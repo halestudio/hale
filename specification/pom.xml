@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>HUMBOLDT</groupId>
-	<artifactId>Specification</artifactId>
-	<name>HUMBOLDT_specification</name>
-	<version>1.1</version>
-	<url>http://maven.apache.org</url>
-	<scm>
-		<connection>scm:svn:http://svn.esdi-humboldt.eu/repo/specification/trunk</connection>
-		<developerConnection>scm:svn:http://svn.esdi-humboldt.eu/repo/specification/trunk</developerConnection>
-	</scm>
+	<groupId>eu.edsihumboldt</groupId>
+	<artifactId>specification</artifactId>
+	<version>2.0</version>
+    <name>HUMBOLDT Specification Component</name>
+	<url>http://www.esdi-humboldt.eu</url>
 	<build>
+		<finalName>humboldt-${project.artifactId}-${project.version}</finalName> 
 		<sourceDirectory>${basedir}/spec</sourceDirectory>
 		<resources>
 			<resource>
 				<directory>${basedir}/res</directory>
 			</resource>
 		</resources>
-		<finalName>humboldt_specification</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>

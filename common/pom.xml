@@ -1,27 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>HUMBOLDT</groupId>
-	<artifactId>common_library</artifactId>
-	<name>HUMBOLDT Common Library</name>
-	<version>1.1</version>
-	<url>http://maven.apache.org</url>
-	<scm>
-		<connection>
-			scm:svn:http://svn.esdi-humboldt.eu/repo/common/trunk
-		</connection>
-		<developerConnection>
-			scm:svn:http://svn.esdi-humboldt.eu/repo/common/trunk
-		</developerConnection>
-	</scm>
+	<groupId>eu.edsihumboldt</groupId>
+	<artifactId>common-library</artifactId>
+	<version>2.0</version>
+	<name>HUMBOLDT Common Library Component</name>
+	<url>http://www.esdi-humboldt.eu</url>
 	<build>
+		<finalName>humboldt-${project.artifactId}-${project.version}</finalName>
 		<sourceDirectory>${basedir}/src</sourceDirectory>
 		<resources>
 			<resource>
 				<directory>${basedir}/res</directory>
 			</resource>
 		</resources>
-		<finalName>humboldt_common_library</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -40,9 +32,9 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>HUMBOLDT</groupId>
-			<artifactId>Specification</artifactId>
-			<version>1.1</version>
+			<groupId>eu.edsihumboldt</groupId>
+			<artifactId>specification</artifactId>
+			<version>2.0</version>
 		</dependency>
 
 		<dependency>
