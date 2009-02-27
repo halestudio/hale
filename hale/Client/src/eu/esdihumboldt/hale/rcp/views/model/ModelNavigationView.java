@@ -1,5 +1,6 @@
 package eu.esdihumboldt.hale.rcp.views.model;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,6 +28,7 @@ import org.opengis.feature.type.PropertyDescriptor;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.impl.SchemaServiceImpl;
 import eu.esdihumboldt.hale.models.impl.SchemaServiceMock;
+import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 
 /**
  * This view component handles the display of source and target schemas.
@@ -100,6 +102,7 @@ public class ModelNavigationView extends ViewPart {
 				.setLabelProvider(new ModelNavigationViewLabelProvider());
 		
 		schemaViewer.setInput(translateSchema(schema));
+		
 		// must be expanded, because the whole tree must be instantiated
 		schemaViewer.expandAll();
 		schemaViewer
@@ -119,14 +122,15 @@ public class ModelNavigationView extends ViewPart {
 	private TreeObject translateSchema(Collection<FeatureType> schema) {
 		
 		if (schema == null || schema.size() == 0) {
-			return new TreeParent("");
+			return new TreeParent("", TreeObjectType.ROOT);
 		}
 		// first, find out a few things about the schema to define the root type.
 		// TODO add metadata on schema here.
 		// TODO is should be possible to attach attributive data for a flyout.
-		TreeParent hidden_root = new TreeParent("ROOT");
+		TreeParent hidden_root = new TreeParent("ROOT", TreeObjectType.ROOT);
 		TreeParent root = new TreeParent(
-				schema.iterator().next().getName().getNamespaceURI());
+				schema.iterator().next().getName().getNamespaceURI(), 
+				TreeObjectType.ROOT);
 		hidden_root.addChild(root);
 		
 		// build the tree of FeatureTypes, starting from those types which 
@@ -167,13 +171,27 @@ public class ModelNavigationView extends ViewPart {
 	 */
 	private TreeObject buildSchemaTree(
 			FeatureType type, Map<FeatureType, Set<FeatureType>> typeHierarchy) {
-		TreeParent result = new TreeParent(type.getName().getLocalPart());
+		TreeObjectType tot = TreeObjectType.CONCRETE_FT;
+		if (type.isAbstract()) {
+			tot = TreeObjectType.ABSTRACT_FT;
+		}
+		TreeParent result = new TreeParent(type.getName().getLocalPart(), tot);
 		// add properties
 		for (PropertyDescriptor pd : type.getDescriptors()) {
+			System.out.println(pd.getType().getClass());
+			tot = TreeObjectType.SIMPLE_ATTRIBUTE;
+			if (Arrays.asList(pd.getType().getClass().getInterfaces()).contains(
+					org.opengis.feature.type.GeometryType.class)) {
+				tot = TreeObjectType.GEOMETRIC_ATTRIBUTE;
+			}
+			else if (Arrays.asList(pd.getType().getClass().getInterfaces()).contains(
+					org.opengis.feature.type.ComplexType.class)) {
+				tot = TreeObjectType.COMPLEX_ATTRIBUTE;
+			}
 			result.addChild(
 					new TreeObject(pd.getName().getLocalPart() + ":" 
 							+ pd.getType().toString().replaceFirst(
-									"^.*?<", "<")));
+									"^.*?<", "<"), tot));
 		}
 		// add children recursively
 		for (FeatureType ft : typeHierarchy.get(type)) {

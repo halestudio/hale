@@ -13,14 +13,15 @@ import org.eclipse.ui.part.ViewPart;
 
 
 /**
- * The AttributeView displays the attributes from the selected data class in the
- * ModelnavigationView. The AttributeView consist of the Labels for the names of
+ * The {@link AttributeView} displays the attributes from the selected data class in the
+ * {@link ModelNavigationView}. The {@link AttributeView} consist of the Labels for the names of
  * the selected data classes and the operator between them and Lists for the 
  * attributes.
+ * 
  * @author cjauss
- *
+ * @version $Id$
  */
-public class AttributeView extends ViewPart{
+public class AttributeView extends ViewPart {
 	
 	public static final String ID ="eu.esdihumboldt.hale.rcp.views.model.AttributeView";
 	
@@ -88,7 +89,7 @@ public class AttributeView extends ViewPart{
 	 * 
 	 * @param _viewer 	if true, userAttributeList selection changed
 	 * 					else inspireAttributeList selection changed
-	 * @param_classname	the name of the class that should be displayed 
+	 * @param _classname the name of the class that should be displayed 
 	 * 					in the corresponding Label
 	 */
 	public void updateView(boolean _viewer, String _classname, TreeItem[] _items){

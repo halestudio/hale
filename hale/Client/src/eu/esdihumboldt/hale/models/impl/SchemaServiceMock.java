@@ -57,13 +57,16 @@ public class SchemaServiceMock implements SchemaService {
 	@Override
 	public Collection<FeatureType> getSourceSchema() {
 		Set<FeatureType> result = new HashSet<FeatureType>();
+		FeatureType ft_abstract = FeatureCollectionUtilities.getFeatureType(
+				null, "TransportNetworkPart", true);
+		result.add(ft_abstract);
 		FeatureType ft_road = FeatureCollectionUtilities.getFeatureType(
-				LineString.class, "Road");
+				ft_abstract, LineString.class, "Road", false);
 		result.add(ft_road);
 		result.add(FeatureCollectionUtilities.getFeatureType(ft_road, 
-				null, "Motorway"));
-		result.add(FeatureCollectionUtilities.getFeatureType(
-				LineString.class, "River"));
+				null, "Motorway", false));
+		result.add(FeatureCollectionUtilities.getFeatureType(ft_abstract,
+				LineString.class, "River", false));
 		return result;
 	}
 
@@ -74,10 +77,10 @@ public class SchemaServiceMock implements SchemaService {
 	public Collection<FeatureType> getTargetSchema() {
 		Set<FeatureType> result = new HashSet<FeatureType>();
 		FeatureType ft_road = FeatureCollectionUtilities.getFeatureType(
-				Polygon.class, "Straße");
+				Polygon.class, "Straße", false);
 		result.add(ft_road);
 		result.add(FeatureCollectionUtilities.getFeatureType(ft_road, 
-				null, "Autobahn"));
+				null, "Autobahn", false));
 		return result;
 	}
 

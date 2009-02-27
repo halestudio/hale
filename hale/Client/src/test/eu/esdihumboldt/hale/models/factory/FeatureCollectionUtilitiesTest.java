@@ -86,7 +86,7 @@ public class FeatureCollectionUtilitiesTest {
 		String testFTName = "TestFTName";
 		Class geometry_class = com.vividsolutions.jts.geom.Polygon.class;
 		FeatureType ft = FeatureCollectionUtilities.getFeatureType(
-				geometry_class, testFTName);
+				geometry_class, testFTName, false);
 		assertTrue(ft.getName() != null);
 		assertEquals(ft.getName().getLocalPart(), testFTName);
 		assertTrue(ft.getDescriptors().size() == 1);

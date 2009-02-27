@@ -124,7 +124,7 @@ public class FeatureCollectionUtilities {
 	 */
 	public static FeatureType getFeatureType(
 			Class<? extends Geometry> _geometry_class, 
-			String _feature_type_name) {
+			String _feature_type_name, boolean _abstract) {
 	
 		FeatureType ft = null;
 		try {
@@ -132,6 +132,7 @@ public class FeatureCollectionUtilities {
 			ftbuilder.setSuperType(null);
 			ftbuilder.setName(_feature_type_name);
 			ftbuilder.setNamespaceURI(namespace);
+			ftbuilder.setAbstract(_abstract);
 			if (_geometry_class != null) {
 				ftbuilder.add("the_geom", _geometry_class);
 			}
@@ -145,26 +146,31 @@ public class FeatureCollectionUtilities {
 	/**
 	 * This method provides a shorthand for getting a {@link FeatureType}.
 	 * 
-	 * @param _geometry_class the {@link Class} of the {@link Geometry} that
+	 * @param _superType the supertype to register for the returned {@link FeatureType}.
+	 * @param _geometryClass the {@link Class} of the {@link Geometry} that
 	 * is to be used, such as {@link LineString}.class.
 	 * @param _geometry_name the name of the {@link FeatureType} to use.
-	 * @return a {@link FeatureType} with one geometric attribute and a 
-	 * supertype.
+	 * @param _abstract if the returned {@link FeatureType} should be abstract, 
+	 * make this parameter true.
+	 * @return a {@link FeatureType} with one geometric attribute, a string name 
+	 * attribute and a supertype.
 	 */
 	public static FeatureType getFeatureType(
-			FeatureType superType,
-			Class<? extends Geometry> _geometry_class, 
-			String _feature_type_name) {
+			FeatureType _superType,
+			Class<? extends Geometry> _geometryClass, 
+			String _featureTypeName, boolean _abstract) {
 	
 		FeatureType ft = null;
 		try {
 			SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
-			ftbuilder.setSuperType((SimpleFeatureType) superType);
-			ftbuilder.setName(_feature_type_name);
+			ftbuilder.setSuperType((SimpleFeatureType) _superType);
+			ftbuilder.setName(_featureTypeName);
 			ftbuilder.setNamespaceURI(namespace);
-			if (_geometry_class != null) {
-				ftbuilder.add("the_geom", _geometry_class);
+			ftbuilder.setAbstract(_abstract);
+			if (_geometryClass != null) {
+				ftbuilder.add("the_geom", _geometryClass);
 			}
+			ftbuilder.add("name", String.class);
 			ft = ftbuilder.buildFeatureType();
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);

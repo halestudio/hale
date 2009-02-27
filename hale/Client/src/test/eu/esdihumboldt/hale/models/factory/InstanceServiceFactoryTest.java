@@ -107,7 +107,7 @@ public class InstanceServiceFactoryTest {
 	@Test
 	public void testGetFeaturesByType() {
 		FeatureType featureType = FeatureCollectionUtilities.getFeatureType(
-				com.vividsolutions.jts.geom.LineString.class, "TransformedFT");
+				com.vividsolutions.jts.geom.LineString.class, "TransformedFT", false);
 		
 		Collection<Feature> fc_reference = InstanceServiceFactory.getInstance().getFeaturesByType(featureType);
 		_log.debug("fc_reference.size(): " + fc_reference.size());
