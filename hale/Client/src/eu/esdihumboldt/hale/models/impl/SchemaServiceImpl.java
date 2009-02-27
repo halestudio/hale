@@ -6,7 +6,10 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeImpl;
 import org.geotools.xml.SchemaFactory;
 import org.geotools.xml.gml.GMLComplexTypes.AbstractFeatureType;
 import org.geotools.xml.schema.Attribute;
@@ -16,8 +19,11 @@ import org.geotools.xml.schema.Schema;
 import org.geotools.xml.schema.SimpleType;
 import org.geotools.xml.xsi.XSISimpleTypes;
 import org.geotools.xml.xsi.XSISimpleTypes.String;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.xml.sax.SAXException;
+
+import test.eu.esdihumboldt.hale.models.factory.FeatureCollectionUtilities;
 
 import eu.esdihumboldt.hale.models.SchemaService;
 
@@ -150,46 +156,85 @@ public class SchemaServiceImpl implements SchemaService {
 		// e.printStackTrace();
 		// }
 
-		InputStream is;
+		InputStream is, is2;
 		try {
 			is = new FileInputStream(file.toString());
-			Schema schema = new SchemaFactory().getInstance(null, is);
-			
-			for (Element element : schema.getElements()) {
-				System.out.println(element.getName());
+			is2 = new FileInputStream(
+					"resources/schema/inheritance/gmlsf2composite_and_featcoll.xsd");
 
+			SchemaFactory factory = new SchemaFactory();
+			Schema schema2 = factory.getInstance(null, is2);
+			Schema schema = factory.getInstance(null, is);
 
-			}
+			Collection<SimpleFeatureType> inTypes = new HashSet<SimpleFeatureType>();
+
+			// Build first a list of FeatureTypes
 			for (ComplexType type : schema.getComplexTypes()) {
-				
 				SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
 				builder.setName(type.getName());
 				builder.setNamespaceURI(type.getNamespace());
-				
-				if (type.getParent() instanceof AbstractFeatureType ) {
-					System.out.println("Feature type: " + type.getName() + ", " + type.getNamespace());
+				builder.setAbstract(type.isAbstract());
+
+				if (type.getParent() != null) {
+					System.out.println("Feature type: " + type.getName()
+							+ ", parent feature type: "
+							+ type.getParent().getName());
+
 					for (Element element : type.getChildElements()) {
 						if (element.getType() instanceof SimpleType) {
-//							System.out.println("\tsimpl0e type element: " + element.getName());
-//							builder.add(element.getName(), element.getType().getClass());
+							builder.add(element.getName(), element.getType()
+									.getClass());
 						}
-						System.out.println("\telement: " + element.getName() + ", " + element.getType()); 
+						System.out.println("\telement: " + element.getName()
+								+ ", " + element.getType().getName());
 					}
-						
-				} else {
-					if (type.getParent() != null )
-						System.out.println( "Feature type: " + type.getName() + 
-								", parent feature type: " + type.getParent().getName() );
+					inTypes.add(builder.buildFeatureType());
 				}
-				
-				
-//				for (Element element : type.getChildElements()) {
-//					System.out.println("\te " + element.getName());
-//				}
-//				for (Attribute attribue : type.getAttributes()) {
-//					System.out.println("\ta " + attribue.getName());
-//				}
 			}
+
+			for (ComplexType type : schema.getComplexTypes()) {
+				if (type.getParent() instanceof ComplexType) {
+					// Create builder
+					SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+					builder.setName(type.getName());
+					builder.setNamespaceURI(type.getNamespace());
+					builder.setAbstract(type.isAbstract());
+
+					if (type.getParent() != null) {
+						System.out.println("Feature type: " + type.getName()
+								+ ", parent feature type: "
+								+ type.getParent().getName());
+
+						for (Element element : type.getChildElements()) {
+							if (element.getType() instanceof SimpleType) {
+								// System.out.println("\tsimpl0e type element: "
+								// + element.getName());
+								builder.add(element.getName(), element
+										.getType().getClass());
+							}
+							System.out.println("\telement: "
+									+ element.getName() + ", "
+									+ element.getType().getName());
+						}
+
+						if (type.getParent().getName().equals(
+								"AbstractFeatureType")) {
+							builder.setSuperType(null);
+						} else {
+							for (SimpleFeatureType featureType : inTypes) {
+								if (featureType.getName().getLocalPart()
+										.equals(type.getParent().getName())) {
+									builder.setSuperType(featureType);
+									System.out.println("Parent type set to "
+											+ featureType.getName());
+								}
+							}
+						}
+						collection.add(builder.buildFeatureType());
+					}
+				}
+			}
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
