@@ -1,0 +1,39 @@
+<!--            XML Schema for OWL, RDF attributes
+                Peter F. Patel-Schneider, Bell Labs Research
+                14 June 2002
+-->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    targetNamespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    elementFormDefault="qualified"
+    attributeFormDefault="qualified"
+>
+
+<xsd:attribute name="about" type="xsd:anyURI" />
+
+<xsd:attribute name="resource" type="xsd:anyURI" />
+
+<xsd:attribute name="datatype" type="xsd:anyURI" />
+
+
+  <xsd:element name="RDF">
+    <xsd:complexType>
+      <xsd:sequence>
+        <!--xsd:element ref="rdf:Description" minOccurs="0" maxOccurs="unbounded"/-->
+      </xsd:sequence>     
+    </xsd:complexType>
+  </xsd:element>
+
+  <!--element name="Description">
+    <complexType>
+      <sequence>
+        <element ref="dc:any" minOccurs="0" maxOccurs="unbounded"/>
+      </sequence>     
+      <attribute ref="rdf:about" use="optional"/>
+    </complexType>
+  </element-->
+
+</xsd:schema>
+

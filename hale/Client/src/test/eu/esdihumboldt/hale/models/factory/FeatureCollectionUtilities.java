@@ -1,0 +1,174 @@
+/*
+ * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
+ * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * 
+ * For more information on the project, please refer to the this web site:
+ * http://www.esdi-humboldt.eu
+ * 
+ * LICENSE: For information on the license under which this program is 
+ * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
+ * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ */
+package test.eu.esdihumboldt.hale.models.factory;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URL;
+
+import org.geotools.data.DataStore;
+import org.geotools.data.FeatureReader;
+import org.geotools.data.gml.GMLDataStoreFactory;
+import org.opengis.feature.Feature;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureCollections;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.io.WKTReader;
+
+/**
+ * This class allows to create FeatureCollections from various input structures,
+ * using Geotools 2.5 and GeoAPI 2.2 types.
+ * 
+ * @author Thorsten Reitz, Fraunhofer IGD
+ * @version {$Id}
+ */
+public class FeatureCollectionUtilities {
+
+	public static final String namespace = "http://www.esdihumboldt.eu/test/";
+	
+	/**
+	 * This method allows to load a {@link FeatureCollection} from an Well Known 
+	 * Text (WKT) file.
+	 * 
+	 * @param _filename the {@link String} containing a valid path to the WKT 
+	 * file.
+	 * @param _ftName the name to use for the created {@link FeatureType}.
+	 * @param _featureName the name to use for the created {@link Feature}s.
+	 * @return a {@link FeatureCollection} containing {@link Feature}s as
+	 * defined in the WKT file.
+	 */
+	public static FeatureCollection<SimpleFeatureType, SimpleFeature> loadFeatureCollectionFromWKT(
+			String _filename, String _ftName, String _featureName) {
+		FeatureCollection<SimpleFeatureType, SimpleFeature> fc = FeatureCollections.newCollection();
+		try {
+			// Load file
+			WKTReader wktReader = new WKTReader();
+			Geometry geom = wktReader.read(new FileReader(_filename));
+			
+			// create the builder (since it maintains state, has to be done every time anew)
+			SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
+			  
+			// set global state
+			ftbuilder.setSuperType(null);
+			ftbuilder.setName(_ftName);
+			ftbuilder.setNamespaceURI(namespace);
+			//ftbuilder.setSRS("EPSG:4326");
+			  
+			// add attributes to FT
+			ftbuilder.add( "the_geom", geom.getClass() );
+			SimpleFeatureType ft = ftbuilder.buildFeatureType();
+			
+			// build Feature itself, using the created type and the geometry.
+			SimpleFeatureBuilder fbuilder = new SimpleFeatureBuilder(ft);
+
+			// add the attributes to Feature
+			fbuilder.add(geom);
+
+			// build the feature and add it to collection
+			SimpleFeature feature = fbuilder.buildFeature(_featureName);
+			fc.add(feature);
+		}
+		catch (Exception ex) {
+			throw new RuntimeException(
+					"An exception occured trying to build a FeatureCollection" +
+					" from the given file " + _filename + ".", ex);
+		}
+		return fc;
+	}
+	
+	/**
+	 * This method allows to load a {@link FeatureCollection} from a GML file.
+	 * @param _filename
+	 * @return
+	 */
+	public static FeatureCollection<SimpleFeatureType, SimpleFeature> loadFeatureCollectionFromGML2(
+			String _filename){
+		FeatureCollection<SimpleFeatureType, SimpleFeature> fc = 
+			FeatureCollections.newCollection();
+		try {
+			GMLDataStoreFactory dsf = new GMLDataStoreFactory();
+			DataStore ds = dsf.createDataStore(new URL(_filename));
+			FeatureReader fr = ds.getFeatureReader(null, null);
+			//fc.add(fr.next());
+			
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return fc;
+	}
+	
+	/**
+	 * This method provides a shorthand for getting a {@link FeatureType}.
+	 * 
+	 * @param _geometry_class the {@link Class} of the {@link Geometry} that
+	 * is to be used, such as {@link LineString}.class.
+	 * @param _geometry_name the name of the {@link FeatureType} to use.
+	 * @return a {@link FeatureType} with one geometric attribute.
+	 */
+	public static FeatureType getFeatureType(
+			Class<? extends Geometry> _geometry_class, 
+			String _feature_type_name) {
+	
+		FeatureType ft = null;
+		try {
+			SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
+			ftbuilder.setSuperType(null);
+			ftbuilder.setName(_feature_type_name);
+			ftbuilder.setNamespaceURI(namespace);
+			if (_geometry_class != null) {
+				ftbuilder.add("the_geom", _geometry_class);
+			}
+			ft = ftbuilder.buildFeatureType();
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+		return ft;
+	}
+	
+	/**
+	 * This method provides a shorthand for getting a {@link FeatureType}.
+	 * 
+	 * @param _geometry_class the {@link Class} of the {@link Geometry} that
+	 * is to be used, such as {@link LineString}.class.
+	 * @param _geometry_name the name of the {@link FeatureType} to use.
+	 * @return a {@link FeatureType} with one geometric attribute and a 
+	 * supertype.
+	 */
+	public static FeatureType getFeatureType(
+			FeatureType superType,
+			Class<? extends Geometry> _geometry_class, 
+			String _feature_type_name) {
+	
+		FeatureType ft = null;
+		try {
+			SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
+			ftbuilder.setSuperType((SimpleFeatureType) superType);
+			ftbuilder.setName(_feature_type_name);
+			ftbuilder.setNamespaceURI(namespace);
+			if (_geometry_class != null) {
+				ftbuilder.add("the_geom", _geometry_class);
+			}
+			ft = ftbuilder.buildFeatureType();
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+		return ft;
+	}
+}

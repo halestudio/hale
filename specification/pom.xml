@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>HUMBOLDT</groupId>
+	<artifactId>Specification</artifactId>
+	<name>HUMBOLDT_specification</name>
+	<version>1.1</version>
+	<url>http://maven.apache.org</url>
+	<scm>
+		<connection>scm:svn:http://svn.esdi-humboldt.eu/repo/specification/trunk</connection>
+		<developerConnection>scm:svn:http://svn.esdi-humboldt.eu/repo/specification/trunk</developerConnection>
+	</scm>
+	<build>
+		<sourceDirectory>${basedir}/spec</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>${basedir}/res</directory>
+			</resource>
+		</resources>
+		<finalName>humboldt_specification</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<workspace>${basedir}</workspace>
+				</configuration>
+			</plugin>
+
+
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.opengis</groupId>
+			<artifactId>geoapi</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vividsolutions</groupId>
+			<artifactId>jts</artifactId>
+			<version>1.8</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring</artifactId>
+			<version>${spring.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.4</version>
+		</dependency>
+
+	</dependencies>
+	<reporting>
+		<plugins>
+			<plugin>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven--plugin</artifactId>
+			</plugin>
+		</plugins>
+	</reporting>
+
+	<properties>
+		<cxf.version>2.1.1</cxf.version>
+		<spring.version>2.5.4</spring.version>
+	</properties>
+</project>
+
+
+<!--
+	mvn deploy:deploy-file -DrepositoryId=humboldt -Durl=http://localhost:8080/artifactory/humboldt -DgroupId=humboldt -DartifactId=humboldt_specification -Dversion=1.0 -Dpackaging=jar -Dfile=humboldt_specification.jar
+
+-->

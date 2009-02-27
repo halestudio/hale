@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="eu.esdihumboldt.hale.rcp.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Perspective"
+            class="eu.esdihumboldt.hale.rcp.ClientPerspective"
+            id="eu.esdihumboldt.hale.rcp.ClientPerspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="Mapviewer"
+            class="eu.esdihumboldt.hale.rcp.views.MapView"
+            id="eu.esdihumboldt.hale.rcp.views.MapView">
+      </view>
+      <view
+            class="eu.esdihumboldt.hale.rcp.views.tasks.TasklistView"
+            id="eu.esdihumboldt.hale.rcp.views.tasks.TasklistView"
+            name="Tasklist">
+      </view>
+      <view
+            class="eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView"
+            id="eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView"
+            name="Schema Explorer">
+      </view>
+      <view
+            class="eu.esdihumboldt.hale.rcp.views.model.AttributeView"
+            id="eu.esdihumboldt.hale.rcp.views.model.AttributeView"
+            name="AttributeView">
+      </view>
+   </extension>
+
+</plugin>
