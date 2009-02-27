@@ -1,5 +1,7 @@
 package eu.esdihumboldt.hale.rcp.views.model;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -7,6 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -27,7 +30,6 @@ import org.opengis.feature.type.PropertyDescriptor;
 
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.impl.SchemaServiceImpl;
-import eu.esdihumboldt.hale.models.impl.SchemaServiceMock;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 
 /**
@@ -37,6 +39,8 @@ import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
  * @version {$Id}
  */
 public class ModelNavigationView extends ViewPart {
+	
+	private static Logger _log = Logger.getLogger(ModelNavigationView.class);
 
 	public static final String ID = 
 		"eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView";
@@ -46,7 +50,13 @@ public class ModelNavigationView extends ViewPart {
 	@Override
 	public void createPartControl(Composite _parent) {
 		
-		SchemaService schemaService = new SchemaServiceMock();
+		SchemaService schemaService = new SchemaServiceImpl();
+		try {
+			schemaService.loadSourceSchema(
+					new URI("D:/humboldt-workspace/HALE2/resources/schema/inheritance/rise_hydrography.xsd")); // FIXME
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 
 		Composite modelComposite = new Composite(_parent, SWT.BEGINNING);
 		GridLayout layout = new GridLayout();
@@ -140,17 +150,24 @@ public class ModelNavigationView extends ViewPart {
 		// first, put all FTs in the Map, with an empty Set of subtypes.
 		for (FeatureType ft : schema) {
 			typeHierarchy.put(ft, new HashSet<FeatureType>());
+			System.out.println("HashCode: " + ft.hashCode());
 		}
+		System.out.println(typeHierarchy.keySet().size());
 		// second, walk all FTs and register them as subtypes to their supertypes.
 		for (FeatureType ft : schema) {
+			System.out.println("SuperType: " + ft.getSuper());
 			if (ft.getSuper() != null) {
+				System.out.println("SuperHashCode: " + ft.getSuper().hashCode());
 				Set<FeatureType> subtypes = typeHierarchy.get(ft.getSuper());
-				System.out.println(ft.getSuper().getName().getNamespaceURI());
 				if (subtypes != null) {
 					subtypes.add(ft);
 				}
+				else {
+					System.out.println("Subtypes-Set was null...");
+				}
 			}
 		}
+		System.out.println(typeHierarchy.keySet().size());
 		// finally, build the tree, starting with those types that don't have supertypes.
 		for (FeatureType ft : schema) {
 			if (ft.getSuper() == null) {
@@ -178,7 +195,6 @@ public class ModelNavigationView extends ViewPart {
 		TreeParent result = new TreeParent(type.getName().getLocalPart(), tot);
 		// add properties
 		for (PropertyDescriptor pd : type.getDescriptors()) {
-			System.out.println(pd.getType().getClass());
 			tot = TreeObjectType.SIMPLE_ATTRIBUTE;
 			if (Arrays.asList(pd.getType().getClass().getInterfaces()).contains(
 					org.opengis.feature.type.GeometryType.class)) {

@@ -160,7 +160,7 @@ public class SchemaServiceImpl implements SchemaService {
 		try {
 			is = new FileInputStream(file.toString());
 			is2 = new FileInputStream(
-					"resources/schema/inheritance/gmlsf2composite_and_featcoll.xsd");
+					"D:/humboldt-workspace/HALE2/resources/schema/inheritance/gmlsf2composite_and_featcoll.xsd");
 
 			SchemaFactory factory = new SchemaFactory();
 			Schema schema2 = factory.getInstance(null, is2);
@@ -179,17 +179,17 @@ public class SchemaServiceImpl implements SchemaService {
 				builder.setAbstract(type.isAbstract());
 
 				if (type.getParent() != null) {
-					System.out.println("Feature type: " + type.getName()
+					/*System.out.println("Feature type: " + type.getName()
 							+ ", parent feature type: "
-							+ type.getParent().getName());
+							+ type.getParent().getName());*/
 
 					for (Element element : type.getChildElements()) {
 						if (element.getType() instanceof SimpleType) {
 							builder.add(element.getName(), element.getType()
 									.getClass());
 						}
-						System.out.println("\telement: " + element.getName()
-								+ ", " + element.getType().getName());
+						/*System.out.println("\telement: " + element.getName()
+								+ ", " + element.getType().getName());*/
 					}
 					inTypes.add(builder.buildFeatureType());
 				}
@@ -215,9 +215,9 @@ public class SchemaServiceImpl implements SchemaService {
 								builder.add(element.getName(), element
 										.getType().getClass());
 							}
-							System.out.println("\telement: "
-									+ element.getName() + ", "
-									+ element.getType().getName());
+//							System.out.println("\telement: "
+//									+ element.getName() + ", "
+//									+ element.getType().getName());
 						}
 
 						if (type.getParent().getName().equals(
@@ -228,8 +228,8 @@ public class SchemaServiceImpl implements SchemaService {
 								if (featureType.getName().getLocalPart()
 										.equals(type.getParent().getName())) {
 									builder.setSuperType(featureType);
-									System.out.println("Parent type set to "
-											+ featureType.getName());
+//									System.out.println("Parent type set to "
+//											+ featureType.getName());
 								}
 							}
 						}
