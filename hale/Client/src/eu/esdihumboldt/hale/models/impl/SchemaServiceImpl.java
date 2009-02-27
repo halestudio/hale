@@ -166,6 +166,9 @@ public class SchemaServiceImpl implements SchemaService {
 			Schema schema2 = factory.getInstance(null, is2);
 			Schema schema = factory.getInstance(null, is);
 
+			Schema[] imports = schema.getImports();
+//			schema.get
+						
 			Collection<SimpleFeatureType> inTypes = new HashSet<SimpleFeatureType>();
 
 			// Build first a list of FeatureTypes
