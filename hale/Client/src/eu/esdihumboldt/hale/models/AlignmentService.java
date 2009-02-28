@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.models;
 
 import java.net.URI;
 
-import org.geotools.feature.FeatureType;
+import org.opengis.feature.type.FeatureType;
 import org.semanticweb.knowledgeweb.heterogeneity.alignment.AlignmentDocument;
 import org.semanticweb.knowledgeweb.heterogeneity.alignment.AlignmentType;
 
