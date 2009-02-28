@@ -30,6 +30,7 @@ import org.opengis.feature.type.PropertyDescriptor;
 
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.impl.SchemaServiceImpl;
+import eu.esdihumboldt.hale.rcp.Application;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 
 /**
@@ -50,10 +51,11 @@ public class ModelNavigationView extends ViewPart {
 	@Override
 	public void createPartControl(Composite _parent) {
 		
-		SchemaService schemaService = new SchemaServiceImpl();
+		SchemaService schemaService = SchemaServiceImpl.getInstance();
 		try {
 			schemaService.loadSourceSchema(
-					new URI("D:/humboldt-workspace/HALE2/resources/schema/inheritance/rise_hydrography.xsd")); // FIXME
+					new URI(Application.getBasePath() 
+							+ "resources/schema/inheritance/rise_hydrography.xsd"));
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
@@ -108,8 +110,7 @@ public class ModelNavigationView extends ViewPart {
 		TreeViewer schemaViewer = new TreeViewer(viewerBComposite, SWT.SINGLE
 				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		schemaViewer.setContentProvider(new ModelContentProvider());
-		schemaViewer
-				.setLabelProvider(new ModelNavigationViewLabelProvider());
+		schemaViewer.setLabelProvider(new ModelNavigationViewLabelProvider());
 		
 		schemaViewer.setInput(translateSchema(schema));
 		
@@ -130,10 +131,10 @@ public class ModelNavigationView extends ViewPart {
 	 * @return
 	 */
 	private TreeObject translateSchema(Collection<FeatureType> schema) {
-		
 		if (schema == null || schema.size() == 0) {
 			return new TreeParent("", TreeObjectType.ROOT);
 		}
+		
 		// first, find out a few things about the schema to define the root type.
 		// TODO add metadata on schema here.
 		// TODO is should be possible to attach attributive data for a flyout.
@@ -145,33 +146,33 @@ public class ModelNavigationView extends ViewPart {
 		
 		// build the tree of FeatureTypes, starting from those types which 
 		// don't have a supertype. 
-		Map<FeatureType, Set<FeatureType>> typeHierarchy = 
-			new HashMap<FeatureType, Set<FeatureType>>();
+		Map<RobustFTKey, Set<FeatureType>> typeHierarchy = 
+			new HashMap<RobustFTKey, Set<FeatureType>>();
+		
 		// first, put all FTs in the Map, with an empty Set of subtypes.
 		for (FeatureType ft : schema) {
-			typeHierarchy.put(ft, new HashSet<FeatureType>());
-			System.out.println("HashCode: " + ft.hashCode());
+			typeHierarchy.put(new RobustFTKey(ft), new HashSet<FeatureType>());
 		}
-		System.out.println(typeHierarchy.keySet().size());
+		
 		// second, walk all FTs and register them as subtypes to their supertypes.
-		for (FeatureType ft : schema) {
-			System.out.println("SuperType: " + ft.getSuper());
-			if (ft.getSuper() != null) {
-				System.out.println("SuperHashCode: " + ft.getSuper().hashCode());
-				Set<FeatureType> subtypes = typeHierarchy.get(ft.getSuper());
+		for (RobustFTKey ftk : typeHierarchy.keySet()) {
+			if (ftk.getFeatureType().getSuper() != null) {
+				Set<FeatureType> subtypes = typeHierarchy.get(
+						new RobustFTKey((FeatureType) ftk.getFeatureType().getSuper()));
 				if (subtypes != null) {
-					subtypes.add(ft);
+					subtypes.add(ftk.getFeatureType());
+					_log.debug("Supertype was added: " + ftk.getFeatureType().getSuper());
 				}
 				else {
-					System.out.println("Subtypes-Set was null...");
+					_log.warn("Subtypes-Set was null. Supertype should have been added, but wasn't.");
 				}
 			}
 		}
-		System.out.println(typeHierarchy.keySet().size());
+		_log.debug(typeHierarchy.keySet().size());
 		// finally, build the tree, starting with those types that don't have supertypes.
-		for (FeatureType ft : schema) {
-			if (ft.getSuper() == null) {
-				root.addChild(this.buildSchemaTree(ft, typeHierarchy));
+		for (RobustFTKey ftk : typeHierarchy.keySet()) {
+			if (ftk.getFeatureType().getSuper() == null) {
+				root.addChild(this.buildSchemaTree(ftk, typeHierarchy));
 			}
 		}
 		
@@ -187,14 +188,14 @@ public class ModelNavigationView extends ViewPart {
 	 * subtypes and their property, starting with the given FT.
 	 */
 	private TreeObject buildSchemaTree(
-			FeatureType type, Map<FeatureType, Set<FeatureType>> typeHierarchy) {
+			RobustFTKey ftk, Map<RobustFTKey, Set<FeatureType>> typeHierarchy) {
 		TreeObjectType tot = TreeObjectType.CONCRETE_FT;
-		if (type.isAbstract()) {
+		if (ftk.getFeatureType().isAbstract()) {
 			tot = TreeObjectType.ABSTRACT_FT;
 		}
-		TreeParent result = new TreeParent(type.getName().getLocalPart(), tot);
+		TreeParent result = new TreeParent(ftk.getFeatureType().getName().getLocalPart(), tot);
 		// add properties
-		for (PropertyDescriptor pd : type.getDescriptors()) {
+		for (PropertyDescriptor pd : ftk.getFeatureType().getDescriptors()) {
 			tot = TreeObjectType.SIMPLE_ATTRIBUTE;
 			if (Arrays.asList(pd.getType().getClass().getInterfaces()).contains(
 					org.opengis.feature.type.GeometryType.class)) {
@@ -210,8 +211,9 @@ public class ModelNavigationView extends ViewPart {
 									"^.*?<", "<"), tot));
 		}
 		// add children recursively
-		for (FeatureType ft : typeHierarchy.get(type)) {
-			result.addChild(this.buildSchemaTree(ft, typeHierarchy));
+		for (FeatureType ft : typeHierarchy.get(ftk)) {
+			result.addChild(this.buildSchemaTree(
+					new RobustFTKey(ft), typeHierarchy));
 		}
 		return result;
 	}

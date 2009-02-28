@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HUMBOLDT Alignment Editor
-Bundle-SymbolicName: HALE2;singleton:=true
+Bundle-SymbolicName: HALE;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: eu.esdihumboldt.hale.rcp.HALEActivator
 Require-Bundle: org.eclipse.ui,
@@ -12,7 +12,6 @@ Bundle-ClassPath: LIB/jts-1.9.jar,
  .,
  LIB/align_d7.2.jar,
  LIB/common-2.2.1.jar,
- LIB/commons-beanutils-1.7.0.jar,
  LIB/ecore-2.2.2.jar,
  LIB/geoapi-2.2-M1.jar,
  LIB/gt-api-2.5.1.jar,
@@ -25,7 +24,6 @@ Bundle-ClassPath: LIB/jts-1.9.jar,
  LIB/jdom-1.0.jar,
  LIB/jsr-275-1.0-beta-2.jar,
  LIB/log4j-1.2.12.jar,
- LIB/picocontainer-1.2.jar,
  LIB/specification-1.1.jar,
  LIB/xercesImpl-2.7.1.jar,
  LIB/xml-apis-1.0.b2.jar,

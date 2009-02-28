@@ -7,7 +7,7 @@ needed to extend gmlsf2 with CompositeSurface and CompositeCurve,
                         and with _FeatureCollection and featureMember(s) in case of WFS publishing
 -->
 
-<xs:import namespace="http://www.opengis.net/gml" schemaLocation="D:/humboldt-workspace/HALE2/resources/schema/gmlsf2composite_and_featcoll.xsd"/>
+<xs:import namespace="http://www.opengis.net/gml" schemaLocation="http://xsdi.org/schema/hale-tests/gmlsf2composite_and_featcoll.xsd"/>
                                                                  
 <!--xs:import namespace="http://www.opengis.net/wfs" schemaLocation="wfs_local.xsd"/-->
 

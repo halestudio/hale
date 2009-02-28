@@ -61,7 +61,7 @@ public class SchemaServiceTest {
 	
 		
 		
-		SchemaServiceImpl service = new SchemaServiceImpl();
+		SchemaServiceImpl service = (SchemaServiceImpl) SchemaServiceImpl.getInstance();
 //		URI file = new URI("schema/target/Roadlink.xsd");
 		URI file = new URI("resources/schema/inheritance/rise_hydrography.xsd");
 //		URI file = new URI("schema/source/roadsGermany212.xsd");

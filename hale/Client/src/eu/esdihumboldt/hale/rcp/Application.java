@@ -45,9 +45,10 @@ public class Application implements IApplication {
 		Logger.getRootLogger().addAppender(appender);
 		
 		URL location = this.getClass().getProtectionDomain().getCodeSource().getLocation();
-		_log.debug(location.getPath());
-		Application.basepath = location.getPath();
-		
+		String location_path = location.getPath().replace(" ", "+");
+		location_path = location_path.replace("bin/", "");
+		_log.debug(location_path);
+		Application.basepath = location_path;
 		
 		Display display = PlatformUI.createDisplay();
 		try {

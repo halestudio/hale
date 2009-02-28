@@ -8,35 +8,43 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.feature.simple.SimpleFeatureTypeImpl;
 import org.geotools.xml.SchemaFactory;
-import org.geotools.xml.gml.GMLComplexTypes.AbstractFeatureType;
-import org.geotools.xml.schema.Attribute;
 import org.geotools.xml.schema.ComplexType;
 import org.geotools.xml.schema.Element;
 import org.geotools.xml.schema.Schema;
 import org.geotools.xml.schema.SimpleType;
-import org.geotools.xml.xsi.XSISimpleTypes;
-import org.geotools.xml.xsi.XSISimpleTypes.String;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.xml.sax.SAXException;
 
-import test.eu.esdihumboldt.hale.models.factory.FeatureCollectionUtilities;
-
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.rcp.Application;
 
 /**
  * Implementation of {@link SchemaService}
  */
 public class SchemaServiceImpl implements SchemaService {
+	
+	private static Logger _log = Logger.getLogger(SchemaServiceImpl.class);
+	
+	private static SchemaServiceImpl instance = new SchemaServiceImpl();
 
 	/** FeatureType collection of the source schema */
 	Collection<FeatureType> sourceSchema;
 
 	/** FeatureType collection of the target schema */
 	Collection<FeatureType> targetSchema;
+	
+	private SchemaServiceImpl() {
+		_log.setLevel(Level.INFO);
+	}
+	
+	public static SchemaService getInstance() {
+		return SchemaServiceImpl.instance;
+	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.models.SchemaService#cleanSourceSchema()
@@ -105,69 +113,22 @@ public class SchemaServiceImpl implements SchemaService {
 	 */
 	private Collection<FeatureType> loadSchema(URI file) {
 		Collection<FeatureType> collection = new ArrayList<org.opengis.feature.type.FeatureType>();
-		// try {
-		//			
-		//Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("*",
-		// new XSDResourceFactoryImpl());
-		//
-		//			
-		// ResourceSet resourceSet = new ResourceSetImpl();
-		//resourceSet.getResource(org.eclipse.emf.common.util.URI.createURI(file
-		// .toString()), true);
-		//
-		// XSDSchema xsdSchema = null;
-		// for (Iterator resources = resourceSet.getResources().iterator();
-		// resources
-		// .hasNext();) {
-		// Resource res = (Resource) resources.next();
-		// if (res instanceof XSDResourceImpl) {
-		// xsdSchema = ((XSDResourceImpl) res).getSchema();
-		// break;
-		// }
-		// }
-		//
-		// Configuration config = new org.geotools.gml3.GMLConfiguration();
-		// MutablePicoContainer ctx = new DefaultPicoContainer();
-		// ctx = config.setupContext(ctx);
-		// BindingLoader bindingLoader = new BindingLoader(config
-		// .setupBindings());
-		// BindingWalkerFactory bwf = new BindingWalkerFactoryImpl(
-		// bindingLoader, ctx);
-		//
-		// List eltDecs = xsdSchema.getElementDeclarations();
-		// org.opengis.feature.type.FeatureType ft = null;
-		// for (int i = 0; i < eltDecs.size(); i++) {
-		// XSDElementDeclaration xsdElt = (XSDElementDeclaration) eltDecs
-		// .get(i);
-		// ft = GML3ParsingUtils.featureType(xsdElt, bwf);
-		// System.out.println("ft is " + ft);
-		// schema.add(ft);
-		// }
-		//
-		// System.out.println("schema loaded");
-		//
-		// } catch (FileNotFoundException e) {
-		// e.printStackTrace();
-		// } catch (SAXException e) {
-		// e.printStackTrace();
-		// } catch (URISyntaxException e) {
-		// e.printStackTrace();
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-
+		
 		InputStream is, is2;
 		try {
-			is = new FileInputStream(file.toString());
-			is2 = new FileInputStream(
-					"D:/humboldt-workspace/HALE2/resources/schema/inheritance/gmlsf2composite_and_featcoll.xsd");
+			is = new FileInputStream(file.toString().replaceAll("\\+", " "));
+			
+			// FIXME: Find good way of automatically importing parent schemas
+			is2 = new FileInputStream(Application.getBasePath().replaceAll("\\+", " ") + 
+					"resources/schema/inheritance/gmlsf2composite_and_featcoll.xsd");
 
-			SchemaFactory factory = new SchemaFactory();
-			Schema schema2 = factory.getInstance(null, is2);
-			Schema schema = factory.getInstance(null, is);
+			Schema schema2 = SchemaFactory.getInstance(null, is2);
+			Schema schema = SchemaFactory.getInstance(null, is);
 
 			Schema[] imports = schema.getImports();
-//			schema.get
+			for (Schema s : imports) {
+				_log.debug("Imported URI + Name: " + s.getURI() + " " + s.getTargetNamespace());
+			}
 						
 			Collection<SimpleFeatureType> inTypes = new HashSet<SimpleFeatureType>();
 
@@ -179,17 +140,17 @@ public class SchemaServiceImpl implements SchemaService {
 				builder.setAbstract(type.isAbstract());
 
 				if (type.getParent() != null) {
-					/*System.out.println("Feature type: " + type.getName()
+					_log.debug("Feature type: " + type.getName()
 							+ ", parent feature type: "
-							+ type.getParent().getName());*/
+							+ type.getParent().getName());
 
 					for (Element element : type.getChildElements()) {
 						if (element.getType() instanceof SimpleType) {
 							builder.add(element.getName(), element.getType()
 									.getClass());
 						}
-						/*System.out.println("\telement: " + element.getName()
-								+ ", " + element.getType().getName());*/
+						_log.debug("\telement: " + element.getName()
+								+ ", " + element.getType().getName());
 					}
 					inTypes.add(builder.buildFeatureType());
 				}
@@ -204,20 +165,20 @@ public class SchemaServiceImpl implements SchemaService {
 					builder.setAbstract(type.isAbstract());
 
 					if (type.getParent() != null) {
-						System.out.println("Feature type: " + type.getName()
+						_log.debug("Feature type: " + type.getName()
 								+ ", parent feature type: "
 								+ type.getParent().getName());
 
 						for (Element element : type.getChildElements()) {
 							if (element.getType() instanceof SimpleType) {
-								// System.out.println("\tsimpl0e type element: "
-								// + element.getName());
+								_log.debug("\tsimpl0e type element: "
+								 + element.getName());
 								builder.add(element.getName(), element
 										.getType().getClass());
 							}
-//							System.out.println("\telement: "
-//									+ element.getName() + ", "
-//									+ element.getType().getName());
+							_log.debug("\telement: "
+									+ element.getName() + ", "
+									+ element.getType().getName());
 						}
 
 						if (type.getParent().getName().equals(
@@ -228,8 +189,8 @@ public class SchemaServiceImpl implements SchemaService {
 								if (featureType.getName().getLocalPart()
 										.equals(type.getParent().getName())) {
 									builder.setSuperType(featureType);
-//									System.out.println("Parent type set to "
-//											+ featureType.getName());
+									_log.debug("Parent type set to "
+											+ featureType.getName());
 								}
 							}
 						}
@@ -239,9 +200,9 @@ public class SchemaServiceImpl implements SchemaService {
 			}
 
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			e.printStackTrace(); // FIXME
 		} catch (SAXException e) {
-			e.printStackTrace();
+			e.printStackTrace(); // FIXME
 		}
 
 		return collection;
