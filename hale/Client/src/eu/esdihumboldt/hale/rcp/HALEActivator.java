@@ -19,6 +19,7 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  * 
  * @author Thorsten Reitz, Fraunhofer IGD
+ * @version $Id$
  */
 public class HALEActivator extends AbstractUIPlugin {
 

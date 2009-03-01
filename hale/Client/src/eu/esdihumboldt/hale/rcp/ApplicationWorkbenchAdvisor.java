@@ -8,12 +8,20 @@
  * LICENSE: For information on the license under which this program is 
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
- */package eu.esdihumboldt.hale.rcp;
+ */
+package eu.esdihumboldt.hale.rcp;
 
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
+/**
+ * The {@link ApplicationWorkbenchAdvisor} controls the appearance of the 
+ * application (menus, toolbars, perspectives, etc).
+ * 
+ * @author Thorsten Reitz
+ * @version $Id$
+ */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	private static final String PERSPECTIVE_ID = "eu.esdihumboldt.hale.rcp.ClientPerspective";

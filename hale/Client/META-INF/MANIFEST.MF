@@ -8,8 +8,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.junit4
 Eclipse-LazyStart: true
-Bundle-ClassPath: LIB/jts-1.9.jar,
- .,
+Bundle-ClassPath: .,
+ LIB/jts-1.9.jar,
  LIB/align_d7.2.jar,
  LIB/common-2.2.1.jar,
  LIB/ecore-2.2.2.jar,

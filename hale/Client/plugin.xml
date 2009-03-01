@@ -42,5 +42,14 @@
             name="AttributeView">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commands.LoadSchemaHandler"
+            description="Load a Source or Target Schema"
+            id="HALE.loadSchema.command"
+            name="Load Schema">
+      </command>
+   </extension>
 
 </plugin>
