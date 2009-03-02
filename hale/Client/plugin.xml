@@ -50,6 +50,60 @@
             id="HALE.loadSchema.command"
             name="Load Schema">
       </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commands.OpenProjectHandler"
+            description="Open an existing alignment project"
+            id="HALE.openProject.command"
+            name="openProject">
+      </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commands.ExitHandler"
+            description="Exit HALE"
+            id="HALE.exit.command"
+            name="exit">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               id="file"
+               label="File">
+            <command
+                  commandId="HALE.openProject.command"
+                  id="openProject"
+                  label="Open Alignment Project"
+                  style="push">
+            </command>
+            <command
+                  commandId="HALE.loadSchema.command"
+                  id="loadSourceSchema"
+                  label="Load a Source Schema"
+                  style="push">
+            </command>
+            <command
+                  commandId="HALE.loadSchema.command"
+                  id="loadTargetSchema"
+                  label="Load a Target Schema"
+                  style="push">
+            </command>
+            <command
+                  commandId="HALE.exit.command"
+                  id="exit"
+                  label="Exit"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.services">
+      <serviceFactory
+            factoryClass="eu.esdihumboldt.hale.rcp.services.InstanceAbstractServiceFactory">
+         <service
+               serviceClass="eu.esdihumboldt.hale.models.InstanceService"></service>
+      </serviceFactory>
    </extension>
 
 </plugin>

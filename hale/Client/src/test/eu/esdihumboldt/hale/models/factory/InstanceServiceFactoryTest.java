@@ -27,7 +27,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
-import eu.esdihumboldt.hale.models.factory.InstanceServiceFactory;
+import eu.esdihumboldt.hale.models.impl.InstanceServiceFactory;
 
 import static org.junit.Assert.*;
 
@@ -75,7 +75,7 @@ public class InstanceServiceFactoryTest {
 	}
 
 	/**
-	 * Test method for {@link eu.esdihumboldt.hale.models.factory.InstanceServiceFactory#getInstance()}.
+	 * Test method for {@link eu.esdihumboldt.hale.models.impl.InstanceServiceFactory#getInstance()}.
 	 */
 	@Test
 	public void testGetInstance() {
@@ -84,7 +84,7 @@ public class InstanceServiceFactoryTest {
 	}
 	
 	/**
-	 * Test method for {@link eu.esdihumboldt.hale.models.factory.InstanceServiceFactory#getAllFeatures(DatasetType)}.
+	 * Test method for {@link eu.esdihumboldt.hale.models.impl.InstanceServiceFactory#getAllFeatures(DatasetType)}.
 	 */
 	@Test
 	public void testGetAllFeatures() {
@@ -102,7 +102,7 @@ public class InstanceServiceFactoryTest {
 	}
 	
 	/**
-	 * Test method for {@link eu.esdihumboldt.hale.models.factory.InstanceServiceFactory#getFeaturesByType(org.opengis.feature.type.FeatureType)}.
+	 * Test method for {@link eu.esdihumboldt.hale.models.impl.InstanceServiceFactory#getFeaturesByType(org.opengis.feature.type.FeatureType)}.
 	 */
 	@Test
 	public void testGetFeaturesByType() {
@@ -117,7 +117,7 @@ public class InstanceServiceFactoryTest {
 	}
 	
 	/**
-	 * Test method for {@link eu.esdihumboldt.hale.models.factory.InstanceServiceFactory#getFeatureByID(String)}.
+	 * Test method for {@link eu.esdihumboldt.hale.models.impl.InstanceServiceFactory#getFeatureByID(String)}.
 	 */
 	@Test
 	public void testGetFeatureByID() {

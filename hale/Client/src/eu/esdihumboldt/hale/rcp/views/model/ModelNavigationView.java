@@ -190,7 +190,7 @@ public class ModelNavigationView extends ViewPart {
 	private TreeObject buildSchemaTree(
 			RobustFTKey ftk, Map<RobustFTKey, Set<FeatureType>> typeHierarchy) {
 		TreeObjectType tot = TreeObjectType.CONCRETE_FT;
-		if (ftk.getFeatureType().isAbstract()) {
+		if (ftk.getFeatureType().isAbstract() || ftk.getFeatureType().getSuper() == null) {
 			tot = TreeObjectType.ABSTRACT_FT;
 		}
 		TreeParent result = new TreeParent(ftk.getFeatureType().getName().getLocalPart(), tot);

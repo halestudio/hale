@@ -15,7 +15,10 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import eu.esdihumboldt.hale.rcp.Application;
+import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 
 /**
@@ -45,20 +48,23 @@ public class ModelNavigationViewLabelProvider extends LabelProvider {
 			imageKey = ISharedImages.IMG_DEF_VIEW;
 		}
 		else if (to.getType().equals(TreeObjectType.ABSTRACT_FT)) {
-			imageKey = ISharedImages.IMG_TOOL_FORWARD;
+			imageKey = "abstract_ft.png";
 		}
 		else if (to.getType().equals(TreeObjectType.CONCRETE_FT)) {
-			imageKey = ISharedImages.IMG_TOOL_UP;
+			imageKey = "concrete_ft.png";
 		}
 		else if (to.getType().equals(TreeObjectType.SIMPLE_ATTRIBUTE)) {
-			imageKey = ISharedImages.IMG_OBJ_FILE;
+			imageKey = "string_attribute.png";
 		} 
 		else if (to.getType().equals(TreeObjectType.COMPLEX_ATTRIBUTE)) {
-			imageKey = ISharedImages.IMG_OBJ_ELEMENT;
+			imageKey = "number_attribute.png";
 		}
 		else if (to.getType().equals(TreeObjectType.GEOMETRIC_ATTRIBUTE)) {
-			imageKey = ISharedImages.IMG_OBJ_ELEMENT;
+			imageKey = "geometry_attribute.png";
 		}
-		return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
+		 PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
+		 return AbstractUIPlugin.imageDescriptorFromPlugin(
+				HALEActivator.PLUGIN_ID, "/icons/" + imageKey).createImage();
+
 	}
 }

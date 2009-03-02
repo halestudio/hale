@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.ViewPart;
 
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
-import eu.esdihumboldt.hale.models.factory.InstanceServiceFactory;
+import eu.esdihumboldt.hale.models.impl.InstanceServiceFactory;
 
 
 /**
