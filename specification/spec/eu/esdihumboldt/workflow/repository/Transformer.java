@@ -16,7 +16,8 @@ package eu.esdihumboldt.workflow.repository;
 import eu.esdihumboldt.workflow.processdescription.ProcessBrief;
 import eu.esdihumboldt.workflow.transformer.inputOutputs.ComplexData;
 import eu.esdihumboldt.workflow.transformer.inputOutputs.LiteralData;
-import eu.esdihumboldt.workflow.transformer.inputOutputs.ProcessInputOutput;
+import eu.esdihumboldt.workflow.transformer.inputOutputs.ProcessInput;
+import eu.esdihumboldt.workflow.transformer.inputOutputs.ProcessOutput;
 import java.net.URI;
 import java.util.Set;
 import java.util.UUID;
@@ -45,7 +46,7 @@ public interface Transformer {
      * @return a Set of {@link MediatorComplexRequest}s, each one containing the
      * constraints that need to be fulfilled to satisfy the precondition.
      */
-    public Set<ProcessInputOutput> getProcessInputs();
+    public Set<ProcessInput> getProcessInputs();
 
     /**
      * This operation is used at workflow construction time to retrieve the
@@ -57,7 +58,7 @@ public interface Transformer {
      * @return a  {@link DesignTimeInputOutput}s, with the
      * constraints that describe the postcondition.
      */
-    public ProcessInputOutput getProcessOutput();
+    public ProcessOutput getProcessOutput();
 
     /**
      * @return the {@link ProcessStatus} that this {@link Transformer} currently has.

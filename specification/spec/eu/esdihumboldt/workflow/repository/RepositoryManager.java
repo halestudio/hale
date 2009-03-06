@@ -75,15 +75,14 @@ public interface RepositoryManager {
     public void updateBasicWorkflow(UUID id, Workflow workflow);
 
     /**
-     * This method is used during Transformer construction to create and add a
-     * Transformer to the repository given a set of inputs and outputs expressed
-     * as MCRs, and a description of the process
-     *
-     * @param transformer A newly created Tranformer
-     * @param pd A human readeable description of what the Transformer does
-     * @return UUID of the Transformer which has been successfully added to the repository
+     * This method is used during Transformer construction to create and add a Transformer to the
+     * repository given a WPS grounding and the process identifier. The method calls the retrieve-
+     * ProcessDescriptor, passes the rtrieved process description and generates a Transformer. The
+     * Transformer is then added to the repository.
+     * @param wpsUrl The URL of the WPS service that realizes the Transformer to be created
+     * @param processId The process identifier of the generated Transormer
      */
-    public void storeTransformer(Transformer transformer);
+    public void storeTransformer(String wpsUrl, String processId);
 
     /**
      * This method updates an existing Transformer using contents of the supplied

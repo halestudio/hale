@@ -14,7 +14,8 @@ package eu.esdihumboldt.workflow.repository;
 
 import eu.esdihumboldt.mediator.constraints.LogicalConstraint;
 import eu.esdihumboldt.workflow.processdescription.Description;
-import eu.esdihumboldt.workflow.transformer.inputOutputs.ProcessInputOutput;
+import eu.esdihumboldt.workflow.transformer.inputOutputs.ProcessInput;
+import eu.esdihumboldt.workflow.transformer.inputOutputs.ProcessOutput;
 import java.util.UUID;
 
 /**
@@ -28,13 +29,13 @@ public interface TransformerConnector {
      *
      * @return The target of the source transformer
      */
-    public ProcessInputOutput getTarget();
+    public ProcessInput getTarget();
 
     /**
      *
      * @return the origin of the connection
      */
-    public ProcessInputOutput getSource();
+    public ProcessOutput getSource();
 
     /**
      * Sets the constraints for this connection

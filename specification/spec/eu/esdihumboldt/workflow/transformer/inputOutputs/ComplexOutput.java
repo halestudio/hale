@@ -9,28 +9,25 @@
  * available, please refer to : http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
+
 package eu.esdihumboldt.workflow.transformer.inputOutputs;
 
 import eu.esdihumboldt.mediator.TypeKey;
 import eu.esdihumboldt.mediator.constraints.Constraint;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**This interface is used to represent a complex data structure for
- * a process input or output
+/**
  *
- * @author Moses
+ * @author mgone
  */
-public interface ComplexData extends ProcessInput {
-
+public interface ComplexOutput extends ProcessOutput{
 
 	/**
 	 * @param key the identifier of a certain {@link Constraint}, i.e. as a
 	 * {@link ConstraintType}.
 	 * @return the {@link Constraint} identified by this key, or null if no such
-     * {@link Constraint} was found.
-     * @throws NullPointerException 
+	 * {@link Constraint} was found.
 	 */
 	public Constraint getConstraint(TypeKey key) throws NullPointerException;
 
@@ -67,5 +64,5 @@ public interface ComplexData extends ProcessInput {
      * @param _supportedFormats
      */
     public void setSupportedFormats(Set<Format> _supportedFormats);
-}
 
+}

@@ -12,6 +12,7 @@
 package eu.esdihumboldt.workflow.transformer.domaintypes;
 
 import eu.esdihumboldt.annotations.spec.ReferenceSpecification;
+import java.util.Set;
 
 
 /**This interface defines the finite set of values and ranges allowed for the input
@@ -25,18 +26,11 @@ import eu.esdihumboldt.annotations.spec.ReferenceSpecification;
 public interface AllowedValues extends LiteralValuesChoice {
 
  
-    /**Retrieves the value of a given parameter quantity
-     * 
-     * @return Value of this quantity
+    /**Retrieves the allowed values of a given parameter quantity. This can be any value- range, single
+     * any value
+     * @return A set of allowed Values of this quantity
      */
-    public AnyValue getValue();
-
-    /**Retrieves the range of values for the numeric parameter
-     * 
-     * @return Range of values of numeric parameter
-     */
-    public Range getRange();
-
+    public Set<LiteralValuesChoice> getValues();
  
 }
 
