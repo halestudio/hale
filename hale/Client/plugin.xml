@@ -103,7 +103,41 @@
             factoryClass="eu.esdihumboldt.hale.rcp.services.InstanceAbstractServiceFactory">
          <service
                serviceClass="eu.esdihumboldt.hale.models.InstanceService"></service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.models.SchemaService">
+         </service>
       </serviceFactory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.splashHandlers">
+      <splashHandler
+            class="eu.esdihumboldt.hale.rcp.HaleSplashHandler"
+            id="HALE.splashHandler">
+      </splashHandler>
+   </extension>
+   <extension
+         id="esdihumboldt_HALE"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.emf.codegen.ecore.Generator"
+            name="HUMBOLDT Alignment Editor">
+         <property
+               name="appName"
+               value="HUMBOLDT Alignment Editor">
+         </property>
+      </product>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="HALE.application"
+            name="HUMBOLDT Alignment Editor">
+         <property
+               name="appName"
+               value="HUMBOLDT Alignment Editor">
+         </property>
+      </product>
    </extension>
 
 </plugin>

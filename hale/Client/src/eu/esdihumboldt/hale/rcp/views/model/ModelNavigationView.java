@@ -51,7 +51,8 @@ public class ModelNavigationView extends ViewPart {
 	@Override
 	public void createPartControl(Composite _parent) {
 		
-		SchemaService schemaService = SchemaServiceImpl.getInstance();
+		SchemaService schemaService = 
+				(SchemaService) this.getSite().getService(SchemaService.class);
 		try {
 			schemaService.loadSourceSchema(
 					new URI(Application.getBasePath() 

@@ -62,9 +62,8 @@ public class ModelNavigationViewLabelProvider extends LabelProvider {
 		else if (to.getType().equals(TreeObjectType.GEOMETRIC_ATTRIBUTE)) {
 			imageKey = "geometry_attribute.png";
 		}
-		 PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
-		 return AbstractUIPlugin.imageDescriptorFromPlugin(
-				HALEActivator.PLUGIN_ID, "/icons/" + imageKey).createImage();
+		return AbstractUIPlugin.imageDescriptorFromPlugin(
+			HALEActivator.PLUGIN_ID, "/icons/" + imageKey).createImage();
 
 	}
 }

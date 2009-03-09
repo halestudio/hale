@@ -15,29 +15,46 @@ package eu.esdihumboldt.hale.rcp.services;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
+import eu.esdihumboldt.hale.models.InstanceService;
+import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.impl.InstanceServiceFactory;
+import eu.esdihumboldt.hale.models.impl.SchemaServiceImpl;
+
 /**
- * TODO Explain the purpose of this type here.
+ * This implementation of the {@link AbstractServiceFactory} allows to use the
+ * {@link InstanceService} as a eclipse service, thereby making direct 
+ * references to the implementation unnecessary.
  * 
  * @author Thorsten Reitz
  * @version $Id$
  */
-public class InstanceAbstractServiceFactory extends AbstractServiceFactory {
+public class InstanceAbstractServiceFactory 
+	extends AbstractServiceFactory {
+	
+	private InstanceService instance = InstanceServiceFactory.getInstance();
+	private SchemaService schema = SchemaServiceImpl.getInstance();
 
-	/**
-	 * 
-	 */
 	public InstanceAbstractServiceFactory() {
 		// TODO Auto-generated constructor stub
 	}
 
-	/* (non-Javadoc)
+	/**
 	 * @see org.eclipse.ui.services.AbstractServiceFactory#create(java.lang.Class, org.eclipse.ui.services.IServiceLocator, org.eclipse.ui.services.IServiceLocator)
 	 */
 	@Override
 	public Object create(Class serviceInterface, IServiceLocator parentLocator,
 			IServiceLocator locator) {
-		// TODO Auto-generated method stub
-		return null;
+		if (serviceInterface.equals(InstanceService.class)) {
+			return this.instance;
+		}
+		if (serviceInterface.equals(SchemaService.class)) {
+			return this.schema;
+		}
+		else {
+			throw new RuntimeException("For the given serviceInterface (" 
+					+ serviceInterface.getCanonicalName() 
+					+ "), no service implementation is known.");
+		}
 	}
 
 }
