@@ -9,12 +9,16 @@
  * available, please refer to : http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-
 package eu.esdihumboldt.workflow.repository;
 
+import eu.esdihumboldt.mediator.MediatorComplexRequest;
+import eu.esdihumboldt.mediator.TypeKey;
+import eu.esdihumboldt.mediator.constraints.Constraint;
 import eu.esdihumboldt.modelrepository.abstractfc.Concept;
 import eu.esdihumboldt.workflow.processdescription.Description;
-import eu.esdihumboldt.workflow.transformer.inputOutputs.ProcessInput;
+import eu.esdihumboldt.workflow.transformer.process.inputoutputs.ComplexDataInput;
+import eu.esdihumboldt.workflow.transformer.process.inputoutputs.ProcessInput;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,31 +32,24 @@ import java.util.UUID;
  * @version $Id$ 
  */
 public interface Workflow {
+
     /**
      * A unique identifier for this Basic workflow
      * @return
      */
-    public UUID getWorkflowID();
-    /**Retrieves a task concept that this workflow represents
+    public UUID getIdentifier();
+
+    /**
+     * Retrieves a task concept that this workflow represents
      * 
      * @return
      */
     public Concept getTaskConcept();
 
     /**
-     * This operation can be used at workflow construction time to insert a
-     * new workflow element identified through its precondition and  postcondition.
-     * This method also links the inserted Tranformer postcondition to a
-     * given Precondition of an existing Transfomer element in the workflow chain
-     * 
-     * @param source The Transformer to be inserted
-     * @param target for the output of the inserted transfomer
-     */
-    public void insertTransformer(Transformer source,
-            ProcessInput target);
-
-    /**This is a convinient method for adding a tranfomer to a workflow
+     * This is a convinient method for adding a tranfomer to a workflow
      * The inserted transfomer is not linked to any exiting transfomer in the workflow
+     *
      * @param transformer
      */
     public void insertTransformer(Transformer transformer);
@@ -62,20 +59,63 @@ public interface Workflow {
      * @return Transformer set in the workflow
      * @throws NullPointerException
      */
-    public Set<Transformer> getTransformers()throws NullPointerException;
+    public Set<Transformer> getTransformers() throws NullPointerException;
 
     /**This method id used to retrieve a set of transfomer connectors belonging to a workflow
      *
      * @return Transformer set in the workflow
      * @throws NullPointerException
      */
-    public Set<TransformerConnector> getTransformerConnectors() throws NullPointerException;
+    public Set<TransformerConnector> getConnectors() throws NullPointerException;
+
+    /**
+     * Gather all the process inputs (leaf-preconditions) of the Transformers in this basic workflow
+     * that have not been satisfied yet!Leaf preconditions are all the inputs to the Transformers in
+     * the Basic Workflow that are not yet satisfied at design time and must be satisfied at consstrction
+     * time by either a grounding service(case of perfect match) or by a transformer ( case of a non-
+     * perfect grounding).
+     * @return
+     * @throws NullPointerException
+     */
+    public Set<ProcessInput> getLeafPreconditions() throws NullPointerException;
 
     /**
      * Retrieves the workflow description
      * @return
      * @throws NullPointerException
      */
-    public Description getWorkflowDescription() throws NullPointerException;
+    public Description getDescription() throws NullPointerException;
 
+    /**
+     * This method retrieves the terminal transformer in this Wokflow
+     *
+     * @return
+     * @throws java.lang.NullPointerException
+     */
+    public Transformer getTerminalTransformer() throws NullPointerException;
+
+    /**
+     * Determines if a link is valid or not, i.e a connection can be made between source (output)and
+     * target input
+     * @param _sourceTransformer link origin
+     * @param _targetPrecondition link destination
+     * @return
+     */
+    public boolean isValidConnection(Transformer _sourceTransformer, ProcessInput _targetPrecondition);
+
+    /**
+     * A convinience method that concretizes preconditions in this basic workflow given a set of constraints
+     * 
+     * @param mcr Mediator complex request with a set of constraints and the taskconcept
+     * provided in the MCR
+     */
+    public void concretize(MediatorComplexRequest mcr);
+
+    /**
+     * This method tests whether the workflow is lad or not. A valid basic workflow has all the leaf
+     * preconditions(inputs) satisfied either by a Transformer or a grounding service
+     * @return
+     * @throws RuntimeException
+     */
+    public boolean isValid();
 }

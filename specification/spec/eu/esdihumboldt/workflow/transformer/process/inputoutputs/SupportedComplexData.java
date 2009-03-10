@@ -9,10 +9,11 @@
  * available, please refer to : http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.workflow.transformer.inputOutputs;
+package eu.esdihumboldt.workflow.transformer.process.inputoutputs;
 
 
 import eu.esdihumboldt.annotations.spec.ReferenceSpecification;
+import eu.esdihumboldt.workflow.transformer.process.inputoutputs.InputOutput;
 import java.net.URI;
 
 /**This interface describe complex data structure used to represent an input or
@@ -48,6 +49,6 @@ public interface SupportedComplexData  {
      * 
      * @return a Complex Data 
      */
-    public ComplexData getComplexData();
+    public InputOutput getComplexData();
 }
 

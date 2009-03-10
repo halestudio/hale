@@ -14,8 +14,8 @@ package eu.esdihumboldt.workflow.repository;
 
 import eu.esdihumboldt.mediator.constraints.LogicalConstraint;
 import eu.esdihumboldt.workflow.processdescription.Description;
-import eu.esdihumboldt.workflow.transformer.inputOutputs.ProcessInput;
-import eu.esdihumboldt.workflow.transformer.inputOutputs.ProcessOutput;
+import eu.esdihumboldt.workflow.transformer.process.inputoutputs.ProcessInput;
+import eu.esdihumboldt.workflow.transformer.process.inputoutputs.ProcessOutput;
 import java.util.UUID;
 
 /**
@@ -87,7 +87,6 @@ public interface TransformerConnector {
      * @return A logical constraints that is a combination of constraints that restricts this link
      */
     public LogicalConstraint getConnectionConstraints();
-
 
 
 }

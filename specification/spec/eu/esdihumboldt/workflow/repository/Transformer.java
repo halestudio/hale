@@ -11,13 +11,11 @@
  */
 
 package eu.esdihumboldt.workflow.repository;
-
-//~--- non-JDK imports --------------------------------------------------------
 import eu.esdihumboldt.workflow.processdescription.ProcessBrief;
-import eu.esdihumboldt.workflow.transformer.inputOutputs.ComplexData;
-import eu.esdihumboldt.workflow.transformer.inputOutputs.LiteralData;
-import eu.esdihumboldt.workflow.transformer.inputOutputs.ProcessInput;
-import eu.esdihumboldt.workflow.transformer.inputOutputs.ProcessOutput;
+import eu.esdihumboldt.workflow.transformer.process.inputoutputs.ComplexDataInput;
+import eu.esdihumboldt.workflow.transformer.process.inputoutputs.LiteralDataInput;
+import eu.esdihumboldt.workflow.transformer.process.inputoutputs.ProcessInput;
+import eu.esdihumboldt.workflow.transformer.process.inputoutputs.ProcessOutput;
 import java.net.URI;
 import java.util.Set;
 import java.util.UUID;
@@ -46,7 +44,7 @@ public interface Transformer {
      * @return a Set of {@link MediatorComplexRequest}s, each one containing the
      * constraints that need to be fulfilled to satisfy the precondition.
      */
-    public Set<ProcessInput> getProcessInputs();
+    public Set<ProcessInput> getInputs();
 
     /**
      * This operation is used at workflow construction time to retrieve the
@@ -58,17 +56,17 @@ public interface Transformer {
      * @return a  {@link DesignTimeInputOutput}s, with the
      * constraints that describe the postcondition.
      */
-    public ProcessOutput getProcessOutput();
+    public ProcessOutput getOutput();
 
     /**
      * @return the {@link ProcessStatus} that this {@link Transformer} currently has.
      */
-    public ProcessStatus getProcessStatus();
+    public ProcessStatus getStatus();
     /**
      * @return the Process Identifier of this {@link Transformer}. It maps to the WPS
      * process identifier
      */
-    public String getProcessIdentifier();
+    public String getIdentifier();
     /**
      *
      * @return grounding of this transformer that points to the WPS that does the
@@ -93,30 +91,40 @@ public interface Transformer {
          * a grounding but it is not yet being executed */
         ready,
     }
-
     /**
-     *
-     * @return
+     * Each of the inputs or output a Transformer has a certain status which is
+     * important for the status of the Transformer during design and  construction time.
+     * For possible status values during the whole lifecycle of the {@link Transformer},
+     * please refer to the {@link ProcessStatus} description.
      */
-    public Transformer getTargetTransformer();
+    public enum InputOutputStatus {
 
-    /**
-     *
-     * @param target
-     */
-    public void setOutputTarget(Transformer target);
+        /**
+         * There is no Transformer or AccessRequest satisfying this input for the case of a transformer
+         * Input. Or one or more Inputs have in a transformer have not been satisfied for the case of
+         * a Transformer output
+         * .
+         */
+        unsatisfied,
+        /**
+         * A status where either a Transformer or a grounding service has been attached to an input
+         * that satisfies this input. It is an output, all the inputs in a given transformer has been
+         * satisfied.
+         */
+        satisfied,
+    }
 
     /**
      * retrieves only the inputs which are of type complexData
      * @return A set of ComplexData
      */
-    public Set<ComplexData> getComplexDataInputs();
+    public Set<ComplexDataInput> getComplexInputs();
 
     /**
      * retrieves only the inputs which are of type LiteralData
      * @return A set of LiteralData
      */
-    public Set<LiteralData> getLiteralDataInputs();
+    public Set<LiteralDataInput> getLiteralInputs();
 
     /**
      * This enumerator, list the various type of a transformers . A trasformer can 
@@ -163,27 +171,16 @@ public interface Transformer {
      * retrieves the description of this Transformer process
      * @return
      */
-    public ProcessBrief getProcessDescription() ;
+    public ProcessBrief getProcessBrief() ;
     /**
      * returns the unique id of this Transformer
      * @return
      */
     public UUID getTransformerId();
     /**
-     * This method is used to determine if a transformer is the terminal tranformer
-     * in the chain i.e the last transformer in the workflow. A terminal Transfomer
-     * does not have  a next in chain transormer or a target Transformer. In addition,
-     * its output is not directed to any other transformer
-     * @return true if the transformer is terminal and false if it source to
-     * the next transformer in the chain
-     */
-    public boolean isterminalTransformer();
-
-
-    /**
      *
      * @return The process type of this transfomer
      */
-    public ProcessType getProcessType();
+    public ProcessType getType();
 
 }

@@ -13,9 +13,6 @@ package eu.esdihumboldt.workflow.repository;
 
 import eu.esdihumboldt.modelrepository.abstractfc.Concept;
 import eu.esdihumboldt.workflow.processdescription.Description;
-import eu.esdihumboldt.workflow.processdescription.ProcessDescription;
-import eu.esdihumboldt.workflow.repository.Transformer.ProcessType;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -48,13 +45,11 @@ public interface RepositoryManager {
      * This method is used at design time to create a basic workflow and store
      * it in the repository, given an MCR.
      *
-     * @param descr The description of the capabilities of the basic workflow
-     * @param transformers a set of transformers making up the basic workflow to be created
-     * @param taskconcept a task concept for identifying this BW 
-     * @return UUID of the created BW
+     * @param description The description of the capabilities of the basic workflow
+     * @param transformer a set of transformers making up the basic workflow to be created
+     * @param taskconcept a task concept for identifying this BW
      */
-    public void createBasicWorkflow(Concept taskconcept,
-            Description descr, Transformer transformers);
+    public void createBasicWorkflow(Concept taskconcept,Description description, Transformer transformer);
 
     /**
      * This method deletes the basic workflow from the repository
@@ -70,7 +65,7 @@ public interface RepositoryManager {
      *
      * @param id the identifier of the workflow to be updated
      * @param workflow Workflow with information for update
-     * @return UUID of the updated basic workflow
+     * 
      */
     public void updateBasicWorkflow(UUID id, Workflow workflow);
 
@@ -101,17 +96,10 @@ public interface RepositoryManager {
      */
     public Set<Transformer> exploreTransformers();
 
-    /**
-     * 
-     * @param _type 
-     * @param type a Process type, ie processing transfomer or constraint transfomer
-     * @return a set of transfomers of the given processtype
-     */
-    public Transformer getTransformers(ProcessType _type);
         /**
-     * A convinient method to retrieve a transformer with the given name
-     * @param _transformerName
+     * A convinient method to retrieve a transformer with the given identifier
+     * @param _transformerIdentifier
      * @return A transformer with he specified name
      */
-    public Transformer getTransformer(String _transformerName);
+    public Transformer getTransformer(String _transformerIdentifier);
 }

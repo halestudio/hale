@@ -1,5 +1,5 @@
 
-package eu.esdihumboldt.workflow.transformer.inputOutputs;
+package eu.esdihumboldt.workflow.transformer.process.inputoutputs;
 
 import java.net.URI;
 
