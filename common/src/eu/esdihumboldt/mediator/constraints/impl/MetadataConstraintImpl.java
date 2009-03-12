@@ -26,245 +26,240 @@ import eu.esdihumboldt.tools.IdentifierManager;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id: MetadataConstraintImpl.java,v 1.7 2007-11-27 13:30:32 pitaeva Exp $ 
  */
+public class MetadataConstraintImpl
+        implements MetadataConstraint, Serializable {
 
-public class MetadataConstraintImpl 
-	implements MetadataConstraint, Serializable {
-	
-	// Fields ..................................................................
-	private UUID identifier;
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    // Fields ..................................................................
+    private UUID identifier;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    /**
+     * The status of this constraint.
+     */
+    private boolean satisfied = false;
+    /**
+     * The unique identifier in the current VM.
+     */
+    private long uid;
+    /**
+     * The List storing the list of locale objects defining the language 
+     * constraint. 
+     */
+    private MetadataType metadatatype;
+    /**
+     * The RelationType declared for the MetadataType and the constraintvalue.
+     */
+    private RelationType relationtype;
+    /**
+     * The actual value to test the metadatatype for.
+     */
+    private Object constraintvalue;
+    /**
+     * the {@link ConstraintSource} of this {@link LanguageConstraint}.
+     */
+    private ConstraintSource constraintSource;
+    /**
+     *  unique identifier in the database. 
+     * 
+     */
+    private long id;
+    private boolean write = false;
 
-	/**
-	 * The status of this constraint.
-	 */
-	private boolean satisfied = false;
-	
-	/**
-	 * The unique identifier in the current VM.
-	 */
-	private long uid;
+    // Constructors ............................................................
+    /**
+     * no-args constructor, to enable hibernate-mapping.
+     * need to be public, because of Castor-requirements.
+     */
+    public MetadataConstraintImpl() {
+        // TODO: discuss the default value for constraint
+        //this.constraintvalue = new Object();
+        // sets default relation type.
+        //this.relationtype = RelationType.equals;
+        // set default metadata-type
+        // TODO: discuss the default value for the metadata-type.
+        //this.metadatatype = MetadataType.Adress;
+        //this.uid = IdentifierManager.next();
+        //this.constraintSource = ConstraintSource.parameter;
+        //this.satisfied = true;
+    }
 
-	/**
-	 * The List storing the list of locale objects defining the language 
-	 * constraint. 
-	 */
-	private MetadataType metadatatype;
-	
-	/**
-	 * The RelationType declared for the MetadataType and the constraintvalue.
-	 */
-	private RelationType relationtype;
-	
-	/**
-	 * The actual value to test the metadatatype for.
-	 */
-	private Object constraintvalue;
-	
-	/**
-	 * the {@link ConstraintSource} of this {@link LanguageConstraint}.
-	 */
-	private ConstraintSource constraintSource;
-	
-	/**
-	 *  unique identifier in the database. 
-	 * 
-	 */
-	private long id;
-  
-    private boolean write= false;
+    /**
+     * The default constructor.
+     * @param _metadatatype the MetadataType, i.e. field of metadata for which 
+     * this constraint is to be valid.
+     * @param _reltype the RelationType that has to be satisfied between 
+     * _metadatatype and _constraintvalue.
+     * @param _constraintvalue the query value to test against.
+     */
+    public MetadataConstraintImpl(MetadataType _metadatatype,
+            RelationType _reltype, Object _constraintvalue) {
+        this.constraintvalue = _constraintvalue;
+        this.relationtype = _reltype;
+        this.metadatatype = _metadatatype;
+        this.uid = IdentifierManager.next();
+        this.constraintSource = ConstraintSource.parameter;
+        this.satisfied = false;
 
-	// Constructors ............................................................
-	
-	/**
-	 * no-args constructor, to enable hibernate-mapping.
-	 * need to be public, because of Castor-requirements.
-	 */
-	public MetadataConstraintImpl(){
-		// TODO: discuss the default value for constraint
-		//this.constraintvalue = new Object();
-		// sets default relation type.
-		//this.relationtype = RelationType.equals;
-		// set default metadata-type
-		// TODO: discuss the default value for the metadata-type.
-		//this.metadatatype = MetadataType.Adress;
-		//this.uid = IdentifierManager.next();
-		//this.constraintSource = ConstraintSource.parameter;
-		//this.satisfied = true;
-		
-	}
-	
-	/**
-	 * The default constructor.
-	 * @param _metadatatype the MetadataType, i.e. field of metadata for which 
-	 * this constraint is to be valid.
-	 * @param _reltype the RelationType that has to be satisfied between 
-	 * _metadatatype and _constraintvalue.
-	 * @param _constraintvalue the query value to test against.
-	 */
-	public MetadataConstraintImpl(MetadataType _metadatatype, 
-			RelationType _reltype, Object _constraintvalue) {
-		this.constraintvalue = _constraintvalue;
-		this.relationtype = _reltype;
-		this.metadatatype = _metadatatype;
-		this.uid = IdentifierManager.next();
-		this.constraintSource = ConstraintSource.parameter;
-		this.satisfied = false;
-                        
-	}
-	
-	// MetadataConstraint operations ...........................................
+    }
 
-	/**
-	 * @see eu.esdihumboldt.mediator.constraints.MetadataConstraint#getConstraintValue()
-	 */
-	public Object getConstraintValue() {
-		return this.constraintvalue;
-	}
+    // MetadataConstraint operations ...........................................
+    /**
+     * @see eu.esdihumboldt.mediator.constraints.MetadataConstraint#getConstraintValue()
+     */
+    public Object getConstraintValue() {
+        return this.constraintvalue;
+    }
 
-	/**
-	 * @see eu.esdihumboldt.mediator.constraints.MetadataConstraint#getMetadataType()
-	 */
-	public MetadataType getMetadataType() {
-		return this.metadatatype;
-	}
+    /**
+     * @see eu.esdihumboldt.mediator.constraints.MetadataConstraint#getMetadataType()
+     */
+    public MetadataType getMetadataType() {
+        return this.metadatatype;
+    }
 
-	/**
-	 * @see eu.esdihumboldt.mediator.constraints.MetadataConstraint#getRelationType()
-	 */
-	public RelationType getRelationType() {
-		return this.relationtype;
-	}
-	
-	// Operations implemented from Constraint ..................................
-	
-	/**
-	 * @see eu.esdihumboldt.mediator.constraints.Constraint#getConstraintSource()
-	 */
-	public ConstraintSource getConstraintSource() {
-		return this.constraintSource;
-	}
+    /**
+     * @see eu.esdihumboldt.mediator.constraints.MetadataConstraint#getRelationType()
+     */
+    public RelationType getRelationType() {
+        return this.relationtype;
+    }
 
-	/**
-	 * @see eu.esdihumboldt.mediator.constraints.Constraint#isSatisfied()
-	 */
-	public boolean isSatisfied() {
-		// TODO: return actual satisfaction.
-		return this.satisfied;
-	}
-	
-	// Other operations ........................................................
-	
-	/**
-	 * @return the Uid that has been assigned to this LanguageConstraint.
-	 */
-	public long getUid() {
-		return this.uid;
-	}
+    // Operations implemented from Constraint ..................................
+    /**
+     * @see eu.esdihumboldt.mediator.constraints.Constraint#getConstraintSource()
+     */
+    public ConstraintSource getConstraintSource() {
+        return this.constraintSource;
+    }
 
-	/**
-	 * @return unique identifier for the database.
-	 */
-	public long getId() {
-		return id;
-	}
+    /**
+     * @see eu.esdihumboldt.mediator.constraints.Constraint#isSatisfied()
+     */
+    public boolean isSatisfied() {
+        // TODO: return actual satisfaction.
+        return this.satisfied;
+    }
 
-	/**
-	 * 
-	 * @param id unique identifier for the database.
-	 */
-	public void setId(long id) {
-		this.id = id;
-	}
+    // Other operations ........................................................
+    /**
+     * @return the Uid that has been assigned to this LanguageConstraint.
+     */
+    public long getUid() {
+        return this.uid;
+    }
 
-	/**
-	 * @return the metadatatype
-	 */
-	@SuppressWarnings("unused")
-	public MetadataType getMetadatatype() {
-		return metadatatype;
-	}
+    /**
+     * @return unique identifier for the database.
+     */
+    public long getId() {
+        return id;
+    }
 
-	/**
-	 * @param metadatatype the metadatatype to set
-	 */
-	@SuppressWarnings("unused")
-	public void setMetadatatype(MetadataType metadatatype) {
-		this.metadatatype = metadatatype;
-	}
+    /**
+     * 
+     * @param id unique identifier for the database.
+     */
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	/**
-	 * @return the relationtype
-	 */
-	@SuppressWarnings("unused")
-	public RelationType getRelationtype() {
-		return relationtype;
-	}
+    /**
+     * @return the metadatatype
+     */
+    @SuppressWarnings("unused")
+    public MetadataType getMetadatatype() {
+        return metadatatype;
+    }
 
-	/**
-	 * @param relationtype the relationtype to set
-	 */
-	@SuppressWarnings("unused")
-	public void setRelationtype(RelationType relationtype) {
-		this.relationtype = relationtype;
-	}
+    /**
+     * @param metadatatype the metadatatype to set
+     */
+    @SuppressWarnings("unused")
+    public void setMetadatatype(MetadataType metadatatype) {
+        this.metadatatype = metadatatype;
+    }
 
-	/**
-	 * @return the constraintvalue
-	 */
-	@SuppressWarnings("unused")
-	public Object getConstraintvalue() {
-		return constraintvalue;
-	}
+    /**
+     * @return the relationtype
+     */
+    @SuppressWarnings("unused")
+    public RelationType getRelationtype() {
+        return relationtype;
+    }
 
-	/**
-	 * @param constraintvalue the constraintvalue to set
-	 */
-	@SuppressWarnings("unused")
-	public void setConstraintvalue(Object constraintvalue) {
-		this.constraintvalue = constraintvalue;
-	}
+    /**
+     * @param relationtype the relationtype to set
+     */
+    @SuppressWarnings("unused")
+    public void setRelationtype(RelationType relationtype) {
+        this.relationtype = relationtype;
+    }
 
-	/**
-	 * @param satisfied the satisfied to set
-	 */
-	@SuppressWarnings("unused")
-	public void setSatisfied(boolean satisfied) {
-		this.satisfied = satisfied;
-	}
+    /**
+     * @return the constraintvalue
+     */
+    @SuppressWarnings("unused")
+    public Object getConstraintvalue() {
+        return constraintvalue;
+    }
 
-	/**
-	 * @param constraintSource the constraintSource to set
-	 */
-	@SuppressWarnings("unused")
-	public void setConstraintSource(ConstraintSource constraintSource) {
-		this.constraintSource = constraintSource;
-	}
+    /**
+     * @param constraintvalue the constraintvalue to set
+     */
+    @SuppressWarnings("unused")
+    public void setConstraintvalue(Object constraintvalue) {
+        this.constraintvalue = constraintvalue;
+    }
 
-	public UUID getIdentifier() {
-		return identifier;
-	}
+    /**
+     * @param satisfied the satisfied to set
+     */
+    @SuppressWarnings("unused")
+    public void setSatisfied(boolean satisfied) {
+        this.satisfied = satisfied;
+    }
 
-	public void setIdentifier(UUID identifier) {
-		this.identifier = identifier;
-	}
+    /**
+     * @param constraintSource the constraintSource to set
+     */
+    @SuppressWarnings("unused")
+    public void setConstraintSource(ConstraintSource constraintSource) {
+        this.constraintSource = constraintSource;
+    }
+
+    public UUID getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(UUID identifier) {
+        this.identifier = identifier;
+    }
 
     public boolean isFinalized() {
         return this.write;
     }
 
-
     public void setFinalized(boolean write) {
         this.write = write;
     }
 
-	public
-	boolean compatible(Constraint constraint) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    public boolean compatible(Constraint constraint) {
 
-	
+        if (constraint != null || (constraint instanceof MetadataConstraint)) {
+
+            MetadataConstraint metadataConstraint = (MetadataConstraint) constraint;
+            boolean isSameType = this.metadatatype.equals(metadataConstraint.getMetadataType());
+            boolean isSameRelation = this.relationtype.equals(metadataConstraint.getRelationType());
+            boolean isSameValue = this.constraintvalue.equals(metadataConstraint.getConstraintValue());
+            if (isSameValue && isSameRelation && isSameType) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false; 
+    }
+   
 }

@@ -9,7 +9,6 @@
  * available, please refer to : http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-
 package eu.esdihumboldt.mediator.constraints.impl;
 
 import eu.esdihumboldt.mediator.constraints.Constraint;
@@ -24,7 +23,6 @@ import eu.esdihumboldt.mediator.constraints.SpatialConstraint;
 import eu.esdihumboldt.mediator.contextservice.hibernate.helpers.GeneralEnvelopeImpl;
 import eu.esdihumboldt.tools.IdentifierManager;
 
-
 /**
  * Prototype Immplementation of the SpatialConstraint that is {@link Immutable}
  * and {@link Serializable}.
@@ -34,62 +32,49 @@ import eu.esdihumboldt.tools.IdentifierManager;
  * @version $Id: SpatialConstraintImpl.java,v 1.13 2007-12-03 09:02:31 pitaeva Exp $
  */
 public class SpatialConstraintImpl
-    implements SpatialConstraint, Serializable {
+        implements SpatialConstraint, Serializable {
 
     // Fields ..................................................................
     private UUID identifier;
-
     /**
      *
      */
     private static final long serialVersionUID = 1L;
-
     /**
      *  The unique identifier of the constraint int the database
      */
     private long id;
-
     /**
      * The status of this constraint.
      */
     private boolean satisfied = false;
-
     /**
      * The unique identifier in the current VM.
      */
     private long uid;
-
     /**
      * The Envelope used to test for the RelationType.
      */
     private Envelope envelope;
-
     private Geometry geometry;
-
     /**
      * Name of the property which the operator should be applied
      */
     private String propertyName;
-
     /**
      * The envelope, that should be stored to the database
      */
     private GeneralEnvelopeImpl dbEnvelope;
-
     /**
      * The Geometry used to test for the RelationType.
      */
     private RelationType relationType;
-
     /**
      * the {@link ConstraintSource} of this {@link SpatialConstraint}.
      */
     private ConstraintSource constraintSource;
-
     private double bufferDistance;
-
     private boolean write;
-
     private boolean finalized;
 
 
@@ -304,7 +289,8 @@ public class SpatialConstraintImpl
     }
 
     public boolean compatible(Constraint constraint) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //@ TODO Implement this
+        return false;
     }
 
     public org.opengis.geometry.Geometry getGeometry() {
@@ -318,5 +304,4 @@ public class SpatialConstraintImpl
     public void setFinalized(boolean write) {
         this.finalized = write;
     }
-
 }

@@ -9,7 +9,6 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-
 package eu.esdihumboldt.mediator.constraints.impl;
 
 import eu.esdihumboldt.mediator.constraints.Constraint;
@@ -34,7 +33,7 @@ import eu.esdihumboldt.modelrepository.abstractfc.ConceptualSchema;
  * @version $Id: ThematicConstraintImpl.java,v 1.11 2007-12-17 15:34:13 pitaeva Exp $ 
  */
 public class ThematicConstraintImpl
-    implements ThematicConstraint {
+        implements ThematicConstraint {
 
     // Fields ..................................................................
     /**
@@ -42,28 +41,23 @@ public class ThematicConstraintImpl
      * ThematicConstraint.
      */
     private List<ConceptualSchema> themes;
-
     /**
      * the {@link ConstraintSource} of this {@link LanguageConstraint}.
      */
     private ConstraintSource constraintSource;
-
     /**
      * the {@link UUID} uniquely identifying this {@link ThematicConstraint}.
      */
     private UUID identifier;
-
     /**
      * The unique identifier for the database
      *
      */
     private long uid;
-
     /**
      * The status of this constraint.
      */
     private boolean satisfied = false;
-
     private boolean finalized = false;
 
     // Constructors ............................................................
@@ -88,7 +82,7 @@ public class ThematicConstraintImpl
     public ThematicConstraintImpl(Concept _concept) {
         this.themes = new ArrayList<ConceptualSchema>();
         ConceptualSchema im = new PrototypeInformationModel(
-            ("transient:" + UUID.randomUUID().toString()));
+                ("transient:" + UUID.randomUUID().toString()));
         im.getConcepts().add(_concept);
         this.themes.add(im);
         this.constraintSource = ConstraintSource.parameter;
@@ -117,7 +111,7 @@ public class ThematicConstraintImpl
      * {@link ThematicConstraint} originates from.
      */
     public ThematicConstraintImpl(ConceptualSchema _im,
-        ConstraintSource _constraintSource) {
+            ConstraintSource _constraintSource) {
         this.themes = new ArrayList<ConceptualSchema>();
         this.themes.add(_im);
         this.constraintSource = _constraintSource;
@@ -219,9 +213,17 @@ public class ThematicConstraintImpl
     }
 
     public boolean compatible(Constraint constraint) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+        if (constraint instanceof ThematicConstraint) {
+            for (ConceptualSchema conceptualSchema : ((ThematicConstraint) constraint).getThemes()) {
+                if (this.getThemes().contains(conceptualSchema)) {
+                    return true;
+                } 
+            }
 
+        }
+        return false;
+
+    }
 }
 
 

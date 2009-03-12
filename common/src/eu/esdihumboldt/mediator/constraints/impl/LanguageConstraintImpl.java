@@ -9,7 +9,6 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-
 package eu.esdihumboldt.mediator.constraints.impl;
 
 import eu.esdihumboldt.mediator.constraints.Constraint;
@@ -30,46 +29,38 @@ import eu.esdihumboldt.tools.IdentifierManager;
  * @version $Id: LanguageConstraintImpl.java,v 1.9 2007-12-17 15:12:08 pitaeva Exp $
  */
 public class LanguageConstraintImpl
-    implements LanguageConstraint, Serializable {
+        implements LanguageConstraint, Serializable {
 
     // Fields ..................................................................
     private UUID identifier;
-
     /**
      *
      */
     private static final long serialVersionUID = 1L;
-
     /** The unique constraint identifire in the database */
     private long id;
-
     /**
      * The status of this constraint.
      */
     private boolean satisfied = false;
-
     /**
      * The unique identifier in the current VM.
      */
     private long uid;
-
     /**
      * The List storing the {@link Locale} objects defining the language
      * constraint.
      */
     private List<String> locales;
-
     /**
      * This stores locale in its position in the
      * list, to store its then  in the database.
      */
     private Set<DBLocale> db_locales;
-
     /**
      * the {@link ConstraintSource} of this {@link LanguageConstraint}.
      */
     private ConstraintSource constraintSource;
-
     private boolean write = false;
 
     // Constructors ............................................................
@@ -118,7 +109,7 @@ public class LanguageConstraintImpl
      * stems.
      */
     public LanguageConstraintImpl(ConstraintSource _constraintSource,
-        String _locale) {
+            String _locale) {
         this.uid = IdentifierManager.next();
         this.locales = new ArrayList<String>();
         this.locales.add(_locale);
@@ -232,17 +223,15 @@ public class LanguageConstraintImpl
     public boolean compatible(Constraint constraint) {
 
         if (constraint.getClass() == this.getClass()) {
-
             LanguageConstraintImpl lcTarget = (LanguageConstraintImpl) constraint;
             //Check if the at least one source language is defined in the target
-            for (String language : this.getLocales()) {
-                if (lcTarget.getLocales().contains(language)) {
-                    return true;
-                }
+            if (this.getLocales().equals(lcTarget.getLocales())) {
+                return true;
+            } else {
+                return false;
             }
         }
         return false;
-
     }
 
     public Constraint getCompatibleLocales(Constraint constraint) {
@@ -259,5 +248,4 @@ public class LanguageConstraintImpl
         }
         return new LanguageConstraintImpl(compatiblelocales);
     }
-
 }

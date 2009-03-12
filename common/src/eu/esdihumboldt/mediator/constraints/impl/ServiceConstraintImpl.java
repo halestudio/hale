@@ -223,9 +223,19 @@ public class ServiceConstraintImpl implements ServiceConstraint, Serializable {
         this.write = write;
     }
 
-	public
-	boolean compatible(Constraint constraint) {
-		throw new UnsupportedOperationException("Not supported yet.");
+	public	boolean compatible(Constraint constraint) {
+	        if (constraint != null || (constraint instanceof ServiceConstraint)) {
+
+            ServiceConstraint serviceConstraint = (ServiceConstraint) constraint;
+            boolean isSameType = this.serviceType.equals(serviceConstraint.getServiceType());
+               boolean isSameVersion = this.serviceVersion.equals(serviceConstraint.getServiceVersion());
+            if (isSameVersion &&  isSameType) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
 	}
 
 }

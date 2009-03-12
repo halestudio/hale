@@ -9,7 +9,6 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-
 package eu.esdihumboldt.mediator.constraints.impl;
 
 import java.io.Serializable;
@@ -30,42 +29,34 @@ import eu.esdihumboldt.tools.IdentifierManager;
  * @version $Id: LogicalConstraintImpl.java,v 1.3 2007-11-16 15:08:27 pitaeva Exp $ 
  */
 public class LogicalConstraintImpl
-    implements LogicalConstraint, Serializable {
+        implements LogicalConstraint, Serializable {
 
     // Fields ..................................................................
     private UUID identifier;
-
     /**
      *
      */
     private static final long serialVersionUID = 1L;
-
     /** The unique constraint identifire in the database */
     private long id;
-
     /**
      * The unique identifier in the current VM.
      */
     private final long uid;
-
     /**
      * The List storing the list of Constraint objects defining the logical
      * constraint.
      */
     private final List<Constraint> constraints;
-
     /**
      * The LogicalOperator that binds the constraints.
      */
     private final LogicalOperator operator;
-
     /**
      * the {@link ConstraintSource} of this {@link LanguageConstraint}.
      */
     private final ConstraintSource constraintSource;
-
     private boolean write = false;
-
     private boolean status;
 
     // Constructors ............................................................
@@ -217,11 +208,21 @@ public class LogicalConstraintImpl
     }
 
     public boolean compatible(Constraint constraint) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (constraint != null || (constraint instanceof LogicalConstraint)) {
+
+            LogicalConstraint logicalConstraint = (LogicalConstraint) constraint;
+
+            if (this.getBoundConstraints().equals(logicalConstraint.getBoundConstraints()) &&
+                    this.getLogicalOperator().equals(logicalConstraint.getLogicalOperator())) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
     }
 
     public void setSatisfied(boolean _satisfied) {
         this.status = _satisfied;
     }
-
 }
