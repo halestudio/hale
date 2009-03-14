@@ -33,10 +33,13 @@ public interface ComplexData {
      *  	 represent the branch of the concrete Interface that has been
      *  	 implemented by the Constraint used as value. This means that for each
      *  	 subinterface of Constraint, exactly one Constraint can be in the returned
-     *       map.
-     *       @throws NullPointerException
+     *       map.The operation may return null only if neither if the cpnstraint set has
+     * not been defined or an empty map if there are no constraints.
+     * @throws NullPointerException 
+     *
+     * 
      */
-    public Map<TypeKey, Constraint> getConstraints() throws NullPointerException;
+    public Map<TypeKey, Constraint> getConstraints()throws NullPointerException;
 
     /**
      *  Describes the defaul format of the complex data input/output type
@@ -64,5 +67,6 @@ public interface ComplexData {
      * @throws RuntimeException
      */
     public void protectConstraints(Set<TypeKey> _protectedkeys);
+
 }
 

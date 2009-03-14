@@ -9,8 +9,10 @@
  * available, please refer to : http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-
 package eu.esdihumboldt.workflow.repository;
+
+import eu.esdihumboldt.mediator.TypeKey;
+import eu.esdihumboldt.mediator.constraints.Constraint;
 import eu.esdihumboldt.workflow.processdescription.ProcessBrief;
 import eu.esdihumboldt.workflow.transformer.process.inputoutputs.ComplexDataInput;
 import eu.esdihumboldt.workflow.transformer.process.inputoutputs.LiteralDataInput;
@@ -62,11 +64,13 @@ public interface Transformer {
      * @return the {@link ProcessStatus} that this {@link Transformer} currently has.
      */
     public ProcessStatus getStatus();
+
     /**
      * @return the Process Identifier of this {@link Transformer}. It maps to the WPS
      * process identifier
      */
     public String getIdentifier();
+
     /**
      *
      * @return grounding of this transformer that points to the WPS that does the
@@ -91,6 +95,7 @@ public interface Transformer {
          * a grounding but it is not yet being executed */
         ready,
     }
+
     /**
      * Each of the inputs or output a Transformer has a certain status which is
      * important for the status of the Transformer during design and  construction time.
@@ -132,11 +137,12 @@ public interface Transformer {
      * Alternatively, in case of a processing Transformer, this can be aby
      */
     public enum ProcessType {
-                /**
+
+        /**
          * Identifies a Transformer that performs transformation on the service constraint
          */
         ServiceTransformer,
-                /**
+        /**
          * Identifies a Transformer that performs transformation on the Logical constraint
          */
         LogicalTransformer,
@@ -144,7 +150,7 @@ public interface Transformer {
          * Identifies a Transformer that performs transformation on the Quality constraint
          */
         QualityTransformer,
-                /**
+        /**
          * Identifies a Transformer that performs transformation on the Metadata constraint
          */
         MetadataTransformer,
@@ -153,7 +159,8 @@ public interface Transformer {
          */
         LanguageTransformer,
         /**
-         * Identifies a Transformer that performs transformation on the Spatial constraint. especially the CRS
+         * Identifies a Transformer that performs transformation on the Spatial constraint. 
+         * especially the CRS.
          */
         SpatialTransformer,
         /**
@@ -167,20 +174,26 @@ public interface Transformer {
 
     }
 
-       /**
+    /**
      * retrieves the description of this Transformer process
      * @return
      */
-    public ProcessBrief getProcessBrief() ;
+    public ProcessBrief getProcessBrief();
+
     /**
      * returns the unique id of this Transformer
      * @return
      */
     public UUID getTransformerId();
+
     /**
      *
      * @return The process type of this transfomer
      */
     public ProcessType getType();
-
+    /**
+     *
+     * @return The constraint type that this Transfomer transforms
+     */
+    public TypeKey getTransformationType();
 }
