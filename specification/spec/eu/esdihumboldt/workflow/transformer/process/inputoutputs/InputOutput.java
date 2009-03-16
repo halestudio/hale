@@ -1,5 +1,6 @@
 package eu.esdihumboldt.workflow.transformer.process.inputoutputs;
 
+import eu.esdihumboldt.workflow.exceptions.IncompatibleTransformersException;
 import eu.esdihumboldt.workflow.processdescription.InputDescription;
 import eu.esdihumboldt.workflow.repository.Transformer;
 import eu.esdihumboldt.workflow.repository.Transformer.InputOutputStatus;
@@ -51,7 +52,9 @@ public interface InputOutput {
      *  This method determines the compatibility of this input/output to another input/output
      *       @param inputOutput 
      *       @return
+     * @throws IncompatibleTransformersException
+     *
      */
-    public boolean isCompatible(InputOutput inputOutput);
+    public boolean isCompatible(InputOutput inputOutput) throws IncompatibleTransformersException;
 }
 

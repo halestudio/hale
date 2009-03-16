@@ -80,7 +80,7 @@ public interface TransformerConnector {
      * precondition is updated.
      */
 
-    public void updateBasicWorkflow();
+    public void doUpdate();
 
     /**
      * Sets the constraints for this connection
