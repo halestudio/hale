@@ -24,7 +24,7 @@ import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.rcp.Application;
 
 /**
- * Implementation of {@link SchemaService}
+ * Implementation of {@link SchemaService}.
  */
 public class SchemaServiceImpl implements SchemaService {
 	
@@ -122,8 +122,19 @@ public class SchemaServiceImpl implements SchemaService {
 			is2 = new FileInputStream(Application.getBasePath().replaceAll("\\+", " ") + 
 					"resources/schema/inheritance/gmlsf2composite_and_featcoll.xsd");
 
-			Schema schema2 = SchemaFactory.getInstance(null, is2);
-			Schema schema = SchemaFactory.getInstance(null, is);
+			Schema schema = null;
+			try {
+				SchemaFactory.getInstance(null, is2);
+			} catch (Exception uhe) {
+				_log.error("Imported Schema only available on-line, but " +
+						"cannot be retrieved.", uhe);
+			}
+			try {
+				schema = SchemaFactory.getInstance(null, is);
+			} catch (Exception uhe) {
+				_log.error("Imported Schema only available on-line, but " +
+						"cannot be retrieved.", uhe);
+			}
 
 			Schema[] imports = schema.getImports();
 			for (Schema s : imports) {
@@ -200,8 +211,6 @@ public class SchemaServiceImpl implements SchemaService {
 			}
 
 		} catch (FileNotFoundException e) {
-			e.printStackTrace(); // FIXME
-		} catch (SAXException e) {
 			e.printStackTrace(); // FIXME
 		}
 

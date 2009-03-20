@@ -16,7 +16,9 @@ import java.util.ArrayList;
 
 /**
  * A special TreeObject which is a parent of other TreeObjects.
- * @author cjauss
+ * 
+ * @author Thorsten Reitz, Christian Jauss
+ * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$
  */
 public class TreeParent extends TreeObject{

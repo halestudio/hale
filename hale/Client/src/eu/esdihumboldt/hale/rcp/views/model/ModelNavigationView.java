@@ -29,7 +29,6 @@ import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 
 import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.models.impl.SchemaServiceImpl;
 import eu.esdihumboldt.hale.rcp.Application;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 
@@ -45,6 +44,7 @@ public class ModelNavigationView extends ViewPart {
 
 	public static final String ID = 
 		"eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView";
+	
 	private TreeViewer sourceSchemaViewer;
 	private TreeViewer targetSchemaViewer;
 
@@ -56,9 +56,10 @@ public class ModelNavigationView extends ViewPart {
 		try {
 			schemaService.loadSourceSchema(
 					new URI(Application.getBasePath() 
-							+ "resources/schema/inheritance/rise_hydrography.xsd"));
+						+ "resources/schema/inheritance/rise_hydrography.xsd"));
 		} catch (URISyntaxException e) {
-			e.printStackTrace();
+			_log.error("The given URI for the schema to load has a invalid " +
+					"Syntax.", e);
 		}
 
 		Composite modelComposite = new Composite(_parent, SWT.BEGINNING);
@@ -68,28 +69,27 @@ public class ModelNavigationView extends ViewPart {
 		layout.verticalSpacing = 10;
 		layout.horizontalSpacing = 5;
 		modelComposite.setLayout(layout);
-
-		Combo sourceCombo = new Combo(modelComposite, SWT.NONE);
-		GridData gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		gData.grabExcessVerticalSpace = true;
-		sourceCombo.setLayoutData(gData);
-		sourceCombo.setText("Choose model organization");
-		sourceCombo.add("Inheritance hierarchy");
-		sourceCombo.add("Aggregation hierarchy");
-
-		Combo targetCombo = new Combo(modelComposite, SWT.NONE);
-		gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		gData.grabExcessVerticalSpace = true;
-		targetCombo.setLayoutData(gData);
-		targetCombo.setText("Choose model organization");
-		targetCombo.add("Inheritance hierarchy");
-		targetCombo.add("Aggregation hierarchy");
+		
+		Combo sourceCombo = getModelConfigurationCombo(modelComposite);
+		Combo targetCombo = getModelConfigurationCombo(modelComposite);
 
 		// source schema explorer setup
 		this.sourceSchemaViewer = this.schemaExplorerSetup(
 				modelComposite, schemaService.getSourceSchema());
 		this.targetSchemaViewer = this.schemaExplorerSetup(
 				modelComposite, schemaService.getTargetSchema());
+	}
+	
+	private Combo getModelConfigurationCombo(Composite modelComposite) {
+		GridData gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+		gData.grabExcessVerticalSpace = true;
+		
+		Combo sourceCombo = new Combo(modelComposite, SWT.NONE);
+		sourceCombo.setLayoutData(gData);
+		sourceCombo.setText("Choose model organization");
+		sourceCombo.add("Inheritance hierarchy");
+		sourceCombo.add("Aggregation hierarchy");
+		return sourceCombo;
 	}
 	
 	/**
@@ -104,9 +104,10 @@ public class ModelNavigationView extends ViewPart {
 		viewerBComposite.setLayout(fLayout);
 		GridData gData = new GridData(GridData.VERTICAL_ALIGN_FILL
 				| GridData.HORIZONTAL_ALIGN_FILL);
-		gData.verticalSpan = 34;
+		gData.verticalSpan = 32;
 		gData.grabExcessHorizontalSpace = true;
 		gData.grabExcessVerticalSpace = true;
+		gData.verticalIndent = 12;
 		viewerBComposite.setLayoutData(gData);
 		TreeViewer schemaViewer = new TreeViewer(viewerBComposite, SWT.SINGLE
 				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
@@ -165,7 +166,9 @@ public class ModelNavigationView extends ViewPart {
 					_log.debug("Supertype was added: " + ftk.getFeatureType().getSuper());
 				}
 				else {
-					_log.warn("Subtypes-Set was null. Supertype should have been added, but wasn't.");
+					_log.warn("Subtypes-Set was null. Supertype should have " +
+							"been added, but wasn't, probably because of an " +
+							"unstable Feature Name + Namespace.");
 				}
 			}
 		}

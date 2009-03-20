@@ -17,6 +17,7 @@ import org.apache.log4j.Appender;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.widgets.Display;
@@ -38,11 +39,19 @@ public class Application implements IApplication {
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
 	 */
 	public Object start(IApplicationContext context) {
-		// set up logger manually, since config doesn't work
-		Appender appender = new ConsoleAppender(
-				new PatternLayout("%d{ISO8601} %5p %C{1}:%L %m%n"), ConsoleAppender.SYSTEM_OUT );
-		appender.setName("A1");
-		Logger.getRootLogger().addAppender(appender);
+		// set up logger manually if necessary
+		if (!Logger.getRootLogger().getAllAppenders().hasMoreElements()) {
+			Appender appender = new ConsoleAppender(
+					new PatternLayout("%d{ISO8601} %5p %C{1}:%L %m%n"), 
+					ConsoleAppender.SYSTEM_OUT );
+			appender.setName("A1");
+			Logger.getRootLogger().addAppender(appender);
+			_log.info("No Logging configuration available, setting up " +
+					"programmatically.");
+		}
+		
+		//String path = Platform.getInstanceLocation().getURL().getPath();
+	    //_log.debug(path);
 		
 		URL location = this.getClass().getProtectionDomain().getCodeSource().getLocation();
 		String location_path = location.getPath().replace(" ", "+");

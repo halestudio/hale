@@ -17,7 +17,6 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
-import eu.esdihumboldt.hale.rcp.Application;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 
@@ -46,6 +45,7 @@ public class ModelNavigationViewLabelProvider extends LabelProvider {
 		
 		if (to.getType().equals(TreeObjectType.ROOT)) {
 			imageKey = ISharedImages.IMG_DEF_VIEW;
+			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
 		}
 		else if (to.getType().equals(TreeObjectType.ABSTRACT_FT)) {
 			imageKey = "abstract_ft.png";
