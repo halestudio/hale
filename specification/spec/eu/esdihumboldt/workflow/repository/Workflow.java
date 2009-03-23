@@ -101,7 +101,8 @@ public interface Workflow {
      * @param _targetPrecondition link destination
      * @return
      */
-    public boolean isValidConnection(Transformer _sourceTransformer, ProcessInput _targetPrecondition);
+    public boolean isValidConnection(Transformer _sourceTransformer,
+            ProcessInput _targetPrecondition);
 
     /**
      * A convinience method that concretizes preconditions in this basic workflow given a set of constraints
@@ -118,4 +119,15 @@ public interface Workflow {
      * @throws RuntimeException
      */
     public boolean isValid();
+
+    /**
+     * This is a convinient method for adding a tranfomer connecto to a workflow
+     * This action also updates the basic workflow and the target precondition in the link
+     *
+     *
+     * @param link the link to be added in this workflow
+     * @return true if link successfully added
+     */
+    public boolean addConnector(TransformerConnector link);
+
 }

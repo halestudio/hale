@@ -74,14 +74,6 @@ public interface TransformerConnector {
      */
     public Transformer getTargetTransformer();
 
-   /**
-     * Updated the status of the source precondition and the target precondition.
-     * The source transformer postcondition's target is set, and the status of the target
-     * precondition is updated.
-     */
-
-    public void doUpdate();
-
     /**
      * Sets the constraints for this connection
      * @return A logical constraints that is a combination of constraints that restricts this link
