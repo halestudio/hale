@@ -36,45 +36,58 @@ public class SpatialConstraintImpl
 
     // Fields ..................................................................
     private UUID identifier;
+
     /**
      *
      */
     private static final long serialVersionUID = 1L;
+
     /**
      *  The unique identifier of the constraint int the database
      */
     private long id;
+
     /**
      * The status of this constraint.
      */
     private boolean satisfied = false;
+
     /**
      * The unique identifier in the current VM.
      */
     private long uid;
+
     /**
      * The Envelope used to test for the RelationType.
      */
     private Envelope envelope;
+
     private Geometry geometry;
+
     /**
      * Name of the property which the operator should be applied
      */
     private String propertyName;
+
     /**
      * The envelope, that should be stored to the database
      */
     private GeneralEnvelopeImpl dbEnvelope;
+
     /**
      * The Geometry used to test for the RelationType.
      */
     private RelationType relationType;
+
     /**
      * the {@link ConstraintSource} of this {@link SpatialConstraint}.
      */
     private ConstraintSource constraintSource;
+
     private double bufferDistance;
+
     private boolean write;
+
     private boolean finalized;
 
 
@@ -126,7 +139,8 @@ public class SpatialConstraintImpl
      * @param _relation_type the RelationType that objects satisfying this
      * Constraint have to match in relation to _geometry.
      */
-    public SpatialConstraintImpl(GeneralEnvelopeImpl _envelope, RelationType _relation_type) {
+    public SpatialConstraintImpl(GeneralEnvelopeImpl _envelope,
+            RelationType _relation_type) {
         this.uid = IdentifierManager.next();
         this.dbEnvelope = _envelope;
         this.relationType = _relation_type;
@@ -289,8 +303,18 @@ public class SpatialConstraintImpl
     }
 
     public boolean compatible(Constraint constraint) {
-        //@ TODO Implement this
-        return false;
+        //@ TODO Re-Implement this
+        boolean sameEnvelop = this.getEnvelope().equals(((SpatialConstraint) constraint).
+                getEnvelope());
+        boolean sameCRS = this.getGeometry().getCoordinateReferenceSystem().equals(((SpatialConstraint) constraint).getGeometry().
+                getCoordinateReferenceSystem());
+        if (this.getEnvelope().equals(((SpatialConstraint) constraint).getEnvelope())) {
+            return true;
+        } else {
+            return false;
+        }
+
+
     }
 
     public org.opengis.geometry.Geometry getGeometry() {
@@ -304,4 +328,5 @@ public class SpatialConstraintImpl
     public void setFinalized(boolean write) {
         this.finalized = write;
     }
+
 }

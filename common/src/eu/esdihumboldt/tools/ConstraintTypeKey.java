@@ -22,80 +22,73 @@ import eu.esdihumboldt.mediator.constraints.Constraint;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id: ConstraintTypeKey.java,v 1.1 2007-11-06 10:26:29 pitaeva Exp $ 
  */
-public class ConstraintTypeKey 
-	implements TypeKey {
-	
-	// Fields ..................................................................
-	
-	private Constraint constraint;
-	
-	private static final ConstraintTypeComparator ctc = new ConstraintTypeComparator();
+public class ConstraintTypeKey
+        implements TypeKey {
 
-	// Constructors ............................................................
-	
-	public ConstraintTypeKey(Constraint _c) {
-		this.constraint = _c;
-	}
-	
-	// Operations ..............................................................
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof ConstraintTypeKey) {
-			ConstraintTypeKey ctk = (ConstraintTypeKey) obj;
-			return ConstraintTypeKey.ctc.compare(
-					ctk.constraint, this.constraint) == 0;
-		}
-		else {
-			throw new ClassCastException("The object passed in was not a " +
-					"ConstraintTypeKey: " + obj.getClass());
-		}
-	}
+    // Fields ..................................................................
+    private Constraint constraint;
 
-	/**
-	 * @see java.lang.Comparable#compareTo(Object)
-	 */
-	public int compareTo(Object obj) {
-		if (obj instanceof ConstraintTypeKey) {
-			ConstraintTypeKey ctk = (ConstraintTypeKey) obj;
-			return ConstraintTypeKey.ctc.compare(
-					ctk.constraint, this.constraint);
-		}
-		else {
-			throw new ClassCastException("The object passed in was not a " +
-					"ConstraintTypeKey: " + obj.getClass());
-		}
-	}
+    private static final ConstraintTypeComparator ctc = new ConstraintTypeComparator();
 
-	/**
-	 * This implementation ensures that TypeKeys containing the same type of 
-	 * {@link Constraint} will have the same HashValue.
-	 */
-	@Override
-	public int hashCode() {		
-		return this.getConstraintType(
-				this.constraint.getClass()).getCanonicalName().hashCode();
-	}
-	
-	/**
-	 * Recursive method for determining the inheritance hierarchy of the
-	 * passed class up unto Constraint.
-	 * @param _c the Class for which to determine the constraint type.
-	 * @return a Class object identifying the correct interface.
-	 */
-	@SuppressWarnings("unchecked")
-	private Class getConstraintType(Class _c) {
-		Class result = Constraint.class;
-		for (Class this_class : _c.getInterfaces()) {
-			for (Class this_super_class : this_class.getInterfaces()) {
-				if (this_super_class.equals(Constraint.class)) {
-					result = this_class;
-				}
-			}
-		}
-		return result;
-	}
-	
-	
-	
+    // Constructors ............................................................
+    public ConstraintTypeKey(Constraint _c) {
+        this.constraint = _c;
+    }
+
+    // Operations ..............................................................
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ConstraintTypeKey) {
+            ConstraintTypeKey ctk = (ConstraintTypeKey) obj;
+            return ConstraintTypeKey.ctc.compare(
+                    ctk.constraint, this.constraint) == 0;
+        } else {
+            throw new ClassCastException("The object passed in was not a " +
+                    "ConstraintTypeKey: " + obj.getClass());
+        }
+    }
+
+    /**
+     * @see java.lang.Comparable#compareTo(Object)
+     */
+    public int compareTo(Object obj) {
+        if (obj instanceof ConstraintTypeKey) {
+            ConstraintTypeKey ctk = (ConstraintTypeKey) obj;
+            return ConstraintTypeKey.ctc.compare(
+                    ctk.constraint, this.constraint);
+        } else {
+            throw new ClassCastException("The object passed in was not a " +
+                    "ConstraintTypeKey: " + obj.getClass());
+        }
+    }
+
+    /**
+     * This implementation ensures that TypeKeys containing the same type of
+     * {@link Constraint} will have the same HashValue.
+     */
+    @Override
+    public int hashCode() {
+        return this.getConstraintType(
+                this.constraint.getClass()).getCanonicalName().hashCode();
+    }
+
+    /**
+     * Recursive method for determining the inheritance hierarchy of the
+     * passed class up unto Constraint.
+     * @param _c the Class for which to determine the constraint type.
+     * @return a Class object identifying the correct interface.
+     */
+    @SuppressWarnings("unchecked")
+    private Class getConstraintType(Class _c) {
+        Class result = Constraint.class;
+        for (Class this_class : _c.getInterfaces()) {
+            for (Class this_super_class : this_class.getInterfaces()) {
+                if (this_super_class.equals(Constraint.class)) {
+                    result = this_class;
+                }
+            }
+        }
+        return result;
+    }
+
 }

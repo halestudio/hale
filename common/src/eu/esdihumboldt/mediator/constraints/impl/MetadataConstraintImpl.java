@@ -17,6 +17,8 @@ import java.util.UUID;
 
 import eu.esdihumboldt.mediator.constraints.MetadataConstraint;
 import eu.esdihumboldt.tools.IdentifierManager;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This constraint allows to define a metadata item to test against. It is 
@@ -31,41 +33,52 @@ public class MetadataConstraintImpl
 
     // Fields ..................................................................
     private UUID identifier;
+
     /**
      * 
      */
     private static final long serialVersionUID = 1L;
+
     /**
      * The status of this constraint.
      */
     private boolean satisfied = false;
+
     /**
      * The unique identifier in the current VM.
      */
     private long uid;
+
     /**
      * The List storing the list of locale objects defining the language 
      * constraint. 
      */
     private MetadataType metadatatype;
+
     /**
      * The RelationType declared for the MetadataType and the constraintvalue.
      */
     private RelationType relationtype;
+
     /**
      * The actual value to test the metadatatype for.
      */
     private Object constraintvalue;
+
     /**
      * the {@link ConstraintSource} of this {@link LanguageConstraint}.
      */
     private ConstraintSource constraintSource;
+
     /**
      *  unique identifier in the database. 
      * 
      */
     private long id;
+
     private boolean write = false;
+
+    private List<String> keywords_ = new ArrayList<String>();
 
     // Constructors ............................................................
     /**
@@ -83,6 +96,16 @@ public class MetadataConstraintImpl
         //this.uid = IdentifierManager.next();
         //this.constraintSource = ConstraintSource.parameter;
         //this.satisfied = true;
+    }
+
+    public MetadataConstraintImpl(MetadataType metadatatype, List<String> keywords,
+            RelationType relationtype) {
+        this.metadatatype = metadatatype;
+        this.relationtype = relationtype;
+        this.keywords_ = keywords;
+        this.uid = IdentifierManager.next();
+        this.constraintSource = ConstraintSource.parameter;
+        this.satisfied = false;
     }
 
     /**
@@ -250,16 +273,19 @@ public class MetadataConstraintImpl
         if (constraint != null || (constraint instanceof MetadataConstraint)) {
 
             MetadataConstraint metadataConstraint = (MetadataConstraint) constraint;
-            boolean isSameType = this.metadatatype.equals(metadataConstraint.getMetadataType());
-            boolean isSameRelation = this.relationtype.equals(metadataConstraint.getRelationType());
-            boolean isSameValue = this.constraintvalue.equals(metadataConstraint.getConstraintValue());
+            boolean isSameType = this.metadatatype.equals(metadataConstraint.
+                    getMetadataType());
+            boolean isSameRelation = this.relationtype.equals(metadataConstraint.
+                    getRelationType());
+            boolean isSameValue = this.constraintvalue.equals(metadataConstraint.
+                    getConstraintValue());
             if (isSameValue && isSameRelation && isSameType) {
                 return true;
             } else {
                 return false;
             }
         }
-        return false; 
+        return false;
     }
-   
+
 }

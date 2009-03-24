@@ -41,23 +41,28 @@ public class ThematicConstraintImpl
      * ThematicConstraint.
      */
     private List<ConceptualSchema> themes;
+
     /**
      * the {@link ConstraintSource} of this {@link LanguageConstraint}.
      */
     private ConstraintSource constraintSource;
+
     /**
      * the {@link UUID} uniquely identifying this {@link ThematicConstraint}.
      */
     private UUID identifier;
+
     /**
      * The unique identifier for the database
      *
      */
     private long uid;
+
     /**
      * The status of this constraint.
      */
     private boolean satisfied = false;
+
     private boolean finalized = false;
 
     // Constructors ............................................................
@@ -214,16 +219,18 @@ public class ThematicConstraintImpl
 
     public boolean compatible(Constraint constraint) {
         if (constraint instanceof ThematicConstraint) {
-            for (ConceptualSchema conceptualSchema : ((ThematicConstraint) constraint).getThemes()) {
+            for (ConceptualSchema conceptualSchema : ((ThematicConstraint) constraint).
+                    getThemes()) {
                 if (this.getThemes().contains(conceptualSchema)) {
                     return true;
-                } 
+                }
             }
 
         }
         return false;
 
     }
+
 }
 
 
