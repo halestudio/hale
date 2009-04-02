@@ -12,7 +12,7 @@
 package eu.esdihumboldt.workflow.transformer.inputoutputs;
 
 /**
- *
+ *This is a superclass of the process output type
  * @author mgone
  */
 public interface ProcessOutput extends InputOutput{

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * This is a super class for complex data types
  *  @author mgone
  */
 public interface ComplexData {

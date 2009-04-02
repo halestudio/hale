@@ -13,7 +13,7 @@
 package eu.esdihumboldt.workflow.transformer.inputoutputs;
 
 /**
- *
+ *This is the super class for a complex data input
  * @author mgone
  */
 public interface ComplexDataInput extends ProcessInput, ComplexData {

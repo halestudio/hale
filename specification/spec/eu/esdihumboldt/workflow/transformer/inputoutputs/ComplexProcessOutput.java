@@ -14,6 +14,7 @@ package eu.esdihumboldt.workflow.transformer.inputoutputs;
 
 
 /**
+ * This is the superclasss for the process complex output
  *  @author mgone
  */
 // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
