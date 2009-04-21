@@ -22,7 +22,7 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            name="Mapviewer"
+            name="Map Viewer"
             class="eu.esdihumboldt.hale.rcp.views.MapView"
             id="eu.esdihumboldt.hale.rcp.views.MapView">
       </view>
@@ -39,7 +39,13 @@
       <view
             class="eu.esdihumboldt.hale.rcp.views.model.AttributeView"
             id="eu.esdihumboldt.hale.rcp.views.model.AttributeView"
-            name="AttributeView">
+            name="Attribute View">
+      </view>
+      <view
+            class="eu.esdihumboldt.hale.rcp.views.TableView"
+            id="eu.esdihumboldt.hale.rcp.views.TableView"
+            name="Table View"
+            restorable="true">
       </view>
    </extension>
    <extension
@@ -88,6 +94,10 @@
                   label="Load a Target Schema"
                   style="push">
             </command>
+            <separator
+                  name="HALE.separator1"
+                  visible="true">
+            </separator>
             <command
                   commandId="HALE.exit.command"
                   id="exit"
@@ -138,6 +148,18 @@
                value="HUMBOLDT Alignment Editor">
          </property>
       </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <wizard
+            class="eu.esdihumboldt.hale.rcp.wizards.io.SchemaImportWizard"
+            icon="icons/sample.gif"
+            id="eu.esdihumboldt.hale.rcp.wizards.io.SchemaImportWizard"
+            name="Import Schema">
+         <description>
+            Import a schema from the local file system or from a remote servcie into the schema explorer.
+         </description>
+      </wizard>
    </extension>
 
 </plugin>

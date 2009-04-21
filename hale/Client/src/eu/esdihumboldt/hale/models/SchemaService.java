@@ -23,7 +23,8 @@ import org.opengis.feature.type.FeatureType;
  * @author Thorsten Reitz
  * @version {$Id}
  */
-public interface SchemaService {
+public interface SchemaService 
+	extends UpdateService {
 	
 	/**
 	 * @return the {@link Collection} of all root {@link FeatureType}s belonging

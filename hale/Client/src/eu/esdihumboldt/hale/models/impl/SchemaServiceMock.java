@@ -23,6 +23,7 @@ import test.eu.esdihumboldt.hale.models.factory.FeatureCollectionUtilities;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Polygon;
 
+import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
 
 /**
@@ -98,6 +99,12 @@ public class SchemaServiceMock implements SchemaService {
 	 */
 	@Override
 	public boolean loadTargetSchema(URI file) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean addListener(HaleServiceListener sl) {
 		// TODO Auto-generated method stub
 		return false;
 	}

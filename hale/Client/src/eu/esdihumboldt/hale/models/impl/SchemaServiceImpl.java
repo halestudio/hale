@@ -20,6 +20,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.xml.sax.SAXException;
 
+import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.rcp.Application;
 
@@ -38,6 +39,8 @@ public class SchemaServiceImpl implements SchemaService {
 	/** FeatureType collection of the target schema */
 	Collection<FeatureType> targetSchema;
 	
+	private Collection<HaleServiceListener> listeners = new HashSet<HaleServiceListener>();
+	
 	private SchemaServiceImpl() {
 		_log.setLevel(Level.INFO);
 	}
@@ -52,6 +55,7 @@ public class SchemaServiceImpl implements SchemaService {
 	@Override
 	public boolean cleanSourceSchema() {
 		this.sourceSchema.clear();
+		this.updateListeners();
 		return true;
 	}
 
@@ -61,6 +65,7 @@ public class SchemaServiceImpl implements SchemaService {
 	@Override
 	public boolean cleanTargetSchema() {
 		this.targetSchema.clear();
+		this.updateListeners();
 		return true;
 	}
 
@@ -87,9 +92,12 @@ public class SchemaServiceImpl implements SchemaService {
 	public boolean loadSourceSchema(URI file) {
 		this.sourceSchema = loadSchema(file);
 		if (this.sourceSchema != null) {
+			this.updateListeners();
 			return true;
-		} else
+		} 
+		else {
 			return false;
+		}
 	}
 
 	/**
@@ -98,10 +106,13 @@ public class SchemaServiceImpl implements SchemaService {
 	@Override
 	public boolean loadTargetSchema(URI file) {
 		this.targetSchema = loadSchema(file);
-		if (targetSchema != null)
+		if (targetSchema != null) {
+			this.updateListeners();
 			return true;
-		else
+		}
+		else {
 			return false;
+		}
 	}
 
 	/**
@@ -211,9 +222,23 @@ public class SchemaServiceImpl implements SchemaService {
 			}
 
 		} catch (FileNotFoundException e) {
-			e.printStackTrace(); // FIXME
+			_log.error(e);
 		}
 
 		return collection;
+	}
+
+	@Override
+	public boolean addListener(HaleServiceListener sl) {
+		return this.listeners.add(sl);
+	}
+	
+	/**
+	 * Inform {@link HaleServiceListener}s of an update.
+	 */
+	private void updateListeners() {
+		for (HaleServiceListener hsl : this.listeners) {
+			hsl.update();
+		}
 	}
 }

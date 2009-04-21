@@ -28,6 +28,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 
+import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.rcp.Application;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
@@ -38,7 +39,9 @@ import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
  * @author Thorsten Reitz
  * @version {$Id}
  */
-public class ModelNavigationView extends ViewPart {
+public class ModelNavigationView 
+	extends ViewPart 
+	implements HaleServiceListener {
 	
 	private static Logger _log = Logger.getLogger(ModelNavigationView.class);
 
@@ -47,20 +50,24 @@ public class ModelNavigationView extends ViewPart {
 	
 	private TreeViewer sourceSchemaViewer;
 	private TreeViewer targetSchemaViewer;
+	
+	private SchemaService schemaService;
 
 	@Override
 	public void createPartControl(Composite _parent) {
 		
-		SchemaService schemaService = 
-				(SchemaService) this.getSite().getService(SchemaService.class);
-		try {
+		schemaService = (SchemaService) 
+							this.getSite().getService(SchemaService.class);
+		schemaService.addListener(this);
+		
+		/*try {
 			schemaService.loadSourceSchema(
 					new URI(Application.getBasePath() 
 						+ "resources/schema/inheritance/rise_hydrography.xsd"));
 		} catch (URISyntaxException e) {
 			_log.error("The given URI for the schema to load has a invalid " +
 					"Syntax.", e);
-		}
+		}*/
 
 		Composite modelComposite = new Composite(_parent, SWT.BEGINNING);
 		GridLayout layout = new GridLayout();
@@ -73,7 +80,7 @@ public class ModelNavigationView extends ViewPart {
 		Combo sourceCombo = getModelConfigurationCombo(modelComposite);
 		Combo targetCombo = getModelConfigurationCombo(modelComposite);
 
-		// source schema explorer setup
+		// initial source schema explorer setup
 		this.sourceSchemaViewer = this.schemaExplorerSetup(
 				modelComposite, schemaService.getSourceSchema());
 		this.targetSchemaViewer = this.schemaExplorerSetup(
@@ -282,6 +289,13 @@ public class ModelNavigationView extends ViewPart {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void update() {
+		// TODO: Add a check which one has been updated.
+		this.sourceSchemaViewer.setInput(schemaService.getSourceSchema());
+		this.targetSchemaViewer.setInput(schemaService.getTargetSchema());
 	}
 
 }

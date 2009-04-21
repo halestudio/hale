@@ -16,6 +16,7 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
 import eu.esdihumboldt.hale.rcp.views.MapView;
+import eu.esdihumboldt.hale.rcp.views.TableView;
 import eu.esdihumboldt.hale.rcp.views.model.AttributeView;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 import eu.esdihumboldt.hale.rcp.views.tasks.TasklistView;
@@ -34,16 +35,21 @@ public class ClientPerspective implements IPerspectiveFactory {
 	public void createInitialLayout(IPageLayout _layout) {
 		String editorArea = _layout.getEditorArea();
 		
-		IFolderLayout topLeft = _layout.createFolder("topLeft", IPageLayout.LEFT, 0.40f, editorArea);
+		IFolderLayout topLeft = _layout.createFolder(
+				"topLeft", IPageLayout.LEFT, 0.40f, editorArea);
 		topLeft.addView(ModelNavigationView.ID);
 		
-		IFolderLayout bottomLeft = _layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.67f,"topLeft");
+		IFolderLayout bottomLeft = _layout.createFolder(
+				"bottomLeft", IPageLayout.BOTTOM, 0.67f, "topLeft");
 		bottomLeft.addView(AttributeView.ID);
 		
-		IFolderLayout topRight = _layout.createFolder("topRight", IPageLayout.LEFT, 0.25f, editorArea);
+		IFolderLayout topRight = _layout.createFolder(
+				"topRight", IPageLayout.LEFT, 0.25f, editorArea);
 		topRight.addView(MapView.ID);
+		topRight.addView(TableView.ID);
 		
-		IFolderLayout bottomRight = _layout.createFolder("bottomRight", IPageLayout.BOTTOM, 0.67f,"topRight");
+		IFolderLayout bottomRight = _layout.createFolder(
+				"bottomRight", IPageLayout.BOTTOM, 0.67f, "topRight");
 		bottomRight.addView(TasklistView.ID);
 		
 		_layout.setEditorAreaVisible(false);

@@ -24,7 +24,8 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * @author Thorsten Reitz
  * @version $Id$
  */
-public class ExitHandler extends AbstractHandler implements IHandler {
+public class ExitHandler 
+	extends AbstractHandler implements IHandler {
 
 	/**
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)

@@ -29,7 +29,8 @@ import eu.esdihumboldt.hale.rcp.views.MapView;
  * @author Thorsten Reitz
  * @version {$Id}
  */
-public interface InstanceService {
+public interface InstanceService 
+	extends UpdateService {
 
 	/**
 	 * @param type the {@link DatasetType} that indicates whether you want to

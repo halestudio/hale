@@ -26,15 +26,16 @@ import org.semanticweb.knowledgeweb.heterogeneity.alignment.AlignmentType;
  * @author Thorsten Reitz
  * @version {$Id}
  */
-public interface AlignmentService {
+public interface AlignmentService 
+	extends UpdateService {
 	
 	/**
-	 * @return the entire {@link AlignmentDocument} as currently represented in the Alignment Model.
+	 * @return the entire {@link Alignment} as currently represented in the Alignment Model.
 	 */
-	public AlignmentDocument getAlignment();
+	//public Alignment getAlignment();
 	
 	/**
-	 * @param alignment the {@link AlignmentType} to update or add to the Alignment Model.
+	 * @param alignment the {@link Alignment} to update or add to the Alignment Model.
 	 * @return true if an existing alignment was updated, false if a new one was added.
 	 */
 	public boolean addOrUpdateAlignment(AlignmentType alignment);
@@ -46,6 +47,29 @@ public interface AlignmentService {
 	 * @return
 	 */
 	public AlignmentDocument getAlignmentForType(FeatureType type);
+	
+	/**
+	 * 
+	 * @param cell
+	 * @return 
+	 */
+	//public boolean addOrUpdateCell(Cell cell);
+	
+	/**
+	 * 
+	 * @param uuid
+	 * @return 
+	 */
+	//public Cell getCell(UUID uuid);
+	
+	/**
+	 * 
+	 * @param entity
+	 * @return all Cells containing the given Entity as a target Entity if the 
+	 * Entity is part of the target schema, or all Cells containing the Entity 
+	 * as a source Entity if the Entity is part of the source schema.
+	 */
+	//public List<Cell> getCell(Entity entity);
 	
 	/**
 	 * Adds the alignments defined in an OML file to the currently loaded ones if the alignments

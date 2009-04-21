@@ -6,8 +6,10 @@ Bundle-Version: 1.0.0
 Bundle-Activator: eu.esdihumboldt.hale.rcp.HALEActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.junit4
-Eclipse-LazyStart: true
+ org.junit4,
+ org.eclipse.ui.ide;bundle-version="3.4.2",
+ org.eclipse.core.resources;bundle-version="3.4.2"
+Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  LIB/jts-1.9.jar,
  LIB/align_d7.2.jar,

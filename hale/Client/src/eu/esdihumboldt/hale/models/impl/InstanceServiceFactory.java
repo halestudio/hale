@@ -24,6 +24,7 @@ import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.models.FeatureFilter;
+import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.InstanceService;
 
 /**
@@ -168,6 +169,12 @@ public class InstanceServiceFactory implements InstanceService {
 		}
 		
 		return true;
+	}
+
+	@Override
+	public boolean addListener(HaleServiceListener sl) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

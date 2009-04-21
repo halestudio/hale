@@ -86,7 +86,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	
 	@Override
 	protected void fillMenuBar(IMenuManager menuBar) {
-		MenuManager importExportMenu = new MenuManager("Import/Export");
+		/*MenuManager importExportMenu = new MenuManager("Import/Export");
 		MenuManager extractionMenu = new MenuManager("Extraction/Alignment");
 		MenuManager othersMenu = new MenuManager("Other");
 		
@@ -133,7 +133,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		othersMenu.add(new Separator());
 		othersMenu.add(preferencesAction);
 		othersMenu.add(new Separator());
-		othersMenu.add(aboutAction);
+		othersMenu.add(aboutAction); */
 	}
 	
 	
@@ -142,7 +142,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	 * @param _window
 	 */
 	protected void makeImportExportActions(final IWorkbenchWindow _window){
-		loadShapefileAction = new LoadShapefileAction("from Shapefile", _window);
+		/*loadShapefileAction = new LoadShapefileAction("from Shapefile", _window);
 		register(loadShapefileAction);
 		
 		loadGMLFromFileAction = new LoadGMLFromFileAction("from GML File", _window);
@@ -161,7 +161,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		register(loadReferenceGMLAction);
 		
 		exitAction = ActionFactory.QUIT.create(_window);
-        register(exitAction);
+        register(exitAction);*/
 	}
 	
 	
@@ -170,7 +170,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	 * @param _window
 	 */
 	protected void makeExtractionAlignmentActions(final IWorkbenchWindow _window){
-		
+		/*
 		loadAlignmentsAction = new LoadAlignmentsAction("Load Alignment",_window);
 		register(loadAlignmentsAction);
 		
@@ -190,7 +190,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		register(startAutoAlignmentAction);
 		
 		startSourceSchemaExtractionAction = new StartSourceSchemaExtractionAction("Start Source Schema Extraction",_window);
-		register(startSourceSchemaExtractionAction);
+		register(startSourceSchemaExtractionAction);*/
 	}
 	
 	
@@ -199,7 +199,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	 * @param _window
 	 */
 	protected void makeOtherActions(final IWorkbenchWindow _window){
-		
+		/*
 		changeSLDAAction = new ChangeSLDAction(_window,"Change SLD of User Data Map",1);
         register(changeSLDAAction);
         
@@ -213,6 +213,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         register(preferencesAction);
         
         aboutAction = ActionFactory.ABOUT.create(_window);
-        register(aboutAction);
+        register(aboutAction);*/
 	}
 }
