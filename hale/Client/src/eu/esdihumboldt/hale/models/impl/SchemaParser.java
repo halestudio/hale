@@ -3,7 +3,9 @@ package eu.esdihumboldt.hale.models.impl;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -18,7 +20,7 @@ public class SchemaParser extends DefaultHandler {
 
 	private String file;
 	
-	private List<String> schemaList = new ArrayList<String>();
+	private Map<String, String> schemas = new HashMap<String, String>();
 	
 	@Override
 	public void endElement(String namespaceURI, String localName, String qName)
@@ -37,10 +39,11 @@ public class SchemaParser extends DefaultHandler {
 			SchemaParser parser = new SchemaParser();
 			String path = file.substring(0, file.lastIndexOf("/") );
 			
-			schemaList.add(path + "/" + atts.getValue("schemaLocation"));
+			schemas.put(atts.getValue("schemaLocation"), path + "/" + atts.getValue("schemaLocation"));
 
-			List<String> list = parser.parse( path + "/" + atts.getValue("schemaLocation") );
-			schemaList.addAll(list);
+			Map<String, String> map = parser.parse( path + "/" + atts.getValue("schemaLocation") );
+			System.out.println("***************************" + path + "/"  + atts.getValue("schemaLocation"));
+			schemas.putAll(map);
 		}
 
 	}
@@ -50,7 +53,7 @@ public class SchemaParser extends DefaultHandler {
 	 * @param file
 	 * @return
 	 */
-	public List<String> parse(String file) {
+	public Map<String, String> parse(String file) {
 		SAXParserFactory factory = SAXParserFactoryImpl.newInstance();
 		
 		// Extracts the path without the filename
@@ -66,6 +69,6 @@ public class SchemaParser extends DefaultHandler {
 			System.out.println("File " + file + " does not exist!");
 		}
 		
-		return schemaList;
+		return schemas;
 	}
 }
