@@ -15,9 +15,12 @@ import eu.esdihumboldt.mediator.MediatorComplexRequest;
 import eu.esdihumboldt.mediator.TypeKey;
 import eu.esdihumboldt.mediator.constraints.Constraint;
 import eu.esdihumboldt.modelrepository.abstractfc.Concept;
+import eu.esdihumboldt.workflow.exceptions.ConcretizationException;
+import eu.esdihumboldt.workflow.exceptions.InconsistentWorkflowException;
 import eu.esdihumboldt.workflow.processdescription.Description;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.ComplexDataInput;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.ProcessInput;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -59,7 +62,7 @@ public interface Workflow {
      * @return Transformer set in the workflow
      * @throws NullPointerException
      */
-    public Set<Transformer> getTransformers() throws NullPointerException;
+    public List<Transformer> getTransformers() throws NullPointerException;
 
     /**This method id used to retrieve a set of transfomer connectors belonging to a workflow
      *
@@ -89,10 +92,10 @@ public interface Workflow {
     /**
      * This method retrieves the terminal transformer in this Wokflow
      *
-     * @return
-     * @throws java.lang.NullPointerException
+     * @return a Terminal Transformer in this workflow
+     * @throws InconsistentWorkflowException
      */
-    public Transformer getTerminalTransformer() throws NullPointerException;
+    public Transformer getTerminalTransformer() throws InconsistentWorkflowException;
 
     /**
      * Determines if a link is valid or not, i.e a connection can be made between source (output)and
@@ -109,8 +112,9 @@ public interface Workflow {
      * 
      * @param mcr Mediator complex request with a set of constraints and the taskconcept
      * provided in the MCR
+     * @throws ConcretizationException
      */
-    public void concretize(MediatorComplexRequest mcr);
+    public void concretize(MediatorComplexRequest mcr)throws ConcretizationException;
 
     /**
      * This method tests whether the workflow is lad or not. A valid basic workflow has all the leaf

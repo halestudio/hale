@@ -13,6 +13,7 @@ package eu.esdihumboldt.workflow;
 
 
 import eu.esdihumboldt.mediator.MediatorComplexRequest;
+import eu.esdihumboldt.workflow.exceptions.InconsistentWorkflowException;
 import eu.esdihumboldt.workflow.repository.Workflow;
 
 /**The workflow generator provide an interface that has got the sole purpose of 
@@ -34,7 +35,8 @@ public interface WorkflowGenerator {
      * 
      * @param mcr An Mediator Complex Request with user constraints and task concept
      * @return A Mediator Workflow that can be executable by the Mediator
+     * @throws InconsistentWorkflowException
      */
-    public Workflow getWorkflow(MediatorComplexRequest mcr);
+    public Workflow getWorkflow(MediatorComplexRequest mcr)throws InconsistentWorkflowException;
     
 }

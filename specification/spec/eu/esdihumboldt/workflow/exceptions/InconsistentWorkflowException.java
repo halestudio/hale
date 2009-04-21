@@ -16,20 +16,20 @@ package eu.esdihumboldt.workflow.exceptions;
  *
  * @author mgone
  */
-public class ConcretizationException extends Exception{
+public class InconsistentWorkflowException extends Exception{
 
-    public ConcretizationException(Throwable cause){
+    private static final long serialVersionUID = 5710590479640849683L;
+
+    public InconsistentWorkflowException(Throwable cause){
         super(cause);
     }
 
-    public ConcretizationException(String message, Throwable cause){
+    public InconsistentWorkflowException(String message, Throwable cause){
         super(message, cause);
     }
 
-    public ConcretizationException(String message){
+    public InconsistentWorkflowException(String message){
         super(message);
     }
-
-
 
 }

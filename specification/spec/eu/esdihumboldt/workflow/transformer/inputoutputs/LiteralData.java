@@ -5,7 +5,7 @@ import eu.esdihumboldt.workflow.transformer.domaintypes.LiteralValuesChoice;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.SupportedUOMs;
 import java.util.Set;
 
-public interface LiteralData {
+public interface LiteralData{
 
     /**
      *  Returns the DataType of this output(or input)
@@ -15,9 +15,11 @@ public interface LiteralData {
     public DomainMetadata getDataType();
 
     /**
-     *  List of Units of measure supported of this numerical output (or input)
+     * List of Units of measure supported of this numerical output (or input).If one is
+     * not defined, a null is returned
      *       
-     *       @return a list of supported UOMs or null if not defined or applicable
+     * @return a list of supported UOMs or null if not defined or applicable
+     *
      */
     public SupportedUOMs getSupportedUOM();
 
@@ -35,7 +37,7 @@ public interface LiteralData {
     public Set<LiteralValuesChoice> getAllowedValues();
 
     /**
-     *  Sets the supported values of the literal input/output
+     *  Sets the supported values of the literal input/output. 
      *       @param _supportedvalues
      */
     public void setSupportedValue(Set<LiteralValuesChoice> _supportedvalues);
@@ -45,5 +47,6 @@ public interface LiteralData {
      *       @param _unitOfMeasure
      */
     public void setSupportedUOM(SupportedUOMs _unitOfMeasure);
+
 }
 

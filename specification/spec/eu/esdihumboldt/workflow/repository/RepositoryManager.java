@@ -12,6 +12,7 @@
 package eu.esdihumboldt.workflow.repository;
 
 import eu.esdihumboldt.modelrepository.abstractfc.Concept;
+import eu.esdihumboldt.workflow.exceptions.InconsistentWorkflowException;
 import eu.esdihumboldt.workflow.processdescription.Description;
 import java.util.Set;
 import java.util.UUID;
@@ -30,8 +31,9 @@ public interface RepositoryManager {
      *
      * @param taskconcept 
      * @return Workflow a Basic Workfow
+     * @throws InconsistentWorkflowException thrown if a valid workflow cannot be returned
      */
-    public Workflow getBasicWorkflow(Concept taskconcept);
+    public Workflow getBasicWorkflow(Concept taskconcept) throws InconsistentWorkflowException;
 
     /**
      * This method is used to retrieves a Transformer from the Repo
