@@ -7,8 +7,8 @@ Bundle-Activator: eu.esdihumboldt.hale.rcp.HALEActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.junit4,
- org.eclipse.ui.ide;bundle-version="3.4.2",
- org.eclipse.core.resources;bundle-version="3.4.2"
+ org.eclipse.ui.ide,
+ org.eclipse.core.resources
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  LIB/jts-1.9.jar,
