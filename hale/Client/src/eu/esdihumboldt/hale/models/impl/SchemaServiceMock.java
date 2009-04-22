@@ -37,7 +37,6 @@ public class SchemaServiceMock implements SchemaService {
 	/* (non-Javadoc)
 	 * @see eu.esdihumboldt.hale.models.SchemaService#cleanSourceSchema()
 	 */
-	@Override
 	public boolean cleanSourceSchema() {
 		// TODO Auto-generated method stub
 		return false;
@@ -46,7 +45,6 @@ public class SchemaServiceMock implements SchemaService {
 	/* (non-Javadoc)
 	 * @see eu.esdihumboldt.hale.models.SchemaService#cleanTargetSchema()
 	 */
-	@Override
 	public boolean cleanTargetSchema() {
 		// TODO Auto-generated method stub
 		return false;
@@ -55,7 +53,6 @@ public class SchemaServiceMock implements SchemaService {
 	/* (non-Javadoc)
 	 * @see eu.esdihumboldt.hale.models.SchemaService#getSourceSchema()
 	 */
-	@Override
 	public Collection<FeatureType> getSourceSchema() {
 		Set<FeatureType> result = new HashSet<FeatureType>();
 		FeatureType ft_abstract = FeatureCollectionUtilities.getFeatureType(
@@ -74,7 +71,6 @@ public class SchemaServiceMock implements SchemaService {
 	/* (non-Javadoc)
 	 * @see eu.esdihumboldt.hale.models.SchemaService#getTargetSchema()
 	 */
-	@Override
 	public Collection<FeatureType> getTargetSchema() {
 		Set<FeatureType> result = new HashSet<FeatureType>();
 		FeatureType ft_road = FeatureCollectionUtilities.getFeatureType(
@@ -88,7 +84,6 @@ public class SchemaServiceMock implements SchemaService {
 	/* (non-Javadoc)
 	 * @see eu.esdihumboldt.hale.models.SchemaService#loadSourceSchema(java.net.URI)
 	 */
-	@Override
 	public boolean loadSourceSchema(URI file) {
 		// TODO Auto-generated method stub
 		return false;
@@ -97,13 +92,11 @@ public class SchemaServiceMock implements SchemaService {
 	/* (non-Javadoc)
 	 * @see eu.esdihumboldt.hale.models.SchemaService#loadTargetSchema(java.net.URI)
 	 */
-	@Override
 	public boolean loadTargetSchema(URI file) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public boolean addListener(HaleServiceListener sl) {
 		// TODO Auto-generated method stub
 		return false;

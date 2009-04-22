@@ -39,7 +39,6 @@ public class LoadSchemaHandler
 	/**
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
-	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		_log.debug("Arrived in the LoadSchemaHandler...");
 		IImportWizard iw = new SchemaImportWizard();

@@ -291,7 +291,6 @@ public class ModelNavigationView
 		}
 	}
 
-	@Override
 	public void update() {
 		// TODO: Add a check which one has been updated.
 		this.sourceSchemaViewer.setInput(schemaService.getSourceSchema());

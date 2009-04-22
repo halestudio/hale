@@ -171,7 +171,6 @@ public class InstanceServiceFactory implements InstanceService {
 		return true;
 	}
 
-	@Override
 	public boolean addListener(HaleServiceListener sl) {
 		// TODO Auto-generated method stub
 		return false;

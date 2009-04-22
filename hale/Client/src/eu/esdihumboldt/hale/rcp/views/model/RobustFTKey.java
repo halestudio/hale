@@ -48,7 +48,7 @@ public class RobustFTKey implements Comparable {
 		return this.ft;
 	}
 
-	@Override
+
 	public int compareTo(Object o) {
 		FeatureType ft2 = ((RobustFTKey) o).getFeatureType();
 		return this.ft.hashCode() - ft2.hashCode();

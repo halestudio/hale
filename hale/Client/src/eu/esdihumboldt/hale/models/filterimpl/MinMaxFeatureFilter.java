@@ -29,7 +29,6 @@ public class MinMaxFeatureFilter
 	/* (non-Javadoc)
 	 * @see eu.esdihumboldt.hale.models.FeatureFilter#filter(org.opengis.feature.Feature)
 	 */
-	@Override
 	public boolean filter(Feature feature) {
 		// TODO Auto-generated method stub
 		return false;

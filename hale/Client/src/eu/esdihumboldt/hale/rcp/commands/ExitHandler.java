@@ -30,7 +30,6 @@ public class ExitHandler
 	/**
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
-	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		HandlerUtil.getActiveWorkbenchWindow(event).close();
 		return null;

@@ -65,7 +65,6 @@ public class SchemaServiceImpl implements SchemaService {
 	/**
 	 * @see eu.esdihumboldt.hale.models.SchemaService#cleanSourceSchema()
 	 */
-	@Override
 	public boolean cleanSourceSchema() {
 		this.sourceSchema.clear();
 		this.updateListeners();
@@ -75,7 +74,6 @@ public class SchemaServiceImpl implements SchemaService {
 	/**
 	 * @see eu.esdihumboldt.hale.models.SchemaService#cleanTargetSchema()
 	 */
-	@Override
 	public boolean cleanTargetSchema() {
 		this.targetSchema.clear();
 		this.updateListeners();
@@ -85,7 +83,6 @@ public class SchemaServiceImpl implements SchemaService {
 	/**
 	 * @see eu.esdihumboldt.hale.models.SchemaService#getSourceSchema()
 	 */
-	@Override
 	public Collection<FeatureType> getSourceSchema() {
 		return sourceSchema;
 	}
@@ -93,7 +90,6 @@ public class SchemaServiceImpl implements SchemaService {
 	/**
 	 * @see eu.esdihumboldt.hale.models.SchemaService#getTargetSchema()
 	 */
-	@Override
 	public Collection<FeatureType> getTargetSchema() {
 		return this.targetSchema;
 	}
@@ -101,7 +97,6 @@ public class SchemaServiceImpl implements SchemaService {
 	/**
 	 * @see eu.esdihumboldt.hale.models.SchemaService#loadSourceSchema(java.net.URI)
 	 */
-	@Override
 	public boolean loadSourceSchema(URI file) {
 		this.sourceSchema = loadSchema(file);
 		if (this.sourceSchema != null) {
@@ -116,7 +111,6 @@ public class SchemaServiceImpl implements SchemaService {
 	/**
 	 * @see eu.esdihumboldt.hale.models.SchemaService#loadTargetSchema(java.net.URI)
 	 */
-	@Override
 	public boolean loadTargetSchema(URI file) {
 		this.targetSchema = loadSchema(file);
 		if (targetSchema != null) {
@@ -358,7 +352,6 @@ public class SchemaServiceImpl implements SchemaService {
 		return collection;
 	}
 
-	@Override
 	public boolean addListener(HaleServiceListener sl) {
 		return this.listeners.add(sl);
 	}
