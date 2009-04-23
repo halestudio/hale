@@ -13,6 +13,7 @@ package eu.esdihumboldt.hale.rcp.wizards.io;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
@@ -26,6 +27,8 @@ public class SchemaImportWizard
 
 	public SchemaImportWizard() {
 		super();
+		mainPage = new SchemaImportWizardPage(
+				"Import Schema", new StructuredSelection()); //NON-NLS-1
 	}
 
 	/* (non-Javadoc)
@@ -48,7 +51,6 @@ public class SchemaImportWizard
 		_log.debug("in init...");
 		setWindowTitle("Schema Import Wizard"); //NON-NLS-1
 		setNeedsProgressMonitor(true);
-		mainPage = new SchemaImportWizardPage("Import Schema", selection); //NON-NLS-1
 	}
 	
 	/* (non-Javadoc)

@@ -18,6 +18,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -43,9 +44,9 @@ public class LoadSchemaHandler
 		_log.debug("Arrived in the LoadSchemaHandler...");
 		IImportWizard iw = new SchemaImportWizard();
 		// Instantiates the wizard container with the wizard and opens it
-		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
-		WizardDialog dialog = new WizardDialog(window.getShell(), iw);
-		dialog.create();
+		Shell shell = HandlerUtil.getActiveShell(event);
+		WizardDialog dialog = new WizardDialog(shell, iw);
+		//dialog.create();
 		dialog.open();
 		return null;
 	}
