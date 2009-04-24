@@ -19,7 +19,8 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
  * The {@link ApplicationWorkbenchAdvisor} controls the appearance of the 
  * application (menus, toolbars, perspectives, etc).
  * 
- * @author Thorsten Reitz
+ * @author Thorsten Reitz 
+ * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$
  */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {

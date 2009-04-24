@@ -4,7 +4,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
 
 /**
- * Action to start the preferences editor.
+ * Action to start the preferences fileFieldEditor.
  * @author cjauss
  *
  */

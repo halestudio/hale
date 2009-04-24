@@ -84,14 +84,8 @@
             </command>
             <command
                   commandId="HALE.loadSchema.command"
-                  id="loadSourceSchema"
-                  label="Load a Source Schema"
-                  style="push">
-            </command>
-            <command
-                  commandId="HALE.loadSchema.command"
-                  id="loadTargetSchema"
-                  label="Load a Target Schema"
+                  id="loadSchema"
+                  label="Load a Schema"
                   style="push">
             </command>
             <separator
@@ -149,7 +143,7 @@
          </property>
       </product>
    </extension>
-   <extension
+   <!-- <extension
          point="org.eclipse.ui.importWizards">
       <wizard
             class="eu.esdihumboldt.hale.rcp.wizards.io.SchemaImportWizard"
@@ -157,10 +151,9 @@
             id="eu.esdihumboldt.hale.rcp.wizards.io.SchemaImportWizard"
             name="Import Schema">
          <description>
-            Import a schema from the local file system or from a remote servcie into the schema explorer.
+            Import a schema from the local file system or from a remote service into the schema explorer.
          </description>
-         <selection class="org.eclipse.core.resources.IResource"/> 
       </wizard>
-   </extension>
+   </extension> -->
 
 </plugin>
