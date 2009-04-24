@@ -13,13 +13,7 @@ package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringBufferInputStream;
-import java.io.StringReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.xml.XMLConstants;
@@ -35,10 +29,13 @@ import javax.xml.validation.Validator;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
- * FIXME Add Type description.
+ * This utility class is used to build and handle WFS GetCapabilities Requests
+ * and Responses.
  * 
  * @author Thorsten Reitz 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -48,6 +45,14 @@ public class GetCapabilititiesRetriever {
 	
 	private static Logger _log = Logger.getLogger(GetCapabilititiesRetriever.class);
 
+	/**
+	 * Builds the URL to use for Getting Capabilities of a WFS.
+	 * @param host the hostname of the WFS.
+	 * @param applicationPath the path to the application, including the service parameter.
+	 * @param selectionIndex 0 for HTTP GET, 1 and 2 for XML POST.
+	 * @return a complete URL.
+	 * @throws Exception if any parsing of the URL components fails.
+	 */
 	public static URL buildURL(
 			String host, 
 			String applicationPath, 
@@ -82,7 +87,15 @@ public class GetCapabilititiesRetriever {
 		// FIXME
 	}
 	
+	/**
+	 * Helper method for reading a resource identified through an URL to a 
+	 * String.
+	 * @param url
+	 * @return
+	 * @throws IOException
+	 */
 	public static String readFromUrl(URL url) throws IOException {
+		_log.info("Reading from URL " +url.toString());
 		BufferedReader reader = new BufferedReader(
 				new InputStreamReader(
 						url.openConnection().getInputStream()));
@@ -94,6 +107,11 @@ public class GetCapabilititiesRetriever {
         return sb.toString();
 	}
 	
+	/**
+	 * Load and validate the schema provided at the given URI string.
+	 * @param uri the URI as a string where the schema can be found.
+	 * @return true if all checks are passed.
+	 */
 	public static boolean validate(String uri) {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -110,36 +128,67 @@ public class GetCapabilititiesRetriever {
 	
 			// create a Validator object and validate the XML file
 			Validator validator = schema.newValidator();
+			validator.setErrorHandler(new ErrorHandler() {
+
+				@Override
+				public void error(SAXParseException exception)
+						throws SAXException {
+					// TODO Auto-generated method stub
+					_log.debug("error");
+				}
+
+				@Override
+				public void fatalError(SAXParseException exception)
+						throws SAXException {
+					// TODO Auto-generated method stub
+					_log.debug("fatalError");
+				}
+
+				@Override
+				public void warning(SAXParseException exception)
+						throws SAXException {
+					// TODO Auto-generated method stub
+					_log.debug("warning");
+				}
+				
+			});
 			validator.validate(new DOMSource(doc));
 			
 		} catch (SAXException e) {
-			_log.warn("Validation failed: " + e.getMessage());
-			return false;
+			if (e.getMessage().startsWith("s4s-elt-character")) {
+				_log.info("Ignoring non-whitespace warning."); // FIXME: This is a hack!
+				return true;
+			} 
+			else {
+				_log.warn("Validation failed: " + e.getMessage());
+				return false;
+			}
 		} catch (IOException e) {
-			_log.warn("Validation failed: " + e.getMessage());
+			_log.warn("Reading failed: " + e.getMessage());
 			return false;
 		} catch (ParserConfigurationException e) {
-			_log.warn("Validation failed: " + e.getMessage());
+			_log.warn("Parsing failed: " + e.getMessage());
 			return false;
 		}
 		return true;
 	}
 	
-	public static int countOccurences(String original, String value)  
-	 {  
-	     int occurences = 0;  
-	   
-	     if (original != null)  
-	     {  
-	         int foundIndex = original.indexOf(value);  
-	         while (foundIndex >= 0)  
-	         {  
-	             occurences++;  
-	             foundIndex = original.indexOf(value, foundIndex);  
-	         }  
-	     }  
-	   
-	     return occurences;  
-	 }
+	/**
+	 * counts the number of occurences of a string declared in another string.
+	 * @param original the full string
+	 * @param value the search string
+	 * @return the count how often value occured in original.
+	 */
+	public static int countOccurences(String original, String value) {
+		int occurences = 0;
+		if (original != null) {
+			int foundIndex = original.indexOf(value);
+			while (foundIndex >= 0) {
+				occurences++;
+				foundIndex = original.indexOf(value, foundIndex + 1);
+			}
+		}
+		return occurences;
+	}
 
 }

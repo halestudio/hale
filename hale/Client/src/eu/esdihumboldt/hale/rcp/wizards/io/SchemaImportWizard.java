@@ -16,6 +16,12 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
+/**
+ * This {@link Wizard} is used to import source and target schemas.
+ * 
+ * @author Thorsten Reitz
+ * @version $Id$
+ */
 public class SchemaImportWizard 
 	extends Wizard implements IImportWizard {
 	

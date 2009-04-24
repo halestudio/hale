@@ -43,7 +43,9 @@ public class WFSFeatureTypesReaderDialog
 	
 	private final static Logger _log = Logger.getLogger(WFSFeatureTypesReaderDialog.class);
 
-	URL result;
+	URL url_result;
+	
+	Listener completedListener;
 	
 	public WFSFeatureTypesReaderDialog(Shell parent, int style) {
 		super(parent, style);
@@ -61,11 +63,13 @@ public class WFSFeatureTypesReaderDialog
 	public URL open () {
 		Shell parent = super.getParent();
 		Shell shell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-		shell.setSize(400, 400);
+		shell.setSize(500, 400);
 		shell.setLayout(new GridLayout());
 		shell.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
                 | GridData.HORIZONTAL_ALIGN_FILL));
 		shell.setText(super.getText());
+		
+		this.completedListener = new ClosingListener(shell);
 		
 		this.createControls(shell);
 		
@@ -74,17 +78,18 @@ public class WFSFeatureTypesReaderDialog
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) display.sleep();
 		}
-		return result;
+		return url_result;
 	}
 
 	private void createControls(Shell shell) {
 		_log.debug("Creating Controls");
 		
 		// Create Fields for URL entry.
-		Composite c = new Composite(shell, SWT.NONE);
+		final Composite c = new Composite(shell, SWT.NONE);
 		c.setLayout(new GridLayout());
 		c.setLayoutData(new GridData(
-				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
+				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL |
+				GridData.GRAB_VERTICAL | GridData.FILL_VERTICAL));
 		Group urlDefinitionArea = new Group(c, SWT.NONE);
 		urlDefinitionArea.setText("Enter the URL of your WFS");
 		urlDefinitionArea.setLayoutData( new GridData(
@@ -133,7 +138,7 @@ public class WFSFeatureTypesReaderDialog
 		
 		// Protocol Version & Type
 		Label protocolVersionLabel = new Label(urlDefinitionArea, SWT.NONE);
-		protocolVersionLabel.setText("WFS Version and Protocol Type:");
+		protocolVersionLabel.setText("WFS Version/Protocol:");
 		protocolVersionLabel.setToolTipText("Select one of the offered combinations of service version and protocol.");
 		final Combo combo = new Combo (urlDefinitionArea, SWT.READ_ONLY);
 		combo.setItems (new String [] {"1.1.0, HTTP GET", "1.0.0 XML POST", "1.1.0 XML POST"});
@@ -144,29 +149,53 @@ public class WFSFeatureTypesReaderDialog
 		Group urlValidationArea = new Group(c, SWT.NONE);
 		urlValidationArea.setText("Validate your WFS settings");
 		urlValidationArea.setLayoutData( new GridData(
-				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
+				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL 
+				| GridData.GRAB_VERTICAL | GridData.FILL_VERTICAL));
 		GridLayout urlValidationLayout = new GridLayout();
 		urlValidationLayout.numColumns = 1;
 		urlValidationLayout.makeColumnsEqualWidth = false;
 		urlValidationArea.setLayout(urlValidationLayout);
 		
 		Composite urlValidationStatusArea = new Composite(urlValidationArea, SWT.NONE);
-		urlValidationArea.setLayoutData( new GridData(
+		urlValidationStatusArea.setLayoutData( new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
 		GridLayout urlValidationStatusLayout = new GridLayout();
 		urlValidationStatusLayout.numColumns = 2;
-		urlValidationStatusLayout.makeColumnsEqualWidth = false;
 		urlValidationStatusArea.setLayout(urlValidationStatusLayout);
 		
 		Button testUrl = new Button(urlValidationStatusArea, SWT.PUSH);
 		testUrl.setText("Validate settings");
 		final Label currentStatusLabel = new Label(urlValidationStatusArea, SWT.NONE);
 		currentStatusLabel.setText("No Validation performed yet.");
-		
-		final Text testResultText = new Text(urlValidationArea, SWT.BORDER);
-		testResultText.setLayoutData( new GridData(
+		currentStatusLabel.setLayoutData(new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
+		currentStatusLabel.setAlignment(SWT.RIGHT);
 		
+		final Text testResultText = new Text(urlValidationArea, 
+				SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		testResultText.setLayoutData(new GridData(GridData.FILL_BOTH));
+		testResultText.setEditable(false);
+		
+		// Cancel/Finish buttons
+		Composite buttons = new Composite(c, SWT.BOTTOM);
+		buttons.setLayoutData( new GridData(SWT.RIGHT, SWT.CENTER, true, false));
+		GridLayout buttonsLayout = new GridLayout();
+		buttonsLayout.numColumns = 2;
+		buttonsLayout.makeColumnsEqualWidth = true;
+		buttons.setLayout(buttonsLayout);
+		
+		final Button finish = new Button(buttons, SWT.NONE);
+		finish.setAlignment(SWT.RIGHT);
+		finish.setText("Use this WFS");
+		finish.setEnabled(false);
+		finish.addListener(SWT.Selection, this.completedListener);
+		
+		Button cancel = new Button(buttons, SWT.NONE);
+		cancel.setAlignment(SWT.RIGHT);
+		cancel.setText("Cancel");
+		cancel.addListener(SWT.Selection, this.completedListener);
+		
+		// add complex Listeners
 		testUrl.addListener(SWT.Selection, new Listener () {
 			public void handleEvent (Event e) {
 				URL url = null;
@@ -179,6 +208,7 @@ public class WFSFeatureTypesReaderDialog
 					currentStatusLabel.setText("Validation FAILED.");
 					testResultText.setText("Capabilities URL could not " +
 							"be built: " + e1.getMessage());
+					finish.setEnabled(false);
 				}
 				if (url != null) {
 					String result = null;
@@ -189,6 +219,7 @@ public class WFSFeatureTypesReaderDialog
 						currentStatusLabel.setText("Validation FAILED.");
 						testResultText.setText("Capabilities document " +
 								"could not be read: " + e1.getMessage());
+						finish.setEnabled(false);
 					}
 					
 					String url_uri_string = null;
@@ -200,37 +231,45 @@ public class WFSFeatureTypesReaderDialog
 					
 					if (url_uri_string != null && GetCapabilititiesRetriever.validate(url_uri_string)) {
 						int count = GetCapabilititiesRetriever.countOccurences(
-								result, "FeatureType") / 2;
+								result, "<FeatureType");
 						currentStatusLabel.setText("Validation OK - " 
 								+ count + " FeatureTypes!");
+						finish.setEnabled(true);
 					}
 					else {
 						currentStatusLabel.setText("Validation FAILED.");
 						testResultText.setText("Capabiltities were retrieved, " 
 								+ "but validation failed.");
+						finish.setEnabled(false);
+						url_result = url;
 					}
 				}
 			}
 		});
 		
-		
-		// Cancel/Finish buttons
-		Composite buttons = new Composite(c, SWT.BOTTOM);
-		buttons.setLayoutData( new GridData(
-				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
-		GridLayout buttonsLayout = new GridLayout();
-		buttonsLayout.numColumns = 2;
-		buttonsLayout.makeColumnsEqualWidth = true;
-		buttons.setLayout(buttonsLayout);
-		Button cancel = new Button(buttons, SWT.CANCEL);
-		cancel.setAlignment(SWT.RIGHT_TO_LEFT);
-		cancel.setText("Cancel");
-		Button finish = new Button(buttons, SWT.SAVE);
-		finish.setAlignment(SWT.RIGHT_TO_LEFT);
-		finish.setText("Use this WFS");
-		
 		// finish drawing
 		urlDefinitionArea.moveAbove(null);
+	}
+	
+	protected class ClosingListener 
+		implements Listener {
+		
+		Shell dialog;
+		
+		protected ClosingListener(Shell dialog) {
+			this.dialog = dialog;
+		}
+		
+		public void handleEvent(Event event) {
+			_log.debug("its closing time");
+			if (((Button)event.item).getText().equals("Cancel")) {
+				this.dialog.close();
+			}
+			else {
+				// TODO if we want to handle some things in addition.
+				this.dialog.close();
+			}
+		}
 	}
 
 }
