@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xs:schema xmlns:de="http://www.esdi-humboldt.org/data/germany" xmlns:gml="http://www.opengis.net/gml" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.esdi-humboldt.org/data/germany" version="1.0">
-  <xs:import namespace="http://www.opengis.net/gml" schemaLocation="../../../ogc/gml/2.1.2.1/schema/src/main/resources/gml/2.1.2.1/feature.xsd"/>
+  <xs:import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/2.1.2.1/feature.xsd"/>
   <xs:complexType xmlns="http://www.w3.org/2001/XMLSchema" name="ver01_l_Type">
  <xs:complexContent>
  <xs:extension base="gml:AbstractFeatureType">
