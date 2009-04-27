@@ -1,5 +1,7 @@
 package eu.esdihumboldt.hale.models.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -16,8 +18,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.xml.transform.stream.StreamSource;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.ws.commons.schema.XmlSchema;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.xml.SchemaFactory;
@@ -363,5 +369,110 @@ public class SchemaServiceImpl implements SchemaService {
 		for (HaleServiceListener hsl : this.listeners) {
 			hsl.update();
 		}
+	}
+
+	public Collection<FeatureType> loadSourceSchema(String pathToSourceSchema) {
+		// use XML Schema to load schema with all its subschema to the memory
+		InputStream is = null;
+		try {
+			is = new FileInputStream(pathToSourceSchema);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		XmlSchemaCollection schemaCol = new XmlSchemaCollection();
+		XmlSchema prepSchema = schemaCol.read(new StreamSource(is), null);
+		System.out.println("Source schema has " + prepSchema.getIncludes().getCount()+ " includes");
+		
+		//write schema to memory
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		prepSchema.write(out);
+		Schema schema = null;
+		Collection<FeatureType> collection = new ArrayList<org.opengis.feature.type.FeatureType>();
+		try {
+			 schema = SchemaFactory.getInstance(null, new ByteArrayInputStream(out.toByteArray()));
+		} catch (Exception uhe) {
+			_log.error("Imported Schema only available on-line, but " +
+					"cannot be retrieved.", uhe);
+		}
+
+//		Schema[] imports = schema.getImports();
+//		for (Schema s : imports) {
+//			_log.debug("Imported URI + Name: " + s.getURI() + " " + s.getTargetNamespace());
+//		}
+					
+		Collection<SimpleFeatureType> inTypes = new HashSet<SimpleFeatureType>();
+
+		// Build first a list of FeatureTypes
+		for (ComplexType type : schema.getComplexTypes()) {
+			SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+			builder.setName(type.getName());
+			builder.setNamespaceURI(type.getNamespace());
+			builder.setAbstract(type.isAbstract());
+
+			if (type.getParent() != null) {
+				System.out.println("Feature type: " + type.getName()
+						+ ", parent feature type: "
+						+ type.getParent().getName());
+
+				for (Element element : type.getChildElements()) {
+					if (element.getType() instanceof SimpleType) {
+						builder.add(element.getName(), element.getType()
+								.getClass());
+					}
+					System.out.println("\telement: " + element.getName()
+							+ ", " + element.getType().getName());
+				}
+				inTypes.add(builder.buildFeatureType());
+			}
+		}
+
+		for (ComplexType type : schema.getComplexTypes()) {
+			if (type.getParent() instanceof ComplexType) {
+				// Create builder
+				SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+				builder.setName(type.getName());
+				builder.setNamespaceURI(type.getNamespace());
+				builder.setAbstract(type.isAbstract());
+
+				if (type.getParent() != null) {
+					System.out.println("Feature type: " + type.getName()
+							+ ", parent feature type: "
+							+ type.getParent().getName());
+
+					for (Element element : type.getChildElements()) {
+						if (element.getType() instanceof SimpleType) {
+							// System.out.println("\tsimpl0e type element: "
+							// + element.getName());
+							builder.add(element.getName(), element
+									.getType().getClass());
+						}
+						System.out.println("\telement: "
+								+ element.getName() + ", "
+								+ element.getType().getName());
+					}
+
+					if (type.getParent().getName().equals(
+							"AbstractFeatureType")) {
+						builder.setSuperType(null);
+					} else {
+						for (SimpleFeatureType featureType : inTypes) {
+							if (featureType.getName().getLocalPart()
+									.equals(type.getParent().getName())) {
+								builder.setSuperType(featureType);
+								System.out.println("Parent type set to "
+										+ featureType.getName());
+							}
+						}
+					}
+					collection.add(builder.buildFeatureType());
+				}
+			}
+		}
+	
+	return collection;
+		
+		
+		
 	}
 }
