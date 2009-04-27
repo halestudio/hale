@@ -36,7 +36,7 @@ public class SchemaServiceTest {
 //		if (element.get)
 //	}
 	
-	@Test
+	//@Test
 	public void testLoadSourceSchema() throws URISyntaxException, SAXException, FileNotFoundException {
 		
 		InputStream is = new FileInputStream("resources/schema/source/roadsGermany212.xsd");
@@ -85,8 +85,23 @@ public class SchemaServiceTest {
 		service.loadSourceSchema(file);
 	}
 
-	@Test
+	//@Test
 	public void testLoadTargetSchema() {
 	}
+	@Test
+	public void testLoadSourceSchemawithImport(){
+		//test download subschema 
+//		String pathToSourceSchema = "resources/schema/source/roadsGermany212.xsd";
+		SchemaServiceImpl service = (SchemaServiceImpl) SchemaServiceImpl.getInstance();
+//		service.loadSourceSchema(pathToSourceSchema);
+		String pathToSourceSchema = "resources/schema/inheritance/rise_hydrography.xsd";
+		service.loadSourceSchema(pathToSourceSchema);
+		
+		
+	}
+	
+	
+	
+	
 
 }
