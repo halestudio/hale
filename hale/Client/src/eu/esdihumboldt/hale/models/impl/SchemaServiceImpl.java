@@ -192,12 +192,12 @@ public class SchemaServiceImpl implements SchemaService {
 		
 		InputStream is, is2;
 		try {
-//			is = new FileInputStream(file.toString().replaceAll("\\+", " "));
-//			
-//			// Get the list of all sub schemas
-//			SchemaParser parser = new SchemaParser();
-//			Map<String, String> subSchemas = parser.parse(file.getPath());
-//			
+			is = new FileInputStream(file.toString().replaceAll("\\+", " "));
+			
+			// Get the list of all sub schemas
+			SchemaParser parser = new SchemaParser();
+			Map<String, String> subSchemas = parser.parse(file.getPath());
+			
 			// Load all schemas
 			Map<String, String> files = new HashMap<String, String>();
 			for (String schema : subSchemas.keySet()) {
