@@ -29,7 +29,7 @@ import java.util.List;
  * @version $Id: MetadataConstraintImpl.java,v 1.7 2007-11-27 13:30:32 pitaeva Exp $ 
  */
 public class MetadataConstraintImpl
-        implements MetadataConstraint, Serializable {
+implements MetadataConstraint, Serializable{
 
     // Fields ..................................................................
     private UUID identifier;
@@ -85,7 +85,7 @@ public class MetadataConstraintImpl
      * no-args constructor, to enable hibernate-mapping.
      * need to be public, because of Castor-requirements.
      */
-    public MetadataConstraintImpl() {
+    public MetadataConstraintImpl(){
         // TODO: discuss the default value for constraint
         //this.constraintvalue = new Object();
         // sets default relation type.
@@ -99,13 +99,13 @@ public class MetadataConstraintImpl
     }
 
     public MetadataConstraintImpl(MetadataType metadatatype, List<String> keywords,
-            RelationType relationtype) {
+    RelationType relationtype){
         this.metadatatype = metadatatype;
         this.relationtype = relationtype;
         this.keywords_ = keywords;
         this.uid = IdentifierManager.next();
         this.constraintSource = ConstraintSource.parameter;
-        this.satisfied = false;
+
     }
 
     /**
@@ -117,13 +117,13 @@ public class MetadataConstraintImpl
      * @param _constraintvalue the query value to test against.
      */
     public MetadataConstraintImpl(MetadataType _metadatatype,
-            RelationType _reltype, Object _constraintvalue) {
+    RelationType _reltype, Object _constraintvalue){
         this.constraintvalue = _constraintvalue;
         this.relationtype = _reltype;
         this.metadatatype = _metadatatype;
         this.uid = IdentifierManager.next();
         this.constraintSource = ConstraintSource.parameter;
-        this.satisfied = false;
+        this.keywords_.add((String) _constraintvalue);
 
     }
 
@@ -131,21 +131,21 @@ public class MetadataConstraintImpl
     /**
      * @see eu.esdihumboldt.mediator.constraints.MetadataConstraint#getConstraintValue()
      */
-    public Object getConstraintValue() {
+    public Object getConstraintValue(){
         return this.constraintvalue;
     }
 
     /**
      * @see eu.esdihumboldt.mediator.constraints.MetadataConstraint#getMetadataType()
      */
-    public MetadataType getMetadataType() {
+    public MetadataType getMetadataType(){
         return this.metadatatype;
     }
 
     /**
      * @see eu.esdihumboldt.mediator.constraints.MetadataConstraint#getRelationType()
      */
-    public RelationType getRelationType() {
+    public RelationType getRelationType(){
         return this.relationtype;
     }
 
@@ -153,14 +153,14 @@ public class MetadataConstraintImpl
     /**
      * @see eu.esdihumboldt.mediator.constraints.Constraint#getConstraintSource()
      */
-    public ConstraintSource getConstraintSource() {
+    public ConstraintSource getConstraintSource(){
         return this.constraintSource;
     }
 
     /**
      * @see eu.esdihumboldt.mediator.constraints.Constraint#isSatisfied()
      */
-    public boolean isSatisfied() {
+    public boolean isSatisfied(){
         // TODO: return actual satisfaction.
         return this.satisfied;
     }
@@ -169,14 +169,14 @@ public class MetadataConstraintImpl
     /**
      * @return the Uid that has been assigned to this LanguageConstraint.
      */
-    public long getUid() {
+    public long getUid(){
         return this.uid;
     }
 
     /**
      * @return unique identifier for the database.
      */
-    public long getId() {
+    public long getId(){
         return id;
     }
 
@@ -184,7 +184,7 @@ public class MetadataConstraintImpl
      * 
      * @param id unique identifier for the database.
      */
-    public void setId(long id) {
+    public void setId(long id){
         this.id = id;
     }
 
@@ -192,15 +192,19 @@ public class MetadataConstraintImpl
      * @return the metadatatype
      */
     @SuppressWarnings("unused")
-    public MetadataType getMetadatatype() {
+    public MetadataType getMetadatatype(){
         return metadatatype;
+    }
+
+    public List<String> getKeywords(){
+        return this.keywords_;
     }
 
     /**
      * @param metadatatype the metadatatype to set
      */
     @SuppressWarnings("unused")
-    public void setMetadatatype(MetadataType metadatatype) {
+    public void setMetadatatype(MetadataType metadatatype){
         this.metadatatype = metadatatype;
     }
 
@@ -208,7 +212,7 @@ public class MetadataConstraintImpl
      * @return the relationtype
      */
     @SuppressWarnings("unused")
-    public RelationType getRelationtype() {
+    public RelationType getRelationtype(){
         return relationtype;
     }
 
@@ -216,7 +220,7 @@ public class MetadataConstraintImpl
      * @param relationtype the relationtype to set
      */
     @SuppressWarnings("unused")
-    public void setRelationtype(RelationType relationtype) {
+    public void setRelationtype(RelationType relationtype){
         this.relationtype = relationtype;
     }
 
@@ -224,7 +228,7 @@ public class MetadataConstraintImpl
      * @return the constraintvalue
      */
     @SuppressWarnings("unused")
-    public Object getConstraintvalue() {
+    public Object getConstraintvalue(){
         return constraintvalue;
     }
 
@@ -232,7 +236,7 @@ public class MetadataConstraintImpl
      * @param constraintvalue the constraintvalue to set
      */
     @SuppressWarnings("unused")
-    public void setConstraintvalue(Object constraintvalue) {
+    public void setConstraintvalue(Object constraintvalue){
         this.constraintvalue = constraintvalue;
     }
 
@@ -240,7 +244,7 @@ public class MetadataConstraintImpl
      * @param satisfied the satisfied to set
      */
     @SuppressWarnings("unused")
-    public void setSatisfied(boolean satisfied) {
+    public void setSatisfied(boolean satisfied){
         this.satisfied = satisfied;
     }
 
@@ -248,44 +252,45 @@ public class MetadataConstraintImpl
      * @param constraintSource the constraintSource to set
      */
     @SuppressWarnings("unused")
-    public void setConstraintSource(ConstraintSource constraintSource) {
+    public void setConstraintSource(ConstraintSource constraintSource){
         this.constraintSource = constraintSource;
     }
 
-    public UUID getIdentifier() {
+    public UUID getIdentifier(){
         return identifier;
     }
 
-    public void setIdentifier(UUID identifier) {
+    public void setIdentifier(UUID identifier){
         this.identifier = identifier;
     }
 
-    public boolean isFinalized() {
+    public boolean isFinalized(){
         return this.write;
     }
 
-    public void setFinalized(boolean write) {
+    public void setFinalized(boolean write){
         this.write = write;
     }
 
-    public boolean compatible(Constraint constraint) {
+    public boolean compatible(Constraint constraint){
 
-        if (constraint != null || (constraint instanceof MetadataConstraint)) {
-
-            MetadataConstraint metadataConstraint = (MetadataConstraint) constraint;
-            boolean isSameType = this.metadatatype.equals(metadataConstraint.
-                    getMetadataType());
-            boolean isSameRelation = this.relationtype.equals(metadataConstraint.
-                    getRelationType());
-            boolean isSameValue = this.constraintvalue.equals(metadataConstraint.
-                    getConstraintValue());
-            if (isSameValue && isSameRelation && isSameType) {
-                return true;
-            } else {
-                return false;
-            }
+        if(constraint == null || (constraint instanceof MetadataConstraint)){
+            return false;
         }
-        return false;
+        MetadataConstraint metadataConstraint = (MetadataConstraint) constraint;
+        boolean isSameType = this.metadatatype.equals(metadataConstraint.getMetadataType());
+        boolean isSameRelation = this.relationtype.equals(metadataConstraint.
+        getRelationType());
+        boolean isSameValue = this.constraintvalue.equals(metadataConstraint.
+        getConstraintValue());
+        if(isSameValue && isSameRelation && isSameType){
+            return true;
+        }
+        else{
+            return false;
+        }
+
+
     }
 
 }
