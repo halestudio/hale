@@ -134,8 +134,6 @@ public class PortrayalConstraintImpl implements PortrayalConstraint, Serializabl
 		this.title = title;
 	}
 	
-	
-	
 	/**
 	 * @return the Abstract, that is an optional element of the SLD. 
 	 */
@@ -187,11 +185,7 @@ public class PortrayalConstraintImpl implements PortrayalConstraint, Serializabl
 	{
 		this.userLayer = userLayer;
 	}
-	
-	
-	
-	
-	
+
 	/**
 	 * @param constraintSource the constraintSource to set
 	 */

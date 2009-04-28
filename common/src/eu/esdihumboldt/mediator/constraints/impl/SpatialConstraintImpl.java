@@ -22,6 +22,7 @@ import eu.esdihumboldt.annotations.concurrency.Immutable;
 import eu.esdihumboldt.mediator.constraints.SpatialConstraint;
 import eu.esdihumboldt.mediator.contextservice.hibernate.helpers.GeneralEnvelopeImpl;
 import eu.esdihumboldt.tools.IdentifierManager;
+import org.opengis.referencing.ReferenceIdentifier;
 
 /**
  * Prototype Immplementation of the SpatialConstraint that is {@link Immutable}
@@ -304,17 +305,14 @@ public class SpatialConstraintImpl
 
     public boolean compatible(Constraint constraint) {
         //@ TODO Re-Implement this
-        boolean sameEnvelop = this.getEnvelope().equals(((SpatialConstraint) constraint).
-                getEnvelope());
+
         boolean sameCRS = this.getGeometry().getCoordinateReferenceSystem().equals(((SpatialConstraint) constraint).getGeometry().
                 getCoordinateReferenceSystem());
-        if (this.getEnvelope().equals(((SpatialConstraint) constraint).getEnvelope())) {
+        if (sameCRS) {
             return true;
         } else {
             return false;
         }
-
-
     }
 
     public org.opengis.geometry.Geometry getGeometry() {
@@ -328,5 +326,18 @@ public class SpatialConstraintImpl
     public void setFinalized(boolean write) {
         this.finalized = write;
     }
-
+    /**
+     * This is a convinient method to find a string value of the CRS defined by this constraint
+     * @return the EPSG code of the CRS defined by this constraint
+     */
+    public String getReferenceSystem() {
+      String refSys = null;
+        for(Object object : this.getDbEnvelope().getCoordinateReferenceSystem().getCoordinateSystem().getIdentifiers()){
+         ReferenceIdentifier   ref = (ReferenceIdentifier) object;
+         System.out.println("The ESPG CODE: "+ref.getCode());
+         System.out.println(ref.getCodeSpace());
+         refSys= ref.getCode();
+        }
+        return refSys;
+    }
 }
