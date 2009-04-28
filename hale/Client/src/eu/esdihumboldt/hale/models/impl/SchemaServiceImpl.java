@@ -406,6 +406,7 @@ public class SchemaServiceImpl implements SchemaService {
 		// Build first a list of FeatureTypes
 		for (ComplexType type : schema.getComplexTypes()) {
 			SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+			System.out.println("FeatureType: " + type.getName());
 			builder.setName(type.getName());
 			builder.setNamespaceURI(type.getNamespace());
 			builder.setAbstract(type.isAbstract());
@@ -419,14 +420,16 @@ public class SchemaServiceImpl implements SchemaService {
 					if (element.getType() instanceof SimpleType) {
 						builder.add(element.getName(), element.getType()
 								.getClass());
+						System.out.println("\telement: " + element.getName()
+								+ ", " + element.getType().getName());
 					}
-					System.out.println("\telement: " + element.getName()
-							+ ", " + element.getType().getName());
+					
 				}
 				inTypes.add(builder.buildFeatureType());
 			}
 		}
 
+		// Build collection of feature type with there parents
 		for (ComplexType type : schema.getComplexTypes()) {
 			if (type.getParent() instanceof ComplexType) {
 				// Create builder
@@ -446,10 +449,11 @@ public class SchemaServiceImpl implements SchemaService {
 							// + element.getName());
 							builder.add(element.getName(), element
 									.getType().getClass());
+							System.out.println("\telement: "
+									+ element.getName() 
+									 + ", "+ element.getType().getName());
 						}
-						System.out.println("\telement: "
-								+ element.getName() + ", "
-								+ element.getType().getName());
+						
 					}
 
 					if (type.getParent().getName().equals(
