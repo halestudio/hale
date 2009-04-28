@@ -1,9 +1,10 @@
 
 package eu.esdihumboldt.workflow.transformer.inputoutputs;
 
+import java.io.Serializable;
 import java.net.URI;
 
-public interface Format {
+public interface Format extends Serializable {
 
     /**Identicication of format supported by the process input or output.
      * The process, shall expect input or priduce output in this Mimetype

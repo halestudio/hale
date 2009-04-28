@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.mediator.constraints;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -35,7 +36,7 @@ import java.util.UUID;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id: Constraint.java,v 1.3 2007-11-15 12:26:09 pitaeva Exp $ 
  */
-public interface Constraint {
+public interface Constraint extends Serializable{
 
 /**
  * @return true if this Constraint was satisfied.

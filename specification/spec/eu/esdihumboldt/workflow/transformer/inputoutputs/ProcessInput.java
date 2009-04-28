@@ -20,18 +20,21 @@ public interface ProcessInput extends InputOutput {
     /**
      * This method is used to define the source postcondition of this input
      * @param postcondition The source postcondition that satisfies this precondition
+     * @throws ProcessInputOutputException
      */
     public void setSourcePostcondition(ProcessOutput postcondition) throws ProcessInputOutputException;
 
     /**
      *Adds a given grounding service to this precondition
      * @param grounding
+     * @throws ProcessInputOutputException
      */
     public void setGroundingForPrecondition(GroundingService grounding)throws ProcessInputOutputException;
 
     /**
      * Retrieve the grounding service that satisfies this precondition
      * @return
+     * @throws ProcessInputOutputException
      */
     public GroundingService getGroundingForPrecondition()throws ProcessInputOutputException;
 }

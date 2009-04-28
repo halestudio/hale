@@ -12,6 +12,7 @@
 package eu.esdihumboldt.workflow.processdescription;
 
 import eu.esdihumboldt.annotations.spec.ReferenceSpecification;
+import java.io.Serializable;
 
 /**This is a super interface for describing processes
  * 
@@ -20,7 +21,7 @@ import eu.esdihumboldt.annotations.spec.ReferenceSpecification;
  * @version $Id$ 
  */
 @ReferenceSpecification("OGC 05-007r6:1.0.0 7.2")
-public interface Description {
+public interface Description extends Serializable{
 
     /**Title of the process, inputs, or outputs, unique for this server
      * 

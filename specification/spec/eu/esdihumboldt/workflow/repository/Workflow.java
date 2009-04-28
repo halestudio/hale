@@ -20,6 +20,7 @@ import eu.esdihumboldt.workflow.exceptions.InconsistentWorkflowException;
 import eu.esdihumboldt.workflow.processdescription.Description;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.ComplexDataInput;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.ProcessInput;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,7 +35,7 @@ import java.util.UUID;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public interface Workflow {
+public interface Workflow extends Serializable{
 
     /**
      * A unique identifier for this Basic workflow

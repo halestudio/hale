@@ -12,6 +12,7 @@
 package eu.esdihumboldt.workflow.transformer.domaintypes;
 
 import eu.esdihumboldt.annotations.spec.ReferenceSpecification;
+import java.io.Serializable;
 
 
 /**A super interface that identifies the type of literal input/output and 
@@ -20,7 +21,7 @@ import eu.esdihumboldt.annotations.spec.ReferenceSpecification;
  * @author Moses Gone
  */
 @ReferenceSpecification("OGC 05-007r6:1.0.0 9.3.1")
-public interface LiteralValuesChoice  {
+public interface LiteralValuesChoice extends Serializable {
 
 
 

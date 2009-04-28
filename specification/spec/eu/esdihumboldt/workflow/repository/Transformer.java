@@ -18,6 +18,7 @@ import eu.esdihumboldt.workflow.transformer.inputoutputs.ComplexDataInput;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.LiteralDataInput;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.ProcessInput;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.ProcessOutput;
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Set;
 import java.util.UUID;
@@ -35,7 +36,7 @@ import java.util.UUID;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$
  */
-public interface Transformer {
+public interface Transformer extends Serializable{
 
     /**
      * This operation is used at workflow construction time to retrieve the

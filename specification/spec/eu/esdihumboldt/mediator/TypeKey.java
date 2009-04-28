@@ -11,6 +11,8 @@
  */
 package eu.esdihumboldt.mediator;
 
+import java.io.Serializable;
+
 /**
  * A TypeKey is sued to determine the properties of an object that make it
  * unique in a certain context. A TypeKey must be {@link Comparable}, since 
@@ -21,6 +23,6 @@ package eu.esdihumboldt.mediator;
  * @version $Id$ 
  */
 public interface TypeKey 
-	extends Comparable {
+	extends Comparable, Serializable{
 
 }

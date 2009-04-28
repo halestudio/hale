@@ -13,6 +13,7 @@ package eu.esdihumboldt.workflow.transformer.domaintypes;
 
 
 import eu.esdihumboldt.annotations.spec.ReferenceSpecification;
+import java.io.Serializable;
 import java.net.URI;
 
 
@@ -23,7 +24,7 @@ import java.net.URI;
  * @version $Id$ 
  */
 @ReferenceSpecification("OGC 05-007r6:Annex D.1")
-public interface DomainMetadata  {
+public interface DomainMetadata  extends Serializable{
 
     /**Human readable name of domain metadata described by associated referenced document
      * 

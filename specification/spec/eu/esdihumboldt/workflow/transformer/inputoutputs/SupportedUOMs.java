@@ -15,6 +15,7 @@ package eu.esdihumboldt.workflow.transformer.inputoutputs;
 
 import eu.esdihumboldt.annotations.spec.ReferenceSpecification;
 import eu.esdihumboldt.workflow.transformer.domaintypes.DomainMetadata;
+import java.io.Serializable;
 import java.net.URI;
 
 
@@ -27,7 +28,7 @@ import java.net.URI;
  * @version $Id$ 
  */
 @ReferenceSpecification("OGC 05-007r7:1.0.0 9.3.1")
-public interface SupportedUOMs  {
+public interface SupportedUOMs  extends Serializable{
 
     /** Reference to default unit of measure
      * 

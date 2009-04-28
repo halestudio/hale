@@ -4,6 +4,7 @@ import eu.esdihumboldt.workflow.exceptions.IncompatibleTransformersException;
 import eu.esdihumboldt.workflow.processdescription.InputDescription;
 import eu.esdihumboldt.workflow.repository.Transformer;
 import eu.esdihumboldt.workflow.repository.Transformer.InputOutputStatus;
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -12,7 +13,7 @@ import java.util.UUID;
 // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
 // #[regen=yes,id=DCE.E748DC78-75B9-A624-D120-D2C3D40D736C]
 // </editor-fold> 
-public interface InputOutput {
+public interface InputOutput extends Serializable{
 
     /**
      *  @return the {@link UUID} uniquely identifying this {@link input or output}.

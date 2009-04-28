@@ -12,6 +12,7 @@
 package eu.esdihumboldt.workflow.transformer.domaintypes;
 
 import eu.esdihumboldt.annotations.spec.ReferenceSpecification;
+import java.io.Serializable;
 import java.util.Set;
 
 
