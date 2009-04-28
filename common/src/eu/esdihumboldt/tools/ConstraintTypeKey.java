@@ -25,6 +25,8 @@ import eu.esdihumboldt.mediator.constraints.Constraint;
 public class ConstraintTypeKey
         implements TypeKey {
 
+    private static final long serialVersionUID = -6702163039383778188L;
+
     // Fields ..................................................................
     private Constraint constraint;
 
