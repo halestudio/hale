@@ -14,6 +14,8 @@ package test.eu.esdihumboldt.hale.models.factory;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureReader;
@@ -30,6 +32,15 @@ import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.io.WKTReader;
+
+import org.geotools.xml.Configuration;
+import org.geotools.xml.XSISAXHandler;
+import org.geotools.xml.gml.GMLComplexTypes;
+import org.geotools.xml.schema.Schema;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
+
 
 /**
  * This class allows to create FeatureCollections from various input structures,
@@ -114,6 +125,23 @@ public class FeatureCollectionUtilities {
 		return fc;
 	}
 	
+
+	/*public void parserTest(URL gml, URL schema, String namespace)
+			throws Exception {
+
+		Configuration configuration = new ApplicationSchemaConfiguration(
+				namespace, schema.getPath());
+
+		InputStream xml = new FileInputStream(gml.getFile());
+		Parser parser = new org.geotools.xml.Parser(configuration);
+		FeatureCollection fc = (FeatureCollection) parser.parse(xml);
+		for (Iterator i = fc.iterator(); i.hasNext();) {
+			Feature f = (Feature) i.next();
+			System.out.println(f);
+		}
+	}*/
+
+	
 	/**
 	 * This method provides a shorthand for getting a {@link FeatureType}.
 	 * 
@@ -176,5 +204,26 @@ public class FeatureCollectionUtilities {
 			throw new RuntimeException(ex);
 		}
 		return ft;
+	}
+	
+	/**
+	 * Use this method to read a collection of FeatureTypes from a XSD at any 
+	 * URL.
+	 * FIXME: compare to SchemaService Solution, integrate!
+	 * 
+	 * @param xsd
+	 * @return
+	 * @throws Exception
+	 */
+	public static List<FeatureType> readFeatureTypes(URL xsd) throws Exception {
+		XMLReader reader = XMLReaderFactory.createXMLReader();
+		XSISAXHandler schemaHandler = new XSISAXHandler(xsd.toURI());
+		reader.setContentHandler(schemaHandler);
+		reader.parse(new InputSource(xsd.openConnection().getInputStream()));
+		Schema s = schemaHandler.getSchema();
+		List<FeatureType> result = new ArrayList<FeatureType>();
+		SimpleFeatureType ft = GMLComplexTypes.createFeatureType(schemaHandler
+				.getSchema().getElements()[1]);
+		return result;
 	}
 }
