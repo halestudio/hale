@@ -91,10 +91,11 @@ public class SchemaServiceTest {
 	@Test
 	public void testLoadSourceSchemawithImport(){
 		//test download subschema 
-//		String pathToSourceSchema = "resources/schema/source/roadsGermany212.xsd";
+//    	String pathToSourceSchema = "resources/schema/source/roadsGermany212.xsd";
+    	String pathToSourceSchema = "resources/schema/inheritance/rise_hydrography.xsd";
 		SchemaServiceImpl service = (SchemaServiceImpl) SchemaServiceImpl.getInstance();
 //		service.loadSourceSchema(pathToSourceSchema);
-		String pathToSourceSchema = "resources/schema/inheritance/rise_hydrography.xsd";
+//		String pathToSourceSchema = "resources/schema/inheritance/rise_hydrography.xsd";
 		service.loadSourceSchema(pathToSourceSchema);
 		
 		
