@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -17,6 +19,8 @@ import org.geotools.xml.schema.Element;
 import org.geotools.xml.schema.Schema;
 import org.geotools.xml.xLink.XLinkSchema;
 import org.junit.Test;
+import org.opengis.feature.type.FeatureType;
+
 import org.xml.sax.SAXException;
 
 import eu.esdihumboldt.hale.models.impl.SchemaParser;
@@ -90,13 +94,35 @@ public class SchemaServiceTest {
 	}
 	@Test
 	public void testLoadSourceSchemawithImport(){
-		//test download subschema 
-//    	String pathToSourceSchema = "resources/schema/source/roadsGermany212.xsd";
+		
+        
     	String pathToSourceSchema = "resources/schema/inheritance/rise_hydrography.xsd";
 		SchemaServiceImpl service = (SchemaServiceImpl) SchemaServiceImpl.getInstance();
-//		service.loadSourceSchema(pathToSourceSchema);
-//		String pathToSourceSchema = "resources/schema/inheritance/rise_hydrography.xsd";
-		service.loadSourceSchema(pathToSourceSchema);
+
+		//load schema 
+		try {
+			service.loadSourceSchema(new URI(pathToSourceSchema));
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//getting service schema
+		Collection<FeatureType> featureTypes = service.getSourceSchema();
+		//check size
+		assertEquals(featureTypes.size(), 11);
+		
+		
+		
+		//check if countains RiverBasinDistrictType
+		boolean containsType = false;
+		Iterator iterator = featureTypes.iterator();
+		while(iterator.hasNext()){
+			FeatureType type = (FeatureType) iterator.next();
+			if (type.getName().getLocalPart().equals("RiverBasinDistrictType"))containsType = true;
+		} 
+		assertEquals(true, containsType);
+		
 		
 		
 	}
