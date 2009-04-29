@@ -208,13 +208,13 @@ public class SchemaServiceImpl implements SchemaService {
 	 *            URI which represents a file
 	 * @return Collection FeatureType collection.
 	 */
-	public Collection<FeatureType> loadSchema(URI file)  {
+	public Collection<FeatureType> loadSchema(URI file) {
 		// use XML Schema to load schema with all its subschema to the memory
 		InputStream is = null;
 		try {
-			//is = new FileInputStream(pathToSourceSchema);
+			// is = new FileInputStream(pathToSourceSchema);
 			String path = file.getPath();
-			
+
 			is = new FileInputStream(path);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -222,61 +222,70 @@ public class SchemaServiceImpl implements SchemaService {
 		}
 		XmlSchemaCollection schemaCol = new XmlSchemaCollection();
 		XmlSchema prepSchema = schemaCol.read(new StreamSource(is), null);
-		System.out.println("Source schema has " + prepSchema.getIncludes().getCount()+ " includes");
-		
-		//write schema to memory
+		// System.out.println("Source schema has " +
+		// prepSchema.getIncludes().getCount()+ " includes");
+
+		// write schema to memory
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		prepSchema.write(out);
 		Schema schema = null;
 		Collection<FeatureType> collection = new ArrayList<org.opengis.feature.type.FeatureType>();
 		try {
-			 schema = SchemaFactory.getInstance(null, new ByteArrayInputStream(out.toByteArray()));
+			schema = SchemaFactory.getInstance(null, new ByteArrayInputStream(
+					out.toByteArray()));
 		} catch (Exception uhe) {
-			_log.error("Imported Schema only available on-line, but " +
-					"cannot be retrieved.", uhe);
+			_log.error("Imported Schema only available on-line, but "
+					+ "cannot be retrieved.", uhe);
 		}
 
-//		Schema[] imports = schema.getImports();
-//		for (Schema s : imports) {
-//			_log.debug("Imported URI + Name: " + s.getURI() + " " + s.getTargetNamespace());
-//		}
-					
+		// Schema[] imports = schema.getImports();
+		// for (Schema s : imports) {
+		// _log.debug("Imported URI + Name: " + s.getURI() + " " +
+		// s.getTargetNamespace());
+		// }
+
 		Collection<SimpleFeatureType> inTypes = new HashSet<SimpleFeatureType>();
 
 		// Build first a list of FeatureTypes
 		for (ComplexType type : schema.getComplexTypes()) {
 			SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
-			System.out.println("FeatureType: " + type.getName());
+			// System.out.println("FeatureType: " + type.getName());
 			builder.setName(type.getName());
 			builder.setNamespaceURI(type.getNamespace());
 			builder.setAbstract(type.isAbstract());
 
 			if (type.getParent() != null) {
-				System.out.println("Feature type: " + type.getName()
-						+ ", parent feature type: "
-						+ type.getParent().getName());
+				
+				 System.out.println("Feature type: " + type.getName() +
+				  ", parent feature type: " + type.getParent().getName());
+				 
 
 				for (Element element : type.getChildElements()) {
 					if (element.getType() instanceof SimpleType) {
 						builder.add(element.getName(), element.getType()
 								.getClass());
-						System.out.println("\telement: " + element.getName()
-								+ ", " + element.getType().getName());
+						
+						  System.out.println("\telement: " + element.getName()
+						 + ", " + element.getType().getName());
+						 
 					}
-					
+
 				}
 				inTypes.add(builder.buildFeatureType());
 			}
 		}
 
 		// Build collection of feature type with there parents
+		
 		for (ComplexType type : schema.getComplexTypes()) {
+			
+			// Create builder
+			SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+			builder.setName(type.getName());
+			builder.setNamespaceURI(type.getNamespace());
+			builder.setAbstract(type.isAbstract());
 			if (type.getParent() instanceof ComplexType) {
-				// Create builder
-				SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
-				builder.setName(type.getName());
-				builder.setNamespaceURI(type.getNamespace());
-				builder.setAbstract(type.isAbstract());
+				
 
 				if (type.getParent() != null) {
 					System.out.println("Feature type: " + type.getName()
@@ -287,36 +296,36 @@ public class SchemaServiceImpl implements SchemaService {
 						if (element.getType() instanceof SimpleType) {
 							// System.out.println("\tsimpl0e type element: "
 							// + element.getName());
-							builder.add(element.getName(), element
-									.getType().getClass());
+							builder.add(element.getName(), element.getType()
+									.getClass());
 							System.out.println("\telement: "
-									+ element.getName() 
-									 + ", "+ element.getType().getName());
+									+ element.getName() + ", "
+									+ element.getType().getName());
 						}
-						
+
 					}
 
-					if (type.getParent().getName().equals(
-							"AbstractFeatureType")) {
+					if (type.getParent().getName()
+							.equals("AbstractFeatureType")) {
 						builder.setSuperType(null);
 					} else {
 						for (SimpleFeatureType featureType : inTypes) {
-							if (featureType.getName().getLocalPart()
-									.equals(type.getParent().getName())) {
+							if (featureType.getName().getLocalPart().equals(
+									type.getParent().getName())) {
 								builder.setSuperType(featureType);
 								System.out.println("Parent type set to "
 										+ featureType.getName());
 							}
 						}
 					}
-					collection.add(builder.buildFeatureType());
+					
 				}
+				
 			}
+			collection.add(builder.buildFeatureType());
 		}
-	
-	return collection;
-		
-		
-		
+
+		return collection;
+
 	}
 }
