@@ -12,7 +12,7 @@
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
@@ -31,10 +31,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
 /**
- * FIXME Add Type description.
+ * The {@link WFSFeatureTypesReaderDialog} enables a user to select a WFS from
+ * which to read capabilities and will confirm communication by displaying
+ * {@link FeatureType} names that are found.
  * 
  * @author Thorsten Reitz 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -46,8 +49,6 @@ public class WFSFeatureTypesReaderDialog
 	private final static Logger _log = Logger.getLogger(WFSFeatureTypesReaderDialog.class);
 
 	URL url_result;
-	
-	Listener completedListener;
 	
 	public WFSFeatureTypesReaderDialog(Shell parent, int style) {
 		super(parent, style);
@@ -71,8 +72,6 @@ public class WFSFeatureTypesReaderDialog
                 | GridData.HORIZONTAL_ALIGN_FILL));
 		shell.setText(super.getText());
 		
-		this.completedListener = new ClosingListener(shell);
-		
 		this.createControls(shell);
 		
 		shell.open();
@@ -80,6 +79,7 @@ public class WFSFeatureTypesReaderDialog
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) display.sleep();
 		}
+		_log.debug("returning result.");
 		return url_result;
 	}
 
@@ -92,7 +92,7 @@ public class WFSFeatureTypesReaderDialog
 		c.setLayoutData(new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL |
 				GridData.GRAB_VERTICAL | GridData.FILL_VERTICAL));
-		Group urlDefinitionArea = new Group(c, SWT.NONE);
+		final Group urlDefinitionArea = new Group(c, SWT.NONE);
 		urlDefinitionArea.setText("Enter the URL of your WFS");
 		urlDefinitionArea.setLayoutData( new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
@@ -103,15 +103,18 @@ public class WFSFeatureTypesReaderDialog
 		urlDefinitionArea.setLayout(fileSelectionLayout);
 		
 		// Host + Port
-		Label hostPortLabel = new Label(urlDefinitionArea, SWT.NONE);
+		final Label hostPortLabel = new Label(urlDefinitionArea, SWT.NONE);
 		hostPortLabel.setText("Host + Port:");
 		hostPortLabel.setToolTipText("Enter the GetCapabilities URL of the " +
 				"WFS you want to query here.");
 		final Text hostPortText = new Text (urlDefinitionArea, SWT.BORDER | SWT.SINGLE);
 		hostPortText.setLayoutData(new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
-		hostPortText.setText(
+		/*hostPortText.setText(
 				"http://staging-esdi-humboldt.igd.fraunhofer.de:8080/" +
+				"geoserver/ows?service=WFS&request=GetCapabilities");*/
+		hostPortText.setText(
+				"http://car2.esrin.esa.int:8080/" +
 				"geoserver/ows?service=WFS&request=GetCapabilities");
 		hostPortText.setEditable(true);
 		hostPortText.addListener (SWT.FocusOut, new Listener () {
@@ -130,7 +133,7 @@ public class WFSFeatureTypesReaderDialog
 		});
 		
 		// Protocol Version & Type
-		Label protocolVersionLabel = new Label(urlDefinitionArea, SWT.NONE);
+		final Label protocolVersionLabel = new Label(urlDefinitionArea, SWT.NONE);
 		protocolVersionLabel.setText("WFS Version/Protocol:");
 		protocolVersionLabel.setToolTipText("Select one of the offered combinations of service version and protocol.");
 		final Combo combo = new Combo (urlDefinitionArea, SWT.READ_ONLY);
@@ -139,7 +142,7 @@ public class WFSFeatureTypesReaderDialog
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
 
 		// Validation Group
-		Group urlValidationArea = new Group(c, SWT.NONE);
+		final Group urlValidationArea = new Group(c, SWT.NONE);
 		urlValidationArea.setText("Validate your WFS settings");
 		urlValidationArea.setLayoutData( new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL 
@@ -179,16 +182,33 @@ public class WFSFeatureTypesReaderDialog
 		
 		final Button finish = new Button(buttons, SWT.NONE);
 		finish.setAlignment(SWT.RIGHT);
-		finish.setText("Use this WFS");
+		finish.setText("   Use this WFS    ");
 		finish.setEnabled(false);
 		finish.setSize(100, 24);
-		finish.addListener(SWT.Selection, this.completedListener);
+		finish.addListener(SWT.Selection, new Listener () {
+			public void handleEvent(Event event) {
+				if (finish.isEnabled()) {
+					_log.debug("saving result: " + hostPortText.getText());
+					try {
+						url_result = new URL(hostPortText.getText());
+					} catch (MalformedURLException e) {
+						_log.error("An error occured when parsing the " +
+								"selected host to a URL:", e);
+					}
+				}
+				finish.getParent().getParent().getShell().dispose();
+			}
+		});
 		
 		Button cancel = new Button(buttons, SWT.NONE);
 		cancel.setAlignment(SWT.RIGHT);
-		cancel.setText("Cancel");
+		cancel.setText("      Cancel       ");
 		cancel.setSize(100, 24);
-		cancel.addListener(SWT.Selection, this.completedListener);
+		cancel.addListener(SWT.Selection, new Listener () {
+			public void handleEvent(Event event) {
+				finish.getParent().getParent().getShell().dispose();
+			}
+		});
 		
 		// add complex Listeners
 		testUrl.addListener(SWT.Selection, new Listener () {
@@ -208,11 +228,18 @@ public class WFSFeatureTypesReaderDialog
 						result = GetCapabilititiesRetriever.readFeatureTypes(url.toString());
 						StringBuffer ft_names = new StringBuffer();
 						for (FeatureType ft : result){
-							ft_names.append(ft.getName() + " \n");
+							if (ft instanceof SimpleFeatureType) {
+								SimpleFeatureType sft = (SimpleFeatureType) ft;
+								ft_names.append(sft.getTypeName() + " \n");
+							}
+							else {
+								ft_names.append(ft.getName() + " \n");
+							}
 						}
 						testResultText.setText(ft_names.toString());
 						currentStatusLabel.setText("Validation OK - " 
 								+ result.size() + " FeatureTypes!");
+						finish.setEnabled(true);
 					} catch (IOException e1) {
 						currentStatusLabel.setText("Validation FAILED.");
 						testResultText.setText("Capabilities document " +
@@ -227,21 +254,6 @@ public class WFSFeatureTypesReaderDialog
 		
 		// finish drawing
 		urlDefinitionArea.moveAbove(null);
-	}
-	
-	protected class ClosingListener 
-		implements Listener {
-		
-		Shell dialog;
-		
-		protected ClosingListener(Shell dialog) {
-			this.dialog = dialog;
-		}
-		
-		public void handleEvent(Event event) {
-			// TODO: handling of close/confirm buttons should be different
-			this.dialog.close();
-		}
 	}
 
 }

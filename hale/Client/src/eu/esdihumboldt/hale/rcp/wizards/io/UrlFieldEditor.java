@@ -13,11 +13,14 @@ package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import java.net.URL;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.preference.StringButtonFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 
 /**
- * FIXME Add Type description.
+ * This editor can be used to select a valid {@link URL} for a WFS to retrieve
+ * schema information from. It delegates all details to the 
+ * {@link WFSFeatureTypesReaderDialog}.
  * 
  * @author Thorsten Reitz 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -26,12 +29,14 @@ import org.eclipse.swt.widgets.Composite;
 public class UrlFieldEditor 
 	extends StringButtonFieldEditor {
 	
+	private final static Logger _log = Logger.getLogger(UrlFieldEditor.class);
+	
 	public UrlFieldEditor(String name, String labelText,
             Composite parent) {
 		super(name, labelText, parent);
 	}
 
-	/* (non-Javadoc)
+	/**
 	 * @see org.eclipse.jface.preference.StringButtonFieldEditor#changePressed()
 	 */
 	@Override
@@ -40,7 +45,8 @@ public class UrlFieldEditor
 		WFSFeatureTypesReaderDialog wfsftrd = new WFSFeatureTypesReaderDialog(
 				this.getShell(), "Select a Web Feature Service");
 		URL result = wfsftrd.open();
-		getTextControl().setData(result);
+		_log.debug("received result: " + result.toString());
+		getTextControl().setText(result.toString());
 		return getTextControl().getText();
 	}
 

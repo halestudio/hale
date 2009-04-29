@@ -220,7 +220,11 @@ public class GetCapabilititiesRetriever {
 		if (data != null) {
 			String typeNames[] = data.getTypeNames();
 			for (String typename : typeNames) {
-				result.add(data.getSchema( typename ));
+				try { 
+					result.add(data.getSchema( typename ));
+				} catch (Exception ex) {
+					_log.warn("A FeatureType could not be added: " + ex.getMessage());
+				}
 			}
 		}
 		return result;
