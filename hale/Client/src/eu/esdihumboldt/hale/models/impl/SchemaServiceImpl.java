@@ -186,178 +186,8 @@ public class SchemaServiceImpl implements SchemaService {
 		        if (fos != null) fos.close();
 		    }
 		  }	
-	/**
-	 * Method to load a XSD schema file and build a collection of FeatureTypes.
-	 * 
-	 * @param file
-	 *            URI which represents a file
-	 * @return Collection FeatureType collection.
-	 */
-	private Collection<FeatureType> loadSchema(URI file) {
-		Collection<FeatureType> collection = new ArrayList<org.opengis.feature.type.FeatureType>();
-		
-		InputStream is, is2;
-		try {
-			is = new FileInputStream(file.toString().replaceAll("\\+", " "));
-			
-			// Get the list of all sub schemas
-			SchemaParser parser = new SchemaParser();
-			Map<String, String> subSchemas = parser.parse(file.getPath());
-			
-			// Load all schemas
-			Map<String, String> files = new HashMap<String, String>();
-			for (String schema : subSchemas.keySet()) {
-
-				File tempSchema = new File( "HALE_temp_schema_" + UUID.randomUUID().toString() + ".xsd" );				
-				File sourceSchema = new File( subSchemas.get(schema) );
-				
-				files.put(subSchemas.get(schema), tempSchema.getAbsolutePath());
-				System.out.println(sourceSchema.getAbsolutePath() + ", " + tempSchema.getAbsolutePath());
-			}
-			
-			for (String schema : subSchemas.keySet()) {
-				File sourceFile = new File(subSchemas.get(schema));
-				String fileContent = getFileContent(sourceFile);
-				
-				for (String replacement : subSchemas.keySet())
-				{
-					fileContent = fileContent.replace(new StringBuffer(replacement),
-						new StringBuffer(files.get(subSchemas.get(replacement))));
-				}
-				
-				File tempFile = new File(files.get(subSchemas.get(schema)));
-				writeFileContent(tempFile, fileContent);
-				
-			}
-			
-			// FIXME: Find good way of automatically importing parent schemas
-//			String path = Application.getBasePath().replaceAll("\\+", " ");
-//			is2 = new FileInputStream(Application.getBasePath().replaceAll("\\+", " ") + 
-//			"resources/schema/inheritance/gmlsf2composite_and_featcoll.xsd");
-			is2 = new FileInputStream("resources/schema/inheritance/gmlsf2composite_and_featcoll.xsd");
-
-//			for (String s : subSchemas) {
-//				System.out.println("schemaLocation: " + s);
-//			}
-			
-//			for (int i = subSchemas.size() - 1; i > 0; i--) {
-//				InputStream subSchemaInputStream = new FileInputStream(subSchemas.get(i));
-//				SchemaFactory.getInstance(null, subSchemaInputStream);
-//			}
-			
-			URI ns = new URI("c:/Humboldt/workspace/HALE_2/resources/schema/inheritance/gmlsf2composite_and_featcoll.xsd");
-//			Schema schema2 = SchemaFactory.getInstance(ns, is2);
-//			Schema schema = SchemaFactory.getInstance(null, is);
-			
-//			Application
-			
-			Schema schema = SchemaFactory.getInstance(null, is2);
-			for ( String filename : files.values() ) {
-				FileInputStream fis = new FileInputStream(filename);
-				Schema subSchema = SchemaFactory.getInstance(null, fis);
-			}
-			
-
-//			Schema schema = null;
-			try {
-				SchemaFactory.getInstance(null, is2);
-			} catch (Exception uhe) {
-				_log.error("Imported Schema only available on-line, but " +
-						"cannot be retrieved.", uhe);
-			}
-			try {
-				schema = SchemaFactory.getInstance(null, is);
-			} catch (Exception uhe) {
-				_log.error("Imported Schema only available on-line, but " +
-						"cannot be retrieved.", uhe);
-			}
-
-//			Schema[] imports = schema.getImports();
-//			for (Schema s : imports) {
-//				_log.debug("Imported URI + Name: " + s.getURI() + " " + s.getTargetNamespace());
-//			}
-						
-			Collection<SimpleFeatureType> inTypes = new HashSet<SimpleFeatureType>();
-
-			// Build first a list of FeatureTypes
-			for (ComplexType type : schema.getComplexTypes()) {
-				SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
-				builder.setName(type.getName());
-				builder.setNamespaceURI(type.getNamespace());
-				builder.setAbstract(type.isAbstract());
-
-				if (type.getParent() != null) {
-					System.out.println("Feature type: " + type.getName()
-							+ ", parent feature type: "
-							+ type.getParent().getName());
-
-					for (Element element : type.getChildElements()) {
-						if (element.getType() instanceof SimpleType) {
-							builder.add(element.getName(), element.getType()
-									.getClass());
-						}
-						System.out.println("\telement: " + element.getName()
-								+ ", " + element.getType().getName());
-					}
-					inTypes.add(builder.buildFeatureType());
-				}
-			}
-
-			for (ComplexType type : schema.getComplexTypes()) {
-				if (type.getParent() instanceof ComplexType) {
-					// Create builder
-					SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
-					builder.setName(type.getName());
-					builder.setNamespaceURI(type.getNamespace());
-					builder.setAbstract(type.isAbstract());
-
-					if (type.getParent() != null) {
-						System.out.println("Feature type: " + type.getName()
-								+ ", parent feature type: "
-								+ type.getParent().getName());
-
-						for (Element element : type.getChildElements()) {
-							if (element.getType() instanceof SimpleType) {
-								// System.out.println("\tsimpl0e type element: "
-								// + element.getName());
-								builder.add(element.getName(), element
-										.getType().getClass());
-							}
-							System.out.println("\telement: "
-									+ element.getName() + ", "
-									+ element.getType().getName());
-						}
-
-						if (type.getParent().getName().equals(
-								"AbstractFeatureType")) {
-							builder.setSuperType(null);
-						} else {
-							for (SimpleFeatureType featureType : inTypes) {
-								if (featureType.getName().getLocalPart()
-										.equals(type.getParent().getName())) {
-									builder.setSuperType(featureType);
-									System.out.println("Parent type set to "
-											+ featureType.getName());
-								}
-							}
-						}
-						collection.add(builder.buildFeatureType());
-					}
-				}
-			}
-		} catch (FileNotFoundException e) {
-			_log.error(e);
-//		} catch (SAXException e) {
-//			e.printStackTrace(); // FIXME
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return collection;
-	}
-
+	
+	
 	public boolean addListener(HaleServiceListener sl) {
 		return this.listeners.add(sl);
 	}
@@ -371,11 +201,21 @@ public class SchemaServiceImpl implements SchemaService {
 		}
 	}
 
-	public Collection<FeatureType> loadSourceSchema(String pathToSourceSchema) {
+	/**
+	 * Method to load a XSD schema file and build a collection of FeatureTypes.
+	 * 
+	 * @param file
+	 *            URI which represents a file
+	 * @return Collection FeatureType collection.
+	 */
+	public Collection<FeatureType> loadSchema(URI file)  {
 		// use XML Schema to load schema with all its subschema to the memory
 		InputStream is = null;
 		try {
-			is = new FileInputStream(pathToSourceSchema);
+			//is = new FileInputStream(pathToSourceSchema);
+			String path = file.getPath();
+			
+			is = new FileInputStream(path);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
