@@ -7,4 +7,14 @@
                 <goal>install</goal>
             </goals>
         </action>
+        <action>
+            <actionName>build-with-dependencies</actionName>
+            <basedir>../..</basedir>
+            <goals>
+                <goal>reactor:make</goal>
+            </goals>
+            <properties>
+                <make.artifacts>${groupId}:${artifactId}</make.artifacts>
+            </properties>
+        </action>
     </actions>
