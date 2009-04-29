@@ -11,8 +11,10 @@
  */
 package test.eu.esdihumboldt.hale.models.factory;
 
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,26 +22,28 @@ import java.util.List;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.gml.GMLDataStoreFactory;
-import org.opengis.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.gml3.ApplicationSchemaConfiguration;
+import org.geotools.xml.Configuration;
+import org.geotools.xml.Parser;
+import org.geotools.xml.XSISAXHandler;
+import org.geotools.xml.gml.GMLComplexTypes;
+import org.geotools.xml.schema.Schema;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
-import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.io.WKTReader;
 
-import org.geotools.xml.Configuration;
-import org.geotools.xml.XSISAXHandler;
-import org.geotools.xml.gml.GMLComplexTypes;
-import org.geotools.xml.schema.Schema;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 
 /**
@@ -104,11 +108,14 @@ public class FeatureCollectionUtilities {
 	}
 	
 	/**
-	 * This method allows to load a {@link FeatureCollection} from a GML file.
-	 * @param _filename
-	 * @return
+	 * This method allows to load a {@link FeatureCollection} from a GML file. 
+	 * It will only work if the schema to be used for parsing is correctly 
+	 * referenced in the document.
+	 * @param _filename the URL as a string to the GML file to be parsed.
+	 * @return a {@link FeatureCollection} with {@link SimpleFeature} organized
+	 * by {@link SimpleFeatureType}s.
 	 */
-	public static FeatureCollection<SimpleFeatureType, SimpleFeature> loadFeatureCollectionFromGML2(
+	public static FeatureCollection<SimpleFeatureType, SimpleFeature> loadFeatureCollectionFromGML(
 			String _filename){
 		FeatureCollection<SimpleFeatureType, SimpleFeature> fc = 
 			FeatureCollections.newCollection();
@@ -126,7 +133,18 @@ public class FeatureCollectionUtilities {
 	}
 	
 
-	/*public void parserTest(URL gml, URL schema, String namespace)
+	/**
+	 * 
+	 * @param gml
+	 * @param schema
+	 * @param namespace
+	 * @return
+	 * @throws Exception
+	 */
+	public FeatureCollection<SimpleFeatureType, SimpleFeature> loadFeatureCollectionFromGML(
+			URL gml, 
+			URL schema, 
+			String namespace)
 			throws Exception {
 
 		Configuration configuration = new ApplicationSchemaConfiguration(
@@ -134,12 +152,8 @@ public class FeatureCollectionUtilities {
 
 		InputStream xml = new FileInputStream(gml.getFile());
 		Parser parser = new org.geotools.xml.Parser(configuration);
-		FeatureCollection fc = (FeatureCollection) parser.parse(xml);
-		for (Iterator i = fc.iterator(); i.hasNext();) {
-			Feature f = (Feature) i.next();
-			System.out.println(f);
-		}
-	}*/
+		return (FeatureCollection) parser.parse(xml);
+	}
 
 	
 	/**

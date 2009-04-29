@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.rcp.wizards.io;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
@@ -30,6 +31,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.opengis.feature.type.FeatureType;
 
 /**
  * FIXME Add Type description.
@@ -103,12 +105,14 @@ public class WFSFeatureTypesReaderDialog
 		// Host + Port
 		Label hostPortLabel = new Label(urlDefinitionArea, SWT.NONE);
 		hostPortLabel.setText("Host + Port:");
-		hostPortLabel.setToolTipText("Enter the hostname and the port of the " +
+		hostPortLabel.setToolTipText("Enter the GetCapabilities URL of the " +
 				"WFS you want to query here.");
 		final Text hostPortText = new Text (urlDefinitionArea, SWT.BORDER | SWT.SINGLE);
 		hostPortText.setLayoutData(new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
-		hostPortText.setText("http://staging-esdi-humboldt.igd.fraunhofer.de:8080");
+		hostPortText.setText(
+				"http://staging-esdi-humboldt.igd.fraunhofer.de:8080/" +
+				"geoserver/ows?service=WFS&request=GetCapabilities");
 		hostPortText.setEditable(true);
 		hostPortText.addListener (SWT.FocusOut, new Listener () {
 			public void handleEvent (Event e) {
@@ -124,17 +128,6 @@ public class WFSFeatureTypesReaderDialog
 				}
 			}
 		});
-		
-		// Application Path
-		Label applicationPathLabel = new Label(urlDefinitionArea, SWT.NONE);
-		applicationPathLabel.setText("WFS path:");
-		applicationPathLabel.setToolTipText("Enter the path to the " +
-				"WFS application you want to query here.");
-		final Text applicationPathText = new Text (urlDefinitionArea, SWT.BORDER | SWT.SINGLE);
-		applicationPathText.setEditable(true);
-		applicationPathText.setLayoutData(new GridData(
-				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
-		applicationPathText.setText("/geoserver/ows?service=WFS");
 		
 		// Protocol Version & Type
 		Label protocolVersionLabel = new Label(urlDefinitionArea, SWT.NONE);
@@ -180,19 +173,21 @@ public class WFSFeatureTypesReaderDialog
 		Composite buttons = new Composite(c, SWT.BOTTOM);
 		buttons.setLayoutData( new GridData(SWT.RIGHT, SWT.CENTER, true, false));
 		GridLayout buttonsLayout = new GridLayout();
-		buttonsLayout.numColumns = 2;
-		buttonsLayout.makeColumnsEqualWidth = true;
+		buttonsLayout.numColumns = 3;
+		buttonsLayout.makeColumnsEqualWidth = false;
 		buttons.setLayout(buttonsLayout);
 		
 		final Button finish = new Button(buttons, SWT.NONE);
 		finish.setAlignment(SWT.RIGHT);
 		finish.setText("Use this WFS");
 		finish.setEnabled(false);
+		finish.setSize(100, 24);
 		finish.addListener(SWT.Selection, this.completedListener);
 		
 		Button cancel = new Button(buttons, SWT.NONE);
 		cancel.setAlignment(SWT.RIGHT);
 		cancel.setText("Cancel");
+		cancel.setSize(100, 24);
 		cancel.addListener(SWT.Selection, this.completedListener);
 		
 		// add complex Listeners
@@ -200,10 +195,7 @@ public class WFSFeatureTypesReaderDialog
 			public void handleEvent (Event e) {
 				URL url = null;
 				try {
-					url = GetCapabilititiesRetriever.buildURL(
-							hostPortText.getText(),
-							applicationPathText.getText(),
-							combo.getSelectionIndex());
+					url = new URL(hostPortText.getText());
 				} catch (Exception e1) {
 					currentStatusLabel.setText("Validation FAILED.");
 					testResultText.setText("Capabilities URL could not " +
@@ -211,37 +203,23 @@ public class WFSFeatureTypesReaderDialog
 					finish.setEnabled(false);
 				}
 				if (url != null) {
-					String result = null;
+					List<FeatureType> result = null;
 					try {
-						result = GetCapabilititiesRetriever.readFromUrl(url);
-						testResultText.setText(result);
+						result = GetCapabilititiesRetriever.readFeatureTypes(url.toString());
+						StringBuffer ft_names = new StringBuffer();
+						for (FeatureType ft : result){
+							ft_names.append(ft.getName() + " \n");
+						}
+						testResultText.setText(ft_names.toString());
+						currentStatusLabel.setText("Validation OK - " 
+								+ result.size() + " FeatureTypes!");
 					} catch (IOException e1) {
 						currentStatusLabel.setText("Validation FAILED.");
 						testResultText.setText("Capabilities document " +
 								"could not be read: " + e1.getMessage());
 						finish.setEnabled(false);
-					}
-					
-					String url_uri_string = null;
-					try {
-						url_uri_string = url.toURI().toString();
-					} catch (URISyntaxException e1) {
-						// TODO Auto-generated catch block
-					}
-					
-					if (url_uri_string != null && GetCapabilititiesRetriever.validate(url_uri_string)) {
-						int count = GetCapabilititiesRetriever.countOccurences(
-								result, "<FeatureType");
-						currentStatusLabel.setText("Validation OK - " 
-								+ count + " FeatureTypes!");
-						finish.setEnabled(true);
-					}
-					else {
-						currentStatusLabel.setText("Validation FAILED.");
-						testResultText.setText("Capabiltities were retrieved, " 
-								+ "but validation failed.");
-						finish.setEnabled(false);
-						url_result = url;
+						_log.warn(e1.getMessage());
+						e1.printStackTrace();
 					}
 				}
 			}
@@ -261,14 +239,8 @@ public class WFSFeatureTypesReaderDialog
 		}
 		
 		public void handleEvent(Event event) {
-			_log.debug("its closing time");
-			if (((Button)event.item).getText().equals("Cancel")) {
-				this.dialog.close();
-			}
-			else {
-				// TODO if we want to handle some things in addition.
-				this.dialog.close();
-			}
+			// TODO: handling of close/confirm buttons should be different
+			this.dialog.close();
 		}
 	}
 

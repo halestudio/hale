@@ -15,6 +15,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -28,6 +32,9 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import org.apache.log4j.Logger;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
+import org.opengis.feature.type.FeatureType;
 import org.w3c.dom.Document;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -48,16 +55,14 @@ public class GetCapabilititiesRetriever {
 	/**
 	 * Builds the URL to use for Getting Capabilities of a WFS.
 	 * @param host the hostname of the WFS.
-	 * @param applicationPath the path to the application, including the service parameter.
 	 * @param selectionIndex 0 for HTTP GET, 1 and 2 for XML POST.
 	 * @return a complete URL.
 	 * @throws Exception if any parsing of the URL components fails.
 	 */
-	public static URL buildURL(
-			String host, 
-			String applicationPath, 
-			int selectionIndex) throws Exception {
-		StringBuffer complete_url = new StringBuffer(host + applicationPath);
+	public static URL buildURL(String host, int selectionIndex) 
+			throws Exception {
+		
+		StringBuffer complete_url = new StringBuffer(host);
 		if (!complete_url.toString().contains("?")) {
 			complete_url.append("?");
 		}
@@ -189,6 +194,36 @@ public class GetCapabilititiesRetriever {
 			}
 		}
 		return occurences;
+	}
+	
+	/**
+	 * 
+	 * @param getCapabilitiesUrl
+	 * @return
+	 * @throws IOException
+	 */
+	public static List<FeatureType> readFeatureTypes(String getCapabilitiesUrl) 
+		throws IOException {
+		_log.info("Getting Capabilities from " + getCapabilitiesUrl);
+		
+		// Connection Definition
+		Map<String, Object> connectionParameters = new HashMap<String, Object>();
+		connectionParameters.put("WFSDataStoreFactory:GET_CAPABILITIES_URL", 
+				getCapabilitiesUrl );
+		connectionParameters.put("WFSDataStoreFactory:TIMEOUT", new Integer(30000));
+				
+		// Step 2 - connection
+		DataStore data = DataStoreFinder.getDataStore( connectionParameters );
+				
+		// Step 3 - discovery and result assembly
+		List<FeatureType> result = new ArrayList<FeatureType>();
+		if (data != null) {
+			String typeNames[] = data.getTypeNames();
+			for (String typename : typeNames) {
+				result.add(data.getSchema( typename ));
+			}
+		}
+		return result;
 	}
 
 }
