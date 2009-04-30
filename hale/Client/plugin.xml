@@ -120,18 +120,6 @@
       </splashHandler>
    </extension>
    <extension
-         id="esdihumboldt_HALE"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.eclipse.emf.codegen.ecore.Generator"
-            name="HUMBOLDT Alignment Editor">
-         <property
-               name="appName"
-               value="HUMBOLDT Alignment Editor">
-         </property>
-      </product>
-   </extension>
-   <extension
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
