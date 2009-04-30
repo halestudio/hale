@@ -36,7 +36,7 @@ public class ClientPerspective implements IPerspectiveFactory {
 		String editorArea = _layout.getEditorArea();
 		
 		IFolderLayout topLeft = _layout.createFolder(
-				"topLeft", IPageLayout.LEFT, 0.40f, editorArea);
+				"topLeft", IPageLayout.LEFT, 0.6f, editorArea);
 		topLeft.addView(ModelNavigationView.ID);
 		
 		IFolderLayout bottomLeft = _layout.createFolder(
@@ -44,7 +44,7 @@ public class ClientPerspective implements IPerspectiveFactory {
 		bottomLeft.addView(AttributeView.ID);
 		
 		IFolderLayout topRight = _layout.createFolder(
-				"topRight", IPageLayout.LEFT, 0.25f, editorArea);
+				"topRight", IPageLayout.RIGHT, 0.4f, editorArea);
 		topRight.addView(MapView.ID);
 		topRight.addView(TableView.ID);
 		
