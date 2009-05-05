@@ -1,13 +1,14 @@
-/*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+/*
+ * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
+ * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * 
+ * For more information on the project, please refer to the this web site:
+ * http://www.esdi-humboldt.eu
+ * 
+ * LICENSE: For information on the license under which this program is 
+ * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
+ * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ */
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import org.apache.log4j.Logger;
@@ -31,11 +32,23 @@ public class SchemaImportWizard
 
 	public SchemaImportWizard() {
 		super();
-		mainPage = new SchemaImportWizardPage(
+		this.mainPage = new SchemaImportWizardPage(
 				"Import Schema", "Import Schema"); //NON-NLS-1
-		setWindowTitle("Schema Import Wizard"); //NON-NLS-1
-		setNeedsProgressMonitor(true);
+		super.setWindowTitle("Schema Import Wizard"); //NON-NLS-1
+		super.setNeedsProgressMonitor(true);
 	}
+	
+	
+
+	/**
+	 * @see org.eclipse.jface.wizard.Wizard#canFinish()
+	 */
+	@Override
+	public boolean canFinish() {
+		_log.debug("Wizard.canFinish: " + this.mainPage.isPageComplete());
+		return this.mainPage.isPageComplete();
+	}
+
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()

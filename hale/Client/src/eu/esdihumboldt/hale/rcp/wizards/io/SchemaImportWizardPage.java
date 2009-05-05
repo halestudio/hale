@@ -1,17 +1,21 @@
-/*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+/*
+ * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
+ * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * 
+ * For more information on the project, please refer to the this web site:
+ * http://www.esdi-humboldt.eu
+ * 
+ * LICENSE: For information on the license under which this program is 
+ * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
+ * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ */
+
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import java.net.URI;
+import java.net.URL;
+
+import org.apache.log4j.Logger;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
@@ -37,9 +41,12 @@ import org.eclipse.swt.widgets.Group;
 public class SchemaImportWizardPage 
 	extends WizardPage {
 	
-	protected FileFieldEditor fileFieldEditor;
+	private static Logger _log = Logger.getLogger(SchemaImportWizardPage.class);
 	
+	protected FileFieldEditor fileFieldEditor;
 	protected UrlFieldEditor wfsFieldEditor;
+	protected Button useWfsRadio;
+	protected Button useFileRadio;
 
 	public SchemaImportWizardPage(String pageName, String pageTitle) {
 		super(pageName, pageTitle, (ImageDescriptor) null); // FIXME ImageDescriptor
@@ -49,14 +56,15 @@ public class SchemaImportWizardPage
 	}
 
 	/**
-	 * 
+	 * The parent methods where all controls are created for this {@link WizardPage}.
 	 * @param parent
 	 */
 	@Override
 	public void createControl(Composite parent) {
 		
         super.initializeDialogUnits(parent);
-
+        this.setPageComplete(this.isPageComplete());
+        
         Composite composite = new Composite(parent, SWT.NULL);
         composite.setLayout(new GridLayout());
         composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
@@ -67,15 +75,55 @@ public class SchemaImportWizardPage
         this.createSourceGroup(composite);
         this.createDestinationGroup(composite);
         this.createOptionsGroup(composite);
-
-        //this.restoreWidgetValues();
-        //this.updateWidgetEnablements();
-		//setPageComplete(determinePageCompletion());
         
         setErrorMessage(null);	// should not initially have error message
 		super.setControl(composite);
 	}
 	
+	
+	
+	/**
+	 * @see org.eclipse.jface.wizard.WizardPage#isPageComplete()
+	 */
+	@Override
+	public boolean isPageComplete() {
+		if (this.fileFieldEditor != null && this.wfsFieldEditor != null) {
+			_log.debug("fileFieldEditor: " + this.fileFieldEditor.getStringValue());
+			try {
+				if (this.useWfsRadio.getSelection()) {
+					// test whether content of the WFS Field Editor validates to URL.
+					String test = this.wfsFieldEditor.getStringValue();
+					if (test != null && !test.equals("")) {
+						new URL(test);
+						_log.debug("wfsFieldEditor URL was OK.");
+					} 
+					else {
+						return false;
+					}
+				}
+				else {
+					// test whether content of the File Field Editor validates to URI.
+					String test = this.fileFieldEditor.getStringValue();
+					if (test != null && !test.equals("")) {
+						new URI(test.replaceAll("\\\\", "/"));
+						_log.debug("fileFieldEditor URI was OK.");
+					}
+					else {
+						return false;
+					}
+				}	
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				return false;
+			} 
+			_log.debug("Page is complete.");
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 	/**
 	 * Creates the UI controls for the selection of the source of the schema
 	 * to be imported.
@@ -108,7 +156,7 @@ public class SchemaImportWizardPage
 		fileSelectionLayout.marginWidth = 0;
 		fileSelectionLayout.marginHeight = 0;
 		fileSelectionArea.setLayout(fileSelectionLayout);
-		Button useFileRadio = new Button(fileSelectionArea, SWT.RADIO);
+		this.useFileRadio = new Button(fileSelectionArea, SWT.RADIO);
 		useFileRadio.setSelection(true);
 		final Composite ffe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ffe_container.setLayoutData(
@@ -117,21 +165,25 @@ public class SchemaImportWizardPage
 				"... file:", ffe_container); //NON-NLS-1 //NON-NLS-2
 		fileFieldEditor.getTextControl(ffe_container).addModifyListener(new ModifyListener(){
 			public void modifyText(ModifyEvent e) {
-				IPath path = new Path(SchemaImportWizardPage.this.fileFieldEditor.getStringValue());
-				//fileFieldEditor.set(path.lastSegment());
+				isPageComplete();
 			}
 		});
 		String[] extensions = new String[] { "*.xml", "*.gml", "*.xsd" }; //NON-NLS-1
 		fileFieldEditor.setFileExtensions(extensions);
 		
 		// read from WFS (DescribeFeatureType)
-		Button useWfsRadio = new Button(fileSelectionArea, SWT.RADIO);
+		this.useWfsRadio = new Button(fileSelectionArea, SWT.RADIO);
 		final Composite ufe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ufe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
 		wfsFieldEditor = new UrlFieldEditor("urlSelect", 
 				"... WFS DescribeFeatureType:", ufe_container);
 		wfsFieldEditor.setEnabled(false, ufe_container);
+		wfsFieldEditor.getTextControl(ufe_container).addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				isPageComplete();
+			}
+		});
 		
 		// add listeners to radio buttons
 		useFileRadio.addSelectionListener(new SelectionAdapter() {
@@ -173,8 +225,23 @@ public class SchemaImportWizardPage
 	 * @param parent the parent {@link Composite}
 	 */
 	private void createDestinationGroup(Composite parent) {
-		// TODO Auto-generated method stub
+		// define source group composite
+		Group destinationArea = new Group(parent, SWT.NONE);
+		destinationArea.setText("Import Destination");
+		destinationArea.setLayout(new GridLayout());
+		GridData destinationAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
+                | GridData.HORIZONTAL_ALIGN_FILL);
+		destinationAreaGD.grabExcessHorizontalSpace = true;
+		destinationArea.setLayoutData(destinationAreaGD);
+		destinationArea.setSize(destinationArea.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		destinationArea.setFont(parent.getFont());
 		
+		Button sourceDestination = new Button(destinationArea, SWT.RADIO);
+		sourceDestination.setSelection(true);
+		sourceDestination.setText("Import as Source Schema");
+		
+		Button targetDestination = new Button(destinationArea, SWT.RADIO);
+		targetDestination.setText("Import as Target Schema");
 	}
 
 	/**
@@ -184,7 +251,21 @@ public class SchemaImportWizardPage
 	 * @param parent the parent {@link Composite}
 	 */
 	private void createOptionsGroup(Composite parent) {
-		// TODO Auto-generated method stub
+		Group optionsGroup = new Group(parent, SWT.NONE);
+		optionsGroup.setText("Import Options");
+		optionsGroup.setLayout(new GridLayout());
+		GridData optionsGroupGD = new GridData(GridData.VERTICAL_ALIGN_FILL
+                | GridData.HORIZONTAL_ALIGN_FILL);
+		optionsGroupGD.grabExcessHorizontalSpace = true;
+		optionsGroup.setLayoutData(optionsGroupGD);
+		optionsGroup.setSize(optionsGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		optionsGroup.setFont(parent.getFont());
+		
+		// import supertypes/schema elements?
+		Button sourceDestination = new Button(optionsGroup, SWT.CHECK);
+		sourceDestination.setSelection(true);
+		sourceDestination.setText("Also import supertypes from imported " +
+				"schemas");
 		
 	}
 	

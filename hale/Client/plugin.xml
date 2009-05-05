@@ -68,6 +68,22 @@
             id="HALE.exit.command"
             name="exit">
       </command>
+      <command
+            id="HALE.openInstanceData.command"
+            name="Open Instance Data">
+      </command>
+      <command
+            id="HALE.openReferenceData.command"
+            name="Open Reference Data">
+      </command>
+      <command
+            id="HALE.saveAlignmentProjectAs.command"
+            name="Save Alignment Project As">
+      </command>
+      <command
+            id="HALE.saveMappingAs.command"
+            name="Save mapping As">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -85,11 +101,42 @@
             <command
                   commandId="HALE.loadSchema.command"
                   id="loadSchema"
-                  label="Load a Schema"
-                  style="push">
+                  label="Open Schema"
+                  style="push"
+                  tooltip="Open a Source or Target Schema">
+            </command>
+            <command
+                  commandId="HALE.openInstanceData.command"
+                  id="openInstanceData"
+                  label="Open Instance Data "
+                  style="push"
+                  tooltip="Load Data that is to be transformed">
+            </command>
+            <command
+                  commandId="HALE.openReferenceData.command"
+                  id="openReferenceData"
+                  label="Open Reference Data"
+                  style="push"
+                  tooltip="Open Reference Data against which Instance Data should be harmonized">
             </command>
             <separator
                   name="HALE.separator1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="HALE.saveAlignmentProjectAs.command"
+                  id="saveAlignmentProjectAs"
+                  label="Save Alignment Project as..."
+                  style="push">
+            </command>
+            <command
+                  commandId="HALE.saveMappingAs.command"
+                  id="saveMappingAs"
+                  label="Save Mapping As..."
+                  style="push">
+            </command>
+            <separator
+                  name="HALE.separator2"
                   visible="true">
             </separator>
             <command

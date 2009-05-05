@@ -20,7 +20,6 @@ import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IImportWizard;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import eu.esdihumboldt.hale.rcp.wizards.io.SchemaImportWizard;
@@ -46,7 +45,6 @@ public class LoadSchemaHandler
 		// Instantiates the wizard container with the wizard and opens it
 		Shell shell = HandlerUtil.getActiveShell(event);
 		WizardDialog dialog = new WizardDialog(shell, iw);
-		//dialog.create();
 		dialog.open();
 		return null;
 	}
