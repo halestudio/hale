@@ -11,11 +11,17 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
+
+import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 
 /**
  * This {@link Wizard} is used to import source and target schemas.
@@ -24,7 +30,8 @@ import org.eclipse.ui.IWorkbench;
  * @version $Id$
  */
 public class SchemaImportWizard 
-	extends Wizard implements IImportWizard {
+	extends Wizard 
+	implements IImportWizard {
 	
 	private static Logger _log = Logger.getLogger(SchemaImportWizard.class);
 	
@@ -50,11 +57,19 @@ public class SchemaImportWizard
 	}
 
 
-	/* (non-Javadoc)
+	/**
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
 	public boolean performFinish() {
-		//FIXME
+		SchemaService schemaService = (SchemaService) 
+					ModelNavigationView.site.getService(SchemaService.class);
+		try {
+			schemaService.loadSourceSchema(
+					new URI(mainPage.getResult().replaceAll("\\\\", "/")));
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return true;
 	}
 	 
@@ -65,7 +80,7 @@ public class SchemaImportWizard
 		_log.debug("in init...");
 	}
 	
-	/* (non-Javadoc)
+	/**
      * @see org.eclipse.jface.wizard.IWizard#addPages()
      */
     public void addPages() {

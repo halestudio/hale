@@ -43,6 +43,8 @@ public class SchemaImportWizardPage
 	
 	private static Logger _log = Logger.getLogger(SchemaImportWizardPage.class);
 	
+	protected Composite ffe_container;
+	protected Composite ufe_container;
 	protected FileFieldEditor fileFieldEditor;
 	protected UrlFieldEditor wfsFieldEditor;
 	protected Button useWfsRadio;
@@ -80,49 +82,6 @@ public class SchemaImportWizardPage
 		super.setControl(composite);
 	}
 	
-	
-	
-	/**
-	 * @see org.eclipse.jface.wizard.WizardPage#isPageComplete()
-	 */
-	@Override
-	public boolean isPageComplete() {
-		if (this.fileFieldEditor != null && this.wfsFieldEditor != null) {
-			_log.debug("fileFieldEditor: " + this.fileFieldEditor.getStringValue());
-			try {
-				if (this.useWfsRadio.getSelection()) {
-					// test whether content of the WFS Field Editor validates to URL.
-					String test = this.wfsFieldEditor.getStringValue();
-					if (test != null && !test.equals("")) {
-						new URL(test);
-						_log.debug("wfsFieldEditor URL was OK.");
-					} 
-					else {
-						return false;
-					}
-				}
-				else {
-					// test whether content of the File Field Editor validates to URI.
-					String test = this.fileFieldEditor.getStringValue();
-					if (test != null && !test.equals("")) {
-						new URI(test.replaceAll("\\\\", "/"));
-						_log.debug("fileFieldEditor URI was OK.");
-					}
-					else {
-						return false;
-					}
-				}	
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				return false;
-			} 
-			_log.debug("Page is complete.");
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
 
 	/**
 	 * Creates the UI controls for the selection of the source of the schema
@@ -158,14 +117,14 @@ public class SchemaImportWizardPage
 		fileSelectionArea.setLayout(fileSelectionLayout);
 		this.useFileRadio = new Button(fileSelectionArea, SWT.RADIO);
 		useFileRadio.setSelection(true);
-		final Composite ffe_container = new Composite(fileSelectionArea, SWT.NULL);
+		this.ffe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ffe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
 		fileFieldEditor = new FileFieldEditor("fileSelect", 
 				"... file:", ffe_container); //NON-NLS-1 //NON-NLS-2
 		fileFieldEditor.getTextControl(ffe_container).addModifyListener(new ModifyListener(){
 			public void modifyText(ModifyEvent e) {
-				isPageComplete();
+				getWizard().getContainer().updateButtons();
 			}
 		});
 		String[] extensions = new String[] { "*.xml", "*.gml", "*.xsd" }; //NON-NLS-1
@@ -173,7 +132,7 @@ public class SchemaImportWizardPage
 		
 		// read from WFS (DescribeFeatureType)
 		this.useWfsRadio = new Button(fileSelectionArea, SWT.RADIO);
-		final Composite ufe_container = new Composite(fileSelectionArea, SWT.NULL);
+		this.ufe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ufe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
 		wfsFieldEditor = new UrlFieldEditor("urlSelect", 
@@ -181,7 +140,7 @@ public class SchemaImportWizardPage
 		wfsFieldEditor.setEnabled(false, ufe_container);
 		wfsFieldEditor.getTextControl(ufe_container).addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				isPageComplete();
+				getWizard().getContainer().updateButtons();
 			}
 		});
 		
@@ -267,6 +226,62 @@ public class SchemaImportWizardPage
 		sourceDestination.setText("Also import supertypes from imported " +
 				"schemas");
 		
+	}
+	
+	/**
+	 * @see org.eclipse.jface.wizard.WizardPage#isPageComplete()
+	 */
+	@Override
+	public boolean isPageComplete() {
+		if (this.fileFieldEditor != null && this.wfsFieldEditor != null) {
+			_log.debug("fileFieldEditor: " + this.fileFieldEditor.getStringValue());
+			try {
+				if (this.useWfsRadio.getSelection()) {
+					// test whether content of the WFS Field Editor validates to URL.
+					String test = this.wfsFieldEditor.getStringValue();
+					if (test != null && !test.equals("")) {
+						new URL(test);
+						_log.debug("wfsFieldEditor URL was OK.");
+					} 
+					else {
+						return false;
+					}
+				}
+				else {
+					// test whether content of the File Field Editor validates to URI.
+					String test = this.fileFieldEditor.getStringValue();
+					if (test != null && !test.equals("")) {
+						new URI(test.replaceAll("\\\\", "/"));
+						_log.debug("fileFieldEditor URI was OK.");
+					}
+					else {
+						return false;
+					}
+				}	
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				return false;
+			} 
+			_log.debug("Page is complete.");
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	/**
+	 * @return a String representing the URL or URI to load the schema from.
+	 */
+	public String getResult() {
+		if (this.useWfsRadio.getSelection()) {
+			return this.wfsFieldEditor.getTextControl(
+					this.ufe_container).getText();
+		}
+		else {
+			return this.fileFieldEditor.getTextControl(
+					this.ffe_container).getText(); 
+		}
 	}
 	
 }

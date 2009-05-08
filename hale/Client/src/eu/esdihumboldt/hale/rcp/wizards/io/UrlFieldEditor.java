@@ -45,9 +45,14 @@ public class UrlFieldEditor
 		WFSFeatureTypesReaderDialog wfsftrd = new WFSFeatureTypesReaderDialog(
 				this.getShell(), "Select a Web Feature Service");
 		URL result = wfsftrd.open();
-		_log.debug("received result: " + result.toString());
-		getTextControl().setText(result.toString());
-		return getTextControl().getText();
+		if (result != null) {
+			_log.debug("received result: " + result.toString());
+			getTextControl().setText(result.toString());
+			return getTextControl().getText();
+		}
+		else { // applicable if cancel is pressed.
+			return "";
+		}
 	}
 
 }

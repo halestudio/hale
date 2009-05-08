@@ -1,7 +1,5 @@
 package eu.esdihumboldt.hale.rcp.views.model;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,6 +21,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.opengis.feature.type.FeatureType;
@@ -43,6 +42,8 @@ public class ModelNavigationView
 	extends ViewPart 
 	implements HaleServiceListener {
 	
+	public static IWorkbenchPartSite site;
+	
 	private static Logger _log = Logger.getLogger(ModelNavigationView.class);
 
 	public static final String ID = 
@@ -55,6 +56,8 @@ public class ModelNavigationView
 
 	@Override
 	public void createPartControl(Composite _parent) {
+		
+		ModelNavigationView.site = this.getSite();
 		
 		schemaService = (SchemaService) 
 							this.getSite().getService(SchemaService.class);
@@ -292,9 +295,12 @@ public class ModelNavigationView
 	}
 
 	public void update() {
-		// TODO: Add a check which one has been updated.
-		this.sourceSchemaViewer.setInput(schemaService.getSourceSchema());
-		this.targetSchemaViewer.setInput(schemaService.getTargetSchema());
+		this.sourceSchemaViewer.setInput(
+				this.translateSchema(schemaService.getSourceSchema()));
+		this.sourceSchemaViewer.refresh();
+		this.targetSchemaViewer.setInput(
+				this.translateSchema(schemaService.getTargetSchema()));
+		this.targetSchemaViewer.refresh();
 	}
 
 }

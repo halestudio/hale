@@ -189,6 +189,7 @@ public class SchemaServiceImpl implements SchemaService {
 	
 	
 	public boolean addListener(HaleServiceListener sl) {
+		_log.warn("Adding a listener.");
 		return this.listeners.add(sl);
 	}
 	
@@ -197,6 +198,7 @@ public class SchemaServiceImpl implements SchemaService {
 	 */
 	private void updateListeners() {
 		for (HaleServiceListener hsl : this.listeners) {
+			_log.warn("Updating a listener.");
 			hsl.update();
 		}
 	}
@@ -212,18 +214,16 @@ public class SchemaServiceImpl implements SchemaService {
 		// use XML Schema to load schema with all its subschema to the memory
 		InputStream is = null;
 		try {
-			// is = new FileInputStream(pathToSourceSchema);
-			String path = file.getPath();
-
+			String path = file.toString();
 			is = new FileInputStream(path);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.error("-- path not resolved: " + file);
+			throw new RuntimeException(e);
 		}
 		XmlSchemaCollection schemaCol = new XmlSchemaCollection();
 		XmlSchema prepSchema = schemaCol.read(new StreamSource(is), null);
-		// System.out.println("Source schema has " +
-		// prepSchema.getIncludes().getCount()+ " includes");
+		_log.info("Source schema has " +
+					prepSchema.getIncludes().getCount()+ " includes");
 
 		// write schema to memory
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -255,18 +255,10 @@ public class SchemaServiceImpl implements SchemaService {
 			builder.setAbstract(type.isAbstract());
 
 			if (type.getParent() != null) {
-				
-				 System.out.println("Feature type: " + type.getName() +
-				  ", parent feature type: " + type.getParent().getName());
-				 
-
 				for (Element element : type.getChildElements()) {
 					if (element.getType() instanceof SimpleType) {
 						builder.add(element.getName(), element.getType()
 								.getClass());
-						
-						  System.out.println("\telement: " + element.getName()
-						 + ", " + element.getType().getName());
 						 
 					}
 
@@ -285,46 +277,32 @@ public class SchemaServiceImpl implements SchemaService {
 			builder.setNamespaceURI(type.getNamespace());
 			builder.setAbstract(type.isAbstract());
 			if (type.getParent() instanceof ComplexType) {
-				
-
 				if (type.getParent() != null) {
-					System.out.println("Feature type: " + type.getName()
-							+ ", parent feature type: "
-							+ type.getParent().getName());
-
 					for (Element element : type.getChildElements()) {
 						if (element.getType() instanceof SimpleType) {
 							// System.out.println("\tsimpl0e type element: "
 							// + element.getName());
 							builder.add(element.getName(), element.getType()
 									.getClass());
-							System.out.println("\telement: "
-									+ element.getName() + ", "
-									+ element.getType().getName());
 						}
 
 					}
 
 					if (type.getParent().getName()
 							.equals("AbstractFeatureType")) {
-						builder.setSuperType(null);
+						builder.setSuperType(null); // FIXME??
 					} else {
 						for (SimpleFeatureType featureType : inTypes) {
 							if (featureType.getName().getLocalPart().equals(
 									type.getParent().getName())) {
-								builder.setSuperType(featureType);
-								System.out.println("Parent type set to "
-										+ featureType.getName());
+								builder.setSuperType(featureType);;
 							}
 						}
 					}
-					
 				}
-				
 			}
 			collection.add(builder.buildFeatureType());
 		}
-
 		return collection;
 
 	}
