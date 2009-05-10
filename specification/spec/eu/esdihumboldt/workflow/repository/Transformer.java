@@ -14,6 +14,7 @@ package eu.esdihumboldt.workflow.repository;
 import eu.esdihumboldt.mediator.TypeKey;
 import eu.esdihumboldt.mediator.constraints.Constraint;
 import eu.esdihumboldt.workflow.processdescription.ProcessBrief;
+import eu.esdihumboldt.workflow.transformer.inputoutputs.ComplexData;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.ComplexDataInput;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.LiteralDataInput;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.ProcessInput;
@@ -197,4 +198,18 @@ public interface Transformer extends Serializable{
      * @return The constraint type that this Transfomer transforms
      */
     public TypeKey getTransformationType();
+    
+    /**
+     * Constraints that are shared between several preconditions/ with postcondition of a
+     * single Transformer can be used to specify cross-parameter constraints on that
+     * Transformer. A typical cross-parameter constraint is e.g. a common spatial reference
+     * system of all input layers of a process.This method is used to share a given
+     * constraint among the  Transformer inputs and or with Transformer output.
+     *
+     * @param inputs Inputs in this transformer that will share a given constraints
+     * @param shareOutput True if the constraint is also shared with the output
+     * @param sharedConstraint the constraint that will be shared among inputs
+     */
+    public void shareConstraint(Set<ProcessInput> inputs, boolean shareOutput, Constraint sharedConstraint );
+
 }
