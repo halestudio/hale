@@ -2,7 +2,7 @@ package eu.esdihumboldt.workflow.transformer.inputoutputs;
 
 import eu.esdihumboldt.workflow.transformer.domaintypes.DomainMetadata;
 import eu.esdihumboldt.workflow.transformer.domaintypes.LiteralValuesChoice;
-import eu.esdihumboldt.workflow.transformer.inputoutputs.SupportedUOMs;
+import eu.esdihumboldt.workflow.transformer.inputoutputs.MeasureUnit;
 import java.util.Set;
 
 public interface LiteralData{
@@ -21,7 +21,7 @@ public interface LiteralData{
      * @return a list of supported UOMs or null if not defined or applicable
      *
      */
-    public SupportedUOMs getSupportedUOM();
+    public MeasureUnit getSupportedUnit();
 
     /**
      *  Identifies type of literal input and provide supporting information
@@ -46,7 +46,7 @@ public interface LiteralData{
      *  Defines the supported unit of measure for numerical literal Data types
      *       @param _unitOfMeasure
      */
-    public void setSupportedUOM(SupportedUOMs _unitOfMeasure);
+    public void setSupportedUnit(MeasureUnit _unitOfMeasure);
 
 }
 
