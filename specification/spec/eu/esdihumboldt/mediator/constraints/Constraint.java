@@ -111,4 +111,16 @@ public void setSatisfied(boolean _satisfied);
  * @return
  */
 public boolean compatible(Constraint constraint);
+
+/**
+ * This method is used to assign a consraint as shared or not
+ * @param shared Sets this constraint to be shared or not
+ */
+public void setShared(boolean shared);
+/**
+ * This method detnotes whether this consraints is shareable or not
+ *
+ * @return True if the constraint is shared
+ */
+public boolean isShared();
 }
