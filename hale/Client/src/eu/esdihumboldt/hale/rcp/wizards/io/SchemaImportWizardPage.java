@@ -61,7 +61,6 @@ public class SchemaImportWizardPage
 	 * The parent methods where all controls are created for this {@link WizardPage}.
 	 * @param parent
 	 */
-	@Override
 	public void createControl(Composite parent) {
 		
         super.initializeDialogUnits(parent);

@@ -135,25 +135,25 @@ public class GetCapabilititiesRetriever {
 			Validator validator = schema.newValidator();
 			validator.setErrorHandler(new ErrorHandler() {
 
-				@Override
+
 				public void error(SAXParseException exception)
 						throws SAXException {
 					// TODO Auto-generated method stub
 					_log.debug("error");
 				}
 
-				@Override
+
 				public void fatalError(SAXParseException exception)
 						throws SAXException {
 					// TODO Auto-generated method stub
 					_log.debug("fatalError");
 				}
 
-				@Override
+
 				public void warning(SAXParseException exception)
 						throws SAXException {
 					// TODO Auto-generated method stub
-					_log.debug("warning");
+ 
 				}
 				
 			});

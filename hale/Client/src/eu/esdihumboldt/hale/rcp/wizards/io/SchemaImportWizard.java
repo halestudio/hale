@@ -21,6 +21,7 @@ import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.impl.SchemaServiceImpl;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 
 /**
@@ -67,7 +68,6 @@ public class SchemaImportWizard
 			schemaService.loadSourceSchema(
 					new URI(mainPage.getResult().replaceAll("\\\\", "/")));
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return true;
