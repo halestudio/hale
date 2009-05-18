@@ -91,6 +91,8 @@ public class SpatialConstraintImpl
 
     private boolean finalized;
 
+    private boolean sharedConstraint=false;
+
 
     // Constructors ............................................................
     public double getBufferDistance() {
@@ -339,5 +341,12 @@ public class SpatialConstraintImpl
          refSys= ref.getCode();
         }
         return refSys;
+    }
+        public void setShared(boolean shared){
+        this.sharedConstraint=shared;
+    }
+
+    public boolean isShared(){
+        return sharedConstraint;
     }
 }

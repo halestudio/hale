@@ -38,6 +38,8 @@ public class StructuralConstraintImpl implements StructuralConstraint {
 
     private ConstraintSource constraintSource;
 
+    private boolean sharedConstraint= false;
+
     public StructuralConstraintImpl() {
         this.status=false;
     }
@@ -104,5 +106,11 @@ public class StructuralConstraintImpl implements StructuralConstraint {
     public void setSatisfied(boolean _satisfied) {
        this.status=_satisfied;
     }
+    public void setShared(boolean shared){
+        this.sharedConstraint=shared;
+    }
 
+    public boolean isShared(){
+        return sharedConstraint;
+    }
 }

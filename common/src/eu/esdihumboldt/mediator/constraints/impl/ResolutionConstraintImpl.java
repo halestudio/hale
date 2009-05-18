@@ -77,6 +77,8 @@ public class ResolutionConstraintImpl implements ResolutionConstraint, Serializa
 
     private boolean write = false;
 
+    private boolean sharedConstraint=false;
+
     /**
      * @return the Resolution Object, that is defined by ISO 19115
      */
@@ -189,7 +191,13 @@ public class ResolutionConstraintImpl implements ResolutionConstraint, Serializa
     public boolean compatible(Constraint constraint) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    public void setShared(boolean shared){
+        this.sharedConstraint=shared;
+    }
 
+    public boolean isShared(){
+        return sharedConstraint;
+    }
 }
 	
 	

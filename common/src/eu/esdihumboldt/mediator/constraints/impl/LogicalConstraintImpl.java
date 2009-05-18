@@ -59,6 +59,8 @@ public class LogicalConstraintImpl
     private boolean write = false;
     private boolean status;
 
+    private boolean sharedConstraint=false;
+
     // Constructors ............................................................
     /**
      * default no-args constructor
@@ -224,5 +226,12 @@ public class LogicalConstraintImpl
 
     public void setSatisfied(boolean _satisfied) {
         this.status = _satisfied;
+    }
+        public void setShared(boolean shared){
+        this.sharedConstraint=shared;
+    }
+
+    public boolean isShared(){
+        return sharedConstraint;
     }
 }

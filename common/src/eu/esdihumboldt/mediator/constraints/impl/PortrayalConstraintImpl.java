@@ -38,225 +38,209 @@ import eu.esdihumboldt.mediator.constraints.portrayal.UserLayer;
  * 
  */
 public class PortrayalConstraintImpl implements PortrayalConstraint, Serializable{
-	
-	private List<Style> styles;
-	
-	private String name;
-	
-	private String title;
-	
-	private String abstractSLD;
-	
-	private Set<NamedLayer> namedLayer;
-	
-	private Set<UserLayer> userLayer;
 
-	private UUID identifier;
+    private List<Style> styles;
 
-	private static final long serialVersionUID = 1L;
+    private String name;
 
-	/**
-	 *  The unique identifier of the constraint int the database
-	 */
-	
-	private long id;
-	
-	/**
-	 * The status of this constraint.
-	 */
-	private boolean satisfied = false;
-	
-	/**
-	 * The unique identifier in the current VM.
-	 */
-	private long uid;
+    private String title;
 
-	/**
-	 * the {@link ConstraintSource} of this {@link SpatialConstraint}.
-	 */
-	private ConstraintSource constraintSource;
-    private boolean write= false;
+    private String abstractSLD;
 
-	
-	
-	/**
-	 * Allows access to the styles structure, 
-	 * if the StyledLayerDescriptor not used.
-	 *
-	 * @return List of named styles.
-	 */
-	public List<Style> getStyle()
-	{
-		return this.styles;
-	}
-	
-	/**
-	 * @param styles
-	 */
-	public void setStyle(List<Style> styles)
-	{
-		this.styles = styles;
-	}
-	
-	
-	
-	/**
-	 * @return the Name, that is an optional element of the SLD.
-	 */
-	public String getName()
-	{
-		return this.name;
-	}
-	
-	/**
-	 * @param name
-	 */
-	public void setName(String name)
-	{
-		this.name = name;
-	}
-	
-	
-	
-	/**
-	 * @return the Title, that is an optional element of the SLD. 
-	 */
-	public String getTitle()
-	{
-		return this.title;
-	}
-	
-	/**
-	 * @param title
-	 */
-	public void setTitle(String title)
-	{
-		this.title = title;
-	}
-	
-	/**
-	 * @return the Abstract, that is an optional element of the SLD. 
-	 */
-	public String getAbstract()
-	{
-		return this.abstractSLD;
-	}
-	
-	/**
-	 * @param abstractSDL
-	 */
-	public void setAbstract(String abstractSDL)
-	{
-		this.abstractSLD = abstractSDL;
-	}
-	
-	
-	
-	/**
-	 * @return the List of the NamedLayer, defined for this SLD.
-	 */ 
-	 public Set<NamedLayer> getNamedLayer()
-	 {
-		 return this.namedLayer;
-	 }
-	 
-	 /**
-	  * @param namedLayer
-	  */
-	 public void setNamedLayer(Set<NamedLayer> namedLayer)
-	 {
-		 this.namedLayer = namedLayer;
-	 }
-	 
-	 
-	
-	/**
-	 * @return the List of the UserLayer, defined for this SLD.
-	 */
-	public Set<UserLayer> getUserLayer()
-	{
-		return this.userLayer;
-	}
-	
-	/**
-	 * @param userLayer
-	 */
-	public void setUserLayer(Set<UserLayer> userLayer)
-	{
-		this.userLayer = userLayer;
-	}
+    private Set<NamedLayer> namedLayer;
 
-	/**
-	 * @param constraintSource the constraintSource to set
-	 */
-	public void setConstraintSource(ConstraintSource constraintSource) {
-		this.constraintSource = constraintSource;
-	}
-	
-	/**
-	 * @see eu.esdihumboldt.mediator.constraints.Constraint#getConstraintSource()
-	 */
-	public ConstraintSource getConstraintSource() {
-		return this.constraintSource;
-	}
-	
-	
-	
-	/**
-	 * @see eu.esdihumboldt.mediator.constraints.Constraint#isSatisfied()
-	 */
-	public boolean isSatisfied() {
-		return this.satisfied;
-	}
-		
-	/**
-	 * @return the Uid that has been assigned to this SpatialConstraint.
-	 */
-	public long getUid() {
-		return this.uid;
-	}
+    private Set<UserLayer> userLayer;
 
-	/**
-	 * @return unique identifier for the database.
-	 */
-	public long getId() {
-		return id;
-	}
+    private UUID identifier;
 
-	/**
-	 * @param id unique identifier for the database.
-	 */
-	public void setId(long id) {
-		this.id = id;
-	}
-	
-	/**
-	 * @param satisfied
-	 */
-	public void setSatisfied(boolean satisfied) {
-		this.satisfied = satisfied;
-	}
+    private static final long serialVersionUID = 1L;
 
-	public UUID getIdentifier() {
-		return identifier;
-	}
+    /**
+     *  The unique identifier of the constraint int the database
+     */
+    private long id;
 
-	public void setIdentifier(UUID identifier) {
-		this.identifier = identifier;
-	}
+    /**
+     * The status of this constraint.
+     */
+    private boolean satisfied = false;
 
-    public boolean isFinalized() {
+    /**
+     * The unique identifier in the current VM.
+     */
+    private long uid;
+
+    /**
+     * the {@link ConstraintSource} of this {@link SpatialConstraint}.
+     */
+    private ConstraintSource constraintSource;
+
+    private boolean write = false;
+
+    private boolean sharedConstraint = false;
+
+    /**
+     * Allows access to the styles structure,
+     * if the StyledLayerDescriptor not used.
+     *
+     * @return List of named styles.
+     */
+    public List<Style> getStyle(){
+        return this.styles;
+    }
+
+    /**
+     * @param styles
+     */
+    public void setStyle(List<Style> styles){
+        this.styles = styles;
+    }
+
+    /**
+     * @return the Name, that is an optional element of the SLD.
+     */
+    public String getName(){
+        return this.name;
+    }
+
+    /**
+     * @param name
+     */
+    public void setName(String name){
+        this.name = name;
+    }
+
+    /**
+     * @return the Title, that is an optional element of the SLD.
+     */
+    public String getTitle(){
+        return this.title;
+    }
+
+    /**
+     * @param title
+     */
+    public void setTitle(String title){
+        this.title = title;
+    }
+
+    /**
+     * @return the Abstract, that is an optional element of the SLD.
+     */
+    public String getAbstract(){
+        return this.abstractSLD;
+    }
+
+    /**
+     * @param abstractSDL
+     */
+    public void setAbstract(String abstractSDL){
+        this.abstractSLD = abstractSDL;
+    }
+
+    /**
+     * @return the List of the NamedLayer, defined for this SLD.
+     */
+    public Set<NamedLayer> getNamedLayer(){
+        return this.namedLayer;
+    }
+
+    /**
+     * @param namedLayer
+     */
+    public void setNamedLayer(Set<NamedLayer> namedLayer){
+        this.namedLayer = namedLayer;
+    }
+
+    /**
+     * @return the List of the UserLayer, defined for this SLD.
+     */
+    public Set<UserLayer> getUserLayer(){
+        return this.userLayer;
+    }
+
+    /**
+     * @param userLayer
+     */
+    public void setUserLayer(Set<UserLayer> userLayer){
+        this.userLayer = userLayer;
+    }
+
+    /**
+     * @param constraintSource the constraintSource to set
+     */
+    public void setConstraintSource(ConstraintSource constraintSource){
+        this.constraintSource = constraintSource;
+    }
+
+    /**
+     * @see eu.esdihumboldt.mediator.constraints.Constraint#getConstraintSource()
+     */
+    public ConstraintSource getConstraintSource(){
+        return this.constraintSource;
+    }
+
+    /**
+     * @see eu.esdihumboldt.mediator.constraints.Constraint#isSatisfied()
+     */
+    public boolean isSatisfied(){
+        return this.satisfied;
+    }
+
+    /**
+     * @return the Uid that has been assigned to this SpatialConstraint.
+     */
+    public long getUid(){
+        return this.uid;
+    }
+
+    /**
+     * @return unique identifier for the database.
+     */
+    public long getId(){
+        return id;
+    }
+
+    /**
+     * @param id unique identifier for the database.
+     */
+    public void setId(long id){
+        this.id = id;
+    }
+
+    /**
+     * @param satisfied
+     */
+    public void setSatisfied(boolean satisfied){
+        this.satisfied = satisfied;
+    }
+
+    public UUID getIdentifier(){
+        return identifier;
+    }
+
+    public void setIdentifier(UUID identifier){
+        this.identifier = identifier;
+    }
+
+    public boolean isFinalized(){
         return this.write;
     }
 
-
-    public void setFinalized(boolean write) {
+    public void setFinalized(boolean write){
         this.write = write;
     }
 
-	public
-	boolean compatible(Constraint constraint) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    public boolean compatible(Constraint constraint){
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setShared(boolean shared){
+        this.sharedConstraint = shared;
+    }
+
+    public boolean isShared(){
+        return sharedConstraint;
+    }
 
 }

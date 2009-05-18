@@ -65,6 +65,8 @@ public class ThematicConstraintImpl
 
     private boolean finalized = false;
 
+    private boolean sharedConstraint=false;
+
     // Constructors ............................................................
     /**
      *
@@ -230,7 +232,13 @@ public class ThematicConstraintImpl
         return false;
 
     }
+    public void setShared(boolean shared){
+        this.sharedConstraint=shared;
+    }
 
+    public boolean isShared(){
+        return sharedConstraint;
+    }
 }
 
 

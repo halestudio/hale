@@ -63,6 +63,8 @@ public class LanguageConstraintImpl
     private ConstraintSource constraintSource;
     private boolean write = false;
 
+    private boolean sharedConstraint=false;
+
     // Constructors ............................................................
     /**
      *
@@ -247,5 +249,12 @@ public class LanguageConstraintImpl
             }
         }
         return new LanguageConstraintImpl(compatiblelocales);
+    }
+        public void setShared(boolean shared){
+        this.sharedConstraint=shared;
+    }
+
+    public boolean isShared(){
+        return sharedConstraint;
     }
 }

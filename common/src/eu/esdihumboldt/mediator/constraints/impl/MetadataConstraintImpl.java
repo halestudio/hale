@@ -80,6 +80,8 @@ implements MetadataConstraint, Serializable{
 
     private List<String> keywords_ = new ArrayList<String>();
 
+    private boolean sharedConstraint = false;
+
     // Constructors ............................................................
     /**
      * no-args constructor, to enable hibernate-mapping.
@@ -291,6 +293,14 @@ implements MetadataConstraint, Serializable{
         }
 
 
+    }
+
+    public void setShared(boolean shared){
+        this.sharedConstraint=shared;
+    }
+
+    public boolean isShared(){
+        return sharedConstraint;
     }
 
 }
