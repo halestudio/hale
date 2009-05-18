@@ -11,10 +11,9 @@
  */
 package eu.esdihumboldt.workflow;
 
-
 import eu.esdihumboldt.mediator.MediatorComplexRequest;
 import eu.esdihumboldt.workflow.exceptions.InconsistentWorkflowException;
-import eu.esdihumboldt.workflow.repository.Workflow;
+import org.dom4j.Document;
 
 /**The workflow generator provide an interface that has got the sole purpose of 
  * generating an executable and grounded workflow and supplying it to its clients
@@ -34,9 +33,9 @@ public interface WorkflowGenerator {
      * workflow that the mediator executes.
      * 
      * @param mcr An Mediator Complex Request with user constraints and task concept
-     * @return A Mediator Workflow that can be executable by the Mediator
+     * @return A Mediator Workflow Xml instance document that can be executable by the Mediator
      * @throws InconsistentWorkflowException
      */
-    public Workflow getWorkflow(MediatorComplexRequest mcr)throws InconsistentWorkflowException;
+    public Document getWorkflow(MediatorComplexRequest mcr)throws InconsistentWorkflowException;
     
 }
