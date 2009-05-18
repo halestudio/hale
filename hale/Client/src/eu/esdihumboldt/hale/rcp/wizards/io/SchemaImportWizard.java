@@ -21,6 +21,7 @@ import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.impl.SchemaServiceEnum;
 import eu.esdihumboldt.hale.models.impl.SchemaServiceImpl;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 
@@ -65,8 +66,14 @@ public class SchemaImportWizard
 		SchemaService schemaService = (SchemaService) 
 					ModelNavigationView.site.getService(SchemaService.class);
 		try {
-			schemaService.loadSourceSchema(
-					new URI(mainPage.getResult().replaceAll("\\\\", "/")));
+			URI uri = new URI(mainPage.getResult().replaceAll("\\\\", "/")); 
+			if (mainPage.getSchemaType() == SchemaServiceEnum.SOURCE_SCHEMA) {
+				schemaService.loadSourceSchema(uri);
+			}
+			else
+			{
+				schemaService.loadTargetSchema(uri);
+			}
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}

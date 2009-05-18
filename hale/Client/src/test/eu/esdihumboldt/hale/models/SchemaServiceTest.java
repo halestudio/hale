@@ -2,6 +2,7 @@ package test.eu.esdihumboldt.hale.models;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -92,12 +93,14 @@ public class SchemaServiceTest {
 	//@Test
 	public void testLoadTargetSchema() {
 	}
-	@Test
+	//@Test
 	public void testLoadSourceSchemawithImport(){
 		
         
-    	String pathToSourceSchema = "resources/schema/inheritance/rise_hydrography.xsd";
-		SchemaServiceImpl service = (SchemaServiceImpl) SchemaServiceImpl.getInstance();
+//    	String pathToSourceSchema = "resources/schema/inheritance/rise_hydrography.xsd";
+//    	String pathToSourceSchema = "D:/Humboldt/workspace/HALE/resources/schema/inheritance/rise_hydrography.xsd";
+    	String pathToSourceSchema = "D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/HY/Hydrography.xsd";
+    	SchemaServiceImpl service = (SchemaServiceImpl) SchemaServiceImpl.getInstance();
 
 		//load schema 
 		try {
@@ -127,7 +130,44 @@ public class SchemaServiceTest {
 		
 	}
 	
-	
+	@Test
+	public void testLoadSourceSchemawithGeometry(){
+		
+        
+   	String pathToSourceSchema = "resources/schema/inheritance/rise_hydrography.xsd";
+//    	String pathToSourceSchema = "D:/Humboldt/workspace/HALE/resources/schema/inheritance/rise_hydrography.xsd";
+    	//String pathToSourceSchema = "resources/schema/target/geometry.xsd" ;
+    	SchemaServiceImpl service = (SchemaServiceImpl) SchemaServiceImpl.getInstance();
+
+		//load schema 
+		try {
+			service.loadSourceSchema(new URI(pathToSourceSchema));
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//getting service schema
+		Collection<FeatureType> featureTypes = service.getSourceSchema();
+		//check size
+		//assertEquals(featureTypes.size(), 11);
+		
+		
+		
+		//check if countains RiverBasinDistrictType
+		boolean containsType = false;
+		Iterator iterator = featureTypes.iterator();
+		while(iterator.hasNext()){
+			FeatureType type = (FeatureType) iterator.next();
+//			if (type.getName().getLocalPart().equals("RiverBasinDistrictType"))containsType = true;
+			System.out.println("FeatureType : " + type.getName().getLocalPart());
+		} 
+		assertEquals(true, containsType);
+		
+		
+		
+	}
+		
 	
 	
 

@@ -30,6 +30,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
+import eu.esdihumboldt.hale.models.impl.SchemaServiceEnum;
+
 /**
  * 
  * This is the main page of the {@link SchemaImportWizard}.
@@ -49,6 +51,8 @@ public class SchemaImportWizardPage
 	protected UrlFieldEditor wfsFieldEditor;
 	protected Button useWfsRadio;
 	protected Button useFileRadio;
+	private Button sourceDestination;
+	private Button targetDestination;
 
 	public SchemaImportWizardPage(String pageName, String pageTitle) {
 		super(pageName, pageTitle, (ImageDescriptor) null); // FIXME ImageDescriptor
@@ -194,11 +198,11 @@ public class SchemaImportWizardPage
 		destinationArea.setSize(destinationArea.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		destinationArea.setFont(parent.getFont());
 		
-		Button sourceDestination = new Button(destinationArea, SWT.RADIO);
+		sourceDestination = new Button(destinationArea, SWT.RADIO);
 		sourceDestination.setSelection(true);
 		sourceDestination.setText("Import as Source Schema");
 		
-		Button targetDestination = new Button(destinationArea, SWT.RADIO);
+		targetDestination = new Button(destinationArea, SWT.RADIO);
 		targetDestination.setText("Import as Target Schema");
 	}
 
@@ -281,6 +285,13 @@ public class SchemaImportWizardPage
 			return this.fileFieldEditor.getTextControl(
 					this.ffe_container).getText(); 
 		}
+	}
+	
+	public SchemaServiceEnum getSchemaType() {
+		if (sourceDestination.getSelection()) {
+			return SchemaServiceEnum.SOURCE_SCHEMA;
+		}
+		else return SchemaServiceEnum.TARGET_SCHEMA;
 	}
 	
 }

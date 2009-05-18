@@ -24,7 +24,10 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.apache.ws.commons.schema.resolver.CollectionURIResolver;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.xml.SchemaFactory;
 import org.geotools.xml.schema.ComplexType;
@@ -216,12 +219,24 @@ public class SchemaServiceImpl implements SchemaService {
 		try {
 			String path = file.toString();
 			is = new FileInputStream(path);
-		} catch (FileNotFoundException e) {
+			
+		} catch (Throwable e) {
 			_log.error("-- path not resolved: " + file);
+			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-		XmlSchemaCollection schemaCol = new XmlSchemaCollection();
-		XmlSchema prepSchema = schemaCol.read(new StreamSource(is), null);
+		XmlSchema prepSchema = null;
+		try {
+			XmlSchemaCollection schemaCol = new XmlSchemaCollection();
+			// Check if the file is located on web
+			if (file.getHost() == null) {
+				schemaCol.setSchemaResolver(new HumboldtURIResolver());
+				schemaCol.setBaseUri(findBaseUri(file));
+			}
+			prepSchema = schemaCol.read(new StreamSource(is), null);
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
 		_log.info("Source schema has " +
 					prepSchema.getIncludes().getCount()+ " includes");
 
@@ -231,9 +246,11 @@ public class SchemaServiceImpl implements SchemaService {
 		Schema schema = null;
 		Collection<FeatureType> collection = new ArrayList<org.opengis.feature.type.FeatureType>();
 		try {
-			schema = SchemaFactory.getInstance(null, new ByteArrayInputStream(
+			URI targetNamespace = null;
+			schema = SchemaFactory.getInstance(targetNamespace, new ByteArrayInputStream(
 					out.toByteArray()));
 		} catch (Exception uhe) {
+			uhe.printStackTrace();
 			_log.error("Imported Schema only available on-line, but "
 					+ "cannot be retrieved.", uhe);
 		}
@@ -255,6 +272,8 @@ public class SchemaServiceImpl implements SchemaService {
 			builder.setAbstract(type.isAbstract());
 
 			if (type.getParent() != null) {
+				//if type not abstract, add its children
+				if (type.getChildElements()!=null){
 				for (Element element : type.getChildElements()) {
 					if (element.getType() instanceof SimpleType) {
 						builder.add(element.getName(), element.getType()
@@ -263,11 +282,12 @@ public class SchemaServiceImpl implements SchemaService {
 					}
 
 				}
+				}
 				inTypes.add(builder.buildFeatureType());
 			}
 		}
 
-		// Build collection of feature type with there parents
+		// Build collection of feature type with their parents
 		
 		for (ComplexType type : schema.getComplexTypes()) {
 			
@@ -304,6 +324,13 @@ public class SchemaServiceImpl implements SchemaService {
 			collection.add(builder.buildFeatureType());
 		}
 		return collection;
-
+	}
+	
+	private String findBaseUri(URI file) {
+		String baseUri = "";
+		baseUri = file.toString();
+		baseUri = baseUri.substring(0, baseUri.lastIndexOf("/"));
+		System.out.println("********* BASE_URI: " + baseUri + "***********");
+		return baseUri;
 	}
 }
