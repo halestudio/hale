@@ -1,0 +1,60 @@
+package test.eu.esdihumboldt.hale.models;
+
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.geotools.xml.XSISAXHandler;
+import org.geotools.xml.gml.GMLComplexTypes;
+import org.geotools.xml.schema.ComplexType;
+import org.geotools.xml.schema.Element;
+import org.geotools.xml.schema.Schema;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
+
+public class TestFTFromXSD {
+
+
+
+	public static void getFeatureType2( String xsd) throws Exception { 
+		XMLReader reader = XMLReaderFactory.createXMLReader();
+		XSISAXHandler schemaHandler = new XSISAXHandler(new URI(xsd));
+		reader.setContentHandler(schemaHandler);
+		reader.parse(new InputSource(xsd));
+		Schema s = schemaHandler.getSchema();
+		System.out.println(s.getImports().length);
+		if (s!=null){ 
+			if (s.getComplexTypes()!=null) System.out.println(s.getComplexTypes().length); 
+			if (s.getAttributes()!=null) System.out.println(s.getAttributes().length); 
+		}
+		for (ComplexType compType :s.getComplexTypes()){
+			System.out.println( compType +  " Type has ");
+			for (Element child : compType.getChildElements()){
+				System.out.println( " Element name: " + child.getName() + " type :" + child.getType());
+				
+			}
+		}
+		
+		// =schemaHandler.getSchema().getElements();
+		//for (int i=0; i<count;i++){
+		/*SimpleFeatureType ft =
+	   GMLComplexTypes.createFeatureType(schemaHandler.getSchema().getElements()[0]);		
+		System.out.println("FeatureType : " + ft.getName() + " GeometryDescriptor " + ft.getGeometryDescriptor());*/
+		//}
+	}
+	public static void main(String [] args){
+		try {
+			getFeatureType2("file:///D:/HUMBOLDT/HALE/workspace/HALE-Client/resources/schema/inheritance/rise_hydrography.xsd");
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}
