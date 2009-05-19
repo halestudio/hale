@@ -242,6 +242,7 @@ public class SchemaServiceImpl implements SchemaService {
 
 		// write schema to memory
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		prepSchema.write(System.out);
 		prepSchema.write(out);
 		Schema schema = null;
 		Collection<FeatureType> collection = new ArrayList<org.opengis.feature.type.FeatureType>();
@@ -275,7 +276,7 @@ public class SchemaServiceImpl implements SchemaService {
 				//if type not abstract, add its children
 				if (type.getChildElements()!=null){
 				for (Element element : type.getChildElements()) {
-					if (element.getType() instanceof SimpleType) {
+					if (element.getType() !=null) {
 						builder.add(element.getName(), element.getType()
 								.getClass());
 						 
@@ -299,9 +300,9 @@ public class SchemaServiceImpl implements SchemaService {
 			if (type.getParent() instanceof ComplexType) {
 				if (type.getParent() != null) {
 					for (Element element : type.getChildElements()) {
-						if (element.getType() instanceof SimpleType) {
-							// System.out.println("\tsimpl0e type element: "
-							// + element.getName());
+						if (element.getType() !=null) {
+							 System.out.println("\tsimpl0e type element: "
+							 + element.getName());
 							builder.add(element.getName(), element.getType()
 									.getClass());
 						}
