@@ -23,13 +23,21 @@ import java.net.URI;
  */
 public class Measure {
 	
+	/**
+	 * a {@link URI} used to uniquely identify a certain Unit of Measure, such 
+	 * as an SI unit.
+	 */
 	private URI datatype;
 
+	// constructors ............................................................
+	
 	public Measure(URI datatype) {
 		super();
 		this.datatype = datatype;
 	}
 
+	// getters / setters .......................................................
+	
 	/**
 	 * @return the datatype
 	 */

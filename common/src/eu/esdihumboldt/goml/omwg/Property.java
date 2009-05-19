@@ -9,38 +9,70 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-
 package eu.esdihumboldt.goml.omwg;
 
 import java.util.List;
 
+import eu.esdihumboldt.goml.align.Entity;
+
 /**
  * This class represents omwg:PropertyType.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz, Marian de Vries
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @partner 08 / Delft University of Technology
+ * @version $Id$
  */
-public class Property {
-	
+public class Property 
+	extends Entity {
+
 	/**
 	 * <xs:element ref="omwg:label" minOccurs="0" maxOccurs="unbounded" />
 	 */
-	private List<String> labels;
-	
+	private List<String> label;
+
 	/**
 	 * <xs:group ref="omwg:propConst" minOccurs="0" maxOccurs="1" />
 	 */
-	private PropertyExpression propConst;
-	
+	// private PropertyExpression propConst;
+	private List<Property> and;
+	private List<Property> or;
+	private Property not;
+	private Relation first;
+	private Property next;
+
 	/**
-	 * <xs:group ref="omwg:propCond" minOccurs="0" maxOccurs="unbounded" />
+	 * <xs:group ref="omwg:propCond" minOccurs="0" maxOccurs="unbounded" /> In
+	 * stead of the group use the group members directly
 	 */
-	private List<PropertyCondition> propCond;
-	
+	// private List<PropertyCondition> propCond;
+
 	/**
-	 * <xs:group ref="omwg:transformation" minOccurs="0" maxOccurs="1" />
+	 * <xs:element ref="omwg:domainRestriction" minOccurs="0"
+	 * maxOccurs="unbounded" />
 	 */
-	private Transformation transformation;
+	private List<FeatureClass> domainRestriction;
+
+	/**
+	 * <xs:element ref="omwg:valueCondition" minOccurs="0" maxOccurs="unbounded" />
+	 */
+	private List<Restriction> valueCondition;
+
+	/**
+	 * TODO add explanation
+	 * TODO: use actual geometry classes from GeoAPI instead of String.
+	 * 
+	 * <xs:element ref="omwg:typeCondition" minOccurs="0" maxOccurs="unbounded"
+	 * />
+	 */
+	private List<String> typeCondition;
+	
+	// constructors ............................................................
+	
+	public Property(List<String> label) {
+		super(label);
+	}
+	
+	
 
 }

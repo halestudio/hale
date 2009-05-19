@@ -15,7 +15,8 @@ package eu.esdihumboldt.goml.align;
 import java.net.URI;
 
 /**
- * FIXME Add Type description.
+ * A {@link Formalism} identifies the formal language or structure used to 
+ * express a {@link Schema}.
  * 
  * @author Thorsten Reitz 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -23,8 +24,44 @@ import java.net.URI;
  */
 public class Formalism {
 
+	/**
+	 * The name of this {@link Formalism}.
+	 */
 	private String name;
 	
+	/**
+	 * The {@link URI} identifying this {@link Formalism}.
+	 */
 	private URI location;
+	
+	// getters / setters .......................................................
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the location
+	 */
+	public URI getLocation() {
+		return location;
+	}
+
+	/**
+	 * @param location the location to set
+	 */
+	public void setLocation(URI location) {
+		this.location = location;
+	}
 	
 }

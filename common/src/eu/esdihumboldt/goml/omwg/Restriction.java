@@ -15,43 +15,39 @@ package eu.esdihumboldt.goml.omwg;
 import java.util.List;
 
 /**
- * A {@link Restriction} is used to define a Condition. It represents the 
+ * A {@link Restriction} is used to define a Condition for a FeatureClass. It represents the 
  * omwg:RestrictionType.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz, Marian de Vries 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @partner 08 / Delft University of Technology
  * @version $Id$ 
  */
 public class Restriction {
 	
 	/**
 	 * <xs:element ref="omwg:onAttribute"/>
+     * TODO in future: onAttribute can also refer to a Relation between (Feature)Classes
 	 */
 	private Property onAttribute;
 	
 	/**
 	 * <xs:element ref="omwg:comparator"/>
 	 */
-	private Property comparator;
+	private ComparatorType comparator;
 	
 	/**
 	 * <xs:element name="value" type="omwg:valueExprType" maxOccurs="unbounded" />
 	 */
-	private List<ValueExprType> values;
+	//private List<ValueExprType> values;
+	private List<ValueExpr> value;
+
 	
 	/**
 	 * <xs:element ref="goml:cqlStr" minOccurs="0" maxOccurs="1" />
 	 */
 	private String cqlStr;
 	
-	
-	public enum ValueExprType { // FIXME!!!!
-		literal,
-		min,
-		max,
-		pathExpr,
-		Instance,
-		Apply
-	}
 
+	
 }

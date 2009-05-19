@@ -11,10 +11,13 @@
  */
 package eu.esdihumboldt.goml.align;
 
+import eu.esdihumboldt.goml.omwg.FeatureClass;
+import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 
 /**
- * FIXME Add Type description.
+ * A Cell contains a mapping between two Entities, such as {@link FeatureClass}es
+ * or {@link Property} objects.
  * 
  * @author Thorsten Reitz 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -32,10 +35,19 @@ public class Cell {
 	 */
 	private Entity entity2;
 	
+	/**
+	 * The mapping/relation type between the two {@link Entity} objects.
+	 */
 	private RelationType relation;
 	
+	/**
+	 * TODO add comment
+	 */
 	private Measure measure;
 	
+	/**
+	 * Metadata on this {@link Cell}.
+	 */
 	private About about;
 	
 	

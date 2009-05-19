@@ -15,7 +15,8 @@ package eu.esdihumboldt.goml.align;
 import eu.esdihumboldt.goml.rdf.About;
 
 /**
- * FIXME Add Type description.
+ * This {@link Schema} type contains some metadata on a schema mapped in an 
+ * {@link Alignment}.
  * 
  * @author Thorsten Reitz 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -23,12 +24,63 @@ import eu.esdihumboldt.goml.rdf.About;
  */
 public class Schema {
 	
+	/**
+	 * TODO add comment
+	 */
 	private String location;
 	
+	/**
+	 * The {@link Formalism} used to express this schema. 
+	 */
 	private Formalism formalism;
 	
+	/**
+	 * Metadata on this {@link Schema} object
+	 */
 	private About about;
 	
-	
+	// getters / setters .......................................................
 
+	/**
+	 * @return the location
+	 */
+	public String getLocation() {
+		return location;
+	}
+
+	/**
+	 * @param location the location to set
+	 */
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	/**
+	 * @return the formalism
+	 */
+	public Formalism getFormalism() {
+		return formalism;
+	}
+
+	/**
+	 * @param formalism the formalism to set
+	 */
+	public void setFormalism(Formalism formalism) {
+		this.formalism = formalism;
+	}
+
+	/**
+	 * @return the about
+	 */
+	public About getAbout() {
+		return about;
+	}
+
+	/**
+	 * @param about the about to set
+	 */
+	public void setAbout(About about) {
+		this.about = about;
+	}
+	
 }

@@ -34,10 +34,90 @@ public class Alignment {
 	 */
 	private Schema schema2;
 	
+	/**
+	 * A {@link List} of all the mappings defined as part of this 
+	 * {@link Alignment}.
+	 */
 	private List<Cell> map;
 	
+	/**
+	 * TODO add description
+	 */
 	private String level;
 	
+	/**
+	 * Metadata on this {@link Alignment}.
+	 */
 	private About about;
+
+	/**
+	 * @return the schema1
+	 */
+	public Schema getSchema1() {
+		return schema1;
+	}
+
+	/**
+	 * @param schema1 the schema1 to set
+	 */
+	public void setSchema1(Schema schema1) {
+		this.schema1 = schema1;
+	}
+
+	/**
+	 * @return the schema2
+	 */
+	public Schema getSchema2() {
+		return schema2;
+	}
+
+	/**
+	 * @param schema2 the schema2 to set
+	 */
+	public void setSchema2(Schema schema2) {
+		this.schema2 = schema2;
+	}
+
+	/**
+	 * @return the map
+	 */
+	public List<Cell> getMap() {
+		return map;
+	}
+
+	/**
+	 * @param map the map to set
+	 */
+	public void setMap(List<Cell> map) {
+		this.map = map;
+	}
+
+	/**
+	 * @return the level
+	 */
+	public String getLevel() {
+		return level;
+	}
+
+	/**
+	 * @param level the level to set
+	 */
+	public void setLevel(String level) {
+		this.level = level;
+	}
+
+	/**
+	 * @return the about
+	 */
+	public About getAbout() {
+		return about;
+	}
+
+	/**
+	 * @param about the about to set
+	 */
+	public void setAbout(About about) {
+		this.about = about;
+	}
 	
 }
