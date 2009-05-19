@@ -48,7 +48,7 @@ public class TestFTFromXSD {
 	}
 	public static void main(String [] args){
 		try {
-			getFeatureType2("file:///D:/HUMBOLDT/HALE/workspace/HALE-Client/resources/schema/inheritance/rise_hydrography.xsd");
+			getFeatureType2("file:///D:/HUMBOLDT/HALE/workspace/HALE-Client/resources/schema/source/roadsGermany212.xsd");
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
