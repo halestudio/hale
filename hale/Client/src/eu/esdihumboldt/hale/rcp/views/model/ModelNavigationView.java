@@ -109,7 +109,7 @@ public class ModelNavigationView
 		gData.grabExcessVerticalSpace = true;
 		gData.verticalIndent = 12;
 		viewerBComposite.setLayoutData(gData);
-		TreeViewer schemaViewer = new TreeViewer(viewerBComposite, SWT.SINGLE
+		TreeViewer schemaViewer = new TreeViewer(viewerBComposite, SWT.MULTI
 				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		schemaViewer.setContentProvider(new ModelContentProvider());
 		schemaViewer.setLabelProvider(new ModelNavigationViewLabelProvider());

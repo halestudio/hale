@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.xml.SchemaFactory;
+import org.geotools.xml.XSISAXHandler;
 import org.geotools.xml.schema.ComplexType;
 import org.geotools.xml.schema.Element;
 import org.geotools.xml.schema.Schema;
@@ -40,7 +41,10 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
@@ -97,7 +101,7 @@ public class SchemaServiceImpl implements SchemaService {
 	 * @see eu.esdihumboldt.hale.models.SchemaService#getSourceSchema()
 	 */
 	public Collection<FeatureType> getSourceSchema() {
-		return sourceSchema;
+		return this.sourceSchema;
 	}
 
 	/**
@@ -111,6 +115,7 @@ public class SchemaServiceImpl implements SchemaService {
 	 * @see eu.esdihumboldt.hale.models.SchemaService#loadSourceSchema(java.net.URI)
 	 */
 	public boolean loadSourceSchema(URI file) {
+		cleanSourceSchema();
 		this.sourceSchema = loadSchema(file);
 		if (this.sourceSchema != null) {
 			this.updateListeners();
@@ -219,7 +224,7 @@ public class SchemaServiceImpl implements SchemaService {
 	 */
 	public Collection<FeatureType> loadSchema(URI file) {
 		// use XML Schema to load schema with all its subschema to the memory
-		InputStream is = null;
+		/*InputStream is = null;
 		try {
 			String path = file.toString();
 			is = new FileInputStream(path);
@@ -235,9 +240,10 @@ public class SchemaServiceImpl implements SchemaService {
 			// Check if the file is located on web
 			if (file.getHost() == null) {
 				schemaCol.setSchemaResolver(new HumboldtURIResolver());
-				schemaCol.setBaseUri(findBaseUri(file));
+			    schemaCol.setBaseUri(findBaseUri(file));
 			}
 			prepSchema = schemaCol.read(new StreamSource(is), null);
+			is.close();
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
@@ -246,19 +252,35 @@ public class SchemaServiceImpl implements SchemaService {
 
 		// write schema to memory
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		out.reset();
 		prepSchema.write(System.out);
 		prepSchema.write(out);
-		Schema schema = null;
-		Collection<FeatureType> collection = new ArrayList<org.opengis.feature.type.FeatureType>();
 		try {
-			URI targetNamespace = null;
-			schema = SchemaFactory.getInstance(targetNamespace, new ByteArrayInputStream(
-					out.toByteArray()));
-		} catch (Exception uhe) {
-			uhe.printStackTrace();
-			_log.error("Imported Schema only available on-line, but "
-					+ "cannot be retrieved.", uhe);
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		*/
+		
+		Collection<FeatureType> collection = new ArrayList<org.opengis.feature.type.FeatureType>();
+		
+		try {
+			/*URI targetNamespace = null;
+			byte [] inputBytes = out.toByteArray();
+			System.out.println(inputBytes.length);
+			ByteArrayInputStream inputS = new ByteArrayInputStream(inputBytes);
+			Schema schema = SchemaFactory.getInstance(targetNamespace, inputS);*/
+			
+			XMLReader reader = XMLReaderFactory.createXMLReader();
+			XSISAXHandler schemaHandler = new XSISAXHandler(file);
+			reader.setContentHandler(schemaHandler);
+			reader.parse(new InputSource(new FileInputStream(file.toString())));
+			Schema schema = schemaHandler.getSchema();
+			 
+			
+			System.out.println(schema.getComplexTypes().length);
+		
 
 		// Schema[] imports = schema.getImports();
 		// for (Schema s : imports) {
@@ -320,7 +342,7 @@ public class SchemaServiceImpl implements SchemaService {
 						for (SimpleFeatureType featureType : inTypes) {
 							if (featureType.getName().getLocalPart().equals(
 									type.getParent().getName())) {
-								builder.setSuperType(featureType);;
+								builder.setSuperType(featureType);
 							}
 						}
 					}
@@ -328,6 +350,11 @@ public class SchemaServiceImpl implements SchemaService {
 			}
 			collection.add(builder.buildFeatureType());
 		}
+	} catch (Exception uhe) {
+		uhe.printStackTrace();
+		_log.error("Imported Schema only available on-line, but "
+				+ "cannot be retrieved.", uhe);
+	}
 		return collection;
 	}
 	

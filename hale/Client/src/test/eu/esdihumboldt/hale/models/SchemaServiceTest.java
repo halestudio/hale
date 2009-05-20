@@ -138,36 +138,63 @@ public class SchemaServiceTest {
    //	String pathToSourceSchema = "resources/schema/inheritance/rise_hydrography.xsd";
 //    	String pathToSourceSchema = "D:/Humboldt/workspace/HALE/resources/schema/inheritance/rise_hydrography.xsd";
     	String pathToSourceSchema = "resources/INSPIRE_Conf_Data/Watercourse/BY/SourceSchema/Watercourses_BY.xml" ;
+    	String pathToSecondSourceSchema = "resources/INSPIRE_Conf_Data/Watercourse/VA/SourceSchema/Watercourses_VA.xml" ;
     	SchemaServiceImpl service = (SchemaServiceImpl) SchemaServiceImpl.getInstance();
 
 		//load schema 
-		try {
-			service.loadSourceSchema(new URI(pathToSourceSchema));
+	try {
+			Collection<FeatureType> featureTypes = service.loadSchema(new URI(pathToSourceSchema));
+			//check if countains RiverBasinDistrictType
+			boolean containsType = false;
+			Iterator iterator = featureTypes.iterator();
+			while(iterator.hasNext()){
+				FeatureType type = (FeatureType) iterator.next();
+			  
+				
+				System.out.println("FeatureType : " + type.getName().getLocalPart());
+				
+
+			} 
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		//getting service schema
-		Collection<FeatureType> featureTypes = service.getSourceSchema();
+		
 		//check size
 		//assertEquals(featureTypes.size(), 11);
 		
 		
 		
-		//check if countains RiverBasinDistrictType
-		boolean containsType = false;
-		Iterator iterator = featureTypes.iterator();
-		while(iterator.hasNext()){
-			FeatureType type = (FeatureType) iterator.next();
-		  
-			
-			System.out.println("FeatureType : " + type.getName().getLocalPart());
-			/*System.out.println(type.getGeometryDescriptor());
-*/
-		} 
-		//assertEquals(true, containsType);
 		
+	
+		//load schema 2
+		
+		try {
+			Collection<FeatureType> featureTypes = service.loadSchema(new URI(pathToSecondSourceSchema));
+			//check if countains RiverBasinDistrictType
+			boolean containsType = false;
+			 Iterator iterator = featureTypes.iterator();
+			while(iterator.hasNext()){
+				FeatureType type = (FeatureType) iterator.next();
+			  
+				
+				System.out.println("FeatureType : " + type.getName().getLocalPart());
+				
+
+			} 
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+		
+		
+	
 		
 		
 	}

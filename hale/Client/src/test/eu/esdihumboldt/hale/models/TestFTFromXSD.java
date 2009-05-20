@@ -26,7 +26,7 @@ public class TestFTFromXSD {
 		reader.setContentHandler(schemaHandler);
 		reader.parse(new InputSource(xsd));
 		Schema s = schemaHandler.getSchema();
-		System.out.println(s.getImports().length);
+		System.out.println("FeatureTypes for xsd: " + xsd);
 		if (s!=null){ 
 			if (s.getComplexTypes()!=null) System.out.println(s.getComplexTypes().length); 
 			if (s.getAttributes()!=null) System.out.println(s.getAttributes().length); 
@@ -48,7 +48,11 @@ public class TestFTFromXSD {
 	}
 	public static void main(String [] args){
 		try {
-			getFeatureType2("file:///D:/HUMBOLDT/HALE/workspace/HALE-Client/resources/schema/source/roadsGermany212.xsd");
+			String pathToSourceSchema = "resources/INSPIRE_Conf_Data/Watercourse/BY/SourceSchema/Watercourses_BY.xml" ;
+	    	String pathToSecondSourceSchema = "resources/INSPIRE_Conf_Data/Watercourse/VA/SourceSchema/Watercourses_VA.xml" ;
+			//getFeatureType2("file:///D:/HUMBOLDT/HALE/workspace/HALE-Client/resources/schema/source/roadsGermany212.xsd");
+	    	getFeatureType2(pathToSourceSchema);
+	    	getFeatureType2(pathToSourceSchema);
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
