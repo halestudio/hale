@@ -137,7 +137,7 @@ public class SchemaServiceTest {
         
    //	String pathToSourceSchema = "resources/schema/inheritance/rise_hydrography.xsd";
 //    	String pathToSourceSchema = "D:/Humboldt/workspace/HALE/resources/schema/inheritance/rise_hydrography.xsd";
-    	String pathToSourceSchema = "resources/schema/source/roadsGermany212.xsd" ;
+    	String pathToSourceSchema = "resources/INSPIRE_Conf_Data/Watercourse/BY/SourceSchema/Watercourses_BY.xml" ;
     	SchemaServiceImpl service = (SchemaServiceImpl) SchemaServiceImpl.getInstance();
 
 		//load schema 

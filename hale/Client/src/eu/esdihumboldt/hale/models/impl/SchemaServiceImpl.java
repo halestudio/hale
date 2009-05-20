@@ -301,8 +301,8 @@ public class SchemaServiceImpl implements SchemaService {
 				if (type.getParent() != null) {
 					for (Element element : type.getChildElements()) {
 						if (element.getType() !=null) {
-							 System.out.println("\tsimpl0e type element: "
-							 + element.getName());
+						/*	 System.out.println("\tsimpl0e type element: "
+							 + element.getName());*/
 							builder.add(element.getName(), element.getType()
 									.getClass());
 						}
