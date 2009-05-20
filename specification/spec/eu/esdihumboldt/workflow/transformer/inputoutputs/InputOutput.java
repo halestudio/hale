@@ -1,7 +1,7 @@
 package eu.esdihumboldt.workflow.transformer.inputoutputs;
 
 import eu.esdihumboldt.workflow.exceptions.IncompatibleTransformersException;
-import eu.esdihumboldt.workflow.processdescription.InputDescription;
+import eu.esdihumboldt.workflow.processdescription.Description;
 import eu.esdihumboldt.workflow.repository.Transformer;
 import eu.esdihumboldt.workflow.repository.Transformer.InputOutputStatus;
 import java.io.Serializable;
@@ -29,7 +29,7 @@ public interface InputOutput extends Serializable{
      *  Describes this input/output
      *       @return the {@link  InputDescription}
      */
-    public InputDescription getDescription();
+    public Description getDescription();
 
     /**
      *  @return the status of this input or output
