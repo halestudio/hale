@@ -12,8 +12,8 @@ import org.eclipse.jface.viewers.Viewer;
  * @author cjauss
  *
  */
-public class ModelContentProvider implements IStructuredContentProvider, 
-ITreeContentProvider{
+public class ModelContentProvider 
+	implements IStructuredContentProvider, ITreeContentProvider{
 	
 	public void inputChanged(Viewer v, Object oldInput, Object newInput){
 		//TODO Auto-generated method stub

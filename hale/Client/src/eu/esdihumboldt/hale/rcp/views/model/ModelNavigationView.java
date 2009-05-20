@@ -41,9 +41,15 @@ public class ModelNavigationView
 	extends ViewPart 
 	implements HaleServiceListener {
 	
+	private static Logger _log = Logger.getLogger(ModelNavigationView.class);
+	
+	private static final String SOURCE_MODEL_ID = "source";
+	
+	private static final String TARGET_MODEL_ID = "target";
+	
 	public static IWorkbenchPartSite site;
 	
-	private static Logger _log = Logger.getLogger(ModelNavigationView.class);
+	
 
 	public static final String ID = 
 		"eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView";
@@ -51,6 +57,10 @@ public class ModelNavigationView
 	private TreeViewer sourceSchemaViewer;
 	private TreeViewer targetSchemaViewer;
 	
+	/** 
+	 * A reference to the {@link SchemaService} which serves as model for this
+	 * {@link ViewPart}.
+	 */
 	private SchemaService schemaService;
 
 	@Override
@@ -75,9 +85,9 @@ public class ModelNavigationView
 
 		// initial source schema explorer setup
 		this.sourceSchemaViewer = this.schemaExplorerSetup(
-				modelComposite, schemaService.getSourceSchema());
+				modelComposite, schemaService.getSourceSchema(), SOURCE_MODEL_ID);
 		this.targetSchemaViewer = this.schemaExplorerSetup(
-				modelComposite, schemaService.getTargetSchema());
+				modelComposite, schemaService.getTargetSchema(), TARGET_MODEL_ID);
 	}
 	
 	private Combo getModelConfigurationCombo(Composite modelComposite) {
@@ -98,7 +108,10 @@ public class ModelNavigationView
 	 * @param schema the Schema to display.
 	 * @return a {@link TreeViewer} with the currently loaded schema.
 	 */
-	private TreeViewer schemaExplorerSetup(Composite modelComposite, Collection<FeatureType> schema) {
+	private TreeViewer schemaExplorerSetup(
+			Composite modelComposite, 
+			Collection<FeatureType> schema,
+			final String targetViewName) {
 		Composite viewerBComposite = new Composite(modelComposite, SWT.NONE);
 		FillLayout fLayout = new FillLayout();
 		viewerBComposite.setLayout(fLayout);
@@ -110,7 +123,7 @@ public class ModelNavigationView
 		gData.verticalIndent = 12;
 		viewerBComposite.setLayoutData(gData);
 		TreeViewer schemaViewer = new TreeViewer(viewerBComposite, SWT.MULTI
-				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.MULTI);
 		schemaViewer.setContentProvider(new ModelContentProvider());
 		schemaViewer.setLabelProvider(new ModelNavigationViewLabelProvider());
 		
@@ -121,7 +134,7 @@ public class ModelNavigationView
 		schemaViewer
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
-						updateAttributeView(false);
+						updateAttributeView(targetViewName);
 					}
 				});
 		return schemaViewer;
@@ -201,7 +214,10 @@ public class ModelNavigationView
 		// add properties
 		for (PropertyDescriptor pd : ftk.getFeatureType().getDescriptors()) {
 			tot = TreeObjectType.SIMPLE_ATTRIBUTE;
-			if (Arrays.asList(pd.getType().getClass().getInterfaces()).contains(
+			if (pd.getType().toString().matches("^.*?GMLComplexTypes.*")) {
+				tot = TreeObjectType.GEOMETRIC_ATTRIBUTE;
+			}
+			else if (Arrays.asList(pd.getType().getClass().getInterfaces()).contains(
 					org.opengis.feature.type.GeometryType.class)) {
 				tot = TreeObjectType.GEOMETRIC_ATTRIBUTE;
 			}
@@ -234,7 +250,7 @@ public class ModelNavigationView
 	 *            =true selection changed in sourceSchemaViewer, else
 	 *            targetSchemaViewer
 	 */
-	private void updateAttributeView(boolean _viewer) {
+	private void updateAttributeView(String targetViewName) {
 		Tree tree;
 		TreeItem selectedItem;
 		AttributeView attributeView = null;
@@ -249,7 +265,7 @@ public class ModelNavigationView
 			}
 		}
 
-		if (_viewer) {
+		if (targetViewName.equals(SOURCE_MODEL_ID)) {
 			tree = sourceSchemaViewer.getTree();
 			attributeView.clear(true);
 		} else {
@@ -265,7 +281,7 @@ public class ModelNavigationView
 					PlatformUI.getWorkbench().getSharedImages().getImage(
 							ISharedImages.IMG_OBJ_ELEMENT))) {
 				// if selection changed in sourceSchemaViewer
-				if (_viewer) {
+				if (targetViewName.equals(SOURCE_MODEL_ID)) {
 					// if not tree root
 					if (!selectedItem.getText().equals("ROOT")) { // FIXME
 						attributeView.updateView(true, selectedItem.getText(),
