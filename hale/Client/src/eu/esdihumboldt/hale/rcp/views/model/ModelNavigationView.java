@@ -29,7 +29,6 @@ import org.opengis.feature.type.PropertyDescriptor;
 
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.rcp.Application;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 
 /**
@@ -62,15 +61,6 @@ public class ModelNavigationView
 		schemaService = (SchemaService) 
 							this.getSite().getService(SchemaService.class);
 		schemaService.addListener(this);
-		
-		/*try {
-			schemaService.loadSourceSchema(
-					new URI(Application.getBasePath() 
-						+ "resources/schema/inheritance/rise_hydrography.xsd"));
-		} catch (URISyntaxException e) {
-			_log.error("The given URI for the schema to load has a invalid " +
-					"Syntax.", e);
-		}*/
 
 		Composite modelComposite = new Composite(_parent, SWT.BEGINNING);
 		GridLayout layout = new GridLayout();
@@ -80,8 +70,8 @@ public class ModelNavigationView
 		layout.horizontalSpacing = 5;
 		modelComposite.setLayout(layout);
 		
-		Combo sourceCombo = getModelConfigurationCombo(modelComposite);
-		Combo targetCombo = getModelConfigurationCombo(modelComposite);
+		this.getModelConfigurationCombo(modelComposite);
+		this.getModelConfigurationCombo(modelComposite);
 
 		// initial source schema explorer setup
 		this.sourceSchemaViewer = this.schemaExplorerSetup(

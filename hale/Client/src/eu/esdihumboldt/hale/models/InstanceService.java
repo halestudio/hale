@@ -62,7 +62,7 @@ public interface InstanceService
 	 * all {@link Feature}s.
 	 * @return true if the instances have been added successfully.
 	 */
-	public boolean addInstances(DatasetType type, FeatureCollection featureCollection);
+	public boolean addInstances(DatasetType type, FeatureCollection<?, ?> featureCollection);
 	
 	/**
 	 * Add the {@link Feature} in the collection to the {@link InstanceService}
@@ -73,7 +73,7 @@ public interface InstanceService
 	 * all {@link Feature}s.
 	 * @return true if the instances have been added successfully.
 	 */
-	public boolean addInstances(DatasetType type, FeatureCollection featureCollection, FeatureFilter filter);
+	public boolean addInstances(DatasetType type, FeatureCollection<?, ?> featureCollection, FeatureFilter filter);
 	
 	/**
 	 * This will remove all instances from the service.

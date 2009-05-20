@@ -75,7 +75,9 @@ public class SchemaServiceImpl implements SchemaService {
 	 * @see eu.esdihumboldt.hale.models.SchemaService#cleanSourceSchema()
 	 */
 	public boolean cleanSourceSchema() {
-		this.sourceSchema.clear();
+		if (this.sourceSchema != null && this.sourceSchema.size() != 0) {
+			this.sourceSchema.clear();
+		}
 		this.updateListeners();
 		return true;
 	}
@@ -84,7 +86,9 @@ public class SchemaServiceImpl implements SchemaService {
 	 * @see eu.esdihumboldt.hale.models.SchemaService#cleanTargetSchema()
 	 */
 	public boolean cleanTargetSchema() {
-		this.targetSchema.clear();
+		if (this.targetSchema != null && this.targetSchema.size() != 0) {
+			this.targetSchema.clear();
+		}
 		this.updateListeners();
 		return true;
 	}
