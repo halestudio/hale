@@ -1,8 +1,6 @@
 package eu.esdihumboldt.workflow.transformer.inputoutputs;
 
-import eu.esdihumboldt.workflow.transformer.domaintypes.DomainMetadata;
 import eu.esdihumboldt.workflow.transformer.domaintypes.LiteralValuesChoice;
-import eu.esdihumboldt.workflow.transformer.inputoutputs.MeasureUnit;
 import java.util.Set;
 
 public interface LiteralData{
@@ -12,7 +10,7 @@ public interface LiteralData{
      *       Defines the data type of the literal data
      *       @return
      */
-    public DomainMetadata getDataType();
+    public String getDataType();
 
     /**
      * List of Units of measure supported of this numerical output (or input).If one is
