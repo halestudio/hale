@@ -1,5 +1,6 @@
 package eu.esdihumboldt.hale.rcp.views.model;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,15 +9,20 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ViewForm;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.ISharedImages;
@@ -44,18 +50,21 @@ public class ModelNavigationView
 	private static Logger _log = Logger.getLogger(ModelNavigationView.class);
 	
 	private static final String SOURCE_MODEL_ID = "source";
-	
 	private static final String TARGET_MODEL_ID = "target";
 	
+	/**
+	 * Used to access the SchemaService.
+	 */
 	public static IWorkbenchPartSite site;
 	
-	
-
 	public static final String ID = 
 		"eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView";
 	
 	private TreeViewer sourceSchemaViewer;
 	private TreeViewer targetSchemaViewer;
+	
+	private Text sourceFilterText;
+	private Text targetFilterText;
 	
 	/** 
 	 * A reference to the {@link SchemaService} which serves as model for this
@@ -73,33 +82,58 @@ public class ModelNavigationView
 		schemaService.addListener(this);
 
 		Composite modelComposite = new Composite(_parent, SWT.BEGINNING);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		layout.makeColumnsEqualWidth = true;
-		layout.verticalSpacing = 10;
-		layout.horizontalSpacing = 5;
+		GridLayout layout = new GridLayout(2, true);
+		layout.verticalSpacing = 6;
+		layout.horizontalSpacing = 3;
 		modelComposite.setLayout(layout);
-		
-		this.getModelConfigurationCombo(modelComposite);
-		this.getModelConfigurationCombo(modelComposite);
 
-		// initial source schema explorer setup
+		// source schema toolbar, filter and explorer
+		Composite sourceComposite = new Composite(modelComposite, SWT.BEGINNING);
+		sourceComposite.setLayout(new GridLayout(1, false));
+		sourceComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		this.initSchemaExplorerToolBar(sourceComposite);
+		this.sourceFilterText = new Text(sourceComposite, SWT.NONE | SWT.BORDER );
+		this.sourceFilterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		this.sourceFilterText.setText("");
 		this.sourceSchemaViewer = this.schemaExplorerSetup(
-				modelComposite, schemaService.getSourceSchema(), SOURCE_MODEL_ID);
+				sourceComposite, schemaService.getSourceSchema(), SOURCE_MODEL_ID);
+		this.sourceSchemaViewer.addFilter(new PatternViewFilter(this.sourceFilterText));
+		this.sourceFilterText.addListener (SWT.FocusOut, new Listener () {
+			public void handleEvent (Event e) {
+				sourceSchemaViewer.refresh();
+			}
+		});
+		
+		// target schema toolbar, filter and explorer
+		Composite targetComposite = new Composite(modelComposite, SWT.BEGINNING);
+		targetComposite.setLayout(new GridLayout(1, false));
+		targetComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		this.initSchemaExplorerToolBar(targetComposite);
+		this.targetFilterText = new Text(targetComposite, SWT.NONE | SWT.BORDER );
+		this.targetFilterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		this.targetFilterText.setText("");
 		this.targetSchemaViewer = this.schemaExplorerSetup(
-				modelComposite, schemaService.getTargetSchema(), TARGET_MODEL_ID);
+				targetComposite, schemaService.getTargetSchema(), TARGET_MODEL_ID);
+		this.targetSchemaViewer.addFilter(new PatternViewFilter(this.targetFilterText));
+		this.targetFilterText.addListener (SWT.FocusOut, new Listener () {
+			public void handleEvent (Event e) {
+				targetSchemaViewer.refresh();
+			}
+		});
 	}
 	
-	private Combo getModelConfigurationCombo(Composite modelComposite) {
-		GridData gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		gData.grabExcessVerticalSpace = true;
+	private void initSchemaExplorerToolBar(Composite modelComposite) {
 		
-		Combo sourceCombo = new Combo(modelComposite, SWT.NONE);
-		sourceCombo.setLayoutData(gData);
-		sourceCombo.setText("Choose model organization");
-		sourceCombo.add("Inheritance hierarchy");
-		sourceCombo.add("Aggregation hierarchy");
-		return sourceCombo;
+        //create view forms
+        ViewForm schemaViewForm = new ViewForm(modelComposite, SWT.NONE);
+       
+        //create toolbar
+        ToolBar schemaFilterBar = new ToolBar(schemaViewForm, SWT.FLAT | SWT.WRAP);
+        schemaViewForm.setTopRight(schemaFilterBar);
+       
+        ToolBarManager manager = new ToolBarManager(schemaFilterBar);
+        manager.add(new UseInheritanceHierarchyAction());
+        manager.update(false);
 	}
 	
 	/**
@@ -123,14 +157,11 @@ public class ModelNavigationView
 		gData.verticalIndent = 12;
 		viewerBComposite.setLayoutData(gData);
 		TreeViewer schemaViewer = new TreeViewer(viewerBComposite, SWT.MULTI
-				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.MULTI);
+				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		schemaViewer.setContentProvider(new ModelContentProvider());
 		schemaViewer.setLabelProvider(new ModelNavigationViewLabelProvider());
-		
 		schemaViewer.setInput(translateSchema(schema));
 		
-		// must be expanded, because the whole tree must be instantiated
-		schemaViewer.expandAll();
 		schemaViewer
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
@@ -185,7 +216,6 @@ public class ModelNavigationView
 				}
 			}
 		}
-		_log.debug(typeHierarchy.keySet().size());
 		// finally, build the tree, starting with those types that don't have supertypes.
 		for (RobustFTKey ftk : typeHierarchy.keySet()) {
 			if (ftk.getFeatureType().getSuper() == null) {
