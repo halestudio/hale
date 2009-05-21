@@ -43,30 +43,28 @@ import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
  * @author Thorsten Reitz
  * @version {$Id}
  */
-public class ModelNavigationView 
-	extends ViewPart 
-	implements HaleServiceListener {
-	
+public class ModelNavigationView extends ViewPart implements
+		HaleServiceListener {
+
 	private static Logger _log = Logger.getLogger(ModelNavigationView.class);
-	
+
 	private static final String SOURCE_MODEL_ID = "source";
 	private static final String TARGET_MODEL_ID = "target";
-	
+
 	/**
 	 * Used to access the SchemaService.
 	 */
 	public static IWorkbenchPartSite site;
-	
-	public static final String ID = 
-		"eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView";
-	
+
+	public static final String ID = "eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView";
+
 	private TreeViewer sourceSchemaViewer;
 	private TreeViewer targetSchemaViewer;
-	
+
 	private Text sourceFilterText;
 	private Text targetFilterText;
-	
-	/** 
+
+	/**
 	 * A reference to the {@link SchemaService} which serves as model for this
 	 * {@link ViewPart}.
 	 */
@@ -74,11 +72,11 @@ public class ModelNavigationView
 
 	@Override
 	public void createPartControl(Composite _parent) {
-		
+
 		ModelNavigationView.site = this.getSite();
-		
-		schemaService = (SchemaService) 
-							this.getSite().getService(SchemaService.class);
+
+		schemaService = (SchemaService) this.getSite().getService(
+				SchemaService.class);
 		schemaService.addListener(this);
 
 		Composite modelComposite = new Composite(_parent, SWT.BEGINNING);
@@ -90,62 +88,70 @@ public class ModelNavigationView
 		// source schema toolbar, filter and explorer
 		Composite sourceComposite = new Composite(modelComposite, SWT.BEGINNING);
 		sourceComposite.setLayout(new GridLayout(1, false));
-		sourceComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		sourceComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true));
 		this.initSchemaExplorerToolBar(sourceComposite);
-		this.sourceFilterText = new Text(sourceComposite, SWT.NONE | SWT.BORDER );
-		this.sourceFilterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		this.sourceFilterText = new Text(sourceComposite, SWT.NONE | SWT.BORDER);
+		this.sourceFilterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+				true, false));
 		this.sourceFilterText.setText("");
-		this.sourceSchemaViewer = this.schemaExplorerSetup(
-				sourceComposite, schemaService.getSourceSchema(), SOURCE_MODEL_ID);
-		this.sourceSchemaViewer.addFilter(new PatternViewFilter(this.sourceFilterText));
-		this.sourceFilterText.addListener (SWT.FocusOut, new Listener () {
-			public void handleEvent (Event e) {
+		this.sourceSchemaViewer = this.schemaExplorerSetup(sourceComposite,
+				schemaService.getSourceSchema(), SOURCE_MODEL_ID);
+		this.sourceSchemaViewer.addFilter(new PatternViewFilter(
+				this.sourceFilterText));
+		this.sourceFilterText.addListener(SWT.FocusOut, new Listener() {
+			public void handleEvent(Event e) {
 				sourceSchemaViewer.refresh();
 			}
 		});
-		
+
 		// target schema toolbar, filter and explorer
 		Composite targetComposite = new Composite(modelComposite, SWT.BEGINNING);
 		targetComposite.setLayout(new GridLayout(1, false));
-		targetComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		targetComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true));
 		this.initSchemaExplorerToolBar(targetComposite);
-		this.targetFilterText = new Text(targetComposite, SWT.NONE | SWT.BORDER );
-		this.targetFilterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		this.targetFilterText = new Text(targetComposite, SWT.NONE | SWT.BORDER);
+		this.targetFilterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+				true, false));
 		this.targetFilterText.setText("");
-		this.targetSchemaViewer = this.schemaExplorerSetup(
-				targetComposite, schemaService.getTargetSchema(), TARGET_MODEL_ID);
-		this.targetSchemaViewer.addFilter(new PatternViewFilter(this.targetFilterText));
-		this.targetFilterText.addListener (SWT.FocusOut, new Listener () {
-			public void handleEvent (Event e) {
+		this.targetSchemaViewer = this.schemaExplorerSetup(targetComposite,
+				schemaService.getTargetSchema(), TARGET_MODEL_ID);
+		this.targetSchemaViewer.addFilter(new PatternViewFilter(
+				this.targetFilterText));
+		this.targetFilterText.addListener(SWT.FocusOut, new Listener() {
+			public void handleEvent(Event e) {
 				targetSchemaViewer.refresh();
 			}
 		});
 	}
-	
+
 	private void initSchemaExplorerToolBar(Composite modelComposite) {
-		
-        //create view forms
-        ViewForm schemaViewForm = new ViewForm(modelComposite, SWT.NONE);
-       
-        //create toolbar
-        ToolBar schemaFilterBar = new ToolBar(schemaViewForm, SWT.FLAT | SWT.WRAP);
-        schemaViewForm.setTopRight(schemaFilterBar);
-       
-        ToolBarManager manager = new ToolBarManager(schemaFilterBar);
-        manager.add(new UseInheritanceHierarchyAction());
-        manager.update(false);
+
+		// create view forms
+		ViewForm schemaViewForm = new ViewForm(modelComposite, SWT.NONE);
+
+		// create toolbar
+		ToolBar schemaFilterBar = new ToolBar(schemaViewForm, SWT.FLAT
+				| SWT.WRAP);
+		schemaViewForm.setTopRight(schemaFilterBar);
+
+		ToolBarManager manager = new ToolBarManager(schemaFilterBar);
+		manager.add(new UseInheritanceHierarchyAction());
+		manager.update(false);
 	}
-	
+
 	/**
 	 * A helper method for setting up the two SchemaExplorers.
-	 * @param modelComposite the parent {@link Composite} to use.
-	 * @param schema the Schema to display.
+	 * 
+	 * @param modelComposite
+	 *            the parent {@link Composite} to use.
+	 * @param schema
+	 *            the Schema to display.
 	 * @return a {@link TreeViewer} with the currently loaded schema.
 	 */
-	private TreeViewer schemaExplorerSetup(
-			Composite modelComposite, 
-			Collection<FeatureType> schema,
-			final String targetViewName) {
+	private TreeViewer schemaExplorerSetup(Composite modelComposite,
+			Collection<FeatureType> schema, final String targetViewName) {
 		Composite viewerBComposite = new Composite(modelComposite, SWT.NONE);
 		FillLayout fLayout = new FillLayout();
 		viewerBComposite.setLayout(fLayout);
@@ -161,7 +167,7 @@ public class ModelNavigationView
 		schemaViewer.setContentProvider(new ModelContentProvider());
 		schemaViewer.setLabelProvider(new ModelNavigationViewLabelProvider());
 		schemaViewer.setInput(translateSchema(schema));
-		
+
 		schemaViewer
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
@@ -172,98 +178,102 @@ public class ModelNavigationView
 	}
 
 	/**
-	 * @param schema the {@link Collection} of {@link FeatureType}s that 
-	 * represent the schema to display.
+	 * @param schema
+	 *            the {@link Collection} of {@link FeatureType}s that represent
+	 *            the schema to display.
 	 * @return
 	 */
 	private TreeObject translateSchema(Collection<FeatureType> schema) {
 		if (schema == null || schema.size() == 0) {
 			return new TreeParent("", TreeObjectType.ROOT);
 		}
-		
-		// first, find out a few things about the schema to define the root type.
+
+		// first, find out a few things about the schema to define the root
+		// type.
 		// TODO add metadata on schema here.
 		// TODO is should be possible to attach attributive data for a flyout.
 		TreeParent hidden_root = new TreeParent("ROOT", TreeObjectType.ROOT);
-		TreeParent root = new TreeParent(
-				schema.iterator().next().getName().getNamespaceURI(), 
-				TreeObjectType.ROOT);
+		TreeParent root = new TreeParent(schema.iterator().next().getName()
+				.getNamespaceURI(), TreeObjectType.ROOT);
 		hidden_root.addChild(root);
-		
-		// build the tree of FeatureTypes, starting from those types which 
-		// don't have a supertype. 
-		Map<RobustFTKey, Set<FeatureType>> typeHierarchy = 
-			new HashMap<RobustFTKey, Set<FeatureType>>();
-		
+
+		// build the tree of FeatureTypes, starting from those types which
+		// don't have a supertype.
+		Map<RobustFTKey, Set<FeatureType>> typeHierarchy = new HashMap<RobustFTKey, Set<FeatureType>>();
+
 		// first, put all FTs in the Map, with an empty Set of subtypes.
 		for (FeatureType ft : schema) {
 			typeHierarchy.put(new RobustFTKey(ft), new HashSet<FeatureType>());
 		}
-		
-		// second, walk all FTs and register them as subtypes to their supertypes.
+
+		// second, walk all FTs and register them as subtypes to their
+		// supertypes.
 		for (RobustFTKey ftk : typeHierarchy.keySet()) {
 			if (ftk.getFeatureType().getSuper() != null) {
-				Set<FeatureType> subtypes = typeHierarchy.get(
-						new RobustFTKey((FeatureType) ftk.getFeatureType().getSuper()));
+				Set<FeatureType> subtypes = typeHierarchy.get(new RobustFTKey(
+						(FeatureType) ftk.getFeatureType().getSuper()));
 				if (subtypes != null) {
 					subtypes.add(ftk.getFeatureType());
-					_log.debug("Supertype was added: " + ftk.getFeatureType().getSuper());
-				}
-				else {
-					_log.warn("Subtypes-Set was null. Supertype should have " +
-							"been added, but wasn't, probably because of an " +
-							"unstable Feature Name + Namespace.");
+					_log.debug("Supertype was added: "
+							+ ftk.getFeatureType().getSuper());
+				} else {
+					_log.warn("Subtypes-Set was null. Supertype should have "
+							+ "been added, but wasn't, probably because of an "
+							+ "unstable Feature Name + Namespace.");
 				}
 			}
 		}
-		// finally, build the tree, starting with those types that don't have supertypes.
+		// finally, build the tree, starting with those types that don't have
+		// supertypes.
 		for (RobustFTKey ftk : typeHierarchy.keySet()) {
 			if (ftk.getFeatureType().getSuper() == null) {
 				root.addChild(this.buildSchemaTree(ftk, typeHierarchy));
 			}
 		}
-		
-		// TODO show references to Properties which are FTs already added as links.
+
+		// TODO show references to Properties which are FTs already added as
+		// links.
 		return hidden_root;
 	}
-	
+
 	/**
 	 * Recursive method for setting up the inheritance tree.
-	 * @param type the type to start the hierarchy from.
-	 * @param typeHierarchy the Map containing all subtypes for all FTs.
-	 * @return a {@link TreeObject} that contains all Properties and all 
-	 * subtypes and their property, starting with the given FT.
+	 * 
+	 * @param type
+	 *            the type to start the hierarchy from.
+	 * @param typeHierarchy
+	 *            the Map containing all subtypes for all FTs.
+	 * @return a {@link TreeObject} that contains all Properties and all
+	 *         subtypes and their property, starting with the given FT.
 	 */
-	private TreeObject buildSchemaTree(
-			RobustFTKey ftk, Map<RobustFTKey, Set<FeatureType>> typeHierarchy) {
+	private TreeObject buildSchemaTree(RobustFTKey ftk,
+			Map<RobustFTKey, Set<FeatureType>> typeHierarchy) {
 		TreeObjectType tot = TreeObjectType.CONCRETE_FT;
-		if (ftk.getFeatureType().isAbstract() || ftk.getFeatureType().getSuper() == null) {
+		if (ftk.getFeatureType().isAbstract()
+				|| ftk.getFeatureType().getSuper() == null) {
 			tot = TreeObjectType.ABSTRACT_FT;
 		}
-		TreeParent result = new TreeParent(ftk.getFeatureType().getName().getLocalPart(), tot);
+		TreeParent result = new TreeParent(ftk.getFeatureType().getName()
+				.getLocalPart(), tot);
 		// add properties
 		for (PropertyDescriptor pd : ftk.getFeatureType().getDescriptors()) {
 			tot = TreeObjectType.SIMPLE_ATTRIBUTE;
 			if (pd.getType().toString().matches("^.*?GMLComplexTypes.*")) {
 				tot = TreeObjectType.GEOMETRIC_ATTRIBUTE;
-			}
-			else if (Arrays.asList(pd.getType().getClass().getInterfaces()).contains(
-					org.opengis.feature.type.GeometryType.class)) {
+			} else if (Arrays.asList(pd.getType().getClass().getInterfaces())
+					.contains(org.opengis.feature.type.GeometryType.class)) {
 				tot = TreeObjectType.GEOMETRIC_ATTRIBUTE;
-			}
-			else if (Arrays.asList(pd.getType().getClass().getInterfaces()).contains(
-					org.opengis.feature.type.ComplexType.class)) {
+			} else if (Arrays.asList(pd.getType().getClass().getInterfaces())
+					.contains(org.opengis.feature.type.ComplexType.class)) {
 				tot = TreeObjectType.COMPLEX_ATTRIBUTE;
 			}
-			result.addChild(
-					new TreeObject(pd.getName().getLocalPart() + ":" 
-							+ pd.getType().toString().replaceFirst(
-									"^.*?<", "<"), tot));
+			result.addChild(new TreeObject(pd.getName().getLocalPart() + ":"
+					+ pd.getType().toString().replaceFirst("^.*?<", "<"), tot));
 		}
 		// add children recursively
 		for (FeatureType ft : typeHierarchy.get(ftk)) {
-			result.addChild(this.buildSchemaTree(
-					new RobustFTKey(ft), typeHierarchy));
+			result.addChild(this.buildSchemaTree(new RobustFTKey(ft),
+					typeHierarchy));
 		}
 		return result;
 	}
@@ -304,16 +314,22 @@ public class ModelNavigationView
 		}
 
 		if (tree.getSelection() != null && tree.getSelection().length > 0) {
-			selectedItem = tree.getSelection()[0];
 
-			// if selected Item is no attribute
-			if (!selectedItem.getImage().equals(
-					PlatformUI.getWorkbench().getSharedImages().getImage(
-							ISharedImages.IMG_OBJ_ELEMENT))) {
+			//updates attribute view for each selected item in case multiple selection
+			for (TreeItem treeItem : tree.getSelection()) {
+				selectedItem = treeItem;
+
+				// if selected Item is no attribute
+				/*
+				 * ap: if block returns always true if
+				 * (!selectedItem.getImage().equals(
+				 * PlatformUI.getWorkbench().getSharedImages().getImage(
+				 * ISharedImages.IMG_OBJ_ELEMENT))) {
+				 */
 				// if selection changed in sourceSchemaViewer
 				if (targetViewName.equals(SOURCE_MODEL_ID)) {
 					// if not tree root
-					if (!selectedItem.getText().equals("ROOT")) { // FIXME
+					if (!(selectedItem.getParentItem() == null)) {
 						attributeView.updateView(true, selectedItem.getText(),
 								selectedItem.getItems());
 					}
@@ -321,7 +337,7 @@ public class ModelNavigationView
 				// if selection changed in targetSchemaViewer
 				else {
 					// if not tree root
-					if (!selectedItem.getText().equals("ROOT")) { // FIXME
+					if (!(selectedItem.getParentItem() == null)) {
 						attributeView.updateView(false, selectedItem.getText(),
 								selectedItem.getItems());
 					}
@@ -331,11 +347,11 @@ public class ModelNavigationView
 	}
 
 	public void update() {
-		this.sourceSchemaViewer.setInput(
-				this.translateSchema(schemaService.getSourceSchema()));
+		this.sourceSchemaViewer.setInput(this.translateSchema(schemaService
+				.getSourceSchema()));
 		this.sourceSchemaViewer.refresh();
-		this.targetSchemaViewer.setInput(
-				this.translateSchema(schemaService.getTargetSchema()));
+		this.targetSchemaViewer.setInput(this.translateSchema(schemaService
+				.getTargetSchema()));
 		this.targetSchemaViewer.refresh();
 	}
 
