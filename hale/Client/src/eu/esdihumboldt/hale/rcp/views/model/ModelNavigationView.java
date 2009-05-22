@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -138,6 +139,11 @@ public class ModelNavigationView extends ViewPart implements
 
 		ToolBarManager manager = new ToolBarManager(schemaFilterBar);
 		manager.add(new UseInheritanceHierarchyAction());
+		manager.add(new UseAggregationHierarchyAction());
+		manager.add(new UseFlatHierarchyAction());
+		manager.add(new Separator());
+		manager.add(new ToggleShowStringsAction());
+		manager.add(new ToggleShowGeometryAction());
 		manager.update(false);
 	}
 
