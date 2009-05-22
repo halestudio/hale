@@ -2,21 +2,27 @@ package eu.esdihumboldt.hale.rcp.views.model;
 
 
 
+
+
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Device;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -84,6 +90,35 @@ public class AttributeView extends ViewPart {
 		gData.grabExcessHorizontalSpace = true;
 		gData.grabExcessVerticalSpace = true;
 		sourceAttributeList.setLayoutData(gData);
+		//Allow data to be linked from the drag source
+		int operations = DND.DROP_LINK;
+		DragSource source = new DragSource(sourceAttributeList,operations);
+		//provide data in Text format
+		Transfer[] types = new Transfer[]{TextTransfer.getInstance()};
+		source.setTransfer(types);
+		source.addDragListener(new DragSourceListener() {
+				   public void dragStart(DragSourceEvent event) {
+			 	     System.out.println("drag start");
+					   // Only start the drag if some attribute selected
+			 	     System.out.println("selected element: " + sourceAttributeList.getSelection()[0]);
+			 	      if (sourceAttributeList.getSelection()[0]==null){
+			 	               event.doit = false;
+				      }
+			 	      else event.detail = DND.DROP_LINK;
+			 	   }
+			 	   public void dragSetData(DragSourceEvent event) {
+			 	    System.out.println("drag set data");
+			 		   // Provide the data of the requested type.
+			 	     if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
+			 	          event.data = sourceAttributeList.getSelection()[0];
+			 	     }
+			 	   }
+			 	   public void dragFinished(DragSourceEvent event) {
+			 		   System.out.println("Drag Finished");
+			 	    
+			 	   }
+			 	});
+		
 
 		/*Label placeHolder = new Label(modelComposite, SWT.NONE);
 		gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL
@@ -116,6 +151,42 @@ public class AttributeView extends ViewPart {
 		gData.grabExcessHorizontalSpace = true;
 		gData.grabExcessVerticalSpace = true;
 		targetAttributeList.setLayoutData(gData);
+		// Allow data to be linked to the drop target
+		operations = DND.DROP_LINK;
+		DropTarget target = new DropTarget(targetAttributeList, operations);
+		// Receive data in Text format
+		final TextTransfer textTransfer = TextTransfer.getInstance();
+		types = new Transfer[] {textTransfer};
+		target.setTransfer(types);
+		target.addDropListener(new DropTargetListener() {
+			
+			  public void dragEnter(DropTargetEvent event) {
+				  System.out.println("dragEnter");
+				  event.detail = DND.DROP_LINK;
+			 	     
+			 	   }
+			 	   public void dragOver(DropTargetEvent event) {
+			 		   System.out.println("dragOver");
+			 	        
+			 	    }
+			 	    public void dragOperationChanged(DropTargetEvent event) {
+			 	        
+			 	    }
+			 	    public void dragLeave(DropTargetEvent event) {
+			 	    	System.out.println("dragLeave");
+			 	    }
+			 	    public void dropAccept(DropTargetEvent event) {
+			 	    	System.out.println("dropAccept");
+			 	    }
+			 	    public void drop(DropTargetEvent event) {
+			 	       System.out.println("drop");
+			 	    	if (textTransfer.isSupportedType(event.currentDataType)) {
+			                String text = (String)event.data;
+			 	           System.out.println(text);
+			 	        }
+			 	        
+			 	    }
+			 	});
 	}
 
 	/**
