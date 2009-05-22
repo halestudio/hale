@@ -13,8 +13,7 @@ package eu.esdihumboldt.workflow.repository;
 
 import eu.esdihumboldt.mediator.TypeKey;
 import eu.esdihumboldt.mediator.constraints.Constraint;
-import eu.esdihumboldt.workflow.processdescription.ProcessBrief;
-import eu.esdihumboldt.workflow.transformer.inputoutputs.ComplexData;
+import eu.esdihumboldt.workflow.processdescription.Description;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.ComplexDataInput;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.LiteralDataInput;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.ProcessInput;
@@ -180,7 +179,7 @@ public interface Transformer extends Serializable{
      * retrieves the description of this Transformer process
      * @return
      */
-    public ProcessBrief getProcessBrief();
+    public Description getProcessDescription();
 
     /**
      * returns the unique id of this Transformer
@@ -195,7 +194,8 @@ public interface Transformer extends Serializable{
     public ProcessType getType();
     /**
      *
-     * @return The constraint type that this Transfomer transforms
+     * @return The constraint type that this Transfomer transforms or a default
+     * TransformerType
      */
     public TypeKey getTransformationType();
     
