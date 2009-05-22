@@ -318,19 +318,14 @@ public class ModelNavigationView extends ViewPart implements
 			// set counter for the FeatureType to use for the attribure
 			// declaration in the AttributeView
 			int itemNumber = 0;
-
+            boolean wasExpanded = true;
 			// updates attribute view for each selected item in case multiple
 			// selection
 			for (TreeItem treeItem : tree.getSelection()) {
 				itemNumber++;
 				selectedItem = treeItem;
 
-				// select all attributes of the feature type even if it is not
-				// expand
-				if (!selectedItem.getExpanded()) {
-					selectedItem.setExpanded(true);
-					sourceSchemaViewer.refresh();  
-				}
+				
 
 				// if selected Item is no attribute
 				/*
@@ -341,23 +336,45 @@ public class ModelNavigationView extends ViewPart implements
 				 */
 				// if selection changed in sourceSchemaViewer
 				if (targetViewName.equals(SOURCE_MODEL_ID)) {
+					// select all attributes of the feature type even if it is not
+					// expand
+					if (!selectedItem.getExpanded()) {
+						selectedItem.setExpanded(true);
+						sourceSchemaViewer.refresh();  
+						wasExpanded = false;
+					}
+					
 					// if not tree root
 					if (!(selectedItem.getParentItem() == null)) {
 						attributeView.updateView(true, selectedItem.getText(),
 								selectedItem.getItems(), itemNumber);
 					}
+					if (!wasExpanded){
+						selectedItem.setExpanded(false);
+					    sourceSchemaViewer.refresh();  
+					}    
 				}
 				// if selection changed in targetSchemaViewer
 				else {
+					// select all attributes of the feature type even if it is not
+					// expand
+					if (!selectedItem.getExpanded()) {
+						selectedItem.setExpanded(true);
+						targetSchemaViewer.refresh();  
+						wasExpanded = false;
+					}
 					// if not tree root
 					if (!(selectedItem.getParentItem() == null)) {
 						attributeView.updateView(false, selectedItem.getText(),
 								selectedItem.getItems(), itemNumber);
-					}					
+					}	
+					if (!wasExpanded){
+						selectedItem.setExpanded(false);
+					    targetSchemaViewer.refresh();  
+					}    
 				}
-               //collapse selected item 
-				selectedItem.setExpanded(false);
-				sourceSchemaViewer.refresh();  
+               //collapse selected item  if was not expanded before selection
+				
 			}
 		}
 	}

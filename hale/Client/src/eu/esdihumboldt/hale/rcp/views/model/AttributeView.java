@@ -5,10 +5,13 @@ package eu.esdihumboldt.hale.rcp.views.model;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Device;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.TreeItem;
@@ -28,6 +31,8 @@ import org.eclipse.ui.part.ViewPart;
 public class AttributeView extends ViewPart {
 
 	public static final String ID = "eu.esdihumboldt.hale.rcp.views.model.AttributeView";
+
+	private static final String FEATURE_TYPE_SUFFIX = "Type";
 
 	// List for the attributes from the selected User Model class
 	private List sourceAttributeList;
@@ -128,13 +133,18 @@ public class AttributeView extends ViewPart {
 	 *            the number of the class in the tree displyed in the ModelNavigationView         
 	 */
 	public void updateView(boolean _viewer, String _classname, TreeItem[] _items, int _classnameNumber) {
-
+		
+		
 		if (_viewer == true) {
 			sourceModelLabel.setText(_classname);
 			// if selected item no attribute
 			if (_items.length!=0) {
 				for (TreeItem item : _items) {
+					
+					//display item in the attribute list only if attribute
+					if(!item.getText().endsWith(FEATURE_TYPE_SUFFIX)){
 					sourceAttributeList.add(_classnameNumber+":" +item.getText());
+					}
 				}
 			} else {
 				sourceAttributeList.add(_classname);
@@ -144,7 +154,12 @@ public class AttributeView extends ViewPart {
 			// if selected item no attribute
 			if (_items.length!=0) {
 				for (TreeItem item : _items) {
-					targetAttributeList.add(_classnameNumber+":" +item.getText());
+					
+					//display item in the attribute list only if attribute
+					if(!item.getText().endsWith(FEATURE_TYPE_SUFFIX))
+					{
+						targetAttributeList.add(_classnameNumber+":" +item.getText());
+					}
 				}
 			} else {
 				targetAttributeList.add(_classname);
