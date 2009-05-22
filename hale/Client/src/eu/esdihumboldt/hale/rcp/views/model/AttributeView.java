@@ -1,8 +1,13 @@
 package eu.esdihumboldt.hale.rcp.views.model;
 
+
+
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
@@ -32,6 +37,8 @@ public class AttributeView extends ViewPart {
 	private Label sourceModelLabel;
 	// Label for the class name selected in ModelnavigationView target Model.
 	private Label targetModelLabel;
+	// Button to open FunctionWizard
+	private Button selectFunctionButton;
 
 	@Override
 	public void createPartControl(Composite _parent) {
@@ -73,11 +80,30 @@ public class AttributeView extends ViewPart {
 		gData.grabExcessVerticalSpace = true;
 		sourceAttributeList.setLayoutData(gData);
 
-		Label placeHolder = new Label(modelComposite, SWT.NONE);
+		/*Label placeHolder = new Label(modelComposite, SWT.NONE);
 		gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.VERTICAL_ALIGN_FILL);
-		placeHolder.setLayoutData(gData);
+		placeHolder.setLayoutData(gData);*/
 
+		selectFunctionButton = new Button(modelComposite, SWT.PUSH);
+		selectFunctionButton.setText("Select Function");
+		gData = new GridData(GridData.HORIZONTAL_ALIGN_CENTER |GridData.VERTICAL_ALIGN_CENTER);
+		selectFunctionButton.setLayoutData(gData);
+		selectFunctionButton.addSelectionListener(new SelectionListener(){
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				selectFunctionButton.setText(sourceAttributeList.getSelection()[0]);
+				
+			}
+			
+		});
 		targetAttributeList = new List(modelComposite, SWT.BORDER
 				| SWT.H_SCROLL | SWT.V_SCROLL);
 		gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL
@@ -98,15 +124,17 @@ public class AttributeView extends ViewPart {
 	 * @param _classname
 	 *            the name of the class that should be displayed in the
 	 *            corresponding Label
+	 * @param _classnameNumber 
+	 *            the number of the class in the tree displyed in the ModelNavigationView         
 	 */
-	public void updateView(boolean _viewer, String _classname, TreeItem[] _items) {
+	public void updateView(boolean _viewer, String _classname, TreeItem[] _items, int _classnameNumber) {
 
 		if (_viewer == true) {
 			sourceModelLabel.setText(_classname);
 			// if selected item no attribute
 			if (_items.length!=0) {
 				for (TreeItem item : _items) {
-					sourceAttributeList.add(item.getText());
+					sourceAttributeList.add(_classnameNumber+":" +item.getText());
 				}
 			} else {
 				sourceAttributeList.add(_classname);
@@ -116,7 +144,7 @@ public class AttributeView extends ViewPart {
 			// if selected item no attribute
 			if (_items.length!=0) {
 				for (TreeItem item : _items) {
-					targetAttributeList.add(item.getText());
+					targetAttributeList.add(_classnameNumber+":" +item.getText());
 				}
 			} else {
 				targetAttributeList.add(_classname);

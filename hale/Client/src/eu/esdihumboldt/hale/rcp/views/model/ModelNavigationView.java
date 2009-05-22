@@ -315,9 +315,22 @@ public class ModelNavigationView extends ViewPart implements
 
 		if (tree.getSelection() != null && tree.getSelection().length > 0) {
 
-			//updates attribute view for each selected item in case multiple selection
+			// set counter for the FeatureType to use for the attribure
+			// declaration in the AttributeView
+			int itemNumber = 0;
+
+			// updates attribute view for each selected item in case multiple
+			// selection
 			for (TreeItem treeItem : tree.getSelection()) {
+				itemNumber++;
 				selectedItem = treeItem;
+
+				// select all attributes of the feature type even if it is not
+				// expand
+				if (!selectedItem.getExpanded()) {
+					selectedItem.setExpanded(true);
+					sourceSchemaViewer.refresh();  
+				}
 
 				// if selected Item is no attribute
 				/*
@@ -331,7 +344,7 @@ public class ModelNavigationView extends ViewPart implements
 					// if not tree root
 					if (!(selectedItem.getParentItem() == null)) {
 						attributeView.updateView(true, selectedItem.getText(),
-								selectedItem.getItems());
+								selectedItem.getItems(), itemNumber);
 					}
 				}
 				// if selection changed in targetSchemaViewer
@@ -339,9 +352,12 @@ public class ModelNavigationView extends ViewPart implements
 					// if not tree root
 					if (!(selectedItem.getParentItem() == null)) {
 						attributeView.updateView(false, selectedItem.getText(),
-								selectedItem.getItems());
-					}
+								selectedItem.getItems(), itemNumber);
+					}					
 				}
+               //collapse selected item 
+				selectedItem.setExpanded(false);
+				sourceSchemaViewer.refresh();  
 			}
 		}
 	}
