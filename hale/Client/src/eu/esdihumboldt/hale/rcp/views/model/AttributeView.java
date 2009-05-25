@@ -1,9 +1,5 @@
 package eu.esdihumboldt.hale.rcp.views.model;
 
-
-
-
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
@@ -25,15 +21,17 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.part.ViewPart;
 
 /**
  * The {@link AttributeView_copy} displays the attributes from the selected data
- * class in the {@link ModelNavigationView}. The {@link AttributeView_copy} consist
- * of the Labels for the names of the selected data classes and the operator
- * between them and Lists for the attributes.
+ * class in the {@link ModelNavigationView}. The {@link AttributeView_copy}
+ * consist of the Labels for the names of the selected data classes and the
+ * operator between them and Lists for the attributes.
  * 
  * @author Thorsten Reitz
  * @version $Id$
@@ -45,9 +43,9 @@ public class AttributeView extends ViewPart {
 	private static final String FEATURE_TYPE_SUFFIX = "Type";
 
 	// List for the attributes from the selected User Model class
-	private List sourceAttributeList;
+	private Table sourceAttributeList;
 	// List for the attributes from the selected INSPIRE Model class
-	private List targetAttributeList;
+	private Table targetAttributeList;
 	// Label for the class name selected in ModelnavigationView source Model
 	private Label sourceModelLabel;
 	// Label for the class name selected in ModelnavigationView target Model.
@@ -63,183 +61,206 @@ public class AttributeView extends ViewPart {
 		layout.verticalSpacing = 6;
 		layout.horizontalSpacing = 3;
 		modelComposite.setLayout(layout);
-		
-		
-		/*layout.marginHeight = 10;
-		layout.marginWidth = 5;*/
-		/*layout.numColumns = 2;
-		layout.makeColumnsEqualWidth = true;*/
-//		layout.verticalSpacing = 20;
-//		layout.horizontalSpacing = 10;
-		
+
+		/*
+		 * layout.marginHeight = 10; layout.marginWidth = 5;
+		 */
+		/*
+		 * layout.numColumns = 2; layout.makeColumnsEqualWidth = true;
+		 */
+		// layout.verticalSpacing = 20;
+		// layout.horizontalSpacing = 10;
 
 		Composite sourceComposite = new Composite(modelComposite, SWT.BEGINNING);
 		sourceComposite.setLayout(new GridLayout(1, false));
 		sourceComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
-		
-		//GridData gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+
+		// GridData gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
 
 		sourceModelLabel = new Label(sourceComposite, SWT.CENTER);
-		
-		GridData gData = new GridData(SWT.FILL, SWT.FILL, true,
-				false);
+
+		GridData gData = new GridData(SWT.FILL, SWT.FILL, true, false);
 		sourceModelLabel.setLayoutData(gData);
 
-	/*	Label operatorLabel = new Label(modelComposite, SWT.NONE);
-		gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL
-				| GridData.VERTICAL_ALIGN_FILL);
-		gData.horizontalAlignment = SWT.CENTER;
-		operatorLabel.setText("placeholder");
-		operatorLabel.setLayoutData(gData);
-*/
+		/*
+		 * Label operatorLabel = new Label(modelComposite, SWT.NONE); gData =
+		 * new GridData(GridData.HORIZONTAL_ALIGN_FILL |
+		 * GridData.VERTICAL_ALIGN_FILL); gData.horizontalAlignment =
+		 * SWT.CENTER; operatorLabel.setText("placeholder");
+		 * operatorLabel.setLayoutData(gData);
+		 */
 		Composite targetComposite = new Composite(modelComposite, SWT.BEGINNING);
 		targetComposite.setLayout(new GridLayout(1, false));
 		targetComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
 		targetModelLabel = new Label(targetComposite, SWT.CENTER);
-	    gData = new GridData(SWT.FILL, SWT.FILL, true,
-				false);
-		
+		gData = new GridData(SWT.FILL, SWT.FILL, true, false);
+
 		targetModelLabel.setLayoutData(gData);
 
-		
 		this.sourceAttributeList = this.attributeListSetup(sourceComposite);
-		
-		
-		/*gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL
-				| GridData.VERTICAL_ALIGN_FILL);
-		gData.grabExcessHorizontalSpace = true;
-		gData.grabExcessVerticalSpace = true;*/
-       /* gData = new GridData(SWT.FILL, SWT.FILL, true,
-				false);
-    	sourceAttributeList.setLayoutData(gData);*/
-		//Allow data to be linked from the drag source
+
+		/*
+		 * gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL |
+		 * GridData.VERTICAL_ALIGN_FILL); gData.grabExcessHorizontalSpace =
+		 * true; gData.grabExcessVerticalSpace = true;
+		 */
+		/*
+		 * gData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		 * sourceAttributeList.setLayoutData(gData);
+		 */
+		// Allow data to be linked from the drag source
 		int operations = DND.DROP_LINK;
-		DragSource source = new DragSource(sourceAttributeList,operations);
-		//provide data in Text format
-		Transfer[] types = new Transfer[]{TextTransfer.getInstance()};
+
+		DragSource source = new DragSource(sourceAttributeList, operations);
+		// provide data in Text format
+		Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
 		source.setTransfer(types);
 		source.addDragListener(new DragSourceListener() {
-				   public void dragStart(DragSourceEvent event) {
-			 	     System.out.println("drag start");
-					   // Only start the drag if some attribute selected
-			 	     System.out.println("selected element: " + sourceAttributeList.getSelection()[0]);
-			 	      if (sourceAttributeList.getSelection()[0]==null){
-			 	               event.doit = false;
-				      }
-			 	      else event.detail = DND.DROP_LINK;
-			 	   }
-			 	   public void dragSetData(DragSourceEvent event) {
-			 	    System.out.println("drag set data");
-			 		   // Provide the data of the requested type.
-			 	     if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
-			 	          event.data = sourceAttributeList.getSelection()[0];
-			 	          
-			 	     }
-			 	   }
-			 	   public void dragFinished(DragSourceEvent event) {
-			 		   System.out.println("Drag Finished");
-			 	    
-			 	   }
-			 	});
-		
-
-		/*Label placeHolder = new Label(modelComposite, SWT.NONE);
-		gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL
-				| GridData.VERTICAL_ALIGN_FILL);
-		placeHolder.setLayoutData(gData);*/
-
-		//TODO drag and drop or selection button
-		/*selectFunctionButton = new Button(modelComposite, SWT.PUSH);
-		selectFunctionButton.setText("Select Function");
-		gData = new GridData(GridData.HORIZONTAL_ALIGN_CENTER |GridData.VERTICAL_ALIGN_CENTER);
-		selectFunctionButton.setLayoutData(gData);
-		selectFunctionButton.addSelectionListener(new SelectionListener(){
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-				
+			public void dragStart(DragSourceEvent event) {
+				System.out.println("drag start");
+				// Only start the drag if some attribute selected
+				System.out.println("selected element: "
+						+ sourceAttributeList.getSelection()[0]);
+				if (sourceAttributeList.getSelection()[0] == null) {
+					event.doit = false;
+				} else
+					event.detail = DND.DROP_LINK;
 			}
 
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				selectFunctionButton.setText(sourceAttributeList.getSelection()[0]);
-				
+			public void dragSetData(DragSourceEvent event) {
+				System.out.println("drag set data");
+				// Provide the data of the requested type.
+
+				DragSource ds = (DragSource) event.widget;
+				Table table = (Table) ds.getControl();
+				TableItem[] selection = table.getSelection();
+
+				StringBuffer buff = new StringBuffer();
+				System.out.println(selection.length
+						+ " Attributes have been selected");
+				for (int i = 0, n = selection.length; i < n; i++) {
+					buff.append(selection[i].getText());
+				}
+				event.data = buff.toString();
+
+				/*
+				 * if
+				 * (TextTransfer.getInstance().isSupportedType(event.dataType))
+				 * { event.data = sourceAttributeList.getSelection()[0];
+				 * 
+				 * }
+				 */
 			}
-			
-		});*/
-		
-		
-		
+
+			public void dragFinished(DragSourceEvent event) {
+				System.out.println("Drag Finished");
+
+			}
+		});
+
+		/*
+		 * Label placeHolder = new Label(modelComposite, SWT.NONE); gData = new
+		 * GridData(GridData.HORIZONTAL_ALIGN_FILL |
+		 * GridData.VERTICAL_ALIGN_FILL); placeHolder.setLayoutData(gData);
+		 */
+
+		// TODO drag and drop or selection button
+		/*
+		 * selectFunctionButton = new Button(modelComposite, SWT.PUSH);
+		 * selectFunctionButton.setText("Select Function"); gData = new
+		 * GridData(GridData.HORIZONTAL_ALIGN_CENTER
+		 * |GridData.VERTICAL_ALIGN_CENTER);
+		 * selectFunctionButton.setLayoutData(gData);
+		 * selectFunctionButton.addSelectionListener(new SelectionListener(){
+		 * 
+		 * @Override public void widgetDefaultSelected(SelectionEvent e) { //
+		 * TODO Auto-generated method stub
+		 * 
+		 * }
+		 * 
+		 * @Override public void widgetSelected(SelectionEvent e) {
+		 * selectFunctionButton.setText(sourceAttributeList.getSelection()[0]);
+		 * 
+		 * }
+		 * 
+		 * });
+		 */
+
 		targetAttributeList = this.attributeListSetup(targetComposite);
-		/*gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL
-				| GridData.VERTICAL_ALIGN_FILL);
-		gData.grabExcessHorizontalSpace = true;
-		gData.grabExcessVerticalSpace = true;*/
-	/*	gData = new GridData(SWT.FILL, SWT.FILL, true,
-				false);
-		targetAttributeList.setLayoutData(gData);*/
+		/*
+		 * gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL |
+		 * GridData.VERTICAL_ALIGN_FILL); gData.grabExcessHorizontalSpace =
+		 * true; gData.grabExcessVerticalSpace = true;
+		 */
+		/*
+		 * gData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		 * targetAttributeList.setLayoutData(gData);
+		 */
 		// Allow data to be linked to the drop target
 		operations = DND.DROP_LINK;
 		DropTarget target = new DropTarget(targetAttributeList, operations);
-		
+
 		// Receive data in Text format
-		
-//		targetAttributeList.addMouseMoveListener(new MouseMoveListener() {
-//
-//			@Override
-//			public void mouseMove(MouseEvent e) {
-//				targetAttributeList.
-//				
-//			}
-//			
-//		});
-//		
-		
+
+		// targetAttributeList.addMouseMoveListener(new MouseMoveListener() {
+		//
+		// @Override
+		// public void mouseMove(MouseEvent e) {
+		// targetAttributeList.
+		//				
+		// }
+		//			
+		// });
+		//		
+
 		final TextTransfer textTransfer = TextTransfer.getInstance();
-		types = new Transfer[] {textTransfer};
+		types = new Transfer[] { textTransfer };
 		target.setTransfer(types);
 		target.addDropListener(new DropTargetListener() {
-			
-			  public void dragEnter(DropTargetEvent event) {
-				  System.out.println("dragEnter");
-				  event.detail = DND.FEEDBACK_INSERT_AFTER;
-				  
-			 	     
-			 	   }
-			 	   public void dragOver(DropTargetEvent event) {
-			 		   System.out.println("dragOver");
-			 	        
-			 	    }
-			 	    public void dragOperationChanged(DropTargetEvent event) {
-			 	        
-			 	    }
-			 	    public void dragLeave(DropTargetEvent event) {
-			 	    	System.out.println("dragLeave");
-			 	    }
-			 	    public void dropAccept(DropTargetEvent event) {
-			 	    	System.out.println("dropAccept");
-			 	    }
-			 	    public void drop(DropTargetEvent event) {
-			 	       System.out.println("drop");
-			 	    	if (textTransfer.isSupportedType(event.currentDataType)) {
-			                String srcText = (String)event.data;
-			                //String targetText = targetAttributeList.getSelection()[0];
-			                System.out.println(srcText);
-			                DropTarget target = (DropTarget)event.widget;
-			                Text text = (Text)target.getControl().getData();
-			                System.out.println(text);
-			                              
-			 	           
-			 	        }
-			 	        
-			 	    }
-			 	});
+
+			public void dragEnter(DropTargetEvent event) {
+				System.out.println("dragEnter");
+				event.detail = DND.FEEDBACK_INSERT_AFTER;
+
+			}
+
+			public void dragOver(DropTargetEvent event) {
+				System.out.println("dragOver");
+
+			}
+
+			public void dragOperationChanged(DropTargetEvent event) {
+
+			}
+
+			public void dragLeave(DropTargetEvent event) {
+				System.out.println("dragLeave");
+			}
+
+			public void dropAccept(DropTargetEvent event) {
+				System.out.println("dropAccept");
+			}
+
+			public void drop(DropTargetEvent event) {
+				System.out.println("drop");
+				if (textTransfer.isSupportedType(event.currentDataType)) {
+					DropTarget target = (DropTarget) event.widget;
+					Table table = (Table) target.getControl();
+					TableItem targetAttribute = (TableItem) event.item;
+					String data = (String) event.data;
+					// TODO replace with wizard call
+					System.out.println("Source Attributes: " + data);
+					System.out.println("Target Attributes: " + targetAttribute.getText());
+
+				}
+
+			}
+		});
 	}
 
-	private List attributeListSetup(Composite attributeComposite) {
+	private Table attributeListSetup(Composite attributeComposite) {
 		Composite viewerLComposite = new Composite(attributeComposite, SWT.NONE);
 		FillLayout fLayout = new FillLayout();
 		viewerLComposite.setLayout(fLayout);
@@ -250,9 +271,9 @@ public class AttributeView extends ViewPart {
 		gData.grabExcessVerticalSpace = true;
 		gData.verticalIndent = 12;
 		viewerLComposite.setLayoutData(gData);
-		List attributeList = new List(viewerLComposite, SWT.BORDER
-				| SWT.H_SCROLL | SWT.V_SCROLL);
-		
+		Table attributeList = new Table(viewerLComposite, SWT.BORDER
+				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
+
 		return attributeList;
 	}
 
@@ -267,40 +288,57 @@ public class AttributeView extends ViewPart {
 	 * @param _classname
 	 *            the name of the class that should be displayed in the
 	 *            corresponding Label
-	 * @param _classnameNumber 
-	 *            the number of the class in the tree displyed in the ModelNavigationView         
+	 * @param _classnameNumber
+	 *            the number of the class in the tree displyed in the
+	 *            ModelNavigationView
 	 */
-	public void updateView(boolean _viewer, String _classname, TreeItem[] _items, int _classnameNumber) {
-		
-		
+	public void updateView(boolean _viewer, String _classname,
+			TreeItem[] _items, int _classnameNumber) {
+
 		if (_viewer == true) {
 			sourceModelLabel.setText(_classname);
 			// if selected item no attribute
-			if (_items.length!=0) {
+			if (_items.length != 0) {
 				for (TreeItem item : _items) {
-					
-					//display item in the attribute list only if attribute
-					if(!item.getText().endsWith(FEATURE_TYPE_SUFFIX)){
-					sourceAttributeList.add(_classnameNumber+":" +item.getText());
+
+					// display item in the attribute list only if attribute
+					if (!item.getText().endsWith(FEATURE_TYPE_SUFFIX)) {
+						TableItem listItem = new TableItem(
+								this.sourceAttributeList, SWT.NONE);
+						listItem.setText(_classnameNumber + ":"
+								+ item.getText());
+						// sourceAttributeList.add(_classnameNumber+":"
+						// +item.getText());
+
 					}
 				}
 			} else {
-				sourceAttributeList.add(_classname);
+				TableItem listItem = new TableItem(this.sourceAttributeList,
+						SWT.NONE);
+				listItem.setText(_classname);
 			}
 		} else {
 			targetModelLabel.setText(_classname);
 			// if selected item no attribute
-			if (_items.length!=0) {
+			if (_items.length != 0) {
 				for (TreeItem item : _items) {
-					
-					//display item in the attribute list only if attribute
-					if(!item.getText().endsWith(FEATURE_TYPE_SUFFIX))
-					{
-						targetAttributeList.add(_classnameNumber+":" +item.getText());
+
+					// display item in the attribute list only if attribute
+					if (!item.getText().endsWith(FEATURE_TYPE_SUFFIX)) {
+						TableItem listItem = new TableItem(
+								this.targetAttributeList, SWT.NONE);
+						listItem.setText(_classnameNumber + ":"
+								+ item.getText());
+						// targetAttributeList.add(_classnameNumber+":"
+						// +item.getText());
 					}
 				}
 			} else {
-				targetAttributeList.add(_classname);
+				TableItem listItem = new TableItem(this.sourceAttributeList,
+						SWT.NONE);
+				listItem.setText(_classname);
+
+				// targetAttributeList.add();
 			}
 		}
 	}
