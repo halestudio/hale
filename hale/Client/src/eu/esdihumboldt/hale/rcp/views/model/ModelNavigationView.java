@@ -1,10 +1,11 @@
 package eu.esdihumboldt.hale.rcp.views.model;
 
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,10 +27,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPartSite;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
@@ -37,6 +36,11 @@ import org.opengis.feature.type.PropertyDescriptor;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
+import eu.esdihumboldt.hale.rcp.views.model.filtering.PatternViewFilter;
+import eu.esdihumboldt.hale.rcp.views.model.filtering.SimpleToggleAction;
+import eu.esdihumboldt.hale.rcp.views.model.filtering.UseAggregationHierarchyAction;
+import eu.esdihumboldt.hale.rcp.views.model.filtering.UseFlatHierarchyAction;
+import eu.esdihumboldt.hale.rcp.views.model.filtering.UseInheritanceHierarchyAction;
 
 /**
  * This view component handles the display of source and target schemas.
@@ -53,7 +57,7 @@ public class ModelNavigationView extends ViewPart implements
 	private static final String TARGET_MODEL_ID = "target";
 
 	/**
-	 * Used to access the SchemaService.
+	 * FIXME find better solution. Used to access the SchemaService.
 	 */
 	public static IWorkbenchPartSite site;
 
@@ -64,6 +68,9 @@ public class ModelNavigationView extends ViewPart implements
 
 	private Text sourceFilterText;
 	private Text targetFilterText;
+	
+	private PatternViewFilter sourceSchemaFilter;
+	private PatternViewFilter targetSchemaFilter;
 
 	/**
 	 * A reference to the {@link SchemaService} which serves as model for this
@@ -79,55 +86,87 @@ public class ModelNavigationView extends ViewPart implements
 		schemaService = (SchemaService) this.getSite().getService(
 				SchemaService.class);
 		schemaService.addListener(this);
+		
+		this.sourceSchemaFilter = new PatternViewFilter();
+		this.targetSchemaFilter = new PatternViewFilter();
 
 		Composite modelComposite = new Composite(_parent, SWT.BEGINNING);
 		GridLayout layout = new GridLayout(2, true);
 		layout.verticalSpacing = 6;
 		layout.horizontalSpacing = 3;
 		modelComposite.setLayout(layout);
+		
+		List<SimpleToggleAction> sourceToggleActions = this.getToggleActions(
+				this.sourceSchemaFilter);
+		List<SimpleToggleAction> targetToggleActions = this.getToggleActions(
+				this.targetSchemaFilter);
 
 		// source schema toolbar, filter and explorer
 		Composite sourceComposite = new Composite(modelComposite, SWT.BEGINNING);
 		sourceComposite.setLayout(new GridLayout(1, false));
 		sourceComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
-		this.initSchemaExplorerToolBar(sourceComposite);
+		this.initSchemaExplorerToolBar(sourceComposite, this.sourceSchemaFilter, 
+				sourceToggleActions);
 		this.sourceFilterText = new Text(sourceComposite, SWT.NONE | SWT.BORDER);
 		this.sourceFilterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
 				true, false));
 		this.sourceFilterText.setText("");
+		this.sourceSchemaFilter.setText(this.sourceFilterText);
 		this.sourceSchemaViewer = this.schemaExplorerSetup(sourceComposite,
 				schemaService.getSourceSchema(), SOURCE_MODEL_ID);
-		this.sourceSchemaViewer.addFilter(new PatternViewFilter(
-				this.sourceFilterText));
+		this.sourceSchemaViewer.addFilter(this.sourceSchemaFilter);
 		this.sourceFilterText.addListener(SWT.FocusOut, new Listener() {
 			public void handleEvent(Event e) {
 				sourceSchemaViewer.refresh();
 			}
 		});
+		for (SimpleToggleAction sta : sourceToggleActions) {
+			sta.setActionTarget(this.sourceSchemaViewer);
+		}
 
 		// target schema toolbar, filter and explorer
 		Composite targetComposite = new Composite(modelComposite, SWT.BEGINNING);
 		targetComposite.setLayout(new GridLayout(1, false));
 		targetComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
-		this.initSchemaExplorerToolBar(targetComposite);
+		this.initSchemaExplorerToolBar(targetComposite, this.targetSchemaFilter, 
+				targetToggleActions);
 		this.targetFilterText = new Text(targetComposite, SWT.NONE | SWT.BORDER);
 		this.targetFilterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
 				true, false));
 		this.targetFilterText.setText("");
+		this.targetSchemaFilter.setText(this.targetFilterText);
 		this.targetSchemaViewer = this.schemaExplorerSetup(targetComposite,
 				schemaService.getTargetSchema(), TARGET_MODEL_ID);
-		this.targetSchemaViewer.addFilter(new PatternViewFilter(
-				this.targetFilterText));
+		
+		this.targetSchemaViewer.addFilter(this.targetSchemaFilter);
 		this.targetFilterText.addListener(SWT.FocusOut, new Listener() {
 			public void handleEvent(Event e) {
 				targetSchemaViewer.refresh();
 			}
 		});
+		for (SimpleToggleAction sta : targetToggleActions) {
+			sta.setActionTarget(this.targetSchemaViewer);
+		}
 	}
 
-	private void initSchemaExplorerToolBar(Composite modelComposite) {
+	private List<SimpleToggleAction> getToggleActions(PatternViewFilter pvf) {
+		List<SimpleToggleAction> result = new ArrayList<SimpleToggleAction>();
+		result.add(new SimpleToggleAction(TreeObjectType.STRING_ATTRIBUTE, 
+				"Hide String Attributes", "Show String Attributes", 
+				"/icons/see_string_attribute.png", pvf));
+		result.add(new SimpleToggleAction(TreeObjectType.GEOMETRIC_ATTRIBUTE, 
+				"Hide Geometry Attributes", "Show Geometry Attributes", 
+				"/icons/see_geometry_attribute.png", pvf));
+		result.add(new SimpleToggleAction(TreeObjectType.NUMERIC_ATTRIBUTE, 
+				"Hide Numeric Attributes", "Show Numeric Attributes", 
+				"/icons/see_number_attribute.png", pvf));
+		return result;
+	}
+
+	private void initSchemaExplorerToolBar(Composite modelComposite, 
+			PatternViewFilter pvf, List<SimpleToggleAction> toggleActions) {
 
 		// create view forms
 		ViewForm schemaViewForm = new ViewForm(modelComposite, SWT.NONE);
@@ -142,8 +181,9 @@ public class ModelNavigationView extends ViewPart implements
 		manager.add(new UseAggregationHierarchyAction());
 		manager.add(new UseFlatHierarchyAction());
 		manager.add(new Separator());
-		manager.add(new ToggleShowStringsAction());
-		manager.add(new ToggleShowGeometryAction());
+		for (SimpleToggleAction sta : toggleActions) {
+			manager.add(sta);
+		}
 		manager.update(false);
 	}
 
@@ -263,7 +303,7 @@ public class ModelNavigationView extends ViewPart implements
 				.getLocalPart(), tot);
 		// add properties
 		for (PropertyDescriptor pd : ftk.getFeatureType().getDescriptors()) {
-			tot = TreeObjectType.SIMPLE_ATTRIBUTE;
+			tot = TreeObjectType.STRING_ATTRIBUTE;
 			if (pd.getType().toString().matches("^.*?GMLComplexTypes.*")) {
 				tot = TreeObjectType.GEOMETRIC_ATTRIBUTE;
 			} else if (Arrays.asList(pd.getType().getClass().getInterfaces())
@@ -321,7 +361,7 @@ public class ModelNavigationView extends ViewPart implements
 
 		if (tree.getSelection() != null && tree.getSelection().length > 0) {
 
-			// set counter for the FeatureType to use for the attribure
+			// set counter for the FeatureType to use for the attribute
 			// declaration in the AttributeView
 			int itemNumber = 0;
             boolean wasExpanded = true;

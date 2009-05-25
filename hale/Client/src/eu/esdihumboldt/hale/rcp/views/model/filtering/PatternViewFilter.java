@@ -9,11 +9,18 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.rcp.views.model;
+package eu.esdihumboldt.hale.rcp.views.model.filtering;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Text;
+
+import eu.esdihumboldt.hale.rcp.views.model.TreeObject;
+import eu.esdihumboldt.hale.rcp.views.model.TreeParent;
+import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 
 /**
  * This {@link ViewerFilter} allows the user to type in any search string to 
@@ -27,40 +34,46 @@ public class PatternViewFilter
 	extends ViewerFilter {
 	
 	private Text text = null;
-	private String namespace = "http://www.openplans.org/topp";
-	
-	public PatternViewFilter(Text text) {
-		this.text = text;
-	}
-	
-	/**
-	 * updates the namespace root node to be protected by this filter.
-	 */
-	public void setNameSpace(String namespace) {
-		this.namespace = namespace;
-	}
+	private Set<TreeObjectType> attribute_filters = new HashSet<TreeObjectType>();
 
 	/**
 	 * @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
 	 */
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
-		if (text == null || text.getText() == null || text.getText().equals("")) {
-			return true;
-		}
-		
 		if (element instanceof TreeObject || element instanceof TreeParent) {
 			TreeObject to = (TreeObject) element;
-			// the namespace node always remains visible.
-			if (to.getName().matches(namespace)) {
+			// the root node always remains visible.
+			if (to.getType().equals(TreeObjectType.ROOT)) {
 				return true;
 			}
 			// other nodes are filtered.
 			// TODO find a way of retaining nodes even when they are under a filtered node.
-			if (to.getName().matches("^.*?" + text.getText() + ".*?")) {
-				return true;
+			if (this.attribute_filters.contains(to.getType())) {
+				return false;
 			}
+			else {
+				if (text == null 
+						|| text.getText() == null 
+						|| text.getText().equals("")
+						|| to.getName().matches("^.*?" + text.getText() + ".*?")) {
+					return true;
+				}
+			}
+			return false;
 		}
 		return false;
+	}
+	
+	public void addAttributeFilter(TreeObjectType filterName) {
+		this.attribute_filters.add(filterName);
+	}
+	
+	public void removeAttributeFilter(TreeObjectType filterName) {
+		this.attribute_filters.remove(filterName);
+	}
+	
+	public void setText(Text text) {
+		this.text = text;
 	}
 
 }

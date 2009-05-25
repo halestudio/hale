@@ -9,7 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.rcp.views.model;
+package eu.esdihumboldt.hale.rcp.views.model.filtering;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -34,6 +34,15 @@ public class UseInheritanceHierarchyAction
 
 	public UseInheritanceHierarchyAction() {
 		super();
+		this.setChecked(true);
+	}
+
+	/**
+	 * @see org.eclipse.jface.action.Action#getToolTipText()
+	 */
+	@Override
+	public String getToolTipText() {
+		return "Organize FeatureTypes by inheritance";
 	}
 
 	@Override

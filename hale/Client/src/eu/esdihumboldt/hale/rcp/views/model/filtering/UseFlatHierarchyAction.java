@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.rcp.views.model;
+package eu.esdihumboldt.hale.rcp.views.model.filtering;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -24,13 +24,21 @@ import eu.esdihumboldt.hale.rcp.HALEActivator;
  * @author Thorsten Reitz
  * @version $Id$
  */
-public class UseAggregationHierarchyAction 
+public class UseFlatHierarchyAction 
 	extends Action {
 	
 	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return AbstractUIPlugin.imageDescriptorFromPlugin(
-				HALEActivator.PLUGIN_ID, "/icons/aggregation_hierarchy.png");
+				HALEActivator.PLUGIN_ID, "/icons/flat_hierarchy.png");
+	}
+	
+	/**
+	 * @see org.eclipse.jface.action.Action#getToolTipText()
+	 */
+	@Override
+	public String getToolTipText() {
+		return "Organize FeatureTypes as List";
 	}
 
 }
