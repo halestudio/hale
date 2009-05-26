@@ -179,6 +179,51 @@
          </property>
       </product>
    </extension>
+    <extension
+         name="FunctionWizard"
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="HALE.wizard.function.numeric"
+            name="Numeric Type Functions">
+      </category>
+      <category
+            id="HALE.wizard.function.literal"
+            name="Literal Type Functions ">
+      </category>
+      <category
+            id="HALE.wizard.function.enumeration"
+            name="Enumeration Type Functions">
+      </category>
+      <category
+            id="HALE.wizard.function.multiple"
+            name="Multitype Functions">
+      </category>
+      <category
+            id="HALE.wizard.function.geometric"
+            name="Geometric Type Functions">
+      </category>
+      <wizard
+            category="HALE.wizard.function.geometric"
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.geometric.NetworkExpansionFunctionWizard"
+            icon="icons/see_geometry_attribute.png"
+            id="HALE.netexpansion"
+            name="Network expansion (Line to Surface)">
+      </wizard>
+      <wizard
+            category="HALE.wizard.function.geometric"
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.geometric.NetworkFusionFunctionWizard"
+            icon="icons/see_geometry_attribute.png"
+            id="HALE.netfusion"
+            name="Network fusion (Line to Line)">
+      </wizard>
+      <wizard
+            category="HALE.wizard.function.geometric"
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.geometric.NetworkGeneralizationFunctionWizard"
+            icon="icons/see_geometry_attribute.png"
+            id="HALE.netgeneralization"
+            name="Network generalization (Line to Line)">
+      </wizard>
+   </extension>
    <!-- <extension
          point="org.eclipse.ui.importWizards">
       <wizard
