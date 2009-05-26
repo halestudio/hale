@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -253,6 +254,15 @@ public class AttributeView extends ViewPart {
 					// TODO replace with wizard call
 					System.out.println("Source Attributes: " + data);
 					System.out.println("Target Attributes: " + targetAttribute.getText());
+					IHandlerService handlerService = (IHandlerService) getSite()
+					.getService(IHandlerService.class);
+			try {
+				handlerService.executeCommand("org.eclipse.ui.newWizard", null);
+			} catch (Exception ex) {
+				throw new RuntimeException("org.eclipse.ui.newWizard not found");
+			}
+
+
 
 				}
 
