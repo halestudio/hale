@@ -120,6 +120,11 @@
                   style="push"
                   tooltip="Open Reference Data against which Instance Data should be harmonized">
             </command>
+              <command
+                  commandId="org.eclipse.ui.newWizard"
+                  label="NEW"
+                  style="push">
+            </command>
             <separator
                   name="HALE.separator1"
                   visible="true">
@@ -222,6 +227,13 @@
             icon="icons/see_geometry_attribute.png"
             id="HALE.netgeneralization"
             name="Network generalization (Line to Line)">
+      </wizard>
+      <wizard
+            category="HALE.wizard.function.numeric"
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.numeric.NumericFunctionWizard"
+            icon="icons/see_number_attribute.png"
+            id="Hale.numfunction"
+            name="Numeric Function Wizard">
       </wizard>
    </extension>
    <!-- <extension
