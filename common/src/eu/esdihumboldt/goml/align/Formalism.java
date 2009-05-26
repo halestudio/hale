@@ -34,6 +34,18 @@ public class Formalism {
 	 */
 	private URI location;
 	
+	// constructors ............................................................
+
+	/**
+	 * @param name
+	 * @param location
+	 */
+	public Formalism(String name, URI location) {
+		super();
+		this.name = name;
+		this.location = location;
+	}
+	
 	// getters / setters .......................................................
 
 	/**

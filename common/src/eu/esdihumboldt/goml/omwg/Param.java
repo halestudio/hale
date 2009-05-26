@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.goml.omwg;
 
-import java.util.List;
-
 /**
  * This class represents <xs:complexType name="ParamType" >.
  * 
@@ -34,7 +32,7 @@ public class Param {
     private String value;
 
     
-    // constuctor ..............................................................
+    // constuctors .............................................................
     
     /**
 	 * @param name

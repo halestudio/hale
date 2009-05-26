@@ -39,6 +39,18 @@ public class Schema {
 	 */
 	private About about;
 	
+	// constructors ............................................................
+	
+	/**
+	 * @param location
+	 * @param formalism
+	 */
+	public Schema(String location, Formalism formalism) {
+		super();
+		this.location = location;
+		this.formalism = formalism;
+	}
+
 	// getters / setters .......................................................
 
 	/**

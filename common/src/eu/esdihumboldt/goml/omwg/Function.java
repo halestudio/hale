@@ -16,7 +16,7 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * This class represents <xs:complexType name="TransformationType" >.
+ * This class represents <xs:complexType name="TransformationType" >. FIXME not correct anymore?
  * 
  * @authors Thorsten Reitz, Marian de Vries
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research

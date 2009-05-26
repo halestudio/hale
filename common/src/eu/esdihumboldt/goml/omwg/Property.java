@@ -27,25 +27,9 @@ public class Property
 	extends Entity {
 
 	/**
-	 * <xs:element ref="omwg:label" minOccurs="0" maxOccurs="unbounded" />
-	 */
-	private List<String> label;
-
-	/**
 	 * <xs:group ref="omwg:propConst" minOccurs="0" maxOccurs="1" />
 	 */
-	// private PropertyExpression propConst;
-	private List<Property> and;
-	private List<Property> or;
-	private Property not;
-	private Relation first;
-	private Property next;
-
-	/**
-	 * <xs:group ref="omwg:propCond" minOccurs="0" maxOccurs="unbounded" /> In
-	 * stead of the group use the group members directly
-	 */
-	// private List<PropertyCondition> propCond;
+	private PropertyConstruction propConstruction;
 
 	/**
 	 * <xs:element ref="omwg:domainRestriction" minOccurs="0"
@@ -72,7 +56,63 @@ public class Property
 	public Property(List<String> label) {
 		super(label);
 	}
+
+	// getters/setters .........................................................
 	
-	
+	/**
+	 * @return the propConstruction
+	 */
+	public PropertyConstruction getPropConstruction() {
+		return propConstruction;
+	}
+
+	/**
+	 * @param propConstruction the propConstruction to set
+	 */
+	public void setPropConstruction(PropertyConstruction propConstruction) {
+		this.propConstruction = propConstruction;
+	}
+
+	/**
+	 * @return the domainRestriction
+	 */
+	public List<FeatureClass> getDomainRestriction() {
+		return domainRestriction;
+	}
+
+	/**
+	 * @param domainRestriction the domainRestriction to set
+	 */
+	public void setDomainRestriction(List<FeatureClass> domainRestriction) {
+		this.domainRestriction = domainRestriction;
+	}
+
+	/**
+	 * @return the valueCondition
+	 */
+	public List<Restriction> getValueCondition() {
+		return valueCondition;
+	}
+
+	/**
+	 * @param valueCondition the valueCondition to set
+	 */
+	public void setValueCondition(List<Restriction> valueCondition) {
+		this.valueCondition = valueCondition;
+	}
+
+	/**
+	 * @return the typeCondition
+	 */
+	public List<String> getTypeCondition() {
+		return typeCondition;
+	}
+
+	/**
+	 * @param typeCondition the typeCondition to set
+	 */
+	public void setTypeCondition(List<String> typeCondition) {
+		this.typeCondition = typeCondition;
+	}
 
 }

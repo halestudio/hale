@@ -16,7 +16,8 @@ import java.util.List;
 import eu.esdihumboldt.goml.rdf.About;
 
 /**
- * FIXME Add Type description.
+ * The {@link Alignment} is the main document containing all mappings and
+ * transformations between two schemas.
  * 
  * @author Thorsten Reitz 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -49,6 +50,8 @@ public class Alignment {
 	 * Metadata on this {@link Alignment}.
 	 */
 	private About about;
+	
+	// getters / setters .......................................................
 
 	/**
 	 * @return the schema1

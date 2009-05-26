@@ -11,12 +11,10 @@
  */
 package eu.esdihumboldt.goml.align;
 
-import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 
 /**
- * A Cell contains a mapping between two Entities, such as {@link FeatureClass}es
+ * A {@link Cell} contains a mapping between two Entities, such as {@link FeatureClass}es
  * or {@link Property} objects.
  * 
  * @author Thorsten Reitz 

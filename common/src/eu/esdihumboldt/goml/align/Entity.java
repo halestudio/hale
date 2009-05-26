@@ -14,8 +14,7 @@ package eu.esdihumboldt.goml.align;
 
 import java.util.List;
 
-import eu.esdihumboldt.goml.omwg.Function;
-import eu.esdihumboldt.goml.omwg.Service;
+import eu.esdihumboldt.goml.oml.ext.Transformation;
 
 /**
  * {@link Entity} is the supertype for all objects that can be mapped in a 
@@ -34,16 +33,10 @@ public class Entity {
 	private List<String> label;
 	
 	/**
-	 * FIXME add explanation
-	 * 
+	 * Note: this can be a single Function (transf) or a Service (service) or a pipe of transformations
 	 * <xs:group ref="omwg:transformation" minOccurs="0" maxOccurs="1" />
 	 */
-	private Function transf;
-	
-	/**
-	 * FIXME add explanation
-	 */
-	private Service service;
+	private Transformation transformation;
 	
 	// constructors ............................................................
 
@@ -65,32 +58,19 @@ public class Entity {
 	}
 
 	/**
-	 * @return the transf
+	 * @return the transformation
 	 */
-	public Function getTransf() {
-		return transf;
+	public Transformation getTransformation() {
+		return transformation;
 	}
 
 	/**
-	 * @param transf the transf to set
+	 * @param transformation the transformation to set
 	 */
-	public void setTransf(Function transf) {
-		this.transf = transf;
+	public void setTransformation(Transformation transformation) {
+		this.transformation = transformation;
 	}
 
-	/**
-	 * @return the service
-	 */
-	public Service getService() {
-		return service;
-	}
-
-	/**
-	 * @param service the service to set
-	 */
-	public void setService(Service service) {
-		this.service = service;
-	}
 
 	/**
 	 * @param label the label to set
