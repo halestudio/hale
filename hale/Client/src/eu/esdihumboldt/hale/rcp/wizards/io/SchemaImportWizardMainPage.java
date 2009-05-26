@@ -40,10 +40,10 @@ import eu.esdihumboldt.hale.models.impl.SchemaServiceEnum;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$
  */
-public class SchemaImportWizardPage 
+public class SchemaImportWizardMainPage 
 	extends WizardPage {
 	
-	private static Logger _log = Logger.getLogger(SchemaImportWizardPage.class);
+	private static Logger _log = Logger.getLogger(SchemaImportWizardMainPage.class);
 	
 	protected Composite ffe_container;
 	protected Composite ufe_container;
@@ -54,7 +54,7 @@ public class SchemaImportWizardPage
 	private Button sourceDestination;
 	private Button targetDestination;
 
-	public SchemaImportWizardPage(String pageName, String pageTitle) {
+	public SchemaImportWizardMainPage(String pageName, String pageTitle) {
 		super(pageName, pageTitle, (ImageDescriptor) null); // FIXME ImageDescriptor
 		setTitle(pageName); //NON-NLS-1
 		setDescription("Read a source or target schema from a local file or a " +

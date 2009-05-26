@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.rcp.commands;
+package eu.esdihumboldt.hale.rcp.commandHandlers;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.AbstractHandler;
@@ -40,7 +40,6 @@ public class LoadSchemaHandler
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		_log.debug("Arrived in the LoadSchemaHandler...");
 		IImportWizard iw = new SchemaImportWizard();
 		// Instantiates the wizard container with the wizard and opens it
 		Shell shell = HandlerUtil.getActiveShell(event);

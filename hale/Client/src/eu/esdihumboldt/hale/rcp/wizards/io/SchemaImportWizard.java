@@ -36,11 +36,11 @@ public class SchemaImportWizard
 	
 	private static Logger _log = Logger.getLogger(SchemaImportWizard.class);
 	
-	SchemaImportWizardPage mainPage;
+	SchemaImportWizardMainPage mainPage;
 
 	public SchemaImportWizard() {
 		super();
-		this.mainPage = new SchemaImportWizardPage(
+		this.mainPage = new SchemaImportWizardMainPage(
 				"Import Schema", "Import Schema"); //NON-NLS-1
 		super.setWindowTitle("Schema Import Wizard"); //NON-NLS-1
 		super.setNeedsProgressMonitor(true);

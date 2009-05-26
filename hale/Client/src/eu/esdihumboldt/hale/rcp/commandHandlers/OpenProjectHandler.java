@@ -10,13 +10,12 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.rcp.commands;
+package eu.esdihumboldt.hale.rcp.commandHandlers;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
-import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * TODO Explain the purpose of this type here.
@@ -24,15 +23,23 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * @author Thorsten Reitz
  * @version $Id$
  */
-public class ExitHandler 
-	extends AbstractHandler implements IHandler {
+public class OpenProjectHandler extends AbstractHandler implements IHandler {
 
-	/**
+	/* (non-Javadoc)
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		HandlerUtil.getActiveWorkbenchWindow(event).close();
+		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.commands.IHandler#isEnabled()
+	 */
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

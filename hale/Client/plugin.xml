@@ -51,24 +51,25 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="eu.esdihumboldt.hale.rcp.commands.LoadSchemaHandler"
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.LoadSchemaHandler"
             description="Load a Source or Target Schema"
             id="HALE.loadSchema.command"
             name="Load Schema">
       </command>
       <command
-            defaultHandler="eu.esdihumboldt.hale.rcp.commands.OpenProjectHandler"
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.OpenProjectHandler"
             description="Open an existing alignment project"
             id="HALE.openProject.command"
             name="openProject">
       </command>
       <command
-            defaultHandler="eu.esdihumboldt.hale.rcp.commands.ExitHandler"
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.ExitHandler"
             description="Exit HALE"
             id="HALE.exit.command"
             name="exit">
       </command>
       <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.LoadInstanceDataHandler"
             id="HALE.openInstanceData.command"
             name="Open Instance Data">
       </command>
