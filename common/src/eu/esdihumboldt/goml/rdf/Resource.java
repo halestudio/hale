@@ -24,5 +24,33 @@ import java.net.URI;
 public class Resource {
 	
 	private URI location;
+	
+	// constructors ............................................................
+
+	/**
+	 * @param location
+	 */
+	public Resource(URI location) {
+		super();
+		this.location = location;
+	}
+	
+	// getters / setters .......................................................
+
+	/**
+	 * @return the location
+	 */
+	public URI getLocation() {
+		return location;
+	}
+
+	/**
+	 * @param location the location to set
+	 */
+	public void setLocation(URI location) {
+		this.location = location;
+	}
+	
+	
 
 }

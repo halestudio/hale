@@ -15,7 +15,7 @@ package eu.esdihumboldt.goml.rdf;
 import java.util.UUID;
 
 /**
- * FIXME Add Type description.
+ * This class can be used to store some metadata.
  * 
  * @author Thorsten Reitz 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -25,12 +25,14 @@ public class About {
 	
 	private UUID uid;
 	
-	
+	// constructors ............................................................
 
 	public About(UUID uid) {
 		super();
 		this.uid = uid;
 	}
+	
+	// getters / setters .......................................................
 
 	/**
 	 * @return the uid
