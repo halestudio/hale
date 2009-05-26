@@ -228,4 +228,13 @@ public class InstanceDataImportWizardMainPage
 		return this.result;
 	}
 
+	public InstanceInterfaceType getInterfaceType() {
+		if (this.useFile) {
+			return InstanceInterfaceType.FILE;
+		}
+		else {
+			return InstanceInterfaceType.WFS;
+		}
+	}
+
 }

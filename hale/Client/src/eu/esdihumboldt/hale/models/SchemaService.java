@@ -12,6 +12,7 @@
 package eu.esdihumboldt.hale.models;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.Collection;
 
 import org.opengis.feature.type.FeatureType;
@@ -67,5 +68,27 @@ public interface SchemaService
 	 * @return true if the cleaning was successful.
 	 */
 	public boolean cleanTargetSchema();
+
+	/**
+	 * @return the namespace of the source schema.
+	 */
+	public String getSourceNameSpace();
+	
+	/**
+	 * @return the namespace of the target schema.
+	 */
+	public String getTargetNameSpace();
+
+	/**
+	 * @return the URL that identifies the location from which the source 
+	 * schema was loaded.
+	 */
+	public URL getSourceURL();
+	
+	/**
+	 * @return the URL that identifies the location from which the target 
+	 * schema was loaded.
+	 */
+	public URL getTargetURL();
 
 }

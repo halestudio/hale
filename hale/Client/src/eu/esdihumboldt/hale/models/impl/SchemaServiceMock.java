@@ -12,6 +12,7 @@
 package eu.esdihumboldt.hale.models.impl;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -100,6 +101,30 @@ public class SchemaServiceMock implements SchemaService {
 	public boolean addListener(HaleServiceListener sl) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public String getSourceNameSpace() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public URL getSourceURL() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getTargetNameSpace() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public URL getTargetURL() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

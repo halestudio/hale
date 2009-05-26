@@ -12,13 +12,26 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.gml3.ApplicationSchemaConfiguration;
+import org.geotools.xml.Configuration;
+import org.geotools.xml.Parser;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 
 import eu.esdihumboldt.hale.models.InstanceService;
+import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 
 /**
@@ -65,8 +78,58 @@ public class InstanceDataImportWizard
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
 	public boolean performFinish() {
+		// get service references.
 		InstanceService instanceService = (InstanceService) ModelNavigationView.site
 				.getService(InstanceService.class);
+		SchemaService schemaService = (SchemaService) ModelNavigationView.site
+				.getService(SchemaService.class);
+		
+		// retrieve required parameters, specifically the location and the namespace of the source schema.
+		String namespace = schemaService.getSourceNameSpace();
+		if (namespace == null) {
+			// set a default namespace
+			namespace = "http://xsdi.org/default";
+		}
+		URL schema_location = schemaService.getSourceURL();
+		if (schema_location == null) {
+			throw new RuntimeException("You have to load a Schema first.");
+		}
+		
+		// retrieve an parse result from the Wizard.
+		URL gml_location = null;
+		try {
+			gml_location = new URL("file://" + this.mainPage.getResult());
+		} catch (MalformedURLException e) {
+			// it is ensured that only a valid URL is passed before
+			throw new RuntimeException(this.mainPage.getResult()
+					+ " was not parsed as a URL sucessfully: ", e);
+		}
+		InstanceInterfaceType iit = this.mainPage.getInterfaceType();
+		
+		// build FeatureCollection from the selected source.
+		FeatureCollection<SimpleFeatureType, SimpleFeature> features = null;
+		
+		if (iit.equals(InstanceInterfaceType.FILE)) {
+			try {
+				Configuration configuration = new ApplicationSchemaConfiguration(
+					namespace, 
+					schema_location.toURI().getAuthority() 
+						+ schema_location.getPath());
+			
+				InputStream xml = new FileInputStream(
+						gml_location.toURI().getAuthority() +
+						gml_location.getPath());
+				Parser parser = new Parser(configuration);
+				features = (FeatureCollection) parser.parse(xml);
+			}
+			catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
+		}
+		if (features != null) {
+			instanceService.addInstances(DatasetType.transformed, features);
+			_log.info(features.size() + " instances were added to the InstanceService.");
+		}
 		return true;
 	}
 

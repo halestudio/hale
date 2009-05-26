@@ -8,8 +8,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -48,7 +50,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.rcp.Application;
 
 /**
  * Implementation of {@link SchemaService}.
@@ -67,6 +68,12 @@ public class SchemaServiceImpl implements SchemaService {
 	
 	private Collection<HaleServiceListener> listeners = new HashSet<HaleServiceListener>();
 	
+	private String sourceNamespace = "";
+	private String targetNamespace = "";
+	
+	private URL sourceLocation = null;
+	private URL targetLocation = null;
+	
 	private SchemaServiceImpl() {
 		_log.setLevel(Level.INFO);
 	}
@@ -82,6 +89,8 @@ public class SchemaServiceImpl implements SchemaService {
 		if (this.sourceSchema != null && this.sourceSchema.size() != 0) {
 			this.sourceSchema.clear();
 		}
+		this.sourceLocation = null;
+		this.sourceNamespace = "";
 		this.updateListeners();
 		return true;
 	}
@@ -93,6 +102,8 @@ public class SchemaServiceImpl implements SchemaService {
 		if (this.targetSchema != null && this.targetSchema.size() != 0) {
 			this.targetSchema.clear();
 		}
+		this.targetLocation = null;
+		this.targetNamespace = "";
 		this.updateListeners();
 		return true;
 	}
@@ -115,8 +126,18 @@ public class SchemaServiceImpl implements SchemaService {
 	 * @see eu.esdihumboldt.hale.models.SchemaService#loadSourceSchema(java.net.URI)
 	 */
 	public boolean loadSourceSchema(URI file) {
-		cleanSourceSchema();
+		this.cleanSourceSchema();
 		this.sourceSchema = loadSchema(file);
+		try {
+			this.sourceLocation = new URL("file://" + file.toString());
+		} catch (MalformedURLException e) {
+			throw new RuntimeException("The source location " + file.getPath()
+					+ "could not be saved: ", e);
+		}
+		if (this.sourceSchema != null && this.sourceSchema.size() > 0) {
+			this.sourceNamespace = this.sourceSchema.iterator().next()
+					.getName().getNamespaceURI().toString();
+		}
 		if (this.sourceSchema != null) {
 			this.updateListeners();
 			return true;
@@ -130,7 +151,18 @@ public class SchemaServiceImpl implements SchemaService {
 	 * @see eu.esdihumboldt.hale.models.SchemaService#loadTargetSchema(java.net.URI)
 	 */
 	public boolean loadTargetSchema(URI file) {
+		this.cleanTargetSchema();
 		this.targetSchema = loadSchema(file);
+		try {
+			this.targetLocation = new URL(file.getPath());
+		} catch (MalformedURLException e) {
+			throw new RuntimeException("The target location " + file.getPath()
+					+ "could not be saved: ", e);
+		}
+		if (this.targetSchema != null && this.targetSchema.size() > 0) {
+			this.targetNamespace = this.targetSchema.iterator().next()
+					.getName().getNamespaceURI().toString();
+		}
 		if (targetSchema != null) {
 			this.updateListeners();
 			return true;
@@ -201,7 +233,7 @@ public class SchemaServiceImpl implements SchemaService {
 	
 	
 	public boolean addListener(HaleServiceListener sl) {
-		_log.warn("Adding a listener.");
+		_log.info("Adding a listener.");
 		return this.listeners.add(sl);
 	}
 	
@@ -210,7 +242,7 @@ public class SchemaServiceImpl implements SchemaService {
 	 */
 	private void updateListeners() {
 		for (HaleServiceListener hsl : this.listeners) {
-			_log.warn("Updating a listener.");
+			_log.info("Updating a listener.");
 			hsl.update();
 		}
 	}
@@ -364,6 +396,34 @@ public class SchemaServiceImpl implements SchemaService {
 		baseUri = baseUri.substring(0, baseUri.lastIndexOf("/"));
 		System.out.println("********* BASE_URI: " + baseUri + "***********");
 		return baseUri;
+	}
+
+	/**
+	 * @see SchemaService#getSourceNameSpace()
+	 */
+	public String getSourceNameSpace() {
+		return this.sourceNamespace;
+	}
+
+	/**
+	 * @see SchemaService#getSourceURL()
+	 */
+	public URL getSourceURL() {
+		return this.sourceLocation;
+	}
+
+	/**
+	 * @see SchemaService#getTargetNameSpace()
+	 */
+	public String getTargetNameSpace() {
+		return this.targetNamespace;
+	}
+
+	/**
+	 * @see SchemaService#getTargetURL()
+	 */
+	public URL getTargetURL() {
+		return this.targetLocation;
 	}
 }
 
