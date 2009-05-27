@@ -1,5 +1,10 @@
 package eu.esdihumboldt.hale.rcp.views.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
@@ -25,6 +30,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
@@ -257,7 +263,16 @@ public class AttributeView extends ViewPart {
 					IHandlerService handlerService = (IHandlerService) getSite()
 					.getService(IHandlerService.class);
 			try {
-				handlerService.executeCommand("org.eclipse.ui.newWizard", null);
+				ICommandService cS = (ICommandService)getSite().getService(ICommandService.class);
+				
+				Command createWizard = cS.getCommand("org.eclipse.ui.newWizard");
+				//adds parameters to the command
+				Map<String,String> params = new HashMap<String,String>();
+				params.put("sourceAttributeID", data);
+				params.put("targetAttributeID", targetAttribute.getText());
+				ParameterizedCommand pC = ParameterizedCommand.generateCommand(createWizard, params);
+				handlerService.executeCommand(pC, null);
+				//handlerService.executeCommand("org.eclipse.ui.newWizard", null);
 			} catch (Exception ex) {
 				throw new RuntimeException("org.eclipse.ui.newWizard not found");
 			}
