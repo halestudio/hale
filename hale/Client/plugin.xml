@@ -85,6 +85,20 @@
             id="HALE.saveMappingAs.command"
             name="Save mapping As">
       </command>
+      <command
+            id="org.eclipse.ui.newWizard"
+            name="createWizard">
+         <commandParameter
+               id="sourceAttributeID"
+               name="sourceAttributeName"
+               optional="true">
+         </commandParameter>
+         <commandParameter
+               id="targetAttributeID"
+               name="targetAttributeName"
+               optional="true">
+         </commandParameter>
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -119,11 +133,6 @@
                   label="Open Reference Data"
                   style="push"
                   tooltip="Open Reference Data against which Instance Data should be harmonized">
-            </command>
-              <command
-                  commandId="org.eclipse.ui.newWizard"
-                  label="NEW"
-                  style="push">
             </command>
             <separator
                   name="HALE.separator1"
@@ -212,14 +221,18 @@
             class="eu.esdihumboldt.hale.rcp.wizards.functions.geometric.NetworkExpansionFunctionWizard"
             icon="icons/see_geometry_attribute.png"
             id="HALE.netexpansion"
-            name="Network expansion (Line to Surface)">
+            name="Network expansion (Line to Surface)"
+            project="true">
       </wizard>
       <wizard
             category="HALE.wizard.function.geometric"
-            class="eu.esdihumboldt.hale.rcp.wizards.functions.geometric.NetworkFusionFunctionWizard"
             icon="icons/see_geometry_attribute.png"
             id="HALE.netfusion"
             name="Network fusion (Line to Line)">
+            <class class="eu.esdihumboldt.hale.rcp.wizards.functions.geometric.NetworkFusionFunctionWizard">
+            <parameter name="sourceAttributeName" value="test"/>
+            </class>
+            
       </wizard>
       <wizard
             category="HALE.wizard.function.geometric"
