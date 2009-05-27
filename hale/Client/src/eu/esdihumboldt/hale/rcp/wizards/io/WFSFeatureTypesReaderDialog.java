@@ -225,7 +225,8 @@ public class WFSFeatureTypesReaderDialog
 				if (url != null) {
 					List<FeatureType> result = null;
 					try {
-						result = GetCapabilititiesRetriever.readFeatureTypes(url.toString());
+						result = GetCapabilititiesRetriever
+									.readFeatureTypes(url.toString());
 						StringBuffer ft_names = new StringBuffer();
 						for (FeatureType ft : result){
 							if (ft instanceof SimpleFeatureType) {

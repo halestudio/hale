@@ -26,8 +26,10 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.gml3.ApplicationSchemaConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.SchemaService;
@@ -95,7 +97,7 @@ public class InstanceDataImportWizard
 			throw new RuntimeException("You have to load a Schema first.");
 		}
 		
-		// retrieve an parse result from the Wizard.
+		// retrieve and parse result from the Wizard.
 		URL gml_location = null;
 		try {
 			gml_location = new URL("file://" + this.mainPage.getResult());
@@ -107,24 +109,14 @@ public class InstanceDataImportWizard
 		InstanceInterfaceType iit = this.mainPage.getInterfaceType();
 		
 		// build FeatureCollection from the selected source.
-		FeatureCollection<SimpleFeatureType, SimpleFeature> features = null;
+		FeatureCollection<? extends FeatureType, ? extends Feature> features = null;
 		
 		if (iit.equals(InstanceInterfaceType.FILE)) {
-			try {
-				Configuration configuration = new ApplicationSchemaConfiguration(
-					namespace, 
-					schema_location.toURI().getAuthority() 
-						+ schema_location.getPath());
+			// FIXME handle shapefiles in addition to GML
+			features = this.parseGML(namespace, schema_location, gml_location);
+		}
+		else if (iit.equals(InstanceInterfaceType.WFS)) {
 			
-				InputStream xml = new FileInputStream(
-						gml_location.toURI().getAuthority() +
-						gml_location.getPath());
-				Parser parser = new Parser(configuration);
-				features = (FeatureCollection) parser.parse(xml);
-			}
-			catch (Exception ex) {
-				throw new RuntimeException(ex);
-			}
 		}
 		if (features != null) {
 			instanceService.addInstances(DatasetType.transformed, features);
@@ -149,5 +141,39 @@ public class InstanceDataImportWizard
 		super.addPage(this.mainPage);
 //		super.addPage(this.filterPage);
 //		super.addPage(this.verificationPage);
+	}
+	
+	/**
+	 * This method allows to read a {@link FeatureCollection} from a given GML
+	 * file.
+	 * @param namespace the namespace to use in {@link FeatureType} creation.
+	 * @param schema_location the {@link URL} of the schema to use in parsing.
+	 * @param gml_location the {@link URL} identifying the GML file to parse.
+	 * @return a {@link FeatureCollection}.
+	 */
+	private FeatureCollection<? extends FeatureType, ? extends Feature> parseGML(
+			String namespace, URL schema_location, URL gml_location) {
+		
+		FeatureCollection<? extends FeatureType, ? extends Feature> result = null;
+		try {
+			Configuration configuration = new ApplicationSchemaConfiguration(
+					namespace, 
+					schema_location.toURI().getAuthority()
+					+ schema_location.getPath());
+
+			InputStream xml = new FileInputStream(gml_location.toURI()
+					.getAuthority()
+					+ gml_location.getPath());
+			Parser parser = new Parser(configuration);
+			// TODO start in a Thread of its own.
+			result = 
+				(FeatureCollection<? extends FeatureType, ? extends Feature>) 
+					parser.parse(xml);
+		} catch (Exception ex) {
+			throw new RuntimeException(
+					"Parsing the given GML into a FeatureCollection failed: ",
+					ex);
+		}
+		return result;
 	}
 }
