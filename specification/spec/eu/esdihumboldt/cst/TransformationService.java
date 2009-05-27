@@ -26,8 +26,7 @@ import eu.esdihumboldt.modelrepository.abstractfc.mapping.Alignment;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public interface TransformationService 
-	extends UpdateService {
+public interface TransformationService  {
 	
 	/**
 	 * This method can be employed to transform an entire data set using an
