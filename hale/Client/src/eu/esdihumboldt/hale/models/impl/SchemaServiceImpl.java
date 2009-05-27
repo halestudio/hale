@@ -154,7 +154,7 @@ public class SchemaServiceImpl implements SchemaService {
 		this.cleanTargetSchema();
 		this.targetSchema = loadSchema(file);
 		try {
-			this.targetLocation = new URL(file.getPath());
+			this.targetLocation = new URL("file://" + file.toString());
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("The target location " + file.getPath()
 					+ "could not be saved: ", e);
