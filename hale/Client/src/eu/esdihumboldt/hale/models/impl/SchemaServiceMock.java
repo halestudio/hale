@@ -103,25 +103,21 @@ public class SchemaServiceMock implements SchemaService {
 		return false;
 	}
 
-	@Override
 	public String getSourceNameSpace() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public URL getSourceURL() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public String getTargetNameSpace() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public URL getTargetURL() {
 		// TODO Auto-generated method stub
 		return null;

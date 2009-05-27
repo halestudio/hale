@@ -8,13 +8,11 @@ import org.eclipse.ui.IWorkbench;
 public class NetworkGeneralizationFunctionWizard extends Wizard 
 implements INewWizard  {
 
-	@Override
 	public boolean performFinish() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		// TODO Auto-generated method stub
 		

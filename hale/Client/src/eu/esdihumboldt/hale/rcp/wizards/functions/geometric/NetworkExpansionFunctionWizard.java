@@ -15,7 +15,6 @@ implements INewWizard {
 		return false;
 	}
 
-	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		// TODO Auto-generated method stub
 		
