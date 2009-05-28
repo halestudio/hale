@@ -77,6 +77,40 @@ public class AttributeView extends ViewPart {
 		 */
 		// layout.verticalSpacing = 20;
 		// layout.horizontalSpacing = 10;
+		// add wizard selection button
+		
+		Composite buttonComposite = new Composite(modelComposite, SWT.BAR);
+
+		buttonComposite.setLayout(new GridLayout(1, false));
+		GridData gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL |
+				 GridData.VERTICAL_ALIGN_FILL);
+		gData.horizontalSpan = 2;
+		buttonComposite.setLayoutData(gData);
+        
+		
+		selectFunctionButton = new Button(buttonComposite, SWT.PUSH);
+		selectFunctionButton.setText("Select Function");
+		gData = new GridData(GridData.CENTER,GridData.FILL,true,false);
+		//gData.horizontalAlignment = 1;
+		// gData.horizontalSpan = 2;
+		selectFunctionButton.setLayoutData(gData);
+		selectFunctionButton.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				selectFunctionButton
+						.setText(sourceAttributeList.getSelection()[0]
+								.getText());
+
+			}
+
+		});
 
 		Composite sourceComposite = new Composite(modelComposite, SWT.BEGINNING);
 		sourceComposite.setLayout(new GridLayout(1, false));
@@ -87,7 +121,7 @@ public class AttributeView extends ViewPart {
 
 		sourceModelLabel = new Label(sourceComposite, SWT.CENTER);
 
-		GridData gData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gData = new GridData(SWT.FILL, SWT.FILL, true, false);
 		sourceModelLabel.setLayoutData(gData);
 
 		/*
@@ -97,6 +131,15 @@ public class AttributeView extends ViewPart {
 		 * SWT.CENTER; operatorLabel.setText("placeholder");
 		 * operatorLabel.setLayoutData(gData);
 		 */
+
+		// TODO drag and drop or selection button
+		/*
+		 * Composite buttonComposite = new Composite(modelComposite,
+		 * SWT.BEGINNING); buttonComposite.setLayout(new GridLayout(1, false));
+		 * buttonComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+		 * true));
+		 */
+
 		Composite targetComposite = new Composite(modelComposite, SWT.BEGINNING);
 		targetComposite.setLayout(new GridLayout(1, false));
 		targetComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
@@ -173,28 +216,6 @@ public class AttributeView extends ViewPart {
 		 * GridData.VERTICAL_ALIGN_FILL); placeHolder.setLayoutData(gData);
 		 */
 
-		// TODO drag and drop or selection button
-		/*
-		 * selectFunctionButton = new Button(modelComposite, SWT.PUSH);
-		 * selectFunctionButton.setText("Select Function"); gData = new
-		 * GridData(GridData.HORIZONTAL_ALIGN_CENTER
-		 * |GridData.VERTICAL_ALIGN_CENTER);
-		 * selectFunctionButton.setLayoutData(gData);
-		 * selectFunctionButton.addSelectionListener(new SelectionListener(){
-		 * 
-		 * @Override public void widgetDefaultSelected(SelectionEvent e) { //
-		 * TODO Auto-generated method stub
-		 * 
-		 * }
-		 * 
-		 * @Override public void widgetSelected(SelectionEvent e) {
-		 * selectFunctionButton.setText(sourceAttributeList.getSelection()[0]);
-		 * 
-		 * }
-		 * 
-		 * });
-		 */
-
 		targetAttributeList = this.attributeListSetup(targetComposite);
 		/*
 		 * gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL |
@@ -259,25 +280,30 @@ public class AttributeView extends ViewPart {
 					String data = (String) event.data;
 					// TODO replace with wizard call
 					System.out.println("Source Attributes: " + data);
-					System.out.println("Target Attributes: " + targetAttribute.getText());
+					System.out.println("Target Attributes: "
+							+ targetAttribute.getText());
 					IHandlerService handlerService = (IHandlerService) getSite()
-					.getService(IHandlerService.class);
-			try {
-				ICommandService cS = (ICommandService)getSite().getService(ICommandService.class);
-				
-				Command createWizard = cS.getCommand("org.eclipse.ui.newWizard");
-				//adds parameters to the command
-				Map<String,String> params = new HashMap<String,String>();
-				params.put("sourceAttributeID", data);
-				params.put("targetAttributeID", targetAttribute.getText());
-				ParameterizedCommand pC = ParameterizedCommand.generateCommand(createWizard, params);
-				handlerService.executeCommand(pC, null);
-				//handlerService.executeCommand("org.eclipse.ui.newWizard", null);
-			} catch (Exception ex) {
-				throw new RuntimeException("org.eclipse.ui.newWizard not found");
-			}
+							.getService(IHandlerService.class);
+					try {
+						ICommandService cS = (ICommandService) getSite()
+								.getService(ICommandService.class);
 
-
+						Command createWizard = cS
+								.getCommand("org.eclipse.ui.newWizard");
+						// adds parameters to the command
+						Map<String, String> params = new HashMap<String, String>();
+						params.put("sourceAttributeID", data);
+						params.put("targetAttributeID", targetAttribute
+								.getText());
+						ParameterizedCommand pC = ParameterizedCommand
+								.generateCommand(createWizard, params);
+						handlerService.executeCommand(pC, null);
+						// handlerService.executeCommand("org.eclipse.ui.newWizard",
+						// null);
+					} catch (Exception ex) {
+						throw new RuntimeException(
+								"org.eclipse.ui.newWizard not found");
+					}
 
 				}
 
