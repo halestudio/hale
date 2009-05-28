@@ -68,6 +68,11 @@
 	    <artifactId>dom4j</artifactId>
 	    <version>1.6.1</version>
 	</dependency>
+    <dependency>
+		<groupId>org.geotools</groupId>
+		<artifactId>gt-wfs</artifactId>
+		<version>${geotools.version}</version>
+	</dependency>		
 	</dependencies>
 	<reporting>
 		<plugins>
@@ -86,6 +91,7 @@
 	<properties>
 		<cxf.version>2.1.1</cxf.version>
 		<spring.version>2.5.4</spring.version>
+		<geotools.version>2.5.4</geotools.version>
 	</properties>
 </project>
 
