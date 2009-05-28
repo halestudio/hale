@@ -385,7 +385,7 @@ public class AttributeView extends ViewPart {
 					}
 				}
 			} else {
-				TableItem listItem = new TableItem(this.sourceAttributeList,
+				TableItem listItem = new TableItem(this.targetAttributeList,
 						SWT.NONE);
 				listItem.setText(_classname);
 
