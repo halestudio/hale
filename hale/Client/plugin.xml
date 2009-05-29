@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
+   <extension-point id="eu.esdihumboldt.hale.rcp.wizards.io.FunctionWizard" name="FunctionWizard" schema="schema/eu.esdihumboldt.hale.rcp.wizards.io.FunctionWizard.exsd"/>
 
    <extension
          id="application"
@@ -99,6 +100,12 @@
                optional="true">
          </commandParameter>
       </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.FunctionWizardHandler"
+            description="Pick a wizrd for the transformation you wish"
+            id="eu.esdihumboldt.hale.rcp.wizards.io.FunctionWizard"
+            name="FunctionWizard">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -193,9 +200,9 @@
          </property>
       </product>
    </extension>
-    <extension
+   <extension
          name="FunctionWizard"
-         point="org.eclipse.ui.newWizards">
+         point="eu.esdihumboldt.hale.rcp.wizards.io.FunctionWizard">
       <category
             id="HALE.wizard.function.numeric"
             name="Numeric Type Functions">

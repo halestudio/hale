@@ -4,7 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.NotEnabledException;
+import org.eclipse.core.commands.NotHandledException;
 import org.eclipse.core.commands.ParameterizedCommand;
+import org.eclipse.core.commands.common.NotDefinedException;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
@@ -30,6 +36,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
@@ -59,10 +67,31 @@ public class AttributeView extends ViewPart {
 	private Label targetModelLabel;
 	// Button to open FunctionWizard
 	private Button selectFunctionButton;
+	
+	// Viewer for the sorceAttributeTable
+	private TableViewer sourceAttributeViewer;
+	
+	//Viewer for the targetAttributeTable
+	private TableViewer targetAttributeViewer;
+	// the listener we register with the selection service 
+	private ISelectionListener sourceAttributeListListener = new ISelectionListener(){
+
+		@Override
+		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+			//use selection button in case of the multiple attribute selection only
+			if (sourceAttributeList.getSelection().length>1) selectFunctionButton.setEnabled(true);
+			else selectFunctionButton.setEnabled(false);
+			selectFunctionButton.redraw();
+			
+			
+		}
+		
+	};
+	
 
 	@Override
 	public void createPartControl(Composite _parent) {
-
+        
 		Composite modelComposite = new Composite(_parent, SWT.BEGINNING);
 		GridLayout layout = new GridLayout(2, true);
 		layout.verticalSpacing = 6;
@@ -94,19 +123,40 @@ public class AttributeView extends ViewPart {
 		//gData.horizontalAlignment = 1;
 		// gData.horizontalSpan = 2;
 		selectFunctionButton.setLayoutData(gData);
+		selectFunctionButton.setEnabled(false);
 		selectFunctionButton.addSelectionListener(new SelectionListener() {
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
+				//button is enabled in case of multiple selection
+			
 
 			}
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				selectFunctionButton
-						.setText(sourceAttributeList.getSelection()[0]
-								.getText());
+				
+				//start a wizard
+				IHandlerService handlerService = (IHandlerService) getSite()
+				.getService(IHandlerService.class);
+				try {
+					handlerService.executeCommand("eu.esdihumboldt.hale.rcp.wizards.io.FunctionWizard", null);
+				} catch (ExecutionException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (NotDefinedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (NotEnabledException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (NotHandledException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				
+				
 
 			}
 
@@ -216,7 +266,7 @@ public class AttributeView extends ViewPart {
 		 * GridData.VERTICAL_ALIGN_FILL); placeHolder.setLayoutData(gData);
 		 */
 
-		targetAttributeList = this.attributeListSetup(targetComposite);
+		targetAttributeList = this.targetAttributeListSetup(targetComposite);
 		/*
 		 * gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL |
 		 * GridData.VERTICAL_ALIGN_FILL); gData.grabExcessHorizontalSpace =
@@ -285,10 +335,10 @@ public class AttributeView extends ViewPart {
 					IHandlerService handlerService = (IHandlerService) getSite()
 							.getService(IHandlerService.class);
 					try {
-						ICommandService cS = (ICommandService) getSite()
-								.getService(ICommandService.class);
+						/*ICommandService cS = (ICommandService) getSite()
+								.getService(ICommandService.class);*/
 
-						Command createWizard = cS
+					/*	Command createWizard = cS
 								.getCommand("org.eclipse.ui.newWizard");
 						// adds parameters to the command
 						Map<String, String> params = new HashMap<String, String>();
@@ -297,9 +347,8 @@ public class AttributeView extends ViewPart {
 								.getText());
 						ParameterizedCommand pC = ParameterizedCommand
 								.generateCommand(createWizard, params);
-						handlerService.executeCommand(pC, null);
-						// handlerService.executeCommand("org.eclipse.ui.newWizard",
-						// null);
+						handlerService.executeCommand(pC, null);*/
+						handlerService.executeCommand("org.eclipse.ui.newWizard", null);
 					} catch (Exception ex) {
 						throw new RuntimeException(
 								"org.eclipse.ui.newWizard not found");
@@ -309,6 +358,22 @@ public class AttributeView extends ViewPart {
 
 			}
 		});
+	}
+
+	private Table targetAttributeListSetup(Composite attributeComposite) {
+		Composite viewerLComposite = new Composite(attributeComposite, SWT.NONE);
+		FillLayout fLayout = new FillLayout();
+		viewerLComposite.setLayout(fLayout);
+		GridData gData = new GridData(GridData.VERTICAL_ALIGN_FILL
+				| GridData.HORIZONTAL_ALIGN_FILL);
+		gData.verticalSpan = 32;
+		gData.grabExcessHorizontalSpace = true;
+		gData.grabExcessVerticalSpace = true;
+		gData.verticalIndent = 12;
+		viewerLComposite.setLayoutData(gData);
+		Table attributeList = new Table(viewerLComposite, SWT.BORDER
+				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
+        return attributeList;
 	}
 
 	private Table attributeListSetup(Composite attributeComposite) {
@@ -325,6 +390,12 @@ public class AttributeView extends ViewPart {
 		Table attributeList = new Table(viewerLComposite, SWT.BORDER
 				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
 
+		//set selection provider for the sourceAttributeList
+		
+		this.sourceAttributeViewer = new TableViewer(attributeList);
+		getSite().setSelectionProvider(this.sourceAttributeViewer);
+		//add listener to the selection service
+		getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this.sourceAttributeListListener);
 		return attributeList;
 	}
 
