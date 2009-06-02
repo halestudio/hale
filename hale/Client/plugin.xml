@@ -254,6 +254,13 @@
             id="Hale.numfunction"
             name="Numeric Function Wizard">
       </wizard>
+      <wizard
+            category="HALE.wizard.function.literal"
+            class="eu.esdihumboldt.rcp.functions.literal.RenamingFunctionWizard"
+            icon="icons/concrete_ft.png"
+            id="HALE.featurerenaming"
+            name="Feature Type Renaming Wizard">
+      </wizard>
    </extension>
    <!-- <extension
          point="org.eclipse.ui.importWizards">
