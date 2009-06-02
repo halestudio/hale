@@ -71,8 +71,16 @@ public class AttributeView extends ViewPart {
 	// Viewer for the sorceAttributeTable
 	private TableViewer sourceAttributeViewer;
 	
+	public TableViewer getSourceAttributeViewer() {
+		return sourceAttributeViewer;
+	}
+
 	//Viewer for the targetAttributeTable
 	private TableViewer targetAttributeViewer;
+	public TableViewer getTargetAttributeViewer() {
+		return targetAttributeViewer;
+	}
+
 	// the listener we register with the selection service 
 	private ISelectionListener sourceAttributeListListener = new ISelectionListener(){
 
@@ -80,6 +88,21 @@ public class AttributeView extends ViewPart {
 		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 			//use selection button in case of the multiple attribute selection only
 			if (sourceAttributeList.getSelection().length>1) selectFunctionButton.setEnabled(true);
+			else selectFunctionButton.setEnabled(false);
+			selectFunctionButton.redraw();
+			
+			
+		}
+		
+	};
+	
+	// the listener we register with the selection service 
+	private ISelectionListener targetAttributeListListener = new ISelectionListener(){
+
+		@Override
+		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+			//use selection button in case of the multiple attribute selection only
+			if (targetAttributeList.getSelection().length>1) selectFunctionButton.setEnabled(true);
 			else selectFunctionButton.setEnabled(false);
 			selectFunctionButton.redraw();
 			
@@ -327,6 +350,9 @@ public class AttributeView extends ViewPart {
 					DropTarget target = (DropTarget) event.widget;
 					Table table = (Table) target.getControl();
 					TableItem targetAttribute = (TableItem) event.item;
+					//set selection to this targtarget item
+					targetAttributeList.setSelection(targetAttribute);
+					
 					String data = (String) event.data;
 					// TODO replace with wizard call
 					System.out.println("Source Attributes: " + data);
@@ -373,6 +399,10 @@ public class AttributeView extends ViewPart {
 		viewerLComposite.setLayoutData(gData);
 		Table attributeList = new Table(viewerLComposite, SWT.BORDER
 				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
+		this.targetAttributeViewer = new TableViewer(attributeList);
+		getSite().setSelectionProvider(this.targetAttributeViewer);
+		//add listener to the selection service
+		getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this.targetAttributeListListener);
         return attributeList;
 	}
 
