@@ -140,7 +140,7 @@ public class AttributeView extends ViewPart {
 				IHandlerService handlerService = (IHandlerService) getSite()
 				.getService(IHandlerService.class);
 				try {
-					handlerService.executeCommand("eu.esdihumboldt.hale.rcp.wizards.io.FunctionWizard", null);
+					handlerService.executeCommand("org.eclipse.ui.newWizard", null);
 				} catch (ExecutionException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

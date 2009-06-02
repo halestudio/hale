@@ -201,9 +201,8 @@
       </product>
    </extension>
    <extension
-         name="FunctionWizard"
-         point="eu.esdihumboldt.hale.rcp.wizards.io.FunctionWizard">
-      <category
+         point="org.eclipse.ui.newWizards">
+           <category
             id="HALE.wizard.function.numeric"
             name="Numeric Type Functions">
       </category>
