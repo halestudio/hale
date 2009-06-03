@@ -4,15 +4,12 @@
 // Any modifications to this file will be lost upon recompilation of the source schema. 
 // Generated on: 2009.01.07 at 01:07:31 PM CET 
 //
-
-
 package eu.esdihumboldt.mediator.transformer;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-
 
 /**
  * <p>Java class for TransformerDataInput complex type.
@@ -37,9 +34,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "TransformerDataInput", propOrder = {
     "previousTransformerID"
 })
-public class TransformerDataInput
-    extends DataInput
-{
+public class TransformerDataInput extends DataInput {
 
     @XmlElement(required = true)
     protected String previousTransformerID;
@@ -67,5 +62,4 @@ public class TransformerDataInput
     public void setPreviousTransformerID(String value) {
         this.previousTransformerID = value;
     }
-
 }
