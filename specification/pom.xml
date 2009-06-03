@@ -72,7 +72,13 @@
 		<groupId>org.geotools</groupId>
 		<artifactId>gt-wfs</artifactId>
 		<version>${geotools.version}</version>
-	</dependency>		
+	</dependency>	
+	<!-- added temporary-->
+		<dependency>
+		<groupId>eu.esdihumboldt</groupId>
+		<artifactId>common-library</artifactId>
+	   <version>2.0</version>
+	</dependency>	
 	</dependencies>
 	<reporting>
 		<plugins>
