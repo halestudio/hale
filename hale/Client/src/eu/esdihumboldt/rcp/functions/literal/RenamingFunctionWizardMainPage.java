@@ -12,11 +12,17 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.models.impl.SchemaServiceEnum;
 import eu.esdihumboldt.hale.rcp.wizards.io.UrlFieldEditor;
@@ -24,24 +30,33 @@ import eu.esdihumboldt.hale.rcp.wizards.io.UrlFieldEditor;
 
 
 public class RenamingFunctionWizardMainPage 
-	extends WizardPage {
+	extends WizardPage implements Listener {
 		
 		private static Logger _log = Logger.getLogger(RenamingFunctionWizardMainPage.class);
-		protected Composite ffe_container;
-		protected Composite ufe_container;
-		protected FileFieldEditor fileFieldEditor;
-		protected UrlFieldEditor wfsFieldEditor;
-		protected Button useWfsRadio;
-		protected Button useFileRadio;
-		private Button sourceDestination;
-		private Button targetDestination;
+		
+		protected Text sourceFeatureTypeName;
+		public Text getSourceFeatureTypeName() {
+			return sourceFeatureTypeName;
+		}
+
+
+		public Text getTargetFeatureTypeName() {
+			return targetFeatureTypeName;
+		}
+
+
+
+
+		protected Text targetFeatureTypeName;
+		
+		private Label sourceFeatureTypeLabel;
+		private Label targetFeatureTypeLabel;
 
         protected RenamingFunctionWizardMainPage(String pageName, String title)
 		 {
 		super(pageName, title, (ImageDescriptor) null);
-		setTitle(pageName); //NON-NLS-1
-		setDescription("Read a source or target schema from a local file or a " +
-				"Web Feature Service"); //NON-NLS-1
+		setTitle(pageName); 
+		setDescription("Enter parameters to adopt the source FeatureType to the target Naming Convention."); 
 		
 	}
 
@@ -54,174 +69,108 @@ public class RenamingFunctionWizardMainPage
     		
             super.initializeDialogUnits(parent);
             this.setPageComplete(this.isPageComplete());
-            
+            //creaste a composite to hold the widgets
             Composite composite = new Composite(parent, SWT.NULL);
-            composite.setLayout(new GridLayout());
+            //create layout for this wizard page
+            GridLayout gl = new GridLayout();
+            gl.numColumns = 2;
+            gl.marginLeft = 0;
+            gl.marginTop = 20;
+            gl.marginRight = 70;
+            composite.setLayout(gl);
             composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
                     | GridData.HORIZONTAL_ALIGN_FILL));
             composite.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
             composite.setFont(parent.getFont());
 
-            this.createSourceGroup(composite);
-            this.createDestinationGroup(composite);
-            this.createOptionsGroup(composite);
+            //source area
+            this.sourceFeatureTypeLabel = new Label(composite, SWT.TITLE);
+            this.sourceFeatureTypeLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
+                    | GridData.HORIZONTAL_ALIGN_FILL));
+            this.sourceFeatureTypeLabel.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+            FontData labelFontData = parent.getFont().getFontData()[0];
+            labelFontData.setStyle(SWT.BOLD);
+        		
+        	this.sourceFeatureTypeLabel.setFont(new Font(parent.getDisplay(), labelFontData));
+
+            this.sourceFeatureTypeLabel.setText("Source Name: ");
+            this.sourceFeatureTypeName = new Text(composite, SWT.BORDER);
+            //TODO replace it with the selected source FeatureType value
+            this.sourceFeatureTypeName.setText("RiverBasinType");
+            GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+            gd.horizontalSpan = 1;
+            this.sourceFeatureTypeName.setLayoutData(gd);
+            
+            //add listener to update the source feature name
+           this.sourceFeatureTypeName.addModifyListener(new ModifyListener(){
+            	 public void modifyText(ModifyEvent event) {
+                     String sourceName = sourceFeatureTypeName .getText();
+                     System.out.println(sourceName);
+                     if(sourceName.length() == 0) setErrorMessage("Source Name can not be empty");
+                     else if (sourceFeatureTypeName.getText().equals(targetFeatureTypeName.getText())) setErrorMessage("Source and Target Name cannot be the same");
+                     else setErrorMessage(null);
+                     setPageComplete(sourceName.length() > 0 && targetFeatureTypeName.getText().length()> 0 && (!sourceFeatureTypeName.getText().equals(targetFeatureTypeName.getText())));
+                     
+                   }
+            	
+            });
+            
+            
+          
+            //target area
+            this.targetFeatureTypeLabel = new Label(composite, SWT.BOLD);
+            this.targetFeatureTypeLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
+                    | GridData.HORIZONTAL_ALIGN_FILL));
+            this.targetFeatureTypeLabel.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+            this.targetFeatureTypeLabel.setFont(new Font(parent.getDisplay(), labelFontData));
+            this.targetFeatureTypeLabel.setText("TargetName: ");
+            this.targetFeatureTypeName = new Text(composite, SWT.BORDER);
+            //TODO replace it with the selected target FeatureType value
+            this.targetFeatureTypeName.setText("RiverType");
+            gd = new GridData(GridData.FILL_HORIZONTAL);
+            gd.horizontalSpan = 1;
+            this.targetFeatureTypeName.setLayoutData(gd);
+            
+            //add listener to update the target feature name
+            this.targetFeatureTypeName.addModifyListener(new ModifyListener(){
+             	 public void modifyText(ModifyEvent event) {
+                      String targetName = targetFeatureTypeName.getText();
+                      
+                      if(targetName.length() == 0) setErrorMessage("Target Name can not be empty");
+                     
+                      else if (sourceFeatureTypeName.getText().equals(targetFeatureTypeName.getText())) setErrorMessage("Source and Target Name cannot be the same");
+                      else setErrorMessage(null);
+                      setPageComplete(targetName.length() > 0 && sourceFeatureTypeName.getText().length()> 0 && (!sourceFeatureTypeName.getText().equals(targetFeatureTypeName.getText())));
+                    }
+             	
+             });
             
             setErrorMessage(null);	// should not initially have error message
     		super.setControl(composite);
     	}
     	
 
-    	/**
-    	 * Creates the UI controls for the selection of the source of the schema
-    	 * to be imported.
-    	 * 
-    	 * @param parent the parent {@link Composite}
-    	 */
-    	private void createSourceGroup(Composite parent) {
-    		
-    		// define source group composite
-    		Group selectionArea = new Group(parent, SWT.NONE);
-    		selectionArea.setText("Read Schema from ...");
-    		selectionArea.setLayout(new GridLayout());
-    		GridData selectionAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
-                    | GridData.HORIZONTAL_ALIGN_FILL);
-    		selectionAreaGD.grabExcessHorizontalSpace = true;
-    		selectionArea.setLayoutData(selectionAreaGD);
-    		selectionArea.setSize(selectionArea.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-    		selectionArea.setFont(parent.getFont());
-    		
-    		// read from file (XSD, GML, XML)
-    		final Composite fileSelectionArea = new Composite(selectionArea, SWT.NONE);
-    		GridData fileSelectionData = new GridData(
-    				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL);
-    		fileSelectionData.grabExcessHorizontalSpace = true;
-    		fileSelectionArea.setLayoutData(fileSelectionData);
-
-    		GridLayout fileSelectionLayout = new GridLayout();
-    		fileSelectionLayout.numColumns = 2;
-    		fileSelectionLayout.makeColumnsEqualWidth = false;
-    		fileSelectionLayout.marginWidth = 0;
-    		fileSelectionLayout.marginHeight = 0;
-    		fileSelectionArea.setLayout(fileSelectionLayout);
-    		this.useFileRadio = new Button(fileSelectionArea, SWT.RADIO);
-    		useFileRadio.setSelection(true);
-    		this.ffe_container = new Composite(fileSelectionArea, SWT.NULL);
-    		ffe_container.setLayoutData(
-    				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-    		fileFieldEditor = new FileFieldEditor("fileSelect", 
-    				"... file:", ffe_container); //NON-NLS-1 //NON-NLS-2
-    		fileFieldEditor.getTextControl(ffe_container).addModifyListener(new ModifyListener(){
-    			public void modifyText(ModifyEvent e) {
-    				getWizard().getContainer().updateButtons();
-    			}
-    		});
-    		String[] extensions = new String[] { "*.xml", "*.gml", "*.xsd" }; //NON-NLS-1
-    		fileFieldEditor.setFileExtensions(extensions);
-    		
-    		// read from WFS (DescribeFeatureType)
-    		this.useWfsRadio = new Button(fileSelectionArea, SWT.RADIO);
-    		this.ufe_container = new Composite(fileSelectionArea, SWT.NULL);
-    		ufe_container.setLayoutData(
-    				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-    		wfsFieldEditor = new UrlFieldEditor("urlSelect", 
-    				"... WFS DescribeFeatureType:", ufe_container);
-    		wfsFieldEditor.setEnabled(false, ufe_container);
-    		wfsFieldEditor.getTextControl(ufe_container).addModifyListener(new ModifyListener() {
-    			public void modifyText(ModifyEvent e) {
-    				getWizard().getContainer().updateButtons();
-    			}
-    		});
-    		
-    		// add listeners to radio buttons
-    		useFileRadio.addSelectionListener(new SelectionAdapter() {
-    			@Override
-    			public void widgetSelected(SelectionEvent e) {
-    				if (((Button)e.widget).getSelection()) {
-    					fileFieldEditor.setEnabled(true, ffe_container);
-    					wfsFieldEditor.setEnabled(false, ufe_container);
-    				}
-    				else {
-    					fileFieldEditor.setEnabled(false, ffe_container);
-    					wfsFieldEditor.setEnabled(true, ufe_container);
-    				}
-    			}
-    		});
-    		
-    		useWfsRadio.addSelectionListener(new SelectionAdapter() {
-    			@Override
-    			public void widgetSelected(SelectionEvent e) {
-    				if (((Button)e.widget).getSelection()) {
-    					fileFieldEditor.setEnabled(false, ffe_container);
-    					wfsFieldEditor.setEnabled(true, ufe_container);
-    				}
-    				else {
-    					fileFieldEditor.setEnabled(true, ffe_container);
-    					wfsFieldEditor.setEnabled(false, ufe_container);
-    				}
-    			}
-    		});
-    		
-    		// finish some stuff.
-    		fileSelectionArea.moveAbove(null);
-    		
-    	}
-
-    	/**
-    	 * creates the UI controls for the selection of the place where to import 
-    	 * the schema to (target schema or source schema)
-    	 * @param parent the parent {@link Composite}
-    	 */
-    	private void createDestinationGroup(Composite parent) {
-    		// define source group composite
-    		Group destinationArea = new Group(parent, SWT.NONE);
-    		destinationArea.setText("Import Destination");
-    		destinationArea.setLayout(new GridLayout());
-    		GridData destinationAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
-                    | GridData.HORIZONTAL_ALIGN_FILL);
-    		destinationAreaGD.grabExcessHorizontalSpace = true;
-    		destinationArea.setLayoutData(destinationAreaGD);
-    		destinationArea.setSize(destinationArea.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-    		destinationArea.setFont(parent.getFont());
-    		
-    		sourceDestination = new Button(destinationArea, SWT.RADIO);
-    		sourceDestination.setSelection(true);
-    		sourceDestination.setText("Import as Source Schema");
-    		
-    		targetDestination = new Button(destinationArea, SWT.RADIO);
-    		targetDestination.setText("Import as Target Schema");
-    	}
-
-    	/**
-    	 * Creates the UI controls for the options that can be applied when 
-    	 * importing a schema.
-    	 * 
-    	 * @param parent the parent {@link Composite}
-    	 */
-    	private void createOptionsGroup(Composite parent) {
-    		Group optionsGroup = new Group(parent, SWT.NONE);
-    		optionsGroup.setText("Import Options");
-    		optionsGroup.setLayout(new GridLayout());
-    		GridData optionsGroupGD = new GridData(GridData.VERTICAL_ALIGN_FILL
-                    | GridData.HORIZONTAL_ALIGN_FILL);
-    		optionsGroupGD.grabExcessHorizontalSpace = true;
-    		optionsGroup.setLayoutData(optionsGroupGD);
-    		optionsGroup.setSize(optionsGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-    		optionsGroup.setFont(parent.getFont());
-    		
-    		// import supertypes/schema elements?
-    		Button sourceDestination = new Button(optionsGroup, SWT.CHECK);
-    		sourceDestination.setSelection(true);
-    		sourceDestination.setText("Also import supertypes from imported " +
-    				"schemas");
-    		
-    	}
+    	
     	
     	/**
     	 * @see org.eclipse.jface.wizard.WizardPage#isPageComplete()
     	 */
-    	@Override
+    	/*@Override
     	public boolean isPageComplete() {
-    		if (this.fileFieldEditor != null && this.wfsFieldEditor != null) {
+    		
+    		if (this.sourceFeatureTypeName != null && this.targetFeatureTypeName != null){
+    			//TODO add error handling if source name = target name_
+    			_log.debug("sourceFeatureType " + this.sourceFeatureTypeName.getText());
+    			_log.debug("sourceFeatureType " + this.sourceFeatureTypeName.getText());
+    			_log.debug("Page is complete.");
+    			return true;
+    		}else {
+    			//TODO 	add error handling if source and/or target name are empty.
+    			return false;
+    			}
+    			
+    		}*/
+    		/*if (this.fileFieldEditor != null && this.wfsFieldEditor != null) {
     			_log.debug("fileFieldEditor: " + this.fileFieldEditor.getStringValue());
     			try {
     				if (this.useWfsRadio.getSelection()) {
@@ -256,27 +205,18 @@ public class RenamingFunctionWizardMainPage
     		else {
     			return false;
     		}
+    		return true;
     	}
-    	
-    	/**
-    	 * @return a String representing the URL or URI to load the schema from.
-    	 */
-    	public String getResult() {
-    		if (this.useWfsRadio.getSelection()) {
-    			return this.wfsFieldEditor.getTextControl(
-    					this.ufe_container).getText();
-    		}
-    		else {
-    			return this.fileFieldEditor.getTextControl(
-    					this.ffe_container).getText(); 
-    		}
-    	}
-    	
-    	public SchemaServiceEnum getSchemaType() {
-    		if (sourceDestination.getSelection()) {
-    			return SchemaServiceEnum.SOURCE_SCHEMA;
-    		}
-    		else return SchemaServiceEnum.TARGET_SCHEMA;
-    	}
+    	*/
+
+
+		@Override
+		public void handleEvent(Event e) {
+			if (e.widget == this.sourceFeatureTypeName){
+				System.out.println(this.sourceFeatureTypeName.getSelectionText());
+			}
+			
+		}
+    
     	
 }

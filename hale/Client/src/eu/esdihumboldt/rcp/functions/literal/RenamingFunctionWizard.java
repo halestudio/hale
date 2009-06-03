@@ -1,4 +1,4 @@
-/*
+ /*
  * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
  * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
  * 
@@ -54,8 +54,8 @@ private static Logger _log = Logger.getLogger(RenamingFunctionWizard.class);
 	public RenamingFunctionWizard(){
 		super();
 		this.mainPage = new RenamingFunctionWizardMainPage(
-				"Rename Feature", "Rename Feature"); 
-		super.setWindowTitle("Rename Feature Wizard"); 
+				"Configure Feature Type Renaming Function", "Configure Feature Type Renaming Function"); 
+		super.setWindowTitle("Configure Function"); 
 		super.setNeedsProgressMonitor(true);
 		
 	}
@@ -77,6 +77,8 @@ private static Logger _log = Logger.getLogger(RenamingFunctionWizard.class);
 	
 	@Override
 	public boolean performFinish() {
+		System.out.println(mainPage.getSourceFeatureTypeName().getText());
+		System.out.println(mainPage.getTargetFeatureTypeName().getText());
 		System.out.println("Transformation finished");
 		return true;
 	}
