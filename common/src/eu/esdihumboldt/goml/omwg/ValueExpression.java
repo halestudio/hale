@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.goml.omwg;
 
-//import java.util.List;
+import eu.esdihumboldt.goml.oml.ext.Function;
 
 /**
  * A {@link ValueExpression} is used to deal with literal values and ranges. It 

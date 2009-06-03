@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.goml.align;
 
+import eu.esdihumboldt.cst.align.ISchema;
+import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.rdf.About;
 
 /**
@@ -22,7 +24,8 @@ import eu.esdihumboldt.goml.rdf.About;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class Schema {
+public class Schema 
+	implements ISchema {
 	
 	/**
 	 * TODO add comment
@@ -37,7 +40,7 @@ public class Schema {
 	/**
 	 * Metadata on this {@link Schema} object
 	 */
-	private About about;
+	private IAbout about;
 	
 	// constructors ............................................................
 	
@@ -84,14 +87,14 @@ public class Schema {
 	/**
 	 * @return the about
 	 */
-	public About getAbout() {
+	public IAbout getAbout() {
 		return about;
 	}
 
 	/**
 	 * @param about the about to set
 	 */
-	public void setAbout(About about) {
+	public void setAbout(IAbout about) {
 		this.about = about;
 	}
 	

@@ -11,6 +11,10 @@
  */
 package eu.esdihumboldt.goml.align;
 
+import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.IEntity;
+import eu.esdihumboldt.cst.align.IMeasure;
+import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.rdf.About;
 
 /**
@@ -21,17 +25,18 @@ import eu.esdihumboldt.goml.rdf.About;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class Cell {
+public class Cell 
+	implements ICell {
 
 	/**
 	 * The first {@link Entity} mapped by this {@link Cell}.
 	 */
-	private Entity entity1;
+	private IEntity entity1;
 	
 	/**
 	 * The second {@link Entity} mapped by this {@link Cell}.
 	 */
-	private Entity entity2;
+	private IEntity entity2;
 	
 	/**
 	 * The mapping/relation type between the two {@link Entity} objects.
@@ -41,29 +46,29 @@ public class Cell {
 	/**
 	 * TODO add comment
 	 */
-	private Measure measure;
+	private IMeasure measure;
 	
 	/**
 	 * Metadata on this {@link Cell}.
 	 */
-	private About about;
+	private IAbout about;
 	
 	
 	// getters/setters .........................................................
 	
-	public void setEntity1(Entity entity1) {
+	public void setEntity1(IEntity entity1) {
 		this.entity1 = entity1;
 	}
 
-	public Entity getEntity1() {
+	public IEntity getEntity1() {
 		return entity1;
 	}
 	
-	public void setEntity2(Entity entity2) {
+	public void setEntity2(IEntity entity2) {
 		this.entity2 = entity2;
 	}
 
-	public Entity getEntity2() {
+	public IEntity getEntity2() {
 		return entity2;
 	}
 	
@@ -84,40 +89,29 @@ public class Cell {
 	/**
 	 * @return the measure
 	 */
-	public Measure getMeasure() {
+	public IMeasure getMeasure() {
 		return measure;
 	}
 
 	/**
 	 * @param measure the measure to set
 	 */
-	public void setMeasure(Measure measure) {
+	public void setMeasure(IMeasure measure) {
 		this.measure = measure;
 	}
 
 	/**
 	 * @return the about
 	 */
-	public About getAbout() {
+	public IAbout getAbout() {
 		return about;
 	}
 
 	/**
 	 * @param about the about to set
 	 */
-	public void setAbout(About about) {
+	public void setAbout(IAbout about) {
 		this.about = about;
 	}
 
-	public enum RelationType {
-		Equivalence,
-		Subsumes,
-		SubsumedBy,
-		InstanceOf,
-		HasInstance,
-		Disjoint,
-		PartOf, // TODO, might have to go elsewhere. added by MdV
-		Extra, // TODO, might have to go elsewhere. added by MdV
-		Missing // TODO, might have to go elsewhere. added by MdV
-	}
 }

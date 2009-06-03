@@ -13,6 +13,10 @@ package eu.esdihumboldt.goml.align;
 
 import java.util.List;
 
+import eu.esdihumboldt.cst.align.IAlignment;
+import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.ISchema;
+import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.rdf.About;
 
 /**
@@ -23,23 +27,23 @@ import eu.esdihumboldt.goml.rdf.About;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class Alignment {
+public class Alignment implements IAlignment {
 
 	/**
 	 * Information on the first {@link Schema} being mapped.
 	 */
-	private Schema schema1;
+	private ISchema schema1;
 	
 	/**
 	 * Information on the second {@link Schema} being mapped.
 	 */
-	private Schema schema2;
+	private ISchema schema2;
 	
 	/**
 	 * A {@link List} of all the mappings defined as part of this 
 	 * {@link Alignment}.
 	 */
-	private List<Cell> map;
+	private List<ICell> map;
 	
 	/**
 	 * TODO add description
@@ -49,49 +53,49 @@ public class Alignment {
 	/**
 	 * Metadata on this {@link Alignment}.
 	 */
-	private About about;
+	private IAbout about;
 	
 	// getters / setters .......................................................
 
 	/**
 	 * @return the schema1
 	 */
-	public Schema getSchema1() {
+	public ISchema getSchema1() {
 		return schema1;
 	}
 
 	/**
 	 * @param schema1 the schema1 to set
 	 */
-	public void setSchema1(Schema schema1) {
+	public void setSchema1(ISchema schema1) {
 		this.schema1 = schema1;
 	}
 
 	/**
 	 * @return the schema2
 	 */
-	public Schema getSchema2() {
+	public ISchema getSchema2() {
 		return schema2;
 	}
 
 	/**
 	 * @param schema2 the schema2 to set
 	 */
-	public void setSchema2(Schema schema2) {
+	public void setSchema2(ISchema schema2) {
 		this.schema2 = schema2;
 	}
 
 	/**
 	 * @return the map
 	 */
-	public List<Cell> getMap() {
+	public List<ICell> getMap() {
 		return map;
 	}
 
 	/**
 	 * @param map the map to set
 	 */
-	public void setMap(List<Cell> map) {
+	public void setMap(List<ICell> map) {
 		this.map = map;
 	}
 
@@ -112,14 +116,14 @@ public class Alignment {
 	/**
 	 * @return the about
 	 */
-	public About getAbout() {
+	public IAbout getAbout() {
 		return about;
 	}
 
 	/**
 	 * @param about the about to set
 	 */
-	public void setAbout(About about) {
+	public void setAbout(IAbout about) {
 		this.about = about;
 	}
 	

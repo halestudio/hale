@@ -14,6 +14,8 @@ package eu.esdihumboldt.goml.align;
 
 import java.util.List;
 
+import eu.esdihumboldt.cst.align.IEntity;
+import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 
 /**
@@ -24,7 +26,8 @@ import eu.esdihumboldt.goml.oml.ext.Transformation;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class Entity {
+public class Entity 
+	implements IEntity {
 	
 	/**
 	 * Note: Interior element omwg:label collapsed. <xs:element ref="omwg:label"
@@ -36,7 +39,7 @@ public class Entity {
 	 * Note: this can be a single Function (transf) or a Service (service) or a pipe of transformations
 	 * <xs:group ref="omwg:transformation" minOccurs="0" maxOccurs="1" />
 	 */
-	private Transformation transformation;
+	private ITransformation transformation;
 	
 	// constructors ............................................................
 
@@ -60,14 +63,14 @@ public class Entity {
 	/**
 	 * @return the transformation
 	 */
-	public Transformation getTransformation() {
+	public ITransformation getTransformation() {
 		return transformation;
 	}
 
 	/**
 	 * @param transformation the transformation to set
 	 */
-	public void setTransformation(Transformation transformation) {
+	public void setTransformation(ITransformation transformation) {
 		this.transformation = transformation;
 	}
 

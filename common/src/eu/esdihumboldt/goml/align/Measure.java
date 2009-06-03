@@ -14,6 +14,8 @@ package eu.esdihumboldt.goml.align;
 
 import java.net.URI;
 
+import eu.esdihumboldt.cst.align.IMeasure;
+
 /**
  * FIXME Add Type description.
  * 
@@ -21,7 +23,8 @@ import java.net.URI;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class Measure {
+public class Measure 
+	implements IMeasure {
 	
 	/**
 	 * a {@link URI} used to uniquely identify a certain Unit of Measure, such 

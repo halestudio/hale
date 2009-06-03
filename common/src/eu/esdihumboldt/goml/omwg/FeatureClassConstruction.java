@@ -22,80 +22,64 @@ import java.util.List;
  * @partner 08 / Delft University of Technology
  * @version $Id$
  */
-public class FeatureClassConstruction {
+public class FeatureClassConstruction 
+	extends FeatureClass {
 
 	/**
-	 * Note: Interior element omwg:ClassAndType collapsed. Currently modeled as
-	 * binary predicate between the elements of this.and. TODO MdV test whether
-	 * nested and, or, not remains possible
+	 * Note: Interior element omwg:ClassAndType collapsed. Modeled as
+	 * binary predicate between the elements of this.entities.
 	 * 
 	 * <xs:element name="and" type="omwg:ClassAndType" minOccurs="0" />
 	 */
-	private List<FeatureClass> and;
-
+	private List<FeatureClass> entities;
+	
 	/**
-	 * Note: Interior element omwg:ClassOrType collapsed. Currently modeled as
-	 * binary predicate between the elements of this.or. TODO MdV test whether
-	 * nested and, or, not remains possible
-	 * 
-	 * <xs:element name="or" type="omwg:ClassOrType" minOccurs="0" />
+	 * Indicates the operator/predicate valid for this 
+	 * {@link FeatureClassConstruction}.
 	 */
-	private List<FeatureClass> or;
-
-	/**
-	 * Note: Interior element omwg:ClassNotType collapsed. Currently modeled as
-	 * unary predicate. If more than one 'not' than like this: not(...) and not
-	 * (...), or like this: not (... or ...)
-	 * 
-	 * <xs:element name="not" type="omwg:ClassNotType" minOccurs="0" />
-	 */
-	private FeatureClass not;
+	private ConstructionType type;
+	
+	// constructors ............................................................
+	
+	public FeatureClassConstruction(List<String> label) {
+		super(label);
+		// TODO Auto-generated constructor stub
+	}
 
 	// getters / setters .......................................................
-
+	
 	/**
-	 * @return the and
+	 * @return the entities
 	 */
-	public List<FeatureClass> getAnd() {
-		return and;
+	public List<FeatureClass> getEntities() {
+		return entities;
 	}
 
 	/**
-	 * @param and
-	 *            the and to set
+	 * @param entities the entities to set
 	 */
-	public void setAnd(List<FeatureClass> and) {
-		this.and = and;
+	public void setEntities(List<FeatureClass> entities) {
+		this.entities = entities;
 	}
 
 	/**
-	 * @return the or
+	 * @return the type
 	 */
-	public List<FeatureClass> getOr() {
-		return or;
+	public ConstructionType getType() {
+		return type;
 	}
 
 	/**
-	 * @param or
-	 *            the or to set
+	 * @param type the type to set
 	 */
-	public void setOr(List<FeatureClass> or) {
-		this.or = or;
+	public void setType(ConstructionType type) {
+		this.type = type;
 	}
 
-	/**
-	 * @return the not
-	 */
-	public FeatureClass isNot() {
-		return not;
-	}
-
-	/**
-	 * @param not
-	 *            the not to set
-	 */
-	public void setNot(FeatureClass not) {
-		this.not = not;
+	public enum ConstructionType {
+		AND, // intersection
+		OR,
+		NOT
 	}
 
 }

@@ -14,7 +14,6 @@ package eu.esdihumboldt.goml.omwg;
 import java.util.List;
 
 import eu.esdihumboldt.goml.align.Entity;
-import eu.esdihumboldt.goml.align.Cell.RelationType;
 
 /**
  * This class represents the <xs:complexType name="RelationType">, to be used
@@ -26,17 +25,8 @@ import eu.esdihumboldt.goml.align.Cell.RelationType;
  * @partner 08 / Delft University of Technology
  * @version $Id$
  */
-public class Relation extends Entity {
-
-	/**
-	 * <xs:group ref="omwg:relConst" minOccurs="0" maxOccurs="1" />
-	 */
-	private RelationConstruction relConstruction;
-
-	/**
-	 * <xs:group ref="omwg:relCond" minOccurs="0" maxOccurs="unbounded" /> In
-	 * stead of the group use the group members directly
-	 */
+public class Relation 
+	extends Entity {
 
 	/**
 	 * <xs:element ref="omwg:domainRestriction" minOccurs="0"
@@ -57,20 +47,6 @@ public class Relation extends Entity {
 	}
 	
 	// getters / setters .......................................................
-
-	/**
-	 * @return the relConstruction
-	 */
-	public RelationConstruction getRelConstruction() {
-		return relConstruction;
-	}
-
-	/**
-	 * @param relConstruction the relConstruction to set
-	 */
-	public void setRelConstruction(RelationConstruction relConstruction) {
-		this.relConstruction = relConstruction;
-	}
 
 	/**
 	 * @return the domainRestriction

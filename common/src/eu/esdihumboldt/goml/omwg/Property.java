@@ -27,11 +27,6 @@ public class Property
 	extends Entity {
 
 	/**
-	 * <xs:group ref="omwg:propConst" minOccurs="0" maxOccurs="1" />
-	 */
-	private PropertyConstruction propConstruction;
-
-	/**
 	 * <xs:element ref="omwg:domainRestriction" minOccurs="0"
 	 * maxOccurs="unbounded" />
 	 */
@@ -58,20 +53,6 @@ public class Property
 	}
 
 	// getters/setters .........................................................
-	
-	/**
-	 * @return the propConstruction
-	 */
-	public PropertyConstruction getPropConstruction() {
-		return propConstruction;
-	}
-
-	/**
-	 * @param propConstruction the propConstruction to set
-	 */
-	public void setPropConstruction(PropertyConstruction propConstruction) {
-		this.propConstruction = propConstruction;
-	}
 
 	/**
 	 * @return the domainRestriction

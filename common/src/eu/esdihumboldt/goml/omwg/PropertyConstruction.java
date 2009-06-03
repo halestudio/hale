@@ -22,78 +22,63 @@ import java.util.List;
  * @partner 08 / Delft University of Technology
  * @version $Id$
  */
-public class PropertyConstruction {
+public class PropertyConstruction 
+	extends Property {
 
 	/**
+	 * The {@link List} of {@link Property} objects bound by this 
+	 * {@link PropertyConstructionType}.
 	 * <xs:group ref="omwg:propConst" minOccurs="0" maxOccurs="1" />
 	 */
-	private List<Property> and;
-	private List<Property> or;
-	private Property not;
-	private Relation first;
-	private Property next;
+	private List<Property> properties;
+	
+	/**
+	 * The {@link PropertyConstructionType} of this {@link PropertyConstruction}.
+	 */
+	private PropertyConstructionType type;
+
+
+	public PropertyConstruction(List<String> label) {
+		super(label);
+		// TODO Auto-generated constructor stub
+	}
 	
 	// getters / setters .......................................................
 	
 	/**
-	 * @return the and
+	 * @return the properties
 	 */
-	public List<Property> getAnd() {
-		return and;
+	public List<Property> getProperties() {
+		return properties;
 	}
+
 	/**
-	 * @param and the and to set
+	 * @param properties the properties to set
 	 */
-	public void setAnd(List<Property> and) {
-		this.and = and;
+	public void setProperties(List<Property> properties) {
+		this.properties = properties;
 	}
+
 	/**
-	 * @return the or
+	 * @return the type
 	 */
-	public List<Property> getOr() {
-		return or;
+	public PropertyConstructionType getType() {
+		return type;
 	}
+
 	/**
-	 * @param or the or to set
+	 * @param type the type to set
 	 */
-	public void setOr(List<Property> or) {
-		this.or = or;
+	public void setType(PropertyConstructionType type) {
+		this.type = type;
 	}
-	/**
-	 * @return the not
-	 */
-	public Property getNot() {
-		return not;
-	}
-	/**
-	 * @param not the not to set
-	 */
-	public void setNot(Property not) {
-		this.not = not;
-	}
-	/**
-	 * @return the first
-	 */
-	public Relation getFirst() {
-		return first;
-	}
-	/**
-	 * @param first the first to set
-	 */
-	public void setFirst(Relation first) {
-		this.first = first;
-	}
-	/**
-	 * @return the next
-	 */
-	public Property getNext() {
-		return next;
-	}
-	/**
-	 * @param next the next to set
-	 */
-	public void setNext(Property next) {
-		this.next = next;
+
+	public enum PropertyConstructionType {
+		AND,
+		OR,
+		NOT,
+		FIRST,
+		NEXT
 	}
 
 }

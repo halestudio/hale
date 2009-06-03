@@ -14,6 +14,8 @@ package eu.esdihumboldt.goml.align;
 
 import java.net.URI;
 
+import eu.esdihumboldt.cst.align.IFormalism;
+
 /**
  * A {@link Formalism} identifies the formal language or structure used to 
  * express a {@link Schema}.
@@ -22,7 +24,8 @@ import java.net.URI;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class Formalism {
+public class Formalism 
+	implements IFormalism {
 
 	/**
 	 * The name of this {@link Formalism}.

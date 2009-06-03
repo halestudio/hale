@@ -12,10 +12,11 @@
 
 package eu.esdihumboldt.goml.oml.ext;
 
+import java.net.URI;
 import java.util.List;
 
-import eu.esdihumboldt.goml.omwg.Function;
-import eu.esdihumboldt.goml.omwg.Service;
+import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.cst.align.ext.ITransformation;
 
 /**
  * This class represents <xs:group name="transformation">.
@@ -25,53 +26,19 @@ import eu.esdihumboldt.goml.omwg.Service;
  * @partner 08 / Delft University of Technology
  * @version $Id$ 
  */
-public class Transformation {
-	
-	private Function transf;
-	
-	private Service service;
-	
-	/**
-	 * <xs:element name="transfPipe" type="goml:TransfPipeType" minOccurs="0" />
-	 */
-	private List<Transformation> pipe;
+public class Transformation 
+	implements ITransformation {
 
+	private URI service;
+	private String label;
+	private List<IParameter> parameters;
 
 	// getters / setters .......................................................
 
 	/**
-	 * @return the transf
-	 */
-	public Function getTransf() {
-		return transf;
-	}
-
-	/**
-	 * @return the pipe
-	 */
-	public List<Transformation> getPipe() {
-		return pipe;
-	}
-
-	/**
-	 * @param pipe the pipe to set
-	 */
-	public void setPipe(List<Transformation> pipe) {
-		this.pipe = pipe;
-	}
-
-	/**
-	 * @param transf
-	 *            the transf to set
-	 */
-	public void setTransf(Function transf) {
-		this.transf = transf;
-	}
-
-	/**
 	 * @return the service
 	 */
-	public Service getService() {
+	public URI getService() {
 		return service;
 	}
 
@@ -79,8 +46,16 @@ public class Transformation {
 	 * @param service
 	 *            the service to set
 	 */
-	public void setService(Service service) {
+	public void setService(URI service) {
 		this.service = service;
+	}
+
+	public String getLabel() {
+		return this.label;
+	}
+
+	public List<IParameter> getParameters() {
+		return this.parameters;
 	}
 
 

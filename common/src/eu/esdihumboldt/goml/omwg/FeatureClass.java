@@ -25,12 +25,8 @@ import eu.esdihumboldt.goml.align.Entity;
  * @partner 08 / Delft University of Technology
  * @version $Id$
  */
-public class FeatureClass extends Entity {
-
-	/**
-	 * <xs:group ref="omwg:classConst" minOccurs="0" maxOccurs="1" />
-	 */
-	private FeatureClassConstruction classConstruction;
+public class FeatureClass 
+	extends Entity {
 
 	/**
 	 * Note: Interior element omwg:classConditionType collapsed. 
@@ -111,14 +107,5 @@ public class FeatureClass extends Entity {
 			List<Restriction> attributeOccurenceCondition) {
 		this.attributeOccurenceCondition = attributeOccurenceCondition;
 	}
-
-	public void setClassConstruction(FeatureClassConstruction classConstruction) {
-		this.classConstruction = classConstruction;
-	}
-
-	public FeatureClassConstruction getClassConstruction() {
-		return classConstruction;
-	}
-
 
 }
