@@ -9,14 +9,16 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.models;
+package eu.esdihumboldt.cst;
 
-import org.geotools.feature.FeatureCollection;
+import org.opengis.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.modelrepository.abstractfc.mapping.Alignment;
+import eu.esdihumboldt.cst.align.IAlignment;
+import eu.esdihumboldt.cst.align.ICell;
+
+
 
 /**
  * This is the interface used by HALE to access schema transformation 
@@ -33,23 +35,21 @@ public interface TransformationService  {
 	 * entire mapping.
 	 * @param fc a {@link FeatureCollection} with {@link Feature}s to be 
 	 * transformed, with source {@link FeatureType}s.
-	 * @param al the {@link Alignment} to be applied
+	 * @param al the {@link IAlignment} to be applied
 	 * @return a {@link FeatureCollection} with the transformed Features, with 
 	 * target {@link FeatureType}s.
 	 */
-	public FeatureCollection<? extends FeatureType, ? extends Feature> 
-		transform(
-				FeatureCollection<? extends FeatureType, ? extends Feature> fc, 
-				Alignment al);
+	public FeatureCollection transform(FeatureCollection fc, 
+				IAlignment al);
 	
 	/**
-	 * Transform a single {@link Feature} using a single {@link Cell}.
+	 * Transform a single {@link Feature} using a single {@link ICell}.
 	 * @param f a single {@link Feature} to be transformed using the given 
 	 * {@link Cell}.
 	 * @param c a single cell containing mappings for the {@link FeatureType} 
 	 * of the provided {@link Feature}.
 	 * @return the transformed {@link Feature}.
 	 */
-	public Feature transform(Feature f, Cell c);
+	public Feature transform(Feature f, ICell c);
 
 }

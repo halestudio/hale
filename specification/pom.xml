@@ -67,18 +67,7 @@
 	    <groupId>dom4j</groupId>
 	    <artifactId>dom4j</artifactId>
 	    <version>1.6.1</version>
-	</dependency>
-    <dependency>
-		<groupId>org.geotools</groupId>
-		<artifactId>gt-wfs</artifactId>
-		<version>${geotools.version}</version>
-	</dependency>	
-	<!-- added temporary-->
-		<dependency>
-		<groupId>eu.esdihumboldt</groupId>
-		<artifactId>common-library</artifactId>
-	   <version>2.0</version>
-	</dependency>	
+	</dependency>		
 	</dependencies>
 	<reporting>
 		<plugins>
@@ -97,7 +86,6 @@
 	<properties>
 		<cxf.version>2.1.1</cxf.version>
 		<spring.version>2.5.4</spring.version>
-		<geotools.version>2.5.4</geotools.version>
 	</properties>
 </project>
 
