@@ -48,7 +48,7 @@ public interface Task {
 	public TaskSource getSource();
 	
 	/**
-	 * @return 1.the value identifies the impact the solving of a task will 
+	 * @return the value identifies the impact the solving of a task will 
 	 * have in terms of the metrics used in the quality model;
 	 */
 	public double getValue();
@@ -58,6 +58,11 @@ public interface Task {
 	 */
 	public String getTaskTitle();
 	
+	/**
+	 * @return the status this Task is currently in.
+	 */
+	public TaskStatus getTaskStatus();
+	
 	
 	public enum SeverityLevel {
 		/** A logical error in the alignment that makes it impossible to apply. */
@@ -66,6 +71,13 @@ public interface Task {
 		warning,
 		/** A normal task. */
 		task
+	}
+	
+	public enum TaskStatus {
+		NEW,
+		ACTIVE,
+		COMPLETE,
+		OBSOLETE
 	}
 	
 }

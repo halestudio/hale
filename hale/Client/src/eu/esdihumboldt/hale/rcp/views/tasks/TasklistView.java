@@ -1,3 +1,14 @@
+/*
+ * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
+ * EU Integrated Project #030962                  01.10.2006 - 30.09.2010
+ * 
+ * For more information on the project, please refer to the this web site:
+ * http://www.esdi-humboldt.eu
+ * 
+ * LICENSE: For information on the license under which this program is 
+ * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
+ * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ */
 package eu.esdihumboldt.hale.rcp.views.tasks;
 
 import org.eclipse.jface.viewers.CellEditor;
@@ -12,23 +23,35 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 
-import eu.esdihumboldt.hale.task.impl.TasklistMock;
+import eu.esdihumboldt.hale.models.HaleServiceListener;
+import eu.esdihumboldt.hale.models.TaskService;
 
 
 /**
- * The Tasklist of the Webclient. The Tasklist . The main component of 
- * this View is a TreeViewer which provides errors, warnings and 
- * tasks to the user.
- * @author cjauss
- *
+ * The Tasklist of the Application.
+ * 
+ * @author Thorsten Reitz 
+ * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @version $Id$ 
  */
-public class TasklistView extends ViewPart{
+public class TasklistView 
+	extends ViewPart 
+	implements HaleServiceListener {
 	
 	public static final String ID ="eu.esdihumboldt.hale.rcp.views.tasks.TasklistView";
-	private Tasklist tasklist;
+
+	private TableViewer tableViewer;
+	
+	private TaskService taskService;
 
 	@Override
 	public void createPartControl(Composite parent) {
+		
+		// get a reference to the TaskService.
+		this.taskService = (TaskService) this.getSite().getService(
+				TaskService.class);
+		this.taskService.addListener(this);
+		
 		Composite viewerComposite = new Composite(parent, SWT.NONE);
 		FillLayout fLay = new FillLayout();
 		viewerComposite.setLayout(fLay);
@@ -38,18 +61,18 @@ public class TasklistView extends ViewPart{
 		t.setHeaderVisible(true);
 		t.setLinesVisible(true);
 		
-		final TableViewer tViewer = new TableViewer(t);
+		this.tableViewer = new TableViewer(t);
 		
 		//Severity column for the TaskListView with Sorter
 		TableColumn severityColumn = new TableColumn(t,SWT.WRAP);
-		severityColumn.setText("Severity");
+		severityColumn.setText("Type");
 		severityColumn.addSelectionListener(new SelectionAdapter(){
 			public void widgetSelected(SelectionEvent e){
-				tViewer.setSorter(
+				tableViewer.setSorter(
 						new TasklistTableSorter(TasklistTableSorter.SEVERITY));
 			}
 		});
-		severityColumn.setWidth(70);
+		severityColumn.setWidth(50);
 		
 
 		//Value column for the TaskListView with Sorter
@@ -57,55 +80,44 @@ public class TasklistView extends ViewPart{
 		valueColumn.setText("Value");
 		valueColumn.addSelectionListener(new SelectionAdapter(){
 			public void widgetSelected(SelectionEvent e){
-				tViewer.setSorter(
+				tableViewer.setSorter(
 						new TasklistTableSorter(TasklistTableSorter.VALUE));
 			}
 		});
-		valueColumn.setWidth(70);
-		
-		//Type column for the TaskListView with Sorter
-		TableColumn taskTypeColumn = new TableColumn(t,SWT.WRAP);
-		taskTypeColumn.setText("Tasktype");
-		taskTypeColumn.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent e){
-				tViewer.setSorter(
-						new TasklistTableSorter(TasklistTableSorter.TYPE));
-			}
-		});
-		taskTypeColumn.setWidth(70);
+		valueColumn.setWidth(50);
 		
 		//Title column for the TaskListView with Sorter
 		TableColumn titleColumn = new TableColumn(t,SWT.WRAP);
 		titleColumn.setText("Title");
 		titleColumn.addSelectionListener(new SelectionAdapter(){
 			public void widgetSelected(SelectionEvent e){
-				tViewer.setSorter(
+				tableViewer.setSorter(
 						new TasklistTableSorter(TasklistTableSorter.TITLE));
 			}
 		});
-		titleColumn.setWidth(70);
+		titleColumn.setWidth(170);
 		
 		//Source Implementation Name column for the TaskListView with Sorter
 		TableColumn sourceImplNameColumn = new TableColumn(t,SWT.WRAP);
 		sourceImplNameColumn.setText("Source Implementation Name");
 		sourceImplNameColumn.addSelectionListener(new SelectionAdapter(){
 			public void widgetSelected(SelectionEvent e){
-				tViewer.setSorter(
+				tableViewer.setSorter(
 						new TasklistTableSorter(TasklistTableSorter.SOURCEIMPLEMENTAIONNAME));
 			}
 		});
-		sourceImplNameColumn.setWidth(160);
+		sourceImplNameColumn.setWidth(50);
 		
 		//Source Implementation Name column for the TaskListView with Sorter
 		TableColumn sourceCreatreasonColumn = new TableColumn(t,SWT.WRAP);
 		sourceCreatreasonColumn.setText("Task Creation Reason");
 		sourceCreatreasonColumn.addSelectionListener(new SelectionAdapter(){
 			public void widgetSelected(SelectionEvent e){
-				tViewer.setSorter(
+				tableViewer.setSorter(
 						new TasklistTableSorter(TasklistTableSorter.TASKCREATIONREASON));
 			}
 		});
-		sourceCreatreasonColumn.setWidth(200);
+		sourceCreatreasonColumn.setWidth(100);
 		
 		CellEditor[] cellEditors = new CellEditor[5];
 		cellEditors[0] = new TextCellEditor(t);
@@ -114,33 +126,27 @@ public class TasklistView extends ViewPart{
 		cellEditors[3] = new TextCellEditor(t);
 		cellEditors[4] = new TextCellEditor(t);
 		
-		tViewer.setCellEditors(cellEditors);
-		tViewer.setCellModifier(new TasklistCellModifier());
-		tViewer.setSorter(new TasklistTableSorter(TasklistTableSorter.SEVERITY));
-		tViewer.setLabelProvider(new TasklistLabelProvider());
-		tViewer.setContentProvider(new TasklistContentProvider(tViewer));
-		// create a new empty Tasklist
-		createTasklist();
-		//TODO set Tasklist as input
-		tViewer.setInput(new TasklistMock());
+		this.tableViewer.setCellEditors(cellEditors);
+		this.tableViewer.setCellModifier(new TasklistCellModifier());
+		this.tableViewer.setSorter(new TasklistTableSorter(TasklistTableSorter.SEVERITY));
+		this.tableViewer.setLabelProvider(new TasklistLabelProvider());
+		this.tableViewer.setContentProvider(new TasklistContentProvider(this.tableViewer));
+
 	}
 	
-	
-	/**
-	 * Creates an empty Tasklist.
-	 */
-	private void createTasklist(){
-		this.tasklist = new Tasklist();
-	}
-	
-	
-	public Tasklist getTasklist(){
-		return tasklist;
-	}
 	
 	
 	@Override
 	public void setFocus(){
 		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.esdihumboldt.hale.models.HaleServiceListener#update()
+	 */
+	@Override
+	public void update() {
+		this.tableViewer.setInput(taskService.getOpenTasks());
 	}
 }

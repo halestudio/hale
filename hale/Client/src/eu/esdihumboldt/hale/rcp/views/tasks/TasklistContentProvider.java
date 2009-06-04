@@ -1,6 +1,7 @@
 package eu.esdihumboldt.hale.rcp.views.tasks;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -32,9 +33,9 @@ public class TasklistContentProvider implements IStructuredContentProvider, ITas
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object[] getElements(Object inputElement){
-		Tasklist tlist = (Tasklist) tableViewer.getInput();
-		HashSet<Task> tasklist= tlist.getTasklist();
+		Set<Task> tasklist = (Set<Task>) tableViewer.getInput();
 		return tasklist.toArray();
 	}
 	

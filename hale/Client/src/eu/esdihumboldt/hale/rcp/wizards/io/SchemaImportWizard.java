@@ -21,7 +21,9 @@ import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.impl.SchemaServiceEnum;
+import eu.esdihumboldt.hale.models.provider.TaskProviderFactory;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 
 /**
@@ -78,6 +80,14 @@ public class SchemaImportWizard
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
+		
+		// create tasks if checked.
+		TaskService taskService = (TaskService) 
+					ModelNavigationView.site.getService(TaskService.class);
+		taskService.addTasks(
+					TaskProviderFactory.getInstance().getTasks(
+							schemaService.getSourceSchema()));
+		
 		return true;
 	}
 	 
