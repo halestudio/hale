@@ -6,25 +6,39 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.Workbench;
+import org.eclipse.ui.internal.WorkbenchColors;
+
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.models.impl.SchemaServiceEnum;
+import eu.esdihumboldt.hale.rcp.views.model.AttributeView;
+import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
+import eu.esdihumboldt.hale.rcp.views.model.TreeObject;
 import eu.esdihumboldt.hale.rcp.wizards.io.UrlFieldEditor;
 
 
@@ -32,6 +46,23 @@ import eu.esdihumboldt.hale.rcp.wizards.io.UrlFieldEditor;
 public class RenamingFunctionWizardMainPage 
 	extends WizardPage implements Listener {
 		
+		private static final String SOURCE_SELECTION_TYPE = "SourceSelectionType";
+
+		private static final String TARGET_SELECTION_TYPE = "TargetSelectionType";
+		
+		//source FeatureType that should be renamed
+		private FeatureType sourceFeatureType;
+		
+		
+		
+
+		public FeatureType getSourceFeatureType() {
+			return sourceFeatureType;
+		}
+
+
+
+
 		private static Logger _log = Logger.getLogger(RenamingFunctionWizardMainPage.class);
 		
 		protected Text sourceFeatureTypeName;
@@ -93,10 +124,10 @@ public class RenamingFunctionWizardMainPage
         		
         	this.sourceFeatureTypeLabel.setFont(new Font(parent.getDisplay(), labelFontData));
 
-            this.sourceFeatureTypeLabel.setText("Source Name: ");
+            this.sourceFeatureTypeLabel.setText("Source Type");
             this.sourceFeatureTypeName = new Text(composite, SWT.BORDER);
             //TODO replace it with the selected source FeatureType value
-            this.sourceFeatureTypeName.setText("RiverBasinType");
+            this.sourceFeatureTypeName.setText(getSelectedFeatureType(SOURCE_SELECTION_TYPE));
             GridData gd = new GridData(GridData.FILL_HORIZONTAL);
             gd.horizontalSpan = 1;
             this.sourceFeatureTypeName.setLayoutData(gd);
@@ -123,10 +154,10 @@ public class RenamingFunctionWizardMainPage
                     | GridData.HORIZONTAL_ALIGN_FILL));
             this.targetFeatureTypeLabel.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
             this.targetFeatureTypeLabel.setFont(new Font(parent.getDisplay(), labelFontData));
-            this.targetFeatureTypeLabel.setText("TargetName: ");
+            this.targetFeatureTypeLabel.setText("Target Type");
             this.targetFeatureTypeName = new Text(composite, SWT.BORDER);
             //TODO replace it with the selected target FeatureType value
-            this.targetFeatureTypeName.setText("RiverType");
+            this.targetFeatureTypeName.setText(getSelectedFeatureType(TARGET_SELECTION_TYPE));
             gd = new GridData(GridData.FILL_HORIZONTAL);
             gd.horizontalSpan = 1;
             this.targetFeatureTypeName.setLayoutData(gd);
@@ -152,7 +183,60 @@ public class RenamingFunctionWizardMainPage
 
     	
     	
-    	/**
+    	private String getSelectedFeatureType(String selectedFeatureType) {
+    		String typeName = "";
+    		ModelNavigationView modelNavigation = getModelNavigationView();
+			if (modelNavigation!=null){
+				
+				if(selectedFeatureType.equals(SOURCE_SELECTION_TYPE)){
+					TreeViewer sourceViewer = modelNavigation.getSourceSchemaViewer();
+					TreeItem [] sourceTreeSelection = sourceViewer.getTree().getSelection();
+					
+					
+					
+					if(sourceTreeSelection.length ==1) {
+				    
+					//highlight a selection
+						sourceTreeSelection[0].setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
+						sourceViewer.refresh();
+					//is a Feature Type
+					typeName = sourceTreeSelection[0].getText();
+					//TODO get Feature Type from the Tree
+					SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+					builder.setName(typeName);
+					this.sourceFeatureType = builder.buildFeatureType();
+					}
+				}else if (selectedFeatureType.equals(TARGET_SELECTION_TYPE)){
+					TreeViewer targetViewer = modelNavigation.getTargetSchemaViewer();
+					TreeItem [] targetTreeSelection = targetViewer.getTree().getSelection();
+					if(targetTreeSelection.length ==1) typeName = targetTreeSelection[0].getText();
+				}
+				
+			}
+    		
+			return typeName;
+			
+		}
+
+
+		private ModelNavigationView getModelNavigationView() {
+			ModelNavigationView attributeView = null;
+			// get All Views
+			IViewReference[] views = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
+			// get AttributeView
+			// get AttributeView
+			for (int count = 0; count < views.length; count++) {
+				if (views[count].getId().equals(
+						"eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView")) {
+					attributeView = (ModelNavigationView) views[count].getView(false);
+				}
+				
+			}
+			return attributeView;
+		}
+
+
+		/**
     	 * @see org.eclipse.jface.wizard.WizardPage#isPageComplete()
     	 */
     	/*@Override

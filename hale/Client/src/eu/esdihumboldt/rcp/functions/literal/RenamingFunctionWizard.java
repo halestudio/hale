@@ -27,13 +27,11 @@ import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.models.impl.SchemaServiceEnum;
+
 import eu.esdihumboldt.hale.rcp.views.model.AttributeView;
-import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
-import eu.esdihumboldt.hale.rcp.wizards.io.SchemaImportWizard;
-import eu.esdihumboldt.hale.rcp.wizards.io.SchemaImportWizardMainPage;
+import eu.esdihumboldt.transformers.cst.RenameTransformer;
 
 /**
  * This {@link Wizard} is used to invoke a Renaming Transformer for the Source Feature Type
@@ -77,8 +75,17 @@ private static Logger _log = Logger.getLogger(RenamingFunctionWizard.class);
 	
 	@Override
 	public boolean performFinish() {
-		System.out.println(mainPage.getSourceFeatureTypeName().getText());
-		System.out.println(mainPage.getTargetFeatureTypeName().getText());
+		//TODO replace syouts with _log
+		System.out.println("Source Feature Type: " + mainPage.getSourceFeatureTypeName().getText());
+		System.out.println("Target Feature Type: " + mainPage.getTargetFeatureTypeName().getText());
+		
+		//System.out.println(mainPage.getTargetFeatureTypeName().getText());
+		FeatureType ft = mainPage.getSourceFeatureType();
+		String newname = mainPage.getTargetFeatureTypeName().getText();
+		RenameTransformer rt = new RenameTransformer(newname);
+		FeatureType targetft = rt.getTargetType(ft, null);
+		//TODO update ModelNavigationView by highliting of the featuretypes.
+		System.out.println("Transformed Feature Type: " + targetft.getName());
 		System.out.println("Transformation finished");
 		return true;
 	}
