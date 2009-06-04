@@ -11,9 +11,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -28,6 +31,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.part.ViewPart;
@@ -50,7 +54,7 @@ import eu.esdihumboldt.hale.rcp.views.model.filtering.UseInheritanceHierarchyAct
  * @version {$Id}
  */
 public class ModelNavigationView extends ViewPart implements
-		HaleServiceListener {
+		HaleServiceListener{
 
 	private static Logger _log = Logger.getLogger(ModelNavigationView.class);
 
@@ -65,6 +69,14 @@ public class ModelNavigationView extends ViewPart implements
 	public static final String ID = "eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView";
 
 	private TreeViewer sourceSchemaViewer;
+	public TreeViewer getSourceSchemaViewer() {
+		return sourceSchemaViewer;
+	}
+
+	public TreeViewer getTargetSchemaViewer() {
+		return targetSchemaViewer;
+	}
+
 	private TreeViewer targetSchemaViewer;
 
 	private Text sourceFilterText;
@@ -214,7 +226,7 @@ public class ModelNavigationView extends ViewPart implements
 		schemaViewer.setContentProvider(new ModelContentProvider());
 		schemaViewer.setLabelProvider(new ModelNavigationViewLabelProvider());
 		schemaViewer.setInput(translateSchema(schema));
-
+        //TODO use SelectionService 
 		schemaViewer
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
@@ -434,5 +446,6 @@ public class ModelNavigationView extends ViewPart implements
 				.getTargetSchema()));
 		this.targetSchemaViewer.refresh();
 	}
+
 
 }

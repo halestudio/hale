@@ -10,6 +10,7 @@ import org.eclipse.core.commands.NotHandledException;
 import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -102,8 +103,10 @@ public class AttributeView extends ViewPart {
 		@Override
 		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 			//use selection button in case of the multiple attribute selection only
-			if (targetAttributeList.getSelection().length>1) selectFunctionButton.setEnabled(true);
-			else selectFunctionButton.setEnabled(false);
+			//if (targetAttributeList.getSelection().length>1) selectFunctionButton.setEnabled(true);
+			selectFunctionButton.setEnabled(true);
+			// if sourceFeatureType and targetFeatureType selected and no arguments selected 
+			//else selectFunctionButton.setEnabled(false);
 			selectFunctionButton.redraw();
 			
 			
@@ -146,7 +149,7 @@ public class AttributeView extends ViewPart {
 		//gData.horizontalAlignment = 1;
 		// gData.horizontalSpan = 2;
 		selectFunctionButton.setLayoutData(gData);
-		selectFunctionButton.setEnabled(false);
+		selectFunctionButton.setEnabled(true);
 		selectFunctionButton.addSelectionListener(new SelectionListener() {
 
 			@Override
@@ -384,6 +387,7 @@ public class AttributeView extends ViewPart {
 
 			}
 		});
+	
 	}
 
 	private Table targetAttributeListSetup(Composite attributeComposite) {
@@ -516,4 +520,9 @@ public class AttributeView extends ViewPart {
 	public void setFocus() {
 
 	}
-}
+
+
+		
+		
+		
+	}
