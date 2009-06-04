@@ -179,6 +179,9 @@
          <service
                serviceClass="eu.esdihumboldt.hale.models.SchemaService">
          </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.models.TaskService">
+         </service>
       </serviceFactory>
    </extension>
    <extension
