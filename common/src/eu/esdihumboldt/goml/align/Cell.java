@@ -15,7 +15,6 @@ import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.align.IMeasure;
 import eu.esdihumboldt.cst.rdf.IAbout;
-import eu.esdihumboldt.goml.rdf.About;
 
 /**
  * A {@link Cell} contains a mapping between two Entities, such as {@link FeatureClass}es

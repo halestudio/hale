@@ -29,6 +29,20 @@ import eu.esdihumboldt.cst.align.ext.ITransformation;
 public class Transformation 
 	implements ITransformation {
 
+	/**
+	 * @param label the label to set
+	 */
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	/**
+	 * @param parameters the parameters to set
+	 */
+	public void setParameters(List<IParameter> parameters) {
+		this.parameters = parameters;
+	}
+
 	private URI service;
 	private String label;
 	private List<IParameter> parameters;
