@@ -19,6 +19,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IImportWizard;
@@ -87,6 +90,15 @@ private static Logger _log = Logger.getLogger(RenamingFunctionWizard.class);
 		//TODO update ModelNavigationView by highliting of the featuretypes.
 		System.out.println("Transformed Feature Type: " + targetft.getName());
 		System.out.println("Transformation finished");
+		
+		//highlight a selection
+		Color color = Display.getDefault().getSystemColor(SWT.COLOR_GREEN);
+		mainPage.getSourceViewer().getTree().getSelection()[0].setBackground(0, color);
+		mainPage.getSourceViewer().getTree().deselectAll();
+		mainPage.getSourceViewer().getControl().redraw();
+		mainPage.getTargetViewer().getTree().getSelection()[0].setBackground(0, color);
+		mainPage.getTargetViewer().getTree().deselectAll();
+		mainPage.getTargetViewer().getControl().redraw();
 		return true;
 	}
 

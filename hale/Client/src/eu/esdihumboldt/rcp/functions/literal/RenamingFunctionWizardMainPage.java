@@ -50,6 +50,11 @@ public class RenamingFunctionWizardMainPage
 
 		private static final String TARGET_SELECTION_TYPE = "TargetSelectionType";
 		
+		private TreeViewer sourceViewer;
+	
+		private TreeViewer targetViewer;
+		
+		
 		//source FeatureType that should be renamed
 		private FeatureType sourceFeatureType;
 		
@@ -66,19 +71,8 @@ public class RenamingFunctionWizardMainPage
 		private static Logger _log = Logger.getLogger(RenamingFunctionWizardMainPage.class);
 		
 		protected Text sourceFeatureTypeName;
-		public Text getSourceFeatureTypeName() {
-			return sourceFeatureTypeName;
-		}
-
-
-		public Text getTargetFeatureTypeName() {
-			return targetFeatureTypeName;
-		}
-
-
-
-
-		protected Text targetFeatureTypeName;
+		
+       protected Text targetFeatureTypeName;
 		
 		private Label sourceFeatureTypeLabel;
 		private Label targetFeatureTypeLabel;
@@ -189,16 +183,14 @@ public class RenamingFunctionWizardMainPage
 			if (modelNavigation!=null){
 				
 				if(selectedFeatureType.equals(SOURCE_SELECTION_TYPE)){
-					TreeViewer sourceViewer = modelNavigation.getSourceSchemaViewer();
+					this.sourceViewer = modelNavigation.getSourceSchemaViewer();
+					this.targetViewer = modelNavigation.getTargetSchemaViewer();
 					TreeItem [] sourceTreeSelection = sourceViewer.getTree().getSelection();
 					
 					
 					
 					if(sourceTreeSelection.length ==1) {
 				    
-					//highlight a selection
-						sourceTreeSelection[0].setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
-						sourceViewer.refresh();
 					//is a Feature Type
 					typeName = sourceTreeSelection[0].getText();
 					//TODO get Feature Type from the Tree
@@ -301,6 +293,22 @@ public class RenamingFunctionWizardMainPage
 			}
 			
 		}
-    
+		public TreeViewer getSourceViewer() {
+			return sourceViewer;
+		}
+
+
+		public TreeViewer getTargetViewer() {
+			return targetViewer;
+		}
+		public Text getSourceFeatureTypeName() {
+			return sourceFeatureTypeName;
+		}
+
+
+		public Text getTargetFeatureTypeName() {
+			return targetFeatureTypeName;
+		}
+
     	
 }
