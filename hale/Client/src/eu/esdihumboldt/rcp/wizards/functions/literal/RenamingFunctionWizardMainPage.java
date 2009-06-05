@@ -94,7 +94,7 @@ public class RenamingFunctionWizardMainPage
     		
             super.initializeDialogUnits(parent);
             this.setPageComplete(this.isPageComplete());
-            //creaste a composite to hold the widgets
+            //create a composite to hold the widgets
             Composite composite = new Composite(parent, SWT.NULL);
             //create layout for this wizard page
             GridLayout gl = new GridLayout();
