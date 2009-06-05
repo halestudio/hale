@@ -57,17 +57,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.4</version>
-		</dependency>
 	<dependency>
 	    <groupId>dom4j</groupId>
 	    <artifactId>dom4j</artifactId>
 	    <version>1.6.1</version>
-	</dependency>		
+	</dependency>
 	</dependencies>
 	<reporting>
 		<plugins>
@@ -94,3 +88,4 @@
 	mvn deploy:deploy-file -DrepositoryId=humboldt -Durl=http://localhost:8080/artifactory/humboldt -DgroupId=humboldt -DartifactId=humboldt_specification -Dversion=1.0 -Dpackaging=jar -Dfile=humboldt_specification.jar
 
 -->
+
