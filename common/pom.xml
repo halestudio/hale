@@ -1,168 +1,158 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>eu.esdihumboldt</groupId>
-	<artifactId>common-library</artifactId>
-	<version>2.0</version>
-	<name>HUMBOLDT Common Library Component</name>
-	<url>http://www.esdi-humboldt.eu</url>
-	<build>
-		<finalName>humboldt-${project.artifactId}-${project.version}</finalName>
-		<sourceDirectory>${basedir}/src</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>${basedir}/res</directory>
-			</resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<workspace>${basedir}</workspace>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	<dependencies>
-		<dependency>
-			<groupId>eu.esdihumboldt</groupId>
-			<artifactId>specification</artifactId>
-			<version>2.0</version>
-		</dependency>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>eu.esdihumboldt</groupId>
+    <artifactId>common-library</artifactId>
+    <version>2.0</version>
+    <name>HUMBOLDT Common Library Component</name>
+    <url>http://www.esdi-humboldt.eu</url>
+    <build>
+        <finalName>humboldt-${project.artifactId}-${project.version}</finalName>
+        <sourceDirectory>${basedir}/src</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>${basedir}/res</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <configuration>
+                    <workspace>${basedir}</workspace>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>eu.esdihumboldt</groupId>
+            <artifactId>specification</artifactId>
+            <version>2.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>servlet-api</artifactId>
+                    <groupId>javax.servlet</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
-		<dependency>
-			<groupId>org.opengis</groupId>
-			<artifactId>geoapi</artifactId>
-			<version>2.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt2-main</artifactId>
-			<version>2.4.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt2-wms</artifactId>
-			<version>2.4.4</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.geotools</groupId>
-					<artifactId>gt2-plugin</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.geotools</groupId>
-					<artifactId>gt2-coverage</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.geotools</groupId>
-					<artifactId>gt2-referencing</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.geotools</groupId>
-					<artifactId>gt2-xml</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.geotools</groupId>
-					<artifactId>gt2-xml-xsd</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.geotools</groupId>
-					<artifactId>gt2-epsg-wkt</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.geotools</groupId>
-					<artifactId>gt2-sample-data</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-lang</groupId>
-					<artifactId>commons-lang</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>dom4j</groupId>
-			<artifactId>dom4j</artifactId>
-			<version>1.6.1</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.15</version>
-			<exclusions>
+        <dependency>
+            <groupId>org.opengis</groupId>
+            <artifactId>geoapi</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt2-main</artifactId>
+            <version>2.4.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt2-wms</artifactId>
+            <version>2.4.4</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.geotools</groupId>
+                    <artifactId>gt2-plugin</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.geotools</groupId>
+                    <artifactId>gt2-coverage</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.geotools</groupId>
+                    <artifactId>gt2-referencing</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.geotools</groupId>
+                    <artifactId>gt2-xml</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.geotools</groupId>
+                    <artifactId>gt2-xml-xsd</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.geotools</groupId>
+                    <artifactId>gt2-epsg-wkt</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.geotools</groupId>
+                    <artifactId>gt2-sample-data</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-lang</groupId>
+                    <artifactId>commons-lang</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.15</version>
+            <exclusions>
 				<!-- JXM Tools are not necessary -->
-				<exclusion>
-					<groupId>com.sun.jdmk</groupId>
-					<artifactId>jmxtools</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.sun.jmx</groupId>
-					<artifactId>jmxri</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tuscany.sca</groupId>
-			<artifactId>tuscany-sca-all</artifactId>
-			<version>1.2-incubating</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.castor</groupId>
-			<artifactId>castor</artifactId>
-			<version>1.1.2.1</version>
-		</dependency>
+                <exclusion>
+                    <groupId>com.sun.jdmk</groupId>
+                    <artifactId>jmxtools</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.jmx</groupId>
+                    <artifactId>jmxri</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-sca-all</artifactId>
+            <version>1.2-incubating</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.castor</groupId>
+            <artifactId>castor</artifactId>
+            <version>1.1.2.1</version>
+        </dependency>
 
-		<dependency>
-			<groupId>com.vividsolutions</groupId>
-			<artifactId>jts</artifactId>
-			<version>1.8</version>
-		</dependency>
+        <dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
+            <version>1.8</version>
+        </dependency>
 
-		<dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
-			<groupId>com.sun.xml.bind</groupId>
-			<artifactId>jaxb-impl</artifactId>
-			<version>2.1.7</version>
-		</dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.1.7</version>
+        </dependency>
 
-	</dependencies>
-	<reporting>
-		<plugins>
-
-			<plugin>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-deploy-plugin</artifactId>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven--plugin</artifactId>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<workspace>${basedir}</workspace>
-				</configuration>
-			</plugin>
-
-
-		</plugins>
-	</reporting>
+    </dependencies>
 <!--
 	<distributionManagement>
 		<repository>
@@ -174,4 +164,9 @@
 		</repository>
 	</distributionManagement>
 -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 </project>
+
+
