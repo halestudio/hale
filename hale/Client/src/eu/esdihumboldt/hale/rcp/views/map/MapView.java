@@ -11,6 +11,10 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map;
 
+import org.eclipse.swt.widgets.Button;
+
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
@@ -61,20 +65,35 @@ public class MapView
 		// add SLD area
 		Composite sldComposite = new Composite(mapComposite, SWT.BEGINNING);
 		layout = new GridLayout();
-		layout.numColumns = 2;
+		layout.numColumns = 3;
 		layout.makeColumnsEqualWidth = true;
 		sldComposite.setLayout(layout);
+		sldComposite.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
 		
 		Label sldALabel = new Label(sldComposite, SWT.NONE);
-		sldALabel.setText("SLD A:  Default");
+		sldALabel.setText("SLD A:  Default  ");
 		
 		Label sldBLabel = new Label(sldComposite, SWT.NONE);
-		sldBLabel.setText("SLD B:  Default");
+		sldBLabel.setText("SLD B:  Default  ");
+		
+		final Button refresh = new Button(sldComposite, SWT.PUSH);
+		refresh.setText("Refresh map");
+		refresh.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+				refreshMap();
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+				refreshMap();
+			}
+		});
 		
 		// add map area
 		Composite mapRenderComposite = new Composite(mapComposite, SWT.BORDER_SOLID);
 		layout = new GridLayout();
 		layout.numColumns = 1;
+		layout.horizontalSpacing = 0;
+		layout.verticalSpacing = 0;
 		mapRenderComposite.setLayout(layout);
 		mapRenderComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		

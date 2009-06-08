@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -22,19 +23,19 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
-import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.DefaultMapContext;
 import org.geotools.map.MapContext;
+import org.geotools.referencing.CRS;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.styling.Style;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.StyleService;
 
@@ -94,12 +95,29 @@ public class SplitRenderer {
 			return null;
 		}
 		// prepare the passed Feature objects for rendering
-		MapContext mapContext = new DefaultMapContext(
-				fc.getSchema().getCoordinateReferenceSystem());
+		Feature f = fc.features().next();
+		CoordinateReferenceSystem crs = 
+			f.getDefaultGeometryProperty().getDescriptor().getCoordinateReferenceSystem();
+		
+		if (crs == null) {
+			crs = fc.getSchema().getCoordinateReferenceSystem();
+		}
+		
+		if (crs == null) {
+			try {
+				_log.warn("Retrieving the CRS from the schema and the "
+						+ "instance data failed; defaulting to EPSG:31251."); 
+				crs = CRS.decode("EPSG:31251");
+			} catch (Exception e) {
+				_log.error("Decoding the default CRS failed, no accurate " +
+						"projection will be shown", e);
+			}
+		}
+		
+		MapContext mapContext = new DefaultMapContext(crs);
 
 		Style style = this.styleService.getStyle(fc.getSchema());
 		
-		// TODO high risk for runtime exceptions, check alternate solutions
         mapContext.addLayer(
         		(FeatureCollection<SimpleFeatureType, SimpleFeature>) fc, style);
         this.renderer.setContext(mapContext);
@@ -107,14 +125,18 @@ public class SplitRenderer {
         BufferedImage image = new BufferedImage(paintArea.width, paintArea.height,
                 BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = image.createGraphics();
+        graphics.setColor(new Color(126, 166, 210));
+        graphics.fillRect(
+        		paintArea.x, paintArea.y, paintArea.width, paintArea.height);
         this.renderer.paint((Graphics2D) graphics, paintArea, mapArea);
+        
         // write image to file for testing purposes
-		java.io.File file = new java.io.File("C:\\GetElevationProfiletest.png");
+		/*java.io.File file = new java.io.File("C:\\GetElevationProfiletest.png");
 		try {
 			ImageIO.write(image, "PNG", file);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
         
         return image;
 
@@ -136,13 +158,8 @@ public class SplitRenderer {
             }*/
             renderer.setRendererHints(hints);
         }
-
         hints.put("memoryPreloadingEnabled", Boolean.FALSE);
         this.renderer.setRendererHints(hints);
-
-        /*if (this.context != null) {
-            this.renderer.setContext(this.context);
-        }*/
     }
 	
 	/**
@@ -154,7 +171,7 @@ public class SplitRenderer {
 	}
 	
     public ReferencedEnvelope getMapArea() {
-        return mapArea;
+        return this.mapArea;
     }
 
     public void setMapArea(ReferencedEnvelope mapArea) {

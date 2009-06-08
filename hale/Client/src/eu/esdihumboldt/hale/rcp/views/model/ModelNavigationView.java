@@ -11,12 +11,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -31,7 +28,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.part.ViewPart;
@@ -326,10 +322,8 @@ public class ModelNavigationView extends ViewPart implements
 					.contains(org.opengis.feature.type.ComplexType.class)) {
 				tot = TreeObjectType.COMPLEX_ATTRIBUTE;
 			}
-//			result.addChild(new TreeObject(pd.getName().getLocalPart() + ":"
-//					+ pd.getType().toString().replaceFirst("^.*?<", "<"), tot));
-			result.addChild(new TreeObject(pd.getName().getLocalPart() + ":"
-					+ pd.getType().getName().getLocalPart().replaceFirst("^.*?<", "<"), tot));
+			result.addChild(new TreeObject(pd.getName().getLocalPart() + ":<"
+					+ pd.getType().getName().getLocalPart() + ">", tot));
 		}
 		// add children recursively
 		for (FeatureType ft : typeHierarchy.get(ftk)) {

@@ -309,10 +309,6 @@ public class SchemaServiceImpl implements SchemaService {
 			reader.setContentHandler(schemaHandler);
 			reader.parse(new InputSource(new FileInputStream(file.toString())));
 			Schema schema = schemaHandler.getSchema();
-			 
-			
-			System.out.println(schema.getComplexTypes().length);
-		
 
 		// Schema[] imports = schema.getImports();
 		// for (Schema s : imports) {

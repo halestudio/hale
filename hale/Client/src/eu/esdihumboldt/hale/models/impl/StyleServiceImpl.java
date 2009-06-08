@@ -31,6 +31,8 @@ import org.geotools.styling.PolygonSymbolizer;
 import org.geotools.styling.Rule;
 import org.geotools.styling.SLD;
 import org.geotools.styling.SLDParser;
+import org.geotools.styling.Stroke;
+import org.geotools.styling.StrokeImpl;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.Symbolizer;
@@ -118,6 +120,7 @@ public class StyleServiceImpl
 	/**
 	 * @see eu.esdihumboldt.hale.models.StyleService#addStyles(java.net.URL)
 	 */
+	@SuppressWarnings("deprecation")
 	public boolean addStyles(URL url) {
 		try {
 			Style style = this.initializeStyles(new File(url.toString()));
@@ -160,6 +163,7 @@ public class StyleServiceImpl
 	 * to be removed in GT 2.6, so has to be updated in case of migration.
 	 * @return a Style for Point objects.
 	 */
+	@SuppressWarnings("deprecation")
 	private Style createPointStyle() {
 		Style style;
 		PointSymbolizer symbolizer = styleFactory.createPointSymbolizer();
@@ -174,16 +178,18 @@ public class StyleServiceImpl
 	}
 
 	/**
-	 * Manually create a Line Style for a FeatureType.
+	 * Manually create a Line Style for a FeatureType. Used methods are going
+	 * to be removed in GT 2.6, so has to be updated in case of migration.
 	 * @return a Style for Line/LineString objects.
 	 */
+	@SuppressWarnings("deprecation")
 	private Style createLineStyle() {
 		Style style;
-
 		LineSymbolizer symbolizer = styleFactory.createLineSymbolizer();
-		SLD.setLineColour(symbolizer, Color.BLUE);
+		SLD.setLineColour(symbolizer, new Color(57, 75, 95));
 		symbolizer.getStroke().setWidth(filterFactory.literal(1));
-		symbolizer.getStroke().setColor(filterFactory.literal(Color.BLUE));
+		symbolizer.getStroke().setColor(filterFactory.literal(
+				new Color(57, 75, 95)));
 
 		Rule rule = styleFactory.createRule();
 		rule.setSymbolizers(new Symbolizer[] { symbolizer });
@@ -199,6 +205,7 @@ public class StyleServiceImpl
 	 * to be removed in GT 2.6, so has to be updated in case of migration.
 	 * @return a Style for Polygon objects.
 	 */
+	@SuppressWarnings("deprecation")
 	private Style createPolygonStyle() {
 		Style style;
 		PolygonSymbolizer symbolizer = styleFactory.createPolygonSymbolizer();
