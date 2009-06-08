@@ -32,7 +32,7 @@ import eu.esdihumboldt.hale.models.impl.TaskServiceImpl;
  * @author Thorsten Reitz
  * @version $Id$
  */
-public class InstanceAbstractServiceFactory 
+public class HaleServiceFactory 
 	extends AbstractServiceFactory {
 	
 	private InstanceService instance = InstanceServiceFactory.getInstance();
@@ -40,7 +40,7 @@ public class InstanceAbstractServiceFactory
 	private StyleService style = StyleServiceImpl.getInstance();
 	private TaskService task = TaskServiceImpl.getInstance();
 
-	public InstanceAbstractServiceFactory() {
+	public HaleServiceFactory() {
 		// TODO Auto-generated constructor stub
 	}
 

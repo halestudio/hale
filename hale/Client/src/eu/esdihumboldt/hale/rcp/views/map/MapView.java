@@ -23,23 +23,21 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.ViewPart;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.renderer.lite.StreamingRenderer;
 
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
-import eu.esdihumboldt.hale.models.impl.InstanceServiceFactory;
+import eu.esdihumboldt.hale.rcp.swingrcpbridge.SwingRcpUtilities;
 
 
 /**
- * The MapView render and display a Map from geodataset. The MapView is divided 
- * diagonal into two parts. One part for a Map with the look of SLD A and the
- * User Data Model. The second part with the look of SLD B and the INSPIRE Data
- * Model.
+ * The MapView renders and display a Map from geodataset. The MapView uses a 
+ * {@link SplitRenderer}, which offers the opportunity of overlaying reference 
+ * and transformed data in multiple ways. 
  * 
- * @author Thorsten Reitz, Christian Jauss
+ * @author Thorsten Reitz
+ * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$
  */
 public class MapView 
@@ -128,7 +126,7 @@ public class MapView
 				currentBounds.width, currentBounds.height));
 		
 		this.mapCanvas.setBackgroundImage(new Image(mapCanvas.getDisplay(), 
-				AwtSwtImageConversionUtilities.convertToSWT(
+				SwingRcpUtilities.convertToSWT(
 						this.renderer.renderFeatures(features))));
 		
 	}
