@@ -34,14 +34,24 @@ public class RobustFTKey implements Comparable {
 	
 	@Override
 	public int hashCode() {
-		return (ft.getName().getNamespaceURI() 
-				+ ft.getName().getLocalPart()).hashCode();
+//		return (ft.getName().getNamespaceURI() 
+//				+ ft.getName().getLocalPart()).hashCode();
+		return ft.getName().getLocalPart().hashCode();
 	}
 	
 	@Override
 	public boolean equals(Object o) {
 		FeatureType ft2 = ((RobustFTKey) o).getFeatureType();
-		return this.ft.hashCode() == ft2.hashCode();
+
+		String s1 = this.ft.getName().getNamespaceURI();
+		s1 += this.ft.getName().getLocalPart();
+		
+		String s2 = ft2.getName().getNamespaceURI();
+		s2 += ft2.getName().getLocalPart();
+
+		// FIXME: Using the hash to compare the string fails here sometimes
+		if (s1.equals(s2)) return true;
+		else return false;
 	}
 	
 	public FeatureType getFeatureType() {
