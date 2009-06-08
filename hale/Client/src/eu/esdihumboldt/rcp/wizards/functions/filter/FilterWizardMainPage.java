@@ -71,12 +71,16 @@ public class FilterWizardMainPage extends WizardPage{
      		
      	this.CQLLabel.setFont(new Font(parent.getDisplay(), labelFontData));
 
-         this.CQLLabel.setText("Source Type");
-         this.CQLEditor = new Text(composite, SWT.BORDER);
+         this.CQLLabel.setText("CQL-Request: ");
+         this.CQLEditor = new Text(composite, SWT.BORDER | SWT.WRAP| SWT.MULTI |SWT.V_SCROLL);
          //TODO replace it with the selected source FeatureType value
          this.CQLEditor.setText("Enter your CQL-expression");
-         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-         gd.horizontalSpan = 1;
+         GridData gd = new GridData();
+         gd.horizontalAlignment = SWT.FILL;
+ 		 gd.grabExcessHorizontalSpace = true;
+ 		 gd.verticalAlignment = SWT.FILL;
+ 		 gd.grabExcessVerticalSpace = true;
+ 	     gd.horizontalSpan = 1;
          this.CQLEditor.setLayoutData(gd);
          
          //add listener to update the source feature name
@@ -84,7 +88,7 @@ public class FilterWizardMainPage extends WizardPage{
          	 public void modifyText(ModifyEvent event) {
                   String sourceName = CQLEditor.getText();
                   System.out.println(sourceName);
-                  if(sourceName.length() == 0) setErrorMessage("Source Name can not be empty");
+                  if(sourceName.length() == 0) setErrorMessage("CQL-String can not be empty");
                   else setErrorMessage(null);
                   setPageComplete(sourceName.length() > 0);
                   
