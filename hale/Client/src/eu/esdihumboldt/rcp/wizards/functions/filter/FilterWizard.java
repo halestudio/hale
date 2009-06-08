@@ -43,6 +43,7 @@ implements INewWizard {
 	private static Logger _log = Logger.getLogger(FilterWizard.class);
 		
 		FilterWizardMainPage mainPage;
+		FilterWizardSecondPage secondPage;
 		
 		/**
 		 * constructor
@@ -50,6 +51,8 @@ implements INewWizard {
 		public FilterWizard(){
 			super();
 			this.mainPage = new FilterWizardMainPage(
+					"Configure Filter Expression", "Configure Filter Expression"); 
+			this.secondPage = new FilterWizardSecondPage(
 					"Configure Filter Expression", "Configure Filter Expression"); 
 			super.setWindowTitle("Configure Function"); 
 			super.setNeedsProgressMonitor(true);
@@ -62,7 +65,7 @@ implements INewWizard {
 		 */
 		@Override
 		public boolean canFinish() {
-			_log.debug("Wizard.canFinish: " + this.mainPage.isPageComplete());
+			_log.debug("Wizard.canFinish: " + this.secondPage.isPageComplete());
 			return true;
 		}
 
@@ -88,7 +91,7 @@ implements INewWizard {
 	     */
 	    public void addPages() {
 	        super.addPages(); 
-	        addPage(mainPage);        
+	        addPage(secondPage);
 	    }
 	
 
