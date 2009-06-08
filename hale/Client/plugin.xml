@@ -259,10 +259,21 @@
       </wizard>
       <wizard
             category="HALE.wizard.function.literal"
-            class="eu.esdihumboldt.rcp.functions.literal.RenamingFunctionWizard"
+            class="eu.esdihumboldt.rcp.wizards.functions.literal.RenamingFunctionWizard"
             icon="icons/concrete_ft.png"
             id="HALE.featurerenaming"
             name="Feature Type Renaming Wizard">
+      </wizard>
+      <category
+            id="HALE.wizard.function.filter"
+            name="Filter Functions">
+      </category>
+      <wizard
+            category="HALE.wizard.function.filter"
+            class="eu.esdihumboldt.rcp.wizards.functions.filter.FilterWizard"
+            icon="icons/concrete_ft.png"
+            id="HALE.filter"
+            name="CQL-based Filter Wizard">
       </wizard>
    </extension>
    <!-- <extension
