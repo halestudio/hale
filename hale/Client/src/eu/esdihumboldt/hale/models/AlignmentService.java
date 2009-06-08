@@ -13,10 +13,14 @@
 package eu.esdihumboldt.hale.models;
 
 import java.net.URI;
+import java.util.List;
 
 import org.opengis.feature.type.FeatureType;
 import org.semanticweb.knowledgeweb.heterogeneity.alignment.AlignmentDocument;
 import org.semanticweb.knowledgeweb.heterogeneity.alignment.AlignmentType;
+
+import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.align.Entity;
 
 /**
  * The {@link AlignmentService} provides access to the currently loaded 
@@ -53,14 +57,8 @@ public interface AlignmentService
 	 * @param cell
 	 * @return 
 	 */
-	//public boolean addOrUpdateCell(Cell cell);
+	public boolean addOrUpdateCell(Cell cell);
 	
-	/**
-	 * 
-	 * @param uuid
-	 * @return 
-	 */
-	//public Cell getCell(UUID uuid);
 	
 	/**
 	 * 
@@ -69,7 +67,7 @@ public interface AlignmentService
 	 * Entity is part of the target schema, or all Cells containing the Entity 
 	 * as a source Entity if the Entity is part of the source schema.
 	 */
-	//public List<Cell> getCell(Entity entity);
+	public List<Cell> getCell(Entity entity);
 	
 	/**
 	 * Adds the alignments defined in an OML file to the currently loaded ones if the alignments
