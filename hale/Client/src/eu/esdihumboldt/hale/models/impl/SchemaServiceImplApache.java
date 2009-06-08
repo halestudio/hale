@@ -624,7 +624,7 @@ public class SchemaServiceImplApache implements SchemaService {
 		featureTypes.removeAll(ft);
 		
 		
-		SchemaPrinter.printFeatureTypeCollection(featureTypes, null, -1);
+		// SchemaPrinter.printFeatureTypeCollection(featureTypes, null, -1);
 		
 		
 		return featureTypes;

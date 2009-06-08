@@ -18,7 +18,7 @@ import org.opengis.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.rcp.views.MapView;
+import eu.esdihumboldt.hale.rcp.views.map.MapView;
 
 /**
  * The {@link InstanceService} provides Features out of the candidate and 
@@ -40,6 +40,15 @@ public interface InstanceService
 	 * model.
 	 */
 	public Collection<Feature> getAllFeatures(DatasetType type);
+	
+	/**
+	 * @param type the {@link DatasetType} that indicates whether you want to
+	 * retrieve the transformed instance data, the reference instance data or
+	 * both.
+	 * @return the entire {@link FeatureCollection} currently held in the 
+	 * model.
+	 */
+	public FeatureCollection<?, ?> getFeatures(DatasetType type);
 	
 	/**
 	 * @param featureID the D of the {@link Feature} to return.

@@ -33,15 +33,20 @@ import eu.esdihumboldt.hale.models.InstanceService;
  * @author Thorsten Reitz, Fraunhofer IGD
  * @version {$Id}
  */
-public class InstanceServiceFactory implements InstanceService {
+public class InstanceServiceFactory 
+	implements InstanceService {
 	
 	private static Logger _log = Logger.getLogger(InstanceServiceFactory.class);
 	
 	private static InstanceServiceFactory instance = new InstanceServiceFactory();
 	
+	private FeatureCollection fc = null;
+	
 	private Map<String, Feature> referenceFeatures;
 	
 	private Map<String, Feature> transformedFeatures;
+	
+	private Set<HaleServiceListener> listeners;
 	
 	
 	// Constructors ............................................................
@@ -49,6 +54,7 @@ public class InstanceServiceFactory implements InstanceService {
 	private InstanceServiceFactory() {
 		this.referenceFeatures = new TreeMap<String, Feature>();
 		this.transformedFeatures = new TreeMap<String, Feature>();
+		this.listeners = new HashSet<HaleServiceListener>();
 	}
 	
 	/**
@@ -111,6 +117,12 @@ public class InstanceServiceFactory implements InstanceService {
 	 */
 	public boolean addInstances(DatasetType type, 
 			FeatureCollection featureCollection) {
+		if (this.fc == null) {
+			this.fc = featureCollection;
+		}
+		else {
+			this.fc.addAll(featureCollection);
+		}
 		Map<String, Feature> selected_type_map = null;
 		if (type.equals(DatasetType.reference)) {
 			selected_type_map = this.referenceFeatures;
@@ -125,6 +137,7 @@ public class InstanceServiceFactory implements InstanceService {
 			selected_type_map.put(f.getIdentifier().getID(), f);
 		}
 		if (selected_type_map.size() > startsize) {
+			this.updateListeners();
 			return true;
 		} 
 		else {
@@ -147,6 +160,7 @@ public class InstanceServiceFactory implements InstanceService {
 			}
 		}
 		if (this.referenceFeatures.size() > startsize) {
+			this.updateListeners();
 			return true;
 		} 
 		else {
@@ -167,13 +181,28 @@ public class InstanceServiceFactory implements InstanceService {
 		if (type.equals(DatasetType.reference) || type.equals(DatasetType.both)) {
 			this.referenceFeatures = new TreeMap<String, Feature>();
 		}
-		
+		this.updateListeners();
 		return true;
 	}
 
 	public boolean addListener(HaleServiceListener sl) {
-		// TODO Auto-generated method stub
-		return false;
+		this.listeners.add(sl);
+		return true;
 	}
+	
+	private void updateListeners() {
+		for (HaleServiceListener hsl : this.listeners) {
+			hsl.update();
+		}
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.models.InstanceService#getFeatures(eu.esdihumboldt.hale.models.InstanceService.DatasetType)
+	 */
+	@Override
+	public FeatureCollection getFeatures(DatasetType type) {
+		return this.fc;
+	}
+
 
 }
