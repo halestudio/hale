@@ -52,7 +52,7 @@ import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
 
 /**
- * Implementation of {@link SchemaService}.
+ * GeoTools-based implementation of {@link SchemaService}.
  */
 public class SchemaServiceImpl implements SchemaService {
 	
@@ -424,6 +424,45 @@ public class SchemaServiceImpl implements SchemaService {
 	 */
 	public URL getTargetURL() {
 		return this.targetLocation;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.models.SchemaService#getFeatureTypeByName()
+	 */
+	@Override
+	public FeatureType getFeatureTypeByName(String name) {
+		FeatureType result = null;
+		// handles cases where a full name was given.
+		if (!this.sourceNamespace.equals("") && name.contains(this.sourceNamespace)) {
+			for (FeatureType ft : this.sourceSchema) {
+				if (ft.getName().getLocalPart().equals(name)) {
+					result = ft;
+					break;
+				}
+			}
+		}
+		else if (!this.targetNamespace.equals("") && name.contains(this.targetNamespace)) {
+			for (FeatureType ft : this.targetSchema) {
+				if (ft.getName().getLocalPart().equals(name)) {
+					result = ft;
+					break;
+				}
+			}
+		}
+		// handle case where only the local part was given.
+		else {
+			String localname = name.substring(name.lastIndexOf("/"));
+			Collection<FeatureType> allFTs = new HashSet<FeatureType>();
+			allFTs.addAll(this.sourceSchema);
+			allFTs.addAll(this.targetSchema);
+			for (FeatureType ft : allFTs) {
+				if (ft.getName().getLocalPart().equals(localname)) {
+					result = ft;
+					break;
+				}
+			}
+		}
+		return result;
 	}
 }
 

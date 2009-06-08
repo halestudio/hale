@@ -643,6 +643,15 @@ public class SchemaServiceImplApache implements SchemaService {
 	public URL getTargetURL() {
 		return this.targetLocation;
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.esdihumboldt.hale.models.SchemaService#getFeatureTypeByName(java.lang.String)
+	 */
+	@Override
+	public FeatureType getFeatureTypeByName(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
 
 

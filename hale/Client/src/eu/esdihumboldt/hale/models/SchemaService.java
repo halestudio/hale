@@ -80,15 +80,22 @@ public interface SchemaService
 	public String getTargetNameSpace();
 
 	/**
-	 * @return the URL that identifies the location from which the source 
-	 * schema was loaded.
+	 * @return the URL that identifies the location from which the source schema
+	 *         was loaded.
 	 */
 	public URL getSourceURL();
-	
+
 	/**
-	 * @return the URL that identifies the location from which the target 
-	 * schema was loaded.
+	 * @return the URL that identifies the location from which the target schema
+	 *         was loaded.
 	 */
 	public URL getTargetURL();
+	
+	/**
+	 * @return returns a {@link FeatureType} identified by the given name. The
+	 *         name String may either consist of only a local part or of a full
+	 *         name, i.e. namespace + local name part
+	 */
+	public FeatureType getFeatureTypeByName(String name);
 
 }
