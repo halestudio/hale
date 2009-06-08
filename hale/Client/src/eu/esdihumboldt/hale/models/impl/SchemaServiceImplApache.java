@@ -1,11 +1,8 @@
 package eu.esdihumboldt.hale.models.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -15,25 +12,38 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.apache.ws.commons.schema.XmlSchemaComplexContentExtension;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
+import org.apache.ws.commons.schema.XmlSchemaContent;
+import org.apache.ws.commons.schema.XmlSchemaContentModel;
 import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.ws.commons.schema.XmlSchemaImport;
+import org.apache.ws.commons.schema.XmlSchemaInclude;
+import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaObjectCollection;
-import org.apache.ws.commons.schema.XmlSchemaObjectTable;
-import org.apache.ws.commons.schema.XmlSchemaType;
+import org.apache.ws.commons.schema.XmlSchemaParticle;
+import org.apache.ws.commons.schema.XmlSchemaSequence;
+import org.apache.ws.commons.schema.XmlSchemaSimpleContentExtension;
+import org.apache.ws.commons.schema.XmlSchemaSimpleType;
+import org.apache.ws.commons.schema.XmlSchemaSimpleTypeRestriction;
+import org.geotools.feature.AttributeTypeBuilder;
+import org.geotools.feature.NameImpl;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.xml.SchemaFactory;
-import org.geotools.xml.XSISAXHandler;
-import org.geotools.xml.schema.ComplexType;
-import org.geotools.xml.schema.Element;
-import org.geotools.xml.schema.Schema;
+import org.geotools.gml3.GMLSchema;
+import org.geotools.xs.XSSchema;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.Name;
+import org.opengis.feature.type.PropertyDescriptor;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
 
@@ -41,6 +51,43 @@ import eu.esdihumboldt.hale.models.SchemaService;
  * Implementation of {@link SchemaService}.
  */
 public class SchemaServiceImplApache implements SchemaService {
+	
+	public class AttributeResult {
+		String name;
+		AttributeType type;
+
+		public AttributeResult(String name, AttributeType type) {
+			super();
+			this.name = name;
+			this.type = type;
+		}
+		
+		/**
+		 * @return the name
+		 */
+		public String getName() {
+			return name;
+		}
+		/**
+		 * @param name the name to set
+		 */
+		public void setName(String name) {
+			this.name = name;
+		}
+		/**
+		 * @return the type
+		 */
+		public AttributeType getType() {
+			return type;
+		}
+		/**
+		 * @param type the type to set
+		 */
+		public void setType(AttributeType type) {
+			this.type = type;
+		}
+	}
+	
 	
 	private static Logger _log = Logger.getLogger(SchemaServiceImpl.class);
 	
@@ -233,6 +280,186 @@ public class SchemaServiceImplApache implements SchemaService {
 		}
 	}
 
+
+	
+	private List<String> printSchemas(XmlSchema schema, List<String> sourceUris, int level) {
+		if (sourceUris == null) sourceUris = new ArrayList<String>();
+		
+		XmlSchemaObjectCollection includes = schema.getIncludes();
+		for (int i = 0; i < includes.getCount(); i++) {
+			Object o = includes.getItem(i);
+			XmlSchema s = null;
+			if (o instanceof XmlSchemaImport) {
+				s = ((XmlSchemaImport)o).getSchema();
+			} else if (o instanceof XmlSchemaInclude) {
+				s = ((XmlSchemaInclude)o).getSchema();
+			}
+			String filename = "";
+			filename += s.getTargetNamespace();
+			filename += ":";
+			filename += new File(s.getSourceURI()).getName();
+			filename = s.getSourceURI();
+
+			if (new File(s.getSourceURI()).getName().equals("geometryComplexes.xsd")) {
+				filename = "";
+			}
+			
+			// Check if the schema was already parsed by using its sourceUri.
+			// If true then exit.
+			// This will avoid endless processing of cyclic includes.
+			boolean found = false;
+			for (String sourceUri : sourceUris) {
+				if (sourceUri.equals(filename)) {
+					found = true;
+					break;
+				}
+			}
+			if (found == false) {
+				if (s.getSourceURI() != null) sourceUris.add(filename);
+				else System.out.print("null|");
+				System.out.println(level + ", " + sourceUris.size() + ", " + filename);
+				sourceUris = printSchemas(s, sourceUris, ++level);
+			}
+			
+		}
+		return sourceUris;
+	}
+	
+	
+	private FeatureType findFeatureType(Collection<FeatureType> featureTypes, String name) {
+		for (FeatureType featureType : featureTypes) {
+			String featureTypeName = featureType.getName().getLocalPart();
+			if (featureTypeName.equals(name)) return featureType; 
+		}
+		return null;
+	}
+	
+	private List<FeatureType> findChildren(FeatureType parent, Collection<FeatureType> featureTypes) {
+		List<FeatureType> children = new ArrayList<FeatureType>();
+		
+		String parentName = parent.getName().getLocalPart();
+		
+		for (FeatureType featureType : featureTypes) {
+			if (featureType.getName().getLocalPart().equals(parentName)) {
+				children.add(featureType);
+			}
+		}
+		return children;
+	}
+	
+	private void inheritAttributesFromChildren(FeatureType featureType) {
+		FeatureType superType = (FeatureType)featureType.getSuper();
+		
+		if (superType == null) return;
+	}
+	
+	private AttributeType getEnumAttributeType(XmlSchemaElement element) {
+		AttributeType type = null;
+		if (element.getSchemaType() instanceof XmlSchemaSimpleType) {
+			XmlSchemaSimpleType simpleType = (XmlSchemaSimpleType)element.getSchemaType();
+			if (simpleType.getContent() instanceof  XmlSchemaSimpleTypeRestriction) {
+				XmlSchemaSimpleTypeRestriction content = (XmlSchemaSimpleTypeRestriction)simpleType.getContent();
+				
+				Name attributeName = new NameImpl(
+						content.getBaseTypeName().getNamespaceURI(),
+						content.getBaseTypeName().getLocalPart());
+				type =  new XSSchema().get(attributeName);
+			}
+		}
+		return type;
+	}
+	
+	private AttributeType getSchemaAttributeType(Name name, Collection<FeatureType> featureTypes) {
+		AttributeType type = null;
+		
+		for (FeatureType featureType : featureTypes) {
+			if (   featureType.getName().getLocalPart().equals(name.getLocalPart())
+				&& featureType.getName().getNamespaceURI().equals(name.getNamespaceURI()))
+			{
+				AttributeTypeBuilder builder = new  AttributeTypeBuilder();
+				builder.setBinding(featureType.getBinding());
+				builder.setName(name.getLocalPart());
+				
+				type = builder.buildType();
+				break;
+			}
+				
+		}
+		return type;
+	}
+	
+	private List<AttributeResult> getAttributeTypesFromParticle(XmlSchemaParticle particle, String superTypeName, Collection<FeatureType> featureTypes) {
+		List<AttributeResult> attributeResults = new ArrayList<AttributeResult>();
+		
+		XSSchema xsSchema = new XSSchema();
+		if (particle instanceof XmlSchemaSequence) {
+			XmlSchemaSequence sequence = (XmlSchemaSequence)particle;
+			for (int j = 0; j < sequence.getItems().getCount(); j++) {
+				XmlSchemaObject object = sequence.getItems().getItem(j);
+				if (object instanceof XmlSchemaElement) {
+					XmlSchemaElement element = (XmlSchemaElement)object;										
+					Name attributeName = null;
+					if (element.getSchemaTypeName() != null) {
+						attributeName = new NameImpl(
+							element.getSchemaTypeName().getNamespaceURI(),
+							element.getSchemaTypeName().getLocalPart());
+					}
+					else if (element.getRefName() != null) {
+						attributeName = new NameImpl(
+							element.getRefName().getNamespaceURI(),
+							element.getRefName().getLocalPart());
+					}
+					else if (element.getSchemaType() != null) {
+						XmlSchemaContentModel model = ((XmlSchemaComplexType)element.getSchemaType()).getContentModel();
+						XmlSchemaParticle p = ((XmlSchemaComplexType)element.getSchemaType()).getParticle();
+						if (model != null) {
+							XmlSchemaContent content = model.getContent();
+							
+							QName qname = null;
+							if (content instanceof XmlSchemaComplexContentExtension) {
+								qname = ((XmlSchemaComplexContentExtension)content).getBaseTypeName();
+							} else if (content instanceof XmlSchemaSimpleContentExtension) {
+								qname = ((XmlSchemaSimpleContentExtension)content).getBaseTypeName();
+							}
+							
+							attributeName = new NameImpl(
+									qname.getNamespaceURI(),
+									qname.getLocalPart());
+						} else if (p != null) {
+							attributeResults.addAll(getAttributeTypesFromParticle(p, superTypeName, featureTypes));
+							continue;
+						}
+					}
+					if (attributeName == null) {
+						System.out.println("Schema type name is null! " + element.getName() );
+						continue;
+					}
+					AttributeType ty = xsSchema.get(attributeName);
+					
+					
+					
+					if (ty == null) {
+						GMLSchema gmlSchema = new GMLSchema();
+						ty = gmlSchema.get(attributeName);
+					}
+					if (ty == null) {
+						ty = getEnumAttributeType(element);
+					}
+					if (ty == null) {
+						ty = getSchemaAttributeType(attributeName, featureTypes);
+					}
+					if (ty == null ) {
+						System.out.println("Type NOT found: " + attributeName.getLocalPart());
+					}
+					
+					attributeResults.add(new AttributeResult(element.getName(), ty));
+				}
+			}
+		}
+		return attributeResults;
+	}
+
+	
 	/**
 	 * Method to load a XSD schema file and build a collection of FeatureTypes.
 	 * 
@@ -252,7 +479,7 @@ public class SchemaServiceImplApache implements SchemaService {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-		XmlSchema prepSchema = null;
+		XmlSchema schema = null;
 		try {
 			XmlSchemaCollection schemaCol = new XmlSchemaCollection();
 			// Check if the file is located on web
@@ -260,194 +487,125 @@ public class SchemaServiceImplApache implements SchemaService {
 				schemaCol.setSchemaResolver(new HumboldtURIResolver());
 			    schemaCol.setBaseUri(findBaseUri(file));
 			}
-			prepSchema = schemaCol.read(new StreamSource(is), null);
+			schema = schemaCol.read(new StreamSource(is), null);
 			is.close();
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
-		_log.info("Source schema has " +
-					prepSchema.getIncludes().getCount()+ " includes");
-
-		// write schema to memory
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		out.reset();
-		prepSchema.write(out);
-		try {
-			out.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		XmlSchemaElement e = prepSchema.getElementByName("DischargePoint");
-		XmlSchemaElement e1 = prepSchema.getElementByName("HydroFacility");
-		XmlSchemaType e2 = prepSchema.getTypeByName("HydroFacilityType");
-		
-		
-		XmlSchemaElement e6 = prepSchema.getElementByName("_Feature");
-		
-		
-		Collection<FeatureType> collection = new ArrayList<org.opengis.feature.type.FeatureType>();
-		
-		try {
-
-			Schema schema = null;
-			
-//			schema = SchemaFactory.getInstance(targetNamespace, new FileInputStream("D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/gml/3.2.1/basicTypes.xsd"));
-
-			
-			
-/*			schemaLocation="D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/GCM/BaseTypes.xsd" />
-			
-			<import namespace="urn:x-inspire:specification:gmlas-v31:GeographicalNames:2.0"
-				schemaLocation="D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/GN/GeographicalNames.xsd" />
-			
-			<import namespace="urn:x-inspire:specification:gmlas-v31:Network:3.1"
-				schemaLocation="D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/GCM/Network.xsd" />
-
-			<import namespace="http://www.isotc211.org/2005/gmd"
-				schemaLocation="D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/iso/19139/20060504/gmd/gmd.xsd" />*/
-			
-//			schema = SchemaFactory.getInstance(null, new FileInputStream("D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/gml/3.1.1/base/gml.xsd"));
-//			schema = SchemaFactory.getInstance(null, new FileInputStream("D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/iso/19139/20060504/gco/gco.xsd"));
-
-//			schema = SchemaFactory.getInstance(null, new FileInputStream("D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/GCM/Network.xsd"));
-//			schema = SchemaFactory.getInstance(null, new FileInputStream("D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/GN/GeographicalNames.xsd"));
-//			schema = SchemaFactory.getInstance(null, new FileInputStream("D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/GCM/BaseTypes.xsd"));
-//			schema = SchemaFactory.getInstance(null, new FileInputStream("D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/iso/19139/20060504/gmd/gmd.xsd"));
-			
-//			schema = SchemaFactory.getInstance(null, new FileInputStream("D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/HY/Hydrography.xsd"));
-			
-			
-			
-//			schema = SchemaFactory.getInstance(null, new FileInputStream("D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/iso/19139/20060504/gco/gco.xsd"));
-//			schema = SchemaFactory.getInstance(null, new FileInputStream("D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/gml/3.1.1/gml.xsd"));
-//		    schema = SchemaFactory.getInstance(schema.getTargetNamespace(), new FileInputStream("D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/gml/3.2.1/deprecatedTypes.xsd"));
-//		    schema = SchemaFactory.getInstance(schema.getTargetNamespace(), new FileInputStream("D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/gml/3.2.1/gmlBase.xsd"));
-			
-			URI targetNamespace = null;
-			byte [] inputBytes = out.toByteArray();
-			System.out.println("Schema size in bytes: " + inputBytes.length);
-			ByteArrayInputStream inputS = new ByteArrayInputStream(inputBytes);
-			schema = SchemaFactory.getInstance(targetNamespace, inputS);
-//			
-			
-//			file = new URI("D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/gml/3.1.1/base/gml.xsd");
-//			XMLReader reader = XMLReaderFactory.createXMLReader();
-//			XSISAXHandler schemaHandler = new XSISAXHandler(file);
-//			reader.setContentHandler(schemaHandler);
-//			reader.parse(new InputSource(new FileInputStream(file.toString())));
-//			schema = schemaHandler.getSchema();
-//			 
-			
-			System.out.println("Number of complex types: " + schema.getComplexTypes().length);
-		
-
-		// Schema[] imports = schema.getImports();
-		// for (Schema s : imports) {
-		// _log.debug("Imported URI + Name: " + s.getURI() + " " +
-		// s.getTargetNamespace());
-		// }
-
-		Collection<SimpleFeatureType> inTypes = new HashSet<SimpleFeatureType>();
-		
-		// Build first a list of FeatureTypes
-		
-//		XmlSchemaObjectCollection o = prepSchema.getItems();
-//		List<XmlSchemaComplexType> com = new ArrayList<XmlSchemaComplexType>();
-//		for (int i = 0; i < o.getCount(); i++) {
-//			if (o.getItem(i) instanceof XmlSchemaComplexType)
-//				com.add((XmlSchemaComplexType)o.getItem(i));
-//		}
-//		
-//		for (XmlSchemaComplexType type : com ) {
-//			SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
-//			// System.out.println("FeatureType: " + type.getName());
-//			builder.setName(type.getName());
-//			builder.setNamespaceURI(type.getSourceURI());
-//			builder.setAbstract(type.isAbstract());
-
-//			if (type.getParent() != null) {
-//				//if type not abstract, add its children
-//				if (type.getChildElements()!=null){
-//					for (Element element : type.getChildElements()) {
-//						if (element.getType() !=null) {
-//							builder.add(element.getName(), element.getType().getClass());
-//						}
-//					}
-//				}
-//				inTypes.add(builder.buildFeatureType());
-//			}
-//		}
-
-		
-
-		// Build first a list of FeatureTypes
-		for (ComplexType type : schema.getComplexTypes()) {
-			SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
-			// System.out.println("FeatureType: " + type.getName());
-			builder.setName(type.getName());
-			builder.setNamespaceURI(type.getNamespace());
-			builder.setAbstract(type.isAbstract());
-
-			if (type.getParent() != null) {
-				//if type not abstract, add its children
-				if (type.getChildElements()!=null){
-				for (Element element : type.getChildElements()) {
-					if (element.getType() !=null) {
-						builder.add(element.getName(), element.getType()
-								.getClass());
-						 
-					}
-
-				}
-				}
-				inTypes.add(builder.buildFeatureType());
-			}
-		}
-
-		// Build collection of feature type with their parents
-		
-		for (ComplexType type : schema.getComplexTypes()) {
-			
-			// Create builder
-			SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
-			builder.setName(type.getName());
-			builder.setNamespaceURI(type.getNamespace());
-			builder.setAbstract(type.isAbstract());
-			if (type.getParent() instanceof ComplexType) {
-				if (type.getParent() != null) {
-					for (Element element : type.getChildElements()) {
-						if (element.getType() !=null) {
-						/*	 System.out.println("\tsimpl0e type element: "
-							 + element.getName());*/
-							builder.add(element.getName(), element.getType()
-									.getClass());
-						}
-					}
-
-					if (type.getParent().getName()
-							.equals("AbstractFeatureType")) {
-						builder.setSuperType(null); // FIXME??
-					} else {
-						for (SimpleFeatureType featureType : inTypes) {
-							if (featureType.getName().getLocalPart().equals(
-									type.getParent().getName())) {
-								builder.setSuperType(featureType);
-							}
-						}
-					}
-				}
-			}
-			collection.add(builder.buildFeatureType());
-		}
-	} catch (Exception uhe) {
-		uhe.printStackTrace();
-		_log.error("Imported Schema only available on-line, but "
-				+ "cannot be retrieved.", uhe);
-		}
 	
-		return collection;
+		XmlSchemaObjectCollection items = schema.getItems();
+		List<XmlSchemaComplexType> types = new ArrayList<XmlSchemaComplexType>();
+		for (int i = 0; i < items.getCount(); i++) {
+			if (items.getItem(i) instanceof XmlSchemaComplexType)
+				types.add((XmlSchemaComplexType)items.getItem(i));
+		}
+		
+		
+		// Create in the first run all feature types 
+		Collection<FeatureType> tmpFeatureTypes = new ArrayList<FeatureType>();
+		for (int i = 0; i < items.getCount(); i++) {
+
+			XmlSchemaObject item = items.getItem(i);
+			String name = "";
+			if (item instanceof XmlSchemaComplexType) {
+				name = ((XmlSchemaComplexType)item).getName();
+			} else if (item instanceof XmlSchemaElement) {
+				name = ((XmlSchemaElement)item).getName();
+			} else if (item instanceof XmlSchemaSimpleType) {
+				name = ((XmlSchemaSimpleType)item).getName();
+			}
+			
+			SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
+			ftbuilder.setSuperType(null);
+			ftbuilder.setName(name);
+			ftbuilder.setNamespaceURI(schema.getTargetNamespace());
+			SimpleFeatureType ft = ftbuilder.buildFeatureType();
+			tmpFeatureTypes.add(ft);
+		}
+		
+		// Assign in the second run super type to the feature types where necessary 
+		Collection<FeatureType> featureTypes = new ArrayList<FeatureType>();
+		for (int i = 0; i < items.getCount(); i++) {
+			XmlSchemaObject item = items.getItem(i);
+
+			String name = "";
+			String superTypeName = null;
+			
+			List<AttributeResult> attributeResults = new ArrayList<AttributeResult>();
+			
+			if (item instanceof XmlSchemaComplexType) {
+				name = ((XmlSchemaComplexType)items.getItem(i)).getName();
+				XmlSchemaContentModel model = ((XmlSchemaComplexType)item).getContentModel();
+				if (model != null ) {
+					XmlSchemaContent content = model.getContent();
+
+					if (content instanceof XmlSchemaComplexContentExtension) {
+						superTypeName = ((XmlSchemaComplexContentExtension)content).getBaseTypeName().getLocalPart();
+						if (((XmlSchemaComplexContentExtension)content).getParticle() != null) {
+							XmlSchemaParticle particle = ((XmlSchemaComplexContentExtension)content).getParticle();
+							attributeResults = getAttributeTypesFromParticle(particle, superTypeName, tmpFeatureTypes);
+						}
+					}
+				}
+				else if (((XmlSchemaComplexType)item).getParticle() != null) {
+					XmlSchemaParticle particle = ((XmlSchemaComplexType)item).getParticle();
+					if (particle instanceof XmlSchemaSequence) {
+						attributeResults = getAttributeTypesFromParticle(particle, superTypeName, tmpFeatureTypes);
+					}
+				}
+			}
+			else if (items.getItem(i) instanceof XmlSchemaElement) {
+				name = ((XmlSchemaElement)items.getItem(i)).getName();
+			}
+			
+
+			// As it is not possible to set the super type of an existing feature type
+			// we need to recreate all feature types. But now set the corresponding 
+			// super type.
+			SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
+			ftbuilder.setSuperType(null);
+			ftbuilder.setName(name);
+			ftbuilder.setNamespaceURI(schema.getTargetNamespace());
+			
+			for (int a = 0; a < attributeResults.size(); a++) {
+				if (attributeResults.get(a).getType() != null) {
+					ftbuilder.add(attributeResults.get(a).name, attributeResults.get(a).getType().getBinding());
+//					System.out.println("Attribute type found: " + attributeResults.get(a).getName());					
+				}
+				else System.out.println("Attribute type NOT found: " + attributeResults.get(a).getName());
+			}
+			
+				
+			if (superTypeName != null) {
+				// Find super type
+				FeatureType superType = findFeatureType(tmpFeatureTypes, superTypeName);
+				
+				if (superType != null) {
+					ftbuilder.setSuperType((SimpleFeatureType)superType);
+					Collection<PropertyDescriptor> descriptors = superType.getDescriptors();
+					for (PropertyDescriptor descriptor : descriptors) {
+						ftbuilder.add((AttributeDescriptor)descriptor);						
+					}
+				}
+			}
+			SimpleFeatureType ft = ftbuilder.buildFeatureType();
+			featureTypes.add(ft);
+		}
+		
+		// Remove the empty feature type which is always appearing
+		List<FeatureType> ft = new ArrayList<FeatureType>();
+		for(FeatureType featureType : featureTypes) {
+			if (featureType.getName().getLocalPart().equals("")) {
+				ft.add(featureType);
+			}
+		}
+		featureTypes.removeAll(ft);
+		
+		
+		SchemaPrinter.printFeatureTypeCollection(featureTypes, null, -1);
+		
+		
+		return featureTypes;
 	}
 	
 	private String findBaseUri(URI file) {
