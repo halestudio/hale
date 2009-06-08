@@ -15,8 +15,8 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
-import eu.esdihumboldt.hale.rcp.views.MapView;
 import eu.esdihumboldt.hale.rcp.views.TableView;
+import eu.esdihumboldt.hale.rcp.views.map.MapView;
 import eu.esdihumboldt.hale.rcp.views.model.AttributeView;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 import eu.esdihumboldt.hale.rcp.views.tasks.TasklistView;

@@ -24,8 +24,8 @@
          point="org.eclipse.ui.views">
       <view
             name="Map Viewer"
-            class="eu.esdihumboldt.hale.rcp.views.MapView"
-            id="eu.esdihumboldt.hale.rcp.views.MapView">
+            class="eu.esdihumboldt.hale.rcp.views.map.MapView"
+            id="eu.esdihumboldt.hale.rcp.views.map.MapView">
       </view>
       <view
             class="eu.esdihumboldt.hale.rcp.views.tasks.TasklistView"
@@ -181,6 +181,9 @@
          </service>
          <service
                serviceClass="eu.esdihumboldt.hale.models.TaskService">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.models.StyleService">
          </service>
       </serviceFactory>
    </extension>
