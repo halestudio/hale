@@ -326,8 +326,10 @@ public class ModelNavigationView extends ViewPart implements
 					.contains(org.opengis.feature.type.ComplexType.class)) {
 				tot = TreeObjectType.COMPLEX_ATTRIBUTE;
 			}
+//			result.addChild(new TreeObject(pd.getName().getLocalPart() + ":"
+//					+ pd.getType().toString().replaceFirst("^.*?<", "<"), tot));
 			result.addChild(new TreeObject(pd.getName().getLocalPart() + ":"
-					+ pd.getType().toString().replaceFirst("^.*?<", "<"), tot));
+					+ pd.getType().getName().getLocalPart().replaceFirst("^.*?<", "<"), tot));
 		}
 		// add children recursively
 		for (FeatureType ft : typeHierarchy.get(ftk)) {
