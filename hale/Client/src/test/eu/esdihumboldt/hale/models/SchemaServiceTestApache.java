@@ -27,20 +27,13 @@ import org.xml.sax.SAXException;
 
 import eu.esdihumboldt.hale.models.impl.SchemaParser;
 import eu.esdihumboldt.hale.models.impl.SchemaServiceImpl;
+import eu.esdihumboldt.hale.models.impl.SchemaServiceImplApache;
 
 /**
  * Unit tests which covers the SchemaService implementation class.
  */
 public class SchemaServiceTestApache {
 
-//	private Element[] printElements(Element element, int level) {
-//		
-//		for (int i = 0; i < 0; i++) {
-//			System.out.print("\t");
-//		}
-//		System.out.println(element.getName());
-//		if (element.get)
-//	}
 	
 	//@Test
 	public void testLoadSourceSchema() throws URISyntaxException, SAXException, FileNotFoundException {
@@ -94,19 +87,21 @@ public class SchemaServiceTestApache {
 	//@Test
 	public void testLoadTargetSchema() {
 	}
-	//@Test
+	@Test
 	public void testLoadSourceSchemawithImport(){
 		
         
 //    	String pathToSourceSchema = "resources/schema/inheritance/rise_hydrography.xsd";
-//    	String pathToSourceSchema = "D:/Humboldt/workspace/HALE/resources/schema/inheritance/rise_hydrography.xsd";
-    	String pathToSourceSchema = "D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/HY/Hydrography.xsd";
-    	SchemaServiceImpl service = (SchemaServiceImpl) SchemaServiceImpl.getInstance();
+    	String pathToSourceSchema = "D:/Humboldt/workspace/HALE/resources/schema/inheritance/rise_hydrography.xsd";
+//    	String pathToSourceSchema = "D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/HY/Hydrography.xsd";
+    	SchemaServiceImplApache service = (SchemaServiceImplApache) SchemaServiceImplApache.getInstance();
+    	SchemaServiceImpl service2 = (SchemaServiceImpl) SchemaServiceImpl.getInstance();
 
 
 		//load schema 
 		try {
 			service.loadSourceSchema(new URI(pathToSourceSchema));
+//			service2.loadSourceSchema(new URI(pathToSourceSchema));
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -114,6 +109,7 @@ public class SchemaServiceTestApache {
 		
 		//getting service schema
 		Collection<FeatureType> featureTypes = service.getSourceSchema();
+//		Collection<FeatureType> featureTypes2 = service2.getSourceSchema();
 		//check size
 		assertEquals(featureTypes.size(), 11);
 		
@@ -127,80 +123,7 @@ public class SchemaServiceTestApache {
 			if (type.getName().getLocalPart().equals("RiverBasinDistrictType"))containsType = true;
 		} 
 		assertEquals(true, containsType);
-		
-		
-		
 	}
-	
-	@Test
-	public void testLoadSourceSchemawithGeometry(){
-		
-        
-   //	String pathToSourceSchema = "resources/schema/inheritance/rise_hydrography.xsd";
-//    	String pathToSourceSchema = "D:/Humboldt/workspace/HALE/resources/schema/inheritance/rise_hydrography.xsd";
-    	String pathToSourceSchema = "resources/INSPIRE_Conf_Data/Watercourse/BY/SourceSchema/Watercourses_BY.xml" ;
-    	String pathToSecondSourceSchema = "resources/INSPIRE_Conf_Data/Watercourse/VA/SourceSchema/Watercourses_VA.xml" ;
-    	SchemaServiceImpl service = (SchemaServiceImpl) SchemaServiceImpl.getInstance();
-
-		//load schema 
-	try {
-			Collection<FeatureType> featureTypes = service.loadSchema(new URI(pathToSourceSchema));
-			//check if countains RiverBasinDistrictType
-			boolean containsType = false;
-			Iterator iterator = featureTypes.iterator();
-			while(iterator.hasNext()){
-				FeatureType type = (FeatureType) iterator.next();
-			  
-				
-				System.out.println("FeatureType : " + type.getName().getLocalPart());
-				
-
-			} 
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		//getting service schema
-		
-		//check size
-		//assertEquals(featureTypes.size(), 11);
-		
-		
-		
-		
-	
-		//load schema 2
-		
-		try {
-			Collection<FeatureType> featureTypes = service.loadSchema(new URI(pathToSecondSourceSchema));
-			//check if countains RiverBasinDistrictType
-			boolean containsType = false;
-			 Iterator iterator = featureTypes.iterator();
-			while(iterator.hasNext()){
-				FeatureType type = (FeatureType) iterator.next();
-			  
-				
-				System.out.println("FeatureType : " + type.getName().getLocalPart());
-				
-
-			} 
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		
-		
-		
-		
-	
-		
-		
-	}
-		
-	
 	
 
 }
