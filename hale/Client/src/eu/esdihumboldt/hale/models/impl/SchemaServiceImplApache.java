@@ -34,10 +34,14 @@ import org.apache.ws.commons.schema.XmlSchemaSimpleContentExtension;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.XmlSchemaSimpleTypeRestriction;
 import org.geotools.feature.AttributeTypeBuilder;
+import org.geotools.feature.FeatureImpl;
 import org.geotools.feature.NameImpl;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.feature.type.AttributeDescriptorImpl;
+import org.geotools.feature.type.AttributeTypeImpl;
 import org.geotools.gml3.GMLSchema;
 import org.geotools.xs.XSSchema;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.AttributeType;
@@ -452,7 +456,9 @@ public class SchemaServiceImplApache implements SchemaService {
 						System.out.println("Type NOT found: " + attributeName.getLocalPart());
 					}
 					
-					attributeResults.add(new AttributeResult(element.getName(), ty));
+					AttributeResult ar = new AttributeResult(element.getName(), ty);
+					attributeResults.add(ar);
+					System.out.println();
 				}
 			}
 		}
@@ -501,26 +507,37 @@ public class SchemaServiceImplApache implements SchemaService {
 		}
 		
 		
-		// Create in the first run all feature types 
+		// Build a collection of feature types 
 		Collection<FeatureType> tmpFeatureTypes = new ArrayList<FeatureType>();
 		for (int i = 0; i < items.getCount(); i++) {
-
 			XmlSchemaObject item = items.getItem(i);
-			String name = "";
+			String name = null;
 			if (item instanceof XmlSchemaComplexType) {
 				name = ((XmlSchemaComplexType)item).getName();
-			} else if (item instanceof XmlSchemaElement) {
-				name = ((XmlSchemaElement)item).getName();
 			} else if (item instanceof XmlSchemaSimpleType) {
 				name = ((XmlSchemaSimpleType)item).getName();
+//			} else if (item instanceof XmlSchemaElement) {
+//				name = ((XmlSchemaElement)item).getName();
 			}
 			
-			SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
-			ftbuilder.setSuperType(null);
-			ftbuilder.setName(name);
-			ftbuilder.setNamespaceURI(schema.getTargetNamespace());
-			SimpleFeatureType ft = ftbuilder.buildFeatureType();
-			tmpFeatureTypes.add(ft);
+			if (name != null) {
+				SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
+				ftbuilder.setSuperType(null);
+				ftbuilder.setName(name);
+				ftbuilder.setNamespaceURI(schema.getTargetNamespace());
+				SimpleFeatureType ft = ftbuilder.buildFeatureType();
+				tmpFeatureTypes.add(ft);
+			} 
+		}
+		
+		// Build a list of features
+		Collection<Feature> features = new ArrayList<Feature>();
+		for (int i = 0; i < items.getCount(); i++) {
+			XmlSchemaObject item = items.getItem(i);
+			String name = null;
+			if (item instanceof XmlSchemaElement) {
+				name = ((XmlSchemaElement)item).getName();
+			}
 		}
 		
 		// Assign in the second run super type to the feature types where necessary 
@@ -569,7 +586,12 @@ public class SchemaServiceImplApache implements SchemaService {
 			
 			for (int a = 0; a < attributeResults.size(); a++) {
 				if (attributeResults.get(a).getType() != null) {
-					ftbuilder.add(attributeResults.get(a).name, attributeResults.get(a).getType().getBinding());
+					AttributeResult res = attributeResults.get(a);
+					AttributeType t = res.getType();
+					AttributeDescriptor desc = new AttributeDescriptorImpl(t, new NameImpl(res.getName()),0, 0, false, null);
+					ftbuilder.add(desc);
+//					ftbuilder.add(attributeResults.get(a).name, attributeResults.get(a).getType().getBinding());
+					
 //					System.out.println("Attribute type found: " + attributeResults.get(a).getName());					
 				}
 				else System.out.println("Attribute type NOT found: " + attributeResults.get(a).getName());
@@ -647,7 +669,6 @@ public class SchemaServiceImplApache implements SchemaService {
 	/* (non-Javadoc)
 	 * @see eu.esdihumboldt.hale.models.SchemaService#getFeatureTypeByName(java.lang.String)
 	 */
-	@Override
 	public FeatureType getFeatureTypeByName(String name) {
 		// TODO Auto-generated method stub
 		return null;
