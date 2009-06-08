@@ -17,9 +17,11 @@ import org.eclipse.ui.services.IServiceLocator;
 
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.impl.InstanceServiceFactory;
 import eu.esdihumboldt.hale.models.impl.SchemaServiceImpl;
+import eu.esdihumboldt.hale.models.impl.StyleServiceImpl;
 import eu.esdihumboldt.hale.models.impl.TaskServiceImpl;
 
 /**
@@ -35,6 +37,7 @@ public class InstanceAbstractServiceFactory
 	
 	private InstanceService instance = InstanceServiceFactory.getInstance();
 	private SchemaService schema = SchemaServiceImpl.getInstance();
+	private StyleService style = StyleServiceImpl.getInstance();
 	private TaskService task = TaskServiceImpl.getInstance();
 
 	public InstanceAbstractServiceFactory() {
@@ -55,6 +58,9 @@ public class InstanceAbstractServiceFactory
 		}
 		if (serviceInterface.equals(TaskService.class)) {
 			return this.task;
+		}
+		if (serviceInterface.equals(StyleService.class)) {
+			return this.style;
 		}
 		else {
 			throw new RuntimeException("For the given serviceInterface (" 
