@@ -89,6 +89,7 @@ public class RenamingFunctionWizardMainPage
 		
 		private Label sourceFeatureTypeLabel;
 		private Label targetFeatureTypeLabel;
+		
 
         protected RenamingFunctionWizardMainPage(String pageName, String title)
 		 {
@@ -106,7 +107,7 @@ public class RenamingFunctionWizardMainPage
     	public void createControl(Composite parent) {
     		
             super.initializeDialogUnits(parent);
-            this.setPageComplete(this.isPageComplete());
+            this.setPageComplete(true);
             //create a composite to hold the widgets
             Composite composite = new Composite(parent, SWT.NULL);
             //create layout for this wizard page
@@ -207,11 +208,11 @@ public class RenamingFunctionWizardMainPage
 					
 					if(sourceTreeSelection.length ==1) {
 						
-					    //is a Feature Type
+					  //is a Feature Type
 						typeNameSource = sourceTreeSelection[0].getText();
 						typeNameTarget = targetTreeSelection[0].getText();
-						
-						//get service
+						 
+						/*//get service
 						SchemaService service = (SchemaService)ModelNavigationView.site.getService(SchemaService.class);
 						FeatureType ft_source = service.getFeatureTypeByName(typeNameSource);
 						FeatureType ft_target = service.getFeatureTypeByName(typeNameTarget);
@@ -243,7 +244,7 @@ public class RenamingFunctionWizardMainPage
 						AlignmentService alservice = (AlignmentService)ModelNavigationView.site.getService(AlignmentService.class);
 						//store transformation in AS
 						alservice.addOrUpdateCell(c);
-
+*/
 				    
 					
 					//TODO get Feature Type from the Tree
@@ -264,7 +265,7 @@ public class RenamingFunctionWizardMainPage
 		}
 
 
-		private ModelNavigationView getModelNavigationView() {
+		protected ModelNavigationView getModelNavigationView() {
 			ModelNavigationView attributeView = null;
 			// get All Views
 			IViewReference[] views = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
@@ -280,6 +281,7 @@ public class RenamingFunctionWizardMainPage
 			return attributeView;
 		}
 
+		
 
 		/**
     	 * @see org.eclipse.jface.wizard.WizardPage#isPageComplete()

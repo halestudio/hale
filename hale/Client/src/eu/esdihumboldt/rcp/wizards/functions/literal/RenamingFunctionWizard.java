@@ -22,6 +22,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IImportWizard;
@@ -83,12 +84,12 @@ private static Logger _log = Logger.getLogger(RenamingFunctionWizard.class);
 		System.out.println("Target Feature Type: " + mainPage.getTargetFeatureTypeName().getText());
 		
 		//System.out.println(mainPage.getTargetFeatureTypeName().getText());
-		FeatureType ft = mainPage.getSourceFeatureType();
+		/*FeatureType ft = mainPage.getSourceFeatureType();
 		String newname = mainPage.getTargetFeatureTypeName().getText();
 		RenameTransformer rt = new RenameTransformer(newname);
-		FeatureType targetft = rt.getTargetType(ft, null);
+		FeatureType targetft = rt.getTargetType(ft, null);*/
 		//TODO update ModelNavigationView by highliting of the featuretypes.
-		System.out.println("Transformed Feature Type: " + targetft.getName());
+		//System.out.println("Transformed Feature Type: " + targetft.getName());
 		System.out.println("Transformation finished");
 		
 		//highlight a selection
@@ -99,6 +100,12 @@ private static Logger _log = Logger.getLogger(RenamingFunctionWizard.class);
 		mainPage.getTargetViewer().getTree().getSelection()[0].setBackground(0, color);
 		mainPage.getTargetViewer().getTree().deselectAll();
 		mainPage.getTargetViewer().getControl().redraw();
+		//update aligment image
+		AttributeView attributeView = getAttributeView();
+		Label alignmentLabel = attributeView.getAlLabel();
+		alignmentLabel.setImage(attributeView.drawAlignmentImage("Renaming"));
+		alignmentLabel.redraw();
+		
 		return true;
 	}
 
@@ -109,7 +116,7 @@ private static Logger _log = Logger.getLogger(RenamingFunctionWizard.class);
 		StructuredSelection structuredSelection = (StructuredSelection) activeWindow.getSelectionService().getSelection();
 		//selection = (IStructuredSelection) workbench.getWorkbenchWindows()[0].getSelectionService().getSelection();
 		System.out.println(structuredSelection.size());
-*/
+
 		AttributeView attributeView = null;
 		// get All Views
 		IViewReference[] views = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
@@ -131,9 +138,10 @@ private static Logger _log = Logger.getLogger(RenamingFunctionWizard.class);
 		_log.debug("Target attribute list");
 		for (TableItem targetItem : targetAttributeList.getSelection()){
 			_log.debug(targetItem.getText());
-			
+			*/
 		}
-	}
+	
+	
 	 /*
 	 * @see org.eclipse.jface.wizard.IWizard#addPages()
      */
@@ -141,4 +149,20 @@ private static Logger _log = Logger.getLogger(RenamingFunctionWizard.class);
         super.addPages(); 
         addPage(mainPage);        
     }
+    protected AttributeView getAttributeView() {
+		AttributeView attributeView = null;
+		// get All Views
+		IViewReference[] views = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
+		// get AttributeView
+		// get AttributeView
+		for (int count = 0; count < views.length; count++) {
+			if (views[count].getId().equals(
+					"eu.esdihumboldt.hale.rcp.views.model.AttributeView")) {
+				attributeView = (AttributeView) views[count].getView(false);
+			}
+			
+		}
+		return attributeView;
+	}
+
 }
