@@ -35,7 +35,7 @@ import org.opengis.feature.type.FeatureType;
 
 
 import eu.esdihumboldt.hale.rcp.views.model.AttributeView;
-import eu.esdihumboldt.transformers.cst.RenameTransformer;
+//import eu.esdihumboldt.transformers.cst.RenameTransformer;
 
 /**
  * This {@link Wizard} is used to invoke a Renaming Transformer for the Source Feature Type
@@ -93,7 +93,7 @@ private static Logger _log = Logger.getLogger(RenamingFunctionWizard.class);
 		System.out.println("Transformation finished");
 		
 		//highlight a selection
-		Color color = Display.getDefault().getSystemColor(SWT.COLOR_GREEN);
+		Color color = new Color(Display.getDefault(), 135, 190, 100);
 		mainPage.getSourceViewer().getTree().getSelection()[0].setBackground(0, color);
 		mainPage.getSourceViewer().getTree().deselectAll();
 		mainPage.getSourceViewer().getControl().redraw();
