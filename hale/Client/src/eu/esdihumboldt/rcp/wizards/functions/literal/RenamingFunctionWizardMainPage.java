@@ -2,10 +2,14 @@ package eu.esdihumboldt.rcp.wizards.functions.literal;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -27,7 +31,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.internal.WorkbenchColors;
@@ -35,6 +41,13 @@ import org.eclipse.ui.internal.WorkbenchColors;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.oml.ext.Transformation;
+import eu.esdihumboldt.goml.omwg.FeatureClass;
+import eu.esdihumboldt.goml.omwg.Param;
+import eu.esdihumboldt.hale.models.AlignmentService;
+import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.impl.SchemaServiceEnum;
 import eu.esdihumboldt.hale.rcp.views.model.AttributeView;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
@@ -44,7 +57,7 @@ import eu.esdihumboldt.hale.rcp.wizards.io.UrlFieldEditor;
 
 
 public class RenamingFunctionWizardMainPage 
-	extends WizardPage implements Listener {
+	extends WizardPage implements  ISelectionListener {
 		
 		private static final String SOURCE_SELECTION_TYPE = "SourceSelectionType";
 
@@ -169,7 +182,8 @@ public class RenamingFunctionWizardMainPage
                     }
              	
              });
-            
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService()
+            .addSelectionListener( this );   
             setErrorMessage(null);	// should not initially have error message
     		super.setControl(composite);
     	}
@@ -178,7 +192,8 @@ public class RenamingFunctionWizardMainPage
     	
     	
     	private String getSelectedFeatureType(String selectedFeatureType) {
-    		String typeName = "";
+    		String typeNameSource = "";
+    		String typeNameTarget ="";
     		ModelNavigationView modelNavigation = getModelNavigationView();
 			if (modelNavigation!=null){
 				
@@ -186,27 +201,65 @@ public class RenamingFunctionWizardMainPage
 					this.sourceViewer = modelNavigation.getSourceSchemaViewer();
 					this.targetViewer = modelNavigation.getTargetSchemaViewer();
 					TreeItem [] sourceTreeSelection = sourceViewer.getTree().getSelection();
+					TreeItem [] targetTreeSelection = targetViewer.getTree().getSelection();
 					
 					
 					
 					if(sourceTreeSelection.length ==1) {
+						
+					    //is a Feature Type
+						typeNameSource = sourceTreeSelection[0].getText();
+						typeNameTarget = targetTreeSelection[0].getText();
+						
+						//get service
+						SchemaService service = (SchemaService)ModelNavigationView.site.getService(SchemaService.class);
+						FeatureType ft_source = service.getFeatureTypeByName(typeNameSource);
+						FeatureType ft_target = service.getFeatureTypeByName(typeNameTarget);
+						
+						
+						//get URI and local name
+						List<String> nameparts = new ArrayList<String>(); 
+						nameparts.add(ft_source.getName().getNamespaceURI());
+						nameparts.add(ft_source.getName().getLocalPart());
+
+
+						
+						//evtl. move to performFinish
+						Cell c = new Cell();
+						FeatureClass entity1 = new FeatureClass(nameparts);
+						Transformation t = new Transformation();
+						t.setLabel("Rename Transformer");
+						List parameters = new ArrayList<IParameter>();
+//						parameters.add(new Param("SourceFeatureType", ft_source.getName().toString()));
+//						parameters.add(new Param("TargetFeatureType", ft_target.getName().toString()));
+						entity1.setTransformation(t); 
+						c.setEntity1(entity1);
+						
+						List<String> nameparts_2 = new ArrayList<String>(); 
+						nameparts_2.add(ft_target.getName().getNamespaceURI());
+						nameparts_2.add(ft_target.getName().getLocalPart());
+						FeatureClass entity2 = new FeatureClass(nameparts_2); 
+						c.setEntity2(entity2);
+						AlignmentService alservice = (AlignmentService)ModelNavigationView.site.getService(AlignmentService.class);
+						//store transformation in AS
+						alservice.addOrUpdateCell(c);
+
 				    
-					//is a Feature Type
-					typeName = sourceTreeSelection[0].getText();
+					
 					//TODO get Feature Type from the Tree
-					SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+					/*SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
 					builder.setName(typeName);
-					this.sourceFeatureType = builder.buildFeatureType();
+					this.sourceFeatureType = builder.buildFeatureType();*/
 					}
 				}else if (selectedFeatureType.equals(TARGET_SELECTION_TYPE)){
 					TreeViewer targetViewer = modelNavigation.getTargetSchemaViewer();
 					TreeItem [] targetTreeSelection = targetViewer.getTree().getSelection();
-					if(targetTreeSelection.length ==1) typeName = targetTreeSelection[0].getText();
+					if(targetTreeSelection.length ==1) typeNameSource = targetTreeSelection[0].getText();
 				}
 				
 			}
     		
-			return typeName;
+			return typeNameSource;
 			
 		}
 
@@ -286,13 +339,13 @@ public class RenamingFunctionWizardMainPage
     	*/
 
 
-		@Override
+		/*@Override
 		public void handleEvent(Event e) {
 			if (e.widget == this.sourceFeatureTypeName){
 				System.out.println(this.sourceFeatureTypeName.getSelectionText());
 			}
 			
-		}
+		}*/
 		public TreeViewer getSourceViewer() {
 			return sourceViewer;
 		}
@@ -308,6 +361,22 @@ public class RenamingFunctionWizardMainPage
 
 		public Text getTargetFeatureTypeName() {
 			return targetFeatureTypeName;
+		}
+		@Override
+		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+			 if ( selection instanceof IStructuredSelection )
+		        {
+		            final Object selectionObject = ( ( IStructuredSelection ) selection )
+		                    .getFirstElement();
+		            if ( selectionObject != null )
+		            {
+		               
+		            	TreeItem treeItem = (TreeItem) selectionObject;
+		            	String selectedFeatureType = treeItem.getText();
+		            	System.out.println("From RenamingFunctionWizard: " + selectedFeatureType);
+		            }
+		        }
+			
 		}
 
     	
