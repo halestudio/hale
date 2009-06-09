@@ -133,7 +133,7 @@ public class MapView
 	}
 	
 	protected void refreshMap() {
-		FeatureCollection features = this.instanceService.getFeatures(
+		FeatureCollection<?, ?> features = this.instanceService.getFeatures(
 				DatasetType.reference);
 		if (features == null) {
 			return;
@@ -141,7 +141,7 @@ public class MapView
 		this.renderer.setMapArea(features.getBounds());
 		Rectangle currentBounds = this.mapCanvas.getBounds();
 		this.renderer.setPaintArea(new java.awt.Rectangle(
-				currentBounds.x, currentBounds.y, 
+				0, 0, 
 				currentBounds.width, currentBounds.height));
 		
 		this.mapCanvas.setBackgroundImage(new Image(mapCanvas.getDisplay(), 
