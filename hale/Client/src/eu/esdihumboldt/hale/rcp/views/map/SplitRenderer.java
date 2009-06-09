@@ -14,6 +14,8 @@ package eu.esdihumboldt.hale.rcp.views.map;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
@@ -132,7 +134,6 @@ public class SplitRenderer {
 				_log.warn("Retrieving the CRS from the schema and the "
 						+ "instance data failed; defaulting to EPSG:31251."); 
 				crs = CRS.parseWKT(epsg31251wkt);
-//				crs = CRS.decode("EPSG:31254");
 				_log.debug("1st Axis Alias: " + crs.getCoordinateSystem().getAxis(0).getName().getCode());
 				_log.debug("1st Axis Direction name: " + crs.getCoordinateSystem().getAxis(0).getDirection().name());
 				_log.debug("2nd Axis Alias: " + crs.getCoordinateSystem().getAxis(1).getName().getCode());
@@ -144,21 +145,23 @@ public class SplitRenderer {
 		}
 		
 		// transform geometry if necessary.
-		_log.debug("Bounds before Tx: " + fc.getBounds().toString());
+		
 		if (crs != null) {
-			_log.info("Transforming FeatureCollection to WGS84 for rendering");
+			_log.debug("Bounds before Tx: " + fc.getBounds().toString());
+			_log.debug("Transforming FeatureCollection to WGS84 for rendering");
 			try {
 				CoordinateReferenceSystem crsTarget = CRS.decode("EPSG:4326");
-				this.math = CRS.findMathTransform(crs, crsTarget);
+				this.math = CRS.findMathTransform(crs, crsTarget, true);
 				_log.debug("Received MathTransform.");
 				fc = this.transformSRS((FeatureCollection<?, SimpleFeature>) fc);
 				_log.debug("Performed transformation of " + fc.size() + " features.");
-//				crs = crsTarget;
+				crs = crsTarget;
 			} catch (Exception e) {
 				_log.error("Could not perform required CRS transformation", e);
 			}
+			_log.debug("Bounds after Tx: " + fc.getBounds().toString());
 		}
-		_log.debug("Bounds after Tx: " + fc.getBounds().toString());
+		
 		
 		// set up MapContext.
 		MapContext mapContext = new DefaultMapContext(crs);
@@ -176,10 +179,29 @@ public class SplitRenderer {
         graphics.setColor(new Color(0, 0, 0));
         graphics.drawRect(0, 0, paintArea.width - 1, paintArea.height - 1);
         this.renderer.paint((Graphics2D) graphics, paintArea, mapArea);
-       
+        
+//        image = this.mirrorImage(image);
         return image;
 	}
 	
+	/**
+	 * @param image
+	 * @return
+	 */
+	private BufferedImage mirrorImage(BufferedImage image) {
+		AffineTransform transform = AffineTransform.getScaleInstance(-1, 1);
+		transform.translate(-image.getWidth(null), 0);
+	    AffineTransformOp op = new AffineTransformOp(
+	    		transform, AffineTransformOp.TYPE_BILINEAR);
+	    BufferedImage image_temp = op.filter(image, null);
+	    
+	    transform = AffineTransform.getQuadrantRotateInstance(1, image_temp.getWidth()/2, image_temp.getHeight()/2);
+	    op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
+	  	BufferedImage result = op.filter(image_temp, null);
+	    
+		return result;
+	}
+
 	private void configureRenderer() {
 		this.renderer = new StreamingRenderer();
 		Map hints = new HashMap();
