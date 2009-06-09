@@ -1,5 +1,6 @@
 package eu.esdihumboldt.hale.rcp.views.model;
 
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,13 +25,23 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Table;
@@ -39,20 +50,22 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
+import org.omg.CORBA._PolicyStub;
 
 /**
  * The {@link AttributeView_copy} displays the attributes from the selected data
- * class in the {@link ModelNavigationView}. The {@link AttributeView_copy}
+ * class in the {@link ModelNavigationView_merged}. The {@link AttributeView_copy}
  * consist of the Labels for the names of the selected data classes and the
  * operator between them and Lists for the attributes.
  * 
  * @author Thorsten Reitz
  * @version $Id$
  */
-public class AttributeView extends ViewPart {
+public class AttributeView extends ViewPart implements ISelectionListener{
 
 	public static final String ID = "eu.esdihumboldt.hale.rcp.views.model.AttributeView";
 
@@ -69,6 +82,14 @@ public class AttributeView extends ViewPart {
 	// Button to open FunctionWizard
 	private Button selectFunctionButton;
 	
+	private Composite labelComposite;
+	
+	// Image Label to show relation between source and target feature types.
+	private Label alLabel;
+	
+
+
+	private Image transparentImage;
 	// Viewer for the sorceAttributeTable
 	private TableViewer sourceAttributeViewer;
 	
@@ -113,11 +134,13 @@ public class AttributeView extends ViewPart {
 		}
 		
 	};
+
+	
 	
 
 	@Override
 	public void createPartControl(Composite _parent) {
-        
+		getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this);
 		Composite modelComposite = new Composite(_parent, SWT.BEGINNING);
 		GridLayout layout = new GridLayout(2, true);
 		layout.verticalSpacing = 6;
@@ -188,6 +211,37 @@ public class AttributeView extends ViewPart {
 
 		});
 
+		
+		Composite labelComposite = new Composite(modelComposite, SWT.BEGINNING);
+		labelComposite.setLayout(new GridLayout(3, false));
+		gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL |
+				 GridData.VERTICAL_ALIGN_FILL);
+        gData.horizontalSpan = 2;
+        labelComposite.setLayoutData(gData);
+		//source feature type
+		sourceModelLabel = new Label(labelComposite, SWT.RIGHT);
+
+		gData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		sourceModelLabel.setLayoutData(gData);
+		//sourceModelLabel.setText("source type");
+		
+        //aligment label
+		  
+		     alLabel = new Label(labelComposite, SWT.CENTER);
+		    gData = new GridData(SWT.FILL, SWT.FILL, true, false);
+
+			alLabel.setLayoutData(gData);
+		    //alLabel.setText("no aligment");
+		    //aligmentLabel.pack();
+		
+		
+		//target label
+		targetModelLabel = new Label(labelComposite, SWT.BEGINNING);
+		gData = new GridData(SWT.FILL, SWT.FILL, true, false);
+
+		targetModelLabel.setLayoutData(gData);
+		//targetModelLabel.setText("target type");
+
 		Composite sourceComposite = new Composite(modelComposite, SWT.BEGINNING);
 		sourceComposite.setLayout(new GridLayout(1, false));
 		sourceComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
@@ -195,11 +249,7 @@ public class AttributeView extends ViewPart {
 
 		// GridData gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
 
-		sourceModelLabel = new Label(sourceComposite, SWT.CENTER);
-
-		gData = new GridData(SWT.FILL, SWT.FILL, true, false);
-		sourceModelLabel.setLayoutData(gData);
-
+		     
 		/*
 		 * Label operatorLabel = new Label(modelComposite, SWT.NONE); gData =
 		 * new GridData(GridData.HORIZONTAL_ALIGN_FILL |
@@ -220,10 +270,7 @@ public class AttributeView extends ViewPart {
 		targetComposite.setLayout(new GridLayout(1, false));
 		targetComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
-		targetModelLabel = new Label(targetComposite, SWT.CENTER);
-		gData = new GridData(SWT.FILL, SWT.FILL, true, false);
-
-		targetModelLabel.setLayoutData(gData);
+	
 
 		this.sourceAttributeList = this.attributeListSetup(sourceComposite);
 
@@ -497,6 +544,36 @@ public class AttributeView extends ViewPart {
 				// targetAttributeList.add();
 			}
 		}
+		
+		//if both labels not empty
+		if (!sourceModelLabel.getText().equals("")&&!targetModelLabel.getText().equals("")){
+			
+			    alLabel.setImage(drawAlignmentImage("no alignment"));
+			  
+			
+		}
+	}
+
+	public Image drawAlignmentImage(String string) {
+		 Display display = Display.getDefault();
+	 		Image image = new Image(display, 200, 16);
+	 		Color backgroundColer = display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
+	 		
+	 		
+		    Color color = display.getSystemColor(SWT.COLOR_BLACK);
+		   
+		    GC gc = new GC(image);
+         gc.setBackground(backgroundColer);	
+         gc.fillRectangle(image.getBounds());
+		    gc.setForeground(color);   
+		    gc.setLineWidth(1);
+		    gc.drawLine(0, 6, 200,6);
+		    Font font = new Font(display,"Arial", 10 ,  SWT.BOLD | SWT.ITALIC); 
+		    gc.setFont(font);
+		    gc.drawText(string, 55, -3, false);
+		    
+		    gc.dispose();
+		    return image;
 	}
 
 	/**
@@ -522,7 +599,38 @@ public class AttributeView extends ViewPart {
 	}
 
 
+		@Override
+		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+			 if ( selection instanceof IStructuredSelection )
+		        {
+		            final Object selectionObject = ( ( IStructuredSelection ) selection )
+		                    .getFirstElement();
+		            if ( selectionObject != null ){
+		            	String selectedFeatureType = "not selected";
+ 		                FeatureTypeSelection ftSelection = (FeatureTypeSelection) selectionObject;
+		            	TreeItem sourceItem = ftSelection.getSourceFeatureTypes()[0];
+		            	if (sourceItem != null ){selectedFeatureType = sourceItem.getText(); }
+		            	System.out.println("Source FeatureType :" + selectedFeatureType);
+		                selectedFeatureType = "not selected";
+		            	TreeItem targetItem = ftSelection.getTargetFeatureType()[0];
+		                if (targetItem !=null){ selectedFeatureType = targetItem.getText();}
+		                System.out.println("Target FeatureType :" + selectedFeatureType);
+		                //TODO use it for SelectFunction, AttributeLists
+		                
+		            	
+		            }
+		        }
+			
+		}
 		
-		
+		public Label getAlLabel() {
+			return alLabel;
+		}
 		
 	}
+
+
+		
+		
+		
+	
