@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.impl.InstanceServiceFactory;
 import eu.esdihumboldt.hale.models.impl.SchemaServiceImpl;
+import eu.esdihumboldt.hale.models.impl.SchemaServiceImplApache;
 import eu.esdihumboldt.hale.models.impl.StyleServiceImpl;
 import eu.esdihumboldt.hale.models.impl.TaskServiceImpl;
 
