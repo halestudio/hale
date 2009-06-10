@@ -16,9 +16,9 @@ import java.net.URI;
 import java.util.List;
 
 import org.opengis.feature.type.FeatureType;
-import org.semanticweb.knowledgeweb.heterogeneity.alignment.AlignmentDocument;
-import org.semanticweb.knowledgeweb.heterogeneity.alignment.AlignmentType;
 
+import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 
@@ -36,13 +36,13 @@ public interface AlignmentService
 	/**
 	 * @return the entire {@link Alignment} as currently represented in the Alignment Model.
 	 */
-	//public Alignment getAlignment();
+	public Alignment getAlignment();
 	
 	/**
 	 * @param alignment the {@link Alignment} to update or add to the Alignment Model.
 	 * @return true if an existing alignment was updated, false if a new one was added.
 	 */
-	public boolean addOrUpdateAlignment(AlignmentType alignment);
+	public boolean addOrUpdateAlignment(Alignment alignment);
 	
 	/**
 	 * This method is used to return all Alignments that have the given type 
@@ -50,7 +50,7 @@ public interface AlignmentService
 	 * @param type the {@link FeatureType} for which to return the Alignments.
 	 * @return
 	 */
-	public AlignmentDocument getAlignmentForType(FeatureType type);
+	public List<ICell> getAlignmentForType(FeatureType type);
 	
 	/**
 	 * 
@@ -67,7 +67,7 @@ public interface AlignmentService
 	 * Entity is part of the target schema, or all Cells containing the Entity 
 	 * as a source Entity if the Entity is part of the source schema.
 	 */
-	public List<Cell> getCell(Entity entity);
+	public List<ICell> getCell(Entity entity);
 	
 	/**
 	 * Adds the alignments defined in an OML file to the currently loaded ones if the alignments
