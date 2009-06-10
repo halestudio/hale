@@ -290,6 +290,16 @@ public class ModelNavigationView extends ViewPart implements
 		// links.
 		return hidden_root;
 	}
+	
+	private boolean checkInterface(Class<?>[] classes, Class classToFind) {
+		for (Class clazz : classes) {
+			if (clazz.equals(classToFind)) return true;
+			for (Class c : clazz.getInterfaces()) {
+				if (clazz.equals(classToFind)) return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Recursive method for setting up the inheritance tree.
@@ -314,9 +324,19 @@ public class ModelNavigationView extends ViewPart implements
 		for (PropertyDescriptor pd : ftk.getFeatureType().getDescriptors()) {
 			tot = TreeObjectType.STRING_ATTRIBUTE;
 			if (pd.getType().toString().matches("^.*?GMLComplexTypes.*")) {
+//			if (pd.getType().getName().getNamespaceURI().equals("http://www.opengis.net/gml")) {
 				tot = TreeObjectType.GEOMETRIC_ATTRIBUTE;
-			} else if (Arrays.asList(pd.getType().getClass().getInterfaces())
+			} else if (Arrays.asList(pd.getType().getBinding().getClass().getInterfaces())
 					.contains(org.opengis.feature.type.GeometryType.class)) {
+				tot = TreeObjectType.GEOMETRIC_ATTRIBUTE;
+			} else if (checkInterface(pd.getType().getBinding().getInterfaces(),
+					com.vividsolutions.jts.geom.Puntal.class)) {
+				tot = TreeObjectType.GEOMETRIC_ATTRIBUTE;
+			} else if (checkInterface(pd.getType().getBinding().getInterfaces(),
+					com.vividsolutions.jts.geom.Polygonal.class)) {
+				tot = TreeObjectType.GEOMETRIC_ATTRIBUTE;
+			} else if (checkInterface(pd.getType().getBinding().getInterfaces(),
+					com.vividsolutions.jts.geom.Lineal.class)) {
 				tot = TreeObjectType.GEOMETRIC_ATTRIBUTE;
 			} else if (Arrays.asList(pd.getType().getClass().getInterfaces())
 					.contains(org.opengis.feature.type.ComplexType.class)) {
