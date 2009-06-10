@@ -51,6 +51,7 @@ public class AlignmentServiceImpl
 	private AlignmentServiceImpl() {
 		super();
 		this.alignment = new Alignment();
+		this.alignment.setMap(new ArrayList<ICell>());
 	}
 	
 	public static AlignmentService getInstance() {

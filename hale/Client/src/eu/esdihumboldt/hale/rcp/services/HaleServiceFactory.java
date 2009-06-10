@@ -39,8 +39,8 @@ public class HaleServiceFactory
 	extends AbstractServiceFactory {
 	
 	private InstanceService instance = InstanceServiceFactory.getInstance();
-	//private SchemaService schema = SchemaServiceImplApache.getInstance();
-	private SchemaService schema = SchemaServiceImpl.getInstance();
+	private SchemaService schema = SchemaServiceImplApache.getInstance();
+//	private SchemaService schema = SchemaServiceImpl.getInstance();
 	private StyleService style = StyleServiceImpl.getInstance();
 	private TaskService task = TaskServiceImpl.getInstance();
 	private AlignmentService alignment = AlignmentServiceImpl.getInstance();
