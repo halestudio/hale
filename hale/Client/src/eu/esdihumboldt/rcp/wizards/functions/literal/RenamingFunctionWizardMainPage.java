@@ -212,7 +212,7 @@ public class RenamingFunctionWizardMainPage
 						typeNameSource = sourceTreeSelection[0].getText();
 						typeNameTarget = targetTreeSelection[0].getText();
 						 
-						/*//get service
+						//get service
 						SchemaService service = (SchemaService)ModelNavigationView.site.getService(SchemaService.class);
 						FeatureType ft_source = service.getFeatureTypeByName(typeNameSource);
 						FeatureType ft_target = service.getFeatureTypeByName(typeNameTarget);
@@ -244,7 +244,7 @@ public class RenamingFunctionWizardMainPage
 						AlignmentService alservice = (AlignmentService)ModelNavigationView.site.getService(AlignmentService.class);
 						//store transformation in AS
 						alservice.addOrUpdateCell(c);
-*/
+
 				    
 					
 					//TODO get Feature Type from the Tree
