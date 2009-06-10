@@ -15,10 +15,12 @@ package eu.esdihumboldt.hale.rcp.services;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
+import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.TaskService;
+import eu.esdihumboldt.hale.models.impl.AlignmentServiceImpl;
 import eu.esdihumboldt.hale.models.impl.InstanceServiceFactory;
 import eu.esdihumboldt.hale.models.impl.SchemaServiceImpl;
 import eu.esdihumboldt.hale.models.impl.SchemaServiceImplApache;
@@ -37,9 +39,11 @@ public class HaleServiceFactory
 	extends AbstractServiceFactory {
 	
 	private InstanceService instance = InstanceServiceFactory.getInstance();
-	private SchemaService schema = SchemaServiceImplApache.getInstance();
+	//private SchemaService schema = SchemaServiceImplApache.getInstance();
+	private SchemaService schema = SchemaServiceImpl.getInstance();
 	private StyleService style = StyleServiceImpl.getInstance();
 	private TaskService task = TaskServiceImpl.getInstance();
+	private AlignmentService alignment = AlignmentServiceImpl.getInstance();
 
 	public HaleServiceFactory() {
 		// TODO Auto-generated constructor stub
@@ -62,6 +66,9 @@ public class HaleServiceFactory
 		}
 		if (serviceInterface.equals(StyleService.class)) {
 			return this.style;
+		}
+		if (serviceInterface.equals(AlignmentService.class)) {
+			return this.alignment;
 		}
 		else {
 			throw new RuntimeException("For the given serviceInterface (" 

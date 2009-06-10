@@ -56,6 +56,11 @@ import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 import org.omg.CORBA._PolicyStub;
 
+import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.hale.models.AlignmentService;
+import eu.esdihumboldt.hale.models.SchemaService;
+
 /**
  * The {@link AttributeView_copy} displays the attributes from the selected data
  * class in the {@link ModelNavigationView_merged}. The {@link AttributeView_copy}
@@ -87,6 +92,8 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 	// Image Label to show relation between source and target feature types.
 	private Label alLabel;
 	
+	private AlignmentService as = null;
+	private SchemaService schemaService = null;
 
 
 	private Image transparentImage;
@@ -140,6 +147,10 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 
 	@Override
 	public void createPartControl(Composite _parent) {
+		
+		this.schemaService =  (SchemaService) this.getSite().getService(
+				SchemaService.class);
+		this.as = (AlignmentService) this.getSite().getService(AlignmentService.class);
 		getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this);
 		Composite modelComposite = new Composite(_parent, SWT.BEGINNING);
 		GridLayout layout = new GridLayout(2, true);
@@ -547,8 +558,11 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 		
 		//if both labels not empty
 		if (!sourceModelLabel.getText().equals("")&&!targetModelLabel.getText().equals("")){
-			
-			    alLabel.setImage(drawAlignmentImage("no alignment"));
+				/*java.util.List<ICell> cells = (java.util.List<ICell>) this.as.getAlignmentForType(this.schemaService.getFeatureTypeByName(sourceModelLabel.getText()));
+			    if (cells != null && cells.size() != 0) {
+			    	cells.get(0).getEntity1().getTransformation().getLabel();
+			    }*/
+				alLabel.setImage(drawAlignmentImage("no alignment"));
 			  
 			
 		}
