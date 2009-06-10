@@ -95,10 +95,10 @@ private static Logger _log = Logger.getLogger(RenamingFunctionWizard.class);
 		//highlight a selection
 		Color color = new Color(Display.getDefault(), 135, 190, 100);
 		mainPage.getSourceViewer().getTree().getSelection()[0].setBackground(0, color);
-		mainPage.getSourceViewer().getTree().deselectAll();
+		//mainPage.getSourceViewer().getTree().deselectAll();
 		mainPage.getSourceViewer().getControl().redraw();
 		mainPage.getTargetViewer().getTree().getSelection()[0].setBackground(0, color);
-		mainPage.getTargetViewer().getTree().deselectAll();
+		//mainPage.getTargetViewer().getTree().deselectAll();
 		mainPage.getTargetViewer().getControl().redraw();
 		//update aligment image
 		AttributeView attributeView = getAttributeView();
