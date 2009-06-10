@@ -1,6 +1,7 @@
 package eu.esdihumboldt.hale.rcp.views.model;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,9 +56,11 @@ import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 import org.omg.CORBA._PolicyStub;
+import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.SchemaService;
 
@@ -558,12 +561,38 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 		
 		//if both labels not empty
 		if (!sourceModelLabel.getText().equals("")&&!targetModelLabel.getText().equals("")){
-				/*java.util.List<ICell> cells = (java.util.List<ICell>) this.as.getAlignmentForType(this.schemaService.getFeatureTypeByName(sourceModelLabel.getText()));
-			    if (cells != null && cells.size() != 0) {
-			    	cells.get(0).getEntity1().getTransformation().getLabel();
-			    }*/
-				alLabel.setImage(drawAlignmentImage("no alignment"));
-			  
+			//get feature types for source and feature label
+			FeatureType ft_source = this.schemaService.getFeatureTypeByName(sourceModelLabel.getText());
+			FeatureType ft_target = this.schemaService.getFeatureTypeByName(targetModelLabel.getText());
+			
+			//get URI and local name
+			java.util.List<String> nameparts_source = new ArrayList<String>(); 
+			nameparts_source.add(ft_source.getName().getNamespaceURI());
+			nameparts_source.add(ft_source.getName().getLocalPart());
+			
+			java.util.List<String> nameparts_target = new ArrayList<String>(); 
+			nameparts_target.add(ft_target.getName().getNamespaceURI());
+			nameparts_target.add(ft_target.getName().getLocalPart());
+			
+			String alignmentLabel = "";
+			
+			//create source entity
+		     Entity e1 = new Entity(nameparts_source);	
+			
+			//create target entity
+			
+			Entity e2 = new Entity(nameparts_target);	
+			//get alignment e1, e2
+			ICell cell = this.as.getCell(e1, e2);
+			    if (cell !=null) {
+			    alignmentLabel =	cell.getEntity1().getTransformation().getLabel();
+			    }
+			    if (!alignmentLabel.equals("")){
+			    	if (alignmentLabel.contains("Renam")) alignmentLabel = "Renaming"; 
+			    		alLabel.setImage(drawAlignmentImage(alignmentLabel));
+			    }
+			    else 
+			    	alLabel.setImage(drawAlignmentImage("no alignment"));
 			
 		}
 	}
