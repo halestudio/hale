@@ -72,26 +72,25 @@ public class SplitRenderer {
 	private static Logger _log = Logger.getLogger(SplitRenderer.class);
 	
 	private final String epsg31251wkt = 
-		"PROJCS[\"MGI(Ferro)/AustriaGKWestZone\"," +
-			"GEOGCS[\"MGI(Ferro)\"," +
-				"DATUM[\"Militar-GeographischeInstitut(Ferro)\"," +
-					"SPHEROID[\"Bessel1841\",6377397.155,299.1528128," +
+		"PROJCS[\"MGI (Ferro)/AustriaGKWestZone\"," +
+			"GEOGCS[\"MGI (Ferro)\"," +
+				"DATUM[\"Militar-Geographische Institut (Ferro)\"," +
+					"SPHEROID[\"Bessel 1841\",6377397.155,299.1528128," +
 					"AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6805\"]]," +
 				"PRIMEM[\"Ferro\",-17.666666666666668,AUTHORITY[\"EPSG\",\"8909\"]]," +
 				"UNIT[\"degree\",0.017453292519943295]," +
-				"AXIS[\"Geodeticlongitude\",EAST]," +
-				"AXIS[\"Geodeticlatitude\",NORTH]," +
+				"AXIS[\"Geodetic latitude\",NORTH]," +
+				"AXIS[\"Geodetic longitude\",EAST]," +
 				"AUTHORITY[\"EPSG\",\"4805\"]]," +
-			"PROJECTION[\"TransverseMercator\"," +
-		"AUTHORITY[\"EPSG\",\"9807\"]]," +
+			"PROJECTION[\"Transverse Mercator\"]," +
 		"PARAMETER[\"central_meridian\",28.0]," +
 		"PARAMETER[\"latitude_of_origin\",0.0]," +
 		"PARAMETER[\"scale_factor\",1.0]," +
 		"PARAMETER[\"false_easting\",0.0]," +
 		"PARAMETER[\"false_northing\",-5000000.0]," +
 		"UNIT[\"m\",1.0]," +
-		"AXIS[\"Easting\",EAST]," +
-		"AXIS[\"Northing\",NORTH]," +
+		"AXIS[\"Y\",EAST]," +
+		"AXIS[\"X\",NORTH]," +
 		"AUTHORITY[\"EPSG\",\"31251\"]]";
 	
 	private SplitStyle splitStyle = SplitStyle.VERTICAL;
