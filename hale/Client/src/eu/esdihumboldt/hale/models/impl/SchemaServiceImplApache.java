@@ -1,3 +1,24 @@
+/*
+ * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
+ * EU Integrated Project #030962                  01.10.2006 - 30.09.2010
+ * 
+ * For more information on the project, please refer to this website:
+ * http://www.esdi-humboldt.eu
+ * 
+ * LICENSE: For information on the license under which this program is 
+ * available, please refer to : http:/www.esdi-humboldt.eu/license.html#core
+ * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ *
+ * Component    : HALE
+ * 	 
+ * Classname    : SchemaServiceImplApache.java 
+ * 
+ * Author       : Bernd Schneiders, Logica
+ * 
+ * Created on   : Jun 3, 2009 -- 4:50:10 PM
+ *
+ */
+
 package eu.esdihumboldt.hale.models.impl;
 
 import java.io.File;
@@ -24,8 +45,6 @@ import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaContent;
 import org.apache.ws.commons.schema.XmlSchemaContentModel;
 import org.apache.ws.commons.schema.XmlSchemaElement;
-import org.apache.ws.commons.schema.XmlSchemaImport;
-import org.apache.ws.commons.schema.XmlSchemaInclude;
 import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaObjectCollection;
 import org.apache.ws.commons.schema.XmlSchemaParticle;
@@ -39,7 +58,6 @@ import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.feature.type.AttributeDescriptorImpl;
 import org.geotools.gml3.GMLSchema;
 import org.geotools.xs.XSSchema;
-import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.AttributeType;
@@ -51,10 +69,22 @@ import eu.esdihumboldt.hale.models.SchemaService;
 
 /**
  * Implementation of {@link SchemaService}.
+ * The main functionality of this class is to load an XML schema file (XSD)
+ * and create a FeatureType collection. This implementation is based on the
+ * Apache XmlSchema library (http://ws.apache.org/commons/XmlSchema/). It is
+ * necessary use this library instead of the GeoTools Xml schema loader, because
+ * the GeoTools versio cannot handle GML 3.2 based files.
  */
 public class SchemaServiceImplApache implements SchemaService {
 	
+	/**
+	 * This class is used as a simple container to store
+	 * a AttributeType / feature type name pair.
+	 */
 	public class AttributeResult {
+		/**
+		 * Name of the feature type
+		 */
 		String name;
 		AttributeType type;
 
@@ -91,7 +121,7 @@ public class SchemaServiceImplApache implements SchemaService {
 	}
 	
 	
-	private static Logger _log = Logger.getLogger(SchemaServiceImpl.class);
+	private static Logger _log = Logger.getLogger(SchemaServiceImplApache.class);
 	
 	private static SchemaServiceImplApache instance = new SchemaServiceImplApache();
 
@@ -189,7 +219,7 @@ public class SchemaServiceImplApache implements SchemaService {
 		this.cleanTargetSchema();
 		this.targetSchema = loadSchema(file);
 		try {
-			this.targetLocation = new URL(file.getPath());
+			this.targetLocation = new URL("file://" + file.toString());
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("The target location " + file.getPath()
 					+ "could not be saved: ", e);
@@ -282,52 +312,13 @@ public class SchemaServiceImplApache implements SchemaService {
 		}
 	}
 
-
-	
-	private List<String> printSchemas(XmlSchema schema, List<String> sourceUris, int level) {
-		if (sourceUris == null) sourceUris = new ArrayList<String>();
-		
-		XmlSchemaObjectCollection includes = schema.getIncludes();
-		for (int i = 0; i < includes.getCount(); i++) {
-			Object o = includes.getItem(i);
-			XmlSchema s = null;
-			if (o instanceof XmlSchemaImport) {
-				s = ((XmlSchemaImport)o).getSchema();
-			} else if (o instanceof XmlSchemaInclude) {
-				s = ((XmlSchemaInclude)o).getSchema();
-			}
-			String filename = "";
-			filename += s.getTargetNamespace();
-			filename += ":";
-			filename += new File(s.getSourceURI()).getName();
-			filename = s.getSourceURI();
-
-			if (new File(s.getSourceURI()).getName().equals("geometryComplexes.xsd")) {
-				filename = "";
-			}
-			
-			// Check if the schema was already parsed by using its sourceUri.
-			// If true then exit.
-			// This will avoid endless processing of cyclic includes.
-			boolean found = false;
-			for (String sourceUri : sourceUris) {
-				if (sourceUri.equals(filename)) {
-					found = true;
-					break;
-				}
-			}
-			if (found == false) {
-				if (s.getSourceURI() != null) sourceUris.add(filename);
-				else System.out.print("null|");
-				System.out.println(level + ", " + sourceUris.size() + ", " + filename);
-				sourceUris = printSchemas(s, sourceUris, ++level);
-			}
-			
-		}
-		return sourceUris;
-	}
-	
-	
+	/**
+	 * Searches a FeatureType in a FeatureType collection by a given name.
+	 * 
+	 * @param featureTypes Collection of FeatureTypes
+	 * @param name Name (LocalPart) of a FeatureType to be find.
+	 * @return 
+	 */
 	private FeatureType findFeatureType(Collection<FeatureType> featureTypes, String name) {
 		for (FeatureType featureType : featureTypes) {
 			String featureTypeName = featureType.getName().getLocalPart();
@@ -592,7 +583,7 @@ public class SchemaServiceImplApache implements SchemaService {
 			}
 		}
 		
-		// Assign in the second run super type to the feature types where necessary 
+		// Assign in the second run super types to the feature types where necessary 
 		for (int i = 0; i < items.getCount(); i++) {
 			XmlSchemaObject item = items.getItem(i);
 
@@ -622,9 +613,9 @@ public class SchemaServiceImplApache implements SchemaService {
 					}
 				}
 			}
-			else if (items.getItem(i) instanceof XmlSchemaElement) {
-				name = ((XmlSchemaElement)items.getItem(i)).getName();
-			}
+//			else if (items.getItem(i) instanceof XmlSchemaElement) {
+//				name = ((XmlSchemaElement)items.getItem(i)).getName();
+//			}
 			
 
 			// As it is not possible to set the super type of an existing feature type
@@ -641,9 +632,6 @@ public class SchemaServiceImplApache implements SchemaService {
 					AttributeType t = res.getType();
 					AttributeDescriptor desc = new AttributeDescriptorImpl(t, new NameImpl(res.getName()),0, 0, false, null);
 					ftbuilder.add(desc);
-//					ftbuilder.add(attributeResults.get(a).name, attributeResults.get(a).getType().getBinding());
-					
-//					System.out.println("Attribute type found: " + attributeResults.get(a).getName());					
 				}
 				else System.out.println("Attribute type NOT found: " + attributeResults.get(a).getName());
 			}
@@ -674,9 +662,8 @@ public class SchemaServiceImplApache implements SchemaService {
 		}
 		featureTypes.removeAll(ft);
 		
-		
-		// SchemaPrinter.printFeatureTypeCollection(featureTypes, null, -1);
-		
+		// Prints the feature type to the console (for debugging only)
+		SchemaPrinter.printFeatureTypeCollection(featureTypes);
 		
 		return featureTypes;
 	}
@@ -721,8 +708,37 @@ public class SchemaServiceImplApache implements SchemaService {
 	 * @see eu.esdihumboldt.hale.models.SchemaService#getFeatureTypeByName(java.lang.String)
 	 */
 	public FeatureType getFeatureTypeByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		FeatureType result = null;
+		// handles cases where a full name was given.
+		if (!this.sourceNamespace.equals("") && name.contains(this.sourceNamespace)) {
+			for (FeatureType ft : this.sourceSchema) {
+				if (ft.getName().getLocalPart().equals(name)) {
+					result = ft;
+					break;
+				}
+			}
+		}
+		else if (!this.targetNamespace.equals("") && name.contains(this.targetNamespace)) {
+			for (FeatureType ft : this.targetSchema) {
+				if (ft.getName().getLocalPart().equals(name)) {
+					result = ft;
+					break;
+				}
+			}
+		}
+		// handle case where only the local part was given.
+		else {
+			Collection<FeatureType> allFTs = new HashSet<FeatureType>();
+			allFTs.addAll(this.sourceSchema);
+			allFTs.addAll(this.targetSchema);
+			for (FeatureType ft : allFTs) {
+				if (ft.getName().getLocalPart().equals(name)) {
+					result = ft;
+					break;
+				}
+			}
+		}
+		return result;
 	}
 }
 

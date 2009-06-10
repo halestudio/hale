@@ -17,30 +17,34 @@ import org.opengis.feature.type.PropertyDescriptor;
  *
  * Componet     : HALE
  * 	 
- * Classname    : /SchemaPrinter.java 
+ * Classname    : SchemaPrinter.java 
  * 
- * Author       : schneidersb
+ * Author       : Bernd Schneiders, Logica
  * 
  * Created on   : Jun 3, 2009 -- 4:50:10 PM
  *
  */
 
 /**
- * @author schneidersb
- *
+ * Helper class which provides a method to print a FeatureType collection
+ * as a tree to the console.
  */
 public class SchemaPrinter {
 	
+	/**
+	 * Method to print a FeatureType collection to the console.
+	 * 	
+	 * @param featureTypes Collection of feature types which should be printed
+	 */
+	static public void printFeatureTypeCollection(Collection<FeatureType> featureTypes) {
+		printFeatureTypeCollection(featureTypes, null, -1);
+	}
 	
-	
-	static public void printFeatureTypeCollection(Collection<FeatureType> featureTypes, FeatureType superType, int level) {
+	static private void printFeatureTypeCollection(Collection<FeatureType> featureTypes, FeatureType superType, int level) {
 		level++;
 		if (level == 0) System.out.println("Size of feature type collection: " + featureTypes.size());
 		if (level == 10) return;
 		for(FeatureType type : featureTypes) {
-			if (level == 0) {
-				System.out.println();
-			}
 			if (level == 0 && type.getSuper() == null) {
 				System.out.println(type.getName().getLocalPart());
 				
