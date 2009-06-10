@@ -447,12 +447,12 @@ public class SchemaServiceImpl implements SchemaService {
 		}
 		// handle case where only the local part was given.
 		else {
-			String localname = name.substring(name.lastIndexOf("/"));
+			//String localname = name.substring(name.lastIndexOf("/"));
 			Collection<FeatureType> allFTs = new HashSet<FeatureType>();
 			allFTs.addAll(this.sourceSchema);
 			allFTs.addAll(this.targetSchema);
 			for (FeatureType ft : allFTs) {
-				if (ft.getName().getLocalPart().equals(localname)) {
+				if (ft.getName().getLocalPart().equals(name)) {
 					result = ft;
 					break;
 				}
