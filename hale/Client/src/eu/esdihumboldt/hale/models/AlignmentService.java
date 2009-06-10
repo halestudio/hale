@@ -52,6 +52,9 @@ public interface AlignmentService
 	 */
 	public List<ICell> getAlignmentForType(FeatureType type);
 	
+	
+	public ICell getAlignmentForType(FeatureType type1, FeatureType type2);
+	
 	/**
 	 * 
 	 * @param cell
@@ -68,6 +71,8 @@ public interface AlignmentService
 	 * as a source Entity if the Entity is part of the source schema.
 	 */
 	public List<ICell> getCell(Entity entity);
+	
+	public ICell getCell(Entity e1, Entity e2);
 	
 	/**
 	 * Adds the alignments defined in an OML file to the currently loaded ones if the alignments

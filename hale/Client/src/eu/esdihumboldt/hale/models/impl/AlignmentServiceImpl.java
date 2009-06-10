@@ -103,6 +103,27 @@ public class AlignmentServiceImpl
 		}
 		return result;
 	}
+	
+	public ICell getCell(Entity e1, Entity e2) {
+		for (ICell c: this.alignment.getMap()) {
+			boolean e1NamespaceMatch = false;
+			boolean e1LocalnameMatch = false;
+			boolean e2NamespaceMatch = false;
+			boolean e2LocalnameMatch = false;
+			if (c.getEntity1() != null) {
+				e1NamespaceMatch = c.getEntity1().getLabel().get(0).equals(e1.getLabel().get(0));
+				e1LocalnameMatch = c.getEntity1().getLabel().get(1).equals(e1.getLabel().get(1));
+			}
+			if (c.getEntity2() != null) {
+				e2NamespaceMatch = c.getEntity2().getLabel().get(0).equals(e2.getLabel().get(0));
+				e2LocalnameMatch = c.getEntity2().getLabel().get(1).equals(e2.getLabel().get(1));
+			}
+			if ((e1NamespaceMatch && e1LocalnameMatch) && (e2NamespaceMatch && e2LocalnameMatch)) {
+				return c;
+			}
+		}
+		return null;
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.esdihumboldt.hale.models.AlignmentService#loadAlignment(java.net.URI)
@@ -145,6 +166,18 @@ public class AlignmentServiceImpl
 		labels.add(type.getName().getLocalPart());
 		Entity e = new Entity(labels);
 		return this.getCell(e);
+	}
+	
+	public ICell getAlignmentForType(FeatureType type1, FeatureType type2) {
+		List<String> labels = new ArrayList<String>();
+		labels.add(type1.getName().getNamespaceURI());
+		labels.add(type1.getName().getLocalPart());
+		Entity e1 = new Entity(labels);
+		labels = new ArrayList<String>();
+		labels.add(type2.getName().getNamespaceURI());
+		labels.add(type2.getName().getLocalPart());
+		Entity e2 = new Entity(labels);
+		return this.getCell(e1, e2);
 	}
 	
 	// UpdateService operations ................................................
