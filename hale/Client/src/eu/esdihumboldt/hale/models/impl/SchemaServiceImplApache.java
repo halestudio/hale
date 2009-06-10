@@ -34,11 +34,9 @@ import org.apache.ws.commons.schema.XmlSchemaSimpleContentExtension;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.XmlSchemaSimpleTypeRestriction;
 import org.geotools.feature.AttributeTypeBuilder;
-import org.geotools.feature.FeatureImpl;
 import org.geotools.feature.NameImpl;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.feature.type.AttributeDescriptorImpl;
-import org.geotools.feature.type.AttributeTypeImpl;
 import org.geotools.gml3.GMLSchema;
 import org.geotools.xs.XSSchema;
 import org.opengis.feature.Feature;
@@ -337,26 +335,13 @@ public class SchemaServiceImplApache implements SchemaService {
 		}
 		return null;
 	}
-	
-	private List<FeatureType> findChildren(FeatureType parent, Collection<FeatureType> featureTypes) {
-		List<FeatureType> children = new ArrayList<FeatureType>();
-		
-		String parentName = parent.getName().getLocalPart();
-		
-		for (FeatureType featureType : featureTypes) {
-			if (featureType.getName().getLocalPart().equals(parentName)) {
-				children.add(featureType);
-			}
-		}
-		return children;
-	}
-	
-	private void inheritAttributesFromChildren(FeatureType featureType) {
-		FeatureType superType = (FeatureType)featureType.getSuper();
-		
-		if (superType == null) return;
-	}
-	
+
+	/**
+	 * Returns the AttributeType for an enumeration.
+	 * 
+	 * @param element
+	 * @return
+	 */
 	private AttributeType getEnumAttributeType(XmlSchemaElement element) {
 		AttributeType type = null;
 		if (element.getSchemaType() instanceof XmlSchemaSimpleType) {
@@ -373,6 +358,12 @@ public class SchemaServiceImplApache implements SchemaService {
 		return type;
 	}
 	
+	/**
+	 * 
+	 * @param name
+	 * @param featureTypes
+	 * @return
+	 */
 	private AttributeType getSchemaAttributeType(Name name, Collection<FeatureType> featureTypes) {
 		AttributeType type = null;
 		
@@ -392,6 +383,14 @@ public class SchemaServiceImplApache implements SchemaService {
 		return type;
 	}
 	
+	/**
+	 * Extracts attributeTypes from a XmlSchemaParticle.
+	 * 
+	 * @param particle
+	 * @param superTypeName
+	 * @param featureTypes
+	 * @return
+	 */
 	private List<AttributeResult> getAttributeTypesFromParticle(XmlSchemaParticle particle, String superTypeName, Collection<FeatureType> featureTypes) {
 		List<AttributeResult> attributeResults = new ArrayList<AttributeResult>();
 		
@@ -441,12 +440,14 @@ public class SchemaServiceImplApache implements SchemaService {
 					AttributeType ty = xsSchema.get(attributeName);
 					
 					
-					
+					// Try to resolve the attribute bindings
 					if (ty == null) {
+						// GML bindings
 						GMLSchema gmlSchema = new GMLSchema();
 						ty = gmlSchema.get(attributeName);
 					}
 					if (ty == null) {
+						// Bindings for enumeration types
 						ty = getEnumAttributeType(element);
 					}
 					if (ty == null) {
@@ -458,13 +459,35 @@ public class SchemaServiceImplApache implements SchemaService {
 					
 					AttributeResult ar = new AttributeResult(element.getName(), ty);
 					attributeResults.add(ar);
-					System.out.println();
 				}
 			}
 		}
 		return attributeResults;
 	}
 
+	/**
+	 * Find a super type name based on a complex type
+	 * @param item
+	 * @return
+	 */
+	private Name getSuperTypeName(XmlSchemaComplexType item) {
+		Name superType = null;
+		
+		if (item instanceof XmlSchemaComplexType) {
+			XmlSchemaContentModel model = ((XmlSchemaComplexType)item).getContentModel();
+			if (model != null ) {
+				XmlSchemaContent content = model.getContent();
+				if (content instanceof XmlSchemaComplexContentExtension) {
+					if (((XmlSchemaComplexContentExtension)content).getBaseTypeName() != null) {
+						superType = new NameImpl(
+								((XmlSchemaComplexContentExtension)content).getBaseTypeName().getNamespaceURI(),
+								((XmlSchemaComplexContentExtension)content).getBaseTypeName().getLocalPart());
+					}
+				}
+			}
+		}
+		return superType;
+	}
 	
 	/**
 	 * Method to load a XSD schema file and build a collection of FeatureTypes.
@@ -507,19 +530,29 @@ public class SchemaServiceImplApache implements SchemaService {
 		}
 		
 		
-		// Build a collection of feature types 
+		// Build a collection of feature types based on all complex and simple
+		// types in the schema.
 		Collection<FeatureType> tmpFeatureTypes = new ArrayList<FeatureType>();
+		Collection<FeatureType> featureTypes = new ArrayList<FeatureType>();
+		Collection<Name> superTypes = new HashSet<Name>();
 		for (int i = 0; i < items.getCount(); i++) {
 			XmlSchemaObject item = items.getItem(i);
 			String name = null;
-			if (item instanceof XmlSchemaComplexType) {
+			if (item instanceof XmlSchemaComplexType) {				
 				name = ((XmlSchemaComplexType)item).getName();
+				
+				// As the complex type could be have an super type which is
+				// not directly defined in the schema (e.g. GML super types)
+				// we need to store all super type and find in 3. all missing
+				// feature types.
+				Name superType = (getSuperTypeName((XmlSchemaComplexType)item));
+				if (superType != null) superTypes.add(superType);
+				
 			} else if (item instanceof XmlSchemaSimpleType) {
 				name = ((XmlSchemaSimpleType)item).getName();
-//			} else if (item instanceof XmlSchemaElement) {
-//				name = ((XmlSchemaElement)item).getName();
 			}
 			
+			// If the item has a name, we create a feature type based on it.
 			if (name != null) {
 				SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
 				ftbuilder.setSuperType(null);
@@ -530,18 +563,36 @@ public class SchemaServiceImplApache implements SchemaService {
 			} 
 		}
 		
-		// Build a list of features
-		Collection<Feature> features = new ArrayList<Feature>();
-		for (int i = 0; i < items.getCount(); i++) {
-			XmlSchemaObject item = items.getItem(i);
-			String name = null;
-			if (item instanceof XmlSchemaElement) {
-				name = ((XmlSchemaElement)item).getName();
+		// Check if for each super type a feature type is existing
+		for (Name superType : superTypes) {
+			boolean found = false;
+			for (FeatureType featureType : tmpFeatureTypes) {
+				// Check if feature type and super type are equal. If, we dont need to create a
+				// new feature type.
+				if (   superType.getLocalPart().equals(featureType.getName().getLocalPart())
+					&& superType.getNamespaceURI().equals(featureType.getName().getNamespaceURI())) {
+					found = true;
+					break;
+				}
+			}
+			
+			// If the super type is not in the feature type collection, we need
+			// to create a new feature type based on this super type.
+			if (found == false) {
+				SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
+				ftbuilder.setSuperType(null);
+				ftbuilder.setName(superType.getLocalPart());
+				ftbuilder.setNamespaceURI(superType.getNamespaceURI());
+				SimpleFeatureType ft = ftbuilder.buildFeatureType();
+				tmpFeatureTypes.add(ft);
+				
+				// Add the feature type also to the featureTypes list, because we now
+				// that this featureType does not have an super type (in this schema)
+				featureTypes.add(ft);
 			}
 		}
 		
 		// Assign in the second run super type to the feature types where necessary 
-		Collection<FeatureType> featureTypes = new ArrayList<FeatureType>();
 		for (int i = 0; i < items.getCount(); i++) {
 			XmlSchemaObject item = items.getItem(i);
 
