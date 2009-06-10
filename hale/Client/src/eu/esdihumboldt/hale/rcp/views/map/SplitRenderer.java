@@ -14,14 +14,9 @@ package eu.esdihumboldt.hale.rcp.views.map;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 import org.geotools.feature.FeatureCollection;
@@ -42,8 +37,6 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.geometry.DirectPosition;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
@@ -78,7 +71,28 @@ public class SplitRenderer {
 	
 	private static Logger _log = Logger.getLogger(SplitRenderer.class);
 	
-	private final String epsg31251wkt = "PROJCS[\"MGI(Ferro)/AustriaGKWestZone\",GEOGCS[\"MGI(Ferro)\",DATUM[\"Militar_Geographische_Institut_Ferro\",SPHEROID[\"Bessel1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6805\"]],PRIMEM[\"Ferro\",-17.66666666666667,AUTHORITY[\"EPSG\",\"8909\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4805\"]],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",28],PARAMETER[\"scale_factor\",1],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",-5000000],AUTHORITY[\"EPSG\",\"31251\"],AXIS[\"Y\",EAST],AXIS[\"X\",NORTH]]";
+	private final String epsg31251wkt = 
+		"PROJCS[\"MGI(Ferro)/AustriaGKWestZone\"," +
+			"GEOGCS[\"MGI(Ferro)\"," +
+				"DATUM[\"Militar-GeographischeInstitut(Ferro)\"," +
+					"SPHEROID[\"Bessel1841\",6377397.155,299.1528128," +
+					"AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6805\"]]," +
+				"PRIMEM[\"Ferro\",-17.666666666666668,AUTHORITY[\"EPSG\",\"8909\"]]," +
+				"UNIT[\"degree\",0.017453292519943295]," +
+				"AXIS[\"Geodeticlongitude\",EAST]," +
+				"AXIS[\"Geodeticlatitude\",NORTH]," +
+				"AUTHORITY[\"EPSG\",\"4805\"]]," +
+			"PROJECTION[\"TransverseMercator\"," +
+		"AUTHORITY[\"EPSG\",\"9807\"]]," +
+		"PARAMETER[\"central_meridian\",28.0]," +
+		"PARAMETER[\"latitude_of_origin\",0.0]," +
+		"PARAMETER[\"scale_factor\",1.0]," +
+		"PARAMETER[\"false_easting\",0.0]," +
+		"PARAMETER[\"false_northing\",-5000000.0]," +
+		"UNIT[\"m\",1.0]," +
+		"AXIS[\"Easting\",EAST]," +
+		"AXIS[\"Northing\",NORTH]," +
+		"AUTHORITY[\"EPSG\",\"31251\"]]";
 	
 	private SplitStyle splitStyle = SplitStyle.VERTICAL;
 	
@@ -146,7 +160,7 @@ public class SplitRenderer {
 		
 		// transform geometry if necessary.
 		
-		if (crs != null) {
+		/*if (crs != null) {
 			_log.debug("Bounds before Tx: " + fc.getBounds().toString());
 			_log.debug("Transforming FeatureCollection to WGS84 for rendering");
 			try {
@@ -160,7 +174,7 @@ public class SplitRenderer {
 				_log.error("Could not perform required CRS transformation", e);
 			}
 			_log.debug("Bounds after Tx: " + fc.getBounds().toString());
-		}
+		}*/
 		
 		
 		// set up MapContext.
@@ -180,26 +194,7 @@ public class SplitRenderer {
         graphics.drawRect(0, 0, paintArea.width - 1, paintArea.height - 1);
         this.renderer.paint((Graphics2D) graphics, paintArea, mapArea);
         
-//        image = this.mirrorImage(image);
         return image;
-	}
-	
-	/**
-	 * @param image
-	 * @return
-	 */
-	private BufferedImage mirrorImage(BufferedImage image) {
-		AffineTransform transform = AffineTransform.getScaleInstance(-1, 1);
-		transform.translate(-image.getWidth(null), 0);
-	    AffineTransformOp op = new AffineTransformOp(
-	    		transform, AffineTransformOp.TYPE_BILINEAR);
-	    BufferedImage image_temp = op.filter(image, null);
-	    
-	    transform = AffineTransform.getQuadrantRotateInstance(1, image_temp.getWidth()/2, image_temp.getHeight()/2);
-	    op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
-	  	BufferedImage result = op.filter(image_temp, null);
-	    
-		return result;
 	}
 
 	private void configureRenderer() {
