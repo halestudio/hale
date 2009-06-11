@@ -588,7 +588,7 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 			    alignmentLabel =	cell.getEntity1().getTransformation().getLabel();
 			    }
 			    if (!alignmentLabel.equals("")){
-			    	if (alignmentLabel.contains("Renam")) alignmentLabel = "Renaming"; 
+			    	if (alignmentLabel.contains("Renam")) alignmentLabel = "Rename"; 
 			    		alLabel.setImage(drawAlignmentImage(alignmentLabel));
 			    }
 			    else 
