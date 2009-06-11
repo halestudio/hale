@@ -1,5 +1,8 @@
 package eu.esdihumboldt.rcp.wizards.functions.filter;
 
+import javax.smartcardio.ATR;
+
+import org.apache.log4j.Logger;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
@@ -12,12 +15,19 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PlatformUI;
+import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.rcp.views.model.AttributeView;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
+import eu.esdihumboldt.rcp.wizards.functions.literal.RenamingFunctionWizard;
 
 public class FilterWizardSecondPage extends WizardPage {
 	
@@ -35,7 +45,7 @@ public class FilterWizardSecondPage extends WizardPage {
 	private Text comparisonValue;
 	private TreeViewer sourceViewer;
 	
-	
+	private static Logger _log = Logger.getLogger(FilterWizardSecondPage.class);
 	protected FilterWizardSecondPage(String pageName, String title)
 			 {
 		super(pageName, title, (ImageDescriptor) null);
@@ -79,7 +89,7 @@ public class FilterWizardSecondPage extends WizardPage {
          this.featureTypeEditor = new Text(composite, SWT.BORDER);
          
          //TODO replace it with the selected source FeatureType value
-         this.featureTypeEditor.setText("DefaultFeatureType");
+         this.featureTypeEditor.setText(getSourceViewer().getTree().getSelection()[0].getText());
          GridData gd = new GridData();
          gd.horizontalAlignment = SWT.FILL;
  		 gd.grabExcessHorizontalSpace = true;
@@ -92,10 +102,11 @@ public class FilterWizardSecondPage extends WizardPage {
         this.featureTypeEditor.addModifyListener(new ModifyListener(){
          	 public void modifyText(ModifyEvent event) {
                   String sourceName = featureTypeEditor.getText();
-                  System.out.println(sourceName);
-                  if(sourceName.length() == 0) setErrorMessage("FeatureType  can not be empty");
+                  _log.debug("Source Feature Type " + sourceName);
+                 /* if(sourceName.length() == 0) setErrorMessage("FeatureType  can not be empty");
                   else setErrorMessage(null);
-                  setPageComplete(sourceName.length() > 0);
+                  setPageComplete(sourceName.length() > 0);*/
+                  setPageComplete(true);
                   
                 }
          	
@@ -119,6 +130,16 @@ public class FilterWizardSecondPage extends WizardPage {
 		 /*gd.verticalAlignment = SWT.FILL;
 		 gd.grabExcessVerticalSpace = true;*/
 	     this.extentXmin.setLayoutData(gd);
+	     //add listener to update XMIN
+	     this.extentXmin.addModifyListener(new ModifyListener(){
+	    	public void modifyText(ModifyEvent event){
+	    	 String x_min = extentXmin.getText();
+	    	_log.debug("Extent x_min " + x_min);
+	    	setPageComplete(true);
+	    	}
+	     }
+	     );
+	     
         
         this.extentYmin = new Text(composite, SWT.BORDER);
         this.extentYmin.setText("Y_MIN");
@@ -129,6 +150,16 @@ public class FilterWizardSecondPage extends WizardPage {
 		 /*gd.verticalAlignment = SWT.FILL;
 		 gd.grabExcessVerticalSpace = true;*/
 	     this.extentYmin.setLayoutData(gd);
+	     
+	     //add listener to update YMIN
+	     this.extentYmin.addModifyListener(new ModifyListener(){
+	    	public void modifyText(ModifyEvent event){
+	    	 String y_min = extentYmin.getText();
+	    	_log.debug("Extent y_min " + y_min);
+	    	setPageComplete(true);
+	    	}
+	     }
+	     );
         
         this.extentXmax = new Text(composite, SWT.BORDER);
         this.extentXmax.setText("X_MAX");
@@ -139,6 +170,16 @@ public class FilterWizardSecondPage extends WizardPage {
 		 /*gd.verticalAlignment = SWT.FILL;
 		 gd.grabExcessVerticalSpace = true;*/
 	    this.extentXmax.setLayoutData(gd);
+	    
+	    //add listener to update XMAX
+	     this.extentXmax.addModifyListener(new ModifyListener(){
+	    	public void modifyText(ModifyEvent event){
+	    	 String x_max = extentXmax.getText();
+	    	_log.debug("Extent x_max " + x_max);
+	    	setPageComplete(true);
+	    	}
+	     }
+	     );
         
         this.extentYmax = new Text(composite, SWT.BORDER);
         this.extentYmax.setText("Y_MAX");
@@ -149,6 +190,15 @@ public class FilterWizardSecondPage extends WizardPage {
 		 /*gd.verticalAlignment = SWT.FILL;
 		 gd.grabExcessVerticalSpace = true;*/
 	     this.extentYmax.setLayoutData(gd);
+	     //add listener to update YMAX
+	     this.extentYmax.addModifyListener(new ModifyListener(){
+	    	public void modifyText(ModifyEvent event){
+	    	 String y_max = extentYmax.getText();
+	    	_log.debug("Extent y_max " + y_max);
+	    	setPageComplete(true);
+	    	}
+	     }
+	     );
         
         Label placeHolder = new Label(composite, SWT.TITLE);
         placeHolder.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
@@ -161,6 +211,15 @@ public class FilterWizardSecondPage extends WizardPage {
         gd.grabExcessHorizontalSpace = true;
 		gd.horizontalSpan = 4;
         this.extentSRS.setLayoutData(gd);
+        //add listener to update SRS
+	     this.extentSRS.addModifyListener(new ModifyListener(){
+	    	public void modifyText(ModifyEvent event){
+	    	 String srs = extentSRS.getText();
+	    	_log.debug("Extent srs " + srs);
+	    	setPageComplete(true);
+	    	}
+	     }
+	     );
         
          
         //by properties 
@@ -177,12 +236,23 @@ public class FilterWizardSecondPage extends WizardPage {
         gd.horizontalSpan = 4;
         attributesCombo.setLayoutData(gd);
         attributesCombo.setText("select attribute");
-        //TODO read attributes from the schema service
-        String [] attributes = new String[]{"Attribute1", "Attribute2", "Attribute3", "Attribute4", "Attribute5"};
-        for (int i=0; i< attributes.length; i++){
-        	attributesCombo.add(attributes[i]);
-        }
+        // read attributes from the schema service
+       TableItem [] attribs = getAttributeView().getSourceAttributeViewer().getTable().getItems();
+        for (int i=0; i<attribs.length;i++){
         
+        	attributesCombo.add(attribs[i].getText());
+        }
+        //add listener to select attribute
+        attributesCombo.addListener(SWT.Selection, new Listener(){
+
+			@Override
+			public void handleEvent(Event event) {
+		      int selectionIndex = attributesCombo.getSelectionIndex();
+		      _log.debug("Selected Property: " + attributesCombo.getItem(selectionIndex));
+				
+			}
+        	
+        });        
         //operators
         this.operatorsLabel = new Label(composite, SWT.TITLE);
         this.operatorsLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
@@ -200,6 +270,18 @@ public class FilterWizardSecondPage extends WizardPage {
         for (int i=0; i< operators.length; i++){
         	operatorsCombo.add(operators[i]);
         }
+        
+        //add listener to select operator
+        operatorsCombo.addListener(SWT.Selection, new Listener(){
+
+			@Override
+			public void handleEvent(Event event) {
+		      int selectionIndex = operatorsCombo.getSelectionIndex();
+		      _log.debug("Selected Operator: " + operatorsCombo.getItem(selectionIndex));
+				
+			}
+        	
+        });        
         //comparison value
         
        
@@ -225,6 +307,19 @@ public class FilterWizardSecondPage extends WizardPage {
 		 gd.grabExcessVerticalSpace = true;*/
 	     gd.horizontalSpan = 4;
         this.comparisonValue.setLayoutData(gd);
+        //add listener to update the comparison value
+        this.comparisonValue.addModifyListener(new ModifyListener(){
+         	 public void modifyText(ModifyEvent event) {
+                  String comparison = comparisonValue.getText();
+                  _log.debug("Comparison value " + comparison);
+                 /* if(sourceName.length() == 0) setErrorMessage("FeatureType  can not be empty");
+                  else setErrorMessage(null);
+                  setPageComplete(sourceName.length() > 0);*/
+                  setPageComplete(true);
+                  
+                }
+         	
+         });
         
         
         
@@ -260,7 +355,24 @@ public class FilterWizardSecondPage extends WizardPage {
 			
 		}
 		return modelNavigationView;
+		}
+	
+	protected AttributeView getAttributeView() {
+		AttributeView attributeView = null;
+		// get All Views
+		IViewReference[] views = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
+		// get AttributeView
+		// get AttributeView
+		for (int count = 0; count < views.length; count++) {
+			if (views[count].getId().equals(
+					"eu.esdihumboldt.hale.rcp.views.model.AttributeView")) {
+				attributeView = (AttributeView) views[count].getView(false);
+			}
+			
+		}
+		return attributeView;
 	}
+
 
 
 }
