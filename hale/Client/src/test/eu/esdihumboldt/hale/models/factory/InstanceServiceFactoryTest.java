@@ -27,13 +27,13 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
-import eu.esdihumboldt.hale.models.impl.InstanceServiceFactory;
+import eu.esdihumboldt.hale.models.impl.InstanceServiceImpl;
 
 import static org.junit.Assert.*;
 
 
 /**
- * This JUnit 4 test tests the {@link InstanceServiceFactory}.
+ * This JUnit 4 test tests the {@link InstanceServiceImpl}.
  * 
  * @author Thorsten Reitz, Fraunhofer IGD
  * @version {$Id}
@@ -50,20 +50,20 @@ public class InstanceServiceFactoryTest {
 			FeatureCollectionUtilities.loadFeatureCollectionFromWKT(
 				"D:/humboldt-workspace/HALE/resources/test.eu.esdihumboldt.hale.models.factory/linestring.wkt", 
 				"ReferenceFT", "ReferenceFeatureID");
-		InstanceServiceFactory.getInstance().addInstances(
+		InstanceServiceImpl.getInstance().addInstances(
 				DatasetType.reference, fc_reference);
 		FeatureCollection<SimpleFeatureType, SimpleFeature> fc_transformed = 
 			FeatureCollectionUtilities.loadFeatureCollectionFromWKT(
 				"D:/humboldt-workspace/HALE/resources/test.eu.esdihumboldt.hale.models.factory/polygon.wkt", 
 				"TransformedFT", "TransformedFeatureID");
-		InstanceServiceFactory.getInstance().addInstances(
+		InstanceServiceImpl.getInstance().addInstances(
 				DatasetType.transformed, fc_transformed);
 		_log.debug("Set up of FeatureCollections completed.");
 	}
 	
 	@AfterClass
 	public static void tearDown() {
-		InstanceServiceFactory.getInstance().cleanInstances(DatasetType.both);
+		InstanceServiceImpl.getInstance().cleanInstances(DatasetType.both);
 		_log.debug("Finished Test.");
 	}
 
@@ -75,23 +75,23 @@ public class InstanceServiceFactoryTest {
 	}
 
 	/**
-	 * Test method for {@link eu.esdihumboldt.hale.models.impl.InstanceServiceFactory#getInstance()}.
+	 * Test method for {@link eu.esdihumboldt.hale.models.impl.InstanceServiceImpl#getInstance()}.
 	 */
 	@Test
 	public void testGetInstance() {
-		assertEquals(InstanceServiceFactory.getInstance(),
-				InstanceServiceFactory.getInstance());
+		assertEquals(InstanceServiceImpl.getInstance(),
+				InstanceServiceImpl.getInstance());
 	}
 	
 	/**
-	 * Test method for {@link eu.esdihumboldt.hale.models.impl.InstanceServiceFactory#getAllFeatures(DatasetType)}.
+	 * Test method for {@link eu.esdihumboldt.hale.models.impl.InstanceServiceImpl#getAllFeatures(DatasetType)}.
 	 */
 	@Test
 	public void testGetAllFeatures() {
 		// execution of getAllFeatures with possible attributes
-		Collection<Feature> fc_reference = InstanceServiceFactory.getInstance().getAllFeatures(DatasetType.reference);
-		Collection<Feature> fc_transformed = InstanceServiceFactory.getInstance().getAllFeatures(DatasetType.transformed);
-		Collection<Feature> fc_both = InstanceServiceFactory.getInstance().getAllFeatures(DatasetType.both);
+		Collection<Feature> fc_reference = InstanceServiceImpl.getInstance().getAllFeatures(DatasetType.reference);
+		Collection<Feature> fc_transformed = InstanceServiceImpl.getInstance().getAllFeatures(DatasetType.transformed);
+		Collection<Feature> fc_both = InstanceServiceImpl.getInstance().getAllFeatures(DatasetType.both);
 		
 		// assertions
 		_log.debug("fc_reference.size(): "+ fc_reference.size());
@@ -102,14 +102,14 @@ public class InstanceServiceFactoryTest {
 	}
 	
 	/**
-	 * Test method for {@link eu.esdihumboldt.hale.models.impl.InstanceServiceFactory#getFeaturesByType(org.opengis.feature.type.FeatureType)}.
+	 * Test method for {@link eu.esdihumboldt.hale.models.impl.InstanceServiceImpl#getFeaturesByType(org.opengis.feature.type.FeatureType)}.
 	 */
 	@Test
 	public void testGetFeaturesByType() {
 		FeatureType featureType = FeatureCollectionUtilities.getFeatureType(
 				com.vividsolutions.jts.geom.LineString.class, "TransformedFT", false);
 		
-		Collection<Feature> fc_reference = InstanceServiceFactory.getInstance().getFeaturesByType(featureType);
+		Collection<Feature> fc_reference = InstanceServiceImpl.getInstance().getFeaturesByType(featureType);
 		_log.debug("fc_reference.size(): " + fc_reference.size());
 		assertTrue(fc_reference.size() == 1);
 		FeatureType ft = fc_reference.iterator().next().getType();
@@ -117,11 +117,11 @@ public class InstanceServiceFactoryTest {
 	}
 	
 	/**
-	 * Test method for {@link eu.esdihumboldt.hale.models.impl.InstanceServiceFactory#getFeatureByID(String)}.
+	 * Test method for {@link eu.esdihumboldt.hale.models.impl.InstanceServiceImpl#getFeatureByID(String)}.
 	 */
 	@Test
 	public void testGetFeatureByID() {
-		Feature f = InstanceServiceFactory.getInstance().getFeatureByID("ReferenceFeatureID");
+		Feature f = InstanceServiceImpl.getInstance().getFeatureByID("ReferenceFeatureID");
 		assertEquals(f.getIdentifier().getID(), "ReferenceFeatureID");
 	}
 	

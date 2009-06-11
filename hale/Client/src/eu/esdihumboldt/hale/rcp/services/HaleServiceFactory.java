@@ -21,7 +21,7 @@ import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.impl.AlignmentServiceImpl;
-import eu.esdihumboldt.hale.models.impl.InstanceServiceFactory;
+import eu.esdihumboldt.hale.models.impl.InstanceServiceImpl;
 import eu.esdihumboldt.hale.models.impl.SchemaServiceImpl;
 import eu.esdihumboldt.hale.models.impl.SchemaServiceImplApache;
 import eu.esdihumboldt.hale.models.impl.StyleServiceImpl;
@@ -38,9 +38,9 @@ import eu.esdihumboldt.hale.models.impl.TaskServiceImpl;
 public class HaleServiceFactory 
 	extends AbstractServiceFactory {
 	
-	private InstanceService instance = InstanceServiceFactory.getInstance();
-	private SchemaService schema = SchemaServiceImplApache.getInstance();
-//	private SchemaService schema = SchemaServiceImpl.getInstance();
+	private InstanceService instance = InstanceServiceImpl.getInstance();
+//	private SchemaService schema = SchemaServiceImplApache.getInstance();
+	private SchemaService schema = SchemaServiceImpl.getInstance();
 	private StyleService style = StyleServiceImpl.getInstance();
 	private TaskService task = TaskServiceImpl.getInstance();
 	private AlignmentService alignment = AlignmentServiceImpl.getInstance();

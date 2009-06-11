@@ -33,12 +33,12 @@ import eu.esdihumboldt.hale.models.InstanceService;
  * @author Thorsten Reitz, Fraunhofer IGD
  * @version {$Id}
  */
-public class InstanceServiceFactory 
+public class InstanceServiceImpl 
 	implements InstanceService {
 	
-	private static Logger _log = Logger.getLogger(InstanceServiceFactory.class);
+	private static Logger _log = Logger.getLogger(InstanceServiceImpl.class);
 	
-	private static InstanceServiceFactory instance = new InstanceServiceFactory();
+	private static InstanceServiceImpl instance = new InstanceServiceImpl();
 	
 	private FeatureCollection fc = null;
 	
@@ -51,17 +51,17 @@ public class InstanceServiceFactory
 	
 	// Constructors ............................................................
 	
-	private InstanceServiceFactory() {
+	private InstanceServiceImpl() {
 		this.referenceFeatures = new TreeMap<String, Feature>();
 		this.transformedFeatures = new TreeMap<String, Feature>();
 		this.listeners = new HashSet<HaleServiceListener>();
 	}
 	
 	/**
-	 * @return the singleton instance of the {@link InstanceServiceFactory}.
+	 * @return the singleton instance of the {@link InstanceServiceImpl}.
 	 */
 	public static InstanceService getInstance() {
-		return InstanceServiceFactory.instance;
+		return InstanceServiceImpl.instance;
 	}
 
 	// InstanceService methods .................................................

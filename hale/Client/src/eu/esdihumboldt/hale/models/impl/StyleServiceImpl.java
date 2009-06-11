@@ -31,8 +31,6 @@ import org.geotools.styling.PolygonSymbolizer;
 import org.geotools.styling.Rule;
 import org.geotools.styling.SLD;
 import org.geotools.styling.SLDParser;
-import org.geotools.styling.Stroke;
-import org.geotools.styling.StrokeImpl;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.Symbolizer;
@@ -82,6 +80,19 @@ public class StyleServiceImpl
 	public static StyleService getInstance() {
 		return StyleServiceImpl.instance;
 	}
+	
+	// StyleService methods ....................................................
+	
+	public Style getNamedStyle(String name) {
+		Style sty = this.getStyle(null);
+		for (Style s : this.styles.values()) {
+			if (s.getName().equals(name)) {
+				sty = s;
+				break;
+			}
+		}
+		return sty;
+	}
 
 	/** 
 	 * This implementation will build a simple style if none is defined
@@ -90,8 +101,8 @@ public class StyleServiceImpl
 	 */
 	@SuppressWarnings("unchecked")
 	public Style getStyle(FeatureType ft) {
-		Style result = null;
-		if (this.styles.get(ft) == null) {
+		Style result = this.styles.get(ft);
+		if (result == null) {
 			Class type = ft.getGeometryDescriptor().getType().getBinding();
 			if (type.isAssignableFrom(Polygon.class)
 					|| type.isAssignableFrom(MultiPolygon.class)) {
@@ -103,18 +114,7 @@ public class StyleServiceImpl
 				return createPointStyle();
 			}
 		}
-		else {
-			result = this.styles.get(ft);
-		}
 		return result;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.models.UpdateService#addListener(eu.esdihumboldt.hale.models.HaleServiceListener)
-	 */
-	public boolean addListener(HaleServiceListener sl) {
-		this.listeners.add(sl);
-		return false;
 	}
 	
 	/**
@@ -132,6 +132,16 @@ public class StyleServiceImpl
 			
 		}
 		this.updateListeners();
+		return false;
+	}
+	
+	// UpdateService methods ...................................................
+	
+	/**
+	 * @see eu.esdihumboldt.hale.models.UpdateService#addListener(eu.esdihumboldt.hale.models.HaleServiceListener)
+	 */
+	public boolean addListener(HaleServiceListener sl) {
+		this.listeners.add(sl);
 		return false;
 	}
 
