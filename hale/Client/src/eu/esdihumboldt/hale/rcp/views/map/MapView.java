@@ -106,7 +106,7 @@ public class MapView
 		this.instanceService.addListener(this);
 		
 		// set up Canvas and renderer
-		this.renderer = new SplitRenderer(styleService);
+		this.renderer = new SplitRenderer(this.styleService, this.instanceService);
 		
 		this.mapCanvas = new Canvas(mapRenderComposite, SWT.BORDER_SOLID);
 		mapCanvas.setBackground(new Color(null, 128, 0, 0));
@@ -133,6 +133,7 @@ public class MapView
 	}
 	
 	protected void refreshMap() {
+		// TODO check whether there is a cheaper solution
 		FeatureCollection<?, ?> features = this.instanceService.getFeatures(
 				DatasetType.reference);
 		if (features == null) {
@@ -146,7 +147,7 @@ public class MapView
 		
 		this.mapCanvas.setBackgroundImage(new Image(mapCanvas.getDisplay(), 
 				SwingRcpUtilities.convertToSWT(
-						this.renderer.renderFeatures(features))));
+						this.renderer.renderFeatures())));
 		
 	}
 }

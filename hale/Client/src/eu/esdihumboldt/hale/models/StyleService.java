@@ -33,6 +33,15 @@ public interface StyleService
 	public Style getStyle(FeatureType ft);
 	
 	/**
+	 * 
+	 * @param name the String that identifies the {@link Style} that should be 
+	 * returned.
+	 * @return a {@link Style} for the given name. Will return a new 
+	 * {@link Style} object if there is no Style of the given name.
+	 */
+	public Style getNamedStyle(String name);
+	
+	/**
 	 * @param url the URL from which to load an SLD document.
 	 * @return true if loading the URL was successful.
 	 */

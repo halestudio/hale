@@ -19,7 +19,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import eu.esdihumboldt.hale.models.impl.InstanceServiceFactory;
+import eu.esdihumboldt.hale.models.impl.InstanceServiceImpl;
 import eu.esdihumboldt.hale.task.Task;
 
 /**
@@ -61,7 +61,7 @@ public class TaskProviderFactory {
 	}
 	
 	/**
-	 * @return the singleton instance of the {@link InstanceServiceFactory}.
+	 * @return the singleton instance of the {@link InstanceServiceImpl}.
 	 */
 	public static TaskProviderFactory getInstance() {
 		return TaskProviderFactory.instance;
