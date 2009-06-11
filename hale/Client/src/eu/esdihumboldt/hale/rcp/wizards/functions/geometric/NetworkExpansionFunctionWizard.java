@@ -1,22 +1,26 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.geometric;
 
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.INewWizard;
+import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.rcp.views.model.AttributeView;
 
 public class NetworkExpansionFunctionWizard extends Wizard 
-implements INewWizard {
+implements INewWizard, ISelectionListener {
 
 	@Override
 	public boolean performFinish() {
@@ -55,6 +59,23 @@ implements INewWizard {
 			System.out.println(targetItem.getText());
 			
 		}
+	}
+
+	@Override
+	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+		 if ( selection instanceof IStructuredSelection )
+	        {
+	            final Object selectionObject = ( ( IStructuredSelection ) selection )
+	                    .getFirstElement();
+	            if ( selectionObject != null )
+	            {
+	               
+	            	TreeItem treeItem = (TreeItem) selectionObject;
+	            	String selectedFeatureType = treeItem.getText();
+	            	System.out.println(selectedFeatureType);
+	            }
+	        }
+		
 	}
 
 }
