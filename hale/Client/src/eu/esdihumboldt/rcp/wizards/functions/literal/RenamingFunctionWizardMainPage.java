@@ -193,8 +193,7 @@ public class RenamingFunctionWizardMainPage
     	
     	
     	private String getSelectedFeatureType(String selectedFeatureType) {
-    		String typeNameSource = "";
-    		String typeNameTarget ="";
+    		String typeName = "";
     		ModelNavigationView modelNavigation = getModelNavigationView();
 			if (modelNavigation!=null){
 				
@@ -209,58 +208,20 @@ public class RenamingFunctionWizardMainPage
 					if(sourceTreeSelection.length ==1) {
 						
 					  //is a Feature Type
-						typeNameSource = sourceTreeSelection[0].getText();
-						typeNameTarget = targetTreeSelection[0].getText();
-						 
-						//get service
-						SchemaService service = (SchemaService)ModelNavigationView.site.getService(SchemaService.class);
-						FeatureType ft_source = service.getFeatureTypeByName(typeNameSource);
-						FeatureType ft_target = service.getFeatureTypeByName(typeNameTarget);
-						
-						
-						//get URI and local name
-						List<String> nameparts = new ArrayList<String>(); 
-						nameparts.add(ft_source.getName().getNamespaceURI());
-						nameparts.add(ft_source.getName().getLocalPart());
-
-
-						
-						//evtl. move to performFinish
-						Cell c = new Cell();
-						FeatureClass entity1 = new FeatureClass(nameparts);
-						Transformation t = new Transformation();
-						t.setLabel("Rename Transformer");
-						List parameters = new ArrayList<IParameter>();
-//						parameters.add(new Param("SourceFeatureType", ft_source.getName().toString()));
-//						parameters.add(new Param("TargetFeatureType", ft_target.getName().toString()));
-						entity1.setTransformation(t); 
-						c.setEntity1(entity1);
-						
-						List<String> nameparts_2 = new ArrayList<String>(); 
-						nameparts_2.add(ft_target.getName().getNamespaceURI());
-						nameparts_2.add(ft_target.getName().getLocalPart());
-						FeatureClass entity2 = new FeatureClass(nameparts_2); 
-						c.setEntity2(entity2);
-						AlignmentService alservice = (AlignmentService)ModelNavigationView.site.getService(AlignmentService.class);
-						//store transformation in AS
-						alservice.addOrUpdateCell(c);
-
+						typeName = sourceTreeSelection[0].getText();
 				    
 					
-					//TODO get Feature Type from the Tree
-					/*SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
-					builder.setName(typeName);
-					this.sourceFeatureType = builder.buildFeatureType();*/
+					
 					}
 				}else if (selectedFeatureType.equals(TARGET_SELECTION_TYPE)){
 					TreeViewer targetViewer = modelNavigation.getTargetSchemaViewer();
 					TreeItem [] targetTreeSelection = targetViewer.getTree().getSelection();
-					if(targetTreeSelection.length ==1) typeNameSource = targetTreeSelection[0].getText();
+					if(targetTreeSelection.length ==1) typeName = targetTreeSelection[0].getText();
 				}
 				
 			}
     		
-			return typeNameSource;
+			return typeName;
 			
 		}
 

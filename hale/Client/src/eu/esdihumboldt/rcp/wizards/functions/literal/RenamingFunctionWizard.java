@@ -13,6 +13,8 @@ package eu.esdihumboldt.rcp.wizards.functions.literal;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -33,9 +35,18 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.opengis.feature.type.FeatureType;
 
+import sun.util.logging.resources.logging;
 
+
+import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.oml.ext.Transformation;
+import eu.esdihumboldt.goml.omwg.FeatureClass;
+import eu.esdihumboldt.hale.models.AlignmentService;
+import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.rcp.views.model.AttributeView;
 //import eu.esdihumboldt.transformers.cst.RenameTransformer;
+import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 
 /**
  * This {@link Wizard} is used to invoke a Renaming Transformer for the Source Feature Type
@@ -80,8 +91,47 @@ private static Logger _log = Logger.getLogger(RenamingFunctionWizard.class);
 	@Override
 	public boolean performFinish() {
 		//TODO replace syouts with _log
-		System.out.println("Source Feature Type: " + mainPage.getSourceFeatureTypeName().getText());
-		System.out.println("Target Feature Type: " + mainPage.getTargetFeatureTypeName().getText());
+		String typeNameSource = mainPage.getSourceFeatureTypeName().getText();
+		String typeNameTarget =  mainPage.getTargetFeatureTypeName().getText();
+		_log.debug("Source Feature Type: " + typeNameSource );
+		_log.debug("Target Feature Type: " +typeNameTarget);
+		
+		
+		 
+		//get service
+		SchemaService service = (SchemaService)ModelNavigationView.site.getService(SchemaService.class);
+		FeatureType ft_source = service.getFeatureTypeByName(typeNameSource);
+		FeatureType ft_target = service.getFeatureTypeByName(typeNameTarget);
+		
+		
+		//get URI and local name
+		List<String> nameparts = new ArrayList<String>(); 
+		nameparts.add(ft_source.getName().getNamespaceURI());
+		nameparts.add(ft_source.getName().getLocalPart());
+
+
+		
+		//evtl. move to performFinish
+		Cell c = new Cell();
+		FeatureClass entity1 = new FeatureClass(nameparts);
+		Transformation t = new Transformation();
+		t.setLabel("Rename Transformer");
+		List parameters = new ArrayList<IParameter>();
+//		parameters.add(new Param("SourceFeatureType", ft_source.getName().toString()));
+//		parameters.add(new Param("TargetFeatureType", ft_target.getName().toString()));
+		entity1.setTransformation(t); 
+		c.setEntity1(entity1);
+		
+		List<String> nameparts_2 = new ArrayList<String>(); 
+		nameparts_2.add(ft_target.getName().getNamespaceURI());
+		nameparts_2.add(ft_target.getName().getLocalPart());
+		FeatureClass entity2 = new FeatureClass(nameparts_2); 
+		c.setEntity2(entity2);
+		AlignmentService alservice = (AlignmentService)ModelNavigationView.site.getService(AlignmentService.class);
+		//store transformation in AS
+		alservice.addOrUpdateCell(c);
+
+		
 		
 		//System.out.println(mainPage.getTargetFeatureTypeName().getText());
 		/*FeatureType ft = mainPage.getSourceFeatureType();
@@ -103,7 +153,7 @@ private static Logger _log = Logger.getLogger(RenamingFunctionWizard.class);
 		//update aligment image
 		AttributeView attributeView = getAttributeView();
 		Label alignmentLabel = attributeView.getAlLabel();
-		alignmentLabel.setImage(attributeView.drawAlignmentImage("Renaming"));
+		alignmentLabel.setImage(attributeView.drawAlignmentImage("Rename"));
 		alignmentLabel.redraw();
 		
 		return true;
