@@ -38,6 +38,7 @@ import org.opengis.feature.type.FeatureType;
 import sun.util.logging.resources.logging;
 
 
+import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
@@ -115,7 +116,7 @@ private static Logger _log = Logger.getLogger(RenamingFunctionWizard.class);
 		Cell c = new Cell();
 		FeatureClass entity1 = new FeatureClass(nameparts);
 		Transformation t = new Transformation();
-		t.setLabel("Rename Transformer");
+		t.setLabel("Rename");
 		List parameters = new ArrayList<IParameter>();
 //		parameters.add(new Param("SourceFeatureType", ft_source.getName().toString()));
 //		parameters.add(new Param("TargetFeatureType", ft_target.getName().toString()));
@@ -151,9 +152,15 @@ private static Logger _log = Logger.getLogger(RenamingFunctionWizard.class);
 		//mainPage.getTargetViewer().getTree().deselectAll();
 		mainPage.getTargetViewer().getControl().redraw();
 		//update aligment image
+		//check if entity1 filtered before renaming
+		String alignment = "";
+		ICell filterCell = alservice.getCell(entity1, entity1);
+		//TODO add enumeration for the alignment types.
+		if (filterCell!=null) alignment = "Filter, Rename";
+		else alignment = "Rename";
 		AttributeView attributeView = getAttributeView();
 		Label alignmentLabel = attributeView.getAlLabel();
-		alignmentLabel.setImage(attributeView.drawAlignmentImage("Rename"));
+		alignmentLabel.setImage(attributeView.drawAlignmentImage(alignment));
 		alignmentLabel.redraw();
 		
 		return true;

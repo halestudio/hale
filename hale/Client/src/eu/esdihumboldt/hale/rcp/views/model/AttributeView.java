@@ -562,8 +562,11 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 		//if both labels not empty
 		if (!sourceModelLabel.getText().equals("")&&!targetModelLabel.getText().equals("")){
 			//get feature types for source and feature label
-			FeatureType ft_source = this.schemaService.getFeatureTypeByName(sourceModelLabel.getText());
-			FeatureType ft_target = this.schemaService.getFeatureTypeByName(targetModelLabel.getText());
+			
+			String sourceType = sourceModelLabel.getText();
+			String targetType = targetModelLabel.getText();
+			FeatureType ft_source = this.schemaService.getFeatureTypeByName(sourceType);
+			FeatureType ft_target = this.schemaService.getFeatureTypeByName(targetType);
 			
 			//get URI and local name
 			java.util.List<String> nameparts_source = new ArrayList<String>(); 
@@ -585,10 +588,15 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 			//get alignment e1, e2
 			ICell cell = this.as.getCell(e1, e2);
 			    if (cell !=null) {
-			    alignmentLabel =	cell.getEntity1().getTransformation().getLabel();
+                    //get transformation type			    
+			    	alignmentLabel =	cell.getEntity1().getTransformation().getLabel();
+			    	// check if filtered before transformaiton
+			    	ICell filterCell = this.as.getCell(e1, e1);
+			    	//if filter is in a transformation chain and the transformation chain has more than one filter transformation
+			    	if (filterCell !=null&&!sourceType.equals(targetType)) alignmentLabel = filterCell.getEntity1().getTransformation().getLabel() + ", " + alignmentLabel;
 			    }
 			    if (!alignmentLabel.equals("")){
-			    	if (alignmentLabel.contains("Renam")) alignmentLabel = "Rename"; 
+			    
 			    		alLabel.setImage(drawAlignmentImage(alignmentLabel));
 			    }
 			    else 

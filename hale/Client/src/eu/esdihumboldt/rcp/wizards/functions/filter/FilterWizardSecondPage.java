@@ -1,6 +1,7 @@
 package eu.esdihumboldt.rcp.wizards.functions.filter;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -13,6 +14,10 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.PlatformUI;
+
+import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 
 public class FilterWizardSecondPage extends WizardPage {
 	
@@ -28,6 +33,8 @@ public class FilterWizardSecondPage extends WizardPage {
 	private Label operatorsLabel;
 	private Label comparisonValueLabel;
 	private Text comparisonValue;
+	private TreeViewer sourceViewer;
+	
 	
 	protected FilterWizardSecondPage(String pageName, String title)
 			 {
@@ -39,8 +46,11 @@ public class FilterWizardSecondPage extends WizardPage {
 	@Override
 	public void createControl(Composite parent) {
 		 super.initializeDialogUnits(parent);
+		 
+		 //set source viewer
+		 this.sourceViewer = getModelNavigationView().getSourceSchemaViewer();
         
-         //create a composite to hold the widgets
+		 //create a composite to hold the widgets
          Composite composite = new Composite(parent, SWT.NULL);
          //create layout for this wizard page
          GridLayout gl = new GridLayout();
@@ -225,6 +235,31 @@ public class FilterWizardSecondPage extends WizardPage {
         setErrorMessage(null);	// should not initially have error message
 		super.setControl(composite);
 		
+	}
+
+	public String buildCQL() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public TreeViewer getSourceViewer() {
+		return sourceViewer;
+	}
+
+	protected ModelNavigationView getModelNavigationView() {
+		ModelNavigationView modelNavigationView = null;
+		// get All Views
+		IViewReference[] views = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
+		// get AttributeView
+		// get AttributeView
+		for (int count = 0; count < views.length; count++) {
+			if (views[count].getId().equals(
+					"eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView")) {
+				modelNavigationView = (ModelNavigationView) views[count].getView(false);
+			}
+			
+		}
+		return modelNavigationView;
 	}
 
 
