@@ -103,10 +103,16 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 	// Viewer for the sorceAttributeTable
 	private TableViewer sourceAttributeViewer;
 	
+	private boolean isSourceFeatureType = false;
+	private boolean isTargetFeaureType = false;
+	
+
+
 	public TableViewer getSourceAttributeViewer() {
 		return sourceAttributeViewer;
 	}
 
+	 
 	//Viewer for the targetAttributeTable
 	private TableViewer targetAttributeViewer;
 	public TableViewer getTargetAttributeViewer() {
@@ -511,11 +517,15 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 	 */
 	public void updateView(boolean _viewer, String _classname,
 			TreeItem[] _items, int _classnameNumber) {
-
+       
+        
 		if (_viewer == true) {
-			sourceModelLabel.setText(_classname);
+		
+			 sourceModelLabel.setText(_classname);
 			// if selected item no attribute
 			if (_items.length != 0) {
+				 setSourceFeatureType(true);
+				
 				for (TreeItem item : _items) {
 
 					// display item in the attribute list only if attribute
@@ -530,6 +540,7 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 					}
 				}
 			} else {
+				setSourceFeatureType(false);
 				TableItem listItem = new TableItem(this.sourceAttributeList,
 						SWT.NONE);
 				listItem.setText(_classname);
@@ -538,6 +549,8 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 			targetModelLabel.setText(_classname);
 			// if selected item no attribute
 			if (_items.length != 0) {
+				setTargetFeaureType(true);
+				//targetModelLabel.setText(_classname);
 				for (TreeItem item : _items) {
 
 					// display item in the attribute list only if attribute
@@ -551,6 +564,7 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 					}
 				}
 			} else {
+				setTargetFeaureType(false);
 				TableItem listItem = new TableItem(this.targetAttributeList,
 						SWT.NONE);
 				listItem.setText(_classname);
@@ -560,7 +574,7 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 		}
 		
 		//if both labels not empty
-		if (!sourceModelLabel.getText().equals("")&&!targetModelLabel.getText().equals("")){
+		if (!sourceModelLabel.getText().equals("")&&!targetModelLabel.getText().equals("")&&isSourceFeatureType&&isTargetFeaureType){
 			//get feature types for source and feature label
 			
 			String sourceType = sourceModelLabel.getText();
@@ -602,6 +616,9 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 			    else 
 			    	alLabel.setImage(drawAlignmentImage("no alignment"));
 			
+		}else if (!sourceModelLabel.getText().equals("")&&!targetModelLabel.getText().equals("")){
+			// no attribute transformation implemented. 
+			alLabel.setImage(drawAlignmentImage("no alignment"));
 		}
 	}
 
@@ -676,6 +693,22 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 		
 		public Label getAlLabel() {
 			return alLabel;
+		}
+		
+		public boolean isSourceFeatureType() {
+			return isSourceFeatureType;
+		}
+
+		public void setSourceFeatureType(boolean isSourceFeatureType) {
+			this.isSourceFeatureType = isSourceFeatureType;
+		}
+
+		public boolean isTargetFeaureType() {
+			return isTargetFeaureType;
+		}
+
+		public void setTargetFeaureType(boolean isTargetFeaureType) {
+			this.isTargetFeaureType = isTargetFeaureType;
 		}
 		
 	}
