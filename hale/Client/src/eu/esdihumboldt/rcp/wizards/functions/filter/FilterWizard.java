@@ -16,17 +16,12 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.INewWizard;
-import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ext.IParameter;
@@ -36,11 +31,7 @@ import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Param;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.rcp.views.model.AttributeView;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
-import eu.esdihumboldt.rcp.wizards.functions.literal.RenamingFunctionWizard;
-import eu.esdihumboldt.rcp.wizards.functions.literal.RenamingFunctionWizardMainPage;
-import eu.esdihumboldt.transformers.cst.RenameTransformer;
 
 /**
  * This {@link Wizard} is used to invoke a Renaming Transformer for the Source Feature Type
