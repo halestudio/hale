@@ -676,7 +676,9 @@ public class SchemaServiceImplApache
 	private String findBaseUri(URI file) {
 		String baseUri = "";
 		baseUri = file.toString();
-		//baseUri = baseUri.substring(0, baseUri.lastIndexOf("/"));
+		if (baseUri.matches("^.*?\\/.+")) {
+			baseUri = baseUri.substring(0, baseUri.lastIndexOf("/"));
+		}
 		_log.info("Base URI for schemas to be used: " + baseUri);
 		return baseUri;
 	}
