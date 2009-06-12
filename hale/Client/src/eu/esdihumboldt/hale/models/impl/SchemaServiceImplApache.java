@@ -10,15 +10,8 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  *
  * Component    : HALE
- * 	 
- * Classname    : SchemaServiceImplApache.java 
- * 
- * Author       : Bernd Schneiders, Logica
- * 
  * Created on   : Jun 3, 2009 -- 4:50:10 PM
- *
  */
-
 package eu.esdihumboldt.hale.models.impl;
 
 import java.io.File;
@@ -73,9 +66,13 @@ import eu.esdihumboldt.hale.models.SchemaService;
  * and create a FeatureType collection. This implementation is based on the
  * Apache XmlSchema library (http://ws.apache.org/commons/XmlSchema/). It is
  * necessary use this library instead of the GeoTools Xml schema loader, because
- * the GeoTools versio cannot handle GML 3.2 based files.
+ * the GeoTools version cannot handle GML 3.2 based files.
+ * 
+ * @author Bernd Schneiders, Logica; Thorsten Reitz, Fraunhofer IGD
+ * @version $Id$
  */
-public class SchemaServiceImplApache implements SchemaService {
+public class SchemaServiceImplApache 
+	implements SchemaService {
 	
 	/**
 	 * This class is used as a simple container to store
@@ -404,28 +401,36 @@ public class SchemaServiceImplApache implements SchemaService {
 							element.getRefName().getLocalPart());
 					}
 					else if (element.getSchemaType() != null) {
-						XmlSchemaContentModel model = ((XmlSchemaComplexType)element.getSchemaType()).getContentModel();
-						XmlSchemaParticle p = ((XmlSchemaComplexType)element.getSchemaType()).getParticle();
-						if (model != null) {
-							XmlSchemaContent content = model.getContent();
-							
-							QName qname = null;
-							if (content instanceof XmlSchemaComplexContentExtension) {
-								qname = ((XmlSchemaComplexContentExtension)content).getBaseTypeName();
-							} else if (content instanceof XmlSchemaSimpleContentExtension) {
-								qname = ((XmlSchemaSimpleContentExtension)content).getBaseTypeName();
+						if (element.getSchemaType() instanceof XmlSchemaComplexType) {
+							XmlSchemaContentModel model = ((XmlSchemaComplexType)element.getSchemaType()).getContentModel();
+							XmlSchemaParticle p = ((XmlSchemaComplexType)element.getSchemaType()).getParticle();
+							if (model != null) {
+								XmlSchemaContent content = model.getContent();
+								
+								QName qname = null;
+								if (content instanceof XmlSchemaComplexContentExtension) {
+									qname = ((XmlSchemaComplexContentExtension)content).getBaseTypeName();
+								} else if (content instanceof XmlSchemaSimpleContentExtension) {
+									qname = ((XmlSchemaSimpleContentExtension)content).getBaseTypeName();
+								}
+								
+								attributeName = new NameImpl(
+										qname.getNamespaceURI(),
+										qname.getLocalPart());
+							} else if (p != null) {
+								attributeResults.addAll(getAttributeTypesFromParticle(p, superTypeName, featureTypes));
+								continue;
 							}
-							
+						}
+						else if (element.getSchemaType() instanceof XmlSchemaSimpleType) {
+							QName qname = element.getQName();
 							attributeName = new NameImpl(
 									qname.getNamespaceURI(),
 									qname.getLocalPart());
-						} else if (p != null) {
-							attributeResults.addAll(getAttributeTypesFromParticle(p, superTypeName, featureTypes));
-							continue;
 						}
 					}
 					if (attributeName == null) {
-						System.out.println("Schema type name is null! " + element.getName() );
+						_log.warn("Schema type name is null! " + element.getName());
 						continue;
 					}
 					AttributeType ty = xsSchema.get(attributeName);
@@ -445,7 +450,7 @@ public class SchemaServiceImplApache implements SchemaService {
 						ty = getSchemaAttributeType(attributeName, featureTypes);
 					}
 					if (ty == null ) {
-						System.out.println("Type NOT found: " + attributeName.getLocalPart());
+						_log.warn("Type NOT found: " + attributeName.getLocalPart());
 					}
 					
 					AttributeResult ar = new AttributeResult(element.getName(), ty);
@@ -491,7 +496,7 @@ public class SchemaServiceImplApache implements SchemaService {
 		// use XML Schema to load schema with all its subschema to the memory
 		InputStream is = null;
 		try {
-			String path = file.toString();
+			String path = file.toString().replace("%20", " ").replace("\\\\", "/");
 			is = new FileInputStream(path);
 			
 		} catch (Throwable e) {
@@ -633,7 +638,7 @@ public class SchemaServiceImplApache implements SchemaService {
 					AttributeDescriptor desc = new AttributeDescriptorImpl(t, new NameImpl(res.getName()),0, 0, false, null);
 					ftbuilder.add(desc);
 				}
-				else System.out.println("Attribute type NOT found: " + attributeResults.get(a).getName());
+				else _log.warn("Attribute type NOT found: " + attributeResults.get(a).getName());
 			}
 			
 				
@@ -663,7 +668,7 @@ public class SchemaServiceImplApache implements SchemaService {
 		featureTypes.removeAll(ft);
 		
 		// Prints the feature type to the console (for debugging only)
-		SchemaPrinter.printFeatureTypeCollection(featureTypes);
+		//SchemaPrinter.printFeatureTypeCollection(featureTypes);
 		
 		return featureTypes;
 	}
@@ -671,8 +676,8 @@ public class SchemaServiceImplApache implements SchemaService {
 	private String findBaseUri(URI file) {
 		String baseUri = "";
 		baseUri = file.toString();
-		baseUri = baseUri.substring(0, baseUri.lastIndexOf("/"));
-		System.out.println("********* BASE_URI: " + baseUri + "***********");
+		//baseUri = baseUri.substring(0, baseUri.lastIndexOf("/"));
+		_log.info("Base URI for schemas to be used: " + baseUri);
 		return baseUri;
 	}
 

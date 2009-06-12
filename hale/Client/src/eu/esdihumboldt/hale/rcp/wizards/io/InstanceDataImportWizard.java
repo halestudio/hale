@@ -9,13 +9,15 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -27,13 +29,12 @@ import org.geotools.gml3.ApplicationSchemaConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
 import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
+import eu.esdihumboldt.hale.models.provider.instance.HaleGMLParser;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 
 /**
@@ -157,18 +158,22 @@ public class InstanceDataImportWizard
 		FeatureCollection<? extends FeatureType, ? extends Feature> result = null;
 		try {
 			Configuration configuration = new ApplicationSchemaConfiguration(
-					namespace, 
-					schema_location.toURI().getAuthority()
-					+ schema_location.getPath());
-
-			InputStream xml = new FileInputStream(gml_location.toURI()
-					.getAuthority()
-					+ gml_location.getPath());
-			Parser parser = new Parser(configuration);
+					namespace, schema_location.toExternalForm());
+			_log.debug("Using this schema location: " + schema_location.toExternalForm());
+			
+			String gmlLocation = gml_location.toURI().getAuthority()
+									+ gml_location.getPath();
+			gmlLocation = gmlLocation.replace("%20", " ");
+			_log.debug("Using this GML location: " + gmlLocation);
+			InputStream xml = new FileInputStream(gmlLocation);
+			
+			System.setProperty("org.xml.sax.parser", "org.apache.xerces.parsers.SAXParser");
+			
+			HaleGMLParser parser = new HaleGMLParser(configuration);
 			// TODO start in a Thread of its own.
+			SAXParser otherParser = SAXParserFactory.newInstance().newSAXParser();
 			result = 
-				(FeatureCollection<? extends FeatureType, ? extends Feature>) 
-					parser.parse(xml);
+				(FeatureCollection<? extends FeatureType, ? extends Feature>) parser.parse(xml);
 		} catch (Exception ex) {
 			throw new RuntimeException(
 					"Parsing the given GML into a FeatureCollection failed: ",

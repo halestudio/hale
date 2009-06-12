@@ -67,7 +67,9 @@ public class SchemaImportWizard
 		SchemaService schemaService = (SchemaService) 
 					ModelNavigationView.site.getService(SchemaService.class);
 		try {
-			URI uri = new URI(mainPage.getResult().replaceAll("\\\\", "/")); 
+			String raw_location = mainPage.getResult().replaceAll("\\\\", "/");
+			String location = raw_location.replace(" ", "%20");
+			URI uri = new URI(location); 
 			if (mainPage.getSchemaType() == SchemaServiceEnum.SOURCE_SCHEMA) {
 				schemaService.cleanSourceSchema();
 				schemaService.loadSourceSchema(uri);

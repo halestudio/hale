@@ -200,6 +200,7 @@ public class InstanceDataImportWizardMainPage
 					// test whether content of the File Field Editor validates to URI.
 					String test = this.fileFieldEditor.getStringValue();
 					if (test != null && !test.equals("")) {
+						test = test.replace(" ", "%20");
 						new URI(test.replaceAll("\\\\", "/"));
 						_log.debug("fileFieldEditor URI was OK.");
 						this.result = test;
