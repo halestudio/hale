@@ -26,6 +26,7 @@ import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml3.ApplicationSchemaConfiguration;
+import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
 import org.opengis.feature.Feature;
@@ -159,7 +160,8 @@ public class InstanceDataImportWizard
 		try {
 			Configuration configuration = new ApplicationSchemaConfiguration(
 					namespace, schema_location.toExternalForm());
-			_log.debug("Using this schema location: " + schema_location.toExternalForm());
+			
+			configuration = new GMLConfiguration();
 			
 			String gmlLocation = gml_location.toURI().getAuthority()
 									+ gml_location.getPath();
@@ -167,11 +169,8 @@ public class InstanceDataImportWizard
 			_log.debug("Using this GML location: " + gmlLocation);
 			InputStream xml = new FileInputStream(gmlLocation);
 			
-			System.setProperty("org.xml.sax.parser", "org.apache.xerces.parsers.SAXParser");
-			
 			HaleGMLParser parser = new HaleGMLParser(configuration);
 			// TODO start in a Thread of its own.
-			SAXParser otherParser = SAXParserFactory.newInstance().newSAXParser();
 			result = 
 				(FeatureCollection<? extends FeatureType, ? extends Feature>) parser.parse(xml);
 		} catch (Exception ex) {
