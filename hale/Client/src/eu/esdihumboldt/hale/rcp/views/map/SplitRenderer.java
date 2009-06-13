@@ -173,10 +173,11 @@ public class SplitRenderer {
 		MapContext mc = new DefaultMapContext(crs); 
 		FeatureCollection<?, ?> fc = this.instanceService.getFeatures(type);
 		// transform geometry if necessary.
-		//fc = new CRSTransformer().transformToWGS84(crs, fc);
-		Style style = this.styleService.getStyle(fc.getSchema());
-		mc.addLayer(
-        		(FeatureCollection<SimpleFeatureType, SimpleFeature>) fc, style);
+		if (fc != null) {
+			Style style = this.styleService.getStyle(fc.getSchema());
+			mc.addLayer(
+	        		(FeatureCollection<SimpleFeatureType, SimpleFeature>) fc, style);
+		}
 		return mc;
 	}
 	
@@ -260,6 +261,7 @@ public class SplitRenderer {
 	}
 	
 
+	@SuppressWarnings("unchecked")
 	private void configureRenderer() {
 		this.renderer = new StreamingRenderer();
 		Map hints = new HashMap();

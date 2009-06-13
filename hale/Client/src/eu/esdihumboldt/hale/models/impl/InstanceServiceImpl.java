@@ -13,19 +13,18 @@ package eu.esdihumboldt.hale.models.impl;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
-import org.opengis.feature.Feature;
 import org.apache.log4j.Logger;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.models.FeatureFilter;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.InstanceService;
+import eu.esdihumboldt.hale.rcp.views.model.RobustFTKey;
 
 /**
  * This class implements the {@link InstanceService} as a Singleton.
@@ -40,11 +39,9 @@ public class InstanceServiceImpl
 	
 	private static InstanceServiceImpl instance = new InstanceServiceImpl();
 	
-	private FeatureCollection fc = null;
+	private FeatureCollection<?, Feature> sourceReferenceFeatures = null;
 	
-	private Map<String, Feature> referenceFeatures;
-	
-	private Map<String, Feature> transformedFeatures;
+	private FeatureCollection<?, Feature> transformedFeatures = null;
 	
 	private Set<HaleServiceListener> listeners;
 	
@@ -52,8 +49,6 @@ public class InstanceServiceImpl
 	// Constructors ............................................................
 	
 	private InstanceServiceImpl() {
-		this.referenceFeatures = new TreeMap<String, Feature>();
-		this.transformedFeatures = new TreeMap<String, Feature>();
 		this.listeners = new HashSet<HaleServiceListener>();
 	}
 	
@@ -65,48 +60,37 @@ public class InstanceServiceImpl
 	}
 
 	// InstanceService methods .................................................
-	
-	/**
-	 * @see eu.esdihumboldt.hale.models.InstanceService#getAllFeatures()
-	 */
-	public Collection<Feature> getAllFeatures(DatasetType type) {
-		if (type.equals(DatasetType.reference)) {
-			return this.referenceFeatures.values();
-		}
-		else if (type.equals(DatasetType.transformed)) {
-			return this.transformedFeatures.values();
-		}
-		else { // return both.
-			Collection<Feature> result = new HashSet<Feature>();
-			result.addAll(this.referenceFeatures.values());
-			result.addAll(this.transformedFeatures.values());
-			return result;
-		}
-	}
 
 	/**
+	 * TODO: Does not currently use an index.
 	 * @see eu.esdihumboldt.hale.models.InstanceService#getFeatureByID(java.lang.String)
 	 */
 	public Feature getFeatureByID(String featureID) {
-		Feature f = this.transformedFeatures.get(featureID);
-		if (f == null) {
-			f = this.referenceFeatures.get(featureID);
+		Feature f = null;
+		FeatureIterator<? extends Feature> fi = this.sourceReferenceFeatures.features();
+		while (fi.hasNext()) {
+			Feature current_feature = (Feature) fi.next();
+			String current_feature_id = current_feature.getIdentifier().getID();
+			if (featureID.equals(current_feature_id)) {
+				return current_feature;
+			}
 		}
 		return f;
 	}
 
 	/**
+	 * TODO: Does not currently use an index.
 	 * @see eu.esdihumboldt.hale.models.InstanceService#getFeaturesByType(org.geotools.feature.FeatureType)
 	 */
 	public Collection<Feature> getFeaturesByType(FeatureType featureType) {
 		Set<Feature> result = new HashSet<Feature>();
-		String search_ft_id = featureType.getName().toString();
-		_log.debug("search name: " + search_ft_id);
-		for (Feature f : this.getAllFeatures(DatasetType.both)) {
-			String candidate_ft_id = f.getType().getName().toString();
-			_log.debug("candidate name: " + candidate_ft_id);
-			if (candidate_ft_id.equals(search_ft_id)) {
-				result.add(f);
+		RobustFTKey searchKey = new RobustFTKey(featureType);
+		FeatureIterator<? extends Feature> fi = this.sourceReferenceFeatures.features();
+		while (fi.hasNext()) {
+			Feature current_feature = (Feature) fi.next();
+			RobustFTKey candidateKey = new RobustFTKey(current_feature.getType());
+			if (searchKey.equals(candidateKey)) {
+				result.add(current_feature);
 			}
 		}
 		return result;
@@ -116,30 +100,33 @@ public class InstanceServiceImpl
 	 * @see eu.esdihumboldt.hale.models.InstanceService#addInstances(FeatureCollection)
 	 */
 	public boolean addInstances(DatasetType type, 
-			FeatureCollection featureCollection) {
-		if (this.fc == null) {
-			this.fc = featureCollection;
-		}
-		else {
-			this.fc.addAll(featureCollection);
-		}
-		Map<String, Feature> selected_type_map = null;
+			FeatureCollection<FeatureType, Feature> featureCollection) {
 		if (type.equals(DatasetType.reference)) {
-			selected_type_map = this.referenceFeatures;
-		}
-		else {
-			selected_type_map = this.transformedFeatures;
-		}
-		int startsize = selected_type_map.size();
-		FeatureIterator fi = featureCollection.features();
-		while (fi.hasNext()) {
-			Feature f = fi.next();
-			selected_type_map.put(f.getIdentifier().getID(), f);
-		}
-		if (selected_type_map.size() > startsize) {
+			if (this.sourceReferenceFeatures == null) {
+				this.sourceReferenceFeatures = featureCollection;
+			}
+			else {
+				FeatureIterator<? extends Feature> fi = featureCollection.features();
+				while (fi.hasNext()) {
+					this.sourceReferenceFeatures.add(fi.next());
+				}
+			}
 			this.updateListeners();
 			return true;
-		} 
+		}
+		else if (type.equals(DatasetType.transformed)) {
+			if (this.transformedFeatures == null) {
+				this.transformedFeatures = featureCollection;
+			}
+			else {
+				FeatureIterator<? extends Feature> fi = featureCollection.features();
+				while (fi.hasNext()) {
+					this.transformedFeatures.add(fi.next());
+				}
+			}
+			this.updateListeners();
+			return true;
+		}
 		else {
 			return false;
 		}
@@ -149,17 +136,30 @@ public class InstanceServiceImpl
 	 * @see eu.esdihumboldt.hale.models.InstanceService#addInstances(FeatureCollection, FeatureFilter)
 	 */
 	public boolean addInstances(DatasetType type, 
-			FeatureCollection featureCollection,
+			FeatureCollection<FeatureType, Feature> featureCollection,
 			FeatureFilter filter) {
-		int startsize = this.referenceFeatures.size();
-		FeatureIterator fi = featureCollection.features();
-		while (fi.hasNext()) {
-			Feature f = fi.next();
-			if (filter.filter(f)) {
-				this.referenceFeatures.put(f.getIdentifier().getID(), f);
+		int startsize = 0;
+		if (type.equals(DatasetType.reference)) {
+			startsize = this.sourceReferenceFeatures.size();
+			FeatureIterator fi = featureCollection.features();
+			while (fi.hasNext()) {
+				Feature f = fi.next();
+				if (filter.filter(f)) {
+					this.sourceReferenceFeatures.add(f);
+				}
 			}
 		}
-		if (this.referenceFeatures.size() > startsize) {
+		else if (type.equals(DatasetType.transformed)) {
+			startsize = this.transformedFeatures.size();
+			FeatureIterator fi = featureCollection.features();
+			while (fi.hasNext()) {
+				Feature f = fi.next();
+				if (filter.filter(f)) {
+					this.transformedFeatures.add(f);
+				}
+			}
+		}
+		if (startsize != 0  || this.sourceReferenceFeatures.size() > startsize) {
 			this.updateListeners();
 			return true;
 		} 
@@ -175,11 +175,11 @@ public class InstanceServiceImpl
 		if (type == null) { 
 			return false;
 		}
-		if (type.equals(DatasetType.transformed) || type.equals(DatasetType.both)) {
-			this.transformedFeatures = new TreeMap<String, Feature>();
+		if (type.equals(DatasetType.transformed)) {
+			this.transformedFeatures = null;
 		}
-		if (type.equals(DatasetType.reference) || type.equals(DatasetType.both)) {
-			this.referenceFeatures = new TreeMap<String, Feature>();
+		if (type.equals(DatasetType.reference)) {
+			this.sourceReferenceFeatures = null;
 		}
 		this.updateListeners();
 		return true;
@@ -201,7 +201,18 @@ public class InstanceServiceImpl
 	 */
 	@Override
 	public FeatureCollection getFeatures(DatasetType type) {
-		return this.fc;
+		if (DatasetType.reference.equals(type)) {
+			if (this.sourceReferenceFeatures != null) {
+				_log.warn(this.sourceReferenceFeatures.getSchema());
+			}
+			return this.sourceReferenceFeatures;
+		}
+		else if (DatasetType.transformed.equals(type)) {
+			return this.transformedFeatures;
+		}
+		else {
+			return null;
+		}
 	}
 
 

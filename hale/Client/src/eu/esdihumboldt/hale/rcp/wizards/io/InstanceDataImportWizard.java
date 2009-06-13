@@ -111,7 +111,7 @@ public class InstanceDataImportWizard
 		InstanceInterfaceType iit = this.mainPage.getInterfaceType();
 		
 		// build FeatureCollection from the selected source.
-		FeatureCollection<? extends FeatureType, ? extends Feature> features = null;
+		FeatureCollection<FeatureType, Feature> features = null;
 		
 		if (iit.equals(InstanceInterfaceType.FILE)) {
 			// FIXME handle shapefiles in addition to GML
@@ -121,7 +121,7 @@ public class InstanceDataImportWizard
 			
 		}
 		if (features != null) {
-			instanceService.addInstances(DatasetType.transformed, features);
+			instanceService.addInstances(DatasetType.reference, features);
 			_log.info(features.size() + " instances were added to the InstanceService.");
 		}
 		return true;
@@ -153,10 +153,10 @@ public class InstanceDataImportWizard
 	 * @param gml_location the {@link URL} identifying the GML file to parse.
 	 * @return a {@link FeatureCollection}.
 	 */
-	private FeatureCollection<? extends FeatureType, ? extends Feature> parseGML(
+	private FeatureCollection<FeatureType, Feature> parseGML(
 			String namespace, URL schema_location, URL gml_location) {
 		
-		FeatureCollection<? extends FeatureType, ? extends Feature> result = null;
+		FeatureCollection<FeatureType, Feature> result = null;
 		try {
 			Configuration configuration = new ApplicationSchemaConfiguration(
 					namespace, schema_location.toExternalForm());
@@ -172,7 +172,7 @@ public class InstanceDataImportWizard
 			HaleGMLParser parser = new HaleGMLParser(configuration);
 			// TODO start in a Thread of its own.
 			result = 
-				(FeatureCollection<? extends FeatureType, ? extends Feature>) parser.parse(xml);
+				(FeatureCollection<FeatureType, Feature>) parser.parse(xml);
 		} catch (Exception ex) {
 			throw new RuntimeException(
 					"Parsing the given GML into a FeatureCollection failed: ",

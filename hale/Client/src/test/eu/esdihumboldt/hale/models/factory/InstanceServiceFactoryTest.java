@@ -22,8 +22,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
@@ -46,13 +44,13 @@ public class InstanceServiceFactoryTest {
 	public static void setUp() {
 		InstanceServiceFactoryTest.setUpLogger();
 		
-		FeatureCollection<SimpleFeatureType, SimpleFeature> fc_reference = 
+		FeatureCollection fc_reference = 
 			FeatureCollectionUtilities.loadFeatureCollectionFromWKT(
 				"D:/humboldt-workspace/HALE/resources/test.eu.esdihumboldt.hale.models.factory/linestring.wkt", 
 				"ReferenceFT", "ReferenceFeatureID");
 		InstanceServiceImpl.getInstance().addInstances(
 				DatasetType.reference, fc_reference);
-		FeatureCollection<SimpleFeatureType, SimpleFeature> fc_transformed = 
+		FeatureCollection fc_transformed = 
 			FeatureCollectionUtilities.loadFeatureCollectionFromWKT(
 				"D:/humboldt-workspace/HALE/resources/test.eu.esdihumboldt.hale.models.factory/polygon.wkt", 
 				"TransformedFT", "TransformedFeatureID");
@@ -63,7 +61,8 @@ public class InstanceServiceFactoryTest {
 	
 	@AfterClass
 	public static void tearDown() {
-		InstanceServiceImpl.getInstance().cleanInstances(DatasetType.both);
+		InstanceServiceImpl.getInstance().cleanInstances(DatasetType.reference);
+		InstanceServiceImpl.getInstance().cleanInstances(DatasetType.transformed);
 		_log.debug("Finished Test.");
 	}
 
@@ -89,16 +88,14 @@ public class InstanceServiceFactoryTest {
 	@Test
 	public void testGetAllFeatures() {
 		// execution of getAllFeatures with possible attributes
-		Collection<Feature> fc_reference = InstanceServiceImpl.getInstance().getAllFeatures(DatasetType.reference);
-		Collection<Feature> fc_transformed = InstanceServiceImpl.getInstance().getAllFeatures(DatasetType.transformed);
-		Collection<Feature> fc_both = InstanceServiceImpl.getInstance().getAllFeatures(DatasetType.both);
+		FeatureCollection<FeatureType, Feature> fc_reference = InstanceServiceImpl.getInstance().getFeatures(DatasetType.reference);
+		FeatureCollection<FeatureType, Feature> fc_transformed = InstanceServiceImpl.getInstance().getFeatures(DatasetType.transformed);
 		
 		// assertions
 		_log.debug("fc_reference.size(): "+ fc_reference.size());
 		_log.debug("fc_transformed.size(): "+ fc_transformed.size());
 		assertTrue(fc_reference.size() == 1);
 		assertTrue(fc_transformed.size() == 1);
-		assertTrue(fc_both.size() == 2);
 	}
 	
 	/**
@@ -109,7 +106,7 @@ public class InstanceServiceFactoryTest {
 		FeatureType featureType = FeatureCollectionUtilities.getFeatureType(
 				com.vividsolutions.jts.geom.LineString.class, "TransformedFT", false);
 		
-		Collection<Feature> fc_reference = InstanceServiceImpl.getInstance().getFeaturesByType(featureType);
+		Collection<? extends Feature> fc_reference = InstanceServiceImpl.getInstance().getFeaturesByType(featureType);
 		_log.debug("fc_reference.size(): " + fc_reference.size());
 		assertTrue(fc_reference.size() == 1);
 		FeatureType ft = fc_reference.iterator().next().getType();

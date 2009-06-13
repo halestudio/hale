@@ -31,15 +31,6 @@ import eu.esdihumboldt.hale.rcp.views.map.MapView;
  */
 public interface InstanceService 
 	extends UpdateService {
-
-	/**
-	 * @param type the {@link DatasetType} that indicates whether you want to
-	 * retrieve the transformed instance data, the reference instance data or
-	 * both.
-	 * @return the entire {@link Collection} of Features currently held in the 
-	 * model.
-	 */
-	public Collection<Feature> getAllFeatures(DatasetType type);
 	
 	/**
 	 * @param type the {@link DatasetType} that indicates whether you want to
@@ -48,7 +39,7 @@ public interface InstanceService
 	 * @return the entire {@link FeatureCollection} currently held in the 
 	 * model.
 	 */
-	public FeatureCollection<?, ?> getFeatures(DatasetType type);
+	public FeatureCollection<FeatureType, Feature> getFeatures(DatasetType type);
 	
 	/**
 	 * @param featureID the D of the {@link Feature} to return.
@@ -60,7 +51,7 @@ public interface InstanceService
 	 * @param featureType the {@link FeatureType} which all returned {@link Feature}s must have.
 	 * @return a new {@link Collection} containing only {@link Feature}s of the given type.
 	 */
-	public Collection<Feature> getFeaturesByType(FeatureType featureType);
+	public Collection<? extends Feature> getFeaturesByType(FeatureType featureType);
 	
 	/**
 	 * Add the {@link Feature} in the collection to the {@link InstanceService}
@@ -71,7 +62,7 @@ public interface InstanceService
 	 * all {@link Feature}s.
 	 * @return true if the instances have been added successfully.
 	 */
-	public boolean addInstances(DatasetType type, FeatureCollection<?, ?> featureCollection);
+	public boolean addInstances(DatasetType type, FeatureCollection<FeatureType, Feature> featureCollection);
 	
 	/**
 	 * Add the {@link Feature} in the collection to the {@link InstanceService}
@@ -82,7 +73,7 @@ public interface InstanceService
 	 * all {@link Feature}s.
 	 * @return true if the instances have been added successfully.
 	 */
-	public boolean addInstances(DatasetType type, FeatureCollection<?, ?> featureCollection, FeatureFilter filter);
+	public boolean addInstances(DatasetType type, FeatureCollection<FeatureType, Feature> featureCollection, FeatureFilter filter);
 	
 	/**
 	 * This will remove all instances from the service.
@@ -98,8 +89,7 @@ public interface InstanceService
 	 */
 	public enum DatasetType {
 		reference,
-		transformed,
-		both
+		transformed
 	}
 	
 }

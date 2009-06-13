@@ -11,16 +11,11 @@
  */
 package eu.esdihumboldt.hale.rcp.views.model;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.NotEnabledException;
 import org.eclipse.core.commands.NotHandledException;
-import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -35,42 +30,29 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
-import org.omg.CORBA._PolicyStub;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.SchemaService;
@@ -323,10 +305,10 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 		source.setTransfer(types);
 		source.addDragListener(new DragSourceListener() {
 			public void dragStart(DragSourceEvent event) {
-				System.out.println("drag start");
+//				System.out.println("drag start");
 				// Only start the drag if some attribute selected
-				System.out.println("selected element: "
-						+ sourceAttributeList.getSelection()[0]);
+//				System.out.println("selected element: "
+//						+ sourceAttributeList.getSelection()[0]);
 				if (sourceAttributeList.getSelection()[0] == null) {
 					event.doit = false;
 				} else
@@ -334,7 +316,7 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 			}
 
 			public void dragSetData(DragSourceEvent event) {
-				System.out.println("drag set data");
+//				System.out.println("drag set data");
 				// Provide the data of the requested type.
 
 				DragSource ds = (DragSource) event.widget;
@@ -342,8 +324,8 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 				TableItem[] selection = table.getSelection();
 
 				StringBuffer buff = new StringBuffer();
-				System.out.println(selection.length
-						+ " Attributes have been selected");
+//				System.out.println(selection.length
+//						+ " Attributes have been selected");
 				for (int i = 0, n = selection.length; i < n; i++) {
 					buff.append(selection[i].getText());
 				}
@@ -359,7 +341,7 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 			}
 
 			public void dragFinished(DragSourceEvent event) {
-				System.out.println("Drag Finished");
+//				System.out.println("Drag Finished");
 
 			}
 		});
@@ -403,13 +385,13 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 		target.addDropListener(new DropTargetListener() {
 
 			public void dragEnter(DropTargetEvent event) {
-				System.out.println("dragEnter");
+//				System.out.println("dragEnter");
 				event.detail = DND.FEEDBACK_INSERT_AFTER;
 
 			}
 
 			public void dragOver(DropTargetEvent event) {
-				System.out.println("dragOver");
+//				System.out.println("dragOver");
 
 			}
 
@@ -418,15 +400,15 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 			}
 
 			public void dragLeave(DropTargetEvent event) {
-				System.out.println("dragLeave");
+//				System.out.println("dragLeave");
 			}
 
 			public void dropAccept(DropTargetEvent event) {
-				System.out.println("dropAccept");
+//				System.out.println("dropAccept");
 			}
 
 			public void drop(DropTargetEvent event) {
-				System.out.println("drop");
+//				System.out.println("drop");
 				if (textTransfer.isSupportedType(event.currentDataType)) {
 					DropTarget target = (DropTarget) event.widget;
 					Table table = (Table) target.getControl();
@@ -436,9 +418,9 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 					
 					String data = (String) event.data;
 					// TODO replace with wizard call
-					System.out.println("Source Attributes: " + data);
-					System.out.println("Target Attributes: "
-							+ targetAttribute.getText());
+//					System.out.println("Source Attributes: " + data);
+//					System.out.println("Target Attributes: "
+//							+ targetAttribute.getText());
 					IHandlerService handlerService = (IHandlerService) getSite()
 							.getService(IHandlerService.class);
 					try {
@@ -689,11 +671,11 @@ public class AttributeView extends ViewPart implements ISelectionListener{
  		                FeatureTypeSelection ftSelection = (FeatureTypeSelection) selectionObject;
 		            	TreeItem sourceItem = ftSelection.getSourceFeatureTypes()[0];
 		            	if (sourceItem != null ){selectedFeatureType = sourceItem.getText(); }
-		            	System.out.println("Source FeatureType :" + selectedFeatureType);
+//		            	System.out.println("Source FeatureType :" + selectedFeatureType);
 		                selectedFeatureType = "not selected";
 		            	TreeItem targetItem = ftSelection.getTargetFeatureType()[0];
 		                if (targetItem !=null){ selectedFeatureType = targetItem.getText();}
-		                System.out.println("Target FeatureType :" + selectedFeatureType);
+//		                System.out.println("Target FeatureType :" + selectedFeatureType);
 		                //TODO use it for SelectFunction, AttributeLists
 		                
 		            	
