@@ -219,6 +219,13 @@
             id="HALE.wizard.function.literal"
             name="Literal Type Functions ">
       </category>
+      <wizard
+            category="HALE.wizard.function.literal"
+            class="eu.esdihumboldt.rcp.wizards.functions.literal.RenamingFunctionWizard"
+            icon="icons/concrete_ft.png"
+            id="HALE.featurerenaming"
+            name="Feature Type Renaming Wizard">
+      </wizard>
       <category
             id="HALE.wizard.function.enumeration"
             name="Enumeration Type Functions">
@@ -234,14 +241,14 @@
       <wizard
             category="HALE.wizard.function.geometric"
             class="eu.esdihumboldt.hale.rcp.wizards.functions.geometric.NetworkExpansionFunctionWizard"
-            icon="icons/see_geometry_attribute.png"
+            icon="icons/geometry_attribute.png"
             id="HALE.netexpansion"
             name="Network expansion (Line to Surface)"
             project="true">
       </wizard>
       <wizard
             category="HALE.wizard.function.geometric"
-            icon="icons/see_geometry_attribute.png"
+            icon="icons/geometry_attribute.png"
             id="HALE.netfusion"
             name="Network fusion (Line to Line)">
             <class class="eu.esdihumboldt.hale.rcp.wizards.functions.geometric.NetworkFusionFunctionWizard">
@@ -252,7 +259,7 @@
       <wizard
             category="HALE.wizard.function.geometric"
             class="eu.esdihumboldt.hale.rcp.wizards.functions.geometric.NetworkGeneralizationFunctionWizard"
-            icon="icons/see_geometry_attribute.png"
+            icon="icons/geometry_attribute.png"
             id="HALE.netgeneralization"
             name="Network generalization (Line to Line)">
       </wizard>
@@ -262,13 +269,6 @@
             icon="icons/see_number_attribute.png"
             id="Hale.numfunction"
             name="Numeric Function Wizard">
-      </wizard>
-      <wizard
-            category="HALE.wizard.function.literal"
-            class="eu.esdihumboldt.rcp.wizards.functions.literal.RenamingFunctionWizard"
-            icon="icons/concrete_ft.png"
-            id="HALE.featurerenaming"
-            name="Feature Type Renaming Wizard">
       </wizard>
       <category
             id="HALE.wizard.function.filter"

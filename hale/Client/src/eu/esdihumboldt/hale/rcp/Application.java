@@ -57,7 +57,7 @@ public class Application implements IApplication {
 		// set up log4j logger for GeoTools
 		Logging.ALL.setLoggerFactory(Log4JLoggerFactory.getInstance());
 		Logger.getLogger(Log4JLogger.class).setLevel(Level.WARN);
-		Logger.getRootLogger().setLevel(Level.WARN);
+//		Logger.getRootLogger().setLevel(Level.WARN);
 		
 		URL location = this.getClass().getProtectionDomain().getCodeSource().getLocation();
 		String location_path = location.getPath().replace(" ", "+");

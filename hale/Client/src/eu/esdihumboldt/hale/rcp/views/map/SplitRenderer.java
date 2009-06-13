@@ -172,8 +172,9 @@ public class SplitRenderer {
 	private MapContext buildMapContext(CoordinateReferenceSystem crs, DatasetType type) {
 		MapContext mc = new DefaultMapContext(crs); 
 		FeatureCollection<?, ?> fc = this.instanceService.getFeatures(type);
-		// transform geometry if necessary.
 		if (fc != null) {
+			_log.info("features size: " + fc.size());
+			_log.info("features bounds: " + fc.getBounds());
 			Style style = this.styleService.getStyle(fc.getSchema());
 			mc.addLayer(
 	        		(FeatureCollection<SimpleFeatureType, SimpleFeature>) fc, style);
@@ -192,6 +193,9 @@ public class SplitRenderer {
 	 */
 	private void renderVerticalSplit(Graphics2D graphics, 
 			MapContext sourceMapContext, MapContext targetMapContext) {
+		if (targetMapContext.getLayerCount() > 0) {
+			this.mapArea = targetMapContext.getLayer(0).getBounds();
+		}
 		
 		Rectangle leftHalfArea = new Rectangle();
     	leftHalfArea.x = paintArea.x;
