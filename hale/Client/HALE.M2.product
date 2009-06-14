@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.4"?>
 
-<product name="HUMBOLDT Alignment Editor" id="HALE.product" application="HALE.application" version="M1" useFeatures="false">
+<product name="HUMBOLDT Alignment Editor" id="HALE.product" application="HALE.application" version="M2" useFeatures="false">
 
    <configIni use="default">
    </configIni>
