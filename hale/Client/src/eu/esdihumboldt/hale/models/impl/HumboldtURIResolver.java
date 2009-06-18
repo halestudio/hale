@@ -101,18 +101,6 @@ public class HumboldtURIResolver implements CollectionURIResolver {
         }
         return new InputSource(schemaLocation);
     }
-    
-    private String getBaseURI(String baseFile) {
-    	String baseURI = "";
-    	
-    	if (baseFile.startsWith("file:/")) {
-    		baseFile = baseFile.substring(6);
-    	}
-    	
-		baseURI = baseFile.substring(0, baseFile.lastIndexOf("/"));
-
-    	return baseFile;
-    }
 
     /**
      * Find whether a given uri is relative or not

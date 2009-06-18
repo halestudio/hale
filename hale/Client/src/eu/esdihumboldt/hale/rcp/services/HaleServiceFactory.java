@@ -9,7 +9,6 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-
 package eu.esdihumboldt.hale.rcp.services;
 
 import org.eclipse.ui.services.AbstractServiceFactory;
@@ -22,15 +21,15 @@ import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.impl.AlignmentServiceImpl;
 import eu.esdihumboldt.hale.models.impl.InstanceServiceImpl;
-import eu.esdihumboldt.hale.models.impl.SchemaServiceImpl;
 import eu.esdihumboldt.hale.models.impl.SchemaServiceImplApache;
 import eu.esdihumboldt.hale.models.impl.StyleServiceImpl;
 import eu.esdihumboldt.hale.models.impl.TaskServiceImpl;
 
 /**
  * This implementation of the {@link AbstractServiceFactory} allows to use the
- * {@link InstanceService} as a eclipse service, thereby making direct 
- * references to the implementation unnecessary.
+ * {@link InstanceService}, {@link SchemaService}, {@link StyleService}, 
+ * {@link TaskService} and {@link AlignmentService} as eclipse service, thereby 
+ * making direct references to the implementation unnecessary.
  * 
  * @author Thorsten Reitz
  * @version $Id$
@@ -40,7 +39,6 @@ public class HaleServiceFactory
 	
 	private InstanceService instance = InstanceServiceImpl.getInstance();
 	private SchemaService schema = SchemaServiceImplApache.getInstance();
-//	private SchemaService schema = SchemaServiceImpl.getInstance();
 	private StyleService style = StyleServiceImpl.getInstance();
 	private TaskService task = TaskServiceImpl.getInstance();
 	private AlignmentService alignment = AlignmentServiceImpl.getInstance();
@@ -52,7 +50,6 @@ public class HaleServiceFactory
 	/**
 	 * @see org.eclipse.ui.services.AbstractServiceFactory#create(java.lang.Class, org.eclipse.ui.services.IServiceLocator, org.eclipse.ui.services.IServiceLocator)
 	 */
-	@Override
 	public Object create(Class serviceInterface, IServiceLocator parentLocator,
 			IServiceLocator locator) {
 		if (serviceInterface.equals(InstanceService.class)) {
