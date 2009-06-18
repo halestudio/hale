@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.mediator.contextservice.hibernate.helpers;
 
+import java.io.Serializable;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 
@@ -24,7 +25,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  * @author Anna Pitaev, LogicaCMG, Bernd Schneiders, LogicaCMG
  * @version $Id: GeneralEnvelopeImpl.java,v 1.3 2007-11-30 10:24:05 pitaeva Exp $
  */
-public class GeneralEnvelopeImpl {
+public class GeneralEnvelopeImpl implements Serializable{
 	private long id;
 	private double minX;
 	private double minY;
