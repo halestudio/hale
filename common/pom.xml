@@ -7,7 +7,7 @@
     <name>HUMBOLDT Common Library Component</name>
     <url>http://www.esdi-humboldt.eu</url>
     <build>
-        <finalName>humboldt-${project.artifactId}-${project.version}</finalName>
+        <finalName>${project.artifactId}-${project.version}</finalName>
         <sourceDirectory>${basedir}/src</sourceDirectory>
         <resources>
             <resource>
