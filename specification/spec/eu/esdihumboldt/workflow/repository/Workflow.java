@@ -17,7 +17,7 @@ import eu.esdihumboldt.mediator.constraints.Constraint;
 import eu.esdihumboldt.modelrepository.abstractfc.Concept;
 import eu.esdihumboldt.workflow.exceptions.ConcretizationException;
 import eu.esdihumboldt.workflow.exceptions.InconsistentWorkflowException;
-import eu.esdihumboldt.workflow.processdescription.Description;
+import eu.esdihumboldt.workflow.process.Description;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.ComplexDataInput;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.ProcessInput;
 import java.io.Serializable;

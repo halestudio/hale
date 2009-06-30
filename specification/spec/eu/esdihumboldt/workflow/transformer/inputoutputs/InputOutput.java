@@ -1,7 +1,7 @@
 package eu.esdihumboldt.workflow.transformer.inputoutputs;
 
 import eu.esdihumboldt.workflow.exceptions.IncompatibleTransformersException;
-import eu.esdihumboldt.workflow.processdescription.Description;
+import eu.esdihumboldt.workflow.process.Description;
 import eu.esdihumboldt.workflow.repository.Transformer;
 import eu.esdihumboldt.workflow.repository.Transformer.InputOutputStatus;
 import java.io.Serializable;

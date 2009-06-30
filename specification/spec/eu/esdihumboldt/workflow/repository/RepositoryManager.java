@@ -13,7 +13,7 @@ package eu.esdihumboldt.workflow.repository;
 
 import eu.esdihumboldt.modelrepository.abstractfc.Concept;
 import eu.esdihumboldt.workflow.exceptions.InconsistentWorkflowException;
-import eu.esdihumboldt.workflow.processdescription.Description;
+import eu.esdihumboldt.workflow.process.Description;
 import java.util.Set;
 import java.util.UUID;
 

@@ -13,7 +13,7 @@ package eu.esdihumboldt.workflow.repository;
 
 import eu.esdihumboldt.mediator.TypeKey;
 import eu.esdihumboldt.mediator.constraints.Constraint;
-import eu.esdihumboldt.workflow.processdescription.Description;
+import eu.esdihumboldt.workflow.process.Description;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.ComplexDataInput;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.LiteralDataInput;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.ProcessInput;
