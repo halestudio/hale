@@ -2,6 +2,7 @@ package eu.esdihumboldt.workflow.transformer.inputoutputs;
 
 import eu.esdihumboldt.informationgrounding.requesthandler.GroundingService;
 import eu.esdihumboldt.workflow.exceptions.ProcessInputOutputException;
+import eu.esdihumboldt.workflow.repository.Transformer.InputOutputStatus;
 
 
 /**
@@ -17,12 +18,6 @@ public interface ProcessInput extends InputOutput {
      */
     public ProcessOutput getSourcePostcondition();
 
-    /**
-     * This method is used to define the source postcondition of this input
-     * @param postcondition The source postcondition that satisfies this precondition
-     * @throws ProcessInputOutputException
-     */
-    public void setSourcePostcondition(ProcessOutput postcondition) throws ProcessInputOutputException;
 
     /**
      *Adds a given grounding service to this precondition
@@ -37,5 +32,10 @@ public interface ProcessInput extends InputOutput {
      * @throws ProcessInputOutputException
      */
     public GroundingService getGroundingForPrecondition()throws ProcessInputOutputException;
+    /**
+     * Returns the status of this input
+     * @return
+     */
+    public InputOutputStatus getInputStatus();
 }
 

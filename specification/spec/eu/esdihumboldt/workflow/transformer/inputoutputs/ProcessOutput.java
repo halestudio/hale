@@ -11,6 +11,8 @@
  */
 package eu.esdihumboldt.workflow.transformer.inputoutputs;
 
+import eu.esdihumboldt.workflow.repository.Transformer.InputOutputStatus;
+
 /**
  *This is a superclass of the process output type
  * @author mgone
@@ -24,10 +26,9 @@ public interface ProcessOutput extends InputOutput{
     public ProcessInput getTarget();
 
     /**
-     * This method is used to define the target of this ProcessOutput
-
-     * @param _target The target precondition where this process input output is directed to
+     * Returns the status of this output
+     * @return
      */
-    public void setTarget(ProcessInput _target);
+    public InputOutputStatus getOutputStatus();
 
 }

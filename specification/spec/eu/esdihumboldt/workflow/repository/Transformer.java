@@ -14,7 +14,7 @@ package eu.esdihumboldt.workflow.repository;
 import eu.esdihumboldt.mediator.TypeKey;
 import eu.esdihumboldt.mediator.constraints.Constraint;
 import eu.esdihumboldt.workflow.process.Description;
-import eu.esdihumboldt.workflow.transformer.inputoutputs.ComplexDataInput;
+import eu.esdihumboldt.workflow.transformer.inputoutputs.ComplexData;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.LiteralDataInput;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.ProcessInput;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.ProcessOutput;
@@ -124,7 +124,7 @@ public interface Transformer extends Serializable{
      * retrieves only the inputs which are of type complexData
      * @return A set of ComplexData
      */
-    public Set<ComplexDataInput> getComplexInputs();
+    public Set<ComplexData> getComplexInputs();
 
     /**
      * retrieves only the inputs which are of type LiteralData
@@ -210,6 +210,6 @@ public interface Transformer extends Serializable{
      * @param shareOutput True if the constraint is also shared with the output
      * @param sharedConstraint the constraint that will be shared among inputs
      */
-    public void shareConstraint(Set<ProcessInput> inputs, boolean shareOutput, Constraint sharedConstraint );
+    public void shareConstraint(Set<ComplexData> inputs, boolean shareOutput, Constraint sharedConstraint );
 
 }

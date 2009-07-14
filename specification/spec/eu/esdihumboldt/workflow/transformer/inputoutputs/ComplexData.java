@@ -2,6 +2,7 @@ package eu.esdihumboldt.workflow.transformer.inputoutputs;
 
 import eu.esdihumboldt.mediator.TypeKey;
 import eu.esdihumboldt.mediator.constraints.Constraint;
+import eu.esdihumboldt.workflow.repository.Connector;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.Format;
 import java.util.Map;
 import java.util.Set;
@@ -68,6 +69,23 @@ public interface ComplexData {
      * @throws RuntimeException
      */
     public void protectConstraints(Set<TypeKey> _protectedkeys);
+    /**
+     * returns true or false depending on whether this complex data had a connection or not
+     * @return
+     */
+    public boolean isIsLinked() ;
+
+    /**
+     * returns a link that is connected to to this complex data
+     * @return
+     */
+    public Connector getLink() ;
+
+    /**
+     * Sets a link to this complex data
+     * @param link
+     */
+    public void setLink(Connector link) ;
 
 }
 

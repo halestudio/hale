@@ -32,11 +32,6 @@ public interface InputOutput extends Serializable{
     public Description getDescription();
 
     /**
-     *  @return the status of this input or output
-     */
-    public InputOutputStatus getStatus();
-
-    /**
      *  This method is a convinience method for identifying which Transformer the precondition belongs
      *  to.
      *       @return

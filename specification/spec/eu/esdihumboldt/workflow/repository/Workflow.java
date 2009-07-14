@@ -12,17 +12,13 @@
 package eu.esdihumboldt.workflow.repository;
 
 import eu.esdihumboldt.mediator.MediatorComplexRequest;
-import eu.esdihumboldt.mediator.TypeKey;
-import eu.esdihumboldt.mediator.constraints.Constraint;
 import eu.esdihumboldt.modelrepository.abstractfc.Concept;
 import eu.esdihumboldt.workflow.exceptions.ConcretizationException;
 import eu.esdihumboldt.workflow.exceptions.InconsistentWorkflowException;
 import eu.esdihumboldt.workflow.process.Description;
-import eu.esdihumboldt.workflow.transformer.inputoutputs.ComplexDataInput;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.ProcessInput;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -70,7 +66,7 @@ public interface Workflow extends Serializable{
      * @return Transformer set in the workflow
      * @throws NullPointerException
      */
-    public Set<TransformerConnector> getConnectors() throws NullPointerException;
+    public Set<Connector> getConnectors() throws NullPointerException;
 
     /**
      * Gather all the process inputs (leaf-preconditions) of the Transformers in this basic workflow
@@ -133,6 +129,6 @@ public interface Workflow extends Serializable{
      * @param link the link to be added in this workflow
      * @return true if link successfully added
      */
-    public boolean addConnector(TransformerConnector link);
+    public boolean addConnector(Connector link);
 
 }

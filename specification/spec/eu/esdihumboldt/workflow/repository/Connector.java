@@ -12,10 +12,12 @@
 
 package eu.esdihumboldt.workflow.repository;
 
+import eu.esdihumboldt.mediator.constraints.Constraint;
 import eu.esdihumboldt.mediator.constraints.LogicalConstraint;
 import eu.esdihumboldt.workflow.process.Description;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.ProcessInput;
 import eu.esdihumboldt.workflow.transformer.inputoutputs.ProcessOutput;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -23,7 +25,7 @@ import java.util.UUID;
  * It has method that retrieves information on the connection between Transformers
  * @author mgone
  */
-public interface TransformerConnector {
+public interface Connector {
 
     /**
      *
@@ -42,7 +44,7 @@ public interface TransformerConnector {
      * @param constraint A logical constraint that combines all the Constraints restricting
      * this connection
      */
-    public void setConnectionConstraints(LogicalConstraint constraint);
+    public void setConnectionConstraints(Set<Constraint> constraint);
 
     /**
      *
@@ -64,21 +66,10 @@ public interface TransformerConnector {
     public void setConnectorDescription(Description _connectorDescription);
 
     /**
-     * Convienience method for retrieving the Source  Transformer of this link
-     * @return
-     */
-    public Transformer getSourceTransformer();
-    /**
-     * Convienience method for retrieving the Target  transformer of this link
-     * @return
-     */
-    public Transformer getTargetTransformer();
-
-    /**
      * Sets the constraints for this connection
-     * @return A logical constraints that is a combination of constraints that restricts this link
+     * @return A set of constraints  that restricts this link
      */
-    public LogicalConstraint getConnectionConstraints();
+    public Set<Constraint> getConnectionConstraints();
 
 
 }
