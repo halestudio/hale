@@ -45,4 +45,33 @@ public interface ThematicConstraint
 	 */
 	public List<ConceptualSchema> getThemes();
 	
+	/**
+	 * @return the topic as the TopicCategoryCode defined in ISO 19115.
+	 */
+	public TopicCode getTopic();
+	
+	/**
+	 * MD_TopicCategoryCode as defined in ISO 19115. 
+	 */
+	public enum TopicCode {
+		farming,
+		biota,
+		boundaries,
+		climatologyMeteorologyAtmosphere,
+		economy,
+		elevation,
+		environment,
+		geoscientificInformation,
+		health,
+		imageryBaseMapsEarthCover,
+		intelligenceMilitary,
+		inlandWaters,
+		location,
+		oceans,
+		planningCadastre,
+		society,
+		structure,
+		transportation,
+		utilitiesCommunication
+	}
 }
