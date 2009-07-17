@@ -41,9 +41,12 @@ public class ThematicConstraintImpl
      * ThematicConstraint.
      */
     private List<ConceptualSchema> themes;
-
     /**
-     * the {@link ConstraintSource} of this {@link LanguageConstraint}.
+     * the {@link TopicCode} of this {@link ThematicConstraint}.
+     */
+    private TopicCode topic;
+    /**
+     * the {@link ConstraintSource} of this {@link ThematicConstraint}.
      */
     private ConstraintSource constraintSource;
 
@@ -78,10 +81,16 @@ public class ThematicConstraintImpl
         this.constraintSource = ConstraintSource.parameter;
 //		this.uid = UUID.randomUUID();
 //		this.satisfied = true;
-
-
     }
 
+    /**
+     * Use this Constructor to specify the topic to be used.
+     * @param _topic
+     */
+    public ThematicConstraintImpl(TopicCode _topic){
+    	this.topic = _topic;
+    }
+    
     /**
      * Use this Constructor to specify a single Concept to be used.
      * @param _concept
@@ -94,8 +103,6 @@ public class ThematicConstraintImpl
         this.themes.add(im);
         this.constraintSource = ConstraintSource.parameter;
         this.identifier = UUID.randomUUID();
-
-
     }
 
     /**
@@ -107,7 +114,6 @@ public class ThematicConstraintImpl
         this.themes.add(_im);
         this.constraintSource = ConstraintSource.parameter;
         this.identifier = UUID.randomUUID();
-
     }
 
     /**
@@ -136,6 +142,13 @@ public class ThematicConstraintImpl
         return this.themes;
     }
 
+    /**
+     * @return
+     * @see eu.esdihumboldt.mediator.constraints.ThematicConstraint#getTopic()
+     */
+    public TopicCode getTopic() {
+    	return this.topic;
+    }
     // Constraint operations ...................................................
     /**
      * @return
@@ -182,6 +195,13 @@ public class ThematicConstraintImpl
         this.themes = themes;
     }
 
+    /**
+     * @param topic the topic to set (TopicCode as defined in ISO 19115)
+     */
+    public void setTopic(TopicCode _topic) {
+        this.topic = _topic;
+    }
+    
     /**
      * @param constraintSource the constraintSource to set
      */
