@@ -99,6 +99,15 @@ public interface GroundingService {
 		throws InconsistentGroundingServiceException;
 
 	/**
+	 * @return this GroundingService's topic code as a String 
+	 * 			The topic is the name defined in the MD_TopicCategoryCode(ISO 19115).
+	 * 			It is the alphanumeric value identifying the reference system. 
+	 * @throws {@link InconsistentGroundingServiceException} if the topic is missing. 
+	 */
+	public String getTopic()
+		throws InconsistentGroundingServiceException;
+	
+	/**
 	 * @return this GroundingService's Reference System code as a String.
 	 * 			It is the alphanumeric value identifying the reference system. 
 	 * @throws {@link InconsistentGroundingServiceException} if the reference system is missing. 
