@@ -1,0 +1,9 @@
+<xs:annotation> 
+<xs:appinfo>
+         <jxb:class name="formalismCollection">
+            <jxb:javadoc>
+            formalismType
+            </jxb:javadoc>
+         </jxb:class>
+      </xs:appinfo>
+ </xs:annotation>
