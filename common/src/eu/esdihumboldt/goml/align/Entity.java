@@ -15,6 +15,7 @@ package eu.esdihumboldt.goml.align;
 import java.util.List;
 
 import eu.esdihumboldt.cst.align.IEntity;
+import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 
@@ -40,6 +41,11 @@ public class Entity
 	 * <xs:group ref="omwg:transformation" minOccurs="0" maxOccurs="1" />
 	 */
 	private ITransformation transformation;
+
+	/**
+	 * Identifier of this {@link Entity} object
+	 */
+	private IAbout about;
 	
 	// constructors ............................................................
 
@@ -81,5 +87,20 @@ public class Entity
 	public void setLabel(List<String> label) {
 		this.label = label;
 	}
+
+	/**
+	 * @return the about
+	 */
+	public IAbout getAbout() {
+		return about;
+	}
+
+	/**
+	 * @param about the about to set
+	 */
+	public void setAbout(IAbout about) {
+		this.about = about;
+	}
+
 
 }

@@ -38,7 +38,7 @@ public class Schema
 	private Formalism formalism;
 	
 	/**
-	 * Metadata on this {@link Schema} object
+	 * Identifier of this {@link Schema} object
 	 */
 	private IAbout about;
 	

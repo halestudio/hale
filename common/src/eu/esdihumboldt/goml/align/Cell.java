@@ -16,6 +16,8 @@ import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.align.IMeasure;
 import eu.esdihumboldt.cst.rdf.IAbout;
 
+import java.util.List;
+
 /**
  * A {@link Cell} contains a mapping between two Entities, such as {@link FeatureClass}es
  * or {@link Property} objects.
@@ -26,6 +28,11 @@ import eu.esdihumboldt.cst.rdf.IAbout;
  */
 public class Cell 
 	implements ICell {
+
+	/**
+	 * Annotation label(s)
+	 */
+	private List<String> label;
 
 	/**
 	 * The first {@link Entity} mapped by this {@link Cell}.
@@ -48,7 +55,7 @@ public class Cell
 	private IMeasure measure;
 	
 	/**
-	 * Metadata on this {@link Cell}.
+	 * Identifier of this {@link Cell} (optional).
 	 */
 	private IAbout about;
 	
@@ -111,6 +118,20 @@ public class Cell
 	 */
 	public void setAbout(IAbout about) {
 		this.about = about;
+	}
+
+	/**
+	 * @return the label(s)
+	 */
+	public List<String> getLabel() {
+		return label;
+	}
+
+	/**
+	 * @param label the label(s) to set
+	 */
+	public void setLabel(List<String> label) {
+		this.label = label;
 	}
 
 }

@@ -15,7 +15,7 @@ package eu.esdihumboldt.goml.rdf;
 import java.util.UUID;
 
 /**
- * This class can be used to store some metadata.
+ * This class can be used to store the identifier of objects.
  * 
  * @author Thorsten Reitz 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research

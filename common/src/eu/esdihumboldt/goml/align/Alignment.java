@@ -51,7 +51,7 @@ public class Alignment implements IAlignment {
 	private String level;
 	
 	/**
-	 * Metadata on this {@link Alignment}.
+	 * Identifier of this {@link Alignment}.
 	 */
 	private IAbout about;
 	
