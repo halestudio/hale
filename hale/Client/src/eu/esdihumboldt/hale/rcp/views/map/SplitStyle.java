@@ -20,7 +20,8 @@ package eu.esdihumboldt.hale.rcp.views.map;
  */
 public enum SplitStyle {
 	
-	NONE,
+	SOURCE,
+	TARGET,
 	HORIZONTAL,
 	VERTICAL,
 	DIAGONAL_UP,
@@ -33,8 +34,10 @@ public enum SplitStyle {
 	@Override
 	public String toString() {
 		switch (this) {
-		case NONE:
+		case SOURCE:
 			return "Reference data only";
+		case TARGET:
+			return "Transformed data only";
 		case HORIZONTAL:
 			return "Split horizontally";
 		case VERTICAL:

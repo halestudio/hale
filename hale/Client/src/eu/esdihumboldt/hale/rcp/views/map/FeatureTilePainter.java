@@ -58,7 +58,7 @@ public class FeatureTilePainter extends AbstractTilePainter {
 	/**
 	 * How the map is split
 	 */
-	private SplitStyle splitStyle = SplitStyle.NONE;
+	private SplitStyle splitStyle = SplitStyle.SOURCE;
 	
 	/**
 	 * Creates a Feature painter for the given control
@@ -228,7 +228,13 @@ public class FeatureTilePainter extends AbstractTilePainter {
 			}
 			
 			break;
-		case NONE:
+		case TARGET:
+			// only draw transformed
+			drawReference = false;
+			drawTransformed = true;
+			break;
+		case SOURCE:
+			// fall through
 		default:
 			// only draw reference
 			drawReference = true;
