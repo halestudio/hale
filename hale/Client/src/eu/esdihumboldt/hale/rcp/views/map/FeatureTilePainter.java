@@ -32,6 +32,7 @@ import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.AbstractTilePainter;
+import eu.esdihumboldt.hale.rcp.views.map.tiles.TileBackground;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.TileCache;
 
 /**
@@ -41,7 +42,7 @@ import eu.esdihumboldt.hale.rcp.views.map.tiles.TileCache;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class FeatureTilePainter extends AbstractTilePainter {
+public class FeatureTilePainter extends AbstractTilePainter implements TileBackground {
 	
 	private static final Log log = LogFactory.getLog(FeatureTilePainter.class);
 	
@@ -66,8 +67,10 @@ public class FeatureTilePainter extends AbstractTilePainter {
 	 * @param canvas the control
 	 */
 	public FeatureTilePainter(Control canvas) {
-		referenceCache = new TileCache(new FeatureTileRenderer(DatasetType.reference));
-		transformedCache = new TileCache(new FeatureTileRenderer(DatasetType.transformed));
+		referenceCache = new TileCache(
+				new FeatureTileRenderer(DatasetType.reference), this);
+		transformedCache = new TileCache(
+				new FeatureTileRenderer(DatasetType.transformed), this);
 		
 		init(canvas, determineMapArea());
 		
@@ -247,12 +250,7 @@ public class FeatureTilePainter extends AbstractTilePainter {
 		
 		// paint background
 		if (drawReference || drawTransformed) {
-			Color bg = gc.getBackground();
-			
-			gc.setBackground(new Color(gc.getDevice(), 126, 166, 210));
-			gc.fillRectangle(x, y, tileWidth, tileHeight);
-			
-			gc.setBackground(bg);
+			drawTileBackground(gc, x, y, tileWidth, tileHeight);
 		}
 		
 		// reference
@@ -331,6 +329,19 @@ public class FeatureTilePainter extends AbstractTilePainter {
 				region = null;
 			}
 		}
+	}
+	
+	/**
+	 * @see TileBackground#drawTileBackground(GC, int, int, int, int)
+	 */
+	@Override
+	public void drawTileBackground(GC gc, int x, int y, int tileWidth, int tileHeight) {
+		Color bg = gc.getBackground();
+		
+		gc.setBackground(new Color(gc.getDevice(), 126, 166, 210));
+		gc.fillRectangle(x, y, tileWidth, tileHeight);
+		
+		gc.setBackground(bg);
 	}
 
 	/**

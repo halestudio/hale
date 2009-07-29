@@ -24,6 +24,9 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.widgets.Display;
@@ -63,6 +66,8 @@ public class TileCache implements TileProvider {
 	
 	private final TileProvider tileProvider;
 	
+	private final TileBackground tileBackground;
+	
 	private final Set<TileListener> listeners = new HashSet<TileListener>();
 
 	private ISchedulingRule exclusiveRule = new ISchedulingRule() {
@@ -79,14 +84,20 @@ public class TileCache implements TileProvider {
 	};
 	
 	/**
+	 * A reference to the main image for it not to be garbaged
+	 */
+	private ImageData mainImage;
+	
+	/**
 	 * Creates a tile cache for the given tile provider
 	 * 
 	 * @param tileProvider the tile provider
 	 */
-	public TileCache(TileProvider tileProvider) {
+	public TileCache(TileProvider tileProvider, TileBackground tileBackground) {
 		super();
 		
 		this.tileProvider = tileProvider;
+		this.tileBackground = tileBackground;
 	}
 	
 	/**
@@ -121,25 +132,32 @@ public class TileCache implements TileProvider {
 			final int x, final int y) throws Exception {
 		
 		synchronized (cache) {
-			TIntObjectHashMap<TIntObjectHashMap<SoftReference<ImageData>>> zoomCache = cache.get(zoom);
-			
-			if (zoomCache == null) {
-				zoomCache = new TIntObjectHashMap<TIntObjectHashMap<SoftReference<ImageData>>>();
-				cache.put(zoom, zoomCache);
-			}
-			
-			TIntObjectHashMap<SoftReference<ImageData>> xCache = zoomCache.get(x);
-			
-			if (xCache == null) {
-				xCache = new TIntObjectHashMap<SoftReference<ImageData>>();
-				zoomCache.put(x, xCache);
-			}
-			
-			SoftReference<ImageData> imgCache = xCache.get(y);
 			ImageData img = null;
+			TIntObjectHashMap<SoftReference<ImageData>> xCache = null;
 			
-			if (imgCache != null) {
-				img = imgCache.get();
+			if (zoom > 0) {
+				TIntObjectHashMap<TIntObjectHashMap<SoftReference<ImageData>>> zoomCache = cache.get(zoom);
+				
+				if (zoomCache == null) {
+					zoomCache = new TIntObjectHashMap<TIntObjectHashMap<SoftReference<ImageData>>>();
+					cache.put(zoom, zoomCache);
+				}
+				
+				xCache = zoomCache.get(x);
+				
+				if (xCache == null) {
+					xCache = new TIntObjectHashMap<SoftReference<ImageData>>();
+					zoomCache.put(x, xCache);
+				}
+				
+				SoftReference<ImageData> imgCache = xCache.get(y);
+				
+				if (imgCache != null) {
+					img = imgCache.get();
+				}
+			}
+			else {
+				img = mainImage;
 			}
 			
 			if (img == EMPTY_IMAGE) {
@@ -149,9 +167,6 @@ public class TileCache implements TileProvider {
 				return img;
 			}
 			else {
-				// put dummy image in cache
-				xCache.put(y, new SoftReference<ImageData>(EMPTY_IMAGE));
-				
 				// create job for tile loading
 				final TIntObjectHashMap<SoftReference<ImageData>> jobCache = xCache;
 				final Display display = Display.getCurrent();
@@ -163,10 +178,20 @@ public class TileCache implements TileProvider {
 						try {
 							ImageData img = tileProvider.getTile(constraints, zoom, x, y);
 							if (img == null) {
-								jobCache.put(y, new SoftReference<ImageData>(EMPTY_IMAGE));
+								if (jobCache != null) {
+									jobCache.put(y, new SoftReference<ImageData>(EMPTY_IMAGE));
+								}
+								else {
+									mainImage = null;
+								}
 							}
 							else {
-								jobCache.put(y, new SoftReference<ImageData>(img));
+								if (jobCache != null) {
+									jobCache.put(y, new SoftReference<ImageData>(img));
+								}
+								else {
+									mainImage = img;
+								}
 							}
 							return Status.OK_STATUS;
 						} catch (Exception e) {
@@ -200,8 +225,15 @@ public class TileCache implements TileProvider {
 				
 				tileJob.schedule();
 					
-				// return loading image
-				return getLoadingImage(constraints, zoom, x, y);
+				// determine loading image
+				ImageData loadingImage = getLoadingImage(constraints, zoom, x, y);
+				
+				// put loading (dummy) image in cache
+				if (xCache != null) {
+					xCache.put(y, new SoftReference<ImageData>((loadingImage != null)?(loadingImage):(EMPTY_IMAGE)));
+				}
+				
+				return loadingImage;
 			}
 		}
 	}
@@ -217,7 +249,96 @@ public class TileCache implements TileProvider {
 	 */
 	protected ImageData getLoadingImage(TileConstraints constraints, int zoom,
 			int x, int y) {
+		
+		if (tileBackground == null)
+			return null;
+		
+		int partWidth = constraints.getTileWidth();
+		int partHeight = constraints.getTileHeight();
+		
+		int tileX = x;
+		int tileY = y;
+		
+		while (zoom > 0) {
+			partWidth /= 2;
+			partHeight /= 2;
+			
+			zoom -= 1;
+			
+			tileX /= 2;
+			tileY /= 2;
+			
+			int partX = (x - 2*tileX)* partWidth;
+			int partY = (y - 2*tileY) * partHeight;
+			
+			
+			if (zoom == 0) {
+				return drawLoadingImage(mainImage, constraints, partX, partY, partWidth, partHeight);
+			}
+			else {
+				TIntObjectHashMap<TIntObjectHashMap<SoftReference<ImageData>>> zoomCache = cache.get(zoom);
+				
+				if (zoomCache != null) {
+					TIntObjectHashMap<SoftReference<ImageData>> xCache = zoomCache.get(tileX);
+					
+					if (xCache != null) {
+						SoftReference<ImageData> imgCache = xCache.get(tileY);
+						
+						if (imgCache != null) {
+							ImageData img = imgCache.get();
+							if (img != null) {
+								return drawLoadingImage(img, constraints, partX, partY, partWidth, partHeight);
+							}
+						}
+					}
+				}
+			}
+		}
+		
 		return null;
+	}
+
+	/**
+	 * @param img
+	 * @return
+	 */
+	private ImageData drawLoadingImage(ImageData img, TileConstraints constraints,
+			int partX, int partY, int partWidth, int partHeight) {
+		if (img == null)
+			return null;
+		
+		final int width = constraints.getTileWidth();
+		final int height = constraints.getTileHeight();
+		
+		Image sourceImage = new Image(Display.getCurrent(), img);
+		Image drawImage = new Image(Display.getCurrent(), width, height);
+		
+		final GC gc = new GC(drawImage);
+		
+		try {
+			gc.setAntialias(SWT.ON);
+			gc.setInterpolation(SWT.HIGH);
+			
+			tileBackground.drawTileBackground(gc, 0, 0, width, height);
+			
+			gc.drawImage(
+					sourceImage,
+					partX,
+					partY,
+					partWidth,
+					partHeight,
+					0,
+					0,
+					width,
+					height);
+			
+			return drawImage.getImageData();
+		}
+		finally {
+			gc.dispose();
+			sourceImage.dispose();
+			drawImage.dispose();
+		}
 	}
 
 	/**
@@ -226,6 +347,7 @@ public class TileCache implements TileProvider {
 	public void clear() {
 		synchronized (cache) {
 			cache.clear();
+			mainImage = null;
 		}
 	}
 
