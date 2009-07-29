@@ -42,7 +42,7 @@ public static void main(String args []){
        Unmarshaller u = jc.createUnmarshaller();
        //it will debug problems while unmarchalling
        u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
-       JAXBElement<AlignmentType> root = u.unmarshal(new StreamSource(new File("res\\schema\\waterVA2inspire.xml")),AlignmentType.class);
+       JAXBElement<AlignmentType> root = u.unmarshal(new StreamSource(new File("res/schema/WatercoursesBY2Inspire.xml")),AlignmentType.class);
        AlignmentType genAlignment = root.getValue();
        System.out.println(genAlignment.getLevel());
 	}catch (Exception e){
