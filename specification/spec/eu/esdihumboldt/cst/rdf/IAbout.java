@@ -12,10 +12,10 @@
 
 package eu.esdihumboldt.cst.rdf;
 
-import eu.esdihumboldt.cst.align.IEntity;
+//import eu.esdihumboldt.cst.align.IEntity;
 
 /**
- * A {@link ICell} contains a mapping between two {@link IEntity}s.
+ * A {@link IAbout} contains the identifier for OML objects such as {@link IEntity}s.
  * 
  * @author Thorsten Reitz 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
