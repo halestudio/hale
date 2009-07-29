@@ -67,6 +67,7 @@ import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
  * @author Thorsten Reitz 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
+ * @deprecated
  */
 public class SplitRenderer {
 	
@@ -318,16 +319,6 @@ public class SplitRenderer {
 	 */
 	public void setPaintArea(Rectangle paintArea) {
 		this.paintArea = paintArea;
-	}
-	
-
-	public enum SplitStyle {
-		NONE,
-		HORIZONTAL,
-		VERTICAL,
-		DIAGONAL_UP,
-		DIAGONAL_DOWN,
-		OVERLAY
 	}
 	
 	protected class CRSTransformer {

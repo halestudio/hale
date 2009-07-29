@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.4"?>
+<?pde version="3.5"?>
 
-<product name="HUMBOLDT Alignment Editor" id="HALE.product" application="HALE.application" version="M2" useFeatures="false">
+<product name="HUMBOLDT Alignment Editor" id="HALE.product" application="HALE.application" version="M2" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
+      <vmArgs>-Xmx256m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
+
+   <launcher>
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
 
    <plugins>
       <plugin id="HALE"/>
@@ -41,5 +52,6 @@
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.junit4"/>
    </plugins>
+
 
 </product>
