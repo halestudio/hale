@@ -14,6 +14,8 @@ package eu.esdihumboldt.goml.rdf;
 
 import java.util.UUID;
 
+import eu.esdihumboldt.cst.rdf.IAbout;
+
 /**
  * This class can be used to store the identifier of objects.
  * 
@@ -21,7 +23,7 @@ import java.util.UUID;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class About {
+public class About implements IAbout{
 	
 	private UUID uid;
 	
