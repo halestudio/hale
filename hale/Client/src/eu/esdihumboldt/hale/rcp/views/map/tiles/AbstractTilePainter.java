@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map.tiles;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.MouseEvent;
@@ -20,6 +21,7 @@ import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Control;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -99,6 +101,10 @@ public abstract class AbstractTilePainter implements PaintListener,
 	 */
 	private Control control;
 	
+	private Cursor defCursor;
+	
+	private Cursor panCursor;
+	
 	/**
 	 * The map area
 	 */
@@ -125,6 +131,11 @@ public abstract class AbstractTilePainter implements PaintListener,
 		updateMap(mapArea);
 		
 		this.control = control;
+		
+		defCursor = new Cursor(control.getDisplay(), SWT.CURSOR_HAND);
+		panCursor = new Cursor(control.getDisplay(), SWT.CURSOR_SIZEALL);
+		
+		control.setCursor(defCursor);
 		
 		if (this.control != null) {
 			this.control.addPaintListener(this);
@@ -198,11 +209,11 @@ public abstract class AbstractTilePainter implements PaintListener,
 			if (currentZoom != zoom)
 				return;
 			
-			/*if ((x + 1) * tileWidth < xOffset || x * tileWidth > xOffset + control.getBounds().width)
+			if ((x + 1) * tileWidth < xOffset || x * tileWidth > xOffset + control.getBounds().width)
 				return;
 			
 			if ((y + 1) * tileHeight < yOffset || y * tileHeight > yOffset + control.getBounds().height)
-				return;*/
+				return;
 			
 			refresh();
 		}
@@ -519,6 +530,8 @@ public abstract class AbstractTilePainter implements PaintListener,
 		panX = e.x;
 		panY = e.y;
 		pan = true;
+		
+		control.setCursor(panCursor);
 	}
 
 	/**
@@ -529,6 +542,8 @@ public abstract class AbstractTilePainter implements PaintListener,
 		pan = false;
 		
 		doPan(e.x, e.y);
+		
+		control.setCursor(defCursor);
 	}
 
 	/**
