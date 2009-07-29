@@ -167,6 +167,8 @@ public class SwingRcpUtilities {
 					int pixel = palette.getPixel(new RGB((rgb >> 16) & 0xFF,
 							(rgb >> 8) & 0xFF, rgb & 0xFF));
 					data.setPixel(x, y, pixel);
+					// also set the alpha value (ST)
+					data.setAlpha(x, y, colorModel.getAlpha(rgb));
 				}
 			}
 			return data;
