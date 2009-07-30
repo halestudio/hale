@@ -41,7 +41,7 @@ public interface ICell {
 	/**
 	 * @return the measure
 	 */
-	public IMeasure getMeasure();
+	public double getMeasure();
 
 	/**
 	 * @return the about
