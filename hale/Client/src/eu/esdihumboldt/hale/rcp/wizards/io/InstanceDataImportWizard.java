@@ -13,22 +13,22 @@ package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml3.ApplicationSchemaConfiguration;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Configuration;
-import org.geotools.xml.Parser;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
@@ -43,7 +43,7 @@ import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
  * visualisation of the transformations and for validation of their 
  * correctness.
  * 
- * @author Thorsten Reitz
+ * @author Thorsten Reitz, Simon Templer
  * @version $Id$
  */
 public class InstanceDataImportWizard 
@@ -83,47 +83,78 @@ public class InstanceDataImportWizard
 	 */
 	public boolean performFinish() {
 		// get service references.
-		InstanceService instanceService = (InstanceService) ModelNavigationView.site
+		final InstanceService instanceService = (InstanceService) ModelNavigationView.site
 				.getService(InstanceService.class);
-		SchemaService schemaService = (SchemaService) ModelNavigationView.site
+		final SchemaService schemaService = (SchemaService) ModelNavigationView.site
 				.getService(SchemaService.class);
 		
-		// retrieve required parameters, specifically the location and the namespace of the source schema.
-		String namespace = schemaService.getSourceNameSpace();
-		if (namespace == null) {
-			// set a default namespace
-			namespace = "http://xsdi.org/default";
-		}
-		URL schema_location = schemaService.getSourceURL();
-		if (schema_location == null) {
-			throw new RuntimeException("You have to load a Schema first.");
-		}
+		final String result = mainPage.getResult();
+		final InstanceInterfaceType iit = mainPage.getInterfaceType();
 		
-		// retrieve and parse result from the Wizard.
-		URL gml_location = null;
+		final Display display = Display.getCurrent();
+		
 		try {
-			gml_location = new URL("file://" + this.mainPage.getResult());
-		} catch (MalformedURLException e) {
-			// it is ensured that only a valid URL is passed before
-			throw new RuntimeException(this.mainPage.getResult()
-					+ " was not parsed as a URL sucessfully: ", e);
+			getContainer().run(true, false, new IRunnableWithProgress() {
+				
+				@Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException,
+						InterruptedException {
+					monitor.beginTask("Importing instance data...", IProgressMonitor.UNKNOWN);
+					
+					// retrieve required parameters, specifically the location and the namespace of the source schema.
+					String namespace = schemaService.getSourceNameSpace();
+					if (namespace == null) {
+						// set a default namespace
+						namespace = "http://xsdi.org/default";
+					}
+					URL schema_location = schemaService.getSourceURL();
+					if (schema_location == null) {
+						throw new RuntimeException("You have to load a Schema first.");
+					}
+					
+					// retrieve and parse result from the Wizard.
+					URL gml_location = null;
+					try {
+						gml_location = new URL("file://" + result);
+					} catch (MalformedURLException e) {
+						// it is ensured that only a valid URL is passed before
+						throw new RuntimeException(result
+								+ " was not parsed as a URL sucessfully: ", e);
+					}
+					
+					// build FeatureCollection from the selected source.
+					FeatureCollection<FeatureType, Feature> features = null;
+					
+					if (iit.equals(InstanceInterfaceType.FILE)) {
+						// FIXME handle shapefiles in addition to GML
+						features = parseGML(namespace, schema_location, gml_location);
+					}
+					else if (iit.equals(InstanceInterfaceType.WFS)) {
+						
+					}
+					
+					final FeatureCollection<FeatureType, Feature> deployFeatures = features;
+					
+					if (features != null) {
+						/* run in display thread because service update listeners 
+						   might expect to be executed there */
+						display.syncExec(new Runnable() {
+							
+							@Override
+							public void run() {
+								instanceService.addInstances(DatasetType.reference, deployFeatures);
+								_log.info(deployFeatures.size() + " instances were added to the InstanceService.");
+							}
+						});
+					}
+					
+					monitor.done();
+				}
+			});
+		} catch (Exception e) {
+			_log.error("Error performing wizard finish", e);
 		}
-		InstanceInterfaceType iit = this.mainPage.getInterfaceType();
 		
-		// build FeatureCollection from the selected source.
-		FeatureCollection<FeatureType, Feature> features = null;
-		
-		if (iit.equals(InstanceInterfaceType.FILE)) {
-			// FIXME handle shapefiles in addition to GML
-			features = this.parseGML(namespace, schema_location, gml_location);
-		}
-		else if (iit.equals(InstanceInterfaceType.WFS)) {
-			
-		}
-		if (features != null) {
-			instanceService.addInstances(DatasetType.reference, features);
-			_log.info(features.size() + " instances were added to the InstanceService.");
-		}
 		return true;
 	}
 
