@@ -103,17 +103,22 @@ public class FeatureTileRenderer implements TileProvider {
 		
         Graphics2D graphics = image.createGraphics();
         
-        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        
-        if (!contextInitialized) {
-        	updateMapContext(constraints.getCRS());
+        try {
+	        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	        
+	        if (!contextInitialized) {
+	        	updateMapContext(constraints.getCRS());
+	        }
+	        
+	        renderer.paint(graphics,
+	    			new Rectangle(0, 0, width, height),
+	    			constraints.getTileArea(zoom, x, y));
+	        
+	        return SwingRcpUtilities.convertToSWT(image);
         }
-        
-        renderer.paint(graphics,
-    			new Rectangle(0, 0, width, height),
-    			constraints.getTileArea(zoom, x, y));
-        
-        return SwingRcpUtilities.convertToSWT(image);
+        finally {
+        	graphics.dispose();
+        }
 	}
 
 }
