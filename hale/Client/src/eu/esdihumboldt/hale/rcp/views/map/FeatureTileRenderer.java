@@ -23,6 +23,7 @@ import java.util.Map;
 import org.eclipse.swt.graphics.ImageData;
 import org.geotools.renderer.GTRenderer;
 import org.geotools.renderer.lite.StreamingRenderer;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.rcp.swingrcpbridge.SwingRcpUtilities;
@@ -40,6 +41,8 @@ public class FeatureTileRenderer implements TileProvider {
 	private final DatasetType type;
 	
 	private GTRenderer renderer;
+	
+	private boolean contextInitialized = false;
 	
 	public FeatureTileRenderer(final DatasetType type) {
 		super();
@@ -63,6 +66,16 @@ public class FeatureTileRenderer implements TileProvider {
         hints.put("memoryPreloadingEnabled", Boolean.FALSE);
         this.renderer.setRendererHints(hints);
     }
+	
+	/**
+	 * Update the map context
+	 * 
+	 * @param crs the coordinate reference system (may be null)
+	 */
+	public void updateMapContext(CoordinateReferenceSystem crs) {
+		renderer.setContext(MapUtils.buildMapContext(crs, type));
+		contextInitialized = true;
+	}
 
 	/**
 	 * @see TileProvider#getTile(TileConstraints, int, int, int)
@@ -92,8 +105,9 @@ public class FeatureTileRenderer implements TileProvider {
         
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
-        //TODO when to update? (or is it OK like this?)
-        renderer.setContext(MapUtils.buildMapContext(constraints.getCRS(), type));
+        if (!contextInitialized) {
+        	updateMapContext(constraints.getCRS());
+        }
         
         renderer.paint(graphics,
     			new Rectangle(0, 0, width, height),

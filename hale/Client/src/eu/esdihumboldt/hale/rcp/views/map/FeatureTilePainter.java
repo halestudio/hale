@@ -49,12 +49,22 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	/**
 	 * The reference data tile cache
 	 */
-	private TileCache referenceCache;
+	private final TileCache referenceCache;
+	
+	/**
+	 * The reference data renderer
+	 */
+	private final FeatureTileRenderer referenceRenderer;
 	
 	/**
 	 * The transformed data tile cache
 	 */
-	private TileCache transformedCache;
+	private final TileCache transformedCache;
+	
+	/**
+	 * The transformed data renderer
+	 */
+	private final FeatureTileRenderer transformedRenderer;
 	
 	/**
 	 * How the map is split
@@ -67,10 +77,11 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	 * @param canvas the control
 	 */
 	public FeatureTilePainter(Control canvas) {
-		referenceCache = new TileCache(
-				new FeatureTileRenderer(DatasetType.reference), this);
-		transformedCache = new TileCache(
-				new FeatureTileRenderer(DatasetType.transformed), this);
+		referenceRenderer = new FeatureTileRenderer(DatasetType.reference);
+		referenceCache = new TileCache(referenceRenderer, this);
+		
+		transformedRenderer = new FeatureTileRenderer(DatasetType.transformed);
+		transformedCache = new TileCache(transformedRenderer, this);
 		
 		init(canvas, determineMapArea());
 		
@@ -89,21 +100,13 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 			
 			@Override
 			public void update() {
-				resetTiles();
-				refresh();
+				synchronized (this) {
+					resetTiles();
+					refresh();
+				}	
 			}
 			
 		});
-		
-		/*SchemaService schemas = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-		schemas.addListener(new HaleServiceListener() {
-			
-			@Override
-			public void update() {
-				updateMap(determineMapArea());
-			}
-			
-		});*/
 		
 		referenceCache.addTileListener(this);
 		transformedCache.addTileListener(this);
@@ -351,6 +354,9 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	protected void resetTiles() {
 		referenceCache.clear();
 		transformedCache.clear();
+		
+		referenceRenderer.updateMapContext(getCRS());
+		transformedRenderer.updateMapContext(getCRS());
 	}
 
 	/**
