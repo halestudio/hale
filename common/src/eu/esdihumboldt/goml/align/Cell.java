@@ -13,7 +13,7 @@ package eu.esdihumboldt.goml.align;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
-import eu.esdihumboldt.cst.align.IMeasure;
+
 import eu.esdihumboldt.cst.rdf.IAbout;
 
 import java.util.List;
@@ -52,7 +52,7 @@ public class Cell
 	/**
 	 * TODO add comment
 	 */
-	private IMeasure measure;
+	private double measure;
 	
 	/**
 	 * Identifier of this {@link Cell} (optional).
@@ -95,14 +95,14 @@ public class Cell
 	/**
 	 * @return the measure
 	 */
-	public IMeasure getMeasure() {
+	public double getMeasure() {
 		return measure;
 	}
 
 	/**
 	 * @param measure the measure to set
 	 */
-	public void setMeasure(IMeasure measure) {
+	public void setMeasure(double measure) {
 		this.measure = measure;
 	}
 

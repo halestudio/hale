@@ -24,7 +24,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
-import eu.esdihumboldt.cst.align.IMeasure;
+
 import eu.esdihumboldt.cst.align.ISchema;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.goml.align.Alignment;
@@ -166,7 +166,7 @@ public class OmlRdfReader {
 		cell.setEntity1(getEntity(cellType.getEntity1().getEntity()));
 		//set entity2
 		cell.setEntity2(getEntity(cellType.getEntity2().getEntity()));
-		cell.setMeasure(getMeasure(cellType.getMeasure()));
+		cell.setMeasure(cellType.getMeasure().getValue());
 		cell.setRelation(getRelation(cellType.getRelation()));
 		
 		return cell;
@@ -187,21 +187,7 @@ public class OmlRdfReader {
 	}
 
 	
-	/**
-	 * Converts from Jaxb Measure to OML Measure
-	 * @param measure
-	 * @return {@link IMeasure}
-	 */
-	private IMeasure getMeasure(Measure jMeasure) {
-		IMeasure measure = null;
-		try {
-			measure = new eu.esdihumboldt.goml.align.Measure(new URI(jMeasure.getDatatype()));
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return measure;
-	}
+	
 
 	private IEntity getEntity(JAXBElement<? extends EntityType> entity) {
 		// TODO Auto-generated method stub
