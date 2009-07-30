@@ -23,17 +23,27 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.IEntity;
+import eu.esdihumboldt.cst.align.IMeasure;
 import eu.esdihumboldt.cst.align.ISchema;
+import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Formalism;
 import eu.esdihumboldt.goml.align.Schema;
 import eu.esdihumboldt.goml.generated.AlignmentType;
+import eu.esdihumboldt.goml.generated.CellType;
+import eu.esdihumboldt.goml.generated.EntityType;
 import eu.esdihumboldt.goml.generated.FormalismType;
+import eu.esdihumboldt.goml.generated.Measure;
 import eu.esdihumboldt.goml.generated.OntologyType;
+import eu.esdihumboldt.goml.generated.RelationEnumType;
 import eu.esdihumboldt.goml.generated.AlignmentType.Map;
 import eu.esdihumboldt.goml.generated.AlignmentType.Onto1;
 import eu.esdihumboldt.goml.rdf.About;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 /**
@@ -122,9 +132,82 @@ public class OmlRdfReader {
 		return formalism;
 	}
 
-	private List<ICell> getMap(List<Map> map) {
+	/**
+	 * 
+	 * @param map List of the generated maps, containing cell{@link CellType} and String about 
+	 * @return List of Cells {@link Cell}
+	 */
+	private List<ICell> getMap(List<Map> maps) {
+		List<ICell> cells = new ArrayList<ICell>(maps.size());
+		Cell cell;
+		Map map;
+		Iterator iterator = maps.iterator();
+		while(iterator.hasNext()){
+			 map = (Map)iterator.next();
+			 cell = getCell(map.getCell());
+			 cells.add(cell);
+			
+		}
+		return cells;
+	}
+
+	/**
+	 * converts from {@link CellType} to {@link Cell}
+	 * @param cell 
+	 * @return
+	 */
+	private Cell getCell(CellType cellType) {
+		Cell cell = new Cell();
+		//TODO set label list 
+		
+		//TODO check with Marian set about as UUID from string about 
+		cell.setAbout(new About(UUID.fromString(cellType.getAbout())));
+		//set entity1
+		cell.setEntity1(getEntity(cellType.getEntity1().getEntity()));
+		//set entity2
+		cell.setEntity2(getEntity(cellType.getEntity2().getEntity()));
+		cell.setMeasure(getMeasure(cellType.getMeasure()));
+		cell.setRelation(getRelation(cellType.getRelation()));
+		
+		return cell;
+	}
+
+	private RelationType getRelation(RelationEnumType relation) {
+		RelationType type = null;
+		if (relation.name().equals(relation.DISJOINT)) type = RelationType.Disjoint;
+		else if (relation.name().equals(relation.EQUIVALENCE)) type = RelationType.Equivalence;
+		else if (relation.name().equals(relation.EXTRA)) type = RelationType.Extra;
+		else if (relation.name().equals(relation.HAS_INSTANCE))type = RelationType.HasInstance;
+		else if (relation.name().equals(relation.INSTANCE_OF)) type = RelationType.InstanceOf;
+		else if (relation.name().equals(relation.MISSING)) type = RelationType.Missing;
+		else if (relation.name().equals(relation.PART_OF)) type = RelationType.PartOf;
+		else if (relation.name().equals(relation.SUBSUMED_BY)) type = RelationType.SubsumedBy;
+		else if (relation.name().equals(relation.SUBSUMES)) type = RelationType.Subsumes;
+		return type;
+	}
+
+	
+	/**
+	 * Converts from Jaxb Measure to OML Measure
+	 * @param measure
+	 * @return {@link IMeasure}
+	 */
+	private IMeasure getMeasure(Measure jMeasure) {
+		IMeasure measure = null;
+		try {
+			measure = new eu.esdihumboldt.goml.align.Measure(new URI(jMeasure.getDatatype()));
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return measure;
+	}
+
+	private IEntity getEntity(JAXBElement<? extends EntityType> entity) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
 
 }
