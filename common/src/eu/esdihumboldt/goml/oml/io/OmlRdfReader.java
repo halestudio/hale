@@ -232,9 +232,17 @@ public class OmlRdfReader {
 		return property;
 	}
 
+	/**
+	 * Converts from the List of DomainRestrictionType
+	 * to the List of the FeatureClass 
+	 * @param domainRestriction
+	 * @return
+	 */
 	private List<FeatureClass> getDomainRestriction(
 		List<DomainRestrictionType> domainRestriction) {
-	// TODO Auto-generated method stub
+		//TODO clear FeatureClass structure and
+		//TODO provide implementation.
+	  
 	return null;
 }
 
@@ -256,7 +264,8 @@ private List<Restriction> getValueCondition(
 		List<ValueExprType> valueExpr = condition.getRestriction().getValue();
 		restriction = new Restriction(null, getValueExpression(valueExpr));
 		restriction.setComparator(getComparator(condition.getRestriction().getComparator()));
-		//TODO add Property, cqlstring to Restriction
+		restriction.setCqlStr(condition.getSeq().toString());
+		//TODO add Property
 		restrictions.add(restriction);
 		
 	}
@@ -310,7 +319,8 @@ private List<Restriction> getValueCondition(
 			omlExpr = new ValueExpression(jaxbExpr.getLiteral());
 			omlExpr.setMax(jaxbExpr.getMax());
 			omlExpr.setMin(jaxbExpr.getMin());
-			omlExpr.setApply(getFunction(jaxbExpr.getApply()));
+			//TODO implement set Apply 
+			//omlExpr.setApply(getFunction(jaxbExpr.getApply()));
 			omlExpressions.add(omlExpr);
 			
 		}
@@ -318,7 +328,13 @@ private List<Restriction> getValueCondition(
 		return omlExpressions;
 	}
 
-	private Function getFunction(ApplyType apply) {
+	/**
+	 * Converts from the ApplyType
+	 * to the FunctionType
+	 * @param apply
+	 * @return
+	 */
+    private Function getFunction(ApplyType apply) {
 		// TODO Auto-generated method stub
 		return null;
 	}
