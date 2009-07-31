@@ -33,6 +33,7 @@ import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.align.Formalism;
 import eu.esdihumboldt.goml.align.Schema;
 import eu.esdihumboldt.goml.generated.AlignmentType;
+import eu.esdihumboldt.goml.generated.ApplyType;
 import eu.esdihumboldt.goml.generated.CellType;
 import eu.esdihumboldt.goml.generated.ComparatorEnumType;
 import eu.esdihumboldt.goml.generated.DomainRestrictionType;
@@ -46,6 +47,7 @@ import eu.esdihumboldt.goml.generated.ValueConditionType;
 import eu.esdihumboldt.goml.generated.ValueExprType;
 import eu.esdihumboldt.goml.generated.AlignmentType.Map;
 import eu.esdihumboldt.goml.generated.AlignmentType.Onto1;
+import eu.esdihumboldt.goml.oml.ext.Function;
 import eu.esdihumboldt.goml.oml.ext.ValueExpression;
 import eu.esdihumboldt.goml.omwg.ComparatorType;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
@@ -263,13 +265,60 @@ private List<Restriction> getValueCondition(
 	return restrictions;
 }
 
-	private ComparatorType getComparator(ComparatorEnumType comparator) {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * converts from the ComparatorEnumType to 
+	 * ComparatorType
+	 * @param comparator
+	 * @return
+	 */
+    private ComparatorType getComparator(ComparatorEnumType comparator) {
+		 ComparatorType omlComparator = null; 
+    	
+    	if (comparator.value().equals(ComparatorEnumType.BETWEEN)) omlComparator = ComparatorType.BETWEEN;
+    	else if (comparator.value().equals(ComparatorEnumType.COLLECTION_CONTAINS)) omlComparator = ComparatorType.COLLECTION_CONTAINS;
+    	else if (comparator.value().equals(ComparatorEnumType.CONTAINS)) omlComparator = ComparatorType.CONTAINS;
+    	else if (comparator.value().equals(ComparatorEnumType.EMPTY)) omlComparator = ComparatorType.EMPTY;
+    	else if (comparator.value().equals(ComparatorEnumType.ENDS_WITH)) omlComparator = ComparatorType.ENDS_WITH;
+    	else if (comparator.value().equals(ComparatorEnumType.EQUAL)) omlComparator = ComparatorType.EQUAL;
+    	else if (comparator.value().equals(ComparatorEnumType.GREATER_THAN)) omlComparator = ComparatorType.GREATER_THAN;
+    	else if (comparator.value().equals(ComparatorEnumType.GREATER_THAN_OR_EQUAL)) omlComparator = ComparatorType.GREATER_THAN_OR_EQUAL;
+    	else if (comparator.value().equals(ComparatorEnumType.INCLUDES)) omlComparator = ComparatorType.INCLUDES;
+    	else if (comparator.value().equals(ComparatorEnumType.INCLUDES_STRICTLY)) omlComparator = ComparatorType.INCLUDES_STRICTLY;
+    	else if (comparator.value().equals(ComparatorEnumType.LESS_THAN)) omlComparator = ComparatorType.LESS_THAN;
+    	else if (comparator.value().equals(ComparatorEnumType.LESS_THAN_OR_EQUAL)) omlComparator = ComparatorType.GREATER_THAN_OR_EQUAL;
+    	else if (comparator.value().equals(ComparatorEnumType.MATCHES)) omlComparator = ComparatorType.MATCHES;
+    	else if (comparator.value().equals(ComparatorEnumType.NOT_EQUAL)) omlComparator = ComparatorType.NOT_EQUAL;
+    	else if (comparator.value().equals(ComparatorEnumType.ONE_OF)) omlComparator = ComparatorType.ONE_OF;
+    	else if (comparator.value().equals(ComparatorEnumType.STARTS_WITH)) omlComparator = ComparatorType.STARTS_WITH;
+		//TODO clear about otherwise-type 
+    	return omlComparator;
 	}
 
-	private List<ValueExpression> getValueExpression(
+	/**
+	 * Conversts from the list of <ValueExprType> 
+	 * to the list of ValueExpression
+	 * @param valueExpr
+	 * @return
+	 */
+    private List<ValueExpression> getValueExpression(
 			List<ValueExprType> valueExpr) {
+		List<ValueExpression> omlExpressions = new ArrayList<ValueExpression>(valueExpr.size());
+		ValueExpression omlExpr;
+		Iterator iterator = valueExpr.iterator();
+		while(iterator.hasNext()){
+			ValueExprType jaxbExpr = (ValueExprType)iterator.next();
+			omlExpr = new ValueExpression(jaxbExpr.getLiteral());
+			omlExpr.setMax(jaxbExpr.getMax());
+			omlExpr.setMin(jaxbExpr.getMin());
+			omlExpr.setApply(getFunction(jaxbExpr.getApply()));
+			omlExpressions.add(omlExpr);
+			
+		}
+			
+		return omlExpressions;
+	}
+
+	private Function getFunction(ApplyType apply) {
 		// TODO Auto-generated method stub
 		return null;
 	}
