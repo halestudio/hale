@@ -29,17 +29,28 @@ import eu.esdihumboldt.cst.align.ISchema;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.align.Formalism;
 import eu.esdihumboldt.goml.align.Schema;
 import eu.esdihumboldt.goml.generated.AlignmentType;
 import eu.esdihumboldt.goml.generated.CellType;
+import eu.esdihumboldt.goml.generated.ComparatorEnumType;
+import eu.esdihumboldt.goml.generated.DomainRestrictionType;
 import eu.esdihumboldt.goml.generated.EntityType;
 import eu.esdihumboldt.goml.generated.FormalismType;
 import eu.esdihumboldt.goml.generated.Measure;
 import eu.esdihumboldt.goml.generated.OntologyType;
+import eu.esdihumboldt.goml.generated.PropertyType;
 import eu.esdihumboldt.goml.generated.RelationEnumType;
+import eu.esdihumboldt.goml.generated.ValueConditionType;
+import eu.esdihumboldt.goml.generated.ValueExprType;
 import eu.esdihumboldt.goml.generated.AlignmentType.Map;
 import eu.esdihumboldt.goml.generated.AlignmentType.Onto1;
+import eu.esdihumboldt.goml.oml.ext.ValueExpression;
+import eu.esdihumboldt.goml.omwg.ComparatorType;
+import eu.esdihumboldt.goml.omwg.FeatureClass;
+import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.goml.rdf.About;
 
 import java.util.ArrayList;
@@ -171,25 +182,94 @@ public class OmlRdfReader {
 		
 		return cell;
 	}
-
+    /**
+     * converts from RelationEnumType to RelationType
+     * @param relation
+     * @return
+     */
 	private RelationType getRelation(RelationEnumType relation) {
 		RelationType type = null;
-		if (relation.name().equals(relation.DISJOINT)) type = RelationType.Disjoint;
-		else if (relation.name().equals(relation.EQUIVALENCE)) type = RelationType.Equivalence;
-		else if (relation.name().equals(relation.EXTRA)) type = RelationType.Extra;
-		else if (relation.name().equals(relation.HAS_INSTANCE))type = RelationType.HasInstance;
-		else if (relation.name().equals(relation.INSTANCE_OF)) type = RelationType.InstanceOf;
-		else if (relation.name().equals(relation.MISSING)) type = RelationType.Missing;
-		else if (relation.name().equals(relation.PART_OF)) type = RelationType.PartOf;
-		else if (relation.name().equals(relation.SUBSUMED_BY)) type = RelationType.SubsumedBy;
-		else if (relation.name().equals(relation.SUBSUMES)) type = RelationType.Subsumes;
+		if (relation.name().equals(RelationEnumType.DISJOINT)) type = RelationType.Disjoint;
+		else if (relation.name().equals(RelationEnumType.EQUIVALENCE)) type = RelationType.Equivalence;
+		else if (relation.name().equals(RelationEnumType.EXTRA)) type = RelationType.Extra;
+		else if (relation.name().equals(RelationEnumType.HAS_INSTANCE))type = RelationType.HasInstance;
+		else if (relation.name().equals(RelationEnumType.INSTANCE_OF)) type = RelationType.InstanceOf;
+		else if (relation.name().equals(RelationEnumType.MISSING)) type = RelationType.Missing;
+		else if (relation.name().equals(RelationEnumType.PART_OF)) type = RelationType.PartOf;
+		else if (relation.name().equals(RelationEnumType.SUBSUMED_BY)) type = RelationType.SubsumedBy;
+		else if (relation.name().equals(RelationEnumType.SUBSUMES)) type = RelationType.Subsumes;
 		return type;
 	}
 
 	
 	
+   /**
+    * Converts from the JAXB generated EntityType to the 
+    *{@link IEntity} 
+    * @param entity
+    * @return
+    */
+	private IEntity getEntity(JAXBElement<? extends EntityType> jaxbEntity) {
+		EntityType entityType = jaxbEntity.getValue();
+		//TODO allow to instantiate entity as Property, FeatureClass, Relation
+		//instantiate entity es property
+		Entity property = new Property(entityType.getLabel());
+		//set About
+		property.setAbout(new About(UUID.fromString(entityType.getAbout())));
+		//TODO replace the downcast.
+		PropertyType propertyType = ((PropertyType)entityType);
+		//TODO add  Transformation to Entity
+		//set property-specific members to the entity
+		//set domainRestriction
+		((Property)property).setDomainRestriction(getDomainRestriction(propertyType.getDomainRestriction()));
+		//set typeCondition
+		((Property)property).setTypeCondition(propertyType.getTypeCondition());
+		//set value conditions
+		((Property)property).setValueCondition(getValueCondition(propertyType.getValueCondition()));
+		
+		return property;
+	}
 
-	private IEntity getEntity(JAXBElement<? extends EntityType> entity) {
+	private List<FeatureClass> getDomainRestriction(
+		List<DomainRestrictionType> domainRestriction) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+	/**
+	 * Converts from List<ValueConditionType>
+	 *  to List<Restriction> 
+	 * @param valueCondition
+	 * @return
+	 */
+private List<Restriction> getValueCondition(
+		List<ValueConditionType> valueCondition) {
+	
+	List<Restriction> restrictions = new ArrayList<Restriction>(valueCondition.size());
+	Iterator iterator = valueCondition.iterator();
+	Restriction restriction;
+	while(iterator.hasNext()){
+		ValueConditionType condition = (ValueConditionType)iterator.next();
+		//get List<ValueExpressionType>
+		List<ValueExprType> valueExpr = condition.getRestriction().getValue();
+		restriction = new Restriction(null, getValueExpression(valueExpr));
+		restriction.setComparator(getComparator(condition.getRestriction().getComparator()));
+		//TODO add Property, cqlstring to Restriction
+		restrictions.add(restriction);
+		
+	}
+	
+	
+	return restrictions;
+}
+
+	private ComparatorType getComparator(ComparatorEnumType comparator) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private List<ValueExpression> getValueExpression(
+			List<ValueExprType> valueExpr) {
 		// TODO Auto-generated method stub
 		return null;
 	}
