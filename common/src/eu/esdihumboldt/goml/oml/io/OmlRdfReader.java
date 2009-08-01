@@ -118,6 +118,7 @@ public class OmlRdfReader {
 	 * @return schema
 	 */
 	private ISchema getSchema(OntologyType onto) {
+		//creates formalism
 		// create Formalism
 		Formalism formalism = getFormalism(onto.getFormalism());
 		ISchema schema = new Schema(onto.getLocation(),formalism);
