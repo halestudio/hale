@@ -26,8 +26,17 @@ import eu.esdihumboldt.cst.rdf.IAbout;
 public class About implements IAbout{
 	
 	private UUID uid;
+	private String about;
 	
 	// constructors ............................................................
+
+	public String getAbout() {
+		return about;
+	}
+
+	public void setAbout(String about) {
+		this.about = about;
+	}
 
 	public About(UUID uid) {
 		super();
