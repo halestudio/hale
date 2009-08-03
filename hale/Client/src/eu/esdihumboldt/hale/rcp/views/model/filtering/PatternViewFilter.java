@@ -33,7 +33,6 @@ import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 public class PatternViewFilter 
 	extends ViewerFilter {
 	
-	private Text text = null;
 	private Set<TreeObjectType> attribute_filters = new HashSet<TreeObjectType>();
 
 	/**
@@ -52,14 +51,8 @@ public class PatternViewFilter
 				return false;
 			}
 			else {
-				if (text == null 
-						|| text.getText() == null 
-						|| text.getText().equals("")
-						|| to.getName().matches("^.*?" + text.getText() + ".*?")) {
-					return true;
-				}
+				return true;
 			}
-			return false;
 		}
 		return false;
 	}
@@ -70,10 +63,6 @@ public class PatternViewFilter
 	
 	public void removeAttributeFilter(TreeObjectType filterName) {
 		this.attribute_filters.remove(filterName);
-	}
-	
-	public void setText(Text text) {
-		this.text = text;
 	}
 
 }

@@ -22,14 +22,13 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPartSite;
+import org.eclipse.ui.dialogs.FilteredTree;
+import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.part.ViewPart;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
@@ -58,28 +57,14 @@ public class ModelNavigationView extends ViewPart implements
 	private static final String TARGET_MODEL_ID = "target";
 
 	/**
-	 * FIXME find better solution. Used to access the SchemaService.
+	 * FIXME find better solution. Used to access the SchemaService from wizards.
 	 */
 	public static IWorkbenchPartSite site;
 
 	public static final String ID = "eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView";
 
-	private TreeViewer sourceSchemaViewer;
-	public TreeViewer getSourceSchemaViewer() {
-		return sourceSchemaViewer;
-	}
-
-	public TreeViewer getTargetSchemaViewer() {
-		return targetSchemaViewer;
-	}
-
+	private TreeViewer sourceSchemaViewer;	
 	private TreeViewer targetSchemaViewer;
-
-	private Text sourceFilterText;
-	private Text targetFilterText;
-	
-	private PatternViewFilter sourceSchemaFilter;
-	private PatternViewFilter targetSchemaFilter;
 
 	/**
 	 * A reference to the {@link SchemaService} which serves as model for this
@@ -91,45 +76,36 @@ public class ModelNavigationView extends ViewPart implements
 	public void createPartControl(Composite _parent) {
 
 		ModelNavigationView.site = this.getSite();
-
 		schemaService = (SchemaService) this.getSite().getService(
 				SchemaService.class);
 		schemaService.addListener(this);
 		
-		this.sourceSchemaFilter = new PatternViewFilter();
-		this.targetSchemaFilter = new PatternViewFilter();
+		final PatternViewFilter sourceSchemaFilter = new PatternViewFilter();
+		final PatternViewFilter targetSchemaFilter = new PatternViewFilter();
 
 		Composite modelComposite = new Composite(_parent, SWT.BEGINNING);
 		GridLayout layout = new GridLayout(2, true);
-		layout.verticalSpacing = 6;
+		layout.verticalSpacing = 3;
 		layout.horizontalSpacing = 3;
 		modelComposite.setLayout(layout);
 		
 		List<SimpleToggleAction> sourceToggleActions = this.getToggleActions(
-				this.sourceSchemaFilter);
+				sourceSchemaFilter);
 		List<SimpleToggleAction> targetToggleActions = this.getToggleActions(
-				this.targetSchemaFilter);
+				targetSchemaFilter);
 
 		// source schema toolbar, filter and explorer
 		Composite sourceComposite = new Composite(modelComposite, SWT.BEGINNING);
 		sourceComposite.setLayout(new GridLayout(1, false));
 		sourceComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
-		this.initSchemaExplorerToolBar(sourceComposite, this.sourceSchemaFilter, 
+		this.initSchemaExplorerToolBar(sourceComposite, sourceSchemaFilter, 
 				sourceToggleActions);
-		this.sourceFilterText = new Text(sourceComposite, SWT.NONE | SWT.BORDER);
-		this.sourceFilterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-				true, false));
-		this.sourceFilterText.setText("");
-		this.sourceSchemaFilter.setText(this.sourceFilterText);
+
 		this.sourceSchemaViewer = this.schemaExplorerSetup(sourceComposite,
 				schemaService.getSourceSchema(), SOURCE_MODEL_ID);
-		this.sourceSchemaViewer.addFilter(this.sourceSchemaFilter);
-		this.sourceFilterText.addListener(SWT.FocusOut, new Listener() {
-			public void handleEvent(Event e) {
-				sourceSchemaViewer.refresh();
-			}
-		});
+		this.sourceSchemaViewer.addFilter(sourceSchemaFilter);
+
 		for (SimpleToggleAction sta : sourceToggleActions) {
 			sta.setActionTarget(this.sourceSchemaViewer);
 		}
@@ -139,22 +115,14 @@ public class ModelNavigationView extends ViewPart implements
 		targetComposite.setLayout(new GridLayout(1, false));
 		targetComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
-		this.initSchemaExplorerToolBar(targetComposite, this.targetSchemaFilter, 
+		this.initSchemaExplorerToolBar(targetComposite, targetSchemaFilter, 
 				targetToggleActions);
-		this.targetFilterText = new Text(targetComposite, SWT.NONE | SWT.BORDER);
-		this.targetFilterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-				true, false));
-		this.targetFilterText.setText("");
-		this.targetSchemaFilter.setText(this.targetFilterText);
+
 		this.targetSchemaViewer = this.schemaExplorerSetup(targetComposite,
 				schemaService.getTargetSchema(), TARGET_MODEL_ID);
 		
-		this.targetSchemaViewer.addFilter(this.targetSchemaFilter);
-		this.targetFilterText.addListener(SWT.FocusOut, new Listener() {
-			public void handleEvent(Event e) {
-				targetSchemaViewer.refresh();
-			}
-		});
+		this.targetSchemaViewer.addFilter(targetSchemaFilter);
+
 		for (SimpleToggleAction sta : targetToggleActions) {
 			sta.setActionTarget(this.targetSchemaViewer);
 		}
@@ -207,18 +175,10 @@ public class ModelNavigationView extends ViewPart implements
 	 */
 	private TreeViewer schemaExplorerSetup(Composite modelComposite,
 			Collection<FeatureType> schema, final String targetViewName) {
-		Composite viewerBComposite = new Composite(modelComposite, SWT.NONE);
-		FillLayout fLayout = new FillLayout();
-		viewerBComposite.setLayout(fLayout);
-		GridData gData = new GridData(GridData.VERTICAL_ALIGN_FILL
-				| GridData.HORIZONTAL_ALIGN_FILL);
-		gData.verticalSpan = 32;
-		gData.grabExcessHorizontalSpace = true;
-		gData.grabExcessVerticalSpace = true;
-		gData.verticalIndent = 12;
-		viewerBComposite.setLayoutData(gData);
-		TreeViewer schemaViewer = new TreeViewer(viewerBComposite, SWT.MULTI
-				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+		PatternFilter patternFilter = new PatternFilter();
+	    final FilteredTree filteredTree = new FilteredTree(modelComposite, SWT.MULTI
+	            | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter);
+	    TreeViewer schemaViewer = filteredTree.getViewer();
 		schemaViewer.setContentProvider(new ModelContentProvider());
 		schemaViewer.setLabelProvider(new ModelNavigationViewLabelProvider());
 		schemaViewer.setInput(translateSchema(schema));
@@ -291,11 +251,12 @@ public class ModelNavigationView extends ViewPart implements
 		return hidden_root;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private boolean checkInterface(Class<?>[] classes, Class classToFind) {
 		for (Class clazz : classes) {
 			if (clazz.equals(classToFind)) return true;
 			for (Class c : clazz.getInterfaces()) {
-				if (clazz.equals(classToFind)) return true;
+				if (clazz.equals(classToFind)) return true; // FIXME, I don't trust this piece of code
 			}
 		}
 		return false;
@@ -452,6 +413,14 @@ public class ModelNavigationView extends ViewPart implements
 				
 			}
 		}
+	}
+	
+	public TreeViewer getSourceSchemaViewer() {
+		return sourceSchemaViewer;
+	}
+
+	public TreeViewer getTargetSchemaViewer() {
+		return targetSchemaViewer;
 	}
 
 	public void update() {
