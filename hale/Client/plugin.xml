@@ -221,7 +221,7 @@
       </category>
       <wizard
             category="HALE.wizard.function.literal"
-            class="eu.esdihumboldt.rcp.wizards.functions.literal.RenamingFunctionWizard"
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.literal.RenamingFunctionWizard"
             icon="icons/concrete_ft.png"
             id="HALE.featurerenaming"
             name="Feature Type Renaming Wizard">
@@ -276,7 +276,7 @@
       </category>
       <wizard
             category="HALE.wizard.function.filter"
-            class="eu.esdihumboldt.rcp.wizards.functions.filter.FilterWizard"
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.filter.FilterWizard"
             icon="icons/concrete_ft.png"
             id="HALE.filter"
             name="CQL-based Filter Wizard">

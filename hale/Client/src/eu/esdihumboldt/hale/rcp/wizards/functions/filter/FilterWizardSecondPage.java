@@ -1,4 +1,4 @@
-package eu.esdihumboldt.rcp.wizards.functions.filter;
+package eu.esdihumboldt.hale.rcp.wizards.functions.filter;
 
 import javax.smartcardio.ATR;
 
@@ -27,7 +27,7 @@ import org.opengis.feature.type.FeatureType;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.rcp.views.model.AttributeView;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
-import eu.esdihumboldt.rcp.wizards.functions.literal.RenamingFunctionWizard;
+import eu.esdihumboldt.hale.rcp.wizards.functions.literal.RenamingFunctionWizard;
 
 public class FilterWizardSecondPage extends WizardPage {
 	
