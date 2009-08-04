@@ -27,6 +27,7 @@ import eu.esdihumboldt.cst.align.IEntity;
 
 import eu.esdihumboldt.cst.align.ISchema;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
+import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
@@ -35,6 +36,8 @@ import eu.esdihumboldt.goml.align.Schema;
 import eu.esdihumboldt.goml.generated.AlignmentType;
 import eu.esdihumboldt.goml.generated.ApplyType;
 import eu.esdihumboldt.goml.generated.CellType;
+import eu.esdihumboldt.goml.generated.ClassConditionType;
+import eu.esdihumboldt.goml.generated.ClassType;
 import eu.esdihumboldt.goml.generated.ComparatorEnumType;
 import eu.esdihumboldt.goml.generated.DomainRestrictionType;
 import eu.esdihumboldt.goml.generated.EntityType;
@@ -43,6 +46,7 @@ import eu.esdihumboldt.goml.generated.Measure;
 import eu.esdihumboldt.goml.generated.OntologyType;
 import eu.esdihumboldt.goml.generated.PropertyType;
 import eu.esdihumboldt.goml.generated.RelationEnumType;
+import eu.esdihumboldt.goml.generated.RestrictionType;
 import eu.esdihumboldt.goml.generated.ValueConditionType;
 import eu.esdihumboldt.goml.generated.ValueExprType;
 import eu.esdihumboldt.goml.generated.AlignmentType.Map;
@@ -96,7 +100,7 @@ public class OmlRdfReader {
 			e.printStackTrace();
 		}
 		AlignmentType genAlignment = root.getValue();
-		System.out.println(genAlignment.getLevel());
+		
 		// 2. create humboldt alignment object and fulfill the required fields
 		Alignment al = new Alignment();
 		//set about
@@ -175,7 +179,10 @@ public class OmlRdfReader {
 		//TODO set label list 
 		
 		//TODO check with Marian set about as UUID from string about 
-		cell.setAbout(new About(UUID.fromString(cellType.getAbout())));
+		//cell.setAbout(new About(UUID.fromString(cellType.getAbout())));
+		About about = new About(UUID.randomUUID());
+		about.setAbout(cellType.getAbout());
+		cell.setAbout(about);
 		//set entity1
 		cell.setEntity1(getEntity(cellType.getEntity1().getEntity()));
 		//set entity2
@@ -191,17 +198,17 @@ public class OmlRdfReader {
      * @return
      */
 	private RelationType getRelation(RelationEnumType relation) {
-		RelationType type = null;
-		if (relation.name().equals(RelationEnumType.DISJOINT)) type = RelationType.Disjoint;
-		else if (relation.name().equals(RelationEnumType.EQUIVALENCE)) type = RelationType.Equivalence;
-		else if (relation.name().equals(RelationEnumType.EXTRA)) type = RelationType.Extra;
-		else if (relation.name().equals(RelationEnumType.HAS_INSTANCE))type = RelationType.HasInstance;
-		else if (relation.name().equals(RelationEnumType.INSTANCE_OF)) type = RelationType.InstanceOf;
-		else if (relation.name().equals(RelationEnumType.MISSING)) type = RelationType.Missing;
-		else if (relation.name().equals(RelationEnumType.PART_OF)) type = RelationType.PartOf;
-		else if (relation.name().equals(RelationEnumType.SUBSUMED_BY)) type = RelationType.SubsumedBy;
-		else if (relation.name().equals(RelationEnumType.SUBSUMES)) type = RelationType.Subsumes;
-		return type;
+		
+		if (relation.equals(RelationEnumType.DISJOINT)) {return RelationType.Disjoint;}
+		else if (relation.equals(RelationEnumType.EQUIVALENCE)) {return RelationType.Equivalence;}
+		else if (relation.equals(RelationEnumType.EXTRA)) {return RelationType.Extra;}
+		else if (relation.equals(RelationEnumType.HAS_INSTANCE)){return RelationType.HasInstance;}
+		else if (relation.equals(RelationEnumType.INSTANCE_OF)){ return RelationType.InstanceOf;}
+		else if (relation.equals(RelationEnumType.MISSING)) {return RelationType.Missing;}
+		else if (relation.equals(RelationEnumType.PART_OF)) {return RelationType.PartOf;}
+		else if (relation.equals(RelationEnumType.SUBSUMED_BY)){return RelationType.SubsumedBy;}
+		else if (relation.equals(RelationEnumType.SUBSUMES)){ return RelationType.Subsumes;}
+		return null;
 	}
 
 	
@@ -216,21 +223,35 @@ public class OmlRdfReader {
 		EntityType entityType = jaxbEntity.getValue();
 		//TODO allow to instantiate entity as Property, FeatureClass, Relation
 		//instantiate entity es property
-		Entity property = new Property(entityType.getLabel());
-		//set About
-		property.setAbout(new About(UUID.fromString(entityType.getAbout())));
-		//TODO replace the downcast.
+		
+		Entity entity = null;
+		
+		
+		//TODO add convertion to the RelationType if needed
+		if (entityType instanceof PropertyType){
+	       entity = new Property(entityType.getLabel());
 		PropertyType propertyType = ((PropertyType)entityType);
 		//TODO add  Transformation to Entity
 		//set property-specific members to the entity
 		//set domainRestriction
-		((Property)property).setDomainRestriction(getDomainRestriction(propertyType.getDomainRestriction()));
+		((Property)entity).setDomainRestriction(getDomainRestriction(propertyType.getDomainRestriction()));
 		//set typeCondition
-		((Property)property).setTypeCondition(propertyType.getTypeCondition());
+		((Property)entity).setTypeCondition(propertyType.getTypeCondition());
 		//set value conditions
-		((Property)property).setValueCondition(getValueCondition(propertyType.getValueCondition()));
-		
-		return property;
+		((Property)entity).setValueCondition(getValueCondition(propertyType.getValueCondition()));
+		}else if (entityType instanceof ClassType){
+			//initiates entity as FeatureType
+			ClassType cType = (ClassType)entityType;
+			entity = new FeatureClass(null);
+			((FeatureClass)entity).setAttributeOccurenceCondition(getRestrictions(cType.getAttributeOccurenceCondition()));
+			((FeatureClass)entity).setAttributeTypeCondition(getRestrictions(cType.getAttributeTypeCondition()));
+			((FeatureClass)entity).setAttributeValueCondition(getRestrictions(cType.getAttributeValueCondition()));
+		}
+		//set About
+		About about = new About(UUID.randomUUID());
+		about.setAbout(entityType.getAbout());
+		entity.setAbout(about);
+		return entity;
 	}
 
 	/**
@@ -240,12 +261,57 @@ public class OmlRdfReader {
 	 * @return
 	 */
 	private List<FeatureClass> getDomainRestriction(
+		//TODO discuss the propertytype-field
 		List<DomainRestrictionType> domainRestriction) {
-		//TODO clear FeatureClass structure and
-		//TODO provide implementation.
-	  
-	return null;
+		List<FeatureClass> classes = new ArrayList<FeatureClass>(domainRestriction.size());
+		DomainRestrictionType restriction = null;
+		FeatureClass fClass;
+		ClassType clazz;
+		Iterator iterator = domainRestriction.iterator();
+		while(iterator.hasNext()){
+			restriction = (DomainRestrictionType)iterator.next();
+			clazz = restriction.getClazz();
+			fClass = new FeatureClass(null);
+			//set about
+			About fAbout = new About(java.util.UUID.randomUUID());
+			fAbout.setAbout(restriction.getClazz().getAbout());
+			fClass.setAbout(fAbout);
+			//set attributeValueCondition list
+			fClass.setAttributeValueCondition(getRestrictions(clazz.getAttributeValueCondition()));
+			//set attributeTypeCondition list
+			fClass.setAttributeTypeCondition(getRestrictions(clazz.getAttributeTypeCondition()));
+			//set attributeOccurenceCondition
+			fClass.setAttributeOccurenceCondition(getRestrictions(clazz.getAttributeOccurenceCondition()));
+			classes.add(fClass);
+		}
+	return classes;
 }
+ /**
+  * converts from a list of the ClassConditionType to
+  *  the list of the Restriction type
+  * @param List of ClassConditionType
+  * @return
+  */
+	private List<Restriction> getRestrictions(
+			List<ClassConditionType> classConditions) {
+		List<Restriction> restrictions = new ArrayList<Restriction>(classConditions.size());
+		Iterator iterator = classConditions.iterator();
+		Restriction restriction;
+		ClassConditionType classCondition;
+		while (iterator.hasNext()){
+			classCondition = (ClassConditionType)iterator.next();
+			RestrictionType rType = classCondition.getRestriction();
+			List<ValueExprType> valueExpr = rType.getValue();
+			restriction = new Restriction(null, getValueExpression(valueExpr));
+			if (rType.getComparator()!=null)restriction.setComparator(getComparator(rType.getComparator()));
+			restriction.setCqlStr(rType.getCqlStr());
+			restrictions.add(restriction);
+		
+			
+		}
+		
+		return restrictions;
+	}
 
 	/**
 	 * Converts from List<ValueConditionType>
@@ -265,7 +331,8 @@ private List<Restriction> getValueCondition(
 		List<ValueExprType> valueExpr = condition.getRestriction().getValue();
 		restriction = new Restriction(null, getValueExpression(valueExpr));
 		restriction.setComparator(getComparator(condition.getRestriction().getComparator()));
-		restriction.setCqlStr(condition.getSeq().toString());
+		//add CqlStr if exists
+		if (condition.getSeq()!=null)restriction.setCqlStr(condition.getSeq().toString());
 		//TODO add Property
 		restrictions.add(restriction);
 		
@@ -282,26 +349,26 @@ private List<Restriction> getValueCondition(
 	 * @return
 	 */
     private ComparatorType getComparator(ComparatorEnumType comparator) {
-		 ComparatorType omlComparator = null; 
+		 
     	
-    	if (comparator.value().equals(ComparatorEnumType.BETWEEN)) omlComparator = ComparatorType.BETWEEN;
-    	else if (comparator.value().equals(ComparatorEnumType.COLLECTION_CONTAINS)) omlComparator = ComparatorType.COLLECTION_CONTAINS;
-    	else if (comparator.value().equals(ComparatorEnumType.CONTAINS)) omlComparator = ComparatorType.CONTAINS;
-    	else if (comparator.value().equals(ComparatorEnumType.EMPTY)) omlComparator = ComparatorType.EMPTY;
-    	else if (comparator.value().equals(ComparatorEnumType.ENDS_WITH)) omlComparator = ComparatorType.ENDS_WITH;
-    	else if (comparator.value().equals(ComparatorEnumType.EQUAL)) omlComparator = ComparatorType.EQUAL;
-    	else if (comparator.value().equals(ComparatorEnumType.GREATER_THAN)) omlComparator = ComparatorType.GREATER_THAN;
-    	else if (comparator.value().equals(ComparatorEnumType.GREATER_THAN_OR_EQUAL)) omlComparator = ComparatorType.GREATER_THAN_OR_EQUAL;
-    	else if (comparator.value().equals(ComparatorEnumType.INCLUDES)) omlComparator = ComparatorType.INCLUDES;
-    	else if (comparator.value().equals(ComparatorEnumType.INCLUDES_STRICTLY)) omlComparator = ComparatorType.INCLUDES_STRICTLY;
-    	else if (comparator.value().equals(ComparatorEnumType.LESS_THAN)) omlComparator = ComparatorType.LESS_THAN;
-    	else if (comparator.value().equals(ComparatorEnumType.LESS_THAN_OR_EQUAL)) omlComparator = ComparatorType.GREATER_THAN_OR_EQUAL;
-    	else if (comparator.value().equals(ComparatorEnumType.MATCHES)) omlComparator = ComparatorType.MATCHES;
-    	else if (comparator.value().equals(ComparatorEnumType.NOT_EQUAL)) omlComparator = ComparatorType.NOT_EQUAL;
-    	else if (comparator.value().equals(ComparatorEnumType.ONE_OF)) omlComparator = ComparatorType.ONE_OF;
-    	else if (comparator.value().equals(ComparatorEnumType.STARTS_WITH)) omlComparator = ComparatorType.STARTS_WITH;
+    	if (comparator.equals(ComparatorEnumType.BETWEEN)) return ComparatorType.BETWEEN;
+    	else if (comparator.equals(ComparatorEnumType.COLLECTION_CONTAINS)) return ComparatorType.COLLECTION_CONTAINS;
+    	else if (comparator.equals(ComparatorEnumType.CONTAINS)) return ComparatorType.CONTAINS;
+    	else if (comparator.equals(ComparatorEnumType.EMPTY)) return ComparatorType.EMPTY;
+    	else if (comparator.equals(ComparatorEnumType.ENDS_WITH)) return ComparatorType.ENDS_WITH;
+    	else if (comparator.equals(ComparatorEnumType.EQUAL)) return ComparatorType.EQUAL;
+    	else if (comparator.equals(ComparatorEnumType.GREATER_THAN)) return ComparatorType.GREATER_THAN;
+    	else if (comparator.equals(ComparatorEnumType.GREATER_THAN_OR_EQUAL)) return ComparatorType.GREATER_THAN_OR_EQUAL;
+    	else if (comparator.equals(ComparatorEnumType.INCLUDES)) return ComparatorType.INCLUDES;
+    	else if (comparator.equals(ComparatorEnumType.INCLUDES_STRICTLY)) return ComparatorType.INCLUDES_STRICTLY;
+    	else if (comparator.equals(ComparatorEnumType.LESS_THAN)) return ComparatorType.LESS_THAN;
+    	else if (comparator.equals(ComparatorEnumType.LESS_THAN_OR_EQUAL)) return ComparatorType.GREATER_THAN_OR_EQUAL;
+    	else if (comparator.equals(ComparatorEnumType.MATCHES)) return ComparatorType.MATCHES;
+    	else if (comparator.equals(ComparatorEnumType.NOT_EQUAL)) return ComparatorType.NOT_EQUAL;
+    	else if (comparator.equals(ComparatorEnumType.ONE_OF)) return ComparatorType.ONE_OF;
+    	else if (comparator.equals(ComparatorEnumType.STARTS_WITH)) return ComparatorType.STARTS_WITH;
 		//TODO clear about otherwise-type 
-    	return omlComparator;
+    	return null;
 	}
 
 	/**
