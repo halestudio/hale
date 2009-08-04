@@ -319,6 +319,16 @@ public class TileCache implements TileProvider {
 			gc.setAntialias(SWT.ON);
 			gc.setInterpolation(SWT.HIGH);
 			
+			/*
+			 * FIXME
+			 * Drawing on a transparent image didn't yield the expected results
+			 * (either the image was still fully transparent or the content was
+			 * visible but pixels that should be transparent were black/white)
+			 * 
+			 * Solution: draw background first (see below)
+			 * Problem: loading images for transformed data in overlay mode
+			 *   will paint over reference data tiles 
+			 */
 			tileBackground.drawTileBackground(gc, 0, 0, width, height);
 			
 			gc.drawImage(
