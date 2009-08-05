@@ -25,6 +25,7 @@ import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.align.IFormalism;
 import eu.esdihumboldt.cst.align.ISchema;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
+import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.goml.oml.ext.ValueExpression;
 import eu.esdihumboldt.goml.omwg.ComparatorType;
@@ -39,6 +40,7 @@ import eu.esdihumboldt.goml.generated.CellType;
 import eu.esdihumboldt.goml.generated.ClassConditionType;
 import eu.esdihumboldt.goml.generated.ClassType;
 import eu.esdihumboldt.goml.generated.ComparatorEnumType;
+import eu.esdihumboldt.goml.generated.DomainRestrictionType;
 import eu.esdihumboldt.goml.generated.Entity1;
 import eu.esdihumboldt.goml.generated.Entity2;
 import eu.esdihumboldt.goml.generated.EntityType;
@@ -47,9 +49,12 @@ import eu.esdihumboldt.goml.generated.FunctionType;
 import eu.esdihumboldt.goml.generated.Measure;
 import eu.esdihumboldt.goml.generated.OnAttributeType;
 import eu.esdihumboldt.goml.generated.OntologyType;
+import eu.esdihumboldt.goml.generated.ParamType;
+import eu.esdihumboldt.goml.generated.PropertyCompositionType;
 import eu.esdihumboldt.goml.generated.RelationEnumType;
 import eu.esdihumboldt.goml.generated.RestrictionType;
 import eu.esdihumboldt.goml.generated.ValueClassType;
+import eu.esdihumboldt.goml.generated.ValueConditionType;
 import eu.esdihumboldt.goml.generated.AlignmentType.Map;
 import eu.esdihumboldt.goml.generated.AlignmentType.Onto1;
 import eu.esdihumboldt.goml.generated.AlignmentType.Onto2;
@@ -360,18 +365,84 @@ public class OmlRdfGenerator {
 	 * @return
 	 */
 	private OnAttributeType getOnAttributeType(Property onAttribute) {
-		
-		return null;
+		//TODO discuss need of the relation, about fields
+		OnAttributeType oaType = new OnAttributeType();
+		oaType.setProperty(getPropertyType(onAttribute));
+		return oaType;
 	}
 
+	/**
+	 * converts from the ComparatorType to 
+	 * ComparatorEnumType
+	 * @param comparator
+	 * @return
+	 */
 	private ComparatorEnumType getComparator(ComparatorType comparator) {
-		// TODO Auto-generated method stub
-		return null;
+		if (comparator.equals(ComparatorType.BETWEEN)) return ComparatorEnumType.BETWEEN;
+    	else if (comparator.equals(ComparatorType.COLLECTION_CONTAINS)) return ComparatorEnumType.COLLECTION_CONTAINS;
+    	else if (comparator.equals( ComparatorType.CONTAINS)) return ComparatorEnumType.CONTAINS;
+    	else if (comparator.equals(ComparatorType.EMPTY)) return ComparatorEnumType.EMPTY;
+    	else if (comparator.equals(ComparatorType.ENDS_WITH)) return ComparatorEnumType.ENDS_WITH ;
+    	else if (comparator.equals(ComparatorType.EQUAL)) return ComparatorEnumType.EQUAL;
+    	else if (comparator.equals(ComparatorType.GREATER_THAN)) return ComparatorEnumType.GREATER_THAN;
+    	else if (comparator.equals(ComparatorType.GREATER_THAN_OR_EQUAL)) return ComparatorEnumType.GREATER_THAN_OR_EQUAL ;
+    	else if (comparator.equals(ComparatorType.INCLUDES)) return ComparatorEnumType.INCLUDES;
+    	else if (comparator.equals(ComparatorType.INCLUDES_STRICTLY)) return ComparatorEnumType.INCLUDES_STRICTLY;
+    	else if (comparator.equals(ComparatorType.LESS_THAN)) return ComparatorEnumType.LESS_THAN;
+    	else if (comparator.equals(ComparatorType.GREATER_THAN_OR_EQUAL)) return ComparatorEnumType.GREATER_THAN_OR_EQUAL ;
+    	else if (comparator.equals(ComparatorType.MATCHES)) return ComparatorEnumType.MATCHES;
+    	else if (comparator.equals(ComparatorType.NOT_EQUAL)) return ComparatorEnumType.NOT_EQUAL;
+    	else if (comparator.equals(ComparatorType.ONE_OF)) return ComparatorEnumType.ONE_OF;
+    	else if (comparator.equals(ComparatorType.STARTS_WITH)) return ComparatorEnumType.STARTS_WITH;
+		//TODO clear about otherwise-type 
+    	return null;
 	}
 
+	/**
+	 * Converts from OML ITransformation 
+	 * to the JAXB generated FunctionType
+	 * @param transformation
+	 * @return
+	 */
 	private FunctionType getTransf(ITransformation transformation) {
-		// TODO Auto-generated method stub
-		return null;
+		FunctionType fType = new FunctionType();
+		//TODO check the resource transformation
+		fType.setResource(transformation.getService().toString());
+		fType.getParam().addAll(getParameters(transformation.getParameters()));
+		return fType;
+	}
+
+	/**
+	 * Converts from List of OML IParameter
+	 * to the collecion of the JAXB ParameterType
+	 * @param parameters
+	 * @return
+	 */
+	private Collection<? extends ParamType> getParameters(
+			List<IParameter> parameters) {
+		ArrayList<ParamType> pTypes = new ArrayList<ParamType>(parameters.size());
+		ParamType pType;
+		IParameter param;
+		Iterator iterator = parameters.iterator();
+		while(iterator.hasNext()){
+			param = (IParameter)iterator.next();
+			pType = getParameterType(param);
+			pTypes.add(pType);
+		}
+		return pTypes;
+	}
+
+	/**
+	 * Converts from OML IParameter
+	 * to the JAXB generated ParamType
+	 * @param param
+	 * @return
+	 */
+	private ParamType getParameterType(IParameter param) {
+		ParamType pType = new ParamType();
+		pType.setName(param.getName());
+		pType.getValue().add(param.getValue());
+		return pType;
 	}
 
 	/**
@@ -381,6 +452,29 @@ public class OmlRdfGenerator {
 	  * @return
 	  */
 	private PropertyType getPropertyType(Property property) {
+		PropertyType pType = new PropertyType();
+		pType.setAbout(((About)property.getAbout()).getAbout());
+		//TODO clear property pipe
+		pType.setPipe(null);
+		//TODO clear property composition
+		pType.setPropertyComposition(null);
+		pType.setTransf(getTransf(property.getTransformation()));
+		pType.getDomainRestriction().addAll(getDomainRestrictionTypes(property.getDomainRestriction()));
+		pType.getTypeCondition().addAll(property.getTypeCondition());
+		pType.getLabel().addAll(property.getLabel());
+		pType.getValueCondition().addAll(getValueConditions(property.getValueCondition()));
+		
+		return pType;
+	}
+
+	private Collection<? extends ValueConditionType> getValueConditions(
+			List<Restriction> valueCondition) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Collection<? extends DomainRestrictionType> getDomainRestrictionTypes(
+			List<FeatureClass> domainRestriction) {
 		// TODO Auto-generated method stub
 		return null;
 	}
