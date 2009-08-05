@@ -12,12 +12,17 @@
 
 package eu.esdihumboldt.goml.oml.io;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.cst.align.IAlignment;
@@ -79,16 +84,24 @@ import eu.esdihumboldt.goml.generated.PropertyType;
  */
 public class OmlRdfGenerator {
  
+/**
+ * Constant defines the path to the alignment jaxb context
+ */
+private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.goml.generated";
 
 /**
   * Stores alignment to xml 
   * @param alignment, to be stored
   * @param xmlPath, path to the xml-file 
+ * @throws JAXBException 
   */
-	public void write(IAlignment alignment, String xmlPath){
+	public void write(IAlignment alignment, String xmlPath) throws JAXBException{
 		//1. convert OML Alignment to the jaxb generated AlignmentType
 		AlignmentType aType = getAlignment(alignment);
 		//2. marshall AlignmentType to xml
+		JAXBContext jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT);
+        Marshaller m = jc.createMarshaller();
+        m.marshal(aType,new File(xmlPath));
 	 
  }
 
