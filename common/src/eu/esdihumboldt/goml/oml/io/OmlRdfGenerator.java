@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
@@ -141,7 +142,9 @@ public class OmlRdfGenerator {
 	 */
 	private OntologyType getOntologyType(ISchema schema) {
 		OntologyType oType = new OntologyType();
-		oType.setAbout(((About)schema.getAbout()).getAbout());
+		About about = (About)schema.getAbout();
+		if (about!=null)
+		oType.setAbout(about.getAbout());
 		oType.setLocation(schema.getLocation());
 		oType.setFormalism(getFormalism(schema.getFormalism()));
 		return oType;
@@ -279,13 +282,14 @@ public class OmlRdfGenerator {
 			 //instantiate as PropertyType
 			 Property property = (Property)entity;
 			 PropertyType pType = getPropertyType(property);
-			 eType = new JAXBElement<PropertyType>(null, null, pType);
+			 eType = new JAXBElement<PropertyType>(new QName(""), PropertyType.class, pType);
 			 
 		 }else if (entity instanceof FeatureClass){
 			 //instantiate as ClassType 
 			 FeatureClass feature = (FeatureClass)entity;
 			 ClassType cType = getClassType(feature);
-			 eType = new JAXBElement<ClassType>(null, null, cType);
+			 
+			eType = new JAXBElement<ClassType>(new QName(""), ClassType.class, cType);
 		 }else if (entity instanceof Relation){
 			 //instantiate as RelationType
 			 //TODO add implementation
@@ -382,6 +386,7 @@ public class OmlRdfGenerator {
 	 * @return
 	 */
 	private ComparatorEnumType getComparator(ComparatorType comparator) {
+		if(comparator!=null){
 		if (comparator.equals(ComparatorType.BETWEEN)) return ComparatorEnumType.BETWEEN;
     	else if (comparator.equals(ComparatorType.COLLECTION_CONTAINS)) return ComparatorEnumType.COLLECTION_CONTAINS;
     	else if (comparator.equals( ComparatorType.CONTAINS)) return ComparatorEnumType.CONTAINS;
@@ -398,6 +403,7 @@ public class OmlRdfGenerator {
     	else if (comparator.equals(ComparatorType.NOT_EQUAL)) return ComparatorEnumType.NOT_EQUAL;
     	else if (comparator.equals(ComparatorType.ONE_OF)) return ComparatorEnumType.ONE_OF;
     	else if (comparator.equals(ComparatorType.STARTS_WITH)) return ComparatorEnumType.STARTS_WITH;
+		}
 		//TODO clear about otherwise-type 
     	return null;
 	}
@@ -410,9 +416,11 @@ public class OmlRdfGenerator {
 	 */
 	private FunctionType getTransf(ITransformation transformation) {
 		FunctionType fType = new FunctionType();
+		if (transformation!=null){
 		//TODO check the resource transformation
-		fType.setResource(transformation.getService().toString());
+		//fType.setResource(transformation.getService().toString());
 		fType.getParam().addAll(getParameters(transformation.getParameters()));
+		}
 		return fType;
 	}
 
@@ -457,7 +465,10 @@ public class OmlRdfGenerator {
 	  */
 	private PropertyType getPropertyType(Property property) {
 		PropertyType pType = new PropertyType();
-		pType.setAbout(((About)property.getAbout()).getAbout());
+		if(property!=null){
+		About about = (About)property.getAbout();
+		if (about!=null)
+		pType.setAbout(about.getAbout());
 		//TODO clear property pipe
 		pType.setPipe(null);
 		//TODO clear property composition
@@ -467,7 +478,7 @@ public class OmlRdfGenerator {
 		pType.getTypeCondition().addAll(property.getTypeCondition());
 		pType.getLabel().addAll(property.getLabel());
 		pType.getValueCondition().addAll(getValueConditions(property.getValueCondition()));
-		
+		}
 		return pType;
 	}
 
@@ -566,7 +577,7 @@ public class OmlRdfGenerator {
 	private ApplyType getApplayType(Function function) {
 		ApplyType aType = new ApplyType();
 		//TODO clear it with marian
-		aType.setOperation(function.getService().toString());
+		//aType.setOperation(function.getService().toString());
 		aType.setValue(null);
 		
 		return aType;
