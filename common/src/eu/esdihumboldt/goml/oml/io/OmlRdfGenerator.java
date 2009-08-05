@@ -27,6 +27,7 @@ import eu.esdihumboldt.cst.align.ISchema;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
+import eu.esdihumboldt.goml.oml.ext.Function;
 import eu.esdihumboldt.goml.oml.ext.ValueExpression;
 import eu.esdihumboldt.goml.omwg.ComparatorType;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
@@ -36,6 +37,7 @@ import eu.esdihumboldt.goml.omwg.Relation;
 import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.generated.AlignmentType;
+import eu.esdihumboldt.goml.generated.ApplyType;
 import eu.esdihumboldt.goml.generated.CellType;
 import eu.esdihumboldt.goml.generated.ClassConditionType;
 import eu.esdihumboldt.goml.generated.ClassType;
@@ -50,11 +52,13 @@ import eu.esdihumboldt.goml.generated.Measure;
 import eu.esdihumboldt.goml.generated.OnAttributeType;
 import eu.esdihumboldt.goml.generated.OntologyType;
 import eu.esdihumboldt.goml.generated.ParamType;
+import eu.esdihumboldt.goml.generated.PropValueRestrictionType;
 import eu.esdihumboldt.goml.generated.PropertyCompositionType;
 import eu.esdihumboldt.goml.generated.RelationEnumType;
 import eu.esdihumboldt.goml.generated.RestrictionType;
 import eu.esdihumboldt.goml.generated.ValueClassType;
 import eu.esdihumboldt.goml.generated.ValueConditionType;
+import eu.esdihumboldt.goml.generated.ValueExprType;
 import eu.esdihumboldt.goml.generated.AlignmentType.Map;
 import eu.esdihumboldt.goml.generated.AlignmentType.Onto1;
 import eu.esdihumboldt.goml.generated.AlignmentType.Onto2;
@@ -80,7 +84,7 @@ public class OmlRdfGenerator {
   * @param alignment, to be stored
   * @param xmlPath, path to the xml-file 
   */
-	public void write(IAlignment alignment, String xmlPaath){
+	public void write(IAlignment alignment, String xmlPath){
 		//1. convert OML Alignment to the jaxb generated AlignmentType
 		AlignmentType aType = getAlignment(alignment);
 		//2. marshall AlignmentType to xml
@@ -467,16 +471,139 @@ public class OmlRdfGenerator {
 		return pType;
 	}
 
+	/**
+	 * Converts from the list of restrictions
+	 * to the collection of the ValueConditionType
+	 * @param restrictions
+	 * @return
+	 */
+	
 	private Collection<? extends ValueConditionType> getValueConditions(
-			List<Restriction> valueCondition) {
-		// TODO Auto-generated method stub
-		return null;
+			List<Restriction> restrictions) {
+		ArrayList<ValueConditionType> vcTypes = new ArrayList<ValueConditionType>(restrictions.size());
+		ValueConditionType vcType;
+		Restriction restriction;
+		Iterator iterator = restrictions.iterator();
+		while(iterator.hasNext()){
+			restriction = (Restriction)iterator.next();
+			vcType = getValueConditionType(restriction);
+			vcTypes.add(vcType);
+		}
+		return vcTypes;
 	}
 
+	/**
+	 * converts from OML Restriction
+	 * to the JAXB ValueConditionType
+	 * @param restriction
+	 * @return
+	 */
+	private ValueConditionType getValueConditionType(Restriction restriction) {
+		ValueConditionType vcType = new ValueConditionType();
+		vcType.setRestriction(getPropertyValueRestrictionType(restriction));
+		//TODO : clear seqstr should be of type BigInteger 
+		//vcType.setSeq(restriction.getCqlStr());
+		return vcType;
+	}
+
+	/**
+	 * Converts from OML Restriction
+	 * to the JAXB PropertyValueRestrictionType
+	 * @param restriction
+	 * @return
+	 */
+	private PropValueRestrictionType getPropertyValueRestrictionType(
+			Restriction restriction) {
+		PropValueRestrictionType pvrType = new PropValueRestrictionType();
+		pvrType.setComparator(getComparator(restriction.getComparator()));
+	    pvrType.getValue().addAll(getValueExpressionTypes(restriction.getValue()));
+		return pvrType;
+	}
+
+	
+	/**
+	 * Converts from List of ValueExpression
+	 * to the Collection of ValueExprType
+	 * @param value
+	 * @return
+	 */
+	private Collection<? extends ValueExprType> getValueExpressionTypes(
+			List<ValueExpression> values) {
+		ArrayList<ValueExprType> veTypes = new ArrayList<ValueExprType>(values.size());
+		ValueExprType veType;
+		ValueExpression expression;
+		Iterator iterator = values.iterator();
+		while(iterator.hasNext()){
+			expression = (ValueExpression)iterator.next();
+			veType = getValueExprType(expression);
+			veTypes.add(veType);
+		}
+	    return veTypes;
+	}
+
+	/**
+	 * Conversts from ValueExpression
+	 * to the JAXB generated ValueExprType
+	 * @param expression
+	 * @return
+	 */
+	private ValueExprType getValueExprType(ValueExpression expression) {
+		ValueExprType veType = new ValueExprType();
+		veType.setApply(getApplayType(expression.getApply()));
+		veType.setLiteral(expression.getLiteral());
+		veType.setMax(expression.getMax());
+		veType.setMin(expression.getMin());
+		return veType;
+	}
+
+	
+	/**
+	 * converts from OML Function
+	 * to the JAXB generated ApplyType
+	 * @param function
+	 * @return
+	 */
+	private ApplyType getApplayType(Function function) {
+		ApplyType aType = new ApplyType();
+		//TODO clear it with marian
+		aType.setOperation(function.getService().toString());
+		aType.setValue(null);
+		
+		return aType;
+	}
+
+	/**
+	 *  converts from the list of the FeatureClass
+	 * to the collection of the FeatureClass  
+	 * @param domainRestriction
+	 * @return
+	 */
 	private Collection<? extends DomainRestrictionType> getDomainRestrictionTypes(
-			List<FeatureClass> domainRestriction) {
-		// TODO Auto-generated method stub
-		return null;
+			List<FeatureClass> features) {
+		ArrayList<DomainRestrictionType> drTypes = new ArrayList<DomainRestrictionType>(features.size());
+		DomainRestrictionType drType;
+		FeatureClass feature;
+		Iterator iterator = features.iterator();
+		while(iterator.hasNext()){
+			feature = (FeatureClass)iterator.next();
+			drType = getDomainRestrictionType(feature);
+			drTypes.add(drType);
+		}
+		return drTypes;
+	}
+
+	/**
+	 * Converts from OML FeatureClass
+	 * to the JAXB generated DomainRestrictionType
+	 * @param feature
+	 * @return
+	 */
+	private DomainRestrictionType getDomainRestrictionType(FeatureClass feature) {
+		DomainRestrictionType drType = new DomainRestrictionType();
+		//TODO clear with Marian property field
+		drType.setProperty(null);
+		drType.setClazz(getClassType(feature));
+		return drType;
 	}
 
 	
