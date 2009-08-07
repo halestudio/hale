@@ -101,7 +101,10 @@ private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.goml.generated"
 		//2. marshall AlignmentType to xml
 		JAXBContext jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT);
         Marshaller m = jc.createMarshaller();
-        m.marshal(aType,new File(xmlPath));
+       /* marshaller.marshal( new JAXBElement(
+        		  new QName("","rootTag"),Point.class,new Point(...)));*/
+
+        m.marshal(new JAXBElement(new QName("","rootTag"),AlignmentType.class,aType),new File(xmlPath));
 	 
  }
 
