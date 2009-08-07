@@ -186,8 +186,10 @@ private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.goml.generated"
 	 */
 	private FormalismType getFormalismType(IFormalism formalism) {
 		FormalismType fType = new FormalismType();
+		if(formalism!=null){
 		fType.setName(formalism.getName());
 		fType.setUri(formalism.getLocation().toString());
+		}
 		return fType;
 	}
 
@@ -222,11 +224,14 @@ private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.goml.generated"
 	 */
 	private CellType getCellType(ICell cell) {
 		CellType cType = new CellType();
-		cType.setAbout(((About)cell.getAbout()).getAbout());
+		if(cell!=null){
+			About about =(About)cell.getAbout();
+		if (about!=null)cType.setAbout(about.getAbout());
 		cType.setMeasure(getMeasure(cell.getMeasure()));
 		cType.setRelation(getRelation(cell.getRelation()));
 		cType.setEntity1(getEntity1(cell.getEntity1()));
 		cType.setEntity2(getEntity2(cell.getEntity2()));
+		}
 		return cType;
 	}
 
@@ -250,18 +255,29 @@ private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.goml.generated"
      * @return
      */
     private RelationEnumType getRelation(RelationType relation) {
-		
-			if (relation.equals(RelationType.Disjoint)) {return RelationEnumType.DISJOINT;}
-			else if (relation.equals(RelationType.Equivalence)) {return RelationEnumType.EQUIVALENCE;}
-			else if (relation.equals(RelationType.Extra)) {return RelationEnumType.EXTRA;}
-			else if (relation.equals(RelationType.HasInstance)){return RelationEnumType.HAS_INSTANCE;}
-			else if (relation.equals(RelationType.InstanceOf)){ return RelationEnumType.INSTANCE_OF;}
-			else if (relation.equals(RelationType.Missing)) {return RelationEnumType.MISSING;}
-			else if (relation.equals(RelationType.PartOf)) {return RelationEnumType.PART_OF;}
-			else if (relation.equals(RelationType.SubsumedBy)){return RelationEnumType.SUBSUMED_BY;}
-			else if (relation.equals(RelationType.Subsumes)){ return RelationEnumType.SUBSUMES;}
-			return null;
-		
+		if (relation != null) {
+			if (relation.equals(RelationType.Disjoint)) {
+				return RelationEnumType.DISJOINT;
+			} else if (relation.equals(RelationType.Equivalence)) {
+				return RelationEnumType.EQUIVALENCE;
+			} else if (relation.equals(RelationType.Extra)) {
+				return RelationEnumType.EXTRA;
+			} else if (relation.equals(RelationType.HasInstance)) {
+				return RelationEnumType.HAS_INSTANCE;
+			} else if (relation.equals(RelationType.InstanceOf)) {
+				return RelationEnumType.INSTANCE_OF;
+			} else if (relation.equals(RelationType.Missing)) {
+				return RelationEnumType.MISSING;
+			} else if (relation.equals(RelationType.PartOf)) {
+				return RelationEnumType.PART_OF;
+			} else if (relation.equals(RelationType.SubsumedBy)) {
+				return RelationEnumType.SUBSUMED_BY;
+			} else if (relation.equals(RelationType.Subsumes)) {
+				return RelationEnumType.SUBSUMES;
+			}
+		}
+		return null;
+
 	}
     /**
      * converts from IEntity to the JAXB Entity2
@@ -293,19 +309,19 @@ private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.goml.generated"
 	 */
 	 private JAXBElement<? extends EntityType> getEntityType(IEntity entity) {
 		 JAXBElement<? extends EntityType> eType = null;
-		 
+		if (entity!=null){ 
 		 if (entity instanceof Property){
 			 //instantiate as PropertyType
 			 Property property = (Property)entity;
 			 PropertyType pType = getPropertyType(property);
-			 eType = new JAXBElement<PropertyType>(new QName(""), PropertyType.class, pType);
+			 eType = new JAXBElement<PropertyType>(new QName("Property"), PropertyType.class, pType);
 			 
 		 }else if (entity instanceof FeatureClass){
 			 //instantiate as ClassType 
 			 FeatureClass feature = (FeatureClass)entity;
 			 ClassType cType = getClassType(feature);
 			 
-			eType = new JAXBElement<ClassType>(new QName(""), ClassType.class, cType);
+			eType = new JAXBElement<ClassType>(new QName("Class"), ClassType.class, cType);
 		 }else if (entity instanceof Relation){
 			 //instantiate as RelationType
 			 //TODO add implementation
@@ -313,7 +329,7 @@ private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.goml.generated"
 			//instantiate as PropertyQualifierType
 			 //TODO add implementation
 		 }
-		 
+		}
 			
 			return eType;
 		}
@@ -326,11 +342,18 @@ private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.goml.generated"
 	 */
 	 private ClassType getClassType(FeatureClass feature) {
 		ClassType cType = new ClassType();
-		cType.setAbout(((About)feature.getAbout()).getAbout());
-		cType.setTransf(getTransf(feature.getTransformation()));
-		cType.getAttributeTypeCondition().addAll(getConditions(feature.getAttributeTypeCondition()));
-		cType.getAttributeValueCondition().addAll(getConditions(feature.getAttributeValueCondition()));
-		cType.getAttributeOccurenceCondition().addAll(getConditions(feature.getAttributeOccurenceCondition()));
+		if (feature != null) {
+			About about = ((About) feature.getAbout());
+			if (about != null)
+				cType.setAbout(about.getAbout());
+			cType.setTransf(getTransf(feature.getTransformation()));
+			cType.getAttributeTypeCondition().addAll(
+					getConditions(feature.getAttributeTypeCondition()));
+			cType.getAttributeValueCondition().addAll(
+					getConditions(feature.getAttributeValueCondition()));
+			cType.getAttributeOccurenceCondition().addAll(
+					getConditions(feature.getAttributeOccurenceCondition()));
+		}
 		return cType;
 	}
 
@@ -363,10 +386,12 @@ private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.goml.generated"
 	 */
 	 private RestrictionType getRestrictionType(Restriction restriction) {
 		RestrictionType rType = new RestrictionType();
+		if(restriction!=null){
 		rType.setComparator(getComparator(restriction.getComparator()));
 		rType.setCqlStr(restriction.getCqlStr());
 		rType.setOnAttribute(getOnAttributeType(restriction.getOnAttribute()));
 		rType.setValueClass(getValueClass(restriction.getValue()));
+		}
 		return rType;
 	}
 
@@ -468,8 +493,10 @@ private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.goml.generated"
 	 */
 	private ParamType getParameterType(IParameter param) {
 		ParamType pType = new ParamType();
+		if (param!=null){
 		pType.setName(param.getName());
 		pType.getValue().add(param.getValue());
+		}
 		return pType;
 	}
 
@@ -542,8 +569,10 @@ private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.goml.generated"
 	private PropValueRestrictionType getPropertyValueRestrictionType(
 			Restriction restriction) {
 		PropValueRestrictionType pvrType = new PropValueRestrictionType();
+		if (restriction!=null){
 		pvrType.setComparator(getComparator(restriction.getComparator()));
 	    pvrType.getValue().addAll(getValueExpressionTypes(restriction.getValue()));
+		}
 		return pvrType;
 	}
 
@@ -576,10 +605,12 @@ private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.goml.generated"
 	 */
 	private ValueExprType getValueExprType(ValueExpression expression) {
 		ValueExprType veType = new ValueExprType();
+		if (expression!=null){
 		veType.setApply(getApplayType(expression.getApply()));
 		veType.setLiteral(expression.getLiteral());
 		veType.setMax(expression.getMax());
 		veType.setMin(expression.getMin());
+		}
 		return veType;
 	}
 
