@@ -104,8 +104,9 @@ private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.goml.generated"
        /* marshaller.marshal( new JAXBElement(
         		  new QName("","rootTag"),Point.class,new Point(...)));*/
 
-        m.marshal(new JAXBElement(new QName("","rootTag"),AlignmentType.class,aType),new File(xmlPath));
-	 
+        m.marshal(new JAXBElement(new QName(null,"Alignment","align"),AlignmentType.class,aType),new File(xmlPath));
+
+       
  }
 
     /**
