@@ -16,7 +16,6 @@ import java.util.Set;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject;
 import eu.esdihumboldt.hale.rcp.views.model.TreeParent;
