@@ -20,12 +20,19 @@ package eu.esdihumboldt.hale.rcp.views.map;
  */
 public enum SplitStyle {
 	
+	/** show only the reference data */
 	SOURCE,
+	/** show only the transformed data */
 	TARGET,
+	/** horizontal splitting */
 	HORIZONTAL,
+	/** vertical splitting */
 	VERTICAL,
+	/** diagonal splitting (up) */
 	DIAGONAL_UP,
+	/** diagonal splitting (down) */
 	DIAGONAL_DOWN,
+	/** overlay */
 	OVERLAY;
 
 	/**

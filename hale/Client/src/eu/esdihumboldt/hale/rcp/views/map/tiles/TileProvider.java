@@ -30,6 +30,7 @@ public interface TileProvider {
 	 * @param x the tile x ordinate
 	 * @param y the tile y ordinate
 	 * @return the tile image data (may be null)
+	 * @throws Exception if an error occurs while creating the tile
 	 */
 	public ImageData getTile(TileConstraints constraints, int zoom, int x, int y)
 		throws Exception;

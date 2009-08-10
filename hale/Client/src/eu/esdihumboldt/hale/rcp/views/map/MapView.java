@@ -11,6 +11,8 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map;
 
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -22,9 +24,11 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
+
+import eu.esdihumboldt.hale.rcp.views.map.style.StyleDropdown;
 
 
 /**
@@ -38,6 +42,9 @@ import org.eclipse.ui.part.WorkbenchPart;
  */
 public class MapView extends ViewPart {
 	
+	/**
+	 * The view ID
+	 */
 	public static final String ID = "eu.esdihumboldt.hale.rcp.views.map.MapView";
 	
 	/**
@@ -62,16 +69,17 @@ public class MapView extends ViewPart {
 		// add SLD area
 		Composite sldComposite = new Composite(mapComposite, SWT.BEGINNING);
 		layout = new GridLayout();
-		layout.numColumns = 3;
+		layout.numColumns = 2;
 		layout.makeColumnsEqualWidth = false;
 		sldComposite.setLayout(layout);
 		sldComposite.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
 		
-		Label sldALabel = new Label(sldComposite, SWT.NONE);
-		sldALabel.setText("SLD A:  Default  ");
-		
-		Label sldBLabel = new Label(sldComposite, SWT.NONE);
-		sldBLabel.setText("SLD B:  Default  ");
+		ToolBar tools = new ToolBar(sldComposite, SWT.FLAT | SWT.WRAP);
+		IToolBarManager tm = new ToolBarManager(tools);
+		tm.add(new StyleDropdown());
+		//tm.add(new DatasetStyleDropdown(DatasetType.reference));
+		//tm.add(new DatasetStyleDropdown(DatasetType.transformed));
+		tm.update(false);
 		
 		// create the split style combo box
 		Combo splitCombo = new Combo(sldComposite, SWT.READ_ONLY);

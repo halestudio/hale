@@ -16,10 +16,12 @@ import java.net.URL;
 import org.geotools.styling.Style;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
+
 /**
  * The {@link StyleService} provides access to the Styles currently loaded.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz, Simon Templer 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
@@ -31,6 +33,22 @@ public interface StyleService
 	 * @return a {@link Style} for the given {@link FeatureType}.
 	 */
 	public Style getStyle(FeatureType ft);
+	
+	/**
+	 * Get a style combining all registered styles
+	 * for {@link FeatureType}s
+	 * 
+	 * @return the style
+	 */
+	public Style getStyle();
+	
+	/**
+	 * Get a style combining all styles for the given data set
+	 * 
+	 * @param dataset the data set
+	 * @return the style
+	 */
+	public Style getStyle(DatasetType dataset);
 	
 	/**
 	 * 
@@ -46,5 +64,13 @@ public interface StyleService
 	 * @return true if loading the URL was successful.
 	 */
 	public boolean addStyles(URL url);
+	
+	/**
+	 * Add styles to the style service. Will override any styles that
+	 * exist for the same feature types.
+	 * 
+	 * @param styles the styles to add
+	 */
+	public void addStyles(Style...styles);
 
 }

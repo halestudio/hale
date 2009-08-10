@@ -736,8 +736,8 @@ public class SchemaServiceImplApache
 		// handle case where only the local part was given.
 		else {
 			Collection<FeatureType> allFTs = new HashSet<FeatureType>();
-			allFTs.addAll(this.sourceSchema);
-			allFTs.addAll(this.targetSchema);
+			if (sourceSchema != null) allFTs.addAll(this.sourceSchema);
+			if (targetSchema != null) allFTs.addAll(this.targetSchema);
 			for (FeatureType ft : allFTs) {
 				if (ft.getName().getLocalPart().equals(name)) {
 					result = ft;

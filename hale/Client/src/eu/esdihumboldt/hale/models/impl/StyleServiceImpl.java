@@ -12,14 +12,12 @@
 package eu.esdihumboldt.hale.models.impl;
 
 import java.awt.Color;
-import java.io.File;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 import org.geotools.factory.CommonFactoryFinder;
@@ -35,6 +33,7 @@ import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.Symbolizer;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.FilterFactory;
 
 import com.vividsolutions.jts.geom.LineString;
@@ -43,55 +42,78 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
 import eu.esdihumboldt.hale.models.HaleServiceListener;
+import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.StyleService;
+import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 
 /**
  * A default {@link StyleService} implementation that will provide simple styles
  * for Lines, Points and Polygons if none have been loaded from an SLD.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz, Simon Templer 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
 public class StyleServiceImpl 
 	implements StyleService {
+
+	private static final Logger _log = Logger.getLogger(StyleServiceImpl.class);
 	
-	private static Logger _log = Logger.getLogger(StyleServiceImpl.class);
+	private static StyleService instance;
 	
-	private static StyleService instance = new StyleServiceImpl();
+	private final Map<FeatureType, FeatureTypeStyle> styles;
 	
-	private Map<FeatureType, Style> styles;
-	
-	private Set<HaleServiceListener> listeners = 
+	private final Set<HaleServiceListener> listeners = 
 		new HashSet<HaleServiceListener>();
 	
-	private StyleFactory styleFactory = 
+	private final StyleFactory styleFactory = 
 		CommonFactoryFinder.getStyleFactory(null);
 	
-	private FilterFactory filterFactory = 
+	private final FilterFactory filterFactory = 
 		CommonFactoryFinder.getFilterFactory(null);
+	
+	private final SchemaService schemaService;
 	
 	// Constructor, instance accessor ..........................................
 	
-	private StyleServiceImpl () {
-		this.styles = new HashMap<FeatureType, Style>();
+	private StyleServiceImpl (SchemaService schema) {
+		styles = new HashMap<FeatureType, FeatureTypeStyle>();
+		
+		schemaService = schema;
 	}
 	
-	public static StyleService getInstance() {
-		return StyleServiceImpl.instance;
+	/**
+	 * Get the style service instance
+	 * 
+	 * @param schema the schema service 
+	 * 
+	 * @return the style service instance
+	 */
+	public static StyleService getInstance(SchemaService schema) {
+		if (instance == null) {
+			instance = new StyleServiceImpl(schema);
+		}
+		
+		return instance;
 	}
 	
 	// StyleService methods ....................................................
 	
+	/**
+	 * @see StyleService#getNamedStyle(String)
+	 */
+	@SuppressWarnings("deprecation")
 	public Style getNamedStyle(String name) {
-		Style sty = this.getStyle(null);
-		for (Style s : this.styles.values()) {
-			if (s.getName().equals(name)) {
-				sty = s;
+		Style style = styleFactory.createStyle();
+		for (FeatureTypeStyle fts : this.styles.values()) {
+			//XXX checks for the FeatureTypeStyle name instead of the UserStyle name
+			if (fts.getName().equals(name)) {
+				style = styleFactory.createStyle();
+				style.addFeatureTypeStyle(fts);
 				break;
 			}
 		}
-		return sty;
+		return style;
 	}
 
 	/** 
@@ -99,11 +121,76 @@ public class StyleServiceImpl
 	 * previously. 
 	 * @see eu.esdihumboldt.hale.models.StyleService#getStyle(org.opengis.feature.type.FeatureType)
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("deprecation")
 	public Style getStyle(FeatureType ft) {
-		Style result = this.styles.get(ft);
-		if (result == null) {
-			Class type = ft.getGeometryDescriptor().getType().getBinding();
+		FeatureTypeStyle fts = styles.get(ft);
+		Style style = styleFactory.createStyle();
+		if (fts != null) {
+			style.addFeatureTypeStyle(fts);
+		}
+		else {
+			style.addFeatureTypeStyle(getDefaultStyle(ft));
+		}
+		return style;
+	}
+	
+	/**
+	 * @see StyleService#getStyle()
+	 */
+	@SuppressWarnings("deprecation")
+	@Override
+	public Style getStyle() {
+		Style style = styleFactory.createStyle();
+		
+		for (FeatureTypeStyle fts : styles.values()) {
+			style.addFeatureTypeStyle(fts);
+		}
+		
+		return style;
+	}
+
+	/**
+	 * @see StyleService#getStyle(eu.esdihumboldt.hale.models.InstanceService.DatasetType)
+	 */
+	@Override
+	public Style getStyle(final DatasetType dataset) {
+		final Collection<FeatureType> types = (dataset == DatasetType.reference)?(schemaService.getSourceSchema()):(schemaService.getTargetSchema());
+		
+		Style style = styleFactory.createStyle();
+		
+		/* TODO for (FeatureType type : types) {
+			style.addFeatureTypeStyle(getStyle());
+		}*/
+		
+		return style;
+	}
+
+	/**
+	 * Returns a default style for the given feature type
+	 * 
+	 * @param ft the feature type
+	 * @return the style
+	 */
+	protected FeatureTypeStyle getDefaultStyle(FeatureType ft) {
+		FeatureType current = ft;
+		Class<?> type = null;
+		
+		while (type == null && current != null) {
+			GeometryDescriptor gd = current.getGeometryDescriptor();
+			if (gd != null) {
+				type = gd.getType().getBinding();
+			}
+			
+			if (current.getSuper() instanceof FeatureType) {
+				//XXX does this make any sense?
+				current = (FeatureType) current.getSuper();
+			}
+			else {
+				current = null;
+			}
+		}
+		
+		if (type != null) {
 			if (type.isAssignableFrom(Polygon.class)
 					|| type.isAssignableFrom(MultiPolygon.class)) {
 				return createPolygonStyle();
@@ -114,25 +201,67 @@ public class StyleServiceImpl
 				return createPointStyle();
 			}
 		}
-		return result;
+		else {
+			return createPointStyle();
+		}
 	}
 	
 	/**
-	 * @see eu.esdihumboldt.hale.models.StyleService#addStyles(java.net.URL)
+	 * @see StyleService#addStyles(Style[])
 	 */
 	@SuppressWarnings("deprecation")
-	public boolean addStyles(URL url) {
-		try {
-			Style style = this.initializeStyles(new File(url.toString()));
+	@Override
+	public void addStyles(Style... styles) {
+		boolean somethingHappened = false;
+		
+		for (Style style : styles) {
 			for (FeatureTypeStyle fts : style.getFeatureTypeStyles()) {
-				_log.debug("" + fts.getFeatureTypeName());
+				FeatureType ft = schemaService.getFeatureTypeByName(fts.getFeatureTypeName());
+				if (ft != null) {
+					FeatureTypeStyle old = this.styles.get(ft);
+					if (old != null) {
+						if (!old.equals(fts)) {
+							_log.info("Replacing style for feature type " + ft.getName());
+							somethingHappened = true;
+						}
+					}
+					else {
+						_log.info("Adding style for feature type " + ft.getName());
+						somethingHappened = true;
+					}
+					
+					this.styles.put(ft, fts);
+				}
+				else {
+					/*
+					 * TODO store for later schema update when
+					 * feature type might be present?
+					 */
+				}
 			}
 		}
-		catch (Exception ex) {
-			
+		
+		if (somethingHappened) {
+			this.updateListeners();
 		}
-		this.updateListeners();
-		return false;
+	}
+
+	/**
+	 * @see StyleService#addStyles(URL)
+	 */
+	public boolean addStyles(URL url) {
+		SLDParser stylereader;
+		try {
+			stylereader = new SLDParser(styleFactory, url);
+			Style[] styles = stylereader.readXML();
+			
+			addStyles(styles);
+			
+			return true;
+		} catch (Exception e) {
+			_log.error("Error reading styled layer descriptor", e);
+			return false;
+		}
 	}
 	
 	// UpdateService methods ...................................................
@@ -155,36 +284,20 @@ public class StyleServiceImpl
 		}
 	}
 	
-	private Style initializeStyles(File sld) {
-		SLDParser stylereader;
-		try {
-			stylereader = new SLDParser(styleFactory, sld.toURL());
-			Style[] style = stylereader.readXML();
-			return style[0]; // FIXME check whether one or all styles should be returned.
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, e.getMessage());
-			System.exit(0);
-		}
-		return null;
-	}
-	
 	/**
 	 * Manually create a Point Style for a FeatureType. Used methods are going
 	 * to be removed in GT 2.6, so has to be updated in case of migration.
 	 * @return a Style for Point objects.
 	 */
 	@SuppressWarnings("deprecation")
-	private Style createPointStyle() {
-		Style style;
+	private FeatureTypeStyle createPointStyle() {
 		PointSymbolizer symbolizer = styleFactory.createPointSymbolizer();
 		symbolizer.getGraphic().setSize(filterFactory.literal(1));
 		Rule rule = styleFactory.createRule();
 		rule.setSymbolizers(new Symbolizer[] { symbolizer });
 		FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle();
-		fts.setRules(new Rule[] { rule });
-		style = styleFactory.createStyle();
-		style.addFeatureTypeStyle(fts);
-		return style;
+		fts.rules().add(rule);
+		return fts;
 	}
 
 	/**
@@ -193,8 +306,7 @@ public class StyleServiceImpl
 	 * @return a Style for Line/LineString objects.
 	 */
 	@SuppressWarnings("deprecation")
-	private Style createLineStyle() {
-		Style style;
+	private FeatureTypeStyle createLineStyle() {
 		LineSymbolizer symbolizer = styleFactory.createLineSymbolizer();
 		SLD.setLineColour(symbolizer, new Color(57, 75, 95));
 		symbolizer.getStroke().setWidth(filterFactory.literal(1));
@@ -204,10 +316,8 @@ public class StyleServiceImpl
 		Rule rule = styleFactory.createRule();
 		rule.setSymbolizers(new Symbolizer[] { symbolizer });
 		FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle();
-		fts.setRules(new Rule[] { rule });
-		style = styleFactory.createStyle();
-		style.addFeatureTypeStyle(fts);
-		return style;
+		fts.rules().add(rule);
+		return fts;
 	}
 
 	/**
@@ -216,8 +326,7 @@ public class StyleServiceImpl
 	 * @return a Style for Polygon objects.
 	 */
 	@SuppressWarnings("deprecation")
-	private Style createPolygonStyle() {
-		Style style;
+	private FeatureTypeStyle createPolygonStyle() {
 		PolygonSymbolizer symbolizer = styleFactory.createPolygonSymbolizer();
 		Fill fill = styleFactory.createFill(filterFactory.literal("#FFAA00"),
 				filterFactory.literal(0.5));
@@ -225,10 +334,8 @@ public class StyleServiceImpl
 		Rule rule = styleFactory.createRule();
 		rule.setSymbolizers(new Symbolizer[] { symbolizer });
 		FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle();
-		fts.setRules(new Rule[] { rule });
-		style = styleFactory.createStyle();
-		style.addFeatureTypeStyle(fts);
-		return style;
+		fts.rules().add(rule);
+		return fts;
 	}
 
 

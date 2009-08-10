@@ -39,7 +39,7 @@ public class HaleServiceFactory
 	
 	private InstanceService instance = InstanceServiceImpl.getInstance();
 	private SchemaService schema = SchemaServiceImplApache.getInstance();
-	private StyleService style = StyleServiceImpl.getInstance();
+	private StyleService style = StyleServiceImpl.getInstance(schema);
 	private TaskService task = TaskServiceImpl.getInstance();
 	private AlignmentService alignment = AlignmentServiceImpl.getInstance();
 

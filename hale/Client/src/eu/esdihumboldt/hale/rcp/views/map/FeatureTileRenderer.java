@@ -31,6 +31,8 @@ import eu.esdihumboldt.hale.rcp.views.map.tiles.TileConstraints;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.TileProvider;
 
 /**
+ * Renderer for feature tiles
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
@@ -44,6 +46,11 @@ public class FeatureTileRenderer implements TileProvider {
 	
 	private boolean contextInitialized = false;
 	
+	/**
+	 * Creates a new renderer
+	 * 
+	 * @param type the data set type
+	 */
 	public FeatureTileRenderer(final DatasetType type) {
 		super();
 		

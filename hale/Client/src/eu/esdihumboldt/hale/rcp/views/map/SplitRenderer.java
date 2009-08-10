@@ -25,16 +25,13 @@ import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.DirectPosition2D;
 import org.geotools.geometry.GeneralDirectPosition;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.map.DefaultMapContext;
 import org.geotools.map.MapContext;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.projection.ProjectionException;
 import org.geotools.renderer.lite.StreamingRenderer;
-import org.geotools.styling.Style;
 import org.opengis.feature.Feature;
 import org.opengis.feature.IllegalAttributeException;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -137,13 +134,13 @@ public class SplitRenderer {
 	public BufferedImage renderFeatures() {
 
 		// prepare the passed Feature objects for rendering
-		CoordinateReferenceSystem crs = this.determineCRS(
+		CoordinateReferenceSystem crs = MapUtils.determineCRS(
 				this.instanceService.getFeatures(DatasetType.reference));
 		this.mapArea = new ReferencedEnvelope(this.mapArea, crs);
 		
 		// set up MapContext.
-		MapContext sourceMapContext = this.buildMapContext(crs, DatasetType.reference);
-		MapContext targetMapContext = this.buildMapContext(crs, DatasetType.transformed);
+		MapContext sourceMapContext = MapUtils.buildMapContext(crs, DatasetType.reference);
+		MapContext targetMapContext = MapUtils.buildMapContext(crs, DatasetType.transformed);
 
         // perform actual rendering.
         BufferedImage image = new BufferedImage(paintArea.width, paintArea.height,
@@ -163,25 +160,7 @@ public class SplitRenderer {
 
         return image;
 	}
-	
-	/**
-	 * @param crs the {@link CoordinateReferenceSystem} to use.
-	 * @param type the {@link DatasetType} to render.
-	 * @return a {@link MapContext} with the given CRS and the 
-	 * {@link FeatureCollection} identified by the given {@link DatasetType}.
-	 */
-	private MapContext buildMapContext(CoordinateReferenceSystem crs, DatasetType type) {
-		MapContext mc = new DefaultMapContext(crs); 
-		FeatureCollection<?, ?> fc = this.instanceService.getFeatures(type);
-		if (fc != null) {
-			_log.info("features size: " + fc.size());
-			_log.info("features bounds: " + fc.getBounds());
-			Style style = this.styleService.getStyle(fc.getSchema());
-			mc.addLayer(
-	        		(FeatureCollection<SimpleFeatureType, SimpleFeature>) fc, style);
-		}
-		return mc;
-	}
+
 	
 	/**
 	 * This method executes the rendering of reference and transformed data in 
@@ -238,33 +217,6 @@ public class SplitRenderer {
     	
     	graphics.drawLine(paintArea.width / 2, 0, paintArea.width / 2, paintArea.height);
 	}
-	
-	private CoordinateReferenceSystem determineCRS(
-			FeatureCollection<? extends FeatureType, ? extends Feature> fc) {
-		// try the instance data first.
-		Feature f = fc.features().next();
-		CoordinateReferenceSystem crs = 
-			f.getDefaultGeometryProperty().getDescriptor().getCoordinateReferenceSystem();
-		
-		// then check the schema.
-		if (crs == null) {
-			crs = fc.getSchema().getCoordinateReferenceSystem();
-		}
-		
-		// if none is available, use a default.
-		if (crs == null) {
-			try {
-				_log.warn("Retrieving the CRS from the schema and the "
-						+ "instance data failed; defaulting to EPSG:31251."); 
-				crs = CRS.parseWKT(epsg31251wkt);
-			} catch (Exception e) {
-				_log.error("Decoding the default CRS failed, no accurate " +
-						"projection will be shown", e);
-			}
-		}
-		return crs;
-	}
-	
 
 	@SuppressWarnings("unchecked")
 	private void configureRenderer() {

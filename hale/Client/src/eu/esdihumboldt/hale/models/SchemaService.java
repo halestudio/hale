@@ -92,9 +92,12 @@ public interface SchemaService
 	public URL getTargetURL();
 	
 	/**
-	 * @return returns a {@link FeatureType} identified by the given name. The
-	 *         name String may either consist of only a local part or of a full
+	 * Get the {@link FeatureType} identified by the given name
+	 * 
+	 * @param name may either consist of only a local part or of a full
 	 *         name, i.e. namespace + local name part
+	 *         
+	 * @return returns a {@link FeatureType} identified by the given name
 	 */
 	public FeatureType getFeatureTypeByName(String name);
 

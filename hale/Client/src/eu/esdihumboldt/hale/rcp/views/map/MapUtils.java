@@ -62,7 +62,14 @@ public abstract class MapUtils {
 		"AXIS[\"X\",NORTH]," +
 		"AUTHORITY[\"EPSG\",\"31251\"]]";
 	
-	private static CoordinateReferenceSystem determineCRS(
+	/**
+	 * Determine the coordinate reference system for a feature collection
+	 * 
+	 * @param fc the feature collection
+	 * 
+	 * @return the coordinate reference system or null
+	 */
+	public static CoordinateReferenceSystem determineCRS(
 			FeatureCollection<? extends FeatureType, ? extends Feature> fc) {
 		CoordinateReferenceSystem crs = null;
 		
@@ -111,7 +118,7 @@ public abstract class MapUtils {
 		if (fc != null) {
 			log.info("features size: " + fc.size());
 			log.info("features bounds: " + fc.getBounds());
-			Style style = ss.getStyle(fc.getSchema());
+			Style style = ss.getStyle(type); //fc.getSchema());
 			mc.addLayer(
 	        		(FeatureCollection<SimpleFeatureType, SimpleFeature>) fc, style);
 		}

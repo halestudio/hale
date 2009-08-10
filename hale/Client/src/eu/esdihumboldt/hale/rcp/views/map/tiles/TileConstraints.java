@@ -47,6 +47,11 @@ public interface TileConstraints {
 	 */
 	public ReferencedEnvelope getTileArea(int zoom, int x, int y);
 	
+	/**
+	 * Get the coordinate reference system
+	 * 
+	 * @return the coordinate reference system
+	 */
 	public CoordinateReferenceSystem getCRS();
 
 }

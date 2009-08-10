@@ -92,6 +92,7 @@ public class TileCache implements TileProvider {
 	 * Creates a tile cache for the given tile provider
 	 * 
 	 * @param tileProvider the tile provider
+	 * @param tileBackground the tile background painter
 	 */
 	public TileCache(TileProvider tileProvider, TileBackground tileBackground) {
 		super();
