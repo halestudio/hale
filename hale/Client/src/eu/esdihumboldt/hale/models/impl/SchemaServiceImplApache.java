@@ -23,8 +23,10 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
@@ -534,6 +536,9 @@ public class SchemaServiceImplApache
 		Collection<FeatureType> tmpFeatureTypes = new ArrayList<FeatureType>();
 		Collection<FeatureType> featureTypes = new ArrayList<FeatureType>();
 		Collection<Name> superTypes = new HashSet<Name>();
+		
+		Map<String, String> names = new HashMap<String, String>();
+		
 		for (int i = 0; i < items.getCount(); i++) {
 			XmlSchemaObject item = items.getItem(i);
 			String name = null;
@@ -549,6 +554,12 @@ public class SchemaServiceImplApache
 				
 			} else if (item instanceof XmlSchemaSimpleType) {
 				name = ((XmlSchemaSimpleType)item).getName();
+			} else if (item instanceof XmlSchemaElement) {
+				// retrieve local name part of XmlSchemaElement and of 
+				// XmlSchemaComplexType to substitute name later on.
+				String typeName = ((XmlSchemaElement)item).getSchemaTypeName().getLocalPart();
+				String elementName = ((XmlSchemaElement)item).getName();
+				names.put(typeName, elementName);
 			}
 			
 			// If the item has a name, we create a feature type based on it.
@@ -621,16 +632,15 @@ public class SchemaServiceImplApache
 					}
 				}
 			}
-//			else if (items.getItem(i) instanceof XmlSchemaElement) {
-//				name = ((XmlSchemaElement)items.getItem(i)).getName();
-//			}
-			
 
 			// As it is not possible to set the super type of an existing feature type
 			// we need to recreate all feature types. But now set the corresponding 
 			// super type.
 			SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
 			ftbuilder.setSuperType(null);
+			if (names.get(name) != null && !names.get(name).equals("")) {
+				name = names.get(name);
+			}
 			ftbuilder.setName(name);
 			ftbuilder.setNamespaceURI(schema.getTargetNamespace());
 			
