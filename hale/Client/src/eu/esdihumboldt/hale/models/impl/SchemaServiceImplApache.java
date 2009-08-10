@@ -57,6 +57,9 @@ import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 import org.opengis.feature.type.PropertyDescriptor;
+
+import com.vividsolutions.jts.geom.Geometry;
+
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
 
@@ -636,6 +639,12 @@ public class SchemaServiceImplApache
 					AttributeResult res = attributeResults.get(a);
 					AttributeType t = res.getType();
 					AttributeDescriptor desc = new AttributeDescriptorImpl(t, new NameImpl(res.getName()),0, 0, false, null);
+					// set the name of the Default geometry property explicitly, 
+					// otherwise nothing will be returned when calling 
+					// getGeometryDescriptor().
+					if (Geometry.class.isAssignableFrom(desc.getType().getBinding())) {
+						ftbuilder.setDefaultGeometry(desc.getName().getLocalPart());
+					}
 					ftbuilder.add(desc);
 				}
 				else _log.warn("Attribute type NOT found: " + attributeResults.get(a).getName());
