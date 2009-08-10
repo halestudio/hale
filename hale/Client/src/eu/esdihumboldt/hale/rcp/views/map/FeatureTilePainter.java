@@ -18,6 +18,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Region;
 import org.eclipse.swt.widgets.Control;
@@ -70,6 +71,11 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	 * How the map is split
 	 */
 	private SplitStyle splitStyle = SplitStyle.SOURCE;
+	
+	/**
+	 * The background color
+	 */
+	private RGB background = new RGB(126, 166, 210);
 	
 	/**
 	 * Creates a Feature painter for the given control
@@ -341,7 +347,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	public void drawTileBackground(GC gc, int x, int y, int tileWidth, int tileHeight) {
 		Color bg = gc.getBackground();
 		
-		gc.setBackground(new Color(gc.getDevice(), 126, 166, 210));
+		gc.setBackground(new Color(gc.getDevice(), background));
 		gc.fillRectangle(x, y, tileWidth, tileHeight);
 		
 		gc.setBackground(bg);
@@ -377,6 +383,27 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		this.splitStyle = splitStyle;
 		
 		refresh();
+	}
+
+	/**
+	 * @return the background
+	 */
+	public RGB getBackground() {
+		return background;
+	}
+
+	/**
+	 * @param background the background to set
+	 */
+	public void setBackground(RGB background) {
+		if (background == null) return;
+		
+		this.background = background;
+		
+		synchronized (this) {
+			resetTiles();
+			refresh();
+		}
 	}
 
 }

@@ -158,7 +158,6 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	 */
 	@Override
 	protected void createPages() {
-		//addPage(new XMLStylePage(this));
 		addPage(new XMLStylePage4(this));
 	}
 	

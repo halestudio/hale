@@ -491,6 +491,38 @@ public class SchemaServiceImplApache
 	}
 	
 	/**
+	 * Get the type name
+	 * 
+	 * @param names mapping for types to names
+	 * @param type the type
+	 * @return the name (if found, else the type)
+	 */
+	private String getTypeName(Map<String, String> names, String type) {
+		String name = names.get(type);
+		
+		if (name != null && !name.isEmpty())
+			return name;
+		else
+			return type;
+	}
+	
+	/**
+	 * Get the type name
+	 * 
+	 * @param names mapping for types to names
+	 * @param type the type
+	 * @return the name (if found, else the type)
+	 */
+	private Name getTypeName(Map<String, String> names, Name type) {
+		String localName = names.get(type.getLocalPart());
+		
+		if (localName != null && !localName.isEmpty())
+			return new NameImpl(type.getNamespaceURI(), localName);
+		else
+			return type;
+	}
+	
+	/**
 	 * Method to load a XSD schema file and build a collection of FeatureTypes.
 	 * 
 	 * @param file
@@ -539,6 +571,21 @@ public class SchemaServiceImplApache
 		
 		Map<String, String> names = new HashMap<String, String>();
 		
+		// first pass - find names for types
+		for (int i = 0; i < items.getCount(); i++) {
+			XmlSchemaObject item = items.getItem(i);
+			
+			if (item instanceof XmlSchemaElement) {
+				XmlSchemaElement element = (XmlSchemaElement) item;
+				// retrieve local name part of XmlSchemaElement and of 
+				// XmlSchemaComplexType to substitute name later on.
+				String typeName = element.getSchemaTypeName().getLocalPart();
+				String elementName = element.getName();
+				names.put(typeName, elementName);
+			}
+		}
+		
+		// 2nd pass - create temporary feature types
 		for (int i = 0; i < items.getCount(); i++) {
 			XmlSchemaObject item = items.getItem(i);
 			String name = null;
@@ -550,23 +597,19 @@ public class SchemaServiceImplApache
 				// we need to store all super type and find in 3. all missing
 				// feature types.
 				Name superType = (getSuperTypeName((XmlSchemaComplexType)item));
-				if (superType != null) superTypes.add(superType);
+				if (superType != null) {
+					superTypes.add(getTypeName(names, superType));
+				}
 				
 			} else if (item instanceof XmlSchemaSimpleType) {
 				name = ((XmlSchemaSimpleType)item).getName();
-			} else if (item instanceof XmlSchemaElement) {
-				// retrieve local name part of XmlSchemaElement and of 
-				// XmlSchemaComplexType to substitute name later on.
-				String typeName = ((XmlSchemaElement)item).getSchemaTypeName().getLocalPart();
-				String elementName = ((XmlSchemaElement)item).getName();
-				names.put(typeName, elementName);
 			}
 			
 			// If the item has a name, we create a feature type based on it.
 			if (name != null) {
 				SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
 				ftbuilder.setSuperType(null);
-				ftbuilder.setName(name);
+				ftbuilder.setName(getTypeName(names, name));
 				ftbuilder.setNamespaceURI(schema.getTargetNamespace());
 				SimpleFeatureType ft = ftbuilder.buildFeatureType();
 				tmpFeatureTypes.add(ft);
@@ -606,12 +649,12 @@ public class SchemaServiceImplApache
 		for (int i = 0; i < items.getCount(); i++) {
 			XmlSchemaObject item = items.getItem(i);
 
-			String name = "";
-			String superTypeName = null;
-			
-			List<AttributeResult> attributeResults = new ArrayList<AttributeResult>();
-			
 			if (item instanceof XmlSchemaComplexType) {
+				String name = "";
+				String superTypeName = null;
+				
+				List<AttributeResult> attributeResults = new ArrayList<AttributeResult>();
+				
 				name = ((XmlSchemaComplexType)items.getItem(i)).getName();
 				XmlSchemaContentModel model = ((XmlSchemaComplexType)item).getContentModel();
 				if (model != null ) {
@@ -631,60 +674,59 @@ public class SchemaServiceImplApache
 						attributeResults = getAttributeTypesFromParticle(particle, superTypeName, tmpFeatureTypes);
 					}
 				}
-			}
-
-			// As it is not possible to set the super type of an existing feature type
-			// we need to recreate all feature types. But now set the corresponding 
-			// super type.
-			SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
-			ftbuilder.setSuperType(null);
-			if (names.get(name) != null && !names.get(name).equals("")) {
-				name = names.get(name);
-			}
-			ftbuilder.setName(name);
-			ftbuilder.setNamespaceURI(schema.getTargetNamespace());
-			
-			for (int a = 0; a < attributeResults.size(); a++) {
-				if (attributeResults.get(a).getType() != null) {
-					AttributeResult res = attributeResults.get(a);
-					AttributeType t = res.getType();
-					AttributeDescriptor desc = new AttributeDescriptorImpl(t, new NameImpl(res.getName()),0, 0, false, null);
-					// set the name of the Default geometry property explicitly, 
-					// otherwise nothing will be returned when calling 
-					// getGeometryDescriptor().
-					if (Geometry.class.isAssignableFrom(desc.getType().getBinding())) {
-						ftbuilder.setDefaultGeometry(desc.getName().getLocalPart());
-					}
-					ftbuilder.add(desc);
-				}
-				else _log.warn("Attribute type NOT found: " + attributeResults.get(a).getName());
-			}
-			
 				
-			if (superTypeName != null) {
-				// Find super type
-				FeatureType superType = findFeatureType(tmpFeatureTypes, superTypeName);
+				// As it is not possible to set the super type of an existing feature type
+				// we need to recreate all feature types. But now set the corresponding 
+				// super type.
+				SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
+				ftbuilder.setSuperType(null);
+				ftbuilder.setName(getTypeName(names, name));
+				ftbuilder.setNamespaceURI(schema.getTargetNamespace());
 				
-				if (superType != null) {
-					ftbuilder.setSuperType((SimpleFeatureType)superType);
-					Collection<PropertyDescriptor> descriptors = superType.getDescriptors();
-					for (PropertyDescriptor descriptor : descriptors) {
-						ftbuilder.add((AttributeDescriptor)descriptor);						
+				for (int a = 0; a < attributeResults.size(); a++) {
+					if (attributeResults.get(a).getType() != null) {
+						AttributeResult res = attributeResults.get(a);
+						AttributeType t = res.getType();
+						AttributeDescriptor desc = new AttributeDescriptorImpl(t, new NameImpl(res.getName()),0, 0, false, null);
+						// set the name of the Default geometry property explicitly, 
+						// otherwise nothing will be returned when calling 
+						// getGeometryDescriptor().
+						if (Geometry.class.isAssignableFrom(desc.getType().getBinding())) {
+							ftbuilder.setDefaultGeometry(desc.getName().getLocalPart());
+						}
+						ftbuilder.add(desc);
+					}
+					else _log.warn("Attribute type NOT found: " + attributeResults.get(a).getName());
+				}
+				
+					
+				if (superTypeName != null) {
+					superTypeName = getTypeName(names, superTypeName);
+					
+					// Find super type
+					FeatureType superType = findFeatureType(tmpFeatureTypes, superTypeName);
+					
+					if (superType != null) {
+						ftbuilder.setSuperType((SimpleFeatureType)superType);
+						Collection<PropertyDescriptor> descriptors = superType.getDescriptors();
+						for (PropertyDescriptor descriptor : descriptors) {
+							ftbuilder.add((AttributeDescriptor)descriptor);						
+						}
 					}
 				}
+				SimpleFeatureType ft = ftbuilder.buildFeatureType();
+				featureTypes.add(ft);
 			}
-			SimpleFeatureType ft = ftbuilder.buildFeatureType();
-			featureTypes.add(ft);
 		}
 		
 		// Remove the empty feature type which is always appearing
-		List<FeatureType> ft = new ArrayList<FeatureType>();
+		/*List<FeatureType> ft = new ArrayList<FeatureType>();
 		for(FeatureType featureType : featureTypes) {
 			if (featureType.getName().getLocalPart().equals("")) {
 				ft.add(featureType);
 			}
 		}
-		featureTypes.removeAll(ft);
+		featureTypes.removeAll(ft);*/
 		
 		// Prints the feature type to the console (for debugging only)
 		//SchemaPrinter.printFeatureTypeCollection(featureTypes);

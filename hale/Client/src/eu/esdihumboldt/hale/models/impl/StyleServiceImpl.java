@@ -152,15 +152,26 @@ public class StyleServiceImpl
 	/**
 	 * @see StyleService#getStyle(eu.esdihumboldt.hale.models.InstanceService.DatasetType)
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public Style getStyle(final DatasetType dataset) {
-		final Collection<FeatureType> types = (dataset == DatasetType.reference)?(schemaService.getSourceSchema()):(schemaService.getTargetSchema());
+		final Collection<FeatureType> types = schemaService.getSourceSchema();
+		//XXX use this when transformation implementation is correct: final Collection<FeatureType> types = (dataset == DatasetType.reference)?(schemaService.getSourceSchema()):(schemaService.getTargetSchema());
 		
 		Style style = styleFactory.createStyle();
 		
-		/* TODO for (FeatureType type : types) {
-			style.addFeatureTypeStyle(getStyle());
-		}*/
+		for (FeatureType type : types) {
+			if (!(type.isAbstract() || type.getSuper() == null)) {
+				// only add styles for non-abstract feature types
+				
+				FeatureTypeStyle fts = styles.get(type);
+				if (fts == null) {
+					fts = getDefaultStyle(type);
+				}
+				
+				style.addFeatureTypeStyle(fts);
+			}
+		}
 		
 		return style;
 	}
@@ -171,6 +182,7 @@ public class StyleServiceImpl
 	 * @param ft the feature type
 	 * @return the style
 	 */
+	@SuppressWarnings("deprecation")
 	protected FeatureTypeStyle getDefaultStyle(FeatureType ft) {
 		FeatureType current = ft;
 		Class<?> type = null;
@@ -190,20 +202,26 @@ public class StyleServiceImpl
 			}
 		}
 		
+		FeatureTypeStyle result;
+		
 		if (type != null) {
 			if (type.isAssignableFrom(Polygon.class)
 					|| type.isAssignableFrom(MultiPolygon.class)) {
-				return createPolygonStyle();
+				result = createPolygonStyle();
 			} else if (type.isAssignableFrom(LineString.class)
 					|| type.isAssignableFrom(MultiLineString.class)) {
-				return createLineStyle();
+				result = createLineStyle();
 			} else {
-				return createPointStyle();
+				result = createPointStyle();
 			}
 		}
 		else {
-			return createPointStyle();
+			result = createPointStyle();
 		}
+		
+		result.setFeatureTypeName(ft.getName().getLocalPart());
+		
+		return result;
 	}
 	
 	/**
@@ -310,9 +328,7 @@ public class StyleServiceImpl
 		LineSymbolizer symbolizer = styleFactory.createLineSymbolizer();
 		SLD.setLineColour(symbolizer, new Color(57, 75, 95));
 		symbolizer.getStroke().setWidth(filterFactory.literal(1));
-		symbolizer.getStroke().setColor(filterFactory.literal(
-				new Color(57, 75, 95)));
-
+		
 		Rule rule = styleFactory.createRule();
 		rule.setSymbolizers(new Symbolizer[] { symbolizer });
 		FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle();

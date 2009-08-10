@@ -103,11 +103,13 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 		int index = 0;
 		
 		for (FeatureType type : types) {
-			IAction action = new FeatureTypeStyleAction(type);
-			IContributionItem item = new ActionContributionItem(action);
-			item.fill(menu, index);
-			
-			index++;
+			if (!(type.isAbstract() || type.getSuper() == null)) { // skip abstract types
+				IAction action = new FeatureTypeStyleAction(type);
+				IContributionItem item = new ActionContributionItem(action);
+				item.fill(menu, index);
+				
+				index++;
+			}
 		}
 	}
 

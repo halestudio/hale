@@ -11,12 +11,7 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map.style;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.action.IMenuCreator;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
@@ -29,72 +24,19 @@ import eu.esdihumboldt.hale.rcp.HALEActivator;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class StyleDropdown extends Action implements IMenuCreator {
-	
-	private final IContributionItem source;
-	private final IContributionItem target;
-	
-	private Menu menu;
+public class StyleDropdown extends DropdownAction {
 	
 	/**
 	 * Creates a style drop-down
 	 */
 	public StyleDropdown() {
-		super("Styles", Action.AS_DROP_DOWN_MENU);
+		super("Styles");
 		
 		setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
 				HALEActivator.PLUGIN_ID, "/icons/styles.gif"));
 		
-		source = new ActionContributionItem(new DatasetStyleDropdown(DatasetType.reference));
-		target = new ActionContributionItem(new DatasetStyleDropdown(DatasetType.transformed));
-		
-		setMenuCreator(this);
-	}
-
-	/**
-	 * @see IMenuCreator#dispose()
-	 */
-	@Override
-	public void dispose() {
-		if (menu != null) {
-			menu.dispose();
-		}
-	}
-
-	/**
-	 * @see IMenuCreator#getMenu(org.eclipse.swt.widgets.Control)
-	 */
-	@Override
-	public Menu getMenu(Control parent) {
-		dispose();
-		
-		menu = new Menu(parent);
-		fillMenu(menu);
-		
-		return menu;
-	}
-
-	/**
-	 * Fill a menu
-	 * 
-	 * @param menu the menu to fill
-	 */
-	public void fillMenu(Menu menu) {
-		source.fill(menu, 0);
-		target.fill(menu, 1);
-	}
-
-	/**
-	 * @see IMenuCreator#getMenu(org.eclipse.swt.widgets.Menu)
-	 */
-	@Override
-	public Menu getMenu(Menu parent) {
-		dispose();
-		
-		menu = new Menu(parent);
-		fillMenu(menu);
-		
-		return menu;
+		addItem(new ActionContributionItem(new DatasetStyleDropdown(DatasetType.reference)));
+		addItem(new ActionContributionItem(new DatasetStyleDropdown(DatasetType.transformed)));
 	}
 	
 }

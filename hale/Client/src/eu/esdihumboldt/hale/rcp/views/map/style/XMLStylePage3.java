@@ -16,6 +16,7 @@ import java.io.StringReader;
 import javax.xml.transform.TransformerException;
 
 import org.eclipse.jface.dialogs.IDialogPage;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.CompositeRuler;
@@ -53,7 +54,7 @@ public class XMLStylePage3 extends FeatureStylePage {
 	 * @param parent the parent dialog
 	 */
 	public XMLStylePage3(FeatureStyleDialog parent) {
-		super(parent, "XML (src)");
+		super(parent, "XML");
 	}
 
 	/**
@@ -69,6 +70,9 @@ public class XMLStylePage3 extends FeatureStylePage {
 		ruler.addDecorator(0, new LineNumberRulerColumn());
 		
 		viewer = new SourceViewer(parent, ruler, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		
+		viewer.getTextWidget().setFont(JFaceResources.getFont("org.eclipse.wst.sse.ui.textfont"));
+		
 		SourceViewerConfiguration conf = new TextSourceViewerConfiguration();
 		viewer.configure(conf);
 		
@@ -80,7 +84,8 @@ public class XMLStylePage3 extends FeatureStylePage {
 		} catch (TransformerException e) {
 			xml = "Error: " + e.getMessage();
 		}
-		IDocument doc = new Document(xml);
+		IDocument doc = new Document(); //StructuredModelManager.getModelManager().createStructuredDocumentFor(ContentTypeIdForXML.ContentTypeID_XML);
+		doc.set(xml);
 		viewer.setInput(doc);
 	}
 

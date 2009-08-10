@@ -11,7 +11,11 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
@@ -19,15 +23,19 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Canvas;
+import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 
+import eu.esdihumboldt.hale.rcp.views.map.style.DropdownAction;
 import eu.esdihumboldt.hale.rcp.views.map.style.StyleDropdown;
 
 
@@ -76,9 +84,23 @@ public class MapView extends ViewPart {
 		
 		ToolBar tools = new ToolBar(sldComposite, SWT.FLAT | SWT.WRAP);
 		IToolBarManager tm = new ToolBarManager(tools);
-		tm.add(new StyleDropdown());
-		//tm.add(new DatasetStyleDropdown(DatasetType.reference));
-		//tm.add(new DatasetStyleDropdown(DatasetType.transformed));
+		DropdownAction styles = new StyleDropdown();
+		styles.addItem(new Separator());
+		Action backgroundAction = new Action("Change background...", IAction.AS_PUSH_BUTTON) {
+
+			@Override
+			public void run() {
+				ColorDialog dialog = new ColorDialog(Display.getCurrent().getActiveShell());
+				dialog.setRGB(painter.getBackground());
+				RGB color = dialog.open();
+				if (color != null) {
+					painter.setBackground(color);
+				}
+			}
+			
+		};
+		styles.addItem(new ActionContributionItem(backgroundAction));
+		tm.add(styles);
 		tm.update(false);
 		
 		// create the split style combo box

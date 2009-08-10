@@ -49,7 +49,7 @@ public class XMLStylePage2 extends FeatureStylePage {
 	 * @param parent the parent dialog
 	 */
 	public XMLStylePage2(FeatureStyleDialog parent) {
-		super(parent, "XML (adv.)");
+		super(parent, "XML");
 	}
 
 	/**
