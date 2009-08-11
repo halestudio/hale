@@ -155,8 +155,13 @@ public class StyleServiceImpl
 	@SuppressWarnings("deprecation")
 	@Override
 	public Style getStyle(final DatasetType dataset) {
-		final Collection<FeatureType> types = schemaService.getSourceSchema();
-		//XXX use this when transformation implementation is correct: final Collection<FeatureType> types = (dataset == DatasetType.reference)?(schemaService.getSourceSchema()):(schemaService.getTargetSchema());
+		final Collection<FeatureType> types = (dataset == DatasetType.reference)?(schemaService.getSourceSchema()):(schemaService.getTargetSchema());
+		
+		//XXX hack until transformation implementation is correct
+		if (dataset == DatasetType.transformed) {
+			types.addAll(schemaService.getSourceSchema());
+		}
+		//XXX hack end
 		
 		Style style = styleFactory.createStyle();
 		
