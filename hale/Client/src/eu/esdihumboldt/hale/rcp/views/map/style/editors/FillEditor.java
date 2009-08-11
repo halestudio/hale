@@ -25,18 +25,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
+import org.geotools.styling.Fill;
 import org.geotools.styling.SLD;
 import org.geotools.styling.Stroke;
 import org.geotools.styling.StyleBuilder;
 
 /**
- * Editor for {@link Stroke}s
+ * Editor for {@link Fill}s
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class StrokeEditor implements Editor<Stroke> {
+public class FillEditor implements Editor<Fill> {
 	
 	private final StyleBuilder styleBuilder = new StyleBuilder();
 	
@@ -45,8 +46,6 @@ public class StrokeEditor implements Editor<Stroke> {
 	private Composite page;
 	
 	private final Editor<RGB> color;
-	
-	private final Spinner width;
 	
 	private final Spinner opacity;
 	
@@ -62,12 +61,12 @@ public class StrokeEditor implements Editor<Stroke> {
 	};
 	
 	/**
-	 * Creates a {@link Stroke} editor
+	 * Creates a {@link Fill} editor
 	 *  
 	 * @param parent the parent composite
-	 * @param stroke the initial stroke
+	 * @param fill the initial fill
 	 */
-	public StrokeEditor(Composite parent, Stroke stroke) {
+	public FillEditor(Composite parent, Fill fill) {
 		super();
 		
 		page = new Composite(parent, SWT.NONE);
@@ -83,31 +82,9 @@ public class StrokeEditor implements Editor<Stroke> {
 		label.setLayoutData(caption);
 		label.setText("Color");
 		
-		Color strokeColor = SLD.color(stroke);
-		color = new ColorEditor(page, new RGB(strokeColor.getRed(), strokeColor.getGreen(), strokeColor.getBlue()));
+		Color fillColor = SLD.color(fill);
+		color = new ColorEditor(page, new RGB(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue()));
 		color.getControl().setLayoutData(editor);
-		
-		// width spinner
-		caption = new GridData(SWT.END, SWT.CENTER, false, false);
-		editor = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
-		
-		label = new Label(page, SWT.NONE);
-		label.setLayoutData(caption);
-		label.setText("Width");
-		
-		width = new Spinner(page, SWT.BORDER);
-		width.setLayoutData(editor);
-		width.setDigits(2);
-		width.setMinimum(0);
-		width.setMaximum(Integer.MAX_VALUE);
-		width.setIncrement(100);
-		width.setPageIncrement(100);
-		try {
-			width.setSelection(Math.round(Float.parseFloat(stroke.getWidth().toString()) * 100.0f));
-		} catch (Exception e) {
-			width.setSelection(100);
-		}
-		width.addSelectionListener(changeListener);
 		
 		// opacity spinner
 		caption = new GridData(SWT.END, SWT.CENTER, false, false);
@@ -127,7 +104,7 @@ public class StrokeEditor implements Editor<Stroke> {
 		opacity.setIncrement(1);
 		opacity.setPageIncrement(10);
 		try {
-			opacity.setSelection(Math.round(Float.parseFloat(stroke.getOpacity().toString()) * 100.0f));
+			opacity.setSelection(Math.round(Float.parseFloat(fill.getOpacity().toString()) * 100.0f));
 		} catch (Exception e) {
 			opacity.setSelection(100);
 		}
@@ -141,8 +118,8 @@ public class StrokeEditor implements Editor<Stroke> {
 	 * @see Editor#getValue()
 	 */
 	@Override
-	public Stroke getValue() {
-		return styleBuilder.createStroke(getColor(), getWidth(), getOpacity());
+	public Fill getValue() {
+		return styleBuilder.createFill(getColor(), getOpacity());
 	}
 
 	/**
@@ -152,15 +129,6 @@ public class StrokeEditor implements Editor<Stroke> {
 	 */
 	private float getOpacity() {
 		return ((float) opacity.getSelection()) / 100.0f;
-	}
-
-	/**
-	 * Get the {@link Stroke} width
-	 * 
-	 * @return the {@link Stroke} width
-	 */
-	private double getWidth() {
-		return ((double) width.getSelection()) / 100.0;
 	}
 
 	/**
@@ -177,18 +145,12 @@ public class StrokeEditor implements Editor<Stroke> {
 	 * @see Editor#setValue(Object)
 	 */
 	@Override
-	public void setValue(Stroke stroke) {
-		Color strokeColor = SLD.color(stroke);
-		color.setValue(new RGB(strokeColor.getRed(), strokeColor.getGreen(), strokeColor.getBlue()));
+	public void setValue(Fill fill) {
+		Color fillColor = SLD.color(fill);
+		color.setValue(new RGB(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue()));
 		
 		try {
-			width.setSelection(Math.round(Float.parseFloat(stroke.getWidth().toString()) * 100.0f));
-		} catch (Exception e) {
-			width.setSelection(100);
-		}
-		
-		try {
-			opacity.setSelection(Math.round(Float.parseFloat(stroke.getOpacity().toString()) * 100.0f));
+			opacity.setSelection(Math.round(Float.parseFloat(fill.getOpacity().toString()) * 100.0f));
 		} catch (Exception e) {
 			opacity.setSelection(100);
 		}

@@ -44,5 +44,12 @@ public interface Editor<T> {
 	 * @return the editor control
 	 */
 	public Control getControl();
+	
+	/**
+	 * States if the value has been changed
+	 * 
+	 * @return if the value has been changed
+	 */
+	public boolean isChanged();
 
 }

@@ -37,6 +37,8 @@ import org.eclipse.swt.widgets.Control;
  */
 public class ColorEditor implements Editor<RGB> {
 	
+	private boolean changed = false;
+	
 	private Button button;
 	
 	private RGB color;
@@ -67,12 +69,13 @@ public class ColorEditor implements Editor<RGB> {
 		updateImage();
         
         button.addSelectionListener(new SelectionAdapter(){
-            public void widgetSelected( SelectionEvent event ) {
+            public void widgetSelected(SelectionEvent event) {
                 ColorDialog colorDialog = new ColorDialog(button.getShell());
                 colorDialog.setRGB(ColorEditor.this.color);
                 RGB newColor = colorDialog.open();
                 if (newColor != null) {
                     ColorEditor.this.color = newColor;
+                    changed = true;
                     updateImage();
                 }
             }
@@ -155,6 +158,14 @@ public class ColorEditor implements Editor<RGB> {
 	@Override
 	public Control getControl() {
 		return button;
+	}
+
+	/**
+	 * @see Editor#isChanged()
+	 */
+	@Override
+	public boolean isChanged() {
+		return changed;
 	}
 
 }

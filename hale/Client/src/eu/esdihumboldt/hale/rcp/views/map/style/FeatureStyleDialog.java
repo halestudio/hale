@@ -75,7 +75,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 		else {
 			Style temp;
 			try {
-				temp = oldPage.getStyle();
+				temp = oldPage.getStyle(false);
 			} catch (Exception e) {
 				if (MessageDialog.openConfirm(getShell(), "Switch editor",
 						"The current style is not valid, if you continue you will loose your changes."
@@ -118,7 +118,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 		
 		Style temp = null;
 		try {
-			temp = page.getStyle();
+			temp = page.getStyle(true);
 		} catch (Exception e) {
 			MessageDialog.openError(getShell(), "Style error",
 					"The current style is not valid, the following error occurred:\n\n"
@@ -167,7 +167,8 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	 */
 	@Override
 	protected void createPages() {
-		addPage(new LineStylePage(this));
+		addPage(new SimpleLineStylePage(this));
+		addPage(new SimplePolygonStylePage(this));
 		addPage(new XMLStylePage3(this));
 	}
 	

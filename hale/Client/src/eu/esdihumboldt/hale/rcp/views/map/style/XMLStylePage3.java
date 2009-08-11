@@ -18,7 +18,9 @@ import javax.xml.transform.TransformerException;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.source.CompositeRuler;
 import org.eclipse.jface.text.source.LineNumberRulerColumn;
 import org.eclipse.jface.text.source.SourceViewer;
@@ -47,6 +49,8 @@ public class XMLStylePage3 extends FeatureStylePage {
 		CommonFactoryFinder.getStyleFactory(null);
 	
 	private SourceViewer viewer;
+	
+	private boolean changed = false;
 	
 	/**
 	 * Create a XML style editor page
@@ -92,17 +96,29 @@ public class XMLStylePage3 extends FeatureStylePage {
 		}
 		IDocument doc = new Document();
 		doc.set(xml);
+		doc.addDocumentListener(new IDocumentListener() {
+			
+			@Override
+			public void documentChanged(DocumentEvent event) {
+				changed = true;
+			}
+			
+			@Override
+			public void documentAboutToBeChanged(DocumentEvent event) {
+				// ignore
+			}
+		});
 		viewer.setInput(doc);
 		
 		setControl(viewer.getControl());
 	}
 
 	/**
-	 * @see FeatureStylePage#getStyle()
+	 * @see FeatureStylePage#getStyle(boolean)
 	 */
 	@Override
-	public Style getStyle() throws Exception {
-		if (viewer == null) {
+	public Style getStyle(boolean force) throws Exception {
+		if (viewer == null || (!force && !changed)) {
 			return null;
 		}
 		

@@ -101,10 +101,10 @@ public class XMLStylePage4 extends FeatureStylePage {
 	}
 
 	/**
-	 * @see FeatureStylePage#getStyle()
+	 * @see FeatureStylePage#getStyle(boolean)
 	 */
 	@Override
-	public Style getStyle() throws Exception {
+	public Style getStyle(boolean force) throws Exception {
 		//XXX WST - if (viewer == null) {
 			return null;
 		/*XXX WST - }
