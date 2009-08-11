@@ -11,38 +11,17 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map.style;
 
-import java.io.StringReader;
-
-import javax.xml.transform.TransformerException;
-
 import org.eclipse.jface.dialogs.IDialogPage;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.source.CompositeRuler;
-import org.eclipse.jface.text.source.IAnnotationAccess;
-import org.eclipse.jface.text.source.IOverviewRuler;
-import org.eclipse.jface.text.source.ISharedTextColors;
-import org.eclipse.jface.text.source.LineNumberRulerColumn;
-import org.eclipse.jface.text.source.OverviewRuler;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.internal.editors.text.EditorsPlugin;
-import org.eclipse.ui.texteditor.DefaultMarkerAnnotationAccess;
-import org.eclipse.wst.sse.core.StructuredModelManager;
-import org.eclipse.wst.sse.core.internal.provisional.IStructuredModel;
-import org.eclipse.wst.sse.ui.internal.StructuredTextViewer;
-import org.eclipse.wst.xml.core.internal.provisional.contenttype.ContentTypeIdForXML;
-import org.eclipse.wst.xml.ui.StructuredTextViewerConfigurationXML;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.styling.SLDParser;
-import org.geotools.styling.SLDTransformer;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 
 /**
- * Page for editing a style as XML
+ * Page for editing a style as XML.
+ * 
+ * Using WST plugins, disabled because this dependency adds unwanted
+ * contributions to the menu (e.g. Search menu).
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -54,7 +33,7 @@ public class XMLStylePage4 extends FeatureStylePage {
 	private final StyleFactory styleFactory = 
 		CommonFactoryFinder.getStyleFactory(null);
 	
-	private StructuredTextViewer viewer;
+	//XXX WST - private StructuredTextViewer viewer;
 	
 	/**
 	 * Create a XML style editor page
@@ -62,7 +41,7 @@ public class XMLStylePage4 extends FeatureStylePage {
 	 * @param parent the parent dialog
 	 */
 	public XMLStylePage4(FeatureStyleDialog parent) {
-		super(parent, "XML (src)");
+		super(parent, "XML");
 	}
 
 	/**
@@ -70,11 +49,7 @@ public class XMLStylePage4 extends FeatureStylePage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
-		FillLayout fillLayout = new FillLayout();
-		fillLayout.type = SWT.VERTICAL;
-		parent.setLayout(fillLayout);
-		
-		IAnnotationAccess annotationAccess = new DefaultMarkerAnnotationAccess();
+		/*XXX WST - IAnnotationAccess annotationAccess = new DefaultMarkerAnnotationAccess();
 		ISharedTextColors sharedTextColors = EditorsPlugin.getDefault().getSharedTextColors();
 		IOverviewRuler overviewRuler = new OverviewRuler(annotationAccess, 12, sharedTextColors);
 		CompositeRuler ruler = new CompositeRuler(4);
@@ -102,7 +77,7 @@ public class XMLStylePage4 extends FeatureStylePage {
 		IDocument document = scratchModel.getStructuredDocument();
 		document.set(xml);
 		viewer.configure(conf);
-		viewer.setDocument(document);
+		viewer.setDocument(document);*/
 		
 		/*AnnotationModel annotationModel = new AnnotationModel();
 		annotationModel.connect(document);
@@ -112,7 +87,7 @@ public class XMLStylePage4 extends FeatureStylePage {
 		
 		viewer.setDocument(document, annotationModel);*/
 		
-		viewer.setDocument(document);
+		/*XXX WST - viewer.setDocument(document);
 		
 		final Display display = Display.getCurrent();
 		
@@ -121,6 +96,8 @@ public class XMLStylePage4 extends FeatureStylePage {
 		lineNumbers.setForeground(display.getSystemColor(SWT.COLOR_BLACK)); //SWT.COLOR_INFO_FOREGROUND));
 		//lineNumbers.setFont(JFaceResources.getBannerFont());
 		ruler.addDecorator(0, lineNumbers);
+		
+		setControl(viewer.getControl());*/
 	}
 
 	/**
@@ -128,16 +105,16 @@ public class XMLStylePage4 extends FeatureStylePage {
 	 */
 	@Override
 	public Style getStyle() throws Exception {
-		if (viewer == null) {
+		//XXX WST - if (viewer == null) {
 			return null;
-		}
+		/*XXX WST - }
 		
 		IDocument doc = viewer.getDocument();
 		
 		SLDParser parser = new SLDParser(styleFactory, new StringReader(doc.get()));
 		Style[] styles = parser.readXML();
 		
-		return styles[0];
+		return styles[0];*/
 	}
 
 }

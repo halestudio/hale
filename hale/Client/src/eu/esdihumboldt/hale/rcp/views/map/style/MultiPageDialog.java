@@ -35,6 +35,9 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -202,6 +205,8 @@ public abstract class MultiPageDialog<T extends IDialogPage> extends TrayDialog 
 	private String title;
 	
 	private Image image;
+
+	private Composite pageArea;
 	
 	/**
 	 * Creates a new dialog using the current shell
@@ -243,11 +248,32 @@ public abstract class MultiPageDialog<T extends IDialogPage> extends TrayDialog 
 		
 		createPages();
 		
-		updatePage();
+		Composite dialogArea = (Composite) getDialogArea();
 		
 		if (pages.size() > 1) {
-			openTray(tray);
+			GridLayout layout = new GridLayout(2, false);
+			dialogArea.setLayout(layout);
+			
+			Composite trayControl = new Composite(dialogArea, SWT.NONE);
+			GridData trayGrid = new GridData(SWT.FILL, SWT.FILL, false, true);
+			trayControl.setLayoutData(trayGrid);
+			trayControl.setLayout(new FillLayout());
+			tray.createContents(trayControl);
+			
+			pageArea = new Composite(dialogArea, SWT.NONE);
+			GridData pageGrid = new GridData(SWT.FILL, SWT.FILL, true, true);
+			pageArea.setLayoutData(pageGrid);
+			pageArea.setLayout(new FillLayout());
+			
+			//old - openTray(tray);
 		}
+		else {
+			dialogArea.setLayout(new FillLayout());
+			
+			this.pageArea = dialogArea;
+		}
+		
+		updatePage();
 		
 		return c;
 	}
@@ -279,7 +305,8 @@ public abstract class MultiPageDialog<T extends IDialogPage> extends TrayDialog 
 		T page = getCurrentPage();
 		
 		if (page != null) {
-			page.createControl((Composite) getDialogArea());
+			page.createControl(pageArea);
+			pageArea.layout(true);
 		}
 	}
 
@@ -316,6 +343,9 @@ public abstract class MultiPageDialog<T extends IDialogPage> extends TrayDialog 
 	private void setCurrentPage(T page) {
 		T oldPage = getCurrentPage();
 		
+		if (page == oldPage)
+			 return;
+		
 		if (allowPageChange(oldPage, page)) {
 			int index = -1;
 			int i = 0;
@@ -335,12 +365,13 @@ public abstract class MultiPageDialog<T extends IDialogPage> extends TrayDialog 
 				currentIndex = index;
 				
 				firePageChange(oldPage, page);
+				
+				oldPage.getControl().dispose();
+				updatePage();
 			}
 		}
 		else {
 			tray.updateSelection();
-			
-			//TODO show some message
 		}
 	}
 

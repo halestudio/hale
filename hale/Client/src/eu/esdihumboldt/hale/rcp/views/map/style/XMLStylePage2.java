@@ -73,6 +73,8 @@ public class XMLStylePage2 extends FeatureStylePage {
 		}
 		IDocument doc = new Document(xml);
 		viewer.setInput(doc);
+		
+		setControl(viewer.getControl());
 	}
 
 	/**

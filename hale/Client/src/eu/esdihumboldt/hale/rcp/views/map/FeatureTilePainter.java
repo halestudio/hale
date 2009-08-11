@@ -320,7 +320,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 			else {
 				Color bg = gc.getBackground();
 				
-				gc.setBackground(new Color(gc.getDevice(), 128, 128, 128));
+				gc.setBackground(gc.getDevice().getSystemColor(SWT.COLOR_DARK_GRAY));
 				gc.fillRectangle(x, y, tileWidth, tileHeight);
 				
 				gc.setBackground(bg);
@@ -347,8 +347,10 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	public void drawTileBackground(GC gc, int x, int y, int tileWidth, int tileHeight) {
 		Color bg = gc.getBackground();
 		
-		gc.setBackground(new Color(gc.getDevice(), background));
+		Color color = new Color(gc.getDevice(), background);
+		gc.setBackground(color);
 		gc.fillRectangle(x, y, tileWidth, tileHeight);
+		color.dispose();
 		
 		gc.setBackground(bg);
 	}

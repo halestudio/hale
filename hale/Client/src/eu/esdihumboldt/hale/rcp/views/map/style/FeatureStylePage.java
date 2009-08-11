@@ -47,7 +47,7 @@ public abstract class FeatureStylePage extends DialogPage {
 	/**
 	 * Get the edited style
 	 * 
-	 * @return the style
+	 * @return the style (or null if the parent style shall be used)
 	 * @throws Exception if the style could not be retrieved
 	 */
 	public abstract Style getStyle() throws Exception;

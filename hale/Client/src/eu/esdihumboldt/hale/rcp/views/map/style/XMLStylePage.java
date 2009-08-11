@@ -72,6 +72,8 @@ public class XMLStylePage extends FeatureStylePage {
 			xml = "Error: " + e.getMessage();
 		}
 		text.setText(xml);
+		
+		setControl(text);
 	}
 
 	/**

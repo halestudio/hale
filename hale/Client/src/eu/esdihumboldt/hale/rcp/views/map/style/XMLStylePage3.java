@@ -26,7 +26,7 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
+import org.eclipse.swt.widgets.Display;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.SLDTransformer;
@@ -62,18 +62,24 @@ public class XMLStylePage3 extends FeatureStylePage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
+		final Display display = parent.getDisplay();
+		
 		FillLayout fillLayout = new FillLayout();
 		fillLayout.type = SWT.VERTICAL;
 		parent.setLayout(fillLayout);
 		
-		CompositeRuler ruler = new CompositeRuler(4);
-		ruler.addDecorator(0, new LineNumberRulerColumn());
+		CompositeRuler ruler = new CompositeRuler(3);
+		LineNumberRulerColumn lineNumbers = new LineNumberRulerColumn();
+		lineNumbers.setBackground(display.getSystemColor(SWT.COLOR_GRAY)); //SWT.COLOR_INFO_BACKGROUND));
+		lineNumbers.setForeground(display.getSystemColor(SWT.COLOR_BLACK)); //SWT.COLOR_INFO_FOREGROUND));
+		lineNumbers.setFont(JFaceResources.getTextFont());
+		ruler.addDecorator(0, lineNumbers);
 		
 		viewer = new SourceViewer(parent, ruler, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		
-		viewer.getTextWidget().setFont(JFaceResources.getFont("org.eclipse.wst.sse.ui.textfont"));
+		viewer.getTextWidget().setFont(JFaceResources.getTextFont());
 		
-		SourceViewerConfiguration conf = new TextSourceViewerConfiguration();
+		SourceViewerConfiguration conf = new SourceViewerConfiguration();
 		viewer.configure(conf);
 		
 		SLDTransformer trans = new SLDTransformer();
@@ -84,9 +90,11 @@ public class XMLStylePage3 extends FeatureStylePage {
 		} catch (TransformerException e) {
 			xml = "Error: " + e.getMessage();
 		}
-		IDocument doc = new Document(); //StructuredModelManager.getModelManager().createStructuredDocumentFor(ContentTypeIdForXML.ContentTypeID_XML);
+		IDocument doc = new Document();
 		doc.set(xml);
 		viewer.setInput(doc);
+		
+		setControl(viewer.getControl());
 	}
 
 	/**

@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map.style;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -76,10 +77,17 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 			try {
 				temp = oldPage.getStyle();
 			} catch (Exception e) {
-				temp = null;
+				if (MessageDialog.openConfirm(getShell(), "Switch editor",
+						"The current style is not valid, if you continue you will loose your changes."
+						+ "\n\nError message:\n" + e.getMessage())) {
+					// revert changes
+					temp = null;
+				}
+				else {
+					// keep page
+					return false;
+				}
 			}
-			
-			//TODO ask question?
 			
 			if (temp != null) {
 				// set style
@@ -87,7 +95,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 				return true;
 			}
 			else {
-				return false;
+				return true;
 			}
 		}
 	}
@@ -98,8 +106,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	@Override
 	protected void onPageChange(FeatureStylePage oldPage,
 			FeatureStylePage newPage) {
-		// TODO Auto-generated method stub
-		
+		// ignore
 	}
 
 	/**
@@ -109,11 +116,13 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	protected void okPressed() {
 		FeatureStylePage page = getCurrentPage();
 		
-		Style temp;
+		Style temp = null;
 		try {
 			temp = page.getStyle();
 		} catch (Exception e) {
-			//TODO
+			MessageDialog.openError(getShell(), "Style error",
+					"The current style is not valid, the following error occurred:\n\n"
+					+ e.getMessage());
 			return;
 		}
 		
@@ -158,7 +167,8 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	 */
 	@Override
 	protected void createPages() {
-		addPage(new XMLStylePage4(this));
+		addPage(new LineStylePage(this));
+		addPage(new XMLStylePage3(this));
 	}
 	
 }
