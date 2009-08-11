@@ -11,11 +11,14 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.net.URLDecoder;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -115,7 +118,8 @@ public class InstanceDataImportWizard
 					// retrieve and parse result from the Wizard.
 					URL gml_location = null;
 					try {
-						gml_location = new URL("file://" + result);
+						File f = new File(result);
+						gml_location = f.toURI().toURL();
 					} catch (MalformedURLException e) {
 						// it is ensured that only a valid URL is passed before
 						throw new RuntimeException(result
@@ -140,7 +144,6 @@ public class InstanceDataImportWizard
 						   might expect to be executed there */
 						display.syncExec(new Runnable() {
 							
-							@Override
 							public void run() {
 								instanceService.addInstances(DatasetType.reference, deployFeatures);
 								_log.info(deployFeatures.size() + " instances were added to the InstanceService.");
@@ -193,15 +196,13 @@ public class InstanceDataImportWizard
 					namespace, schema_location.toExternalForm());
 			
 			configuration = new GMLConfiguration();
+
+			_log.info("Using this GML location: " + gml_location.toString());
 			
-			String gmlLocation = gml_location.toURI().getAuthority()
-									+ gml_location.getPath();
-			gmlLocation = gmlLocation.replace("%20", " ");
-			_log.debug("Using this GML location: " + gmlLocation);
-			InputStream xml = new FileInputStream(gmlLocation);
+			URI file = new URI(URLDecoder.decode(gml_location.toString(), "UTF-8"));
+			InputStream xml = new FileInputStream(new File(file));
 			
 			HaleGMLParser parser = new HaleGMLParser(configuration);
-			// TODO start in a Thread of its own.
 			result = 
 				(FeatureCollection<FeatureType, Feature>) parser.parse(xml);
 		} catch (Exception ex) {
