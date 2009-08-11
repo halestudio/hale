@@ -42,20 +42,13 @@ public interface SchemaService
 	public Collection<FeatureType> getTargetSchema();
 	
 	/**
-	 * Loads the schema defined under the given URL as the target schema.
+	 * Loads the schema defined under the given URL as the target or source 
+	 * schema.
 	 * May point to different source, such as a XSD or a a WFS.
 	 * @param file the {@link URI} to the file from which to load the schema.
 	 * @return true if the loading was successful.
 	 */
-	public boolean loadTargetSchema(URI file);
-	
-	/**
-	 * Loads the schema defined under the given URL as the source schema.
-	 * May point to different source, such as a XSD or a a WFS.
-	 * @param file the {@link URI} to the file from which to load the schema.
-	 * @return true if the loading was successful.
-	 */
-	public boolean loadSourceSchema(URI file);
+	public boolean loadSchema(URI file, SchemaType type);
 	
 	/**
 	 * Invoke this operation if you want to clear out the source schema stored. 
@@ -100,5 +93,10 @@ public interface SchemaService
 	 * @return returns a {@link FeatureType} identified by the given name
 	 */
 	public FeatureType getFeatureTypeByName(String name);
+	
+	public enum SchemaType {
+		SOURCE,
+		TARGET
+	}
 
 }

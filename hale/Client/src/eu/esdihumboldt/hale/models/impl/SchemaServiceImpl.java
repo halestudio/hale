@@ -61,11 +61,13 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 
 /**
  * GeoTools-based implementation of {@link SchemaService}.
  */
-public class SchemaServiceImpl implements SchemaService {
+public class SchemaServiceImpl 
+	implements SchemaService {
 	
 	private static Logger _log = Logger.getLogger(SchemaServiceImpl.class);
 	
@@ -134,114 +136,42 @@ public class SchemaServiceImpl implements SchemaService {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.models.SchemaService#loadSourceSchema(java.net.URI)
+	 * @see eu.esdihumboldt.hale.models.SchemaService#loadSchema(java.net.URI, SchemaType)
 	 */
-	public boolean loadSourceSchema(URI file) {
-		this.cleanSourceSchema();
-		this.sourceSchema = loadSchema(file);
+	public boolean loadSchema(URI file, SchemaType type) {
+		
+		Collection<FeatureType> schema = this.loadSchema(file);
+		URL baseURL = null;
+		
 		try {
-			this.sourceLocation = new URL("file://" + file.toString());
+			baseURL = file.toURL();
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("The source location " + file.getPath()
 					+ "could not be saved: ", e);
 		}
-		if (this.sourceSchema != null && this.sourceSchema.size() > 0) {
-			this.sourceNamespace = this.sourceSchema.iterator().next()
-					.getName().getNamespaceURI().toString();
-		}
-		if (this.sourceSchema != null) {
-			this.updateListeners();
-			return true;
+		
+		if (type.equals(SchemaType.SOURCE)) {
+			this.cleanSourceSchema();
+			this.sourceSchema = schema;
+			if (this.sourceSchema != null && this.sourceSchema.size() > 0) {
+				this.sourceNamespace = this.sourceSchema.iterator().next()
+						.getName().getNamespaceURI().toString();
+			}
+			this.sourceLocation = baseURL;
 		} 
 		else {
-			return false;
+			this.cleanTargetSchema();
+			this.targetSchema = schema;
+			if (this.targetSchema != null && this.targetSchema.size() > 0) {
+				this.targetNamespace = this.targetSchema.iterator().next()
+						.getName().getNamespaceURI().toString();
+			}
+			this.targetLocation = baseURL;
 		}
+		
+		this.updateListeners();
+		return true;
 	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.models.SchemaService#loadTargetSchema(java.net.URI)
-	 */
-	public boolean loadTargetSchema(URI file) {
-		this.cleanTargetSchema();
-		this.targetSchema = loadSchema(file);
-		try {
-			this.targetLocation = new URL("file://" + file.toString());
-		} catch (MalformedURLException e) {
-			throw new RuntimeException("The target location " + file.getPath()
-					+ "could not be saved: ", e);
-		}
-		if (this.targetSchema != null && this.targetSchema.size() > 0) {
-			this.targetNamespace = this.targetSchema.iterator().next()
-					.getName().getNamespaceURI().toString();
-		}
-		if (targetSchema != null) {
-			this.updateListeners();
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
-	/**
-	 *  Copies a file
-	 * 
-	 * @param in
-	 * @param out
-	 * @throws Exception
-	 */
-	  public static void copyFile(File in, File out) throws Exception {
-		    FileInputStream fis  = new FileInputStream(in);
-		    FileOutputStream fos = new FileOutputStream(out);
-		    try {
-		        byte[] buf = new byte[1024];
-		        int i = 0;
-		        while ((i = fis.read(buf)) != -1) {
-		            fos.write(buf, 0, i);
-		        }
-		    } 
-		    catch (Exception e) {
-		        throw e;
-		    }
-		    finally {
-		        if (fis != null) fis.close();
-		        if (fos != null) fos.close();
-		    }
-		  }
-
-	  public static String getFileContent(File in) throws Exception {
-		    FileInputStream fis  = new FileInputStream(in);
-		    StringBuffer content = new StringBuffer();
-		    try {
-		        byte[] buf = new byte[1024];
-		        int i = 0;
-		        while ((i = fis.read(buf)) != -1) {
-		            
-		        	content.append(new String(buf, 0, i));
-		        }
-		    } 
-		    catch (Exception e) {
-		        throw e;
-		    }
-		    finally {
-		        if (fis != null) fis.close();
-		    }
-		    return content.toString();
-		  }
-	  
-	  public static void writeFileContent(File out, String content) throws Exception {
-		    FileOutputStream fos  = new FileOutputStream(out);
-		    try {
-		        	fos.write(content.getBytes());
-		    } 
-		    catch (Exception e) {
-		        throw e;
-		    }
-		    finally {
-		        if (fos != null) fos.close();
-		    }
-		  }	
-	
 	
 	public boolean addListener(HaleServiceListener sl) {
 		_log.info("Adding a listener.");
@@ -390,7 +320,6 @@ public class SchemaServiceImpl implements SchemaService {
 			collection.add(builder.buildFeatureType());
 		}
 	} catch (Exception uhe) {
-		uhe.printStackTrace();
 		_log.error("Imported Schema only available on-line, but "
 				+ "cannot be retrieved.", uhe);
 	}

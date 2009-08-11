@@ -25,6 +25,7 @@ import org.opengis.feature.type.FeatureType;
 
 import org.xml.sax.SAXException;
 
+import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.impl.SchemaParser;
 import eu.esdihumboldt.hale.models.impl.SchemaServiceImpl;
 import eu.esdihumboldt.hale.models.impl.SchemaServiceImplApache;
@@ -81,7 +82,7 @@ public class SchemaServiceTestApache {
 		
 //		service.findImports(file);
 		
-		service.loadSourceSchema(file);
+		service.loadSchema(file, SchemaType.SOURCE);
 	}
 
 	//@Test
@@ -100,7 +101,7 @@ public class SchemaServiceTestApache {
 
 		//load schema 
 		try {
-			service.loadSourceSchema(new URI(pathToSourceSchema));
+			service.loadSchema(new URI(pathToSourceSchema), SchemaType.SOURCE);
 //			service2.loadSourceSchema(new URI(pathToSourceSchema));
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block

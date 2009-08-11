@@ -11,8 +11,11 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
+import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -22,7 +25,7 @@ import org.eclipse.ui.IWorkbench;
 
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.TaskService;
-import eu.esdihumboldt.hale.models.impl.SchemaServiceEnum;
+import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.provider.TaskProviderFactory;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 
@@ -67,20 +70,17 @@ public class SchemaImportWizard
 		SchemaService schemaService = (SchemaService) 
 					ModelNavigationView.site.getService(SchemaService.class);
 		try {
-			String raw_location = mainPage.getResult().replaceAll("\\\\", "/");
-			String location = raw_location.replace(" ", "%20");
-			URI uri = new URI(location); 
-			if (mainPage.getSchemaType() == SchemaServiceEnum.SOURCE_SCHEMA) {
-				schemaService.cleanSourceSchema();
-				schemaService.loadSourceSchema(uri);
+			File f = new File(mainPage.getResult());
+			URI uri = f.toURI(); 
+			if (mainPage.getSchemaType() == SchemaType.SOURCE) {;
+				schemaService.loadSchema(uri, SchemaType.SOURCE);
 			}
 			else
 			{
-				schemaService.cleanTargetSchema();
-				schemaService.loadTargetSchema(uri);
+				schemaService.loadSchema(uri, SchemaType.TARGET);
 			}
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
+		} catch (Exception e2) {
+			_log.error("Given Path/URL could not be parsed to an URI: ", e2);
 		}
 		
 		// create tasks if checked.

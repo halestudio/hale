@@ -38,7 +38,6 @@ package eu.esdihumboldt.hale.models.impl;
  * specific language governing permissions and limitations
  * under the License.
  */
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -55,52 +54,47 @@ import org.xml.sax.InputSource;
  * given schema document. The system will call this default resolver if there
  * is no other resolver present in the system. 
  */
-public class HumboldtURIResolver implements CollectionURIResolver {
+public class HumboldtURIResolver 
+	implements CollectionURIResolver {
 	
 	private String collectionBaseURI;
 
 
     /**
      * Try to resolve a schema location to some data.
-     * @param namespace targt namespace.
+     * @param namespace target namespace.
      * @param schemaLocation system ID.
      * @param baseUri base URI for the schema.
      */
-    public InputSource resolveEntity(String namespace,
-                                     String schemaLocation,
-                                     String baseUri) {
+    public InputSource resolveEntity(String namespace, String schemaLocation,
+			String baseUri) {
 
-        if (baseUri!=null) 
-        {
-            try
-            {
-            	if (baseUri.startsWith("file:/")) {
-            		baseUri = baseUri.substring(6);
-            	}
-   
-            	File baseFile = new File(baseUri);
-                if (baseFile.exists()) {
-                	baseUri = baseFile.toURI().toString();
-//                	baseUri = baseUri.substring(0, baseUri.lastIndexOf("/"));
+		if (baseUri != null) {
+			try {
+				if (baseUri.startsWith("file:/")) {
+					baseUri = new URI(baseUri).getPath();
+				}
 
-                } else if(collectionBaseURI != null) {
-                	baseFile = new File(collectionBaseURI);
-                    if (baseFile.exists()) {
-                    	baseUri = baseFile.toURI().toString();
-                    }
-                }
-                
-                String ref = new URI(baseUri).resolve(new URI(schemaLocation)).toString();
+				File baseFile = new File(baseUri);
+				if (baseFile.exists()) {
+					baseUri = baseFile.toURI().toString();
+				} else if (collectionBaseURI != null) {
+					baseFile = new File(collectionBaseURI);
+					if (baseFile.exists()) {
+						baseUri = baseFile.toURI().toString();
+					}
+				}
 
-                return new InputSource(ref);
-            }
-            catch (URISyntaxException e1)
-            {
-                throw new RuntimeException(e1);
-            }
-        }
-        return new InputSource(schemaLocation);
-    }
+				String ref = new URI(baseUri).resolve(new URI(schemaLocation))
+						.toString();
+
+				return new InputSource(ref);
+			} catch (URISyntaxException e1) {
+				throw new RuntimeException(e1);
+			}
+		}
+		return new InputSource(schemaLocation);
+	}
 
     /**
      * Find whether a given uri is relative or not
@@ -184,7 +178,7 @@ public class HumboldtURIResolver implements CollectionURIResolver {
             }
 
             if (parentFile != null) {
-                parent = parentFile.toURL();
+            	parent = parentFile.toURI().toURL();
             }
             if (parent != null) {
                 return new URL(parent, path);

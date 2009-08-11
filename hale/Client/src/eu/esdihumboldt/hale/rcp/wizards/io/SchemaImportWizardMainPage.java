@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URL;
 
@@ -30,7 +31,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
-import eu.esdihumboldt.hale.models.impl.SchemaServiceEnum;
+import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 
 /**
  * 
@@ -228,7 +229,6 @@ public class SchemaImportWizardMainPage
 		sourceDestination.setSelection(true);
 		sourceDestination.setText("Also import supertypes from imported " +
 				"schemas");
-		
 	}
 	
 	/**
@@ -237,14 +237,13 @@ public class SchemaImportWizardMainPage
 	@Override
 	public boolean isPageComplete() {
 		if (this.fileFieldEditor != null && this.wfsFieldEditor != null) {
-			_log.debug("fileFieldEditor: " + this.fileFieldEditor.getStringValue());
 			try {
+				String test = this.getResult();
 				if (this.useWfsRadio.getSelection()) {
 					// test whether content of the WFS Field Editor validates to URL.
-					String test = this.wfsFieldEditor.getStringValue();
 					if (test != null && !test.equals("")) {
-						new URL(test);
-						_log.debug("wfsFieldEditor URL was OK.");
+						URL url = new URL(test);
+						_log.info("wfsFieldEditor URL was OK: " + url.toString());
 					} 
 					else {
 						return false;
@@ -252,10 +251,9 @@ public class SchemaImportWizardMainPage
 				}
 				else {
 					// test whether content of the File Field Editor validates to URI.
-					String test = this.fileFieldEditor.getStringValue();
 					if (test != null && !test.equals("")) {
-						test = test.replace(" ", "%20");
-						new URI(test.replaceAll("\\\\", "/"));
+						File f = new File(test);
+						_log.info("fileFieldEditor URI was OK: " + f.toURI());
 					}
 					else {
 						return false;
@@ -278,20 +276,18 @@ public class SchemaImportWizardMainPage
 	 */
 	public String getResult() {
 		if (this.useWfsRadio.getSelection()) {
-			return this.wfsFieldEditor.getTextControl(
-					this.ufe_container).getText();
+			return this.wfsFieldEditor.getStringValue();
 		}
 		else {
-			return this.fileFieldEditor.getTextControl(
-					this.ffe_container).getText(); 
+			return this.fileFieldEditor.getStringValue(); 
 		}
 	}
 	
-	public SchemaServiceEnum getSchemaType() {
+	public SchemaType getSchemaType() {
 		if (sourceDestination.getSelection()) {
-			return SchemaServiceEnum.SOURCE_SCHEMA;
+			return SchemaType.SOURCE;
 		}
-		else return SchemaServiceEnum.TARGET_SCHEMA;
+		else return SchemaType.TARGET;
 	}
 	
 }
