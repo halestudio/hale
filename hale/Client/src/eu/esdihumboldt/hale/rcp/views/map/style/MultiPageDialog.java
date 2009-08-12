@@ -135,8 +135,7 @@ public abstract class MultiPageDialog<T extends IDialogPage> extends TrayDialog 
 				
 				@Override
 				public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-					// TODO Auto-generated method stub
-					
+					// ignore
 				}
 				
 				@Override

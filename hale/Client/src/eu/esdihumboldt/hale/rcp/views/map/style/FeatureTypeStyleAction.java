@@ -76,6 +76,7 @@ public class FeatureTypeStyleAction extends Action {
 	public void run() {
 		try {
 			FeatureStyleDialog dialog = new FeatureStyleDialog(type);
+			dialog.setBlockOnOpen(false);
 			dialog.open();
 		} catch (Exception e) {
 			log.error("Error opening style editor dialog", e);

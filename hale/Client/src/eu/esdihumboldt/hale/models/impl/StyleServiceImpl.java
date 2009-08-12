@@ -66,10 +66,10 @@ public class StyleServiceImpl
 	private final Set<HaleServiceListener> listeners = 
 		new HashSet<HaleServiceListener>();
 	
-	private final StyleFactory styleFactory = 
+	private static final StyleFactory styleFactory = 
 		CommonFactoryFinder.getStyleFactory(null);
 	
-	private final FilterFactory filterFactory = 
+	private static final FilterFactory filterFactory = 
 		CommonFactoryFinder.getFilterFactory(null);
 	
 	private final SchemaService schemaService;
@@ -188,7 +188,7 @@ public class StyleServiceImpl
 	 * @return the style
 	 */
 	@SuppressWarnings("deprecation")
-	protected FeatureTypeStyle getDefaultStyle(FeatureType ft) {
+	public static FeatureTypeStyle getDefaultStyle(FeatureType ft) {
 		FeatureType current = ft;
 		Class<?> type = null;
 		
@@ -313,7 +313,7 @@ public class StyleServiceImpl
 	 * @return a Style for Point objects.
 	 */
 	@SuppressWarnings("deprecation")
-	private FeatureTypeStyle createPointStyle() {
+	private static FeatureTypeStyle createPointStyle() {
 		PointSymbolizer symbolizer = styleFactory.createPointSymbolizer();
 		symbolizer.getGraphic().setSize(filterFactory.literal(1));
 		Rule rule = styleFactory.createRule();
@@ -329,7 +329,7 @@ public class StyleServiceImpl
 	 * @return a Style for Line/LineString objects.
 	 */
 	@SuppressWarnings("deprecation")
-	private FeatureTypeStyle createLineStyle() {
+	private static FeatureTypeStyle createLineStyle() {
 		LineSymbolizer symbolizer = styleFactory.createLineSymbolizer();
 		SLD.setLineColour(symbolizer, new Color(57, 75, 95));
 		symbolizer.getStroke().setWidth(filterFactory.literal(1));
@@ -347,7 +347,7 @@ public class StyleServiceImpl
 	 * @return a Style for Polygon objects.
 	 */
 	@SuppressWarnings("deprecation")
-	private FeatureTypeStyle createPolygonStyle() {
+	private static FeatureTypeStyle createPolygonStyle() {
 		PolygonSymbolizer symbolizer = styleFactory.createPolygonSymbolizer();
 		Fill fill = styleFactory.createFill(filterFactory.literal("#FFAA00"),
 				filterFactory.literal(0.5));
@@ -358,6 +358,5 @@ public class StyleServiceImpl
 		fts.rules().add(rule);
 		return fts;
 	}
-
 
 }

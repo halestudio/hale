@@ -17,12 +17,11 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.geotools.styling.LineSymbolizer;
 import org.geotools.styling.SLD;
-import org.geotools.styling.Stroke;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
 import org.geotools.styling.Symbolizer;
 
-import eu.esdihumboldt.hale.rcp.views.map.style.editors.StrokeEditor;
+import eu.esdihumboldt.hale.rcp.views.map.style.editors.LineSymbolizerEditor;
 
 /**
  * Line style editor
@@ -35,13 +34,13 @@ public class SimpleLineStylePage extends FeatureStylePage {
 	
 	private final StyleBuilder styleBuilder = new StyleBuilder();
 	
-	private StrokeEditor strokeEditor;
+	private LineSymbolizerEditor lineEditor;
 	
 	/**
 	 * @param parent the parent dialog
 	 */
 	public SimpleLineStylePage(FeatureStyleDialog parent) {
-		super(parent, "Line");
+		super(parent, "Simple line");
 	}
 
 	/**
@@ -49,10 +48,9 @@ public class SimpleLineStylePage extends FeatureStylePage {
 	 */
 	@Override
 	public Style getStyle(boolean force) throws Exception {
-		if (strokeEditor != null) {
-			if (force || strokeEditor.isChanged()) {
-				return styleBuilder.createStyle(styleBuilder
-						.createLineSymbolizer(strokeEditor.getValue()));
+		if (lineEditor != null) {
+			if (force || lineEditor.isChanged()) {
+				return styleBuilder.createStyle(lineEditor.getValue());
 			}
 			else {
 				// nothing has changed
@@ -75,12 +73,12 @@ public class SimpleLineStylePage extends FeatureStylePage {
 		page.setLayout(layout);
 		
 		Style style = getParent().getStyle();
-		Stroke stroke = null;
+		LineSymbolizer line = null;
 		try {
 			Symbolizer[] symbolizers = SLD.symbolizers(style);
 			for (Symbolizer symbol : symbolizers) {
 				if (symbol instanceof LineSymbolizer) {
-					stroke = SLD.stroke((LineSymbolizer) symbol);
+					line = (LineSymbolizer) symbol;
 					break;
 				}
 			}
@@ -89,11 +87,11 @@ public class SimpleLineStylePage extends FeatureStylePage {
 			// ignore
 		}
 		
-		if (stroke == null) {
-			stroke = styleBuilder.createStroke();
+		if (line == null) {
+			line = styleBuilder.createLineSymbolizer();
 		}
 		
-		strokeEditor = new StrokeEditor(page, stroke);
+		lineEditor = new LineSymbolizerEditor(page, line);
 		
 		setControl(page);
 	}

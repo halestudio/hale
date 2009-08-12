@@ -167,9 +167,18 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	 */
 	@Override
 	protected void createPages() {
+		addPage(new RuleStylePage(this));
 		addPage(new SimpleLineStylePage(this));
+		addPage(new SimplePointStylePage(this));
 		addPage(new SimplePolygonStylePage(this));
 		addPage(new XMLStylePage3(this));
+	}
+
+	/**
+	 * @return the type
+	 */
+	public FeatureType getType() {
+		return type;
 	}
 	
 }

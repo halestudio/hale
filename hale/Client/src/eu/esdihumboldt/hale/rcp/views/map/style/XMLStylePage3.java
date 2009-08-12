@@ -66,6 +66,8 @@ public class XMLStylePage3 extends FeatureStylePage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
+		changed = false;
+		
 		final Display display = parent.getDisplay();
 		
 		FillLayout fillLayout = new FillLayout();

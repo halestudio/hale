@@ -15,32 +15,33 @@ import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.geotools.styling.PolygonSymbolizer;
+import org.geotools.styling.LineSymbolizer;
+import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.SLD;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
 import org.geotools.styling.Symbolizer;
 
-import eu.esdihumboldt.hale.rcp.views.map.style.editors.PolygonSymbolizerEditor;
+import eu.esdihumboldt.hale.rcp.views.map.style.editors.PointSymbolizerEditor;
 
 /**
- * Line style editor
+ * Simple point style editor
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class SimplePolygonStylePage extends FeatureStylePage {
+public class SimplePointStylePage extends FeatureStylePage {
 	
 	private final StyleBuilder styleBuilder = new StyleBuilder();
 	
-	private PolygonSymbolizerEditor polyEditor;
+	private PointSymbolizerEditor pointEditor;
 	
 	/**
 	 * @param parent the parent dialog
 	 */
-	public SimplePolygonStylePage(FeatureStyleDialog parent) {
-		super(parent, "Simple polygon");
+	public SimplePointStylePage(FeatureStyleDialog parent) {
+		super(parent, "Simple point");
 	}
 
 	/**
@@ -48,9 +49,9 @@ public class SimplePolygonStylePage extends FeatureStylePage {
 	 */
 	@Override
 	public Style getStyle(boolean force) throws Exception {
-		if (polyEditor != null) {
-			if (force || polyEditor.isChanged()) {
-				return styleBuilder.createStyle(polyEditor.getValue());
+		if (pointEditor != null) {
+			if (force || pointEditor.isChanged()) {
+				return styleBuilder.createStyle(pointEditor.getValue());
 			}
 			else {
 				// nothing has changed
@@ -69,16 +70,16 @@ public class SimplePolygonStylePage extends FeatureStylePage {
 		// create new controls
 		Composite page = new Composite(parent, SWT.NONE);
 
-		RowLayout layout = new RowLayout(SWT.VERTICAL);
+		RowLayout layout = new RowLayout(SWT.HORIZONTAL);
 		page.setLayout(layout);
 		
 		Style style = getParent().getStyle();
-		PolygonSymbolizer poly = null;
+		PointSymbolizer point = null;
 		try {
 			Symbolizer[] symbolizers = SLD.symbolizers(style);
 			for (Symbolizer symbol : symbolizers) {
-				if (symbol instanceof PolygonSymbolizer) {
-					poly = (PolygonSymbolizer) symbol;
+				if (symbol instanceof LineSymbolizer) {
+					point = (PointSymbolizer) symbol;
 					break;
 				}
 			}
@@ -87,11 +88,11 @@ public class SimplePolygonStylePage extends FeatureStylePage {
 			// ignore
 		}
 		
-		if (poly == null) {
-			poly = styleBuilder.createPolygonSymbolizer();
+		if (point == null) {
+			point = styleBuilder.createPointSymbolizer();
 		}
 		
-		polyEditor = new PolygonSymbolizerEditor(page, poly);
+		pointEditor = new PointSymbolizerEditor(page, point);
 		
 		setControl(page);
 	}

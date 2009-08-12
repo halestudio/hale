@@ -36,6 +36,8 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 
 import eu.esdihumboldt.hale.rcp.views.map.style.DropdownAction;
+import eu.esdihumboldt.hale.rcp.views.map.style.LoadStylesAction;
+import eu.esdihumboldt.hale.rcp.views.map.style.SaveStylesAction;
 import eu.esdihumboldt.hale.rcp.views.map.style.StyleDropdown;
 
 
@@ -100,6 +102,10 @@ public class MapView extends ViewPart {
 			
 		};
 		styles.addItem(new ActionContributionItem(backgroundAction));
+		styles.addItem(new Separator());
+		styles.addItem(new ActionContributionItem(new LoadStylesAction()));
+		styles.addItem(new ActionContributionItem(new SaveStylesAction()));
+		
 		tm.add(styles);
 		tm.update(false);
 		
