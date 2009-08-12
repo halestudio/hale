@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.opengis.feature.type.FeatureType;
@@ -24,6 +25,7 @@ import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 
@@ -50,10 +52,20 @@ public class AlignmentServiceImpl
 	
 	private AlignmentServiceImpl() {
 		super();
-		this.alignment = new Alignment();
-		this.alignment.setMap(new ArrayList<ICell>());
+		this.initNewAlignment();
+		
 	}
 	
+	/**
+	 * 
+	 */
+	private void initNewAlignment() {
+		this.alignment = new Alignment();
+		this.alignment.setAbout(new About(UUID.randomUUID()));
+		this.alignment.setLevel("");
+		this.alignment.setMap(new ArrayList<ICell>());
+	}
+
 	public static AlignmentService getInstance() {
 		return AlignmentServiceImpl.instance;
 	}
@@ -73,7 +85,7 @@ public class AlignmentServiceImpl
 	 * @see eu.esdihumboldt.hale.models.AlignmentService#cleanModel()
 	 */
 	public boolean cleanModel() {
-		this.alignment = new Alignment();
+		this.initNewAlignment();
 		this.updateListeners();
 		return true;
 	}
@@ -142,10 +154,18 @@ public class AlignmentServiceImpl
 	 */
 	@Override
 	public boolean addOrUpdateAlignment(Alignment alignment) {
-		this.alignment.setSchema1(alignment.getSchema1());
-		this.alignment.setSchema2(alignment.getSchema2());
-		this.alignment.setLevel(alignment.getLevel());
-		this.alignment.setAbout(alignment.getAbout());
+		if (alignment.getSchema1() != null) {
+			this.alignment.setSchema1(alignment.getSchema1());
+		}
+		if (alignment.getSchema2() != null) {
+			this.alignment.setSchema1(alignment.getSchema2());
+		}
+		if (alignment.getLevel() != null) {
+			this.alignment.setLevel(alignment.getLevel());
+		}
+		if (alignment.getAbout() != null) {
+			this.alignment.setAbout(alignment.getAbout());
+		}
 		return true;
 	}
 

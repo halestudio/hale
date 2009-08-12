@@ -33,8 +33,6 @@ import eu.esdihumboldt.hale.rcp.wizards.io.MappingExportWizard;
 public class SaveSchemaCommandHandler 
 	extends AbstractHandler
 	implements IHandler {
-	
-	private static Logger _log = Logger.getLogger(SaveSchemaCommandHandler.class);
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)

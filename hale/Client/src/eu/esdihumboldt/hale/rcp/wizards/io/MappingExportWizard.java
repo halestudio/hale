@@ -11,10 +11,17 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
+
+import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
+import eu.esdihumboldt.hale.models.AlignmentService;
+import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
+import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 
 /**
  * This wizard is used to export the currently active mapping to an gOML file.
@@ -26,41 +33,61 @@ import org.eclipse.ui.IWorkbench;
 public class MappingExportWizard 
 	extends Wizard
 	implements IExportWizard {
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
-	 */
-	@Override
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		// TODO Auto-generated method stub
-
+	
+	private MappingExportWizardMainPage mainPage;
+	
+	private static Logger _log = Logger.getLogger(MappingExportWizard.class);
+	
+	public MappingExportWizard() {
+		super();
+		this.mainPage = new MappingExportWizardMainPage(
+				"Export Mapping", "Export Mapping"); //NON-NLS-1
+		super.setWindowTitle("Mapping Export Wizard"); //NON-NLS-1
+		super.setNeedsProgressMonitor(true);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.IWizard#addPages()
-	 */
-	@Override
-	public void addPages() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.IWizard#canFinish()
-	 */
-	@Override
-	public boolean canFinish() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
-	/* (non-Javadoc)
+	
+	/**
 	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
 	 */
 	public boolean performFinish() {
-		// TODO Auto-generated method stub
-		return false;
+		String result = this.mainPage.getResult();
+		if (result != null) {
+			AlignmentService alService = (AlignmentService) 
+						ModelNavigationView.site.getService(AlignmentService.class);
+			
+			OmlRdfGenerator orgen = new OmlRdfGenerator();
+			
+			try {
+				orgen.write(alService.getAlignment(), result);
+			} catch (Exception e) {
+				String message = "Saving the current Alignment failed: ";
+				_log.error(message, e);
+				ExceptionHelper.handleException(
+						message, HALEActivator.PLUGIN_ID, e);
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
+	 */
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		
+	}
+
+	/**
+	 * @see org.eclipse.jface.wizard.IWizard#addPages()
+	 */
+	public void addPages() {
+		super.addPage(this.mainPage);
+	}
+
+	/**
+	 * @see org.eclipse.jface.wizard.IWizard#canFinish()
+	 */
+	public boolean canFinish() {
+		return this.mainPage.isPageComplete();
 	}
 
 }

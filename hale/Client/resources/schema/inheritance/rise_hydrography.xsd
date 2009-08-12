@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xs:schema xmlns:gml="http://www.opengis.net/gml" xmlns:hydro="http://www.rise.eu/hydrography" xmlns:wfs="http://www.opengis.net/wfs" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.rise.eu/hydrography" version="1.0">
 
-<!-- handmade schema based on RISE23 Conceptual Schema in UML Annex 2 UML Application Schema (textual description)
-for ERiskA, by mdv (TUD) 6-Aug-2008 ;
-needed to extend gmlsf2 with CompositeSurface and CompositeCurve, 
-                        and with _FeatureCollection and featureMember(s) in case of WFS publishing
+<!-- handmade schema based on RISE23 Conceptual Schema in UML Annex 2 UML Application Schema (textual description) for ERiskA, by mdv (TUD) 6-Aug-2008 ; needed to extend gmlsf2 with CompositeSurface and CompositeCurve, and with _FeatureCollection and featureMember(s) in case of WFS publishing
 -->
 
-<xs:import namespace="http://www.opengis.net/gml" schemaLocation="gmlsf2composite_and_featcoll.xsd"/>
+<xs:import namespace="http://www.opengis.net/gml" schemaLocation="D:/humboldt-workspace/HALE/resources/schema/inheritance/gmlsf2composite_and_featcoll.xsd"/>
                                                                  
 <!--xs:import namespace="http://www.opengis.net/wfs" schemaLocation="wfs_local.xsd"/-->
 

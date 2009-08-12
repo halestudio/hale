@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.5"?>
+<?pde version="3.4"?>
 
-<product name="HUMBOLDT Alignment Editor" id="HALE.product" application="HALE.application" version="M2" useFeatures="false" includeLaunchers="true">
+<product name="HUMBOLDT Alignment Editor" id="HALE.product" application="HALE.application" version="M3" useFeatures="false">
 
    <configIni use="default">
    </configIni>
@@ -24,7 +24,7 @@
    <plugins>
       <plugin id="HALE"/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="javax.transaction" fragment="true"/>
+      <plugin id="javax.transaction"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.databinding"/>
@@ -56,6 +56,5 @@
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit4"/>
    </plugins>
-
 
 </product>

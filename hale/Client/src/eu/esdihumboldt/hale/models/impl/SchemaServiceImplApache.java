@@ -63,6 +63,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 
 /**
  * Implementation of {@link SchemaService}.
@@ -728,6 +729,18 @@ public class SchemaServiceImplApache
 			}
 		}
 		return result;
+	}
+	
+	/**
+	 * @see eu.esdihumboldt.hale.models.SchemaService#getSchema(eu.esdihumboldt.hale.models.SchemaService.SchemaType)
+	 */
+	public Collection<FeatureType> getSchema(SchemaType schemaType) {
+		if (SchemaType.SOURCE.equals(schemaType)) {
+			return this.sourceSchema;
+		}
+		else {
+			return this.targetSchema;
+		}
 	}
 }
 

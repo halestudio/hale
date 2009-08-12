@@ -12,10 +12,7 @@
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLEncoder;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -23,6 +20,9 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
+import eu.esdihumboldt.goml.align.Formalism;
+import eu.esdihumboldt.goml.align.Schema;
+import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
@@ -69,27 +69,43 @@ public class SchemaImportWizard
 	public boolean performFinish() {
 		SchemaService schemaService = (SchemaService) 
 					ModelNavigationView.site.getService(SchemaService.class);
+		AlignmentService alService = (AlignmentService) 
+					ModelNavigationView.site.getService(AlignmentService.class);
+		
 		try {
 			File f = new File(mainPage.getResult());
 			URI uri = f.toURI(); 
 			if (mainPage.getSchemaType() == SchemaType.SOURCE) {;
+				// load Schema as Source schema
 				schemaService.loadSchema(uri, SchemaType.SOURCE);
+				// update Alignment
+				Schema schema = new Schema(schemaService.getSourceNameSpace(), 
+						new Formalism("GML 3.2.1 Application Schema", 
+								new URI("http://www.opengis.net/gml"))); // FIXME
+				alService.getAlignment().setSchema1(schema);
 			}
 			else
 			{
 				schemaService.loadSchema(uri, SchemaType.TARGET);
+				// update Alignment
+				Schema schema = new Schema(schemaService.getTargetNameSpace(), 
+						new Formalism("GML 3.2.1 Application Schema", 
+								new URI("http://www.opengis.net/gml"))); // FIXME
+				alService.getAlignment().setSchema2(schema);
 			}
 		} catch (Exception e2) {
 			_log.error("Given Path/URL could not be parsed to an URI: ", e2);
 		}
 		
 		// create tasks if checked.
-		TaskService taskService = (TaskService) 
-					ModelNavigationView.site.getService(TaskService.class);
-		taskService.addTasks(
+		if (mainPage.createTasks()) {
+			TaskService taskService = (TaskService) 
+						ModelNavigationView.site.getService(TaskService.class);
+			taskService.addTasks(
 					TaskProviderFactory.getInstance().getTasks(
-							schemaService.getSourceSchema()));
-		
+							schemaService.getSchema(mainPage.getSchemaType())));
+		}
+
 		return true;
 	}
 	 
@@ -97,7 +113,7 @@ public class SchemaImportWizard
 	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		_log.debug("in init...");
+
 	}
 	
 	/**

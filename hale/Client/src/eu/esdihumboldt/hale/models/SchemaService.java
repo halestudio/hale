@@ -99,4 +99,10 @@ public interface SchemaService
 		TARGET
 	}
 
+	/**
+	 * @param schemaType
+	 * @return
+	 */
+	public Collection<FeatureType> getSchema(SchemaType schemaType);
+
 }

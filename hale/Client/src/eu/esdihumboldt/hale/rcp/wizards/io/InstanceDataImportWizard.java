@@ -39,6 +39,8 @@ import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.models.provider.instance.HaleGMLParser;
+import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 
 /**
@@ -112,7 +114,8 @@ public class InstanceDataImportWizard
 					}
 					URL schema_location = schemaService.getSourceURL();
 					if (schema_location == null) {
-						throw new RuntimeException("You have to load a Schema first.");
+						String message = "You have to load a Schema first.";
+						throw new RuntimeException(message);
 					}
 					
 					// retrieve and parse result from the Wizard.
@@ -155,6 +158,9 @@ public class InstanceDataImportWizard
 				}
 			});
 		} catch (Exception e) {
+			ExceptionHelper.handleException(
+					"An Error occured when trying toopen instance data: ", 
+					HALEActivator.PLUGIN_ID, e);
 			_log.error("Error performing wizard finish", e);
 		}
 		

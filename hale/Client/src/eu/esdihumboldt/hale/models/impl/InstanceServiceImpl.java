@@ -202,9 +202,6 @@ public class InstanceServiceImpl
 	@Override
 	public FeatureCollection getFeatures(DatasetType type) {
 		if (DatasetType.reference.equals(type)) {
-			if (this.sourceReferenceFeatures != null) {
-				_log.warn(this.sourceReferenceFeatures.getSchema());
-			}
 			return this.sourceReferenceFeatures;
 		}
 		else if (DatasetType.transformed.equals(type)) {

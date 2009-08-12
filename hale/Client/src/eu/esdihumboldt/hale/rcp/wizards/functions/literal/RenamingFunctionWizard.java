@@ -11,32 +11,20 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.literal;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.opengis.feature.type.FeatureType;
-
-import sun.util.logging.resources.logging;
-
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
@@ -46,7 +34,6 @@ import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.rcp.views.model.AttributeView;
-//import eu.esdihumboldt.transformers.cst.RenameTransformer;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 
 /**

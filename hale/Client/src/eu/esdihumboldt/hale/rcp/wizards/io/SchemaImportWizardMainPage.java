@@ -13,7 +13,6 @@
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import java.io.File;
-import java.net.URI;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
@@ -131,7 +130,7 @@ public class SchemaImportWizardMainPage
 				getWizard().getContainer().updateButtons();
 			}
 		});
-		String[] extensions = new String[] { "*.xml", "*.gml", "*.xsd" }; //NON-NLS-1
+		String[] extensions = new String[] { "*.xsd", "*.gml", "*.xml" }; //NON-NLS-1
 		fileFieldEditor.setFileExtensions(extensions);
 		
 		// read from WFS (DescribeFeatureType)
@@ -288,6 +287,14 @@ public class SchemaImportWizardMainPage
 			return SchemaType.SOURCE;
 		}
 		else return SchemaType.TARGET;
+	}
+
+	/**
+	 * @return true if the use has selected that tasks should be created.
+	 */
+	public boolean createTasks() {
+		// TODO Auto-generated method stub
+		return true;
 	}
 	
 }

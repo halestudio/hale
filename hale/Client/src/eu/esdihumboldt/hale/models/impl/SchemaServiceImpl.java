@@ -11,57 +11,29 @@
  */
 package eu.esdihumboldt.hale.models.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.ws.commons.schema.XmlSchema;
-import org.apache.ws.commons.schema.XmlSchemaCollection;
-import org.apache.ws.commons.schema.resolver.CollectionURIResolver;
-import org.apache.xerces.jaxp.SAXParserFactoryImpl;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Platform;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.xml.SchemaFactory;
 import org.geotools.xml.XSISAXHandler;
 import org.geotools.xml.schema.ComplexType;
 import org.geotools.xml.schema.Element;
 import org.geotools.xml.schema.Schema;
-import org.geotools.xml.schema.SimpleType;
-import org.jdom.Content;
-import org.jdom.Document;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 
 /**
  * GeoTools-based implementation of {@link SchemaService}.
@@ -399,6 +371,18 @@ public class SchemaServiceImpl
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.models.SchemaService#getSchema(eu.esdihumboldt.hale.models.SchemaService.SchemaType)
+	 */
+	public Collection<FeatureType> getSchema(SchemaType schemaType) {
+		if (SchemaType.SOURCE.equals(schemaType)) {
+			return this.sourceSchema;
+		}
+		else {
+			return this.targetSchema;
+		}
 	}
 }
 
