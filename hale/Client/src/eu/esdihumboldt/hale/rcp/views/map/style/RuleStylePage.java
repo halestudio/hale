@@ -354,7 +354,7 @@ public class RuleStylePage extends FeatureStylePage {
 		
 		// editor area
 		editorArea = new Composite(page, SWT.NONE);
-		editorArea.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, true));
+		editorArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		editorArea.setLayout(new FillLayout());
 		
 		setControl(page);
