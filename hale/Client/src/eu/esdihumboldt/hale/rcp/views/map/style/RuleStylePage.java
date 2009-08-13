@@ -121,6 +121,20 @@ public class RuleStylePage extends FeatureStylePage {
 	private static Image removeImage = null;
 	
 	private static Image renameImage = null;
+	
+	private static Image upImage = null;
+	
+	private static Image downImage = null;
+	
+	private Button addButton;
+	
+	private Button removeButton;
+	
+	private Button renameButton;
+	
+	private Button upButton;
+	
+	private Button downButton;
 
 	private Composite editorArea;
 	
@@ -155,6 +169,16 @@ public class RuleStylePage extends FeatureStylePage {
 		if (renameImage == null) {
 			renameImage = AbstractUIPlugin.imageDescriptorFromPlugin(
 					HALEActivator.PLUGIN_ID, "/icons/rename.gif").createImage();
+		}
+		
+		if (upImage == null) {
+			upImage = AbstractUIPlugin.imageDescriptorFromPlugin(
+					HALEActivator.PLUGIN_ID, "/icons/arrow_up.gif").createImage();
+		}
+		
+		if (downImage == null) {
+			downImage = AbstractUIPlugin.imageDescriptorFromPlugin(
+					HALEActivator.PLUGIN_ID, "/icons/arrow_down.gif").createImage();
 		}
 	}
 
@@ -247,17 +271,20 @@ public class RuleStylePage extends FeatureStylePage {
 		// rule list
 		Composite ruleArea = new Composite(page, SWT.NONE);
 		ruleArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
-		ruleArea.setLayout(new GridLayout(3, true));
+		GridLayout leftLayout = new GridLayout(5, true);
+		leftLayout.horizontalSpacing = 1;
+		leftLayout.verticalSpacing = 1;
+		ruleArea.setLayout(leftLayout);
 		
 		// label
 		Label rulesLabel = new Label(ruleArea, SWT.NONE);
-		rulesLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
+		rulesLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 5, 1));
 		rulesLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
 		rulesLabel.setText("Rules");
 		
 		// viewer
 		listViewer = new ListViewer(ruleArea);
-		listViewer.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 3, 1));
+		listViewer.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 5, 1));
 		listViewer.setContentProvider(new IStructuredContentProvider() {
 			
 			@Override
@@ -304,7 +331,7 @@ public class RuleStylePage extends FeatureStylePage {
 		});
 		
 		// buttons
-		Button addButton = new Button(ruleArea, SWT.PUSH);
+		addButton = new Button(ruleArea, SWT.PUSH);
 		addButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 		addButton.setImage(addImage);
 		addButton.addSelectionListener(new SelectionListener() {
@@ -319,8 +346,9 @@ public class RuleStylePage extends FeatureStylePage {
 				// ignore
 			}
 		});
+		addButton.setToolTipText("Add a new rule");
 		
-		Button removeButton = new Button(ruleArea, SWT.PUSH);
+		removeButton = new Button(ruleArea, SWT.PUSH);
 		removeButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 		removeButton.setImage(removeImage);
 		removeButton.addSelectionListener(new SelectionListener() {
@@ -335,8 +363,43 @@ public class RuleStylePage extends FeatureStylePage {
 				// ignore
 			}
 		});
+		removeButton.setToolTipText("Remove the currently selected rule");
 		
-		Button renameButton = new Button(ruleArea, SWT.PUSH);
+		upButton = new Button(ruleArea, SWT.PUSH);
+		upButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
+		upButton.setImage(upImage);
+		upButton.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				moveCurrentRuleUp();
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// ignore
+			}
+		});
+		upButton.setToolTipText("Move the currently selected rule up");
+		
+		downButton = new Button(ruleArea, SWT.PUSH);
+		downButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
+		downButton.setImage(downImage);
+		downButton.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				moveCurrentRuleDown();
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// ignore
+			}
+		});
+		downButton.setToolTipText("Move the currently selected rule down");
+		
+		renameButton = new Button(ruleArea, SWT.PUSH);
 		renameButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 		renameButton.setImage(renameImage);
 		renameButton.addSelectionListener(new SelectionListener() {
@@ -351,6 +414,7 @@ public class RuleStylePage extends FeatureStylePage {
 				// ignore
 			}
 		});
+		renameButton.setToolTipText("Rename the current rule");
 		
 		// editor area
 		editorArea = new Composite(page, SWT.NONE);
@@ -360,6 +424,50 @@ public class RuleStylePage extends FeatureStylePage {
 		setControl(page);
 		
 		updateEditor();
+	}
+
+	/**
+	 * Move the current rule up
+	 */
+	protected void moveCurrentRuleUp() {
+		if (currentIndex >= 1 && currentIndex < rules.size()) {
+			updateCurrentRule();
+			
+			RuleItem item1 = rules.get(currentIndex);
+			Rule temp = item1.getRule();
+			
+			RuleItem item2 = rules.get(--currentIndex);
+			item1.setRule(item2.getRule());
+			item2.setRule(temp);
+			
+			listViewer.refresh(true);
+			listViewer.setSelection(new StructuredSelection(item2));
+			updateEditor();
+			
+			changed = true;
+		}
+	}
+
+	/**
+	 * Move the current rule down
+	 */
+	protected void moveCurrentRuleDown() {
+		if (currentIndex >= 0 && currentIndex < rules.size() - 1) {
+			updateCurrentRule();
+			
+			RuleItem item1 = rules.get(currentIndex);
+			Rule temp = item1.getRule();
+			
+			RuleItem item2 = rules.get(++currentIndex);
+			item1.setRule(item2.getRule());
+			item2.setRule(temp);
+			
+			listViewer.refresh(true);
+			listViewer.setSelection(new StructuredSelection(item2));
+			updateEditor();
+			
+			changed = true;
+		}
 	}
 
 	/**
@@ -376,6 +484,8 @@ public class RuleStylePage extends FeatureStylePage {
 			if (dlg.open() == InputDialog.OK) {
 				rule.setName(dlg.getValue());
 				listViewer.update(item, null);
+				
+				changed = true;
 			}
 		}
 	}
@@ -388,7 +498,10 @@ public class RuleStylePage extends FeatureStylePage {
 			RuleItem item = rules.remove(currentIndex);
 			currentIndex--;
 			listViewer.remove(item);
+			listViewer.refresh(true);
 			updateEditor();
+			
+			changed = true;
 		}
 	}
 
@@ -405,6 +518,10 @@ public class RuleStylePage extends FeatureStylePage {
 			RuleItem item = new RuleItem(rule);
 			rules.add(item);
 			listViewer.add(item);
+			
+			updateButtonState();
+			
+			changed = true;
 		}
 	}
 
@@ -422,6 +539,21 @@ public class RuleStylePage extends FeatureStylePage {
 			currentEditor = createEditor(rule, editorArea);
 			editorArea.layout(true);
 		}
+		
+		updateButtonState();
+	}
+	
+	/**
+	 * Update the button states
+	 */
+	private void updateButtonState() {
+		boolean valid = currentIndex >= 0 && currentIndex < rules.size();
+		
+		removeButton.setEnabled(valid);
+		renameButton.setEnabled(valid);
+		
+		upButton.setEnabled(valid && currentIndex >= 1);
+		downButton.setEnabled(valid && currentIndex < rules.size() - 1);
 	}
 
 	/**

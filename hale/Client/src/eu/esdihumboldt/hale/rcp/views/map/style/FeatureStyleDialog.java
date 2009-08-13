@@ -11,8 +11,12 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map.style;
 
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.geotools.styling.FeatureTypeStyle;
@@ -30,6 +34,8 @@ import eu.esdihumboldt.hale.rcp.HALEActivator;
  * @version $Id$ 
  */
 public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
+
+	private static final int APPLY_ID = IDialogConstants.CLIENT_ID + 1;
 
 	private static Image styleImage;
 	
@@ -77,7 +83,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 			try {
 				temp = oldPage.getStyle(false);
 			} catch (Exception e) {
-				if (MessageDialog.openConfirm(getShell(), "Switch editor",
+				if (MessageDialog.openConfirm(getShell(), "Switch style editor",
 						"The current style is not valid, if you continue you will loose your changes."
 						+ "\n\nError message:\n" + e.getMessage())) {
 					// revert changes
@@ -91,12 +97,42 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 			
 			if (temp != null) {
 				// set style
-				setStyle(temp);
+				if (MessageDialog.openQuestion(getShell(), "Switch style editor",
+						"Do you want to save the changes you made to the style?")) {
+					setStyle(temp);
+				}
 				return true;
 			}
 			else {
 				return true;
 			}
+		}
+	}
+
+	/**
+	 * @see Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
+	 */
+	@Override
+	protected void createButtonsForButtonBar(Composite parent) {
+		// create OK and cancel
+		super.createButtonsForButtonBar(parent);
+		
+		// create apply
+		createButton(parent, APPLY_ID,
+				"Apply", false);
+	}
+
+	/**
+	 * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
+	 */
+	@Override
+	protected void buttonPressed(int buttonId) {
+		switch (buttonId) {
+		case APPLY_ID:
+			applyPressed();
+			break;
+		default:
+			super.buttonPressed(buttonId);
 		}
 	}
 
@@ -114,6 +150,19 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	 */
 	@Override
 	protected void okPressed() {
+		if (apply()) {
+			super.okPressed();
+		}
+	}
+	
+	/**
+	 * Called when the apply button was pressed
+	 */
+	protected void applyPressed() {
+		apply();
+	}
+	
+	private boolean apply() {
 		FeatureStylePage page = getCurrentPage();
 		
 		Style temp = null;
@@ -123,7 +172,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 			MessageDialog.openError(getShell(), "Style error",
 					"The current style is not valid, the following error occurred:\n\n"
 					+ e.getMessage());
-			return;
+			return false;
 		}
 		
 		if (temp != null) {
@@ -131,7 +180,8 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 		}
 		
 		styles.addStyles(style);
-		super.okPressed();
+		
+		return true;
 	}
 
 	/**
