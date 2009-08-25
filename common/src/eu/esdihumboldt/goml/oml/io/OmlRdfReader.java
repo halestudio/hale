@@ -176,7 +176,10 @@ public class OmlRdfReader {
 	 */
 	private Cell getCell(CellType cellType) {
 		Cell cell = new Cell();
-		//TODO set label list 
+		
+		
+		List<String> labels = cellType.getLabel();
+		cell.setLabel(labels);
 		
 		//TODO check with Marian set about as UUID from string about 
 		//cell.setAbout(new About(UUID.fromString(cellType.getAbout())));

@@ -32,6 +32,7 @@ import eu.esdihumboldt.cst.align.ISchema;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
+import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.generated.AlignmentType;
 import eu.esdihumboldt.goml.generated.ApplyType;
 import eu.esdihumboldt.goml.generated.CellType;
@@ -234,6 +235,7 @@ public class OmlRdfGenerator {
 			cType.setRelation(getRelation(cell.getRelation()));
 			cType.setEntity1(getEntity1(cell.getEntity1()));
 			cType.setEntity2(getEntity2(cell.getEntity2()));
+			cType.getLabel().addAll(((Cell)cell).getLabel());
 		}
 		return cType;
 	}
