@@ -79,6 +79,7 @@
    <xs:element name="Cell" type="align:CellType" />
    <xs:complexType name="CellType">
       <xs:sequence>
+		 <xs:element ref="omwg:label" minOccurs="0" maxOccurs="unbounded" />
          <xs:element ref="omwg:entity1"/>
          <xs:element ref="omwg:entity2"/>
          <xs:element ref="align:measure"/>

@@ -47,7 +47,8 @@ Changes:
   <!-- filter: only those instances are mapped to the target schema where the condition (value of the attribute OBJART equals 5101) is fulfilled -->
     <align:map>
         <align:Cell rdf:about="" >
-            <entity1>
+            <label>filter</label>
+			<entity1>
                 <Class rdf:about="watercoursesBY:Rivers">
                     <attributeValueCondition>
                         <Restriction>
