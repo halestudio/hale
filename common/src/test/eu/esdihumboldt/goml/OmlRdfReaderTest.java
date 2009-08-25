@@ -83,7 +83,7 @@ public class OmlRdfReaderTest {
 		
 		//3. test the mapping for filter
 		Cell filter =(Cell)aligment.getMap().get(0);
-		//
+		//read operation name
 		assertEquals("filter",filter.getLabel().get(0));
 		//assertEquals(1.0,filter.getMeasure());
 		assertEquals(RelationType.Equivalence, filter.getRelation());
