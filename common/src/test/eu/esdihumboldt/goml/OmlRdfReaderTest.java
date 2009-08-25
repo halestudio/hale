@@ -22,6 +22,7 @@ import com.sun.org.apache.regexp.internal.recompile;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.goml.omwg.ComparatorType;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
@@ -81,7 +82,9 @@ public class OmlRdfReaderTest {
 		assertEquals("inspireHY:Watercourse", ((About) prop2.getDomainRestriction().get(0).getAbout()).getAbout());
 		
 		//3. test the mapping for filter
-		ICell filter = aligment.getMap().get(0);
+		Cell filter =(Cell)aligment.getMap().get(0);
+		//
+		assertEquals("filter",filter.getLabel().get(0));
 		//assertEquals(1.0,filter.getMeasure());
 		assertEquals(RelationType.Equivalence, filter.getRelation());
 		//check entity1 properties
