@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.cst.align;
 
+import java.util.List;
+
 import eu.esdihumboldt.cst.rdf.IAbout;
 
 /**
@@ -47,6 +49,15 @@ public interface ICell {
 	 * @return the about
 	 */
 	public IAbout getAbout();
+	
+	
+	/**
+	 * Returns a list of labels of the cell. The first label is 
+	 * currently used to retrieve the operation name which 
+	 * indicates the transformer.
+	 * @return List of labels.
+	 */
+	public List<String> getLabel();
 
 
 	public enum RelationType {
