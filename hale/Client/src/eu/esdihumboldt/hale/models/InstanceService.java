@@ -76,6 +76,20 @@ public interface InstanceService
 	public boolean addInstances(DatasetType type, FeatureCollection<FeatureType, Feature> featureCollection, FeatureFilter filter);
 	
 	/**
+	 * Replace Features for a given FeatureType (both defined in the 
+	 * featureCollection) and {@link DatasetType}.
+	 * @param type the {@link DatasetType} within which to replace instances.
+	 * @param featureCollection the {@link FeatureCollection} that contains the
+	 * Features that should be used as replacements. Please note that this 
+	 * operation is expected to work on the granularity of FeatureTypes, i.e. 
+	 * all Features of a Type represented in this parameter will be replaced by 
+	 * the Features in this parameter.
+	 * @return true if any existing instances were replaced, false if none 
+	 * were replaced.
+	 */
+	public boolean replaceInstances(DatasetType type, FeatureCollection<FeatureType, Feature> featureCollection);
+	
+	/**
 	 * This will remove all instances from the service.
 	 * @param type the {@link DatasetType} that indicates which instances you
 	 * want to clean.

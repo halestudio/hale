@@ -12,13 +12,18 @@
 package eu.esdihumboldt.hale.models.impl;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.Feature;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.models.FeatureFilter;
@@ -210,6 +215,77 @@ public class InstanceServiceImpl
 		else {
 			return null;
 		}
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.models.InstanceService#replaceInstances(eu.esdihumboldt.hale.models.InstanceService.DatasetType, org.geotools.feature.FeatureCollection)
+	 */
+	@Override
+	public boolean replaceInstances(DatasetType type,
+			FeatureCollection<FeatureType, Feature> newFeatures) {
+		Map<RobustFTKey, Set<Feature>> mergedFeatures = 
+			new HashMap<RobustFTKey, Set<Feature>>();
+		FeatureCollection<?, Feature> oldFeatures = null;
+		if (DatasetType.reference.equals(type)) {
+			oldFeatures = this.sourceReferenceFeatures;
+		}
+		else {
+			oldFeatures = this.transformedFeatures;
+		}
+		// add original features to merged collection
+		FeatureIterator fi = oldFeatures.features();
+		while (fi.hasNext()) {
+			Feature f = fi.next();
+			RobustFTKey fkey = new RobustFTKey(f.getType());
+			Set<Feature> tmp = mergedFeatures.get(fkey);
+			if (tmp != null) {
+				tmp.add(f);
+			}
+			else {
+				tmp = new HashSet<Feature>();
+				tmp.add(f);
+				mergedFeatures.put(fkey, tmp);
+			}
+		}
+		// add new features to merged collection
+		boolean result = false;
+		Set<RobustFTKey> clearedSet = new HashSet<RobustFTKey>();
+		fi = newFeatures.features();
+		while (fi.hasNext()) {
+			Feature f = fi.next();
+			RobustFTKey fkey = new RobustFTKey(f.getType());
+			Set<Feature> tmp = mergedFeatures.get(fkey);
+			if (tmp != null) {
+				if (!clearedSet.contains(fkey)) {
+					tmp.clear();
+					clearedSet.add(fkey);
+				}
+				tmp.add(f);
+			}
+			else {
+				tmp = new HashSet<Feature>();
+				tmp.add(f);
+				mergedFeatures.put(fkey, tmp);
+				result = true;
+			}
+		}
+		// recreate FeatureCollection from merged collection
+		FeatureCollection mergedFc = 
+			FeatureCollections.newCollection();
+		
+		for (Set<Feature> features : mergedFeatures.values()) {
+			mergedFc.addAll(features);
+		}
+		
+		// assign result and return...
+		if (DatasetType.reference.equals(type)) {
+			this.sourceReferenceFeatures = mergedFc;
+		}
+		else {
+			this.transformedFeatures = mergedFc;
+		}
+		
+		return result;
 	}
 
 
