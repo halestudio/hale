@@ -14,13 +14,16 @@ package eu.esdihumboldt.modelmapping.imm.impl;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.geotools.metadata.iso.IdentifierImpl;
 import org.geotools.metadata.iso.citation.CitationImpl;
 import org.geotools.metadata.iso.identification.IdentificationImpl;
 import org.geotools.util.SimpleInternationalString;
+import org.opengis.metadata.Identifier;
 import org.opengis.metadata.identification.Identification;
 
 import eu.esdihumboldt.mediator.contextservice.hibernate.helpers.IdentificationHelper;
@@ -91,13 +94,14 @@ public class PrototypeFeatureType
 		ci.setTitle(new SimpleInternationalString(_typeName));
 		
 		// create unique identifier and IdentifierType for Citation.
-		List<String> identifiers = new ArrayList<String>();
+		List<IdentifierImpl> identifiers = new ArrayList<IdentifierImpl>();
 		UUID uuid = UUID.randomUUID();
-		identifiers.add(uuid.toString());
+		IdentifierImpl identifier = new IdentifierImpl(uuid.toString());
+		identifiers.add(identifier);
 		ci.setIdentifiers(identifiers);
-		List<String> identifierTypes = new ArrayList<String>();
-		identifierTypes.add(uuid.getClass().getName());
-		ci.setIdentifierTypes(identifierTypes);
+		/*List<String> identifierTypes = new ArrayList<String>();
+		identifierTypes.add(uuid.getClass().getName());*/
+		//ci.setIdentifierTypes(identifierTypes);
 		
 		// assign created Citation(Identification to this FT.
 		IdentificationImpl ii = new IdentificationImpl();

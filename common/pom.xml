@@ -23,12 +23,12 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
-            <plugin>
+            <!-- plugin>
                 <artifactId>maven-eclipse-plugin</artifactId>
                 <configuration>
                     <workspace>${basedir}</workspace>
                 </configuration>
-            </plugin>
+            </plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -59,41 +59,41 @@
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
-            <artifactId>gt2-main</artifactId>
-            <version>2.4.4</version>
+            <artifactId>gt-main</artifactId>
+            <version>${geotools.version}</version>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
-            <artifactId>gt2-wms</artifactId>
-            <version>2.4.4</version>
+            <artifactId>gt-wms</artifactId>
+            <version>${geotools.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.geotools</groupId>
-                    <artifactId>gt2-plugin</artifactId>
+                    <artifactId>gt-plugin</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.geotools</groupId>
-                    <artifactId>gt2-coverage</artifactId>
+                    <artifactId>gt-coverage</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.geotools</groupId>
-                    <artifactId>gt2-referencing</artifactId>
+                    <artifactId>gt-referencing</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.geotools</groupId>
-                    <artifactId>gt2-xml</artifactId>
+                    <artifactId>gt-xml</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.geotools</groupId>
-                    <artifactId>gt2-xml-xsd</artifactId>
+                    <artifactId>gt-xml-xsd</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.geotools</groupId>
-                    <artifactId>gt2-epsg-wkt</artifactId>
+                    <artifactId>gt-epsg-wkt</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.geotools</groupId>
-                    <artifactId>gt2-sample-data</artifactId>
+                    <artifactId>gt-sample-data</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>commons-lang</groupId>
@@ -174,19 +174,21 @@
 			<version>2.1</version>
 	</dependency>	
 </dependencies>		
-<!--
-	<distributionManagement>
-		<repository>
-			<id>humboldt</id>
-			<name>Humboldt internal repository</name>
-			<url>
-				http://localhost:8080/artifactory/humboldt-internal-libraries
-			</url>
-		</repository>
-	</distributionManagement>
--->
+<repositories>
+    <repository>
+      <id>central</id>
+      <name>Humboldt internal repository</name>
+      <url>http://artifactory.esdi-humboldt.eu:8070/artifactory/libraries</url>
+    </repository>
+    <repository>
+      <id>gt-central</id>
+      <name>Geotools Maven Repository</name>
+      <url>http://download.osgeo.org/webdav/geotools</url>
+    </repository>
+  </repositories>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<geotools.version>2.5.5</geotools.version>
     </properties>
 </project>
 
