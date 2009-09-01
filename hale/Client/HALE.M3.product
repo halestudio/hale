@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.4"?>
+<?pde version="3.5"?>
 
-<product name="HUMBOLDT Alignment Editor" id="HALE.product" application="HALE.application" version="M3" useFeatures="false">
+<product name="HUMBOLDT Alignment Editor" id="HALE.product" application="HALE.application" version="M3" useFeatures="false" includeLaunchers="true">
+
 
    <configIni use="default">
    </configIni>
@@ -11,20 +12,25 @@
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <launcher>
+   <windowImages/>
+
+
+   <launcher name="HALE">
       <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
 
+
    <vm>
    </vm>
+
 
    <plugins>
       <plugin id="HALE"/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="javax.transaction"/>
+      <plugin id="javax.transaction" fragment="true"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.databinding"/>
@@ -56,5 +62,6 @@
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit4"/>
    </plugins>
+
 
 </product>
