@@ -12,7 +12,6 @@
 package eu.esdihumboldt.hale.rcp.views.model.filtering;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -25,14 +24,14 @@ import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
  * simple boolean state. It can also be used directly if no specific behaviour 
  * is expected.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz, Simon Templer 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
 public class SimpleToggleAction 
 	extends Action {
 	
-	private final TreeObjectType actionName;
+	private final TreeObjectType objectType;
 	
 	/**
 	 * The {@link Composite} that needs to be updated when this action is 
@@ -41,61 +40,55 @@ public class SimpleToggleAction
 	 */
 	private TreeViewer actionTarget;
 	
-	private boolean active = true;
-	
-	private String msgTrue = "";
-	private String msgFalse = "";
-	private String iconPath = "";
+	private String msgDisable = "";
+	private String msgEnable = "";
 	
 	private PatternViewFilter filterListener; 
 	
-	public SimpleToggleAction(TreeObjectType action_name, String msg_true, 
-			String msg_false, String icon_path, PatternViewFilter pvf) {
-		super();
-		this.setChecked(true);
-		this.actionName = action_name;
-		this.msgTrue = msg_true;
-		this.msgFalse = msg_false;
-		this.iconPath = icon_path;
-		this.filterListener = pvf;
-	}
-	
-	@Override
-	public ImageDescriptor getImageDescriptor() {
-		return AbstractUIPlugin.imageDescriptorFromPlugin(
-				HALEActivator.PLUGIN_ID, this.iconPath);
-	}
-
 	/**
-	 * @see org.eclipse.jface.action.Action#getToolTipText()
+	 * Constructor
+	 * 
+	 * @param objectType the tree object type
+	 * @param msgDisable the message to disable filter
+	 * @param msgEnable the message to enable filter
+	 * @param iconPath the icon path
+	 * @param pvf the pattern view filter
 	 */
-	@Override
-	public String getToolTipText() {
-		if (this.active) {
-			return this.msgTrue;
-		}
-		else {
-			return this.msgFalse;
-		}
+	public SimpleToggleAction(TreeObjectType objectType, String msgDisable, 
+			String msgEnable, String iconPath, PatternViewFilter pvf) {
+		super(msgDisable, Action.AS_CHECK_BOX);
+		setChecked(true);
+		setToolTipText(msgDisable);
+		
+		this.objectType = objectType;
+		this.msgDisable = msgDisable;
+		this.msgEnable = msgEnable;
+		this.filterListener = pvf;
+		
+		setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
+				HALEActivator.PLUGIN_ID, iconPath));
 	}
 
 	/**
-	 * @see org.eclipse.jface.action.Action#run()
+	 * @see Action#run()
 	 */
 	@Override
 	public void run() {
-		this.active = !this.active;
-		if (this.active) {
-			this.filterListener.addAttributeFilter(this.actionName);
+		boolean active = isChecked();
+		
+		String text = (active)?(msgDisable):(msgEnable);
+		setToolTipText(text);
+		setText(text);
+		
+		if (active) { // active means visible means filter not active
+			filterListener.removeAttributeFilter(this.objectType);
 		}
-		else {
-			this.filterListener.removeAttributeFilter(this.actionName);
+		else { // not active means not visible means filter active
+			filterListener.addAttributeFilter(this.objectType);
 		}
-		if (this.actionTarget != null) {
-			this.actionTarget.refresh();
+		if (actionTarget != null) {
+			actionTarget.refresh();
 		}
-		this.setChecked(!this.active);
-		super.run();
 	}
 	
 	/**
@@ -103,9 +96,14 @@ public class SimpleToggleAction
 	 * indicates the effect it should have.
 	 */
 	public TreeObjectType getActionName() {
-		return this.actionName;
+		return this.objectType;
 	}
 	
+	/**
+	 * Set the action target
+	 * 
+	 * @param tv the action target tree viewer
+	 */
 	public void setActionTarget(TreeViewer tv) {
 		this.actionTarget = tv;
 	}
