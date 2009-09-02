@@ -70,6 +70,9 @@ public class HumboldtURIResolver
 			String baseUri) {
 
 		if (baseUri != null) {
+			if (baseUri.equals("file:/D:/Humboldt/workspace/HALE2/resources/INSPIRE_Conf_Data/GML-3.1.1/base/geometryComplexes.xsd")) {
+				System.out.println("Hallo");
+			}
 			try {
 				if (baseUri.startsWith("file:/")) {
 					baseUri = new URI(baseUri).getPath();
