@@ -14,6 +14,7 @@ package eu.esdihumboldt.goml.omwg;
 
 import java.util.List;
 
+import eu.esdihumboldt.goml.oml.ext.ValueClass;
 import eu.esdihumboldt.goml.oml.ext.ValueExpression;
 
 /**
@@ -44,7 +45,14 @@ public class Restriction {
 	 * <xs:element name="value" type="omwg:valueExprType" maxOccurs="unbounded" />
 	 */
 	private List<ValueExpression> value;
+	
+	/**
+	 * if List of value expressions is empty use the value class
+	 */
+	private ValueClass valueClass;
+		
 
+	
 	/**
 	 * TODO explain. 
 	 * <xs:element ref="goml:cqlStr" minOccurs="0" maxOccurs="1" />
@@ -125,6 +133,22 @@ public class Restriction {
 	 */
 	public void setCqlStr(String cqlStr) {
 		this.cqlStr = cqlStr;
+	}
+
+	/**
+	 * 
+	 * @return ValueClass
+	 */
+	public ValueClass getValueClass() {
+		return valueClass;
+	}
+
+	/**
+	 * 
+	 * @param valueClass
+	 */
+	public void setValueClass(ValueClass valueClass) {
+		this.valueClass = valueClass;
 	}
 
 }

@@ -47,11 +47,13 @@ import eu.esdihumboldt.goml.generated.OntologyType;
 import eu.esdihumboldt.goml.generated.PropertyType;
 import eu.esdihumboldt.goml.generated.RelationEnumType;
 import eu.esdihumboldt.goml.generated.RestrictionType;
+import eu.esdihumboldt.goml.generated.ValueClassType;
 import eu.esdihumboldt.goml.generated.ValueConditionType;
 import eu.esdihumboldt.goml.generated.ValueExprType;
 import eu.esdihumboldt.goml.generated.AlignmentType.Map;
 import eu.esdihumboldt.goml.generated.AlignmentType.Onto1;
 import eu.esdihumboldt.goml.oml.ext.Function;
+import eu.esdihumboldt.goml.oml.ext.ValueClass;
 import eu.esdihumboldt.goml.oml.ext.ValueExpression;
 import eu.esdihumboldt.goml.omwg.ComparatorType;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
@@ -306,6 +308,13 @@ public class OmlRdfReader {
 			RestrictionType rType = classCondition.getRestriction();
 			List<ValueExprType> valueExpr = rType.getValue();
 			restriction = new Restriction(null, getValueExpression(valueExpr));
+			//set value class to add about and resource document
+			ValueClass vClass = new ValueClass();
+			ValueClassType vcType = rType.getValueClass();
+			vClass.setAbout(vcType.getAbout());
+			vClass.setResource(vcType.getResource());
+			vClass.getValue().addAll(getValueExpression(vcType.getValue()));
+			restriction.setValueClass(vClass);
 			if (rType.getComparator()!=null)restriction.setComparator(getComparator(rType.getComparator()));
 			restriction.setCqlStr(rType.getCqlStr());
 			restrictions.add(restriction);

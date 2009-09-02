@@ -61,6 +61,7 @@ import eu.esdihumboldt.goml.generated.AlignmentType.Onto1;
 import eu.esdihumboldt.goml.generated.AlignmentType.Onto2;
 import eu.esdihumboldt.goml.generated.OntologyType.Formalism;
 import eu.esdihumboldt.goml.oml.ext.Function;
+import eu.esdihumboldt.goml.oml.ext.ValueClass;
 import eu.esdihumboldt.goml.oml.ext.ValueExpression;
 import eu.esdihumboldt.goml.omwg.ComparatorType;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
@@ -406,9 +407,47 @@ public class OmlRdfGenerator {
 			rType.setCqlStr(restriction.getCqlStr());
 			rType.setOnAttribute(getOnAttributeType(restriction
 					.getOnAttribute()));
-			rType.setValueClass(getValueClass(restriction.getValue()));
+			
+			//if list of value expressions for this restriction is empty
+			//use ValueClass
+			List<ValueExpression> values = restriction.getValue();
+			if (values.size()>0)
+			rType.setValueClass(getValueClass(values));
+			
+			else rType.setValueClass(getValueClass(restriction.getValueClass()));
 		}
 		return rType;
+	}
+
+	/**
+	 * Converts from the OML ValueClass to the Jaxb ValueClassType
+	 * @param valueClass
+	 * @return
+	 */
+	private ValueClassType getValueClass(ValueClass valueClass) {
+		ValueClassType vcType = new ValueClassType();
+		vcType.setAbout(valueClass.getAbout());
+		vcType.setResource(valueClass.getResource());
+		vcType.getValue().addAll(getValueExpressions(valueClass.getValue()));
+		
+		return vcType;
+	}
+
+	private Collection<? extends ValueExprType> getValueExpressions(
+			List<ValueExpression> value) {
+		List<ValueExprType> vExpressions = new ArrayList<ValueExprType>(value.size());
+		Iterator iterator = value.iterator();
+		ValueExprType veType;
+		while(iterator.hasNext()){
+			ValueExpression ve = (ValueExpression)iterator.next();
+			veType = new ValueExprType();
+			veType.setLiteral(ve.getLiteral());
+			veType.setMax(ve.getMax());
+			veType.setMin(ve.getMin());
+			veType.setApply(getApplayType(ve.getApply()));
+			vExpressions.add(veType);
+		}
+		return vExpressions;
 	}
 
 	/**
@@ -420,7 +459,7 @@ public class OmlRdfGenerator {
 	 */
 	private ValueClassType getValueClass(List<ValueExpression> value) {
 		ValueClassType vcType = new ValueClassType();
-		// TODO add implementation after discussion with MdV
+		vcType.getValue().addAll(getValueExpressions(value));
 		return vcType;
 	}
 
