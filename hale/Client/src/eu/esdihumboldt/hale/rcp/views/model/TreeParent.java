@@ -24,8 +24,8 @@ import java.util.ArrayList;
 public class TreeParent extends TreeObject{
 	private ArrayList<TreeObject> children;
 	
-	public TreeParent(String name, TreeObjectType type) {
-		super(name, type);
+	public TreeParent(String name, TreeObjectType type, Object data) {
+		super(name, type, data);
 		children = new ArrayList<TreeObject>();
 	}
 	

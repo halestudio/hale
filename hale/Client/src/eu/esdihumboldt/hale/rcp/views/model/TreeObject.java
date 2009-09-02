@@ -21,10 +21,12 @@ public class TreeObject {
 	private String name;
 	private TreeParent parent;
 	private TreeObjectType type;
+	private Object data;
 	
-	public TreeObject(String name, TreeObjectType type) {
+	public TreeObject(String name, TreeObjectType type, Object data) {
 		this.name = name;
 		this.type = type;
+		this.data = data;
 	}
 	/**
 	 * @return the type, either ROOT, 
@@ -46,6 +48,13 @@ public class TreeObject {
 		return getName();
 	}
 	
+	/**
+	 * @return the data
+	 */
+	public Object getData() {
+		return data;
+	}
+	
 	public enum TreeObjectType {
 		ROOT,
 		ABSTRACT_FT,
@@ -55,4 +64,5 @@ public class TreeObject {
 		COMPLEX_ATTRIBUTE,
 		GEOMETRIC_ATTRIBUTE
 	}
+
 }

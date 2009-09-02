@@ -199,16 +199,16 @@ public class ModelNavigationView extends ViewPart implements
 	 */
 	private TreeObject translateSchema(Collection<FeatureType> schema) {
 		if (schema == null || schema.size() == 0) {
-			return new TreeParent("", TreeObjectType.ROOT);
+			return new TreeParent("", TreeObjectType.ROOT, null);
 		}
 
 		// first, find out a few things about the schema to define the root
 		// type.
 		// TODO add metadata on schema here.
 		// TODO is should be possible to attach attributive data for a flyout.
-		TreeParent hidden_root = new TreeParent("ROOT", TreeObjectType.ROOT);
+		TreeParent hidden_root = new TreeParent("ROOT", TreeObjectType.ROOT, null);
 		TreeParent root = new TreeParent(schema.iterator().next().getName()
-				.getNamespaceURI(), TreeObjectType.ROOT);
+				.getNamespaceURI(), TreeObjectType.ROOT, null);
 		hidden_root.addChild(root);
 
 		// build the tree of FeatureTypes, starting from those types which
@@ -279,7 +279,7 @@ public class ModelNavigationView extends ViewPart implements
 			tot = TreeObjectType.ABSTRACT_FT;
 		}
 		TreeParent result = new TreeParent(ftk.getFeatureType().getName()
-				.getLocalPart(), tot);
+				.getLocalPart(), tot, ftk.getFeatureType());
 		// add properties
 		for (PropertyDescriptor pd : ftk.getFeatureType().getDescriptors()) {
 			tot = TreeObjectType.STRING_ATTRIBUTE;
@@ -302,8 +302,9 @@ public class ModelNavigationView extends ViewPart implements
 					.contains(org.opengis.feature.type.ComplexType.class)) {
 				tot = TreeObjectType.COMPLEX_ATTRIBUTE;
 			}
+//			result.addChild(new TreeObject(ftk.getFeatureType().getName().getLocalPart() + ":" + ftk.getFeatureType().getName().getNamespaceURI(), tot));
 			result.addChild(new TreeObject(pd.getName().getLocalPart() + ":<"
-					+ pd.getType().getName().getLocalPart() + ">", tot));
+					+ pd.getType().getName().getLocalPart() + ">", tot, ftk.getFeatureType()));
 		}
 		// add children recursively
 		for (FeatureType ft : typeHierarchy.get(ftk)) {
