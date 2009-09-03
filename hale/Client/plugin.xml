@@ -107,6 +107,12 @@
             id="eu.esdihumboldt.hale.rcp.wizards.io.FunctionWizard"
             name="FunctionWizard">
       </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.LoadTestDataHandler"
+            description="Load source/target schema and instance data"
+            id="HALE2.LoadTestData.command"
+            name="LoadTestData">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -166,6 +172,12 @@
                   commandId="HALE.exit.command"
                   id="exit"
                   label="Exit"
+                  style="push">
+            </command>
+            <command
+                  commandId="HALE2.LoadTestData.command"
+                  id="openTestData"
+                  label="Load test data"
                   style="push">
             </command>
          </menu>
