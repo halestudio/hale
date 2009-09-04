@@ -13,6 +13,7 @@
 package eu.esdihumboldt.goml.oml.ext;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.esdihumboldt.cst.align.ext.IParameter;
@@ -29,19 +30,7 @@ import eu.esdihumboldt.cst.align.ext.ITransformation;
 public class Transformation 
 	implements ITransformation {
 
-	/**
-	 * @param label the label to set
-	 */
-	public void setLabel(String label) {
-		this.label = label;
-	}
 
-	/**
-	 * @param parameters the parameters to set
-	 */
-	public void setParameters(List<IParameter> parameters) {
-		this.parameters = parameters;
-	}
 
 	private URI service;
 	private String label;
@@ -49,6 +38,11 @@ public class Transformation
 
 	// getters / setters .......................................................
 
+	
+	public Transformation() {
+		this.parameters = new ArrayList<IParameter>();
+	}
+	
 	/**
 	 * @return the service
 	 */
@@ -72,5 +66,18 @@ public class Transformation
 		return this.parameters;
 	}
 
+	/**
+	 * @param label the label to set
+	 */
+	public void setLabel(String label) {
+		this.label = label;
+	}
+	
+	/**
+	 * @param parameters the parameters to set
+	 */
+	public void setParameters(List<IParameter> parameters) {
+		this.parameters = parameters;
+	}
 
 }
