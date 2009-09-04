@@ -4,6 +4,7 @@ package eu.esdihumboldt.hale.rcp.views.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,13 +26,14 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IViewReference;
-import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.part.ViewPart;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
+import org.opengis.feature.type.PropertyType;
 
+import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
@@ -44,8 +46,8 @@ import eu.esdihumboldt.hale.rcp.views.model.filtering.UseInheritanceHierarchyAct
 /**
  * This view component handles the display of source and target schemas.
  * 
- * @author Thorsten Reitz
- * @version {$Id}
+ * @author Thorsten Reitz, Simon Templer
+ * @version $Id$
  */
 public class ModelNavigationView extends ViewPart implements
 		HaleServiceListener{
@@ -58,7 +60,7 @@ public class ModelNavigationView extends ViewPart implements
 	/**
 	 * FIXME find better solution. Used to access the SchemaService from wizards.
 	 */
-	public static IWorkbenchPartSite site;
+	//public static IWorkbenchPartSite site;
 
 	public static final String ID = "eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView";
 
@@ -73,8 +75,6 @@ public class ModelNavigationView extends ViewPart implements
 
 	@Override
 	public void createPartControl(Composite _parent) {
-
-		ModelNavigationView.site = this.getSite();
 		schemaService = (SchemaService) this.getSite().getService(
 				SchemaService.class);
 		schemaService.addListener(this);
@@ -125,6 +125,18 @@ public class ModelNavigationView extends ViewPart implements
 		for (SimpleToggleAction sta : targetToggleActions) {
 			sta.setActionTarget(this.targetSchemaViewer);
 		}
+		
+		// redraw on alignment change
+		AlignmentService as = (AlignmentService) getSite().getService(AlignmentService.class);
+		as.addListener(new HaleServiceListener() {
+
+			@Override
+			public void update() {
+				sourceSchemaViewer.getControl().redraw();
+				targetSchemaViewer.getControl().redraw();
+			}
+			
+		});
 	}
 
 	private List<SimpleToggleAction> getToggleActions(PatternViewFilter pvf) {
@@ -199,16 +211,16 @@ public class ModelNavigationView extends ViewPart implements
 	 */
 	private TreeObject translateSchema(Collection<FeatureType> schema) {
 		if (schema == null || schema.size() == 0) {
-			return new TreeParent("", TreeObjectType.ROOT, null);
+			return new TreeParent("", null, TreeObjectType.ROOT);
 		}
 
 		// first, find out a few things about the schema to define the root
 		// type.
 		// TODO add metadata on schema here.
 		// TODO is should be possible to attach attributive data for a flyout.
-		TreeParent hidden_root = new TreeParent("ROOT", TreeObjectType.ROOT, null);
+		TreeParent hidden_root = new TreeParent("ROOT", null, TreeObjectType.ROOT);
 		TreeParent root = new TreeParent(schema.iterator().next().getName()
-				.getNamespaceURI(), TreeObjectType.ROOT, null);
+				.getNamespaceURI(), null, TreeObjectType.ROOT);
 		hidden_root.addChild(root);
 
 		// build the tree of FeatureTypes, starting from those types which
@@ -255,7 +267,7 @@ public class ModelNavigationView extends ViewPart implements
 		for (Class clazz : classes) {
 			if (clazz.equals(classToFind)) return true;
 			for (Class c : clazz.getInterfaces()) {
-				if (clazz.equals(classToFind)) return true; // FIXME, I don't trust this piece of code
+				if (c.equals(classToFind)) return true;
 			}
 		}
 		return false;
@@ -279,32 +291,15 @@ public class ModelNavigationView extends ViewPart implements
 			tot = TreeObjectType.ABSTRACT_FT;
 		}
 		TreeParent result = new TreeParent(ftk.getFeatureType().getName()
-				.getLocalPart(), tot, ftk.getFeatureType());
+				.getLocalPart(), ftk.getFeatureType().getName(), tot);
 		// add properties
 		for (PropertyDescriptor pd : ftk.getFeatureType().getDescriptors()) {
-			tot = TreeObjectType.STRING_ATTRIBUTE;
-			if (pd.getType().toString().matches("^.*?GMLComplexTypes.*")) {
-//			if (pd.getType().getName().getNamespaceURI().equals("http://www.opengis.net/gml")) {
-				tot = TreeObjectType.GEOMETRIC_ATTRIBUTE;
-			} else if (Arrays.asList(pd.getType().getBinding().getClass().getInterfaces())
-					.contains(org.opengis.feature.type.GeometryType.class)) {
-				tot = TreeObjectType.GEOMETRIC_ATTRIBUTE;
-			} else if (checkInterface(pd.getType().getBinding().getInterfaces(),
-					com.vividsolutions.jts.geom.Puntal.class)) {
-				tot = TreeObjectType.GEOMETRIC_ATTRIBUTE;
-			} else if (checkInterface(pd.getType().getBinding().getInterfaces(),
-					com.vividsolutions.jts.geom.Polygonal.class)) {
-				tot = TreeObjectType.GEOMETRIC_ATTRIBUTE;
-			} else if (checkInterface(pd.getType().getBinding().getInterfaces(),
-					com.vividsolutions.jts.geom.Lineal.class)) {
-				tot = TreeObjectType.GEOMETRIC_ATTRIBUTE;
-			} else if (Arrays.asList(pd.getType().getClass().getInterfaces())
-					.contains(org.opengis.feature.type.ComplexType.class)) {
-				tot = TreeObjectType.COMPLEX_ATTRIBUTE;
-			}
+			tot = getAttributeType(pd);
+			
 //			result.addChild(new TreeObject(ftk.getFeatureType().getName().getLocalPart() + ":" + ftk.getFeatureType().getName().getNamespaceURI(), tot));
 			result.addChild(new TreeObject(pd.getName().getLocalPart() + ":<"
-					+ pd.getType().getName().getLocalPart() + ">", tot, ftk.getFeatureType()));
+					+ pd.getType().getName().getLocalPart() + ">", 
+					pd.getName(), tot));
 		}
 		// add children recursively
 		for (FeatureType ft : typeHierarchy.get(ftk)) {
@@ -312,6 +307,62 @@ public class ModelNavigationView extends ViewPart implements
 					typeHierarchy));
 		}
 		return result;
+	}
+
+	/**
+	 * Get the tree object type for an attribute
+	 * 
+	 * @param pd the attribute's property descriptor
+	 * @return the tree object type of the attribute
+	 */
+	protected TreeObjectType getAttributeType(PropertyDescriptor pd) {
+		PropertyType type = pd.getType();
+		Class<?> binding = type.getBinding();
+		
+		if (type.toString().matches("^.*?GMLComplexTypes.*")) {
+//		if (pd.getType().getName().getNamespaceURI().equals("http://www.opengis.net/gml")) {
+			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
+		} else if (Arrays.asList(binding.getClass().getInterfaces())
+				.contains(org.opengis.feature.type.GeometryType.class)) {
+			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
+		} else if (checkInterface(binding.getInterfaces(),
+				com.vividsolutions.jts.geom.Puntal.class)) {
+			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
+		} else if (checkInterface(binding.getInterfaces(),
+				com.vividsolutions.jts.geom.Polygonal.class)) {
+			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
+		} else if (checkInterface(binding.getInterfaces(),
+				com.vividsolutions.jts.geom.Lineal.class)) {
+			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
+		}
+		// numeric
+		else if (Number.class.isAssignableFrom(binding) || Date.class.isAssignableFrom(binding)) {
+			return TreeObjectType.NUMERIC_ATTRIBUTE;
+		}
+		// string
+		else if (String.class.isAssignableFrom(binding)) {
+			return TreeObjectType.STRING_ATTRIBUTE;
+		}
+		// boolean
+		else if (Boolean.class.isAssignableFrom(binding)) {
+			return TreeObjectType.STRING_ATTRIBUTE; //TODO new attribute type?
+		}
+		// default geometry attribute
+		else if (pd.getName().getLocalPart().equalsIgnoreCase("geometry") ||
+				pd.getName().getLocalPart().equalsIgnoreCase("the_geom")) {
+			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
+		}
+		else if (Arrays.asList(type.getClass().getInterfaces())
+				.contains(org.opengis.feature.type.ComplexType.class)) {
+			return TreeObjectType.COMPLEX_ATTRIBUTE;
+		}
+		// collection
+		else if (Collection.class.isAssignableFrom(binding)) {
+			return TreeObjectType.COMPLEX_ATTRIBUTE;
+		}
+		
+		// default to complex attribute
+		return TreeObjectType.COMPLEX_ATTRIBUTE;
 	}
 
 	@Override
@@ -415,14 +466,27 @@ public class ModelNavigationView extends ViewPart implements
 		}
 	}
 	
+	/**
+	 * Get the source schema viewer
+	 * 
+	 * @return the source schema viewer
+	 */
 	public TreeViewer getSourceSchemaViewer() {
 		return sourceSchemaViewer;
 	}
 
+	/**
+	 * Get the target schema viewer
+	 * 
+	 * @return the target schema viewer
+	 */
 	public TreeViewer getTargetSchemaViewer() {
 		return targetSchemaViewer;
 	}
 
+	/**
+	 * @see HaleServiceListener#update()
+	 */
 	public void update() {
 		this.sourceSchemaViewer.setInput(this.translateSchema(schemaService
 				.getSourceSchema()));

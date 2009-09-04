@@ -16,12 +16,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
-import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 
 /**
  * This wizard is used to export the currently active mapping to an gOML file.
@@ -38,6 +38,9 @@ public class MappingExportWizard
 	
 	private static Logger _log = Logger.getLogger(MappingExportWizard.class);
 	
+	/**
+	 * Default constructor
+	 */
 	public MappingExportWizard() {
 		super();
 		this.mainPage = new MappingExportWizardMainPage(
@@ -53,7 +56,7 @@ public class MappingExportWizard
 		String result = this.mainPage.getResult();
 		if (result != null) {
 			AlignmentService alService = (AlignmentService) 
-						ModelNavigationView.site.getService(AlignmentService.class);
+					PlatformUI.getWorkbench().getService(AlignmentService.class);
 			
 			OmlRdfGenerator orgen = new OmlRdfGenerator();
 			

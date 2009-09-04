@@ -108,6 +108,11 @@
             name="FunctionWizard">
       </command>
       <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.NewProjectHandler"
+            id="HALE.newProject.command"
+            name="New Alignment Project">
+      </command>
+      <command
             defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.LoadTestDataHandler"
             description="Load source/target schema and instance data"
             id="HALE2.LoadTestData.command"
@@ -121,6 +126,12 @@
          <menu
                id="file"
                label="File">
+            <command
+                  commandId="HALE.newProject.command"
+                  id="newProject"
+                  label="New Alignment Project"
+                  style="push">
+            </command>
             <command
                   commandId="HALE.openProject.command"
                   id="openProject"

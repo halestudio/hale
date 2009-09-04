@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.5"?>
+<?pde version="3.4"?>
 
-<product name="HUMBOLDT Alignment Editor" id="HALE.product" application="HALE.application" version="M3" useFeatures="false" includeLaunchers="true">
-
+<product name="HUMBOLDT Alignment Editor" id="HALE.product" application="HALE.application" version="M3" useFeatures="false">
 
    <configIni use="default">
    </configIni>
@@ -14,7 +13,6 @@
 
    <windowImages/>
 
-
    <launcher name="HALE">
       <solaris/>
       <win useIco="false">
@@ -22,15 +20,13 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
       <plugin id="HALE"/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="javax.transaction" fragment="true"/>
+      <plugin id="javax.transaction"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.databinding"/>
@@ -45,6 +41,8 @@
       <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.emf.common"/>
+      <plugin id="org.eclipse.emf.common.ui"/>
       <plugin id="org.eclipse.equinox.app"/>
       <plugin id="org.eclipse.equinox.common"/>
       <plugin id="org.eclipse.equinox.preferences"/>
@@ -62,6 +60,5 @@
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit4"/>
    </plugins>
-
 
 </product>

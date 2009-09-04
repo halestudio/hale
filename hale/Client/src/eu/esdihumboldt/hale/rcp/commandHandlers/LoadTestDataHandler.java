@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.INewWizard;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml3.ApplicationSchemaConfiguration;
@@ -67,9 +68,9 @@ public class LoadTestDataHandler extends AbstractHandler implements IHandler {
 	private static Logger _log = Logger.getLogger(LoadTestDataHandler.class);
 
 	private void LoadSchemas(String sourceFilename, String targetFilename) {
-		SchemaService schemaService = (SchemaService) ModelNavigationView.site
+		SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench()
 				.getService(SchemaService.class);
-		AlignmentService alService = (AlignmentService) ModelNavigationView.site
+		AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench()
 				.getService(AlignmentService.class);
 
 		try {
@@ -109,9 +110,9 @@ public class LoadTestDataHandler extends AbstractHandler implements IHandler {
 	
 	public void LoadInstanceData(String filename) {
 		// get service references.
-		final InstanceService instanceService = (InstanceService) ModelNavigationView.site
+		final InstanceService instanceService = (InstanceService) PlatformUI.getWorkbench()
 				.getService(InstanceService.class);
-		final SchemaService schemaService = (SchemaService) ModelNavigationView.site
+		final SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench()
 				.getService(SchemaService.class);
 		
 		final String result = filename;

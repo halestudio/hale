@@ -19,6 +19,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWizard;
+import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.goml.align.Formalism;
 import eu.esdihumboldt.goml.align.Schema;
@@ -27,12 +29,11 @@ import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.provider.TaskProviderFactory;
-import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 
 /**
  * This {@link Wizard} is used to import source and target schemas.
  * 
- * @author Thorsten Reitz
+ * @author Thorsten Reitz, Simon Templer
  * @version $Id$
  */
 public class SchemaImportWizard 
@@ -43,6 +44,9 @@ public class SchemaImportWizard
 	
 	SchemaImportWizardMainPage mainPage;
 
+	/**
+	 * Default constructor
+	 */
 	public SchemaImportWizard() {
 		super();
 		this.mainPage = new SchemaImportWizardMainPage(
@@ -51,10 +55,8 @@ public class SchemaImportWizard
 		super.setNeedsProgressMonitor(true);
 	}
 	
-	
-
 	/**
-	 * @see org.eclipse.jface.wizard.Wizard#canFinish()
+	 * @see Wizard#canFinish()
 	 */
 	@Override
 	public boolean canFinish() {
@@ -64,17 +66,19 @@ public class SchemaImportWizard
 
 
 	/**
-	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
+	 * @see Wizard#performFinish()
 	 */
 	public boolean performFinish() {
 		SchemaService schemaService = (SchemaService) 
-					ModelNavigationView.site.getService(SchemaService.class);
+					PlatformUI.getWorkbench().getService(SchemaService.class);
 		AlignmentService alService = (AlignmentService) 
-					ModelNavigationView.site.getService(AlignmentService.class);
+					PlatformUI.getWorkbench().getService(AlignmentService.class);
 		
 		try {
-			File f = new File(mainPage.getResult());
-			URI uri = f.toURI(); 
+			final String result = mainPage.getResult();
+			
+			URI uri = getSchemaURI(result);
+			
 			if (mainPage.getSchemaType() == SchemaType.SOURCE) {;
 				// load Schema as Source schema
 				schemaService.loadSchema(uri, SchemaType.SOURCE);
@@ -100,7 +104,7 @@ public class SchemaImportWizard
 		// create tasks if checked.
 		if (mainPage.createTasks()) {
 			TaskService taskService = (TaskService) 
-						ModelNavigationView.site.getService(TaskService.class);
+						PlatformUI.getWorkbench().getService(TaskService.class);
 			taskService.addTasks(
 					TaskProviderFactory.getInstance().getTasks(
 							schemaService.getSchema(mainPage.getSchemaType())));
@@ -109,8 +113,26 @@ public class SchemaImportWizard
 		return true;
 	}
 	 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
+	/**
+	 * Get the schema {@link URI} for the given location
+	 * 
+	 * @param location the schema location
+	 * @return the {@link URI}
+	 */
+	private URI getSchemaURI(String location) {
+		// check if it is an existing file
+		File file = new File(location);
+		if (file.exists()) {
+			return file.toURI();
+		}
+		// else it should be a URL
+		else {
+			return URI.create(location);
+		}
+	}
+
+	/**
+	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 

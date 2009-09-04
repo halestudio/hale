@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -37,6 +38,8 @@ import eu.esdihumboldt.hale.models.SchemaService;
 
 /**
  * GeoTools-based implementation of {@link SchemaService}.
+ * 
+ * $Id$
  */
 public class SchemaServiceImpl 
 	implements SchemaService {
@@ -384,6 +387,15 @@ public class SchemaServiceImpl
 			return this.targetSchema;
 		}
 	}
+
+	/**
+	 * @see SchemaService#loadSchema(List, SchemaService.SchemaType)
+	 */
+	@Override
+	public boolean loadSchema(List<URI> uris, SchemaType type) {
+		throw new UnsupportedOperationException("Not implemented");
+	}
+	
 }
 
 

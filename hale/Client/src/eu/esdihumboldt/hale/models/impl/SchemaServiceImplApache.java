@@ -14,8 +14,6 @@
  */
 package eu.esdihumboldt.hale.models.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -63,7 +61,6 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 
 /**
  * Implementation of {@link SchemaService}.
@@ -73,7 +70,8 @@ import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
  * necessary use this library instead of the GeoTools Xml schema loader, because
  * the GeoTools version cannot handle GML 3.2 based files.
  * 
- * @author Bernd Schneiders, Logica; Thorsten Reitz, Fraunhofer IGD
+ * @author Bernd Schneiders, Logica; Thorsten Reitz, Fraunhofer IGD;
+ *   Simon Templer, Fraunhofer IGD
  * @version $Id$
  */
 public class SchemaServiceImplApache 
@@ -90,6 +88,12 @@ public class SchemaServiceImplApache
 		String name;
 		AttributeType type;
 
+		/**
+		 * Constructor
+		 * 
+		 * @param name the attribute name
+		 * @param type the attribute type
+		 */
 		public AttributeResult(String name, AttributeType type) {
 			super();
 			this.name = name;
@@ -145,6 +149,11 @@ public class SchemaServiceImplApache
 		_log.setLevel(Level.INFO);
 	}
 	
+	/**
+	 * Get the {@link SchemaServiceImplApache} instance
+	 * 
+	 * @return the {@link SchemaServiceImplApache} instance
+	 */
 	public static SchemaService getInstance() {
 		return SchemaServiceImplApache.instance;
 	}
@@ -190,7 +199,7 @@ public class SchemaServiceImplApache
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.models.SchemaService#loadSchema(java.net.URI, SchemaType)
+	 * @see SchemaService#loadSchema(URI, SchemaType)
 	 */
 	public boolean loadSchema(URI file, SchemaType type) {
 		
@@ -225,6 +234,14 @@ public class SchemaServiceImplApache
 		
 		this.updateListeners();
 		return true;
+	}
+	
+	/**
+	 * @see SchemaService#loadSchema(List, SchemaService.SchemaType)
+	 */
+	@Override
+	public boolean loadSchema(List<URI> uris, SchemaType type) {
+		throw new UnsupportedOperationException("Not implemented");
 	}
 	
 	public boolean addListener(HaleServiceListener sl) {
@@ -459,7 +476,7 @@ public class SchemaServiceImplApache
 		// use XML Schema to load schema with all its subschema to the memory
 		InputStream is = null;
 		try {
-			is = new FileInputStream(new File(file));
+			is = file.toURL().openStream(); //new FileInputStream(new File(file));
 		} catch (Throwable e) {
 			_log.error("File URI could not be resolved.", e);
 			throw new RuntimeException(e);
@@ -742,6 +759,7 @@ public class SchemaServiceImplApache
 			return this.targetSchema;
 		}
 	}
+	
 }
 
 

@@ -44,7 +44,7 @@ import org.xml.sax.SAXParseException;
  * This utility class is used to build and handle WFS GetCapabilities Requests
  * and Responses.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz, Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
@@ -197,6 +197,26 @@ public class GetCapabilititiesRetriever {
 	}
 	
 	/**
+	 * Get the data store for the given capabilities URL
+	 * 
+	 * @param getCapabilitiesUrl
+	 * @return the data store
+	 * @throws IOException
+	 */
+	public static DataStore getDataStore(String getCapabilitiesUrl) throws IOException {
+		_log.info("Getting Capabilities from " + getCapabilitiesUrl);
+		
+		// Connection Definition
+		Map<String, Object> connectionParameters = new HashMap<String, Object>();
+		connectionParameters.put("WFSDataStoreFactory:GET_CAPABILITIES_URL", 
+				getCapabilitiesUrl);
+		connectionParameters.put("WFSDataStoreFactory:TIMEOUT", new Integer(30000));
+				
+		// Step 2 - connection
+		return DataStoreFinder.getDataStore( connectionParameters );
+	}
+	
+	/**
 	 * 
 	 * @param getCapabilitiesUrl
 	 * @return
@@ -204,16 +224,9 @@ public class GetCapabilititiesRetriever {
 	 */
 	public static List<FeatureType> readFeatureTypes(String getCapabilitiesUrl) 
 		throws IOException {
-		_log.info("Getting Capabilities from " + getCapabilitiesUrl);
+		DataStore data = getDataStore(getCapabilitiesUrl);
 		
-		// Connection Definition
-		Map<String, Object> connectionParameters = new HashMap<String, Object>();
-		connectionParameters.put("WFSDataStoreFactory:GET_CAPABILITIES_URL", 
-				getCapabilitiesUrl );
-		connectionParameters.put("WFSDataStoreFactory:TIMEOUT", new Integer(30000));
-				
-		// Step 2 - connection
-		DataStore data = DataStoreFinder.getDataStore( connectionParameters );
+		//WFSDataStore wfs = (WFSDataStore) data;
 				
 		// Step 3 - discovery and result assembly
 		List<FeatureType> result = new ArrayList<FeatureType>();

@@ -29,12 +29,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
-import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
+import eu.esdihumboldt.hale.rcp.utils.ModelNavigationViewHelper;
+import eu.esdihumboldt.hale.rcp.utils.ModelNavigationViewHelper.SelectionType;
 
 /**
  * This {@link WizardPage} is used to define a renaming mapping.
@@ -46,17 +45,11 @@ public class RenamingFunctionWizardMainPage
 		extends WizardPage implements
 		ISelectionListener {
 
-	private static final String SOURCE_SELECTION_TYPE = "SourceSelectionType";
-	private static final String TARGET_SELECTION_TYPE = "TargetSelectionType";
-	
 	private static Logger _log = Logger.getLogger(RenamingFunctionWizardMainPage.class);
 
 	private TreeViewer sourceViewer;
 	private TreeViewer targetViewer;
-
-	// source FeatureType that should be renamed
-	private FeatureType sourceFeatureType;
-
+	
 	protected Text sourceFeatureTypeName;
 	protected Text targetFeatureTypeName;
 
@@ -109,8 +102,8 @@ public class RenamingFunctionWizardMainPage
 		this.sourceFeatureTypeLabel.setText("Source Type");
 		this.sourceFeatureTypeName = new Text(composite, SWT.BORDER);
 		// TODO replace it with the selected source FeatureType value
-		this.sourceFeatureTypeName
-				.setText(getSelectedFeatureType(SOURCE_SELECTION_TYPE));
+		this.sourceFeatureTypeName.setText(ModelNavigationViewHelper
+				.getFeatureTypeName(SelectionType.SOURCE).getLocalPart());
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 1;
 		this.sourceFeatureTypeName.setLayoutData(gd);
@@ -147,8 +140,8 @@ public class RenamingFunctionWizardMainPage
 		this.targetFeatureTypeLabel.setText("Target Type");
 		this.targetFeatureTypeName = new Text(composite, SWT.BORDER);
 		// TODO replace it with the selected target FeatureType value
-		this.targetFeatureTypeName
-				.setText(getSelectedFeatureType(TARGET_SELECTION_TYPE));
+		this.targetFeatureTypeName.setText(ModelNavigationViewHelper
+				.getFeatureTypeName(SelectionType.TARGET).getLocalPart());
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 1;
 		this.targetFeatureTypeName.setLayoutData(gd);
@@ -177,62 +170,6 @@ public class RenamingFunctionWizardMainPage
 				.getSelectionService().addSelectionListener(this);
 		setErrorMessage(null); // should not initially have error message
 		super.setControl(composite);
-	}
-	
-	public FeatureType getSourceFeatureType() {
-		return sourceFeatureType;
-	}
-
-	private String getSelectedFeatureType(String selectedFeatureType) {
-		String typeName = "";
-		ModelNavigationView modelNavigation = getModelNavigationView();
-		if (modelNavigation != null) {
-
-			if (selectedFeatureType.equals(SOURCE_SELECTION_TYPE)) {
-				this.sourceViewer = modelNavigation.getSourceSchemaViewer();
-				this.targetViewer = modelNavigation.getTargetSchemaViewer();
-				TreeItem[] sourceTreeSelection = sourceViewer.getTree()
-						.getSelection();
-				TreeItem[] targetTreeSelection = targetViewer.getTree()
-						.getSelection();
-
-				if (sourceTreeSelection.length == 1) {
-
-					// is a Feature Type
-					typeName = sourceTreeSelection[0].getText();
-
-				}
-			} else if (selectedFeatureType.equals(TARGET_SELECTION_TYPE)) {
-				TreeViewer targetViewer = modelNavigation
-						.getTargetSchemaViewer();
-				TreeItem[] targetTreeSelection = targetViewer.getTree()
-						.getSelection();
-				if (targetTreeSelection.length == 1)
-					typeName = targetTreeSelection[0].getText();
-			}
-
-		}
-
-		return typeName;
-
-	}
-
-	protected ModelNavigationView getModelNavigationView() {
-		ModelNavigationView attributeView = null;
-		// get All Views
-		IViewReference[] views = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage().getViewReferences();
-		// get AttributeView
-		// get AttributeView
-		for (int count = 0; count < views.length; count++) {
-			if (views[count].getId().equals(
-					"eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView")) {
-				attributeView = (ModelNavigationView) views[count]
-						.getView(false);
-			}
-
-		}
-		return attributeView;
 	}
 
 	/**

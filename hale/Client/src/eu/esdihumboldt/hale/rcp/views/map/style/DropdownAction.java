@@ -34,7 +34,7 @@ public class DropdownAction extends Action implements IMenuCreator {
 	private Menu menu;
 	
 	/**
-	 * Creates a drop-down actionthe action name
+	 * Creates a drop-down action
 	 * @param name the action name
 	 */
 	public DropdownAction(String name) {

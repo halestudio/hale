@@ -28,6 +28,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PlatformUI;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml3.ApplicationSchemaConfiguration;
 import org.geotools.gml3.GMLConfiguration;
@@ -41,7 +42,6 @@ import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.models.provider.instance.HaleGMLParser;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
-import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 
 /**
  * This {@link Wizard} controls the import of geodata to be used for 
@@ -60,6 +60,9 @@ public class InstanceDataImportWizard
 	InstanceDataImportWizardFilterPage filterPage;
 	InstanceDataImportWizardVerificationPage verificationPage;
 
+	/**
+	 * Default constructor
+	 */
 	public InstanceDataImportWizard() {
 		super();
 		this.mainPage = new InstanceDataImportWizardMainPage(
@@ -88,9 +91,9 @@ public class InstanceDataImportWizard
 	 */
 	public boolean performFinish() {
 		// get service references.
-		final InstanceService instanceService = (InstanceService) ModelNavigationView.site
+		final InstanceService instanceService = (InstanceService) PlatformUI.getWorkbench()
 				.getService(InstanceService.class);
-		final SchemaService schemaService = (SchemaService) ModelNavigationView.site
+		final SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench()
 				.getService(SchemaService.class);
 		
 		final String result = mainPage.getResult();
@@ -193,6 +196,7 @@ public class InstanceDataImportWizard
 	 * @param gml_location the {@link URL} identifying the GML file to parse.
 	 * @return a {@link FeatureCollection}.
 	 */
+	@SuppressWarnings("unchecked")
 	private FeatureCollection<FeatureType, Feature> parseGML(
 			String namespace, URL schema_location, URL gml_location) {
 		

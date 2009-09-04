@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.rcp.wizards.io;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -31,6 +32,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.geotools.data.DataStore;
+import org.geotools.data.wfs.WFSDataStore;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
@@ -39,7 +42,7 @@ import org.opengis.feature.type.FeatureType;
  * which to read capabilities and will confirm communication by displaying
  * {@link FeatureType} names that are found.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz, Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
@@ -50,10 +53,22 @@ public class WFSFeatureTypesReaderDialog
 
 	URL url_result;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param parent the parent shell
+	 * @param style the dialog style
+	 */
 	public WFSFeatureTypesReaderDialog(Shell parent, int style) {
 		super(parent, style);
 	}
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param parent the parent shell
+	 * @param title the dialog title
+	 */
 	public WFSFeatureTypesReaderDialog(Shell parent, String title) {
 		super(parent, 0);
 		this.setText(title);
@@ -80,6 +95,7 @@ public class WFSFeatureTypesReaderDialog
 			if (!display.readAndDispatch()) display.sleep();
 		}
 		_log.debug("returning result.");
+		
 		return url_result;
 	}
 
@@ -110,12 +126,12 @@ public class WFSFeatureTypesReaderDialog
 		final Text hostPortText = new Text (urlDefinitionArea, SWT.BORDER | SWT.SINGLE);
 		hostPortText.setLayoutData(new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
-		/*hostPortText.setText(
-				"http://staging-esdi-humboldt.igd.fraunhofer.de:8080/" +
-				"geoserver/ows?service=WFS&request=GetCapabilities");*/
 		hostPortText.setText(
-				"http://car2.esrin.esa.int:8080/" +
+				"http://staging-esdi-humboldt.igd.fraunhofer.de:8080/" +
 				"geoserver/ows?service=WFS&request=GetCapabilities");
+		/*hostPortText.setText(
+				"http://car2.esrin.esa.int:8080/" +
+				"geoserver/ows?service=WFS&request=GetCapabilities");*/
 		hostPortText.setEditable(true);
 		hostPortText.addListener (SWT.FocusOut, new Listener () {
 			public void handleEvent (Event e) {
@@ -190,10 +206,42 @@ public class WFSFeatureTypesReaderDialog
 				if (finish.isEnabled()) {
 					_log.debug("saving result: " + hostPortText.getText());
 					try {
-						url_result = new URL(hostPortText.getText());
+						//url_result = new URL(hostPortText.getText());
+						String capabilities = hostPortText.getText();
+						
+						// build DescribeFeatureType URL
+						DataStore data = GetCapabilititiesRetriever.getDataStore(capabilities);
+						
+						// collect type names
+						StringBuffer typeNames = new StringBuffer();
+						String firstType = null;
+						boolean first = true;
+						for (String typeName : data.getTypeNames()) {
+							if (first) {
+								first = false;
+								firstType = typeName;
+							}
+							else {
+								typeNames.append(',');
+							}
+							typeNames.append(typeName);
+						}
+						
+						// get the URL
+						//XXX replaced by code below - url_result = ((WFSDataStore) data).getDescribeFeatureTypeURL(typeNames.toString());
+						//XXX we have to trick because the geotools implementation of the WFS 1.1.0 protocol is limited to one feature type 
+						if (firstType != null) {
+							String temp = ((WFSDataStore) data).getDescribeFeatureTypeURL(firstType).toString();
+							temp = temp.replaceAll(URLEncoder.encode(firstType), URLEncoder.encode(typeNames.toString()));
+							url_result = new URL(temp);
+						}
+						
+						_log.info("DescribeFeatureType URL: " + url_result.toString());
 					} catch (MalformedURLException e) {
 						_log.error("An error occured when parsing the " +
 								"selected host to a URL:", e);
+					} catch (IOException e) {
+						_log.error("Error connecting to the WFS service", e);
 					}
 				}
 				finish.getParent().getParent().getShell().dispose();

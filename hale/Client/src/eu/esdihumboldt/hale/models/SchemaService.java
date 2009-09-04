@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.models;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
+import java.util.List;
 
 import org.opengis.feature.type.FeatureType;
 
@@ -46,9 +47,19 @@ public interface SchemaService
 	 * schema.
 	 * May point to different source, such as a XSD or a a WFS.
 	 * @param file the {@link URI} to the file from which to load the schema.
+	 * @param type the schema type
 	 * @return true if the loading was successful.
 	 */
 	public boolean loadSchema(URI file, SchemaType type);
+	
+	/**
+	 * Loads multiple schemas into the target or source schema.
+	 * 
+	 * @param uris the {@link URI}s to the schemas
+	 * @param type the schema type
+	 * @return if the loading was successful
+	 */
+	public boolean loadSchema(List<URI> uris, SchemaType type);
 	
 	/**
 	 * Invoke this operation if you want to clear out the source schema stored. 
