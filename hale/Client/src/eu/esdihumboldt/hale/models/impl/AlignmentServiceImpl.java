@@ -33,8 +33,6 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.transformer.ITransformationService;
-import eu.esdihumboldt.cst.transformer.TransformationServiceFactory;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
@@ -129,67 +127,7 @@ public class AlignmentServiceImpl implements AlignmentService {
 	 * @see eu.esdihumboldt.hale.models.AlignmentService#addOrUpdateCell(eu.esdihumboldt.goml.align.Cell)
 	 */
 	public boolean addOrUpdateCell(Cell cell) {
-		System.out.println("Updating cell..");
-
 		boolean result = this.alignment.getMap().add(cell);
-		try {
-			// Get source entity
-			Entity entity = (Entity) cell.getEntity1();
-			
-			NameImpl name = null;
-			
-			// Check if the type of the entity is a feature type
-			String type = entity.getLabel().get(0);
-			if (   type.equals(TreeObjectType.ABSTRACT_FT.toString())
-				|| type.equals(TreeObjectType.CONCRETE_FT.toString())) {				
-				name = new NameImpl(entity.getLabel().get(2), entity.getLabel().get(1));
-				System.err.println("debug: entity is a feature type");
-			} else {
-				name = new NameImpl(entity.getLabel().get(3), entity.getLabel().get(2));
-				System.err.println("debug: entity is an atribute");
-			}
-			
-			// Create a feature type from the labels.
-			SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
-			builder.setName(name);
-			FeatureType featureType = builder.buildFeatureType();
-			System.err.println("debug: Name: " + name.getLocalPart() + ":" + name.getNamespaceURI());
-
-			// Get all features of the feature type.
-			System.err.println("Fetching features by type...");
-			InstanceService instanceService = InstanceServiceImpl.getInstance();
-			Collection<? extends Feature> features = instanceService.getFeaturesByType(featureType);
-			System.err.println("Features by type fetched. " + features.size() + " matched.");
-
-			// Updates the transformed features of the InstanceService
-			ITransformationService service = TransformationServiceFactory.getInstance();
-
-			// Create a FeatureCollection from the features.
-			FeatureCollection referenceCopy = FeatureCollections.newCollection();
-			for (Feature feature : features) {
-				referenceCopy.add(feature);
-			}
-			
-			// Transform all features
-			System.err.println("Transforming features...");
-			
-			Alignment alignment = new Alignment();
-			alignment.setMap(new ArrayList<ICell>());
-			alignment.getMap().add(cell);
-
-			FeatureCollection<FeatureType,Feature> transformed;// = FeatureCollections.newCollection();
-			transformed = (FeatureCollection<FeatureType, Feature>) service.transform(referenceCopy, alignment);
-			System.err.println("Features transformed. Number of features: " + transformed.size());
-			
-			instanceService.addInstances(DatasetType.transformed, transformed);
-			System.err.println("Transformed features added to instance service");
-
-			this.updateListeners();
-
-			System.out.println("Cell updated");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		return result;
 	}
 

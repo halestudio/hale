@@ -28,6 +28,8 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.cst.transformer.ITransformationService;
+import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.StyleService;
@@ -91,7 +93,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		
 		init(canvas, determineMapArea());
 		
-		InstanceService instances = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+		final InstanceService instances = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 		instances.addListener(new HaleServiceListener() {
 			
 			@Override
@@ -112,6 +114,22 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 				}	
 			}
 			
+		});
+		
+		final AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+		alService.addListener(new HaleServiceListener() {
+			@Override
+			public void update() {
+				synchronized (this) {
+					ITransformationService ts = (ITransformationService) 
+						PlatformUI.getWorkbench().getService(ITransformationService.class);
+					instances.cleanInstances(DatasetType.transformed);
+					instances.addInstances(DatasetType.transformed, 
+							(FeatureCollection<FeatureType, Feature>) ts.transform(
+									instances.getFeatures(DatasetType.reference), 
+									alService.getAlignment()));
+				}	
+			}
 		});
 		
 		referenceCache.addTileListener(this);
