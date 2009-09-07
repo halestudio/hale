@@ -43,6 +43,7 @@ import eu.esdihumboldt.hale.rcp.views.model.filtering.SimpleToggleAction;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.UseAggregationHierarchyAction;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.UseFlatHierarchyAction;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.UseInheritanceHierarchyAction;
+import eu.esdihumboldt.tools.RobustFTKey;
 
 /**
  * This view component handles the display of source and target schemas.
