@@ -28,7 +28,7 @@ import eu.esdihumboldt.hale.models.FeatureFilter;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
-import eu.esdihumboldt.hale.rcp.views.model.RobustFTKey;
+import eu.esdihumboldt.tools.RobustFTKey;
 
 /**
  * This class implements the {@link InstanceService} as a Singleton.
