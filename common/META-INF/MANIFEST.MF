@@ -19,6 +19,7 @@ Export-Package: eu.esdihumboldt.goml.align,
  eu.esdihumboldt.mediator.usermanagement.types.impl,
  eu.esdihumboldt.mediator.util,
  eu.esdihumboldt.modelmapping.imm.impl,
- eu.esdihumboldt.tools,
- test.eu.esdihumboldt.goml,
- test.eu.esdihumboldt.tools
+ eu.esdihumboldt.tools
+Import-Package: eu.esdihumboldt.cst.align,
+ eu.esdihumboldt.cst.align.ext,
+ eu.esdihumboldt.cst.rdf
