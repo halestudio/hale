@@ -31,6 +31,7 @@ public class Cell
 
 	/**
 	 * Annotation label(s)
+	 * TODO check whether this and the IAbout aren't in conflict.
 	 */
 	private List<String> label;
 
@@ -46,11 +47,14 @@ public class Cell
 	
 	/**
 	 * The mapping/relation type between the two {@link Entity} objects.
+	 * TODO replace by an extensible construct, maybe including the MDL.
+	 * Note: MDL should go to schema of its own.
 	 */
 	private RelationType relation;
 	
 	/**
-	 * TODO add comment
+	 * The confidence as a numerical value of the correctness of this mapping
+	 * TODO replace by MDL elements.
 	 */
 	private double measure;
 	
