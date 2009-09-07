@@ -28,7 +28,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.cst.transformer.ITransformationService;
+import eu.esdihumboldt.cst.transformer.TransformationService;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.InstanceService;
@@ -121,8 +121,8 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 			@Override
 			public void update() {
 				synchronized (this) {
-					ITransformationService ts = (ITransformationService) 
-						PlatformUI.getWorkbench().getService(ITransformationService.class);
+					TransformationService ts = (TransformationService) 
+						PlatformUI.getWorkbench().getService(TransformationService.class);
 					instances.cleanInstances(DatasetType.transformed);
 					instances.addInstances(DatasetType.transformed, 
 							(FeatureCollection<FeatureType, Feature>) ts.transform(

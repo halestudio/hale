@@ -14,8 +14,8 @@ package eu.esdihumboldt.hale.rcp.services;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
-import eu.esdihumboldt.cst.transformer.ITransformationService;
-import eu.esdihumboldt.cst.transformer.TransformationServiceFactory;
+import eu.esdihumboldt.cst.transformer.TransformationService;
+import eu.esdihumboldt.cst.transformer.impl.TransformationServiceFactory;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.SchemaService;
@@ -44,7 +44,7 @@ public class HaleServiceFactory
 	private StyleService style = StyleServiceImpl.getInstance(schema);
 	private TaskService task = TaskServiceImpl.getInstance();
 	private AlignmentService alignment = AlignmentServiceImpl.getInstance();
-	private ITransformationService transform = TransformationServiceFactory.getInstance();
+	private TransformationService transform = TransformationServiceFactory.getInstance();
 
 	public HaleServiceFactory() {
 		// TODO Auto-generated constructor stub
@@ -70,7 +70,7 @@ public class HaleServiceFactory
 		if (serviceInterface.equals(AlignmentService.class)) {
 			return this.alignment;
 		}
-		if (serviceInterface.equals(ITransformationService.class)) {
+		if (serviceInterface.equals(TransformationService.class)) {
 			return this.transform;
 		}
 		else {
