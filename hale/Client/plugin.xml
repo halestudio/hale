@@ -213,7 +213,7 @@
                serviceClass="eu.esdihumboldt.hale.models.AlignmentService">
          </service>
          <service
-               serviceClass="eu.esdihumboldt.cst.transformer.ITransformationService">
+               serviceClass="eu.esdihumboldt.cst.transformer.TransformationService">
          </service>
       </serviceFactory>
    </extension>
