@@ -26,6 +26,7 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 
@@ -56,7 +57,7 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 		setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
 				HALEActivator.PLUGIN_ID, "/icons/ft_stylelist.gif"));
 		
-		update();
+		update(null);
 		
 		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		schema.addListener(this);
@@ -127,10 +128,9 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 	}
 
 	/**
-	 * @see HaleServiceListener#update()
+	 * @see HaleServiceListener#update(UpdateMessage)
 	 */
-	@Override
-	public void update() {
+	public void update(UpdateMessage message) {
 		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
 		Collection<FeatureType> types = (dataset == DatasetType.reference)?(schema.getSourceSchema()):(schema.getTargetSchema());

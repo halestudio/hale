@@ -61,6 +61,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.UpdateMessage;
 
 /**
  * Implementation of {@link SchemaService}.
@@ -253,7 +254,7 @@ public class SchemaServiceImplApache
 	 */
 	private void updateListeners() {
 		for (HaleServiceListener hsl : this.listeners) {
-			hsl.update();
+			hsl.update(new UpdateMessage(SchemaService.class, null)); // FIXME
 		}
 	}
 

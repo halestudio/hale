@@ -35,6 +35,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.UpdateMessage;
 
 /**
  * GeoTools-based implementation of {@link SchemaService}.
@@ -159,7 +160,7 @@ public class SchemaServiceImpl
 	private void updateListeners() {
 		for (HaleServiceListener hsl : this.listeners) {
 			_log.info("Updating a listener.");
-			hsl.update();
+			hsl.update(new UpdateMessage(SchemaService.class, null)); // FIXME
 		}
 	}
 

@@ -28,11 +28,12 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.cst.transformer.TransformationService;
+import eu.esdihumboldt.cst.transformer.ITransformationService;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.StyleService;
+import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.AbstractTilePainter;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.TileBackground;
@@ -97,7 +98,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		instances.addListener(new HaleServiceListener() {
 			
 			@Override
-			public void update() {
+			public void update(UpdateMessage message) {
 				updateMap(determineMapArea());
 			}
 			
@@ -107,7 +108,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		styles.addListener(new HaleServiceListener() {
 			
 			@Override
-			public void update() {
+			public void update(UpdateMessage message) {
 				synchronized (this) {
 					resetTiles();
 					refresh();
@@ -119,7 +120,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		final AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
 		alService.addListener(new HaleServiceListener() {
 			@Override
-			public void update() {
+			public void update(UpdateMessage message) {
 				synchronized (this) {
 					TransformationService ts = (TransformationService) 
 						PlatformUI.getWorkbench().getService(TransformationService.class);

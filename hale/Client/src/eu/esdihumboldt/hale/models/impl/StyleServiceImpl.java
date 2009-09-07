@@ -44,6 +44,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.StyleService;
+import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 
 /**
@@ -303,7 +304,7 @@ public class StyleServiceImpl
 	private void updateListeners() {
 		for (HaleServiceListener hsl : this.listeners) {
 			_log.info("Updating a listener.");
-			hsl.update();
+			hsl.update(new UpdateMessage(StyleService.class, null)); //FIXME
 		}
 	}
 	

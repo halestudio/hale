@@ -22,13 +22,12 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.models.FeatureFilter;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.InstanceService;
+import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.rcp.views.model.RobustFTKey;
 
 /**
@@ -197,7 +196,7 @@ public class InstanceServiceImpl
 	
 	private void updateListeners() {
 		for (HaleServiceListener hsl : this.listeners) {
-			hsl.update();
+			hsl.update(new UpdateMessage(InstanceService.class, null)); // FIXME
 		}
 	}
 

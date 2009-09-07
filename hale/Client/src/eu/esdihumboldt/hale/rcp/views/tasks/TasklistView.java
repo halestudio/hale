@@ -25,6 +25,7 @@ import org.eclipse.ui.part.ViewPart;
 
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.TaskService;
+import eu.esdihumboldt.hale.models.UpdateMessage;
 
 
 /**
@@ -146,7 +147,7 @@ public class TasklistView
 	 * @see eu.esdihumboldt.hale.models.HaleServiceListener#update()
 	 */
 	@Override
-	public void update() {
+	public void update(UpdateMessage message) {
 		this.tableViewer.setInput(taskService.getOpenTasks());
 	}
 }

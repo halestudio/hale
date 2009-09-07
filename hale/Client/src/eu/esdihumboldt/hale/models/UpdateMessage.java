@@ -12,20 +12,35 @@
 package eu.esdihumboldt.hale.models;
 
 /**
- * The {@link HaleServiceListener} allows views to be notified when a
- * service's data has been updated, such as by loading a new schema.
- * It has to be implemented by Views wanting to be notified.
+ * This class is used by the {@link HaleServiceListener} and can be used to 
+ * provide details on a given update to the Listener.
  * 
  * @author Thorsten Reitz 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public interface HaleServiceListener {
+public class UpdateMessage<T> {
+	
+	private Class sourceClass;
+	private T messageObject;
+
+	public UpdateMessage(Class sourceClass, T messageObject) {
+		this.sourceClass = sourceClass;
+		this.messageObject = messageObject;
+	}
 	
 	/**
-	 * This method is called by the service when it's internal state 
-	 * changes.
+	 * @return the interface class of the service that sent the message.
 	 */
-	public void update(UpdateMessage message);
-
+	public Class getSource(){
+		return this.sourceClass;
+	}
+	
+	/**
+	 * @return the message object providing details on the updating event.
+	 */
+	public T getMessage() {
+		return this.messageObject;
+	}
+	
 }

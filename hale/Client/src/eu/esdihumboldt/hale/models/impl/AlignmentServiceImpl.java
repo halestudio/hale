@@ -29,6 +29,7 @@ import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
+import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.UpdateService;
 
 /**
@@ -275,7 +276,7 @@ public class AlignmentServiceImpl implements AlignmentService {
 	private void updateListeners() {
 		for (HaleServiceListener hsl : this.listeners) {
 			_log.info("Updating a listener.");
-			hsl.update();
+			hsl.update(new UpdateMessage(AlignmentService.class, null)); // FIXME
 		}
 	}
 

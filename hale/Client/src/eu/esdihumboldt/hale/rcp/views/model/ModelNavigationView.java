@@ -36,6 +36,7 @@ import org.opengis.feature.type.PropertyType;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.PatternViewFilter;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.SimpleToggleAction;
@@ -131,7 +132,7 @@ public class ModelNavigationView extends ViewPart implements
 		as.addListener(new HaleServiceListener() {
 
 			@Override
-			public void update() {
+			public void update(UpdateMessage message) {
 				sourceSchemaViewer.getControl().redraw();
 				targetSchemaViewer.getControl().redraw();
 			}
@@ -487,7 +488,7 @@ public class ModelNavigationView extends ViewPart implements
 	/**
 	 * @see HaleServiceListener#update()
 	 */
-	public void update() {
+	public void update(UpdateMessage message) {
 		this.sourceSchemaViewer.setInput(this.translateSchema(schemaService
 				.getSourceSchema()));
 		this.sourceSchemaViewer.refresh();

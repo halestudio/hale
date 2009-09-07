@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.TaskService;
+import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.task.Task;
 import eu.esdihumboldt.hale.task.Task.TaskStatus;
 
@@ -121,7 +122,7 @@ public class TaskServiceImpl
 	private void updateListeners() {
 		for (HaleServiceListener hsl : this.listeners) {
 			_log.info("Updating a listener.");
-			hsl.update();
+			hsl.update(new UpdateMessage(TaskService.class, null));
 		}
 	}
 
