@@ -122,13 +122,25 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 			@Override
 			public void update(UpdateMessage message) {
 				synchronized (this) {
-					TransformationService ts = (TransformationService) 
-						PlatformUI.getWorkbench().getService(TransformationService.class);
-					instances.cleanInstances(DatasetType.transformed);
-					instances.addInstances(DatasetType.transformed, 
-							(FeatureCollection<FeatureType, Feature>) ts.transform(
-									instances.getFeatures(DatasetType.reference), 
-									alService.getAlignment()));
+					FeatureCollection<FeatureType, Feature> fc_reference = 
+						instances.getFeatures(DatasetType.reference);
+					if (fc_reference != null && fc_reference.size() > 0 
+							&& alService.getAlignment() != null 
+							&& alService.getAlignment().getMap() != null 
+							&& alService.getAlignment().getMap().size() > 0) {
+						TransformationService ts = (TransformationService) 
+							PlatformUI.getWorkbench().getService(
+									TransformationService.class);
+						instances.cleanInstances(DatasetType.transformed);
+						instances.addInstances(DatasetType.transformed, 
+								(FeatureCollection<FeatureType, Feature>) ts.transform(
+										fc_reference, alService.getAlignment()));
+					}
+					else {
+						log.warn("No instance data was provided, or the " +
+								"alignment was not initialized correctly.");
+					}
+					
 				}	
 			}
 		});
