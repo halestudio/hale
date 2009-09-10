@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: HUMBOLDT Commons
 Bundle-SymbolicName: eu.esdihumboldt.commons
 Bundle-Version: 2.0.0
+Eclipse-BuddyPolicy: registered
 Export-Package: eu.esdihumboldt.goml.align,
  eu.esdihumboldt.goml.generated,
  eu.esdihumboldt.goml.oml.ext,
