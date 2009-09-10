@@ -25,6 +25,7 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.cst.transformer.TransformerFactory;
+import eu.esdihumboldt.cst.transformer.impl.NetworkExpansionTransformer;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
@@ -85,7 +86,7 @@ public class NetworkExpansionFunctionWizard
 		
 		System.err.println("debug1");
 		Transformation transformation = new Transformation();
-		transformation.setLabel(TransformerFactory.BUFFER_GEOMETRY);
+		transformation.setLabel(NetworkExpansionTransformer.class.getName()); //FIXME
 		transformation.getParameters().add(new Parameter("Expansion", "50"));
 		System.err.println("debug1");
 		entity1.setTransformation(transformation);
@@ -94,20 +95,7 @@ public class NetworkExpansionFunctionWizard
 		cell.setEntity1(entity1);
 		cell.setEntity2(entity2);
 		alignmentService.addOrUpdateCell(cell);
-		
-//		InstanceService is = InstanceServiceImpl.getInstance();
-//
-////		// Get instances
-//		FeatureCollection<FeatureType, Feature> features = is.getFeatures(DatasetType.reference);
-//		
-//		// transform geometry in instances
-//		FeatureCollection<FeatureType, Feature> transformedFeatures = this.bufferGeometry(features);
-//		
-//		// put instances in InstanceService
-//		is.addInstances(DatasetType.transformed, transformedFeatures);
-//		
-//		_log.info("transformedFeatures size: " + transformedFeatures.size());
-		
+
 		return this.mainPage.isPageComplete();
 	}
 	
@@ -143,32 +131,5 @@ public class NetworkExpansionFunctionWizard
 		}
 
 	}
-	
-	/*XXX unused - private FeatureCollection<FeatureType, Feature> bufferGeometry(FeatureCollection<FeatureType, Feature> features) {
-			FeatureCollection result = FeatureCollections.newCollection();
-			FeatureIterator fi = features.features();
-	
-			
-			int counter = 0;
-			boolean odd = true;
-			while (fi.hasNext()) {
-				SimpleFeature f = (SimpleFeature) fi.next();
-				Geometry old_geometry = (Geometry)f.getDefaultGeometry();
-				if (old_geometry != null) {
-					Geometry new_geometry = null;
-					try {
-						BufferBuilder bb = new BufferBuilder(new BufferParameters());
-						new_geometry = bb.buffer((Geometry)f.getDefaultGeometry(), 50);
-						SimpleFeature newFeature = SimpleFeatureBuilder.deep(f);
-						newFeature.setDefaultGeometry(new_geometry);
-						result.add(newFeature);
-					} catch (Exception ex) {
-						counter++;
-					}
-				}
-			}
-			_log.debug("Exceptions: " + counter);
-			return result;
-	}*/
 
 }
