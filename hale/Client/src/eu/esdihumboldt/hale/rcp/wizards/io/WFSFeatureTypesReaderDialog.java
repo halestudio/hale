@@ -16,9 +16,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -36,6 +40,7 @@ import org.geotools.data.DataStore;
 import org.geotools.data.wfs.WFSDataStore;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.Name;
 
 /**
  * The {@link WFSFeatureTypesReaderDialog} enables a user to select a WFS from
@@ -183,10 +188,13 @@ public class WFSFeatureTypesReaderDialog
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
 		currentStatusLabel.setAlignment(SWT.RIGHT);
 		
-		final Text testResultText = new Text(urlValidationArea, 
+		final FeatureTypeSelection selection = new FeatureTypeSelection(urlValidationArea);
+		selection.setLayoutData(new GridData(GridData.FILL_BOTH));
+		
+		/*XXX final Text testResultText = new Text(urlValidationArea, 
 				SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		testResultText.setLayoutData(new GridData(GridData.FILL_BOTH));
-		testResultText.setEditable(false);
+		testResultText.setEditable(false);*/
 		
 		// Cancel/Finish buttons
 		Composite buttons = new Composite(c, SWT.BOTTOM);
@@ -216,7 +224,9 @@ public class WFSFeatureTypesReaderDialog
 						StringBuffer typeNames = new StringBuffer();
 						String firstType = null;
 						boolean first = true;
-						for (String typeName : data.getTypeNames()) {
+						for (FeatureType type : selection.getSelection()) { //data.getTypeNames()) {
+							String typeName = type.getName().getLocalPart();
+							
 							if (first) {
 								first = false;
 								firstType = typeName;
@@ -229,7 +239,8 @@ public class WFSFeatureTypesReaderDialog
 						
 						// get the URL
 						//XXX replaced by code below - url_result = ((WFSDataStore) data).getDescribeFeatureTypeURL(typeNames.toString());
-						//XXX we have to trick because the geotools implementation of the WFS 1.1.0 protocol is limited to one feature type 
+						//XXX we have to trick because the geotools implementation of the WFS 1.1.0 protocol is limited to one feature type
+						//TODO better solution
 						if (firstType != null) {
 							String temp = ((WFSDataStore) data).getDescribeFeatureTypeURL(firstType).toString();
 							temp = temp.replaceAll(URLEncoder.encode(firstType), URLEncoder.encode(typeNames.toString()));
@@ -266,37 +277,56 @@ public class WFSFeatureTypesReaderDialog
 					url = new URL(hostPortText.getText());
 				} catch (Exception e1) {
 					currentStatusLabel.setText("Validation FAILED.");
-					testResultText.setText("Capabilities URL could not " +
-							"be built: " + e1.getMessage());
+					//XXX testResultText.setText("Capabilities URL could not " +
+					//		"be built: " + e1.getMessage());
 					finish.setEnabled(false);
 				}
 				if (url != null) {
-					List<FeatureType> result = null;
-					try {
-						result = GetCapabilititiesRetriever
-									.readFeatureTypes(url.toString());
-						StringBuffer ft_names = new StringBuffer();
-						for (FeatureType ft : result){
-							if (ft instanceof SimpleFeatureType) {
-								SimpleFeatureType sft = (SimpleFeatureType) ft;
-								ft_names.append(sft.getTypeName() + " \n");
-							}
-							else {
-								ft_names.append(ft.getName() + " \n");
+					final String capabilitiesURL = url.toString();
+					final Display display = Display.getCurrent();
+					
+					BusyIndicator.showWhile(display, new Runnable() {
+
+						@Override
+						public void run() {
+							try {
+								final List<FeatureType> types = GetCapabilititiesRetriever
+											.readFeatureTypes(capabilitiesURL);
+								
+								display.asyncExec(new Runnable() {
+
+									@Override
+									public void run() {
+										selection.setFeatureTypes(types);
+										
+										currentStatusLabel.setText("Validation OK - " 
+												+ types.size() + " FeatureTypes!");
+										finish.setEnabled(true);
+									}
+									
+								});
+								
+							} catch (final IOException e1) {
+								display.asyncExec(new Runnable() {
+
+									@Override
+									public void run() {
+										currentStatusLabel.setText("Validation FAILED.");
+										
+										selection.setFeatureTypes(null);
+										
+										//XXX testResultText.setText("Capabilities document " +
+										//		"could not be read: " + e1.getMessage());
+										finish.setEnabled(false);
+										_log.warn(e1.getMessage());
+										e1.printStackTrace();
+									}
+									
+								});
 							}
 						}
-						testResultText.setText(ft_names.toString());
-						currentStatusLabel.setText("Validation OK - " 
-								+ result.size() + " FeatureTypes!");
-						finish.setEnabled(true);
-					} catch (IOException e1) {
-						currentStatusLabel.setText("Validation FAILED.");
-						testResultText.setText("Capabilities document " +
-								"could not be read: " + e1.getMessage());
-						finish.setEnabled(false);
-						_log.warn(e1.getMessage());
-						e1.printStackTrace();
-					}
+						
+					});
 				}
 			}
 		});
