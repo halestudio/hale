@@ -7,6 +7,7 @@
    </configIni>
 
    <launcherArgs>
+      <programArgs>-consolelog</programArgs>
       <vmArgs>-Xmx256m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
@@ -26,12 +27,12 @@
    <plugins>
       <plugin id="HALE"/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="javax.transaction"/>
+      <plugin id="eu.esdihumboldt.commons"/>
+      <plugin id="eu.esdihumboldt.specification"/>
+      <plugin id="eu.esdihumboldt.transformer.cst"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.databinding"/>
-      <plugin id="org.eclipse.core.databinding.observable"/>
-      <plugin id="org.eclipse.core.databinding.property"/>
       <plugin id="org.eclipse.core.expressions"/>
       <plugin id="org.eclipse.core.filesystem"/>
       <plugin id="org.eclipse.core.filesystem.win32.x86" fragment="true"/>
@@ -57,7 +58,6 @@
       <plugin id="org.eclipse.text"/>
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.workbench"/>
-      <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit4"/>
    </plugins>
 
