@@ -14,7 +14,9 @@ package eu.esdihumboldt.goml.oml.ext;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
@@ -64,6 +66,14 @@ public class Transformation
 
 	public List<IParameter> getParameters() {
 		return this.parameters;
+	}
+	
+	public Map<String, IParameter> getParameterMap() {
+		Map<String, IParameter> result = new HashMap<String, IParameter>();
+		for (IParameter p : this.parameters) {
+			result.put(p.getName(), p);
+		}
+		return result;
 	}
 
 	/**
