@@ -54,19 +54,21 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.SchemaService;
 
 /**
  * The {@link AttributeView_copy} displays the attributes from the selected data
- * class in the {@link ModelNavigationView_merged}. The {@link AttributeView_copy}
- * consist of the Labels for the names of the selected data classes and the
- * operator between them and Lists for the attributes.
+ * class in the {@link ModelNavigationView_merged}. The
+ * {@link AttributeView_copy} consist of the Labels for the names of the
+ * selected data classes and the operator between them and Lists for the
+ * attributes.
  * 
  * @author Thorsten Reitz
  * @version $Id$
  */
-public class AttributeView extends ViewPart implements ISelectionListener{
+public class AttributeView extends ViewPart implements ISelectionListener {
 
 	public static final String ID = "eu.esdihumboldt.hale.rcp.views.model.AttributeView";
 
@@ -82,78 +84,78 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 	private Label targetModelLabel;
 	// Button to open FunctionWizard
 	private Button selectFunctionButton;
-	
+
 	private Composite labelComposite;
-	
+
 	// Image Label to show relation between source and target feature types.
 	private Label alLabel;
-	
+
 	private AlignmentService as = null;
 	private SchemaService schemaService = null;
-
 
 	private Image transparentImage;
 	// Viewer for the sorceAttributeTable
 	private TableViewer sourceAttributeViewer;
-	
+
 	private boolean isSourceFeatureType = false;
 	private boolean isTargetFeaureType = false;
-	
-
 
 	public TableViewer getSourceAttributeViewer() {
 		return sourceAttributeViewer;
 	}
 
-	 
-	//Viewer for the targetAttributeTable
+	// Viewer for the targetAttributeTable
 	private TableViewer targetAttributeViewer;
+
 	public TableViewer getTargetAttributeViewer() {
 		return targetAttributeViewer;
 	}
 
-	// the listener we register with the selection service 
-	private ISelectionListener sourceAttributeListListener = new ISelectionListener(){
+	// the listener we register with the selection service
+	private ISelectionListener sourceAttributeListListener = new ISelectionListener() {
 
 		@Override
 		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-			//use selection button in case of the multiple attribute selection only
-			if (sourceAttributeList.getSelection().length>1) selectFunctionButton.setEnabled(true);
-			else selectFunctionButton.setEnabled(false);
+			// use selection button in case of the multiple attribute selection
+			// only
+			if (sourceAttributeList.getSelection().length > 1)
+				selectFunctionButton.setEnabled(true);
+			else
+				selectFunctionButton.setEnabled(false);
 			selectFunctionButton.redraw();
-			
-			
+
 		}
-		
+
 	};
-	
-	// the listener we register with the selection service 
-	private ISelectionListener targetAttributeListListener = new ISelectionListener(){
+
+	// the listener we register with the selection service
+	private ISelectionListener targetAttributeListListener = new ISelectionListener() {
 
 		@Override
 		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-			//use selection button in case of the multiple attribute selection only
-			//if (targetAttributeList.getSelection().length>1) selectFunctionButton.setEnabled(true);
+			// use selection button in case of the multiple attribute selection
+			// only
+			// if (targetAttributeList.getSelection().length>1)
+			// selectFunctionButton.setEnabled(true);
 			selectFunctionButton.setEnabled(true);
-			// if sourceFeatureType and targetFeatureType selected and no arguments selected 
-			//else selectFunctionButton.setEnabled(false);
+			// if sourceFeatureType and targetFeatureType selected and no
+			// arguments selected
+			// else selectFunctionButton.setEnabled(false);
 			selectFunctionButton.redraw();
-			
-			
-		}
-		
-	};
 
-	
-	
+		}
+
+	};
 
 	@Override
 	public void createPartControl(Composite _parent) {
-		
-		this.schemaService =  (SchemaService) this.getSite().getService(
+
+		this.schemaService = (SchemaService) this.getSite().getService(
 				SchemaService.class);
-		this.as = (AlignmentService) this.getSite().getService(AlignmentService.class);
-		getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this);
+		this.as = (AlignmentService) this.getSite().getService(
+				AlignmentService.class);
+		getSite().getWorkbenchWindow().getSelectionService()
+				.addSelectionListener(this);
 		Composite modelComposite = new Composite(_parent, SWT.BEGINNING);
 		GridLayout layout = new GridLayout(2, true);
 		layout.verticalSpacing = 6;
@@ -169,20 +171,18 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 		// layout.verticalSpacing = 20;
 		// layout.horizontalSpacing = 10;
 		// add wizard selection button
-		
 		Composite buttonComposite = new Composite(modelComposite, SWT.BAR);
 
 		buttonComposite.setLayout(new GridLayout(1, false));
-		GridData gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL |
-				 GridData.VERTICAL_ALIGN_FILL);
+		GridData gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL
+				| GridData.VERTICAL_ALIGN_FILL);
 		gData.horizontalSpan = 2;
 		buttonComposite.setLayoutData(gData);
-        
-		
+
 		selectFunctionButton = new Button(buttonComposite, SWT.PUSH);
 		selectFunctionButton.setText("Select Function");
-		gData = new GridData(GridData.CENTER,GridData.FILL,true,false);
-		//gData.horizontalAlignment = 1;
+		gData = new GridData(GridData.CENTER, GridData.FILL, true, false);
+		// gData.horizontalAlignment = 1;
 		// gData.horizontalSpan = 2;
 		selectFunctionButton.setLayoutData(gData);
 		selectFunctionButton.setEnabled(true);
@@ -190,70 +190,55 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				//button is enabled in case of multiple selection
-			
+				// button is enabled in case of multiple selection
 
 			}
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				
-				//start a wizard
+
+				// start a wizard
 				IHandlerService handlerService = (IHandlerService) getSite()
-				.getService(IHandlerService.class);
+						.getService(IHandlerService.class);
 				try {
-					handlerService.executeCommand("org.eclipse.ui.newWizard", null);
-				} catch (ExecutionException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (NotDefinedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (NotEnabledException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (NotHandledException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					handlerService.executeCommand("org.eclipse.ui.newWizard",
+							null);
+				} catch (Exception e1) {
+					throw new RuntimeException(e1);
 				}
-				
-				
-				
 
 			}
 
 		});
 
-		
 		Composite labelComposite = new Composite(modelComposite, SWT.BEGINNING);
 		labelComposite.setLayout(new GridLayout(3, false));
-		gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL |
-				 GridData.VERTICAL_ALIGN_FILL);
-        gData.horizontalSpan = 2;
-        labelComposite.setLayoutData(gData);
-		//source feature type
+		gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL
+				| GridData.VERTICAL_ALIGN_FILL);
+		gData.horizontalSpan = 2;
+		labelComposite.setLayoutData(gData);
+		// source feature type
 		sourceModelLabel = new Label(labelComposite, SWT.RIGHT);
 
 		gData = new GridData(SWT.FILL, SWT.FILL, true, false);
 		sourceModelLabel.setLayoutData(gData);
-		//sourceModelLabel.setText("source type");
-		
-        //aligment label
-		  
-		     alLabel = new Label(labelComposite, SWT.CENTER);
-		    gData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		// sourceModelLabel.setText("source type");
 
-			alLabel.setLayoutData(gData);
-		    //alLabel.setText("no aligment");
-		    //aligmentLabel.pack();
-		
-		
-		//target label
+		// aligment label
+
+		alLabel = new Label(labelComposite, SWT.CENTER);
+		gData = new GridData(SWT.FILL, SWT.FILL, true, false);
+
+		alLabel.setLayoutData(gData);
+		// alLabel.setText("no aligment");
+		// aligmentLabel.pack();
+
+		// target label
 		targetModelLabel = new Label(labelComposite, SWT.BEGINNING);
 		gData = new GridData(SWT.FILL, SWT.FILL, true, false);
 
 		targetModelLabel.setLayoutData(gData);
-		//targetModelLabel.setText("target type");
+		// targetModelLabel.setText("target type");
 
 		Composite sourceComposite = new Composite(modelComposite, SWT.BEGINNING);
 		sourceComposite.setLayout(new GridLayout(1, false));
@@ -262,7 +247,6 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 
 		// GridData gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
 
-		     
 		/*
 		 * Label operatorLabel = new Label(modelComposite, SWT.NONE); gData =
 		 * new GridData(GridData.HORIZONTAL_ALIGN_FILL |
@@ -283,7 +267,6 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 		targetComposite.setLayout(new GridLayout(1, false));
 		targetComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
-	
 
 		this.sourceAttributeList = this.attributeListSetup(sourceComposite);
 
@@ -305,10 +288,10 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 		source.setTransfer(types);
 		source.addDragListener(new DragSourceListener() {
 			public void dragStart(DragSourceEvent event) {
-//				System.out.println("drag start");
+				// System.out.println("drag start");
 				// Only start the drag if some attribute selected
-//				System.out.println("selected element: "
-//						+ sourceAttributeList.getSelection()[0]);
+				// System.out.println("selected element: "
+				// + sourceAttributeList.getSelection()[0]);
 				if (sourceAttributeList.getSelection()[0] == null) {
 					event.doit = false;
 				} else
@@ -316,7 +299,7 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 			}
 
 			public void dragSetData(DragSourceEvent event) {
-//				System.out.println("drag set data");
+				// System.out.println("drag set data");
 				// Provide the data of the requested type.
 
 				DragSource ds = (DragSource) event.widget;
@@ -324,60 +307,25 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 				TableItem[] selection = table.getSelection();
 
 				StringBuffer buff = new StringBuffer();
-//				System.out.println(selection.length
-//						+ " Attributes have been selected");
+				// System.out.println(selection.length
+				// + " Attributes have been selected");
 				for (int i = 0, n = selection.length; i < n; i++) {
 					buff.append(selection[i].getText());
 				}
 				event.data = buff.toString();
-
-				/*
-				 * if
-				 * (TextTransfer.getInstance().isSupportedType(event.dataType))
-				 * { event.data = sourceAttributeList.getSelection()[0];
-				 * 
-				 * }
-				 */
 			}
 
 			public void dragFinished(DragSourceEvent event) {
-//				System.out.println("Drag Finished");
+				// System.out.println("Drag Finished");
 
 			}
 		});
 
-		/*
-		 * Label placeHolder = new Label(modelComposite, SWT.NONE); gData = new
-		 * GridData(GridData.HORIZONTAL_ALIGN_FILL |
-		 * GridData.VERTICAL_ALIGN_FILL); placeHolder.setLayoutData(gData);
-		 */
-
 		targetAttributeList = this.targetAttributeListSetup(targetComposite);
-		/*
-		 * gData = new GridData(GridData.HORIZONTAL_ALIGN_FILL |
-		 * GridData.VERTICAL_ALIGN_FILL); gData.grabExcessHorizontalSpace =
-		 * true; gData.grabExcessVerticalSpace = true;
-		 */
-		/*
-		 * gData = new GridData(SWT.FILL, SWT.FILL, true, false);
-		 * targetAttributeList.setLayoutData(gData);
-		 */
+
 		// Allow data to be linked to the drop target
 		operations = DND.DROP_LINK;
-		DropTarget target = new DropTarget(targetAttributeList, operations);
-
-		// Receive data in Text format
-
-		// targetAttributeList.addMouseMoveListener(new MouseMoveListener() {
-		//
-		// @Override
-		// public void mouseMove(MouseEvent e) {
-		// targetAttributeList.
-		//				
-		// }
-		//			
-		// });
-		//		
+		DropTarget target = new DropTarget(targetAttributeList, operations);	
 
 		final TextTransfer textTransfer = TextTransfer.getInstance();
 		types = new Transfer[] { textTransfer };
@@ -385,13 +333,10 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 		target.addDropListener(new DropTargetListener() {
 
 			public void dragEnter(DropTargetEvent event) {
-//				System.out.println("dragEnter");
 				event.detail = DND.FEEDBACK_INSERT_AFTER;
-
 			}
 
 			public void dragOver(DropTargetEvent event) {
-//				System.out.println("dragOver");
 
 			}
 
@@ -400,54 +345,34 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 			}
 
 			public void dragLeave(DropTargetEvent event) {
-//				System.out.println("dragLeave");
+
 			}
 
 			public void dropAccept(DropTargetEvent event) {
-//				System.out.println("dropAccept");
+
 			}
 
 			public void drop(DropTargetEvent event) {
-//				System.out.println("drop");
 				if (textTransfer.isSupportedType(event.currentDataType)) {
 					DropTarget target = (DropTarget) event.widget;
-					Table table = (Table) target.getControl();
 					TableItem targetAttribute = (TableItem) event.item;
-					//set selection to this targtarget item
-					targetAttributeList.setSelection(targetAttribute);
 					
-					String data = (String) event.data;
+					// set selection to this targtarget item
+					targetAttributeList.setSelection(targetAttribute);
+
 					// TODO replace with wizard call
-//					System.out.println("Source Attributes: " + data);
-//					System.out.println("Target Attributes: "
-//							+ targetAttribute.getText());
 					IHandlerService handlerService = (IHandlerService) getSite()
 							.getService(IHandlerService.class);
 					try {
-						/*ICommandService cS = (ICommandService) getSite()
-								.getService(ICommandService.class);*/
-
-					/*	Command createWizard = cS
-								.getCommand("org.eclipse.ui.newWizard");
-						// adds parameters to the command
-						Map<String, String> params = new HashMap<String, String>();
-						params.put("sourceAttributeID", data);
-						params.put("targetAttributeID", targetAttribute
-								.getText());
-						ParameterizedCommand pC = ParameterizedCommand
-								.generateCommand(createWizard, params);
-						handlerService.executeCommand(pC, null);*/
-						handlerService.executeCommand("org.eclipse.ui.newWizard", null);
+						handlerService.executeCommand(
+								"org.eclipse.ui.newWizard", null);
 					} catch (Exception ex) {
 						throw new RuntimeException(
 								"org.eclipse.ui.newWizard not found");
 					}
-
 				}
-
 			}
 		});
-	
 	}
 
 	private Table targetAttributeListSetup(Composite attributeComposite) {
@@ -465,9 +390,10 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
 		this.targetAttributeViewer = new TableViewer(attributeList);
 		getSite().setSelectionProvider(this.targetAttributeViewer);
-		//add listener to the selection service
-		getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this.targetAttributeListListener);
-        return attributeList;
+		// add listener to the selection service
+		getSite().getWorkbenchWindow().getSelectionService()
+				.addSelectionListener(this.targetAttributeListListener);
+		return attributeList;
 	}
 
 	private Table attributeListSetup(Composite attributeComposite) {
@@ -484,12 +410,13 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 		Table attributeList = new Table(viewerLComposite, SWT.BORDER
 				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
 
-		//set selection provider for the sourceAttributeList
-		
+		// set selection provider for the sourceAttributeList
+
 		this.sourceAttributeViewer = new TableViewer(attributeList);
 		getSite().setSelectionProvider(this.sourceAttributeViewer);
-		//add listener to the selection service
-		getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this.sourceAttributeListListener);
+		// add listener to the selection service
+		getSite().getWorkbenchWindow().getSelectionService()
+				.addSelectionListener(this.sourceAttributeListListener);
 		return attributeList;
 	}
 
@@ -510,15 +437,14 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 	 */
 	public void updateView(boolean _viewer, String _classname,
 			TreeItem[] _items, int _classnameNumber) {
-       
-        
+
 		if (_viewer == true) {
-		
-			 sourceModelLabel.setText(_classname);
+
+			sourceModelLabel.setText(_classname);
 			// if selected item no attribute
 			if (_items.length != 0) {
-				 setSourceFeatureType(true);
-				
+				setSourceFeatureType(true);
+
 				for (TreeItem item : _items) {
 
 					// display item in the attribute list only if attribute
@@ -543,7 +469,7 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 			// if selected item no attribute
 			if (_items.length != 0) {
 				setTargetFeaureType(true);
-				//targetModelLabel.setText(_classname);
+				// targetModelLabel.setText(_classname);
 				for (TreeItem item : _items) {
 
 					// display item in the attribute list only if attribute
@@ -565,76 +491,85 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 				// targetAttributeList.add();
 			}
 		}
-		
-		//if both labels not empty
-		if (!sourceModelLabel.getText().equals("")&&!targetModelLabel.getText().equals("")&&isSourceFeatureType&&isTargetFeaureType){
-			//get feature types for source and feature label
-			
+
+		// if both labels not empty
+		if (!sourceModelLabel.getText().equals("")
+				&& !targetModelLabel.getText().equals("")
+				&& isSourceFeatureType && isTargetFeaureType) {
+			// get feature types for source and feature label
+
 			String sourceType = sourceModelLabel.getText();
 			String targetType = targetModelLabel.getText();
-			FeatureType ft_source = this.schemaService.getFeatureTypeByName(sourceType);
-			FeatureType ft_target = this.schemaService.getFeatureTypeByName(targetType);
-			
-			//get URI and local name
-			java.util.List<String> nameparts_source = new ArrayList<String>(); 
+			FeatureType ft_source = this.schemaService
+					.getFeatureTypeByName(sourceType);
+			FeatureType ft_target = this.schemaService
+					.getFeatureTypeByName(targetType);
+
+			// get URI and local name
+			java.util.List<String> nameparts_source = new ArrayList<String>();
 			nameparts_source.add(ft_source.getName().getNamespaceURI());
 			nameparts_source.add(ft_source.getName().getLocalPart());
-			
-			java.util.List<String> nameparts_target = new ArrayList<String>(); 
+
+			java.util.List<String> nameparts_target = new ArrayList<String>();
 			nameparts_target.add(ft_target.getName().getNamespaceURI());
 			nameparts_target.add(ft_target.getName().getLocalPart());
-			
+
 			String alignmentLabel = "";
-			
-			//create source entity
-		     Entity e1 = new Entity(nameparts_source);	
-			
-			//create target entity
-			
-			Entity e2 = new Entity(nameparts_target);	
-			//get alignment e1, e2
+
+			// create source entity
+			Entity e1 = new Property(nameparts_source); // TODO might have to be fixed!
+
+			// create target entity
+
+			Entity e2 = new Property(nameparts_target); // TODO might have to be fixed!
+			// get alignment e1, e2
 			ICell cell = this.as.getCell(e1, e2);
-			    if (cell !=null) {
-                    //get transformation type			    
-			    	alignmentLabel =	cell.getEntity1().getTransformation().getLabel();
-			    	// check if filtered before transformaiton
-			    	ICell filterCell = this.as.getCell(e1, e1);
-			    	//if filter is in a transformation chain and the transformation chain has more than one filter transformation
-			    	if (filterCell !=null&&!sourceType.equals(targetType)) alignmentLabel = filterCell.getEntity1().getTransformation().getLabel() + ", " + alignmentLabel;
-			    }
-			    if (!alignmentLabel.equals("")){
-			    
-			    		alLabel.setImage(drawAlignmentImage(alignmentLabel));
-			    }
-			    else 
-			    	alLabel.setImage(drawAlignmentImage("no alignment"));
-			
-		}else if (!sourceModelLabel.getText().equals("")&&!targetModelLabel.getText().equals("")){
-			// no attribute transformation implemented. 
+			if (cell != null) {
+				// get transformation type
+				alignmentLabel = cell.getEntity1().getTransformation()
+						.getLabel();
+				// check if filtered before transformation
+				ICell filterCell = this.as.getCell(e1, e1);
+				// if filter is in a transformation chain and the transformation
+				// chain has more than one filter transformation
+				if (filterCell != null && !sourceType.equals(targetType))
+					alignmentLabel = filterCell.getEntity1()
+							.getTransformation().getLabel()
+							+ ", " + alignmentLabel;
+			}
+			if (!alignmentLabel.equals("")) {
+
+				alLabel.setImage(drawAlignmentImage(alignmentLabel));
+			} else
+				alLabel.setImage(drawAlignmentImage("no alignment"));
+
+		} else if (!sourceModelLabel.getText().equals("")
+				&& !targetModelLabel.getText().equals("")) {
+			// no attribute transformation implemented.
 			alLabel.setImage(drawAlignmentImage("no alignment"));
 		}
 	}
 
 	public Image drawAlignmentImage(String string) {
-		 Display display = Display.getDefault();
-	 		Image image = new Image(display, 200, 16);
-	 		Color backgroundColer = display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
-	 		
-	 		
-		    Color color = display.getSystemColor(SWT.COLOR_BLACK);
-		   
-		    GC gc = new GC(image);
-         gc.setBackground(backgroundColer);	
-         gc.fillRectangle(image.getBounds());
-		    gc.setForeground(color);   
-		    gc.setLineWidth(1);
-		    gc.drawLine(0, 6, 200,6);
-		    Font font = new Font(display,"Arial", 10 ,  SWT.BOLD | SWT.ITALIC); 
-		    gc.setFont(font);
-		    gc.drawText(string, 55, -3, false);
-		    
-		    gc.dispose();
-		    return image;
+		Display display = Display.getDefault();
+		Image image = new Image(display, 200, 16);
+		Color backgroundColer = display
+				.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
+
+		Color color = display.getSystemColor(SWT.COLOR_BLACK);
+
+		GC gc = new GC(image);
+		gc.setBackground(backgroundColer);
+		gc.fillRectangle(image.getBounds());
+		gc.setForeground(color);
+		gc.setLineWidth(1);
+		gc.drawLine(0, 6, 200, 6);
+		Font font = new Font(display, "Arial", 10, SWT.BOLD | SWT.ITALIC);
+		gc.setFont(font);
+		gc.drawText(string, 55, -3, false);
+
+		gc.dispose();
+		return image;
 	}
 
 	/**
@@ -659,55 +594,50 @@ public class AttributeView extends ViewPart implements ISelectionListener{
 
 	}
 
+	@Override
+	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+		if (selection instanceof IStructuredSelection) {
+			final Object selectionObject = ((IStructuredSelection) selection)
+					.getFirstElement();
+			if (selectionObject != null) {
+				String selectedFeatureType = "not selected";
+				FeatureTypeSelection ftSelection = (FeatureTypeSelection) selectionObject;
+				TreeItem sourceItem = ftSelection.getSourceFeatureTypes()[0];
+				if (sourceItem != null) {
+					selectedFeatureType = sourceItem.getText();
+				}
 
-		@Override
-		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-			 if ( selection instanceof IStructuredSelection )
-		        {
-		            final Object selectionObject = ( ( IStructuredSelection ) selection )
-		                    .getFirstElement();
-		            if ( selectionObject != null ){
-		            	String selectedFeatureType = "not selected";
- 		                FeatureTypeSelection ftSelection = (FeatureTypeSelection) selectionObject;
-		            	TreeItem sourceItem = ftSelection.getSourceFeatureTypes()[0];
-		            	if (sourceItem != null ){selectedFeatureType = sourceItem.getText(); }
-//		            	System.out.println("Source FeatureType :" + selectedFeatureType);
-		                selectedFeatureType = "not selected";
-		            	TreeItem targetItem = ftSelection.getTargetFeatureType()[0];
-		                if (targetItem !=null){ selectedFeatureType = targetItem.getText();}
-//		                System.out.println("Target FeatureType :" + selectedFeatureType);
-		                //TODO use it for SelectFunction, AttributeLists
-		                
-		            	
-		            }
-		        }
-			
-		}
-		
-		public Label getAlLabel() {
-			return alLabel;
-		}
-		
-		public boolean isSourceFeatureType() {
-			return isSourceFeatureType;
+				selectedFeatureType = "not selected";
+				TreeItem targetItem = ftSelection.getTargetFeatureType()[0];
+				if (targetItem != null) {
+					selectedFeatureType = targetItem.getText();
+				}
+
+				// TODO use it for SelectFunction, AttributeLists
+
+			}
 		}
 
-		public void setSourceFeatureType(boolean isSourceFeatureType) {
-			this.isSourceFeatureType = isSourceFeatureType;
-		}
-
-		public boolean isTargetFeaureType() {
-			return isTargetFeaureType;
-		}
-
-		public void setTargetFeaureType(boolean isTargetFeaureType) {
-			this.isTargetFeaureType = isTargetFeaureType;
-		}
-		
 	}
 
+	public Label getAlLabel() {
+		return alLabel;
+	}
 
-		
-		
-		
-	
+	public boolean isSourceFeatureType() {
+		return isSourceFeatureType;
+	}
+
+	public void setSourceFeatureType(boolean isSourceFeatureType) {
+		this.isSourceFeatureType = isSourceFeatureType;
+	}
+
+	public boolean isTargetFeaureType() {
+		return isTargetFeaureType;
+	}
+
+	public void setTargetFeaureType(boolean isTargetFeaureType) {
+		this.isTargetFeaureType = isTargetFeaureType;
+	}
+
+}

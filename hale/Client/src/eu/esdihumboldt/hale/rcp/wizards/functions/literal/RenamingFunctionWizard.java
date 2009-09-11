@@ -22,9 +22,13 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.transformer.impl.RenameAttributeTransformer;
+import eu.esdihumboldt.cst.transformer.impl.RenameFeatureTransformer;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
+import eu.esdihumboldt.goml.omwg.FeatureClass;
+import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.rcp.utils.ModelNavigationViewHelper;
 import eu.esdihumboldt.hale.rcp.utils.ModelNavigationViewHelper.SelectionType;
@@ -73,38 +77,21 @@ public class RenamingFunctionWizard extends Wizard implements INewWizard {
 	public boolean performFinish() {
 		Entity entity1 = ModelNavigationViewHelper.getEntity(SelectionType.SOURCE);
 		Entity entity2 = ModelNavigationViewHelper.getEntity(SelectionType.TARGET);
+		
+		Property p1 = new Property(entity1.getLabel());
+		Property p2 = new Property(entity2.getLabel());
 
 		Cell c = new Cell();
 		Transformation t = new Transformation();
-		t.setLabel("Rename");
-		//List<IParameter> parameters = new ArrayList<IParameter>();
-		// parameters.add(new Param("SourceFeatureType",
-		// ft_source.getName().toString()));
-		// parameters.add(new Param("TargetFeatureType",
-		// ft_target.getName().toString()));
+		t.setLabel(RenameAttributeTransformer.class.getName());
 		entity1.setTransformation(t);
-		c.setEntity1(entity1);
-		c.setEntity2(entity2);
+		c.setEntity1(p1);
+		c.setEntity2(p2);
 		
 		AlignmentService alservice = (AlignmentService) PlatformUI
 				.getWorkbench().getService(AlignmentService.class);
 		// store transformation in AS
 		alservice.addOrUpdateCell(c);
-
-		// System.out.println(mainPage.getTargetFeatureTypeName().getText());
-		/*
-		 * FeatureType ft = mainPage.getSourceFeatureType(); String newname =
-		 * mainPage.getTargetFeatureTypeName().getText(); RenameTransformer rt =
-		 * new RenameTransformer(newname); FeatureType targetft =
-		 * rt.getTargetType(ft, null);
-		 */
-		// TODO update ModelNavigationView by highliting of the featuretypes.
-		// System.out.println("Transformed Feature Type: " +
-		// targetft.getName());
-		System.out.println("Transformation finished");
-
-		// changing the background color in the schema viewer is now done in the
-		// ModelNavigationViewLabelProvider class
 
 		// update aligment image
 

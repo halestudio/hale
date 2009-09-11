@@ -82,7 +82,7 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 			imageKey = "geometry_attribute.png";
 		}
 		else if (to.getType().equals(TreeObjectType.COMPLEX_ATTRIBUTE)) {
-			// TODO
+			// TODO add image for complex attributes
 		}
 		
 		if (imageKey == null) {

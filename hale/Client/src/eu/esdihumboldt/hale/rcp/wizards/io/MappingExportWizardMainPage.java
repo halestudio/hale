@@ -11,9 +11,6 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
-import java.io.File;
-import java.net.URI;
-
 import org.apache.log4j.Logger;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -29,7 +26,8 @@ import org.eclipse.swt.widgets.Group;
 /**
  * This is the main page of the {@link MappingExportWizard}.
  * 
- * TODO: Add an overview over the mapping that has been created. Use component for source view of mapping.
+ * TODO: Add an overview over the mapping that has been created. Use component 
+ * for source view of mapping.
  * 
  * @author Thorsten Reitz 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research

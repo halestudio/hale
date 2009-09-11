@@ -26,6 +26,7 @@ import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
@@ -78,42 +79,6 @@ public class AlignmentServiceImpl implements AlignmentService {
 	}
 
 	// AlignmentService operations .............................................
-
-	/*XXX unused - private void copyFeatures() {
-		InstanceService instanceService = InstanceServiceImpl.getInstance();
-
-		// Get the original reference data
-		FeatureCollection<?, Feature> fc = instanceService.getFeatures(DatasetType.reference);
-		FeatureIterator<Feature> iterator = fc.features();
-
-		// Checks if already transformed data is available
-		// If not, copy the reference data into the transformed data.
-		FeatureCollection<?, Feature> trans = instanceService.getFeatures(DatasetType.transformed);
-		if (trans == null) {
-			System.err.println("No transformed data available. creating a copy of reference data");
-			FeatureCollection referenceCopy = FeatureCollections
-					.newCollection();
-//			for (Feature feature : features) {
-//				referenceCopy.add(feature);
-//			}
-//			instanceService.addInstances(DatasetType.transformed, referenceCopy);
-			System.err.println("Transformed data added. Number of features: " + referenceCopy.size());
-		}
-		else System.err.println("Transformed data available.");
-		
-		// Create a new feature collection
-		FeatureCollection fc1 = FeatureCollections.newCollection();
-		while (iterator.hasNext()) {
-			Feature feature = iterator.next();
-			Feature copy = (Feature)SimpleFeatureBuilder.deep((SimpleFeature) feature);
-			fc1.add(copy);
-		}
-		System.err.println("New feature collection created.");
-
-//		// Replaces the transformed features with the new features
-//		instanceService.replaceInstances(DatasetType.transformed, fc1);
-
-	}*/
 	
 	/**
 	 * @see eu.esdihumboldt.hale.models.AlignmentService#addOrUpdateCell(eu.esdihumboldt.goml.align.Cell)
@@ -242,7 +207,7 @@ public class AlignmentServiceImpl implements AlignmentService {
 		List<String> labels = new ArrayList<String>();
 		labels.add(type.getName().getNamespaceURI());
 		labels.add(type.getName().getLocalPart());
-		Entity e = new Entity(labels);
+		Entity e = new FeatureClass(labels);
 		return this.getCell(e);
 	}
 
@@ -253,11 +218,11 @@ public class AlignmentServiceImpl implements AlignmentService {
 		List<String> labels = new ArrayList<String>();
 		labels.add(type1.getName().getNamespaceURI());
 		labels.add(type1.getName().getLocalPart());
-		Entity e1 = new Entity(labels);
+		Entity e1 = new FeatureClass(labels);
 		labels = new ArrayList<String>();
 		labels.add(type2.getName().getNamespaceURI());
 		labels.add(type2.getName().getLocalPart());
-		Entity e2 = new Entity(labels);
+		Entity e2 = new FeatureClass(labels);
 		return this.getCell(e1, e2);
 	}
 
