@@ -50,11 +50,10 @@ public class Restriction {
 	 * if List of value expressions is empty use the value class
 	 */
 	private ValueClass valueClass;
-		
-
 	
 	/**
-	 * TODO explain. 
+	 * The cql String can be used as an alternative to using the fields above.
+	 * 
 	 * <xs:element ref="goml:cqlStr" minOccurs="0" maxOccurs="1" />
 	 */
 	private String cqlStr;

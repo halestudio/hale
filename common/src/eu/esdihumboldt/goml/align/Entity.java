@@ -27,7 +27,7 @@ import eu.esdihumboldt.goml.oml.ext.Transformation;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class Entity 
+public abstract class Entity 
 	implements IEntity {
 	
 	/**
@@ -38,6 +38,7 @@ public class Entity
 	
 	/**
 	 * Note: this can be a single Function (transf) or a Service (service) or a pipe of transformations
+	 * If defined on the Entity2, this represents an augmentation.
 	 * <xs:group ref="omwg:transformation" minOccurs="0" maxOccurs="1" />
 	 */
 	private ITransformation transformation;
