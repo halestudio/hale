@@ -15,7 +15,7 @@ import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
 import eu.esdihumboldt.cst.transformer.TransformationService;
-import eu.esdihumboldt.cst.transformer.impl.TransformationServiceFactory;
+import eu.esdihumboldt.cst.transformer.service.impl.TransformationServiceFactory;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.SchemaService;
