@@ -84,7 +84,7 @@ public class RenamingFunctionWizard extends Wizard implements INewWizard {
 		Cell c = new Cell();
 		Transformation t = new Transformation();
 		t.setLabel(RenameAttributeTransformer.class.getName());
-		entity1.setTransformation(t);
+		p1.setTransformation(t);
 		c.setEntity1(p1);
 		c.setEntity2(p2);
 		
