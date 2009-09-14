@@ -236,7 +236,9 @@ public class OmlRdfGenerator {
 			cType.setRelation(getRelation(cell.getRelation()));
 			cType.setEntity1(getEntity1(cell.getEntity1()));
 			cType.setEntity2(getEntity2(cell.getEntity2()));
-			cType.getLabel().addAll(((Cell)cell).getLabel());
+			if (cell.getLabel() != null) {
+				cType.getLabel().addAll(((Cell)cell).getLabel());
+			}
 		}
 		return cType;
 	}
@@ -358,12 +360,18 @@ public class OmlRdfGenerator {
 			if (about != null)
 				cType.setAbout(about.getAbout());
 			cType.setTransf(getTransf(feature.getTransformation()));
-			cType.getAttributeTypeCondition().addAll(
+			if (feature.getAttributeTypeCondition() != null) {
+				cType.getAttributeTypeCondition().addAll(
 					getConditions(feature.getAttributeTypeCondition()));
-			cType.getAttributeValueCondition().addAll(
+			}
+			if (feature.getAttributeValueCondition() != null) {
+				cType.getAttributeValueCondition().addAll(
 					getConditions(feature.getAttributeValueCondition()));
-			cType.getAttributeOccurenceCondition().addAll(
+			}
+			if (feature.getAttributeOccurenceCondition() != null) {
+				cType.getAttributeOccurenceCondition().addAll(
 					getConditions(feature.getAttributeOccurenceCondition()));
+			}
 		}
 		return cType;
 	}
@@ -405,8 +413,8 @@ public class OmlRdfGenerator {
 		if (restriction != null) {
 			rType.setComparator(getComparator(restriction.getComparator()));
 			rType.setCqlStr(restriction.getCqlStr());
-			rType.setOnAttribute(getOnAttributeType(restriction
-					.getOnAttribute()));
+			rType.setOnAttribute(getOnAttributeType(
+					restriction.getOnAttribute()));
 			
 			//if list of value expressions for this restriction is empty
 			//use ValueClass
@@ -428,8 +436,9 @@ public class OmlRdfGenerator {
 		ValueClassType vcType = new ValueClassType();
 		vcType.setAbout(valueClass.getAbout());
 		vcType.setResource(valueClass.getResource());
-		vcType.getValue().addAll(getValueExpressions(valueClass.getValue()));
-		
+		if (getValueExpressions(valueClass.getValue()) != null) {
+			vcType.getValue().addAll(getValueExpressions(valueClass.getValue()));
+		}
 		return vcType;
 	}
 
@@ -459,7 +468,9 @@ public class OmlRdfGenerator {
 	 */
 	private ValueClassType getValueClass(List<ValueExpression> value) {
 		ValueClassType vcType = new ValueClassType();
-		vcType.getValue().addAll(getValueExpressions(value));
+		if (getValueExpressions(value) != null) {
+			vcType.getValue().addAll(getValueExpressions(value));
+		}
 		return vcType;
 	}
 
@@ -532,8 +543,10 @@ public class OmlRdfGenerator {
 		if (transformation != null) {
 			// TODO check the resource transformation
 			// fType.setResource(transformation.getService().toString());
-			fType.getParam().addAll(
+			if (transformation.getParameters() != null) {
+				fType.getParam().addAll(
 					getParameters(transformation.getParameters()));
+			}
 		}
 		return fType;
 	}
@@ -595,12 +608,20 @@ public class OmlRdfGenerator {
 			// TODO clear property composition
 			pType.setPropertyComposition(null);
 			pType.setTransf(getTransf(property.getTransformation()));
-			pType.getDomainRestriction().addAll(
+			if (property.getDomainRestriction() != null) {
+				pType.getDomainRestriction().addAll(
 					getDomainRestrictionTypes(property.getDomainRestriction()));
-			pType.getTypeCondition().addAll(property.getTypeCondition());
-			pType.getLabel().addAll(property.getLabel());
-			pType.getValueCondition().addAll(
+			}
+			if (property.getTypeCondition() != null) {
+				pType.getTypeCondition().addAll(property.getTypeCondition());
+			}
+			if (property.getLabel() != null) {
+				pType.getLabel().addAll(property.getLabel());
+			}
+			if (property.getValueCondition() != null) {
+				pType.getValueCondition().addAll(
 					getValueConditions(property.getValueCondition()));
+			}
 		}
 		return pType;
 	}
@@ -656,8 +677,10 @@ public class OmlRdfGenerator {
 		PropValueRestrictionType pvrType = new PropValueRestrictionType();
 		if (restriction != null) {
 			pvrType.setComparator(getComparator(restriction.getComparator()));
-			pvrType.getValue().addAll(
+			if (restriction.getValue() != null) {
+				pvrType.getValue().addAll(
 					getValueExpressionTypes(restriction.getValue()));
+			}
 		}
 		return pvrType;
 	}
