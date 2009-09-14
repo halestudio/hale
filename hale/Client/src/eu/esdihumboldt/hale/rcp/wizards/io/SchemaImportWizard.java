@@ -13,14 +13,17 @@ package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import java.io.File;
 import java.net.URI;
+import java.util.Collection;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
+import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.goml.align.Formalism;
 import eu.esdihumboldt.goml.align.Schema;
@@ -78,6 +81,17 @@ public class SchemaImportWizard
 			final String result = mainPage.getResult();
 			
 			URI uri = getSchemaURI(result);
+			
+			Collection<FeatureType> currentSchema = schemaService.getSchema(mainPage.getSchemaType());
+			if (currentSchema != null && !currentSchema.isEmpty()) {
+				String info = ((mainPage.getSchemaType() == SchemaType.SOURCE)?("source"):("target"));
+				
+				if (!MessageDialog.openQuestion(getShell(), "Replace " + info + " schema",
+						"A " + info + 
+						" schema has already been loaded. Do you want to replace it with this schema?")) {
+					return false;
+				}
+			}
 			
 			if (mainPage.getSchemaType() == SchemaType.SOURCE) {;
 				// load Schema as Source schema

@@ -77,8 +77,8 @@ public class SchemaImportWizardMainPage
         composite.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         composite.setFont(parent.getFont());
 
-        this.createSourceGroup(composite);
         this.createDestinationGroup(composite);
+        this.createSourceGroup(composite);
         this.createOptionsGroup(composite);
         
         setErrorMessage(null);	// should not initially have error message

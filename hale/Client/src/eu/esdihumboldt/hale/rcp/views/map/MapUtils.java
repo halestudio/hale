@@ -69,7 +69,7 @@ public abstract class MapUtils {
 	 * 
 	 * @return the coordinate reference system or null
 	 */
-	public static CoordinateReferenceSystem determineCRS(
+	private static CoordinateReferenceSystem determineCRS(
 			FeatureCollection<? extends FeatureType, ? extends Feature> fc) {
 		CoordinateReferenceSystem crs = null;
 		
