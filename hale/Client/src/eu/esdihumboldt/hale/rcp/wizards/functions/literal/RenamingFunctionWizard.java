@@ -22,10 +22,12 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.transformer.impl.NetworkExpansionTransformer;
 import eu.esdihumboldt.cst.transformer.impl.RenameAttributeTransformer;
 import eu.esdihumboldt.cst.transformer.impl.RenameFeatureTransformer;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
@@ -84,6 +86,10 @@ public class RenamingFunctionWizard extends Wizard implements INewWizard {
 		Cell c = new Cell();
 		Transformation t = new Transformation();
 		t.setLabel(RenameAttributeTransformer.class.getName());
+		//Add old attribute name
+		t.getParameters().add(new Parameter(RenameAttributeTransformer.OLD_ATTRIBUTE_NAME_PARAMETER, entity1.getLabel().get(2)));
+		t.getParameters().add(new Parameter(RenameAttributeTransformer.NEW_ATTRIBUTE_NAME_PARAMETER, entity2.getLabel().get(2)));
+		
 		p1.setTransformation(t);
 		c.setEntity1(p1);
 		c.setEntity2(p2);
