@@ -31,6 +31,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
+import eu.esdihumboldt.cst.transformer.impl.FilterTransformer;
+import eu.esdihumboldt.cst.transformer.impl.RenameFeatureTransformer;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
@@ -196,10 +198,10 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 		}
 		
 		if (!names.isEmpty()) {
-			if (names.contains("Filter")) {
+			if (names.contains(FilterTransformer.class.getName())) {
 				return new RGB(255, 255, 0);
 			}
-			else if (names.contains("Rename")) {
+			else if (names.contains(RenameFeatureTransformer.class.getName())) {
 				return new RGB(135, 190, 100);
 			}
 			//TODO more sophisticated color generation
