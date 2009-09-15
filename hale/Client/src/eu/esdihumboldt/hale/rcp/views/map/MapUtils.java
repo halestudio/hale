@@ -13,11 +13,11 @@ package eu.esdihumboldt.hale.rcp.views.map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.map.DefaultMapContext;
 import org.geotools.map.MapContext;
-import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
@@ -40,37 +40,16 @@ public abstract class MapUtils {
 	
 	private static final Log log = LogFactory.getLog(FeatureTileRenderer.class);
 	
-	private static final String epsg31251wkt = 
-		"PROJCS[\"MGI (Ferro)/AustriaGKWestZone\"," +
-			"GEOGCS[\"MGI (Ferro)\"," +
-				"DATUM[\"Militar-Geographische Institut (Ferro)\"," +
-					"SPHEROID[\"Bessel 1841\",6377397.155,299.1528128," +
-					"AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6805\"]]," +
-				"PRIMEM[\"Ferro\",-17.666666666666668,AUTHORITY[\"EPSG\",\"8909\"]]," +
-				"UNIT[\"degree\",0.017453292519943295]," +
-				"AXIS[\"Geodetic latitude\",NORTH]," +
-				"AXIS[\"Geodetic longitude\",EAST]," +
-				"AUTHORITY[\"EPSG\",\"4805\"]]," +
-			"PROJECTION[\"Transverse Mercator\"]," +
-		"PARAMETER[\"central_meridian\",28.0]," +
-		"PARAMETER[\"latitude_of_origin\",0.0]," +
-		"PARAMETER[\"scale_factor\",1.0]," +
-		"PARAMETER[\"false_easting\",0.0]," +
-		"PARAMETER[\"false_northing\",-5000000.0]," +
-		"UNIT[\"m\",1.0]," +
-		"AXIS[\"Y\",EAST]," +
-		"AXIS[\"X\",NORTH]," +
-		"AUTHORITY[\"EPSG\",\"31251\"]]";
-	
 	/**
 	 * Determine the coordinate reference system for a feature collection
 	 * 
 	 * @param fc the feature collection
+	 * @param resetCustomCRS reset the user CRS
 	 * 
 	 * @return the coordinate reference system or null
 	 */
 	private static CoordinateReferenceSystem determineCRS(
-			FeatureCollection<? extends FeatureType, ? extends Feature> fc) {
+			FeatureCollection<? extends FeatureType, ? extends Feature> fc, boolean resetCustomCRS) {
 		CoordinateReferenceSystem crs = null;
 		
 		// try the instance data first.
@@ -86,13 +65,16 @@ public abstract class MapUtils {
 		
 		// if none is available, use a default.
 		if (crs == null) {
-			try {
-				log.warn("Retrieving the CRS from the schema and the "
-						+ "instance data failed; defaulting to EPSG:31251."); 
-				crs = CRS.parseWKT(epsg31251wkt);
-			} catch (Exception e) {
-				log.error("Decoding the default CRS failed, no accurate " +
-						"projection will be shown", e);
+			final Display display = Display.getCurrent();
+			
+			SelectCRSDialog dialog = new SelectCRSDialog(display.getActiveShell());
+			while (crs == null) {
+				if (!dialog.determineCRS(resetCustomCRS)) {
+					return null; //XXX unable to determine CRS
+				}
+				else {
+					crs = dialog.getValue();
+				}
 			}
 		}
 		return crs;
@@ -101,16 +83,17 @@ public abstract class MapUtils {
 	/**
 	 * @param crs the {@link CoordinateReferenceSystem} to use.
 	 * @param type the {@link DatasetType} to render.
+	 * @param resetCustomCRS reset the user CRS
 	 * @return a {@link MapContext} with the given CRS and the 
 	 * {@link FeatureCollection} identified by the given {@link DatasetType}.
 	 */
 	@SuppressWarnings("unchecked")
-	public static MapContext buildMapContext(CoordinateReferenceSystem crs, DatasetType type) {
+	public static MapContext buildMapContext(CoordinateReferenceSystem crs, DatasetType type, boolean resetCustomCRS) {
 		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 		
 		if (crs == null) {
-			crs = determineCRS(is.getFeatures(type));
+			crs = determineCRS(is.getFeatures(type), resetCustomCRS);
 		}
 		
 		MapContext mc = new DefaultMapContext(crs); 

@@ -78,9 +78,10 @@ public class FeatureTileRenderer implements TileProvider {
 	 * Update the map context
 	 * 
 	 * @param crs the coordinate reference system (may be null)
+	 * @param resetCustomCRS reset the user CRS
 	 */
-	public void updateMapContext(CoordinateReferenceSystem crs) {
-		renderer.setContext(MapUtils.buildMapContext(crs, type));
+	public void updateMapContext(CoordinateReferenceSystem crs, boolean resetCustomCRS) {
+		renderer.setContext(MapUtils.buildMapContext(crs, type, resetCustomCRS));
 		contextInitialized = true;
 	}
 
@@ -114,7 +115,7 @@ public class FeatureTileRenderer implements TileProvider {
 	        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	        
 	        if (!contextInitialized) {
-	        	updateMapContext(constraints.getCRS());
+	        	updateMapContext(constraints.getCRS(), false);
 	        }
 	        
 	        renderer.paint(graphics,

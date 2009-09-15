@@ -97,9 +97,10 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		final InstanceService instances = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 		instances.addListener(new HaleServiceListener() {
 			
+			@SuppressWarnings("unchecked")
 			@Override
 			public void update(UpdateMessage message) {
-				updateMap(determineMapArea());
+				updateMap(determineMapArea(), true);
 			}
 			
 		});
@@ -107,10 +108,11 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		StyleService styles = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 		styles.addListener(new HaleServiceListener() {
 			
+			@SuppressWarnings("unchecked")
 			@Override
 			public void update(UpdateMessage message) {
 				synchronized (this) {
-					resetTiles();
+					resetTiles(false);
 					refresh();
 				}	
 			}
@@ -119,6 +121,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		
 		final AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
 		alService.addListener(new HaleServiceListener() {
+			@SuppressWarnings("unchecked")
 			@Override
 			public void update(UpdateMessage message) {
 				synchronized (this) {
@@ -390,12 +393,13 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	 * @see AbstractTilePainter#resetTiles()
 	 */
 	@Override
-	protected void resetTiles() {
+	protected void resetTiles(boolean resetCustomCRS) {
 		referenceCache.clear();
 		transformedCache.clear();
 		
-		referenceRenderer.updateMapContext(getCRS());
-		transformedRenderer.updateMapContext(getCRS());
+		referenceRenderer.updateMapContext(getCRS(), resetCustomCRS);
+		// don't reset the CRS for the second renderer
+		transformedRenderer.updateMapContext(getCRS(), false);
 	}
 
 	/**
@@ -434,7 +438,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		this.background = background;
 		
 		synchronized (this) {
-			resetTiles();
+			resetTiles(false);
 			refresh();
 		}
 	}
