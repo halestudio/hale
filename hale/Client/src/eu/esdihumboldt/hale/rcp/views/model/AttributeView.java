@@ -13,10 +13,6 @@ package eu.esdihumboldt.hale.rcp.views.model;
 
 import java.util.ArrayList;
 
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.NotEnabledException;
-import org.eclipse.core.commands.NotHandledException;
-import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -428,31 +424,31 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 	 * @param _viewer
 	 *            if true, sourceAttributeList selection changed else
 	 *            targetAttributeList selection changed
-	 * @param _classname
+	 * @param type
 	 *            the name of the class that should be displayed in the
 	 *            corresponding Label
 	 * @param _classnameNumber
 	 *            the number of the class in the tree displyed in the
 	 *            ModelNavigationView
 	 */
-	public void updateView(boolean _viewer, String _classname,
-			TreeItem[] _items, int _classnameNumber) {
+	public void updateView(boolean _viewer, TreeObject type,
+			TreeObject[] _items, int _classnameNumber) {
 
 		if (_viewer == true) {
 
-			sourceModelLabel.setText(_classname);
+			sourceModelLabel.setText(type.getName().getLocalPart());
 			// if selected item no attribute
 			if (_items.length != 0) {
 				setSourceFeatureType(true);
 
-				for (TreeItem item : _items) {
+				for (TreeObject item : _items) {
 
 					// display item in the attribute list only if attribute
-					if (!item.getText().endsWith(FEATURE_TYPE_SUFFIX)) {
+					if (item.isAttribute()) {
 						TableItem listItem = new TableItem(
 								this.sourceAttributeList, SWT.NONE);
 						listItem.setText(_classnameNumber + ":"
-								+ item.getText());
+								+ item.getName().getLocalPart());
 						// sourceAttributeList.add(_classnameNumber+":"
 						// +item.getText());
 
@@ -462,22 +458,22 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 				setSourceFeatureType(false);
 				TableItem listItem = new TableItem(this.sourceAttributeList,
 						SWT.NONE);
-				listItem.setText(_classname);
+				listItem.setText(type.getName().getLocalPart());
 			}
 		} else {
-			targetModelLabel.setText(_classname);
+			targetModelLabel.setText(type.getName().getLocalPart());
 			// if selected item no attribute
 			if (_items.length != 0) {
 				setTargetFeaureType(true);
 				// targetModelLabel.setText(_classname);
-				for (TreeItem item : _items) {
+				for (TreeObject item : _items) {
 
 					// display item in the attribute list only if attribute
-					if (!item.getText().endsWith(FEATURE_TYPE_SUFFIX)) {
+					if (item.isAttribute()) {
 						TableItem listItem = new TableItem(
 								this.targetAttributeList, SWT.NONE);
 						listItem.setText(_classnameNumber + ":"
-								+ item.getText());
+								+ item.getName().getLocalPart());
 						// targetAttributeList.add(_classnameNumber+":"
 						// +item.getText());
 					}
@@ -486,7 +482,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 				setTargetFeaureType(false);
 				TableItem listItem = new TableItem(this.targetAttributeList,
 						SWT.NONE);
-				listItem.setText(_classname);
+				listItem.setText(type.getName().getLocalPart());
 
 				// targetAttributeList.add();
 			}

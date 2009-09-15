@@ -79,8 +79,9 @@ public class FilterWizard extends Wizard implements INewWizard {
 		t.setLabel(FilterTransformer.class.getName());
 
 		List<IParameter> parameters = new ArrayList<IParameter>();
-		//parameters.add(new Parameter(FilterTransformer.CQL_PARAMETER, secondPage.buildCQL()));
-		parameters.add(new Parameter(FilterTransformer.CQL_PARAMETER, "OBJNR = 'BU500E6'"));
+		parameters.add(new Parameter(FilterTransformer.CQL_PARAMETER, secondPage.buildCQL()));
+		//parameters.add(new Parameter(FilterTransformer.CQL_PARAMETER, "OBJNR = 'BU500E6'"));
+		//parameters.add(new Parameter(FilterTransformer.CQL_PARAMETER, "LEVEL < 2"));
 		t.setParameters(parameters);
 
 		entity1.setTransformation(t);

@@ -60,6 +60,7 @@ public class TreeObject {
 			List<String> nameparts = new ArrayList<String>();
 			
 			switch (getType()) {
+			case PROPERTY_TYPE: // fall through //TODO handle separately
 			case ABSTRACT_FT: // fall through
 			case CONCRETE_FT:
 				// feature type
@@ -84,6 +85,21 @@ public class TreeObject {
 		}
 		
 		return entity;
+	}
+	
+	/**
+	 * @return if the tree object represents an attribute
+	 */
+	public boolean isAttribute() {
+		switch (type) {
+		case ABSTRACT_FT:
+		case CONCRETE_FT:
+		case PROPERTY_TYPE:
+		case ROOT:
+			return false;
+		default:
+			return true;
+		}
 	}
 	
 	/**
@@ -145,6 +161,8 @@ public class TreeObject {
 		ABSTRACT_FT,
 		/** concrete feature type item **/
 		CONCRETE_FT,
+		/** property type */
+		PROPERTY_TYPE,
 		/** numeric attribute item */
 		NUMERIC_ATTRIBUTE,
 		/** string attribute item */

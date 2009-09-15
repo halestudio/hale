@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.utils.FeatureTypeHelper;
 
 /**
  * Drop-down action for style editing of data set feature types
@@ -104,7 +105,8 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 		int index = 0;
 		
 		for (FeatureType type : types) {
-			if (!(type.isAbstract() || type.getSuper() == null)) { // skip abstract types
+			if (!FeatureTypeHelper.isAbstract(type) &&
+					!FeatureTypeHelper.isPropertyType(type)) { // skip abstract types
 				IAction action = new FeatureTypeStyleAction(type);
 				IContributionItem item = new ActionContributionItem(action);
 				item.fill(menu, index);

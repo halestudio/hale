@@ -47,6 +47,7 @@ import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
+import eu.esdihumboldt.hale.rcp.utils.FeatureTypeHelper;
 
 /**
  * A default {@link StyleService} implementation that will provide simple styles
@@ -172,7 +173,8 @@ public class StyleServiceImpl
 		Style style = styleFactory.createStyle();
 		
 		for (FeatureType type : types) {
-			if (!(type.isAbstract() || type.getSuper() == null)) {
+			if (!FeatureTypeHelper.isAbstract(type) && 
+					!FeatureTypeHelper.isPropertyType(type)) {
 				// only add styles for non-abstract feature types
 				
 				FeatureTypeStyle fts = styles.get(type);

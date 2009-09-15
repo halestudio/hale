@@ -19,6 +19,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.utils.FeatureTypeHelper;
 
 /**
  * Action that opens a style editor for a certain feature type
@@ -50,7 +51,7 @@ public class FeatureTypeStyleAction extends Action {
 		init();
 		
 		setImageDescriptor(
-				(type.isAbstract() || type.getSuper() == null)
+				(FeatureTypeHelper.isAbstract(type))
 				?(abstractImage):(featureImage));
 	}
 

@@ -72,6 +72,9 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 		else if (to.getType().equals(TreeObjectType.CONCRETE_FT)) {
 			imageKey = "concrete_ft.png";
 		}
+		else if (to.getType().equals(TreeObjectType.PROPERTY_TYPE)) {
+			//TODO add image for property types
+		}
 		else if (to.getType().equals(TreeObjectType.STRING_ATTRIBUTE)) {
 			imageKey = "string_attribute.png";
 		} 

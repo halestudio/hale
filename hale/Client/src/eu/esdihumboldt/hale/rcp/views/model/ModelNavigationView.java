@@ -37,6 +37,7 @@ import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.hale.rcp.utils.FeatureTypeHelper;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.PatternViewFilter;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.SimpleToggleAction;
@@ -143,6 +144,9 @@ public class ModelNavigationView extends ViewPart implements
 
 	private List<SimpleToggleAction> getToggleActions(PatternViewFilter pvf) {
 		List<SimpleToggleAction> result = new ArrayList<SimpleToggleAction>();
+		result.add(new SimpleToggleAction(TreeObjectType.PROPERTY_TYPE, 
+				"Hide Property Types", "Show Property Types", 
+				"/icons/placeholder.gif", pvf));
 		result.add(new SimpleToggleAction(TreeObjectType.STRING_ATTRIBUTE, 
 				"Hide String Attributes", "Show String Attributes", 
 				"/icons/see_string_attribute.png", pvf));
@@ -288,8 +292,10 @@ public class ModelNavigationView extends ViewPart implements
 	private TreeObject buildSchemaTree(RobustFTKey ftk,
 			Map<RobustFTKey, Set<FeatureType>> typeHierarchy) {
 		TreeObjectType tot = TreeObjectType.CONCRETE_FT;
-		if (ftk.getFeatureType().isAbstract()
-				|| ftk.getFeatureType().getSuper() == null) {
+		if (FeatureTypeHelper.isPropertyType(ftk.getFeatureType())) {
+			tot = TreeObjectType.PROPERTY_TYPE;
+		}
+		else if (FeatureTypeHelper.isAbstract(ftk.getFeatureType())) {
 			tot = TreeObjectType.ABSTRACT_FT;
 		}
 		TreeParent result = new TreeParent(ftk.getFeatureType().getName()
@@ -393,77 +399,36 @@ public class ModelNavigationView extends ViewPart implements
 				attributeView = (AttributeView) views[count].getView(false);
 			}
 		}
+		
+		boolean viewId = targetViewName.equals(SOURCE_MODEL_ID);
 
-		if (targetViewName.equals(SOURCE_MODEL_ID)) {
+		if (viewId) {
 			tree = sourceSchemaViewer.getTree();
-			attributeView.clear(true);
 		} else {
 			tree = targetSchemaViewer.getTree();
-			attributeView.clear(false);
 		}
+		
+		attributeView.clear(viewId);
 
 		if (tree.getSelection() != null && tree.getSelection().length > 0) {
 
 			// set counter for the FeatureType to use for the attribute
 			// declaration in the AttributeView
 			int itemNumber = 0;
-            boolean wasExpanded = true;
-			// updates attribute view for each selected item in case multiple
+            // updates attribute view for each selected item in case multiple
 			// selection
 			for (TreeItem treeItem : tree.getSelection()) {
 				itemNumber++;
 				selectedItem = treeItem;
 
-				
-
-				// if selected Item is no attribute
-				/*
-				 * ap: if block returns always true if
-				 * (!selectedItem.getImage().equals(
-				 * PlatformUI.getWorkbench().getSharedImages().getImage(
-				 * ISharedImages.IMG_OBJ_ELEMENT))) {
-				 */
-				// if selection changed in sourceSchemaViewer
-				if (targetViewName.equals(SOURCE_MODEL_ID)) {
-					// select all attributes of the feature type even if it is not
-					// expand
-					if (!selectedItem.getExpanded()) {
-						selectedItem.setExpanded(true);
-						sourceSchemaViewer.refresh();  
-						wasExpanded = false;
+				// if not tree root
+				if (!(selectedItem.getParentItem() == null)) {
+					Object data = selectedItem.getData();
+					if (data instanceof TreeParent) {
+						TreeParent tp = (TreeParent) data;
+						attributeView.updateView(viewId, tp, tp.getChildren(), itemNumber);
 					}
-					
-					// if not tree root
-					if (!(selectedItem.getParentItem() == null)) {
-						attributeView.updateView(true, selectedItem.getText(),
-								selectedItem.getItems(), itemNumber);
-					}
-					if (!wasExpanded){
-						selectedItem.setExpanded(false);
-					    sourceSchemaViewer.refresh();  
-					}    
 				}
-				// if selection changed in targetSchemaViewer
-				else {
-					// select all attributes of the feature type even if it is not
-					// expand
-					if (!selectedItem.getExpanded()) {
-						selectedItem.setExpanded(true);
-						targetSchemaViewer.refresh();  
-						wasExpanded = false;
-					}
-					// if not tree root
-					if (!(selectedItem.getParentItem() == null)) {
-						attributeView.updateView(false, selectedItem.getText(),
-								selectedItem.getItems(), itemNumber);
-					}	
-					if (!wasExpanded){
-						selectedItem.setExpanded(false);
-					    targetSchemaViewer.refresh();  
-					}    
-				}
-               //collapse selected item  if was not expanded before selection
-				
 			}
 		}
 	}
