@@ -15,7 +15,9 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.HandlerUtil;
 
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.InstanceService;
@@ -35,23 +37,24 @@ public class NewProjectHandler extends AbstractHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		//TODO ask, options?
-		
-		// clean alignment service
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
-		as.cleanModel();
-		
-		// clean instance service
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
-		is.cleanInstances(DatasetType.transformed);
-		is.cleanInstances(DatasetType.reference);
-		
-		// clean schema service
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-		ss.cleanSourceSchema();
-		ss.cleanTargetSchema();
-		
-		System.gc();
+		if (MessageDialog.openQuestion(HandlerUtil.getActiveShell(event), 
+				"New Alignment Project", "This will reset the Alignment Project, unsaved changes will be lost. Do you want to continue?")) {
+			// clean alignment service
+			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+			as.cleanModel();
+			
+			// clean instance service
+			InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+			is.cleanInstances(DatasetType.transformed);
+			is.cleanInstances(DatasetType.reference);
+			
+			// clean schema service
+			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+			ss.cleanSourceSchema();
+			ss.cleanTargetSchema();
+			
+			System.gc();
+		}
 		
 		return null;
 	}
