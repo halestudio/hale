@@ -44,6 +44,9 @@ public class FilterWizardSecondPage extends WizardPage {
 	private Label comparisonValueLabel;
 	private Text comparisonValue;
 	private TreeViewer sourceViewer;
+	private Text selectedAttribute;
+	private Text selectedOperator;
+	
 	
 	private static Logger _log = Logger.getLogger(FilterWizardSecondPage.class);
 	protected FilterWizardSecondPage(String pageName, String title)
@@ -232,6 +235,7 @@ public class FilterWizardSecondPage extends WizardPage {
         this.propertyLabel.setFont(new Font(parent.getDisplay(), labelFontData));
         this.propertyLabel.setText("By Property: ");
         final Combo attributesCombo = new Combo(composite, SWT.NULL);
+        selectedAttribute = new Text(attributesCombo,SWT.NULL); 
         gd.horizontalAlignment = SWT.FILL;
         gd.horizontalSpan = 4;
         attributesCombo.setLayoutData(gd);
@@ -249,6 +253,9 @@ public class FilterWizardSecondPage extends WizardPage {
 			public void handleEvent(Event event) {
 		      int selectionIndex = attributesCombo.getSelectionIndex();
 		      _log.debug("Selected Property: " + attributesCombo.getItem(selectionIndex));
+		     
+		      selectedAttribute.setText(attributesCombo.getItem(selectionIndex));
+		      
 				
 			}
         	
@@ -263,6 +270,7 @@ public class FilterWizardSecondPage extends WizardPage {
         this.operatorsLabel.setFont(new Font(parent.getDisplay(), labelFontData));
         this.operatorsLabel.setText("OperatorType: ");
         final Combo operatorsCombo = new Combo(composite, SWT.NULL);
+        selectedOperator = new Text(operatorsCombo, SWT.NULL);
         operatorsCombo.setLayoutData(gd);
         operatorsCombo.setText("select Operator Type");
         //TODO read attributes from the schema service
@@ -278,6 +286,7 @@ public class FilterWizardSecondPage extends WizardPage {
 			public void handleEvent(Event event) {
 		      int selectionIndex = operatorsCombo.getSelectionIndex();
 		      _log.debug("Selected Operator: " + operatorsCombo.getItem(selectionIndex));
+		      selectedOperator.setText(operatorsCombo.getItem(selectionIndex));
 				
 			}
         	
@@ -312,6 +321,7 @@ public class FilterWizardSecondPage extends WizardPage {
          	 public void modifyText(ModifyEvent event) {
                   String comparison = comparisonValue.getText();
                   _log.debug("Comparison value " + comparison);
+                  
                  /* if(sourceName.length() == 0) setErrorMessage("FeatureType  can not be empty");
                   else setErrorMessage(null);
                   setPageComplete(sourceName.length() > 0);*/
@@ -332,11 +342,63 @@ public class FilterWizardSecondPage extends WizardPage {
 		
 	}
 
+	/**
+	 * 
+	 * @return CQL expression based on the pageinput.
+	 */
 	public String buildCQL() {
-		// TODO Auto-generated method stub
-		return null;
+		//build using property, comparison operator and comparison value
+	
+		//get attribute name - String between ::
+		String fullPropertyName = selectedAttribute.getText();
+		int firstIndexOfColon = fullPropertyName.indexOf(":");
+		String attributeValue = comparisonValue.getText();
+		String propertyLocalName = fullPropertyName.substring(firstIndexOfColon+1);	
+		if ((selectedOperator.getText()).equals(CQLOperators.PropertyIsLike.name()))  attributeValue = "'" + attributeValue + "'";
+		String CQLexpression = propertyLocalName + " " + getCQLOperator(CQLOperators.valueOf(selectedOperator.getText())) + " " + attributeValue;
+		_log.debug("CQL Expression "+ CQLexpression);
+		
+		return CQLexpression;
 	}
 
+	/**
+	 * @param text
+	 * @return
+	 */
+	private String getCQLOperator(CQLOperators operator) {
+		String cqlOperator = "";
+		switch (operator) {
+		case PropertyIsEqualTo:
+			cqlOperator = "=";		
+			break;
+		case PropertyIsNotEqualTo:
+			cqlOperator = "!=";
+			break;
+		case PropertyIsLessThan:	
+			cqlOperator = "<";
+			break;
+		case PropertyIsGreaterThan:
+			cqlOperator = ">";
+			break;
+		case PropertyIsLessThanOrEqualTo:
+			cqlOperator = "<=";
+			break;
+		case PropertyIsGreaterThanOrEqualTo:
+			cqlOperator = ">=";
+			break;
+		case PropertyIsLike:
+			cqlOperator = "LIKE";
+			break;
+		case PropertyIsNull:
+			cqlOperator = "IS NULL";
+			break;
+		case PropertyIsBetween:
+			cqlOperator = "BETWEEN";
+		}
+			
+		return cqlOperator;
+	}
+	
 	public TreeViewer getSourceViewer() {
 		return sourceViewer;
 	}
@@ -373,6 +435,22 @@ public class FilterWizardSecondPage extends WizardPage {
 		return attributeView;
 	}
 
+  /**
+   * enum contains allowed CQL operators for the
+   * CST Filter Transformer
+   */
+	public enum CQLOperators{
+      PropertyIsEqualTo,
+	  PropertyIsNotEqualTo,
+	  PropertyIsLessThan,	
+	  PropertyIsGreaterThan,
+	  PropertyIsLessThanOrEqualTo,
+	  PropertyIsGreaterThanOrEqualTo,
+	  PropertyIsLike,
+	  PropertyIsNull,
+	  PropertyIsBetween
+	}
+	 
+ }
 
 
-}
