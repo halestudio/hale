@@ -160,7 +160,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		
 		if (is != null) {
 			FeatureCollection<FeatureType, Feature> features = is.getFeatures(DatasetType.reference);
-			if (features != null) {
+			if (features != null && !features.isEmpty()) {
 				return features.getBounds();
 			}
 		}

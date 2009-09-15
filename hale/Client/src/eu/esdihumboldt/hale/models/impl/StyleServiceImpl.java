@@ -13,6 +13,7 @@ package eu.esdihumboldt.hale.models.impl;
 
 import java.awt.Color;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -156,7 +157,11 @@ public class StyleServiceImpl
 	@SuppressWarnings("deprecation")
 	@Override
 	public Style getStyle(final DatasetType dataset) {
-		final Collection<FeatureType> types = (dataset == DatasetType.reference)?(schemaService.getSourceSchema()):(schemaService.getTargetSchema());
+		Collection<FeatureType> types = (dataset == DatasetType.reference)?(schemaService.getSourceSchema()):(schemaService.getTargetSchema());
+		
+		if (types == null) {
+			types = new ArrayList<FeatureType>();
+		}
 		
 		//XXX hack until transformation implementation is correct
 		if (dataset == DatasetType.transformed) {

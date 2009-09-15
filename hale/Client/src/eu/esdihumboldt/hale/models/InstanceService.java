@@ -98,6 +98,12 @@ public interface InstanceService
 	public boolean cleanInstances(DatasetType type);
 	
 	/**
+	 * This will remove all instances from the service.
+	 * @return true if the cleaning operation was successful.
+	 */
+	public boolean cleanInstances();
+	
+	/**
 	 * This enum is used to identify on which data set you want to perform any
 	 * of the operations that this Service offers.
 	 */

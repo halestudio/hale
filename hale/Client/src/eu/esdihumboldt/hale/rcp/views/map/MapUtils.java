@@ -92,20 +92,25 @@ public abstract class MapUtils {
 		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 		
-		if (crs == null) {
-			crs = determineCRS(is.getFeatures(type), resetCustomCRS);
-		}
-		
-		MapContext mc = new DefaultMapContext(crs); 
 		FeatureCollection<?, ?> fc = is.getFeatures(type);
-		if (fc != null) {
+		if (fc != null && fc.size() > 0) {
+			if (crs == null) {
+				crs = determineCRS(is.getFeatures(type), resetCustomCRS);
+			}
+			
 			log.info("features size: " + fc.size());
 			log.info("features bounds: " + fc.getBounds());
 			Style style = ss.getStyle(type); //fc.getSchema());
+			
+			MapContext mc = new DefaultMapContext(crs); 
 			mc.addLayer(
 	        		(FeatureCollection<SimpleFeatureType, SimpleFeature>) fc, style);
+			
+			return mc;
 		}
-		return mc;
+		else {
+			return new DefaultMapContext(crs);
+		}
 	}
 
 }

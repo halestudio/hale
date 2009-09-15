@@ -45,8 +45,7 @@ public class NewProjectHandler extends AbstractHandler {
 			
 			// clean instance service
 			InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
-			is.cleanInstances(DatasetType.transformed);
-			is.cleanInstances(DatasetType.reference);
+			is.cleanInstances();
 			
 			// clean schema service
 			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);

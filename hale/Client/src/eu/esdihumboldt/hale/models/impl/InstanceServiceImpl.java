@@ -173,7 +173,7 @@ public class InstanceServiceImpl
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.models.InstanceService#cleanInstances()
+	 * @see InstanceService#cleanInstances()
 	 */
 	public boolean cleanInstances(DatasetType type) {
 		if (type == null) { 
@@ -186,6 +186,19 @@ public class InstanceServiceImpl
 			this.sourceReferenceFeatures = null;
 		}
 		this.updateListeners();
+		return true;
+	}
+
+	/**
+	 * @see InstanceService#cleanInstances()
+	 */
+	@Override
+	public boolean cleanInstances() {
+		transformedFeatures = null;
+		sourceReferenceFeatures = null;
+		
+		this.updateListeners();
+		
 		return true;
 	}
 
