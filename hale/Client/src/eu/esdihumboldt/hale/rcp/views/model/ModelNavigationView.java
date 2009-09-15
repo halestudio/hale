@@ -428,6 +428,9 @@ public class ModelNavigationView extends ViewPart implements
 						TreeParent tp = (TreeParent) data;
 						attributeView.updateView(viewId, tp, tp.getChildren(), itemNumber);
 					}
+					else if (data instanceof TreeObject) {
+						attributeView.updateView(viewId, (TreeObject) data, new TreeObject[]{}, itemNumber);
+					}
 				}
 			}
 		}
