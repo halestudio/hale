@@ -47,7 +47,9 @@ public abstract class FeatureTypeHelper {
 		else {
 			AttributeType parent = ft.getSuper();
 			if (parent != null && parent instanceof FeatureType) {
-				return isPropertyType((FeatureType) parent);
+				//return isPropertyType((FeatureType) parent);
+				//FIXME feature type hierarchy is inconsistent - so the above code doesn't yield the expected result
+				return false;
 			}
 			else {
 				return true;
