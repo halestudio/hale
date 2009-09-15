@@ -357,8 +357,12 @@ public class OmlRdfGenerator {
 		ClassType cType = new ClassType();
 		if (feature != null) {
 			About about = ((About) feature.getAbout());
-			if (about != null)
+			if (feature.getLabel() != null) {
+				cType.getLabel().addAll(feature.getLabel());
+			}
+			if (about != null) {
 				cType.setAbout(about.getAbout());
+			}
 			cType.setTransf(getTransf(feature.getTransformation()));
 			if (feature.getAttributeTypeCondition() != null) {
 				cType.getAttributeTypeCondition().addAll(
@@ -543,6 +547,7 @@ public class OmlRdfGenerator {
 		if (transformation != null) {
 			// TODO check the resource transformation
 			// fType.setResource(transformation.getService().toString());
+			fType.setResource(transformation.getLabel());
 			if (transformation.getParameters() != null) {
 				fType.getParam().addAll(
 					getParameters(transformation.getParameters()));
