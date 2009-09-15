@@ -42,6 +42,7 @@ import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.models.provider.instance.HaleGMLParser;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
+import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
 
 /**
  * This {@link Wizard} controls the import of geodata to be used for 
@@ -151,6 +152,8 @@ public class InstanceDataImportWizard
 						display.syncExec(new Runnable() {
 							
 							public void run() {
+								instanceService.cleanInstances();
+								SelectCRSDialog.resetCustomCRS();
 								instanceService.addInstances(DatasetType.reference, deployFeatures);
 								_log.info(deployFeatures.size() + " instances were added to the InstanceService.");
 							}

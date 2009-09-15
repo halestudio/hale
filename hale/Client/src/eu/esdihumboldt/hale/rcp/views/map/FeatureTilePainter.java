@@ -100,7 +100,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 			@SuppressWarnings("unchecked")
 			@Override
 			public void update(UpdateMessage message) {
-				updateMap(determineMapArea(), true);
+				updateMap(determineMapArea());
 			}
 			
 		});
@@ -112,7 +112,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 			@Override
 			public void update(UpdateMessage message) {
 				synchronized (this) {
-					resetTiles(false);
+					resetTiles();
 					refresh();
 				}	
 			}
@@ -393,13 +393,12 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	 * @see AbstractTilePainter#resetTiles()
 	 */
 	@Override
-	protected void resetTiles(boolean resetCustomCRS) {
+	protected void resetTiles() {
 		referenceCache.clear();
 		transformedCache.clear();
 		
-		referenceRenderer.updateMapContext(getCRS(), resetCustomCRS);
-		// don't reset the CRS for the second renderer
-		transformedRenderer.updateMapContext(getCRS(), false);
+		referenceRenderer.updateMapContext(getCRS());
+		transformedRenderer.updateMapContext(getCRS());
 	}
 
 	/**
@@ -438,7 +437,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		this.background = background;
 		
 		synchronized (this) {
-			resetTiles(false);
+			resetTiles();
 			refresh();
 		}
 	}

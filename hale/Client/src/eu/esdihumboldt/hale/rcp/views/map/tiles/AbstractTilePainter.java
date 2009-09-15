@@ -128,7 +128,7 @@ public abstract class AbstractTilePainter implements PaintListener,
 		
 		pan = false;
 		
-		updateMap(mapArea, true);
+		updateMap(mapArea);
 		
 		this.control = control;
 		
@@ -160,9 +160,8 @@ public abstract class AbstractTilePainter implements PaintListener,
 	 * Update the map
 	 * 
 	 * @param mapArea the new map area
-	 * @param resetCustomCRS reset the user CRS
 	 */
-	public void updateMap(final ReferencedEnvelope mapArea, boolean resetCustomCRS) {
+	public void updateMap(final ReferencedEnvelope mapArea) {
 		synchronized (this) {
 			if (mapArea == null || mapArea.getWidth() == 0 || mapArea.getHeight() == 0) {
 				// invalid area
@@ -173,7 +172,7 @@ public abstract class AbstractTilePainter implements PaintListener,
 			
 			this.mapArea = mapArea;
 			
-			resetTiles(resetCustomCRS);
+			resetTiles();
 			
 			if (mapArea != null) {
 				// determine current zoom
@@ -232,10 +231,8 @@ public abstract class AbstractTilePainter implements PaintListener,
 	
 	/**
 	 * Reset all tiles
-	 * 
-	 * @param resetCustomCRS reset the user CRS
 	 */
-	protected abstract void resetTiles(boolean resetCustomCRS);
+	protected abstract void resetTiles();
 	
 	/**
 	 * Get the current zoom level

@@ -44,12 +44,11 @@ public abstract class MapUtils {
 	 * Determine the coordinate reference system for a feature collection
 	 * 
 	 * @param fc the feature collection
-	 * @param resetCustomCRS reset the user CRS
 	 * 
 	 * @return the coordinate reference system or null
 	 */
 	private static CoordinateReferenceSystem determineCRS(
-			FeatureCollection<? extends FeatureType, ? extends Feature> fc, boolean resetCustomCRS) {
+			FeatureCollection<? extends FeatureType, ? extends Feature> fc) {
 		CoordinateReferenceSystem crs = null;
 		
 		// try the instance data first.
@@ -69,7 +68,7 @@ public abstract class MapUtils {
 			
 			SelectCRSDialog dialog = new SelectCRSDialog(display.getActiveShell());
 			while (crs == null) {
-				if (!dialog.determineCRS(resetCustomCRS)) {
+				if (!dialog.determineCRS()) {
 					return null; //XXX unable to determine CRS
 				}
 				else {
@@ -83,19 +82,18 @@ public abstract class MapUtils {
 	/**
 	 * @param crs the {@link CoordinateReferenceSystem} to use.
 	 * @param type the {@link DatasetType} to render.
-	 * @param resetCustomCRS reset the user CRS
 	 * @return a {@link MapContext} with the given CRS and the 
 	 * {@link FeatureCollection} identified by the given {@link DatasetType}.
 	 */
 	@SuppressWarnings("unchecked")
-	public static MapContext buildMapContext(CoordinateReferenceSystem crs, DatasetType type, boolean resetCustomCRS) {
+	public static MapContext buildMapContext(CoordinateReferenceSystem crs, DatasetType type) {
 		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 		
 		FeatureCollection<?, ?> fc = is.getFeatures(type);
 		if (fc != null && fc.size() > 0) {
 			if (crs == null) {
-				crs = determineCRS(is.getFeatures(type), resetCustomCRS);
+				crs = determineCRS(is.getFeatures(type));
 			}
 			
 			log.info("features size: " + fc.size());

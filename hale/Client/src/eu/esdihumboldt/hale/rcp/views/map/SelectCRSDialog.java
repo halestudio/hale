@@ -358,16 +358,11 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 
 	/**
 	 * Determine the CRS to use, the CRS can be retrieved using {@link #getValue()}
-	 * @param resetCRS 
 	 * 
 	 * @return if a new value was set or an existing valid value exists
 	 */
-	public boolean determineCRS(boolean resetCRS) {
+	public boolean determineCRS() {
 		init();
-		
-		if (resetCRS) {
-			value = null;
-		}
 		
 		if (value != null) {
 			// valid crs, not reseted
@@ -397,6 +392,13 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 			
 			initialized = true;
 		}*/
+	}
+	
+	/**
+	 * Reset the custom CRS
+	 */
+	public static void resetCustomCRS() {
+		value = null;
 	}
 
 	/**

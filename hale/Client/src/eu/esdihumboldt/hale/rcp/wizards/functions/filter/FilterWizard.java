@@ -22,6 +22,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.cst.transformer.impl.FilterTransformer;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
@@ -75,10 +76,11 @@ public class FilterWizard extends Wizard implements INewWizard {
 		Cell c = new Cell();
 		Entity entity1 = ModelNavigationViewHelper.getEntity(SelectionType.SOURCE);
 		Transformation t = new Transformation();
-		t.setLabel("Filter");
+		t.setLabel(FilterTransformer.class.getName());
 
 		List<IParameter> parameters = new ArrayList<IParameter>();
-		parameters.add(new Parameter("CQLExpression", secondPage.buildCQL()));
+		//parameters.add(new Parameter(FilterTransformer.CQL_PARAMETER, secondPage.buildCQL()));
+		parameters.add(new Parameter(FilterTransformer.CQL_PARAMETER, "OBJNR = 'BU500E6'"));
 		t.setParameters(parameters);
 
 		entity1.setTransformation(t);
