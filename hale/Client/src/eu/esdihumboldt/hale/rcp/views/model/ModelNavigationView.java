@@ -133,10 +133,14 @@ public class ModelNavigationView extends ViewPart implements
 		AlignmentService as = (AlignmentService) getSite().getService(AlignmentService.class);
 		as.addListener(new HaleServiceListener() {
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public void update(UpdateMessage message) {
-				sourceSchemaViewer.getControl().redraw();
-				targetSchemaViewer.getControl().redraw();
+				sourceSchemaViewer.refresh();
+				targetSchemaViewer.refresh();
+				
+				/*XXX seems to be not enough to update the label colors - sourceSchemaViewer.getControl().redraw();
+				targetSchemaViewer.getControl().redraw();*/
 			}
 			
 		});
@@ -455,8 +459,9 @@ public class ModelNavigationView extends ViewPart implements
 	}
 
 	/**
-	 * @see HaleServiceListener#update()
+	 * @see HaleServiceListener#update(UpdateMessage)
 	 */
+	@SuppressWarnings("unchecked")
 	public void update(UpdateMessage message) {
 		this.sourceSchemaViewer.setInput(this.translateSchema(schemaService
 				.getSourceSchema()));

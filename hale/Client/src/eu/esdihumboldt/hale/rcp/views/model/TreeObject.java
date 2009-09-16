@@ -59,21 +59,15 @@ public class TreeObject {
 		if (entity == null) {
 			List<String> nameparts = new ArrayList<String>();
 			
-			switch (getType()) {
-			case PROPERTY_TYPE: // fall through //TODO handle separately
-			case ABSTRACT_FT: // fall through
-			case CONCRETE_FT:
+			if (isType()) {
 				// feature type
 				if (name != null) {
 					nameparts.add(name.getNamespaceURI());
 					nameparts.add(name.getLocalPart());
 					entity = new FeatureClass(nameparts);
 				}
-				break;
-			case ROOT:
-				// no entity
-				break;
-			default:
+			}
+			else if (isAttribute()) {
 				// attributes
 				if (parent != null && parent.getName() != null) {
 					nameparts.add(parent.getName().getNamespaceURI());
@@ -99,6 +93,26 @@ public class TreeObject {
 			return false;
 		default:
 			return true;
+		}
+	}
+	
+	/**
+	 * @return if the tree object represents a type (feature type or property type)
+	 */
+	public boolean isType() {
+		return isFeatureType() || type.equals(TreeObjectType.PROPERTY_TYPE);
+	}
+	
+	/**
+	 * @return if the tree object represents a feature type
+	 */
+	public boolean isFeatureType() {
+		switch (type) {
+		case ABSTRACT_FT:
+		case CONCRETE_FT:
+			return true;
+		default:
+			return false;
 		}
 	}
 	

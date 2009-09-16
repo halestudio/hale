@@ -22,19 +22,17 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.transformer.impl.NetworkExpansionTransformer;
 import eu.esdihumboldt.cst.transformer.impl.RenameAttributeTransformer;
 import eu.esdihumboldt.cst.transformer.impl.RenameFeatureTransformer;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.rcp.utils.ModelNavigationViewHelper;
 import eu.esdihumboldt.hale.rcp.utils.ModelNavigationViewHelper.SelectionType;
 import eu.esdihumboldt.hale.rcp.views.model.AttributeView;
+import eu.esdihumboldt.hale.rcp.views.model.TreeObject;
 
 /**
  * This {@link Wizard} is used to invoke a Renaming Transformer for the Source
@@ -77,22 +75,41 @@ public class RenamingFunctionWizard extends Wizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
-		Entity entity1 = ModelNavigationViewHelper.getEntity(SelectionType.SOURCE);
-		Entity entity2 = ModelNavigationViewHelper.getEntity(SelectionType.TARGET);
+		TreeObject source = ModelNavigationViewHelper.getTreeObject(SelectionType.SOURCE);
+		TreeObject target = ModelNavigationViewHelper.getTreeObject(SelectionType.TARGET);
 		
-		Property p1 = new Property(entity1.getLabel());
-		Property p2 = new Property(entity2.getLabel());
-
 		Cell c = new Cell();
 		Transformation t = new Transformation();
-		t.setLabel(RenameAttributeTransformer.class.getName());
-		//Add old attribute name
-		t.getParameters().add(new Parameter(RenameAttributeTransformer.OLD_ATTRIBUTE_NAME_PARAMETER, entity1.getLabel().get(2)));
-		t.getParameters().add(new Parameter(RenameAttributeTransformer.NEW_ATTRIBUTE_NAME_PARAMETER, entity2.getLabel().get(2)));
 		
-		p1.setTransformation(t);
-		c.setEntity1(p1);
-		c.setEntity2(p2);
+		if (source.isFeatureType() && target.isFeatureType()) {
+			// Type renaming
+			t.setLabel(RenameFeatureTransformer.class.getName());
+			
+			//TODO any parameters needed?
+		}
+		else if (source.isAttribute() && target.isAttribute()) {
+			// Attribute renaming
+			t.setLabel(RenameAttributeTransformer.class.getName());
+			
+			//Add old attribute name
+			t.getParameters().add(new Parameter(
+					RenameAttributeTransformer.OLD_ATTRIBUTE_NAME_PARAMETER, 
+					source.getName().getLocalPart()));
+			t.getParameters().add(new Parameter(
+					RenameAttributeTransformer.NEW_ATTRIBUTE_NAME_PARAMETER, 
+					target.getName().getLocalPart()));
+		}
+		else {
+			//TODO error message?
+			return false;
+		}
+
+		Entity entity1 = source.getEntity();
+		Entity entity2 = target.getEntity();
+		
+		entity1.setTransformation(t);
+		c.setEntity1(entity1);
+		c.setEntity2(entity2);
 		
 		AlignmentService alservice = (AlignmentService) PlatformUI
 				.getWorkbench().getService(AlignmentService.class);
