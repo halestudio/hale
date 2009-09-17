@@ -131,42 +131,6 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 		return targetAttributeViewer;
 	}
 
-	// the listener we register with the selection service
-	private ISelectionListener sourceAttributeListListener = new ISelectionListener() {
-
-		@Override
-		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-			// use selection button in case of the multiple attribute selection
-			// only
-			if (sourceAttributeList.getSelection().length > 1)
-				selectFunctionButton.setEnabled(true);
-			else
-				selectFunctionButton.setEnabled(false);
-			selectFunctionButton.redraw();
-
-		}
-
-	};
-
-	// the listener we register with the selection service
-	private ISelectionListener targetAttributeListListener = new ISelectionListener() {
-
-		@Override
-		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-			// use selection button in case of the multiple attribute selection
-			// only
-			// if (targetAttributeList.getSelection().length>1)
-			// selectFunctionButton.setEnabled(true);
-			selectFunctionButton.setEnabled(true);
-			// if sourceFeatureType and targetFeatureType selected and no
-			// arguments selected
-			// else selectFunctionButton.setEnabled(false);
-			selectFunctionButton.redraw();
-
-		}
-
-	};
-
 	@Override
 	public void createPartControl(Composite _parent) {
 		// get schema service
@@ -425,10 +389,6 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 		Table attributeList = new Table(viewerLComposite, SWT.BORDER
 				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
 		this.targetAttributeViewer = new TableViewer(attributeList);
-		getSite().setSelectionProvider(this.targetAttributeViewer);
-		// add listener to the selection service
-		getSite().getWorkbenchWindow().getSelectionService()
-				.addSelectionListener(this.targetAttributeListListener);
 		return attributeList;
 	}
 
@@ -446,13 +406,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 		Table attributeList = new Table(viewerLComposite, SWT.BORDER
 				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
 
-		// set selection provider for the sourceAttributeList
-
 		this.sourceAttributeViewer = new TableViewer(attributeList);
-		getSite().setSelectionProvider(this.sourceAttributeViewer);
-		// add listener to the selection service
-		getSite().getWorkbenchWindow().getSelectionService()
-				.addSelectionListener(this.sourceAttributeListListener);
 		return attributeList;
 	}
 
@@ -662,6 +616,9 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 			
 			addItems(sel.getSourceItems(), SchemaType.SOURCE);
 			addItems(sel.getTargetItems(), SchemaType.TARGET);
+			
+			selectFunctionButton.setEnabled(!sel.getSourceItems().isEmpty()
+					&& !sel.getTargetItems().isEmpty());
 			
 			lastSelection = sel;
 			updateAlignment();

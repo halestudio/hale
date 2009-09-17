@@ -12,8 +12,6 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.literal;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -25,10 +23,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.rcp.utils.SchemaSelectionHelper;
 
@@ -39,8 +33,7 @@ import eu.esdihumboldt.hale.rcp.utils.SchemaSelectionHelper;
  * @version {$Id}
  */
 public class RenamingFunctionWizardMainPage 
-		extends WizardPage implements
-		ISelectionListener {
+		extends WizardPage {
 
 	//private static Logger _log = Logger.getLogger(RenamingFunctionWizardMainPage.class);
 
@@ -160,8 +153,6 @@ public class RenamingFunctionWizardMainPage
 			}
 
 		});
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-				.getSelectionService().addSelectionListener(this);
 		setErrorMessage(null); // should not initially have error message
 		super.setControl(composite);
 	}
@@ -205,24 +196,5 @@ public class RenamingFunctionWizardMainPage
 	 * 
 	 * }
 	 */
-	
-	/**
-	 * @see ISelectionListener#selectionChanged(IWorkbenchPart, ISelection)
-	 */
-	@Override
-	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			final Object selectionObject = ((IStructuredSelection) selection)
-					.getFirstElement();
-			if (selectionObject != null) {
-
-				TreeItem treeItem = (TreeItem) selectionObject;
-				String selectedFeatureType = treeItem.getText();
-				System.out.println("From RenamingFunctionWizard: "
-						+ selectedFeatureType);
-			}
-		}
-
-	}
 
 }
