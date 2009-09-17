@@ -54,6 +54,8 @@ public class FilterWizardSecondPage extends WizardPage {
 	private Composite attrValueComposite;
 	private Composite composite;
 	private Composite statComposite;
+	private Text selectedGeomProperty;
+	private Combo geomProperties;
 
 	private static Logger _log = Logger.getLogger(FilterWizardSecondPage.class);
 
@@ -218,16 +220,55 @@ public class FilterWizardSecondPage extends WizardPage {
 			}
 		});
 
-		final Label placeHolder = new Label(composite, SWT.TITLE);
+    	final Label placeHolder = new Label(composite, SWT.TITLE);
 		placeHolder.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
 				| GridData.HORIZONTAL_ALIGN_FILL));
+		
+		
 		placeHolder.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		
+		//combo for the geometry:attributes
+		
+		this.geomProperties = new Combo(composite, SWT.NULL);
+		selectedGeomProperty = new Text(geomProperties, SWT.NULL);
+		gd = new GridData();
+		gd.horizontalAlignment = SWT.FILL;
+		//gd.grabExcessHorizontalSpace = true;
+		gd.horizontalSpan = 2;
+		this.geomProperties.setLayoutData(gd);
+		this.geomProperties.setText("select geometry property");
+		// read attributes from the schema service
+		TableItem[] attribs = getAttributeView().getSourceAttributeViewer()
+				.getTable().getItems();
+		for (int i = 0; i < attribs.length; i++) {
+            //TODO how define an attribute type having a name
+            if (attribs[i].getText().contains("geom"))		
+			this.geomProperties.add(attribs[i].getText());
+		}
+		// add listener to select attribute
+		this.geomProperties.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+				int selectionIndex = geomProperties.getSelectionIndex();
+				_log.debug("Selected Property: "
+						+ geomProperties.getItem(selectionIndex));
+
+				selectedGeomProperty.setText(geomProperties
+						.getItem(selectionIndex));
+
+			}
+
+		});
+		
+		
 		this.extentSRS = new Text(composite, SWT.BORDER);
 		this.extentSRS.setText("SRS");
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
-		gd.grabExcessHorizontalSpace = true;
-		gd.horizontalSpan = 4;
+		gd.horizontalSpan = 2;
+		//gd.grabExcessHorizontalSpace = true;
+		
 		this.extentSRS.setLayoutData(gd);
 		// add listener to update SRS
 		this.extentSRS.addModifyListener(new ModifyListener() {
@@ -251,12 +292,13 @@ public class FilterWizardSecondPage extends WizardPage {
 		this.propertyLabel.setText("By Property: ");
 		final Combo attributesCombo = new Combo(composite, SWT.NULL);
 		selectedAttribute = new Text(attributesCombo, SWT.NULL);
+		gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
 		gd.horizontalSpan = 4;
 		attributesCombo.setLayoutData(gd);
 		attributesCombo.setText("select attribute");
 		// read attributes from the schema service
-		TableItem[] attribs = getAttributeView().getSourceAttributeViewer()
+		attribs = getAttributeView().getSourceAttributeViewer()
 				.getTable().getItems();
 		for (int i = 0; i < attribs.length; i++) {
 
@@ -499,12 +541,14 @@ public class FilterWizardSecondPage extends WizardPage {
 	 */
 	public String buildCQL() {
 		String CQLexpression = "";
-		//1. make a decison: Filter by FT, BBOX or Property Operator
-		//2. Build CQL using FT
-		//3. Bild CQL using BBOX
 		
+		//1. Bild CQL using BBOX
 		
-		//4. build using property, comparison operator and comparison value
+		CQLexpression = buildBBOX();
+		
+		if (!CQLexpression.equals(""))
+			CQLexpression+= " AND ";
+		//2. build using property, comparison operator and comparison value
 
 		// get attribute name - String between ::
 		String fullPropertyName = selectedAttribute.getText();
@@ -522,6 +566,18 @@ public class FilterWizardSecondPage extends WizardPage {
 		_log.debug("CQL Expression " + CQLexpression);
 
 		return CQLexpression;
+	}
+
+	/**
+	 * @return
+	 */
+	private String buildBBOX() {
+		String BBOXCQL = "BBOX(" + selectedGeomProperty.getText() + "," + extentXmin.getText()+ "," + extentYmin.getText()+"," + extentXmax.getText()+  ","+ extentYmax.getText();
+		//SRS Attribute is optional
+	    if (!extentSRS.equals("")) BBOXCQL = BBOXCQL + ","+ extentSRS.getText();
+		BBOXCQL += ")";
+		return BBOXCQL;
+		
 	}
 
 	/**
