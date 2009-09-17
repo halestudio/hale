@@ -199,12 +199,15 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 		
 		if (!names.isEmpty()) {
 			if (names.contains(FilterTransformer.class.getName())) {
-				return new RGB(255, 255, 0);
+				return new RGB(250, 250, 30);
 			}
 			else if (names.contains(RenameFeatureTransformer.class.getName())) {
-				return new RGB(135, 190, 100);
+				return new RGB(150, 190, 120);
 			}
-			//TODO more sophisticated color generation
+			else {
+				// default color
+				return new RGB(190, 220, 170);
+			}
 		}
 		
 		return null;
