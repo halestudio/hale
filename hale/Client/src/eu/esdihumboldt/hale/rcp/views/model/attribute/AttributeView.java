@@ -537,14 +537,22 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 			}
 		}
 		
+		Image newImage;
 		if (label == null) {
-			alLabel.setImage(drawAlignmentImage("no alignment"));
+			newImage = drawAlignmentImage("no alignment");
 		}
 		else if (label.equals("")) {
-			alLabel.setImage(null);
+			newImage = null;
 		}
 		else {
-			alLabel.setImage(drawAlignmentImage(label));
+			newImage = drawAlignmentImage(label);
+		}
+		
+		Image oldImage = alLabel.getImage();
+		alLabel.setImage(newImage);
+		
+		if (oldImage != null) {
+			oldImage.dispose();
 		}
 	}
 
@@ -567,17 +575,22 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 		Color color = display.getSystemColor(SWT.COLOR_BLACK);
 
 		GC gc = new GC(image);
-		gc.setBackground(backgroundColer);
-		gc.fillRectangle(image.getBounds());
-		gc.setForeground(color);
-		gc.setLineWidth(1);
-		gc.drawLine(0, 6, width, 6);
 		Font font = new Font(display, "Arial", 10, SWT.BOLD | SWT.ITALIC);
-		gc.setFont(font);
-		int stringWidth = gc.stringExtent(string).x;
-		gc.drawText(string, (width - stringWidth) / 2, -3, false);
-
-		gc.dispose();
+		try {
+			gc.setBackground(backgroundColer);
+			gc.fillRectangle(image.getBounds());
+			gc.setForeground(color);
+			gc.setLineWidth(1);
+			gc.drawLine(0, 6, width, 6);
+			
+			gc.setFont(font);
+			int stringWidth = gc.stringExtent(string).x;
+			gc.drawText(string, (width - stringWidth) / 2, -3, false);
+		} finally {
+			gc.dispose();
+			font.dispose();
+		}
+		
 		return image;
 	}
 
@@ -684,6 +697,20 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 	 */
 	public void setTargetFeaureType(boolean isTargetFeaureType) {
 		this.isTargetFeaureType = isTargetFeaureType;
+	}
+
+	/**
+	 * @see WorkbenchPart#dispose()
+	 */
+	@Override
+	public void dispose() {
+		Image image = alLabel.getImage();
+		if (image != null) {
+			alLabel.setImage(null);
+			image.dispose();
+		}
+		
+		super.dispose();
 	}
 
 }
