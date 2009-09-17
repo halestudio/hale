@@ -51,7 +51,9 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
@@ -503,20 +505,30 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 				Entity sourceEntity = source.getEntity();
 				ICell cell = as.getCell(sourceEntity, target.getEntity());
 				
+				
+				
 				if (cell != null) {
 					// get transformation type
 					label = shortenLabel(cell.getEntity1().getTransformation()
 							.getLabel());
-					// check if filtered before transformation
-					ICell filterCell = as.getCell(sourceEntity, sourceEntity);
-					// if filter is in a transformation chain and the
-					// transformation chain has more than one filter
-					// transformation
-					if (filterCell != null
-							&& filterCell.getEntity1().getTransformation() != null) {
-						label = shortenLabel(filterCell.getEntity1()
-								.getTransformation().getLabel())
-								+ ", " + label;
+					
+					// check if a Filter Restriction is applied to this cell
+					Restriction r = null;
+					if (cell.getEntity1() instanceof FeatureClass) {
+						FeatureClass fc = (FeatureClass)cell.getEntity1();
+						if (fc.getAttributeValueCondition() != null) {
+							r = fc.getAttributeValueCondition().get(0);
+						}
+					}
+					else if (cell.getEntity1() instanceof Property) {
+						Property fc = (Property)cell.getEntity1();
+						if (fc.getValueCondition() != null) {
+							r = fc.getValueCondition().get(0);
+						}
+					}
+
+					if (r != null && r.getCqlStr() != null) {
+						label = "Filter (" + r.getCqlStr() + "), " + label;
 					}
 				}
 			}

@@ -21,12 +21,16 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.impl.FilterTransformer;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
+import eu.esdihumboldt.goml.omwg.FeatureClass;
+import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.rcp.utils.SchemaSelectionHelper;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
@@ -75,22 +79,32 @@ public class FilterWizard extends Wizard implements INewWizard {
 	public boolean performFinish() {
 		Cell c = new Cell();
 		SchemaSelection selection = SchemaSelectionHelper.getSchemaSelection();
-		Entity entity1 = selection.getFirstSourceItem().getEntity();
-		Transformation t = new Transformation();
-		t.setLabel(FilterTransformer.class.getName());
-
-		List<IParameter> parameters = new ArrayList<IParameter>();
-		parameters.add(new Parameter(FilterTransformer.CQL_PARAMETER, secondPage.buildCQL()));
-		//parameters.add(new Parameter(FilterTransformer.CQL_PARAMETER, "OBJNR = 'BU500E6'"));
-		//parameters.add(new Parameter(FilterTransformer.CQL_PARAMETER, "LEVEL < 2"));
-		t.setParameters(parameters);
-
-		entity1.setTransformation(t);
-		c.setEntity1(entity1);
-		c.setEntity2(entity1);
-		
 		AlignmentService alservice = (AlignmentService) PlatformUI
-				.getWorkbench().getService(AlignmentService.class);
+							.getWorkbench().getService(AlignmentService.class);
+		
+		Entity entity1 = selection.getFirstSourceItem().getEntity();
+		Entity entity2 = selection.getFirstTargetItem().getEntity();
+		
+		ICell cell = alservice.getCell(entity1, entity2);
+		if (cell == null) {
+			throw new RuntimeException("A Mapping needs to be defined before " +
+					"adding a Filter definition.");
+		}
+		
+		Restriction r = new Restriction(null, null);
+		r.setCqlStr(secondPage.buildCQL());
+		
+		if (cell.getEntity1() instanceof FeatureClass) {
+			FeatureClass fc = (FeatureClass)cell.getEntity1();
+			if (fc.getAttributeValueCondition() == null) {
+				fc.setAttributeValueCondition(new ArrayList<Restriction>());
+			}
+			fc.getAttributeValueCondition().add(r);
+		}
+		if (cell.getEntity1() instanceof Property) {
+			((Property)cell.getEntity1()).getValueCondition().add(r);
+		}
+
 		// store transformation in AS
 		alservice.addOrUpdateCell(c);
 		

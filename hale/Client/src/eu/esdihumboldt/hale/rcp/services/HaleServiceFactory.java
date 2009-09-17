@@ -30,8 +30,9 @@ import eu.esdihumboldt.hale.models.impl.TaskServiceImpl;
 /**
  * This implementation of the {@link AbstractServiceFactory} allows to use the
  * {@link InstanceService}, {@link SchemaService}, {@link StyleService}, 
- * {@link TaskService} and {@link AlignmentService} as eclipse service, thereby 
- * making direct references to the implementation unnecessary.
+ * {@link TaskService}, {@link AlignmentService} and {@link TransformationService} 
+ * as eclipse service, thereby making direct references to the implementation 
+ * unnecessary.
  * 
  * @author Thorsten Reitz
  * @version $Id$
@@ -53,6 +54,7 @@ public class HaleServiceFactory
 	/**
 	 * @see org.eclipse.ui.services.AbstractServiceFactory#create(java.lang.Class, org.eclipse.ui.services.IServiceLocator, org.eclipse.ui.services.IServiceLocator)
 	 */
+	@SuppressWarnings("unchecked")
 	public Object create(Class serviceInterface, IServiceLocator parentLocator,
 			IServiceLocator locator) {
 		if (serviceInterface.equals(InstanceService.class)) {
