@@ -34,6 +34,8 @@ import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.cst.transformer.impl.FilterTransformer;
 import eu.esdihumboldt.cst.transformer.impl.RenameFeatureTransformer;
 import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.goml.omwg.FeatureClass;
+import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
@@ -155,7 +157,25 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 	private RGB getColor(Entity entity, boolean background) {
 		if (entity == null) return null;
 		
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+		if (background) { // TODO Symbol or gradient?
+			if (entity instanceof FeatureClass) {
+				FeatureClass entityFC = (FeatureClass) entity;
+				if (entityFC.getAttributeValueCondition() != null 
+						&& entityFC.getAttributeValueCondition().get(0) != null) {
+					return new RGB(250, 250, 30);
+				}
+			}
+			if (entity instanceof Property) {
+				Property entityProperty = (Property) entity;
+				if (entityProperty.getValueCondition() != null 
+						&& entityProperty.getValueCondition().get(0) != null) {
+					return new RGB(250, 250, 30);
+				}
+			}
+		}
+		
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
 		List<ICell> cells = as.getCell(entity);
 		
 		List<ITransformation> transformations = new ArrayList<ITransformation>();
@@ -198,10 +218,7 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 		}
 		
 		if (!names.isEmpty()) {
-			if (names.contains(FilterTransformer.class.getName())) {
-				return new RGB(250, 250, 30);
-			}
-			else if (names.contains(RenameFeatureTransformer.class.getName())) {
+			if (names.contains(RenameFeatureTransformer.class.getName())) {
 				return new RGB(150, 190, 120);
 			}
 			else {
