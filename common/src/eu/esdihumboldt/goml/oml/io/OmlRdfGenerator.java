@@ -417,16 +417,17 @@ public class OmlRdfGenerator {
 		if (restriction != null) {
 			rType.setComparator(getComparator(restriction.getComparator()));
 			rType.setCqlStr(restriction.getCqlStr());
-			rType.setOnAttribute(getOnAttributeType(
-					restriction.getOnAttribute()));
-			
-			//if list of value expressions for this restriction is empty
-			//use ValueClass
+			rType.setOnAttribute(getOnAttributeType(restriction
+					.getOnAttribute()));
+
+			// if list of value expressions for this restriction is empty
+			// use ValueClass
 			List<ValueExpression> values = restriction.getValue();
-			if (values.size()>0)
-			rType.setValueClass(getValueClass(values));
-			
-			else rType.setValueClass(getValueClass(restriction.getValueClass()));
+			if (values != null && values.size() > 0) {
+				rType.setValueClass(getValueClass(values));
+			} else {
+				rType.setValueClass(getValueClass(restriction.getValueClass()));
+			}
 		}
 		return rType;
 	}
@@ -438,10 +439,12 @@ public class OmlRdfGenerator {
 	 */
 	private ValueClassType getValueClass(ValueClass valueClass) {
 		ValueClassType vcType = new ValueClassType();
-		vcType.setAbout(valueClass.getAbout());
-		vcType.setResource(valueClass.getResource());
-		if (getValueExpressions(valueClass.getValue()) != null) {
-			vcType.getValue().addAll(getValueExpressions(valueClass.getValue()));
+		if (valueClass != null) {
+			vcType.setAbout(valueClass.getAbout());
+			vcType.setResource(valueClass.getResource());
+			if (getValueExpressions(valueClass.getValue()) != null) {
+				vcType.getValue().addAll(getValueExpressions(valueClass.getValue()));
+			}
 		}
 		return vcType;
 	}
