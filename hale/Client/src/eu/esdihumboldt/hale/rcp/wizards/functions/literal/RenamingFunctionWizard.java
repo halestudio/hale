@@ -15,13 +15,11 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.transformer.impl.RenameAttributeTransformer;
 import eu.esdihumboldt.cst.transformer.impl.RenameFeatureTransformer;
 import eu.esdihumboldt.goml.align.Cell;
@@ -29,10 +27,10 @@ import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.rcp.utils.ModelNavigationViewHelper;
-import eu.esdihumboldt.hale.rcp.utils.ModelNavigationViewHelper.SelectionType;
-import eu.esdihumboldt.hale.rcp.views.model.AttributeView;
-import eu.esdihumboldt.hale.rcp.views.model.TreeObject;
+import eu.esdihumboldt.hale.rcp.utils.SchemaSelectionHelper;
+import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
+import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
+import eu.esdihumboldt.hale.rcp.views.model.attribute.AttributeView;
 
 /**
  * This {@link Wizard} is used to invoke a Renaming Transformer for the Source
@@ -75,8 +73,14 @@ public class RenamingFunctionWizard extends Wizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
-		TreeObject source = ModelNavigationViewHelper.getTreeObject(SelectionType.SOURCE);
-		TreeObject target = ModelNavigationViewHelper.getTreeObject(SelectionType.TARGET);
+		SchemaSelection selection = SchemaSelectionHelper.getSchemaSelection();
+		
+		SchemaItem source = selection.getFirstSourceItem();
+		SchemaItem target = selection.getFirstTargetItem();
+		
+		if (source == null || target == null) {
+			return false;
+		}
 		
 		Cell c = new Cell();
 		Transformation t = new Transformation();
@@ -115,21 +119,6 @@ public class RenamingFunctionWizard extends Wizard implements INewWizard {
 				.getWorkbench().getService(AlignmentService.class);
 		// store transformation in AS
 		alservice.addOrUpdateCell(c);
-
-		// update aligment image
-
-		// check if entity1 filtered before renaming
-		String alignment = "";
-		ICell filterCell = alservice.getCell(entity1, entity1);
-		// TODO add enumeration for the alignment types.
-		if (filterCell != null)
-			alignment = "Filter, Rename";
-		else
-			alignment = "Rename";
-		AttributeView attributeView = getAttributeView();
-		Label alignmentLabel = attributeView.getAlLabel();
-		alignmentLabel.setImage(attributeView.drawAlignmentImage(alignment));
-		alignmentLabel.redraw();
 
 		return true;
 	}

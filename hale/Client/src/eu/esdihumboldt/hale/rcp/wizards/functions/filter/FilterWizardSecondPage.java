@@ -1,7 +1,5 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.filter;
 
-import javax.smartcardio.ATR;
-
 import org.apache.log4j.Logger;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -22,12 +20,9 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PlatformUI;
-import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.rcp.views.model.AttributeView;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
-import eu.esdihumboldt.hale.rcp.wizards.functions.literal.RenamingFunctionWizard;
+import eu.esdihumboldt.hale.rcp.views.model.attribute.AttributeView;
 
 public class FilterWizardSecondPage extends WizardPage {
 
@@ -238,6 +233,7 @@ public class FilterWizardSecondPage extends WizardPage {
 		this.geomProperties.setLayoutData(gd);
 		this.geomProperties.setText("select geometry property");
 		// read attributes from the schema service
+		//FIXME view should not be used for getting attributes
 		TableItem[] attribs = getAttributeView().getSourceAttributeViewer()
 				.getTable().getItems();
 		for (int i = 0; i < attribs.length; i++) {

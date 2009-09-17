@@ -9,12 +9,13 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.rcp.views.model;
+package eu.esdihumboldt.hale.rcp.views.model.attribute;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -41,34 +42,42 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.part.WorkbenchPart;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.hale.models.AlignmentService;
+import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
+import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
+import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
+import eu.esdihumboldt.hale.rcp.views.model.SchemaType;
+import eu.esdihumboldt.hale.rcp.views.model.TreeParent;
 
 /**
- * The {@link AttributeView_copy} displays the attributes from the selected data
- * class in the {@link ModelNavigationView_merged}. The
- * {@link AttributeView_copy} consist of the Labels for the names of the
+ * The {@link AttributeView} displays the attributes from the selected data
+ * class in the {@link ModelNavigationView}. The
+ * {@link AttributeView} consist of the Labels for the names of the
  * selected data classes and the operator between them and Lists for the
  * attributes.
  * 
- * @author Thorsten Reitz
+ * @author Thorsten Reitz, Simon Templer
  * @version $Id$
  */
 public class AttributeView extends ViewPart implements ISelectionListener {
 
+	/**
+	 * The view id
+	 */
 	public static final String ID = "eu.esdihumboldt.hale.rcp.views.model.AttributeView";
-
-	private static final String FEATURE_TYPE_SUFFIX = "Type";
 
 	// List for the attributes from the selected User Model class
 	private Table sourceAttributeList;
@@ -80,8 +89,10 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 	private Label targetModelLabel;
 	// Button to open FunctionWizard
 	private Button selectFunctionButton;
+	
+	private SchemaSelection lastSelection = new SchemaSelection();
 
-	private Composite labelComposite;
+	//XXX private Composite labelComposite;
 
 	// Image Label to show relation between source and target feature types.
 	private Label alLabel;
@@ -89,13 +100,20 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 	private AlignmentService as = null;
 	private SchemaService schemaService = null;
 
-	private Image transparentImage;
+	//XXX private Image transparentImage;
+	
 	// Viewer for the sorceAttributeTable
 	private TableViewer sourceAttributeViewer;
 
 	private boolean isSourceFeatureType = false;
 	private boolean isTargetFeaureType = false;
 
+	/**
+	 * Get the table view showing the source attributes
+	 * 
+	 * @return the table view showing the source attributes
+	 * @deprecated the view should not be publicly available
+	 */
 	public TableViewer getSourceAttributeViewer() {
 		return sourceAttributeViewer;
 	}
@@ -103,6 +121,12 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 	// Viewer for the targetAttributeTable
 	private TableViewer targetAttributeViewer;
 
+	/**
+	 * Get the table view showing the target attributes
+	 * 
+	 * @return the table view showing the target attributes
+	 * @deprecated the view should not be publicly available
+	 */
 	public TableViewer getTargetAttributeViewer() {
 		return targetAttributeViewer;
 	}
@@ -145,13 +169,18 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 
 	@Override
 	public void createPartControl(Composite _parent) {
-
+		// get schema service
 		this.schemaService = (SchemaService) this.getSite().getService(
 				SchemaService.class);
+		
+		// get alignment service
 		this.as = (AlignmentService) this.getSite().getService(
 				AlignmentService.class);
+		
+		// register as selection listener
 		getSite().getWorkbenchWindow().getSelectionService()
 				.addSelectionListener(this);
+		
 		Composite modelComposite = new Composite(_parent, SWT.BEGINNING);
 		GridLayout layout = new GridLayout(2, true);
 		layout.verticalSpacing = 6;
@@ -216,7 +245,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 		// source feature type
 		sourceModelLabel = new Label(labelComposite, SWT.RIGHT);
 
-		gData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gData = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
 		sourceModelLabel.setLayoutData(gData);
 		// sourceModelLabel.setText("source type");
 
@@ -231,7 +260,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 
 		// target label
 		targetModelLabel = new Label(labelComposite, SWT.BEGINNING);
-		gData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gData = new GridData(SWT.END, SWT.CENTER, false, false);
 
 		targetModelLabel.setLayoutData(gData);
 		// targetModelLabel.setText("target type");
@@ -369,6 +398,17 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 				}
 			}
 		});
+		
+		// listen on alignment service
+		as.addListener(new HaleServiceListener() {
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void update(UpdateMessage message) {
+				updateAlignment();
+			}
+			
+		});
 	}
 
 	private Table targetAttributeListSetup(Composite attributeComposite) {
@@ -427,21 +467,23 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 	 * @param type
 	 *            the name of the class that should be displayed in the
 	 *            corresponding Label
+	 * @param _items
+	 * 			  the child items
 	 * @param _classnameNumber
 	 *            the number of the class in the tree displyed in the
 	 *            ModelNavigationView
 	 */
-	public void updateView(boolean _viewer, TreeObject type,
-			TreeObject[] _items, int _classnameNumber) {
+	public void updateView(SchemaType _viewer, SchemaItem type,
+			SchemaItem[] _items, int _classnameNumber) {
 
-		if (_viewer == true) {
+		if (_viewer.equals(SchemaType.SOURCE)) {
 
 			sourceModelLabel.setText(type.getName().getLocalPart());
 			// if selected item no attribute
 			if (_items.length != 0) {
 				setSourceFeatureType(true);
 
-				for (TreeObject item : _items) {
+				for (SchemaItem item : _items) {
 
 					// display item in the attribute list only if attribute
 					if (item.isAttribute()) {
@@ -466,7 +508,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 			if (_items.length != 0) {
 				setTargetFeaureType(true);
 				// targetModelLabel.setText(_classname);
-				for (TreeObject item : _items) {
+				for (SchemaItem item : _items) {
 
 					// display item in the attribute list only if attribute
 					if (item.isAttribute()) {
@@ -487,68 +529,72 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 				// targetAttributeList.add();
 			}
 		}
+		
+		sourceModelLabel.getParent().layout(true);
+	}
 
-		// if both labels not empty
-		if (!sourceModelLabel.getText().equals("")
-				&& !targetModelLabel.getText().equals("")
-				&& isSourceFeatureType && isTargetFeaureType) {
-			// get feature types for source and feature label
-
-			String sourceType = sourceModelLabel.getText();
-			String targetType = targetModelLabel.getText();
-			FeatureType ft_source = this.schemaService
-					.getFeatureTypeByName(sourceType);
-			FeatureType ft_target = this.schemaService
-					.getFeatureTypeByName(targetType);
-
-			// get URI and local name
-			java.util.List<String> nameparts_source = new ArrayList<String>();
-			nameparts_source.add(ft_source.getName().getNamespaceURI());
-			nameparts_source.add(ft_source.getName().getLocalPart());
-
-			java.util.List<String> nameparts_target = new ArrayList<String>();
-			nameparts_target.add(ft_target.getName().getNamespaceURI());
-			nameparts_target.add(ft_target.getName().getLocalPart());
-
-			String alignmentLabel = "";
-
-			// create source entity
-			Entity e1 = new Property(nameparts_source); // TODO might have to be fixed!
-
-			// create target entity
-
-			Entity e2 = new Property(nameparts_target); // TODO might have to be fixed!
-			// get alignment e1, e2
-			ICell cell = this.as.getCell(e1, e2);
-			if (cell != null) {
-				// get transformation type
-				alignmentLabel = cell.getEntity1().getTransformation()
-						.getLabel();
-				// check if filtered before transformation
-				ICell filterCell = this.as.getCell(e1, e1);
-				// if filter is in a transformation chain and the transformation
-				// chain has more than one filter transformation
-				if (filterCell != null && !sourceType.equals(targetType))
-					alignmentLabel = filterCell.getEntity1()
-							.getTransformation().getLabel()
-							+ ", " + alignmentLabel;
+	/**
+	 * Update the alignment label
+	 */
+	private void updateAlignment() {
+		String label = null;
+		
+		if (lastSelection != null) {
+			SchemaItem source = lastSelection.getFirstSourceItem();
+			SchemaItem target = lastSelection.getFirstTargetItem();
+			
+			if (source != null && target != null &&
+					(source.isAttribute() || source.isType()) &&
+					(target.isAttribute() || target.isType())) {
+				Entity sourceEntity = source.getEntity();
+				ICell cell = as.getCell(sourceEntity, target.getEntity());
+				
+				if (cell != null) {
+					// get transformation type
+					label = shortenLabel(cell.getEntity1().getTransformation()
+							.getLabel());
+					// check if filtered before transformation
+					ICell filterCell = as.getCell(sourceEntity, sourceEntity);
+					// if filter is in a transformation chain and the
+					// transformation chain has more than one filter
+					// transformation
+					if (filterCell != null
+							&& filterCell.getEntity1().getTransformation() != null) {
+						label = shortenLabel(filterCell.getEntity1()
+								.getTransformation().getLabel())
+								+ ", " + label;
+					}
+				}
 			}
-			if (!alignmentLabel.equals("")) {
-
-				alLabel.setImage(drawAlignmentImage(alignmentLabel));
-			} else
-				alLabel.setImage(drawAlignmentImage("no alignment"));
-
-		} else if (!sourceModelLabel.getText().equals("")
-				&& !targetModelLabel.getText().equals("")) {
-			// no attribute transformation implemented.
+			else {
+				label = "";
+			}
+		}
+		
+		if (label == null) {
 			alLabel.setImage(drawAlignmentImage("no alignment"));
+		}
+		else if (label.equals("")) {
+			alLabel.setImage(null);
+		}
+		else {
+			alLabel.setImage(drawAlignmentImage(label));
 		}
 	}
 
-	public Image drawAlignmentImage(String string) {
+	private static String shortenLabel(String label) {
+		if (label == null)
+			return null;
+		
+		String[] split = label.split("\\.");
+		
+		return split[split.length - 1];
+	}
+
+	private Image drawAlignmentImage(String string) {
 		Display display = Display.getDefault();
-		Image image = new Image(display, 200, 16);
+		int width = alLabel.getSize().x;
+		Image image = new Image(display, width, 16);
 		Color backgroundColer = display
 				.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
 
@@ -559,10 +605,11 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 		gc.fillRectangle(image.getBounds());
 		gc.setForeground(color);
 		gc.setLineWidth(1);
-		gc.drawLine(0, 6, 200, 6);
+		gc.drawLine(0, 6, width, 6);
 		Font font = new Font(display, "Arial", 10, SWT.BOLD | SWT.ITALIC);
 		gc.setFont(font);
-		gc.drawText(string, 55, -3, false);
+		int stringWidth = gc.stringExtent(string).x;
+		gc.drawText(string, (width - stringWidth) / 2, -3, false);
 
 		gc.dispose();
 		return image;
@@ -571,67 +618,101 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 	/**
 	 * Delete the class name from Model label and clear the corresponding list.
 	 * 
-	 * @param _list
-	 *            if true, selection in userDataViewer changes, else selection
-	 *            in inspireDataViewer changes
+	 * @param type the schema type
 	 */
-	public void clear(boolean _list) {
-		if (_list) {
+	public void clear(SchemaType type) {
+		if (type == null) {
+			// clear all
+			clear(SchemaType.SOURCE);
+			clear(SchemaType.TARGET);
+			return;
+		}
+		
+		switch (type) {
+		case SOURCE:
 			sourceAttributeList.removeAll();
 			sourceModelLabel.setText("");
-		} else {
+			break;
+		case TARGET:
 			targetAttributeList.removeAll();
 			targetModelLabel.setText("");
+			break;
+		default:
+			// do nothing
 		}
 	}
 
+	/**
+	 * @see WorkbenchPart#setFocus()
+	 */
 	@Override
 	public void setFocus() {
 
 	}
 
+	/**
+	 * @see ISelectionListener#selectionChanged(IWorkbenchPart, ISelection)
+	 */
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			final Object selectionObject = ((IStructuredSelection) selection)
-					.getFirstElement();
-			if (selectionObject != null) {
-				String selectedFeatureType = "not selected";
-				FeatureTypeSelection ftSelection = (FeatureTypeSelection) selectionObject;
-				TreeItem sourceItem = ftSelection.getSourceFeatureTypes()[0];
-				if (sourceItem != null) {
-					selectedFeatureType = sourceItem.getText();
+		if (selection instanceof SchemaSelection) {
+			SchemaSelection sel = (SchemaSelection) selection;
+			
+			clear(null);
+			
+			addItems(sel.getSourceItems(), SchemaType.SOURCE);
+			addItems(sel.getTargetItems(), SchemaType.TARGET);
+			
+			lastSelection = sel;
+			updateAlignment();
+		}
+	}
+
+	private void addItems(Set<SchemaItem> items, SchemaType type) {
+		Iterator<SchemaItem> it = items.iterator();
+		int number = 0;
+		while (it.hasNext()) {
+			SchemaItem item = it.next();
+			number++;
+			if (item.isAttribute() || item.isType()) { 
+				if (item instanceof TreeParent) {
+					updateView(type, item, ((TreeParent) item).getChildren(), number);
 				}
-
-				selectedFeatureType = "not selected";
-				TreeItem targetItem = ftSelection.getTargetFeatureType()[0];
-				if (targetItem != null) {
-					selectedFeatureType = targetItem.getText();
+				else {
+					updateView(type, item, new SchemaItem[]{}, number);
 				}
-
-				// TODO use it for SelectFunction, AttributeLists
-
 			}
 		}
-
 	}
 
-	public Label getAlLabel() {
-		return alLabel;
-	}
-
+	/**
+	 * @return if the source feature type is present
+	 */
 	public boolean isSourceFeatureType() {
 		return isSourceFeatureType;
 	}
 
+	/**
+	 * Set if a source feature type is present
+	 * 
+	 * @param isSourceFeatureType if a source feature type is present
+	 */
 	public void setSourceFeatureType(boolean isSourceFeatureType) {
 		this.isSourceFeatureType = isSourceFeatureType;
 	}
 
+	/**
+	 * @return if the target feature type is present
+	 */
 	public boolean isTargetFeaureType() {
 		return isTargetFeaureType;
 	}
 
+	/**
+	 * Set if a target feature type is present
+	 * 
+	 * @param isTargetFeaureType if a target feature type is present
+	 */
 	public void setTargetFeaureType(boolean isTargetFeaureType) {
 		this.isTargetFeaureType = isTargetFeaureType;
 	}

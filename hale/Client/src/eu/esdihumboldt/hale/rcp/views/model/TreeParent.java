@@ -63,8 +63,8 @@ public class TreeParent extends TreeObject{
 	 * 
 	 * @return an array of the item's children
 	 */
-	public TreeObject[] getChildren() {
-		return (TreeObject[]) children.toArray(new TreeObject[children.size()]);
+	public SchemaItem[] getChildren() {
+		return (SchemaItem[]) children.toArray(new TreeObject[children.size()]);
 	}
 	
 	/**

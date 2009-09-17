@@ -127,7 +127,7 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 	 */
 	private Color getColor(Object element, boolean background) {
 		if (element instanceof TreeObject) {
-			Entity entity = ((TreeObject) element).getEntity();
+			Entity entity = ((SchemaItem) element).getEntity();
 			
 			RGB rgb = getColor(entity, background);
 			if (rgb != null) {

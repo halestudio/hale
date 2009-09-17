@@ -38,7 +38,7 @@
             name="Schema Explorer">
       </view>
       <view
-            class="eu.esdihumboldt.hale.rcp.views.model.AttributeView"
+            class="eu.esdihumboldt.hale.rcp.views.model.attribute.AttributeView"
             id="eu.esdihumboldt.hale.rcp.views.model.AttributeView"
             name="Attribute View">
       </view>

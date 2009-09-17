@@ -28,8 +28,8 @@ import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.rcp.utils.ModelNavigationViewHelper;
-import eu.esdihumboldt.hale.rcp.utils.ModelNavigationViewHelper.SelectionType;
+import eu.esdihumboldt.hale.rcp.utils.SchemaSelectionHelper;
+import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
 
 /**
  * This {@link Wizard} is used to invoke a Renaming Transformer for the Source
@@ -74,7 +74,8 @@ public class FilterWizard extends Wizard implements INewWizard {
 	@Override
 	public boolean performFinish() {
 		Cell c = new Cell();
-		Entity entity1 = ModelNavigationViewHelper.getEntity(SelectionType.SOURCE);
+		SchemaSelection selection = SchemaSelectionHelper.getSchemaSelection();
+		Entity entity1 = selection.getFirstSourceItem().getEntity();
 		Transformation t = new Transformation();
 		t.setLabel(FilterTransformer.class.getName());
 

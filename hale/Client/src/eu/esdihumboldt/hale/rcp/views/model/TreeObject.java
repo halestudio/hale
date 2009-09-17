@@ -27,7 +27,7 @@ import eu.esdihumboldt.goml.omwg.Property;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class TreeObject {
+public class TreeObject implements SchemaItem {
 	
 	private final String label;
 	private TreeParent parent;
@@ -51,9 +51,7 @@ public class TreeObject {
 	}
 	
 	/**
-	 * Get the item's entity
-	 * 
-	 * @return the item entity, null if determining the entity fails
+	 * @see eu.esdihumboldt.hale.rcp.views.model.SchemaItem#getEntity()
 	 */
 	public Entity getEntity() {
 		if (entity == null) {
@@ -82,7 +80,7 @@ public class TreeObject {
 	}
 	
 	/**
-	 * @return if the tree object represents an attribute
+	 * @see eu.esdihumboldt.hale.rcp.views.model.SchemaItem#isAttribute()
 	 */
 	public boolean isAttribute() {
 		switch (type) {
@@ -97,14 +95,14 @@ public class TreeObject {
 	}
 	
 	/**
-	 * @return if the tree object represents a type (feature type or property type)
+	 * @see eu.esdihumboldt.hale.rcp.views.model.SchemaItem#isType()
 	 */
 	public boolean isType() {
 		return isFeatureType() || type.equals(TreeObjectType.PROPERTY_TYPE);
 	}
 	
 	/**
-	 * @return if the tree object represents a feature type
+	 * @see eu.esdihumboldt.hale.rcp.views.model.SchemaItem#isFeatureType()
 	 */
 	public boolean isFeatureType() {
 		switch (type) {
@@ -133,7 +131,7 @@ public class TreeObject {
 	}
 	
 	/**
-	 * @return the name
+	 * @see eu.esdihumboldt.hale.rcp.views.model.SchemaItem#getName()
 	 */
 	public Name getName() {
 		return name;

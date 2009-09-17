@@ -24,7 +24,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.cst.transformer.TransformerFactory;
 import eu.esdihumboldt.cst.transformer.impl.NetworkExpansionTransformer;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
@@ -32,8 +31,8 @@ import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.InstanceService;
-import eu.esdihumboldt.hale.rcp.utils.ModelNavigationViewHelper;
-import eu.esdihumboldt.hale.rcp.utils.ModelNavigationViewHelper.SelectionType;
+import eu.esdihumboldt.hale.rcp.utils.SchemaSelectionHelper;
+import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
 
 /**
  * A simplified Wizard for the configuration of the Network Expansion function,
@@ -79,10 +78,12 @@ public class NetworkExpansionFunctionWizard
 			(AlignmentService) PlatformUI.getWorkbench().getService(
 					AlignmentService.class);
 		
+		SchemaSelection selection = SchemaSelectionHelper.getSchemaSelection();
+		
 		// Create the cell
 		Cell cell = new Cell();
-		Entity entity1 = ModelNavigationViewHelper.getEntity(SelectionType.SOURCE);
-		Entity entity2 = ModelNavigationViewHelper.getEntity(SelectionType.TARGET);
+		Entity entity1 = selection.getFirstSourceItem().getEntity();
+		Entity entity2 = selection.getFirstTargetItem().getEntity();
 		
 		System.err.println("debug1");
 		Transformation transformation = new Transformation();

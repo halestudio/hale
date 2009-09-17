@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,7 +15,10 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -23,12 +27,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.part.WorkbenchPart;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.feature.type.PropertyType;
@@ -53,21 +55,23 @@ import eu.esdihumboldt.tools.RobustFTKey;
  * @version $Id$
  */
 public class ModelNavigationView extends ViewPart implements
-		HaleServiceListener{
+		HaleServiceListener, ISelectionProvider{
 
 	private static Logger _log = Logger.getLogger(ModelNavigationView.class);
-
-	private static final String SOURCE_MODEL_ID = "source";
-	private static final String TARGET_MODEL_ID = "target";
-
+	
 	/**
-	 * FIXME find better solution. Used to access the SchemaService from wizards.
+	 * The view id
 	 */
-	//public static IWorkbenchPartSite site;
-
 	public static final String ID = "eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView";
 
-	private TreeViewer sourceSchemaViewer;	
+	/**
+	 * Viewer for the source schema
+	 */
+	private TreeViewer sourceSchemaViewer;
+	
+	/**
+	 * Viewer for the target schema
+	 */
 	private TreeViewer targetSchemaViewer;
 
 	/**
@@ -76,11 +80,25 @@ public class ModelNavigationView extends ViewPart implements
 	 */
 	private SchemaService schemaService;
 
+	/**
+	 * The selection listeners
+	 */
+	private final Set<ISelectionChangedListener> listeners = new HashSet<ISelectionChangedListener>();
+
+	private ISelection currentSelection;
+
+	/**
+	 * @see WorkbenchPart#createPartControl(Composite)
+	 */
 	@Override
 	public void createPartControl(Composite _parent) {
+		// get schema service
 		schemaService = (SchemaService) this.getSite().getService(
 				SchemaService.class);
 		schemaService.addListener(this);
+		
+		// register as selection provider
+		getSite().setSelectionProvider(this);
 		
 		final PatternViewFilter sourceSchemaFilter = new PatternViewFilter();
 		final PatternViewFilter targetSchemaFilter = new PatternViewFilter();
@@ -105,7 +123,7 @@ public class ModelNavigationView extends ViewPart implements
 				sourceToggleActions);
 
 		this.sourceSchemaViewer = this.schemaExplorerSetup(sourceComposite,
-				schemaService.getSourceSchema(), SOURCE_MODEL_ID);
+				schemaService.getSourceSchema(), SchemaType.SOURCE);
 		this.sourceSchemaViewer.addFilter(sourceSchemaFilter);
 
 		for (SimpleToggleAction sta : sourceToggleActions) {
@@ -121,7 +139,7 @@ public class ModelNavigationView extends ViewPart implements
 				targetToggleActions);
 
 		this.targetSchemaViewer = this.schemaExplorerSetup(targetComposite,
-				schemaService.getTargetSchema(), TARGET_MODEL_ID);
+				schemaService.getTargetSchema(), SchemaType.TARGET);
 		
 		this.targetSchemaViewer.addFilter(targetSchemaFilter);
 
@@ -195,7 +213,7 @@ public class ModelNavigationView extends ViewPart implements
 	 * @return a {@link TreeViewer} with the currently loaded schema.
 	 */
 	private TreeViewer schemaExplorerSetup(Composite modelComposite,
-			Collection<FeatureType> schema, final String targetViewName) {
+			Collection<FeatureType> schema, final SchemaType viewer) {
 		PatternFilter patternFilter = new PatternFilter();
 	    final FilteredTree filteredTree = new FilteredTree(modelComposite, SWT.MULTI
 	            | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter);
@@ -203,11 +221,10 @@ public class ModelNavigationView extends ViewPart implements
 		schemaViewer.setContentProvider(new ModelContentProvider());
 		schemaViewer.setLabelProvider(new ModelNavigationViewLabelProvider());
 		schemaViewer.setInput(translateSchema(schema));
-        //TODO use SelectionService 
-		schemaViewer
+        schemaViewer
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
-						updateAttributeView(targetViewName);
+						updateSelection();
 					}
 				});
 		return schemaViewer;
@@ -219,7 +236,7 @@ public class ModelNavigationView extends ViewPart implements
 	 *            the schema to display.
 	 * @return
 	 */
-	private TreeObject translateSchema(Collection<FeatureType> schema) {
+	private SchemaItem translateSchema(Collection<FeatureType> schema) {
 		if (schema == null || schema.size() == 0) {
 			return new TreeParent("", null, TreeObjectType.ROOT);
 		}
@@ -381,69 +398,12 @@ public class ModelNavigationView extends ViewPart implements
 	public void setFocus() {
 
 	}
-
-	/**
-	 * Update of AttributeList contents.
-	 * 
-	 * @param _viewer
-	 *            =true selection changed in sourceSchemaViewer, else
-	 *            targetSchemaViewer
-	 */
-	private void updateAttributeView(String targetViewName) {
-		Tree tree;
-		TreeItem selectedItem;
-		AttributeView attributeView = null;
-		// get All Views
-		IViewReference[] views = this.getViewSite().getWorkbenchWindow()
-				.getActivePage().getViewReferences();
-		// get AttributeView
-		for (int count = 0; count < views.length; count++) {
-			if (views[count].getId().equals(
-					"eu.esdihumboldt.hale.rcp.views.model.AttributeView")) {
-				attributeView = (AttributeView) views[count].getView(false);
-			}
-		}
-		
-		boolean viewId = targetViewName.equals(SOURCE_MODEL_ID);
-
-		if (viewId) {
-			tree = sourceSchemaViewer.getTree();
-		} else {
-			tree = targetSchemaViewer.getTree();
-		}
-		
-		attributeView.clear(viewId);
-
-		if (tree.getSelection() != null && tree.getSelection().length > 0) {
-
-			// set counter for the FeatureType to use for the attribute
-			// declaration in the AttributeView
-			int itemNumber = 0;
-            // updates attribute view for each selected item in case multiple
-			// selection
-			for (TreeItem treeItem : tree.getSelection()) {
-				itemNumber++;
-				selectedItem = treeItem;
-
-				// if not tree root
-				if (!(selectedItem.getParentItem() == null)) {
-					Object data = selectedItem.getData();
-					if (data instanceof TreeParent) {
-						TreeParent tp = (TreeParent) data;
-						attributeView.updateView(viewId, tp, tp.getChildren(), itemNumber);
-					}
-					else if (data instanceof TreeObject) {
-						attributeView.updateView(viewId, (TreeObject) data, new TreeObject[]{}, itemNumber);
-					}
-				}
-			}
-		}
-	}
 	
 	/**
 	 * Get the source schema viewer
 	 * 
 	 * @return the source schema viewer
+	 * @deprecated the view should not be publicly accessible
 	 */
 	public TreeViewer getSourceSchemaViewer() {
 		return sourceSchemaViewer;
@@ -453,6 +413,7 @@ public class ModelNavigationView extends ViewPart implements
 	 * Get the target schema viewer
 	 * 
 	 * @return the target schema viewer
+	 * @deprecated the view should not be publicly accessible
 	 */
 	public TreeViewer getTargetSchemaViewer() {
 		return targetSchemaViewer;
@@ -469,6 +430,87 @@ public class ModelNavigationView extends ViewPart implements
 		this.targetSchemaViewer.setInput(this.translateSchema(schemaService
 				.getTargetSchema()));
 		this.targetSchemaViewer.refresh();
+	}
+	
+	/**
+	 * Update the selection and fire a selection change
+	 */
+	@SuppressWarnings("unchecked")
+	private void updateSelection() {
+		SchemaSelection selection = new SchemaSelection();
+		
+		// source items
+		IStructuredSelection sourceSelection = (IStructuredSelection) sourceSchemaViewer.getSelection();
+		if (sourceSelection != null) {
+			Iterator<Object> it = sourceSelection.iterator();
+			while (it.hasNext()) {
+				Object item = it.next();
+				if (item != null && item instanceof SchemaItem) {
+					selection.addSourceItem((SchemaItem) item);
+				}
+			}
+		}
+		
+		// target items
+		IStructuredSelection targetSelection = (IStructuredSelection) targetSchemaViewer.getSelection();
+		if (targetSelection != null) {
+			Iterator<Object> it = targetSelection.iterator();
+			while (it.hasNext()) {
+				Object item = it.next();
+				if (item != null && item instanceof SchemaItem) {
+					selection.addTargetItem((SchemaItem) item);
+				}
+			}
+		}
+ 		
+		fireSelectionChange(selection);
+	}
+	
+	/**
+	 * Sets the selection to the given selection and fires a selection change
+	 */
+	protected void fireSelectionChange(ISelection selection) {
+		this.currentSelection = selection;
+		
+		SelectionChangedEvent event = 
+			new SelectionChangedEvent(this, currentSelection);
+		
+		for (ISelectionChangedListener listener : listeners) {
+			listener.selectionChanged(event);
+		}
+	}
+
+	/**
+	 * @see ISelectionProvider#addSelectionChangedListener(ISelectionChangedListener)
+	 */
+	@Override
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		listeners.add(listener);
+	}
+
+	/**
+	 * @see ISelectionProvider#getSelection()
+	 */
+	@Override
+	public ISelection getSelection() {
+		return currentSelection;
+	}
+
+	/**
+	 * @see ISelectionProvider#removeSelectionChangedListener(ISelectionChangedListener)
+	 */
+	@Override
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		listeners.remove(listener);
+	}
+
+	/**
+	 * @see ISelectionProvider#setSelection(ISelection)
+	 */
+	@Override
+	public void setSelection(ISelection selection) {
+		this.currentSelection = selection;
 	}
 
 

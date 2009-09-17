@@ -11,11 +11,9 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.literal;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -32,8 +30,7 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.rcp.utils.ModelNavigationViewHelper;
-import eu.esdihumboldt.hale.rcp.utils.ModelNavigationViewHelper.SelectionType;
+import eu.esdihumboldt.hale.rcp.utils.SchemaSelectionHelper;
 
 /**
  * This {@link WizardPage} is used to define a renaming mapping.
@@ -45,11 +42,8 @@ public class RenamingFunctionWizardMainPage
 		extends WizardPage implements
 		ISelectionListener {
 
-	private static Logger _log = Logger.getLogger(RenamingFunctionWizardMainPage.class);
+	//private static Logger _log = Logger.getLogger(RenamingFunctionWizardMainPage.class);
 
-	private TreeViewer sourceViewer;
-	private TreeViewer targetViewer;
-	
 	protected Text sourceFeatureTypeName;
 	protected Text targetFeatureTypeName;
 
@@ -102,8 +96,8 @@ public class RenamingFunctionWizardMainPage
 		this.sourceFeatureTypeLabel.setText("Source Type");
 		this.sourceFeatureTypeName = new Text(composite, SWT.BORDER);
 		// TODO replace it with the selected source FeatureType value
-		this.sourceFeatureTypeName.setText(ModelNavigationViewHelper
-				.getFeatureTypeName(SelectionType.SOURCE).getLocalPart());
+		this.sourceFeatureTypeName.setText(SchemaSelectionHelper
+				.getSchemaSelection().getFirstSourceItem().getName().getLocalPart());
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 1;
 		this.sourceFeatureTypeName.setLayoutData(gd);
@@ -140,8 +134,8 @@ public class RenamingFunctionWizardMainPage
 		this.targetFeatureTypeLabel.setText("Target Type");
 		this.targetFeatureTypeName = new Text(composite, SWT.BORDER);
 		// TODO replace it with the selected target FeatureType value
-		this.targetFeatureTypeName.setText(ModelNavigationViewHelper
-				.getFeatureTypeName(SelectionType.TARGET).getLocalPart());
+		this.targetFeatureTypeName.setText(SchemaSelectionHelper
+				.getSchemaSelection().getFirstTargetItem().getName().getLocalPart());
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 1;
 		this.targetFeatureTypeName.setLayoutData(gd);
@@ -211,22 +205,10 @@ public class RenamingFunctionWizardMainPage
 	 * 
 	 * }
 	 */
-	public TreeViewer getSourceViewer() {
-		return sourceViewer;
-	}
-
-	public TreeViewer getTargetViewer() {
-		return targetViewer;
-	}
-
-	public Text getSourceFeatureTypeName() {
-		return sourceFeatureTypeName;
-	}
-
-	public Text getTargetFeatureTypeName() {
-		return targetFeatureTypeName;
-	}
-
+	
+	/**
+	 * @see ISelectionListener#selectionChanged(IWorkbenchPart, ISelection)
+	 */
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
