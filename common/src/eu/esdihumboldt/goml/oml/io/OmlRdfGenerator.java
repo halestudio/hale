@@ -22,6 +22,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.PropertyException;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.cst.align.IAlignment;
@@ -70,6 +71,7 @@ import eu.esdihumboldt.goml.omwg.PropertyQualifier;
 import eu.esdihumboldt.goml.omwg.Relation;
 import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.mediator.util.NamespacePrefixMapperImpl;
 
 /**
  * This class implements methods for marshalling HUMBOLDT OML Objects to XML.
@@ -104,7 +106,23 @@ public class OmlRdfGenerator {
 		/*
 		 * marshaller.marshal( new JAXBElement( new
 		 * QName("","rootTag"),Point.class,new Point(...)));
+		 * 
 		 */
+		try {
+			m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
+					new NamespacePrefixMapperImpl());
+		} catch (PropertyException e) {
+			// if the JAXB provider doesn't recognize the prefix mapper,
+			// it will throw this exception. Since being unable to specify
+			// a human friendly prefix is not really a fatal problem,
+			// you can just continue marshalling without failing
+			;
+		}
+
+		// make the output indented. It looks nicer on screen.
+		// this is a JAXB standard property, so it should work with any JAXB
+		// impl.
+		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
 		m.marshal(new JAXBElement(new QName(null, "Alignment", "align"),
 				AlignmentType.class, aType), new File(xmlPath));
