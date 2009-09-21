@@ -90,6 +90,18 @@ public class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 		// I want the namespace to be mapped to "gml".
 		if ("http://www.opengis.net/gml/".equals(namespaceUri))
 			return "gml";
+        	
+		
+		//map omwg
+		if ("http://www.omwg.org/TR/d7/ontology/alignment".equals(namespaceUri)) return "omwg";
+		//map align
+		if ("http://knowledgeweb.semanticweb.org/heterogeneity/alignment".equals(namespaceUri)) return "align";
+		//map goml
+		if ("http://humboldt/goml".equals(namespaceUri)) return "goml";
+		//map rdf 
+		if ("http://www.w3.org/1999/02/22-rdf-syntax-ns#".equals(namespaceUri)) return "rdf";
+		//map xsi   
+		if ("http://www.w3.org/2001/XMLSchema-instance".equals(namespaceUri)) return "xsi";
 
 		// otherwise I don't care. Just use the default suggestion, whatever it
 		// may be.
@@ -149,6 +161,6 @@ public class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 	public String[] getPreDeclaredNamespaceUris() {
 		// return new String[] { "urn:abc", "urn:def" };
 		return new String[] { "http://www.w3.org/2001/XMLSchema-instance",
-				"http://www.opengis.net/gml/" };
+				"http://www.opengis.net/gml/", "http://www.omwg.org/TR/d7/ontology/alignment", "http://humboldt/goml", "http://www.w3.org/1999/02/22-rdf-syntax-ns#","http://www.w3.org/2001/XMLSchema-instance" };
 	}
 }

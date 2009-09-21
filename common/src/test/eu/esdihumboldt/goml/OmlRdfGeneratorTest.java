@@ -32,7 +32,7 @@ public class OmlRdfGeneratorTest {
 		Alignment alignment = new OmlRdfReader().read("res/schema/WatercoursesBY2Inspire.xml");
 		OmlRdfGenerator omlGenerator = new OmlRdfGenerator();
 		try {
-			omlGenerator.write(alignment, "res/schema/WatercoursesBY2Inspire_generated.xml");
+			omlGenerator.write(alignment, "res/schema/WatercoursesBY2Inspire_generated3.xml");
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
