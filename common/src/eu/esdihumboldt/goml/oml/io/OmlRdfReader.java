@@ -311,9 +311,12 @@ public class OmlRdfReader {
 			//set value class to add about and resource document
 			ValueClass vClass = new ValueClass();
 			ValueClassType vcType = rType.getValueClass();
-			vClass.setAbout(vcType.getAbout());
-			vClass.setResource(vcType.getResource());
-			vClass.getValue().addAll(getValueExpression(vcType.getValue()));
+			if (vcType!=null){
+				vClass.setAbout(vcType.getAbout());
+				vClass.setResource(vcType.getResource());
+				vClass.getValue().addAll(getValueExpression(vcType.getValue()));
+			}
+			
 			restriction.setValueClass(vClass);
 			if (rType.getComparator()!=null)restriction.setComparator(getComparator(rType.getComparator()));
 			restriction.setCqlStr(rType.getCqlStr());
