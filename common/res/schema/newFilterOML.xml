@@ -25,4 +25,4 @@
 			<align:measure rdf:datatype="xsd:float">1.0</align:measure>
 			<align:relation>Equivalence</align:relation>
 		</align:Cell>
-	</align:map>
+</align:map>
