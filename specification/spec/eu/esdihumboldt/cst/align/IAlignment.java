@@ -14,6 +14,7 @@ package eu.esdihumboldt.cst.align;
 
 import java.util.List;
 
+import eu.esdihumboldt.cst.align.ext.IValueClass;
 import eu.esdihumboldt.cst.rdf.IAbout;
 
 /**
@@ -49,5 +50,10 @@ public interface IAlignment {
 	 * @return the about
 	 */
 	public IAbout getAbout();
+	
+	/**
+	 * @return the list fo ValueClasses 
+	 */
 
+	 public List<IValueClass> getValueClasses(); 
 }
