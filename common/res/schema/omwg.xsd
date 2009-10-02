@@ -194,7 +194,7 @@
    <xs:complexType name="RestrictionType">
       <xs:choice>
          <xs:sequence minOccurs="0" maxOccurs="1" >
-            <xs:element ref="omwg:onAttribute"/>
+            <xs:element ref="omwg:onAttribute" minOccurs="0" maxOccurs="1"/>
             <xs:element ref="omwg:comparator"/>
             <xs:choice>
                <xs:element name="value" type="omwg:valueExprType" minOccurs="0" maxOccurs="unbounded" />
@@ -260,12 +260,13 @@
    <xs:element name="valueCondition" type="omwg:valueConditionType" />
    <xs:complexType name="valueConditionType" >
             <xs:sequence>
-               <xs:element name="Restriction" type="omwg:propValueRestrictionType" />                  
+               <xs:element name="Restriction" type="omwg:RestrictionType" />                  
             </xs:sequence>
             <xs:attribute name="seq" use="optional" type="xs:integer" />
    </xs:complexType>
 
-   <!-- only a type, element Restriction already exists as global element for Class -->
+   <!-- TODO: find a clear way to add the sqlString -->
+   <!-- only a type, element Restriction already exists as global element for Class 
    <xs:complexType name="propValueRestrictionType"  >
       <xs:sequence>
            <xs:element ref="omwg:comparator"/>
@@ -275,6 +276,7 @@
            </xs:choice>
       </xs:sequence>
    </xs:complexType>
+	   -->
 
 <!-- ==== PropertyAttribute ==== -->
    <xs:element name="PropertyQualifier" type="omwg:PropertyQualifierType" substitutionGroup="omwg:_Entity" />
