@@ -14,7 +14,7 @@ package eu.esdihumboldt.goml.align;
 
 import eu.esdihumboldt.cst.align.ISchema;
 import eu.esdihumboldt.cst.rdf.IAbout;
-import eu.esdihumboldt.goml.rdf.About;
+
 
 /**
  * This {@link Schema} type contains some metadata on a schema mapped in an 

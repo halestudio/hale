@@ -16,8 +16,9 @@ import java.util.List;
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ISchema;
+import eu.esdihumboldt.cst.align.ext.IValueClass;
 import eu.esdihumboldt.cst.rdf.IAbout;
-import eu.esdihumboldt.goml.rdf.About;
+
 
 /**
  * The {@link Alignment} is the main document containing all mappings and
@@ -55,6 +56,11 @@ public class Alignment implements IAlignment {
 	 */
 	private IAbout about;
 	
+	/**
+	 * A {@link List} of all values classes (attribute values grouped into categories for efficient re-use)
+	 */
+	
+	private List<IValueClass> valueClasses;
 	// getters / setters .......................................................
 
 	/**
@@ -125,6 +131,13 @@ public class Alignment implements IAlignment {
 	 */
 	public void setAbout(IAbout about) {
 		this.about = about;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.esdihumboldt.cst.align.IAlignment#getValueClasses()
+	 */
+	public List<IValueClass> getValueClasses() {
+		return this.valueClasses;
 	}
 	
 }

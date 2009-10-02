@@ -27,6 +27,7 @@ import eu.esdihumboldt.cst.align.IEntity;
 
 import eu.esdihumboldt.cst.align.ISchema;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
+import eu.esdihumboldt.cst.align.ext.IValueExpression;
 import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
@@ -226,7 +227,7 @@ public class OmlRdfReader {
     */
 	private IEntity getEntity(JAXBElement<? extends EntityType> jaxbEntity) {
 		EntityType entityType = jaxbEntity.getValue();
-		//TODO allow to instantiate entity as Property, FeatureClass, Relation
+		//TODO allow to instantiate entity as Property, FeatureClass, Relation, ComposedFeatureClass, ComposedFeatureType, composedRelation
 		//instantiate entity es property
 		
 		Entity entity = null;
@@ -348,7 +349,7 @@ private List<Restriction> getValueCondition(
 		restriction.setComparator(getComparator(condition.getRestriction().getComparator()));
 		//add CqlStr if exists
 		if (condition.getSeq()!=null)restriction.setCqlStr(condition.getSeq().toString());
-		//TODO add Property
+		//TODO add Property onAttribute
 		restrictions.add(restriction);
 		
 	}
@@ -392,9 +393,9 @@ private List<Restriction> getValueCondition(
 	 * @param valueExpr
 	 * @return
 	 */
-    private List<ValueExpression> getValueExpression(
+    private List<IValueExpression> getValueExpression(
 			List<ValueExprType> valueExpr) {
-		List<ValueExpression> omlExpressions = new ArrayList<ValueExpression>(valueExpr.size());
+		List<IValueExpression> omlExpressions = new ArrayList<IValueExpression>(valueExpr.size());
 		ValueExpression omlExpr;
 		Iterator iterator = valueExpr.iterator();
 		while(iterator.hasNext()){

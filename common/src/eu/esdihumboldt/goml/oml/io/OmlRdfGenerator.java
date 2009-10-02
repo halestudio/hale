@@ -33,6 +33,7 @@ import eu.esdihumboldt.cst.align.ISchema;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
+import eu.esdihumboldt.cst.align.ext.IValueExpression;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.generated.AlignmentType;
 import eu.esdihumboldt.goml.generated.ApplyType;
@@ -440,7 +441,7 @@ public class OmlRdfGenerator {
 
 			// if list of value expressions for this restriction is empty
 			// use ValueClass
-			List<ValueExpression> values = restriction.getValue();
+			List<IValueExpression> values = restriction.getValue();
 			if (values != null && values.size() > 0) {
 				rType.setValueClass(getValueClass(values));
 			} else {
@@ -460,15 +461,15 @@ public class OmlRdfGenerator {
 		if (valueClass != null) {
 			vcType.setAbout(valueClass.getAbout());
 			vcType.setResource(valueClass.getResource());
-			if (getValueExpressions(valueClass.getValue()) != null) {
-				vcType.getValue().addAll(getValueExpressions(valueClass.getValue()));
+			if (getJAXBValueExpressions(valueClass.getValue()) != null) {
+				vcType.getValue().addAll(getJAXBValueExpressions(valueClass.getValue()));
 			}
 		}
 		return vcType;
 	}
 
-	private Collection<? extends ValueExprType> getValueExpressions(
-			List<ValueExpression> value) {
+	private Collection<? extends ValueExprType> getJAXBValueExpressions(
+			List<IValueExpression> value) {
 		List<ValueExprType> vExpressions = new ArrayList<ValueExprType>(value.size());
 		Iterator iterator = value.iterator();
 		ValueExprType veType;
@@ -491,10 +492,10 @@ public class OmlRdfGenerator {
 	 * @param value
 	 * @return
 	 */
-	private ValueClassType getValueClass(List<ValueExpression> value) {
+	private ValueClassType getValueClass(List<IValueExpression> value) {
 		ValueClassType vcType = new ValueClassType();
-		if (getValueExpressions(value) != null) {
-			vcType.getValue().addAll(getValueExpressions(value));
+		if (getJAXBValueExpressions(value) != null) {
+			vcType.getValue().addAll(getJAXBValueExpressions(value));
 		}
 		return vcType;
 	}
@@ -718,7 +719,7 @@ public class OmlRdfGenerator {
 	 * @return
 	 */
 	private Collection<? extends ValueExprType> getValueExpressionTypes(
-			List<ValueExpression> values) {
+			List<IValueExpression> values) {
 		if (values != null) {
 			ArrayList<ValueExprType> veTypes = new ArrayList<ValueExprType>(values
 					.size());

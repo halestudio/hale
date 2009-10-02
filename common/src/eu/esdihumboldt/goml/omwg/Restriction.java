@@ -14,6 +14,7 @@ package eu.esdihumboldt.goml.omwg;
 
 import java.util.List;
 
+import eu.esdihumboldt.cst.align.ext.IValueExpression;
 import eu.esdihumboldt.goml.oml.ext.ValueClass;
 import eu.esdihumboldt.goml.oml.ext.ValueExpression;
 
@@ -44,7 +45,7 @@ public class Restriction {
 	 * TODO explain. 
 	 * <xs:element name="value" type="omwg:valueExprType" maxOccurs="unbounded" />
 	 */
-	private List<ValueExpression> value;
+	private List<IValueExpression> value;
 	
 	/**
 	 * if List of value expressions is empty use the value class
@@ -66,7 +67,7 @@ public class Restriction {
 	 * @param onAttribute
 	 * @param value
 	 */
-	public Restriction(Property onAttribute, List<ValueExpression> value) {
+	public Restriction(Property onAttribute, List<IValueExpression> value) {
 		super();
 		this.onAttribute = onAttribute;
 		this.value = value;
@@ -107,7 +108,7 @@ public class Restriction {
 	/**
 	 * @return the value
 	 */
-	public List<ValueExpression> getValue() {
+	public List<IValueExpression> getValue() {
 		return value;
 	}
 
@@ -115,7 +116,7 @@ public class Restriction {
 	 * @param value
 	 *            the value to set
 	 */
-	public void setValue(List<ValueExpression> value) {
+	public void setValue(List<IValueExpression> value) {
 		this.value = value;
 	}
 
