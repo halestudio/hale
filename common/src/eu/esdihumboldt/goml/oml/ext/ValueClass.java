@@ -15,6 +15,9 @@ package eu.esdihumboldt.goml.oml.ext;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.esdihumboldt.cst.align.ext.IValueClass;
+import eu.esdihumboldt.cst.align.ext.IValueExpression;
+
 
 /**
  * A {@link ValueClass} is a collection of {@link ValueExpression}s.
@@ -27,9 +30,9 @@ import java.util.List;
  */
 
 
-public class ValueClass {
+public class ValueClass implements IValueClass {
 
-    private List<ValueExpression> value;
+    private List<IValueExpression> value;
 
     private String resource;
 
@@ -39,9 +42,9 @@ public class ValueClass {
      * Gets the value of the value property.
      * 
      */
-    public List<ValueExpression> getValue() {
+    public List<IValueExpression> getValue() {
         if (value == null) {
-            value = new ArrayList<ValueExpression>();
+            value = new ArrayList<IValueExpression>();
         }
         return this.value;
     }

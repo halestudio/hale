@@ -12,7 +12,8 @@
 
 package eu.esdihumboldt.goml.oml.ext;
 
-//import eu.esdihumboldt.goml.oml.ext.Function;
+import eu.esdihumboldt.cst.align.ext.IValueExpression;
+
 
 /**
  * A {@link ValueExpression} is used to deal with literal values and ranges. It 
@@ -23,7 +24,7 @@ package eu.esdihumboldt.goml.oml.ext;
  * @partner 08 / Delft University of Technology
  * @version $Id$ 
  */
-public class ValueExpression {
+public class ValueExpression implements IValueExpression{
 
     private String literal;
     private String min;
