@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.goml.omwg;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import eu.esdihumboldt.cst.align.ext.IValueExpression;
@@ -58,8 +59,22 @@ public class Restriction {
 	 * <xs:element ref="goml:cqlStr" minOccurs="0" maxOccurs="1" />
 	 */
 	private String cqlStr;
+	
+	/**
+	 * sequnce field describing the position of the value condition in the list
+	 */
+	
+	private BigInteger seq;
 
 	// constructors ............................................................
+
+	public BigInteger getSeq() {
+		return seq;
+	}
+
+	public void setSeq(BigInteger seq) {
+		this.seq = seq;
+	}
 
 	/**
 	 * TODO explain.

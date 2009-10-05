@@ -38,6 +38,7 @@ public enum ComparatorType {
     INCLUDES_STRICTLY("includes-strictly"),
     EMPTY("empty"),
     ONE_OF("oneOf"),
+    OTHERWISE("otherwise"),
     BETWEEN("between");
 
     private final String value;

@@ -229,7 +229,6 @@ public class OmlRdfGenerator {
 		ICell cell;
 
 		while (iterator.hasNext()) {
-			// TODO: clear about elemenet for each map
 			cell = (ICell) iterator.next();
 			jMap = new Map();
 			jMap.setCell(getCellType(cell));
@@ -269,6 +268,8 @@ public class OmlRdfGenerator {
 	 * @return
 	 */
 	private Measure getMeasure(double measure) {
+		//TODO changed structure of the Measure element in the schema
+		
 		Measure jMeasure = new Measure();
 		jMeasure.setDatatype("xsd:float");
 		jMeasure.setValue(new Double(measure).floatValue());
@@ -356,10 +357,10 @@ public class OmlRdfGenerator {
 						ClassType.class, cType);
 			} else if (entity instanceof Relation) {
 				// instantiate as RelationType
-				// TODO add implementation
+				// TODO add implementation, for the next release
 			} else if (entity instanceof PropertyQualifier) {
 				// instantiate as PropertyQualifierType
-				// TODO add implementation
+				// TODO add implementation, will get the examples from MDV
 			}
 		}
 
@@ -507,7 +508,8 @@ public class OmlRdfGenerator {
 	 * @return
 	 */
 	private OnAttributeType getOnAttributeType(Property onAttribute) {
-		// TODO discuss need of the relation, about fields
+		// uses property as onAttribute until we have the implementation for the realation 
+		//TODO clear the need of the about attribute fot the onAttribute-element 
 		OnAttributeType oaType = new OnAttributeType();
 		oaType.setProperty(getPropertyType(onAttribute));
 		return oaType;
@@ -553,8 +555,10 @@ public class OmlRdfGenerator {
 				return ComparatorEnumType.ONE_OF;
 			else if (comparator.equals(ComparatorType.STARTS_WITH))
 				return ComparatorEnumType.STARTS_WITH;
+			
+			else  if (comparator.equals(ComparatorType.OTHERWISE))return ComparatorEnumType.OTHERWISE;
 		}
-		// TODO clear about otherwise-type
+		
 		return null;
 	}
 
@@ -569,6 +573,7 @@ public class OmlRdfGenerator {
 		if (transformation != null) {
 			// TODO check the resource transformation
 			// fType.setResource(transformation.getService().toString());
+			//Uli will provide us with examples
 			fType.setResource(transformation.getLabel());
 			if (transformation.getParameters() != null) {
 				fType.getParam().addAll(
@@ -630,9 +635,9 @@ public class OmlRdfGenerator {
 			About about = (About) property.getAbout();
 			if (about != null)
 				pType.setAbout(about.getAbout());
-			// TODO clear property pipe
-			pType.setPipe(null);
-			// TODO clear property composition
+			//incase it  is a composed property add the property composition elmenet
+			// TODO keep the property comsposition as optional element
+			// property composition is used to define the merge on the attributes 
 			pType.setPropertyComposition(null);
 			pType.setTransf(getTransf(property.getTransformation()));
 			if (property.getDomainRestriction() != null) {
@@ -688,8 +693,7 @@ public class OmlRdfGenerator {
 	private ValueConditionType getValueConditionType(Restriction restriction) {
 		ValueConditionType vcType = new ValueConditionType();
 		vcType.setRestriction(getPropertyValueRestrictionType(restriction));
-		// TODO : clear seqstr should be of type BigInteger
-		// vcType.setSeq(restriction.getCqlStr());
+		vcType.setSeq(restriction.getSeq());
 		return vcType;
 	}
 
@@ -761,7 +765,7 @@ public class OmlRdfGenerator {
 	 */
 	private ApplyType getApplayType(Function function) {
 		ApplyType aType = new ApplyType();
-		// TODO clear it with marian
+		// TODO implement it for the next release, in case we have some examples
 		// aType.setOperation(function.getService().toString());
 		aType.setValue(null);
 
@@ -802,8 +806,7 @@ public class OmlRdfGenerator {
 	 */
 	private DomainRestrictionType getDomainRestrictionType(FeatureClass feature) {
 		DomainRestrictionType drType = new DomainRestrictionType();
-		// TODO clear with Marian property field
-		drType.setProperty(null);
+		//set one  property in case of the PropertyQualifier only
 		drType.setClazz(getClassType(feature));
 		return drType;
 	}

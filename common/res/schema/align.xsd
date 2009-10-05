@@ -105,8 +105,8 @@
       </xs:restriction>
    </xs:simpleType>
 
-   <!--xs:element name="measure" type="xs:float" /-->
-   <xs:element name="measure">
+   <xs:element name="measure" type="xs:float" />
+   <!--xs:element name="measure">
      <xs:complexType>
        <xs:simpleContent>
          <xs:extension base="xs:float">
@@ -114,6 +114,6 @@
          </xs:extension>
        </xs:simpleContent>
      </xs:complexType>
-   </xs:element>
+   </xs:element-->
 
 </xs:schema>
