@@ -38,3 +38,4 @@ Export-Package: eu.esdihumboldt.annotations.concurrency,
  eu.esdihumboldt.workflow.repository,
  eu.esdihumboldt.workflow.transformer.domaintypes,
  eu.esdihumboldt.workflow.transformer.inputoutputs
+Import-Package: eu.esdihumboldt.goml.oml.ext
