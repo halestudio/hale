@@ -21,11 +21,11 @@ import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.TaskService;
-import eu.esdihumboldt.hale.models.impl.AlignmentServiceImpl;
-import eu.esdihumboldt.hale.models.impl.InstanceServiceImpl;
-import eu.esdihumboldt.hale.models.impl.SchemaServiceImplApache;
-import eu.esdihumboldt.hale.models.impl.StyleServiceImpl;
-import eu.esdihumboldt.hale.models.impl.TaskServiceImpl;
+import eu.esdihumboldt.hale.models.alignment.AlignmentServiceImpl;
+import eu.esdihumboldt.hale.models.instance.InstanceServiceImpl;
+import eu.esdihumboldt.hale.models.schema.SchemaServiceImplApache;
+import eu.esdihumboldt.hale.models.style.StyleServiceImpl;
+import eu.esdihumboldt.hale.models.task.TaskServiceImpl;
 
 /**
  * This implementation of the {@link AbstractServiceFactory} allows to use the

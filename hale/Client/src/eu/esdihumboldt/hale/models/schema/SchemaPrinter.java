@@ -1,4 +1,4 @@
-package eu.esdihumboldt.hale.models.impl;
+package eu.esdihumboldt.hale.models.schema;
 import java.util.Collection;
 
 import org.opengis.feature.type.FeatureType;

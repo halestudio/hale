@@ -9,7 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.models.filterimpl;
+package eu.esdihumboldt.hale.models.instance;
 
 import org.opengis.feature.Feature;
 

@@ -46,7 +46,7 @@ import org.geotools.styling.Symbolizer;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 
-import eu.esdihumboldt.hale.models.impl.StyleServiceImpl;
+import eu.esdihumboldt.hale.models.style.StyleServiceImpl;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.map.style.editors.Editor;
 import eu.esdihumboldt.hale.rcp.views.map.style.editors.EditorFactory;

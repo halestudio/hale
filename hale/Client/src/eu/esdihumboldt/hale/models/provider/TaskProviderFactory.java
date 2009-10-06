@@ -19,7 +19,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import eu.esdihumboldt.hale.models.impl.InstanceServiceImpl;
+import eu.esdihumboldt.hale.models.instance.InstanceServiceImpl;
 import eu.esdihumboldt.hale.task.Task;
 
 /**

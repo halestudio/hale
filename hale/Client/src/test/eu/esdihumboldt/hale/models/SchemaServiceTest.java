@@ -26,8 +26,8 @@ import org.opengis.feature.type.FeatureType;
 import org.xml.sax.SAXException;
 
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
-import eu.esdihumboldt.hale.models.impl.SchemaParser;
-import eu.esdihumboldt.hale.models.impl.SchemaServiceImpl;
+import eu.esdihumboldt.hale.models.schema.SchemaParser;
+import eu.esdihumboldt.hale.models.schema.SchemaServiceImpl;
 
 /**
  * Unit tests which covers the SchemaService implementation class.

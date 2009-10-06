@@ -9,7 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.models.provider.task;
+package eu.esdihumboldt.hale.models.task;
 
 import java.util.HashSet;
 import java.util.List;

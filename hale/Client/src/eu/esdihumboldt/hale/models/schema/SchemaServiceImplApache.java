@@ -12,7 +12,7 @@
  * Component    : HALE
  * Created on   : Jun 3, 2009 -- 4:50:10 PM
  */
-package eu.esdihumboldt.hale.models.impl;
+package eu.esdihumboldt.hale.models.schema;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;

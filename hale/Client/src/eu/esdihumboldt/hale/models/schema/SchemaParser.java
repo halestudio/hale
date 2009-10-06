@@ -1,4 +1,4 @@
-package eu.esdihumboldt.hale.models.impl;
+package eu.esdihumboldt.hale.models.schema;
 
 import java.io.IOException;
 import java.net.URI;

@@ -39,7 +39,7 @@ import org.opengis.feature.type.FeatureType;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
-import eu.esdihumboldt.hale.models.provider.instance.HaleGMLParser;
+import eu.esdihumboldt.hale.models.instance.HaleGMLParser;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
 import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;

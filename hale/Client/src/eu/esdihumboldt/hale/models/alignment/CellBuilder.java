@@ -9,7 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.models.impl;
+package eu.esdihumboldt.hale.models.alignment;
 
 import java.util.ArrayList;
 import java.util.List;

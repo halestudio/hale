@@ -18,7 +18,7 @@
  * Created on   : May 11, 2009 -- 3:14:38 PM
  *
  */
-package eu.esdihumboldt.hale.models.impl;
+package eu.esdihumboldt.hale.models.schema;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
