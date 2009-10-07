@@ -13,6 +13,7 @@ package eu.esdihumboldt.hale.models.provider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,7 +44,7 @@ public class TaskProviderFactory {
 		
 		// initialize InstanceProviders. TODO: use external config file.
 		List<String> tpClassNames = new ArrayList<String>();
-		tpClassNames.add("eu.esdihumboldt.hale.models.provider.task.SchemaLoadingTaskProvider");
+		tpClassNames.add("eu.esdihumboldt.hale.models.task.SchemaLoadingTaskProvider");
 		for (String tpClassName : tpClassNames) {
 			try {
 				Class<?> task_provider_class = Class.forName(tpClassName);
@@ -70,6 +71,10 @@ public class TaskProviderFactory {
 	public Set<Task> getTasks(Object input) {
 		TaskProvider tp = TaskProviderFactory.getInstance().providers
 				.get(TaskProviderFactory.buildKeyString(input));
+		if (tp == null) {
+			// to prevent NullPointerException (ST)
+			return new HashSet<Task>();
+		}
 		return tp.createTasks(input);
 	}
 	
