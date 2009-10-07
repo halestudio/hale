@@ -17,6 +17,7 @@ import org.eclipse.ui.IPerspectiveFactory;
 
 import eu.esdihumboldt.hale.rcp.views.TableView;
 import eu.esdihumboldt.hale.rcp.views.map.MapView;
+import eu.esdihumboldt.hale.rcp.views.mapping.MappingView;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 import eu.esdihumboldt.hale.rcp.views.model.attribute.AttributeView;
 import eu.esdihumboldt.hale.rcp.views.tasks.TasklistView;
@@ -51,6 +52,7 @@ public class ClientPerspective implements IPerspectiveFactory {
 		IFolderLayout bottomRight = _layout.createFolder(
 				"bottomRight", IPageLayout.BOTTOM, 0.67f, "topRight");
 		bottomRight.addView(TasklistView.ID);
+		bottomRight.addView(MappingView.ID);
 		
 		_layout.setEditorAreaVisible(false);
 	}

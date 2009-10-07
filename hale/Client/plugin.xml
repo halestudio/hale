@@ -48,6 +48,13 @@
             name="Table View"
             restorable="true">
       </view>
+      <view
+            allowMultiple="false"
+            class="eu.esdihumboldt.hale.rcp.views.mapping.MappingView"
+            id="eu.esdihumboldt.hale.rcp.views.mapping.MappingView"
+            name="Mapping"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.commands">

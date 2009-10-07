@@ -185,4 +185,20 @@ public class TreeObject implements SchemaItem {
 		GEOMETRIC_ATTRIBUTE
 	}
 
+	/**
+	 * @see SchemaItem#getChildren()
+	 */
+	@Override
+	public SchemaItem[] getChildren() {
+		return null;
+	}
+
+	/**
+	 * @see SchemaItem#hasChildren()
+	 */
+	@Override
+	public boolean hasChildren() {
+		return false;
+	}
+
 }

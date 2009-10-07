@@ -11,7 +11,6 @@
  */
 package eu.esdihumboldt.hale.rcp.views.model.attribute;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -47,7 +46,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
-import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.goml.align.Entity;
@@ -673,6 +671,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 	public boolean isSourceFeatureType() {
 		return isSourceFeatureType;
 	}
+	
 
 	/**
 	 * Set if a source feature type is present
@@ -704,10 +703,12 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 	 */
 	@Override
 	public void dispose() {
-		Image image = alLabel.getImage();
-		if (image != null) {
-			alLabel.setImage(null);
-			image.dispose();
+		if (!alLabel.isDisposed()) {
+			Image image = alLabel.getImage();
+			if (image != null) {
+				alLabel.setImage(null);
+				image.dispose();
+			}
 		}
 		
 		super.dispose();

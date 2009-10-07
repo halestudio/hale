@@ -63,6 +63,7 @@ public class TreeParent extends TreeObject{
 	 * 
 	 * @return an array of the item's children
 	 */
+	@Override
 	public SchemaItem[] getChildren() {
 		return (SchemaItem[]) children.toArray(new TreeObject[children.size()]);
 	}
@@ -72,7 +73,8 @@ public class TreeParent extends TreeObject{
 	 * 
 	 * @return if the item has any children
 	 */
+	@Override
 	public boolean hasChildren() {
-		return children.size()>0;
+		return children.size() >0 ;
 	}
 }

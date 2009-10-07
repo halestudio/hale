@@ -49,5 +49,19 @@ public interface SchemaItem {
 	 * @return the name
 	 */
 	public abstract Name getName();
+	
+	/**
+	 * Get the item's children
+	 * 
+	 * @return an array of the item's children
+	 */
+	public SchemaItem[] getChildren();
+	
+	/**
+	 * Determine if the item has any children
+	 * 
+	 * @return if the item has any children
+	 */
+	public boolean hasChildren();
 
 }
