@@ -20,10 +20,11 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 
 /**
+ * View for viewing, removing and editing alignment cells
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
- *
  */
 public class MappingView extends ViewPart {
 
@@ -31,6 +32,8 @@ public class MappingView extends ViewPart {
 	 * The view ID
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.rcp.views.mapping.MappingView";
+	
+	private CellSelector cellSelector;
 
 	/**
 	 * @see WorkbenchPart#createPartControl(Composite)
@@ -42,12 +45,12 @@ public class MappingView extends ViewPart {
 		Composite page = new Composite(parent, SWT.NONE);
 		page.setLayout(new GridLayout(2, false));
 		
-		CellSelector cellSelector = new CellSelector(page, selectionService);
+		cellSelector = new CellSelector(page, selectionService);
 		cellSelector.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
 		
 		CellDetails details = new CellDetails(page);
 		details.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		cellSelector.addListener(details);
+		cellSelector.addSelectionChangedListener(details);
 	}
 
 	/**
@@ -56,6 +59,16 @@ public class MappingView extends ViewPart {
 	@Override
 	public void setFocus() {
 		// do nothing
+	}
+
+	/**
+	 * @see WorkbenchPart#dispose()
+	 */
+	@Override
+	public void dispose() {
+		if (cellSelector != null) {
+			cellSelector.dispose();
+		}
 	}
 
 }

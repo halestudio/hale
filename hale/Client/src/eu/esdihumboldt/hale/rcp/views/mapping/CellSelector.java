@@ -23,10 +23,17 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -34,12 +41,14 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.services.IDisposable;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
 
@@ -50,33 +59,46 @@ import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class CellSelector implements ISelectionListener {
+public class CellSelector implements ISelectionListener, IDisposable, ISelectionProvider {
 	
 	private static final Log log = LogFactory.getLog(CellSelector.class);
-
-	/**
-	 * Listeners for cell selection changes
-	 */
-	public interface CellSelectionListener {
-		
-		/**
-		 * Called when the selected cell has changed
-		 * 
-		 * @param cell the selected cell, may be <code>null</code>
-		 */
-		public void onSelectedCell(ICell cell);
-
-	}
-
+	
 	private final ComboViewer viewer;
 	
 	private final AlignmentService alignmentService;
 	
+	/**
+	 * The last schema selection
+	 */
 	private ISelection lastSelection = null;
 	
 	private ICell lastSelected = null;
 	
-	private final Set<CellSelectionListener> listeners = new HashSet<CellSelectionListener>();
+	/**
+	 * The currently selected cell
+	 */
+	private ICell selected = null;
+	
+	/**
+	 * The current cell selection
+	 */
+	private ISelection cellSelection;
+	
+	private final Composite page;
+	
+	private final Set<ISelectionChangedListener> listeners = new HashSet<ISelectionChangedListener>();
+	
+	private final Image prevImage;
+	
+	private final Image nextImage;
+	
+	private final Image editImage;
+	
+	private final Image deleteImage;
+	
+	private final Button prevButton;
+	
+	private final Button nextButton;
 	
 	/**
 	 * Constructor
@@ -89,7 +111,52 @@ public class CellSelector implements ISelectionListener {
 		
 		alignmentService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
 		
-		Combo combo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
+		// composite
+		page = new Composite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout(5, false);
+		layout.marginWidth = 0;
+		layout.marginHeight = 0;
+		layout.horizontalSpacing = 2;
+		page.setLayout(layout);
+		
+		// navigation buttons
+		prevButton = new Button(page, SWT.PUSH);
+		prevButton.setEnabled(false);
+		prevImage = HALEActivator.getImageDescriptor("icons/backward_nav.gif").createImage();
+		prevButton.setImage(prevImage);
+		prevButton.addSelectionListener(new SelectionAdapter() {
+
+			/**
+			 * @see SelectionAdapter#widgetSelected(SelectionEvent)
+			 */
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Object element = viewer.getElementAt(viewer.getCombo().getSelectionIndex() - 1);
+				viewer.setSelection(new StructuredSelection(element));
+			}
+			
+		});
+		
+		nextButton = new Button(page, SWT.PUSH);
+		nextButton.setEnabled(false);
+		nextImage = HALEActivator.getImageDescriptor("icons/forward_nav.gif").createImage();
+		nextButton.setImage(nextImage);
+		nextButton.addSelectionListener(new SelectionAdapter() {
+
+			/**
+			 * @see SelectionAdapter#widgetSelected(SelectionEvent)
+			 */
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Object element = viewer.getElementAt(viewer.getCombo().getSelectionIndex() + 1);
+				viewer.setSelection(new StructuredSelection(element));
+			}
+			
+		});
+		
+		// combo box
+		Combo combo = new Combo(page, SWT.DROP_DOWN | SWT.READ_ONLY);
+		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		viewer = new ComboViewer(combo);
 		viewer.setContentProvider(new ArrayContentProvider());
 		viewer.setLabelProvider(new LabelProvider() {
@@ -110,6 +177,45 @@ public class CellSelector implements ISelectionListener {
 			}
 			
 		});
+		
+		// edit buttons
+		final Button editButton = new Button(page, SWT.PUSH);
+		editImage = HALEActivator.getImageDescriptor("icons/editor_area.gif").createImage();
+		editButton.setImage(editImage);
+		//TODO
+		
+		final Button deleteButton = new Button(page, SWT.PUSH);
+		deleteImage = HALEActivator.getImageDescriptor("icons/delete_edit.gif").createImage();
+		deleteButton.setImage(deleteImage);
+		deleteButton.addSelectionListener(new SelectionAdapter() {
+
+			/**
+			 * @see SelectionAdapter#widgetSelected(SelectionEvent)
+			 */
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (selected != null) {
+					alignmentService.removeCell(selected);
+				}
+			}
+			
+		});
+		
+		
+		// edit buttons state
+		addSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				boolean enabled = !event.getSelection().isEmpty();
+				editButton.setEnabled(false); //XXX editButton.setEnabled(enabled);
+				deleteButton.setEnabled(enabled);
+			}
+			
+		});
+		
+		// initial selection event
+		fireCellSelectionChange(null);
 		
 		// update now
 		update(selectionService.getSelection());
@@ -144,6 +250,12 @@ public class CellSelector implements ISelectionListener {
 					lastSelected = selectedCell;
 					fireCellSelectionChange(selectedCell);
 				}
+				
+				// navigation buttons
+				Combo combo = viewer.getCombo();
+				prevButton.setEnabled(combo.getSelectionIndex() > 0);
+				nextButton.setEnabled(combo.getSelectionIndex() >= 0 &&
+						combo.getSelectionIndex() < combo.getItemCount() - 1);
 			}
 			
 		});
@@ -249,31 +361,23 @@ public class CellSelector implements ISelectionListener {
 	 * @return the control
 	 */
 	public Control getControl() {
-		return viewer.getControl();
-	}
-	
-	/**
-	 * Adds a listener
-	 * 
-	 * @param listener the listener
-	 */
-	public void addListener(CellSelectionListener listener) {
-		listeners.add(listener);
-	}
-	
-	/**
-	 * Removes a listener
-	 * 
-	 * @param listener the listener
-	 */
-	public void removeListener(CellSelectionListener listener) {
-		listeners.remove(listener);
+		return page;
 	}
 	
 	protected void fireCellSelectionChange(ICell cell) {
-		for (CellSelectionListener listener : listeners) {
+		selected = cell;
+		
+		if (cell != null) {
+			cellSelection = new CellSelection(cell);
+		} else {
+			cellSelection = new CellSelection();
+		}
+		
+		SelectionChangedEvent event = new SelectionChangedEvent(this, cellSelection);
+		
+		for (ISelectionChangedListener listener : listeners) {
 			try {
-				listener.onSelectedCell(cell);
+				listener.selectionChanged(event);
 			} catch (Exception e) {
 				log.error("Error while notifying listener", e);
 			}
@@ -299,6 +403,50 @@ public class CellSelector implements ISelectionListener {
 		}
 		
 		return "unnamed";
+	}
+
+	/**
+	 * @see IDisposable#dispose()
+	 */
+	@Override
+	public void dispose() {
+		prevImage.dispose();
+		nextImage.dispose();
+		editImage.dispose();
+		deleteImage.dispose();
+	}
+
+	/**
+	 * @see ISelectionProvider#addSelectionChangedListener(ISelectionChangedListener)
+	 */
+	@Override
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		listeners.add(listener);
+	}
+
+	/**
+	 * @see ISelectionProvider#getSelection()
+	 */
+	@Override
+	public ISelection getSelection() {
+		return cellSelection;
+	}
+
+	/**
+	 * @see ISelectionProvider#removeSelectionChangedListener(ISelectionChangedListener)
+	 */
+	@Override
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		listeners.add(listener);
+	}
+
+	/**
+	 * @see ISelectionProvider#setSelection(ISelection)
+	 */
+	@Override
+	public void setSelection(ISelection selection) {
+		this.cellSelection = selection;
 	}
 
 }

@@ -14,7 +14,9 @@ package eu.esdihumboldt.hale.rcp.views.mapping;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
@@ -25,7 +27,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
-import eu.esdihumboldt.hale.rcp.views.mapping.CellSelector.CellSelectionListener;
+import eu.esdihumboldt.goml.omwg.FeatureClass;
+import eu.esdihumboldt.goml.omwg.Restriction;
 
 /**
  * Cell details view
@@ -34,7 +37,7 @@ import eu.esdihumboldt.hale.rcp.views.mapping.CellSelector.CellSelectionListener
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class CellDetails implements CellSelectionListener {
+public class CellDetails implements ISelectionChangedListener {
 
 	private final TableViewer viewer;
 	
@@ -68,6 +71,14 @@ public class CellDetails implements CellSelectionListener {
 					List<TableItem> items = new ArrayList<TableItem>();
 					
 					items.add(new TableItem("Entity 1", CellSelector.getShortName(cell.getEntity1())));
+					if (cell.getEntity1() instanceof FeatureClass) {
+						FeatureClass feature = (FeatureClass) cell.getEntity1();
+						if (feature.getAttributeValueCondition() != null) {
+							for (Restriction res : feature.getAttributeValueCondition()) {
+								items.add(new TableItem("Filter", res.getCqlStr()));
+							}
+						}
+					}
 					items.add(new TableItem("Entity 2", CellSelector.getShortName(cell.getEntity2())));
 					ITransformation transformation = cell.getEntity1().getTransformation();
 					if (transformation != null) {
@@ -109,7 +120,7 @@ public class CellDetails implements CellSelectionListener {
 		viewer.getTable().setLinesVisible(true);
 		viewer.getTable().setHeaderVisible(false);
 		
-		onSelectedCell(null);
+		selectionChanged(null);
 	}
 
 	/**
@@ -122,10 +133,21 @@ public class CellDetails implements CellSelectionListener {
 	}
 
 	/**
-	 * @see CellSelectionListener#onSelectedCell(ICell)
+	 * @see ISelectionChangedListener#selectionChanged(SelectionChangedEvent)
 	 */
 	@Override
-	public void onSelectedCell(ICell cell) {
+	public void selectionChanged(SelectionChangedEvent event) {
+		ICell cell;
+		if (event == null) {
+			cell = null;
+		}
+		else if (event.getSelection() instanceof CellSelection) {
+			cell = ((CellSelection) event.getSelection()).getCell();
+		}
+		else {
+			return;
+		}
+		
 		viewer.setInput(cell);
 		
 		names.pack();

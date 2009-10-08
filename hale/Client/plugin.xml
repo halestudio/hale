@@ -23,22 +23,26 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            name="Map Viewer"
             class="eu.esdihumboldt.hale.rcp.views.map.MapView"
-            id="eu.esdihumboldt.hale.rcp.views.map.MapView">
+            icon="icons/map.gif"
+            id="eu.esdihumboldt.hale.rcp.views.map.MapView"
+            name="Map Viewer">
       </view>
       <view
             class="eu.esdihumboldt.hale.rcp.views.tasks.TasklistView"
+            icon="icons/tasks.gif"
             id="eu.esdihumboldt.hale.rcp.views.tasks.TasklistView"
             name="Tasklist">
       </view>
       <view
             class="eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView"
+            icon="icons/schema.gif"
             id="eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView"
             name="Schema Explorer">
       </view>
       <view
             class="eu.esdihumboldt.hale.rcp.views.model.attribute.AttributeView"
+            icon="icons/attribute.gif"
             id="eu.esdihumboldt.hale.rcp.views.model.AttributeView"
             name="Attribute View">
       </view>
@@ -51,6 +55,7 @@
       <view
             allowMultiple="false"
             class="eu.esdihumboldt.hale.rcp.views.mapping.MappingView"
+            icon="icons/mapping.gif"
             id="eu.esdihumboldt.hale.rcp.views.mapping.MappingView"
             name="Mapping"
             restorable="true">

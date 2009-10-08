@@ -89,4 +89,11 @@ public interface AlignmentService
 	 */
 	public boolean cleanModel();
 
+	/**
+	 * Removes the given cell
+	 * 
+	 * @param cell the cell to remove
+	 */
+	public void removeCell(ICell cell);
+
 }

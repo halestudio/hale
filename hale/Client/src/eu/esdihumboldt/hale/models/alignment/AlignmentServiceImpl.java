@@ -245,4 +245,14 @@ public class AlignmentServiceImpl implements AlignmentService {
 		}
 	}
 
+	/**
+	 * @see AlignmentService#removeCell(ICell)
+	 */
+	@Override
+	public void removeCell(ICell cell) {
+		alignment.getMap().remove(cell);
+		
+		updateListeners();
+	}
+
 }
