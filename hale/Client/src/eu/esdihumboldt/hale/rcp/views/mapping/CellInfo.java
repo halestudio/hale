@@ -64,4 +64,24 @@ public class CellInfo {
 		return targetItem;
 	}
 
+	/**
+	 * @see Object#equals(Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof CellInfo) {
+			return getCell().equals(((CellInfo) obj).getCell());
+		}
+		
+		return false;
+	}
+
+	/**
+	 * @see Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return getCell().hashCode();
+	}
+
 }
