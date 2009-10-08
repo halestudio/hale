@@ -12,34 +12,17 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.geometric;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.jface.preference.FileFieldEditor;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.IViewReference;
-import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
-import eu.esdihumboldt.hale.rcp.wizards.io.UrlFieldEditor;
+import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 
 /**
  * TODO Explain the purpose of this type here.
@@ -48,18 +31,20 @@ import eu.esdihumboldt.hale.rcp.wizards.io.UrlFieldEditor;
  * @version $Id$
  */
 public class NetworkExpansionFunctionWizardPage 
-	extends WizardPage {
+	extends AbstractSingleCellWizardPage {
 	
 	private Text inputAttributeText = null;
 	private Text outputAttributeText = null;
 	private Text expansionExpressionText = null;
-
+	
 	protected NetworkExpansionFunctionWizardPage(String pageName) {
 		super(pageName);
+		
+		setTitle(pageName);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+	/**
+	 * @see IDialogPage#createControl(Composite)
 	 */
 	@Override
 	public void createControl(Composite parent) {
@@ -109,28 +94,37 @@ public class NetworkExpansionFunctionWizardPage
 		inputAttributeLabel.setText("Source attribute:");
 		this.inputAttributeText = new Text(configurationComposite, SWT.BORDER);
 		this.inputAttributeText.setLayoutData(configurationLayoutData);
-		this.inputAttributeText.setText(this.getSelectedFeatureType("source"));
+		this.inputAttributeText.setText(getParent().getSourceItem().getName().getLocalPart());
+		inputAttributeText.setEnabled(false);
 		
 		final Label outputAttributeLabel = new Label(configurationComposite, SWT.NONE);
 		outputAttributeLabel.setText("Target attribute:");
 		this.outputAttributeText = new Text(configurationComposite, SWT.BORDER);
 		this.outputAttributeText.setLayoutData(configurationLayoutData);
-		this.outputAttributeText.setText(this.getSelectedFeatureType("target"));
+		this.outputAttributeText.setText(getParent().getTargetItem().getName().getLocalPart());
+		outputAttributeText.setEnabled(false);
 		
 		final Label expansionExpressionLabel = new Label(configurationComposite, SWT.NONE);
 		expansionExpressionLabel.setText("Expansion expression:");
 		this.expansionExpressionText = new Text(configurationComposite, SWT.BORDER);
 		this.expansionExpressionText.setLayoutData(configurationLayoutData);
-		this.expansionExpressionText.setText("50");
+		
+		String value = "50";
+		/*FIXME outcomment this when build errors are resolved - ITransformation trans = cell.getEntity1().getTransformation();
+		if (trans != null && trans.getParameters() != null) {
+			if (IParameter param : trans.getParameters()) {
+				if (param.getName().equals("Expansion")) {
+					value = param.getValue();
+				}
+			}
+		}*/
+		
+		this.expansionExpressionText.setText(value);
 		
 	}
 	
-	public Cell getResultCell() {
-		return new Cell();
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.WizardPage#isPageComplete()
+	/**
+	 * @see WizardPage#isPageComplete()
 	 */
 	@Override
 	public boolean isPageComplete() {
@@ -146,42 +140,11 @@ public class NetworkExpansionFunctionWizardPage
 		return false;
 	}
 
-	private String getSelectedFeatureType(String selectedFeatureType) {
-		String typeName = "";
-		ModelNavigationView modelNavigation = getModelNavigationView();
-		if (modelNavigation != null) {
-			if (selectedFeatureType.equals("source")) {
-				TreeItem[] sourceTreeSelection = 
-					modelNavigation.getSourceSchemaViewer().getTree().getSelection();
-				if (sourceTreeSelection.length == 1) {
-					typeName = sourceTreeSelection[0].getText();
-				}
-			} else if (selectedFeatureType.equals("target")) {
-				TreeItem[] targetTreeSelection = 
-					modelNavigation.getTargetSchemaViewer().getTree().getSelection();
-				if (targetTreeSelection.length == 1)
-					typeName = targetTreeSelection[0].getText();
-			}
-		}
-		return typeName;
-	}
-	
-	protected ModelNavigationView getModelNavigationView() {
-		ModelNavigationView attributeView = null;
-		// get All Views
-		IViewReference[] views = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage().getViewReferences();
-		// get AttributeView
-		// get AttributeView
-		for (int count = 0; count < views.length; count++) {
-			if (views[count].getId().equals(
-					"eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView")) {
-				attributeView = (ModelNavigationView) views[count]
-						.getView(false);
-			}
-
-		}
-		return attributeView;
+	/**
+	 * @return the expansion expression
+	 */
+	public String getExpansion() {
+		return expansionExpressionText.getText();
 	}
 
 }

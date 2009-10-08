@@ -12,13 +12,8 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.literal;
 
 import org.apache.log4j.Logger;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.INewWizard;
-import org.eclipse.ui.IViewReference;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.cst.transformer.impl.RenameAttributeTransformer;
 import eu.esdihumboldt.cst.transformer.impl.RenameFeatureTransformer;
@@ -26,11 +21,12 @@ import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
+import eu.esdihumboldt.goml.omwg.FeatureClass;
+import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.rcp.utils.SchemaSelectionHelper;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
+import eu.esdihumboldt.hale.rcp.views.mapping.CellSelection;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
-import eu.esdihumboldt.hale.rcp.views.model.attribute.AttributeView;
+import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 
 /**
  * This {@link Wizard} is used to invoke a Renaming Transformer for the Source
@@ -39,27 +35,41 @@ import eu.esdihumboldt.hale.rcp.views.model.attribute.AttributeView;
  * @author Anna Pitaev, Logica; Simon Templer, Fraunhofer IGD
  * @version $Id$
  */
-public class RenamingFunctionWizard extends Wizard implements INewWizard {
+public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 
 	private static Logger _log = Logger.getLogger(RenamingFunctionWizard.class);
 
 	RenamingFunctionWizardMainPage mainPage;
 
 	/**
-	 * constructor
+	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(CellSelection)
 	 */
-	public RenamingFunctionWizard() {
-		super();
+	public RenamingFunctionWizard(CellSelection cellSelection) {
+		super(cellSelection);
+	}
+
+	/**
+	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(SchemaSelection, AlignmentService)
+	 */
+	public RenamingFunctionWizard(SchemaSelection schemaSelection,
+			AlignmentService alignmentService) {
+		super(schemaSelection, alignmentService);
+	}
+	
+	/**
+	 * @see AbstractSingleCellWizard#init()
+	 */
+	@Override
+	protected void init() {
 		this.mainPage = new RenamingFunctionWizardMainPage(
 				"Configure Feature Type Renaming Function",
 				"Configure Feature Type Renaming Function");
 		super.setWindowTitle("Configure Function");
 		super.setNeedsProgressMonitor(true);
-
 	}
-
+	
 	/**
-	 * @see org.eclipse.jface.wizard.Wizard#canFinish()
+	 * @see Wizard#canFinish()
 	 */
 	@Override
 	public boolean canFinish() {
@@ -68,92 +78,44 @@ public class RenamingFunctionWizard extends Wizard implements INewWizard {
 	}
 
 	/**
-	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
+	 * @see Wizard#performFinish()
 	 */
 
 	@Override
 	public boolean performFinish() {
-		SchemaSelection selection = SchemaSelectionHelper.getSchemaSelection();
+		Cell c = (Cell) getResultCell();
 		
-		SchemaItem source = selection.getFirstSourceItem();
-		SchemaItem target = selection.getFirstTargetItem();
+		Entity source = (Entity) c.getEntity1();
+		Entity target = (Entity) c.getEntity2();
 		
-		if (source == null || target == null) {
-			return false;
-		}
-		
-		Cell c = new Cell();
 		Transformation t = new Transformation();
 		
-		if (source.isFeatureType() && target.isFeatureType()) {
+		if (source instanceof FeatureClass && target instanceof FeatureClass) {
 			// Type renaming
 			t.setLabel(RenameFeatureTransformer.class.getName());
 			
 			//TODO any parameters needed?
 		}
-		else if (source.isAttribute() && target.isAttribute()) {
+		else if (source instanceof Property && target instanceof Property) {
 			// Attribute renaming
 			t.setLabel(RenameAttributeTransformer.class.getName());
 			
 			//Add old attribute name
 			t.getParameters().add(new Parameter(
 					RenameAttributeTransformer.OLD_ATTRIBUTE_NAME_PARAMETER, 
-					source.getName().getLocalPart()));
+					source.getLabel().get(source.getLabel().size() - 1)));
 			t.getParameters().add(new Parameter(
 					RenameAttributeTransformer.NEW_ATTRIBUTE_NAME_PARAMETER, 
-					target.getName().getLocalPart()));
+					target.getLabel().get(target.getLabel().size() - 1)));
 		}
 		else {
 			//TODO error message?
 			return false;
 		}
 
-		Entity entity1 = source.getEntity();
-		Entity entity2 = target.getEntity();
-		
-		entity1.setTransformation(t);
-		c.setEntity1(entity1);
-		c.setEntity2(entity2);
-		
-		AlignmentService alservice = (AlignmentService) PlatformUI
-				.getWorkbench().getService(AlignmentService.class);
-		// store transformation in AS
-		alservice.addOrUpdateCell(c);
+		source.setTransformation(t);
 
 		return true;
-	}
-
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		_log.debug("in init..");
-		/*
-		 * IWorkbenchWindow activeWindow =
-		 * PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		 * System.out.println(activeWindow.getClass().getName());
-		 * StructuredSelection structuredSelection = (StructuredSelection)
-		 * activeWindow.getSelectionService().getSelection(); //selection =
-		 * (IStructuredSelection)
-		 * workbench.getWorkbenchWindows()[0].getSelectionService
-		 * ().getSelection(); System.out.println(structuredSelection.size());
-		 * 
-		 * AttributeView attributeView = null; // get All Views IViewReference[]
-		 * views =
-		 * PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage
-		 * ().getViewReferences(); // get AttributeView for (int count = 0;
-		 * count < views.length; count++) { if (views[count].getId().equals(
-		 * "eu.esdihumboldt.hale.rcp.views.model.AttributeView")) {
-		 * attributeView = (AttributeView) views[count].getView(false); } }
-		 * TableViewer targetAttributeViewer =
-		 * attributeView.getTargetAttributeViewer(); TableViewer
-		 * sourceAtttibuteViewer = attributeView.getSourceAttributeViewer();
-		 * Table sourceAttributeList = sourceAtttibuteViewer.getTable();
-		 * _log.debug("Source attribute list:"); for (TableItem targetItem :
-		 * sourceAttributeList.getSelection()){
-		 * _log.debug(targetItem.getText()); } Table targetAttributeList =
-		 * targetAttributeViewer.getTable();
-		 * _log.debug("Target attribute list"); for (TableItem targetItem :
-		 * targetAttributeList.getSelection()){
-		 * _log.debug(targetItem.getText());
-		 */
 	}
 
 	/**
@@ -163,23 +125,6 @@ public class RenamingFunctionWizard extends Wizard implements INewWizard {
 	public void addPages() {
 		super.addPages();
 		addPage(mainPage);
-	}
-
-	protected AttributeView getAttributeView() {
-		AttributeView attributeView = null;
-		// get All Views
-		IViewReference[] views = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage().getViewReferences();
-		// get AttributeView
-		// get AttributeView
-		for (int count = 0; count < views.length; count++) {
-			if (views[count].getId().equals(
-					"eu.esdihumboldt.hale.rcp.views.model.AttributeView")) {
-				attributeView = (AttributeView) views[count].getView(false);
-			}
-
-		}
-		return attributeView;
 	}
 
 }

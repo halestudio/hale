@@ -1,9 +1,8 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.filter;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -16,15 +15,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IViewReference;
-import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
-import eu.esdihumboldt.hale.rcp.views.model.attribute.AttributeView;
+import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
+import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 
-public class FilterWizardSecondPage extends WizardPage {
+/**
+ * Filter wizard page
+ * 
+ * @author ?, Simon Templer
+ * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @version $Id$ 
+ */
+public class FilterWizardSecondPage extends AbstractSingleCellWizardPage {
 
 	private Label featureTypeLabel;
 	private Text featureTypeEditor;
@@ -43,15 +46,14 @@ public class FilterWizardSecondPage extends WizardPage {
 	private Label blankLabel;
 	private Text intervallBegin;
 	private Text intervallEnd;
-	private TreeViewer sourceViewer;
 	private Text selectedAttribute;
 	private Text selectedOperator;
-	private Composite attrValueComposite;
+	//private Composite attrValueComposite;
 	private Composite composite;
-	private Composite statComposite;
+	//private Composite statComposite;
 	private Text selectedGeomProperty;
 	private Combo geomProperties;
-
+	
 	private static Logger _log = Logger.getLogger(FilterWizardSecondPage.class);
 
 	protected FilterWizardSecondPage(String pageName, String title) {
@@ -60,12 +62,12 @@ public class FilterWizardSecondPage extends WizardPage {
 		setDescription("Configure your CQL-Expression to proceed filter operation.");
 	}
 
+	/**
+	 * @see IDialogPage#createControl(Composite)
+	 */
 	@Override
 	public void createControl(Composite parent) {
 		super.initializeDialogUnits(parent);
-
-		// set source viewer
-		this.sourceViewer = getModelNavigationView().getSourceSchemaViewer();
 
 		// create a composite to hold the widgets
 		this.composite = new Composite(parent, SWT.NULL);
@@ -97,10 +99,10 @@ public class FilterWizardSecondPage extends WizardPage {
 		// this.featureTypeEditor = new Text(composite, SWT.BORDER | SWT.WRAP|
 		// SWT.MULTI |SWT.V_SCROLL);
 		this.featureTypeEditor = new Text(composite, SWT.BORDER);
-
-		// TODO replace it with the selected source FeatureType value
-		this.featureTypeEditor.setText(getSourceViewer().getTree()
-				.getSelection()[0].getText());
+		
+		this.featureTypeEditor.setText(getParent().getSourceItem().getName().getLocalPart());
+		featureTypeEditor.setEnabled(false);
+		
 		GridData gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
 		gd.grabExcessHorizontalSpace = true;
@@ -233,13 +235,17 @@ public class FilterWizardSecondPage extends WizardPage {
 		this.geomProperties.setLayoutData(gd);
 		this.geomProperties.setText("select geometry property");
 		// read attributes from the schema service
-		//FIXME view should not be used for getting attributes
-		TableItem[] attribs = getAttributeView().getSourceAttributeViewer()
-				.getTable().getItems();
-		for (int i = 0; i < attribs.length; i++) {
-            //TODO how define an attribute type having a name
-            if (attribs[i].getText().contains("geom"))		
-			this.geomProperties.add(attribs[i].getText());
+		SchemaItem sourceItem = getParent().getSourceItem();
+		if (sourceItem.hasChildren()) {
+			for (SchemaItem child : sourceItem.getChildren()) {
+				if (child.isAttribute()) {
+					String name = child.getName().getLocalPart();
+		            //TODO how define an attribute type having a name
+		            if (name.contains("geom")) {	
+		            	this.geomProperties.add(name);
+		            }
+				}
+			}
 		}
 		// add listener to select attribute
 		this.geomProperties.addListener(SWT.Selection, new Listener() {
@@ -294,11 +300,13 @@ public class FilterWizardSecondPage extends WizardPage {
 		attributesCombo.setLayoutData(gd);
 		attributesCombo.setText("select attribute");
 		// read attributes from the schema service
-		attribs = getAttributeView().getSourceAttributeViewer()
-				.getTable().getItems();
-		for (int i = 0; i < attribs.length; i++) {
-
-			attributesCombo.add(attribs[i].getText());
+		if (sourceItem.hasChildren()) {
+			for (SchemaItem child : sourceItem.getChildren()) {
+				if (child.isAttribute()) {
+					String name = child.getName().getLocalPart();
+					attributesCombo.add(name);
+				}
+			}
 		}
 		// add listener to select attribute
 		attributesCombo.addListener(SWT.Selection, new Listener() {
@@ -616,48 +624,10 @@ public class FilterWizardSecondPage extends WizardPage {
 		return cqlOperator;
 	}
 
-	public TreeViewer getSourceViewer() {
-		return sourceViewer;
-	}
-
-	protected ModelNavigationView getModelNavigationView() {
-		ModelNavigationView modelNavigationView = null;
-		// get All Views
-		IViewReference[] views = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage().getViewReferences();
-		// get AttributeView
-		// get AttributeView
-		for (int count = 0; count < views.length; count++) {
-			if (views[count].getId().equals(
-					"eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView")) {
-				modelNavigationView = (ModelNavigationView) views[count]
-						.getView(false);
-			}
-
-		}
-		return modelNavigationView;
-	}
-
-	protected AttributeView getAttributeView() {
-		AttributeView attributeView = null;
-		// get All Views
-		IViewReference[] views = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage().getViewReferences();
-		// get AttributeView
-		// get AttributeView
-		for (int count = 0; count < views.length; count++) {
-			if (views[count].getId().equals(
-					"eu.esdihumboldt.hale.rcp.views.model.AttributeView")) {
-				attributeView = (AttributeView) views[count].getView(false);
-			}
-
-		}
-		return attributeView;
-	}
-
 	/**
 	 * enum contains allowed CQL operators for the CST Filter Transformer
 	 */
+	@SuppressWarnings("all")
 	public enum CQLOperators {
 		PropertyIsEqualTo, PropertyIsNotEqualTo, PropertyIsLessThan, PropertyIsGreaterThan, PropertyIsLessThanOrEqualTo, PropertyIsGreaterThanOrEqualTo, PropertyIsLike, PropertyIsNull, PropertyIsBetween
 	}

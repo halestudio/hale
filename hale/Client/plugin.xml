@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-   <extension-point id="eu.esdihumboldt.hale.rcp.wizards.io.FunctionWizard" name="FunctionWizard" schema="schema/eu.esdihumboldt.hale.rcp.wizards.io.FunctionWizard.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory" name="FunctionWizardFactory" schema="schema/eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory.exsd"/>
 
    <extension
          id="application"
@@ -137,7 +137,8 @@
             locationURI="menu:org.eclipse.ui.main.menu">
          <menu
                id="file"
-               label="File">
+               label="File"
+               mnemonic="F">
             <command
                   commandId="HALE.newProject.command"
                   id="newProject"
@@ -203,6 +204,13 @@
                   label="Load test data"
                   style="push">
             </command>
+         </menu>
+         <menu
+               label="Functions">
+            <dynamic
+                  class="eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardContribution"
+                  id="HALE.dynamic.functionWizards">
+            </dynamic>
          </menu>
       </menuContribution>
    </extension>
@@ -320,6 +328,39 @@
             id="HALE.filter"
             name="CQL-based Filter Wizard">
       </wizard>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory">
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.filter.FilterWizardFactory"
+            icon="icons/concrete_ft.png"
+            name="CQL-based filter">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.literal.RenamingFunctionWizardFactory"
+            icon="icons/rename.gif"
+            name="Rename wizard">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.geometric.NetworkExpansionFunctionWizardFactory"
+            icon="icons/geometry_attribute.png"
+            name="Network expansion (Line to Surface)">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.geometric.NetworkFusionFunctionWizardFactory"
+            icon="icons/geometry_attribute.png"
+            name="Network fusion (Line to Line)">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.geometric.NetworkGeneralizationFunctionWizardFactory"
+            icon="icons/geometry_attribute.png"
+            name="Network generalization (Line to Line)">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.numeric.NumericFunctionWizardFactory"
+            icon="icons/number_attribute.png"
+            name="Numeric function wizard">
+      </factory>
    </extension>
    <!-- <extension
          point="org.eclipse.ui.importWizards">

@@ -26,8 +26,6 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
@@ -87,8 +85,6 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 	private Label sourceModelLabel;
 	// Label for the class name selected in ModelnavigationView target Model.
 	private Label targetModelLabel;
-	// Button to open FunctionWizard
-	private Button selectFunctionButton;
 	
 	private SchemaSelection lastSelection = new SchemaSelection();
 
@@ -167,38 +163,6 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 				| GridData.VERTICAL_ALIGN_FILL);
 		gData.horizontalSpan = 2;
 		buttonComposite.setLayoutData(gData);
-
-		selectFunctionButton = new Button(buttonComposite, SWT.PUSH);
-		selectFunctionButton.setText("Select Function");
-		gData = new GridData(GridData.CENTER, GridData.FILL, true, false);
-		// gData.horizontalAlignment = 1;
-		// gData.horizontalSpan = 2;
-		selectFunctionButton.setLayoutData(gData);
-		selectFunctionButton.setEnabled(true);
-		selectFunctionButton.addSelectionListener(new SelectionListener() {
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// button is enabled in case of multiple selection
-
-			}
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-
-				// start a wizard
-				IHandlerService handlerService = (IHandlerService) getSite()
-						.getService(IHandlerService.class);
-				try {
-					handlerService.executeCommand("org.eclipse.ui.newWizard",
-							null);
-				} catch (Exception e1) {
-					throw new RuntimeException(e1);
-				}
-
-			}
-
-		});
 
 		Composite labelComposite = new Composite(modelComposite, SWT.BEGINNING);
 		labelComposite.setLayout(new GridLayout(3, false));
@@ -639,9 +603,6 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 			
 			addItems(sel.getSourceItems(), SchemaType.SOURCE);
 			addItems(sel.getTargetItems(), SchemaType.TARGET);
-			
-			selectFunctionButton.setEnabled(!sel.getSourceItems().isEmpty()
-					&& !sel.getTargetItems().isEmpty());
 			
 			lastSelection = sel;
 			updateAlignment();

@@ -9,42 +9,28 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.rcp.views.mapping;
+package eu.esdihumboldt.hale.rcp.wizards.functions;
 
-import org.eclipse.jface.viewers.StructuredSelection;
+import java.util.List;
+
+import org.eclipse.jface.wizard.IWizard;
+
+import eu.esdihumboldt.cst.align.ICell;
 
 /**
- * Cell selection
+ * Function wizard interface
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class CellSelection extends StructuredSelection {
-	
-	/**
-	 * Creates an empty selection
-	 */
-	public CellSelection() {
-		super();
-	}
-	
-	/**
-	 * Creates a selection with one cell
-	 * 
-	 * @param cell the cell
-	 */
-	public CellSelection(CellInfo cell) {
-		super(cell);
-	}
-	
-	/**
-	 * Get the selected cell
-	 * 
-	 * @return the selected cell or <code>null</code>
-	 */
-	public CellInfo getCellInfo() {
-		return (CellInfo) getFirstElement();
-	}
+public interface FunctionWizard extends IWizard {
 
+	/**
+	 * Get the result cells
+	 * 
+	 * @return the list of result cells
+	 */
+	public List<ICell> getResult();
+	
 }

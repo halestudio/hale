@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import eu.esdihumboldt.hale.rcp.utils.SchemaSelectionHelper;
+import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 
 /**
  * This {@link WizardPage} is used to define a renaming mapping.
@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.rcp.utils.SchemaSelectionHelper;
  * @version {$Id}
  */
 public class RenamingFunctionWizardMainPage 
-		extends WizardPage {
+		extends AbstractSingleCellWizardPage {
 
 	//private static Logger _log = Logger.getLogger(RenamingFunctionWizardMainPage.class);
 
@@ -42,12 +42,18 @@ public class RenamingFunctionWizardMainPage
 
 	private Label sourceFeatureTypeLabel;
 	private Label targetFeatureTypeLabel;
-
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param pageName the page name
+	 * @param title the page title
+	 * @param cell the cell to edit
+	 */
 	protected RenamingFunctionWizardMainPage(String pageName, String title) {
 		super(pageName, title, (ImageDescriptor) null);
 		setTitle(pageName);
 		setDescription("Enter parameters to adopt the source FeatureType to the target Naming Convention.");
-
 	}
 
 	/**
@@ -57,7 +63,6 @@ public class RenamingFunctionWizardMainPage
 	 * @param parent
 	 */
 	public void createControl(Composite parent) {
-
 		super.initializeDialogUnits(parent);
 		this.setPageComplete(true);
 		// create a composite to hold the widgets
@@ -88,9 +93,9 @@ public class RenamingFunctionWizardMainPage
 
 		this.sourceFeatureTypeLabel.setText("Source Type");
 		this.sourceFeatureTypeName = new Text(composite, SWT.BORDER);
-		// TODO replace it with the selected source FeatureType value
-		this.sourceFeatureTypeName.setText(SchemaSelectionHelper
-				.getSchemaSelection().getFirstSourceItem().getName().getLocalPart());
+		this.sourceFeatureTypeName.setText(getParent().getSourceItem().getName().getLocalPart());
+		sourceFeatureTypeName.setEnabled(false);
+		
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 1;
 		this.sourceFeatureTypeName.setLayoutData(gd);
@@ -127,8 +132,9 @@ public class RenamingFunctionWizardMainPage
 		this.targetFeatureTypeLabel.setText("Target Type");
 		this.targetFeatureTypeName = new Text(composite, SWT.BORDER);
 		// TODO replace it with the selected target FeatureType value
-		this.targetFeatureTypeName.setText(SchemaSelectionHelper
-				.getSchemaSelection().getFirstTargetItem().getName().getLocalPart());
+		this.targetFeatureTypeName.setText(getParent().getTargetItem().getName().getLocalPart());
+		targetFeatureTypeName.setEnabled(false);
+		
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 1;
 		this.targetFeatureTypeName.setLayoutData(gd);

@@ -51,6 +51,8 @@ public class MappingView extends ViewPart {
 		CellDetails details = new CellDetails(page);
 		details.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		cellSelector.addSelectionChangedListener(details);
+		
+		getSite().setSelectionProvider(cellSelector);
 	}
 
 	/**

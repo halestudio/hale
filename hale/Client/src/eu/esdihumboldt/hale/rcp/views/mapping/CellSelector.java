@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
@@ -37,6 +38,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbenchPart;
@@ -44,13 +46,14 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.IDisposable;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.utils.EntityHelper;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
+import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardContribution;
 
 /**
  * Control for selecting a cell, reacts on {@link SchemaSelection}s
@@ -61,6 +64,21 @@ import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
  */
 public class CellSelector implements ISelectionListener, IDisposable, ISelectionProvider {
 	
+	/**
+	 * Contribution for local selection
+	 */
+	public class CellFunctionContribution extends FunctionWizardContribution {
+
+		/**
+		 * @see FunctionWizardContribution#getSelection()
+		 */
+		@Override
+		protected ISelection getSelection() {
+			return cellSelection;
+		}
+
+	}
+
 	private static final Log log = LogFactory.getLog(CellSelector.class);
 	
 	private final ComboViewer viewer;
@@ -72,12 +90,12 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 	 */
 	private ISelection lastSelection = null;
 	
-	private ICell lastSelected = null;
+	private CellInfo lastSelected = null;
 	
 	/**
 	 * The currently selected cell
 	 */
-	private ICell selected = null;
+	private CellInfo selected = null;
 	
 	/**
 	 * The current cell selection
@@ -122,6 +140,7 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 		// navigation buttons
 		prevButton = new Button(page, SWT.PUSH);
 		prevButton.setEnabled(false);
+		prevButton.setToolTipText("Previous cell");
 		prevImage = HALEActivator.getImageDescriptor("icons/backward_nav.gif").createImage();
 		prevButton.setImage(prevImage);
 		prevButton.addSelectionListener(new SelectionAdapter() {
@@ -139,6 +158,7 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 		
 		nextButton = new Button(page, SWT.PUSH);
 		nextButton.setEnabled(false);
+		nextButton.setToolTipText("Next cell");
 		nextImage = HALEActivator.getImageDescriptor("icons/forward_nav.gif").createImage();
 		nextButton.setImage(nextImage);
 		nextButton.addSelectionListener(new SelectionAdapter() {
@@ -166,10 +186,10 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 			 */
 			@Override
 			public String getText(Object element) {
-				if (element instanceof ICell) {
-					ICell cell = (ICell) element;
-					return getShortName(cell.getEntity1()) +
-						" - " + getShortName(cell.getEntity2());
+				if (element instanceof CellInfo) {
+					CellInfo cell = (CellInfo) element;
+					return EntityHelper.getShortName(cell.getCell().getEntity1()) +
+						" - " + EntityHelper.getShortName(cell.getCell().getEntity2());
 				}
 				else {
 					return super.getText(element);
@@ -180,11 +200,24 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 		
 		// edit buttons
 		final Button editButton = new Button(page, SWT.PUSH);
+		editButton.setToolTipText("Edit cell");
 		editImage = HALEActivator.getImageDescriptor("icons/editor_area.gif").createImage();
 		editButton.setImage(editImage);
-		//TODO
+		editButton.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				MenuManager manager = new MenuManager();
+				manager.add(new CellFunctionContribution());
+				Menu menu = manager.createContextMenu(editButton);
+				menu.setLocation(editButton.toDisplay(0, editButton.getSize().y));
+				menu.setVisible(true);
+			}
+			
+		});
 		
 		final Button deleteButton = new Button(page, SWT.PUSH);
+		deleteButton.setToolTipText("Delete cell");
 		deleteImage = HALEActivator.getImageDescriptor("icons/delete_edit.gif").createImage();
 		deleteButton.setImage(deleteImage);
 		deleteButton.addSelectionListener(new SelectionAdapter() {
@@ -195,7 +228,7 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (selected != null) {
-					alignmentService.removeCell(selected);
+					alignmentService.removeCell(selected.getCell());
 				}
 			}
 			
@@ -208,7 +241,7 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				boolean enabled = !event.getSelection().isEmpty();
-				editButton.setEnabled(false); //XXX editButton.setEnabled(enabled);
+				editButton.setEnabled(enabled);
 				deleteButton.setEnabled(enabled);
 			}
 			
@@ -246,7 +279,7 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 					fireCellSelectionChange(null);
 				}
 				else {
-					ICell selectedCell = (ICell) ((StructuredSelection) selection).getFirstElement();
+					CellInfo selectedCell = (CellInfo) ((StructuredSelection) selection).getFirstElement();
 					lastSelected = selectedCell;
 					fireCellSelectionChange(selectedCell);
 				}
@@ -281,7 +314,7 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 	private void update(ISelection selection) {
 		lastSelection = selection;
 		
-		List<ICell> cells = new ArrayList<ICell>();
+		List<CellInfo> cells = new ArrayList<CellInfo>();
 		
 		if (selection != null && !selection.isEmpty()
 				&& selection instanceof SchemaSelection) {
@@ -304,7 +337,7 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 								target.getEntity());
 						
 						if (cell != null) {
-							cells.add(cell);
+							cells.add(new CellInfo(cell, source, target));
 						}
 					}
 				}
@@ -364,7 +397,7 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 		return page;
 	}
 	
-	protected void fireCellSelectionChange(ICell cell) {
+	protected void fireCellSelectionChange(CellInfo cell) {
 		selected = cell;
 		
 		if (cell != null) {
@@ -382,27 +415,6 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 				log.error("Error while notifying listener", e);
 			}
 		}
-	}
-	
-	/**
-	 * Get a short name for the given entity
-	 * 
-	 * @param entity the entity
-	 * @return the short name
-	 */
-	public static String getShortName(IEntity entity) {
-		List<String> label = entity.getLabel();
-		if (label.size() == 2) {
-			return label.get(1);
-		}
-		else if (label.size() > 2) {
-			return label.get(label.size() - 2) + "." + label.get(label.size() - 1);
-		}
-		else if (label.size() == 1) {
-			return label.get(0);
-		}
-		
-		return "unnamed";
 	}
 
 	/**

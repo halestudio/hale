@@ -19,7 +19,6 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 
 /**
@@ -60,7 +59,7 @@ public interface AlignmentService
 	 * @param cell
 	 * @return 
 	 */
-	public boolean addOrUpdateCell(Cell cell);
+	public boolean addOrUpdateCell(ICell cell);
 	
 	
 	/**

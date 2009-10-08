@@ -81,9 +81,9 @@ public class AlignmentServiceImpl implements AlignmentService {
 	// AlignmentService operations .............................................
 	
 	/**
-	 * @see eu.esdihumboldt.hale.models.AlignmentService#addOrUpdateCell(eu.esdihumboldt.goml.align.Cell)
+	 * @see AlignmentService#addOrUpdateCell(ICell)
 	 */
-	public boolean addOrUpdateCell(Cell cell) {
+	public boolean addOrUpdateCell(ICell cell) {
 		boolean result = this.alignment.getMap().add(cell);
 		this.updateListeners();
 		return result;

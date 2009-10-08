@@ -13,6 +13,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
@@ -26,6 +30,7 @@ import org.eclipse.swt.custom.ViewForm;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
@@ -46,6 +51,7 @@ import eu.esdihumboldt.hale.rcp.views.model.filtering.SimpleToggleAction;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.UseAggregationHierarchyAction;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.UseFlatHierarchyAction;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.UseInheritanceHierarchyAction;
+import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardContribution;
 import eu.esdihumboldt.tools.RobustFTKey;
 
 /**
@@ -162,6 +168,25 @@ public class ModelNavigationView extends ViewPart implements
 			}
 			
 		});
+		
+		MenuManager menuManager = new MenuManager();
+		menuManager.setRemoveAllWhenShown(true);
+		menuManager.addMenuListener(new IMenuListener() {
+
+			@Override
+			public void menuAboutToShow(IMenuManager manager) {
+				manager.add(new FunctionWizardContribution());
+			}
+			
+		});
+		
+		Menu sourceMenu = menuManager.createContextMenu(sourceSchemaViewer.getControl());
+		sourceSchemaViewer.getControl().setMenu(sourceMenu);
+		
+		Menu targetMenu = menuManager.createContextMenu(targetSchemaViewer.getControl());
+		targetSchemaViewer.getControl().setMenu(targetMenu);
+		
+		getSite().registerContextMenu(menuManager, this);
 	}
 
 	private List<SimpleToggleAction> getToggleActions(PatternViewFilter pvf) {
@@ -397,26 +422,6 @@ public class ModelNavigationView extends ViewPart implements
 	@Override
 	public void setFocus() {
 
-	}
-	
-	/**
-	 * Get the source schema viewer
-	 * 
-	 * @return the source schema viewer
-	 * @deprecated the view should not be publicly accessible
-	 */
-	public TreeViewer getSourceSchemaViewer() {
-		return sourceSchemaViewer;
-	}
-
-	/**
-	 * Get the target schema viewer
-	 * 
-	 * @return the target schema viewer
-	 * @deprecated the view should not be publicly accessible
-	 */
-	public TreeViewer getTargetSchemaViewer() {
-		return targetSchemaViewer;
 	}
 
 	/**

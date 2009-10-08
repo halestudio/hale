@@ -24,11 +24,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TableColumn;
 
-import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Restriction;
+import eu.esdihumboldt.hale.rcp.utils.EntityHelper;
 
 /**
  * Cell details view
@@ -65,22 +65,24 @@ public class CellDetails implements ISelectionChangedListener {
 
 			@Override
 			public Object[] getElements(Object inputElement) {
-				if (inputElement != null && inputElement instanceof ICell) {
-					ICell cell = (ICell) inputElement;
+				if (inputElement != null && inputElement instanceof CellInfo) {
+					CellInfo cell = (CellInfo) inputElement;
 					
 					List<TableItem> items = new ArrayList<TableItem>();
 					
-					items.add(new TableItem("Entity 1", CellSelector.getShortName(cell.getEntity1())));
-					if (cell.getEntity1() instanceof FeatureClass) {
-						FeatureClass feature = (FeatureClass) cell.getEntity1();
+					items.add(new TableItem("Entity 1", EntityHelper.getShortName(cell.getCell().getEntity1())));
+					if (cell.getCell().getEntity1() instanceof FeatureClass) {
+						FeatureClass feature = (FeatureClass) cell.getCell().getEntity1();
 						if (feature.getAttributeValueCondition() != null) {
 							for (Restriction res : feature.getAttributeValueCondition()) {
 								items.add(new TableItem("Filter", res.getCqlStr()));
 							}
 						}
 					}
-					items.add(new TableItem("Entity 2", CellSelector.getShortName(cell.getEntity2())));
-					ITransformation transformation = cell.getEntity1().getTransformation();
+					
+					items.add(new TableItem("Entity 2", EntityHelper.getShortName(cell.getCell().getEntity2())));
+					
+					ITransformation transformation = cell.getCell().getEntity1().getTransformation();
 					if (transformation != null) {
 						items.add(new TableItem("Transformation", transformation.getLabel()));
 						if (transformation.getService() != null) {
@@ -137,12 +139,12 @@ public class CellDetails implements ISelectionChangedListener {
 	 */
 	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
-		ICell cell;
+		CellInfo cell;
 		if (event == null) {
 			cell = null;
 		}
 		else if (event.getSelection() instanceof CellSelection) {
-			cell = ((CellSelection) event.getSelection()).getCell();
+			cell = ((CellSelection) event.getSelection()).getCellInfo();
 		}
 		else {
 			return;
