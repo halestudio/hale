@@ -19,6 +19,9 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -67,7 +70,7 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 	/**
 	 * Contribution for local selection
 	 */
-	public class CellFunctionContribution extends FunctionWizardContribution {
+	private class CellFunctionContribution extends FunctionWizardContribution {
 
 		/**
 		 * @see FunctionWizardContribution#getSelection()
@@ -203,15 +206,24 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 		editButton.setToolTipText("Edit cell");
 		editImage = HALEActivator.getImageDescriptor("icons/editor_area.gif").createImage();
 		editButton.setImage(editImage);
+		MenuManager manager = new MenuManager();
+		manager.setRemoveAllWhenShown(true);
+		final IContributionItem editContribution = new CellFunctionContribution();
+		manager.addMenuListener(new IMenuListener() {
+
+			@Override
+			public void menuAboutToShow(IMenuManager manager) {
+				manager.add(editContribution);
+			}
+			
+		});
+		final Menu editMenu = manager.createContextMenu(editButton);
 		editButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				MenuManager manager = new MenuManager();
-				manager.add(new CellFunctionContribution());
-				Menu menu = manager.createContextMenu(editButton);
-				menu.setLocation(editButton.toDisplay(0, editButton.getSize().y));
-				menu.setVisible(true);
+				editMenu.setLocation(editButton.toDisplay(0, editButton.getSize().y));
+				editMenu.setVisible(true);
 			}
 			
 		});

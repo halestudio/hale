@@ -132,26 +132,7 @@ public class FunctionWizardContribution extends ContributionItem {
 		 * @return if the wizard action shall be currently active
 		 */
 		public boolean isActive() {
-			ISelection selection = getSelection();
-			
-			if (selection.isEmpty()) return false;
-			
-			boolean enabled = false;
-			
-			if (selection instanceof SchemaSelection) {
-				SchemaSelection schemaSelection = (SchemaSelection) selection;
-				if (descriptor.supports(schemaSelection, alignmentService)) {
-					enabled = true;
-				}
-			}
-			else if (selection instanceof CellSelection) {
-				CellSelection cellSelection = (CellSelection) selection;
-				if (descriptor.supports(cellSelection)) {
-					enabled = true;
-				}
-			}
-			
-			return enabled;
+			return FunctionWizardContribution.this.isActive(descriptor);
 		}
 
 	}
@@ -224,6 +205,55 @@ public class FunctionWizardContribution extends ContributionItem {
 		else {
 			return SchemaSelectionHelper.getSchemaSelection();
 		}
+	}
+	
+	/**
+	 * Determine if a function wizard is active for the current
+	 *   selection
+	 *   
+	 * @param descriptor the function wizard descriptor
+	 * @return if the function wizard is active for the current
+	 *   selection
+	 */
+	protected boolean isActive(FunctionWizardDescriptor descriptor) {
+		AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+		ISelection selection = getSelection();
+		
+		if (selection == null || selection.isEmpty()) return false;
+		
+		boolean enabled = false;
+		
+		if (selection instanceof SchemaSelection) {
+			SchemaSelection schemaSelection = (SchemaSelection) selection;
+			if (descriptor.supports(schemaSelection, alignmentService)) {
+				enabled = true;
+			}
+		}
+		else if (selection instanceof CellSelection) {
+			CellSelection cellSelection = (CellSelection) selection;
+			if (descriptor.supports(cellSelection)) {
+				enabled = true;
+			}
+		}
+		
+		return enabled;
+	}
+	
+	/**
+	 * Determines if there are any active function wizards for the
+	 *   current selection
+	 *   
+	 * @return if there are any active function wizards for the
+	 *   current selection
+	 */
+	public boolean hasActiveFunctions() {
+		for (FunctionWizardDescriptor descriptor : FunctionWizardExtension.getFunctionWizards()) {
+			if (isActive(descriptor)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 }

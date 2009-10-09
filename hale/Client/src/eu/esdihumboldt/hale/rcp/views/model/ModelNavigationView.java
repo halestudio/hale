@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -27,9 +27,14 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ViewForm;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.dialogs.FilteredTree;
@@ -44,6 +49,7 @@ import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.FeatureTypeHelper;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.PatternViewFilter;
@@ -62,6 +68,21 @@ import eu.esdihumboldt.tools.RobustFTKey;
  */
 public class ModelNavigationView extends ViewPart implements
 		HaleServiceListener, ISelectionProvider{
+
+	/**
+	 * Function contribution that always uses this view's selection
+	 */
+	private class SchemaFunctionContribution extends FunctionWizardContribution {
+
+		/**
+		 * @see FunctionWizardContribution#getSelection()
+		 */
+		@Override
+		protected ISelection getSelection() {
+			return currentSelection;
+		}
+
+	}
 
 	private static Logger _log = Logger.getLogger(ModelNavigationView.class);
 	
@@ -92,6 +113,8 @@ public class ModelNavigationView extends ViewPart implements
 	private final Set<ISelectionChangedListener> listeners = new HashSet<ISelectionChangedListener>();
 
 	private ISelection currentSelection;
+	
+	private Image functionImage;
 
 	/**
 	 * @see WorkbenchPart#createPartControl(Composite)
@@ -110,9 +133,9 @@ public class ModelNavigationView extends ViewPart implements
 		final PatternViewFilter targetSchemaFilter = new PatternViewFilter();
 
 		Composite modelComposite = new Composite(_parent, SWT.BEGINNING);
-		GridLayout layout = new GridLayout(2, true);
+		GridLayout layout = new GridLayout(3, false);
 		layout.verticalSpacing = 3;
-		layout.horizontalSpacing = 3;
+		layout.horizontalSpacing = 0;
 		modelComposite.setLayout(layout);
 		
 		List<SimpleToggleAction> sourceToggleActions = this.getToggleActions(
@@ -135,6 +158,47 @@ public class ModelNavigationView extends ViewPart implements
 		for (SimpleToggleAction sta : sourceToggleActions) {
 			sta.setActionTarget(this.sourceSchemaViewer);
 		}
+		
+		// function button
+		final Button functionButton = new Button(modelComposite, SWT.PUSH | SWT.FLAT);
+		functionImage = HALEActivator.getImageDescriptor("icons/mapping.gif").createImage();
+		functionButton.setImage(functionImage);
+		functionButton.setToolTipText("Select a mapping function");
+		functionButton.setEnabled(false);
+		MenuManager manager = new MenuManager();
+		manager.setRemoveAllWhenShown(true);
+		final FunctionWizardContribution functionContribution = new SchemaFunctionContribution();
+		manager.addMenuListener(new IMenuListener() {
+
+			@Override
+			public void menuAboutToShow(IMenuManager manager) {
+				// populate context menu
+				manager.add(functionContribution);
+			}
+			
+		});
+		final Menu functionMenu = manager.createContextMenu(functionButton);
+		functionButton.addSelectionListener(new SelectionAdapter() {
+
+			/**
+			 * @see SelectionAdapter#widgetSelected(SelectionEvent)
+			 */
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// show menu on button press
+				functionMenu.setLocation(Display.getCurrent().getCursorLocation());
+				functionMenu.setVisible(true);
+			}
+			
+		});
+		addSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				functionButton.setEnabled(functionContribution.hasActiveFunctions());
+			}
+			
+		});
 
 		// target schema toolbar, filter and explorer
 		Composite targetComposite = new Composite(modelComposite, SWT.BEGINNING);
@@ -171,11 +235,12 @@ public class ModelNavigationView extends ViewPart implements
 		
 		MenuManager menuManager = new MenuManager();
 		menuManager.setRemoveAllWhenShown(true);
+		final IContributionItem contextFunctions = new FunctionWizardContribution();
 		menuManager.addMenuListener(new IMenuListener() {
 
 			@Override
 			public void menuAboutToShow(IMenuManager manager) {
-				manager.add(new FunctionWizardContribution());
+				manager.add(contextFunctions);
 			}
 			
 		});
@@ -516,6 +581,18 @@ public class ModelNavigationView extends ViewPart implements
 	@Override
 	public void setSelection(ISelection selection) {
 		this.currentSelection = selection;
+	}
+
+	/**
+	 * @see WorkbenchPart#dispose()
+	 */
+	@Override
+	public void dispose() {
+		if (functionImage != null) {
+			functionImage.dispose();
+		}
+		
+		super.dispose();
 	}
 
 

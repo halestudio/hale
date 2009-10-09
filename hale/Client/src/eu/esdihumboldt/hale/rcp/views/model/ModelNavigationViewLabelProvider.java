@@ -31,7 +31,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
-import eu.esdihumboldt.cst.transformer.impl.FilterTransformer;
 import eu.esdihumboldt.cst.transformer.impl.RenameFeatureTransformer;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
