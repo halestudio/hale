@@ -182,6 +182,7 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		viewer = new ComboViewer(combo);
 		viewer.setContentProvider(new ArrayContentProvider());
+		viewer.setSelection(StructuredSelection.EMPTY);
 		viewer.setLabelProvider(new LabelProvider() {
 
 			/**
@@ -262,24 +263,6 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 		// initial selection event
 		fireCellSelectionChange(null);
 		
-		// update now
-		update(selectionService.getSelection());
-		
-		// update after selection change
-		selectionService.addSelectionListener(this);
-		
-		// update after alignment change
-		alignmentService.addListener(new HaleServiceListener() {
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public void update(UpdateMessage message) {
-				CellSelector.this.update(
-						CellSelector.this.lastSelection);
-			}
-			
-		});
-		
 		// react on cell selection changes
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -301,6 +284,24 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 				prevButton.setEnabled(combo.getSelectionIndex() > 0);
 				nextButton.setEnabled(combo.getSelectionIndex() >= 0 &&
 						combo.getSelectionIndex() < combo.getItemCount() - 1);
+			}
+			
+		});
+		
+		// update now
+		update(selectionService.getSelection());
+		
+		// update after selection change
+		selectionService.addSelectionListener(this);
+		
+		// update after alignment change
+		alignmentService.addListener(new HaleServiceListener() {
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void update(UpdateMessage message) {
+				CellSelector.this.update(
+						CellSelector.this.lastSelection);
 			}
 			
 		});
@@ -446,6 +447,10 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 	@Override
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		listeners.add(listener);
+		
+		if (cellSelection != null) {
+			listener.selectionChanged(new SelectionChangedEvent(this, cellSelection));
+		}
 	}
 
 	/**
