@@ -37,7 +37,7 @@ public class FilterWizard extends AbstractSingleCellWizard {
 
 	private static Logger _log = Logger.getLogger(FilterWizard.class);
 
-	FilterWizardMainPage mainPage;
+	//FilterWizardMainPage mainPage;
 	FilterWizardSecondPage secondPage;
 
 	/**
@@ -60,8 +60,8 @@ public class FilterWizard extends AbstractSingleCellWizard {
 	 */
 	@Override
 	protected void init() {
-		this.mainPage = new FilterWizardMainPage("Configure Filter Expression",
-		"Configure Filter Expression");
+		/*this.mainPage = new FilterWizardMainPage("Configure Filter Expression",
+			"Configure Filter Expression");*/
 		this.secondPage = new FilterWizardSecondPage(
 				"Configure Filter Expression", "Configure Filter Expression");
 		super.setWindowTitle("Configure Function");

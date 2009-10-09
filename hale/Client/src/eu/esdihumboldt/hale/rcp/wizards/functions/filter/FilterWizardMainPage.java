@@ -12,7 +12,6 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.filter;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -30,6 +29,7 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author Anna Pitaev, Logica
  * @version $Id$
+ * @deprecated replaced by {@link FilterWizardSecondPage}?
  */
 public class FilterWizardMainPage extends WizardPage{
 

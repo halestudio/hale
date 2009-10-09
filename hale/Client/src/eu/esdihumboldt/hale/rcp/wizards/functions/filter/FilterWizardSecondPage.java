@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
+import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 
@@ -68,6 +69,13 @@ public class FilterWizardSecondPage extends AbstractSingleCellWizardPage {
 	@Override
 	public void createControl(Composite parent) {
 		super.initializeDialogUnits(parent);
+		
+		/*
+		 * TODO if this page shall also handle filter editing:
+		 * determine if there is already a filter present and
+		 * parse the filter expression
+		 */
+		//Cell cell = getParent().getResultCell();
 
 		// create a composite to hold the widgets
 		this.composite = new Composite(parent, SWT.NULL);

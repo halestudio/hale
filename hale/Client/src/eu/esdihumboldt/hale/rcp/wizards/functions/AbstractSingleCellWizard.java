@@ -139,7 +139,7 @@ public abstract class AbstractSingleCellWizard extends Wizard implements Functio
 	 * 
 	 * @return the cell to edit
 	 */
-	protected final Cell getResultCell() {
+	public final Cell getResultCell() {
 		return cell;
 	}
 	
