@@ -33,7 +33,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -104,28 +103,8 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 	private boolean isSourceFeatureType = false;
 	private boolean isTargetFeaureType = false;
 
-	/**
-	 * Get the table view showing the source attributes
-	 * 
-	 * @return the table view showing the source attributes
-	 * @deprecated the view should not be publicly available
-	 */
-	public TableViewer getSourceAttributeViewer() {
-		return sourceAttributeViewer;
-	}
-
 	// Viewer for the targetAttributeTable
 	private TableViewer targetAttributeViewer;
-
-	/**
-	 * Get the table view showing the target attributes
-	 * 
-	 * @return the table view showing the target attributes
-	 * @deprecated the view should not be publicly available
-	 */
-	public TableViewer getTargetAttributeViewer() {
-		return targetAttributeViewer;
-	}
 
 	@Override
 	public void createPartControl(Composite _parent) {
