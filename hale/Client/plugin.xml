@@ -205,13 +205,6 @@
                   style="push">
             </command>
          </menu>
-         <menu
-               label="Functions">
-            <dynamic
-                  class="eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardContribution"
-                  id="HALE.dynamic.functionWizards">
-            </dynamic>
-         </menu>
       </menuContribution>
    </extension>
    <extension
