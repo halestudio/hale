@@ -165,6 +165,7 @@ public class ModelNavigationView extends ViewPart implements
 		functionButton.setImage(functionImage);
 		functionButton.setToolTipText("Select a mapping function");
 		functionButton.setEnabled(false);
+		functionButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 		MenuManager manager = new MenuManager();
 		manager.setRemoveAllWhenShown(true);
 		final FunctionWizardContribution functionContribution = new SchemaFunctionContribution();
