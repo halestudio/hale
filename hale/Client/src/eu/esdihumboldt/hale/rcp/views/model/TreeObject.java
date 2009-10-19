@@ -35,8 +35,6 @@ public class TreeObject implements SchemaItem {
 	
 	private final Name name;
 	
-	private Entity entity = null;
-	
 	/**
 	 * Constructor
 	 * 
@@ -51,9 +49,11 @@ public class TreeObject implements SchemaItem {
 	}
 	
 	/**
-	 * @see eu.esdihumboldt.hale.rcp.views.model.SchemaItem#getEntity()
+	 * @see SchemaItem#getEntity()
 	 */
 	public Entity getEntity() {
+		Entity entity = null;
+		
 		if (entity == null) {
 			List<String> nameparts = new ArrayList<String>();
 			
