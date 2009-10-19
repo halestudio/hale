@@ -11,11 +11,6 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.rcp.views.mapping.CellSelection;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
 
 /**
  * Factory for function wizards
@@ -29,49 +24,23 @@ public interface FunctionWizardFactory {
 	/**
 	 * Determine if the wizard defined by this factory supports
 	 *   creating new cells or editing existing cells based on
-	 *   the given {@link SchemaSelection}
+	 *   the given {@link AlignmentInfo}
 	 * 
-	 * @param schemaSelection the {@link SchemaItem} selection
-	 * @param alignmentService the alignment service
+	 * @param selection the {@link AlignmentInfo} of the selection
 	 * 
 	 * @return if the wizard supports creating/editing cells
 	 *   cells based on the given selection
 	 */
-	public boolean supports(SchemaSelection schemaSelection,
-			AlignmentService alignmentService);
-	
-	/**
-	 * Determine if the wizard defined by this factory supports
-	 *   editing the {@link ICell} specified by the given
-	 *   {@link CellSelection}
-	 * 
-	 * @param cellSelection the {@link ICell} selection
-	 * 
-	 * @return if the wizard supports editing the cell specified
-	 *   by the given selection
-	 */
-	public boolean supports(CellSelection cellSelection);
+	public boolean supports(AlignmentInfo selection);
 	
 	/**
 	 * Creates a wizard for creating new cells or editing existing
-	 *   cells based on the given {@link SchemaSelection}
+	 *   cells based on the given {@link AlignmentInfo}
 	 * 
-	 * @param schemaSelection the {@link SchemaItem} selection
-	 * @param alignmentService the alignment service
+	 * @param selection the {@link AlignmentInfo} of the selection
 	 * 
 	 * @return the new wizard instance
 	 */
-	public FunctionWizard createWizard(SchemaSelection schemaSelection,
-			AlignmentService alignmentService);
-	
-	/**
-	 * Creates a wizard for editing the {@link ICell} specified by
-	 *   the given {@link CellSelection}
-	 * 
-	 * @param cellSelection the {@link ICell} selection
-	 * 
-	 * @return the edit wizard instance
-	 */
-	public FunctionWizard createWizard(CellSelection cellSelection);
+	public FunctionWizard createWizard(AlignmentInfo selection);
 
 }

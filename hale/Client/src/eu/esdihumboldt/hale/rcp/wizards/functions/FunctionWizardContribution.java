@@ -84,18 +84,19 @@ public class FunctionWizardContribution extends ContributionItem {
 			if (selection.isEmpty()) return;
 			
 			FunctionWizard wizard = null;
+			AlignmentInfo info = null;
 			
 			if (selection instanceof SchemaSelection) {
 				SchemaSelection schemaSelection = (SchemaSelection) selection;
-				if (descriptor.supports(schemaSelection, alignmentService)) {
-					wizard = descriptor.createWizard(schemaSelection, alignmentService);
-				}
+				info = new SchemaSelectionInfo(schemaSelection, alignmentService);
 			}
 			else if (selection instanceof CellSelection) {
 				CellSelection cellSelection = (CellSelection) selection;
-				if (descriptor.supports(cellSelection)) {
-					wizard = descriptor.createWizard(cellSelection);
-				}
+				info = new CellSelectionInfo(cellSelection);
+			}
+			
+			if (info != null && descriptor.supports(info)) {
+				wizard = descriptor.createWizard(info);
 			}
 			
 			if (wizard != null) {
@@ -225,13 +226,13 @@ public class FunctionWizardContribution extends ContributionItem {
 		
 		if (selection instanceof SchemaSelection) {
 			SchemaSelection schemaSelection = (SchemaSelection) selection;
-			if (descriptor.supports(schemaSelection, alignmentService)) {
+			if (descriptor.supports(new SchemaSelectionInfo(schemaSelection, alignmentService))) {
 				enabled = true;
 			}
 		}
 		else if (selection instanceof CellSelection) {
 			CellSelection cellSelection = (CellSelection) selection;
-			if (descriptor.supports(cellSelection)) {
+			if (descriptor.supports(new CellSelectionInfo(cellSelection))) {
 				enabled = true;
 			}
 		}

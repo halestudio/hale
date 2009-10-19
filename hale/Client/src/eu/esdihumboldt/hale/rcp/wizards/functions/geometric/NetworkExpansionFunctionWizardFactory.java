@@ -12,14 +12,11 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.geometric;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.cst.transformer.impl.NetworkExpansionTransformer;
-import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.rcp.views.mapping.CellSelection;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
-import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
+import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
+import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
 
 /**
  * Factory for {@link NetworkExpansionFunctionWizard}s
@@ -33,60 +30,39 @@ public class NetworkExpansionFunctionWizardFactory implements
 		FunctionWizardFactory {
 
 	/**
-	 * @see FunctionWizardFactory#createWizard(CellSelection)
+	 * @see FunctionWizardFactory#createWizard(AlignmentInfo)
 	 */
 	@Override
-	public FunctionWizard createWizard(CellSelection cellSelection) {
-		return new NetworkExpansionFunctionWizard(cellSelection);
+	public FunctionWizard createWizard(AlignmentInfo selection) {
+		return new NetworkExpansionFunctionWizard(selection);
 	}
 
 	/**
-	 * @see FunctionWizardFactory#createWizard(SchemaSelection, AlignmentService)
+	 * @see FunctionWizardFactory#supports(AlignmentInfo)
 	 */
 	@Override
-	public FunctionWizard createWizard(SchemaSelection schemaSelection,
-			AlignmentService alignmentService) {
-		return new NetworkExpansionFunctionWizard(schemaSelection,
-				alignmentService);
-	}
-
-	/**
-	 * @see FunctionWizardFactory#supports(CellSelection)
-	 */
-	@Override
-	public boolean supports(CellSelection cellSelection) {
-		if (!cellSelection.isEmpty()) {
-			ITransformation trans = cellSelection.getCellInfo().getCell().getEntity1().getTransformation();
-			return trans.getLabel().equals(NetworkExpansionTransformer.class.getName());
-		}
-		
-		return false;
-	}
-
-	/**
-	 * @see FunctionWizardFactory#supports(SchemaSelection, AlignmentService)
-	 */
-	@Override
-	public boolean supports(SchemaSelection schemaSelection,
-			AlignmentService alignmentService) {
-		SchemaItem source = schemaSelection.getFirstSourceItem();
-		SchemaItem target = schemaSelection.getFirstTargetItem();
-		
-		if (source == null || target == null) {
-			return false;
-		}
-		
-		ICell cell = alignmentService.getCell(
-				source.getEntity(), target.getEntity());
-		
-		if (cell != null) {
-			// only allow editing matching transformation
-			return cell.getEntity1().getTransformation().getLabel().equals(
-					NetworkExpansionTransformer.class.getName());
-		}
-		else if (source.isAttribute() && target.isAttribute()) {
-			//TODO more sophisticated check
-			return true;
+	public boolean supports(AlignmentInfo selection) {
+		if (selection.getSourceItemCount() == 1 &&
+				selection.getTargetItemCount() == 1) {
+			SchemaItem source = selection.getFirstSourceItem();
+			SchemaItem target = selection.getFirstTargetItem();
+			
+			if (source == null || target == null) {
+				return false;
+			}
+			
+			ICell cell = selection.getAlignment(
+					source, target);
+			
+			if (cell != null) {
+				// only allow editing matching transformation
+				return cell.getEntity1().getTransformation().getLabel().equals(
+						NetworkExpansionTransformer.class.getName());
+			}
+			else if (source.isAttribute() && target.isAttribute()) {
+				//TODO more sophisticated check
+				return true;
+			}
 		}
 		
 		return false;

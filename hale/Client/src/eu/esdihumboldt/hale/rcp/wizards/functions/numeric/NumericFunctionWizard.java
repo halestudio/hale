@@ -2,10 +2,8 @@ package eu.esdihumboldt.hale.rcp.wizards.functions.numeric;
 
 import org.eclipse.jface.wizard.Wizard;
 
-import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.rcp.views.mapping.CellSelection;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
+import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 
 /**
  * Numeric function wizard
@@ -17,18 +15,10 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 public class NumericFunctionWizard extends AbstractSingleCellWizard {
 
 	/**
-	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(CellSelection)
+	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(AlignmentInfo)
 	 */
-	public NumericFunctionWizard(CellSelection cellSelection) {
-		super(cellSelection);
-	}
-
-	/**
-	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(SchemaSelection, AlignmentService)
-	 */
-	public NumericFunctionWizard(SchemaSelection schemaSelection,
-			AlignmentService alignmentService) {
-		super(schemaSelection, alignmentService);
+	public NumericFunctionWizard(AlignmentInfo selection) {
+		super(selection);
 	}
 
 	/**

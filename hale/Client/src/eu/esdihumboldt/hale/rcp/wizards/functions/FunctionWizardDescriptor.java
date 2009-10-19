@@ -21,10 +21,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.Bundle;
 
-import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.rcp.views.mapping.CellSelection;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
-
 /**
  * Descriptor for {@link FunctionWizardFactory}(ie)s
  * 
@@ -118,37 +114,19 @@ public class FunctionWizardDescriptor implements FunctionWizardFactory {
 	}
 	
 	/**
-	 * @see FunctionWizardFactory#createWizard(CellSelection)
+	 * @see FunctionWizardFactory#createWizard(AlignmentInfo)
 	 */
 	@Override
-	public FunctionWizard createWizard(CellSelection cellSelection) {
-		return getFactory().createWizard(cellSelection);
+	public FunctionWizard createWizard(AlignmentInfo selection) {
+		return getFactory().createWizard(selection);
 	}
 
 	/**
-	 * @see FunctionWizardFactory#createWizard(SchemaSelection, AlignmentService)
+	 * @see FunctionWizardFactory#supports(AlignmentInfo)
 	 */
 	@Override
-	public FunctionWizard createWizard(SchemaSelection schemaSelection,
-			AlignmentService alignmentService) {
-		return getFactory().createWizard(schemaSelection, alignmentService);
-	}
-
-	/**
-	 * @see FunctionWizardFactory#supports(CellSelection)
-	 */
-	@Override
-	public boolean supports(CellSelection cellSelection) {
-		return getFactory().supports(cellSelection);
-	}
-
-	/**
-	 * @see FunctionWizardFactory#supports(SchemaSelection, AlignmentService)
-	 */
-	@Override
-	public boolean supports(SchemaSelection schemaSelection,
-			AlignmentService alignmentService) {
-		return getFactory().supports(schemaSelection, alignmentService);
+	public boolean supports(AlignmentInfo selection) {
+		return getFactory().supports(selection);
 	}
 
 }

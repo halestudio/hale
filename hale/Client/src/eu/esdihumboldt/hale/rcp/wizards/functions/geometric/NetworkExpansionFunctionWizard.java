@@ -19,10 +19,8 @@ import eu.esdihumboldt.cst.transformer.impl.NetworkExpansionTransformer;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.rcp.views.mapping.CellSelection;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
+import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 
 /**
  * A simplified Wizard for the configuration of the Network Expansion function,
@@ -40,18 +38,10 @@ public class NetworkExpansionFunctionWizard
 	private NetworkExpansionFunctionWizardPage mainPage;
 	
 	/**
-	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(CellSelection)
+	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(AlignmentInfo)
 	 */
-	public NetworkExpansionFunctionWizard(CellSelection cellSelection) {
-		super(cellSelection);
-	}
-
-	/**
-	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(SchemaSelection, AlignmentService)
-	 */
-	public NetworkExpansionFunctionWizard(SchemaSelection schemaSelection,
-			AlignmentService alignmentService) {
-		super(schemaSelection, alignmentService);
+	public NetworkExpansionFunctionWizard(AlignmentInfo selection) {
+		super(selection);
 	}
 
 	/**

@@ -21,10 +21,8 @@ import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.omwg.Restriction;
-import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.rcp.views.mapping.CellSelection;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
+import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 
 /**
  * This {@link Wizard} is used to invoke a Renaming Transformer for the Source
@@ -41,18 +39,10 @@ public class FilterWizard extends AbstractSingleCellWizard {
 	FilterWizardSecondPage secondPage;
 
 	/**
-	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(CellSelection)
+	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(AlignmentInfo)
 	 */
-	public FilterWizard(CellSelection cellSelection) {
-		super(cellSelection);
-	}
-
-	/**
-	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(SchemaSelection, AlignmentService)
-	 */
-	public FilterWizard(SchemaSelection schemaSelection,
-			AlignmentService alignmentService) {
-		super(schemaSelection, alignmentService);
+	public FilterWizard(AlignmentInfo selection) {
+		super(selection);
 	}
 	
 	/**

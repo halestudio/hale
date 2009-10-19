@@ -19,11 +19,7 @@ import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.rcp.views.mapping.CellInfo;
-import eu.esdihumboldt.hale.rcp.views.mapping.CellSelection;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
 
 /**
  * Abstract function wizard working with a single {@link Cell}
@@ -41,21 +37,20 @@ public abstract class AbstractSingleCellWizard extends Wizard implements Functio
 	private final SchemaItem targetItem;
 	
 	/**
-	 * Creates a wizard that creates a new {@link Cell} for the first source
-	 *   and target items in the given {@link SchemaSelection}
+	 * Creates a wizard that creates a new {@link Cell} or
+	 *   copies the existing {@link ICell} for the first
+	 *   source an target items of the given {@link AlignmentInfo}
 	 *   
-	 * @param schemaSelection the {@link SchemaItem} selection
-	 * @param alignmentService the alignment service
+	 * @param selection the {@link AlignmentInfo} of the selection
 	 */
-	public AbstractSingleCellWizard(SchemaSelection schemaSelection,
-			AlignmentService alignmentService) {
+	public AbstractSingleCellWizard(AlignmentInfo selection) {
 		super();
 		
-		sourceItem = schemaSelection.getFirstSourceItem();
-		targetItem = schemaSelection.getFirstTargetItem();
+		sourceItem = selection.getFirstSourceItem();
+		targetItem = selection.getFirstTargetItem();
 		
-		ICell oldCell = alignmentService.getCell(
-				sourceItem.getEntity(), targetItem.getEntity());
+		ICell oldCell = selection.getAlignment(
+				sourceItem, targetItem);
 		
 		if (oldCell == null) {
 			cell = new Cell();
@@ -72,33 +67,6 @@ public abstract class AbstractSingleCellWizard extends Wizard implements Functio
 			cell.setMeasure(oldCell.getMeasure());
 			cell.setRelation(oldCell.getRelation());
 		}
-		
-		init();
-	}
-	
-	/**
-	 * Creates a wizard that edits an {@link ICell} specified by the given
-	 *  {@link CellSelection}
-	 *   
-	 * @param cellSelection the {@link ICell} selection
-	 */
-	public AbstractSingleCellWizard(CellSelection cellSelection) {
-		super();
-		
-		CellInfo info = cellSelection.getCellInfo();
-		ICell selectedCell = info.getCell();
-		
-		// copy the cell
-		cell = new Cell();
-		cell.setEntity1(selectedCell.getEntity1());
-		cell.setEntity2(selectedCell.getEntity2());
-		cell.setAbout(selectedCell.getAbout());
-		cell.setLabel(selectedCell.getLabel());
-		cell.setMeasure(selectedCell.getMeasure());
-		cell.setRelation(selectedCell.getRelation());
-		
-		sourceItem = info.getSourceItem();
-		targetItem = info.getTargetItem();
 		
 		init();
 	}

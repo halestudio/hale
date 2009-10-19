@@ -23,10 +23,8 @@ import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.rcp.views.mapping.CellSelection;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
+import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 
 /**
  * This {@link Wizard} is used to invoke a Renaming Transformer for the Source
@@ -42,20 +40,12 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 	RenamingFunctionWizardMainPage mainPage;
 
 	/**
-	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(CellSelection)
+	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(AlignmentInfo)
 	 */
-	public RenamingFunctionWizard(CellSelection cellSelection) {
-		super(cellSelection);
+	public RenamingFunctionWizard(AlignmentInfo selection) {
+		super(selection);
 	}
 
-	/**
-	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(SchemaSelection, AlignmentService)
-	 */
-	public RenamingFunctionWizard(SchemaSelection schemaSelection,
-			AlignmentService alignmentService) {
-		super(schemaSelection, alignmentService);
-	}
-	
 	/**
 	 * @see AbstractSingleCellWizard#init()
 	 */

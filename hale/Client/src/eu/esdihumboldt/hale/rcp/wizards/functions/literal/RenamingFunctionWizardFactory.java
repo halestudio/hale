@@ -12,12 +12,10 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.literal;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.rcp.views.mapping.CellSelection;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
-import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
+import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
+import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
 
 /**
  * Factory for {@link RenamingFunctionWizard}s
@@ -29,56 +27,35 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
 public class RenamingFunctionWizardFactory implements FunctionWizardFactory {
 
 	/**
-	 * @see FunctionWizardFactory#createWizard(CellSelection)
+	 * @see FunctionWizardFactory#createWizard(AlignmentInfo)
 	 */
 	@Override
-	public FunctionWizard createWizard(CellSelection cellSelection) {
-		// TODO Auto-generated method stub
-		return null;
+	public FunctionWizard createWizard(AlignmentInfo selection) {
+		return new RenamingFunctionWizard(selection);
 	}
 
 	/**
-	 * @see FunctionWizardFactory#createWizard(SchemaSelection, AlignmentService)
+	 * @see FunctionWizardFactory#supports(AlignmentInfo)
 	 */
 	@Override
-	public FunctionWizard createWizard(SchemaSelection schemaSelection,
-			AlignmentService alignmentService) {
-		return new RenamingFunctionWizard(schemaSelection, alignmentService);
-	}
-
-	/**
-	 * @see FunctionWizardFactory#supports(CellSelection)
-	 */
-	@Override
-	public boolean supports(CellSelection cellSelection) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/**
-	 * @see FunctionWizardFactory#supports(SchemaSelection, AlignmentService)
-	 */
-	@Override
-	public boolean supports(SchemaSelection schemaSelection,
-			AlignmentService alignmentService) {
-		SchemaItem source = schemaSelection.getFirstSourceItem();
-		SchemaItem target = schemaSelection.getFirstTargetItem();
-		
-		if (source == null || target == null) {
-			return false;
-		}
-		
-		ICell cell = alignmentService.getCell(source.getEntity(), target.getEntity());
-		
-		if (cell != null) {
-			// only adding supported
-			return false;
-		}
-		else if (source.isFeatureType() && target.isFeatureType()) {
-			return true;
-		}
-		else if (source.isAttribute() && target.isAttribute()) {
-			return true;
+	public boolean supports(AlignmentInfo selection) {
+		if (selection.getSourceItemCount() == 1 &&
+				selection.getTargetItemCount() == 1) {
+			SchemaItem source = selection.getFirstSourceItem();
+			SchemaItem target = selection.getFirstTargetItem();
+			
+			ICell cell = selection.getAlignment(source, target);
+			
+			if (cell != null) {
+				// only adding supported
+				return false;
+			}
+			else if (source.isFeatureType() && target.isFeatureType()) {
+				return true;
+			}
+			else if (source.isAttribute() && target.isAttribute()) {
+				return true;
+			}
 		}
 		
 		return false;

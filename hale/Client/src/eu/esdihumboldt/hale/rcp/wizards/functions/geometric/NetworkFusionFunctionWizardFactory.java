@@ -11,9 +11,7 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.geometric;
 
-import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.rcp.views.mapping.CellSelection;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
+import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
 
@@ -27,38 +25,18 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
 public class NetworkFusionFunctionWizardFactory implements FunctionWizardFactory {
 
 	/**
-	 * @see FunctionWizardFactory#createWizard(CellSelection)
+	 * @see FunctionWizardFactory#createWizard(AlignmentInfo)
 	 */
 	@Override
-	public FunctionWizard createWizard(CellSelection cellSelection) {
-		return new NetworkFusionFunctionWizard(cellSelection);
+	public FunctionWizard createWizard(AlignmentInfo selection) {
+		return new NetworkFusionFunctionWizard(selection);
 	}
 
 	/**
-	 * @see FunctionWizardFactory#createWizard(SchemaSelection, AlignmentService)
+	 * @see FunctionWizardFactory#supports(AlignmentInfo)
 	 */
 	@Override
-	public FunctionWizard createWizard(SchemaSelection schemaSelection,
-			AlignmentService alignmentService) {
-		return new NetworkFusionFunctionWizard(schemaSelection,
-				alignmentService);
-	}
-
-	/**
-	 * @see FunctionWizardFactory#supports(CellSelection)
-	 */
-	@Override
-	public boolean supports(CellSelection cellSelection) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/**
-	 * @see FunctionWizardFactory#supports(SchemaSelection, AlignmentService)
-	 */
-	@Override
-	public boolean supports(SchemaSelection schemaSelection,
-			AlignmentService alignmentService) {
+	public boolean supports(AlignmentInfo selection) {
 		// TODO Auto-generated method stub
 		return false;
 	}

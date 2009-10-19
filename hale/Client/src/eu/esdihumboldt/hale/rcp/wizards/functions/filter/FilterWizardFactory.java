@@ -12,10 +12,8 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.filter;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.rcp.views.mapping.CellSelection;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
+import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
 
@@ -29,59 +27,34 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
 public class FilterWizardFactory implements FunctionWizardFactory {
 
 	/**
-	 * @see FunctionWizardFactory#createWizard(CellSelection)
+	 * @see FunctionWizardFactory#createWizard(AlignmentInfo)
 	 */
 	@Override
-	public FunctionWizard createWizard(CellSelection cellSelection) {
-		return new FilterWizard(cellSelection);
+	public FunctionWizard createWizard(AlignmentInfo selection) {
+		return new FilterWizard(selection);
 	}
 
 	/**
-	 * @see FunctionWizardFactory#createWizard(SchemaSelection, AlignmentService)
+	 * @see FunctionWizardFactory#supports(AlignmentInfo)
 	 */
 	@Override
-	public FunctionWizard createWizard(SchemaSelection schemaSelection,
-			AlignmentService alignmentService) {
-		return new FilterWizard(schemaSelection, alignmentService);
-	}
-
-	/**
-	 * @see FunctionWizardFactory#supports(CellSelection)
-	 */
-	@Override
-	public boolean supports(CellSelection cellSelection) {
-		SchemaItem source = cellSelection.getCellInfo().getSourceItem();
-		SchemaItem target = cellSelection.getCellInfo().getTargetItem();
-		
-		if (!source.isFeatureType() || !target.isFeatureType()) {
-			// only feature types supported
-			return false;
+	public boolean supports(AlignmentInfo selection) {
+		if (selection.getSourceItemCount() == 1 &&
+				selection.getTargetItemCount() == 1) {
+			SchemaItem source = selection.getFirstSourceItem();
+			SchemaItem target = selection.getFirstTargetItem();
+			
+			if (!source.isFeatureType() || !target.isFeatureType()) {
+				// only feature types supported
+				return false;
+			}
+			
+			ICell cell = selection.getAlignment(source, target);
+			
+			return cell != null;
 		}
 		
-		return true;
-	}
-
-	/**
-	 * @see FunctionWizardFactory#supports(SchemaSelection, AlignmentService)
-	 */
-	@Override
-	public boolean supports(SchemaSelection schemaSelection,
-			AlignmentService alignmentService) {
-		SchemaItem source = schemaSelection.getFirstSourceItem();
-		SchemaItem target = schemaSelection.getFirstTargetItem();
-		
-		if (source == null || target == null) {
-			return false;
-		}
-		else if (!source.isFeatureType() || !target.isFeatureType()) {
-			// only feature types supported
-			return false;
-		}
-		
-		ICell cell = alignmentService.getCell(
-				source.getEntity(), target.getEntity());
-		
-		return cell != null;
+		return false;
 	}
 
 }
