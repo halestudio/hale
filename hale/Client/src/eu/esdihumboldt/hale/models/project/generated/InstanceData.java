@@ -15,16 +15,18 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for MappedSchema complex type.
+ * <p>Java class for InstanceData complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="MappedSchema">
+ * &lt;complexType name="InstanceData">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="path" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="wkt" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="epsgcode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -34,13 +36,17 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "MappedSchema", propOrder = {
-    "path"
+@XmlType(name = "InstanceData", propOrder = {
+    "path",
+    "wkt",
+    "epsgcode"
 })
-public class MappedSchema {
+public class InstanceData {
 
     @XmlElement(required = true)
     protected String path;
+    protected String wkt;
+    protected String epsgcode;
 
     /**
      * Gets the value of the path property.
@@ -64,6 +70,54 @@ public class MappedSchema {
      */
     public void setPath(String value) {
         this.path = value;
+    }
+
+    /**
+     * Gets the value of the wkt property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getWkt() {
+        return wkt;
+    }
+
+    /**
+     * Sets the value of the wkt property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setWkt(String value) {
+        this.wkt = value;
+    }
+
+    /**
+     * Gets the value of the epsgcode property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getEpsgcode() {
+        return epsgcode;
+    }
+
+    /**
+     * Sets the value of the epsgcode property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setEpsgcode(String value) {
+        this.epsgcode = value;
     }
 
 }

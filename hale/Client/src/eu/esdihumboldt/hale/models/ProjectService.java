@@ -37,4 +37,6 @@ public interface ProjectService extends UpdateService {
 	
 	public void setProjectCreatedDate(String date);
 	
+	public String getHaleVersion();
+	
 }

@@ -13,7 +13,6 @@
 package eu.esdihumboldt.hale.models.project;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -33,9 +32,11 @@ import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.project.generated.HaleProject;
+import eu.esdihumboldt.hale.models.project.generated.InstanceData;
 import eu.esdihumboldt.hale.models.project.generated.MappedSchema;
 import eu.esdihumboldt.hale.models.project.generated.Task;
 import eu.esdihumboldt.hale.models.project.generated.TaskStatus;
+import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
 import eu.esdihumboldt.mediator.util.NamespacePrefixMapperImpl;
 
 /**
@@ -89,11 +90,22 @@ public class ProjectGenerator {
 		
 		// setup project and basic attributes
 		HaleProject hproject = new HaleProject();
-		hproject.setHaleVersion("M4.1952");
+		hproject.setHaleVersion(projectService.getHaleVersion());
 		hproject.setDateCreated(projectService.getProjectCreatedDate());
 		hproject.setDateModified(Calendar.getInstance().getTime().toString());
 		hproject.setName(name);
-		hproject.setInstancePath(projectService.getInstanceDataPath());
+		
+		// create InstanceData element
+		InstanceData id = new InstanceData();
+		id.setPath(projectService.getInstanceDataPath());
+		if (SelectCRSDialog.lastWasCode()) {
+			id.setEpsgcode(
+					SelectCRSDialog.getValue().getCoordinateSystem().getName().getCode());
+		}
+		else if (SelectCRSDialog.getValueWKT() != null) {
+			id.setWkt(SelectCRSDialog.getValueWKT());
+		}
+		hproject.setInstanceData(id);
 		
 		// create MappedSchema elements
 		MappedSchema sourceschema = new MappedSchema();

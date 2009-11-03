@@ -25,7 +25,7 @@
 			<xs:element name="dateCreated" type="xs:string" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="dateModified" type="xs:string" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="omlPath" type="xs:string" minOccurs="1" maxOccurs="1"/>
-			<xs:element name="instancePath" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="instanceData" type="InstanceData" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="sourceSchema" type="MappedSchema" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="targetSchema" type="MappedSchema" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="taskStatus" type="TaskStatus" minOccurs="1" maxOccurs="1"/>
@@ -35,6 +35,14 @@
 	<xs:complexType name="MappedSchema">
 		<xs:sequence>
 			<xs:element name="path" type="xs:string" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="InstanceData" type="InstanceData"/>
+	<xs:complexType name="InstanceData">
+		<xs:sequence>
+			<xs:element name="path" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="wkt" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="epsgcode" type="xs:string" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:element name="ContextElement" type="ContextElement"/>

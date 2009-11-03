@@ -16,10 +16,13 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.hale.rcp.HALEActivator;
 
 /**
  * Default implementation of the {@link ProjectService}.
@@ -32,6 +35,8 @@ public class ProjectServiceImpl
 	
 	static ProjectService instance = new ProjectServiceImpl();
 	
+	private static Logger _log = Logger.getLogger(ProjectServiceImpl.class);
+	
 	private Set<HaleServiceListener> listeners = new HashSet<HaleServiceListener>();
 
 	String instanceDataPath = null;
@@ -42,8 +47,11 @@ public class ProjectServiceImpl
 	
 	String targetSchemaPath = null;
 	
+	String haleVersion = null;
+	
 	private ProjectServiceImpl(){
-		
+		this.haleVersion = (String) 
+				HALEActivator.getDefault().getBundle().getHeaders().get("Bundle-Version");
 	}
 	
 	public static ProjectService getInstance() {
@@ -104,6 +112,14 @@ public class ProjectServiceImpl
 	public void setTargetSchemaPath(String path) {
 		this.targetSchemaPath = path;
 		updateListeners();
+	}
+	
+	/**
+	 * @see eu.esdihumboldt.hale.models.ProjectService#getHaleVersion()
+	 */
+	@Override
+	public String getHaleVersion() {
+		return this.haleVersion;
 	}
 	
 	// UpdateService operations ................................................

@@ -24,24 +24,27 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import eu.esdihumboldt.hale.rcp.wizards.io.SaveAlignmentProjectWizard;
 
 /**
- * TODO Explain the purpose of this type here.
+ * This type handles the saving of Alignment Projects.
  * 
  * @author Thorsten Reitz
  * @version $Id$
  */
-public class SaveAlignmentProjectHandler 
-extends AbstractHandler
-implements IHandler {
+public class SaveAlignmentProjectHandler extends AbstractHandler implements
+		IHandler {
 
-/* (non-Javadoc)
- * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
- */
-public Object execute(ExecutionEvent event) throws ExecutionException {
-	IExportWizard iw = new SaveAlignmentProjectWizard();
-	// Instantiates the wizard container with the wizard and opens it
-	Shell shell = HandlerUtil.getActiveShell(event);
-	WizardDialog dialog = new WizardDialog(shell, iw);
-	dialog.open();
-	return null;
-}
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.
+	 * ExecutionEvent)
+	 */
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		IExportWizard iw = new SaveAlignmentProjectWizard();
+		// Instantiates the wizard container with the wizard and opens it
+		Shell shell = HandlerUtil.getActiveShell(event);
+		WizardDialog dialog = new WizardDialog(shell, iw);
+		dialog.open();
+		return null;
+	}
 }

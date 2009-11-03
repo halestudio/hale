@@ -16,9 +16,15 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IExportWizard;
+import org.eclipse.ui.handlers.HandlerUtil;
+
+import eu.esdihumboldt.hale.rcp.wizards.io.OpenAlignmentProjectWizard;
 
 /**
- * TODO Explain the purpose of this type here.
+ * This type handles the Opening of Alignment Projects.
  * 
  * @author Thorsten Reitz
  * @version $Id$
@@ -29,17 +35,13 @@ public class OpenProjectHandler extends AbstractHandler implements IHandler {
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		// TODO Auto-generated method stub
+		IExportWizard iw = new OpenAlignmentProjectWizard();
+		// Instantiates the wizard container with the wizard and opens it
+		Shell shell = HandlerUtil.getActiveShell(event);
+		WizardDialog dialog = new WizardDialog(shell, iw);
+		dialog.open();
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.commands.IHandler#isEnabled()
-	 */
-	@Override
-	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 }

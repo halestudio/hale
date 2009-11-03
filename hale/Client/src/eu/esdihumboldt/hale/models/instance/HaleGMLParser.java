@@ -36,6 +36,7 @@ import org.geotools.xs.XS;
  * @version $Id$ 
  */
 public class HaleGMLParser {
+	
     /** sax handler which maintains the element stack */
     private ParserHandler handler;
 

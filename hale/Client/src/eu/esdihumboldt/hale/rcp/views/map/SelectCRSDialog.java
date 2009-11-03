@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -43,6 +44,8 @@ import eu.esdihumboldt.hale.models.InstanceService;
  *
  */
 public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeListener {
+	
+	private static Logger _log = Logger.getLogger(SelectCRSDialog.class);
 	
 	/**
 	 * Text field for editing WKT
@@ -173,6 +176,9 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 
 	}
 	
+	/**
+	 * true = EPSG code is used, false = WKT is used
+	 */
 	private static boolean lastWasCode = true;
 
 	private static String lastCRS = "EPSG:4326";
@@ -222,6 +228,10 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 	 */
 	public SelectCRSDialog(Shell parentShell) {
 		super(parentShell);
+	}
+	
+	public static boolean lastWasCode() {
+		return lastWasCode;
 	}
 
 	/**
@@ -352,8 +362,32 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 	/**
 	 * @return the value
 	 */
-	public CoordinateReferenceSystem getValue() {
+	public static CoordinateReferenceSystem getValue() {
 		return value;
+	}
+	
+	public static void setWkt(String wkt) {
+		SelectCRSDialog.lastWKT = wkt;
+		SelectCRSDialog.lastWasCode = false;
+		try {
+			value = CRS.parseWKT(SelectCRSDialog.lastWKT);
+		} catch (Exception e) {
+			_log.error("WKT could not be parsed: ", e);
+		}
+	}
+	
+	public static void setEpsgcode(String epsgcode) {
+		SelectCRSDialog.lastCRS = epsgcode;
+		SelectCRSDialog.lastWasCode = true;
+		try {
+			value = CRS.decode(SelectCRSDialog.lastCRS);
+		} catch (Exception e) {
+			_log.error("EPSG code could not be decoded: ", e);
+		}
+	}
+	
+	public static String getValueWKT(){
+		return SelectCRSDialog.lastWKT;
 	}
 
 	/**

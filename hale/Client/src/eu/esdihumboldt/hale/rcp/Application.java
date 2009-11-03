@@ -59,12 +59,19 @@ public class Application implements IApplication {
 		Logger.getLogger(Log4JLogger.class).setLevel(Level.WARN);
 		Logger.getRootLogger().setLevel(Level.WARN);
 		
+		// provide information on HALE version to console.
+		_log.info("HALE Version: " 
+				+ HALEActivator.getDefault().getBundle().getHeaders().get(
+						"Bundle-Version"));
+		
+		// find base path of the application.
 		URL location = this.getClass().getProtectionDomain().getCodeSource().getLocation();
 		String location_path = location.getPath().replace(" ", "+");
 		location_path = location_path.replace("bin/", "");
 		_log.debug(location_path);
 		Application.basepath = location_path;
 		
+		// initialize UI
 		Display display = PlatformUI.createDisplay();
 		try {
 			int returnCode = PlatformUI.createAndRunWorkbench(
