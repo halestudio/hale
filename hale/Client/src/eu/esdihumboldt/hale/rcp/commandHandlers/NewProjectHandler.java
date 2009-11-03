@@ -11,6 +11,8 @@
  */
 package eu.esdihumboldt.hale.rcp.commandHandlers;
 
+import java.util.Calendar;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -21,6 +23,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.InstanceService;
+import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 
@@ -40,17 +43,28 @@ public class NewProjectHandler extends AbstractHandler {
 		if (MessageDialog.openQuestion(HandlerUtil.getActiveShell(event), 
 				"New Alignment Project", "This will reset the Alignment Project, unsaved changes will be lost. Do you want to continue?")) {
 			// clean alignment service
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+			AlignmentService as = (AlignmentService) 
+					PlatformUI.getWorkbench().getService(AlignmentService.class);
 			as.cleanModel();
 			
 			// clean instance service
-			InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+			InstanceService is = (InstanceService) 
+					PlatformUI.getWorkbench().getService(InstanceService.class);
 			is.cleanInstances();
 			
 			// clean schema service
-			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+			SchemaService ss = (SchemaService) 
+					PlatformUI.getWorkbench().getService(SchemaService.class);
 			ss.cleanSourceSchema();
 			ss.cleanTargetSchema();
+			
+			// clean the project Service
+			ProjectService ps = (ProjectService) 
+					PlatformUI.getWorkbench().getService(ProjectService.class);
+			ps.setInstanceDataPath(null);
+			ps.setProjectCreatedDate(Calendar.getInstance().getTime().toString());
+			ps.setSourceSchemaPath(null);
+			ps.setTargetSchemaPath(null);
 			
 			System.gc();
 		}

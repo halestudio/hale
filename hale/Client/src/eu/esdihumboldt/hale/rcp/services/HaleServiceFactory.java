@@ -18,11 +18,13 @@ import eu.esdihumboldt.cst.transformer.TransformationService;
 import eu.esdihumboldt.cst.transformer.service.impl.TransformationServiceFactory;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.InstanceService;
+import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.alignment.AlignmentServiceImpl;
 import eu.esdihumboldt.hale.models.instance.InstanceServiceImpl;
+import eu.esdihumboldt.hale.models.project.ProjectServiceImpl;
 import eu.esdihumboldt.hale.models.schema.SchemaServiceImplApache;
 import eu.esdihumboldt.hale.models.style.StyleServiceImpl;
 import eu.esdihumboldt.hale.models.task.TaskServiceImpl;
@@ -46,6 +48,7 @@ public class HaleServiceFactory
 	private TaskService task = TaskServiceImpl.getInstance();
 	private AlignmentService alignment = AlignmentServiceImpl.getInstance();
 	private TransformationService transform = TransformationServiceFactory.getInstance();
+	private ProjectService project = ProjectServiceImpl.getInstance();
 
 	public HaleServiceFactory() {
 		// TODO Auto-generated constructor stub
@@ -60,20 +63,23 @@ public class HaleServiceFactory
 		if (serviceInterface.equals(InstanceService.class)) {
 			return this.instance;
 		}
-		if (serviceInterface.equals(SchemaService.class)) {
+		else if (serviceInterface.equals(SchemaService.class)) {
 			return this.schema;
 		}
-		if (serviceInterface.equals(TaskService.class)) {
+		else if (serviceInterface.equals(TaskService.class)) {
 			return this.task;
 		}
-		if (serviceInterface.equals(StyleService.class)) {
+		else if (serviceInterface.equals(StyleService.class)) {
 			return this.style;
 		}
-		if (serviceInterface.equals(AlignmentService.class)) {
+		else if (serviceInterface.equals(AlignmentService.class)) {
 			return this.alignment;
 		}
-		if (serviceInterface.equals(TransformationService.class)) {
+		else if (serviceInterface.equals(TransformationService.class)) {
 			return this.transform;
+		}
+		else if (serviceInterface.equals(ProjectService.class)) {
+			return this.project;
 		}
 		else {
 			throw new RuntimeException("For the given serviceInterface (" 

@@ -124,7 +124,7 @@ public class InstanceDataImportWizardMainPage
 				getWizard().getContainer().updateButtons();
 			}
 		});
-		String[] extensions = new String[] { "*.gml" }; //NON-NLS-1
+		String[] extensions = new String[] { "*.gml", "*.xml" }; //NON-NLS-1
 		this.fileFieldEditor.setFileExtensions(extensions);
 		
 		// read from WFS (GetFeature)

@@ -91,6 +91,7 @@
             name="Open Reference Data">
       </command>
       <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.SaveAlignmentProjectHandler"
             id="HALE.saveAlignmentProjectAs.command"
             name="Save Alignment Project As">
       </command>
@@ -227,6 +228,9 @@
          </service>
          <service
                serviceClass="eu.esdihumboldt.cst.transformer.TransformationService">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.models.ProjectService">
          </service>
       </serviceFactory>
    </extension>

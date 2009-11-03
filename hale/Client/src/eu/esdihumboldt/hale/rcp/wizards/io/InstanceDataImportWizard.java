@@ -37,6 +37,7 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.models.InstanceService;
+import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.models.instance.HaleGMLParser;
@@ -96,6 +97,8 @@ public class InstanceDataImportWizard
 				.getService(InstanceService.class);
 		final SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench()
 				.getService(SchemaService.class);
+		final ProjectService projectService = (ProjectService) PlatformUI.getWorkbench()
+				.getService(ProjectService.class);
 		
 		final String result = mainPage.getResult();
 		final InstanceInterfaceType iit = mainPage.getInterfaceType();
@@ -161,11 +164,13 @@ public class InstanceDataImportWizard
 					}
 					
 					monitor.done();
+					projectService.setInstanceDataPath(gml_location.toString());
 				}
 			});
+			
 		} catch (Exception e) {
 			ExceptionHelper.handleException(
-					"An Error occured when trying toopen instance data: ", 
+					"An Error occured when trying to open instance data: ", 
 					HALEActivator.PLUGIN_ID, e);
 			_log.error("Error performing wizard finish", e);
 		}

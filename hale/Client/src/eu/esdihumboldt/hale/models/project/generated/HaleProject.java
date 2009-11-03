@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="dateCreated" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="dateModified" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="omlPath" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         <xs:element name="instancePath" type="xs:string" minOccurs="1" maxOccurs="1"/>
  *         &lt;element name="sourceSchema" type="{}MappedSchema"/>
  *         &lt;element name="targetSchema" type="{}MappedSchema"/>
  *         &lt;element name="taskStatus" type="{}TaskStatus"/>
@@ -47,13 +48,28 @@ import javax.xml.bind.annotation.XmlType;
     "dateCreated",
     "dateModified",
     "omlPath",
+    "instancePath",
     "sourceSchema",
     "targetSchema",
     "taskStatus"
 })
 public class HaleProject {
 
-    @XmlElement(required = true)
+    /**
+	 * @return the instancePath
+	 */
+	public String getInstancePath() {
+		return instancePath;
+	}
+
+	/**
+	 * @param instancePath the instancePath to set
+	 */
+	public void setInstancePath(String instancePath) {
+		this.instancePath = instancePath;
+	}
+
+	@XmlElement(required = true)
     protected String name;
     @XmlElement(required = true)
     protected String haleVersion;
@@ -63,6 +79,8 @@ public class HaleProject {
     protected String dateModified;
     @XmlElement(required = true)
     protected String omlPath;
+    @XmlElement(required = true)
+    protected String instancePath;
     @XmlElement(required = true)
     protected MappedSchema sourceSchema;
     @XmlElement(required = true)

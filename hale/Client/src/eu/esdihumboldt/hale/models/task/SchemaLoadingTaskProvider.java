@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.hale.models.task;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,14 +59,14 @@ public class SchemaLoadingTaskProvider
 	 * @see eu.esdihumboldt.hale.models.provider.TaskProvider#getSupportedInputType()
 	 */
 	public String getSupportedInputType() {
-		return "java.util.List<org.opengis.feature.type.FeatureType>";
+		return new ArrayList<FeatureType>().getClass().getName();
 	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.task.TaskSource#getImplementationName()
 	 */
 	public String getImplementationName() {
-		return this.getClass().getSimpleName();
+		return this.getClass().getName();
 	}
 
 	/**

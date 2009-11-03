@@ -48,5 +48,11 @@
 	<classpathentry exported="true" kind="lib" path="LIB/jts-1.10.jar" sourcepath="HALEsrc.zip"/>
 	<classpathentry kind="lib" path="LIB/trove-2.0.4.jar" sourcepath="LIB/trove-src-2.0.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="LIB/commons-jxpath-1.3.jar" sourcepath="HALEsrc.zip"/>
+	<classpathentry kind="lib" path="G:/Dokumente und Einstellungen/thorsten/.m2/repository/jaxb/jaxb-api/1.3/jaxb-api-1.3.jar"/>
+	<classpathentry kind="lib" path="G:/Dokumente und Einstellungen/thorsten/.m2/repository/jaxb/jaxb-impl/1.3/jaxb-impl-1.3.jar"/>
+	<classpathentry kind="lib" path="G:/Dokumente und Einstellungen/thorsten/.m2/repository/jaxb/jaxb-libs/1.3/jaxb-libs-1.3.jar"/>
+	<classpathentry kind="lib" path="LIB/jaxb-api-1.3.jar"/>
+	<classpathentry kind="lib" path="LIB/jaxb-impl-1.3.jar"/>
+	<classpathentry kind="lib" path="LIB/jaxb-libs-1.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

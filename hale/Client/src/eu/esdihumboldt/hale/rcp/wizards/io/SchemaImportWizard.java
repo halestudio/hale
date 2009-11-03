@@ -28,6 +28,7 @@ import org.opengis.feature.type.FeatureType;
 import eu.esdihumboldt.goml.align.Formalism;
 import eu.esdihumboldt.goml.align.Schema;
 import eu.esdihumboldt.hale.models.AlignmentService;
+import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
@@ -76,6 +77,8 @@ public class SchemaImportWizard
 					PlatformUI.getWorkbench().getService(SchemaService.class);
 		AlignmentService alService = (AlignmentService) 
 					PlatformUI.getWorkbench().getService(AlignmentService.class);
+		final ProjectService projectService = (ProjectService) 
+					PlatformUI.getWorkbench().getService(ProjectService.class);
 		
 		try {
 			final String result = mainPage.getResult();
@@ -101,6 +104,7 @@ public class SchemaImportWizard
 						new Formalism("GML 3.2.1 Application Schema", 
 								new URI("http://www.opengis.net/gml"))); // FIXME
 				alService.getAlignment().setSchema1(schema);
+				projectService.setSourceSchemaPath(uri.toString());
 			}
 			else
 			{
@@ -110,6 +114,7 @@ public class SchemaImportWizard
 						new Formalism("GML 3.2.1 Application Schema", 
 								new URI("http://www.opengis.net/gml"))); // FIXME
 				alService.getAlignment().setSchema2(schema);
+				projectService.setTargetSchemaPath(uri.toString());
 			}
 		} catch (Exception e2) {
 			_log.error("Given Path/URL could not be parsed to an URI: ", e2);

@@ -1,6 +1,6 @@
 /*
  * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                  01.10.2006 - 30.09.2010
+ * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
  * 
  * For more information on the project, please refer to the this web site:
  * http://www.esdi-humboldt.eu
@@ -9,6 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
+
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import org.eclipse.jface.preference.FileFieldEditor;
@@ -23,17 +24,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
 /**
- * This is the main page of the {@link MappingExportWizard}.
+ * TODO Explain the purpose of this type here.
  * 
- * TODO: Add an overview over the mapping that has been created. Use component 
- * for source view of mapping.
- * 
- * @author Thorsten Reitz 
- * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @author Thorsten Reitz
+ * @version $Id$
  */
-public class MappingExportWizardMainPage 
-	extends WizardPage {
+public class SaveAlignmentProjectWizardMainPage extends WizardPage {
 	
 	private String result = null;
 	
@@ -43,10 +39,10 @@ public class MappingExportWizardMainPage
 	 * @param string
 	 * @param string2
 	 */
-	public MappingExportWizardMainPage(String pageName, String pageTitle) {
+	public SaveAlignmentProjectWizardMainPage(String pageName, String pageTitle) {
 		super(pageName, pageTitle, (ImageDescriptor) null);
 		setTitle(pageName); //NON-NLS-1
-		setDescription("Export the currently created mapping to an OML file"); //NON-NLS-1
+		setDescription("Save the current Alignment Project"); //NON-NLS-1
 	}
 
 	/**
@@ -60,7 +56,8 @@ public class MappingExportWizardMainPage
         
 		// define source group composite
 		Group selectionArea = new Group(parent, SWT.NONE);
-		selectionArea.setText("Select a location to export the Mapping to: ");
+		selectionArea.setText("Select a location to save the current " +
+				"Alignment Project to: ");
 		selectionArea.setLayout(new GridLayout());
 		GridData selectionAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
                 | GridData.HORIZONTAL_ALIGN_FILL);
@@ -92,7 +89,7 @@ public class MappingExportWizardMainPage
 				getWizard().getContainer().updateButtons();
 			}
 		});
-		String[] extensions = new String[] { "*.oml", "*.goml", "*.xml" }; //NON-NLS-1
+		String[] extensions = new String[] { "*.xml" }; //NON-NLS-1
 		this.ffe.setFileExtensions(extensions);
 		
 		setErrorMessage(null);	// should not initially have error message

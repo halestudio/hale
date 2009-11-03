@@ -25,6 +25,7 @@
 			<xs:element name="dateCreated" type="xs:string" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="dateModified" type="xs:string" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="omlPath" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="instancePath" type="xs:string" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="sourceSchema" type="MappedSchema" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="targetSchema" type="MappedSchema" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="taskStatus" type="TaskStatus" minOccurs="1" maxOccurs="1"/>
