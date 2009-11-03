@@ -37,7 +37,6 @@ import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
 public class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 
 	/**
@@ -159,7 +158,6 @@ public class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 	 * @since JAXB RI 1.0.2
 	 */
 	public String[] getPreDeclaredNamespaceUris() {
-		// return new String[] { "urn:abc", "urn:def" };
 		return new String[] { "http://www.w3.org/2001/XMLSchema-instance",
 				"http://www.opengis.net/gml/", "http://www.omwg.org/TR/d7/ontology/alignment", "http://humboldt/goml", "http://www.w3.org/1999/02/22-rdf-syntax-ns#","http://www.w3.org/2001/XMLSchema-instance" };
 	}

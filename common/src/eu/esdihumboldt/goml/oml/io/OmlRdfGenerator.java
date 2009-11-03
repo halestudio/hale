@@ -181,11 +181,13 @@ public class OmlRdfGenerator {
 	 */
 	private OntologyType getOntologyType(ISchema schema) {
 		OntologyType oType = new OntologyType();
-		About about = (About) schema.getAbout();
-		if (about != null)
-			oType.setAbout(about.getAbout());
-		oType.setLocation(schema.getLocation());
-		oType.setFormalism(getFormalism(schema.getFormalism()));
+		if (schema != null) {
+			About about = (About) schema.getAbout();
+			if (about != null)
+				oType.setAbout(about.getAbout());
+			oType.setLocation(schema.getLocation());
+			oType.setFormalism(getFormalism(schema.getFormalism()));
+		}
 		return oType;
 	}
 
