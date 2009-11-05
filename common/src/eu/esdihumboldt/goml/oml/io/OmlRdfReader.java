@@ -15,6 +15,10 @@ package eu.esdihumboldt.goml.oml.io;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -24,11 +28,9 @@ import javax.xml.transform.stream.StreamSource;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
-
 import eu.esdihumboldt.cst.align.ISchema;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.cst.align.ext.IValueExpression;
-import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
@@ -43,7 +45,6 @@ import eu.esdihumboldt.goml.generated.ComparatorEnumType;
 import eu.esdihumboldt.goml.generated.DomainRestrictionType;
 import eu.esdihumboldt.goml.generated.EntityType;
 import eu.esdihumboldt.goml.generated.FormalismType;
-import eu.esdihumboldt.goml.generated.Measure;
 import eu.esdihumboldt.goml.generated.OntologyType;
 import eu.esdihumboldt.goml.generated.PropertyType;
 import eu.esdihumboldt.goml.generated.RelationEnumType;
@@ -52,7 +53,6 @@ import eu.esdihumboldt.goml.generated.ValueClassType;
 import eu.esdihumboldt.goml.generated.ValueConditionType;
 import eu.esdihumboldt.goml.generated.ValueExprType;
 import eu.esdihumboldt.goml.generated.AlignmentType.Map;
-import eu.esdihumboldt.goml.generated.AlignmentType.Onto1;
 import eu.esdihumboldt.goml.oml.ext.Function;
 import eu.esdihumboldt.goml.oml.ext.ValueClass;
 import eu.esdihumboldt.goml.oml.ext.ValueExpression;
@@ -61,11 +61,6 @@ import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.goml.rdf.About;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
 /**
  * This class reads the OML Rdf Document into Java Object.
  * 
@@ -94,7 +89,7 @@ public class OmlRdfReader {
 			jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT);
             Unmarshaller u = jc.createUnmarshaller();
 
-			// it will debug problems while unmarchalling
+			// it will debug problems while unmarshalling
             u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
             root = u.unmarshal(new StreamSource(new File(rdfFile)),
 					AlignmentType.class);
@@ -162,7 +157,7 @@ public class OmlRdfReader {
 		List<ICell> cells = new ArrayList<ICell>(maps.size());
 		Cell cell;
 		Map map;
-		Iterator iterator = maps.iterator();
+		Iterator<Map> iterator = maps.iterator();
 		while(iterator.hasNext()){
 			 map = (Map)iterator.next();
 			 cell = getCell(map.getCell());
@@ -273,7 +268,7 @@ public class OmlRdfReader {
 		DomainRestrictionType restriction = null;
 		FeatureClass fClass;
 		ClassType clazz;
-		Iterator iterator = domainRestriction.iterator();
+		Iterator<DomainRestrictionType> iterator = domainRestriction.iterator();
 		while(iterator.hasNext()){
 			restriction = (DomainRestrictionType)iterator.next();
 			clazz = restriction.getClazz();
@@ -301,7 +296,7 @@ public class OmlRdfReader {
 	private List<Restriction> getRestrictions(
 			List<ClassConditionType> classConditions) {
 		List<Restriction> restrictions = new ArrayList<Restriction>(classConditions.size());
-		Iterator iterator = classConditions.iterator();
+		Iterator<ClassConditionType> iterator = classConditions.iterator();
 		Restriction restriction;
 		ClassConditionType classCondition;
 		while (iterator.hasNext()){
@@ -339,7 +334,7 @@ private List<Restriction> getValueCondition(
 		List<ValueConditionType> valueCondition) {
 	
 	List<Restriction> restrictions = new ArrayList<Restriction>(valueCondition.size());
-	Iterator iterator = valueCondition.iterator();
+	Iterator<ValueConditionType> iterator = valueCondition.iterator();
 	Restriction restriction;
 	while(iterator.hasNext()){
 		ValueConditionType condition = (ValueConditionType)iterator.next();
@@ -397,7 +392,7 @@ private List<Restriction> getValueCondition(
 			List<ValueExprType> valueExpr) {
 		List<IValueExpression> omlExpressions = new ArrayList<IValueExpression>(valueExpr.size());
 		ValueExpression omlExpr;
-		Iterator iterator = valueExpr.iterator();
+		Iterator<ValueExprType> iterator = valueExpr.iterator();
 		while(iterator.hasNext()){
 			ValueExprType jaxbExpr = (ValueExprType)iterator.next();
 			omlExpr = new ValueExpression(jaxbExpr.getLiteral());
@@ -411,18 +406,4 @@ private List<Restriction> getValueCondition(
 			
 		return omlExpressions;
 	}
-
-	/**
-	 * Converts from the ApplyType
-	 * to the FunctionType
-	 * @param apply
-	 * @return
-	 */
-    private Function getFunction(ApplyType apply) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-
 }
