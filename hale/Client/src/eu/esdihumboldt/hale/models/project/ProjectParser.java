@@ -38,7 +38,6 @@ import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.instance.HaleGMLParser;
@@ -46,7 +45,9 @@ import eu.esdihumboldt.hale.models.project.generated.HaleProject;
 import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
 
 /**
- * TODO Explain the purpose of this type here.
+ * The {@link ProjectParser} reads a given project xml file and directly pushes
+ * the values read into the respective services, such as {@link ProjectService}, 
+ * {@link InstanceService} and {@link AlignmentService}.
  * 
  * @author Thorsten Reitz
  * @version $Id$

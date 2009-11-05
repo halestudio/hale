@@ -53,6 +53,8 @@ public class SchemaImportWizardMainPage
 	protected Button useFileRadio;
 	private Button sourceDestination;
 	private Button targetDestination;
+	private Button createTasks;
+	private Button createSuperTypes;
 
 	public SchemaImportWizardMainPage(String pageName, String pageTitle) {
 		super(pageName, pageTitle, (ImageDescriptor) null); // FIXME ImageDescriptor
@@ -224,10 +226,13 @@ public class SchemaImportWizardMainPage
 		optionsGroup.setFont(parent.getFont());
 		
 		// import supertypes/schema elements?
-		Button sourceDestination = new Button(optionsGroup, SWT.CHECK);
-		sourceDestination.setSelection(true);
-		sourceDestination.setText("Also import supertypes from imported " +
+		this.createSuperTypes = new Button(optionsGroup, SWT.CHECK);
+		this.createSuperTypes.setSelection(true);
+		this.createSuperTypes.setText("Also import supertypes from imported " +
 				"schemas");
+		this.createTasks = new Button(optionsGroup, SWT.CHECK);
+		this.createTasks.setSelection(true);
+		this.createTasks.setText("Create tasks for this schema");
 	}
 	
 	/**
@@ -288,13 +293,19 @@ public class SchemaImportWizardMainPage
 		}
 		else return SchemaType.TARGET;
 	}
+	
+	/**
+	 * @return true if the user has selected that supertypes should be imported.
+	 */
+	public boolean importSuperTypes() {
+		return this.createSuperTypes.getSelection();
+	}
 
 	/**
-	 * @return true if the use has selected that tasks should be created.
+	 * @return true if the user has selected that tasks should be created.
 	 */
 	public boolean createTasks() {
-		// TODO Auto-generated method stub
-		return true;
+		return this.createTasks.getSelection();
 	}
 	
 }

@@ -11,8 +11,17 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
+import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * FIXME Add Type description.
@@ -23,31 +32,73 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class OpenAlignmentProjectWizardMainPage 
 	extends WizardPage {
+	
+	protected FileFieldEditor ffe = null;
 
 	/**
 	 * @param pageName
 	 * @param title
 	 * @param titleImage
 	 */
-	protected OpenAlignmentProjectWizardMainPage(String pageName, String title) {
-		super(pageName, title, null);
+	protected OpenAlignmentProjectWizardMainPage(String pageName, String pageTitle) {
+		super(pageName, pageTitle, (ImageDescriptor) null); // FIXME ImageDescriptor
+		super.setTitle(pageName); //NON-NLS-1
+		super.setDescription("Load an Alignment Project.");
 	}
 
-	/* (non-Javadoc)
+	/**
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	public void createControl(Composite parent) {
-		// TODO Auto-generated method stub
+		super.initializeDialogUnits(parent);
+        this.setPageComplete(this.isPageComplete());
+        
+		// define open group composite
+		Group selectionArea = new Group(parent, SWT.NONE);
+		selectionArea.setText("Select an Alignment Project to open: ");
+		selectionArea.setLayout(new GridLayout());
+		GridData selectionAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
+                | GridData.HORIZONTAL_ALIGN_FILL);
+		selectionAreaGD.grabExcessHorizontalSpace = true;
+		selectionArea.setLayoutData(selectionAreaGD);
+		selectionArea.setSize(selectionArea.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		selectionArea.setFont(parent.getFont());
+		
+		final Composite fileSelectionArea = new Composite(selectionArea, SWT.NONE);
+		GridData fileSelectionData = new GridData(
+				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL);
+		fileSelectionData.grabExcessHorizontalSpace = true;
+		fileSelectionArea.setLayoutData(fileSelectionData);
 
+		GridLayout fileSelectionLayout = new GridLayout();
+		fileSelectionLayout.numColumns = 1;
+		fileSelectionLayout.makeColumnsEqualWidth = false;
+		fileSelectionLayout.marginWidth = 0;
+		fileSelectionLayout.marginHeight = 0;
+		fileSelectionArea.setLayout(fileSelectionLayout);
+		Composite ffe_container = new Composite(fileSelectionArea, SWT.NULL);
+		ffe_container.setLayoutData(
+				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
+		this.ffe = new FileFieldEditor("fileSelect", 
+				"File:", ffe_container); //NON-NLS-1 //NON-NLS-2
+		this.ffe.getTextControl(ffe_container).addModifyListener(new ModifyListener(){
+			public void modifyText(ModifyEvent e) {
+				getWizard().getContainer().updateButtons();
+			}
+		});
+		String[] extensions = new String[] { "*.xml" }; //NON-NLS-1
+		this.ffe.setFileExtensions(extensions);
+		
+		setErrorMessage(null);	// should not initially have error message
+		super.setControl(selectionArea);
 	}
 
 	/**
-	 * @return
+	 * @return the path of the selected project file as a String.
 	 */
 	public String getResult() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.ffe.getStringValue();
 	}
 
 }
