@@ -14,8 +14,8 @@ package eu.esdihumboldt.hale.rcp.services;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
-import eu.esdihumboldt.cst.transformer.TransformationService;
-import eu.esdihumboldt.cst.transformer.service.impl.TransformationServiceFactory;
+import eu.esdihumboldt.cst.transformer.CstService;
+import eu.esdihumboldt.cst.transformer.service.impl.CstServiceFactory;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
@@ -32,7 +32,7 @@ import eu.esdihumboldt.hale.models.task.TaskServiceImpl;
 /**
  * This implementation of the {@link AbstractServiceFactory} allows to use the
  * {@link InstanceService}, {@link SchemaService}, {@link StyleService}, 
- * {@link TaskService}, {@link AlignmentService} and {@link TransformationService} 
+ * {@link TaskService}, {@link AlignmentService} and {@link CstService} 
  * as eclipse service, thereby making direct references to the implementation 
  * unnecessary.
  * 
@@ -47,7 +47,7 @@ public class HaleServiceFactory
 	private StyleService style = StyleServiceImpl.getInstance(schema);
 	private TaskService task = TaskServiceImpl.getInstance();
 	private AlignmentService alignment = AlignmentServiceImpl.getInstance();
-	private TransformationService transform = TransformationServiceFactory.getInstance();
+	private CstService transform = CstServiceFactory.getInstance();
 	private ProjectService project = ProjectServiceImpl.getInstance();
 
 	public HaleServiceFactory() {
@@ -75,7 +75,7 @@ public class HaleServiceFactory
 		else if (serviceInterface.equals(AlignmentService.class)) {
 			return this.alignment;
 		}
-		else if (serviceInterface.equals(TransformationService.class)) {
+		else if (serviceInterface.equals(CstService.class)) {
 			return this.transform;
 		}
 		else if (serviceInterface.equals(ProjectService.class)) {

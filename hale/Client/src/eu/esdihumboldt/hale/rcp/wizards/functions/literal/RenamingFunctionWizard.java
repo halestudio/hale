@@ -27,7 +27,7 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 
 /**
- * This {@link Wizard} is used to invoke a Renaming Transformer for the Source
+ * This {@link Wizard} is used to invoke a Renaming CstFunction for the Source
  * Feature Type
  * 
  * @author Anna Pitaev, Logica; Simon Templer, Fraunhofer IGD

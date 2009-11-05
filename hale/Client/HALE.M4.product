@@ -7,8 +7,7 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-consolelog</programArgs>
-      <vmArgs>-Xmx256m</vmArgs>
+      <vmArgs>-Xmx384m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -27,9 +26,6 @@
    <plugins>
       <plugin id="HALE"/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="eu.esdihumboldt.commons"/>
-      <plugin id="eu.esdihumboldt.specification"/>
-      <plugin id="eu.esdihumboldt.transformer.cst"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.databinding"/>

@@ -633,7 +633,7 @@ public class FilterWizardSecondPage extends AbstractSingleCellWizardPage {
 	}
 
 	/**
-	 * enum contains allowed CQL operators for the CST Filter Transformer
+	 * enum contains allowed CQL operators for the CST Filter CstFunction
 	 */
 	@SuppressWarnings("all")
 	public enum CQLOperators {
