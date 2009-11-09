@@ -23,12 +23,19 @@ import eu.esdihumboldt.cst.rdf.IAbout;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class About implements IAbout{
+public class About implements IAbout {
 	
 	private UUID uid;
 	private String about;
 	
 	// constructors ............................................................
+
+	public About(UUID uid) {
+		super();
+		this.uid = uid;
+	}
+	
+	// getters / setters .......................................................
 
 	public String getAbout() {
 		return about;
@@ -37,13 +44,6 @@ public class About implements IAbout{
 	public void setAbout(String about) {
 		this.about = about;
 	}
-
-	public About(UUID uid) {
-		super();
-		this.uid = uid;
-	}
-	
-	// getters / setters .......................................................
 
 	/**
 	 * @return the uid

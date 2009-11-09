@@ -20,6 +20,7 @@ import java.util.Map;
 
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
+import eu.esdihumboldt.goml.rdf.About;
 
 /**
  * This class represents <xs:group name="transformation">.
@@ -33,7 +34,7 @@ public class Transformation
 	implements ITransformation {
 
 
-
+	private About about;
 	private URI service;
 	private String label;
 	private List<IParameter> parameters;
@@ -89,5 +90,21 @@ public class Transformation
 	public void setParameters(List<IParameter> parameters) {
 		this.parameters = parameters;
 	}
+
+	/**
+	 * @return the about
+	 */
+	public About getAbout() {
+		return about;
+	}
+
+	/**
+	 * @param about the about to set
+	 */
+	public void setAbout(About about) {
+		this.about = about;
+	}
+	
+	
 
 }
