@@ -15,6 +15,8 @@ package eu.esdihumboldt.cst.align.ext;
 import java.net.URI;
 import java.util.List;
 
+import eu.esdihumboldt.cst.rdf.IAbout;
+
 /**
  * The superinterface for all transformations.
  * 
@@ -38,5 +40,10 @@ public interface ITransformation {
 	 * @return the label of this Transformation.
 	 */
 	public String getLabel();
+	
+	/**
+	 * @return the identifying metadata of this Transformation.
+	 */
+	public IAbout getAbout();
 
 }

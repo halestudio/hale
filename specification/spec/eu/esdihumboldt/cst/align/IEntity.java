@@ -15,6 +15,7 @@ package eu.esdihumboldt.cst.align;
 import java.util.List;
 
 import eu.esdihumboldt.cst.align.ext.ITransformation;
+import eu.esdihumboldt.cst.rdf.IAbout;
 
 /**
  * Represents any object that might be mapped inside an {@link ICell}.
@@ -34,5 +35,10 @@ public interface IEntity {
 	 * @return the transformation
 	 */
 	public ITransformation getTransformation();
+	
+	/**
+	 * @return identification Metadata
+	 */
+	public IAbout getAbout();
 
 }

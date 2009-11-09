@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.cst.rdf;
 
-//import eu.esdihumboldt.cst.align.IEntity;
+import java.util.UUID;
 
 /**
  * A {@link IAbout} contains the identifier for OML objects such as {@link IEntity}s.
@@ -22,5 +22,11 @@ package eu.esdihumboldt.cst.rdf;
  * @version $Id$ 
  */
 public interface IAbout {
+	
+	/**
+	 * @return the uid
+	 */
+	public UUID getUid();
 
+	public String getAbout();
 }
