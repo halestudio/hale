@@ -15,7 +15,6 @@
 package eu.esdihumboldt.hale.models.schema;
 
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -132,19 +131,19 @@ public class SchemaServiceImplApache
 	
 	private static SchemaServiceImplApache instance = new SchemaServiceImplApache();
 
-	/** FeatureType collection of the source schema */
-	Collection<FeatureType> sourceSchema;
+	/** Source schema */
+	private Schema sourceSchema = Schema.EMPTY_SCHEMA;
 
-	/** FeatureType collection of the target schema */
-	Collection<FeatureType> targetSchema;
+	/** Target schema */
+	private Schema targetSchema = Schema.EMPTY_SCHEMA;
 	
 	private Collection<HaleServiceListener> listeners = new HashSet<HaleServiceListener>();
 	
-	private String sourceNamespace = "";
-	private String targetNamespace = "";
+	//private String sourceNamespace = "";
+	//private String targetNamespace = "";
 	
-	private URL sourceLocation = null;
-	private URL targetLocation = null;
+	//private URL sourceLocation = null;
+	//private URL targetLocation = null;
 	
 	private SchemaServiceImplApache() {
 		_log.setLevel(Level.INFO);
@@ -160,77 +159,61 @@ public class SchemaServiceImplApache
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.models.SchemaService#cleanSourceSchema()
+	 * @see SchemaService#cleanSourceSchema()
 	 */
 	public boolean cleanSourceSchema() {
-		if (this.sourceSchema != null && this.sourceSchema.size() != 0) {
-			this.sourceSchema.clear();
-		}
-		this.sourceLocation = null;
-		this.sourceNamespace = "";
-		this.updateListeners();
+		sourceSchema = Schema.EMPTY_SCHEMA;
+		updateListeners();
+		
 		return true;
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.models.SchemaService#cleanTargetSchema()
+	 * @see SchemaService#cleanTargetSchema()
 	 */
 	public boolean cleanTargetSchema() {
-		if (this.targetSchema != null && this.targetSchema.size() != 0) {
-			this.targetSchema.clear();
-		}
-		this.targetLocation = null;
-		this.targetNamespace = "";
-		this.updateListeners();
+		targetSchema = Schema.EMPTY_SCHEMA;
+		updateListeners();
+		
 		return true;
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.models.SchemaService#getSourceSchema()
+	 * @see SchemaService#getSourceSchema()
 	 */
 	public Collection<FeatureType> getSourceSchema() {
-		return this.sourceSchema;
+		return sourceSchema.getFeatureTypes();
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.models.SchemaService#getTargetSchema()
+	 * @see SchemaService#getTargetSchema()
 	 */
 	public Collection<FeatureType> getTargetSchema() {
-		return this.targetSchema;
+		return targetSchema.getFeatureTypes();
 	}
 
 	/**
 	 * @see SchemaService#loadSchema(URI, SchemaType)
 	 */
-	public boolean loadSchema(URI file, SchemaType type) {
-		
-		Collection<FeatureType> schema = this.loadSchema(file);
-		URL baseURL = null;
-		
-		try {
-			baseURL = file.toURL();
-		} catch (MalformedURLException e) {
-			throw new RuntimeException("The source location " + file.getPath()
-					+ "could not be saved: ", e);
-		}
+	public boolean loadSchema(URI location, SchemaType type) {
+		Schema schema = this.loadSchema(location);
 		
 		if (type.equals(SchemaType.SOURCE)) {
-			this.cleanSourceSchema();
-			this.sourceSchema = schema;
-			if (this.sourceSchema != null && this.sourceSchema.size() > 0) {
-				this.sourceNamespace = this.sourceSchema.iterator().next()
+			sourceSchema = schema;
+			/*if (this.sourceSchema != null && this.sourceSchema.size() > 0) {
+				this.sourceNamespace =
+					this.sourceSchema.iterator().next()
 						.getName().getNamespaceURI().toString();
 			}
-			this.sourceLocation = baseURL;
+			this.sourceLocation = baseURL; */
 		} 
 		else {
-			this.cleanTargetSchema();
-			this.targetSchema = schema;
-			if (this.targetSchema != null && this.targetSchema.size() > 0) {
+			targetSchema = schema;
+			/*if (this.targetSchema != null && this.targetSchema.size() > 0) {
 				this.targetNamespace = this.targetSchema.iterator().next()
 						.getName().getNamespaceURI().toString();
 			}
-			this.targetLocation = baseURL;
+			this.targetLocation = baseURL; */
 		}
 		
 		this.updateListeners();
@@ -252,6 +235,7 @@ public class SchemaServiceImplApache
 	/**
 	 * Inform {@link HaleServiceListener}s of an update.
 	 */
+	@SuppressWarnings("unchecked")
 	private void updateListeners() {
 		for (HaleServiceListener hsl : this.listeners) {
 			hsl.update(new UpdateMessage(SchemaService.class, null)); // FIXME
@@ -469,15 +453,17 @@ public class SchemaServiceImplApache
 	/**
 	 * Method to load a XSD schema file and build a collection of FeatureTypes.
 	 * 
-	 * @param file
+	 * @param location
 	 *            URI which represents a file
 	 * @return Collection FeatureType collection.
 	 */
-	protected Collection<FeatureType> loadSchema(URI file) {
+	protected Schema loadSchema(URI location) {
 		// use XML Schema to load schema with all its subschema to the memory
 		InputStream is = null;
+		URL locationURL;
 		try {
-			is = file.toURL().openStream(); //new FileInputStream(new File(file));
+			locationURL = location.toURL();
+			is = locationURL.openStream();
 		} catch (Throwable e) {
 			_log.error("File URI could not be resolved.", e);
 			throw new RuntimeException(e);
@@ -486,14 +472,20 @@ public class SchemaServiceImplApache
 		try {
 			XmlSchemaCollection schemaCol = new XmlSchemaCollection();
 			// Check if the file is located on web
-			if (file.getHost() == null) {
+			if (location.getHost() == null) {
 				schemaCol.setSchemaResolver(new HumboldtURIResolver());
-			    schemaCol.setBaseUri(findBaseUri(file));
+			    schemaCol.setBaseUri(findBaseUri(location));
 			}
 			schema = schemaCol.read(new StreamSource(is), null);
 			is.close();
 		} catch (Throwable e) {
 			e.printStackTrace();
+		}
+		
+		String namespace = schema.getTargetNamespace();
+		if (namespace == null || namespace.isEmpty()) {
+			// default to gml schema
+			namespace = "http://www.opengis.net/gml";
 		}
 	
 		XmlSchemaObjectCollection items = schema.getItems();
@@ -671,7 +663,7 @@ public class SchemaServiceImplApache
 		// Prints the feature type to the console (for debugging only)
 		//SchemaPrinter.printFeatureTypeCollection(featureTypes);
 		
-		return featureTypes;
+		return new Schema(featureTypes, namespace, locationURL);
 	}
 	
 	private String findBaseUri(URI file) {
@@ -688,46 +680,46 @@ public class SchemaServiceImplApache
 	 * @see SchemaService#getSourceNameSpace()
 	 */
 	public String getSourceNameSpace() {
-		return this.sourceNamespace;
+		return sourceSchema.getNamespace();
 	}
 
 	/**
 	 * @see SchemaService#getSourceURL()
 	 */
 	public URL getSourceURL() {
-		return this.sourceLocation;
+		return sourceSchema.getLocation();
 	}
 
 	/**
 	 * @see SchemaService#getTargetNameSpace()
 	 */
 	public String getTargetNameSpace() {
-		return this.targetNamespace;
+		return targetSchema.getNamespace();
 	}
 
 	/**
 	 * @see SchemaService#getTargetURL()
 	 */
 	public URL getTargetURL() {
-		return this.targetLocation;
+		return targetSchema.getLocation();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.esdihumboldt.hale.models.SchemaService#getFeatureTypeByName(java.lang.String)
+	/**
+	 * @see SchemaService#getFeatureTypeByName(java.lang.String)
 	 */
 	public FeatureType getFeatureTypeByName(String name) {
 		FeatureType result = null;
 		// handles cases where a full name was given.
-		if (!this.sourceNamespace.equals("") && name.contains(this.sourceNamespace)) {
-			for (FeatureType ft : this.sourceSchema) {
+		if (!getSourceNameSpace().equals("") && name.contains(getSourceNameSpace())) {
+			for (FeatureType ft : getSourceSchema()) {
 				if (ft.getName().getLocalPart().equals(name)) {
 					result = ft;
 					break;
 				}
 			}
 		}
-		else if (!this.targetNamespace.equals("") && name.contains(this.targetNamespace)) {
-			for (FeatureType ft : this.targetSchema) {
+		else if (!getTargetNameSpace().equals("") && name.contains(getTargetNameSpace())) {
+			for (FeatureType ft : getTargetSchema()) {
 				if (ft.getName().getLocalPart().equals(name)) {
 					result = ft;
 					break;
@@ -737,8 +729,8 @@ public class SchemaServiceImplApache
 		// handle case where only the local part was given.
 		else {
 			Collection<FeatureType> allFTs = new HashSet<FeatureType>();
-			if (sourceSchema != null) allFTs.addAll(this.sourceSchema);
-			if (targetSchema != null) allFTs.addAll(this.targetSchema);
+			allFTs.addAll(getSourceSchema());
+			allFTs.addAll(getTargetSchema());
 			for (FeatureType ft : allFTs) {
 				if (ft.getName().getLocalPart().equals(name)) {
 					result = ft;
@@ -750,14 +742,14 @@ public class SchemaServiceImplApache
 	}
 	
 	/**
-	 * @see eu.esdihumboldt.hale.models.SchemaService#getSchema(eu.esdihumboldt.hale.models.SchemaService.SchemaType)
+	 * @see SchemaService#getSchema(SchemaService.SchemaType)
 	 */
 	public Collection<FeatureType> getSchema(SchemaType schemaType) {
 		if (SchemaType.SOURCE.equals(schemaType)) {
-			return this.sourceSchema;
+			return getSourceSchema();
 		}
 		else {
-			return this.targetSchema;
+			return getTargetSchema();
 		}
 	}
 	

@@ -152,7 +152,8 @@ public class ModelNavigationView extends ViewPart implements
 				sourceToggleActions);
 
 		this.sourceSchemaViewer = this.schemaExplorerSetup(sourceComposite,
-				schemaService.getSourceSchema(), SchemaType.SOURCE);
+				schemaService.getSourceSchema(), schemaService.getSourceNameSpace(),
+				SchemaType.SOURCE);
 		this.sourceSchemaViewer.addFilter(sourceSchemaFilter);
 
 		for (SimpleToggleAction sta : sourceToggleActions) {
@@ -210,7 +211,8 @@ public class ModelNavigationView extends ViewPart implements
 				targetToggleActions);
 
 		this.targetSchemaViewer = this.schemaExplorerSetup(targetComposite,
-				schemaService.getTargetSchema(), SchemaType.TARGET);
+				schemaService.getTargetSchema(), schemaService.getTargetNameSpace(), 
+				SchemaType.TARGET);
 		
 		this.targetSchemaViewer.addFilter(targetSchemaFilter);
 
@@ -304,14 +306,14 @@ public class ModelNavigationView extends ViewPart implements
 	 * @return a {@link TreeViewer} with the currently loaded schema.
 	 */
 	private TreeViewer schemaExplorerSetup(Composite modelComposite,
-			Collection<FeatureType> schema, final SchemaType viewer) {
+			Collection<FeatureType> schema, String namespace, final SchemaType viewer) {
 		PatternFilter patternFilter = new PatternFilter();
 	    final FilteredTree filteredTree = new FilteredTree(modelComposite, SWT.MULTI
 	            | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter);
 	    TreeViewer schemaViewer = filteredTree.getViewer();
 		schemaViewer.setContentProvider(new ModelContentProvider());
 		schemaViewer.setLabelProvider(new ModelNavigationViewLabelProvider());
-		schemaViewer.setInput(translateSchema(schema));
+		schemaViewer.setInput(translateSchema(schema, namespace));
         schemaViewer
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
@@ -327,7 +329,7 @@ public class ModelNavigationView extends ViewPart implements
 	 *            the schema to display.
 	 * @return
 	 */
-	private SchemaItem translateSchema(Collection<FeatureType> schema) {
+	private SchemaItem translateSchema(Collection<FeatureType> schema, String namespace) {
 		if (schema == null || schema.size() == 0) {
 			return new TreeParent("", null, TreeObjectType.ROOT);
 		}
@@ -337,8 +339,7 @@ public class ModelNavigationView extends ViewPart implements
 		// TODO add metadata on schema here.
 		// TODO is should be possible to attach attributive data for a flyout.
 		TreeParent hidden_root = new TreeParent("ROOT", null, TreeObjectType.ROOT);
-		TreeParent root = new TreeParent(schema.iterator().next().getName()
-				.getNamespaceURI(), null, TreeObjectType.ROOT);
+		TreeParent root = new TreeParent(namespace, null, TreeObjectType.ROOT);
 		hidden_root.addChild(root);
 
 		// build the tree of FeatureTypes, starting from those types which
@@ -496,10 +497,10 @@ public class ModelNavigationView extends ViewPart implements
 	@SuppressWarnings("unchecked")
 	public void update(UpdateMessage message) {
 		this.sourceSchemaViewer.setInput(this.translateSchema(schemaService
-				.getSourceSchema()));
+				.getSourceSchema(), schemaService.getSourceNameSpace()));
 		this.sourceSchemaViewer.refresh();
 		this.targetSchemaViewer.setInput(this.translateSchema(schemaService
-				.getTargetSchema()));
+				.getTargetSchema(), schemaService.getTargetNameSpace()));
 		this.targetSchemaViewer.refresh();
 	}
 	
