@@ -13,15 +13,11 @@ package test.eu.esdihumboldt.hale.models.factory;
 
 import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.geotools.data.DataStore;
-import org.geotools.data.FeatureReader;
-import org.geotools.data.gml.GMLDataStoreFactory;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -103,31 +99,6 @@ public class FeatureCollectionUtilities {
 			throw new RuntimeException(
 					"An exception occured trying to build a FeatureCollection" +
 					" from the given file " + _filename + ".", ex);
-		}
-		return fc;
-	}
-	
-	/**
-	 * This method allows to load a {@link FeatureCollection} from a GML file. 
-	 * It will only work if the schema to be used for parsing is correctly 
-	 * referenced in the document.
-	 * @param _filename the URL as a string to the GML file to be parsed.
-	 * @return a {@link FeatureCollection} with {@link SimpleFeature} organized
-	 * by {@link SimpleFeatureType}s.
-	 */
-	public static FeatureCollection<SimpleFeatureType, SimpleFeature> loadFeatureCollectionFromGML(
-			String _filename){
-		FeatureCollection<SimpleFeatureType, SimpleFeature> fc = 
-			FeatureCollections.newCollection();
-		try {
-			GMLDataStoreFactory dsf = new GMLDataStoreFactory();
-			DataStore ds = dsf.createDataStore(new URL(_filename));
-			FeatureReader fr = ds.getFeatureReader(null, null);
-			//fc.add(fr.next());
-			
-			
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 		return fc;
 	}
