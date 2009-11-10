@@ -245,7 +245,7 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="HALE.application"
+            application="eu.esdihumboldt.hale.application"
             name="HUMBOLDT Alignment Editor">
          <property
                name="appName"

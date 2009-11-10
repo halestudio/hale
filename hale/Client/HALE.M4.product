@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.4"?>
 
-<product name="HUMBOLDT Alignment Editor" id="HALE.product" application="HALE.application" version="M4" useFeatures="false">
+<product name="HUMBOLDT Alignment Editor" id="eu.esdihumboldt.hale.product" application="eu.esdihumboldt.hale.application" version="M4" useFeatures="false">
 
    <configIni use="default">
    </configIni>
@@ -24,8 +24,11 @@
    </vm>
 
    <plugins>
-      <plugin id="HALE"/>
       <plugin id="com.ibm.icu"/>
+      <plugin id="eu.esdihumboldt.commons"/>
+      <plugin id="eu.esdihumboldt.hale"/>
+      <plugin id="eu.esdihumboldt.specification"/>
+      <plugin id="eu.esdihumboldt.transformer.cst"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.databinding"/>
