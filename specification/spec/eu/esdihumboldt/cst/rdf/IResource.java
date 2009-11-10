@@ -11,8 +11,6 @@
  */
 package eu.esdihumboldt.cst.rdf;
 
-import java.net.URI;
-
 import eu.esdihumboldt.cst.align.ext.ITransformation;
 
 /**
@@ -28,6 +26,6 @@ public interface IResource {
 	/**
 	 * @return the location
 	 */
-	public URI getLocation();
+	public String getLocation();
 
 }

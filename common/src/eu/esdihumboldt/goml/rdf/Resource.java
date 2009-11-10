@@ -12,12 +12,10 @@
 
 package eu.esdihumboldt.goml.rdf;
 
-import java.net.URI;
-
 import eu.esdihumboldt.cst.rdf.IResource;
 
 /**
- * FIXME Add Type description.
+ * Simple implementation of {@link IResource}.
  * 
  * @author Thorsten Reitz 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -26,14 +24,14 @@ import eu.esdihumboldt.cst.rdf.IResource;
 public class Resource 
 	implements IResource {
 	
-	private URI location;
+	private String location;
 	
 	// constructors ............................................................
 
 	/**
 	 * @param location
 	 */
-	public Resource(URI location) {
+	public Resource(String location) {
 		super();
 		this.location = location;
 	}
@@ -43,14 +41,14 @@ public class Resource
 	/**
 	 * @return the location
 	 */
-	public URI getLocation() {
+	public String getLocation() {
 		return location;
 	}
 
 	/**
 	 * @param location the location to set
 	 */
-	public void setLocation(URI location) {
+	public void setLocation(String location) {
 		this.location = location;
 	}
 	
