@@ -42,9 +42,10 @@ public static void main(String args []){
        Unmarshaller u = jc.createUnmarshaller();
        //it will debug problems while unmarchalling
        u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
-       JAXBElement<AlignmentType> root = u.unmarshal(new StreamSource(new File("res/schema/WatercoursesBY2Inspire.xml")),AlignmentType.class);
+       JAXBElement<AlignmentType> root = u.unmarshal(new StreamSource(new File("res/schema/testproject.xml")),AlignmentType.class);
        AlignmentType genAlignment = root.getValue();
        System.out.println(genAlignment.getLevel());
+       System.out.println("Unmarshalling done..");
 	}catch (Exception e){
 		e.printStackTrace();
 	}
