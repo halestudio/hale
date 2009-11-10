@@ -9,51 +9,25 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-
-package eu.esdihumboldt.goml.rdf;
+package eu.esdihumboldt.cst.rdf;
 
 import java.net.URI;
 
-import eu.esdihumboldt.cst.rdf.IResource;
+import eu.esdihumboldt.cst.align.ext.ITransformation;
 
 /**
- * FIXME Add Type description.
+ * {@link IResource} is used to denote the location under which a given element,
+ * such as a {@link ITransformation} can be found.
  * 
  * @author Thorsten Reitz 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class Resource 
-	implements IResource {
+public interface IResource {
 	
-	private URI location;
-	
-	// constructors ............................................................
-
-	/**
-	 * @param location
-	 */
-	public Resource(URI location) {
-		super();
-		this.location = location;
-	}
-	
-	// getters / setters .......................................................
-
 	/**
 	 * @return the location
 	 */
-	public URI getLocation() {
-		return location;
-	}
-
-	/**
-	 * @param location the location to set
-	 */
-	public void setLocation(URI location) {
-		this.location = location;
-	}
-	
-	
+	public URI getLocation();
 
 }

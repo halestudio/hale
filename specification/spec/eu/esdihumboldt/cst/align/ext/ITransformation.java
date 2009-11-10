@@ -12,10 +12,10 @@
 
 package eu.esdihumboldt.cst.align.ext;
 
-import java.net.URI;
 import java.util.List;
 
 import eu.esdihumboldt.cst.rdf.IAbout;
+import eu.esdihumboldt.cst.rdf.IResource;
 
 /**
  * The superinterface for all transformations.
@@ -34,7 +34,7 @@ public interface ITransformation {
 	/**
 	 * @return the URI grounding this Transformation.
 	 */
-	public URI getService();
+	public IResource getService();
 	
 	/**
 	 * @return the label of this Transformation.

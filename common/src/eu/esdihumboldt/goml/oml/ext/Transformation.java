@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.goml.oml.ext;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +20,7 @@ import java.util.Map;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.goml.rdf.Resource;
 
 /**
  * This class represents <xs:group name="transformation">.
@@ -35,7 +35,7 @@ public class Transformation
 
 
 	private About about;
-	private URI service;
+	private Resource resource;
 	private String label;
 	private List<IParameter> parameters;
 
@@ -49,16 +49,16 @@ public class Transformation
 	/**
 	 * @return the service
 	 */
-	public URI getService() {
-		return service;
+	public Resource getService() {
+		return resource;
 	}
 
 	/**
 	 * @param service
 	 *            the service to set
 	 */
-	public void setService(URI service) {
-		this.service = service;
+	public void setService(Resource resource) {
+		this.resource = resource;
 	}
 
 	public String getLabel() {
