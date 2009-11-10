@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- mdv oct. 2009 meant to validate single gOML mappings (consisting of one or just a few Cells) against the xsd schemas
+-->
+
+<align:Alignment rdf:about="" xmlns="http://www.omwg.org/TR/d7/ontology/alignment"
+    xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment"
+    xmlns:align="http://knowledgeweb.semanticweb.org/heterogeneity/alignment"
+    xmlns:goml="http://humboldt/goml"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://knowledgeweb.semanticweb.org/heterogeneity/alignment align.xsd">
+
+    <align:level>2OMWG</align:level>
+    <align:onto1>
+        <align:Ontology rdf:about="waterVA">
+            <align:location>inputdatasets.xsd</align:location>
+            <align:formalism>
+                <align:Formalism>
+                    <align:uri/>
+                    <align:name>XSD</align:name>
+                </align:Formalism>
+            </align:formalism>
+        </align:Ontology>
+    </align:onto1>
+    <align:onto2>
+        <align:Ontology rdf:about="inspire">
+            <omwg:label>xmlns:HY="urn:x-HY:specification:gmlas-v31:Hydrography:2.0"</omwg:label>
+            <omwg:label>xmlns:GN="urn:x-HY:specification:gmlas-v31:GeographicalNames:2.0"</omwg:label>
+            <align:location>hydrography.xsd</align:location>
+            <align:formalism>
+                <align:Formalism>
+                    <align:uri/>
+                    <align:name>XSD</align:name>
+                </align:Formalism>
+            </align:formalism>
+        </align:Ontology>
+    </align:onto2>
+
+    <!--align:map>
+        <align:Cell>
+            <omwg:label>Rename</omwg:label>
+            <omwg:label>Filter</omwg:label>
+            <entity1>
+            </entity1>
+            <entity2>
+            </entity2>
+        </align:Cell>
+    </align:map-->
+
+
+    <!-- example of a "ValueClass", that can be re-used / referenced from a valueCondition or attributeValueCondition -->
+
+                <goml:ValueClass rdf:about="waterVA:LEVEL_cat1">
+                            <!--comparator>oneOf</comparator-->
+                            <value><literal>2</literal></value>
+                            <value><literal>3</literal></value>
+                            <value><literal>4</literal></value>
+                            <value><literal>70</literal></value>
+                            <value><literal>71</literal></value>
+                            <value><literal>72</literal></value>
+                            <value><literal>73</literal></value>
+                            <value><literal>74</literal></value>
+                </goml:ValueClass>
+
+
+
+</align:Alignment>
