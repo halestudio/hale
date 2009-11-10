@@ -8,6 +8,7 @@
       elementFormDefault="qualified">
 
 <!-- TUD mdv 2009 24 Febr wofc, added 'operation' attribute to align:Cell, but March: removed again -->
+<!-- oct 2009: measure and relation are now optional; and measure becomes a simple type, without attribute rdf:datatype -->
 
 
    <xs:import namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#" schemaLocation="tmprdf.xsd" />
@@ -82,9 +83,9 @@
 		 <xs:element ref="omwg:label" minOccurs="0" maxOccurs="unbounded" />
          <xs:element ref="omwg:entity1"/>
          <xs:element ref="omwg:entity2"/>
-         <xs:element ref="align:measure"/>
+         <xs:element ref="align:measure" minOccurs="0" />
          <!--xs:element name="semanticRelation" type="align:relationEnumType" /-->
-         <xs:element name="relation" type="align:relationEnumType" />
+         <xs:element name="relation" type="align:relationEnumType" minOccurs="0"  />
       </xs:sequence>
       <xs:attribute ref="rdf:about" use="optional"/>
       <!--xs:attribute ref="goml:operation" use="optional" /-->
