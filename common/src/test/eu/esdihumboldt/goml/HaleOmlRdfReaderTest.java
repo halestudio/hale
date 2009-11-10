@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
+import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
@@ -63,70 +64,68 @@ public class HaleOmlRdfReaderTest {
 		assertEquals(2, labels.size());
 		assertEquals("http://www.esdi-humboldt.org/waterVA", labels.get(0));
 		assertEquals("Watercourses_VA", labels.get(1));
-			
 		//test fc1 transformer
 		assertNotNull(fc1.getTransformation());
-		assertEquals("eu.esdihumboldt.cst.transformer.impl.RenameFeatureTransformer", fc1.getTransformation().getAbout().getAbout());
+		assertEquals("eu.esdihumboldt.cst.transformer.impl.RenameFeatureTransformer", fc1.getTransformation().getService().getLocation());
 		//test entity2 contexts
+		assertNotNull(renaming.getEntity2());
+		FeatureClass fc2 = (FeatureClass) renaming.getEntity2();
+		assertNotNull(fc2);
+		//test fc1 labels
+		labels = fc2.getLabel();
+		assertEquals(2, labels.size());
+		assertEquals("urn:x-inspire:specification:gmlas-v31:Hydrography:2.0", labels.get(0));
+		assertEquals("Watercourse", labels.get(1));
+		assertNotNull(fc2.getTransformation());
+		assertNotNull(fc2.getTransformation().getService());
+		assertNull(fc2.getTransformation().getService().getLocation());
 		//test measure
 		assertEquals(0.0, renaming.getMeasure(),0);
 		//test relation is null
 		assertNull(renaming.getRelation());
 		
-	
-		//test the cell defining networkexpansion
-		
-		
-		/*
-		//test some alignment maps.
-		//TODO in all mappings test add test for the domain restriction element
-		//1.test the mapping for the attribute renaming mapping3
-		ICell renaming = aligment.getMap().get(3);
-		//assertEquals(1.0,renaming.getMeasure());
-		assertEquals(RelationType.Equivalence, renaming.getRelation());
+	    //test the cell defining networkexpansion
+		ICell netExpansion = aligment.getMap().get(1);
+		//test entity1 contexts
 		//check that entity1 is not empty
-		assertNotNull(renaming.getEntity1());
-		//tests about element for the both entities
-		Property prop1 = (Property)renaming.getEntity1();
-		Property prop2 = (Property)renaming.getEntity2();
-		assertEquals("watercoursesBY:GN",((About)prop1.getAbout()).getAbout());
-		assertEquals("inspireHY:geographicalName/inspireHY:spelling/inspireHY:text",((About)prop2.getAbout()).getAbout());
+		assertNotNull(netExpansion.getEntity1());
+		Property pr1 = (Property) netExpansion.getEntity1();
+		assertNotNull(pr1);
+		//test pr1 labels
+		labels = pr1.getLabel();
+		assertEquals(3, labels.size());
+		assertEquals("http://www.esdi-humboldt.org/waterVA", labels.get(0));
+		assertEquals("Watercourses_VA", labels.get(1));
+		assertEquals("the_geom", labels.get(2));
+		//test pr1 transformer
+		assertNotNull(pr1.getTransformation());
+		assertEquals("eu.esdihumboldt.cst.transformer.impl.NetworkExpansionTransformer", pr1.getTransformation().getService().getLocation());
+		//transformer parameter list should contain 1 parameter
+		assertEquals(1, pr1.getTransformation().getParameters().size());
+		IParameter parameter = pr1.getTransformation().getParameters().get(0);
+		assertEquals("Expansion", parameter.getName());
+		assertEquals("50", parameter.getValue());
+		//test entity2 contexts
+		assertNotNull(renaming.getEntity2());
+		Property pr2 = (Property) netExpansion.getEntity2();
+		assertNotNull(pr2);
+		//test fc1 labels
+		labels = pr2.getLabel();
+		assertEquals(3, labels.size());
+		assertEquals("urn:x-inspire:specification:gmlas-v31:Hydrography:2.0", labels.get(0));
+		assertEquals("SurfaceWater", labels.get(1));
+		assertEquals("geometry", labels.get(2));
+		assertNotNull(pr2.getTransformation());
+		assertNotNull(pr2.getTransformation().getService());
+		assertNull(pr2.getTransformation().getService().getLocation());
+		//test measure
+		assertEquals(0.0, netExpansion.getMeasure(),0);
+		//test relation is null
+		assertNull(netExpansion.getRelation());
 		
-		//2. test for the mapping for the augmentation
-		ICell augmentation = aligment.getMap().get(2);
-		//assertEquals(1.0,augmentation.getMeasure());
-		assertEquals(RelationType.Extra, augmentation.getRelation());
-		//check that entity1 is empty
 		
-		//tests about element for the both entities
-		 prop1 = (Property)augmentation.getEntity1();
-		 prop2 = (Property)augmentation.getEntity2();
-		assertEquals("",((About)prop1.getAbout()).getAbout());
-		assertEquals("inspireHY:endLifespanVersion",((About)prop2.getAbout()).getAbout());
-		//check value condition for the entity2
-		assertEquals(1, prop2.getValueCondition().size());
-		Restriction restriction = prop2.getValueCondition().get(0);
-		assertEquals(ComparatorType.EQUAL, restriction.getComparator());
-		assertEquals("unpopulated", restriction.getValue().get(0).getLiteral());
-		//check DomainValueCondition
-		assertEquals(1,prop2.getDomainRestriction().size());
-		assertEquals("inspireHY:Watercourse", ((About) prop2.getDomainRestriction().get(0).getAbout()).getAbout());
 		
-		//3. test the mapping for filter
-		Cell filter =(Cell)aligment.getMap().get(0);
-		//read operation name
-		assertEquals("filter",filter.getLabel().get(0));
-		//assertEquals(1.0,filter.getMeasure());
-		assertEquals(RelationType.Equivalence, filter.getRelation());
-		//check entity1 properties
-		FeatureClass fc1 = (FeatureClass)filter.getEntity1();
-		assertEquals(1,fc1.getAttributeValueCondition().size());
-		assertEquals(null,fc1.getAttributeValueCondition().get(0).getComparator());
-		assertEquals("watercoursesBY:OBJART=5101", fc1.getAttributeValueCondition().get(0).getCqlStr());
-		//check entity2 properties
-		FeatureClass fc2 = (FeatureClass)filter.getEntity2();
-		assertEquals("inspireHY:Watercourse", ((About)fc2.getAbout()).getAbout());
-		*/
+		
 	}
  
 }
