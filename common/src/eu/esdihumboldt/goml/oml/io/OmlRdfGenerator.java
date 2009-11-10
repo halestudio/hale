@@ -252,7 +252,8 @@ public class OmlRdfGenerator {
 			About about = (About) cell.getAbout();
 			if (about != null)
 				cType.setAbout(about.getAbout());
-			cType.setMeasure(getMeasure(cell.getMeasure()));
+			//keep Measure optional
+			cType.setMeasure(new Float(cell.getMeasure()));
 			cType.setRelation(getRelation(cell.getRelation()));
 			cType.setEntity1(getEntity1(cell.getEntity1()));
 			cType.setEntity2(getEntity2(cell.getEntity2()));
@@ -269,7 +270,7 @@ public class OmlRdfGenerator {
 	 * @param measure
 	 * @return
 	 */
-	private Measure getMeasure(double measure) {
+	/*private Float getMeasure(double measure) {
 		//TODO changed structure of the Measure element in the schema
 		
 		Measure jMeasure = new Measure();
@@ -277,7 +278,7 @@ public class OmlRdfGenerator {
 		jMeasure.setValue(new Double(measure).floatValue());
 		return jMeasure;
 	}
-
+*/
 	/**
 	 * converts from RelationType to RelationEnumType
 	 * 
@@ -694,7 +695,7 @@ public class OmlRdfGenerator {
 	 */
 	private ValueConditionType getValueConditionType(Restriction restriction) {
 		ValueConditionType vcType = new ValueConditionType();
-		vcType.setRestriction(getPropertyValueRestrictionType(restriction));
+		vcType.setRestriction(getRestrictionType(restriction));
 		vcType.setSeq(restriction.getSeq());
 		return vcType;
 	}

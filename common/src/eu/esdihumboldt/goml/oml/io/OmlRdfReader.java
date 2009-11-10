@@ -188,7 +188,7 @@ public class OmlRdfReader {
 		cell.setEntity1(getEntity(cellType.getEntity1().getEntity()));
 		//set entity2
 		cell.setEntity2(getEntity(cellType.getEntity2().getEntity()));
-		cell.setMeasure(cellType.getMeasure().getValue());
+		cell.setMeasure(cellType.getMeasure());
 		cell.setRelation(getRelation(cellType.getRelation()));
 		
 		return cell;
