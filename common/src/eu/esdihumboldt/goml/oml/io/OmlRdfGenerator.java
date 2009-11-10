@@ -348,7 +348,7 @@ public class OmlRdfGenerator {
 				// instantiate as PropertyType
 				Property property = (Property) entity;
 				PropertyType pType = getPropertyType(property);
-				eType = new JAXBElement<PropertyType>(new QName("Property"),
+				eType = new JAXBElement<PropertyType>(new QName("http://www.omwg.org/TR/d7/ontology/alignment","Property"),
 						PropertyType.class, pType);
 
 			} else if (entity instanceof FeatureClass) {
@@ -356,7 +356,7 @@ public class OmlRdfGenerator {
 				FeatureClass feature = (FeatureClass) entity;
 				ClassType cType = getClassType(feature);
 
-				eType = new JAXBElement<ClassType>(new QName("Class"),
+				eType = new JAXBElement<ClassType>(new QName("http://www.omwg.org/TR/d7/ontology/alignment", "Class"),
 						ClassType.class, cType);
 			} else if (entity instanceof Relation) {
 				// instantiate as RelationType
