@@ -30,6 +30,7 @@ import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.align.ISchema;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
+import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.cst.align.ext.IValueExpression;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
@@ -45,6 +46,7 @@ import eu.esdihumboldt.goml.generated.ComparatorEnumType;
 import eu.esdihumboldt.goml.generated.DomainRestrictionType;
 import eu.esdihumboldt.goml.generated.EntityType;
 import eu.esdihumboldt.goml.generated.FormalismType;
+import eu.esdihumboldt.goml.generated.FunctionType;
 import eu.esdihumboldt.goml.generated.OntologyType;
 import eu.esdihumboldt.goml.generated.PropertyType;
 import eu.esdihumboldt.goml.generated.RelationEnumType;
@@ -54,6 +56,7 @@ import eu.esdihumboldt.goml.generated.ValueConditionType;
 import eu.esdihumboldt.goml.generated.ValueExprType;
 import eu.esdihumboldt.goml.generated.AlignmentType.Map;
 import eu.esdihumboldt.goml.oml.ext.Function;
+import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.oml.ext.ValueClass;
 import eu.esdihumboldt.goml.oml.ext.ValueExpression;
 import eu.esdihumboldt.goml.omwg.ComparatorType;
@@ -234,7 +237,6 @@ public class OmlRdfReader {
 		if (entityType instanceof PropertyType){
 	       entity = new Property(entityType.getLabel());
 		PropertyType propertyType = ((PropertyType)entityType);
-		//TODO add  Transformation to Entity
 		//set property-specific members to the entity
 		//set domainRestriction
 		((Property)entity).setDomainRestriction(getDomainRestriction(propertyType.getDomainRestriction()));
@@ -245,17 +247,33 @@ public class OmlRdfReader {
 		}else if (entityType instanceof ClassType){
 			//initiates entity as FeatureType
 			ClassType cType = (ClassType)entityType;
-			entity = new FeatureClass(null);
+			entity = new FeatureClass(entityType.getLabel());
 			((FeatureClass)entity).setAttributeOccurenceCondition(getRestrictions(cType.getAttributeOccurenceCondition()));
 			((FeatureClass)entity).setAttributeTypeCondition(getRestrictions(cType.getAttributeTypeCondition()));
 			((FeatureClass)entity).setAttributeValueCondition(getRestrictions(cType.getAttributeValueCondition()));
 		}
+		
+		//set Transformation to Entity
+		Transformation transformation = getTransformation(entityType.getTransf());
 		//set About
 		About about = new About(UUID.randomUUID());
 		about.setAbout(entityType.getAbout());
 		entity.setAbout(about);
 		return entity;
 	}
+
+	/**
+ * @param transf
+ * @return
+ */
+private Transformation getTransformation(FunctionType transf) {
+	Transformation trans = new Transformation();
+	//put resource to about element
+	/*About tranfAbout = new About(UUID.randomUUID());
+	(trans).setAbout(transf.getResource());*/
+	
+	return null;
+}
 
 	/**
 	 * Converts from the List of DomainRestrictionType
