@@ -30,6 +30,7 @@ import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.align.ISchema;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
+import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.cst.align.ext.IValueExpression;
 import eu.esdihumboldt.goml.align.Alignment;
@@ -48,6 +49,7 @@ import eu.esdihumboldt.goml.generated.EntityType;
 import eu.esdihumboldt.goml.generated.FormalismType;
 import eu.esdihumboldt.goml.generated.FunctionType;
 import eu.esdihumboldt.goml.generated.OntologyType;
+import eu.esdihumboldt.goml.generated.ParamType;
 import eu.esdihumboldt.goml.generated.PropertyType;
 import eu.esdihumboldt.goml.generated.RelationEnumType;
 import eu.esdihumboldt.goml.generated.RestrictionType;
@@ -56,6 +58,7 @@ import eu.esdihumboldt.goml.generated.ValueConditionType;
 import eu.esdihumboldt.goml.generated.ValueExprType;
 import eu.esdihumboldt.goml.generated.AlignmentType.Map;
 import eu.esdihumboldt.goml.oml.ext.Function;
+import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.oml.ext.ValueClass;
 import eu.esdihumboldt.goml.oml.ext.ValueExpression;
@@ -64,6 +67,7 @@ import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.goml.rdf.Resource;
 /**
  * This class reads the OML Rdf Document into Java Object.
  * 
@@ -255,6 +259,7 @@ public class OmlRdfReader {
 		
 		//set Transformation to Entity
 		Transformation transformation = getTransformation(entityType.getTransf());
+		entity.setTransformation(transformation);
 		//set About
 		About about = new About(UUID.randomUUID());
 		about.setAbout(entityType.getAbout());
@@ -263,17 +268,35 @@ public class OmlRdfReader {
 	}
 
 	/**
- * @param transf
- * @return
- */
+	 * Converts from the FunctionType 
+	 * to the Transformation
+	 * @param transf
+	 * @return 
+	 */
 private Transformation getTransformation(FunctionType transf) {
 	Transformation trans = new Transformation();
-	//put resource to about element
-	/*About tranfAbout = new About(UUID.randomUUID());
-	(trans).setAbout(transf.getResource());*/
+	//set Service
+    Resource resource = new Resource(transf.getResource());
+    trans.setService(resource);
+	//set parameter list
+	trans.setParameters(getParameters(transf.getParam()));
 	
-	return null;
+	
+	return trans;
 }
+
+	private List<IParameter> getParameters(List<ParamType> param) {
+		List<IParameter> params = new ArrayList<IParameter>(param.size());
+		Iterator<ParamType> iterator = param.iterator();
+		ParamType paramType;
+		IParameter parameter;
+		while(iterator.hasNext()){
+			paramType = (ParamType)iterator.next();
+			parameter = new Parameter(paramType.getName(),paramType.getValue().get(0));
+			params.add(parameter);
+		}
+		return params;
+	}
 
 	/**
 	 * Converts from the List of DomainRestrictionType
