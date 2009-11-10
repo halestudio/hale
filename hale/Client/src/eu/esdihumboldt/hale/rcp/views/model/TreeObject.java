@@ -27,7 +27,7 @@ import eu.esdihumboldt.goml.omwg.Property;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class TreeObject implements SchemaItem {
+public class TreeObject implements SchemaItem, Comparable<TreeObject> {
 	
 	private final String label;
 	private TreeParent parent;
@@ -199,6 +199,14 @@ public class TreeObject implements SchemaItem {
 	@Override
 	public boolean hasChildren() {
 		return false;
+	}
+
+	/**
+	 * @see Comparable#compareTo(Object)
+	 */
+	@Override
+	public int compareTo(TreeObject other) {
+		return label.compareToIgnoreCase(other.label);
 	}
 
 }

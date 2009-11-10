@@ -11,7 +11,8 @@
  */
 package eu.esdihumboldt.hale.rcp.views.model;
 
-import java.util.ArrayList;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.opengis.feature.type.Name;
 
@@ -24,7 +25,7 @@ import org.opengis.feature.type.Name;
  * @version $Id$
  */
 public class TreeParent extends TreeObject{
-	private ArrayList<TreeObject> children;
+	private SortedSet<TreeObject> children;
 	
 	/**
 	 * Constructor
@@ -35,7 +36,7 @@ public class TreeParent extends TreeObject{
 	 */
 	public TreeParent(String label, Name name, TreeObjectType type) {
 		super(label, name, type);
-		children = new ArrayList<TreeObject>();
+		children = new TreeSet<TreeObject>();
 	}
 	
 	/**
