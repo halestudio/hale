@@ -25,6 +25,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.feature.FeatureCollection;
@@ -65,6 +66,7 @@ public class ProjectParser {
 	 * @param result
 	 */
 	public static void read(String result) {
+		ProjectParser._log.setLevel(Level.INFO);
 		// 1. unmarshal rdf
 		JAXBContext jc;
 		JAXBElement<HaleProject> root = null;
@@ -120,6 +122,7 @@ public class ProjectParser {
 			OmlRdfReader reader = new OmlRdfReader();
 			alignmentService.addOrUpdateAlignment(
 					reader.read(project.getOmlPath()));
+			_log.info("Number of loaded cells: " + alignmentService.getAlignment().getMap().size());
 		} catch (Exception e) {
 			throw new RuntimeException("Alignment could not be loaded: ", e);
 		}

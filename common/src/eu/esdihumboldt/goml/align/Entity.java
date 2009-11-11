@@ -17,7 +17,6 @@ import java.util.List;
 import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
 
 /**
  * {@link Entity} is the supertype for all objects that can be mapped in a 
@@ -53,9 +52,9 @@ public abstract class Entity
 	/**
 	 * @param label
 	 */
-	public Entity(List<String> label) {
+	public Entity(IAbout about) {
 		super();
-		this.label = label;
+		this.about = about;
 	}
 
 	// getters / setters .......................................................

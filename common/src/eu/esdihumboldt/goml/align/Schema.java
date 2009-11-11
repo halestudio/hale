@@ -12,6 +12,9 @@
 
 package eu.esdihumboldt.goml.align;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import eu.esdihumboldt.cst.align.ISchema;
 import eu.esdihumboldt.cst.rdf.IAbout;
 
@@ -42,6 +45,11 @@ public class Schema
 	 */
 	private IAbout about;
 	
+	/**
+	 * A {@link List} of user-definable Labels that may be given to a SChema.
+	 */
+	private List<String> labels;
+	
 	// constructors ............................................................
 	
 	/**
@@ -52,6 +60,7 @@ public class Schema
 		super();
 		this.location = location;
 		this.formalism = formalism;
+		this.labels = new ArrayList<String>();
 	}
 
 	// getters / setters .......................................................
@@ -96,6 +105,20 @@ public class Schema
 	 */
 	public void setAbout(IAbout about) {
 		this.about = about;
+	}
+
+	/**
+	 * @return the labels
+	 */
+	public List<String> getLabels() {
+		return labels;
+	}
+
+	/**
+	 * @param labels the labels to set
+	 */
+	public void setLabels(List<String> labels) {
+		this.labels = labels;
 	}
 	
 }

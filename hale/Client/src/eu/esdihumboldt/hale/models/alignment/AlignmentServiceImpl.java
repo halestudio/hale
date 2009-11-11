@@ -204,10 +204,7 @@ public class AlignmentServiceImpl implements AlignmentService {
 	 */
 	@Override
 	public List<ICell> getAlignmentForType(FeatureType type) {
-		List<String> labels = new ArrayList<String>();
-		labels.add(type.getName().getNamespaceURI());
-		labels.add(type.getName().getLocalPart());
-		Entity e = new FeatureClass(labels);
+		Entity e = new FeatureClass(new About(type.getName().getURI()));
 		return this.getCell(e);
 	}
 
@@ -215,14 +212,8 @@ public class AlignmentServiceImpl implements AlignmentService {
 	 * @see AlignmentService#getAlignmentForType(FeatureType, FeatureType)
 	 */
 	public ICell getAlignmentForType(FeatureType type1, FeatureType type2) {
-		List<String> labels = new ArrayList<String>();
-		labels.add(type1.getName().getNamespaceURI());
-		labels.add(type1.getName().getLocalPart());
-		Entity e1 = new FeatureClass(labels);
-		labels = new ArrayList<String>();
-		labels.add(type2.getName().getNamespaceURI());
-		labels.add(type2.getName().getLocalPart());
-		Entity e2 = new FeatureClass(labels);
+		Entity e1 = new FeatureClass(new About(type1.getName().getURI()));
+		Entity e2 = new FeatureClass(new About(type2.getName().getURI()));
 		return this.getCell(e1, e2);
 	}
 

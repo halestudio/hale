@@ -13,6 +13,8 @@ package eu.esdihumboldt.goml.omwg;
 
 import java.util.List;
 
+import eu.esdihumboldt.cst.rdf.IAbout;
+
 /**
  * This class represents omwg:classConst. Used for building an expression that
  * constructs a FeatureClass based on other FeatureClasses.
@@ -41,8 +43,8 @@ public class ComposedFeatureClass
 	
 	// constructors ............................................................
 	
-	public ComposedFeatureClass(List<String> label) {
-		super(label);
+	public ComposedFeatureClass(IAbout about) {
+		super(about);
 		// TODO Auto-generated constructor stub
 	}
 

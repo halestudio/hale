@@ -29,6 +29,11 @@ public class About implements IAbout {
 	private String about;
 	
 	// constructors ............................................................
+	
+	public About(String about) {
+		super();
+		this.about = about;
+	}
 
 	public About(UUID uid) {
 		super();

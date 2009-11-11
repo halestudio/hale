@@ -13,6 +13,7 @@ package eu.esdihumboldt.goml.omwg;
 
 import java.util.List;
 
+import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.align.Entity;
 
 /**
@@ -53,8 +54,8 @@ public class FeatureClass
 	/**
 	 * @param label
 	 */
-	public FeatureClass(List<String> label) {
-		super(label);
+	public FeatureClass(IAbout about) {
+		super(about);
 	}
 
 	// getters / setters .......................................................

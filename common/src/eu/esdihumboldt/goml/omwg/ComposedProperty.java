@@ -13,6 +13,8 @@ package eu.esdihumboldt.goml.omwg;
 
 import java.util.List;
 
+import eu.esdihumboldt.cst.rdf.IAbout;
+
 /**
  * This class represents omwg:propertyConst. Used for building an expression that
  * constructs a Property based on other Properties.
@@ -44,9 +46,8 @@ public class ComposedProperty
 	
 	// constructors ............................................................
 	
-	public ComposedProperty(List<String> label) {
-		super(label);
-		// TODO Auto-generated constructor stub
+	public ComposedProperty(IAbout about) {
+		super(about);
 	}
 
 	// getters / setters .......................................................

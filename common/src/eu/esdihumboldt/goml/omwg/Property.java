@@ -13,6 +13,7 @@ package eu.esdihumboldt.goml.omwg;
 
 import java.util.List;
 
+import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.align.Entity;
 
 /**
@@ -48,8 +49,8 @@ public class Property
 	
 	// constructors ............................................................
 	
-	public Property(List<String> label) {
-		super(label);
+	public Property(IAbout about) {
+		super(about);
 	}
 
 	// getters/setters .........................................................

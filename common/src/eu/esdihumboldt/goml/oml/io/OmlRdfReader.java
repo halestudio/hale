@@ -248,7 +248,7 @@ public class OmlRdfReader {
 		
 		//TODO add convertion to the RelationType if needed
 		if (entityType instanceof PropertyType){
-	       entity = new Property(entityType.getLabel());
+	       entity = new Property(new About(entityType.getAbout()));
 		PropertyType propertyType = ((PropertyType)entityType);
 		//set property-specific members to the entity
 		//set domainRestriction
@@ -260,7 +260,7 @@ public class OmlRdfReader {
 		}else if (entityType instanceof ClassType){
 			//initiates entity as FeatureType
 			ClassType cType = (ClassType)entityType;
-			entity = new FeatureClass(entityType.getLabel());
+			entity = new FeatureClass(new About(entityType.getAbout()));
 			((FeatureClass)entity).setAttributeOccurenceCondition(getRestrictions(cType.getAttributeOccurenceCondition()));
 			((FeatureClass)entity).setAttributeTypeCondition(getRestrictions(cType.getAttributeTypeCondition()));
 			((FeatureClass)entity).setAttributeValueCondition(getRestrictions(cType.getAttributeValueCondition()));

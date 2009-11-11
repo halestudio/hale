@@ -64,7 +64,7 @@ public class ProjectGenerator {
 			m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
 					new NamespacePrefixMapperImpl());
 		} catch (PropertyException e) {
-			_log.warn("JAXB provider doesn't recognize the prefix mapper.");
+			_log.warn("JAXB provider doesn't recognize the prefix mapper:", e);
 		}
 
 		// make the output indented.

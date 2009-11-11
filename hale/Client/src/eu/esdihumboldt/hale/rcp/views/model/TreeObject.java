@@ -11,14 +11,12 @@
  */
 package eu.esdihumboldt.hale.rcp.views.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.rdf.About;
 
 /**
  * A TreeObject for TreeViewers.
@@ -55,23 +53,19 @@ public class TreeObject implements SchemaItem, Comparable<TreeObject> {
 		Entity entity = null;
 		
 		if (entity == null) {
-			List<String> nameparts = new ArrayList<String>();
 			
 			if (isType()) {
 				// feature type
 				if (name != null) {
-					nameparts.add(name.getNamespaceURI());
-					nameparts.add(name.getLocalPart());
-					entity = new FeatureClass(nameparts);
+					entity = new FeatureClass(new About(name.getURI()));
 				}
 			}
 			else if (isAttribute()) {
 				// attributes
 				if (parent != null && parent.getName() != null) {
-					nameparts.add(parent.getName().getNamespaceURI());
-					nameparts.add(parent.getName().getLocalPart());
-					nameparts.add(name.getLocalPart());
-					entity = new Property(nameparts);
+					entity = new Property(
+							new About(name.getURI() + "/" 
+									+ name.getLocalPart()));
 				}
 			}
 		}

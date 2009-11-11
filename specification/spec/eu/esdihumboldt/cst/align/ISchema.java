@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.cst.align;
 
+import java.util.List;
+
 import eu.esdihumboldt.cst.rdf.IAbout;
 
 /**
@@ -37,4 +39,9 @@ public interface ISchema {
 	 * @return the about
 	 */
 	public IAbout getAbout();
+	
+	/**
+	 * @return the labels
+	 */
+	public List<String> getLabels();
 }

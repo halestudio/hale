@@ -13,6 +13,8 @@ package eu.esdihumboldt.goml.omwg;
 
 import java.util.List;
 
+import eu.esdihumboldt.cst.rdf.IAbout;
+
 /**
  * This class represents omwg:relConst. Used for building an expression that
  * constructs a Relation based on other Relations.
@@ -39,16 +41,11 @@ public class ComposedRelation
        *
 	 */
 	private List<FeatureClass> collection;
-      private Relation relation;
-	
-
-
 	
 	// constructors ............................................................
 	
-	public ComposedRelation(List<String> label) {
-		super(label);
-		// TODO Auto-generated constructor stub
+	public ComposedRelation(IAbout about) {
+		super(about);
 	}
 
 	// getters / setters .......................................................

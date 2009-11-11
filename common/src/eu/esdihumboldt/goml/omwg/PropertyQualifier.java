@@ -15,6 +15,7 @@ package eu.esdihumboldt.goml.omwg;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.align.Entity;
 
 
@@ -47,8 +48,8 @@ public class PropertyQualifier
     /**
     * @param label
     */
-    public PropertyQualifier(List<String> label) {
-	 super(label);
+    public PropertyQualifier(IAbout about) {
+	 super(about);
     }
 
 
