@@ -118,6 +118,7 @@ public class OmlRdfReader {
 		//set schema1,2 containing information about ontologies1,2
 		al.setSchema1(getSchema(genAlignment.getOnto1().getOntology()));
 		al.setSchema2(getSchema(genAlignment.getOnto2().getOntology() ));
+		//TODO add value class to alignment
 		return al;
 	}
 

@@ -145,7 +145,7 @@ public class OmlRdfGenerator {
 		aType.setOnto2(getOnto2(alignment.getSchema2()));
 		// 2. add map of cells
 		aType.getMap().addAll(getMaps(alignment.getMap()));
-
+        //TODO add valueClass
 		return aType;
 	}
 
