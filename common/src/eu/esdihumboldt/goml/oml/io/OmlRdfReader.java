@@ -33,6 +33,7 @@ import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.cst.align.ext.IValueExpression;
+import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
@@ -131,6 +132,13 @@ public class OmlRdfReader {
 		// create Formalism
 		Formalism formalism = getFormalism(onto.getFormalism());
 		ISchema schema = new Schema(onto.getLocation(),formalism);
+		//set about 
+		IAbout about = new About(UUID.randomUUID());
+		((About)about).setAbout(onto.getAbout());
+		((Schema)schema).setAbout(about);
+		
+		//TODO set labels
+		
 		return schema;
 		
 	}

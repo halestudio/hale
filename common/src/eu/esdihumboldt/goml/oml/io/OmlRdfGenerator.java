@@ -187,6 +187,7 @@ public class OmlRdfGenerator {
 				oType.setAbout(about.getAbout());
 			oType.setLocation(schema.getLocation());
 			oType.setFormalism(getFormalism(schema.getFormalism()));
+			//TODO set labels
 		}
 		return oType;
 	}
@@ -574,10 +575,10 @@ public class OmlRdfGenerator {
 	private FunctionType getTransf(ITransformation transformation) {
 		FunctionType fType = new FunctionType();
 		if (transformation != null) {
-			// TODO check the resource transformation
-			// fType.setResource(transformation.getService().toString());
-			//Uli will provide us with examples
-			fType.setResource(transformation.getLabel());
+			
+			if(transformation.getService()!=null) fType.setResource(transformation.getService().getLocation());
+			/*//Uli will provide us with examples
+			fType.setResource(transformation.getLabel());*/
 			if (transformation.getParameters() != null) {
 				fType.getParam().addAll(
 					getParameters(transformation.getParameters()));
