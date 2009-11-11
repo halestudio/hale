@@ -256,10 +256,11 @@ public class OmlRdfReader {
 			((FeatureClass)entity).setAttributeTypeCondition(getRestrictions(cType.getAttributeTypeCondition()));
 			((FeatureClass)entity).setAttributeValueCondition(getRestrictions(cType.getAttributeValueCondition()));
 		}
-		
+		if (entityType.getTransf()!=null){
 		//set Transformation to Entity
 		Transformation transformation = getTransformation(entityType.getTransf());
 		entity.setTransformation(transformation);
+		}
 		//set About
 		About about = new About(UUID.randomUUID());
 		about.setAbout(entityType.getAbout());
