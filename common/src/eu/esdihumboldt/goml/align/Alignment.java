@@ -140,4 +140,13 @@ public class Alignment implements IAlignment {
 		return this.valueClasses;
 	}
 	
+	/*
+	 * 
+	 * @param list of value class 
+	 */
+	public void setValueClass(List<IValueClass> valueClass){
+		this.valueClasses = valueClass;
+		
+	}
+ 
 }
