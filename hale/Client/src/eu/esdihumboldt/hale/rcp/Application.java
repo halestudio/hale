@@ -24,8 +24,11 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Log4JLoggerFactory;
 import org.geotools.util.logging.Logging;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 
 /**
  * This class controls all aspects of the application's execution
@@ -58,6 +61,13 @@ public class Application implements IApplication {
 		Logging.ALL.setLoggerFactory(Log4JLoggerFactory.getInstance());
 		Logger.getLogger(Log4JLogger.class).setLevel(Level.WARN);
 		Logger.getRootLogger().setLevel(Level.WARN);
+		
+		// init HSQL database
+		try {
+			CRS.decode("EPSG:4326");
+		} catch (Exception e) {
+			_log.error("Error while initializing epsg database", e);
+		}
 		
 		// provide information on HALE version to console.
 		_log.info("HALE Version: " 
