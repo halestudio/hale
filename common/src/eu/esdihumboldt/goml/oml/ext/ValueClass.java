@@ -34,7 +34,18 @@ public class ValueClass implements IValueClass {
 
     private List<IValueExpression> value;
 
-    private String resource;
+    /**
+     * Sets the value of the value property.
+     * 
+     * @param List of value properties
+     * 
+     */
+    
+    public void setValue(List<IValueExpression> value) {
+		this.value = value;
+	}
+
+	private String resource;
 
     private String about;
 
