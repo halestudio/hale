@@ -84,7 +84,6 @@ public class CellDetails implements ISelectionChangedListener {
 					
 					ITransformation transformation = cell.getCell().getEntity1().getTransformation();
 					if (transformation != null) {
-						items.add(new TableItem("Transformation", transformation.getLabel()));
 						if (transformation.getService() != null) {
 							items.add(new TableItem("Service", transformation.getService().toString()));
 						}

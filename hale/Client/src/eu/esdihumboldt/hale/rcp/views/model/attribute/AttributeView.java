@@ -451,7 +451,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 				if (cell != null) {
 					// get transformation type
 					label = shortenLabel(cell.getEntity1().getTransformation()
-							.getLabel());
+							.getService().getLocation());
 					
 					// check if a Filter Restriction is applied to this cell
 					Restriction r = null;

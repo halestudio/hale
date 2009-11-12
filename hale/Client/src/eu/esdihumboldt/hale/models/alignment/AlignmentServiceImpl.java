@@ -122,17 +122,10 @@ public class AlignmentServiceImpl implements AlignmentService {
 	 */
 	protected boolean entitiesMatch(IEntity e1, IEntity e2) {
 		if (e1 != null && e2 != null) {
-			List<String> labels1 = e1.getLabel();
-			List<String> labels2 = e2.getLabel();
+			String about1 = e1.getAbout().getAbout();
+			String about2 = e2.getAbout().getAbout();
 			
-			if (labels1.size() == labels2.size()) {
-				for (int i = 0; i < labels1.size(); i++) {
-					if (labels1.get(i) == null && labels2.get(i) != null)
-						return false;
-					else if (labels1.get(i) != null && !labels1.get(i).equals(labels2.get(i)))
-						return false;
-				}
-				
+			if (about1.equals(about2)) {
 				return true;
 			}
 			else {

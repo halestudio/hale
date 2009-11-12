@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 
+import eu.esdihumboldt.cst.transformer.impl.NetworkExpansionTransformer;
 import eu.esdihumboldt.cst.transformer.impl.RenameAttributeTransformer;
 import eu.esdihumboldt.cst.transformer.impl.RenameFeatureTransformer;
 import eu.esdihumboldt.goml.align.Cell;
@@ -23,6 +24,7 @@ import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 
@@ -83,20 +85,22 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 		if (source instanceof FeatureClass && target instanceof FeatureClass) {
 			// Type renaming
 			t.setLabel(RenameFeatureTransformer.class.getName());
-			
+			t.setService(new Resource(RenameFeatureTransformer.class.getName()));
+
 			//TODO any parameters needed?
 		}
 		else if (source instanceof Property && target instanceof Property) {
 			// Attribute renaming
 			t.setLabel(RenameAttributeTransformer.class.getName());
+			t.setService(new Resource(RenameFeatureTransformer.class.getName()));
 			
 			//Add old attribute name
 			t.getParameters().add(new Parameter(
 					RenameAttributeTransformer.OLD_ATTRIBUTE_NAME_PARAMETER, 
-					source.getLabel().get(source.getLabel().size() - 1)));
+					source.getAbout().getAbout()));
 			t.getParameters().add(new Parameter(
 					RenameAttributeTransformer.NEW_ATTRIBUTE_NAME_PARAMETER, 
-					target.getLabel().get(target.getLabel().size() - 1)));
+					target.getAbout().getAbout()));
 		}
 		else {
 			//TODO error message?

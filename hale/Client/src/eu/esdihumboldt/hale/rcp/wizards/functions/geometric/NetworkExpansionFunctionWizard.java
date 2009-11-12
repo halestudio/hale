@@ -19,6 +19,7 @@ import eu.esdihumboldt.cst.transformer.impl.NetworkExpansionTransformer;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
+import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 
@@ -64,7 +65,7 @@ public class NetworkExpansionFunctionWizard
 		Entity entity1 = (Entity) cell.getEntity1();
 		
 		Transformation transformation = new Transformation();
-		transformation.setLabel(NetworkExpansionTransformer.class.getName()); //FIXME
+		transformation.setService(new Resource(NetworkExpansionTransformer.class.getName()));
 		transformation.getParameters().add(new Parameter("Expansion", mainPage.getExpansion()));
 		
 		entity1.setTransformation(transformation);

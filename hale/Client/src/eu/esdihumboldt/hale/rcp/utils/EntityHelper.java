@@ -11,8 +11,6 @@
  */
 package eu.esdihumboldt.hale.rcp.utils;
 
-import java.util.List;
-
 import eu.esdihumboldt.cst.align.IEntity;
 
 /**
@@ -31,32 +29,13 @@ public abstract class EntityHelper {
 	 * @return the short name
 	 */
 	public static String getShortName(IEntity entity) {
-		List<String> label = entity.getLabel();
-		if (label.size() == 2) {
-			return label.get(1);
+		if (entity.getAbout() != null && entity.getAbout().getAbout() != null ) {
+			String label = entity.getAbout().getAbout();
+			String[] nameparts = label.split("\\/");
+			return nameparts[nameparts.length -1];
 		}
-		else if (label.size() > 2) {
-			return label.get(label.size() - 2) + "." + label.get(label.size() - 1);
-		}
-		else if (label.size() == 1) {
-			return label.get(0);
-		}
-		
-		return "unnamed";
-	}
-	
-	/**
-	 * Get the last label entry for the given entity
-	 * 
-	 * @param entity the entity
-	 * @return the last label entry
-	 */
-	public static String getLastName(IEntity entity) {
-		List<String> label = entity.getLabel();
-		if (label.size() > 0) {
-			return label.get(label.size() - 1);
-		}
-		
+		String label = entity.getAbout().getAbout();
+		String[] nameparts = label.split("\\/");
 		return "unnamed";
 	}
 

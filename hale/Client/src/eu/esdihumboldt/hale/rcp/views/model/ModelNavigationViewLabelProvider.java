@@ -213,7 +213,7 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 	protected RGB getBackgroundColor(List<ITransformation> transformations) {
 		Set<String> names = new HashSet<String>();
 		for (ITransformation trans : transformations) {
-			names.add(trans.getLabel()); //XXX service is null!
+			names.add(trans.getService().getLocation()); //XXX service is null!
 		}
 		
 		if (!names.isEmpty()) {

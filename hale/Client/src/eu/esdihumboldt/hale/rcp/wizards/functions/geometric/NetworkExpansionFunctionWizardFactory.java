@@ -56,7 +56,7 @@ public class NetworkExpansionFunctionWizardFactory implements
 			
 			if (cell != null) {
 				// only allow editing matching transformation
-				return cell.getEntity1().getTransformation().getLabel().equals(
+				return cell.getEntity1().getTransformation().getService().getLocation().equals(
 						NetworkExpansionTransformer.class.getName());
 			}
 			else if (source.isAttribute() && target.isAttribute()) {
