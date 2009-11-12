@@ -33,6 +33,7 @@ import eu.esdihumboldt.cst.align.ISchema;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
+import eu.esdihumboldt.cst.align.ext.IValueClass;
 import eu.esdihumboldt.cst.align.ext.IValueExpression;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.generated.AlignmentType;
@@ -145,8 +146,31 @@ public class OmlRdfGenerator {
 		aType.setOnto2(getOnto2(alignment.getSchema2()));
 		// 2. add map of cells
 		aType.getMap().addAll(getMaps(alignment.getMap()));
-        //TODO add valueClass
+        //3. add valueClass
+		aType.getValueClass().addAll(getValueClasses(alignment.getValueClasses()));
 		return aType;
+	}
+
+	/**
+	 * Converts from list of the OML Classes
+	 * to the list of the JAXB generated classes
+	 * @param valueClasses
+	 * @return
+	 */
+	private List<ValueClassType> getValueClasses(
+			List<IValueClass> valueClasses) {
+		List<ValueClassType> vcTypes = new ArrayList<ValueClassType>();
+		ValueClassType vcType = new ValueClassType();
+		IValueClass vClass;
+		Iterator<IValueClass> iterator = valueClasses.iterator();
+		while(iterator.hasNext()){
+			vClass = (IValueClass)iterator.next();
+			vcType.setAbout(vClass.getAbout());
+			vcType.setResource(vClass.getResource());
+			vcType.getValue().addAll(getValueExpressionTypes(vClass.getValue()));
+			vcTypes.add(vcType);
+		}
+		return vcTypes;
 	}
 
 	/**
@@ -187,7 +211,7 @@ public class OmlRdfGenerator {
 				oType.setAbout(about.getAbout());
 			oType.setLocation(schema.getLocation());
 			oType.setFormalism(getFormalism(schema.getFormalism()));
-			//TODO set labels
+			oType.getLabel().addAll(schema.getLabels());
 		}
 		return oType;
 	}

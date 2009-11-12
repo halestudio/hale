@@ -16,6 +16,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -32,6 +33,7 @@ import eu.esdihumboldt.cst.align.ISchema;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
+import eu.esdihumboldt.cst.align.ext.IValueClass;
 import eu.esdihumboldt.cst.align.ext.IValueExpression;
 import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.align.Alignment;
@@ -118,9 +120,39 @@ public class OmlRdfReader {
 		//set schema1,2 containing information about ontologies1,2
 		al.setSchema1(getSchema(genAlignment.getOnto1().getOntology()));
 		al.setSchema2(getSchema(genAlignment.getOnto2().getOntology() ));
-		//TODO add value class to alignment
+		//set Value Class
+		al.setValueClass(getValueClass(genAlignment.getValueClass()));
 		return al;
 	}
+
+	
+	/**
+	 * Converts from List of JAXB Value Class objects
+	 * to the list of the OML objects
+	 * @param valueClass
+	 * @return
+	 */
+
+	private List<IValueClass> getValueClass(List<ValueClassType> valueClass) {
+		List<IValueClass> oValueClasses = new ArrayList<IValueClass>();
+		IValueClass oValueClass = new ValueClass();
+		Iterator<ValueClassType> iterator = valueClass.iterator();
+		ValueClassType vcType;
+		while(iterator.hasNext()){
+			vcType = (ValueClassType)iterator.next();
+			//set about
+			((ValueClass)oValueClass).setAbout(vcType.getAbout());
+			//set resource
+			((ValueClass)oValueClass).setResource(vcType.getResource());
+			//setValueExpression
+			((ValueClass)oValueClass).setValue(getValueExpression(vcType.getValue()));
+			oValueClasses.add(oValueClass);
+		}
+		return oValueClasses;
+	}
+
+
+
 
 	/**
 	 * converts from JAXB Ontology {@link OntologyType} 
@@ -137,8 +169,8 @@ public class OmlRdfReader {
 		IAbout about = new About(UUID.randomUUID());
 		((About)about).setAbout(onto.getAbout());
 		((Schema)schema).setAbout(about);
-		
-		//TODO set labels
+		//set labels
+		((Schema)schema).getLabels().addAll(onto.getLabel());
 		
 		return schema;
 		
