@@ -51,6 +51,12 @@ public class PropertyQualifier
     public PropertyQualifier(IAbout about) {
 	 super(about);
     }
+    
+    // FIXME copied from Entity, might not be applicable
+	public String getNamespace() {
+		return this.getAbout().getAbout().substring(
+				0, (this.getAbout().getAbout().lastIndexOf("/")));
+	}
 
 
     // getters / setters .......................................................

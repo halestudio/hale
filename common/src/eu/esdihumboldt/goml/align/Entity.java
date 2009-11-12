@@ -57,6 +57,19 @@ public abstract class Entity
 		this.about = about;
 	}
 
+	/**
+	 * @return the namespace part of this {@link Entity}.
+	 */
+	public abstract String getNamespace();
+	
+	/**
+	 * @return the local name part of this {@link Entity}.
+	 */
+	public String getLocalname() {
+		String[] nameparts = this.getAbout().getAbout().split("/");
+		return nameparts[nameparts.length -1];
+	}
+	
 	// getters / setters .......................................................
 	
 	/**

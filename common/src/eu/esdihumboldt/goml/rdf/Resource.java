@@ -38,6 +38,10 @@ public class Resource
 	
 	// getters / setters .......................................................
 
+	public String toString() {
+		return this.location.toString();
+	}
+	
 	/**
 	 * @return the location
 	 */

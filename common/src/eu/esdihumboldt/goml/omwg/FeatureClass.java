@@ -37,7 +37,7 @@ public class FeatureClass
 
 	/**
 	 * Note: Interior element omwg:classConditionType collapsed. 
-       * <xs:element ref="omwg:attributeTypeCondition" minOccurs="0" maxOccurs="unbounded" />
+       * <xs:element Re="omwg:attributeTypeCondition" minOccurs="0" maxOccurs="unbounded" />
 	 */
 	private List<Restriction> attributeTypeCondition;
 
@@ -56,6 +56,11 @@ public class FeatureClass
 	 */
 	public FeatureClass(IAbout about) {
 		super(about);
+	}
+	
+	public String getNamespace() {
+		return this.getAbout().getAbout().substring(
+				0, (this.getAbout().getAbout().lastIndexOf("/")));
 	}
 
 	// getters / setters .......................................................

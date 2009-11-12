@@ -52,6 +52,19 @@ public class Property
 	public Property(IAbout about) {
 		super(about);
 	}
+	
+	public String getNamespace() {
+		String[] nameparts = this.getAbout().getAbout().split("/");
+		
+		return this.getAbout().getAbout().substring(
+				0, (this.getAbout().getAbout().lastIndexOf(
+								nameparts[nameparts.length - 2])));
+	}
+	
+	public String getFeatureClassName() {
+		String[] nameparts = this.getAbout().getAbout().split("/");
+		return nameparts[nameparts.length - 2];
+	}
 
 	// getters/setters .........................................................
 
