@@ -12,6 +12,7 @@
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -21,6 +22,9 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.layout.GridData;
@@ -104,7 +108,7 @@ public class WFSFeatureTypesReaderDialog
 		return url_result;
 	}
 
-	private void createControls(Shell shell) {
+	private void createControls(final Shell shell) {
 		_log.debug("Creating Controls");
 		
 		// Create Fields for URL entry.
@@ -243,7 +247,11 @@ public class WFSFeatureTypesReaderDialog
 						//TODO better solution
 						if (firstType != null) {
 							String temp = ((WFSDataStore) data).getDescribeFeatureTypeURL(firstType).toString();
-							temp = temp.replaceAll(URLEncoder.encode(firstType), URLEncoder.encode(typeNames.toString()));
+							String repl = URLEncoder.encode(firstType);
+							if (temp.indexOf(repl) < 0) {
+								repl = firstType;
+							}
+							temp = temp.replaceAll(repl, URLEncoder.encode(typeNames.toString()));
 							url_result = new URL(temp);
 						}
 						
@@ -285,48 +293,57 @@ public class WFSFeatureTypesReaderDialog
 					final String capabilitiesURL = url.toString();
 					final Display display = Display.getCurrent();
 					
-					BusyIndicator.showWhile(display, new Runnable() {
+					ProgressMonitorDialog progress = new ProgressMonitorDialog(display.getActiveShell());
+					progress.setCancelable(true);
+					try {
+						progress.run(true, true, new IRunnableWithProgress() {
 
-						@Override
-						public void run() {
-							try {
-								final List<FeatureType> types = GetCapabilititiesRetriever
-											.readFeatureTypes(capabilitiesURL);
-								
-								display.asyncExec(new Runnable() {
-
-									@Override
-									public void run() {
-										selection.setFeatureTypes(types);
-										
-										currentStatusLabel.setText("Validation OK - " 
-												+ types.size() + " FeatureTypes!");
-										finish.setEnabled(true);
-									}
+							@Override
+							public void run(IProgressMonitor monitor)
+									throws InvocationTargetException,
+									InterruptedException {
+								try {
+									final List<FeatureType> types = GetCapabilititiesRetriever
+												.readFeatureTypes(capabilitiesURL, monitor);
 									
-								});
-								
-							} catch (final IOException e1) {
-								display.asyncExec(new Runnable() {
+									display.asyncExec(new Runnable() {
 
-									@Override
-									public void run() {
-										currentStatusLabel.setText("Validation FAILED.");
+										@Override
+										public void run() {
+											selection.setFeatureTypes(types);
+											
+											currentStatusLabel.setText("Validation OK - " 
+													+ types.size() + " FeatureTypes!");
+											finish.setEnabled(true);
+										}
 										
-										selection.setFeatureTypes(null);
-										
-										//XXX testResultText.setText("Capabilities document " +
-										//		"could not be read: " + e1.getMessage());
-										finish.setEnabled(false);
-										_log.warn(e1.getMessage());
-										e1.printStackTrace();
-									}
+									});
 									
-								});
+								} catch (final IOException e1) {
+									display.asyncExec(new Runnable() {
+
+										@Override
+										public void run() {
+											currentStatusLabel.setText("Validation FAILED.");
+											
+											selection.setFeatureTypes(null);
+											
+											//XXX testResultText.setText("Capabilities document " +
+											//		"could not be read: " + e1.getMessage());
+											finish.setEnabled(false);
+											_log.warn(e1.getMessage());
+											e1.printStackTrace();
+										}
+										
+									});
+								}
 							}
-						}
-						
-					});
+							
+						});
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		});

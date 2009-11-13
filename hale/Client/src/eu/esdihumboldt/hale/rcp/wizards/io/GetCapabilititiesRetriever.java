@@ -32,6 +32,7 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.opengis.feature.type.FeatureType;
@@ -210,19 +211,21 @@ public class GetCapabilititiesRetriever {
 		Map<String, Object> connectionParameters = new HashMap<String, Object>();
 		connectionParameters.put("WFSDataStoreFactory:GET_CAPABILITIES_URL", 
 				getCapabilitiesUrl);
-		connectionParameters.put("WFSDataStoreFactory:TIMEOUT", new Integer(30000));
+		connectionParameters.put("WFSDataStoreFactory:TIMEOUT", new Integer(5000));
 				
 		// Step 2 - connection
 		return DataStoreFinder.getDataStore( connectionParameters );
 	}
 	
 	/**
+	 * Get the feature type from a capabilities document
 	 * 
-	 * @param getCapabilitiesUrl
-	 * @return
+	 * @param getCapabilitiesUrl the GetCapabilities URL
+	 * @param monitor the progress monitor
+	 * @return the list of feature types
 	 * @throws IOException
 	 */
-	public static List<FeatureType> readFeatureTypes(String getCapabilitiesUrl) 
+	public static List<FeatureType> readFeatureTypes(String getCapabilitiesUrl, IProgressMonitor monitor) 
 		throws IOException {
 		DataStore data = getDataStore(getCapabilitiesUrl);
 		
@@ -232,13 +235,22 @@ public class GetCapabilititiesRetriever {
 		List<FeatureType> result = new ArrayList<FeatureType>();
 		if (data != null) {
 			String typeNames[] = data.getTypeNames();
+			monitor.beginTask("Retrieving feature types...", typeNames.length);
+			int worked = 0;
 			for (String typename : typeNames) {
+				if (monitor.isCanceled()) {
+					break;
+				}
+				monitor.subTask(typename + " (" + (++worked) + "/" + typeNames.length + ")");
 				try { 
+					//FIXME takes to long for many feature types, there should be another way to get the namespaces
 					result.add(data.getSchema( typename ));
 				} catch (Exception ex) {
 					_log.warn("A FeatureType could not be added: " + ex.getMessage());
 				}
+				monitor.worked(1);
 			}
+			monitor.done();
 		}
 		return result;
 	}
