@@ -129,7 +129,7 @@ public class WFSFeatureTypesReaderDialog
 		
 		// Host + Port
 		final Label hostPortLabel = new Label(urlDefinitionArea, SWT.NONE);
-		hostPortLabel.setText("Host + Port:");
+		hostPortLabel.setText("GetCapabilities URL:");
 		hostPortLabel.setToolTipText("Enter the GetCapabilities URL of the " +
 				"WFS you want to query here.");
 		final Text hostPortText = new Text (urlDefinitionArea, SWT.BORDER | SWT.SINGLE);
@@ -158,13 +158,13 @@ public class WFSFeatureTypesReaderDialog
 		});
 		
 		// Protocol Version & Type
-		final Label protocolVersionLabel = new Label(urlDefinitionArea, SWT.NONE);
+		/*final Label protocolVersionLabel = new Label(urlDefinitionArea, SWT.NONE);
 		protocolVersionLabel.setText("WFS Version/Protocol:");
 		protocolVersionLabel.setToolTipText("Select one of the offered combinations of service version and protocol.");
 		final Combo combo = new Combo (urlDefinitionArea, SWT.READ_ONLY);
 		combo.setItems (new String [] {"1.1.0, HTTP GET", "1.0.0 XML POST", "1.1.0 XML POST"});
 		combo.setLayoutData(new GridData(
-				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
+				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));*/
 
 		// Validation Group
 		final Group urlValidationArea = new Group(c, SWT.NONE);
