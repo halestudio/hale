@@ -57,15 +57,18 @@ public class TreeObject implements SchemaItem, Comparable<TreeObject> {
 			if (isType()) {
 				// feature type
 				if (name != null) {
-					entity = new FeatureClass(new About(name.getURI()));
+					entity = new FeatureClass(
+							new About(name.getNamespaceURI(), 
+									name.getLocalPart()));
 				}
 			}
 			else if (isAttribute()) {
 				// attributes
 				if (parent != null && parent.getName() != null) {
 					entity = new Property(
-							new About(name.getURI() + "/" 
-									+ name.getLocalPart()));
+							new About(name.getNamespaceURI(), 
+									parent.getName().getLocalPart(),
+									name.getLocalPart()));
 				}
 			}
 		}

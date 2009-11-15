@@ -41,6 +41,9 @@ import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
+import org.geotools.feature.NameImpl;
+import org.geotools.feature.type.AttributeDescriptorImpl;
+import org.geotools.feature.type.PropertyDescriptorImpl;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.feature.type.PropertyType;
@@ -395,8 +398,9 @@ public class ModelNavigationView extends ViewPart implements
 	/**
 	 * Recursive method for setting up the inheritance tree.
 	 * 
-	 * @param type
-	 *            the type to start the hierarchy from.
+	 * @param ftk
+	 *            a {@link RobustFTKey} identifying the type to start the 
+	 *            hierarchy from.
 	 * @param typeHierarchy
 	 *            the Map containing all subtypes for all FTs.
 	 * @return a {@link TreeObject} that contains all Properties and all
@@ -413,11 +417,12 @@ public class ModelNavigationView extends ViewPart implements
 		}
 		TreeParent result = new TreeParent(ftk.getFeatureType().getName()
 				.getLocalPart(), ftk.getFeatureType().getName(), tot);
+		
+		String ftName = ftk.getFeatureType().getName().getNamespaceURI();
+		
 		// add properties
 		for (PropertyDescriptor pd : ftk.getFeatureType().getDescriptors()) {
 			tot = getAttributeType(pd);
-			
-//			result.addChild(new TreeObject(ftk.getFeatureType().getName().getLocalPart() + ":" + ftk.getFeatureType().getName().getNamespaceURI(), tot));
 			result.addChild(new TreeObject(pd.getName().getLocalPart() + ":<"
 					+ pd.getType().getName().getLocalPart() + ">", 
 					pd.getName(), tot));
