@@ -11,10 +11,16 @@
  */
 package eu.esdihumboldt.goml.omwg;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import eu.esdihumboldt.cst.align.IEntity;
+import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.goml.oml.ext.Parameter;
+import eu.esdihumboldt.goml.oml.ext.Transformation;
+import eu.esdihumboldt.goml.rdf.About;
 
 /**
  * This class represents omwg:PropertyType.
@@ -58,7 +64,7 @@ public class Property
 		
 		return this.getAbout().getAbout().substring(
 				0, (this.getAbout().getAbout().lastIndexOf(
-								nameparts[nameparts.length - 2])));
+								nameparts[nameparts.length - 2])) - 1);
 	}
 	
 	public String getFeatureClassName() {
@@ -108,6 +114,27 @@ public class Property
 	 */
 	public void setTypeCondition(List<String> typeCondition) {
 		this.typeCondition = typeCondition;
+	}
+
+	@Override
+	public IEntity deepCopy() {
+		Property result = new Property(new About(this.getAbout().getAbout()));
+		
+		Transformation t = new Transformation(this.getTransformation().getService());
+		List<IParameter> parameters = new ArrayList<IParameter>();
+		for (IParameter p : this.getTransformation().getParameters()) {
+			parameters.add(new Parameter(p.getName(), p.getValue()));
+		}
+		t.setParameters(parameters);
+		result.setTransformation(t);
+		
+		List<String> newLabels = new ArrayList<String>();
+		for (String label : this.getLabel()) {
+			newLabels.add(label);
+		}
+		result.setLabel(newLabels);
+		
+		return result;
 	}
 
 }

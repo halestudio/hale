@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.goml.align;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.esdihumboldt.cst.align.IAlignment;
@@ -18,6 +19,7 @@ import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ISchema;
 import eu.esdihumboldt.cst.align.ext.IValueClass;
 import eu.esdihumboldt.cst.rdf.IAbout;
+import eu.esdihumboldt.goml.rdf.About;
 
 
 /**
@@ -61,6 +63,27 @@ public class Alignment implements IAlignment {
 	 */
 	
 	private List<IValueClass> valueClasses;
+	
+	public Alignment deepCopy() {
+		Alignment result = new Alignment();
+		result.setAbout(new About(this.getAbout().getAbout()));
+		result.setLevel(this.getLevel());
+		Schema schema1 = new Schema(this.level, (Formalism) this.getSchema1().getFormalism());
+		schema1.setAbout(new About(this.getSchema1().getAbout().getAbout()));
+		result.setSchema1(schema1);
+		
+		Schema schema2 = new Schema(this.level, (Formalism) this.getSchema2().getFormalism());
+		schema2.setAbout(new About(this.getSchema2().getAbout().getAbout()));
+		result.setSchema2(schema2);
+		
+		List<ICell> cells = new ArrayList<ICell>();
+		for (ICell cell : this.getMap()) {
+			cells.add(((Cell)cell).deepCopy());
+		}
+		result.setMap(cells);
+		return result;
+	}
+	
 	// getters / setters .......................................................
 
 	/**

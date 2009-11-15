@@ -19,6 +19,7 @@ import java.util.Map;
 
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
+import eu.esdihumboldt.cst.rdf.IResource;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.rdf.Resource;
 
@@ -35,7 +36,7 @@ public class Transformation
 
 
 	private About about;
-	private Resource resource;
+	private IResource resource;
 	private String label;
 	private List<IParameter> parameters;
 
@@ -46,10 +47,15 @@ public class Transformation
 		this.parameters = new ArrayList<IParameter>();
 	}
 	
+	public Transformation(IResource iResource) {
+		this();
+		this.resource = iResource; 
+	}
+	
 	/**
 	 * @return the service
 	 */
-	public Resource getService() {
+	public IResource getService() {
 		return resource;
 	}
 

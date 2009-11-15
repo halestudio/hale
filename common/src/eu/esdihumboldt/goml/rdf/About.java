@@ -15,6 +15,8 @@ package eu.esdihumboldt.goml.rdf;
 import java.util.UUID;
 
 import eu.esdihumboldt.cst.rdf.IAbout;
+import eu.esdihumboldt.goml.omwg.FeatureClass;
+import eu.esdihumboldt.goml.omwg.Property;
 
 /**
  * This class can be used to store the identifier of objects.
@@ -30,11 +32,46 @@ public class About implements IAbout {
 	
 	// constructors ............................................................
 	
-	public About(String about) {
-		super();
-		this.about = about;
+	/**
+	 * Use this constructor if you want to build the {@link About} for a 
+	 * {@link Property}. If no namespace is given, a default one will be 
+	 * assigned.
+	 */
+	public About(String namespace, String typeName, String attributeName) {
+		this(namespace, typeName);
+		if (typeName.endsWith("/") || attributeName.startsWith("/")) {
+			this.about = this.about + attributeName;
+		}
+		else {
+			this.about = this.about + "/" + attributeName;
+		}
+		
 	}
 
+	/**
+	 * Use this constructor for {@link FeatureClass} objects. If no namespace is
+	 * given, a default one will be assigned.
+	 * @param namespace the namespace to use.
+	 * @param typeName the localPart of the FetaureType's name.
+	 */
+	public About(String namespace, String typeName) {
+		super();
+		if (namespace == null) {
+			namespace = "http://xsdi.org/schema";
+		}
+		if (namespace.endsWith("/") || typeName.startsWith("/")) {
+			this.about = namespace + typeName;
+		}
+		else {
+			this.about = namespace + "/" + typeName;
+		}
+	}
+	
+	public About(String name) {
+		super();
+		this.about = name;
+	}
+	
 	public About(UUID uid) {
 		super();
 		this.uid = uid;

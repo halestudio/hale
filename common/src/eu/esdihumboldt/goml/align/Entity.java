@@ -115,5 +115,7 @@ public abstract class Entity
 		this.about = about;
 	}
 
+	public abstract IEntity deepCopy();
+
 
 }

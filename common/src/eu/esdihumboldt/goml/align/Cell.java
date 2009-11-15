@@ -15,7 +15,9 @@ import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
 
 import eu.esdihumboldt.cst.rdf.IAbout;
+import eu.esdihumboldt.goml.rdf.About;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -136,6 +138,25 @@ public class Cell
 	 */
 	public void setLabel(List<String> label) {
 		this.label = label;
+	}
+
+	public ICell deepCopy() {
+		Cell result = new Cell();
+		result.setAbout(new About(this.getAbout().getAbout()));
+		
+		result.setEntity1(((Entity)this.getEntity1()).deepCopy());
+		result.setEntity2(((Entity)this.getEntity2()).deepCopy());
+		
+		List<String> newLabels = new ArrayList<String>();
+		for (String label : this.getLabel()) {
+			newLabels.add(label);
+		}
+		result.setLabel(newLabels);
+	
+		result.setMeasure(this.getMeasure());
+		result.setRelation(this.getRelation()); // not yet deep
+		
+		return result;
 	}
 
 }

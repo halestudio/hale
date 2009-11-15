@@ -15,6 +15,7 @@ package eu.esdihumboldt.goml.omwg;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.align.Entity;
 
@@ -103,5 +104,11 @@ public class PropertyQualifier
         }
         return this.valueCondition;
     }
+
+	@Override
+	public IEntity deepCopy() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

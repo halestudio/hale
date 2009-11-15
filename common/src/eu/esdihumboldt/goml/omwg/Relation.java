@@ -13,6 +13,7 @@ package eu.esdihumboldt.goml.omwg;
 
 import java.util.List;
 
+import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.align.Entity;
 
@@ -81,6 +82,12 @@ public class Relation
 	 */
 	public void setRangeRestriction(List<FeatureClass> rangeRestriction) {
 		this.rangeRestriction = rangeRestriction;
+	}
+
+	@Override
+	public IEntity deepCopy() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	
