@@ -512,7 +512,14 @@ public class SchemaServiceImplApache
 				XmlSchemaElement element = (XmlSchemaElement) item;
 				// retrieve local name part of XmlSchemaElement and of 
 				// XmlSchemaComplexType to substitute name later on.
-				String typeName = element.getSchemaTypeName().getLocalPart();
+				String typeName = null;
+				if (element.getSchemaTypeName() != null) {
+					typeName = element.getSchemaTypeName().getLocalPart();
+				}
+				else if (element.getQName() != null) {
+					typeName = element.getQName().getLocalPart();
+				} 
+				
 				String elementName = element.getName();
 				names.put(typeName, elementName);
 			}
@@ -620,7 +627,8 @@ public class SchemaServiceImplApache
 					if (attributeResults.get(a).getType() != null) {
 						AttributeResult res = attributeResults.get(a);
 						AttributeType t = res.getType();
-						AttributeDescriptor desc = new AttributeDescriptorImpl(t, new NameImpl(res.getName()),0, 0, false, null);
+						AttributeDescriptor desc = new AttributeDescriptorImpl(
+								t, new NameImpl(schema.getTargetNamespace(), res.getName()),0, 0, false, null);
 						// set the name of the Default geometry property explicitly, 
 						// otherwise nothing will be returned when calling 
 						// getGeometryDescriptor().
