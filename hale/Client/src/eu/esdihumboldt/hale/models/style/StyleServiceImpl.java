@@ -357,6 +357,8 @@ public class StyleServiceImpl
 	@SuppressWarnings("deprecation")
 	private static FeatureTypeStyle createPolygonStyle() {
 		PolygonSymbolizer symbolizer = styleFactory.createPolygonSymbolizer();
+		SLD.setPolyColour(symbolizer, new Color(57, 75, 95));
+		symbolizer.getStroke().setWidth(filterFactory.literal(1));
 		Fill fill = styleFactory.createFill(filterFactory.literal("#FFAA00"),
 				filterFactory.literal(0.5));
 		symbolizer.setFill(fill);
