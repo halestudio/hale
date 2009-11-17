@@ -11,6 +11,8 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map;
 
+import java.util.HashSet;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
@@ -32,6 +34,7 @@ import eu.esdihumboldt.cst.transformer.CstService;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.InstanceService;
+import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
@@ -120,6 +123,8 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		});
 		
 		final AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+		final SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+		
 		alService.addListener(new HaleServiceListener() {
 			@SuppressWarnings("unchecked")
 			@Override
@@ -137,7 +142,9 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 						instances.cleanInstances(DatasetType.transformed);
 						instances.addInstances(DatasetType.transformed, 
 								(FeatureCollection<FeatureType, Feature>) ts.transform(
-										fc_reference, alService.getAlignment()));
+										fc_reference, // Input Features
+										alService.getAlignment(), // Alignment
+										new HashSet(schemaService.getTargetSchema()))); // target schema
 					}
 					else {
 						log.warn("No instance data was provided, or the " +
