@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.opengis.layer.Style;
+import org.opengis.style.Style;
 
 import eu.esdihumboldt.mediator.constraints.PortrayalConstraint;
 import eu.esdihumboldt.mediator.constraints.portrayal.NamedLayer;

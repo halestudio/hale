@@ -2,12 +2,11 @@ package eu.esdihumboldt.mediator.constraints.portrayal.impl;
 
 import java.util.List;
 
-import org.opengis.go.display.style.GraphicStyle;
-import org.opengis.layer.LegendURL;
-import org.opengis.layer.Style;
-import org.opengis.layer.StyleSheetURL;
-import org.opengis.layer.StyleURL;
-import org.opengis.sld.FeatureStyle;
+import org.opengis.style.Description;
+import org.opengis.style.FeatureTypeStyle;
+import org.opengis.style.Style;
+import org.opengis.style.StyleVisitor;
+import org.opengis.style.Symbolizer;
 import org.opengis.util.InternationalString;
 
 import eu.esdihumboldt.mediator.constraints.SpatialConstraint;
@@ -103,21 +102,6 @@ public class StyleImpl implements Style {
 		return null;
 	}
 
-	public List<FeatureStyle> getFeatureStyles() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<GraphicStyle> getGraphicStyles() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<LegendURL> getLegendURLs() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public String getName() {		
 		return this.name;
 	}
@@ -126,19 +110,34 @@ public class StyleImpl implements Style {
 		this.name = name;
 	}
 
-	public StyleSheetURL getStyleSheetURL() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public StyleURL getStyleURL() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public InternationalString getTitle() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void accept(StyleVisitor arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public List<? extends FeatureTypeStyle> featureTypeStyles() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Symbolizer getDefaultSpecification() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Description getDescription() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean isDefault() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
