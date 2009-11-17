@@ -652,9 +652,20 @@ public class SchemaServiceImplApache
 						for (PropertyDescriptor descriptor : descriptors) {
 							ftbuilder.add((AttributeDescriptor)descriptor);						
 						}
+						if (ftbuilder.getDefaultGeometry() == null 
+								&& superType.getGeometryDescriptor() != null) {
+							ftbuilder.add("the_geom", Geometry.class );
+						}
 					}
 				}
+				
 				SimpleFeatureType ft = ftbuilder.buildFeatureType();
+				
+				if (ft.getGeometryDescriptor() == null) {
+					_log.warn("For FeatureType " + ft.getTypeName()
+							+ ", no GeometryProperty was assigned.");
+				}
+				
 				featureTypes.add(ft);
 			}
 		}
