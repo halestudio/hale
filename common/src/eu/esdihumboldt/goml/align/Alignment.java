@@ -118,6 +118,9 @@ public class Alignment implements IAlignment {
 	 * @return the map
 	 */
 	public List<ICell> getMap() {
+		if (this.map == null) {
+			this.map = new ArrayList<ICell>();
+		}
 		return map;
 	}
 
