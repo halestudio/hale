@@ -14,8 +14,6 @@ package eu.esdihumboldt.mediator.constraints;
 import java.util.List;
 import java.util.Set;
 
-import org.opengis.layer.Style;
-
 import eu.esdihumboldt.mediator.constraints.portrayal.NamedLayer;
 import eu.esdihumboldt.mediator.constraints.portrayal.UserLayer;
 
@@ -43,7 +41,7 @@ public interface PortrayalConstraint extends Constraint{
 	 * @return List of named styles.
 	 * 
 	 */
-	public List<Style> getStyle();
+	public List<org.opengis.style.Style> getStyle();
 	
 	
 	
