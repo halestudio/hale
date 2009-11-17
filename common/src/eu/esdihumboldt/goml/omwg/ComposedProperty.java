@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.goml.omwg;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.esdihumboldt.cst.rdf.IAbout;
@@ -48,6 +49,7 @@ public class ComposedProperty
 	
 	public ComposedProperty(IAbout about) {
 		super(about);
+		this.collection = new ArrayList<Property>();
 	}
 
 	// getters / setters .......................................................
