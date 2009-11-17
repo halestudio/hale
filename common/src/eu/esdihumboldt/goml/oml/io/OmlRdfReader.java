@@ -388,7 +388,9 @@ private Transformation getTransformation(FunctionType transf) {
 			classCondition = (ClassConditionType)iterator.next();
 			RestrictionType rType = classCondition.getRestriction();
 			List<ValueExprType> valueExpr = rType.getValue();
-			restriction = new Restriction(null, getValueExpression(valueExpr));
+            //TODO clear with MdV   			
+			//restriction = new Restriction(null, getValueExpression(valueExpr));
+			restriction = new Restriction(getValueExpression(valueExpr));
 			//set value class to add about and resource document
 			ValueClass vClass = new ValueClass();
 			ValueClassType vcType = rType.getValueClass();
@@ -425,7 +427,9 @@ private List<Restriction> getValueCondition(
 		ValueConditionType condition = (ValueConditionType)iterator.next();
 		//get List<ValueExpressionType>
 		List<ValueExprType> valueExpr = condition.getRestriction().getValue();
-		restriction = new Restriction(null, getValueExpression(valueExpr));
+		//TODO:clear with MdV
+		//restriction = new Restriction(null, getValueExpression(valueExpr));
+		restriction = new Restriction(getValueExpression(valueExpr));
 		restriction.setComparator(getComparator(condition.getRestriction().getComparator()));
 		//add CqlStr if exists
 		if (condition.getSeq()!=null)restriction.setCqlStr(condition.getSeq().toString());

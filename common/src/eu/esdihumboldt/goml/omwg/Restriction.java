@@ -34,7 +34,8 @@ public class Restriction {
 	 * <xs:element ref="omwg:onAttribute"/> TODO in future: onAttribute can also
 	 * refer to a Relation between (Feature)Classes
 	 */
-	private Property onAttribute;
+	//FIXME clear with MdV
+	//private Property onAttribute;
 
 	/**
 	 * TODO explain. 
@@ -76,34 +77,44 @@ public class Restriction {
 		this.seq = seq;
 	}
 
+//	/**
+//	 * TODO explain.
+//	 * 
+//	 * @param onAttribute
+//	 * @param value
+//	 */
+//	public Restriction(Property onAttribute, List<IValueExpression> value) {
+//		super();
+//		this.onAttribute = onAttribute;
+//		this.value = value;
+//	}
 	/**
-	 * TODO explain.
-	 * 
-	 * @param onAttribute
+	 *
 	 * @param value
+	 * 
 	 */
-	public Restriction(Property onAttribute, List<IValueExpression> value) {
+
+	public Restriction(List<IValueExpression> value) {
 		super();
-		this.onAttribute = onAttribute;
 		this.value = value;
 	}
-
+	
 	// getters / setters .......................................................
 
-	/**
-	 * @return the onAttribute
-	 */
-	public Property getOnAttribute() {
-		return onAttribute;
-	}
-
-	/**
-	 * @param onAttribute
-	 *            the onAttribute to set
-	 */
-	public void setOnAttribute(Property onAttribute) {
-		this.onAttribute = onAttribute;
-	}
+//	/**
+//	 * @return the onAttribute
+//	 */
+//	public Property getOnAttribute() {
+//		return onAttribute;
+//	}
+//
+//	/**
+//	 * @param onAttribute
+//	 *            the onAttribute to set
+//	 */
+//	public void setOnAttribute(Property onAttribute) {
+//		this.onAttribute = onAttribute;
+//	}
 
 	/**
 	 * @return the comparator

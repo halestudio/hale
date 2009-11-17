@@ -59,7 +59,7 @@ public class ValueConditionsTest {
 	valueExpressions.add(new ValueExpression("72"));
 	valueExpressions.add(new ValueExpression("73"));
 	valueExpressions.add(new ValueExpression("74"));
-	Restriction r = new Restriction(entity1, valueExpressions);
+	Restriction r = new Restriction(valueExpressions);
 	r.setSeq(sequenceId);
 	r.setComparator(ComparatorType.ONE_OF);
 	
@@ -74,7 +74,7 @@ public class ValueConditionsTest {
 	
 	List<IValueExpression> valueExpressions2 = new ArrayList<IValueExpression>();
 	valueExpressions2.add(new ValueExpression("Fluss, Bach"));
-	Restriction r2 = new Restriction(entity2, valueExpressions2);
+	Restriction r2 = new Restriction(valueExpressions2);
 	r2.setSeq(sequenceId); // key link to other Seq Identifier
 	r2.setComparator(ComparatorType.ONE_OF);
 	

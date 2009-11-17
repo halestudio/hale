@@ -159,7 +159,9 @@ public class OmlRdfGenerator {
 	 */
 	private List<ValueClassType> getValueClasses(
 			List<IValueClass> valueClasses) {
+		
 		List<ValueClassType> vcTypes = new ArrayList<ValueClassType>();
+		if (valueClasses!=null){
 		ValueClassType vcType = new ValueClassType();
 		IValueClass vClass;
 		Iterator<IValueClass> iterator = valueClasses.iterator();
@@ -169,6 +171,7 @@ public class OmlRdfGenerator {
 			vcType.setResource(vClass.getResource());
 			vcType.getValue().addAll(getValueExpressionTypes(vClass.getValue()));
 			vcTypes.add(vcType);
+		}
 		}
 		return vcTypes;
 	}
@@ -465,8 +468,9 @@ public class OmlRdfGenerator {
 		if (restriction != null) {
 			rType.setComparator(getComparator(restriction.getComparator()));
 			rType.setCqlStr(restriction.getCqlStr());
-			rType.setOnAttribute(getOnAttributeType(restriction
-					.getOnAttribute()));
+            //TODO: clear with MdV 
+			//			rType.setOnAttribute(getOnAttributeType(restriction
+			//					.getOnAttribute()));
 
 			// if list of value expressions for this restriction is empty
 			// use ValueClass
