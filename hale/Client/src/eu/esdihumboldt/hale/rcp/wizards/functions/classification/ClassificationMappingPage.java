@@ -1,0 +1,380 @@
+/*
+ * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
+ * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * 
+ * For more information on the project, please refer to the this web site:
+ * http://www.esdi-humboldt.eu
+ * 
+ * LICENSE: For information on the license under which this program is 
+ * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
+ * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ */
+package eu.esdihumboldt.hale.rcp.wizards.functions.classification;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.Map.Entry;
+
+import org.eclipse.jface.dialogs.DialogPage;
+import org.eclipse.jface.dialogs.IDialogPage;
+import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
+
+import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
+
+/**
+ * @author Simon Templer
+ * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @version $Id$ 
+ *
+ */
+public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
+	
+	private final Map<String, Set<String>> classifications = new TreeMap<String, Set<String>>();
+	
+	private final Image addImage = HALEActivator.getImageDescriptor("icons/add.gif").createImage();
+	
+	private final Image removeImage = HALEActivator.getImageDescriptor("icons/remove.gif").createImage();
+	
+	private ComboViewer classes;
+	
+	private ListViewer values;
+
+	/**
+	 * @see AbstractSingleCellWizardPage#AbstractSingleCellWizardPage(String, String, ImageDescriptor)
+	 */
+	public ClassificationMappingPage(String pageName, String title,
+			ImageDescriptor titleImage) {
+		super(pageName, title, titleImage);
+	}
+
+	/**
+	 * @see IDialogPage#createControl(Composite)
+	 */
+	@Override
+	public void createControl(Composite parent) {
+		super.initializeDialogUnits(parent);
+		
+		Composite page = new Composite(parent, SWT.NONE);
+		page.setLayout(new GridLayout(4, false));
+		
+		// target label
+		final String targetFt = getParent().getTargetItem().getParent().getName().getLocalPart();
+		final String targetProperty = getParent().getTargetItem().getName().getLocalPart();
+		Label targetLabel = new Label(page, SWT.NONE);
+		targetLabel.setText(targetFt + "." + targetProperty);
+		targetLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
+		
+		// target value selection
+		Combo combo = new Combo(page, SWT.DROP_DOWN | SWT.READ_ONLY);
+		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		classes = new ComboViewer(combo);
+		classes.setContentProvider(new ArrayContentProvider());
+		classes.setInput(classifications.keySet());
+		
+		// add target value
+		Button addButton = new Button(page, SWT.PUSH);
+		addButton.setImage(addImage);
+		addButton.setToolTipText("Add classification value");
+		addButton.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				final Display display = Display.getCurrent();
+				InputDialog dialog = new InputDialog(
+						display.getActiveShell(), 
+						"Add classification", 
+						"Enter a new classification value for " + targetFt + "." + targetProperty, 
+						"",
+						null); // no validator
+				
+				if (dialog.open() == InputDialog.OK) {
+					String newClass = dialog.getValue();
+					if (newClass != null) {
+						addClassification(newClass);
+					}
+				}
+			}
+			
+		});
+		
+		// remove target value
+		final Button removeButton = new Button(page, SWT.PUSH);
+		removeButton.setImage(removeImage);
+		removeButton.setEnabled(false);
+		removeButton.setToolTipText("Remove currently selected classification");
+		removeButton.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				final Display display = Display.getCurrent();
+				
+				String selectedClass = ((IStructuredSelection) classes.getSelection()).getFirstElement().toString();
+				
+				if (MessageDialog.openQuestion(
+						display.getActiveShell(), 
+						"Remove classification", 
+						"Do you really want to remove the classification for '" + selectedClass + "'?")) {
+					removeClassification(selectedClass);
+				}
+			}
+			
+		});
+		
+		// source label
+		final String sourceFt = getParent().getSourceItem().getParent().getName().getLocalPart();
+		final String sourceProperty = getParent().getSourceItem().getName().getLocalPart();
+		Label sourceLabel = new Label(page, SWT.NONE);
+		sourceLabel.setText(sourceFt + "." + sourceProperty);
+		sourceLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false, 1, 2));
+		
+		// list
+		List list = new List(page, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
+		list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+		values = new ListViewer(list);
+		values.setContentProvider(new ArrayContentProvider());
+		
+		// value list controls
+		Composite listControls = new Composite(page, SWT.NONE);
+		listControls.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
+		listControls.setLayout(new GridLayout(2, true));
+		
+		final Button valueAdd = new Button(listControls, SWT.PUSH);
+		valueAdd.setImage(addImage);
+		valueAdd.setText("Add value");
+		valueAdd.setEnabled(false);
+		valueAdd.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		valueAdd.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				final Display display = Display.getCurrent();
+				
+				String selectedClass = ((IStructuredSelection) classes.getSelection()).getFirstElement().toString();
+				
+				InputDialog dialog = new InputDialog(
+						display.getActiveShell(), 
+						"Add value", 
+						"Enter a new value for " + sourceFt + "." + sourceProperty +
+						" that is classified as '" + selectedClass + "' in " +
+						targetFt + "." + targetProperty, 
+						"",
+						null); // no validator
+				
+				if (dialog.open() == InputDialog.OK) {
+					String newValue = dialog.getValue();
+					if (newValue != null) {
+						addValue(newValue);
+					}
+				}
+			}
+			
+		});
+		
+		final Button valueRemove = new Button(listControls, SWT.PUSH);
+		valueRemove.setImage(removeImage);
+		valueRemove.setText("Remove value");
+		valueRemove.setEnabled(false);
+		valueRemove.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		valueRemove.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				final Display display = Display.getCurrent();
+				
+				String selectedValue = ((IStructuredSelection) values.getSelection()).getFirstElement().toString();
+				
+				if (MessageDialog.openQuestion(
+						display.getActiveShell(), 
+						"Remove value", 
+						"Do you really want to remove the value '" + selectedValue +
+						"' from the classification?")) {
+					removeValue(selectedValue);
+				}
+			}
+			
+		});
+		
+		// set the control
+		setControl(page);
+		
+		// combo selection change
+		classes.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				boolean empty = event.getSelection().isEmpty();
+				
+				removeButton.setEnabled(!empty);
+				valueAdd.setEnabled(!empty);
+				
+				if (!empty) {
+					String className = ((IStructuredSelection) event.getSelection()).getFirstElement().toString();
+					
+					Set<String> valueSet = classifications.get(className);
+					values.setInput(valueSet);
+					values.setSelection(StructuredSelection.EMPTY);
+				}
+			}
+			
+		});
+		
+		// list selection change
+		values.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				boolean empty = event.getSelection().isEmpty();
+				
+				valueRemove.setEnabled(!empty);
+			}
+			
+		});
+		
+		// initialize selection
+		if (!classifications.keySet().isEmpty()) {
+			classes.setSelection(new StructuredSelection(classifications.keySet().iterator().next()));
+		}
+	}
+	
+	/**
+	 * @return the classifications
+	 */
+	public Map<String, Set<String>> getClassifications() {
+		return classifications;
+	}
+
+	/**
+	 * Get the classification for the given value
+	 * 
+	 * @param value the value
+	 * 
+	 * @return the classification or <code>null</code> if the value is
+	 *   not classified
+	 */
+	private String getClassification(String value) {
+		for (Entry<String, Set<String>> entry : classifications.entrySet()) {
+			if (entry.getValue().contains(value)) {
+				return entry.getKey();
+			}
+		}
+		
+		return null;
+	}
+
+	/**
+	 * Remove the given value from the current classification
+	 * 
+	 * @param selectedValue the value to remove
+	 */
+	protected void removeValue(String selectedValue) {
+		String selectedClass = ((IStructuredSelection) classes.getSelection()).getFirstElement().toString();
+		
+		Set<String> valueSet = classifications.get(selectedClass);
+		if (valueSet != null && valueSet.contains(selectedValue)) {
+			valueSet.remove(selectedValue);
+			values.refresh();
+		}
+	}
+
+	/**
+	 * Add a new value to the current classification
+	 * 
+	 * @param newValue the value to add
+	 */
+	protected void addValue(String newValue) {
+		final Display display = Display.getCurrent();
+		
+		String selectedClass = ((IStructuredSelection) classes.getSelection()).getFirstElement().toString();
+		
+		// check for value in other classification
+		final String oldClass = getClassification(newValue);
+		if (oldClass == null ||
+			MessageDialog.openConfirm(display.getActiveShell(),
+					"Duplicate value", "The value was already classified as '" + oldClass +
+					"', the old classification will be replaced.")) {
+		
+			// add value
+			Set<String> valueSet = classifications.get(selectedClass);
+			if (valueSet != null && !valueSet.contains(newValue)) {
+				valueSet.add(newValue);
+				values.refresh();
+			}
+			
+			// remove old classification
+			if (oldClass != null) {
+				valueSet = classifications.get(oldClass);
+				valueSet.remove(newValue);
+			}
+		}
+	}
+
+	/**
+	 * Remove the given classification
+	 * 
+	 * @param selectedClass the classification to remove
+	 */
+	protected void removeClassification(String selectedClass) {
+		if (classifications.containsKey(selectedClass)) {
+			classifications.remove(selectedClass);
+			classes.refresh();
+		}
+	}
+
+	/**
+	 * Add a new classification if it doesn't already exist
+	 * 
+	 * @param newClass the new classification
+	 */
+	protected void addClassification(String newClass) {
+		if (!classifications.containsKey(newClass)) {
+			classifications.put(newClass, new TreeSet<String>());
+			classes.refresh();
+			classes.setSelection(new StructuredSelection(newClass));
+		}
+	}
+
+	/**
+	 * @see DialogPage#dispose()
+	 */
+	@Override
+	public void dispose() {
+		addImage.dispose();
+		removeImage.dispose();
+		
+		super.dispose();
+	}
+
+	/**
+	 * Add the given classifications
+	 * 
+	 * @param classifications the classifications
+	 */
+	public void addClassifications(Map<String, Set<String>> classifications) {
+		this.classifications.putAll(classifications);
+	}
+
+}

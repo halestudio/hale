@@ -285,6 +285,11 @@
             icon="icons/number_attribute.png"
             name="Numeric function wizard">
       </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.classification.ClassificationMappingFunctionWizardFactory"
+            icon="icons/mapping.gif"
+            name="Classification mapping">
+      </factory>
    </extension>
    <!-- <extension
          point="org.eclipse.ui.importWizards">
