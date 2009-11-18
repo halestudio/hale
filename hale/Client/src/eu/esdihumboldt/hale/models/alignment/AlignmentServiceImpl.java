@@ -24,7 +24,6 @@ import org.opengis.feature.type.FeatureType;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.rdf.About;
@@ -84,13 +83,18 @@ public class AlignmentServiceImpl implements AlignmentService {
 	 * @see AlignmentService#addOrUpdateCell(ICell)
 	 */
 	public boolean addOrUpdateCell(ICell cell) {
+		ICell oldCell = getCellInternal(cell.getEntity1(), cell.getEntity2());
+		if (oldCell != null) {
+			alignment.getMap().remove(oldCell);
+		}
+		
 		boolean result = this.alignment.getMap().add(cell);
 		this.updateListeners();
 		return result;
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.models.AlignmentService#cleanModel()
+	 * @see AlignmentService#cleanModel()
 	 */
 	public boolean cleanModel() {
 		this.initNewAlignment();
@@ -141,6 +145,10 @@ public class AlignmentServiceImpl implements AlignmentService {
 	 * @see AlignmentService#getCell(Entity, Entity)
 	 */
 	public ICell getCell(Entity e1, Entity e2) {
+		return getCellInternal(e1, e2);
+	}
+	
+	private ICell getCellInternal(IEntity e1, IEntity e2) {
 		for (ICell c : this.alignment.getMap()) {
 			if (entitiesMatch(e1, c.getEntity1()) && 
 					entitiesMatch(e2, c.getEntity2())) {
