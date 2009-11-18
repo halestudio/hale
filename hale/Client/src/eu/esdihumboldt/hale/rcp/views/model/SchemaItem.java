@@ -63,5 +63,12 @@ public interface SchemaItem {
 	 * @return if the item has any children
 	 */
 	public boolean hasChildren();
+	
+	/**
+	 * Get the parent schema item
+	 * 
+	 * @return the parent schema item, may be <code>null</code>
+	 */
+	public abstract SchemaItem getParent();
 
 }
