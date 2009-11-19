@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.models.alignment;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -25,7 +26,9 @@ import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
+import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
@@ -86,6 +89,7 @@ public class AlignmentServiceImpl implements AlignmentService {
 		ICell oldCell = getCellInternal(cell.getEntity1(), cell.getEntity2());
 		if (oldCell != null) {
 			alignment.getMap().remove(oldCell);
+			_log.info("Replacing alignment cell");
 		}
 		
 		boolean result = this.alignment.getMap().add(cell);
@@ -118,7 +122,7 @@ public class AlignmentServiceImpl implements AlignmentService {
 	}
 
 	/**
-	 * Determine of two non-null entities match
+	 * Determine if two non-null entities match
 	 * 
 	 * @param e1 the first entity
 	 * @param e2 the second entity
@@ -133,6 +137,23 @@ public class AlignmentServiceImpl implements AlignmentService {
 				return true;
 			}
 			else {
+				// about doesn't match
+				
+				// check composed properties
+				if (e1 instanceof ComposedProperty && e2 instanceof ComposedProperty) {
+					// both entities are composed properties
+					return compositionsMatch((ComposedProperty) e1, (ComposedProperty) e2);
+				}
+				else if (e1 instanceof ComposedProperty && e2 instanceof Property) {
+					// e1 is composed, e2 is a property
+					return compositionContains((ComposedProperty) e1, (Property) e2);
+				}
+				else if (e1 instanceof Property && e2 instanceof ComposedProperty) {
+					// e1 is property, e2 is composed
+					return compositionContains((ComposedProperty) e2, (Property) e1);
+				}
+				//TODO check composed feature types
+				
 				return false;
 			}
 		}
@@ -141,6 +162,74 @@ public class AlignmentServiceImpl implements AlignmentService {
 		}
 	}
 	
+	/**
+	 * Determine if two composed properties match
+	 * 
+	 * @param c1 the first composed property
+	 * @param c2 the second composed property
+	 * 
+	 * @return if both compositions contain the same properties
+	 */
+	private boolean compositionsMatch(ComposedProperty c1, ComposedProperty c2) {
+		boolean c2Empty = c2.getCollection() == null || c2.getCollection().isEmpty();
+		
+		if (c1.getCollection() == null || c1.getCollection().isEmpty()) {
+			return c2Empty;
+		}
+		else {
+			if (c2Empty) {
+				return false;
+			}
+			
+			List<Property> c2Properties = new ArrayList<Property>(c2.getCollection());
+			
+			for (Property c1Property : c1.getCollection()) {
+				Property match = null;
+				
+				Iterator<Property> itC2 = c2Properties.iterator();
+				while (itC2.hasNext() && match == null) {
+					Property c2Property = itC2.next();
+					
+					if (entitiesMatch(c1Property, c2Property)) {
+						match = c2Property;
+					}
+				}
+				
+				if (match == null) {
+					// no match for a property found
+					return false;
+				}
+				else {
+					c2Properties.remove(match);
+				}
+			}
+			
+			// all properties were matched
+			// if the collection is empty there are no additional properties in c2
+			return c2Properties.isEmpty();
+		}
+	}
+
+	/**
+	 * Determine if the given composed property contains the given property
+	 * 
+	 * @param composition the composed property
+	 * @param property the property
+	 * 
+	 * @return if the property is contained in the composition
+	 */
+	private boolean compositionContains(ComposedProperty composition, Property property) {
+		if (composition.getCollection() != null) {
+			for (Property candidate : composition.getCollection()) {
+				if (entitiesMatch(candidate, property)) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+
 	/**
 	 * @see AlignmentService#getCell(Entity, Entity)
 	 */
