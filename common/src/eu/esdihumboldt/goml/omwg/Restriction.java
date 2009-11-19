@@ -77,17 +77,7 @@ public class Restriction {
 		this.seq = seq;
 	}
 
-//	/**
-//	 * TODO explain.
-//	 * 
-//	 * @param onAttribute
-//	 * @param value
-//	 */
-//	public Restriction(Property onAttribute, List<IValueExpression> value) {
-//		super();
-//		this.onAttribute = onAttribute;
-//		this.value = value;
-//	}
+	
 	/**
 	 *
 	 * @param value
@@ -101,20 +91,7 @@ public class Restriction {
 	
 	// getters / setters .......................................................
 
-//	/**
-//	 * @return the onAttribute
-//	 */
-//	public Property getOnAttribute() {
-//		return onAttribute;
-//	}
-//
-//	/**
-//	 * @param onAttribute
-//	 *            the onAttribute to set
-//	 */
-//	public void setOnAttribute(Property onAttribute) {
-//		this.onAttribute = onAttribute;
-//	}
+
 
 	/**
 	 * @return the comparator
