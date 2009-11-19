@@ -133,7 +133,7 @@ public class ClassificationMappingFunctionWizard extends
 			for (String value : classification.getValue()) {
 				valueExpressions.add(new ValueExpression(value));
 			}
-			Restriction r = new Restriction(sourceProperty, valueExpressions);
+			Restriction r = new Restriction(valueExpressions);
 			r.setSeq(seqId);
 			r.setComparator(ComparatorType.ONE_OF);
 			
@@ -142,7 +142,7 @@ public class ClassificationMappingFunctionWizard extends
 			// target restriction
 			valueExpressions = new ArrayList<IValueExpression>();
 			valueExpressions.add(new ValueExpression(classification.getKey()));
-			r = new Restriction(targetProperty, valueExpressions);
+			r = new Restriction(valueExpressions);
 			r.setSeq(seqId);
 			r.setComparator(ComparatorType.ONE_OF);
 			

@@ -74,7 +74,7 @@ public class FilterWizard extends AbstractSingleCellWizard {
 	public boolean performFinish() {
 		ICell cell = getResultCell();
 		
-		Restriction r = new Restriction(null, null);
+		Restriction r = new Restriction(null);
 		r.setCqlStr(secondPage.buildCQL());
 		
 		if (cell.getEntity1() instanceof FeatureClass) {
