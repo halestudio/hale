@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="LIB/JMEP-0.1.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
@@ -37,10 +38,10 @@
 	<classpathentry exported="true" kind="lib" path="LIB/gt-referencing-2.5.8.jar" sourcepath="HALEsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="LIB/gt-render-2.5.8.jar" sourcepath="HALEsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="LIB/gt-shapefile-2.5.8.jar" sourcepath="HALEsrc.zip"/>
-	<classpathentry exported="true" kind="lib" path="LIB/gt-wfs-2.5.8.jar" sourcepath="HALEsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="LIB/gt-wfs-2.5.8.jar" sourcepath="D:/Entwicklung/HALE/geotools-2.5.8"/>
 	<classpathentry exported="true" kind="lib" path="LIB/gt-widgets-swing-2.5.8.jar" sourcepath="HALEsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="LIB/gt-xml-2.5.8.jar" sourcepath="HALEsrc.zip"/>
-	<classpathentry exported="true" kind="lib" path="LIB/gt-xsd-core-2.5.8.jar" sourcepath="HALEsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="LIB/gt-xsd-core-2.5.8.jar" sourcepath="D:/Entwicklung/HALE/geotools-2.5.8"/>
 	<classpathentry exported="true" kind="lib" path="LIB/gt-xsd-filter-2.5.8.jar" sourcepath="HALEsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="LIB/gt-xsd-gml2-2.5.8.jar" sourcepath="HALEsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="LIB/gt-xsd-gml3-2.5.8.jar" sourcepath="HALEsrc.zip"/>

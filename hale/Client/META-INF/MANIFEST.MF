@@ -14,9 +14,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text;bundle-version="3.4.0",
  org.eclipse.emf.common;bundle-version="2.4.0",
  org.eclipse.emf.common.ui;bundle-version="2.4.0",
- eu.esdihumboldt.transformer.cst;bundle-version="1.0.0",
+ eu.esdihumboldt.commons;bundle-version="2.0.0",
  eu.esdihumboldt.specification;bundle-version="2.0.0",
- eu.esdihumboldt.commons;bundle-version="2.0.0"
+ eu.esdihumboldt.transformer.cst;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  LIB/common-2.2.1.jar,
@@ -71,8 +71,13 @@ Bundle-ClassPath: .,
  LIB/gt-libraryJTS-2.5.8.jar,
  LIB/jaxb-api.jar,
  LIB/jaxb-impl.jar,
- LIB/jaxb-xjc.jar
-Export-Package: com.sun.media.imageio.plugins.bmp,
+ LIB/jaxb-xjc.jar,
+ LIB/JMEP-0.1.0.jar
+Export-Package: com.iabcinc.jmep,
+ com.iabcinc.jmep.hooks,
+ com.iabcinc.jmep.tokens,
+ com.iabcinc.jmep.values,
+ com.sun.media.imageio.plugins.bmp,
  com.sun.media.imageio.plugins.jpeg2000,
  com.sun.media.imageio.plugins.pnm,
  com.sun.media.imageio.plugins.tiff,

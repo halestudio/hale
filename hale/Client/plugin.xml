@@ -290,6 +290,11 @@
             icon="icons/mapping.gif"
             name="Classification mapping">
       </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.math.GenericMathFunctionWizardFactory"
+            icon="icons/number_attribute.png"
+            name="Mathematical expression">
+      </factory>
    </extension>
    <!-- <extension
          point="org.eclipse.ui.importWizards">
