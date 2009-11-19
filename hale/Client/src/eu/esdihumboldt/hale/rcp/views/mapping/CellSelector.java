@@ -12,9 +12,11 @@
 package eu.esdihumboldt.hale.rcp.views.mapping;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -327,7 +329,7 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 	private void update(ISelection selection) {
 		lastSelection = selection;
 		
-		List<CellInfo> cells = new ArrayList<CellInfo>();
+		Map<ICell, CellInfo> cells = new HashMap<ICell, CellInfo>();
 		
 		if (selection != null && !selection.isEmpty()
 				&& selection instanceof SchemaSelection) {
@@ -350,26 +352,30 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 								target.getEntity());
 						
 						if (cell != null) {
-							cells.add(new CellInfo(cell, source, target));
+							if (!cells.containsKey(cell)) {
+								cells.put(cell, new CellInfo(cell, source, target));
+							}
 						}
 					}
 				}
 			}
 		}
 		
+		List<CellInfo> cellList = new ArrayList<CellInfo>(cells.values());
+		
 		// set the input
-		viewer.setInput(cells);
+		viewer.setInput(cellList);
 		
 		// update the selection & state
-		if (cells.isEmpty()) {
+		if (cellList.isEmpty()) {
 			viewer.setSelection(StructuredSelection.EMPTY);
 			viewer.getControl().setEnabled(false);
 		}
 		else {
-			if (lastSelected != null && cells.contains(lastSelected)) {
+			if (lastSelected != null && cellList.contains(lastSelected)) {
 				viewer.setSelection(new StructuredSelection(lastSelected));
 			} else {
-				viewer.setSelection(new StructuredSelection(cells.get(0)));
+				viewer.setSelection(new StructuredSelection(cellList.get(0)));
 			}
 			viewer.getControl().setEnabled(true);
 		}

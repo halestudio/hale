@@ -47,7 +47,8 @@ public class CellSelectionInfo implements AlignmentInfo {
 	public ICell getAlignment(SchemaItem source, SchemaItem target) {
 		CellInfo info = selection.getCellInfo();
 		
-		if (source.equals(info.getSourceItem()) && target.equals(info.getTargetItem())) {
+		if (info.getSourceItems().size() == 1 && info.getTargetItems().size() == 1 &&
+				source.equals(getFirstSourceItem()) && target.equals(getFirstTargetItem())) {
 			return info.getCell();
 		}
 		
@@ -59,7 +60,7 @@ public class CellSelectionInfo implements AlignmentInfo {
 	 */
 	@Override
 	public SchemaItem getFirstSourceItem() {
-		return selection.getCellInfo().getSourceItem();
+		return selection.getCellInfo().getSourceItems().iterator().next();
 	}
 
 	/**
@@ -67,7 +68,7 @@ public class CellSelectionInfo implements AlignmentInfo {
 	 */
 	@Override
 	public SchemaItem getFirstTargetItem() {
-		return selection.getCellInfo().getTargetItem();
+		return selection.getCellInfo().getTargetItems().iterator().next();
 	}
 
 	/**
@@ -75,17 +76,15 @@ public class CellSelectionInfo implements AlignmentInfo {
 	 */
 	@Override
 	public int getSourceItemCount() {
-		return 1;
+		return selection.getCellInfo().getSourceItems().size();
 	}
 
 	/**
 	 * @see AlignmentInfo#getSourceItems()
 	 */
 	@Override
-	public Iterable<SchemaItem> getSourceItems() {
-		Collection<SchemaItem> result = new ArrayList<SchemaItem>();
-		result.add(getFirstSourceItem());
-		return result;
+	public Collection<SchemaItem> getSourceItems() {
+		return new ArrayList<SchemaItem>(selection.getCellInfo().getSourceItems());
 	}
 
 	/**
@@ -93,17 +92,15 @@ public class CellSelectionInfo implements AlignmentInfo {
 	 */
 	@Override
 	public int getTargetItemCount() {
-		return 1;
+		return selection.getCellInfo().getTargetItems().size();
 	}
 
 	/**
 	 * @see AlignmentInfo#getTargetItems()
 	 */
 	@Override
-	public Iterable<SchemaItem> getTargetItems() {
-		Collection<SchemaItem> result = new ArrayList<SchemaItem>();
-		result.add(getFirstTargetItem());
-		return result;
+	public Collection<SchemaItem> getTargetItems() {
+		return new ArrayList<SchemaItem>(selection.getCellInfo().getTargetItems());
 	}
 
 	/**
@@ -111,6 +108,30 @@ public class CellSelectionInfo implements AlignmentInfo {
 	 */
 	@Override
 	public boolean hasAlignment(SchemaItem source, SchemaItem target) {
+		return getAlignment(source, target) != null;
+	}
+
+	/**
+	 * @see AlignmentInfo#getAlignment(Collection, Collection)
+	 */
+	@Override
+	public ICell getAlignment(Collection<SchemaItem> source,
+			Collection<SchemaItem> target) {
+		CellInfo info = selection.getCellInfo();
+		
+		if (info.getSourceItems().containsAll(source) && info.getTargetItems().containsAll(target)) {
+			return info.getCell();
+		}
+			
+		return null;
+	}
+
+	/**
+	 * @see AlignmentInfo#hasAlignment(Collection, Collection)
+	 */
+	@Override
+	public boolean hasAlignment(Collection<SchemaItem> source,
+			Collection<SchemaItem> target) {
 		return getAlignment(source, target) != null;
 	}
 

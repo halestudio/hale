@@ -11,6 +11,8 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions;
 
+import java.util.Collection;
+
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 
@@ -43,14 +45,14 @@ public interface AlignmentInfo {
 	 * 
 	 * @return the source items
 	 */
-	public Iterable<SchemaItem> getSourceItems();
+	public Collection<SchemaItem> getSourceItems();
 	
 	/**
 	 * Get the target items
 	 * 
 	 * @return the target items
 	 */
-	public Iterable<SchemaItem> getTargetItems();
+	public Collection<SchemaItem> getTargetItems();
 	
 	/**
 	 * Get the first selected source item
@@ -79,6 +81,18 @@ public interface AlignmentInfo {
 	public boolean hasAlignment(SchemaItem source, SchemaItem target);
 	
 	/**
+	 * Determines if there is an alignment cell for the given
+	 *   combination of source and target items
+	 *   
+	 * @param source the source items the first entity is composed of
+	 * @param target the target items the second entity is composed of
+	 * 
+	 * @return if there is an alignment cell for the given
+	 *   source and target items
+	 */
+	public boolean hasAlignment(Collection<SchemaItem> source, Collection<SchemaItem> target);
+	
+	/**
 	 * Get the alignment cell for the given
 	 *   combination of source and target item
 	 *   
@@ -89,5 +103,17 @@ public interface AlignmentInfo {
 	 *   source and target item or <code>null</code>
 	 */
 	public ICell getAlignment(SchemaItem source, SchemaItem target);
+	
+	/**
+	 * Get the alignment cell for the given
+	 *   combination of source and target item
+	 *   
+	 * @param source the source items the first entity is composed of
+	 * @param target the target items the second entity is composed of
+	 * 
+	 * @return the alignment cell for the given
+	 *   source and target item or <code>null</code>
+	 */
+	public ICell getAlignment(Collection<SchemaItem> source, Collection<SchemaItem> target);
 
 }

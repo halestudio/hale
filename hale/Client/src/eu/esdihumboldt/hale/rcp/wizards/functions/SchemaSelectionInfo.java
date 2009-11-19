@@ -11,7 +11,15 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
@@ -62,8 +70,8 @@ public class SchemaSelectionInfo implements AlignmentInfo {
 	 * @see AlignmentInfo#getSourceItems()
 	 */
 	@Override
-	public Iterable<SchemaItem> getSourceItems() {
-		return selection.getSourceItems();
+	public Collection<SchemaItem> getSourceItems() {
+		return new ArrayList<SchemaItem>(selection.getSourceItems());
 	}
 
 	/**
@@ -78,8 +86,8 @@ public class SchemaSelectionInfo implements AlignmentInfo {
 	 * @see AlignmentInfo#getTargetItems()
 	 */
 	@Override
-	public Iterable<SchemaItem> getTargetItems() {
-		return selection.getTargetItems();
+	public Collection<SchemaItem> getTargetItems() {
+		return new ArrayList<SchemaItem> (selection.getTargetItems());
 	}
 
 	/**
@@ -104,6 +112,84 @@ public class SchemaSelectionInfo implements AlignmentInfo {
 	@Override
 	public SchemaItem getFirstTargetItem() {
 		return selection.getFirstTargetItem();
+	}
+
+	/**
+	 * @see AlignmentInfo#getAlignment(Collection, Collection)
+	 */
+	@Override
+	public ICell getAlignment(Collection<SchemaItem> source,
+			Collection<SchemaItem> target) {
+		Entity entity1 = determineEntity(source);
+		Entity entity2 = determineEntity(target);
+		
+		if (entity1 == null || entity2 == null) {
+			return null;
+		}
+		else {
+			return alignment.getCell(entity1, entity2);
+		}
+	}
+
+	/**
+	 * Determine the entity for a collection of {@link SchemaItem}s
+	 * 
+	 * @param items the items
+	 * @return the entity or <code>null</code> if there could not be
+	 *   created a valid entity
+	 */
+	public static Entity determineEntity(Collection<SchemaItem> items) {
+		if (items == null || items.isEmpty()) {
+			return null;
+		}
+		else if (items.size() == 1) {
+			return items.iterator().next().getEntity();
+		}
+		else {
+			Iterator<SchemaItem> it = items.iterator();
+			Entity itemEntity = it.next().getEntity();
+			String namespace = itemEntity.getNamespace();
+			
+			// handle different cases
+			
+			// composed property
+			if (itemEntity instanceof Property) {
+				Property property = (Property) itemEntity;
+				List<Property> properties = new ArrayList<Property>(items.size());
+				properties.add(property);
+				
+				while (it.hasNext()) {
+					itemEntity = it.next().getEntity();
+					if (itemEntity instanceof Property &&
+							itemEntity.getNamespace().equals(namespace)) {
+						// add property to list
+						property = (Property) itemEntity;
+						properties.add(property);
+					}
+					else {
+						// no property or namespace doesn't match
+						return null;
+					}
+				}
+				
+				ComposedProperty result = new ComposedProperty(namespace);
+				result.setCollection(properties);
+				return result;
+			}
+			
+			//TODO composed feature type?
+			
+			return null;
+		}
+	}
+
+	/**
+	 * @see AlignmentInfo#hasAlignment(Collection, Collection)
+	 */
+	@Override
+	public boolean hasAlignment(Collection<SchemaItem> source,
+			Collection<SchemaItem> target) {
+		return getAlignment(source, target) != null;
 	}
 
 }
