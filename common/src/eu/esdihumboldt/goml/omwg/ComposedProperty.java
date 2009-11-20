@@ -13,8 +13,10 @@ package eu.esdihumboldt.goml.omwg;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import eu.esdihumboldt.cst.rdf.IAbout;
+import eu.esdihumboldt.goml.rdf.About;
 
 /**
  * This class represents omwg:propertyConst. Used for building an expression that
@@ -50,6 +52,11 @@ public class ComposedProperty
 	public ComposedProperty(IAbout about) {
 		super(about);
 		this.collection = new ArrayList<Property>();
+	}
+	
+	//FIXME
+	public ComposedProperty(String namespace) {
+		this(new About(namespace, UUID.randomUUID().toString()));
 	}
 
 	// getters / setters .......................................................
