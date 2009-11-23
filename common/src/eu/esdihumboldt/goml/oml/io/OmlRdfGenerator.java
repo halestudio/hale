@@ -53,7 +53,9 @@ import eu.esdihumboldt.goml.generated.OnAttributeType;
 import eu.esdihumboldt.goml.generated.OntologyType;
 import eu.esdihumboldt.goml.generated.ParamType;
 import eu.esdihumboldt.goml.generated.PropValueRestrictionType;
+import eu.esdihumboldt.goml.generated.PropertyCollectionType;
 import eu.esdihumboldt.goml.generated.PropertyCompositionType;
+import eu.esdihumboldt.goml.generated.PropertyOperatorType;
 import eu.esdihumboldt.goml.generated.PropertyType;
 import eu.esdihumboldt.goml.generated.RelationEnumType;
 import eu.esdihumboldt.goml.generated.RestrictionType;
@@ -673,9 +675,13 @@ public class OmlRdfGenerator {
 			//incase it  is a composed property add the property composition elmenet
 			// TODO keep the property comsposition as optional element
 			// property composition is used to define the merge on the attributes 
-			PropertyCompositionType propComp = new PropertyCompositionType();
+			PropertyCompositionType propCompType = new PropertyCompositionType();
 			//set Relation
-		/*	propComp.setRelation(getR((ComposedProperty)property).getRelation())*/
+		    propCompType.setRelation(getRelation(((ComposedProperty)property).getRelation()));
+		    //set  property collection
+		    propCompType.setCollection(getPropertyCollection(((ComposedProperty)property).getCollection()));
+		    //set PropertyOperatorType
+		    propCompType.setOperator(getOperatorType(((ComposedProperty)property).getPropertyOperatorType()));
 			pType.setPropertyComposition(null);
 			}
 			pType.setTransf(getTransf(property.getTransformation()));
@@ -695,6 +701,26 @@ public class OmlRdfGenerator {
 			}
 		}
 		return pType;
+	}
+
+
+
+	private PropertyOperatorType getOperatorType(
+			eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType propertyOperatorType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private PropertyCollectionType getPropertyCollection(
+			List<Property> collection) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private eu.esdihumboldt.goml.generated.RelationType getRelation(
+			Relation relation) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
