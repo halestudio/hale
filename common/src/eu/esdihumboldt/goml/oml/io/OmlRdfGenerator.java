@@ -53,6 +53,7 @@ import eu.esdihumboldt.goml.generated.OnAttributeType;
 import eu.esdihumboldt.goml.generated.OntologyType;
 import eu.esdihumboldt.goml.generated.ParamType;
 import eu.esdihumboldt.goml.generated.PropValueRestrictionType;
+import eu.esdihumboldt.goml.generated.PropertyCompositionType;
 import eu.esdihumboldt.goml.generated.PropertyType;
 import eu.esdihumboldt.goml.generated.RelationEnumType;
 import eu.esdihumboldt.goml.generated.RestrictionType;
@@ -67,6 +68,7 @@ import eu.esdihumboldt.goml.oml.ext.Function;
 import eu.esdihumboldt.goml.oml.ext.ValueClass;
 import eu.esdihumboldt.goml.oml.ext.ValueExpression;
 import eu.esdihumboldt.goml.omwg.ComparatorType;
+import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.omwg.PropertyQualifier;
@@ -667,10 +669,15 @@ public class OmlRdfGenerator {
 			About about = (About) property.getAbout();
 			if (about != null)
 				pType.setAbout(about.getAbout());
+			if(property instanceof ComposedProperty){
 			//incase it  is a composed property add the property composition elmenet
 			// TODO keep the property comsposition as optional element
 			// property composition is used to define the merge on the attributes 
+			PropertyCompositionType propComp = new PropertyCompositionType();
+			//set Relation
+		/*	propComp.setRelation(getR((ComposedProperty)property).getRelation())*/
 			pType.setPropertyComposition(null);
+			}
 			pType.setTransf(getTransf(property.getTransformation()));
 			if (property.getDomainRestriction() != null) {
 				pType.getDomainRestriction().addAll(
