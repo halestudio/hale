@@ -49,6 +49,20 @@ public class ComposedProperty
 	
 	// constructors ............................................................
 	
+	/**
+	 * @return the relation
+	 */
+	public Relation getRelation() {
+		return relation;
+	}
+
+	/**
+	 * @param relation the relation to set
+	 */
+	public void setRelation(Relation relation) {
+		this.relation = relation;
+	}
+
 	public ComposedProperty(IAbout about) {
 		super(about);
 		this.collection = new ArrayList<Property>();
