@@ -57,6 +57,7 @@ import eu.esdihumboldt.goml.generated.PropertyCollectionType;
 import eu.esdihumboldt.goml.generated.PropertyCompositionType;
 import eu.esdihumboldt.goml.generated.PropertyOperatorType;
 import eu.esdihumboldt.goml.generated.PropertyType;
+import eu.esdihumboldt.goml.generated.RangeRestrictionType;
 import eu.esdihumboldt.goml.generated.RelationEnumType;
 import eu.esdihumboldt.goml.generated.RestrictionType;
 import eu.esdihumboldt.goml.generated.ValueClassType;
@@ -66,6 +67,7 @@ import eu.esdihumboldt.goml.generated.AlignmentType.Map;
 import eu.esdihumboldt.goml.generated.AlignmentType.Onto1;
 import eu.esdihumboldt.goml.generated.AlignmentType.Onto2;
 import eu.esdihumboldt.goml.generated.OntologyType.Formalism;
+import eu.esdihumboldt.goml.generated.PropertyCollectionType.Item;
 import eu.esdihumboldt.goml.oml.ext.Function;
 import eu.esdihumboldt.goml.oml.ext.ValueClass;
 import eu.esdihumboldt.goml.oml.ext.ValueExpression;
@@ -88,6 +90,14 @@ import eu.esdihumboldt.mediator.util.NamespacePrefixMapperImpl;
  */
 public class OmlRdfGenerator {
 
+	
+	/**
+	 * stack for property invocation
+	 * value = 0, property parent element is cell
+	 * value = 1, property parent element is ComposedProperty
+	 */
+	
+	private int propertyStack = 0;
 	/**
 	 * Constant defines the path to the alignment jaxb context
 	 */
@@ -144,7 +154,8 @@ public class OmlRdfGenerator {
 	private AlignmentType getAlignment(IAlignment alignment) {
 		AlignmentType aType = new AlignmentType();
 		// 1. set about,level, ontology1,2
-		aType.setAbout(((About) alignment.getAbout()).getAbout());
+		if (alignment!=null){
+		if (alignment.getAbout()!=null) aType.setAbout(((About) alignment.getAbout()).getAbout());
 		aType.setLevel(alignment.getLevel());
 		aType.setOnto1(getOnto1(alignment.getSchema1()));
 		aType.setOnto2(getOnto2(alignment.getSchema2()));
@@ -152,6 +163,8 @@ public class OmlRdfGenerator {
 		aType.getMap().addAll(getMaps(alignment.getMap()));
         //3. add valueClass
 		aType.getValueClass().addAll(getValueClasses(alignment.getValueClasses()));
+		}
+		
 		return aType;
 	}
 
@@ -671,7 +684,8 @@ public class OmlRdfGenerator {
 			About about = (About) property.getAbout();
 			if (about != null)
 				pType.setAbout(about.getAbout());
-			if(property instanceof ComposedProperty){
+			if(property instanceof ComposedProperty&& this.propertyStack == 0){
+				this.propertyStack ++;
 			//incase it  is a composed property add the property composition elmenet
 			// TODO keep the property comsposition as optional element
 			// property composition is used to define the merge on the attributes 
@@ -682,7 +696,7 @@ public class OmlRdfGenerator {
 		    propCompType.setCollection(getPropertyCollection(((ComposedProperty)property).getCollection()));
 		    //set PropertyOperatorType
 		    propCompType.setOperator(getOperatorType(((ComposedProperty)property).getPropertyOperatorType()));
-			pType.setPropertyComposition(null);
+			pType.setPropertyComposition(propCompType);
 			}
 			pType.setTransf(getTransf(property.getTransformation()));
 			if (property.getDomainRestriction() != null) {
@@ -705,22 +719,89 @@ public class OmlRdfGenerator {
 
 
 
+	/**
+	 * Converts propertyOperator instance 
+	 * from the OML enum
+	 * to the JAXB-based enum
+	 * 
+	 * @param propertyOperatorType
+	 * @return
+	 */
 	private PropertyOperatorType getOperatorType(
 			eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType propertyOperatorType) {
-		// TODO Auto-generated method stub
+	    if(propertyOperatorType!= null){
+	    	//TODO clear mapping
+	    	if (propertyOperatorType.equals(eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType.AND)) return PropertyOperatorType.INTERSECTION;
+	    	if((propertyOperatorType.equals(eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType.OR))) return PropertyOperatorType.UNION;
+	    	if((propertyOperatorType.equals(eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType.FIRST))) return PropertyOperatorType.FIRST;
+	    	if((propertyOperatorType.equals(eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType.NEXT))) return PropertyOperatorType.NEXT;
+	    }
 		return null;
 	}
 
+	/**
+	 * Translate the list of the OML Properties
+	 * To the Jaxb-based PropertyCollectionType
+	 * @param collection
+	 * @return
+	 */
 	private PropertyCollectionType getPropertyCollection(
 			List<Property> collection) {
-		// TODO Auto-generated method stub
-		return null;
+	PropertyCollectionType propCollectionType = new PropertyCollectionType();
+	if(collection!=null){
+		Iterator iterator = collection.iterator();
+		while(iterator.hasNext()){
+			//get property from a list
+			Property property = (Property)iterator.next();
+			//convert property to the property type
+			//TODO could be the circular dependencies in case of ComposedProperty
+			PropertyType pType = getPropertyType(property);
+			//add to the collection
+			Item item = new Item();
+			item.setProperty(pType);
+			propCollectionType.getItem().add(item);
+		}
+			
+	}
+		return propCollectionType;
 	}
 
+	/**
+	 * Translate the list of the OML Relation
+	 * To the Jaxb-based RelationType
+	 * @param relation
+	 * @return
+	 */
 	private eu.esdihumboldt.goml.generated.RelationType getRelation(
 			Relation relation) {
-		// TODO Auto-generated method stub
-		return null;
+		eu.esdihumboldt.goml.generated.RelationType relType = new eu.esdihumboldt.goml.generated.RelationType();
+		if (relation!=null){
+			//TODO clear with MdV
+			if (relation.getDomainRestriction()!=null)relType.setDomainRestriction(getDomainRestrictionType(relation.getDomainRestriction().get(0)));
+			//TODO clear with MdV
+			relType.setPipe(null);
+			if (relation.getAbout()!=null) relType.setAbout(relation.getAbout().getAbout());
+			//TODO clear with MdV
+			relType.setRelationComposition(null);
+			if (relation.getRangeRestriction()!=null)relType.setRangeRestriction(getRangeRestrictionType(relation.getRangeRestriction().get(0)));
+			if (relation.getTransformation()!=null)relType.setTransf(getTransf(relation.getTransformation()));
+			
+		}
+			
+		return relType;
+	}
+
+	/**
+	 * Translates from OML FeatureClass
+	 * To the schema based FeatureClass
+	 * @param featureClass
+	 * @return
+	 */
+	private RangeRestrictionType getRangeRestrictionType(
+			FeatureClass featureClass) {
+		RangeRestrictionType rangeRestriction = new RangeRestrictionType();
+		rangeRestriction.setClazz(getClassType(featureClass));
+		return rangeRestriction;
 	}
 
 	/**

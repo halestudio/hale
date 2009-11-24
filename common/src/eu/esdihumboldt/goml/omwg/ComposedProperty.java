@@ -36,7 +36,7 @@ public class ComposedProperty
 	private PropertyOperatorType operator;
 
 	/**
-	 * In case of AND and OR the operand is a collection of two or more (Composed)FeatureClasses.
+	 * In case of AND and OR the operand is a collection of two or more (Composed)PropertyClasses.
        * In case of a unary operator the operand is either: 
        * - a collection consisting of one Property (or ComposedProperty);
        * - a Relation (or ComposedRelation).

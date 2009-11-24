@@ -53,6 +53,8 @@ import eu.esdihumboldt.goml.generated.FormalismType;
 import eu.esdihumboldt.goml.generated.FunctionType;
 import eu.esdihumboldt.goml.generated.OntologyType;
 import eu.esdihumboldt.goml.generated.ParamType;
+import eu.esdihumboldt.goml.generated.PropertyCollectionType;
+import eu.esdihumboldt.goml.generated.PropertyCompositionType;
 import eu.esdihumboldt.goml.generated.PropertyType;
 import eu.esdihumboldt.goml.generated.RelationEnumType;
 import eu.esdihumboldt.goml.generated.RestrictionType;
@@ -66,9 +68,12 @@ import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.oml.ext.ValueClass;
 import eu.esdihumboldt.goml.oml.ext.ValueExpression;
 import eu.esdihumboldt.goml.omwg.ComparatorType;
+import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.omwg.Relation;
 import eu.esdihumboldt.goml.omwg.Restriction;
+import eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.rdf.Resource;
 /**
@@ -280,9 +285,26 @@ public class OmlRdfReader {
 		
 		//TODO add convertion to the RelationType if needed
 		if (entityType instanceof PropertyType){
-	       entity = new Property(new About(entityType.getAbout()));
-		PropertyType propertyType = ((PropertyType)entityType);
+			
+			//make decision whether it is ComposedProperty
+		if (((PropertyType)entityType).getPropertyComposition()!=null){
+			PropertyCompositionType propCompType = ((PropertyType)entityType).getPropertyComposition();
+			//instantiate entity as ComposedProperty
+			IAbout about = new About(entityType.getAbout());
+			entity = new ComposedProperty(about);
+			//1. set operator
+			((ComposedProperty)entity).setPropertyOperatorType(getOperator(propCompType.getOperator()));
+			//2. set collection of properties
+			((ComposedProperty)entity).setCollection(getPropertyCollecion(propCompType.getCollection()));
+            //3. set relation 		
+			((ComposedProperty)entity).setRelation(getOMLRelation(propCompType.getRelation()));
+			//set ComposedProperty specific members
+		}else {
+           // instantiate entity as property 	       
+			entity = new Property(new About(entityType.getAbout()));
+		}
 		//set property-specific members to the entity
+		PropertyType propertyType = ((PropertyType)entityType);
 		//set domainRestriction
 		((Property)entity).setDomainRestriction(getDomainRestriction(propertyType.getDomainRestriction()));
 		//set typeCondition
@@ -308,6 +330,26 @@ public class OmlRdfReader {
 		entity.setAbout(about);
 		return entity;
 	}
+
+	private Relation getOMLRelation(
+		eu.esdihumboldt.goml.generated.RelationType relation) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+
+	private List<Property> getPropertyCollecion(PropertyCollectionType collection) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+
+	private PropertyOperatorType getOperator(
+		eu.esdihumboldt.goml.generated.PropertyOperatorType operator) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
 
 	/**
 	 * Converts from the FunctionType 
