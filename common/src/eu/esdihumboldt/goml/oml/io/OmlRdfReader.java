@@ -344,13 +344,32 @@ public class OmlRdfReader {
 }
 
 
+	/**
+	 * Converts propertyOperator instance 
+	 * from the JAXB-based enum
+	 * to the OML enum
+	 * 
+	 * @param propertyOperatorType
+	 * @return
+	 */
 	private PropertyOperatorType getOperator(
 		eu.esdihumboldt.goml.generated.PropertyOperatorType operator) {
-	// TODO Auto-generated method stub
+	    if (operator!=null){
+	    	if(operator!= null){
+		    	if (operator.equals(eu.esdihumboldt.goml.generated.PropertyOperatorType.INTERSECTION)) return eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType.AND;
+		    	if (operator.equals(eu.esdihumboldt.goml.generated.PropertyOperatorType.UNION))return eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType.OR;
+		    	if (operator.equals(eu.esdihumboldt.goml.generated.PropertyOperatorType.FIRST)) return eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType.FIRST;
+		    	if (operator.equals(eu.esdihumboldt.goml.generated.PropertyOperatorType.NEXT)) return eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType.NEXT;
+		    	
+		    	
+		    }
+	    	
+	    }
 	return null;
 }
 
 
+	
 	/**
 	 * Converts from the FunctionType 
 	 * to the Transformation
