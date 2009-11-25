@@ -785,6 +785,11 @@ public class OmlRdfGenerator {
 			relType.setRelationComposition(null);
 			if (relation.getRangeRestriction()!=null)relType.setRangeRestriction(getRangeRestrictionType(relation.getRangeRestriction().get(0)));
 			if (relation.getTransformation()!=null)relType.setTransf(getTransf(relation.getTransformation()));
+			//set label list
+			List<String> labels = relation.getLabel();
+			if (labels!=null){
+				if (labels.size()>0)relType.getLabel().addAll(labels);
+			}
 			
 		}
 			

@@ -26,6 +26,9 @@ import org.apache.log4j.lf5.util.Resource;
 import org.junit.Test;
 
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.cst.align.ext.ITransformation;
+import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Formalism;
@@ -34,6 +37,7 @@ import eu.esdihumboldt.goml.generated.PropertyOperatorType;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
+import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
@@ -106,8 +110,37 @@ public class ComposedPropertyTest extends TestCase {
 		}
 		
 		
-		
 	}
+	
+	@Test
+	public void testOmlRdfRead(){
+		Alignment aligment = new OmlRdfReader().read("res/schema/test_ComposedProperty_generated.xml");
+		//test for ComposedProperty
+		ComposedProperty compProperty = (ComposedProperty)alignment.getMap().get(0).getEntity1();
+		//test about
+		IAbout about = compProperty.getAbout();
+		String constructedAbout = this.sourceNamespace+"/"+ this.sourceLocalname;
+		assertEquals(constructedAbout, about.getAbout());
+		
+		//test property collection
+	    List<Property> properties = compProperty.getCollection();
+	    assertEquals(3, properties.size());
+	    //test About for the PropertyC
+	    Property propC = properties.get(2);
+	    about = propC.getAbout();
+	    constructedAbout = constructedAbout+"/"+this.sourceLocalnamePropertyC;
+	    assertEquals(constructedAbout, about.getAbout());
+		//test transformation
+	    ITransformation transf = compProperty.getTransformation();
+	    assertEquals("location",transf.getService().getLocation());
+	    assertEquals(1, transf.getParameters().size());
+	    IParameter parameter = transf.getParameters().get(0);
+	    assertEquals("math_expression", parameter.getName());
+	    assertEquals("0.5 * (PropertyA * PropertyB + PropertyC)", parameter.getValue());
+	    //test operator type
+	    assertEquals(eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType.FIRST.name(), compProperty.getPropertyOperatorType().name());
+	}
+	
 	
 	
 
