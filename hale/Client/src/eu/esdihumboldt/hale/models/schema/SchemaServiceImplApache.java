@@ -143,12 +143,9 @@ public class SchemaServiceImplApache
 	
 	private Collection<HaleServiceListener> listeners = new HashSet<HaleServiceListener>();
 	
-	//private String sourceNamespace = "";
-	//private String targetNamespace = "";
-	
-	//private URL sourceLocation = null;
-	//private URL targetLocation = null;
-	
+	/**
+	 * Default constructor
+	 */
 	private SchemaServiceImplApache() {
 		_log.setLevel(Level.INFO);
 	}
@@ -204,20 +201,9 @@ public class SchemaServiceImplApache
 		
 		if (type.equals(SchemaType.SOURCE)) {
 			sourceSchema = schema;
-			/*if (this.sourceSchema != null && this.sourceSchema.size() > 0) {
-				this.sourceNamespace =
-					this.sourceSchema.iterator().next()
-						.getName().getNamespaceURI().toString();
-			}
-			this.sourceLocation = baseURL; */
 		} 
 		else {
 			targetSchema = schema;
-			/*if (this.targetSchema != null && this.targetSchema.size() > 0) {
-				this.targetNamespace = this.targetSchema.iterator().next()
-						.getName().getNamespaceURI().toString();
-			}
-			this.targetLocation = baseURL; */
 		}
 		
 		this.updateListeners();
@@ -269,10 +255,12 @@ public class SchemaServiceImplApache
 	}
 	
 	/**
+	 * Get an attribute type from a feature type map
 	 * 
-	 * @param name
-	 * @param featureTypes
-	 * @return
+	 * @param name the attribute type name
+	 * @param featureTypes the feature type map
+	 * @return the attribute type or <code>null</code> if the corresponding
+	 *   type was not found in the set
 	 */
 	private AttributeType getSchemaAttributeType(Name name, Map<Name, FeatureType> featureTypes) {
 		AttributeType type = null;
@@ -489,22 +477,6 @@ public class SchemaServiceImplApache
 	 * @param type the type
 	 * @return the name (if found, else the type)
 	 */
-	/*private String getTypeName(Map<String, String> names, String type) {
-		String name = names.get(type);
-		
-		if (name != null && !name.isEmpty())
-			return name;
-		else
-			return type;
-	}*/
-	
-	/**
-	 * Get the type name
-	 * 
-	 * @param names mapping for types to names
-	 * @param type the type
-	 * @return the name (if found, else the type)
-	 */
 	private Name getTypeName(Map<String, String> names, Name type) {
 		String localName = names.get(type.getLocalPart());
 		
@@ -557,6 +529,14 @@ public class SchemaServiceImplApache
 		return new Schema(types.values(), namespace, locationURL);
 	}
 		
+	/**
+	 * Load the feature types defined by the given schema
+	 * 
+	 * @param schema the schema
+	 * @param imports the imports/includes that were already
+	 *   loaded or where loading has been started
+	 * @return the map of feature type names and types
+	 */
 	protected Map<Name, FeatureType> loadSchema(XmlSchema schema, Map<String, Map<Name, FeatureType>> imports) {
 		String namespace = schema.getTargetNamespace();
 		if (namespace == null || namespace.isEmpty()) {
@@ -574,7 +554,6 @@ public class SchemaServiceImplApache
 		XmlSchemaObjectCollection externalItems = schema.getIncludes();
 		for (int i = 0; i < externalItems.getCount(); i++) {
 			try {
-				//TODO handle includes differently?
 				XmlSchemaExternal imp = (XmlSchemaExternal) externalItems.getItem(i);
 				XmlSchema importedSchema = imp.getSchema();
 				String location = importedSchema.getSourceURI();
@@ -763,11 +742,6 @@ public class SchemaServiceImplApache
 					
 					// Find super type
 					FeatureType superType = featureTypes.get(superTypeName);
-					
-					//XXX this block needed? super types should already be in result set
-					if (superType == null) {
-						superType = importedFeatureTypes.get(superTypeName);
-					}
 					
 					if (superType == null) {
 						SimpleFeatureTypeBuilder stbuilder = new SimpleFeatureTypeBuilder();
