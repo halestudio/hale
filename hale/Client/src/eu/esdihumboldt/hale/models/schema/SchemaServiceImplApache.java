@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
@@ -38,6 +39,7 @@ import org.apache.ws.commons.schema.XmlSchemaContent;
 import org.apache.ws.commons.schema.XmlSchemaContentModel;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaExternal;
+import org.apache.ws.commons.schema.XmlSchemaInclude;
 import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaObjectCollection;
 import org.apache.ws.commons.schema.XmlSchemaParticle;
@@ -565,17 +567,23 @@ public class SchemaServiceImplApache
 		// Map of type names / types for the result
 		Map<Name, FeatureType> featureTypes = new HashMap<Name, FeatureType>();
 		
+		// Set of include locations
+		Set<String> includes = new HashSet<String>();
+		
 		// handle imports
-		XmlSchemaObjectCollection includes = schema.getIncludes();
-		for (int i = 0; i < includes.getCount(); i++) {
+		XmlSchemaObjectCollection externalItems = schema.getIncludes();
+		for (int i = 0; i < externalItems.getCount(); i++) {
 			try {
 				//TODO handle includes differently?
-				XmlSchemaExternal imp = (XmlSchemaExternal) includes.getItem(i);
+				XmlSchemaExternal imp = (XmlSchemaExternal) externalItems.getItem(i);
 				XmlSchema importedSchema = imp.getSchema();
 				String location = importedSchema.getSourceURI();
 				if (!(imports.containsKey(location))) { // only add schemas that were not already added
 					imports.put(location, null); // place a marker in the map to prevent loading the location in the call to loadSchema 
 					imports.put(location, loadSchema(importedSchema, imports));
+				}
+				if (imp instanceof XmlSchemaInclude) {
+					includes.add(location);
 				}
 			} catch (Throwable e) {
 				_log.error("Error adding imported schema", e);
@@ -586,9 +594,16 @@ public class SchemaServiceImplApache
 		Map<Name, FeatureType> importedFeatureTypes = new HashMap<Name, FeatureType>();
 		
 		// add imported types
-		for (Map<Name, FeatureType> imported : imports.values()) {
-			if (imported != null) {
-				importedFeatureTypes.putAll(imported);
+		for (Entry<String, Map<Name, FeatureType>> entry : imports.entrySet()) {
+			if (entry.getValue() != null) {
+				if (includes.contains(entry.getKey())) {
+					// is include, add to result
+					featureTypes.putAll(entry.getValue());
+				}
+				else {
+					// is import, don't add to result
+					importedFeatureTypes.putAll(entry.getValue());
+				}
 			}
 		}
 		
@@ -697,7 +712,7 @@ public class SchemaServiceImplApache
 		DependencyOrderedList<Name> typeNames = new DependencyOrderedList<Name>(dependencies);
 		
 		// 3rd pass: create feature types 
-		for (Name typeName : typeNames.getInternalList()) {
+		for (Name typeName : typeNames.getItems()) {
 			XmlSchemaObject item = typeDefinitions.get(typeName);
 
 			if (item == null || item instanceof XmlSchemaSimpleType) {
