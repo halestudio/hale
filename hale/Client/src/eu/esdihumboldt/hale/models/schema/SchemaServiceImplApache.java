@@ -345,8 +345,15 @@ public class SchemaServiceImplApache
 					}
 					AttributeType ty = xsSchema.get(attributeName);
 					
-					
 					// Try to resolve the attribute bindings
+					
+					if (ty == null) {
+						ty = getSchemaAttributeType(attributeName, featureTypes);
+					}
+					if (ty == null) {
+						ty = getSchemaAttributeType(attributeName, importedFeatureTypes);
+					}
+					
 					if (ty == null) {
 						// GML bindings
 						GMLSchema gmlSchema = new GMLSchema();
@@ -355,13 +362,6 @@ public class SchemaServiceImplApache
 					if (ty == null) {
 						// Bindings for enumeration types
 						ty = getEnumAttributeType(element);
-					}
-					if (ty == null) {
-						// why last?
-						ty = getSchemaAttributeType(attributeName, featureTypes);
-					}
-					if (ty == null) {
-						ty = getSchemaAttributeType(attributeName, importedFeatureTypes);
 					}
 					if (ty == null ) {
 						_log.warn("Type NOT found: " + attributeName.getLocalPart());
