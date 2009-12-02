@@ -114,6 +114,10 @@ public abstract class Entity
 	public void setAbout(IAbout about) {
 		this.about = about;
 	}
+	
+	public String toString() {
+		return this.getClass().getName() + ": " + this.getAbout().getAbout();
+	}
 
 	public abstract IEntity deepCopy();
 
