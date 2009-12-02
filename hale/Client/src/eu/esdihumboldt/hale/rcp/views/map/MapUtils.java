@@ -93,7 +93,7 @@ public abstract class MapUtils {
 		FeatureCollection<?, ?> fc = is.getFeatures(type);
 		if (fc != null && fc.size() > 0) {
 			if (crs == null) {
-				crs = determineCRS(is.getFeatures(DatasetType.reference)); // always use source CRS! (Check whether OK, TODO)
+				crs = determineCRS(is.getFeatures(DatasetType.reference)); // TODO always use source CRS! (Check whether OK)
 			}
 			
 			log.info("features size: " + fc.size());

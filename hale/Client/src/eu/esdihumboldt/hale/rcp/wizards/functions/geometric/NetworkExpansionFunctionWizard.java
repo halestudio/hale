@@ -15,7 +15,7 @@ import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.transformer.impl.NetworkExpansionTransformer;
+import eu.esdihumboldt.cst.transformer.impl.NetworkExpansionFunction;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
@@ -65,7 +65,7 @@ public class NetworkExpansionFunctionWizard
 		Entity entity1 = (Entity) cell.getEntity1();
 		
 		Transformation transformation = new Transformation();
-		transformation.setService(new Resource(NetworkExpansionTransformer.class.getName()));
+		transformation.setService(new Resource(NetworkExpansionFunction.class.getName()));
 		transformation.getParameters().add(new Parameter("Expansion", mainPage.getExpansion()));
 		
 		entity1.setTransformation(transformation);
