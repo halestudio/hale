@@ -74,14 +74,9 @@ public abstract class AugmentationWizardFactory implements
 		
 		SchemaItem item = selection.getFirstTargetItem();
 		
-		// only supports feature types
-		if (!item.isFeatureType()) {
-			return false;
-		}
-		
 		AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
 		
-		//TODO? check if there is any mapping for this item?
+		//TODO? check if there is any mapping for this item? or rather not?
 		
 		// get augmentation cell
 		ICell augmentation = selection.getAlignment(NullSchemaItem.INSTANCE, item);
