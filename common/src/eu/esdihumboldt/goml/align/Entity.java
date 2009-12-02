@@ -17,6 +17,8 @@ import java.util.List;
 import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
+import eu.esdihumboldt.goml.omwg.FeatureClass;
+import eu.esdihumboldt.goml.rdf.About;
 
 /**
  * {@link Entity} is the supertype for all objects that can be mapped in a 
@@ -28,6 +30,11 @@ import eu.esdihumboldt.cst.align.ext.ITransformation;
  */
 public abstract class Entity 
 	implements IEntity {
+	
+	/**
+	 * Null entity
+	 */
+	public static Entity NULL_ENTITY = new FeatureClass(new About("entity", "null"));
 	
 	/**
 	 * Note: Interior element omwg:label collapsed. <xs:element ref="omwg:label"
@@ -120,6 +127,5 @@ public abstract class Entity
 	}
 
 	public abstract IEntity deepCopy();
-
 
 }
