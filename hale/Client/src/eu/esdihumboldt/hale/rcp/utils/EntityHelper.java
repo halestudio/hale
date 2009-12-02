@@ -12,6 +12,7 @@
 package eu.esdihumboldt.hale.rcp.utils;
 
 import eu.esdihumboldt.cst.align.IEntity;
+import eu.esdihumboldt.goml.align.Entity;
 
 /**
  * Entity utility methods
@@ -29,13 +30,16 @@ public abstract class EntityHelper {
 	 * @return the short name
 	 */
 	public static String getShortName(IEntity entity) {
+		if (entity.equals(Entity.NULL_ENTITY)) {
+			return "None";
+		}
+		
 		if (entity.getAbout() != null && entity.getAbout().getAbout() != null ) {
 			String label = entity.getAbout().getAbout();
 			String[] nameparts = label.split("\\/");
 			return nameparts[nameparts.length -1];
 		}
-		String label = entity.getAbout().getAbout();
-		String[] nameparts = label.split("\\/");
+		
 		return "unnamed";
 	}
 

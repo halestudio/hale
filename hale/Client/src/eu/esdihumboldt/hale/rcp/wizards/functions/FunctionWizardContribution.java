@@ -11,18 +11,21 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbenchPart;
@@ -137,11 +140,22 @@ public class FunctionWizardContribution extends ContributionItem {
 		}
 
 	}
+
+	private final boolean showAugmentations;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param showAugmentations if augmentations shall be shown
+	 */
+	public FunctionWizardContribution(boolean showAugmentations) {
+		this.showAugmentations = showAugmentations;
+	}
 	
 	/**
 	 * @see ContributionItem#fill(ToolBar, int)
 	 */
-	@Override
+	/*@Override
 	public void fill(ToolBar parent, int index) {
 		ISelectionService selectionService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
 		AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
@@ -152,7 +166,7 @@ public class FunctionWizardContribution extends ContributionItem {
 			IContributionItem item = new ActionContributionItem(action);
 			item.fill(parent, index++);
 		}
-	}
+	}*/
 
 	/**
 	 * @see ContributionItem#fill(Menu, int)
@@ -164,10 +178,37 @@ public class FunctionWizardContribution extends ContributionItem {
 		ISelectionService selectionService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
 		AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
 		
+		List<WizardAction> augmentationActions = new ArrayList<WizardAction>();
+		
 		for (FunctionWizardDescriptor descriptor : FunctionWizardExtension.getFunctionWizards()) {
-			WizardAction action = new WizardAction(descriptor, selectionService,
-					alignmentService);
-			if (action.isActive()) {
+			if (!descriptor.isAugmentation() || showAugmentations) {
+				WizardAction action = new WizardAction(descriptor, selectionService,
+						alignmentService);
+				if (action.isActive()) {
+					if (descriptor.isAugmentation()) {
+						augmentationActions.add(action);
+					}
+					else {
+						IContributionItem item = new ActionContributionItem(action);
+						item.fill(menu, index++);
+						added = true;
+					}
+				}
+			}
+		}
+		
+		if (!augmentationActions.isEmpty()) {
+			if (added) {
+				new Separator().fill(menu, index++);
+			}
+			
+			MenuItem augItem = new MenuItem(menu, SWT.PUSH, index++);
+			augItem.setText("Augmentations");
+			augItem.setEnabled(false);
+			
+			//new Separator().fill(menu, index++);
+			
+			for (WizardAction action : augmentationActions) {
 				IContributionItem item = new ActionContributionItem(action);
 				item.fill(menu, index++);
 				added = true;

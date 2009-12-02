@@ -203,7 +203,15 @@ public class TreeObject implements SchemaItem, Comparable<TreeObject> {
 	 */
 	@Override
 	public int compareTo(TreeObject other) {
-		return label.compareToIgnoreCase(other.label);
+		if (isType() && !other.isType()) {
+			return -1;
+		}
+		else if (!isType() && other.isType()) {
+			return 1;
+		}
+		else {
+			return label.compareToIgnoreCase(other.label);
+		}
 	}
 
 }

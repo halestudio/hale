@@ -58,6 +58,7 @@ import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.EntityHelper;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
+import eu.esdihumboldt.hale.rcp.wizards.augmentations.NullSchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardContribution;
 
 /**
@@ -73,6 +74,10 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 	 * Contribution for local selection
 	 */
 	private class CellFunctionContribution extends FunctionWizardContribution {
+
+		public CellFunctionContribution() {
+			super(true);
+		}
 
 		/**
 		 * @see FunctionWizardContribution#getSelection()
@@ -341,6 +346,9 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 			sourceItems.addAll(getChildren(sourceItems));
 			targetItems.addAll(getChildren(targetItems));
 			
+			// add NullSchemaItem to find augmentations
+			sourceItems.add(NullSchemaItem.INSTANCE);
+			
 			if (sourceItems != null && targetItems != null) {
 				// for each source item...
 				for (SchemaItem source : sourceItems) {
@@ -416,6 +424,11 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 		return page;
 	}
 	
+	/**
+	 * Update the selection and fire a selection change
+	 * 
+	 * @param cell the new selection
+	 */
 	protected void fireCellSelectionChange(CellInfo cell) {
 		selected = cell;
 		

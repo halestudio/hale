@@ -41,9 +41,6 @@ import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
-import org.geotools.feature.NameImpl;
-import org.geotools.feature.type.AttributeDescriptorImpl;
-import org.geotools.feature.type.PropertyDescriptorImpl;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.feature.type.PropertyType;
@@ -76,6 +73,13 @@ public class ModelNavigationView extends ViewPart implements
 	 * Function contribution that always uses this view's selection
 	 */
 	private class SchemaFunctionContribution extends FunctionWizardContribution {
+
+		/**
+		 * Default constructor
+		 */
+		public SchemaFunctionContribution() {
+			super(true);
+		}
 
 		/**
 		 * @see FunctionWizardContribution#getSelection()
@@ -118,6 +122,8 @@ public class ModelNavigationView extends ViewPart implements
 	private ISelection currentSelection;
 	
 	private Image functionImage;
+	
+	private Image augmentImage;
 
 	/**
 	 * @see WorkbenchPart#createPartControl(Composite)
@@ -166,6 +172,7 @@ public class ModelNavigationView extends ViewPart implements
 		// function button
 		final Button functionButton = new Button(modelComposite, SWT.PUSH | SWT.FLAT);
 		functionImage = HALEActivator.getImageDescriptor("icons/mapping.gif").createImage();
+		augmentImage = HALEActivator.getImageDescriptor("icons/augment.gif").createImage();
 		functionButton.setImage(functionImage);
 		functionButton.setToolTipText("Select a mapping function");
 		functionButton.setEnabled(false);
@@ -201,6 +208,17 @@ public class ModelNavigationView extends ViewPart implements
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				functionButton.setEnabled(functionContribution.hasActiveFunctions());
+				if (event.getSelection() instanceof SchemaSelection) {
+					SchemaSelection selection = (SchemaSelection) event.getSelection();
+					if (selection.getSourceItems().size() == 0 && selection.getTargetItems().size() > 0) {
+						// augmentation
+						functionButton.setImage(augmentImage);
+					}
+					else {
+						// function
+						functionButton.setImage(functionImage);
+					}
+				}
 			}
 			
 		});
@@ -239,25 +257,38 @@ public class ModelNavigationView extends ViewPart implements
 			
 		});
 		
-		MenuManager menuManager = new MenuManager();
-		menuManager.setRemoveAllWhenShown(true);
-		final IContributionItem contextFunctions = new FunctionWizardContribution();
-		menuManager.addMenuListener(new IMenuListener() {
+		MenuManager sourceMenuManager = new MenuManager();
+		sourceMenuManager.setRemoveAllWhenShown(true);
+		final IContributionItem sourceContextFunctions = new FunctionWizardContribution(false);
+		sourceMenuManager.addMenuListener(new IMenuListener() {
 
 			@Override
 			public void menuAboutToShow(IMenuManager manager) {
-				manager.add(contextFunctions);
+				manager.add(sourceContextFunctions);
 			}
 			
 		});
 		
-		Menu sourceMenu = menuManager.createContextMenu(sourceSchemaViewer.getControl());
+		Menu sourceMenu = sourceMenuManager.createContextMenu(sourceSchemaViewer.getControl());
 		sourceSchemaViewer.getControl().setMenu(sourceMenu);
 		
-		Menu targetMenu = menuManager.createContextMenu(targetSchemaViewer.getControl());
+		MenuManager targetMenuManager = new MenuManager();
+		targetMenuManager.setRemoveAllWhenShown(true);
+		final IContributionItem targetContextFunctions = new FunctionWizardContribution(true);
+		targetMenuManager.addMenuListener(new IMenuListener() {
+
+			@Override
+			public void menuAboutToShow(IMenuManager manager) {
+				manager.add(targetContextFunctions);
+			}
+			
+		});
+		
+		Menu targetMenu = targetMenuManager.createContextMenu(targetSchemaViewer.getControl());
 		targetSchemaViewer.getControl().setMenu(targetMenu);
 		
-		getSite().registerContextMenu(menuManager, this);
+		getSite().registerContextMenu(sourceMenuManager, sourceSchemaViewer);
+		getSite().registerContextMenu(targetMenuManager, targetSchemaViewer);
 	}
 
 	private List<SimpleToggleAction> getToggleActions(PatternViewFilter pvf) {
@@ -597,6 +628,9 @@ public class ModelNavigationView extends ViewPart implements
 	public void dispose() {
 		if (functionImage != null) {
 			functionImage.dispose();
+		}
+		if (augmentImage != null) {
+			augmentImage.dispose();
 		}
 		
 		super.dispose();

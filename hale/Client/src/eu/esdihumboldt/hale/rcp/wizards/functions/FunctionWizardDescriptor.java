@@ -21,6 +21,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.Bundle;
 
+import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizardFactory;
+
 /**
  * Descriptor for {@link FunctionWizardFactory}(ie)s
  * 
@@ -79,7 +81,7 @@ public class FunctionWizardDescriptor implements FunctionWizardFactory {
 	 *   configuration element
 	 *   
 	 * @param iconAttribute
-	 * @return
+	 * @return the icon URL or <code>null</code> if none is defined
 	 */
 	protected URL getIconURL(String iconAttribute) {
 		String icon = conf.getAttribute(iconAttribute);
@@ -111,6 +113,15 @@ public class FunctionWizardDescriptor implements FunctionWizardFactory {
 		}
 		
 		return factory;
+	}
+	
+	/**
+	 * Determines if the descriptor represents an augmentation
+	 * 
+	 * @return if the descriptor represents an augmentation
+	 */
+	public boolean isAugmentation() {
+		return getFactory() instanceof AugmentationWizardFactory;
 	}
 	
 	/**
