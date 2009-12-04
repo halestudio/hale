@@ -264,12 +264,11 @@ public class AlignmentServiceImpl implements AlignmentService {
 	 */
 	@Override
 	public boolean addOrUpdateAlignment(Alignment alignment) {
-		System.out.println("Updating alignment");
 		if (alignment.getSchema1() != null) {
 			this.alignment.setSchema1(alignment.getSchema1());
 		}
 		if (alignment.getSchema2() != null) {
-			this.alignment.setSchema1(alignment.getSchema2());
+			this.alignment.setSchema2(alignment.getSchema2());
 		}
 		if (alignment.getLevel() != null) {
 			this.alignment.setLevel(alignment.getLevel());
@@ -277,7 +276,6 @@ public class AlignmentServiceImpl implements AlignmentService {
 		if (alignment.getAbout() != null) {
 			this.alignment.setAbout(alignment.getAbout());
 		}
-		System.out.println("Alignment updated");
 		return true;
 	}
 
