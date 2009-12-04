@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 
+import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.cst.transformer.impl.RenameAttributeTransformer;
 import eu.esdihumboldt.cst.transformer.impl.RenameFeatureTransformer;
 import eu.esdihumboldt.goml.align.Cell;
@@ -87,6 +88,7 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 			t.setService(new Resource(RenameFeatureTransformer.class.getName()));
 
 			//TODO any parameters needed?
+			c.setRelation(RelationType.Equivalence);
 		}
 		else if (source instanceof Property && target instanceof Property) {
 			// Attribute renaming
