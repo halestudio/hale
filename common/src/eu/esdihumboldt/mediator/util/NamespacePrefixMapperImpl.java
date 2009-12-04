@@ -159,6 +159,6 @@ public class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 	 */
 	public String[] getPreDeclaredNamespaceUris() {
 		return new String[] { "http://www.w3.org/2001/XMLSchema-instance",
-				"http://www.opengis.net/gml/", "http://www.omwg.org/TR/d7/ontology/alignment", "http://humboldt/goml", "http://www.w3.org/1999/02/22-rdf-syntax-ns#","http://www.w3.org/2001/XMLSchema-instance" };
+				"http://www.opengis.net/gml/", "http://www.omwg.org/TR/d7/ontology/alignment", "http://www.esdi-humboldt.eu/goml", "http://www.w3.org/1999/02/22-rdf-syntax-ns#","http://www.w3.org/2001/XMLSchema-instance" };
 	}
 }

@@ -5,7 +5,7 @@
 <align:Alignment rdf:about="" xmlns="http://www.omwg.org/TR/d7/ontology/alignment"
     xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment"
     xmlns:align="http://knowledgeweb.semanticweb.org/heterogeneity/alignment"
-    xmlns:goml="http://humboldt/goml"
+    xmlns:goml="http://www.esdi-humboldt.eu/goml"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://knowledgeweb.semanticweb.org/heterogeneity/alignment align.xsd">

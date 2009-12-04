@@ -581,12 +581,12 @@ public class OmlRdfReader {
 	 */
 	private Transformation getTransformation(FunctionType transf) {
 		Transformation trans = new Transformation();
-		if (transf!=null){
-		// set Service
-		Resource resource = new Resource(transf.getResource());
-		trans.setService(resource);
-		// set parameter list
-		trans.setParameters(getParameters(transf.getParam()));
+		if (transf != null) {
+			// set Service
+			Resource resource = new Resource(transf.getResource());
+			trans.setService(resource);
+			// set parameter list
+			trans.setParameters(getParameters(transf.getParam()));
 		}
 
 		return trans;
