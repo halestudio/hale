@@ -66,7 +66,8 @@ public class NetworkExpansionFunctionWizard
 		
 		Transformation transformation = new Transformation();
 		transformation.setService(new Resource(NetworkExpansionFunction.class.getName()));
-		transformation.getParameters().add(new Parameter("Expansion", mainPage.getExpansion()));
+		transformation.getParameters().add(
+				new Parameter(NetworkExpansionFunction.BUFFERWIDTH, mainPage.getExpansion()));
 		
 		entity1.setTransformation(transformation);
 
