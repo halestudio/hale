@@ -194,15 +194,17 @@ public class OmlRdfReader {
 	 */
 	private Formalism getFormalism(
 			eu.esdihumboldt.goml.generated.OntologyType.Formalism jaxbFormalism) {
-		FormalismType fType = jaxbFormalism.getFormalism();
-		URI uri = null;
-		try {
-			uri = new URI(fType.getUri());
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		Formalism formalism = null;
+		if (jaxbFormalism != null) {
+			FormalismType fType = jaxbFormalism.getFormalism();
+			URI uri = null;
+			try {
+				uri = new URI(fType.getUri());
+			} catch (URISyntaxException e) {
+				throw new RuntimeException(e);
+			}
+			formalism = new Formalism(fType.getName(), uri);
 		}
-		Formalism formalism = new Formalism(fType.getName(), uri);
 		return formalism;
 	}
 

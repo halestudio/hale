@@ -39,7 +39,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ValueClassType", namespace = "http://humboldt/goml", propOrder = {
+@XmlType(name = "ValueClassType", namespace = "http://www.esdi-humboldt.eu/goml", propOrder = {
     "value"
 })
 public class ValueClassType {

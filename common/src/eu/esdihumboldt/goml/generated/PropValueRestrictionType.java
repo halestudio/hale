@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element ref="{http://www.omwg.org/TR/d7/ontology/alignment}comparator"/>
  *         &lt;choice>
  *           &lt;element name="value" type="{http://www.omwg.org/TR/d7/ontology/alignment}valueExprType" maxOccurs="unbounded" minOccurs="0"/>
- *           &lt;element ref="{http://humboldt/goml}ValueClass" minOccurs="0"/>
+ *           &lt;element ref="{http://www.esdi-humboldt.eu/goml}ValueClass" minOccurs="0"/>
  *         &lt;/choice>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -51,7 +51,7 @@ public class PropValueRestrictionType {
     protected ComparatorEnumType comparator;
     @XmlElement(namespace = "http://www.omwg.org/TR/d7/ontology/alignment", required = true)
     protected List<ValueExprType> value;
-    @XmlElement(name = "ValueClass", namespace = "http://humboldt/goml")
+    @XmlElement(name = "ValueClass", namespace = "http://www.esdi-humboldt.eu/goml")
     protected ValueClassType valueClass;
 
     /**

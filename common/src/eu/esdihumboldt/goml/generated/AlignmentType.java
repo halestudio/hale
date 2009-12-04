@@ -65,7 +65,7 @@ import eu.esdihumboldt.goml.generated.AlignmentType.Onto2;
  *             &lt;/complexContent>
  *           &lt;/complexType>
  *         &lt;/element>
- *         &lt;element ref="{http://humboldt/goml}ValueClass" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element ref="{http://www.esdi-humboldt.eu/goml}ValueClass" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *       &lt;attribute ref="{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about"/>
  *     &lt;/restriction>

@@ -388,7 +388,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link ValueClassType }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://humboldt/goml", name = "ValueClass")
+    @XmlElementDecl(namespace = "http://www.esdi-humboldt.eu/goml", name = "ValueClass")
     public JAXBElement<ValueClassType> createValueClass(ValueClassType value) {
         return new JAXBElement<ValueClassType>(_ValueClass_QNAME, ValueClassType.class, null, value);
     }
@@ -577,7 +577,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://humboldt/goml", name = "cqlStr")
+    @XmlElementDecl(namespace = "http://www.esdi-humboldt.eu/goml", name = "cqlStr")
     public JAXBElement<String> createCqlStr(String value) {
         return new JAXBElement<String>(_CqlStr_QNAME, String.class, null, value);
     }

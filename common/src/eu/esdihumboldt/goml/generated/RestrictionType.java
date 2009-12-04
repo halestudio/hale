@@ -31,10 +31,10 @@ import javax.xml.bind.annotation.XmlType;
  *           &lt;element ref="{http://www.omwg.org/TR/d7/ontology/alignment}comparator"/>
  *           &lt;choice>
  *             &lt;element name="value" type="{http://www.omwg.org/TR/d7/ontology/alignment}valueExprType" maxOccurs="unbounded" minOccurs="0"/>
- *             &lt;element ref="{http://humboldt/goml}ValueClass" minOccurs="0"/>
+ *             &lt;element ref="{http://www.esdi-humboldt.eu/goml}ValueClass" minOccurs="0"/>
  *           &lt;/choice>
  *         &lt;/sequence>
- *         &lt;element ref="{http://humboldt/goml}cqlStr" minOccurs="0"/>
+ *         &lt;element ref="{http://www.esdi-humboldt.eu/goml}cqlStr" minOccurs="0"/>
  *       &lt;/choice>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -61,7 +61,7 @@ public class RestrictionType {
     protected List<ValueExprType> value;
     @XmlElement(name = "ValueClass", namespace = "http://www.esdi-humboldt.eu/goml")
     protected ValueClassType valueClass;
-    @XmlElement(namespace = "http://humboldt/goml")
+    @XmlElement(namespace = "http://www.esdi-humboldt.eu/goml")
     protected String cqlStr;
 
     /**
