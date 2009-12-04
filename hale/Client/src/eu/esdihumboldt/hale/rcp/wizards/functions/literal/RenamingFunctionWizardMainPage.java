@@ -11,19 +11,27 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.literal;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 
 /**
@@ -34,26 +42,37 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
  */
 public class RenamingFunctionWizardMainPage 
 		extends AbstractSingleCellWizardPage {
-
-	//private static Logger _log = Logger.getLogger(RenamingFunctionWizardMainPage.class);
-
-	protected Text sourceFeatureTypeName;
-	protected Text targetFeatureTypeName;
-
-	private Label sourceFeatureTypeLabel;
-	private Label targetFeatureTypeLabel;
 	
+	/**
+	 * Instance mapping types
+	 */
+	public enum InstanceMappingType {
+		/** normal 1:1 */
+		NORMAL,
+		/** split 1:n */
+		SPLIT,
+		/** merge n:1 */
+		MERGE
+	}
+	
+	private InstanceMappingType type = InstanceMappingType.NORMAL;
+	
+	private String initialCondition = null;
+	
+	private Text condition; 
+	
+	private ListViewer varList;
+
 	/**
 	 * Constructor
 	 * 
 	 * @param pageName the page name
 	 * @param title the page title
-	 * @param cell the cell to edit
 	 */
 	protected RenamingFunctionWizardMainPage(String pageName, String title) {
 		super(pageName, title, (ImageDescriptor) null);
 		setTitle(pageName);
-		setDescription("Enter parameters to adopt the source FeatureType to the target Naming Convention.");
+		//setDescription("Enter parameters to adopt the source FeatureType to the target Naming Convention.");
 	}
 
 	/**
@@ -64,143 +83,176 @@ public class RenamingFunctionWizardMainPage
 	 */
 	public void createControl(Composite parent) {
 		super.initializeDialogUnits(parent);
-		this.setPageComplete(true);
 		// create a composite to hold the widgets
-		Composite composite = new Composite(parent, SWT.NULL);
+		Composite page = new Composite(parent, SWT.NULL);
 		// create layout for this wizard page
 		GridLayout gl = new GridLayout();
 		gl.numColumns = 2;
 		gl.marginLeft = 0;
 		gl.marginTop = 20;
 		gl.marginRight = 70;
-		composite.setLayout(gl);
-		composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
-				| GridData.HORIZONTAL_ALIGN_FILL));
-		composite.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		composite.setFont(parent.getFont());
+		page.setLayout(gl);
 
 		// source area
-		this.sourceFeatureTypeLabel = new Label(composite, SWT.TITLE);
-		this.sourceFeatureTypeLabel.setLayoutData(new GridData(
-				GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
-		this.sourceFeatureTypeLabel.setSize(composite.computeSize(SWT.DEFAULT,
-				SWT.DEFAULT));
-		FontData labelFontData = parent.getFont().getFontData()[0];
-		labelFontData.setStyle(SWT.BOLD);
-
-		this.sourceFeatureTypeLabel.setFont(new Font(parent.getDisplay(),
-				labelFontData));
-
-		this.sourceFeatureTypeLabel.setText("Source Type");
-		this.sourceFeatureTypeName = new Text(composite, SWT.BORDER);
-		this.sourceFeatureTypeName.setText(getParent().getSourceItem().getName().getLocalPart());
-		sourceFeatureTypeName.setEnabled(false);
+		Label sourceLabel = new Label(page, SWT.NONE);
+		sourceLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
+		sourceLabel.setText("Source " + ((getParent().getSourceItem().isType())?("type"):("attribute")));
 		
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 1;
-		this.sourceFeatureTypeName.setLayoutData(gd);
-
-		// add listener to update the source feature name
-		this.sourceFeatureTypeName.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent event) {
-				String sourceName = sourceFeatureTypeName.getText();
-				System.out.println(sourceName);
-				if (sourceName.length() == 0)
-					setErrorMessage("Source Name can not be empty");
-				else if (sourceFeatureTypeName.getText().equals(
-						targetFeatureTypeName.getText()))
-					setErrorMessage("Source and Target Name cannot be the same");
-				else
-					setErrorMessage(null);
-				setPageComplete(sourceName.length() > 0
-						&& targetFeatureTypeName.getText().length() > 0
-						&& (!sourceFeatureTypeName.getText().equals(
-								targetFeatureTypeName.getText())));
-
-			}
-
-		});
+		Text sourceName = new Text(page, SWT.BORDER);
+		sourceName.setText(getParent().getSourceItem().getName().getLocalPart());
+		sourceName.setEnabled(false);
+		sourceName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		// target area
-		this.targetFeatureTypeLabel = new Label(composite, SWT.BOLD);
-		this.targetFeatureTypeLabel.setLayoutData(new GridData(
-				GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
-		this.targetFeatureTypeLabel.setSize(composite.computeSize(SWT.DEFAULT,
-				SWT.DEFAULT));
-		this.targetFeatureTypeLabel.setFont(new Font(parent.getDisplay(),
-				labelFontData));
-		this.targetFeatureTypeLabel.setText("Target Type");
-		this.targetFeatureTypeName = new Text(composite, SWT.BORDER);
-		// TODO replace it with the selected target FeatureType value
-		this.targetFeatureTypeName.setText(getParent().getTargetItem().getName().getLocalPart());
-		targetFeatureTypeName.setEnabled(false);
+		Label targetLabel = new Label(page, SWT.NONE);
+		targetLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
+		targetLabel.setText("Target " + ((getParent().getTargetItem().isType())?("type"):("attribute")));
 		
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 1;
-		this.targetFeatureTypeName.setLayoutData(gd);
+		Text targetName = new Text(page, SWT.BORDER);
+		targetName.setText(getParent().getTargetItem().getName().getLocalPart());
+		targetName.setEnabled(false);
+		targetName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		
+		if (getParent().getSourceItem().isFeatureType() && getParent().getTargetItem().isFeatureType()) {
+			new Composite(page, SWT.NONE);
+			
+			// instance mapping
+			Group group = new Group(page, SWT.NONE);
+			group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			group.setLayout(new GridLayout(2, false));
+			group.setText("Instance mapping");
+			
+			Button normal = new Button(group, SWT.RADIO);
+			normal.setText("1:1");
+			normal.setSelection(type == InstanceMappingType.NORMAL);
+			normal.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
+			normal.addSelectionListener(new SelectionAdapter() {
 
-		// add listener to update the target feature name
-		this.targetFeatureTypeName.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent event) {
-				String targetName = targetFeatureTypeName.getText();
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					type = InstanceMappingType.NORMAL;
+					update();
+				}
+				
+			});
+			
+			Button split = new Button(group, SWT.RADIO);
+			split.setText("1:n (split)");
+			split.setSelection(type == InstanceMappingType.SPLIT);
+			split.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
+			split.addSelectionListener(new SelectionAdapter() {
 
-				if (targetName.length() == 0)
-					setErrorMessage("Target Name can not be empty");
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					type = InstanceMappingType.SPLIT;
+					update();
+				}
+				
+			});
+			
+			Button merge = new Button(group, SWT.RADIO);
+			merge.setText("n:1 (merge)");
+			merge.setSelection(type == InstanceMappingType.SPLIT);
+			merge.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
+			merge.addSelectionListener(new SelectionAdapter() {
 
-				else if (sourceFeatureTypeName.getText().equals(
-						targetFeatureTypeName.getText()))
-					setErrorMessage("Source and Target Name cannot be the same");
-				else
-					setErrorMessage(null);
-				setPageComplete(targetName.length() > 0
-						&& sourceFeatureTypeName.getText().length() > 0
-						&& (!sourceFeatureTypeName.getText().equals(
-								targetFeatureTypeName.getText())));
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					type = InstanceMappingType.MERGE;
+					update();
+				}
+				
+			});
+			
+			// condition
+			Label labelCondition = new Label(group, SWT.NONE);
+			labelCondition.setText("Condition:");
+			labelCondition.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
+			
+			condition = new Text(group, SWT.BORDER);
+			if (initialCondition != null) {
+				condition.setText(initialCondition);
 			}
+			condition.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+			
+			// variables
+			new Label(group, SWT.NONE);
+			
+			Label label = new Label(group, SWT.NONE);
+			label.setText("Available variables (double click to insert)");
+			label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false));
+			
+			Set<String> variables = new TreeSet<String>();
+			if (getParent().getSourceItem().hasChildren()) {
+				for (SchemaItem child : getParent().getSourceItem().getChildren()) {
+					variables.add(child.getName().getLocalPart());
+				}
+			}
+			
+			new Label(group, SWT.NONE);
+			
+			varList = new ListViewer(group);
+			varList.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			varList.setContentProvider(new ArrayContentProvider());
+			varList.setInput(variables);
+			varList.getList().addMouseListener(new MouseAdapter() {
 
-		});
-		setErrorMessage(null); // should not initially have error message
-		super.setControl(composite);
+				/**
+				 * @see MouseAdapter#mouseDoubleClick(MouseEvent)
+				 */
+				@Override
+				public void mouseDoubleClick(MouseEvent e) {
+					int index = varList.getList().getSelectionIndex();
+					if (index >= 0) {
+						String var = varList.getList().getItem(index);
+						condition.insert(var);
+						condition.setFocus();
+					}
+				}
+				
+			});
+			
+			update();
+		}
+		
+		super.setControl(page);
+	}
+
+	private void update() {
+		if (condition != null) {
+			condition.setEnabled(type != InstanceMappingType.NORMAL);
+		}
+		if (varList != null) {
+			varList.getControl().setEnabled(type != InstanceMappingType.NORMAL);
+		}
 	}
 
 	/**
-	 * @see org.eclipse.jface.wizard.WizardPage#isPageComplete()
+	 * @return the type
 	 */
-	/*
-	 * @Override public boolean isPageComplete() {
-	 * 
-	 * if (this.sourceFeatureTypeName != null && this.targetFeatureTypeName !=
-	 * null){ //TODO add error handling if source name = target name_
-	 * _log.debug("sourceFeatureType " + this.sourceFeatureTypeName.getText());
-	 * _log.debug("sourceFeatureType " + this.sourceFeatureTypeName.getText());
-	 * _log.debug("Page is complete."); return true; }else { //TODO add error
-	 * handling if source and/or target name are empty. return false; }
-	 * 
-	 * }
-	 */
-	/*
-	 * if (this.fileFieldEditor != null && this.wfsFieldEditor != null) {
-	 * _log.debug("fileFieldEditor: " + this.fileFieldEditor.getStringValue());
-	 * try { if (this.useWfsRadio.getSelection()) { // test whether content of
-	 * the WFS Field Editor validates to URL. String test =
-	 * this.wfsFieldEditor.getStringValue(); if (test != null &&
-	 * !test.equals("")) { new URL(test);
-	 * _log.debug("wfsFieldEditor URL was OK."); } else { return false; } } else
-	 * { // test whether content of the File Field Editor validates to URI.
-	 * String test = this.fileFieldEditor.getStringValue(); if (test != null &&
-	 * !test.equals("")) { new URI(test.replaceAll("\\\\", "/"));
-	 * _log.debug("fileFieldEditor URI was OK."); } else { return false; } } }
-	 * catch (Exception ex) { ex.printStackTrace(); return false; }
-	 * _log.debug("Page is complete."); return true; } else { return false; }
-	 * return true; }
-	 */
+	public InstanceMappingType getType() {
+		return type;
+	}
 
-	/*
-	 * @Override public void handleEvent(Event e) { if (e.widget ==
-	 * this.sourceFeatureTypeName){
-	 * System.out.println(this.sourceFeatureTypeName.getSelectionText()); }
-	 * 
-	 * }
+	/**
+	 * @param type the type to set
 	 */
+	public void setType(InstanceMappingType type) {
+		this.type = type;
+	}
+
+	/**
+	 * @return the condition
+	 */
+	public String getCondition() {
+		return condition.getText();
+	}
+
+	/**
+	 * @param condition the condition to set
+	 */
+	public void setInitialCondition(String condition) {
+		this.initialCondition = condition;
+	}
 
 }

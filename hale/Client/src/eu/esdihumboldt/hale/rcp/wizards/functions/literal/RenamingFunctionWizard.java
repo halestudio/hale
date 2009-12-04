@@ -11,10 +11,14 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.literal;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 
+import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.cst.transformer.impl.RenameAttributeTransformer;
 import eu.esdihumboldt.cst.transformer.impl.RenameFeatureTransformer;
@@ -22,11 +26,10 @@ import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.rcp.wizards.functions.literal.RenamingFunctionWizardMainPage.InstanceMappingType;
 
 /**
  * This {@link Wizard} is used to invoke a Renaming CstFunction for the Source
@@ -37,9 +40,19 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
  */
 public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 
+	/**
+	 * Parameter name for instance merge condition
+	 */
+	public static final String PARAMETER_INSTANCE_MERGE_CONDITION = "InstanceMergeCondition";
+
+	/**
+	 * Parameter name for instance split condition
+	 */
+	public static final String PARAMETER_INSTANCE_SPLIT_CONDITION = "InstanceSplitCondition";
+
 	private static Logger _log = Logger.getLogger(RenamingFunctionWizard.class);
 
-	RenamingFunctionWizardMainPage mainPage;
+	private RenamingFunctionWizardMainPage mainPage;
 
 	/**
 	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(AlignmentInfo)
@@ -54,10 +67,38 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 	@Override
 	protected void init() {
 		this.mainPage = new RenamingFunctionWizardMainPage(
-				"Configure Feature Type Renaming Function",
-				"Configure Feature Type Renaming Function");
+				"Configure Renaming Function",
+				"Configure Renaming Function");
 		super.setWindowTitle("Configure Function");
 		super.setNeedsProgressMonitor(true);
+		
+		// initialize from cell
+		Cell cell = getResultCell();
+		if (cell.getEntity1().getTransformation() != null) {
+			String condition = null;
+			InstanceMappingType type = InstanceMappingType.NORMAL;
+			
+			List<IParameter> parameters = cell.getEntity1().getTransformation().getParameters();
+			if (parameters != null) {
+				Iterator<IParameter> it = parameters.iterator();
+				while (condition == null && it.hasNext()) {
+					IParameter param = it.next();
+					if (param.getValue() != null) {
+						if (param.getName().equals(PARAMETER_INSTANCE_MERGE_CONDITION)) {
+							condition = param.getValue();
+							type = InstanceMappingType.MERGE;
+						}
+						else if (param.getName().equals(PARAMETER_INSTANCE_SPLIT_CONDITION)) {
+							condition = param.getValue();
+							type = InstanceMappingType.SPLIT;
+						}
+					}
+				}
+			}
+			
+			mainPage.setType(type);
+			mainPage.setInitialCondition(condition);
+		}
 	}
 	
 	/**
@@ -82,15 +123,28 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 		
 		Transformation t = new Transformation();
 		
-		if (source instanceof FeatureClass && target instanceof FeatureClass) {
+		if (getSourceItem().isFeatureType() && getTargetItem().isFeatureType()) {
 			// Type renaming
 			t.setLabel(RenameFeatureTransformer.class.getName());
 			t.setService(new Resource(RenameFeatureTransformer.class.getName()));
 
-			//TODO any parameters needed?
+			InstanceMappingType type = mainPage.getType();
+			String condition = mainPage.getCondition();
+			
+			switch (type) {
+			case SPLIT:
+				t.getParameters().add(new Parameter(PARAMETER_INSTANCE_SPLIT_CONDITION, condition));
+				break;
+			case MERGE:
+				t.getParameters().add(new Parameter(PARAMETER_INSTANCE_MERGE_CONDITION, condition));
+				break;
+			case NORMAL: // fall through
+			default:
+				// do nothing
+			}
 			c.setRelation(RelationType.Equivalence);
 		}
-		else if (source instanceof Property && target instanceof Property) {
+		else if (getSourceItem().isAttribute() && getTargetItem().isAttribute()) {
 			// Attribute renaming
 			t.setLabel(RenameAttributeTransformer.class.getName());
 			t.setService(new Resource(RenameFeatureTransformer.class.getName()));
