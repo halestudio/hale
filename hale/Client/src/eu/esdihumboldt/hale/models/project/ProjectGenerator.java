@@ -96,16 +96,18 @@ public class ProjectGenerator {
 		hproject.setName(name);
 		
 		// create InstanceData element
-		InstanceData id = new InstanceData();
-		id.setPath(projectService.getInstanceDataPath());
-		if (SelectCRSDialog.lastWasCode()) {
-			id.setEpsgcode(
-					SelectCRSDialog.getValue().getCoordinateSystem().getName().getCode());
+		if (projectService.getInstanceDataPath() != null) {
+			InstanceData id = new InstanceData();
+			id.setPath(projectService.getInstanceDataPath());
+			if (SelectCRSDialog.lastWasCode()) {
+				id.setEpsgcode(
+						SelectCRSDialog.getValue().getCoordinateSystem().getName().getCode());
+			}
+			else if (SelectCRSDialog.getValueWKT() != null) {
+				id.setWkt(SelectCRSDialog.getValueWKT());
+			}
+			hproject.setInstanceData(id);
 		}
-		else if (SelectCRSDialog.getValueWKT() != null) {
-			id.setWkt(SelectCRSDialog.getValueWKT());
-		}
-		hproject.setInstanceData(id);
 		
 		// create MappedSchema elements
 		MappedSchema sourceschema = new MappedSchema();

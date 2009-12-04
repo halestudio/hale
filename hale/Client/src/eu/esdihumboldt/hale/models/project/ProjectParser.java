@@ -113,6 +113,8 @@ public class ProjectParser {
 			schemaService.loadSchema(
 					new URI(project.getTargetSchema().getPath()), 
 					SchemaType.TARGET);
+			projectService.setSourceSchemaPath(project.getSourceSchema().getPath());
+			projectService.setTargetSchemaPath(project.getTargetSchema().getPath());
 		} catch (URISyntaxException e) {
 			throw new RuntimeException("Schema could not be loaded: ", e);
 		}
@@ -134,14 +136,16 @@ public class ProjectParser {
 				InputStream xml = new FileInputStream(new File(file));
 				Configuration configuration = new GMLConfiguration();
 				HaleGMLParser parser = new HaleGMLParser(configuration);
-				instanceService.addInstances(DatasetType.reference, 
-						(FeatureCollection<FeatureType, Feature>) parser.parse(xml));
 				if (project.getInstanceData().getEpsgcode() != null) {
 					SelectCRSDialog.setEpsgcode(project.getInstanceData().getEpsgcode());
 				}
 				else if (project.getInstanceData() != null) {
 					SelectCRSDialog.setWkt(project.getInstanceData().getWkt());
 				}
+				instanceService.addInstances(DatasetType.reference, 
+						(FeatureCollection<FeatureType, Feature>) parser.parse(xml));
+				projectService.setInstanceDataPath(project.getInstanceData().getPath());
+				
 			} catch (Exception e) {
 				throw new RuntimeException("Instances could not be loaded: ", e);
 			}
@@ -150,10 +154,7 @@ public class ProjectParser {
 		// fourth, it's time for loading the tasks.
 		// TODO load tasks from project
 		
-		// Finally, initialize ProjectService values.
-		projectService.setInstanceDataPath(project.getInstanceData().getPath());
-		projectService.setSourceSchemaPath(project.getSourceSchema().getPath());
-		projectService.setTargetSchemaPath(project.getTargetSchema().getPath());
+		// Finally, initialize other ProjectService values.
 		projectService.setProjectCreatedDate(project.getDateCreated());
 	}
 
