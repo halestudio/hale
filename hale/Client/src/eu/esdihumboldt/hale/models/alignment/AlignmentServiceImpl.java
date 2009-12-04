@@ -276,6 +276,8 @@ public class AlignmentServiceImpl implements AlignmentService {
 		if (alignment.getAbout() != null) {
 			this.alignment.setAbout(alignment.getAbout());
 		}
+		this.alignment.getMap().addAll(alignment.getMap()); // FIXME check whether a cell is there.
+		this.updateListeners();
 		return true;
 	}
 
