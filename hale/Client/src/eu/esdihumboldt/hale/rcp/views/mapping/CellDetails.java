@@ -84,11 +84,29 @@ public class CellDetails implements ISelectionChangedListener {
 					
 					ITransformation transformation = cell.getCell().getEntity1().getTransformation();
 					if (transformation != null) {
+//						if (transformation.getAbout() != null) {
+//							items.add(new TableItem("Transformation", transformation.getAbout().getAbout()));
+//						}
 						if (transformation.getService() != null) {
-							items.add(new TableItem("Service", transformation.getService().toString()));
+							items.add(new TableItem("Transformation", transformation.getService().toString()));
 						}
 						if (transformation.getParameters() != null) {
 							for (IParameter param : transformation.getParameters()) {
+								items.add(new TableItem(param.getName(), param.getValue()));
+							}
+						}
+					}
+					
+					ITransformation augmentation = cell.getCell().getEntity2().getTransformation();
+					if (augmentation != null) {
+//						if (augmentation.getAbout() != null) {
+//							items.add(new TableItem("Augmentation", augmentation.getAbout().getAbout()));
+//						}
+						if (augmentation.getService() != null) {
+							items.add(new TableItem("Augmentation", augmentation.getService().toString()));
+						}
+						if (augmentation.getParameters() != null) {
+							for (IParameter param : augmentation.getParameters()) {
 								items.add(new TableItem(param.getName(), param.getValue()));
 							}
 						}

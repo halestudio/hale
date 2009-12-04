@@ -131,6 +131,11 @@
             id="HALE2.LoadTestData.command"
             name="LoadTestData">
       </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.ImportMappingHandler"
+            id="HALE.importMapping.command"
+            name="Import Mapping">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -197,12 +202,6 @@
                   commandId="HALE.exit.command"
                   id="exit"
                   label="Exit"
-                  style="push">
-            </command>
-            <command
-                  commandId="HALE2.LoadTestData.command"
-                  id="openTestData"
-                  label="Load test data"
                   style="push">
             </command>
          </menu>
@@ -294,6 +293,10 @@
             class="eu.esdihumboldt.hale.rcp.wizards.functions.math.GenericMathFunctionWizardFactory"
             icon="icons/number_attribute.png"
             name="Mathematical expression">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.augmentations.nilreason.NilReasonWizardFactory"
+            name="Nil reason">
       </factory>
    </extension>
    <!-- <extension
