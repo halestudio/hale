@@ -164,12 +164,6 @@ public class StyleServiceImpl
 			types = new ArrayList<FeatureType>();
 		}
 		
-		//XXX hack until transformation implementation is correct
-		if (dataset == DatasetType.transformed) {
-			types.addAll(schemaService.getSourceSchema());
-		}
-		//XXX hack end
-		
 		Style style = styleFactory.createStyle();
 		
 		for (FeatureType type : types) {
