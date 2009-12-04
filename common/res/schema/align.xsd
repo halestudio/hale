@@ -2,7 +2,7 @@
 <xs:schema targetNamespace="http://knowledgeweb.semanticweb.org/heterogeneity/alignment"
       xmlns:align="http://knowledgeweb.semanticweb.org/heterogeneity/alignment"
       xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment"
-      xmlns:goml="http://humboldt/goml" 
+      xmlns:goml="http://www.esdi-humboldt.eu/goml" 
       xmlns:xs="http://www.w3.org/2001/XMLSchema"
       xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
       elementFormDefault="qualified">
@@ -13,7 +13,7 @@
 
    <xs:import namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#" schemaLocation="tmprdf.xsd" />
    <xs:import namespace="http://www.omwg.org/TR/d7/ontology/alignment" schemaLocation="omwg.xsd" />
-   <xs:import namespace="http://humboldt/goml" schemaLocation="goml.xsd" />
+   <xs:import namespace="http://www.esdi-humboldt.eu/goml" schemaLocation="goml.xsd" />
 
    <xs:element name="Alignment" type="align:AlignmentType" />
    <xs:complexType name="AlignmentType">

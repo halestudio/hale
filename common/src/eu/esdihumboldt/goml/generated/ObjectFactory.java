@@ -38,7 +38,7 @@ public class ObjectFactory {
     private final static QName _Value_QNAME = new QName("http://www.omwg.org/TR/d7/ontology/alignment", "value");
     private final static QName _Formalism_QNAME = new QName("http://knowledgeweb.semanticweb.org/heterogeneity/alignment", "Formalism");
     private final static QName _FeatureClass_QNAME = new QName("http://www.omwg.org/TR/d7/ontology/alignment", "FeatureClass");
-    private final static QName _ValueClass_QNAME = new QName("http://humboldt/goml", "ValueClass");
+    private final static QName _ValueClass_QNAME = new QName("http://www.esdi-humboldt.eu/goml", "ValueClass");
     private final static QName _RangeRestriction_QNAME = new QName("http://www.omwg.org/TR/d7/ontology/alignment", "rangeRestriction");
     private final static QName _Entity_QNAME = new QName("http://www.omwg.org/TR/d7/ontology/alignment", "_Entity");
     private final static QName _PropertyQualifier_QNAME = new QName("http://www.omwg.org/TR/d7/ontology/alignment", "PropertyQualifier");
@@ -59,7 +59,7 @@ public class ObjectFactory {
     private final static QName _Comparator_QNAME = new QName("http://www.omwg.org/TR/d7/ontology/alignment", "comparator");
     private final static QName _Ontology_QNAME = new QName("http://knowledgeweb.semanticweb.org/heterogeneity/alignment", "Ontology");
     private final static QName _DomainRestriction_QNAME = new QName("http://www.omwg.org/TR/d7/ontology/alignment", "domainRestriction");
-    private final static QName _CqlStr_QNAME = new QName("http://humboldt/goml", "cqlStr");
+    private final static QName _CqlStr_QNAME = new QName("http://www.esdi-humboldt.eu/goml", "cqlStr");
     private final static QName _Relation_QNAME = new QName("http://www.omwg.org/TR/d7/ontology/alignment", "Relation");
 
     /**

@@ -93,7 +93,7 @@ public class AlignmentType {
     protected Onto2 onto2;
     @XmlElement(namespace = "http://knowledgeweb.semanticweb.org/heterogeneity/alignment", required = true)
     protected List<Map> map;
-    @XmlElement(name = "ValueClass", namespace = "http://humboldt/goml", required = true)
+    @XmlElement(name = "ValueClass", namespace = "http://www.esdi-humboldt.eu/goml", required = true)
     protected List<ValueClassType> valueClass;
     @XmlAttribute(namespace = "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
     protected String about;

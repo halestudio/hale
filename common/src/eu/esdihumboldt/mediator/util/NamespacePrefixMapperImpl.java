@@ -96,7 +96,7 @@ public class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 		//map align
 		if ("http://knowledgeweb.semanticweb.org/heterogeneity/alignment".equals(namespaceUri)) return "align";
 		//map goml
-		if ("http://humboldt/goml".equals(namespaceUri)) return "goml";
+		if ("http://www.esdi-humboldt.eu/goml".equals(namespaceUri)) return "goml";
 		//map rdf 
 		if ("http://www.w3.org/1999/02/22-rdf-syntax-ns#".equals(namespaceUri)) return "rdf";
 		//map xsi   

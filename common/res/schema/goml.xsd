@@ -4,8 +4,8 @@
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:goml="http://humboldt/goml"
-    targetNamespace="http://humboldt/goml"
+    xmlns:goml="http://www.esdi-humboldt.eu/goml"
+    targetNamespace="http://www.esdi-humboldt.eu/goml"
     xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     elementFormDefault="qualified"

@@ -59,7 +59,7 @@ public class RestrictionType {
     protected ComparatorEnumType comparator;
     @XmlElement(namespace = "http://www.omwg.org/TR/d7/ontology/alignment", required = true)
     protected List<ValueExprType> value;
-    @XmlElement(name = "ValueClass", namespace = "http://humboldt/goml")
+    @XmlElement(name = "ValueClass", namespace = "http://www.esdi-humboldt.eu/goml")
     protected ValueClassType valueClass;
     @XmlElement(namespace = "http://humboldt/goml")
     protected String cqlStr;
