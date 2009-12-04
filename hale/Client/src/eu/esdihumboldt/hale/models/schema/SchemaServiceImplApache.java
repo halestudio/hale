@@ -719,19 +719,23 @@ public class SchemaServiceImplApache
 					if (attributeResults.get(a).getType() != null) {
 						AttributeResult res = attributeResults.get(a);
 						AttributeType t = res.getType();
+						if (res.getName().equals("geometry")) {
+							AttributeTypeBuilder builder = new AttributeTypeBuilder();
+							builder.setBinding(Geometry.class);
+							builder.setName(t.getName().getLocalPart());
+							builder.setNillable(true);
+							t = builder.buildType();
+						}
+						
 						AttributeDescriptor desc = new AttributeDescriptorImpl(
-								t, new NameImpl(schema.getTargetNamespace(), res.getName()),0, 0, false, null);
+								t, new NameImpl(schema.getTargetNamespace(), res.getName()),0, 0, true, null); // FIXME nillable determination
 						// set the name of the Default geometry property explicitly, 
 						// otherwise nothing will be returned when calling 
 						// getGeometryDescriptor().
 						if (Geometry.class.isAssignableFrom(desc.getType().getBinding())) {
 							ftbuilder.setDefaultGeometry(desc.getName().getLocalPart());
 						}
-						//XXX hack
-//						else if (res.getName().equals("geometry")) {
-//							ftbuilder.setDefaultGeometry(res.getName());
-//						}
-						//XXX hack
+			
 						ftbuilder.add(desc);
 					}
 					else _log.warn("Attribute type NOT found: " + attributeResults.get(a).getName());
