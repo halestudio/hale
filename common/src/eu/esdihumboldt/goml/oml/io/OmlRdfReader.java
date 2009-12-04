@@ -108,8 +108,8 @@ public class OmlRdfReader {
 			Unmarshaller u = jc.createUnmarshaller();
 
 			// it will debug problems while unmarshalling
-			u
-					.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
+			u.setEventHandler(
+					new javax.xml.bind.helpers.DefaultValidationEventHandler());
 			root = u.unmarshal(new StreamSource(new File(rdfFile)),
 					AlignmentType.class);
 		} catch (JAXBException e) {
@@ -583,12 +583,16 @@ public class OmlRdfReader {
 		Transformation trans = new Transformation();
 		if (transf != null) {
 			// set Service
-			Resource resource = new Resource(transf.getResource());
-			trans.setService(resource);
-			// set parameter list
-			trans.setParameters(getParameters(transf.getParam()));
+			if (transf.getResource() != null) {
+				Resource resource = new Resource(transf.getResource());
+				trans.setService(resource);
+				// set parameter list
+				trans.setParameters(getParameters(transf.getParam()));
+			}
+			else {
+				trans = null;
+			}
 		}
-
 		return trans;
 	}
 
