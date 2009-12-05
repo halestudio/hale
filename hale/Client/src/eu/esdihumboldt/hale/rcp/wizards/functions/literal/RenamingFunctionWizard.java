@@ -20,8 +20,8 @@ import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
-import eu.esdihumboldt.cst.transformer.impl.RenameAttributeTransformer;
-import eu.esdihumboldt.cst.transformer.impl.RenameFeatureTransformer;
+import eu.esdihumboldt.cst.transformer.impl.RenameAttributeFunction;
+import eu.esdihumboldt.cst.transformer.impl.RenameFeatureFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
@@ -125,8 +125,8 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 		
 		if (getSourceItem().isFeatureType() && getTargetItem().isFeatureType()) {
 			// Type renaming
-			t.setLabel(RenameFeatureTransformer.class.getName());
-			t.setService(new Resource(RenameFeatureTransformer.class.getName()));
+			t.setLabel(RenameFeatureFunction.class.getName());
+			t.setService(new Resource(RenameFeatureFunction.class.getName()));
 
 			InstanceMappingType type = mainPage.getType();
 			String condition = mainPage.getCondition();
@@ -146,15 +146,15 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 		}
 		else if (getSourceItem().isAttribute() && getTargetItem().isAttribute()) {
 			// Attribute renaming
-			t.setLabel(RenameAttributeTransformer.class.getName());
-			t.setService(new Resource(RenameFeatureTransformer.class.getName()));
+			t.setLabel(RenameAttributeFunction.class.getName());
+			t.setService(new Resource(RenameFeatureFunction.class.getName()));
 			
 			//Add old attribute name
 			t.getParameters().add(new Parameter(
-					RenameAttributeTransformer.OLD_ATTRIBUTE_NAME_PARAMETER, 
+					RenameAttributeFunction.OLD_ATTRIBUTE_NAME_PARAMETER, 
 					source.getAbout().getAbout()));
 			t.getParameters().add(new Parameter(
-					RenameAttributeTransformer.NEW_ATTRIBUTE_NAME_PARAMETER, 
+					RenameAttributeFunction.NEW_ATTRIBUTE_NAME_PARAMETER, 
 					target.getAbout().getAbout()));
 		}
 		else {
