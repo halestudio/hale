@@ -37,6 +37,11 @@ public class NetworkExpansionFunctionWizardPage
 	private Text outputAttributeText = null;
 	private Text expansionExpressionText = null;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param pageName the page name
+	 */
 	protected NetworkExpansionFunctionWizardPage(String pageName) {
 		super(pageName);
 		
