@@ -202,8 +202,26 @@ public class FunctionWizardContribution extends ContributionItem {
 				new Separator().fill(menu, index++);
 			}
 			
+			// get augmentation target name
+			ISelection selection = selectionService.getSelection();
+			AlignmentInfo info = null;
+			
+			if (selection instanceof SchemaSelection) {
+				SchemaSelection schemaSelection = (SchemaSelection) selection;
+				info = new SchemaSelectionInfo(schemaSelection, alignmentService);
+			}
+			else if (selection instanceof CellSelection) {
+				CellSelection cellSelection = (CellSelection) selection;
+				info = new CellSelectionInfo(cellSelection);
+			}
+			
+			String augmentations = "Augmentations";
+			if (info != null && info.getTargetItemCount() == 1) {
+				augmentations += " for " + info.getFirstTargetItem().getName().getLocalPart();
+			}
+			
 			MenuItem augItem = new MenuItem(menu, SWT.PUSH, index++);
-			augItem.setText("Augmentations");
+			augItem.setText(augmentations);
 			augItem.setEnabled(false);
 			
 			//new Separator().fill(menu, index++);
