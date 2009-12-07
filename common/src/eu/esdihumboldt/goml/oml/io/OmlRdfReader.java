@@ -715,9 +715,9 @@ public class OmlRdfReader {
 			restriction = new Restriction(getValueExpression(valueExpr));
 			restriction.setComparator(getComparator(condition.getRestriction()
 					.getComparator()));
-			// add CqlStr if exists
+			// add Seq if exists
 			if (condition.getSeq() != null)
-				restriction.setCqlStr(condition.getSeq().toString());
+				restriction.setSeq(condition.getSeq());
 			// TODO add Property onAttribute
 			restrictions.add(restriction);
 
