@@ -24,6 +24,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Region;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -38,6 +39,7 @@ import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
+import eu.esdihumboldt.hale.models.instance.InstanceServiceListener;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.AbstractTilePainter;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.TileBackground;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.TileCache;
@@ -98,14 +100,51 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		init(canvas, determineMapArea());
 		
 		final InstanceService instances = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
-		instances.addListener(new HaleServiceListener() {
+		instances.addListener(new InstanceServiceListener() {
 			
 			@SuppressWarnings("unchecked")
 			@Override
 			public void update(UpdateMessage message) {
-				updateMap(determineMapArea());
+				// ignore
 			}
 			
+			@Override
+			public void datasetChanged(DatasetType type) {
+				switch (type) {
+				case reference:
+					if (Display.getCurrent() != null) {
+						updateMap(determineMapArea());
+						updateTransformation();
+					}
+					else {
+						final Display display = PlatformUI.getWorkbench().getDisplay();
+						display.syncExec(new Runnable() {
+							
+							@Override
+							public void run() {
+								updateMap(determineMapArea());
+								updateTransformation();
+							}
+						});
+					}
+					break;
+				case transformed:
+					if (Display.getCurrent() != null) {
+						resetTransformedTiles();
+					}
+					else {
+						final Display display = PlatformUI.getWorkbench().getDisplay();
+						display.syncExec(new Runnable() {
+							
+							@Override
+							public void run() {
+								resetTransformedTiles();
+							}
+						});
+					}
+					break;
+				}
+			}
 		});
 		
 		StyleService styles = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
@@ -114,7 +153,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 			@SuppressWarnings("unchecked")
 			@Override
 			public void update(UpdateMessage message) {
-				synchronized (this) {
+				synchronized (FeatureTilePainter.this) {
 					resetTiles();
 					refresh();
 				}	
@@ -123,35 +162,24 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		});
 		
 		final AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
-		final SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
 		alService.addListener(new HaleServiceListener() {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void update(UpdateMessage message) {
-				synchronized (this) {
-					FeatureCollection<FeatureType, Feature> fc_reference = 
-						instances.getFeatures(DatasetType.reference);
-					if (fc_reference != null && fc_reference.size() > 0 
-							&& alService.getAlignment() != null 
-							&& alService.getAlignment().getMap() != null 
-							&& alService.getAlignment().getMap().size() > 0) {
-						CstService ts = (CstService) 
-							PlatformUI.getWorkbench().getService(
-									CstService.class);
-						instances.cleanInstances(DatasetType.transformed);
-						instances.addInstances(DatasetType.transformed, 
-								(FeatureCollection<FeatureType, Feature>) ts.transform(
-										fc_reference, // Input Features
-										alService.getAlignment(), // Alignment
-										new HashSet(schemaService.getTargetSchema()))); // target schema
-					}
-					else {
-						log.warn("No instance data was provided, or the " +
-								"alignment was not initialized correctly.");
-					}
-					
-				}	
+				if (Display.getCurrent() != null) {
+					updateTransformation();	
+				}
+				else {
+					final Display display = PlatformUI.getWorkbench().getDisplay();
+					display.syncExec(new Runnable() {
+						
+						@Override
+						public void run() {
+							updateTransformation();
+						}
+					});
+				}
 			}
 		});
 		
@@ -160,7 +188,41 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	}
 
 	/**
-	 * @return
+	 * Update the transformed instances
+	 */
+	@SuppressWarnings("unchecked")
+	protected void updateTransformation() {
+		final InstanceService instances = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+		final AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+		final SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+		
+		synchronized (this) {
+			FeatureCollection<FeatureType, Feature> fc_reference = 
+				instances.getFeatures(DatasetType.reference);
+			if (fc_reference != null && fc_reference.size() > 0 
+					&& alService.getAlignment() != null 
+					&& alService.getAlignment().getMap() != null 
+					&& alService.getAlignment().getMap().size() > 0) {
+				CstService ts = (CstService) 
+					PlatformUI.getWorkbench().getService(
+							CstService.class);
+				instances.cleanInstances(DatasetType.transformed);
+				FeatureCollection features = (FeatureCollection<FeatureType, Feature>) ts.transform(
+						fc_reference, // Input Features
+						alService.getAlignment(), // Alignment
+						new HashSet(schemaService.getTargetSchema()));
+				instances.addInstances(DatasetType.transformed, features); // target schema
+			}
+			else {
+				log.warn("No instance data was provided, or the " +
+						"alignment was not initialized correctly.");
+			}
+			
+		}
+	}
+
+	/**
+	 * @return the map area
 	 */
 	private ReferencedEnvelope determineMapArea() {
 		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
@@ -405,6 +467,11 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		transformedCache.clear();
 		
 		referenceRenderer.updateMapContext(getCRS());
+		transformedRenderer.updateMapContext(getCRS());
+	}
+	
+	private void resetTransformedTiles() {
+		transformedCache.clear();
 		transformedRenderer.updateMapContext(getCRS());
 	}
 

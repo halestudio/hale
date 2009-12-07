@@ -27,6 +27,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml3.GMLConfiguration;
@@ -64,8 +65,11 @@ public class ProjectParser {
 
 	/**
 	 * @param result
+	 * @param monitor 
 	 */
-	public static void read(String result) {
+	public static void read(String result, IProgressMonitor monitor) {
+		monitor.beginTask("Loading alignment project", IProgressMonitor.UNKNOWN);
+		
 		ProjectParser._log.setLevel(Level.INFO);
 		// 1. unmarshal rdf
 		JAXBContext jc;
@@ -81,13 +85,16 @@ public class ProjectParser {
 			_log.error("Unmarshalling the selected HaleProject failed: ", e);
 		}
 		
-		ProjectParser.load(root.getValue());
+		ProjectParser.load(root.getValue(), monitor);
+		
+		monitor.done();
 	}
 
 	/**
+	 * @param monitor 
 	 * @param value
 	 */
-	private static void load(HaleProject project) {
+	private static void load(HaleProject project, IProgressMonitor monitor) {
 		// get service references as required.
 		ProjectService projectService = 
 			(ProjectService) PlatformUI.getWorkbench().getService(
@@ -106,6 +113,7 @@ public class ProjectParser {
 					SchemaService.class);
 		
 		// first, load schemas.
+		monitor.subTask("Schemas");
 		try {
 			schemaService.loadSchema(
 					new URI(project.getSourceSchema().getPath()), 
@@ -120,6 +128,7 @@ public class ProjectParser {
 		}
 		
 		// second, load alignment.
+		monitor.subTask("Mapping");
 		try {
 			OmlRdfReader reader = new OmlRdfReader();
 			alignmentService.addOrUpdateAlignment(
@@ -130,6 +139,7 @@ public class ProjectParser {
 		}
 		
 		// third, load instances.
+		monitor.subTask("Instances");
 		if (project.getInstanceData() != null) {
 			try {
 				URI file = new URI(URLDecoder.decode(project.getInstanceData().getPath(), "UTF-8"));

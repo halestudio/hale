@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.part.ViewPart;
@@ -248,11 +249,21 @@ public class ModelNavigationView extends ViewPart implements
 			@SuppressWarnings("unchecked")
 			@Override
 			public void update(UpdateMessage message) {
-				sourceSchemaViewer.refresh();
-				targetSchemaViewer.refresh();
-				
-				/*XXX seems to be not enough to update the label colors - sourceSchemaViewer.getControl().redraw();
-				targetSchemaViewer.getControl().redraw();*/
+				if (Display.getCurrent() != null) {
+					sourceSchemaViewer.refresh();
+					targetSchemaViewer.refresh();
+				}
+				else {
+					final Display display = PlatformUI.getWorkbench().getDisplay();
+					display.syncExec(new Runnable() {
+						
+						@Override
+						public void run() {
+							sourceSchemaViewer.refresh();
+							targetSchemaViewer.refresh();
+						}
+					});
+				}
 			}
 			
 		});
@@ -532,6 +543,22 @@ public class ModelNavigationView extends ViewPart implements
 	 */
 	@SuppressWarnings("unchecked")
 	public void update(UpdateMessage message) {
+		if (Display.getCurrent() != null) {
+			update();
+		}
+		else {
+			final Display display = PlatformUI.getWorkbench().getDisplay();
+			display.syncExec(new Runnable() {
+				
+				@Override
+				public void run() {
+					update();
+				}
+			});
+		}
+	}
+	
+	private void update() {
 		this.sourceSchemaViewer.setInput(this.translateSchema(schemaService
 				.getSourceSchema(), schemaService.getSourceNameSpace()));
 		this.sourceSchemaViewer.refresh();
@@ -539,7 +566,7 @@ public class ModelNavigationView extends ViewPart implements
 				.getTargetSchema(), schemaService.getTargetNameSpace()));
 		this.targetSchemaViewer.refresh();
 	}
-	
+
 	/**
 	 * Update the selection and fire a selection change
 	 */

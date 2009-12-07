@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISelectionService;
@@ -307,8 +308,21 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 			@SuppressWarnings("unchecked")
 			@Override
 			public void update(UpdateMessage message) {
-				CellSelector.this.update(
-						CellSelector.this.lastSelection);
+				if (Display.getCurrent() != null) {
+					CellSelector.this.update(
+							CellSelector.this.lastSelection);
+				}
+				else {
+					final Display display = PlatformUI.getWorkbench().getDisplay();
+					display.syncExec(new Runnable() {
+						
+						@Override
+						public void run() {
+							CellSelector.this.update(
+									CellSelector.this.lastSelection);
+						}
+					});
+				}
 			}
 			
 		});

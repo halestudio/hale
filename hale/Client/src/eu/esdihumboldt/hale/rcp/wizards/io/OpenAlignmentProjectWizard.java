@@ -11,7 +11,11 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IExportWizard;
@@ -51,10 +55,24 @@ public class OpenAlignmentProjectWizard
 	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
 	 */
 	public boolean performFinish() {
-		String result = this.mainPage.getResult();
+		final String result = this.mainPage.getResult();
 		if (result != null) {
 			try {
-				ProjectParser.read(result);
+				getContainer().run(true, false, new IRunnableWithProgress() {
+					
+					@Override
+					public void run(IProgressMonitor monitor) throws InvocationTargetException,
+							InterruptedException {
+						try {
+							ProjectParser.read(result, monitor);
+						} catch (Exception e) {
+							String message = "Opening the selected Alignment Project failed: ";
+							_log.error(message, e);
+							ExceptionHelper.handleException(
+									message, HALEActivator.PLUGIN_ID, e);
+						}
+					}
+				});
 			} catch (Exception e) {
 				String message = "Opening the selected Alignment Project failed: ";
 				_log.error(message, e);
