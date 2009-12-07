@@ -52,9 +52,9 @@ public class RenamingFunctionWizardFactory implements FunctionWizardFactory {
 				// only allow editing matching transformation
 				try {
 					return cell.getEntity1().getTransformation().getService().getLocation().equals(
-							RenameFeatureFunction.class.toString())
+							RenameFeatureFunction.class.getName())
 						|| cell.getEntity1().getTransformation().getService().getLocation().equals(
-								RenameAttributeFunction.class.toString());
+								RenameAttributeFunction.class.getName());
 				} catch (NullPointerException e) {
 					return false;
 				}

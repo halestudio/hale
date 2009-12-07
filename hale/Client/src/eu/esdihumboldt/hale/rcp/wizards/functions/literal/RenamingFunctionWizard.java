@@ -126,7 +126,7 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 		if (getSourceItem().isFeatureType() && getTargetItem().isFeatureType()) {
 			// Type renaming
 			t.setLabel(RenameFeatureFunction.class.getName());
-			t.setService(new Resource(RenameFeatureFunction.class.toString()));
+			t.setService(new Resource(RenameFeatureFunction.class.getName()));
 
 			InstanceMappingType type = mainPage.getType();
 			String condition = mainPage.getCondition();
@@ -147,7 +147,7 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 		else if (getSourceItem().isAttribute() && getTargetItem().isAttribute()) {
 			// Attribute renaming
 			t.setLabel(RenameAttributeFunction.class.getName());
-			t.setService(new Resource(RenameAttributeFunction.class.toString()));
+			t.setService(new Resource(RenameAttributeFunction.class.getName()));
 			
 			//Add old attribute name
 			t.getParameters().add(new Parameter(
