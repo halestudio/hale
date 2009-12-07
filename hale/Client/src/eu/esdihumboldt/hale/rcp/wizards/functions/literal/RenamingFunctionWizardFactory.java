@@ -12,7 +12,6 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.literal;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.transformer.impl.RenameAttributeFunction;
 import eu.esdihumboldt.cst.transformer.impl.RenameFeatureFunction;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
@@ -53,8 +52,8 @@ public class RenamingFunctionWizardFactory implements FunctionWizardFactory {
 				try {
 					return cell.getEntity1().getTransformation().getService().getLocation().equals(
 							RenameFeatureFunction.class.getName())
-						|| cell.getEntity1().getTransformation().getService().getLocation().equals(
-								RenameAttributeFunction.class.getName());
+						/* editing makes only sense for feature type renaming || cell.getEntity1().getTransformation().getService().getLocation().equals(
+								RenameAttributeFunction.class.getName())*/;
 				} catch (NullPointerException e) {
 					return false;
 				}
