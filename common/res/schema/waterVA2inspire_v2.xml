@@ -1,0 +1,1269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- TUD mdv 2009: version in accordance with OMWG D7.2: Ontology Mapping Language RDF/XML Syntax
+DERI OMWG Working Draft last update 21 January 2007
+Changes:
+- now 2 namespaces: omwg: and align:
+- added the align: namespaces to the element names
+- the omwg (= default) namespace does not have a forward slash at the end anymore
+- added rdf:about attribute to Alignment element
+- added rdf:datatype="xsd:float" to 'measure', oct2009 removed again
+- added goml:cqlStr (and goml namespace)
+-->
+<!-- TODO depending on the type and the nillable=true the (and the nilReason) missing values 
+     have to be dealt with differently -->
+
+<align:Alignment rdf:about="" xmlns="http://www.omwg.org/TR/d7/ontology/alignment"
+    xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment"
+    xmlns:align="http://knowledgeweb.semanticweb.org/heterogeneity/alignment"
+    xmlns:goml="http://www.esdi-humboldt.eu/goml"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://knowledgeweb.semanticweb.org/heterogeneity/alignment align.xsd">
+
+    <align:level>2OMWG</align:level>
+    <align:onto1>
+        <align:Ontology rdf:about="waterVA">
+            <align:location>inputdatasets.xsd</align:location>
+            <align:formalism>
+                <align:Formalism>
+                    <align:uri/>
+                    <align:name>XSD</align:name>
+                </align:Formalism>
+            </align:formalism>
+        </align:Ontology>
+    </align:onto1>
+    <align:onto2>
+        <align:Ontology rdf:about="inspire">
+            <!--omwg:label>xmlns:HY="urn:x-HY:specification:gmlas-v31:Hydrography:2.0"</omwg:label>
+            <omwg:label>xmlns:GN="urn:x-HY:specification:gmlas-v31:GeographicalNames:2.0"</omwg:label-->
+            <align:location>hydrography.xsd</align:location>
+            <align:formalism>
+                <align:Formalism>
+                    <align:uri/>
+                    <align:name>XSD</align:name>
+                </align:Formalism>
+            </align:formalism>
+        </align:Ontology>
+    </align:onto2>
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <Class rdf:about="waterVA:Watercourses_VA">
+                    <attributeValueCondition>
+                        <Restriction>
+                            <!-- in this example the cqlStr(ing) is used for the filter condition,
+                                 and not the original OML way with onAttribute, comparator and value -->
+                            <!--onAttribute>
+                                <Property rdf:about="waterVA:LEVEL"/>
+                            </onAttribute>
+                            <comparator>oneOf</comparator>
+                            <value><literal>2</literal></value>
+                            <value><literal>3</literal></value>
+                            <value><literal>4</literal></value>
+                            <value><literal>7</literal></value>
+                            <value><literal>21</literal></value>
+                            <value><literal>22</literal></value>
+                            <value><literal>23</literal></value>
+                            <value><literal>24</literal></value>
+                            <value><literal>25</literal></value>
+                            <value><literal>59</literal></value>
+                            <value><literal>70</literal></value>
+                            <value><literal>71</literal></value>
+                            <value><literal>72</literal></value>
+                            <value><literal>73</literal></value>
+                            <value><literal>74</literal></value-->
+
+                            <goml:cqlStr>waterVA:LEVEL in (2, 3, 4, 7, 21, 22, 23, 24, 25, 59, 70, 71, 72, 73, 74)</goml:cqlStr>
+                        </Restriction>
+                    </attributeValueCondition>
+                </Class>
+            </entity1>
+            <entity2>
+                <Class rdf:about="HY:Watercourse">
+                </Class>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+
+        <align:map>
+            <align:Cell>
+                <entity1>
+                    <Property rdf:about="">
+                    </Property>
+                </entity1>
+                <entity2>
+                    <Property rdf:about="HY:pointOfInterest">
+                        <domainRestriction>
+                            <!-- TODO evaluate whether a list of classes should be allowed, for example
+                                 to accomodate superclass to subclass inheritance of properties -->
+                            <!-- Decided 30-11-2009: just put here the superclass name (SurfaceWater)
+                                 and handle the inheritance of properties from SurfaceWater to Watercourse 
+                                 in the CST component -->
+                            <Class rdf:about="HY:SurfaceWater"/>
+                            <!--Class rdf:about="HY:Watercourse"/-->
+                        </domainRestriction>
+                        <typeCondition>gml:ReferenceType</typeCondition>
+                    </Property>
+                </entity2>
+                <align:measure >1</align:measure>
+                <align:relation>Equivalence</align:relation>
+            </align:Cell>
+        </align:map>
+        <align:map>
+            <align:Cell>
+                <entity1>
+                    <Property rdf:about="">
+                    </Property>
+                </entity1>
+                <entity2>
+                    <Property rdf:about="HY:neighbour">
+                        <domainRestriction>
+                            <Class rdf:about="HY:Watercourse"/>
+                        </domainRestriction>
+                        <typeCondition>gml:ReferenceType</typeCondition>
+                    </Property>
+                </entity2>
+                <align:measure >1</align:measure>
+                <align:relation>Equivalence</align:relation>
+            </align:Cell>
+        </align:map>
+        <align:map>
+            <align:Cell>
+                <entity1>
+                    <Property rdf:about="">
+                    </Property>
+                </entity1>
+                <entity2>
+                    <Property rdf:about="HY:hasEmbankment">
+                        <domainRestriction>
+                            <Class rdf:about="HY:Watercourse"/>
+                        </domainRestriction>
+                        <typeCondition>gml:ReferenceType</typeCondition>
+                    </Property>
+                </entity2>
+                <align:measure >1</align:measure>
+                <align:relation>Equivalence</align:relation>
+            </align:Cell>
+        </align:map>
+        <align:map>
+            <align:Cell>
+                <entity1>
+                    <Property rdf:about="">
+                    </Property>
+                </entity1>
+                <entity2>
+                    <Property rdf:about="HY:drainsCatchment">
+                        <domainRestriction>
+                            <Class rdf:about="HY:Watercourse"/>
+                        </domainRestriction>
+                        <typeCondition>gml:ReferenceType</typeCondition>
+                    </Property>
+                </entity2>
+                <align:measure >1</align:measure>
+                <align:relation>Equivalence</align:relation>
+            </align:Cell>
+        </align:map>
+        <align:map>
+            <align:Cell>
+                <entity1>
+                    <Property rdf:about="">
+                    </Property>
+                </entity1>
+                <entity2>
+                    <Property rdf:about="HY:shoreline">
+                        <domainRestriction>
+                            <Class rdf:about="HY:Watercourse"/>
+                        </domainRestriction>
+                        <typeCondition>gml:ReferenceType</typeCondition>
+                    </Property>
+                </entity2>
+                <align:measure >1</align:measure>
+                <align:relation>Equivalence</align:relation>
+            </align:Cell>
+        </align:map>
+        <align:map>
+            <align:Cell>
+                <entity1>
+                    <Property rdf:about="">
+                    </Property>
+                </entity1>
+                <entity2>
+                    <Property rdf:about="HY:theHydroFacility">
+                        <domainRestriction>
+                            <Class rdf:about="HY:Watercourse"/>
+                        </domainRestriction>
+                        <typeCondition>gml:ReferenceType</typeCondition>
+                    </Property>
+                </entity2>
+                <align:measure >1</align:measure>
+                <align:relation>Equivalence</align:relation>
+            </align:Cell>
+        </align:map>
+        <align:map>
+            <align:Cell>
+                <entity1>
+                    <Property rdf:about="">
+                    </Property>
+                </entity1>
+                <entity2>
+                    <Property rdf:about="HY:hasConstruction">
+                        <domainRestriction>
+                            <Class rdf:about="HY:Watercourse"/>
+                        </domainRestriction>
+                        <typeCondition>gml:ReferenceType</typeCondition>
+                    </Property>
+                </entity2>
+                <align:measure >1</align:measure>
+                <align:relation>Equivalence</align:relation>
+            </align:Cell>
+        </align:map>
+
+    <align:map>
+            <align:Cell>
+                <entity1>
+                    <Property rdf:about="">
+                    </Property>
+                </entity1>
+                <entity2>
+                    <Property rdf:about="HY:beginLifespanVersion">
+                        <domainRestriction>
+                            <Class rdf:about="HY:Watercourse"/>
+                        </domainRestriction>
+                        <typeCondition>dateTime</typeCondition>
+                        <valueCondition>
+                            <Restriction>
+                                <comparator>equal</comparator>
+                                <value><literal>nil</literal></value>
+                            </Restriction>
+                        </valueCondition>
+                    </Property>
+                </entity2>
+                <align:measure >1</align:measure>
+                <align:relation>Equivalence</align:relation>
+            </align:Cell>
+    </align:map>
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <Property rdf:about="">
+                </Property>
+            </entity1>
+            <entity2>
+                <Property rdf:about="HY:geographicalName/GN:GeographicalName/GN:language">
+                    <domainRestriction>
+                        <Class rdf:about="HY:Watercourse"/>
+                    </domainRestriction>
+                    <valueCondition>
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>ger</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                </Property>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Extra</align:relation>
+        </align:Cell>
+    </align:map>
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <Property rdf:about="">
+                </Property>
+            </entity1>
+            <entity2>
+                <Property rdf:about="HY:geographicalName/GN:GeographicalName/GN:status">
+                    <domainRestriction>
+                        <Class rdf:about="HY:Watercourse"/>
+                    </domainRestriction>
+                    <valueCondition>
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>Official</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                </Property>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Extra</align:relation>
+        </align:Cell>
+    </align:map>
+
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <Property rdf:about="waterVA:NAME">
+                    <domainRestriction>
+                        <Class rdf:about="waterVA:Watercourses_VA"/>
+                    </domainRestriction>
+                </Property>
+            </entity1>
+            <entity2>
+                <Property rdf:about="HY:geographicalName/GN:GeographicalName/GN:spelling/GN:SpellingOfName/GN:text">
+                    <domainRestriction>
+                        <Class rdf:about="HY:Watercourse"/>
+                    </domainRestriction>
+                </Property>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <Property rdf:about="">
+                </Property>
+            </entity1>
+            <entity2>
+                <Property rdf:about="HY:geographicalName/GN:GeographicalName/GN:spelling/GN:SpellingOfName/GN:script">
+                    <domainRestriction>
+                        <Class rdf:about="HY:Watercourse"/>
+                    </domainRestriction>
+                    <valueCondition>
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>Latin</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                </Property>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Extra</align:relation>
+        </align:Cell>
+    </align:map>
+
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <Property rdf:about="waterVA:the_geom">
+                    <transf rdf:resource="humboldt:MultiLineString2Curve_splitFeature"/>
+                    <domainRestriction>
+                        <Class rdf:about="waterVA:Watercourses_VA"/>
+                    </domainRestriction>
+                    <typeCondition>gml:MultiLineStringPropertyType</typeCondition>
+                </Property>
+            </entity1>
+            <entity2>
+                <Property rdf:about="HY:geometry">
+                    <domainRestriction>
+                        <Class rdf:about="HY:Watercourse"/>
+                    </domainRestriction>
+                    <typeCondition>gml:CurvePropertyType</typeCondition>
+                </Property>
+            </entity2>
+            <align:measure >1</align:measure>
+            <!-- TODO mdv added -->
+            <align:relation>PartOf</align:relation>
+        </align:Cell>
+    </align:map>
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <Property rdf:about="">
+                </Property>            
+            </entity1>
+            <entity2>
+                <Property rdf:about="HY:hydroId/HY:HydroIdentifier/HY:countryCode">
+                    <domainRestriction>
+                        <Class rdf:about="HY:Watercourse"/>
+                    </domainRestriction>
+                    <valueCondition>
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>AT</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                </Property>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Extra</align:relation>
+        </align:Cell>
+    </align:map>
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <Property rdf:about="waterVA:FGW_ID">
+                    <domainRestriction>
+                        <Class rdf:about="waterVA:Watercourses_VA"/>
+                    </domainRestriction>
+                </Property>
+            </entity1>
+            <entity2>
+                <Property rdf:about="HY:hydroId/HY:HydroIdentifier/HY:id">
+                    <domainRestriction>
+                        <Class rdf:about="HY:Watercourse"/>
+                    </domainRestriction>
+                </Property>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+
+        <align:map>
+            <align:Cell>
+                <entity1>
+                    <Property rdf:about="">
+                    </Property>
+                </entity1>
+                <entity2>
+                    <Property rdf:about="HY:id/base:Identifier/base:localId">
+                        <domainRestriction>
+                            <Class rdf:about="HY:Watercourse"/>
+                        </domainRestriction>
+                        <typeCondition>string</typeCondition>
+                    </Property>
+                </entity2>
+                <align:measure >1</align:measure>
+                <align:relation>Equivalence</align:relation>
+            </align:Cell>
+        </align:map>
+        <align:map>
+            <align:Cell>
+                <entity1>
+                    <Property rdf:about="">
+                    </Property>
+                </entity1>
+                <entity2>
+                    <Property rdf:about="HY:id/base:Identifier/base:namespace">
+                        <domainRestriction>
+                            <Class rdf:about="HY:Watercourse"/>
+                        </domainRestriction>
+                        <typeCondition>string</typeCondition>
+                    </Property>
+                </entity2>
+                <align:measure >1</align:measure>
+                <align:relation>Equivalence</align:relation>
+            </align:Cell>
+        </align:map>
+        <align:map>
+            <align:Cell>
+                <entity1>
+                    <Property rdf:about="">
+                    </Property>
+                </entity1>
+                <entity2>
+                    <Property rdf:about="HY:id/base:Identifier/base:versionId">
+                        <domainRestriction>
+                            <Class rdf:about="HY:Watercourse"/>
+                        </domainRestriction>
+                        <typeCondition>string</typeCondition>
+                    </Property>
+                </entity2>
+                <align:measure >1</align:measure>
+                <align:relation>Equivalence</align:relation>
+            </align:Cell>
+        </align:map>
+
+    <align:map>
+        <align:Cell>
+            <entity1>               
+                <Property rdf:about="">
+                </Property>           
+            </entity1>
+            <entity2>
+                <Property rdf:about="HY:levelOfDetail">
+                    <domainRestriction>
+                        <Class rdf:about="HY:Watercourse"/>
+                    </domainRestriction>
+                    <valueCondition>
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>National</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                </Property>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Extra</align:relation>
+        </align:Cell>
+    </align:map>
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <Property rdf:about="waterVA:LEVEL">
+                    <domainRestriction>
+                        <Class rdf:about="waterVA:Watercourses_VA"/>
+                    </domainRestriction>
+
+                    <valueCondition seq="1">
+                        <Restriction>
+                            <comparator>oneOf</comparator>
+                            <goml:ValueClass rdf:resource="waterVA:LEVEL_cat1" />
+                        </Restriction>
+                    </valueCondition>
+
+                    <valueCondition seq="2">
+                        <Restriction>
+                            <comparator>oneOf</comparator>
+                            <value><literal>7</literal></value>
+                        </Restriction>
+                    </valueCondition>
+
+                    <valueCondition seq="3">
+                        <Restriction>
+                            <comparator>oneOf</comparator>
+                            <goml:ValueClass rdf:resource="waterVA:LEVEL_cat2" />
+                        </Restriction>
+                    </valueCondition>
+
+                    <valueCondition seq="4">
+                        <Restriction>
+                            <comparator>oneOf</comparator>
+                            <value><literal>59</literal></value>
+                        </Restriction>
+                    </valueCondition>
+
+
+                </Property>
+            </entity1>
+            <entity2>
+                <Property rdf:about="HY:localType/gmd:LocalisedCharacterString">
+                    <domainRestriction>
+                        <Class rdf:about="HY:Watercourse"/>
+                    </domainRestriction>
+                    <valueCondition seq="1">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>Fluss, Bach</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="2">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>Gewaesser unterirdisch</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="3">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>imag. Achse f. Fluss, Bach</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="4">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>Fiktiver unterirdischer Verlauf</literal></value>
+                        </Restriction>
+                    </valueCondition>
+
+                </Property>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <Property rdf:about="waterVA:LEVEL">
+                    <domainRestriction>
+                        <Class rdf:about="waterVA:Watercourses_VA"/>
+                    </domainRestriction>
+
+                    <valueCondition seq="1">
+                        <Restriction>
+                            <comparator>oneOf</comparator>
+                            <goml:ValueClass rdf:resource="waterVA:LEVEL_cat1" />
+                        </Restriction>
+                    </valueCondition>
+
+                    <valueCondition seq="2">
+                        <Restriction>
+                            <comparator>oneOf</comparator>
+                            <goml:ValueClass rdf:resource="waterVA:LEVEL_cat2" />
+                        </Restriction>
+                    </valueCondition>
+
+                    <valueCondition seq="3">
+                        <Restriction>
+                            <!-- TODO add to schema; this is the else / otherwise / complement -->
+                            <comparator>otherwise</comparator>
+                        </Restriction>
+                    </valueCondition>
+
+                </Property>
+            </entity1>
+            <entity2>
+                <Property rdf:about="HY:origin">
+                    <domainRestriction>
+                        <Class rdf:about="HY:Watercourse"/>
+                    </domainRestriction>
+                    <valueCondition seq="1">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>natural</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="2">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>manMade</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="3">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>nil</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                </Property>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <Property rdf:about="waterVA:LEVEL">
+                    <domainRestriction>
+                        <Class rdf:about="waterVA:Watercourses_VA"/>
+                    </domainRestriction>
+                    <valueCondition seq="1">
+                        <Restriction>
+                            <comparator>oneOf</comparator>
+                            <value><literal>2</literal></value>
+                            <value><literal>3</literal></value>
+                            <value><literal>21</literal></value>
+                            <value><literal>22</literal></value>
+                            <value><literal>23</literal></value>
+                            <value><literal>25</literal></value>
+                            <value><literal>70</literal></value>
+                            <value><literal>71</literal></value>
+                            <value><literal>72</literal></value>
+                            <value><literal>73</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="2">
+                        <Restriction>
+                            <comparator>otherwise</comparator>
+                        </Restriction>
+                    </valueCondition>
+                </Property>
+            </entity1>
+            <entity2>
+                <Property rdf:about="HY:persistence">
+                    <domainRestriction>
+                        <Class rdf:about="HY:Watercourse"/>
+                    </domainRestriction>
+                    <valueCondition seq="1">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>perennial</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="2">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>unknown</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                </Property>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+
+    <!--align:map>
+        <align:Cell>
+            <entity1>
+                <Property rdf:about="">
+                </Property>
+            </entity1>
+            <entity2>
+                <Property rdf:about="HY:condition">
+                    <domainRestriction>
+                        <Class rdf:about="HY:Watercourse"/>
+                    </domainRestriction>
+                    <valueCondition>
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>unpopulated</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                </Property>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map-->
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <Property rdf:about="waterVA:LEVEL">
+                    <domainRestriction>
+                        <Class rdf:about="waterVA:Watercourses_VA"/>
+                    </domainRestriction>
+                    <valueCondition seq="1">
+                        <Restriction>
+                            <comparator>oneOf</comparator>
+                            <value><literal>7</literal></value>
+                            <value><literal>21</literal></value>
+                            <value><literal>22</literal></value>
+                            <value><literal>23</literal></value>
+                            <value><literal>24</literal></value>
+                            <value><literal>25</literal></value>
+                            <value><literal>59</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="2">
+                        <Restriction>
+                            <comparator>otherwise</comparator>
+                        </Restriction>
+                    </valueCondition>
+                </Property>
+            </entity1>
+            <entity2>
+                <Property rdf:about="HY:fictitious">
+                    <domainRestriction>
+                        <Class rdf:about="HY:Watercourse"/>
+                    </domainRestriction>
+                    <valueCondition seq="1">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>true</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <!-- TODO more elegant solution depending on datatype -->
+                    <valueCondition seq="2">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>false</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                </Property>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <Property rdf:about="waterVA:LENGTH">
+                    <!-- TODO -->
+                    <!--choice>
+                        <Property rdf:about="waterVA:LENGTH">
+                           <domainRestriction>
+                              <Class rdf:about="waterVA:Watercourses_VA"/>
+                           </domainRestriction>
+                        </Property>
+                        <Property rdf:about="waterVA:LAENGE_ARCS">
+                           <domainRestriction>
+                              <Class rdf:about="waterVA:Watercourses_VA"/>
+                           </domainRestriction>
+                        </Property>
+                    </choice-->
+                </Property>
+            </entity1>
+            <entity2>
+                <Property rdf:about="HY:length">
+                    <domainRestriction>
+                        <Class rdf:about="HY:Watercourse"/>
+                    </domainRestriction>
+                    <typeCondition>gml:LengthType</typeCondition>
+                </Property>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+
+
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <Property rdf:about="waterVA:LEVEL">
+                    <domainRestriction>
+                        <Class rdf:about="waterVA:Watercourses_VA"/>
+                    </domainRestriction>
+                    <valueCondition seq="1">
+                        <Restriction>
+                            <comparator>oneOf</comparator>
+                            <value><literal>7</literal></value>
+                            <value><literal>59</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="2">
+                        <Restriction>
+                            <comparator>oneOf</comparator>
+                            <value><literal>2</literal></value>
+                            <value><literal>3</literal></value>
+                            <value><literal>4</literal></value>
+                            <value><literal>21</literal></value>
+                            <value><literal>22</literal></value>
+                            <value><literal>23</literal></value>
+                            <value><literal>24</literal></value>
+                            <value><literal>25</literal></value>
+                            <value><literal>70</literal></value>
+                            <value><literal>71</literal></value>
+                            <value><literal>72</literal></value>
+                            <value><literal>73</literal></value>
+                            <value><literal>74</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                </Property>
+            </entity1>
+            <entity2>
+                <Property rdf:about="HY:level">
+                    <domainRestriction>
+                        <Class rdf:about="HY:Watercourse"/>
+                    </domainRestriction>
+                    <valueCondition seq="1">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>belowGround</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="2">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>onGround</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                </Property>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <Property rdf:about="">
+                </Property>
+            </entity1>
+            <entity2>
+                <Property rdf:about="HY:tidal">
+                    <domainRestriction>
+                        <Class rdf:about="HY:Watercourse"/>
+                    </domainRestriction>
+                    <valueCondition>
+                            <Restriction>
+                                <comparator>equal</comparator>
+                                <value><literal>nil</literal></value>
+                            </Restriction>
+                    </valueCondition>
+                </Property>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Extra</align:relation>
+        </align:Cell>
+    </align:map>
+
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <Property rdf:about="waterVA:ORDNUNG2">
+                    <domainRestriction>
+                        <Class rdf:about="waterVA:Watercourses_VA"/>
+                    </domainRestriction>
+                    <valueCondition seq="1">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>1</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="2">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>2</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="3">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>3</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="4">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>4</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="5">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>5</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="6">
+                        <Restriction>
+                            <comparator>oneOf</comparator>
+                            <value><literal>6</literal></value>
+                            <value><literal>7</literal></value>
+                            <value><literal>8</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                </Property>
+            </entity1>
+            <entity2>
+                <Property rdf:about="HY:waterCourseHierarchy">
+                    <domainRestriction>
+                        <Class rdf:about="HY:Watercourse"/>
+                    </domainRestriction>
+                    <valueCondition seq="1">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>1st</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="2">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>2nd</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="3">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>3rd</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="4">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>4th</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="5">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>5th</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="6">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>other</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                </Property>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <Property rdf:about="waterVA:LEVEL">
+                    <domainRestriction>
+                        <Class rdf:about="waterVA:Watercourses_VA"/>
+                    </domainRestriction>
+                    <valueCondition seq="1">
+                        <Restriction>
+                            <comparator>oneOf</comparator>
+                            <goml:ValueClass rdf:resource="waterVA:LEVEL_cat3" />
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="2">
+                        <Restriction>
+                            <comparator>oneOf</comparator>
+                            <goml:ValueClass rdf:resource="waterVA:LEVEL_cat4" />
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="3">
+                        <Restriction>
+                            <comparator>oneOf</comparator>
+                            <goml:ValueClass rdf:resource="waterVA:LEVEL_cat5" />
+                        </Restriction>
+                    </valueCondition>
+
+                </Property>
+            </entity1>
+            <entity2>
+                <Property rdf:about="HY:width/HY:WidthRangeType/HY:lower">
+                    <domainRestriction>
+                        <Class rdf:about="HY:Watercourse"/>
+                    </domainRestriction>
+                    <typeCondition>gml:LengthType</typeCondition>
+                    <valueCondition seq="1">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>0</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="2">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>5</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="3">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>20</literal></value>
+                        </Restriction>
+                    </valueCondition>
+
+                </Property>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <Property rdf:about="waterVA:LEVEL">
+                    <domainRestriction>
+                        <Class rdf:about="waterVA:Watercourses_VA"/>
+                    </domainRestriction>
+                    <valueCondition seq="1">
+                        <Restriction>
+                            <comparator>oneOf</comparator>
+                            <goml:ValueClass rdf:resource="waterVA:LEVEL_cat3" />
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="2">
+                        <Restriction>
+                            <comparator>oneOf</comparator>
+                            <goml:ValueClass rdf:resource="waterVA:LEVEL_cat4" />
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="3">
+                        <Restriction>
+                            <comparator>oneOf</comparator>
+                            <goml:ValueClass rdf:resource="waterVA:LEVEL_cat5" />
+                        </Restriction>
+                    </valueCondition>
+                </Property>
+            </entity1>
+            <entity2>
+                <Property rdf:about="HY:width/HY:WidthRangeType/HY:upper">
+                    <domainRestriction>
+                        <Class rdf:about="HY:Watercourse"/>
+                    </domainRestriction>
+                    <typeCondition>gml:LengthType</typeCondition>
+                    <valueCondition seq="1">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>5</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="2">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>20</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                    <valueCondition seq="3">
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal></literal></value>
+                        </Restriction>
+                    </valueCondition>
+
+                </Property>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+
+
+    <!-- for xml attributes, new OML entitytype -->
+
+        <!--  align:map>
+            <align:Cell>
+                <entity1>
+                    <PropertyQualifier rdf:about="">
+                    </PropertyQualifier>
+                </entity1>
+                <entity2>
+                    <PropertyQualifier rdf:about="HY:beginLifespanVersion/@nilReason">
+                        <domainRestriction>
+                            <Property rdf:about="HY:beginLifespanVersion"/>
+                        </domainRestriction>
+                        <typeCondition>gml:NullType</typeCondition>
+                        <valueCondition>
+                            <Restriction>
+                                <comparator>equal</comparator>
+                                <value>
+                                    <literal>missing</literal>
+                                </value>
+                            </Restriction>
+                        </valueCondition>
+                    </PropertyQualifier>
+                </entity2>
+                <align:measure >1</align:measure>
+                <align:relation>Equivalence</align:relation>
+            </align:Cell>
+        </align:map>
+
+        
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <PropertyQualifier rdf:about="">
+                </PropertyQualifier>
+            </entity1>
+            <entity2>
+                <PropertyQualifier rdf:about="HY:tidal/@nilReason">
+                    <domainRestriction>
+                        <Property rdf:about="HY:tidal"/>
+                    </domainRestriction>
+                    <typeCondition>gml:NullType</typeCondition>
+                    <valueCondition>
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value>
+                                <literal>missing</literal>
+                            </value>
+                        </Restriction>
+                    </valueCondition>
+                </PropertyQualifier>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <PropertyQualifier rdf:about="">
+                </PropertyQualifier>
+            </entity1>
+            <entity2>
+                <PropertyQualifier rdf:about="HY:length/@uom">
+                    <domainRestriction>
+                        <Property rdf:about="HY:length"/>
+                    </domainRestriction>
+                    
+                    <typeCondition>anyURI</typeCondition>
+                    <typeCondition>gml:UomIdentifier</typeCondition>
+                    <valueCondition>
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>meter</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                </PropertyQualifier>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <PropertyQualifier rdf:about="">
+                </PropertyQualifier>
+            </entity1>
+            <entity2>
+                <PropertyQualifier rdf:about="HY:width/HY:WidthRangeType/HY:lower/@uom">
+                    <domainRestriction>
+                        <Property rdf:about="HY:width/HY:WidthRangeType/HY:lower"/>
+                    </domainRestriction>
+                    <typeCondition>gml:UomIdentifier</typeCondition>
+                    <valueCondition>
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>meter</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                </PropertyQualifier>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+
+    <align:map>
+        <align:Cell>
+            <entity1>
+                <PropertyQualifier rdf:about="">
+                </PropertyQualifier>
+            </entity1>
+            <entity2>
+                <PropertyQualifier rdf:about="HY:width/HY:WidthRangeType/HY:upper/@uom">
+                    <domainRestriction>
+                        <Property rdf:about="HY:width/HY:WidthRangeType/HY:upper"/>
+                    </domainRestriction>
+                    <typeCondition>gml:UomIdentifier</typeCondition>
+                    <valueCondition>
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>meter</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                </PropertyQualifier>
+            </entity2>
+            <align:measure >1</align:measure>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map> -->
+
+    <!-- value classes, TODO decide on alternative with subProperties -->
+
+                <goml:ValueClass rdf:about="waterVA:LEVEL_cat1">
+                            <!--comparator>oneOf</comparator-->
+                            <value><literal>2</literal></value>
+                            <value><literal>3</literal></value>
+                            <value><literal>4</literal></value>
+                            <value><literal>70</literal></value>
+                            <value><literal>71</literal></value>
+                            <value><literal>72</literal></value>
+                            <value><literal>73</literal></value>
+                            <value><literal>74</literal></value>
+                </goml:ValueClass>
+
+                <goml:ValueClass rdf:about="waterVA:LEVEL_cat2">
+                            <!--comparator>oneOf</comparator-->
+                            <value><literal>21</literal></value>
+                            <value><literal>22</literal></value>
+                            <value><literal>23</literal></value>
+                            <value><literal>24</literal></value>
+                            <value><literal>25</literal></value>
+                </goml:ValueClass>                       
+                       
+                <goml:ValueClass rdf:about="waterVA:LEVEL_cat3">
+                            <!--comparator>oneOf</comparator-->
+                            <value><literal>3</literal></value>
+                            <value><literal>23</literal></value>
+                            <value><literal>73</literal></value>
+                </goml:ValueClass>                       
+
+                <goml:ValueClass rdf:about="waterVA:LEVEL_cat4">
+                            <!--comparator>oneOf</comparator-->
+                            <value><literal>2</literal></value>
+                            <value><literal>22</literal></value>
+                            <value><literal>72</literal></value>
+                </goml:ValueClass>                       
+
+                <goml:ValueClass rdf:about="waterVA:LEVEL_cat5">
+                            <!--comparator>oneOf</comparator-->
+                            <value><literal>21</literal></value>
+                            <value><literal>71</literal></value>
+                </goml:ValueClass>                       
+
+
+</align:Alignment>
