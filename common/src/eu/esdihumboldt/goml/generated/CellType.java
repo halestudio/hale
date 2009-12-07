@@ -53,9 +53,9 @@ import javax.xml.bind.annotation.XmlType;
 public class CellType {
 
     protected List<String> label;
-    @XmlElement(required = true)
+    @XmlElement(namespace="http://www.omwg.org/TR/d7/ontology/alignment", required = true)
     protected Entity1 entity1;
-    @XmlElement(required = true)
+    @XmlElement(namespace="http://www.omwg.org/TR/d7/ontology/alignment", required = true)
     protected Entity2 entity2;
     @XmlElement(namespace = "http://knowledgeweb.semanticweb.org/heterogeneity/alignment")
     protected Float measure;
