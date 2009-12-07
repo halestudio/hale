@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
@@ -191,8 +192,11 @@ public class RenamingFunctionWizardMainPage
 			
 			new Label(group, SWT.NONE);
 			
-			varList = new ListViewer(group);
-			varList.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			List list = new List(group, SWT.SINGLE | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+			varList = new ListViewer(list);
+			GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+			gd.heightHint = list.getItemHeight() * 5;
+			varList.getControl().setLayoutData(gd);
 			varList.setContentProvider(new ArrayContentProvider());
 			varList.setInput(variables);
 			varList.getList().addMouseListener(new MouseAdapter() {
