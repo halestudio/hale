@@ -86,15 +86,19 @@ public class AlignmentServiceImpl implements AlignmentService {
 	 * @see AlignmentService#addOrUpdateCell(ICell)
 	 */
 	public boolean addOrUpdateCell(ICell cell) {
+		boolean result = internalAddOrUpdateCell(cell);
+		this.updateListeners();
+		return result;
+	}
+
+	private boolean internalAddOrUpdateCell(ICell cell) {
 		ICell oldCell = getCellInternal(cell.getEntity1(), cell.getEntity2());
 		if (oldCell != null) {
 			alignment.getMap().remove(oldCell);
 			_log.info("Replacing alignment cell");
 		}
 		
-		boolean result = this.alignment.getMap().add(cell);
-		this.updateListeners();
-		return result;
+		return this.alignment.getMap().add(cell);
 	}
 
 	/**
@@ -276,7 +280,12 @@ public class AlignmentServiceImpl implements AlignmentService {
 		if (alignment.getAbout() != null) {
 			this.alignment.setAbout(alignment.getAbout());
 		}
-		this.alignment.getMap().addAll(alignment.getMap()); // FIXME check whether a cell is there.
+		
+		// add cells
+		for (ICell cell : alignment.getMap()) {
+			internalAddOrUpdateCell(cell);
+		}
+		
 		this.updateListeners();
 		return true;
 	}
