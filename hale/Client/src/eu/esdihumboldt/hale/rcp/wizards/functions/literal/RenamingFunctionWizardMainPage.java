@@ -152,7 +152,7 @@ public class RenamingFunctionWizardMainPage
 			
 			Button merge = new Button(group, SWT.RADIO);
 			merge.setText("n:1 (merge)");
-			merge.setSelection(type == InstanceMappingType.SPLIT);
+			merge.setSelection(type == InstanceMappingType.MERGE);
 			merge.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
 			merge.addSelectionListener(new SelectionAdapter() {
 
