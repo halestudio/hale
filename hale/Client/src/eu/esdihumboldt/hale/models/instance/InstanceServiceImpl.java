@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.FeatureIterator;
@@ -39,7 +38,7 @@ import eu.esdihumboldt.tools.RobustFTKey;
 public class InstanceServiceImpl 
 	implements InstanceService {
 	
-	private static Logger _log = Logger.getLogger(InstanceServiceImpl.class);
+	//private static Logger _log = Logger.getLogger(InstanceServiceImpl.class);
 	
 	private static InstanceServiceImpl instance = new InstanceServiceImpl();
 	
@@ -84,7 +83,7 @@ public class InstanceServiceImpl
 
 	/**
 	 * TODO: Does not currently use an index.
-	 * @see eu.esdihumboldt.hale.models.InstanceService#getFeaturesByType(org.geotools.feature.FeatureType)
+	 * @see eu.esdihumboldt.hale.models.InstanceService#getFeaturesByType(FeatureType)
 	 */
 	public Collection<Feature> getFeaturesByType(FeatureType featureType) {
 		Set<Feature> result = new HashSet<Feature>();
@@ -101,7 +100,7 @@ public class InstanceServiceImpl
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.models.InstanceService#addInstances(FeatureCollection)
+	 * @see eu.esdihumboldt.hale.models.InstanceService#addInstances(DatasetType, FeatureCollection)
 	 */
 	public boolean addInstances(DatasetType type, 
 			FeatureCollection<FeatureType, Feature> featureCollection) {
@@ -115,7 +114,7 @@ public class InstanceServiceImpl
 					this.sourceReferenceFeatures.add(fi.next());
 				}
 			}
-			this.updateListeners();
+			this.updateListeners(type);
 			return true;
 		}
 		else if (type.equals(DatasetType.transformed)) {
@@ -128,7 +127,7 @@ public class InstanceServiceImpl
 					this.transformedFeatures.add(fi.next());
 				}
 			}
-			this.updateListeners();
+			this.updateListeners(type);
 			return true;
 		}
 		else {
@@ -137,8 +136,9 @@ public class InstanceServiceImpl
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.models.InstanceService#addInstances(FeatureCollection, FeatureFilter)
+	 * @see eu.esdihumboldt.hale.models.InstanceService#addInstances(DatasetType, FeatureCollection, FeatureFilter)
 	 */
+	@SuppressWarnings("unchecked")
 	public boolean addInstances(DatasetType type, 
 			FeatureCollection<FeatureType, Feature> featureCollection,
 			FeatureFilter filter) {
@@ -164,7 +164,7 @@ public class InstanceServiceImpl
 			}
 		}
 		if (startsize != 0  || this.sourceReferenceFeatures.size() > startsize) {
-			this.updateListeners();
+			this.updateListeners(type);
 			return true;
 		} 
 		else {
@@ -185,7 +185,7 @@ public class InstanceServiceImpl
 		if (type.equals(DatasetType.reference)) {
 			this.sourceReferenceFeatures = null;
 		}
-		this.updateListeners();
+		this.updateListeners(type);
 		return true;
 	}
 
@@ -197,7 +197,7 @@ public class InstanceServiceImpl
 		transformedFeatures = null;
 		sourceReferenceFeatures = null;
 		
-		this.updateListeners();
+		this.updateListeners(null);
 		
 		return true;
 	}
@@ -207,8 +207,24 @@ public class InstanceServiceImpl
 		return true;
 	}
 	
-	private void updateListeners() {
+	/**
+	 * Update the listeners
+	 * 
+	 * @param type the data set that was changed, <code>null</code> if both were changed
+	 */
+	@SuppressWarnings("unchecked")
+	private void updateListeners(DatasetType type) {
 		for (HaleServiceListener hsl : this.listeners) {
+			if (hsl instanceof InstanceServiceListener) {
+				if (type == null) {
+					((InstanceServiceListener) hsl).datasetChanged(DatasetType.reference);
+					((InstanceServiceListener) hsl).datasetChanged(DatasetType.transformed);
+				}
+				else {
+					((InstanceServiceListener) hsl).datasetChanged(type);
+				}
+			}
+			
 			hsl.update(new UpdateMessage(InstanceService.class, null)); // FIXME
 		}
 	}
@@ -216,6 +232,7 @@ public class InstanceServiceImpl
 	/**
 	 * @see eu.esdihumboldt.hale.models.InstanceService#getFeatures(eu.esdihumboldt.hale.models.InstanceService.DatasetType)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public FeatureCollection getFeatures(DatasetType type) {
 		if (DatasetType.reference.equals(type)) {
@@ -232,6 +249,7 @@ public class InstanceServiceImpl
 	/**
 	 * @see eu.esdihumboldt.hale.models.InstanceService#replaceInstances(eu.esdihumboldt.hale.models.InstanceService.DatasetType, org.geotools.feature.FeatureCollection)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean replaceInstances(DatasetType type,
 			FeatureCollection<FeatureType, Feature> newFeatures) {
