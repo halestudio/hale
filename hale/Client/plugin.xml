@@ -165,6 +165,11 @@
                   tooltip="Open a Source or Target Schema">
             </command>
             <command
+                  commandId="HALE.importMapping.command"
+                  label="Import Mapping"
+                  style="push">
+            </command>
+            <command
                   commandId="HALE.openInstanceData.command"
                   id="openInstanceData"
                   label="Open Instance Data "
