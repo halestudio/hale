@@ -11,7 +11,12 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.filter;
 
+import java.util.List;
+
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.goml.omwg.FeatureClass;
+import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
@@ -51,7 +56,35 @@ public class FilterWizardFactory implements FunctionWizardFactory {
 			
 			ICell cell = selection.getAlignment(source, target);
 			
-			return cell != null;
+			if (cell == null) {
+				return false;
+			}
+			
+			// a filter must not be present, because parsing the filter expression is not implemented
+			List<Restriction> restrictions;
+			if (cell.getEntity1() instanceof FeatureClass) {
+				restrictions = ((FeatureClass) cell.getEntity1()).getAttributeValueCondition();
+			}
+			else if (cell.getEntity1() instanceof Property) {
+				restrictions = ((Property) cell.getEntity1()).getValueCondition();
+			}
+			else {
+				restrictions = null;
+			}
+			
+			if (restrictions == null || restrictions.isEmpty()) {
+				return true;
+			}
+			else {
+				// check for a filter restriction
+				for (Restriction restriction : restrictions) {
+					if (restriction.getCqlStr() != null && !restriction.getCqlStr().isEmpty()) {
+						return false;
+					}
+				}
+				
+				return true;
+			}
 		}
 		
 		return false;

@@ -35,8 +35,7 @@ public class FilterWizard extends AbstractSingleCellWizard {
 
 	private static Logger _log = Logger.getLogger(FilterWizard.class);
 
-	//FilterWizardMainPage mainPage;
-	FilterWizardSecondPage secondPage;
+	private FilterWizardMainPage mainPage;
 
 	/**
 	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(AlignmentInfo)
@@ -50,9 +49,7 @@ public class FilterWizard extends AbstractSingleCellWizard {
 	 */
 	@Override
 	protected void init() {
-		/*this.mainPage = new FilterWizardMainPage("Configure Filter Expression",
-			"Configure Filter Expression");*/
-		this.secondPage = new FilterWizardSecondPage(
+		this.mainPage = new FilterWizardMainPage(
 				"Configure Filter Expression", "Configure Filter Expression");
 		super.setWindowTitle("Configure Function");
 		super.setNeedsProgressMonitor(true);
@@ -63,7 +60,7 @@ public class FilterWizard extends AbstractSingleCellWizard {
 	 */
 	@Override
 	public boolean canFinish() {
-		_log.debug("Wizard.canFinish: " + this.secondPage.isPageComplete());
+		_log.debug("Wizard.canFinish: " + this.mainPage.isPageComplete());
 		return true;
 	}
 
@@ -75,7 +72,7 @@ public class FilterWizard extends AbstractSingleCellWizard {
 		ICell cell = getResultCell();
 		
 		Restriction r = new Restriction(null);
-		r.setCqlStr(secondPage.buildCQL());
+		r.setCqlStr(mainPage.buildCQL());
 		
 		if (cell.getEntity1() instanceof FeatureClass) {
 			FeatureClass fc = (FeatureClass)cell.getEntity1();
@@ -96,7 +93,7 @@ public class FilterWizard extends AbstractSingleCellWizard {
 	 */
 	public void addPages() {
 		super.addPages();
-		addPage(secondPage);
+		addPage(mainPage);
 	}
 
 }
