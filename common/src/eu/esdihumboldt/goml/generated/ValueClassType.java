@@ -13,6 +13,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
@@ -43,7 +44,7 @@ import javax.xml.bind.annotation.XmlType;
     "value"
 })
 public class ValueClassType {
-
+	@XmlElement(name = "value", namespace = "http://www.omwg.org/TR/d7/ontology/alignment")
     protected List<ValueExprType> value;
     @XmlAttribute(namespace = "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
     @XmlSchemaType(name = "anyURI")

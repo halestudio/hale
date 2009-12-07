@@ -37,7 +37,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "valueExprType", propOrder = {
+@XmlType(name = "valueExprType", namespace="http://www.omwg.org/TR/d7/ontology/alignment", propOrder = {
     "literal",
     "min",
     "max",
