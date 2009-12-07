@@ -255,9 +255,14 @@
    <extension
          point="eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory">
       <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.filter.SimpleFilterWizardFactory"
+            icon="icons/concrete_ft.png"
+            name="CQL-based filter (String)">
+      </factory>
+      <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.filter.FilterWizardFactory"
             icon="icons/concrete_ft.png"
-            name="CQL-based filter">
+            name="CQL-based filter (Form)">
       </factory>
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.literal.RenamingFunctionWizardFactory"
@@ -285,14 +290,14 @@
             name="Numeric function wizard">
       </factory>
       <factory
-            class="eu.esdihumboldt.hale.rcp.wizards.functions.classification.ClassificationMappingFunctionWizardFactory"
-            icon="icons/mapping.gif"
-            name="Classification mapping">
-      </factory>
-      <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.math.GenericMathFunctionWizardFactory"
             icon="icons/number_attribute.png"
             name="Mathematical expression">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.classification.ClassificationMappingFunctionWizardFactory"
+            icon="icons/mapping.gif"
+            name="Classification mapping">
       </factory>
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.augmentations.nilreason.NilReasonWizardFactory"
