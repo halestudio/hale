@@ -33,8 +33,8 @@ public class ApplicationWorkbenchWindowAdvisor
 	@Override
 	public void preWindowOpen() {
 		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-		configurer.setInitialSize(new Point(1024,768));
-		configurer.setTitle("HUMBOLDT Alignment Editor M4");
+		configurer.setInitialSize(new Point(1280,1024));
+		configurer.setTitle("HUMBOLDT Alignment Editor 1.0.0-RC1");
 		configurer.setShowCoolBar(false); // this reserves space for action bars on top.
 		configurer.setShowPerspectiveBar(false); // this reserves space for the selection of perspectives.
 	}

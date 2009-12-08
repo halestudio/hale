@@ -60,6 +60,10 @@ public class Application implements IApplication {
 		// set up log4j logger for GeoTools
 		Logging.ALL.setLoggerFactory(Log4JLoggerFactory.getInstance());
 		Logger.getLogger(Log4JLogger.class).setLevel(Level.WARN);
+		// provide information on HALE version to console.
+		_log.info("HALE Version: " 
+				+ HALEActivator.getDefault().getBundle().getHeaders().get(
+						"Bundle-Version"));
 		Logger.getRootLogger().setLevel(Level.WARN);
 		
 		// init HSQL database
@@ -69,10 +73,7 @@ public class Application implements IApplication {
 			_log.error("Error while initializing epsg database", e);
 		}
 		
-		// provide information on HALE version to console.
-		_log.info("HALE Version: " 
-				+ HALEActivator.getDefault().getBundle().getHeaders().get(
-						"Bundle-Version"));
+		
 		
 		// find base path of the application.
 		URL location = this.getClass().getProtectionDomain().getCodeSource().getLocation();
