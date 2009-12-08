@@ -306,7 +306,13 @@
       </factory>
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.augmentations.nilreason.NilReasonWizardFactory"
+            icon="icons/remove.gif"
             name="Nil reason">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.inspire.IdentifierFunctionWizardFactory"
+            icon="icons/rename.gif"
+            name="Create INSPIRE Identifier">
       </factory>
    </extension>
    <!-- <extension

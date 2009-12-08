@@ -38,7 +38,7 @@ import eu.esdihumboldt.hale.rcp.views.mapping.CellSelection;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
 
 /**
- * Contributon that provides access to function wizards
+ * Contribution that provides access to function wizards
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
