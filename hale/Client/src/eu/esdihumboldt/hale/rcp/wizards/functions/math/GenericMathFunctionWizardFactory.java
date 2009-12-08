@@ -63,7 +63,7 @@ public class GenericMathFunctionWizardFactory implements FunctionWizardFactory {
 			// only allow editing matching transformation
 			try {
 				return cell.getEntity1().getTransformation().getService().getLocation().equals(
-						GenericMathFunction.class.toString());
+						GenericMathFunction.class.getName());
 			} catch (NullPointerException e) {
 				return false;
 			}

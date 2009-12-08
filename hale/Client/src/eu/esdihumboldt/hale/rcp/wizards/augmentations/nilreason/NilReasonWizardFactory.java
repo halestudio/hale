@@ -42,7 +42,7 @@ public class NilReasonWizardFactory extends AugmentationWizardFactory {
 	@Override
 	protected boolean supports(SchemaItem item, ICell augmentation) {
 		return augmentation == null || augmentation.getEntity2().getTransformation()
-			.getService().getLocation().equals(NilReasonFunction.class.toString());
+			.getService().getLocation().equals(NilReasonFunction.class.getName());
 	}
 
 }

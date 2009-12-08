@@ -64,7 +64,7 @@ public class ClassificationMappingFunctionWizard extends
 		Property targetProperty = (Property) cell.getEntity2();
 		
 		Transformation t = new Transformation();
-		t.setService(new Resource(ClassificationMappingFunction.class.toString()));
+		t.setService(new Resource(ClassificationMappingFunction.class.getName()));
 		sourceProperty.setTransformation(t);
 		
 		List<Restriction> sourceRestrictions = sourceProperty.getValueCondition();

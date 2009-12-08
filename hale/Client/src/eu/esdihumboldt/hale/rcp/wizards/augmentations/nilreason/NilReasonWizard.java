@@ -22,6 +22,7 @@ import org.eclipse.jface.wizard.Wizard;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.impl.NilReasonFunction;
+import eu.esdihumboldt.cst.transformer.impl.NilReasonFunction.NilReasonType;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
@@ -29,7 +30,6 @@ import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizard;
-import eu.esdihumboldt.hale.rcp.wizards.augmentations.nilreason.NilReasonWizardPage.NilReasonType;
 
 /**
  * Wizard for the {@link NilReasonFunction} augmentation
@@ -100,7 +100,7 @@ public class NilReasonWizard extends AugmentationWizard {
 		Entity entity = (Entity) result.getEntity2();
 		
 		Transformation transformation = new Transformation();
-		transformation.setService(new Resource(NilReasonFunction.class.toString()));
+		transformation.setService(new Resource(NilReasonFunction.class.getName()));
 		transformation.getParameters().add(
 				new Parameter(
 						NilReasonFunction.PARAMETER_NIL_REASON_TYPE, 

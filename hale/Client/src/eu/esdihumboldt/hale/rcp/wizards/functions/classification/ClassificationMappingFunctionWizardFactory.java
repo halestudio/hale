@@ -64,7 +64,7 @@ public class ClassificationMappingFunctionWizardFactory implements
 			// only allow editing matching transformation
 			try {
 				return cell.getEntity1().getTransformation().getService().getLocation().equals(
-						ClassificationMappingFunction.class.toString());
+						ClassificationMappingFunction.class.getName());
 			} catch (NullPointerException e) {
 				return false;
 			}

@@ -84,7 +84,7 @@ public class GenericMathFunctionWizard extends
 		ICell cell = getResultCell();
 		
 		Transformation t = new Transformation();
-		t.setService(new Resource(GenericMathFunction.class.toString()));
+		t.setService(new Resource(GenericMathFunction.class.getName()));
 		t.getParameters().add(
 				new Parameter(
 						GenericMathFunction.EXPRESSION_PARAMETER_NAME, 
