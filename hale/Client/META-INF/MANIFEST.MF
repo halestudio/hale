@@ -403,3 +403,4 @@ Export-Package: com.iabcinc.jmep,
  org.xmlpull.v1.wrapper.classic,
  test.eu.esdihumboldt.hale.models,
  test.eu.esdihumboldt.hale.models.factory
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
