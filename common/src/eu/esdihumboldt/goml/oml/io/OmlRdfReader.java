@@ -16,7 +16,6 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -32,7 +31,6 @@ import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.align.ISchema;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.cst.align.ext.IValueClass;
 import eu.esdihumboldt.cst.align.ext.IValueExpression;
 import eu.esdihumboldt.cst.rdf.IAbout;
@@ -42,7 +40,6 @@ import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.align.Formalism;
 import eu.esdihumboldt.goml.align.Schema;
 import eu.esdihumboldt.goml.generated.AlignmentType;
-import eu.esdihumboldt.goml.generated.ApplyType;
 import eu.esdihumboldt.goml.generated.CellType;
 import eu.esdihumboldt.goml.generated.ClassConditionType;
 import eu.esdihumboldt.goml.generated.ClassType;
@@ -64,7 +61,6 @@ import eu.esdihumboldt.goml.generated.ValueConditionType;
 import eu.esdihumboldt.goml.generated.ValueExprType;
 import eu.esdihumboldt.goml.generated.AlignmentType.Map;
 import eu.esdihumboldt.goml.generated.PropertyCollectionType.Item;
-import eu.esdihumboldt.goml.oml.ext.Function;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.oml.ext.ValueClass;
@@ -492,7 +488,7 @@ public class OmlRdfReader {
 		if (collection!=null){
 			List<Item> items = collection.getItem();
 			if(items!=null){
-				Iterator iterator = items.iterator();
+				Iterator<?> iterator = items.iterator();
 				while(iterator.hasNext()){
 					propType = ((Item)iterator.next()).getProperty();
 					property = getSimpleProperty(propType);
@@ -501,9 +497,6 @@ public class OmlRdfReader {
 				
 			}
 		}
-		
-		
-		
 		return properties;
 	}
 
@@ -709,18 +702,22 @@ public class OmlRdfReader {
 			// get List<ValueExpressionType>
 			List<ValueExprType> valueExpr = condition.getRestriction()
 					.getValue();
+			if ((valueExpr == null || valueExpr.size() == 0) 
+					&& condition.getRestriction().getValueClass() != null) {
+				valueExpr = condition.getRestriction().getValueClass().getValue();
+			}
 			// TODO:clear with MdV
 			// restriction = new Restriction(null,
 			// getValueExpression(valueExpr));
 			restriction = new Restriction(getValueExpression(valueExpr));
 			restriction.setComparator(getComparator(condition.getRestriction()
 					.getComparator()));
-			// add Seq if exists
-			if (condition.getSeq() != null)
+			// add Sequence ID if it exists
+			if (condition.getSeq() != null) {
 				restriction.setSeq(condition.getSeq());
+			}
 			// TODO add Property onAttribute
 			restrictions.add(restriction);
-
 		}
 
 		return restrictions;

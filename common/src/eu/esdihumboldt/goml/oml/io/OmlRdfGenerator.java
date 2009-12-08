@@ -48,7 +48,6 @@ import eu.esdihumboldt.goml.generated.Entity2;
 import eu.esdihumboldt.goml.generated.EntityType;
 import eu.esdihumboldt.goml.generated.FormalismType;
 import eu.esdihumboldt.goml.generated.FunctionType;
-import eu.esdihumboldt.goml.generated.Measure;
 import eu.esdihumboldt.goml.generated.OnAttributeType;
 import eu.esdihumboldt.goml.generated.OntologyType;
 import eu.esdihumboldt.goml.generated.ParamType;
@@ -271,7 +270,7 @@ public class OmlRdfGenerator {
 	 */
 	private Collection<? extends Map> getMaps(List<ICell> map) {
 		ArrayList<Map> maps = new ArrayList<Map>(map.size());
-		Iterator iterator = map.iterator();
+		Iterator<?> iterator = map.iterator();
 		Map jMap;
 		ICell cell;
 
@@ -462,7 +461,7 @@ public class OmlRdfGenerator {
 					restrictions.size());
 			ClassConditionType condition;
 			Restriction restriction;
-			Iterator iterator = restrictions.iterator();
+			Iterator<?> iterator = restrictions.iterator();
 			while (iterator.hasNext()) {
 				restriction = (Restriction) iterator.next();
 				condition = new ClassConditionType();
@@ -521,7 +520,7 @@ public class OmlRdfGenerator {
 	private Collection<? extends ValueExprType> getJAXBValueExpressions(
 			List<IValueExpression> value) {
 		List<ValueExprType> vExpressions = new ArrayList<ValueExprType>(value.size());
-		Iterator iterator = value.iterator();
+		Iterator<?> iterator = value.iterator();
 		ValueExprType veType;
 		while(iterator.hasNext()){
 			ValueExpression ve = (ValueExpression)iterator.next();
@@ -646,7 +645,7 @@ public class OmlRdfGenerator {
 					parameters.size());
 			ParamType pType;
 			IParameter param;
-			Iterator iterator = parameters.iterator();
+			Iterator<?> iterator = parameters.iterator();
 			while (iterator.hasNext()) {
 				param = (IParameter) iterator.next();
 				pType = getParameterType(param);
@@ -749,7 +748,7 @@ public class OmlRdfGenerator {
 			List<Property> collection) {
 	PropertyCollectionType propCollectionType = new PropertyCollectionType();
 	if(collection!=null){
-		Iterator iterator = collection.iterator();
+		Iterator<?> iterator = collection.iterator();
 		while(iterator.hasNext()){
 			//get property from a list
 			Property property = (Property)iterator.next();
@@ -824,7 +823,7 @@ public class OmlRdfGenerator {
 					restrictions.size());
 			ValueConditionType vcType;
 			Restriction restriction;
-			Iterator iterator = restrictions.iterator();
+			Iterator<?> iterator = restrictions.iterator();
 			while (iterator.hasNext()) {
 				restriction = (Restriction) iterator.next();
 				vcType = getValueConditionType(restriction);
@@ -880,7 +879,7 @@ public class OmlRdfGenerator {
 					.size());
 			ValueExprType veType;
 			ValueExpression expression;
-			Iterator iterator = values.iterator();
+			Iterator<?> iterator = values.iterator();
 			while (iterator.hasNext()) {
 				expression = (ValueExpression) iterator.next();
 				veType = getValueExprType(expression);
@@ -937,7 +936,7 @@ public class OmlRdfGenerator {
 					features.size());
 			DomainRestrictionType drType;
 			FeatureClass feature;
-			Iterator iterator = features.iterator();
+			Iterator<?> iterator = features.iterator();
 			while (iterator.hasNext()) {
 				feature = (FeatureClass) iterator.next();
 				drType = getDomainRestrictionType(feature);
