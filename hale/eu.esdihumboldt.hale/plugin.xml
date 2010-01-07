@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory" name="FunctionWizardFactory" schema="schema/eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory.exsd"/>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="eu.esdihumboldt.hale.rcp.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Perspective"
+            class="eu.esdihumboldt.hale.rcp.ClientPerspective"
+            id="eu.esdihumboldt.hale.rcp.ClientPerspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="eu.esdihumboldt.hale.rcp.views.map.MapView"
+            icon="icons/map.gif"
+            id="eu.esdihumboldt.hale.rcp.views.map.MapView"
+            name="Map Viewer">
+      </view>
+      <view
+            class="eu.esdihumboldt.hale.rcp.views.tasks.TasklistView"
+            icon="icons/tasks.gif"
+            id="eu.esdihumboldt.hale.rcp.views.tasks.TasklistView"
+            name="Tasklist">
+      </view>
+      <view
+            class="eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView"
+            icon="icons/schema.gif"
+            id="eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView"
+            name="Schema Explorer">
+      </view>
+      <view
+            class="eu.esdihumboldt.hale.rcp.views.model.attribute.AttributeView"
+            icon="icons/attribute.gif"
+            id="eu.esdihumboldt.hale.rcp.views.model.AttributeView"
+            name="Attribute View">
+      </view>
+      <view
+            class="eu.esdihumboldt.hale.rcp.views.TableView"
+            id="eu.esdihumboldt.hale.rcp.views.TableView"
+            name="Table View"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            class="eu.esdihumboldt.hale.rcp.views.mapping.MappingView"
+            icon="icons/mapping.gif"
+            id="eu.esdihumboldt.hale.rcp.views.mapping.MappingView"
+            name="Mapping"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.LoadSchemaHandler"
+            description="Load a Source or Target Schema"
+            id="HALE.loadSchema.command"
+            name="Load Schema">
+      </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.OpenProjectHandler"
+            description="Open an existing alignment project"
+            id="HALE.openProject.command"
+            name="openProject">
+      </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.ExitHandler"
+            description="Exit HALE"
+            id="HALE.exit.command"
+            name="exit">
+      </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.LoadInstanceDataHandler"
+            id="HALE.openInstanceData.command"
+            name="Open Source Data">
+      </command>
+      <command
+            id="HALE.openReferenceData.command"
+            name="Open Reference Data">
+      </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.SaveAlignmentProjectHandler"
+            id="HALE.saveAlignmentProjectAs.command"
+            name="Save Alignment Project As">
+      </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.SaveSchemaCommandHandler"
+            id="HALE.saveMappingAs.command"
+            name="Save Mapping as">
+      </command>
+      <command
+            id="org.eclipse.ui.newWizard"
+            name="createWizard">
+         <commandParameter
+               id="sourceAttributeID"
+               name="sourceAttributeName"
+               optional="true">
+         </commandParameter>
+         <commandParameter
+               id="targetAttributeID"
+               name="targetAttributeName"
+               optional="true">
+         </commandParameter>
+      </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.FunctionWizardHandler"
+            description="Pick a wizrd for the transformation you wish"
+            id="eu.esdihumboldt.hale.rcp.wizards.io.FunctionWizard"
+            name="FunctionWizard">
+      </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.NewProjectHandler"
+            id="HALE.newProject.command"
+            name="New Alignment Project">
+      </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.LoadTestDataHandler"
+            description="Load source/target schema and instance data"
+            id="HALE2.LoadTestData.command"
+            name="LoadTestData">
+      </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.ImportMappingHandler"
+            id="HALE.importMapping.command"
+            name="Import Mapping">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               id="file"
+               label="File"
+               mnemonic="F">
+            <command
+                  commandId="HALE.newProject.command"
+                  id="newProject"
+                  label="New Alignment Project"
+                  style="push">
+            </command>
+            <command
+                  commandId="HALE.openProject.command"
+                  id="openProject"
+                  label="Open Alignment Project"
+                  style="push">
+            </command>
+            <command
+                  commandId="HALE.loadSchema.command"
+                  id="loadSchema"
+                  label="Open Schema"
+                  style="push"
+                  tooltip="Open a Source or Target Schema">
+            </command>
+            <command
+                  commandId="HALE.importMapping.command"
+                  label="Import Mapping"
+                  style="push">
+            </command>
+            <command
+                  commandId="HALE.openInstanceData.command"
+                  id="openInstanceData"
+                  label="Open Instance Data "
+                  style="push"
+                  tooltip="Load Data that is to be transformed">
+            </command>
+            <command
+                  commandId="HALE.openReferenceData.command"
+                  id="openReferenceData"
+                  label="Open Reference Data"
+                  style="push"
+                  tooltip="Open Reference Data against which Instance Data should be harmonized">
+            </command>
+            <separator
+                  name="HALE.separator1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="HALE.saveAlignmentProjectAs.command"
+                  id="saveAlignmentProjectAs"
+                  label="Save Alignment Project as..."
+                  style="push">
+            </command>
+            <command
+                  commandId="HALE.saveMappingAs.command"
+                  id="saveMappingAs"
+                  label="Save Mapping as..."
+                  style="push">
+            </command>
+            <separator
+                  name="HALE.separator2"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="HALE.exit.command"
+                  id="exit"
+                  label="Exit"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.services">
+      <serviceFactory
+            factoryClass="eu.esdihumboldt.hale.rcp.services.HaleServiceFactory">
+         <service
+               serviceClass="eu.esdihumboldt.hale.models.InstanceService"></service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.models.SchemaService">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.models.TaskService">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.models.StyleService">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.models.AlignmentService">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.cst.transformer.CstService">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.models.ProjectService">
+         </service>
+      </serviceFactory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.splashHandlers">
+      <splashHandler
+            class="eu.esdihumboldt.hale.rcp.HaleSplashHandler"
+            id="HALE.splashHandler">
+      </splashHandler>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="eu.esdihumboldt.hale.application"
+            name="HUMBOLDT Alignment Editor">
+         <property
+               name="appName"
+               value="HUMBOLDT Alignment Editor">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory">
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.filter.SimpleFilterWizardFactory"
+            icon="icons/concrete_ft.png"
+            name="CQL-based filter (String)">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.filter.FilterWizardFactory"
+            icon="icons/concrete_ft.png"
+            name="CQL-based filter (Form)">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.literal.RenamingFunctionWizardFactory"
+            icon="icons/rename.gif"
+            name="Rename wizard">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.geometric.NetworkExpansionFunctionWizardFactory"
+            icon="icons/geometry_attribute.png"
+            name="Network expansion (Line to Surface)">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.geometric.NetworkFusionFunctionWizardFactory"
+            icon="icons/geometry_attribute.png"
+            name="Network fusion (Line to Line)">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.geometric.NetworkGeneralizationFunctionWizardFactory"
+            icon="icons/geometry_attribute.png"
+            name="Network generalization (Line to Line)">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.numeric.NumericFunctionWizardFactory"
+            icon="icons/number_attribute.png"
+            name="Numeric function wizard">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.math.GenericMathFunctionWizardFactory"
+            icon="icons/number_attribute.png"
+            name="Mathematical expression">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.classification.ClassificationMappingFunctionWizardFactory"
+            icon="icons/mapping.gif"
+            name="Classification mapping">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.augmentations.nilreason.NilReasonWizardFactory"
+            icon="icons/remove.gif"
+            name="Nil reason">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.inspire.IdentifierFunctionWizardFactory"
+            icon="icons/rename.gif"
+            name="Create INSPIRE Identifier">
+      </factory>
+   </extension>
+   <!-- <extension
+         point="org.eclipse.ui.importWizards">
+      <wizard
+            class="eu.esdihumboldt.hale.rcp.wizards.io.SchemaImportWizard"
+            icon="icons/sample.gif"
+            id="eu.esdihumboldt.hale.rcp.wizards.io.SchemaImportWizard"
+            name="Import Schema">
+         <description>
+            Import a schema from the local file system or from a remote service into the schema explorer.
+         </description>
+      </wizard>
+   </extension> -->
+
+</plugin>
