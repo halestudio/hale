@@ -1,0 +1,7 @@
+-classpath: lib/xtiff-jai.jar
+-output: org.libtiff.jai_1.0.0.jar
+Import-Package: *
+Export-Package: *
+Bundle-Version: 1.0.0
+Bundle-Name: JAI LibTIFF Plug-in
+Bundle-SymbolicName: org.libtiff.jai

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.5"?>
+
+<target name="eu.esdihumboldt.hale.platform">
+<locations>
+<location path="${project_loc:hale-platform}/target/com.iabcinc.jmep" type="Directory"/>
+<location includeAllPlatforms="false" includeMode="planner" type="InstallableUnit">
+<unit id="org.eclipse.sdk.ide" version="3.5.1.M20090917-0800"/>
+<repository location="http://download.eclipse.org/eclipse/updates/3.5"/>
+</location>
+<location path="${project_loc:hale-platform}/target/com.sun.xml.bind" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/com.vividsolutions.jts" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/eu.esdihumboldt.commons" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/eu.esdihumboldt.specification" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/gnu.trove" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/javax.media.jai" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.commons" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.log4j" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.xerces" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.geotools" type="Directory"/>
+<location includeAllPlatforms="false" includeMode="planner" type="InstallableUnit">
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.5.0.v200906151043"/>
+<repository location="http://download.eclipse.org/releases/galileo"/>
+</location>
+<location path="${project_loc:hale-platform}/target/javax.xml.stream" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/javax.activation" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.castor" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/javax.servlet" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.dom4j" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.springframework" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/javax.el" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.jvnet.staxex" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.jdom" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.w3c.css.sac" type="Directory"/>
+</locations>
+</target>

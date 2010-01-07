@@ -1,0 +1,7 @@
+-classpath: lib/JMEP-0.1.0.jar
+-output: com.iabcinc.jmep-0.1.0.jar
+Export-Package: *;-split-package:=merge-last;-noimport:=true
+Import-Package: *
+Bundle-Version: 0.1.0
+Bundle-Name: Java Math Expression Parser
+Bundle-SymbolicName: com.iabcinc.jmep

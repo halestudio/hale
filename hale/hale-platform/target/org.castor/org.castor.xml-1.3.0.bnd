@@ -1,0 +1,11 @@
+-classpath: lib/castor-1.3-xml.jar
+-output: org.castor.xml-1.3.0.jar
+Export-Package: *;-split-package:=merge-last;-noimport:=true
+Import-Package: *, \
+  org.apache.oro.text.regex;resolution:=optional, \
+  org.apache.regexp;resolution:=optional
+Bundle-Version: 1.3.0
+Bundle-Name: Castor XML Plugin
+Bundle-SymbolicName: org.castor.xml
+Eclipse-RegisterBuddy: org.castor.core
+Eclipse-BuddyPolicy: registered

@@ -1,0 +1,9 @@
+-classpath: lib/xercesImpl-2.7.1.jar,\
+  lib/xml-apis-1.3.04.jar,\
+  lib/xml-apis-xerces-2.7.1.jar
+-output: org.apache.xerces-2.7.1.jar
+Export-Package: *;-split-package:=merge-last;-noimport:=true
+Import-Package: *,sun.io;resolution:=optional
+Bundle-Version: 2.7.1
+Bundle-Name: Apache Xerces
+Bundle-SymbolicName: org.apache.xerces
