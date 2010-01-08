@@ -11,11 +11,12 @@
  */
 package eu.esdihumboldt.hale.rcp.services;
 
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
 import eu.esdihumboldt.cst.transformer.CstService;
-import eu.esdihumboldt.cst.transformer.service.impl.CstServiceFactory;
+import eu.esdihumboldt.cst.transformer.service.CstServiceFactory;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
@@ -48,6 +49,7 @@ public class HaleServiceFactory
 	private TaskService task = TaskServiceImpl.getInstance();
 	private AlignmentService alignment = AlignmentServiceImpl.getInstance();
 	private CstService transform = CstServiceFactory.getInstance();
+	private boolean transformRegistered = false;
 	private ProjectService project = ProjectServiceImpl.getInstance();
 
 	public HaleServiceFactory() {
@@ -76,6 +78,13 @@ public class HaleServiceFactory
 			return this.alignment;
 		}
 		else if (serviceInterface.equals(CstService.class)) {
+			synchronized (this) {
+				if (!transformRegistered) {
+					transform.registerCstFunctions("eu.esdihumboldt.cst.corefunctions");
+					transform.registerCstFunctions("eu.esdihumboldt.cst.corefunctions.inspire");
+					transformRegistered = true;
+				}
+			}
 			return this.transform;
 		}
 		else if (serviceInterface.equals(ProjectService.class)) {

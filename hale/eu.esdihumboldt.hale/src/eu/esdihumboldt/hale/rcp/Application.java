@@ -27,8 +27,6 @@ import org.eclipse.ui.PlatformUI;
 import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Log4JLoggerFactory;
 import org.geotools.util.logging.Logging;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 
 /**
  * This class controls all aspects of the application's execution
@@ -72,8 +70,6 @@ public class Application implements IApplication {
 		} catch (Exception e) {
 			_log.error("Error while initializing epsg database", e);
 		}
-		
-		
 		
 		// find base path of the application.
 		URL location = this.getClass().getProtectionDomain().getCodeSource().getLocation();

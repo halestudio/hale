@@ -12,7 +12,7 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.literal;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.transformer.service.impl.RenameFeatureFunction;
+import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
