@@ -18,9 +18,10 @@
  * Created on   : Aug 26, 2009 -- 11:50:35 AM
  *
  */
-package eu.esdihumboldt.cst.transformer.service.impl;
+package eu.esdihumboldt.cst.transformer.service;
 
 import eu.esdihumboldt.cst.transformer.CstService;
+import eu.esdihumboldt.cst.transformer.service.impl.CstServiceImpl;
 
 /**
  * Factory to get an instance of an {@link CstService}.

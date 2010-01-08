@@ -17,7 +17,8 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import eu.esdihumboldt.cst.transformer.service.impl.RenameFeatureFunction;
+import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
+import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Transformation;

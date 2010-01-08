@@ -34,10 +34,12 @@ import org.opengis.feature.type.FeatureType;
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.transformer.CstFunction;
-import eu.esdihumboldt.cst.transformer.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.CstService;
-import eu.esdihumboldt.cst.transformer.CstServiceCapabilities;
-import eu.esdihumboldt.cst.transformer.FunctionDescription;
+import eu.esdihumboldt.cst.transformer.capabilities.CstServiceCapabilities;
+import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
+import eu.esdihumboldt.cst.transformer.capabilities.impl.CstServiceCapabilitiesImpl;
+import eu.esdihumboldt.cst.transformer.capabilities.impl.FunctionDescriptionImpl;
+import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 
 /**
  * Simple CstService implementation which applies all necessary Transformers on

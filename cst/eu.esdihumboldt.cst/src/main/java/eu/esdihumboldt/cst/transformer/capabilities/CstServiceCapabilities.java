@@ -10,9 +10,11 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.cst.transformer;
+package eu.esdihumboldt.cst.transformer.capabilities;
 
 import java.util.List;
+
+import eu.esdihumboldt.cst.transformer.CstService;
 
 /**
  * This type provides a set of {@link FunctionDescription}s.

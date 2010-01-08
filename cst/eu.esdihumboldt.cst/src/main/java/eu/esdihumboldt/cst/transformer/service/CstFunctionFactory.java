@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.cst.transformer;
+package eu.esdihumboldt.cst.transformer.service;
 
 
 import java.io.File;
@@ -25,8 +25,10 @@ import java.util.Map;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
+import eu.esdihumboldt.cst.transformer.CstFunction;
+import eu.esdihumboldt.cst.transformer.CstService;
 import eu.esdihumboldt.cst.transformer.configuration.ReflectionHelper;
-import eu.esdihumboldt.cst.transformer.service.impl.RenameFeatureFunction;
+import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 

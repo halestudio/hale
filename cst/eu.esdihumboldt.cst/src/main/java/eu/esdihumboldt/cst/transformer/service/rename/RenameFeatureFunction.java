@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.cst.transformer.service.impl;
+package eu.esdihumboldt.cst.transformer.service.rename;
 
 import java.util.HashMap;
 import java.util.Iterator;

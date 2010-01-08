@@ -10,10 +10,12 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.cst.transformer;
+package eu.esdihumboldt.cst.transformer.capabilities;
 
 import java.net.URL;
 import java.util.Map;
+
+import eu.esdihumboldt.cst.transformer.CstService;
 
 /**
  * An {@link FunctionDescription} provides essential information about a 

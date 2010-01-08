@@ -10,12 +10,12 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.cst.transformer.service.impl;
+package eu.esdihumboldt.cst.transformer.capabilities.impl;
 
 import java.net.URL;
 import java.util.Map;
 
-import eu.esdihumboldt.cst.transformer.FunctionDescription;
+import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
 
 public class FunctionDescriptionImpl implements FunctionDescription {
 
