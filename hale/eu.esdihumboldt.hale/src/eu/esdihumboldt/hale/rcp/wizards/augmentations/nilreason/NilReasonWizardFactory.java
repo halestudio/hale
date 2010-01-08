@@ -13,7 +13,7 @@
 package eu.esdihumboldt.hale.rcp.wizards.augmentations.nilreason;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.transformer.impl.NilReasonFunction;
+import eu.esdihumboldt.cst.corefunctions.NilReasonFunction;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizard;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizardFactory;

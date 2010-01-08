@@ -12,7 +12,7 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.inspire;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.transformer.impl.inspire.IdentifierFunction;
+import eu.esdihumboldt.cst.corefunctions.inspire.IdentifierFunction;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;

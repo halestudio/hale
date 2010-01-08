@@ -31,7 +31,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
-import eu.esdihumboldt.cst.transformer.impl.RenameFeatureFunction;
+import eu.esdihumboldt.cst.transformer.service.impl.RenameFeatureFunction;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;

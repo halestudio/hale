@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
-import eu.esdihumboldt.cst.transformer.impl.NilReasonFunction.NilReasonType;
+import eu.esdihumboldt.cst.corefunctions.NilReasonFunction.NilReasonType;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizardPage;
 

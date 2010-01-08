@@ -12,7 +12,7 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.geometric;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.transformer.impl.NetworkExpansionFunction;
+import eu.esdihumboldt.cst.corefunctions.NetworkExpansionFunction;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;

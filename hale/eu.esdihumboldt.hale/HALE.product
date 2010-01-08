@@ -48,6 +48,7 @@
       <plugin id="com.springsource.org.jvnet.staxex"/>
       <plugin id="com.vividsolutions.jts"/>
       <plugin id="eu.esdihumboldt.commons"/>
+      <plugin id="eu.esdihumboldt.cst.corefunctions"/>
       <plugin id="eu.esdihumboldt.hale"/>
       <plugin id="eu.esdihumboldt.hale.gmlparser"/>
       <plugin id="eu.esdihumboldt.specification"/>

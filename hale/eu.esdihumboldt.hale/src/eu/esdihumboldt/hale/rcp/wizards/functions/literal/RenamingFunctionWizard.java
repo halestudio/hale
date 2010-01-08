@@ -18,10 +18,10 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 
-import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
-import eu.esdihumboldt.cst.transformer.impl.RenameAttributeFunction;
-import eu.esdihumboldt.cst.transformer.impl.RenameFeatureFunction;
+import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction;
+import eu.esdihumboldt.cst.transformer.service.impl.RenameFeatureFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;

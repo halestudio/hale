@@ -25,7 +25,7 @@ import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IValueExpression;
-import eu.esdihumboldt.cst.transformer.impl.ClassificationMappingFunction;
+import eu.esdihumboldt.cst.corefunctions.ClassificationMappingFunction;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.oml.ext.ValueExpression;
 import eu.esdihumboldt.goml.omwg.ComparatorType;
