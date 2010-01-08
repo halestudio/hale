@@ -24,6 +24,8 @@ import eu.esdihumboldt.cst.transformer.CstService;
 
 /**
  * Factory to get an instance of an {@link CstService}.
+ * 
+ * @author Thorsten Reitz
  */
 public class CstServiceFactory {
 

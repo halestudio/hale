@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
@@ -47,8 +45,6 @@ import eu.esdihumboldt.cst.transformer.FunctionDescription;
  */
 public class CstServiceImpl 
 	implements CstService {
-
-	private static final Log _log = LogFactory.getLog(CstServiceImpl.class);
 
 	private CstFunctionFactory transformerFactory;
 
@@ -94,7 +90,6 @@ public class CstServiceImpl
 		TargetSchemaProvider.getInstance().addTypes(targetSchema);
 		SchemaTranslationController stc = new SchemaTranslationController(alignment);
 		FeatureCollection result = stc.translate((FeatureCollection) fc);
-		_log.info("Created " + result.size() + " new Features." );
 		return result;
 	}
 

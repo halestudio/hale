@@ -33,11 +33,11 @@ import org.geotools.gml3.ApplicationSchemaConfiguration;
 import org.geotools.referencing.CRS;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
+import org.junit.Assert;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
-import org.springframework.util.Assert;
 import org.xml.sax.SAXException;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -93,7 +93,7 @@ public class DataUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Assert.notNull(fc);
+		Assert.assertNotNull(fc);
 		return fc;
 	}
 
@@ -131,7 +131,7 @@ public class DataUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Assert.notNull(fc);
+		Assert.assertNotNull(fc);
 		return fc;
 	}
 	
@@ -244,7 +244,7 @@ public class DataUtils {
 			System.err.println("Spatial type: "+geomType.getName()+ " not supported!");
 			e.printStackTrace();
 		}
-		Assert.notNull(fc);
+		Assert.assertNotNull(fc);
 		return fc;
 	}
 	

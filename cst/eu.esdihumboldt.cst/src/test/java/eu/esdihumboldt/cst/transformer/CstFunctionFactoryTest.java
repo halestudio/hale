@@ -14,26 +14,26 @@ package eu.esdihumboldt.cst.transformer;
 
 import java.util.Map;
 
-import junit.framework.TestCase;
-import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.transformer.impl.FilterTransformer;
-import eu.esdihumboldt.cst.transformer.impl.RenameFeatureFunction;
+import org.junit.Assert;
+import org.junit.Test;
+
+import eu.esdihumboldt.cst.transformer.service.impl.RenameFeatureFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
-import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.rdf.Resource;
 
-public class TransformerFactoryTest extends TestCase {
+public class CstFunctionFactoryTest {
 	
 	private String localname1 = "LocalName";
 	private String namespace1 = "http://somenamespace.org/path";
 	
+	@Test
 	public void testFeatureRenameTransfomer() throws Exception {
 		CstFunctionFactory tf = CstFunctionFactory.getInstance();
-		tf.initConfiguration();
+		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
 
 		Cell c = new Cell();
 		Entity entity1 = new FeatureClass(
@@ -47,15 +47,17 @@ public class TransformerFactoryTest extends TestCase {
 		c.setEntity2(entity1);
 
 		CstFunction tr = tf.getCstFunction(c);		
-		assertTrue(tr instanceof RenameFeatureFunction);
+		Assert.assertTrue(tr instanceof RenameFeatureFunction);
 
 	}
+	
+	@Test
 	public void testCstGetRegisteredTransfomers(){
 		CstFunctionFactory tf = CstFunctionFactory.getInstance();
-		tf.initConfiguration();
+		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
 		Map<String, Class<? extends CstFunction>> functions = tf.getRegisteredFunctions();
 		functions.clear();
 	    functions = tf.getRegisteredFunctions();
-		assertTrue(functions.size()>0);
+	    Assert.assertTrue(functions.size()>0);
 	}
 }

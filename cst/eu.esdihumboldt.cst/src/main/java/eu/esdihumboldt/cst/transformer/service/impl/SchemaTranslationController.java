@@ -33,7 +33,6 @@ import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.transformer.CstFunction;
 import eu.esdihumboldt.cst.transformer.CstFunctionFactory;
-import eu.esdihumboldt.cst.transformer.impl.RenameFeatureFunction;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Restriction;
 

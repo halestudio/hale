@@ -13,25 +13,20 @@
 package eu.esdihumboldt.cst.transformer;
 
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
-import eu.esdihumboldt.cst.transformer.impl.BoundingBoxFunction;
-import eu.esdihumboldt.cst.transformer.impl.CentroidFunction;
-import eu.esdihumboldt.cst.transformer.impl.ClassificationMappingFunction;
-import eu.esdihumboldt.cst.transformer.impl.GenericMathFunction;
-import eu.esdihumboldt.cst.transformer.impl.NetworkExpansionFunction;
-import eu.esdihumboldt.cst.transformer.impl.RenameAttributeFunction;
-import eu.esdihumboldt.cst.transformer.impl.RenameFeatureFunction;
-import eu.esdihumboldt.cst.transformer.impl.SpatialTypeConversionFunction;
-import eu.esdihumboldt.cst.transformer.impl.inspire.IdentifierFunction;
+import eu.esdihumboldt.cst.transformer.configuration.ReflectionHelper;
+import eu.esdihumboldt.cst.transformer.service.impl.RenameFeatureFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 
@@ -55,7 +50,7 @@ public class CstFunctionFactory {
 	 * Hidden constructor
 	 */
 	private CstFunctionFactory() {
-		initConfiguration();
+		functions.put(RenameFeatureFunction.class.getName(), RenameFeatureFunction.class);
 	}
 	
 	/**
@@ -111,6 +106,21 @@ public class CstFunctionFactory {
 	}	
 	
 	/**
+	 * @param params
+	 * @return a Map of String keys and values made from the IParameter list
+	 * @deprecated Will be removed until 2.0-M1
+	 */
+	private Map<String, String> convertToMap(List<IParameter> params){
+		Map<String, String> paramMap = new HashMap<String, String>();
+		for (Iterator<IParameter> i = params.iterator(); i.hasNext();){
+			IParameter p = i.next();
+			
+			paramMap.put(p.getName(), p.getValue());
+		}
+		return paramMap;
+	}
+	
+	/**
 	 * Returns an Augmentation {@link CstFunction} if one was defined in the 
 	 * {@link Cell}.
 	 * @param cell the {@link Cell} to analyse.
@@ -127,50 +137,99 @@ public class CstFunctionFactory {
 	 */
 	public Map<String, Class<? extends CstFunction>> getRegisteredFunctions(){
 		final Map<String, Class<? extends CstFunction>> func = 
-			new HashMap<String, Class<? extends CstFunction>>(CstFunctionFactory.functions);
+			new HashMap<String, Class<? extends CstFunction>>(
+					CstFunctionFactory.functions);
 		return  func;
 	}
 	
 	/**
-	 * TODO: replace with parsing a configuration file.
+	 * Reads {@link CstFunction} implementations from the given package and 
+	 * registers them with this {@link CstService}.
+	 * @param functionPackage
 	 */
-	protected void initConfiguration() {
-		Set<String> functionNames = new HashSet<String>();
-		functionNames.add(CentroidFunction.class.getName());
-		functionNames.add(NetworkExpansionFunction.class.getName());
-	    functionNames.add(RenameAttributeFunction.class.getName());
-		functionNames.add(RenameFeatureFunction.class.getName());
-		functionNames.add(GenericMathFunction.class.getName());
-		functionNames.add(ClassificationMappingFunction.class.getName());
-		functionNames.add(BoundingBoxFunction.class.getName());
-		functionNames.add(SpatialTypeConversionFunction.class.getName());
-		functionNames.add(IdentifierFunction.class.getName());
-		
-		for (String name : functionNames) {
-			Class<?> tclass = null;
-			try {
-				tclass = Class.forName(name);
-				tclass.newInstance();
-				
-			} catch (Exception e) {
-				throw new RuntimeException("A CstFunction class could not be " +
-						"instantiated for name = " + name + " : ", e);
-			} 
-			if (tclass != null) {
-				CstFunctionFactory.functions.put(
-						name, (Class<? extends CstFunction>) tclass);
-			}
-		}
+	public void registerCstPackage(String functionPackage) {
+		this.loadFunctionClasses(functionPackage);
 	}
 	
-	protected Map<String, String> convertToMap(List<IParameter> params){
-		Map<String, String> paramMap = new HashMap<String, String>();
-		for (Iterator<IParameter> i = params.iterator(); i.hasNext();){
-			IParameter p = i.next();
-			
-			paramMap.put(p.getName(), p.getValue());
+    /**
+     * This method loads all {@link CstFunction}s from a specified package, 
+     * identified by it's name. 
+     * @param functionPackage the name of the package containing the 
+     * {@link CstFunction}s
+     * @throws RuntimeException if the package could not be initialized
+     */
+    private void loadFunctionClasses(String functionPackage) {
+        // first, get a list of all classes in the functionPackage.
+    	File[] files;
+		try {
+			files = ReflectionHelper.getFilesFromPackage(functionPackage);
+		} catch (IOException e) {
+			throw new RuntimeException("Could not load CstFunctions from function package: ", e);
 		}
-		return paramMap;
-	}
+        
+		List<Class<? extends CstFunction>> result = null;
+        if (files != null) {
+            result =  this.readPackage(files, functionPackage);
+        }
+
+        for (Class<? extends CstFunction> cstclass : result) {
+        	CstFunctionFactory.functions.put(
+        			cstclass.getName(), cstclass);
+        }
+        
+    }
+    
+    /**
+     * 
+     */
+	private List<Class<? extends CstFunction>> readPackage(File[] files,
+			String functionPackage) {
+		List<Class<? extends CstFunction>> result =
+        	new ArrayList<Class<? extends CstFunction>>();
+        
+        String package_path = functionPackage.replaceAll("\\.", "/");
+        
+        String fileString;
+        for (int i = 0; i < files.length; i++) {
+        	fileString = files[i].toURI().toString();
+            if (!fileString.matches(".*\\.class")) {
+            	continue;
+            }
+
+        	// cut the classname from the file
+            int dppp = fileString.indexOf(package_path);
+            if (dppp != -1) {
+            	//try to preserve sub-directories
+            	fileString = fileString.substring(dppp + package_path.length() + 1);
+            	fileString = fileString.replaceAll("\\/", ".");
+            } else {
+            	fileString = fileString.replaceAll("(.*/)*", "");
+            }
+            fileString = fileString.replaceAll("\\.class$", "");
+            
+            //skip unit tests
+            if (fileString.endsWith("Test")) {
+            	continue;
+            }
+
+            try {
+            	Class<?> c = Class.forName(functionPackage + "." + fileString);
+                if (c.isInterface() || Modifier.isAbstract(c.getModifiers()) ||
+                	c.isLocalClass() || c.isAnonymousClass() || c.isMemberClass()) {
+                	continue;
+                }
+
+                if (CstFunction.class.isAssignableFrom(c)) {
+                	CstFunction o = (CstFunction) c.newInstance();
+                	result.add((Class<? extends CstFunction>)c);
+                } 
+            } catch (Exception e) {
+                throw new RuntimeException("CstFunction could not be " +
+                		"instantiated: " + e.getMessage(), e);
+            }
+        }
+    
+        return result;
+    }
 	
 }

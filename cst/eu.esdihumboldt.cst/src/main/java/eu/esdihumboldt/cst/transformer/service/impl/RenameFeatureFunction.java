@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.cst.transformer.impl;
+package eu.esdihumboldt.cst.transformer.service.impl;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,7 +35,7 @@ import eu.esdihumboldt.cst.transformer.service.impl.TargetSchemaProvider;
  * in the target schema. Also copies the default geometry if possible.
  * 
  * @author Thorsten Reitz, Jan Jezek
- * @version $Id$ 
+ * @version $Id: RenameFeatureFunction.java 2418 2009-12-22 11:35:12Z jjezek $ 
  */
 public class RenameFeatureFunction 
 	extends AbstractCstFunction {

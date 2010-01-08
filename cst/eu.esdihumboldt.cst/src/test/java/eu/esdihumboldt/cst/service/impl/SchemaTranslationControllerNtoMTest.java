@@ -7,8 +7,6 @@ package eu.esdihumboldt.cst.service.impl;
 import static org.junit.Assert.*;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.ConsoleAppender;
@@ -17,12 +15,9 @@ import org.apache.log4j.PatternLayout;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.IAlignment;
-import eu.esdihumboldt.cst.transformer.impl.GenericMathFunctionTest;
 import eu.esdihumboldt.cst.transformer.service.impl.SchemaTranslationController;
-import eu.esdihumboldt.cst.transformer.service.impl.TargetSchemaProvider;
 
 /**
  * This is a more complex test for the {@link SchemaTranslationController}

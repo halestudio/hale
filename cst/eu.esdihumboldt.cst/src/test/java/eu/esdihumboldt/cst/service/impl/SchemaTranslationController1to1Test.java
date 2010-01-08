@@ -14,6 +14,7 @@ package eu.esdihumboldt.cst.service.impl;
 
 import static org.junit.Assert.*;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,16 +36,21 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.cst.TestnameHelper;
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
-import eu.esdihumboldt.cst.transformer.impl.GenericMathFunctionTest;
-import eu.esdihumboldt.cst.transformer.impl.RenameFeatureFunction;
+import eu.esdihumboldt.cst.transformer.CstFunctionFactory;
+import eu.esdihumboldt.cst.transformer.service.impl.RenameFeatureFunction;
 import eu.esdihumboldt.cst.transformer.service.impl.SchemaTranslationController;
 import eu.esdihumboldt.cst.transformer.service.impl.TargetSchemaProvider;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.align.Formalism;
+import eu.esdihumboldt.goml.align.Schema;
+import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
+import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.goml.rdf.About;
@@ -78,17 +84,22 @@ public class SchemaTranslationController1to1Test {
 			Logger.getRootLogger().addAppender(appender);
 		}
 		
+		// configure the CstFunctionFactory
+		CstFunctionFactory.getInstance().registerCstPackage("eu.esdihumboldt.cst.corefunctions");
+		CstFunctionFactory.getInstance().registerCstPackage("eu.esdihumboldt.cst.corefunctions.inspire");
+		
+		// set up the Schema Translation Controller to use for testing
 		stc = new SchemaTranslationController(getTestAlignment());
 		sourceType = getFeatureType(
-				GenericMathFunctionTest.sourceNamespace, 
-				GenericMathFunctionTest.sourceLocalname, 
-				new String[]{GenericMathFunctionTest.sourceLocalnamePropertyA, 
-						GenericMathFunctionTest.sourceLocalnamePropertyB, 
-						GenericMathFunctionTest.sourceLocalnamePropertyC});
+				TestnameHelper.sourceNamespace, 
+				TestnameHelper.sourceLocalname, 
+				new String[]{TestnameHelper.sourceLocalnamePropertyA, 
+						TestnameHelper.sourceLocalnamePropertyB, 
+						TestnameHelper.sourceLocalnamePropertyC});
 		targetType = getFeatureType(
-				GenericMathFunctionTest.targetNamespace, 
-				GenericMathFunctionTest.targetLocalname, 
-				new String[]{GenericMathFunctionTest.targetLocalnamePropertyD});
+				TestnameHelper.targetNamespace, 
+				TestnameHelper.targetLocalname, 
+				new String[]{TestnameHelper.targetLocalnamePropertyD});
 		
 		// also, we'll have to provide the target types to the TargetSchemaProvider
 		Collection<FeatureType> types = new ArrayList<FeatureType>();
@@ -122,10 +133,10 @@ public class SchemaTranslationController1to1Test {
 		assertTrue(result != null);
 		assertTrue(result.size() == 1);
 		assertTrue(result.getSchema().getName().getLocalPart().equals(
-				GenericMathFunctionTest.targetLocalname));
+				TestnameHelper.targetLocalname));
 		SimpleFeature target = (SimpleFeature) result.features().next();
 		Property prop = target.getProperty(
-				GenericMathFunctionTest.targetLocalnamePropertyD);
+				TestnameHelper.targetLocalnamePropertyD);
 		assertTrue(prop.getValue().toString().equals("5.0"));
 	}
 	
@@ -154,7 +165,7 @@ public class SchemaTranslationController1to1Test {
 		assertTrue(result != null);
 		assertTrue(result.size() == 1000);
 		assertTrue(result.getSchema().getName().getLocalPart().equals(
-				GenericMathFunctionTest.targetLocalname));
+				TestnameHelper.targetLocalname));
 	}
 	
 	/**
@@ -195,7 +206,7 @@ public class SchemaTranslationController1to1Test {
 		System.out.println(result.size());
 		assertTrue(result.size() == 500);
 		assertTrue(result.getSchema().getName().getLocalPart().equals(
-				GenericMathFunctionTest.targetLocalname));
+				TestnameHelper.targetLocalname));
 	}
 	
 	/**
@@ -203,17 +214,29 @@ public class SchemaTranslationController1to1Test {
 	 */
 	private static IAlignment getTestAlignment(){
 		// first, use an alignment created by a different test as a basis.
-		IAlignment a = GenericMathFunctionTest.getTestAlignment();
+		Alignment a = new Alignment();
+		a.setAbout(new About("lala"));
+		try {
+			a.setSchema1(new Schema(
+					TestnameHelper.sourceNamespace, new Formalism(
+							"GML", new URI("http://schemas.opengis.org/gml"))));
+			a.setSchema2(new Schema(
+					TestnameHelper.targetNamespace, new Formalism(
+							"GML", new URI("http://schemas.opengis.org/gml"))));
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
+		a.getMap().add(getTestCell());
 		
 		// second, add a FeatureType Rename operation.
 		Cell cell = new Cell();
 		cell.setEntity1(
 				new FeatureClass(new About(
-						GenericMathFunctionTest.sourceNamespace, 
-						GenericMathFunctionTest.sourceLocalname)));
+						TestnameHelper.sourceNamespace, 
+						TestnameHelper.sourceLocalname)));
 		cell.setEntity2(new FeatureClass(new About(
-				GenericMathFunctionTest.targetNamespace, 
-				GenericMathFunctionTest.targetLocalname)));
+				TestnameHelper.targetNamespace, 
+				TestnameHelper.targetLocalname)));
 		cell.setRelation(RelationType.Equivalence);
 		
 		Transformation t = new Transformation();
@@ -249,6 +272,36 @@ public class SchemaTranslationController1to1Test {
 			throw new RuntimeException(ex);
 		}
 		return ft;
+	}
+
+	
+	private static ICell getTestCell() {
+		// set up cell to use for testing
+		Cell cell = new Cell();
+		ComposedProperty cp = new ComposedProperty(
+				new About(TestnameHelper.sourceNamespace, TestnameHelper.sourceLocalname));
+		cp.getCollection().add(new eu.esdihumboldt.goml.omwg.Property(
+				new About(TestnameHelper.sourceNamespace, TestnameHelper.sourceLocalname, 
+						TestnameHelper.sourceLocalnamePropertyA)));
+		cp.getCollection().add(new eu.esdihumboldt.goml.omwg.Property(
+				new About(TestnameHelper.sourceNamespace, TestnameHelper.sourceLocalname, 
+						TestnameHelper.sourceLocalnamePropertyB)));
+		cp.getCollection().add(new eu.esdihumboldt.goml.omwg.Property(
+				new About(TestnameHelper.sourceNamespace, TestnameHelper.sourceLocalname, 
+						TestnameHelper.sourceLocalnamePropertyC)));
+		Transformation t = new Transformation();
+		t.setService(new Resource("eu.esdihumboldt.cst.corefunctions.GenericMathFunction"));
+		t.getParameters().add(
+				new Parameter(
+						"math_expression", 
+						"0.5 * (PropertyA * PropertyB + PropertyC)"));
+		cp.setTransformation(t);
+		cell.setEntity1(cp);
+		cell.setEntity2(new eu.esdihumboldt.goml.omwg.Property(
+				new About(TestnameHelper.targetNamespace, TestnameHelper.targetLocalname, 
+						TestnameHelper.targetLocalnamePropertyD)));
+		
+		return cell;
 	}
 
 }
