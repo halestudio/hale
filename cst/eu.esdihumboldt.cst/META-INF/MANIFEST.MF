@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CST
+Bundle-SymbolicName: eu.esdihumboldt.transformer.cst
+Bundle-Version: 1.0.0
+Eclipse-BuddyPolicy: registered
+Export-Package: eu.esdihumboldt.cst,
+ eu.esdihumboldt.cst.service.impl,
+ eu.esdihumboldt.cst.transformer,
+ eu.esdihumboldt.cst.transformer.exceptions,
+ eu.esdihumboldt.cst.transformer.impl,
+ eu.esdihumboldt.cst.transformer.impl.inspire,
+ eu.esdihumboldt.cst.transformer.service.impl
+Require-Bundle: eu.esdihumboldt.commons;bundle-version="2.0.0",
+ eu.esdihumboldt.specification;bundle-version="2.0.0"
