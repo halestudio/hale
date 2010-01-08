@@ -34,9 +34,7 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
@@ -65,9 +63,7 @@ public class CentroidFunction extends AbstractCstFunction {
 	public Feature transform(Feature source, Feature target) {
 		Collection<org.opengis.feature.Property> c = new HashSet<org.opengis.feature.Property>();
 		PropertyDescriptor pd = target.getDefaultGeometryProperty().getDescriptor();
-		GeometryFactory geomFactory = new GeometryFactory();
 		Geometry geom = (Geometry)source.getDefaultGeometryProperty().getValue();
-		Coordinate[] coords = geom.getCoordinates();
 		//get Centroid from old geom and store in new geom
 		Object newGeometry = geom.getCentroid();
 		PropertyImpl p = new AttributeImpl(newGeometry, (AttributeDescriptor) pd, null);	
