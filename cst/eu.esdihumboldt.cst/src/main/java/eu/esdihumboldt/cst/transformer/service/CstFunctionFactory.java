@@ -35,7 +35,7 @@ import eu.esdihumboldt.goml.oml.ext.Parameter;
 /**
  * A class managing instantiation of CstFunction objects.
  * 
- * @author Jan Jezek, Anna Pitaev, Thorsten Reitz
+ * @author Thorsten Reitz, Jan Jezek, Anna Pitaev
  * @version $Id$ 
  */
 public class CstFunctionFactory {
@@ -222,7 +222,7 @@ public class CstFunctionFactory {
                 }
 
                 if (CstFunction.class.isAssignableFrom(c)) {
-                	CstFunction o = (CstFunction) c.newInstance();
+                	c.newInstance();
                 	result.add((Class<? extends CstFunction>)c);
                 } 
             } catch (Exception e) {

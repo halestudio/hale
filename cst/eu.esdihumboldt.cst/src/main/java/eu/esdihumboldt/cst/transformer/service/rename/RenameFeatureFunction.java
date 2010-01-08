@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.cst.transformer.service.rename;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 

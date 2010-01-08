@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.cst.transformer;
 
+import java.util.List;
 import java.util.Set;
 
 import org.geotools.feature.FeatureCollection;
@@ -64,5 +65,13 @@ public interface CstService {
 	 * functions implemented by this {@link CstService}.
 	 */
 	public CstServiceCapabilities getCapabilities();
+	
+	/**
+	 * @param packageName the name of the package from which to register 
+	 * {@link CstFunction} implementations
+	 * @return a List of with the qualified class names of the functions that
+	 * have been registered
+	 */
+	public List<String> registerCstFunctions(String packageName);
 
 }

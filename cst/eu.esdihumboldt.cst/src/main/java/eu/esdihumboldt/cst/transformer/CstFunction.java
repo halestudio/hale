@@ -34,6 +34,8 @@ import eu.esdihumboldt.goml.oml.ext.Function;
 /**
  * Interface which defines the two basic methods to transform a
  * {@link Feature} and a {@link FeatureCollection}.
+ * 
+ * @author Thorsten Reitz
  */
 public interface CstFunction {
 	/**
@@ -42,6 +44,7 @@ public interface CstFunction {
 	 * transformed, with source {@link FeatureType}s.
 	 * @return a {@link FeatureCollection} with the transformed Features, with 
 	 * target {@link FeatureType}s.
+	 * @deprecated use {@link #transform(Feature, Feature)} instead.
 	 */
 	public FeatureCollection<? extends FeatureType, ? extends Feature> 
 		transform(FeatureCollection<? extends FeatureType, ? extends Feature> fc);
@@ -68,18 +71,21 @@ public interface CstFunction {
 	 * @param parameters a {@link List} with {@link IParameter} objects used
 	 * for configuring a {@link Function}.
 	 * @return false if this mode of configuration is not supported.
+	 * @deprecated use {@link #configure(ICell)} instead.
 	 */
 	public boolean configure(List<IParameter> parameters);
 	
 	/**
 	 * @param parameters a {@link Map} of parameter names and values.
 	 * @return false if this mode of configuration is not supported.
+	 * @deprecated use {@link #configure(ICell)} instead.
 	 */
 	public boolean configure(Map<String, String> parametersValues);
 	
 	
 	/**
 	 * @return a {@link Map} with parameter names and their type
+	 * @deprecated to be replaced by a method based on Cells
 	 */	
 	public Map<String, Class<?>> getParameterTypes();
 

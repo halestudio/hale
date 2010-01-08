@@ -20,11 +20,8 @@
  */
 package eu.esdihumboldt.cst.transformer.service.impl;
 
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.geotools.feature.FeatureCollection;
@@ -36,9 +33,7 @@ import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.transformer.CstFunction;
 import eu.esdihumboldt.cst.transformer.CstService;
 import eu.esdihumboldt.cst.transformer.capabilities.CstServiceCapabilities;
-import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
 import eu.esdihumboldt.cst.transformer.capabilities.impl.CstServiceCapabilitiesImpl;
-import eu.esdihumboldt.cst.transformer.capabilities.impl.FunctionDescriptionImpl;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 
 /**
@@ -48,36 +43,12 @@ import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 public class CstServiceImpl 
 	implements CstService {
 
-	private CstFunctionFactory transformerFactory;
-
-	CstServiceCapabilities tCapabilities;
+	CstServiceCapabilities tCapabilities = new CstServiceCapabilitiesImpl(null);
 
 	/**
 	 * Default {@link CstService} constructor.
 	 */
 	public CstServiceImpl() {
-		transformerFactory = CstFunctionFactory.getInstance();
-		List<FunctionDescription> odList = new ArrayList<FunctionDescription>();
-
-		try {
-			Map<String, Class<? extends CstFunction>> transformers = transformerFactory
-					.getRegisteredFunctions();
-			for (Iterator<String> i = transformers.keySet().iterator(); i.hasNext();) {
-				String transName = i.next();
-				Class<?> tclass = Class.forName(transName);
-				CstFunction t = (CstFunction) tclass.newInstance();
-
-				/**
-				 * TODO - clarify what URL in FunctionDescription mean.
-				 */
-				FunctionDescription od = new FunctionDescriptionImpl(new URL(
-						"file://" + transName), t.getParameterTypes());
-				odList.add(od);
-			}
-			tCapabilities = new CstServiceCapabilitiesImpl(odList);
-		} catch (Exception e) {
-			throw new RuntimeException("Initialising the CstServiceImpl failed: " + e);
-		}
 
 	}
 
@@ -120,7 +91,22 @@ public class CstServiceImpl
 	}
 
 	public CstServiceCapabilities getCapabilities() {
+		// FIXME, must be re-implemented based on Cell mechanism and on current state (shouldn't be done in constructor!)
 		return tCapabilities;
 
+	}
+
+	/**
+	 * @see eu.esdihumboldt.cst.transformer.CstService#registerCstFunctions(java.lang.String)
+	 */
+	public List<String> registerCstFunctions(String packageName) {
+		if (packageName != null) {
+			CstFunctionFactory.getInstance().registerCstPackage(packageName);
+		}
+		List<String> result = new ArrayList<String>();
+		for (Class<? extends CstFunction> type : CstFunctionFactory.getInstance().getRegisteredFunctions().values()) {
+			result.add(type.getName());
+		}
+		return result;
 	}
 }

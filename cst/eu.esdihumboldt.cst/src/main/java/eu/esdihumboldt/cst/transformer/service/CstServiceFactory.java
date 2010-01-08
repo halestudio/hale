@@ -27,6 +27,7 @@ import eu.esdihumboldt.cst.transformer.service.impl.CstServiceImpl;
  * Factory to get an instance of an {@link CstService}.
  * 
  * @author Thorsten Reitz
+ * @version $Id$
  */
 public class CstServiceFactory {
 
@@ -37,7 +38,7 @@ public class CstServiceFactory {
 	 * Returns an instance of an {@link CstService}.
 	 * @return CstService
 	 */
-	public static CstServiceImpl getInstance() {
+	public static CstService getInstance() {
 		if (service == null) {
 			service = new CstServiceImpl();
 		}
