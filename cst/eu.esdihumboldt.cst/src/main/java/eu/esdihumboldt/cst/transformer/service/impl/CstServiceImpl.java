@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
@@ -36,12 +38,15 @@ import eu.esdihumboldt.cst.transformer.capabilities.CstServiceCapabilities;
 import eu.esdihumboldt.cst.transformer.capabilities.impl.CstServiceCapabilitiesImpl;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 
+
 /**
  * Simple CstService implementation which applies all necessary Transformers on
  * a FeatureCollection or Feature.
  */
 public class CstServiceImpl 
 	implements CstService {
+	
+	private static Logger _log = Logger.getLogger(CstServiceImpl.class);
 
 	CstServiceCapabilities tCapabilities = new CstServiceCapabilitiesImpl(null);
 
@@ -49,7 +54,7 @@ public class CstServiceImpl
 	 * Default {@link CstService} constructor.
 	 */
 	public CstServiceImpl() {
-
+		
 	}
 
 
@@ -100,12 +105,14 @@ public class CstServiceImpl
 	 * @see eu.esdihumboldt.cst.transformer.CstService#registerCstFunctions(java.lang.String)
 	 */
 	public List<String> registerCstFunctions(String packageName) {
+		_log.setLevel(Level.INFO);
 		if (packageName != null) {
 			CstFunctionFactory.getInstance().registerCstPackage(packageName);
 		}
 		List<String> result = new ArrayList<String>();
 		for (Class<? extends CstFunction> type : CstFunctionFactory.getInstance().getRegisteredFunctions().values()) {
 			result.add(type.getName());
+			_log.info("Registered CstFunction: " + type.getName());
 		}
 		return result;
 	}
