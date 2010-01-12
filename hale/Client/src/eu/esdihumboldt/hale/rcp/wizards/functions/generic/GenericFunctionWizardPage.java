@@ -38,8 +38,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.cst.transformer.CstServiceCapabilities;
-import eu.esdihumboldt.cst.transformer.FunctionDescription;
+import eu.esdihumboldt.cst.transformer.capabilities.CstServiceCapabilities;
+import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
 import eu.esdihumboldt.cst.transformer.service.impl.CstServiceImpl;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.AlgorithmCST;
@@ -156,7 +156,7 @@ public class GenericFunctionWizardPage extends AbstractSingleCellWizardPage {
 			AlgorithmCST alg = null;
 			try{
 				alg = new AlgorithmCST(getAlgorithmName(funcDescr.getFunctionId()), funcDescr.getFunctionId(), funcDescr.getParameterConfiguration());
-				System.out.println(funcDescr.getFunctionId().getFile());
+		//		System.out.println(funcDescr.getFunctionId().getFile());
 			}
 			catch (NullPointerException e){
 				alg = new AlgorithmCST(getAlgorithmName(funcDescr.getFunctionId()), funcDescr.getFunctionId(), null);
