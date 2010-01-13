@@ -8,22 +8,17 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.jface.text;bundle-version="3.4.0",
- org.eclipse.emf.common;bundle-version="2.4.0",
- org.eclipse.emf.common.ui;bundle-version="2.4.0",
- com.iabcinc.jmep;bundle-version="0.1.0",
  com.vividsolutions.jts;bundle-version="1.10.0",
  gnu.trove;bundle-version="2.0.4",
  com.springsource.javax.media.jai.codec;bundle-version="1.1.3",
  com.springsource.javax.media.jai.core;bundle-version="1.1.3",
  org.libtiff.jai;bundle-version="1.0.0",
- com.springsource.org.apache.log4j;bundle-version="1.2.15",
  org.geotools;bundle-version="2.5.8",
  com.springsource.org.apache.commons.beanutils;bundle-version="1.8.0",
  com.springsource.org.apache.commons.collections;bundle-version="3.2.1",
  com.springsource.org.apache.commons.jxpath;bundle-version="1.2.0",
  com.springsource.org.apache.commons.logging;bundle-version="1.1.1",
  eu.esdihumboldt.commons;bundle-version="2.0.0",
- eu.esdihumboldt.cst.corefunctions;bundle-version="1.0.0",
  eu.esdihumboldt.hale.gmlparser;bundle-version="1.0.0",
  eu.esdihumboldt.specification;bundle-version="2.0.0",
  eu.esdihumboldt.transformer.cst;bundle-version="1.0.0",
@@ -31,4 +26,8 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: com.sun.xml.bind.marshaller;version="2.1.7"
+Import-Package: eu.esdihumboldt.hale.prefixmapper,
+ org.apache.log4j
+Export-Package: eu.esdihumboldt.hale.rcp.views.model,
+ eu.esdihumboldt.hale.rcp.wizards.augmentations,
+ eu.esdihumboldt.hale.rcp.wizards.functions

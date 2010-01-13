@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+  <extension
+         point="eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory">
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.filter.SimpleFilterWizardFactory"
+            icon="icons/concrete_ft.png"
+            name="CQL-based filter (String)">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.filter.FilterWizardFactory"
+            icon="icons/concrete_ft.png"
+            name="CQL-based filter (Form)">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.literal.RenamingFunctionWizardFactory"
+            icon="icons/rename.gif"
+            name="Rename wizard">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric.NetworkExpansionFunctionWizardFactory"
+            icon="icons/geometry_attribute.png"
+            name="Network expansion (Line to Surface)">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric.NetworkFusionFunctionWizardFactory"
+            icon="icons/geometry_attribute.png"
+            name="Network fusion (Line to Line)">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric.NetworkGeneralizationFunctionWizardFactory"
+            icon="icons/geometry_attribute.png"
+            name="Network generalization (Line to Line)">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.numeric.NumericFunctionWizardFactory"
+            icon="icons/number_attribute.png"
+            name="Numeric function wizard">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.math.GenericMathFunctionWizardFactory"
+            icon="icons/number_attribute.png"
+            name="Mathematical expression">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.classification.ClassificationMappingFunctionWizardFactory"
+            icon="icons/mapping.gif"
+            name="Classification mapping">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.augmentation.nilreason.NilReasonWizardFactory"
+            icon="icons/remove.gif"
+            name="Nil reason">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.IdentifierFunctionWizardFactory"
+            icon="icons/rename.gif"
+            name="Create INSPIRE Identifier">
+      </factory>
+   </extension>
+
+</plugin>

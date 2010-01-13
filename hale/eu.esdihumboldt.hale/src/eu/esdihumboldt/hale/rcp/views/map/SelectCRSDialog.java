@@ -38,10 +38,11 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import eu.esdihumboldt.hale.models.InstanceService;
 
 /**
+ * Dialog for selecting the CRS to use
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
- *
  */
 public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeListener {
 	

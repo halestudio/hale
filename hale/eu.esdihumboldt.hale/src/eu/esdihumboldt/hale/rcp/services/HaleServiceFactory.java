@@ -11,12 +11,9 @@
  */
 package eu.esdihumboldt.hale.rcp.services;
 
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
-import eu.esdihumboldt.cst.transformer.CstService;
-import eu.esdihumboldt.cst.transformer.service.CstServiceFactory;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
@@ -33,7 +30,7 @@ import eu.esdihumboldt.hale.models.task.TaskServiceImpl;
 /**
  * This implementation of the {@link AbstractServiceFactory} allows to use the
  * {@link InstanceService}, {@link SchemaService}, {@link StyleService}, 
- * {@link TaskService}, {@link AlignmentService} and {@link CstService} 
+ * {@link TaskService} and {@link AlignmentService} 
  * as eclipse service, thereby making direct references to the implementation 
  * unnecessary.
  * 
@@ -48,16 +45,17 @@ public class HaleServiceFactory
 	private StyleService style = StyleServiceImpl.getInstance(schema);
 	private TaskService task = TaskServiceImpl.getInstance();
 	private AlignmentService alignment = AlignmentServiceImpl.getInstance();
-	private CstService transform = CstServiceFactory.getInstance();
-	private boolean transformRegistered = false;
 	private ProjectService project = ProjectServiceImpl.getInstance();
 
+	/**
+	 * Default constructor
+	 */
 	public HaleServiceFactory() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	/**
-	 * @see org.eclipse.ui.services.AbstractServiceFactory#create(java.lang.Class, org.eclipse.ui.services.IServiceLocator, org.eclipse.ui.services.IServiceLocator)
+	 * @see AbstractServiceFactory#create(Class, IServiceLocator, IServiceLocator)
 	 */
 	@SuppressWarnings("unchecked")
 	public Object create(Class serviceInterface, IServiceLocator parentLocator,
@@ -76,16 +74,6 @@ public class HaleServiceFactory
 		}
 		else if (serviceInterface.equals(AlignmentService.class)) {
 			return this.alignment;
-		}
-		else if (serviceInterface.equals(CstService.class)) {
-			synchronized (this) {
-				if (!transformRegistered) {
-					transform.registerCstFunctions("eu.esdihumboldt.cst.corefunctions");
-					transform.registerCstFunctions("eu.esdihumboldt.cst.corefunctions.inspire");
-					transformRegistered = true;
-				}
-			}
-			return this.transform;
 		}
 		else if (serviceInterface.equals(ProjectService.class)) {
 			return this.project;

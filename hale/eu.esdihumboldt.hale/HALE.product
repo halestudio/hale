@@ -51,6 +51,9 @@
       <plugin id="eu.esdihumboldt.cst.corefunctions"/>
       <plugin id="eu.esdihumboldt.hale"/>
       <plugin id="eu.esdihumboldt.hale.gmlparser"/>
+      <plugin id="eu.esdihumboldt.hale.log4j.config" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
+      <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.core"/>
       <plugin id="eu.esdihumboldt.specification"/>
       <plugin id="eu.esdihumboldt.transformer.cst"/>
       <plugin id="gnu.trove"/>

@@ -11,22 +11,22 @@
  */
 package eu.esdihumboldt.hale.gmlparser;
 
-import org.apache.xerces.parsers.SAXParser;
-import org.eclipse.xsd.XSDSchema;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.NamespaceSupport;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.Iterator;
 import java.util.List;
-import javax.xml.namespace.QName;
+
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.xerces.parsers.SAXParser;
+import org.eclipse.xsd.XSDSchema;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.impl.ParserHandler;
 import org.geotools.xs.XS;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.NamespaceSupport;
 
 /**
  * FIXME Add Type description.
@@ -85,6 +85,7 @@ public class HaleGMLParser {
      * The object returned from the parse is the object which has been bound to the root
      * element of the document. This method should only be called once for a single instance document.
      * </p>
+     * @param input the input stream
      *
      * @return The object representation of the root element of the document.
      *
@@ -103,6 +104,7 @@ public class HaleGMLParser {
      * The object returned from the parse is the object which has been bound to the root
      * element of the document. This method should only be called once for a single instance document.
      * </p>
+     * @param reader the reader
      *
      * @return The object representation of the root element of the document.
      *
@@ -116,11 +118,12 @@ public class HaleGMLParser {
     }
 
     /**
-     * Parses an instance documented defined by a sax input source.
+     * Parses an instance documented defined by a SAX input source.
      * <p>
      * The object returned from the parse is the object which has been bound to the root
      * element of the document. This method should only be called once for a single instance document.
      * </p>
+     * @param source the input source
      *
      * @return The object representation of the root element of the document.
      *
@@ -143,7 +146,7 @@ public class HaleGMLParser {
      * Sets the strict parsing flag.
      * <p>
      * When set to <code>true</code>, this will cause the parser to operate in
-     * a strict mode, which means that xml being parsed must be exactly correct
+     * a strict mode, which means that XML being parsed must be exactly correct
      * with respect to the schema it references.
      * </p>
      * <p>
@@ -161,7 +164,7 @@ public class HaleGMLParser {
     }
 
     /**
-     * Sets the flag controlling wether the parser should validate or not.
+     * Sets the flag controlling whether the parser should validate or not.
      *
      * @param validating Validation flag, <code>true</code> to validate, otherwise <code>false</code>
      */
@@ -206,7 +209,7 @@ public class HaleGMLParser {
      *
      * @return A list of errors, or an empty list if none.
      */
-    public List getValidationErrors() {
+    public List<?> getValidationErrors() {
         return handler.getValidationErrors();
     }
 
@@ -249,6 +252,13 @@ public class HaleGMLParser {
         return handler.getNamespaceSupport();
     }
 
+    /**
+     * Create the SAX parser
+     * 
+     * @return the parser
+     * @throws ParserConfigurationException
+     * @throws SAXException
+     */
     protected SAXParser parser() throws ParserConfigurationException, SAXException {
         //JD: we use xerces directly here because jaxp does seem to allow use to 
         // override all the namespaces to validate against
@@ -266,7 +276,7 @@ public class HaleGMLParser {
         //set the schema sources of this configuration, and all dependent ones
         StringBuffer schemaLocation = new StringBuffer();
 
-        for (Iterator d = handler.getConfiguration().allDependencies().iterator(); d.hasNext();) {
+        for (Iterator<?> d = handler.getConfiguration().allDependencies().iterator(); d.hasNext();) {
             Configuration dependency = (Configuration) d.next();
 
             //ignore xs namespace

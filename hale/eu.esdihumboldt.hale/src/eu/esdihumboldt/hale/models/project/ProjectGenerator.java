@@ -36,8 +36,8 @@ import eu.esdihumboldt.hale.models.project.generated.InstanceData;
 import eu.esdihumboldt.hale.models.project.generated.MappedSchema;
 import eu.esdihumboldt.hale.models.project.generated.Task;
 import eu.esdihumboldt.hale.models.project.generated.TaskStatus;
+import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
 import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
-import eu.esdihumboldt.mediator.util.NamespacePrefixMapperImpl;
 
 /**
  * The {@link ProjectGenerator} serializes all project info to an xml file.
@@ -57,11 +57,11 @@ public class ProjectGenerator {
 		
 		// 2. marshall AlignmentType to xml
 		JAXBContext jc = JAXBContext.newInstance(
-				"eu.esdihumboldt.hale.models.project.generated");
+				"eu.esdihumboldt.hale.models.project.generated", ProjectGenerator.class.getClassLoader());
 		Marshaller m = jc.createMarshaller();
 
 		try {
-			m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
+			m.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper",
 					new NamespacePrefixMapperImpl());
 		} catch (PropertyException e) {
 			_log.warn("JAXB provider doesn't recognize the prefix mapper:", e);
