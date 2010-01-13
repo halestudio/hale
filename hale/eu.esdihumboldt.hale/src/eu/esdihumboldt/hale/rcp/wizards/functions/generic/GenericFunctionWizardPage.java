@@ -22,7 +22,10 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.generic;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -37,9 +40,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.cst.transformer.CstFunction;
 import eu.esdihumboldt.cst.transformer.CstService;
 import eu.esdihumboldt.cst.transformer.capabilities.CstServiceCapabilities;
 import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
+import eu.esdihumboldt.cst.transformer.capabilities.impl.CstServiceCapabilitiesImpl;
+import eu.esdihumboldt.cst.transformer.capabilities.impl.FunctionDescriptionImpl;
+import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.AlgorithmCST;
 import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.FunctionType;
@@ -149,16 +156,43 @@ public class GenericFunctionWizardPage extends AbstractSingleCellWizardPage {
 		root.addBox(numeric);
 		root.addBox(other);
 		
+		
+	
 		CstService ts = (CstService) 
 		PlatformUI.getWorkbench().getService(
 				CstService.class);
-	    CstServiceCapabilities tCapabilities = ts.getCapabilities();
+	/*    CstServiceCapabilities tCapabilities = ts.getCapabilities();
+	*/    
+		
+		//////////// will be changed to getCapabilities()
+		CstFunctionFactory transformerFactory;
+		CstServiceCapabilities tCapabilities = new CstServiceCapabilitiesImpl(null);
+		transformerFactory = CstFunctionFactory.getInstance();
+		List<FunctionDescription> odList = new ArrayList<FunctionDescription>();
+		try {
+			Map<String, Class<? extends CstFunction>> transformers = transformerFactory
+					.getRegisteredFunctions();
+			for (Iterator<String> i = transformers.keySet().iterator(); i.hasNext();) {
+				String transName = i.next();
+				Class<?> tclass = Class.forName(transName);
+				CstFunction t = (CstFunction) tclass.newInstance();
+				FunctionDescription od = new FunctionDescriptionImpl(new URL(
+							"file://" + transName), t.getParameterTypes());
+				odList.add(od);
+			}
+			tCapabilities = new CstServiceCapabilitiesImpl(odList);
+		} catch (Exception e) {
+			throw new RuntimeException("Initialising the CstServiceImpl failed: " + e);
+		}
+		//////////////////////////
+	    
+	    
 	    for (Iterator <FunctionDescription> iter = tCapabilities.getFunctionDescriptions().iterator(); iter.hasNext();){
 			FunctionDescription funcDescr = (FunctionDescription) iter.next();
 			AlgorithmCST alg = null;
 			try{
 				alg = new AlgorithmCST(getAlgorithmName(funcDescr.getFunctionId()), funcDescr.getFunctionId(), funcDescr.getParameterConfiguration());
-		//		System.out.println(funcDescr.getFunctionId().getFile());
+				//System.out.println("ALGORITHM:"+funcDescr.getFunctionId().getFile());
 			}
 			catch (NullPointerException e){
 				alg = new AlgorithmCST(getAlgorithmName(funcDescr.getFunctionId()), funcDescr.getFunctionId(), null);
