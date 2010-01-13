@@ -1,0 +1,15 @@
+NamespacePrefixMapper for HALE
+
+The JRE provides JAXB, which is exported by the system bundle. Because the HALE 
+plugin already has a dependency to the system bundle (OSGi framework) it can't
+use the JAXB provided by the target platform.
+This poses a problem when using the NamespacePrefixMapper from the Humboldt
+Common Library, which references a class that is only present in the target
+platform's JAXB implementation (com.sun.xml.bind.marshaller.NamespacePrefixMapper).
+Using this class results in a conflict, so the corresponding class in the JRE
+must be used (com.sun.xml.internal.bind.marshaller.NamespacePrefixMapper).
+Because access to this class is restricted, this Eclipse project has to be
+a normal Java project instead of a PDE project.
+Because there may still be issues compiling this project in Eclipse, this bundle
+is also provided pre-compiled in the target platform. Therefore it need not be
+imported into the workspace.
