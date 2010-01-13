@@ -32,5 +32,6 @@
 <location path="${project_loc:hale-platform}/target/org.jvnet.staxex" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.jdom" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.w3c.css.sac" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/eu.esdihumboldt.hale.prefixmapper" type="Directory"/>
 </locations>
 </target>
