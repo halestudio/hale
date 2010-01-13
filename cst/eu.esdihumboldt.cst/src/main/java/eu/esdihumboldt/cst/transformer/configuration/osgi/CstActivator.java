@@ -25,17 +25,29 @@ public class CstActivator
 	
 	private static BundleContext context = null;
 
+	/**
+	 * @see BundleActivator#start(BundleContext)
+	 */
 	public void start(BundleContext context) throws Exception {
 		CstActivator.context = context;
 		Class.forName(
 				"eu.esdihumboldt.cst.transformer.configuration.osgi.OSGIPackageResolver");
+		
+		CstFunctionExtension.registerFunctions();
 	}
 
+	/**
+	 * @see BundleActivator#stop(BundleContext)
+	 */
 	public void stop(BundleContext context) throws Exception {
-		// TODO Auto-generated method stub
-		
+		context = null;
 	}
 	
+	/**
+	 * Get the bundle context
+	 * 
+	 * @return the bundle context
+	 */
 	public static BundleContext getContext() {
 		return context;
 	}

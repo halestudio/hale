@@ -1,13 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CST
-Bundle-SymbolicName: eu.esdihumboldt.transformer.cst
+Bundle-SymbolicName: eu.esdihumboldt.transformer.cst;singleton:=true
 Bundle-Version: 1.0.0
 Export-Package: eu.esdihumboldt.cst,
- eu.esdihumboldt.cst.service.impl,
  eu.esdihumboldt.cst.transformer,
  eu.esdihumboldt.cst.transformer.capabilities,
- eu.esdihumboldt.cst.transformer.capabilities.impl,
  eu.esdihumboldt.cst.transformer.configuration,
  eu.esdihumboldt.cst.transformer.configuration.osgi,
  eu.esdihumboldt.cst.transformer.exceptions,
@@ -18,8 +16,11 @@ Require-Bundle: eu.esdihumboldt.commons;bundle-version="2.0.0",
  org.geotools;bundle-version="2.5.8",
  com.vividsolutions.jts;bundle-version="1.10.0",
  com.springsource.org.apache.log4j;bundle-version="1.2.15",
- org.junit4;bundle-version="4.5.0"
-Import-Package: org.eclipse.core.runtime,org.osgi.framework
+ org.junit4;bundle-version="4.5.0",
+ org.eclipse.ui,
+ org.eclipse.core.runtime
+Import-Package: org.osgi.framework
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.cst.transformer.configuration.osgi.CstActivator
 Eclipse-BuddyPolicy: registered
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

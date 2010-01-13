@@ -48,7 +48,7 @@ public class CstServiceImpl
 	
 	private static Logger _log = Logger.getLogger(CstServiceImpl.class);
 
-	CstServiceCapabilities tCapabilities = new CstServiceCapabilitiesImpl(null);
+	private final CstServiceCapabilities tCapabilities = new CstServiceCapabilitiesImpl();
 
 	/**
 	 * Default {@link CstService} constructor.
