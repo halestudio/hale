@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.cst.transformer.service.impl;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -193,7 +192,6 @@ public class SchemaTranslationController {
 	 * Array of two values, the first one indicating the 
 	 * {@link FeatureType} level cardinality, the second one indicating the 
 	 * {@link Feature} level cardinality (instance splits and merges)
-	 * @throws MalformedURLException 
 	 */
 	private Map<String, CellCardinalityType[]> determineCardinalities(IAlignment alignment) {
 		Map<String, CellCardinalityType[]> result = 
