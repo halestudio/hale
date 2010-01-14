@@ -36,7 +36,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.cst.TestnameHelper;
+import eu.esdihumboldt.cst.NameHelper;
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
@@ -91,15 +91,15 @@ public class SchemaTranslationController1to1Test {
 		// set up the Schema Translation Controller to use for testing
 		stc = new SchemaTranslationController(getTestAlignment());
 		sourceType = getFeatureType(
-				TestnameHelper.sourceNamespace, 
-				TestnameHelper.sourceLocalname, 
-				new String[]{TestnameHelper.sourceLocalnamePropertyA, 
-						TestnameHelper.sourceLocalnamePropertyB, 
-						TestnameHelper.sourceLocalnamePropertyC});
+				NameHelper.sourceNamespace, 
+				NameHelper.sourceLocalname, 
+				new String[]{NameHelper.sourceLocalnamePropertyA, 
+						NameHelper.sourceLocalnamePropertyB, 
+						NameHelper.sourceLocalnamePropertyC});
 		targetType = getFeatureType(
-				TestnameHelper.targetNamespace, 
-				TestnameHelper.targetLocalname, 
-				new String[]{TestnameHelper.targetLocalnamePropertyD});
+				NameHelper.targetNamespace, 
+				NameHelper.targetLocalname, 
+				new String[]{NameHelper.targetLocalnamePropertyD});
 		
 		// also, we'll have to provide the target types to the TargetSchemaProvider
 		Collection<FeatureType> types = new ArrayList<FeatureType>();
@@ -133,10 +133,10 @@ public class SchemaTranslationController1to1Test {
 		assertTrue(result != null);
 		assertTrue(result.size() == 1);
 		assertTrue(result.getSchema().getName().getLocalPart().equals(
-				TestnameHelper.targetLocalname));
+				NameHelper.targetLocalname));
 		SimpleFeature target = (SimpleFeature) result.features().next();
 		Property prop = target.getProperty(
-				TestnameHelper.targetLocalnamePropertyD);
+				NameHelper.targetLocalnamePropertyD);
 		assertTrue(prop.getValue().toString().equals("5.0"));
 	}
 	
@@ -165,7 +165,7 @@ public class SchemaTranslationController1to1Test {
 		assertTrue(result != null);
 		assertTrue(result.size() == 1000);
 		assertTrue(result.getSchema().getName().getLocalPart().equals(
-				TestnameHelper.targetLocalname));
+				NameHelper.targetLocalname));
 	}
 	
 	/**
@@ -206,7 +206,7 @@ public class SchemaTranslationController1to1Test {
 		System.out.println(result.size());
 		assertTrue(result.size() == 500);
 		assertTrue(result.getSchema().getName().getLocalPart().equals(
-				TestnameHelper.targetLocalname));
+				NameHelper.targetLocalname));
 	}
 	
 	/**
@@ -218,10 +218,10 @@ public class SchemaTranslationController1to1Test {
 		a.setAbout(new About("lala"));
 		try {
 			a.setSchema1(new Schema(
-					TestnameHelper.sourceNamespace, new Formalism(
+					NameHelper.sourceNamespace, new Formalism(
 							"GML", new URI("http://schemas.opengis.org/gml"))));
 			a.setSchema2(new Schema(
-					TestnameHelper.targetNamespace, new Formalism(
+					NameHelper.targetNamespace, new Formalism(
 							"GML", new URI("http://schemas.opengis.org/gml"))));
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
@@ -232,11 +232,11 @@ public class SchemaTranslationController1to1Test {
 		Cell cell = new Cell();
 		cell.setEntity1(
 				new FeatureClass(new About(
-						TestnameHelper.sourceNamespace, 
-						TestnameHelper.sourceLocalname)));
+						NameHelper.sourceNamespace, 
+						NameHelper.sourceLocalname)));
 		cell.setEntity2(new FeatureClass(new About(
-				TestnameHelper.targetNamespace, 
-				TestnameHelper.targetLocalname)));
+				NameHelper.targetNamespace, 
+				NameHelper.targetLocalname)));
 		cell.setRelation(RelationType.Equivalence);
 		
 		Transformation t = new Transformation();
@@ -279,16 +279,16 @@ public class SchemaTranslationController1to1Test {
 		// set up cell to use for testing
 		Cell cell = new Cell();
 		ComposedProperty cp = new ComposedProperty(
-				new About(TestnameHelper.sourceNamespace, TestnameHelper.sourceLocalname));
+				new About(NameHelper.sourceNamespace, NameHelper.sourceLocalname));
 		cp.getCollection().add(new eu.esdihumboldt.goml.omwg.Property(
-				new About(TestnameHelper.sourceNamespace, TestnameHelper.sourceLocalname, 
-						TestnameHelper.sourceLocalnamePropertyA)));
+				new About(NameHelper.sourceNamespace, NameHelper.sourceLocalname, 
+						NameHelper.sourceLocalnamePropertyA)));
 		cp.getCollection().add(new eu.esdihumboldt.goml.omwg.Property(
-				new About(TestnameHelper.sourceNamespace, TestnameHelper.sourceLocalname, 
-						TestnameHelper.sourceLocalnamePropertyB)));
+				new About(NameHelper.sourceNamespace, NameHelper.sourceLocalname, 
+						NameHelper.sourceLocalnamePropertyB)));
 		cp.getCollection().add(new eu.esdihumboldt.goml.omwg.Property(
-				new About(TestnameHelper.sourceNamespace, TestnameHelper.sourceLocalname, 
-						TestnameHelper.sourceLocalnamePropertyC)));
+				new About(NameHelper.sourceNamespace, NameHelper.sourceLocalname, 
+						NameHelper.sourceLocalnamePropertyC)));
 		Transformation t = new Transformation();
 		t.setService(new Resource("eu.esdihumboldt.cst.corefunctions.GenericMathFunction"));
 		t.getParameters().add(
@@ -298,8 +298,8 @@ public class SchemaTranslationController1to1Test {
 		cp.setTransformation(t);
 		cell.setEntity1(cp);
 		cell.setEntity2(new eu.esdihumboldt.goml.omwg.Property(
-				new About(TestnameHelper.targetNamespace, TestnameHelper.targetLocalname, 
-						TestnameHelper.targetLocalnamePropertyD)));
+				new About(NameHelper.targetNamespace, NameHelper.targetLocalname, 
+						NameHelper.targetLocalnamePropertyD)));
 		
 		return cell;
 	}

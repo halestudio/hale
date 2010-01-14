@@ -7,7 +7,7 @@ package eu.esdihumboldt.cst;
  * @author Administrator
  *
  */
-public class TestnameHelper {
+public class NameHelper {
 	
 	public static String sourceLocalname = "FT1";
 	public static String sourceLocalnamePropertyA = "PropertyA";
