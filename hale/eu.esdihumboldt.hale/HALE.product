@@ -103,5 +103,8 @@
       <plugin id="org.springframework.transaction"/>
    </plugins>
 
+   <configurations>
+      <plugin id="eu.esdihumboldt.transformer.cst" autoStart="true" startLevel="0" />
+   </configurations>
 
 </product>
