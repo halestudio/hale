@@ -19,7 +19,7 @@
      <sourceDirectory>./src/main/java</sourceDirectory>
     <resources>
       <resource>
-        <directory>./src/main/resource</directory>
+        <directory>./src/main/java/</directory>
       </resource>
     </resources>
     <testResources>
@@ -41,16 +41,20 @@
           <target>1.5</target>  <!-- The -target argument for the Java compiler. -->
           <debug>true</debug>   <!-- Whether to include debugging information.   -->
           <encoding>UTF-8</encoding> <!-- The -encoding argument for the Java compiler. -->
+          <excludes>
+                        <exclude>**/eu/esdihumboldt/cst/transformer/configuration/osgi/*.java</exclude>
+                        <exclude>**/eu/esdihumboldt/cst/transformer/configuration/osgi/*.java</exclude>
+          </excludes>            
         </configuration>
       </plugin>
      </plugins>
-    </pluginManagement>
-  </build>
+    </pluginManagement>   
+   </build>
  <dependencies>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.7</version>
+      <version>4.5</version>
       <scope>test</scope>
     </dependency>
      <dependency>
@@ -106,6 +110,11 @@
 	<version>2.0</version>
      </dependency>
      <dependency>
+	<groupId>eu.esdihumboldt.cst</groupId>
+	<artifactId>corefunctions</artifactId>
+	<version>1.0.0</version>
+     </dependency>
+    <dependency>
      	<groupId>com.iabcinc</groupId>
      	<artifactId>JMEP</artifactId>
      	<version>0.1.0</version>
