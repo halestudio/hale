@@ -12,22 +12,33 @@
 
 package eu.esdihumboldt.cst.corefunctions.inspire;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 
+import org.geotools.feature.AttributeImpl;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.PropertyImpl;
 import org.opengis.feature.Feature;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.PropertyDescriptor;
 
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
+
+import eu.esdihumboldt.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.goml.omwg.Property;
 
 /**
  * This function creates INSPIRE-compliant identifiers like this one
  * <code>urn:de:fraunhofer:exampleDataset:exampleFeatureTypeName:localID</code> 
  * based on the localId of the given source attribute.
  * 
- * @author Thorsten Reitz 
- * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @author Ulrich Schaeffler, Thorsten Reitz
+ * @partner 01 / Technische Universitaet Muenchen
+ * @partner 02 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
 public class IdentifierFunction 
@@ -36,13 +47,38 @@ public class IdentifierFunction
 	public static final String COUNTRY_PARAMETER_NAME = "countryName";
 	public static final String DATA_PROVIDER_PARAMETER_NAME = "providerName";
 	public static final String PRODUCT_PARAMETER_NAME = "productName";
+	
+	private String countryName = null;
+	private String dataProviderName= null;
+	private String productName = null;
+	private String featureTypename = null;
+	private Property sourceProperty = null;
+	private Property targetProperty = null;
 
 	/* (non-Javadoc)
 	 * @see eu.esdihumboldt.cst.transformer.CstFunction#configure(eu.esdihumboldt.cst.align.ICell)
 	 */
 	public boolean configure(ICell cell) {
-		// TODO Auto-generated method stub
-		return false;
+		for (IParameter ip : cell.getEntity1().getTransformation().getParameters()) {
+			if (ip.getName().equals(IdentifierFunction.COUNTRY_PARAMETER_NAME)) {
+				this.countryName = ip.getValue();
+			}
+			else{
+				if (ip.getName().equals(IdentifierFunction.DATA_PROVIDER_PARAMETER_NAME)) {
+					this.dataProviderName = ip.getValue();
+				}	
+				else{
+					if (ip.getName().equals(IdentifierFunction.PRODUCT_PARAMETER_NAME)) {
+						this.productName = ip.getValue();
+					}
+				}
+			}
+		}
+		
+		this.featureTypename= cell.getEntity1().getAbout().getAbout();
+		this.sourceProperty = ((ComposedProperty)cell.getEntity1()).getCollection().get(0);
+		this.targetProperty = (Property) cell.getEntity2();
+		return true;
 	}
 
 
@@ -59,7 +95,19 @@ public class IdentifierFunction
 	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.opengis.feature.Feature, org.opengis.feature.Feature)
 	 */
 	public Feature transform(Feature source, Feature target) {
-		// TODO Auto-generated method stub
+		PropertyDescriptor pd = target.getProperty(
+				this.targetProperty.getLocalname()).getDescriptor();
+		System.out.println("+++" +source.getProperty(this.sourceProperty.getLocalname()));
+		String localID = source.getProperty(this.sourceProperty.getLocalname()).getValue().toString();
+		
+		String inspireIDString = "urn:" + this.countryName+ ":"+this.dataProviderName+":"+this.productName+ ":"+this.featureTypename+":"+localID;
+		PropertyImpl p = null;
+		if (pd.getType().getBinding().equals(String.class)) {
+		  p = new AttributeImpl(inspireIDString, (AttributeDescriptor) pd, null);	
+		}
+		Collection<org.opengis.feature.Property> c = new HashSet<org.opengis.feature.Property>();
+		c.add(p);
+		target.setValue(c);
 		return target;
 	}
 
