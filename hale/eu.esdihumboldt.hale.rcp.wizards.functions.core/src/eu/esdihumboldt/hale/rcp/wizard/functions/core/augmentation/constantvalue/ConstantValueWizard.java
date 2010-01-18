@@ -82,4 +82,11 @@ public class ConstantValueWizard extends AugmentationWizard {
 	public void addPages() {
 		addPage(page);
 	}
+	
+	@Override
+	public boolean canFinish(){
+		return page.isPageComplete();
+	}
+	
 }
+

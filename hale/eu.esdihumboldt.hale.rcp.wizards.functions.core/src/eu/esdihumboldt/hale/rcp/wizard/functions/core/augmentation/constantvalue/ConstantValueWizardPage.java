@@ -58,6 +58,8 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 	public void createControl(Composite parent) {
 		
 			super.initializeDialogUnits(parent);
+			
+			
 			Composite composite = new Composite(parent, SWT.NULL);
 	        composite.setLayout(new GridLayout());
 	        composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
@@ -69,6 +71,7 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 	        
 	        setErrorMessage(null);	// should not initially have error message
 			super.setControl(composite);
+			setPageComplete(false);
 
 		}
 	
@@ -107,16 +110,6 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 		final Label outputAttributeLabel = new Label(configurationComposite, SWT.NONE);
 		outputAttributeLabel.setText("Attribute default value:");
 		this.attributeValueText = new Text(configurationComposite, SWT.BORDER);
-		this.attributeValueText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e){
-				updatePageComplete();
-			}
-
-			
-		});
-			
-			
-		
 		this.attributeValueText.setLayoutData(configurationLayoutData);
 		//if cell already exists and valid, display the old default value
 		if ((getParent().getResultCell()!= null && getParent().getResultCell().getEntity2()!= null && getParent().getResultCell().getEntity2().getTransformation()!=null && getParent().getResultCell().getEntity2().getTransformation().getParameters()!= null)){
@@ -130,6 +123,14 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 			}
 			this.attributeValueText.setText(oldValue);
 		}
+		this.attributeValueText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e){
+				updatePageComplete();
+				//getWizard().getContainer().updateButtons();
+			}
+
+			
+		});
 		
 		this.attributeValueText.setEnabled(true);
 		
@@ -148,8 +149,9 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 	@Override
 	public boolean isPageComplete() {
 		boolean isComplete = false;
-		if (this.attributeValueText!=null && this.attributeValueText.getText() != null && !this.attributeValueText.equals(""))
+		if (this.attributeValueText!=null && !this.attributeValueText.getText().equals("")){
 			isComplete = true;
+		}
 		return isComplete;
 	}
 

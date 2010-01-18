@@ -44,9 +44,13 @@ public class ConstantValueWizardFactory extends AugmentationWizardFactory {
 	 */
 	@Override
 	protected boolean supports(SchemaItem item, ICell augmentation) {
-		//creates a new cell or edits the existing augmentation cell
+		boolean supports = false;
+		//defined on the attributes of the simple type only
+		if (item.isAttribute()){
 		//TODO add check type of parameters 
-		return (augmentation == null || augmentation.getEntity2().getTransformation().getService().getLocation().equals(ConstantValueFunction.class.getName()));
+	        supports =(augmentation == null || augmentation.getEntity2().getTransformation().getService().getLocation().equals(ConstantValueFunction.class.getName()));
+		}
+		return supports;
 	}
 
 }
