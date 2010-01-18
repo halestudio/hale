@@ -14,7 +14,6 @@ package eu.esdihumboldt.hale.models;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
-import java.util.List;
 
 import org.opengis.feature.type.FeatureType;
 
@@ -59,7 +58,7 @@ public interface SchemaService
 	 * @param type the schema type
 	 * @return if the loading was successful
 	 */
-	public boolean loadSchema(List<URI> uris, SchemaType type);
+	//XXX not supported for now - public boolean loadSchema(List<URI> uris, SchemaType type);
 	
 	/**
 	 * Invoke this operation if you want to clear out the source schema stored. 
@@ -105,14 +104,22 @@ public interface SchemaService
 	 */
 	public FeatureType getFeatureTypeByName(String name);
 	
+	/**
+	 * Schema type enum
+	 */
 	public enum SchemaType {
+		/** Source schema */
 		SOURCE,
+		/** Target schema */
 		TARGET
 	}
 
 	/**
-	 * @param schemaType
-	 * @return
+	 * Get the feature types for the given schema type
+	 * 
+	 * @param schemaType the schema type
+	 * 
+	 * @return the feature types
 	 */
 	public Collection<FeatureType> getSchema(SchemaType schemaType);
 

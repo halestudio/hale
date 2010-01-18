@@ -29,7 +29,6 @@ import java.util.Map.Entry;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
@@ -62,9 +61,8 @@ import org.opengis.feature.type.PropertyDescriptor;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.hale.models.provider.SchemaProvider;
 
 /**
  * Implementation of {@link SchemaService}.
@@ -78,8 +76,8 @@ import eu.esdihumboldt.hale.models.UpdateMessage;
  *   Simon Templer, Fraunhofer IGD
  * @version $Id$
  */
-public class SchemaServiceImplApache 
-	implements SchemaService {
+public class ApacheSchemaProvider 
+	implements SchemaProvider {
 	
 	/**
 	 * This class is used as a simple container to store
@@ -130,108 +128,11 @@ public class SchemaServiceImplApache
 		}
 	}
 	
+	/**
+	 * The log
+	 */
+	private static Logger _log = Logger.getLogger(ApacheSchemaProvider.class);
 	
-	private static Logger _log = Logger.getLogger(SchemaServiceImplApache.class);
-	
-	private static SchemaServiceImplApache instance = new SchemaServiceImplApache();
-
-	/** Source schema */
-	private Schema sourceSchema = Schema.EMPTY_SCHEMA;
-
-	/** Target schema */
-	private Schema targetSchema = Schema.EMPTY_SCHEMA;
-	
-	private Collection<HaleServiceListener> listeners = new HashSet<HaleServiceListener>();
-	
-	/**
-	 * Default constructor
-	 */
-	private SchemaServiceImplApache() {
-		_log.setLevel(Level.INFO);
-	}
-	
-	/**
-	 * Get the {@link SchemaServiceImplApache} instance
-	 * 
-	 * @return the {@link SchemaServiceImplApache} instance
-	 */
-	public static SchemaService getInstance() {
-		return SchemaServiceImplApache.instance;
-	}
-
-	/**
-	 * @see SchemaService#cleanSourceSchema()
-	 */
-	public boolean cleanSourceSchema() {
-		sourceSchema = Schema.EMPTY_SCHEMA;
-		updateListeners();
-		
-		return true;
-	}
-
-	/**
-	 * @see SchemaService#cleanTargetSchema()
-	 */
-	public boolean cleanTargetSchema() {
-		targetSchema = Schema.EMPTY_SCHEMA;
-		updateListeners();
-		
-		return true;
-	}
-
-	/**
-	 * @see SchemaService#getSourceSchema()
-	 */
-	public Collection<FeatureType> getSourceSchema() {
-		return sourceSchema.getFeatureTypes();
-	}
-
-	/**
-	 * @see SchemaService#getTargetSchema()
-	 */
-	public Collection<FeatureType> getTargetSchema() {
-		return targetSchema.getFeatureTypes();
-	}
-
-	/**
-	 * @see SchemaService#loadSchema(URI, SchemaType)
-	 */
-	public boolean loadSchema(URI location, SchemaType type) {
-		Schema schema = this.loadSchema(location);
-		
-		if (type.equals(SchemaType.SOURCE)) {
-			sourceSchema = schema;
-		} 
-		else {
-			targetSchema = schema;
-		}
-		
-		this.updateListeners();
-		return true;
-	}
-	
-	/**
-	 * @see SchemaService#loadSchema(List, SchemaService.SchemaType)
-	 */
-	@Override
-	public boolean loadSchema(List<URI> uris, SchemaType type) {
-		throw new UnsupportedOperationException("Not implemented");
-	}
-	
-	public boolean addListener(HaleServiceListener sl) {
-		return this.listeners.add(sl);
-	}
-	
-	/**
-	 * Inform {@link HaleServiceListener}s of an update.
-	 */
-	@SuppressWarnings("unchecked")
-	private void updateListeners() {
-		for (HaleServiceListener hsl : this.listeners) {
-			hsl.update(new UpdateMessage(SchemaService.class, null)); // FIXME
-		}
-	}
-
 	/**
 	 * Returns the AttributeType for an enumeration.
 	 * 
@@ -379,9 +280,6 @@ public class SchemaServiceImplApache
 	 * Extracts attribute type names from a XmlSchemaParticle.
 	 * 
 	 * @param particle
-	 * @param superTypeName
-	 * @param featureTypes
-	 * @param importedFeatureTypes 
 	 * @return
 	 */
 	private Set<Name> getAttributeTypeNamesFromParticle(XmlSchemaParticle particle) {
@@ -493,7 +391,7 @@ public class SchemaServiceImplApache
 	 *            URI which represents a file
 	 * @return Collection FeatureType collection.
 	 */
-	protected Schema loadSchema(URI location) {
+	public Schema loadSchema(URI location) {
 		// use XML Schema to load schema with all its subschema to the memory
 		InputStream is = null;
 		URL locationURL;
@@ -857,83 +755,6 @@ public class SchemaServiceImplApache
 		}
 		_log.info("Base URI for schemas to be used: " + baseUri);
 		return baseUri;
-	}
-
-	/**
-	 * @see SchemaService#getSourceNameSpace()
-	 */
-	public String getSourceNameSpace() {
-		return sourceSchema.getNamespace();
-	}
-
-	/**
-	 * @see SchemaService#getSourceURL()
-	 */
-	public URL getSourceURL() {
-		return sourceSchema.getLocation();
-	}
-
-	/**
-	 * @see SchemaService#getTargetNameSpace()
-	 */
-	public String getTargetNameSpace() {
-		return targetSchema.getNamespace();
-	}
-
-	/**
-	 * @see SchemaService#getTargetURL()
-	 */
-	public URL getTargetURL() {
-		return targetSchema.getLocation();
-	}
-
-	/**
-	 * @see SchemaService#getFeatureTypeByName(java.lang.String)
-	 */
-	public FeatureType getFeatureTypeByName(String name) {
-		FeatureType result = null;
-		// handles cases where a full name was given.
-		if (!getSourceNameSpace().equals("") && name.contains(getSourceNameSpace())) {
-			for (FeatureType ft : getSourceSchema()) {
-				if (ft.getName().getLocalPart().equals(name)) {
-					result = ft;
-					break;
-				}
-			}
-		}
-		else if (!getTargetNameSpace().equals("") && name.contains(getTargetNameSpace())) {
-			for (FeatureType ft : getTargetSchema()) {
-				if (ft.getName().getLocalPart().equals(name)) {
-					result = ft;
-					break;
-				}
-			}
-		}
-		// handle case where only the local part was given.
-		else {
-			Collection<FeatureType> allFTs = new HashSet<FeatureType>();
-			allFTs.addAll(getSourceSchema());
-			allFTs.addAll(getTargetSchema());
-			for (FeatureType ft : allFTs) {
-				if (ft.getName().getLocalPart().equals(name)) {
-					result = ft;
-					break;
-				}
-			}
-		}
-		return result;
-	}
-	
-	/**
-	 * @see SchemaService#getSchema(SchemaService.SchemaType)
-	 */
-	public Collection<FeatureType> getSchema(SchemaType schemaType) {
-		if (SchemaType.SOURCE.equals(schemaType)) {
-			return getSourceSchema();
-		}
-		else {
-			return getTargetSchema();
-		}
 	}
 	
 }

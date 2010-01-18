@@ -25,10 +25,12 @@ import org.opengis.feature.type.FeatureType;
 
 import org.xml.sax.SAXException;
 
+import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.schema.SchemaParser;
+import eu.esdihumboldt.hale.models.schema.SchemaProviderService;
 import eu.esdihumboldt.hale.models.schema.SchemaServiceImpl;
-import eu.esdihumboldt.hale.models.schema.SchemaServiceImplApache;
+import eu.esdihumboldt.hale.models.schema.ApacheSchemaProvider;
 
 /**
  * Unit tests which covers the SchemaService implementation class.
@@ -89,13 +91,13 @@ public class SchemaServiceTestApache {
 	public void testLoadTargetSchema() {
 	}
 	@Test
-	public void testLoadSourceSchemawithImport(){
+	public void testLoadSourceSchemawithImport() throws InstantiationException, IllegalAccessException{
 		
         
 //    	String pathToSourceSchema = "resources/schema/inheritance/rise_hydrography.xsd";
     	String pathToSourceSchema = "D:/Humboldt/workspace/HALE/resources/schema/inheritance/rise_hydrography.xsd";
 //    	String pathToSourceSchema = "D:/Humboldt/workspace/HALE/resources/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/HY/Hydrography.xsd";
-    	SchemaServiceImplApache service = (SchemaServiceImplApache) SchemaServiceImplApache.getInstance();
+    	SchemaService service = SchemaProviderService.getInstance(ApacheSchemaProvider.class);
     	SchemaServiceImpl service2 = (SchemaServiceImpl) SchemaServiceImpl.getInstance();
 
 

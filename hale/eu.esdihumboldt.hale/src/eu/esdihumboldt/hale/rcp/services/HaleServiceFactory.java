@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.hale.rcp.services;
 
+import org.apache.log4j.Logger;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
@@ -23,7 +24,8 @@ import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.alignment.AlignmentServiceImpl;
 import eu.esdihumboldt.hale.models.instance.InstanceServiceImpl;
 import eu.esdihumboldt.hale.models.project.ProjectServiceImpl;
-import eu.esdihumboldt.hale.models.schema.SchemaServiceImplApache;
+import eu.esdihumboldt.hale.models.schema.ApacheSchemaProvider;
+import eu.esdihumboldt.hale.models.schema.SchemaProviderService;
 import eu.esdihumboldt.hale.models.style.StyleServiceImpl;
 import eu.esdihumboldt.hale.models.task.TaskServiceImpl;
 
@@ -40,9 +42,11 @@ import eu.esdihumboldt.hale.models.task.TaskServiceImpl;
 public class HaleServiceFactory 
 	extends AbstractServiceFactory {
 	
+	private static final Logger log = Logger.getLogger(HaleServiceFactory.class);
+	
 	private InstanceService instance = InstanceServiceImpl.getInstance();
-	private SchemaService schema = SchemaServiceImplApache.getInstance();
-	private StyleService style = StyleServiceImpl.getInstance(schema);
+	private SchemaService schema;
+	private StyleService style;
 	private TaskService task = TaskServiceImpl.getInstance();
 	private AlignmentService alignment = AlignmentServiceImpl.getInstance();
 	private ProjectService project = ProjectServiceImpl.getInstance();
@@ -64,13 +68,13 @@ public class HaleServiceFactory
 			return this.instance;
 		}
 		else if (serviceInterface.equals(SchemaService.class)) {
-			return this.schema;
+			return getSchemaService();
 		}
 		else if (serviceInterface.equals(TaskService.class)) {
 			return this.task;
 		}
 		else if (serviceInterface.equals(StyleService.class)) {
-			return this.style;
+			return getStyleService();
 		}
 		else if (serviceInterface.equals(AlignmentService.class)) {
 			return this.alignment;
@@ -83,6 +87,34 @@ public class HaleServiceFactory
 					+ serviceInterface.getCanonicalName() 
 					+ "), no service implementation is known.");
 		}
+	}
+
+	/**
+	 * Get the schema service
+	 * 
+	 * @return the schema service
+	 */
+	private SchemaService getSchemaService() {
+		if (schema == null) {
+			try {
+				schema = SchemaProviderService.getInstance(ApacheSchemaProvider.class);
+			} catch (Exception e) {
+				log.error("Error instantiating schema service", e);
+			}
+		}
+		return schema;
+	}
+	
+	/**
+	 * Get the style service
+	 * 
+	 * @return the style service
+	 */
+	private StyleService getStyleService() {
+		if (style == null) {
+			style = StyleServiceImpl.getInstance(getSchemaService());
+		}
+		return style;
 	}
 
 }

@@ -18,7 +18,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -63,10 +62,18 @@ public class SchemaServiceImpl
 	private URL sourceLocation = null;
 	private URL targetLocation = null;
 	
+	/**
+	 * Default constructor
+	 */
 	private SchemaServiceImpl() {
 		_log.setLevel(Level.INFO);
 	}
 	
+	/**
+	 * Get the schema service instance
+	 * 
+	 * @return the schema service instance
+	 */
 	public static SchemaService getInstance() {
 		return SchemaServiceImpl.instance;
 	}
@@ -157,6 +164,7 @@ public class SchemaServiceImpl
 	/**
 	 * Inform {@link HaleServiceListener}s of an update.
 	 */
+	@SuppressWarnings("unchecked")
 	private void updateListeners() {
 		for (HaleServiceListener hsl : this.listeners) {
 			_log.info("Updating a listener.");
@@ -302,14 +310,6 @@ public class SchemaServiceImpl
 		return collection;
 	}
 	
-	private String findBaseUri(URI file) {
-		String baseUri = "";
-		baseUri = file.toString();
-		baseUri = baseUri.substring(0, baseUri.lastIndexOf("/"));
-		System.out.println("********* BASE_URI: " + baseUri + "***********");
-		return baseUri;
-	}
-
 	/**
 	 * @see SchemaService#getSourceNameSpace()
 	 */
@@ -339,7 +339,7 @@ public class SchemaServiceImpl
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.models.SchemaService#getFeatureTypeByName()
+	 * @see SchemaService#getFeatureTypeByName(String)
 	 */
 	@Override
 	public FeatureType getFeatureTypeByName(String name) {
@@ -378,7 +378,7 @@ public class SchemaServiceImpl
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.models.SchemaService#getSchema(eu.esdihumboldt.hale.models.SchemaService.SchemaType)
+	 * @see SchemaService#getSchema(SchemaType)
 	 */
 	public Collection<FeatureType> getSchema(SchemaType schemaType) {
 		if (SchemaType.SOURCE.equals(schemaType)) {
@@ -387,14 +387,6 @@ public class SchemaServiceImpl
 		else {
 			return this.targetSchema;
 		}
-	}
-
-	/**
-	 * @see SchemaService#loadSchema(List, SchemaService.SchemaType)
-	 */
-	@Override
-	public boolean loadSchema(List<URI> uris, SchemaType type) {
-		throw new UnsupportedOperationException("Not implemented");
 	}
 	
 }
