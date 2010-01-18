@@ -61,7 +61,7 @@
       <factory
             class="eu.esdihumboldt.hale.rcp.wizard.functions.core.augmentation.constantvalue.ConstantValueWizardFactory"
             icon="icons/add.gif"
-            name="Attribute Default Value (factory)">
+            name="Attribute Default Value ">
       </factory>
    </extension>
 
