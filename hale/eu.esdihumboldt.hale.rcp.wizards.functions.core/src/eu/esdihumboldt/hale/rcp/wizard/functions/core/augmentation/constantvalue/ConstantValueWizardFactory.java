@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.rcp.wizard.functions.core.augmentation.constantvalu
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.corefunctions.ConstantValueFunction;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
+import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizard;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizardFactory;
 
@@ -46,9 +47,8 @@ public class ConstantValueWizardFactory extends AugmentationWizardFactory {
 	protected boolean supports(SchemaItem item, ICell augmentation) {
 		boolean supports = false;
 		//defined on the attributes of the simple type only
-		if (item.isAttribute()){
-		//TODO add check type of parameters 
-	        supports =(augmentation == null || augmentation.getEntity2().getTransformation().getService().getLocation().equals(ConstantValueFunction.class.getName()));
+		if (item.isAttribute()&&(item.getType().equals(TreeObjectType.NUMERIC_ATTRIBUTE)||item.getType().equals(TreeObjectType.STRING_ATTRIBUTE))){
+			supports =(augmentation == null || augmentation.getEntity2().getTransformation().getService().getLocation().equals(ConstantValueFunction.class.getName()));
 		}
 		return supports;
 	}
