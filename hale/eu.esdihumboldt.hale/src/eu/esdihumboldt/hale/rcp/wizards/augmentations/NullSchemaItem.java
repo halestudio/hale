@@ -17,6 +17,7 @@ import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
+import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 
 /**
  * Schema item representing the {@link Entity#NULL_ENTITY}
@@ -106,5 +107,17 @@ public class NullSchemaItem implements SchemaItem {
 	public boolean isType() {
 		return false;
 	}
+
+	/**
+	 * 
+	 * @see SchemaItem#getType()
+	 */
+	
+	@Override
+	public TreeObjectType getType() {
+		return null;
+	}
+
+	
 
 }

@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.rcp.views.model;
 import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 
 /**
  * @author Simon Templer
@@ -70,5 +71,12 @@ public interface SchemaItem {
 	 * @return the parent schema item, may be <code>null</code>
 	 */
 	public abstract SchemaItem getParent();
+	
+	/**
+	 * @return type of the SchemaItem as defined
+	 * @see eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType
+	 * 
+	 */
+	public abstract TreeObjectType getType();
 
 }
