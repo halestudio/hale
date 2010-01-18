@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -43,7 +44,7 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 	private Text attributeNameText;
 	
 	/** text field for the default value to set up */
-	private Text attributeValueText;
+	private StyledText attributeValueText;
 
 	public ConstantValueWizardPage(String pageName, String title,
 			ImageDescriptor titleImage) {
@@ -109,7 +110,7 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 		
 		final Label outputAttributeLabel = new Label(configurationComposite, SWT.NONE);
 		outputAttributeLabel.setText("Attribute default value:");
-		this.attributeValueText = new Text(configurationComposite, SWT.BORDER);
+		this.attributeValueText = new StyledText(configurationComposite, SWT.BORDER);
 		this.attributeValueText.setLayoutData(configurationLayoutData);
 		//if cell already exists and valid, display the old default value
 		if ((getParent().getResultCell()!= null && getParent().getResultCell().getEntity2()!= null && getParent().getResultCell().getEntity2().getTransformation()!=null && getParent().getResultCell().getEntity2().getTransformation().getParameters()!= null)){
@@ -122,11 +123,13 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 				if (tmpParameter.getName().equals(getParamName())) oldValue = tmpParameter.getValue();
 			}
 			this.attributeValueText.setText(oldValue);
+			this.attributeValueText.setCaretOffset(oldValue.length());
+			
 		}
 		this.attributeValueText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e){
 				updatePageComplete();
-				//getWizard().getContainer().updateButtons();
+				
 			}
 
 			
