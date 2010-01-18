@@ -11,24 +11,28 @@
  */
 package eu.esdihumboldt.hale.models.provider;
 
-import java.util.Collection;
+import java.net.URI;
 
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.models.schema.Schema;
+
 /**
- * A {@link SchemaProvider} generates new {@link FeatureType}s from a given 
- * input.
+ * A {@link SchemaProvider} loads a schema from a given URI. A type that
+ * implements this interface must have a default constructor
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz, Simon Templer 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
 public interface SchemaProvider {
 
 	/**
-	 * Create a Collection of {@link FeatureType}s based on a given file path
-	 * string.
-	 * @return a {@link Collection} of {@link FeatureType}s.
+	 * Method to load a XSD schema file and build a collection of
+	 * {@link FeatureType}s.
+	 * 
+	 * @param location URI which represents a file
+	 * @return the schema object containing the {@link FeatureType}s
 	 */
-	public Collection<FeatureType> createFeatureTypes(String path);
+	public Schema loadSchema(URI location);
 }
