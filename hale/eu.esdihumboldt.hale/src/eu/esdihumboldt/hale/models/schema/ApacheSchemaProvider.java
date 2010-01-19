@@ -80,26 +80,29 @@ public class ApacheSchemaProvider
 	implements SchemaProvider {
 	
 	/**
-	 * This class is used as a simple container to store
-	 * a AttributeType / feature type name pair.
+	 * Represents the definition of an attribute
 	 */
-	public class AttributeResult {
+	private static class AttributeDefinition {
 		/**
 		 * Name of the feature type
 		 */
-		String name;
-		AttributeType type;
+		private final String name;
+		private final Name typeName;
+		private final XmlSchemaElement element;
 
 		/**
 		 * Constructor
 		 * 
 		 * @param name the attribute name
-		 * @param type the attribute type
+		 * @param typeName the name of the attribute type
+		 * @param element the element defining the attribute
 		 */
-		public AttributeResult(String name, AttributeType type) {
+		public AttributeDefinition(String name, Name typeName,
+				XmlSchemaElement element) {
 			super();
 			this.name = name;
-			this.type = type;
+			this.typeName = typeName;
+			this.element = element;
 		}
 		
 		/**
@@ -108,24 +111,21 @@ public class ApacheSchemaProvider
 		public String getName() {
 			return name;
 		}
+
 		/**
-		 * @param name the name to set
+		 * @return the typeName
 		 */
-		public void setName(String name) {
-			this.name = name;
+		public Name getTypeName() {
+			return typeName;
 		}
+
 		/**
-		 * @return the type
+		 * @return the element
 		 */
-		public AttributeType getType() {
-			return type;
+		public XmlSchemaElement getElement() {
+			return element;
 		}
-		/**
-		 * @param type the type to set
-		 */
-		public void setType(AttributeType type) {
-			this.type = type;
-		}
+		
 	}
 	
 	/**
@@ -134,10 +134,11 @@ public class ApacheSchemaProvider
 	private static Logger _log = Logger.getLogger(ApacheSchemaProvider.class);
 	
 	/**
-	 * Returns the AttributeType for an enumeration.
+	 * Returns the attribute type for an enumeration.
 	 * 
-	 * @param element
-	 * @return
+	 * @param element the defining element
+	 * 
+	 * @return the attribute type
 	 */
 	private AttributeType getEnumAttributeType(XmlSchemaElement element) {
 		AttributeType type = null;
@@ -179,111 +180,54 @@ public class ApacheSchemaProvider
 	}
 	
 	/**
-	 * Extracts attributeTypes from a XmlSchemaParticle.
+	 * Get the attribute type for an attribute definition
 	 * 
-	 * TODO use {@link #getAttributeTypeNamesFromParticle(XmlSchemaParticle)} instead?
-	 * 
-	 * @param particle
-	 * @param superTypeName
-	 * @param featureTypes
-	 * @param importedFeatureTypes 
-	 * @return
+	 * @param attribute the attribute definition
+	 * @param featureTypes the local feature types
+	 * @param importedFeatureTypes the imported feature types
+	 *  
+	 * @return the attribute type, may be <code>null</code> if it could not be
+	 *    resolved
 	 */
-	private List<AttributeResult> getAttributeTypesFromParticle(XmlSchemaParticle particle,
+	private AttributeType getAttributeType(AttributeDefinition attribute,
 			Map<Name, FeatureType> featureTypes, Map<Name, FeatureType> importedFeatureTypes) {
-		List<AttributeResult> attributeResults = new ArrayList<AttributeResult>();
-		
 		XSSchema xsSchema = new XSSchema();
-		if (particle instanceof XmlSchemaSequence) {
-			XmlSchemaSequence sequence = (XmlSchemaSequence)particle;
-			for (int j = 0; j < sequence.getItems().getCount(); j++) {
-				XmlSchemaObject object = sequence.getItems().getItem(j);
-				if (object instanceof XmlSchemaElement) {
-					XmlSchemaElement element = (XmlSchemaElement)object;										
-					Name attributeName = null;
-					if (element.getSchemaTypeName() != null) {
-						attributeName = new NameImpl(
-							element.getSchemaTypeName().getNamespaceURI(),
-							element.getSchemaTypeName().getLocalPart());
-					}
-					else if (element.getRefName() != null) {
-						attributeName = new NameImpl(
-							element.getRefName().getNamespaceURI(),
-							element.getRefName().getLocalPart());
-					}
-					else if (element.getSchemaType() != null) {
-						if (element.getSchemaType() instanceof XmlSchemaComplexType) {
-							XmlSchemaContentModel model = ((XmlSchemaComplexType)element.getSchemaType()).getContentModel();
-							XmlSchemaParticle p = ((XmlSchemaComplexType)element.getSchemaType()).getParticle();
-							if (model != null) {
-								XmlSchemaContent content = model.getContent();
-								
-								QName qname = null;
-								if (content instanceof XmlSchemaComplexContentExtension) {
-									qname = ((XmlSchemaComplexContentExtension)content).getBaseTypeName();
-								} else if (content instanceof XmlSchemaSimpleContentExtension) {
-									qname = ((XmlSchemaSimpleContentExtension)content).getBaseTypeName();
-								}
-								
-								attributeName = new NameImpl(
-										qname.getNamespaceURI(),
-										qname.getLocalPart());
-							} else if (p != null) {
-								attributeResults.addAll(getAttributeTypesFromParticle(p, featureTypes, importedFeatureTypes));
-								continue;
-							}
-						}
-						else if (element.getSchemaType() instanceof XmlSchemaSimpleType) {
-							QName qname = element.getQName();
-							attributeName = new NameImpl(
-									qname.getNamespaceURI(),
-									qname.getLocalPart());
-						}
-					}
-					if (attributeName == null) {
-						_log.warn("Schema type name is null! " + element.getName());
-						continue;
-					}
-					AttributeType ty = xsSchema.get(attributeName);
-					
-					// Try to resolve the attribute bindings
-					
-					if (ty == null) {
-						ty = getSchemaAttributeType(attributeName, featureTypes);
-					}
-					if (ty == null) {
-						ty = getSchemaAttributeType(attributeName, importedFeatureTypes);
-					}
-					
-					if (ty == null) {
-						// GML bindings
-						GMLSchema gmlSchema = new GMLSchema();
-						ty = gmlSchema.get(attributeName);
-					}
-					if (ty == null) {
-						// Bindings for enumeration types
-						ty = getEnumAttributeType(element);
-					}
-					if (ty == null ) {
-						_log.warn("Type NOT found: " + attributeName.getLocalPart());
-					}
-					
-					AttributeResult ar = new AttributeResult(element.getName(), ty);
-					attributeResults.add(ar);
-				}
-			}
+		AttributeType ty = xsSchema.get(attribute.getTypeName());
+			
+		// Try to resolve the attribute bindings
+		
+		if (ty == null) {
+			ty = getSchemaAttributeType(attribute.getTypeName(), featureTypes);
 		}
-		return attributeResults;
+		if (ty == null) {
+			ty = getSchemaAttributeType(attribute.getTypeName(), importedFeatureTypes);
+		}
+		
+		if (ty == null) {
+			// GML bindings
+			GMLSchema gmlSchema = new GMLSchema();
+			ty = gmlSchema.get(attribute.getTypeName());
+		}
+		if (ty == null) {
+			// Bindings for enumeration types
+			ty = getEnumAttributeType(attribute.getElement());
+		}
+		if (ty == null ) {
+			_log.warn("Type NOT found: " + attribute.getTypeName().getLocalPart());
+		}
+		
+		return ty;
 	}
 	
 	/**
-	 * Extracts attribute type names from a XmlSchemaParticle.
+	 * Extracts attribute definitions from a {@link XmlSchemaParticle}.
 	 * 
-	 * @param particle
-	 * @return
+	 * @param particle the particle
+	 * 
+	 * @return the list of attribute definitions
 	 */
-	private Set<Name> getAttributeTypeNamesFromParticle(XmlSchemaParticle particle) {
-		Set<Name> attributeResults = new HashSet<Name>();
+	private List<AttributeDefinition> getAttributesFromParticle(XmlSchemaParticle particle) {
+		List<AttributeDefinition> attributeResults = new ArrayList<AttributeDefinition>();
 		
 		if (particle instanceof XmlSchemaSequence) {
 			XmlSchemaSequence sequence = (XmlSchemaSequence)particle;
@@ -316,11 +260,13 @@ public class ApacheSchemaProvider
 									qname = ((XmlSchemaSimpleContentExtension)content).getBaseTypeName();
 								}
 								
-								attributeName = new NameImpl(
-										qname.getNamespaceURI(),
-										qname.getLocalPart());
+								if (qname != null) {
+									attributeName = new NameImpl(
+											qname.getNamespaceURI(),
+											qname.getLocalPart());
+								}
 							} else if (p != null) {
-								attributeResults.addAll(getAttributeTypeNamesFromParticle(p));
+								attributeResults.addAll(getAttributesFromParticle(p));
 								continue;
 							}
 						}
@@ -335,7 +281,10 @@ public class ApacheSchemaProvider
 						_log.warn("Schema type name is null! " + element.getName());
 					}
 					else {
-						attributeResults.add(attributeName);
+						attributeResults.add(new AttributeDefinition(
+								element.getName(), 
+								attributeName, 
+								element));
 					}
 				}
 			}
@@ -346,25 +295,26 @@ public class ApacheSchemaProvider
 
 	/**
 	 * Find a super type name based on a complex type
-	 * @param item
-	 * @return
+	 * 
+	 * @param item the complex type defining a super type
+	 * 
+	 * @return the name of the super type or <code>null</code>
 	 */
 	private Name getSuperTypeName(XmlSchemaComplexType item) {
 		Name superType = null;
 		
-		if (item instanceof XmlSchemaComplexType) {
-			XmlSchemaContentModel model = ((XmlSchemaComplexType)item).getContentModel();
-			if (model != null ) {
-				XmlSchemaContent content = model.getContent();
-				if (content instanceof XmlSchemaComplexContentExtension) {
-					if (((XmlSchemaComplexContentExtension)content).getBaseTypeName() != null) {
-						superType = new NameImpl(
-								((XmlSchemaComplexContentExtension)content).getBaseTypeName().getNamespaceURI(),
-								((XmlSchemaComplexContentExtension)content).getBaseTypeName().getLocalPart());
-					}
+		XmlSchemaContentModel model = item.getContentModel();
+		if (model != null ) {
+			XmlSchemaContent content = model.getContent();
+			if (content instanceof XmlSchemaComplexContentExtension) {
+				if (((XmlSchemaComplexContentExtension)content).getBaseTypeName() != null) {
+					superType = new NameImpl(
+							((XmlSchemaComplexContentExtension)content).getBaseTypeName().getNamespaceURI(),
+							((XmlSchemaComplexContentExtension)content).getBaseTypeName().getLocalPart());
 				}
 			}
 		}
+		
 		return superType;
 	}
 	
@@ -385,11 +335,7 @@ public class ApacheSchemaProvider
 	}
 	
 	/**
-	 * Method to load a XSD schema file and build a collection of FeatureTypes.
-	 * 
-	 * @param location
-	 *            URI which represents a file
-	 * @return Collection FeatureType collection.
+	 * @see SchemaProvider#loadSchema(java.net.URI)
 	 */
 	public Schema loadSchema(URI location) {
 		// use XML Schema to load schema with all its subschema to the memory
@@ -602,7 +548,9 @@ public class ApacheSchemaProvider
 			}
 			else if (item instanceof XmlSchemaComplexType) {
 				Name superTypeName = getSuperTypeName((XmlSchemaComplexType) item);
-				List<AttributeResult> attributeResults = getAttributes((XmlSchemaComplexType) item, featureTypes, importedFeatureTypes);
+				
+				// get the attributes
+				List<AttributeDefinition> attributeDefinitions = getAttributes((XmlSchemaComplexType) item);
 				
 				// As it is not possible to set the super type of an existing feature type
 				// we need to recreate all feature types. But now set the corresponding 
@@ -613,20 +561,20 @@ public class ApacheSchemaProvider
 				ftbuilder.setNamespaceURI(typeName.getNamespaceURI()); //schema.getTargetNamespace());
 				ftbuilder.setAbstract(((XmlSchemaComplexType) item).isAbstract());
 				
-				for (int a = 0; a < attributeResults.size(); a++) {
-					if (attributeResults.get(a).getType() != null) {
-						AttributeResult res = attributeResults.get(a);
-						AttributeType t = res.getType();
-						if (res.getName().equals("geometry")) {
+				for (AttributeDefinition attribute : attributeDefinitions) {
+					AttributeType attributeType = getAttributeType(attribute, featureTypes, importedFeatureTypes);
+					
+					if (attributeType != null) {
+						if (attribute.getName().equals("geometry")) {
 							AttributeTypeBuilder builder = new AttributeTypeBuilder();
 							builder.setBinding(Geometry.class);
-							builder.setName(t.getName().getLocalPart());
+							builder.setName(attributeType.getName().getLocalPart());
 							builder.setNillable(true);
-							t = builder.buildType();
+							attributeType = builder.buildType();
 						}
 						
 						AttributeDescriptor desc = new AttributeDescriptorImpl(
-								t, new NameImpl(schema.getTargetNamespace(), res.getName()),0, 0, true, null); // FIXME nillable determination
+								attributeType, new NameImpl(schema.getTargetNamespace(), attribute.getName()),0, 0, true, null); // FIXME nillable determination
 						// set the name of the Default geometry property explicitly, 
 						// otherwise nothing will be returned when calling 
 						// getGeometryDescriptor().
@@ -636,7 +584,7 @@ public class ApacheSchemaProvider
 			
 						ftbuilder.add(desc);
 					}
-					else _log.warn("Attribute type NOT found: " + attributeResults.get(a).getName());
+					else _log.warn("Attribute type NOT found: " + attribute.getName());
 				}
 				
 				if (superTypeName != null) {
@@ -691,32 +639,30 @@ public class ApacheSchemaProvider
 	/**
 	 * Get the attributes for the given item
 	 * 
-	 * TODO use {@link #getAttributeTypeNames(XmlSchemaComplexType)} ?
-	 * 
 	 * @param item the complex type item
-	 * @return the attributes as a list of {@link AttributeResult}s
+	 *  
+	 * @return the attributes as a list of {@link AttributeDefinition}s
 	 */
-	private List<AttributeResult> getAttributes(XmlSchemaComplexType item, Map<Name, FeatureType> featureTypes,
-			Map<Name, FeatureType> importedFeatureTypes) {
-		XmlSchemaContentModel model = ((XmlSchemaComplexType)item).getContentModel();
+	private List<AttributeDefinition> getAttributes(XmlSchemaComplexType item) {
+		XmlSchemaContentModel model = item.getContentModel();
 		if (model != null ) {
 			XmlSchemaContent content = model.getContent();
 
 			if (content instanceof XmlSchemaComplexContentExtension) {
 				if (((XmlSchemaComplexContentExtension)content).getParticle() != null) {
 					XmlSchemaParticle particle = ((XmlSchemaComplexContentExtension)content).getParticle();
-					return getAttributeTypesFromParticle(particle, featureTypes, importedFeatureTypes);
+					return getAttributesFromParticle(particle);
 				}
 			}
 		}
 		else if (((XmlSchemaComplexType)item).getParticle() != null) {
 			XmlSchemaParticle particle = ((XmlSchemaComplexType)item).getParticle();
 			if (particle instanceof XmlSchemaSequence) {
-				return getAttributeTypesFromParticle(particle, featureTypes, importedFeatureTypes);
+				return getAttributesFromParticle(particle);
 			}
 		}
 		
-		return new ArrayList<AttributeResult>();
+		return new ArrayList<AttributeDefinition>();
 	}
 	
 	/**
@@ -726,30 +672,27 @@ public class ApacheSchemaProvider
 	 * @return the attribute type names
 	 */
 	private Set<Name> getAttributeTypeNames(XmlSchemaComplexType item) {
-		XmlSchemaContentModel model = ((XmlSchemaComplexType)item).getContentModel();
-		if (model != null ) {
-			XmlSchemaContent content = model.getContent();
-
-			if (content instanceof XmlSchemaComplexContentExtension) {
-				if (((XmlSchemaComplexContentExtension)content).getParticle() != null) {
-					XmlSchemaParticle particle = ((XmlSchemaComplexContentExtension)content).getParticle();
-					return getAttributeTypeNamesFromParticle(particle);
-				}
-			}
-		}
-		else if (((XmlSchemaComplexType)item).getParticle() != null) {
-			XmlSchemaParticle particle = ((XmlSchemaComplexType)item).getParticle();
-			if (particle instanceof XmlSchemaSequence) {
-				return getAttributeTypeNamesFromParticle(particle);
-			}
+		List<AttributeDefinition> attributes = getAttributes(item);
+		
+		Set<Name> typeNames = new HashSet<Name>();
+		
+		for (AttributeDefinition def : attributes) {
+			typeNames.add(def.getTypeName());
 		}
 		
-		return new HashSet<Name>();
+		return typeNames;
 	}
 
-	private String findBaseUri(URI file) {
+	/**
+	 * Get the base URI for the given URI
+	 * 
+	 * @param uri the URI
+	 * 
+	 * @return the base URI as string
+	 */
+	private String findBaseUri(URI uri) {
 		String baseUri = "";
-		baseUri = file.toString();
+		baseUri = uri.toString();
 		if (baseUri.matches("^.*?\\/.+")) {
 			baseUri = baseUri.substring(0, baseUri.lastIndexOf("/"));
 		}
