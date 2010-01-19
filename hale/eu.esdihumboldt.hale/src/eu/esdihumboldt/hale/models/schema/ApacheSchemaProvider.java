@@ -169,11 +169,13 @@ public class ApacheSchemaProvider
 		
 		FeatureType featureType = featureTypes.get(name); 
 		if (featureType != null) {
-			AttributeTypeBuilder builder = new  AttributeTypeBuilder();
+			/*XXX why create a new type if we can use the existing feature type? - AttributeTypeBuilder builder = new  AttributeTypeBuilder();
 			builder.setBinding(featureType.getBinding());
 			builder.setName(name.getLocalPart());
 			
-			type = builder.buildType();
+			type = builder.buildType();*/
+			
+			type = featureType;
 		}
 				
 		return type;

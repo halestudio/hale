@@ -1,3 +1,14 @@
+/*
+ * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
+ * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * 
+ * For more information on the project, please refer to the this web site:
+ * http://www.esdi-humboldt.eu
+ * 
+ * LICENSE: For information on the license under which this program is 
+ * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
+ * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ */
 package eu.esdihumboldt.hale.rcp.views.model;
 
 
@@ -53,6 +64,7 @@ import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.FeatureTypeHelper;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
+import eu.esdihumboldt.hale.rcp.views.model.filtering.AbstractContentProviderAction;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.PatternViewFilter;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.SimpleToggleAction;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.UseAggregationHierarchyAction;
@@ -158,13 +170,18 @@ public class ModelNavigationView extends ViewPart implements
 		sourceComposite.setLayout(new GridLayout(1, false));
 		sourceComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
-		this.initSchemaExplorerToolBar(sourceComposite, sourceSchemaFilter, 
+		List<AbstractContentProviderAction> sourceContentActions = 
+			initSchemaExplorerToolBar(sourceComposite, sourceSchemaFilter, 
 				sourceToggleActions);
 
 		this.sourceSchemaViewer = this.schemaExplorerSetup(sourceComposite,
 				schemaService.getSourceSchema(), schemaService.getSourceNameSpace(),
 				SchemaType.SOURCE);
 		this.sourceSchemaViewer.addFilter(sourceSchemaFilter);
+		
+		for (AbstractContentProviderAction cpa : sourceContentActions) {
+			cpa.setViewer(sourceSchemaViewer);
+		}
 
 		for (SimpleToggleAction sta : sourceToggleActions) {
 			sta.setActionTarget(this.sourceSchemaViewer);
@@ -229,7 +246,8 @@ public class ModelNavigationView extends ViewPart implements
 		targetComposite.setLayout(new GridLayout(1, false));
 		targetComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
-		this.initSchemaExplorerToolBar(targetComposite, targetSchemaFilter, 
+		List<AbstractContentProviderAction> targetContentActions = 
+			initSchemaExplorerToolBar(targetComposite, targetSchemaFilter, 
 				targetToggleActions);
 
 		this.targetSchemaViewer = this.schemaExplorerSetup(targetComposite,
@@ -237,6 +255,10 @@ public class ModelNavigationView extends ViewPart implements
 				SchemaType.TARGET);
 		
 		this.targetSchemaViewer.addFilter(targetSchemaFilter);
+		
+		for (AbstractContentProviderAction cpa : targetContentActions) {
+			cpa.setViewer(targetSchemaViewer);
+		}
 
 		for (SimpleToggleAction sta : targetToggleActions) {
 			sta.setActionTarget(this.targetSchemaViewer);
@@ -319,7 +341,7 @@ public class ModelNavigationView extends ViewPart implements
 		return result;
 	}
 
-	private void initSchemaExplorerToolBar(Composite modelComposite, 
+	private List<AbstractContentProviderAction> initSchemaExplorerToolBar(Composite modelComposite, 
 			PatternViewFilter pvf, List<SimpleToggleAction> toggleActions) {
 
 		// create view forms
@@ -329,16 +351,26 @@ public class ModelNavigationView extends ViewPart implements
 		ToolBar schemaFilterBar = new ToolBar(schemaViewForm, SWT.FLAT
 				| SWT.WRAP);
 		schemaViewForm.setTopRight(schemaFilterBar);
+		
+		List<AbstractContentProviderAction> actions = new ArrayList<AbstractContentProviderAction>();
+		actions.add(new UseInheritanceHierarchyAction());
+		actions.add(new UseAggregationHierarchyAction());
+		actions.add(new UseFlatHierarchyAction());
+		
+		// default
+		actions.get(0).setChecked(true);
 
 		ToolBarManager manager = new ToolBarManager(schemaFilterBar);
-		manager.add(new UseInheritanceHierarchyAction());
-		manager.add(new UseAggregationHierarchyAction());
-		manager.add(new UseFlatHierarchyAction());
+		for (AbstractContentProviderAction action : actions) {
+			manager.add(action);
+		}
 		manager.add(new Separator());
 		for (SimpleToggleAction sta : toggleActions) {
 			manager.add(sta);
 		}
 		manager.update(false);
+		
+		return actions;
 	}
 
 	/**
@@ -356,7 +388,8 @@ public class ModelNavigationView extends ViewPart implements
 	    final FilteredTree filteredTree = new FilteredTree(modelComposite, SWT.MULTI
 	            | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter);
 	    TreeViewer schemaViewer = filteredTree.getViewer();
-		schemaViewer.setContentProvider(new ModelContentProvider());
+	    // set the default content provider
+		schemaViewer.setContentProvider(new InheritanceContentProvider());
 		schemaViewer.setLabelProvider(new ModelNavigationViewLabelProvider());
 		schemaViewer.setInput(translateSchema(schema, namespace));
         schemaViewer
@@ -427,7 +460,7 @@ public class ModelNavigationView extends ViewPart implements
 	}
 	
 	@SuppressWarnings("unchecked")
-	private boolean checkInterface(Class<?>[] classes, Class classToFind) {
+	private static boolean checkInterface(Class<?>[] classes, Class classToFind) {
 		for (Class clazz : classes) {
 			if (clazz.equals(classToFind)) return true;
 			for (Class c : clazz.getInterfaces()) {
@@ -463,12 +496,8 @@ public class ModelNavigationView extends ViewPart implements
 		String ftName = ftk.getFeatureType().getName().getNamespaceURI();
 		
 		// add properties
-		for (PropertyDescriptor pd : ftk.getFeatureType().getDescriptors()) {
-			tot = getAttributeType(pd);
-			result.addChild(new TreeObject(pd.getName().getLocalPart() + ":<"
-					+ pd.getType().getName().getLocalPart() + ">", 
-					pd.getName(), tot));
-		}
+		addProperties(result, ftk.getFeatureType());
+		
 		// add children recursively
 		for (FeatureType ft : typeHierarchy.get(ftk)) {
 			result.addChild(this.buildSchemaTree(new RobustFTKey(ft),
@@ -478,12 +507,34 @@ public class ModelNavigationView extends ViewPart implements
 	}
 
 	/**
+	 * Add properties of the given feature type to the given tree parent
+	 * 
+	 * @param parent the tree parent
+	 * @param featureType the feature type
+	 */
+	private static void addProperties(TreeParent parent, FeatureType featureType) {
+		for (PropertyDescriptor pd : featureType.getDescriptors()) {
+			TreeObjectType tot = getAttributeType(pd);
+			
+			TreeParent property = new TreeParent(pd.getName().getLocalPart() + ":<"
+					+ pd.getType().getName().getLocalPart() + ">", 
+					pd.getName(), tot);
+			
+			if (pd.getType() instanceof FeatureType) {
+				addProperties(property, (FeatureType) pd.getType());
+			}
+			
+			parent.addChild(property);
+		}
+	}
+
+	/**
 	 * Get the tree object type for an attribute
 	 * 
 	 * @param pd the attribute's property descriptor
 	 * @return the tree object type of the attribute
 	 */
-	protected TreeObjectType getAttributeType(PropertyDescriptor pd) {
+	protected static TreeObjectType getAttributeType(PropertyDescriptor pd) {
 		PropertyType type = pd.getType();
 		Class<?> binding = type.getBinding();
 		

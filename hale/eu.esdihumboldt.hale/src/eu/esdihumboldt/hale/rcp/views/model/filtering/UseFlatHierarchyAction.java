@@ -14,19 +14,25 @@ package eu.esdihumboldt.hale.rcp.views.model.filtering;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.views.model.FlatContentProvider;
 
 /**
  * TODO Explain the purpose of this type here.
  * 
- * @author Thorsten Reitz
- * @version $Id$
+ * @author Thorsten Reitz, Simon Templer
+ * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @version $Id$ 
  */
 public class UseFlatHierarchyAction 
-	extends Action {
+	extends AbstractContentProviderAction {
 	
+	/**
+	 * @see Action#getImageDescriptor()
+	 */
 	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return AbstractUIPlugin.imageDescriptorFromPlugin(
@@ -34,11 +40,19 @@ public class UseFlatHierarchyAction
 	}
 	
 	/**
-	 * @see org.eclipse.jface.action.Action#getToolTipText()
+	 * @see Action#getToolTipText()
 	 */
 	@Override
 	public String getToolTipText() {
 		return "Organize FeatureTypes as List";
+	}
+
+	/**
+	 * @see AbstractContentProviderAction#getContentProvider()
+	 */
+	@Override
+	protected IContentProvider getContentProvider() {
+		return new FlatContentProvider();
 	}
 
 }

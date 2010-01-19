@@ -13,9 +13,11 @@ package eu.esdihumboldt.hale.rcp.views.model.filtering;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.views.model.InheritanceContentProvider;
 
 /**
  * Enabling this action will switch the affected SchemaExplorer to display it's 
@@ -25,30 +27,36 @@ import eu.esdihumboldt.hale.rcp.HALEActivator;
  * When both it and the aggregation hierarchy are inactive, a simple list will 
  * be shown.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz, Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
 public class UseInheritanceHierarchyAction 
-	extends Action {
-
-	public UseInheritanceHierarchyAction() {
-		super();
-		this.setChecked(true);
-	}
+	extends AbstractContentProviderAction {
 
 	/**
-	 * @see org.eclipse.jface.action.Action#getToolTipText()
+	 * @see Action#getToolTipText()
 	 */
 	@Override
 	public String getToolTipText() {
 		return "Organize FeatureTypes by inheritance";
 	}
 
+	/**
+	 * @see Action#getImageDescriptor()
+	 */
 	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return AbstractUIPlugin.imageDescriptorFromPlugin(
 				HALEActivator.PLUGIN_ID, "/icons/inheritance_hierarchy.png");
+	}
+
+	/**
+	 * @see AbstractContentProviderAction#getContentProvider()
+	 */
+	@Override
+	protected IContentProvider getContentProvider() {
+		return new InheritanceContentProvider();
 	}
 	
 	
