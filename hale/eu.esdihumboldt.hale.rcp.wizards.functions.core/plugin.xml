@@ -59,7 +59,7 @@
             name="Create INSPIRE Identifier">
       </factory>
       <factory
-            class="eu.esdihumboldt.hale.rcp.wizard.functions.core.augmentation.constantvalue.ConstantValueWizardFactory"
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.augmentation.constantvalue.ConstantValueWizardFactory"
             icon="icons/add.gif"
             name="Attribute Default Value ">
       </factory>

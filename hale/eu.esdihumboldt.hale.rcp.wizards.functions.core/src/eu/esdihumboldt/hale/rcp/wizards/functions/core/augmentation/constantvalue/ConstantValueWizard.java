@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.rcp.wizard.functions.core.augmentation.constantvalue;
+package eu.esdihumboldt.hale.rcp.wizards.functions.core.augmentation.constantvalue;
 
 import org.apache.log4j.Logger;
 
