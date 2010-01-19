@@ -266,7 +266,26 @@ public class ApacheSchemaProvider
 											qname.getLocalPart());
 								}
 							} else if (p != null) {
-								attributeResults.addAll(getAttributesFromParticle(p));
+								// this where we get when there is an anonymous complex type as property type
+								/*
+								 * FIXME the type is not properly resolved, the call
+								 * to getAttributesFromParticle just returns the
+								 * base type of the property type
+								 */
+								List<AttributeDefinition> attributes = getAttributesFromParticle(p);
+								//XXX fix property name
+								if (attributes.size() == 1) {
+									AttributeDefinition org = attributes.get(0);
+									
+									attributeResults.add(new AttributeDefinition(
+											element.getName(), 
+											org.getTypeName(), 
+											element));
+								}
+								else {
+									attributeResults.addAll(attributes);
+								}
+									
 								continue;
 							}
 						}
