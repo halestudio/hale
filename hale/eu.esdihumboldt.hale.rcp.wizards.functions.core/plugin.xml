@@ -63,6 +63,11 @@
             icon="icons/add.gif"
             name="Attribute Default Value ">
       </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.generic.GenericFunctionWizardFactory"
+            icon="icons/generic.png"
+            name="Generic wizard">
+      </factory>
    </extension>
 
 </plugin>
