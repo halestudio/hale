@@ -24,10 +24,10 @@ import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.alignment.AlignmentServiceImpl;
 import eu.esdihumboldt.hale.models.instance.InstanceServiceImpl;
 import eu.esdihumboldt.hale.models.project.ProjectServiceImpl;
-import eu.esdihumboldt.hale.models.schema.ApacheSchemaProvider;
 import eu.esdihumboldt.hale.models.schema.SchemaProviderService;
 import eu.esdihumboldt.hale.models.style.StyleServiceImpl;
 import eu.esdihumboldt.hale.models.task.TaskServiceImpl;
+import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
 
 /**
  * This implementation of the {@link AbstractServiceFactory} allows to use the

@@ -12,7 +12,7 @@
  * Component    : HALE
  * Created on   : Jun 3, 2009 -- 4:50:10 PM
  */
-package eu.esdihumboldt.hale.models.schema;
+package eu.esdihumboldt.hale.schemaprovider.provider;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -62,11 +62,13 @@ import org.opengis.feature.type.PropertyDescriptor;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.models.provider.SchemaProvider;
+import eu.esdihumboldt.hale.schemaprovider.EnumAttributeTypeImpl;
+import eu.esdihumboldt.hale.schemaprovider.HumboldtURIResolver;
+import eu.esdihumboldt.hale.schemaprovider.Schema;
+import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
+import eu.esdihumboldt.hale.schemaprovider.provider.internal.DependencyOrderedList;
 
 /**
- * Implementation of {@link SchemaService}.
  * The main functionality of this class is to load an XML schema file (XSD)
  * and create a FeatureType collection. This implementation is based on the
  * Apache XmlSchema library (http://ws.apache.org/commons/XmlSchema/). It is

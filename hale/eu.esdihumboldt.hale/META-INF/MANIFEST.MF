@@ -28,6 +28,8 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: eu.esdihumboldt.hale.prefixmapper,
+ eu.esdihumboldt.hale.schemaprovider,
+ eu.esdihumboldt.hale.schemaprovider.provider,
  org.apache.log4j
 Export-Package: eu.esdihumboldt.hale.rcp.views.model,
  eu.esdihumboldt.hale.rcp.wizards.augmentations,

@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Schema Provider Bundle
+Bundle-SymbolicName: eu.esdihumboldt.hale.schemaprovider
+Bundle-Version: 1.0.0
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: com.vividsolutions.jts.geom,
+ org.apache.log4j,
+ org.apache.ws.commons.schema,
+ org.apache.ws.commons.schema.resolver,
+ org.geotools.feature,
+ org.geotools.feature.simple,
+ org.geotools.feature.type,
+ org.geotools.gml3,
+ org.geotools.xs,
+ org.junit,
+ org.opengis.feature.simple,
+ org.opengis.feature.type,
+ org.opengis.filter,
+ org.opengis.util
+Export-Package: eu.esdihumboldt.hale.schemaprovider,
+ eu.esdihumboldt.hale.schemaprovider.provider

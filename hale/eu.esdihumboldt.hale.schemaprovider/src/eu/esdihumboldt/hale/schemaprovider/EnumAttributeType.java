@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.models.schema;
+package eu.esdihumboldt.hale.schemaprovider;
 
 import java.util.Set;
 

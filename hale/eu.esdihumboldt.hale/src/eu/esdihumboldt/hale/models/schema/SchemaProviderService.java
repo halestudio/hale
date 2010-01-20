@@ -27,7 +27,8 @@ import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.UpdateService;
-import eu.esdihumboldt.hale.models.provider.SchemaProvider;
+import eu.esdihumboldt.hale.schemaprovider.Schema;
+import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
 
 /**
  * Implementation of {@link SchemaService}. It uses a {@link SchemaProvider}

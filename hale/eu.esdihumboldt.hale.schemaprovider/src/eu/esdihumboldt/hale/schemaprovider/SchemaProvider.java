@@ -9,13 +9,11 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.models.provider;
+package eu.esdihumboldt.hale.schemaprovider;
 
 import java.net.URI;
 
 import org.opengis.feature.type.FeatureType;
-
-import eu.esdihumboldt.hale.models.schema.Schema;
 
 /**
  * A {@link SchemaProvider} loads a schema from a given URI. A type that

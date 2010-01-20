@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.models.schema;
+package eu.esdihumboldt.hale.schemaprovider;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.Name;
+
 
 /**
  * Enumeration attribute type decorator
@@ -52,7 +53,6 @@ public class EnumAttributeTypeImpl extends AbstractAttributeTypeDecorator
 	/**
 	 * @see EnumAttributeType#getAllowedValues()
 	 */
-	@Override
 	public Set<String> getAllowedValues() {
 		return allowedValues;
 	}

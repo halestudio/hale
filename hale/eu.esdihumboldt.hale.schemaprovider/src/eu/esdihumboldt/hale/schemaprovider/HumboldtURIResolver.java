@@ -18,7 +18,7 @@
  * Created on   : May 11, 2009 -- 3:14:38 PM
  *
  */
-package eu.esdihumboldt.hale.models.schema;
+package eu.esdihumboldt.hale.schemaprovider;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -116,6 +116,7 @@ public class HumboldtURIResolver
      *
      * @param contextURL
      * @param spec
+     * @return the URL
      * @throws java.io.IOException
      */
     protected URL getURL(URL contextURL, String spec) throws IOException {
@@ -156,6 +157,7 @@ public class HumboldtURIResolver
      *
      * @param contextURL
      * @param path
+     * @return the URL
      * @throws IOException
      */
     protected URL getFileURL(URL contextURL, String path)

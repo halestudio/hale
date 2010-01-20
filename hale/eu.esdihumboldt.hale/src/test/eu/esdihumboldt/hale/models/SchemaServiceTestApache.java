@@ -30,7 +30,7 @@ import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.schema.SchemaParser;
 import eu.esdihumboldt.hale.models.schema.SchemaProviderService;
 import eu.esdihumboldt.hale.models.schema.SchemaServiceImpl;
-import eu.esdihumboldt.hale.models.schema.ApacheSchemaProvider;
+import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
 
 /**
  * Unit tests which covers the SchemaService implementation class.
