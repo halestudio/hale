@@ -11,6 +11,9 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.classification;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -26,6 +29,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -41,6 +45,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.ui.dialogs.ListDialog;
+import org.eclipse.ui.dialogs.ListSelectionDialog;
 
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.CoreFunctionWizardsPlugin;
@@ -62,6 +68,10 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 	private ComboViewer classes;
 	
 	private ListViewer values;
+	
+	private boolean fixedClassifications = false;
+
+	private Set<String> allowedValues = null;
 
 	/**
 	 * @see AbstractSingleCellWizardPage#AbstractSingleCellWizardPage(String, String, ImageDescriptor)
@@ -99,6 +109,7 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 		Button addButton = new Button(page, SWT.PUSH);
 		addButton.setImage(addImage);
 		addButton.setToolTipText("Add classification value");
+		addButton.setEnabled(!fixedClassifications);
 		addButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -175,19 +186,43 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 				
 				String selectedClass = ((IStructuredSelection) classes.getSelection()).getFirstElement().toString();
 				
-				InputDialog dialog = new InputDialog(
-						display.getActiveShell(), 
-						"Add value", 
-						"Enter a new value for " + sourceFt + "." + sourceProperty +
-						" that is classified as '" + selectedClass + "' in " +
-						targetFt + "." + targetProperty, 
-						"",
-						null); // no validator
-				
-				if (dialog.open() == InputDialog.OK) {
-					String newValue = dialog.getValue();
-					if (newValue != null) {
-						addValue(newValue);
+				if (allowedValues == null) {
+					// no restriction
+					InputDialog dialog = new InputDialog(
+							display.getActiveShell(), 
+							"Add value", 
+							"Enter a new value for " + sourceFt + "." + sourceProperty +
+							" that is classified as '" + selectedClass + "' in " +
+							targetFt + "." + targetProperty, 
+							"",
+							null); // no validator
+					
+					if (dialog.open() == InputDialog.OK) {
+						String newValue = dialog.getValue();
+						if (newValue != null) {
+							addValue(newValue);
+						}
+					}
+				}
+				else {
+					// restricted to the allowed values
+					ListSelectionDialog dialog = new ListSelectionDialog(
+							display.getActiveShell(), 
+							allowedValues, 
+							ArrayContentProvider.getInstance(), 
+							new LabelProvider(), 
+							"Select a value that shall be classified as '" + selectedClass + "'");
+					dialog.setTitle("Select a value");
+					
+					if (dialog.open() == ListDialog.OK) {
+						Object[] result = dialog.getResult();
+						if (result != null) {
+							for (Object newValue : result) {
+								if (newValue != null) {
+									addValue(newValue.toString());
+								}
+							}
+						}
 					}
 				}
 			}
@@ -228,7 +263,7 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 			public void selectionChanged(SelectionChangedEvent event) {
 				boolean empty = event.getSelection().isEmpty();
 				
-				removeButton.setEnabled(!empty);
+				removeButton.setEnabled(!fixedClassifications && !empty);
 				valueAdd.setEnabled(!empty);
 				
 				if (!empty) {
@@ -258,6 +293,8 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 		if (!classifications.keySet().isEmpty()) {
 			classes.setSelection(new StructuredSelection(classifications.keySet().iterator().next()));
 		}
+		
+		updateMessage();
 	}
 	
 	/**
@@ -297,6 +334,8 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 		if (valueSet != null && valueSet.contains(selectedValue)) {
 			valueSet.remove(selectedValue);
 			values.refresh();
+			
+			updateMessage();
 		}
 	}
 
@@ -329,6 +368,8 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 				valueSet = classifications.get(oldClass);
 				valueSet.remove(newValue);
 			}
+			
+			updateMessage();
 		}
 	}
 
@@ -341,6 +382,8 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 		if (classifications.containsKey(selectedClass)) {
 			classifications.remove(selectedClass);
 			classes.refresh();
+			
+			updateMessage();
 		}
 	}
 
@@ -354,6 +397,40 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 			classifications.put(newClass, new TreeSet<String>());
 			classes.refresh();
 			classes.setSelection(new StructuredSelection(newClass));
+			
+			updateMessage();
+		}
+	}
+
+	/**
+	 * Update the message
+	 */
+	private void updateMessage() {
+		// check if there are any values that are not mapped
+		if (allowedValues != null) {
+			Set<String> notMapped = new HashSet<String>();
+			for (String value : allowedValues) {
+				boolean found = false;
+				Iterator<Set<String>> classes = classifications.values().iterator();
+				while (!found && classes.hasNext()) {
+					found = classes.next().contains(value);
+				}
+				
+				if (!found) {
+					notMapped.add(value);
+				}
+			}
+			
+			if (notMapped.isEmpty()) {
+				setMessage("All values are classified", INFORMATION);
+			}
+			else {
+				setMessage("Values that are not classified: " + 
+						Arrays.toString(notMapped.toArray()), WARNING);
+			}
+		}
+		else {
+			setMessage(null);
 		}
 	}
 
@@ -375,6 +452,20 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 	 */
 	public void addClassifications(Map<String, Set<String>> classifications) {
 		this.classifications.putAll(classifications);
+	}
+
+	/**
+	 * @param fixedClassifications the fixedClassifications to set
+	 */
+	public void setFixedClassifications(boolean fixedClassifications) {
+		this.fixedClassifications = fixedClassifications;
+	}
+
+	/**
+	 * @param allowedValues the allowed values to set
+	 */
+	public void setAllowedValues(Set<String> allowedValues) {
+		this.allowedValues = allowedValues;
 	}
 
 }

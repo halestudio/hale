@@ -13,6 +13,7 @@ package eu.esdihumboldt.hale.rcp.wizards.functions.core.classification;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.schemaprovider.EnumAttributeType;
 
 /**
  * @author Simon Templer
@@ -105,6 +107,25 @@ public class ClassificationMappingFunctionWizard extends
 		}
 		
 		mainPage = new ClassificationMappingPage("main", "Classification", null);
+		
+		// add classifications if target is an enumeration
+		if (getTargetItem().getPropertyType() instanceof EnumAttributeType) {
+			EnumAttributeType enumType = (EnumAttributeType) getTargetItem().getPropertyType();
+			
+			for (String value : enumType.getAllowedValues()) {
+				if (!classifications.containsKey(value)) {
+					classifications.put(value, new HashSet<String>());
+				}
+			}
+			
+			mainPage.setFixedClassifications(true);
+		}
+		
+		// values
+		if (getSourceItem().getPropertyType() instanceof EnumAttributeType) {
+			mainPage.setAllowedValues(((EnumAttributeType) getSourceItem().getPropertyType()).getAllowedValues());
+		}
+		
 		mainPage.addClassifications(classifications);
 	}
 

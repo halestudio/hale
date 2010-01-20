@@ -14,6 +14,7 @@ Import-Package: com.iabcinc.jmep,
  eu.esdihumboldt.hale.rcp.views.model,
  eu.esdihumboldt.hale.rcp.wizards.augmentations,
  eu.esdihumboldt.hale.rcp.wizards.functions,
+ eu.esdihumboldt.hale.schemaprovider,
  org.apache.log4j
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
