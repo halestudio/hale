@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.jface.dialogs.IDialogPage;
+import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;

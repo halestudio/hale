@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.geographicname;
 
-import eu.esdihumboldt.cst.corefunctions.inspire.IdentifierFunction;
+import eu.esdihumboldt.cst.corefunctions.inspire.GeographicalNameFunction;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
