@@ -1,0 +1,48 @@
+/*
+ * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
+ * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * 
+ * For more information on the project, please refer to the this web site:
+ * http://www.esdi-humboldt.eu
+ * 
+ * LICENSE: For information on the license under which this program is 
+ * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
+ * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ */
+
+package eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.geographicname;
+
+import eu.esdihumboldt.cst.corefunctions.inspire.IdentifierFunction;
+import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
+import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
+
+/**
+ * This is the {@link FunctionWizardFactory} for the {@link GeographicalNameFunction}.
+ *
+ * @author Anna Pitaev
+ * @partner 04 / Logica
+ * @version $Id$ 
+ */
+public class GeographicNameFunctionWizardFactory implements
+		FunctionWizardFactory {
+
+	/**
+	 * @see eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory#createWizard(eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo)
+	 */
+	@Override
+	public FunctionWizard createWizard(AlignmentInfo selection) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory#supports(eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo)
+	 */
+	@Override
+	public boolean supports(AlignmentInfo selection) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+}
