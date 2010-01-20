@@ -37,6 +37,7 @@ import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaContent;
 import org.apache.ws.commons.schema.XmlSchemaContentModel;
 import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.ws.commons.schema.XmlSchemaEnumerationFacet;
 import org.apache.ws.commons.schema.XmlSchemaExternal;
 import org.apache.ws.commons.schema.XmlSchemaInclude;
 import org.apache.ws.commons.schema.XmlSchemaObject;
@@ -138,19 +139,47 @@ public class ApacheSchemaProvider
 	 * 
 	 * @param element the defining element
 	 * 
-	 * @return the attribute type
+	 * @return the attribute type or <code>null</code>
 	 */
 	private AttributeType getEnumAttributeType(XmlSchemaElement element) {
-		AttributeType type = null;
 		if (element.getSchemaType() instanceof XmlSchemaSimpleType) {
-			XmlSchemaSimpleType simpleType = (XmlSchemaSimpleType)element.getSchemaType();
-			if (simpleType.getContent() instanceof  XmlSchemaSimpleTypeRestriction) {
-				XmlSchemaSimpleTypeRestriction content = (XmlSchemaSimpleTypeRestriction)simpleType.getContent();
-				
-				Name attributeName = new NameImpl(
-						content.getBaseTypeName().getNamespaceURI(),
-						content.getBaseTypeName().getLocalPart());
-				type =  new XSSchema().get(attributeName);
+			return getEnumAttributeType((XmlSchemaSimpleType) element.getSchemaType(), null);
+		}
+		else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Returns the attribute type for an enumeration.
+	 * 
+	 * @param simpleType the simple type
+	 * @param name the custom type name or <code>null</code>
+	 * 
+	 * @return the attribute type or <code>null</code>
+	 */
+	private AttributeType getEnumAttributeType(XmlSchemaSimpleType simpleType, Name name) {
+		AttributeType type = null;
+		if (simpleType.getContent() instanceof  XmlSchemaSimpleTypeRestriction) {
+			XmlSchemaSimpleTypeRestriction content = (XmlSchemaSimpleTypeRestriction)simpleType.getContent();
+			
+			Name attributeName = new NameImpl(
+					content.getBaseTypeName().getNamespaceURI(),
+					content.getBaseTypeName().getLocalPart());
+			type =  new XSSchema().get(attributeName);
+			
+			List<String> values = new ArrayList<String>();
+			XmlSchemaObjectCollection facets = content.getFacets();
+			for (int i = 0; i < facets.getCount(); i++) {
+				XmlSchemaObject facet = facets.getItem(i);
+				if (facet instanceof XmlSchemaEnumerationFacet) {
+					String value = ((XmlSchemaEnumerationFacet) facet).getValue().toString();
+					values.add(value);
+				}
+			}
+			
+			if (!values.isEmpty()) {
+				type = new EnumAttributeTypeImpl(type, values, name);
 			}
 		}
 		return type;
@@ -164,21 +193,8 @@ public class ApacheSchemaProvider
 	 * @return the attribute type or <code>null</code> if the corresponding
 	 *   type was not found in the set
 	 */
-	private AttributeType getSchemaAttributeType(Name name, Map<Name, FeatureType> featureTypes) {
-		AttributeType type = null;
-		
-		FeatureType featureType = featureTypes.get(name); 
-		if (featureType != null) {
-			/*XXX why create a new type if we can use the existing feature type? - AttributeTypeBuilder builder = new  AttributeTypeBuilder();
-			builder.setBinding(featureType.getBinding());
-			builder.setName(name.getLocalPart());
-			
-			type = builder.buildType();*/
-			
-			type = featureType;
-		}
-				
-		return type;
+	private AttributeType getSchemaAttributeType(Name name, Map<Name, AttributeType> featureTypes) {
+		return featureTypes.get(name);
 	}
 	
 	/**
@@ -192,7 +208,7 @@ public class ApacheSchemaProvider
 	 *    resolved
 	 */
 	private AttributeType getAttributeType(AttributeDefinition attribute,
-			Map<Name, FeatureType> featureTypes, Map<Name, FeatureType> importedFeatureTypes) {
+			Map<Name, AttributeType> featureTypes, Map<Name, AttributeType> importedFeatureTypes) {
 		XSSchema xsSchema = new XSSchema();
 		AttributeType ty = xsSchema.get(attribute.getTypeName());
 			
@@ -206,13 +222,14 @@ public class ApacheSchemaProvider
 		}
 		
 		if (ty == null) {
+			// Bindings for enumeration types
+			ty = getEnumAttributeType(attribute.getElement());
+		}
+		
+		if (ty == null) {
 			// GML bindings
 			GMLSchema gmlSchema = new GMLSchema();
 			ty = gmlSchema.get(attribute.getTypeName());
-		}
-		if (ty == null) {
-			// Bindings for enumeration types
-			ty = getEnumAttributeType(attribute.getElement());
 		}
 		if (ty == null ) {
 			_log.warn("Type NOT found: " + attribute.getTypeName().getLocalPart());
@@ -389,9 +406,16 @@ public class ApacheSchemaProvider
 			namespace = "http://www.opengis.net/gml";
 		}
 		
-		Map<Name, FeatureType> types = loadSchema(schema, new HashMap<String, Map<Name, FeatureType>>());
+		Map<Name, AttributeType> types = loadSchema(schema, new HashMap<String, Map<Name, AttributeType>>());
 		
-		return new Schema(types.values(), namespace, locationURL);
+		List<FeatureType> featureTypes = new ArrayList<FeatureType>();
+		for (AttributeType type : types.values()) {
+			if (type instanceof FeatureType) {
+				featureTypes.add((FeatureType) type);
+			}
+		}
+		
+		return new Schema(featureTypes, namespace, locationURL);
 	}
 		
 	/**
@@ -402,7 +426,7 @@ public class ApacheSchemaProvider
 	 *   loaded or where loading has been started
 	 * @return the map of feature type names and types
 	 */
-	protected Map<Name, FeatureType> loadSchema(XmlSchema schema, Map<String, Map<Name, FeatureType>> imports) {
+	protected Map<Name, AttributeType> loadSchema(XmlSchema schema, Map<String, Map<Name, AttributeType>> imports) {
 		String namespace = schema.getTargetNamespace();
 		if (namespace == null || namespace.isEmpty()) {
 			// default to gml schema
@@ -410,7 +434,7 @@ public class ApacheSchemaProvider
 		}
 		
 		// Map of type names / types for the result
-		Map<Name, FeatureType> featureTypes = new HashMap<Name, FeatureType>();
+		Map<Name, AttributeType> featureTypes = new HashMap<Name, AttributeType>();
 		
 		// Set of include locations
 		Set<String> includes = new HashSet<String>();
@@ -435,10 +459,10 @@ public class ApacheSchemaProvider
 		}
 		
 		// map for all imported types
-		Map<Name, FeatureType> importedFeatureTypes = new HashMap<Name, FeatureType>();
+		Map<Name, AttributeType> importedFeatureTypes = new HashMap<Name, AttributeType>();
 		
 		// add imported types
-		for (Entry<String, Map<Name, FeatureType>> entry : imports.entrySet()) {
+		for (Entry<String, Map<Name, AttributeType>> entry : imports.entrySet()) {
 			if (entry.getValue() != null) {
 				if (includes.contains(entry.getKey())) {
 					// is include, add to result
@@ -453,6 +477,9 @@ public class ApacheSchemaProvider
 		
 		// name mapping (schema type name / feature type name)
 		Map<String, String> names = new HashMap<String, String>();
+		
+		// type names for type definitions where is no element
+		Set<String> schemaTypeNames = new HashSet<String>();
 		
 		// the schema items
 		XmlSchemaObjectCollection items = schema.getItems();
@@ -475,6 +502,12 @@ public class ApacheSchemaProvider
 				
 				String elementName = element.getName();
 				names.put(typeName, elementName);
+			}
+			else if (item instanceof XmlSchemaComplexType) {
+				schemaTypeNames.add(((XmlSchemaComplexType)item).getName());
+			}
+			else if (item instanceof XmlSchemaSimpleType) {
+				schemaTypeNames.add(((XmlSchemaSimpleType)item).getName());
 			}
 		}
 		
@@ -522,7 +555,9 @@ public class ApacheSchemaProvider
 				
 				if (typeDependencies != null) {
 					for (Name dependency : typeDependencies) {
-						if (dependency.getNamespaceURI().equals(namespace) && names.containsValue(dependency.getLocalPart())) {
+						if (dependency.getNamespaceURI().equals(namespace) && 
+								(names.containsValue(dependency.getLocalPart()) ||
+								schemaTypeNames.contains(dependency.getLocalPart()))) {
 							// local type, add to local dependencies
 							localDependencies.add(dependency);
 						}
@@ -531,7 +566,7 @@ public class ApacheSchemaProvider
 				
 				// add imported super types to the result set
 				Name importName = superTypeName;
-				FeatureType importType = null;
+				AttributeType importType = null;
 				
 				while (importName != null && (importType = importedFeatureTypes.get(importName)) != null) {
 					featureTypes.put(importName, importType);
@@ -559,13 +594,24 @@ public class ApacheSchemaProvider
 		for (Name typeName : typeNames.getItems()) {
 			XmlSchemaObject item = typeDefinitions.get(typeName);
 
-			if (item == null || item instanceof XmlSchemaSimpleType) {
-				SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
-				ftbuilder.setSuperType(null);
-				ftbuilder.setName(typeName.getLocalPart());
-				ftbuilder.setNamespaceURI(typeName.getNamespaceURI());
-				SimpleFeatureType simpleType = ftbuilder.buildFeatureType();
-				featureTypes.put(typeName, simpleType);
+			if (item == null) {
+				_log.error("No definition for " + typeName.toString());
+			}
+			else if (item instanceof XmlSchemaSimpleType) {
+				// attribute type from simple schema types
+				AttributeType simpleType = null;
+				
+				if (simpleType == null) {
+					simpleType = getEnumAttributeType((XmlSchemaSimpleType) item, typeName);
+				}
+				//TODO other methods of resolving the type
+				
+				if (simpleType != null) {
+					featureTypes.put(typeName, simpleType);
+				}
+				else {
+					_log.error("No attribute type generated for simple type " + typeName.toString());
+				}
 			}
 			else if (item instanceof XmlSchemaComplexType) {
 				Name superTypeName = getSuperTypeName((XmlSchemaComplexType) item);
@@ -612,7 +658,8 @@ public class ApacheSchemaProvider
 					superTypeName = getTypeName(names, superTypeName);
 					
 					// Find super type
-					FeatureType superType = featureTypes.get(superTypeName);
+					AttributeType tempType = featureTypes.get(superTypeName);
+					FeatureType superType = ((tempType instanceof FeatureType)?((FeatureType) tempType):(null));
 					
 					if (superType == null) {
 						SimpleFeatureTypeBuilder stbuilder = new SimpleFeatureTypeBuilder();
