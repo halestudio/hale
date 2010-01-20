@@ -57,7 +57,8 @@ public class ConstantValueWizard extends AugmentationWizard {
 	protected void init() {
 		
 		// get and validate the initial value from the cell (if available)
-		page = new ConstantValueWizardPage("mainPage", "Configure Default Value Augmentation", null);
+		page = new ConstantValueWizardPage("mainPage", "Configure Constant Value Augmentation", null);
+		super.setWindowTitle("Constant Value Augmentation Wizard");
 
 	}
 

@@ -72,7 +72,7 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 	        
 	        setErrorMessage(null);	// should not initially have error message
 			super.setControl(composite);
-			setPageComplete(false);
+			
 
 		}
 	
@@ -94,12 +94,12 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 		configurationLayoutData.grabExcessHorizontalSpace = true;
 		configurationComposite.setLayoutData(configurationLayoutData);
 
-		GridLayout fileSelectionLayout = new GridLayout();
-		fileSelectionLayout.numColumns = 2;
-		fileSelectionLayout.makeColumnsEqualWidth = false;
-		fileSelectionLayout.marginWidth = 0;
-		fileSelectionLayout.marginHeight = 0;
-		configurationComposite.setLayout(fileSelectionLayout);
+		GridLayout attributeInputLayout = new GridLayout();
+		attributeInputLayout.numColumns = 2;
+		attributeInputLayout.makeColumnsEqualWidth = false;
+		attributeInputLayout.marginWidth = 0;
+		attributeInputLayout.marginHeight = 0;
+		configurationComposite.setLayout(attributeInputLayout);
 		
 		final Label inputAttributeLabel = new Label(configurationComposite, SWT.NONE);
 		inputAttributeLabel.setText("Attribute name:");
