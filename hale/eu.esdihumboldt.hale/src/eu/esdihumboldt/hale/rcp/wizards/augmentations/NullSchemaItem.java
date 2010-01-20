@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.rcp.wizards.augmentations;
 
 import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.Name;
+import org.opengis.feature.type.PropertyType;
 
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
@@ -109,12 +110,18 @@ public class NullSchemaItem implements SchemaItem {
 	}
 
 	/**
-	 * 
 	 * @see SchemaItem#getType()
 	 */
-	
 	@Override
 	public TreeObjectType getType() {
+		return null;
+	}
+
+	/**
+	 * @see SchemaItem#getPropertyType()
+	 */
+	@Override
+	public PropertyType getPropertyType() {
 		return null;
 	}
 

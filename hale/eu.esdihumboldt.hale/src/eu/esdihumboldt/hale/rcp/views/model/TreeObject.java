@@ -12,6 +12,7 @@
 package eu.esdihumboldt.hale.rcp.views.model;
 
 import org.opengis.feature.type.Name;
+import org.opengis.feature.type.PropertyType;
 
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
@@ -30,6 +31,7 @@ public class TreeObject implements SchemaItem, Comparable<TreeObject> {
 	private final String label;
 	private TreeParent parent;
 	private final TreeObjectType type;
+	private final PropertyType propertyType;
 	
 	private final Name name;
 	
@@ -39,11 +41,14 @@ public class TreeObject implements SchemaItem, Comparable<TreeObject> {
 	 * @param label the item label
 	 * @param name the entity name
 	 * @param type the entity type
+	 * @param propertyType the property type represented by this item, may be <code>null</code>
 	 */
-	public TreeObject(String label, Name name, TreeObjectType type) {
+	public TreeObject(String label, Name name, TreeObjectType type,
+			PropertyType propertyType) {
 		this.label = label;
 		this.type = type;
 		this.name = name;
+		this.propertyType = propertyType;
 	}
 	
 	/**
@@ -212,6 +217,14 @@ public class TreeObject implements SchemaItem, Comparable<TreeObject> {
 		else {
 			return label.compareToIgnoreCase(other.label);
 		}
+	}
+
+	/**
+	 * @see SchemaItem#getPropertyType()
+	 */
+	@Override
+	public PropertyType getPropertyType() {
+		return propertyType;
 	}
 
 }

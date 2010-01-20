@@ -13,9 +13,7 @@ package eu.esdihumboldt.hale.rcp.views.model;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -55,14 +53,12 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
-import org.opengis.feature.type.PropertyType;
 
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
-import eu.esdihumboldt.hale.rcp.utils.FeatureTypeHelper;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.AbstractContentProviderAction;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.PatternViewFilter;
@@ -409,15 +405,15 @@ public class ModelNavigationView extends ViewPart implements
 	 */
 	private SchemaItem translateSchema(Collection<FeatureType> schema, String namespace) {
 		if (schema == null || schema.size() == 0) {
-			return new TreeParent("", null, TreeObjectType.ROOT);
+			return new TreeParent("", null, TreeObjectType.ROOT, null);
 		}
 
 		// first, find out a few things about the schema to define the root
 		// type.
 		// TODO add metadata on schema here.
 		// TODO is should be possible to attach attributive data for a flyout.
-		TreeParent hidden_root = new TreeParent("ROOT", null, TreeObjectType.ROOT);
-		TreeParent root = new TreeParent(namespace, null, TreeObjectType.ROOT);
+		TreeParent hidden_root = new TreeParent("ROOT", null, TreeObjectType.ROOT, null);
+		TreeParent root = new TreeParent(namespace, null, TreeObjectType.ROOT, null);
 		hidden_root.addChild(root);
 
 		// build the tree of FeatureTypes, starting from those types which
@@ -459,17 +455,6 @@ public class ModelNavigationView extends ViewPart implements
 		return hidden_root;
 	}
 	
-	@SuppressWarnings("unchecked")
-	private static boolean checkInterface(Class<?>[] classes, Class classToFind) {
-		for (Class clazz : classes) {
-			if (clazz.equals(classToFind)) return true;
-			for (Class c : clazz.getInterfaces()) {
-				if (c.equals(classToFind)) return true;
-			}
-		}
-		return false;
-	}
-
 	/**
 	 * Recursive method for setting up the inheritance tree.
 	 * 
@@ -483,27 +468,17 @@ public class ModelNavigationView extends ViewPart implements
 	 */
 	private TreeObject buildSchemaTree(RobustFTKey ftk,
 			Map<RobustFTKey, Set<FeatureType>> typeHierarchy) {
-		TreeObjectType tot = TreeObjectType.CONCRETE_FT;
-		if (FeatureTypeHelper.isPropertyType(ftk.getFeatureType())) {
-			tot = TreeObjectType.PROPERTY_TYPE;
-		}
-		else if (FeatureTypeHelper.isAbstract(ftk.getFeatureType())) {
-			tot = TreeObjectType.ABSTRACT_FT;
-		}
-		TreeParent result = new TreeParent(ftk.getFeatureType().getName()
-				.getLocalPart(), ftk.getFeatureType().getName(), tot);
-		
-		String ftName = ftk.getFeatureType().getName().getNamespaceURI();
+		FeatureTypeItem featureItem = new FeatureTypeItem(ftk.getFeatureType());
 		
 		// add properties
-		addProperties(result, ftk.getFeatureType());
+		addProperties(featureItem, ftk.getFeatureType());
 		
 		// add children recursively
 		for (FeatureType ft : typeHierarchy.get(ftk)) {
-			result.addChild(this.buildSchemaTree(new RobustFTKey(ft),
+			featureItem.addChild(this.buildSchemaTree(new RobustFTKey(ft),
 					typeHierarchy));
 		}
-		return result;
+		return featureItem;
 	}
 
 	/**
@@ -514,11 +489,7 @@ public class ModelNavigationView extends ViewPart implements
 	 */
 	private static void addProperties(TreeParent parent, FeatureType featureType) {
 		for (PropertyDescriptor pd : featureType.getDescriptors()) {
-			TreeObjectType tot = getAttributeType(pd);
-			
-			TreeParent property = new TreeParent(pd.getName().getLocalPart() + ":<"
-					+ pd.getType().getName().getLocalPart() + ">", 
-					pd.getName(), tot);
+			PropertyItem property = new PropertyItem(pd);
 			
 			if (pd.getType() instanceof FeatureType) {
 				addProperties(property, (FeatureType) pd.getType());
@@ -526,62 +497,6 @@ public class ModelNavigationView extends ViewPart implements
 			
 			parent.addChild(property);
 		}
-	}
-
-	/**
-	 * Get the tree object type for an attribute
-	 * 
-	 * @param pd the attribute's property descriptor
-	 * @return the tree object type of the attribute
-	 */
-	protected static TreeObjectType getAttributeType(PropertyDescriptor pd) {
-		PropertyType type = pd.getType();
-		Class<?> binding = type.getBinding();
-		
-		if (type.toString().matches("^.*?GMLComplexTypes.*")) {
-//		if (pd.getType().getName().getNamespaceURI().equals("http://www.opengis.net/gml")) {
-			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
-		} else if (Arrays.asList(binding.getClass().getInterfaces())
-				.contains(org.opengis.feature.type.GeometryType.class)) {
-			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
-		} else if (checkInterface(binding.getInterfaces(),
-				com.vividsolutions.jts.geom.Puntal.class)) {
-			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
-		} else if (checkInterface(binding.getInterfaces(),
-				com.vividsolutions.jts.geom.Polygonal.class)) {
-			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
-		} else if (checkInterface(binding.getInterfaces(),
-				com.vividsolutions.jts.geom.Lineal.class)) {
-			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
-		}
-		// numeric
-		else if (Number.class.isAssignableFrom(binding) || Date.class.isAssignableFrom(binding)) {
-			return TreeObjectType.NUMERIC_ATTRIBUTE;
-		}
-		// string
-		else if (String.class.isAssignableFrom(binding)) {
-			return TreeObjectType.STRING_ATTRIBUTE;
-		}
-		// boolean
-		else if (Boolean.class.isAssignableFrom(binding)) {
-			return TreeObjectType.STRING_ATTRIBUTE; //TODO new attribute type?
-		}
-		// default geometry attribute
-		else if (pd.getName().getLocalPart().equalsIgnoreCase("geometry") ||
-				pd.getName().getLocalPart().equalsIgnoreCase("the_geom")) {
-			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
-		}
-		else if (Arrays.asList(type.getClass().getInterfaces())
-				.contains(org.opengis.feature.type.ComplexType.class)) {
-			return TreeObjectType.COMPLEX_ATTRIBUTE;
-		}
-		// collection
-		else if (Collection.class.isAssignableFrom(binding)) {
-			return TreeObjectType.COMPLEX_ATTRIBUTE;
-		}
-		
-		// default to complex attribute
-		return TreeObjectType.COMPLEX_ATTRIBUTE;
 	}
 
 	@Override

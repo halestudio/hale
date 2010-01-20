@@ -15,6 +15,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.opengis.feature.type.Name;
+import org.opengis.feature.type.PropertyType;
 
 
 /**
@@ -33,9 +34,11 @@ public class TreeParent extends TreeObject{
 	 * @param label the item label
 	 * @param name the item entity name
 	 * @param type the item entity type
+	 * @param propertyType the property type represented by this item, may be <code>null</code>
 	 */
-	public TreeParent(String label, Name name, TreeObjectType type) {
-		super(label, name, type);
+	public TreeParent(String label, Name name, TreeObjectType type,
+			PropertyType propertyType) {
+		super(label, name, type, propertyType);
 		children = new TreeSet<TreeObject>();
 	}
 	

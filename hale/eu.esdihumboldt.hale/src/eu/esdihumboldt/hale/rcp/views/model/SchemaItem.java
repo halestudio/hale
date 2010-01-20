@@ -11,7 +11,10 @@
  */
 package eu.esdihumboldt.hale.rcp.views.model;
 
+import org.opengis.feature.type.AttributeType;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
+import org.opengis.feature.type.PropertyType;
 
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
@@ -78,5 +81,14 @@ public interface SchemaItem {
 	 * 
 	 */
 	public abstract TreeObjectType getType();
+	
+	/**
+	 * Get the property type represented by this item.
+	 * This may for example be a {@link FeatureType} or {@link AttributeType}.
+	 * 
+	 * @return the property type represented by this item, may be <code>null</code>
+	 *   if this item doesn't represent a type
+	 */
+	public abstract PropertyType getPropertyType();
 
 }
