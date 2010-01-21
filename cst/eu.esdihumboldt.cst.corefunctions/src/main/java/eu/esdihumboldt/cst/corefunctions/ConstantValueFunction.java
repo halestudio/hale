@@ -20,6 +20,7 @@ import org.geotools.feature.AttributeImpl;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.PropertyImpl;
 import org.opengis.feature.Feature;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
@@ -65,8 +66,7 @@ public class ConstantValueFunction extends AbstractCstFunction {
 			}
 		
 		}
-		
-//		this.sourceProperty = ((ComposedProperty)cell.getEntity1()).getCollection().get(0);
+
 		this.targetProperty = ((ComposedProperty)cell.getEntity2()).getCollection().get(0);
 		return true;
 	}
@@ -94,37 +94,37 @@ public class ConstantValueFunction extends AbstractCstFunction {
 		if (pd.getType().getBinding().isPrimitive()) {
 			
 			if (pd.getType().getBinding().equals(Integer.class)){
-				p = new AttributeImpl((Integer)this.defaultValue, (AttributeDescriptor) pd, null);
+				((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),(Integer)this.defaultValue);
 			}
 			else if (pd.getType().getBinding().equals(Short.class)){
-				p = new AttributeImpl((Short)this.defaultValue, (AttributeDescriptor) pd, null);
+				((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),(Short)this.defaultValue);
 			}
 			else if (pd.getType().getBinding().equals(Double.class)){
-				p = new AttributeImpl((Double)this.defaultValue, (AttributeDescriptor) pd, null);
+				((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),(Double)this.defaultValue);
 			}
 			else if (pd.getType().getBinding().equals(Long.class)){
-				p = new AttributeImpl((Long)this.defaultValue, (AttributeDescriptor) pd, null);
+				((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),(Long)this.defaultValue);
 			}
 			else if (pd.getType().getBinding().equals(Float.class)){
-				p = new AttributeImpl((Float)this.defaultValue, (AttributeDescriptor) pd, null);
+				((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),(Float)this.defaultValue);
 			}
 			else if (pd.getType().getBinding().equals(Boolean.class)){
-				p = new AttributeImpl((Boolean)this.defaultValue, (AttributeDescriptor) pd, null);
+				((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),(Boolean)this.defaultValue);
 			}
 			else if (pd.getType().getBinding().equals(Byte.class)){
-				p = new AttributeImpl((Byte)this.defaultValue, (AttributeDescriptor) pd, null);
+				((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),(Byte)this.defaultValue);
 			}
 			else {
-				p = new AttributeImpl((Character)this.defaultValue, (AttributeDescriptor) pd, null);
+				((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),(Character)this.defaultValue);
 			}
 
 		}
 		else if (pd.getType().getBinding().equals(String.class)){
-			p = new AttributeImpl(this.defaultValue.toString(), (AttributeDescriptor) pd, null);
+			
+			((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),this.defaultValue.toString());
+
 		}
-		Collection<org.opengis.feature.Property> c = new HashSet<org.opengis.feature.Property>();
-		c.add(p);
-		target.setValue(c);
+		
 		return target;
 	}
 
