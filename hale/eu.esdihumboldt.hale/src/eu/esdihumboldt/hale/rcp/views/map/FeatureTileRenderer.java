@@ -62,14 +62,11 @@ public class FeatureTileRenderer implements TileProvider {
 	@SuppressWarnings("unchecked")
 	private void configureRenderer() {
 		this.renderer = new StreamingRenderer();
-		Map hints = new HashMap();
-        if (renderer instanceof StreamingRenderer) {
-            hints = renderer.getRendererHints();
-            if (hints == null) {
-                hints = new HashMap();
-            }
-            renderer.setRendererHints(hints);
+		Map hints = renderer.getRendererHints();
+        if (hints == null) {
+            hints = new HashMap();
         }
+        renderer.setRendererHints(hints);
         hints.put("memoryPreloadingEnabled", Boolean.FALSE);
         this.renderer.setRendererHints(hints);
     }

@@ -11,10 +11,16 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.geotools.data.memory.MemoryFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.map.DefaultMapContext;
 import org.geotools.map.MapContext;
@@ -72,7 +78,7 @@ public abstract class MapUtils {
 					return null; //XXX unable to determine CRS
 				}
 				else {
-					crs = dialog.getValue();
+					crs = SelectCRSDialog.getValue();
 				}
 			}
 		}
@@ -98,11 +104,31 @@ public abstract class MapUtils {
 			
 			log.info("features size: " + fc.size());
 			log.info("features bounds: " + fc.getBounds());
-			Style style = ss.getStyle(type); //fc.getSchema());
+			Style style = ss.getStyle(type);
 			
-			MapContext mc = new DefaultMapContext(crs); 
-			mc.addLayer(
-	        		(FeatureCollection<SimpleFeatureType, SimpleFeature>) fc, style);
+			Map<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> groupedFeatures = new HashMap<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>>();
+			Iterator it = fc.iterator();
+			while (it.hasNext()) {
+				Object tmp = it.next();
+				
+				if (tmp instanceof SimpleFeature) {
+					SimpleFeature feature = (SimpleFeature) tmp;
+					FeatureCollection<SimpleFeatureType, SimpleFeature> collection = groupedFeatures.get(feature.getFeatureType());
+					if (collection == null) {
+						collection = new MemoryFeatureCollection(feature.getFeatureType());
+						groupedFeatures.put(feature.getFeatureType(), collection);
+					}
+					collection.add(feature);
+				}
+				else {
+					log.error("Unrecognized Feature");
+				}
+			}
+			
+			MapContext mc = new DefaultMapContext(crs);
+			for (Entry<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> entry : groupedFeatures.entrySet()) {
+				mc.addLayer(entry.getValue(), style);//ss.getStyle(entry.getKey())); //style);
+			}
 			
 			return mc;
 		}

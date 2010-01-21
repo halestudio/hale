@@ -189,7 +189,6 @@ public class StyleServiceImpl
 	 * @param ft the feature type
 	 * @return the style
 	 */
-	@SuppressWarnings("deprecation")
 	public static FeatureTypeStyle getDefaultStyle(FeatureType ft) {
 		FeatureType current = ft;
 		Class<?> type = null;
@@ -302,6 +301,7 @@ public class StyleServiceImpl
 	/**
 	 * Inform {@link HaleServiceListener}s of an update.
 	 */
+	@SuppressWarnings("unchecked")
 	private void updateListeners() {
 		for (HaleServiceListener hsl : this.listeners) {
 			_log.info("Updating a listener.");
@@ -314,7 +314,6 @@ public class StyleServiceImpl
 	 * to be removed in GT 2.6, so has to be updated in case of migration.
 	 * @return a Style for Point objects.
 	 */
-	@SuppressWarnings("deprecation")
 	private static FeatureTypeStyle createPointStyle() {
 		PointSymbolizer symbolizer = styleFactory.createPointSymbolizer();
 		symbolizer.getGraphic().setSize(filterFactory.literal(1));
@@ -330,7 +329,6 @@ public class StyleServiceImpl
 	 * to be removed in GT 2.6, so has to be updated in case of migration.
 	 * @return a Style for Line/LineString objects.
 	 */
-	@SuppressWarnings("deprecation")
 	private static FeatureTypeStyle createLineStyle() {
 		LineSymbolizer symbolizer = styleFactory.createLineSymbolizer();
 		SLD.setLineColour(symbolizer, new Color(57, 75, 95));
@@ -348,7 +346,6 @@ public class StyleServiceImpl
 	 * to be removed in GT 2.6, so has to be updated in case of migration.
 	 * @return a Style for Polygon objects.
 	 */
-	@SuppressWarnings("deprecation")
 	private static FeatureTypeStyle createPolygonStyle() {
 		PolygonSymbolizer symbolizer = styleFactory.createPolygonSymbolizer();
 		SLD.setPolyColour(symbolizer, new Color(57, 75, 95));
