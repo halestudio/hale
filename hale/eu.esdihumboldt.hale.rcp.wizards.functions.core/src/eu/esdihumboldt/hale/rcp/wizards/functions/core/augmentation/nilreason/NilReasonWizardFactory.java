@@ -41,6 +41,10 @@ public class NilReasonWizardFactory extends AugmentationWizardFactory {
 	 */
 	@Override
 	protected boolean supports(SchemaItem item, ICell augmentation) {
+		if (!item.isAttribute()) {
+			return false;
+		}
+		
 		return augmentation == null || augmentation.getEntity2().getTransformation()
 			.getService().getLocation().equals(NilReasonFunction.class.getName());
 	}
