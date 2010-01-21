@@ -54,6 +54,11 @@ public class SchemaTranslationController {
 	
 	Map<String, CellCardinalityType[]> cardinalities = null;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param alignment the alignment
+	 */
 	public SchemaTranslationController(IAlignment alignment) {
 		// get an AlignmentIndex
 		this.ai = new AlignmentIndex(alignment);
@@ -85,8 +90,8 @@ public class SchemaTranslationController {
 		Set<String> checkTypes = new HashSet<String>();
 
 		for (String targetFtName : this.ai.getTargetTypes()) {
-		
-			List<Feature> transformedFeatures = new ArrayList<Feature>();
+			InstanceMap transformMap = null;
+			
 			// build new Feature(s) first, depending on Cardinalities and applying a filter as needed
 			CellCardinalityType thisFTCardinality = this.cardinalities.get(targetFtName)[0];
 			CellCardinalityType thisInstanceCardinality = this.cardinalities.get(targetFtName)[1];
@@ -95,14 +100,13 @@ public class SchemaTranslationController {
 				String sourceFtName = this.ai.getAllMappedFeatureTypes(targetFtName).iterator().next();
 				if (thisInstanceCardinality.equals(CellCardinalityType.one_to_one)) {
 					// create one new Feature per source Feature
-					transformedFeatures = this.handleOneToOneInstanceCreation(
+					transformMap = this.handleOneToOneInstanceCreation(
 							targetFtName, sourceFtName, partitionedSourceFeatures);
 					_log.info("Handled FTCardinality.one_to_one/" +
 							"InstanceCardinality.one_to_one, created " 
-							+ transformedFeatures.size() + " target features.");
+							+ transformMap.getTransformedFeatures().size() + " target features.");
 					
 					// apply additional attributive transformations
-					List<Feature> sourceFeatures = partitionedSourceFeatures.get(sourceFtName);
 					for (ICell cell : ai.getCellsPerEntity(targetFtName)) {
 						// create CstFunction by using CstFunctionFactory
 						CstFunction cstf = null;
@@ -115,9 +119,9 @@ public class SchemaTranslationController {
 						// invoke CstFunction with Target Features List. 
 						if (cstf != null && !cstf.getClass().equals(RenameFeatureFunction.class)) {
 							_log.info("Applying a " + cstf.getClass().getName() + " function.");
-							for (int i = 0; i < transformedFeatures.size(); i++) {
-								cstf.transform(sourceFeatures.get(i), 
-										transformedFeatures.get(i));
+							for (int i = 0; i < transformMap.getTransformedFeatures().size(); i++) {
+								cstf.transform(transformMap.getSourceFeatures().get(i), 
+										transformMap.getTransformedFeatures().get(i));
 							}
 						}
 					}
@@ -132,14 +136,15 @@ public class SchemaTranslationController {
 				if (!checkTypes.contains(sourceFT)) {
 					if (thisInstanceCardinality.equals(CellCardinalityType.one_to_one)) {
 						// create one new Feature per source Feature
-						transformedFeatures = this.handleOneToOneInstanceCreation(
+						transformMap = this.handleOneToOneInstanceCreation(
 								targetFtName, sourceFT, partitionedSourceFeatures);
+						
+						_log.info("Handled FTCardinality.one_to_many/" +
+								"InstanceCardinality.one_to_one, created " 
+								+ transformMap.getTransformedFeatures().size() + " target features.");
 					}
 					checkTypes.add(sourceFT);
 				}
-				_log.info("Handled FTCardinality.one_to_many/" +
-						"InstanceCardinality.one_to_one, created " 
-						+ transformedFeatures.size() + " target features.");
 			}
 			else if (thisFTCardinality.equals(CellCardinalityType.many_to_one)) {
 				throw new UnsupportedOperationException(
@@ -153,7 +158,10 @@ public class SchemaTranslationController {
 			}
 			
 			// add transformed Features to partitionedTargetFeatures
-			partitionedTargetFeatures.put(targetFtName, transformedFeatures);
+			if (transformMap != null) {
+				partitionedTargetFeatures.put(targetFtName, 
+						transformMap.getTransformedFeatures());
+			}
 		}
 		
 		// execute Augmentations batchwise per target FeatureType
@@ -282,7 +290,7 @@ public class SchemaTranslationController {
 
 	
 	@SuppressWarnings("unchecked")
-	private List<Feature> handleOneToOneInstanceCreation(
+	private InstanceMap handleOneToOneInstanceCreation(
 			String targetFtName, String sourceFtName, Map<String, List<Feature>> partitionedSourceFeatures) {
 		
 		FeatureCollection sourceFeatures = FeatureCollections.newCollection();
@@ -292,7 +300,9 @@ public class SchemaTranslationController {
 				sourceFeatures.add(f);
 			}
 		}
+		
 		List<Feature> transformedFeatures = new ArrayList<Feature>();
+		List<Feature> sourceList = new ArrayList<Feature>();
 		
 		// create one new Feature per source Feature
 		List<ICell> cells = this.ai.getRenameCell(targetFtName);
@@ -316,12 +326,16 @@ public class SchemaTranslationController {
 							"used to build a Filter: ", e);
 				}
 			}
+			
 			FeatureIterator<Feature> fi = sourceFeatures.features();
 			while (fi.hasNext()) {
-				transformedFeatures.add(rtf.transform(fi.next(), null));
+				Feature sourceFeature = fi.next();
+				transformedFeatures.add(rtf.transform(sourceFeature, null));
+				sourceList.add(sourceFeature);
 			}
 		}
-		return transformedFeatures;
+		
+		return new InstanceMap(sourceList, transformedFeatures);
 	}
 	
 
@@ -332,9 +346,13 @@ public class SchemaTranslationController {
 	 * instances.
 	 */
 	public enum CellCardinalityType {
+		/** one to one */
 		one_to_one,
+		/** one to many */
 		one_to_many,
+		/** many to one */
 		many_to_one,
+		/** many to many */
 		many_to_many
 	}
 	
