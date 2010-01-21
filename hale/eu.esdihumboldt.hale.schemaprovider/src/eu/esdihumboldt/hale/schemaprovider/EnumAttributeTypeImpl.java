@@ -13,7 +13,7 @@
 package eu.esdihumboldt.hale.schemaprovider;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.opengis.feature.type.AttributeType;
@@ -30,7 +30,7 @@ import org.opengis.feature.type.Name;
 public class EnumAttributeTypeImpl extends AbstractAttributeTypeDecorator
 		implements EnumAttributeType {
 
-	private final Set<String> allowedValues = new HashSet<String>();
+	private final Set<String> allowedValues = new LinkedHashSet<String>();
 	
 	private final Name name;
 	
