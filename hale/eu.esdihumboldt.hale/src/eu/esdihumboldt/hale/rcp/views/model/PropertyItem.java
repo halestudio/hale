@@ -27,6 +27,8 @@ import org.opengis.feature.type.PropertyType;
  * @version $Id$ 
  */
 public class PropertyItem extends TreeParent {
+	
+	private final PropertyDescriptor propertyDescriptor;
 
 	/**
 	 * Creates a property item
@@ -40,6 +42,8 @@ public class PropertyItem extends TreeParent {
 				propertyDescriptor.getName(), 
 				determineType(propertyDescriptor), 
 				propertyDescriptor.getType());
+		
+		this.propertyDescriptor = propertyDescriptor;
 	}
 
 	/**
@@ -109,6 +113,13 @@ public class PropertyItem extends TreeParent {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * @return the propertyDescriptor
+	 */
+	public PropertyDescriptor getPropertyDescriptor() {
+		return propertyDescriptor;
 	}
 
 }

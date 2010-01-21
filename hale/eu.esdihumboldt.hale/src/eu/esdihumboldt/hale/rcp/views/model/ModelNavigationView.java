@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -60,6 +62,7 @@ import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
+import eu.esdihumboldt.hale.rcp.views.model.dialogs.PropertiesAction;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.AbstractContentProviderAction;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.PatternViewFilter;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.SimpleToggleAction;
@@ -77,6 +80,53 @@ import eu.esdihumboldt.tools.RobustFTKey;
  */
 public class ModelNavigationView extends ViewPart implements
 		HaleServiceListener, ISelectionProvider{
+
+	/**
+	 * Context menu contribution
+	 */
+	private static class SchemaItemContribution extends
+			FunctionWizardContribution {
+		
+		private final TreeViewer tree;
+
+		/**
+		 * Create a new contribution
+		 * 
+		 * @param tree the tree for retrieving the selected item
+		 * 
+		 * @param showAugmentations if augmentations shall be shown in the menu
+		 */
+		public SchemaItemContribution(TreeViewer tree, boolean showAugmentations) {
+			super(showAugmentations);
+			
+			this.tree = tree;
+		}
+
+		/**
+		 * @see FunctionWizardContribution#fill(Menu, int)
+		 */
+		@Override
+		public void fill(Menu menu, int index) {
+			if (tree.getSelection() instanceof IStructuredSelection) {
+				IStructuredSelection selection = (IStructuredSelection) tree.getSelection();
+				Object tmp = selection.getFirstElement();
+				if (tmp != null && tmp instanceof SchemaItem) {
+					SchemaItem item = (SchemaItem) tmp;
+					
+					if (item.isType() || item.isAttribute()) {
+						IAction action = new PropertiesAction(item);
+						IContributionItem contrib = new ActionContributionItem(action);
+						contrib.fill(menu, index++);
+						
+						new Separator().fill(menu, index++);
+					}
+				}
+			}
+			
+			super.fill(menu, index);
+		}
+
+	}
 
 	/**
 	 * Function contribution that always uses this view's selection
@@ -288,7 +338,7 @@ public class ModelNavigationView extends ViewPart implements
 		
 		MenuManager sourceMenuManager = new MenuManager();
 		sourceMenuManager.setRemoveAllWhenShown(true);
-		final IContributionItem sourceContextFunctions = new FunctionWizardContribution(false);
+		final IContributionItem sourceContextFunctions = new SchemaItemContribution(sourceSchemaViewer, false);
 		sourceMenuManager.addMenuListener(new IMenuListener() {
 
 			@Override
@@ -303,7 +353,7 @@ public class ModelNavigationView extends ViewPart implements
 		
 		MenuManager targetMenuManager = new MenuManager();
 		targetMenuManager.setRemoveAllWhenShown(true);
-		final IContributionItem targetContextFunctions = new FunctionWizardContribution(true);
+		final IContributionItem targetContextFunctions = new SchemaItemContribution(targetSchemaViewer, true);
 		targetMenuManager.addMenuListener(new IMenuListener() {
 
 			@Override
