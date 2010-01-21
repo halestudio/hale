@@ -131,6 +131,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 				case transformed:
 					if (Display.getCurrent() != null) {
 						resetTransformedTiles();
+						refresh();
 					}
 					else {
 						final Display display = PlatformUI.getWorkbench().getDisplay();
@@ -139,6 +140,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 							@Override
 							public void run() {
 								resetTransformedTiles();
+								refresh();
 							}
 						});
 					}
