@@ -564,7 +564,6 @@ public class RuleStylePage extends FeatureStylePage {
 	 * 
 	 * @return the {@link Rule} editor
 	 */
-	@SuppressWarnings("deprecation")
 	private Editor<Rule> createEditor(Rule rule, Composite parent) {
 		FeatureType ft = getParent().getType();
 		Filter filter = rule.getFilter();

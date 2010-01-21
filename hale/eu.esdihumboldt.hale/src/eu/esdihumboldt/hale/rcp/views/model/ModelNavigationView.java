@@ -53,6 +53,7 @@ import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 
@@ -61,6 +62,7 @@ import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.views.map.style.FeatureTypeStyleAction;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 import eu.esdihumboldt.hale.rcp.views.model.dialogs.PropertiesAction;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.AbstractContentProviderAction;
@@ -112,12 +114,31 @@ public class ModelNavigationView extends ViewPart implements
 				Object tmp = selection.getFirstElement();
 				if (tmp != null && tmp instanceof SchemaItem) {
 					SchemaItem item = (SchemaItem) tmp;
+					boolean addSep = false;
 					
+					// properties
 					if (item.isType() || item.isAttribute()) {
 						IAction action = new PropertiesAction(item);
 						IContributionItem contrib = new ActionContributionItem(action);
 						contrib.fill(menu, index++);
 						
+						addSep = true;
+					}
+					
+					// SLD
+					if (item.isFeatureType() && item.getPropertyType() instanceof FeatureType
+							&& !((FeatureType) item.getPropertyType()).isAbstract()) {
+						IAction action = new FeatureTypeStyleAction((FeatureType) item.getPropertyType());
+						action.setText("Edit style...");
+						action.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
+								HALEActivator.PLUGIN_ID, "/icons/styles.gif"));
+						IContributionItem contrib = new ActionContributionItem(action);
+						contrib.fill(menu, index++);
+						
+						addSep = true;
+					}
+					
+					if (addSep) {
 						new Separator().fill(menu, index++);
 					}
 				}
@@ -426,13 +447,15 @@ public class ModelNavigationView extends ViewPart implements
 	 *            the parent {@link Composite} to use.
 	 * @param schema
 	 *            the Schema to display.
+	 * @param namespace the namespace
+	 * @param viewer the viewer type
 	 * @return a {@link TreeViewer} with the currently loaded schema.
 	 */
 	private TreeViewer schemaExplorerSetup(Composite modelComposite,
 			Collection<FeatureType> schema, String namespace, final SchemaType viewer) {
 		PatternFilter patternFilter = new PatternFilter();
 	    final FilteredTree filteredTree = new FilteredTree(modelComposite, SWT.MULTI
-	            | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter);
+	            | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
 	    TreeViewer schemaViewer = filteredTree.getViewer();
 	    // set the default content provider
 		schemaViewer.setContentProvider(new InheritanceContentProvider());
@@ -451,7 +474,9 @@ public class ModelNavigationView extends ViewPart implements
 	 * @param schema
 	 *            the {@link Collection} of {@link FeatureType}s that represent
 	 *            the schema to display.
-	 * @return
+	 * @param namespace the namespace
+	 * 
+	 * @return the root item
 	 */
 	private SchemaItem translateSchema(Collection<FeatureType> schema, String namespace) {
 		if (schema == null || schema.size() == 0) {
@@ -619,6 +644,8 @@ public class ModelNavigationView extends ViewPart implements
 	
 	/**
 	 * Sets the selection to the given selection and fires a selection change
+	 * 
+	 * @param selection the selection to set 
 	 */
 	protected void fireSelectionChange(ISelection selection) {
 		this.currentSelection = selection;

@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map.style;
 
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;

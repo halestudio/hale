@@ -382,6 +382,12 @@ public abstract class MultiPageDialog<T extends IDialogPage> extends TrayDialog 
 		pageListeners.remove(listener);
 	}
 	
+	/**
+	 * Fire a page change
+	 * 
+	 * @param oldPage the old page
+	 * @param newPage the new page
+	 */
 	protected void firePageChange(T oldPage, T newPage) {
 		onPageChange(oldPage, newPage);
 		

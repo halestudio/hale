@@ -91,6 +91,11 @@ public class ColorEditor implements Editor<RGB> {
         });
 	}
 	
+	/**
+	 * Determine with and height
+	 * 
+	 * @param control the parent control
+	 */
 	protected void init(Control control) {
 		if (!initialized) {
 			initialized = true;

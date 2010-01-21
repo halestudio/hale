@@ -127,7 +127,7 @@ public abstract class MapUtils {
 			
 			MapContext mc = new DefaultMapContext(crs);
 			for (Entry<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> entry : groupedFeatures.entrySet()) {
-				mc.addLayer(entry.getValue(), style);//ss.getStyle(entry.getKey())); //style);
+				mc.addLayer(entry.getValue(), style);
 			}
 			
 			return mc;

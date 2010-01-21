@@ -11,7 +11,11 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map.style;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
@@ -97,7 +101,16 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 	public void fillMenu(Menu menu) {
 		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
-		Collection<FeatureType> types = (dataset == DatasetType.reference)?(schema.getSourceSchema()):(schema.getTargetSchema());
+		Collection<FeatureType> tmp = (dataset == DatasetType.reference)?(schema.getSourceSchema()):(schema.getTargetSchema());
+		List<FeatureType> types = new ArrayList<FeatureType>(tmp);
+		Collections.sort(types, new Comparator<FeatureType>() {
+
+			@Override
+			public int compare(FeatureType o1, FeatureType o2) {
+				return o1.getName().getLocalPart().compareToIgnoreCase(o2.getName().getLocalPart());
+			}
+			
+		});
 		
 		if (types == null || types.isEmpty())
 			return;
@@ -132,6 +145,7 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 	/**
 	 * @see HaleServiceListener#update(UpdateMessage)
 	 */
+	@SuppressWarnings("unchecked")
 	public void update(UpdateMessage message) {
 		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
