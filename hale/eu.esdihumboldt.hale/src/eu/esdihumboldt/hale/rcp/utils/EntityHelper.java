@@ -11,8 +11,12 @@
  */
 package eu.esdihumboldt.hale.rcp.utils;
 
+import java.util.Iterator;
+
 import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.goml.omwg.Property;
 
 /**
  * Entity utility methods
@@ -32,6 +36,21 @@ public abstract class EntityHelper {
 	public static String getShortName(IEntity entity) {
 		if (entity.equals(Entity.NULL_ENTITY)) {
 			return "None";
+		}
+		
+		if (entity instanceof ComposedProperty) {
+			ComposedProperty cp = (ComposedProperty) entity;
+			Iterator<Property> it = cp.getCollection().iterator();
+			StringBuffer result = new StringBuffer();
+			while (it.hasNext()) {
+				result.append(getShortName(it.next()));
+				
+				if (it.hasNext()) {
+					result.append(" & ");
+				}
+			}
+			
+			return result.toString();
 		}
 		
 		if (entity.getAbout() != null && entity.getAbout().getAbout() != null ) {
