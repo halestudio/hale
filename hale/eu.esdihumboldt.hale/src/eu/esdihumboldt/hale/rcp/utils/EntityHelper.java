@@ -56,7 +56,12 @@ public abstract class EntityHelper {
 		if (entity.getAbout() != null && entity.getAbout().getAbout() != null ) {
 			String label = entity.getAbout().getAbout();
 			String[] nameparts = label.split("\\/");
-			return nameparts[nameparts.length -1];
+			if (entity instanceof Property && nameparts.length >= 2) {
+				return nameparts[nameparts.length - 2] + "." + nameparts[nameparts.length - 1];
+			}
+			else {
+				return nameparts[nameparts.length - 1];
+			}
 		}
 		
 		return "unnamed";

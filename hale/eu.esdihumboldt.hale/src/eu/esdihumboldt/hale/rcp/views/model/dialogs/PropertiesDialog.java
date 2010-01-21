@@ -140,7 +140,8 @@ public class PropertiesDialog extends TitleAreaDialog {
 		List<TreeNode> nodes = new ArrayList<TreeNode>();
 		
 		// name
-		MultiColumnTreeNode name = new MultiColumnTreeNode("Name", EntityHelper.getShortName(item.getEntity()));
+		MultiColumnTreeNode name = new MultiColumnTreeNode("Name", 
+				item.getName().getLocalPart());//EntityHelper.getShortName(item.getEntity()));
 		nodes.add(name);
 		
 		if (item.getPropertyType() != null) {
