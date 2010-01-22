@@ -72,5 +72,10 @@ public interface StyleService
 	 * @param styles the styles to add
 	 */
 	public void addStyles(Style...styles);
+	
+	/**
+	 * Clear all styles
+	 */
+	public void clearStyles();
 
 }

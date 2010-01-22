@@ -15,18 +15,17 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for InstanceData complex type.
+ * <p>Java class for Styles complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="InstanceData">
+ * &lt;complexType name="Styles">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="path" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="wkt" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="epsgcode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="background" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -36,17 +35,15 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "InstanceData", propOrder = {
+@XmlType(name = "Styles", propOrder = {
     "path",
-    "wkt",
-    "epsgcode"
+    "background"
 })
-public class InstanceData {
+public class Styles {
 
     @XmlElement(required = true)
     protected String path;
-    protected String wkt;
-    protected String epsgcode;
+    protected String background;
 
     /**
      * Gets the value of the path property.
@@ -73,51 +70,27 @@ public class InstanceData {
     }
 
     /**
-     * Gets the value of the wkt property.
+     * Gets the value of the background property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getWkt() {
-        return wkt;
+    public String getBackground() {
+        return background;
     }
 
     /**
-     * Sets the value of the wkt property.
+     * Sets the value of the background property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setWkt(String value) {
-        this.wkt = value;
-    }
-
-    /**
-     * Gets the value of the epsgcode property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getEpsgcode() {
-        return epsgcode;
-    }
-
-    /**
-     * Sets the value of the epsgcode property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setEpsgcode(String value) {
-        this.epsgcode = value;
+    public void setBackground(String value) {
+        this.background = value;
     }
 
 }

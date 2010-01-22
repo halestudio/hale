@@ -342,6 +342,17 @@ public class StyleServiceImpl
 		}
 	}
 	
+	/**
+	 * @see StyleService#clearStyles()
+	 */
+	@Override
+	public void clearStyles() {
+		queuedStyles.clear();
+		styles.clear();
+		
+		updateListeners();
+	}
+	
 	// UpdateService methods ...................................................
 	
 	/**

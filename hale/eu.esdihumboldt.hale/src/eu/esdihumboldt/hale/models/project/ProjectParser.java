@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.project.generated.HaleProject;
@@ -112,6 +113,8 @@ public class ProjectParser {
 			(SchemaService) PlatformUI.getWorkbench().getService(
 					SchemaService.class);
 		
+		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+		
 		// first, load schemas.
 		monitor.subTask("Schemas");
 		try {
@@ -136,6 +139,21 @@ public class ProjectParser {
 			_log.info("Number of loaded cells: " + alignmentService.getAlignment().getMap().size());
 		} catch (Exception e) {
 			throw new RuntimeException("Alignment could not be loaded: ", e);
+		}
+		
+		// second and a half, load styles
+		monitor.subTask("Styles");
+		if (project.getStyles() != null) {
+			String path = project.getStyles().getPath();
+			//styleService.clearStyles();
+			if (path != null) {
+				try {
+					styleService.addStyles(new File(path).toURI().toURL());
+				} catch (Exception e) {
+					_log.warn("Error loading SLD from " + path, e);
+				}
+			}
+			//TODO background
 		}
 		
 		// third, load instances.

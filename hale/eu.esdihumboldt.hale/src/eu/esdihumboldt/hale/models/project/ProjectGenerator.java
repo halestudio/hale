@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.models.project;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.util.Calendar;
 import java.util.List;
 
@@ -25,15 +26,19 @@ import javax.xml.namespace.QName;
 
 import org.apache.log4j.Logger;
 import org.eclipse.ui.PlatformUI;
+import org.geotools.styling.SLDTransformer;
+import org.geotools.styling.Style;
 
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.ProjectService;
+import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.project.generated.HaleProject;
 import eu.esdihumboldt.hale.models.project.generated.InstanceData;
 import eu.esdihumboldt.hale.models.project.generated.MappedSchema;
+import eu.esdihumboldt.hale.models.project.generated.Styles;
 import eu.esdihumboldt.hale.models.project.generated.Task;
 import eu.esdihumboldt.hale.models.project.generated.TaskStatus;
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
@@ -88,6 +93,8 @@ public class ProjectGenerator {
 			(AlignmentService) PlatformUI.getWorkbench().getService(
 					AlignmentService.class);
 		
+		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+		
 		// setup project and basic attributes
 		HaleProject hproject = new HaleProject();
 		hproject.setHaleVersion(projectService.getHaleVersion());
@@ -135,6 +142,27 @@ public class ProjectGenerator {
 		OmlRdfGenerator org = new OmlRdfGenerator();
 		org.write(alignmentService.getAlignment(), xmlPath + ".goml");
 		hproject.setOmlPath(xmlPath + ".goml");
+		
+		// save SLD and background
+		Style style = styleService.getStyle();
+		if (style != null) {
+			String stylePath = xmlPath + ".sld";
+			SLDTransformer trans = new SLDTransformer();
+			trans.setIndentation(2);
+			try {
+				FileWriter writer = new FileWriter(new File(stylePath));
+				trans.transform(styleService.getStyle(), writer);
+				writer.close();
+			} catch (Exception e) {
+				_log.error("Error saving SLD file", e);
+			}
+			
+			Styles styles = new Styles();
+			styles.setPath(stylePath);
+			//TODO styles.setBackground(value);
+			hproject.setStyles(styles);
+		}
+		
 		return hproject;
 	}
 }
