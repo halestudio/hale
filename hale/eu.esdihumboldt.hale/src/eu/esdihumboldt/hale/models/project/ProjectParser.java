@@ -28,6 +28,8 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.resource.StringConverter;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml3.GMLConfiguration;
@@ -45,6 +47,7 @@ import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.project.generated.HaleProject;
+import eu.esdihumboldt.hale.rcp.views.map.MapView;
 import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
 
 /**
@@ -153,7 +156,29 @@ public class ProjectParser {
 					_log.warn("Error loading SLD from " + path, e);
 				}
 			}
-			//TODO background
+			// background
+			final String color = project.getStyles().getBackground();
+			if (color != null) {
+				if (Display.getCurrent() != null) {
+					MapView map = (MapView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(MapView.ID);
+					if (map != null) {
+						map.setBackground(StringConverter.asRGB(color));
+					}
+				}
+				else {
+					final Display display = PlatformUI.getWorkbench().getDisplay();
+					display.syncExec(new Runnable() {
+						
+						@Override
+						public void run() {
+							MapView map = (MapView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(MapView.ID);
+							if (map != null) {
+								map.setBackground(StringConverter.asRGB(color));
+							}
+						}
+					});
+				}
+			}
 		}
 		
 		// third, load instances.

@@ -25,6 +25,8 @@ import javax.xml.bind.PropertyException;
 import javax.xml.namespace.QName;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.resource.StringConverter;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.styling.SLDTransformer;
 import org.geotools.styling.Style;
@@ -42,6 +44,7 @@ import eu.esdihumboldt.hale.models.project.generated.Styles;
 import eu.esdihumboldt.hale.models.project.generated.Task;
 import eu.esdihumboldt.hale.models.project.generated.TaskStatus;
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
+import eu.esdihumboldt.hale.rcp.views.map.MapView;
 import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
 
 /**
@@ -159,7 +162,13 @@ public class ProjectGenerator {
 			
 			Styles styles = new Styles();
 			styles.setPath(stylePath);
-			//TODO styles.setBackground(value);
+			
+			// background
+			MapView map = (MapView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(MapView.ID);
+			if (map != null) {
+				styles.setBackground(StringConverter.asString(map.getBackground()));
+			}
+			
 			hproject.setStyles(styles);
 		}
 		
