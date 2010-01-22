@@ -44,11 +44,7 @@ public class GeographicNameFunctionWizard extends AbstractSingleCellWizard {
 		this.page = new GeographicNamePage("main",
 				"Configure Geographic Name Function", null);
 		super.setWindowTitle("INSPIRE Geographic Name Function Wizard");
-		/*
-		 * Shell shell = getShell(); //WizardDialog dialog = new
-		 * WizardDialog(HandlerUtil.getActiveShell(event), this);
-		 * dialog.setPageSize(10, 10); this.setContainer(dialog);
-		 */
+		
 
 	}
 

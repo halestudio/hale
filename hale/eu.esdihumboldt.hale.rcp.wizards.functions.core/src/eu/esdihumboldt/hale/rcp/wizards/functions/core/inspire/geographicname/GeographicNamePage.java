@@ -80,7 +80,7 @@ public class GeographicNamePage extends AbstractSingleCellWizardPage {
 		composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
 				| GridData.HORIZONTAL_ALIGN_FILL));
 
-		/* gd.heightHint = SWT.DEFAULT * 1000; */
+		
 		composite.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		composite.setFont(parent.getFont());
 
@@ -97,7 +97,7 @@ public class GeographicNamePage extends AbstractSingleCellWizardPage {
 
 		final Composite configurationComposite = new Composite(parent, SWT.NONE);
 		GridData configurationLayoutData = new GridData(
-				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL);
+				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL | GridData.GRAB_VERTICAL);
 		configurationLayoutData.grabExcessHorizontalSpace = true;
 		// configurationLayoutData.grabExcessVerticalSpace = true;
 		configurationLayoutData.verticalIndent = 3;

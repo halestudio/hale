@@ -32,8 +32,8 @@ public class GeographicNameFunctionWizardFactory implements
 	 */
 	@Override
 	public FunctionWizard createWizard(AlignmentInfo selection) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return new GeographicNameFunctionWizard(selection);
 	}
 
 	/**
