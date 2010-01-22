@@ -42,7 +42,7 @@ public class GeographicNameFunctionWizardFactory implements
 	@Override
 	public boolean supports(AlignmentInfo selection) {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 }
