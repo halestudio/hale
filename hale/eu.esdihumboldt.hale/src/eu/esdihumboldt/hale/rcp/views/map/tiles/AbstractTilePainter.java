@@ -24,6 +24,8 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -225,7 +227,19 @@ public abstract class AbstractTilePainter implements PaintListener,
 	 */
 	protected void refresh() {
 		if (control != null) {
-			control.redraw();
+			if (Display.getCurrent() != null) {
+				control.redraw();	
+			}
+			else {
+				final Display display = PlatformUI.getWorkbench().getDisplay();
+				display.syncExec(new Runnable() {
+					
+					@Override
+					public void run() {
+						control.redraw();
+					}
+				});
+			}
 		}
 	}
 	

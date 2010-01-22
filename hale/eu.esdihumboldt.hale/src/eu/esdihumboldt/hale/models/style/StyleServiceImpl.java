@@ -17,7 +17,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -76,6 +78,11 @@ public class StyleServiceImpl
 		CommonFactoryFinder.getFilterFactory(null);
 	
 	private final SchemaService schemaService;
+
+	/**
+	 * Queued styles
+	 */
+	private final Queue<FeatureTypeStyle> queuedStyles = new LinkedList<FeatureTypeStyle>();
 	
 	// Constructor, instance accessor ..........................................
 	
@@ -83,6 +90,36 @@ public class StyleServiceImpl
 		styles = new HashMap<FeatureType, FeatureTypeStyle>();
 		
 		schemaService = schema;
+		
+		// add listener to process queued styles
+		schema.addListener(new HaleServiceListener() {
+			
+			@SuppressWarnings({ "unchecked", "deprecation" })
+			@Override
+			public void update(UpdateMessage message) {
+				Collection<FeatureTypeStyle> failures = new ArrayList<FeatureTypeStyle>();
+				boolean updateNeeded = false;
+				
+				while (!queuedStyles.isEmpty()) {
+					FeatureTypeStyle fts = queuedStyles.poll();
+					FeatureType ft = schemaService.getFeatureTypeByName(fts.getFeatureTypeName());
+					if (ft != null) {
+						if (addStyle(ft, fts)) {
+							updateNeeded = true;
+						}
+					}
+					else {
+						failures.add(fts);
+					}
+				}
+				
+				queuedStyles.addAll(failures);
+				
+				if (updateNeeded) {
+					updateListeners();
+				}
+			}
+		});
 	}
 	
 	/**
@@ -193,6 +230,7 @@ public class StyleServiceImpl
 		FeatureType current = ft;
 		Class<?> type = null;
 		
+		// find geometry type
 		while (type == null && current != null) {
 			GeometryDescriptor gd = current.getGeometryDescriptor();
 			if (gd != null) {
@@ -200,7 +238,6 @@ public class StyleServiceImpl
 			}
 			
 			if (current.getSuper() instanceof FeatureType) {
-				//XXX does this make any sense?
 				current = (FeatureType) current.getSuper();
 			}
 			else {
@@ -242,25 +279,16 @@ public class StyleServiceImpl
 			for (FeatureTypeStyle fts : style.getFeatureTypeStyles()) {
 				FeatureType ft = schemaService.getFeatureTypeByName(fts.getFeatureTypeName());
 				if (ft != null) {
-					FeatureTypeStyle old = this.styles.get(ft);
-					if (old != null) {
-						if (!old.equals(fts)) {
-							_log.info("Replacing style for feature type " + ft.getName());
-							somethingHappened = true;
-						}
-					}
-					else {
-						_log.info("Adding style for feature type " + ft.getName());
+					if (addStyle(ft, fts)) {
 						somethingHappened = true;
 					}
-					
-					this.styles.put(ft, fts);
 				}
 				else {
 					/*
-					 * TODO store for later schema update when
-					 * feature type might be present?
+					 * store for later schema update when
+					 * feature type might be present
 					 */
+					queuedStyles.add(fts);
 				}
 			}
 		}
@@ -268,6 +296,32 @@ public class StyleServiceImpl
 		if (somethingHappened) {
 			this.updateListeners();
 		}
+	}
+
+	/**
+	 * Add a feature type style
+	 * 
+	 * @param ft the feature type
+	 * @param fts the feature type style
+	 * 
+	 * @return if the style definitions were changed
+	 */
+	private boolean addStyle(FeatureType ft, FeatureTypeStyle fts) {
+		boolean somethingHappened = false;
+		FeatureTypeStyle old = this.styles.get(ft);
+		if (old != null) {
+			if (!old.equals(fts)) {
+				_log.info("Replacing style for feature type " + ft.getName());
+				somethingHappened = true;
+			}
+		}
+		else {
+			_log.info("Adding style for feature type " + ft.getName());
+			somethingHappened = true;
+		}
+		
+		this.styles.put(ft, fts);
+		return somethingHappened;
 	}
 
 	/**
