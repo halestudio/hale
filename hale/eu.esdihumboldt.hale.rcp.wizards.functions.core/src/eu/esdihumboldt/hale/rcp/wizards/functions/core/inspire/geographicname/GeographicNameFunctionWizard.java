@@ -12,24 +12,27 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.geographicname;
 
+import org.eclipse.jface.wizard.Wizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 
 /**
  * Wizard for the {@link GeographicNameFunction}.
- *
+ * 
  * @author Anna Pitaev
  * @partner 04 / Logica
- * @version $Id$ 
+ * @version $Id$
  */
 public class GeographicNameFunctionWizard extends AbstractSingleCellWizard {
+
+	private GeographicNamePage page;
 
 	/**
 	 * @param selection
 	 */
 	public GeographicNameFunctionWizard(AlignmentInfo selection) {
 		super(selection);
-		// TODO Auto-generated constructor stub
+
 	}
 
 	/**
@@ -37,7 +40,15 @@ public class GeographicNameFunctionWizard extends AbstractSingleCellWizard {
 	 */
 	@Override
 	protected void init() {
-		// TODO Auto-generated method stub
+
+		this.page = new GeographicNamePage("main",
+				"Configure Geographic Name Function", null);
+		super.setWindowTitle("INSPIRE Geographic Name Function Wizard");
+		/*
+		 * Shell shell = getShell(); //WizardDialog dialog = new
+		 * WizardDialog(HandlerUtil.getActiveShell(event), this);
+		 * dialog.setPageSize(10, 10); this.setContainer(dialog);
+		 */
 
 	}
 
@@ -47,7 +58,29 @@ public class GeographicNameFunctionWizard extends AbstractSingleCellWizard {
 	@Override
 	public boolean performFinish() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
+
+	/**
+	 * @see Wizard#addPages()
+	 */
+	@Override
+	public void addPages() {
+		addPage(page);
+	}
+
+	@Override
+	public boolean canFinish() {
+		return page.isPageComplete();
+
+	}
+	/*
+	 * @Override public void createPageControls(Composite pageContainer) {
+	 * //System.out.println("createPageControls"); pageContainer.setSize(1000,
+	 * 1000); page.createControl(pageContainer);
+	 * Assert.isNotNull(page.getControl());
+	 * 
+	 * }
+	 */
 
 }
