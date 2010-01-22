@@ -1,0 +1,44 @@
+/**
+ * 
+ */
+package eu.esdihumboldt.goml.omwg.comparator;
+
+import java.util.List;
+
+import org.opengis.feature.Property;
+
+import eu.esdihumboldt.cst.align.ext.IValueExpression;
+import eu.esdihumboldt.goml.omwg.Restriction;
+
+/**
+ * Compares the Property values in the sourceRestriction with the <b><i>corresponding</b></i> 
+ * Property value. If the source Property being compared contains <b><i>one</b></i> occurrence of
+ * any <b><i>value</b></i> in the <b><i>corresponding</i></b> target Property the evaluation returns true.
+ * 
+ * @author Mark Doyle (Logica)
+ * @see org.opengis.feature.Property
+ * @see IValueExpression
+ */
+public class OneOfComparator implements Comparator {
+
+	/* (non-Javadoc)
+	 * @see eu.esdihumboldt.goml.omwg.comparator.Comparator#evaluate(java.util.List, java.util.List)
+	 */
+	public boolean evaluate(Restriction sourceRestriction, Property sourceProp) {
+		
+		List<IValueExpression> sourceValues = sourceRestriction.getValue();
+		Object sourcePropValue = sourceProp.getValue();
+		
+		for(IValueExpression value : sourceValues) {
+			// TODO Should we be testing the equivalence of the source property value against the literal?
+			// Is literal always populated?  I would have assumed the equal() would have worked on the value object
+			if(sourcePropValue.equals(value.getLiteral())) {
+				// We have found one of the values so we can break and return true;
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+}
