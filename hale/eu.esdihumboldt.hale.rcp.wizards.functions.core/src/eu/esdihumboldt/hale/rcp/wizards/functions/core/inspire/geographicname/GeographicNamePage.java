@@ -12,11 +12,15 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.geographicname;
 
+import org.apache.batik.svggen.font.table.NameTable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -24,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Caret;
 
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 
@@ -41,7 +46,7 @@ public class GeographicNamePage extends AbstractSingleCellWizardPage {
 	private StyledText nameSpellingTransliteration;
 	private Text namePronounciationSounds;
 	private StyledText namePronounciationIPA;
-	private Text nameLanguageText;
+	private StyledText nameLanguageText;	
 	private StyledText nameSourceText;
 	private Combo nameStatusCombo;
 	private Combo nameNativenessCombo;
@@ -97,7 +102,7 @@ public class GeographicNamePage extends AbstractSingleCellWizardPage {
 
 		final Composite configurationComposite = new Composite(parent, SWT.NONE);
 		GridData configurationLayoutData = new GridData(
-				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL | GridData.GRAB_VERTICAL);
+				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL);
 		configurationLayoutData.grabExcessHorizontalSpace = true;
 		// configurationLayoutData.grabExcessVerticalSpace = true;
 		configurationLayoutData.verticalIndent = 3;
@@ -116,9 +121,32 @@ public class GeographicNamePage extends AbstractSingleCellWizardPage {
 		final Label nameLanguageLabel = new Label(configurationComposite,
 				SWT.NONE);
 		nameLanguageLabel.setText("Language");
-		this.nameLanguageText = new Text(configurationComposite, SWT.BORDER);
+		
+		this.nameLanguageText = new StyledText(configurationComposite, SWT.BORDER);
 		this.nameLanguageText.setLayoutData(configurationLayoutData);
+		//TODO set to the default parameter value if exist
+		String languageCode = " <enter ISO language code>";
+		this.nameLanguageText.setText(languageCode);
+		this.nameLanguageText.setCaretOffset(languageCode.length());
 		this.nameLanguageText.setEnabled(true);
+		this.nameLanguageText.setTabs(0);
+		//Add a key listener to enable the switch between the input text fields.
+		this.nameLanguageText.addKeyListener(new KeyListener(){
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				//DO nothing
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.keyCode == SWT.TAB){
+					nameSourceText.setFocus();
+				}
+				
+			}
+		});
 
 		// Source of Name
 		final Label nameSourceLabel = new Label(configurationComposite,
@@ -126,7 +154,28 @@ public class GeographicNamePage extends AbstractSingleCellWizardPage {
 		nameSourceLabel.setText("Source of Name");
 		this.nameSourceText = new StyledText(configurationComposite, SWT.BORDER);
 		this.nameSourceText.setLayoutData(configurationLayoutData);
+		String nameSource = " <enter source if known>";
+		this.nameSourceText.setText(nameSource);
+		this.nameSourceText.setCaretOffset(nameSource.length());
 		this.nameSourceText.setEnabled(true);
+		this.nameSourceText.setTabs(0);
+		//Add a key listener to enable the switch between the input text fields.
+		this.nameSourceText.addKeyListener(new KeyListener(){
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				//DO nothing
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.keyCode == SWT.TAB){
+					nameSpellingScript.setFocus();
+				}
+				
+			}
+		});
 
 		// Name Status
 		final Label nameStatusLabel = new Label(configurationComposite,
@@ -242,6 +291,24 @@ public class GeographicNamePage extends AbstractSingleCellWizardPage {
 				SWT.BORDER);
 		this.namePronounciationIPA.setLayoutData(configurationLayoutData);
 		this.namePronounciationIPA.setEnabled(true);
+		this.namePronounciationIPA.setTabs(0);
+		//Add a key listener to enable the switch between the input text fields.
+		this.namePronounciationIPA.addKeyListener(new KeyListener(){
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				//DO nothing
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.keyCode == SWT.TAB){
+					nameLanguageText.setFocus();
+				}
+				
+			}
+		});
 
 	}
 
@@ -280,6 +347,7 @@ public class GeographicNamePage extends AbstractSingleCellWizardPage {
 		nameSpellingTextLabel.setText("Text");
 		this.nameSpellingText = new Text(configurationComposite, SWT.BORDER);
 		this.nameSpellingText.setLayoutData(configurationLayoutData);
+		this.nameSpellingText.setText(getParent().getSourceItem().getName().getLocalPart());
 		this.nameSpellingText.setEnabled(false);
 
 		// Script
@@ -290,6 +358,24 @@ public class GeographicNamePage extends AbstractSingleCellWizardPage {
 				SWT.BORDER);
 		this.nameSpellingScript.setLayoutData(configurationLayoutData);
 		this.nameSpellingScript.setEnabled(true);
+		this.nameSpellingScript.setTabs(0);
+		//Add a key listener to enable the switch between the input text fields.
+		this.nameSpellingScript.addKeyListener(new KeyListener(){
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				//DO nothing
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.keyCode == SWT.TAB){
+					nameSpellingTransliteration.setFocus();
+				}
+				
+			}
+		});
 
 		// Transliteration
 		final Label nameSpellingTransliterationLabel = new Label(
@@ -299,6 +385,24 @@ public class GeographicNamePage extends AbstractSingleCellWizardPage {
 				configurationComposite, SWT.BORDER);
 		this.nameSpellingTransliteration.setLayoutData(configurationLayoutData);
 		this.nameSpellingTransliteration.setEnabled(true);
+		this.nameSpellingTransliteration.setTabs(0);
+		//Add a key listener to enable the switch between the input text fields.
+		this.nameSpellingTransliteration.addKeyListener(new KeyListener(){
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				//DO nothing
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.keyCode == SWT.TAB){
+					namePronounciationIPA.setFocus();
+				}
+				
+			}
+		});
 
 	}
 
