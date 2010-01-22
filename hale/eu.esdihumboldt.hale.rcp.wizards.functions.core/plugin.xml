@@ -68,6 +68,11 @@
             icon="icons/generic.png"
             name="Generic wizard">
       </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.geographicname.GeographicNameFunctionWizardFactory"
+            icon="icons/rename.gif"
+            name="Geographic name">
+      </factory>
    </extension>
 
 </plugin>
