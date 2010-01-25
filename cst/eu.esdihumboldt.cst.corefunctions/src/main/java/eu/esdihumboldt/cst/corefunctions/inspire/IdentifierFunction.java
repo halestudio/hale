@@ -20,6 +20,7 @@ import org.geotools.feature.AttributeImpl;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.PropertyImpl;
 import org.opengis.feature.Feature;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
@@ -101,19 +102,10 @@ public class IdentifierFunction
 				+ featureTypeName + ":" + localID;
 		
 		// set to target feature
-		PropertyDescriptor pd = target.getProperty(
-				this.targetProperty.getLocalname()).getDescriptor();
-		PropertyImpl p = null;
-		if (pd.getType().getBinding().equals(String.class)) {
-			p = new AttributeImpl(inspireIDString, (AttributeDescriptor) pd,
-					null);
-		}
-		
+			
 		//((FeatureType)pd.getType()).getDescriptors()
+		((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),inspireIDString);
 		
-		Collection<org.opengis.feature.Property> c = new HashSet<org.opengis.feature.Property>();
-		c.add(p);
-		target.setValue(c);
 		return target;
 	}
 

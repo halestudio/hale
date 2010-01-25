@@ -72,6 +72,8 @@ public class IdentifierTest extends TestCase {
 				sourcetype, new Object[]{"ID1"}, "1");
 		Feature target = SimpleFeatureBuilder.build(
 				targettype, new Object[]{}, "2");
+	
+		
 		// perform actual test
 		
 		System.out.println(source.getProperty(this.sourceLocalnamePropertyAID).getValue().toString());
@@ -83,7 +85,7 @@ public class IdentifierTest extends TestCase {
 		System.out.println("B: " +neu.getProperty(
 				this.targetLocalnamePropertyBID).getValue().toString());
 		assertTrue(neu.getProperty(
-				this.targetLocalnamePropertyBID).getValue().toString().equals("urn:de:TUM:PRName:FT1:ID1"));
+				this.targetLocalnamePropertyBID).getValue().toString().equals("urn:de:TUM:PRName:FT1:1"));
 		
 
 		
