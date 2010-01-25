@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Caret;
 
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
+import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
 
 /**
  * The WizardPage for the {@link GeographicNameFunctionWizard}
@@ -39,7 +40,7 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
  * @partner 04 / Logica
  * @version $Id$
  */
-public class GeographicNamePage extends AbstractSingleCellWizardPage {
+public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 
 	private Text nameSpellingText;
 	private StyledText nameSpellingScript;
@@ -52,6 +53,160 @@ public class GeographicNamePage extends AbstractSingleCellWizardPage {
 	private Combo nameNativenessCombo;
 	private Combo nameGenderCombo;
 	private Combo nameNumberCombo;
+	
+	private String text;
+	private String script;
+	private String transliteration;
+	private String ipa;
+	private String language;
+	private String sourceOfName;
+	private String nameStatus;
+	private String nativeness;
+	private String gender;
+	private String number;
+	
+	/**
+	 * @return the text
+	 */
+	public String getText() {
+		return text;
+	}
+
+	/**
+	 * @param text the text to set
+	 */
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	/**
+	 * @return the script
+	 */
+	public String getScript() {
+		return script;
+	}
+
+	/**
+	 * @param script the script to set
+	 */
+	public void setScript(String script) {
+		this.script = script;
+	}
+
+	/**
+	 * @return the transliteration
+	 */
+	public String getTransliteration() {
+		return transliteration;
+	}
+
+	/**
+	 * @param transliteration the transliteration to set
+	 */
+	public void setTransliteration(String transliteration) {
+		this.transliteration = transliteration;
+	}
+
+	/**
+	 * @return the ipa
+	 */
+	public String getIpa() {
+		return ipa;
+	}
+
+	/**
+	 * @param ipa the ipa to set
+	 */
+	public void setIpa(String ipa) {
+		this.ipa = ipa;
+	}
+
+	/**
+	 * @return the language
+	 */
+	public String getLanguage() {
+		return language;
+	}
+
+	/**
+	 * @param language the language to set
+	 */
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	/**
+	 * @return the sourceOfName
+	 */
+	public String getSourceOfName() {
+		return sourceOfName;
+	}
+
+	/**
+	 * @param sourceOfName the sourceOfName to set
+	 */
+	public void setSourceOfName(String sourceOfName) {
+		this.sourceOfName = sourceOfName;
+	}
+
+	/**
+	 * @return the nameStatus
+	 */
+	public String getNameStatus() {
+		return nameStatus;
+	}
+
+	/**
+	 * @param nameStatus the nameStatus to set
+	 */
+	public void setNameStatus(String nameStatus) {
+		this.nameStatus = nameStatus;
+	}
+
+	/**
+	 * @return the nativeness
+	 */
+	public String getNativeness() {
+		return nativeness;
+	}
+
+	/**
+	 * @param nativeness the nativeness to set
+	 */
+	public void setNativeness(String nativeness) {
+		this.nativeness = nativeness;
+	}
+
+	/**
+	 * @return the gender
+	 */
+	public String getGender() {
+		return gender;
+	}
+
+	/**
+	 * @param gender the gender to set
+	 */
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	/**
+	 * @return the number
+	 */
+	public String getNumber() {
+		return number;
+	}
+
+	/**
+	 * @param number the number to set
+	 */
+	public void setNumber(String number) {
+		this.number = number;
+	}
+
+	
+	
 
 	/**
 	 * @param pageName
@@ -347,7 +502,7 @@ public class GeographicNamePage extends AbstractSingleCellWizardPage {
 		nameSpellingTextLabel.setText("Text");
 		this.nameSpellingText = new Text(configurationComposite, SWT.BORDER);
 		this.nameSpellingText.setLayoutData(configurationLayoutData);
-		this.nameSpellingText.setText(getParent().getSourceItem().getName().getLocalPart());
+		this.nameSpellingText.setText(getParent().getFirstSourceItem().getName().getLocalPart());
 		this.nameSpellingText.setEnabled(false);
 
 		// Script
