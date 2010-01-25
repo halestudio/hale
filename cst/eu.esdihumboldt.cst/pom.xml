@@ -101,20 +101,10 @@
 	</dependency>
 	<dependency>
 	<groupId>eu.esdihumboldt</groupId>
-	<artifactId>specification</artifactId>
-	<version>2.0</version>
-	</dependency>
-     <dependency>
-	<groupId>eu.esdihumboldt</groupId>
 	<artifactId>common-library</artifactId>
-	<version>2.0</version>
+	<version>2.0.1</version>
      </dependency>
-     <dependency>
-	<groupId>eu.esdihumboldt.cst</groupId>
-	<artifactId>corefunctions</artifactId>
-	<version>1.0.0</version>
-     </dependency>
-    <dependency>
+	<dependency>
      	<groupId>com.iabcinc</groupId>
      	<artifactId>JMEP</artifactId>
      	<version>0.1.0</version>
