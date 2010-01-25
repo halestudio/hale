@@ -18,6 +18,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Cursor;
@@ -279,18 +281,36 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		
 		this.nameLanguageText = new StyledText(configurationComposite, SWT.BORDER);
 		this.nameLanguageText.setLayoutData(configurationLayoutData);
-		//TODO set to the default parameter value if exist
-		String languageCode = " <enter ISO language code>";
+		String languageCode = null;
+		if(getLanguage()!=null && !getLanguage().equals("")){
+			languageCode = getLanguage();
+			this.nameLanguageText.setCaretOffset(languageCode.length());
+			
+			}
+		else {
+		languageCode = " <enter ISO language code>";
+		}
 		this.nameLanguageText.setText(languageCode);
+		
 		this.nameLanguageText.setCaretOffset(languageCode.length());
 		this.nameLanguageText.setEnabled(true);
 		this.nameLanguageText.setTabs(0);
+		this.nameLanguageText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e){
+				//set a new iso value for the language
+				setLanguage(nameLanguageText.getText());
+				
+			}
+
+			
+		});
 		//Add a key listener to enable the switch between the input text fields.
 		this.nameLanguageText.addKeyListener(new KeyListener(){
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				//DO nothing
+				
+				
 				
 			}
 			
@@ -298,6 +318,8 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 			public void keyPressed(KeyEvent e) {
 				if (e.keyCode == SWT.TAB){
 					nameSourceText.setFocus();
+					
+					
 				}
 				
 			}
@@ -309,10 +331,28 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		nameSourceLabel.setText("Source of Name");
 		this.nameSourceText = new StyledText(configurationComposite, SWT.BORDER);
 		this.nameSourceText.setLayoutData(configurationLayoutData);
-		String nameSource = " <enter source if known>";
+		String nameSource = null;
+		if(getSourceOfName()!=null && !getSourceOfName().equals("")){
+			nameSource = getSourceOfName();
+			
+			
+			}
+		else {
+			nameSource = " <enter source if known>";
+		}
+		
+		
 		this.nameSourceText.setText(nameSource);
 		this.nameSourceText.setCaretOffset(nameSource.length());
 		this.nameSourceText.setEnabled(true);
+		this.nameSourceText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e){
+				//set a new iso value for the language
+				setSourceOfName(nameSourceText.getText());
+				
+				
+			}
+		});
 		this.nameSourceText.setTabs(0);
 		//Add a key listener to enable the switch between the input text fields.
 		this.nameSourceText.addKeyListener(new KeyListener(){
@@ -447,6 +487,22 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		this.namePronounciationIPA.setLayoutData(configurationLayoutData);
 		this.namePronounciationIPA.setEnabled(true);
 		this.namePronounciationIPA.setTabs(0);
+		String ipa = "";
+		if(getIpa()!=null && !getIpa().equals("")){
+			ipa = getIpa();
+			
+		}
+		this.namePronounciationIPA.setText(ipa);
+		this.namePronounciationIPA.setCaretOffset(ipa.length());
+		this.namePronounciationIPA.addModifyListener(new ModifyListener(){
+
+			@Override
+			public void modifyText(ModifyEvent e) {
+				setIpa(namePronounciationIPA.getText());
+				
+			}
+			
+		});
 		//Add a key listener to enable the switch between the input text fields.
 		this.namePronounciationIPA.addKeyListener(new KeyListener(){
 			
@@ -503,6 +559,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		this.nameSpellingText = new Text(configurationComposite, SWT.BORDER);
 		this.nameSpellingText.setLayoutData(configurationLayoutData);
 		this.nameSpellingText.setText(getParent().getFirstSourceItem().getName().getLocalPart());
+		setText(this.nameSpellingText.getText());
 		this.nameSpellingText.setEnabled(false);
 
 		// Script
@@ -514,6 +571,23 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		this.nameSpellingScript.setLayoutData(configurationLayoutData);
 		this.nameSpellingScript.setEnabled(true);
 		this.nameSpellingScript.setTabs(0);
+		String script = "";
+		if(getScript()!=null && !getScript().equals("")){
+			script = getScript();
+			
+			
+		}
+		this.nameSpellingScript.setText(script);
+		this.nameSpellingScript.setCaretOffset(script.length());
+		
+		this.nameSpellingScript.addModifyListener(new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent e) {
+				setScript(nameSpellingScript.getText());
+				
+			}
+		});
 		//Add a key listener to enable the switch between the input text fields.
 		this.nameSpellingScript.addKeyListener(new KeyListener(){
 			
@@ -541,6 +615,22 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		this.nameSpellingTransliteration.setLayoutData(configurationLayoutData);
 		this.nameSpellingTransliteration.setEnabled(true);
 		this.nameSpellingTransliteration.setTabs(0);
+		String transliteration = "";
+		if(getTransliteration()!=null && !getTransliteration().equals("")){
+			transliteration = getTransliteration();
+			
+			
+		}
+		this.nameSpellingTransliteration.setText(transliteration);
+		this.nameSpellingTransliteration.setCaretOffset(transliteration.length());
+		this.nameSpellingTransliteration.addModifyListener(new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent e) {
+				setTransliteration(nameSpellingTransliteration.getText());
+				
+			}
+		});
 		//Add a key listener to enable the switch between the input text fields.
 		this.nameSpellingTransliteration.addKeyListener(new KeyListener(){
 			

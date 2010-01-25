@@ -38,7 +38,8 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.core.math.MathFunctionPage;
  * @partner 04 / Logica
  * @version $Id$
  */
-public class GeographicNameFunctionWizard extends AbstractSingleComposedCellWizard {
+public class GeographicNameFunctionWizard extends
+		AbstractSingleComposedCellWizard {
 
 	private GeographicNamePage page;
 
@@ -75,7 +76,7 @@ public class GeographicNameFunctionWizard extends AbstractSingleComposedCellWiza
 
 			if (parameters != null) {
 				Iterator<IParameter> it = parameters.iterator();
-				
+
 				while (it.hasNext()) {
 					IParameter param = it.next();
 					String paramValue = param.getValue();
@@ -103,8 +104,12 @@ public class GeographicNameFunctionWizard extends AbstractSingleComposedCellWiza
 					} else if (param.getName().equals(
 							GeographicalNameFunction.PROPERTY_SOURCEOFNAME)) {
 						sourceOfName = paramValue;
-					}else if (param.getName().equals(GeographicalNameFunction.PROPERTY_TEXT)){
+					} else if (param.getName().equals(
+							GeographicalNameFunction.PROPERTY_TEXT)) {
 						text = paramValue;
+					} else if (param.getName().equals(
+							GeographicalNameFunction.PROPERTY_TRANSLITERATION)) {
+						transliteration = paramValue;
 					}
 				}
 			}
@@ -133,56 +138,48 @@ public class GeographicNameFunctionWizard extends AbstractSingleComposedCellWiza
 		ICell cell = getResultCell();
 		Transformation t = new Transformation();
 		t.setService(new Resource(GeographicalNameFunction.class.getName()));
-		//add parameters 
-		
-		//text
+		// add parameters
+
+		// text
+		t.getParameters().add(
+				new Parameter(GeographicalNameFunction.PROPERTY_TEXT, page
+						.getText()));
+		// script
+		t.getParameters().add(
+				new Parameter(GeographicalNameFunction.PROPERTY_SCRIPT, page
+						.getScript()));
+		// transliteration
 		t.getParameters().add(
 				new Parameter(
-						GeographicalNameFunction.PROPERTY_TEXT, 
-						page.getText()));
-		//script
+						GeographicalNameFunction.PROPERTY_TRANSLITERATION, page
+								.getTransliteration()));
+		// ipa
 		t.getParameters().add(
 				new Parameter(
-						GeographicalNameFunction.PROPERTY_SCRIPT, 
-						page.getScript()));
-		//transliteration
-		t.getParameters().add(
-				new Parameter(
-						GeographicalNameFunction.PROPERTY_TRANSLITERATION, 
-						page.getTransliteration()));
-		//ipa
-		t.getParameters().add(
-				new Parameter(
-						GeographicalNameFunction.PROPERTY_PRONUNCIATIONIPA, 
+						GeographicalNameFunction.PROPERTY_PRONUNCIATIONIPA,
 						page.getIpa()));
-		//language
+		// language
 		t.getParameters().add(
-				new Parameter(
-						GeographicalNameFunction.PROPERTY_LANGUAGE, 
-						page.getLanguage()));
-		//source of Name
+				new Parameter(GeographicalNameFunction.PROPERTY_LANGUAGE, page
+						.getLanguage()));
+		// source of Name
 		t.getParameters().add(
-				new Parameter(
-						GeographicalNameFunction.PROPERTY_SOURCEOFNAME, 
+				new Parameter(GeographicalNameFunction.PROPERTY_SOURCEOFNAME,
 						page.getSourceOfName()));
-		//nativeness
+		// nativeness
 		t.getParameters().add(
-				new Parameter(
-						GeographicalNameFunction.PROPERTY_NATIVENESS, 
+				new Parameter(GeographicalNameFunction.PROPERTY_NATIVENESS,
 						page.getNativeness()));
-		//gender
+		// gender
 		t.getParameters().add(
-				new Parameter(
-						GeographicalNameFunction.PROPERTY_GRAMMA_GENDER, 
+				new Parameter(GeographicalNameFunction.PROPERTY_GRAMMA_GENDER,
 						page.getGender()));
-		//number
+		// number
 		t.getParameters().add(
-				new Parameter(
-						GeographicalNameFunction.PROPERTY_GRAMMA_NUMBER, 
+				new Parameter(GeographicalNameFunction.PROPERTY_GRAMMA_NUMBER,
 						page.getNumber()));
 		((Entity) cell.getEntity1()).setTransformation(t);
-		
-		
+
 		return true;
 	}
 
@@ -199,6 +196,5 @@ public class GeographicNameFunctionWizard extends AbstractSingleComposedCellWiza
 		return page.isPageComplete();
 
 	}
-	
 
 }
