@@ -19,11 +19,9 @@ import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.junit.Test;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import eu.esdihumboldt.cst.corefunctions.inspire.IdentifierFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.rdf.Resource;
@@ -51,20 +49,15 @@ public class ConstantValueTest extends TestCase {
 
 		// set up cell to use for testing
 		Cell cell = new Cell();
-		ComposedProperty cp = new ComposedProperty(
-				new About(this.targetNamespace, this.targetLocalname));
-		cp.getCollection().add(new Property(
-				new About(this.targetNamespace, this.targetLocalname, 
-						this.targetLocalnamePropertyBConst)));
-		
+	
 		Transformation t = new Transformation();
 		t.setService(new Resource(ConstantValueFunction.class.toString()));
 		t.getParameters().add(new Parameter("defaultValue", "Spingfield"));
-		cp.setTransformation(t);
+		
+		Property p1 = new Property(new About(this.targetNamespace, this.targetLocalname, this.targetLocalnamePropertyBConst));
+		p1.setTransformation(t);
 		cell.setEntity1(null);
-		cell.setEntity2(cp);
-//		cell.setEntity1(new Property(new About(this.sourceNamespace, this.sourceLocalname, this.sourceLocalnamePropertyAConst)));
-//		cell.setEntity2(new Property(new About(this.targetNamespace, this.targetLocalname, this.targetLocalnamePropertyBConst)));
+		cell.setEntity2(p1);
 
 		// build source and target Features
 		

@@ -67,7 +67,7 @@ public class ConstantValueFunction extends AbstractCstFunction {
 		
 		}
 
-		this.targetProperty = ((ComposedProperty)cell.getEntity2()).getCollection().get(0);
+		this.targetProperty = (Property) cell.getEntity2();
 		return true;
 	}
 

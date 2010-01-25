@@ -47,16 +47,19 @@ public class BoundingBoxTest extends TestCase {
 	
 		// set up cell to use for testing
 		Cell cell = new Cell();
-		ComposedProperty cp = new ComposedProperty(
-				new About(this.sourceNamespace, this.sourceLocalname));
-		cp.getCollection().add(new Property(
-				new About(this.sourceNamespace, this.sourceLocalname, 
-						this.sourceLocalnamePropertyAGeom)));
+//		ComposedProperty cp = new ComposedProperty(
+//				new About(this.sourceNamespace, this.sourceLocalname));
+//		cp.getCollection().add(new Property(
+//				new About(this.sourceNamespace, this.sourceLocalname, 
+//						this.sourceLocalnamePropertyAGeom)));
 		
 		Transformation t = new Transformation();
 		t.setService(new Resource(BoundingBoxFunction.class.toString()));
-		cp.setTransformation(t);
-		cell.setEntity1(cp);
+		Property p1 = new Property(new About(this.sourceNamespace, this.sourceLocalname, this.sourceLocalnamePropertyAGeom));
+		p1.setTransformation(t);
+		cell.setEntity1(p1);
+//		cp.setTransformation(t);
+//		cell.setEntity1(cp);
 		cell.setEntity2(new Property(new About(this.targetNamespace, this.targetLocalname, this.targetLocalnamePropertyBGeom)));
 
 		// build source and target Features

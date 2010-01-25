@@ -30,7 +30,6 @@ import com.vividsolutions.jts.geom.MultiPoint;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.rdf.Resource;
@@ -52,18 +51,13 @@ public class SpatialTypeConversionTest extends TestCase {
 
 		// set up cell to use for testing
 		Cell cell = new Cell();
-		ComposedProperty cp = new ComposedProperty(
-				new About(this.sourceNamespace, this.sourceLocalname));
-		cp.getCollection().add(new Property(
-				new About(this.sourceNamespace, this.sourceLocalname, 
-						this.sourceLocalnamePropertyAGeom)));
-		
 		Transformation t = new Transformation();
 		t.setService(new Resource(SpatialTypeConversionFunction.class.toString()));
 		t.getParameters().add(new Parameter("FROM", "com.vividsolutions.jts.geom.LineString"));
 		t.getParameters().add(new Parameter("TO", "com.vividsolutions.jts.geom.MultiPoint"));
-		cp.setTransformation(t);
-		cell.setEntity1(cp);
+		Property p1 = new Property(new About(this.sourceNamespace, this.sourceLocalname, this.sourceLocalnamePropertyAGeom));
+		p1.setTransformation(t);
+		cell.setEntity1(p1);
 		cell.setEntity2(new Property(new About(this.targetNamespace, this.targetLocalname, this.targetLocalnamePropertyBGeom)));
 
 		// build source and target Features
@@ -119,18 +113,14 @@ public class SpatialTypeConversionTest extends TestCase {
 
 		// set up cell to use for testing
 		Cell cell = new Cell();
-		ComposedProperty cp = new ComposedProperty(
-				new About(this.sourceNamespace, this.sourceLocalname));
-		cp.getCollection().add(new Property(
-				new About(this.sourceNamespace, this.sourceLocalname, 
-						this.sourceLocalnamePropertyAGeom)));
 		
 		Transformation t = new Transformation();
 		t.setService(new Resource(SpatialTypeConversionFunction.class.toString()));
 		t.getParameters().add(new Parameter("FROM", "com.vividsolutions.jts.geom.MultiLineString"));
 		t.getParameters().add(new Parameter("TO", "com.vividsolutions.jts.geom.MultiPoint"));
-		cp.setTransformation(t);
-		cell.setEntity1(cp);
+		Property p1 = new Property(new About(this.sourceNamespace, this.sourceLocalname, this.sourceLocalnamePropertyAGeom));
+		p1.setTransformation(t);
+		cell.setEntity1(p1);
 		cell.setEntity2(new Property(new About(this.targetNamespace, this.targetLocalname, this.targetLocalnamePropertyBGeom)));
 
 		// build source and target Features
