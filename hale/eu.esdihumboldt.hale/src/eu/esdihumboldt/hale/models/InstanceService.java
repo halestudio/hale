@@ -42,16 +42,20 @@ public interface InstanceService
 	public FeatureCollection<FeatureType, Feature> getFeatures(DatasetType type);
 	
 	/**
+	 * @param type the {@link DatasetType} that indicates whether you want to
+	 * retrieve the transformed instance data or the reference instance
 	 * @param featureID the D of the {@link Feature} to return.
 	 * @return a single {@link Feature} as identified by the given _featureID.
 	 */
-	public Feature getFeatureByID(String featureID);
+	public Feature getFeatureByID(DatasetType type, String featureID);
 	
 	/**
+	 * @param type the {@link DatasetType} that indicates whether you want to
+	 * retrieve the transformed instance data or the reference instance
 	 * @param featureType the {@link FeatureType} which all returned {@link Feature}s must have.
 	 * @return a new {@link Collection} containing only {@link Feature}s of the given type.
 	 */
-	public Collection<? extends Feature> getFeaturesByType(FeatureType featureType);
+	public Collection<? extends Feature> getFeaturesByType(DatasetType type, FeatureType featureType);
 	
 	/**
 	 * Add the {@link Feature} in the collection to the {@link InstanceService}

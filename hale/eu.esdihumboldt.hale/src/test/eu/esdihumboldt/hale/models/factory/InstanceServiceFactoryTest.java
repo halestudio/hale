@@ -106,7 +106,7 @@ public class InstanceServiceFactoryTest {
 		FeatureType featureType = FeatureCollectionUtilities.getFeatureType(
 				com.vividsolutions.jts.geom.LineString.class, "TransformedFT", false);
 		
-		Collection<? extends Feature> fc_reference = InstanceServiceImpl.getInstance().getFeaturesByType(featureType);
+		Collection<? extends Feature> fc_reference = InstanceServiceImpl.getInstance().getFeaturesByType(DatasetType.reference, featureType);
 		_log.debug("fc_reference.size(): " + fc_reference.size());
 		assertTrue(fc_reference.size() == 1);
 		FeatureType ft = fc_reference.iterator().next().getType();
@@ -118,7 +118,7 @@ public class InstanceServiceFactoryTest {
 	 */
 	@Test
 	public void testGetFeatureByID() {
-		Feature f = InstanceServiceImpl.getInstance().getFeatureByID("ReferenceFeatureID");
+		Feature f = InstanceServiceImpl.getInstance().getFeatureByID(DatasetType.reference, "ReferenceFeatureID");
 		assertEquals(f.getIdentifier().getID(), "ReferenceFeatureID");
 	}
 	

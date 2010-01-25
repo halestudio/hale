@@ -66,11 +66,22 @@ public class InstanceServiceImpl
 
 	/**
 	 * TODO: Does not currently use an index.
-	 * @see eu.esdihumboldt.hale.models.InstanceService#getFeatureByID(java.lang.String)
+	 * @see InstanceService#getFeatureByID(DatasetType, String)
 	 */
-	public Feature getFeatureByID(String featureID) {
+	public Feature getFeatureByID(DatasetType type, String featureID) {
+		switch (type) {
+		case reference:
+			return getFeatureByID(featureID, sourceReferenceFeatures);
+		case transformed:
+			return getFeatureByID(featureID, transformedFeatures);
+		default:
+			return getFeatureByID(featureID, sourceReferenceFeatures);
+		}
+	}
+	
+	private Feature getFeatureByID(String featureID, FeatureCollection<?, Feature> features) {
 		Feature f = null;
-		FeatureIterator<? extends Feature> fi = this.sourceReferenceFeatures.features();
+		FeatureIterator<? extends Feature> fi = features.features();
 		while (fi.hasNext()) {
 			Feature current_feature = (Feature) fi.next();
 			String current_feature_id = current_feature.getIdentifier().getID();
@@ -83,12 +94,24 @@ public class InstanceServiceImpl
 
 	/**
 	 * TODO: Does not currently use an index.
-	 * @see eu.esdihumboldt.hale.models.InstanceService#getFeaturesByType(FeatureType)
+	 * @see InstanceService#getFeaturesByType(DatasetType, FeatureType)
 	 */
-	public Collection<Feature> getFeaturesByType(FeatureType featureType) {
+	public Collection<Feature> getFeaturesByType(DatasetType type, FeatureType featureType) {
+		switch (type) {
+		case reference:
+			return getFeaturesByType(featureType, sourceReferenceFeatures);
+		case transformed:
+			return getFeaturesByType(featureType, transformedFeatures);
+		default:
+			return getFeaturesByType(featureType, sourceReferenceFeatures);
+		}
+	}
+	
+	private Collection<Feature> getFeaturesByType(FeatureType featureType, 
+			FeatureCollection<?, Feature> features) {
 		Set<Feature> result = new HashSet<Feature>();
 		RobustFTKey searchKey = new RobustFTKey(featureType);
-		FeatureIterator<? extends Feature> fi = this.sourceReferenceFeatures.features();
+		FeatureIterator<? extends Feature> fi = features.features();
 		while (fi.hasNext()) {
 			Feature current_feature = (Feature) fi.next();
 			RobustFTKey candidateKey = new RobustFTKey(current_feature.getType());
