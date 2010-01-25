@@ -32,8 +32,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Caret;
 
+import eu.esdihumboldt.cst.corefunctions.inspire.GeographicalNameFunction;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
+import eu.esdihumboldt.inspire.data.GrammaticalGenderValue;
+import eu.esdihumboldt.inspire.data.GrammaticalNumberValue;
+import eu.esdihumboldt.inspire.data.NameStatusValue;
+import eu.esdihumboldt.inspire.data.NativenessValue;
 
 /**
  * The WizardPage for the {@link GeographicNameFunctionWizard}
@@ -379,13 +384,28 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		this.nameStatusCombo = new Combo(configurationComposite, SWT.READ_ONLY
 				| SWT.DROP_DOWN);
 		this.nameStatusCombo.setLayoutData(configurationLayoutData);
-		this.nameStatusCombo.setItems(new String[] { "Official",
-				"Standardised", "Historical", "Other" });
-		this.nameStatusCombo.select(0);
+		String [] statusItems = new String[] { NameStatusValue.official.name(),
+				NameStatusValue.standardised.name(), NameStatusValue.historical.name(), NameStatusValue.other.name() };
+		
+		this.nameStatusCombo.setItems(statusItems);
+		int index = 0;
+		if(getNameStatus()!=null){
+			String status = getNameStatus();
+			for (int i=0;i<statusItems.length;i++){
+				if(status.equals(statusItems[i])){
+					index = i;
+					break;
+					
+				}
+			}
+		}	
+		
+		this.nameStatusCombo.select(index);
+		
 		this.nameStatusCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				// TODO implement
+				setNameStatus(nameStatusCombo.getItem(nameStatusCombo.getSelectionIndex()));
 			}
 
 		});
@@ -397,13 +417,30 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		this.nameNativenessCombo = new Combo(configurationComposite,
 				SWT.READ_ONLY | SWT.DROP_DOWN);
 		this.nameNativenessCombo.setLayoutData(configurationLayoutData);
+		
+		String [] nativenessItems = new String[]{NativenessValue.endonym.name(), NativenessValue.exonym.name()};
 		this.nameNativenessCombo
-				.setItems(new String[] { "Endonym", "Exonym", });
-		this.nameNativenessCombo.select(0);
+				.setItems(nativenessItems);
+		int nativenessIndex = 0;
+		if(getNativeness()!=null){
+			String nativeness = getNativeness();
+			for (int i=0;i<nativenessItems.length;i++){
+				if (nativeness.equals(nativenessItems[i])){
+					nativenessIndex = i;
+					break;
+				}
+				
+			
+		}
+		
+			
+		}
+		
+		this.nameNativenessCombo.select(nativenessIndex);
 		this.nameNativenessCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				// TODO implement
+				setNativeness(nameNativenessCombo.getItem(nameNativenessCombo.getSelectionIndex()));
 			}
 
 		});
@@ -414,12 +451,25 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		this.nameGenderCombo = new Combo(configurationComposite, SWT.READ_ONLY
 				| SWT.DROP_DOWN);
 		this.nameGenderCombo.setLayoutData(configurationLayoutData);
-		this.nameGenderCombo.setItems(new String[] { "M", "F", "N" });
-		this.nameGenderCombo.select(0);
+		String [] genderItems =  new String[] {GrammaticalGenderValue.feminine.name(), GrammaticalGenderValue.masculine.name(), GrammaticalGenderValue.common.name()};
+		this.nameGenderCombo.setItems(genderItems);
+		int genderIndex = 0;
+		if(getGender()!=null){
+			String gender = getGender(); 
+			for (int i=0;i<genderItems.length;i++){
+				if(gender.equals(genderItems[i])){
+					genderIndex = i;
+					break;
+				}
+			
+				
+			}
+		}
+		this.nameGenderCombo.select(genderIndex);
 		this.nameGenderCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				// TODO implement
+				setGender(nameGenderCombo.getItem(nameGenderCombo.getSelectionIndex()));
 			}
 
 		});
@@ -430,12 +480,24 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		this.nameNumberCombo = new Combo(configurationComposite, SWT.READ_ONLY
 				| SWT.DROP_DOWN);
 		this.nameNumberCombo.setLayoutData(configurationLayoutData);
-		this.nameNumberCombo.setItems(new String[] { "Singular", "Plural" });
-		this.nameNumberCombo.select(0);
+		String [] numberItems = new String []{GrammaticalNumberValue.singular.name(), GrammaticalNumberValue.dual.name(), GrammaticalNumberValue.plural.name()};
+		this.nameNumberCombo.setItems(numberItems);
+		int numberIndex = 0;
+		if (getNumber()!=null){
+			String number = getNumber();
+			for (int i=0; i<numberItems.length; i++){
+				if (number.equals(numberItems[i])){
+					numberIndex = i;
+					break;
+				}
+			}
+			
+		}
+		this.nameNumberCombo.select(numberIndex);
 		this.nameNumberCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				// TODO implement
+				setNumber(nameNumberCombo.getItem(nameNumberCombo.getSelectionIndex()));
 			}
 
 		});
@@ -579,7 +641,6 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		}
 		this.nameSpellingScript.setText(script);
 		this.nameSpellingScript.setCaretOffset(script.length());
-		
 		this.nameSpellingScript.addModifyListener(new ModifyListener() {
 			
 			@Override

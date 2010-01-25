@@ -166,6 +166,10 @@ public class GeographicNameFunctionWizard extends
 		t.getParameters().add(
 				new Parameter(GeographicalNameFunction.PROPERTY_SOURCEOFNAME,
 						page.getSourceOfName()));
+		// name status
+		t.getParameters().add(
+				new Parameter(GeographicalNameFunction.PROPERTY_NAMESTATUS,
+						page.getNameStatus()));
 		// nativeness
 		t.getParameters().add(
 				new Parameter(GeographicalNameFunction.PROPERTY_NATIVENESS,
