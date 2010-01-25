@@ -51,7 +51,6 @@ public class IdentifierFunction
 	private String countryName = null;
 	private String dataProviderName= null;
 	private String productName = null;
-	private String featureTypename = null;
 	private Property sourceProperty = null;
 	private Property targetProperty = null;
 
@@ -75,8 +74,7 @@ public class IdentifierFunction
 			}
 		}
 		
-		this.featureTypename= cell.getEntity1().getAbout().getAbout();
-		this.sourceProperty = ((ComposedProperty)cell.getEntity1()).getCollection().get(0);
+		this.sourceProperty = (Property) cell.getEntity1();
 		this.targetProperty = (Property) cell.getEntity2();
 		return true;
 	}
@@ -97,10 +95,9 @@ public class IdentifierFunction
 	public Feature transform(Feature source, Feature target) {
 		PropertyDescriptor pd = target.getProperty(
 				this.targetProperty.getLocalname()).getDescriptor();
-		System.out.println("+++" +source.getProperty(this.sourceProperty.getLocalname()));
 		String localID = source.getProperty(this.sourceProperty.getLocalname()).getValue().toString();
-		
-		String inspireIDString = "urn:" + this.countryName+ ":"+this.dataProviderName+":"+this.productName+ ":"+this.featureTypename+":"+localID;
+		String featureTypeName = source.getType().getName().getLocalPart();
+		String inspireIDString = "urn:" + this.countryName+ ":"+this.dataProviderName+":"+this.productName+ ":"+featureTypeName+":"+localID;
 		PropertyImpl p = null;
 		if (pd.getType().getBinding().equals(String.class)) {
 		  p = new AttributeImpl(inspireIDString, (AttributeDescriptor) pd, null);	

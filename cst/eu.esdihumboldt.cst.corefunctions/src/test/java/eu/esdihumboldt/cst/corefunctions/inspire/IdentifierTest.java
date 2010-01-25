@@ -16,6 +16,7 @@ import com.vividsolutions.jts.geom.MultiPoint;
 
 
 import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.generated.Entity1;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
@@ -40,20 +41,22 @@ public class IdentifierTest extends TestCase {
 
 		// set up cell to use for testing
 		Cell cell = new Cell();
-		ComposedProperty cp = new ComposedProperty(
-				new About(this.sourceNamespace, this.sourceLocalname));
-		cp.getCollection().add(new Property(
-				new About(this.sourceNamespace, this.sourceLocalname, 
-						this.sourceLocalnamePropertyAID)));
+//		ComposedProperty cp = new ComposedProperty(
+//				new About(this.sourceNamespace, this.sourceLocalname));
+//		cp.getCollection().add(new Property(
+//				new About(this.sourceNamespace, this.sourceLocalname, 
+//						this.sourceLocalnamePropertyAID)));
 		
 		Transformation t = new Transformation();
 		t.setService(new Resource(IdentifierFunction.class.toString()));
 		t.getParameters().add(new Parameter("countryName", "de"));
 		t.getParameters().add(new Parameter("providerName", "TUM"));
 		t.getParameters().add(new Parameter("productName", "PRName"));
-		cp.setTransformation(t);
-		cell.setEntity1(cp);
-//		cell.setEntity1(new Property(new About(this.sourceNamespace, this.sourceLocalname, this.sourceLocalnamePropertyAID)));
+//		cp.setTransformation(t);
+//		cell.setEntity1(cp);
+		Property p1 = new Property(new About(this.sourceNamespace, this.sourceLocalname, this.sourceLocalnamePropertyAID));
+		p1.setTransformation(t);
+		cell.setEntity1(p1);
 		cell.setEntity2(new Property(new About(this.targetNamespace, this.targetLocalname, this.targetLocalnamePropertyBID)));
 
 		// build source and target Features
@@ -77,8 +80,10 @@ public class IdentifierTest extends TestCase {
 		idf.configure(cell);
 
 		Feature neu = idf.transform(source, target);
+		System.out.println("B: " +neu.getProperty(
+				this.targetLocalnamePropertyBID).getValue().toString());
 		assertTrue(neu.getProperty(
-				this.targetLocalnamePropertyBID).getValue().toString().equals("urn:de:TUM:PRName:http://esdi-humboldt.eu/FT1:ID1"));
+				this.targetLocalnamePropertyBID).getValue().toString().equals("urn:de:TUM:PRName:FT1:ID1"));
 		
 
 		
