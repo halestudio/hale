@@ -11,6 +11,11 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map.tiles;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -26,13 +31,15 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.TileCache.TileListener;
 
 /**
- * 
+ * Abstract painter based on tiles
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -42,6 +49,41 @@ public abstract class AbstractTilePainter implements PaintListener,
 		MouseWheelListener, MouseMoveListener, MouseListener,
 		MouseTrackListener, TileConstraints, ControlListener,
 		TileListener {
+	
+	/**
+	 * Interface for painter state listeners
+	 */
+	public interface StateListener {
+		
+		/**
+		 * Notifies the listener that the zoom level has changed
+		 * 
+		 * @param zoom the current zoom level
+		 */
+		public void zoomChanged(int zoom);
+		
+	}
+	
+	/**
+	 * Abstract state listener action
+	 */
+	public abstract class StateListenerAction extends Action implements StateListener {
+
+		/**
+		 * Default constructor
+		 */
+		public StateListenerAction() {
+			super();
+			
+			AbstractTilePainter.this.addStateListener(this);
+		}
+		
+	}
+	
+	/**
+	 * The state listeners
+	 */
+	private final Set<StateListener> listeners = new HashSet<StateListener>();
 	
 	/**
 	 * The minimum tile size
@@ -197,6 +239,10 @@ public abstract class AbstractTilePainter implements PaintListener,
 				// determine x/y offset
 				xOffset = 0;
 				yOffset = 0;
+				
+				for (StateListener listener : listeners) {
+					listener.zoomChanged(currentZoom);
+				}
 			}
 			
 			refresh();
@@ -380,8 +426,90 @@ public abstract class AbstractTilePainter implements PaintListener,
 				long y = Math.round(yTileNum * tileHeight) - control.getBounds().height / 2;
 				
 				setOffsets(x, y); //refresh();
+				
+				for (StateListener listener : listeners) {
+					listener.zoomChanged(zoom);
+				}
 			}
 		}
+	}
+	
+	/**
+	 * Add a state listeners
+	 * 
+	 * @param listener the state listener
+	 */
+	public void addStateListener(StateListener listener) {
+		listeners.add(listener);
+	}
+	
+	/**
+	 * Remove a state listeners
+	 * 
+	 * @param listener the state listener
+	 */
+	public void removeStateListener(StateListener listener) {
+		listeners.remove(listener);
+	}
+	
+	/**
+	 * Get a zoom in action
+	 * 
+	 * @return a zoom in action
+	 */
+	public IAction getZoomInAction() {
+		Action action = new StateListenerAction() {
+			
+			@Override
+			public void zoomChanged(int zoom) {
+				setEnabled(zoom != maxZoom);
+			}
+		
+			@Override
+			public void run() {
+				int zoom = getZoom();
+				if (zoom < maxZoom) {
+					setZoom(zoom + 1);
+				}
+			}
+			
+		};
+		
+		action.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
+				HALEActivator.PLUGIN_ID, "/icons/add.gif"));
+		action.setToolTipText("Zoom in");
+		
+		return action;
+	}
+	
+	/**
+	 * Get a zoom out action
+	 * 
+	 * @return a zoom out action
+	 */
+	public IAction getZoomOutAction() {
+		Action action = new StateListenerAction() {
+			
+			@Override
+			public void zoomChanged(int zoom) {
+				setEnabled(zoom != minZoom);
+			}
+
+			@Override
+			public void run() {
+				int zoom = getZoom();
+				if (zoom > minZoom) {
+					setZoom(zoom - 1);
+				}
+			}
+			
+		};
+		
+		action.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
+				HALEActivator.PLUGIN_ID, "/icons/minus.gif"));
+		action.setToolTipText("Zoom out");
+		
+		return action;
 	}
 	
 	/**

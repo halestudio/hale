@@ -79,7 +79,7 @@ public class MapView extends ViewPart {
 		// add SLD area
 		Composite sldComposite = new Composite(mapComposite, SWT.BEGINNING);
 		layout = new GridLayout();
-		layout.numColumns = 2;
+		layout.numColumns = 4;
 		layout.makeColumnsEqualWidth = false;
 		sldComposite.setLayout(layout);
 		sldComposite.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
@@ -130,6 +130,11 @@ public class MapView extends ViewPart {
 		
 		// create the painter
 		painter = new FeatureTilePainter(mapCanvas);
+		
+		// add zoom buttons
+		tm.add(painter.getZoomOutAction());
+		tm.add(painter.getZoomInAction());
+		tm.update(false);
 		
 		splitView.setSelection(new StructuredSelection(painter.getSplitStyle()));
 		splitView.addSelectionChangedListener(new ISelectionChangedListener() {
