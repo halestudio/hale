@@ -15,6 +15,7 @@ package eu.esdihumboldt.cst.corefunctions.inspire;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.UUID;
 
 import org.geotools.feature.AttributeImpl;
 import org.geotools.feature.FeatureCollection;
@@ -95,7 +96,14 @@ public class IdentifierFunction
 	 */
 	public Feature transform(Feature source, Feature target) {
 		// define String to use
-		String localID = source.getIdentifier().getID();
+		String localID = null;
+		if (source.getIdentifier().getID()==null || source.getIdentifier().getID().equalsIgnoreCase("")){
+			localID = UUID.randomUUID().toString();
+		}
+		else {
+			localID = source.getIdentifier().getID();
+		}
+		
 		String featureTypeName = source.getType().getName().getLocalPart();
 		String inspireIDString = "urn:" + this.countryName + ":"
 				+ this.dataProviderName + ":" + this.productName + ":"

@@ -7,19 +7,9 @@ import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.junit.Test;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeatureType;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-
-
 import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.generated.Entity1;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.rdf.Resource;
@@ -76,14 +66,14 @@ public class IdentifierTest extends TestCase {
 		
 		// perform actual test
 		
-		System.out.println(source.getProperty(this.sourceLocalnamePropertyAID).getValue().toString());
-		System.out.println("about " +cell.getEntity1().getAbout().getAbout());
+//		System.out.println(source.getProperty(this.sourceLocalnamePropertyAID).getValue().toString());
+//		System.out.println("about " +cell.getEntity1().getAbout().getAbout());
 		IdentifierFunction idf = new IdentifierFunction();
 		idf.configure(cell);
 
 		Feature neu = idf.transform(source, target);
-		System.out.println("B: " +neu.getProperty(
-				this.targetLocalnamePropertyBID).getValue().toString());
+//		System.out.println("B: " +neu.getProperty(
+//				this.targetLocalnamePropertyBID).getValue().toString());
 		assertTrue(neu.getProperty(
 				this.targetLocalnamePropertyBID).getValue().toString().equals("urn:de:TUM:PRName:FT1:1"));
 		
