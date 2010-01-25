@@ -1,0 +1,87 @@
+/*
+ * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
+ * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * 
+ * For more information on the project, please refer to the this web site:
+ * http://www.esdi-humboldt.eu
+ * 
+ * LICENSE: For information on the license under which this program is 
+ * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
+ * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ */
+
+package eu.esdihumboldt.hale.rcp.views.table.tree;
+
+import org.opengis.feature.Feature;
+import org.opengis.feature.Property;
+
+import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNode;
+
+/**
+ * Tree item representing a feature type property
+ *
+ * @author Simon Templer
+ * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @version $Id$ 
+ */
+public class PropertyItem extends MultiColumnTreeNode {
+	
+	/**
+	 * The property name
+	 */
+	private final String propertyName;
+
+	/**
+	 * Create a new property item
+	 * 
+	 * @param propertyName the property name
+	 * @param label the item label
+	 */
+	public PropertyItem(String propertyName, String label) {
+		super(label);
+		
+		this.propertyName = propertyName;
+	}
+	
+	/**
+	 * Get the value of the property for the given feature
+	 * 
+	 * @param feature the feature
+	 * 
+	 * @return the feature's property value
+	 */
+	public String getText(Feature feature) {
+		Object value = getValue(feature);
+		if (value == null) {
+			return "null";
+		}
+		else {
+			return value.toString();
+		}
+	}
+	
+	private Object getValue(Feature feature) {
+		if (getParent() instanceof PropertyItem) {
+			// property of a property
+			Object propertyValue = ((PropertyItem) getParent()).getValue(feature);
+			if (propertyValue != null && propertyValue instanceof Feature) {
+				Property property = ((Feature) propertyValue).getProperty(propertyName);
+				if (property != null) {
+					return property.getValue();
+				}
+				else {
+					return null;
+				}
+			}
+			else {
+				return null;
+			}
+		}
+		else {
+			// property of the feature
+			Property property = feature.getProperty(propertyName);
+			return property.getValue();
+		}
+	}
+
+}

@@ -47,7 +47,7 @@
             name="Attribute View">
       </view>
       <view
-            class="eu.esdihumboldt.hale.rcp.views.TableView"
+            class="eu.esdihumboldt.hale.rcp.views.table.TableView"
             id="eu.esdihumboldt.hale.rcp.views.TableView"
             name="Table View"
             restorable="true">
