@@ -93,15 +93,24 @@ public class IdentifierFunction
 	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.opengis.feature.Feature, org.opengis.feature.Feature)
 	 */
 	public Feature transform(Feature source, Feature target) {
+		// define String to use
+		String localID = source.getIdentifier().getID();
+		String featureTypeName = source.getType().getName().getLocalPart();
+		String inspireIDString = "urn:" + this.countryName + ":"
+				+ this.dataProviderName + ":" + this.productName + ":"
+				+ featureTypeName + ":" + localID;
+		
+		// set to target feature
 		PropertyDescriptor pd = target.getProperty(
 				this.targetProperty.getLocalname()).getDescriptor();
-		String localID = source.getProperty(this.sourceProperty.getLocalname()).getValue().toString();
-		String featureTypeName = source.getType().getName().getLocalPart();
-		String inspireIDString = "urn:" + this.countryName+ ":"+this.dataProviderName+":"+this.productName+ ":"+featureTypeName+":"+localID;
 		PropertyImpl p = null;
 		if (pd.getType().getBinding().equals(String.class)) {
-		  p = new AttributeImpl(inspireIDString, (AttributeDescriptor) pd, null);	
+			p = new AttributeImpl(inspireIDString, (AttributeDescriptor) pd,
+					null);
 		}
+		
+		//((FeatureType)pd.getType()).getDescriptors()
+		
 		Collection<org.opengis.feature.Property> c = new HashSet<org.opengis.feature.Property>();
 		c.add(p);
 		target.setValue(c);
