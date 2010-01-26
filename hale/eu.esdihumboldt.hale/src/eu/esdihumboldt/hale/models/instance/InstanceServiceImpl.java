@@ -111,14 +111,17 @@ public class InstanceServiceImpl
 			FeatureCollection<?, Feature> features) {
 		Set<Feature> result = new HashSet<Feature>();
 		RobustFTKey searchKey = new RobustFTKey(featureType);
-		FeatureIterator<? extends Feature> fi = features.features();
-		while (fi.hasNext()) {
-			Feature current_feature = (Feature) fi.next();
-			RobustFTKey candidateKey = new RobustFTKey(current_feature.getType());
-			if (searchKey.equals(candidateKey)) {
-				result.add(current_feature);
+		if (features != null) {
+			FeatureIterator<? extends Feature> fi = features.features();
+			while (fi.hasNext()) {
+				Feature current_feature = (Feature) fi.next();
+				RobustFTKey candidateKey = new RobustFTKey(current_feature.getType());
+				if (searchKey.equals(candidateKey)) {
+					result.add(current_feature);
+				}
 			}
 		}
+		
 		return result;
 	}
 

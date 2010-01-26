@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -29,17 +30,33 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.filter.Filter;
 
+import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.FeatureTypeHelper;
+import eu.esdihumboldt.hale.rcp.utils.filter.FeatureFilterField;
+import eu.esdihumboldt.hale.rcp.utils.filter.FeatureFilterField.FilterListener;
 
 /**
  * Selects filtered features
@@ -65,15 +82,21 @@ public class FeatureSelector extends Composite {
 		
 	}
 	
-	private ComboViewer schemaTypes;
+	private static final Logger log = Logger.getLogger(FeatureSelector.class);
 	
-	private ComboViewer featureTypes;
+	private final ComboViewer schemaTypes;
 	
-	private ComboViewer count;
+	private final ComboViewer featureTypes;
+	
+	private final ComboViewer count;
+	
+	private final FeatureFilterField filterField;
 	
 	private Iterable<Feature> selection;
 	
 	private FeatureType selectedType;
+	
+	private final Image refreshImage;
 	
 	private final Set<FeatureSelectionListener> listeners = new HashSet<FeatureSelectionListener>();
 	
@@ -85,10 +108,30 @@ public class FeatureSelector extends Composite {
 	public FeatureSelector(Composite parent) {
 		super(parent, SWT.NONE);
 		
-		setLayout(new GridLayout(3, false));
+		refreshImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/refresh.gif").createImage();
+		
+		setLayout(new GridLayout(5, false));
 		
 		// schema type selector
 		schemaTypes = new ComboViewer(this, SWT.READ_ONLY);
+		schemaTypes.setLabelProvider(new LabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				if (element instanceof SchemaType) {
+					switch ((SchemaType) element) {
+					case SOURCE: return "Reference";
+					case TARGET: return "Transformed";
+					default:
+						return "#unknown";
+					}
+				}
+				else {
+					return super.getText(element);
+				}
+			}
+			
+		});
 		schemaTypes.setContentProvider(ArrayContentProvider.getInstance());
 		schemaTypes.setInput(new Object[]{SchemaType.SOURCE, SchemaType.TARGET});
 		schemaTypes.setSelection(new StructuredSelection(SchemaType.SOURCE));
@@ -136,10 +179,37 @@ public class FeatureSelector extends Composite {
 			
 		});
 		
+		// filter field
+		filterField = new FeatureFilterField(selectedType, this, SWT.NONE);
+		filterField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		filterField.addListener(new FilterListener() {
+			
+			@Override
+			public void filterChanged() {
+				updateSelection();
+			}
+			
+		});
+		
+		// refresh button
+		Button refresh = new Button(this, SWT.PUSH);
+		refresh.setImage(refreshImage);
+		refresh.setToolTipText("Refresh");
+		refresh.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
+		refresh.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				updateSelection();
+			}
+			
+		});
+		
 		// max count selector
 		count = new ComboViewer(this, SWT.READ_ONLY);
 		count.setContentProvider(ArrayContentProvider.getInstance());
-		count.setInput(new Integer[]{Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3)});
+		count.setInput(new Integer[]{Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3),
+				Integer.valueOf(4), Integer.valueOf(5)});
 		count.setSelection(new StructuredSelection(Integer.valueOf(2)));
 		count.addSelectionChangedListener(new ISelectionChangedListener() {
 			
@@ -151,6 +221,52 @@ public class FeatureSelector extends Composite {
 		});
 		
 		updateFeatureTypesSelection();
+		
+		// service listeners
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+		ss.addListener(new HaleServiceListener() {
+			
+			@SuppressWarnings("unchecked")
+			@Override
+			public void update(UpdateMessage message) {
+				if (Display.getCurrent() != null) {
+					updateFeatureTypesSelection();
+				}
+				else {
+					final Display display = PlatformUI.getWorkbench().getDisplay();
+					display.syncExec(new Runnable() {
+						
+						@Override
+						public void run() {
+							updateFeatureTypesSelection();
+						}
+					});
+				}
+			}
+		});
+		
+		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+		is.addListener(new HaleServiceListener() {
+			
+			@SuppressWarnings("unchecked")
+			@Override
+			public void update(UpdateMessage message) {
+				if (Display.getCurrent() != null) {
+					updateSelection();
+				}
+				else {
+					final Display display = PlatformUI.getWorkbench().getDisplay();
+					display.syncExec(new Runnable() {
+						
+						@Override
+						public void run() {
+							updateSelection();
+						}
+					});
+				}
+			}
+			
+		});
 	}
 	
 	/**
@@ -174,6 +290,9 @@ public class FeatureSelector extends Composite {
 		if (!filteredTypes.isEmpty()) {
 			featureTypes.setSelection(new StructuredSelection(filteredTypes.iterator().next()));
 		}
+		
+		layout(true, true);
+		
 		updateSelection();
 	}
 
@@ -184,21 +303,43 @@ public class FeatureSelector extends Composite {
 		if (!featureTypes.getSelection().isEmpty()) {
 			FeatureType featureType = (FeatureType) ((IStructuredSelection) featureTypes.getSelection()).getFirstElement();
 			
+			filterField.setFeatureType(featureType);
+			
 			SchemaType schemaType = (SchemaType) ((IStructuredSelection) schemaTypes.getSelection()).getFirstElement();
 			
 			Integer max = (Integer) ((IStructuredSelection) count.getSelection()).getFirstElement();
 			
 			InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
-			Collection<? extends Feature> features = is.getFeaturesByType(
-					(schemaType == SchemaType.SOURCE)?(DatasetType.reference):(DatasetType.transformed), 
-					featureType);
 			
 			List<Feature> featureList = new ArrayList<Feature>();
-			Iterator<? extends Feature> it = features.iterator();
-			int num = 0;
-			while (it.hasNext() && num < max) {
-				featureList.add(it.next());
-				num++;
+			DatasetType dataset = (schemaType == SchemaType.SOURCE)?(DatasetType.reference):(DatasetType.transformed);
+			try {
+				Filter filter = filterField.getFilter();
+				
+				if (filter == null) {
+					Collection<? extends Feature> features = is.getFeaturesByType(
+						dataset, 
+						featureType);
+					
+					Iterator<? extends Feature> it = features.iterator();
+					int num = 0;
+					while (it.hasNext() && num < max) {
+						featureList.add(it.next());
+						num++;
+					}
+				}
+				else {
+					FeatureCollection<FeatureType, Feature> fc = is.getFeatures(dataset);
+					
+					FeatureIterator<Feature> it = fc.subCollection(filter).features();
+					int num = 0;
+					while (it.hasNext() && num < max) {
+						featureList.add(it.next());
+						num++;
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Error creating filter");
 			}
 			
 			selection = featureList;
@@ -207,6 +348,8 @@ public class FeatureSelector extends Composite {
 		else {
 			selection = null;
 			selectedType = null;
+			
+			filterField.setFeatureType(null);
 		}
 		
 		for (FeatureSelectionListener listener : listeners) {
@@ -232,6 +375,16 @@ public class FeatureSelector extends Composite {
 	 */
 	public void removeSelectionListener(FeatureSelectionListener listener) {
 		listeners.remove(listener);
+	}
+
+	/**
+	 * @see Widget#dispose()
+	 */
+	@Override
+	public void dispose() {
+		refreshImage.dispose();
+		
+		super.dispose();
 	}
 
 }

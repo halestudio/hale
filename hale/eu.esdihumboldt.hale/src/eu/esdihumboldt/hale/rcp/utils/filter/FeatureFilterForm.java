@@ -346,7 +346,6 @@ public class FeatureFilterForm extends Composite {
 					 */
 					gd.horizontalSpan = 2;
 					intervallEnd.setLayoutData(gd);
-					FeatureFilterForm.this.layout(true, true);
 					break;
 				default:
 					comparisonValueLabel = new Label(FeatureFilterForm.this, SWT.TITLE);
@@ -377,9 +376,9 @@ public class FeatureFilterForm extends Composite {
 					 */
 					gd.horizontalSpan = 4;
 					attributeValue.setLayoutData(gd);
-					FeatureFilterForm.this.layout(true, true);
 				}
 				
+				FeatureFilterForm.this.layout(true, true);
 			}
 
 			/**
@@ -444,7 +443,6 @@ public class FeatureFilterForm extends Composite {
 	    if (!extentSRS.getText().equals("")) BBOXCQL = BBOXCQL + ","+ extentSRS.getText();
 		BBOXCQL += ")";
 		return BBOXCQL;
-		
 	}
 
 	/**
