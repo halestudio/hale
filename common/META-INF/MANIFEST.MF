@@ -2,14 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HUMBOLDT Commons
 Bundle-SymbolicName: eu.esdihumboldt.commons
-Bundle-Version: 2.0.0
-Eclipse-BuddyPolicy: registered
+Bundle-Version: 2.0.1
 Export-Package: eu.esdihumboldt.goml.align,
  eu.esdihumboldt.goml.generated,
  eu.esdihumboldt.goml.oml.ext,
  eu.esdihumboldt.goml.oml.io,
  eu.esdihumboldt.goml.omwg,
+ eu.esdihumboldt.goml.omwg.comparator,
  eu.esdihumboldt.goml.rdf,
+ eu.esdihumboldt.inspire.data,
  eu.esdihumboldt.mediator,
  eu.esdihumboldt.mediator.constraints.impl,
  eu.esdihumboldt.mediator.constraints.portrayal.impl,
@@ -20,7 +21,9 @@ Export-Package: eu.esdihumboldt.goml.align,
  eu.esdihumboldt.mediator.usermanagement.types.impl,
  eu.esdihumboldt.mediator.util,
  eu.esdihumboldt.modelmapping.imm.impl,
- eu.esdihumboldt.tools
-Import-Package: eu.esdihumboldt.cst.align,
- eu.esdihumboldt.cst.align.ext,
- eu.esdihumboldt.cst.rdf
+ eu.esdihumboldt.tools,
+ test.eu.esdihumboldt.goml,
+ test.eu.esdihumboldt.goml.omwg.comparator,
+ test.eu.esdihumboldt.tools
+Import-Package: eu.esdihumboldt.cst.align,eu.esdihumboldt.cst.align.ext,eu.esdihumboldt.cst.rdf
+Eclipse-BuddyPolicy: registered
