@@ -7,6 +7,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URL;
 import java.util.List;
 
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -21,11 +22,10 @@ import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.omwg.Restriction;
-import eu.esdihumboldt.goml.omwg.comparator.Comparator;
-import eu.esdihumboldt.goml.omwg.comparator.OneOfComparator;
 
 /**
- * @author doylemr
+ * @author Mark Doyle
+ * @partner Logica
  *
  */
 public class OneOfComparatorTest {
@@ -66,7 +66,8 @@ public class OneOfComparatorTest {
 	 */
 	@BeforeClass
 	public static void setUpOnce() throws Exception {
-		Alignment alignment = new OmlRdfReader().read("res/testfiles/OneOfComparatorTest.oml");
+		URL url = OneOfComparatorTest.class.getResource("./OneOfComparatorTest.oml");
+		Alignment alignment = new OmlRdfReader().read(url.getFile());
 		ICell cell = alignment.getMap().get(0);
 		Property propA = (Property)cell.getEntity1();
 		
