@@ -44,7 +44,8 @@ public interface CstFunction {
 	 * transformed, with source {@link FeatureType}s.
 	 * @return a {@link FeatureCollection} with the transformed Features, with 
 	 * target {@link FeatureType}s.
-	 * @deprecated use {@link #transform(Feature, Feature)} instead.
+	 * @deprecated use multiple invocations of 
+	 * {@link #transform(Feature, Feature)} instead.
 	 */
 	public FeatureCollection<? extends FeatureType, ? extends Feature> 
 		transform(FeatureCollection<? extends FeatureType, ? extends Feature> fc);

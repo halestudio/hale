@@ -45,6 +45,7 @@ public class AlignmentIndex {
 	private final IAlignment alignment;
 	
 	Set<String> targetTypes = new HashSet<String>();
+	Set<String> abstractTargetTypes = new HashSet<String>();
 	Set<String> sourceTypes = new HashSet<String>();
 	Map<String, List<ICell>> cellsFtIndex = 
 		new HashMap<String, List<ICell>>();
@@ -53,18 +54,28 @@ public class AlignmentIndex {
 
 	public AlignmentIndex(IAlignment al) {
 		this.alignment = al;
+		// identify concretely mapped Feature Classes
 		for (ICell c : this.alignment.getMap()) {
-			try {
-				if (c.getEntity1().getClass().isAssignableFrom(FeatureClass.class)) {
-					this.sourceTypes.add(c.getEntity1().getAbout().getAbout());
-				}
-				if (c.getEntity2().getClass().isAssignableFrom(FeatureClass.class)) {
-					this.targetTypes.add(c.getEntity2().getAbout().getAbout());
-				}
-			} catch (Exception e) {
-				_log.error("An Entity's name could not be parsed to an URL: ", e);
+			if (c.getEntity1().getClass().isAssignableFrom(FeatureClass.class)) {
+				this.sourceTypes.add(c.getEntity1().getAbout().getAbout());
+			}
+			if (c.getEntity2().getClass().isAssignableFrom(FeatureClass.class)) {
+				this.targetTypes.add(c.getEntity2().getAbout().getAbout());
 			}
 		}
+		
+		// handle "orphan" property cells
+		for (ICell c : this.alignment.getMap()) {
+			if (c.getEntity2().getClass().isAssignableFrom(Property.class)) {
+				Property p = ((Property) c.getEntity2());
+				if (!this.targetTypes.contains(p.getFeatureClassName())) {
+					this.abstractTargetTypes.add(getKeyFromEntity(p));
+				}
+			}
+			_log.info("Recognized " + this.abstractTargetTypes.size() 
+					+ " orphan cells.");
+		}
+		
 		this.determineCellsPerFeatureType(al);
 	}
 	
@@ -96,16 +107,65 @@ public class AlignmentIndex {
 	}
 	
 	/**
-	 * @param key {@link URL} identifying a {@link FeatureType}
+	 * @param key a {@link String} identifying a {@link FeatureType}
 	 * @return a {@link List} of all {@link ICell}s that contain the given 
-	 * {@link Entity} URL. If a {@link FeatureType} URL is passed, it will also 
+	 * {@link Entity} String. If a {@link FeatureType} URL is passed, it will also 
 	 * return all property {@link ICell}s below.
 	 */
 	public List<ICell> getCellsPerEntity(String key) {
-		//FIXME: how to handle entities that are defined on inheritance level?
-		return this.cellsFtIndex.get(key);
+		List<ICell> result = new ArrayList<ICell>();
+		
+		// get FeatureType for the passed typename
+		FeatureType keyType = TargetSchemaProvider.getInstance().getType(key);
+		
+		// find out all supertypes
+		List<FeatureType> relevantTypes = new ArrayList<FeatureType>();
+		if (keyType != null) {
+			Set<String> allTypeNames = new HashSet<String>();
+			allTypeNames.addAll(this.abstractTargetTypes);
+			allTypeNames.addAll(this.targetTypes);
+			for (String typeName : allTypeNames) {
+				FeatureType ft = TargetSchemaProvider.getInstance().getType(typeName);
+				if (this.isSuperTypeOf(keyType, ft))  {
+					relevantTypes.add(ft);
+				}
+			}
+		}
+		
+		// add cells for the identified relevant types
+		for (FeatureType type: relevantTypes) {
+			result.addAll(this.cellsFtIndex.get(
+					type.getName().getNamespaceURI() + "/" 
+					+ type.getName().getLocalPart()));
+		}
+		
+		// add cells declared directly on the Type identified by the key.
+		result.addAll(this.cellsFtIndex.get(key));
+		
+		return result;
 	}
 	
+	/**
+	 * @param potentialChild
+	 * @param potentialParent
+	 * @return true if potentialParent is a supertype of potentialChild
+	 */
+	private boolean isSuperTypeOf(FeatureType potentialChild, FeatureType potentialParent) {
+		boolean result = false;
+		if (potentialChild != null && potentialChild.getSuper() != null && potentialParent != null) {
+			if (potentialChild.getSuper().getName().equals(
+							potentialParent.getName())) {
+				result = true;
+			}
+			else {
+				result = this.isSuperTypeOf(
+						(FeatureType)potentialChild.getSuper(), 
+						potentialParent);
+			}
+		}
+		return result;
+	}
+
 	/**
 	 * @param key {@link URL} identifying a {@link FeatureType}
 	 * @return true if the given {@link URL} identifies a known target 
