@@ -30,7 +30,7 @@ import eu.esdihumboldt.goml.omwg.Property;
  * attribute target values.
  *
  * @author Ulrich Schaeffler, Anna Pitaev
- * @partner Technische Universitaet Muenchen, 04 / Logica
+ * @partner 14 / TUM, 04 / Logica
  * @version $Id$ 
  */
 public class ConstantValueFunction extends AbstractCstFunction {

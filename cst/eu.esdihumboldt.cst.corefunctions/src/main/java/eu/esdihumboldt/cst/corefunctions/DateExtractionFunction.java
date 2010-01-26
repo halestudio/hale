@@ -16,10 +16,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+
+import org.geotools.feature.AttributeImpl;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.PropertyImpl;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.PropertyDescriptor;
+
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
@@ -34,28 +40,28 @@ import eu.esdihumboldt.goml.omwg.Property;
  * ://java.sun.com/javase/6/docs/api/java/text/SimpleDateFormat.html</a>
  * 
  * @author Ulrich Schaeffler
- * @partner 01 / TUM
+ * @partner 14 / TUM
  * @version $Id$
  */
 
 public class DateExtractionFunction extends AbstractCstFunction {
 	
 	
-	public static final String DATE_STRING = "dateString";
+//	public static final String DATE_STRING = "dateString";
 	public static final String DATE_FORMAT_SOURCE = "dateFormatSource";
 	public static final String DATE_FORMAT_TARGET = "dateFormatTarget";
 	
-	private String dateStringSource = null;
-	private String dateStringTarget = null;
+
+
 	private String dateFormatSource = null;
 	private String dateFormatTarget = null;
 	private Property targetProperty = null;
+	private Property sourceProperty = null;
 	
 	
 
 	@Override
 	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
-		parameterTypes.put(DateExtractionFunction.DATE_STRING, String.class);
 		parameterTypes.put(DateExtractionFunction.DATE_FORMAT_SOURCE, String.class);
 		parameterTypes.put(DateExtractionFunction.DATE_FORMAT_TARGET, String.class);
 		
@@ -64,10 +70,6 @@ public class DateExtractionFunction extends AbstractCstFunction {
 	@Override
 	public boolean configure(ICell cell) {
 		for (IParameter ip : cell.getEntity1().getTransformation().getParameters()) {
-			if (ip.getName().equals(DateExtractionFunction.DATE_STRING)) {
-				this.dateStringSource = ip.getValue();
-			}
-			else{
 				if (ip.getName().equals(DateExtractionFunction.DATE_FORMAT_SOURCE)) {
 					this.dateFormatSource = ip.getValue();
 				}	
@@ -83,23 +85,10 @@ public class DateExtractionFunction extends AbstractCstFunction {
 						
 					}
 				}
-			}
 		}
 		
+		this.sourceProperty = (Property) cell.getEntity1();
 		this.targetProperty = (Property) cell.getEntity2();
-		
-		//transform date string
-		SimpleDateFormat sdf = new SimpleDateFormat(); 
-		sdf.applyPattern(this.dateFormatSource);
-		Date sourceDate = null;
-		try {
-			sourceDate = sdf.parse( this.dateStringSource );
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		sdf.applyPattern(this.dateFormatTarget);
-		this.dateStringTarget = sdf.format(sourceDate);
-		
 		return true;
 	}
 
@@ -111,7 +100,29 @@ public class DateExtractionFunction extends AbstractCstFunction {
 
 	@Override
 	public Feature transform(Feature source, Feature target) {
-		((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),this.dateStringTarget);
+		//transform date string
+		SimpleDateFormat sdf = new SimpleDateFormat(); 
+		sdf.applyPattern(this.dateFormatSource);
+		
+		//get the date string from the source
+		String dateString = (String) source.getProperty(this.sourceProperty.getLocalname()).getValue();
+		Date sourceDate = null;
+		try {
+			sourceDate = sdf.parse(dateString);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		sdf.applyPattern(this.dateFormatTarget);
+
+		PropertyDescriptor pd = target.getProperty(
+				this.targetProperty.getLocalname()).getDescriptor();
+		PropertyImpl p = null;
+		if (pd.getType().getBinding().equals(String.class)) {
+			((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),sdf.format(sourceDate));
+		}
+		if (pd.getType().getBinding().equals(Date.class)) {
+			((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),sourceDate);
+		}
 		return target;
 	}
 

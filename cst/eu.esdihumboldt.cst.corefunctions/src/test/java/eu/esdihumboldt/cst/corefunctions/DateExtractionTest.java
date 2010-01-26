@@ -34,7 +34,6 @@ public class DateExtractionTest extends TestCase {
 		Cell cell = new Cell();
 		Transformation t = new Transformation();
 		t.setService(new Resource(DateExtractionFunction.class.toString()));
-		t.getParameters().add(new Parameter("dateString", "15.07.1982 16:30"));
 		t.getParameters().add(new Parameter("dateFormatSource", "dd.MM.yyyy HH:mm"));
 		t.getParameters().add(new Parameter("dateFormatTarget", "MM-dd-yy h:mm a"));
 		Property p1 = new Property(new About(this.sourceNamespace,
@@ -54,7 +53,7 @@ public class DateExtractionTest extends TestCase {
 				this.targetLocalname, 
 				new String[]{this.targetLocalnamePropertyBDate});
 		Feature source = SimpleFeatureBuilder.build(
-				sourcetype, new Object[]{"SomeThing"}, "1");
+				sourcetype, new Object[]{"15.07.1982 16:30"}, "1");
 		Feature target = SimpleFeatureBuilder.build(
 				targettype, new Object[]{"DateHere"}, "2");
 	

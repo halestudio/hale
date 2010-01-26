@@ -42,6 +42,7 @@ import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
 /**
  * 
  * @author Ulrich Schaeffler 
+ * @partner 14 / TUM
  * @version $Id$ 
  */
 
