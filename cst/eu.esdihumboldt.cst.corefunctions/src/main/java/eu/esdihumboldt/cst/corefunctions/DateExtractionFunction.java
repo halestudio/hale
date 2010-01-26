@@ -14,6 +14,8 @@ package eu.esdihumboldt.cst.corefunctions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
@@ -119,15 +121,20 @@ public class DateExtractionFunction extends AbstractCstFunction {
 
 		PropertyDescriptor pd = target.getProperty(
 				this.targetProperty.getLocalname()).getDescriptor();
-		PropertyImpl p = null;
+
 		if (pd.getType().getBinding().equals(String.class)) {
 			((SimpleFeature) target).setAttribute(this.targetProperty
 					.getLocalname(), sdf.format(sourceDate));
 		}
-		if (pd.getType().getBinding().equals(Date.class)) {
-			((SimpleFeature) target).setAttribute(this.targetProperty
-					.getLocalname(), sourceDate);
+		
+		if (pd.getType().getBinding().equals(Date.class) || Date.class.isAssignableFrom(
+				target.getProperty(
+						this.targetProperty.getLocalname()).getType().getBinding())) {
+				((SimpleFeature) target).setAttribute(this.targetProperty
+						.getLocalname(), sourceDate);
+			
 		}
+		
 		return target;
 	}
 
