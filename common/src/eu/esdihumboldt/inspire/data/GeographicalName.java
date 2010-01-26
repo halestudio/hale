@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.inspire.data;
 
+import java.util.ArrayList;
+
 
 /**
  * This is the INPSIRE GeographicalName object implementation
@@ -22,7 +24,7 @@ package eu.esdihumboldt.inspire.data;
  */
 public class GeographicalName {
 
-	private SpellingOfName spelling=null;
+	private ArrayList<SpellingOfName> spelling=new ArrayList<SpellingOfName>();
 	private String language=null;
 	private NativenessValue nativeness=null;
 	private NameStatusValue nameStatus=null;
@@ -33,11 +35,22 @@ public class GeographicalName {
 	
 	public GeographicalName(){}
 	
-	public SpellingOfName getSpelling(){return spelling;}
+	public ArrayList<SpellingOfName> getSpellingList(){return spelling;}
+	public int getSpellingCount(){return spelling.size();}
+	public SpellingOfName getSpelling(int n){return spelling.get(n);}
 	public void setSpelling(SpellingOfName sp)
 	{
 		try {
-			spelling=(SpellingOfName)sp.clone();
+			spelling.clear();
+			spelling.add(0,(SpellingOfName)sp.clone());
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+	}
+	public void addSpelling(SpellingOfName sp)
+	{
+		try {
+			spelling.add(0,(SpellingOfName)sp.clone());
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
@@ -78,9 +91,9 @@ public class GeographicalName {
 		if (target==null)
 			return false;
 		
-		if (spelling==null && target.getSpelling()!=null)
+		if (spelling==null && target.getSpellingCount()!=0)
 			return false;
-		else if (spelling.equals(target.getSpelling())==false)
+		else if (spelling.equals(target.getSpellingList())==false)
 			return false;
 		
 		if (pronunciation==null && target.getPronunciation()!=null)
