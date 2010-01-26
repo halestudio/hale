@@ -12,6 +12,9 @@
 
 package eu.esdihumboldt.hale.rcp.views.table.tree;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
 
@@ -56,7 +59,12 @@ public class PropertyItem extends MultiColumnTreeNode {
 			return "null";
 		}
 		else {
-			return value.toString();
+			if (value instanceof Collection<?>) {
+				return Arrays.toString(((Collection<?>) value).toArray());
+			}
+			else {
+				return value.toString();
+			}
 		}
 	}
 	
@@ -82,6 +90,38 @@ public class PropertyItem extends MultiColumnTreeNode {
 			Property property = feature.getProperty(propertyName);
 			return property.getValue();
 		}
+	}
+
+	/**
+	 * @see Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((propertyName == null) ? 0 : propertyName.hashCode());
+		return result;
+	}
+
+	/**
+	 * @see Object#equals(Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PropertyItem other = (PropertyItem) obj;
+		if (propertyName == null) {
+			if (other.propertyName != null)
+				return false;
+		} else if (!propertyName.equals(other.propertyName))
+			return false;
+		return true;
 	}
 
 }
