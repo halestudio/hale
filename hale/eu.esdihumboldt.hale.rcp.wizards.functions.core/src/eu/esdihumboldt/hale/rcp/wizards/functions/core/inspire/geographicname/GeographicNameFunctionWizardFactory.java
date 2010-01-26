@@ -12,7 +12,11 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.geographicname;
 
+import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.corefunctions.GenericMathFunction;
 import eu.esdihumboldt.cst.corefunctions.inspire.GeographicalNameFunction;
+import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
+import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
@@ -41,8 +45,40 @@ public class GeographicNameFunctionWizardFactory implements
 	 */
 	@Override
 	public boolean supports(AlignmentInfo selection) {
-		// TODO Auto-generated method stub
-		return true;
+		boolean supports = true;
+		// must be at least one source item and exactly one target item
+		if (selection.getSourceItemCount() < 1 || selection.getTargetItemCount() != 1) {
+			supports = false;
+		}
+		
+		// target item must be a property of the type geometric attribute
+		//FIXME add check for the geographical name type.
+		SchemaItem target = selection.getFirstTargetItem();
+		if (!target.isAttribute()) {
+			supports = false;
+		}
+		
+		// source items must be properties of the type STRING_ATTRIBUTE
+		for (SchemaItem source : selection.getSourceItems()) {
+			if (!source.isAttribute() || !source.getType().equals(TreeObjectType.STRING_ATTRIBUTE)) {
+				supports = false;
+			}
+		}
+		
+		ICell cell = selection.getAlignment(selection.getSourceItems(),
+				selection.getTargetItems());
+		if (cell != null) {
+			// only allow editing matching transformation
+			try {
+				return cell.getEntity1().getTransformation().getService().getLocation().equals(
+						GeographicalNameFunction.class.getName());
+			} catch (NullPointerException e) {
+				supports = false;
+			}
+		}
+		
+		return supports;
+		
 	}
 
 }
