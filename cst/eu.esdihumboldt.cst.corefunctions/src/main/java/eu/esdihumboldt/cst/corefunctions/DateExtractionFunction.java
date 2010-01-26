@@ -35,7 +35,7 @@ import eu.esdihumboldt.goml.omwg.Property;
  * This function extracts the date/time from a source string and puts it
  * reformatted to the target, based on a format parameter for the date/time
  * pattern of the source and the target. For date/time pattern:
- * @see <a href=
+ * <a href=
  * "http://java.sun.com/javase/6/docs/api/java/text/SimpleDateFormat.html">http
  * ://java.sun.com/javase/6/docs/api/java/text/SimpleDateFormat.html</a>
  * 
@@ -67,26 +67,26 @@ public class DateExtractionFunction extends AbstractCstFunction {
 		
 	}
 
+	/**
+	 * @see AbstractCstFunction#configure(ICell)
+	 */
 	@Override
 	public boolean configure(ICell cell) {
 		for (IParameter ip : cell.getEntity1().getTransformation().getParameters()) {
-				if (ip.getName().equals(DateExtractionFunction.DATE_FORMAT_SOURCE)) {
-					this.dateFormatSource = ip.getValue();
-				}	
-				else{
-					if (ip.getName().equals(DateExtractionFunction.DATE_FORMAT_TARGET)) {
-						//if dateFormatTarget is not set use the format of the source
-						if (ip.getValue() == null || ip.getValue().toString().equals("")){
-							this.dateFormatTarget = this.dateFormatSource;
-						}
-						else {
-							this.dateFormatTarget = ip.getValue();
-						}
-						
-					}
+			if (ip.getName().equals(DateExtractionFunction.DATE_FORMAT_SOURCE)) {
+				this.dateFormatSource = ip.getValue();
+			} else if (ip.getName().equals(DateExtractionFunction.DATE_FORMAT_TARGET)) {
+				// if dateFormatTarget is not set use the format of the source
+				if (ip.getValue() != null
+						|| !ip.getValue().toString().equals("")) {
+					this.dateFormatTarget = ip.getValue();
 				}
+			}
 		}
-		
+		if (this.dateFormatTarget == null) {
+			this.dateFormatTarget = this.dateFormatSource;
+
+		}
 		this.sourceProperty = (Property) cell.getEntity1();
 		this.targetProperty = (Property) cell.getEntity2();
 		return true;
@@ -105,12 +105,15 @@ public class DateExtractionFunction extends AbstractCstFunction {
 		sdf.applyPattern(this.dateFormatSource);
 		
 		//get the date string from the source
-		String dateString = (String) source.getProperty(this.sourceProperty.getLocalname()).getValue();
+		String dateString = (String) source.getProperty(
+				this.sourceProperty.getLocalname()).getValue();
 		Date sourceDate = null;
 		try {
 			sourceDate = sdf.parse(dateString);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			throw new RuntimeException("Parsing the given date string " 
+					+ dateString + " using the supplied format " 
+					+ this.dateFormatSource + " failed.", e);
 		}
 		sdf.applyPattern(this.dateFormatTarget);
 
@@ -118,10 +121,12 @@ public class DateExtractionFunction extends AbstractCstFunction {
 				this.targetProperty.getLocalname()).getDescriptor();
 		PropertyImpl p = null;
 		if (pd.getType().getBinding().equals(String.class)) {
-			((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),sdf.format(sourceDate));
+			((SimpleFeature) target).setAttribute(this.targetProperty
+					.getLocalname(), sdf.format(sourceDate));
 		}
 		if (pd.getType().getBinding().equals(Date.class)) {
-			((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),sourceDate);
+			((SimpleFeature) target).setAttribute(this.targetProperty
+					.getLocalname(), sourceDate);
 		}
 		return target;
 	}
