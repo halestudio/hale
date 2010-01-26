@@ -3,16 +3,14 @@
  */
 package test.eu.esdihumboldt.goml.omwg.comparator;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
@@ -25,7 +23,6 @@ import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.goml.omwg.comparator.Comparator;
 import eu.esdihumboldt.goml.omwg.comparator.OneOfComparator;
-import eu.esdihumboldt.goml.rdf.About;
 
 /**
  * @author doylemr
