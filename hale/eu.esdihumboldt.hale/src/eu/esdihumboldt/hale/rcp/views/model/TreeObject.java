@@ -184,7 +184,9 @@ public class TreeObject implements SchemaItem, Comparable<TreeObject> {
 		/** complex attribute item */
 		COMPLEX_ATTRIBUTE,
 		/** geometric attribute item */
-		GEOMETRIC_ATTRIBUTE
+		GEOMETRIC_ATTRIBUTE,
+		/** geographical name attribute item */
+		GEOGRAPHICAl_NAME_ATTRIBUTE 
 	}
 
 	/**
