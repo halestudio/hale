@@ -68,6 +68,10 @@
             icon="icons/rename.gif"
             name="Geographic name">
       </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.date.DateExtractionFunctionWizardFactory"
+            name="Date Extraction">
+      </factory>
    </extension>
 
 </plugin>
