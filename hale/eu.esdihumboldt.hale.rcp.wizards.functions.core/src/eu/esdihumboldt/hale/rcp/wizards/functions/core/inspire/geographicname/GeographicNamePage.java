@@ -12,6 +12,9 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.geographicname;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import org.apache.batik.svggen.font.table.NameTable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -33,6 +36,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Caret;
 
 import eu.esdihumboldt.cst.corefunctions.inspire.GeographicalNameFunction;
+import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
 import eu.esdihumboldt.inspire.data.GrammaticalGenderValue;
@@ -49,7 +53,7 @@ import eu.esdihumboldt.inspire.data.NativenessValue;
  */
 public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 
-	private Text nameSpellingText;
+	private Combo nameSpellingText;
 	private StyledText nameSpellingScript;
 	private StyledText nameSpellingTransliteration;
 	private Text namePronounciationSounds;
@@ -505,7 +509,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		// Sounds like
 		final Label namePronounciationTextLabel = new Label(
 				configurationComposite, SWT.NONE);
-		namePronounciationTextLabel.setText("Soundlink");
+		namePronounciationTextLabel.setText("Soundlink    ");
 		this.namePronounciationSounds = new Text(configurationComposite,
 				SWT.BORDER);
 		this.namePronounciationSounds.setLayoutData(configurationLayoutData);
@@ -574,11 +578,20 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		final Label nameSpellingTextLabel = new Label(configurationComposite,
 				SWT.NONE);
 		nameSpellingTextLabel.setText("Text");
-		this.nameSpellingText = new Text(configurationComposite, SWT.BORDER);
+		this.nameSpellingText = new Combo(configurationComposite, SWT.DROP_DOWN |SWT.READ_ONLY);
 		this.nameSpellingText.setLayoutData(configurationLayoutData);
-		this.nameSpellingText.setText(getParent().getFirstSourceItem().getName().getLocalPart());
-		setText(this.nameSpellingText.getText());
-		this.nameSpellingText.setEnabled(false);
+		this.nameSpellingText.setItems(getItemLocalName());
+		//default set selection to the first element on the list 
+		this.nameSpellingText.select(0);
+		this.nameSpellingText.setEnabled(true);
+		this.nameSpellingText.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent event) {
+				nameSpellingScript.setText("");
+				nameSpellingTransliteration.setText("");
+			}
+
+		});
 
 		// Script
 		final Label nameSpellingScriptLabel = new Label(configurationComposite,
@@ -636,6 +649,26 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		});
 		
 
+	}
+	/**
+	 * extracts local names from the set of the SchemaItem	
+	 * @return String [] schemaItemLocalName
+	 */
+	private String[] getItemLocalName() {
+		Set<SchemaItem> items = getParent().getSourceItems();
+		String [] schemaItemLocalNames = new String [items.size()];
+		Iterator iterator = items.iterator();
+		SchemaItem item = null;
+		String localName;
+		int i = 0;
+		while(iterator.hasNext()){
+			item = (SchemaItem)iterator.next();
+			localName = item.getName().getLocalPart();
+			schemaItemLocalNames[i] = localName;
+			i++;
+		}
+		
+		return schemaItemLocalNames;
 	}
 
 }
