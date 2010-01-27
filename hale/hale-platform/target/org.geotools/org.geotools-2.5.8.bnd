@@ -1,4 +1,5 @@
--classpath: lib/batik-awt-util-1.6.jar,\
+-classpath: lib/_common_services.jar,\
+lib/batik-awt-util-1.6.jar,\
 lib/batik-bridge-1.6.jar,\
 lib/batik-css-1.6.jar,\
 lib/batik-dom-1.6.jar,\
@@ -60,7 +61,7 @@ Import-Package: *,com.sun.jimi.core;resolution:=optional,\
   org.mozilla.javascript;resolution:=optional,\
   org.xmlpull.v1;resolution:=optional,\
   junit.framework;resolution:=optional
-Export-Package: *;-noimport:=true
+Export-Package: *;-noimport:=true;-split-package:=merge-first
 Bundle-Version: 2.5.8
 Bundle-Name: Geotools Plug-in
 Bundle-SymbolicName: org.geotools
