@@ -54,7 +54,7 @@ public class GeographicNameFunctionWizardFactory implements
 		// target item must be a property of the type geometric attribute
 		//FIXME add check for the geographical name type.
 		SchemaItem target = selection.getFirstTargetItem();
-		if (!target.isAttribute()) {
+		if (!target.isAttribute() || !target.getType().equals(TreeObjectType.GEOGRAPHICAl_NAME_ATTRIBUTE)) {
 			supports = false;
 		}
 		
