@@ -44,16 +44,21 @@ public class ClientPerspective implements IPerspectiveFactory {
 		IFolderLayout bottomLeft = _layout.createFolder(
 				"bottomLeft", IPageLayout.BOTTOM, 0.67f, "topLeft");
 		bottomLeft.addView(MappingView.ID);
+		_layout.getViewLayout(MappingView.ID).setCloseable(false);
 		bottomLeft.addView(AttributeView.ID);
+		_layout.getViewLayout(AttributeView.ID).setCloseable(false);
 		
 		IFolderLayout topRight = _layout.createFolder(
 				"topRight", IPageLayout.RIGHT, 0.4f, editorArea);
 		topRight.addView(MapView.ID);
+		_layout.getViewLayout(MapView.ID).setCloseable(false);
 		topRight.addView(TableView.ID);
+		_layout.getViewLayout(TableView.ID).setCloseable(false);
 		
 		IFolderLayout bottomRight = _layout.createFolder(
 				"bottomRight", IPageLayout.BOTTOM, 0.67f, "topRight");
 		bottomRight.addView(TasklistView.ID);
+		_layout.getViewLayout(TasklistView.ID).setCloseable(false);
 		
 		_layout.setEditorAreaVisible(false);
 	}
