@@ -104,11 +104,7 @@
 	<artifactId>common-library</artifactId>
 	<version>2.0.1</version>
      </dependency>
-	<dependency>
-     	<groupId>com.iabcinc</groupId>
-     	<artifactId>JMEP</artifactId>
-     	<version>0.1.0</version>
-     </dependency>
+	
 
   	
   </dependencies>
