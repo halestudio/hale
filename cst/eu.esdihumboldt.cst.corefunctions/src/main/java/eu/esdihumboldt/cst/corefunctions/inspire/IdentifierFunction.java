@@ -12,35 +12,29 @@
 
 package eu.esdihumboldt.cst.corefunctions.inspire;
 
-import java.util.Collection;
-import java.util.HashSet;
+
 import java.util.Map;
 import java.util.UUID;
 
-import org.geotools.feature.AttributeImpl;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.PropertyImpl;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
-
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
-
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.inspire.data.InspireIdentifier;
 
 /**
  * This function creates INSPIRE-compliant identifiers like this one
  * <code>urn:de:fraunhofer:exampleDataset:exampleFeatureTypeName:localID</code> 
  * based on the localId of the given source attribute.
  * 
- * @author Ulrich Schaeffler, Thorsten Reitz
- * @partner 01 / Technische Universitaet Muenchen
- * @partner 02 / Fraunhofer Institute for Computer Graphics Research
+ * @author Ulrich Schaeffler
+ * @partner 14 / TUM
  * @version $Id$ 
  */
 public class IdentifierFunction 
@@ -49,10 +43,15 @@ public class IdentifierFunction
 	public static final String COUNTRY_PARAMETER_NAME = "countryName";
 	public static final String DATA_PROVIDER_PARAMETER_NAME = "providerName";
 	public static final String PRODUCT_PARAMETER_NAME = "productName";
+	public static final String VERSION = "version";
+	
+	public static final String INSPIRE_IDENTIFIER_PREFIX = "urn:x-inspire:object:id";
 	
 	private String countryName = null;
 	private String dataProviderName= null;
 	private String productName = null;
+	private String version = null;
+	
 	private Property sourceProperty = null;
 	private Property targetProperty = null;
 
@@ -71,6 +70,11 @@ public class IdentifierFunction
 				else{
 					if (ip.getName().equals(IdentifierFunction.PRODUCT_PARAMETER_NAME)) {
 						this.productName = ip.getValue();
+					}
+					else {
+						if (ip.getName().equals(IdentifierFunction.VERSION)){
+							this.version = ip.getValue();
+						}
 					}
 				}
 			}
@@ -95,32 +99,84 @@ public class IdentifierFunction
 	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.opengis.feature.Feature, org.opengis.feature.Feature)
 	 */
 	public Feature transform(Feature source, Feature target) {
-		// define String to use
-		String localID = null;
-		if (source.getIdentifier().getID()==null || source.getIdentifier().getID().equalsIgnoreCase("")){
-			localID = UUID.randomUUID().toString();
-		}
-		else {
-			localID = source.getIdentifier().getID();
-		}
 		
-		String featureTypeName = source.getType().getName().getLocalPart();
-		String inspireIDString = "urn:" + this.countryName + ":"
-				+ this.dataProviderName + ":" + this.productName + ":"
-				+ featureTypeName + ":" + localID;
-		
-		// set to target feature
+		//check if the input features have the expected property name
+		if (target.getProperties(targetProperty.getLocalname()).size()==0) return null;
+		if (source.getProperties(sourceProperty.getLocalname()).size()==0) return null;
+
+		// inject result into target object
+		PropertyDescriptor pd = target.getProperty(
+				this.targetProperty.getLocalname()).getDescriptor();
+
+		if (pd.getType().getBinding().equals(InspireIdentifier.class)) {
+			InspireIdentifier ii=new InspireIdentifier();
+			String localID = null;
+			if (source.getIdentifier().getID()==null || source.getIdentifier().getID().equalsIgnoreCase("")){
+				localID = UUID.randomUUID().toString();
+			}
+			else {
+				localID = source.getIdentifier().getID();
+			}
 			
-		//((FeatureType)pd.getType()).getDescriptors()
-		((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),inspireIDString);
+			ii.setLocalID(localID);
+			
+			String featureTypeName = source.getType().getName().getLocalPart();
+			ii.setNameSpace(this.countryName + ":"
+					+ this.dataProviderName + ":" + this.productName + ":"
+					+ featureTypeName);
+			
 		
+			if (this.version != null && !this.version.equals("")){
+				ii.setVersionID(this.version);
+			}
+			else{
+				ii.setVersionID("");
+			}
+
+			((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),ii);
+		
+		}
+		//TODO: Write in gml:id
+		else if (pd.getType().getBinding().equals(String.class)){
+			// define String to use
+			String localID = null;
+			if (source.getIdentifier().getID()==null || source.getIdentifier().getID().equalsIgnoreCase("")){
+				localID = UUID.randomUUID().toString();
+			}
+			else {
+				localID = source.getIdentifier().getID();
+			}
+
+			if (this.version != null && !this.version.equals("")){
+
+					String featureTypeName = source.getType().getName().getLocalPart();
+					String inspireIDString = this.INSPIRE_IDENTIFIER_PREFIX + ":" + this.countryName + ":"
+							+ this.dataProviderName + ":" + this.productName + ":"
+							+ featureTypeName + ":" + localID + ":"+this.version;	
+					// set to target feature
+					((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),inspireIDString);
+			}
+				
+				else{
+					String featureTypeName = source.getType().getName().getLocalPart();
+					String inspireIDString = this.INSPIRE_IDENTIFIER_PREFIX + ":" + this.countryName + ":"
+							+ this.dataProviderName + ":" + this.productName + ":"
+							+ featureTypeName + ":" + localID;
+					// set to target feature
+					((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),inspireIDString);
+				}
+			}
+
 		return target;
 	}
 
 
 	@Override
 	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
-		// TODO Auto-generated method stub
+		parameterTypes.put(IdentifierFunction.COUNTRY_PARAMETER_NAME, String.class);
+		parameterTypes.put(IdentifierFunction.DATA_PROVIDER_PARAMETER_NAME, String.class);
+		parameterTypes.put(IdentifierFunction.PRODUCT_PARAMETER_NAME, String.class);
+		parameterTypes.put(IdentifierFunction.VERSION, String.class);
 		
 	}
 
