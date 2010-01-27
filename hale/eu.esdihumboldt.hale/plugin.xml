@@ -48,6 +48,7 @@
       </view>
       <view
             class="eu.esdihumboldt.hale.rcp.views.table.TableView"
+            icon="icons/table.gif"
             id="eu.esdihumboldt.hale.rcp.views.TableView"
             name="Table View"
             restorable="true">
