@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.cst.transformer;
 
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -34,7 +32,6 @@ public class CstFunctionFactoryTest {
 	@Test
 	public void testFeatureRenameTransfomer() throws Exception {
 		CstFunctionFactory tf = CstFunctionFactory.getInstance();
-		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
 
 		Cell c = new Cell();
 		Entity entity1 = new FeatureClass(
@@ -52,13 +49,4 @@ public class CstFunctionFactoryTest {
 
 	}
 	
-	@Test
-	public void testCstGetRegisteredTransfomers(){
-		CstFunctionFactory tf = CstFunctionFactory.getInstance();
-		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
-		Map<String, Class<? extends CstFunction>> functions = tf.getRegisteredFunctions();
-		functions.clear();
-	    functions = tf.getRegisteredFunctions();
-	    Assert.assertTrue(functions.size()>0);
-	}
 }
