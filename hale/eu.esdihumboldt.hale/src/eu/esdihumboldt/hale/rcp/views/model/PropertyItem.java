@@ -91,6 +91,10 @@ public class PropertyItem extends TreeParent {
 				pd.getName().getLocalPart().equalsIgnoreCase("the_geom")) {
 			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
 		}
+		// default geographical name attribute
+		else if (pd.getName().getLocalPart().equalsIgnoreCase("geographicalname")) {
+			return TreeObjectType.GEOGRAPHICAl_NAME_ATTRIBUTE;
+		}
 		else if (Arrays.asList(type.getClass().getInterfaces())
 				.contains(org.opengis.feature.type.ComplexType.class)) {
 			return TreeObjectType.COMPLEX_ATTRIBUTE;
@@ -99,10 +103,7 @@ public class PropertyItem extends TreeParent {
 		else if (Collection.class.isAssignableFrom(binding)) {
 			return TreeObjectType.COMPLEX_ATTRIBUTE;
 		}
-		// default geographical name attribute
-		else if (pd.getName().getLocalPart().equalsIgnoreCase("geographicalname")) {
-			return TreeObjectType.GEOGRAPHICAl_NAME_ATTRIBUTE;
-		}
+	
 		// default to complex attribute
 		return TreeObjectType.COMPLEX_ATTRIBUTE;
 	}
