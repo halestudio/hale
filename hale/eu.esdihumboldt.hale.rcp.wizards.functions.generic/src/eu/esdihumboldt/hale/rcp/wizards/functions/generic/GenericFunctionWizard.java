@@ -19,7 +19,7 @@
  *
  */
 
-package eu.esdihumboldt.hale.rcp.wizards.functions.core.generic;
+package eu.esdihumboldt.hale.rcp.wizards.functions.generic;
 
 import java.util.Iterator;
 
@@ -33,7 +33,7 @@ import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
-import eu.esdihumboldt.hale.rcp.wizards.functions.core.generic.model.AlgorithmCST;
+import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.AlgorithmCST;
 
 public class GenericFunctionWizard extends AbstractSingleCellWizard {
 	

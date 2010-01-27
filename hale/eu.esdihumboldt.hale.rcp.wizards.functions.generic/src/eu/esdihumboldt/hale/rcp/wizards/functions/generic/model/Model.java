@@ -19,7 +19,7 @@
  *
  */
 
-package eu.esdihumboldt.hale.rcp.wizards.functions.core.generic.model;
+package eu.esdihumboldt.hale.rcp.wizards.functions.generic.model;
 
 import java.net.URL;
 

@@ -19,14 +19,14 @@
  *
  */
 
-package eu.esdihumboldt.hale.rcp.wizards.functions.core.generic;
+package eu.esdihumboldt.hale.rcp.wizards.functions.generic;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 
-import eu.esdihumboldt.hale.rcp.wizards.functions.core.generic.model.FunctionType;
-import eu.esdihumboldt.hale.rcp.wizards.functions.core.generic.model.Model;
+import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.FunctionType;
+import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.Model;
 
 
 public class FunctionTypeContentProvider implements ITreeContentProvider {

@@ -19,7 +19,7 @@
  *
  */
 
-package eu.esdihumboldt.hale.rcp.wizards.functions.core.generic;
+package eu.esdihumboldt.hale.rcp.wizards.functions.generic;
 
 import java.net.URL;
 import java.util.Iterator;
@@ -41,9 +41,9 @@ import eu.esdihumboldt.cst.transformer.CstService;
 import eu.esdihumboldt.cst.transformer.capabilities.CstServiceCapabilities;
 import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
-import eu.esdihumboldt.hale.rcp.wizards.functions.core.generic.model.AlgorithmCST;
-import eu.esdihumboldt.hale.rcp.wizards.functions.core.generic.model.FunctionType;
-import eu.esdihumboldt.hale.rcp.wizards.functions.core.generic.model.Model;
+import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.AlgorithmCST;
+import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.FunctionType;
+import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.Model;
 
 public class GenericFunctionWizardPage extends AbstractSingleCellWizardPage {
 

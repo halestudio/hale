@@ -19,15 +19,15 @@
  *
  */
 
-package eu.esdihumboldt.hale.rcp.wizards.functions.core.generic;
+package eu.esdihumboldt.hale.rcp.wizards.functions.generic;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.rcp.wizards.functions.core.generic.model.AlgorithmCST;
-import eu.esdihumboldt.hale.rcp.wizards.functions.core.generic.model.FunctionType;
+import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.AlgorithmCST;
+import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.FunctionType;
 
 
 public class FunctionTypeLabelProvider extends LabelProvider {	

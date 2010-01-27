@@ -19,7 +19,7 @@
  *
  */
 
-package eu.esdihumboldt.hale.rcp.wizards.functions.core.generic;
+package eu.esdihumboldt.hale.rcp.wizards.functions.generic;
 
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
