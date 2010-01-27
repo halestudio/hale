@@ -12,6 +12,10 @@
 
 package eu.esdihumboldt.hale.rcp.views.table.tree;
 
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.Map.Entry;
+
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -162,14 +166,20 @@ public class FeatureTreeViewer {
 	 */
 	private void addProperties(MultiColumnTreeNode parent,
 			FeatureType type) {
+		SortedMap<String, PropertyDescriptor> sortedProperties = new TreeMap<String, PropertyDescriptor>();
+		
 		for (PropertyDescriptor pd : type.getDescriptors()) {
-			String name = pd.getName().getLocalPart();
-			String typeName = pd.getType().getName().getLocalPart();
+			sortedProperties.put(pd.getName().getLocalPart(), pd);
+		}
+		
+		for (Entry<String, PropertyDescriptor> entry : sortedProperties.entrySet()) {
+			String name = entry.getKey();
+			String typeName = entry.getValue().getType().getName().getLocalPart();
 			
 			MultiColumnTreeNode childNode = new PropertyItem(name, name + ":<" +
 					typeName + ">");
 			
-			PropertyType childType = pd.getType();
+			PropertyType childType = entry.getValue().getType();
 			if (childType instanceof FeatureType) {
 				addProperties(childNode, (FeatureType) childType);
 			}
