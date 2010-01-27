@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- MdV TUDelft 2009 based on OMWG OML -->
+<xs:schema targetNamespace="http://www.omwg.org/TR/d7/ontology/alignment" 
+      xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment"
+      xmlns:goml="http://www.esdi-humboldt.eu/goml" 
+      xmlns:xs="http://www.w3.org/2001/XMLSchema"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      elementFormDefault="qualified">
+
+   <xs:include schemaLocation="util.xsd" />
+   <xs:import namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#" schemaLocation="tmprdf.xsd" />
+   <xs:import namespace="http://www.esdi-humboldt.eu/goml" schemaLocation="goml.xsd" />
+
+
+<!-- ====== label element also used in align.xsd, therefore global, went to util.xsd  ====== -->
+
+   <!--xs:element name="label" type="xs:string"/-->
+
+<!-- ====== Entity (abstract) TODO decide: should it go to align: ? ====== -->
+    
+   <xs:element name="_Entity" type="omwg:EntityType"  abstract="true" />
+   <xs:complexType name="EntityType" abstract="true" >
+      <xs:sequence>
+            <!-- mdv added label -->
+      	<xs:element ref="omwg:label" minOccurs="0" maxOccurs="unbounded" />
+      	<!--xs:element ref="omwg:_transformation" minOccurs="0" maxOccurs="1" /-->
+            <xs:element ref="omwg:transf" minOccurs="0" maxOccurs="1"   />
+            <xs:element ref="omwg:pipe" minOccurs="0" maxOccurs="1"   />
+      </xs:sequence>
+      <xs:attribute ref="rdf:about" use="optional"/>
+   </xs:complexType>
+
+   <xs:element name="entity1" >
+     <xs:complexType >
+        <xs:sequence>
+           <xs:element ref="omwg:_Entity"/>
+        </xs:sequence>
+     </xs:complexType>
+   </xs:element>
+
+   <xs:element name="entity2" >
+     <xs:complexType >
+        <xs:sequence>
+           <xs:element ref="omwg:_Entity"/>
+        </xs:sequence>
+     </xs:complexType>
+   </xs:element>
+
+
+<!-- ====== (Feature)Class ====== -->
+   <xs:element name="FeatureClass" type="omwg:ClassType" substitutionGroup="omwg:_Entity" />
+   <xs:element name="Class" type="omwg:ClassType" substitutionGroup="omwg:_Entity" />
+   <xs:complexType name="ClassType">
+      <xs:complexContent>
+         <xs:extension base="omwg:EntityType">
+            <xs:sequence>
+               <xs:element name="classComposition" type="omwg:ClassCompositionType" minOccurs="0" maxOccurs="1"   />
+               <xs:element name="attributeValueCondition" type="omwg:ClassConditionType" minOccurs="0" maxOccurs="unbounded" />
+               <xs:element name="attributeTypeCondition" type="omwg:ClassConditionType" minOccurs="0" maxOccurs="unbounded" />
+               <xs:element name="attributeOccurenceCondition" type="omwg:ClassConditionType" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <!-- TODO decide whether this is necessary -->
+   <!--xs:complexType name="FeatureClassType">
+      <xs:complexContent>
+         <xs:extension base="omwg:ClassType">
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType-->
+
+<!-- ==== set construction ==== -->
+
+   <xs:complexType name="ClassCompositionType" >
+         <xs:sequence>
+           <xs:element name="operator" type="omwg:ClassOperatorType" />
+           <xs:choice  >
+               <xs:element name="collection" type="omwg:ClassCollectionType"  />
+               <xs:element ref="omwg:FeatureClass"  />
+           </xs:choice>
+         </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="PropertyCompositionType" >
+         <xs:sequence>
+           <xs:element name="operator" type="omwg:PropertyOperatorType" />
+           <xs:choice  >
+               <xs:element name="collection" type="omwg:PropertyCollectionType"  />
+               <xs:element ref="omwg:Property"  />
+               <xs:element ref="omwg:Relation"  />
+           </xs:choice>
+         </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="RelationCompositionType" >
+         <xs:sequence>
+           <xs:element name="operator" type="omwg:RelationOperatorType" />
+           <xs:choice  >
+               <xs:element name="collection" type="omwg:ClassCollectionType"  />
+               <xs:element ref="omwg:Relation"  />
+           </xs:choice>
+         </xs:sequence>
+   </xs:complexType>
+
+   <!-- TODO decide whether a generic one or not, not: because then in Java different (constructor) methods -->
+   <!--xs:simpleType name="SetOperatorType" >
+      <xs:restriction base="xs:string">
+         <xs:enumeration value="INTERSECTION"/>
+         <xs:enumeration value="UNION"/>
+         <xs:enumeration value="UNION_DUPLICATES"/>
+         <xs:enumeration value="DISJOINT_COMPOSITION"/>
+         <xs:enumeration value="COMPLEMENT"/>
+         <xs:enumeration value="DIFFERENCE"/>
+         <xs:enumeration value="INVERSE"/>
+         <xs:enumeration value="SYMMETRIC"/>
+         <xs:enumeration value="TRANSITIVE"/>
+         <xs:enumeration value="REFLEXIVE"/>
+         <xs:enumeration value="FIRST"/>
+         <xs:enumeration value="NEXT"/>
+      </xs:restriction>
+   </xs:simpleType-->
+
+   <xs:simpleType name="ClassOperatorType" >
+      <xs:restriction base="xs:string">
+         <xs:enumeration value="INTERSECTION"/>
+         <!-- mdv UNION, UNION ALL ('or') split and renamed -->
+         <xs:enumeration value="UNION"/>
+         <xs:enumeration value="UNION_DUPLICATES"/>
+         <xs:enumeration value="COMPLEMENT"/>
+      </xs:restriction>
+   </xs:simpleType>
+   <xs:simpleType name="PropertyOperatorType" >
+      <xs:restriction base="xs:string">
+         <xs:enumeration value="INTERSECTION"/>
+         <!-- mdv UNION, UNION ALL ('or') split and renamed -->
+         <xs:enumeration value="UNION"/>
+         <xs:enumeration value="UNION_DUPLICATES"/>
+         <xs:enumeration value="COMPLEMENT"/>
+         <xs:enumeration value="FIRST"/>
+         <xs:enumeration value="NEXT"/>
+      </xs:restriction>
+   </xs:simpleType>
+   <xs:simpleType name="RelationOperatorType" >
+      <xs:restriction base="xs:string">
+         <xs:enumeration value="INTERSECTION"/>
+         <!-- mdv UNION, UNION ALL ('or') split and renamed -->
+         <xs:enumeration value="UNION"/>
+         <xs:enumeration value="UNION_DUPLICATES"/>
+         <xs:enumeration value="COMPLEMENT"/>
+         <xs:enumeration value="INVERSE"/>
+         <xs:enumeration value="SYMMETRIC"/>
+         <xs:enumeration value="TRANSITIVE"/>
+         <xs:enumeration value="REFLEXIVE"/>
+         <xs:enumeration value="FIRST"/>
+         <xs:enumeration value="NEXT"/>
+      </xs:restriction>
+   </xs:simpleType>
+
+
+   <xs:complexType name="ClassCollectionType">
+      <xs:sequence>
+         <xs:element name="item" minOccurs="2" maxOccurs="unbounded" >
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element ref="omwg:FeatureClass"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element> 
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="PropertyCollectionType">
+      <xs:sequence>
+         <xs:element name="item" minOccurs="2" maxOccurs="unbounded" >
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element ref="omwg:Property"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element> 
+      </xs:sequence>
+   </xs:complexType>
+
+
+
+<!-- ==== (Feature)Class conditions ==== -->
+
+   <xs:complexType name="ClassConditionType"  >
+            <xs:sequence>
+               <xs:element name="Restriction" type="omwg:RestrictionType" />
+            </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="RestrictionType">
+      <xs:choice>
+         <xs:sequence minOccurs="0" maxOccurs="1" >
+            <xs:element ref="omwg:onAttribute" minOccurs="0" maxOccurs="1"/>
+            <xs:element ref="omwg:comparator"/>
+            <xs:choice>
+               <xs:element name="value" type="omwg:valueExprType" minOccurs="0" maxOccurs="unbounded" />
+               <xs:element ref="goml:ValueClass" minOccurs="0"  />
+            </xs:choice>
+         </xs:sequence>
+         <xs:element ref="goml:cqlStr" minOccurs="0" maxOccurs="1" />
+      </xs:choice>
+   </xs:complexType>
+
+   <!-- added based on Scharffe thesis 9.2 and examples, because not in 9.8 alignment ontology -->
+   <xs:element name="onAttribute" type="omwg:onAttributeType" />
+   <xs:complexType name="onAttributeType">
+      <xs:choice>
+         <!--xs:element ref="omwg:Path"/-->
+         <xs:element ref="omwg:Property"/>
+         <xs:element ref="omwg:Relation"/>
+      </xs:choice>
+      <xs:attribute ref="rdf:about" use="optional"/>
+   </xs:complexType>
+
+   <!-- went to util.xsd -->
+   <!--xs:complexType name="valueExprType">
+      <xs:choice>
+         <xs:element name="literal" type="xs:string" />
+         <xs:element name="min" type="xs:string" />
+         <xs:element name="max" type="xs:string" />
+         <xs:element name="Apply" type="omwg:ApplyType" />
+      </xs:choice>
+   </xs:complexType-->
+
+<!-- ====== Property ====== -->
+   <xs:element name="Property" type="omwg:PropertyType" substitutionGroup="omwg:_Entity" />
+   <xs:complexType name="PropertyType">
+      <xs:complexContent>
+         <xs:extension base="omwg:EntityType">
+           <xs:sequence>
+             <xs:element name="propertyComposition" type="omwg:PropertyCompositionType" minOccurs="0" maxOccurs="1"   />
+             <!-- mdv changed order, domainRestriction and typeCondition before valueCondition -->
+             <xs:element ref="omwg:domainRestriction" minOccurs="0" maxOccurs="unbounded" />
+             <xs:element ref="omwg:typeCondition" minOccurs="0" maxOccurs="unbounded" />
+             <xs:element ref="omwg:valueCondition" minOccurs="0" maxOccurs="unbounded" />
+           </xs:sequence>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+
+<!-- ==== Property conditions ==== -->
+
+   <xs:element name="domainRestriction" type="omwg:domainRestrictionType" />
+   <xs:complexType name="domainRestrictionType">
+            <xs:choice>
+               <xs:element ref="omwg:Class"/>
+               <!-- because of the introduction of the PropertyQualifier entity -->
+               <xs:element ref="omwg:Property"/>
+            </xs:choice>
+   </xs:complexType>
+
+   <!-- TODO check type -->
+   <xs:element name="typeCondition" type="xs:string" />
+
+   <xs:element name="valueCondition" type="omwg:valueConditionType" />
+   <xs:complexType name="valueConditionType" >
+            <xs:sequence>
+               <xs:element name="Restriction" type="omwg:RestrictionType" />                  
+            </xs:sequence>
+            <xs:attribute name="seq" use="optional" type="xs:integer" />
+   </xs:complexType>
+
+   <!-- TODO: find a clear way to add the sqlString -->
+   <!-- only a type, element Restriction already exists as global element for Class--> 
+   <xs:complexType name="propValueRestrictionType"  >
+      <xs:sequence>
+           <xs:element ref="omwg:comparator"/>
+           <xs:choice>
+              <xs:element name="value" type="omwg:valueExprType" minOccurs="0" maxOccurs="unbounded" />
+              <xs:element ref="goml:ValueClass" minOccurs="0"  />
+           </xs:choice>
+      </xs:sequence>
+   </xs:complexType>
+	   
+
+<!-- ==== PropertyAttribute ==== -->
+   <xs:element name="PropertyQualifier" type="omwg:PropertyQualifierType" substitutionGroup="omwg:_Entity" />
+   <xs:complexType name="PropertyQualifierType">
+      <xs:complexContent>
+         <xs:extension base="omwg:EntityType">
+            <xs:sequence>
+             <xs:element ref="omwg:domainRestriction" minOccurs="0" maxOccurs="unbounded" />
+             <xs:element ref="omwg:typeCondition" minOccurs="0" maxOccurs="unbounded" />
+             <xs:element ref="omwg:valueCondition" minOccurs="0" maxOccurs="unbounded" />
+
+            </xs:sequence>            
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+
+<!-- ====== Relation ====== -->
+   <xs:element name="Relation" type="omwg:RelationType" substitutionGroup="omwg:_Entity" />
+   <xs:complexType name="RelationType">
+      <xs:complexContent>
+         <xs:extension base="omwg:EntityType">
+          <xs:sequence>
+             <xs:element name="relationComposition" type="omwg:RelationCompositionType" minOccurs="0" maxOccurs="1"   />
+             <xs:element ref="omwg:domainRestriction" />
+             <xs:element ref="omwg:rangeRestriction"/>
+          </xs:sequence>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:element name="rangeRestriction" type="omwg:rangeRestrictionType" />
+   <xs:complexType name="rangeRestrictionType">
+            <xs:sequence>
+               <xs:element ref="omwg:Class"/>
+            </xs:sequence>
+   </xs:complexType>
+
+
+<!-- ==== Instance ==== -->
+   <xs:element name="Instance" type="omwg:InstanceType" substitutionGroup="omwg:_Entity" />
+   <xs:complexType name="InstanceType">
+      <xs:complexContent>
+         <xs:extension base="omwg:EntityType">
+            <xs:sequence>
+            </xs:sequence>            
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+
+
+<!-- ==== enumeration type for comparator element ==== -->
+
+   <xs:element name="comparator" type="omwg:comparatorEnumType" />
+   <xs:simpleType name="comparatorEnumType">
+      <xs:restriction base="xs:string">
+         <xs:enumeration value="equal"/>
+         <xs:enumeration value="not-equal"/>
+         <xs:enumeration value="less-than"/>
+         <xs:enumeration value="less-than-or-equal"/>
+         <xs:enumeration value="greater-than"/>
+         <xs:enumeration value="greater-than-or-equal"/>
+         <xs:enumeration value="contains"/>
+         <xs:enumeration value="starts-with"/>
+         <xs:enumeration value="ends-with"/>
+         <xs:enumeration value="matches"/>
+         <xs:enumeration value="collection-contains"/>
+         <xs:enumeration value="includes"/>
+         <xs:enumeration value="includes-strictly"/>
+         <xs:enumeration value="empty"/>
+         <!-- mdv added -->
+         <xs:enumeration value="oneOf"/>
+         <xs:enumeration value="between"/>
+         <xs:enumeration value="otherwise"/>
+      </xs:restriction>
+   </xs:simpleType>
+
+
+   <!-- went to util.xsd -->
+   <!--xs:complexType name="ApplyType">
+      <xs:sequence>
+         <xs:element name="value" type="omwg:valueExprType" />
+      </xs:sequence>
+      <xs:attribute name="operation" type="xs:anyURI"/>
+   </xs:complexType-->
+
+
+<!-- ======== transformation function or pipe (or service TODO decide) ======== -->
+
+   <!-- should be in goml: package -->
+   <xs:element name="_transformation" type="omwg:TransformationType" abstract="true" />
+   <xs:complexType name="TransformationType" abstract="true" >
+      <xs:sequence>
+         <xs:element name="param" type="omwg:paramType" minOccurs="0" maxOccurs="unbounded"  />
+         <!--xs:element name="params" type="xs:string" minOccurs="0" /-->
+         <!--xs:group ref="omwg:pov" minOccurs="0" maxOccurs="1"   /-->
+      </xs:sequence>
+      <xs:attribute ref="rdf:resource" use="optional"/>
+   </xs:complexType>
+
+   <xs:element name="transf" type="omwg:FunctionType" substitutionGroup="omwg:_transformation" />
+   <xs:complexType name="FunctionType" >
+      <!-- mdv to decide: use rdf:resource and/or FunctionName -->
+      <xs:complexContent>
+         <xs:extension base="omwg:TransformationType">
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:element name="service" type="omwg:ServiceType" substitutionGroup="omwg:_transformation" />
+   <xs:complexType name="ServiceType"  >
+      <!-- mdv to decide: use rdf:resource and/or WPS ProcessName -->
+      <xs:complexContent>
+         <xs:extension base="omwg:TransformationType">
+           <xs:attribute name="id" use="optional"/>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:element name="pipe" type="omwg:TransfPipeType" substitutionGroup="omwg:_transformation" />
+   <xs:complexType name="TransfPipeType">
+      <xs:complexContent>
+         <xs:extension base="omwg:TransformationType">
+             <xs:sequence>
+                <xs:element ref="omwg:_transformation" minOccurs="1" maxOccurs="unbounded"  />
+             </xs:sequence>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <!-- mdv kvp solution -->
+   <xs:complexType name="paramType"  >
+      <xs:sequence>
+         <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
+         <xs:element name="value" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+      </xs:sequence>
+   </xs:complexType>
+
+
+</xs:schema>

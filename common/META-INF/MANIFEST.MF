@@ -4,7 +4,6 @@ Bundle-Name: HUMBOLDT Commons
 Bundle-SymbolicName: eu.esdihumboldt.commons
 Bundle-Version: 2.0.1
 Export-Package: eu.esdihumboldt.goml.align,
- eu.esdihumboldt.goml.generated,
  eu.esdihumboldt.goml.oml.ext,
  eu.esdihumboldt.goml.oml.io,
  eu.esdihumboldt.goml.omwg,

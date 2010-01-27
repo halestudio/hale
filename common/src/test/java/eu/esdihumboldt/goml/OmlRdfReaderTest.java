@@ -41,7 +41,7 @@ public class OmlRdfReaderTest {
 	 */
 	@Test
 	public final void testRead() {
-		Alignment aligment = new OmlRdfReader().read("res/schema/WatercoursesBY2Inspire.xml");
+		Alignment aligment = new OmlRdfReader().read(OmlRdfReaderTest.class.getResource("./WatercoursesBY2Inspire.xml").getFile());
 		//test alignment basic elements
 		assertEquals("Watercourses_BY.xsd", aligment.getSchema1().getLocation());
 		assertEquals("Hydrography.xsd", aligment.getSchema2().getLocation());

@@ -88,7 +88,7 @@ public class ValueConditionsTest {
 	a.getMap().add(cell);
 	
 	OmlRdfGenerator org = new OmlRdfGenerator();
-	org.write(a, "res/schema/test_value_conditions_generated.xml");
+	org.write(a, "ValueConditionsTestFile.xml");
 	
 
 }

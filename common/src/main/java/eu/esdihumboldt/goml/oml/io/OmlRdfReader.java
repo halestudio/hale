@@ -39,28 +39,28 @@ import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.align.Formalism;
 import eu.esdihumboldt.goml.align.Schema;
-import eu.esdihumboldt.goml.generated.AlignmentType;
-import eu.esdihumboldt.goml.generated.CellType;
-import eu.esdihumboldt.goml.generated.ClassConditionType;
-import eu.esdihumboldt.goml.generated.ClassType;
-import eu.esdihumboldt.goml.generated.ComparatorEnumType;
-import eu.esdihumboldt.goml.generated.DomainRestrictionType;
-import eu.esdihumboldt.goml.generated.EntityType;
-import eu.esdihumboldt.goml.generated.FormalismType;
-import eu.esdihumboldt.goml.generated.FunctionType;
-import eu.esdihumboldt.goml.generated.OntologyType;
-import eu.esdihumboldt.goml.generated.ParamType;
-import eu.esdihumboldt.goml.generated.PropertyCollectionType;
-import eu.esdihumboldt.goml.generated.PropertyCompositionType;
-import eu.esdihumboldt.goml.generated.PropertyType;
-import eu.esdihumboldt.goml.generated.RangeRestrictionType;
-import eu.esdihumboldt.goml.generated.RelationEnumType;
-import eu.esdihumboldt.goml.generated.RestrictionType;
-import eu.esdihumboldt.goml.generated.ValueClassType;
-import eu.esdihumboldt.goml.generated.ValueConditionType;
-import eu.esdihumboldt.goml.generated.ValueExprType;
-import eu.esdihumboldt.goml.generated.AlignmentType.Map;
-import eu.esdihumboldt.goml.generated.PropertyCollectionType.Item;
+import eu.esdihumboldt.generated.AlignmentType;
+import eu.esdihumboldt.generated.CellType;
+import eu.esdihumboldt.generated.ClassConditionType;
+import eu.esdihumboldt.generated.ClassType;
+import eu.esdihumboldt.generated.ComparatorEnumType;
+import eu.esdihumboldt.generated.DomainRestrictionType;
+import eu.esdihumboldt.generated.EntityType;
+import eu.esdihumboldt.generated.FormalismType;
+import eu.esdihumboldt.generated.FunctionType;
+import eu.esdihumboldt.generated.OntologyType;
+import eu.esdihumboldt.generated.ParamType;
+import eu.esdihumboldt.generated.PropertyCollectionType;
+import eu.esdihumboldt.generated.PropertyCompositionType;
+import eu.esdihumboldt.generated.PropertyType;
+import eu.esdihumboldt.generated.RangeRestrictionType;
+import eu.esdihumboldt.generated.RelationEnumType;
+import eu.esdihumboldt.generated.RestrictionType;
+import eu.esdihumboldt.generated.ValueClassType;
+import eu.esdihumboldt.generated.ValueConditionType;
+import eu.esdihumboldt.generated.ValueExprType;
+import eu.esdihumboldt.generated.AlignmentType.Map;
+import eu.esdihumboldt.generated.PropertyCollectionType.Item;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.oml.ext.ValueClass;
@@ -86,7 +86,7 @@ public class OmlRdfReader {
 	/**
 	 * Constant defines the path to the alignment jaxb context
 	 */
-	private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.goml.generated";
+	private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.generated";
 
 	/**
 	 * Unmarshalls oml-mapping to the HUMBOLDT Alignment.
@@ -189,7 +189,7 @@ public class OmlRdfReader {
 	 * @return Formalism
 	 */
 	private Formalism getFormalism(
-			eu.esdihumboldt.goml.generated.OntologyType.Formalism jaxbFormalism) {
+			eu.esdihumboldt.generated.OntologyType.Formalism jaxbFormalism) {
 		Formalism formalism = null;
 		if (jaxbFormalism != null) {
 			FormalismType fType = jaxbFormalism.getFormalism();
@@ -375,7 +375,7 @@ public class OmlRdfReader {
 	 * @return
 	 */
 	private Relation getOMLRelation(
-			eu.esdihumboldt.goml.generated.RelationType relationType) {
+			eu.esdihumboldt.generated.RelationType relationType) {
 		Relation relation = null;
 		if (relationType!=null){
 			IAbout about = new About(relationType.getAbout());
@@ -544,20 +544,20 @@ public class OmlRdfReader {
 	 * @return
 	 */
 	private PropertyOperatorType getOperator(
-			eu.esdihumboldt.goml.generated.PropertyOperatorType operator) {
+			eu.esdihumboldt.generated.PropertyOperatorType operator) {
 		if (operator != null) {
 			if (operator != null) {
 				if (operator
-						.equals(eu.esdihumboldt.goml.generated.PropertyOperatorType.INTERSECTION))
+						.equals(eu.esdihumboldt.generated.PropertyOperatorType.INTERSECTION))
 					return eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType.AND;
 				if (operator
-						.equals(eu.esdihumboldt.goml.generated.PropertyOperatorType.UNION))
+						.equals(eu.esdihumboldt.generated.PropertyOperatorType.UNION))
 					return eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType.OR;
 				if (operator
-						.equals(eu.esdihumboldt.goml.generated.PropertyOperatorType.FIRST))
+						.equals(eu.esdihumboldt.generated.PropertyOperatorType.FIRST))
 					return eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType.FIRST;
 				if (operator
-						.equals(eu.esdihumboldt.goml.generated.PropertyOperatorType.NEXT))
+						.equals(eu.esdihumboldt.generated.PropertyOperatorType.NEXT))
 					return eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType.NEXT;
 
 			}

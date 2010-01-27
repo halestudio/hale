@@ -30,10 +30,10 @@ public class OmlRdfGeneratorTest {
 	@Test
 	public final void testWrite() {
 		//Alignment alignment = new OmlRdfReader().read("res/schema/WatercoursesBY2Inspire.xml");
-		Alignment alignment = new OmlRdfReader().read("res/schema/test_newFilterOML_TR.xml");
+		Alignment alignment = new OmlRdfReader().read(OmlRdfGeneratorTest.class.getResource("./test_newFilterOML_TR.xml").getFile());
 		OmlRdfGenerator omlGenerator = new OmlRdfGenerator();
 		try {
-			omlGenerator.write(alignment, "res/schema/test_newFilterOML_TR_generated.xml");
+			omlGenerator.write(alignment, "test_newFilterOML_TR_generated.xml");
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

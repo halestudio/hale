@@ -14,6 +14,7 @@ package eu.esdihumboldt.goml;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -33,7 +34,7 @@ import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Formalism;
 import eu.esdihumboldt.goml.align.Schema;
-import eu.esdihumboldt.goml.generated.PropertyOperatorType;
+import eu.esdihumboldt.generated.PropertyOperatorType;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
@@ -99,22 +100,11 @@ public class ComposedPropertyTest extends TestCase {
 		}
 
 	}
-	@Test
-	public void testOmlRdfGeneration() {
-		OmlRdfGenerator omlGenerator = new OmlRdfGenerator();
-		try {
-			omlGenerator.write(alignment, "res/schema/test_ComposedProperty_generated.xml");
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-	}
 	
 	@Test
 	public void testOmlRdfRead(){
-		Alignment aligment = new OmlRdfReader().read("res/schema/test_ComposedProperty_generated.xml");
+		URL url = ComposedPropertyTest.class.getResource("./ComposedPropertyTest.xml");
+		Alignment aligment = new OmlRdfReader().read(url.getFile());
 		//test for ComposedProperty
 		ComposedProperty compProperty = (ComposedProperty)alignment.getMap().get(0).getEntity1();
 		//test about

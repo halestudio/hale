@@ -1,173 +1,233 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>eu.esdihumboldt</groupId>
-    <artifactId>common-library</artifactId>
-    <version>2.0.1</version>
-    <name>HUMBOLDT Common Library Component</name>
-    <url>http://www.esdi-humboldt.eu</url>
-    <build>
-    	<resources>
-    		<resource>
-    			<directory>./src/main/resource</directory>
-    		</resource>
-    	</resources>
-    	<testResources>
-    		<testResource>
-    			<directory>./src/test/resource</directory>
-    		</testResource>
-    	</testResources>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
-            <!-- plugin>
-                <artifactId>maven-eclipse-plugin</artifactId>
-                <configuration>
-                    <workspace>${basedir}</workspace>
-                </configuration>
-            </plugin -->
-        </plugins>
-    </build>
-    <dependencies>
-        <dependency>
-            <groupId>eu.esdihumboldt</groupId>
-            <artifactId>specification</artifactId>
-            <version>2.0</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>servlet-api</artifactId>
-                    <groupId>javax.servlet</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>eu.esdihumboldt</groupId>
+	<artifactId>common-library</artifactId>
+	<version>2.0.1-SNAPSHOT</version>
+	<name>HUMBOLDT Common Library Component</name>
+	<url>http://www.esdi-humboldt.eu</url>
 
-        <dependency>
-            <groupId>org.opengis</groupId>
-            <artifactId>geoapi</artifactId>
-            <version>2.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-main</artifactId>
-            <version>${geotools.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-wms</artifactId>
-            <version>${geotools.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.geotools</groupId>
-                    <artifactId>gt-plugin</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.geotools</groupId>
-                    <artifactId>gt-coverage</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.geotools</groupId>
-                    <artifactId>gt-referencing</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.geotools</groupId>
-                    <artifactId>gt-xml</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.geotools</groupId>
-                    <artifactId>gt-xml-xsd</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.geotools</groupId>
-                    <artifactId>gt-epsg-wkt</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.geotools</groupId>
-                    <artifactId>gt-sample-data</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-lang</groupId>
-                    <artifactId>commons-lang</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-            <version>1.6.1</version>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.15</version>
-            <exclusions>
+	<build>
+		<resources>
+			<resource>
+				<directory>./src/main/resource</directory>
+			</resource>
+		</resources>
+
+		<testResources>
+			<testResource>
+				<directory>./src/test/resource</directory>
+			</testResource>
+		</testResources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.jvnet.jaxb2.maven2</groupId>
+				<artifactId>maven-jaxb2-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<schemaDirectory>src/main/resource/schema</schemaDirectory>
+					<bindingDirectory>src/main/resource/schema</bindingDirectory>
+					<generatePackage>eu.esdihumboldt.generated</generatePackage>
+					<generateDirectory>${basedir}/src/main/java</generateDirectory>
+					<readOnly>true</readOnly>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>eu.esdihumboldt</groupId>
+			<artifactId>specification</artifactId>
+			<version>2.0</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>servlet-api</artifactId>
+					<groupId>javax.servlet</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.opengis</groupId>
+			<artifactId>geoapi</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-main</artifactId>
+			<version>${geotools.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-wms</artifactId>
+			<version>${geotools.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.geotools</groupId>
+					<artifactId>gt-plugin</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.geotools</groupId>
+					<artifactId>gt-coverage</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.geotools</groupId>
+					<artifactId>gt-referencing</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.geotools</groupId>
+					<artifactId>gt-xml</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.geotools</groupId>
+					<artifactId>gt-xml-xsd</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.geotools</groupId>
+					<artifactId>gt-epsg-wkt</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.geotools</groupId>
+					<artifactId>gt-sample-data</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>commons-lang</groupId>
+					<artifactId>commons-lang</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.15</version>
+			<exclusions>
 				<!-- JXM Tools are not necessary -->
-                <exclusion>
-                    <groupId>com.sun.jdmk</groupId>
-                    <artifactId>jmxtools</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun.jmx</groupId>
-                    <artifactId>jmxri</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.castor</groupId>
-            <artifactId>castor</artifactId>
-            <version>1.1.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.vividsolutions</groupId>
-            <artifactId>jts</artifactId>
-            <version>1.8</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.5</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>2.1.7</version>
-        </dependency>
-        <dependency>
-		<groupId>javax.xml.bind</groupId>
-		<artifactId>jaxb-api</artifactId>
-		<version>2.1</version>
-	</dependency>
-        <dependency>
+				<exclusion>
+					<groupId>com.sun.jdmk</groupId>
+					<artifactId>jmxtools</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jmx</groupId>
+					<artifactId>jmxri</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.castor</groupId>
+			<artifactId>castor</artifactId>
+			<version>1.1.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vividsolutions</groupId>
+			<artifactId>jts</artifactId>
+			<version>1.8</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.5</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-xjc</artifactId>
 			<version>2.1.7</version>
-	</dependency>
+		</dependency>
+		<!-- all jaxb dependencies -->
+	</dependencies>
 
-    
-	<!-- all jaxb dependencies -->	
-</dependencies>		
-<repositories>
-    <repository>
-      <id>central</id>
-      <name>Humboldt internal repository</name>
-      <url>http://artifactory.esdi-humboldt.eu:8070/artifactory/libraries</url>
-    </repository>
-    <repository>
-      <id>gt-central</id>
-      <name>Geotools Maven Repository</name>
-      <url>http://download.osgeo.org/webdav/geotools</url>
-    </repository>
-  </repositories>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	<repositories>
+		<!--		<repository>-->
+		<!--			<id>central</id>-->
+		<!--			<name>Humboldt internal repository</name>-->
+		<!--
+			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/libraries</url>
+		-->
+		<!--		</repository>-->
+		<repository>
+			<id>gt-central</id>
+			<name>Geotools Maven Repository</name>
+			<url>http://download.osgeo.org/webdav/geotools</url>
+		</repository>
+
+		<repository>
+			<id>maven2-repository.dev.java.net</id>
+			<name>Java.net Maven 2 Repository</name>
+			<url>http://download.java.net/maven/2</url>
+		</repository>
+		<repository>
+			<id>maven-repository.dev.java.net</id>
+			<name>Java.net Maven 1 Repository (legacy)</name>
+			<url>http://download.java.net/maven/1</url>
+			<layout>legacy</layout>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>maven2-repository.dev.java.net</id>
+			<name>Java.net Maven 2 Repository</name>
+			<url>http://download.java.net/maven/2</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>maven-repository.dev.java.net</id>
+			<name>Java.net Maven 1 Repository (legacy)</name>
+			<url>http://download.java.net/maven/1</url>
+			<layout>legacy</layout>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<geotools.version>2.5.8</geotools.version>
-    </properties>
+	</properties>
+
+	<distributionManagement>
+		<repository>
+			<id>artifactory.esdi-humboldt.eu</id>
+			<name>artifactory.esdi-humboldt.eu-releases</name>
+			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/libs-releases-local</url>
+		</repository>
+		<snapshotRepository>
+			<id>artifactory.esdi-humboldt.eu</id>
+			<name>artifactory.esdi-humboldt.eu-snapshots</name>
+			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/libs-snapshots-local</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 </project>
 
 

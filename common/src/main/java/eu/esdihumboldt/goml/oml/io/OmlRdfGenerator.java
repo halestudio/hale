@@ -36,37 +36,37 @@ import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.cst.align.ext.IValueClass;
 import eu.esdihumboldt.cst.align.ext.IValueExpression;
 import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.generated.AlignmentType;
-import eu.esdihumboldt.goml.generated.ApplyType;
-import eu.esdihumboldt.goml.generated.CellType;
-import eu.esdihumboldt.goml.generated.ClassConditionType;
-import eu.esdihumboldt.goml.generated.ClassType;
-import eu.esdihumboldt.goml.generated.ComparatorEnumType;
-import eu.esdihumboldt.goml.generated.DomainRestrictionType;
-import eu.esdihumboldt.goml.generated.Entity1;
-import eu.esdihumboldt.goml.generated.Entity2;
-import eu.esdihumboldt.goml.generated.EntityType;
-import eu.esdihumboldt.goml.generated.FormalismType;
-import eu.esdihumboldt.goml.generated.FunctionType;
-import eu.esdihumboldt.goml.generated.OnAttributeType;
-import eu.esdihumboldt.goml.generated.OntologyType;
-import eu.esdihumboldt.goml.generated.ParamType;
-import eu.esdihumboldt.goml.generated.PropValueRestrictionType;
-import eu.esdihumboldt.goml.generated.PropertyCollectionType;
-import eu.esdihumboldt.goml.generated.PropertyCompositionType;
-import eu.esdihumboldt.goml.generated.PropertyOperatorType;
-import eu.esdihumboldt.goml.generated.PropertyType;
-import eu.esdihumboldt.goml.generated.RangeRestrictionType;
-import eu.esdihumboldt.goml.generated.RelationEnumType;
-import eu.esdihumboldt.goml.generated.RestrictionType;
-import eu.esdihumboldt.goml.generated.ValueClassType;
-import eu.esdihumboldt.goml.generated.ValueConditionType;
-import eu.esdihumboldt.goml.generated.ValueExprType;
-import eu.esdihumboldt.goml.generated.AlignmentType.Map;
-import eu.esdihumboldt.goml.generated.AlignmentType.Onto1;
-import eu.esdihumboldt.goml.generated.AlignmentType.Onto2;
-import eu.esdihumboldt.goml.generated.OntologyType.Formalism;
-import eu.esdihumboldt.goml.generated.PropertyCollectionType.Item;
+import eu.esdihumboldt.generated.AlignmentType;
+import eu.esdihumboldt.generated.ApplyType;
+import eu.esdihumboldt.generated.CellType;
+import eu.esdihumboldt.generated.ClassConditionType;
+import eu.esdihumboldt.generated.ClassType;
+import eu.esdihumboldt.generated.ComparatorEnumType;
+import eu.esdihumboldt.generated.DomainRestrictionType;
+import eu.esdihumboldt.generated.Entity1;
+import eu.esdihumboldt.generated.Entity2;
+import eu.esdihumboldt.generated.EntityType;
+import eu.esdihumboldt.generated.FormalismType;
+import eu.esdihumboldt.generated.FunctionType;
+import eu.esdihumboldt.generated.OnAttributeType;
+import eu.esdihumboldt.generated.OntologyType;
+import eu.esdihumboldt.generated.ParamType;
+import eu.esdihumboldt.generated.PropValueRestrictionType;
+import eu.esdihumboldt.generated.PropertyCollectionType;
+import eu.esdihumboldt.generated.PropertyCompositionType;
+import eu.esdihumboldt.generated.PropertyOperatorType;
+import eu.esdihumboldt.generated.PropertyType;
+import eu.esdihumboldt.generated.RangeRestrictionType;
+import eu.esdihumboldt.generated.RelationEnumType;
+import eu.esdihumboldt.generated.RestrictionType;
+import eu.esdihumboldt.generated.ValueClassType;
+import eu.esdihumboldt.generated.ValueConditionType;
+import eu.esdihumboldt.generated.ValueExprType;
+import eu.esdihumboldt.generated.AlignmentType.Map;
+import eu.esdihumboldt.generated.AlignmentType.Onto1;
+import eu.esdihumboldt.generated.AlignmentType.Onto2;
+import eu.esdihumboldt.generated.OntologyType.Formalism;
+import eu.esdihumboldt.generated.PropertyCollectionType.Item;
 import eu.esdihumboldt.goml.oml.ext.Function;
 import eu.esdihumboldt.goml.oml.ext.ValueClass;
 import eu.esdihumboldt.goml.oml.ext.ValueExpression;
@@ -100,7 +100,7 @@ public class OmlRdfGenerator {
 	/**
 	 * Constant defines the path to the alignment jaxb context
 	 */
-	private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.goml.generated";
+	private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.generated";
 
 	/**
 	 * Stores alignment to xml
@@ -771,9 +771,9 @@ public class OmlRdfGenerator {
 	 * @param relation
 	 * @return
 	 */
-	private eu.esdihumboldt.goml.generated.RelationType getRelation(
+	private eu.esdihumboldt.generated.RelationType getRelation(
 			Relation relation) {
-		eu.esdihumboldt.goml.generated.RelationType relType = new eu.esdihumboldt.goml.generated.RelationType();
+		eu.esdihumboldt.generated.RelationType relType = new eu.esdihumboldt.generated.RelationType();
 		if (relation!=null){
 			//TODO clear with MdV
 			if (relation.getDomainRestriction()!=null)relType.setDomainRestriction(getDomainRestrictionType(relation.getDomainRestriction().get(0)));

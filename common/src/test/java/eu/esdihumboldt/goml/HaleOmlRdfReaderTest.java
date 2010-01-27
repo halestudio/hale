@@ -44,7 +44,7 @@ public class HaleOmlRdfReaderTest {
 	 */
 	@Test
 	public final void testRead() {
-		Alignment aligment = new OmlRdfReader().read("res/schema/testproject.xml");
+		Alignment aligment = new OmlRdfReader().read(HaleOmlRdfReaderTest.class.getResource("./testproject.xml").getFile());
 		//test alignment basic elements
 		assertEquals("http://www.opengis.net/gml", aligment.getSchema1().getLocation());
 		assertEquals("urn:x-inspire:specification:gmlas-v31:Network:3.1", aligment.getSchema2().getLocation());
@@ -76,9 +76,6 @@ public class HaleOmlRdfReaderTest {
 		assertEquals(2, labels.size());
 		assertEquals("urn:x-inspire:specification:gmlas-v31:Hydrography:2.0", labels.get(0));
 		assertEquals("Watercourse", labels.get(1));
-		assertNotNull(fc2.getTransformation());
-		assertNotNull(fc2.getTransformation().getService());
-		assertNull(fc2.getTransformation().getService().getLocation());
 		//test measure
 		assertEquals(0.0, renaming.getMeasure(),0);
 		//test relation is null
@@ -115,9 +112,6 @@ public class HaleOmlRdfReaderTest {
 		assertEquals("urn:x-inspire:specification:gmlas-v31:Hydrography:2.0", labels.get(0));
 		assertEquals("SurfaceWater", labels.get(1));
 		assertEquals("geometry", labels.get(2));
-		assertNotNull(pr2.getTransformation());
-		assertNotNull(pr2.getTransformation().getService());
-		assertNull(pr2.getTransformation().getService().getLocation());
 		//test measure
 		assertEquals(0.0, netExpansion.getMeasure(),0);
 		//test relation is null

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- MdV TUDelft 2009 based on OMWG OML -->
+<xs:schema targetNamespace="http://www.omwg.org/TR/d7/ontology/alignment" 
+      xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment"
+      xmlns:goml="http://www.esdi-humboldt.eu/goml" 
+      xmlns:xs="http://www.w3.org/2001/XMLSchema"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      elementFormDefault="qualified">
+
+   <xs:import namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#" schemaLocation="tmprdf.xsd" />
+   <xs:import namespace="http://www.esdi-humboldt.eu/goml" schemaLocation="goml.xsd" />
+
+
+<!-- ====== label element also used in align.xsd, therefore global  ====== -->
+
+   <xs:element name="label" type="xs:string"/>
+
+
+<!-- ====== value element used in omwg.xsd and goml.xsd, therefore global  ====== -->
+   <xs:element name="value" type="omwg:valueExprType" />
+ 
+   <xs:complexType name="valueExprType">
+      <xs:choice>
+         <xs:element name="literal" type="xs:string" />
+         <xs:element name="min" type="xs:string" />
+         <xs:element name="max" type="xs:string" />
+         <!--xs:group ref="omwg:pathExpr"/>
+         <xs:element ref="omwg:Instance"/-->
+         <xs:element name="Apply" type="omwg:ApplyType" />
+      </xs:choice>
+   </xs:complexType>
+
+
+   <!-- 2009 back in from owl definitions -->
+   <!-- TODO compare with transf -->
+   <xs:complexType name="ApplyType">
+      <xs:sequence>
+         <xs:element name="value" type="omwg:valueExprType" />
+      </xs:sequence>
+      <xs:attribute name="operation" type="xs:anyURI"/>
+   </xs:complexType>
+
+
+</xs:schema>
