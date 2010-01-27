@@ -296,18 +296,13 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		languageCode = " <enter ISO language code>";
 		}
 		this.nameLanguageText.setText(languageCode);
+		setLanguage(languageCode);
 		
 		this.nameLanguageText.setCaretOffset(languageCode.length());
 		this.nameLanguageText.setEnabled(true);
 		this.nameLanguageText.setTabs(0);
 		this.nameLanguageText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e){
-				//set a new iso value for the language
-				String language = nameLanguageText.getText();
-			/*	int length = language.length() - 1;
-				if (language.charAt(length)==('\t'))
-					language = language.substring(0, length);*/
-				
 				setLanguage(language);
 				
 			}
@@ -333,6 +328,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		
 		
 		this.nameSourceText.setText(nameSource);
+		setSourceOfName(nameSource);
 		this.nameSourceText.setCaretOffset(nameSource.length());
 		this.nameSourceText.setEnabled(true);
 		this.nameSourceText.addModifyListener(new ModifyListener() {
@@ -370,6 +366,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		}	
 		
 		this.nameStatusCombo.select(index);
+		setNameStatus(nameStatusCombo.getItem(index));
 		
 		this.nameStatusCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -406,6 +403,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		}
 		
 		this.nameNativenessCombo.select(nativenessIndex);
+		setNativeness(nameNativenessCombo.getItem(nativenessIndex));
 		this.nameNativenessCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
@@ -435,6 +433,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 			}
 		}
 		this.nameGenderCombo.select(genderIndex);
+		setGender(nameGenderCombo.getItem(genderIndex));
 		this.nameGenderCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
@@ -451,6 +450,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		this.nameNumberCombo.setLayoutData(configurationLayoutData);
 		String [] numberItems = new String []{GrammaticalNumberValue.singular.name(), GrammaticalNumberValue.dual.name(), GrammaticalNumberValue.plural.name()};
 		this.nameNumberCombo.setItems(numberItems);
+		//set default selection
 		int numberIndex = 0;
 		if (getNumber()!=null){
 			String number = getNumber();
@@ -463,6 +463,8 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 			
 		}
 		this.nameNumberCombo.select(numberIndex);
+		setNumber(nameNumberCombo.getItem(numberIndex));
+		setNumber(nameNumberCombo.getItem(numberIndex));
 		this.nameNumberCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
@@ -503,7 +505,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		// Sounds like
 		final Label namePronounciationTextLabel = new Label(
 				configurationComposite, SWT.NONE);
-		namePronounciationTextLabel.setText("Sounds like... ");
+		namePronounciationTextLabel.setText("Soundlink");
 		this.namePronounciationSounds = new Text(configurationComposite,
 				SWT.BORDER);
 		this.namePronounciationSounds.setLayoutData(configurationLayoutData);
@@ -524,6 +526,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 			
 		}
 		this.namePronounciationIPA.setText(ipa);
+		setIpa(ipa);
 		this.namePronounciationIPA.setCaretOffset(ipa.length());
 		this.namePronounciationIPA.addModifyListener(new ModifyListener(){
 
@@ -592,7 +595,9 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 			
 			
 		}
+		//set default value for script
 		this.nameSpellingScript.setText(script);
+		setScript(script);
 		this.nameSpellingScript.setCaretOffset(script.length());
 		this.nameSpellingScript.addModifyListener(new ModifyListener() {
 			
@@ -620,6 +625,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		}
 		this.nameSpellingTransliteration.setText(transliteration);
 		this.nameSpellingTransliteration.setCaretOffset(transliteration.length());
+		setTransliteration(transliteration);
 		this.nameSpellingTransliteration.addModifyListener(new ModifyListener() {
 			
 			@Override
