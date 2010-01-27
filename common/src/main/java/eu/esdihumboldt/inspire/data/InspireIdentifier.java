@@ -22,23 +22,14 @@ package eu.esdihumboldt.inspire.data;
  */
 public class InspireIdentifier {
 	
-	private String inspirePrefix = null;
+	
 	private String localID = null;
-	
-	
-
 	private String nameSpace = null;
 	private String versionID = null;
 	
 	public InspireIdentifier(){}
 	
-	public String getInspirePrefix() {
-		return inspirePrefix;
-	}
-
-	public void setInspirePrefix(String inspirePrefix) {
-		this.inspirePrefix = inspirePrefix;
-	}
+	
 
 	public String getLocalID() {
 		return localID;
@@ -69,10 +60,6 @@ public class InspireIdentifier {
 		if (target==null)
 			return false;
 		
-		if (this.inspirePrefix!=null && this.inspirePrefix.equals(target.getInspirePrefix())==false)
-			return false;
-		else if (this.inspirePrefix==null && target.getInspirePrefix()!=null)
-			return false;
 		
 		if (this.localID!=null && this.localID.equals(target.getLocalID())==false)
 			return false;
