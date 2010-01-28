@@ -20,7 +20,9 @@
  */
 package eu.esdihumboldt.cst.corefunctions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.geotools.feature.FeatureCollection;
@@ -37,6 +39,9 @@ import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.oml.ext.Parameter;
+import eu.esdihumboldt.goml.oml.ext.Transformation;
+import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 
@@ -109,19 +114,29 @@ public class NetworkExpansionFunction extends AbstractCstFunction {
 		return true;
 	}
 
-	@Override
-	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
-		parametersTypes.put(NetworkExpansionFunction.BUFFERWIDTH, Double.class);
-		parametersTypes.put(NetworkExpansionFunction.CAPSTYLE, Integer.class);
-	}
-	
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
-		Property entity1 = new Property(new About(""));
-		Property entity2 = new Property(new About(""));
 	
+		Property  entity1 = new Property(new About(""));
+		Property  entity2 = new Property(new About(""));	
+		
+		List<IParameter> params = new ArrayList<IParameter>();
+		IParameter buffer   = new Parameter(NetworkExpansionFunction.BUFFERWIDTH, "0");
+		IParameter capstyle = new Parameter(NetworkExpansionFunction.CAPSTYLE   , "0");
+		params.add(buffer);
+		params.add(capstyle);
+		Transformation t = new Transformation();
+		t.setParameters(params);
+		
+		entity1.setTransformation(t);		
+		
 		parameterCell.setEntity1(entity1);
 		parameterCell.setEntity2(entity2);
 		return parameterCell;
 	}
+	@Override
+	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
+		parametersTypes.put(NetworkExpansionFunction.BUFFERWIDTH, Double.class);
+		parametersTypes.put(NetworkExpansionFunction.CAPSTYLE, Integer.class);
+	}	
 }

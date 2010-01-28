@@ -117,6 +117,7 @@ public class DateExtractionFunction extends AbstractCstFunction {
 		parameterCell.setEntity2(entity2);
 		return parameterCell;
 	}
+	
 	public FeatureCollection<? extends FeatureType, ? extends Feature> transform(
 			FeatureCollection<? extends FeatureType, ? extends Feature> fc) {
 		return null;

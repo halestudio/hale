@@ -79,15 +79,17 @@ public class GenericMathFunction
 
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
-		Property entity1 = new Property(new About(""));
-		Property entity2 = new Property(new About(""));
+	
+		ComposedProperty  entity1 = new ComposedProperty(new About(""));
+		Property          entity2 = new Property(new About(""));	
 		
 		List<IParameter> params = new ArrayList<IParameter>();
-		IParameter p = new Parameter(GenericMathFunction.EXPRESSION_PARAMETER_NAME,"String");
+		IParameter p = new Parameter(GenericMathFunction.EXPRESSION_PARAMETER_NAME, "");
 		params.add(p);
 		Transformation t = new Transformation();
 		t.setParameters(params);
-		entity1.setTransformation(t);
+		
+		entity1.setTransformation(t);		
 		
 		parameterCell.setEntity1(entity1);
 		parameterCell.setEntity2(entity2);

@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.cst.corefunctions;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.geotools.feature.FeatureCollection;
@@ -24,6 +26,8 @@ import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.goml.oml.ext.Parameter;
+import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.rdf.About;
 
 /**
@@ -59,6 +63,24 @@ public class NilReasonFunction extends AbstractCstFunction {
 	}
 
 
+	public Cell getParameters() {
+		Cell parameterCell = new Cell();	
+				
+		eu.esdihumboldt.goml.omwg.Property entity2 = 
+			new eu.esdihumboldt.goml.omwg.Property(new About(""));
+	
+	
+		Transformation t = new Transformation();
+		List<IParameter> params = new ArrayList<IParameter>(); 
+			
+		Parameter p   = 
+			new Parameter(PARAMETER_NIL_REASON_TYPE,"");
+		
+		params.add(p);		
+		entity2.setTransformation(t);	
+		parameterCell.setEntity2(entity2);
+		return parameterCell;
+	}
 	/**
 	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.geotools.feature.FeatureCollection)
 	 */
@@ -129,7 +151,7 @@ public class NilReasonFunction extends AbstractCstFunction {
 		parametersTypes.put(PARAMETER_NIL_REASON_TYPE, String.class);				
 	}
 	
-	public Cell getParameters() {
+	/*public Cell getParameters() {
 		Cell parameterCell = new Cell();
 		eu.esdihumboldt.goml.omwg.Property entity1 = new eu.esdihumboldt.goml.omwg.Property(new About(""));
 		eu.esdihumboldt.goml.omwg.Property entity2 = new eu.esdihumboldt.goml.omwg.Property(new About(""));
@@ -137,5 +159,5 @@ public class NilReasonFunction extends AbstractCstFunction {
 		parameterCell.setEntity1(entity1);
 		parameterCell.setEntity2(entity2);
 		return parameterCell;
-	}
+	}*/
 }
