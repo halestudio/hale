@@ -33,7 +33,7 @@ public abstract class AbstractDefinition implements Definition {
 	/**
 	 * @param description the description to set
 	 */
-	protected void setDescription(String description) {
+	public void setDescription(String description) {
 		this.description = description;
 	}
 

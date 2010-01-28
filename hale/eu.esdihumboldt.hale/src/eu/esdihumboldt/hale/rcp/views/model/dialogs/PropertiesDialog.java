@@ -28,9 +28,11 @@ import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.rcp.utils.EntityHelper;
 import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNode;
@@ -39,6 +41,7 @@ import eu.esdihumboldt.hale.rcp.views.model.AttributeItem;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.schemaprovider.EnumAttributeType;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 
 /**
  * Dialog showing the properties of a schema item
@@ -50,6 +53,8 @@ import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 public class PropertiesDialog extends TitleAreaDialog {
 	
 	private final SchemaItem item;
+	
+	private Text descriptionText;
 	
 	/**
 	 * Constructor
@@ -96,12 +101,33 @@ public class PropertiesDialog extends TitleAreaDialog {
 		data.heightHint = 300;
 		page.setLayoutData(data);
 		
+		GridLayout pageLayout = new GridLayout(1, false);
+		pageLayout.marginLeft = 0;
+		pageLayout.marginTop = 0;
+		pageLayout.marginLeft = 0;
+		pageLayout.marginBottom = 0;
+		page.setLayout(pageLayout);
+		
+		Definition definition = item.getDefinition();
+		// description
+		if (definition != null && definition.getDescription() != null) {
+			// text field for description
+			descriptionText = new Text(page, SWT.MULTI | SWT.READ_ONLY);
+			GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+			//gd.heightHint = 100;
+			descriptionText.setLayoutData(gd);
+			descriptionText.setText(definition.getDescription());
+		}
+		
+		Composite treeComposite = new Composite(page, SWT.NONE);
+		treeComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
 		// tree column layout
 		TreeColumnLayout layout = new TreeColumnLayout(); 
-		page.setLayout(layout);
+		treeComposite.setLayout(layout);
 		
 		// tree viewer
-		TreeViewer tree = new TreeViewer(page, SWT.SINGLE | SWT.FULL_SELECTION);
+		TreeViewer tree = new TreeViewer(treeComposite, SWT.SINGLE | SWT.FULL_SELECTION);
 		tree.setContentProvider(new TreeNodeContentProvider());
 				
 		// property column
@@ -138,10 +164,17 @@ public class PropertiesDialog extends TitleAreaDialog {
 	 */
 	protected List<TreeNode> getTreeModel() {
 		List<TreeNode> nodes = new ArrayList<TreeNode>();
+		Definition definition = item.getDefinition();
 		
 		// name
 		MultiColumnTreeNode name = new MultiColumnTreeNode("Name", 
 				item.getName().getLocalPart());//EntityHelper.getShortName(item.getEntity()));
+		
+		// identifier
+		if (definition != null && definition.getIdentifier() != null) {
+			name.addChild(new MultiColumnTreeNode("Identifier", definition.getIdentifier()));
+		}
+		
 		nodes.add(name);
 		
 		if (item.getPropertyType() != null) {
@@ -155,6 +188,9 @@ public class PropertiesDialog extends TitleAreaDialog {
 			nodes.add(type);
 		}
 		
+		
+		
+		
 		if (item instanceof AttributeItem) {
 			AttributeDefinition property = ((AttributeItem) item).getAttributeDefinition();
 			
@@ -164,7 +200,8 @@ public class PropertiesDialog extends TitleAreaDialog {
 			nodes.add(nillable);
 			
 			// cardinality
-			String cardinalityValue = property.getMinOccurs() + ".." + property.getMaxOccurs();
+			long maxOccurs = property.getMaxOccurs();
+			String cardinalityValue = property.getMinOccurs() + ".." + ((maxOccurs == Long.MAX_VALUE)?("unbounded"):(maxOccurs));
 			MultiColumnTreeNode cardinality = new MultiColumnTreeNode("Cardinality", cardinalityValue);
 			nodes.add(cardinality);
 		}

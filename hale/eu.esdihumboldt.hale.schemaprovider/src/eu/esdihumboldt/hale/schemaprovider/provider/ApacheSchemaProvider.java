@@ -326,6 +326,9 @@ public class ApacheSchemaProvider
 		// name mapping (schema type name / feature type name)
 		Map<String, String> names = new HashMap<String, String>();
 		
+		// descriptions (element (feature type) name / description)
+		Map<String, String> descriptions = new HashMap<String, String>();
+		
 		// type names for type definitions where is no element
 		Set<String> schemaTypeNames = new HashSet<String>();
 		
@@ -350,6 +353,11 @@ public class ApacheSchemaProvider
 				
 				String elementName = element.getName();
 				names.put(typeName, elementName);
+				
+				String description = SchemaAttribute.getDescription(element);
+				if (description != null) {
+					descriptions.put(elementName, description);
+				}
 			}
 			else if (item instanceof XmlSchemaComplexType) {
 				schemaTypeNames.add(((XmlSchemaComplexType)item).getName());
@@ -495,6 +503,12 @@ public class ApacheSchemaProvider
 				
 				// set additional properties
 				typeDef.setAbstract(((XmlSchemaComplexType) item).isAbstract());
+				
+				// set description
+				String description = descriptions.get(typeName.getLocalPart());
+				if (description != null) {
+					typeDef.setDescription(description);
+				}
 				
 				// add type definition
 				featureTypes.put(typeName, typeDef);

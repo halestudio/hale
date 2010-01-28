@@ -87,7 +87,13 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 		if (attributeType == null) {
 			AttributeType type = createAttributeType();
 			attributeType = new TypeDefinition(typeName, type, null);
-			setDescription("Generated empty attribute type");
+			String desc = "HALE: Generated empty attribute type";
+			if (getDescription() != null) {
+				setDescription(desc + "\n\n" + getDescription());
+			}
+			else {
+				setDescription(desc);
+			}
 			//XXX log message?
 		}
 		
@@ -103,7 +109,7 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 		AttributeTypeBuilder builder = new AttributeTypeBuilder();
 		builder.setName(typeName.getLocalPart());
 		builder.setNamespaceURI(typeName.getNamespaceURI());
-		builder.setBinding(Void.class);
+		builder.setBinding(Object.class);
 		return builder.buildType();
 	}
 
