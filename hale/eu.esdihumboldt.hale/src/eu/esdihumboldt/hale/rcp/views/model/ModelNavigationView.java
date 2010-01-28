@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
@@ -169,7 +168,7 @@ public class ModelNavigationView extends ViewPart implements
 
 	}
 
-	private static Logger _log = Logger.getLogger(ModelNavigationView.class);
+	//private static Logger _log = Logger.getLogger(ModelNavigationView.class);
 	
 	/**
 	 * The view id
@@ -492,8 +491,8 @@ public class ModelNavigationView extends ViewPart implements
 		// finally, build the tree, starting with those types that don't have
 		// supertypes.
 		for (TypeDefinition type : schema) {
-			if (type.getSuperType() == null && hasNamespaceChild(type, namespace)) {
-				root.addChild(this.buildSchemaTree(type, namespace));
+			if (type.getSuperType() == null) {
+				root.addChild(this.buildSchemaTree(type, schema, namespace));
 			}
 		}
 
@@ -501,39 +500,17 @@ public class ModelNavigationView extends ViewPart implements
 		// links.
 		return hidden_root;
 	}
-	
-	/**
-	 * Determines if the given type has a subtype in the given namespace
-	 * 
-	 * @param type the type definition
-	 * @param namespace the namespace
-	 * 
-	 * @return if there is a subtype with the given namespace
-	 */
-	private boolean hasNamespaceChild(TypeDefinition type, String namespace) {
-		if (type.getName().getNamespaceURI().equals(namespace)) {
-			return true;
-		}
-		else {
-			for (TypeDefinition child : type.getSubTypes()) {
-				if (hasNamespaceChild(child, namespace)) {
-					return true;
-				}
-			}
-			
-			return false;
-		}
-	}
 
 	/**
 	 * Recursive method for setting up the inheritance tree.
 	 * 
 	 * @param type the type definition
+	 * @param schema the collection of types to display
 	 * @param namespace the namespace
 	 * @return a {@link SchemaItem} that contains all Properties and all
 	 *         subtypes and their property, starting with the given FT.
 	 */
-	private TreeObject buildSchemaTree(TypeDefinition type, String namespace) {
+	private TreeObject buildSchemaTree(TypeDefinition type, Collection<TypeDefinition> schema, String namespace) {
 		TypeItem featureItem = new TypeItem(type);
 		
 		// add properties
@@ -549,8 +526,8 @@ public class ModelNavigationView extends ViewPart implements
 		
 		// add children recursively
 		for (TypeDefinition subType : type.getSubTypes()) {
-			if (hasNamespaceChild(subType, namespace)) {
-				featureItem.addChild(buildSchemaTree(subType, namespace));
+			if (schema.contains(subType)) {
+				featureItem.addChild(buildSchemaTree(subType, schema, namespace));
 			}
 		}
 		return featureItem;
