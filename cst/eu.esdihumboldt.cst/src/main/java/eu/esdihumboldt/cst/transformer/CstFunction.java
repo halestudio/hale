@@ -29,6 +29,7 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Function;
 
 /**
@@ -89,5 +90,7 @@ public interface CstFunction {
 	 * @deprecated to be replaced by a method based on Cells
 	 */	
 	public Map<String, Class<?>> getParameterTypes();
+	
+	public Cell getParameters(); 
 
 }

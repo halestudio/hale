@@ -14,9 +14,9 @@
     <outputDirectory>target/classes</outputDirectory>
     <finalName>${artifactId}-${version}</finalName>
     <testOutputDirectory>target/test-classes</testOutputDirectory>   
-    <scriptSourceDirectory>./src/main/scripts</scriptSourceDirectory>
-    <testSourceDirectory>./src/test/java</testSourceDirectory>
+    <scriptSourceDirectory>./src/main/scripts</scriptSourceDirectory>    
      <sourceDirectory>./src/main/java</sourceDirectory>
+     <testSourceDirectory>./src/test/java</testSourceDirectory>
     <resources>
       <resource>
         <directory>./src/main/java/</directory>
@@ -98,7 +98,7 @@
 	<dependency>
 	<groupId>eu.esdihumboldt</groupId>
 	<artifactId>common-library</artifactId>
-	<version>2.0.1</version>
+	<version>2.0.1-SNAPSHOT</version>
      </dependency>
 		<dependency>
      	<groupId>com.iabcinc</groupId>
