@@ -212,6 +212,7 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
 		Property entity1 = new Property(new About(""));
+		
 
 		List<IValueExpression> valueExpressions = new ArrayList<IValueExpression>();
 		Restriction r = new Restriction(valueExpressions);

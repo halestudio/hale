@@ -29,7 +29,11 @@ import org.opengis.feature.type.FeatureType;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
+import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.goml.rdf.Resource;
 
 
 
@@ -82,6 +86,16 @@ public class CentroidFunction extends AbstractCstFunction {
 	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public Cell getParameters() {
+		Cell parameterCell = new Cell();
+		Property entity1 = new Property(new About(""));
+		Property entity2 = new Property(new About(""));
+		
+		parameterCell.setEntity1(entity1);
+		parameterCell.setEntity2(entity2);
+		return parameterCell;
 	}
 	
 	

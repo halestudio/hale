@@ -28,8 +28,10 @@ import org.opengis.feature.type.PropertyDescriptor;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
+import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.inspire.data.GeographicalName;
 import eu.esdihumboldt.inspire.data.GrammaticalGenderValue;
 import eu.esdihumboldt.inspire.data.GrammaticalNumberValue;
@@ -216,5 +218,14 @@ public class GeographicalNameFunction
 		parameterTypes.put(GeographicalNameFunction.PROPERTY_GRAMMA_NUMBER, String.class);
 	}
 	
+	public Cell getParameters() {
+		Cell parameterCell = new Cell();
+		Property entity1 = new Property(new About(""));
+		Property entity2 = new Property(new About(""));
+	
+		parameterCell.setEntity1(entity1);
+		parameterCell.setEntity2(entity2);
+		return parameterCell;
+	}
 
 }

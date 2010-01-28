@@ -12,20 +12,19 @@
 
 package eu.esdihumboldt.cst.corefunctions;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
+import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.goml.rdf.About;
 
 /**
  * This function will populate the nilReason attribute of any properties that 
@@ -128,5 +127,15 @@ public class NilReasonFunction extends AbstractCstFunction {
 	@Override
 	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
 		parametersTypes.put(PARAMETER_NIL_REASON_TYPE, String.class);				
+	}
+	
+	public Cell getParameters() {
+		Cell parameterCell = new Cell();
+		eu.esdihumboldt.goml.omwg.Property entity1 = new eu.esdihumboldt.goml.omwg.Property(new About(""));
+		eu.esdihumboldt.goml.omwg.Property entity2 = new eu.esdihumboldt.goml.omwg.Property(new About(""));
+	
+		parameterCell.setEntity1(entity1);
+		parameterCell.setEntity2(entity2);
+		return parameterCell;
 	}
 }

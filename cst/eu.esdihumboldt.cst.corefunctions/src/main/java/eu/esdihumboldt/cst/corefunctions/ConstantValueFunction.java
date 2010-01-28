@@ -23,7 +23,9 @@ import org.opengis.feature.type.PropertyDescriptor;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
+import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.rdf.About;
 
 /**
  * CST Function to set default
@@ -51,7 +53,6 @@ public class ConstantValueFunction extends AbstractCstFunction {
 	/**
 	 * @see eu.esdihumboldt.cst.transformer.CstFunction#configure(eu.esdihumboldt.cst.align.ICell)
 	 */
-	@Override
 	public boolean configure(ICell cell) {
 		for (IParameter ip : cell.getEntity2().getTransformation().getParameters()) {
 			if (ip.getName().equals(ConstantValueFunction.DEFAULT_VALUE_PARAMETER_NAME)) {
@@ -65,7 +66,6 @@ public class ConstantValueFunction extends AbstractCstFunction {
 	/**
 	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.geotools.feature.FeatureCollection)
 	 */
-	@Override
 	public FeatureCollection<? extends FeatureType, ? extends Feature> transform(
 			FeatureCollection<? extends FeatureType, ? extends Feature> fc) {
 		// TODO Auto-generated method stub
@@ -75,7 +75,6 @@ public class ConstantValueFunction extends AbstractCstFunction {
 	/**
 	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.opengis.feature.Feature, org.opengis.feature.Feature)
 	 */
-	@Override
 	public Feature transform(Feature source, Feature target) {
 		PropertyDescriptor pd = target.getProperty(
 				this.targetProperty.getLocalname()).getDescriptor();
@@ -119,4 +118,13 @@ public class ConstantValueFunction extends AbstractCstFunction {
 		return target;
 	}
 
+	public Cell getParameters() {
+		Cell parameterCell = new Cell();
+		Property entity1 = new Property(new About(""));
+		Property entity2 = new Property(new About(""));
+	
+		parameterCell.setEntity1(entity1);
+		parameterCell.setEntity2(entity2);
+		return parameterCell;
+	}
 }

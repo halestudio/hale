@@ -31,7 +31,9 @@ import org.opengis.feature.type.PropertyDescriptor;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
+import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.rdf.About;
 
 /**
  * This function extracts the date/time from a source string and puts it
@@ -69,10 +71,6 @@ public class DateExtractionFunction extends AbstractCstFunction {
 		
 	}
 
-	/**
-	 * @see AbstractCstFunction#configure(ICell)
-	 */
-	@Override
 	public boolean configure(ICell cell) {
 		for (IParameter ip : cell.getEntity1().getTransformation().getParameters()) {
 			if (ip.getName().equals(DateExtractionFunction.DATE_FORMAT_SOURCE)) {
@@ -94,13 +92,11 @@ public class DateExtractionFunction extends AbstractCstFunction {
 		return true;
 	}
 
-	@Override
 	public FeatureCollection<? extends FeatureType, ? extends Feature> transform(
 			FeatureCollection<? extends FeatureType, ? extends Feature> fc) {
 		return null;
 	}
 
-	@Override
 	public Feature transform(Feature source, Feature target) {
 		//transform date string
 		SimpleDateFormat sdf = new SimpleDateFormat(); 
@@ -136,6 +132,16 @@ public class DateExtractionFunction extends AbstractCstFunction {
 		}
 		
 		return target;
+	}
+	
+	public Cell getParameters() {
+		Cell parameterCell = new Cell();
+		Property entity1 = new Property(new About(""));
+		Property entity2 = new Property(new About(""));
+	
+		parameterCell.setEntity1(entity1);
+		parameterCell.setEntity2(entity2);
+		return parameterCell;
 	}
 
 }

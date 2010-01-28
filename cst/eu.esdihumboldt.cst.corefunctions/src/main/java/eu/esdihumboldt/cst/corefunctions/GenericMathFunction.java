@@ -14,7 +14,6 @@ package eu.esdihumboldt.cst.corefunctions;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +34,12 @@ import com.iabcinc.jmep.hooks.Constant;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
+import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.oml.ext.Parameter;
+import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.rdf.About;
 
 /**
  * FIXME Add Type description.
@@ -74,6 +77,22 @@ public class GenericMathFunction
 		return true;
 	}
 
+	public Cell getParameters() {
+		Cell parameterCell = new Cell();
+		Property entity1 = new Property(new About(""));
+		Property entity2 = new Property(new About(""));
+		
+		List<IParameter> params = new ArrayList<IParameter>();
+		IParameter p = new Parameter(GenericMathFunction.EXPRESSION_PARAMETER_NAME,"String");
+		params.add(p);
+		Transformation t = new Transformation();
+		t.setParameters(params);
+		entity1.setTransformation(t);
+		
+		parameterCell.setEntity1(entity1);
+		parameterCell.setEntity2(entity2);
+		return parameterCell;
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.geotools.feature.FeatureCollection)

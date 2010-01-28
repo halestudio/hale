@@ -17,15 +17,17 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.PropertyImpl;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
+
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
+import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.inspire.data.InspireIdentifier;
 
 /**
@@ -178,6 +180,16 @@ public class IdentifierFunction
 		parameterTypes.put(IdentifierFunction.PRODUCT_PARAMETER_NAME, String.class);
 		parameterTypes.put(IdentifierFunction.VERSION, String.class);
 		
+	}
+	
+	public Cell getParameters() {
+		Cell parameterCell = new Cell();
+		Property entity1 = new Property(new About(""));
+		Property entity2 = new Property(new About(""));
+	
+		parameterCell.setEntity1(entity1);
+		parameterCell.setEntity2(entity2);
+		return parameterCell;
 	}
 
 }

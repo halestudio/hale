@@ -11,20 +11,24 @@
  */
 package eu.esdihumboldt.cst.corefunctions;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.geotools.feature.FeatureCollection;
-import org.geotools.filter.text.cql2.CQL;
-import org.geotools.filter.text.cql2.CQLException;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
+import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.goml.rdf.Resource;
 
 /**
  * CstFunction for attribute renaming, i.e. the copying of attributes of the 
@@ -129,6 +133,20 @@ public class RenameAttributeFunction extends AbstractCstFunction {
 	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
 		parametersTypes.put(OLD_ATTRIBUTE_NAME_PARAMETER, String.class);
 		parametersTypes.put(OLD_ATTRIBUTE_NAME_PARAMETER, String.class);		
+	}
+	
+	public Cell getParameters() {
+		Cell parameterCell = new Cell();
+		Property entity1 = new Property(new About(""));
+		Property entity2 = new Property(new About(""));
+		Transformation t =  new Transformation(
+				new Resource(getClass().getName()));		
+		
+		entity1.setTransformation(t);		
+		
+		parameterCell.setEntity1(entity1);
+		parameterCell.setEntity2(entity2);
+		return parameterCell;
 	}
 	
 }

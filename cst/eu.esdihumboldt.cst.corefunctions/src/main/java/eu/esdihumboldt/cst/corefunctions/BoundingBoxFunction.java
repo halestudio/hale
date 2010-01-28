@@ -38,6 +38,9 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
+import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.rdf.About;
 
 public class BoundingBoxFunction extends AbstractCstFunction {
 	
@@ -68,6 +71,16 @@ public class BoundingBoxFunction extends AbstractCstFunction {
 	@Override
 	protected void setParametersTypes(Map<String, Class<?>> parameters) {
 		//No parameters needed so leaving empty		
+	}
+	
+	public Cell getParameters() {
+		Cell parameterCell = new Cell();
+		Property entity1 = new Property(new About(""));
+		Property entity2 = new Property(new About(""));
+	
+		parameterCell.setEntity1(entity1);
+		parameterCell.setEntity2(entity2);
+		return parameterCell;
 	}
 		
 }
