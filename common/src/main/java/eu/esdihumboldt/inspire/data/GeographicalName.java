@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package main.java.eu.esdihumboldt.inspire.data;
+package eu.esdihumboldt.inspire.data;
 
 import java.util.ArrayList;
 
