@@ -53,31 +53,60 @@ import eu.esdihumboldt.inspire.data.NativenessValue;
  * @version $Id$
  */
 public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
-	
+
+	/**
+	 * constants for the wizard page labels
+	 */
 	private final static String SOURCE_OF_NAME_PROMT = "<enter source if known>";
 
 	private static final String GENDER_NULL_VAUE_MENU_ENTRY = "";
 
 	private static final String NUMBER_NULL_VALUE_MENU_ENTRY = "";
-	
+
+	private static final String LANGUAGE_LABEL_TEXT = "Language";
+
+	private static final String ISO_CODE_ENG = "eng";
+
+	private static final String SOURCE_OF_NAME_LABEL_TEXT = "Source of Name";
+
+	private static final String NAME_STATUS_LABEL_TEXT = "Name Status";
+
+	private static final String NATIVENESS_LABEL_TEXT = "Nativeness";
+
+	private static final String GRAMMATICAL_GENDER_LABEL_TEXT = "Grammatical Gender";
+
+	private static final String GRAMMATICAL_NUMBER_LABEL_TEXT = "Grammatical Number";
+
+	private static final String PRONOUNCIATION_GRPOUP_TEXT = "Pronounciation";
+
+	private static final String SOUNDLINK_LABEL_TEXT = "Soundlink        ";
+
+	private static final String IPA_LABEL_TEXT = "IPA";
+
+	private static final String SPELLING_GROUP_TEXT = "Spelling";
+
+	private static final String SPELLING_TEXT_LABEL_TEXT = "Text";
+
+	private static final String SCRIPT_LABEL_TEXT = "Script";
+
+	private static final String TRANSLITERATION_LABEL_TEXT = "Transliteration";
+
 	private Combo nameSpellingText;
 	private StyledText nameSpellingScript;
 	private StyledText nameSpellingTransliteration;
 	private Text namePronounciationSounds;
 	private StyledText namePronounciationIPA;
-	private StyledText nameLanguageText;	
+	private StyledText nameLanguageText;
 	private StyledText nameSourceText;
 	private Combo nameStatusCombo;
 	private Combo nameNativenessCombo;
 	private Combo nameGenderCombo;
 	private Combo nameNumberCombo;
-	
-	
+
 	private ArrayList<SpellingType> spellings;
 	private SpellingType activeSpelling;
-	
+
 	private String ipa;
-	
 
 	private String language;
 	private String sourceOfName;
@@ -85,8 +114,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 	private String nativeness;
 	private String gender;
 	private String number;
-	
-	
+
 	/**
 	 * @param pageName
 	 * @param title
@@ -121,7 +149,6 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
 				| GridData.HORIZONTAL_ALIGN_FILL));
 
-		
 		composite.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		composite.setFont(parent.getFont());
 
@@ -156,100 +183,98 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		// Language
 		final Label nameLanguageLabel = new Label(configurationComposite,
 				SWT.NONE);
-		nameLanguageLabel.setText("Language");
-		
-		this.nameLanguageText = new StyledText(configurationComposite, SWT.BORDER | SWT.SINGLE);
+		nameLanguageLabel.setText(LANGUAGE_LABEL_TEXT);
+
+		this.nameLanguageText = new StyledText(configurationComposite,
+				SWT.BORDER | SWT.SINGLE);
 		this.nameLanguageText.setLayoutData(configurationLayoutData);
 		String languageCode = null;
-		if(getLanguage()!= null && !getLanguage().equals("")){
+		if (getLanguage() != null && !getLanguage().equals("")) {
 			languageCode = getLanguage();
 			this.nameLanguageText.setCaretOffset(languageCode.length());
-			
-			}
-		else {
-		languageCode = "eng";
+
+		} else {
+			languageCode = ISO_CODE_ENG;
 		}
 		this.nameLanguageText.setText(languageCode);
 		setLanguage(languageCode);
-		
+
 		this.nameLanguageText.setCaretOffset(languageCode.length());
 		this.nameLanguageText.setEnabled(true);
 		this.nameLanguageText.setTabs(0);
 		this.nameLanguageText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e){
+			public void modifyText(ModifyEvent e) {
 				setLanguage(language);
-				
+
 			}
 
-			
 		});
-		
+
 		// Source of Name
 		final Label nameSourceLabel = new Label(configurationComposite,
 				SWT.NONE);
-		nameSourceLabel.setText("Source of Name");
-		this.nameSourceText = new StyledText(configurationComposite, SWT.BORDER | SWT.SINGLE);
+		nameSourceLabel.setText(SOURCE_OF_NAME_LABEL_TEXT);
+		this.nameSourceText = new StyledText(configurationComposite, SWT.BORDER
+				| SWT.SINGLE);
 		this.nameSourceText.setLayoutData(configurationLayoutData);
 		String nameSource = null;
-		if(getSourceOfName()!=null && !getSourceOfName().equals("")){
+		if (getSourceOfName() != null && !getSourceOfName().equals("")) {
 			nameSource = getSourceOfName();
-			
-			
-			}
-		else {
+
+		} else {
 			nameSource = SOURCE_OF_NAME_PROMT;
 		}
-		
-		
+
 		this.nameSourceText.setText(nameSource);
 		setSourceOfName(nameSource);
 		this.nameSourceText.setCaretOffset(nameSource.length());
 		this.nameSourceText.setEnabled(true);
 		this.nameSourceText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e){
-				
-				//if source of name defined by user
-				if (!sourceOfName.equals(SOURCE_OF_NAME_PROMT)){
+			public void modifyText(ModifyEvent e) {
+
+				// if source of name defined by user
+				if (!sourceOfName.equals(SOURCE_OF_NAME_PROMT)) {
 					setSourceOfName(nameSourceText.getText());
 				}
+				// FIXME replace with constant from new commons release
 				setSourceOfName("uknown");
-				
-				
+
 			}
 		});
 		this.nameSourceText.setTabs(0);
-		
 
 		// Name Status
 		final Label nameStatusLabel = new Label(configurationComposite,
 				SWT.NONE);
-		nameStatusLabel.setText("Name Status");
+		nameStatusLabel.setText(NAME_STATUS_LABEL_TEXT);
 		this.nameStatusCombo = new Combo(configurationComposite, SWT.READ_ONLY
 				| SWT.DROP_DOWN);
 		this.nameStatusCombo.setLayoutData(configurationLayoutData);
-		String [] statusItems = new String[] { NameStatusValue.official.name(),
-				NameStatusValue.standardised.name(), NameStatusValue.historical.name(), NameStatusValue.other.name() };
-		
+		String[] statusItems = new String[] { NameStatusValue.official.name(),
+				NameStatusValue.standardised.name(),
+				NameStatusValue.historical.name(), NameStatusValue.other.name() };
+
 		this.nameStatusCombo.setItems(statusItems);
 		int index = 0;
-		if(getNameStatus()!=null){
+		if (getNameStatus() != null) {
 			String status = getNameStatus();
-			for (int i=0;i<statusItems.length;i++){
-				if(status.equals(statusItems[i])){
+			for (int i = 0; i < statusItems.length; i++) {
+				if (status.equals(statusItems[i])) {
 					index = i;
 					break;
-					
+
 				}
 			}
-		}	
-		
+		}
+
 		this.nameStatusCombo.select(index);
 		setNameStatus(nameStatusCombo.getItem(index));
-		
+
 		this.nameStatusCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				setNameStatus(nameStatusCombo.getItem(nameStatusCombo.getSelectionIndex()));
+				setNameStatus(nameStatusCombo.getItem(nameStatusCombo
+						.getSelectionIndex()));
 			}
 
 		});
@@ -257,57 +282,58 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		// Nativeness
 		final Label nativenessLabel = new Label(configurationComposite,
 				SWT.NONE);
-		nativenessLabel.setText("Nativeness");
+		nativenessLabel.setText(NATIVENESS_LABEL_TEXT);
 		this.nameNativenessCombo = new Combo(configurationComposite,
 				SWT.READ_ONLY | SWT.DROP_DOWN);
 		this.nameNativenessCombo.setLayoutData(configurationLayoutData);
-		
-		String [] nativenessItems = new String[]{NativenessValue.endonym.name(), NativenessValue.exonym.name()};
-		this.nameNativenessCombo
-				.setItems(nativenessItems);
+
+		String[] nativenessItems = new String[] {
+				NativenessValue.endonym.name(), NativenessValue.exonym.name() };
+		this.nameNativenessCombo.setItems(nativenessItems);
 		int nativenessIndex = 0;
-		if(getNativeness()!=null){
+		if (getNativeness() != null) {
 			String nativeness = getNativeness();
-			for (int i=0;i<nativenessItems.length;i++){
-				if (nativeness.equals(nativenessItems[i])){
+			for (int i = 0; i < nativenessItems.length; i++) {
+				if (nativeness.equals(nativenessItems[i])) {
 					nativenessIndex = i;
 					break;
 				}
-				
-			
+
+			}
+
 		}
-		
-			
-		}
-		
+
 		this.nameNativenessCombo.select(nativenessIndex);
 		setNativeness(nameNativenessCombo.getItem(nativenessIndex));
 		this.nameNativenessCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				setNativeness(nameNativenessCombo.getItem(nameNativenessCombo.getSelectionIndex()));
+				setNativeness(nameNativenessCombo.getItem(nameNativenessCombo
+						.getSelectionIndex()));
 			}
 
 		});
 
 		// Gramatical Gender
 		final Label genderLabel = new Label(configurationComposite, SWT.NONE);
-		genderLabel.setText("Grammatical Gender");
+		genderLabel.setText(GRAMMATICAL_GENDER_LABEL_TEXT);
 		this.nameGenderCombo = new Combo(configurationComposite, SWT.READ_ONLY
 				| SWT.DROP_DOWN);
 		this.nameGenderCombo.setLayoutData(configurationLayoutData);
-		String [] genderItems =  new String[] {GENDER_NULL_VAUE_MENU_ENTRY, GrammaticalGenderValue.feminine.name(), GrammaticalGenderValue.masculine.name(), GrammaticalGenderValue.common.name()};
+		String[] genderItems = new String[] { GENDER_NULL_VAUE_MENU_ENTRY,
+				GrammaticalGenderValue.feminine.name(),
+				GrammaticalGenderValue.masculine.name(),
+				GrammaticalGenderValue.common.name() };
 		this.nameGenderCombo.setItems(genderItems);
 		int genderIndex = 0;
-		if(getGender()!=null){
-			String gender = getGender(); 
-			for (int i=0;i<genderItems.length;i++){
-				if(gender.equals(genderItems[i])){
+		if (getGender() != null) {
+			String gender = getGender();
+			for (int i = 0; i < genderItems.length; i++) {
+				if (gender.equals(genderItems[i])) {
 					genderIndex = i;
 					break;
 				}
-			
-				
+
 			}
 		}
 		this.nameGenderCombo.select(genderIndex);
@@ -315,30 +341,34 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		this.nameGenderCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				setGender(nameGenderCombo.getItem(nameGenderCombo.getSelectionIndex()));
+				setGender(nameGenderCombo.getItem(nameGenderCombo
+						.getSelectionIndex()));
 			}
 
 		});
 
 		// Gramatical Number
 		final Label numberLabel = new Label(configurationComposite, SWT.NONE);
-		numberLabel.setText("Grammatical Number");
+		numberLabel.setText(GRAMMATICAL_NUMBER_LABEL_TEXT);
 		this.nameNumberCombo = new Combo(configurationComposite, SWT.READ_ONLY
 				| SWT.DROP_DOWN);
 		this.nameNumberCombo.setLayoutData(configurationLayoutData);
-		String [] numberItems = new String []{NUMBER_NULL_VALUE_MENU_ENTRY, GrammaticalNumberValue.singular.name(), GrammaticalNumberValue.dual.name(), GrammaticalNumberValue.plural.name()};
+		String[] numberItems = new String[] { NUMBER_NULL_VALUE_MENU_ENTRY,
+				GrammaticalNumberValue.singular.name(),
+				GrammaticalNumberValue.dual.name(),
+				GrammaticalNumberValue.plural.name() };
 		this.nameNumberCombo.setItems(numberItems);
-		//set default selection
+		// set default selection
 		int numberIndex = 0;
-		if (getNumber()!=null){
+		if (getNumber() != null) {
 			String number = getNumber();
-			for (int i=0; i<numberItems.length; i++){
-				if (number.equals(numberItems[i])){
+			for (int i = 0; i < numberItems.length; i++) {
+				if (number.equals(numberItems[i])) {
 					numberIndex = i;
 					break;
 				}
 			}
-			
+
 		}
 		this.nameNumberCombo.select(numberIndex);
 		setNumber(nameNumberCombo.getItem(numberIndex));
@@ -346,7 +376,8 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		this.nameNumberCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				setNumber(nameNumberCombo.getItem(nameNumberCombo.getSelectionIndex()));
+				setNumber(nameNumberCombo.getItem(nameNumberCombo
+						.getSelectionIndex()));
 			}
 
 		});
@@ -355,7 +386,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 	private void createPronounciationGroup(Composite parent) {
 		// define Pronounciatiation Group composite
 		Group configurationGroup = new Group(parent, SWT.NONE);
-		configurationGroup.setText("Pronounciation");
+		configurationGroup.setText(PRONOUNCIATION_GRPOUP_TEXT);
 		configurationGroup.setLayout(new GridLayout());
 		GridData configurationAreaGD = new GridData(
 				GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL);
@@ -380,12 +411,11 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		pronounciationLayout.marginHeight = 0;
 		configurationComposite.setLayout(pronounciationLayout);
 
-		// Sounds like
+		// Soundlink
 		final Label namePronounciationTextLabel = new Label(
 				configurationComposite, SWT.NONE);
-		namePronounciationTextLabel.setText("Soundlink        ");
-											
-											
+		namePronounciationTextLabel.setText(SOUNDLINK_LABEL_TEXT);
+
 		this.namePronounciationSounds = new Text(configurationComposite,
 				SWT.BORDER);
 		this.namePronounciationSounds.setLayoutData(configurationLayoutData);
@@ -394,38 +424,37 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		// IPA
 		final Label namePronounciatiationIPALabel = new Label(
 				configurationComposite, SWT.NONE);
-		namePronounciatiationIPALabel.setText("IPA");
+		namePronounciatiationIPALabel.setText(IPA_LABEL_TEXT);
 		this.namePronounciationIPA = new StyledText(configurationComposite,
 				SWT.BORDER | SWT.SINGLE);
 		this.namePronounciationIPA.setLayoutData(configurationLayoutData);
 		this.namePronounciationIPA.setEnabled(true);
 		this.namePronounciationIPA.setTabs(0);
 		String ipa = "";
-		if(getIpa()!=null && !getIpa().equals("")){
+		if (getIpa() != null && !getIpa().equals("")) {
 			ipa = getIpa();
-			
+
 		}
 		this.namePronounciationIPA.setText(ipa);
 		setIpa(ipa);
 		this.namePronounciationIPA.setCaretOffset(ipa.length());
-		this.namePronounciationIPA.addModifyListener(new ModifyListener(){
+		this.namePronounciationIPA.addModifyListener(new ModifyListener() {
 
 			@Override
 			public void modifyText(ModifyEvent e) {
 				setIpa(namePronounciationIPA.getText());
-							
+
 			}
-			
+
 		});
-		
-	
+
 	}
 
 	private void createSpellingGroup(Composite parent) {
 
 		// define Spelling Group composite
 		Group configurationGroup = new Group(parent, SWT.NONE);
-		configurationGroup.setText("Spelling");
+		configurationGroup.setText(SPELLING_GROUP_TEXT);
 		configurationGroup.setLayout(new GridLayout());
 		GridData configurationAreaGD = new GridData(
 				GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL);
@@ -453,120 +482,132 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		// Text
 		final Label nameSpellingTextLabel = new Label(configurationComposite,
 				SWT.NONE);
-		nameSpellingTextLabel.setText("Text");
-		this.nameSpellingText = new Combo(configurationComposite, SWT.DROP_DOWN |SWT.READ_ONLY);
+		nameSpellingTextLabel.setText(SPELLING_TEXT_LABEL_TEXT);
+		this.nameSpellingText = new Combo(configurationComposite, SWT.DROP_DOWN
+				| SWT.READ_ONLY);
 		this.nameSpellingText.setLayoutData(configurationLayoutData);
 		this.nameSpellingText.setItems(getItemLocalName());
-		//default set selection to the first element on the list 
+		// default set selection to the first element on the list
 		this.nameSpellingText.select(0);
 		this.nameSpellingText.setEnabled(true);
-		//create a new spelling object and add it to the spellings collection.
-		SpellingType firstSpelling = new SpellingType(this.nameSpellingText.getItem(0));
+		// create a new spelling object and add it to the spellings collection.
+		SpellingType firstSpelling = new SpellingType(this.nameSpellingText
+				.getItem(0));
 		this.getSpellings().add(firstSpelling);
-		//set active spelling
+		// set active spelling
 		this.activeSpelling = firstSpelling;
 		this.nameSpellingText.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				String script = "eng";
+				String script = ISO_CODE_ENG;
 				String transliteration = "";
 				activeSpelling = getActiveSpelling(nameSpellingText.getText());
-				if (activeSpelling.getScript()!=null && !activeSpelling.getScript().equals("")) script = activeSpelling.getScript();
-				if (activeSpelling.getTransliteration()!=null && !activeSpelling.getTransliteration().equals("") ) transliteration = activeSpelling.getTransliteration();
+				if (activeSpelling.getScript() != null
+						&& !activeSpelling.getScript().equals(""))
+					script = activeSpelling.getScript();
+				if (activeSpelling.getTransliteration() != null
+						&& !activeSpelling.getTransliteration().equals(""))
+					transliteration = activeSpelling.getTransliteration();
 				nameSpellingScript.setText(script);
 				nameSpellingScript.setCaretOffset(script.length());
 				nameSpellingTransliteration.setText(transliteration);
-				nameSpellingTransliteration.setCaretOffset(transliteration.length());
-				
-				
-			}
+				nameSpellingTransliteration.setCaretOffset(transliteration
+						.length());
 
+			}
 
 		});
 
 		// Script
 		final Label nameSpellingScriptLabel = new Label(configurationComposite,
 				SWT.NONE);
-		nameSpellingScriptLabel.setText("Script");
+		nameSpellingScriptLabel.setText(SCRIPT_LABEL_TEXT);
 		this.nameSpellingScript = new StyledText(configurationComposite,
 				SWT.BORDER | SWT.SINGLE);
 		this.nameSpellingScript.setLayoutData(configurationLayoutData);
 		this.nameSpellingScript.setEnabled(true);
 		this.nameSpellingScript.setTabs(0);
 		String script = "eng";
-		//read script from the active spelling
-		if (activeSpelling.getScript()!=null) script = activeSpelling.getScript();
-		//set default value for script
+		// read script from the active spelling
+		if (activeSpelling.getScript() != null)
+			script = activeSpelling.getScript();
+		// set default value for script
 		this.nameSpellingScript.setText(script);
 		this.nameSpellingScript.setCaretOffset(script.length());
 		this.nameSpellingScript.addModifyListener(new ModifyListener() {
-			
+
 			@Override
 			public void modifyText(ModifyEvent e) {
 				activeSpelling.setScript(nameSpellingScript.getText());
-				
+
 			}
 		});
-		
+
 		// Transliteration
 		final Label nameSpellingTransliterationLabel = new Label(
 				configurationComposite, SWT.NONE);
-		nameSpellingTransliterationLabel.setText("Transliteration");
+		nameSpellingTransliterationLabel.setText(TRANSLITERATION_LABEL_TEXT);
 		this.nameSpellingTransliteration = new StyledText(
 				configurationComposite, SWT.BORDER | SWT.SINGLE);
 		this.nameSpellingTransliteration.setLayoutData(configurationLayoutData);
 		this.nameSpellingTransliteration.setEnabled(true);
 		this.nameSpellingTransliteration.setTabs(0);
-		//FIXME show default alignments from the existing oml
-		//read script from the active spelling
+		// FIXME show default alignments from the existing oml
+		// read script from the active spelling
 		String transliteration = "";
-		if (activeSpelling.getTransliteration()!=null) transliteration = activeSpelling.getTransliteration();
-		//set default value for transliteration
+		if (activeSpelling.getTransliteration() != null)
+			transliteration = activeSpelling.getTransliteration();
+		// set default value for transliteration
 		this.nameSpellingTransliteration.setText(transliteration);
-		this.nameSpellingTransliteration.setCaretOffset(transliteration.length());
-		this.nameSpellingTransliteration.addModifyListener(new ModifyListener() {
-			
-			@Override
-			public void modifyText(ModifyEvent e) {
-				activeSpelling.setTransliteration(nameSpellingTransliteration.getText());
-				
-			}
-		});
-		
+		this.nameSpellingTransliteration.setCaretOffset(transliteration
+				.length());
+		this.nameSpellingTransliteration
+				.addModifyListener(new ModifyListener() {
+
+					@Override
+					public void modifyText(ModifyEvent e) {
+						activeSpelling
+								.setTransliteration(nameSpellingTransliteration
+										.getText());
+
+					}
+				});
 
 	}
+
 	/**
-	 * extracts local names from the set of the SchemaItem	
+	 * extracts local names from the set of the SchemaItem
+	 * 
 	 * @return String [] schemaItemLocalName
 	 */
 	private String[] getItemLocalName() {
 		Set<SchemaItem> items = getParent().getSourceItems();
-		String [] schemaItemLocalNames = new String [items.size()];
+		String[] schemaItemLocalNames = new String[items.size()];
 		Iterator iterator = items.iterator();
 		SchemaItem item = null;
 		String localName;
 		int i = 0;
-		while(iterator.hasNext()){
-			item = (SchemaItem)iterator.next();
+		while (iterator.hasNext()) {
+			item = (SchemaItem) iterator.next();
 			localName = item.getName().getLocalPart();
 			schemaItemLocalNames[i] = localName;
 			i++;
 		}
-		
+
 		return schemaItemLocalNames;
 	}
 
 	/**
-	 * An inner class for the Geographicalname Spelling attribute 
-	 *
+	 * An inner class for the Geographicalname Spelling attribute
+	 * 
 	 */
 	public class SpellingType {
-		
+
 		/**
-		 * name of the source attribute
-		 * read
+		 * name of the source attribute read
 		 */
 		private final String text;
+
 		/**
 		 * @return the text
 		 */
@@ -574,16 +615,15 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 			return text;
 		}
 
-
 		/**
 		 * script
 		 */
 		private String script;
-		/** 
+		/**
 		 * transliteration schema
 		 */
 		private String transliteration;
-		
+
 		/**
 		 * @return the transliteration
 		 */
@@ -592,7 +632,8 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		}
 
 		/**
-		 * @param transliteration the transliteration to set
+		 * @param transliteration
+		 *            the transliteration to set
 		 */
 		public void setTransliteration(String transliteration) {
 			this.transliteration = transliteration;
@@ -600,9 +641,10 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 
 		/**
 		 * Constructor
+		 * 
 		 * @param text
 		 */
-		public SpellingType(String text){
+		public SpellingType(String text) {
 			this.text = text;
 		}
 
@@ -614,43 +656,43 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		}
 
 		/**
-		 * @param script the script to set
+		 * @param script
+		 *            the script to set
 		 */
 		public void setScript(String script) {
 			this.script = script;
 		}
 
-		
-		}
-	
-	
+	}
+
 	/**
 	 * Returns a spelling assigned to source attribute name
+	 * 
 	 * @param text
 	 * @return
 	 */
 	protected SpellingType getActiveSpelling(String text) {
-		//1. check if the spelling object already exists
+		// 1. check if the spelling object already exists
 		Iterator<SpellingType> iterator = getSpellings().iterator();
 		SpellingType spelling;
 		SpellingType aSpelling = null;
-		while (iterator.hasNext()){
-			
-			spelling = (SpellingType)iterator.next();
-			if (spelling.getText().equals(text)){
+		while (iterator.hasNext()) {
+
+			spelling = (SpellingType) iterator.next();
+			if (spelling.getText().equals(text)) {
 				aSpelling = spelling;
 				break;
 			}
-			
+
 		}
-		//if active spelling does not exist
+		// if active spelling does not exist
 		if (aSpelling == null) {
 			aSpelling = new SpellingType(text);
 			this.spellings.add(aSpelling);
 		}
 		return aSpelling;
 	}
-	
+
 	/**
 	 * @return the ipa
 	 */
@@ -659,7 +701,8 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 	}
 
 	/**
-	 * @param ipa the ipa to set
+	 * @param ipa
+	 *            the ipa to set
 	 */
 	public void setIpa(String ipa) {
 		this.ipa = ipa;
@@ -673,7 +716,8 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 	}
 
 	/**
-	 * @param language the language to set
+	 * @param language
+	 *            the language to set
 	 */
 	public void setLanguage(String language) {
 		this.language = language;
@@ -687,7 +731,8 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 	}
 
 	/**
-	 * @param sourceOfName the sourceOfName to set
+	 * @param sourceOfName
+	 *            the sourceOfName to set
 	 */
 	public void setSourceOfName(String sourceOfName) {
 		this.sourceOfName = sourceOfName;
@@ -701,7 +746,8 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 	}
 
 	/**
-	 * @param nameStatus the nameStatus to set
+	 * @param nameStatus
+	 *            the nameStatus to set
 	 */
 	public void setNameStatus(String nameStatus) {
 		this.nameStatus = nameStatus;
@@ -715,7 +761,8 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 	}
 
 	/**
-	 * @param nativeness the nativeness to set
+	 * @param nativeness
+	 *            the nativeness to set
 	 */
 	public void setNativeness(String nativeness) {
 		this.nativeness = nativeness;
@@ -729,7 +776,8 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 	}
 
 	/**
-	 * @param gender the gender to set
+	 * @param gender
+	 *            the gender to set
 	 */
 	public void setGender(String gender) {
 		this.gender = gender;
@@ -743,7 +791,8 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 	}
 
 	/**
-	 * @param number the number to set
+	 * @param number
+	 *            the number to set
 	 */
 	public void setNumber(String number) {
 		this.number = number;
@@ -757,11 +806,11 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 	}
 
 	/**
-	 * @param spellings the spellings to set
+	 * @param spellings
+	 *            the spellings to set
 	 */
 	public void setSpellings(ArrayList<SpellingType> spellings) {
 		this.spellings = spellings;
 	}
 
-	
 }

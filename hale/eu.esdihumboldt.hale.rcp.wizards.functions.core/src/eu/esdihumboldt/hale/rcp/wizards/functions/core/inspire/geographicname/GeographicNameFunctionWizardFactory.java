@@ -22,11 +22,12 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
 
 /**
- * This is the {@link FunctionWizardFactory} for the {@link GeographicalNameFunction}.
- *
+ * This is the {@link FunctionWizardFactory} for the
+ * {@link GeographicalNameFunction}.
+ * 
  * @author Anna Pitaev
  * @partner 04 / Logica
- * @version $Id$ 
+ * @version $Id$
  */
 public class GeographicNameFunctionWizardFactory implements
 		FunctionWizardFactory {
@@ -36,7 +37,7 @@ public class GeographicNameFunctionWizardFactory implements
 	 */
 	@Override
 	public FunctionWizard createWizard(AlignmentInfo selection) {
-		
+
 		return new GeographicNameFunctionWizard(selection);
 	}
 
@@ -47,37 +48,42 @@ public class GeographicNameFunctionWizardFactory implements
 	public boolean supports(AlignmentInfo selection) {
 		boolean supports = true;
 		// must be at least one source item and exactly one target item
-		if (selection.getSourceItemCount() < 1 || selection.getTargetItemCount() != 1) {
+		if (selection.getSourceItemCount() < 1
+				|| selection.getTargetItemCount() != 1) {
 			return false;
 		}
-		
-		
+
 		SchemaItem target = selection.getFirstTargetItem();
-		if (!target.isAttribute() || !target.getType().equals(TreeObjectType.GEOGRAPHICAl_NAME_ATTRIBUTE)) {
+		if (!target.isAttribute()
+				|| !target.getType().equals(
+						TreeObjectType.GEOGRAPHICAl_NAME_ATTRIBUTE)) {
 			return false;
 		}
-		
+
 		// source items must be properties of the type STRING_ATTRIBUTE
 		for (SchemaItem source : selection.getSourceItems()) {
-			if (!source.isAttribute() || !source.getType().equals(TreeObjectType.STRING_ATTRIBUTE)) {
+			if (!source.isAttribute()
+					|| !source.getType()
+							.equals(TreeObjectType.STRING_ATTRIBUTE)) {
 				return false;
 			}
 		}
-		
+
 		ICell cell = selection.getAlignment(selection.getSourceItems(),
 				selection.getTargetItems());
 		if (cell != null) {
 			// only allow editing matching transformation
 			try {
-				return cell.getEntity1().getTransformation().getService().getLocation().equals(
-						GeographicalNameFunction.class.getName());
+				return cell.getEntity1().getTransformation().getService()
+						.getLocation().equals(
+								GeographicalNameFunction.class.getName());
 			} catch (NullPointerException e) {
 				return false;
 			}
 		}
-		
+
 		return true;
-		
+
 	}
 
 }
