@@ -98,7 +98,8 @@ public class PropertiesDialog extends TitleAreaDialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite page = new Composite(parent, SWT.NONE);
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
-		data.heightHint = 300;
+		data.heightHint = 400;
+		data.widthHint = 600;
 		page.setLayoutData(data);
 		
 		GridLayout pageLayout = new GridLayout(1, false);
@@ -112,7 +113,7 @@ public class PropertiesDialog extends TitleAreaDialog {
 		// description
 		if (definition != null && definition.getDescription() != null) {
 			// text field for description
-			descriptionText = new Text(page, SWT.MULTI | SWT.READ_ONLY);
+			descriptionText = new Text(page, SWT.MULTI | SWT.READ_ONLY | SWT.WRAP);
 			GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 			//gd.heightHint = 100;
 			descriptionText.setLayoutData(gd);
