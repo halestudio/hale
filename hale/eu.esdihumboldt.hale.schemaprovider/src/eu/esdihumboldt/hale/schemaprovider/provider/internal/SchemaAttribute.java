@@ -187,6 +187,7 @@ public class SchemaAttribute extends AttributeDefinition {
 			AttributeTypeBuilder builder = new AttributeTypeBuilder();
 			builder.setBinding(Geometry.class);
 			builder.setName(getTypeName().getLocalPart());
+			builder.setNamespaceURI(getTypeName().getNamespaceURI());
 			builder.setNillable(true);
 			AttributeType attributeType = builder.buildType();
 			
