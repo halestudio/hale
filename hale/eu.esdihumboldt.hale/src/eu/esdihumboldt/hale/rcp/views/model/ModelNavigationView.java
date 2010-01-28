@@ -57,6 +57,8 @@ import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.models.schema.SchemaServiceListener;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.map.style.FeatureTypeStyleAction;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
@@ -78,7 +80,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @version $Id$
  */
 public class ModelNavigationView extends ViewPart implements
-		HaleServiceListener, ISelectionProvider{
+		ISelectionProvider{
 
 	/**
 	 * Context menu contribution
@@ -210,7 +212,31 @@ public class ModelNavigationView extends ViewPart implements
 		// get schema service
 		schemaService = (SchemaService) this.getSite().getService(
 				SchemaService.class);
-		schemaService.addListener(this);
+		schemaService.addListener(new SchemaServiceListener() {
+			
+			@SuppressWarnings("unchecked")
+			@Override
+			public void update(UpdateMessage message) {
+				// ignore
+			}
+			
+			@Override
+			public void schemaChanged(final SchemaType schema) {
+				if (Display.getCurrent() != null) {
+					ModelNavigationView.this.update(schema);
+				}
+				else {
+					final Display display = PlatformUI.getWorkbench().getDisplay();
+					display.syncExec(new Runnable() {
+						
+						@Override
+						public void run() {
+							ModelNavigationView.this.update(schema);
+						}
+					});
+				}
+			}
+		});
 		
 		// register as selection provider
 		getSite().setSelectionProvider(this);
@@ -551,38 +577,32 @@ public class ModelNavigationView extends ViewPart implements
 		}
 	}
 
+	/**
+	 * @see WorkbenchPart#setFocus()
+	 */
 	@Override
 	public void setFocus() {
 
 	}
 
 	/**
-	 * @see HaleServiceListener#update(UpdateMessage)
+	 * Update the viewers on changes to a schema
+	 * 
+	 * @param schema the schema that changed
 	 */
-	@SuppressWarnings("unchecked")
-	public void update(UpdateMessage message) {
-		if (Display.getCurrent() != null) {
-			update();
+	protected void update(SchemaType schema) {
+		switch (schema) {
+		case SOURCE:
+			sourceSchemaViewer.setInput(translateSchema(schemaService
+					.getSourceSchema(), schemaService.getSourceNameSpace()));
+			sourceSchemaViewer.refresh();
+			break;
+		case TARGET:
+			targetSchemaViewer.setInput(translateSchema(schemaService
+					.getTargetSchema(), schemaService.getTargetNameSpace()));
+			targetSchemaViewer.refresh();
+			break;
 		}
-		else {
-			final Display display = PlatformUI.getWorkbench().getDisplay();
-			display.syncExec(new Runnable() {
-				
-				@Override
-				public void run() {
-					update();
-				}
-			});
-		}
-	}
-	
-	private void update() {
-		this.sourceSchemaViewer.setInput(this.translateSchema(schemaService
-				.getSourceSchema(), schemaService.getSourceNameSpace()));
-		this.sourceSchemaViewer.refresh();
-		this.targetSchemaViewer.setInput(this.translateSchema(schemaService
-				.getTargetSchema(), schemaService.getTargetNameSpace()));
-		this.targetSchemaViewer.refresh();
 	}
 
 	/**
