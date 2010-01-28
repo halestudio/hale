@@ -22,8 +22,10 @@
 package eu.esdihumboldt.cst.corefunctions;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.geotools.feature.AttributeImpl;
@@ -76,8 +78,17 @@ public class BoundingBoxFunction extends AbstractCstFunction {
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
 		Property entity1 = new Property(new About(""));
-		Property entity2 = new Property(new About(""));
 	
+		List <String> entity1Types = new ArrayList <String>();
+		entity1Types.add("com.vividsolutions.jts.geom.Geometry.class");
+		entity1.setTypeCondition(entity1Types);
+		
+		Property entity2 = new Property(new About(""));
+
+		List <String> entity2Types = new ArrayList<String>();
+		entity2Types.add("com.vividsolutions.jts.geom.Geometry.class");
+		entity2.setTypeCondition(entity2Types);
+		
 		parameterCell.setEntity1(entity1);
 		parameterCell.setEntity2(entity2);
 		return parameterCell;

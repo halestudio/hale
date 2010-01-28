@@ -138,9 +138,18 @@ public class ClipByRectangleFunction extends AbstractCstFunction{
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();	
 				
-		eu.esdihumboldt.goml.omwg.Property entity1 = 
-			new eu.esdihumboldt.goml.omwg.Property(new About(""));
-	
+		Property entity1 = new Property(new About(""));
+		
+		List <String> entity1Types = new ArrayList <String>();
+		entity1Types.add("com.vividsolutions.jts.geom.Geometry.class");
+		entity1.setTypeCondition(entity1Types);
+		
+		Property entity2 = new Property(new About(""));
+
+		List <String> entity2Types = new ArrayList<String>();
+		entity2Types.add("com.vividsolutions.jts.geom.Geometry.class");
+		entity2.setTypeCondition(entity2Types);
+			
 	
 		Transformation t = new Transformation();
 		List<IParameter> params = new ArrayList<IParameter>(); 
