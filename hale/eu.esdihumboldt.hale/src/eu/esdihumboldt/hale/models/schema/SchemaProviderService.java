@@ -102,7 +102,7 @@ public class SchemaProviderService<T extends SchemaProvider>
 	 */
 	public boolean cleanSourceSchema() {
 		sourceSchema = Schema.EMPTY_SCHEMA;
-		updateListeners();
+		updateListeners(SchemaType.SOURCE);
 		
 		return true;
 	}
@@ -112,7 +112,7 @@ public class SchemaProviderService<T extends SchemaProvider>
 	 */
 	public boolean cleanTargetSchema() {
 		targetSchema = Schema.EMPTY_SCHEMA;
-		updateListeners();
+		updateListeners(SchemaType.TARGET);
 		
 		return true;
 	}
@@ -144,7 +144,7 @@ public class SchemaProviderService<T extends SchemaProvider>
 			targetSchema = schema;
 		}
 		
-		this.updateListeners();
+		this.updateListeners(type);
 		return true;
 	}
 	
@@ -157,10 +157,16 @@ public class SchemaProviderService<T extends SchemaProvider>
 	
 	/**
 	 * Inform {@link HaleServiceListener}s of an update.
+	 * 
+	 * @param schema the schema that was changed
 	 */
 	@SuppressWarnings("unchecked")
-	private void updateListeners() {
+	private void updateListeners(SchemaType schema) {
 		for (HaleServiceListener hsl : this.listeners) {
+			if (hsl instanceof SchemaServiceListener) {
+				((SchemaServiceListener) hsl).schemaChanged(schema);
+			}
+			
 			hsl.update(new UpdateMessage(SchemaService.class, null)); // FIXME
 		}
 	}
