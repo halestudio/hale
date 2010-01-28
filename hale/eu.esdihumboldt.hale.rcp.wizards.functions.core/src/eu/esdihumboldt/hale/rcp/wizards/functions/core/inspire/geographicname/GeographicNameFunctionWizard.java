@@ -123,10 +123,10 @@ public class GeographicNameFunctionWizard extends
 		this.page.setNameStatus(nameStatus);
 		this.page.setNativeness(nativeness);
 		this.page.setNumber(number);
-		this.page.setTransliteration(transliteration);
-		this.page.setText(text);
+		/*this.page.setTransliteration(transliteration);
+		this.page.setText(text);*/
 		this.page.setSourceOfName(sourceOfName);
-		this.page.setScript(script);
+		/*this.page.setScript(script);*/
 
 	}
 
@@ -140,7 +140,7 @@ public class GeographicNameFunctionWizard extends
 		t.setService(new Resource(GeographicalNameFunction.class.getName()));
 		// add parameters
 
-		// text
+		/*// text
 		t.getParameters().add(
 				new Parameter(GeographicalNameFunction.PROPERTY_TEXT, page
 						.getText()));
@@ -152,7 +152,7 @@ public class GeographicNameFunctionWizard extends
 		t.getParameters().add(
 				new Parameter(
 						GeographicalNameFunction.PROPERTY_TRANSLITERATION, page
-								.getTransliteration()));
+								.getTransliteration()));*/
 		// ipa
 		t.getParameters().add(
 				new Parameter(

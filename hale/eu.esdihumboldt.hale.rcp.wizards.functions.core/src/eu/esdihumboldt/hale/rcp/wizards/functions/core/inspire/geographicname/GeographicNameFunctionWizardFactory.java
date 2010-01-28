@@ -48,20 +48,19 @@ public class GeographicNameFunctionWizardFactory implements
 		boolean supports = true;
 		// must be at least one source item and exactly one target item
 		if (selection.getSourceItemCount() < 1 || selection.getTargetItemCount() != 1) {
-			supports = false;
+			return false;
 		}
 		
-		// target item must be a property of the type geometric attribute
-		//FIXME add check for the geographical name type.
+		
 		SchemaItem target = selection.getFirstTargetItem();
 		if (!target.isAttribute() || !target.getType().equals(TreeObjectType.GEOGRAPHICAl_NAME_ATTRIBUTE)) {
-			supports = false;
+			return false;
 		}
 		
 		// source items must be properties of the type STRING_ATTRIBUTE
 		for (SchemaItem source : selection.getSourceItems()) {
 			if (!source.isAttribute() || !source.getType().equals(TreeObjectType.STRING_ATTRIBUTE)) {
-				supports = false;
+				return false;
 			}
 		}
 		
@@ -73,11 +72,11 @@ public class GeographicNameFunctionWizardFactory implements
 				return cell.getEntity1().getTransformation().getService().getLocation().equals(
 						GeographicalNameFunction.class.getName());
 			} catch (NullPointerException e) {
-				supports = false;
+				return false;
 			}
 		}
 		
-		return supports;
+		return true;
 		
 	}
 
