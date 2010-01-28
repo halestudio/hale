@@ -19,6 +19,7 @@ import org.opengis.feature.type.PropertyType;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 
 /**
  * Schema item representing the {@link Entity#NULL_ENTITY}
@@ -122,6 +123,14 @@ public class NullSchemaItem implements SchemaItem {
 	 */
 	@Override
 	public PropertyType getPropertyType() {
+		return null;
+	}
+
+	/**
+	 * @see SchemaItem#getDefinition()
+	 */
+	@Override
+	public Definition getDefinition() {
 		return null;
 	}
 

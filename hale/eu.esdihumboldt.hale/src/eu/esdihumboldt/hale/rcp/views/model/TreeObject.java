@@ -26,7 +26,7 @@ import eu.esdihumboldt.goml.rdf.About;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class TreeObject implements SchemaItem, Comparable<TreeObject> {
+public abstract class TreeObject implements SchemaItem, Comparable<TreeObject> {
 	
 	private final String label;
 	private TreeParent parent;

@@ -14,11 +14,9 @@ package eu.esdihumboldt.hale.rcp.views.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -55,7 +53,6 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.opengis.feature.type.FeatureType;
-import org.opengis.feature.type.PropertyDescriptor;
 
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
@@ -72,8 +69,8 @@ import eu.esdihumboldt.hale.rcp.views.model.filtering.UseAggregationHierarchyAct
 import eu.esdihumboldt.hale.rcp.views.model.filtering.UseFlatHierarchyAction;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.UseInheritanceHierarchyAction;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardContribution;
+import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
-import eu.esdihumboldt.tools.RobustFTKey;
 
 /**
  * This view component handles the display of source and target schemas.
@@ -492,37 +489,11 @@ public class ModelNavigationView extends ViewPart implements
 		TreeParent root = new TreeParent(namespace, null, TreeObjectType.ROOT, null);
 		hidden_root.addChild(root);
 
-		// build the tree of FeatureTypes, starting from those types which
-		// don't have a supertype.
-		Map<RobustFTKey, Set<FeatureType>> typeHierarchy = new HashMap<RobustFTKey, Set<FeatureType>>();
-
-		// first, put all FTs in the Map, with an empty Set of subtypes.
-		for (TypeDefinition ft : schema) {
-			typeHierarchy.put(new RobustFTKey((FeatureType) ft.getType()), new HashSet<FeatureType>());
-		}
-
-		// second, walk all FTs and register them as subtypes to their
-		// supertypes.
-		for (RobustFTKey ftk : typeHierarchy.keySet()) {
-			if (ftk.getFeatureType().getSuper() != null) {
-				Set<FeatureType> subtypes = typeHierarchy.get(new RobustFTKey(
-						(FeatureType) ftk.getFeatureType().getSuper()));
-				if (subtypes != null) {
-					subtypes.add(ftk.getFeatureType());
-					_log.debug("Supertype was added: "
-							+ ftk.getFeatureType().getSuper());
-				} else {
-					_log.warn("Subtypes-Set was null. Supertype should have "
-							+ "been added, but wasn't, probably because of an "
-							+ "unstable Feature Name + Namespace.");
-				}
-			}
-		}
 		// finally, build the tree, starting with those types that don't have
 		// supertypes.
-		for (RobustFTKey ftk : typeHierarchy.keySet()) {
-			if (ftk.getFeatureType().getSuper() == null) {
-				root.addChild(this.buildSchemaTree(ftk, typeHierarchy));
+		for (TypeDefinition type : schema) {
+			if (type.getSuperType() == null && hasNamespaceChild(type, namespace)) {
+				root.addChild(this.buildSchemaTree(type, namespace));
 			}
 		}
 
@@ -532,27 +503,55 @@ public class ModelNavigationView extends ViewPart implements
 	}
 	
 	/**
+	 * Determines if the given type has a subtype in the given namespace
+	 * 
+	 * @param type the type definition
+	 * @param namespace the namespace
+	 * 
+	 * @return if there is a subtype with the given namespace
+	 */
+	private boolean hasNamespaceChild(TypeDefinition type, String namespace) {
+		if (type.getName().getNamespaceURI().equals(namespace)) {
+			return true;
+		}
+		else {
+			for (TypeDefinition child : type.getSubTypes()) {
+				if (hasNamespaceChild(child, namespace)) {
+					return true;
+				}
+			}
+			
+			return false;
+		}
+	}
+
+	/**
 	 * Recursive method for setting up the inheritance tree.
 	 * 
-	 * @param ftk
-	 *            a {@link RobustFTKey} identifying the type to start the 
-	 *            hierarchy from.
-	 * @param typeHierarchy
-	 *            the Map containing all subtypes for all FTs.
-	 * @return a {@link TreeObject} that contains all Properties and all
+	 * @param type the type definition
+	 * @param namespace the namespace
+	 * @return a {@link SchemaItem} that contains all Properties and all
 	 *         subtypes and their property, starting with the given FT.
 	 */
-	private TreeObject buildSchemaTree(RobustFTKey ftk,
-			Map<RobustFTKey, Set<FeatureType>> typeHierarchy) {
-		FeatureTypeItem featureItem = new FeatureTypeItem(ftk.getFeatureType());
+	private TreeObject buildSchemaTree(TypeDefinition type, String namespace) {
+		TypeItem featureItem = new TypeItem(type);
 		
 		// add properties
-		addProperties(featureItem, ftk.getFeatureType());
+		addProperties(featureItem, type);
+		
+		// add super type properties
+		TypeDefinition superType = type.getSuperType();
+		while (superType != null) {
+			addProperties(featureItem, superType);
+			
+			superType = superType.getSuperType();
+		}
 		
 		// add children recursively
-		for (FeatureType ft : typeHierarchy.get(ftk)) {
-			featureItem.addChild(this.buildSchemaTree(new RobustFTKey(ft),
-					typeHierarchy));
+		for (TypeDefinition subType : type.getSubTypes()) {
+			if (hasNamespaceChild(subType, namespace)) {
+				featureItem.addChild(buildSchemaTree(subType, namespace));
+			}
 		}
 		return featureItem;
 	}
@@ -561,17 +560,17 @@ public class ModelNavigationView extends ViewPart implements
 	 * Add properties of the given feature type to the given tree parent
 	 * 
 	 * @param parent the tree parent
-	 * @param featureType the feature type
+	 * @param type the type definition
 	 */
-	private static void addProperties(TreeParent parent, FeatureType featureType) {
-		for (PropertyDescriptor pd : featureType.getDescriptors()) {
-			PropertyItem property = new PropertyItem(pd);
-			
-			if (pd.getType() instanceof FeatureType) {
-				addProperties(property, (FeatureType) pd.getType());
+	private static void addProperties(TreeParent parent, TypeDefinition type) {
+		for (AttributeDefinition attribute : type.getDeclaredAttributes()) {
+			if (attribute.getAttributeType() != null) { // only properties with an associated type
+				AttributeItem property = new AttributeItem(attribute);
+				
+				addProperties(property, attribute.getAttributeType());
+				
+				parent.addChild(property);
 			}
-			
-			parent.addChild(property);
 		}
 	}
 

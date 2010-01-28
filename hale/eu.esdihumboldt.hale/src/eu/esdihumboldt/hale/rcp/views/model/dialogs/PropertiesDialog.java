@@ -31,14 +31,14 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.opengis.feature.type.PropertyDescriptor;
 
 import eu.esdihumboldt.hale.rcp.utils.EntityHelper;
 import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNodeLabelProvider;
-import eu.esdihumboldt.hale.rcp.views.model.PropertyItem;
+import eu.esdihumboldt.hale.rcp.views.model.AttributeItem;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.schemaprovider.EnumAttributeType;
+import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 
 /**
  * Dialog showing the properties of a schema item
@@ -155,8 +155,8 @@ public class PropertiesDialog extends TitleAreaDialog {
 			nodes.add(type);
 		}
 		
-		if (item instanceof PropertyItem) {
-			PropertyDescriptor property = ((PropertyItem) item).getPropertyDescriptor();
+		if (item instanceof AttributeItem) {
+			AttributeDefinition property = ((AttributeItem) item).getAttributeDefinition();
 			
 			// nillable
 			MultiColumnTreeNode nillable = new MultiColumnTreeNode("Nillable", 

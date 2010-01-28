@@ -18,6 +18,7 @@ import org.opengis.feature.type.PropertyType;
 
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 
 /**
  * @author Simon Templer
@@ -53,6 +54,13 @@ public interface SchemaItem {
 	 * @return the name
 	 */
 	public abstract Name getName();
+	
+	/**
+	 * Get the corresponding definition
+	 * 
+	 * @return the definition
+	 */
+	public Definition getDefinition();
 	
 	/**
 	 * Get the item's children

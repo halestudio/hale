@@ -22,6 +22,8 @@ import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 /**
  * Represents a type definition
  *
@@ -29,7 +31,7 @@ import org.opengis.feature.type.Name;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class TypeDefinition implements Comparable<TypeDefinition>,
+public class TypeDefinition extends AbstractDefinition implements Comparable<TypeDefinition>,
 	Definition {
 	
 	/**
@@ -201,6 +203,10 @@ public class TypeDefinition implements Comparable<TypeDefinition>,
 				AttributeDescriptor desc = attribute.createAttributeDescriptor();
 				if (desc != null) {
 					builder.add(desc);
+					
+					if (Geometry.class.isAssignableFrom(desc.getType().getBinding())) {
+						builder.setDefaultGeometry(desc.getName().getLocalPart());
+					}
 				}
 			}
 			

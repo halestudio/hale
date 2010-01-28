@@ -19,20 +19,22 @@ package eu.esdihumboldt.hale.schemaprovider.model;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public interface Definition {
+public abstract class AbstractDefinition implements Definition {
+
+	private String description = null;
 	
 	/**
-	 * Get the definitions identifier
-	 * 
-	 * @return the unique name of the definition
+	 * @see Definition#getDescription()
 	 */
-	public String getIdentifier();
-	
+	public String getDescription() {
+		return description;
+	}
+
 	/**
-	 * Get the description
-	 *  
-	 * @return the description string or <code>null</code>
+	 * @param description the description to set
 	 */
-	public abstract String getDescription();
+	protected void setDescription(String description) {
+		this.description = description;
+	}
 
 }

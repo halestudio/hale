@@ -12,7 +12,9 @@
 
 package eu.esdihumboldt.hale.schemaprovider.model;
 
+import org.geotools.feature.AttributeTypeBuilder;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.Name;
 
 /**
@@ -22,8 +24,8 @@ import org.opengis.feature.type.Name;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public abstract class AttributeDefinition implements Comparable<AttributeDefinition>,
-	Definition {
+public abstract class AttributeDefinition extends AbstractDefinition implements 
+	Comparable<AttributeDefinition>, Definition {
 	
 	private final String name;
 	
@@ -32,7 +34,7 @@ public abstract class AttributeDefinition implements Comparable<AttributeDefinit
 	private TypeDefinition attributeType;
 	
 	private TypeDefinition declaringType;
-
+	
 	/**
 	 * Create an attribute definition
 	 * 
@@ -82,7 +84,27 @@ public abstract class AttributeDefinition implements Comparable<AttributeDefinit
 	 * @return the attributeType
 	 */
 	public TypeDefinition getAttributeType() {
+		if (attributeType == null) {
+			AttributeType type = createAttributeType();
+			attributeType = new TypeDefinition(typeName, type, null);
+			setDescription("Generated empty attribute type");
+			//XXX log message?
+		}
+		
 		return attributeType;
+	}
+
+	/**
+	 * Create an attribute type if none was set
+	 * 
+	 * @return the atrribute type 
+	 */
+	protected AttributeType createAttributeType() {
+		AttributeTypeBuilder builder = new AttributeTypeBuilder();
+		builder.setName(typeName.getLocalPart());
+		builder.setNamespaceURI(typeName.getNamespaceURI());
+		builder.setBinding(Void.class);
+		return builder.buildType();
 	}
 
 	/**
@@ -172,4 +194,19 @@ public abstract class AttributeDefinition implements Comparable<AttributeDefinit
 		}
 	}
 
+	/**
+	 * @return if the attribute is nillable
+	 */
+	public abstract boolean isNillable();
+	
+	/**
+	 * @return the minOccurs
+	 */
+	public abstract long getMinOccurs();
+
+	/**
+	 * @return the maxOccurs
+	 */
+	public abstract long getMaxOccurs();
+	
 }

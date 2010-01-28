@@ -53,6 +53,12 @@ public class SchemaAttribute extends AttributeDefinition {
 	
 	private static final GMLSchema gmlSchema = new GMLSchema();
 	
+	private final boolean nillable;
+	
+	private final long minOccurs;
+	
+	private final long maxOccurs;
+	
 	//private final XmlSchemaElement element;
 
 	/**
@@ -72,6 +78,18 @@ public class SchemaAttribute extends AttributeDefinition {
 		super(name, typeName, null);
 		
 		//this.element = element;
+		
+		nillable = element.isNillable(); //XXX correct?
+		minOccurs = element.getMinOccurs(); //XXX correct?
+		maxOccurs = element.getMaxOccurs(); //XXX correct?
+		
+		if (element.getAnnotation() != null) {
+			XmlSchemaObjectCollection annotationItems = element.getAnnotation().getItems();
+			for (int i = 0; i < annotationItems.getCount(); i++) {
+				XmlSchemaObject item = annotationItems.getItem(i);
+				item.getLineNumber();
+			}
+		}
 		
 		if (declaringType != null) {
 			// set the declaring type
@@ -156,9 +174,9 @@ public class SchemaAttribute extends AttributeDefinition {
 			return new AttributeDescriptorImpl(
 					getAttributeType().getType(),
 					new NameImpl(parentName.getNamespaceURI() + "/" + parentName.getLocalPart(), getName()),
-					0, //TODO
-					0, //TODO
-					true, // FIXME nillable determination?
+					(int) minOccurs,
+					(int) maxOccurs,
+					true, // always nillable, else creating the features fails
 					null); 
 		}
 		else {
@@ -252,6 +270,30 @@ public class SchemaAttribute extends AttributeDefinition {
 		else {
 			return null;
 		}
+	}
+
+	/**
+	 * @see AttributeDefinition#getMaxOccurs()
+	 */
+	@Override
+	public long getMaxOccurs() {
+		return maxOccurs;
+	}
+
+	/**
+	 * @see AttributeDefinition#getMinOccurs()
+	 */
+	@Override
+	public long getMinOccurs() {
+		return minOccurs;
+	}
+
+	/**
+	 * @see AttributeDefinition#isNillable()
+	 */
+	@Override
+	public boolean isNillable() {
+		return nillable;
 	}
 	
 }

@@ -17,6 +17,8 @@ import java.util.TreeSet;
 import org.opengis.feature.type.Name;
 import org.opengis.feature.type.PropertyType;
 
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+
 
 /**
  * A special TreeObject which is a parent of other TreeObjects.
@@ -80,5 +82,13 @@ public class TreeParent extends TreeObject{
 	@Override
 	public boolean hasChildren() {
 		return children.size() >0 ;
+	}
+
+	/**
+	 * @see SchemaItem#getDefinition()
+	 */
+	@Override
+	public Definition getDefinition() {
+		return null;
 	}
 }

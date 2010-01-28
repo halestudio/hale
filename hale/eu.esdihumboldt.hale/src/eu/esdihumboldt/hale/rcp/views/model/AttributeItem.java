@@ -16,8 +16,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
-import org.opengis.feature.type.PropertyDescriptor;
+import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.PropertyType;
+
+import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 
 /**
  * Schema item representing a property
@@ -26,36 +29,36 @@ import org.opengis.feature.type.PropertyType;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class PropertyItem extends TreeParent {
+public class AttributeItem extends TreeParent {
 	
-	private final PropertyDescriptor propertyDescriptor;
+	private final AttributeDefinition attributeDefinition;
 
 	/**
 	 * Creates a property item
 	 * 
-	 * @param propertyDescriptor the feature type
+	 * @param attribute the attribute definition
 	 */
-	public PropertyItem(PropertyDescriptor propertyDescriptor) {
+	public AttributeItem(AttributeDefinition attribute) {
 		super(
-				propertyDescriptor.getName().getLocalPart() + ":<" +
-					propertyDescriptor.getType().getName().getLocalPart() + ">", 
-				propertyDescriptor.getName(), 
-				determineType(propertyDescriptor), 
-				propertyDescriptor.getType());
+				attribute.getName() + ":<" +
+					attribute.getTypeName().getLocalPart() + ">", 
+				new NameImpl(attribute.getDeclaringType().getIdentifier(), attribute.getName()), 
+				determineType(attribute), 
+				attribute.getAttributeType().getType());
 		
-		this.propertyDescriptor = propertyDescriptor;
+		this.attributeDefinition = attribute;
 	}
 
 	/**
 	 * Determine the {@link TreeObject.TreeObjectType} for a property
 	 *   descriptor
 	 * 
-	 * @param pd the property descriptor
+	 * @param attribute the attribute definition
 	 * 
 	 * @return the tree object type
 	 */
-	private static TreeObjectType determineType(PropertyDescriptor pd) {
-		PropertyType type = pd.getType();
+	private static TreeObjectType determineType(AttributeDefinition attribute) {
+		PropertyType type = attribute.getAttributeType().getType();
 		Class<?> binding = type.getBinding();
 		
 		if (type.toString().matches("^.*?GMLComplexTypes.*")) {
@@ -87,12 +90,12 @@ public class PropertyItem extends TreeParent {
 			return TreeObjectType.STRING_ATTRIBUTE; //TODO new attribute type?
 		}
 		// default geometry attribute
-		else if (pd.getName().getLocalPart().equalsIgnoreCase("geometry") ||
-				pd.getName().getLocalPart().equalsIgnoreCase("the_geom")) {
+		else if (attribute.getName().equalsIgnoreCase("geometry") ||
+				attribute.getName().equalsIgnoreCase("the_geom")) {
 			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
 		}
 		// default geographical name attribute
-		else if (pd.getName().getLocalPart().equalsIgnoreCase("geographicalname")) {
+		else if (attribute.getName().equalsIgnoreCase("geographicalname")) {
 			return TreeObjectType.GEOGRAPHICAl_NAME_ATTRIBUTE;
 		}
 		else if (Arrays.asList(type.getClass().getInterfaces())
@@ -120,10 +123,18 @@ public class PropertyItem extends TreeParent {
 	}
 
 	/**
-	 * @return the propertyDescriptor
+	 * @return the attributeDefinition
 	 */
-	public PropertyDescriptor getPropertyDescriptor() {
-		return propertyDescriptor;
+	public AttributeDefinition getAttributeDefinition() {
+		return attributeDefinition;
+	}
+
+	/**
+	 * @see SchemaItem#getDefinition()
+	 */
+	@Override
+	public Definition getDefinition() {
+		return attributeDefinition;
 	}
 
 }

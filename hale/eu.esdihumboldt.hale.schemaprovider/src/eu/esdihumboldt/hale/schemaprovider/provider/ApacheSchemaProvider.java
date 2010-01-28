@@ -92,14 +92,14 @@ public class ApacheSchemaProvider
 				XmlSchemaObject object = sequence.getItems().getItem(j);
 				if (object instanceof XmlSchemaElement) {
 					XmlSchemaElement element = (XmlSchemaElement)object;										
-					Name attributeName = null;
+					Name attributeTypeName = null;
 					if (element.getSchemaTypeName() != null) {
-						attributeName = new NameImpl(
+						attributeTypeName = new NameImpl(
 							element.getSchemaTypeName().getNamespaceURI(),
 							element.getSchemaTypeName().getLocalPart());
 					}
 					else if (element.getRefName() != null) {
-						attributeName = new NameImpl(
+						attributeTypeName = new NameImpl(
 							element.getRefName().getNamespaceURI(),
 							element.getRefName().getLocalPart());
 					}
@@ -118,7 +118,7 @@ public class ApacheSchemaProvider
 								}
 								
 								if (qname != null) {
-									attributeName = new NameImpl(
+									attributeTypeName = new NameImpl(
 											qname.getNamespaceURI(),
 											qname.getLocalPart());
 								}
@@ -155,19 +155,19 @@ public class ApacheSchemaProvider
 						}
 						else if (element.getSchemaType() instanceof XmlSchemaSimpleType) {
 							QName qname = element.getQName();
-							attributeName = new NameImpl(
+							attributeTypeName = new NameImpl(
 									qname.getNamespaceURI(),
 									qname.getLocalPart());
 						}
 					}
-					if (attributeName == null) {
+					if (attributeTypeName == null) {
 						_log.warn("Schema type name is null! " + element.getName());
 					}
 					else {
 						attributeResults.add(new SchemaAttribute(
 								typeDef,
 								element.getName(), 
-								attributeName, 
+								attributeTypeName, 
 								element,
 								featureTypes,
 								importedFeatureTypes));
