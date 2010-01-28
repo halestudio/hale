@@ -22,7 +22,7 @@ import org.opengis.feature.type.Name;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public abstract class AttributeDefinition {
+public abstract class AttributeDefinition implements Comparable<AttributeDefinition> {
 	
 	private final String name;
 	
@@ -96,6 +96,67 @@ public abstract class AttributeDefinition {
 	 */
 	public void setAttributeType(TypeDefinition attributeType) {
 		this.attributeType = attributeType;
+	}
+
+	/**
+	 * @see Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((declaringType == null) ? 0 : declaringType.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	/**
+	 * @see Object#equals(Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AttributeDefinition other = (AttributeDefinition) obj;
+		if (declaringType == null) {
+			if (other.declaringType != null)
+				return false;
+		} else if (!declaringType.equals(other.declaringType))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
+
+	/**
+	 * @see Comparable#compareTo(Object)
+	 */
+	public int compareTo(AttributeDefinition other) {
+		int result = name.compareToIgnoreCase(other.name);
+		if (result == 0) {
+			if (declaringType == null && other.declaringType == null) {
+				return 0;
+			}
+			else if (declaringType == null) {
+				return 1;
+			}
+			else if (other.declaringType == null) {
+				return -1;
+			}
+			else {
+				return declaringType.compareTo(other.declaringType);
+			}
+		}
+		
+		return result;
 	}
 
 }

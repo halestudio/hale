@@ -12,8 +12,8 @@
 
 package eu.esdihumboldt.hale.schemaprovider.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -29,7 +29,7 @@ import org.opengis.feature.type.Name;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class TypeDefinition {
+public class TypeDefinition implements Comparable<TypeDefinition> {
 	
 	/**
 	 * The type name
@@ -47,6 +47,11 @@ public class TypeDefinition {
 	private final TypeDefinition superType;
 	
 	/**
+	 * The subtypes
+	 */
+	private final SortedSet<TypeDefinition> subTypes = new TreeSet<TypeDefinition>();
+	
+	/**
 	 * If the type is abstract
 	 */
 	private boolean abstractType = false; 
@@ -54,7 +59,7 @@ public class TypeDefinition {
 	/**
 	 * The list of declared attributes
 	 */
-	private final List<AttributeDefinition> declaredAttributes = new ArrayList<AttributeDefinition>();
+	private final SortedSet<AttributeDefinition> declaredAttributes = new TreeSet<AttributeDefinition>();
 
 	/**
 	 * Create a new type definition
@@ -69,6 +74,10 @@ public class TypeDefinition {
 		this.name = name;
 		this.type = type;
 		this.superType = superType;
+		
+		if (superType != null) {
+			superType.subTypes.add(this);
+		}
 	}
 	
 	/**
@@ -215,7 +224,7 @@ public class TypeDefinition {
 	/**
 	 * @return the declaredAttributes
 	 */
-	public List<AttributeDefinition> getDeclaredAttributes() {
+	public Iterable<AttributeDefinition> getDeclaredAttributes() {
 		return declaredAttributes;
 	}
 
@@ -231,6 +240,56 @@ public class TypeDefinition {
 	 */
 	public void setAbstract(boolean abstractType) {
 		this.abstractType = abstractType;
+	}
+
+	/**
+	 * @return the subTypes
+	 */
+	public Iterable<TypeDefinition> getSubTypes() {
+		return subTypes;
+	}
+
+	/**
+	 * @see Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	/**
+	 * @see Object#equals(Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TypeDefinition other = (TypeDefinition) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
+
+	/**
+	 * @see Comparable#compareTo(Object)
+	 */
+	public int compareTo(TypeDefinition other) {
+		int result = name.getLocalPart().compareToIgnoreCase(other.name.getLocalPart());
+		if (result == 0) {
+			return name.getNamespaceURI().compareToIgnoreCase(other.name.getNamespaceURI());
+		}
+		
+		return result;
 	}
 
 }
