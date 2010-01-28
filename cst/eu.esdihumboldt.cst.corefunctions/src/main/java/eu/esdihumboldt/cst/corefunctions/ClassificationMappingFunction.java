@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.cst.corefunctions;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -216,6 +217,7 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 
 		List<IValueExpression> valueExpressions = new ArrayList<IValueExpression>();
 		Restriction r = new Restriction(valueExpressions);
+		r.setSeq(new BigInteger("1"));
 
 		List<Restriction> valueConditions = new ArrayList<Restriction>();
 		valueConditions.add(r);
@@ -225,10 +227,12 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 
 		List<IValueExpression> valueExpressions2 = new ArrayList<IValueExpression>();
 		Restriction r2 = new Restriction(valueExpressions2);
+		r2.setSeq(new BigInteger("1"));
+		
 		List<Restriction> valueConditions2 = new ArrayList<Restriction>();
 		valueConditions2.add(r2);
 		entity2.setValueCondition(valueConditions2);
-
+		
 		parameterCell.setEntity1(entity1);
 		parameterCell.setEntity2(entity2);
 		return parameterCell;
