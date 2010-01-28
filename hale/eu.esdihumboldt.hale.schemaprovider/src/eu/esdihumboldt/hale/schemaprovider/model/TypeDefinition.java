@@ -29,7 +29,8 @@ import org.opengis.feature.type.Name;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class TypeDefinition implements Comparable<TypeDefinition> {
+public class TypeDefinition implements Comparable<TypeDefinition>,
+	Definition {
 	
 	/**
 	 * The type name
@@ -290,6 +291,13 @@ public class TypeDefinition implements Comparable<TypeDefinition> {
 		}
 		
 		return result;
+	}
+
+	/**
+	 * @see Definition#getIdentifier()
+	 */
+	public String getIdentifier() {
+		return name.getNamespaceURI() + "/" + name.getLocalPart();
 	}
 
 }

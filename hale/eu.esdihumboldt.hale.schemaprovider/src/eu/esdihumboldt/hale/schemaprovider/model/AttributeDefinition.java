@@ -22,7 +22,8 @@ import org.opengis.feature.type.Name;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public abstract class AttributeDefinition implements Comparable<AttributeDefinition> {
+public abstract class AttributeDefinition implements Comparable<AttributeDefinition>,
+	Definition {
 	
 	private final String name;
 	
@@ -157,6 +158,18 @@ public abstract class AttributeDefinition implements Comparable<AttributeDefinit
 		}
 		
 		return result;
+	}
+
+	/**
+	 * @see Definition#getIdentifier()
+	 */
+	public String getIdentifier() {
+		if (declaringType == null) {
+			return name;
+		}
+		else {
+			return declaringType.getIdentifier() + "/" + name;
+		}
 	}
 
 }
