@@ -12,9 +12,11 @@
 
 package eu.esdihumboldt.cst.corefunctions;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.geotools.feature.AttributeImpl;
@@ -39,6 +41,8 @@ import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
 import eu.esdihumboldt.cst.transformer.exceptions.SpatialTypeNotSupportedException;
 import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.oml.ext.Parameter;
+import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 
@@ -211,20 +215,32 @@ public class SpatialTypeConversionFunction extends AbstractCstFunction {
 		return true;
 	}
 
+	public Cell getParameters() {
+		Cell parameterCell = new Cell();	
+		Property entity1 = new Property(new About(""));
+		Property entity2 = new Property(new About(""));
+	
+		Transformation t = new Transformation();
+		List<IParameter> params = new ArrayList<IParameter>(); 
+			
+		Parameter p_to   = 
+			new Parameter(SpatialTypeConversionFunction.TO  ,"com.vividsolutions.jts.geom.Geometry");
+		Parameter p_from = 
+			new Parameter(SpatialTypeConversionFunction.FROM,"com.vividsolutions.jts.geom.Geometry");
+		
+		params.add(p_to);
+		params.add(p_from);
+		t.setParameters(params);
+		entity1.setTransformation(t);
+		parameterCell.setEntity1(entity1);
+		parameterCell.setEntity2(entity2);
+		return parameterCell;
+	}
+	
 	@Override
 	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
 		parametersTypes.put(SpatialTypeConversionFunction.FROM, Geometry.class);
 		parametersTypes.put(SpatialTypeConversionFunction.TO, Geometry.class);
 		
 	}
-	public Cell getParameters() {
-		Cell parameterCell = new Cell();
-		Property entity1 = new Property(new About(""));
-		Property entity2 = new Property(new About(""));
-	
-		parameterCell.setEntity1(entity1);
-		parameterCell.setEntity2(entity2);
-		return parameterCell;
-	}
-	
 }
