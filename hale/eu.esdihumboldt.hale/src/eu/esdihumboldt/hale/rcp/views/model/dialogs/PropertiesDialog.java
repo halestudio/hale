@@ -98,7 +98,6 @@ public class PropertiesDialog extends TitleAreaDialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite page = new Composite(parent, SWT.NONE);
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
-		data.heightHint = 400;
 		data.widthHint = 600;
 		page.setLayoutData(data);
 		
@@ -121,7 +120,9 @@ public class PropertiesDialog extends TitleAreaDialog {
 		}
 		
 		Composite treeComposite = new Composite(page, SWT.NONE);
-		treeComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		GridData tgd = new GridData(SWT.FILL, SWT.FILL, true, true);
+		tgd.heightHint = 250;
+		treeComposite.setLayoutData(tgd);
 		
 		// tree column layout
 		TreeColumnLayout layout = new TreeColumnLayout(); 
