@@ -13,17 +13,23 @@
 package eu.esdihumboldt.cst.corefunctions;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.PropertyImpl;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
+
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.oml.ext.Parameter;
+import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 
@@ -61,6 +67,20 @@ public class ConstantValueFunction extends AbstractCstFunction {
 		}
 		this.targetProperty = (Property) cell.getEntity2();
 		return true;
+	}
+	
+	public Cell getParameters() {
+		Cell parameterCell = new Cell();	
+		Property entity2 = new Property(new About(""));
+	
+		Transformation t = new Transformation();
+		List<IParameter> params = new ArrayList<IParameter>(); 
+		Parameter p = new Parameter(ConstantValueFunction.DEFAULT_VALUE_PARAMETER_NAME,"");
+		params.add(p);
+		t.setParameters(params);
+		entity2.setTransformation(t);
+		parameterCell.setEntity2(entity2);
+		return parameterCell;
 	}
 
 	/**
@@ -118,13 +138,5 @@ public class ConstantValueFunction extends AbstractCstFunction {
 		return target;
 	}
 
-	public Cell getParameters() {
-		Cell parameterCell = new Cell();
-		Property entity1 = new Property(new About(""));
-		Property entity2 = new Property(new About(""));
-	
-		parameterCell.setEntity1(entity1);
-		parameterCell.setEntity2(entity2);
-		return parameterCell;
-	}
+
 }
