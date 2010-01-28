@@ -21,14 +21,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.opengis.feature.type.FeatureType;
-
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.UpdateService;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Implementation of {@link SchemaService}. It uses a {@link SchemaProvider}
@@ -121,15 +120,15 @@ public class SchemaProviderService<T extends SchemaProvider>
 	/**
 	 * @see SchemaService#getSourceSchema()
 	 */
-	public Collection<FeatureType> getSourceSchema() {
-		return sourceSchema.getFeatureTypes();
+	public Collection<TypeDefinition> getSourceSchema() {
+		return sourceSchema.getTypes();
 	}
 
 	/**
 	 * @see SchemaService#getTargetSchema()
 	 */
-	public Collection<FeatureType> getTargetSchema() {
-		return targetSchema.getFeatureTypes();
+	public Collection<TypeDefinition> getTargetSchema() {
+		return targetSchema.getTypes();
 	}
 
 	/**
@@ -197,11 +196,11 @@ public class SchemaProviderService<T extends SchemaProvider>
 	/**
 	 * @see SchemaService#getFeatureTypeByName(String)
 	 */
-	public FeatureType getFeatureTypeByName(String name) {
-		FeatureType result = null;
+	public TypeDefinition getFeatureTypeByName(String name) {
+		TypeDefinition result = null;
 		// handles cases where a full name was given.
 		if (!getSourceNameSpace().equals("") && name.contains(getSourceNameSpace())) {
-			for (FeatureType ft : getSourceSchema()) {
+			for (TypeDefinition ft : getSourceSchema()) {
 				if (ft.getName().getLocalPart().equals(name)) {
 					result = ft;
 					break;
@@ -209,7 +208,7 @@ public class SchemaProviderService<T extends SchemaProvider>
 			}
 		}
 		else if (!getTargetNameSpace().equals("") && name.contains(getTargetNameSpace())) {
-			for (FeatureType ft : getTargetSchema()) {
+			for (TypeDefinition ft : getTargetSchema()) {
 				if (ft.getName().getLocalPart().equals(name)) {
 					result = ft;
 					break;
@@ -218,10 +217,10 @@ public class SchemaProviderService<T extends SchemaProvider>
 		}
 		// handle case where only the local part was given.
 		else {
-			Collection<FeatureType> allFTs = new HashSet<FeatureType>();
+			Collection<TypeDefinition> allFTs = new HashSet<TypeDefinition>();
 			allFTs.addAll(getSourceSchema());
 			allFTs.addAll(getTargetSchema());
-			for (FeatureType ft : allFTs) {
+			for (TypeDefinition ft : allFTs) {
 				if (ft.getName().getLocalPart().equals(name)) {
 					result = ft;
 					break;
@@ -234,7 +233,7 @@ public class SchemaProviderService<T extends SchemaProvider>
 	/**
 	 * @see SchemaService#getSchema(SchemaService.SchemaType)
 	 */
-	public Collection<FeatureType> getSchema(SchemaType schemaType) {
+	public Collection<TypeDefinition> getSchema(SchemaType schemaType) {
 		if (SchemaType.SOURCE.equals(schemaType)) {
 			return getSourceSchema();
 		}

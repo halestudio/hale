@@ -19,4 +19,5 @@ Import-Package: com.vividsolutions.jts.geom,
  org.opengis.filter,
  org.opengis.util
 Export-Package: eu.esdihumboldt.hale.schemaprovider,
+ eu.esdihumboldt.hale.schemaprovider.model,
  eu.esdihumboldt.hale.schemaprovider.provider

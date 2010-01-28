@@ -72,6 +72,7 @@ import eu.esdihumboldt.hale.rcp.views.model.filtering.UseAggregationHierarchyAct
 import eu.esdihumboldt.hale.rcp.views.model.filtering.UseFlatHierarchyAction;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.UseInheritanceHierarchyAction;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardContribution;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.tools.RobustFTKey;
 
 /**
@@ -452,7 +453,7 @@ public class ModelNavigationView extends ViewPart implements
 	 * @return a {@link TreeViewer} with the currently loaded schema.
 	 */
 	private TreeViewer schemaExplorerSetup(Composite modelComposite,
-			Collection<FeatureType> schema, String namespace, final SchemaType viewer) {
+			Collection<TypeDefinition> schema, String namespace, final SchemaType viewer) {
 		PatternFilter patternFilter = new PatternFilter();
 	    final FilteredTree filteredTree = new FilteredTree(modelComposite, SWT.MULTI
 	            | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
@@ -478,7 +479,7 @@ public class ModelNavigationView extends ViewPart implements
 	 * 
 	 * @return the root item
 	 */
-	private SchemaItem translateSchema(Collection<FeatureType> schema, String namespace) {
+	private SchemaItem translateSchema(Collection<TypeDefinition> schema, String namespace) {
 		if (schema == null || schema.size() == 0) {
 			return new TreeParent("", null, TreeObjectType.ROOT, null);
 		}
@@ -496,8 +497,8 @@ public class ModelNavigationView extends ViewPart implements
 		Map<RobustFTKey, Set<FeatureType>> typeHierarchy = new HashMap<RobustFTKey, Set<FeatureType>>();
 
 		// first, put all FTs in the Map, with an empty Set of subtypes.
-		for (FeatureType ft : schema) {
-			typeHierarchy.put(new RobustFTKey(ft), new HashSet<FeatureType>());
+		for (TypeDefinition ft : schema) {
+			typeHierarchy.put(new RobustFTKey((FeatureType) ft.getType()), new HashSet<FeatureType>());
 		}
 
 		// second, walk all FTs and register them as subtypes to their

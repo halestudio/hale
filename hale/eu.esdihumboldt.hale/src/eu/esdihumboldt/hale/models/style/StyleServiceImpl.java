@@ -49,7 +49,7 @@ import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
-import eu.esdihumboldt.hale.rcp.utils.FeatureTypeHelper;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * A default {@link StyleService} implementation that will provide simple styles
@@ -102,9 +102,9 @@ public class StyleServiceImpl
 				
 				while (!queuedStyles.isEmpty()) {
 					FeatureTypeStyle fts = queuedStyles.poll();
-					FeatureType ft = schemaService.getFeatureTypeByName(fts.getFeatureTypeName());
-					if (ft != null) {
-						if (addStyle(ft, fts)) {
+					TypeDefinition ft = schemaService.getFeatureTypeByName(fts.getFeatureTypeName());
+					if (ft != null && ft.getType() != null) {
+						if (addStyle((FeatureType) ft.getType(), fts)) {
 							updateNeeded = true;
 						}
 					}
@@ -195,22 +195,22 @@ public class StyleServiceImpl
 	@SuppressWarnings("deprecation")
 	@Override
 	public Style getStyle(final DatasetType dataset) {
-		Collection<FeatureType> types = (dataset == DatasetType.reference)?(schemaService.getSourceSchema()):(schemaService.getTargetSchema());
+		Collection<TypeDefinition> types = (dataset == DatasetType.reference)?(schemaService.getSourceSchema()):(schemaService.getTargetSchema());
 		
 		if (types == null) {
-			types = new ArrayList<FeatureType>();
+			types = new ArrayList<TypeDefinition>();
 		}
 		
 		Style style = styleFactory.createStyle();
 		
-		for (FeatureType type : types) {
-			if (!FeatureTypeHelper.isAbstract(type) && 
-					!FeatureTypeHelper.isPropertyType(type)) {
+		for (TypeDefinition type : types) {
+			if (!type.isAbstract() && type.isFeatureType()) {
 				// only add styles for non-abstract feature types
+				FeatureType ft = (FeatureType) type.getType();
 				
-				FeatureTypeStyle fts = styles.get(type);
+				FeatureTypeStyle fts = styles.get(ft);
 				if (fts == null) {
-					fts = getDefaultStyle(type);
+					fts = getDefaultStyle(ft);
 				}
 				
 				style.addFeatureTypeStyle(fts);
@@ -277,9 +277,9 @@ public class StyleServiceImpl
 		
 		for (Style style : styles) {
 			for (FeatureTypeStyle fts : style.getFeatureTypeStyles()) {
-				FeatureType ft = schemaService.getFeatureTypeByName(fts.getFeatureTypeName());
-				if (ft != null) {
-					if (addStyle(ft, fts)) {
+				TypeDefinition ft = schemaService.getFeatureTypeByName(fts.getFeatureTypeName());
+				if (ft != null && ft.getType() != null) {
+					if (addStyle((FeatureType) ft.getType(), fts)) {
 						somethingHappened = true;
 					}
 				}

@@ -15,7 +15,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.opengis.feature.type.FeatureType;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Represents a schema
@@ -30,12 +30,12 @@ public class Schema {
 	 * Empty schema instance
 	 */
 	public static final Schema EMPTY_SCHEMA =
-		new Schema(new ArrayList<FeatureType>(), "", null);
+		new Schema(new ArrayList<TypeDefinition>(), "", null);
 	
 	/**
 	 * The feature types
 	 */
-	private final Collection<FeatureType> featureTypes;
+	private final Collection<TypeDefinition> types;
 	
 	/**
 	 * The namespace
@@ -50,14 +50,14 @@ public class Schema {
 	/**
 	 * Constructor
 	 * 
-	 * @param featureTypes the feature type collection
+	 * @param types the type definitions
 	 * @param namespace the namespace
 	 * @param location the location
 	 */
-	public Schema(Collection<FeatureType> featureTypes, String namespace,
+	public Schema(Collection<TypeDefinition> types, String namespace,
 			URL location) {
 		super();
-		this.featureTypes = featureTypes;
+		this.types = types;
 		this.namespace = namespace;
 		this.location = location;
 	}
@@ -65,8 +65,8 @@ public class Schema {
 	/**
 	 * @return the featureTypes
 	 */
-	public Collection<FeatureType> getFeatureTypes() {
-		return featureTypes;
+	public Collection<TypeDefinition> getTypes() {
+		return types;
 	}
 
 	/**

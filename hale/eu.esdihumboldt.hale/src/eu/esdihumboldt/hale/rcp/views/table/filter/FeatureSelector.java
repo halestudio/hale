@@ -54,9 +54,9 @@ import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
-import eu.esdihumboldt.hale.rcp.utils.FeatureTypeHelper;
 import eu.esdihumboldt.hale.rcp.utils.filter.FeatureFilterField;
 import eu.esdihumboldt.hale.rcp.utils.filter.FeatureFilterField.FilterListener;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Selects filtered features
@@ -276,12 +276,12 @@ public class FeatureSelector extends Composite {
 		SchemaType schemaType = (SchemaType) ((IStructuredSelection) schemaTypes.getSelection()).getFirstElement();
 		
 		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-		Collection<FeatureType> types = ss.getSchema(schemaType);
+		Collection<TypeDefinition> types = ss.getSchema(schemaType);
 		
 		List<FeatureType> filteredTypes = new ArrayList<FeatureType>();
-		for (FeatureType type : types) {
-			if (!FeatureTypeHelper.isAbstract(type) && !FeatureTypeHelper.isPropertyType(type)) {
-				filteredTypes.add(type);
+		for (TypeDefinition type : types) {
+			if (!type.isAbstract() && type.isFeatureType()) {
+				filteredTypes.add((FeatureType) type.getType());
 			}
 		}
 		

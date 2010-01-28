@@ -23,7 +23,6 @@ import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
-import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.goml.align.Formalism;
 import eu.esdihumboldt.goml.align.Schema;
@@ -33,6 +32,7 @@ import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.provider.TaskProviderFactory;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * This {@link Wizard} is used to import source and target schemas.
@@ -85,7 +85,7 @@ public class SchemaImportWizard
 			
 			URI uri = getSchemaURI(result);
 			
-			Collection<FeatureType> currentSchema = schemaService.getSchema(mainPage.getSchemaType());
+			Collection<TypeDefinition> currentSchema = schemaService.getSchema(mainPage.getSchemaType());
 			if (currentSchema != null && !currentSchema.isEmpty()) {
 				String info = ((mainPage.getSchemaType() == SchemaType.SOURCE)?("source"):("target"));
 				

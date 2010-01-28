@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -37,7 +36,6 @@ import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaContent;
 import org.apache.ws.commons.schema.XmlSchemaContentModel;
 import org.apache.ws.commons.schema.XmlSchemaElement;
-import org.apache.ws.commons.schema.XmlSchemaEnumerationFacet;
 import org.apache.ws.commons.schema.XmlSchemaExternal;
 import org.apache.ws.commons.schema.XmlSchemaInclude;
 import org.apache.ws.commons.schema.XmlSchemaObject;
@@ -46,27 +44,15 @@ import org.apache.ws.commons.schema.XmlSchemaParticle;
 import org.apache.ws.commons.schema.XmlSchemaSequence;
 import org.apache.ws.commons.schema.XmlSchemaSimpleContentExtension;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
-import org.apache.ws.commons.schema.XmlSchemaSimpleTypeRestriction;
-import org.geotools.feature.AttributeTypeBuilder;
 import org.geotools.feature.NameImpl;
-import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.feature.type.AttributeDescriptorImpl;
-import org.geotools.gml3.GMLSchema;
-import org.geotools.xs.XSSchema;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.AttributeDescriptor;
-import org.opengis.feature.type.AttributeType;
-import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
-import org.opengis.feature.type.PropertyDescriptor;
 
-import com.vividsolutions.jts.geom.Geometry;
-
-import eu.esdihumboldt.hale.schemaprovider.EnumAttributeTypeImpl;
 import eu.esdihumboldt.hale.schemaprovider.HumboldtURIResolver;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.DependencyOrderedList;
+import eu.esdihumboldt.hale.schemaprovider.provider.internal.SchemaAttribute;
 
 /**
  * The main functionality of this class is to load an XML schema file (XSD)
@@ -83,172 +69,22 @@ public class ApacheSchemaProvider
 	implements SchemaProvider {
 	
 	/**
-	 * Represents the definition of an attribute
-	 */
-	private static class AttributeDefinition {
-		/**
-		 * Name of the feature type
-		 */
-		private final String name;
-		private final Name typeName;
-		private final XmlSchemaElement element;
-
-		/**
-		 * Constructor
-		 * 
-		 * @param name the attribute name
-		 * @param typeName the name of the attribute type
-		 * @param element the element defining the attribute
-		 */
-		public AttributeDefinition(String name, Name typeName,
-				XmlSchemaElement element) {
-			super();
-			this.name = name;
-			this.typeName = typeName;
-			this.element = element;
-		}
-		
-		/**
-		 * @return the name
-		 */
-		public String getName() {
-			return name;
-		}
-
-		/**
-		 * @return the typeName
-		 */
-		public Name getTypeName() {
-			return typeName;
-		}
-
-		/**
-		 * @return the element
-		 */
-		public XmlSchemaElement getElement() {
-			return element;
-		}
-		
-	}
-	
-	/**
 	 * The log
 	 */
 	private static Logger _log = Logger.getLogger(ApacheSchemaProvider.class);
-	
-	/**
-	 * Returns the attribute type for an enumeration.
-	 * 
-	 * @param element the defining element
-	 * 
-	 * @return the attribute type or <code>null</code>
-	 */
-	private AttributeType getEnumAttributeType(XmlSchemaElement element) {
-		if (element.getSchemaType() instanceof XmlSchemaSimpleType) {
-			return getEnumAttributeType((XmlSchemaSimpleType) element.getSchemaType(), null);
-		}
-		else {
-			return null;
-		}
-	}
-	
-	/**
-	 * Returns the attribute type for an enumeration.
-	 * 
-	 * @param simpleType the simple type
-	 * @param name the custom type name or <code>null</code>
-	 * 
-	 * @return the attribute type or <code>null</code>
-	 */
-	private AttributeType getEnumAttributeType(XmlSchemaSimpleType simpleType, Name name) {
-		AttributeType type = null;
-		if (simpleType.getContent() instanceof  XmlSchemaSimpleTypeRestriction) {
-			XmlSchemaSimpleTypeRestriction content = (XmlSchemaSimpleTypeRestriction)simpleType.getContent();
-			
-			Name attributeName = new NameImpl(
-					content.getBaseTypeName().getNamespaceURI(),
-					content.getBaseTypeName().getLocalPart());
-			type =  new XSSchema().get(attributeName);
-			
-			List<String> values = new ArrayList<String>();
-			XmlSchemaObjectCollection facets = content.getFacets();
-			for (int i = 0; i < facets.getCount(); i++) {
-				XmlSchemaObject facet = facets.getItem(i);
-				if (facet instanceof XmlSchemaEnumerationFacet) {
-					String value = ((XmlSchemaEnumerationFacet) facet).getValue().toString();
-					values.add(value);
-				}
-			}
-			
-			if (!values.isEmpty()) {
-				type = new EnumAttributeTypeImpl(type, values, name);
-			}
-		}
-		return type;
-	}
-	
-	/**
-	 * Get an attribute type from a feature type map
-	 * 
-	 * @param name the attribute type name
-	 * @param featureTypes the feature type map
-	 * @return the attribute type or <code>null</code> if the corresponding
-	 *   type was not found in the set
-	 */
-	private AttributeType getSchemaAttributeType(Name name, Map<Name, AttributeType> featureTypes) {
-		return featureTypes.get(name);
-	}
-	
-	/**
-	 * Get the attribute type for an attribute definition
-	 * 
-	 * @param attribute the attribute definition
-	 * @param featureTypes the local feature types
-	 * @param importedFeatureTypes the imported feature types
-	 *  
-	 * @return the attribute type, may be <code>null</code> if it could not be
-	 *    resolved
-	 */
-	private AttributeType getAttributeType(AttributeDefinition attribute,
-			Map<Name, AttributeType> featureTypes, Map<Name, AttributeType> importedFeatureTypes) {
-		XSSchema xsSchema = new XSSchema();
-		AttributeType ty = xsSchema.get(attribute.getTypeName());
-			
-		// Try to resolve the attribute bindings
-		
-		if (ty == null) {
-			ty = getSchemaAttributeType(attribute.getTypeName(), featureTypes);
-		}
-		if (ty == null) {
-			ty = getSchemaAttributeType(attribute.getTypeName(), importedFeatureTypes);
-		}
-		
-		if (ty == null) {
-			// Bindings for enumeration types
-			ty = getEnumAttributeType(attribute.getElement());
-		}
-		
-		if (ty == null) {
-			// GML bindings
-			GMLSchema gmlSchema = new GMLSchema();
-			ty = gmlSchema.get(attribute.getTypeName());
-		}
-		if (ty == null ) {
-			_log.warn("Type NOT found: " + attribute.getTypeName().getLocalPart());
-		}
-		
-		return ty;
-	}
-	
+
 	/**
 	 * Extracts attribute definitions from a {@link XmlSchemaParticle}.
 	 * 
+	 * @param typeDef the definition of the declaring type
 	 * @param particle the particle
+	 * @param featureTypes 
+	 * @param importedFeatureTypes 
 	 * 
 	 * @return the list of attribute definitions
 	 */
-	private List<AttributeDefinition> getAttributesFromParticle(XmlSchemaParticle particle) {
-		List<AttributeDefinition> attributeResults = new ArrayList<AttributeDefinition>();
+	private List<SchemaAttribute> getAttributesFromParticle(TypeDefinition typeDef, XmlSchemaParticle particle, Map<Name, TypeDefinition> featureTypes, Map<Name, TypeDefinition> importedFeatureTypes) {
+		List<SchemaAttribute> attributeResults = new ArrayList<SchemaAttribute>();
 		
 		if (particle instanceof XmlSchemaSequence) {
 			XmlSchemaSequence sequence = (XmlSchemaSequence)particle;
@@ -293,15 +129,22 @@ public class ApacheSchemaProvider
 								 * to getAttributesFromParticle just returns the
 								 * base type of the property type
 								 */
-								List<AttributeDefinition> attributes = getAttributesFromParticle(p);
+								List<SchemaAttribute> attributes = getAttributesFromParticle(typeDef, p, featureTypes, importedFeatureTypes);
 								//XXX fix property name
 								if (attributes.size() == 1) {
-									AttributeDefinition org = attributes.get(0);
+									SchemaAttribute org = attributes.get(0);
+									if (org.getDeclaringType() != null) {
+										// remove wrong property
+										org.getDeclaringType().removeDeclaredAttribute(org);
+									}
 									
-									attributeResults.add(new AttributeDefinition(
+									attributeResults.add(new SchemaAttribute(
+											typeDef,
 											element.getName(), 
 											org.getTypeName(), 
-											element));
+											element,
+											featureTypes,
+											importedFeatureTypes));
 								}
 								else {
 									attributeResults.addAll(attributes);
@@ -321,10 +164,13 @@ public class ApacheSchemaProvider
 						_log.warn("Schema type name is null! " + element.getName());
 					}
 					else {
-						attributeResults.add(new AttributeDefinition(
+						attributeResults.add(new SchemaAttribute(
+								typeDef,
 								element.getName(), 
 								attributeName, 
-								element));
+								element,
+								featureTypes,
+								importedFeatureTypes));
 					}
 				}
 			}
@@ -408,12 +254,12 @@ public class ApacheSchemaProvider
 			namespace = "http://www.opengis.net/gml";
 		}
 		
-		Map<Name, AttributeType> types = loadSchema(schema, new HashMap<String, Map<Name, AttributeType>>());
+		Map<Name, TypeDefinition> types = loadSchema(schema, new HashMap<String, Map<Name, TypeDefinition>>());
 		
-		List<FeatureType> featureTypes = new ArrayList<FeatureType>();
-		for (AttributeType type : types.values()) {
-			if (type instanceof FeatureType) {
-				featureTypes.add((FeatureType) type);
+		List<TypeDefinition> featureTypes = new ArrayList<TypeDefinition>();
+		for (TypeDefinition type : types.values()) {
+			if (type.isComplexType()) {
+				featureTypes.add(type);
 			}
 		}
 		
@@ -428,7 +274,7 @@ public class ApacheSchemaProvider
 	 *   loaded or where loading has been started
 	 * @return the map of feature type names and types
 	 */
-	protected Map<Name, AttributeType> loadSchema(XmlSchema schema, Map<String, Map<Name, AttributeType>> imports) {
+	protected Map<Name, TypeDefinition> loadSchema(XmlSchema schema, Map<String, Map<Name, TypeDefinition>> imports) {
 		String namespace = schema.getTargetNamespace();
 		if (namespace == null || namespace.isEmpty()) {
 			// default to gml schema
@@ -436,7 +282,7 @@ public class ApacheSchemaProvider
 		}
 		
 		// Map of type names / types for the result
-		Map<Name, AttributeType> featureTypes = new HashMap<Name, AttributeType>();
+		Map<Name, TypeDefinition> featureTypes = new HashMap<Name, TypeDefinition>();
 		
 		// Set of include locations
 		Set<String> includes = new HashSet<String>();
@@ -461,10 +307,10 @@ public class ApacheSchemaProvider
 		}
 		
 		// map for all imported types
-		Map<Name, AttributeType> importedFeatureTypes = new HashMap<Name, AttributeType>();
+		Map<Name, TypeDefinition> importedFeatureTypes = new HashMap<Name, TypeDefinition>();
 		
 		// add imported types
-		for (Entry<String, Map<Name, AttributeType>> entry : imports.entrySet()) {
+		for (Entry<String, Map<Name, TypeDefinition>> entry : imports.entrySet()) {
 			if (entry.getValue() != null) {
 				if (includes.contains(entry.getKey())) {
 					// is include, add to result
@@ -568,12 +414,12 @@ public class ApacheSchemaProvider
 				
 				// add imported super types to the result set
 				Name importName = superTypeName;
-				AttributeType importType = null;
+				TypeDefinition importType = null;
 				
 				while (importName != null && (importType = importedFeatureTypes.get(importName)) != null) {
 					featureTypes.put(importName, importType);
 					
-					AttributeType superType = importType.getSuper();
+					TypeDefinition superType = importType.getSuperType();
 					if (superType != null) {
 						importName = superType.getName(); 
 					}
@@ -601,14 +447,15 @@ public class ApacheSchemaProvider
 			}
 			else if (item instanceof XmlSchemaSimpleType) {
 				// attribute type from simple schema types
-				AttributeType simpleType = null;
+				TypeDefinition simpleType = null;
 				
 				if (simpleType == null) {
-					simpleType = getEnumAttributeType((XmlSchemaSimpleType) item, typeName);
+					simpleType = SchemaAttribute.getEnumAttributeType((XmlSchemaSimpleType) item, typeName);
 				}
 				//TODO other methods of resolving the type
 				
 				if (simpleType != null) {
+					// create a simple type
 					featureTypes.put(typeName, simpleType);
 				}
 				else {
@@ -616,90 +463,41 @@ public class ApacheSchemaProvider
 				}
 			}
 			else if (item instanceof XmlSchemaComplexType) {
+				// determine the super type name
 				Name superTypeName = getSuperTypeName((XmlSchemaComplexType) item);
 				
-				// get the attributes
-				List<AttributeDefinition> attributeDefinitions = getAttributes((XmlSchemaComplexType) item);
-				
-				// As it is not possible to set the super type of an existing feature type
-				// we need to recreate all feature types. But now set the corresponding 
-				// super type.
-				SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
-				ftbuilder.setSuperType(null);
-				ftbuilder.setName(typeName.getLocalPart()); //getTypeName(names, name));
-				ftbuilder.setNamespaceURI(typeName.getNamespaceURI()); //schema.getTargetNamespace());
-				ftbuilder.setAbstract(((XmlSchemaComplexType) item).isAbstract());
-				
-				for (AttributeDefinition attribute : attributeDefinitions) {
-					AttributeType attributeType = getAttributeType(attribute, featureTypes, importedFeatureTypes);
-					
-					if (attributeType != null) {
-						if (attribute.getName().equals("geometry")) {
-							AttributeTypeBuilder builder = new AttributeTypeBuilder();
-							builder.setBinding(Geometry.class);
-							builder.setName(attributeType.getName().getLocalPart());
-							builder.setNillable(true);
-							attributeType = builder.buildType();
-						}
-						
-						AttributeDescriptor desc = new AttributeDescriptorImpl(
-								attributeType, new NameImpl(schema.getTargetNamespace(), attribute.getName()),0, 0, true, null); // FIXME nillable determination
-						// set the name of the Default geometry property explicitly, 
-						// otherwise nothing will be returned when calling 
-						// getGeometryDescriptor().
-						if (Geometry.class.isAssignableFrom(desc.getType().getBinding())) {
-							ftbuilder.setDefaultGeometry(desc.getName().getLocalPart());
-						}
-			
-						ftbuilder.add(desc);
-					}
-					else _log.warn("Attribute type NOT found: " + attribute.getName());
-				}
-				
+				TypeDefinition superType = null;
 				if (superTypeName != null) {
+					// determine correct name
 					superTypeName = getTypeName(names, superTypeName);
 					
-					// Find super type
-					AttributeType tempType = featureTypes.get(superTypeName);
-					FeatureType superType = ((tempType instanceof FeatureType)?((FeatureType) tempType):(null));
+					// find super type
+					superType = featureTypes.get(superTypeName);
 					
+					// create empty super type if it was not found
 					if (superType == null) {
-						SimpleFeatureTypeBuilder stbuilder = new SimpleFeatureTypeBuilder();
-						stbuilder.setSuperType(null);
-						stbuilder.setName(superTypeName.getLocalPart());
-						stbuilder.setNamespaceURI(superTypeName.getNamespaceURI());
-						superType = stbuilder.buildFeatureType();
+						superType = new TypeDefinition(superTypeName, null, null);
+						superType.setAbstract(true);
+						// add super type to feature map
 						featureTypes.put(superTypeName, superType);
-						
-						_log.warn("Super type not found, creating an empty super type: " + superTypeName.getURI());
-					}
-					
-					if (superType != null) {
-						ftbuilder.setSuperType((SimpleFeatureType)superType);
-						// add super type properties
-						Collection<PropertyDescriptor> descriptors = superType.getDescriptors();
-						for (PropertyDescriptor descriptor : descriptors) {
-							ftbuilder.add((AttributeDescriptor)descriptor);						
-						}
-						/*if (ftbuilder.getDefaultGeometry() == null 
-								&& superType.getGeometryDescriptor() != null) {
-							//ftbuilder.add("the_geom", Geometry.class ); //XXX ???
-							//XXX test
-							GeometryDescriptor desc = superType.getGeometryDescriptor();
-							ftbuilder.add(desc);
-							ftbuilder.setDefaultGeometry(superType.getGeometryDescriptor().getLocalName());
-						}*/
 					}
 				}
 				
-				SimpleFeatureType ft = ftbuilder.buildFeatureType();
+				// create type definition
+				TypeDefinition typeDef = new TypeDefinition(typeName, null, superType);
 				
-				if (ft.getGeometryDescriptor() == null) {
-//					_log.warn("For FeatureType " + ft.getTypeName()
-//							+ ", no GeometryProperty was assigned.");
-				}
+				// determine the defined attributes and add them to the declaring type
+				getAttributes(
+						typeDef, // definition of the declaring type
+						(XmlSchemaComplexType) item,
+						featureTypes,
+						importedFeatureTypes);
 				
-				featureTypes.put(typeName, ft);
+				// set additional properties
+				typeDef.setAbstract(((XmlSchemaComplexType) item).isAbstract());
+				
+				// add type definition
+				featureTypes.put(typeName, typeDef);
 			}
 		}
 		
@@ -709,11 +507,14 @@ public class ApacheSchemaProvider
 	/**
 	 * Get the attributes for the given item
 	 * 
+	 * @param typeDef the definition of the declaring type 
 	 * @param item the complex type item
+	 * @param featureTypes 
+	 * @param importedFeatureTypes 
 	 *  
-	 * @return the attributes as a list of {@link AttributeDefinition}s
+	 * @return the attributes as a list of {@link SchemaAttribute}s
 	 */
-	private List<AttributeDefinition> getAttributes(XmlSchemaComplexType item) {
+	private List<SchemaAttribute> getAttributes(TypeDefinition typeDef, XmlSchemaComplexType item, Map<Name, TypeDefinition> featureTypes, Map<Name, TypeDefinition> importedFeatureTypes) {
 		XmlSchemaContentModel model = item.getContentModel();
 		if (model != null ) {
 			XmlSchemaContent content = model.getContent();
@@ -721,18 +522,18 @@ public class ApacheSchemaProvider
 			if (content instanceof XmlSchemaComplexContentExtension) {
 				if (((XmlSchemaComplexContentExtension)content).getParticle() != null) {
 					XmlSchemaParticle particle = ((XmlSchemaComplexContentExtension)content).getParticle();
-					return getAttributesFromParticle(particle);
+					return getAttributesFromParticle(typeDef, particle, featureTypes, importedFeatureTypes);
 				}
 			}
 		}
 		else if (((XmlSchemaComplexType)item).getParticle() != null) {
 			XmlSchemaParticle particle = ((XmlSchemaComplexType)item).getParticle();
 			if (particle instanceof XmlSchemaSequence) {
-				return getAttributesFromParticle(particle);
+				return getAttributesFromParticle(typeDef, particle, featureTypes, importedFeatureTypes);
 			}
 		}
 		
-		return new ArrayList<AttributeDefinition>();
+		return new ArrayList<SchemaAttribute>();
 	}
 	
 	/**
@@ -742,11 +543,11 @@ public class ApacheSchemaProvider
 	 * @return the attribute type names
 	 */
 	private Set<Name> getAttributeTypeNames(XmlSchemaComplexType item) {
-		List<AttributeDefinition> attributes = getAttributes(item);
+		List<SchemaAttribute> attributes = getAttributes(null, item, null, null);
 		
 		Set<Name> typeNames = new HashSet<Name>();
 		
-		for (AttributeDefinition def : attributes) {
+		for (SchemaAttribute def : attributes) {
 			typeNames.add(def.getTypeName());
 		}
 		

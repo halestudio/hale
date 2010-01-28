@@ -17,6 +17,8 @@ import java.util.Collection;
 
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+
 /**
  * The SchemaService is used internally to provide access to the currently 
  * loaded schemas.
@@ -32,14 +34,14 @@ public interface SchemaService
 	 * to the currently loaded source schema, i.e. {@link FeatureType}s which do
 	 * not have a supertype.
 	 */
-	public Collection<FeatureType> getSourceSchema();
+	public Collection<TypeDefinition> getSourceSchema();
 	
 	/**
 	 * @return the {@link Collection} of all root {@link FeatureType}s belonging
 	 * to the currently loaded target schema, i.e. {@link FeatureType}s which do
 	 * not have a supertype.
 	 */
-	public Collection<FeatureType> getTargetSchema();
+	public Collection<TypeDefinition> getTargetSchema();
 	
 	/**
 	 * Loads the schema defined under the given URL as the target or source 
@@ -102,7 +104,7 @@ public interface SchemaService
 	 *         
 	 * @return returns a {@link FeatureType} identified by the given name
 	 */
-	public FeatureType getFeatureTypeByName(String name);
+	public TypeDefinition getFeatureTypeByName(String name);
 	
 	/**
 	 * Schema type enum
@@ -121,6 +123,6 @@ public interface SchemaService
 	 * 
 	 * @return the feature types
 	 */
-	public Collection<FeatureType> getSchema(SchemaType schemaType);
+	public Collection<TypeDefinition> getSchema(SchemaType schemaType);
 
 }

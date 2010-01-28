@@ -11,7 +11,9 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,6 +45,7 @@ import eu.esdihumboldt.hale.models.instance.InstanceServiceListener;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.AbstractTilePainter;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.TileBackground;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.TileCache;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Painter for Features
@@ -209,10 +212,17 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 					PlatformUI.getWorkbench().getService(
 							CstService.class);
 				instances.cleanInstances(DatasetType.transformed);
+				
+				Collection<TypeDefinition> targetTypes = schemaService.getTargetSchema();
+				Set<FeatureType> fts = new HashSet<FeatureType>();
+				for (TypeDefinition type : targetTypes) {
+					fts.add((FeatureType) type.getType());
+				}
+				
 				FeatureCollection features = (FeatureCollection<FeatureType, Feature>) ts.transform(
 						fc_reference, // Input Features
 						alService.getAlignment(), // Alignment
-						new HashSet(schemaService.getTargetSchema()));
+						fts);
 				instances.addInstances(DatasetType.transformed, features); // target schema
 			}
 			else {
