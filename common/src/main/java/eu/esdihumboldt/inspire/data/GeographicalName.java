@@ -32,6 +32,7 @@ public class GeographicalName {
 	private PronunciationOfName pronunciation=null;
 	private GrammaticalGenderValue grammaticalGender=null;
 	private GrammaticalNumberValue grammaticalNumber=null;
+	public final static String sourceOfNameDefaultValue="Unknown";
 	
 	public GeographicalName(){}
 	
