@@ -13,8 +13,10 @@
 package eu.esdihumboldt.cst.corefunctions.inspire;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.geotools.feature.AttributeImpl;
@@ -221,7 +223,18 @@ public class GeographicalNameFunction
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
 		Property entity1 = new Property(new About(""));
+		
+		// Setting of type condition for entity1
+		List <String> entityTypes = new ArrayList <String>();
+		entityTypes.add("eu.esdihumboldt.inspire.data.GeographicalName.class");
+		entityTypes.add("java.lang.String.class");
+		entity1.setTypeCondition(entityTypes);
+		
 		Property entity2 = new Property(new About(""));
+		 
+		// Setting of type condition for entity2
+			// 	entity2 has same type conditions as entity1
+		entity2.setTypeCondition(entityTypes);
 	
 		parameterCell.setEntity1(entity1);
 		parameterCell.setEntity2(entity2);
