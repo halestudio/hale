@@ -226,8 +226,8 @@ public class GeographicalNameFunction
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
-		entityTypes.add("eu.esdihumboldt.inspire.data.GeographicalName.class");
-		entityTypes.add("java.lang.String.class");
+		entityTypes.add("eu.esdihumboldt.inspire.data.GeographicalName");
+		entityTypes.add("java.lang.String");
 		entity1.setTypeCondition(entityTypes);
 		
 		Property entity2 = new Property(new About(""));
