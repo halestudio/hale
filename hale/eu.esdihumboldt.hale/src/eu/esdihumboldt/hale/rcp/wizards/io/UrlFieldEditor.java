@@ -16,6 +16,7 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.preference.StringButtonFieldEditor;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Dialog;
 
 /**
  * This editor can be used to select a valid {@link URL} for a WFS to retrieve
@@ -23,17 +24,25 @@ import org.eclipse.swt.widgets.Composite;
  * {@link WFSFeatureTypesReaderDialog}.
  * 
  * @author Thorsten Reitz 
+ * @author Jan Kolar
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @partner 02 / Intergraph CS
  * @version $Id$ 
  */
 public class UrlFieldEditor 
 	extends StringButtonFieldEditor {
 	
 	private final static Logger _log = Logger.getLogger(UrlFieldEditor.class);
+	private boolean _getFeatures = false;
 	
 	public UrlFieldEditor(String name, String labelText,
             Composite parent) {
 		super(name, labelText, parent);
+	}
+	
+	public UrlFieldEditor(String name, String labelText,Composite parent,boolean getFeatures) {
+		super(name, labelText, parent);
+		this._getFeatures = getFeatures;
 	}
 
 	/**
@@ -41,10 +50,17 @@ public class UrlFieldEditor
 	 */
 	@Override
 	protected String changePressed() {
-		// Open WFSFeatureTypesReaderDialog
-		WFSFeatureTypesReaderDialog wfsftrd = new WFSFeatureTypesReaderDialog(
-				this.getShell(), "Select a Web Feature Service");
-		URL result = wfsftrd.open();
+		URL result = null;
+		
+		if (!this._getFeatures) {
+			WFSFeatureTypesReaderDialog wfsDialog = new WFSFeatureTypesReaderDialog(this.getShell(), "Select a Web Feature Service");
+			result = wfsDialog.open();
+		}
+		else {
+			WFSDataReaderDialog wfsDialog = new WFSDataReaderDialog(this.getShell(), "Select a Web Feature Service to load data from");
+			result = wfsDialog.open();
+		}
+
 		if (result != null) {
 			_log.debug("received result: " + result.toString());
 			getTextControl().setText(result.toString());

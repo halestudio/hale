@@ -132,8 +132,7 @@ public class InstanceDataImportWizardMainPage
 		final Composite ufe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ufe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		this.wfsFieldEditor = new UrlFieldEditor("urlSelect", 
-				"... WFS GetFeature:", ufe_container);
+		this.wfsFieldEditor = new UrlFieldEditor("urlSelect","... WFS GetFeature:", ufe_container,true);
 		this.wfsFieldEditor.setEnabled(false, ufe_container);
 		this.wfsFieldEditor.getTextControl(ufe_container).addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
