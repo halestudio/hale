@@ -4,16 +4,37 @@
 	<groupId>eu.esdihumboldt</groupId>
 	<artifactId>specification</artifactId>
 	<version>2.0</version>
-    <name>HUMBOLDT Specification Component</name>
+	<name>HUMBOLDT Specification Component</name>
 	<url>http://www.esdi-humboldt.eu</url>
+
+	<scm>
+		<connection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/humboldt-specification/trunk
+		</connection>
+		<developerConnection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/humboldt-specification/trunk
+		</developerConnection>
+		<url>http://svn.esdi-humboldt.eu/repo/humboldt2</url>
+	</scm>
+
 	<build>
-		<finalName>humboldt-${project.artifactId}-${project.version}</finalName> 
+		<finalName>humboldt-${project.artifactId}-${project.version}
+		</finalName>
 		<sourceDirectory>${basedir}/spec</sourceDirectory>
+
 		<resources>
 			<resource>
 				<directory>${basedir}/res</directory>
 			</resource>
+			<resource>
+				<directory>./src/main/resource</directory>
+			</resource>
 		</resources>
+
+		<testResources>
+			<testResource>
+				<directory>./src/test/resource</directory>
+			</testResource>
+		</testResources>
+
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -57,11 +78,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-	<dependency>
-	    <groupId>dom4j</groupId>
-	    <artifactId>dom4j</artifactId>
-	    <version>1.6.1</version>
-	</dependency>
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
 	</dependencies>
 	<reporting>
 		<plugins>
@@ -84,8 +105,10 @@
 </project>
 
 
-<!--
-	mvn deploy:deploy-file -DrepositoryId=humboldt -Durl=http://localhost:8080/artifactory/humboldt -DgroupId=humboldt -DartifactId=humboldt_specification -Dversion=1.0 -Dpackaging=jar -Dfile=humboldt_specification.jar
-
--->
+	<!--
+		mvn deploy:deploy-file -DrepositoryId=humboldt
+		-Durl=http://localhost:8080/artifactory/humboldt -DgroupId=humboldt
+		-DartifactId=humboldt_specification -Dversion=1.0 -Dpackaging=jar
+		-Dfile=humboldt_specification.jar
+	-->
 
