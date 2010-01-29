@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.esdihumboldt</groupId>
 	<artifactId>common-library</artifactId>
-	<version>2.1.1-SNAPSHOT</version>
+	<version>3.0.0</version>
 	<name>HUMBOLDT Common Library Component</name>
 	<url>http://www.esdi-humboldt.eu</url>
 
 	<scm>
-		<connection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/humboldt-commons/trunk</connection>
-		<developerConnection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/humboldt-commons/trunk</developerConnection>
-		<url>http://svn.esdi-humboldt.eu/repo/humboldt2</url>
+		<connection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/humboldt-commons/tags/3.0.0</connection>
+		<developerConnection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/humboldt-commons/tags/3.0.0</developerConnection>
+		<url>http://svn.esdi-humboldt.eu/repo/humboldt2/tags/3.0.0</url>
 	</scm>
 
 	<build>
@@ -196,7 +196,7 @@
 
 	<repositories>
 		<repository>
-			<id>central</id>
+			<id>artifactory.esdi-humboldt.eu</id>
 			<name>Humboldt internal repository</name>
 			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory</url>
 		</repository>
