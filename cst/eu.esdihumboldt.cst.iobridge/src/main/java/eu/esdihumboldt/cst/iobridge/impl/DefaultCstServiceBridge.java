@@ -29,6 +29,7 @@ import eu.esdihumboldt.cst.transformer.service.CstServiceFactory;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
 
 /**
@@ -87,7 +88,11 @@ public class DefaultCstServiceBridge
 		try {
 			Schema schema = asp.loadSchema(new URI(schemaFilename));
 			if (schema != null) {
-				result.addAll(schema.getFeatureTypes());
+				for (TypeDefinition td : schema.getTypes()) {
+					if (td.getFeatureType() != null) {
+						result.add(td.getFeatureType());
+					}
+				}
 			}
 		} catch (URISyntaxException e) {
 			throw new RuntimeException("Parsing the schema Filename to a URI " +
