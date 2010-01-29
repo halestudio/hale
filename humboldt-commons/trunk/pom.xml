@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.esdihumboldt</groupId>
 	<artifactId>common-library</artifactId>
-	<version>2.0.2-SNAPSHOT</version>
+	<version>2.1.0</version>
 	<name>HUMBOLDT Common Library Component</name>
 	<url>http://www.esdi-humboldt.eu</url>
 
 	<scm>
-		<connection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2</connection>
-		<developerConnection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2</developerConnection>
-		<url>http://svn.esdi-humboldt.eu/repo/humboldt2</url>
+		<connection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/tags/Winter of Code release</connection>
+		<developerConnection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/tags/Winter of Code release</developerConnection>
+		<url>http://svn.esdi-humboldt.eu/repo/humboldt2/tags/Winter of Code release</url>
 	</scm>
 
 	<build>
