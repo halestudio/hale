@@ -102,8 +102,8 @@ public class DateExtractionFunction extends AbstractCstFunction {
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
-		entityTypes.add("java.lang.String.class");
-		entityTypes.add("java.util.Date.class");
+		entityTypes.add("java.lang.String");
+		entityTypes.add("java.util.Date");
 		entity1.setTypeCondition(entityTypes);
 
 		Property entity2 = new Property(new About(""));

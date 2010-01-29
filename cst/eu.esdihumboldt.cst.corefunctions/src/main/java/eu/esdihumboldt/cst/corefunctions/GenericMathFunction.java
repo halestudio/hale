@@ -84,8 +84,8 @@ public class GenericMathFunction
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
-		entityTypes.add("java.lang.String.class");
-		entityTypes.add("java.lang.Number.class");
+		entityTypes.add("java.lang.String");
+		entityTypes.add("java.lang.Number");
 		entity1.setTypeCondition(entityTypes);
 		
 		Property entity2 = new Property(new About(""));	

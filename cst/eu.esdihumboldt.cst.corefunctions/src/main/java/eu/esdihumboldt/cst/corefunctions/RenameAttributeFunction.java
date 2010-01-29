@@ -144,13 +144,13 @@ public class RenameAttributeFunction extends AbstractCstFunction {
 		Property entity1 = new Property(new About(""));
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
-		entityTypes.add("com.vividsolutions.jts.geom.Geometry.class");
-		entityTypes.add("org.opengis.geometry.Geometry.class");
-		entityTypes.add("java.lang.String.class");
-		entityTypes.add("java.lang.Number.class");
-		entityTypes.add("java.lang.Boolean.class");
-		entityTypes.add("java.util.Date.class");
-		entityTypes.add("java.util.Collection.class");
+		entityTypes.add("com.vividsolutions.jts.geom.Geometry");
+		entityTypes.add("org.opengis.geometry.Geometry");
+		entityTypes.add("java.lang.String");
+		entityTypes.add("java.lang.Number");
+		entityTypes.add("java.lang.Boolean");
+		entityTypes.add("java.util.Date");
+		entityTypes.add("java.util.Collection");
 		entity1.setTypeCondition(entityTypes);
 
 		Property entity2 = new Property(new About(""));

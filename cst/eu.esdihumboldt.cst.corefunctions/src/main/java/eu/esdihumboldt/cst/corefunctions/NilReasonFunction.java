@@ -70,13 +70,13 @@ public class NilReasonFunction extends AbstractCstFunction {
 			new eu.esdihumboldt.goml.omwg.Property(new About(""));
 		// Setting of type condition for entity2
 		List <String> entity2Types = new ArrayList <String>();
-		entity2Types.add("com.vividsolutions.jts.geom.Geometry.class");
-		entity2Types.add("org.opengis.geometry.Geometry.class");
-		entity2Types.add("java.lang.String.class");
-		entity2Types.add("java.lang.Number.class");
-		entity2Types.add("java.lang.Boolean.class");
-		entity2Types.add("java.util.Date.class");
-		entity2Types.add("java.util.Collection.class");
+		entity2Types.add("com.vividsolutions.jts.geom.Geometry");
+		entity2Types.add("org.opengis.geometry.Geometry");
+		entity2Types.add("java.lang.String");
+		entity2Types.add("java.lang.Number");
+		entity2Types.add("java.lang.Boolean");
+		entity2Types.add("java.util.Date");
+		entity2Types.add("java.util.Collection");
 		entity2.setTypeCondition(entity2Types);
 	
 		Transformation t = new Transformation();

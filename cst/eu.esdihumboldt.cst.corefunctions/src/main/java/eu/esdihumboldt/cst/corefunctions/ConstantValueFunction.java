@@ -75,10 +75,10 @@ public class ConstantValueFunction extends AbstractCstFunction {
 		
 		// Setting of type condition for entity2
 		List <String> entity2Types = new ArrayList <String>();
-		entity2Types.add("java.lang.String.class");
-		entity2Types.add("java.lang.Number.class");
-		entity2Types.add("java.lang.Boolean.class");
-		entity2Types.add("java.util.Date.class");		
+		entity2Types.add("java.lang.String");
+		entity2Types.add("java.lang.Number");
+		entity2Types.add("java.lang.Boolean");
+		entity2Types.add("java.util.Date");		
 		entity2.setTypeCondition(entity2Types);
 		
 				

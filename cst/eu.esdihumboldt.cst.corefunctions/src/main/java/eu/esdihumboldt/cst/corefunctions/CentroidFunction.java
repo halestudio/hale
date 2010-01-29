@@ -96,8 +96,8 @@ public class CentroidFunction extends AbstractCstFunction {
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
-		entityTypes.add("com.vividsolutions.jts.geom.Geometry.class");
-		entityTypes.add("org.opengis.geometry.Geometry.class");
+		entityTypes.add("com.vividsolutions.jts.geom.Geometry");
+		entityTypes.add("org.opengis.geometry.Geometry");
 		entity1.setTypeCondition(entityTypes);
 		
 		Property entity2 = new Property(new About(""));
