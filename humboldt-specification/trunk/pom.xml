@@ -8,22 +8,15 @@
 	<url>http://www.esdi-humboldt.eu</url>
 
 	<scm>
-		<connection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/humboldt-specification/trunk
-		</connection>
-		<developerConnection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/humboldt-specification/trunk
-		</developerConnection>
+		<connection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/humboldt-specification/trunk</connection>
+		<developerConnection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/humboldt-specification/trunk</developerConnection>
 		<url>http://svn.esdi-humboldt.eu/repo/humboldt2</url>
 	</scm>
 
 	<build>
-		<finalName>humboldt-${project.artifactId}-${project.version}
-		</finalName>
-		<sourceDirectory>${basedir}/spec</sourceDirectory>
+		<finalName>humboldt-${project.artifactId}-${project.version}</finalName>
 
 		<resources>
-			<resource>
-				<directory>${basedir}/res</directory>
-			</resource>
 			<resource>
 				<directory>./src/main/resource</directory>
 			</resource>
@@ -39,21 +32,13 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>1.6</source>
+					<target>1.6</target>
 				</configuration>
 			</plugin>
-
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<workspace>${basedir}</workspace>
-				</configuration>
-			</plugin>
-
-
 		</plugins>
 	</build>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.opengis</groupId>
@@ -84,6 +69,7 @@
 			<version>1.6.1</version>
 		</dependency>
 	</dependencies>
+	
 	<reporting>
 		<plugins>
 			<plugin>
@@ -102,6 +88,46 @@
 		<cxf.version>2.1.1</cxf.version>
 		<spring.version>2.5.4</spring.version>
 	</properties>
+	
+	<distributionManagement>
+		<repository>
+			<id>artifactory.esdi-humboldt.eu</id>
+			<name>artifactory.esdi-humboldt.eu-releases</name>
+			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/libs-releases-local</url>
+		</repository>
+		<snapshotRepository>
+			<id>artifactory.esdi-humboldt.eu</id>
+			<name>artifactory.esdi-humboldt.eu-snapshots</name>
+			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/libs-snapshots-local</url>
+		</snapshotRepository>
+	</distributionManagement>
+	
+	<repositories>
+		<repository>
+			<id>artifactory.esdi-humboldt.eu</id>
+			<name>Humboldt internal repository</name>
+			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>artifactory.esdi-humboldt.eu</id>
+			<name>plugins-releases</name>
+			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/plugins-releases</url>
+		</pluginRepository>
+		<pluginRepository>
+			<snapshots />
+			<id>artifactory.esdi-humboldt.eu</id>
+			<name>plugins-snapshots</name>
+			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/plugins-snapshots</url>
+		</pluginRepository>
+	</pluginRepositories>
+	
+	
 </project>
 
 
