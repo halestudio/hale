@@ -214,6 +214,16 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 		Cell parameterCell = new Cell();
 		Property entity1 = new Property(new About(""));
 		
+		// Setting of type condition for entity1
+		List <String> entityTypes = new ArrayList <String>();
+		entityTypes.add("com.vividsolutions.jts.geom.Geometry.class");
+		entityTypes.add("org.opengis.geometry.Geometry.class");
+		entityTypes.add("java.lang.String.class");
+		entityTypes.add("java.lang.Number.class");
+		entityTypes.add("java.lang.Boolean.class");
+		entityTypes.add("java.util.Date.class");
+		entityTypes.add("java.util.Collection.class");
+		entity1.setTypeCondition(entityTypes);
 
 		List<IValueExpression> valueExpressions = new ArrayList<IValueExpression>();
 		Restriction r = new Restriction(valueExpressions);
@@ -225,6 +235,10 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 
 		Property entity2 = new Property(new About(""));
 
+		// Setting of type condition for entity2
+			// 	entity2 has same type conditions as entity1
+		entity2.setTypeCondition(entityTypes);
+		
 		List<IValueExpression> valueExpressions2 = new ArrayList<IValueExpression>();
 		Restriction r2 = new Restriction(valueExpressions2);
 		r2.setSeq(new BigInteger("1"));

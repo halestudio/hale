@@ -81,7 +81,18 @@ public class GenericMathFunction
 		Cell parameterCell = new Cell();
 	
 		ComposedProperty  entity1 = new ComposedProperty(new About(""));
-		Property          entity2 = new Property(new About(""));	
+		
+		// Setting of type condition for entity1
+		List <String> entityTypes = new ArrayList <String>();
+		entityTypes.add("java.lang.String.class");
+		entityTypes.add("java.lang.Number.class");
+		entity1.setTypeCondition(entityTypes);
+		
+		Property entity2 = new Property(new About(""));	
+		
+		// Setting of type condition for entity2
+			// 	entity2 has same type conditions as entity1
+		entity2.setTypeCondition(entityTypes);
 		
 		List<IParameter> params = new ArrayList<IParameter>();
 		IParameter p = new Parameter(GenericMathFunction.EXPRESSION_PARAMETER_NAME, "");

@@ -79,15 +79,17 @@ public class BoundingBoxFunction extends AbstractCstFunction {
 		Cell parameterCell = new Cell();
 		Property entity1 = new Property(new About(""));
 	
-		List <String> entity1Types = new ArrayList <String>();
-		entity1Types.add("com.vividsolutions.jts.geom.Geometry.class");
-		entity1.setTypeCondition(entity1Types);
+		// Setting of type condition for entity1
+		List <String> entityTypes = new ArrayList <String>();
+		entityTypes.add("com.vividsolutions.jts.geom.Geometry.class");
+		entityTypes.add("org.opengis.geometry.Geometry.class");
+		entity1.setTypeCondition(entityTypes);
 		
 		Property entity2 = new Property(new About(""));
-
-		List <String> entity2Types = new ArrayList<String>();
-		entity2Types.add("com.vividsolutions.jts.geom.Geometry.class");
-		entity2.setTypeCondition(entity2Types);
+		 
+		// Setting of type condition for entity2
+			// 	entity2 has same conditions as entity1
+		entity2.setTypeCondition(entityTypes);
 		
 		parameterCell.setEntity1(entity1);
 		parameterCell.setEntity2(entity2);

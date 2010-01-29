@@ -72,7 +72,16 @@ public class ConstantValueFunction extends AbstractCstFunction {
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();	
 		Property entity2 = new Property(new About(""));
-	
+		
+		// Setting of type condition for entity2
+		List <String> entity2Types = new ArrayList <String>();
+		entity2Types.add("java.lang.String.class");
+		entity2Types.add("java.lang.Number.class");
+		entity2Types.add("java.lang.Boolean.class");
+		entity2Types.add("java.util.Date.class");		
+		entity2.setTypeCondition(entity2Types);
+		
+				
 		Transformation t = new Transformation();
 		List<IParameter> params = new ArrayList<IParameter>(); 
 		Parameter p = new Parameter(ConstantValueFunction.DEFAULT_VALUE_PARAMETER_NAME,"");

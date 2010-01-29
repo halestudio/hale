@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.cst.corefunctions;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +24,12 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.cst.align.ext.IValueExpression;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.rdf.Resource;
 
@@ -137,8 +140,26 @@ public class RenameAttributeFunction extends AbstractCstFunction {
 	
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
+		
 		Property entity1 = new Property(new About(""));
+		// Setting of type condition for entity1
+		List <String> entityTypes = new ArrayList <String>();
+		entityTypes.add("com.vividsolutions.jts.geom.Geometry.class");
+		entityTypes.add("org.opengis.geometry.Geometry.class");
+		entityTypes.add("java.lang.String.class");
+		entityTypes.add("java.lang.Number.class");
+		entityTypes.add("java.lang.Boolean.class");
+		entityTypes.add("java.util.Date.class");
+		entityTypes.add("java.util.Collection.class");
+		entity1.setTypeCondition(entityTypes);
+
 		Property entity2 = new Property(new About(""));
+		// Setting of type condition for entity2
+			// 	entity2 has same type conditions as entity1
+		entity2.setTypeCondition(entityTypes);
+		
+		
+		
 		Transformation t =  new Transformation(
 				new Resource(getClass().getName()));		
 		

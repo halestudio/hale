@@ -117,8 +117,19 @@ public class NetworkExpansionFunction extends AbstractCstFunction {
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
 	
-		Property  entity1 = new Property(new About(""));
-		Property  entity2 = new Property(new About(""));	
+		Property entity1 = new Property(new About(""));
+		
+		// Setting of type condition for entity1
+		List <String> entityTypes = new ArrayList <String>();
+		entityTypes.add("com.vividsolutions.jts.geom.Geometry.class");
+		entityTypes.add("org.opengis.geometry.Geometry.class");
+		entity1.setTypeCondition(entityTypes);
+		
+		Property entity2 = new Property(new About(""));
+		 
+		// Setting of type condition for entity2
+			// 	entity2 has same conditions as entity1
+		entity2.setTypeCondition(entityTypes);
 		
 		List<IParameter> params = new ArrayList<IParameter>();
 		IParameter buffer   = new Parameter(NetworkExpansionFunction.BUFFERWIDTH, "0");
