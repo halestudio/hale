@@ -108,4 +108,11 @@ public class ValueClass implements IValueClass {
         this.about = value;
     }
 
+	@Override
+	public String toString() {
+		return "ValueClass [about=" + about + ", resource=" + resource + ", value=" + value + "]";
+	}
+    
+    
+
 }

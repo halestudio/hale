@@ -91,4 +91,10 @@ public class ValueExpression implements IValueExpression{
 		this.apply = apply;
 	}
 
+	@Override
+	public String toString() {
+		return "ValueExpression [apply=" + apply + ", literal=" + literal + ", max=" + max + ", min=" + min + "]";
+	}
+
+	
 }

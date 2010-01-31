@@ -153,5 +153,11 @@ public class Restriction {
 	public void setValueClass(ValueClass valueClass) {
 		this.valueClass = valueClass;
 	}
+	
+	@Override
+	public String toString() {
+		return "Restriction [comparator=" + comparator + ", cqlStr=" + cqlStr + ", seq=" + seq + ", value=" + value
+				+ ", valueClass=" + valueClass + "]";
+	}
 
 }
