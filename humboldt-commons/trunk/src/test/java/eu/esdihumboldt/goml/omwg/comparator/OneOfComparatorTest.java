@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.junit.BeforeClass;
@@ -29,6 +30,8 @@ import eu.esdihumboldt.goml.omwg.Restriction;
  *
  */
 public class OneOfComparatorTest {
+	
+	private final static Logger LOG = Logger.getLogger(OneOfComparatorTest.class);
 	
 	/**
 	 * Test source name for the source Feature generated for the tests
@@ -81,6 +84,7 @@ public class OneOfComparatorTest {
 	 */
 	@Test
 	public void testEvaluateTrue() {
+		LOG.info("Testing true evaluation");
 		org.opengis.feature.Property sourceProperty = createSource(true).getProperty(SOURCE_LOCAL_NAME_PROPERTY_A);
 		
 		Comparator oneOfComp = new OneOfComparator();
@@ -95,6 +99,7 @@ public class OneOfComparatorTest {
 	 */
 	@Test
 	public void testEvaluateFalse() {
+		LOG.info("Testing false evaluation");
 		org.opengis.feature.Property sourceProperty = createSource(false).getProperty(SOURCE_LOCAL_NAME_PROPERTY_A);
 		
 		Comparator oneOfComp = new OneOfComparator();
@@ -109,7 +114,7 @@ public class OneOfComparatorTest {
 	 * 
 	 */
 	private SimpleFeature createSource(boolean withSuccessfulValue) {
-		System.out.println("Creating SimpleFeature source for " + this.getClass().getName() + " test");
+		LOG.debug("Creating SimpleFeature source for " + this.getClass().getName() + " test");
 		SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
 		ftbuilder.setName(SOURCE_LOCAL_NAME);
 		ftbuilder.setNamespaceURI(SOURCE_NAMESPACE);
@@ -118,11 +123,11 @@ public class OneOfComparatorTest {
 		
 		SimpleFeature sourceFeature = null;
 		if(withSuccessfulValue) {
-			System.out.println("Creating a source feature which should map to Fluss, Bach in the target");
+			LOG.debug("Creating a source feature which should map to Fluss, Bach in the target");
 			sourceFeature = SimpleFeatureBuilder.build(sourceFeatureType, new Object[]{SUCCESSFUL_EVALUATION_VALUE}, "1");
 		}
 		else {
-			System.out.println("Creating a source feature which should not map to Fluss, Bach in the target");
+			LOG.debug("Creating a source feature which should not map to Fluss, Bach in the target");
 			sourceFeature = SimpleFeatureBuilder.build(sourceFeatureType, new Object[]{UNSUCCESSFUL_EVALUATION_VALUE}, "1");
 		}
 		
