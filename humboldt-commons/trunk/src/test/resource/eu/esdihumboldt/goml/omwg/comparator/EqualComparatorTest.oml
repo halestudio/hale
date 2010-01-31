@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Alignment xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:goml="http://www.esdi-humboldt.eu/goml" xmlns:align="http://knowledgeweb.semanticweb.org/heterogeneity/alignment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml/" rdf:about="lala">
+
+    <align:onto1>
+        <align:Ontology>
+            <align:location>http://esdi-humboldt.eu</align:location>
+            <align:formalism>
+                <align:Formalism>
+                    <align:uri>http://schemas.opengis.org/gml</align:uri>
+                    <align:name>GML</align:name>
+                </align:Formalism>
+            </align:formalism>
+        </align:Ontology>
+    </align:onto1>
+	
+    <align:onto2>
+        <align:Ontology>
+            <align:location>http://xsdi.org</align:location>
+            <align:formalism>
+                <align:Formalism>
+                    <align:uri>http://schemas.opengis.org/gml</align:uri>
+                    <align:name>GML</align:name>
+                </align:Formalism>
+            </align:formalism>
+        </align:Ontology>
+    </align:onto2>
+	
+    <align:map>
+        <align:Cell rdf:about="">
+		
+            <entity1>
+                <Property rdf:about="watercoursesBY:HYD">
+                    <domainRestriction>
+                        <Class rdf:about="watercoursesBY:Rivers"/>
+                    </domainRestriction>
+                    <valueCondition>
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>1000</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                </Property>
+            </entity1>
+			
+            <entity2>
+                <Property rdf:about="inspireHY:persistence">
+                    <domainRestriction>
+                        <Class rdf:about="inspireHY:Watercourse"/>
+                    </domainRestriction>
+                    <valueCondition>
+                        <Restriction>
+                            <comparator>equal</comparator>
+                            <value><literal>perrenial</literal></value>
+                        </Restriction>
+                    </valueCondition>
+                </Property>
+            </entity2>
+			
+            <align:measure rdf:datatype="xsd:float">1</align:measure>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+
+</Alignment>
