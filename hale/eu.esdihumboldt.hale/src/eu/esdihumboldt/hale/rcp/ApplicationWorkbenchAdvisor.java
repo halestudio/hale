@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.hale.rcp;
 
+import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
@@ -27,13 +28,29 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	private static final String PERSPECTIVE_ID = "eu.esdihumboldt.hale.rcp.ClientPerspective";
 
+	/**
+	 * @see WorkbenchAdvisor#createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer)
+	 */
 	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
 			IWorkbenchWindowConfigurer configurer) {
 		return new ApplicationWorkbenchWindowAdvisor(configurer);
 	}
 
+	/**
+	 * @see WorkbenchAdvisor#getInitialWindowPerspectiveId()
+	 */
 	public String getInitialWindowPerspectiveId() {
 		return PERSPECTIVE_ID;
+	}
+
+	/**
+	 * @see WorkbenchAdvisor#initialize(IWorkbenchConfigurer)
+	 */
+	@Override
+	public void initialize(IWorkbenchConfigurer configurer) {
+		super.initialize(configurer);
+		
+		configurer.setSaveAndRestore(true);
 	}
 
 }
