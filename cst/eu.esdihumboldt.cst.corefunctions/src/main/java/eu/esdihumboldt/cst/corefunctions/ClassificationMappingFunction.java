@@ -121,7 +121,7 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 				if (Collection.class.isAssignableFrom(
 						target.getProperty(
 								this.targetProperty).getType().getBinding())) {
-					Collection c = new ArrayList();
+					Collection<String> c = new ArrayList<String>();
 					c.add(targetClassValue);
 					((SimpleFeatureImpl)target).setAttribute(this.targetProperty, c);
 				}
@@ -196,12 +196,6 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 		}
 		return result;
 	}
-
-	@Override
-	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	/**
 	 * Sample parameter configuration using a cell instead of KV pairs.
@@ -216,13 +210,10 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
-		entityTypes.add("com.vividsolutions.jts.geom.Geometry");
-		entityTypes.add("org.opengis.geometry.Geometry");
-		entityTypes.add("java.lang.String");
-		entityTypes.add("java.lang.Number");
-		entityTypes.add("java.lang.Boolean");
-		entityTypes.add("java.util.Date");
-		entityTypes.add("java.util.Collection");
+		entityTypes.add(String.class.getName());
+		entityTypes.add(Number.class.getName());
+		entityTypes.add(Boolean.class.getName());
+		entityTypes.add(Collection.class.getName());
 		entity1.setTypeCondition(entityTypes);
 
 		List<IValueExpression> valueExpressions = new ArrayList<IValueExpression>();

@@ -15,18 +15,12 @@ package eu.esdihumboldt.cst.corefunctions;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import org.geotools.feature.AttributeImpl;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.PropertyImpl;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 
@@ -65,15 +59,6 @@ public class DateExtractionFunction extends AbstractCstFunction {
 	private String dateFormatTarget = null;
 	private Property targetProperty = null;
 	private Property sourceProperty = null;
-	
-	
-
-	@Override
-	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
-		parameterTypes.put(DateExtractionFunction.DATE_FORMAT_SOURCE, String.class);
-		parameterTypes.put(DateExtractionFunction.DATE_FORMAT_TARGET, String.class);
-		
-	}
 
 	public boolean configure(ICell cell) {
 		for (IParameter ip : cell.getEntity1().getTransformation().getParameters()) {

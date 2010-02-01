@@ -15,10 +15,8 @@ package eu.esdihumboldt.cst.corefunctions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.PropertyImpl;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.FeatureType;
@@ -46,15 +44,6 @@ public class ConstantValueFunction extends AbstractCstFunction {
 	public static final String DEFAULT_VALUE_PARAMETER_NAME = "defaultValue";
 	private Object defaultValue = null;
 	private Property targetProperty = null;
-
-	/**
-	 * @see eu.esdihumboldt.cst.transformer.AbstractCstFunction#setParametersTypes(java.util.Map)
-	 */
-	@Override
-	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
-		parameterTypes.put(ConstantValueFunction.DEFAULT_VALUE_PARAMETER_NAME, Object.class);
-
-	}
 
 	/**
 	 * @see eu.esdihumboldt.cst.transformer.CstFunction#configure(eu.esdihumboldt.cst.align.ICell)
@@ -108,8 +97,6 @@ public class ConstantValueFunction extends AbstractCstFunction {
 		PropertyDescriptor pd = target.getProperty(
 				this.targetProperty.getLocalname()).getDescriptor();
 		
-		
-		PropertyImpl p = null;
 		if (pd.getType().getBinding().isPrimitive()) {
 			
 			if (pd.getType().getBinding().equals(Integer.class)){

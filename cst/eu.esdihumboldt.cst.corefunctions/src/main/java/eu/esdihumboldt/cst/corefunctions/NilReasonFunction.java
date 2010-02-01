@@ -12,9 +12,10 @@
 
 package eu.esdihumboldt.cst.corefunctions;
 
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
@@ -70,13 +71,13 @@ public class NilReasonFunction extends AbstractCstFunction {
 			new eu.esdihumboldt.goml.omwg.Property(new About(""));
 		// Setting of type condition for entity2
 		List <String> entity2Types = new ArrayList <String>();
-		entity2Types.add("com.vividsolutions.jts.geom.Geometry");
-		entity2Types.add("org.opengis.geometry.Geometry");
-		entity2Types.add("java.lang.String");
-		entity2Types.add("java.lang.Number");
-		entity2Types.add("java.lang.Boolean");
-		entity2Types.add("java.util.Date");
-		entity2Types.add("java.util.Collection");
+		entity2Types.add(com.vividsolutions.jts.geom.Geometry.class.getName());
+		entity2Types.add(org.opengis.geometry.Geometry.class.getName());
+		entity2Types.add(String.class.getName());
+		entity2Types.add(Number.class.getName());
+		entity2Types.add(Boolean.class.getName());
+		entity2Types.add(Date.class.getName());
+		entity2Types.add(Collection.class.getName());
 		entity2.setTypeCondition(entity2Types);
 	
 		Transformation t = new Transformation();
@@ -154,19 +155,5 @@ public class NilReasonFunction extends AbstractCstFunction {
 		unknown
 	}
 
-
-	@Override
-	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
-		parametersTypes.put(PARAMETER_NIL_REASON_TYPE, String.class);				
-	}
 	
-	/*public Cell getParameters() {
-		Cell parameterCell = new Cell();
-		eu.esdihumboldt.goml.omwg.Property entity1 = new eu.esdihumboldt.goml.omwg.Property(new About(""));
-		eu.esdihumboldt.goml.omwg.Property entity2 = new eu.esdihumboldt.goml.omwg.Property(new About(""));
-	
-		parameterCell.setEntity1(entity1);
-		parameterCell.setEntity2(entity2);
-		return parameterCell;
-	}*/
 }

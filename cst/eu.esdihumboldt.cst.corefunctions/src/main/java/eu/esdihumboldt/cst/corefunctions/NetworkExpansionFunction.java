@@ -41,7 +41,6 @@ import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 
@@ -82,7 +81,8 @@ public class NetworkExpansionFunction extends AbstractCstFunction {
 				bufferParameters.setEndCapStyle(capStyle);
 				BufferBuilder bb = new BufferBuilder(new BufferParameters());
 				new_geometry = bb.buffer(old_geometry, bufferWidth);
-				((SimpleFeatureImpl)target).setDefaultGeometry(new_geometry);
+				((SimpleFeatureImpl)target).setAttribute(
+						this.targetProperty.getLocalname(), new_geometry);
 			} catch (Exception ex) {
 				if (!ex.getClass().equals(TopologyException.class)) {
 					throw new RuntimeException(ex);
@@ -91,13 +91,6 @@ public class NetworkExpansionFunction extends AbstractCstFunction {
 		}
 		return target;
 	}
-
-	
-	public boolean configure(Map<String, String> parametersValues) {		
-		this.setBufferWidth(Double.parseDouble(parametersValues.get(NetworkExpansionFunction.BUFFERWIDTH)));	
-		this.capStyle = Integer.parseInt(parametersValues.get(NetworkExpansionFunction.CAPSTYLE));
-		return true;
-    }
 
 	public boolean configure(ICell cell) {
 		for (IParameter ip : cell.getEntity1().getTransformation().getParameters()) {
@@ -121,8 +114,8 @@ public class NetworkExpansionFunction extends AbstractCstFunction {
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
-		entityTypes.add("com.vividsolutions.jts.geom.Geometry");
-		entityTypes.add("org.opengis.geometry.Geometry");
+		entityTypes.add(com.vividsolutions.jts.geom.Geometry.class.getName());
+		entityTypes.add(org.opengis.geometry.Geometry.class.getName());
 		entity1.setTypeCondition(entityTypes);
 		
 		Property entity2 = new Property(new About(""));
@@ -145,9 +138,5 @@ public class NetworkExpansionFunction extends AbstractCstFunction {
 		parameterCell.setEntity2(entity2);
 		return parameterCell;
 	}
-	@Override
-	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
-		parametersTypes.put(NetworkExpansionFunction.BUFFERWIDTH, Double.class);
-		parametersTypes.put(NetworkExpansionFunction.CAPSTYLE, Integer.class);
-	}	
+
 }

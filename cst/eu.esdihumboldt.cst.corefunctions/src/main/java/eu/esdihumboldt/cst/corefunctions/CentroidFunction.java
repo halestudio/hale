@@ -23,7 +23,6 @@ package eu.esdihumboldt.cst.corefunctions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
@@ -32,12 +31,8 @@ import com.vividsolutions.jts.geom.Geometry;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
-import eu.esdihumboldt.goml.rdf.Resource;
-
-
 
 
 /**
@@ -46,7 +41,6 @@ import eu.esdihumboldt.goml.rdf.Resource;
  * @partner 14 / TUM
  * @version $Id$ 
  */
-
 public class CentroidFunction extends AbstractCstFunction {
 	Property sourceProperty = null;
 	Property targetProperty = null;
@@ -82,13 +76,6 @@ public class CentroidFunction extends AbstractCstFunction {
 		this.targetProperty = (Property) cell.getEntity2();
 		return true;
 	}
-
-
-	@Override
-	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
@@ -96,8 +83,8 @@ public class CentroidFunction extends AbstractCstFunction {
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
-		entityTypes.add("com.vividsolutions.jts.geom.Geometry");
-		entityTypes.add("org.opengis.geometry.Geometry");
+		entityTypes.add(com.vividsolutions.jts.geom.Geometry.class.getName());
+		entityTypes.add(org.opengis.geometry.Geometry.class.getName());
 		entity1.setTypeCondition(entityTypes);
 		
 		Property entity2 = new Property(new About(""));

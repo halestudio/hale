@@ -11,8 +11,9 @@
  */
 package eu.esdihumboldt.cst.corefunctions;
 
-import java.math.BigInteger;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -23,13 +24,10 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.align.ext.IValueExpression;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.rdf.Resource;
 
@@ -131,12 +129,6 @@ public class RenameAttributeFunction extends AbstractCstFunction {
 		this.newName = ((Property)cell.getEntity2()).getLocalname();
 		return true;
 	}
-
-	@Override
-	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
-		parametersTypes.put(OLD_ATTRIBUTE_NAME_PARAMETER, String.class);
-		parametersTypes.put(OLD_ATTRIBUTE_NAME_PARAMETER, String.class);		
-	}
 	
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
@@ -144,21 +136,19 @@ public class RenameAttributeFunction extends AbstractCstFunction {
 		Property entity1 = new Property(new About(""));
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
-		entityTypes.add("com.vividsolutions.jts.geom.Geometry");
-		entityTypes.add("org.opengis.geometry.Geometry");
-		entityTypes.add("java.lang.String");
-		entityTypes.add("java.lang.Number");
-		entityTypes.add("java.lang.Boolean");
-		entityTypes.add("java.util.Date");
-		entityTypes.add("java.util.Collection");
+		entityTypes.add(com.vividsolutions.jts.geom.Geometry.class.getName());
+		entityTypes.add(org.opengis.geometry.Geometry.class.getName());
+		entityTypes.add(String.class.getName());
+		entityTypes.add(Number.class.getName());
+		entityTypes.add(Boolean.class.getName());
+		entityTypes.add(Date.class.getName());
+		entityTypes.add(Collection.class.getName());
 		entity1.setTypeCondition(entityTypes);
 
 		Property entity2 = new Property(new About(""));
 		// Setting of type condition for entity2
 			// 	entity2 has same type conditions as entity1
 		entity2.setTypeCondition(entityTypes);
-		
-		
 		
 		Transformation t =  new Transformation(
 				new Resource(getClass().getName()));		

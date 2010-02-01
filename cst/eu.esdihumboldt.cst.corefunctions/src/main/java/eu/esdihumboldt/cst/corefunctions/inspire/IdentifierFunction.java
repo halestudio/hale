@@ -15,7 +15,6 @@ package eu.esdihumboldt.cst.corefunctions.inspire;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.geotools.feature.FeatureCollection;
@@ -154,7 +153,7 @@ public class IdentifierFunction
 			if (this.version != null && !this.version.equals("")){
 
 					String featureTypeName = source.getType().getName().getLocalPart();
-					String inspireIDString = this.INSPIRE_IDENTIFIER_PREFIX + ":" + this.countryName + ":"
+					String inspireIDString = INSPIRE_IDENTIFIER_PREFIX + ":" + this.countryName + ":"
 							+ this.dataProviderName + ":" + this.productName + ":"
 							+ featureTypeName + ":" + localID + ":"+this.version;	
 					// set to target feature
@@ -163,7 +162,7 @@ public class IdentifierFunction
 				
 				else{
 					String featureTypeName = source.getType().getName().getLocalPart();
-					String inspireIDString = this.INSPIRE_IDENTIFIER_PREFIX + ":" + this.countryName + ":"
+					String inspireIDString = INSPIRE_IDENTIFIER_PREFIX + ":" + this.countryName + ":"
 							+ this.dataProviderName + ":" + this.productName + ":"
 							+ featureTypeName + ":" + localID;
 					// set to target feature
@@ -173,16 +172,6 @@ public class IdentifierFunction
 
 		return target;
 	}
-
-
-	@Override
-	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
-		parameterTypes.put(IdentifierFunction.COUNTRY_PARAMETER_NAME, String.class);
-		parameterTypes.put(IdentifierFunction.DATA_PROVIDER_PARAMETER_NAME, String.class);
-		parameterTypes.put(IdentifierFunction.PRODUCT_PARAMETER_NAME, String.class);
-		parameterTypes.put(IdentifierFunction.VERSION, String.class);
-		
-	}
 	
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
@@ -190,8 +179,8 @@ public class IdentifierFunction
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
-		entityTypes.add("eu.esdihumboldt.inspire.data.InspireIdentifier");
-		entityTypes.add("java.lang.String");
+		entityTypes.add(InspireIdentifier.class.getName());
+		entityTypes.add(String.class.getName());
 		entity1.setTypeCondition(entityTypes);
 		
 		Property entity2 = new Property(new About(""));

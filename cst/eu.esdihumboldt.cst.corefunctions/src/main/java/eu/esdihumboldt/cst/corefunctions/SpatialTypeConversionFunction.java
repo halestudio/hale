@@ -14,15 +14,14 @@ package eu.esdihumboldt.cst.corefunctions;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import org.geotools.feature.AttributeImpl;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.PropertyImpl;
 import org.opengis.feature.Feature;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
@@ -54,7 +53,8 @@ import eu.esdihumboldt.goml.rdf.About;
  * @version $Id$
  */
 
-public class SpatialTypeConversionFunction extends AbstractCstFunction {
+public class SpatialTypeConversionFunction 
+	extends AbstractCstFunction {
 
 	public static final String FROM = "FROM";
 	public static final String TO = "TO";
@@ -83,8 +83,10 @@ public class SpatialTypeConversionFunction extends AbstractCstFunction {
 
 		// FIXME: should be using sourceProperty/targetProperty
 		Collection<org.opengis.feature.Property> c = new HashSet<org.opengis.feature.Property>();
-		PropertyDescriptor pd = target.getDefaultGeometryProperty()
-				.getDescriptor();
+		Geometry geom = (Geometry)((SimpleFeature)source).getProperty(
+				this.sourceProperty.getLocalname()).getValue();
+		PropertyDescriptor pd_target = ((SimpleFeature)target).getProperty(
+				this.targetProperty.getLocalname()).getDescriptor();
 
 		GeometryFactory geomFactory = new GeometryFactory();
 		Object newGeometry = null;
@@ -92,74 +94,58 @@ public class SpatialTypeConversionFunction extends AbstractCstFunction {
 		// do the conversion
 		if (this.from.equals(LineString.class)
 				&& this.to.equals(MultiPoint.class)) {
-			Geometry geom = (Geometry) source.getDefaultGeometryProperty()
-					.getValue();
 			Coordinate[] coords = geom.getCoordinates();
 			newGeometry = geomFactory.createMultiPoint(coords);
 			PropertyImpl p = new AttributeImpl(newGeometry,
-					(AttributeDescriptor) pd, null);
+					(AttributeDescriptor) pd_target, null);
 			c.add(p);
 
 		} else if (this.from.equals(Polygon.class)
 				&& this.to.equals(MultiPoint.class)) {
-			Geometry geom = (Geometry) source.getDefaultGeometryProperty()
-					.getValue();
 			Coordinate[] coords = geom.getCoordinates();
 			newGeometry = geomFactory.createMultiPoint(coords);
 			PropertyImpl p = new AttributeImpl(newGeometry,
-					(AttributeDescriptor) pd, null);
+					(AttributeDescriptor) pd_target, null);
 			c.add(p);
 		} else if (this.from.equals(MultiPolygon.class)
 				&& this.to.equals(MultiPoint.class)) {
-			Geometry geom = (Geometry) source.getDefaultGeometryProperty()
-					.getValue();
 			Coordinate[] coords = geom.getCoordinates();
 			newGeometry = geomFactory.createMultiPoint(coords);
 			PropertyImpl p = new AttributeImpl(newGeometry,
-					(AttributeDescriptor) pd, null);
+					(AttributeDescriptor) pd_target, null);
 			c.add(p);
 		} else if (this.from.equals(MultiLineString.class)
 				&& this.to.equals(MultiPoint.class)) {
-			Geometry geom = (Geometry) source.getDefaultGeometryProperty()
-					.getValue();
 			Coordinate[] coords = geom.getCoordinates();
 			newGeometry = geomFactory.createMultiPoint(coords);
 			PropertyImpl p = new AttributeImpl(newGeometry,
-					(AttributeDescriptor) pd, null);
+					(AttributeDescriptor) pd_target, null);
 			c.add(p);
 		} else if (this.from.equals(Polygon.class)
 				&& this.to.equals(MultiLineString.class)) {
-			Geometry geom = (Geometry) source.getDefaultGeometryProperty()
-					.getValue();
 			newGeometry = geom.getBoundary();
 			PropertyImpl p = new AttributeImpl(newGeometry,
-					(AttributeDescriptor) pd, null);
+					(AttributeDescriptor) pd_target, null);
 			c.add(p);
 		} else if (this.from.equals(Polygon.class)
 				&& this.to.equals(LineString.class)) {
-			Geometry geom = (Geometry) source.getDefaultGeometryProperty()
-					.getValue();
 			Coordinate[] coords = geom.getCoordinates();
 			newGeometry = geomFactory.createLineString(coords);
 			PropertyImpl p = new AttributeImpl(newGeometry,
-					(AttributeDescriptor) pd, null);
+					(AttributeDescriptor) pd_target, null);
 			c.add(p);
 		} else if (this.from.equals(MultiPolygon.class)
 				&& this.to.equals(MultiLineString.class)) {
-			Geometry geom = (Geometry) source.getDefaultGeometryProperty()
-					.getValue();
 			newGeometry = geom.getBoundary();
 			PropertyImpl p = new AttributeImpl(newGeometry,
-					(AttributeDescriptor) pd, null);
+					(AttributeDescriptor) pd_target, null);
 			c.add(p);
 		} else if (this.from.equals(MultiPolygon.class)
 				&& this.to.equals(LineString.class)) {
-			Geometry geom = (Geometry) source.getDefaultGeometryProperty()
-					.getValue();
 			Coordinate[] coords = geom.getCoordinates();
 			newGeometry = geomFactory.createLineString(coords);
 			PropertyImpl p = new AttributeImpl(newGeometry,
-					(AttributeDescriptor) pd, null);
+					(AttributeDescriptor) pd_target, null);
 			c.add(p);
 		}
 
@@ -170,19 +156,6 @@ public class SpatialTypeConversionFunction extends AbstractCstFunction {
 
 		target.setValue(c);
 		return target;
-	}
-
-	@SuppressWarnings("unchecked")
-	public boolean configure(Map<String, String> parametersValues) {
-		try {
-			this.from = (Class<? extends Geometry>) Class
-					.forName(parametersValues.get(FROM));
-			this.to = (Class<? extends Geometry>) Class
-					.forName(parametersValues.get(TO));
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
 	}
 
 	/**
@@ -221,8 +194,8 @@ public class SpatialTypeConversionFunction extends AbstractCstFunction {
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
-		entityTypes.add("com.vividsolutions.jts.geom.Geometry");
-		entityTypes.add("org.opengis.geometry.Geometry");
+		entityTypes.add(com.vividsolutions.jts.geom.Geometry.class.getName());
+		entityTypes.add(org.opengis.geometry.Geometry.class.getName());
 		entity1.setTypeCondition(entityTypes);
 		
 		Property entity2 = new Property(new About(""));
@@ -235,9 +208,11 @@ public class SpatialTypeConversionFunction extends AbstractCstFunction {
 		List<IParameter> params = new ArrayList<IParameter>(); 
 			
 		Parameter p_to   = 
-			new Parameter(SpatialTypeConversionFunction.TO  ,"com.vividsolutions.jts.geom.Geometry");
+			new Parameter(SpatialTypeConversionFunction.TO,
+					com.vividsolutions.jts.geom.Geometry.class.getName());
 		Parameter p_from = 
-			new Parameter(SpatialTypeConversionFunction.FROM,"com.vividsolutions.jts.geom.Geometry");
+			new Parameter(SpatialTypeConversionFunction.FROM,
+					com.vividsolutions.jts.geom.Geometry.class.getName());
 		
 		params.add(p_to);
 		params.add(p_from);
@@ -248,10 +223,4 @@ public class SpatialTypeConversionFunction extends AbstractCstFunction {
 		return parameterCell;
 	}
 	
-	@Override
-	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
-		parametersTypes.put(SpatialTypeConversionFunction.FROM, Geometry.class);
-		parametersTypes.put(SpatialTypeConversionFunction.TO, Geometry.class);
-		
-	}
 }

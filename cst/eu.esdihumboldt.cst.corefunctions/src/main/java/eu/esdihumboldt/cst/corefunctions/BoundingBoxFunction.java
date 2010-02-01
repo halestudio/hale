@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import org.geotools.feature.AttributeImpl;
 import org.geotools.feature.FeatureCollection;
@@ -70,19 +69,14 @@ public class BoundingBoxFunction extends AbstractCstFunction {
 		return false;
 	}
 	
-	@Override
-	protected void setParametersTypes(Map<String, Class<?>> parameters) {
-		//No parameters needed so leaving empty		
-	}
-	
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
 		Property entity1 = new Property(new About(""));
 	
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
-		entityTypes.add("com.vividsolutions.jts.geom.Geometry");
-		entityTypes.add("org.opengis.geometry.Geometry");
+		entityTypes.add(com.vividsolutions.jts.geom.Geometry.class.getName());
+		entityTypes.add(org.opengis.geometry.Geometry.class.getName());
 		entity1.setTypeCondition(entityTypes);
 		
 		Property entity2 = new Property(new About(""));

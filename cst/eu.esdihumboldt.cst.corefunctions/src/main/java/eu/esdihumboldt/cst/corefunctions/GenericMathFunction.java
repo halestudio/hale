@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import org.geotools.feature.AttributeImpl;
 import org.geotools.feature.FeatureCollection;
@@ -84,8 +83,8 @@ public class GenericMathFunction
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
-		entityTypes.add("java.lang.String");
-		entityTypes.add("java.lang.Number");
+		entityTypes.add(String.class.getName());
+		entityTypes.add(Number.class.getName());
 		entity1.setTypeCondition(entityTypes);
 		
 		Property entity2 = new Property(new About(""));	
@@ -152,11 +151,6 @@ public class GenericMathFunction
 
 		
 		return target;
-	}
-
-	@Override
-	protected void setParametersTypes(Map<String, Class<?>> parameterTypes) {
-		parameterTypes.put(GenericMathFunction.EXPRESSION_PARAMETER_NAME, String.class);		
 	}
 
 }

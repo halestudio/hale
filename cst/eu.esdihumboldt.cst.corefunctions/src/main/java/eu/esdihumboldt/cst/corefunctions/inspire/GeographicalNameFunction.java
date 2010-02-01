@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import org.geotools.feature.AttributeImpl;
 import org.geotools.feature.FeatureCollection;
@@ -204,21 +203,6 @@ public class GeographicalNameFunction
 		
 		return target;
 	}
-
-	@Override
-	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
-		parameterTypes.put(GeographicalNameFunction.PROPERTY_TEXT, String.class);
-		parameterTypes.put(GeographicalNameFunction.PROPERTY_SCRIPT, String.class);
-		parameterTypes.put(GeographicalNameFunction.PROPERTY_TRANSLITERATION, String.class);
-		parameterTypes.put(GeographicalNameFunction.PROPERTY_NAMESTATUS, String.class);
-		parameterTypes.put(GeographicalNameFunction.PROPERTY_LANGUAGE, String.class);
-		parameterTypes.put(GeographicalNameFunction.PROPERTY_NATIVENESS, String.class);
-		parameterTypes.put(GeographicalNameFunction.PROPERTY_SOURCEOFNAME, String.class);
-		parameterTypes.put(GeographicalNameFunction.PROPERTY_PRONUNCIATIONIPA, String.class);
-		parameterTypes.put(GeographicalNameFunction.PROPERTY_PRONUNCIATIONSOUNDLINK, String.class);
-		parameterTypes.put(GeographicalNameFunction.PROPERTY_GRAMMA_GENDER, String.class);
-		parameterTypes.put(GeographicalNameFunction.PROPERTY_GRAMMA_NUMBER, String.class);
-	}
 	
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
@@ -226,8 +210,8 @@ public class GeographicalNameFunction
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
-		entityTypes.add("eu.esdihumboldt.inspire.data.GeographicalName");
-		entityTypes.add("java.lang.String");
+		entityTypes.add(GeographicalName.class.getName());
+		entityTypes.add(String.class.getName());
 		entity1.setTypeCondition(entityTypes);
 		
 		Property entity2 = new Property(new About(""));

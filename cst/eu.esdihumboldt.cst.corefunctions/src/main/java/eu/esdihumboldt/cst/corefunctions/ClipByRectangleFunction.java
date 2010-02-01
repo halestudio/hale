@@ -23,10 +23,8 @@ package eu.esdihumboldt.cst.corefunctions;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import org.geotools.feature.AttributeImpl;
 import org.geotools.feature.FeatureCollection;
@@ -142,8 +140,8 @@ public class ClipByRectangleFunction extends AbstractCstFunction{
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
-		entityTypes.add("com.vividsolutions.jts.geom.Geometry");
-		entityTypes.add("org.opengis.geometry.Geometry");
+		entityTypes.add(com.vividsolutions.jts.geom.Geometry.class.getName());
+		entityTypes.add(org.opengis.geometry.Geometry.class.getName());
 		entity1.setTypeCondition(entityTypes);
 		
 		Property entity2 = new Property(new About(""));
@@ -169,11 +167,4 @@ public class ClipByRectangleFunction extends AbstractCstFunction{
 		return parameterCell;
 	}
 	
-	@Override
-	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
-		parametersTypes.put(ClipByRectangleFunction.XMAX, Double.class);
-		parametersTypes.put(ClipByRectangleFunction.XMIN, Double.class);
-		parametersTypes.put(ClipByRectangleFunction.YMAX, Double.class);
-		parametersTypes.put(ClipByRectangleFunction.YMIN, Double.class);	
-	}		
 }
