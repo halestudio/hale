@@ -34,6 +34,9 @@ import eu.esdihumboldt.hale.rcp.views.tasks.TasklistView;
  */
 public class ClientPerspective implements IPerspectiveFactory {
 	
+	/**
+	 * @see IPerspectiveFactory#createInitialLayout(IPageLayout)
+	 */
 	public void createInitialLayout(IPageLayout _layout) {
 		String editorArea = _layout.getEditorArea();
 		
@@ -45,23 +48,17 @@ public class ClientPerspective implements IPerspectiveFactory {
 		IFolderLayout bottomLeft = _layout.createFolder(
 				"bottomLeft", IPageLayout.BOTTOM, 0.67f, "topLeft");
 		bottomLeft.addView(MappingView.ID);
-		_layout.getViewLayout(MappingView.ID).setCloseable(false);
 		bottomLeft.addView(AttributeView.ID);
-		_layout.getViewLayout(AttributeView.ID).setCloseable(false);
 		
 		IFolderLayout topRight = _layout.createFolder(
 				"topRight", IPageLayout.RIGHT, 0.4f, editorArea);
 		topRight.addView(MapView.ID);
-		_layout.getViewLayout(MapView.ID).setCloseable(false);
 		topRight.addView(ReferenceTableView.ID);
-		_layout.getViewLayout(ReferenceTableView.ID).setCloseable(false);
 		topRight.addView(TransformedTableView.ID);
-		_layout.getViewLayout(TransformedTableView.ID).setCloseable(false);
 		
 		IFolderLayout bottomRight = _layout.createFolder(
 				"bottomRight", IPageLayout.BOTTOM, 0.67f, "topRight");
 		bottomRight.addView(TasklistView.ID);
-		_layout.getViewLayout(TasklistView.ID).setCloseable(false);
 		
 		_layout.setEditorAreaVisible(false);
 	}

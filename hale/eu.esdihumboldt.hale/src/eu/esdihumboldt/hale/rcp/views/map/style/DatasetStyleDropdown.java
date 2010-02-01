@@ -66,7 +66,7 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 		update(null);
 		
 		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-		schema.addListener(this);
+		schema.addListener(this); //FIXME remove the listener? when & where?
 		
 		setMenuCreator(this);
 	}

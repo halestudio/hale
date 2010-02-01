@@ -204,6 +204,10 @@ public class ModelNavigationView extends ViewPart implements
 	
 	private Image augmentImage;
 
+	private SchemaServiceListener schemaListener;
+
+	private HaleServiceListener alignmentListener;
+
 	/**
 	 * @see WorkbenchPart#createPartControl(Composite)
 	 */
@@ -212,7 +216,7 @@ public class ModelNavigationView extends ViewPart implements
 		// get schema service
 		schemaService = (SchemaService) this.getSite().getService(
 				SchemaService.class);
-		schemaService.addListener(new SchemaServiceListener() {
+		schemaService.addListener(schemaListener = new SchemaServiceListener() {
 			
 			@SuppressWarnings("unchecked")
 			@Override
@@ -356,7 +360,7 @@ public class ModelNavigationView extends ViewPart implements
 		
 		// redraw on alignment change
 		AlignmentService as = (AlignmentService) getSite().getService(AlignmentService.class);
-		as.addListener(new HaleServiceListener() {
+		as.addListener(alignmentListener = new HaleServiceListener() {
 
 			@SuppressWarnings("unchecked")
 			@Override
@@ -693,6 +697,16 @@ public class ModelNavigationView extends ViewPart implements
 	 */
 	@Override
 	public void dispose() {
+		if (schemaListener != null) {
+			SchemaService ss = (SchemaService) getSite().getService(SchemaService.class);
+			ss.removeListener(schemaListener);
+		}
+		
+		if (alignmentListener != null) {
+			AlignmentService as = (AlignmentService) getSite().getService(AlignmentService.class);
+			as.removeListener(alignmentListener);
+		}
+		
 		if (functionImage != null) {
 			functionImage.dispose();
 		}

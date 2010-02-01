@@ -182,4 +182,16 @@ public class MapView extends ViewPart {
 		painter.setBackground(background);
 	}
 
+	/**
+	 * @see WorkbenchPart#dispose()
+	 */
+	@Override
+	public void dispose() {
+		if (painter != null) {
+			painter.dispose();
+		}
+		
+		super.dispose();
+	}
+
 }

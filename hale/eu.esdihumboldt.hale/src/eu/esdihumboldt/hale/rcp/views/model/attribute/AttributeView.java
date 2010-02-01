@@ -51,7 +51,6 @@ import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
-import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
@@ -93,25 +92,16 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 	private Label alLabel;
 
 	private AlignmentService as = null;
-	private SchemaService schemaService = null;
 
 	//XXX private Image transparentImage;
 	
-	// Viewer for the sorceAttributeTable
-	private TableViewer sourceAttributeViewer;
-
 	private boolean isSourceFeatureType = false;
 	private boolean isTargetFeaureType = false;
 
-	// Viewer for the targetAttributeTable
-	private TableViewer targetAttributeViewer;
+	private HaleServiceListener alignmentListener;
 
 	@Override
 	public void createPartControl(Composite _parent) {
-		// get schema service
-		this.schemaService = (SchemaService) this.getSite().getService(
-				SchemaService.class);
-		
 		// get alignment service
 		this.as = (AlignmentService) this.getSite().getService(
 				AlignmentService.class);
@@ -286,7 +276,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 
 			public void drop(DropTargetEvent event) {
 				if (textTransfer.isSupportedType(event.currentDataType)) {
-					DropTarget target = (DropTarget) event.widget;
+					//DropTarget target = (DropTarget) event.widget;
 					TableItem targetAttribute = (TableItem) event.item;
 					
 					// set selection to this targtarget item
@@ -307,7 +297,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 		});
 		
 		// listen on alignment service
-		as.addListener(new HaleServiceListener() {
+		as.addListener(alignmentListener = new HaleServiceListener() {
 
 			@SuppressWarnings("unchecked")
 			@Override
@@ -331,7 +321,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 		viewerLComposite.setLayoutData(gData);
 		Table attributeList = new Table(viewerLComposite, SWT.BORDER
 				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
-		this.targetAttributeViewer = new TableViewer(attributeList);
+		new TableViewer(attributeList);
 		return attributeList;
 	}
 
@@ -349,7 +339,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 		Table attributeList = new Table(viewerLComposite, SWT.BORDER
 				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
 
-		this.sourceAttributeViewer = new TableViewer(attributeList);
+		new TableViewer(attributeList);
 		return attributeList;
 	}
 
@@ -643,6 +633,10 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 	 */
 	@Override
 	public void dispose() {
+		if (alignmentListener != null) {
+			as.removeListener(alignmentListener);
+		}
+		
 		if (!alLabel.isDisposed()) {
 			Image image = alLabel.getImage();
 			if (image != null) {

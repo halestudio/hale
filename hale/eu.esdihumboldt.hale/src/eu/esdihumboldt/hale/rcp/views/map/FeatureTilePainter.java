@@ -87,6 +87,12 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	 * The background color
 	 */
 	private RGB background = new RGB(126, 166, 210);
+
+	private final InstanceServiceListener instanceListener;
+
+	private final HaleServiceListener styleListener;
+
+	private final HaleServiceListener alignmentListener;
 	
 	/**
 	 * Creates a Feature painter for the given control
@@ -103,7 +109,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		init(canvas, determineMapArea());
 		
 		final InstanceService instances = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
-		instances.addListener(new InstanceServiceListener() {
+		instances.addListener(instanceListener = new InstanceServiceListener() {
 			
 			@SuppressWarnings("unchecked")
 			@Override
@@ -153,7 +159,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		});
 		
 		StyleService styles = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
-		styles.addListener(new HaleServiceListener() {
+		styles.addListener(styleListener = new HaleServiceListener() {
 			
 			@SuppressWarnings("unchecked")
 			@Override
@@ -168,7 +174,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		
 		final AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
 		
-		alService.addListener(new HaleServiceListener() {
+		alService.addListener(alignmentListener = new HaleServiceListener() {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void update(UpdateMessage message) {
@@ -526,6 +532,20 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 			resetTiles();
 			refresh();
 		}
+	}
+	
+	/**
+	 * Dispose the painter
+	 */
+	public void dispose() {
+		final InstanceService instances = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+		instances.removeListener(instanceListener);
+		
+		StyleService styles = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+		styles.removeListener(styleListener);
+		
+		final AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+		alService.removeListener(alignmentListener);
 	}
 
 }

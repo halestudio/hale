@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.part.WorkbenchPart;
 
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.TaskService;
@@ -39,12 +40,18 @@ public class TasklistView
 	extends ViewPart 
 	implements HaleServiceListener {
 	
+	/**
+	 * The view ID
+	 */
 	public static final String ID ="eu.esdihumboldt.hale.rcp.views.tasks.TasklistView";
 
 	private TableViewer tableViewer;
 	
 	private TaskService taskService;
 
+	/**
+	 * @see WorkbenchPart#createPartControl(Composite)
+	 */
 	@Override
 	public void createPartControl(Composite parent) {
 		
@@ -135,19 +142,31 @@ public class TasklistView
 
 	}
 	
-	
-	
+	/**
+	 * @see WorkbenchPart#setFocus()
+	 */
 	@Override
 	public void setFocus(){
 		
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.esdihumboldt.hale.models.HaleServiceListener#update()
+	/**
+	 * @see HaleServiceListener#update(UpdateMessage)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void update(UpdateMessage message) {
 		this.tableViewer.setInput(taskService.getOpenTasks());
 	}
+
+	/**
+	 * @see WorkbenchPart#dispose()
+	 */
+	@Override
+	public void dispose() {
+		taskService.removeListener(this);
+		
+		super.dispose();
+	}
+	
 }

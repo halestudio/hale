@@ -128,6 +128,8 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 	private final Button prevButton;
 	
 	private final Button nextButton;
+
+	private final HaleServiceListener alignmentListener;
 	
 	/**
 	 * Constructor
@@ -303,7 +305,7 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 		selectionService.addSelectionListener(this);
 		
 		// update after alignment change
-		alignmentService.addListener(new HaleServiceListener() {
+		alignmentService.addListener(alignmentListener = new HaleServiceListener() {
 
 			@SuppressWarnings("unchecked")
 			@Override
@@ -468,6 +470,8 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 	 */
 	@Override
 	public void dispose() {
+		alignmentService.removeListener(alignmentListener);
+		
 		prevImage.dispose();
 		nextImage.dispose();
 		editImage.dispose();
