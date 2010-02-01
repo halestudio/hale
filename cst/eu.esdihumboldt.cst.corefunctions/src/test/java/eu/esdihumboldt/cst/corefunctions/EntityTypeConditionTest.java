@@ -79,7 +79,7 @@ public class EntityTypeConditionTest extends TestCase {
 						for (Iterator<String> it = entity1.getTypeCondition()
 								.iterator(); it.hasNext();) {
 							typeCondition = it.next();
-							Class c = Class.forName(typeCondition);
+							Class.forName(typeCondition);
 						}
 					}
 					// typeCondition class can't be created
@@ -104,7 +104,7 @@ public class EntityTypeConditionTest extends TestCase {
 						for (Iterator<String> it = entity2.getTypeCondition()
 								.iterator(); it.hasNext();) {
 							String tc = it.next();
-							Class c = Class.forName(tc);
+							Class.forName(tc);
 						}
 					}
 					// typeCondition class can't be created

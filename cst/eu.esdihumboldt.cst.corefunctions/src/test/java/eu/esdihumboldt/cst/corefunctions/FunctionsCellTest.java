@@ -7,10 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.esdihumboldt.cst.corefunctions.inspire.GeographicalNameFunction;
-import eu.esdihumboldt.cst.corefunctions.inspire.IdentifierFunction;
 import eu.esdihumboldt.cst.transformer.CstFunction;
-import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
 
 /**

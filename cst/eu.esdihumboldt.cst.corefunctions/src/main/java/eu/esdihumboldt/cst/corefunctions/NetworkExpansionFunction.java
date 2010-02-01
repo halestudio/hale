@@ -81,8 +81,7 @@ public class NetworkExpansionFunction extends AbstractCstFunction {
 				bufferParameters.setEndCapStyle(capStyle);
 				BufferBuilder bb = new BufferBuilder(new BufferParameters());
 				new_geometry = bb.buffer(old_geometry, bufferWidth);
-				((SimpleFeatureImpl)target).setAttribute(
-						this.targetProperty.getLocalname(), new_geometry);
+				((SimpleFeatureImpl)target).setDefaultGeometry(new_geometry);
 			} catch (Exception ex) {
 				if (!ex.getClass().equals(TopologyException.class)) {
 					throw new RuntimeException(ex);

@@ -83,11 +83,33 @@ public class SpatialTypeConversionFunction
 
 		// FIXME: should be using sourceProperty/targetProperty
 		Collection<org.opengis.feature.Property> c = new HashSet<org.opengis.feature.Property>();
-		Geometry geom = (Geometry)((SimpleFeature)source).getProperty(
-				this.sourceProperty.getLocalname()).getValue();
-		PropertyDescriptor pd_target = ((SimpleFeature)target).getProperty(
-				this.targetProperty.getLocalname()).getDescriptor();
-
+		Geometry geom = null;
+		try {
+			geom = (Geometry)((SimpleFeature)source).getProperty(
+					this.sourceProperty.getLocalname()).getValue();
+		}
+		catch (Exception ex) {}
+		finally {
+			if (geom == null) {
+				geom = (Geometry) source.getDefaultGeometryProperty().getValue();
+			}
+		}
+		PropertyDescriptor pd_target = null;
+		try {
+			pd_target = ((SimpleFeature)target).getProperty(
+					this.targetProperty.getLocalname()).getDescriptor();
+		}
+		catch (Exception ex) {}
+		finally {
+			if (pd_target == null) {
+				pd_target = target.getDefaultGeometryProperty().getDescriptor();
+			}
+		}
+		
+		if (pd_target == null || geom == null) {
+			throw new NullPointerException("Incorrect parameters given.");
+		}
+		
 		GeometryFactory geomFactory = new GeometryFactory();
 		Object newGeometry = null;
 
