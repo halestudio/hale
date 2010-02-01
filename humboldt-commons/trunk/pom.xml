@@ -198,7 +198,7 @@
 		<repository>
 			<id>artifactory.esdi-humboldt.eu</id>
 			<name>Humboldt internal repository</name>
-			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory</url>
+			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/repo</url>
 		</repository>
 	</repositories>
 
