@@ -125,14 +125,6 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 				schemaTypes.setContentProvider(ArrayContentProvider.getInstance());
 				schemaTypes.setInput(new Object[]{SchemaType.SOURCE, SchemaType.TARGET});
 				schemaTypes.setSelection(new StructuredSelection(SchemaType.SOURCE));
-				schemaTypes.addSelectionChangedListener(new ISelectionChangedListener() {
-					
-					@Override
-					public void selectionChanged(SelectionChangedEvent event) {
-						updateFeatureTypesSelection();
-					}
-					
-				});
 			}
 			else {
 				schemaTypes = null;
@@ -215,6 +207,17 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 			});
 			
 			updateFeatureTypesSelection();
+			
+			if (schemaTypes != null) {
+				schemaTypes.addSelectionChangedListener(new ISelectionChangedListener() {
+					
+					@Override
+					public void selectionChanged(SelectionChangedEvent event) {
+						updateFeatureTypesSelection();
+					}
+					
+				});
+			}
 			
 			// service listeners
 			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
