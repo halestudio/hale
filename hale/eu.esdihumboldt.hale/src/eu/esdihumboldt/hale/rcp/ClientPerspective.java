@@ -19,7 +19,8 @@ import eu.esdihumboldt.hale.rcp.views.map.MapView;
 import eu.esdihumboldt.hale.rcp.views.mapping.MappingView;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 import eu.esdihumboldt.hale.rcp.views.model.attribute.AttributeView;
-import eu.esdihumboldt.hale.rcp.views.table.TableView;
+import eu.esdihumboldt.hale.rcp.views.table.ReferenceTableView;
+import eu.esdihumboldt.hale.rcp.views.table.TransformedTableView;
 import eu.esdihumboldt.hale.rcp.views.tasks.TasklistView;
 
 
@@ -52,8 +53,10 @@ public class ClientPerspective implements IPerspectiveFactory {
 				"topRight", IPageLayout.RIGHT, 0.4f, editorArea);
 		topRight.addView(MapView.ID);
 		_layout.getViewLayout(MapView.ID).setCloseable(false);
-		topRight.addView(TableView.ID);
-		_layout.getViewLayout(TableView.ID).setCloseable(false);
+		topRight.addView(ReferenceTableView.ID);
+		_layout.getViewLayout(ReferenceTableView.ID).setCloseable(false);
+		topRight.addView(TransformedTableView.ID);
+		_layout.getViewLayout(TransformedTableView.ID).setCloseable(false);
 		
 		IFolderLayout bottomRight = _layout.createFolder(
 				"bottomRight", IPageLayout.BOTTOM, 0.67f, "topRight");

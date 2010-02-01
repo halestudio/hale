@@ -47,10 +47,10 @@
             name="Attribute View">
       </view>
       <view
-            class="eu.esdihumboldt.hale.rcp.views.table.TableView"
+            class="eu.esdihumboldt.hale.rcp.views.table.ReferenceTableView"
             icon="icons/table.gif"
-            id="eu.esdihumboldt.hale.rcp.views.TableView"
-            name="Table View"
+            id="eu.esdihumboldt.hale.rcp.views.ReferenceTable"
+            name="Reference Data"
             restorable="true">
       </view>
       <view
@@ -59,6 +59,13 @@
             icon="icons/mapping.gif"
             id="eu.esdihumboldt.hale.rcp.views.mapping.MappingView"
             name="Mapping"
+            restorable="true">
+      </view>
+      <view
+            class="eu.esdihumboldt.hale.rcp.views.table.TransformedTableView"
+            icon="icons/table.gif"
+            id="eu.esdihumboldt.hale.rcp.views.TransformedTable"
+            name="Transformed Data"
             restorable="true">
       </view>
    </extension>
@@ -249,6 +256,12 @@
          </service>
          <service
                serviceClass="eu.esdihumboldt.hale.models.ProjectService">
+         </service>
+      </serviceFactory>
+      <serviceFactory
+            factoryClass="eu.esdihumboldt.hale.rcp.views.table.ServiceFactory">
+         <service
+               serviceClass="eu.esdihumboldt.hale.rcp.views.table.ReferenceSampleService">
          </service>
       </serviceFactory>
    </extension>

@@ -66,11 +66,13 @@ public class FeatureFilterField extends Composite {
 	private final Text filterText;
 	private final Button openForm;
 	private final Button insertVar;
+	private final Button clearFilter;
 	
 	private FeatureType featureType;
 	
 	private final Image insertVarImage;
 	private final Image openFormImage;
+	private final Image clearFilterImage;
 	
 	private final Set<FilterListener> listeners = new HashSet<FilterListener>();
 
@@ -86,14 +88,17 @@ public class FeatureFilterField extends Composite {
 		
 		this.featureType = featureType;
 		
-		GridLayout layout = new GridLayout(3, false);
+		GridLayout layout = new GridLayout(4, false);
 		layout.horizontalSpacing = 0;
 		layout.verticalSpacing = 0;
+		layout.marginWidth = 0;
+		layout.marginHeight = 0;
 		setLayout(layout);
 		
 		// images
 		insertVarImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/insert.gif").createImage();
 		openFormImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/form.gif").createImage();
+		clearFilterImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/remove.gif").createImage();
 		
 		// create components
 		
@@ -105,6 +110,24 @@ public class FeatureFilterField extends Composite {
 			
 			@Override
 			public void modifyText(ModifyEvent e) {
+				clearFilter.setEnabled(filterText.getText() != null && !filterText.getText().isEmpty());
+				notifyListeners();
+			}
+			
+		});
+		
+		// clear filter
+		clearFilter = new Button(this, SWT.PUSH);
+		clearFilter.setEnabled(false);
+		clearFilter.setImage(clearFilterImage);
+		clearFilter.setToolTipText("Clear filter");
+		clearFilter.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
+		clearFilter.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				filterText.setText("");
+				clearFilter.setEnabled(false);
 				notifyListeners();
 			}
 			
@@ -218,6 +241,7 @@ public class FeatureFilterField extends Composite {
 	public void dispose() {
 		openFormImage.dispose();
 		insertVarImage.dispose();
+		clearFilterImage.dispose();
 		
 		super.dispose();
 	}
