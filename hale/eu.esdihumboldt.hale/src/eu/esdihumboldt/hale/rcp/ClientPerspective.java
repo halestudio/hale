@@ -43,7 +43,7 @@ public class ClientPerspective implements IPerspectiveFactory {
 		IFolderLayout topLeft = _layout.createFolder(
 				"topLeft", IPageLayout.LEFT, 0.6f, editorArea);
 		topLeft.addView(ModelNavigationView.ID);
-		_layout.getViewLayout(ModelNavigationView.ID).setCloseable(false);
+		//_layout.getViewLayout(ModelNavigationView.ID).setCloseable(false);
 		
 		IFolderLayout bottomLeft = _layout.createFolder(
 				"bottomLeft", IPageLayout.BOTTOM, 0.67f, "topLeft");

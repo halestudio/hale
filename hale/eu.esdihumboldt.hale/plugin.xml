@@ -15,7 +15,7 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="Perspective"
+            name="Default"
             class="eu.esdihumboldt.hale.rcp.ClientPerspective"
             id="eu.esdihumboldt.hale.rcp.ClientPerspective">
       </perspective>
@@ -160,12 +160,14 @@
                mnemonic="F">
             <command
                   commandId="HALE.newProject.command"
+                  icon="icons/new.gif"
                   id="newProject"
                   label="New Alignment Project"
                   style="push">
             </command>
             <command
                   commandId="HALE.openProject.command"
+                  icon="icons/open.gif"
                   id="openProject"
                   label="Open Alignment Project"
                   style="push">
@@ -202,6 +204,7 @@
             </separator>
             <command
                   commandId="HALE.saveAlignmentProjectAs.command"
+                  icon="icons/saveas.gif"
                   id="saveAlignmentProjectAs"
                   label="Save Alignment Project as..."
                   style="push">
@@ -234,6 +237,32 @@
                   style="push">
             </command>
          </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="HALE.toolbar.main">
+            <command
+                  commandId="HALE.newProject.command"
+                  icon="icons/new.gif"
+                  label="New Alignment Project"
+                  style="push">
+            </command>
+            <command
+                  commandId="HALE.openProject.command"
+                  icon="icons/open.gif"
+                  id="openProject"
+                  label="Open Alignment Project"
+                  style="push">
+            </command>
+            <command
+                  commandId="HALE.saveAlignmentProjectAs.command"
+                  icon="icons/saveas.gif"
+                  id="saveAlignmentProjectAs"
+                  label="Save Alignment Project as..."
+                  style="push">
+            </command>
+         </toolbar>
       </menuContribution>
    </extension>
    <extension

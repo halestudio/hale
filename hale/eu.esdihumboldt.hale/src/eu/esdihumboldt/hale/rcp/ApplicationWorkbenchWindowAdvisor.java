@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.hale.rcp;
 
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
@@ -20,7 +21,9 @@ import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ContributionItemFactory;
+import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
@@ -53,8 +56,8 @@ public class ApplicationWorkbenchWindowAdvisor
 		configurer.setInitialSize(new Point(1280,1024));
 		configurer.setTitle("HUMBOLDT Alignment Editor " + 
 				HALEActivator.getDefault().getBundle().getVersion().toString());
-		configurer.setShowCoolBar(false); // this reserves space for action bars on top.
-		configurer.setShowPerspectiveBar(false); // this reserves space for the selection of perspectives.
+		configurer.setShowCoolBar(true); // this reserves space for action bars on top.
+		configurer.setShowPerspectiveBar(true); // this reserves space for the selection of perspectives.
         configurer.setShowMenuBar(true);
         
         // show curved view tabs
@@ -86,6 +89,11 @@ public class ApplicationWorkbenchWindowAdvisor
 				IMenuManager viewMenu = new MenuManager("Show view");
 				windowMenu.add(viewMenu);
 				viewMenu.add(item);
+				
+				//XXX
+				IWorkbenchAction perspectiveAction = ActionFactory.SAVE_PERSPECTIVE.create(configurer.getWindowConfigurer().getWindow());
+				IContributionItem perspectiveItem = new ActionContributionItem(perspectiveAction);
+				windowMenu.add(perspectiveItem);
 
 				menuBar.add(windowMenu);
 			}
