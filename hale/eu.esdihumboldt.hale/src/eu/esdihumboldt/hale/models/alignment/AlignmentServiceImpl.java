@@ -332,6 +332,7 @@ public class AlignmentServiceImpl implements AlignmentService {
 	/**
 	 * Inform {@link HaleServiceListener}s of an update.
 	 */
+	@SuppressWarnings("unchecked")
 	private void updateListeners() {
 		for (HaleServiceListener hsl : this.listeners) {
 			_log.info("Updating a listener.");
@@ -347,6 +348,14 @@ public class AlignmentServiceImpl implements AlignmentService {
 		alignment.getMap().remove(cell);
 		
 		updateListeners();
+	}
+
+	/**
+	 * @see UpdateService#removeListener(HaleServiceListener)
+	 */
+	@Override
+	public void removeListener(HaleServiceListener listener) {
+		listeners.remove(listener);
 	}
 
 }

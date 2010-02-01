@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.models.FeatureFilter;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.hale.models.UpdateService;
 import eu.esdihumboldt.tools.RobustFTKey;
 
 /**
@@ -342,6 +343,14 @@ public class InstanceServiceImpl
 		}
 		
 		return result;
+	}
+
+	/**
+	 * @see UpdateService#removeListener(HaleServiceListener)
+	 */
+	@Override
+	public void removeListener(HaleServiceListener listener) {
+		listeners.remove(listener);
 	}
 
 

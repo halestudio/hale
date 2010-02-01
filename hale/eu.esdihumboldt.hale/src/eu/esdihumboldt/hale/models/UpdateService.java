@@ -28,5 +28,12 @@ public interface UpdateService {
 	 * @return
 	 */
 	public boolean addListener(HaleServiceListener sl);
+	
+	/**
+	 * Remove a listener
+	 * 
+	 * @param listener the listener to remove
+	 */
+	public void removeListener(HaleServiceListener listener);
 
 }

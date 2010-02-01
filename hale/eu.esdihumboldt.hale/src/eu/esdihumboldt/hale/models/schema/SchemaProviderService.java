@@ -247,6 +247,14 @@ public class SchemaProviderService<T extends SchemaProvider>
 			return getTargetSchema();
 		}
 	}
+
+	/**
+	 * @see UpdateService#removeListener(HaleServiceListener)
+	 */
+	@Override
+	public void removeListener(HaleServiceListener listener) {
+		listeners.remove(listener);
+	}
 	
 }
 

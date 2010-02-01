@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.hale.models.UpdateService;
 import eu.esdihumboldt.hale.task.Task;
 import eu.esdihumboldt.hale.task.Task.TaskStatus;
 
@@ -119,11 +120,20 @@ public class TaskServiceImpl
 	/**
 	 * Inform {@link HaleServiceListener}s of an update.
 	 */
+	@SuppressWarnings("unchecked")
 	private void updateListeners() {
 		for (HaleServiceListener hsl : this.listeners) {
 			_log.info("Updating a listener.");
 			hsl.update(new UpdateMessage(TaskService.class, null));
 		}
+	}
+
+	/**
+	 * @see UpdateService#removeListener(HaleServiceListener)
+	 */
+	@Override
+	public void removeListener(HaleServiceListener listener) {
+		listeners.remove(listener);
 	}
 
 }

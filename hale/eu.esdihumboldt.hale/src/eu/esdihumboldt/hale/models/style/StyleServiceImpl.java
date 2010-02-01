@@ -48,6 +48,7 @@ import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.hale.models.UpdateService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
@@ -423,6 +424,14 @@ public class StyleServiceImpl
 		FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle();
 		fts.rules().add(rule);
 		return fts;
+	}
+
+	/**
+	 * @see UpdateService#removeListener(HaleServiceListener)
+	 */
+	@Override
+	public void removeListener(HaleServiceListener listener) {
+		listeners.remove(listener);
 	}
 
 }

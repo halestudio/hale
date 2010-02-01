@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.hale.models.UpdateService;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 
 /**
@@ -134,10 +135,19 @@ public class ProjectServiceImpl
 	/**
 	 * Inform {@link HaleServiceListener}s of an update.
 	 */
+	@SuppressWarnings("unchecked")
 	private void updateListeners() {
 		for (HaleServiceListener hsl : this.listeners) {
 			hsl.update(new UpdateMessage(TaskService.class, null));
 		}
+	}
+
+	/**
+	 * @see UpdateService#removeListener(HaleServiceListener)
+	 */
+	@Override
+	public void removeListener(HaleServiceListener listener) {
+		listeners.remove(listener);
 	}
 
 }
