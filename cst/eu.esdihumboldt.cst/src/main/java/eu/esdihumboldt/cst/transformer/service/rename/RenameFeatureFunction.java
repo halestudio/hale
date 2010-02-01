@@ -111,13 +111,7 @@ public class RenameFeatureFunction
 		this.newName = cell.getEntity2().getAbout().getAbout();
 		return true;
 	}
-
-	@Override
-	protected void setParametersTypes(Map<String, Class<?>> parametersTypes) {
-		 parametersTypes.put(TARGET_FEATURETYPE_NAME, String.class);		
-	}
 	
-
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
 		Property entity1 = new Property(new About(""));

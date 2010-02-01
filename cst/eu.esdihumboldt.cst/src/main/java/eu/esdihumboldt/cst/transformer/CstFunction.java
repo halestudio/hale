@@ -20,17 +20,12 @@
  */
 package eu.esdihumboldt.cst.transformer;
 
-import java.util.List;
-import java.util.Map;
-
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.oml.ext.Function;
 
 /**
  * Interface which defines the two basic methods to transform a
@@ -70,27 +65,10 @@ public interface CstFunction {
 	public boolean configure(ICell cell);
 	
 	/**
-	 * @param parameters a {@link List} with {@link IParameter} objects used
-	 * for configuring a {@link Function}.
-	 * @return false if this mode of configuration is not supported.
-	 * @deprecated use {@link #configure(ICell)} instead.
+	 * @return a prototype {@link Cell} that provides information on the parameter 
+	 * structure that a function expects, including type conditions and value 
+	 * conditions if appropriate. Parameter values are left empty.
 	 */
-	public boolean configure(List<IParameter> parameters);
-	
-	/**
-	 * @param parameters a {@link Map} of parameter names and values.
-	 * @return false if this mode of configuration is not supported.
-	 * @deprecated use {@link #configure(ICell)} instead.
-	 */
-	public boolean configure(Map<String, String> parametersValues);
-	
-	
-	/**
-	 * @return a {@link Map} with parameter names and their type
-	 * @deprecated to be replaced by a method based on Cells
-	 */	
-	public Map<String, Class<?>> getParameterTypes();
-	
 	public Cell getParameters(); 
 
 }

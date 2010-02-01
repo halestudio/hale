@@ -18,12 +18,10 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.cst.transformer.CstFunction;
 import eu.esdihumboldt.cst.transformer.CstService;
@@ -91,13 +89,7 @@ public class CstFunctionFactory {
 			}				
 			
 			// configure using cell first; if false is returned, proceed with manual param configuration
-			if (!t.configure(cell)) {
-				Map<String, String> paramMap = convertToMap(
-						transformation.getParameters());
-				paramMap.put(ENTITY_1_NAME, cell.getEntity1().getAbout().getAbout());
-				paramMap.put(ENTITY_2_NAME, cell.getEntity2().getAbout().getAbout());
-				t.configure(paramMap);
-			}
+			t.configure(cell);
 			return t;
 		}
 		else {
@@ -107,20 +99,6 @@ public class CstFunctionFactory {
 
 	}	
 	
-	/**
-	 * @param params
-	 * @return a Map of String keys and values made from the IParameter list
-	 * @deprecated Will be removed until 2.0-M1
-	 */
-	private Map<String, String> convertToMap(List<IParameter> params){
-		Map<String, String> paramMap = new HashMap<String, String>();
-		for (Iterator<IParameter> i = params.iterator(); i.hasNext();){
-			IParameter p = i.next();
-			
-			paramMap.put(p.getName(), p.getValue());
-		}
-		return paramMap;
-	}
 	
 	/**
 	 * Returns an Augmentation {@link CstFunction} if one was defined in the 
