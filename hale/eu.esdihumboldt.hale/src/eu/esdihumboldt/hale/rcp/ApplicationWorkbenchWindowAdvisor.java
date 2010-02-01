@@ -11,7 +11,18 @@
  */
 package eu.esdihumboldt.hale.rcp;
 
+import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.ui.IPerspectiveFactory;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchPreferenceConstants;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ContributionItemFactory;
+import org.eclipse.ui.application.ActionBarAdvisor;
+import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
@@ -26,16 +37,59 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 public class ApplicationWorkbenchWindowAdvisor 
 	extends WorkbenchWindowAdvisor {
 
+	/**
+	 * @see WorkbenchWindowAdvisor#WorkbenchWindowAdvisor(IWorkbenchWindowConfigurer)
+	 */
 	public ApplicationWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
 		super(configurer);
 	}
 
+	/**
+	 * @see WorkbenchWindowAdvisor#preWindowOpen()
+	 */
 	@Override
 	public void preWindowOpen() {
 		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
 		configurer.setInitialSize(new Point(1280,1024));
-		configurer.setTitle("HUMBOLDT Alignment Editor 1.0.0-RC1");
+		configurer.setTitle("HUMBOLDT Alignment Editor " + 
+				HALEActivator.getDefault().getBundle().getVersion().toString());
 		configurer.setShowCoolBar(false); // this reserves space for action bars on top.
 		configurer.setShowPerspectiveBar(false); // this reserves space for the selection of perspectives.
+        configurer.setShowMenuBar(true);
+        
+        // show curved view tabs
+		PlatformUI.getPreferenceStore().setValue(
+				IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS, false);
 	}
+
+	/**
+	 * @see WorkbenchWindowAdvisor#createActionBarAdvisor(IActionBarConfigurer)
+	 */
+	@Override
+	public ActionBarAdvisor createActionBarAdvisor(
+			final IActionBarConfigurer configurer) {
+		return new ApplicationActionBarAdvisor(configurer) {
+			/**
+			 * @see ActionBarAdvisor#fillMenuBar(IMenuManager)
+			 */
+        	@Override
+			protected void fillMenuBar(final IMenuManager menuBar) {
+				super.fillMenuBar(menuBar);
+
+				menuBar.add(new GroupMarker(
+						IWorkbenchActionConstants.MB_ADDITIONS));
+
+				IContributionItem item = ContributionItemFactory.VIEWS_SHORTLIST
+						.create(configurer.getWindowConfigurer().getWindow());
+				
+				IMenuManager windowMenu = new MenuManager("Configure", "configure");
+				IMenuManager viewMenu = new MenuManager("Show view");
+				windowMenu.add(viewMenu);
+				viewMenu.add(item);
+
+				menuBar.add(windowMenu);
+			}
+		};
+	}
+	
 }

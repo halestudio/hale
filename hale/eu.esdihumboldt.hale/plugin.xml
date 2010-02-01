@@ -224,9 +224,9 @@
             </command>
          </menu>
          <menu
-               id="function"
-               label="Function"
-               mnemonic="u">
+               id="configure"
+               label="Configure"
+               mnemonic="C">
             <command
                   commandId="HALE.listFunctions.command"
                   id="listFunctions"
