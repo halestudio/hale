@@ -62,12 +62,8 @@ public class FunctionDescriptionImpl
 				parameters.put("entity2", parameter.getEntity2().getClass());
 				inspectObject("entity2", parameter.getEntity2());
 			}
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new RuntimeException("Translating a parameter Cell to KV failed: ", e);
 		}
 	}
 
