@@ -91,7 +91,7 @@ public class FunctionDescriptionImpl
 	        	}
 				else if (Collection.class.isAssignableFrom(field.getType())) {
 					int i = 0;
-					for (Object o : (Collection)field.get(parameter)) {
+					for (Object o : (Collection<?>)field.get(parameter)) {
 						String name = parentname + "." + field.getName() + "[" + i++ + "]";
 						parameters.put(name, field.getType());
 						inspectObject(name, o);

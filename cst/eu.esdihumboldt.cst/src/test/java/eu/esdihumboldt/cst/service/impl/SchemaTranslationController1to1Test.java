@@ -28,6 +28,7 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.metadata.iso.lineage.LineageImpl;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opengis.feature.Feature;
@@ -139,6 +140,8 @@ public class SchemaTranslationController1to1Test {
 		Property prop = target.getProperty(
 				NameHelper.targetLocalnamePropertyD);
 		assertTrue(prop.getValue().toString().equals("5.0"));
+		LineageImpl li = (LineageImpl) target.getUserData().get("METADATA_LINEAGE");
+		assertTrue(li.getProcessSteps().size() > 0);
 	}
 	
 	/**
