@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.cst.transformer.capabilities.impl;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -24,45 +22,42 @@ import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 
 /**
- * Basic implementation of CST service capabilities (provisional)
+ * Basic implementation of CST service capabilities
  * 
- * @author ?, Simon Templer
+ * @author Thorsten Reitz, Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$
  */
-public class CstServiceCapabilitiesImpl implements
-		CstServiceCapabilities {
+public class CstServiceCapabilitiesImpl implements CstServiceCapabilities {
 
 	/**
 	 * @see CstServiceCapabilities#getFunctionDescriptions()
 	 */
 	public List<FunctionDescription> getFunctionDescriptions() {
 		List<FunctionDescription> result = new ArrayList<FunctionDescription>();
-		
-		for (Entry<String, Class<? extends CstFunction>> entry : CstFunctionFactory.getInstance().getRegisteredFunctions().entrySet()) {
-			result.add(createDescription(entry.getKey(), entry.getValue()));
+
+		for (Entry<String, Class<? extends CstFunction>> entry : CstFunctionFactory
+				.getInstance().getRegisteredFunctions().entrySet()) {
+			result.add(this.createDescription(entry.getValue()));
 		}
-		
+
 		return result;
 	}
 
 	/**
 	 * Create a function description
 	 * 
-	 * @param name the function name
-	 * @param type the implementing type
+	 * @param type
+	 *            the implementing type
 	 * 
 	 * @return the function description
 	 */
-	protected FunctionDescription createDescription(String name,
+	protected FunctionDescription createDescription(
 			Class<? extends CstFunction> type) {
 		try {
-			//FIXME just to have it working for now
-			return new FunctionDescriptionImpl(new URL("http", "java", "/" + name), null);
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new RuntimeException("Error creating function description", e);
+			return new FunctionDescriptionImpl(type.newInstance());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
