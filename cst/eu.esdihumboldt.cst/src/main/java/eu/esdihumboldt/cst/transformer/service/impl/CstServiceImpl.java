@@ -37,6 +37,7 @@ import eu.esdihumboldt.cst.transformer.CstService;
 import eu.esdihumboldt.cst.transformer.capabilities.CstServiceCapabilities;
 import eu.esdihumboldt.cst.transformer.capabilities.impl.CstServiceCapabilitiesImpl;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
+import eu.esdihumboldt.cst.transformer.service.CstServiceFactory.ToleranceLevel;
 
 
 /**
@@ -49,12 +50,14 @@ public class CstServiceImpl
 	private static Logger _log = Logger.getLogger(CstServiceImpl.class);
 
 	private final CstServiceCapabilities tCapabilities = new CstServiceCapabilitiesImpl();
+	private ToleranceLevel tl = null;
 
 	/**
 	 * Default {@link CstService} constructor.
+	 * @param tl 
 	 */
-	public CstServiceImpl() {
-		
+	public CstServiceImpl(ToleranceLevel tl) {
+		this.tl = tl;
 	}
 
 
@@ -66,7 +69,7 @@ public class CstServiceImpl
 			FeatureCollection<? extends FeatureType, ? extends Feature> fc,
 			IAlignment alignment, Set<FeatureType> targetSchema) {
 		TargetSchemaProvider.getInstance().addTypes(targetSchema);
-		SchemaTranslationController stc = new SchemaTranslationController(alignment);
+		SchemaTranslationController stc = new SchemaTranslationController(tl, alignment);
 		FeatureCollection result = stc.translate((FeatureCollection) fc);
 		return result;
 	}

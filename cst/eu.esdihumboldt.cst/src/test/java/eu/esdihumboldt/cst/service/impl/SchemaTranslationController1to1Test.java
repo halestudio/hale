@@ -41,6 +41,7 @@ import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
+import eu.esdihumboldt.cst.transformer.service.CstServiceFactory.ToleranceLevel;
 import eu.esdihumboldt.cst.transformer.service.impl.SchemaTranslationController;
 import eu.esdihumboldt.cst.transformer.service.impl.TargetSchemaProvider;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
@@ -89,7 +90,7 @@ public class SchemaTranslationController1to1Test {
 		CstFunctionFactory.getInstance().registerCstPackage("eu.esdihumboldt.cst.corefunctions.inspire");
 		
 		// set up the Schema Translation Controller to use for testing
-		stc = new SchemaTranslationController(getTestAlignment());
+		stc = new SchemaTranslationController(null, getTestAlignment());
 		sourceType = getFeatureType(
 				NameHelper.sourceNamespace, 
 				NameHelper.sourceLocalname, 
@@ -186,7 +187,7 @@ public class SchemaTranslationController1to1Test {
 				((FeatureClass) cell.getEntity1()).setAttributeValueCondition(attributeValueConditions );
 			}
 		}
-		stc = new SchemaTranslationController(a);
+		stc = new SchemaTranslationController(ToleranceLevel.strict, a);
 		
 		// set up a FeatureCollection to use for transformation.
 		FeatureCollection features = FeatureCollections.newCollection();

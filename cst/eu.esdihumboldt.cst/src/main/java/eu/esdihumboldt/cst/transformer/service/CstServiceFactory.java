@@ -33,6 +33,7 @@ public class CstServiceFactory {
 
 	/** Reference to a transformation service */
 	private static CstServiceImpl service = null;
+	private static ToleranceLevel tl = ToleranceLevel.lenient;
 	
 	/**
 	 * Returns an instance of an {@link CstService}.
@@ -40,8 +41,27 @@ public class CstServiceFactory {
 	 */
 	public static CstService getInstance() {
 		if (service == null) {
-			service = new CstServiceImpl();
+			service = new CstServiceImpl(tl);
 		}
 		return service;
+	}
+	
+	public static void setToleranceLevel(ToleranceLevel tl) {
+		CstServiceFactory.tl = tl;
+		service = new CstServiceImpl(tl);
+	}
+	
+	/**
+	 * This enumeration provides values for specifying the execution mode of the
+	 * CSTService.
+	 */
+	public enum ToleranceLevel {
+		/** strict execution mode; execution is stopped when any function
+	        execution fails */
+		strict, 
+		/** exceptions thrown by functions are caught, execution is continued and
+	        the cst will always try to return a (partial) result */
+		lenient
+		
 	}
 }

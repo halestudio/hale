@@ -32,6 +32,7 @@ import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.transformer.CstFunction;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
+import eu.esdihumboldt.cst.transformer.service.CstServiceFactory.ToleranceLevel;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Restriction;
@@ -54,17 +55,26 @@ public class SchemaTranslationController {
 	
 	Map<String, CellCardinalityType[]> cardinalities = null;
 	
+	boolean strict = true;
+	
 	/**
 	 * Constructor
+	 * @param tl 
 	 * 
 	 * @param alignment the alignment
 	 */
-	public SchemaTranslationController(IAlignment alignment) {
+	public SchemaTranslationController(ToleranceLevel tl, IAlignment alignment) {
 		// get an AlignmentIndex
 		this.ai = new AlignmentIndex(alignment);
 		
 		// Analyze Alignment to determine later processing
 		this.cardinalities = this.determineCardinalities(alignment);
+		
+		if (tl != null) {
+			if (ToleranceLevel.lenient.equals(tl)) {
+				this.strict = false;
+			}
+		}
 	}
 
 	/**
@@ -112,16 +122,23 @@ public class SchemaTranslationController {
 						CstFunction cstf = null;
 						try {
 							cstf = CstFunctionFactory.getInstance().getCstFunction(cell);
+						
+							// invoke CstFunction with Target Features List. 
+							if (cstf != null && !cstf.getClass().equals(RenameFeatureFunction.class)) {
+								_log.info("Applying a " + cstf.getClass().getName() + " function.");
+								for (int i = 0; i < transformMap.getTransformedFeatures().size(); i++) {
+									cstf.transform(transformMap.getSourceFeatures().get(i), 
+											transformMap.getTransformedFeatures().get(i));
+								}
+							}
 						} catch (Exception e) {
-							throw new RuntimeException("Getting the requested " +
-									"CstFunction failed: ", e);
-						}
-						// invoke CstFunction with Target Features List. 
-						if (cstf != null && !cstf.getClass().equals(RenameFeatureFunction.class)) {
-							_log.info("Applying a " + cstf.getClass().getName() + " function.");
-							for (int i = 0; i < transformMap.getTransformedFeatures().size(); i++) {
-								cstf.transform(transformMap.getSourceFeatures().get(i), 
-										transformMap.getTransformedFeatures().get(i));
+							if (this.strict) {
+								throw new RuntimeException("Executing the requested " +
+										"CstFunction failed: ", e);
+							}
+							else {
+								_log.error("Executing the requested " +
+										"CstFunction failed: ", e);
 							}
 						}
 					}
