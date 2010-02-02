@@ -13,6 +13,7 @@
 package eu.esdihumboldt.cst.transformer.service.rename;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.geotools.feature.FeatureCollection;
@@ -147,5 +148,10 @@ public class RenameFeatureFunction
 		parameterCell.setEntity1(entity1);
 		parameterCell.setEntity2(entity2);
 		return parameterCell;
+	}
+
+	public List<Feature> transformSplit(Feature sourceFeature, List<Feature> targetFeatures) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

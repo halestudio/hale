@@ -25,6 +25,7 @@ import org.opengis.feature.Feature;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.transformer.CstFunction;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
+import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Restriction;
@@ -53,7 +54,7 @@ public class InstanceCreationHandler {
 				String targetFtName, 
 				String sourceFtName, 
 				Map<String, List<Feature>> partitionedSourceFeatures,
-				AlignmentIndex ai) {
+				ICell renameCell) {
 			
 			FeatureCollection sourceFeatures = FeatureCollections.newCollection();
 			List<Feature> features = partitionedSourceFeatures.get(sourceFtName);
@@ -67,18 +68,15 @@ public class InstanceCreationHandler {
 			List<Feature> sourceList = new ArrayList<Feature>();
 			
 			// create one new Feature per source Feature
-			List<ICell> cells = ai.getRenameCell(targetFtName);
-			for (ICell cell : cells) {
-				CstFunction rtf = CstFunctionFactory.getInstance().getCstFunction(cell);
-				// check and apply relevant filters on the cell
-				sourceFeatures = filterCollection(sourceFeatures, cell);
-				
-				FeatureIterator<Feature> fi = sourceFeatures.features();
-				while (fi.hasNext()) {
-					Feature sourceFeature = fi.next();
-					transformedFeatures.add(rtf.transform(sourceFeature, null));
-					sourceList.add(sourceFeature);
-				}
+			CstFunction rtf = CstFunctionFactory.getInstance().getCstFunction(renameCell);
+			// check and apply relevant filters on the cell
+			sourceFeatures = filterCollection(sourceFeatures, renameCell);
+			
+			FeatureIterator<Feature> fi = sourceFeatures.features();
+			while (fi.hasNext()) {
+				Feature sourceFeature = fi.next();
+				transformedFeatures.add(rtf.transform(sourceFeature, null));
+				sourceList.add(sourceFeature);
 			}
 			
 			return new InstanceMap(sourceList, transformedFeatures);
@@ -93,7 +91,7 @@ public class InstanceCreationHandler {
 	 * @param renameCell
 	 * @return
 	 */
-	public static InstanceMap oneToMany(
+	public static InstanceSplitMap oneToMany(
 			String targetFtName,
 			String sourceFtName,
 			Map<String, List<Feature>> partitionedSourceFeatures,
@@ -111,17 +109,18 @@ public class InstanceCreationHandler {
 		List<Feature> sourceList = new ArrayList<Feature>();
 		
 		// create one new Feature per source Feature
-		CstFunction rtf = CstFunctionFactory.getInstance().getCstFunction(renameCell);
+		RenameFeatureFunction rtf = new RenameFeatureFunction();
+		rtf.configure(renameCell);
 		
 		sourceFeatures = filterCollection(sourceFeatures, renameCell);
 		FeatureIterator<Feature> fi = sourceFeatures.features();
 		while (fi.hasNext()) {
 			Feature sourceFeature = fi.next();
-			transformedFeatures.add(rtf.transform(sourceFeature, null));
+			transformedFeatures.add(rtf.transformSplit(sourceFeature, null));
 			sourceList.add(sourceFeature);
 		}
 		
-		return new InstanceMap(sourceList, transformedFeatures);
+		return new InstanceSplitMap(sourceList, transformedFeatures);
 	}
 	
 	/**

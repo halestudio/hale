@@ -24,8 +24,6 @@ import org.apache.log4j.Logger;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.filter.text.cql2.CQL;
-import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.metadata.iso.lineage.LineageImpl;
 import org.geotools.metadata.iso.lineage.ProcessStepImpl;
 import org.geotools.util.SimpleInternationalString;
@@ -41,7 +39,6 @@ import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory.ToleranceLevel;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.omwg.Restriction;
 
 /**
  * This class provides Schema Translation capabilities, including complex 
@@ -106,7 +103,7 @@ public class SchemaTranslationController {
 		Set<String> checkTypes = new HashSet<String>();
 
 		for (String targetFtName : this.ai.getTargetTypes()) {
-			InstanceMap transformMap = null;
+			List<Feature> transformed = new ArrayList<Feature>();
 			
 			// build new Feature(s) first, depending on Cardinalities and applying a filter as needed
 			CellCardinalityType thisFTCardinality = this.cardinalities.get(targetFtName)[0];
@@ -116,8 +113,10 @@ public class SchemaTranslationController {
 				String sourceFtName = this.ai.getAllMappedFeatureTypes(targetFtName).iterator().next();
 				if (thisInstanceCardinality.equals(CellCardinalityType.one_to_one)) {
 					// create one new Feature per source Feature
-					transformMap = this.handleOneToOneInstanceCreation(
-							targetFtName, sourceFtName, partitionedSourceFeatures);
+					InstanceMap transformMap = InstanceCreationHandler.oneToOne(
+							targetFtName, sourceFtName, 
+							partitionedSourceFeatures, 
+							ai.getRenameCell(targetFtName).get(0));
 					_log.info("Handled FTCardinality.one_to_one/" +
 							"InstanceCardinality.one_to_one, created " 
 							+ transformMap.getTransformedFeatures().size() + " target features.");
@@ -127,6 +126,27 @@ public class SchemaTranslationController {
 						// create CstFunction by using CstFunctionFactory
 						this.applyAttributiveFunction(cell, transformMap);
 					}
+					transformed.addAll(transformMap.getTransformedFeatures());
+				}
+				else if (thisInstanceCardinality.equals(CellCardinalityType.one_to_many)) {
+					// create multiple new Features per source Feature
+					InstanceSplitMap transformMap = InstanceCreationHandler.oneToMany(
+							targetFtName, sourceFtName, 
+							partitionedSourceFeatures, 
+							ai.getRenameCell(targetFtName).get(0));
+					_log.info("Handled FTCardinality.one_to_one/" +
+							"InstanceCardinality.one_to_many, created " 
+							+ transformMap.getTransformedFeatures().size() + " target features.");
+					
+					// apply additional attributive transformations
+					for (ICell cell : ai.getCellsPerEntity(targetFtName)) {
+						// create CstFunction by using CstFunctionFactory
+						this.applyAttributiveFunction(cell, transformMap);
+					}
+					for (List<Feature> thisList : transformMap.getTransformedFeatures()) {
+						transformed.addAll(thisList);
+					}
+					
 				}
 			}
 			else if (thisFTCardinality.equals(CellCardinalityType.one_to_many)) {
@@ -134,19 +154,29 @@ public class SchemaTranslationController {
 				// FeatureType, which we now have to find. In addition, we need 
 				// to ensure that the operation is not performed needlessly a 
 				// second time.
-				String sourceFT = ai.getAllMappedFeatureTypes(targetFtName).iterator().next();
-				if (!checkTypes.contains(sourceFT)) {
+				String sourceFtName = ai.getAllMappedFeatureTypes(targetFtName).iterator().next();
+				if (!checkTypes.contains(sourceFtName)) {
 					if (thisInstanceCardinality.equals(CellCardinalityType.one_to_one)) {
 						// create one new Feature per source Feature
-						transformMap = this.handleOneToOneInstanceCreation(
-								targetFtName, sourceFT, partitionedSourceFeatures);
+						InstanceMap transformMap = InstanceCreationHandler.oneToOne(
+								targetFtName, sourceFtName, 
+								partitionedSourceFeatures, 
+								ai.getRenameCell(targetFtName).get(0));
 						
 						_log.info("Handled FTCardinality.one_to_many/" +
 								"InstanceCardinality.one_to_one, created " 
 								+ transformMap.getTransformedFeatures().size() 
 								+ " target features.");
+						
+						// apply additional attributive transformations
+						for (ICell cell : ai.getCellsPerEntity(targetFtName)) {
+							// create CstFunction by using CstFunctionFactory
+							this.applyAttributiveFunction(cell, transformMap);
+						}
+						
+						transformed.addAll(transformMap.getTransformedFeatures());
 					}
-					checkTypes.add(sourceFT);
+					checkTypes.add(sourceFtName);
 				}
 			}
 			else if (thisFTCardinality.equals(CellCardinalityType.many_to_one)) {
@@ -161,9 +191,9 @@ public class SchemaTranslationController {
 			}
 			
 			// add transformed Features to partitionedTargetFeatures
-			if (transformMap != null) {
+			if (transformed != null) {
 				partitionedTargetFeatures.put(targetFtName, 
-						transformMap.getTransformedFeatures());
+						transformed);
 			}
 		}
 		
@@ -196,11 +226,52 @@ public class SchemaTranslationController {
 		return result;
 	}
 	
-	private void applyAttributiveFunction(ICell cell, InstanceMap transformMap) {
-		// create CstFunction by using CstFunctionFactory
-		CstFunction cstf = null;
+	private void applyAttributiveFunction(ICell cell,
+			InstanceSplitMap transformMap) {
 		try {
-			cstf = CstFunctionFactory.getInstance().getCstFunction(cell);
+			// create CstFunction by using CstFunctionFactory
+			CstFunction cstf = CstFunctionFactory.getInstance().getCstFunction(cell);
+		
+			// invoke CstFunction with Target Features List. 
+			if (cstf != null && !cstf.getClass().equals(RenameFeatureFunction.class)) {
+				_log.info("Applying a " + cstf.getClass().getName() + " function.");
+				for (int i = 0; i < transformMap.getTransformedFeatures().size(); i++) {
+					for (Feature target : transformMap.getTransformedFeatures().get(i)) {
+						String error = null;
+						try {
+							cstf.transform(
+									transformMap.getSourceFeatures().get(i), 
+									target);
+							
+						} catch (Exception e) {
+							if (this.strict) {
+								throw new RuntimeException("Executing the requested " +
+										"CstFunction failed: ", e);
+							}
+							else {
+								error = e.getMessage();
+							}
+						}
+						this.addLineage(error, cstf, target);
+					}
+				}
+			}
+		} catch (Exception e) {
+			if (this.strict) {
+				throw new RuntimeException("Executing the requested " +
+						"CstFunction failed: ", e);
+			}
+			else {
+				_log.error("Executing the requested " +
+						"CstFunction failed: ", e);
+			}
+		}
+	}
+
+	private void applyAttributiveFunction(ICell cell, InstanceMap transformMap) {	
+		try {
+			// create CstFunction by using CstFunctionFactory
+			CstFunction cstf = CstFunctionFactory.getInstance().getCstFunction(cell);
 		
 			// invoke CstFunction with Target Features List. 
 			if (cstf != null && !cstf.getClass().equals(RenameFeatureFunction.class)) {
@@ -354,58 +425,6 @@ public class SchemaTranslationController {
 		}
 		return result;
 	}
-
-	
-	@SuppressWarnings("unchecked")
-	private InstanceMap handleOneToOneInstanceCreation(
-			String targetFtName, String sourceFtName, Map<String, List<Feature>> partitionedSourceFeatures) {
-		
-		FeatureCollection sourceFeatures = FeatureCollections.newCollection();
-		List<Feature> features = partitionedSourceFeatures.get(sourceFtName);
-		if (features != null && features.size() > 0) {
-			for (Feature f : features) {
-				sourceFeatures.add(f);
-			}
-		}
-		
-		List<Feature> transformedFeatures = new ArrayList<Feature>();
-		List<Feature> sourceList = new ArrayList<Feature>();
-		
-		// create one new Feature per source Feature
-		List<ICell> cells = this.ai.getRenameCell(targetFtName);
-		for (ICell cell : cells) {
-			CstFunction rtf = CstFunctionFactory.getInstance().getCstFunction(cell);
-			// check for any relevant filters on the cell
-			String cql = null;
-			List<Restriction> avclist = ((FeatureClass)cell.getEntity1()).getAttributeValueCondition();
-			if (avclist != null 
-					&& avclist.size() > 0 
-					&& avclist.get(0) != null) {
-				cql = avclist.get(0).getCqlStr();
-			}
-			
-			// now, apply renaming Feature by Feature, ignoring those which don't fulfill the filtering criteria
-			if (cql != null) {
-				try {
-					sourceFeatures = sourceFeatures.subCollection(CQL.toFilter(cql));
-				} catch (CQLException e) {
-					throw new RuntimeException("The given CQL string could not be " +
-							"used to build a Filter: ", e);
-				}
-			}
-			
-			FeatureIterator<Feature> fi = sourceFeatures.features();
-			while (fi.hasNext()) {
-				Feature sourceFeature = fi.next();
-				transformedFeatures.add(rtf.transform(sourceFeature, null));
-				sourceList.add(sourceFeature);
-			}
-		}
-		
-		return new InstanceMap(sourceList, transformedFeatures);
-	}
-	
-
 	
 	/**
 	 * This enumeration is used to describe both the cardinality a given Cell 

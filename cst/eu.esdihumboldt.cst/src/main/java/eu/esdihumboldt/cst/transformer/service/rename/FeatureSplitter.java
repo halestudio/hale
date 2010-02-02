@@ -11,7 +11,11 @@
  */
 package eu.esdihumboldt.cst.transformer.service.rename;
 
+import java.util.List;
 import java.util.regex.Pattern;
+
+import org.opengis.feature.Feature;
+import org.opengis.feature.type.FeatureType;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
@@ -73,6 +77,10 @@ public class FeatureSplitter {
 			throw new RuntimeException("You can only create a " +
 				"FeatureSplitter from a split rule.");
 		}
+	}
+	
+	public List<Feature> split(Feature source, FeatureType targetFT) {
+		return null;
 	}
 
 }
