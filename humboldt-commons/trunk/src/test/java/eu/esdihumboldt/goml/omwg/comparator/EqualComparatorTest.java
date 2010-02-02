@@ -83,12 +83,6 @@ public class EqualComparatorTest {
 		SOURCE_RESTRICTION  = sourceRestrictions.get(0);
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
 
 	/**
 	 * Test method for {@link eu.esdihumboldt.goml.omwg.comparator.EqualComparator#evaluate(eu.esdihumboldt.goml.omwg.Restriction, org.opengis.feature.Property)}.
