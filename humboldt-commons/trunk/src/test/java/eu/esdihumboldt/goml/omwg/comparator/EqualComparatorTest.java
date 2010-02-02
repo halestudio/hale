@@ -5,6 +5,7 @@ package eu.esdihumboldt.goml.omwg.comparator;
 
 import org.apache.log4j.Logger;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -110,7 +111,7 @@ public class EqualComparatorTest {
 		Comparator equalComp = new EqualComparator();
 		boolean result = equalComp.evaluate(SOURCE_RESTRICTION, sourceProperty);
 		
-		assertTrue("Evaluation should return false", result);
+		assertFalse("Evaluation should return false", result);
 	}
 	
 	
