@@ -25,6 +25,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
 import eu.esdihumboldt.cst.transformer.CstFunction;
 import eu.esdihumboldt.cst.transformer.service.impl.TargetSchemaProvider;
@@ -41,8 +42,20 @@ import eu.esdihumboldt.goml.rdf.About;
  */
 public class RenameFeatureFunction 
 	extends AbstractCstFunction {
+	
+	/**
+	 * Parameter name for instance merge condition
+	 */
+	public static final String PARAMETER_INSTANCE_MERGE_CONDITION = "InstanceMergeCondition";
 
-	// private String featureName = null;
+	/**
+	 * Parameter name for instance split condition
+	 */
+	public static final String PARAMETER_INSTANCE_SPLIT_CONDITION = "InstanceSplitCondition";
+
+	private FeatureSplitter splitter = null;
+	
+	private FeatureMerger merger = null;
 
 	private String newName;
 
@@ -109,6 +122,20 @@ public class RenameFeatureFunction
 
 	public boolean configure(ICell cell) {
 		this.newName = cell.getEntity2().getAbout().getAbout();
+		for (IParameter ip : cell.getEntity1().getTransformation().getParameters()) {
+			if (ip.getName().equals(PARAMETER_INSTANCE_SPLIT_CONDITION)) {
+				//this.splitter = new FeatureSplitter(ip.getValue());
+			}
+			if (ip.getName().equals(PARAMETER_INSTANCE_MERGE_CONDITION)) {
+				this.merger = new FeatureMerger(ip.getValue());
+			}
+		}
+		
+		if (this.splitter != null && this.merger != null) {
+			throw new RuntimeException("Only a Merge OR a Split condition " +
+					"may be used, not both.");
+		}
+		
 		return true;
 	}
 	
