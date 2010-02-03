@@ -4,7 +4,7 @@
 	<groupId>eu.esdihumboldt.cst</groupId>
 	<artifactId>corefunctions</artifactId>
 	<packaging>jar</packaging>
-	<version>SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>corefunctions</name>
 	<url>http://maven.apache.org</url>
 
@@ -103,7 +103,7 @@
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
 			<artifactId>cst</artifactId>
-			<version>SNAPSHOT</version>
+			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.iabcinc</groupId>

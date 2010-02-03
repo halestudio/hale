@@ -4,7 +4,7 @@
 	<groupId>eu.esdihumboldt</groupId>
 	<artifactId>cst</artifactId>
 	<packaging>jar</packaging>
-	<version>SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>cst</name>
 	<url>http://maven.apache.org</url>
 
