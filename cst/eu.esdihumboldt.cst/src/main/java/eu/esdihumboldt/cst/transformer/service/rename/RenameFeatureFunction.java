@@ -31,6 +31,7 @@ import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
 import eu.esdihumboldt.cst.transformer.CstFunction;
 import eu.esdihumboldt.cst.transformer.service.impl.TargetSchemaProvider;
 import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 
@@ -125,7 +126,9 @@ public class RenameFeatureFunction
 		this.newName = cell.getEntity2().getAbout().getAbout();
 		for (IParameter ip : cell.getEntity1().getTransformation().getParameters()) {
 			if (ip.getName().equals(PARAMETER_INSTANCE_SPLIT_CONDITION)) {
-				//this.splitter = new FeatureSplitter(ip.getValue());
+				this.splitter = new FeatureSplitter(
+						((FeatureClass)cell.getEntity1()).getLocalname(), 
+						ip.getValue());
 			}
 			if (ip.getName().equals(PARAMETER_INSTANCE_MERGE_CONDITION)) {
 				this.merger = new FeatureMerger(ip.getValue());
@@ -140,6 +143,9 @@ public class RenameFeatureFunction
 		return true;
 	}
 	
+	/**
+	 * @see CstFunction#getParameters()
+	 */
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
 		Property entity1 = new Property(new About(""));
@@ -150,8 +156,18 @@ public class RenameFeatureFunction
 		return parameterCell;
 	}
 
+	/**
+	 * A non-standard operation for CstFunctions which allows to create multiple 
+	 * {@link Feature}s from a single one.
+	 * @param sourceFeature
+	 * @param targetFeatures
+	 * @return
+	 */
 	public List<Feature> transformSplit(Feature sourceFeature, List<Feature> targetFeatures) {
-		// TODO Auto-generated method stub
-		return null;
+		if (this.splitter != null) {
+			targetFeatures = this.splitter.split(sourceFeature, 
+					this.getTargetType(this.newName));
+		}
+		return targetFeatures;
 	}
 }
