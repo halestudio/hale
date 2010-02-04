@@ -25,9 +25,11 @@ import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.junit.Test;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.corefunctions.util.TypeLoader;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
@@ -79,6 +81,9 @@ public class GeographicalNameFunctionTest {
 	@Test
 	public void testTransformFeatureFeature() {
 		
+		FeatureType geoNameType = TypeLoader.getType("GeographicalName", 
+				"file:///d:/hale-workspace/eu.esdihumboldt.cst.corefunctions/" +
+				"src/test/resource/inspire_v3.0_xsd/GeographicalNames.xsd");		
 		
 		//build source and target Features
 		SimpleFeatureType sourceType = this.getFeatureType(
