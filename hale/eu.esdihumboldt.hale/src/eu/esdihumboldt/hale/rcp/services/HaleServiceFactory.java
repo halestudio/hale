@@ -44,12 +44,12 @@ public class HaleServiceFactory
 	
 	private static final Logger log = Logger.getLogger(HaleServiceFactory.class);
 	
-	private InstanceService instance = InstanceServiceImpl.getInstance();
+	private InstanceService instance;
 	private SchemaService schema;
 	private StyleService style;
-	private TaskService task = TaskServiceImpl.getInstance();
-	private AlignmentService alignment = AlignmentServiceImpl.getInstance();
-	private ProjectService project = ProjectServiceImpl.getInstance();
+	private TaskService task;
+	private AlignmentService alignment;
+	private ProjectService project;
 
 	/**
 	 * Default constructor
@@ -65,22 +65,34 @@ public class HaleServiceFactory
 	public Object create(Class serviceInterface, IServiceLocator parentLocator,
 			IServiceLocator locator) {
 		if (serviceInterface.equals(InstanceService.class)) {
-			return this.instance;
+			if (instance == null) {
+				instance = InstanceServiceImpl.getInstance();
+			}
+			return instance;
 		}
 		else if (serviceInterface.equals(SchemaService.class)) {
 			return getSchemaService();
 		}
 		else if (serviceInterface.equals(TaskService.class)) {
-			return this.task;
+			if (task == null) {
+				task = TaskServiceImpl.getInstance();
+			}
+			return task;
 		}
 		else if (serviceInterface.equals(StyleService.class)) {
 			return getStyleService();
 		}
 		else if (serviceInterface.equals(AlignmentService.class)) {
-			return this.alignment;
+			if (alignment == null) {
+				alignment = AlignmentServiceImpl.getInstance();
+			}
+			return alignment;
 		}
 		else if (serviceInterface.equals(ProjectService.class)) {
-			return this.project;
+			if (project == null) {
+				project = ProjectServiceImpl.getInstance();
+			}
+			return project;
 		}
 		else {
 			throw new RuntimeException("For the given serviceInterface (" 

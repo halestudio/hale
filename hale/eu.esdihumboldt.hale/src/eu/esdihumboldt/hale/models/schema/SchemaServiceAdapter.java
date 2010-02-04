@@ -13,23 +13,33 @@
 package eu.esdihumboldt.hale.models.schema;
 
 import eu.esdihumboldt.hale.models.HaleServiceListener;
-import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 
 /**
- * Dedicated listener for {@link SchemaService} events
+ * Schema service listener adapter
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public interface SchemaServiceListener extends HaleServiceListener {
+public abstract class SchemaServiceAdapter implements SchemaServiceListener {
 
 	/**
-	 * Called when a schema has changed
-	 * 
-	 * @param schema the schema type
+	 * @see SchemaServiceListener#schemaChanged(SchemaType)
 	 */
-	public void schemaChanged(SchemaType schema);
-	
+	@Override
+	public void schemaChanged(SchemaType schema) {
+		// override me
+	}
+
+	/**
+	 * @see HaleServiceListener#update(UpdateMessage)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public void update(UpdateMessage message) {
+		// override me
+	}
+
 }

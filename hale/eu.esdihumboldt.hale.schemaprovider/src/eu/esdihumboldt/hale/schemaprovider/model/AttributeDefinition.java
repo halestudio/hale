@@ -17,6 +17,10 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.Name;
 
+import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.rdf.About;
+
 /**
  * Represents an attribute definition
  *
@@ -214,5 +218,15 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	 * @return the maxOccurs
 	 */
 	public abstract long getMaxOccurs();
+
+	/**
+	 * @see Definition#getEntity()
+	 */
+	public Entity getEntity() {
+		return new Property(
+				new About(getDeclaringType().getName().getNamespaceURI(), 
+						getDeclaringType().getName().getLocalPart(),
+						name));
+	}
 	
 }

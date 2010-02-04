@@ -11,129 +11,166 @@
  */
 package eu.esdihumboldt.hale.models.task;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 
-import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.TaskService;
-import eu.esdihumboldt.hale.models.UpdateMessage;
-import eu.esdihumboldt.hale.models.UpdateService;
+import eu.esdihumboldt.hale.task.ResolvedTask;
+import eu.esdihumboldt.hale.task.ServiceProvider;
 import eu.esdihumboldt.hale.task.Task;
-import eu.esdihumboldt.hale.task.Task.TaskStatus;
+import eu.esdihumboldt.hale.task.TaskProvider;
+import eu.esdihumboldt.hale.task.TaskRegistry;
+import eu.esdihumboldt.hale.task.impl.EclipseServiceProvider;
 
 /**
  * This is the standard implementation of the {@link TaskService}.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz, Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class TaskServiceImpl 
-	implements TaskService {
+public class TaskServiceImpl extends AbstractTaskService {
 	
 	private static Logger _log = Logger.getLogger(TaskServiceImpl.class);
 	
-	private static TaskService instance = new TaskServiceImpl();
+	private static volatile TaskService instance;
 	
-	private Set<HaleServiceListener> listeners = new HashSet<HaleServiceListener>();
+	private final TaskRegistry registry = new TaskRegistryImpl();
 	
-	private Task activeTask;
+	private final ServiceProvider serviceProvider = new EclipseServiceProvider();
 	
-	private SortedSet<Task> tasks;
+	private final SortedSet<Task> tasks = new TreeSet<Task>();
 	
 	// Constructor/ instance access ............................................
 	
-	private TaskServiceImpl() {
+	/**
+	 * Default constructor
+	 */
+	public TaskServiceImpl() {
 		super();
-		this.activeTask = null;
-		this.tasks = new TreeSet<Task>(new TaskValueComparator());
+		
+		List<TaskProviderFactory> factories = TaskProviderExtension.getTaskProviderFactories();
+		for (TaskProviderFactory factory : factories) {
+			TaskProvider taskProvider = factory.getTaskProvider();
+			if (taskProvider != null) {
+				// register task types
+				taskProvider.registerTaskTypes(registry);
+				
+				//XXX for now, activate every task provider
+				taskProvider.activate(this, serviceProvider);
+			}
+		}
 	}
 	
+	/**
+	 * Get the task service instance
+	 * 
+	 * @return the task service instance
+	 */
 	public static TaskService getInstance() {
-		return TaskServiceImpl.instance;
+		if (instance == null) {
+			instance = new TaskServiceImpl();
+		}
+		
+		return instance;
 	}
 	
 	// TaskService methods .....................................................
 
 	/**
-	 * @see eu.esdihumboldt.hale.models.TaskService#addTask(eu.esdihumboldt.hale.task.Task, eu.esdihumboldt.hale.models.TaskService.TaskStatus)
-	 */
-	public boolean addTask(Task task) {
-		this.tasks.add(task);
-		this.updateListeners();
-		return true;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.models.TaskService#addTasks(java.util.List, eu.esdihumboldt.hale.models.TaskService.TaskStatus)
-	 */
-	public boolean addTasks(Set<Task> tasks) {
-		for (Task t : tasks) {
-			this.tasks.add(t);
-		}
-		this.updateListeners();
-		return true;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.models.TaskService#getActiveTask()
-	 */
-	public Task getActiveTask() {
-		return this.activeTask;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.models.TaskService#getOpenTasks()
+	 * @see TaskService#addTask(Task)
 	 */
 	@Override
-	public Set<Task> getOpenTasks() {
-		Set<Task> result = new HashSet<Task>();
-		for (Task t : this.tasks) {
-			if (t.getTaskStatus().equals(TaskStatus.ACTIVE) || t.getTaskStatus().equals(TaskStatus.NEW)) {
-				result.add(t);
+	public void addTask(Task task) {
+		addTaskInternal(task);
+		
+		notifyTasksAdded(Collections.singleton(task));
+	}
+
+	/**
+	 * Add a task without notifying the listeners
+	 * 
+	 * @param task the task to add
+	 */
+	private void addTaskInternal(Task task) {
+		synchronized (tasks) {
+			tasks.add(task);
+		}
+		task.setTaskService(this);
+	}
+
+	/**
+	 * @see TaskService#addTasks(Iterable)
+	 */
+	@Override
+	public void addTasks(Iterable<Task> tasks) {
+		for (Task task : tasks) {
+			addTaskInternal(task);
+		}
+		
+		notifyTasksAdded(tasks);
+	}
+
+	/**
+	 * @see TaskService#getResolvedTasks()
+	 */
+	@Override
+	public Collection<ResolvedTask> getResolvedTasks() {
+		List<ResolvedTask> result = new ArrayList<ResolvedTask>();
+		synchronized (tasks) {
+			for (Task task : tasks) {
+				ResolvedTask resolved = ResolvedTask.resolveTask(registry, task);
+				if (resolved != null) {
+					result.add(resolved);
+				}
+				else {
+					_log.error("Could not resolve task with type " + task.getTypeName());
+				}
 			}
 		}
 		return result;
 	}
 	
 	/**
-	 * 
+	 * @see TaskService#getResolvedTasks()
 	 */
-	public Task activateTask(Task task) {
-		this.activeTask = task;
-		return null;
+	@Override
+	public Collection<Task> getTasks() {
+		List<Task> result;
+		synchronized (tasks) {
+			result = new ArrayList<Task>(tasks);
+		}
+		return result;
 	}
-	
-	// UpdateService operations ................................................
 
 	/**
-	 * @see eu.esdihumboldt.hale.models.UpdateService#addListener(eu.esdihumboldt.hale.models.HaleServiceListener)
+	 * @see TaskService#removeTask(Task)
 	 */
-	public boolean addListener(HaleServiceListener sl) {
-		return this.listeners.add(sl);
-	}
-	
-	/**
-	 * Inform {@link HaleServiceListener}s of an update.
-	 */
-	@SuppressWarnings("unchecked")
-	private void updateListeners() {
-		for (HaleServiceListener hsl : this.listeners) {
-			_log.info("Updating a listener.");
-			hsl.update(new UpdateMessage(TaskService.class, null));
+	@Override
+	public void removeTask(Task task) {
+		boolean removed;
+		synchronized (tasks) {
+			removed = tasks.remove(task);
+		}
+		
+		if (removed) {
+			task.dispose();
+			notifyTaskRemoved(task);
 		}
 	}
 
 	/**
-	 * @see UpdateService#removeListener(HaleServiceListener)
+	 * @see TaskService#resolveTask(Task)
 	 */
 	@Override
-	public void removeListener(HaleServiceListener listener) {
-		listeners.remove(listener);
+	public ResolvedTask resolveTask(Task task) {
+		return ResolvedTask.resolveTask(registry, task);
 	}
-
+	
 }

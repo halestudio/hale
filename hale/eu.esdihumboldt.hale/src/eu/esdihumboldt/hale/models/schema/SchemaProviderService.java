@@ -21,12 +21,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.models.UpdateMessage;
-import eu.esdihumboldt.hale.models.UpdateService;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
+import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -38,7 +37,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @param <T> 
  */
 public class SchemaProviderService<T extends SchemaProvider> 
-	implements SchemaService {
+	extends AbstractSchemaService {
 	
 	/**
 	 * The instance map
@@ -59,11 +58,6 @@ public class SchemaProviderService<T extends SchemaProvider>
 	 * The schema provider
 	 */
 	private final SchemaProvider schemaProvider;
-	
-	/**
-	 * Listeners
-	 */
-	private Collection<HaleServiceListener> listeners = new HashSet<HaleServiceListener>();
 	
 	/**
 	 * Creates the schema service
@@ -102,7 +96,7 @@ public class SchemaProviderService<T extends SchemaProvider>
 	 */
 	public boolean cleanSourceSchema() {
 		sourceSchema = Schema.EMPTY_SCHEMA;
-		updateListeners(SchemaType.SOURCE);
+		notifySchemaChanged(SchemaType.SOURCE);
 		
 		return true;
 	}
@@ -112,7 +106,7 @@ public class SchemaProviderService<T extends SchemaProvider>
 	 */
 	public boolean cleanTargetSchema() {
 		targetSchema = Schema.EMPTY_SCHEMA;
-		updateListeners(SchemaType.TARGET);
+		notifySchemaChanged(SchemaType.TARGET);
 		
 		return true;
 	}
@@ -121,14 +115,14 @@ public class SchemaProviderService<T extends SchemaProvider>
 	 * @see SchemaService#getSourceSchema()
 	 */
 	public Collection<TypeDefinition> getSourceSchema() {
-		return sourceSchema.getTypes();
+		return sourceSchema.getTypes().values();
 	}
 
 	/**
 	 * @see SchemaService#getTargetSchema()
 	 */
 	public Collection<TypeDefinition> getTargetSchema() {
-		return targetSchema.getTypes();
+		return targetSchema.getTypes().values();
 	}
 
 	/**
@@ -144,31 +138,8 @@ public class SchemaProviderService<T extends SchemaProvider>
 			targetSchema = schema;
 		}
 		
-		this.updateListeners(type);
+		notifySchemaChanged(type);
 		return true;
-	}
-	
-	/**
-	 * @see UpdateService#addListener(HaleServiceListener)
-	 */
-	public boolean addListener(HaleServiceListener sl) {
-		return this.listeners.add(sl);
-	}
-	
-	/**
-	 * Inform {@link HaleServiceListener}s of an update.
-	 * 
-	 * @param schema the schema that was changed
-	 */
-	@SuppressWarnings("unchecked")
-	private void updateListeners(SchemaType schema) {
-		for (HaleServiceListener hsl : this.listeners) {
-			if (hsl instanceof SchemaServiceListener) {
-				((SchemaServiceListener) hsl).schemaChanged(schema);
-			}
-			
-			hsl.update(new UpdateMessage(SchemaService.class, null)); // FIXME
-		}
 	}
 
 	/**
@@ -249,14 +220,52 @@ public class SchemaProviderService<T extends SchemaProvider>
 	}
 
 	/**
-	 * @see UpdateService#removeListener(HaleServiceListener)
+	 * @see SchemaService#getDefinition(String)
 	 */
 	@Override
-	public void removeListener(HaleServiceListener listener) {
-		listeners.remove(listener);
+	public Definition getDefinition(String identifier) {
+		//XXX improve implementation?
+		Definition result = getDefinition(identifier, sourceSchema);
+		if (result == null) {
+			result = getDefinition(identifier, targetSchema);
+		}
+		
+		return result;
+	}
+
+	/**
+	 * @see SchemaService#getDefinition(String, SchemaType)
+	 */
+	@Override
+	public Definition getDefinition(String identifier, SchemaType schema) {
+		return getDefinition(identifier, (schema == SchemaType.SOURCE)?(sourceSchema):(targetSchema));
+	}
+
+	private Definition getDefinition(String identifier, Schema schema) {
+		//XXX improve implementation?
+		Definition result = schema.getTypes().get(identifier);
+		
+		if (result == null) {
+			// not found as type, may be attribute
+			int index = identifier.lastIndexOf('/');
+			if (index > 0) {
+				String subIdentifier = identifier.substring(0, index);
+				String attributeName = identifier.substring(index + 1);
+				
+				TypeDefinition type = schema.getTypes().get(subIdentifier);
+				
+				if (type != null) {
+					// try to find attribute
+					for (AttributeDefinition attribute : type.getDeclaredAttributes()) {
+						if (attribute.getName().equals(attributeName)) {
+							return attribute;
+						}
+					}
+				}
+			}
+		}
+		
+		return result;
 	}
 	
 }
-
-
-

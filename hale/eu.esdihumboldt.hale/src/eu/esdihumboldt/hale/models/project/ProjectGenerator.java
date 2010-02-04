@@ -131,7 +131,7 @@ public class ProjectGenerator {
 		// transfer task status
 		TaskStatus taskStatus = new TaskStatus();
 		List<Task> tasks = taskStatus.getTask();
-		for (eu.esdihumboldt.hale.task.Task t : taskService.getOpenTasks()) {
+		/*XXX for (eu.esdihumboldt.hale.task.Task t : taskService.getOpenTasks()) {
 			Task newTask = new Task();
 			newTask.setSeverityLevel(t.getSeverityLevel().toString());
 			newTask.setTaskStatus(t.getTaskStatus().toString());
@@ -139,7 +139,7 @@ public class ProjectGenerator {
 			newTask.setTitle(t.getTaskTitle());
 			newTask.setValue(t.getValue());
 			tasks.add(newTask);
-		}
+		}*/
 		
 		// serialize mapping and link it in HaleProject 
 		OmlRdfGenerator org = new OmlRdfGenerator();

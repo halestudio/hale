@@ -21,7 +21,7 @@ import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 import eu.esdihumboldt.hale.rcp.views.model.attribute.AttributeView;
 import eu.esdihumboldt.hale.rcp.views.table.ReferenceTableView;
 import eu.esdihumboldt.hale.rcp.views.table.TransformedTableView;
-import eu.esdihumboldt.hale.rcp.views.tasks.TasklistView;
+import eu.esdihumboldt.hale.rcp.views.tasks.TaskTreeView;
 
 
 /**
@@ -58,7 +58,7 @@ public class ClientPerspective implements IPerspectiveFactory {
 		
 		IFolderLayout bottomRight = _layout.createFolder(
 				"bottomRight", IPageLayout.BOTTOM, 0.67f, "topRight");
-		bottomRight.addView(TasklistView.ID);
+		bottomRight.addView(TaskTreeView.ID);
 		
 		_layout.setEditorAreaVisible(false);
 	}

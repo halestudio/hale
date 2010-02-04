@@ -24,6 +24,10 @@ import org.opengis.feature.type.Name;
 
 import com.vividsolutions.jts.geom.Geometry;
 
+import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.goml.omwg.FeatureClass;
+import eu.esdihumboldt.goml.rdf.About;
+
 /**
  * Represents a type definition
  *
@@ -304,6 +308,15 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	 */
 	public String getIdentifier() {
 		return name.getNamespaceURI() + "/" + name.getLocalPart();
+	}
+	
+	/**
+	 * @see Definition#getEntity()
+	 */
+	public Entity getEntity() {
+		return new FeatureClass(
+				new About(name.getNamespaceURI(), 
+						name.getLocalPart()));
 	}
 
 }

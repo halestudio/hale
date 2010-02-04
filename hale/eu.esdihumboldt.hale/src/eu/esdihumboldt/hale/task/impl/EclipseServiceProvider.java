@@ -10,39 +10,28 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.schemaprovider.model;
+package eu.esdihumboldt.hale.task.impl;
 
-import eu.esdihumboldt.goml.align.Entity;
+import org.eclipse.ui.PlatformUI;
+
+import eu.esdihumboldt.hale.task.ServiceProvider;
 
 /**
- * 
+ * Service provider that retrieves services using {@link PlatformUI}
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public interface Definition {
-	
-	/**
-	 * Get the definitions identifier
-	 * 
-	 * @return the unique name of the definition
-	 */
-	public String getIdentifier();
-	
-	/**
-	 * Get the description
-	 *  
-	 * @return the description string or <code>null</code>
-	 */
-	public abstract String getDescription();
+public class EclipseServiceProvider implements ServiceProvider {
 
 	/**
-	 * Create an entity for the definition.
-	 * NOTE: the entity for attributes is always associated with the declaring type
-	 * 
-	 * @return the entity
+	 * @see ServiceProvider#getService(Class)
 	 */
-	public Entity getEntity();
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getService(Class<T> serviceType) {
+		return (T) PlatformUI.getWorkbench().getService(serviceType);
+	}
 
 }

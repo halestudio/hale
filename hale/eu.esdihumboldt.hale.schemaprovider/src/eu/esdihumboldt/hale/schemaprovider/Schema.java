@@ -12,8 +12,8 @@
 package eu.esdihumboldt.hale.schemaprovider;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
@@ -30,12 +30,12 @@ public class Schema {
 	 * Empty schema instance
 	 */
 	public static final Schema EMPTY_SCHEMA =
-		new Schema(new ArrayList<TypeDefinition>(), "", null);
+		new Schema(new HashMap<String, TypeDefinition>(), "", null);
 	
 	/**
 	 * The feature types
 	 */
-	private final Collection<TypeDefinition> types;
+	private final Map<String, TypeDefinition> types;
 	
 	/**
 	 * The namespace
@@ -54,7 +54,7 @@ public class Schema {
 	 * @param namespace the namespace
 	 * @param location the location
 	 */
-	public Schema(Collection<TypeDefinition> types, String namespace,
+	public Schema(Map<String, TypeDefinition> types, String namespace,
 			URL location) {
 		super();
 		this.types = types;
@@ -65,7 +65,7 @@ public class Schema {
 	/**
 	 * @return the featureTypes
 	 */
-	public Collection<TypeDefinition> getTypes() {
+	public Map<String, TypeDefinition> getTypes() {
 		return types;
 	}
 

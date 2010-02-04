@@ -13,16 +13,13 @@ package eu.esdihumboldt.hale.models.alignment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
-import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
-import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 
 /**
@@ -36,6 +33,15 @@ import eu.esdihumboldt.goml.oml.ext.Transformation;
  */
 public class CellBuilder {
 	
+	/**
+	 * Build a cell
+	 * 
+	 * @param entity1 the source entity
+	 * @param entity2 the target entity
+	 * @param transformation the transformation
+	 * 
+	 * @return the cell
+	 */
 	public static ICell getCell(
 			Entity entity1, Entity entity2, Transformation transformation) {
 		Cell cell = new Cell();
@@ -48,6 +54,14 @@ public class CellBuilder {
 		return cell;
 	}
 	
+	/**
+	 * Build a transformation
+	 * 
+	 * @param transformationID the transformation id
+	 * @param parameters the transformation parameters
+	 * 
+	 * @return the transformation
+	 */
 	public static ITransformation getTransformation(
 			String transformationID, List<IParameter> parameters) {
 		Transformation t = new Transformation();
@@ -55,7 +69,5 @@ public class CellBuilder {
 		t.setParameters(parameters);
 		return t;
 	}
-	
-	
 	
 }

@@ -11,9 +11,10 @@
  */
 package eu.esdihumboldt.hale.models;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
+import eu.esdihumboldt.hale.task.ResolvedTask;
 import eu.esdihumboldt.hale.task.Task;
 
 /**
@@ -25,39 +26,57 @@ import eu.esdihumboldt.hale.task.Task;
  * specified, all {@link List}s that are returned are sorted by the {@link Task}
  * value, in descending order (highest value first).
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz, Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
 public interface TaskService 
 	extends UpdateService {
 	
-	public Task activateTask(Task task);
+	//TODO set active task etc?
+	
+	/**
+	 * Add a task
+	 * 
+	 * @param task the task to add
+	 */
+	public void addTask(Task task);
+	
+	/**
+	 * Add tasks
+	 * 
+	 * @param tasks the tasks to add
+	 */
+	public void addTasks(Iterable<Task> tasks);
+	
+	/**
+	 * Remove a task
+	 * 
+	 * @param task the task to remove
+	 */
+	public void removeTask(Task task);
+	
+	/**
+	 * Get the tasks
+	 * 
+	 * @return a collection of all tasks
+	 */
+	public Collection<Task> getTasks();
+	
+	/**
+	 * Resolves the tasks and returns them
+	 * 
+	 * @return the resolved tasks
+	 */
+	public Collection<ResolvedTask> getResolvedTasks();
 
 	/**
-	 * @return the active {@link Task}, or null if there is no active task.
+	 * Resolves the given task
+	 * 
+	 * @param task the task to resolve
+	 * 
+	 * @return the resolved task
 	 */
-	public Task getActiveTask();
-	
-	/**
-	 * @return a {@link List} of all {@link Task}s with status NEW or ACTIVE.
-	 * This List is always ordered by using the Comparator specified at 
-	 * construction time of this {@link TaskService}.
-	 */
-	public Set<Task> getOpenTasks();
-	
-	/**
-	 * Add a single {@link Task} to the {@link TaskService}.
-	 * @param task the {@link Task} to add.
-	 * @return true if the adding was successful.
-	 */
-	public boolean addTask(Task task);
-	
-	/**
-	 * Add a {@link List} of {@link Task}s to this {@link TaskService}.
-	 * @param tasks the {@link List} of {@link Task}s to add.
-	 * @return true if the adding was successful.
-	 */
-	public boolean addTasks(Set<Task> tasks);
-	
+	public ResolvedTask resolveTask(Task task);
+
 }

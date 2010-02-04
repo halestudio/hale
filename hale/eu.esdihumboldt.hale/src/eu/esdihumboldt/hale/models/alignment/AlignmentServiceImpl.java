@@ -13,10 +13,9 @@ package eu.esdihumboldt.hale.models.alignment;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -31,9 +30,6 @@ import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.models.HaleServiceListener;
-import eu.esdihumboldt.hale.models.UpdateMessage;
-import eu.esdihumboldt.hale.models.UpdateService;
 
 /**
  * This is a simple default implementation that manages a single Alignment
@@ -43,15 +39,13 @@ import eu.esdihumboldt.hale.models.UpdateService;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$
  */
-public class AlignmentServiceImpl implements AlignmentService {
+public class AlignmentServiceImpl extends AbstractAlignmentService {
 
 	private static Logger _log = Logger.getLogger(AlignmentServiceImpl.class);
 
 	private Alignment alignment;
 
 	private static AlignmentService instance = new AlignmentServiceImpl();
-
-	private Set<HaleServiceListener> listeners = new HashSet<HaleServiceListener>();
 
 	// Constructor/ instance access ............................................
 
@@ -86,16 +80,36 @@ public class AlignmentServiceImpl implements AlignmentService {
 	 * @see AlignmentService#addOrUpdateCell(ICell)
 	 */
 	public boolean addOrUpdateCell(ICell cell) {
-		boolean result = internalAddOrUpdateCell(cell);
-		this.updateListeners();
+		Collection<ICell> added = new ArrayList<ICell>();
+		Collection<ICell> updated = new ArrayList<ICell>();
+		boolean result = internalAddOrUpdateCell(cell, added, updated);
+		if (!added.isEmpty()) {
+			notifyCellsAdded(added);
+		}
+		if (!updated.isEmpty()) {
+			notifyCellsUpdated(updated);
+		}
 		return result;
 	}
 
-	private boolean internalAddOrUpdateCell(ICell cell) {
+	/**
+	 * Add or update a cell without firing an event
+	 * 
+	 * @param cell the cell to add/update
+	 * @param added a collection the cell will be added to if it was added
+	 * @param updated a collection the cell will be added to if it was updated
+	 * 
+	 * @return if the cell was added/updated
+	 */
+	private boolean internalAddOrUpdateCell(ICell cell, Collection<ICell> added, Collection<ICell> updated) {
 		ICell oldCell = getCellInternal(cell.getEntity1(), cell.getEntity2());
 		if (oldCell != null) {
 			alignment.getMap().remove(oldCell);
 			_log.info("Replacing alignment cell");
+			updated.add(cell);
+		}
+		else {
+			added.add(cell);
 		}
 		
 		return this.alignment.getMap().add(cell);
@@ -105,8 +119,8 @@ public class AlignmentServiceImpl implements AlignmentService {
 	 * @see AlignmentService#cleanModel()
 	 */
 	public boolean cleanModel() {
-		this.initNewAlignment();
-		this.updateListeners();
+		initNewAlignment();
+		notifyAlignmentCleared();
 		return true;
 	}
 
@@ -264,10 +278,13 @@ public class AlignmentServiceImpl implements AlignmentService {
 	 * This method allows to set the properties of the Alignment object itself,
 	 * such as the schemas being mapped. It does not update the Cells list.
 	 * 
-	 * @see eu.esdihumboldt.hale.models.AlignmentService#addOrUpdateAlignment(eu.esdihumboldt.goml.align.Alignment)
+	 * @see AlignmentService#addOrUpdateAlignment(Alignment)
 	 */
 	@Override
 	public boolean addOrUpdateAlignment(Alignment alignment) {
+		Collection<ICell> added = new ArrayList<ICell>();
+		Collection<ICell> updated = new ArrayList<ICell>();
+		
 		if (alignment.getSchema1() != null) {
 			this.alignment.setSchema1(alignment.getSchema1());
 		}
@@ -283,10 +300,16 @@ public class AlignmentServiceImpl implements AlignmentService {
 		
 		// add cells
 		for (ICell cell : alignment.getMap()) {
-			internalAddOrUpdateCell(cell);
+			internalAddOrUpdateCell(cell, added, updated);
 		}
 		
-		this.updateListeners();
+		if (!added.isEmpty()) {
+			notifyCellsAdded(added);
+		}
+		if (!updated.isEmpty()) {
+			notifyCellsUpdated(updated);
+		}
+		
 		return true;
 	}
 
@@ -323,39 +346,13 @@ public class AlignmentServiceImpl implements AlignmentService {
 	// UpdateService operations ................................................
 
 	/**
-	 * @see UpdateService#addListener(HaleServiceListener)
-	 */
-	public boolean addListener(HaleServiceListener sl) {
-		return this.listeners.add(sl);
-	}
-
-	/**
-	 * Inform {@link HaleServiceListener}s of an update.
-	 */
-	@SuppressWarnings("unchecked")
-	private void updateListeners() {
-		for (HaleServiceListener hsl : this.listeners) {
-			_log.info("Updating a listener.");
-			hsl.update(new UpdateMessage(AlignmentService.class, null)); // FIXME
-		}
-	}
-
-	/**
 	 * @see AlignmentService#removeCell(ICell)
 	 */
 	@Override
 	public void removeCell(ICell cell) {
 		alignment.getMap().remove(cell);
 		
-		updateListeners();
-	}
-
-	/**
-	 * @see UpdateService#removeListener(HaleServiceListener)
-	 */
-	@Override
-	public void removeListener(HaleServiceListener listener) {
-		listeners.remove(listener);
+		notifyCellRemoved(cell);
 	}
 
 }

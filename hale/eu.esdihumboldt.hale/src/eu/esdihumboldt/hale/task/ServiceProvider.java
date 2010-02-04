@@ -10,39 +10,25 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.schemaprovider.model;
-
-import eu.esdihumboldt.goml.align.Entity;
+package eu.esdihumboldt.hale.task;
 
 /**
- * 
+ * Provides services
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public interface Definition {
+public interface ServiceProvider {
 	
 	/**
-	 * Get the definitions identifier
+	 * Get a service instance
 	 * 
-	 * @return the unique name of the definition
-	 */
-	public String getIdentifier();
-	
-	/**
-	 * Get the description
-	 *  
-	 * @return the description string or <code>null</code>
-	 */
-	public abstract String getDescription();
-
-	/**
-	 * Create an entity for the definition.
-	 * NOTE: the entity for attributes is always associated with the declaring type
+	 * @param <T> the service type
+	 * @param serviceType the service type
 	 * 
-	 * @return the entity
+	 * @return the service instance or <code>null</code> if none could be retrieved
 	 */
-	public Entity getEntity();
+	public <T> T getService(Class<T> serviceType); 
 
 }

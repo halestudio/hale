@@ -5,6 +5,10 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.schemaprovider
 Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: com.vividsolutions.jts.geom,
+ eu.esdihumboldt.cst.rdf,
+ eu.esdihumboldt.goml.align,
+ eu.esdihumboldt.goml.omwg,
+ eu.esdihumboldt.goml.rdf,
  org.apache.log4j,
  org.apache.ws.commons.schema,
  org.apache.ws.commons.schema.resolver,

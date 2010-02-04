@@ -10,39 +10,33 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.schemaprovider.model;
+package eu.esdihumboldt.hale.models.task;
 
-import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.hale.models.HaleServiceListener;
+import eu.esdihumboldt.hale.models.TaskService;
+import eu.esdihumboldt.hale.task.Task;
 
 /**
- * 
+ * Dedicated listener for {@link TaskService}s
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public interface Definition {
+public interface TaskServiceListener extends HaleServiceListener {
 	
 	/**
-	 * Get the definitions identifier
+	 * Called when tasks have been added
 	 * 
-	 * @return the unique name of the definition
+	 * @param tasks the tasks that have been added
 	 */
-	public String getIdentifier();
+	public void tasksAdded(Iterable<Task> tasks);
 	
 	/**
-	 * Get the description
-	 *  
-	 * @return the description string or <code>null</code>
-	 */
-	public abstract String getDescription();
-
-	/**
-	 * Create an entity for the definition.
-	 * NOTE: the entity for attributes is always associated with the declaring type
+	 * Called when a task has been removed
 	 * 
-	 * @return the entity
+	 * @param task the task that has been removed
 	 */
-	public Entity getEntity();
+	public void taskRemoved(Task task);
 
 }

@@ -10,39 +10,35 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.schemaprovider.model;
-
-import eu.esdihumboldt.goml.align.Entity;
+package eu.esdihumboldt.hale.task;
 
 /**
- * 
+ * Task type registry interface
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public interface Definition {
+public interface TaskRegistry {
 	
 	/**
-	 * Get the definitions identifier
+	 * Register a task type
 	 * 
-	 * @return the unique name of the definition
+	 * @param type the task type
+	 * 
+	 * @throws IllegalStateException if a type with the same type name already
+	 *   exists 
 	 */
-	public String getIdentifier();
+	public void registerType(TaskType type) throws IllegalStateException;
 	
 	/**
-	 * Get the description
-	 *  
-	 * @return the description string or <code>null</code>
-	 */
-	public abstract String getDescription();
-
-	/**
-	 * Create an entity for the definition.
-	 * NOTE: the entity for attributes is always associated with the declaring type
+	 * Get the task type with the given name
 	 * 
-	 * @return the entity
+	 * @param typeName the task type name
+	 * 
+	 * @return the task type or <code>null</code> if no type with the given name
+	 *   is registered
 	 */
-	public Entity getEntity();
+	public TaskType getType(String typeName);
 
 }

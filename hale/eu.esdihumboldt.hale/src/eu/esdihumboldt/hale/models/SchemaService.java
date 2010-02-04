@@ -17,6 +17,8 @@ import java.util.Collection;
 
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -124,5 +126,27 @@ public interface SchemaService
 	 * @return the feature types
 	 */
 	public Collection<TypeDefinition> getSchema(SchemaType schemaType);
+	
+	/**
+	 * Get the definition for the given identifier if it is part of the given
+	 *   schema
+	 * 
+	 * @param identifier the identifier
+	 * @param schema the schema type
+	 * 
+	 * @return the definition (either a {@link TypeDefinition} or an
+	 *   {@link AttributeDefinition})
+	 */
+	public Definition getDefinition(String identifier, SchemaType schema);
+
+	/**
+	 * Get the definition for the given identifier
+	 * 
+	 * @param identifier the identifier
+	 * 
+	 * @return the definition (either a {@link TypeDefinition} or an
+	 *   {@link AttributeDefinition})
+	 */
+	public Definition getDefinition(String identifier);
 
 }

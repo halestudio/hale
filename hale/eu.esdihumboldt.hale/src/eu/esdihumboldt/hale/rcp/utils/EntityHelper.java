@@ -17,6 +17,7 @@ import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 
 /**
  * Entity utility methods
@@ -65,6 +66,17 @@ public abstract class EntityHelper {
 		}
 		
 		return "unnamed";
+	}
+	
+	/**
+	 * Get the identifier for the given entity, as in {@link Definition#getIdentifier()}
+	 * 
+	 * @param entity the entity
+	 * 
+	 * @return the entity's identifier
+	 */
+	public static String getIdentifier(IEntity entity) {
+		return entity.getAbout().getAbout();
 	}
 
 }

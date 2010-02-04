@@ -242,6 +242,10 @@ public class ApacheSchemaProvider
 				schemaCol.setSchemaResolver(new HumboldtURIResolver());
 			    schemaCol.setBaseUri(findBaseUri(location));
 			}
+			else if (location.getScheme().equals("bundleresource")) {
+				schemaCol.setSchemaResolver(new HumboldtURIResolver());
+				schemaCol.setBaseUri(findBaseUri(location) + "/");
+			}
 			schema = schemaCol.read(new StreamSource(is), null);
 			is.close();
 		} catch (Throwable e) {
@@ -256,10 +260,10 @@ public class ApacheSchemaProvider
 		
 		Map<Name, TypeDefinition> types = loadSchema(schema, new HashMap<String, Map<Name, TypeDefinition>>());
 		
-		List<TypeDefinition> featureTypes = new ArrayList<TypeDefinition>();
+		Map<String, TypeDefinition> featureTypes = new HashMap<String, TypeDefinition>();
 		for (TypeDefinition type : types.values()) {
 			if (type.isComplexType()) {
-				featureTypes.add(type);
+				featureTypes.put(type.getIdentifier(), type);
 			}
 		}
 		

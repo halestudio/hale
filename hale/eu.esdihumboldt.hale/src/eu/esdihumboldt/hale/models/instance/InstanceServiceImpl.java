@@ -24,10 +24,7 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.models.FeatureFilter;
-import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.InstanceService;
-import eu.esdihumboldt.hale.models.UpdateMessage;
-import eu.esdihumboldt.hale.models.UpdateService;
 import eu.esdihumboldt.tools.RobustFTKey;
 
 /**
@@ -36,8 +33,7 @@ import eu.esdihumboldt.tools.RobustFTKey;
  * @author Thorsten Reitz, Fraunhofer IGD
  * @version {$Id}
  */
-public class InstanceServiceImpl 
-	implements InstanceService {
+public class InstanceServiceImpl extends AbstractInstanceService {
 	
 	//private static Logger _log = Logger.getLogger(InstanceServiceImpl.class);
 	
@@ -47,13 +43,12 @@ public class InstanceServiceImpl
 	
 	private FeatureCollection<?, Feature> transformedFeatures = null;
 	
-	private Set<HaleServiceListener> listeners;
-	
-	
 	// Constructors ............................................................
-	
+
+	/**
+	 * Default constructor
+	 */
 	private InstanceServiceImpl() {
-		this.listeners = new HashSet<HaleServiceListener>();
 	}
 	
 	/**
@@ -127,34 +122,34 @@ public class InstanceServiceImpl
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.models.InstanceService#addInstances(DatasetType, FeatureCollection)
+	 * @see InstanceService#addInstances(DatasetType, FeatureCollection)
 	 */
 	public boolean addInstances(DatasetType type, 
 			FeatureCollection<FeatureType, Feature> featureCollection) {
 		if (type.equals(DatasetType.reference)) {
-			if (this.sourceReferenceFeatures == null) {
-				this.sourceReferenceFeatures = featureCollection;
+			if (sourceReferenceFeatures == null) {
+				sourceReferenceFeatures = featureCollection;
 			}
 			else {
 				FeatureIterator<? extends Feature> fi = featureCollection.features();
 				while (fi.hasNext()) {
-					this.sourceReferenceFeatures.add(fi.next());
+					sourceReferenceFeatures.add(fi.next());
 				}
 			}
-			this.updateListeners(type);
+			notifyDatasetChanged(type);
 			return true;
 		}
 		else if (type.equals(DatasetType.transformed)) {
-			if (this.transformedFeatures == null) {
-				this.transformedFeatures = featureCollection;
+			if (transformedFeatures == null) {
+				transformedFeatures = featureCollection;
 			}
 			else {
 				FeatureIterator<? extends Feature> fi = featureCollection.features();
 				while (fi.hasNext()) {
-					this.transformedFeatures.add(fi.next());
+					transformedFeatures.add(fi.next());
 				}
 			}
-			this.updateListeners(type);
+			notifyDatasetChanged(type);
 			return true;
 		}
 		else {
@@ -163,7 +158,7 @@ public class InstanceServiceImpl
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.models.InstanceService#addInstances(DatasetType, FeatureCollection, FeatureFilter)
+	 * @see InstanceService#addInstances(DatasetType, FeatureCollection, FeatureFilter)
 	 */
 	@SuppressWarnings("unchecked")
 	public boolean addInstances(DatasetType type, 
@@ -171,27 +166,27 @@ public class InstanceServiceImpl
 			FeatureFilter filter) {
 		int startsize = 0;
 		if (type.equals(DatasetType.reference)) {
-			startsize = this.sourceReferenceFeatures.size();
+			startsize = sourceReferenceFeatures.size();
 			FeatureIterator fi = featureCollection.features();
 			while (fi.hasNext()) {
 				Feature f = fi.next();
 				if (filter.filter(f)) {
-					this.sourceReferenceFeatures.add(f);
+					sourceReferenceFeatures.add(f);
 				}
 			}
 		}
 		else if (type.equals(DatasetType.transformed)) {
-			startsize = this.transformedFeatures.size();
+			startsize = transformedFeatures.size();
 			FeatureIterator fi = featureCollection.features();
 			while (fi.hasNext()) {
 				Feature f = fi.next();
 				if (filter.filter(f)) {
-					this.transformedFeatures.add(f);
+					transformedFeatures.add(f);
 				}
 			}
 		}
-		if (startsize != 0  || this.sourceReferenceFeatures.size() > startsize) {
-			this.updateListeners(type);
+		if (startsize != 0  || sourceReferenceFeatures.size() > startsize) {
+			notifyDatasetChanged(type);
 			return true;
 		} 
 		else {
@@ -207,12 +202,12 @@ public class InstanceServiceImpl
 			return false;
 		}
 		if (type.equals(DatasetType.transformed)) {
-			this.transformedFeatures = null;
+			transformedFeatures = null;
 		}
 		if (type.equals(DatasetType.reference)) {
-			this.sourceReferenceFeatures = null;
+			sourceReferenceFeatures = null;
 		}
-		this.updateListeners(type);
+		notifyDatasetChanged(type);
 		return true;
 	}
 
@@ -224,49 +219,22 @@ public class InstanceServiceImpl
 		transformedFeatures = null;
 		sourceReferenceFeatures = null;
 		
-		this.updateListeners(null);
+		notifyDatasetChanged(null);
 		
 		return true;
 	}
 
-	public boolean addListener(HaleServiceListener sl) {
-		this.listeners.add(sl);
-		return true;
-	}
-	
 	/**
-	 * Update the listeners
-	 * 
-	 * @param type the data set that was changed, <code>null</code> if both were changed
-	 */
-	@SuppressWarnings("unchecked")
-	private void updateListeners(DatasetType type) {
-		for (HaleServiceListener hsl : this.listeners) {
-			if (hsl instanceof InstanceServiceListener) {
-				if (type == null) {
-					((InstanceServiceListener) hsl).datasetChanged(DatasetType.reference);
-					((InstanceServiceListener) hsl).datasetChanged(DatasetType.transformed);
-				}
-				else {
-					((InstanceServiceListener) hsl).datasetChanged(type);
-				}
-			}
-			
-			hsl.update(new UpdateMessage(InstanceService.class, null)); // FIXME
-		}
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.models.InstanceService#getFeatures(eu.esdihumboldt.hale.models.InstanceService.DatasetType)
+	 * @see InstanceService#getFeatures(DatasetType)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public FeatureCollection getFeatures(DatasetType type) {
 		if (DatasetType.reference.equals(type)) {
-			return this.sourceReferenceFeatures;
+			return sourceReferenceFeatures;
 		}
 		else if (DatasetType.transformed.equals(type)) {
-			return this.transformedFeatures;
+			return transformedFeatures;
 		}
 		else {
 			return null;
@@ -274,7 +242,7 @@ public class InstanceServiceImpl
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.models.InstanceService#replaceInstances(eu.esdihumboldt.hale.models.InstanceService.DatasetType, org.geotools.feature.FeatureCollection)
+	 * @see InstanceService#replaceInstances(DatasetType, FeatureCollection)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -284,10 +252,10 @@ public class InstanceServiceImpl
 			new HashMap<RobustFTKey, Set<Feature>>();
 		FeatureCollection<?, Feature> oldFeatures = null;
 		if (DatasetType.reference.equals(type)) {
-			oldFeatures = this.sourceReferenceFeatures;
+			oldFeatures = sourceReferenceFeatures;
 		}
 		else {
-			oldFeatures = this.transformedFeatures;
+			oldFeatures = transformedFeatures;
 		}
 		// add original features to merged collection
 		FeatureIterator fi = oldFeatures.features();
@@ -336,22 +304,15 @@ public class InstanceServiceImpl
 		
 		// assign result and return...
 		if (DatasetType.reference.equals(type)) {
-			this.sourceReferenceFeatures = mergedFc;
+			sourceReferenceFeatures = mergedFc;
 		}
 		else {
-			this.transformedFeatures = mergedFc;
+			transformedFeatures = mergedFc;
 		}
+		
+		notifyDatasetChanged(type);
 		
 		return result;
 	}
-
-	/**
-	 * @see UpdateService#removeListener(HaleServiceListener)
-	 */
-	@Override
-	public void removeListener(HaleServiceListener listener) {
-		listeners.remove(listener);
-	}
-
 
 }

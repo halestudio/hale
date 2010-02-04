@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.TreeNode;
 
 /**
  * Label provider for a column of a tree with {@link TreeNode}s or
- * {@link MultiColumnTreeNode}s
+ * {@link AbstractMultiColumnTreeNode}s
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research

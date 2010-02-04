@@ -29,9 +29,7 @@ import eu.esdihumboldt.goml.align.Schema;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
-import eu.esdihumboldt.hale.models.provider.TaskProviderFactory;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -122,11 +120,11 @@ public class SchemaImportWizard
 		
 		// create tasks if checked.
 		if (mainPage.createTasks()) {
-			TaskService taskService = (TaskService) 
+			/*XXX TaskService taskService = (TaskService) 
 						PlatformUI.getWorkbench().getService(TaskService.class);
 			taskService.addTasks(
 					TaskProviderFactory.getInstance().getTasks(
-							schemaService.getSchema(mainPage.getSchemaType())));
+							schemaService.getSchema(mainPage.getSchemaType())));*/
 		}
 
 		return true;

@@ -2,6 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension-point id="eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory" name="FunctionWizardFactory" schema="schema/eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.task.TaskProvider" name="TaskProvider" schema="schema/eu.esdihumboldt.hale.task.TaskProvider.exsd"/>
 
    <extension
          id="application"
@@ -29,10 +30,10 @@
             name="Map Viewer">
       </view>
       <view
-            class="eu.esdihumboldt.hale.rcp.views.tasks.TasklistView"
+            class="eu.esdihumboldt.hale.rcp.views.tasks.TaskTreeView"
             icon="icons/tasks.gif"
-            id="eu.esdihumboldt.hale.rcp.views.tasks.TasklistView"
-            name="Tasklist">
+            id="eu.esdihumboldt.hale.rcp.views.tasks.TaskTreeView"
+            name="Tasks">
       </view>
       <view
             class="eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView"
@@ -312,6 +313,13 @@
                value="HUMBOLDT Alignment Editor">
          </property>
       </product>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.task.TaskProvider">
+      <tasks
+            class="eu.esdihumboldt.hale.task.schema.SchemaTaskProvider"
+            name="Schema tasks">
+      </tasks>
    </extension>
    <!-- <extension
          point="org.eclipse.ui.importWizards">

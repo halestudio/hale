@@ -16,11 +16,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.geotools.factory.CommonFactoryFinder;
@@ -44,11 +42,11 @@ import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
+import eu.esdihumboldt.hale.models.AbstractUpdateService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
-import eu.esdihumboldt.hale.models.UpdateService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
@@ -60,7 +58,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class StyleServiceImpl 
+public class StyleServiceImpl extends AbstractUpdateService
 	implements StyleService {
 
 	private static final Logger _log = Logger.getLogger(StyleServiceImpl.class);
@@ -68,9 +66,6 @@ public class StyleServiceImpl
 	private static StyleService instance;
 	
 	private final Map<FeatureType, FeatureTypeStyle> styles;
-	
-	private final Set<HaleServiceListener> listeners = 
-		new HashSet<HaleServiceListener>();
 	
 	private static final StyleFactory styleFactory = 
 		CommonFactoryFinder.getStyleFactory(null);
@@ -354,25 +349,11 @@ public class StyleServiceImpl
 		updateListeners();
 	}
 	
-	// UpdateService methods ...................................................
-	
-	/**
-	 * @see eu.esdihumboldt.hale.models.UpdateService#addListener(eu.esdihumboldt.hale.models.HaleServiceListener)
-	 */
-	public boolean addListener(HaleServiceListener sl) {
-		this.listeners.add(sl);
-		return false;
-	}
-
 	/**
 	 * Inform {@link HaleServiceListener}s of an update.
 	 */
-	@SuppressWarnings("unchecked")
 	private void updateListeners() {
-		for (HaleServiceListener hsl : this.listeners) {
-			_log.info("Updating a listener.");
-			hsl.update(new UpdateMessage(StyleService.class, null)); //FIXME
-		}
+		notifyListeners(new UpdateMessage<Object>(StyleService.class, null));
 	}
 	
 	/**
@@ -424,14 +405,6 @@ public class StyleServiceImpl
 		FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle();
 		fts.rules().add(rule);
 		return fts;
-	}
-
-	/**
-	 * @see UpdateService#removeListener(HaleServiceListener)
-	 */
-	@Override
-	public void removeListener(HaleServiceListener listener) {
-		listeners.remove(listener);
 	}
 
 }
