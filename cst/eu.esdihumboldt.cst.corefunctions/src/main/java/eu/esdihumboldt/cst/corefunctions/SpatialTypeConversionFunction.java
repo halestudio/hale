@@ -37,8 +37,7 @@ import com.vividsolutions.jts.geom.Polygon;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
-import eu.esdihumboldt.cst.transformer.exceptions.SpatialTypeNotSupportedException;
+import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
@@ -62,18 +61,6 @@ public class SpatialTypeConversionFunction
 	private Class<? extends Geometry> to;
 	private Property sourceProperty = null;
 	private Property targetProperty = null;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.esdihumboldt.cst.transformer.CstFunction#transform(org.geotools.feature
-	 * .FeatureCollection)
-	 */
-	public FeatureCollection<? extends FeatureType, ? extends Feature> transform(
-			FeatureCollection<? extends FeatureType, ? extends Feature> fc) {
-		return null;
-	}
 
 	/**
 	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.opengis.feature.Feature,
@@ -172,7 +159,7 @@ public class SpatialTypeConversionFunction
 		}
 
 		else {
-			throw new SpatialTypeNotSupportedException(
+			throw new RuntimeException(
 					"Spatial type not supported");
 		}
 

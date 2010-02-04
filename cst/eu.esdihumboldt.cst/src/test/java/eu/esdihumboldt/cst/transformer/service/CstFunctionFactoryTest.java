@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
-import eu.esdihumboldt.cst.transformer.CstFunction;
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
 import eu.esdihumboldt.goml.align.Cell;

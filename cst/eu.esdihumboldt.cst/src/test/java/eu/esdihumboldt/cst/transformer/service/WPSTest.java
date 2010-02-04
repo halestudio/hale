@@ -2,14 +2,11 @@ package eu.esdihumboldt.cst.transformer.service;
 
 import java.net.URL;
 import java.util.Iterator;
-import java.util.Map.Entry;
 
 import junit.framework.TestCase;
-import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
-import eu.esdihumboldt.cst.transformer.CstFunction;
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
 import eu.esdihumboldt.cst.transformer.capabilities.impl.CstServiceCapabilitiesImpl;
-import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
 
 public class WPSTest extends TestCase {
 

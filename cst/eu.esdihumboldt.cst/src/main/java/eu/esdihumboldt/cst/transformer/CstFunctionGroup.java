@@ -16,6 +16,8 @@ import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.cst.CstFunction;
+
 /**
  * An interface for dealing with multiple {@link CstFunction}s in a schema 
  * translation. A group is usually built for each target {@link FeatureType}.
@@ -39,14 +41,5 @@ public interface CstFunctionGroup {
 	 * @return the modified target {@link Feature}.
 	 */
 	public Feature executeFunctionGroup(Feature target);
-	
-	/**
-	 * execute a group of {@link CstFunction}s.
-	 * @param target the target {@link FeatureCollection} to use for all embedded 
-	 * {@link CstFunction}s
-	 * @return the modified target {@link FeatureCollection}.
-	 */
-	public FeatureCollection<? extends FeatureType, ? extends Feature> executeFunctionGroup(
-			FeatureCollection<? extends FeatureType, ? extends Feature> target);
 
 }

@@ -23,7 +23,7 @@ import java.util.Map;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
-import eu.esdihumboldt.cst.transformer.CstFunction;
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.transformer.CstService;
 import eu.esdihumboldt.cst.transformer.configuration.ReflectionHelper;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;

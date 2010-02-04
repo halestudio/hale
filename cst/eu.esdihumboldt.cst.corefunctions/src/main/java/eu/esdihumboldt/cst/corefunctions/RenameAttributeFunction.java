@@ -24,7 +24,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
+import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
@@ -50,11 +50,6 @@ public class RenameAttributeFunction extends AbstractCstFunction {
 
 	public SimpleFeatureType getTargetType(FeatureType sourceType) {
 		return null;
-	}
-
-	public FeatureCollection<? extends FeatureType, ? extends Feature> transform(
-			FeatureCollection<? extends FeatureType, ? extends Feature> fc) {
-		throw new UnsupportedOperationException("Currently not supported.");
 	}
 
 	/**

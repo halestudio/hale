@@ -24,7 +24,7 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
+import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
@@ -90,14 +90,6 @@ public class NilReasonFunction extends AbstractCstFunction {
 		entity2.setTransformation(t);	
 		parameterCell.setEntity2(entity2);
 		return parameterCell;
-	}
-	/**
-	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.geotools.feature.FeatureCollection)
-	 */
-	public FeatureCollection<? extends FeatureType, ? extends Feature> transform(
-			FeatureCollection<? extends FeatureType, ? extends Feature> fc) {
-		throw new UnsupportedOperationException("This operation is not yet " +
-				"implemented since the interface for it will change anyway.");
 	}
 
 	/**

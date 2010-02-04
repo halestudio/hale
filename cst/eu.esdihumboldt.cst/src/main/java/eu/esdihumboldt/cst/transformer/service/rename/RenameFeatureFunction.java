@@ -27,8 +27,8 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
-import eu.esdihumboldt.cst.transformer.CstFunction;
+import eu.esdihumboldt.cst.AbstractCstFunction;
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.transformer.service.impl.TargetSchemaProvider;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.FeatureClass;

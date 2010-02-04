@@ -23,10 +23,9 @@ import org.geotools.filter.text.cql2.CQLException;
 import org.opengis.feature.Feature;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.transformer.CstFunction;
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
-import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Restriction;
 
@@ -91,6 +90,7 @@ public class InstanceCreationHandler {
 	 * @param renameCell
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public static InstanceSplitMap oneToMany(
 			String targetFtName,
 			String sourceFtName,
@@ -140,6 +140,7 @@ public class InstanceCreationHandler {
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private static FeatureCollection filterCollection(FeatureCollection sourceFeatures, ICell renameCell) {
 		// check for any relevant filters on the cell
 		String cql = null;

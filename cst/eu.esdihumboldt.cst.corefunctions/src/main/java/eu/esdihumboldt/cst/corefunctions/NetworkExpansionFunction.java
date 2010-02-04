@@ -37,7 +37,7 @@ import com.vividsolutions.jts.operation.buffer.BufferParameters;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
+import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
@@ -62,14 +62,6 @@ public class NetworkExpansionFunction extends AbstractCstFunction {
 	
 	public void setBufferWidth(double bufferWidth) {
 		this.bufferWidth = bufferWidth;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public FeatureCollection<? extends FeatureType, ? extends Feature> transform(
-			FeatureCollection<? extends FeatureType, ? extends Feature> fc) {
-		return null;
 	}
 
 	public Feature transform(Feature source, Feature target) {

@@ -23,13 +23,16 @@ package eu.esdihumboldt.cst.corefunctions;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.FeatureType;
+
 import com.vividsolutions.jts.geom.Geometry;
+
+import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
@@ -44,15 +47,6 @@ import eu.esdihumboldt.goml.rdf.About;
 public class CentroidFunction extends AbstractCstFunction {
 	Property sourceProperty = null;
 	Property targetProperty = null;
-
-	
-	/* (non-Javadoc)
-	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.geotools.feature.FeatureCollection)
-	 */
-	public FeatureCollection<? extends FeatureType, ? extends Feature> transform(
-			FeatureCollection<? extends FeatureType, ? extends Feature> fc) {
-		return null;
-	}
 
 	
 	/**

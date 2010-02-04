@@ -22,9 +22,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import eu.esdihumboldt.cst.transformer.CstFunction;
+import eu.esdihumboldt.cst.CstFunction;
+import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
-import eu.esdihumboldt.goml.align.Cell;
 
 /**
  * This is an implementation of {@link FunctionDescription}.
@@ -52,7 +52,7 @@ public class FunctionDescriptionImpl
 		inspectCell(function.getParameters());
 	}
 	
-	private void inspectCell(Cell parameter) {
+	private void inspectCell(ICell parameter) {
 		try {
 			if (parameter.getEntity1() != null) {
 				parameters.put("entity1", parameter.getEntity1().getClass());

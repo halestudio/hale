@@ -32,7 +32,7 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.transformer.CstFunction;
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.transformer.CstService;
 import eu.esdihumboldt.cst.transformer.capabilities.CstServiceCapabilities;
 import eu.esdihumboldt.cst.transformer.capabilities.impl.CstServiceCapabilitiesImpl;

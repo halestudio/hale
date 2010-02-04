@@ -27,8 +27,7 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
-import eu.esdihumboldt.cst.transformer.CstFunction;
-import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.goml.omwg.Property;
 
 public class EntityTypeConditionTest extends TestCase {
@@ -36,27 +35,11 @@ public class EntityTypeConditionTest extends TestCase {
 	@Test
 	public void testTypeConditionForProperty() {
 
-		CstFunctionFactory.getInstance().registerCstPackage(
-				"eu.esdihumboldt.cst.corefunctions");
-		// System.out.println("CST contains " +
-		// CstFunctionFactory.getInstance().getRegisteredFunctions().size() +
-		// "functions");
-		CstFunction f = null;
 		Property entity1 = null;
 		Property entity2 = null;
 		String typeCondition = null;
-		Boolean bug = false;
 
-		for (Iterator<String> i = CstFunctionFactory.getInstance()
-				.getRegisteredFunctions().keySet().iterator(); i.hasNext();) {
-
-			try {
-				f = CstFunctionFactory.getInstance().getRegisteredFunctions()
-						.get(i.next()).newInstance();
-				// System.out.println("********"+f.toString());
-			} catch (Exception e) {
-				f = null;
-			}
+		for (CstFunction f : FunctionsCellTest.getTestFunctions()) {
 
 			if (f != null) {
 				// Setting of entity1
@@ -82,19 +65,13 @@ public class EntityTypeConditionTest extends TestCase {
 							Class.forName(typeCondition);
 						}
 					}
-					// typeCondition class can't be created
 					catch (ClassNotFoundException e) {
-						System.out.println("---------------");
-						System.out.println(f.getClass().toString());
-						System.out.println(e + " --typeCondition for entity1 ");
-						bug = true;
+						fail("typeCondition class can't be created for " +
+								"entity1 in " + f.getClass().toString());
 					}
-					// typeCondition doesn't exist for existing entity
 					catch (NullPointerException e) {
-						System.out.println("---------------");
-						System.out.println(f.getClass().toString()
-								+ "-- missing typeCondition for entity1");
-						bug = true;
+						fail("typeCondition doesn't exist for entity1 for" +
+								"function " + f.getClass().toString());
 					}
 
 				}
@@ -107,26 +84,16 @@ public class EntityTypeConditionTest extends TestCase {
 							Class.forName(tc);
 						}
 					}
-					// typeCondition class can't be created
 					catch (ClassNotFoundException e) {
-						System.out.println("---------------");
-						System.out.println(f.getClass().toString());
-						System.out
-								.println(e + " --typeCondition for entity2  ");
-						bug = true;
+						fail("typeCondition class can't be created for " +
+								"entity2 in " + f.getClass().toString());
 					}
-					// typeCondition doesn't exist for existing entity
 					catch (NullPointerException e) {
-						System.out.println("---------------");
-						System.out.println(f.getClass().toString()
-								+ "-- missing typeCondition for entity2");
-						bug = true;
+						fail("typeCondition doesn't exist for entity2 for" +
+								"function " + f.getClass().toString());
 					}
 
 				}
-			}
-			if (bug) {
-				assertTrue(false);
 			}
 		}
 	}

@@ -19,7 +19,7 @@ import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.cst.transformer.CstFunction;
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.transformer.CstFunctionGroup;
 
 /**
@@ -71,17 +71,6 @@ public class CstFunctionGroupImpl
 	public Feature executeFunctionGroup(Feature target) {
 		for (CstFunction cstf : this.functions) {
 			target = cstf.transform(this.source, target);
-		}
-		return target;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.cst.transformer.CstFunctionGroup#executeFunctionGroup(org.geotools.feature.FeatureCollection)
-	 */
-	public FeatureCollection<? extends FeatureType, ? extends Feature> executeFunctionGroup(
-			FeatureCollection<? extends FeatureType, ? extends Feature> target) {
-		for (CstFunction cstf : this.functions) {
-			target = cstf.transform(this.sourceCollection); // FIXME use target features
 		}
 		return target;
 	}

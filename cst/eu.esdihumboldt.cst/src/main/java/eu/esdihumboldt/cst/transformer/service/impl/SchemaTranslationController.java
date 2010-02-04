@@ -34,7 +34,7 @@ import org.opengis.metadata.lineage.Lineage;
 
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.transformer.CstFunction;
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory.ToleranceLevel;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;

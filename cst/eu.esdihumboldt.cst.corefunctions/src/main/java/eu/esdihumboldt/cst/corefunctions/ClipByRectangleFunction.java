@@ -41,7 +41,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
+import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
@@ -85,12 +85,6 @@ public class ClipByRectangleFunction extends AbstractCstFunction{
 		coords[4] = new Coordinate(xMin, yMin);			
 		clipGeometry = gf.createLinearRing(coords);
 		clipEnvelope = clipGeometry.getEnvelopeInternal();
-	}
-	
-	
-	public FeatureCollection<? extends FeatureType, ? extends Feature> transform(
-			FeatureCollection<? extends FeatureType, ? extends Feature> fc) {
-			return null;
 	}
 
 	public Feature transform(Feature source, Feature target) {

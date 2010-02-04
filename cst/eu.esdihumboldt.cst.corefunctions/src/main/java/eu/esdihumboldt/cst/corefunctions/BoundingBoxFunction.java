@@ -38,18 +38,13 @@ import org.opengis.feature.type.PropertyDescriptor;
 import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
+import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 
 public class BoundingBoxFunction extends AbstractCstFunction {
 	
-
-	public FeatureCollection<? extends FeatureType, ? extends Feature> transform(
-		FeatureCollection<? extends FeatureType, ? extends Feature> fc) {
-		return null;
-	}
 
 	public Feature transform(Feature source, Feature target) {
 		Collection<org.opengis.feature.Property> c = new HashSet<org.opengis.feature.Property>();

@@ -25,7 +25,7 @@ import org.opengis.feature.type.PropertyDescriptor;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.transformer.AbstractCstFunction;
+import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
@@ -86,16 +86,6 @@ public class IdentifierFunction
 		this.sourceProperty = (Property) cell.getEntity1();
 		this.targetProperty = (Property) cell.getEntity2();
 		return true;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.geotools.feature.FeatureCollection)
-	 */
-	public FeatureCollection<? extends FeatureType, ? extends Feature> transform(
-			FeatureCollection<? extends FeatureType, ? extends Feature> fc) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/* (non-Javadoc)

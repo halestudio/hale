@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import eu.esdihumboldt.cst.transformer.CstFunction;
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
 import eu.esdihumboldt.cst.transformer.capabilities.impl.FunctionDescriptionImpl;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
