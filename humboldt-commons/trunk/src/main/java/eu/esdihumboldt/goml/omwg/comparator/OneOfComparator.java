@@ -20,12 +20,12 @@ import eu.esdihumboldt.goml.omwg.Restriction;
  * @see org.opengis.feature.Property
  * @see IValueExpression
  */
-public class OneOfComparator implements Comparator {
+public class OneOfComparator implements IComparator {
 	
 	private static final Logger LOG = Logger.getLogger(OneOfComparator.class);
 
 	/* (non-Javadoc)
-	 * @see eu.esdihumboldt.goml.omwg.comparator.Comparator#evaluate(java.util.List, java.util.List)
+	 * @see eu.esdihumboldt.goml.omwg.comparator.IComparator#evaluate(java.util.List, java.util.List)
 	 */
 	public boolean evaluate(Restriction sourceRestriction, Property sourceProp) {
 		List<IValueExpression> sourceValues = sourceRestriction.getValue();

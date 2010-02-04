@@ -17,14 +17,14 @@ import eu.esdihumboldt.goml.omwg.Restriction;
  * @author Mark Doyle (Logica)
  *
  */
-public class EqualComparator implements Comparator {
+public class EqualComparator implements IComparator {
 	/**
 	 * Logger for this class
 	 */
 	private static final Logger LOG = Logger.getLogger(EqualComparator.class);
 
 	/* (non-Javadoc)
-	 * @see eu.esdihumboldt.goml.omwg.comparator.Comparator#evaluate(java.util.List, java.util.List)
+	 * @see eu.esdihumboldt.goml.omwg.comparator.IComparator#evaluate(java.util.List, java.util.List)
 	 */
 	public boolean evaluate(Restriction sourceRestriction, Property sourceProp) {
 		List<IValueExpression> sourceValues = sourceRestriction.getValue();		

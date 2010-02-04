@@ -20,11 +20,11 @@ import eu.esdihumboldt.goml.omwg.Restriction;
  * 
  *
  */
-public interface Comparator {
+public interface IComparator {
 	
 	/**
 	 * Evaluates the source property against a Restriction.  What this means in detail depends 
-	 * upon the concrete Comparator implementations; this simply provides the interface for clients to
+	 * upon the concrete IComparator implementations; this simply provides the interface for clients to
 	 * call.
 	 * 
 	 * @param sourceRestriction source java.util.List of Restriction.
