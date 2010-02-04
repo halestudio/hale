@@ -44,7 +44,7 @@ public class TypeLoader {
 		try {
 			Schema schema = asp.loadSchema(new URI(schemaFilename));
 			if (schema != null) {
-				for (TypeDefinition td : schema.getTypes()) {
+				for (TypeDefinition td : schema.getTypes().values()) {
 					if (td.getFeatureType() != null) {
 						if (localname.equals(td.getName().getLocalPart())) {
 							type = td.getFeatureType();

@@ -80,10 +80,10 @@ public class GeographicalNameFunctionTest {
 	
 	@Test
 	public void testTransformFeatureFeature() {
-		
-		FeatureType geoNameType = TypeLoader.getType("GeographicalName", 
-				"file:///d:/hale-workspace/eu.esdihumboldt.cst.corefunctions/" +
-				"src/test/resource/inspire_v3.0_xsd/GeographicalNames.xsd");		
+		String url = getClass().getResource("/inspire_v3.0_xsd/GeographicalNames.xsd").toString();
+		FeatureType geoNameType = TypeLoader.getType("GeographicalName", url);
+		//		"file:///d:/hale-workspace/eu.esdihumboldt.cst.corefunctions/" +
+		//		"src/test/resource/inspire_v3.0_xsd/GeographicalNames.xsd");		
 		
 		//build source and target Features
 		SimpleFeatureType sourceType = this.getFeatureType(
