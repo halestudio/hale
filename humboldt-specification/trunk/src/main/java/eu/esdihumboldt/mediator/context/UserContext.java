@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.mediator.context;
 
-import java.util.UUID;
 import eu.esdihumboldt.mediator.constraints.MetadataConstraint;
 import eu.esdihumboldt.mediator.usermanagement.User;
 

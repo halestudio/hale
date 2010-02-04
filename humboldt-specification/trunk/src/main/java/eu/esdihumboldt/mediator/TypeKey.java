@@ -14,7 +14,7 @@ package eu.esdihumboldt.mediator;
 import java.io.Serializable;
 
 /**
- * A TypeKey is sued to determine the properties of an object that make it
+ * A TypeKey is used to determine the properties of an object that make it
  * unique in a certain context. A TypeKey must be {@link Comparable}, since 
  * it will be used in Collections a lot.
  * 

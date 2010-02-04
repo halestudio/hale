@@ -28,7 +28,7 @@ import eu.esdihumboldt.mediator.constraints.Constraint;
  * @version $Id: ConstraintTypeComparator.java,v 1.1 2007-11-06 10:26:29 pitaeva Exp $ 
  */
 public class ConstraintTypeComparator 
-	implements Comparator {
+	implements Comparator<Object> {
 
 	/**
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
@@ -39,8 +39,8 @@ public class ConstraintTypeComparator
 		}
 		
 		// get the Classes for each of the Constraints to compare.		
-		List<Class> c1_supertypes = this.getSupertypes(_constraint1.getClass());
-		List<Class> c2_supertypes = this.getSupertypes(_constraint2.getClass());
+		List<Class<?>> c1_supertypes = this.getSupertypes(_constraint1.getClass());
+		List<Class<?>> c2_supertypes = this.getSupertypes(_constraint2.getClass());
 		
 		// use the difference of the constraint.class hash values as natural 
 		// ordering.
@@ -48,7 +48,7 @@ public class ConstraintTypeComparator
 		
 		//..but also make cases equal where a common subinterface of constraint 
 		// is implemented.
-		for (Class this_class : c1_supertypes) {
+		for (Class<?> this_class : c1_supertypes) {
 			if (c2_supertypes.contains(this_class)) {
 				if (!this_class.equals(Serializable.class)) {
 					result = 0;
@@ -65,12 +65,12 @@ public class ConstraintTypeComparator
 	 * @return a List of Class objects, starting with the one passed in and
 	 * ending with {@link Constraint}.
 	 */
-	private List<Class> getSupertypes(Class _c) {
-		List<Class> result = new ArrayList<Class>();
+	private List<Class<?>> getSupertypes(Class<?> _c) {
+		List<Class<?>> result = new ArrayList<Class<?>>();
 		// Constraint.class is the stopper value.
 		if (!_c.equals(Constraint.class)) {
 			result.add(_c);
-			for (Class this_class : _c.getInterfaces()) {
+			for (Class<?> this_class : _c.getInterfaces()) {
                 result.addAll(this.getSupertypes(this_class));
             }
 		}

@@ -16,7 +16,6 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import javax.security.cert.X509Certificate;

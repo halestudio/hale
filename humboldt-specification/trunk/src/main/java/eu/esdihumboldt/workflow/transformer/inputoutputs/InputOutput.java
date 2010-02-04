@@ -3,16 +3,12 @@ package eu.esdihumboldt.workflow.transformer.inputoutputs;
 import eu.esdihumboldt.workflow.exceptions.IncompatibleTransformersException;
 import eu.esdihumboldt.workflow.process.Description;
 import eu.esdihumboldt.workflow.repository.Transformer;
-import eu.esdihumboldt.workflow.repository.Transformer.InputOutputStatus;
 import java.io.Serializable;
 import java.util.UUID;
 
 /**
  *  @author mgone
  */
-// <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-// #[regen=yes,id=DCE.E748DC78-75B9-A624-D120-D2C3D40D736C]
-// </editor-fold> 
 public interface InputOutput extends Serializable{
 
     /**
