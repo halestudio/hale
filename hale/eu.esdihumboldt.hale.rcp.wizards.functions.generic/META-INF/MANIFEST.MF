@@ -9,6 +9,6 @@ Import-Package: eu.esdihumboldt.hale.rcp.views.model,
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  eu.esdihumboldt.commons;bundle-version="2.0.1",
- eu.esdihumboldt.specification;bundle-version="2.0.0",
+ eu.esdihumboldt.specification;bundle-version="2.0.2",
  org.geotools;bundle-version="2.5.8",
  eu.esdihumboldt.transformer.cst;bundle-version="1.0.0"
