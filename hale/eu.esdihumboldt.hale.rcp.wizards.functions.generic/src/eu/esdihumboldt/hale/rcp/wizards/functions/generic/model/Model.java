@@ -26,14 +26,14 @@ import java.net.URL;
 public abstract class Model {
 	protected FunctionType parent;
 	protected String name;
-	protected URL functionID;
+	protected String functionID;
 	
 	/**
 	 * constructor	
 	 * @param title name of function
 	 * @param functionID ID of algorithm
 	 */
-	public Model(String title, URL functionID) {
+	public Model(String title, String functionID) {
 		this.name = title;
 		this.functionID = functionID;
 	}
@@ -50,7 +50,7 @@ public abstract class Model {
 	 * sets functionID
 	 * @param functionID
 	 */
-	public void setFunctionID(URL functionID){
+	public void setFunctionID(String functionID){
 		this.functionID = functionID;
 	}
 	
@@ -74,7 +74,7 @@ public abstract class Model {
 	 * Method gets function ID
 	 * @return url
 	 */
-	public URL getFunctionID(){
+	public String getFunctionID(){
 		return functionID;
 	}
 	

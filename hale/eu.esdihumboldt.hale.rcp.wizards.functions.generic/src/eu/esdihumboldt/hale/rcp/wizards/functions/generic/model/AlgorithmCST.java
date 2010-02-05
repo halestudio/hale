@@ -21,13 +21,17 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.generic.model;
 
-import java.net.URL;
-import java.util.Map;
+import java.util.List;
+
+import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.ext.IParameter;
 
 public class AlgorithmCST extends Model{
 	
-	public Map <String, Class<?>> parameters = null;	// parameters of algorithm
+	public List <IParameter> parameters = null;	// parameters of algorithm
 	public int numberOfParameters = 0;			// number of input parameters
+	public boolean transformationOnEntity1 = false;
+	public boolean transformationOnEntity2 = false;
 	
 	/**
 	 * constructor
@@ -35,19 +39,34 @@ public class AlgorithmCST extends Model{
 	 * @param functionID function ID of algorithm
 	 * @param parameters input parameters of algorithm
 	 */
-	public AlgorithmCST(String title, URL functionID, Map <String, Class<?>> parameters) {
+	public AlgorithmCST(String title, String functionID, ICell cell) {
 		super(title, functionID);
-		this.parameters = parameters;
-		if (parameters != null){
-			numberOfParameters = parameters.size();
+		try{
+			this.parameters = cell.getEntity1().getTransformation().getParameters();
+			transformationOnEntity1 = true;
 		}
+		catch(NullPointerException e){
+			try{
+				this.parameters = cell.getEntity2().getTransformation().getParameters();
+				transformationOnEntity2 = true;
+			}
+			catch(NullPointerException ee){
+				transformationOnEntity1 = true;
+			}
+		}
+		
+		if (this.parameters != null){
+			numberOfParameters = parameters.size();
+			//System.out.println(parameters.toString());
+		}
+		
 	}
 	
 	/**
 	 * Method that get parameters of algorithm
 	 * @return Map <String, Class<?>> of type input parameters
 	 */
-	public Map <String, Class<?>> getParameters(){
+	public List <IParameter> getParameters(){
 		return this.parameters;
 	}
 }

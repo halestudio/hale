@@ -26,28 +26,20 @@ import java.util.List;
 
 public class FunctionType extends Model {
 	protected List <FunctionType> boxes;
-	protected List <AlgorithmCST> clasification;
-	protected List <AlgorithmCST> filter;
-	protected List <AlgorithmCST> geometric;
 	protected List <AlgorithmCST> inspire;
-	protected List <AlgorithmCST> literal; 
-	protected List <AlgorithmCST> math;
-	protected List <AlgorithmCST> numeric;
-	protected List <AlgorithmCST> other;
+	protected List <AlgorithmCST> core;
+	protected List <AlgorithmCST> others; 
+
 	
 	/**
 	 * constructor for root
 	 */
 	public FunctionType() {
 		boxes =  new ArrayList<FunctionType>();
-		clasification = new ArrayList<AlgorithmCST>();
-		filter = new ArrayList<AlgorithmCST>();
-		geometric = new ArrayList<AlgorithmCST>();
+
 		inspire = new ArrayList<AlgorithmCST>();
-		literal = new ArrayList<AlgorithmCST>();
-		math = new ArrayList<AlgorithmCST>();
-		numeric = new ArrayList<AlgorithmCST>();
-		other = new ArrayList<AlgorithmCST>();
+		core = new ArrayList<AlgorithmCST>();
+		others = new ArrayList<AlgorithmCST>();
 	}
 	
 	/**
@@ -77,55 +69,39 @@ public class FunctionType extends Model {
 	}
 	
 	/**
-	 * Method gets all clasification functions
-	 * @return list of clasification functions
+	 * Method gets all core functions
+	 * @return list of core functions
 	 */
-	public List <AlgorithmCST> getClasificationFunctions() {
-		return clasification;
+	public List <AlgorithmCST> getCoreFunctions() {
+		return core;
 	}
 	
 	/**
 	 * adds new function
 	 * @param item name of function
 	 */
-	public void addClasificationFunction(AlgorithmCST item) {
-		clasification.add(item);
+	public void addCoreFunction(AlgorithmCST item) {
+		core.add(item);
 		item.parent = this;
 	}
 	
 	/**
-	 * Method gets all filter functions
-	 * @return list of filter functions
+	 * Method gets all others functions
+	 * @return list of others functions
 	 */
-	public List <AlgorithmCST> getFilterFunctions() {
-		return filter;
-	}
-
-	/**
-	 * adds new function
-	 * @param item name of function
-	 */
-	public void addFilterFunction(AlgorithmCST item) {
-		filter.add(item);
-		item.parent = this;
-	}
-	
-	/**
-	 * Method gets all geometric functions
-	 * @return list of geometric functions
-	 */
-	public List <AlgorithmCST> getGeometricFunctions() {
-		return geometric;
+	public List <AlgorithmCST> getOthersFunctions() {
+		return others;
 	}
 	
 	/**
 	 * adds new function
 	 * @param item name of function
 	 */
-	public void addGeometricFunction(AlgorithmCST item) {
-		geometric.add(item);
+	public void addOthersFunction(AlgorithmCST item) {
+		others.add(item);
 		item.parent = this;
 	}
+	
 
 	/**
 	 * Method gets all Inspire functions
@@ -144,81 +120,12 @@ public class FunctionType extends Model {
 		item.parent = this;
 	}
 	
-	/**
-	 * Method gets all literal functions
-	 * @return list of literal functions
-	 */
-	public List <AlgorithmCST> getLiteralFunctions() {
-		return literal;
-	}
-
-	/**
-	 * adds new function
-	 * @param item name of function
-	 */
-	public void addLiteralFunction(AlgorithmCST item) {
-		literal.add(item);
-		item.parent = this;
-	}
-
-	/**
-	 * Method gets all Math functions
-	 * @return list of Math functions
-	 */
-	public List <AlgorithmCST> getMathFunctions() {
-		return math;
-	}
-
-	/**
-	 * adds new function
-	 * @param item name of function
-	 */
-	public void addMathFunction(AlgorithmCST item) {
-		math.add(item);
-		item.parent = this;
-	}
-
-	/**
-	 * Method gets all numeric functions
-	 * @return list of numeric functions
-	 */
-	public List <AlgorithmCST> getNumericFunctions() {
-		return numeric;
-	}
-	
-	/**
-	 * adds new function
-	 * @param item name of function
-	 */
-	public void addNumericFunction(AlgorithmCST item) {
-		numeric.add(item);
-		item.parent = this;
-	}
-
-	/**
-	 * Method gets all other functions
-	 * @return list of other functions
-	 */
-	public List <AlgorithmCST> getOtherFunctions() {
-		return other;
-	}
-
-	/**
-	 * adds new function
-	 * @param item name of function
-	 */
-	public void addOtherFunction(AlgorithmCST item) {
-		other.add(item);
-		item.parent = this;
-	}
 
 	/** Answer the total number of items the
 	 * receiver contains.
 	 */
 	public int size() {
-		return getClasificationFunctions().size() + getFilterFunctions().size() + getGeometricFunctions().size() +
-		getInspireFunctions().size() + getLiteralFunctions().size() + getMathFunctions().size() + getNumericFunctions().size() +
-		getOtherFunctions().size();
+		return getCoreFunctions().size() + getInspireFunctions().size();
 	}
 
 }
