@@ -17,6 +17,10 @@ import java.util.Collection;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeColumnViewerLabelProvider;
 import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -38,6 +42,7 @@ import eu.esdihumboldt.hale.rcp.utils.tree.CollectionTreeNodeContentProvider;
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MapTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.SortedMapTreeNode;
+import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.task.ResolvedTask;
 import eu.esdihumboldt.hale.task.Task;
@@ -150,8 +155,53 @@ public class TaskTreeView extends ViewPart {
 		createInput();
 		
 		configureActions();
+		
+		// interaction
+		tree.addDoubleClickListener(new IDoubleClickListener() {
+			
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				ISelection selection = event.getSelection();
+				if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
+					Object selected = ((IStructuredSelection) selection).getFirstElement();
+					if (selected instanceof TreeNode) {
+						// determine value
+						Object tmp = ((TreeNode) selected).getValue();
+						Object value;
+						if (tmp.getClass().isArray()) {
+							value = ((Object[]) tmp)[0];
+						}
+						else {
+							value = tmp;
+						}
+						if (value instanceof Task) {
+							// node is task node
+							Task task = (Task) value;
+							onDoubleClick(task.getMainContext().getIdentifier());
+						}
+						else if (value instanceof TypeDefinition) {
+							TypeDefinition type = (TypeDefinition) value;
+							onDoubleClick(type.getIdentifier());
+						}
+					}
+				}
+			}
+		});
 	}
 	
+	/**
+	 * React on a double click on an item that represents the given identifier
+	 * 
+	 * @param identifier the identifier
+	 */
+	protected void onDoubleClick(String identifier) {
+		//FIXME use selection mechanism instead of getting the view (real ugly)
+		ModelNavigationView modelView = (ModelNavigationView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ModelNavigationView.ID);
+		if (modelView != null) {
+			modelView.selectItem(identifier);
+		}
+	}
+
 	private void configureActions() {
 		IActionBars bars = getViewSite().getActionBars();
 		
@@ -288,7 +338,7 @@ public class TaskTreeView extends ViewPart {
 			TypeDefinition group, boolean allowCreate) {
 		MapTreeNode<Task, TreeNode> groupNode = rootNode.getChild(group);
 		if (groupNode == null && allowCreate) {
-			groupNode = new SortedMapTreeNode<Task, TreeNode>(group.getName().getLocalPart());
+			groupNode = new SortedMapTreeNode<Task, TreeNode>(group);
 			rootNode.addChild(group, groupNode);
 			// update viewer
 			tree.refresh(rootNode, true);

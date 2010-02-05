@@ -18,9 +18,11 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MapTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNodeLabelProvider;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.task.ResolvedTask;
 import eu.esdihumboldt.hale.task.TaskType.SeverityLevel;
 
@@ -33,6 +35,8 @@ import eu.esdihumboldt.hale.task.TaskType.SeverityLevel;
  */
 public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvider {
 	
+	private final Image taskImage;
+	
 	private final int index;
 	
 	/**
@@ -44,6 +48,8 @@ public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvid
 		super(index);
 		
 		this.index = index;
+		
+		taskImage = HALEActivator.getImageDescriptor("icons/tasks.gif").createImage();
 	}
 
 	/**
@@ -77,6 +83,7 @@ public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvid
 		
 		switch (severityLevel) {
 		case task:
+			//return taskImage;
 			return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
 		case warning:
 			return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_WARN_TSK);
@@ -147,7 +154,12 @@ public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvid
 	@Override
 	protected String getValueText(Object value, TreeNode node) {
 		if (value instanceof ResolvedTask) {
+			// task title
 			return ((ResolvedTask) value).getTitle();
+		}
+		else if (value instanceof TypeDefinition) {
+			// type name
+			return ((TypeDefinition) value).getName().getLocalPart();
 		}
 		else {
 			return super.getValueText(value, node);
@@ -159,10 +171,7 @@ public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvid
 	 */
 	@Override
 	public void dispose() {
-		//XXX shared images musn't be disposed
-		/*taskImage.dispose();
-		warningImage.dispose();
-		errorImage.dispose();*/
+		taskImage.dispose();
 		
 		super.dispose();
 	}

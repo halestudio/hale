@@ -14,9 +14,11 @@ package eu.esdihumboldt.hale.rcp.views.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jface.action.ActionContributionItem;
@@ -32,6 +34,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ViewForm;
@@ -207,6 +210,16 @@ public class ModelNavigationView extends ViewPart implements
 	private SchemaServiceListener schemaListener;
 
 	private HaleServiceListener alignmentListener;
+	
+	/**
+	 * Source schema items that have an associated defintion
+	 */
+	private final Map<String, SchemaItem> sourceSchemaItems = new HashMap<String, SchemaItem>();
+	
+	/**
+	 * Target schema items that have an associated defintion
+	 */
+	private final Map<String, SchemaItem> targetSchemaItems = new HashMap<String, SchemaItem>();
 
 	/**
 	 * @see WorkbenchPart#createPartControl(Composite)
@@ -475,11 +488,11 @@ public class ModelNavigationView extends ViewPart implements
 	 * @param schema
 	 *            the Schema to display.
 	 * @param namespace the namespace
-	 * @param viewer the viewer type
+	 * @param schemaType the viewer type
 	 * @return a {@link TreeViewer} with the currently loaded schema.
 	 */
 	private TreeViewer schemaExplorerSetup(Composite modelComposite,
-			Collection<TypeDefinition> schema, String namespace, final SchemaType viewer) {
+			Collection<TypeDefinition> schema, String namespace, final SchemaType schemaType) {
 		PatternFilter patternFilter = new PatternFilter();
 	    final FilteredTree filteredTree = new FilteredTree(modelComposite, SWT.MULTI
 	            | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
@@ -487,7 +500,7 @@ public class ModelNavigationView extends ViewPart implements
 	    // set the default content provider
 		schemaViewer.setContentProvider(new InheritanceContentProvider());
 		schemaViewer.setLabelProvider(new ModelNavigationViewLabelProvider());
-		schemaViewer.setInput(translateSchema(schema, namespace));
+		schemaViewer.setInput(translateSchema(schema, namespace, schemaType));
         schemaViewer
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
@@ -502,10 +515,25 @@ public class ModelNavigationView extends ViewPart implements
 	 *            the {@link Collection} of {@link FeatureType}s that represent
 	 *            the schema to display.
 	 * @param namespace the namespace
+	 * @param schemaType the schema type
 	 * 
 	 * @return the root item
 	 */
-	private SchemaItem translateSchema(Collection<TypeDefinition> schema, String namespace) {
+	private SchemaItem translateSchema(Collection<TypeDefinition> schema, String namespace, SchemaType schemaType) {
+		Map<String, SchemaItem> itemMap;
+		switch (schemaType) {
+		case SOURCE:
+			itemMap = sourceSchemaItems;
+			break;
+		case TARGET:
+			itemMap = targetSchemaItems;
+			break;
+		default:
+			throw new RuntimeException("Schema type must be specified");
+		}
+		
+		itemMap.clear();
+		
 		if (schema == null || schema.size() == 0) {
 			return new TreeParent("", null, TreeObjectType.ROOT, null);
 		}
@@ -522,7 +550,7 @@ public class ModelNavigationView extends ViewPart implements
 		// supertypes.
 		for (TypeDefinition type : schema) {
 			if (type.getSuperType() == null) {
-				root.addChild(this.buildSchemaTree(type, schema, namespace));
+				root.addChild(this.buildSchemaTree(type, schema, namespace, itemMap));
 			}
 		}
 
@@ -537,19 +565,21 @@ public class ModelNavigationView extends ViewPart implements
 	 * @param type the type definition
 	 * @param schema the collection of types to display
 	 * @param namespace the namespace
+	 * @param itemMap map to add the created items to (definition identifier mapped to item)
 	 * @return a {@link SchemaItem} that contains all Properties and all
 	 *         subtypes and their property, starting with the given FT.
 	 */
-	private TreeObject buildSchemaTree(TypeDefinition type, Collection<TypeDefinition> schema, String namespace) {
+	private TreeObject buildSchemaTree(TypeDefinition type, Collection<TypeDefinition> schema, String namespace, Map<String, SchemaItem> itemMap) {
 		TypeItem featureItem = new TypeItem(type);
+		itemMap.put(type.getIdentifier(), featureItem);
 		
 		// add properties
-		addProperties(featureItem, type);
+		addProperties(featureItem, type, itemMap);
 		
 		// add super type properties
 		TypeDefinition superType = type.getSuperType();
 		while (superType != null) {
-			addProperties(featureItem, superType);
+			addProperties(featureItem, superType, null); // null map to prevent adding to item map (wrong identifer would be used)
 			
 			superType = superType.getSuperType();
 		}
@@ -557,7 +587,7 @@ public class ModelNavigationView extends ViewPart implements
 		// add children recursively
 		for (TypeDefinition subType : type.getSubTypes()) {
 			if (schema.contains(subType)) {
-				featureItem.addChild(buildSchemaTree(subType, schema, namespace));
+				featureItem.addChild(buildSchemaTree(subType, schema, namespace, itemMap));
 			}
 		}
 		return featureItem;
@@ -568,13 +598,18 @@ public class ModelNavigationView extends ViewPart implements
 	 * 
 	 * @param parent the tree parent
 	 * @param type the type definition
+	 * @param itemMap map to add the created items to (definition identifier mapped to item)
 	 */
-	private static void addProperties(TreeParent parent, TypeDefinition type) {
+	private static void addProperties(TreeParent parent, TypeDefinition type, Map<String, SchemaItem> itemMap) {
 		for (AttributeDefinition attribute : type.getDeclaredAttributes()) {
 			if (attribute.getAttributeType() != null) { // only properties with an associated type
 				AttributeItem property = new AttributeItem(attribute);
 				
-				addProperties(property, attribute.getAttributeType());
+				if (itemMap != null) {
+					itemMap.put(attribute.getIdentifier(), property);
+				}
+				
+				addProperties(property, attribute.getAttributeType(), null); // null map to prevent adding to item map (would be duplicate)
 				
 				parent.addChild(property);
 			}
@@ -598,12 +633,12 @@ public class ModelNavigationView extends ViewPart implements
 		switch (schema) {
 		case SOURCE:
 			sourceSchemaViewer.setInput(translateSchema(schemaService
-					.getSourceSchema(), schemaService.getSourceNameSpace()));
+					.getSourceSchema(), schemaService.getSourceNameSpace(), schema));
 			sourceSchemaViewer.refresh();
 			break;
 		case TARGET:
 			targetSchemaViewer.setInput(translateSchema(schemaService
-					.getTargetSchema(), schemaService.getTargetNameSpace()));
+					.getTargetSchema(), schemaService.getTargetNameSpace(), schema));
 			targetSchemaViewer.refresh();
 			break;
 		}
@@ -641,6 +676,27 @@ public class ModelNavigationView extends ViewPart implements
 		}
  		
 		fireSelectionChange(selection);
+	}
+	
+	/**
+	 * Select the item with representing the given identifier
+	 * 
+	 * @param identifier the identifier
+	 */
+	public void selectItem(String identifier) {
+		TreeViewer tree;
+		SchemaItem item = sourceSchemaItems.get(identifier);
+		if (item == null) {
+			item = targetSchemaItems.get(identifier);
+			tree = targetSchemaViewer;
+		}
+		else {
+			tree = sourceSchemaViewer;
+		}
+		
+		if (item != null) {
+			tree.setSelection(new StructuredSelection(item), true);
+		}
 	}
 	
 	/**
@@ -716,6 +772,5 @@ public class ModelNavigationView extends ViewPart implements
 		
 		super.dispose();
 	}
-
 
 }
