@@ -38,16 +38,12 @@ import eu.esdihumboldt.hale.task.impl.AbstractTaskProvider;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class SchemaTaskProvider extends AbstractTaskProvider {
+public abstract class AbstractSchemaTaskProvider extends AbstractTaskProvider {
 	
 	private final SchemaType schemaType;
 	
 	private SchemaService schemaService;
 	
-	private final MapTypeTaskFactory mapType;
-	
-	private final MapAttributeTaskFactory mapAttribute;
-
 	private SchemaServiceAdapter schemaListener;
 
 	private AlignmentService alignmentService;
@@ -57,15 +53,20 @@ public class SchemaTaskProvider extends AbstractTaskProvider {
 	/**
 	 * Create a new schema task provider for the given schema type
 	 * 
+	 * @param prefix the type name prefix or <code>null</code> 
 	 * @param schemaType the schema type
 	 */
-	public SchemaTaskProvider(SchemaType schemaType) {
-		super((schemaType == SchemaType.SOURCE)?("source."):("target."));
+	public AbstractSchemaTaskProvider(String prefix, SchemaType schemaType) {
+		super(prefix);
 		
 		this.schemaType = schemaType;
-		
-		addFactory(mapType = new MapTypeTaskFactory()); //TODO param?
-		addFactory(mapAttribute = new MapAttributeTaskFactory()); //TODO param?
+	}
+
+	/**
+	 * @return the schemaType
+	 */
+	public SchemaType getSchemaType() {
+		return schemaType;
 	}
 
 	/**
@@ -122,11 +123,10 @@ public class SchemaTaskProvider extends AbstractTaskProvider {
 						generateSchemaTasks(taskService, Collections.singleton((TypeDefinition) definition));
 					}
 					else if (definition instanceof AttributeDefinition) {
+						Collection<Task> tasks = new ArrayList<Task>();
 						AttributeDefinition attribute = (AttributeDefinition) definition;
-						Task attrTask = mapAttribute.createTask(serviceProvider, attribute);
-						if (attrTask != null) {
-							taskService.addTask(attrTask);
-						}
+						generateAttributeTasks(attribute, tasks);
+						taskService.addTasks(tasks);
 					}
 				}
 			}
@@ -145,24 +145,36 @@ public class SchemaTaskProvider extends AbstractTaskProvider {
 		Collection<Task> tasks = new ArrayList<Task>();
 		for (TypeDefinition type : schema) {
 			if (type.isFeatureType()) { // restrict to feature types
-				// create map type tasks
-				Task task = mapType.createTask(serviceProvider, type);
-				if (task != null) {
-					tasks.add(task);
-				}
+				// create type tasks
+				generateTypeTasks(type, tasks);
 				
-				// create attribute type tasks
+				// create attribute tasks
 				for (AttributeDefinition attribute : type.getDeclaredAttributes()) {
-					Task attrTask = mapAttribute.createTask(serviceProvider, attribute);
-					if (attrTask != null) {
-						tasks.add(attrTask);
-					}
+					generateAttributeTasks(attribute, tasks);
 				}
 			}
 		}
 		
 		taskService.addTasks(tasks);
 	}
+
+	/**
+	 * Generate tasks based on the given attribute
+	 * 
+	 * @param attribute the attribute
+	 * @param taskList the task list to add created tasks to
+	 */
+	protected abstract void generateAttributeTasks(AttributeDefinition attribute,
+			Collection<Task> taskList);
+
+	/**
+	 * Generate tasks based on the given type
+	 * 
+	 * @param type the type
+	 * @param taskList the task list to add created tasks to
+	 */
+	protected abstract void generateTypeTasks(TypeDefinition type,
+			Collection<Task> taskList);
 
 	/**
 	 * @see AbstractTaskProvider#doDeactivate()
