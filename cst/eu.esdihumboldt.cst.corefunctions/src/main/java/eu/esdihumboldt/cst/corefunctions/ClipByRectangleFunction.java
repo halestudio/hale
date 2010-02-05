@@ -156,8 +156,10 @@ public class ClipByRectangleFunction extends AbstractCstFunction{
 		params.add(ymax);
 		params.add(xmin);
 		params.add(ymin);	
+		t.setParameters(params);
 		entity1.setTransformation(t);	
 		parameterCell.setEntity1(entity1);
+		parameterCell.setEntity2(entity2);
 		return parameterCell;
 	}
 	
