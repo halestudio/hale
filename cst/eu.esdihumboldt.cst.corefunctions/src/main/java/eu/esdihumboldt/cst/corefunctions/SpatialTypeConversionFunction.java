@@ -18,12 +18,10 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.geotools.feature.AttributeImpl;
-import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.PropertyImpl;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.AttributeDescriptor;
-import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 
 import com.vividsolutions.jts.geom.Coordinate;

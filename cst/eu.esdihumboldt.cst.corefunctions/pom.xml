@@ -6,7 +6,8 @@
 	<packaging>jar</packaging>
 	<version>1.0.1-SNAPSHOT</version>
 	<name>corefunctions</name>
-	<url>http://maven.apache.org</url>
+	<description>A set of core Schema Translation Function implementations</description>
+	<url>http://community.esdi-humboldt.eu/projects/show/cst</url>
 
 
 	<build>
