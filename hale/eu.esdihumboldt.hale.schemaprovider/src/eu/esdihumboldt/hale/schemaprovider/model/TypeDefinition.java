@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.schemaprovider.model;
 
+import java.util.Collection;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -256,7 +257,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	/**
 	 * @return the subTypes
 	 */
-	public Iterable<TypeDefinition> getSubTypes() {
+	public Collection<TypeDefinition> getSubTypes() {
 		return subTypes;
 	}
 
