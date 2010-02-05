@@ -13,6 +13,7 @@
 package eu.esdihumboldt.cst.transformer.capabilities.impl;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -70,16 +71,31 @@ public class FunctionDescriptionImpl
 	private void inspectObject(String parentname, Object parameter) 
 		throws IllegalArgumentException, IllegalAccessException 
 	{
+		if (parameter.getClass().isPrimitive() 
+				|| Number.class.isAssignableFrom(parameter.getClass())
+				|| String.class.isAssignableFrom(parameter.getClass())) {
+			if (parentname.matches(".*typeCondition\\[.*?\\]$")) {
+				// special case: when encountering a type condition, use it's value instead of it's type.
+				Class<?> typeConditionClass = String.class;
+				try {
+					typeConditionClass = Class.forName(parameter.toString());
+				} catch (ClassNotFoundException e) {}
+				parameters.put(parentname, typeConditionClass);
+			}
+			else {
+				parameters.put(parentname, parameter.getClass());
+			}
+    		return;
+    	}
 		
 		for (Field field : this.getFields(parameter.getClass())) {
+			
 			if (parentname.contains(field.getName() ) 
-					|| field.getName().equals("NULL_ENTITY")
-					|| field.getName().equals("CASE_INSENSITIVE_ORDER")
+					|| Modifier.isStatic(field.getModifiers())
 					|| field.getName().equals("count")
 					|| field.getName().equals("hash")
 					|| field.getName().equals("offset")
-					|| field.getName().equals("serialPersistentFields")
-					|| field.getName().equals("serialVersionUID")) {
+					|| field.getName().equals("serialPersistentFields")) {
 				continue;
 			}
 			field.setAccessible(true);
@@ -90,10 +106,10 @@ public class FunctionDescriptionImpl
 	        		parameters.put(parentname + "." + field.getName(), field.getType());
 	        	}
 				else if (Collection.class.isAssignableFrom(field.getType())) {
+					parameters.put(parentname + "." + field.getName(), field.getType());
 					int i = 0;
 					for (Object o : (Collection<?>)field.get(parameter)) {
 						String name = parentname + "." + field.getName() + "[" + i++ + "]";
-						parameters.put(name, field.getType());
 						inspectObject(name, o);
 					}
 				}

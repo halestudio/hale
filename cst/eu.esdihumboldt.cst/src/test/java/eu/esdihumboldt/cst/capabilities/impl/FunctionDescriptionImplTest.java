@@ -28,6 +28,7 @@ public class FunctionDescriptionImplTest {
 	public void testFunctionDescriptionImpl() {
 		CstFunctionFactory cff = CstFunctionFactory.getInstance();
 		cff.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
+		cff.registerCstPackage("eu.esdihumboldt.cst.corefunctions.inspire");
 
 		for (Class<? extends CstFunction> functionClass : cff.getRegisteredFunctions().values()) {
 			System.out.println("=== Test for class: " + functionClass.getName() + " ===");
@@ -38,7 +39,7 @@ public class FunctionDescriptionImplTest {
 				fail(e.getMessage());
 			}
 			for (String key : fd.getParameterConfiguration().keySet()) {
-				System.out.println(key + ": "
+				System.out.println("    " + key + ": "
 						+ fd.getParameterConfiguration().get(key).getName());
 			}
 			assertTrue(fd.getFunctionId() != null);
