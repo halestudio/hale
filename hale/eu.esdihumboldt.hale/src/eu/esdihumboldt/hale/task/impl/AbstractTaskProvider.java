@@ -32,6 +32,8 @@ public abstract class AbstractTaskProvider implements TaskProvider {
 	
 	private boolean active = false;
 	
+	private final String typePrefix;
+	
 	/**
 	 * The service provider, it is first set in {@link #activate(TaskService, ServiceProvider)}
 	 */
@@ -45,12 +47,23 @@ public abstract class AbstractTaskProvider implements TaskProvider {
 	private final Map<String, TaskFactory> factories = new HashMap<String, TaskFactory>();
 	
 	/**
+	 * Create a new task provider
+	 * 
+	 * @param typePrefix the type name prefix
+	 */
+	public AbstractTaskProvider(String typePrefix) {
+		super();
+		this.typePrefix = typePrefix;
+	}
+
+	/**
 	 * Add a task factory. It must be added before {@link #registerTaskTypes(TaskRegistry)}
 	 * is called (e.g in the constructor)
 	 * 
 	 * @param factory the factory to add
 	 */
 	protected void addFactory(TaskFactory factory) {
+		factory.setTypeNamePrefix(typePrefix);
 		factories.put(factory.getTaskType().getName(), factory);
 	}
 	

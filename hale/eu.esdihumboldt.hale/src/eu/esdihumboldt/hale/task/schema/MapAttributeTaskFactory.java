@@ -23,22 +23,23 @@ import eu.esdihumboldt.hale.task.ServiceProvider;
 import eu.esdihumboldt.hale.task.Task;
 import eu.esdihumboldt.hale.task.TaskFactory;
 import eu.esdihumboldt.hale.task.TaskType;
+import eu.esdihumboldt.hale.task.impl.AbstractTaskFactory;
 import eu.esdihumboldt.hale.task.impl.AbstractTaskType;
 import eu.esdihumboldt.hale.task.impl.AlignmentTask;
 
 /**
- * 
+ * Map attribute task factory
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class MapAttributeTaskFactory implements TaskFactory {
+public class MapAttributeTaskFactory extends AbstractTaskFactory {
 	
 	/**
 	 * The task 
 	 */
-	private static class MapAttributeTask extends AlignmentTask {
+	private class MapAttributeTask extends AlignmentTask {
 
 		/**
 		 * Create a new task
@@ -48,7 +49,7 @@ public class MapAttributeTaskFactory implements TaskFactory {
 		 */
 		public MapAttributeTask(ServiceProvider serviceProvider,
 				AttributeDefinition type) {
-			super(serviceProvider, TYPE_NAME, Collections.singletonList(type));
+			super(serviceProvider, getTaskTypeName(), Collections.singletonList(type));
 		}
 
 		/**
@@ -75,7 +76,7 @@ public class MapAttributeTaskFactory implements TaskFactory {
 		 * @param taskFactory the task factory
 		 */
 		public MapAttributeTaskType(TaskFactory taskFactory) {
-			super(TYPE_NAME, taskFactory);
+			super(taskFactory);
 		}
 
 		/**
@@ -107,12 +108,21 @@ public class MapAttributeTaskFactory implements TaskFactory {
 	/**
 	 * The type name
 	 */
-	public static final String TYPE_NAME = "Schema.mapAttribute";
+	public static final String BASE_TYPE_NAME = "Schema.mapAttribute";
 	
 	/**
 	 * The task type
 	 */
-	private TaskType type = new MapAttributeTaskType(this);
+	private final TaskType type;
+
+	/**
+	 * Default constructor
+	 */
+	public MapAttributeTaskFactory() {
+		super(BASE_TYPE_NAME);
+		
+		type = new MapAttributeTaskType(this);
+	}
 
 	/**
 	 * @see TaskFactory#createTask(ServiceProvider, Definition[])

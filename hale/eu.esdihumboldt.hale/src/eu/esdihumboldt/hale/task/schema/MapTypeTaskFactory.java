@@ -23,22 +23,23 @@ import eu.esdihumboldt.hale.task.ServiceProvider;
 import eu.esdihumboldt.hale.task.Task;
 import eu.esdihumboldt.hale.task.TaskFactory;
 import eu.esdihumboldt.hale.task.TaskType;
+import eu.esdihumboldt.hale.task.impl.AbstractTaskFactory;
 import eu.esdihumboldt.hale.task.impl.AbstractTaskType;
 import eu.esdihumboldt.hale.task.impl.AlignmentTask;
 
 /**
- * 
+ * Map type task factory
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class MapTypeTaskFactory implements TaskFactory {
+public class MapTypeTaskFactory extends AbstractTaskFactory {
 	
 	/**
 	 * The task 
 	 */
-	private static class MapTypeTask extends AlignmentTask {
+	private class MapTypeTask extends AlignmentTask {
 
 		/**
 		 * Create a new task
@@ -48,7 +49,7 @@ public class MapTypeTaskFactory implements TaskFactory {
 		 */
 		public MapTypeTask(ServiceProvider serviceProvider,
 				TypeDefinition type) {
-			super(serviceProvider, TYPE_NAME, Collections.singletonList(type));
+			super(serviceProvider, getTaskTypeName(), Collections.singletonList(type));
 		}
 
 		/**
@@ -75,7 +76,7 @@ public class MapTypeTaskFactory implements TaskFactory {
 		 * @param taskFactory the task factory
 		 */
 		public MapTypeTaskType(TaskFactory taskFactory) {
-			super(TYPE_NAME, taskFactory);
+			super(taskFactory);
 		}
 
 		/**
@@ -107,12 +108,21 @@ public class MapTypeTaskFactory implements TaskFactory {
 	/**
 	 * The type name
 	 */
-	public static final String TYPE_NAME = "Schema.mapType";
+	public static final String BASE_TYPE_NAME = "Schema.mapType";
 	
 	/**
 	 * The task type
 	 */
-	private TaskType type = new MapTypeTaskType(this);
+	private final TaskType type;
+
+	/**
+	 * Default constructor
+	 */
+	public MapTypeTaskFactory() {
+		super(BASE_TYPE_NAME);
+		
+		type = new MapTypeTaskType(this);
+	}
 
 	/**
 	 * @see TaskFactory#createTask(ServiceProvider, Definition[])

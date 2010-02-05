@@ -13,46 +13,48 @@
 package eu.esdihumboldt.hale.task.impl;
 
 import eu.esdihumboldt.hale.task.TaskFactory;
-import eu.esdihumboldt.hale.task.TaskType;
 
 /**
- * Abstract task type
+ * Abstract task factory
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public abstract class AbstractTaskType implements TaskType {
+public abstract class AbstractTaskFactory implements TaskFactory {
+	
+	private String prefix = null;
+	
+	private final String baseTypeName;
+
+	/**
+	 * Creates a new task factory
+	 * 
+	 * @param baseTypeName the base type name
+	 */
+	public AbstractTaskFactory(String baseTypeName) {
+		super();
+		this.baseTypeName = baseTypeName;
+	}
+
+	/**
+	 * @see TaskFactory#setTypeNamePrefix(String)
+	 */
+	@Override
+	public void setTypeNamePrefix(String prefix) {
+		this.prefix = prefix;
+	}
 	
 	/**
-	 * The task provider
+	 * @see TaskFactory#getTaskTypeName()
 	 */
-	private final TaskFactory taskFactory;
-
-	/**
-	 * Create a new task type
-	 * 
-	 * @param taskFactory the task factory
-	 */
-	public AbstractTaskType(TaskFactory taskFactory) {
-		super();
-		this.taskFactory = taskFactory;
-	}
-
-	/**
-	 * @see TaskType#getName()
-	 */
-	@Override
-	public String getName() {
-		return taskFactory.getTaskTypeName();
-	}
-
-	/**
-	 * @see TaskType#getTaskFactory()
-	 */
-	@Override
-	public TaskFactory getTaskFactory() {
-		return taskFactory;
+	public String getTaskTypeName() {
+		if (prefix == null) {
+			return baseTypeName;
+		}
+		else {
+			return prefix + baseTypeName;
+		}
 	}
 
 }

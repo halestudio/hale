@@ -56,7 +56,7 @@ public class SchemaTaskProvider extends AbstractTaskProvider {
 	 * Default constructor
 	 */
 	public SchemaTaskProvider() {
-		super();
+		super("source.");
 		
 		addFactory(mapType = new MapTypeTaskFactory());
 		addFactory(mapAttribute = new MapAttributeTaskFactory());

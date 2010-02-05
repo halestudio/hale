@@ -24,6 +24,21 @@ import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 public interface TaskFactory {
 	
 	/**
+	 * Sets a type name prefix, prevents conflicts in case this type/factory is
+	 *   used in multiple task providers
+	 *   
+	 * @param prefix the type name prefix
+	 */
+	public void setTypeNamePrefix(String prefix);
+	
+	/**
+	 * Get the name of the task type
+	 * 
+	 * @return the name of the task type
+	 */
+	public String getTaskTypeName();
+	
+	/**
 	 * Get the task type
 	 * 
 	 * @return the task type
