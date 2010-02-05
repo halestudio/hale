@@ -37,7 +37,9 @@ public class FunctionTypeContentProvider implements ITreeContentProvider {
 	 * @see IContentProvider#dispose()
 	 */
 	@Override
-	public void dispose() {}
+	public void dispose() {
+		
+	}
 
 	/*
 	 * @see IContentProvider#inputChanged(Viewer, Object, Object)
@@ -60,14 +62,10 @@ public class FunctionTypeContentProvider implements ITreeContentProvider {
 		if(parentElement instanceof FunctionType) {
 			FunctionType box = (FunctionType)parentElement;
 			return concat(box.getBoxes().toArray(), 
-				box.getClasificationFunctions().toArray(),
-				box.getFilterFunctions().toArray(),
-				box.getGeometricFunctions().toArray(),
+				box.getCoreFunctions().toArray(),
 				box.getInspireFunctions().toArray(),
-				box.getLiteralFunctions().toArray(),
-				box.getMathFunctions().toArray(),
-				box.getNumericFunctions().toArray(),
-				box.getOtherFunctions().toArray());
+				box.getOthersFunctions().toArray());
+				
 		}
 		return EMPTY_ARRAY;
 	}
@@ -85,11 +83,8 @@ public class FunctionTypeContentProvider implements ITreeContentProvider {
 	 * @param more8
 	 * @return	united array of all items
 	 */
-	protected Object[] concat(Object[] object, Object[] more, Object[] more2, Object[] more3,
-				Object[] more4, Object[] more5, Object[] more6, Object[] more7, Object[] more8) {
-		Object[] both = new Object[object.length + more.length + more2.length
-		                           + more3.length + more4.length + more5.length
-		                           + more6.length + more7.length + more8.length];
+	protected Object[] concat(Object[] object, Object[] more, Object[] more2, Object[] more3){ 
+		Object[] both = new Object[object.length + more.length + more2.length + more3.length];
 		int length = 0;
 		System.arraycopy(object, 0, both, length, object.length);
 		length = length + object.length;
@@ -99,16 +94,6 @@ public class FunctionTypeContentProvider implements ITreeContentProvider {
 		length = length + more2.length;
 		System.arraycopy(more3, 0, both, length, more3.length);		
 		length = length + more3.length;
-		System.arraycopy(more4, 0, both, length, more4.length);		
-		length = length + more4.length;
-		System.arraycopy(more5, 0, both, length, more5.length);		
-		length = length + more5.length;
-		System.arraycopy(more6, 0, both, length, more6.length);		
-		length = length + more6.length;
-		System.arraycopy(more7, 0, both, length, more7.length);		
-		length = length + more7.length;
-		System.arraycopy(more8, 0, both, length, more8.length);		
-		
 		return both;
 	}
 

@@ -27,6 +27,7 @@ import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
@@ -67,21 +68,26 @@ public class GenericFunctionWizard extends AbstractSingleCellWizard {
 	@Override
 	public boolean performFinish() {
 		ICell cell = getResultCell();
-		Entity entity1 = (Entity) cell.getEntity1();
+		Entity entity = null;
+		
+		if (algorithmModel.transformationOnEntity1)
+			entity = (Entity) cell.getEntity1();
+		else
+			entity = (Entity) cell.getEntity2();
 		Transformation transformation = new Transformation();
-		transformation.setService(new Resource(algorithmModel.getFunctionID().getFile().substring(1)));
+		transformation.setService(new Resource(algorithmModel.getFunctionID()));
 		
 		if (algorithmModel.parameters != null){
-			Iterator <String> iter = algorithmModel.parameters.keySet().iterator();
+			Iterator <IParameter> iter = algorithmModel.parameters.iterator();
 			// add all active parameters
 			for (int i=0; i<algorithmModel.numberOfParameters; i++){
 				if (iter.hasNext()){
 					transformation.getParameters().add(
-							new Parameter(iter.next().toString(), algorithmPage.params[i].getText()));
+							new Parameter(iter.next().getName(), algorithmPage.params[i].getText()));
 				}	
 			}
 		}	
-		entity1.setTransformation(transformation);
+		entity.setTransformation(transformation);
 		return true;
 	}
 	

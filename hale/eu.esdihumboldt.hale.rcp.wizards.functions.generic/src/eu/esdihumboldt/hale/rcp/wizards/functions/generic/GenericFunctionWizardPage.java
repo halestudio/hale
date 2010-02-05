@@ -21,7 +21,6 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.generic;
 
-import java.net.URL;
 import java.util.Iterator;
 
 import org.eclipse.jface.dialogs.IDialogPage;
@@ -37,9 +36,11 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.transformer.CstService;
 import eu.esdihumboldt.cst.transformer.capabilities.CstServiceCapabilities;
 import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
+import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.AlgorithmCST;
 import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.FunctionType;
@@ -64,8 +65,8 @@ public class GenericFunctionWizardPage extends AbstractSingleCellWizardPage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
-		 super.initializeDialogUnits(parent);
-		 this.setPageComplete(this.isPageComplete());
+		super.initializeDialogUnits(parent);
+		this.setPageComplete(this.isPageComplete());
         
         Composite composite = new Composite(parent, SWT.NULL);
         composite.setLayout(new GridLayout());
@@ -131,72 +132,78 @@ public class GenericFunctionWizardPage extends AbstractSingleCellWizardPage {
 	public FunctionType getInitalInput() {
 		int countAlgorithm = 0;   
 		FunctionType root = new FunctionType();
-		FunctionType clasification = new FunctionType("Clasification functions");
-		FunctionType filter = new FunctionType("Filter functions");
-		FunctionType geometric = new FunctionType("Geometric functions");
+		
+		FunctionType core = new FunctionType("Core functions");
 		FunctionType inspire = new FunctionType("Inspire functions");
-		FunctionType literal = new FunctionType("Literal functions");
-		FunctionType math = new FunctionType("Math functions");
-		FunctionType numeric = new FunctionType("Numeric functions");
-		FunctionType other = new FunctionType("Other functions");
-		 
-		root.addBox(clasification);
-		root.addBox(filter);
-		root.addBox(geometric);
+		FunctionType others = new FunctionType("Other functions"); 
+		root.addBox(core);
 		root.addBox(inspire);
-		root.addBox(literal);
-		root.addBox(math);
-		root.addBox(numeric);
-		root.addBox(other);
-		
-		
+		root.addBox(others);
 	
+/*		
 		CstService ts = (CstService) 
 		PlatformUI.getWorkbench().getService(
 				CstService.class);
 	   CstServiceCapabilities tCapabilities = ts.getCapabilities();
-	    
-	/*	
-		//////////// will be changed to getCapabilities()
-		CstFunctionFactory transformerFactory;
-		CstServiceCapabilities tCapabilities = new CstServiceCapabilitiesImpl(null);
-		transformerFactory = CstFunctionFactory.getInstance();
-		List<FunctionDescription> odList = new ArrayList<FunctionDescription>();
-		try {
-			Map<String, Class<? extends CstFunction>> transformers = transformerFactory
-					.getRegisteredFunctions();
-			for (Iterator<String> i = transformers.keySet().iterator(); i.hasNext();) {
-				String transName = i.next();
-				Class<?> tclass = Class.forName(transName);
-				CstFunction t = (CstFunction) tclass.newInstance();
-				FunctionDescription od = new FunctionDescriptionImpl(new URL(
-							"file://" + transName), t.getParameterTypes());
-				odList.add(od);
-			}
-			tCapabilities = new CstServiceCapabilitiesImpl(odList);
-		} catch (Exception e) {
-			throw new RuntimeException("Initialising the CstServiceImpl failed: " + e);
-		}
-		//////////////////////////
-	  */  
-	    
+	   
 	    for (Iterator <FunctionDescription> iter = tCapabilities.getFunctionDescriptions().iterator(); iter.hasNext();){
 			FunctionDescription funcDescr = (FunctionDescription) iter.next();
-			AlgorithmCST alg = null;
-			try{
-				alg = new AlgorithmCST(getAlgorithmName(funcDescr.getFunctionId()), funcDescr.getFunctionId(), funcDescr.getParameterConfiguration());
-				//System.out.println("ALGORITHM:"+funcDescr.getFunctionId().getFile());
+			System.out.println("-----");
+			System.out.println(funcDescr.toString());
+			System.out.println(funcDescr.getFunctionId());
+			System.out.println(funcDescr.getParameterConfiguration());
+	    }	
+		*/
+	
+		CstFunctionFactory.getInstance().registerCstPackage(
+		"eu.esdihumboldt.cst.corefunctions");
+		CstFunction f = null;
+
+		for (Iterator<String> i = CstFunctionFactory.getInstance()
+				.getRegisteredFunctions().keySet().iterator(); i.hasNext();) {
+
+			try {
+				f = CstFunctionFactory.getInstance().getRegisteredFunctions()
+					.get(i.next()).newInstance();
+				//System.out.println("********"+f.getClass().toString());
+			} catch (Exception e) {
+				f = null;
 			}
-			catch (NullPointerException e){
-				alg = new AlgorithmCST(getAlgorithmName(funcDescr.getFunctionId()), funcDescr.getFunctionId(), null);
-			}
-			other.addOtherFunction(alg);
-			countAlgorithm++;
-			setMaximumParameters(alg);
+			
+			if (f != null){
+				AlgorithmCST alg = null;
+				try{
+					alg = new AlgorithmCST(getAlgorithmName(f.getClass().getSimpleName()), f.getClass().getCanonicalName(), f.getParameters());
+				
+					
+				}
+				catch (NullPointerException e){
+					alg = new AlgorithmCST(getAlgorithmName(f.getClass().getSimpleName()), f.getClass().getCanonicalName(), null);
+				}
+
+				String functionGroup = f.getClass().getName().toString().substring(0, f.getClass().getName().toString().lastIndexOf('.'));
+				functionGroup = functionGroup.substring(functionGroup.lastIndexOf('.')+1);
+				//System.out.println(functionGroup);
+		
+				if (functionGroup.equals("corefunctions")){
+					core.addCoreFunction(alg);
+				}
+				else{
+					if (functionGroup.equals("inspire"))
+						inspire.addInspireFunction(alg);
+					else
+						others.addOthersFunction(alg);
+				}
+			
+				countAlgorithm++;
+				setMaximumParameters(alg);
+			}	
 		}
 		setTitle("Toolbox contains "+countAlgorithm+" algorithms");
 		return root;
 	}
+	
+
 	
 	/**
 	 * Method that sets maximum of algorithm parameters
@@ -212,8 +219,8 @@ public class GenericFunctionWizardPage extends AbstractSingleCellWizardPage {
 	 * @param url url of selected algorithm
 	 * @return name of algorithm
 	 */
-	private String getAlgorithmName(URL url){
-		String s = url.toString();
+	private String getAlgorithmName(String className){
+		String s = className.toString();
 		s = s.substring(s.lastIndexOf('.')+1);
 		String ss = s.toLowerCase();
 		String name = "";

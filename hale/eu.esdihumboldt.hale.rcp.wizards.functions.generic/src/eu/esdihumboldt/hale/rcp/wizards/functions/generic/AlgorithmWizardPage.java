@@ -22,7 +22,7 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.generic;
 
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.Wizard;
@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 
 public class AlgorithmWizardPage extends AbstractSingleCellWizardPage  {
@@ -112,6 +113,7 @@ public class AlgorithmWizardPage extends AbstractSingleCellWizardPage  {
 		params = new Text [numberOfParameters];
 		
 		for (int i=0; i<params.length; i++){
+			
 			labels[i] = new Label(configurationComposite, SWT.NONE);			
 			labels[i].setText("                                        ");
 			params[i] = new Text(configurationComposite, SWT.BORDER);
@@ -144,17 +146,17 @@ public class AlgorithmWizardPage extends AbstractSingleCellWizardPage  {
 		else{
 			wizard.parametersCompleted = false;
 		}
-		Iterator <String> iter = null;
-		Map <String, Class <?>> parameters = wizard.algorithmModel.getParameters();
+		Iterator <IParameter> iter = null;
+		List <IParameter> parameters = wizard.algorithmModel.getParameters();
 		if (parameters != null)
-			iter =  parameters.keySet().iterator();
+			iter =  parameters.iterator();
 		for (int i=0; i<numberOfParameters; i++){
 			labels[i].setVisible(false);
 			params[i].setVisible(false);
 			if (iter != null && iter.hasNext()){
-				Object name = iter.next();
-				labels[i].setText((String)name.toString());
-				params[i].setToolTipText((String)parameters.get(name).toString());
+				IParameter name = iter.next();
+				labels[i].setText(name.getName());
+				params[i].setToolTipText(name.getValue());
 				labels[i].setVisible(true);
 				params[i].setVisible(true);
 			}
