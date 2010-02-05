@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.rcp.utils.EntityHelper;
-import eu.esdihumboldt.hale.rcp.utils.tree.DefaultMultiColumnTreeNode;
+import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNodeLabelProvider;
 import eu.esdihumboldt.hale.rcp.views.model.AttributeItem;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
@@ -169,23 +169,23 @@ public class PropertiesDialog extends TitleAreaDialog {
 		Definition definition = item.getDefinition();
 		
 		// name
-		DefaultMultiColumnTreeNode name = new DefaultMultiColumnTreeNode("Name", 
+		DefaultTreeNode name = new DefaultTreeNode("Name", 
 				item.getName().getLocalPart());//EntityHelper.getShortName(item.getEntity()));
 		
 		// identifier
 		if (definition != null && definition.getIdentifier() != null) {
-			name.addChild(new DefaultMultiColumnTreeNode("Identifier", definition.getIdentifier()));
+			name.addChild(new DefaultTreeNode("Identifier", definition.getIdentifier()));
 		}
 		
 		nodes.add(name);
 		
 		if (item.getPropertyType() != null) {
 			// type & binding
-			DefaultMultiColumnTreeNode type = new DefaultMultiColumnTreeNode("Type", 
+			DefaultTreeNode type = new DefaultTreeNode("Type", 
 					item.getPropertyType().getName().getNamespaceURI() + "/" + item.getPropertyType().getName().getLocalPart());
-			type.addChild(new DefaultMultiColumnTreeNode("Namespace", item.getPropertyType().getName().getNamespaceURI()));
-			type.addChild(new DefaultMultiColumnTreeNode("Local part", item.getPropertyType().getName().getLocalPart()));
-			type.addChild(new DefaultMultiColumnTreeNode("Binding",
+			type.addChild(new DefaultTreeNode("Namespace", item.getPropertyType().getName().getNamespaceURI()));
+			type.addChild(new DefaultTreeNode("Local part", item.getPropertyType().getName().getLocalPart()));
+			type.addChild(new DefaultTreeNode("Binding",
 					item.getPropertyType().getBinding().getName()));
 			nodes.add(type);
 		}
@@ -197,14 +197,14 @@ public class PropertiesDialog extends TitleAreaDialog {
 			AttributeDefinition property = ((AttributeItem) item).getAttributeDefinition();
 			
 			// nillable
-			DefaultMultiColumnTreeNode nillable = new DefaultMultiColumnTreeNode("Nillable", 
+			DefaultTreeNode nillable = new DefaultTreeNode("Nillable", 
 					String.valueOf(property.isNillable()));
 			nodes.add(nillable);
 			
 			// cardinality
 			long maxOccurs = property.getMaxOccurs();
 			String cardinalityValue = property.getMinOccurs() + ".." + ((maxOccurs == Long.MAX_VALUE)?("unbounded"):(maxOccurs));
-			DefaultMultiColumnTreeNode cardinality = new DefaultMultiColumnTreeNode("Cardinality", cardinalityValue);
+			DefaultTreeNode cardinality = new DefaultTreeNode("Cardinality", cardinalityValue);
 			nodes.add(cardinality);
 		}
 		
@@ -212,23 +212,23 @@ public class PropertiesDialog extends TitleAreaDialog {
 		if (item.getPropertyType() != null && item.getPropertyType() instanceof EnumAttributeType) {
 			Set<String> allowedValues = ((EnumAttributeType) item.getPropertyType()).getAllowedValues();
 			
-			DefaultMultiColumnTreeNode enumeration = new DefaultMultiColumnTreeNode("Enumeration");
+			DefaultTreeNode enumeration = new DefaultTreeNode("Enumeration");
 			for (String value : allowedValues) {
-				enumeration.addChild(new DefaultMultiColumnTreeNode(value));
+				enumeration.addChild(new DefaultTreeNode(value));
 			}
 			nodes.add(enumeration);
 		}
 		
 		// attributes
 		if (item.hasChildren()) {
-			DefaultMultiColumnTreeNode attributes = new DefaultMultiColumnTreeNode("Attributes");
+			DefaultTreeNode attributes = new DefaultTreeNode("Attributes");
 			for (SchemaItem child : item.getChildren()) {
 				if (child.isAttribute()) {
 					if (child.getPropertyType() == null) {
-						attributes.addChild(new DefaultMultiColumnTreeNode(child.getName().getLocalPart()));
+						attributes.addChild(new DefaultTreeNode(child.getName().getLocalPart()));
 					}
 					else {
-						attributes.addChild(new DefaultMultiColumnTreeNode(child.getName().getLocalPart(),
+						attributes.addChild(new DefaultTreeNode(child.getName().getLocalPart(),
 								child.getPropertyType().getName().getLocalPart()));
 					}
 				}

@@ -30,19 +30,30 @@ import org.eclipse.jface.viewers.TreeNode;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id: MultiColumnTreeNode.java 2510 2010-01-21 08:49:00Z stempler $ 
  */
-public class MapMultiColumnTreeNode<T, N extends TreeNode> extends AbstractMultiColumnTreeNode {
+public class MapTreeNode<T, N extends TreeNode> extends AbstractMultiColumnTreeNode {
 	
-	private final Map<T, N> children = new HashMap<T, N>();
+	private final Map<T, N> children;
 
 	/**
 	 * Create a new node
 	 * 
 	 * @param values the node values
 	 */
-	public MapMultiColumnTreeNode(Object... values) {
+	public MapTreeNode(Object... values) {
 		super(values);
+		
+		children = createMap();
 	}
 	
+	/**
+	 * Create the map that is used to manage the children
+	 * 
+	 * @return the map to manage the children
+	 */
+	protected Map<T, N> createMap() {
+		return new HashMap<T, N>();
+	}
+
 	/**
 	 * Add a child to the node
 	 * 

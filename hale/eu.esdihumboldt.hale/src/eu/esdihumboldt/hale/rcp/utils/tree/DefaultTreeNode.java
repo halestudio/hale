@@ -25,7 +25,7 @@ import org.eclipse.jface.viewers.TreeNode;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id: MultiColumnTreeNode.java 2510 2010-01-21 08:49:00Z stempler $ 
  */
-public class DefaultMultiColumnTreeNode extends AbstractMultiColumnTreeNode {
+public class DefaultTreeNode extends AbstractMultiColumnTreeNode {
 	
 	private final List<TreeNode> children = new ArrayList<TreeNode>();
 
@@ -34,7 +34,7 @@ public class DefaultMultiColumnTreeNode extends AbstractMultiColumnTreeNode {
 	 * 
 	 * @param values the node values
 	 */
-	public DefaultMultiColumnTreeNode(Object... values) {
+	public DefaultTreeNode(Object... values) {
 		super(values);
 	}
 	

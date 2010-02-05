@@ -35,9 +35,10 @@ import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.task.TaskServiceAdapter;
 import eu.esdihumboldt.hale.rcp.utils.tree.CollectionTreeNodeContentProvider;
-import eu.esdihumboldt.hale.rcp.utils.tree.DefaultMultiColumnTreeNode;
-import eu.esdihumboldt.hale.rcp.utils.tree.MapMultiColumnTreeNode;
+import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
+import eu.esdihumboldt.hale.rcp.utils.tree.MapTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNodeLabelProvider;
+import eu.esdihumboldt.hale.rcp.utils.tree.SortedMapTreeNode;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.task.ResolvedTask;
 import eu.esdihumboldt.hale.task.Task;
@@ -68,9 +69,9 @@ public class TaskTreeView extends ViewPart {
 	
 	private SchemaService schemaService;
 	
-	private MapMultiColumnTreeNode<TypeDefinition, MapMultiColumnTreeNode<Task, TreeNode>> sourceNode;
+	private MapTreeNode<TypeDefinition, MapTreeNode<Task, TreeNode>> sourceNode;
 	
-	private MapMultiColumnTreeNode<TypeDefinition, MapMultiColumnTreeNode<Task, TreeNode>> targetNode;
+	private MapTreeNode<TypeDefinition, MapTreeNode<Task, TreeNode>> targetNode;
 	
 	/**
 	 * @see WorkbenchPart#createPartControl(Composite)
@@ -169,8 +170,8 @@ public class TaskTreeView extends ViewPart {
 		TaskService taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
 		
 		final Collection<TreeNode> input = new ArrayList<TreeNode>();
-		sourceNode = new MapMultiColumnTreeNode<TypeDefinition, MapMultiColumnTreeNode<Task,TreeNode>>("Source");
-		targetNode = new MapMultiColumnTreeNode<TypeDefinition, MapMultiColumnTreeNode<Task,TreeNode>>("Target");
+		sourceNode = new SortedMapTreeNode<TypeDefinition, MapTreeNode<Task,TreeNode>>("Source");
+		targetNode = new SortedMapTreeNode<TypeDefinition, MapTreeNode<Task,TreeNode>>("Target");
 		input.add(sourceNode);
 		input.add(targetNode);
 		
@@ -189,9 +190,9 @@ public class TaskTreeView extends ViewPart {
 	 */
 	private void addTask(ResolvedTask task) {
 		// add task to model
-		MapMultiColumnTreeNode<Task,TreeNode> parent = getParentNode(task, true);
+		MapTreeNode<Task,TreeNode> parent = getParentNode(task, true);
 		if (parent != null) {
-			parent.addChild(task, new DefaultMultiColumnTreeNode(task.getTitle()));
+			parent.addChild(task, new DefaultTreeNode(task.getTitle()));
 			// update viewer
 			tree.refresh(parent, false);
 		}
@@ -217,12 +218,12 @@ public class TaskTreeView extends ViewPart {
 	@SuppressWarnings("unchecked")
 	private void removeTask(Task task) {
 		// remove task from model
-		MapMultiColumnTreeNode<Task, TreeNode> parent = getParentNode(task, false);
+		MapTreeNode<Task, TreeNode> parent = getParentNode(task, false);
 		if (parent != null) {
 			parent.removeChild(task);
 			// remove empty nodes
 			if (!parent.hasChildren()) {
-				MapMultiColumnTreeNode<TypeDefinition, MapMultiColumnTreeNode<Task, TreeNode>> root = (MapMultiColumnTreeNode<TypeDefinition, MapMultiColumnTreeNode<Task, TreeNode>>) parent.getParent();
+				MapTreeNode<TypeDefinition, MapTreeNode<Task, TreeNode>> root = (MapTreeNode<TypeDefinition, MapTreeNode<Task, TreeNode>>) parent.getParent();
 				root.removeChildNode(parent);
 				tree.refresh(root, false);
 			}
@@ -240,7 +241,7 @@ public class TaskTreeView extends ViewPart {
 	 * 
 	 * @return the parent node
 	 */
-	private MapMultiColumnTreeNode<Task,TreeNode> getParentNode(Task task, boolean allowCreate) {
+	private MapTreeNode<Task,TreeNode> getParentNode(Task task, boolean allowCreate) {
 		TypeDefinition group = TaskUtils.getGroup(task);
 		if (group.getName().getNamespaceURI().equals(schemaService.getSourceNameSpace())) {
 			// source task
@@ -252,7 +253,7 @@ public class TaskTreeView extends ViewPart {
 		}
 		else {
 			// invalid task ?
-			MapMultiColumnTreeNode<Task,TreeNode> result = getGroupNode(sourceNode, group, false);
+			MapTreeNode<Task,TreeNode> result = getGroupNode(sourceNode, group, false);
 			if (result == null) {
 				result = getGroupNode(targetNode, group, false);
 			}
@@ -269,12 +270,12 @@ public class TaskTreeView extends ViewPart {
 	 * 
 	 * @return the group node
 	 */
-	private MapMultiColumnTreeNode<Task,TreeNode> getGroupNode(
-			MapMultiColumnTreeNode<TypeDefinition, MapMultiColumnTreeNode<Task,TreeNode>> rootNode,
+	private MapTreeNode<Task,TreeNode> getGroupNode(
+			MapTreeNode<TypeDefinition, MapTreeNode<Task,TreeNode>> rootNode,
 			TypeDefinition group, boolean allowCreate) {
-		MapMultiColumnTreeNode<Task, TreeNode> groupNode = rootNode.getChild(group);
+		MapTreeNode<Task, TreeNode> groupNode = rootNode.getChild(group);
 		if (groupNode == null && allowCreate) {
-			groupNode = new MapMultiColumnTreeNode<Task, TreeNode>(group.getName().getLocalPart());
+			groupNode = new SortedMapTreeNode<Task, TreeNode>(group.getName().getLocalPart());
 			rootNode.addChild(group, groupNode);
 			// update viewer
 			tree.refresh(rootNode, true);

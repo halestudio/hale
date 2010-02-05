@@ -33,7 +33,7 @@ import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.feature.type.PropertyType;
 
-import eu.esdihumboldt.hale.rcp.utils.tree.DefaultMultiColumnTreeNode;
+import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNodeLabelProvider;
 
 /**
@@ -115,7 +115,7 @@ public class FeatureTreeViewer {
 		
 		// create row definitions from feature type
 		if (featureType != null) {
-			DefaultMultiColumnTreeNode root = new DefaultMultiColumnTreeNode();
+			DefaultTreeNode root = new DefaultTreeNode();
 			addProperties(root, featureType);
 			// remove parent
 			for (TreeNode child : root.getChildren()) {
@@ -164,7 +164,7 @@ public class FeatureTreeViewer {
 	 * @param parent the parent node
 	 * @param type the feature type
 	 */
-	private void addProperties(DefaultMultiColumnTreeNode parent,
+	private void addProperties(DefaultTreeNode parent,
 			FeatureType type) {
 		SortedMap<String, PropertyDescriptor> sortedProperties = new TreeMap<String, PropertyDescriptor>();
 		
@@ -176,7 +176,7 @@ public class FeatureTreeViewer {
 			String name = entry.getKey();
 			String typeName = entry.getValue().getType().getName().getLocalPart();
 			
-			DefaultMultiColumnTreeNode childNode = new PropertyItem(name, name + ":<" +
+			DefaultTreeNode childNode = new PropertyItem(name, name + ":<" +
 					typeName + ">");
 			
 			PropertyType childType = entry.getValue().getType();

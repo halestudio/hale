@@ -18,7 +18,7 @@ import java.util.Collection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
 
-import eu.esdihumboldt.hale.rcp.utils.tree.DefaultMultiColumnTreeNode;
+import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
 
 /**
  * Tree item representing a feature type property
@@ -27,7 +27,7 @@ import eu.esdihumboldt.hale.rcp.utils.tree.DefaultMultiColumnTreeNode;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class PropertyItem extends DefaultMultiColumnTreeNode {
+public class PropertyItem extends DefaultTreeNode {
 	
 	/**
 	 * The property name
