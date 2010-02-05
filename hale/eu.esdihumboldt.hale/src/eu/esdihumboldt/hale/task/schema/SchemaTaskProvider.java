@@ -32,13 +32,15 @@ import eu.esdihumboldt.hale.task.Task;
 import eu.esdihumboldt.hale.task.impl.AbstractTaskProvider;
 
 /**
- * Schema based task provider (FIXME for now only source schema based)
+ * Schema based task provider
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
 public class SchemaTaskProvider extends AbstractTaskProvider {
+	
+	private final SchemaType schemaType;
 	
 	private SchemaService schemaService;
 	
@@ -53,13 +55,17 @@ public class SchemaTaskProvider extends AbstractTaskProvider {
 	private AlignmentServiceAdapter alignmentListener;
 	
 	/**
-	 * Default constructor
+	 * Create a new schema task provider for the given schema type
+	 * 
+	 * @param schemaType the schema type
 	 */
-	public SchemaTaskProvider() {
-		super("source.");
+	public SchemaTaskProvider(SchemaType schemaType) {
+		super((schemaType == SchemaType.SOURCE)?("source."):("target."));
 		
-		addFactory(mapType = new MapTypeTaskFactory());
-		addFactory(mapAttribute = new MapAttributeTaskFactory());
+		this.schemaType = schemaType;
+		
+		addFactory(mapType = new MapTypeTaskFactory()); //TODO param?
+		addFactory(mapAttribute = new MapAttributeTaskFactory()); //TODO param?
 	}
 
 	/**
@@ -71,37 +77,45 @@ public class SchemaTaskProvider extends AbstractTaskProvider {
 		alignmentService = serviceProvider.getService(AlignmentService.class);
 		
 		// create tasks from the current schema
-		generateSchemaTasks(taskService, schemaService.getSchema(SchemaType.SOURCE));
+		generateSchemaTasks(taskService, schemaService.getSchema(schemaType));
 		
 		// create tasks for new schema types
 		schemaService.addListener(schemaListener = new SchemaServiceAdapter() {
 
 			@Override
 			public void schemaChanged(SchemaType schema) {
-				switch (schema) {
-				case SOURCE:
+				if (schema.equals(schemaType)) {
 					generateSchemaTasks(taskService, schemaService.getSchema(schema));
-					break;
 				}
 			}
 			
 		});
 		
-		//TODO create tasks when cells have been removed
+		// create tasks when cells have been removed
 		alignmentService.addListener(alignmentListener = new AlignmentServiceAdapter() {
 
 			@Override
 			public void alignmentCleared() {
-				//XXX works for SOURCE
-				generateSchemaTasks(taskService, schemaService.getSchema(SchemaType.SOURCE));
+				generateSchemaTasks(taskService, schemaService.getSchema(schemaType));
 			}
 
 			@Override
 			public void cellRemoved(ICell cell) {
-				//XXX works for SOURCE
-				IEntity entity = cell.getEntity1();
+				// get entity
+				IEntity entity;
+				switch (schemaType) {
+				case SOURCE:
+					entity = cell.getEntity1();
+					break;
+				case TARGET:
+					entity = cell.getEntity2();
+					break;
+				default:
+					throw new RuntimeException("Invalid schema type");
+				}
+				// get definition
 				String identifier = EntityHelper.getIdentifier(entity);
-				Definition definition = schemaService.getDefinition(identifier);
+				Definition definition = schemaService.getDefinition(identifier, schemaType);
 				if (definition != null) {
 					if (definition instanceof TypeDefinition) {
 						// type mapping removed
@@ -130,17 +144,19 @@ public class SchemaTaskProvider extends AbstractTaskProvider {
 			Collection<TypeDefinition> schema) {
 		Collection<Task> tasks = new ArrayList<Task>();
 		for (TypeDefinition type : schema) {
-			// create map type tasks
-			Task task = mapType.createTask(serviceProvider, type);
-			if (task != null) {
-				tasks.add(task);
-			}
-			
-			// create attribute type tasks
-			for (AttributeDefinition attribute : type.getDeclaredAttributes()) {
-				Task attrTask = mapAttribute.createTask(serviceProvider, attribute);
-				if (attrTask != null) {
-					tasks.add(attrTask);
+			if (type.isFeatureType()) { // restrict to feature types
+				// create map type tasks
+				Task task = mapType.createTask(serviceProvider, type);
+				if (task != null) {
+					tasks.add(task);
+				}
+				
+				// create attribute type tasks
+				for (AttributeDefinition attribute : type.getDeclaredAttributes()) {
+					Task attrTask = mapAttribute.createTask(serviceProvider, attribute);
+					if (attrTask != null) {
+						tasks.add(attrTask);
+					}
 				}
 			}
 		}

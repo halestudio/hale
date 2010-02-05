@@ -317,9 +317,14 @@
    <extension
          point="eu.esdihumboldt.hale.task.TaskProvider">
       <tasks
-            class="eu.esdihumboldt.hale.task.schema.SchemaTaskProvider"
-            id="eu.esdihumboldt.hale.task.schema.SchemaTaskProvider"
-            name="Schema tasks">
+            class="eu.esdihumboldt.hale.task.schema.SourceSchemaTaskProvider"
+            id="eu.esdihumboldt.hale.task.schema.SourceSchemaTaskProvider"
+            name="Source Schema Mapping">
+      </tasks>
+      <tasks
+            class="eu.esdihumboldt.hale.task.schema.TargetSchemaTaskProvider"
+            id="eu.esdihumboldt.hale.task.schema.TargetSchemaTaskProvider"
+            name="Target Schema Mapping">
       </tasks>
    </extension>
    <extension
