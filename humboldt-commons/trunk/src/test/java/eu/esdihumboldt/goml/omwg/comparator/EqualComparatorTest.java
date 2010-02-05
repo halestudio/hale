@@ -93,7 +93,7 @@ public class EqualComparatorTest {
 		LOG.info("Testing true evaluation");
 		org.opengis.feature.Property sourceProperty = createSource(true).getProperty(SOURCE_LOCAL_NAME_PROPERTY_A);
 		
-		Comparator equalComp = new EqualComparator();
+		IComparator equalComp = new EqualComparator();
 		boolean result = equalComp.evaluate(SOURCE_RESTRICTION, sourceProperty);
 		
 		assertTrue("Evaluation should return true", result);
@@ -108,7 +108,7 @@ public class EqualComparatorTest {
 		LOG.info("Testing false evaluation");
 		org.opengis.feature.Property sourceProperty = createSource(false).getProperty(SOURCE_LOCAL_NAME_PROPERTY_A);
 		
-		Comparator equalComp = new EqualComparator();
+		IComparator equalComp = new EqualComparator();
 		boolean result = equalComp.evaluate(SOURCE_RESTRICTION, sourceProperty);
 		
 		assertFalse("Evaluation should return false", result);

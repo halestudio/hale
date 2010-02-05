@@ -93,7 +93,7 @@ public class NotEqualComparatorTest {
 		LOG.info("Testing true evaluation");
 		org.opengis.feature.Property sourceProperty = createSource(true).getProperty(SOURCE_LOCAL_NAME_PROPERTY_A);
 		
-		Comparator notEqualComp = new NotEqualComparator();
+		IComparator notEqualComp = new NotEqualComparator();
 		boolean result = notEqualComp.evaluate(SOURCE_RESTRICTION, sourceProperty);
 		
 		assertTrue("Evaluation should return true", result);
@@ -108,7 +108,7 @@ public class NotEqualComparatorTest {
 		LOG.info("Testing false evaluation");
 		org.opengis.feature.Property sourceProperty = createSource(false).getProperty(SOURCE_LOCAL_NAME_PROPERTY_A);
 		
-		Comparator notEqualComp = new NotEqualComparator();
+		IComparator notEqualComp = new NotEqualComparator();
 		boolean result = notEqualComp.evaluate(SOURCE_RESTRICTION, sourceProperty);
 		
 		assertFalse("Evaluation should return false", result);
