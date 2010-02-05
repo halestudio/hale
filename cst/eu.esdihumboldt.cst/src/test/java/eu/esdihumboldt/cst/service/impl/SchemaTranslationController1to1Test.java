@@ -87,8 +87,10 @@ public class SchemaTranslationController1to1Test {
 		}
 		
 		// configure the CstFunctionFactory
-		CstFunctionFactory.getInstance().registerCstPackage("eu.esdihumboldt.cst.corefunctions");
-		CstFunctionFactory.getInstance().registerCstPackage("eu.esdihumboldt.cst.corefunctions.inspire");
+		CstFunctionFactory.getInstance().registerCstPackage(
+				"eu.esdihumboldt.cst.corefunctions");
+		CstFunctionFactory.getInstance().registerCstPackage(
+				"eu.esdihumboldt.cst.corefunctions.inspire");
 		
 		// set up the Schema Translation Controller to use for testing
 		stc = new SchemaTranslationController(null, getTestAlignment());
