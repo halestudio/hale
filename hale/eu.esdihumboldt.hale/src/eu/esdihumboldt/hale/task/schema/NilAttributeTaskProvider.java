@@ -18,30 +18,26 @@ import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.task.Task;
+import eu.esdihumboldt.hale.task.TaskFactory;
 
 /**
- * Task provider that creates tasks for unmapped types and attributes
+ * Nil attribute mapping tasks
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class SchemaMappingTaskProvider extends AbstractSchemaTaskProvider {
+public class NilAttributeTaskProvider extends AbstractSchemaTaskProvider {
 	
-	private final MapTypeTaskFactory mapType;
-	
-	private final MapAttributeTaskFactory mapAttribute;
+	private TaskFactory mapNilAttribute;
 
 	/**
-	 * Create a new schema task provider for the given schema type
-	 * 
-	 * @param schemaType the schema type
+	 * Default constructor
 	 */
-	public SchemaMappingTaskProvider(SchemaType schemaType) {
-		super((schemaType == SchemaType.SOURCE)?("source."):("target."), schemaType);
+	public NilAttributeTaskProvider() {
+		super(null, SchemaType.TARGET);
 		
-		addFactory(mapType = new MapTypeTaskFactory()); //TODO param?
-		addFactory(mapAttribute = new MapAttributeTaskFactory()); //TODO param?
+		addFactory(mapNilAttribute = new MapNilAttributeTaskFactory());
 	}
 
 	/**
@@ -50,7 +46,7 @@ public class SchemaMappingTaskProvider extends AbstractSchemaTaskProvider {
 	@Override
 	protected void generateAttributeTasks(AttributeDefinition attribute,
 			Collection<Task> taskList) {
-		Task attrTask = mapAttribute.createTask(serviceProvider, attribute);
+		Task attrTask = mapNilAttribute.createTask(serviceProvider, attribute);
 		if (attrTask != null) {
 			taskList.add(attrTask);
 		}
@@ -62,10 +58,7 @@ public class SchemaMappingTaskProvider extends AbstractSchemaTaskProvider {
 	@Override
 	protected void generateTypeTasks(TypeDefinition type,
 			Collection<Task> taskList) {
-		Task task = mapType.createTask(serviceProvider, type);
-		if (task != null) {
-			taskList.add(task);
-		}
+		// ignore
 	}
 
 }

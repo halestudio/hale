@@ -317,14 +317,19 @@
    <extension
          point="eu.esdihumboldt.hale.task.TaskProvider">
       <tasks
-            class="eu.esdihumboldt.hale.task.schema.SourceSchemaTaskProvider"
-            id="eu.esdihumboldt.hale.task.schema.SourceSchemaTaskProvider"
+            class="eu.esdihumboldt.hale.task.schema.SourceMappingTaskProvider"
+            id="eu.esdihumboldt.hale.task.schema.SourceMappingTaskProvider"
             name="Source Schema Mapping">
       </tasks>
       <tasks
-            class="eu.esdihumboldt.hale.task.schema.TargetSchemaTaskProvider"
-            id="eu.esdihumboldt.hale.task.schema.TargetSchemaTaskProvider"
+            class="eu.esdihumboldt.hale.task.schema.TargetMappingTaskProvider"
+            id="eu.esdihumboldt.hale.task.schema.TargetMappingTaskProvider"
             name="Target Schema Mapping">
+      </tasks>
+      <tasks
+            class="eu.esdihumboldt.hale.task.schema.NilAttributeTaskProvider"
+            id="eu.esdihumboldt.hale.task.schema.NilAttributeTaskProvider"
+            name="Nil Attribute Warnings">
       </tasks>
    </extension>
    <extension

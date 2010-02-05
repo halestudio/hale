@@ -32,7 +32,8 @@ import eu.esdihumboldt.hale.task.Task;
 import eu.esdihumboldt.hale.task.impl.AbstractTaskProvider;
 
 /**
- * Schema based task provider
+ * Schema based task provider. Reacts on changes to schema and removed alignment
+ * cells.
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research

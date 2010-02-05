@@ -21,12 +21,12 @@ import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class TargetSchemaTaskProvider extends SchemaMappingTaskProvider {
+public class TargetMappingTaskProvider extends SchemaMappingTaskProvider {
 
 	/**
 	 * Default constructor
 	 */
-	public TargetSchemaTaskProvider() {
+	public TargetMappingTaskProvider() {
 		super(SchemaType.TARGET);
 	}
 
