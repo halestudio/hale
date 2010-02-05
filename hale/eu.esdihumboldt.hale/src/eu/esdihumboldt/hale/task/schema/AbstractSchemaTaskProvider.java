@@ -51,6 +51,8 @@ public abstract class AbstractSchemaTaskProvider extends AbstractTaskProvider {
 
 	private AlignmentServiceAdapter alignmentListener;
 	
+	private boolean reactOnCellAddOrUpdate = false;
+	
 	/**
 	 * Create a new schema task provider for the given schema type
 	 * 
@@ -61,6 +63,13 @@ public abstract class AbstractSchemaTaskProvider extends AbstractTaskProvider {
 		super(prefix);
 		
 		this.schemaType = schemaType;
+	}
+
+	/**
+	 * @param reactOnCellAddOrUpdate the reactOnCellAddOrUpdate to set
+	 */
+	public void setReactOnCellAddOrUpdate(boolean reactOnCellAddOrUpdate) {
+		this.reactOnCellAddOrUpdate = reactOnCellAddOrUpdate;
 	}
 
 	/**
@@ -103,36 +112,76 @@ public abstract class AbstractSchemaTaskProvider extends AbstractTaskProvider {
 
 			@Override
 			public void cellRemoved(ICell cell) {
-				// get entity
-				IEntity entity;
-				switch (schemaType) {
-				case SOURCE:
-					entity = cell.getEntity1();
-					break;
-				case TARGET:
-					entity = cell.getEntity2();
-					break;
-				default:
-					throw new RuntimeException("Invalid schema type");
-				}
-				// get definition
-				String identifier = EntityHelper.getIdentifier(entity);
-				Definition definition = schemaService.getDefinition(identifier, schemaType);
-				if (definition != null) {
-					if (definition instanceof TypeDefinition) {
-						// type mapping removed
-						generateSchemaTasks(taskService, Collections.singleton((TypeDefinition) definition));
+				generateSchemaTasks(cell, false); //XXX
+			}
+
+			@Override
+			public void cellsAdded(Iterable<ICell> cells) {
+				if (reactOnCellAddOrUpdate) {
+					for (ICell cell : cells) {
+						generateSchemaTasks(cell, true); //XXX
 					}
-					else if (definition instanceof AttributeDefinition) {
-						Collection<Task> tasks = new ArrayList<Task>();
-						AttributeDefinition attribute = (AttributeDefinition) definition;
-						generateAttributeTasks(attribute, tasks);
-						taskService.addTasks(tasks);
+				}
+			}
+
+			@Override
+			public void cellsUpdated(Iterable<ICell> cells) {
+				if (reactOnCellAddOrUpdate) {
+					for (ICell cell : cells) {
+						generateSchemaTasks(cell, true); //XXX
 					}
 				}
 			}
 			
 		});
+	}
+
+	/**
+	 * Generate schema tasks based on the given cell
+	 * 
+	 * @param cell the cell
+	 * @param checkSuperTypes if super types shall be checked
+	 */
+	protected void generateSchemaTasks(ICell cell, boolean checkSuperTypes) {
+		// get entity
+		IEntity entity;
+		switch (schemaType) {
+		case SOURCE:
+			entity = cell.getEntity1();
+			break;
+		case TARGET:
+			entity = cell.getEntity2();
+			break;
+		default:
+			throw new RuntimeException("Invalid schema type");
+		}
+		// get definition
+		String identifier = EntityHelper.getIdentifier(entity);
+		Definition definition = schemaService.getDefinition(identifier, schemaType);
+		if (definition != null) {
+			if (definition instanceof TypeDefinition) {
+				// type mapping removed
+				if (checkSuperTypes) {
+					Collection<TypeDefinition> types = new ArrayList<TypeDefinition>();
+					TypeDefinition type = (TypeDefinition) definition;
+					while (type != null) {
+						types.add(type);
+						
+						type = type.getSuperType();
+					}
+					generateSchemaTasks(taskService, types);
+				}
+				else {
+					generateSchemaTasks(taskService, Collections.singleton((TypeDefinition) definition));
+				}
+			}
+			else if (definition instanceof AttributeDefinition) {
+				Collection<Task> tasks = new ArrayList<Task>();
+				AttributeDefinition attribute = (AttributeDefinition) definition;
+				generateAttributeTasks(attribute, tasks);
+				taskService.addTasks(tasks);
+			}
+		}
 	}
 
 	/**

@@ -13,12 +13,15 @@
 package eu.esdihumboldt.hale.task.schema;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.task.ServiceProvider;
 import eu.esdihumboldt.hale.task.Task;
 import eu.esdihumboldt.hale.task.TaskFactory;
@@ -58,6 +61,16 @@ public class MapNilAttributeTaskFactory extends AbstractTaskFactory {
 		@Override
 		public void cellsAdded(Iterable<ICell> cells) {
 			//TODO check given cells instead of calling validateTask
+			if (!validateTask((AttributeDefinition) getMainContext(), alignmentService)) {
+				invalidate();
+			}
+		}
+
+		/**
+		 * @see AlignmentTask#cellRemoved(ICell)
+		 */
+		@Override
+		public void cellRemoved(ICell cell) {
 			if (!validateTask((AttributeDefinition) getMainContext(), alignmentService)) {
 				invalidate();
 			}
@@ -166,10 +179,28 @@ public class MapNilAttributeTaskFactory extends AbstractTaskFactory {
 			return false;
 		}
 		
+		// additional condition: declaring type or sub type must be mapped
+		boolean typeMapped = false;
+		Queue<TypeDefinition> typeQueue = new LinkedList<TypeDefinition>();
+		typeQueue.add(attribute.getDeclaringType());
+		while (!typeMapped && !typeQueue.isEmpty()) {
+			TypeDefinition type = typeQueue.poll();
+			
+			List<ICell> typeCells = alignmentService.getCell(type.getEntity());
+			if (typeCells != null && !typeCells.isEmpty()) {
+				typeMapped = true;
+			}
+			
+			typeQueue.addAll(type.getSubTypes());
+		}
+		if (!typeMapped) {
+			return false;
+		}
+		
 		//TODO check for nil reason?
 		
-		List<ICell> cells = alignmentService.getCell(attribute.getEntity());
-		if (cells == null || cells.isEmpty()) {
+		List<ICell> attributeCells = alignmentService.getCell(attribute.getEntity());
+		if (attributeCells == null || attributeCells.isEmpty()) {
 			return true;
 		}
 		

@@ -37,6 +37,8 @@ public class NilAttributeTaskProvider extends AbstractSchemaTaskProvider {
 	public NilAttributeTaskProvider() {
 		super(null, SchemaType.TARGET);
 		
+		setReactOnCellAddOrUpdate(true);
+		
 		addFactory(mapNilAttribute = new MapNilAttributeTaskFactory());
 	}
 
