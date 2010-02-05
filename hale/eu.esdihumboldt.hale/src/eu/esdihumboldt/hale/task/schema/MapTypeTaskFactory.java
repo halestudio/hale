@@ -103,6 +103,14 @@ public class MapTypeTaskFactory extends AbstractTaskFactory {
 			return "Create a mapping for " + ((TypeDefinition) task.getMainContext()).getName().getLocalPart();
 		}
 
+		/**
+		 * @see TaskType#getValue(Task)
+		 */
+		@Override
+		public double getValue(Task task) {
+			return 10.0;
+		}
+
 	}
 	
 	/**

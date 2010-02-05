@@ -103,6 +103,14 @@ public class MapAttributeTaskFactory extends AbstractTaskFactory {
 			return "Create a mapping for the attribute " + ((AttributeDefinition) task.getMainContext()).getName();
 		}
 
+		/**
+		 * @see TaskType#getValue(Task)
+		 */
+		@Override
+		public double getValue(Task task) {
+			return 5.0;
+		}
+
 	}
 	
 	/**

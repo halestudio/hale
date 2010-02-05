@@ -56,12 +56,6 @@ public interface Task extends Comparable<Task> {
 	public List<? extends Definition> getContext();
 
 	/**
-	 * @return the value identifies the impact the solving of a task will 
-	 * have in terms of the metrics used in the quality model;
-	 */
-	public double getValue();
-	
-	/**
 	 * @return the status this Task is currently in.
 	 */
 	public TaskStatus getTaskStatus();

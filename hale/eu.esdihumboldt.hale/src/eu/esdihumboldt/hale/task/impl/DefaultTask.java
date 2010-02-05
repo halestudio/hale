@@ -41,8 +41,6 @@ public class DefaultTask implements Task, Comparable<Task> {
 	
 	private TaskStatus status = TaskStatus.NEW; //TODO
 	
-	private double value = 1.0; //TODO
-
 	/**
 	 * Create a new task
 	 * 
@@ -113,14 +111,6 @@ public class DefaultTask implements Task, Comparable<Task> {
 	}
 
 	/**
-	 * @see Task#getValue()
-	 */
-	@Override
-	public double getValue() {
-		return value;
-	}
-
-	/**
 	 * @see Task#dispose()
 	 */
 	@Override
@@ -177,16 +167,7 @@ public class DefaultTask implements Task, Comparable<Task> {
 			return -1;
 		}
 		
-		if (value < other.getValue()) {
-			return -1;
-		}
-		else if (value > other.getValue()) {
-			return 1;
-		}
-		else {
-			//XXX
-			return getMainContext().getIdentifier().compareTo(other.getMainContext().getIdentifier());
-		}
+		return getMainContext().getIdentifier().compareTo(other.getMainContext().getIdentifier());
 	}
 
 }

@@ -68,6 +68,16 @@ public interface TaskType {
 	public SeverityLevel getSeverityLevel(Task task);
 	
 	/**
+	 * Get the value of the given task
+	 * 
+	 * @param task the task
+	 * 
+	 * @return the value identifies the impact the solving of a task will 
+	 * have in terms of the metrics used in the quality model;
+	 */
+	public double getValue(Task task);
+	
+	/**
 	 * Get the creation reason for the given task
 	 * 
 	 * @param task the task which reason shall be determined. The task's
