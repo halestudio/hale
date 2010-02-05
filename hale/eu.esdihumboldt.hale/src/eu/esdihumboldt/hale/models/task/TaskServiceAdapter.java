@@ -26,10 +26,10 @@ import eu.esdihumboldt.hale.task.Task;
 public abstract class TaskServiceAdapter implements TaskServiceListener {
 
 	/**
-	 * @see TaskServiceListener#taskRemoved(Task)
+	 * @see TaskServiceListener#tasksRemoved(Iterable)
 	 */
 	@Override
-	public void taskRemoved(Task task) {
+	public void tasksRemoved(Iterable<Task> tasks) {
 		// override me
 	}
 

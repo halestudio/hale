@@ -9,7 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.models.task;
+package eu.esdihumboldt.hale.task.extension;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
@@ -65,6 +65,15 @@ public class TaskProviderFactory {
 		}
 		
 		return null;
+	}
+
+	/**
+	 * Get the task provider ID
+	 * 
+	 * @return the ID
+	 */
+	public String getId() {
+		return conf.getAttribute("id");
 	}
 
 }

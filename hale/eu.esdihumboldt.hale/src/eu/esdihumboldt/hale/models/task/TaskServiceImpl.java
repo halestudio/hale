@@ -14,7 +14,10 @@ package eu.esdihumboldt.hale.models.task;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -26,7 +29,10 @@ import eu.esdihumboldt.hale.task.ServiceProvider;
 import eu.esdihumboldt.hale.task.Task;
 import eu.esdihumboldt.hale.task.TaskProvider;
 import eu.esdihumboldt.hale.task.TaskRegistry;
+import eu.esdihumboldt.hale.task.extension.TaskProviderExtension;
+import eu.esdihumboldt.hale.task.extension.TaskProviderFactory;
 import eu.esdihumboldt.hale.task.impl.EclipseServiceProvider;
+import eu.esdihumboldt.hale.task.preferences.TaskPreferenceUtils;
 
 /**
  * This is the standard implementation of the {@link TaskService}.
@@ -47,6 +53,11 @@ public class TaskServiceImpl extends AbstractTaskService {
 	
 	private final SortedSet<Task> tasks = new TreeSet<Task>();
 	
+	/**
+	 * The task provider instances
+	 */
+	private final Map<String, TaskProvider> taskProviders = new HashMap<String, TaskProvider>();
+	
 	// Constructor/ instance access ............................................
 	
 	/**
@@ -62,8 +73,12 @@ public class TaskServiceImpl extends AbstractTaskService {
 				// register task types
 				taskProvider.registerTaskTypes(registry);
 				
-				//XXX for now, activate every task provider
-				taskProvider.activate(this, serviceProvider);
+				// activate provider
+				if (TaskPreferenceUtils.getTaskProviderActive(factory.getId())) {
+					taskProvider.activate(this, serviceProvider);
+				}
+				
+				taskProviders.put(factory.getId(), taskProvider);
 			}
 		}
 	}
@@ -161,8 +176,26 @@ public class TaskServiceImpl extends AbstractTaskService {
 		
 		if (removed) {
 			task.dispose();
-			notifyTaskRemoved(task);
+			notifyTasksRemoved(Collections.singleton(task));
 		}
+	}
+
+	/**
+	 * @see TaskService#removeTasks(String)
+	 */
+	@Override
+	public void removeTasks(String type) {
+		Collection<Task> toRemove = new HashSet<Task>();
+		synchronized (tasks) {
+			for (Task task : tasks) {
+				if (task.getTypeName().equals(type)) {
+					toRemove.add(task);
+				}
+			}
+			
+			tasks.removeAll(toRemove);
+		}
+		notifyTasksRemoved(toRemove);
 	}
 
 	/**
@@ -171,6 +204,40 @@ public class TaskServiceImpl extends AbstractTaskService {
 	@Override
 	public ResolvedTask resolveTask(Task task) {
 		return ResolvedTask.resolveTask(registry, task);
+	}
+
+	/**
+	 * @see TaskService#activateTaskProvider(String)
+	 */
+	@Override
+	public void activateTaskProvider(String id) {
+		TaskProvider taskProvider = taskProviders.get(id);
+		
+		if (taskProvider != null) {
+			TaskPreferenceUtils.setTaskProviderActive(id, true);
+			taskProvider.activate(this, serviceProvider);
+		}
+	}
+
+	/**
+	 * @see TaskService#deactivateTaskProvider(String)
+	 */
+	@Override
+	public void deactivateTaskProvider(String id) {
+		TaskProvider taskProvider = taskProviders.get(id);
+		
+		if (taskProvider != null) {
+			TaskPreferenceUtils.setTaskProviderActive(id, false);
+			taskProvider.deactivate();
+		}
+	}
+
+	/**
+	 * @see TaskService#taskProviderIsActive(String)
+	 */
+	@Override
+	public boolean taskProviderIsActive(String id) {
+		return TaskPreferenceUtils.getTaskProviderActive(id);
 	}
 	
 }

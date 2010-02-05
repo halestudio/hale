@@ -16,7 +16,6 @@ import eu.esdihumboldt.hale.models.AbstractUpdateService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
-import eu.esdihumboldt.hale.models.alignment.AlignmentServiceListener;
 import eu.esdihumboldt.hale.task.Task;
 
 /**
@@ -62,14 +61,14 @@ public abstract class AbstractTaskService extends AbstractUpdateService
 	}
 	
 	/**
-	 * Call when a task has been removed
+	 * Call when tasks have been removed
 	 * 
-	 * @param task the task that has been removed
+	 * @param tasks the tasks that have been removed
 	 */
-	protected void notifyTaskRemoved(Task task) {
+	protected void notifyTasksRemoved(Iterable<Task> tasks) {
 		for (HaleServiceListener listener : getListeners()) {
 			if (listener instanceof TaskServiceListener) {
-				((TaskServiceListener) listener).taskRemoved(task);
+				((TaskServiceListener) listener).tasksRemoved(tasks);
 			}
 			
 			listener.update(DEF_MESSAGE);

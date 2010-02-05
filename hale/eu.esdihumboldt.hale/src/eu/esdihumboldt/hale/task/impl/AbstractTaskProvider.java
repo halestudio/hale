@@ -37,6 +37,11 @@ public abstract class AbstractTaskProvider implements TaskProvider {
 	 */
 	protected ServiceProvider serviceProvider;
 	
+	/**
+	 * The task service
+	 */
+	protected TaskService taskService;
+	
 	private final Map<String, TaskFactory> factories = new HashMap<String, TaskFactory>();
 	
 	/**
@@ -77,6 +82,7 @@ public abstract class AbstractTaskProvider implements TaskProvider {
 	public void activate(TaskService taskService,
 			ServiceProvider serviceProvider) {
 		this.serviceProvider = serviceProvider;
+		this.taskService = taskService;
 		
 		if (!active) {
 			active = true;
@@ -100,7 +106,10 @@ public abstract class AbstractTaskProvider implements TaskProvider {
 		if (active) {
 			active = false;
 			doDeactivate();
-			//TODO remove task that were created by this task provider?!
+			// remove tasks that were created by this task provider (by type)
+			for (String type : factories.keySet()) {
+				taskService.removeTasks(type);
+			}
 		}
 	}
 	

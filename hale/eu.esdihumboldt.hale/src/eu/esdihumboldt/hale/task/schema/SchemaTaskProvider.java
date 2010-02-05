@@ -70,6 +70,9 @@ public class SchemaTaskProvider extends AbstractTaskProvider {
 		schemaService = serviceProvider.getService(SchemaService.class);
 		alignmentService = serviceProvider.getService(AlignmentService.class);
 		
+		// create tasks from the current schema
+		generateSchemaTasks(taskService, schemaService.getSchema(SchemaType.SOURCE));
+		
 		// create tasks for new schema types
 		schemaService.addListener(schemaListener = new SchemaServiceAdapter() {
 

@@ -318,8 +318,15 @@
          point="eu.esdihumboldt.hale.task.TaskProvider">
       <tasks
             class="eu.esdihumboldt.hale.task.schema.SchemaTaskProvider"
+            id="eu.esdihumboldt.hale.task.schema.SchemaTaskProvider"
             name="Schema tasks">
       </tasks>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="eu.esdihumboldt.hale.task.preferences.TaskPreferenceInitializer">
+      </initializer>
    </extension>
    <!-- <extension
          point="org.eclipse.ui.importWizards">

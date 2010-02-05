@@ -57,6 +57,13 @@ public interface TaskService
 	public void removeTask(Task task);
 	
 	/**
+	 * Remove all tasks of the given type
+	 * 
+	 * @param type the type name
+	 */
+	public void removeTasks(String type);
+	
+	/**
 	 * Get the tasks
 	 * 
 	 * @return a collection of all tasks
@@ -78,5 +85,30 @@ public interface TaskService
 	 * @return the resolved task
 	 */
 	public ResolvedTask resolveTask(Task task);
+	
+	// task provider managment
+	
+	/**
+	 * Activate the task provider with the given ID
+	 * 
+	 * @param id the task provider id 
+	 */
+	public void activateTaskProvider(String id);
+	
+	/**
+	 * Deactivate the task provider with the given ID
+	 * 
+	 * @param id the task provider id
+	 */
+	public void deactivateTaskProvider(String id);
+	
+	/**
+	 * Determine if the task provider with the given ID is active
+	 * 
+	 * @param id the task provider id
+	 * 
+	 * @return if the task provider is active
+	 */
+	public boolean taskProviderIsActive(String id);
 
 }

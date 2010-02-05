@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.rcp.views.tasks;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TreeColumnViewerLabelProvider;
@@ -24,6 +25,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
@@ -106,9 +108,9 @@ public class TaskTreeView extends ViewPart {
 		taskService.addListener(taskListener = new TaskServiceAdapter() {
 			
 			@Override
-			public void taskRemoved(final Task task) {
+			public void tasksRemoved(final Iterable<Task> tasks) {
 				if (Display.getCurrent() != null) {
-					removeTask(task);
+					removeTasks(tasks);
 				}
 				else {
 					final Display display = PlatformUI.getWorkbench().getDisplay();
@@ -116,7 +118,7 @@ public class TaskTreeView extends ViewPart {
 
 						@Override
 						public void run() {
-							removeTask(task);
+							removeTasks(tasks);
 						}
 						
 					});
@@ -144,8 +146,22 @@ public class TaskTreeView extends ViewPart {
 		});
 		
 		createInput();
+		
+		configureActions();
 	}
 	
+	private void configureActions() {
+		IActionBars bars = getViewSite().getActionBars();
+		
+		// tool-bar
+		//IToolBarManager toolBar = bars.getToolBarManager();
+		//toolBar.add(...);
+		
+		// menu
+		IMenuManager menu = bars.getMenuManager();
+		menu.add(new TaskProviderMenu());
+	}
+
 	/**
 	 * Update the view
 	 */
@@ -180,6 +196,18 @@ public class TaskTreeView extends ViewPart {
 			tree.refresh(parent, false);
 		}
 	}
+	
+	/**
+	 * Adds the given tasks
+	 * 
+	 * @param tasks the tasks to add
+	 */
+	protected void removeTasks(Iterable<Task> tasks) {
+		//TODO smart refresh
+		for (Task task : tasks) {
+			removeTask(task);
+		}
+	}
 
 	/**
 	 * Remove a task
@@ -187,7 +215,7 @@ public class TaskTreeView extends ViewPart {
 	 * @param task the task to remove
 	 */
 	@SuppressWarnings("unchecked")
-	protected void removeTask(Task task) {
+	private void removeTask(Task task) {
 		// remove task from model
 		MapMultiColumnTreeNode<Task, TreeNode> parent = getParentNode(task, false);
 		if (parent != null) {
@@ -260,6 +288,7 @@ public class TaskTreeView extends ViewPart {
 	 * @param tasks the tasks to add
 	 */
 	protected void addTasks(Iterable<Task> tasks) {
+		//TODO smart refresh
 		for (Task task : tasks) {
 			addTask(taskService.resolveTask(task));
 		}

@@ -10,33 +10,20 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.models.task;
-
-import eu.esdihumboldt.hale.models.HaleServiceListener;
-import eu.esdihumboldt.hale.models.TaskService;
-import eu.esdihumboldt.hale.task.Task;
+package eu.esdihumboldt.hale.task.preferences;
 
 /**
- * Dedicated listener for {@link TaskService}s
+ * Task related preference constancs
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public interface TaskServiceListener extends HaleServiceListener {
+public interface TaskPreferenceConstants {
 	
 	/**
-	 * Called when tasks have been added
-	 * 
-	 * @param tasks the tasks that have been added
+	 * The list of active providers
 	 */
-	public void tasksAdded(Iterable<Task> tasks);
+	public static final String TASK_PROVIDER_PREFIX = "task-provider:";
 	
-	/**
-	 * Called when tasks have been removed
-	 * 
-	 * @param tasks the tasks that have been removed
-	 */
-	public void tasksRemoved(Iterable<Task> tasks);
-
 }
