@@ -32,7 +32,35 @@ public interface TaskType {
 		/** A warning indicates a possible error in the alignment, as indicated by instance analysis */
 		warning,
 		/** A normal task. */
-		task
+		task;
+
+		/**
+		 * Get the maximum severity level based on the given levels
+		 * 
+		 * @param one one level
+		 * @param theOther the other level
+		 * 
+		 * @return the maximum severity of both given levels
+		 */
+		public static SeverityLevel max(SeverityLevel one, SeverityLevel theOther) {
+			if (one == null) {
+				return theOther;
+			}
+			if (theOther == null) {
+				return one;
+			}
+			
+			if (one.equals(error) || theOther.equals(error)) {
+				return error;
+			}
+			else if (one.equals(warning) || theOther.equals(warning)) {
+				return warning;
+			}
+			else {
+				return task;
+			}
+		}
+		
 	}
 	
 	/**

@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.rcp.utils.tree;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeNode;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * Label provider for a column of a tree with {@link TreeNode}s or
@@ -52,16 +53,39 @@ public class MultiColumnTreeNodeLabelProvider extends LabelProvider {
 				if (value.getClass().isArray()) {
 					Object[] values = (Object[]) value;
 					if (columnIndex < values.length) {
-						return getValueText(values[columnIndex]);
+						return getValueText(values[columnIndex], (TreeNode) element);
 					}
 				}
 				else if (columnIndex == 0) {
-					return getValueText(value);
+					return getValueText(value, (TreeNode) element);
 				}
 			}
 		}
 		
 		return getDefaultText();
+	}
+
+	/**
+	 * @see LabelProvider#getImage(Object)
+	 */
+	@Override
+	public Image getImage(Object element) {
+		if (element instanceof TreeNode) {
+			Object value = ((TreeNode) element).getValue();
+			if (value != null) {
+				if (value.getClass().isArray()) {
+					Object[] values = (Object[]) value;
+					if (columnIndex < values.length) {
+						return getValueImage(values[columnIndex], (TreeNode) element);
+					}
+				}
+				else if (columnIndex == 0) {
+					return getValueImage(value, (TreeNode) element);
+				}
+			}
+		}
+		
+		return getDefaultImage();
 	}
 
 	/**
@@ -72,16 +96,38 @@ public class MultiColumnTreeNodeLabelProvider extends LabelProvider {
 	protected String getDefaultText() {
 		return "";
 	}
+	
+	/**
+	 * Get the default image when no value is available
+	 * 
+	 * @return the default image
+	 */
+	protected Image getDefaultImage() {
+		return null;
+	}
 
 	/**
 	 * Get the text for the given value
 	 * 
 	 * @param value the value
+	 * @param node the tree node
 	 * 
 	 * @return the text representing the value
 	 */
-	protected String getValueText(Object value) {
+	protected String getValueText(Object value, TreeNode node) {
 		return value.toString();
+	}
+	
+	/**
+	 * Get the image for the given value
+	 * 
+	 * @param value the value
+	 * @param node the tree node
+	 * 
+	 * @return the text representing the value
+	 */
+	protected Image getValueImage(Object value, TreeNode node) {
+		return null;
 	}
 	
 }

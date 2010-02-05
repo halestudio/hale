@@ -37,7 +37,6 @@ import eu.esdihumboldt.hale.models.task.TaskServiceAdapter;
 import eu.esdihumboldt.hale.rcp.utils.tree.CollectionTreeNodeContentProvider;
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MapTreeNode;
-import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNodeLabelProvider;
 import eu.esdihumboldt.hale.rcp.utils.tree.SortedMapTreeNode;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.task.ResolvedTask;
@@ -98,8 +97,10 @@ public class TaskTreeView extends ViewPart {
 		// title/description
 		TreeViewerColumn description = new TreeViewerColumn(tree, SWT.LEFT);
 		description.getColumn().setText("Description");
-		description.setLabelProvider(new TreeColumnViewerLabelProvider(
-				new MultiColumnTreeNodeLabelProvider(0)));
+		TreeColumnViewerLabelProvider descriptionLabelProvider = new TreeColumnViewerLabelProvider(
+				new TaskDescriptionLabelProvider(0));
+		//descriptionLabelProvider.setProviders(...);
+		description.setLabelProvider(descriptionLabelProvider);
 		layout.setColumnData(description.getColumn(), new ColumnWeightData(1));
 		
 		// listeners
@@ -192,9 +193,15 @@ public class TaskTreeView extends ViewPart {
 		// add task to model
 		MapTreeNode<Task,TreeNode> parent = getParentNode(task, true);
 		if (parent != null) {
-			parent.addChild(task, new DefaultTreeNode(task.getTitle()));
+			parent.addChild(task, new DefaultTreeNode(task));
 			// update viewer
-			tree.refresh(parent, false);
+			tree.refresh(parent, true);
+			// update icons
+			TreeNode updateNode = parent.getParent();
+			while (updateNode != null) {
+				tree.update(updateNode, null);
+				updateNode = updateNode.getParent();
+			}
 		}
 	}
 	
@@ -225,10 +232,16 @@ public class TaskTreeView extends ViewPart {
 			if (!parent.hasChildren()) {
 				MapTreeNode<TypeDefinition, MapTreeNode<Task, TreeNode>> root = (MapTreeNode<TypeDefinition, MapTreeNode<Task, TreeNode>>) parent.getParent();
 				root.removeChildNode(parent);
-				tree.refresh(root, false);
+				tree.refresh(root, true);
 			}
 			else {
-				tree.refresh(parent, false);
+				tree.refresh(parent, true);
+				// update icons
+				TreeNode updateNode = parent.getParent();
+				while (updateNode != null) {
+					tree.update(updateNode, null);
+					updateNode = updateNode.getParent();
+				}
 			}
 		}
 	}
