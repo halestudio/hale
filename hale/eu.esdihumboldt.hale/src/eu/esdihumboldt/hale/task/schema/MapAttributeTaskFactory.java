@@ -108,7 +108,7 @@ public class MapAttributeTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public double getValue(Task task) {
-			return 5.0;
+			return 0.3;
 		}
 
 	}
