@@ -113,7 +113,15 @@ public class TaskTreeView extends ViewPart {
 		TreeColumnViewerLabelProvider valueLabelProvider = new TreeColumnViewerLabelProvider(
 				new TaskValueLabelProvider(0));
 		value.setLabelProvider(valueLabelProvider);
-		layout.setColumnData(value.getColumn(), new ColumnWeightData(0, 24));
+		layout.setColumnData(value.getColumn(), new ColumnWeightData(0, 20));
+		
+		// number of tasks
+		TreeViewerColumn number = new TreeViewerColumn(tree, SWT.RIGHT);
+		number.getColumn().setText("#");
+		TreeColumnViewerLabelProvider numberLabelProvider = new TreeColumnViewerLabelProvider(
+				new TaskCountLabelProvider(0));
+		number.setLabelProvider(numberLabelProvider);
+		layout.setColumnData(number.getColumn(), new ColumnWeightData(0, 48));
 		
 		// listeners
 		schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
