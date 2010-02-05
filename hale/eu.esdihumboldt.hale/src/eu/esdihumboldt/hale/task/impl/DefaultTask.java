@@ -167,7 +167,13 @@ public class DefaultTask implements Task, Comparable<Task> {
 			return -1;
 		}
 		
-		return getMainContext().getIdentifier().compareTo(other.getMainContext().getIdentifier());
+		int result = getMainContext().getIdentifier().compareTo(other.getMainContext().getIdentifier());
+		if (result == 0) {
+			return getTypeName().compareTo(other.getTypeName());
+		}
+		else {
+			return result;
+		}
 	}
 
 }

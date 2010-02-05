@@ -40,6 +40,8 @@ public class SchemaMappingTaskProvider extends AbstractSchemaTaskProvider {
 	public SchemaMappingTaskProvider(SchemaType schemaType) {
 		super((schemaType == SchemaType.SOURCE)?("source."):("target."), schemaType);
 		
+		setReactOnCellAddOrUpdate(true);
+		
 		addFactory(mapType = new MapTypeTaskFactory()); //TODO param?
 		addFactory(mapAttribute = new MapAttributeTaskFactory()); //TODO param?
 	}

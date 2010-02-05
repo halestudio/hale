@@ -73,9 +73,9 @@ public class TaskTreeView extends ViewPart {
 	
 	private SchemaService schemaService;
 	
-	private MapTreeNode<TypeDefinition, MapTreeNode<Task, TreeNode>> sourceNode;
+	private MapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>> sourceNode;
 	
-	private MapTreeNode<TypeDefinition, MapTreeNode<Task, TreeNode>> targetNode;
+	private MapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>> targetNode;
 	
 	/**
 	 * @see WorkbenchPart#createPartControl(Composite)
@@ -236,8 +236,8 @@ public class TaskTreeView extends ViewPart {
 		TaskService taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
 		
 		final Collection<TreeNode> input = new ArrayList<TreeNode>();
-		sourceNode = new SortedMapTreeNode<TypeDefinition, MapTreeNode<Task,TreeNode>>("Source");
-		targetNode = new SortedMapTreeNode<TypeDefinition, MapTreeNode<Task,TreeNode>>("Target");
+		sourceNode = new SortedMapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>>("Source");
+		targetNode = new SortedMapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>>("Target");
 		input.add(sourceNode);
 		input.add(targetNode);
 		
@@ -256,7 +256,7 @@ public class TaskTreeView extends ViewPart {
 	 */
 	private void addTask(ResolvedTask task) {
 		// add task to model
-		MapTreeNode<Task,TreeNode> parent = getParentNode(task, true);
+		MapTreeNode<ResolvedTask, TreeNode> parent = getParentNode(task, true);
 		if (parent != null) {
 			parent.addChild(task, new DefaultTreeNode(task));
 			// update viewer
@@ -289,13 +289,14 @@ public class TaskTreeView extends ViewPart {
 	 */
 	@SuppressWarnings("unchecked")
 	private void removeTask(Task task) {
+		ResolvedTask resolved = taskService.resolveTask(task);
 		// remove task from model
-		MapTreeNode<Task, TreeNode> parent = getParentNode(task, false);
+		MapTreeNode<ResolvedTask, TreeNode> parent = getParentNode(resolved, false);
 		if (parent != null) {
-			parent.removeChild(task);
+			parent.removeChild(resolved);
 			// remove empty nodes
 			if (!parent.hasChildren()) {
-				MapTreeNode<TypeDefinition, MapTreeNode<Task, TreeNode>> root = (MapTreeNode<TypeDefinition, MapTreeNode<Task, TreeNode>>) parent.getParent();
+				MapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>> root = (MapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>>) parent.getParent();
 				root.removeChildNode(parent);
 				tree.refresh(root, true);
 			}
@@ -319,7 +320,7 @@ public class TaskTreeView extends ViewPart {
 	 * 
 	 * @return the parent node
 	 */
-	private MapTreeNode<Task,TreeNode> getParentNode(Task task, boolean allowCreate) {
+	private MapTreeNode<ResolvedTask, TreeNode> getParentNode(ResolvedTask task, boolean allowCreate) {
 		TypeDefinition group = TaskUtils.getGroup(task);
 		if (group.getName().getNamespaceURI().equals(schemaService.getSourceNameSpace())) {
 			// source task
@@ -331,7 +332,7 @@ public class TaskTreeView extends ViewPart {
 		}
 		else {
 			// invalid task ?
-			MapTreeNode<Task,TreeNode> result = getGroupNode(sourceNode, group, false);
+			MapTreeNode<ResolvedTask, TreeNode> result = getGroupNode(sourceNode, group, false);
 			if (result == null) {
 				result = getGroupNode(targetNode, group, false);
 			}
@@ -348,12 +349,12 @@ public class TaskTreeView extends ViewPart {
 	 * 
 	 * @return the group node
 	 */
-	private MapTreeNode<Task,TreeNode> getGroupNode(
-			MapTreeNode<TypeDefinition, MapTreeNode<Task,TreeNode>> rootNode,
+	private MapTreeNode<ResolvedTask, TreeNode> getGroupNode(
+			MapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>> rootNode,
 			TypeDefinition group, boolean allowCreate) {
-		MapTreeNode<Task, TreeNode> groupNode = rootNode.getChild(group);
+		MapTreeNode<ResolvedTask, TreeNode> groupNode = rootNode.getChild(group);
 		if (groupNode == null && allowCreate) {
-			groupNode = new SortedMapTreeNode<Task, TreeNode>(group);
+			groupNode = new SortedMapTreeNode<ResolvedTask, TreeNode>(group);
 			rootNode.addChild(group, groupNode);
 			// update viewer
 			tree.refresh(rootNode, true);
