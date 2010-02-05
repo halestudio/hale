@@ -177,11 +177,18 @@ public class ResolvedTask implements Task {
 	@Override
 	public int compareTo(Task other) {
 		if (other instanceof ResolvedTask) {
-			if (getValue() > ((ResolvedTask) other).getValue()) {
-				return -1;
+			int result = getSeverityLevel().compareTo(((ResolvedTask) other).getSeverityLevel());
+			
+			if (result == 0) {
+				if (getValue() > ((ResolvedTask) other).getValue()) {
+					return -1;
+				}
+				else if (getValue() < ((ResolvedTask) other).getValue()) {
+					return 1;
+				}
 			}
-			else if (getValue() < ((ResolvedTask) other).getValue()) {
-				return 1;
+			else {
+				return result;
 			}
 		}
 		
