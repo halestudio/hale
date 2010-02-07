@@ -12,6 +12,7 @@
 package eu.esdihumboldt.cst.transformer.service.rename;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -70,7 +71,7 @@ public class FeatureSplitter {
 		if (splitrule[0].equals("split")) {
 			if (splitrule[1].startsWith("extractSubgeometry")) {
 				String extractGeometryParameter = splitrule[1].substring(
-						splitrule[1].indexOf("("), 
+						splitrule[1].indexOf("(") + 1, 
 						splitrule[1].indexOf(")"));
 				if (extractGeometryParameter.equals("Point")) {
 					this.geometryAtomType = Point.class;
@@ -80,6 +81,10 @@ public class FeatureSplitter {
 				}
 				else if (extractGeometryParameter.equals("Polygon")) {
 					this.geometryAtomType = Polygon.class;
+				}
+				else {
+					throw new RuntimeException("You can only extract Points, " +
+							"Polygons and LineStrings.");
 				}
 			}
 			else if (splitrule[1].startsWith("extractSubstring")) {
@@ -152,12 +157,18 @@ public class FeatureSplitter {
 				}
 			}
 			else if (attribute_value.getClass().equals(MultiPolygon.class)) {
+				MultiPolygon multipolygon = (MultiPolygon) attribute_value;
 				if (this.geometryAtomType.equals(Point.class)) {
-					result = this.makeNewPointFeatures(source, targetFT, 
-					((MultiPolygon)attribute_value).getCoordinates());
+					result = new ArrayList<Feature>();
+					for (int n = 0; n < multipolygon.getNumGeometries(); n++) {
+						Coordinate[] coords = 
+							((Polygon)multipolygon.getGeometryN(n)).getCoordinates();
+						coords = Arrays.copyOfRange(coords, 1, coords.length);
+						result.addAll(this.makeNewPointFeatures(source, targetFT, 
+								coords));
+					}
 				}
 				else if (this.geometryAtomType.equals(Polygon.class)) {
-					MultiPolygon multipolygon = (MultiPolygon) attribute_value;
 					Polygon[] interiorPolys = new Polygon[
 					                          multipolygon.getNumGeometries()];
 					for (int n = 0; n < multipolygon.getNumGeometries(); n++) {
@@ -181,8 +192,10 @@ public class FeatureSplitter {
 			}
 			else if (attribute_value.getClass().equals(Polygon.class)) {
 				if (this.geometryAtomType.equals(Point.class)) {
+					Coordinate[] coords = ((Polygon)attribute_value).getCoordinates();
+					coords = Arrays.copyOfRange(coords, 1, coords.length);
 					result = this.makeNewPointFeatures(source, targetFT, 
-					((Polygon)attribute_value).getCoordinates());
+							coords);
 				}
 				else {
 					throw new RuntimeException(preparedErrorMsg);
