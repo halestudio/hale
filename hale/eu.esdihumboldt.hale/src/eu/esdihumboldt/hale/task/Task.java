@@ -21,20 +21,6 @@ import eu.esdihumboldt.modelrepository.abstractfc.SchemaElement;
 public interface Task extends Comparable<Task> {
 	
 	/**
-	 * Task status
-	 */
-	public enum TaskStatus {
-		/** a new task */
-		NEW,
-		/** an active task */
-		ACTIVE,
-		/** the task is completed */
-		COMPLETE,
-		/** the task is obsolete */
-		OBSOLETE
-	}
-	
-	/**
 	 * Get the name of the task's type
 	 * 
 	 * @return the task type name
@@ -55,11 +41,6 @@ public interface Task extends Comparable<Task> {
 	 */
 	public List<? extends Definition> getContext();
 
-	/**
-	 * @return the status this Task is currently in.
-	 */
-	public TaskStatus getTaskStatus();
-	
 	/**
 	 * Clean up the task. This method is called when a task is removed from the
 	 *  task service

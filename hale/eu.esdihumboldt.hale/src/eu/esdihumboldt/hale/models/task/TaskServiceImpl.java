@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.task.ServiceProvider;
 import eu.esdihumboldt.hale.task.Task;
 import eu.esdihumboldt.hale.task.TaskProvider;
 import eu.esdihumboldt.hale.task.TaskRegistry;
+import eu.esdihumboldt.hale.task.TaskUserData;
 import eu.esdihumboldt.hale.task.extension.TaskProviderExtension;
 import eu.esdihumboldt.hale.task.extension.TaskProviderFactory;
 import eu.esdihumboldt.hale.task.impl.EclipseServiceProvider;
@@ -52,6 +53,8 @@ public class TaskServiceImpl extends AbstractTaskService {
 	private final ServiceProvider serviceProvider = new EclipseServiceProvider();
 	
 	private final SortedSet<Task> tasks = new TreeSet<Task>();
+	
+	private final Map<Task, TaskUserData> taskUserData = new HashMap<Task, TaskUserData>();
 	
 	/**
 	 * The task provider instances
@@ -140,7 +143,7 @@ public class TaskServiceImpl extends AbstractTaskService {
 		List<ResolvedTask> result = new ArrayList<ResolvedTask>();
 		synchronized (tasks) {
 			for (Task task : tasks) {
-				ResolvedTask resolved = ResolvedTask.resolveTask(registry, task);
+				ResolvedTask resolved = resolveTask(task);
 				if (resolved != null) {
 					result.add(resolved);
 				}
@@ -199,11 +202,28 @@ public class TaskServiceImpl extends AbstractTaskService {
 	}
 
 	/**
+	 * @see TaskService#setUserData(Task, TaskUserData)
+	 */
+	@Override
+	public void setUserData(Task task, TaskUserData userData) {
+		if (userData == null) {
+			this.taskUserData.remove(task);
+		}
+		else {
+			this.taskUserData.put(task, userData);
+		}
+		
+		if (tasks.contains(task)) {
+			notifyTaskUserDataChanged(resolveTask(task));
+		}
+	}
+
+	/**
 	 * @see TaskService#resolveTask(Task)
 	 */
 	@Override
 	public ResolvedTask resolveTask(Task task) {
-		return ResolvedTask.resolveTask(registry, task);
+		return ResolvedTask.resolveTask(registry, task, taskUserData.get(task));
 	}
 
 	/**
@@ -238,6 +258,33 @@ public class TaskServiceImpl extends AbstractTaskService {
 	@Override
 	public boolean taskProviderIsActive(String id) {
 		return TaskPreferenceUtils.getTaskProviderActive(id);
+	}
+
+	/**
+	 * @see TaskService#getUserTasks()
+	 */
+	@Override
+	public Map<Task, TaskUserData> getUserTasks() {
+		return taskUserData;
+	}
+
+	/**
+	 * @see TaskService#clearUserTasks()
+	 */
+	@Override
+	public void clearUserTasks() {
+		List<Task> userDataTasks = new ArrayList<Task>();
+		for (Task task : taskUserData.keySet()) {
+			if (tasks.contains(task)) {
+				userDataTasks.add(task);
+			}
+		}
+		
+		taskUserData.clear();
+		
+		for (Task task : userDataTasks) {
+			notifyTaskUserDataChanged(resolveTask(task));
+		}
 	}
 	
 }

@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.models.task;
 
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.TaskService;
+import eu.esdihumboldt.hale.task.ResolvedTask;
 import eu.esdihumboldt.hale.task.Task;
 
 /**
@@ -38,5 +39,12 @@ public interface TaskServiceListener extends HaleServiceListener {
 	 * @param tasks the tasks that have been removed
 	 */
 	public void tasksRemoved(Iterable<Task> tasks);
+	
+	/**
+	 * Called when the user data of a task has changed
+	 * 
+	 * @param task the resolved task
+	 */
+	public void taskUserDataChanged(ResolvedTask task);
 
 }

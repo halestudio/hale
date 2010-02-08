@@ -15,6 +15,9 @@ package eu.esdihumboldt.hale.models.task;
 import java.util.HashMap;
 import java.util.Map;
 
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.task.ServiceProvider;
+import eu.esdihumboldt.hale.task.Task;
 import eu.esdihumboldt.hale.task.TaskRegistry;
 import eu.esdihumboldt.hale.task.TaskType;
 
@@ -47,6 +50,21 @@ public class TaskRegistryImpl implements TaskRegistry {
 		}
 		else {
 			types.put(type.getName(), type);
+		}
+	}
+
+	/**
+	 * @see TaskRegistry#createTask(ServiceProvider, String, Definition[])
+	 */
+	@Override
+	public Task createTask(ServiceProvider serviceProvider, String typeName,
+			Definition... definitions) {
+		TaskType type = getType(typeName);
+		if (type != null) {
+			return type.getTaskFactory().createTask(serviceProvider, definitions);
+		}
+		else {
+			return null;
 		}
 	}
 

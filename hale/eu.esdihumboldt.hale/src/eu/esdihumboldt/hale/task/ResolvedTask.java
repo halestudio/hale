@@ -17,6 +17,7 @@ import java.util.List;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.task.TaskType.SeverityLevel;
+import eu.esdihumboldt.hale.task.TaskUserData.TaskStatus;
 
 /**
  * Task decorator that provides convenience methods for accessing the task
@@ -31,17 +32,21 @@ public class ResolvedTask implements Task {
 	private final Task task;
 	
 	private final TaskType type;
+	
+	private final TaskUserData userData;
 
 	/**
 	 * Create a resolved task
 	 * 
 	 * @param task the task
 	 * @param type the task's type
+	 * @param userData the task user data, may be <code>null</code>
 	 */
-	public ResolvedTask(Task task, TaskType type) {
+	public ResolvedTask(Task task, TaskType type, TaskUserData userData) {
 		super();
 		this.task = task;
 		this.type = type;
+		this.userData = userData;
 	}
 	
 	/**
@@ -49,14 +54,16 @@ public class ResolvedTask implements Task {
 	 * 
 	 * @param registry the task type registry
 	 * @param task the task to be resolved
+	 * @param userData the task user data, may be <code>null</code>
 	 * 
 	 * @return the resolved task or <code>null</code> if the task type could not
 	 *   be resolved
 	 */
-	public static ResolvedTask resolveTask(TaskRegistry registry, Task task) {
+	public static ResolvedTask resolveTask(TaskRegistry registry, Task task,
+			TaskUserData userData) {
 		TaskType type = registry.getType(task.getTypeName());
 		if (type != null) {
-			return new ResolvedTask(task, type);
+			return new ResolvedTask(task, type, userData);
 		}
 		else {
 			return null;
@@ -88,11 +95,31 @@ public class ResolvedTask implements Task {
 	}
 
 	/**
-	 * @see Task#getTaskStatus()
+	 * Get the task status
+	 * 
+	 * @return the task status
 	 */
-	@Override
 	public TaskStatus getTaskStatus() {
-		return task.getTaskStatus();
+		if (userData == null) {
+			return TaskStatus.NEW;
+		}
+		else {
+			return userData.getTaskStatus();
+		}
+	}
+
+	/**
+	 * Get the user comment
+	 * 
+	 * @return the user comment or <code>null</code>
+	 */
+	public String getUserComment() {
+		if (userData == null) {
+			return null;
+		}
+		else {
+			return userData.getUserComment();
+		}
 	}
 
 	/**
@@ -193,6 +220,20 @@ public class ResolvedTask implements Task {
 		}
 		
 		return task.compareTo(other);
+	}
+
+	/**
+	 * @return the task
+	 */
+	public Task getTask() {
+		return task;
+	}
+
+	/**
+	 * @return the userData
+	 */
+	public TaskUserData getUserData() {
+		return userData;
 	}
 
 	/**

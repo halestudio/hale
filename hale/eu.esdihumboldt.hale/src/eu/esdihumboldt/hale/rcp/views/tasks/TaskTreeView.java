@@ -13,6 +13,8 @@ package eu.esdihumboldt.hale.rcp.views.tasks;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.layout.TreeColumnLayout;
@@ -77,6 +79,8 @@ public class TaskTreeView extends ViewPart {
 	
 	private MapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>> targetNode;
 	
+	private final Map<Task, DefaultTreeNode> taskNodes = new HashMap<Task, DefaultTreeNode>();
+	
 	/**
 	 * @see WorkbenchPart#createPartControl(Composite)
 	 */
@@ -93,9 +97,13 @@ public class TaskTreeView extends ViewPart {
 		// tree viewer
 		tree = new TreeViewer(page, SWT.SINGLE | SWT.FULL_SELECTION | SWT.BORDER);
 		tree.setContentProvider(new CollectionTreeNodeContentProvider());
+		tree.setUseHashlookup(true);
 		
 		tree.getTree().setHeaderVisible(true);
 		tree.getTree().setLinesVisible(true);
+		
+		schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+		taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
 		
 		// columns
 		
@@ -105,7 +113,7 @@ public class TaskTreeView extends ViewPart {
 		TreeColumnViewerLabelProvider descriptionLabelProvider = new TreeColumnViewerLabelProvider(
 				new TaskDescriptionLabelProvider(0));
 		description.setLabelProvider(descriptionLabelProvider);
-		layout.setColumnData(description.getColumn(), new ColumnWeightData(1));
+		layout.setColumnData(description.getColumn(), new ColumnWeightData(4));
 		
 		// value
 		TreeViewerColumn value = new TreeViewerColumn(tree, SWT.CENTER);
@@ -123,10 +131,21 @@ public class TaskTreeView extends ViewPart {
 		number.setLabelProvider(numberLabelProvider);
 		layout.setColumnData(number.getColumn(), new ColumnWeightData(0, 48));
 		
-		// listeners
-		schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+		// user data: status
+		TreeViewerColumn status = new TreeViewerColumn(tree, SWT.LEFT);
+		status.getColumn().setText("Status");
+		status.setLabelProvider(new TreeColumnViewerLabelProvider(new TaskStatusLabelProvider(0)));
+		layout.setColumnData(status.getColumn(), new ColumnWeightData(1));
+		status.setEditingSupport(new TaskStatusEditingSupport(tree, taskService));
 		
-		taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
+		// user data: comment
+		TreeViewerColumn comment = new TreeViewerColumn(tree, SWT.LEFT);
+		comment.getColumn().setText("Comment");
+		comment.setLabelProvider(new TreeColumnViewerLabelProvider(new TaskCommentLabelProvider(0)));
+		layout.setColumnData(comment.getColumn(), new ColumnWeightData(4));
+		comment.setEditingSupport(new TaskCommentEditingSupport(tree, taskService));
+		
+		// listeners
 		taskService.addListener(taskListener = new TaskServiceAdapter() {
 			
 			@Override
@@ -159,6 +178,24 @@ public class TaskTreeView extends ViewPart {
 						@Override
 						public void run() {
 							addTasks(tasks);
+						}
+						
+					});
+				}
+			}
+
+			@Override
+			public void taskUserDataChanged(final ResolvedTask task) {
+				if (Display.getCurrent() != null) {
+					updateNode(task);
+				}
+				else {
+					final Display display = PlatformUI.getWorkbench().getDisplay();
+					display.syncExec(new Runnable() {
+
+						@Override
+						public void run() {
+							updateNode(task);
 						}
 						
 					});
@@ -258,7 +295,9 @@ public class TaskTreeView extends ViewPart {
 		// add task to model
 		MapTreeNode<ResolvedTask, TreeNode> parent = getParentNode(task, true);
 		if (parent != null) {
-			parent.addChild(task, new DefaultTreeNode(task));
+			DefaultTreeNode node = new DefaultTreeNode(task);
+			parent.addChild(task, node);
+			taskNodes.put(task.getTask(), node);
 			// update viewer
 			tree.refresh(parent, true);
 			// update icons
@@ -289,26 +328,43 @@ public class TaskTreeView extends ViewPart {
 	 */
 	@SuppressWarnings("unchecked")
 	private void removeTask(Task task) {
-		ResolvedTask resolved = taskService.resolveTask(task);
-		// remove task from model
-		MapTreeNode<ResolvedTask, TreeNode> parent = getParentNode(resolved, false);
-		if (parent != null) {
-			parent.removeChild(resolved);
-			// remove empty nodes
-			if (!parent.hasChildren()) {
-				MapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>> root = (MapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>>) parent.getParent();
-				root.removeChildNode(parent);
-				tree.refresh(root, true);
-			}
-			else {
-				tree.refresh(parent, true);
-				// update icons
-				TreeNode updateNode = parent.getParent();
-				while (updateNode != null) {
-					tree.update(updateNode, null);
-					updateNode = updateNode.getParent();
+		DefaultTreeNode node = taskNodes.get(task);
+		
+		if (node != null) {
+			// remove task from model
+			MapTreeNode<ResolvedTask, TreeNode> parent = (MapTreeNode<ResolvedTask, TreeNode>) node.getParent();
+			if (parent != null) {
+				parent.removeChildNode(node);
+				taskNodes.remove(task);
+				// remove empty nodes
+				if (!parent.hasChildren()) {
+					MapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>> root = (MapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>>) parent.getParent();
+					root.removeChildNode(parent);
+					tree.refresh(root, true);
+				}
+				else {
+					tree.refresh(parent, true);
+					// update icons
+					TreeNode updateNode = parent.getParent();
+					while (updateNode != null) {
+						tree.update(updateNode, null);
+						updateNode = updateNode.getParent();
+					}
 				}
 			}
+		}
+	}
+	
+	/**
+	 * Update the node label for the given task
+	 * 
+	 * @param task the task
+	 */
+	protected void updateNode(ResolvedTask task) {
+		DefaultTreeNode node = taskNodes.get(task.getTask());
+		if (node != null) {
+			node.setValues(task);
+			tree.update(node, null);
 		}
 	}
 

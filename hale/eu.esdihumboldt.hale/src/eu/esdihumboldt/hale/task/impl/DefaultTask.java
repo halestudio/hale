@@ -14,7 +14,6 @@ package eu.esdihumboldt.hale.task.impl;
 
 import java.util.List;
 
-import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.task.ServiceProvider;
 import eu.esdihumboldt.hale.task.Task;
@@ -26,20 +25,12 @@ import eu.esdihumboldt.hale.task.Task;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class DefaultTask implements Task, Comparable<Task> {
-	
-	private TaskService taskService = null;
+public class DefaultTask extends BaseTask implements Task, Comparable<Task> {
 	
 	/**
 	 * The service provider that may be used to retrieve services
 	 */
 	protected final ServiceProvider serviceProvider;
-	
-	private final String typeName;
-	
-	private final List<? extends Definition> context;
-	
-	private TaskStatus status = TaskStatus.NEW; //TODO
 	
 	/**
 	 * Create a new task
@@ -50,130 +41,8 @@ public class DefaultTask implements Task, Comparable<Task> {
 	 */
 	public DefaultTask(ServiceProvider serviceProvider, String typeName, 
 			List<? extends Definition> context) {
-		super();
-		this.typeName = typeName;
-		this.context = context;
+		super(typeName, context);
 		this.serviceProvider = serviceProvider;
-	}
-	
-	/**
-	 * Remove the task
-	 */
-	protected void invalidate() {
-		if (taskService != null) {
-			taskService.removeTask(this);
-		}
-	}
-
-	/**
-	 * @see Task#setTaskService(TaskService)
-	 */
-	@Override
-	public void setTaskService(TaskService taskService) {
-		this.taskService = taskService;
-	}
-
-	/**
-	 * @see Task#getContext()
-	 */
-	@Override
-	public List<? extends Definition> getContext() {
-		return context;
-	}
-
-	/**
-	 * @see Task#getMainContext()
-	 */
-	@Override
-	public Definition getMainContext() {
-		if (context.size() > 0) {
-			return context.get(0);
-		}
-		else {
-			throw new IllegalStateException("No valid task context defined");
-		}
-	}
-
-	/**
-	 * @see Task#getTaskStatus()
-	 */
-	@Override
-	public TaskStatus getTaskStatus() {
-		return status;
-	}
-
-	/**
-	 * @see Task#getTypeName()
-	 */
-	@Override
-	public String getTypeName() {
-		return typeName;
-	}
-
-	/**
-	 * @see Task#dispose()
-	 */
-	@Override
-	public void dispose() {
-		// do nothing
-	}
-
-	/**
-	 * @see Object#hashCode()
-	 */
-	@Override
-	public final int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((context == null) ? 0 : context.hashCode());
-		result = prime * result
-				+ ((typeName == null) ? 0 : typeName.hashCode());
-		return result;
-	}
-
-	/**
-	 * @see Object#equals(Object)
-	 */
-	@Override
-	public final boolean equals(Object obj) {
-		// test if the other is a task with equal context and type name
-		
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof Task))
-			return false;
-		Task other = (Task) obj;
-		if (context == null) {
-			if (other.getContext() != null)
-				return false;
-		} else if (!context.equals(other.getContext()))
-			return false;
-		if (typeName == null) {
-			if (other.getTypeName() != null)
-				return false;
-		} else if (!typeName.equals(other.getTypeName()))
-			return false;
-		return true;
-	}
-
-	/**
-	 * @see Comparable#compareTo(Object)
-	 */
-	@Override
-	public int compareTo(Task other) {
-		if (other == null) {
-			return -1;
-		}
-		
-		int result = getMainContext().getIdentifier().compareTo(other.getMainContext().getIdentifier());
-		if (result == 0) {
-			return getTypeName().compareTo(other.getTypeName());
-		}
-		else {
-			return result;
-		}
 	}
 
 }

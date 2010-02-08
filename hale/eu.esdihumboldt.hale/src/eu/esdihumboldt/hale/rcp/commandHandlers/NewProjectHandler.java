@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 
 /**
@@ -57,6 +58,10 @@ public class NewProjectHandler extends AbstractHandler {
 					PlatformUI.getWorkbench().getService(SchemaService.class);
 			ss.cleanSourceSchema();
 			ss.cleanTargetSchema();
+			
+			// clear user tasks
+			TaskService taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
+			taskService.clearUserTasks();
 			
 			// clean the project Service
 			ProjectService ps = (ProjectService) 

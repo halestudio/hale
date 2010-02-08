@@ -25,6 +25,8 @@ import org.eclipse.jface.viewers.TreeNode;
  */
 public abstract class AbstractMultiColumnTreeNode extends TreeNode {
 	
+	private Object value;
+	
 	/**
 	 * Create a new node
 	 * 
@@ -32,8 +34,27 @@ public abstract class AbstractMultiColumnTreeNode extends TreeNode {
 	 */
 	public AbstractMultiColumnTreeNode(Object... values) {
 		super(values);
+		
+		this.value = values;
 	}
 	
+	/**
+	 * @see TreeNode#getValue()
+	 */
+	@Override
+	public Object getValue() {
+		return value;
+	}
+	
+	/**
+	 * Set the node value
+	 * 
+	 * @param values the node values
+	 */
+	public void setValues(Object... values) {
+		this.value = values;
+	}
+
 	/**
 	 * Get the child nodes
 	 * 
@@ -56,6 +77,29 @@ public abstract class AbstractMultiColumnTreeNode extends TreeNode {
 	@Override
 	public boolean hasChildren() {
 		return !getChildNodes().isEmpty();
+	}
+	
+	/**
+	 * Get the first value
+	 * 
+	 * @return the first value
+	 */
+	public Object getFirstValue() {
+		Object tmp = getValue();
+		if (tmp == null) {
+			return null;
+		}
+		else if (tmp.getClass().isArray()) {
+			if (((Object[]) tmp).length > 0) {
+				return ((Object[]) tmp)[0];
+			}
+			else {
+				return null;
+			}
+		}
+		else {
+			return tmp;
+		}
 	}
 
 	/**

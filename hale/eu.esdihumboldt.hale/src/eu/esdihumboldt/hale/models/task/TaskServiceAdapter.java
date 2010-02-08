@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.models.task;
 
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.hale.task.ResolvedTask;
 import eu.esdihumboldt.hale.task.Task;
 
 /**
@@ -38,6 +39,14 @@ public abstract class TaskServiceAdapter implements TaskServiceListener {
 	 */
 	@Override
 	public void tasksAdded(Iterable<Task> tasks) {
+		// override me
+	}
+
+	/**
+	 * @see TaskServiceListener#taskUserDataChanged(ResolvedTask)
+	 */
+	@Override
+	public void taskUserDataChanged(ResolvedTask task) {
 		// override me
 	}
 

@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -46,6 +47,8 @@ import eu.esdihumboldt.hale.models.project.generated.TaskStatus;
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
 import eu.esdihumboldt.hale.rcp.views.map.MapView;
 import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.task.TaskUserData;
 
 /**
  * The {@link ProjectGenerator} serializes all project info to an xml file.
@@ -131,15 +134,18 @@ public class ProjectGenerator {
 		// transfer task status
 		TaskStatus taskStatus = new TaskStatus();
 		List<Task> tasks = taskStatus.getTask();
-		/*XXX for (eu.esdihumboldt.hale.task.Task t : taskService.getOpenTasks()) {
+		for (Entry<eu.esdihumboldt.hale.task.Task, TaskUserData> entry : taskService.getUserTasks().entrySet()) {
 			Task newTask = new Task();
-			newTask.setSeverityLevel(t.getSeverityLevel().toString());
-			newTask.setTaskStatus(t.getTaskStatus().toString());
-			newTask.setTaskType(t.getTaskType());
-			newTask.setTitle(t.getTaskTitle());
-			newTask.setValue(t.getValue());
+			newTask.setTaskStatus(entry.getValue().getTaskStatus().name());
+			newTask.setTaskType(entry.getKey().getTypeName());
+			newTask.setComment(entry.getValue().getUserComment());
+			List<String> identifiers = newTask.getContextIdentifier();
+			for (Definition definition : entry.getKey().getContext()) {
+				identifiers.add(definition.getIdentifier());
+			}
 			tasks.add(newTask);
-		}*/
+		}
+		hproject.setTaskStatus(taskStatus);
 		
 		// serialize mapping and link it in HaleProject 
 		OmlRdfGenerator org = new OmlRdfGenerator();

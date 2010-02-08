@@ -16,6 +16,7 @@ import eu.esdihumboldt.hale.models.AbstractUpdateService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.hale.task.ResolvedTask;
 import eu.esdihumboldt.hale.task.Task;
 
 /**
@@ -69,6 +70,21 @@ public abstract class AbstractTaskService extends AbstractUpdateService
 		for (HaleServiceListener listener : getListeners()) {
 			if (listener instanceof TaskServiceListener) {
 				((TaskServiceListener) listener).tasksRemoved(tasks);
+			}
+			
+			listener.update(DEF_MESSAGE);
+		}
+	}
+	
+	/**
+	 * Call when the user data of a task has changed
+	 * 
+	 * @param task the resolved task
+	 */
+	protected void notifyTaskUserDataChanged(ResolvedTask task) {
+		for (HaleServiceListener listener : getListeners()) {
+			if (listener instanceof TaskServiceListener) {
+				((TaskServiceListener) listener).taskUserDataChanged(task);
 			}
 			
 			listener.update(DEF_MESSAGE);

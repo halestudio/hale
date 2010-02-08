@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.task;
 
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+
 /**
  * Task type registry interface
  *
@@ -40,5 +42,18 @@ public interface TaskRegistry {
 	 *   is registered
 	 */
 	public TaskType getType(String typeName);
+	
+	/**
+	 * Create a task for the given definitions. The task factory must check if
+	 * input is valid before creating a task
+	 * 
+	 * @param serviceProvider the service provider
+	 * @param typeName the type name of the task
+	 * @param definitions the definitions
+	 * 
+	 * @return the created task or <code>null</code> if no task for the given
+	 *   definitions was created
+	 */
+	public Task createTask(ServiceProvider serviceProvider, String typeName, Definition... definitions);
 
 }

@@ -13,9 +13,11 @@ package eu.esdihumboldt.hale.models;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import eu.esdihumboldt.hale.task.ResolvedTask;
 import eu.esdihumboldt.hale.task.Task;
+import eu.esdihumboldt.hale.task.TaskUserData;
 
 /**
  * The {@link TaskService} provides information on all Tasks that have been 
@@ -64,6 +66,14 @@ public interface TaskService
 	public void removeTasks(String type);
 	
 	/**
+	 * Set the user data for the given task
+	 * 
+	 * @param task the task
+	 * @param userData the task user data
+	 */
+	public void setUserData(Task task, TaskUserData userData);
+	
+	/**
 	 * Get the tasks
 	 * 
 	 * @return a collection of all tasks
@@ -110,5 +120,17 @@ public interface TaskService
 	 * @return if the task provider is active
 	 */
 	public boolean taskProviderIsActive(String id);
+
+	/**
+	 * Get the user tasks
+	 * 
+	 * @return the user tasks
+	 */
+	public Map<Task, TaskUserData> getUserTasks();
+	
+	/**
+	 * Clear the user data associated with the tasks
+	 */
+	public void clearUserTasks();
 
 }

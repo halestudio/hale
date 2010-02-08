@@ -11,11 +11,11 @@
 	<xs:complexType name="Task">
 		<xs:sequence>
 			<xs:element name="taskType" type="xs:string" minOccurs="1" maxOccurs="1"/>
-			<xs:element name="severityLevel" type="xs:string" minOccurs="1" maxOccurs="1"/>
-			<xs:element name="value" type="xs:double" minOccurs="1" maxOccurs="1"/>
-			<xs:element name="title" type="xs:string" minOccurs="1" maxOccurs="1"/>
-			<xs:element name="taskStatus" type="xs:string" minOccurs="1" maxOccurs="1"/>
-			<xs:element name="contextElement" type="ContextElement" minOccurs="1" maxOccurs="unbounded"/>
+			<xs:element name="comment" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="taskStatus" type="xs:string" minOccurs="1"
+				maxOccurs="1" />
+			<xs:element name="contextIdentifier" type="xs:string"
+				minOccurs="1" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 	<xs:element name="HaleProject" type="HaleProject"/>
@@ -56,15 +56,7 @@
 			<xs:element name="epsgcode" type="xs:string" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:element name="ContextElement" type="ContextElement"/>
-	<xs:complexType name="ContextElement">
-		<xs:sequence>
-			<xs:element name="type" type="xs:string" minOccurs="1" maxOccurs="1"/>
-			<xs:element name="namespace" type="xs:string" minOccurs="1" maxOccurs="1"/>
-			<xs:element name="typeName" type="xs:string" minOccurs="1" maxOccurs="1"/>
-			<xs:element name="propertyName" type="xs:string" minOccurs="1" maxOccurs="1"/>
-		</xs:sequence>
-	</xs:complexType>
+	<xs:element name="ContextElement" type="xs:string"/>
 	<xs:element name="Styles" type="Styles"/>
 	<xs:complexType name="Styles">
 		<xs:sequence>

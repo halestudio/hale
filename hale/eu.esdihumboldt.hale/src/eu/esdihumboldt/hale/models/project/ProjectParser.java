@@ -18,6 +18,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -44,11 +46,21 @@ import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.StyleService;
+import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.project.generated.HaleProject;
+import eu.esdihumboldt.hale.models.project.generated.Task;
+import eu.esdihumboldt.hale.models.project.generated.TaskStatus;
 import eu.esdihumboldt.hale.rcp.views.map.MapView;
 import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.task.ServiceProvider;
+import eu.esdihumboldt.hale.task.TaskUserData;
+import eu.esdihumboldt.hale.task.impl.BaseTask;
+import eu.esdihumboldt.hale.task.impl.DefaultTask;
+import eu.esdihumboldt.hale.task.impl.EclipseServiceProvider;
+import eu.esdihumboldt.hale.task.impl.TaskUserDataImpl;
 
 /**
  * The {@link ProjectParser} reads a given project xml file and directly pushes
@@ -115,6 +127,8 @@ public class ProjectParser {
 		SchemaService schemaService = 
 			(SchemaService) PlatformUI.getWorkbench().getService(
 					SchemaService.class);
+		
+		TaskService taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
 		
 		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 		
@@ -205,7 +219,40 @@ public class ProjectParser {
 		}
 		
 		// fourth, it's time for loading the tasks.
-		// TODO load tasks from project
+		monitor.subTask("Tasks");
+		taskService.clearUserTasks();
+		TaskStatus status = project.getTaskStatus();
+		if (status != null) {
+			for (Task task : status.getTask()) {
+				try {
+					// get identifiers
+					List<Definition> definitions = new ArrayList<Definition>();
+					for (String identifier : task.getContextIdentifier()) {
+						Definition definition = schemaService.getDefinition(identifier);
+						if (definition == null) {
+							throw new IllegalStateException("Unknown identifier " + 
+									identifier + ", failed to load task.");
+						}
+						else {
+							definitions.add(definition);
+						}
+					}
+					eu.esdihumboldt.hale.task.Task newTask = new BaseTask(task.getTaskType(), definitions);
+					if (newTask != null) {
+						TaskUserData userData = new TaskUserDataImpl();
+						userData.setUserComment(task.getComment());
+						userData.setTaskStatus(eu.esdihumboldt.hale.task.TaskUserData.TaskStatus.valueOf(task.getTaskStatus()));
+						
+						taskService.setUserData(newTask, userData);
+					}
+					else {
+						_log.error("Task creation of type " + task.getTaskType() + " failed");
+					}
+				} catch (IllegalStateException e) {
+					_log.error(e.getMessage());
+				}
+			}
+		}
 		
 		// Finally, initialize other ProjectService values.
 		projectService.setProjectCreatedDate(project.getDateCreated());
