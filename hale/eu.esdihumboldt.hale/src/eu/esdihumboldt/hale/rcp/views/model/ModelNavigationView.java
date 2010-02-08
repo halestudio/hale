@@ -460,12 +460,12 @@ public class ModelNavigationView extends ViewPart implements
 		schemaViewForm.setTopRight(schemaFilterBar);
 		
 		List<AbstractContentProviderAction> actions = new ArrayList<AbstractContentProviderAction>();
+		actions.add(new UseFlatHierarchyAction());
 		actions.add(new UseInheritanceHierarchyAction());
 		actions.add(new UseAggregationHierarchyAction());
-		actions.add(new UseFlatHierarchyAction());
 		
-		// default
-		actions.get(0).setChecked(true);
+		// default setting for actions 
+		//actions.get(0).setChecked(true);
 
 		ToolBarManager manager = new ToolBarManager(schemaFilterBar);
 		for (AbstractContentProviderAction action : actions) {
@@ -497,8 +497,8 @@ public class ModelNavigationView extends ViewPart implements
 	    final FilteredTree filteredTree = new FilteredTree(modelComposite, SWT.MULTI
 	            | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
 	    TreeViewer schemaViewer = filteredTree.getViewer();
-	    // set the default content provider
-		schemaViewer.setContentProvider(new InheritanceContentProvider());
+	    // set the default content provider, settings must match initial action state (be careful: [asIs, invert, invert])
+		schemaViewer.setContentProvider(new ConfigurableModelContentProvider(false, true, true));
 		schemaViewer.setLabelProvider(new ModelNavigationViewLabelProvider());
 		schemaViewer.setInput(translateSchema(schema, namespace, schemaType));
         schemaViewer

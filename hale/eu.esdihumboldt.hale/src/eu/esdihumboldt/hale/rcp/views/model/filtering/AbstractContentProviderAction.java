@@ -14,7 +14,8 @@ package eu.esdihumboldt.hale.rcp.views.model.filtering;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ContentViewer;
-import org.eclipse.jface.viewers.IContentProvider;
+
+import eu.esdihumboldt.hale.rcp.views.model.ConfigurableModelContentProvider;
 
 /**
  * Basic action for changing the content provider on a viewer
@@ -31,7 +32,7 @@ public abstract class AbstractContentProviderAction extends Action {
 	 * Default constructor
 	 */
 	protected AbstractContentProviderAction() {
-		super(null, AS_RADIO_BUTTON);
+		super(null, AS_CHECK_BOX);
 	}
 	
 	/**
@@ -39,7 +40,9 @@ public abstract class AbstractContentProviderAction extends Action {
 	 * 
 	 * @return the content provider
 	 */
-	protected abstract IContentProvider getContentProvider();
+	private ConfigurableModelContentProvider getContentProvider() {
+		return (ConfigurableModelContentProvider) viewer.getContentProvider();
+	}
 
 	/**
 	 * @param viewer the viewer to set
@@ -53,7 +56,16 @@ public abstract class AbstractContentProviderAction extends Action {
 	 */
 	@Override
 	public void run() {
-		viewer.setContentProvider(getContentProvider());
+		ConfigurableModelContentProvider contentProvider = getContentProvider();
+		updateContentProvider(contentProvider);
+		viewer.setContentProvider(contentProvider);
 	}
-	
+
+	/**
+	 * Update the content provider
+	 * 
+	 * @param contentProvider the content provider
+	 */
+	protected abstract void updateContentProvider(
+			ConfigurableModelContentProvider contentProvider);	
 }

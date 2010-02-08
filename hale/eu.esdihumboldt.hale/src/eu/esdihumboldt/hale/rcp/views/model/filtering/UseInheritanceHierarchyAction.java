@@ -13,11 +13,10 @@ package eu.esdihumboldt.hale.rcp.views.model.filtering;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.hale.rcp.HALEActivator;
-import eu.esdihumboldt.hale.rcp.views.model.InheritanceContentProvider;
+import eu.esdihumboldt.hale.rcp.views.model.ConfigurableModelContentProvider;
 
 /**
  * Enabling this action will switch the affected SchemaExplorer to display it's 
@@ -39,7 +38,7 @@ public class UseInheritanceHierarchyAction
 	 */
 	@Override
 	public String getToolTipText() {
-		return "Organize FeatureTypes by inheritance";
+		return "Show inherited attributes";
 	}
 
 	/**
@@ -52,13 +51,12 @@ public class UseInheritanceHierarchyAction
 	}
 
 	/**
-	 * @see AbstractContentProviderAction#getContentProvider()
+	 * @see AbstractContentProviderAction#updateContentProvider(ConfigurableModelContentProvider)
 	 */
 	@Override
-	protected IContentProvider getContentProvider() {
-		return new InheritanceContentProvider();
+	protected void updateContentProvider(
+			ConfigurableModelContentProvider contentProvider) {
+		contentProvider.setSuppressInheritedAttributes(!isChecked());
 	}
-	
-	
 
 }

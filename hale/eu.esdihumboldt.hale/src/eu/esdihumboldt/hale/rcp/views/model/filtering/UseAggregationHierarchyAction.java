@@ -14,11 +14,10 @@ package eu.esdihumboldt.hale.rcp.views.model.filtering;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.hale.rcp.HALEActivator;
-import eu.esdihumboldt.hale.rcp.views.model.ModelContentProvider;
+import eu.esdihumboldt.hale.rcp.views.model.ConfigurableModelContentProvider;
 
 /**
  * TODO Explain the purpose of this type here.
@@ -44,16 +43,16 @@ public class UseAggregationHierarchyAction
 	 */
 	@Override
 	public String getToolTipText() {
-		return "Organize FeatureTypes by aggregation";
+		return "Property aggregation";
 	}
 
 	/**
-	 * @see AbstractContentProviderAction#getContentProvider()
+	 * @see AbstractContentProviderAction#updateContentProvider(ConfigurableModelContentProvider)
 	 */
 	@Override
-	protected IContentProvider getContentProvider() {
-		//TODO replace?
-		return new ModelContentProvider();
+	protected void updateContentProvider(
+			ConfigurableModelContentProvider contentProvider) {
+		contentProvider.setSuppressAggregation(!isChecked());
 	}
 
 }
