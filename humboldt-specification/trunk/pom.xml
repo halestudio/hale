@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.esdihumboldt</groupId>
 	<artifactId>specification</artifactId>
@@ -35,9 +36,16 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<pde>true</pde>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.opengis</groupId>
@@ -68,7 +76,7 @@
 			<version>1.6.1</version>
 		</dependency>
 	</dependencies>
-	
+
 	<reporting>
 		<plugins>
 			<plugin>
@@ -87,7 +95,7 @@
 		<cxf.version>2.1.1</cxf.version>
 		<spring.version>2.5.4</spring.version>
 	</properties>
-	
+
 	<distributionManagement>
 		<repository>
 			<id>artifactory.esdi-humboldt.eu</id>
@@ -100,7 +108,7 @@
 			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/libs-snapshots-local</url>
 		</snapshotRepository>
 	</distributionManagement>
-	
+
 	<repositories>
 		<repository>
 			<id>artifactory.esdi-humboldt.eu</id>
@@ -125,8 +133,8 @@
 			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/plugins-snapshots</url>
 		</pluginRepository>
 	</pluginRepositories>
-	
-	
+
+
 </project>
 
 
