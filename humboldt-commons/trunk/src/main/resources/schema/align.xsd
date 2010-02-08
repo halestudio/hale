@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://knowledgeweb.semanticweb.org/heterogeneity/alignment"
+      xmlns:align="http://knowledgeweb.semanticweb.org/heterogeneity/alignment"
+      xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment"
+      xmlns:goml="http://www.esdi-humboldt.eu/goml" 
+      xmlns:xs="http://www.w3.org/2001/XMLSchema"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      elementFormDefault="qualified">
+
+<!-- TUD mdv 2009 24 Febr wofc, added 'operation' attribute to align:Cell, but March: removed again -->
+<!-- oct 2009: measure and relation are now optional; and measure becomes a simple type, without attribute rdf:datatype -->
+
+
+   <xs:import namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#" schemaLocation="tmprdf.xsd" />
+   <xs:import namespace="http://www.omwg.org/TR/d7/ontology/alignment" schemaLocation="omwg.xsd" />
+   <xs:import namespace="http://www.esdi-humboldt.eu/goml" schemaLocation="goml.xsd" />
+
+   <xs:element name="Alignment" type="align:AlignmentType" />
+   <xs:complexType name="AlignmentType">
+      <xs:sequence>
+         <xs:element name="level" type="xs:string" />
+         <xs:element name="onto1">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element ref="align:Ontology"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element> 
+         <xs:element name="onto2">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element ref="align:Ontology"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element> 
+         <xs:element name="map" minOccurs="0" maxOccurs="unbounded" >
+            <xs:complexType >
+               <xs:sequence>
+                  <xs:element ref="align:Cell" maxOccurs="1"/>
+                  <!-- TODO decide, option: should map contain more than one Cell?; this is not so in Scharffe -->
+                  <!--xs:element ref="align:Cell" maxOccurs="unbounded"/-->
+               </xs:sequence>
+               <xs:attribute ref="rdf:about" use="optional"/>
+            </xs:complexType>
+         </xs:element>
+         <!-- mdv added -->
+         <xs:element ref="goml:ValueClass" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute ref="rdf:about" use="optional"/>
+   </xs:complexType>
+
+   <xs:element name="Ontology" type="align:OntologyType" />
+   <xs:complexType name="OntologyType">
+      <xs:sequence>
+         <!-- mdv added label as temporary solution to hold namespaces -->
+         <xs:element ref="omwg:label" minOccurs="0" maxOccurs="unbounded" />
+         <!-- next one not in owl doc, added based on Scharffe thesis 9.2  -->
+         <xs:element name="location" type="xs:string" />
+         <!--xs:element ref="align:hasFormalism"/-->
+         <xs:element name="formalism" >
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element ref="align:Formalism"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+      </xs:sequence>
+      <xs:attribute ref="rdf:about" use="optional"/>
+   </xs:complexType>
+
+
+   <xs:element name="Formalism" type="align:FormalismType" />
+   <xs:complexType name="FormalismType">
+      <xs:sequence>
+         <xs:element name="uri" type="xs:string" />
+         <xs:element name="name" type="xs:string" />
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:element name="Cell" type="align:CellType" />
+   <xs:complexType name="CellType">
+      <xs:sequence>
+		 <xs:element ref="omwg:label" minOccurs="0" maxOccurs="unbounded" />
+         <xs:element ref="omwg:entity1"/>
+         <xs:element ref="omwg:entity2"/>
+         <xs:element ref="align:measure" minOccurs="0" />
+         <!--xs:element name="semanticRelation" type="align:relationEnumType" /-->
+         <xs:element name="relation" type="align:relationEnumType" minOccurs="0"  />
+      </xs:sequence>
+      <xs:attribute ref="rdf:about" use="optional"/>
+      <!--xs:attribute ref="goml:operation" use="optional" /-->
+   </xs:complexType>
+
+   <xs:simpleType name="relationEnumType">
+      <xs:restriction base="xs:string">
+         <xs:enumeration value="Equivalence"/>
+         <xs:enumeration value="Subsumes"/>
+         <xs:enumeration value="SubsumedBy"/>
+         <xs:enumeration value="InstanceOf"/>
+         <xs:enumeration value="HasInstance"/>
+         <xs:enumeration value="Disjoint"/>
+         <!-- TODO not in OML, added by mdv, should be in subtype of this enum type -->
+         <xs:enumeration value="PartOf"/>
+         <xs:enumeration value="Extra"/>
+         <xs:enumeration value="Missing"/>
+      </xs:restriction>
+   </xs:simpleType>
+
+   <xs:element name="measure" type="xs:float" />
+   <!--xs:element name="measure">
+     <xs:complexType>
+       <xs:simpleContent>
+         <xs:extension base="xs:float">
+           <xs:attribute ref="rdf:datatype" use="optional"/>
+         </xs:extension>
+       </xs:simpleContent>
+     </xs:complexType>
+   </xs:element-->
+
+</xs:schema>

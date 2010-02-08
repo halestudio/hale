@@ -1,0 +1,36 @@
+<!--            schema for the GOML extensions
+                HUMBOLDT project, MdV TUD 2009
+-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:goml="http://www.esdi-humboldt.eu/goml"
+    targetNamespace="http://www.esdi-humboldt.eu/goml"
+    xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    elementFormDefault="qualified"
+    attributeFormDefault="qualified" >
+
+  <xs:import namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#" schemaLocation="tmprdf.xsd" />
+  <xs:import namespace="http://www.omwg.org/TR/d7/ontology/alignment" schemaLocation="util.xsd" />
+
+
+  <!-- alternative way to express filter conditions -->
+  <xs:element name="cqlStr" type="xs:string"  />
+
+  <!-- for grouping values that are used as group more than once in reclassification mappings --> 
+  <xs:element name="ValueClass" type="goml:ValueClassType"  />
+  <xs:complexType name="ValueClassType"  >
+      <xs:sequence>
+         <xs:element ref="omwg:value" minOccurs="0" maxOccurs="unbounded"  />
+      </xs:sequence>
+      <xs:attribute ref="rdf:resource" use="optional"/>
+      <xs:attribute ref="rdf:about" use="optional"/>
+  </xs:complexType>
+
+  <!-- not needed anymore  -->
+  <!--xs:attribute name="operation" type="xs:anyURI"/-->
+
+
+</xs:schema>
+
