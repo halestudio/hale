@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.esdihumboldt</groupId>
 	<artifactId>common-library</artifactId>
@@ -42,11 +43,13 @@
 					<schemaDirectory>src/main/resource/schema</schemaDirectory>
 					<bindingDirectory>src/main/resource/schema</bindingDirectory>
 					<generatePackage>eu.esdihumboldt.generated</generatePackage>
-<!--					<generateDirectory>${basedir}/src/main/java</generateDirectory>-->
+					<!--
+						<generateDirectory>${basedir}/src/main/java</generateDirectory>
+					-->
 					<readOnly>true</readOnly>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
@@ -73,6 +76,13 @@
 					<source>1.6</source>
 					<target>1.6</target>
 					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<pde>true</pde>
 				</configuration>
 			</plugin>
 
