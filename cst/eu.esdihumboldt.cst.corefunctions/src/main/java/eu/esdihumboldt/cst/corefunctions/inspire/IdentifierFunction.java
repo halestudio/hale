@@ -14,6 +14,7 @@ package eu.esdihumboldt.cst.corefunctions.inspire;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -109,7 +110,7 @@ public class IdentifierFunction
 				"urn:x-inspire:specification:gmlas:BaseTypes:3.2") 
 				&& pd.getType().getName().getLocalPart().equals("IdentifierPropertyType")) {
 			// retrieve required Property Descriptors
-			SimpleFeatureType nameType = (SimpleFeatureType)((SimpleFeatureType)pd.getType()).getDescriptor("Identifier");
+			SimpleFeatureType nameType = (SimpleFeatureType)((SimpleFeatureType)pd.getType()).getDescriptor("Identifier").getType();
 			AttributeDescriptor localId = nameType.getDescriptor("localId");
 			AttributeDescriptor namespace = nameType.getDescriptor("namespace");
 			AttributeDescriptor versionId = nameType.getDescriptor("versionId");
@@ -127,7 +128,7 @@ public class IdentifierFunction
 					"Identifier");
 			
 			((SimpleFeature)target).setAttribute(
-					this.targetProperty.getLocalname(),geoname);
+					this.targetProperty.getLocalname(), Collections.singleton(geoname));
 			
 		}
 		else if (pd.getType().getBinding().equals(InspireIdentifier.class)) {
