@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.task.preferences;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -38,8 +39,8 @@ public class TaskPreferenceInitializer extends AbstractPreferenceInitializer
 		IPreferenceStore preferences = HALEActivator.getDefault().getPreferenceStore();
 
 		Map<String, TaskProviderFactory> taskProviders = TaskPreferenceUtils.getTaskProviders();
-		for (String key : taskProviders.keySet()) {
-			preferences.setDefault(key, true);
+		for (Entry<String, TaskProviderFactory> entry : taskProviders.entrySet()) {
+			preferences.setDefault(entry.getKey(), entry.getValue().isDefaultEnabled());
 		}
 	}
 

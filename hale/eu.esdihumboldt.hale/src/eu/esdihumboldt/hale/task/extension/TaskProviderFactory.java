@@ -61,6 +61,15 @@ public class TaskProviderFactory {
 	}
 	
 	/**
+	 * Get if the task provider should be enabled by default
+	 * 
+	 * @return if the task provider should be enabled by default
+	 */
+	public boolean isDefaultEnabled() {
+		return Boolean.parseBoolean(conf.getAttribute("defaultEnabled"));
+	}
+	
+	/**
 	 * Get the task provider
 	 * 
 	 * @return the task provider or <code>null</code> if the

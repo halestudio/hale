@@ -86,6 +86,13 @@
                </appInfo>
             </annotation>
          </attribute>
+         <attribute name="defaultEnabled" type="boolean" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
