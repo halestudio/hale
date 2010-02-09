@@ -287,6 +287,9 @@
          <service
                serviceClass="eu.esdihumboldt.hale.models.ProjectService">
          </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.models.utils.SchemaItemService">
+         </service>
       </serviceFactory>
       <serviceFactory
             factoryClass="eu.esdihumboldt.hale.rcp.views.table.ServiceFactory">

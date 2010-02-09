@@ -27,6 +27,8 @@ import eu.esdihumboldt.hale.models.project.ProjectServiceImpl;
 import eu.esdihumboldt.hale.models.schema.SchemaProviderService;
 import eu.esdihumboldt.hale.models.style.StyleServiceImpl;
 import eu.esdihumboldt.hale.models.task.TaskServiceImpl;
+import eu.esdihumboldt.hale.models.utils.SchemaItemService;
+import eu.esdihumboldt.hale.models.utils.SchemaItemServiceImpl;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
 
 /**
@@ -50,6 +52,7 @@ public class HaleServiceFactory
 	private TaskService task;
 	private AlignmentService alignment;
 	private ProjectService project;
+	private SchemaItemService schemaItem;
 
 	/**
 	 * Default constructor
@@ -93,6 +96,12 @@ public class HaleServiceFactory
 				project = ProjectServiceImpl.getInstance();
 			}
 			return project;
+		}
+		else if (serviceInterface.equals(SchemaItemService.class)) {
+			if (schemaItem == null) {
+				schemaItem = new SchemaItemServiceImpl(getSchemaService());
+			}
+			return schemaItem;
 		}
 		else {
 			throw new RuntimeException("For the given serviceInterface (" 

@@ -13,12 +13,9 @@ package eu.esdihumboldt.hale.rcp.views.model;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jface.action.ActionContributionItem;
@@ -62,6 +59,7 @@ import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.schema.SchemaServiceListener;
+import eu.esdihumboldt.hale.models.utils.SchemaItemService;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.map.style.FeatureTypeStyleAction;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
@@ -73,8 +71,6 @@ import eu.esdihumboldt.hale.rcp.views.model.filtering.UseAggregationHierarchyAct
 import eu.esdihumboldt.hale.rcp.views.model.filtering.UseFlatHierarchyAction;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.UseInheritanceHierarchyAction;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardContribution;
-import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * This view component handles the display of source and target schemas.
@@ -194,7 +190,7 @@ public class ModelNavigationView extends ViewPart implements
 	 * A reference to the {@link SchemaService} which serves as model for this
 	 * {@link ViewPart}.
 	 */
-	private SchemaService schemaService;
+	private SchemaItemService schemaItemService;
 
 	/**
 	 * The selection listeners
@@ -212,24 +208,13 @@ public class ModelNavigationView extends ViewPart implements
 	private HaleServiceListener alignmentListener;
 	
 	/**
-	 * Source schema items that have an associated defintion
-	 */
-	private final Map<String, SchemaItem> sourceSchemaItems = new HashMap<String, SchemaItem>();
-	
-	/**
-	 * Target schema items that have an associated defintion
-	 */
-	private final Map<String, SchemaItem> targetSchemaItems = new HashMap<String, SchemaItem>();
-
-	/**
 	 * @see WorkbenchPart#createPartControl(Composite)
 	 */
 	@Override
 	public void createPartControl(Composite _parent) {
 		// get schema service
-		schemaService = (SchemaService) this.getSite().getService(
-				SchemaService.class);
-		schemaService.addListener(schemaListener = new SchemaServiceListener() {
+		schemaItemService = (SchemaItemService) PlatformUI.getWorkbench().getService(SchemaItemService.class);
+		schemaItemService.addListener(schemaListener = new SchemaServiceListener() {
 			
 			@SuppressWarnings("unchecked")
 			@Override
@@ -281,9 +266,7 @@ public class ModelNavigationView extends ViewPart implements
 			initSchemaExplorerToolBar(sourceComposite, sourceSchemaFilter, 
 				sourceToggleActions);
 
-		this.sourceSchemaViewer = this.schemaExplorerSetup(sourceComposite,
-				schemaService.getSourceSchema(), schemaService.getSourceNameSpace(),
-				SchemaType.SOURCE);
+		this.sourceSchemaViewer = this.schemaExplorerSetup(sourceComposite, SchemaType.SOURCE);
 		this.sourceSchemaViewer.addFilter(sourceSchemaFilter);
 		
 		for (AbstractContentProviderAction cpa : sourceContentActions) {
@@ -358,7 +341,6 @@ public class ModelNavigationView extends ViewPart implements
 				targetToggleActions);
 
 		this.targetSchemaViewer = this.schemaExplorerSetup(targetComposite,
-				schemaService.getTargetSchema(), schemaService.getTargetNameSpace(), 
 				SchemaType.TARGET);
 		
 		this.targetSchemaViewer.addFilter(targetSchemaFilter);
@@ -485,14 +467,10 @@ public class ModelNavigationView extends ViewPart implements
 	 * 
 	 * @param modelComposite
 	 *            the parent {@link Composite} to use.
-	 * @param schema
-	 *            the Schema to display.
-	 * @param namespace the namespace
 	 * @param schemaType the viewer type
 	 * @return a {@link TreeViewer} with the currently loaded schema.
 	 */
-	private TreeViewer schemaExplorerSetup(Composite modelComposite,
-			Collection<TypeDefinition> schema, String namespace, final SchemaType schemaType) {
+	private TreeViewer schemaExplorerSetup(Composite modelComposite, final SchemaType schemaType) {
 		PatternFilter patternFilter = new PatternFilter();
 	    final FilteredTree filteredTree = new FilteredTree(modelComposite, SWT.MULTI
 	            | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
@@ -500,7 +478,7 @@ public class ModelNavigationView extends ViewPart implements
 	    // set the default content provider, settings must match initial action state (be careful: [asIs, invert, invert])
 		schemaViewer.setContentProvider(new ConfigurableModelContentProvider(false, true, true));
 		schemaViewer.setLabelProvider(new ModelNavigationViewLabelProvider());
-		schemaViewer.setInput(translateSchema(schema, namespace, schemaType));
+		schemaViewer.setInput(schemaItemService.getRoot(schemaType));
         schemaViewer
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
@@ -508,112 +486,6 @@ public class ModelNavigationView extends ViewPart implements
 					}
 				});
 		return schemaViewer;
-	}
-
-	/**
-	 * @param schema
-	 *            the {@link Collection} of {@link FeatureType}s that represent
-	 *            the schema to display.
-	 * @param namespace the namespace
-	 * @param schemaType the schema type
-	 * 
-	 * @return the root item
-	 */
-	private SchemaItem translateSchema(Collection<TypeDefinition> schema, String namespace, SchemaType schemaType) {
-		Map<String, SchemaItem> itemMap;
-		switch (schemaType) {
-		case SOURCE:
-			itemMap = sourceSchemaItems;
-			break;
-		case TARGET:
-			itemMap = targetSchemaItems;
-			break;
-		default:
-			throw new RuntimeException("Schema type must be specified");
-		}
-		
-		itemMap.clear();
-		
-		if (schema == null || schema.size() == 0) {
-			return new TreeParent("", null, TreeObjectType.ROOT, null);
-		}
-
-		// first, find out a few things about the schema to define the root
-		// type.
-		// TODO add metadata on schema here.
-		// TODO is should be possible to attach attributive data for a flyout.
-		TreeParent hidden_root = new TreeParent("ROOT", null, TreeObjectType.ROOT, null);
-		TreeParent root = new TreeParent(namespace, null, TreeObjectType.ROOT, null);
-		hidden_root.addChild(root);
-
-		// finally, build the tree, starting with those types that don't have
-		// supertypes.
-		for (TypeDefinition type : schema) {
-			if (type.getSuperType() == null) {
-				root.addChild(this.buildSchemaTree(type, schema, namespace, itemMap));
-			}
-		}
-
-		// TODO show references to Properties which are FTs already added as
-		// links.
-		return hidden_root;
-	}
-
-	/**
-	 * Recursive method for setting up the inheritance tree.
-	 * 
-	 * @param type the type definition
-	 * @param schema the collection of types to display
-	 * @param namespace the namespace
-	 * @param itemMap map to add the created items to (definition identifier mapped to item)
-	 * @return a {@link SchemaItem} that contains all Properties and all
-	 *         subtypes and their property, starting with the given FT.
-	 */
-	private TreeObject buildSchemaTree(TypeDefinition type, Collection<TypeDefinition> schema, String namespace, Map<String, SchemaItem> itemMap) {
-		TypeItem featureItem = new TypeItem(type);
-		itemMap.put(type.getIdentifier(), featureItem);
-		
-		// add properties
-		addProperties(featureItem, type, itemMap);
-		
-		// add super type properties
-		TypeDefinition superType = type.getSuperType();
-		while (superType != null) {
-			addProperties(featureItem, superType, null); // null map to prevent adding to item map (wrong identifer would be used)
-			
-			superType = superType.getSuperType();
-		}
-		
-		// add children recursively
-		for (TypeDefinition subType : type.getSubTypes()) {
-			if (schema.contains(subType)) {
-				featureItem.addChild(buildSchemaTree(subType, schema, namespace, itemMap));
-			}
-		}
-		return featureItem;
-	}
-
-	/**
-	 * Add properties of the given feature type to the given tree parent
-	 * 
-	 * @param parent the tree parent
-	 * @param type the type definition
-	 * @param itemMap map to add the created items to (definition identifier mapped to item)
-	 */
-	private static void addProperties(TreeParent parent, TypeDefinition type, Map<String, SchemaItem> itemMap) {
-		for (AttributeDefinition attribute : type.getDeclaredAttributes()) {
-			if (attribute.getAttributeType() != null) { // only properties with an associated type
-				AttributeItem property = new AttributeItem(attribute);
-				
-				if (itemMap != null) {
-					itemMap.put(attribute.getIdentifier(), property);
-				}
-				
-				addProperties(property, attribute.getAttributeType(), null); // null map to prevent adding to item map (would be duplicate)
-				
-				parent.addChild(property);
-			}
-		}
 	}
 
 	/**
@@ -632,13 +504,11 @@ public class ModelNavigationView extends ViewPart implements
 	protected void update(SchemaType schema) {
 		switch (schema) {
 		case SOURCE:
-			sourceSchemaViewer.setInput(translateSchema(schemaService
-					.getSourceSchema(), schemaService.getSourceNameSpace(), schema));
+			sourceSchemaViewer.setInput(schemaItemService.getRoot(schema));
 			sourceSchemaViewer.refresh();
 			break;
 		case TARGET:
-			targetSchemaViewer.setInput(translateSchema(schemaService
-					.getTargetSchema(), schemaService.getTargetNameSpace(), schema));
+			targetSchemaViewer.setInput(schemaItemService.getRoot(schema));
 			targetSchemaViewer.refresh();
 			break;
 		}
@@ -685,9 +555,9 @@ public class ModelNavigationView extends ViewPart implements
 	 */
 	public void selectItem(String identifier) {
 		TreeViewer tree;
-		SchemaItem item = sourceSchemaItems.get(identifier);
+		SchemaItem item = schemaItemService.getSchemaItem(identifier, SchemaType.SOURCE);
 		if (item == null) {
-			item = targetSchemaItems.get(identifier);
+			item = schemaItemService.getSchemaItem(identifier, SchemaType.TARGET);
 			tree = targetSchemaViewer;
 		}
 		else {
@@ -754,8 +624,7 @@ public class ModelNavigationView extends ViewPart implements
 	@Override
 	public void dispose() {
 		if (schemaListener != null) {
-			SchemaService ss = (SchemaService) getSite().getService(SchemaService.class);
-			ss.removeListener(schemaListener);
+			schemaItemService.removeListener(schemaListener);
 		}
 		
 		if (alignmentListener != null) {
