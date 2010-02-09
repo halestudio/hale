@@ -52,6 +52,15 @@ public class TaskProviderFactory {
 	}
 	
 	/**
+	 * Get the wizard description
+	 * 
+	 * @return the wizard description or <code>null</code>
+	 */
+	public String getDescription() {
+		return conf.getAttribute("description");
+	}
+	
+	/**
 	 * Get the task provider
 	 * 
 	 * @return the task provider or <code>null</code> if the

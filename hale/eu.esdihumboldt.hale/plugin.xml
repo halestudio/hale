@@ -237,6 +237,13 @@
                   label="Available functions..."
                   style="push">
             </command>
+            <menu
+                  label="Tasks">
+               <dynamic
+                     class="eu.esdihumboldt.hale.rcp.views.tasks.TaskProviderMenu"
+                     id="HALE.dynamic.tasks">
+               </dynamic>
+            </menu>
          </menu>
       </menuContribution>
       <menuContribution
@@ -321,16 +328,19 @@
          point="eu.esdihumboldt.hale.task.TaskProvider">
       <tasks
             class="eu.esdihumboldt.hale.task.schema.SourceMappingTaskProvider"
+            description="Tasks for a complete mapping of the source schema"
             id="eu.esdihumboldt.hale.task.schema.SourceMappingTaskProvider"
             name="Source Schema Mapping">
       </tasks>
       <tasks
             class="eu.esdihumboldt.hale.task.schema.TargetMappingTaskProvider"
+            description="Tasks for a complete mapping of the target schema"
             id="eu.esdihumboldt.hale.task.schema.TargetMappingTaskProvider"
             name="Target Schema Mapping">
       </tasks>
       <tasks
             class="eu.esdihumboldt.hale.task.schema.NilAttributeTaskProvider"
+            description="Warns when non-nillable attributes are not mapped"
             id="eu.esdihumboldt.hale.task.schema.NilAttributeTaskProvider"
             name="Nil Attribute Warnings">
       </tasks>

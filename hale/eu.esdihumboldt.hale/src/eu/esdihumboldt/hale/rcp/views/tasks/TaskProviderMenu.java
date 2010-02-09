@@ -58,6 +58,7 @@ public class TaskProviderMenu extends ContributionItem {
 			this.taskService = taskService;
 			
 			setChecked(taskService.taskProviderIsActive(taskProviderId));
+			setToolTipText(factory.getDescription());
 		}
 
 		/**
