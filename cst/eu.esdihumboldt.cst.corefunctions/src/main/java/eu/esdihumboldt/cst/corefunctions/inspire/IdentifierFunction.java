@@ -21,6 +21,7 @@ import java.util.UUID;
 import org.geotools.feature.AttributeImpl;
 import org.geotools.feature.PropertyImpl;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureImpl;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -111,25 +112,23 @@ public class IdentifierFunction
 				"urn:x-inspire:specification:gmlas:BaseTypes:3.2") 
 				&& pd.getType().getName().getLocalPart().equals("IdentifierPropertyType")) {
 			// retrieve required Property Descriptors
-			SimpleFeatureType nameType = (SimpleFeatureType)((SimpleFeatureType)pd.getType()).getDescriptor("Identifier").getType();
-			AttributeDescriptor localId = nameType.getDescriptor("localId");
-			AttributeDescriptor namespace = nameType.getDescriptor("namespace");
-			AttributeDescriptor versionId = nameType.getDescriptor("versionId");
-			
-			PropertyImpl pLocalId = new AttributeImpl(
-					source.getIdentifier().toString(), localId, null);
-			PropertyImpl pNameSpace = new AttributeImpl(
-					this.getNamespace(target.getType().getName().getLocalPart()), 
-					namespace, null);
-			PropertyImpl pVersionId = new AttributeImpl(
-					this.version, versionId, null);
-			
-			Feature geoname = SimpleFeatureBuilder.build(
-					nameType, new Object[]{pLocalId, pNameSpace, pVersionId}, 
+			SimpleFeatureType idType = (SimpleFeatureType)((SimpleFeatureType)pd.getType()).getDescriptor("Identifier").getType();
+			SimpleFeatureImpl identifier = (SimpleFeatureImpl) SimpleFeatureBuilder.build(
+					idType, new Object[]{}, 
 					"Identifier");
 			
+			identifier.setAttribute("localId", source.getIdentifier().toString());
+			identifier.setAttribute("namespace", this.getNamespace(target.getType().getName().getLocalPart()));
+			identifier.setAttribute("versionId", this.version);
+			
+			SimpleFeatureImpl identifierPropertyType = (SimpleFeatureImpl)SimpleFeatureBuilder.build(
+					(SimpleFeatureType) pd.getType(), new Object[]{}, 
+					"IdentifierPropertyType");
+			
+			identifierPropertyType.setAttribute("Identifier", Collections.singleton(identifier));
+			
 			((SimpleFeature)target).setAttribute(
-					this.targetProperty.getLocalname(), Collections.singleton(geoname));
+					this.targetProperty.getLocalname(), Collections.singleton(identifierPropertyType));
 			
 		}
 		else if (pd.getType().getBinding().equals(InspireIdentifier.class)) {
