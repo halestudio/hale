@@ -134,7 +134,9 @@ public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvid
 				// determine level
 				if (value instanceof ResolvedTask) {
 					ResolvedTask task = (ResolvedTask) value;
-					level = SeverityLevel.max(level, task.getSeverityLevel());
+					if (task.isOpen()) { // only inspect open tasks
+						level = SeverityLevel.max(level, task.getSeverityLevel());
+					}
 				}
 			}
 			else if (child instanceof MapTreeNode<?, ?>) {
