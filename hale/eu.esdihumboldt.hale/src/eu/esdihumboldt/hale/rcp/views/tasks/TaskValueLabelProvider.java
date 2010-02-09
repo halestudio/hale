@@ -55,7 +55,12 @@ public class TaskValueLabelProvider extends MultiColumnTreeNodeLabelProvider {
 	protected Image getValueImage(Object value, TreeNode node) {
 		if (value instanceof ResolvedTask) {
 			ResolvedTask task = (ResolvedTask) value;
-			return getValueImage(task.getValue());
+			if (task.isOpen()) {
+				return getValueImage(task.getValue());
+			}
+			else {
+				return super.getValueImage(value, node);
+			}
 		}
 		else if (node instanceof MapTreeNode<?, ?>) {
 			return getNodeImage((MapTreeNode<?, ?>) node);
@@ -121,7 +126,9 @@ public class TaskValueLabelProvider extends MultiColumnTreeNodeLabelProvider {
 				// determine level
 				if (value instanceof ResolvedTask) {
 					ResolvedTask task = (ResolvedTask) value;
-					result = Math.max(result, task.getValue());
+					if (task.isOpen()) {
+						result = Math.max(result, task.getValue());
+					}
 				}
 			}
 			else if (child instanceof MapTreeNode<?, ?>) {

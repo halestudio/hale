@@ -235,6 +235,24 @@ public class ResolvedTask implements Task {
 	public TaskUserData getUserData() {
 		return userData;
 	}
+	
+	/**
+	 * Determines if this is an open task
+	 * 
+	 * @return if this is an open task
+	 */
+	public boolean isOpen() {
+		TaskStatus status = getTaskStatus();
+		switch (status) {
+		case COMPLETED: // fall through
+		case IGNORED:
+			return false;
+		case ACTIVE: // fall through
+		case NEW: // fall through
+		default:
+			return true;
+		}
+	}
 
 	/**
 	 * @see Object#hashCode()

@@ -20,6 +20,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -106,12 +107,14 @@ public class TaskTreeView extends ViewPart {
 		taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
 		
 		// columns
+		IColorProvider colorProvider = new TaskColorProvider(Display.getCurrent());
 		
 		// title/description
 		TreeViewerColumn description = new TreeViewerColumn(tree, SWT.LEFT);
 		description.getColumn().setText("Description");
 		TreeColumnViewerLabelProvider descriptionLabelProvider = new TreeColumnViewerLabelProvider(
 				new TaskDescriptionLabelProvider(0));
+		descriptionLabelProvider.setProviders(colorProvider);
 		description.setLabelProvider(descriptionLabelProvider);
 		layout.setColumnData(description.getColumn(), new ColumnWeightData(4));
 		
@@ -120,28 +123,35 @@ public class TaskTreeView extends ViewPart {
 		value.getColumn().setText("!");
 		TreeColumnViewerLabelProvider valueLabelProvider = new TreeColumnViewerLabelProvider(
 				new TaskValueLabelProvider(0));
+		valueLabelProvider.setProviders(colorProvider);
 		value.setLabelProvider(valueLabelProvider);
 		layout.setColumnData(value.getColumn(), new ColumnWeightData(0, 20));
 		
 		// number of tasks
 		TreeViewerColumn number = new TreeViewerColumn(tree, SWT.RIGHT);
 		number.getColumn().setText("#");
+		number.getColumn().setToolTipText("Number of open tasks");
 		TreeColumnViewerLabelProvider numberLabelProvider = new TreeColumnViewerLabelProvider(
 				new TaskCountLabelProvider(0));
+		numberLabelProvider.setProviders(colorProvider);
 		number.setLabelProvider(numberLabelProvider);
 		layout.setColumnData(number.getColumn(), new ColumnWeightData(0, 48));
 		
 		// user data: status
 		TreeViewerColumn status = new TreeViewerColumn(tree, SWT.LEFT);
 		status.getColumn().setText("Status");
-		status.setLabelProvider(new TreeColumnViewerLabelProvider(new TaskStatusLabelProvider(0)));
+		TreeColumnViewerLabelProvider statusLabelProvider = new TreeColumnViewerLabelProvider(new TaskStatusLabelProvider(0));
+		statusLabelProvider.setProviders(colorProvider);
+		status.setLabelProvider(statusLabelProvider);
 		layout.setColumnData(status.getColumn(), new ColumnWeightData(1));
 		status.setEditingSupport(new TaskStatusEditingSupport(tree, taskService));
 		
 		// user data: comment
 		TreeViewerColumn comment = new TreeViewerColumn(tree, SWT.LEFT);
 		comment.getColumn().setText("Comment");
-		comment.setLabelProvider(new TreeColumnViewerLabelProvider(new TaskCommentLabelProvider(0)));
+		TreeColumnViewerLabelProvider commentLabelProvider = new TreeColumnViewerLabelProvider(new TaskCommentLabelProvider(0));
+		commentLabelProvider.setProviders(colorProvider);
+		comment.setLabelProvider(commentLabelProvider);
 		layout.setColumnData(comment.getColumn(), new ColumnWeightData(4));
 		comment.setEditingSupport(new TaskCommentEditingSupport(tree, taskService));
 		
@@ -365,6 +375,13 @@ public class TaskTreeView extends ViewPart {
 		if (node != null) {
 			node.setValues(task);
 			tree.update(node, null);
+			
+			// update parent nodes
+			TreeNode parent = node.getParent();
+			while (parent != null) {
+				tree.update(parent, null);
+				parent = parent.getParent();
+			}
 		}
 	}
 

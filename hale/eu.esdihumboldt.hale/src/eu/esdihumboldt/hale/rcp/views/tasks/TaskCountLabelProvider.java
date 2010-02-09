@@ -94,8 +94,8 @@ public class TaskCountLabelProvider extends MultiColumnTreeNodeLabelProvider {
 				else {
 					value = tmp;
 				}
-				// add task to count
-				if (value instanceof ResolvedTask) {
+				// add task to count if it is open
+				if (value instanceof ResolvedTask && ((ResolvedTask) value).isOpen()) {
 					count++;
 				}
 			}
