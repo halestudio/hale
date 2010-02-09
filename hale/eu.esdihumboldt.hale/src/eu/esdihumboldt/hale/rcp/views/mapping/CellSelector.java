@@ -12,6 +12,7 @@
 package eu.esdihumboldt.hale.rcp.views.mapping;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -55,6 +56,9 @@ import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.models.schema.SchemaServiceAdapter;
+import eu.esdihumboldt.hale.models.utils.SchemaItemService;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.EntityHelper;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
@@ -101,6 +105,8 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 	 */
 	private ISelection lastSelection = null;
 	
+	private ISelection lastViewSelection = null;
+	
 	private CellInfo lastSelected = null;
 	
 	/**
@@ -123,13 +129,21 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 	
 	private final Image editImage;
 	
+	private final Image synchImage;
+	
 	private final Image deleteImage;
 	
 	private final Button prevButton;
 	
 	private final Button nextButton;
+	
+	private final ISelectionService selectionService;
 
 	private final HaleServiceListener alignmentListener;
+	
+	private boolean useViewSelection = false;
+
+	private final SchemaServiceAdapter itemListener;
 	
 	/**
 	 * Constructor
@@ -140,15 +154,32 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 	public CellSelector(Composite parent, ISelectionService selectionService) {
 		super();
 		
+		this.selectionService = selectionService;
+		
 		alignmentService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
 		
 		// composite
 		page = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout(5, false);
+		GridLayout layout = new GridLayout(6, false);
 		layout.marginWidth = 0;
 		layout.marginHeight = 0;
 		layout.horizontalSpacing = 2;
 		page.setLayout(layout);
+		
+		// synch button
+		Button synchButton = new Button(page, SWT.TOGGLE);
+		synchButton.setSelection(useViewSelection);
+		synchButton.setToolTipText("Synchronize with Schema Explorer selection");
+		synchImage = HALEActivator.getImageDescriptor("icons/refresh.gif").createImage();
+		synchButton.setImage(synchImage);
+		synchButton.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				useViewSelection = !useViewSelection;
+				updateNow();
+			}
+		});
 		
 		// navigation buttons
 		prevButton = new Button(page, SWT.PUSH);
@@ -158,9 +189,6 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 		prevButton.setImage(prevImage);
 		prevButton.addSelectionListener(new SelectionAdapter() {
 
-			/**
-			 * @see SelectionAdapter#widgetSelected(SelectionEvent)
-			 */
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Object element = viewer.getElementAt(viewer.getCombo().getSelectionIndex() - 1);
@@ -176,9 +204,6 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 		nextButton.setImage(nextImage);
 		nextButton.addSelectionListener(new SelectionAdapter() {
 
-			/**
-			 * @see SelectionAdapter#widgetSelected(SelectionEvent)
-			 */
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Object element = viewer.getElementAt(viewer.getCombo().getSelectionIndex() + 1);
@@ -298,8 +323,7 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 			
 		});
 		
-		// update now
-		update(selectionService.getSelection());
+		updateNow();
 		
 		// update after selection change
 		selectionService.addSelectionListener(this);
@@ -328,6 +352,56 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 			}
 			
 		});
+		
+		// update default schema selection
+		SchemaItemService itemService = (SchemaItemService) PlatformUI.getWorkbench().getService(SchemaItemService.class);
+		itemService.addListener(itemListener = new SchemaServiceAdapter() {
+
+			/**
+			 * @see SchemaServiceAdapter#schemaChanged(SchemaType)
+			 */
+			@Override
+			public void schemaChanged(SchemaType schema) {
+				if (!useViewSelection) {
+					if (Display.getCurrent() != null) {
+						updateNow();
+					}
+					else {
+						final Display display = PlatformUI.getWorkbench().getDisplay();
+						display.syncExec(new Runnable() {
+							
+							@Override
+							public void run() {
+								updateNow();
+							}
+							
+						});
+					}
+				}
+			}
+		});
+	}
+
+	private void updateNow() {
+		// update now
+		if (useViewSelection) {
+			update((lastViewSelection == null)?(selectionService.getSelection()):(lastViewSelection));
+		}
+		else {
+			update(getDefaultSchemaSelection());
+		}
+	}
+
+	/**
+	 * Get the default schema selection
+	 * 
+	 * @return the default schema selection
+	 */
+	private SchemaSelection getDefaultSchemaSelection() {
+		SchemaItemService schemaItemService = (SchemaItemService) PlatformUI.getWorkbench().getService(SchemaItemService.class);
+		return new SchemaSelection(
+				Collections.singleton(schemaItemService.getRoot(SchemaType.SOURCE)),
+				Collections.singleton(schemaItemService.getRoot(SchemaType.TARGET)));
 	}
 
 	/**
@@ -339,7 +413,11 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 			return;
 		}
 		
-		update(selection);
+		lastViewSelection = selection;
+		
+		if (useViewSelection) {
+			update(selection);
+		}
 	}
 	
 	/**
@@ -472,10 +550,16 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 	public void dispose() {
 		alignmentService.removeListener(alignmentListener);
 		
+		selectionService.removeSelectionListener(this);
+		
+		SchemaItemService itemService = (SchemaItemService) PlatformUI.getWorkbench().getService(SchemaItemService.class);
+		itemService.removeListener(itemListener);
+		
 		prevImage.dispose();
 		nextImage.dispose();
 		editImage.dispose();
 		deleteImage.dispose();
+		synchImage.dispose();
 	}
 
 	/**

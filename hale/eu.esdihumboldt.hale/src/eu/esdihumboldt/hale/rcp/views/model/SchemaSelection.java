@@ -53,7 +53,7 @@ public class SchemaSelection implements ISelection {
 		}
 		
 		if (targetItems != null) {
-			this.sourceItems.addAll(targetItems);
+			this.targetItems.addAll(targetItems);
 		}
 	}
 	
