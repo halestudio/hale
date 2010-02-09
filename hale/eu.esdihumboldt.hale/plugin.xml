@@ -17,8 +17,13 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             name="Default"
-            class="eu.esdihumboldt.hale.rcp.ClientPerspective"
-            id="eu.esdihumboldt.hale.rcp.ClientPerspective">
+            class="eu.esdihumboldt.hale.rcp.DefaultPerspective"
+            id="eu.esdihumboldt.hale.rcp.perspective.Default">
+      </perspective>
+      <perspective
+            class="eu.esdihumboldt.hale.rcp.DataPerspective"
+            id="eu.esdihumboldt.hale.rcp.perspective.Data"
+            name="Data">
       </perspective>
    </extension>
    <extension

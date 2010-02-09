@@ -26,7 +26,7 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
  */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
-	private static final String PERSPECTIVE_ID = "eu.esdihumboldt.hale.rcp.ClientPerspective";
+	private static final String PERSPECTIVE_ID = "eu.esdihumboldt.hale.rcp.perspective.Default";
 
 	/**
 	 * @see WorkbenchAdvisor#createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer)
