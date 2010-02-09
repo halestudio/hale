@@ -173,4 +173,12 @@ public abstract class AbstractTableView extends ViewPart {
 		// do nothing
 	}
 
+	/**
+	 * @see WorkbenchPart#dispose()
+	 */
+	@Override
+	public void dispose() {
+		selectorControl.dispose();
+	}
+
 }

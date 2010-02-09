@@ -14,6 +14,8 @@ package eu.esdihumboldt.hale.rcp.views.table.filter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -27,8 +29,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -133,7 +133,7 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 			// feature type selector
 			featureTypes = new ComboViewer(this, SWT.READ_ONLY);
 			featureTypes.setContentProvider(ArrayContentProvider.getInstance());
-			featureTypes.setComparator(new ViewerComparator() {
+			/*featureTypes.setComparator(new ViewerComparator() {
 
 				@Override
 				public int compare(Viewer viewer, Object e1, Object e2) {
@@ -144,7 +144,7 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 					return super.compare(viewer, e1, e2);
 				}
 				
-			});
+			});*/
 			featureTypes.setLabelProvider(new LabelProvider() {
 
 				@Override
@@ -282,6 +282,15 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 				}
 			}
 			
+			Collections.sort(filteredTypes, new Comparator<FeatureType>() {
+
+				@Override
+				public int compare(FeatureType o1, FeatureType o2) {
+					return o1.getName().getLocalPart().compareTo(o2.getName().getLocalPart());
+				}
+				
+			});
+			
 			featureTypes.setInput(filteredTypes);
 			
 			FeatureType typeToSelect = null;
@@ -298,6 +307,20 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 						typeToSelect = ((SimpleFeature) feature).getFeatureType();
 					}
 				}
+			}
+			
+			if (typeToSelect != null) {
+				// find type to select in filtered types
+				FeatureType typeFound = null;
+				Iterator<FeatureType> it = filteredTypes.iterator();
+				while (typeFound == null && it.hasNext()) {
+					FeatureType type = it.next();
+					if (type.getName().equals(typeToSelect.getName())) {
+						typeFound = type;
+					}
+				}
+				
+				typeToSelect = typeFound;
 			}
 			
 			// fallback selection
