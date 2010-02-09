@@ -327,6 +327,10 @@
                name="appName"
                value="HUMBOLDT Alignment Editor">
          </property>
+         <property
+               name="windowImages"
+               value="icons/hale_icon.png">
+         </property>
       </product>
    </extension>
    <extension
