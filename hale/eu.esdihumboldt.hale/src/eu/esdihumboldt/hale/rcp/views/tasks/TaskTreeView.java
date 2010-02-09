@@ -103,6 +103,8 @@ public class TaskTreeView extends ViewPart {
 		tree.getTree().setHeaderVisible(true);
 		tree.getTree().setLinesVisible(true);
 		
+		tree.setComparator(new TaskTreeComparator());
+		
 		schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
 		
@@ -374,10 +376,19 @@ public class TaskTreeView extends ViewPart {
 		DefaultTreeNode node = taskNodes.get(task.getTask());
 		if (node != null) {
 			node.setValues(task);
-			tree.update(node, null);
+			//refresh parent instead of update node (sorting) - tree.update(node, null);
 			
 			// update parent nodes
 			TreeNode parent = node.getParent();
+			
+			if (parent != null) {
+				tree.refresh(parent, true);
+				parent = parent.getParent();
+			}
+			else {
+				tree.update(node, null);
+			}
+			
 			while (parent != null) {
 				tree.update(parent, null);
 				parent = parent.getParent();
