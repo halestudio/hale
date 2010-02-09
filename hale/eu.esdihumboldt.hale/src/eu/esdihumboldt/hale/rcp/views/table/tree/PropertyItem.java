@@ -12,8 +12,11 @@
 
 package eu.esdihumboldt.hale.rcp.views.table.tree;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
@@ -72,13 +75,27 @@ public class PropertyItem extends DefaultTreeNode {
 		if (getParent() instanceof PropertyItem) {
 			// property of a property
 			Object propertyValue = ((PropertyItem) getParent()).getValue(feature);
-			if (propertyValue != null && propertyValue instanceof Feature) {
-				Property property = ((Feature) propertyValue).getProperty(propertyName);
-				if (property != null) {
-					return property.getValue();
+			if (propertyValue != null) {
+				Collection<?> propertyValues = (Collection<?>) ((propertyValue instanceof Collection<?>)?(propertyValue):(Collections.singleton(propertyValue)));
+				List<Object> values = new ArrayList<Object>();
+				
+				for (Object pValue : propertyValues) {
+					if (pValue instanceof Feature) {
+						Property property = ((Feature) pValue).getProperty(propertyName);
+						if (property != null) {
+							values.add(property.getValue());
+						}
+					}
+				}
+				
+				if (values.isEmpty()) {
+					return null;
+				}
+				else if (values.size() == 1) {
+					return values.get(0);
 				}
 				else {
-					return null;
+					return values;
 				}
 			}
 			else {
