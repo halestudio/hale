@@ -24,7 +24,10 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.ext.ITransformation;
+import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
 import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
@@ -142,6 +145,40 @@ public class AlignmentIndex {
 		// add cells declared directly on the Type identified by the key.
 		result.addAll(this.cellsFtIndex.get(key));
 		
+		return result;
+	}
+	
+	/**
+	 * @param key the identifier of a target {@link FeatureType}.
+	 * @return a List with just the {@link Cell}s defining an attributive 
+	 * transformation, augmentations and renames are not returned.
+	 */
+	public List<ICell> getAttributiveCellsPerEntity(String key) {
+		List<ICell> result = new ArrayList<ICell>();
+		for (ICell cell : this.getCellsPerEntity(key)) {
+			ITransformation t = cell.getEntity1().getTransformation();
+			if (t != null && t.getService() != null
+					&& !t.getService().getLocation().equals(
+							RenameFeatureFunction.class.getName())) {
+				result.add(cell);
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * @param key the identifier of a target {@link FeatureType}.
+	 * @return a List with just the {@link Cell}s defining an augmentation 
+	 * transformation
+	 */
+	public List<ICell> getAugmentationCellsPerEntity(String key) {
+		List<ICell> result = new ArrayList<ICell>();
+		for (ICell cell : this.getCellsPerEntity(key)) {
+			if (cell.getEntity2().getTransformation() != null 
+					&& cell.getEntity2().getTransformation().getService() != null) {
+				result.add(cell);
+			}
+		}
 		return result;
 	}
 	
