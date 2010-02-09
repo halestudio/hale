@@ -76,27 +76,7 @@ public class CstFunctionFactory {
 					"Transformation has not been initialized correctly with " +
 					"a Resource.");
 		}
-		String operation = transformation.getService().getLocation();
-		
-		Class<?> tclass = functions.get(operation);
-		if ( tclass != null) {
-			CstFunction t;
-			try {
-				t = (CstFunction) tclass.newInstance();
-			} catch (Exception e) {
-				throw new RuntimeException("This Function " + operation 
-						+ " could not be instantiated by this CST: ", e);
-			}				
-			
-			// configure using cell first; if false is returned, proceed with manual param configuration
-			t.configure(cell);
-			return t;
-		}
-		else {
-			throw new RuntimeException("This Function " + operation 
-					+ " is not known to this CST.");
-		}
-
+		return this.getFunction(transformation.getService().getLocation(), cell);
 	}	
 	
 	
@@ -107,8 +87,32 @@ public class CstFunctionFactory {
 	 * @return a {@link CstFunction} if a Transformation was defined on Entity2.
 	 */
 	public CstFunction getCstAugmentationFunction(ICell cell) {
-		// TODO Auto-generated method stub
-		return null;
+		ITransformation transformation = cell.getEntity2().getTransformation();
+		if (transformation == null || transformation.getService() == null) {
+			throw new RuntimeException("The Service element of the passed " +
+					"Transformation has not been initialized correctly with " +
+					"a Resource.");
+		}
+		return this.getFunction(transformation.getService().getLocation(), cell);
+	}
+	
+	private CstFunction getFunction(String operation, ICell cell) {
+		Class<?> tclass = functions.get(operation);
+		if ( tclass != null) {
+			CstFunction t;
+			try {
+				t = (CstFunction) tclass.newInstance();
+			} catch (Exception e) {
+				throw new RuntimeException("This Function " + operation 
+						+ " could not be instantiated by this CST: ", e);
+			}				
+			t.configure(cell);
+			return t;
+		}
+		else {
+			throw new RuntimeException("This Function " + operation 
+					+ " is not known to this CST.");
+		}
 	}
 	
 	/**
