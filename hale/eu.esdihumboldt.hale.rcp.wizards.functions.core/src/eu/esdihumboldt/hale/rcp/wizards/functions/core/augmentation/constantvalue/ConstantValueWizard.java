@@ -64,13 +64,14 @@ public class ConstantValueWizard extends AugmentationWizard {
 	 */
 	@Override
 	public boolean performFinish() {
-		String parameterName = page.getParamName();
+		//String parameterName = page.getParamName();
 		String parameterValue = page.getParamValue();
 		Cell result = getResultCell();
 		Entity entity = (Entity) result.getEntity2();
 		Transformation transformation = new Transformation();
 		transformation.setService(new Resource(ConstantValueFunction.class.getName()));
-		transformation.getParameters().add(new Parameter(parameterName, parameterValue));
+		// Simon: replaced parameterName with constant that is used in ConstantValueFunction as the parameter name
+		transformation.getParameters().add(new Parameter(ConstantValueFunction.DEFAULT_VALUE_PARAMETER_NAME /*parameterName*/, parameterValue));
 		entity.setTransformation(transformation);
 		
 		return true;
