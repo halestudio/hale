@@ -17,8 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.geotools.feature.AttributeImpl;
+import org.geotools.feature.PropertyImpl;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.PropertyDescriptor;
 
 import eu.esdihumboldt.cst.align.ICell;
@@ -86,7 +91,8 @@ public class IdentifierFunction
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * This implementation is not null-safe.
 	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.opengis.feature.Feature, org.opengis.feature.Feature)
 	 */
 	public Feature transform(Feature source, Feature target) {
@@ -99,7 +105,32 @@ public class IdentifierFunction
 		PropertyDescriptor pd = target.getProperty(
 				this.targetProperty.getLocalname()).getDescriptor();
 
-		if (pd.getType().getBinding().equals(InspireIdentifier.class)) {
+		if (pd.getType().getName().getNamespaceURI().equals(
+				"urn:x-inspire:specification:gmlas:BaseTypes:3.2") 
+				&& pd.getType().getName().getLocalPart().equals("IdentifierPropertyType")) {
+			// retrieve required Property Descriptors
+			SimpleFeatureType nameType = (SimpleFeatureType)((SimpleFeatureType)pd.getType()).getDescriptor("Identifier");
+			AttributeDescriptor localId = nameType.getDescriptor("localId");
+			AttributeDescriptor namespace = nameType.getDescriptor("namespace");
+			AttributeDescriptor versionId = nameType.getDescriptor("versionId");
+			
+			PropertyImpl pLocalId = new AttributeImpl(
+					source.getIdentifier().toString(), localId, null);
+			PropertyImpl pNameSpace = new AttributeImpl(
+					this.getNamespace(target.getType().getName().getLocalPart()), 
+					namespace, null);
+			PropertyImpl pVersionId = new AttributeImpl(
+					this.version, versionId, null);
+			
+			Feature geoname = SimpleFeatureBuilder.build(
+					nameType, new Object[]{pLocalId, pNameSpace, pVersionId}, 
+					"Identifier");
+			
+			((SimpleFeature)target).setAttribute(
+					this.targetProperty.getLocalname(),geoname);
+			
+		}
+		else if (pd.getType().getBinding().equals(InspireIdentifier.class)) {
 			InspireIdentifier ii=new InspireIdentifier();
 			String localID = null;
 			if (source.getIdentifier().getID()==null || source.getIdentifier().getID().equalsIgnoreCase("")){
@@ -179,6 +210,12 @@ public class IdentifierFunction
 		parameterCell.setEntity1(entity1);
 		parameterCell.setEntity2(entity2);
 		return parameterCell;
+	}
+	
+	private String getNamespace(String featureTypeName) {
+		return this.countryName + ":"
+				+ this.dataProviderName + ":" + this.productName + ":"
+				+ featureTypeName;
 	}
 
 }

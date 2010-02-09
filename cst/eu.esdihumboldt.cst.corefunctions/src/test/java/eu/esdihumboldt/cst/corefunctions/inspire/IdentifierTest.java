@@ -8,6 +8,9 @@ import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.junit.Test;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
+
+import eu.esdihumboldt.cst.corefunctions.util.TypeLoader;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
@@ -23,7 +26,7 @@ public class IdentifierTest extends TestCase {
 	private final String sourceNamespace = "http://esdi-humboldt.eu";
 	
 	private final String targetLocalname = "FT2";
-	private final String targetLocalnamePropertyBID = "PropertyBID";
+	private final String targetLocalnamePropertyBID = "inspireId";
 	private final String targetNamespace = "http://xsdi.org";
 	
 	private String localID = "1";
@@ -32,23 +35,44 @@ public class IdentifierTest extends TestCase {
 	private String prodName = "SomeProduct";
 	private String version = "150782";
 	
-	
+	@Test
+	public void testTransformTypeBinding() {
+		Cell cell = this.getCell();
+		
+		// build source and target Features
+		SimpleFeatureType sourcetype = this.getFeatureType(
+				this.sourceNamespace, 
+				this.sourceLocalname, 
+				new String[]{this.sourceLocalnamePropertyAID});
+		
+		String url = getClass().getResource(
+				"/inspire_v3.0_xsd/CadastralParcels.xsd").toString();
+			FeatureType targettype = TypeLoader.getType("CadastralZoning", url);
+		Feature source = SimpleFeatureBuilder.build(
+				sourcetype, new Object[]{"ID1"}, localID);
+		Feature target = SimpleFeatureBuilder.build(
+				(SimpleFeatureType) targettype, new Object[]{}, "2");
+		
+		// perform actual test
+		IdentifierFunction idf = new IdentifierFunction();
+		idf.configure(cell);
+
+		/*Feature neu = idf.transform(source, target);
+		System.out.println("With Type Binding: "+neu.getProperty(
+				this.targetLocalnamePropertyBID).getValue().toString());
+		assertTrue(neu.getProperty(this.targetLocalnamePropertyBID).getValue()
+				.toString().equals(
+						IdentifierFunction.INSPIRE_IDENTIFIER_PREFIX + ":"
+								+ this.countryname + ":" + this.provName + ":"
+								+ this.prodName + ":" + this.sourceLocalname
+								+ ":" + this.localID + ":" + this.version));*/
+	}
 	
 
 	@Test
 	public void testTransformFeatureFeatureStringBinding() {
 		// set up cell to use for testing
-		Cell cell = new Cell();
-		Transformation t = new Transformation();
-		t.setService(new Resource(IdentifierFunction.class.toString()));
-		t.getParameters().add(new Parameter("countryName", this.countryname));
-		t.getParameters().add(new Parameter("providerName", this.provName));
-		t.getParameters().add(new Parameter("productName", this.prodName));
-		t.getParameters().add(new Parameter("version", this.version));
-		Property p1 = new Property(new About(this.sourceNamespace, this.sourceLocalname, this.sourceLocalnamePropertyAID));
-		p1.setTransformation(t);
-		cell.setEntity1(p1);
-		cell.setEntity2(new Property(new About(this.targetNamespace, this.targetLocalname, this.targetLocalnamePropertyBID)));
+		Cell cell = this.getCell();
 
 		// build source and target Features
 		SimpleFeatureType sourcetype = this.getFeatureType(
@@ -71,26 +95,19 @@ public class IdentifierTest extends TestCase {
 		Feature neu = idf.transform(source, target);
 		System.out.println("With String Binding: "+neu.getProperty(
 				this.targetLocalnamePropertyBID).getValue().toString());
-		assertTrue(neu.getProperty(
-				this.targetLocalnamePropertyBID).getValue().toString().equals(IdentifierFunction.INSPIRE_IDENTIFIER_PREFIX+ ":" +this.countryname+":"+this.provName+":"+this.prodName+":"+this.sourceLocalname+":" +this.localID+":"+this.version));
+		assertTrue(neu.getProperty(this.targetLocalnamePropertyBID).getValue()
+				.toString().equals(
+						IdentifierFunction.INSPIRE_IDENTIFIER_PREFIX + ":"
+								+ this.countryname + ":" + this.provName + ":"
+								+ this.prodName + ":" + this.sourceLocalname
+								+ ":" + this.localID + ":" + this.version));
 
 	}
 	
 	@Test
 	public void testTransformFeatureFeatureInspireIdentifierBinding() {
 
-		// set up cell to use for testing
-		Cell cell = new Cell();
-		Transformation t = new Transformation();
-		t.setService(new Resource(IdentifierFunction.class.toString()));
-		t.getParameters().add(new Parameter("countryName", this.countryname));
-		t.getParameters().add(new Parameter("providerName", this.provName));
-		t.getParameters().add(new Parameter("productName", this.prodName));
-		t.getParameters().add(new Parameter("version", this.version));
-		Property p1 = new Property(new About(this.sourceNamespace, this.sourceLocalname, this.sourceLocalnamePropertyAID));
-		p1.setTransformation(t);
-		cell.setEntity1(p1);
-		cell.setEntity2(new Property(new About(this.targetNamespace, this.targetLocalname, this.targetLocalnamePropertyBID)));
+		Cell cell = this.getCell();
 
 		// build source and target Features
 		SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
@@ -159,5 +176,20 @@ public class IdentifierTest extends TestCase {
 		ii.setNameSpace(this.countryname+":"+this.provName+":"+this.prodName+":"+this.sourceLocalname);
 		ii.setVersionID(this.version);
 		return ii;
+	}
+	
+	private Cell getCell() {
+		Cell cell = new Cell();
+		Transformation t = new Transformation();
+		t.setService(new Resource(IdentifierFunction.class.toString()));
+		t.getParameters().add(new Parameter("countryName", this.countryname));
+		t.getParameters().add(new Parameter("providerName", this.provName));
+		t.getParameters().add(new Parameter("productName", this.prodName));
+		t.getParameters().add(new Parameter("version", this.version));
+		Property p1 = new Property(new About(this.sourceNamespace, this.sourceLocalname, this.sourceLocalnamePropertyAID));
+		p1.setTransformation(t);
+		cell.setEntity1(p1);
+		cell.setEntity2(new Property(new About(this.targetNamespace, this.targetLocalname, this.targetLocalnamePropertyBID)));
+		return cell;
 	}
 }
