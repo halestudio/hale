@@ -118,15 +118,6 @@ public class SchemaImportWizard
 			_log.error("Given Path/URL could not be parsed to an URI: ", e2);
 		}
 		
-		// create tasks if checked.
-		if (mainPage.createTasks()) {
-			/*XXX TaskService taskService = (TaskService) 
-						PlatformUI.getWorkbench().getService(TaskService.class);
-			taskService.addTasks(
-					TaskProviderFactory.getInstance().getTasks(
-							schemaService.getSchema(mainPage.getSchemaType())));*/
-		}
-
 		return true;
 	}
 	 

@@ -45,17 +45,21 @@ public class SchemaImportWizardMainPage
 	
 	private static Logger _log = Logger.getLogger(SchemaImportWizardMainPage.class);
 	
-	protected Composite ffe_container;
-	protected Composite ufe_container;
-	protected FileFieldEditor fileFieldEditor;
-	protected UrlFieldEditor wfsFieldEditor;
-	protected Button useWfsRadio;
-	protected Button useFileRadio;
+	private Composite ffe_container;
+	private Composite ufe_container;
+	private FileFieldEditor fileFieldEditor;
+	private UrlFieldEditor wfsFieldEditor;
+	private Button useWfsRadio;
+	private Button useFileRadio;
 	private Button sourceDestination;
 	private Button targetDestination;
-	private Button createTasks;
-	private Button createSuperTypes;
-
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param pageName the page name
+	 * @param pageTitle the page title
+	 */
 	public SchemaImportWizardMainPage(String pageName, String pageTitle) {
 		super(pageName, pageTitle, (ImageDescriptor) null); // FIXME ImageDescriptor
 		setTitle(pageName); //NON-NLS-1
@@ -81,7 +85,6 @@ public class SchemaImportWizardMainPage
 
         this.createDestinationGroup(composite);
         this.createSourceGroup(composite);
-        this.createOptionsGroup(composite);
         
         setErrorMessage(null);	// should not initially have error message
 		super.setControl(composite);
@@ -207,33 +210,6 @@ public class SchemaImportWizardMainPage
 		targetDestination = new Button(destinationArea, SWT.RADIO);
 		targetDestination.setText("Import as Target Schema");
 	}
-
-	/**
-	 * Creates the UI controls for the options that can be applied when 
-	 * importing a schema.
-	 * 
-	 * @param parent the parent {@link Composite}
-	 */
-	private void createOptionsGroup(Composite parent) {
-		Group optionsGroup = new Group(parent, SWT.NONE);
-		optionsGroup.setText("Import Options");
-		optionsGroup.setLayout(new GridLayout());
-		GridData optionsGroupGD = new GridData(GridData.VERTICAL_ALIGN_FILL
-                | GridData.HORIZONTAL_ALIGN_FILL);
-		optionsGroupGD.grabExcessHorizontalSpace = true;
-		optionsGroup.setLayoutData(optionsGroupGD);
-		optionsGroup.setSize(optionsGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		optionsGroup.setFont(parent.getFont());
-		
-		// import supertypes/schema elements?
-		this.createSuperTypes = new Button(optionsGroup, SWT.CHECK);
-		this.createSuperTypes.setSelection(true);
-		this.createSuperTypes.setText("Also import supertypes from imported " +
-				"schemas");
-		this.createTasks = new Button(optionsGroup, SWT.CHECK);
-		this.createTasks.setSelection(true);
-		this.createTasks.setText("Create tasks for this schema");
-	}
 	
 	/**
 	 * @see org.eclipse.jface.wizard.WizardPage#isPageComplete()
@@ -287,25 +263,16 @@ public class SchemaImportWizardMainPage
 		}
 	}
 	
+	/**
+	 * Get the schema type
+	 * 
+	 * @return the schema type
+	 */
 	public SchemaType getSchemaType() {
 		if (sourceDestination.getSelection()) {
 			return SchemaType.SOURCE;
 		}
 		else return SchemaType.TARGET;
-	}
-	
-	/**
-	 * @return true if the user has selected that supertypes should be imported.
-	 */
-	public boolean importSuperTypes() {
-		return this.createSuperTypes.getSelection();
-	}
-
-	/**
-	 * @return true if the user has selected that tasks should be created.
-	 */
-	public boolean createTasks() {
-		return this.createTasks.getSelection();
 	}
 	
 }
