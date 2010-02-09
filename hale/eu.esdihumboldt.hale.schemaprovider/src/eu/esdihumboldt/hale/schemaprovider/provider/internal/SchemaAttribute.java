@@ -203,10 +203,10 @@ public class SchemaAttribute extends AttributeDefinition {
 	 */
 	public AttributeDescriptor createAttributeDescriptor() {
 		if (getAttributeType() != null && getAttributeType().getType() != null) {
-			Name parentName = getDeclaringType().getName();
+			//Name parentName = getDeclaringType().getName();
 			return new AttributeDescriptorImpl(
 					getAttributeType().getType(),
-					new NameImpl(parentName.getNamespaceURI() + "/" + parentName.getLocalPart(), getName()),
+					new NameImpl(null, /*parentName.getNamespaceURI() + "/" + parentName.getLocalPart(), */getName()),
 					(int) minOccurs,
 					(int) maxOccurs,
 					true, // always nillable, else creating the features fails
