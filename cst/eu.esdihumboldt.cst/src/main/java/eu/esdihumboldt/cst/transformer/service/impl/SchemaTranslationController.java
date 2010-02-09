@@ -122,7 +122,7 @@ public class SchemaTranslationController {
 							+ transformMap.getTransformedFeatures().size() + " target features.");
 					
 					// apply additional attributive transformations
-					for (ICell cell : ai.getCellsPerEntity(targetFtName)) {
+					for (ICell cell : ai.getAttributiveCellsPerEntity(targetFtName)) {
 						// create CstFunction by using CstFunctionFactory
 						this.applyAttributiveFunction(cell, transformMap);
 					}
@@ -200,7 +200,7 @@ public class SchemaTranslationController {
 		// execute Augmentations batchwise per target FeatureType
 		// Augmentations don't create new Features, but change the existing ones.
 		for (String url : partitionedTargetFeatures.keySet()) {
-			for (ICell cell : ai.getCellsPerEntity(url)) {
+			for (ICell cell : ai.getAugmentationCellsPerEntity(url)) {
 				// create CstFunction by using CstFunctionFactory
 				CstFunction cstf = null;
 				try {
