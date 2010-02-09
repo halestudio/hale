@@ -106,7 +106,8 @@ public class IdentifierFunction
 		PropertyDescriptor pd = target.getProperty(
 				this.targetProperty.getLocalname()).getDescriptor();
 
-		if (pd.getType().getName().getNamespaceURI().equals(
+		if (pd.getType().getName().getNamespaceURI() != null 
+				&& pd.getType().getName().getNamespaceURI().equals(
 				"urn:x-inspire:specification:gmlas:BaseTypes:3.2") 
 				&& pd.getType().getName().getLocalPart().equals("IdentifierPropertyType")) {
 			// retrieve required Property Descriptors

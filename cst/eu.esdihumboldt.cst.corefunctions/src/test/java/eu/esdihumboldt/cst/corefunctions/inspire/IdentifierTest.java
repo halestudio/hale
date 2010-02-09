@@ -2,8 +2,11 @@ package eu.esdihumboldt.cst.corefunctions.inspire;
 
 
 
+import java.util.Collection;
+
 import junit.framework.TestCase;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureImpl;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.junit.Test;
 import org.opengis.feature.Feature;
@@ -57,15 +60,12 @@ public class IdentifierTest extends TestCase {
 		IdentifierFunction idf = new IdentifierFunction();
 		idf.configure(cell);
 
-		/*Feature neu = idf.transform(source, target);
-		System.out.println("With Type Binding: "+neu.getProperty(
-				this.targetLocalnamePropertyBID).getValue().toString());
-		assertTrue(neu.getProperty(this.targetLocalnamePropertyBID).getValue()
-				.toString().equals(
-						IdentifierFunction.INSPIRE_IDENTIFIER_PREFIX + ":"
-								+ this.countryname + ":" + this.provName + ":"
-								+ this.prodName + ":" + this.sourceLocalname
-								+ ":" + this.localID + ":" + this.version));*/
+		Feature transformed = idf.transform(source, target);
+		Object o = transformed.getProperty(this.targetLocalnamePropertyBID).getValue();
+		assertNotNull(o);
+		Object identifier = ((Collection)o).iterator().next();
+		assertNotNull(identifier);
+		
 	}
 	
 
