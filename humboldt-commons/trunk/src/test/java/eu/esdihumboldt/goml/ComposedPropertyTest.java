@@ -34,7 +34,7 @@ import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Formalism;
 import eu.esdihumboldt.goml.align.Schema;
-import eu.esdihumboldt.generated.PropertyOperatorType;
+import eu.esdihumboldt.generated.oml.PropertyOperatorType;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;

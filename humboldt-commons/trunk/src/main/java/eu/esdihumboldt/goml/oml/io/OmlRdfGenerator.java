@@ -36,37 +36,37 @@ import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.cst.align.ext.IValueClass;
 import eu.esdihumboldt.cst.align.ext.IValueExpression;
 import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.generated.AlignmentType;
-import eu.esdihumboldt.generated.ApplyType;
-import eu.esdihumboldt.generated.CellType;
-import eu.esdihumboldt.generated.ClassConditionType;
-import eu.esdihumboldt.generated.ClassType;
-import eu.esdihumboldt.generated.ComparatorEnumType;
-import eu.esdihumboldt.generated.DomainRestrictionType;
-import eu.esdihumboldt.generated.Entity1;
-import eu.esdihumboldt.generated.Entity2;
-import eu.esdihumboldt.generated.EntityType;
-import eu.esdihumboldt.generated.FormalismType;
-import eu.esdihumboldt.generated.FunctionType;
-import eu.esdihumboldt.generated.OnAttributeType;
-import eu.esdihumboldt.generated.OntologyType;
-import eu.esdihumboldt.generated.ParamType;
-import eu.esdihumboldt.generated.PropValueRestrictionType;
-import eu.esdihumboldt.generated.PropertyCollectionType;
-import eu.esdihumboldt.generated.PropertyCompositionType;
-import eu.esdihumboldt.generated.PropertyOperatorType;
-import eu.esdihumboldt.generated.PropertyType;
-import eu.esdihumboldt.generated.RangeRestrictionType;
-import eu.esdihumboldt.generated.RelationEnumType;
-import eu.esdihumboldt.generated.RestrictionType;
-import eu.esdihumboldt.generated.ValueClassType;
-import eu.esdihumboldt.generated.ValueConditionType;
-import eu.esdihumboldt.generated.ValueExprType;
-import eu.esdihumboldt.generated.AlignmentType.Map;
-import eu.esdihumboldt.generated.AlignmentType.Onto1;
-import eu.esdihumboldt.generated.AlignmentType.Onto2;
-import eu.esdihumboldt.generated.OntologyType.Formalism;
-import eu.esdihumboldt.generated.PropertyCollectionType.Item;
+import eu.esdihumboldt.generated.oml.AlignmentType;
+import eu.esdihumboldt.generated.oml.ApplyType;
+import eu.esdihumboldt.generated.oml.CellType;
+import eu.esdihumboldt.generated.oml.ClassConditionType;
+import eu.esdihumboldt.generated.oml.ClassType;
+import eu.esdihumboldt.generated.oml.ComparatorEnumType;
+import eu.esdihumboldt.generated.oml.DomainRestrictionType;
+import eu.esdihumboldt.generated.oml.Entity1;
+import eu.esdihumboldt.generated.oml.Entity2;
+import eu.esdihumboldt.generated.oml.EntityType;
+import eu.esdihumboldt.generated.oml.FormalismType;
+import eu.esdihumboldt.generated.oml.FunctionType;
+import eu.esdihumboldt.generated.oml.OnAttributeType;
+import eu.esdihumboldt.generated.oml.OntologyType;
+import eu.esdihumboldt.generated.oml.ParamType;
+import eu.esdihumboldt.generated.oml.PropValueRestrictionType;
+import eu.esdihumboldt.generated.oml.PropertyCollectionType;
+import eu.esdihumboldt.generated.oml.PropertyCompositionType;
+import eu.esdihumboldt.generated.oml.PropertyOperatorType;
+import eu.esdihumboldt.generated.oml.PropertyType;
+import eu.esdihumboldt.generated.oml.RangeRestrictionType;
+import eu.esdihumboldt.generated.oml.RelationEnumType;
+import eu.esdihumboldt.generated.oml.RestrictionType;
+import eu.esdihumboldt.generated.oml.ValueClassType;
+import eu.esdihumboldt.generated.oml.ValueConditionType;
+import eu.esdihumboldt.generated.oml.ValueExprType;
+import eu.esdihumboldt.generated.oml.AlignmentType.Map;
+import eu.esdihumboldt.generated.oml.AlignmentType.Onto1;
+import eu.esdihumboldt.generated.oml.AlignmentType.Onto2;
+import eu.esdihumboldt.generated.oml.OntologyType.Formalism;
+import eu.esdihumboldt.generated.oml.PropertyCollectionType.Item;
 import eu.esdihumboldt.goml.oml.ext.Function;
 import eu.esdihumboldt.goml.oml.ext.ValueClass;
 import eu.esdihumboldt.goml.oml.ext.ValueExpression;
@@ -79,6 +79,7 @@ import eu.esdihumboldt.goml.omwg.Relation;
 import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.mediator.util.NamespacePrefixMapperImpl;
+import eu.esdihumboldt.tools.ConfigurationManager;
 
 /**
  * This class implements methods for marshalling HUMBOLDT OML Objects to XML.
@@ -90,17 +91,26 @@ import eu.esdihumboldt.mediator.util.NamespacePrefixMapperImpl;
 public class OmlRdfGenerator {
 
 	
+	public static final String PROPERTY_STACK_SIZE = "composedPropertyStackSize"; 
 	/**
 	 * stack for property invocation
 	 * value = 0, property parent element is cell
-	 * value = 1, property parent element is ComposedProperty
+	 * value >0 and value < @link{propertyStackSize}, property parent element is ComposedProperty
 	 */
 	
-	private int propertyStack = 0;
+	private int propertyStack;
+	
+	/**
+	 * max size of the property stack
+	 */
+	
+	private static final int propertyStackSize = new Integer(ConfigurationManager.getComponentProperty(PROPERTY_STACK_SIZE)).intValue();
+	
+	
 	/**
 	 * Constant defines the path to the alignment jaxb context
 	 */
-	private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.generated";
+	private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.generated.oml";
 
 	/**
 	 * Stores alignment to xml
@@ -683,7 +693,7 @@ public class OmlRdfGenerator {
 			About about = (About) property.getAbout();
 			if (about != null)
 				pType.setAbout(about.getAbout());
-			if(property instanceof ComposedProperty&& this.propertyStack == 0){
+			if(property instanceof ComposedProperty&& this.propertyStack < propertyStackSize){
 				this.propertyStack ++;
 			//incase it  is a composed property add the property composition elmenet
 			// TODO keep the property comsposition as optional element
@@ -771,9 +781,9 @@ public class OmlRdfGenerator {
 	 * @param relation
 	 * @return
 	 */
-	private eu.esdihumboldt.generated.RelationType getRelation(
+	private eu.esdihumboldt.generated.oml.RelationType getRelation(
 			Relation relation) {
-		eu.esdihumboldt.generated.RelationType relType = new eu.esdihumboldt.generated.RelationType();
+		eu.esdihumboldt.generated.oml.RelationType relType = new eu.esdihumboldt.generated.oml.RelationType();
 		if (relation!=null){
 			//TODO clear with MdV
 			if (relation.getDomainRestriction()!=null)relType.setDomainRestriction(getDomainRestrictionType(relation.getDomainRestriction().get(0)));
