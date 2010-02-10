@@ -14,7 +14,7 @@
 			<xsd:sequence>
 
 				<xsd:element name="componentproperties" type="cfg:PropertiesType"
-					minOccurs="1" maxOccurs="unbounded">
+					minOccurs="1" maxOccurs="1">
 					<xsd:annotation>
 						<xsd:documentation>Component Properties contain configuration for
 							the component specific parameters. </xsd:documentation>
@@ -22,7 +22,7 @@
 				</xsd:element>
 
 				<xsd:element name="systemproperties" type="cfg:PropertiesType"
-					minOccurs="0" maxOccurs="unbounded">
+					minOccurs="0" maxOccurs="1">
 					<xsd:annotation>
 						<xsd:documentation>System Properties may contain some system
 							specific parameter
