@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.hale.models;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
@@ -52,8 +53,9 @@ public interface SchemaService
 	 * @param file the {@link URI} to the file from which to load the schema.
 	 * @param type the schema type
 	 * @return true if the loading was successful.
+	 * @throws IOException 
 	 */
-	public boolean loadSchema(URI file, SchemaType type);
+	public boolean loadSchema(URI file, SchemaType type) throws IOException;
 	
 	/**
 	 * Loads multiple schemas into the target or source schema.

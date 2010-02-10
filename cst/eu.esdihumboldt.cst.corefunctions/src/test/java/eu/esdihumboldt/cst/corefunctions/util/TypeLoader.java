@@ -53,7 +53,7 @@ public class TypeLoader {
 					}
 				}
 			}
-		} catch (URISyntaxException e) {
+		} catch (Exception e) {
 			throw new RuntimeException("Parsing the schema Filename to a URI " +
 					"failed.", e);
 		}

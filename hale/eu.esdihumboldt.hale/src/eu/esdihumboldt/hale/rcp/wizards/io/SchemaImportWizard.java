@@ -30,6 +30,8 @@ import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -115,7 +117,11 @@ public class SchemaImportWizard
 				projectService.setTargetSchemaPath(uri.toString());
 			}
 		} catch (Exception e2) {
-			_log.error("Given Path/URL could not be parsed to an URI: ", e2);
+			ExceptionHelper.handleException(
+					"An error occured while loading the schema you " +
+					"have selected. Most often, such errors appear when a " +
+					"schema import location could not be resolved.", 
+					HALEActivator.PLUGIN_ID, e2);
 		}
 		
 		return true;

@@ -14,6 +14,7 @@
  */
 package eu.esdihumboldt.hale.models.schema;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
@@ -126,9 +127,10 @@ public class SchemaProviderService<T extends SchemaProvider>
 	}
 
 	/**
+	 * @throws IOException 
 	 * @see SchemaService#loadSchema(URI, SchemaType)
 	 */
-	public boolean loadSchema(URI location, SchemaType type) {
+	public boolean loadSchema(URI location, SchemaType type) throws IOException {
 		Schema schema = schemaProvider.loadSchema(location);
 		
 		if (type.equals(SchemaType.SOURCE)) {

@@ -14,6 +14,7 @@
  */
 package eu.esdihumboldt.hale.schemaprovider.provider;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
@@ -223,50 +224,42 @@ public class ApacheSchemaProvider
 	/**
 	 * @see SchemaProvider#loadSchema(java.net.URI)
 	 */
-	public Schema loadSchema(URI location) {
+	public Schema loadSchema(URI location) throws IOException {
 		// use XML Schema to load schema with all its subschema to the memory
 		InputStream is = null;
 		URL locationURL;
-		try {
-			locationURL = location.toURL();
-			is = locationURL.openStream();
-		} catch (Throwable e) {
-			_log.error("File URI could not be resolved.", e);
-			throw new RuntimeException(e);
-		}
+		locationURL = location.toURL();
+		is = locationURL.openStream();
+
 		XmlSchema schema = null;
-		try {
-			XmlSchemaCollection schemaCol = new XmlSchemaCollection();
-			// Check if the file is located on web
-			if (location.getHost() == null) {
-				schemaCol.setSchemaResolver(new HumboldtURIResolver());
-			    schemaCol.setBaseUri(findBaseUri(location));
-			}
-			else if (location.getScheme().equals("bundleresource")) {
-				schemaCol.setSchemaResolver(new HumboldtURIResolver());
-				schemaCol.setBaseUri(findBaseUri(location) + "/");
-			}
-			schema = schemaCol.read(new StreamSource(is), null);
-			is.close();
-		} catch (Throwable e) {
-			e.printStackTrace();
+		XmlSchemaCollection schemaCol = new XmlSchemaCollection();
+		// Check if the file is located on web
+		if (location.getHost() == null) {
+			schemaCol.setSchemaResolver(new HumboldtURIResolver());
+			schemaCol.setBaseUri(findBaseUri(location));
+		} else if (location.getScheme().equals("bundleresource")) {
+			schemaCol.setSchemaResolver(new HumboldtURIResolver());
+			schemaCol.setBaseUri(findBaseUri(location) + "/");
 		}
-		
+		schema = schemaCol.read(new StreamSource(is), null);
+		is.close();
+
 		String namespace = schema.getTargetNamespace();
 		if (namespace == null || namespace.isEmpty()) {
 			// default to gml schema
 			namespace = "http://www.opengis.net/gml";
 		}
-		
-		Map<Name, TypeDefinition> types = loadSchema(schema, new HashMap<String, Map<Name, TypeDefinition>>());
-		
+
+		Map<Name, TypeDefinition> types = loadSchema(schema,
+				new HashMap<String, Map<Name, TypeDefinition>>());
+
 		Map<String, TypeDefinition> featureTypes = new HashMap<String, TypeDefinition>();
 		for (TypeDefinition type : types.values()) {
 			if (type.isComplexType()) {
 				featureTypes.put(type.getIdentifier(), type);
 			}
 		}
-		
+
 		return new Schema(featureTypes, namespace, locationURL);
 	}
 		

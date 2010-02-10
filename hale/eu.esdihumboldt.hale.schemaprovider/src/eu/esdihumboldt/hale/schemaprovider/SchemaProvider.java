@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.hale.schemaprovider;
 
+import java.io.IOException;
 import java.net.URI;
 
 import org.opengis.feature.type.FeatureType;
@@ -32,5 +33,5 @@ public interface SchemaProvider {
 	 * @param location URI which represents a file
 	 * @return the schema object containing the {@link FeatureType}s
 	 */
-	public Schema loadSchema(URI location);
+	public Schema loadSchema(URI location) throws IOException;
 }

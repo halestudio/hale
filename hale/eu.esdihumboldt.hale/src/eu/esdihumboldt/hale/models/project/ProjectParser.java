@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.models.project;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -143,7 +144,7 @@ public class ProjectParser {
 					SchemaType.TARGET);
 			projectService.setSourceSchemaPath(project.getSourceSchema().getPath());
 			projectService.setTargetSchemaPath(project.getTargetSchema().getPath());
-		} catch (URISyntaxException e) {
+		} catch (Exception e) {
 			throw new RuntimeException("Schema could not be loaded: ", e);
 		}
 		
