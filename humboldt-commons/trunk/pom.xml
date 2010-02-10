@@ -40,13 +40,23 @@
 					</execution>
 				</executions>
 				<configuration>
-					<schemaDirectory>src/main/resource/schema</schemaDirectory>
-					<bindingDirectory>src/main/resource/schema</bindingDirectory>
-					<generatePackage>eu.esdihumboldt.generated</generatePackage>
-					<!--
-						<generateDirectory>${basedir}/src/main/java</generateDirectory>
-					-->
-					<readOnly>true</readOnly>
+
+					<schemaDirectory>
+						src/main/resource/schema
+					</schemaDirectory>
+
+					<includeSchemas>
+						<includeSchema>align.xsd</includeSchema>
+						<includeSchema>configuration.xsd</includeSchema>
+					</includeSchemas>
+					<bindingDirectory>
+						src/main/resource/jxbbinding
+					</bindingDirectory>
+					<includeBinding>bindings.xjb</includeBinding>
+
+
+
+					<strict>false</strict>
 				</configuration>
 			</plugin>
 
@@ -76,13 +86,6 @@
 					<source>1.6</source>
 					<target>1.6</target>
 					<encoding>${project.build.sourceEncoding}</encoding>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<pde>true</pde>
 				</configuration>
 			</plugin>
 
