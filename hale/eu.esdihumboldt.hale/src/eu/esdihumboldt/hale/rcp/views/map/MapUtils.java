@@ -60,7 +60,9 @@ public abstract class MapUtils {
 		// try the instance data first.
 		if (fc != null) {
 			Feature f = fc.features().next();
-			crs = f.getDefaultGeometryProperty().getDescriptor().getCoordinateReferenceSystem();
+			if (f.getDefaultGeometryProperty() != null) {
+				crs = f.getDefaultGeometryProperty().getDescriptor().getCoordinateReferenceSystem();
+			}
 		}
 		
 		// then check the schema.
