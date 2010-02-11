@@ -39,14 +39,10 @@ public class CstFunctionFactoryTest extends TestCase{
 	private String namespace1 = "http://somenamespace.org/path";
 
 	private static final Class[] parameters = new Class[]{URL.class};
+	
 	@Override
 	protected void setUp() throws Exception {		
-		super.setUp();				
-		/**
-		 * We should add corefunctions jar to classpath before trying to register it.
-		 */
-		URL functions = getClass().getResource("corefunctions-SNAPSHOT.jar");		
-		addURL(functions);				
+		AddFunctionsToPathUtility.getInstance().add();				
 	}
 	@Test
 	public void testFeatureRenameTransfomer() throws Exception {

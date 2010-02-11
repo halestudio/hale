@@ -5,12 +5,16 @@ package eu.esdihumboldt.cst.capabilities.impl;
 
 import static org.junit.Assert.*;
 
+import java.net.URISyntaxException;
+
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
 import eu.esdihumboldt.cst.transformer.capabilities.impl.FunctionDescriptionImpl;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
+import eu.esdihumboldt.cst.transformer.service.AddFunctionsToPathUtility;
 
 /**
  * JUnit 4 Test for the {@link FunctionDescriptionImpl} type.
@@ -21,6 +25,10 @@ import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
  */
 public class FunctionDescriptionImplTest {
 
+	@BeforeClass
+	public static void addCstFunctionsTopath(){
+		AddFunctionsToPathUtility.getInstance().add();
+	}
 	/**
 	 * Test method for {@link eu.esdihumboldt.cst.transformer.capabilities.impl.FunctionDescriptionImpl#FunctionDescriptionImpl(eu.esdihumboldt.cst.transformer.CstFunction)}.
 	 */

@@ -16,33 +16,10 @@ public class WPSTest extends TestCase {
 	/**
 	 * We should add corefunctions jar to classpath before trying to register it.
 	 */
-	URL functions = getClass().getResource("corefunctions-SNAPSHOT.jar");		
-	CstFunctionFactoryTest.addURL(functions);
-    }
-  
-      
-    /**
-     * Tests if getParameters Method is compatible with configure method 
-     */
-    public void testCellConfiguration() throws Exception{
-    	
-    	CstFunctionFactory.getInstance().registerCstPackage("eu.esdihumboldt.cst.corefunctions");			
-		
-		
-    	for (Iterator<String> i = CstFunctionFactory.getInstance().getRegisteredFunctions().keySet().iterator(); i.hasNext();) {
-    		CstFunction f = null;
-    		try {
-				f = CstFunctionFactory.getInstance().getRegisteredFunctions().get(i.next()).newInstance();
-				f.configure(f.getParameters());
-			} catch (Exception e) {
-				assertTrue(f.getClass().getName()+" - incompatible getParameters and configure method", false);
-				e.printStackTrace();
-			}
-		}
-	
+		AddFunctionsToPathUtility.getInstance().add();
     }
     
-	public void ttestWPSInfo(){
+	public void testWPSInfo(){
 		CstFunctionFactory.getInstance().registerCstPackage("eu.esdihumboldt.cst.corefunctions");			
 		
 		CstServiceCapabilitiesImpl service = new CstServiceCapabilitiesImpl();

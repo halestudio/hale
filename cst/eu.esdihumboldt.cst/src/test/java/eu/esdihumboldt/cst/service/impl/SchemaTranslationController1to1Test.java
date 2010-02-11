@@ -42,6 +42,7 @@ import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
+import eu.esdihumboldt.cst.transformer.service.AddFunctionsToPathUtility;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory.ToleranceLevel;
 import eu.esdihumboldt.cst.transformer.service.impl.SchemaTranslationController;
 import eu.esdihumboldt.cst.transformer.service.impl.TargetSchemaProvider;
@@ -85,7 +86,7 @@ public class SchemaTranslationController1to1Test {
 			appender.setName("A1");
 			Logger.getRootLogger().addAppender(appender);
 		}
-		
+		AddFunctionsToPathUtility.getInstance().add();
 		// configure the CstFunctionFactory
 		CstFunctionFactory.getInstance().registerCstPackage(
 				"eu.esdihumboldt.cst.corefunctions");
