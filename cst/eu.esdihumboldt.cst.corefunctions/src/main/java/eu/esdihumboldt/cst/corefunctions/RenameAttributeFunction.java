@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.cst.corefunctions;
 
+import java.math.BigInteger;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -110,14 +111,17 @@ public class RenameAttributeFunction extends AbstractCstFunction {
 				(bindingSource.equals(Float.class) 
 						|| bindingSource.equals(Double.class) 
 						|| bindingSource.equals(Integer.class) 
-						|| bindingSource.equals(Long.class))) {
+						|| bindingSource.equals(Long.class)
+						|| bindingSource.equals(BigInteger.class))) {
 			((SimpleFeature)target).setAttribute(
 					this.newName, source.getProperty(
 							this.oldName).getValue().toString());
 		}
 		else {
-			throw new UnsupportedOperationException("For the given source " +
-					"and target attribute bindings, this rename function " +
+			throw new UnsupportedOperationException("For the given source (" 
+					+ bindingSource.getName() +
+					") and target (" + bindingTarget.getName() 
+					+ ") attribute bindings, this rename function " +
 					"cannot be used.");
 		}
 		
