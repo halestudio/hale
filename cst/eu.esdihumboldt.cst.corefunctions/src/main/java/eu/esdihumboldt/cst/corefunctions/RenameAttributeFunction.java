@@ -22,8 +22,17 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.cst.align.ICell;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+
 import eu.esdihumboldt.cst.AbstractCstFunction;
+import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
@@ -56,49 +65,52 @@ public class RenameAttributeFunction extends AbstractCstFunction {
 	 * (Strings, Numbers).
 	 */
 	public Feature transform(Feature source, Feature target) {
-		Class<?> pdSource = source.getProperty(this.oldName).getDescriptor()
+		Class<?> bindingSource = source.getProperty(this.oldName).getDescriptor()
 								.getType().getBinding();
-		Class<?> pdTarget = target.getProperty(this.newName).getDescriptor()
+		Class<?> bindingTarget = target.getProperty(this.newName).getDescriptor()
 								.getType().getBinding();
 		
 		// only do a direct copy if the two Properties have equal bindings.
-		if (pdSource.equals(pdTarget)) {
+		if (bindingSource.equals(bindingTarget)) {
 			((SimpleFeature)target).setAttribute(
 					this.newName, source.getProperty(this.oldName).getValue());
 		}
-		else if (pdSource.equals(Integer.class) 
-				&& pdTarget.equals(Integer.class)) {
+		else if (Geometry.class.isAssignableFrom(bindingSource) 
+				&& Geometry.class.isAssignableFrom(bindingTarget)) {
+			Object value = this.convertSpatialType(
+					bindingSource, bindingTarget, 
+					(Geometry) source.getProperty(this.oldName).getValue());
+			((SimpleFeature)target).setAttribute(this.newName, value);
+		}
+		else if (bindingSource.equals(Integer.class) 
+				&& bindingTarget.equals(Integer.class)) {
 			Integer value = Integer.parseInt(source.getProperty(
 					this.oldName).getValue().toString());
-			((SimpleFeature)target).setAttribute(
-					this.newName, value);
+			((SimpleFeature)target).setAttribute(this.newName, value);
 		}
-		else if (pdSource.equals(String.class) 
-				&& pdTarget.equals(Long.class)) {
+		else if (bindingSource.equals(String.class) 
+				&& bindingTarget.equals(Long.class)) {
 			Long value = Long.parseLong(source.getProperty(
 					this.oldName).getValue().toString());
-			((SimpleFeature)target).setAttribute(
-					this.newName, value);
+			((SimpleFeature)target).setAttribute(this.newName, value);
 		}
-		else if (pdSource.equals(String.class) 
-				&& pdTarget.equals(Float.class)) {
+		else if (bindingSource.equals(String.class) 
+				&& bindingTarget.equals(Float.class)) {
 			Float value = Float.parseFloat(source.getProperty(
 					this.oldName).getValue().toString());
-			((SimpleFeature)target).setAttribute(
-					this.newName, value);
+			((SimpleFeature)target).setAttribute(this.newName, value);
 		}
-		else if (pdSource.equals(String.class) 
-				&& pdTarget.equals(Double.class)) {
+		else if (bindingSource.equals(String.class) 
+				&& bindingTarget.equals(Double.class)) {
 			Double value = Double.parseDouble(source.getProperty(
 					this.oldName).getValue().toString());
-			((SimpleFeature)target).setAttribute(
-					this.newName, value);
+			((SimpleFeature)target).setAttribute(this.newName, value);
 		}
-		else if (pdTarget.equals(String.class) && 
-				(pdSource.equals(Float.class) 
-						|| pdSource.equals(Double.class) 
-						|| pdSource.equals(Integer.class) 
-						|| pdSource.equals(Long.class))) {
+		else if (bindingTarget.equals(String.class) && 
+				(bindingSource.equals(Float.class) 
+						|| bindingSource.equals(Double.class) 
+						|| bindingSource.equals(Integer.class) 
+						|| bindingSource.equals(Long.class))) {
 			((SimpleFeature)target).setAttribute(
 					this.newName, source.getProperty(
 							this.oldName).getValue().toString());
@@ -152,6 +164,45 @@ public class RenameAttributeFunction extends AbstractCstFunction {
 		parameterCell.setEntity1(entity1);
 		parameterCell.setEntity2(entity2);
 		return parameterCell;
+	}
+	
+	private Geometry convertSpatialType(Class<?> bindingSource, Class<?> bindingTarget, Geometry geom) {
+		GeometryFactory geomFactory = new GeometryFactory();
+		Geometry newGeometry = null;
+		if (bindingSource.equals(Point.class)
+				&& bindingTarget.equals(MultiPoint.class)) { // Point -> MultiPoint
+			newGeometry = geomFactory.createMultiPoint(geom.getCoordinates());
+		} else if (bindingSource.equals(LineString.class)
+				&& bindingTarget.equals(MultiPoint.class)) { // LineString -> Multipoint
+			newGeometry = geomFactory.createMultiPoint(geom.getCoordinates());
+		} else if (bindingSource.equals(Polygon.class)
+				&& bindingTarget.equals(MultiPoint.class)) { // Polygon -> Multipoint
+			newGeometry = geomFactory.createMultiPoint(geom.getCoordinates());
+		} else if (bindingSource.equals(MultiPolygon.class)
+				&& bindingTarget.equals(MultiPoint.class)) { // MultiPolygon -> Multipoint
+			newGeometry = geomFactory.createMultiPoint(geom.getCoordinates());
+		} else if (bindingSource.equals(MultiLineString.class)
+				&& bindingTarget.equals(MultiPoint.class)) { // MultiLineString -> Multipoint
+			newGeometry = geomFactory.createMultiPoint(geom.getCoordinates());
+		} else if (bindingSource.equals(Polygon.class)
+				&& bindingTarget.equals(MultiLineString.class)) { // Polygon -> MultiLineString
+			newGeometry = geom.getBoundary();
+		} else if (bindingSource.equals(Polygon.class)
+				&& bindingTarget.equals(LineString.class)) { // Polygon -> LineString
+			newGeometry = geomFactory.createLineString(geom.getCoordinates());
+		} else if (bindingSource.equals(MultiPolygon.class)
+				&& bindingTarget.equals(MultiLineString.class)) { // MultiPolygon -> MultiLineString
+			newGeometry = geom.getBoundary();
+		} else if (bindingSource.equals(MultiPolygon.class)
+				&& bindingTarget.equals(LineString.class)) { // MultiPolygon -> LineString
+			newGeometry = geomFactory.createLineString(geom.getCoordinates());
+		}
+		else {
+			throw new RuntimeException(
+					"Spatial type conversion from " + bindingSource.getName() 
+					+ " to " + bindingTarget.getName() + " is not supported.");
+		}
+		return newGeometry;
 	}
 	
 }
