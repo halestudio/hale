@@ -38,6 +38,12 @@
 						</excludes>
 					</configuration>
 				</plugin>
+				<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<pde>true</pde>
+				</configuration>
+			</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
