@@ -14,10 +14,8 @@ package eu.esdihumboldt.hale.models.project;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -136,14 +134,20 @@ public class ProjectParser {
 		// first, load schemas.
 		monitor.subTask("Schemas");
 		try {
-			schemaService.loadSchema(
-					new URI(project.getSourceSchema().getPath()), 
-					SchemaType.SOURCE);
-			schemaService.loadSchema(
-					new URI(project.getTargetSchema().getPath()), 
-					SchemaType.TARGET);
-			projectService.setSourceSchemaPath(project.getSourceSchema().getPath());
-			projectService.setTargetSchemaPath(project.getTargetSchema().getPath());
+			if (project.getSourceSchema() != null 
+					&& project.getSourceSchema().getPath() != null) {
+				schemaService.loadSchema(
+						new URI(project.getSourceSchema().getPath()), 
+						SchemaType.SOURCE);
+				projectService.setSourceSchemaPath(project.getSourceSchema().getPath());
+			}
+			if (project.getTargetSchema() != null 
+					&& project.getTargetSchema().getPath() != null) {
+				schemaService.loadSchema(
+						new URI(project.getTargetSchema().getPath()), 
+						SchemaType.TARGET);
+				projectService.setTargetSchemaPath(project.getTargetSchema().getPath());
+			}
 		} catch (Exception e) {
 			throw new RuntimeException("Schema could not be loaded: ", e);
 		}

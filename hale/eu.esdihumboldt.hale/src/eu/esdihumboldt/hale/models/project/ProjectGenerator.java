@@ -27,7 +27,6 @@ import javax.xml.namespace.QName;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.resource.StringConverter;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.styling.SLDTransformer;
 import org.geotools.styling.Style;
@@ -114,7 +113,7 @@ public class ProjectGenerator {
 			id.setPath(projectService.getInstanceDataPath());
 			if (SelectCRSDialog.lastWasCode()) {
 				id.setEpsgcode(
-						SelectCRSDialog.getValue().getCoordinateSystem().getName().getCode());
+						SelectCRSDialog.getValue().getIdentifiers().iterator().next().toString());
 			}
 			else if (SelectCRSDialog.getValueWKT() != null) {
 				id.setWkt(SelectCRSDialog.getValueWKT());
