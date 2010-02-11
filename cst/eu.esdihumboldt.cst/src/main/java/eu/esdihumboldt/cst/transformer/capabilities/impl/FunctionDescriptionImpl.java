@@ -53,6 +53,28 @@ public class FunctionDescriptionImpl
 		inspectCell(function.getParameters());
 	}
 	
+	public FunctionDescriptionImpl(ICell cell) {
+		
+		// create Identifier for function
+		try {
+			String cstfname = "";
+			if (cell.getEntity1() != null 
+					&& cell.getEntity1().getTransformation() != null) {
+				cstfname = cell.getEntity1().getTransformation().getService().getLocation();
+			}
+			if (cell.getEntity2() != null 
+					&& cell.getEntity2().getTransformation() != null) {
+				cstfname = cell.getEntity2().getTransformation().getService().getLocation();
+			}
+			this.url = new URL("file://java/" + cstfname);
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
+		
+		// set parameters from cell configuration
+		inspectCell(cell);
+	}
+	
 	private void inspectCell(ICell parameter) {
 		try {
 			if (parameter.getEntity1() != null) {
@@ -141,6 +163,14 @@ public class FunctionDescriptionImpl
 
 	public Map<String, Class<?>> getParameterConfiguration() {
 		return parameters;
+	}
+	
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		for (String key : this.parameters.keySet()) {
+			sb.append(key + ": " + this.parameters.get(key).getName() + "\n");
+		}
+		return sb.toString();
 	}
 
 }

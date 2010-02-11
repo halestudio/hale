@@ -48,16 +48,15 @@ public class CstServiceImpl
 	implements CstService {
 	
 	private static Logger _log = Logger.getLogger(CstServiceImpl.class);
-
-	private final CstServiceCapabilities tCapabilities = new CstServiceCapabilitiesImpl();
-	private ToleranceLevel tl = null;
+	private static ToleranceLevel tl = null;
+	private static boolean createLineage = true;
 
 	/**
 	 * Default {@link CstService} constructor.
 	 * @param tl 
 	 */
 	public CstServiceImpl(ToleranceLevel tl) {
-		this.tl = tl;
+		CstServiceImpl.tl = tl;
 	}
 
 
@@ -69,7 +68,7 @@ public class CstServiceImpl
 			FeatureCollection<? extends FeatureType, ? extends Feature> fc,
 			IAlignment alignment, Set<FeatureType> targetSchema) {
 		TargetSchemaProvider.getInstance().addTypes(targetSchema);
-		SchemaTranslationController stc = new SchemaTranslationController(tl, alignment);
+		SchemaTranslationController stc = new SchemaTranslationController(CstServiceImpl.tl, CstServiceImpl.createLineage, alignment);
 		FeatureCollection result = stc.translate((FeatureCollection) fc);
 		return result;
 	}
@@ -99,9 +98,7 @@ public class CstServiceImpl
 	}
 
 	public CstServiceCapabilities getCapabilities() {
-		// FIXME, must be re-implemented based on Cell mechanism and on current state (shouldn't be done in constructor!)
-		return tCapabilities;
-
+		return new CstServiceCapabilitiesImpl();
 	}
 
 	/**
@@ -118,5 +115,10 @@ public class CstServiceImpl
 			_log.info("Registered CstFunction: " + type.getName());
 		}
 		return result;
+	}
+
+
+	public void enableLineageCreation(boolean activateLineage) {
+		CstServiceImpl.createLineage = activateLineage;
 	}
 }

@@ -94,7 +94,7 @@ public class SchemaTranslationController1to1Test {
 				"eu.esdihumboldt.cst.corefunctions.inspire");
 		
 		// set up the Schema Translation Controller to use for testing
-		stc = new SchemaTranslationController(null, getTestAlignment());
+		stc = new SchemaTranslationController(null, true, getTestAlignment());
 		sourceType = getFeatureType(
 				NameHelper.sourceNamespace, 
 				NameHelper.sourceLocalname, 
@@ -193,7 +193,7 @@ public class SchemaTranslationController1to1Test {
 				((FeatureClass) cell.getEntity1()).setAttributeValueCondition(attributeValueConditions );
 			}
 		}
-		stc = new SchemaTranslationController(ToleranceLevel.strict, a);
+		stc = new SchemaTranslationController(ToleranceLevel.strict, true, a);
 		
 		// set up a FeatureCollection to use for transformation.
 		FeatureCollection features = FeatureCollections.newCollection();

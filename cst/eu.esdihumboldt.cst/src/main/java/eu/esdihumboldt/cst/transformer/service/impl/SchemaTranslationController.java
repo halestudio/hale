@@ -35,6 +35,7 @@ import org.opengis.metadata.lineage.Lineage;
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.CstFunction;
+import eu.esdihumboldt.cst.transformer.capabilities.impl.FunctionDescriptionImpl;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory.ToleranceLevel;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
@@ -60,13 +61,16 @@ public class SchemaTranslationController {
 	
 	boolean strict = true;
 	
+	boolean addLineage = true;
+	
 	/**
 	 * Constructor
 	 * @param tl 
 	 * 
 	 * @param alignment the alignment
 	 */
-	public SchemaTranslationController(ToleranceLevel tl, IAlignment alignment) {
+	public SchemaTranslationController(ToleranceLevel tl, 
+			boolean createLineage, IAlignment alignment) {
 		// get an AlignmentIndex
 		this.ai = new AlignmentIndex(alignment);
 		
@@ -78,6 +82,8 @@ public class SchemaTranslationController {
 				this.strict = false;
 			}
 		}
+		
+		this.addLineage = createLineage;
 	}
 
 	/**
@@ -252,7 +258,9 @@ public class SchemaTranslationController {
 								error = e.getMessage();
 							}
 						}
-						this.addLineage(error, cstf, target);
+						if (this.addLineage) {
+							this.addLineage(error, cstf, target, cell);
+						}
 					}
 				}
 			}
@@ -290,8 +298,10 @@ public class SchemaTranslationController {
 							error = e.getMessage();
 						}
 					}
-					this.addLineage(error, cstf, 
-							transformMap.getTransformedFeatures().get(i));
+					if (this.addLineage) {
+						this.addLineage(error, cstf, 
+								transformMap.getTransformedFeatures().get(i), cell);
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -306,17 +316,21 @@ public class SchemaTranslationController {
 		}
 	}
 	
-	private void addLineage(String error, CstFunction cstf, Feature target) {
+	private void addLineage(String error, CstFunction cstf, Feature target, ICell cell) {
 		// add information about transformation to Feature
 		ProcessStepImpl ps = new ProcessStepImpl();
 		ps.setDate(new Date());
 		if (error != null) {
 			ps.setDescription(new SimpleInternationalString(
+					"HUMBOLDT Conceptual Schema Transformer 1.0.0: " +
 					cstf.getClass().getName() + " execution error: " + error));
 		}
 		else {
 			ps.setDescription(new SimpleInternationalString(
-					cstf.getClass().getName() + " applied."));
+					"HUMBOLDT Conceptual Schema Transformer 1.0.0: " 
+					+ cstf.getClass().getName() 
+					+ " applied with the following parameters: \n"
+					+ new FunctionDescriptionImpl(cell).toString()));
 		}	
 		
 		Object o = ((SimpleFeature) target).getUserData().get("METADATA_LINEAGE");

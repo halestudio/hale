@@ -46,9 +46,21 @@ public class CstServiceFactory {
 		return service;
 	}
 	
+	/**
+	 * 
+	 * @param tl the {@link ToleranceLevel} to use for this CST.
+	 */
 	public static void setToleranceLevel(ToleranceLevel tl) {
 		CstServiceFactory.tl = tl;
 		service = new CstServiceImpl(tl);
+	}
+	
+	/**
+	 * @param activateLineage true if Lineage should be created and attached to 
+	 * the transformed features.
+	 */
+	public static void setLineageMode(boolean activateLineage) {
+		service.enableLineageCreation(activateLineage);
 	}
 	
 	/**
