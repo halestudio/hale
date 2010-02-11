@@ -44,6 +44,12 @@
 						<encoding>UTF-8</encoding> <!-- The -encoding argument for the Java compiler. -->
 					</configuration>
 				</plugin>
+				<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<pde>true</pde>
+				</configuration>
+			</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
