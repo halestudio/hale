@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: HUMBOLDT Commons
-Bundle-SymbolicName: eu.esdihumboldt.commons
-Bundle-Version: 2.0.1
+Bundle-Name: HUMBOLDT Common Library Component
+Bundle-SymbolicName: common-library;singleton:=true
+Bundle-Version: 3.0.1.SNAPSHOT
 Export-Package: eu.esdihumboldt.goml.align,
  eu.esdihumboldt.goml.oml.ext,
  eu.esdihumboldt.goml.oml.io,
@@ -23,3 +23,4 @@ Export-Package: eu.esdihumboldt.goml.align,
  eu.esdihumboldt.tools
 Import-Package: eu.esdihumboldt.cst.align,eu.esdihumboldt.cst.align.ext,eu.esdihumboldt.cst.rdf
 Eclipse-BuddyPolicy: registered
+Bundle-ClassPath: .
