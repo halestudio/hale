@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.rcp.utils.definition.internal;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
+import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditorFactory;
 import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 
 /**
@@ -35,6 +36,9 @@ public class ServiceFactory extends AbstractServiceFactory {
 			IServiceLocator locator) {
 		if (serviceInterface.equals(DefinitionLabelFactory.class)) {
 			return new DefaultDefinitionLabelFactory();
+		}
+		else if (serviceInterface.equals(AttributeEditorFactory.class)) {
+			return new DefaultAttributeEditorFactory();
 		}
 		
 		return null;

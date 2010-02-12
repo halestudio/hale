@@ -19,9 +19,6 @@ import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -32,14 +29,17 @@ import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.corefunctions.ConstantValueFunction;
+import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditor;
+import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditorFactory;
 import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizardPage;
+import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 
 /**
- * 
+ * Main page of the {@link ConstantValueWizard}
  *
- * @author Anna Pitaev
- * @partner 04 / Logica
+ * @author Anna Pitaev, Simon Templer
+ * @partner 04 / Logica; 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
 public class ConstantValueWizardPage extends AugmentationWizardPage {
@@ -48,8 +48,15 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 	//private Text attributeNameText;
 	
 	/** text field for the default value to set up */
-	private StyledText attributeValueText;
+	private AttributeEditor<?> attributeValue;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param pageName
+	 * @param title
+	 * @param titleImage
+	 */
 	public ConstantValueWizardPage(String pageName, String title,
 			ImageDescriptor titleImage) {
 		super(pageName, title, titleImage);
@@ -78,6 +85,7 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 	
 	private void createConfigurationGroup(Composite parent) {
 		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(DefinitionLabelFactory.class);
+		AttributeEditorFactory aef = (AttributeEditorFactory) PlatformUI.getWorkbench().getService(AttributeEditorFactory.class);
 		
 		// define source group composite
 		Group configurationGroup = new Group(parent, SWT.NONE);
@@ -114,8 +122,8 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 		
 		final Label outputAttributeLabel = new Label(configurationComposite, SWT.NONE);
 		outputAttributeLabel.setText("Attribute default value:");
-		this.attributeValueText = new StyledText(configurationComposite, SWT.BORDER | SWT.SINGLE);
-		this.attributeValueText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		attributeValue = aef.createEditor(configurationComposite, (AttributeDefinition) getParent().getItem().getDefinition());
+		attributeValue.getControl().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		//if cell already exists and valid, display the old default value
 		if ((getParent().getResultCell()!= null && getParent().getResultCell().getEntity2()!= null && getParent().getResultCell().getEntity2().getTransformation()!=null && getParent().getResultCell().getEntity2().getTransformation().getParameters()!= null)){
 			String oldValue = "";
@@ -127,20 +135,16 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 					oldValue = tmpParameter.getValue();
 				}
 			}
-			this.attributeValueText.setText(oldValue);
-			this.attributeValueText.setCaretOffset(oldValue.length());
+			attributeValue.setAsText(oldValue);
+			//XXX this.attributeValueText.setCaretOffset(oldValue.length());
 			
 		}
-		this.attributeValueText.addModifyListener(new ModifyListener() {
+		/*XXX this.attributeValueText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e){
 				updatePageComplete();
 				
 			}
-
-			
-		});
-		
-		this.attributeValueText.setEnabled(true);
+		});*/
 	}
 	
 	/**
@@ -149,18 +153,15 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 	@Override
 	public boolean isPageComplete() {
 		boolean isComplete = false;
-		if (this.attributeValueText!=null && !this.attributeValueText.getText().equals("")){
+		if (attributeValue !=null && !attributeValue.getAsText().equals("")){
 			isComplete = true;
 		}
 		return isComplete;
 	}
 
-	/**
-	 * @see WizardPage#isPageComplete()
-	 */
-	private void updatePageComplete(){
+	/*XXX private void updatePageComplete(){
 		setPageComplete(this.isPageComplete());
-	}
+	}*/
 	
 	/**
 	 * Returns the default value to be set
@@ -168,7 +169,7 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 	 * @return the parameter value
 	 */
 	public String getParamValue() {
-		return this.attributeValueText.getText();
+		return attributeValue.getAsText();
 	}
 
 }

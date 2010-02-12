@@ -313,6 +313,9 @@
             factoryClass="eu.esdihumboldt.hale.rcp.utils.definition.internal.ServiceFactory">
          <service
                serviceClass="eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory"></service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditorFactory">
+         </service>
       </serviceFactory>
    </extension>
    <extension
