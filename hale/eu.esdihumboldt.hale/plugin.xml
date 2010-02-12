@@ -309,6 +309,11 @@
                serviceClass="eu.esdihumboldt.hale.rcp.views.table.ReferenceSampleService">
          </service>
       </serviceFactory>
+      <serviceFactory
+            factoryClass="eu.esdihumboldt.hale.rcp.utils.definition.internal.ServiceFactory">
+         <service
+               serviceClass="eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory"></service>
+      </serviceFactory>
    </extension>
    <extension
          point="org.eclipse.ui.splashHandlers">

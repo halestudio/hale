@@ -28,8 +28,11 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
 
@@ -65,6 +68,8 @@ public class MathFunctionPage extends AbstractSingleComposedCellWizardPage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
+		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(DefinitionLabelFactory.class);
+		
 		Composite page = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout(3, false);
 		page.setLayout(layout);
@@ -74,12 +79,16 @@ public class MathFunctionPage extends AbstractSingleComposedCellWizardPage {
 			variables.add(var.getName().getLocalPart());
 		}
 		
-		// expression
 		SchemaItem target = getParent().getFirstTargetItem();
-		expressionEditor = new MathExpressionFieldEditor("expression",
-				target.getName().getLocalPart() + " =", page,
-				variables);
 		
+		// target attribute label
+		Control attributeLabel = dlf.createLabel(page, target.getDefinition());
+		attributeLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
+		
+		// expression
+		expressionEditor = new MathExpressionFieldEditor("expression",
+				"=", page,
+				variables);
 		expressionEditor.setStringValue(initialExpression);
 		expressionEditor.setEmptyStringAllowed(false);
 		expressionEditor.setPage(this);
@@ -91,16 +100,18 @@ public class MathFunctionPage extends AbstractSingleComposedCellWizardPage {
 				}
 			}
 		});
-		expressionEditor.getLabelControl(page).setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		
 		// spacer
-		new Label(page, SWT.NONE).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 3));
-		new Label(page, SWT.NONE).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+		new Label(page, SWT.NONE).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 2, 3));
+		new Label(page, SWT.NONE).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 2, 1));
 		
 		// variables
 		Label label = new Label(page, SWT.NONE);
 		label.setText("Available variables (double click to insert)");
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+		
+		// spacer
+		new Label(page, SWT.NONE).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 2, 1));
 		
 		final ListViewer varList = new ListViewer(page);
 		varList.getControl().setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
@@ -125,6 +136,10 @@ public class MathFunctionPage extends AbstractSingleComposedCellWizardPage {
 			}
 			
 		});
+		
+		// re-set the layout because the field editor breaks it and sets its own
+		page.setLayout(layout);
+		page.layout(true, true);
 		
 		setControl(page);
 		

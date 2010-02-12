@@ -228,5 +228,12 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 						getDeclaringType().getName().getLocalPart(),
 						name));
 	}
+
+	/**
+	 * @see Definition#getDisplayName()
+	 */
+	public String getDisplayName() {
+		return getName();
+	}
 	
 }

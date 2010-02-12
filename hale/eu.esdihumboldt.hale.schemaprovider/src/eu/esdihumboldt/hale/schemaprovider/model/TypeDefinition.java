@@ -320,4 +320,11 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 						name.getLocalPart()));
 	}
 
+	/**
+	 * @see Definition#getDisplayName()
+	 */
+	public String getDisplayName() {
+		return getName().getLocalPart();
+	}
+
 }

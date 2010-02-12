@@ -32,7 +32,8 @@ Import-Package: eu.esdihumboldt.hale.prefixmapper,
  eu.esdihumboldt.hale.schemaprovider.model,
  eu.esdihumboldt.hale.schemaprovider.provider,
  org.apache.log4j
-Export-Package: eu.esdihumboldt.hale.rcp.utils.filter,
+Export-Package: eu.esdihumboldt.hale.rcp.utils.definition,
+ eu.esdihumboldt.hale.rcp.utils.filter,
  eu.esdihumboldt.hale.rcp.views.model,
  eu.esdihumboldt.hale.rcp.wizards.augmentations,
  eu.esdihumboldt.hale.rcp.wizards.functions

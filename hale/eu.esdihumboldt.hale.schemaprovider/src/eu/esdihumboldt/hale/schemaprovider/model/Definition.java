@@ -31,6 +31,13 @@ public interface Definition {
 	public String getIdentifier();
 	
 	/**
+	 * Get the definition's display name
+	 * 
+	 * @return the display name
+	 */
+	public String getDisplayName();
+	
+	/**
 	 * Get the description
 	 *  
 	 * @return the description string or <code>null</code>
