@@ -53,12 +53,10 @@ import eu.esdihumboldt.hale.models.project.generated.Task;
 import eu.esdihumboldt.hale.models.project.generated.TaskStatus;
 import eu.esdihumboldt.hale.rcp.views.map.MapView;
 import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
+import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
-import eu.esdihumboldt.hale.task.ServiceProvider;
 import eu.esdihumboldt.hale.task.TaskUserData;
 import eu.esdihumboldt.hale.task.impl.BaseTask;
-import eu.esdihumboldt.hale.task.impl.DefaultTask;
-import eu.esdihumboldt.hale.task.impl.EclipseServiceProvider;
 import eu.esdihumboldt.hale.task.impl.TaskUserDataImpl;
 
 /**
@@ -105,11 +103,7 @@ public class ProjectParser {
 		monitor.done();
 	}
 
-	/**
-	 * @param monitor 
-	 * @param value
-	 */
-	private static void load(HaleProject project, IProgressMonitor monitor) {
+	private static void load(HaleProject project, final IProgressMonitor monitor) {
 		// get service references as required.
 		ProjectService projectService = 
 			(ProjectService) PlatformUI.getWorkbench().getService(
@@ -134,18 +128,31 @@ public class ProjectParser {
 		// first, load schemas.
 		monitor.subTask("Schemas");
 		try {
+			ProgressIndicator progress = new ProgressIndicator() {
+				
+				@Override
+				public void setProgress(int percent) {
+					// ignore
+				}
+				
+				@Override
+				public void setCurrentTask(String taskName) {
+					monitor.subTask(taskName);
+				}
+			};
+			
 			if (project.getSourceSchema() != null 
 					&& project.getSourceSchema().getPath() != null) {
 				schemaService.loadSchema(
 						new URI(project.getSourceSchema().getPath()), 
-						SchemaType.SOURCE);
+						SchemaType.SOURCE, progress);
 				projectService.setSourceSchemaPath(project.getSourceSchema().getPath());
 			}
 			if (project.getTargetSchema() != null 
 					&& project.getTargetSchema().getPath() != null) {
 				schemaService.loadSchema(
 						new URI(project.getTargetSchema().getPath()), 
-						SchemaType.TARGET);
+						SchemaType.TARGET, progress);
 				projectService.setTargetSchemaPath(project.getTargetSchema().getPath());
 			}
 		} catch (Exception e) {

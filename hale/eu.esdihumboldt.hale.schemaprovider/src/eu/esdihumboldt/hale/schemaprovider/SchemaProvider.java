@@ -31,7 +31,9 @@ public interface SchemaProvider {
 	 * {@link FeatureType}s.
 	 * 
 	 * @param location URI which represents a file
+	 * @param progress the progress indicator, may be <code>null</code>
 	 * @return the schema object containing the {@link FeatureType}s
+	 * @throws IOException 
 	 */
-	public Schema loadSchema(URI location) throws IOException;
+	public Schema loadSchema(URI location, ProgressIndicator progress) throws IOException;
 }

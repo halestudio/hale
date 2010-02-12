@@ -60,7 +60,7 @@ public class LoadTestDataHandler extends AbstractHandler implements IHandler {
 			URI uriSource = fileSource.toURI();
 
 			// load Schema as Source schema
-			schemaService.loadSchema(uriSource, SchemaType.SOURCE);
+			schemaService.loadSchema(uriSource, SchemaType.SOURCE, null);
 			
 			// update Alignment
 			Schema schemaSource = new Schema(schemaService.getSourceNameSpace(),
@@ -75,7 +75,7 @@ public class LoadTestDataHandler extends AbstractHandler implements IHandler {
 			File fileTarget = new File(targetFilename);
 			URI uriTarget = fileTarget.toURI();
 		
-			schemaService.loadSchema(uriTarget, SchemaType.TARGET);
+			schemaService.loadSchema(uriTarget, SchemaType.TARGET, null);
 		
 			// update Alignment
 			Schema schemaTarget = new Schema(schemaService.getTargetNameSpace(),

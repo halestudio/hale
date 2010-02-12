@@ -12,13 +12,18 @@
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
@@ -32,6 +37,7 @@ import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
+import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -73,58 +79,105 @@ public class SchemaImportWizard
 	 * @see Wizard#performFinish()
 	 */
 	public boolean performFinish() {
-		SchemaService schemaService = (SchemaService) 
-					PlatformUI.getWorkbench().getService(SchemaService.class);
-		AlignmentService alService = (AlignmentService) 
-					PlatformUI.getWorkbench().getService(AlignmentService.class);
-		final ProjectService projectService = (ProjectService) 
-					PlatformUI.getWorkbench().getService(ProjectService.class);
+		final String result = mainPage.getResult();
+		final SchemaType schemaType = mainPage.getSchemaType();
+		
+		final AtomicBoolean succeeded = new AtomicBoolean(true);
 		
 		try {
-			final String result = mainPage.getResult();
-			
-			URI uri = getSchemaURI(result);
-			
-			Collection<TypeDefinition> currentSchema = schemaService.getSchema(mainPage.getSchemaType());
-			if (currentSchema != null && !currentSchema.isEmpty()) {
-				String info = ((mainPage.getSchemaType() == SchemaType.SOURCE)?("source"):("target"));
+			getContainer().run(true, false, new IRunnableWithProgress() {
 				
-				if (!MessageDialog.openQuestion(getShell(), "Replace " + info + " schema",
-						"A " + info + 
-						" schema has already been loaded. Do you want to replace it with this schema?")) {
-					return false;
+				@Override
+				public void run(final IProgressMonitor monitor) throws InvocationTargetException,
+						InterruptedException {
+					monitor.beginTask("Importing schema", IProgressMonitor.UNKNOWN);
+					
+					SchemaService schemaService = (SchemaService) 
+								PlatformUI.getWorkbench().getService(SchemaService.class);
+					AlignmentService alService = (AlignmentService) 
+								PlatformUI.getWorkbench().getService(AlignmentService.class);
+					final ProjectService projectService = (ProjectService) 
+								PlatformUI.getWorkbench().getService(ProjectService.class);
+					
+					try {
+						URI uri = getSchemaURI(result);
+						
+						Collection<TypeDefinition> currentSchema = schemaService.getSchema(schemaType);
+						if (currentSchema != null && !currentSchema.isEmpty()) {
+							final String info = ((schemaType == SchemaType.SOURCE)?("source"):("target"));
+							
+							final AtomicBoolean loadSchema = new AtomicBoolean(false);
+							final Display display = PlatformUI.getWorkbench().getDisplay();
+							display.syncExec(new Runnable() {
+								
+								@Override
+								public void run() {
+									if (MessageDialog.openQuestion(getShell(), "Replace " + info + " schema",
+											"A " + info + 
+											" schema has already been loaded. Do you want to replace it with this schema?")) {
+										loadSchema.set(true);
+									}
+								}
+							});
+							
+							if (!loadSchema.get()) {
+								succeeded.set(false);
+								return;
+							}
+						}
+						
+						ProgressIndicator progress = new ProgressIndicator() {
+							
+							@Override
+							public void setProgress(int percent) {
+								// ignore
+							}
+							
+							@Override
+							public void setCurrentTask(String taskName) {
+								monitor.subTask(taskName);
+							}
+						};
+						
+						if (schemaType == SchemaType.SOURCE) {;
+							// load Schema as Source schema
+							schemaService.loadSchema(uri, SchemaType.SOURCE, progress);
+							// update Alignment
+							Schema schema = new Schema(schemaService.getSourceNameSpace(), 
+									new Formalism("GML 3.2.1 Application Schema", 
+											new URI("http://www.opengis.net/gml"))); // FIXME
+							alService.getAlignment().setSchema1(schema);
+							projectService.setSourceSchemaPath(uri.toString());
+						}
+						else
+						{
+							schemaService.loadSchema(uri, SchemaType.TARGET, progress);
+							// update Alignment
+							Schema schema = new Schema(schemaService.getTargetNameSpace(), 
+									new Formalism("GML 3.2.1 Application Schema", 
+											new URI("http://www.opengis.net/gml"))); // FIXME
+							alService.getAlignment().setSchema2(schema);
+							projectService.setTargetSchemaPath(uri.toString());
+						}
+					} catch (Exception e2) {
+						ExceptionHelper.handleException(
+								"An error occured while loading the schema you " +
+								"have selected. Most often, such errors appear when a " +
+								"schema import location could not be resolved.", 
+								HALEActivator.PLUGIN_ID, e2);
+						succeeded.set(false);
+					}
+					
+					monitor.done();
 				}
-			}
-			
-			if (mainPage.getSchemaType() == SchemaType.SOURCE) {;
-				// load Schema as Source schema
-				schemaService.loadSchema(uri, SchemaType.SOURCE);
-				// update Alignment
-				Schema schema = new Schema(schemaService.getSourceNameSpace(), 
-						new Formalism("GML 3.2.1 Application Schema", 
-								new URI("http://www.opengis.net/gml"))); // FIXME
-				alService.getAlignment().setSchema1(schema);
-				projectService.setSourceSchemaPath(uri.toString());
-			}
-			else
-			{
-				schemaService.loadSchema(uri, SchemaType.TARGET);
-				// update Alignment
-				Schema schema = new Schema(schemaService.getTargetNameSpace(), 
-						new Formalism("GML 3.2.1 Application Schema", 
-								new URI("http://www.opengis.net/gml"))); // FIXME
-				alService.getAlignment().setSchema2(schema);
-				projectService.setTargetSchemaPath(uri.toString());
-			}
-		} catch (Exception e2) {
+				
+			});
+		} catch (Exception e) {
 			ExceptionHelper.handleException(
-					"An error occured while loading the schema you " +
-					"have selected. Most often, such errors appear when a " +
-					"schema import location could not be resolved.", 
-					HALEActivator.PLUGIN_ID, e2);
+					"Job could not be started.", HALEActivator.PLUGIN_ID, e);
 		}
 		
-		return true;
+		return succeeded.get();
 	}
 	 
 	/**

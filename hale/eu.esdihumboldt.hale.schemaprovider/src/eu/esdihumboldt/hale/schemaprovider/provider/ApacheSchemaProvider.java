@@ -45,14 +45,19 @@ import org.apache.ws.commons.schema.XmlSchemaParticle;
 import org.apache.ws.commons.schema.XmlSchemaSequence;
 import org.apache.ws.commons.schema.XmlSchemaSimpleContentExtension;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
+import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
+import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.Name;
 
+import eu.esdihumboldt.hale.schemaprovider.LogProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.HumboldtURIResolver;
+import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.DependencyOrderedList;
+import eu.esdihumboldt.hale.schemaprovider.provider.internal.ProgressURIResolver;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.SchemaAttribute;
 
 /**
@@ -222,26 +227,37 @@ public class ApacheSchemaProvider
 	}
 	
 	/**
-	 * @see SchemaProvider#loadSchema(java.net.URI)
+	 * @see SchemaProvider#loadSchema(java.net.URI, ProgressIndicator)
 	 */
-	public Schema loadSchema(URI location) throws IOException {
+	public Schema loadSchema(URI location, ProgressIndicator progress) throws IOException {
+		if (progress == null) {
+			progress = new LogProgressIndicator();
+		}
+		
 		// use XML Schema to load schema with all its subschema to the memory
 		InputStream is = null;
 		URL locationURL;
 		locationURL = location.toURL();
 		is = locationURL.openStream();
+		
+		progress.setCurrentTask("Loading schema");
 
 		XmlSchema schema = null;
 		XmlSchemaCollection schemaCol = new XmlSchemaCollection();
 		// Check if the file is located on web
 		if (location.getHost() == null) {
-			schemaCol.setSchemaResolver(new HumboldtURIResolver());
+			schemaCol.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress));
 			schemaCol.setBaseUri(findBaseUri(location));
 		} else if (location.getScheme().equals("bundleresource")) {
-			schemaCol.setSchemaResolver(new HumboldtURIResolver());
+			schemaCol.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress));
 			schemaCol.setBaseUri(findBaseUri(location) + "/");
 		}
+		else {
+			URIResolver resolver = schemaCol.getSchemaResolver();
+			schemaCol.setSchemaResolver(new ProgressURIResolver((resolver == null)?(new DefaultURIResolver()):(resolver), progress));
+		}
 		schema = schemaCol.read(new StreamSource(is), null);
+		
 		is.close();
 
 		String namespace = schema.getTargetNamespace();
@@ -251,7 +267,7 @@ public class ApacheSchemaProvider
 		}
 
 		Map<Name, TypeDefinition> types = loadSchema(schema,
-				new HashMap<String, Map<Name, TypeDefinition>>());
+				new HashMap<String, Map<Name, TypeDefinition>>(), progress);
 
 		Map<String, TypeDefinition> featureTypes = new HashMap<String, TypeDefinition>();
 		for (TypeDefinition type : types.values()) {
@@ -262,16 +278,17 @@ public class ApacheSchemaProvider
 
 		return new Schema(featureTypes, namespace, locationURL);
 	}
-		
+
 	/**
 	 * Load the feature types defined by the given schema
 	 * 
 	 * @param schema the schema
 	 * @param imports the imports/includes that were already
 	 *   loaded or where loading has been started
+	 * @param progress the progress indicator
 	 * @return the map of feature type names and types
 	 */
-	protected Map<Name, TypeDefinition> loadSchema(XmlSchema schema, Map<String, Map<Name, TypeDefinition>> imports) {
+	protected Map<Name, TypeDefinition> loadSchema(XmlSchema schema, Map<String, Map<Name, TypeDefinition>> imports, ProgressIndicator progress) {
 		String namespace = schema.getTargetNamespace();
 		if (namespace == null || namespace.isEmpty()) {
 			// default to gml schema
@@ -293,7 +310,7 @@ public class ApacheSchemaProvider
 				String location = importedSchema.getSourceURI();
 				if (!(imports.containsKey(location))) { // only add schemas that were not already added
 					imports.put(location, null); // place a marker in the map to prevent loading the location in the call to loadSchema 
-					imports.put(location, loadSchema(importedSchema, imports));
+					imports.put(location, loadSchema(importedSchema, imports, progress));
 				}
 				if (imp instanceof XmlSchemaInclude) {
 					includes.add(location);
@@ -302,6 +319,8 @@ public class ApacheSchemaProvider
 				_log.error("Error adding imported schema", e);
 			}
 		}
+		
+		progress.setCurrentTask("Analyzing schema " + namespace);
 		
 		// map for all imported types
 		Map<Name, TypeDefinition> importedFeatureTypes = new HashMap<Name, TypeDefinition>();

@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Map;
 
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
@@ -127,11 +128,11 @@ public class SchemaProviderService<T extends SchemaProvider>
 	}
 
 	/**
-	 * @throws IOException 
-	 * @see SchemaService#loadSchema(URI, SchemaType)
+	 * @see SchemaService#loadSchema(URI, SchemaType, ProgressIndicator)
 	 */
-	public boolean loadSchema(URI location, SchemaType type) throws IOException {
-		Schema schema = schemaProvider.loadSchema(location);
+	@Override
+	public boolean loadSchema(URI location, SchemaType type, ProgressIndicator progress) throws IOException {
+		Schema schema = schemaProvider.loadSchema(location, progress);
 		
 		if (type.equals(SchemaType.SOURCE)) {
 			sourceSchema = schema;

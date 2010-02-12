@@ -165,8 +165,22 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 			@Override
 			public void update(UpdateMessage message) {
 				synchronized (FeatureTilePainter.this) {
-					resetTiles();
-					refresh();
+					if (Display.getCurrent() != null) {
+						resetTiles();
+						refresh();
+					}
+					else {
+						final Display display = PlatformUI.getWorkbench().getDisplay();
+						display.syncExec(new Runnable() {
+							
+							@Override
+							public void run() {
+								resetTiles();
+								refresh();
+							}
+							
+						});
+					}
 				}	
 			}
 			

@@ -18,6 +18,7 @@ import java.util.Collection;
 
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -52,10 +53,11 @@ public interface SchemaService
 	 * May point to different source, such as a XSD or a a WFS.
 	 * @param file the {@link URI} to the file from which to load the schema.
 	 * @param type the schema type
+	 * @param progress the progress indicator, may be <code>null</code>
 	 * @return true if the loading was successful.
 	 * @throws IOException 
 	 */
-	public boolean loadSchema(URI file, SchemaType type) throws IOException;
+	public boolean loadSchema(URI file, SchemaType type, ProgressIndicator progress) throws IOException;
 	
 	/**
 	 * Loads multiple schemas into the target or source schema.
