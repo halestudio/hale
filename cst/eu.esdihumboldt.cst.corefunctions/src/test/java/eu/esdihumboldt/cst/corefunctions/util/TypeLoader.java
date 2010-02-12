@@ -42,7 +42,7 @@ public class TypeLoader {
 		ApacheSchemaProvider asp = new ApacheSchemaProvider();
 		FeatureType type = null;
 		try {
-			Schema schema = asp.loadSchema(new URI(schemaFilename));
+			Schema schema = asp.loadSchema(new URI(schemaFilename), null);
 			if (schema != null) {
 				for (TypeDefinition td : schema.getTypes().values()) {
 					if (td.getFeatureType() != null) {
