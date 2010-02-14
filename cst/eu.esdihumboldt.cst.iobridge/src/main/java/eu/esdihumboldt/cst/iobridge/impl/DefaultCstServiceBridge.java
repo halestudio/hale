@@ -87,7 +87,7 @@ public class DefaultCstServiceBridge
 		ApacheSchemaProvider asp = new ApacheSchemaProvider();
 		Set<FeatureType> result = new HashSet<FeatureType>();
 		try {
-			Schema schema = asp.loadSchema(new URI(schemaFilename));
+			Schema schema = asp.loadSchema(new URI(schemaFilename), null);
 			if (schema != null) {
 				for (TypeDefinition td : schema.getTypes().values()) {
 					if (td.getFeatureType() != null) {
