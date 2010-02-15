@@ -22,7 +22,6 @@ import java.util.Map.Entry;
 
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.dialogs.IDialogPage;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -49,9 +48,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ListDialog;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
 
+import eu.esdihumboldt.hale.rcp.utils.definition.AttributeInputDialog;
 import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.CoreFunctionWizardsPlugin;
+import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 
 /**
  * @author Simon Templer
@@ -119,15 +120,14 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				final Display display = Display.getCurrent();
-				InputDialog dialog = new InputDialog(
-						display.getActiveShell(), 
-						"Add classification", 
-						"Enter a new classification value for " + targetFt + "." + targetProperty, 
-						"",
-						null); // no validator
+				AttributeInputDialog dialog = new AttributeInputDialog(
+						(AttributeDefinition) getParent().getTargetItem().getDefinition(),
+						display.getActiveShell(),
+						"Add classification",
+						"Enter a new classification value for " + targetFt + "." + targetProperty);
 				
-				if (dialog.open() == InputDialog.OK) {
-					String newClass = dialog.getValue();
+				if (dialog.open() == AttributeInputDialog.OK) {
+					String newClass = dialog.getValueAsText();
 					if (newClass != null) {
 						addClassification(newClass);
 					}
@@ -192,17 +192,16 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 				
 				if (allowedValues == null) {
 					// no restriction
-					InputDialog dialog = new InputDialog(
+					AttributeInputDialog dialog = new AttributeInputDialog(
+							(AttributeDefinition) getParent().getSourceItem().getDefinition(),
 							display.getActiveShell(), 
 							"Add value", 
 							"Enter a new value for " + sourceFt + "." + sourceProperty +
 							" that is classified as '" + selectedClass + "' in " +
-							targetFt + "." + targetProperty, 
-							"",
-							null); // no validator
+							targetFt + "." + targetProperty);
 					
-					if (dialog.open() == InputDialog.OK) {
-						String newValue = dialog.getValue();
+					if (dialog.open() == AttributeInputDialog.OK) {
+						String newValue = dialog.getValueAsText();
 						if (newValue != null) {
 							addValue(newValue);
 						}
