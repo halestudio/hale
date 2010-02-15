@@ -37,7 +37,16 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	
 	private TypeDefinition attributeType;
 	
+	/**
+	 * The type declaring the attribute
+	 */
 	private TypeDefinition declaringType;
+	
+	/**
+	 * The concrete parent type of the attribute, may be equal to {@link #declaringType}
+	 *   or a sub type
+	 */
+	private TypeDefinition parentType;
 	
 	/**
 	 * Create an attribute definition
@@ -55,6 +64,18 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	}
 	
 	/**
+	 * Copy constructor
+	 * 
+	 * @param other the attribute definition to copy
+	 */
+	protected AttributeDefinition(AttributeDefinition other) {
+		this(other.getName(), other.getTypeName(), other.getAttributeType());
+		
+		setDescription(other.getDescription());
+		setDeclaringType(other.getDeclaringType());
+	}
+	
+	/**
 	 * Create an attribute descriptor
 	 * 
 	 * @return the attribute descriptor
@@ -62,12 +83,13 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	public abstract AttributeDescriptor createAttributeDescriptor();
 
 	/**
-	 * Set the declaring type
+	 * Init the declaring/parent type
 	 * 
 	 * @param declaringType the declaring type
 	 */
 	void setDeclaringType(TypeDefinition declaringType) {
 		this.declaringType = declaringType;
+		this.parentType = declaringType;
 	}
 
 	/**
@@ -139,7 +161,7 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((declaringType == null) ? 0 : declaringType.hashCode());
+				+ ((parentType == null) ? 0 : parentType.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -156,10 +178,10 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 		if (getClass() != obj.getClass())
 			return false;
 		AttributeDefinition other = (AttributeDefinition) obj;
-		if (declaringType == null) {
-			if (other.declaringType != null)
+		if (parentType == null) {
+			if (other.parentType != null)
 				return false;
-		} else if (!declaringType.equals(other.declaringType))
+		} else if (!parentType.equals(other.parentType))
 			return false;
 		if (name == null) {
 			if (other.name != null)
@@ -175,17 +197,17 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	public int compareTo(AttributeDefinition other) {
 		int result = name.compareToIgnoreCase(other.name);
 		if (result == 0) {
-			if (declaringType == null && other.declaringType == null) {
+			if (parentType == null && other.parentType == null) {
 				return 0;
 			}
-			else if (declaringType == null) {
+			else if (parentType == null) {
 				return 1;
 			}
-			else if (other.declaringType == null) {
+			else if (other.parentType == null) {
 				return -1;
 			}
 			else {
-				return declaringType.compareTo(other.declaringType);
+				return parentType.compareTo(other.parentType);
 			}
 		}
 		
@@ -196,11 +218,11 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	 * @see Definition#getIdentifier()
 	 */
 	public String getIdentifier() {
-		if (declaringType == null) {
+		if (parentType == null) {
 			return name;
 		}
 		else {
-			return declaringType.getIdentifier() + "/" + name;
+			return parentType.getIdentifier() + "/" + name;
 		}
 	}
 
@@ -224,8 +246,8 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	 */
 	public Entity getEntity() {
 		return new Property(
-				new About(getDeclaringType().getName().getNamespaceURI(), 
-						getDeclaringType().getName().getLocalPart(),
+				new About(getParentType().getName().getNamespaceURI(), 
+						getParentType().getName().getLocalPart(),
 						name));
 	}
 
@@ -235,5 +257,30 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	public String getDisplayName() {
 		return getName();
 	}
+
+	/**
+	 * @return the parentType
+	 */
+	public TypeDefinition getParentType() {
+		return parentType;
+	}
+	
+	/**
+	 * @param parentType the parentType to set
+	 */
+	protected void setParentType(TypeDefinition parentType) {
+		this.parentType = parentType;
+	}
+
+	/**
+	 * Create a copy of the attribute definition, as the attribute of the given
+	 *   parent type
+	 *   
+	 * @param parentType the parent type, must be a sub type of the declaring type
+	 *   of the attribute
+	 *   
+	 * @return the attribute definition
+	 */
+	public abstract AttributeDefinition copyAttribute(TypeDefinition parentType);
 	
 }

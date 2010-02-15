@@ -68,6 +68,11 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	 * The list of declared attributes
 	 */
 	private final SortedSet<AttributeDefinition> declaredAttributes = new TreeSet<AttributeDefinition>();
+	
+	/**
+	 * The inherited attributes
+	 */
+	private SortedSet<AttributeDefinition> inheritedAttributes;
 
 	/**
 	 * Create a new type definition
@@ -238,6 +243,39 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	 */
 	public Iterable<AttributeDefinition> getDeclaredAttributes() {
 		return declaredAttributes;
+	}
+	
+	/**
+	 * Get the declared attributes and the super type attributes
+	 * 
+	 * @return the attribute definitions
+	 */
+	public Collection<AttributeDefinition> getAttributes() {
+		Collection<AttributeDefinition> attributes = new TreeSet<AttributeDefinition>();
+		
+		// add declared attributes
+		attributes.addAll(declaredAttributes);
+		
+		if (inheritedAttributes == null) {
+			inheritedAttributes = new TreeSet<AttributeDefinition>();
+			
+			// populate inherited attributes
+			TypeDefinition parent = getSuperType();
+			while (parent != null) {
+				for (AttributeDefinition parentAttribute : parent.getDeclaredAttributes()) {
+					// wrap attribute definition? OR create new one
+					AttributeDefinition attribute = parentAttribute.copyAttribute(this);
+					inheritedAttributes.add(attribute);
+				}
+				
+				parent = parent.getSuperType();
+			}
+		}
+		
+		// add inherited attributes
+		attributes.addAll(inheritedAttributes);
+		
+		return attributes;
 	}
 
 	/**

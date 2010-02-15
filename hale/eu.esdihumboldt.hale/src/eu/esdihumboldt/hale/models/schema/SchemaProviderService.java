@@ -259,7 +259,7 @@ public class SchemaProviderService<T extends SchemaProvider>
 				
 				if (type != null) {
 					// try to find attribute
-					for (AttributeDefinition attribute : type.getDeclaredAttributes()) {
+					for (AttributeDefinition attribute : type.getAttributes()) {
 						if (attribute.getName().equals(attributeName)) {
 							return attribute;
 						}

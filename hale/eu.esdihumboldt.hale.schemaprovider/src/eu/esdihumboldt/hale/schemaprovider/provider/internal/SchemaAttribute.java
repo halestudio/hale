@@ -101,6 +101,19 @@ public class SchemaAttribute extends AttributeDefinition {
 	}
 	
 	/**
+	 * Copy constructor
+	 * 
+	 * @param other the schema attribute to copy
+	 */
+	protected SchemaAttribute(SchemaAttribute other) {
+		super(other);
+		
+		nillable = other.isNillable();
+		minOccurs = other.getMinOccurs();
+		maxOccurs = other.getMaxOccurs();
+	}
+	
+	/**
 	 * Get the documentation from XML element annotations
 	 * 
 	 * @param element the annotated element
@@ -327,6 +340,16 @@ public class SchemaAttribute extends AttributeDefinition {
 	@Override
 	public boolean isNillable() {
 		return nillable;
+	}
+
+	/**
+	 * @see AttributeDefinition#copyAttribute(TypeDefinition)
+	 */
+	@Override
+	public AttributeDefinition copyAttribute(TypeDefinition parentType) {
+		SchemaAttribute copy = new SchemaAttribute(this);
+		copy.setParentType(parentType);
+		return copy;
 	}
 	
 }

@@ -229,14 +229,6 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 		// add properties
 		addProperties(featureItem, type, itemMap);
 		
-		// add super type properties
-		TypeDefinition superType = type.getSuperType();
-		while (superType != null) {
-			addProperties(featureItem, superType, null); // null map to prevent adding to item map (wrong identifer would be used)
-			
-			superType = superType.getSuperType();
-		}
-		
 		// add children recursively
 		for (TypeDefinition subType : type.getSubTypes()) {
 			if (schema.contains(subType)) {
@@ -254,7 +246,7 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 	 * @param itemMap map to add the created items to (definition identifier mapped to item)
 	 */
 	private static void addProperties(TreeParent parent, TypeDefinition type, Map<String, SchemaItem> itemMap) {
-		for (AttributeDefinition attribute : type.getDeclaredAttributes()) {
+		for (AttributeDefinition attribute : type.getAttributes()) {
 			if (attribute.getAttributeType() != null) { // only properties with an associated type
 				AttributeItem property = new AttributeItem(attribute);
 				
