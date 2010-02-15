@@ -209,13 +209,7 @@ The next upper level cadastral zoning containing this cadastral zoning.</documen
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">cp:CadastralZoning</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The next upper level cadastral zoning containing this cadastral zoning.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">cp:CadastralZoning</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
@@ -348,13 +342,7 @@ The administrative unit of lowest administrative level containing this basic pro
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">au:AdministrativeUnit</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The administrative unit of lowest administrative level containing this basic property unit.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">au:AdministrativeUnit</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
@@ -510,13 +498,7 @@ The administrative unit of lowest administrative level containing this cadastral
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">au:AdministrativeUnit</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The administrative unit of lowest administrative level containing this cadastral parcel.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">au:AdministrativeUnit</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
           <element maxOccurs="unbounded" minOccurs="0" name="basicPropertyUnit" nillable="true" type="gml:ReferenceType">
             <annotation>
@@ -526,13 +508,7 @@ The basic property unit(s) containing this cadastral parcel.</documentation>
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">cp:BasicPropertyUnit</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The basic property unit(s) containing this cadastral parcel.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">cp:BasicPropertyUnit</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
           <element minOccurs="0" name="zoning" nillable="true" type="gml:ReferenceType">
             <annotation>
@@ -542,13 +518,7 @@ The cadastral zoning of lowest level containing this cadastral parcel.</document
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">cp:CadastralZoning</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The cadastral zoning of lowest level containing this cadastral parcel.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">cp:CadastralZoning</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
@@ -668,13 +638,7 @@ The cadastral parcel(s) outlined by this cadastral boundary. A cadastral boundar
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">cp:CadastralParcel</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The cadastral parcel(s) outlined by this cadastral boundary. A cadastral boundary may outline one or two cadastral parcels.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">cp:CadastralParcel</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
