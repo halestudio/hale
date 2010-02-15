@@ -42,12 +42,14 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ListDialog;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
 
+import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.CoreFunctionWizardsPlugin;
 
@@ -88,14 +90,16 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 	public void createControl(Composite parent) {
 		super.initializeDialogUnits(parent);
 		
+		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(DefinitionLabelFactory.class);
+		
 		Composite page = new Composite(parent, SWT.NONE);
 		page.setLayout(new GridLayout(4, false));
 		
 		// target label
 		final String targetFt = getParent().getTargetItem().getParent().getName().getLocalPart();
 		final String targetProperty = getParent().getTargetItem().getName().getLocalPart();
-		Label targetLabel = new Label(page, SWT.NONE);
-		targetLabel.setText(targetFt + "." + targetProperty);
+		
+		Control targetLabel = dlf.createLabel(page, getParent().getTargetItem().getDefinition(), true);
 		targetLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		
 		// target value selection
@@ -158,8 +162,8 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 		// source label
 		final String sourceFt = getParent().getSourceItem().getParent().getName().getLocalPart();
 		final String sourceProperty = getParent().getSourceItem().getName().getLocalPart();
-		Label sourceLabel = new Label(page, SWT.NONE);
-		sourceLabel.setText(sourceFt + "." + sourceProperty);
+		
+		Control sourceLabel = dlf.createLabel(page, getParent().getSourceItem().getDefinition(), true);
 		sourceLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false, 1, 2));
 		
 		// list

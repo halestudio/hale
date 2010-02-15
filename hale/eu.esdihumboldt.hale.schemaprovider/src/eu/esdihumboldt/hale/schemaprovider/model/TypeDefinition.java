@@ -263,7 +263,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 			TypeDefinition parent = getSuperType();
 			while (parent != null) {
 				for (AttributeDefinition parentAttribute : parent.getDeclaredAttributes()) {
-					// wrap attribute definition? OR create new one
+					// create attribute definition copy
 					AttributeDefinition attribute = parentAttribute.copyAttribute(this);
 					inheritedAttributes.add(attribute);
 				}

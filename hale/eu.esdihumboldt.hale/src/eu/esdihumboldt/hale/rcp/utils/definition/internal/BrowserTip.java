@@ -74,8 +74,9 @@ public class BrowserTip {
 	 * @param posy the y-position
 	 * 
 	 * @param toolTip the tool tip string
+	 * @return the tool shell
 	 */
-	public void showToolTip(Control control, int posx, int posy, String toolTip) {
+	public Shell showToolTip(Control control, int posx, int posy, String toolTip) {
 		final Shell toolShell = new Shell (control.getShell(), SWT.ON_TOP | SWT.NO_FOCUS
 	            | SWT.TOOL);
 	    FillLayout layout = new FillLayout ();
@@ -150,9 +151,13 @@ public class BrowserTip {
 		    }, 2 * HOVER_DELAY, 1000);
 		    
 		    toolShell.setVisible(true);
+		    
+		    return toolShell;
 	    }
 	    catch(SWTError err) {
 	      log.error(err.getMessage(), err);
+	      
+	      return null;
 	    }
 	}
 	
@@ -161,8 +166,8 @@ public class BrowserTip {
 	 * 
 	 * @param shell the tip shell 
 	 */
-	protected static void hideToolTip(Shell shell) {
-		if (shell != null) {
+	public static void hideToolTip(Shell shell) {
+		if (shell != null && !shell.isDisposed()) {
 			shell.close();
 			shell.dispose();
 		}

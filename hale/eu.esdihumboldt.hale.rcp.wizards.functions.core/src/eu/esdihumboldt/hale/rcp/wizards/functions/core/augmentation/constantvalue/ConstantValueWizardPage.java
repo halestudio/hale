@@ -113,7 +113,7 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 		
 		final Label inputAttributeLabel = new Label(configurationComposite, SWT.NONE);
 		inputAttributeLabel.setText("Attribute name:");
-		Control attributeName = dlf.createLabel(configurationComposite, getParent().getItem().getDefinition());
+		Control attributeName = dlf.createLabel(configurationComposite, getParent().getItem().getDefinition(), false);
 		attributeName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		/*this.attributeNameText = new Text(configurationComposite, SWT.BORDER);
 		this.attributeNameText.setLayoutData(configurationLayoutData);

@@ -12,6 +12,9 @@
 
 package eu.esdihumboldt.hale.rcp.utils.definition.internal;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -19,9 +22,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Shell;
 
 import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
+import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Default definition label factory
@@ -32,38 +38,70 @@ import eu.esdihumboldt.hale.schemaprovider.model.Definition;
  */
 public class DefaultDefinitionLabelFactory implements DefinitionLabelFactory {
 	
-	private final BrowserTip tip = new BrowserTip(300, 200, true);
+	private final BrowserTip browserTip = new BrowserTip(300, 200, true);
 
 	/**
-	 * @see DefinitionLabelFactory#createLabel(Composite, Definition)
+	 * @see DefinitionLabelFactory#createLabel(Composite, Definition, boolean)
 	 */
 	@Override
-	public Control createLabel(Composite parent, Definition definition) {
+	public Control createLabel(Composite parent, Definition definition, boolean verbose) {
 		String name = definition.getDisplayName();
 		
-		final String description = definition.getDescription();
+		String description = definition.getDescription();
 		if (description != null && !description.isEmpty()) {
 			// link for displaying documentation
+			String linkText = "<a href=\"" + definition.getIdentifier() + "\">" + name + "</a>";
+			
+			final Map<String, String> tips = new HashMap<String, String>();
+			tips.put(definition.getIdentifier(), description);
+			
+			if (verbose && definition instanceof AttributeDefinition) {
+				TypeDefinition parentType = ((AttributeDefinition) definition).getParentType();
+				String typeDescription = parentType.getDescription();
+				if (typeDescription != null) {
+					tips.put(parentType.getIdentifier(), typeDescription);
+					linkText = "<a href=\"" + parentType.getIdentifier() + "\">" + 
+						parentType.getDisplayName() + "</a>." + linkText;
+				}
+				else {
+					linkText = parentType.getDisplayName() + "." + linkText;
+				}
+			}
+			
 			final Link link = new Link(parent, SWT.NONE);
-			link.setText("<a href=\"" + definition.getIdentifier() + "\">" + name + "</a>");
-			//final DefaultToolTip tt = new DefaultToolTip(link, ToolTip.NO_RECREATE, true);
-			//tt.setText(description);
+			link.setText(linkText);
+			
 			link.addSelectionListener(new SelectionAdapter() {
+				
+				private Shell lastShell = null;
 
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					// link target is in e.text - but not needed here
+					String href = e.text;
+					
 					// show tip
-					tip.showToolTip(link, 0, link.getSize().y, description);
-//					tt.show(new Point(0, link.getSize().y));
+					String tip = tips.get(href);
+					
+					if (tip != null) {
+						BrowserTip.hideToolTip(lastShell);
+						lastShell = browserTip.showToolTip(link, 0, link.getSize().y, tip);
+					}
 				}
 				
 			});
+			
 			return link;
 		}
 		else {
 			Label label = new Label(parent, SWT.NONE);
-			label.setText(name);
+			if (verbose && definition instanceof AttributeDefinition) {
+				label.setText(((AttributeDefinition) definition).getParentType().getDisplayName() +
+						"." + name);
+			}
+			else {
+				label.setText(name);
+			}
 			return label;
 		}
 	}

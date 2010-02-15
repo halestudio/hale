@@ -82,7 +82,7 @@ public class MathFunctionPage extends AbstractSingleComposedCellWizardPage {
 		SchemaItem target = getParent().getFirstTargetItem();
 		
 		// target attribute label
-		Control attributeLabel = dlf.createLabel(page, target.getDefinition());
+		Control attributeLabel = dlf.createLabel(page, target.getDefinition(), false);
 		attributeLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		
 		// expression

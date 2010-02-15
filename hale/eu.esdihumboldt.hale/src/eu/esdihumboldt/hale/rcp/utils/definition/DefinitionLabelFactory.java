@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.rcp.utils.definition;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 
 /**
@@ -31,9 +32,10 @@ public interface DefinitionLabelFactory {
 	 * 
 	 * @param parent the parent composite
 	 * @param definition the definition
+	 * @param verbose show parent type if definition is an {@link AttributeDefinition}
 	 * 
 	 * @return the control presenting the label
 	 */
-	public Control createLabel(Composite parent, Definition definition);
+	public Control createLabel(Composite parent, Definition definition, boolean verbose);
 
 }
