@@ -12,8 +12,12 @@
 
 package eu.esdihumboldt.hale.rcp.utils.definition.internal.editors;
 
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -28,7 +32,7 @@ import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditor;
  */
 public class BooleanAttributeEditor implements AttributeEditor<Boolean> {
 
-	private final Button button;
+	private final ComboViewer combo;
 	
 	/**
 	 * Create a boolean attribute editor
@@ -38,8 +42,13 @@ public class BooleanAttributeEditor implements AttributeEditor<Boolean> {
 	public BooleanAttributeEditor(Composite parent) {
 		super();
 		
-		//XXX combo with true/false a better solution?
-		button =  new Button(parent, SWT.CHECK);
+		combo = new ComboViewer(parent, SWT.READ_ONLY);
+		combo.setContentProvider(ArrayContentProvider.getInstance());
+		combo.setLabelProvider(new LabelProvider());
+		combo.setInput(new Object[]{Boolean.TRUE, Boolean.FALSE});
+		
+		// default selection
+		combo.setSelection(new StructuredSelection(Boolean.FALSE));
 	}
 
 	/**
@@ -55,7 +64,7 @@ public class BooleanAttributeEditor implements AttributeEditor<Boolean> {
 	 */
 	@Override
 	public Control getControl() {
-		return button;
+		return combo.getControl();
 	}
 
 	/**
@@ -63,7 +72,7 @@ public class BooleanAttributeEditor implements AttributeEditor<Boolean> {
 	 */
 	@Override
 	public Boolean getValue() {
-		return button.getSelection();
+		return (Boolean) ((IStructuredSelection) combo.getSelection()).getFirstElement();
 	}
 
 	/**
@@ -79,7 +88,7 @@ public class BooleanAttributeEditor implements AttributeEditor<Boolean> {
 	 */
 	@Override
 	public void setValue(Boolean value) {
-		button.setSelection(value);
+		combo.setSelection(new StructuredSelection(value));
 	}
 	
 }
