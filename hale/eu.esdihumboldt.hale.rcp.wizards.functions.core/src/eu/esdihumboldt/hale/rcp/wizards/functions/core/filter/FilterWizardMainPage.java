@@ -6,10 +6,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.rcp.utils.filter.FeatureFilterForm;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Filter wizard page
@@ -62,7 +62,8 @@ public class FilterWizardMainPage extends AbstractSingleCellWizardPage {
 				| GridData.HORIZONTAL_ALIGN_FILL));
 		page.setLayout(new GridLayout(1, false));
 		
-		filterForm = new FeatureFilterForm((FeatureType) getParent().getSourceItem().getPropertyType(),
+		
+		filterForm = new FeatureFilterForm((TypeDefinition) getParent().getSourceItem().getDefinition(),
 				page, SWT.NONE);
 		filterForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 

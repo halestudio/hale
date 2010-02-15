@@ -24,14 +24,19 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 
 import com.vividsolutions.jts.geom.Geometry;
+
+import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Form for creating a CQL filter based on a feature type
@@ -45,7 +50,6 @@ public class FeatureFilterForm extends Composite {
 	private static Logger _log = Logger.getLogger(FeatureFilterForm.class);
 
 	private Label featureTypeLabel;
-	private Text featureTypeEditor;
 	private Label extentLabel;
 	private Text extentXmin;
 	private Text extentYmin;
@@ -67,14 +71,39 @@ public class FeatureFilterForm extends Composite {
 	private Combo geomProperties;
 	
 	/**
-	 * Create a new feature filter form
+	 * Create a new feature filter form from a type definition
+	 * 
+	 * @param definition the corresponding type definition
+	 * @param parent the parent composite
+	 * @param style the composite style
+	 */
+	public FeatureFilterForm(TypeDefinition definition, Composite parent, int style) {
+		this(definition.getFeatureType(), definition, parent, style);
+	}
+	
+	/**
+	 * Create a new feature filter form from a feature type
 	 * 
 	 * @param featureType the feature type
 	 * @param parent the parent composite
 	 * @param style the composite style
 	 */
 	public FeatureFilterForm(FeatureType featureType, Composite parent, int style) {
+		this(featureType, null, parent, style);
+	}
+
+	/**
+	 * Create a new feature filter form
+	 * 
+	 * @param featureType the feature type
+	 * @param definition the corresponding type definition, may be <code>null</code>
+	 * @param parent the parent composite
+	 * @param style the composite style
+	 */
+	private FeatureFilterForm(FeatureType featureType, TypeDefinition definition, Composite parent, int style) {
 		super(parent, style);
+		
+		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(DefinitionLabelFactory.class);
 		
 		SortedSet<String> attributeNames = new TreeSet<String>();
 		Collection<PropertyDescriptor> properties = featureType.getDescriptors();
@@ -104,16 +133,23 @@ public class FeatureFilterForm extends Composite {
 				labelFontData));
 
 		featureTypeLabel.setText("FeatureType: ");
-		featureTypeEditor = new Text(this, SWT.BORDER);
 		
-		featureTypeEditor.setText(featureType.getName().getLocalPart());
-		featureTypeEditor.setEnabled(false);
+		Control featureyTypeName;
+		if (definition != null) {
+			featureyTypeName = dlf.createLabel(this, definition, false);
+		}
+		else {
+			Text featureTypeEditor = new Text(this, SWT.BORDER);
+			featureTypeEditor.setText(featureType.getName().getLocalPart());
+			featureTypeEditor.setEnabled(false);
+			featureyTypeName = featureTypeEditor;
+		}
+		featureyTypeName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
 		
 		GridData gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalSpan = 4;
-		featureTypeEditor.setLayoutData(gd);
 
 		extentLabel = new Label(this, SWT.TITLE);
 		extentLabel.setLayoutData(new GridData(

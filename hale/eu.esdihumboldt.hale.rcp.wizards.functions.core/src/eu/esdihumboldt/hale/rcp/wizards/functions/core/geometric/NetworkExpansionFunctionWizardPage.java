@@ -18,10 +18,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 
 /**
@@ -33,8 +36,6 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 public class NetworkExpansionFunctionWizardPage 
 	extends AbstractSingleCellWizardPage {
 	
-	private Text inputAttributeText = null;
-	private Text outputAttributeText = null;
 	private Text expansionExpressionText = null;
 	
 	/**
@@ -83,10 +84,7 @@ public class NetworkExpansionFunctionWizardPage
 		configurationGroup.setFont(parent.getFont());
 		
 		final Composite configurationComposite = new Composite(configurationGroup, SWT.NONE);
-		GridData configurationLayoutData = new GridData(
-				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL);
-		configurationLayoutData.grabExcessHorizontalSpace = true;
-		configurationComposite.setLayoutData(configurationLayoutData);
+		configurationComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		GridLayout fileSelectionLayout = new GridLayout();
 		fileSelectionLayout.numColumns = 2;
@@ -95,24 +93,22 @@ public class NetworkExpansionFunctionWizardPage
 		fileSelectionLayout.marginHeight = 0;
 		configurationComposite.setLayout(fileSelectionLayout);
 		
+		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(DefinitionLabelFactory.class);
+		
 		final Label inputAttributeLabel = new Label(configurationComposite, SWT.NONE);
 		inputAttributeLabel.setText("Source attribute:");
-		this.inputAttributeText = new Text(configurationComposite, SWT.BORDER);
-		this.inputAttributeText.setLayoutData(configurationLayoutData);
-		this.inputAttributeText.setText(getParent().getSourceItem().getName().getLocalPart());
-		inputAttributeText.setEnabled(false);
+		Control inputAttributeText = dlf.createLabel(configurationComposite, getParent().getSourceItem().getDefinition(), false);
+		inputAttributeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		final Label outputAttributeLabel = new Label(configurationComposite, SWT.NONE);
 		outputAttributeLabel.setText("Target attribute:");
-		this.outputAttributeText = new Text(configurationComposite, SWT.BORDER);
-		this.outputAttributeText.setLayoutData(configurationLayoutData);
-		this.outputAttributeText.setText(getParent().getTargetItem().getName().getLocalPart());
-		outputAttributeText.setEnabled(false);
+		Control outputAttributeText = dlf.createLabel(configurationComposite, getParent().getTargetItem().getDefinition(), false);
+		outputAttributeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		final Label expansionExpressionLabel = new Label(configurationComposite, SWT.NONE);
 		expansionExpressionLabel.setText("Expansion expression:");
 		this.expansionExpressionText = new Text(configurationComposite, SWT.BORDER);
-		this.expansionExpressionText.setLayoutData(configurationLayoutData);
+		this.expansionExpressionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		String value = "50";
 		/*FIXME outcomment this when build errors are resolved - ITransformation trans = cell.getEntity1().getTransformation();
@@ -133,16 +129,7 @@ public class NetworkExpansionFunctionWizardPage
 	 */
 	@Override
 	public boolean isPageComplete() {
-		if (this.inputAttributeText != null 
-				&& this.outputAttributeText != null 
-				&& this.expansionExpressionText != null) {
-			if (this.inputAttributeText.getText() != null 
-					&& this.outputAttributeText.getText() != null 
-					&& this.expansionExpressionText.getText() != null) {
-				return true;
-			}
-		}
-		return false;
+		return expansionExpressionText != null && expansionExpressionText.getText() != null;
 	}
 
 	/**
