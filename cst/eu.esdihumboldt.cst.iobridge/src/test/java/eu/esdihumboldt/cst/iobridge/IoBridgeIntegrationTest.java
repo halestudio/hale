@@ -11,9 +11,13 @@
  */
 package eu.esdihumboldt.cst.iobridge;
 
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import eu.esdihumboldt.cst.CstFunction;
@@ -28,6 +32,11 @@ import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
  */
 public class IoBridgeIntegrationTest {
 	
+
+	@Before 
+	public void initialize(){
+		addCST();
+	}
 	@Test
 	public void testCstGetRegisteredTransfomers(){
 		CstFunctionFactory tf = CstFunctionFactory.getInstance();
@@ -39,4 +48,20 @@ public class IoBridgeIntegrationTest {
 		Assert.assertTrue(functions.size() > 0);
 	}
 
+	public void addCST() {
+		Class[] parameters = new Class[]{URL.class};
+		URL functions = getClass().getResource("corefunctions-1.0.1-SNAPSHOT.jar");		
+		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+	      Class sysclass = URLClassLoader.class;
+
+	      try {
+	         Method method = sysclass.getDeclaredMethod("addURL", parameters);
+	         method.setAccessible(true);
+	         method.invoke(sysloader, new Object[]{functions});
+	      } catch (Throwable t) {
+	         t.printStackTrace();
+	         //throw new IOException("Error, could not add URL to system classloader");
+	      }
+
+	}
 }
