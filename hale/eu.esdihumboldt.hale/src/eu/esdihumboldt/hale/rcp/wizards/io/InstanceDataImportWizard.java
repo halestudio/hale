@@ -24,10 +24,12 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml3.ApplicationSchemaConfiguration;
@@ -80,7 +82,7 @@ public class InstanceDataImportWizard
 	}
 
 	/**
-	 * @see org.eclipse.jface.wizard.Wizard#canFinish()
+	 * @see Wizard#canFinish()
 	 */
 	@Override
 	public boolean canFinish() {
@@ -89,7 +91,8 @@ public class InstanceDataImportWizard
 
 	/**
 	 * Load instance data from source into {@link InstanceService}.
-	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
+	 * 
+	 * @see Wizard#performFinish()
 	 */
 	public boolean performFinish() {
 		// get service references.
@@ -122,7 +125,8 @@ public class InstanceDataImportWizard
 					URL schema_location = schemaService.getSourceURL();
 					if (schema_location == null) {
 						String message = "You have to load a Schema first.";
-						throw new RuntimeException(message);
+						ExceptionHelper.handleException(message, HALEActivator.PLUGIN_ID, null);
+						return;
 					}
 					
 					// retrieve and parse result from the Wizard.
@@ -132,8 +136,9 @@ public class InstanceDataImportWizard
 						gml_location = f.toURI().toURL();
 					} catch (MalformedURLException e) {
 						// it is ensured that only a valid URL is passed before
-						throw new RuntimeException(result
-								+ " was not parsed as a URL sucessfully: ", e);
+						ExceptionHelper.handleException(result + " was not parsed as a URL sucessfully",
+								HALEActivator.PLUGIN_ID, e);
+						return;
 					}
 					
 					// build FeatureCollection from the selected source.
@@ -179,15 +184,14 @@ public class InstanceDataImportWizard
 	}
 
 	/**
-	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
-	 * org.eclipse.jface.viewers.IStructuredSelection)
+	 * @see IWorkbenchWizard#init(IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-
+		// do nothing
 	}
 
 	/**
-	 * @see org.eclipse.jface.wizard.IWizard#addPages()
+	 * @see IWizard#addPages()
 	 */
 	public void addPages() {
 		super.addPages();
@@ -211,7 +215,7 @@ public class InstanceDataImportWizard
 		FeatureCollection<FeatureType, Feature> result = null;
 		try {
 			Configuration configuration = new ApplicationSchemaConfiguration(
-					namespace, schema_location.toExternalForm());
+					namespace, schema_location.toExternalForm()); //FIXME is this intentional? configuration is replaced in the next command
 			
 			configuration = new GMLConfiguration();
 
