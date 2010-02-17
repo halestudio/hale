@@ -15,11 +15,13 @@ package eu.esdihumboldt.cst.corefunctions.inspire;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import org.geotools.feature.AttributeImpl;
 import org.geotools.feature.PropertyImpl;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureImpl;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
@@ -65,6 +67,7 @@ public class GeographicalNameFunction
 	public static final String PROPERTY_PRONUNCIATIONSOUNDLINK = "pronunciationSoundLink";
 	public static final String PROPERTY_GRAMMA_GENDER = "grammaticalGender";
 	public static final String PROPERTY_GRAMMA_NUMBER = "grammaticalNumber";
+	public static final String INSPIRE_IDENTIFIER_PREFIX = "urn:x-inspire:object:id";
 	
 	private ArrayList<ArrayList<Property>> variable = new ArrayList<ArrayList<Property>>();
 	private Property targetProperty = null;
@@ -143,8 +146,6 @@ public class GeographicalNameFunction
 				}
 			}
 			// Force to complete index for all arrayLists
-			//if (this._script.size()<cellcount+1) this._script.add(cellcount,null);
-			//if (this._transliteration.size()<cellcount+1) this._transliteration.add(cellcount,null);
 			if (this._nameStatus.size()<cellcount+1) this._nameStatus.add(cellcount,null);
 			if (this._language.size()<cellcount+1) this._language.add(cellcount,null);
 			if (this._nativeness.size()<cellcount+1) this._nativeness.add(cellcount,null);
@@ -153,7 +154,6 @@ public class GeographicalNameFunction
 			if (this._pronunciationSoundLink.size()<cellcount+1) this._pronunciationSoundLink.add(cellcount,null);
 			if (this._grammaticalGender.size()<cellcount+1) this._grammaticalGender.add(cellcount,null);
 			if (this._grammaticalNumber.size()<cellcount+1) this._grammaticalNumber.add(cellcount,null);
-			//this.variable.add(cellcount,p);
 			cellcount++;
 		}
 		this.targetProperty = (Property) cell.getEntity2();
@@ -178,80 +178,49 @@ public class GeographicalNameFunction
 		for (int i=0;i<variable.size();i++)
 			for (int j=0;j<variable.get(i).size();j++)
 				if (source.getProperties(variable.get(i).get(j).getLocalname()).size()==0) return null;
+
+		PropertyDescriptor pd = target.getProperty(targetProperty.getLocalname()).getDescriptor();
+		SimpleFeatureType SpellingOfNamePropertyType = (SimpleFeatureType)((SimpleFeatureType)pd.getType()).getDescriptor("spelling").getType();
+		SimpleFeatureType SpellingOfNameType = (SimpleFeatureType)(SpellingOfNamePropertyType.getDescriptor("SpellingOfName")).getType();
+		SimpleFeatureType PronunciationOfNameType = (SimpleFeatureType)((SimpleFeatureType)pd.getType()).getDescriptor("pronunciation").getType();
+		
+		Collection<SimpleFeatureImpl> geographicalnames=new HashSet<SimpleFeatureImpl>();
 		
 		// Creates an Array of GeographicalNames with Configuration values
-		ArrayList<GeographicalName> gns = new ArrayList<GeographicalName>();
+		//ArrayList<GeographicalName> gns = new ArrayList<GeographicalName>();
 		for (int i=0;i<cellcount;i++)
 		{
-			GeographicalName gn = new GeographicalName();
+			//GeographicalName gn = new GeographicalName();
+			Collection<SimpleFeatureImpl> colecc=new HashSet<SimpleFeatureImpl>();
 			for (int j=0;j<_script.get(i).size();j++)
 			{
-				SpellingOfName sp = new SpellingOfName();
 				Object result = source.getProperty(this.variable.get(i).get(j).getLocalname()).getValue();
-				sp.setText(result.toString());
-				sp.setScript(_script.get(i).get(j));
-				sp.setTransliterationScheme(_transliteration.get(i).get(j));
-				gn.addSpelling(sp);
-			}
-			gn.setLanguage(_language.get(i));
-			gn.setNativeness(_nativeness.get(i));
-			gn.setNameStatus(_nameStatus.get(i));
-			gn.setSourceOfName(_sourceOfName.get(i));
-			PronunciationOfName pron = new PronunciationOfName();
-			pron.setPronunciationIPA(_pronunciationIPA.get(i));
-			pron.setPronunciationSoundLink(_pronunciationSoundLink.get(i));
-			gn.setPronunciation(pron);
-			gn.setGrammaticalGender(_grammaticalGender.get(i));
-			gn.setGrammaticalNumber(_grammaticalNumber.get(i));
-			gns.add(gn);
-		}
-		
-		/*
-		// Combine those GeographicalName objects which are equal except of Spelling
-		for (int i=0;i<gns.size();i++)
-		{
-			if (gns.get(i)==null) continue;
-			for (int j=i+1;j<gns.size();j++)
-			{
-				if (gns.get(j)==null) continue;
-				/** TODO Uncomment when library common is updated!!
-				if (gns.get(i).equalsuniquevalues(gns.get(j)))
-				{
-					gns.addSpelling(gns.get(j).getSpelling());
-					gns.set(j,null);
-				}
+				SimpleFeatureImpl spellingofname = (SimpleFeatureImpl) SimpleFeatureBuilder.build(SpellingOfNameType, new Object[]{},"SpellingOfName");
+				spellingofname.setAttribute("script", _script.get(i).get(j));
+				spellingofname.setAttribute("text", result.toString());
+				spellingofname.setAttribute("transliterationScheme",_transliteration.get(i).get(j));
 				
+				SimpleFeatureImpl spellingofnameproperty = (SimpleFeatureImpl)SimpleFeatureBuilder.build(SpellingOfNamePropertyType, new Object[]{},"SpellingOfNameProperty");
+				spellingofnameproperty.setAttribute("SpellingOfName", Collections.singleton(spellingofname));
+				
+				colecc.add(spellingofnameproperty);
 			}
-		}*/
-		
-		
-		SimpleFeatureType targetType2 = this.getFeatureType(
-				GeographicalNameFunctionTest.targetNamespace,
-			    GeographicalNameFunctionTest.targetLocalName, 
-			    GeographicalName.class);
-		Feature target2 = SimpleFeatureBuilder.build(
-				targetType2, new Object[]{}, "2");		
-		//Add collection of GeographicNames to target feature
-		//PropertyDescriptor pd = target.getProperty(this.targetProperty.getLocalname()).getDescriptor();
-		
-		Cell cell = new Cell();
-		String targetLocalName2 = "FT2";
-		String targetLocalNameProperty2 = "GeographicalName";
-		String targetNamespace2 = "urn:x-inspire:specification:gmlas-v31:Hydrography:2.0";
-		
-		cell.setEntity2(new Property ( 
-				new About (targetNamespace2, targetLocalName2, 
-						targetLocalNameProperty2)));
-		
-		Property targetProperty2 = (Property) cell.getEntity2();
-		PropertyDescriptor pd2 = target2.getProperty(targetProperty2.getLocalname()).getDescriptor();
-		Collection<org.opengis.feature.Property> c = new HashSet<org.opengis.feature.Property>();
-		for (int i=0;i<gns.size();i++)
-		{
-			PropertyImpl p = new AttributeImpl(gns.get(i), (AttributeDescriptor) pd2, null);			
-			c.add(p);
+			SimpleFeatureImpl geographicalname = (SimpleFeatureImpl) SimpleFeatureBuilder.build((SimpleFeatureType)pd.getType(), new Object[]{},"GeographicalName");
+			geographicalname.setAttribute("spelling",colecc);
+			geographicalname.setAttribute("language",_language.get(i));
+			if (_nativeness.get(i)!=null) geographicalname.setAttribute("nativeness",_nativeness.get(i).toString());
+			if (_sourceOfName.get(i)!=null) geographicalname.setAttribute("sourceOfName",_sourceOfName.get(i).toString());
+			if (_grammaticalGender.get(i)!=null) geographicalname.setAttribute("grammaticalGender",_grammaticalGender.get(i).toString());
+			if (_grammaticalNumber.get(i)!=null) geographicalname.setAttribute("grammaticalNumber",_grammaticalNumber.get(i).toString());
+			SimpleFeatureImpl pronunciation = (SimpleFeatureImpl) SimpleFeatureBuilder.build(PronunciationOfNameType, new Object[]{},"PronunctiationOfName");
+			pronunciation.setAttribute("pronunciationIPA",_pronunciationIPA.get(i));
+			pronunciation.setAttribute("pronunciationSoundLink",_pronunciationSoundLink.get(i));
+			geographicalname.setAttribute("pronunciation",Collections.singleton(pronunciation));
+			
+			geographicalnames.add(geographicalname);
 		}
-		((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(), c);
+
+		((SimpleFeature)target).setAttribute(targetProperty.getLocalname(), geographicalnames);
 		return target;
 	}
 	
