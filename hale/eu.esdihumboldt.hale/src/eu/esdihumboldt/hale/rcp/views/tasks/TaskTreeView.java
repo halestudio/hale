@@ -114,6 +114,7 @@ public class TaskTreeView extends ViewPart {
 		// title/description
 		TreeViewerColumn description = new TreeViewerColumn(tree, SWT.LEFT);
 		description.getColumn().setText(Messages.TaskTreeView_TitleDescriptionText);
+		description.getColumn().setToolTipText(Messages.TaskTreeView_description_tooltip);
 		TreeColumnViewerLabelProvider descriptionLabelProvider = new TreeColumnViewerLabelProvider(
 				new TaskDescriptionLabelProvider(0));
 		descriptionLabelProvider.setProviders(colorProvider);
@@ -123,6 +124,7 @@ public class TaskTreeView extends ViewPart {
 		// value
 		TreeViewerColumn value = new TreeViewerColumn(tree, SWT.CENTER);
 		value.getColumn().setText("!"); //$NON-NLS-1$
+		value.getColumn().setToolTipText(Messages.TaskTreeView_value_tooltip);
 		TreeColumnViewerLabelProvider valueLabelProvider = new TreeColumnViewerLabelProvider(
 				new TaskValueLabelProvider(0));
 		valueLabelProvider.setProviders(colorProvider);
