@@ -33,7 +33,7 @@ public class FeatureTypeList extends Composite {
 		this.setLayout(layout);
 		
 		Label label = new Label(this, SWT.NONE);
-		label.setText("Filter by namespace:");
+		label.setText(Messages.FeatureTypeList_LabelFilter);
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 		
 		this._namespaces = new Combo(this, SWT.READ_ONLY | SWT.DROP_DOWN);
@@ -53,7 +53,7 @@ public class FeatureTypeList extends Composite {
 		});
 		
 		label = new Label(this, SWT.NONE);
-		label.setText("Select feature type:");
+		label.setText(Messages.FeatureTypeList_LabelFeature);
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 		
 		this._featuresList = new org.eclipse.swt.widgets.List(this, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
@@ -92,7 +92,7 @@ public class FeatureTypeList extends Composite {
 	 */
 	private void updateNamespaces() {
 		this._namespaces.removeAll();
-		this._namespaces.add("");
+		this._namespaces.add(""); //$NON-NLS-1$
 		
 		String first = null;
 		for (String namespace : this._types.keySet()) {
@@ -126,7 +126,7 @@ public class FeatureTypeList extends Composite {
 			}
 			this._featuresList.setEnabled(true);
 		}
-		else if (namespace.equals("") && (this._featuresList != null)) {
+		else if (namespace.equals("") && (this._featuresList != null)) { //$NON-NLS-1$
 			Set<String> keys = this._types.keySet();
 			for (String key: keys) {
 				types = this._types.get(key);

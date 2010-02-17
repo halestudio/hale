@@ -63,8 +63,8 @@ public class SchemaImportWizardMainPage
 	public SchemaImportWizardMainPage(String pageName, String pageTitle) {
 		super(pageName, pageTitle, (ImageDescriptor) null); // FIXME ImageDescriptor
 		setTitle(pageName); //NON-NLS-1
-		setDescription("Read a source or target schema from a local file or a " +
-				"Web Feature Service"); //NON-NLS-1
+		setDescription(Messages.SchemaImportWizardMainPage_SchemaImportDescription +
+				Messages.SchemaImportWizardMainPage_SchemaImportDescription2); //NON-NLS-1
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class SchemaImportWizardMainPage
 		
 		// define source group composite
 		Group selectionArea = new Group(parent, SWT.NONE);
-		selectionArea.setText("Read Schema from ...");
+		selectionArea.setText(Messages.SchemaImportWizardMainPage_SchemaImportReadSchema);
 		selectionArea.setLayout(new GridLayout());
 		GridData selectionAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
                 | GridData.HORIZONTAL_ALIGN_FILL);
@@ -128,14 +128,14 @@ public class SchemaImportWizardMainPage
 		this.ffe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ffe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		fileFieldEditor = new FileFieldEditor("fileSelect", 
-				"... file:", ffe_container); //NON-NLS-1 //NON-NLS-2
+		fileFieldEditor = new FileFieldEditor(Messages.SchemaImportWizardMainPage_FileSelect, 
+				Messages.SchemaImportWizardMainPage_File, ffe_container); //NON-NLS-1 //NON-NLS-2
 		fileFieldEditor.getTextControl(ffe_container).addModifyListener(new ModifyListener(){
 			public void modifyText(ModifyEvent e) {
 				getWizard().getContainer().updateButtons();
 			}
 		});
-		String[] extensions = new String[] { "*.xsd", "*.gml", "*.xml" }; //NON-NLS-1
+		String[] extensions = new String[] { "*.xsd", "*.gml", "*.xml" }; //NON-NLS-1 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		fileFieldEditor.setFileExtensions(extensions);
 		
 		// read from WFS (DescribeFeatureType)
@@ -143,8 +143,8 @@ public class SchemaImportWizardMainPage
 		this.ufe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ufe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		wfsFieldEditor = new UrlFieldEditor("urlSelect", 
-				"... WFS DescribeFeatureType:", ufe_container);
+		wfsFieldEditor = new UrlFieldEditor("urlSelect",  //$NON-NLS-1$
+				"... WFS DescribeFeatureType:", ufe_container); //$NON-NLS-1$
 		wfsFieldEditor.setEnabled(false, ufe_container);
 		wfsFieldEditor.getTextControl(ufe_container).addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -194,7 +194,7 @@ public class SchemaImportWizardMainPage
 	private void createDestinationGroup(Composite parent) {
 		// define source group composite
 		Group destinationArea = new Group(parent, SWT.NONE);
-		destinationArea.setText("Import Destination");
+		destinationArea.setText(Messages.SchemaImportWizardMainPage_ImportDestination);
 		destinationArea.setLayout(new GridLayout());
 		GridData destinationAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
                 | GridData.HORIZONTAL_ALIGN_FILL);
@@ -205,10 +205,10 @@ public class SchemaImportWizardMainPage
 		
 		sourceDestination = new Button(destinationArea, SWT.RADIO);
 		sourceDestination.setSelection(true);
-		sourceDestination.setText("Import as Source Schema");
+		sourceDestination.setText(Messages.SchemaImportWizardMainPage_ImportSource);
 		
 		targetDestination = new Button(destinationArea, SWT.RADIO);
-		targetDestination.setText("Import as Target Schema");
+		targetDestination.setText(Messages.SchemaImportWizardMainPage_ImportTarget);
 	}
 	
 	/**
@@ -221,9 +221,9 @@ public class SchemaImportWizardMainPage
 				String test = this.getResult();
 				if (this.useWfsRadio.getSelection()) {
 					// test whether content of the WFS Field Editor validates to URL.
-					if (test != null && !test.equals("")) {
+					if (test != null && !test.equals("")) { //$NON-NLS-1$
 						URL url = new URL(test);
-						_log.info("wfsFieldEditor URL was OK: " + url.toString());
+						_log.info("wfsFieldEditor URL was OK: " + url.toString()); //$NON-NLS-1$
 					} 
 					else {
 						return false;
@@ -231,9 +231,9 @@ public class SchemaImportWizardMainPage
 				}
 				else {
 					// test whether content of the File Field Editor validates to URI.
-					if (test != null && !test.equals("")) {
+					if (test != null && !test.equals("")) { //$NON-NLS-1$
 						File f = new File(test);
-						_log.info("fileFieldEditor URI was OK: " + f.toURI());
+						_log.info("fileFieldEditor URI was OK: " + f.toURI()); //$NON-NLS-1$
 					}
 					else {
 						return false;
@@ -243,7 +243,7 @@ public class SchemaImportWizardMainPage
 				ex.printStackTrace();
 				return false;
 			} 
-			_log.debug("Page is complete.");
+			_log.debug("Page is complete."); //$NON-NLS-1$
 			return true;
 		}
 		else {

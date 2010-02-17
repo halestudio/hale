@@ -31,7 +31,7 @@ public class MappingView extends ViewPart {
 	/**
 	 * The view ID
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.rcp.views.mapping.MappingView";
+	public static final String ID = "eu.esdihumboldt.hale.rcp.views.mapping.MappingView"; //$NON-NLS-1$
 	
 	private CellSelector cellSelector;
 

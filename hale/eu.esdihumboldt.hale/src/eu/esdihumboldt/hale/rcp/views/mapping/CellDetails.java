@@ -55,10 +55,10 @@ public class CellDetails implements ISelectionChangedListener {
 		
 		names = new TableColumn(viewer.getTable(), SWT.NONE);
 		names.setWidth(200);
-		names.setText("Name");
+		names.setText(Messages.CellDetails_NameText);
 		values = new TableColumn(viewer.getTable(), SWT.NONE);
 		values.setWidth(200);
-		values.setText("Value");
+		values.setText(Messages.CellDetails_ValueText);
 		
 		// content
 		viewer.setContentProvider(new IStructuredContentProvider() {
@@ -70,17 +70,17 @@ public class CellDetails implements ISelectionChangedListener {
 					
 					List<TableItem> items = new ArrayList<TableItem>();
 					
-					items.add(new TableItem("Entity 1", EntityHelper.getShortName(cell.getCell().getEntity1())));
+					items.add(new TableItem(Messages.CellDetails_Entity1Title, EntityHelper.getShortName(cell.getCell().getEntity1())));
 					if (cell.getCell().getEntity1() instanceof FeatureClass) {
 						FeatureClass feature = (FeatureClass) cell.getCell().getEntity1();
 						if (feature.getAttributeValueCondition() != null) {
 							for (Restriction res : feature.getAttributeValueCondition()) {
-								items.add(new TableItem("Filter", res.getCqlStr()));
+								items.add(new TableItem(Messages.CellDetails_FilterTitle, res.getCqlStr()));
 							}
 						}
 					}
 					
-					items.add(new TableItem("Entity 2", EntityHelper.getShortName(cell.getCell().getEntity2())));
+					items.add(new TableItem(Messages.CellDetails_Entity2Title, EntityHelper.getShortName(cell.getCell().getEntity2())));
 					
 					ITransformation transformation = cell.getCell().getEntity1().getTransformation();
 					if (transformation != null) {
@@ -88,7 +88,7 @@ public class CellDetails implements ISelectionChangedListener {
 //							items.add(new TableItem("Transformation", transformation.getAbout().getAbout()));
 //						}
 						if (transformation.getService() != null) {
-							items.add(new TableItem("Transformation", transformation.getService().toString()));
+							items.add(new TableItem(Messages.CellDetails_TransformationTitle, transformation.getService().toString()));
 						}
 						if (transformation.getParameters() != null) {
 							for (IParameter param : transformation.getParameters()) {
@@ -103,7 +103,7 @@ public class CellDetails implements ISelectionChangedListener {
 //							items.add(new TableItem("Augmentation", augmentation.getAbout().getAbout()));
 //						}
 						if (augmentation.getService() != null) {
-							items.add(new TableItem("Augmentation", augmentation.getService().toString()));
+							items.add(new TableItem(Messages.CellDetails_AugmentationTitle, augmentation.getService().toString()));
 						}
 						if (augmentation.getParameters() != null) {
 							for (IParameter param : augmentation.getParameters()) {

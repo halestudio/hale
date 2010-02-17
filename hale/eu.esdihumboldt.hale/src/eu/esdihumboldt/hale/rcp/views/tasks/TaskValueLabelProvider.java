@@ -45,7 +45,7 @@ public class TaskValueLabelProvider extends MultiColumnTreeNodeLabelProvider {
 		
 		this.index = index;
 		
-		priorityImage = HALEActivator.getImageDescriptor("icons/priority.gif").createImage();
+		priorityImage = HALEActivator.getImageDescriptor("icons/priority.gif").createImage(); //$NON-NLS-1$
 	}
 
 	/**
@@ -147,7 +147,7 @@ public class TaskValueLabelProvider extends MultiColumnTreeNodeLabelProvider {
 	 */
 	@Override
 	protected String getValueText(Object value, TreeNode node) {
-		return "";
+		return ""; //$NON-NLS-1$
 	}
 
 	/**

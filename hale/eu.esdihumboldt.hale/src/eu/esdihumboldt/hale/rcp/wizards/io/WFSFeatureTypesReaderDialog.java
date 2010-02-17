@@ -103,13 +103,13 @@ public class WFSFeatureTypesReaderDialog
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) display.sleep();
 		}
-		_log.debug("returning result.");
+		_log.debug("returning result."); //$NON-NLS-1$
 		
 		return url_result;
 	}
 
 	private void createControls(final Shell shell) {
-		_log.debug("Creating Controls");
+		_log.debug("Creating Controls"); //$NON-NLS-1$
 		
 		// Create Fields for URL entry.
 		final Composite c = new Composite(shell, SWT.NONE);
@@ -118,7 +118,7 @@ public class WFSFeatureTypesReaderDialog
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL |
 				GridData.GRAB_VERTICAL | GridData.FILL_VERTICAL));
 		final Group urlDefinitionArea = new Group(c, SWT.NONE);
-		urlDefinitionArea.setText("Enter the URL of your WFS");
+		urlDefinitionArea.setText(Messages.WFSFeatureTypesReaderDialog_UrlEnterText);
 		urlDefinitionArea.setLayoutData( new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
 
@@ -129,15 +129,15 @@ public class WFSFeatureTypesReaderDialog
 		
 		// Host + Port
 		final Label hostPortLabel = new Label(urlDefinitionArea, SWT.NONE);
-		hostPortLabel.setText("GetCapabilities URL:");
-		hostPortLabel.setToolTipText("Enter the GetCapabilities URL of the " +
-				"WFS you want to query here.");
+		hostPortLabel.setText(Messages.WFSFeatureTypesReaderDialog_HostPortLabelText);
+		hostPortLabel.setToolTipText(Messages.WFSFeatureTypesReaderDialog_HostPortTooltip1 +
+				Messages.WFSFeatureTypesReaderDialog_HostPortTooltip2);
 		final Text hostPortText = new Text (urlDefinitionArea, SWT.BORDER | SWT.SINGLE);
 		hostPortText.setLayoutData(new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
 		hostPortText.setText(
-				"http://staging-esdi-humboldt.igd.fraunhofer.de:8080/" +
-				"geoserver/ows?service=WFS&request=GetCapabilities");
+				"http://staging-esdi-humboldt.igd.fraunhofer.de:8080/" + //$NON-NLS-1$
+				"geoserver/ows?service=WFS&request=GetCapabilities"); //$NON-NLS-1$
 		/*hostPortText.setText(
 				"http://car2.esrin.esa.int:8080/" +
 				"geoserver/ows?service=WFS&request=GetCapabilities");*/
@@ -149,8 +149,8 @@ public class WFSFeatureTypesReaderDialog
 					new URL(string);
 				}
 				catch (Exception ex) {
-					_log.warn("Exception occured in parsing " + string 
-							+ " to URL: " + ex.getMessage());
+					_log.warn("Exception occured in parsing " + string  //$NON-NLS-1$
+							+ " to URL: " + ex.getMessage()); //$NON-NLS-1$
 					e.doit = false;
 					return;
 				}
@@ -168,7 +168,7 @@ public class WFSFeatureTypesReaderDialog
 
 		// Validation Group
 		final Group urlValidationArea = new Group(c, SWT.NONE);
-		urlValidationArea.setText("Validate your WFS settings");
+		urlValidationArea.setText(Messages.WFSFeatureTypesReaderDialog_ValidateText);
 		urlValidationArea.setLayoutData( new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL 
 				| GridData.GRAB_VERTICAL | GridData.FILL_VERTICAL));
@@ -185,9 +185,9 @@ public class WFSFeatureTypesReaderDialog
 		urlValidationStatusArea.setLayout(urlValidationStatusLayout);
 		
 		Button testUrl = new Button(urlValidationStatusArea, SWT.PUSH);
-		testUrl.setText("Validate settings");
+		testUrl.setText(Messages.WFSFeatureTypesReaderDialog_TestUrlText);
 		final Label currentStatusLabel = new Label(urlValidationStatusArea, SWT.NONE);
-		currentStatusLabel.setText("No Validation performed yet.");
+		currentStatusLabel.setText(Messages.WFSFeatureTypesReaderDialog_StatusText);
 		currentStatusLabel.setLayoutData(new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
 		currentStatusLabel.setAlignment(SWT.RIGHT);
@@ -210,13 +210,13 @@ public class WFSFeatureTypesReaderDialog
 		
 		final Button finish = new Button(buttons, SWT.NONE);
 		finish.setAlignment(SWT.RIGHT);
-		finish.setText("   Use this WFS    ");
+		finish.setText("   Use this WFS    "); //$NON-NLS-1$
 		finish.setEnabled(false);
 		finish.setSize(100, 24);
 		finish.addListener(SWT.Selection, new Listener () {
 			public void handleEvent(Event event) {
 				if (finish.isEnabled()) {
-					_log.debug("saving result: " + hostPortText.getText());
+					_log.debug("saving result: " + hostPortText.getText()); //$NON-NLS-1$
 					try {
 						//url_result = new URL(hostPortText.getText());
 						String capabilities = hostPortText.getText();
@@ -255,12 +255,12 @@ public class WFSFeatureTypesReaderDialog
 							url_result = new URL(temp);
 						}
 						
-						_log.info("DescribeFeatureType URL: " + url_result.toString());
+						_log.info("DescribeFeatureType URL: " + url_result.toString()); //$NON-NLS-1$
 					} catch (MalformedURLException e) {
-						_log.error("An error occured when parsing the " +
-								"selected host to a URL:", e);
+						_log.error("An error occured when parsing the " + //$NON-NLS-1$
+								"selected host to a URL:", e); //$NON-NLS-1$
 					} catch (IOException e) {
-						_log.error("Error connecting to the WFS service", e);
+						_log.error("Error connecting to the WFS service", e); //$NON-NLS-1$
 					}
 				}
 				finish.getParent().getParent().getShell().dispose();
@@ -269,7 +269,7 @@ public class WFSFeatureTypesReaderDialog
 		
 		Button cancel = new Button(buttons, SWT.NONE);
 		cancel.setAlignment(SWT.RIGHT);
-		cancel.setText("      Cancel       ");
+		cancel.setText(Messages.WFSFeatureTypesReaderDialog_CancelText);
 		cancel.setSize(100, 24);
 		cancel.addListener(SWT.Selection, new Listener () {
 			public void handleEvent(Event event) {
@@ -284,7 +284,7 @@ public class WFSFeatureTypesReaderDialog
 				try {
 					url = new URL(hostPortText.getText());
 				} catch (Exception e1) {
-					currentStatusLabel.setText("Validation FAILED.");
+					currentStatusLabel.setText(Messages.WFSFeatureTypesReaderDialog_ValidationFailedText);
 					//XXX testResultText.setText("Capabilities URL could not " +
 					//		"be built: " + e1.getMessage());
 					finish.setEnabled(false);
@@ -312,8 +312,8 @@ public class WFSFeatureTypesReaderDialog
 										public void run() {
 											selection.setFeatureTypes(types);
 											
-											currentStatusLabel.setText("Validation OK - " 
-													+ types.size() + " FeatureTypes!");
+											currentStatusLabel.setText(Messages.WFSFeatureTypesReaderDialog_ValdationOKText1 
+													+ types.size() + Messages.WFSFeatureTypesReaderDialog_ValdationOKText2);
 											finish.setEnabled(true);
 										}
 										
@@ -324,7 +324,7 @@ public class WFSFeatureTypesReaderDialog
 
 										@Override
 										public void run() {
-											currentStatusLabel.setText("Validation FAILED.");
+											currentStatusLabel.setText(Messages.WFSFeatureTypesReaderDialog_ValidationFailedText);
 											
 											selection.setFeatureTypes(null);
 											

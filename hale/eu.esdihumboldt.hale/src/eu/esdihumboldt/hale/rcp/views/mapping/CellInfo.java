@@ -103,8 +103,8 @@ public class CellInfo {
 				result.add(candidateItem);
 			}
 			else {
-				throw new RuntimeException("Schema item for entity " +
-						candidate.getAbout().getAbout() + " not found.");
+				throw new RuntimeException("Schema item for entity " + //$NON-NLS-1$
+						candidate.getAbout().getAbout() + " not found."); //$NON-NLS-1$
 			}
 		}
 		return result;

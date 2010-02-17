@@ -11,7 +11,7 @@ public class OGCFilterText extends StringButtonFieldEditor {
 	
 	@Override
 	protected String changePressed() {
-		OGCFilterDialog wfsDialog = new OGCFilterDialog(this.getShell(), "Create OGC Filter");
+		OGCFilterDialog wfsDialog = new OGCFilterDialog(this.getShell(), Messages.OGCFilterText_CreateFilter);
 		return wfsDialog.open();
 	}
 

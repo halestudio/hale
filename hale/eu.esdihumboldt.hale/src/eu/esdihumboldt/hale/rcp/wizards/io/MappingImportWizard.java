@@ -50,8 +50,8 @@ public class MappingImportWizard
 	public MappingImportWizard() {
 		super();
 		this.mainPage = new MappingImportWizardMainPage(
-				"Import Mapping", "Import Mapping"); //NON-NLS-1
-		super.setWindowTitle("Mapping Import Wizard"); //NON-NLS-1
+				Messages.MappingImportWizard_ImportMappingTitle, Messages.MappingImportWizard_ImportMappingDescription); //NON-NLS-1
+		super.setWindowTitle(Messages.MappingImportWizard_WindowTitle); //NON-NLS-1
 		super.setNeedsProgressMonitor(true);
 	}
 	
@@ -66,7 +66,7 @@ public class MappingImportWizard
 			File file = new File(result);
 			if (!file.exists()) {
 				MessageDialog.openError(display.getActiveShell(), 
-						"Mapping file", "The given file does not exist.");
+						Messages.MappingImportWizard_FileExistTitle, Messages.MappingImportWizard_FileExistDescription);
 				return false;
 			}
 			
@@ -81,25 +81,25 @@ public class MappingImportWizard
 					SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 					if (!sourceNamespace.equals(schemaService.getSourceNameSpace())) {
 						MessageDialog.openWarning(display.getActiveShell(), 
-								"Source namespace", 
-								"Namespace doesn't match current source schema: " + sourceNamespace);
+								Messages.MappingImportWizard_SourceExistTitle, 
+								Messages.MappingImportWizard_SourceExistDescription + sourceNamespace);
 						return false;
 					}
 					
 					String targetNamespace = alignment.getSchema2().getLocation();
 					if (!targetNamespace.equals(schemaService.getTargetNameSpace())) {
 						MessageDialog.openWarning(display.getActiveShell(), 
-								"Target namespace", 
-								"Namespace doesn't match current target schema: " + targetNamespace);
+								Messages.MappingImportWizard_TargetExistTitle, 
+								Messages.MappingImportWizard_TargetExistDescription + targetNamespace);
 						return false;
 					}
 					
-					_log.info("Number of loaded cells: " + alignment.getMap().size());
+					_log.info("Number of loaded cells: " + alignment.getMap().size()); //$NON-NLS-1$
 					
 					alignmentService.addOrUpdateAlignment(alignment);
 				}
 			} catch (Exception e) {
-				throw new RuntimeException("Alignment could not be loaded: ", e);
+				throw new RuntimeException("Alignment could not be loaded: ", e); //$NON-NLS-1$
 			}
 		}
 		return true;

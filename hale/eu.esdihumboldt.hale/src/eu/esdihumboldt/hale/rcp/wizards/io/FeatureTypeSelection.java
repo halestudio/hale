@@ -56,7 +56,7 @@ public class FeatureTypeSelection extends Composite {
 		setLayout(layout);
 		
 		Label label = new Label(this, SWT.NONE);
-		label.setText("Select a namespace:");
+		label.setText(Messages.FeatureTypeSelection_LabelNamespace);
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 		
 		namespaces = new Combo(this, SWT.READ_ONLY | SWT.DROP_DOWN);
@@ -76,7 +76,7 @@ public class FeatureTypeSelection extends Composite {
 		});
 		
 		label = new Label(this, SWT.NONE);
-		label.setText("Feature types:");
+		label.setText(Messages.FeatureTypeSelection_LabelFeature);
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 		
 		features = new Text(this, 
@@ -106,7 +106,7 @@ public class FeatureTypeSelection extends Composite {
 			features.setEnabled(true);
 		}
 		else {
-			features.setText("");
+			features.setText(""); //$NON-NLS-1$
 			features.setEnabled(false);
 		}
 	}

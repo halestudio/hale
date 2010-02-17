@@ -89,13 +89,13 @@ public class WFSDataReaderDialog extends Dialog {
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) display.sleep();
 		}
-		_log.debug("returning result.");
+		_log.debug("returning result."); //$NON-NLS-1$
 		
 		return this.url_result;
 	}
 	
 	private void createControls(final Shell shell) {
-		_log.debug("Creating Controls");
+		_log.debug("Creating Controls"); //$NON-NLS-1$
 		
 		// Create Fields for URL entry.
 		final Composite c = new Composite(shell, SWT.NONE);
@@ -106,7 +106,7 @@ public class WFSDataReaderDialog extends Dialog {
 		
 	/*WFS link group start*/
 		final Group urlDefinitionArea = new Group(c, SWT.NONE); 
-		urlDefinitionArea.setText("Enter the URL of your WFS");
+		urlDefinitionArea.setText(Messages.WFSDataReaderDialog_UrlDefinitionText);
 		urlDefinitionArea.setLayoutData( new GridData(GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
 
 		GridLayout fileSelectionLayout = new GridLayout();
@@ -116,12 +116,12 @@ public class WFSDataReaderDialog extends Dialog {
 		
 		// Host + Port
 		final Label hostPortLabel = new Label(urlDefinitionArea, SWT.NONE);
-		hostPortLabel.setText("GetCapabilities URL:");
-		hostPortLabel.setToolTipText("Enter the GetCapabilities URL of the " + "WFS you want to query here.");
+		hostPortLabel.setText(Messages.WFSDataReaderDialog_HostPortLabel);
+		hostPortLabel.setToolTipText(Messages.WFSDataReaderDialog_HostPortToolTipText + Messages.WFSDataReaderDialog_HostPortToolTipText2);
 		final Text hostPortText = new Text (urlDefinitionArea, SWT.BORDER | SWT.SINGLE);
 		hostPortText.setLayoutData(new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
-		hostPortText.setText("http://staging-esdi-humboldt.igd.fraunhofer.de:8080/geoserver/ows" + "?service=WFS&request=GetCapabilities");
+		hostPortText.setText("http://staging-esdi-humboldt.igd.fraunhofer.de:8080/geoserver/ows" + "?service=WFS&request=GetCapabilities"); //$NON-NLS-1$ //$NON-NLS-2$
 		/*hostPortText.setText(
 				"http://car2.esrin.esa.int:8080/" +
 				"geoserver/ows?service=WFS&request=GetCapabilities");*/
@@ -133,8 +133,8 @@ public class WFSDataReaderDialog extends Dialog {
 					new URL(string);
 				}
 				catch (Exception ex) {
-					_log.warn("Exception occured in parsing " + string 
-							+ " to URL: " + ex.getMessage());
+					_log.warn("Exception occured in parsing " + string  //$NON-NLS-1$
+							+ " to URL: " + ex.getMessage()); //$NON-NLS-1$
 					e.doit = false;
 					return;
 				}
@@ -152,7 +152,7 @@ public class WFSDataReaderDialog extends Dialog {
 
 	/* Validation Group start*/
 		final Group urlValidationArea = new Group(c, SWT.NONE);
-		urlValidationArea.setText("Validate your WFS settings");
+		urlValidationArea.setText(Messages.WFSDataReaderDialog_URLValidationText);
 		urlValidationArea.setLayoutData( new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL 
 				| GridData.GRAB_VERTICAL | GridData.FILL_VERTICAL));
@@ -169,9 +169,9 @@ public class WFSDataReaderDialog extends Dialog {
 		urlValidationStatusArea.setLayout(urlValidationStatusLayout);
 		
 		Button testUrl = new Button(urlValidationStatusArea, SWT.PUSH);
-		testUrl.setText("Validate settings");
+		testUrl.setText(Messages.WFSDataReaderDialog_TestURLText);
 		final Label currentStatusLabel = new Label(urlValidationStatusArea, SWT.NONE);
-		currentStatusLabel.setText("No Validation performed yet.");
+		currentStatusLabel.setText(Messages.WFSDataReaderDialog_CurrentStatusText);
 		currentStatusLabel.setLayoutData(new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
 		currentStatusLabel.setAlignment(SWT.RIGHT);
@@ -183,7 +183,7 @@ public class WFSDataReaderDialog extends Dialog {
 		
 	/* Filter Group Start*/	
 		final Group filterArea = new Group(c,SWT.NONE);
-		filterArea.setText("Filter data");
+		filterArea.setText(Messages.WFSDataReaderDialog_FilterText);
 		filterArea.setLayoutData( new GridData(GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL));
 		GridLayout filterLayout = new GridLayout();
 		filterLayout.numColumns = 1;
@@ -192,7 +192,7 @@ public class WFSDataReaderDialog extends Dialog {
 		
 		Composite filterComponent = new Composite(filterArea,SWT.NONE);
 		filterComponent.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
-		final OGCFilterText filterText = new OGCFilterText("Filter","OGC Filter",filterComponent);
+		final OGCFilterText filterText = new OGCFilterText(Messages.WFSDataReaderDialog_FilterTitle,Messages.WFSDataReaderDialog_FilterDescription,filterComponent);
 	
 
 				
@@ -214,13 +214,13 @@ public class WFSDataReaderDialog extends Dialog {
 		
 		final Button finish = new Button(buttons, SWT.NONE);
 		finish.setAlignment(SWT.RIGHT);
-		finish.setText("   Use this WFS    ");
+		finish.setText("   Use this WFS    "); //$NON-NLS-1$
 		finish.setEnabled(false);
 		finish.setSize(100, 24);
 		finish.addListener(SWT.Selection, new Listener () {
 			public void handleEvent(Event event) {
 				if (finish.isEnabled()) {
-					_log.debug("saving result: " + hostPortText.getText());
+					_log.debug("saving result: " + hostPortText.getText()); //$NON-NLS-1$
 					try {
 						//url_result = new URL(hostPortText.getText());
 						String capabilities = hostPortText.getText();
@@ -259,12 +259,12 @@ public class WFSDataReaderDialog extends Dialog {
 							url_result = new URL(temp);
 						}
 						
-						_log.info("DescribeFeatureType URL: " + url_result.toString());
+						_log.info("DescribeFeatureType URL: " + url_result.toString()); //$NON-NLS-1$
 					} catch (MalformedURLException e) {
-						_log.error("An error occured when parsing the " +
-								"selected host to a URL:", e);
+						_log.error("An error occured when parsing the " + //$NON-NLS-1$
+								"selected host to a URL:", e); //$NON-NLS-1$
 					} catch (IOException e) {
-						_log.error("Error connecting to the WFS service", e);
+						_log.error("Error connecting to the WFS service", e); //$NON-NLS-1$
 					}
 				}
 				finish.getParent().getParent().getShell().dispose();
@@ -273,7 +273,7 @@ public class WFSDataReaderDialog extends Dialog {
 		
 		Button cancel = new Button(buttons, SWT.NONE);
 		cancel.setAlignment(SWT.RIGHT);
-		cancel.setText("      Cancel       ");
+		cancel.setText(Messages.WFSDataReaderDialog_CancelText);
 		cancel.setSize(100, 24);
 		cancel.addListener(SWT.Selection, new Listener () {
 			public void handleEvent(Event event) {
@@ -288,7 +288,7 @@ public class WFSDataReaderDialog extends Dialog {
 				try {
 					url = new URL(hostPortText.getText());
 				} catch (Exception e1) {
-					currentStatusLabel.setText("Validation FAILED.");
+					currentStatusLabel.setText(Messages.WFSDataReaderDialog_ValidationFailedText);
 					//XXX testResultText.setText("Capabilities URL could not " +
 					//		"be built: " + e1.getMessage());
 					finish.setEnabled(false);
@@ -316,8 +316,8 @@ public class WFSDataReaderDialog extends Dialog {
 										public void run() {
 											selection.setFeatureTypes(types);
 											
-											currentStatusLabel.setText("Validation OK - " 
-													+ types.size() + " FeatureTypes!");
+											currentStatusLabel.setText(Messages.WFSDataReaderDialog_ValidationOKText 
+													+ types.size() + Messages.WFSDataReaderDialog_FeatureTypesText);
 											finish.setEnabled(true);
 										}
 										
@@ -328,7 +328,7 @@ public class WFSDataReaderDialog extends Dialog {
 
 										@Override
 										public void run() {
-											currentStatusLabel.setText("Validation FAILED.");
+											currentStatusLabel.setText(Messages.WFSDataReaderDialog_ValidationFailedText2);
 											
 											selection.setFeatureTypes(null);
 											

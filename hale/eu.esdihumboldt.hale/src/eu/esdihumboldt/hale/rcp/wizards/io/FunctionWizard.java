@@ -33,15 +33,14 @@ public class FunctionWizard
 	public FunctionWizard() {
 		super();
 		this.mainPage = new SchemaImportWizardMainPage(
-				"Select a wizard", "FunctionWizard");
-		super.setWindowTitle("Function Wizard"); // NON-NLS-1
+				Messages.FunctionWizard_SelectWizard, Messages.FunctionWizard_FunctionWizard);
+		super.setWindowTitle(Messages.FunctionWizard_WindowTitle); // NON-NLS-1
 		super.setNeedsProgressMonitor(true);
 		
 	}
 
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-	System.out.println("in init");
 		
 	}
 

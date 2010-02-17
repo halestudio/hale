@@ -60,8 +60,8 @@ public class SchemaImportWizard
 	public SchemaImportWizard() {
 		super();
 		this.mainPage = new SchemaImportWizardMainPage(
-				"Import Schema", "Import Schema"); //NON-NLS-1
-		super.setWindowTitle("Schema Import Wizard"); //NON-NLS-1
+				Messages.SchemaImportWizard_ImportSchemaTitle, Messages.SchemaImportWizard_ImportSchemaDescription); //NON-NLS-1
+		super.setWindowTitle(Messages.SchemaImportWizard_WindowTitle); //NON-NLS-1
 		super.setNeedsProgressMonitor(true);
 	}
 	
@@ -70,7 +70,7 @@ public class SchemaImportWizard
 	 */
 	@Override
 	public boolean canFinish() {
-		_log.debug("Wizard.canFinish: " + this.mainPage.isPageComplete());
+		_log.debug("Wizard.canFinish: " + this.mainPage.isPageComplete()); //$NON-NLS-1$
 		return this.mainPage.isPageComplete();
 	}
 
@@ -90,7 +90,7 @@ public class SchemaImportWizard
 				@Override
 				public void run(final IProgressMonitor monitor) throws InvocationTargetException,
 						InterruptedException {
-					monitor.beginTask("Importing schema", IProgressMonitor.UNKNOWN);
+					monitor.beginTask(Messages.SchemaImportWizard_SchemaImport, IProgressMonitor.UNKNOWN);
 					
 					SchemaService schemaService = (SchemaService) 
 								PlatformUI.getWorkbench().getService(SchemaService.class);
@@ -104,7 +104,7 @@ public class SchemaImportWizard
 						
 						Collection<TypeDefinition> currentSchema = schemaService.getSchema(schemaType);
 						if (currentSchema != null && !currentSchema.isEmpty()) {
-							final String info = ((schemaType == SchemaType.SOURCE)?("source"):("target"));
+							final String info = ((schemaType == SchemaType.SOURCE)?("source"):("target")); //$NON-NLS-1$ //$NON-NLS-2$
 							
 							final AtomicBoolean loadSchema = new AtomicBoolean(false);
 							final Display display = PlatformUI.getWorkbench().getDisplay();
@@ -112,9 +112,9 @@ public class SchemaImportWizard
 								
 								@Override
 								public void run() {
-									if (MessageDialog.openQuestion(getShell(), "Replace " + info + " schema",
-											"A " + info + 
-											" schema has already been loaded. Do you want to replace it with this schema?")) {
+									if (MessageDialog.openQuestion(getShell(), "Replace " + info + " schema", //$NON-NLS-1$ //$NON-NLS-2$
+											"A " + info +  //$NON-NLS-1$
+											Messages.SchemaImportWizard_SchemaQuestion)) {
 										loadSchema.set(true);
 									}
 								}
@@ -144,8 +144,8 @@ public class SchemaImportWizard
 							schemaService.loadSchema(uri, SchemaType.SOURCE, progress);
 							// update Alignment
 							Schema schema = new Schema(schemaService.getSourceNameSpace(), 
-									new Formalism("GML 3.2.1 Application Schema", 
-											new URI("http://www.opengis.net/gml"))); // FIXME
+									new Formalism("GML 3.2.1 Application Schema",  //$NON-NLS-1$
+											new URI("http://www.opengis.net/gml"))); // FIXME //$NON-NLS-1$
 							alService.getAlignment().setSchema1(schema);
 							projectService.setSourceSchemaPath(uri.toString());
 						}
@@ -154,16 +154,16 @@ public class SchemaImportWizard
 							schemaService.loadSchema(uri, SchemaType.TARGET, progress);
 							// update Alignment
 							Schema schema = new Schema(schemaService.getTargetNameSpace(), 
-									new Formalism("GML 3.2.1 Application Schema", 
-											new URI("http://www.opengis.net/gml"))); // FIXME
+									new Formalism("GML 3.2.1 Application Schema",  //$NON-NLS-1$
+											new URI("http://www.opengis.net/gml"))); // FIXME //$NON-NLS-1$
 							alService.getAlignment().setSchema2(schema);
 							projectService.setTargetSchemaPath(uri.toString());
 						}
 					} catch (Exception e2) {
 						ExceptionHelper.handleException(
-								"An error occured while loading the schema you " +
-								"have selected. Most often, such errors appear when a " +
-								"schema import location could not be resolved.", 
+								Messages.SchemaImportWizard_ErrorMessage1 +
+								Messages.SchemaImportWizard_ErrorMessage2 +
+								Messages.SchemaImportWizard_ErrorMessage3, 
 								HALEActivator.PLUGIN_ID, e2);
 						succeeded.set(false);
 					}
@@ -174,7 +174,7 @@ public class SchemaImportWizard
 			});
 		} catch (Exception e) {
 			ExceptionHelper.handleException(
-					"Job could not be started.", HALEActivator.PLUGIN_ID, e);
+					Messages.SchemaImportWizard_JobError, HALEActivator.PLUGIN_ID, e);
 		}
 		
 		return succeeded.get();

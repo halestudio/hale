@@ -46,8 +46,8 @@ public class OpenAlignmentProjectWizard
 	public OpenAlignmentProjectWizard() {
 		super();
 		this.mainPage = new OpenAlignmentProjectWizardMainPage(
-				"Open Alignment Project", "Open Alignment Project"); //NON-NLS-1
-		super.setWindowTitle("Open Alignment Project Wizard"); //NON-NLS-1
+				Messages.OpenAlignmentProjectWizard_OpenAlignmentProjectTitle, Messages.OpenAlignmentProjectWizard_OpenAlignmentProjectDescription); //NON-NLS-1
+		super.setWindowTitle(Messages.OpenAlignmentProjectWizard_WindowTitle); //NON-NLS-1
 		super.setNeedsProgressMonitor(true);
 	}
 
@@ -66,7 +66,7 @@ public class OpenAlignmentProjectWizard
 						try {
 							ProjectParser.read(result, monitor);
 						} catch (Exception e) {
-							String message = "Opening the selected Alignment Project failed: ";
+							String message = Messages.OpenAlignmentProjectWizard_Failed;
 							_log.error(message, e);
 							ExceptionHelper.handleException(
 									message, HALEActivator.PLUGIN_ID, e);
@@ -74,7 +74,7 @@ public class OpenAlignmentProjectWizard
 					}
 				});
 			} catch (Exception e) {
-				String message = "Opening the selected Alignment Project failed: ";
+				String message = Messages.OpenAlignmentProjectWizard_Failed2;
 				_log.error(message, e);
 				ExceptionHelper.handleException(
 						message, HALEActivator.PLUGIN_ID, e);

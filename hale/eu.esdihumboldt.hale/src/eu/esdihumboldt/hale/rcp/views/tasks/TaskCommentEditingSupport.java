@@ -63,7 +63,7 @@ public class TaskCommentEditingSupport extends AbstractTaskEditingSupport {
 		
 		if (value == null) {
 			// may not return null as value
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 		else {
 			return value;

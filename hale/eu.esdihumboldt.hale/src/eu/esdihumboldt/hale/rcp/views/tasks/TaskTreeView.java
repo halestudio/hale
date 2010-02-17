@@ -63,7 +63,7 @@ public class TaskTreeView extends ViewPart {
 	/**
 	 * The view ID
 	 */
-	public static String ID = "eu.esdihumboldt.hale.rcp.views.tasks.TaskTreeView";
+	public static String ID = "eu.esdihumboldt.hale.rcp.views.tasks.TaskTreeView"; //$NON-NLS-1$
 
 	/**
 	 * The tree viewer
@@ -113,7 +113,7 @@ public class TaskTreeView extends ViewPart {
 		
 		// title/description
 		TreeViewerColumn description = new TreeViewerColumn(tree, SWT.LEFT);
-		description.getColumn().setText("Description");
+		description.getColumn().setText(Messages.TaskTreeView_TitleDescriptionText);
 		TreeColumnViewerLabelProvider descriptionLabelProvider = new TreeColumnViewerLabelProvider(
 				new TaskDescriptionLabelProvider(0));
 		descriptionLabelProvider.setProviders(colorProvider);
@@ -122,7 +122,7 @@ public class TaskTreeView extends ViewPart {
 		
 		// value
 		TreeViewerColumn value = new TreeViewerColumn(tree, SWT.CENTER);
-		value.getColumn().setText("!");
+		value.getColumn().setText("!"); //$NON-NLS-1$
 		TreeColumnViewerLabelProvider valueLabelProvider = new TreeColumnViewerLabelProvider(
 				new TaskValueLabelProvider(0));
 		valueLabelProvider.setProviders(colorProvider);
@@ -131,8 +131,8 @@ public class TaskTreeView extends ViewPart {
 		
 		// number of tasks
 		TreeViewerColumn number = new TreeViewerColumn(tree, SWT.RIGHT);
-		number.getColumn().setText("#");
-		number.getColumn().setToolTipText("Number of open tasks");
+		number.getColumn().setText("#"); //$NON-NLS-1$
+		number.getColumn().setToolTipText(Messages.TaskTreeView_NumberText);
 		TreeColumnViewerLabelProvider numberLabelProvider = new TreeColumnViewerLabelProvider(
 				new TaskCountLabelProvider(0));
 		numberLabelProvider.setProviders(colorProvider);
@@ -141,7 +141,7 @@ public class TaskTreeView extends ViewPart {
 		
 		// user data: status
 		TreeViewerColumn status = new TreeViewerColumn(tree, SWT.LEFT);
-		status.getColumn().setText("Status");
+		status.getColumn().setText(Messages.TaskTreeView_StatusText);
 		TreeColumnViewerLabelProvider statusLabelProvider = new TreeColumnViewerLabelProvider(new TaskStatusLabelProvider(0));
 		statusLabelProvider.setProviders(colorProvider);
 		status.setLabelProvider(statusLabelProvider);
@@ -150,7 +150,7 @@ public class TaskTreeView extends ViewPart {
 		
 		// user data: comment
 		TreeViewerColumn comment = new TreeViewerColumn(tree, SWT.LEFT);
-		comment.getColumn().setText("Comment");
+		comment.getColumn().setText(Messages.TaskTreeView_CommentText);
 		TreeColumnViewerLabelProvider commentLabelProvider = new TreeColumnViewerLabelProvider(new TaskCommentLabelProvider(0));
 		commentLabelProvider.setProviders(colorProvider);
 		comment.setLabelProvider(commentLabelProvider);
@@ -285,8 +285,8 @@ public class TaskTreeView extends ViewPart {
 		TaskService taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
 		
 		final Collection<TreeNode> input = new ArrayList<TreeNode>();
-		sourceNode = new SortedMapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>>("Source");
-		targetNode = new SortedMapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>>("Target");
+		sourceNode = new SortedMapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>>(Messages.TaskTreeView_SourceNodeTitle);
+		targetNode = new SortedMapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>>(Messages.TaskTreeView_TargetNodeTitle);
 		input.add(sourceNode);
 		input.add(targetNode);
 		

@@ -53,21 +53,21 @@ public class UrlFieldEditor
 		URL result = null;
 		
 		if (!this._getFeatures) {
-			WFSFeatureTypesReaderDialog wfsDialog = new WFSFeatureTypesReaderDialog(this.getShell(), "Select a Web Feature Service");
+			WFSFeatureTypesReaderDialog wfsDialog = new WFSFeatureTypesReaderDialog(this.getShell(), Messages.UrlFieldEditor_FeatureServiceTitle);
 			result = wfsDialog.open();
 		}
 		else {
-			WFSDataReaderDialog wfsDialog = new WFSDataReaderDialog(this.getShell(), "Select a Web Feature Service to load data from");
+			WFSDataReaderDialog wfsDialog = new WFSDataReaderDialog(this.getShell(), Messages.UrlFieldEditor_DataReaderDialogTitle);
 			result = wfsDialog.open();
 		}
 
 		if (result != null) {
-			_log.debug("received result: " + result.toString());
+			_log.debug("received result: " + result.toString()); //$NON-NLS-1$
 			getTextControl().setText(result.toString());
 			return getTextControl().getText();
 		}
 		else { // applicable if cancel is pressed.
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 	}
 

@@ -169,8 +169,8 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 		// synch button
 		Button synchButton = new Button(page, SWT.TOGGLE);
 		synchButton.setSelection(useViewSelection);
-		synchButton.setToolTipText("Synchronize with Schema Explorer selection");
-		synchImage = HALEActivator.getImageDescriptor("icons/refresh.gif").createImage();
+		synchButton.setToolTipText(Messages.CellSelector_SynchButtonToolTipText);
+		synchImage = HALEActivator.getImageDescriptor("icons/refresh.gif").createImage(); //$NON-NLS-1$
 		synchButton.setImage(synchImage);
 		synchButton.addSelectionListener(new SelectionAdapter() {
 
@@ -184,8 +184,8 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 		// navigation buttons
 		prevButton = new Button(page, SWT.PUSH);
 		prevButton.setEnabled(false);
-		prevButton.setToolTipText("Previous cell");
-		prevImage = HALEActivator.getImageDescriptor("icons/backward_nav.gif").createImage();
+		prevButton.setToolTipText(Messages.CellSelector_PrevButtonToolTipText);
+		prevImage = HALEActivator.getImageDescriptor("icons/backward_nav.gif").createImage(); //$NON-NLS-1$
 		prevButton.setImage(prevImage);
 		prevButton.addSelectionListener(new SelectionAdapter() {
 
@@ -199,8 +199,8 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 		
 		nextButton = new Button(page, SWT.PUSH);
 		nextButton.setEnabled(false);
-		nextButton.setToolTipText("Next cell");
-		nextImage = HALEActivator.getImageDescriptor("icons/forward_nav.gif").createImage();
+		nextButton.setToolTipText(Messages.CellSelector_NextButtonToolTipText);
+		nextImage = HALEActivator.getImageDescriptor("icons/forward_nav.gif").createImage(); //$NON-NLS-1$
 		nextButton.setImage(nextImage);
 		nextButton.addSelectionListener(new SelectionAdapter() {
 
@@ -228,7 +228,7 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 				if (element instanceof CellInfo) {
 					CellInfo cell = (CellInfo) element;
 					return EntityHelper.getShortName(cell.getCell().getEntity1()) +
-						" - " + EntityHelper.getShortName(cell.getCell().getEntity2());
+						" - " + EntityHelper.getShortName(cell.getCell().getEntity2()); //$NON-NLS-1$
 				}
 				else {
 					return super.getText(element);
@@ -239,8 +239,8 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 		
 		// edit buttons
 		final Button editButton = new Button(page, SWT.PUSH);
-		editButton.setToolTipText("Edit cell");
-		editImage = HALEActivator.getImageDescriptor("icons/editor_area.gif").createImage();
+		editButton.setToolTipText(Messages.CellSelector_EditButtonToolTipText);
+		editImage = HALEActivator.getImageDescriptor("icons/editor_area.gif").createImage(); //$NON-NLS-1$
 		editButton.setImage(editImage);
 		MenuManager manager = new MenuManager();
 		manager.setRemoveAllWhenShown(true);
@@ -265,8 +265,8 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 		});
 		
 		final Button deleteButton = new Button(page, SWT.PUSH);
-		deleteButton.setToolTipText("Delete cell");
-		deleteImage = HALEActivator.getImageDescriptor("icons/delete_edit.gif").createImage();
+		deleteButton.setToolTipText(Messages.CellSelector_DeleteButtonToolTipText);
+		deleteImage = HALEActivator.getImageDescriptor("icons/delete_edit.gif").createImage(); //$NON-NLS-1$
 		deleteButton.setImage(deleteImage);
 		deleteButton.addSelectionListener(new SelectionAdapter() {
 
@@ -538,7 +538,7 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 			try {
 				listener.selectionChanged(event);
 			} catch (Exception e) {
-				log.error("Error while notifying listener", e);
+				log.error("Error while notifying listener", e); //$NON-NLS-1$
 			}
 		}
 	}

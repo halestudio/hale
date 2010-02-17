@@ -46,7 +46,7 @@ public class MappingExportWizardMainPage
 	public MappingExportWizardMainPage(String pageName, String pageTitle) {
 		super(pageName, pageTitle, (ImageDescriptor) null);
 		setTitle(pageName); //NON-NLS-1
-		setDescription("Export the currently created mapping to an OML file"); //NON-NLS-1
+		setDescription(Messages.MappingExportWizardMainPage_MappingExportDescription); //NON-NLS-1
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class MappingExportWizardMainPage
         
 		// define source group composite
 		Group selectionArea = new Group(parent, SWT.NONE);
-		selectionArea.setText("Select a location to export the Mapping to: ");
+		selectionArea.setText(Messages.MappingExportWizardMainPage_SelectionAreaText);
 		selectionArea.setLayout(new GridLayout());
 		GridData selectionAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
                 | GridData.HORIZONTAL_ALIGN_FILL);
@@ -85,14 +85,14 @@ public class MappingExportWizardMainPage
 		Composite ffe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ffe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		this.ffe = new FileFieldEditor("fileSelect", 
-				"... file:", ffe_container); //NON-NLS-1 //NON-NLS-2
+		this.ffe = new FileFieldEditor(Messages.MappingExportWizardMainPage_FileSelect, 
+				Messages.MappingExportWizardMainPage_File, ffe_container); //NON-NLS-1 //NON-NLS-2
 		this.ffe.getTextControl(ffe_container).addModifyListener(new ModifyListener(){
 			public void modifyText(ModifyEvent e) {
 				getWizard().getContainer().updateButtons();
 			}
 		});
-		String[] extensions = new String[] { "*.oml", "*.goml", "*.xml" }; //NON-NLS-1
+		String[] extensions = new String[] { "*.oml", "*.goml", "*.xml" }; //NON-NLS-1 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		this.ffe.setFileExtensions(extensions);
 		
 		setErrorMessage(null);	// should not initially have error message

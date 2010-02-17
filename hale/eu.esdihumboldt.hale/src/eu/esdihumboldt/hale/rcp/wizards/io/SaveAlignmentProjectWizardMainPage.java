@@ -50,7 +50,7 @@ public class SaveAlignmentProjectWizardMainPage extends WizardPage {
 	public SaveAlignmentProjectWizardMainPage(String pageName, String pageTitle) {
 		super(pageName, pageTitle, (ImageDescriptor) null);
 		setTitle(pageName); //NON-NLS-1
-		setDescription("Save the current Alignment Project"); //NON-NLS-1
+		setDescription(Messages.SaveAlignmentProjectWizardMainPage_Description); //NON-NLS-1
 	}
 
 	/**
@@ -71,8 +71,8 @@ public class SaveAlignmentProjectWizardMainPage extends WizardPage {
         
 		// define source group composite
 		Group selectionArea = new Group(parent, SWT.NONE);
-		selectionArea.setText("Select a location to save the current " +
-				"Alignment Project to: ");
+		selectionArea.setText(Messages.SaveAlignmentProjectWizardMainPage_LocationText1 +
+				Messages.SaveAlignmentProjectWizardMainPage_LocationText2);
 		selectionArea.setLayout(new GridLayout());
 		GridData selectionAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
                 | GridData.HORIZONTAL_ALIGN_FILL);
@@ -92,18 +92,18 @@ public class SaveAlignmentProjectWizardMainPage extends WizardPage {
 		Composite ffe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ffe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		this.ffe = new FileFieldEditor("fileSelect", 
-				"File:", ffe_container); //NON-NLS-1 //NON-NLS-2
+		this.ffe = new FileFieldEditor(Messages.SaveAlignmentProjectWizardMainPage_FileSelectTitle, 
+				Messages.SaveAlignmentProjectWizardMainPage_File, ffe_container); //NON-NLS-1 //NON-NLS-2
 		this.ffe.getTextControl(ffe_container).addModifyListener(new ModifyListener(){
 			public void modifyText(ModifyEvent e) {
 				getWizard().getContainer().updateButtons();
 			}
 		});
-		String[] extensions = new String[] { "*.xml" }; //NON-NLS-1
+		String[] extensions = new String[] { "*.xml" }; //NON-NLS-1 //$NON-NLS-1$
 		this.ffe.setFileExtensions(extensions);
 		
 		Group optionsGroup = new Group(parent, SWT.NONE);
-		optionsGroup.setText("Project Saving Options");
+		optionsGroup.setText(Messages.SaveAlignmentProjectWizardMainPage_ProjectSavingText);
 		optionsGroup.setLayout(new GridLayout());
 		GridData optionsGroupGD = new GridData(GridData.VERTICAL_ALIGN_FILL
                 | GridData.HORIZONTAL_ALIGN_FILL);
@@ -116,12 +116,12 @@ public class SaveAlignmentProjectWizardMainPage extends WizardPage {
 		this.projectName = new Text(optionsGroup, SWT.BORDER | SWT.SINGLE);
 		this.projectName.setLayoutData(new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
-		this.projectName.setText("Project Name");
+		this.projectName.setText(Messages.SaveAlignmentProjectWizardMainPage_ProjectNameText);
 		this.projectName.setEditable(true);
 		this.projectAuthor = new Text(optionsGroup, SWT.BORDER | SWT.SINGLE);
 		this.projectAuthor.setLayoutData(new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
-		this.projectAuthor.setText("Project Author Name");
+		this.projectAuthor.setText(Messages.SaveAlignmentProjectWizardMainPage_ProjectAuthorText);
 		this.projectAuthor.setEditable(true);
 		
 		setErrorMessage(null);	// should not initially have error message
@@ -154,7 +154,7 @@ public class SaveAlignmentProjectWizardMainPage extends WizardPage {
 	 * @return the Name given for the project, or null if none was entered.
 	 */
 	public String getProjectName() {
-		if (!this.projectName.getText().equals("Project Name")) {
+		if (!this.projectName.getText().equals("Project Name")) { //$NON-NLS-1$
 			return this.projectName.getText();
 		}
 		else {
@@ -167,7 +167,7 @@ public class SaveAlignmentProjectWizardMainPage extends WizardPage {
 	 * if none was entered.
 	 */
 	public String getProjectAuthor() {
-		if (!this.projectAuthor.getText().equals("Project Author Name")) {
+		if (!this.projectAuthor.getText().equals("Project Author Name")) { //$NON-NLS-1$
 			return this.projectAuthor.getText();
 		}
 		else {

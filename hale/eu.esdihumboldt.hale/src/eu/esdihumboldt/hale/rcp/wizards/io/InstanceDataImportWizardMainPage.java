@@ -55,8 +55,8 @@ public class InstanceDataImportWizardMainPage
 	protected InstanceDataImportWizardMainPage(String pageName, String pageTitle) {
 		super(pageName, pageTitle, (ImageDescriptor) null); // FIXME ImageDescriptor
 		super.setTitle(pageName); //NON-NLS-1
-		super.setDescription("Load geodata from a file or service to test your " +
-				"defined mappings and transformations.");
+		super.setDescription(Messages.InstanceDataImportWizardMainPage_LoadGeoDescription1 +
+				Messages.InstanceDataImportWizardMainPage_LoadGeoDescription2);
 	}
 	
 	// methods .................................................................
@@ -90,7 +90,7 @@ public class InstanceDataImportWizardMainPage
 		
 		// define source group composite
 		Group selectionArea = new Group(parent, SWT.NONE);
-		selectionArea.setText("Read Geodata from ...");
+		selectionArea.setText(Messages.InstanceDataImportWizardMainPage_ReadGeodata);
 		selectionArea.setLayout(new GridLayout());
 		GridData selectionAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
                 | GridData.HORIZONTAL_ALIGN_FILL);
@@ -117,14 +117,14 @@ public class InstanceDataImportWizardMainPage
 		final Composite ffe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ffe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		this.fileFieldEditor = new FileFieldEditor("fileSelect", 
-				"... file:", ffe_container); //NON-NLS-1 //NON-NLS-2
+		this.fileFieldEditor = new FileFieldEditor("fileSelect",  //$NON-NLS-1$
+				Messages.InstanceDataImportWizardMainPage_File, ffe_container); //NON-NLS-1 //NON-NLS-2
 		this.fileFieldEditor.getTextControl(ffe_container).addModifyListener(new ModifyListener(){
 			public void modifyText(ModifyEvent e) {
 				getWizard().getContainer().updateButtons();
 			}
 		});
-		String[] extensions = new String[] { "*.gml", "*.xml" }; //NON-NLS-1
+		String[] extensions = new String[] { "*.gml", "*.xml" }; //NON-NLS-1 //$NON-NLS-1$ //$NON-NLS-2$
 		this.fileFieldEditor.setFileExtensions(extensions);
 		
 		// read from WFS (GetFeature)
@@ -132,7 +132,7 @@ public class InstanceDataImportWizardMainPage
 		final Composite ufe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ufe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		this.wfsFieldEditor = new UrlFieldEditor("urlSelect","... WFS GetFeature:", ufe_container,true);
+		this.wfsFieldEditor = new UrlFieldEditor("urlSelect","... WFS GetFeature:", ufe_container,true); //$NON-NLS-1$ //$NON-NLS-2$
 		this.wfsFieldEditor.setEnabled(false, ufe_container);
 		this.wfsFieldEditor.getTextControl(ufe_container).addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -186,9 +186,9 @@ public class InstanceDataImportWizardMainPage
 				if (!this.useFile) {
 					// test whether content of the WFS Field Editor validates to URL.
 					String test = this.wfsFieldEditor.getStringValue();
-					if (test != null && !test.equals("")) {
+					if (test != null && !test.equals("")) { //$NON-NLS-1$
 						new URL(test);
-						_log.debug("wfsFieldEditor URL was OK.");
+						_log.debug("wfsFieldEditor URL was OK."); //$NON-NLS-1$
 						this.result = test;
 					} 
 					else {
@@ -198,10 +198,10 @@ public class InstanceDataImportWizardMainPage
 				else {
 					// test whether content of the File Field Editor validates to URI.
 					String test = this.fileFieldEditor.getStringValue();
-					if (test != null && !test.equals("")) {
-						test = test.replace(" ", "%20");
-						new URI(test.replaceAll("\\\\", "/"));
-						_log.debug("fileFieldEditor URI was OK.");
+					if (test != null && !test.equals("")) { //$NON-NLS-1$
+						test = test.replace(" ", "%20"); //$NON-NLS-1$ //$NON-NLS-2$
+						new URI(test.replaceAll("\\\\", "/")); //$NON-NLS-1$ //$NON-NLS-2$
+						_log.debug("fileFieldEditor URI was OK."); //$NON-NLS-1$
 						this.result = test;
 					}
 					else {
@@ -212,7 +212,7 @@ public class InstanceDataImportWizardMainPage
 				ex.printStackTrace();
 				return false;
 			} 
-			_log.debug("Page is complete.");
+			_log.debug("Page is complete."); //$NON-NLS-1$
 			return true;
 		}
 		else {

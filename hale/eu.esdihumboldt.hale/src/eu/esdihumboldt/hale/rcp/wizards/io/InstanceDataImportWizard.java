@@ -70,14 +70,14 @@ public class InstanceDataImportWizard
 	public InstanceDataImportWizard() {
 		super();
 		this.mainPage = new InstanceDataImportWizardMainPage(
-				"Import Instance Data", "Import Geodata"); // NON-NLS-1
+				Messages.InstanceDataImportWizard_MainPageLabel, Messages.ImportGeodataText); // NON-NLS-1
 		this.filterPage = new InstanceDataImportWizardFilterPage(
-				"Filter Instance Data to be imported",
-				"Filter imported Geodata"); // NON-NLS-1
+				Messages.FilterDataText,
+				Messages.FilterImportGeodataText); // NON-NLS-1
 		this.verificationPage = new InstanceDataImportWizardVerificationPage(
-				"Define Constraints for Data to be used in Transformation Verification",
-				"Define Verification Constraints"); // NON-NLS-1
-		super.setWindowTitle("Instance Data Import Wizard"); // NON-NLS-1
+				Messages.InstanceDataImportTitle,
+				Messages.InstanceDataImportDescription); // NON-NLS-1
+		super.setWindowTitle(Messages.WindowTitle); // NON-NLS-1
 		super.setNeedsProgressMonitor(true);
 	}
 
@@ -114,17 +114,17 @@ public class InstanceDataImportWizard
 				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException,
 						InterruptedException {
-					monitor.beginTask("Importing instance data...", IProgressMonitor.UNKNOWN);
+					monitor.beginTask(Messages.ImportDataStatusText, IProgressMonitor.UNKNOWN);
 					
 					// retrieve required parameters, specifically the location and the namespace of the source schema.
 					String namespace = schemaService.getSourceNameSpace();
 					if (namespace == null) {
 						// set a default namespace
-						namespace = "http://xsdi.org/default";
+						namespace = "http://xsdi.org/default"; //$NON-NLS-1$
 					}
 					URL schema_location = schemaService.getSourceURL();
 					if (schema_location == null) {
-						String message = "You have to load a Schema first.";
+						String message = Messages.LoadSchemaFailure;
 						ExceptionHelper.handleException(message, HALEActivator.PLUGIN_ID, null);
 						return;
 					}
@@ -136,7 +136,7 @@ public class InstanceDataImportWizard
 						gml_location = f.toURI().toURL();
 					} catch (MalformedURLException e) {
 						// it is ensured that only a valid URL is passed before
-						ExceptionHelper.handleException(result + " was not parsed as a URL sucessfully",
+						ExceptionHelper.handleException(result + Messages.UrlParsingFailure,
 								HALEActivator.PLUGIN_ID, e);
 						return;
 					}
@@ -163,7 +163,7 @@ public class InstanceDataImportWizard
 								instanceService.cleanInstances();
 								SelectCRSDialog.resetCustomCRS();
 								instanceService.addInstances(DatasetType.reference, deployFeatures);
-								_log.info(deployFeatures.size() + " instances were added to the InstanceService.");
+								_log.info(deployFeatures.size() + " instances were added to the InstanceService."); //$NON-NLS-1$
 							}
 						});
 					}
@@ -175,9 +175,9 @@ public class InstanceDataImportWizard
 			
 		} catch (Exception e) {
 			ExceptionHelper.handleException(
-					"An Error occured when trying to open instance data: ", 
+					Messages.InstanceOpeningError, 
 					HALEActivator.PLUGIN_ID, e);
-			_log.error("Error performing wizard finish", e);
+			_log.error("Error performing wizard finish", e); //$NON-NLS-1$
 		}
 		
 		return true;
@@ -219,9 +219,9 @@ public class InstanceDataImportWizard
 			
 			configuration = new GMLConfiguration();
 
-			_log.info("Using this GML location: " + gml_location.toString());
+			_log.info("Using this GML location: " + gml_location.toString()); //$NON-NLS-1$
 			
-			URI file = new URI(URLDecoder.decode(gml_location.toString(), "UTF-8"));
+			URI file = new URI(URLDecoder.decode(gml_location.toString(), "UTF-8")); //$NON-NLS-1$
 			InputStream xml = new FileInputStream(new File(file));
 			
 			HaleGMLParser parser = new HaleGMLParser(configuration);
@@ -229,7 +229,7 @@ public class InstanceDataImportWizard
 				(FeatureCollection<FeatureType, Feature>) parser.parse(xml);
 		} catch (Exception ex) {
 			throw new RuntimeException(
-					"Parsing the given GML into a FeatureCollection failed: ",
+					"Parsing the given GML into a FeatureCollection failed: ", //$NON-NLS-1$
 					ex);
 		}
 		return result;

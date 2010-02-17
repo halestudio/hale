@@ -64,19 +64,19 @@ public class GetCapabilititiesRetriever {
 			throws Exception {
 		
 		StringBuffer complete_url = new StringBuffer(host);
-		if (!complete_url.toString().contains("?")) {
-			complete_url.append("?");
+		if (!complete_url.toString().contains("?")) { //$NON-NLS-1$
+			complete_url.append("?"); //$NON-NLS-1$
 		}
 		char last_char = complete_url.toString().charAt(
 				complete_url.length() - 1);
 		switch (selectionIndex) {
 		case -1: 
-			throw new Exception("No valid Protocol selection was made.");
+			throw new Exception("No valid Protocol selection was made."); //$NON-NLS-1$
 		case 0: // 1.1.0, HTTP GET
 			if (!(last_char == '&') && !(last_char == '?')) {
-				complete_url.append("&");
+				complete_url.append("&"); //$NON-NLS-1$
 			}
-			complete_url.append("request=GetCapabilities&version=1.1.0");
+			complete_url.append("request=GetCapabilities&version=1.1.0"); //$NON-NLS-1$
 			return new URL(complete_url.toString());
 		default: // 1.0.0/1.1.0 XML POST
 			if ((last_char == '&') || (last_char == '?')) {
@@ -101,14 +101,14 @@ public class GetCapabilititiesRetriever {
 	 * @throws IOException
 	 */
 	public static String readFromUrl(URL url) throws IOException {
-		_log.info("Reading from URL " +url.toString());
+		_log.info("Reading from URL " +url.toString()); //$NON-NLS-1$
 		BufferedReader reader = new BufferedReader(
 				new InputStreamReader(
 						url.openConnection().getInputStream()));
         StringBuilder sb = new StringBuilder();
         String line = null;
         while ((line = reader.readLine()) != null) {
-            sb.append(line + "\n");
+            sb.append(line + "\n"); //$NON-NLS-1$
         }
         return sb.toString();
 	}
@@ -140,14 +140,14 @@ public class GetCapabilititiesRetriever {
 				public void error(SAXParseException exception)
 						throws SAXException {
 					// TODO Auto-generated method stub
-					_log.debug("error");
+					_log.debug("error"); //$NON-NLS-1$
 				}
 
 
 				public void fatalError(SAXParseException exception)
 						throws SAXException {
 					// TODO Auto-generated method stub
-					_log.debug("fatalError");
+					_log.debug("fatalError"); //$NON-NLS-1$
 				}
 
 
@@ -161,19 +161,19 @@ public class GetCapabilititiesRetriever {
 			validator.validate(new DOMSource(doc));
 			
 		} catch (SAXException e) {
-			if (e.getMessage().startsWith("s4s-elt-character")) {
-				_log.info("Ignoring non-whitespace warning."); // FIXME: This is a hack!
+			if (e.getMessage().startsWith("s4s-elt-character")) { //$NON-NLS-1$
+				_log.info("Ignoring non-whitespace warning."); // FIXME: This is a hack! //$NON-NLS-1$
 				return true;
 			} 
 			else {
-				_log.warn("Validation failed: " + e.getMessage());
+				_log.warn("Validation failed: " + e.getMessage()); //$NON-NLS-1$
 				return false;
 			}
 		} catch (IOException e) {
-			_log.warn("Reading failed: " + e.getMessage());
+			_log.warn("Reading failed: " + e.getMessage()); //$NON-NLS-1$
 			return false;
 		} catch (ParserConfigurationException e) {
-			_log.warn("Parsing failed: " + e.getMessage());
+			_log.warn("Parsing failed: " + e.getMessage()); //$NON-NLS-1$
 			return false;
 		}
 		return true;
@@ -205,13 +205,13 @@ public class GetCapabilititiesRetriever {
 	 * @throws IOException
 	 */
 	public static DataStore getDataStore(String getCapabilitiesUrl) throws IOException {
-		_log.info("Getting Capabilities from " + getCapabilitiesUrl);
+		_log.info("Getting Capabilities from " + getCapabilitiesUrl); //$NON-NLS-1$
 		
 		// Connection Definition
 		Map<String, Object> connectionParameters = new HashMap<String, Object>();
-		connectionParameters.put("WFSDataStoreFactory:GET_CAPABILITIES_URL", 
+		connectionParameters.put("WFSDataStoreFactory:GET_CAPABILITIES_URL",  //$NON-NLS-1$
 				getCapabilitiesUrl);
-		connectionParameters.put("WFSDataStoreFactory:TIMEOUT", new Integer(5000));
+		connectionParameters.put("WFSDataStoreFactory:TIMEOUT", new Integer(5000)); //$NON-NLS-1$
 				
 		// Step 2 - connection
 		return DataStoreFinder.getDataStore( connectionParameters );
@@ -235,18 +235,18 @@ public class GetCapabilititiesRetriever {
 		List<FeatureType> result = new ArrayList<FeatureType>();
 		if (data != null) {
 			String typeNames[] = data.getTypeNames();
-			monitor.beginTask("Retrieving feature types...", typeNames.length);
+			monitor.beginTask(Messages.GetCapabilititiesRetriever_Retriever, typeNames.length);
 			int worked = 0;
 			for (String typename : typeNames) {
 				if (monitor.isCanceled()) {
 					break;
 				}
-				monitor.subTask(typename + " (" + (++worked) + "/" + typeNames.length + ")");
+				monitor.subTask(typename + " (" + (++worked) + "/" + typeNames.length + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				try { 
 					//FIXME takes to long for many feature types, there should be another way to get the namespaces
 					result.add(data.getSchema( typename ));
 				} catch (Exception ex) {
-					_log.warn("A FeatureType could not be added: " + ex.getMessage());
+					_log.warn("A FeatureType could not be added: " + ex.getMessage()); //$NON-NLS-1$
 				}
 				monitor.worked(1);
 			}

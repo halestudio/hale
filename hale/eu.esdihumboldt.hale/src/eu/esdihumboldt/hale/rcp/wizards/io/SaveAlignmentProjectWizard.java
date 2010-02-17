@@ -41,8 +41,8 @@ public class SaveAlignmentProjectWizard
 	public SaveAlignmentProjectWizard() {
 		super();
 		this.mainPage = new SaveAlignmentProjectWizardMainPage(
-				"Save Alignment", "Save Alignment"); //NON-NLS-1
-		super.setWindowTitle("Save Alignment Wizard"); //NON-NLS-1
+				Messages.SaveAlignmentProjectWizard_SaveAlignmentTitle, Messages.SaveAlignmentProjectWizard_SaveAlignmentDescription); //NON-NLS-1
+		super.setWindowTitle(Messages.SaveAlignmentProjectWizard_WindowTitle); //NON-NLS-1
 		super.setNeedsProgressMonitor(true);
 	}
 	
@@ -53,9 +53,9 @@ public class SaveAlignmentProjectWizard
 		String result = this.mainPage.getResult();
 		if (result != null) {
 			try {
-				ProjectGenerator.write(result, "default");
+				ProjectGenerator.write(result, "default"); //$NON-NLS-1$
 			} catch (Exception e) {
-				String message = "Saving the current Alignment Project failed: ";
+				String message = Messages.SaveAlignmentProjectWizard_SaveFaild;
 				_log.error(message, e);
 				ExceptionHelper.handleException(
 						message, HALEActivator.PLUGIN_ID, e);

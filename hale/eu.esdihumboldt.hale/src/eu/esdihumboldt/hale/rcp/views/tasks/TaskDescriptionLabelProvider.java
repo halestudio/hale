@@ -49,7 +49,7 @@ public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvid
 		
 		this.index = index;
 		
-		taskImage = HALEActivator.getImageDescriptor("icons/tasks.gif").createImage();
+		taskImage = HALEActivator.getImageDescriptor("icons/tasks.gif").createImage(); //$NON-NLS-1$
 	}
 
 	/**

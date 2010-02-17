@@ -44,13 +44,13 @@ public class OGCFilterDialog extends Dialog {
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) display.sleep();
 		}
-		_log.debug("returning result.");
+		_log.debug("returning result."); //$NON-NLS-1$
 		
 		return this._filter;
 	}
 	
 	private void createControls(final Shell shell) {
-		_log.debug("Creating Controls");
+		_log.debug("Creating Controls"); //$NON-NLS-1$
 		
 		
 		// Create Fields for URL entry.
@@ -61,7 +61,7 @@ public class OGCFilterDialog extends Dialog {
 				GridData.GRAB_VERTICAL | GridData.FILL_VERTICAL));
 		
 		final Group filterDef = new Group(c, SWT.NONE); 
-		filterDef.setText("Filter operators...");
+		filterDef.setText(Messages.OGCFilterDialog_FilterOperatorText);
 		filterDef.setLayoutData( new GridData(GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
 		
 		

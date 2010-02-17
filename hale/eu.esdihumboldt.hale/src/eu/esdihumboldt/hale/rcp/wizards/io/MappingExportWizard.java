@@ -44,8 +44,8 @@ public class MappingExportWizard
 	public MappingExportWizard() {
 		super();
 		this.mainPage = new MappingExportWizardMainPage(
-				"Export Mapping", "Export Mapping"); //NON-NLS-1
-		super.setWindowTitle("Mapping Export Wizard"); //NON-NLS-1
+				Messages.MappingExportWizard_ExportMenu1, Messages.MappingExportWizard_ExportMenu2); //NON-NLS-1
+		super.setWindowTitle(Messages.MappingExportWizard_WindowTitle); //NON-NLS-1
 		super.setNeedsProgressMonitor(true);
 	}
 	
@@ -63,7 +63,7 @@ public class MappingExportWizard
 			try {
 				orgen.write(alService.getAlignment(), result);
 			} catch (Exception e) {
-				String message = "Saving the current Alignment failed: ";
+				String message = Messages.MappingExportWizard_SaveFailed;
 				_log.error(message, e);
 				ExceptionHelper.handleException(
 						message, HALEActivator.PLUGIN_ID, e);
