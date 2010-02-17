@@ -110,7 +110,7 @@
             name="Save Alignment Project As">
       </command>
       <command
-            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.SaveSchemaCommandHandler"
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.SaveMappingCommandHandler"
             id="HALE.saveMappingAs.command"
             name="Save Mapping as">
       </command>
@@ -130,7 +130,7 @@
       </command>
       <command
             defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.FunctionWizardHandler"
-            description="Pick a wizrd for the transformation you wish"
+            description="Pick a wizard for the transformation you wish"
             id="eu.esdihumboldt.hale.rcp.wizards.io.FunctionWizard"
             name="FunctionWizard">
       </command>
