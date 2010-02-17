@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.rcp.views.model.dialogs;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.widgets.Display;
 
+import eu.esdihumboldt.hale.rcp.views.model.Messages;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 
 /**
@@ -38,7 +39,7 @@ public class PropertiesAction extends Action {
 		
 		this.item = item;
 		
-		setText("Properties...");
+		setText(Messages.PropertiesAction_PropertiesText);
 	}
 
 	/**

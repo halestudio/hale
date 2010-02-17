@@ -127,9 +127,9 @@ public class ModelNavigationView extends ViewPart implements
 					if (item.isFeatureType() && item.getPropertyType() instanceof FeatureType
 							&& !((FeatureType) item.getPropertyType()).isAbstract()) {
 						IAction action = new FeatureTypeStyleAction((FeatureType) item.getPropertyType());
-						action.setText("Edit style...");
+						action.setText(Messages.ModelNavigationView_ActionText);
 						action.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
-								HALEActivator.PLUGIN_ID, "/icons/styles.gif"));
+								HALEActivator.PLUGIN_ID, "/icons/styles.gif")); //$NON-NLS-1$
 						IContributionItem contrib = new ActionContributionItem(action);
 						contrib.fill(menu, index++);
 						
@@ -174,7 +174,7 @@ public class ModelNavigationView extends ViewPart implements
 	/**
 	 * The view id
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView";
+	public static final String ID = "eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView"; //$NON-NLS-1$
 
 	/**
 	 * Viewer for the source schema
@@ -279,10 +279,10 @@ public class ModelNavigationView extends ViewPart implements
 		
 		// function button
 		final Button functionButton = new Button(modelComposite, SWT.PUSH | SWT.FLAT);
-		functionImage = HALEActivator.getImageDescriptor("icons/mapping.gif").createImage();
-		augmentImage = HALEActivator.getImageDescriptor("icons/augment.gif").createImage();
+		functionImage = HALEActivator.getImageDescriptor("icons/mapping.gif").createImage(); //$NON-NLS-1$
+		augmentImage = HALEActivator.getImageDescriptor("icons/augment.gif").createImage(); //$NON-NLS-1$
 		functionButton.setImage(functionImage);
-		functionButton.setToolTipText("Select a mapping function");
+		functionButton.setToolTipText(Messages.ModelNavigationView_FunctionButtonToolTipText);
 		functionButton.setEnabled(false);
 		functionButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 		MenuManager manager = new MenuManager();
@@ -416,17 +416,17 @@ public class ModelNavigationView extends ViewPart implements
 	private List<SimpleToggleAction> getToggleActions(PatternViewFilter pvf) {
 		List<SimpleToggleAction> result = new ArrayList<SimpleToggleAction>();
 		result.add(new SimpleToggleAction(TreeObjectType.PROPERTY_TYPE, 
-				"Hide Property Types", "Show Property Types", 
-				"/icons/placeholder.gif", pvf));
+				Messages.ModelNavigationView_PropertyHide, Messages.ModelNavigationView_PropertyShow, 
+				"/icons/placeholder.gif", pvf)); //$NON-NLS-1$
 		result.add(new SimpleToggleAction(TreeObjectType.STRING_ATTRIBUTE, 
-				"Hide String Attributes", "Show String Attributes", 
-				"/icons/see_string_attribute.png", pvf));
+				Messages.ModelNavigationView_StringHide, Messages.ModelNavigationView_StringShow, 
+				"/icons/see_string_attribute.png", pvf)); //$NON-NLS-1$
 		result.add(new SimpleToggleAction(TreeObjectType.GEOMETRIC_ATTRIBUTE, 
-				"Hide Geometry Attributes", "Show Geometry Attributes", 
-				"/icons/see_geometry_attribute.png", pvf));
+				Messages.ModelNavigationView_GeometryHide, Messages.ModelNavigationView_GeometryShow, 
+				"/icons/see_geometry_attribute.png", pvf)); //$NON-NLS-1$
 		result.add(new SimpleToggleAction(TreeObjectType.NUMERIC_ATTRIBUTE, 
-				"Hide Numeric Attributes", "Show Numeric Attributes", 
-				"/icons/see_number_attribute.png", pvf));
+				Messages.ModelNavigationView_NumericHide, Messages.ModelNavigationView_NumericShow, 
+				"/icons/see_number_attribute.png", pvf)); //$NON-NLS-1$
 		return result;
 	}
 

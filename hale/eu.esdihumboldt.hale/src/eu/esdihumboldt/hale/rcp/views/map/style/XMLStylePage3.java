@@ -35,6 +35,8 @@ import org.geotools.styling.SLDTransformer;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
+
 /**
  * Page for editing a style as XML
  * 
@@ -58,7 +60,7 @@ public class XMLStylePage3 extends FeatureStylePage {
 	 * @param parent the parent dialog
 	 */
 	public XMLStylePage3(FeatureStyleDialog parent) {
-		super(parent, "XML");
+		super(parent, Messages.XMLStylePage3_SuperTitle);
 	}
 
 	/**
@@ -94,7 +96,7 @@ public class XMLStylePage3 extends FeatureStylePage {
 		try {
 			xml = trans.transform(getParent().getStyle());
 		} catch (TransformerException e) {
-			xml = "Error: " + e.getMessage();
+			xml = "Error: " + e.getMessage(); //$NON-NLS-1$
 		}
 		IDocument doc = new Document();
 		doc.set(xml);

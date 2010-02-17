@@ -104,8 +104,8 @@ public abstract class MapUtils {
 				crs = determineCRS(is.getFeatures(DatasetType.reference)); // TODO always use source CRS! (Check whether OK)
 			}
 			
-			log.info("features size: " + fc.size());
-			log.info("features bounds: " + fc.getBounds());
+			log.info("features size: " + fc.size()); //$NON-NLS-1$
+			log.info("features bounds: " + fc.getBounds()); //$NON-NLS-1$
 			Style style = ss.getStyle(type);
 			
 			Map<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> groupedFeatures = new HashMap<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>>();
@@ -123,7 +123,7 @@ public abstract class MapUtils {
 					collection.add(feature);
 				}
 				else {
-					log.error("Unrecognized Feature");
+					log.error("Unrecognized Feature"); //$NON-NLS-1$
 				}
 			}
 			

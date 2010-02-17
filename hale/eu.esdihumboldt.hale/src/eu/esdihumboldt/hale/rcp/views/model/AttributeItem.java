@@ -40,8 +40,8 @@ public class AttributeItem extends TreeParent {
 	 */
 	public AttributeItem(AttributeDefinition attribute) {
 		super(
-				attribute.getName() + ":<" +
-					attribute.getTypeName().getLocalPart() + ">", 
+				attribute.getName() + ":<" + //$NON-NLS-1$
+					attribute.getTypeName().getLocalPart() + ">",  //$NON-NLS-1$
 				new NameImpl(attribute.getDeclaringType().getIdentifier(), attribute.getName()), 
 				determineType(attribute), 
 				attribute.getAttributeType().getType());
@@ -61,7 +61,7 @@ public class AttributeItem extends TreeParent {
 		PropertyType type = attribute.getAttributeType().getType();
 		Class<?> binding = type.getBinding();
 		
-		if (type.toString().matches("^.*?GMLComplexTypes.*")) {
+		if (type.toString().matches("^.*?GMLComplexTypes.*")) { //$NON-NLS-1$
 //		if (pd.getType().getName().getNamespaceURI().equals("http://www.opengis.net/gml")) {
 			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
 		} else if (Arrays.asList(binding.getClass().getInterfaces())
@@ -90,12 +90,12 @@ public class AttributeItem extends TreeParent {
 			return TreeObjectType.STRING_ATTRIBUTE; //TODO new attribute type?
 		}
 		// default geometry attribute
-		else if (attribute.getName().equalsIgnoreCase("geometry") ||
-				attribute.getName().equalsIgnoreCase("the_geom")) {
+		else if (attribute.getName().equalsIgnoreCase("geometry") || //$NON-NLS-1$
+				attribute.getName().equalsIgnoreCase("the_geom")) { //$NON-NLS-1$
 			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
 		}
 		// default geographical name attribute
-		else if (attribute.getName().equalsIgnoreCase("geographicalname")) {
+		else if (attribute.getName().equalsIgnoreCase("geographicalname")) { //$NON-NLS-1$
 			return TreeObjectType.GEOGRAPHICAl_NAME_ATTRIBUTE;
 		}
 		else if (Arrays.asList(type.getClass().getInterfaces())

@@ -16,6 +16,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
 
 /**
  * Drop-down action for style editing
@@ -30,10 +31,10 @@ public class StyleDropdown extends DropdownAction {
 	 * Creates a style drop-down
 	 */
 	public StyleDropdown() {
-		super("Styles");
+		super(Messages.StyleDropdown_SuperTitle);
 		
 		setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
-				HALEActivator.PLUGIN_ID, "/icons/styles.gif"));
+				HALEActivator.PLUGIN_ID, "/icons/styles.gif")); //$NON-NLS-1$
 		
 		addItem(new ActionContributionItem(new DatasetStyleDropdown(DatasetType.reference)));
 		addItem(new ActionContributionItem(new DatasetStyleDropdown(DatasetType.transformed)));

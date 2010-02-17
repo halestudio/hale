@@ -21,6 +21,7 @@ import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
 import org.geotools.styling.Symbolizer;
 
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
 import eu.esdihumboldt.hale.rcp.views.map.style.editors.PolygonSymbolizerEditor;
 
 /**
@@ -40,7 +41,7 @@ public class SimplePolygonStylePage extends FeatureStylePage {
 	 * @param parent the parent dialog
 	 */
 	public SimplePolygonStylePage(FeatureStyleDialog parent) {
-		super(parent, "Simple polygon");
+		super(parent, Messages.SimplePolygonStylePage_SuperTitle);
 	}
 
 	/**

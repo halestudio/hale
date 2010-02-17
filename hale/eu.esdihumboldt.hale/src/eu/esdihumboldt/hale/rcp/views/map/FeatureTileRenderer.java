@@ -67,7 +67,7 @@ public class FeatureTileRenderer implements TileProvider {
             hints = new HashMap();
         }
         renderer.setRendererHints(hints);
-        hints.put("memoryPreloadingEnabled", Boolean.FALSE);
+        hints.put("memoryPreloadingEnabled", Boolean.FALSE); //$NON-NLS-1$
         this.renderer.setRendererHints(hints);
     }
 	

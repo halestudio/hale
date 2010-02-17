@@ -17,6 +17,8 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
+
 /**
  * Page for editing a style as XML.
  * 
@@ -41,7 +43,7 @@ public class XMLStylePage4 extends FeatureStylePage {
 	 * @param parent the parent dialog
 	 */
 	public XMLStylePage4(FeatureStyleDialog parent) {
-		super(parent, "XML");
+		super(parent, Messages.XMLStylePage4_SuperTitle);
 	}
 
 	/**

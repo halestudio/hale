@@ -18,6 +18,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.model.ConfigurableModelContentProvider;
+import eu.esdihumboldt.hale.rcp.views.model.Messages;
 
 /**
  * TODO Explain the purpose of this type here.
@@ -35,7 +36,7 @@ public class UseAggregationHierarchyAction
 	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return AbstractUIPlugin.imageDescriptorFromPlugin(
-				HALEActivator.PLUGIN_ID, "/icons/aggregation_hierarchy.png");
+				HALEActivator.PLUGIN_ID, "/icons/aggregation_hierarchy.png"); //$NON-NLS-1$
 	}
 	
 	/**
@@ -43,7 +44,7 @@ public class UseAggregationHierarchyAction
 	 */
 	@Override
 	public String getToolTipText() {
-		return "Property aggregation";
+		return Messages.UseAggregationHierarchyAction_PropertyAggregationToolTipText;
 	}
 
 	/**

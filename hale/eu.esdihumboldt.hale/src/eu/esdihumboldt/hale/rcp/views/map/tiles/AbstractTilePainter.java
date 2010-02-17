@@ -36,6 +36,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.TileCache.TileListener;
 
 /**
@@ -476,8 +477,8 @@ public abstract class AbstractTilePainter implements PaintListener,
 		};
 		
 		action.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
-				HALEActivator.PLUGIN_ID, "/icons/add.gif"));
-		action.setToolTipText("Zoom in");
+				HALEActivator.PLUGIN_ID, "/icons/add.gif")); //$NON-NLS-1$
+		action.setToolTipText(Messages.AbstractTilePainter_ZoomIn);
 		
 		return action;
 	}
@@ -506,8 +507,8 @@ public abstract class AbstractTilePainter implements PaintListener,
 		};
 		
 		action.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
-				HALEActivator.PLUGIN_ID, "/icons/minus.gif"));
-		action.setToolTipText("Zoom out");
+				HALEActivator.PLUGIN_ID, "/icons/minus.gif")); //$NON-NLS-1$
+		action.setToolTipText(Messages.AbstractTilePainter_ZoomOut);
 		
 		return action;
 	}

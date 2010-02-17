@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.views.model.Messages;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 
 /**
@@ -40,8 +41,8 @@ public class SimpleToggleAction
 	 */
 	private TreeViewer actionTarget;
 	
-	private String msgDisable = "";
-	private String msgEnable = "";
+	private String msgDisable = ""; //$NON-NLS-1$
+	private String msgEnable = ""; //$NON-NLS-1$
 	
 	private PatternViewFilter filterListener; 
 	

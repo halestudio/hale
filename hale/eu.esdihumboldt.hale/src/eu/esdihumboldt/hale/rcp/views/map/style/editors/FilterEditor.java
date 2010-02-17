@@ -50,6 +50,8 @@ import org.opengis.filter.expression.Expression;
 import org.opengis.filter.expression.Literal;
 import org.opengis.filter.expression.PropertyName;
 
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
+
 /**
  * Editor for {@link Filter}s
  * 
@@ -181,17 +183,17 @@ public class FilterEditor implements Editor<Filter> {
 		public String toString() {
 			switch (this) {
 			case EQUAL:
-				return "=";
+				return "="; //$NON-NLS-1$
 			case LESS_THAN:
-				return "<";
+				return "<"; //$NON-NLS-1$
 			case LESS_OR_EQUAL:
-				return "<=";
+				return "<="; //$NON-NLS-1$
 			case GREATER_THAN:
-				return ">";
+				return ">"; //$NON-NLS-1$
 			case GREATER_OR_EQUAL:
-				return ">=";
+				return ">="; //$NON-NLS-1$
 			case LIKE:
-				return "like";
+				return "like"; //$NON-NLS-1$
 			default:
 				return super.toString();
 			}
@@ -355,7 +357,7 @@ public class FilterEditor implements Editor<Filter> {
 					return null;
 				}
 			} catch (Exception e) {
-				log.warn("Error getting filter", e);
+				log.warn("Error getting filter", e); //$NON-NLS-1$
 				return null;
 			}
 		}

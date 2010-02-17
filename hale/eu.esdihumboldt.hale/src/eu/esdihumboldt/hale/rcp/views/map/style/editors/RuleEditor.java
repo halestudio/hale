@@ -24,6 +24,8 @@ import org.geotools.styling.Symbolizer;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
+
 /**
  * Editor for {@link Rule}s
  * @param <T> the {@link Symbolizer} type
@@ -63,7 +65,7 @@ public class RuleEditor<T extends Symbolizer> implements Editor<Rule> {
 		Label filterLabel = new Label(page, SWT.NONE);
 		filterLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 		filterLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
-		filterLabel.setText("Filter");
+		filterLabel.setText(Messages.RuleEditor_FilterLabel);
 		
 		filterEditor = new FilterEditor(page, featureType, filter);
 		filterEditor.getControl().setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, true, false));
@@ -110,7 +112,7 @@ public class RuleEditor<T extends Symbolizer> implements Editor<Rule> {
 	 */
 	@Override
 	public void setValue(Rule value) {
-		throw new UnsupportedOperationException("Setting the value on the rule editor not allowed, use the constructor instead.");
+		throw new UnsupportedOperationException(Messages.RuleEditor_ExceptionText);
 	}
 
 }

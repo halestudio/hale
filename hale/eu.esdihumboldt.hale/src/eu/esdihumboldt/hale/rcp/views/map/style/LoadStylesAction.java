@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.models.StyleService;
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
 
 /**
  * Action that loads styles from a SLD file
@@ -39,7 +40,7 @@ public class LoadStylesAction extends Action {
 	 * Creates an action that loads styles from a SLD file
 	 */
 	public LoadStylesAction() {
-		super("Load SLD file...", AS_PUSH_BUTTON);
+		super(Messages.LoadStylesAction_SuperTitle, AS_PUSH_BUTTON);
 	}
 
 	/**
@@ -53,8 +54,8 @@ public class LoadStylesAction extends Action {
 			FileDialog files = new FileDialog(Display.getCurrent().getActiveShell(), SWT.OPEN);
 			
 			String[] extensions = new String[2]; 
-			extensions[0]= "*.sld";
-			extensions[1]= "*.*";
+			extensions[0]= "*.sld"; //$NON-NLS-1$
+			extensions[1]= "*.*"; //$NON-NLS-1$
 			files.setFilterExtensions(extensions);
 			
 			String filename = files.open();
@@ -63,7 +64,7 @@ public class LoadStylesAction extends Action {
 			try {
 				styles.addStyles(file.toURI().toURL());
 			} catch (MalformedURLException e) {
-				log.error("Error loading SLD file", e);
+				log.error("Error loading SLD file", e); //$NON-NLS-1$
 			}
 		}
 	}

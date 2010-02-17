@@ -24,6 +24,7 @@ import org.eclipse.ui.PlatformUI;
 import org.geotools.styling.SLDTransformer;
 
 import eu.esdihumboldt.hale.models.StyleService;
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
 
 /**
  * @author Simon Templer
@@ -39,7 +40,7 @@ private static final Log log = LogFactory.getLog(SaveStylesAction.class);
 	 * Creates an action that loads styles from a SLD file
 	 */
 	public SaveStylesAction() {
-		super("Save to SLD file...", AS_PUSH_BUTTON);
+		super(Messages.SaveStylesAction_SuperTitle, AS_PUSH_BUTTON);
 	}
 
 	/**
@@ -53,8 +54,8 @@ private static final Log log = LogFactory.getLog(SaveStylesAction.class);
 			FileDialog files = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
 			
 			String[] extensions = new String[2]; 
-			extensions[0]= "*.sld";
-			extensions[1]= "*.xml";
+			extensions[0]= "*.sld"; //$NON-NLS-1$
+			extensions[1]= "*.xml"; //$NON-NLS-1$
 			files.setFilterExtensions(extensions);
 			
 			String filename = files.open();
@@ -68,7 +69,7 @@ private static final Log log = LogFactory.getLog(SaveStylesAction.class);
 				trans.transform(styles.getStyle(), writer);
 				writer.close();
 			} catch (Exception e) {
-				log.error("Error saving SLD file", e);
+				log.error("Error saving SLD file", e); //$NON-NLS-1$
 			}
 		}
 	}

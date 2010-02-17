@@ -25,6 +25,7 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
 
 /**
  * Dialog for editing feature type styles
@@ -57,10 +58,10 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 		
 		if (styleImage == null) {
 			styleImage = AbstractUIPlugin.imageDescriptorFromPlugin(
-					HALEActivator.PLUGIN_ID, "/icons/styles.gif").createImage();
+					HALEActivator.PLUGIN_ID, "/icons/styles.gif").createImage(); //$NON-NLS-1$
 		}
 		
-		setTitle("FeatureStyle: " + type.getName().getLocalPart());
+		setTitle(Messages.FeatureStyleDialog_Title + type.getName().getLocalPart());
 		setImage(styleImage);
 		
 		styles = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
@@ -83,9 +84,9 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 			try {
 				temp = oldPage.getStyle(false);
 			} catch (Exception e) {
-				if (MessageDialog.openConfirm(getShell(), "Switch style editor",
-						"The current style is not valid, if you continue you will loose your changes."
-						+ "\n\nError message:\n" + e.getMessage())) {
+				if (MessageDialog.openConfirm(getShell(), Messages.FeatureStyleDialog_SwitchStyleTitle,
+						Messages.FeatureStyleDialog_SwitchStyleDescription
+						+ "\n\nError message:\n" + e.getMessage())) { //$NON-NLS-1$
 					// revert changes
 					temp = null;
 				}
@@ -97,8 +98,8 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 			
 			if (temp != null) {
 				// set style
-				if (MessageDialog.openQuestion(getShell(), "Switch style editor",
-						"Do you want to save the changes you made to the style?")) {
+				if (MessageDialog.openQuestion(getShell(), Messages.FeatureStyleDialog_SwitchStyleTitle2,
+						Messages.FeatureStyleDialog_SwitchStyleDescription2)) {
 					setStyle(temp);
 				}
 				return true;
@@ -119,7 +120,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 		
 		// create apply
 		createButton(parent, APPLY_ID,
-				"Apply", false);
+				Messages.FeatureStyleDialog_ApplyButtonText, false);
 	}
 
 	/**
@@ -169,8 +170,8 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 		try {
 			temp = page.getStyle(true);
 		} catch (Exception e) {
-			MessageDialog.openError(getShell(), "Style error",
-					"The current style is not valid, the following error occurred:\n\n"
+			MessageDialog.openError(getShell(), Messages.FeatureStyleDialog_ErrorMessageTitle,
+					Messages.FeatureStyleDialog_ErrorMessageDescription
 					+ e.getMessage());
 			return false;
 		}

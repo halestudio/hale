@@ -29,6 +29,8 @@ import org.geotools.styling.SLD;
 import org.geotools.styling.Stroke;
 import org.geotools.styling.StyleBuilder;
 
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
+
 /**
  * Editor for {@link Stroke}s
  * 
@@ -81,7 +83,7 @@ public class StrokeEditor implements Editor<Stroke> {
 		// color editor
 		Label label = new Label(page, SWT.NONE);
 		label.setLayoutData(caption);
-		label.setText("Color");
+		label.setText(Messages.StrokeEditor_ColorLabel);
 		
 		Color strokeColor = SLD.color(stroke);
 		color = new ColorEditor(page, new RGB(strokeColor.getRed(), strokeColor.getGreen(), strokeColor.getBlue()));
@@ -93,7 +95,7 @@ public class StrokeEditor implements Editor<Stroke> {
 		
 		label = new Label(page, SWT.NONE);
 		label.setLayoutData(caption);
-		label.setText("Width");
+		label.setText(Messages.StrokeEditor_WidthLabel);
 		
 		width = new Spinner(page, SWT.BORDER);
 		width.setLayoutData(editor);
@@ -115,7 +117,7 @@ public class StrokeEditor implements Editor<Stroke> {
 		
 		label = new Label(page, SWT.NONE);
 		label.setLayoutData(caption);
-		label.setText("Opacity");
+		label.setText(Messages.StrokeEditor_OpacityLabel);
 		
 		Composite opc = new Composite(page, SWT.NONE);
 		opc.setLayoutData(editor);
@@ -134,7 +136,7 @@ public class StrokeEditor implements Editor<Stroke> {
 		opacity.addSelectionListener(changeListener);
 		
 		label = new Label(opc, SWT.NONE);
-		label.setText("%");
+		label.setText("%"); //$NON-NLS-1$
 	}
 
 	/**

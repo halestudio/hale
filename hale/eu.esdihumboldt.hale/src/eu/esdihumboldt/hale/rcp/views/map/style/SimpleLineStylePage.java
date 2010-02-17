@@ -21,6 +21,7 @@ import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
 import org.geotools.styling.Symbolizer;
 
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
 import eu.esdihumboldt.hale.rcp.views.map.style.editors.LineSymbolizerEditor;
 
 /**
@@ -40,7 +41,7 @@ public class SimpleLineStylePage extends FeatureStylePage {
 	 * @param parent the parent dialog
 	 */
 	public SimpleLineStylePage(FeatureStyleDialog parent) {
-		super(parent, "Simple line");
+		super(parent, Messages.SimpleLineStylePage_SuperTitle);
 	}
 
 	/**

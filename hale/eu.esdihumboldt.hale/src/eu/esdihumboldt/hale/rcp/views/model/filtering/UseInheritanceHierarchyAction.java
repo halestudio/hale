@@ -17,6 +17,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.model.ConfigurableModelContentProvider;
+import eu.esdihumboldt.hale.rcp.views.model.Messages;
 
 /**
  * Enabling this action will switch the affected SchemaExplorer to display it's 
@@ -38,7 +39,7 @@ public class UseInheritanceHierarchyAction
 	 */
 	@Override
 	public String getToolTipText() {
-		return "Show inherited attributes";
+		return Messages.UseInheritanceHierarchyAction_ShowInheritedTooltipText;
 	}
 
 	/**
@@ -47,7 +48,7 @@ public class UseInheritanceHierarchyAction
 	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return AbstractUIPlugin.imageDescriptorFromPlugin(
-				HALEActivator.PLUGIN_ID, "/icons/inheritance_hierarchy.png");
+				HALEActivator.PLUGIN_ID, "/icons/inheritance_hierarchy.png"); //$NON-NLS-1$
 	}
 
 	/**

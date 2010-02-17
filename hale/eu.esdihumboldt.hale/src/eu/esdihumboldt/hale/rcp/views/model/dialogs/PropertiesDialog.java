@@ -38,6 +38,7 @@ import eu.esdihumboldt.hale.rcp.utils.EntityHelper;
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNodeLabelProvider;
 import eu.esdihumboldt.hale.rcp.views.model.AttributeItem;
+import eu.esdihumboldt.hale.rcp.views.model.Messages;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.schemaprovider.EnumAttributeType;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
@@ -76,7 +77,7 @@ public class PropertiesDialog extends TitleAreaDialog {
 		Control control = super.createContents(parent);
 		
 		//setMessage("");
-		setTitle("Properties of " + EntityHelper.getShortName(item.getEntity()));
+		setTitle(Messages.PropertiesDialog_Title + EntityHelper.getShortName(item.getEntity()));
 		
 		return control;
 	}
@@ -88,7 +89,7 @@ public class PropertiesDialog extends TitleAreaDialog {
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		
-		newShell.setText("Properties");
+		newShell.setText(Messages.PropertiesDialog_ShellTitle);
 	}
 
 	/**
@@ -134,13 +135,13 @@ public class PropertiesDialog extends TitleAreaDialog {
 				
 		// property column
 		TreeViewerColumn col1 = new TreeViewerColumn(tree, SWT.LEFT);
-		col1.getColumn().setText("Property");
+		col1.getColumn().setText(Messages.PropertiesDialog_col1Text);
 		col1.setLabelProvider(new TreeColumnViewerLabelProvider(
 				new MultiColumnTreeNodeLabelProvider(0)));
 		
 		// value column
 		TreeViewerColumn col2 = new TreeViewerColumn(tree, SWT.LEFT);
-		col2.getColumn().setText("Value");
+		col2.getColumn().setText(Messages.PropertiesDialog_col12Text);
 		col2.setLabelProvider(new TreeColumnViewerLabelProvider(
 				new MultiColumnTreeNodeLabelProvider(1)));
 		
@@ -169,23 +170,23 @@ public class PropertiesDialog extends TitleAreaDialog {
 		Definition definition = item.getDefinition();
 		
 		// name
-		DefaultTreeNode name = new DefaultTreeNode("Name", 
+		DefaultTreeNode name = new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleName, 
 				item.getName().getLocalPart());//EntityHelper.getShortName(item.getEntity()));
 		
 		// identifier
 		if (definition != null && definition.getIdentifier() != null) {
-			name.addChild(new DefaultTreeNode("Identifier", definition.getIdentifier()));
+			name.addChild(new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeIndentifier, definition.getIdentifier()));
 		}
 		
 		nodes.add(name);
 		
 		if (item.getPropertyType() != null) {
 			// type & binding
-			DefaultTreeNode type = new DefaultTreeNode("Type", 
-					item.getPropertyType().getName().getNamespaceURI() + "/" + item.getPropertyType().getName().getLocalPart());
-			type.addChild(new DefaultTreeNode("Namespace", item.getPropertyType().getName().getNamespaceURI()));
-			type.addChild(new DefaultTreeNode("Local part", item.getPropertyType().getName().getLocalPart()));
-			type.addChild(new DefaultTreeNode("Binding",
+			DefaultTreeNode type = new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleType, 
+					item.getPropertyType().getName().getNamespaceURI() + "/" + item.getPropertyType().getName().getLocalPart()); //$NON-NLS-1$
+			type.addChild(new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleNamespace, item.getPropertyType().getName().getNamespaceURI()));
+			type.addChild(new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleLocalpart, item.getPropertyType().getName().getLocalPart()));
+			type.addChild(new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleBinding,
 					item.getPropertyType().getBinding().getName()));
 			nodes.add(type);
 		}
@@ -197,14 +198,14 @@ public class PropertiesDialog extends TitleAreaDialog {
 			AttributeDefinition property = ((AttributeItem) item).getAttributeDefinition();
 			
 			// nillable
-			DefaultTreeNode nillable = new DefaultTreeNode("Nillable", 
+			DefaultTreeNode nillable = new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleNillable, 
 					String.valueOf(property.isNillable()));
 			nodes.add(nillable);
 			
 			// cardinality
 			long maxOccurs = property.getMaxOccurs();
-			String cardinalityValue = property.getMinOccurs() + ".." + ((maxOccurs == Long.MAX_VALUE)?("unbounded"):(maxOccurs));
-			DefaultTreeNode cardinality = new DefaultTreeNode("Cardinality", cardinalityValue);
+			String cardinalityValue = property.getMinOccurs() + ".." + ((maxOccurs == Long.MAX_VALUE)?("unbounded"):(maxOccurs)); //$NON-NLS-1$ //$NON-NLS-2$
+			DefaultTreeNode cardinality = new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleCardinality, cardinalityValue);
 			nodes.add(cardinality);
 		}
 		
@@ -212,7 +213,7 @@ public class PropertiesDialog extends TitleAreaDialog {
 		if (item.getPropertyType() != null && item.getPropertyType() instanceof EnumAttributeType) {
 			Set<String> allowedValues = ((EnumAttributeType) item.getPropertyType()).getAllowedValues();
 			
-			DefaultTreeNode enumeration = new DefaultTreeNode("Enumeration");
+			DefaultTreeNode enumeration = new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleEnumeration);
 			for (String value : allowedValues) {
 				enumeration.addChild(new DefaultTreeNode(value));
 			}
@@ -221,7 +222,7 @@ public class PropertiesDialog extends TitleAreaDialog {
 		
 		// attributes
 		if (item.hasChildren()) {
-			DefaultTreeNode attributes = new DefaultTreeNode("Attributes");
+			DefaultTreeNode attributes = new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleAttributes);
 			for (SchemaItem child : item.getChildren()) {
 				if (child.isAttribute()) {
 					if (child.getPropertyType() == null) {

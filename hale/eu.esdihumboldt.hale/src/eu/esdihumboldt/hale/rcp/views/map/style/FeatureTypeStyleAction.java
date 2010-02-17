@@ -20,6 +20,7 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.FeatureTypeHelper;
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
 
 /**
  * Action that opens a style editor for a certain feature type
@@ -61,12 +62,12 @@ public class FeatureTypeStyleAction extends Action {
 	private static void init() {
 		if (featureImage == null) {
 			featureImage = AbstractUIPlugin.imageDescriptorFromPlugin(
-					HALEActivator.PLUGIN_ID, "/icons/concrete_ft.png");
+					HALEActivator.PLUGIN_ID, "/icons/concrete_ft.png"); //$NON-NLS-1$
 		}
 		
 		if (abstractImage == null) {
 			abstractImage = AbstractUIPlugin.imageDescriptorFromPlugin(
-					HALEActivator.PLUGIN_ID, "/icons/abstract_ft.png");
+					HALEActivator.PLUGIN_ID, "/icons/abstract_ft.png"); //$NON-NLS-1$
 		}
 	}
 
@@ -80,7 +81,7 @@ public class FeatureTypeStyleAction extends Action {
 			dialog.setBlockOnOpen(false);
 			dialog.open();
 		} catch (Exception e) {
-			log.error("Error opening style editor dialog", e);
+			log.error("Error opening style editor dialog", e); //$NON-NLS-1$
 		}
 	}
 

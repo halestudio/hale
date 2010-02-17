@@ -30,6 +30,8 @@ import org.geotools.styling.SLD;
 import org.geotools.styling.Stroke;
 import org.geotools.styling.StyleBuilder;
 
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
+
 /**
  * Editor for {@link Fill}s
  * 
@@ -80,7 +82,7 @@ public class FillEditor implements Editor<Fill> {
 		// color editor
 		Label label = new Label(page, SWT.NONE);
 		label.setLayoutData(caption);
-		label.setText("Color");
+		label.setText(Messages.FillEditor_ColorLabelText);
 		
 		Color fillColor = SLD.color(fill);
 		color = new ColorEditor(page, new RGB(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue()));
@@ -92,7 +94,7 @@ public class FillEditor implements Editor<Fill> {
 		
 		label = new Label(page, SWT.NONE);
 		label.setLayoutData(caption);
-		label.setText("Opacity");
+		label.setText(Messages.FillEditor_OpacityText);
 		
 		Composite opc = new Composite(page, SWT.NONE);
 		opc.setLayoutData(editor);
@@ -111,7 +113,7 @@ public class FillEditor implements Editor<Fill> {
 		opacity.addSelectionListener(changeListener);
 		
 		label = new Label(opc, SWT.NONE);
-		label.setText("%");
+		label.setText("%"); //$NON-NLS-1$
 	}
 
 	/**

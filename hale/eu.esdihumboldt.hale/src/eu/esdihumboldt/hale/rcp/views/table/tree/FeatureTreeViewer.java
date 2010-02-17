@@ -35,6 +35,7 @@ import org.opengis.feature.type.PropertyType;
 
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNodeLabelProvider;
+import eu.esdihumboldt.hale.rcp.views.table.Messages;
 
 /**
  * Tree viewer for features of a common feature type
@@ -176,8 +177,8 @@ public class FeatureTreeViewer {
 			String name = entry.getKey();
 			String typeName = entry.getValue().getType().getName().getLocalPart();
 			
-			DefaultTreeNode childNode = new PropertyItem(name, name + ":<" +
-					typeName + ">");
+			DefaultTreeNode childNode = new PropertyItem(name, name + ":<" + //$NON-NLS-1$
+					typeName + ">"); //$NON-NLS-1$
 			
 			PropertyType childType = entry.getValue().getType();
 			if (childType instanceof FeatureType) {

@@ -34,6 +34,7 @@ import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.FeatureTypeHelper;
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -55,13 +56,13 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 	 * @param dataset the data set
 	 */
 	public DatasetStyleDropdown(final DatasetType dataset) {
-		super((dataset == DatasetType.reference)?("Source SLD"):("Target SLD"),
+		super((dataset == DatasetType.reference)?("Source SLD"):("Target SLD"), //$NON-NLS-1$ //$NON-NLS-2$
 				Action.AS_DROP_DOWN_MENU);
 		
 		this.dataset = dataset;
 		
 		setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
-				HALEActivator.PLUGIN_ID, "/icons/ft_stylelist.gif"));
+				HALEActivator.PLUGIN_ID, "/icons/ft_stylelist.gif")); //$NON-NLS-1$
 		
 		update(null);
 		

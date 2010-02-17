@@ -42,19 +42,19 @@ public enum SplitStyle {
 	public String toString() {
 		switch (this) {
 		case SOURCE:
-			return "Reference data only";
+			return Messages.SplitStyle_ComboBoxText1;
 		case TARGET:
-			return "Transformed data only";
+			return Messages.SplitStyle_ComboBoxText2;
 		case HORIZONTAL:
-			return "Split horizontally";
+			return Messages.SplitStyle_ComboBoxText3;
 		case VERTICAL:
-			return "Split vertically";
+			return Messages.SplitStyle_ComboBoxText4;
 		case DIAGONAL_UP:
-			return "Split diagonally (up)";
+			return Messages.SplitStyle_ComboBoxText5;
 		case DIAGONAL_DOWN:
-			return "Split diagonally (down)";
+			return Messages.SplitStyle_ComboBoxText6;
 		case OVERLAY:
-			return "Overlay";
+			return Messages.SplitStyle_ComboBoxText7;
 		default:
 			return super.toString();
 		}

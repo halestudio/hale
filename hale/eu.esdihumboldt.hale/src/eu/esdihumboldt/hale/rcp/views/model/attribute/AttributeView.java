@@ -52,6 +52,7 @@ import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.hale.rcp.views.model.Messages;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
@@ -73,7 +74,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 	/**
 	 * The view id
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.rcp.views.model.AttributeView";
+	public static final String ID = "eu.esdihumboldt.hale.rcp.views.model.AttributeView"; //$NON-NLS-1$
 
 	// List for the attributes from the selected User Model class
 	private Table sourceAttributeList;
@@ -287,10 +288,10 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 							.getService(IHandlerService.class);
 					try {
 						handlerService.executeCommand(
-								"org.eclipse.ui.newWizard", null);
+								"org.eclipse.ui.newWizard", null); //$NON-NLS-1$
 					} catch (Exception ex) {
 						throw new RuntimeException(
-								"org.eclipse.ui.newWizard not found");
+								"org.eclipse.ui.newWizard not found"); //$NON-NLS-1$
 					}
 				}
 			}
@@ -376,7 +377,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 					if (item.isAttribute()) {
 						TableItem listItem = new TableItem(
 								this.sourceAttributeList, SWT.NONE);
-						listItem.setText(_classnameNumber + ":"
+						listItem.setText(_classnameNumber + ":" //$NON-NLS-1$
 								+ item.getName().getLocalPart());
 						// sourceAttributeList.add(_classnameNumber+":"
 						// +item.getText());
@@ -401,7 +402,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 					if (item.isAttribute()) {
 						TableItem listItem = new TableItem(
 								this.targetAttributeList, SWT.NONE);
-						listItem.setText(_classnameNumber + ":"
+						listItem.setText(_classnameNumber + ":" //$NON-NLS-1$
 								+ item.getName().getLocalPart());
 						// targetAttributeList.add(_classnameNumber+":"
 						// +item.getText());
@@ -459,20 +460,20 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 					}
 
 					if (r != null && r.getCqlStr() != null) {
-						label = "Filter (" + r.getCqlStr() + "), " + label;
+						label = "Filter (" + r.getCqlStr() + "), " + label; //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 			}
 			else {
-				label = "";
+				label = ""; //$NON-NLS-1$
 			}
 		}
 		
 		Image newImage;
 		if (label == null) {
-			newImage = drawAlignmentImage("no alignment");
+			newImage = drawAlignmentImage("no alignment"); //$NON-NLS-1$
 		}
-		else if (label.equals("")) {
+		else if (label.equals("")) { //$NON-NLS-1$
 			newImage = null;
 		}
 		else {
@@ -491,7 +492,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 		if (label == null)
 			return null;
 		
-		String[] split = label.split("\\.");
+		String[] split = label.split("\\."); //$NON-NLS-1$
 		
 		return split[split.length - 1];
 	}
@@ -506,7 +507,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 		Color color = display.getSystemColor(SWT.COLOR_BLACK);
 
 		GC gc = new GC(image);
-		Font font = new Font(display, "Arial", 10, SWT.BOLD | SWT.ITALIC);
+		Font font = new Font(display, "Arial", 10, SWT.BOLD | SWT.ITALIC); //$NON-NLS-1$
 		try {
 			gc.setBackground(backgroundColer);
 			gc.fillRectangle(image.getBounds());
@@ -541,11 +542,11 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 		switch (type) {
 		case SOURCE:
 			sourceAttributeList.removeAll();
-			sourceModelLabel.setText("");
+			sourceModelLabel.setText(""); //$NON-NLS-1$
 			break;
 		case TARGET:
 			targetAttributeList.removeAll();
-			targetModelLabel.setText("");
+			targetModelLabel.setText(""); //$NON-NLS-1$
 			break;
 		default:
 			// do nothing

@@ -39,7 +39,7 @@ public class TransformedTableView extends AbstractTableView {
 	/**
 	 * The view id
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.rcp.views.TransformedTable";
+	public static final String ID = "eu.esdihumboldt.hale.rcp.views.TransformedTable"; //$NON-NLS-1$
 	
 	private Image synchImage;
 	
@@ -69,10 +69,10 @@ public class TransformedTableView extends AbstractTableView {
 		
 		final Button synch = new Button(parent, SWT.TOGGLE);
 		if (synchImage == null) {
-			synchImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/refresh.gif").createImage();
+			synchImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/refresh.gif").createImage(); //$NON-NLS-1$
 		}
 		synch.setImage(synchImage);
-		synch.setToolTipText("Synchronize with reference data view");
+		synch.setToolTipText(Messages.TransformedTableView_SynchToolTipText);
 		synch.addSelectionListener(new SelectionAdapter() {
 
 			@Override

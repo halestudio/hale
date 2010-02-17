@@ -22,6 +22,7 @@ import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
 import org.geotools.styling.Symbolizer;
 
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
 import eu.esdihumboldt.hale.rcp.views.map.style.editors.PointSymbolizerEditor;
 
 /**
@@ -41,7 +42,7 @@ public class SimplePointStylePage extends FeatureStylePage {
 	 * @param parent the parent dialog
 	 */
 	public SimplePointStylePage(FeatureStyleDialog parent) {
-		super(parent, "Simple point");
+		super(parent, Messages.SimplePointStylePage_SuperTitle);
 	}
 
 	/**

@@ -246,8 +246,8 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 				instances.addInstances(DatasetType.transformed, features); // target schema
 			}
 			else {
-				log.warn("No instance data was provided, or the " +
-						"alignment was not initialized correctly.");
+				log.warn("No instance data was provided, or the " + //$NON-NLS-1$
+						"alignment was not initialized correctly."); //$NON-NLS-1$
 			}
 			
 		}
@@ -435,7 +435,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 			imageData = cache.getTile(this, zoom, tileX, tileY);
 		} catch (Exception e) {
 			imageData = null;
-			log.error("Error getting the tile image", e);
+			log.error("Error getting the tile image", e); //$NON-NLS-1$
 		}
 		
 		Image image = null;

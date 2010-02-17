@@ -22,6 +22,7 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
 
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
+import eu.esdihumboldt.hale.rcp.views.table.Messages;
 
 /**
  * Tree item representing a feature type property
@@ -59,7 +60,7 @@ public class PropertyItem extends DefaultTreeNode {
 	public String getText(Feature feature) {
 		Object value = getValue(feature);
 		if (value == null) {
-			return "null";
+			return "null"; //$NON-NLS-1$
 		}
 		else {
 			if (value instanceof Collection<?>) {

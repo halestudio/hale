@@ -20,6 +20,8 @@ import org.eclipse.swt.widgets.Label;
 import org.geotools.styling.PolygonSymbolizer;
 import org.geotools.styling.StyleBuilder;
 
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
+
 /**
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -53,13 +55,13 @@ public class PolygonSymbolizerEditor implements Editor<PolygonSymbolizer> {
 		// stroke
 		Label strokeLabel = new Label(page, SWT.NONE);
 		strokeLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
-		strokeLabel.setText("Stroke");
+		strokeLabel.setText(Messages.PolygonSymbolizerEditor_StrokeLabel);
 		strokeEditor = new StrokeEditor(page, poly.getStroke());
 		
 		// fill
 		Label fillLabel = new Label(page, SWT.NONE);
 		fillLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
-		fillLabel.setText("Fill");
+		fillLabel.setText(Messages.PolygonSymbolizerEditor_FillLabel);
 		fillEditor = new FillEditor(page, poly.getFill());
 	}
 

@@ -31,6 +31,8 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.widgets.Display;
 
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
+
 import gnu.trove.TIntObjectHashMap;
 
 /**
@@ -172,7 +174,7 @@ public class TileCache implements TileProvider {
 				final TIntObjectHashMap<SoftReference<ImageData>> jobCache = xCache;
 				final Display display = Display.getCurrent();
 				
-				Job tileJob = new Job("Loading tile") {
+				Job tileJob = new Job(Messages.TileCache_JobLoadTitle) {
 					
 					@Override
 					protected IStatus run(IProgressMonitor monitor) {
@@ -196,7 +198,7 @@ public class TileCache implements TileProvider {
 							}
 							return Status.OK_STATUS;
 						} catch (Exception e) {
-							log.error("Error drawing tile image", e);
+							log.error("Error drawing tile image", e); //$NON-NLS-1$
 							return Status.CANCEL_STATUS;
 						}
 					}

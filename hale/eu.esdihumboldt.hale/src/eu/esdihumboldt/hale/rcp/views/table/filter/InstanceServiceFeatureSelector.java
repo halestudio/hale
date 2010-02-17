@@ -55,6 +55,7 @@ import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.filter.FeatureFilterField;
 import eu.esdihumboldt.hale.rcp.utils.filter.FeatureFilterField.FilterListener;
+import eu.esdihumboldt.hale.rcp.views.table.Messages;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -97,7 +98,7 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 		public FeatureSelectorControl(Composite parent, int style) {
 			super(parent, style);
 			
-			refreshImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/refresh.gif").createImage();
+			refreshImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/refresh.gif").createImage(); //$NON-NLS-1$
 			
 			setLayout(new GridLayout((fixedSchemaType == null)?(4):(3), false));
 			
@@ -110,10 +111,10 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 					public String getText(Object element) {
 						if (element instanceof SchemaType) {
 							switch ((SchemaType) element) {
-							case SOURCE: return "Reference";
-							case TARGET: return "Transformed";
+							case SOURCE: return Messages.InstanceServiceFeatureSelector_SourceReturnText;
+							case TARGET: return Messages.InstanceServiceFeatureSelector_TargetReturnText;
 							default:
-								return "#unknown";
+								return Messages.InstanceServiceFeatureSelector_defaultReturnText;
 							}
 						}
 						else {
@@ -394,7 +395,7 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 						}
 					}
 				} catch (Exception e) {
-					log.warn("Error creating filter");
+					log.warn("Error creating filter"); //$NON-NLS-1$
 				}
 				
 				selection = featureList;

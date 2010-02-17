@@ -28,6 +28,8 @@ import org.eclipse.swt.widgets.Label;
 import org.geotools.styling.Mark;
 import org.geotools.styling.StyleBuilder;
 
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
+
 /**
  * Editor for {@link Mark}s
  * 
@@ -82,7 +84,7 @@ public class MarkEditor implements Editor<Mark> {
 		Label markLabel = new Label(markComp, SWT.NONE);
 		markLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		markLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
-		markLabel.setText("Mark");
+		markLabel.setText(Messages.MarkEditor_MarkLabel);
 		
 		Combo markCombo = new Combo(markComp, SWT.READ_ONLY);
 		markCombo.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
@@ -100,13 +102,13 @@ public class MarkEditor implements Editor<Mark> {
 		// stroke
 		Label strokeLabel = new Label(page, SWT.NONE);
 		strokeLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
-		strokeLabel.setText("Stroke");
+		strokeLabel.setText(Messages.MarkEditor_StrokeLabel);
 		strokeEditor = new StrokeEditor(page, mark.getStroke());
 		
 		// fill
 		Label fillLabel = new Label(page, SWT.NONE);
 		fillLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
-		fillLabel.setText("Fill");
+		fillLabel.setText(Messages.MarkEditor_FillLabel);
 		fillEditor = new FillEditor(page, mark.getFill());
 	}
 

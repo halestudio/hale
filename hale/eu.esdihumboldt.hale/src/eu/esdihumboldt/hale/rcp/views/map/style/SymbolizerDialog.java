@@ -27,6 +27,8 @@ import org.geotools.styling.PolygonSymbolizer;
 import org.geotools.styling.StyleBuilder;
 import org.geotools.styling.Symbolizer;
 
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
+
 /**
  * Symbolizer dialog
  * 
@@ -56,7 +58,7 @@ public class SymbolizerDialog extends TrayDialog {
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		
-		newShell.setText("Symbolizer");
+		newShell.setText(Messages.SymbolizerDialog_ShellSymbolizerText);
 	}
 
 	/**
@@ -68,7 +70,7 @@ public class SymbolizerDialog extends TrayDialog {
 		page.setLayout(new RowLayout(SWT.VERTICAL));
 		
 		Label label = new Label(page, SWT.NONE);
-		label.setText("Choose a symbolizer: ");
+		label.setText(Messages.SymbolizerDialog_LabelText);
 		
 		combo = new Combo(page, SWT.READ_ONLY);
 		combo.add(LineSymbolizer.class.getSimpleName());

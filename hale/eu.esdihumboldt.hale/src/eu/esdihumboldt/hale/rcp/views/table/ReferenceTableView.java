@@ -34,7 +34,7 @@ public class ReferenceTableView extends AbstractTableView {
 	/**
 	 * The view id
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.rcp.views.ReferenceTable";
+	public static final String ID = "eu.esdihumboldt.hale.rcp.views.ReferenceTable"; //$NON-NLS-1$
 
 	/**
 	 * Default constructor

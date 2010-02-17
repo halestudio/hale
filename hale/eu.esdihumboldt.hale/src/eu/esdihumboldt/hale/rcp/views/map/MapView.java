@@ -55,7 +55,7 @@ public class MapView extends ViewPart {
 	/**
 	 * The view ID
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.rcp.views.map.MapView";
+	public static final String ID = "eu.esdihumboldt.hale.rcp.views.map.MapView"; //$NON-NLS-1$
 	
 	/**
 	 * The canvas to paint the map on
@@ -88,7 +88,7 @@ public class MapView extends ViewPart {
 		IToolBarManager tm = new ToolBarManager(tools);
 		DropdownAction styles = new StyleDropdown();
 		styles.addItem(new Separator());
-		Action backgroundAction = new Action("Change background...", IAction.AS_PUSH_BUTTON) {
+		Action backgroundAction = new Action(Messages.MapView_ChangeBackgroundText, IAction.AS_PUSH_BUTTON) {
 
 			@Override
 			public void run() {

@@ -70,22 +70,22 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
 		}
 		else if (to.getType().equals(TreeObjectType.ABSTRACT_FT)) {
-			imageKey = "abstract_ft.png";
+			imageKey = "abstract_ft.png"; //$NON-NLS-1$
 		}
 		else if (to.getType().equals(TreeObjectType.CONCRETE_FT)) {
-			imageKey = "concrete_ft.png";
+			imageKey = "concrete_ft.png"; //$NON-NLS-1$
 		}
 		else if (to.getType().equals(TreeObjectType.PROPERTY_TYPE)) {
 			//TODO add image for property types
 		}
 		else if (to.getType().equals(TreeObjectType.STRING_ATTRIBUTE)) {
-			imageKey = "string_attribute.png";
+			imageKey = "string_attribute.png"; //$NON-NLS-1$
 		} 
 		else if (to.getType().equals(TreeObjectType.NUMERIC_ATTRIBUTE)) {
-			imageKey = "number_attribute.png";
+			imageKey = "number_attribute.png"; //$NON-NLS-1$
 		}
 		else if (to.getType().equals(TreeObjectType.GEOMETRIC_ATTRIBUTE)) {
-			imageKey = "geometry_attribute.png";
+			imageKey = "geometry_attribute.png"; //$NON-NLS-1$
 		}
 		else if (to.getType().equals(TreeObjectType.COMPLEX_ATTRIBUTE)) {
 			// TODO add image for complex attributes
@@ -98,7 +98,7 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 		}
 		else  {
 			return AbstractUIPlugin.imageDescriptorFromPlugin(
-				HALEActivator.PLUGIN_ID, "/icons/" + imageKey).createImage();
+				HALEActivator.PLUGIN_ID, "/icons/" + imageKey).createImage(); //$NON-NLS-1$
 		}
 	}
 

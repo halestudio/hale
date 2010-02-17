@@ -48,6 +48,7 @@ import org.opengis.filter.Filter;
 
 import eu.esdihumboldt.hale.models.style.StyleServiceImpl;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.views.map.Messages;
 import eu.esdihumboldt.hale.rcp.views.map.style.editors.Editor;
 import eu.esdihumboldt.hale.rcp.views.map.style.editors.EditorFactory;
 import eu.esdihumboldt.hale.rcp.views.map.style.editors.LineSymbolizerEditor;
@@ -105,7 +106,7 @@ public class RuleStylePage extends FeatureStylePage {
 		public String toString() {
 			String name = getRule().getName();
 			if (name == null || name.isEmpty()) {
-				return "Rule " + rules.indexOf(this);
+				return Messages.RuleStylePage_Rule + rules.indexOf(this);
 			}
 			else {
 				return name;
@@ -154,31 +155,31 @@ public class RuleStylePage extends FeatureStylePage {
 	 * @param parent the parent dialog
 	 */
 	public RuleStylePage(FeatureStyleDialog parent) {
-		super(parent, "Advanced");
+		super(parent, Messages.RuleStylePage_SuperTitle);
 		
 		if (addImage == null) {
 			addImage = AbstractUIPlugin.imageDescriptorFromPlugin(
-					HALEActivator.PLUGIN_ID, "/icons/add.gif").createImage();
+					HALEActivator.PLUGIN_ID, "/icons/add.gif").createImage(); //$NON-NLS-1$
 		}
 		
 		if (removeImage == null) {
 			removeImage = AbstractUIPlugin.imageDescriptorFromPlugin(
-					HALEActivator.PLUGIN_ID, "/icons/remove.gif").createImage();
+					HALEActivator.PLUGIN_ID, "/icons/remove.gif").createImage(); //$NON-NLS-1$
 		}
 		
 		if (renameImage == null) {
 			renameImage = AbstractUIPlugin.imageDescriptorFromPlugin(
-					HALEActivator.PLUGIN_ID, "/icons/rename.gif").createImage();
+					HALEActivator.PLUGIN_ID, "/icons/rename.gif").createImage(); //$NON-NLS-1$
 		}
 		
 		if (upImage == null) {
 			upImage = AbstractUIPlugin.imageDescriptorFromPlugin(
-					HALEActivator.PLUGIN_ID, "/icons/arrow_up.gif").createImage();
+					HALEActivator.PLUGIN_ID, "/icons/arrow_up.gif").createImage(); //$NON-NLS-1$
 		}
 		
 		if (downImage == null) {
 			downImage = AbstractUIPlugin.imageDescriptorFromPlugin(
-					HALEActivator.PLUGIN_ID, "/icons/arrow_down.gif").createImage();
+					HALEActivator.PLUGIN_ID, "/icons/arrow_down.gif").createImage(); //$NON-NLS-1$
 		}
 	}
 
@@ -204,7 +205,7 @@ public class RuleStylePage extends FeatureStylePage {
 			}
 			
 			// create style
-			FeatureTypeStyle fts = styleBuilder.createFeatureTypeStyle("Feature", ruleArray);
+			FeatureTypeStyle fts = styleBuilder.createFeatureTypeStyle(Messages.RuleStylePage_FeatureTypeTitle, ruleArray);
 			Style style = styleBuilder.createStyle();
 			style.addFeatureTypeStyle(fts);
 			return style;
@@ -280,7 +281,7 @@ public class RuleStylePage extends FeatureStylePage {
 		Label rulesLabel = new Label(ruleArea, SWT.NONE);
 		rulesLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 5, 1));
 		rulesLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
-		rulesLabel.setText("Rules");
+		rulesLabel.setText(Messages.RuleStylePage_RuleLabelText);
 		
 		// viewer
 		listViewer = new ListViewer(ruleArea);
@@ -346,7 +347,7 @@ public class RuleStylePage extends FeatureStylePage {
 				// ignore
 			}
 		});
-		addButton.setToolTipText("Add a new rule");
+		addButton.setToolTipText(Messages.RuleStylePage_AddRuleButtonToolTippText);
 		
 		removeButton = new Button(ruleArea, SWT.PUSH);
 		removeButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
@@ -363,7 +364,7 @@ public class RuleStylePage extends FeatureStylePage {
 				// ignore
 			}
 		});
-		removeButton.setToolTipText("Remove the currently selected rule");
+		removeButton.setToolTipText(Messages.RuleStylePage_RemoveRuleButtonToolTippText);
 		
 		upButton = new Button(ruleArea, SWT.PUSH);
 		upButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
@@ -380,7 +381,7 @@ public class RuleStylePage extends FeatureStylePage {
 				// ignore
 			}
 		});
-		upButton.setToolTipText("Move the currently selected rule up");
+		upButton.setToolTipText(Messages.RuleStylePage_UpRuleButtonToolTippText);
 		
 		downButton = new Button(ruleArea, SWT.PUSH);
 		downButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
@@ -397,7 +398,7 @@ public class RuleStylePage extends FeatureStylePage {
 				// ignore
 			}
 		});
-		downButton.setToolTipText("Move the currently selected rule down");
+		downButton.setToolTipText(Messages.RuleStylePage_DownRuleButtonToolTippText);
 		
 		renameButton = new Button(ruleArea, SWT.PUSH);
 		renameButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
@@ -414,7 +415,7 @@ public class RuleStylePage extends FeatureStylePage {
 				// ignore
 			}
 		});
-		renameButton.setToolTipText("Rename the current rule");
+		renameButton.setToolTipText(Messages.RuleStylePage_RenameRuleButtonToolTippText);
 		
 		// editor area
 		editorArea = new Composite(page, SWT.NONE);
@@ -478,8 +479,8 @@ public class RuleStylePage extends FeatureStylePage {
 			RuleItem item = rules.get(currentIndex);
 			Rule rule = item.getRule();
 			
-			InputDialog dlg = new InputDialog(getShell(), "Rule name",
-					"Enter the rule name:", rule.getName(), null);
+			InputDialog dlg = new InputDialog(getShell(), Messages.RuleStylePage_InputDialogTitle,
+					Messages.RuleStylePage_InputDialogDescription, rule.getName(), null);
 			
 			if (dlg.open() == InputDialog.OK) {
 				rule.setName(dlg.getValue());

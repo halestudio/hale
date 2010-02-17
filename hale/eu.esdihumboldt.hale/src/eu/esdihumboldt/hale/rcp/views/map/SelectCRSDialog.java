@@ -100,7 +100,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		private void valueChanged() {
 			try {
 				crs = CRS.parseWKT(getText());
-				errorMessage = "Invalid WKT";
+				errorMessage = "Invalid WKT"; //$NON-NLS-1$
 			} catch (Exception e) {
 				errorMessage = e.getLocalizedMessage();
 				crs = null;
@@ -158,7 +158,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 			try {
 				crs = CRS.decode(getStringValue());
 				boolean valid = crs != null;
-				setErrorMessage("Invalid CRS code");
+				setErrorMessage("Invalid CRS code"); //$NON-NLS-1$
 				return valid;
 			} catch (Exception e) {
 				setErrorMessage(e.getMessage());
@@ -182,29 +182,29 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 	 */
 	private static boolean lastWasCode = true;
 
-	private static String lastCRS = "EPSG:4326";
+	private static String lastCRS = "EPSG:4326"; //$NON-NLS-1$
 	
 	private static String lastWKT = 
-		"PROJCS[\"MGI (Ferro)/AustriaGKWestZone\",\n" +
-			"\tGEOGCS[\"MGI (Ferro)\",\n" +
-				"\t\tDATUM[\"Militar-Geographische Institut (Ferro)\",\n" +
-					"\t\t\tSPHEROID[\"Bessel 1841\",6377397.155,299.1528128,\n" +
-					"\t\t\tAUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6805\"]],\n" +
-				"\t\tPRIMEM[\"Ferro\",-17.666666666666668,AUTHORITY[\"EPSG\",\"8909\"]],\n" +
-				"\t\tUNIT[\"degree\",0.017453292519943295],\n" +
-				"\t\tAXIS[\"Geodetic latitude\",NORTH],\n" +
-				"\t\tAXIS[\"Geodetic longitude\",EAST],\n" +
-				"\t\tAUTHORITY[\"EPSG\",\"4805\"]],\n" +
-			"\tPROJECTION[\"Transverse Mercator\"],\n" +
-		"PARAMETER[\"central_meridian\",28.0],\n" +
-		"PARAMETER[\"latitude_of_origin\",0.0],\n" +
-		"PARAMETER[\"scale_factor\",1.0],\n" +
-		"PARAMETER[\"false_easting\",0.0],\n" +
-		"PARAMETER[\"false_northing\",-5000000.0],\n" +
-		"UNIT[\"m\",1.0],\n" +
-		"AXIS[\"Y\",EAST],\n" +
-		"AXIS[\"X\",NORTH],\n" +
-		"AUTHORITY[\"EPSG\",\"31251\"]]";
+		"PROJCS[\"MGI (Ferro)/AustriaGKWestZone\",\n" + //$NON-NLS-1$
+			"\tGEOGCS[\"MGI (Ferro)\",\n" + //$NON-NLS-1$
+				"\t\tDATUM[\"Militar-Geographische Institut (Ferro)\",\n" + //$NON-NLS-1$
+					"\t\t\tSPHEROID[\"Bessel 1841\",6377397.155,299.1528128,\n" + //$NON-NLS-1$
+					"\t\t\tAUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6805\"]],\n" + //$NON-NLS-1$
+				"\t\tPRIMEM[\"Ferro\",-17.666666666666668,AUTHORITY[\"EPSG\",\"8909\"]],\n" + //$NON-NLS-1$
+				"\t\tUNIT[\"degree\",0.017453292519943295],\n" + //$NON-NLS-1$
+				"\t\tAXIS[\"Geodetic latitude\",NORTH],\n" + //$NON-NLS-1$
+				"\t\tAXIS[\"Geodetic longitude\",EAST],\n" + //$NON-NLS-1$
+				"\t\tAUTHORITY[\"EPSG\",\"4805\"]],\n" + //$NON-NLS-1$
+			"\tPROJECTION[\"Transverse Mercator\"],\n" + //$NON-NLS-1$
+		"PARAMETER[\"central_meridian\",28.0],\n" + //$NON-NLS-1$
+		"PARAMETER[\"latitude_of_origin\",0.0],\n" + //$NON-NLS-1$
+		"PARAMETER[\"scale_factor\",1.0],\n" + //$NON-NLS-1$
+		"PARAMETER[\"false_easting\",0.0],\n" + //$NON-NLS-1$
+		"PARAMETER[\"false_northing\",-5000000.0],\n" + //$NON-NLS-1$
+		"UNIT[\"m\",1.0],\n" + //$NON-NLS-1$
+		"AXIS[\"Y\",EAST],\n" + //$NON-NLS-1$
+		"AXIS[\"X\",NORTH],\n" + //$NON-NLS-1$
+		"AUTHORITY[\"EPSG\",\"31251\"]]"; //$NON-NLS-1$
 	
 	private CRSFieldEditor crsField;
 	
@@ -214,7 +214,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 	
 	//private static boolean initialized = false;
 	
-	private static final String DEF_MESSAGE = "";
+	private static final String DEF_MESSAGE = ""; //$NON-NLS-1$
 	
 	private Button radioCRS;
 	
@@ -242,7 +242,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 	protected Control createContents(Composite parent) {
 		Control control = super.createContents(parent);
 		
-		setTitle("Please specify the CRS to use");
+		setTitle(Messages.SelectCRSDialog_ContentTitle);
 		setMessage(DEF_MESSAGE);
 		
 		updateState();
@@ -258,7 +258,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		
-		newShell.setText("Unable to determine CRS");
+		newShell.setText(Messages.SelectCRSDialog_ShellTitle);
 	}
 
 	/**
@@ -275,7 +275,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		group = new Group(page, SWT.NONE);
 		group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		group.setLayout(new GridLayout(3, false));
-		group.setText("Coordinate Reference System");
+		group.setText(Messages.SelectCRSDialog_GroupText);
 		
 		SelectionListener radioListener = new SelectionListener() {
 
@@ -294,7 +294,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		// CRS string
 		radioCRS = new Button(group, SWT.RADIO);
 		radioCRS.setSelection(lastWasCode);
-		radioCRS.setText("CRS code");
+		radioCRS.setText(Messages.SelectCRSDialog_RadioCRSText);
 		radioCRS.addSelectionListener(radioListener);
 		
 		crsField = new CRSFieldEditor();
@@ -307,7 +307,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		// WKT string
 		radioWKT = new Button(group, SWT.RADIO);
 		radioWKT.setSelection(!lastWasCode);
-		radioWKT.setText("Well Known Text");
+		radioWKT.setText(Messages.SelectCRSDialog_RadioWKTText);
 		radioWKT.addSelectionListener(radioListener);
 		
 		wktField = new WKText(group);
@@ -373,7 +373,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		try {
 			value = CRS.parseWKT(SelectCRSDialog.lastWKT);
 		} catch (Exception e) {
-			_log.error("WKT could not be parsed: ", e);
+			_log.error("WKT could not be parsed: ", e); //$NON-NLS-1$
 		}
 	}
 	
@@ -383,7 +383,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		try {
 			value = CRS.decode(SelectCRSDialog.lastCRS);
 		} catch (Exception e) {
-			_log.error("EPSG code could not be decoded: ", e);
+			_log.error("EPSG code could not be decoded: ", e); //$NON-NLS-1$
 		}
 	}
 	
