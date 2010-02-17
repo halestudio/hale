@@ -23,13 +23,13 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import eu.esdihumboldt.hale.rcp.wizards.io.MappingExportWizard;
 
 /**
- * Command Handler for saving a schema.
+ * Command Handler for exporting a mapping.
  * 
  * @author Thorsten Reitz 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class SaveSchemaCommandHandler 
+public class SaveMappingCommandHandler 
 	extends AbstractHandler
 	implements IHandler {
 
