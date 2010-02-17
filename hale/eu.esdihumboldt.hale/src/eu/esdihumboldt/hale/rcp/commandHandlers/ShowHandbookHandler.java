@@ -11,25 +11,100 @@
  */
 package eu.esdihumboldt.hale.rcp.commandHandlers;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
+
+import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
 
 /**
  * TODO: Enter Type comment.
  * 
  * @author Thorsten Reitz
  */
-public class ShowHandbookHandler 	
-	extends AbstractHandler
-	implements IHandler {
+public class ShowHandbookHandler extends AbstractHandler implements IHandler {
+	
+	/**
+	 * The name of the PDF file to open
+	 */
+	private static final String PDFFILE = "hale_manual_en.pdf"; //$NON-NLS-1$
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
+	/**
+	 * @see
+	 * org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.
+	 * ExecutionEvent)
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		// TODO Auto-generated method stub
+
+		String tempDirName = System.getProperty("java.io.tmpdir"); //$NON-NLS-1$
+		if (!tempDirName.endsWith("/")) { //$NON-NLS-1$
+			tempDirName = tempDirName + "/"; //$NON-NLS-1$
+		}
+		tempDirName = tempDirName + HALEActivator.PLUGIN_ID + "/"; //$NON-NLS-1$
+
+		File tempDir = new File(tempDirName);
+		tempDir.mkdirs();
+		tempDir.deleteOnExit();
+
+		File pdfFile = new File(tempDirName + PDFFILE);
+		if (!pdfFile.exists()) {
+			pdfFile.deleteOnExit();
+
+			URL pdfUrl = this.getClass().getResource("/documentation/" + PDFFILE); //$NON-NLS-1$
+			if (pdfUrl == null) {
+				throw new RuntimeException("Manual could not be retrieved.");
+			}
+
+			InputStream in;
+			try {
+				in = pdfUrl.openStream();
+			} catch (IOException e) {
+				ExceptionHelper.handleException("", //$NON-NLS-1$
+						HALEActivator.PLUGIN_ID, e);
+				return null;
+			}
+
+			FileOutputStream fos = null;
+			byte[] buffer = new byte[4096];
+			int read;
+			try {
+				fos = new FileOutputStream(pdfFile);
+
+				while ((read = in.read(buffer)) != -1) {
+					fos.write(buffer, 0, read);
+				}
+			} catch (IOException e) {
+				ExceptionHelper.handleException("", //$NON-NLS-1$
+						HALEActivator.PLUGIN_ID, e);
+				return null;
+			} finally {
+				try {
+					if (fos != null) {
+						fos.close();
+					}
+					in.close();
+				} catch (IOException e) {
+					// ignore
+				}
+			}
+		}
+
+		try {
+			Desktop.getDesktop().open(pdfFile);
+		} catch (IOException e) {
+			ExceptionHelper.handleException("", //$NON-NLS-1$
+					HALEActivator.PLUGIN_ID, e);
+		}
+
 		return null;
 	}
 
