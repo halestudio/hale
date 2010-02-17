@@ -26,6 +26,7 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
@@ -276,10 +277,21 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (selected != null) {
-					alignmentService.removeCell(selected.getCell());
+					final Display display = PlatformUI.getWorkbench().getDisplay();
+					display.syncExec(new Runnable() {
+						
+						@Override
+						public void run() {
+							if (MessageDialog.openQuestion(
+									page.getShell(), 
+									Messages.CellSelector_ConfirmCellTitle, 
+									Messages.CellSelector_ConfirmCellText)) {
+								alignmentService.removeCell(selected.getCell());
+							}
+						}
+					});
 				}
 			}
-			
 		});
 		
 		

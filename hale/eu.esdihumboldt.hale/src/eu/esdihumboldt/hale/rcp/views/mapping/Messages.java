@@ -11,6 +11,8 @@ public class Messages extends NLS {
 	public static String CellDetails_NameText;
 	public static String CellDetails_TransformationTitle;
 	public static String CellDetails_ValueText;
+	public static String CellSelector_ConfirmCellText;
+	public static String CellSelector_ConfirmCellTitle;
 	public static String CellSelector_DeleteButtonToolTipText;
 	public static String CellSelector_EditButtonToolTipText;
 	public static String CellSelector_NextButtonToolTipText;
