@@ -129,6 +129,7 @@ public class InstanceDataImportWizardMainPage
 		
 		// read from WFS (GetFeature)
 		Button useWfsRadio = new Button(fileSelectionArea, SWT.RADIO);
+		useWfsRadio.setEnabled(false);
 		final Composite ufe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ufe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
