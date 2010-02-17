@@ -27,9 +27,9 @@ import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
 
 /**
- * TODO: Enter Type comment.
+ * This class is the handler for opening a PDF-manual.
  * 
- * @author Thorsten Reitz
+ * @author Michel Krämer
  */
 public class ShowHandbookHandler extends AbstractHandler implements IHandler {
 	
@@ -68,7 +68,7 @@ public class ShowHandbookHandler extends AbstractHandler implements IHandler {
 			try {
 				in = pdfUrl.openStream();
 			} catch (IOException e) {
-				ExceptionHelper.handleException("", //$NON-NLS-1$
+				ExceptionHelper.handleException("Could not open Streaming.", //$NON-NLS-1$
 						HALEActivator.PLUGIN_ID, e);
 				return null;
 			}
@@ -83,7 +83,7 @@ public class ShowHandbookHandler extends AbstractHandler implements IHandler {
 					fos.write(buffer, 0, read);
 				}
 			} catch (IOException e) {
-				ExceptionHelper.handleException("", //$NON-NLS-1$
+				ExceptionHelper.handleException("Error while reading the file.", //$NON-NLS-1$
 						HALEActivator.PLUGIN_ID, e);
 				return null;
 			} finally {
@@ -101,7 +101,7 @@ public class ShowHandbookHandler extends AbstractHandler implements IHandler {
 		try {
 			Desktop.getDesktop().open(pdfFile);
 		} catch (IOException e) {
-			ExceptionHelper.handleException("", //$NON-NLS-1$
+			ExceptionHelper.handleException("The file could not be opened", //$NON-NLS-1$
 					HALEActivator.PLUGIN_ID, e);
 		}
 
