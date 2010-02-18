@@ -12,15 +12,13 @@
 
 package eu.esdihumboldt.cst.corefunctions.inspire;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Locale;
 
-import org.geotools.feature.AttributeImpl;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureImpl;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -40,13 +38,10 @@ import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.rdf.Resource;
-import eu.esdihumboldt.inspire.data.GeographicalName;
 import eu.esdihumboldt.inspire.data.GrammaticalGenderValue;
 import eu.esdihumboldt.inspire.data.GrammaticalNumberValue;
 import eu.esdihumboldt.inspire.data.NameStatusValue;
 import eu.esdihumboldt.inspire.data.NativenessValue;
-import eu.esdihumboldt.inspire.data.PronunciationOfName;
-import eu.esdihumboldt.inspire.data.SpellingOfName;
 
 
 
@@ -105,7 +100,7 @@ public class GeographicalNameFunctionTest {
 		Feature result = gnf.transform(source, target);
 				
 		// ************* BUILD THE EXPECTED FEATURE ****************
-		Feature expectedGN = setGeographicalNameResult(targetType);
+		Feature expectedGN = getGeographicalNameResult(targetType);
 		
 		// ************* CHECK EQUALITY OF EXPECTED AND RECEIVED FEATURES ****************
 		assertTrue(result.equals(expectedGN));
@@ -157,9 +152,9 @@ public class GeographicalNameFunctionTest {
 		ComposedProperty cpsp1 = new ComposedProperty(new About(sourceNamespace, sourceLocalName));
 		ComposedProperty cpsp2 = new ComposedProperty(new About(sourceNamespace, sourceLocalName));
 		
-		Property p1 = new Property(new About(sourceNamespace, sourceLocalName,sourceLocalnameProperty));
-		Property p2 = new Property(new About(sourceNamespace, sourceLocalName,sourceLocalnameProperty2));
-		Property p3 = new Property(new About(sourceNamespace, sourceLocalName,sourceLocalnameProperty3));
+		Property p1 = new Property(new About(sourceNamespace, sourceLocalName, sourceLocalnameProperty));
+		Property p2 = new Property(new About(sourceNamespace, sourceLocalName, sourceLocalnameProperty2));
+		Property p3 = new Property(new About(sourceNamespace, sourceLocalName, sourceLocalnameProperty3));
 		
 		// ************* SET TRANSFORMATION AND PARAMETERS ****************
 		Transformation t = new Transformation();
@@ -228,7 +223,7 @@ public class GeographicalNameFunctionTest {
 	 * @param targettype: Type required to build feature in a correct way
 	 * @return a test feature to compare with resulting one of transform function
 	 */
-	private SimpleFeature setGeographicalNameResult(FeatureType targettype)
+	private SimpleFeature getGeographicalNameResult(FeatureType targettype)
 	{
 		// ************* CREATION OF THE TARGET ****************
 		SimpleFeature target = SimpleFeatureBuilder.build((SimpleFeatureType)targettype, new Object[]{}, "2");
