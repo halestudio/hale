@@ -74,7 +74,6 @@ public class GenericMathFunctionTest {
 		
 		assertTrue(target.getProperty(
 				GenericMathFunctionTest.targetLocalnamePropertyD).getValue().toString().equals("5.0"));
-		
 	}
 	
 	private SimpleFeatureType getFeatureType(String featureTypeNamespace, 
@@ -137,8 +136,6 @@ public class GenericMathFunctionTest {
 		cell.setEntity2(new Property(
 				new About(targetNamespace, targetLocalname, 
 						targetLocalnamePropertyD)));
-		
 		return cell;
 	}
-
 }
