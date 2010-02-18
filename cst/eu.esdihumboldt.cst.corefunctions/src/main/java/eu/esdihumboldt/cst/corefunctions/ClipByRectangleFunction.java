@@ -146,10 +146,10 @@ public class ClipByRectangleFunction extends AbstractCstFunction{
 		Transformation t = new Transformation();
 		List<IParameter> params = new ArrayList<IParameter>(); 
 			
-		Parameter xmax = new Parameter(XMAX,"");
-		Parameter ymax = new Parameter(YMAX,"");
-		Parameter xmin = new Parameter(XMIN,"");
-		Parameter ymin = new Parameter(YMIN,"");					
+		Parameter xmax = new Parameter(XMAX,"0");
+		Parameter ymax = new Parameter(YMAX,"0");
+		Parameter xmin = new Parameter(XMIN,"0");
+		Parameter ymin = new Parameter(YMIN,"0");					
 		params.add(xmax);
 		params.add(ymax);
 		params.add(xmin);
