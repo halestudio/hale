@@ -15,15 +15,18 @@ package eu.esdihumboldt.cst.corefunctions.inspire;
 import static org.junit.Assert.*;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 
 import org.geotools.feature.AttributeImpl;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureImpl;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.junit.Test;
 import org.opengis.feature.Feature;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
@@ -65,7 +68,7 @@ public class GeographicalNameFunctionTest {
 	public static String sourceNamespace = "http://www.esdi-humboldt.eu";
 	
 	public static String targetLocalName = "FT2";
-	public static String targetLocalNameProperty = "Collection";
+	public static String targetLocalNameProperty = "name";
 	public static String targetNamespace = "urn:x-inspire:specification:gmlas-v31:Hydrography:2.0";
 	
 	public static String name_value = "Danube";
@@ -80,69 +83,41 @@ public class GeographicalNameFunctionTest {
 	
 	@Test
 	public void testTransformFeatureFeature() {
-		String url = getClass().getResource("/inspire_v3.0_xsd/GeographicalNames.xsd").toString();
-		FeatureType geoNameType = TypeLoader.getType("GeographicalName", url);
-		//		"file:///d:/hale-workspace/eu.esdihumboldt.cst.corefunctions/" +
-		//		"src/test/resource/inspire_v3.0_xsd/GeographicalNames.xsd");		
 		
-		//build source and target Features
+		// ************* BUIL SOURCE AND TARGET FEATURES ****************
 		SimpleFeatureType sourceType = this.getFeatureType(
 				GeographicalNameFunctionTest.sourceNamespace,
 			    GeographicalNameFunctionTest.sourceLocalName,
 			    String[].class);
-			    //String[].getClass(){GeographicalNameFunctionTest3.name_value,GeographicalNameFunctionTest3.nom_value});
-		SimpleFeatureType targetType = this.getFeatureType(
-				GeographicalNameFunctionTest.targetNamespace,
-			    GeographicalNameFunctionTest.targetLocalName, 
-			    Collection.class);
+
+		String url = getClass().getResource(
+		"/inspire_v3.0_xsd/CadastralParcels.xsd").toString();
+		FeatureType targetType = TypeLoader.getType("CadastralZoning", url);
 		
 		Feature source = SimpleFeatureBuilder.build(
 				sourceType, new Object[]{name_value,nom_value,nombre_value}, "1");
 		Feature target = SimpleFeatureBuilder.build(
-				targetType, new Object[]{}, "2");
+				(SimpleFeatureType) targetType, new Object[]{}, "2");
 		
-		//perform actual test
+		// ************* PERFORM ACTUAL TEST ****************
 		GeographicalNameFunction gnf = new GeographicalNameFunction();
 		gnf.configure(GeographicalNameFunctionTest.getTestCell());
 		Feature result = gnf.transform(source, target);
-
-		PropertyDescriptor pd =  result.getProperty(
-				GeographicalNameFunctionTest.targetLocalNameProperty).getDescriptor();
-		//check binding
-		assertTrue(pd.getType().getBinding().getName().equals(Collection.class.getName()));
+				
+		// ************* BUILD THE EXPECTED FEATURE ****************
+		Feature expectedGN = setGeographicalNameResult(targetType);
 		
-		// build the geographical name expected 
-		Collection<GeographicalName> expectedGN = setGeographicalNameResult();
-		// this is the geographical name result
-		/*Collection<GeographicalName> col = (Collection<GeographicalName>)target.getProperty(
-				GeographicalNameFunctionTest3.targetLocalNameProperty).getValue();
-		
-		for (Iterator<GeographicalName> coliter = col.iterator();coliter.hasNext();)
-		{
-			GeographicalName gn = coliter.next();
-		}*/
-		Collection<AttributeImpl> receivedGN = (Collection<AttributeImpl>)target.getProperty(
-				GeographicalNameFunctionTest.targetLocalNameProperty).getValue();
-		//check value
-		assertTrue(receivedGN.size()==expectedGN.size());
-		for (Iterator<AttributeImpl> reciter=receivedGN.iterator();reciter.hasNext();)
-		{
-			AttributeImpl atim = reciter.next();
-			GeographicalName gnrec = (GeographicalName)atim.getValue();
-			boolean isinside = false;
-			for (Iterator<GeographicalName> expiter=expectedGN.iterator();expiter.hasNext();)
-			{
-				GeographicalName gnexp = expiter.next();
-				if (gnrec.equals(gnexp))
-				{
-					isinside=true;
-					break;
-				}
-			}
-			assertTrue(isinside);
-		}	
+		// ************* CHECK EQUALITY OF EXPECTED AND RECEIVED FEATURES ****************
+		assertTrue(result.equals(expectedGN));
 	}
 	
+	/**
+	 * Function getFeatureType
+	 * @param featureTypeNamespace
+	 * @param featureTypeName
+	 * @param name
+	 * @return FeatureType
+	 */
 	private SimpleFeatureType getFeatureType(String featureTypeNamespace, String featureTypeName, Class <? extends Object> name) {
 		
 		SimpleFeatureType ft = null;
@@ -167,8 +142,13 @@ public class GeographicalNameFunctionTest {
 		return ft;
 	}
 	
+	/**
+	 * Function getTestCell
+	 * @return An ICell containing data for configure GeographicNameFunction
+	 */
 	private static ICell getTestCell(){
-		//set up cell to use for testing
+		// ************* SET UP CELL TO USE FOR TESTING ****************
+
 		Cell cell = new Cell();
 		
 		ComposedProperty cp = new ComposedProperty( 
@@ -181,7 +161,7 @@ public class GeographicalNameFunctionTest {
 		Property p2 = new Property(new About(sourceNamespace, sourceLocalName,sourceLocalnameProperty2));
 		Property p3 = new Property(new About(sourceNamespace, sourceLocalName,sourceLocalnameProperty3));
 		
-		//set transformation and parameters 
+		// ************* SET TRANSFORMATION AND PARAMETERS ****************
 		Transformation t = new Transformation();
 		t.setService(new Resource(GeographicalNameFunction.class.getName()));
 		
@@ -235,7 +215,7 @@ public class GeographicalNameFunctionTest {
 		cp.getCollection().add(cpsp1);
 		cp.getCollection().add(cpsp2);
 		
-		//set entities
+		// ************* SET ENTITIES ****************
 		cell.setEntity1(cp);
 		cell.setEntity2(new Property ( 
 				new About (targetNamespace, targetLocalName, 
@@ -243,46 +223,93 @@ public class GeographicalNameFunctionTest {
 		return cell;
 	}
 	
-	private Collection<GeographicalName> setGeographicalNameResult()
+	/**
+	 * 
+	 * @param targettype: Type required to build feature in a correct way
+	 * @return a test feature to compare with resulting one of transform function
+	 */
+	private SimpleFeature setGeographicalNameResult(FeatureType targettype)
 	{
-		// build the expected geographicalname as result
-		Collection<GeographicalName> colgn=new HashSet<GeographicalName>();
+		// ************* CREATION OF THE TARGET ****************
+		SimpleFeature target = SimpleFeatureBuilder.build((SimpleFeatureType)targettype, new Object[]{}, "2");
 		
-		GeographicalName gn1 = new GeographicalName();
-		GeographicalName gn2 = new GeographicalName();
+		// ************* OBTAINING BASIC TYPES OF ATTRIBUTES ****************
+		PropertyDescriptor pd = target.getProperty(targetLocalNameProperty).getDescriptor();
+		SimpleFeatureType SpellingOfNamePropertyType = (SimpleFeatureType)((SimpleFeatureType)pd.getType()).getDescriptor("spelling").getType();
+		SimpleFeatureType SpellingOfNameType = (SimpleFeatureType)(SpellingOfNamePropertyType.getDescriptor("SpellingOfName")).getType();
+		SimpleFeatureType PronunciationOfNameType = (SimpleFeatureType)((SimpleFeatureType)pd.getType()).getDescriptor("pronunciation").getType();
 		
-		SpellingOfName sn1 = new SpellingOfName();
-		SpellingOfName sn2 = new SpellingOfName();
-		SpellingOfName sn3 = new SpellingOfName();
-		sn1.setText(name_value);
-		sn2.setText(nom_value);
-		sn3.setText(nombre_value);
-		sn1.setScript("script1");
-		sn2.setScript("script2");
-		sn3.setScript("script3");
+		// ************* CREATION OF THE COLLECTION OF GEOGRAPHICALNAMES ****************
+		Collection<SimpleFeatureImpl> geographicalnames=new HashSet<SimpleFeatureImpl>();
 		
-		PronunciationOfName pn = new PronunciationOfName();
+		// ************* CREATION OF THE COLLECTIONS OF SPELLINGS ****************
+		Collection<SimpleFeatureImpl> colecc=new HashSet<SimpleFeatureImpl>();
+		Collection<SimpleFeatureImpl> colecc2=new HashSet<SimpleFeatureImpl>();
 		
-		gn1.addSpelling(sn1);
-		gn1.addSpelling(sn3);
-		gn1.setPronunciation(pn);
-		gn1.setLanguage(language.toString());
-		gn1.setNameStatus(name_status);
-		gn1.setNativeness(nativeness);
-		gn1.setGrammaticalGender(grammatical_gender);
-		gn1.setGrammaticalNumber(grammatical_number);
+		// ************* SET UP THREE SPELLINGS ****************
+		SimpleFeatureImpl spellingofname1 = (SimpleFeatureImpl) SimpleFeatureBuilder.build(SpellingOfNameType, new Object[]{},"SpellingOfName");
+		spellingofname1.setAttribute("script", "script1");
+		spellingofname1.setAttribute("text", name_value);
+		SimpleFeatureImpl spellingofnameproperty1 = (SimpleFeatureImpl)SimpleFeatureBuilder.build(SpellingOfNamePropertyType, new Object[]{},"SpellingOfNameProperty");
+		spellingofnameproperty1.setAttribute("SpellingOfName", Collections.singleton(spellingofname1));
 		
-		gn2.addSpelling(sn2);
-		gn2.setPronunciation(pn);
-		gn2.setLanguage(language2.toString());
-		gn2.setNameStatus(name_status);
-		gn2.setNativeness(nativeness);
-		gn2.setGrammaticalGender(grammatical_gender);
-		gn2.setGrammaticalNumber(grammatical_number);
+		SimpleFeatureImpl spellingofname2 = (SimpleFeatureImpl) SimpleFeatureBuilder.build(SpellingOfNameType, new Object[]{},"SpellingOfName");
+		spellingofname2.setAttribute("script", "script2");
+		spellingofname2.setAttribute("text", nom_value);
+		SimpleFeatureImpl spellingofnameproperty2 = (SimpleFeatureImpl)SimpleFeatureBuilder.build(SpellingOfNamePropertyType, new Object[]{},"SpellingOfNameProperty");
+		spellingofnameproperty2.setAttribute("SpellingOfName", Collections.singleton(spellingofname2));
 		
-		colgn.add(gn1);
-		colgn.add(gn2);
+		SimpleFeatureImpl spellingofname3 = (SimpleFeatureImpl) SimpleFeatureBuilder.build(SpellingOfNameType, new Object[]{},"SpellingOfName");
+		spellingofname3.setAttribute("script", "script3");
+		spellingofname3.setAttribute("text", nombre_value);
+		SimpleFeatureImpl spellingofnameproperty3 = (SimpleFeatureImpl)SimpleFeatureBuilder.build(SpellingOfNamePropertyType, new Object[]{},"SpellingOfNameProperty");
+		spellingofnameproperty3.setAttribute("SpellingOfName", Collections.singleton(spellingofname3));
 		
-		return colgn;
+		// ************* JOIN TWO SPELLINGS IN SAME GEOGRAPHICALNAME  ****************
+		colecc.add(spellingofnameproperty1);
+		colecc.add(spellingofnameproperty3);
+		
+		// ************* THE OTHER SPELLING WILL BE IN ANOTHER GEOGRAPHICALNAME  ****************
+		colecc2.add(spellingofnameproperty2);
+		
+		// ************* CREATION OF TWO PRONUNCIATIONS (VOID)  ****************
+		SimpleFeatureImpl pronunciation1 = (SimpleFeatureImpl) SimpleFeatureBuilder.build(PronunciationOfNameType, new Object[]{},"PronunctiationOfName");
+		pronunciation1.setAttribute("pronunciationIPA",null);
+		pronunciation1.setAttribute("pronunciationSoundLink",null);
+		
+		
+		SimpleFeatureImpl pronunciation2 = (SimpleFeatureImpl) SimpleFeatureBuilder.build(PronunciationOfNameType, new Object[]{},"PronunctiationOfName");
+		pronunciation2.setAttribute("pronunciationIPA",null);
+		pronunciation2.setAttribute("pronunciationSoundLink",null);
+
+		// ************* SET UP AND FILL TWO GEOGRAPHICALNAMES ****************
+		SimpleFeatureImpl geographicalname1 = (SimpleFeatureImpl) SimpleFeatureBuilder.build((SimpleFeatureType)pd.getType(), new Object[]{},"GeographicalName");
+		SimpleFeatureImpl geographicalname2 = (SimpleFeatureImpl) SimpleFeatureBuilder.build((SimpleFeatureType)pd.getType(), new Object[]{},"GeographicalName");
+		
+		geographicalname1.setAttribute("spelling",colecc);
+		geographicalname1.setAttribute("language",language.toString());
+		geographicalname1.setAttribute("nativeness",Collections.singleton(nativeness.toString()));
+		geographicalname1.setAttribute("nameStatus",Collections.singleton(name_status.toString()));
+		geographicalname1.setAttribute("grammaticalGender",Collections.singleton(grammatical_gender.toString()));
+		geographicalname1.setAttribute("grammaticalNumber",Collections.singleton(grammatical_number.toString()));
+		geographicalname1.setAttribute("pronunciation",Collections.singleton(pronunciation1));
+		geographicalname1.setAttribute("sourceOfName",null);
+		
+		geographicalname2.setAttribute("spelling",colecc2);
+		geographicalname2.setAttribute("language",language2.toString());
+		geographicalname2.setAttribute("nativeness",Collections.singleton(nativeness.toString()));
+		geographicalname2.setAttribute("nameStatus",Collections.singleton(name_status.toString()));
+		geographicalname2.setAttribute("grammaticalGender",Collections.singleton(grammatical_gender.toString()));
+		geographicalname2.setAttribute("grammaticalNumber",Collections.singleton(grammatical_number.toString()));
+		geographicalname2.setAttribute("pronunciation",Collections.singleton(pronunciation2));
+		geographicalname2.setAttribute("sourceOfName",null);
+		
+		geographicalnames.add(geographicalname1);
+		geographicalnames.add(geographicalname2);
+
+		// ************* SET UP FINAL FEATURE  ****************
+		((SimpleFeature)target).setAttribute(targetLocalNameProperty, geographicalnames);
+		return target;
+		
 	}
 }
