@@ -16,14 +16,14 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="Default"
+            name="%perspective.default.name"
             class="eu.esdihumboldt.hale.rcp.DefaultPerspective"
             id="eu.esdihumboldt.hale.rcp.perspective.Default">
       </perspective>
       <perspective
             class="eu.esdihumboldt.hale.rcp.DataPerspective"
             id="eu.esdihumboldt.hale.rcp.perspective.Data"
-            name="Data">
+            name="%perspective.data.name">
       </perspective>
    </extension>
    <extension
@@ -32,31 +32,31 @@
             class="eu.esdihumboldt.hale.rcp.views.map.MapView"
             icon="icons/map.gif"
             id="eu.esdihumboldt.hale.rcp.views.map.MapView"
-            name="Map Viewer">
+            name="%view.map.name">
       </view>
       <view
             class="eu.esdihumboldt.hale.rcp.views.tasks.TaskTreeView"
             icon="icons/tasks.gif"
             id="eu.esdihumboldt.hale.rcp.views.tasks.TaskTreeView"
-            name="Tasks">
+            name="%view.tasks.name">
       </view>
       <view
             class="eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView"
             icon="icons/schema.gif"
             id="eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView"
-            name="Schema Explorer">
+            name="%view.schemaExplorer.name">
       </view>
       <view
             class="eu.esdihumboldt.hale.rcp.views.model.attribute.AttributeView"
             icon="icons/attribute.gif"
             id="eu.esdihumboldt.hale.rcp.views.model.AttributeView"
-            name="Attribute View">
+            name="%view.attribute.name">
       </view>
       <view
             class="eu.esdihumboldt.hale.rcp.views.table.ReferenceTableView"
             icon="icons/table.gif"
             id="eu.esdihumboldt.hale.rcp.views.ReferenceTable"
-            name="Reference Data"
+            name="%view.referenceTable.name"
             restorable="true">
       </view>
       <view
@@ -64,56 +64,19 @@
             class="eu.esdihumboldt.hale.rcp.views.mapping.MappingView"
             icon="icons/mapping.gif"
             id="eu.esdihumboldt.hale.rcp.views.mapping.MappingView"
-            name="Mapping"
+            name="%view.mapping1.name"
             restorable="true">
       </view>
       <view
             class="eu.esdihumboldt.hale.rcp.views.table.TransformedTableView"
             icon="icons/table.gif"
             id="eu.esdihumboldt.hale.rcp.views.TransformedTable"
-            name="Transformed Data"
+            name="%view.transformedTable.name"
             restorable="true">
       </view>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
-      <command
-            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.LoadSchemaHandler"
-            description="Load a Source or Target Schema"
-            id="HALE.loadSchema.command"
-            name="Load Schema">
-      </command>
-      <command
-            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.OpenProjectHandler"
-            description="Open an existing alignment project"
-            id="HALE.openProject.command"
-            name="openProject">
-      </command>
-      <command
-            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.ExitHandler"
-            description="Exit HALE"
-            id="HALE.exit.command"
-            name="exit">
-      </command>
-      <command
-            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.LoadInstanceDataHandler"
-            id="HALE.openInstanceData.command"
-            name="Open Source Data">
-      </command>
-      <command
-            id="HALE.openReferenceData.command"
-            name="Open Reference Data">
-      </command>
-      <command
-            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.SaveAlignmentProjectHandler"
-            id="HALE.saveAlignmentProjectAs.command"
-            name="Save Alignment Project As">
-      </command>
-      <command
-            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.SaveMappingCommandHandler"
-            id="HALE.saveMappingAs.command"
-            name="Save Mapping as">
-      </command>
       <command
             id="org.eclipse.ui.newWizard"
             name="createWizard">
@@ -129,36 +92,67 @@
          </commandParameter>
       </command>
       <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.LoadSchemaHandler"
+            description="%command.loadSchema.description"
+            id="HALE.loadSchema.command"
+            name="%command.loadSchema.name">
+      </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.OpenProjectHandler"
+            description="%command.openProject.description"
+            id="HALE.openProject.command"
+            name="openProject">
+      </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.ExitHandler"
+            description="%command.exit.description"
+            id="HALE.exit.command"
+            name="exit">
+      </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.LoadInstanceDataHandler"
+            id="HALE.openInstanceData.command"
+            name="%command.openSource.name">
+      </command>
+      <command
+            id="HALE.openReferenceData.command"
+            name="%command.openReference.name">
+      </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.SaveAlignmentProjectHandler"
+            id="HALE.saveAlignmentProjectAs.command"
+            name="%command.saveProject.name">
+      </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.SaveMappingCommandHandler"
+            id="HALE.saveMappingAs.command"
+            name="%command.saveMapping.name">
+      </command>
+      <command
             defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.FunctionWizardHandler"
-            description="Pick a wizard for the transformation you wish"
+            description="%command.selectWizard.description"
             id="eu.esdihumboldt.hale.rcp.wizards.io.FunctionWizard"
             name="FunctionWizard">
       </command>
       <command
             defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.NewProjectHandler"
             id="HALE.newProject.command"
-            name="New Alignment Project">
-      </command>
-      <command
-            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.LoadTestDataHandler"
-            description="Load source/target schema and instance data"
-            id="HALE2.LoadTestData.command"
-            name="LoadTestData">
+            name="%command.newProject.name">
       </command>
       <command
             defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.ImportMappingHandler"
             id="HALE.importMapping.command"
-            name="Import Mapping">
+            name="%command.importMapping.name">
       </command>
       <command
             defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.ListFunctionsHandler"
             id="HALE.listFunctions.command"
-            name="List functions">
+            name="%command.listFunctions.name">
       </command>
       <command
             defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.ShowHandbookHandler"
             id="eu.esdihumboldt.hale.ShowManual"
-            name="Show Manual">
+            name="%command.showManual.name">
       </command>
    </extension>
    <extension
@@ -167,47 +161,47 @@
             locationURI="menu:org.eclipse.ui.main.menu">
          <menu
                id="file"
-               label="File"
-               mnemonic="F">
+               label="%menu.file.label"
+               mnemonic="%menu.file.mnemonic">
             <command
                   commandId="HALE.newProject.command"
                   icon="icons/new.gif"
                   id="newProject"
-                  label="New Alignment Project"
+                  label="%command.newproject.label"
                   style="push">
             </command>
             <command
                   commandId="HALE.openProject.command"
                   icon="icons/open.gif"
                   id="openProject"
-                  label="Open Alignment Project"
+                  label="%command.openProject.label"
                   style="push">
             </command>
             <command
                   commandId="HALE.loadSchema.command"
                   id="loadSchema"
-                  label="Open Schema"
+                  label="%command.openSchema.label"
                   style="push"
-                  tooltip="Open a Source or Target Schema">
+                  tooltip="%command.openSchema.tooltip">
             </command>
             <command
                   commandId="HALE.importMapping.command"
-                  label="Import Mapping"
+                  label="%command.importMapping.label"
                   style="push">
             </command>
             <command
                   commandId="HALE.openInstanceData.command"
                   id="openInstanceData"
-                  label="Open Instance Data "
+                  label="%command.openInstanceData.label"
                   style="push"
-                  tooltip="Load Data that is to be transformed">
+                  tooltip="%command.openInstanceData.tooltip">
             </command>
             <command
                   commandId="HALE.openReferenceData.command"
                   id="openReferenceData"
-                  label="Open Reference Data"
+                  label="%command.openReferenceData.label"
                   style="push"
-                  tooltip="Open Reference Data against which Instance Data should be harmonized">
+                  tooltip="%command.openReferenceData.tooltip">
             </command>
             <separator
                   name="HALE.separator1"
@@ -217,13 +211,13 @@
                   commandId="HALE.saveAlignmentProjectAs.command"
                   icon="icons/saveas.gif"
                   id="saveAlignmentProjectAs"
-                  label="Save Alignment Project as..."
+                  label="%command.saveProject.label"
                   style="push">
             </command>
             <command
                   commandId="HALE.saveMappingAs.command"
                   id="saveMappingAs"
-                  label="Save Mapping as..."
+                  label="%command.saveMapping.label"
                   style="push">
             </command>
             <separator
@@ -233,22 +227,23 @@
             <command
                   commandId="HALE.exit.command"
                   id="exit"
-                  label="Exit"
+                  label="%command.exit.label"
                   style="push">
             </command>
          </menu>
          <menu
                id="configure"
-               label="Configure"
-               mnemonic="C">
+               label="%menu.configure.label"
+               mnemonic="%menu.configure.mnemonic">
             <command
                   commandId="HALE.listFunctions.command"
                   id="listFunctions"
-                  label="Available functions..."
+                  label="%command.availableFunctions.label"
                   style="push">
             </command>
             <menu
-                  label="Tasks">
+                  id="configureTasks"
+                  label="%menu.tasks.label">
                <dynamic
                      class="eu.esdihumboldt.hale.rcp.views.tasks.TaskProviderMenu"
                      id="HALE.dynamic.tasks">
@@ -260,12 +255,12 @@
             locationURI="menu:org.eclipse.ui.main.menu?after=configure">
          <menu
                id="help"
-               label="Help"
-               mnemonic="h">
+               label="%menu.help.label"
+               mnemonic="%menu.help.mnemonic">
             <command
                   commandId="eu.esdihumboldt.hale.ShowManual"
                   id="ShowManual"
-                  label="Show Manual..."
+                  label="%command.showManual.label"
                   mnemonic="s"
                   style="push">
             </command>
@@ -278,21 +273,21 @@
             <command
                   commandId="HALE.newProject.command"
                   icon="icons/new.gif"
-                  label="New Alignment Project"
+                  label="%command.newProject.label"
                   style="push">
             </command>
             <command
                   commandId="HALE.openProject.command"
                   icon="icons/open.gif"
                   id="openProject"
-                  label="Open Alignment Project"
+                  label="%command.openProject.label"
                   style="push">
             </command>
             <command
                   commandId="HALE.saveAlignmentProjectAs.command"
                   icon="icons/saveas.gif"
                   id="saveAlignmentProjectAs"
-                  label="Save Alignment Project as..."
+                  label="%command.saveProject.label"
                   style="push">
             </command>
          </toolbar>
@@ -350,7 +345,7 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="eu.esdihumboldt.hale.application"
-            name="HUMBOLDT Alignment Editor">
+            name="%product.name">
          <property
                name="appName"
                value="HUMBOLDT Alignment Editor">
@@ -366,23 +361,23 @@
       <tasks
             class="eu.esdihumboldt.hale.task.schema.SourceMappingTaskProvider"
             defaultEnabled="true"
-            description="Tasks for a complete mapping of the source schema"
+            description="%tasks.sourceMappingTaskProvider.description"
             id="eu.esdihumboldt.hale.task.schema.SourceMappingTaskProvider"
-            name="Source Schema Mapping">
+            name="%tasks.sourceMappingTaskProvider.name">
       </tasks>
       <tasks
             class="eu.esdihumboldt.hale.task.schema.TargetMappingTaskProvider"
             defaultEnabled="false"
-            description="Tasks for a complete mapping of the target schema"
+            description="%tasks.targetMappingTaskProvider.description"
             id="eu.esdihumboldt.hale.task.schema.TargetMappingTaskProvider"
-            name="Target Schema Mapping">
+            name="%tasks.targetMappingTaskProvider.name">
       </tasks>
       <tasks
             class="eu.esdihumboldt.hale.task.schema.NilAttributeTaskProvider"
             defaultEnabled="true"
-            description="Warns when non-nillable attributes are not mapped"
+            description="%tasks.nilWarningsTaskProvider.description"
             id="eu.esdihumboldt.hale.task.schema.NilAttributeTaskProvider"
-            name="Nil Attribute Warnings">
+            name="%tasks.nilWarningsTaskProvider.name">
       </tasks>
    </extension>
    <extension
