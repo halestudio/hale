@@ -89,6 +89,9 @@ public class GeographicalNameFunction
 	 * @see eu.esdihumboldt.cst.transformer.CstFunction#configure(eu.esdihumboldt.cst.align.ICell)
 	 */
 	public boolean configure(ICell cell) {
+		
+		// ************* STORE ALL PARAMETERS IN ARRAYLISTS TO FACILITATE  ****************
+		// ************* CONSTRUCTION OF GEOGRAPHICALNAMES IN TRANSFORM FUNCTION  ****************
 		for (Property p : ((ComposedProperty)cell.getEntity1()).getCollection()){
 			spellcount=0;
 			this._script.add(cellcount,new ArrayList<String>());
@@ -145,7 +148,7 @@ public class GeographicalNameFunction
 					this._grammaticalNumber.add(cellcount,GrammaticalNumberValue.valueOf(ip.getValue()));
 				}
 			}
-			// Force to complete index for all arrayLists
+			// ************* FORCE TO COMPLETE INDEX FOR ALL ARRAYLISTS  ****************
 			if (this._nameStatus.size()<cellcount+1) this._nameStatus.add(cellcount,null);
 			if (this._language.size()<cellcount+1) this._language.add(cellcount,null);
 			if (this._nativeness.size()<cellcount+1) this._nativeness.add(cellcount,null);
@@ -172,7 +175,7 @@ public class GeographicalNameFunction
 	 */
 	public Feature transform(Feature source, Feature target) {
 		
-		//check if the input features have the expected property name
+		// ************* CHECK IF INPUT FEATURES HAVE THE EXPECTED PROPERTY NAME  ****************
 		if (target.getProperties(targetProperty.getLocalname()).size()==0) return null;
 		
 		for (int i=0;i<variable.size();i++)
@@ -186,11 +189,9 @@ public class GeographicalNameFunction
 		
 		Collection<SimpleFeatureImpl> geographicalnames=new HashSet<SimpleFeatureImpl>();
 		
-		// Creates an Array of GeographicalNames with Configuration values
-		//ArrayList<GeographicalName> gns = new ArrayList<GeographicalName>();
+		// ************* CREATION OF A COLLECTION OF GEOGRAPHICALNAMES WITH CONFIGURED VALUES  ****************
 		for (int i=0;i<cellcount;i++)
 		{
-			//GeographicalName gn = new GeographicalName();
 			Collection<SimpleFeatureImpl> colecc=new HashSet<SimpleFeatureImpl>();
 			for (int j=0;j<_script.get(i).size();j++)
 			{
@@ -208,18 +209,22 @@ public class GeographicalNameFunction
 			SimpleFeatureImpl geographicalname = (SimpleFeatureImpl) SimpleFeatureBuilder.build((SimpleFeatureType)pd.getType(), new Object[]{},"GeographicalName");
 			geographicalname.setAttribute("spelling",colecc);
 			geographicalname.setAttribute("language",_language.get(i));
-			if (_nativeness.get(i)!=null) geographicalname.setAttribute("nativeness",_nativeness.get(i).toString());
-			if (_sourceOfName.get(i)!=null) geographicalname.setAttribute("sourceOfName",_sourceOfName.get(i).toString());
-			if (_grammaticalGender.get(i)!=null) geographicalname.setAttribute("grammaticalGender",_grammaticalGender.get(i).toString());
-			if (_grammaticalNumber.get(i)!=null) geographicalname.setAttribute("grammaticalNumber",_grammaticalNumber.get(i).toString());
+			geographicalname.setAttribute("sourceOfName",_sourceOfName.get(i));
+			if (_nativeness.get(i)!=null) geographicalname.setAttribute("nativeness",Collections.singleton(_nativeness.get(i).toString()));
+			else geographicalname.setAttribute("nativeness",null);
+			if (_grammaticalGender.get(i)!=null) geographicalname.setAttribute("grammaticalGender",Collections.singleton(_grammaticalGender.get(i).toString()));
+			else geographicalname.setAttribute("grammaticalGender",null);
+			if (_grammaticalNumber.get(i)!=null) geographicalname.setAttribute("grammaticalNumber",Collections.singleton(_grammaticalNumber.get(i).toString()));
+			else geographicalname.setAttribute("grammaticalNumber",null);
+			if (_nameStatus.get(i)!=null) geographicalname.setAttribute("nameStatus",Collections.singleton(_nameStatus.get(i).toString()));
+			else geographicalname.setAttribute("nameStatus",null);
 			SimpleFeatureImpl pronunciation = (SimpleFeatureImpl) SimpleFeatureBuilder.build(PronunciationOfNameType, new Object[]{},"PronunctiationOfName");
 			pronunciation.setAttribute("pronunciationIPA",_pronunciationIPA.get(i));
 			pronunciation.setAttribute("pronunciationSoundLink",_pronunciationSoundLink.get(i));
 			geographicalname.setAttribute("pronunciation",Collections.singleton(pronunciation));
-			
 			geographicalnames.add(geographicalname);
 		}
-
+		// ************* SET COLLECTION OF GEOGRAPHICALNAMES AS TARGET INPUT PARAMETER  ****************
 		((SimpleFeature)target).setAttribute(targetProperty.getLocalname(), geographicalnames);
 		return target;
 	}
@@ -228,18 +233,16 @@ public class GeographicalNameFunction
 		Cell parameterCell = new Cell();
 		Property entity1 = new Property(new About(""));
 		
-		// Setting of type condition for entity1
+		// ************* SETTING OF TUPE CONDITION FOR ENTITY1  ****************
 		List <String> entityTypes = new ArrayList <String>();
 		entityTypes.add(GeographicalName.class.getName());
 		entityTypes.add(String.class.getName());
 		entity1.setTypeCondition(entityTypes);
 		
+		// ************* SETTING OF TUPE CONDITION FOR ENTITY2  ****************
 		Property entity2 = new Property(new About(""));
-		 
-		// Setting of type condition for entity2
-			// 	entity2 has same type conditions as entity1
 		entity2.setTypeCondition(entityTypes);
-	
+		
 		parameterCell.setEntity1(entity1);
 		parameterCell.setEntity2(entity2);
 		return parameterCell;
