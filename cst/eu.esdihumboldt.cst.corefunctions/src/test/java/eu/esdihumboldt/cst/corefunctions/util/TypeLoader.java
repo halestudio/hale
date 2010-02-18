@@ -12,7 +12,6 @@
 package eu.esdihumboldt.cst.corefunctions.util;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.opengis.feature.type.FeatureType;
 
