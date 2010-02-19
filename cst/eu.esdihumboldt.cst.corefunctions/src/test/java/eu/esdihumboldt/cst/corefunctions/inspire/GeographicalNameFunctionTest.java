@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.cst.corefunctions.inspire;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -78,7 +78,7 @@ public class GeographicalNameFunctionTest {
 	
 	@Test
 	public void testTransformFeatureFeature() {
-		
+			
 		// ************* BUIL SOURCE AND TARGET FEATURES ****************
 		SimpleFeatureType sourceType = this.getFeatureType(
 				GeographicalNameFunctionTest.sourceNamespace,
@@ -93,6 +93,7 @@ public class GeographicalNameFunctionTest {
 				sourceType, new Object[]{name_value,nom_value,nombre_value}, "1");
 		Feature target = SimpleFeatureBuilder.build(
 				(SimpleFeatureType) targetType, new Object[]{}, "2");
+			
 		
 		// ************* PERFORM ACTUAL TEST ****************
 		GeographicalNameFunction gnf = new GeographicalNameFunction();
@@ -100,10 +101,10 @@ public class GeographicalNameFunctionTest {
 		Feature result = gnf.transform(source, target);
 				
 		// ************* BUILD THE EXPECTED FEATURE ****************
-		Feature expectedGN = getGeographicalNameResult(targetType);
+		Feature expectedGN = setGeographicalNameResult(targetType);
 		
 		// ************* CHECK EQUALITY OF EXPECTED AND RECEIVED FEATURES ****************
-		assertTrue(result.equals(expectedGN));
+		assertEquals(result,expectedGN);
 	}
 	
 	/**
@@ -144,7 +145,7 @@ public class GeographicalNameFunctionTest {
 	private static ICell getTestCell(){
 		// ************* SET UP CELL TO USE FOR TESTING ****************
 
-		Cell cell = new Cell();
+		Cell testcell = new Cell();
 		
 		ComposedProperty cp = new ComposedProperty( 
 				new About(sourceNamespace, sourceLocalName));
@@ -152,41 +153,42 @@ public class GeographicalNameFunctionTest {
 		ComposedProperty cpsp1 = new ComposedProperty(new About(sourceNamespace, sourceLocalName));
 		ComposedProperty cpsp2 = new ComposedProperty(new About(sourceNamespace, sourceLocalName));
 		
-		Property p1 = new Property(new About(sourceNamespace, sourceLocalName, sourceLocalnameProperty));
-		Property p2 = new Property(new About(sourceNamespace, sourceLocalName, sourceLocalnameProperty2));
-		Property p3 = new Property(new About(sourceNamespace, sourceLocalName, sourceLocalnameProperty3));
+		Property p1 = new Property(new About(sourceNamespace, sourceLocalName,sourceLocalnameProperty));
+		Property p2 = new Property(new About(sourceNamespace, sourceLocalName,sourceLocalnameProperty2));
+		Property p3 = new Property(new About(sourceNamespace, sourceLocalName,sourceLocalnameProperty3));
 		
-		// ************* SET TRANSFORMATION AND PARAMETERS ****************
-		Transformation t = new Transformation();
-		t.setService(new Resource(GeographicalNameFunction.class.getName()));
+		// ************* SET TRANSFORMATION OF EACH MAPPING ****************
+		Transformation transform1 = new Transformation();
+		transform1.setService(new Resource(GeographicalNameFunction.class.getName()));
 		
-		t.getParameters().add( 
+		transform1.getParameters().add( 
 				new Parameter ("language", language.toString()));
-		t.getParameters().add( 
+		transform1.getParameters().add( 
 				new Parameter ("nameStatus", name_status.toString()));
-		t.getParameters().add( 
+		transform1.getParameters().add( 
 				new Parameter ("nativeness", nativeness.toString()));
-		t.getParameters().add( 
+		transform1.getParameters().add( 
 				new Parameter ("grammaticalGender", grammatical_gender.toString()));
-		t.getParameters().add( 
+		transform1.getParameters().add( 
 				new Parameter ("grammaticalNumber", grammatical_number.toString()));
-		cpsp1.setTransformation(t);
+		cpsp1.setTransformation(transform1);
 		
-		Transformation t2 = new Transformation();
-		t.setService(new Resource(GeographicalNameFunction.class.getName()));
+		Transformation transform2 = new Transformation();
+		transform2.setService(new Resource(GeographicalNameFunction.class.getName()));
 		
-		t2.getParameters().add( 
+		transform2.getParameters().add( 
 				new Parameter ("language", language2.toString()));
-		t2.getParameters().add( 
+		transform2.getParameters().add( 
 				new Parameter ("nameStatus", name_status.toString()));
-		t2.getParameters().add( 
+		transform2.getParameters().add( 
 				new Parameter ("nativeness", nativeness.toString()));
-		t2.getParameters().add( 
+		transform2.getParameters().add( 
 				new Parameter ("grammaticalGender", grammatical_gender.toString()));
-		t2.getParameters().add( 
+		transform2.getParameters().add( 
 				new Parameter ("grammaticalNumber", grammatical_number.toString()));
-		p2.setTransformation(t);
+		cpsp2.setTransformation(transform2);
 		
+		// ************* SET TRANSFORMATION OF EACH PROPERTY ****************
 		Transformation tsp1 = new Transformation();
 		tsp1.setService(new Resource(GeographicalNameFunction.class.getName()));
 		tsp1.getParameters().add(new Parameter ("script", "script1"));
@@ -202,20 +204,22 @@ public class GeographicalNameFunctionTest {
 		p1.setTransformation(tsp1);
 		p2.setTransformation(tsp2);
 		p3.setTransformation(tsp3);
-		cpsp2.setTransformation(t2);
 		
+		// ************* SET MAPPING COMPOSED PROPERTIES WITH PROPERTIES ****************
 		cpsp1.getCollection().add(p1);
 		cpsp1.getCollection().add(p3);
 		cpsp2.getCollection().add(p2);
+		
+		// ************* SET MAIN COMPOSED PROPERTY WITH MAPPING ONES ****************
 		cp.getCollection().add(cpsp1);
 		cp.getCollection().add(cpsp2);
 		
 		// ************* SET ENTITIES ****************
-		cell.setEntity1(cp);
-		cell.setEntity2(new Property ( 
+		testcell.setEntity1(cp);
+		testcell.setEntity2(new Property ( 
 				new About (targetNamespace, targetLocalName, 
 						targetLocalNameProperty)));
-		return cell;
+		return testcell;
 	}
 	
 	/**
@@ -223,7 +227,7 @@ public class GeographicalNameFunctionTest {
 	 * @param targettype: Type required to build feature in a correct way
 	 * @return a test feature to compare with resulting one of transform function
 	 */
-	private SimpleFeature getGeographicalNameResult(FeatureType targettype)
+	private SimpleFeature setGeographicalNameResult(FeatureType targettype)
 	{
 		// ************* CREATION OF THE TARGET ****************
 		SimpleFeature target = SimpleFeatureBuilder.build((SimpleFeatureType)targettype, new Object[]{}, "2");
