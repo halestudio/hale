@@ -1,21 +1,25 @@
 package eu.esdihumboldt.cst.corefunctions;
 
+import static org.junit.Assert.assertEquals;
+
 import java.sql.Timestamp;
+import java.util.Locale;
 
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.junit.Before;
 import org.junit.Test;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeatureType;
+
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.rdf.Resource;
-import junit.framework.TestCase;
 
-public class DateExtractionTest extends TestCase {
+public class DateExtractionTest {
 	
 	
 	private final String sourceLocalname = "FT1";
@@ -26,8 +30,13 @@ public class DateExtractionTest extends TestCase {
 	private final String targetLocalnamePropertyBDate = "PropertyBdate";
 	private final String targetNamespace = "http://xsdi.org";
 
+	
+	@Before
+	public void init() throws Exception{
+		Locale.setDefault(Locale.ENGLISH); 		
+	}
 	@Test
-	public void testTransformFeatureFeature() {
+	public void testTransformFeatureFeature() throws Exception{
 
 		// set up cell to use for testing
 		Cell cell = new Cell();
@@ -62,16 +71,15 @@ public class DateExtractionTest extends TestCase {
 		DateExtractionFunction def = new DateExtractionFunction();
 		def.configure(cell);
 		Feature neu = def.transform(source, target);
-		System.out.println(neu.getProperty(
-				this.targetLocalnamePropertyBDate).getValue().toString());
-		assertTrue(neu.getProperty(
-				this.targetLocalnamePropertyBDate).getValue().toString().equals("07-15-82 4:30 PM"));
+		
+		assertEquals(neu.getProperty(
+				this.targetLocalnamePropertyBDate).getValue().toString(),"07-15-82 4:30 PM");
 
 	}
 	
 	
 	@Test
-	public void testTransformFeatureFeatureDateBinding() {
+	public void testTransformFeatureFeatureDateBinding() throws Exception{
 
 		// set up cell to use for testing
 		Cell cell = new Cell();
@@ -111,10 +119,9 @@ public class DateExtractionTest extends TestCase {
 		DateExtractionFunction def = new DateExtractionFunction();
 		def.configure(cell);
 		Feature neu = def.transform(source, target);
-		System.out.println(neu.getProperty(
-				this.targetLocalnamePropertyBDate).getValue().toString());
-		assertTrue(neu.getProperty(
-				this.targetLocalnamePropertyBDate).getValue().toString().equals("1982-07-15 16:30:00.0"));
+	
+		assertEquals(neu.getProperty(
+				this.targetLocalnamePropertyBDate).getValue().toString(),"1982-07-15 16:30:00.0");
 
 	}
 	
