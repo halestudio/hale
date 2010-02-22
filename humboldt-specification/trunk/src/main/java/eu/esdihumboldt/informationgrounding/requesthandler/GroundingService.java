@@ -169,7 +169,7 @@ public interface GroundingService {
 	
 	/**
 	 * @return this GroundingService's Service as a String.
-	 * It is the alphanumeric value identifying the service. (e.g. “WMS”).
+	 * It is the alphanumeric value identifying the service. (e.g. "WMS").
 	 * @throws {@link InconsistentGroundingServiceException} if the service is missing.
 	 */
 	public java.lang.String getService()
@@ -177,7 +177,7 @@ public interface GroundingService {
 	
 	/**
 	 * @return this GroundingService's ServiceVersion as a String.
-	 * It is the alphanumeric value identifying the service version. (e.g. “1.1.0”). 
+	 * It is the alphanumeric value identifying the service version. (e.g. "1.1.0"). 
 	 * @throws {@link InconsistentGroundingServiceException} if the service version is missing.
 	 */
 	public java.lang.String getServiceVersion()
