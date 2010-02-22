@@ -240,7 +240,7 @@
 	</pluginRepositories>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+<!--		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
 		<geotools.version>2.5.8</geotools.version>
 	</properties>
 
