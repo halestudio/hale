@@ -6,6 +6,6 @@
 		<cfg:property key="composedPropertyStackSize" value="4" />
 	</cfg:componentproperties>
 	<cfg:systemproperties>
-		<cfg:property key="" value="" />
+		<cfg:property key="log4jproperties" value="log4j.xml" />
 	</cfg:systemproperties>
 </cfg:Configuration>
