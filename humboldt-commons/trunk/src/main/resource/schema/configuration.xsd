@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.esdi-humboldt.eu/configuration"
+	xmlns:cfg="http://www.esdi-humboldt.eu/configuration"
+	elementFormDefault="qualified">
+	<xsd:annotation>
+		<xsd:documentation xml:lang="en">
+			This schema defines the
+			configuration for the HUMBOLDT components.
+		</xsd:documentation>
+	</xsd:annotation>
+	<xsd:element name="Configuration">
+		<xsd:complexType>
+			<xsd:sequence>
+
+				<xsd:element name="componentproperties" type="cfg:PropertiesType"
+					minOccurs="1" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>Component Properties contain configuration for
+							the component specific parameters. </xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+
+				<xsd:element name="systemproperties" type="cfg:PropertiesType"
+					minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>System Properties may contain some system
+							specific parameter
+							e.g. database host, data server url.
+						</xsd:documentation>
+					</xsd:annotation>
+
+				</xsd:element>
+			</xsd:sequence>
+			<xsd:attribute name="componentName" type="xsd:string"
+				use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="PropertiesType">
+		<xsd:sequence>
+			<xsd:element name="property" type="cfg:PropertyType"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="PropertyType">
+		<xsd:attribute name="key" type="xsd:string" use="required" />
+		<xsd:attribute name="value" type="xsd:string" use="required" />
+	</xsd:complexType>
+
+</xsd:schema>
