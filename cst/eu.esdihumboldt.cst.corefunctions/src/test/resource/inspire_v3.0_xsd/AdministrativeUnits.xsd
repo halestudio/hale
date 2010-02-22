@@ -115,19 +115,7 @@ NOTE In case of a national boundary (i.e. nationalLevel='1st order')  only one n
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">au:boundary</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The administrative units separated by this administrative boundary. &#13;
-&#13;
--- Description --&#13;
-NOTE In case of a national boundary (i.e. nationalLevel='1st order')  only one national administrative unit (i.e. country) is provided. &#13;
-</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">au:AdministrativeUnit</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">au:boundary</reversePropertyName>
-              </appinfo>
-            </annotation>
-          </element>
+         </element>
         </sequence>
       </extension>
     </complexContent>
