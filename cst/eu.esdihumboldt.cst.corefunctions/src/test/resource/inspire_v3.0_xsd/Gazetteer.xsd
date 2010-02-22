@@ -64,12 +64,7 @@
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">gaz:LocationType</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>location type of this instance</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">gaz:LocationType</targetElement>
-              </appinfo>
-            </annotation>
+           
           </element>
           <element maxOccurs="unbounded" name="gazetteer" type="gml:ReferenceType">
             <annotation>
@@ -78,12 +73,7 @@
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">gaz:Gazetteer</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>gazatteer which includes this location instance</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">gaz:Gazetteer</targetElement>
-              </appinfo>
-            </annotation>
+           
           </element>
           <element maxOccurs="unbounded" minOccurs="0" name="parent" type="gml:ReferenceType">
             <annotation>
@@ -92,12 +82,7 @@
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">gaz:LocationInstance</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>location instance of a different location type, for which this location instance is a sub-division</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">gaz:LocationInstance</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
@@ -179,12 +164,7 @@
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">gaz:LocationType</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>name of parent location type (a location type of which this location type is a sub-division)</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">gaz:LocationType</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
@@ -258,12 +238,7 @@
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">gaz:LocationType</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>location type for which instances are recorded in the gazetteer</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">gaz:LocationType</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>

@@ -93,13 +93,7 @@ A related hydrographic object representing the same real-world feature.</documen
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">hy:HydroObject</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-A related hydrographic object representing the same real-world feature.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">hy:HydroObject</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
           <element name="beginLifespanVersion" nillable="true">
             <annotation>
@@ -156,16 +150,7 @@ SOURCE [DFDD].</documentation>
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">lc:Shore</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The part of the shore or beach which lies between the low water mark and the upper limit of normal wave action.&#13;
-&#13;
--- Description --&#13;
-SOURCE [DFDD].</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">lc:Shore</targetElement>
-              </appinfo>
-            </annotation>
+           
           </element>
         </sequence>
       </extension>

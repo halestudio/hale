@@ -377,13 +377,7 @@ A component of a traffic separation scheme.</documentation>
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">tn-w:TrafficSeparationSchemeArea</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-A component of a traffic separation scheme.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">tn-w:TrafficSeparationSchemeArea</targetElement>
-              </appinfo>
-            </annotation>
+            
             <complexType>
               <complexContent>
                 <extension base="gml:AbstractMemberType">
@@ -401,13 +395,7 @@ A marker forming part of a traffic separation scheme.</documentation>
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">tn-w:Beacon</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-A marker forming part of a traffic separation scheme.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">tn-w:Beacon</targetElement>
-              </appinfo>
-            </annotation>
+            
             <complexType>
               <complexContent>
                 <extension base="gml:AbstractMemberType">
@@ -425,13 +413,7 @@ The collection of marine waterways associated with a traffic separation scheme.<
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">tn-w:MarineWaterway</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The collection of marine waterways associated with a traffic separation scheme.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">tn-w:MarineWaterway</targetElement>
-              </appinfo>
-            </annotation>
+           
             <complexType>
               <complexContent>
                 <extension base="gml:AbstractMemberType">
@@ -449,13 +431,7 @@ A marker forming part of a traffic separation scheme.</documentation>
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">tn-w:Buoy</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-A marker forming part of a traffic separation scheme.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">tn-w:Buoy</targetElement>
-              </appinfo>
-            </annotation>
+            
             <complexType>
               <complexContent>
                 <extension base="gml:AbstractMemberType">

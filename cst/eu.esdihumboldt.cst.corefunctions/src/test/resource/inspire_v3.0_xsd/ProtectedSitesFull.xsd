@@ -311,14 +311,7 @@ A link to the SpeciesAggregationUnit feature type that represents the generic as
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">sd:isAggregatedOver</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-A link to the SpeciesAggregationUnit feature type that represents the generic aspects of different types of units over which species may be distributed.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">sd:SpeciesAggregationUnit</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">sd:isAggregatedOver</reversePropertyName>
-              </appinfo>
-            </annotation>
+            
           </element>
           <element minOccurs="0" name="isInRegion" type="gml:ReferenceType">
             <annotation>
@@ -331,16 +324,7 @@ Although Protected Sites may exist across the boundary of more than one biogeogr
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">bgr:Bio-GeographicalRegion</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The bio-geographical region to which a Protected Site is assigned.&#13;
-&#13;
--- Description --&#13;
-Although Protected Sites may exist across the boundary of more than one biogeographical region, it is usually assigned to one region for Natura2000 purposes.  If this is the case, this attribute is used to indicate the officially assigned biogeographical region used by the Member State.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">bgr:Bio-GeographicalRegion</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
           <element maxOccurs="unbounded" minOccurs="0" name="isManagedBy" type="gml:ReferenceType">
             <annotation>
@@ -350,13 +334,7 @@ The Agency that is responsible (either entirely or in combination with other age
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">ps-f:ResponsibleAgency</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The Agency that is responsible (either entirely or in combination with other agencies) for the management of the Protected Site.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">ps-f:ResponsibleAgency</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
@@ -465,13 +443,7 @@ The Agency that is responsible (either in part or in total) for executing the Si
             <targetElement xmlns="http://www.opengis.net/gml/3.2">ps-f:ResponsibleAgency</targetElement>
           </appinfo>
         </annotation>
-        <annotation>
-          <documentation>-- Definition --&#13;
-The Agency that is responsible (either in part or in total) for executing the Site Management Plan.</documentation>
-          <appinfo>
-            <targetElement xmlns="http://www.opengis.net/gml/3.2">ps-f:ResponsibleAgency</targetElement>
-          </appinfo>
-        </annotation>
+       
       </element>
     </sequence>
   </complexType>
@@ -614,13 +586,7 @@ The role of a Species Distribution as a protected entity.</documentation>
             <targetElement xmlns="http://www.opengis.net/gml/3.2">sd:SpeciesDistribution</targetElement>
           </appinfo>
         </annotation>
-        <annotation>
-          <documentation>-- Definition --&#13;
-The role of a Species Distribution as a protected entity.</documentation>
-          <appinfo>
-            <targetElement xmlns="http://www.opengis.net/gml/3.2">sd:SpeciesDistribution</targetElement>
-          </appinfo>
-        </annotation>
+        
       </element>
       <element maxOccurs="unbounded" minOccurs="0" name="isABuilding" nillable="true" type="gml:ReferenceType">
         <annotation>
@@ -630,13 +596,7 @@ The role of a building as a protected entity.</documentation>
             <targetElement xmlns="http://www.opengis.net/gml/3.2">bui:Building</targetElement>
           </appinfo>
         </annotation>
-        <annotation>
-          <documentation>-- Definition --&#13;
-The role of a building as a protected entity.</documentation>
-          <appinfo>
-            <targetElement xmlns="http://www.opengis.net/gml/3.2">bui:Building</targetElement>
-          </appinfo>
-        </annotation>
+        
       </element>
       <element maxOccurs="unbounded" minOccurs="0" name="isAHabitat" nillable="true" type="gml:ReferenceType">
         <annotation>
@@ -646,13 +606,7 @@ The role of a Habitat as a protected entity</documentation>
             <targetElement xmlns="http://www.opengis.net/gml/3.2">hb:Habitat</targetElement>
           </appinfo>
         </annotation>
-        <annotation>
-          <documentation>-- Definition --&#13;
-The role of a Habitat as a protected entity</documentation>
-          <appinfo>
-            <targetElement xmlns="http://www.opengis.net/gml/3.2">hb:Habitat</targetElement>
-          </appinfo>
-        </annotation>
+        
       </element>
     </sequence>
   </complexType>
@@ -724,13 +678,7 @@ The relationship between a protected site and a habitat that exists on that Site
             <targetElement xmlns="http://www.opengis.net/gml/3.2">hb:Habitat</targetElement>
           </appinfo>
         </annotation>
-        <annotation>
-          <documentation>-- Definition --&#13;
-The relationship between a protected site and a habitat that exists on that Site.</documentation>
-          <appinfo>
-            <targetElement xmlns="http://www.opengis.net/gml/3.2">hb:Habitat</targetElement>
-          </appinfo>
-        </annotation>
+       
       </element>
     </sequence>
   </complexType>

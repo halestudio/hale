@@ -119,14 +119,7 @@ The set of control towers belonging to an aerodrome (airport/heliport).</documen
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">bui:airportHeliport</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The set of control towers belonging to an aerodrome (airport/heliport).</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">bui:ControlTower</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">bui:airportHeliport</reversePropertyName>
-              </appinfo>
-            </annotation>
+           
           </element>
         </sequence>
       </extension>

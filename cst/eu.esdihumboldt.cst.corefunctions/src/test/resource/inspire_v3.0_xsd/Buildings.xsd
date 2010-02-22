@@ -45,14 +45,7 @@ The aerodrome (airport/heliport) to which the control tower belongs.</documentat
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">tn-a:controlTowers</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The aerodrome (airport/heliport) to which the control tower belongs.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">tn-a:AerodromeNode</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">tn-a:controlTowers</reversePropertyName>
-              </appinfo>
-            </annotation>
+           
           </element>
         </sequence>
       </extension>

@@ -307,14 +307,7 @@ Route in a transport network along which the marker post is placed.</documentati
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">tn:post</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-Route in a transport network along which the marker post is placed.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">tn:TransportLinkSet</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">tn:post</reversePropertyName>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
@@ -430,14 +423,7 @@ Marker post along a route in a transport network.</documentation>
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">tn:route</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-Marker post along a route in a transport network.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">tn:MarkerPost</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">tn:route</reversePropertyName>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>

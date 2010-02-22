@@ -161,18 +161,7 @@ EXAMPLE The geographical name "Huskvarna", which represents a part of the munici
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">gn:NamedPlace</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The named place that this address area name represents.  &#13;
-&#13;
--- Description --&#13;
-NOTE In order to populate this association, it is important that the area covered by the identified Named Place is exactly the same as the area covered by the address area name in question; if this is not the case the association would result in an inconsistency.&#13;
-&#13;
-EXAMPLE The geographical name "Huskvarna", which represents a part of the municipality of Jönköping in Sweden, is the source of the address area name, "Huskvarna".</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">gn:NamedPlace</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
@@ -221,16 +210,7 @@ EXAMPLE The administrative unit (municipality) "Gävle" in Sweden is the source 
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">au:AdministrativeUnit</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The administrative unit that is the source of the content of the administrative unit name.&#13;
-&#13;
--- Description --&#13;
-EXAMPLE The administrative unit (municipality) "Gävle" in Sweden is the source of the address component administrative unit name, "Gävle".</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">au:AdministrativeUnit</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
@@ -336,16 +316,7 @@ EXAMPLE The thoroughfare name "Na Pankráci" in Praha, The Czech Republic, has b
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">tn:TransportLink</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-One or several transport network links to which the spatial object of the thoroughfare name has been designated.&#13;
-&#13;
--- Description --&#13;
-EXAMPLE The thoroughfare name "Na Pankráci" in Praha, The Czech Republic, has been designated as a road name for a number of road links (street segments) in the city.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">tn:TransportLink</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
@@ -489,14 +460,7 @@ Reference to the address spatial object.&#13;
             <targetElement xmlns="http://www.opengis.net/gml/3.2">ad:Address</targetElement>
           </appinfo>
         </annotation>
-        <annotation>
-          <documentation>-- Definition --&#13;
-Reference to the address spatial object.&#13;
-</documentation>
-          <appinfo>
-            <targetElement xmlns="http://www.opengis.net/gml/3.2">ad:Address</targetElement>
-          </appinfo>
-        </annotation>
+       
       </element>
     </sequence>
   </complexType>
@@ -659,24 +623,7 @@ EXAMPLE 2 In Denmark, several address area names entitled "Strandby" exists. In 
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">ad:AddressComponent</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-Another address component within which the geographic feature represented by this address component is situated.&#13;
-&#13;
--- Description --&#13;
-NOTE 1 The association enables the application schema to express that the subtypes of address components in the dataset form a hierarchy e.g. like: thoroughfare name within municipality within region within country &#13;
-&#13;
-NOTE 2 The representation of the hierarchy facilitates queries e.g. for a specific thoroughfare name within a given municipality or postcode. It is also necessary where the application schema is used to create or update, for example , a gazetteer which is based on the hierarchical structure of the address components. &#13;
-&#13;
-NOTE 3 The multiplicity of the association allows it to express that a thoroughfare name is situated in a certain municipality and in a certain postcode. It is also possible to express, for example, that some thoroughfare names cross borders between municipalities and thus is situated within more than one municipality.&#13;
-&#13;
-EXAMPLE 1 In Spain many spatial objects of the thoroughfare name "Calle Santiago" exist. The association can express that one of the spatial objects is situated within in the municipality of Albacete. From the same example the municipality name "Albacete" is situated within the administrative name (region) of "Castilla La Mancha".&#13;
-&#13;
-EXAMPLE 2 In Denmark, several address area names entitled "Strandby" exists. In order to identify a specific spatial object it is necessary to know that the relevant spatial object is situated e.g. in the municipality of "Frederikshavn".</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">ad:AddressComponent</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
@@ -760,24 +707,7 @@ EXAMPLE 3 In the Czech Republic in some cities an address has two locator design
             <targetElement xmlns="http://www.opengis.net/gml/3.2">ad:AddressComponent</targetElement>
           </appinfo>
         </annotation>
-        <annotation>
-          <documentation>-- Definition --&#13;
-The address component that defines the scope within which the address locator is assigned according to rules ensuring unambiguousness. &#13;
-&#13;
--- Description --&#13;
-NOTE 1 For the assignment of unambiguous locators (e.g. address numbers) different rules exists in different countries and regions. According to the most common rule, an address number should be unique within the scope of the thoroughfare name. In other areas the address number is unique inside an address area name (e.g. the name of the village) or postal designator (e.g. the post code). In some areas even a combination of rules are applied: e.g. addresses with two locators, each of them referencing to a separate address component. &#13;
-&#13;
-NOTE 2 Locators that has the level of unit (like e.g. floor identifier and door or unit identifiers) are most often assigned so that they are unambiguous within the more narrow scope of the property or building; for these locators the association should therefore not be populated. &#13;
-&#13;
-EXAMPLE 1 In a typical European address dataset, parts of the addresses have locators which are unambiguous within the scope of the road name (thoroughfare name) while others are unambiguous within the name ogf the village or district (address area name). &#13;
-&#13;
-EXAMPLE 2 In Lithuania and Estonia a concept of "corner addresses" exists. Corner addresses have two address numbers (designators) each of them referring to a thoroughfare name (primary and secondary street name). E.g. in Vilnius the address designated "A. Stulginskio gatve 4 / A. Smetonos gatve 7" is situated on the corner of the two streets. &#13;
-&#13;
-EXAMPLE 3 In the Czech Republic in some cities an address has two locator designators: A building number which referres to the address area (district, cz: "cast obce") and a address number that referres to the thoroughfare name. As an example in Praha for address designated "Na Pankráci 1690/125, Nusle" the designator "1690" is a building number unique within the address area (cz cast obce) "Nusle", while the "125" is an address number that has the thoroughfare name as its scope.</documentation>
-          <appinfo>
-            <targetElement xmlns="http://www.opengis.net/gml/3.2">ad:AddressComponent</targetElement>
-          </appinfo>
-        </annotation>
+        
       </element>
     </sequence>
   </complexType>
@@ -949,18 +879,7 @@ EXAMPLE In the street "Wildersgade" in Copenhagen, Denmark, the address designat
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">cp:CadastralParcel</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-Cadastral parcel that this address is assigned to or associated with.  &#13;
-&#13;
--- Description --&#13;
-NOTE An address could potentially have an association to zero, one or several cadastral parcels. Also it is possible (but this is not expressed in this application schema) that several addresses are associated to a single cadastral parcel.&#13;
-&#13;
-EXAMPLE In the street "Wildersgade" in Copenhagen, Denmark, the address designated as "Wildersgade 66, 1408 København K" is associated to the cadastral parcel identifier "81" in the district of "Christianshavn".</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">cp:CadastralParcel</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
           <element maxOccurs="unbounded" minOccurs="0" name="building" nillable="true" type="gml:ReferenceType">
             <annotation>
@@ -975,18 +894,7 @@ EXAMPLE In Praha, The Czech Republic, the address designated "NaPankráci 1690/1
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">bui:Building</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-Building that the address is assigned to or associated with. &#13;
-&#13;
- -- Description --&#13;
-NOTE An address could potentially have an association to zero, one or several buildings. Also it is possible (but this is not expressed in this application schema) that several addresses are associated to a single building.&#13;
-&#13;
-EXAMPLE In Praha, The Czech Republic, the address designated "NaPankráci 1690/125" is associated to a specific building in the street, in this case the building with number 1690 in the district (cz: cast obce) "Nusle".</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">bui:Building</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
           <element minOccurs="0" name="parentAddress" nillable="true" type="gml:ReferenceType">
             <annotation>
@@ -1007,24 +915,7 @@ EXAMPLE 3 In The Netherlands only one level of addresses exists. </documentation
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">ad:Address</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The main (parent) address with which this (sub) address is tightly connected.&#13;
-&#13;
--- Description --&#13;
-NOTE 1 The relationship between a set of subaddresses and the main address most often means that the sub addresses use the same locator and address components (for example , thoroughfare name, address area, post code) as the parent address. For each sub address additional address locators are then included for identification, like e.g. flat number, floor identifier, door number. &#13;
-&#13;
-NOTE 2 In some countries several levels of parent-, sub- and sub-sub-addresses exist. In other countries the concept of parent addresses does not exist; all addresses are thus of the same level. &#13;
-&#13;
-EXAMPLE 1 In a Spanish city the address "Calle Gran Vía 8" is a parent address where the locator "8" represents the building. In the building, the sub address "Calle Gran Via 8, door 3" represents a sub-address, while the more detailed sub-sub address "Calle Gran Via 8, door 3, staircase A, floor 5, dwelling 1" represents the address of a specific dwelling. &#13;
-&#13;
-EXAMPLE 2 In Denmark the legislation on addresses define two types of addresses: the parent "access level" and the sub "unit level". In the city of Copenhagen "Wildersgade 60A" is a parent access address that represents a specific entrance to a building. Inside the entrance, subaddresses using floor and door designators identifies the individual dwellings like e.g. "Wildersgade 60A, 1st floor, left door". &#13;
-&#13;
-EXAMPLE 3 In The Netherlands only one level of addresses exists. </documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">ad:Address</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
           <element maxOccurs="unbounded" name="component">
             <annotation>
@@ -1037,16 +928,7 @@ EXAMPLE For the address designated "Calle Mayor 13, Cortijo del Marqués, 41037,
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">ad:AddressComponent</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-Represents that the address component is engaged as a part of the address.&#13;
-&#13;
--- Description --&#13;
-EXAMPLE For the address designated "Calle Mayor 13, Cortijo del Marqués, 41037, Écija, Sevilla, España" the six address components "Calle Mayor", "Cortijo del Marqués", "41037", "Écija", "Sevilla" and "España" are engaged as address components.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">ad:AddressComponent</targetElement>
-              </appinfo>
-            </annotation>
+            
             <complexType>
               <complexContent>
                 <extension base="gml:AbstractMemberType">

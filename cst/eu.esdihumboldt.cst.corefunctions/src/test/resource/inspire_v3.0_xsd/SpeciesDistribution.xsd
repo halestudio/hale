@@ -99,14 +99,7 @@ The distribution of species over the particular aggregation unit.</documentation
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">sd:coversUnit</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The distribution of species over the particular aggregation unit.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">sd:SpeciesDistribution</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">sd:coversUnit</reversePropertyName>
-              </appinfo>
-            </annotation>
+            
           </element>
           <element minOccurs="0" name="isAggregatedOver" nillable="true" type="gml:ReferenceType">
             <annotation>
@@ -120,17 +113,7 @@ A species distribution may be aggregated over a number of different types of uni
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ps-f:isASpeciesAggregationUnit</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The region, administative or analytical unit over which the species distribution is aggregated.  &#13;
-&#13;
--- Description --&#13;
-A species distribution may be aggregated over a number of different types of units for different purposes.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">ps-f:ProtectedSite</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ps-f:isASpeciesAggregationUnit</reversePropertyName>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
@@ -400,14 +383,7 @@ The habitat within which the species lives.</documentation>
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">hb:hasSpecies</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The habitat within which the species lives.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">hb:HabitatSpeciesType</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">hb:hasSpecies</reversePropertyName>
-              </appinfo>
-            </annotation>
+            
           </element>
           <element name="coversUnit" nillable="true" type="gml:ReferenceType">
             <annotation>
@@ -418,14 +394,7 @@ The unit that the species is distributed over.  A number of different types of a
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">sd:hasSpecies</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The unit that the species is distributed over.  A number of different types of aggregation unit are possible.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">sd:SpeciesAggregationUnit</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">sd:hasSpecies</reversePropertyName>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>

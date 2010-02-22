@@ -280,18 +280,7 @@ NOTE2: Each administrative unit at lowest level is topologically covered by a ce
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">stat:NUTSRegion</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>NUTSRegion that topologically contains this administrative unit.&#13;
-&#13;
-NOTE NUTS regions are Territorial units for statistics defined in the framework of the Regulation (EC) No 1059/2003 of the European Parliament and of the Council of 26 May 2003 (see hhtp:ec.europe.eu/eurostat/ramon/nuts/home_regions_de.html)&#13;
-&#13;
-&#13;
-NOTE2: Each administrative unit at lowest level is topologically covered by a certain NUTS3 region established for statistical purposes. Each NUTS3 region belongs to a specific NUTS2 region that is a part of NUTS1 region. The administrative unit at lowest level can refer the corresponding regions from all three levels: NUTS3, NUTS2, and NUTS1. &#13;
-</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">stat:NUTSRegion</targetElement>
-              </appinfo>
-            </annotation>
+           
           </element>
           <element maxOccurs="unbounded" minOccurs="0" name="condominium" nillable="true" type="gml:ReferenceType">
             <annotation>
@@ -305,17 +294,7 @@ NOTE Condominiums may only exist at state level and can be administered only by 
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">au:admUnit</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-Condominium administered by this administrative unit &#13;
-&#13;
--- Description --&#13;
-NOTE Condominiums may only exist at state level and can be administered only by administrative units at the highest level of the national administrative hierarchy (i.e. countries).</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">au:Condominium</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">au:admUnit</reversePropertyName>
-              </appinfo>
-            </annotation>
+            
           </element>
           <element maxOccurs="unbounded" minOccurs="0" name="lowerLevelUnit" nillable="true">
             <annotation>
@@ -332,20 +311,7 @@ CONSTRAINT Each administrative unit except for the lowest level units shall refe
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">au:upperLevelUnit</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-Units established at a lower level of the national administrative hierarchy which are administered by this administrative unit. &#13;
-&#13;
--- Description --&#13;
-NOTE For administrative units at the lowest level of the national hierarchy no lower level unit exists. &#13;
-&#13;
-CONSTRAINT Each administrative unit except for the lowest level units shall refer to its lower level units&#13;
-</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">au:AdministrativeUnit</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">au:upperLevelUnit</reversePropertyName>
-              </appinfo>
-            </annotation>
+           
             <complexType>
               <complexContent>
                 <extension base="gml:AbstractMemberType">
@@ -370,20 +336,7 @@ CONSTRAINT Each administrative unit at the level other than '1st order' (i.e. na
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">au:lowerLevelUnit</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-A unit established at a higher level of national administrative hierarchy that this administrative unit administers. &#13;
-&#13;
--- Description --&#13;
-NOTE Administrative units at the highest level of national hierarchy (i.e. the country) do not have upper level units. &#13;
-&#13;
-CONSTRAINT Each administrative unit at the level other than '1st order' (i.e. nationalLevel &lt;&gt; '1st order') shall refer their upper level unit.&#13;
-</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">au:AdministrativeUnit</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">au:lowerLevelUnit</reversePropertyName>
-              </appinfo>
-            </annotation>
+           
           </element>
           <element maxOccurs="unbounded" minOccurs="0" name="administeredBy" nillable="true" type="gml:ReferenceType">
             <annotation>
@@ -395,15 +348,7 @@ Administrative units established at same level of national administrative hierar
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">au:coAdminister</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-Administrative units established at same level of national administrative hierarchy which are co-administered by this administrative unit. &#13;
-</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">au:AdministrativeUnit</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">au:coAdminister</reversePropertyName>
-              </appinfo>
-            </annotation>
+           
           </element>
           <element maxOccurs="unbounded" minOccurs="0" name="coAdminister" nillable="true" type="gml:ReferenceType">
             <annotation>
@@ -415,15 +360,7 @@ A unit established at same level of national administrative hierarchy that admin
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">au:administeredBy</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-A unit established at same level of national administrative hierarchy that administers this administrative unit.&#13;
-</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">au:AdministrativeUnit</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">au:administeredBy</reversePropertyName>
-              </appinfo>
-            </annotation>
+            
           </element>
           <element maxOccurs="unbounded" name="boundary" nillable="true" type="gml:ReferenceType">
             <annotation>
@@ -437,17 +374,7 @@ NOTE Administrative boundary corresponds to the curve established between the  n
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">au:admUnit</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The administrative boundaries between this administrative unit and all the units adjacent to it.&#13;
-&#13;
--- Description --&#13;
-NOTE Administrative boundary corresponds to the curve established between the  nodes  at lowest level of territory division  in Member State. Thus, it does not necessairly represents boundary in political terms, but just part of it. </documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">au:AdministrativeBoundary</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">au:admUnit</reversePropertyName>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
@@ -536,14 +463,7 @@ The administrative unit administering the condominium</documentation>
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">au:condominium</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The administrative unit administering the condominium</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">au:AdministrativeUnit</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">au:condominium</reversePropertyName>
-              </appinfo>
-            </annotation>
+           
           </element>
         </sequence>
       </extension>

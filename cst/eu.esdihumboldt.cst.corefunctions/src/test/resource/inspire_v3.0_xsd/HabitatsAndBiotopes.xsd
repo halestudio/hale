@@ -218,14 +218,7 @@ The species that lives in the habitat.</documentation>
             <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">sd:existsInHabitat</reversePropertyName>
           </appinfo>
         </annotation>
-        <annotation>
-          <documentation>-- Definition --&#13;
-The species that lives in the habitat.</documentation>
-          <appinfo>
-            <targetElement xmlns="http://www.opengis.net/gml/3.2">sd:SpeciesDistribution</targetElement>
-            <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">sd:existsInHabitat</reversePropertyName>
-          </appinfo>
-        </annotation>
+       
       </element>
     </sequence>
   </complexType>

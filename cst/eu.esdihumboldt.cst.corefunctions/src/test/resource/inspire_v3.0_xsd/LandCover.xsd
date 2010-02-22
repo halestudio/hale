@@ -62,13 +62,7 @@ A related hydrographic object representing the same real-world feature.</documen
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">hy:HydroObject</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-A related hydrographic object representing the same real-world feature.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">hy:HydroObject</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
           <element name="beginLifespanVersion" nillable="true">
             <annotation>
@@ -184,13 +178,7 @@ A related hydrographic object representing the same real-world feature.</documen
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">hy:HydroObject</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-A related hydrographic object representing the same real-world feature.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">hy:HydroObject</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
           <element name="beginLifespanVersion" nillable="true">
             <annotation>
@@ -326,13 +314,7 @@ A related hydrographic object representing the same real-world feature.</documen
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">hy:HydroObject</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-A related hydrographic object representing the same real-world feature.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">hy:HydroObject</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
           <element name="beginLifespanVersion" nillable="true">
             <annotation>

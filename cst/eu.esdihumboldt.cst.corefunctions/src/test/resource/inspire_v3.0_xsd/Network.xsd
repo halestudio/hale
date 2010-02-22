@@ -42,14 +42,7 @@ Network elements in different networks&#13;
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">net:NetworkElement</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-Network elements in different networks&#13;
-</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">net:NetworkElement</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
@@ -166,17 +159,7 @@ NOTE In the INSPIRE context, this spoke property is to be published when this in
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">net:endNode</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The links that enter the node.&#13;
-&#13;
--- Description --&#13;
-NOTE In the INSPIRE context, this spoke property is to be published when this information is published in current exchange formats of the data set.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">net:Link</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">net:endNode</reversePropertyName>
-              </appinfo>
-            </annotation>
+            
           </element>
           <element maxOccurs="unbounded" minOccurs="0" name="spokeStart" nillable="true" type="gml:ReferenceType">
             <annotation>
@@ -190,17 +173,7 @@ NOTE In the INSPIRE context, this spoke property is to be published when this in
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">net:startNode</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The links that leave the node.&#13;
-&#13;
--- Description --&#13;
-NOTE In the INSPIRE context, this spoke property is to be published when this information is published in current exchange formats of the data set.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">net:Link</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">net:startNode</reversePropertyName>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
@@ -249,11 +222,7 @@ A reference to a network element.&#13;
             <targetElement xmlns="http://www.opengis.net/gml/3.2">net:NetworkElement</targetElement>
           </appinfo>
         </annotation>
-        <annotation>
-          <appinfo>
-            <targetElement xmlns="http://www.opengis.net/gml/3.2">net:NetworkElement</targetElement>
-          </appinfo>
-        </annotation>
+        
       </element>
     </sequence>
   </complexType>
@@ -318,14 +287,7 @@ The networks in which a network element is a member.</documentation>
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">net:elements</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The networks in which a network element is a member.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">net:Network</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">net:elements</reversePropertyName>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
@@ -401,11 +363,7 @@ EXAMPLE A dual carriageway road, as a collection of the two link sequences that 
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">net:GeneralisedLink</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">net:GeneralisedLink</targetElement>
-              </appinfo>
-            </annotation>
+            
             <complexType>
               <complexContent>
                 <extension base="gml:AbstractMemberType">
@@ -450,13 +408,7 @@ The link</documentation>
             <targetElement xmlns="http://www.opengis.net/gml/3.2">net:Link</targetElement>
           </appinfo>
         </annotation>
-        <annotation>
-          <documentation>-- Definition --&#13;
-The link</documentation>
-          <appinfo>
-            <targetElement xmlns="http://www.opengis.net/gml/3.2">net:Link</targetElement>
-          </appinfo>
-        </annotation>
+        
       </element>
     </sequence>
   </complexType>
@@ -547,14 +499,7 @@ The optional end node for this link. The end node may be the same instance as th
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">net:spokeEnd</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The optional end node for this link. The end node may be the same instance as the start node. </documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">net:Node</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">net:spokeEnd</reversePropertyName>
-              </appinfo>
-            </annotation>
+            
           </element>
           <element minOccurs="0" name="startNode" type="gml:ReferenceType">
             <annotation>
@@ -565,14 +510,7 @@ The optional start node for this link.</documentation>
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">net:spokeStart</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The optional start node for this link.</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">net:Node</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">net:spokeStart</reversePropertyName>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
@@ -607,11 +545,7 @@ NOTE 2 In the normal case this is when elements intersect in the x/y-plane when 
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">net:Link</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">net:Link</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
@@ -646,13 +580,7 @@ The cross referenced elements</documentation>
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">net:NetworkElement</targetElement>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The cross referenced elements</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">net:NetworkElement</targetElement>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
@@ -730,15 +658,7 @@ The collection of elements that constitutres the network.&#13;
                 <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">net:inNetwork</reversePropertyName>
               </appinfo>
             </annotation>
-            <annotation>
-              <documentation>-- Definition --&#13;
-The collection of elements that constitutres the network.&#13;
-</documentation>
-              <appinfo>
-                <targetElement xmlns="http://www.opengis.net/gml/3.2">net:NetworkElement</targetElement>
-                <reversePropertyName xmlns="http://www.opengis.net/gml/3.2">net:inNetwork</reversePropertyName>
-              </appinfo>
-            </annotation>
+            
           </element>
         </sequence>
       </extension>
