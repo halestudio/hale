@@ -29,7 +29,7 @@ public interface Relevancy {
 	
 	/**
 	 * @return True if the complete list of constraints is satisfied by the Grounding Service. 
-	 * 			This should be the “perfect match”.
+	 * 			This should be the "perfect match".
 	 * 			False if some constraint is not fulfilled.
 	 */
 	public boolean isPerfectMatch();
