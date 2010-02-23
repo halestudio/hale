@@ -50,6 +50,57 @@
 			<version>6.1.22</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>eu.esdihumboldt.cst</groupId>
+			<artifactId>corefunctions</artifactId>
+			<version>1.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>cz.hsrs</groupId>
+			<artifactId>pywps</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>artifactory.esdi-humboldt.eu</id>
+			<name>Humboldt internal repository</name>
+			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/repo</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>artifactory.esdi-humboldt.eu</id>
+			<name>plugins-releases</name>
+			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/plugins-releases
+			</url>
+		</pluginRepository>
+		<pluginRepository>
+			<snapshots />
+			<id>artifactory.esdi-humboldt.eu</id>
+			<name>plugins-snapshots</name>
+			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/plugins-snapshots
+			</url>
+		</pluginRepository>
+	</pluginRepositories>
+	<distributionManagement>
+		<repository>
+			<id>artifactory.esdi-humboldt.eu</id>
+			<name>artifactory.esdi-humboldt.eu-releases</name>
+			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/libs-releases-local
+			</url>
+		</repository>
+		<snapshotRepository>
+			<id>artifactory.esdi-humboldt.eu</id>
+			<name>artifactory.esdi-humboldt.eu-snapshots</name>
+			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/libs-snapshots-local
+			</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 </project>
