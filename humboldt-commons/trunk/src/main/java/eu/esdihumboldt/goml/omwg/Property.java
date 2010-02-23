@@ -53,6 +53,11 @@ public class Property
 	 */
 	private List<String> typeCondition;
 	
+	/**
+	 * PropertyComposition
+	 */
+	private PropertyComposition propertyComposition;
+	
 	// constructors ............................................................
 	
 	public Property(IAbout about) {
