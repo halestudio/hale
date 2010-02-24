@@ -17,7 +17,21 @@ import java.util.List;
 
 /**
  * This class represents the PropertyComposition
- * that can be included in a single Property instance. 
+ *
+ * <p>
+ * The Single PropertyComposition Instance can contain:
+ * <ul>
+ * <li>collection of properties</li>
+ * <li>single Property</li>
+ * <li>single Relation</li>
+ * </ul>
+ * but nether the composition of these.
+ * </p>
+ * <p>
+ *
+ * 
+ * 
+ * 
  * 
  *
  * @author Anna Pitaev
@@ -27,7 +41,7 @@ import java.util.List;
 public class PropertyComposition {
 	
 	/**
-	 * Property Operator
+	 * Property Operator is a mandatory parameter for the Property Composition
 	 */
 	private PropertyOperator operator;
 	
@@ -35,7 +49,7 @@ public class PropertyComposition {
 	 private List<Property> collection; 
 
 	/**
-	 * Property 
+	 * Property
 	 */
 	private Property property; 
 	
@@ -45,14 +59,48 @@ public class PropertyComposition {
 	private Relation relation;
 	
 	/**
-	 * Constructor
+	 *	<p> 
+	 * 	Constructor to put collection of Properties to the Property Composition
+	 *  </p>
+	 * 
 	 * @param PropertyOperator operator
+	 * @param List<Property> collection of the Properties
 	 */
-	public PropertyComposition(PropertyOperator operator){
+	public PropertyComposition(PropertyOperator operator, List<Property> collection){
 		//property operator is a mandatory element in the corresponding omwg-schema
 		this.operator = operator;
-		this.collection = new ArrayList<Property>();
+		this.collection = collection;
 	}
+	
+	/**
+	 *	<p> 
+	 * 	Constructor to put a single Property to the Property Composition
+	 *  </p>
+	 * 
+	 * @param PropertyOperator operator
+	 * @param Property property
+	 */
+	public PropertyComposition(PropertyOperator operator, Property property){
+		//property operator is a mandatory element in the corresponding omwg-schema
+		this.operator = operator;
+		this.property = property;
+	}
+	
+	/**
+	 *	<p> 
+	 * 	Constructor to put Relation to the Property Composition
+	 *  </p>r
+	 * 
+	 * @param PropertyOperator operator
+	 * @param Relation relation
+	 */
+	public PropertyComposition(PropertyOperator operator, Relation relation){
+		//property operator is a mandatory element in the corresponding omwg-schema
+		this.operator = operator;
+		this.relation = relation;
+	}
+	
+	
 
 	/**
 	 * @return the operator
@@ -75,12 +123,7 @@ public class PropertyComposition {
 		return collection;
 	}
 
-	/**
-	 * @param collection the collection to set
-	 */
-	public void setCollection(List<Property> collection) {
-		this.collection = collection;
-	}
+	
 
 	/**
 	 * @return the property
@@ -89,13 +132,7 @@ public class PropertyComposition {
 		return property;
 	}
 
-	/**
-	 * @param property the property to set
-	 */
-	public void setProperty(Property property) {
-		this.property = property;
-	}
-
+	
 	/**
 	 * @return the relation
 	 */
@@ -103,10 +140,5 @@ public class PropertyComposition {
 		return relation;
 	}
 
-	/**
-	 * @param relation the relation to set
-	 */
-	public void setRelation(Relation relation) {
-		this.relation = relation;
-	}
+	
 }
