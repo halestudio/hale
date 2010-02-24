@@ -11,7 +11,9 @@
  */
 package eu.esdihumboldt.hale.rcp;
 
+import java.io.FileInputStream;
 import java.net.URL;
+import java.util.Properties;
 
 import org.apache.commons.logging.impl.Log4JLogger;
 import org.apache.log4j.Appender;
@@ -77,6 +79,29 @@ public class Application implements IApplication {
 		location_path = location_path.replace("bin/", "");
 		_log.debug(location_path);
 		Application.basepath = location_path;
+		
+		// read and set proxy settings
+		try {
+			Properties prop = new Properties();
+			prop.load(new FileInputStream(
+					Application.basepath + "proxy.properties"));
+			_log.info("proxy.properties file found.");
+			if (prop.getProperty("http.proxyHost") != null 
+					&& !prop.getProperty("http.proxyHost").equals("")) {
+				System.setProperty(
+						"http.proxyHost", 
+						prop.getProperty("http.proxyHost"));
+			}
+			if (prop.getProperty("http.proxyPort") != null 
+					&& !prop.getProperty("http.proxyPort").equals("")) {
+				System.setProperty(
+						"http.proxyPort", 
+						prop.getProperty("http.proxyPort"));
+			}
+		}
+		catch (Exception ex) {
+			_log.warn("Setting the Proxy configuration failed: " + ex.getMessage());
+		}
 		
 		// initialize UI
 		Display display = PlatformUI.createDisplay();
