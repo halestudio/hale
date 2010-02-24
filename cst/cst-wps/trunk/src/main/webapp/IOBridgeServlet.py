@@ -45,7 +45,8 @@ class IOBridgeServlet(HttpServlet):
                 pywps.debug(wps.inputs)
                 wpsresponse = wps.performRequest(processes=ioBridgeProcesses)
                 if wpsresponse:
-                    pywps.response.response(wps.response, response, wps.parser.isSoap)
+                    #pywps.response.response(wps.response, response, wps.parser.isSoap)
+                    pywps.response.responseJava(wps.response, response, wps.parser.isSoap)
         except WPSException,e:
             pywps.response.response(e, response)
 
