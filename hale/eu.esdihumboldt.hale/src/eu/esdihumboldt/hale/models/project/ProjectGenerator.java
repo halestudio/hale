@@ -62,7 +62,12 @@ public class ProjectGenerator {
 
 	public static void write(String xmlPath, String name) throws JAXBException {
 		
-		// 1. create HaleProject object from various services.
+		// add *.xml extension if is wasn't added before
+		if (!xmlPath.endsWith(".xml")) {
+			xmlPath = xmlPath + ".xml";
+		}
+		
+		// create HaleProject object from various services.
 		HaleProject hproject = ProjectGenerator.createHaleProject(xmlPath, name);
 		
 		// 2. marshall AlignmentType to xml

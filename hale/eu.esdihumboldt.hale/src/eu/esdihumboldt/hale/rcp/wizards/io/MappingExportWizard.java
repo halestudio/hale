@@ -55,6 +55,10 @@ public class MappingExportWizard
 	public boolean performFinish() {
 		String result = this.mainPage.getResult();
 		if (result != null) {
+			if (!result.endsWith(".goml") || !result.endsWith(".oml") 
+					|| !result.endsWith(".xml")) {
+				result = result + ".goml";
+			}
 			AlignmentService alService = (AlignmentService) 
 					PlatformUI.getWorkbench().getService(AlignmentService.class);
 			
