@@ -119,8 +119,18 @@ public class NetworkSettingsDialog extends Dialog {
 				if (port != null && !port.equals("")) {
 					System.setProperty("http.proxyPort", port);
 				}
+				else {
+					if (System.getProperty("http.proxyPort") != null) {
+						System.clearProperty("http.proxyPort");
+					}
+				}
 				if (host != null && !host.equals("")) {
 					System.setProperty("http.proxyHost", host);
+				}
+				else {
+					if (System.getProperty("http.proxyHost") != null) {
+						System.clearProperty("http.proxyHost");
+					}
 				}
 				
 				// store eclipse preferences for making settings persistent
