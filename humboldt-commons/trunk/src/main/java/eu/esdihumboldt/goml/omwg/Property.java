@@ -60,6 +60,8 @@ public class Property
 	
 	// constructors ............................................................
 	
+	
+
 	public Property(IAbout about) {
 		super(about);
 	}
@@ -119,6 +121,20 @@ public class Property
 	 */
 	public void setTypeCondition(List<String> typeCondition) {
 		this.typeCondition = typeCondition;
+	}
+	
+	/**
+	 * @return the propertyComposition
+	 */
+	public PropertyComposition getPropertyComposition() {
+		return propertyComposition;
+	}
+
+	/**
+	 * @param propertyComposition the propertyComposition to set
+	 */
+	public void setPropertyComposition(PropertyComposition propertyComposition) {
+		this.propertyComposition = propertyComposition;
 	}
 
 	@Override
