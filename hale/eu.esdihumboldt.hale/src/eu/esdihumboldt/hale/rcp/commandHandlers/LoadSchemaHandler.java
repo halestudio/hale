@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.rcp.commandHandlers;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -34,7 +33,6 @@ public class LoadSchemaHandler
 	extends AbstractHandler 
 	implements IHandler {
 	
-	private static Logger _log = Logger.getLogger(LoadSchemaHandler.class);
 
 	/**
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)

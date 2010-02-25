@@ -26,7 +26,6 @@ import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.TaskService;
-import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 
 /**
  * @author Simon Templer

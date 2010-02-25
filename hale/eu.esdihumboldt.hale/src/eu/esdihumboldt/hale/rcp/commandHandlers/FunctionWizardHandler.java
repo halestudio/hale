@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.rcp.commandHandlers;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -20,11 +19,9 @@ import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IImportWizard;
-import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import eu.esdihumboldt.hale.rcp.wizards.io.FunctionWizard;
-import eu.esdihumboldt.hale.rcp.wizards.io.SchemaImportWizard;
 
 
 /**
@@ -36,8 +33,6 @@ import eu.esdihumboldt.hale.rcp.wizards.io.SchemaImportWizard;
 public class FunctionWizardHandler 
 	extends AbstractHandler 
 	implements IHandler {
-	
-	private static Logger _log = Logger.getLogger(FunctionWizardHandler.class);
 
 	/**
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)

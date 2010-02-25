@@ -16,7 +16,6 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.preference.StringButtonFieldEditor;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Dialog;
 
 /**
  * This editor can be used to select a valid {@link URL} for a WFS to retrieve
