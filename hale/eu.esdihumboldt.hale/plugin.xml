@@ -154,6 +154,11 @@
             id="eu.esdihumboldt.hale.ShowManual"
             name="%command.showManual.name">
       </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.NetworkSettingsHandler"
+            id="HALE.networkSettings.command"
+            name="Network Settings...">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -249,6 +254,12 @@
                      id="HALE.dynamic.tasks">
                </dynamic>
             </menu>
+            <command
+                  commandId="HALE.networkSettings.command"
+                  id="networkSettings"
+                  label="Network Settings..."
+                  style="push">
+            </command>
          </menu>
       </menuContribution>
       <menuContribution

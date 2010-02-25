@@ -11,9 +11,7 @@
  */
 package eu.esdihumboldt.hale.rcp;
 
-import java.io.FileInputStream;
 import java.net.URL;
-import java.util.Properties;
 
 import org.apache.commons.logging.impl.Log4JLogger;
 import org.apache.log4j.Appender;
@@ -23,6 +21,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
@@ -82,21 +81,15 @@ public class Application implements IApplication {
 		
 		// read and set proxy settings
 		try {
-			Properties prop = new Properties();
-			prop.load(new FileInputStream(
-					Application.basepath + "proxy.properties"));
-			_log.info("proxy.properties file found.");
-			if (prop.getProperty("http.proxyHost") != null 
-					&& !prop.getProperty("http.proxyHost").equals("")) {
-				System.setProperty(
-						"http.proxyHost", 
-						prop.getProperty("http.proxyHost"));
+			IPreferenceStore preferences = HALEActivator.getDefault().getPreferenceStore();
+			String host = preferences.getString("http.proxyHost");
+			String port = preferences.getString("http.proxyPort");
+			
+			if (port != null && !port.equals("")) {
+				System.setProperty("http.proxyPort", port);
 			}
-			if (prop.getProperty("http.proxyPort") != null 
-					&& !prop.getProperty("http.proxyPort").equals("")) {
-				System.setProperty(
-						"http.proxyPort", 
-						prop.getProperty("http.proxyPort"));
+			if (host != null && !host.equals("")) {
+				System.setProperty("http.proxyHost", host);
 			}
 		}
 		catch (Exception ex) {
