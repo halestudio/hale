@@ -339,6 +339,7 @@ public class OmlRdfReader {
 			((Property) entity)
 					.setValueCondition(getValueCondition(propertyType
 							.getValueCondition()));
+			//TODO setPropertyComposition if exists
 		} else if (entityType instanceof ClassType) {
 			// initiates entity as FeatureType
 			ClassType cType = (ClassType) entityType;

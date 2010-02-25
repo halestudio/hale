@@ -722,6 +722,7 @@ public class OmlRdfGenerator {
 				pType.getValueCondition().addAll(
 					getValueConditions(property.getValueCondition()));
 			}
+			//TODO add PropertyComposition if exists
 		}
 		return pType;
 	}
