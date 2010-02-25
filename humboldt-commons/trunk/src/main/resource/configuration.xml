@@ -4,6 +4,7 @@
 	xsi:schemaLocation="http://www.esdi-humboldt.eu/configuration configuration.xsd ">
 	<cfg:componentproperties>
 		<cfg:property key="composedPropertyStackSize" value="4" />
+		<cfg:property key="propertyCompositionStackSize" value="2"/>
 	</cfg:componentproperties>
 	<cfg:systemproperties>
 		<cfg:property key="log4jproperties" value="log4j.xml" />
