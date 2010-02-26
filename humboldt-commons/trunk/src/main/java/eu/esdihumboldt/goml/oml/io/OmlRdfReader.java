@@ -26,6 +26,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
+import org.opengis.feature.type.FeatureType;
+
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.align.ISchema;
@@ -69,6 +71,8 @@ import eu.esdihumboldt.goml.omwg.ComparatorType;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.omwg.PropertyComposition;
+import eu.esdihumboldt.goml.omwg.PropertyOperator;
 import eu.esdihumboldt.goml.omwg.Relation;
 import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType;
@@ -339,7 +343,10 @@ public class OmlRdfReader {
 			((Property) entity)
 					.setValueCondition(getValueCondition(propertyType
 							.getValueCondition()));
-			//TODO setPropertyComposition if exists
+			//setPropertyComposition if exists
+			((Property)entity).setPropertyComposition(
+					getPropertyComposition(propertyType.getPropertyComposition()));
+			
 		} else if (entityType instanceof ClassType) {
 			// initiates entity as FeatureType
 			ClassType cType = (ClassType) entityType;
@@ -367,6 +374,177 @@ public class OmlRdfReader {
 		//set Labels
 		entity.setLabel(entityType.getLabel());
 		return entity;
+	}
+
+	
+	/**
+	 * 
+	 * Implements casting from the JAXB-Type to
+	 * the OML Type for the PropertyComposition element.
+	 * 
+	 * @param propertyComposition jaxb-generated object
+	 * @return eu.esdihumboldt.goml.omwg.PropertyComposition 
+	 */
+	private PropertyComposition getPropertyComposition(
+			PropertyCompositionType propertyComposition) {
+		PropertyComposition omlComposition = null;
+		if (propertyComposition != null){
+			// create PropertyOperator as mandatory element
+			PropertyOperator omlOperator = getPropertyOperator(propertyComposition.getOperator());
+			//Only one of the Property, Relation or ListOfProperties is allowed
+			if (propertyComposition.getCollection()!= null){
+				//create PropertyComposition from the Collection of Properties
+				List<Property> omlPropertyCollection = getPropertyCollection(propertyComposition.getCollection());
+				if (omlPropertyCollection != null) omlComposition = new PropertyComposition(omlOperator, omlPropertyCollection);
+			}else if(propertyComposition.getProperty()!= null){
+				//create PropertyCollection from the single Property
+				Property omlProperty = getProperty(propertyComposition.getProperty());
+				if (omlProperty != null) omlComposition = new PropertyComposition(omlOperator, omlProperty);
+				
+			}else if (propertyComposition.getRelation()!= null){
+				//create PropertyCollection from the Relation
+				Relation omlRelation = getRelation(propertyComposition.getRelation());
+				if (omlRelation != null) omlComposition = new PropertyComposition(omlOperator, omlRelation);
+			}
+		}
+		return omlComposition;
+	}
+
+	
+	/**
+	 * Implements casting from the JAXB-Type to
+	 * the OML Type for the Relation element.
+	 * 
+	 * 
+	 * @param relation jaxb-generated object
+	 * @return omlRelation
+	*/
+	private Relation getRelation(
+			eu.esdihumboldt.generated.oml.RelationType relation) {
+		Relation omlRelation = new Relation (new About(""));
+		if (relation != null){
+			//set about
+			if (relation.getAbout() !=null && !relation.getAbout().equals("")){
+				omlRelation.setAbout(new About(relation.getAbout()));
+			}
+			//set domain restriction
+			if (relation.getDomainRestriction()!=null) {
+				FeatureClass domainRestriction = getDomainRestriction(relation.getDomainRestriction());
+				ArrayList<FeatureClass> domainRestrictions = new ArrayList<FeatureClass>();
+				domainRestrictions.add(domainRestriction);
+				omlRelation.setDomainRestriction(domainRestrictions);
+			}
+			//set label
+			if(relation.getLabel()!= null && relation.getLabel().size()>0){
+				omlRelation.setLabel(relation.getLabel());
+				
+			}
+			//set transformation
+			if(relation.getTransf() != null){
+				omlRelation.setTransformation(getTransformation(relation.getTransf()));
+			}
+			//set Range Restriction
+			if(relation.getRangeRestriction() != null){
+				FeatureClass omlRangeRestriction = getRangeRestriction(relation.getRangeRestriction());
+				List<FeatureClass> omlRangeRestrictions = new ArrayList<FeatureClass>();
+				omlRangeRestrictions.add(omlRangeRestriction);
+				omlRelation.setRangeRestriction(omlRangeRestrictions);
+			}
+		
+		}
+		return omlRelation;
+	}
+
+	/**
+	 * Implements casting from the JAXB-Type to
+	 * the OML Type for the Property element.
+	 * 
+	 * 
+	 * @param property jaxb-generated object
+	 * @return omlProperty
+	*/
+	private Property getProperty(PropertyType property) {
+		Property omlProperty = new Property (new About(""));
+		if (property != null){
+			//set About
+			if (property.getAbout() != null && !property.getAbout().equals("")){
+			 omlProperty.setAbout(new About(property.getAbout()));
+			}
+			//set domain restriction
+			if (property.getDomainRestriction()!= null){
+				omlProperty.setDomainRestriction(getDomainRestriction(property.getDomainRestriction()));
+			}
+			//set label
+			if (property.getLabel()!= null){
+				omlProperty.setLabel(property.getLabel());
+			}
+			//set propertyComposition
+			if (property.getPropertyComposition()!=null){
+				omlProperty.setPropertyComposition(getPropertyComposition(property.getPropertyComposition()));
+			}
+			//set transformation
+			if (property.getTransf() != null){
+				omlProperty.setTransformation(getTransformation(property.getTransf()));
+			}
+			//set type condition
+			if (property.getTypeCondition() != null){
+				omlProperty.setTypeCondition(property.getTypeCondition());
+			}
+			//set value condition
+			if (property.getValueCondition() != null){
+				omlProperty.setValueCondition(getValueCondition(property.getValueCondition()));
+			}
+			
+		
+		}
+		
+		return omlProperty;
+	}
+	
+	/**
+	 * Returns a List of OML Properties 
+	 * for given jaxb-based PropertyCollectionType.
+	 * 
+	 * @param collection
+	 * @return
+	 */
+	private List<Property> getPropertyCollection(
+			PropertyCollectionType collection) {
+		List<Property> properties = null;
+		if (collection != null){
+			properties = new ArrayList<Property>();
+			List<Item> collectionItems = collection.getItem();
+            Iterator<Item> iterator = collectionItems.iterator();
+            Item item;
+            Property property;
+            while(iterator.hasNext()){
+            	item = iterator.next();
+            	property = getProperty(item.getProperty());
+            	properties.add(property);
+            }
+		}
+		return properties;
+	}
+
+	/**
+	 * Converts jaxb-generated PropertyOperator to 
+	 * the according OML Type.
+	 
+	 * @param PropertyOperatorType operator 
+	 * @return PropertyOperator 
+	 */
+	private PropertyOperator getPropertyOperator(eu.esdihumboldt.generated.oml.PropertyOperatorType operator) {
+		PropertyOperator omlOperator = null;
+		if (operator != null){
+			if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.COMPLEMENT)) omlOperator = PropertyOperator.COMPLEMENT;
+			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.FIRST)) omlOperator = PropertyOperator.FIRST;
+			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.INTERSECTION)) omlOperator = PropertyOperator.INTERSECTION;
+			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.NEXT)) omlOperator = PropertyOperator.NEXT;
+			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.UNION)) omlOperator = PropertyOperator.UNION;
+			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.UNION_DUPLICATES)) omlOperator = PropertyOperator.UNION_DUPLICATES;
+			
+		}
+		return omlOperator;
 	}
 
 	/**
