@@ -2,6 +2,8 @@
   <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
   <import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="http://schemas.opengis.net/iso/19139/20070417/gmd/gmd.xsd"/>
   <!--XML Schema document created by ShapeChange-->
+  <!-- HUMBOLDT project / deegree: AP, MdV: base:member now has an anonymous type that inherits from gml:AbstractFeatureMemberType, 
+       see gml 3.2.1 spec. section 9.9.1   -->
   <simpleType name="VerticalPositionValueType">
     <annotation>
       <documentation>-- Definition --&#13;
@@ -71,13 +73,23 @@ Metadata of the spatial data set.&#13;
               </complexContent>
             </complexType>
           </element>
-          <element maxOccurs="unbounded" minOccurs="0" name="member" type="gml:FeaturePropertyType">
+          <element maxOccurs="unbounded" minOccurs="0" name="member">
             <annotation>
               <documentation>The spatial objects that are members of the spatial data set</documentation>
               <appinfo>
                 <targetElement xmlns="http://www.opengis.net/gml/3.2">null:AbstractFeature</targetElement>
               </appinfo>
             </annotation>
+             <complexType>
+              <complexContent>
+                <extension base="gml:AbstractFeatureMemberType">
+		      <sequence minOccurs="0">
+			  <element ref="gml:AbstractFeature"/>
+		      </sequence>
+		      <attributeGroup ref="gml:AssociationAttributeGroup"/>
+                </extension>
+              </complexContent>
+            </complexType>
           </element>
         </sequence>
       </extension>
