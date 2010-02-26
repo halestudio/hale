@@ -12,9 +12,12 @@
 package eu.esdihumboldt.cst.iobridge.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -23,12 +26,15 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.geotools.feature.FeatureCollection;
+import org.geotools.gml3.GMLConfiguration;
+import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.iobridge.CstServiceBridge;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
+import eu.esdihumboldt.hale.gmlparser.HaleGMLParser;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
@@ -57,8 +63,13 @@ public class DefaultCstServiceBridge
 				this.loadSchema(schemaFilename));
 		
 		// encode the transformed data and store it temporarily, return the temporary file location
-		URL outputFilename = this.getClass().getResource("temp/" 
-				+ UUID.randomUUID() + ".gml");
+		URL outputFilename = null;
+		try {
+			outputFilename = new URL(
+					this.getClass().getResource("").toExternalForm() + UUID.randomUUID() + ".gml");
+		} catch (MalformedURLException e) {
+			throw new RuntimeException("Couldn't create temporary output file: ", e);
+		}
 		this.encodeGML(result, outputFilename, schemaFilename);
 		return outputFilename.toString();
 	}
@@ -78,7 +89,7 @@ public class DefaultCstServiceBridge
 					new File(outputPath.toString()));
 			gmlGenerator.encode(result, out);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException("An exception occured when trying to write out GML: ", e);
 		}
 		
 	}
@@ -111,6 +122,12 @@ public class DefaultCstServiceBridge
 	}
 
 	private FeatureCollection<?, ?> loadGml(String gmlFilename) {
-		return null;
+		try {
+			InputStream xml = new FileInputStream(new File(gmlFilename));
+			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration());
+			return (FeatureCollection<FeatureType, Feature>) parser.parse(xml);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} 
 	}
 }

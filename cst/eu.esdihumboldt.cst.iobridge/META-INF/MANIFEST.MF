@@ -11,5 +11,6 @@ Require-Bundle: eu.esdihumboldt.transformer.cst;bundle-version="1.0.0",
  eu.esdihumboldt.hale.gmlparser;bundle-version="1.0.0",
  eu.esdihumboldt.hale.schemaprovider;bundle-version="1.0.0",
  org.junit4;bundle-version="4.5.0"
-Import-Package: org.apache.ws.commons.schema,
+Import-Package: org.apache.log4j;version="1.2.15",
+ org.apache.ws.commons.schema,
  org.eclipse.xsd
