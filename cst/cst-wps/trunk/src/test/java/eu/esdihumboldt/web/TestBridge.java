@@ -17,15 +17,17 @@ public class TestBridge {
 	@Test
 	public void testBridge() {
 		try{
-		URL oml = this.getClass().getResource("testproject_hydro_withmapping.xml.goml");
+		URL oml = this.getClass().getResource("HY/testproject.xml.goml");
 		URL gml = this.getClass().getResource("wfs_va.gml");
-		URL xsd = this.getClass().getResource("Hydrography.xsd");		
+		URL xsd = this.getClass().getResource("HY/Hydrography.xsd");		
 	
+		System.out.println(xsd.toURI());
 		System.out.println(
 				IoBridgeFactory.getIoBridge(BridgeType.preloaded)
-				        .transform(gml.getPath(), 
-						           oml.getPath(), 
-						           xsd.getPath()));
+				        .transform(xsd.toURI().toString(),
+				        		   oml.getPath(),
+				        		   gml.getPath()					           
+						          ));
 		} catch (Exception e){
 			e.printStackTrace();
 		}

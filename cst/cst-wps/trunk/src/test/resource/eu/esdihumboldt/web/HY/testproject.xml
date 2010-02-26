@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<HaleProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml/" xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment" xmlns:goml="http://www.esdi-humboldt.eu/goml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <name>default</name>
+    <haleVersion>1.0.0</haleVersion>
+    <dateCreated>Thu Dec 10 15:54:23 CET 2009</dateCreated>
+    <dateModified>Thu Dec 10 16:22:57 CET 2009</dateModified>
+    <omlPath>D:\_temp\demodata\D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1\HY\testproject.xml.goml</omlPath>
+    <instanceData>
+        <path>file:/D:/_temp/demodata/wfs_va.gml</path>
+        <wkt>PROJCS[&quot;MGI (Ferro)/AustriaGKWestZone&quot;,&#xD;
+	GEOGCS[&quot;MGI (Ferro)&quot;,&#xD;
+		DATUM[&quot;Militar-Geographische Institut (Ferro)&quot;,&#xD;
+			SPHEROID[&quot;Bessel 1841&quot;,6377397.155,299.1528128,&#xD;
+			AUTHORITY[&quot;EPSG&quot;,&quot;7004&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;6805&quot;]],&#xD;
+		PRIMEM[&quot;Ferro&quot;,-17.666666666666668,AUTHORITY[&quot;EPSG&quot;,&quot;8909&quot;]],&#xD;
+		UNIT[&quot;degree&quot;,0.017453292519943295],&#xD;
+		AXIS[&quot;Geodetic latitude&quot;,NORTH],&#xD;
+		AXIS[&quot;Geodetic longitude&quot;,EAST],&#xD;
+		AUTHORITY[&quot;EPSG&quot;,&quot;4805&quot;]],&#xD;
+	PROJECTION[&quot;Transverse Mercator&quot;],&#xD;
+PARAMETER[&quot;central_meridian&quot;,28.0],&#xD;
+PARAMETER[&quot;latitude_of_origin&quot;,0.0],&#xD;
+PARAMETER[&quot;scale_factor&quot;,1.0],&#xD;
+PARAMETER[&quot;false_easting&quot;,0.0],&#xD;
+PARAMETER[&quot;false_northing&quot;,-5000000.0],&#xD;
+UNIT[&quot;m&quot;,1.0],&#xD;
+AXIS[&quot;Y&quot;,EAST],&#xD;
+AXIS[&quot;X&quot;,NORTH],&#xD;
+AUTHORITY[&quot;EPSG&quot;,&quot;31251&quot;]]</wkt>
+    </instanceData>
+    <sourceSchema>
+        <path>file:/D:/_temp/demodata/wfs_va.xsd</path>
+    </sourceSchema>
+    <targetSchema>
+        <path>file:/D:/_temp/demodata/D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/HY/Hydrography.xsd</path>
+    </targetSchema>
+</HaleProject>
