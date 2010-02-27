@@ -7,6 +7,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
@@ -69,8 +71,15 @@ public class OneOfComparatorTest {
 	 */
 	@BeforeClass
 	public static void setUpOnce() throws Exception {
-		URL url = OneOfComparatorTest.class.getResource("./OneOfComparatorTest.oml");
-		Alignment alignment = new OmlRdfReader().read(url.getFile());
+		URI uri = null;
+		try {
+			uri = new URI(OneOfComparatorTest.class.getResource("OneOfComparatorTest.oml").getFile());
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Alignment alignment = new OmlRdfReader().read(uri.getPath());
+
 		ICell cell = alignment.getMap().get(0);
 		Property propA = (Property)cell.getEntity1();
 		

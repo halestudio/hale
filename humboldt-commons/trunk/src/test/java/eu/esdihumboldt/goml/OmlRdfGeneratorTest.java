@@ -13,6 +13,9 @@ package eu.esdihumboldt.goml;
 
 import static org.junit.Assert.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import javax.xml.bind.JAXBException;
 
 import org.junit.Test;
@@ -29,8 +32,14 @@ public class OmlRdfGeneratorTest {
 
 	@Test
 	public final void testWrite() {
-		//Alignment alignment = new OmlRdfReader().read("res/schema/WatercoursesBY2Inspire.xml");
-		Alignment alignment = new OmlRdfReader().read(OmlRdfGeneratorTest.class.getResource("./test_newFilterOML_TR.xml").getFile());
+		URI uri = null;
+		try {
+			uri = new URI(OmlRdfReaderTest.class.getResource("test_newFilterOML_TR.xml").getFile());
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Alignment alignment = new OmlRdfReader().read(uri.getPath());
 		OmlRdfGenerator omlGenerator = new OmlRdfGenerator();
 		try {
 			omlGenerator.write(alignment, "test_newFilterOML_TR_generated.xml");

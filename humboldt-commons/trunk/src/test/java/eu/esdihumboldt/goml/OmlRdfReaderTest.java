@@ -50,16 +50,16 @@ public class OmlRdfReaderTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Alignment aligment = new OmlRdfReader().read(uri.getPath());
+		Alignment alignment = new OmlRdfReader().read(uri.getPath());
 		//test alignment basic elements
-		assertEquals("Watercourses_BY.xsd", aligment.getSchema1().getLocation());
-		assertEquals("Hydrography.xsd", aligment.getSchema2().getLocation());
-		assertEquals("2OMWG",aligment.getLevel());
-		assertEquals(40,aligment.getMap().size());
+		assertEquals("Watercourses_BY.xsd", alignment.getSchema1().getLocation());
+		assertEquals("Hydrography.xsd", alignment.getSchema2().getLocation());
+		assertEquals("2OMWG",alignment.getLevel());
+		assertEquals(40,alignment.getMap().size());
 		//test some alignment maps.
 		//TODO in all mappings test add test for the domain restriction element
 		//1.test the mapping for the attribute renaming mapping3
-		ICell renaming = aligment.getMap().get(3);
+		ICell renaming = alignment.getMap().get(3);
 		//assertEquals(1.0,renaming.getMeasure());
 		assertEquals(RelationType.Equivalence, renaming.getRelation());
 		//check that entity1 is not empty
@@ -71,7 +71,7 @@ public class OmlRdfReaderTest {
 		assertEquals("inspireHY:geographicalName/inspireHY:spelling/inspireHY:text",((About)prop2.getAbout()).getAbout());
 		
 		//2. test for the mapping for the augmentation
-		ICell augmentation = aligment.getMap().get(2);
+		ICell augmentation = alignment.getMap().get(2);
 		//assertEquals(1.0,augmentation.getMeasure());
 		assertEquals(RelationType.Extra, augmentation.getRelation());
 		//check that entity1 is empty
@@ -91,7 +91,7 @@ public class OmlRdfReaderTest {
 		assertEquals("inspireHY:Watercourse", ((About) prop2.getDomainRestriction().get(0).getAbout()).getAbout());
 		
 		//3. test the mapping for filter
-		Cell filter =(Cell)aligment.getMap().get(0);
+		Cell filter =(Cell)alignment.getMap().get(0);
 		//read operation name
 		assertEquals("filter",filter.getLabel().get(0));
 		//assertEquals(1.0,filter.getMeasure());

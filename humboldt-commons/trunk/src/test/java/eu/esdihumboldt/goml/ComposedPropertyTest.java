@@ -103,8 +103,14 @@ public class ComposedPropertyTest extends TestCase {
 	
 	@Test
 	public void testOmlRdfRead(){
-		URL url = ComposedPropertyTest.class.getResource("./ComposedPropertyTest.xml");
-		Alignment aligment = new OmlRdfReader().read(url.getFile());
+		URI uri = null;
+		try {
+			uri = new URI(ComposedPropertyTest.class.getResource("ComposedPropertyTest.xml").getFile());
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Alignment aligment = new OmlRdfReader().read(uri.getPath());
 		//test for ComposedProperty
 		ComposedProperty compProperty = (ComposedProperty)alignment.getMap().get(0).getEntity1();
 		//test about

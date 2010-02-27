@@ -15,6 +15,8 @@ package eu.esdihumboldt.goml;
 
 import static org.junit.Assert.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import org.junit.Test;
@@ -44,7 +46,14 @@ public class HaleOmlRdfReaderTest {
 	 */
 	@Test
 	public final void testRead() {
-		Alignment aligment = new OmlRdfReader().read(HaleOmlRdfReaderTest.class.getResource("./testproject.xml").getFile());
+		URI uri = null;
+		try {
+			uri = new URI(HaleOmlRdfReaderTest.class.getResource("testproject.xml").getFile());
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Alignment aligment = new OmlRdfReader().read(uri.getPath());
 		//test alignment basic elements
 		assertEquals("http://www.opengis.net/gml", aligment.getSchema1().getLocation());
 		assertEquals("urn:x-inspire:specification:gmlas-v31:Network:3.1", aligment.getSchema2().getLocation());
