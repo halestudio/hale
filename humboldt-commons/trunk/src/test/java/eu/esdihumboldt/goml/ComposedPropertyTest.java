@@ -110,7 +110,7 @@ public class ComposedPropertyTest extends TestCase {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Alignment aligment = new OmlRdfReader().read(uri.getPath());
+		Alignment alignment = new OmlRdfReader().read(uri.getPath());
 		//test for ComposedProperty
 		ComposedProperty compProperty = (ComposedProperty)alignment.getMap().get(0).getEntity1();
 		//test about

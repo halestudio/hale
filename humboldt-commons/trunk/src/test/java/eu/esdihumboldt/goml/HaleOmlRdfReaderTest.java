@@ -53,16 +53,16 @@ public class HaleOmlRdfReaderTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Alignment aligment = new OmlRdfReader().read(uri.getPath());
+		Alignment alignment = new OmlRdfReader().read(uri.getPath());
 		//test alignment basic elements
-		assertEquals("http://www.opengis.net/gml", aligment.getSchema1().getLocation());
-		assertEquals("urn:x-inspire:specification:gmlas-v31:Network:3.1", aligment.getSchema2().getLocation());
-		assertEquals("",aligment.getLevel());
-		assertEquals(2,aligment.getMap().size());
+		assertEquals("http://www.opengis.net/gml", alignment.getSchema1().getLocation());
+		assertEquals("urn:x-inspire:specification:gmlas-v31:Network:3.1", alignment.getSchema2().getLocation());
+		assertEquals("",alignment.getLevel());
+		assertEquals(2,alignment.getMap().size());
 		
 		//test the cell defining renaming
 		//1.test the mapping for the attribute renaming mapping3
-		ICell renaming = aligment.getMap().get(0);
+		ICell renaming = alignment.getMap().get(0);
 		//test entity1 contexts
 		//check that entity1 is not empty
 		assertNotNull(renaming.getEntity1());
@@ -91,7 +91,7 @@ public class HaleOmlRdfReaderTest {
 		assertNull(renaming.getRelation());
 		
 	    //test the cell defining networkexpansion
-		ICell netExpansion = aligment.getMap().get(1);
+		ICell netExpansion = alignment.getMap().get(1);
 		//test entity1 contexts
 		//check that entity1 is not empty
 		assertNotNull(netExpansion.getEntity1());

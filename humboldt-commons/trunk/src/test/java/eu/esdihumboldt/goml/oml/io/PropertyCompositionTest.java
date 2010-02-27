@@ -16,6 +16,8 @@ package eu.esdihumboldt.goml.oml.io;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,7 @@ import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.ComposedPropertyTest;
+import eu.esdihumboldt.goml.HaleOmlRdfReaderTest;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
@@ -206,8 +209,15 @@ public class PropertyCompositionTest {
 	
 	@Test
 	 public void testOmlRdfRead(){
-		URL url = PropertyCompositionTest.class.getResource("./PropertyCompositionTest.xml");
-		Alignment aligment = new OmlRdfReader().read(url.getFile());
+		URI uri = null;
+		try {
+			uri = new URI(PropertyCompositionTest.class.getResource("PropertyCompositionTest.xml").getFile());
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Alignment alignment = new OmlRdfReader().read(uri.getPath());
+
 		//test for ComposedProperty
 		PropertyComposition propComposition = ((Property)alignment.getMap().get(0).getEntity1()).getPropertyComposition();
 		//test operator
