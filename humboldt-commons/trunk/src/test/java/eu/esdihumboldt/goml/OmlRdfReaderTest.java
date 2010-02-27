@@ -13,11 +13,13 @@
 
 package eu.esdihumboldt.goml;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.junit.Test;
-
-
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
@@ -41,7 +43,14 @@ public class OmlRdfReaderTest {
 	 */
 	@Test
 	public final void testRead() {
-		Alignment aligment = new OmlRdfReader().read(OmlRdfReaderTest.class.getResource("./WatercoursesBY2Inspire.xml").getFile());
+		URI uri = null;
+		try {
+			uri = new URI(OmlRdfReaderTest.class.getResource("./WatercoursesBY2Inspire.xml").getFile());
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Alignment aligment = new OmlRdfReader().read(uri.getPath());
 		//test alignment basic elements
 		assertEquals("Watercourses_BY.xsd", aligment.getSchema1().getLocation());
 		assertEquals("Hydrography.xsd", aligment.getSchema2().getLocation());
