@@ -13,6 +13,7 @@
 package eu.esdihumboldt.goml.oml.io;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -131,6 +132,16 @@ public class OmlRdfReader {
 		al.setSchema2(getSchema(genAlignment.getOnto2().getOntology()));
 		// set Value Class
 		al.setValueClass(getValueClass(genAlignment.getValueClass()));
+		return al;
+	}
+	
+	public Alignment read(File rdfFile) {
+		Alignment al = null;
+		try {
+			al = this.read(rdfFile.getCanonicalFile());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return al;
 	}
 

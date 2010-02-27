@@ -75,7 +75,7 @@ public class EqualComparatorTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		URL url = OneOfComparatorTest.class.getResource("./EqualComparatorTest.oml");
+		URL url = OneOfComparatorTest.class.getResource("EqualComparatorTest.oml");
 		Alignment alignment = new OmlRdfReader().read(url.getFile());
 		ICell cell = alignment.getMap().get(0);
 		Property propA = (Property)cell.getEntity1();
