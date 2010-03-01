@@ -236,12 +236,76 @@ public class PropertyCompositionTest {
 		//test about for prop1
 		assertEquals("", prop1.getAbout().getAbout());
 		//test transformation for prop1
+		ITransformation transf1 = prop1.getTransformation();
+		// test rdfResource
+		assertEquals("eu.esdihumboldt.cst.transformer.impl.GeographicalNameFunction", transf1.getService().getLocation());
+		//test parameters count
+		assertEquals(8, transf1.getParameters().size());
+		// test value for parameter 7
+		assertEquals("grammaticalNumber", transf1.getParameters().get(7).getName());
+		assertEquals("", transf1.getParameters().get(7).getValue());
 		//test property composition for prop1
+	    PropertyComposition subPropComp1 = prop1.getPropertyComposition();
+		//test operator
+	    assertEquals(PropertyOperator.UNION.name(), subPropComp1.getOperator().name());
+	    //test property is null
+	    assertNull(subPropComp1.getProperty());
+		//test relation is null
+	    assertNull(subPropComp1.getRelation());
+		//test property collection is not null and has size 2
+	    List<Property> subColl1 = subPropComp1.getCollection();
+	    assertNotNull(subColl1);
+	    assertEquals(2, subColl1.size());
+		//test property composition item 0
+	    Property subProperty1 = subColl1.get(0);
+	    //test about
+	    assertEquals("GermanName_LatnScript",subProperty1.getAbout().getAbout());
+	   
+	    //test transformation
+	    ITransformation subTransf1 = subProperty1.getTransformation();
+	    assertEquals("eu.esdihumboldt.cst.transformer.impl.SpellingFunction", subTransf1.getService().getLocation());
+	    List<IParameter> subParams1 = subTransf1.getParameters();
+	    assertEquals(3,subParams1.size());
+	    assertEquals("transliterationScheme", subParams1.get(2).getName());
+	    assertEquals("", subParams1.get(2).getValue());
+	    
 		
 		Property prop2 = deducedProperties.get(1);
-		//test about for prop1
-		//test transformation for prop1
-		//test property composition for prop1
+		//test about for prop2
+		assertEquals("", prop2.getAbout().getAbout());
+		//test transformation for prop2
+		ITransformation transf2 = prop2.getTransformation();
+		// test rdfResource
+		assertEquals("eu.esdihumboldt.cst.transformer.impl.GeographicalNameFunction", transf2.getService().getLocation());
+		//test parameters count
+		assertEquals(8, transf2.getParameters().size());
+		// test value for parameter 3
+		assertEquals("sourceOfName", transf2.getParameters().get(3).getName());
+		assertEquals("sourceOfName1", transf2.getParameters().get(3).getValue());
+		//test property composition for prop2
+	    PropertyComposition subPropComp2 = prop2.getPropertyComposition();
+		//test operator
+	    assertEquals(PropertyOperator.UNION.name(), subPropComp2.getOperator().name());
+	    //test property
+	    Property subProp2 = subPropComp2.getProperty();
+	    assertNotNull(subProp2);
+	    //test about
+	    assertEquals("EnglishName_LatnScript", subProp2.getAbout().getAbout());
+	    //test transformation
+	    ITransformation subTransf2 = subProp2.getTransformation();
+	    //test transformation resource
+	   assertEquals("eu.esdihumboldt.cst.transformer.impl.SpellingFunction",subTransf2.getService().getLocation());
+	   //test transforamtion parameters
+       List<IParameter> subParams2 = subTransf2.getParameters();
+       assertEquals(3, subParams2.size());
+       assertEquals("text", subParams2.get(0).getName());
+       assertEquals("EnglishName", subParams2.get(0).getValue());
+		//test relation is null
+	    assertNull(subPropComp2.getRelation());
+	    //test propertyCollection is null
+	    assertNull(subPropComp2.getCollection());
+	    
+		
 	   
 	}
 
