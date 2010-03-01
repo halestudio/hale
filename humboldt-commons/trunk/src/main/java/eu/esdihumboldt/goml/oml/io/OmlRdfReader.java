@@ -547,12 +547,12 @@ public class OmlRdfReader {
 	private PropertyOperator getPropertyOperator(eu.esdihumboldt.generated.oml.PropertyOperatorType operator) {
 		PropertyOperator omlOperator = null;
 		if (operator != null){
-			if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.COMPLEMENT)) omlOperator = PropertyOperator.COMPLEMENT;
-			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.FIRST)) omlOperator = PropertyOperator.FIRST;
-			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.INTERSECTION)) omlOperator = PropertyOperator.INTERSECTION;
-			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.NEXT)) omlOperator = PropertyOperator.NEXT;
-			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.UNION)) omlOperator = PropertyOperator.UNION;
-			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.UNION_DUPLICATES)) omlOperator = PropertyOperator.UNION_DUPLICATES;
+			if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.COMPLEMENT.name())) omlOperator = PropertyOperator.COMPLEMENT;
+			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.FIRST.name())) omlOperator = PropertyOperator.FIRST;
+			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.INTERSECTION.name())) omlOperator = PropertyOperator.INTERSECTION;
+			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.NEXT.name())) omlOperator = PropertyOperator.NEXT;
+			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.UNION.name())) omlOperator = PropertyOperator.UNION;
+			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.UNION_DUPLICATES.name())) omlOperator = PropertyOperator.UNION_DUPLICATES;
 			
 		}
 		return omlOperator;
