@@ -33,7 +33,7 @@ public class ComposedProperty
 	/**
 	 * Indicates the (first) operator/predicate for this {@link ComposedProperty}.
 	 */
-	private PropertyOperatorType operator;
+	private final PropertyOperatorType operator;
 
 	/**
 	 * In case of AND and OR the operand is a collection of two or more (Composed)PropertyClasses.
@@ -63,11 +63,37 @@ public class ComposedProperty
 		this.relation = relation;
 	}
 
-	public ComposedProperty(IAbout about) {
+	/**
+	 * Constructor
+	 
+	 * @param operator 
+	 * @param about
+	 */
+	public ComposedProperty(PropertyOperatorType operator, IAbout about) {
 		super(about);
+		this.operator = operator;
 		this.collection = new ArrayList<Property>();
 	}
 	
+
+	/**
+	 * Constructor 
+	 * 
+	 * sets a default operator value as {@link PropertyOperatorType.OR}
+	 * 
+	 * @param about IAbout
+	 */
+	public ComposedProperty (IAbout about) {
+		super(about);
+		//sets union as default operator
+		this.operator = PropertyOperatorType.OR;
+		this.collection = new ArrayList<Property>();
+	}
+	
+	//FIXME
+	public ComposedProperty(PropertyOperatorType operator, String namespace) {
+		this(operator, new About(namespace, UUID.randomUUID().toString()));
+	}
 	//FIXME
 	public ComposedProperty(String namespace) {
 		this(new About(namespace, UUID.randomUUID().toString()));
@@ -96,12 +122,7 @@ public class ComposedProperty
 		return operator;
 	}
 
-	/**
-	 * @param operator the operator to set
-	 */
-	public void setPropertyOperatorType(PropertyOperatorType operator) {
-		this.operator = operator;
-	}
+
 
 	public enum PropertyOperatorType {
 		AND, // intersection

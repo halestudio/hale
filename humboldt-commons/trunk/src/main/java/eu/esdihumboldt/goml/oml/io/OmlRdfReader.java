@@ -24,11 +24,8 @@ import java.util.UUID;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
-
-import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
@@ -73,8 +70,6 @@ import eu.esdihumboldt.goml.omwg.ComparatorType;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.omwg.PropertyComposition;
-import eu.esdihumboldt.goml.omwg.PropertyOperator;
 import eu.esdihumboldt.goml.omwg.Relation;
 import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType;
@@ -110,10 +105,12 @@ public class OmlRdfReader {
 			Unmarshaller u = jc.createUnmarshaller();
 
 			// it will debug problems while unmarshalling
-			u.setEventHandler(
-					new javax.xml.bind.helpers.DefaultValidationEventHandler());
-			root = u.unmarshal(new StreamSource(new URL(rdfFile).openStream()),
-					AlignmentType.class);
+			u
+					.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
+			/*root = u.unmarshal(new StreamSource(new URL(rdfFile).openStream()),
+					AlignmentType.class);*/
+			
+			root =  u.unmarshal(new StreamSource(new File(rdfFile)),AlignmentType.class);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -135,7 +132,7 @@ public class OmlRdfReader {
 		al.setValueClass(getValueClass(genAlignment.getValueClass()));
 		return al;
 	}
-	
+
 	public Alignment read(File rdfFile) {
 		Alignment al = null;
 		try {
@@ -160,7 +157,7 @@ public class OmlRdfReader {
 		Iterator<ValueClassType> iterator = valueClass.iterator();
 		ValueClassType vcType;
 		while (iterator.hasNext()) {
-			vcType = (ValueClassType) iterator.next();
+			vcType = iterator.next();
 			// set about
 			((ValueClass) oValueClass).setAbout(vcType.getAbout());
 			// set resource
@@ -233,7 +230,7 @@ public class OmlRdfReader {
 		Map map;
 		Iterator<Map> iterator = maps.iterator();
 		while (iterator.hasNext()) {
-			map = (Map) iterator.next();
+			map = iterator.next();
 			cell = getCell(map.getCell());
 			cells.add(cell);
 
@@ -325,18 +322,27 @@ public class OmlRdfReader {
 						.getPropertyComposition();
 				// instantiate entity as ComposedProperty
 				IAbout about = new About(entityType.getAbout());
-				entity = new ComposedProperty(about);
-				// 1. set operator
-				((ComposedProperty) entity)
-						.setPropertyOperatorType(getOperator(propCompType
-								.getOperator()));
-				// 2. set collection of properties
-				((ComposedProperty) entity)
-						.setCollection(getPropertyCollecion(propCompType
-								.getCollection()));
-				// 3. set relation
-				((ComposedProperty) entity)
-						.setRelation(getOMLRelation(propCompType.getRelation()));
+				entity = new ComposedProperty(getOperator(propCompType
+						.getOperator()), about);
+
+				// 2. set collection of properties, a single property or
+				// relation
+
+				if (propCompType.getCollection().getItem().size() > 0) {
+					// set collection
+					((ComposedProperty) entity)
+							.setCollection(getPropertyCollection(propCompType
+									.getCollection()));
+				} else if (propCompType.getProperty() != null) {
+					// set Property
+					((ComposedProperty) entity).getCollection().add(
+							getProperty(propCompType.getProperty()));
+				} else if (propCompType.getRelation() != null) {
+					// set Relation
+					((ComposedProperty) entity)
+							.setRelation(getOMLRelation(propCompType
+									.getRelation()));
+				}
 				// set ComposedProperty specific members
 			} else {
 				// instantiate entity as property
@@ -355,10 +361,7 @@ public class OmlRdfReader {
 			((Property) entity)
 					.setValueCondition(getValueCondition(propertyType
 							.getValueCondition()));
-			//setPropertyComposition if exists
-			((Property)entity).setPropertyComposition(
-					getPropertyComposition(propertyType.getPropertyComposition()));
-			
+
 		} else if (entityType instanceof ClassType) {
 			// initiates entity as FeatureType
 			ClassType cType = (ClassType) entityType;
@@ -383,139 +386,129 @@ public class OmlRdfReader {
 		About about = new About(UUID.randomUUID());
 		about.setAbout(entityType.getAbout());
 		entity.setAbout(about);
-		//set Labels
+		// set Labels
 		entity.setLabel(entityType.getLabel());
 		return entity;
 	}
 
-	
 	/**
-	 * 
-	 * Implements casting from the JAXB-Type to
-	 * the OML Type for the PropertyComposition element.
-	 * 
-	 * @param propertyComposition jaxb-generated object
-	 * @return eu.esdihumboldt.goml.omwg.PropertyComposition 
-	 */
-	private PropertyComposition getPropertyComposition(
-			PropertyCompositionType propertyComposition) {
-		PropertyComposition omlComposition = null;
-		if (propertyComposition != null){
-			// create PropertyOperator as mandatory element
-			PropertyOperator omlOperator = getPropertyOperator(propertyComposition.getOperator());
-			//Only one of the Property, Relation or ListOfProperties is allowed
-			if (propertyComposition.getCollection()!= null){
-				//create PropertyComposition from the Collection of Properties
-				List<Property> omlPropertyCollection = getPropertyCollection(propertyComposition.getCollection());
-				if (omlPropertyCollection != null) omlComposition = new PropertyComposition(omlOperator, omlPropertyCollection);
-			}else if(propertyComposition.getProperty()!= null){
-				//create PropertyCollection from the single Property
-				Property omlProperty = getProperty(propertyComposition.getProperty());
-				if (omlProperty != null) omlComposition = new PropertyComposition(omlOperator, omlProperty);
-				
-			}else if (propertyComposition.getRelation()!= null){
-				//create PropertyCollection from the Relation
-				Relation omlRelation = getRelation(propertyComposition.getRelation());
-				if (omlRelation != null) omlComposition = new PropertyComposition(omlOperator, omlRelation);
-			}
-		}
-		return omlComposition;
-	}
-
-	
-	/**
-	 * Implements casting from the JAXB-Type to
-	 * the OML Type for the Relation element.
+	 * Implements casting from the JAXB-Type to the OML Type for the Relation
+	 * element.
 	 * 
 	 * 
-	 * @param relation jaxb-generated object
+	 * @param relation
+	 *            jaxb-generated object
 	 * @return omlRelation
-	*/
+	 */
 	private Relation getRelation(
 			eu.esdihumboldt.generated.oml.RelationType relation) {
-		Relation omlRelation = new Relation (new About(""));
-		if (relation != null){
-			//set about
-			if (relation.getAbout() !=null && !relation.getAbout().equals("")){
+		Relation omlRelation = new Relation(new About(""));
+		if (relation != null) {
+			// set about
+			if (relation.getAbout() != null && !relation.getAbout().equals("")) {
 				omlRelation.setAbout(new About(relation.getAbout()));
 			}
-			//set domain restriction
-			if (relation.getDomainRestriction()!=null) {
-				FeatureClass domainRestriction = getDomainRestriction(relation.getDomainRestriction());
+			// set domain restriction
+			if (relation.getDomainRestriction() != null) {
+				FeatureClass domainRestriction = getDomainRestriction(relation
+						.getDomainRestriction());
 				ArrayList<FeatureClass> domainRestrictions = new ArrayList<FeatureClass>();
 				domainRestrictions.add(domainRestriction);
 				omlRelation.setDomainRestriction(domainRestrictions);
 			}
-			//set label
-			if(relation.getLabel()!= null && relation.getLabel().size()>0){
+			// set label
+			if (relation.getLabel() != null && relation.getLabel().size() > 0) {
 				omlRelation.setLabel(relation.getLabel());
-				
+
 			}
-			//set transformation
-			if(relation.getTransf() != null){
-				omlRelation.setTransformation(getTransformation(relation.getTransf()));
+			// set transformation
+			if (relation.getTransf() != null) {
+				omlRelation.setTransformation(getTransformation(relation
+						.getTransf()));
 			}
-			//set Range Restriction
-			if(relation.getRangeRestriction() != null){
-				FeatureClass omlRangeRestriction = getRangeRestriction(relation.getRangeRestriction());
+			// set Range Restriction
+			if (relation.getRangeRestriction() != null) {
+				FeatureClass omlRangeRestriction = getRangeRestriction(relation
+						.getRangeRestriction());
 				List<FeatureClass> omlRangeRestrictions = new ArrayList<FeatureClass>();
 				omlRangeRestrictions.add(omlRangeRestriction);
 				omlRelation.setRangeRestriction(omlRangeRestrictions);
 			}
-		
+
 		}
 		return omlRelation;
 	}
 
 	/**
-	 * Implements casting from the JAXB-Type to
-	 * the OML Type for the Property element.
+	 * Implements casting from the JAXB-Type to the OML Type for the Property
+	 * element.
 	 * 
 	 * 
-	 * @param property jaxb-generated object
+	 * @param property
+	 *            jaxb-generated object
 	 * @return omlProperty
-	*/
+	 */
 	private Property getProperty(PropertyType property) {
-		Property omlProperty = new Property (new About(""));
-		if (property != null){
-			//set About
-			if (property.getAbout() != null && !property.getAbout().equals("")){
-			 omlProperty.setAbout(new About(property.getAbout()));
+		Property omlProperty;
+		//make decision: simple property or composed property
+		if (property.getPropertyComposition()!=null){
+			PropertyCompositionType pcType = property.getPropertyComposition();
+			//initialize as composed property
+			omlProperty = new ComposedProperty(getOperator(pcType.getOperator()),new About(""));
+			//set collection of properties and/or relation
+			if (pcType.getCollection() != null && pcType.getCollection().getItem()!= null){
+				//set collection
+				((ComposedProperty)omlProperty).setCollection(getPropertyCollection(pcType.getCollection()));
+			}else if (pcType.getProperty() != null){
+				//set a single property
+				((ComposedProperty)omlProperty).getCollection().add(getProperty(pcType.getProperty()));
 			}
-			//set domain restriction
-			if (property.getDomainRestriction()!= null){
-				omlProperty.setDomainRestriction(getDomainRestriction(property.getDomainRestriction()));
-			}
-			//set label
-			if (property.getLabel()!= null){
-				omlProperty.setLabel(property.getLabel());
-			}
-			//set propertyComposition
-			if (property.getPropertyComposition()!=null){
-				omlProperty.setPropertyComposition(getPropertyComposition(property.getPropertyComposition()));
-			}
-			//set transformation
-			if (property.getTransf() != null){
-				omlProperty.setTransformation(getTransformation(property.getTransf()));
-			}
-			//set type condition
-			if (property.getTypeCondition() != null){
-				omlProperty.setTypeCondition(property.getTypeCondition());
-			}
-			//set value condition
-			if (property.getValueCondition() != null){
-				omlProperty.setValueCondition(getValueCondition(property.getValueCondition()));
+			if (pcType.getRelation() != null){
+				//set relation
+				((ComposedProperty)omlProperty).setRelation(getRelation(pcType.getRelation()));
 			}
 			
-		
+		}else{// initialize as property
+		 omlProperty = new Property(new About(""));
 		}
-		
+		if (property != null) {
+			// set About
+			if (property.getAbout() != null && !property.getAbout().equals("")) {
+				omlProperty.setAbout(new About(property.getAbout()));
+			}
+			// set domain restriction
+			if (property.getDomainRestriction() != null) {
+				omlProperty.setDomainRestriction(getDomainRestriction(property
+						.getDomainRestriction()));
+			}
+			// set label
+			if (property.getLabel() != null) {
+				omlProperty.setLabel(property.getLabel());
+			}
+
+			// set transformation
+			if (property.getTransf() != null) {
+				omlProperty.setTransformation(getTransformation(property
+						.getTransf()));
+			}
+			// set type condition
+			if (property.getTypeCondition() != null) {
+				omlProperty.setTypeCondition(property.getTypeCondition());
+			}
+			// set value condition
+			if (property.getValueCondition() != null) {
+				omlProperty.setValueCondition(getValueCondition(property
+						.getValueCondition()));
+			}
+
+		}
+
 		return omlProperty;
 	}
-	
+
 	/**
-	 * Returns a List of OML Properties 
-	 * for given jaxb-based PropertyCollectionType.
+	 * Returns a List of OML Properties for given jaxb-based
+	 * PropertyCollectionType.
 	 * 
 	 * @param collection
 	 * @return
@@ -523,74 +516,56 @@ public class OmlRdfReader {
 	private List<Property> getPropertyCollection(
 			PropertyCollectionType collection) {
 		List<Property> properties = null;
-		if (collection != null){
+		if (collection != null) {
 			properties = new ArrayList<Property>();
 			List<Item> collectionItems = collection.getItem();
-            Iterator<Item> iterator = collectionItems.iterator();
-            Item item;
-            Property property;
-            while(iterator.hasNext()){
-            	item = iterator.next();
-            	property = getProperty(item.getProperty());
-            	properties.add(property);
-            }
+			Iterator<Item> iterator = collectionItems.iterator();
+			Item item;
+			Property property;
+			while (iterator.hasNext()) {
+				item = iterator.next();
+				property = getProperty(item.getProperty());
+				properties.add(property);
+			}
 		}
 		return properties;
 	}
 
 	/**
-	 * Converts jaxb-generated PropertyOperator to 
-	 * the according OML Type.
-	 
-	 * @param PropertyOperatorType operator 
-	 * @return PropertyOperator 
-	 */
-	private PropertyOperator getPropertyOperator(eu.esdihumboldt.generated.oml.PropertyOperatorType operator) {
-		PropertyOperator omlOperator = null;
-		if (operator != null){
-			if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.COMPLEMENT.name())) omlOperator = PropertyOperator.COMPLEMENT;
-			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.FIRST.name())) omlOperator = PropertyOperator.FIRST;
-			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.INTERSECTION.name())) omlOperator = PropertyOperator.INTERSECTION;
-			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.NEXT.name())) omlOperator = PropertyOperator.NEXT;
-			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.UNION.name())) omlOperator = PropertyOperator.UNION;
-			else if (operator.name().equals(eu.esdihumboldt.generated.oml.PropertyOperatorType.UNION_DUPLICATES.name())) omlOperator = PropertyOperator.UNION_DUPLICATES;
-			
-		}
-		return omlOperator;
-	}
-
-	/**
-	 * Converts from the JAXB-Based
-	 * RelationType to the OML Relation
+	 * Converts from the JAXB-Based RelationType to the OML Relation
+	 * 
 	 * @param relation
 	 * @return
 	 */
 	private Relation getOMLRelation(
 			eu.esdihumboldt.generated.oml.RelationType relationType) {
 		Relation relation = null;
-		if (relationType!=null){
+		if (relationType != null) {
 			IAbout about = new About(relationType.getAbout());
 			relation = new Relation(about);
-			//set label list
+			// set label list
 			relation.setLabel(relationType.getLabel());
-			//set transformation
-			relation.setTransformation(getTransformation(relationType.getTransf()));
-			//set Range Restriction
+			// set transformation
+			relation.setTransformation(getTransformation(relationType
+					.getTransf()));
+			// set Range Restriction
 			List<FeatureClass> features = new ArrayList<FeatureClass>();
-			features.add(getRangeRestriction(relationType.getRangeRestriction()));
+			features
+					.add(getRangeRestriction(relationType.getRangeRestriction()));
 			relation.setRangeRestriction(features);
-			//set Domain Restriction
+			// set Domain Restriction
 			features = new ArrayList<FeatureClass>();
-			features.add(getDomainRestriction(relationType.getDomainRestriction()));
+			features.add(getDomainRestriction(relationType
+					.getDomainRestriction()));
 			relation.setDomainRestriction(features);
 		}
 		return relation;
 	}
 
 	/**
-	 * Converts from the 
-	 * JAXB-based DomainRestrictionType
-	 * to the OML FeatureClass
+	 * Converts from the JAXB-based DomainRestrictionType to the OML
+	 * FeatureClass
+	 * 
 	 * @param domainRestriction
 	 * @return
 	 */
@@ -598,38 +573,37 @@ public class OmlRdfReader {
 			DomainRestrictionType domainRestriction) {
 		FeatureClass fClass;
 		ClassType clazz;
-		
-	    fClass = new FeatureClass(null);
-	    if (domainRestriction!=null){
-	    	clazz = domainRestriction.getClazz();
-	    	if (clazz!=null){
-	    		// set about
-	    		About fAbout = new About(java.util.UUID.randomUUID());
-	    		fAbout.setAbout(clazz.getAbout());
-	    		fClass.setAbout(fAbout);
-	    		// set attributeValueCondition list
-	    		fClass.setAttributeValueCondition(getRestrictions(clazz
-					.getAttributeValueCondition()));
-	    		// set attributeTypeCondition list
-	    		fClass.setAttributeTypeCondition(getRestrictions(clazz
-					.getAttributeTypeCondition()));
-	    		// set attributeOccurenceCondition
-	    		fClass.setAttributeOccurenceCondition(getRestrictions(clazz
-					.getAttributeOccurenceCondition()));
-	    		//set label list
-	    		fClass.setLabel(clazz.getLabel());
-	    		//set transformation
-	    		fClass.setTransformation(getTransformation(clazz.getTransf()));
-	    	}
-	    }
-			
+
+		fClass = new FeatureClass(null);
+		if (domainRestriction != null) {
+			clazz = domainRestriction.getClazz();
+			if (clazz != null) {
+				// set about
+				About fAbout = new About(java.util.UUID.randomUUID());
+				fAbout.setAbout(clazz.getAbout());
+				fClass.setAbout(fAbout);
+				// set attributeValueCondition list
+				fClass.setAttributeValueCondition(getRestrictions(clazz
+						.getAttributeValueCondition()));
+				// set attributeTypeCondition list
+				fClass.setAttributeTypeCondition(getRestrictions(clazz
+						.getAttributeTypeCondition()));
+				// set attributeOccurenceCondition
+				fClass.setAttributeOccurenceCondition(getRestrictions(clazz
+						.getAttributeOccurenceCondition()));
+				// set label list
+				fClass.setLabel(clazz.getLabel());
+				// set transformation
+				fClass.setTransformation(getTransformation(clazz.getTransf()));
+			}
+		}
+
 		return fClass;
 	}
 
 	/**
-	 * Converts from the 
-	 * JAXB-based RangeRestrictionType
-	 * to the OML FeatureClass
+	 * Converts from the JAXB-based RangeRestrictionType to the OML FeatureClass
+	 * 
 	 * @param domainRestriction
 	 * @return
 	 */
@@ -637,95 +611,91 @@ public class OmlRdfReader {
 			RangeRestrictionType rangeRestriction) {
 		FeatureClass fClass;
 		ClassType clazz;
-		
-	    fClass = new FeatureClass(null);
-	    if (rangeRestriction!=null){
-	    	clazz = rangeRestriction.getClazz();
-	    	if (clazz!=null){
-	    		// set about
-	    		About fAbout = new About(java.util.UUID.randomUUID());
-	    		fAbout.setAbout(clazz.getAbout());
-	    		fClass.setAbout(fAbout);
-	    		// set attributeValueCondition list
-	    		fClass.setAttributeValueCondition(getRestrictions(clazz
-					.getAttributeValueCondition()));
-	    		// set attributeTypeCondition list
-	    		fClass.setAttributeTypeCondition(getRestrictions(clazz
-					.getAttributeTypeCondition()));
-	    		// set attributeOccurenceCondition
-	    		fClass.setAttributeOccurenceCondition(getRestrictions(clazz
-					.getAttributeOccurenceCondition()));
-	    		//set label list
-	    		fClass.setLabel(clazz.getLabel());
-	    		//set transformation
-	    		fClass.setTransformation(getTransformation(clazz.getTransf()));
-	    	}
-	    }
-			
+
+		fClass = new FeatureClass(null);
+		if (rangeRestriction != null) {
+			clazz = rangeRestriction.getClazz();
+			if (clazz != null) {
+				// set about
+				About fAbout = new About(java.util.UUID.randomUUID());
+				fAbout.setAbout(clazz.getAbout());
+				fClass.setAbout(fAbout);
+				// set attributeValueCondition list
+				fClass.setAttributeValueCondition(getRestrictions(clazz
+						.getAttributeValueCondition()));
+				// set attributeTypeCondition list
+				fClass.setAttributeTypeCondition(getRestrictions(clazz
+						.getAttributeTypeCondition()));
+				// set attributeOccurenceCondition
+				fClass.setAttributeOccurenceCondition(getRestrictions(clazz
+						.getAttributeOccurenceCondition()));
+				// set label list
+				fClass.setLabel(clazz.getLabel());
+				// set transformation
+				fClass.setTransformation(getTransformation(clazz.getTransf()));
+			}
+		}
+
 		return fClass;
 	}
 
 	/**
-	 * Creates s list of properties
-	 * from the jaxb-based PropertyCollectionType
+	 * Creates s list of properties from the jaxb-based PropertyCollectionType
+	 * 
 	 * @param collection
 	 * @return
-	 */
+	 *//*
 	private List<Property> getPropertyCollecion(
 			PropertyCollectionType collection) {
 		List<Property> properties = new ArrayList<Property>();
 		Property property;
 		PropertyType propType;
-		if (collection!=null){
+		if (collection != null) {
 			List<Item> items = collection.getItem();
-			if(items!=null){
+			if (items != null) {
 				Iterator<?> iterator = items.iterator();
-				while(iterator.hasNext()){
-					propType = ((Item)iterator.next()).getProperty();
+				while (iterator.hasNext()) {
+					propType = ((Item) iterator.next()).getProperty();
 					property = getSimpleProperty(propType);
 					properties.add(property);
 				}
-				
+
 			}
 		}
 		return properties;
 	}
 
-	
-	/**
-	 * Converts the instance of the 
-	 * JAXB-based property type
-	 * to the simple/non composed property
+	*//**
+	 * Converts the instance of the JAXB-based property type to the simple/non
+	 * composed property
+	 * 
 	 * @param propType
 	 * @return
-	 */
+	 *//*
 	private Property getSimpleProperty(PropertyType propType) {
 		Property property = null;
-		if (propType!=null){
+		if (propType != null) {
 			IAbout about = new About(propType.getAbout());
 			property = new Property(about);
 			// set domainRestriction
-			property
-					.setDomainRestriction(getDomainRestriction(propType
-							.getDomainRestriction()));
+			property.setDomainRestriction(getDomainRestriction(propType
+					.getDomainRestriction()));
 			// set typeCondition
-			property.setTypeCondition(propType
-					.getTypeCondition());
+			property.setTypeCondition(propType.getTypeCondition());
 			// set value conditions
-			property
-					.setValueCondition(getValueCondition(propType
-							.getValueCondition()));
-			//set transformation
+			property.setValueCondition(getValueCondition(propType
+					.getValueCondition()));
+			// set transformation
 			Transformation transformation = getTransformation(propType
 					.getTransf());
-			
+
 			property.setTransformation(transformation);
-			//set labels
-		  property.setLabel(propType.getLabel());
+			// set labels
+			property.setLabel(propType.getLabel());
 		}
-		
+
 		return property;
-	}
+	}*/
 
 	/**
 	 * Converts propertyOperator instance from the JAXB-based enum to the OML
@@ -772,8 +742,7 @@ public class OmlRdfReader {
 				trans.setService(resource);
 				// set parameter list
 				trans.setParameters(getParameters(transf.getParam()));
-			}
-			else {
+			} else {
 				trans = null;
 			}
 		}
@@ -786,7 +755,7 @@ public class OmlRdfReader {
 		ParamType paramType;
 		IParameter parameter;
 		while (iterator.hasNext()) {
-			paramType = (ParamType) iterator.next();
+			paramType = iterator.next();
 			parameter = new Parameter(paramType.getName(), paramType.getValue()
 					.get(0));
 			params.add(parameter);
@@ -811,7 +780,7 @@ public class OmlRdfReader {
 		ClassType clazz;
 		Iterator<DomainRestrictionType> iterator = domainRestriction.iterator();
 		while (iterator.hasNext()) {
-			restriction = (DomainRestrictionType) iterator.next();
+			restriction = iterator.next();
 			clazz = restriction.getClazz();
 			fClass = new FeatureClass(null);
 			// set about
@@ -848,7 +817,7 @@ public class OmlRdfReader {
 		Restriction restriction;
 		ClassConditionType classCondition;
 		while (iterator.hasNext()) {
-			classCondition = (ClassConditionType) iterator.next();
+			classCondition = iterator.next();
 			RestrictionType rType = classCondition.getRestriction();
 			List<ValueExprType> valueExpr = rType.getValue();
 			// TODO clear with MdV
@@ -889,13 +858,14 @@ public class OmlRdfReader {
 		Iterator<ValueConditionType> iterator = valueCondition.iterator();
 		Restriction restriction;
 		while (iterator.hasNext()) {
-			ValueConditionType condition = (ValueConditionType) iterator.next();
+			ValueConditionType condition = iterator.next();
 			// get List<ValueExpressionType>
 			List<ValueExprType> valueExpr = condition.getRestriction()
 					.getValue();
-			if ((valueExpr == null || valueExpr.size() == 0) 
+			if ((valueExpr == null || valueExpr.size() == 0)
 					&& condition.getRestriction().getValueClass() != null) {
-				valueExpr = condition.getRestriction().getValueClass().getValue();
+				valueExpr = condition.getRestriction().getValueClass()
+						.getValue();
 			}
 			// TODO:clear with MdV
 			// restriction = new Restriction(null,
@@ -971,7 +941,7 @@ public class OmlRdfReader {
 		ValueExpression omlExpr;
 		Iterator<ValueExprType> iterator = valueExpr.iterator();
 		while (iterator.hasNext()) {
-			ValueExprType jaxbExpr = (ValueExprType) iterator.next();
+			ValueExprType jaxbExpr = iterator.next();
 			omlExpr = new ValueExpression(jaxbExpr.getLiteral());
 			omlExpr.setMax(jaxbExpr.getMax());
 			omlExpr.setMin(jaxbExpr.getMin());

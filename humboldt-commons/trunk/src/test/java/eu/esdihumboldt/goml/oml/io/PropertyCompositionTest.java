@@ -43,14 +43,16 @@ import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.omwg.PropertyComposition;
-import eu.esdihumboldt.goml.omwg.PropertyOperator;
+import eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType;
+
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.mediator.TransformationQueueManager.ProcessStatus;
 
 /**
  * A Test for the deserialization of the PropertyComposition.
+ * 
+ * 
  *
  * @author Anna Pitaev
  * @partner 04 / Logica
@@ -82,6 +84,14 @@ public class PropertyCompositionTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		
+		/* creates an OML structure according to the jaxb-based mapping:
+		 * 
+		 * ComposedProperty entity1|-->ComposedProperty item1|-->Property prop1
+		 *                         |                         |-->Property prop2
+		 *                         |-->ComposedProperty item2 --> Property subProperty                        
+		 */
+		
 		this.alignment = new Alignment();
 		this.alignment.setAbout(new About(UUID.randomUUID()));
 		this.alignment.setLevel("PropertyCompositionTest");
@@ -106,18 +116,18 @@ public class PropertyCompositionTest {
 	    List<ICell> map = new ArrayList<ICell>();
 		// set up cell to use for testing
 		Cell cell = new Cell();
-		//create entity1
-		Entity entity1 = new Property(new About(""));
+		//create entity1 as Composed Property
+		Entity entity1 = new ComposedProperty(PropertyOperatorType.OR, new About(""));
 		
 		//create Transformation
 		Transformation transformation1 = new Transformation(new Resource("eu.esdihumboldt.cst.transformer.impl.GeographicalNameFunction"));
 		entity1.setTransformation(transformation1);
-		//create PropertyComposition
+		
 		//1. create list of the properties
 		
 		List<Property> properties = new ArrayList<Property>();
-		//1.0 create first item  and put it to the properties list
-		Property item1 = new Property(new About(""));
+		//1.0 create first item  as ComposedProperty and put it to the properties list
+		ComposedProperty item1 = new ComposedProperty(PropertyOperatorType.OR,new About(""));
 		//1.0.1 create Transformation for the item1
 		Transformation item1Transformation = new Transformation(new Resource("eu.esdihumboldt.cst.transformer.impl.GeographicalNameFunction"));
 		List<IParameter> item1Params = new ArrayList<IParameter>();
@@ -132,8 +142,8 @@ public class PropertyCompositionTest {
 		item1Transformation.setParameters(item1Params);
 		item1.setTransformation(item1Transformation);
 		
-		//1.0.2 create PropertyComposition for the item1
-		//create a properties list
+		
+		//create a properties list for the ComposedProperty item1
 		List<Property> subCollection = new ArrayList<Property>();
 		Property prop1 = new Property(new About("GermanName_LatnScript"));
 		Transformation tranProp1 = new Transformation(new Resource("eu.esdihumboldt.cst.transformer.impl.SpellingFunction"));
@@ -153,13 +163,13 @@ public class PropertyCompositionTest {
 		tranProp2.setParameters(tranProp1Params);
 		prop2.setTransformation(tranProp1);
 		subCollection.add(prop2);
-		PropertyComposition subComposition = new PropertyComposition(PropertyOperator.UNION, subCollection);
-		item1.setPropertyComposition(subComposition);
+		item1.setCollection(subCollection);
+		
 		//1.0.3 put item1 to the list
 		properties.add(item1);
 	
-		//1.1 create second item and put it to the properties list
-		Property item2 = new Property(new About(""));
+		//1.1 create second item as ComposedProperty and put it to the properties list
+		ComposedProperty item2 = new ComposedProperty(PropertyOperatorType.OR, new About(""));
 		Transformation item2Transformation = new Transformation(new Resource("eu.esdihumboldt.cst.transformer.impl.GeographicalNameFunction"));
 		List<IParameter> item2Params = new ArrayList<IParameter>();
 		item2Params.add(new Parameter("language", "eng"));
@@ -172,8 +182,7 @@ public class PropertyCompositionTest {
 		item2Params.add(new Parameter("grammaticalNumber",""));
 		item2Transformation.setParameters(item1Params);
 		item2.setTransformation(item2Transformation);
-		//1.1.2 create PropertyComposition for the item2
-		
+		//add single property to the item2 property collection
 		Property subProperty = new Property(new About("EnglishName_LatnScript"));
 		Transformation subTrans = new Transformation (new Resource("eu.esdihumboldt.cst.transformer.impl.SpellingFunction"));
 		List<IParameter> subTransParams = new ArrayList<IParameter>();
@@ -182,16 +191,11 @@ public class PropertyCompositionTest {
 		subTransParams.add(new Parameter("transliterationScheme",""));
 		subTrans.setParameters(subTransParams);
 		subProperty.setTransformation(subTrans);
-		PropertyComposition subPropComposition = new PropertyComposition(PropertyOperator.UNION, subProperty);
-		item2.setPropertyComposition(subPropComposition);
+		item2.getCollection().add(subProperty);
 		//1.1.3 put item2 to the list
 		properties.add(item2);
-		//2.0  create PropertyComposition for this properties-list
-		PropertyComposition  propComp = new PropertyComposition(PropertyOperator.UNION,properties);
-		//3.0  add PropertyComposition to the Entity1
-		((Property)entity1).setPropertyComposition(propComp);
+		((ComposedProperty) entity1).setCollection(properties);
 		cell.setEntity1(entity1);
-		
 		//create entity2
 		Entity entity2 = new Property(new About("hy-p:geographicalName"));  
 		//create Domain restriction for the Entity2
@@ -202,9 +206,6 @@ public class PropertyCompositionTest {
         cell.setEntity2(entity2);
         map.add(cell);
         alignment.setMap(map);
-		
-		
-		
 	}
 	
 	@Test
@@ -219,24 +220,24 @@ public class PropertyCompositionTest {
 		Alignment alignment = new OmlRdfReader().read(uri.getPath());
 
 		//test for ComposedProperty
-		PropertyComposition propComposition = ((Property)alignment.getMap().get(0).getEntity1()).getPropertyComposition();
+		ComposedProperty  entity1 = ((ComposedProperty)alignment.getMap().get(0).getEntity1());
 		//test operator
-		assertEquals(PropertyOperator.UNION.name(), propComposition.getOperator().name());
+		assertEquals(PropertyOperatorType.OR.name(), entity1.getPropertyOperatorType().name());
 		//test Property is not included in the propComposition
-		assertNull(propComposition.getProperty());
+		assertFalse(entity1.getCollection().size()==1);
 		//test Realtion is not incluede in the propComposition
-		assertNull(propComposition.getRelation());
+		assertNull(entity1.getRelation());
         //test Collection<Property> is not null
-		List<Property> deducedProperties =  propComposition.getCollection();
-		assertNotNull(deducedProperties);
+		List<Property> deducedProperties =  entity1.getCollection();
+		assertTrue(deducedProperties.size()>1);
 		//test size of the Collection<Property>
 		assertEquals(2, deducedProperties.size());
 		//test the deserialization for the each collection item
-		Property prop1 = deducedProperties.get(0);
-		//test about for prop1
-		assertEquals("", prop1.getAbout().getAbout());
-		//test transformation for prop1
-		ITransformation transf1 = prop1.getTransformation();
+		ComposedProperty item1 = (ComposedProperty)deducedProperties.get(0);
+		//test about for item1
+		assertEquals("", item1.getAbout().getAbout());
+		//test transformation for item1
+		ITransformation transf1 = item1.getTransformation();
 		// test rdfResource
 		assertEquals("eu.esdihumboldt.cst.transformer.impl.GeographicalNameFunction", transf1.getService().getLocation());
 		//test parameters count
@@ -244,16 +245,15 @@ public class PropertyCompositionTest {
 		// test value for parameter 7
 		assertEquals("grammaticalNumber", transf1.getParameters().get(7).getName());
 		assertEquals("", transf1.getParameters().get(7).getValue());
-		//test property composition for prop1
-	    PropertyComposition subPropComp1 = prop1.getPropertyComposition();
-		//test operator
-	    assertEquals(PropertyOperator.UNION.name(), subPropComp1.getOperator().name());
+		
+		//test operator for the ComposedProperty item1
+	    assertEquals(PropertyOperatorType.OR.name(), item1.getPropertyOperatorType().name());
 	    //test property is null
-	    assertNull(subPropComp1.getProperty());
+	    assertFalse(item1.getCollection().size()==0);
 		//test relation is null
-	    assertNull(subPropComp1.getRelation());
+	    assertNull(item1.getRelation());
 		//test property collection is not null and has size 2
-	    List<Property> subColl1 = subPropComp1.getCollection();
+	    List<Property> subColl1 = item1.getCollection();
 	    assertNotNull(subColl1);
 	    assertEquals(2, subColl1.size());
 		//test property composition item 0
@@ -270,11 +270,11 @@ public class PropertyCompositionTest {
 	    assertEquals("", subParams1.get(2).getValue());
 	    
 		
-		Property prop2 = deducedProperties.get(1);
-		//test about for prop2
-		assertEquals("", prop2.getAbout().getAbout());
-		//test transformation for prop2
-		ITransformation transf2 = prop2.getTransformation();
+		ComposedProperty entity2 = (ComposedProperty)deducedProperties.get(1);
+		//test about for entity2
+		assertEquals("", entity2.getAbout().getAbout());
+		//test transformation for entity2
+		ITransformation transf2 = entity2.getTransformation();
 		// test rdfResource
 		assertEquals("eu.esdihumboldt.cst.transformer.impl.GeographicalNameFunction", transf2.getService().getLocation());
 		//test parameters count
@@ -282,12 +282,10 @@ public class PropertyCompositionTest {
 		// test value for parameter 3
 		assertEquals("sourceOfName", transf2.getParameters().get(3).getName());
 		assertEquals("sourceOfName1", transf2.getParameters().get(3).getValue());
-		//test property composition for prop2
-	    PropertyComposition subPropComp2 = prop2.getPropertyComposition();
-		//test operator
-	    assertEquals(PropertyOperator.UNION.name(), subPropComp2.getOperator().name());
+		//test operator for ComposedProperty entity2
+	    assertEquals(PropertyOperatorType.OR.name(), entity2.getPropertyOperatorType().name());
 	    //test property
-	    Property subProp2 = subPropComp2.getProperty();
+	    Property subProp2 = entity2.getCollection().get(0);
 	    assertNotNull(subProp2);
 	    //test about
 	    assertEquals("EnglishName_LatnScript", subProp2.getAbout().getAbout());
@@ -301,9 +299,9 @@ public class PropertyCompositionTest {
        assertEquals("text", subParams2.get(0).getName());
        assertEquals("EnglishName", subParams2.get(0).getValue());
 		//test relation is null
-	    assertNull(subPropComp2.getRelation());
+	    assertNull(entity2.getRelation());
 	    //test propertyCollection is null
-	    assertNull(subPropComp2.getCollection());
+	    assertTrue(entity2.getCollection().size() == 1);
 	    
 		
 	   

@@ -74,8 +74,6 @@ import eu.esdihumboldt.goml.omwg.ComparatorType;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.omwg.PropertyComposition;
-import eu.esdihumboldt.goml.omwg.PropertyOperator;
 import eu.esdihumboldt.goml.omwg.PropertyQualifier;
 import eu.esdihumboldt.goml.omwg.Relation;
 import eu.esdihumboldt.goml.omwg.Restriction;
@@ -97,10 +95,6 @@ public class OmlRdfGenerator {
 	 * property stack size parameter name
 	 */
 	public static final String PROPERTY_STACK_SIZE = "composedPropertyStackSize"; 
-	/**
-	 * property composition stack size  parameter name
-	 */
-	public static final String 	PROPERTY_COMPOSITION_STACK_SIZE = "propertyCompositionStackSize";
 	
 	/**
 	 * stack for property invocation
@@ -109,23 +103,14 @@ public class OmlRdfGenerator {
 	 */
 	private int propertyStack;
 	
-	/**
-	 * stack for property invacation inside of the property composition
-	 * value = 0, property parent element is cell
-	 * value >0 and value < < @link{propertyCompositionStackSize}, property parent element is PropertyComposition
-	 */
-	private int propertyCompositionStack;
+	
 	
 	/**
 	 * max size of the property stack
 	 */
 	
 	private static final int propertyStackSize = new Integer(ConfigurationManager.getComponentProperty(PROPERTY_STACK_SIZE)).intValue();
-	
-	/**
-	 * max size of the property composition stack
-	 */
-	private static final int propertyCompositionStackSize = new Integer(ConfigurationManager.getComponentProperty(PROPERTY_COMPOSITION_STACK_SIZE)).intValue();
+
 	
 	/**
 	 * Constant defines the path to the alignment jaxb context
@@ -713,30 +698,34 @@ public class OmlRdfGenerator {
 			About about = (About) property.getAbout();
 			if (about != null)
 				pType.setAbout(about.getAbout());
-			if(property instanceof ComposedProperty&& this.propertyStack < propertyStackSize){
-				this.propertyStack ++;
-			//incase it  is a composed property add the property composition elmenet
-			// TODO keep the property comsposition as optional element
-			// property composition is used to define the merge on the attributes 
-			PropertyCompositionType propCompType = new PropertyCompositionType();
-			//set Relation
-		    propCompType.setRelation(getRelation(((ComposedProperty)property).getRelation()));
-		    //set  property collection
-		    propCompType.setCollection(getPropertyCollection(((ComposedProperty)property).getCollection()));
-		    //set PropertyOperatorType
-		    propCompType.setOperator(getOperatorType(((ComposedProperty)property).getPropertyOperatorType()));
-			pType.setPropertyComposition(propCompType);
-			}
-			if(property.getPropertyComposition() != null && this.propertyCompositionStack < propertyCompositionStackSize){
-				   this.propertyCompositionStack ++;
-					//generate property composition using this explicit mapping method 
-					pType.setPropertyComposition(getPropertyCompositionType(property.getPropertyComposition()));
+			if (property instanceof ComposedProperty
+					&& this.propertyStack < propertyStackSize) {
+				this.propertyStack++;
+				// in case it is a composed property add the property composition
+				// element
+				PropertyCompositionType propCompType = new PropertyCompositionType();
+				// set Relation
+				propCompType.setRelation(getRelation(((ComposedProperty) property).getRelation()));
+				// set property collection or single property
+				if (((ComposedProperty) property).getCollection().size()> 1){
+				//set collection
+				propCompType.setCollection(getPropertyCollection(((ComposedProperty) property).getCollection()));
+				}
+				else if (((ComposedProperty) property).getCollection().size() == 1){
+				//set single property
+				propCompType.setProperty(getPropertyType(((ComposedProperty)property).getCollection().get(0)));
+				}
+				
+				// set PropertyOperatorType
+				propCompType.setOperator(getOperatorType(((ComposedProperty) property).getPropertyOperatorType()));
+				pType.setPropertyComposition(propCompType);
 			}
 			
 			pType.setTransf(getTransf(property.getTransformation()));
 			if (property.getDomainRestriction() != null) {
 				pType.getDomainRestriction().addAll(
-					getDomainRestrictionTypes(property.getDomainRestriction()));
+						getDomainRestrictionTypes(property
+								.getDomainRestriction()));
 			}
 			if (property.getTypeCondition() != null) {
 				pType.getTypeCondition().addAll(property.getTypeCondition());
@@ -746,55 +735,13 @@ public class OmlRdfGenerator {
 			}
 			if (property.getValueCondition() != null) {
 				pType.getValueCondition().addAll(
-					getValueConditions(property.getValueCondition()));
+						getValueConditions(property.getValueCondition()));
 			}
-			
+
 		}
 		return pType;
 	}
 
-
-	/**
-	 * Generates JAXB-based Instance for the OML Property Composition
-	 * @param propertyComposition
-	 * @return PropertyCompositionType
-	 */
-	private PropertyCompositionType getPropertyCompositionType(
-			PropertyComposition propertyComposition) {
-		
-		PropertyCompositionType propCompType = new PropertyCompositionType();
-		//set operator 
-		propCompType.setOperator(getOperatorType(propertyComposition.getOperator()));
-		//set one and only one of Propery, Relation and PropertyCollection
-		if (propertyComposition.getProperty() != null){
-			propCompType.setProperty(getPropertyType(propertyComposition.getProperty()));
-		}else if (propertyComposition.getRelation() != null){
-			
-			propCompType.setRelation(getRelation(propertyComposition.getRelation()));
-		}else if (propertyComposition.getCollection()!= null){
-			propCompType.setCollection(getPropertyCollection(propertyComposition.getCollection()));
-		}
-		
-		return propCompType;
-	}
-
-	/**
-	 * Converts OML PropertyOperator
-	 * to the JAXB-based class.
-	 * @param OML Property operator
-	 * @return JAXB-based PropertyOperator
-	 */
-	private PropertyOperatorType getOperatorType(PropertyOperator operator) {
-		if (operator != null){
-			if(operator.equals(PropertyOperator.COMPLEMENT)) return PropertyOperatorType.COMPLEMENT;
-			if(operator.equals(PropertyOperator.FIRST)) return PropertyOperatorType.FIRST;
-			if(operator.equals(PropertyOperator.INTERSECTION)) return PropertyOperatorType.INTERSECTION;
-			if(operator.equals(PropertyOperator.NEXT)) return PropertyOperatorType.NEXT;
-			if(operator.equals(PropertyOperator.UNION)) return PropertyOperatorType.UNION;
-			if(operator.equals(PropertyOperator.UNION_DUPLICATES)) return PropertyOperatorType.UNION_DUPLICATES;
-		}
-		return null;
-	}
 
 	/**
 	 * Converts propertyOperator instance 

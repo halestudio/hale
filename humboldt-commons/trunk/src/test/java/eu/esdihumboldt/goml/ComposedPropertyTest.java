@@ -69,7 +69,7 @@ public class ComposedPropertyTest extends TestCase {
 		
 		// set up cell to use for testing
 		Cell cell = new Cell();
-		ComposedProperty cp = new ComposedProperty(
+		ComposedProperty cp = new ComposedProperty(eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType.FIRST,
 				new About(this.sourceNamespace, this.sourceLocalname));
 		cp.getCollection().add(new Property(
 				new About(this.sourceNamespace, this.sourceLocalname, 
@@ -87,7 +87,6 @@ public class ComposedPropertyTest extends TestCase {
 						"math_expression", 
 						"0.5 * (PropertyA * PropertyB + PropertyC)"));
 		cp.setTransformation(t);
-		cp.setPropertyOperatorType(eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType.FIRST);
 		cell.setEntity1(cp);
 		cell.setEntity2(new Property(
 				new About(this.targetNamespace, this.targetLocalname, 

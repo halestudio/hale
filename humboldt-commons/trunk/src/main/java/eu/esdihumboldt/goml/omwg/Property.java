@@ -53,10 +53,6 @@ public class Property
 	 */
 	private List<String> typeCondition;
 	
-	/**
-	 * PropertyComposition
-	 */
-	private PropertyComposition propertyComposition;
 	
 	// constructors ............................................................
 	
@@ -123,19 +119,7 @@ public class Property
 		this.typeCondition = typeCondition;
 	}
 	
-	/**
-	 * @return the propertyComposition
-	 */
-	public PropertyComposition getPropertyComposition() {
-		return propertyComposition;
-	}
-
-	/**
-	 * @param propertyComposition the propertyComposition to set
-	 */
-	public void setPropertyComposition(PropertyComposition propertyComposition) {
-		this.propertyComposition = propertyComposition;
-	}
+	
 
 	@Override
 	public IEntity deepCopy() {
