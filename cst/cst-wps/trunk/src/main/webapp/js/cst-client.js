@@ -14,13 +14,7 @@ Ext.onReady(function(){
         frame: true,
         title: 'Humboldt CST IOBridge web client',
         autoHeight: true,
-        renderTo:"wps-div"
+        renderTo:"wps-div",
     });
 });
 
-
-// HACK HACK HACK
-Ext.DomQuery.select = function(record, root) {
-    //console.log(record,root,"##");
-    return root.getElementsByTagName(record);
-};

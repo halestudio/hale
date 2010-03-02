@@ -45,7 +45,22 @@ Humboldt.ProcessForm = function(config) {
 
                 {name: 'identifier', convert: function(v,record) {
                 return record.firstChild.nodeValue}}
-            ]
+            ],
+        // hack, which will enable to look after namespaced elements, e.g.
+        // ows:Value
+        listeners : {
+                    beforeload:function() {
+                        this._tempSelect = Ext.DomQuery.select;
+                        Ext.DomQuery.select = function(record, root) {
+                            return root.getElementsByTagName(record);
+                        };
+                    },
+                    load: function() {
+                        Ext.DomQuery.select = this._tempSelect ;
+                    },
+                    scope: this
+                }
+
         });
 
     this.schemaCombo = new Ext.form.ComboBox({
@@ -56,11 +71,11 @@ Humboldt.ProcessForm = function(config) {
         //mode: 'local',
         store: this.schemaStore,
         valueField: 'identifier',
-        displayField: 'identifier'
-    });
+        displayField: 'identifier'    });
 
     // configure the form
     config.fileUpload =  true;
+    config.buttonAlign = "right";
     config.items = [
             this.omlField,
             this.gmlField,
@@ -70,13 +85,13 @@ Humboldt.ProcessForm = function(config) {
             text: 'Execute',
             scope: this,
             handler: this.uploadAndExecute 
-        },{
+        },
+        {
             text: 'Reset',
             handler: function(){
                 fp.getForm().reset();
             }
         }];
-
     //
     Humboldt.ProcessForm.superclass.constructor.call(this, config);
 };
