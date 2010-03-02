@@ -118,10 +118,18 @@ Ext.extend(Humboldt.ProcessForm, Ext.form.FormPanel, {
                 this.getForm().submit({
                     url: this.uploadUrl,
                     waitMsg: 'Storing GML and OML files.',
+                    scope: this,
                     success: function(fp, o){
                         this.omlUrl = o.result.omlFile;
                         this.omlUrl = o.result.gmlFile;
-                        this.execute()
+                        try {
+                            this.execute();
+                        }catch(e) {
+                            if (window.console) {
+                                console.log(e);
+                            }
+                            alert(e);
+                        }
                     }
                 });
         }
@@ -132,22 +140,22 @@ Ext.extend(Humboldt.ProcessForm, Ext.form.FormPanel, {
      */
     execute: function() {
         // define the WPS instance
-        this.wps = new OpenLayers.WPS(this.wpsUrl);
+        this.wps = new OpenLayers.WPS(this.wpsUrl,{onSucceeded: this.onExecuted});
 
         // define inputs and outputs
-        var schemaInput = new OpenLayes.WPS.LiteralPut({identifier:"schema",
+        var schemaInput = new OpenLayers.WPS.LiteralPut({identifier:"schema",
                 value: this.schemaCombo.getValue()});
-        var omlInput = new OpenLayes.WPS.ComplexPut({identifier:"oml",
+        var omlInput = new OpenLayers.WPS.ComplexPut({identifier:"oml",
                 value: this.omlUrl});
-        var gmlInput = new OpenLayes.WPS.ComplexPut({identifier:"gml",
+        var gmlInput = new OpenLayers.WPS.ComplexPut({identifier:"gml",
                 value: this.gmlUrl});
 
-        var gmlOutput = new OpenLayes.WPS.ComplexPut({identifier:"gml",
+        var gmlOutput = new OpenLayers.WPS.ComplexPut({identifier:"gml",
                 value: this.gmlUrl,
                 asReference: true});
 
         // define the iobridge process
-        var ioBridgeProcess = new OpenLayes.WPS.Process({identifier:"iobridge",
+        var ioBridgeProcess = new OpenLayers.WPS.Process({identifier:"iobridge",
                 inputs: [schemaInput, omlInput, gmlInput],
                 outputs: [gmlOutput]});
 
@@ -155,6 +163,14 @@ Ext.extend(Humboldt.ProcessForm, Ext.form.FormPanel, {
         this.wps.addProcess(ioBridgeProcess);
         
         // execute process
-        this.wps.execute();
+        this.wps.execute(ioBridgeProcess.identifier);
+    },
+
+    /**
+     * Called when WPS successfully finished
+     */
+    onExecuted: function(process) {
+        var gmlUrl = process.outputs[0].getValue();
+        alert (gmlUrl);
     }
 });
