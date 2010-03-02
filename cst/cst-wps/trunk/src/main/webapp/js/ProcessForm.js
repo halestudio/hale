@@ -114,8 +114,8 @@ Ext.extend(Humboldt.ProcessForm, Ext.form.FormPanel, {
      * Upload all files and call the execute request
      */
     uploadAndExecute: function() {
-        if(requestForm.getForm().isValid()){
-                requestForm.getForm().submit({
+        if(this.getForm().isValid()){
+                this.getForm().submit({
                     url: this.uploadUrl,
                     waitMsg: 'Storing GML and OML files.',
                     success: function(fp, o){
