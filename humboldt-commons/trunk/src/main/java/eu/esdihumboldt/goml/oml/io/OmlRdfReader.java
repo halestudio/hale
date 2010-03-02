@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -111,9 +112,9 @@ public class OmlRdfReader {
 			// it will debug problems while unmarshalling
 			u.setEventHandler(
 					new javax.xml.bind.helpers.DefaultValidationEventHandler());
-			root = u.unmarshal(new StreamSource(new File(rdfFile)),
+			root = u.unmarshal(new StreamSource(new URL(rdfFile).openStream()),
 					AlignmentType.class);
-		} catch (JAXBException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
