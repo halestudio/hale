@@ -17,23 +17,24 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
-public class UploadServlet extends HttpServlet{
+public class UploadServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		
+
 		processRequest(req, resp);
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		
+
 		processRequest(req, resp);
 	}
-	
-	private void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+
+	private void processRequest(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 		try {
 			FileItemFactory factory = new DiskFileItemFactory();
 
@@ -43,22 +44,38 @@ public class UploadServlet extends HttpServlet{
 			// Parse the request
 			List<FileItem> items = upload.parseRequest(req);
 			Iterator iter = items.iterator();
+			File gmlFile = null;
+			File omlFile = null;
 			while (iter.hasNext()) {
-			    FileItem item = (FileItem) iter.next();
+				FileItem item = (FileItem) iter.next();
 
-			    if (!item.isFormField()) {
-			    	  Date d = new Date();
-			    	  System.out.println(this.getServletContext().getRealPath("./"));
-			    	  File uploadedFile = new File(this.getServletContext().getRealPath("./")+"/"+d.getTime());
-			    	  item.write(uploadedFile);
+				if (!item.isFormField()) {
+					if (item.getFieldName().equals("gml")) {
+						Date d = new Date();
+						gmlFile = new File(this.getServletContext()
+								.getRealPath("./tmp")
+								+ "/" + d.getTime() + "." + item.getFieldName());
+						item.write(gmlFile);
+					} else if (item.getFieldName().equals("oml")) {
+						Date d = new Date();
+						omlFile = new File(this.getServletContext()
+								.getRealPath("./tmp")
+								+ "/" + d.getTime() + "." + item.getFieldName());
+						item.write(omlFile);
+					}
 
-			    } else {
-			    	System.out.print(item.getInputStream());
-			    }
+				} else {
+					//throw new IOException("unexpected field "
+					//		+ item.getFieldName());
+				}
 			}
 
+			String r = "Content-type: text/html"
+				+ "{success:true, oml:\"files/tmp/"+omlFile.getName()+"\", gml:\"files/tmp/"+gmlFile.getName()+"\"}";
+			
+			resp.getWriter().write(r);
 		} catch (Exception e) {
-			throw new IOException(e); 
+			throw new IOException(e);
 		}
 	}
 
