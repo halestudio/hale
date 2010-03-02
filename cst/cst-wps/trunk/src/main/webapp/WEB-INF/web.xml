@@ -26,8 +26,14 @@
 		<servlet-name>HumboldtServlet</servlet-name>
 		<servlet-class>org.python.util.PyServlet</servlet-class>
 	</servlet>
-	<servlet-mapping>
-		<servlet-name>HumboldtServlet</servlet-name>
-		<url-pattern>*.py</url-pattern>
-	</servlet-mapping>
+
+        <servlet>
+            <servlet-name>PyServlet</servlet-name>
+            <servlet-class>org.python.util.PyServlet</servlet-class>
+            <load-on-startup>1</load-on-startup>
+        </servlet>
+        <servlet-mapping>
+            <servlet-name>PyServlet</servlet-name>
+            <url-pattern>*.py</url-pattern> 
+        </servlet-mapping>
 </web-app>

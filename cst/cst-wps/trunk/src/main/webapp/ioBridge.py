@@ -3,7 +3,7 @@
 from pywps.Process import WPSProcess
 from eu.esdihumboldt.cst.iobridge.impl import DefaultCstServiceBridge
 import types
-import os
+import os,urllib
 
 def createIOBridgeProcess():
 
@@ -13,7 +13,9 @@ def createIOBridgeProcess():
                     title = "Humboldt CST IOBridge",
                     abstract = """IOBridge process for the Humbold CST.
                     Process acceptes schema file, oml file and input gml
-                    file and provides the transformation""")
+                    file and provides the transformation""",
+                    storeSupported = True,
+                    statusSupported = True)
 
             self.schema = self.addLiteralInput(identifier="schema",
                             title="Schema file",
@@ -31,7 +33,11 @@ def createIOBridgeProcess():
 
         def execute(self):
             dcsb = DefaultCstServiceBridge()
-            transformedGML = dcsb.transform(self.schema.getValue(),
+            cwd = os.path.dirname(os.path.abspath(__file__))
+            schemaPath = os.path.join(cwd, self.schema.getValue())
+            schemaUrl = urllib.basejoin("file:",schmaPath)
+            self.status.set("Transforming input GML")
+            transformedGML = dcsb.transform(schemaUrl,
                                             self.oml.getValue(),
                                             self.gmlin.getValue())
 

@@ -13,6 +13,7 @@ import traceback
 
 from pywps import config
 import os
+#import logging
 
 class IOBridgeServlet(HttpServlet):
 
@@ -26,8 +27,9 @@ class IOBridgeServlet(HttpServlet):
         self.doPywps(request, response, inputQuery, pywps.METHOD_GET)
 
     def doPost(self,request,response):
+        #logging.basicConfig(filename="/tmp/apache.log",level=logging.DEBUG)
 
-        inputQuery = request.getQueryString()
+        inputQuery = request.getReader()
         self.doPywps(request, response, inputQuery, pywps.METHOD_POST)
 
     def doPywps(self,request, response, inputQuery,method):
