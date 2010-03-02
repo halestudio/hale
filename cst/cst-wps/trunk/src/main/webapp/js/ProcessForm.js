@@ -120,6 +120,7 @@ Ext.extend(Humboldt.ProcessForm, Ext.form.FormPanel, {
                     waitMsg: 'Storing GML and OML files.',
                     scope: this,
                     success: function(fp, o){
+                        
                         this.omlUrl = o.result.omlFile;
                         this.omlUrl = o.result.gmlFile;
                         try {
@@ -140,7 +141,8 @@ Ext.extend(Humboldt.ProcessForm, Ext.form.FormPanel, {
      */
     execute: function() {
         // define the WPS instance
-        this.wps = new OpenLayers.WPS(this.wpsUrl,{onSucceeded: this.onExecuted});
+        this.wps = new OpenLayers.WPS(this.wpsUrl,{onSucceeded: this.onExecuted,
+                                                   onFailed: this.onFailed});
 
         // define inputs and outputs
         var schemaInput = new OpenLayers.WPS.LiteralPut({identifier:"schema",
@@ -162,6 +164,7 @@ Ext.extend(Humboldt.ProcessForm, Ext.form.FormPanel, {
         // register process
         this.wps.addProcess(ioBridgeProcess);
         
+        this.showMessage();
         // execute process
         this.wps.execute(ioBridgeProcess.identifier);
     },
@@ -170,7 +173,33 @@ Ext.extend(Humboldt.ProcessForm, Ext.form.FormPanel, {
      * Called when WPS successfully finished
      */
     onExecuted: function(process) {
+        Ext.MessageBox.hide();
         var gmlUrl = process.outputs[0].getValue();
-        alert (gmlUrl);
+        document.getElementById("wps-results").innerHTML = gmlUrl;
+    },
+
+    /**
+     * Called when WPS failed
+     */
+    onFailed: function(process) {
+        Ext.MessageBox.hide();
+        document.getElementById("wps-results").innerHTML = "<b>"+process.exception.code+": </b>"+
+            process.exception.text;
+    },
+
+    /**
+     * Show progress message box
+     */
+    showMessage: function() {
+        Ext.MessageBox.show({
+            msg: 'Transforming GML file',
+            progressText: 'Transforming...',
+            width:300,
+            wait:true,
+            waitConfig: {interval:200}//,
+            //icon:'ext-mb-download' //, //custom class in msg-box.html
+            //animEl: 'mb7'
+        });
     }
+
 });

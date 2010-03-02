@@ -70,8 +70,8 @@ public class UploadServlet extends HttpServlet {
 				}
 			}
 
-			String r = "Content-type: text/html"
-				+ "{success:true, oml:\"files/tmp/"+omlFile.getName()+"\", gml:\"files/tmp/"+gmlFile.getName()+"\"}";
+                        resp.setContentType("text/html");
+			String r = "{success:true, oml:\"files/tmp/"+omlFile.getName()+"\", gml:\"files/tmp/"+gmlFile.getName()+"\"}";
 			
 			resp.getWriter().write(r);
 		} catch (Exception e) {

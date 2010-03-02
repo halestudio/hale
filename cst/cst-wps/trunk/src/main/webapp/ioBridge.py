@@ -35,12 +35,22 @@ def createIOBridgeProcess():
             dcsb = DefaultCstServiceBridge()
             cwd = os.path.dirname(os.path.abspath(__file__))
             schemaPath = os.path.join(cwd, self.schema.getValue())
-            schemaUrl = urllib.basejoin("file:",schmaPath)
+            schemaUrl = urllib.basejoin("file:",schemaPath)
             self.status.set("Transforming input GML")
-            transformedGML = dcsb.transform(schemaUrl,
-                                            self.oml.getValue(),
-                                            self.gmlin.getValue())
 
+            tempDir = os.path.join(cwd,"tmp")
+            omlFile = os.path.basename(self.oml.getValue())
+            gmlFile = os.path.basename(self.gmlin.getValue())
+
+            transformedGML = None
+            import java.lang.NullPointerException
+            try:
+                transformedGML = dcsb.transform(schemaUrl,
+                                            os.path.join(tempDir, omlFile),
+                                            os.path.join(tempDir,gmlFile))
+
+            except java.lang.NullPointerException,e:
+                return "Could not transform GML, got java.lang.NullPointerException: %s" % e
             self.gmlout.setValue(transformedGML)
 
     return IOBridgeProcess()
