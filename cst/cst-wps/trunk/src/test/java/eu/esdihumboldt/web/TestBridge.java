@@ -15,11 +15,13 @@ public class TestBridge {
 	 * @param args
 	 */
 	@Test
-	public void testBridge() {
-		try{
-		URL oml = this.getClass().getResource("HY/testproject.xml.goml");
-		URL gml = this.getClass().getResource("wfs_va.gml");
-		URL xsd = this.getClass().getResource("HY/Hydrography.xsd");		
+	public void testBridge() throws Exception{
+		
+		
+		try {
+		File oml = new File("./src/main/webapp/xsds/HY/testproject.xml.goml");		
+		File gml = new File("./src/main/webapp/xsds/wfs_va.gml");		
+		File xsd = new File("./src/main/webapp/xsds/HY/Hydrography.xsd");			
 	
 		System.out.println(xsd.toURI());
 		System.out.println(
