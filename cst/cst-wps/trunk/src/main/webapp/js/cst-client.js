@@ -9,7 +9,7 @@ Ext.onReady(function(){
     //
     var processForm = new Humboldt.ProcessForm({
         wpsUrl:"IOBridgeServlet.py",
-        uploadUrl:"Sem to, Honzo, napis",
+        uploadUrl:"upload",
         width: 500,
         frame: true,
         title: 'Humboldt CST IOBridge web client',
