@@ -39,7 +39,9 @@ public class GenericFunctionWizardFactory implements FunctionWizardFactory {
 
 	@Override
 	public boolean supports(AlignmentInfo selection) {
-		// TODO Auto-generated method stub
+		if (selection.getFirstSourceItem().isFeatureType() || selection.getFirstTargetItem().isFeatureType()) {
+			return false;
+		}
 		return true;
 	}
 
