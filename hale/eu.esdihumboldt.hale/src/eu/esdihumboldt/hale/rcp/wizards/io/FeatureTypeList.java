@@ -84,7 +84,33 @@ public class FeatureTypeList extends Composite {
 	 * @return the selected {@link FeatureType}s
 	 */
 	public Collection<FeatureType> getSelection() {
-		return null;
+		Collection<FeatureType> selectedFeatureTypes = new ArrayList<FeatureType>();
+		
+		List<FeatureType> types = null;
+		
+		String namespace = this._namespaces.getText();
+		if (namespace.equals("") && (_featuresList != null)) {
+			types = new ArrayList<FeatureType>();
+			Set<String> keys = _types.keySet();
+			for (String key: keys) {
+				types.addAll(_types.get(key));
+			}
+		}
+		else {
+			types = _types.get(namespace);
+		}
+		
+		String[] selection = _featuresList.getSelection();
+		for (int i=0; i<selection.length; i++) {
+			for (FeatureType type: types) {
+				if (type.getName().getLocalPart().equals(selection[i])) {
+					selectedFeatureTypes.add(type);
+					break;
+				}
+			}
+		}
+		
+		return selectedFeatureTypes;
 	}
 	
 	/**

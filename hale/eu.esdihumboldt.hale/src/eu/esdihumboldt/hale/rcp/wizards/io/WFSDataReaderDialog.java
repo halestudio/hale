@@ -89,7 +89,7 @@ public class WFSDataReaderDialog extends Dialog {
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) display.sleep();
 		}
-		_log.debug("returning result."); //$NON-NLS-1$
+		_log.debug("returning result.");
 		
 		return this.url_result;
 	}
@@ -192,7 +192,7 @@ public class WFSDataReaderDialog extends Dialog {
 		
 		Composite filterComponent = new Composite(filterArea,SWT.NONE);
 		filterComponent.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
-		final OGCFilterText filterText = new OGCFilterText(Messages.WFSDataReaderDialog_FilterTitle,Messages.WFSDataReaderDialog_FilterDescription,filterComponent);
+		final OGCFilterText filterText = new OGCFilterText(selection, Messages.WFSDataReaderDialog_FilterTitle,Messages.WFSDataReaderDialog_FilterDescription,filterComponent);
 	
 
 				
