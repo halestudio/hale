@@ -64,7 +64,7 @@ public class OGCFilterDialog extends Dialog {
 		buttons.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 		
 		final Button finishButton = new Button(buttons, SWT.NONE);
-		finishButton.setText(Messages.OGCFilterDialog_FilterOperatorText);
+		finishButton.setText("Use this filter");
 		finishButton.addListener(SWT.Selection, new Listener () {
 			public void handleEvent(Event event) {
 				// do finish
