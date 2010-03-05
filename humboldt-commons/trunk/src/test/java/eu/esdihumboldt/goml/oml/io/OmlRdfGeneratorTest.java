@@ -9,7 +9,7 @@
  * available, please refer to : http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2008 to 2010.
  */
-package eu.esdihumboldt.goml;
+package eu.esdihumboldt.goml.oml.io;
 
 import static org.junit.Assert.*;
 

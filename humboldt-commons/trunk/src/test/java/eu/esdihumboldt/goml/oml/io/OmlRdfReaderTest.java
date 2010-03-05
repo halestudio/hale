@@ -11,7 +11,7 @@
  */
 
 
-package eu.esdihumboldt.goml;
+package eu.esdihumboldt.goml.oml.io;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
