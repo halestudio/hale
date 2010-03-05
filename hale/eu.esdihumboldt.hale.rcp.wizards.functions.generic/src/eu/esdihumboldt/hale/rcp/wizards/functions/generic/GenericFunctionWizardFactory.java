@@ -39,7 +39,8 @@ public class GenericFunctionWizardFactory implements FunctionWizardFactory {
 
 	@Override
 	public boolean supports(AlignmentInfo selection) {
-		if (selection.getFirstSourceItem().isFeatureType() || selection.getFirstTargetItem().isFeatureType()) {
+		if ((selection.getFirstSourceItem() != null && selection.getFirstSourceItem().isFeatureType()) 
+				|| (selection.getFirstTargetItem() != null && selection.getFirstTargetItem().isFeatureType())) {
 			return false;
 		}
 		return true;
