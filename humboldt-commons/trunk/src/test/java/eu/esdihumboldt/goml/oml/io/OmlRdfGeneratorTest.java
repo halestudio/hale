@@ -11,8 +11,6 @@
  */
 package eu.esdihumboldt.goml.oml.io;
 
-import static org.junit.Assert.*;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -21,8 +19,6 @@ import javax.xml.bind.JAXBException;
 import org.junit.Test;
 
 import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
-import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 
 /**
  * @author Anna Pitaev, Logica
