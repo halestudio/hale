@@ -939,12 +939,12 @@ public class OmlRdfGenerator {
 	 * @return
 	 */
 	private ApplyType getApplayType(Function function) {
-		ApplyType aType = new ApplyType();
+		//ApplyType aType = new ApplyType();
 		// TODO implement it for the next release, in case we have some examples
 		// aType.setOperation(function.getService().toString());
-		aType.setValue(null);
+		//aType.setValue(null);
 
-		return aType;
+		return null;
 	}
 
 	/**
