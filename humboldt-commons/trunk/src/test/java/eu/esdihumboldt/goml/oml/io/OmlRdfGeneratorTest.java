@@ -94,6 +94,7 @@ public class OmlRdfGeneratorTest {
 	 * @throws ConfigurationException
 	 * @throws SAXException
 	 */
+	@SuppressWarnings("unchecked") // XMLUnit uses a raw List
 	@Test
 	public final void testWriteFromReadOML() throws URISyntaxException, JAXBException, FileNotFoundException, ConfigurationException, SAXException {
 		// Read in the test file.
