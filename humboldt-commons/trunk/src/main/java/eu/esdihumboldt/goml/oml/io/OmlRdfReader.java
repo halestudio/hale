@@ -152,6 +152,7 @@ public class OmlRdfReader {
 	 */
 
 	private List<IValueClass> getValueClass(List<ValueClassType> valueClass) {
+		if (valueClass.size()>0){
 		List<IValueClass> oValueClasses = new ArrayList<IValueClass>();
 		IValueClass oValueClass = new ValueClass();
 		Iterator<ValueClassType> iterator = valueClass.iterator();
@@ -168,6 +169,8 @@ public class OmlRdfReader {
 			oValueClasses.add(oValueClass);
 		}
 		return oValueClasses;
+		}
+		return null;
 	}
 
 	/**
@@ -831,9 +834,10 @@ public class OmlRdfReader {
 				vClass.setAbout(vcType.getAbout());
 				vClass.setResource(vcType.getResource());
 				vClass.getValue().addAll(getValueExpression(vcType.getValue()));
+				restriction.setValueClass(vClass);
 			}
 
-			restriction.setValueClass(vClass);
+			
 			if (rType.getComparator() != null)
 				restriction.setComparator(getComparator(rType.getComparator()));
 			restriction.setCqlStr(rType.getCqlStr());

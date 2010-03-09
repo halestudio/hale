@@ -503,13 +503,17 @@ public class OmlRdfGenerator {
 			//			rType.setOnAttribute(getOnAttributeType(restriction
 			//					.getOnAttribute()));
 
-			// if list of value expressions for this restriction is empty
+			// if a list of value expressions for this restriction is empty
 			// use ValueClass
 			List<IValueExpression> values = restriction.getValue();
 			if (values != null && values.size() > 0) {
-				rType.setValueClass(getValueClass(values));
+				if (getValueClass(values)!=null){
+					rType.setValueClass(getValueClass(values));
+				}
 			} else {
-				rType.setValueClass(getValueClass(restriction.getValueClass()));
+				if (getValueClass(restriction.getValueClass())!=null){
+					rType.setValueClass(getValueClass(restriction.getValueClass()));
+				}
 			}
 		}
 		return rType;
@@ -521,15 +525,17 @@ public class OmlRdfGenerator {
 	 * @return
 	 */
 	private ValueClassType getValueClass(ValueClass valueClass) {
-		ValueClassType vcType = new ValueClassType();
+		
 		if (valueClass != null) {
+			ValueClassType	vcType = new ValueClassType();
 			vcType.setAbout(valueClass.getAbout());
 			vcType.setResource(valueClass.getResource());
 			if (getJAXBValueExpressions(valueClass.getValue()) != null) {
 				vcType.getValue().addAll(getJAXBValueExpressions(valueClass.getValue()));
 			}
+			return vcType;
 		}
-		return vcType;
+		return null;
 	}
 
 	private Collection<? extends ValueExprType> getJAXBValueExpressions(
@@ -557,11 +563,13 @@ public class OmlRdfGenerator {
 	 * @return
 	 */
 	private ValueClassType getValueClass(List<IValueExpression> value) {
-		ValueClassType vcType = new ValueClassType();
+		
 		if (getJAXBValueExpressions(value) != null) {
+			ValueClassType vcType  = new ValueClassType();
 			vcType.getValue().addAll(getJAXBValueExpressions(value));
+			return vcType;
 		}
-		return vcType;
+		return null;
 	}
 
 	/**
