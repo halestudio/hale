@@ -11,38 +11,142 @@
  */
 package eu.esdihumboldt.goml.oml.io;
 
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.transform.stream.StreamSource;
 
+import org.apache.log4j.Logger;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.custommonkey.xmlunit.exceptions.ConfigurationException;
+import org.custommonkey.xmlunit.jaxp13.Validator;
+import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.utilities.TestUtilities;
 
 /**
- * @author Anna Pitaev, Logica
- *
+ * @author Anna Pitaev, Logica Mark Doyle, Logica
+ * 
  */
 public class OmlRdfGeneratorTest {
+	/**
+	 * Logger for this class
+	 */
+	private static final Logger LOG = Logger.getLogger(OmlRdfGeneratorTest.class);
 
+	/**
+	 * The schema used in the tests. TODO Externalise.
+	 */
+	private static final String OML_ALIGNMENT_SCHEMA = "align.xsd";
+
+	/**
+	 * The OML source file used in the tests. TODO Externalise.
+	 */
+	private static final String TEST_OML_SOURCE_FILE = "test_newFilterOML_TR.xml";
+
+	/**
+	 * File name to serialise xml instance to. TODO Externalise.
+	 */
+	private static final String TEST_GENERATED_OML_FILE = "testWriteFromReadOmlGenerated.xml";
+
+	/**
+	 * If we want to keep a copy of the generated xml instance after the test set this to true. TODO externalise!
+	 */
+	private boolean keepGeneratedFile = true;
+
+	/**
+	 * Temporary folder used by the tests. Cleaned up after the tests have run.
+	 */
+	@Rule
+	public static TemporaryFolder TEMP_FOLDER = new TemporaryFolder();
+
+	/**
+	 * Single static method run once before any tests. Used to do any setup common to all tests.
+	 */
+	@BeforeClass
+	public static void setUpParsers() {
+		// Set up which XML classes we will use for the test.
+		XMLUnit.setControlParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
+		XMLUnit.setTestParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
+		XMLUnit.setSAXParserFactory("org.apache.xerces.jaxp.SAXParserFactoryImpl");
+		XMLUnit.setIgnoreWhitespace(true);
+	}
+
+	/**
+	 * Tests the softwares ability to read an OML file in and serialise it back to a file. The schema is validated and
+	 * serialised xml instance is validated against the schema.
+	 * 
+	 * @throws URISyntaxException
+	 * @throws JAXBException
+	 * @throws FileNotFoundException
+	 * @throws ConfigurationException
+	 * @throws SAXException
+	 */
 	@Test
-	public final void testWrite() {
-		URI uri = null;
-		try {
-			uri = new URI(OmlRdfReaderTest.class.getResource("test_newFilterOML_TR.xml").getFile());
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public final void testWriteFromReadOML() throws URISyntaxException, JAXBException, FileNotFoundException, ConfigurationException, SAXException {
+		// Read in the test file.
+		LOG.trace("Reading " + TEST_OML_SOURCE_FILE + " test file");
+		URI uri = new URI(OmlRdfGeneratorTest.class.getResource(OmlRdfGeneratorTest.TEST_OML_SOURCE_FILE).getFile());
 		Alignment alignment = new OmlRdfReader().read(uri.getPath());
+
+		// Serialise the alignment instance to an xml file.
+		LOG.trace("Generating and writing oml file");
 		OmlRdfGenerator omlGenerator = new OmlRdfGenerator();
-		try {
-			omlGenerator.write(alignment, "test_newFilterOML_TR_generated.xml");
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		String xmlGenerationPath = TEMP_FOLDER.getRoot().getPath() + "/" + OmlRdfGeneratorTest.TEST_GENERATED_OML_FILE;
+		omlGenerator.write(alignment, xmlGenerationPath);
+
+		// If we want a copy (for debug purposes) copy the file to the user home. Required because the @Rule for TEMP_FOLDER
+		// cleans up after the test
+		if (keepGeneratedFile) {
+			TestUtilities.copyTo(new File(xmlGenerationPath), new File(System.getProperty("user.home") + "/testWriteFromReadOmlGeneratedInstance.xml"));
 		}
+
+		// Create an XML validator
+		LOG.trace("Validating generated xml");
+		Validator validator = new Validator();
+
+		// Get the schema file.
+		File schemaFile = new File(getClass().getResource("/schema/" + OmlRdfGeneratorTest.OML_ALIGNMENT_SCHEMA).toURI());
+		assertTrue("Checking if the schema file exists", schemaFile.exists());
+		assertTrue("Checking if we can read the schema file", schemaFile.canRead());
+
+		// If tracing is enabled print out the schema file to the console. Useful for debugging.
+		if (LOG.isTraceEnabled()) {
+			TestUtilities.printFileToConsole(schemaFile);
+		}
+
+		// Add the schema to the validator, any XML instances are now validated against this schema.
+		validator.addSchemaSource(new StreamSource(schemaFile));
+
+		// Validate the XML schema.
+		assertTrue("The schema is invalid", validator.isSchemaValid());
+
+		// Validate the XML instance, if the instance is invalid print out the reasons why.
+		StreamSource generatedXmlStreamSource = new StreamSource(xmlGenerationPath);
+		boolean instanceValid = validator.isInstanceValid(generatedXmlStreamSource);
+		if (!instanceValid) {
+			List<SAXParseException> errors = validator.getInstanceErrors(generatedXmlStreamSource);
+			LOG.info("There were " + errors.size() + " parse errors");
+			for (SAXParseException e : errors) {
+				LOG.info("Line:" + e.getLineNumber() + " Column:" + e.getColumnNumber() + " - " + e);
+			}
+		}
+
+		// Note: XMLUnit asserts don't work with these validators so I must use the returned boolean
+		// Not the prettiest but it works.
+		assertTrue("The generated xml instance is invalid.  Errors have been logged as per log4j configuration", instanceValid);
 	}
 
 }
