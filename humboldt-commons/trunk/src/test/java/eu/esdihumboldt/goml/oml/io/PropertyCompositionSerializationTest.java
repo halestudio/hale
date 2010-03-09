@@ -20,7 +20,7 @@ import javax.xml.bind.JAXBException;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.esdihumboldt.goml.OmlRdfReaderTest;
+
 import eu.esdihumboldt.goml.align.Alignment;
 
 /**
