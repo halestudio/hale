@@ -154,7 +154,7 @@ public class OmlRdfGenerator {
 		// impl.
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-		m.marshal(new JAXBElement(new QName(null, "Alignment", "align"),
+		m.marshal(new JAXBElement(new QName("http://knowledgeweb.semanticweb.org/heterogeneity/alignment", "Alignment", "align"),
 				AlignmentType.class, aType), new File(xmlPath));
 	}
 
