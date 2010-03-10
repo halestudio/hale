@@ -979,11 +979,14 @@ public class OmlRdfReader {
 				valueCondition.size());
 		Iterator<ValueConditionType> iterator = valueCondition.iterator();
 		Restriction restriction;
+		List<ValueExprType> valueExpr = null;
 		while (iterator.hasNext()) {
 			ValueConditionType condition = iterator.next();
 			// get List<ValueExpressionType>
-			List<ValueExprType> valueExpr = condition.getRestriction()
-					.getValue();
+			if (condition.getRestriction() != null && condition.getRestriction().getValue() != null){
+				valueExpr = condition.getRestriction().getValue();
+			}
+					
 			if ((valueExpr == null || valueExpr.size() == 0)
 					&& condition.getRestriction().getValueClass() != null) {
 				valueExpr = condition.getRestriction().getValueClass()
@@ -993,8 +996,10 @@ public class OmlRdfReader {
 			// restriction = new Restriction(null,
 			// getValueExpression(valueExpr));
 			restriction = new Restriction(getValueExpression(valueExpr));
-			restriction.setComparator(getComparator(condition.getRestriction()
-					.getComparator()));
+			if (condition.getRestriction() != null && condition.getRestriction().getComparator() != null){
+				restriction.setComparator(getComparator(condition.getRestriction().getComparator()));
+			}
+					
 			// add Sequence ID if it exists
 			if (condition.getSeq() != null) {
 				restriction.setSeq(condition.getSeq());
