@@ -27,7 +27,11 @@ import java.util.Map;
 
 import org.geotools.feature.simple.SimpleFeatureImpl;
 import org.opengis.feature.Feature;
+import org.opengis.feature.type.PropertyDescriptor;
 
+import com.iabcinc.jmep.Environment;
+import com.iabcinc.jmep.Expression;
+import com.iabcinc.jmep.hooks.Constant;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.TopologyException;
 import com.vividsolutions.jts.operation.buffer.BufferBuilder;
@@ -47,7 +51,7 @@ import eu.esdihumboldt.goml.rdf.About;
  */
 public class NetworkExpansionFunction extends AbstractCstFunction {
 
-	private double bufferWidth = 10.0;
+	private String bufferExpression = "10.0";
 	private int capStyle = BufferParameters.CAP_ROUND;
 	
 	public static final String BUFFERWIDTH = "BUFFERWIDTH";
@@ -58,20 +62,38 @@ public class NetworkExpansionFunction extends AbstractCstFunction {
 	
 	
 	
-	public void setBufferWidth(double bufferWidth) {
-		this.bufferWidth = bufferWidth;
+	public void setBufferExpression(String bufferExpression) {
+		this.bufferExpression = bufferExpression;
 	}
 
 	public Feature transform(Feature source, Feature target) {
+		// find out which input parameters have been used
+		Environment env = new Environment();
+		for (PropertyDescriptor pd : source.getType().getDescriptors()) {
+			if (this.bufferExpression.contains(pd.getName().getLocalPart())) {
+				Object value = source.getProperty(
+						pd.getName().getLocalPart()).getValue();
+				Number number = Double.parseDouble(value.toString());
+				env.addVariable(pd.getName().getLocalPart(), 
+						new Constant(number));
+			}
+		}
+		
 		Geometry old_geometry = (Geometry)source.getDefaultGeometryProperty().getValue();
 		if (old_geometry != null) {
 			Geometry new_geometry = null;
 			try {
+				Expression expr = new Expression(this.bufferExpression, env);
+				Object result = expr.evaluate();
+				
 				BufferParameters bufferParameters = new BufferParameters();
-				bufferParameters.setEndCapStyle(capStyle);
+				bufferParameters.setEndCapStyle(this.capStyle);
 				BufferBuilder bb = new BufferBuilder(new BufferParameters());
-				new_geometry = bb.buffer(old_geometry, bufferWidth);
-				((SimpleFeatureImpl)target).setDefaultGeometry(new_geometry);
+				new_geometry = bb.buffer(old_geometry, Double.parseDouble(
+						result.toString()));
+//				((SimpleFeatureImpl)target).setDefaultGeometry(new_geometry);
+				((SimpleFeatureImpl)target).setAttribute(
+						this.targetProperty.getLocalname(), new_geometry);
 			} catch (Exception ex) {
 				if (!ex.getClass().equals(TopologyException.class)) {
 					throw new RuntimeException(ex);
@@ -84,7 +106,7 @@ public class NetworkExpansionFunction extends AbstractCstFunction {
 	public boolean configure(ICell cell) {
 		for (IParameter ip : cell.getEntity1().getTransformation().getParameters()) {
 				if (ip.getName().equals(NetworkExpansionFunction.BUFFERWIDTH)) {
-					this.setBufferWidth(Double.parseDouble(ip.getValue()));
+					this.setBufferExpression(ip.getValue());
 				}
 				else if(ip.getName().equals(NetworkExpansionFunction.CAPSTYLE)) {
 					this.capStyle = Integer.parseInt(ip.getValue());
