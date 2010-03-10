@@ -609,24 +609,35 @@ public class OmlRdfReader {
 	private Relation getOMLRelation(
 			eu.esdihumboldt.generated.oml.RelationType relationType) {
 		Relation relation = null;
+		IAbout about = null;
+		List<FeatureClass> features = null;
 		if (relationType != null) {
-			IAbout about = new About(relationType.getAbout());
+			if (relationType.getAbout() != null){
+				about = new About(relationType.getAbout());
+			}
 			relation = new Relation(about);
 			// set label list
-			relation.setLabel(relationType.getLabel());
+			if (relation.getLabel() != null){
+				relation.setLabel(relationType.getLabel());
+			}
 			// set transformation
-			relation.setTransformation(getTransformation(relationType
-					.getTransf()));
+			if (relationType.getTransf() != null){
+				relation.setTransformation(getTransformation(relationType.getTransf()));
+			}
 			// set Range Restriction
-			List<FeatureClass> features = new ArrayList<FeatureClass>();
+			if (relationType.getRangeRestriction() != null){
+			 features = new ArrayList<FeatureClass>();
 			features
 					.add(getRangeRestriction(relationType.getRangeRestriction()));
 			relation.setRangeRestriction(features);
+			}
 			// set Domain Restriction
-			features = new ArrayList<FeatureClass>();
-			features.add(getDomainRestriction(relationType
+			if (relationType.getDomainRestriction() != null){
+				features = new ArrayList<FeatureClass>();
+				features.add(getDomainRestriction(relationType
 					.getDomainRestriction()));
 			relation.setDomainRestriction(features);
+			}
 		}
 		return relation;
 	}
