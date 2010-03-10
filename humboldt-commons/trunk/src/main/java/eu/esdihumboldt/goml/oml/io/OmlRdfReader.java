@@ -839,7 +839,9 @@ public class OmlRdfReader {
 				Resource resource = new Resource(transf.getResource());
 				trans.setService(resource);
 				// set parameter list
+			if (transf.getParam() != null){	
 				trans.setParameters(getParameters(transf.getParam()));
+			}
 			} else {
 				trans = null;
 			}
