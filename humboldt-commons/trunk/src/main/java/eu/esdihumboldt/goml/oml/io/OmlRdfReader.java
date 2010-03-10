@@ -926,29 +926,39 @@ public class OmlRdfReader {
 		List<Restriction> restrictions = new ArrayList<Restriction>(
 				classConditions.size());
 		Iterator<ClassConditionType> iterator = classConditions.iterator();
-		Restriction restriction;
+		Restriction restriction = null;;
 		ClassConditionType classCondition;
 		while (iterator.hasNext()) {
 			classCondition = iterator.next();
 			RestrictionType rType = classCondition.getRestriction();
-			List<ValueExprType> valueExpr = rType.getValue();
+			if (rType != null){
+				
+				//set value expression if exist
+				if (rType.getValue() != null){
+				List<ValueExprType> valueExpr = rType.getValue();
+				restriction = new Restriction(getValueExpression(valueExpr));
+				}
+				// set value class to add about and resource document
+				ValueClass vClass = new ValueClass();
+				ValueClassType vcType = rType.getValueClass();
+				if (vcType != null) {
+					vClass.setAbout(vcType.getAbout());
+					vClass.setResource(vcType.getResource());
+					vClass.getValue().addAll(getValueExpression(vcType.getValue()));
+					restriction.setValueClass(vClass);
+				}
+				if (rType.getComparator() != null){
+					restriction.setComparator(getComparator(rType.getComparator()));
+				}
+				if (rType.getCqlStr() != null){
+					restriction.setCqlStr(rType.getCqlStr());
+				}
+				
+			}
 			// TODO clear with MdV
 			// restriction = new Restriction(null,
 			// getValueExpression(valueExpr));
-			restriction = new Restriction(getValueExpression(valueExpr));
-			// set value class to add about and resource document
-			ValueClass vClass = new ValueClass();
-			ValueClassType vcType = rType.getValueClass();
-			if (vcType != null) {
-				vClass.setAbout(vcType.getAbout());
-				vClass.setResource(vcType.getResource());
-				vClass.getValue().addAll(getValueExpression(vcType.getValue()));
-				restriction.setValueClass(vClass);
-			}
-
-			if (rType.getComparator() != null)
-				restriction.setComparator(getComparator(rType.getComparator()));
-			restriction.setCqlStr(rType.getCqlStr());
+			
 			restrictions.add(restriction);
 
 		}
