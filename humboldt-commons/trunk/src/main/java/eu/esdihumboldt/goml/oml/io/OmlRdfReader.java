@@ -1069,12 +1069,18 @@ public class OmlRdfReader {
 		Iterator<ValueExprType> iterator = valueExpr.iterator();
 		while (iterator.hasNext()) {
 			ValueExprType jaxbExpr = iterator.next();
+			if (jaxbExpr.getLiteral() != null){
 			omlExpr = new ValueExpression(jaxbExpr.getLiteral());
-			omlExpr.setMax(jaxbExpr.getMax());
-			omlExpr.setMin(jaxbExpr.getMin());
+			if (jaxbExpr.getMax() != null){
+				omlExpr.setMax(jaxbExpr.getMax());
+			}
+			if (jaxbExpr.getMin() != null) {
+				omlExpr.setMin(jaxbExpr.getMin());
+			}
 			// TODO implement set Apply
 			// omlExpr.setApply(getFunction(jaxbExpr.getApply()));
 			omlExpressions.add(omlExpr);
+			}
 
 		}
 
