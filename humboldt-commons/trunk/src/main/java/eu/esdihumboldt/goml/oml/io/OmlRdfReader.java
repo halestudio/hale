@@ -660,21 +660,30 @@ public class OmlRdfReader {
 			if (clazz != null) {
 				// set about
 				About fAbout = new About(java.util.UUID.randomUUID());
-				fAbout.setAbout(clazz.getAbout());
+				if (clazz.getAbout() != null){
+					fAbout.setAbout(clazz.getAbout());
+				}
 				fClass.setAbout(fAbout);
 				// set attributeValueCondition list
-				fClass.setAttributeValueCondition(getRestrictions(clazz
-						.getAttributeValueCondition()));
+				if (clazz.getAttributeValueCondition() != null){
+					fClass.setAttributeValueCondition(getRestrictions(clazz.getAttributeValueCondition()));
+				}
 				// set attributeTypeCondition list
-				fClass.setAttributeTypeCondition(getRestrictions(clazz
-						.getAttributeTypeCondition()));
+				if (clazz.getAttributeTypeCondition() != null){
+					fClass.setAttributeTypeCondition(getRestrictions(clazz.getAttributeTypeCondition()));
+				}
 				// set attributeOccurenceCondition
-				fClass.setAttributeOccurenceCondition(getRestrictions(clazz
-						.getAttributeOccurenceCondition()));
+				if (clazz.getAttributeOccurenceCondition() != null){
+					fClass.setAttributeOccurenceCondition(getRestrictions(clazz.getAttributeOccurenceCondition()));
+				}
 				// set label list
-				fClass.setLabel(clazz.getLabel());
+				if (clazz.getLabel() != null){
+					fClass.setLabel(clazz.getLabel());
+				}
 				// set transformation
-				fClass.setTransformation(getTransformation(clazz.getTransf()));
+				if (clazz.getTransf() != null){
+					fClass.setTransformation(getTransformation(clazz.getTransf()));
+				}
 			}
 		}
 
@@ -698,21 +707,30 @@ public class OmlRdfReader {
 			if (clazz != null) {
 				// set about
 				About fAbout = new About(java.util.UUID.randomUUID());
-				fAbout.setAbout(clazz.getAbout());
+				if (clazz.getAbout() != null){
+					fAbout.setAbout(clazz.getAbout());
+				}
 				fClass.setAbout(fAbout);
 				// set attributeValueCondition list
-				fClass.setAttributeValueCondition(getRestrictions(clazz
-						.getAttributeValueCondition()));
+				if (clazz.getAttributeValueCondition() != null) {
+					fClass.setAttributeValueCondition(getRestrictions(clazz.getAttributeValueCondition()));
+				}
 				// set attributeTypeCondition list
-				fClass.setAttributeTypeCondition(getRestrictions(clazz
-						.getAttributeTypeCondition()));
+				if (clazz.getAttributeTypeCondition() != null) {
+					fClass.setAttributeTypeCondition(getRestrictions(clazz.getAttributeTypeCondition()));
+				}
 				// set attributeOccurenceCondition
-				fClass.setAttributeOccurenceCondition(getRestrictions(clazz
-						.getAttributeOccurenceCondition()));
+				if (clazz.getAttributeOccurenceCondition()!= null) {
+					fClass.setAttributeOccurenceCondition(getRestrictions(clazz.getAttributeOccurenceCondition()));
+				}
 				// set label list
-				fClass.setLabel(clazz.getLabel());
+				if (clazz.getLabel() != null){
+					fClass.setLabel(clazz.getLabel());
+				}
 				// set transformation
-				fClass.setTransformation(getTransformation(clazz.getTransf()));
+				if (clazz.getTransf() != null) {
+					fClass.setTransformation(getTransformation(clazz.getTransf()));
+				}
 			}
 		}
 
