@@ -350,6 +350,7 @@ public class OmlRdfReader {
 		// instantiate entity es property
 
 		Entity entity = null;
+		IAbout about = null;
 
 		// TODO add convertion to the RelationType if needed
 		if (entityType instanceof PropertyType) {
@@ -359,7 +360,9 @@ public class OmlRdfReader {
 				PropertyCompositionType propCompType = ((PropertyType) entityType)
 						.getPropertyComposition();
 				// instantiate entity as ComposedProperty
-				IAbout about = new About(entityType.getAbout());
+				if (entityType.getAbout()!= null){
+					about = new About(entityType.getAbout());
+				}
 				entity = new ComposedProperty(getOperator(propCompType
 						.getOperator()), about);
 
@@ -384,35 +387,56 @@ public class OmlRdfReader {
 				// set ComposedProperty specific members
 			} else {
 				// instantiate entity as property
-				entity = new Property(new About(entityType.getAbout()));
+				if (entityType.getAbout() != null){
+					about = new About(entityType.getAbout());
+				}
+				entity = new Property(about);
 			}
 			// set property-specific members to the entity
 			PropertyType propertyType = ((PropertyType) entityType);
 			// set domainRestriction
+			if (propertyType.getDomainRestriction() != null){
 			((Property) entity)
 					.setDomainRestriction(getDomainRestriction(propertyType
 							.getDomainRestriction()));
+			}
 			// set typeCondition
+			if (propertyType.getTypeCondition() != null){
 			((Property) entity).setTypeCondition(propertyType
 					.getTypeCondition());
+			}
 			// set value conditions
-			((Property) entity)
-					.setValueCondition(getValueCondition(propertyType
+			if (propertyType.getValueCondition() != null){
+				((Property) entity).setValueCondition(getValueCondition(propertyType
 							.getValueCondition()));
+			}
 
 		} else if (entityType instanceof ClassType) {
 			// initiates entity as FeatureType
 			ClassType cType = (ClassType) entityType;
-			entity = new FeatureClass(new About(entityType.getAbout()));
+			if (entityType.getAbout()!= null){
+				about = new About(entityType.getAbout());
+			}
+			entity = new FeatureClass(about);
+			//set attribute occurence conditions if exist
+			if (cType.getAttributeOccurenceCondition() != null){
 			((FeatureClass) entity)
 					.setAttributeOccurenceCondition(getRestrictions(cType
 							.getAttributeOccurenceCondition()));
+			}
+			
+			//set attribute type conditions if exist
+			if (cType.getAttributeTypeCondition() != null){
 			((FeatureClass) entity)
 					.setAttributeTypeCondition(getRestrictions(cType
 							.getAttributeTypeCondition()));
+			}
+			//set attribute value conditions if exist
+			if (cType.getAttributeValueCondition() != null){
 			((FeatureClass) entity)
 					.setAttributeValueCondition(getRestrictions(cType
 							.getAttributeValueCondition()));
+			}
 		}
 		if (entityType.getTransf() != null) {
 			// set Transformation to Entity
@@ -421,11 +445,15 @@ public class OmlRdfReader {
 			entity.setTransformation(transformation);
 		}
 		// set About
-		About about = new About(UUID.randomUUID());
-		about.setAbout(entityType.getAbout());
-		entity.setAbout(about);
+		About eabout = new About(UUID.randomUUID());
+		if (entityType.getAbout() != null){
+			eabout.setAbout(entityType.getAbout());
+		}
+		entity.setAbout(eabout);
 		// set Labels
+		if (entityType.getLabel() != null){
 		entity.setLabel(entityType.getLabel());
+		}
 		return entity;
 	}
 
