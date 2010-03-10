@@ -276,24 +276,34 @@ public class OmlRdfReader {
 		Cell cell = new Cell();
 
 		List<String> labels = cellType.getLabel();
-		cell.setLabel(labels);
+		if (labels != null){
+			cell.setLabel(labels);
+		}
 
 		// TODO check with Marian set about as UUID from string about
 		// cell.setAbout(new About(UUID.fromString(cellType.getAbout())));
 		About about = new About(UUID.randomUUID());
-		about.setAbout(cellType.getAbout());
+		if (cellType.getAbout() != null){
+			about.setAbout(cellType.getAbout());
+		}
 		cell.setAbout(about);
 		// set entity1
+		if (cellType.getEntity1() != null){
 		cell.setEntity1(getEntity(cellType.getEntity1().getEntity()));
+		}
 		// set entity2
-		cell.setEntity2(getEntity(cellType.getEntity2().getEntity()));
+		if (cellType.getEntity2() != null){
+			cell.setEntity2(getEntity(cellType.getEntity2().getEntity()));
+		}
+		
 		// Measure is optional
-		if (cellType.getMeasure() != null)
+		if (cellType.getMeasure() != null){
 			cell.setMeasure(cellType.getMeasure());
+		}
 		// Relation is optional
-		if (cellType.getRelation() != null)
+		if (cellType.getRelation() != null){
 			cell.setRelation(getRelation(cellType.getRelation()));
-
+		}
 		return cell;
 	}
 
