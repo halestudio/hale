@@ -200,14 +200,21 @@ public class OmlRdfReader {
 	private ISchema getSchema(OntologyType onto) {
 		// creates formalism
 		// create Formalism
-		Formalism formalism = getFormalism(onto.getFormalism());
+		Formalism formalism = null;
+		if (onto.getFormalism() != null){
+			formalism = getFormalism(onto.getFormalism());
+		}
 		ISchema schema = new Schema(onto.getLocation(), formalism);
 		// set about
 		IAbout about = new About(UUID.randomUUID());
-		((About) about).setAbout(onto.getAbout());
+		if (onto.getAbout() != null){
+			((About) about).setAbout(onto.getAbout());
+		}
 		((Schema) schema).setAbout(about);
 		// set labels
-		((Schema) schema).getLabels().addAll(onto.getLabel());
+		if (onto.getLabel() != null){
+			((Schema) schema).getLabels().addAll(onto.getLabel());
+		}
 
 		return schema;
 
