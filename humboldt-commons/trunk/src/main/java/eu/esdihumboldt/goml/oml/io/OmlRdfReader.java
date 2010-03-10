@@ -257,8 +257,10 @@ public class OmlRdfReader {
 		Iterator<Map> iterator = maps.iterator();
 		while (iterator.hasNext()) {
 			map = iterator.next();
-			cell = getCell(map.getCell());
-			cells.add(cell);
+			if (map.getCell() != null){
+				cell = getCell(map.getCell());
+				cells.add(cell);
+			}
 
 		}
 		return cells;
