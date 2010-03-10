@@ -122,14 +122,25 @@ public class OmlRdfReader {
 		// set about
 		al.setAbout(new About(UUID.randomUUID()));
 		// set level
-		al.setLevel(genAlignment.getLevel());
+		if (genAlignment.getLevel()!= null){
+			al.setLevel(genAlignment.getLevel());
+		}
 		// set map with cells
-		al.setMap(getMap(genAlignment.getMap()));
+		if (genAlignment.getMap()!= null){
+			al.setMap(getMap(genAlignment.getMap()));
+		}
 		// set schema1,2 containing information about ontologies1,2
-		al.setSchema1(getSchema(genAlignment.getOnto1().getOntology()));
-		al.setSchema2(getSchema(genAlignment.getOnto2().getOntology()));
+		if (genAlignment.getOnto1()!= null && genAlignment.getOnto1().getOntology() != null){
+			al.setSchema1(getSchema(genAlignment.getOnto1().getOntology()));
+		}
+		if (genAlignment.getOnto2()!= null && genAlignment.getOnto2().getOntology() != null){
+			al.setSchema2(getSchema(genAlignment.getOnto2().getOntology()));
+		}
 		// set Value Class
-		al.setValueClass(getValueClass(genAlignment.getValueClass()));
+		if (genAlignment.getValueClass() != null){
+			al.setValueClass(getValueClass(genAlignment.getValueClass()));
+		}
+		
 		return al;
 	}
 
