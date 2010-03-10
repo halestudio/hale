@@ -517,7 +517,7 @@ public class OmlRdfReader {
 	private Property getProperty(PropertyType property) {
 		Property omlProperty;
 		//make decision: simple property or composed property
-		if (property.getPropertyComposition()!=null){
+		if (property.getPropertyComposition()!= null){
 			PropertyCompositionType pcType = property.getPropertyComposition();
 			//initialize as composed property
 			omlProperty = new ComposedProperty(getOperator(pcType.getOperator()),new About(""));
@@ -590,8 +590,11 @@ public class OmlRdfReader {
 			Property property;
 			while (iterator.hasNext()) {
 				item = iterator.next();
-				property = getProperty(item.getProperty());
-				properties.add(property);
+				if (item.getProperty() != null){
+					property = getProperty(item.getProperty());
+					properties.add(property);
+				}
+				
 			}
 		}
 		return properties;
