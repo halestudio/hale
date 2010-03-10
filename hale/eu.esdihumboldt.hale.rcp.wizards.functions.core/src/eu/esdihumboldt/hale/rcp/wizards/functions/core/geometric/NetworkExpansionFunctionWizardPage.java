@@ -12,7 +12,14 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
+
 import org.eclipse.jface.dialogs.IDialogPage;
+import org.eclipse.jface.preference.FieldEditor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -21,11 +28,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
+import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.math.MathExpressionFieldEditor;
 
 /**
  * TODO Explain the purpose of this type here.
@@ -36,7 +44,9 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 public class NetworkExpansionFunctionWizardPage 
 	extends AbstractSingleCellWizardPage {
 	
-	private Text expansionExpressionText = null;
+	private MathExpressionFieldEditor expressionEditor = null;
+	
+	private String initialExpression = null;
 	
 	/**
 	 * Constructor
@@ -107,21 +117,43 @@ public class NetworkExpansionFunctionWizardPage
 		
 		final Label expansionExpressionLabel = new Label(configurationComposite, SWT.NONE);
 		expansionExpressionLabel.setText("Expansion expression:");
-		this.expansionExpressionText = new Text(configurationComposite, SWT.BORDER);
-		this.expansionExpressionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
-		String value = "50";
-		/*FIXME outcomment this when build errors are resolved - ITransformation trans = cell.getEntity1().getTransformation();
-		if (trans != null && trans.getParameters() != null) {
-			if (IParameter param : trans.getParameters()) {
-				if (param.getName().equals("Expansion")) {
-					value = param.getValue();
+		// expression
+		Set<String> variables = new TreeSet<String>();
+		SchemaItem p = getParent().getSourceItem();
+		for (SchemaItem var : p.getParent().getChildren()) {
+			if (Number.class.isAssignableFrom(
+					var.getPropertyType().getBinding()) 
+					|| String.class.isAssignableFrom(
+							var.getPropertyType().getBinding())) {
+				variables.add(var.getName().getLocalPart());
+			}
+		}
+		
+		this.expressionEditor = new MathExpressionFieldEditor(
+				"expression", "=", configurationComposite, variables);
+		if (this.initialExpression != null && !this.initialExpression.equals("")) {
+			this.expressionEditor.setStringValue(this.initialExpression);
+		}
+		else {
+			this.expressionEditor.setStringValue("50");
+		}
+		
+		this.expressionEditor.setEmptyStringAllowed(false);
+		this.expressionEditor.setPage(this);
+		this.expressionEditor.setPropertyChangeListener(new IPropertyChangeListener() {
+			
+			public void propertyChange(PropertyChangeEvent event) {
+				if (event.getProperty().equals(FieldEditor.IS_VALID)) {
+					update();
 				}
 			}
-		}*/
+		});
 		
-		this.expansionExpressionText.setText(value);
-		
+	}
+	
+	private void update() {
+		setPageComplete(expressionEditor.isValid());
 	}
 	
 	/**
@@ -129,14 +161,19 @@ public class NetworkExpansionFunctionWizardPage
 	 */
 	@Override
 	public boolean isPageComplete() {
-		return expansionExpressionText != null && expansionExpressionText.getText() != null;
+		return this.expressionEditor != null 
+						&& this.expressionEditor.getStringValue() != null;
 	}
 
 	/**
 	 * @return the expansion expression
 	 */
 	public String getExpansion() {
-		return expansionExpressionText.getText();
+		return this.expressionEditor.getStringValue();
+	}
+	
+	public void setInitialExpression(String value) {
+		this.initialExpression = value;
 	}
 
 }

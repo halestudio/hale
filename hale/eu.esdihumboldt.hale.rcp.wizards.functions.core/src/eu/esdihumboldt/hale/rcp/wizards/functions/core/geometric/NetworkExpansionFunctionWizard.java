@@ -11,10 +11,14 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.corefunctions.NetworkExpansionFunction;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
@@ -51,9 +55,32 @@ public class NetworkExpansionFunctionWizard
 	@Override
 	protected void init() {
 		this.mainPage = new NetworkExpansionFunctionWizardPage(
-			"Configure Network Expansion"); 
+			"Configure Buffer Function"); 
 		super.setWindowTitle("Configure Function"); 
 		super.setNeedsProgressMonitor(true);
+		
+		ICell cell = getResultCell();
+		
+		String expression = null;
+		
+		// init expression from cell
+		if (cell.getEntity1().getTransformation() != null) {
+			List<IParameter> parameters = cell.getEntity1().getTransformation().getParameters();
+			
+			if (parameters != null) {
+				Iterator<IParameter> it = parameters.iterator();
+				while (it.hasNext() && expression == null) {
+					IParameter param = it.next();
+					if (param.getName().equals(NetworkExpansionFunction.BUFFERWIDTH)) {
+						expression = param.getValue();
+						break;
+					}
+				}
+			}
+		}
+		if (expression != null) {
+			this.mainPage.setInitialExpression(expression);
+		}
 	}
 
 	/**

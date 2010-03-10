@@ -21,7 +21,7 @@
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric.NetworkExpansionFunctionWizardFactory"
             icon="icons/geometry_attribute.png"
-            name="Network expansion (Line to Surface)">
+            name="Buffer (Line to Surface)">
       </factory>
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric.NetworkFusionFunctionWizardFactory"
