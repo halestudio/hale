@@ -1,11 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HUMBOLDT Specification Component
-Bundle-SymbolicName: specification;singleton:=true
-Bundle-Version: 2.0.3.SNAPSHOT
+Bundle-SymbolicName: eu.esdihumboldt.specification;singleton:=true
+Bundle-Version: 2.0.3
 Eclipse-BuddyPolicy: registered
 Export-Package: eu.esdihumboldt.annotations.concurrency,
  eu.esdihumboldt.annotations.spec,
+ eu.esdihumboldt.cst,
  eu.esdihumboldt.cst.align,
  eu.esdihumboldt.cst.align.ext,
  eu.esdihumboldt.cst.rdf,
@@ -39,3 +40,28 @@ Export-Package: eu.esdihumboldt.annotations.concurrency,
  eu.esdihumboldt.workflow.transformer.domaintypes,
  eu.esdihumboldt.workflow.transformer.inputoutputs
 Bundle-ClassPath: .
+Import-Package: org.dom4j;version="1.6.1",
+ org.opengis.feature,
+ org.opengis.feature.simple,
+ org.opengis.feature.type,
+ org.opengis.filter.expression,
+ org.opengis.geometry,
+ org.opengis.geometry.aggregate,
+ org.opengis.geometry.complex,
+ org.opengis.geometry.coordinate,
+ org.opengis.geometry.primitive,
+ org.opengis.metadata,
+ org.opengis.metadata.citation,
+ org.opengis.metadata.constraint,
+ org.opengis.metadata.content,
+ org.opengis.metadata.distribution,
+ org.opengis.metadata.extent,
+ org.opengis.metadata.identification,
+ org.opengis.metadata.lineage,
+ org.opengis.metadata.maintenance,
+ org.opengis.metadata.quality,
+ org.opengis.metadata.spatial,
+ org.opengis.referencing.cs,
+ org.opengis.style,
+ org.springframework.transaction;version="2.5.6.A",
+ org.springframework.transaction.annotation;version="2.5.6.A"

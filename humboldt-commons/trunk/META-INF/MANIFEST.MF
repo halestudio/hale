@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HUMBOLDT Common Library Component
-Bundle-SymbolicName: common-library;singleton:=true
-Bundle-Version: 3.0.1.SNAPSHOT
+Bundle-SymbolicName: eu.esdihumboldt.commons;singleton:=true
+Bundle-Version: 3.0.1
 Export-Package: eu.esdihumboldt.goml.align,
  eu.esdihumboldt.goml.oml.ext,
  eu.esdihumboldt.goml.oml.io,
@@ -21,6 +21,13 @@ Export-Package: eu.esdihumboldt.goml.align,
  eu.esdihumboldt.mediator.util,
  eu.esdihumboldt.modelmapping.imm.impl,
  eu.esdihumboldt.tools
-Import-Package: eu.esdihumboldt.cst.align,eu.esdihumboldt.cst.align.ext,eu.esdihumboldt.cst.rdf
+Import-Package: eu.esdihumboldt.cst.align,
+ eu.esdihumboldt.cst.align.ext,
+ eu.esdihumboldt.cst.rdf,
+ org.dom4j;version="1.6.1"
 Eclipse-BuddyPolicy: registered
 Bundle-ClassPath: .
+Require-Bundle: org.geotools;bundle-version="2.5.8",
+ eu.esdihumboldt.specification;bundle-version="2.0.3",
+ org.junit4;bundle-version="4.5.0",
+ com.springsource.org.apache.log4j;bundle-version="1.2.15"
