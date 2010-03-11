@@ -8,15 +8,6 @@
  * LICENSE: For information on the license under which this program is 
  * available, please refer to : http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
- *
- * Componet     : cst
- * 	 
- * Classname    : eu.esdihumboldt.cst.transformer/ITransformer.java 
- * 
- * Author       : schneidersb
- * 
- * Created on   : Aug 13, 2009 -- 1:50:08 PM
- *
  */
 package eu.esdihumboldt.cst;
 
@@ -26,8 +17,8 @@ import org.opengis.feature.Feature;
 import eu.esdihumboldt.cst.align.ICell;
 
 /**
- * Interface which defines the two basic methods to transform a
- * {@link Feature} and a {@link FeatureCollection}.
+ * Interface which defines methods for function configuration, description 
+ * and simple one-to-one execution.
  * 
  * @author Thorsten Reitz
  */
