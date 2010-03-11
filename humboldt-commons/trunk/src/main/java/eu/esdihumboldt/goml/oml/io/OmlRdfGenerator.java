@@ -28,6 +28,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 import javax.xml.namespace.QName;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
@@ -120,6 +122,8 @@ public class OmlRdfGenerator {
 	 * Constant defines the path to the alignment jaxb context
 	 */
 	private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.generated.oml";
+	
+	
 
 	/**
 	 * Stores alignment to xml
@@ -137,6 +141,7 @@ public class OmlRdfGenerator {
 		// 2. marshall AlignmentType to xml
 		JAXBContext jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT);
 		Marshaller m = jc.createMarshaller();
+		
 		/*
 		 * marshaller.marshal( new JAXBElement( new
 		 * QName("","rootTag"),Point.class,new Point(...)));
@@ -145,6 +150,7 @@ public class OmlRdfGenerator {
 		try {
 			m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
 					new NamespacePrefixMapperImpl());
+			
 		} catch (PropertyException e) {
 			// if the JAXB provider doesn't recognize the prefix mapper,
 			// it will throw this exception. Since being unable to specify
@@ -157,6 +163,8 @@ public class OmlRdfGenerator {
 		// this is a JAXB standard property, so it should work with any JAXB
 		// impl.
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		m.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://knowledgeweb.semanticweb.org/heterogeneity/alignment align.xsd");
+		
 
 		m.marshal(new JAXBElement(new QName("http://knowledgeweb.semanticweb.org/heterogeneity/alignment", "Alignment", "align"),
 				AlignmentType.class, aType), new File(xmlPath));
