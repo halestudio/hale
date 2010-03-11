@@ -357,7 +357,9 @@ public class OmlRdfGenerator {
 			if (about != null)
 				cType.setAbout(about.getAbout());
 			//keep Measure optional
-			cType.setMeasure(new Float(cell.getMeasure()));
+			if (cell.getMeasure() != 0){
+				cType.setMeasure(new Float(cell.getMeasure()));
+			}
 			if (cell.getRelation() != null) {
 				cType.setRelation(getRelation(cell.getRelation()));
 			}
@@ -810,7 +812,9 @@ public class OmlRdfGenerator {
 				pType.setPropertyComposition(propCompType);
 			}
 			
-			pType.setTransf(getTransf(property.getTransformation()));
+			if (property.getTransformation() != null){
+				pType.setTransf(getTransf(property.getTransformation()));
+			}
 			if (property.getDomainRestriction() != null) {
 				pType.getDomainRestriction().addAll(
 						getDomainRestrictionTypes(property
