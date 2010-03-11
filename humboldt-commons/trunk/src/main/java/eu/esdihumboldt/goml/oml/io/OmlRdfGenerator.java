@@ -13,6 +13,10 @@
 package eu.esdihumboldt.goml.oml.io;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -156,6 +160,19 @@ public class OmlRdfGenerator {
 
 		m.marshal(new JAXBElement(new QName("http://knowledgeweb.semanticweb.org/heterogeneity/alignment", "Alignment", "align"),
 				AlignmentType.class, aType), new File(xmlPath));
+		/*try {
+			URLConnection connection = new URL("file", null, xmlPath).openConnection();
+			connection.setDoOutput(true);
+			
+			m.marshal(new JAXBElement(new QName("http://knowledgeweb.semanticweb.org/heterogeneity/alignment", "Alignment", "align"),
+					AlignmentType.class, aType), connection.getOutputStream());
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 	}
 
 	/**

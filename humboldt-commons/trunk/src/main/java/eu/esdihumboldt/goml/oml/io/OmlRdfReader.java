@@ -107,13 +107,13 @@ public class OmlRdfReader {
 			// it will debug problems while unmarshalling
 			u
 					.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
-			/*
-			 * root = u.unmarshal(new StreamSource(new
-			 * URL(rdfFile).openStream()), AlignmentType.class);
-			 */
+			
+			  root = u.unmarshal(new StreamSource(new
+			  URL("file", null ,rdfFile).openStream()), AlignmentType.class);
+			 
 
-			root = u.unmarshal(new StreamSource(new File(rdfFile)),
-					AlignmentType.class);
+		/*	root = u.unmarshal(new StreamSource(new File(rdfFile)),
+					AlignmentType.class);*/
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
