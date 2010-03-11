@@ -186,14 +186,24 @@ public class OmlRdfGenerator {
 		AlignmentType aType = new AlignmentType();
 		// 1. set about,level, ontology1,2
 		if (alignment!=null){
-		if (alignment.getAbout()!=null) aType.setAbout(((About) alignment.getAbout()).getAbout());
-		aType.setLevel(alignment.getLevel());
-		aType.setOnto1(getOnto1(alignment.getSchema1()));
-		aType.setOnto2(getOnto2(alignment.getSchema2()));
+		if (alignment.getAbout()!= null) aType.setAbout(((About) alignment.getAbout()).getAbout());
+		if (alignment.getLevel() != null){
+			aType.setLevel(alignment.getLevel());
+		}
+		if (alignment.getSchema1() != null) {
+			aType.setOnto1(getOnto1(alignment.getSchema1()));
+		}
+		if (alignment.getSchema2() != null){
+			aType.setOnto2(getOnto2(alignment.getSchema2()));
+		}
 		// 2. add map of cells
-		aType.getMap().addAll(getMaps(alignment.getMap()));
+		if (alignment.getMap() != null) {
+			aType.getMap().addAll(getMaps(alignment.getMap()));
+		}
         //3. add valueClass
-		aType.getValueClass().addAll(getValueClasses(alignment.getValueClasses()));
+		if (alignment.getValueClasses() != null){
+			aType.getValueClass().addAll(getValueClasses(alignment.getValueClasses()));
+		}
 		}
 		
 		return aType;
