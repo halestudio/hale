@@ -225,9 +225,15 @@ public class OmlRdfGenerator {
 		Iterator<IValueClass> iterator = valueClasses.iterator();
 		while(iterator.hasNext()){
 			vClass = (IValueClass)iterator.next();
-			vcType.setAbout(vClass.getAbout());
-			vcType.setResource(vClass.getResource());
-			vcType.getValue().addAll(getValueExpressionTypes(vClass.getValue()));
+			if (vClass.getAbout() != null) {
+				vcType.setAbout(vClass.getAbout());
+			}
+			if (vClass.getResource() != null) {
+				vcType.setResource(vClass.getResource());
+			}
+			if (vClass.getValue() != null) {
+				vcType.getValue().addAll(getValueExpressionTypes(vClass.getValue()));
+			}
 			vcTypes.add(vcType);
 		}
 		}
@@ -270,9 +276,15 @@ public class OmlRdfGenerator {
 			About about = (About) schema.getAbout();
 			if (about != null)
 				oType.setAbout(about.getAbout());
-			oType.setLocation(schema.getLocation());
-			oType.setFormalism(getFormalism(schema.getFormalism()));
-			oType.getLabel().addAll(schema.getLabels());
+			if (schema.getLocation() != null){
+				oType.setLocation(schema.getLocation());
+			}
+			if (schema.getFormalism() != null) {
+				oType.setFormalism(getFormalism(schema.getFormalism()));
+			}
+			if (schema.getLabels() != null){
+				oType.getLabel().addAll(schema.getLabels());
+			}
 		}
 		return oType;
 	}
@@ -298,8 +310,12 @@ public class OmlRdfGenerator {
 	private FormalismType getFormalismType(IFormalism formalism) {
 		FormalismType fType = new FormalismType();
 		if (formalism != null) {
-			fType.setName(formalism.getName());
-			fType.setUri(formalism.getLocation().toString());
+			if (formalism.getName() != null) {
+				fType.setName(formalism.getName());
+			}
+			if (formalism.getLocation() != null){
+				fType.setUri(formalism.getLocation().toString());
+			}
 		}
 		return fType;
 	}
@@ -318,10 +334,12 @@ public class OmlRdfGenerator {
 
 		while (iterator.hasNext()) {
 			cell = (ICell) iterator.next();
-			jMap = new Map();
-			jMap.setCell(getCellType(cell));
-			maps.add(jMap);
-
+			if (cell != null){
+				jMap = new Map();
+				jMap.setCell(getCellType(cell));
+				maps.add(jMap);
+			}
+		
 		}
 		return maps;
 	}
@@ -340,9 +358,15 @@ public class OmlRdfGenerator {
 				cType.setAbout(about.getAbout());
 			//keep Measure optional
 			cType.setMeasure(new Float(cell.getMeasure()));
-			cType.setRelation(getRelation(cell.getRelation()));
-			cType.setEntity1(getEntity1(cell.getEntity1()));
-			cType.setEntity2(getEntity2(cell.getEntity2()));
+			if (cell.getRelation() != null) {
+				cType.setRelation(getRelation(cell.getRelation()));
+			}
+			if (cell.getEntity1() != null){
+				cType.setEntity1(getEntity1(cell.getEntity1()));
+			}
+			if (cell.getEntity2() != null){
+				cType.setEntity2(getEntity2(cell.getEntity2()));
+			}
 			if (cell.getLabel() != null) {
 				cType.getLabel().addAll(((Cell)cell).getLabel());
 			}
@@ -464,15 +488,20 @@ public class OmlRdfGenerator {
 	 */
 	private ClassType getClassType(FeatureClass feature) {
 		ClassType cType = new ClassType();
+		About about = null;
 		if (feature != null) {
-			About about = ((About) feature.getAbout());
+			if (feature.getAbout() != null) {
+				 about = ((About) feature.getAbout());
+			}
 			if (feature.getLabel() != null) {
 				cType.getLabel().addAll(feature.getLabel());
 			}
 			if (about != null) {
 				cType.setAbout(about.getAbout());
 			}
-			cType.setTransf(getTransf(feature.getTransformation()));
+			if (feature.getTransformation() != null) {
+				cType.setTransf(getTransf(feature.getTransformation()));
+			}
 			if (feature.getAttributeTypeCondition() != null) {
 				cType.getAttributeTypeCondition().addAll(
 					getConditions(feature.getAttributeTypeCondition()));
@@ -506,9 +535,12 @@ public class OmlRdfGenerator {
 			Iterator<?> iterator = restrictions.iterator();
 			while (iterator.hasNext()) {
 				restriction = (Restriction) iterator.next();
-				condition = new ClassConditionType();
-				condition.setRestriction(getRestrictionType(restriction));
-				conditions.add(condition);
+				if (restriction != null) {
+					condition = new ClassConditionType();
+					condition.setRestriction(getRestrictionType(restriction));
+					conditions.add(condition);
+				}
+				
 			}
 			return conditions;
 		}
@@ -524,8 +556,12 @@ public class OmlRdfGenerator {
 	private RestrictionType getRestrictionType(Restriction restriction) {
 		RestrictionType rType = new RestrictionType();
 		if (restriction != null) {
-			rType.setComparator(getComparator(restriction.getComparator()));
-			rType.setCqlStr(restriction.getCqlStr());
+			if (restriction.getComparator() != null) {
+				rType.setComparator(getComparator(restriction.getComparator()));
+			}
+			if (restriction.getCqlStr() != null){
+				rType.setCqlStr(restriction.getCqlStr());
+			}
             //TODO: clear with MdV 
 			//			rType.setOnAttribute(getOnAttributeType(restriction
 			//					.getOnAttribute()));
@@ -555,8 +591,12 @@ public class OmlRdfGenerator {
 		
 		if (valueClass != null) {
 			ValueClassType	vcType = new ValueClassType();
-			vcType.setAbout(valueClass.getAbout());
-			vcType.setResource(valueClass.getResource());
+			if (valueClass.getAbout() != null){
+				vcType.setAbout(valueClass.getAbout());
+			}
+			if (valueClass.getResource() != null) {
+				vcType.setResource(valueClass.getResource());
+			}
 			if (getJAXBValueExpressions(valueClass.getValue()) != null) {
 				vcType.getValue().addAll(getJAXBValueExpressions(valueClass.getValue()));
 			}
@@ -573,10 +613,18 @@ public class OmlRdfGenerator {
 		while(iterator.hasNext()){
 			ValueExpression ve = (ValueExpression)iterator.next();
 			veType = new ValueExprType();
-			veType.setLiteral(ve.getLiteral());
-			veType.setMax(ve.getMax());
-			veType.setMin(ve.getMin());
-			veType.setApply(getApplayType(ve.getApply()));
+			if (ve.getLiteral() != null) {
+				veType.setLiteral(ve.getLiteral());
+			}
+			if (ve.getMax() != null){
+				veType.setMax(ve.getMax());
+			}
+			if (ve.getMin() != null) {
+				veType.setMin(ve.getMin());
+			}
+			if (ve.getApply() != null) {
+				veType.setApply(getApplayType(ve.getApply()));
+			}
 			vExpressions.add(veType);
 		}
 		return vExpressions;
@@ -670,7 +718,9 @@ public class OmlRdfGenerator {
 		FunctionType fType = new FunctionType();
 		if (transformation != null) {
 			
-			if(transformation.getService()!=null) fType.setResource(transformation.getService().getLocation());
+			if(transformation.getService()!=null){
+				fType.setResource(transformation.getService().getLocation());
+			}
 			/*//Uli will provide us with examples
 			fType.setResource(transformation.getLabel());*/
 			if (transformation.getParameters() != null) {
@@ -715,8 +765,12 @@ public class OmlRdfGenerator {
 	private ParamType getParameterType(IParameter param) {
 		ParamType pType = new ParamType();
 		if (param != null) {
-			pType.setName(param.getName());
-			pType.getValue().add(param.getValue());
+			if (param.getName() != null) {
+				pType.setName(param.getName());
+			}
+			if (param.getValue() != null){
+				pType.getValue().add(param.getValue());
+			}
 		}
 		return pType;
 	}
@@ -836,17 +890,25 @@ public class OmlRdfGenerator {
 		eu.esdihumboldt.generated.oml.RelationType relType = new eu.esdihumboldt.generated.oml.RelationType();
 		if (relation!=null){
 			//TODO clear with MdV
-			if (relation.getDomainRestriction()!=null)relType.setDomainRestriction(getDomainRestrictionType(relation.getDomainRestriction().get(0)));
+			if (relation.getDomainRestriction()!= null && relation.getDomainRestriction().get(0) != null) {
+				relType.setDomainRestriction(getDomainRestrictionType(relation.getDomainRestriction().get(0)));
+			}
 			//TODO clear with MdV
 			relType.setPipe(null);
-			if (relation.getAbout()!=null) relType.setAbout(relation.getAbout().getAbout());
+			if (relation.getAbout()!=null){
+				relType.setAbout(relation.getAbout().getAbout());
+			}
 			//TODO clear with MdV
 			relType.setRelationComposition(null);
-			if (relation.getRangeRestriction()!=null)relType.setRangeRestriction(getRangeRestrictionType(relation.getRangeRestriction().get(0)));
-			if (relation.getTransformation()!=null)relType.setTransf(getTransf(relation.getTransformation()));
+			if (relation.getRangeRestriction()!= null && relation.getRangeRestriction().get(0) != null){
+				relType.setRangeRestriction(getRangeRestrictionType(relation.getRangeRestriction().get(0)));
+			}
+			if (relation.getTransformation()!= null){
+				relType.setTransf(getTransf(relation.getTransformation()));
+			}
 			//set label list
 			List<String> labels = relation.getLabel();
-			if (labels!=null){
+			if (labels!= null){
 				if (labels.size()>0)relType.getLabel().addAll(labels);
 			}
 			
@@ -903,7 +965,9 @@ public class OmlRdfGenerator {
 	private ValueConditionType getValueConditionType(Restriction restriction) {
 		ValueConditionType vcType = new ValueConditionType();
 		vcType.setRestriction(getRestrictionType(restriction));
-		vcType.setSeq(restriction.getSeq());
+		if (restriction.getCqlStr() != null){
+			vcType.setSeq(restriction.getSeq());
+		}
 		return vcType;
 	}
 
@@ -917,7 +981,9 @@ public class OmlRdfGenerator {
 			Restriction restriction) {
 		PropValueRestrictionType pvrType = new PropValueRestrictionType();
 		if (restriction != null) {
+			if (restriction.getComparator() != null){
 			pvrType.setComparator(getComparator(restriction.getComparator()));
+			}
 			if (restriction.getValue() != null) {
 				pvrType.getValue().addAll(
 					getValueExpressionTypes(restriction.getValue()));
@@ -959,10 +1025,18 @@ public class OmlRdfGenerator {
 	private ValueExprType getValueExprType(ValueExpression expression) {
 		ValueExprType veType = new ValueExprType();
 		if (expression != null) {
-			veType.setApply(getApplayType(expression.getApply()));
-			veType.setLiteral(expression.getLiteral());
-			veType.setMax(expression.getMax());
-			veType.setMin(expression.getMin());
+			if (expression.getApply() != null){
+				veType.setApply(getApplayType(expression.getApply()));
+			}
+			if (expression.getLiteral() != null){
+				veType.setLiteral(expression.getLiteral());
+			}
+			if (expression.getMax() != null){
+				veType.setMax(expression.getMax());
+			}
+			if (expression.getMin() != null){
+				veType.setMin(expression.getMin());
+			}
 		}
 		return veType;
 	}
