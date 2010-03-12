@@ -12,15 +12,24 @@
 package eu.esdihumboldt.cst.transformer.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.index.rtree.RTree;
 import org.opengis.feature.Feature;
+import org.opengis.feature.Property;
+import org.opengis.feature.type.PropertyType;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.CstFunction;

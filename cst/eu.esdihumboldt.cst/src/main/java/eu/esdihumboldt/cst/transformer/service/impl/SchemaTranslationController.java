@@ -154,6 +154,9 @@ public class SchemaTranslationController {
 					}
 					
 				}
+				else if (thisInstanceCardinality.equals(CellCardinalityType.many_to_one)) {
+					// TODO aggregate case
+				}
 			}
 			else if (thisFTCardinality.equals(CellCardinalityType.one_to_many)) {
 				// In this case, there is also exactly one relevant source 
@@ -189,6 +192,7 @@ public class SchemaTranslationController {
 				throw new UnsupportedOperationException(
 						"FeatureType CellCardinalityType.many_to_one not " +
 						"yet implemented");
+				// TODO join features of different types
 			}
 			else if (thisFTCardinality.equals(CellCardinalityType.many_to_many)) {
 				throw new UnsupportedOperationException(

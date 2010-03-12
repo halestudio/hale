@@ -68,7 +68,8 @@ public class CstServiceImpl
 			FeatureCollection<? extends FeatureType, ? extends Feature> fc,
 			IAlignment alignment, Set<FeatureType> targetSchema) {
 		TargetSchemaProvider.getInstance().addTypes(targetSchema);
-		SchemaTranslationController stc = new SchemaTranslationController(CstServiceImpl.tl, CstServiceImpl.createLineage, alignment);
+		SchemaTranslationController stc = new SchemaTranslationController(CstServiceImpl.tl,
+				CstServiceImpl.createLineage, alignment);
 		FeatureCollection result = stc.translate((FeatureCollection) fc);
 		return result;
 	}

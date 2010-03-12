@@ -58,8 +58,10 @@ public class RenameFeatureFunction
 	private FeatureSplitter splitter = null;
 	
 	private FeatureMerger merger = null;
+	private FeatureSpatialJoiner spatialjoiner = null;
 
 	private String newName;
+	
 
 	public static final String TARGET_FEATURETYPE_NAME = "ENTITY_2_NAME";
 
