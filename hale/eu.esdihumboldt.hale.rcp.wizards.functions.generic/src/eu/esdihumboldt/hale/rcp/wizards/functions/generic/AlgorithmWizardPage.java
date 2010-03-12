@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -39,7 +40,7 @@ import org.eclipse.swt.widgets.Text;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 
-public class AlgorithmWizardPage extends AbstractSingleCellWizardPage  {
+public class AlgorithmWizardPage extends WizardPage  {
 
 
 	protected boolean algorithmIsSelected = false;	 // if is algorithm is selected, not FunctionType
@@ -48,7 +49,7 @@ public class AlgorithmWizardPage extends AbstractSingleCellWizardPage  {
 	private Text outputAttributeText = null;
 	protected Text[] params = null;
 	private Label[] labels = null;
-	
+	private GenericFunctionWizard wizard;
 	/**
 	 * constructor 
 	 * @param pageName  
@@ -95,18 +96,22 @@ public class AlgorithmWizardPage extends AbstractSingleCellWizardPage  {
 		fileSelectionLayout.marginHeight = 0;
 		configurationComposite.setLayout(fileSelectionLayout);
 		
+		wizard = (GenericFunctionWizard) getWizard();
 		final Label inputAttributeLabel = new Label(configurationComposite, SWT.NONE);
 		inputAttributeLabel.setText("Source attribute:");
 		this.inputAttributeText = new Text(configurationComposite, SWT.BORDER);
 		this.inputAttributeText.setLayoutData(configurationLayoutData);
-		this.inputAttributeText.setText(getParent().getSourceItem().getName().getLocalPart());
+		if (wizard.getSourceItem() != null)
+			this.inputAttributeText.setText(wizard.getSourceItem().getName().getLocalPart());
+		else
+			this.inputAttributeText.setText("None");
 		inputAttributeText.setEnabled(false);
 		
 		final Label outputAttributeLabel = new Label(configurationComposite, SWT.NONE);
 		outputAttributeLabel.setText("Target attribute:");
 		this.outputAttributeText = new Text(configurationComposite, SWT.BORDER);
 		this.outputAttributeText.setLayoutData(configurationLayoutData);
-		this.outputAttributeText.setText(getParent().getTargetItem().getName().getLocalPart());
+		this.outputAttributeText.setText(wizard.getTargetItem().getName().getLocalPart());
 		outputAttributeText.setEnabled(false);
 		numberOfParameters = ((GenericFunctionWizard)getWizard()).maximumParameters;
 		labels = new Label[numberOfParameters];

@@ -22,6 +22,7 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.generic;
 
 import java.util.Iterator;
+import java.util.Map;
 
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -29,6 +30,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -41,15 +43,16 @@ import eu.esdihumboldt.cst.transformer.CstService;
 import eu.esdihumboldt.cst.transformer.capabilities.CstServiceCapabilities;
 import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.AlgorithmCST;
 import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.FunctionType;
 import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.Model;
 
-public class GenericFunctionWizardPage extends AbstractSingleCellWizardPage {
+public class GenericFunctionWizardPage extends WizardPage {
 
 	FunctionTypeLabelProvider labelProvider;
 	TreeViewer tree;
+	GenericFunctionWizard wizard;
+	
 	
 	/**
 	 * constructor
@@ -67,7 +70,7 @@ public class GenericFunctionWizardPage extends AbstractSingleCellWizardPage {
 	public void createControl(Composite parent) {
 		super.initializeDialogUnits(parent);
 		this.setPageComplete(this.isPageComplete());
-        
+		
         Composite composite = new Composite(parent, SWT.NULL);
         composite.setLayout(new GridLayout());
         composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
@@ -76,11 +79,13 @@ public class GenericFunctionWizardPage extends AbstractSingleCellWizardPage {
         composite.setFont(parent.getFont());
         composite.setLayout(new FillLayout());
         labelProvider = new FunctionTypeLabelProvider();
+    	
         tree = new TreeViewer(composite, SWT.SINGLE);
         tree.setContentProvider(new FunctionTypeContentProvider());
         tree.setLabelProvider(labelProvider);
        	tree.setInput(this.getInitalInput());        
-          	
+       	tree.expandAll();
+      
     	tree.addSelectionChangedListener(new ISelectionChangedListener() {
     			public void selectionChanged(SelectionChangedEvent event) {
      				if(event.getSelection().isEmpty()) {
@@ -110,9 +115,9 @@ public class GenericFunctionWizardPage extends AbstractSingleCellWizardPage {
     			}
     		});
         setErrorMessage(null);	// should not initially have error message
-		super.setControl(composite);
-
-	}
+        
+        super.setControl(composite);
+  	}
 	
 	/**
 	 * @see IWizardPage#canFlipToNextPage()
@@ -140,22 +145,119 @@ public class GenericFunctionWizardPage extends AbstractSingleCellWizardPage {
 		root.addBox(inspire);
 		root.addBox(others);
 	
-/*		
 		CstService ts = (CstService) 
 		PlatformUI.getWorkbench().getService(
 				CstService.class);
-	   CstServiceCapabilities tCapabilities = ts.getCapabilities();
+		CstServiceCapabilities tCapabilities = ts.getCapabilities();
+		CstFunctionFactory.getInstance().registerCstPackage("eu.esdihumboldt.cst.corefunctions");
+		Map <String, Class<? extends CstFunction>> registredFunctions = CstFunctionFactory.getInstance().getRegisteredFunctions();
 	   
-	    for (Iterator <FunctionDescription> iter = tCapabilities.getFunctionDescriptions().iterator(); iter.hasNext();){
-			FunctionDescription funcDescr = (FunctionDescription) iter.next();
-			System.out.println("-----");
-			System.out.println(funcDescr.toString());
-			System.out.println(funcDescr.getFunctionId());
-			System.out.println(funcDescr.getParameterConfiguration());
-	    }	
-		*/
+	    wizard = (GenericFunctionWizard) getWizard();
+	    if (!wizard.existMapping()){
+	    	for (Iterator <FunctionDescription> iter = tCapabilities.getFunctionDescriptions().iterator(); iter.hasNext();){
+	    		FunctionDescription funcDescr = (FunctionDescription) iter.next();
+	    		if (isAlgorithmActive(funcDescr.getParameterConfiguration())){
+	    			if (registredFunctions.containsKey(funcDescr.getFunctionId().getFile().substring(1))){
+	    				CstFunction f = null;
+	    				try {
+	    					f = CstFunctionFactory.getInstance().getRegisteredFunctions().get(funcDescr.getFunctionId().getFile().substring(1)).newInstance();
+	    				}
+	    				catch (Exception e) {
+	    					f = null;
+	    				}
+	    				if (f != null){
+	    					AlgorithmCST alg = null;
+	    					try{
+	    						alg = new AlgorithmCST(getAlgorithmName(f.getClass().getSimpleName()), f.getClass().getCanonicalName(), f.getParameters());
+	    					}
+	    					catch (NullPointerException e){
+	    						alg = new AlgorithmCST(getAlgorithmName(f.getClass().getSimpleName()), f.getClass().getCanonicalName(), null);
+	    					}
+
+	    					String functionGroup = f.getClass().getName().toString().substring(0, f.getClass().getName().toString().lastIndexOf('.'));
+	    					functionGroup = functionGroup.substring(functionGroup.lastIndexOf('.')+1);
+	    					//System.out.println(functionGroup);
+	    					
+	    					if (functionGroup.equals("corefunctions")){
+	    						core.addCoreFunction(alg);
+	    					}
+	    					else{
+	    						if (functionGroup.equals("inspire"))
+	    							inspire.addInspireFunction(alg);
+	    						else
+	    							others.addOthersFunction(alg);
+	    					}
+					
+	    					countAlgorithm++;
+	    					setMaximumParameters(alg);
+	    				}	
+	    			}	
+	    		}
+	    	}	
+	    }
+	    else{ //exist mapping for current selection
+	    	CstFunction f = null;
+	    	String functionLocation;
+	    	AlgorithmCST alg = null;
+
+	    	if (wizard.getResultCell().getEntity1().getTransformation() != null)
+				functionLocation = wizard.getResultCell().getEntity1().getTransformation().getService().getLocation();
+	    	else
+	    		functionLocation = wizard.getResultCell().getEntity2().getTransformation().getService().getLocation();
+
+	    	try {
+				f = CstFunctionFactory.getInstance().getRegisteredFunctions().get(functionLocation).newInstance();
+			}
+			catch (Exception e) {
+				f = null;
+			}
+			
+			if (f != null){
+				try{
+					alg = new AlgorithmCST(getAlgorithmName(f.getClass().getSimpleName()), f.getClass().getCanonicalName(), f.getParameters());
+				}
+				catch (NullPointerException e){
+					alg = new AlgorithmCST(getAlgorithmName(f.getClass().getSimpleName()), f.getClass().getCanonicalName(), null);
+				}
+				String functionGroup = f.getClass().getName().toString().substring(0, f.getClass().getName().toString().lastIndexOf('.'));
+				functionGroup = functionGroup.substring(functionGroup.lastIndexOf('.')+1);
+								
+				if (functionGroup.equals("corefunctions")){
+					core.addCoreFunction(alg);
+				}
+				else{
+					if (functionGroup.equals("inspire"))
+						inspire.addInspireFunction(alg);
+					else
+						others.addOthersFunction(alg);
+				}
+		
+				countAlgorithm++;
+				setMaximumParameters(alg);
+				
+				if (!functionLocation.equals("eu.esdihumboldt.cst.corefunctions.NilReasonFunction")){ //.class.getName())){
+					try {
+						f = CstFunctionFactory.getInstance().getRegisteredFunctions().get("eu.esdihumboldt.cst.corefunctions.NilReasonFunction").newInstance();//NilReasonFunction.class.getName()).newInstance();
+					}
+					catch (Exception e) {
+						f = null;
+					}
+					if (f != null){
+						try{
+							alg = new AlgorithmCST(getAlgorithmName(f.getClass().getSimpleName()), f.getClass().getCanonicalName(), f.getParameters());
+						}
+						catch (NullPointerException e){
+							alg = new AlgorithmCST(getAlgorithmName(f.getClass().getSimpleName()), f.getClass().getCanonicalName(), null);
+						}
+						core.addCoreFunction(alg);
+						countAlgorithm++;
+						setMaximumParameters(alg);
+					}
+				}
+			}	
+	    }
 	
-		CstFunctionFactory.getInstance().registerCstPackage(
+/*		CstFunctionFactory.getInstance().registerCstPackage(
 		"eu.esdihumboldt.cst.corefunctions");
 		CstFunction f = null;
 
@@ -163,6 +265,8 @@ public class GenericFunctionWizardPage extends AbstractSingleCellWizardPage {
 				.getRegisteredFunctions().keySet().iterator(); i.hasNext();) {
 
 			try {
+				System.out.println("..."+CstFunctionFactory.getInstance().getRegisteredFunctions()
+						.get(i.next()));
 				f = CstFunctionFactory.getInstance().getRegisteredFunctions()
 					.get(i.next()).newInstance();
 				//System.out.println("********"+f.getClass().toString());
@@ -198,12 +302,12 @@ public class GenericFunctionWizardPage extends AbstractSingleCellWizardPage {
 				countAlgorithm++;
 				setMaximumParameters(alg);
 			}	
-		}
-		setTitle("Toolbox contains "+countAlgorithm+" algorithms");
+		}*/
+		setTitle("Toolbox contains "+countAlgorithm+" functions for current selection");
 		return root;
 	}
 	
-
+	
 	
 	/**
 	 * Method that sets maximum of algorithm parameters
@@ -212,6 +316,68 @@ public class GenericFunctionWizardPage extends AbstractSingleCellWizardPage {
 	private void setMaximumParameters(AlgorithmCST alg){
 		if (((GenericFunctionWizard)getWizard()).maximumParameters < alg.numberOfParameters)
 			((GenericFunctionWizard)getWizard()).maximumParameters = alg.numberOfParameters;
+	}
+	
+	/**
+	 * The method tests function if is active for current selection
+	 * @param description
+	 * @return
+	 */
+	private boolean isAlgorithmActive(Map <String, Class<?>> description){
+		
+		wizard  = (GenericFunctionWizard)getWizard();
+
+		Class <?> entity1Class = null;
+		if (wizard.getSourceItem() != null)
+			entity1Class = wizard.getSourceItem().getPropertyType().getBinding();
+		else
+			entity1Class = null;
+		Class <?> entity2Class = wizard.getTargetItem().getPropertyType().getBinding();
+		
+		boolean entity1IsCorrect = false;
+		boolean entity2IsCorrect = false;
+
+
+		//testing - if function need to set entity1
+		if (!description.containsKey("entity1"))
+			entity1IsCorrect = true;
+		else{
+			for (int i=0;;i++){
+				String key = "entity1.typeCondition["+i+"]";
+				if ((entity1Class != null) && description.containsKey(key)){
+					
+					Class <?> conditionType = (Class<?>) description.get(key);
+					if (conditionType.isAssignableFrom(entity1Class)){
+						entity1IsCorrect = true;
+						break;
+					}
+				}
+				else
+					break;
+				
+			}
+		}
+		
+		for (int i=0;;i++){
+			String key = "entity2.typeCondition["+i+"]";
+			if (description.containsKey(key)){
+				Class <?> conditionType = (Class<?>) description.get(key);
+				if (conditionType.isAssignableFrom(entity2Class)){
+					entity2IsCorrect = true;
+					break;
+				}
+			}
+			else{
+				break;
+			}
+		}
+		
+
+		if (entity1IsCorrect && entity2IsCorrect){
+			return true;
+		}
+		
+		return false;		
 	}
 	
 	/**

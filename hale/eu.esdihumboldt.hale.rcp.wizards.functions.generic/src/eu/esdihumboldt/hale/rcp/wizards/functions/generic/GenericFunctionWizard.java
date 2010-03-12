@@ -21,41 +21,74 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.generic;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.rdf.Resource;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
+import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.AlgorithmCST;
 
-public class GenericFunctionWizard extends AbstractSingleCellWizard {
+public class GenericFunctionWizard extends Wizard implements FunctionWizard {
 	
 	protected GenericFunctionWizardPage mainPage;
 	protected AlgorithmWizardPage algorithmPage;
 	protected AlgorithmCST algorithmModel = null;
 	protected int maximumParameters = 0;	//maximum input algorithm parameters in one algorithm
 	protected boolean parametersCompleted = false;
-
+	private final Cell cell;
+	private final SchemaItem sourceItem;
+	private final SchemaItem targetItem;
+	private boolean existMapping = false;
 	
 	/**
-	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(AlignmentInfo)
+	 * Constructor solve both variant
+	 * 1. sourceItem isn't selected
+	 * 2. sourceItem is selected
 	 */
-	public GenericFunctionWizard(AlignmentInfo selection) {
-		super(selection);
+	public GenericFunctionWizard(ICell augmentation, SchemaItem sourceItem, SchemaItem targetItem) {
+		super();
+		this.sourceItem = sourceItem;
+		this.targetItem = targetItem;
+		if (augmentation == null) {
+			cell = new Cell();
+			if (sourceItem == null)
+				cell.setEntity1(Entity.NULL_ENTITY);
+			else 
+				cell.setEntity1(sourceItem.getEntity());
+			
+			cell.setEntity2(targetItem.getEntity());
+			
+		}
+		else {
+			existMapping =  true;
+			// copy the cell
+			cell = new Cell();
+			cell.setEntity1(augmentation.getEntity1());
+			cell.setEntity2(augmentation.getEntity2());
+			cell.setAbout(augmentation.getAbout());
+			cell.setLabel(augmentation.getLabel());
+			cell.setMeasure(augmentation.getMeasure());
+			cell.setRelation(augmentation.getRelation());
+		}
+		
+		init();
 	}
 
 	/**
-	 * @see AbstractSingleCellWizard#init()
+	 * @see Wizard#init()
 	 */
-	@Override
+	//@Override
 	protected void init() {
 		this.mainPage = new GenericFunctionWizardPage(""); 
 		super.setWindowTitle("Generic Wizard"); 
@@ -108,11 +141,51 @@ public class GenericFunctionWizard extends AbstractSingleCellWizard {
      */
     public void addPages() {
        // super.addPages(); 
+    	
         addPage(this.mainPage);
-		algorithmPage = new AlgorithmWizardPage("Algorithm");
+        algorithmPage = new AlgorithmWizardPage("Algorithm");
 		addPage(this.algorithmPage);
 		
     }
 
+	/**
+	 * Get the cell to edit
+	 * 
+	 * @return the cell to edit
+	 */
+	public final Cell getResultCell() {
+		return cell;
+	}
+	
+	/**
+	 * @see FunctionWizard#getResult()
+	 */
+	@Override
+	public List<ICell> getResult() {
+		List<ICell> result = new ArrayList<ICell>();
+		result.add(getResultCell());
+		return result;
+	}
 
+	/**
+	 * The method return current surceItem
+	 */
+	protected SchemaItem getSourceItem(){
+		return sourceItem;
+	}
+
+	/**
+	 * The method return current targetItem
+	 */
+	protected SchemaItem getTargetItem(){
+		return targetItem;
+	}
+
+	/**
+	 * The method return if exist mapping for current selection
+	 */
+	protected boolean existMapping(){
+		return existMapping;
+	}
 }
+

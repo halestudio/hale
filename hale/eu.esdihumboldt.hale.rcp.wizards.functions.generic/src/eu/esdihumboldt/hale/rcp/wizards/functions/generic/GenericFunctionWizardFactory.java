@@ -21,6 +21,9 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.generic;
 
+import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
+import eu.esdihumboldt.hale.rcp.wizards.augmentations.NullSchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
@@ -33,16 +36,24 @@ public class GenericFunctionWizardFactory implements FunctionWizardFactory {
 
 	@Override
 	public FunctionWizard createWizard(AlignmentInfo selection) {
-		// TODO Auto-generated method stub
-		return new GenericFunctionWizard(selection);
+		ICell cell = null;
+		SchemaItem sourceItem = selection.getFirstSourceItem();
+		SchemaItem targetItem = selection.getFirstTargetItem();
+		try{
+			cell = selection.getAlignment(selection.getFirstSourceItem(), selection.getFirstTargetItem());
+		}
+		catch (NullPointerException e){
+			cell = selection.getAlignment(NullSchemaItem.INSTANCE, selection.getFirstTargetItem());
+		}
+		return new GenericFunctionWizard(cell, sourceItem, targetItem);
 	}
 
 	@Override
 	public boolean supports(AlignmentInfo selection) {
-		if ((selection.getFirstSourceItem() != null && selection.getFirstSourceItem().isFeatureType()) 
-				|| (selection.getFirstTargetItem() != null && selection.getFirstTargetItem().isFeatureType())) {
+		if (((selection.getFirstSourceItem()) != null && !selection.getFirstSourceItem().isAttribute())
+				|| ((selection.getFirstTargetItem() != null) && !selection.getFirstTargetItem().isAttribute())) 
 			return false;
-		}
+		
 		return true;
 	}
 
