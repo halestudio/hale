@@ -90,7 +90,7 @@
 			<plugin>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<configuration>
-					<pde>true</pde>
+					<pde>false</pde>
 				</configuration>
 			</plugin>
 
