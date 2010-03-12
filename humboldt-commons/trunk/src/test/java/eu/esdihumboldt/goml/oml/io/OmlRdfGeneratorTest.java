@@ -30,6 +30,7 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -148,6 +149,8 @@ public class OmlRdfGeneratorTest {
 		// Note: XMLUnit asserts don't work with these validators so I must use the returned boolean
 		// Not the prettiest but it works.
 		assertTrue("The generated xml instance is invalid.  Errors have been logged as per log4j configuration", instanceValid);
+		// Assert that the source and generated XML are semantically equivalent.
+		//XMLAssert.assertXMLEqual("The XML is not equivalent", new InputSource(sourceOmlUri.getPath()), new InputSource(xmlGenerationPath));
 	}
 
 }
