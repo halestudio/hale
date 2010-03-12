@@ -82,7 +82,9 @@ public class CentroidFunction extends AbstractCstFunction {
 		Property entity2 = new Property(new About(""));
 
 		// Setting of type condition for entity2
-			//entity 2 has same type condition as entity1
+		entityTypes = new ArrayList <String>();
+		entityTypes.add(com.vividsolutions.jts.geom.Point.class.getName());
+		entityTypes.add(org.opengis.geometry.primitive.Point.class.getName());
 		entity2.setTypeCondition(entityTypes);
 				
 		parameterCell.setEntity1(entity1);
