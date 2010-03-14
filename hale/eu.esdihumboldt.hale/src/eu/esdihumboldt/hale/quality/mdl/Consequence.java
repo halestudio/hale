@@ -23,13 +23,29 @@ import java.util.List;
  */
 public class Consequence {
 	
-	MismatchContext context;
+	private MismatchContext context;
 	
-	List<DataQualityElement> impact;
+	private List<DataQualityElement> impact;
 	
 	public Consequence() {
 		this.context = null;
 		this.impact = new ArrayList<DataQualityElement>();
+	}
+
+	public MismatchContext getContext() {
+		return context;
+	}
+
+	public void setContext(MismatchContext context) {
+		this.context = context;
+	}
+
+	public List<DataQualityElement> getImpact() {
+		return impact;
+	}
+
+	public void setImpact(List<DataQualityElement> impact) {
+		this.impact = impact;
 	}
 
 }

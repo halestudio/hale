@@ -20,5 +20,32 @@ package eu.esdihumboldt.hale.quality.mdl;
  */
 public abstract class DataQualityElement {
 
+	private final boolean isRelative;
+	
+	private final String type;
+	
+	private Measurement measurement;
+
+	public DataQualityElement(boolean isRelative, String type) {
+		super();
+		this.isRelative = isRelative;
+		this.type = type;
+	}
+
+	public Measurement getMeasurement() {
+		return measurement;
+	}
+
+	public void setMeasurement(Measurement measurement) {
+		this.measurement = measurement;
+	}
+
+	public boolean isRelative() {
+		return isRelative;
+	}
+
+	public String getType() {
+		return type;
+	}
 
 }
