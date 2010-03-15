@@ -34,6 +34,7 @@ import org.opengis.metadata.lineage.Lineage;
 
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.transformer.capabilities.impl.FunctionDescriptionImpl;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
@@ -413,11 +414,30 @@ public class SchemaTranslationController {
 		}
 		
 		// for instance cardinalities, we're looking for split and merge conditions.
-		// FIXME for now only returning 1to1
-		for (CellCardinalityType[] cardinalities : result.values()) {
-			cardinalities[1] = CellCardinalityType.one_to_one;
+		for (ICell cell : alignment.getMap()) {
+			// we're only looking for cells that map FeatureClasses
+			if (cell.getEntity2().getClass().isAssignableFrom(FeatureClass.class)) { // Entity2 is always set, also in augmentations
+				CellCardinalityType[] cct = result.get(cell.getEntity2().getAbout().getAbout());
+				if (cell.getEntity1() != null && cell.getEntity1().getTransformation() != null) {
+					ITransformation t = cell.getEntity1().getTransformation();
+					// look for a merge condition (many to one)
+					if (t.getParameters().contains("InstanceMergeCondition")) {
+						cct[1] = CellCardinalityType.many_to_one;
+					}
+					// look for a split condition (one to many)
+					else if (t.getParameters().contains("InstanceSplitCondition")) {
+						cct[1] = CellCardinalityType.one_to_many;
+					}
+					else {
+						cct[1] = CellCardinalityType.one_to_one;
+					}
+				}
+				else if (cell.getEntity2() != null && cell.getEntity2().getTransformation() != null) {
+					// we got an augmentation here - cardinality is always 1 to 1 for these.
+					cct[1] = CellCardinalityType.one_to_one;
+				}
+			}
 		}
-		
 		return result;
 	}
 	
