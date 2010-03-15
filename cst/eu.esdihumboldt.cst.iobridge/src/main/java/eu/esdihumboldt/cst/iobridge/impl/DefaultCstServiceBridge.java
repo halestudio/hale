@@ -87,6 +87,7 @@ public class DefaultCstServiceBridge
 					schemaPath);
 			OutputStream out = new FileOutputStream(
 					new File(outputPath.toString()));
+			
 			gmlGenerator.encode(result, out);
 		} catch (Exception e) {
 			throw new RuntimeException("An exception occured when trying to write out GML: ", e);
@@ -123,7 +124,8 @@ public class DefaultCstServiceBridge
 
 	private FeatureCollection<?, ?> loadGml(String gmlFilename) {
 		try {
-			InputStream xml = new FileInputStream(new File(gmlFilename));
+			//InputStream xml = new FileInputStream(new File(gmlFilename));
+			InputStream xml = new URL(gmlFilename).openStream();
 			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration());
 			return (FeatureCollection<FeatureType, Feature>) parser.parse(xml);
 		} catch (Exception e) {
