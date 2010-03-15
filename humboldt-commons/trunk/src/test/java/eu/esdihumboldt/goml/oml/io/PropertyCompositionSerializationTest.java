@@ -14,6 +14,7 @@ package eu.esdihumboldt.goml.oml.io;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import javax.xml.bind.JAXBException;
 
@@ -55,7 +56,7 @@ public class PropertyCompositionSerializationTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.alignment = new OmlRdfReader().read(uri.getPath());
+		this.alignment = new OmlRdfReader().read(new URL("file", null, uri.getPath()));
 		this.omlGenerator = new OmlRdfGenerator();
 		
 	}

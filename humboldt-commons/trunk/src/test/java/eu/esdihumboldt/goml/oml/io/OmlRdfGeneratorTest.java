@@ -15,8 +15,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -94,14 +96,15 @@ public class OmlRdfGeneratorTest {
 	 * @throws FileNotFoundException
 	 * @throws ConfigurationException
 	 * @throws SAXException
+	 * @throws MalformedURLException 
 	 */
 	@SuppressWarnings("unchecked") // XMLUnit uses a raw List
 	@Test
-	public final void testWriteFromReadOML() throws URISyntaxException, JAXBException, FileNotFoundException, ConfigurationException, SAXException {
+	public final void testWriteFromReadOML() throws URISyntaxException, JAXBException, FileNotFoundException, ConfigurationException, SAXException, MalformedURLException {
 		// Read in the test file.
 		LOG.trace("Reading " + TEST_OML_SOURCE_FILE + " test file");
 		URI uri = new URI(OmlRdfGeneratorTest.class.getResource(OmlRdfGeneratorTest.TEST_OML_SOURCE_FILE).getFile());
-		Alignment alignment = new OmlRdfReader().read(uri.getPath());
+		Alignment alignment = new OmlRdfReader().read(new URL("file", null, uri.getPath()));
 
 		// Serialise the alignment instance to an xml file.
 		LOG.trace("Generating and writing oml file");

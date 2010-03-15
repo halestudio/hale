@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.goml;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -101,7 +102,7 @@ public class ComposedPropertyTest extends TestCase {
 	}
 	
 	@Test
-	public void testOmlRdfRead(){
+	public void testOmlRdfRead() throws MalformedURLException{
 		URI uri = null;
 		try {
 			uri = new URI(ComposedPropertyTest.class.getResource("ComposedPropertyTest.xml").getFile());

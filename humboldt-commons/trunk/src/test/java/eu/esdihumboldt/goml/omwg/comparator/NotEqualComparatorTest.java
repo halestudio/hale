@@ -85,7 +85,7 @@ public class NotEqualComparatorTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Alignment alignment = new OmlRdfReader().read(uri.getPath());
+		Alignment alignment = new OmlRdfReader().read(new URL("file", null, uri.getPath()));
 
 		ICell cell = alignment.getMap().get(0);
 		Property propA = (Property)cell.getEntity1();

@@ -14,6 +14,7 @@ package eu.esdihumboldt.goml.oml.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -97,6 +98,27 @@ public class OmlRdfReader {
 	 * @return Alignment object
 	 */
 	public Alignment read(String rdfFile) {
+		URL rdfUrl = null;
+		try {
+			rdfUrl = new URL(rdfFile);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			rdfUrl =  new URL("file", null, rdfFile);
+			
+		}finally{
+			return read(rdfUrl);
+		}
+		
+	}
+	
+	/**
+	 * Unmarshalls oml-mapping to the HUMBOLDT Alignment.
+	 * 
+	 * @param rdfFile
+	 *            path to the oml-mapping file
+	 * @return Alignment object
+	 */
+	public Alignment read(URL rdfFile) {
 		// 1. unmarshal rdf
 		JAXBContext jc;
 		JAXBElement<AlignmentType> root = null;
@@ -108,8 +130,7 @@ public class OmlRdfReader {
 			u
 					.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
 			
-			  root = u.unmarshal(new StreamSource(new
-			  URL("file", null ,rdfFile).openStream()), AlignmentType.class);
+			  root = u.unmarshal(new StreamSource(rdfFile.openStream()), AlignmentType.class);
 			 
 
 		/*	root = u.unmarshal(new StreamSource(new File(rdfFile)),

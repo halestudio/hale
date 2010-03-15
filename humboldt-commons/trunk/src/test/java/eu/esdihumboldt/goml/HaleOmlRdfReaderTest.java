@@ -15,8 +15,10 @@ package eu.esdihumboldt.goml;
 
 import static org.junit.Assert.*;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 
 import org.junit.Test;
@@ -43,9 +45,11 @@ public class HaleOmlRdfReaderTest {
 
 	/**
 	 * Test method for {@link eu.esdihumboldt.goml.oml.io.OmlRdfReader#read(java.lang.String)}.
+	 * @throws MalformedURLException 
+	 * @throws MalformedURLException 
 	 */
 	@Test
-	public final void testRead() {
+	public final void testRead() throws MalformedURLException {
 		URI uri = null;
 		try {
 			uri = new URI(HaleOmlRdfReaderTest.class.getResource("testproject.xml").getFile());
@@ -53,7 +57,7 @@ public class HaleOmlRdfReaderTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Alignment alignment = new OmlRdfReader().read(uri.getPath());
+		Alignment alignment = new OmlRdfReader().read(new URL("file", null, uri.getPath()));
 		//test alignment basic elements
 		assertEquals("http://www.opengis.net/gml", alignment.getSchema1().getLocation());
 		assertEquals("urn:x-inspire:specification:gmlas-v31:Network:3.1", alignment.getSchema2().getLocation());

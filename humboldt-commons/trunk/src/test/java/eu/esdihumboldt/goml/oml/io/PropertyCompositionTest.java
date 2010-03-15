@@ -16,6 +16,7 @@ package eu.esdihumboldt.goml.oml.io;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -209,7 +210,7 @@ public class PropertyCompositionTest {
 	}
 	
 	@Test
-	 public void testOmlRdfRead(){
+	 public void testOmlRdfRead() throws MalformedURLException{
 		URI uri = null;
 		try {
 			uri = new URI(PropertyCompositionTest.class.getResource("PropertyCompositionTest.xml").getFile());
@@ -217,7 +218,7 @@ public class PropertyCompositionTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Alignment alignment = new OmlRdfReader().read(uri.getPath());
+		Alignment alignment = new OmlRdfReader().read(new URL ("file", null, uri.getPath()));
 
 		//test for ComposedProperty
 		ComposedProperty  entity1 = ((ComposedProperty)alignment.getMap().get(0).getEntity1());

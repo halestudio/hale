@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -80,7 +81,7 @@ public class EqualComparatorTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Alignment alignment = new OmlRdfReader().read(uri.getPath());
+		Alignment alignment = new OmlRdfReader().read(new URL("file", null, uri.getPath()));
 		ICell cell = alignment.getMap().get(0);
 		Property propA = (Property)cell.getEntity1();
 		

@@ -16,8 +16,10 @@ package eu.esdihumboldt.goml.oml.io;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.junit.Test;
 
@@ -40,9 +42,10 @@ public class OmlRdfReaderTest {
 
 	/**
 	 * Test method for {@link eu.esdihumboldt.goml.oml.io.OmlRdfReader#read(java.lang.String)}.
+	 * @throws MalformedURLException 
 	 */
 	@Test
-	public final void testRead() {
+	public final void testRead()  {
 		URI uri = null;
 		try {
 			uri = new URI(OmlRdfReaderTest.class.getResource("./WatercoursesBY2Inspire.xml").getFile());
@@ -50,7 +53,10 @@ public class OmlRdfReaderTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Alignment alignment = new OmlRdfReader().read(uri.getPath());
+		Alignment alignment;
+		try {
+			alignment = new OmlRdfReader().read(new URL ("file", null,uri.getPath()));
+		
 		//test alignment basic elements
 		assertEquals("Watercourses_BY.xsd", alignment.getSchema1().getLocation());
 		assertEquals("Hydrography.xsd", alignment.getSchema2().getLocation());
@@ -104,6 +110,10 @@ public class OmlRdfReaderTest {
 		//check entity2 properties
 		FeatureClass fc2 = (FeatureClass)filter.getEntity2();
 		assertEquals("inspireHY:Watercourse", ((About)fc2.getAbout()).getAbout());
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
