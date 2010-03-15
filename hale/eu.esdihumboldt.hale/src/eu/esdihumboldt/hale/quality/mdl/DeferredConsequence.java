@@ -11,44 +11,91 @@
  */
 package eu.esdihumboldt.hale.quality.mdl;
 
+import java.util.List;
+
+import org.opengis.feature.Feature;
+
 /**
  * A {@link DeferredConsequence} is one whose {@link Measurement} can only be 
  * calculated at execution time, based on the results of the instance 
  * translation.
- * 
- * The calculation rule used depends on the Mismatch type, and e.g. for 
- * completeness usually evaluates the size of two sets.
- * 
- * The following is an example rule for completeness:
- * <pre>double: |Entity1.PropertyA != null | / |Entity2.PropertyB != null|</pre>
- * 
- * Rules can also be used to get boolean results, such as in this case, which 
- * evaluates existence of a certain element:
- * <pre>boolean: forAll(Entity1.PropertyA != null)</pre>
- * forAll rules are evaluated once based on the final data set, and result set 
- * size must be identical to input set size for the result to be true.
- * <br/>
- * TODO: A full grammar is to follow.
+ * The calculation makes use of a {@link CalculationRule}.
  * 
  * @author Thorsten Reitz
  * @version $Id$
  */
-public class DeferredConsequence 
+public class DeferredConsequence<T> 
 	extends Consequence {
 	
-	private String calculationRule;
-
-	public DeferredConsequence(String calculationRule) {
+	private final CalculationRule<T> calculationRule;
+	
+	private List<? extends T> originalObjects;
+	
+	private List<? extends T> transformedObjects;
+	
+	public DeferredConsequence(CalculationRule<T> calculationRule) {
 		super();
 		this.calculationRule = calculationRule;
 	}
 
-	public String getCalculationRule() {
+	/**
+	 * @return the {@link CalculationRule} that has been set.
+	 */
+	public CalculationRule<?> getCalculationRule() {
 		return calculationRule;
 	}
+	
+	/**
+	 * Sets the variables to use for the calculation, such as the sets of source
+	 * and transformed features.
+	 * @param originalObjects
+	 * @param transformedObjects
+	 */
+	public void setCalculationVariables(
+			List<? extends T> originalObjects, 
+			List<? extends T> transformedObjects) {
+		this.originalObjects = originalObjects;
+		this.transformedObjects = transformedObjects;
+	}
+	
+	@Override
+	public List<DataQualityElement> getImpact() {
+		return this.calculationRule.evaluate(
+				originalObjects, transformedObjects);
+	}
 
-	public void setCalculationRule(String calculationRule) {
-		this.calculationRule = calculationRule;
+	@Override
+	public void setImpact(List<DataQualityElement> impact) {
+		throw new UnsupportedOperationException("You cannot set an Impact on" +
+				" a DeferredConsequence.");
+	}
+
+
+
+	/**
+	 * Types implementing this interface can be used to submit custom rules for
+	 * the calculation of the values of {@link DataQualityElement}s of a 
+	 * {@link Consequence}.
+	 * 
+	 * @author Thorsten Reitz
+	 * @version $Id$ 
+	 * @param <T> any type to base a quality impact calculation on; usually
+	 * {@link Feature}s.
+	 */
+	public interface CalculationRule<T> {
+		
+		/**
+		 * 
+		 * @param originalObjects a {@link List} of objects as they appeared 
+		 * before the transformation
+		 * @param transformedObjects a corresponding {@link List} of objects as
+		 * they appear after transformation
+		 * @return
+		 */
+		public List<DataQualityElement> evaluate(
+				List<? extends T> originalObjects, 
+				List<? extends T> transformedObjects);
+		
 	}
 
 }

@@ -89,7 +89,12 @@ public class Mismatch {
 	}
 
 	/**
-	 * TODO: Enter Type comment.
+	 * This enumeration contains the types of Mismatches currently defined for
+	 * the MDL.
+	 * TODO: Think of a way to make this enumeration more dynamic, taking into 
+	 * account possible dimensions of mismatches (type of elements they occur 
+	 * on, level of abstraction they occur on, including left-hand side/right 
+	 * hand side (spatial/non-spatial...))
 	 * 
 	 * @author Thorsten Reitz
 	 */

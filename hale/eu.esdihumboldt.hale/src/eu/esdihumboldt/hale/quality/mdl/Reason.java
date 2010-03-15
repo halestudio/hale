@@ -22,6 +22,9 @@ import eu.esdihumboldt.goml.align.Entity;
  * on the property of the declared mapping or on properties of instance data 
  * used for verification.
  * 
+ * TODO: Clarify relationship between Reason triggerRule and CalculationRule in
+ * Consequence.
+ * 
  * @author Thorsten Reitz
  * @version $Id$
  */
@@ -66,9 +69,24 @@ public class Reason {
 		return "";
 	}
 	
-	public enum ReasonType {
-		CardinalityDifference,
-		BindingDifference
+	/**
+	 * Some properties that all entities have and that can form the basis of a
+	 * Mismatch are given in this enumeration.
+	 */
+	public enum EntityProperty {
+		/** The number of occurrences allowed for the first entity is different 
+		 * from the number of occurrences allowed for the second entity */
+		Cardinality,
+		/** The type (binding) of the first entity is incompatible to the 
+		 * binding of the second entity */
+		Binding,
+		/** An association that the first entity has within its schema is not
+		 * compatible to an association that the second entity has within its 
+		 * schema.  */
+		AssociationType,
+		/** There is a constraint on the first entity that is not compatible
+		 * to a constraint on the second entity. */
+		Constraint
 	}
 	
 }
