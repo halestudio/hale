@@ -40,7 +40,6 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWiza
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
- *
  */
 public class MathFunctionPage extends AbstractSingleComposedCellWizardPage {
 	

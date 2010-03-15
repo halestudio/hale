@@ -44,19 +44,28 @@
             name="Mathematical expression">
       </factory>
       <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.date.DateExtractionFunctionWizardFactory"
+            name="Date Extraction">
+      </factory>
+      <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.classification.ClassificationMappingFunctionWizardFactory"
             icon="icons/mapping.gif"
             name="Classification mapping">
       </factory>
       <factory
-            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.augmentation.nilreason.NilReasonWizardFactory"
-            icon="icons/remove.gif"
-            name="Nil reason">
-      </factory>
-      <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.IdentifierFunctionWizardFactory"
             icon="icons/rename.gif"
-            name="Create INSPIRE Identifier">
+            name="INSPIRE Identifier">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.geographicname.GeographicNameFunctionWizardFactory"
+            icon="icons/rename.gif"
+            name="INSPIRE Geographic name">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.augmentation.nilreason.NilReasonWizardFactory"
+            icon="icons/remove.gif"
+            name="INSPIRE Nil reason">
       </factory>
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.augmentation.constantvalue.ConstantValueWizardFactory"
@@ -64,13 +73,8 @@
             name="Attribute Default Value ">
       </factory>
       <factory
-            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.geographicname.GeographicNameFunctionWizardFactory"
-            icon="icons/rename.gif"
-            name="Geographic name">
-      </factory>
-      <factory
-            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.date.DateExtractionFunctionWizardFactory"
-            name="Date Extraction">
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.userdefined.UserDefinedFunctionWizardFactory"
+            name="User defined function">
       </factory>
    </extension>
 
