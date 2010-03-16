@@ -34,6 +34,11 @@
             name="Network generalization (Line to Line)">
       </factory>
       <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric.OrdinatesPointWizardFactory"
+            icon="icons/geometry_attribute.png"
+            name="Ordinates to Point geometry">
+      </factory>
+      <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.numeric.NumericFunctionWizardFactory"
             icon="icons/number_attribute.png"
             name="Numeric function wizard">
@@ -51,6 +56,11 @@
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.classification.ClassificationMappingFunctionWizardFactory"
             icon="icons/mapping.gif"
             name="Classification mapping">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.reference.CreateReferenceWizardFactory"
+            icon="icons/rename.gif"
+            name="Create GML Reference">
       </factory>
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.IdentifierFunctionWizardFactory"
@@ -75,11 +85,6 @@
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.userdefined.UserDefinedFunctionWizardFactory"
             name="User defined function">
-      </factory>
-      <factory
-            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric.OrdinatesPointWizardFactory"
-            icon="icons/geometry_attribute.png"
-            name="Ordinates to Point geometry">
       </factory>
    </extension>
 
