@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.goml.oml.io;
 
+import org.apache.log4j.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -85,6 +87,11 @@ import eu.esdihumboldt.goml.rdf.Resource;
  * @version $Id$
  */
 public class OmlRdfReader {
+	/**
+	 * Logger for this class
+	 */
+	private static final Logger LOG = Logger.getLogger(OmlRdfReader.class);
+
 	/**
 	 * Constant defines the path to the alignment jaxb context
 	 */
@@ -253,18 +260,27 @@ public class OmlRdfReader {
 	 * @param jaxbFormalism
 	 * @return Formalism
 	 */
-	private Formalism getFormalism(
-			eu.esdihumboldt.generated.oml.OntologyType.Formalism jaxbFormalism) {
+	private Formalism getFormalism(eu.esdihumboldt.generated.oml.OntologyType.Formalism jaxbFormalism) {
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("getFormalism(eu.esdihumboldt.generated.oml.OntologyType.Formalism) - start");
+		}
+
 		Formalism formalism = null;
 		if (jaxbFormalism != null) {
 			FormalismType fType = jaxbFormalism.getFormalism();
 			URI uri = null;
 			try {
 				uri = new URI(fType.getUri());
-			} catch (URISyntaxException e) {
-				throw new RuntimeException(e);
+			}
+			catch (URISyntaxException e) {
+				LOG.error("getFormalism(eu.esdihumboldt.generated.oml.OntologyType.Formalism)",e);
+//				throw new RuntimeException(e);
 			}
 			formalism = new Formalism(fType.getName(), uri);
+		}
+
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("getFormalism(eu.esdihumboldt.generated.oml.OntologyType.Formalism) - end");
 		}
 		return formalism;
 	}
