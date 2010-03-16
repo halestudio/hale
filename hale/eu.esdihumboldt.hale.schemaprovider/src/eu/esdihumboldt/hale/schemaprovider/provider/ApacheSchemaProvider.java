@@ -45,13 +45,16 @@ import org.apache.ws.commons.schema.XmlSchemaParticle;
 import org.apache.ws.commons.schema.XmlSchemaSequence;
 import org.apache.ws.commons.schema.XmlSchemaSimpleContentExtension;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
+import org.apache.ws.commons.schema.XmlSchemaSimpleTypeContent;
+import org.apache.ws.commons.schema.XmlSchemaSimpleTypeList;
+import org.apache.ws.commons.schema.XmlSchemaSimpleTypeUnion;
 import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.Name;
 
-import eu.esdihumboldt.hale.schemaprovider.LogProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.HumboldtURIResolver;
+import eu.esdihumboldt.hale.schemaprovider.LogProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
@@ -59,6 +62,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.DependencyOrderedList;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.ProgressURIResolver;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.SchemaAttribute;
+import eu.esdihumboldt.hale.schemaprovider.provider.internal.SchemaResult;
 
 /**
  * The main functionality of this class is to load an XML schema file (XSD)
@@ -82,6 +86,8 @@ public class ApacheSchemaProvider
 	/**
 	 * Extracts attribute definitions from a {@link XmlSchemaParticle}.
 	 * 
+	 * @param elementTypeMap map of element names to type names
+	 * @param importedElementTypeMap map of element names to imported type names
 	 * @param typeDef the definition of the declaring type
 	 * @param particle the particle
 	 * @param featureTypes 
@@ -89,7 +95,7 @@ public class ApacheSchemaProvider
 	 * 
 	 * @return the list of attribute definitions
 	 */
-	private List<SchemaAttribute> getAttributesFromParticle(TypeDefinition typeDef, XmlSchemaParticle particle, Map<Name, TypeDefinition> featureTypes, Map<Name, TypeDefinition> importedFeatureTypes) {
+	private List<SchemaAttribute> getAttributesFromParticle(Map<Name, Name> elementTypeMap, Map<Name, Name> importedElementTypeMap, TypeDefinition typeDef, XmlSchemaParticle particle, Map<Name, TypeDefinition> featureTypes, Map<Name, TypeDefinition> importedFeatureTypes) {
 		List<SchemaAttribute> attributeResults = new ArrayList<SchemaAttribute>();
 		
 		if (particle instanceof XmlSchemaSequence) {
@@ -100,14 +106,27 @@ public class ApacheSchemaProvider
 					XmlSchemaElement element = (XmlSchemaElement)object;										
 					Name attributeTypeName = null;
 					if (element.getSchemaTypeName() != null) {
+						// element with a type
+						// <element name="ELEMENT_NAME" type="SCHEMA_TYPE_NAME" />
 						attributeTypeName = new NameImpl(
 							element.getSchemaTypeName().getNamespaceURI(),
 							element.getSchemaTypeName().getLocalPart());
 					}
 					else if (element.getRefName() != null) {
-						attributeTypeName = new NameImpl(
-							element.getRefName().getNamespaceURI(),
-							element.getRefName().getLocalPart());
+						// References another element
+						// <element ref="REF_NAME" />
+						Name elementName = new NameImpl(
+								element.getRefName().getNamespaceURI(),
+								element.getRefName().getLocalPart());
+						// local element definition
+						attributeTypeName = elementTypeMap.get(elementName);
+						if (attributeTypeName == null) {
+							// imported element definition
+							attributeTypeName = importedElementTypeMap.get(elementName);
+						}
+						if (attributeTypeName == null) {
+							_log.error("Reference to element " + element.getRefName().getLocalPart() +" not found");
+						}
 					}
 					else if (element.getSchemaType() != null) {
 						if (element.getSchemaType() instanceof XmlSchemaComplexType) {
@@ -135,7 +154,7 @@ public class ApacheSchemaProvider
 								 * to getAttributesFromParticle just returns the
 								 * base type of the property type
 								 */
-								List<SchemaAttribute> attributes = getAttributesFromParticle(typeDef, p, featureTypes, importedFeatureTypes);
+								List<SchemaAttribute> attributes = getAttributesFromParticle(elementTypeMap, importedElementTypeMap, typeDef, p, featureTypes, importedFeatureTypes);
 								//XXX fix property name
 								if (attributes.size() == 1) {
 									SchemaAttribute org = attributes.get(0);
@@ -211,22 +230,6 @@ public class ApacheSchemaProvider
 	}
 	
 	/**
-	 * Get the type name
-	 * 
-	 * @param names mapping for types to names
-	 * @param type the type
-	 * @return the name (if found, else the type)
-	 */
-	private Name getTypeName(Map<String, String> names, Name type) {
-		String localName = names.get(type.getLocalPart());
-		
-		if (localName != null && !localName.isEmpty())
-			return new NameImpl(type.getNamespaceURI(), localName);
-		else
-			return type;
-	}
-	
-	/**
 	 * @see SchemaProvider#loadSchema(java.net.URI, ProgressIndicator)
 	 */
 	public Schema loadSchema(URI location, ProgressIndicator progress) throws IOException {
@@ -265,12 +268,17 @@ public class ApacheSchemaProvider
 			// default to gml schema
 			namespace = "http://www.opengis.net/gml";
 		}
+		
+		schema.setSourceURI(location.toString());
+		
+		HashMap<String, SchemaResult> imports = new HashMap<String, SchemaResult>();
+		imports.put(location.toString(), null);
 
-		Map<Name, TypeDefinition> types = loadSchema(schema,
-				new HashMap<String, Map<Name, TypeDefinition>>(), progress);
+		SchemaResult schemaResult = loadSchema(schema,
+				imports, progress);
 
 		Map<String, TypeDefinition> featureTypes = new HashMap<String, TypeDefinition>();
-		for (TypeDefinition type : types.values()) {
+		for (TypeDefinition type : schemaResult.getNameToTypeDefinitionMap().values()) {
 			if (type.isComplexType()) {
 				featureTypes.put(type.getIdentifier(), type);
 			}
@@ -288,21 +296,32 @@ public class ApacheSchemaProvider
 	 * @param progress the progress indicator
 	 * @return the map of feature type names and types
 	 */
-	protected Map<Name, TypeDefinition> loadSchema(XmlSchema schema, Map<String, Map<Name, TypeDefinition>> imports, ProgressIndicator progress) {
+	protected SchemaResult loadSchema(XmlSchema schema, Map<String, SchemaResult> imports, ProgressIndicator progress) {
 		String namespace = schema.getTargetNamespace();
 		if (namespace == null || namespace.isEmpty()) {
 			// default to gml schema
 			namespace = "http://www.opengis.net/gml";
 		}
 		
+		String schemaLocation = schema.getSourceURI();
+		if (schemaLocation == null) {
+			schemaLocation = "namespace:" + namespace;
+		}
+		
 		// Map of type names / types for the result
 		Map<Name, TypeDefinition> featureTypes = new HashMap<Name, TypeDefinition>();
+		// name mapping: element name -> type name
+		Map<Name, Name> elementNames = new HashMap<Name, Name>();
 		
 		// Set of include locations
 		Set<String> includes = new HashSet<String>();
 		
 		// handle imports
 		XmlSchemaObjectCollection externalItems = schema.getIncludes();
+		if (externalItems.getCount() > 0) {
+			_log.info("Loading includes and imports for schema at " + schemaLocation);
+		}
+		
 		for (int i = 0; i < externalItems.getCount(); i++) {
 			try {
 				XmlSchemaExternal imp = (XmlSchemaExternal) externalItems.getItem(i);
@@ -320,27 +339,30 @@ public class ApacheSchemaProvider
 			}
 		}
 		
+		_log.info("Creating types for schema at " + schemaLocation);
+		
 		progress.setCurrentTask("Analyzing schema " + namespace);
 		
 		// map for all imported types
 		Map<Name, TypeDefinition> importedFeatureTypes = new HashMap<Name, TypeDefinition>();
+		// name mapping for imported types: element name -> type name
+		Map<Name, Name> importedElementNames = new HashMap<Name, Name>();
 		
 		// add imported types
-		for (Entry<String, Map<Name, TypeDefinition>> entry : imports.entrySet()) {
+		for (Entry<String, SchemaResult> entry : imports.entrySet()) {
 			if (entry.getValue() != null) {
 				if (includes.contains(entry.getKey())) {
 					// is include, add to result
-					featureTypes.putAll(entry.getValue());
+					featureTypes.putAll(entry.getValue().getNameToTypeDefinitionMap());
+					elementNames.putAll(entry.getValue().getElementToTypeNameMap());
 				}
 				else {
 					// is import, don't add to result
-					importedFeatureTypes.putAll(entry.getValue());
+					importedFeatureTypes.putAll(entry.getValue().getNameToTypeDefinitionMap());
+					importedElementNames.putAll(entry.getValue().getElementToTypeNameMap());
 				}
 			}
 		}
-		
-		// name mapping (schema type name / feature type name)
-		Map<String, String> names = new HashMap<String, String>();
 		
 		// descriptions (element (feature type) name / description)
 		Map<String, String> descriptions = new HashMap<String, String>();
@@ -359,16 +381,22 @@ public class ApacheSchemaProvider
 				XmlSchemaElement element = (XmlSchemaElement) item;
 				// retrieve local name part of XmlSchemaElement and of 
 				// XmlSchemaComplexType to substitute name later on.
-				String typeName = null;
+				Name typeName = null;
 				if (element.getSchemaTypeName() != null) {
-					typeName = element.getSchemaTypeName().getLocalPart();
+					typeName = new NameImpl(
+							element.getSchemaTypeName().getNamespaceURI(), 
+							element.getSchemaTypeName().getLocalPart());
 				}
 				else if (element.getQName() != null) {
-					typeName = element.getQName().getLocalPart();
+					typeName = new NameImpl(
+							element.getQName().getNamespaceURI(),
+							element.getQName().getLocalPart());
 				} 
 				
 				String elementName = element.getName();
-				names.put(typeName, elementName);
+				elementNames.put(
+						new NameImpl(namespace, elementName), 
+						typeName);
 				
 				String description = SchemaAttribute.getDescription(element);
 				if (description != null) {
@@ -400,12 +428,12 @@ public class ApacheSchemaProvider
 				name = ((XmlSchemaComplexType)item).getName();
 				
 				// get the attribute type names
-				typeDependencies = getAttributeTypeNames((XmlSchemaComplexType) item);
+				typeDependencies = getAttributeTypeNames(elementNames, importedElementNames, (XmlSchemaComplexType) item);
 				
 				// get the name of the super type 
 				Name superType = (getSuperTypeName((XmlSchemaComplexType)item));
 				if (superType != null) {
-					superTypeName = getTypeName(names, superType);
+					superTypeName = superType; //XXX getTypeName(names, superType);
 					if (superTypeName != null) {
 						typeDependencies.add(superTypeName);
 					}
@@ -420,7 +448,7 @@ public class ApacheSchemaProvider
 			// if the item is a type we remember the type definition and determine its local dependencies
 			if (name != null) {
 				// determine the real type name
-				Name typeName = getTypeName(names, new NameImpl(namespace, name));
+				Name typeName = new NameImpl(namespace, name); //XXX getTypeName(names, new NameImpl(namespace, name));
 				
 				// determine the local dependency set
 				Set<Name> localDependencies = new HashSet<Name>();
@@ -428,7 +456,7 @@ public class ApacheSchemaProvider
 				if (typeDependencies != null) {
 					for (Name dependency : typeDependencies) {
 						if (dependency.getNamespaceURI().equals(namespace) && 
-								(names.containsValue(dependency.getLocalPart()) ||
+								((elementNames.containsValue(dependency) && !featureTypes.containsKey(dependency)) ||
 								schemaTypeNames.contains(dependency.getLocalPart()))) {
 							// local type, add to local dependencies
 							localDependencies.add(dependency);
@@ -477,6 +505,22 @@ public class ApacheSchemaProvider
 					simpleType = SchemaAttribute.getEnumAttributeType((XmlSchemaSimpleType) item, typeName);
 				}
 				//TODO other methods of resolving the type
+				if (simpleType == null) {
+					XmlSchemaSimpleTypeContent content = ((XmlSchemaSimpleType) item).getContent();
+					
+					if (content instanceof XmlSchemaSimpleTypeUnion) {
+						XmlSchemaSimpleTypeUnion union = (XmlSchemaSimpleTypeUnion) content;
+						
+						//TODO handle unions
+						simpleType = new TypeDefinition(typeName, null, null); //XXX
+					}
+					else if (content instanceof XmlSchemaSimpleTypeList) {
+						XmlSchemaSimpleTypeList list = (XmlSchemaSimpleTypeList) content;
+						
+						//TODO handle lists
+						simpleType = new TypeDefinition(typeName, null, null); //XXX
+					}
+				}
 				
 				if (simpleType != null) {
 					// create a simple type
@@ -492,9 +536,6 @@ public class ApacheSchemaProvider
 				
 				TypeDefinition superType = null;
 				if (superTypeName != null) {
-					// determine correct name
-					superTypeName = getTypeName(names, superTypeName);
-					
 					// find super type
 					superType = featureTypes.get(superTypeName);
 					
@@ -512,6 +553,8 @@ public class ApacheSchemaProvider
 				
 				// determine the defined attributes and add them to the declaring type
 				getAttributes(
+						elementNames,
+						importedElementNames,
 						typeDef, // definition of the declaring type
 						(XmlSchemaComplexType) item,
 						featureTypes,
@@ -531,12 +574,14 @@ public class ApacheSchemaProvider
 			}
 		}
 		
-		return featureTypes;
+		return new SchemaResult(featureTypes, elementNames);
 	}
 	
 	/**
 	 * Get the attributes for the given item
 	 * 
+	 * @param elementTypeMap map of element names to type names
+	 * @param importedElementTypeMap map of element names to imported type names
 	 * @param typeDef the definition of the declaring type 
 	 * @param item the complex type item
 	 * @param featureTypes 
@@ -544,7 +589,7 @@ public class ApacheSchemaProvider
 	 *  
 	 * @return the attributes as a list of {@link SchemaAttribute}s
 	 */
-	private List<SchemaAttribute> getAttributes(TypeDefinition typeDef, XmlSchemaComplexType item, Map<Name, TypeDefinition> featureTypes, Map<Name, TypeDefinition> importedFeatureTypes) {
+	private List<SchemaAttribute> getAttributes(Map<Name, Name> elementTypeMap, Map<Name, Name> importedElementTypeMap, TypeDefinition typeDef, XmlSchemaComplexType item, Map<Name, TypeDefinition> featureTypes, Map<Name, TypeDefinition> importedFeatureTypes) {
 		XmlSchemaContentModel model = item.getContentModel();
 		if (model != null ) {
 			XmlSchemaContent content = model.getContent();
@@ -552,14 +597,14 @@ public class ApacheSchemaProvider
 			if (content instanceof XmlSchemaComplexContentExtension) {
 				if (((XmlSchemaComplexContentExtension)content).getParticle() != null) {
 					XmlSchemaParticle particle = ((XmlSchemaComplexContentExtension)content).getParticle();
-					return getAttributesFromParticle(typeDef, particle, featureTypes, importedFeatureTypes);
+					return getAttributesFromParticle(elementTypeMap, importedElementTypeMap, typeDef, particle, featureTypes, importedFeatureTypes);
 				}
 			}
 		}
 		else if (((XmlSchemaComplexType)item).getParticle() != null) {
 			XmlSchemaParticle particle = ((XmlSchemaComplexType)item).getParticle();
 			if (particle instanceof XmlSchemaSequence) {
-				return getAttributesFromParticle(typeDef, particle, featureTypes, importedFeatureTypes);
+				return getAttributesFromParticle(elementTypeMap, importedElementTypeMap, typeDef, particle, featureTypes, importedFeatureTypes);
 			}
 		}
 		
@@ -569,11 +614,13 @@ public class ApacheSchemaProvider
 	/**
 	 * Get the attributes type names for the given item
 	 * 
+	 * @param elementTypeMap map of element names to type names 
+	 * @param importedElementTypeMap map of element names to imported type names
 	 * @param item the complex type item
 	 * @return the attribute type names
 	 */
-	private Set<Name> getAttributeTypeNames(XmlSchemaComplexType item) {
-		List<SchemaAttribute> attributes = getAttributes(null, item, null, null);
+	private Set<Name> getAttributeTypeNames(Map<Name, Name> elementTypeMap, Map<Name, Name> importedElementTypeMap, XmlSchemaComplexType item) {
+		List<SchemaAttribute> attributes = getAttributes(elementTypeMap, importedElementTypeMap, null, item, null, null);
 		
 		Set<Name> typeNames = new HashSet<Name>();
 		
