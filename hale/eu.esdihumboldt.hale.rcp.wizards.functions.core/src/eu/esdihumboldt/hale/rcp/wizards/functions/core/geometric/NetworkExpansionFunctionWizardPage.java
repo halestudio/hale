@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -36,7 +35,7 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.math.MathExpressionFieldEditor;
 
 /**
- * TODO Explain the purpose of this type here.
+ * The WizardPage that contains the UI for the {@link NetworkExpansionFunctionWizard}.
  * 
  * @author Thorsten Reitz
  * @version $Id$

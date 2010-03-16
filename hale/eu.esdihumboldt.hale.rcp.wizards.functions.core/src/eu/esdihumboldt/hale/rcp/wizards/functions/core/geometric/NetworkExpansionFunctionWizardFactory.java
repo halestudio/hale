@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.corefunctions.NetworkExpansionFunction;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
+import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
@@ -48,6 +49,11 @@ public class NetworkExpansionFunctionWizardFactory implements
 			SchemaItem target = selection.getFirstTargetItem();
 			
 			if (source == null || target == null) {
+				return false;
+			}
+			
+			if (!source.getType().equals(TreeObjectType.GEOMETRIC_ATTRIBUTE) 
+					 || !target.getType().equals(TreeObjectType.GEOMETRIC_ATTRIBUTE)) {
 				return false;
 			}
 			
