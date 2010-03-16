@@ -76,6 +76,11 @@
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.userdefined.UserDefinedFunctionWizardFactory"
             name="User defined function">
       </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric.OrdinatesPointWizardFactory"
+            icon="icons/geometry_attribute.png"
+            name="Ordinates to Point geometry">
+      </factory>
    </extension>
 
 </plugin>
