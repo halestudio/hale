@@ -45,6 +45,10 @@ public class RenamingFunctionWizardFactory implements FunctionWizardFactory {
 			SchemaItem source = selection.getFirstSourceItem();
 			SchemaItem target = selection.getFirstTargetItem();
 			
+			if (!target.isFeatureType() && !source.isFeatureType()) {
+				return false;
+			}
+			
 			ICell cell = selection.getAlignment(source, target);
 			
 			if (cell != null) {

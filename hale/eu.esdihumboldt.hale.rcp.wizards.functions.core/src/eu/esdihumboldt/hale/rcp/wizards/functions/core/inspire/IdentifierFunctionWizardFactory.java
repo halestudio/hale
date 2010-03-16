@@ -45,9 +45,12 @@ public class IdentifierFunctionWizardFactory implements FunctionWizardFactory {
 			return false;
 		}
 		
-		// target item must be a property
+		// target item must be a property and be an INSPIRE identifier
 		SchemaItem target = selection.getFirstTargetItem();
 		if (!target.isAttribute()) {
+			return false;
+		}
+		if (!target.getPropertyType().getName().getLocalPart().equals("IdentifierPropertyType")) {
 			return false;
 		}
 		
