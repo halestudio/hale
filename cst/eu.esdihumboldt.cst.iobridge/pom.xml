@@ -106,6 +106,11 @@
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
+			<groupId>eu.esdihumboldt.hale</groupId>
+			<artifactId>gmlparser</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>xsd</artifactId>
 			<version>2.2.2</version>
