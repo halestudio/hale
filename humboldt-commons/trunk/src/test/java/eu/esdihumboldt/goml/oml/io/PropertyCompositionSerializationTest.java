@@ -19,7 +19,9 @@ import java.net.URL;
 import javax.xml.bind.JAXBException;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 
 import eu.esdihumboldt.goml.align.Alignment;
@@ -35,6 +37,8 @@ import eu.esdihumboldt.goml.align.Alignment;
  */
 public class PropertyCompositionSerializationTest {
 	
+	private static final String TEST_GENERATED_OML_FILE = "PropertyCompositionTest_generated.xml";
+
 	/**
 	 * an Alignment Instance containing the Property Composistion to be serialized
 	 */
@@ -45,6 +49,12 @@ public class PropertyCompositionSerializationTest {
 	 * 
 	 */
 	OmlRdfGenerator omlGenerator;
+	
+	/**
+	 * Temporary folder used by the tests. Cleaned up after the tests have run.
+	 */
+	@Rule
+	public static TemporaryFolder TEMP_FOLDER = new TemporaryFolder();
 	
 	@Before
 	public void setUp() throws Exception{
@@ -64,7 +74,8 @@ public class PropertyCompositionSerializationTest {
 	@Test
 	public final void testWrite(){
 		try {
-			omlGenerator.write(alignment, "PropertyCompositionTest_generated.xml");
+			String xmlGenerationPath = TEMP_FOLDER.getRoot().getPath() + "/" + PropertyCompositionSerializationTest.TEST_GENERATED_OML_FILE;
+			omlGenerator.write(alignment, xmlGenerationPath);
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
