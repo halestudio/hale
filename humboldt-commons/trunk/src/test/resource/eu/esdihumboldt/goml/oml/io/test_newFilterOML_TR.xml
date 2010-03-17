@@ -2,7 +2,7 @@
 <!-- mdv oct. 2009 meant to validate single gOML mappings (consisting of one or just a few Cells) against the xsd schemas
 -->
 
-<align:Alignment rdf:about="" xmlns="http://www.omwg.org/TR/d7/ontology/alignment"
+<align:Alignment xmlns="http://www.omwg.org/TR/d7/ontology/alignment"
 	xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment"
 	xmlns:align="http://knowledgeweb.semanticweb.org/heterogeneity/alignment"
 	xmlns:goml="http://www.esdi-humboldt.eu/goml"
@@ -16,8 +16,8 @@
 			<align:location>inputdatasets.xsd</align:location>
 			<align:formalism>
 				<align:Formalism>
-					<align:uri/>
 					<align:name>XSD</align:name>
+					<align:uri/>
 				</align:Formalism>
 			</align:formalism>
 		</align:Ontology>
@@ -31,8 +31,8 @@
 			<align:location>hydrography.xsd</align:location>
 			<align:formalism>
 				<align:Formalism>
-					<align:uri/>
 					<align:name>XSD</align:name>
+					<align:uri/>
 				</align:Formalism>
 			</align:formalism>
 		</align:Ontology>
