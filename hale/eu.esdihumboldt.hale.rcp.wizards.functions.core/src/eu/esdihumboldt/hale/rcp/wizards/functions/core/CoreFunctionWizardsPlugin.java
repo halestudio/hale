@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.rcp.wizards.functions.core;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.BundleContext;
 
 /**
  * Plug-in activator
@@ -28,6 +29,19 @@ public class CoreFunctionWizardsPlugin extends AbstractUIPlugin {
 	 * The plug-in ID
 	 */
 	public static final String PLUGIN_ID = "eu.esdihumboldt.hale.rcp.wizards.functions.core";
+	
+	/**
+	 * The shared instance of this plug-in
+	 */
+	public static CoreFunctionWizardsPlugin plugin;
+	
+	/**
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+	 */
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		plugin = this;
+	}
 
 	/**
 	 * Returns an image descriptor for the image file at the given
