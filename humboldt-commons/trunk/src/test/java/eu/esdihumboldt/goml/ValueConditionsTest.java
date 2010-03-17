@@ -5,7 +5,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import eu.esdihumboldt.cst.align.ext.IValueExpression;
 import eu.esdihumboldt.goml.align.Alignment;
@@ -23,6 +25,8 @@ import eu.esdihumboldt.goml.rdf.About;
 public class ValueConditionsTest {
 	
 	
+	private static final String TEST_GENERATED_OML_FILE = "ValueConditionsTestFile.xml";
+	
 	private final String sourceLocalname = "FT1";
 	private final String sourceLocalnamePropertyA = "PropertyA";
 	private final String sourceNamespace = "http://esdi-humboldt.eu";
@@ -30,6 +34,12 @@ public class ValueConditionsTest {
 	private final String targetLocalname = "FT2";
 	private final String targetLocalnamePropertyD = "PropertyB";
 	private final String targetNamespace = "http://xsdi.org";
+	
+	/**
+	 * Temporary folder used by the tests. Cleaned up after the tests have run.
+	 */
+	@Rule
+	public static TemporaryFolder TEMP_FOLDER = new TemporaryFolder();
 	
 	@Test
 	public void testValueConditionGeneration()throws Exception{
@@ -88,7 +98,8 @@ public class ValueConditionsTest {
 	a.getMap().add(cell);
 	
 	OmlRdfGenerator org = new OmlRdfGenerator();
-	org.write(a, "ValueConditionsTestFile.xml");
+	String xmlGenerationPath = TEMP_FOLDER.getRoot().getPath() + "/" + ValueConditionsTest.TEST_GENERATED_OML_FILE;
+	org.write(a, xmlGenerationPath);
 	
 
 }
