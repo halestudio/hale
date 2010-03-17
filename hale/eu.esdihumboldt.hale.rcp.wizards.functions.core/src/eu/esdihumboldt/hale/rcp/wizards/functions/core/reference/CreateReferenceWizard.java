@@ -27,6 +27,9 @@ public class CreateReferenceWizard
 	
 	private CreateReferenceWizardPage mainPage;
 
+	/**
+	 * @param selection
+	 */
 	public CreateReferenceWizard(AlignmentInfo selection) {
 		super(selection);
 	}

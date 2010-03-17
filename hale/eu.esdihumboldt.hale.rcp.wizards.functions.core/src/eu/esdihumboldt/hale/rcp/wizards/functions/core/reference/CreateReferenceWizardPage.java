@@ -18,9 +18,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 
 /**
+ * TODO: clarify whether both normal xlinks and gml:ReferenceTypes are needed 
+ * (or whether ReferenceType is just a semantic element saying "by reference only")
+ * 
  * @author Thorsten Reitz
  * @version $Id$
  */
@@ -31,14 +35,20 @@ public class CreateReferenceWizardPage
 	
 	private Text postfix = null;
 
+	private SchemaItem sourceItem = null;
+
 	public CreateReferenceWizardPage(String pageName) {
 		super(pageName);
+		setTitle(pageName);
 		setDescription("Define how to create a reference to another spatial object.");
 	}
 
 	@Override
 	public void createControl(Composite parent) {
 		super.initializeDialogUnits(parent);
+		
+		this.sourceItem = getParent().getSourceItem();
+		
 		// create a composite to hold the widgets
 		Composite page = new Composite(parent, SWT.NULL);
 		setControl(parent);
@@ -81,6 +91,18 @@ public class CreateReferenceWizardPage
 		this.postfix.setEnabled(true);
 		this.postfix.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
+	}
+	
+	public String getPrefix() {
+		return this.prefix.getText();
+	}
+	
+	public String getPostfix() {
+		return this.postfix.getText();
+	}
+	
+	public String getEntityName() {
+		return this.sourceItem.getName().getLocalPart();
 	}
 
 }
