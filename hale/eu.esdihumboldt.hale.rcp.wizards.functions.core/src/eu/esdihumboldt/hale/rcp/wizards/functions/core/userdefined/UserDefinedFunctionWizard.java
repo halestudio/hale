@@ -14,6 +14,11 @@ package eu.esdihumboldt.hale.rcp.wizards.functions.core.userdefined;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.wizard.Wizard;
 
+import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.goml.oml.ext.Transformation;
+import eu.esdihumboldt.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.CoreFunctionWizardsPlugin;
@@ -43,7 +48,7 @@ public class UserDefinedFunctionWizard
 
 	@Override
 	protected void init() {
-		// TODO Auto-generated method stub
+		// TODO support editing of cell
 	}
 
 
@@ -51,6 +56,15 @@ public class UserDefinedFunctionWizard
 	public boolean performFinish() {
 		IPreferenceStore preferences = CoreFunctionWizardsPlugin.plugin.getPreferenceStore();
 		preferences.putValue("eu.esdihumboldt.udfPreferences", this.mainPage.getEncodedUdfTemplates());
+		
+		// create adequate cell
+		ICell cell = super.getResultCell();
+		
+		Transformation t = new Transformation();
+		t.setService(new Resource("UserDefinedFunction"));
+		t.setParameters(this.mainPage.getUdfParameters());
+		((Property)cell.getEntity1()).setTransformation(t);
+		
 		return true;
 	}
 	

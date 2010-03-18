@@ -50,7 +50,7 @@ public class DateExtractionFunctionWizard extends AbstractSingleComposedCellWiza
 	@Override
 	protected void init() {
 		this.mainPage = new DateExtractionFunctionWizardPage(
-			"Configure Date/Time Exctraction"); 
+			"Configure Date/Time Extraction"); 
 		super.setWindowTitle("Date/Time Extraction Function"); 
 		super.setNeedsProgressMonitor(true);
 	}

@@ -12,21 +12,24 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.userdefined;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.TableEditor;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -39,11 +42,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.CoreFunctionWizardsPlugin;
@@ -60,16 +63,16 @@ public class UserDefinedFunctionWizardPage extends
 	 * The key represents the name of the template, the value list represents 
 	 * the name of each of the possible parameters.
 	 */
-	private final Map<String, List<String>> udfTemplates = new TreeMap<String, List<String>>();
+	private final Map<String, List<EditableParameter>> udfTemplates = 
+		new TreeMap<String, List<EditableParameter>>();
 	
 	private ComboViewer templates;
 	private Text udfName;
 	private Table table;
+	private TableViewer tableViewer;
 	
 	private Button saveButton;
 	private Button removeButton;
-	
-	private TableEditor nameEditor;
 	
 	private final Image addImage = 
 		CoreFunctionWizardsPlugin.getImageDescriptor("icons/add.gif").createImage();
@@ -106,8 +109,11 @@ public class UserDefinedFunctionWizardPage extends
 				// separate name from parameters
 				String[] nameParameters = tpl.split(nameParameterSeparator);
 				if (nameParameters.length == 2) {
-					this.udfTemplates.put(nameParameters[0], 
-							Arrays.asList(nameParameters[1].split(parameterSeparator)));
+					List<EditableParameter> parameters = new ArrayList<EditableParameter>();
+					for (String key : nameParameters[1].split(parameterSeparator)) {
+						parameters.add(new EditableParameter(key, ""));
+					}
+					this.udfTemplates.put(nameParameters[0], parameters);
 				}
 			}
 		}
@@ -168,14 +174,8 @@ public class UserDefinedFunctionWizardPage extends
 				if (event.getSelection() != null) {
 					String key = ((StructuredSelection)event.getSelection()).getFirstElement().toString();
 					udfName.setText(key);
-					table.removeAll();
-					for (String paramName : udfTemplates.get(key)) {
-						TableItem item = new TableItem (table, SWT.NONE);
-						item.setText (0, paramName);
-					}
+					tableViewer.setInput(udfTemplates.get(key));
 					table.setEnabled(true);
-					Control oldEditor = nameEditor.getEditor();
-					if (oldEditor != null) oldEditor.dispose();
 					removeButton.setEnabled(true);
 				}
 			}
@@ -190,17 +190,13 @@ public class UserDefinedFunctionWizardPage extends
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				table.clearAll();
 				udfName.setText("");
 				table.setEnabled(true);
-				table.removeAll();
+				List<EditableParameter> emptyParams = new ArrayList<EditableParameter>();
 				for (int i = 0; i < 20; i++) {
-					TableItem item = new TableItem (table, SWT.NONE);
-					item.setText (0, "");
-					item.setText (1, "");
+					emptyParams.add(new EditableParameter("", ""));
 				}
-				Control oldEditor = nameEditor.getEditor();
-				if (oldEditor != null) oldEditor.dispose();
+				tableViewer.setInput(emptyParams);
 				udfName.setEnabled(true);
 				saveButton.setEnabled(true);
 			}
@@ -218,14 +214,8 @@ public class UserDefinedFunctionWizardPage extends
 			public void widgetSelected(SelectionEvent e) {
 				if (udfName != null && udfName.getText() != null 
 						&& !udfName.getText().equals("")) {
-					List<String> paramNames = new ArrayList<String>();
-					for (int i = 0; i < table.getItemCount(); i++) {
-						String result = table.getItem(i).getText(0);
-						if (result != null && !result.equals("")) {
-							paramNames.add(result);
-						}
-					}
-					udfTemplates.put(udfName.getText(), paramNames);
+					udfTemplates.put(udfName.getText(), 
+							(List<EditableParameter>) tableViewer.getInput());
 					templates.setInput(udfTemplates.keySet());
 				}
 			}
@@ -245,9 +235,7 @@ public class UserDefinedFunctionWizardPage extends
 				udfName.setText("");
 				udfTemplates.remove(((StructuredSelection)templates.getSelection()).getFirstElement().toString());
 				templates.setInput(udfTemplates.keySet());
-				table.removeAll();
-				Control oldEditor = nameEditor.getEditor();
-				if (oldEditor != null) oldEditor.dispose();
+				tableViewer.setInput(new ArrayList<EditableParameter>());
 			}
 			
 		});
@@ -283,53 +271,58 @@ public class UserDefinedFunctionWizardPage extends
 		data.heightHint = 200;
 		table.setLayoutData(data);
 		
-		TableColumn columnName = new TableColumn(table, SWT.NONE);
-		columnName.setText("Parameter name");
-		columnName.setWidth(125);
-		TableColumn columnValue = new TableColumn(table, SWT.NONE);
-		columnValue.setText("Parameter value");
-		columnValue.setWidth(340);
+		this.tableViewer = new TableViewer(this.table);
+		this.tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		
-		this.nameEditor = new TableEditor(table);
-		this.nameEditor.horizontalAlignment = SWT.LEFT;
-		this.nameEditor.grabHorizontal = true;
-		this.nameEditor.minimumWidth = 50;
-		
-		table.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				// determine column to edit
-				final int column = e.x;
-				
-				// Clean up any previous editor control
-				Control oldEditor = nameEditor.getEditor();
-				if (oldEditor != null) oldEditor.dispose();
-		
-				// Identify the selected row
-				TableItem item = (TableItem)e.item;
-				if (item == null) return;
-		
-				// The control that will be the editor must be a child of the Table
-				Text newEditor = new Text(table, SWT.NONE);
-				newEditor.setText(item.getText(column));
-				newEditor.addModifyListener(new ModifyListener() {
-					public void modifyText(ModifyEvent me) {
-						Text text = (Text)nameEditor.getEditor();
-						nameEditor.getItem().setText(column, text.getText());
-					}
-				});
-				newEditor.selectAll();
-				newEditor.setFocus();
-				nameEditor.setEditor(newEditor, item, column);
-			}
+		TableViewerColumn viewerNameColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+		viewerNameColumn.getColumn().setText("Parameter name");
+		viewerNameColumn.getColumn().setWidth(125);
+		viewerNameColumn.setLabelProvider(new CellLabelProvider() {
+		    @Override
+		    public void update(ViewerCell cell) {
+		        cell.setText(((EditableParameter) cell.getElement()).getName());
+		    }
+		});
+		viewerNameColumn.setEditingSupport(new EditingSupport(tableViewer) {
+		    protected boolean canEdit(Object element) {
+		        return true;
+		    }
+		    protected CellEditor getCellEditor(Object element) {
+		        return new TextCellEditor(tableViewer.getTable());
+		    }
+		    protected Object getValue(Object element) {
+		        return ((EditableParameter) element).getName();
+		    }
+		    protected void setValue(Object element, Object value) {
+		    	((EditableParameter) element).setName(String.valueOf(value));
+		        tableViewer.refresh(element);
+		    }
 		});
 		
-		
-		// create some default rows.
-		for (int i = 0; i < 20; i++) {
-			TableItem item = new TableItem (table, SWT.NONE);
-			item.setText (0, "");
-			item.setText (1, "");
-		}
+		TableViewerColumn viewerValueColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+		viewerValueColumn.getColumn().setText("Parameter value");
+		viewerValueColumn.getColumn().setWidth(340);
+		viewerValueColumn.setLabelProvider(new CellLabelProvider() {
+		    @Override
+		    public void update(ViewerCell cell) {
+		        cell.setText(((EditableParameter) cell.getElement()).getValue());
+		    }
+		});
+		viewerValueColumn.setEditingSupport(new EditingSupport(tableViewer) {
+		    protected boolean canEdit(Object element) {
+		        return true;
+		    }
+		    protected CellEditor getCellEditor(Object element) {
+		        return new TextCellEditor(tableViewer.getTable());
+		    }
+		    protected Object getValue(Object element) {
+		        return ((EditableParameter) element).getValue();
+		    }
+		    protected void setValue(Object element, Object value) {
+		    	((EditableParameter) element).setValue(String.valueOf(value));
+		        tableViewer.refresh(element);
+		    }
+		});
 		
 		this.table.setEnabled(false);
 	}
@@ -350,19 +343,66 @@ public class UserDefinedFunctionWizardPage extends
 			result.append(key);
 			result.append(this.nameParameterSeparator);
 			boolean first = true;
-			for (String paramName : this.udfTemplates.get(key)) {
+			for (EditableParameter param : this.udfTemplates.get(key)) {
 				if (!first) {
 					result.append(this.parameterSeparator);
 				}
 				else {
 					first = false;
 				}
-				result.append(paramName);
+				result.append(param.getName());
 			}
 		}
 		return result.toString();
 	}
 	
+	/**
+	 * @return the name of the configured Udf.
+	 */
+	public String getUdfName() {
+		return this.udfName.getText();
+	}
 	
+	public List<IParameter> getUdfParameters() {
+		List<IParameter> result = new ArrayList<IParameter>();
+		for (EditableParameter input: (List<EditableParameter>) this.tableViewer.getInput()) {
+			result.add(input.asParameter());
+		}
+		return result;
+	}
+	
+	protected class EditableParameter {
+		
+		private String name;
+		
+		private String value;
+
+		public EditableParameter(String name, String value) {
+			super();
+			this.name = name;
+			this.value = value;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+
+		public String getName() {
+			return this.name;
+		}
+		
+		public String getValue() {
+			return this.value;
+		}
+		
+		public Parameter asParameter() {
+			return new Parameter(this.name, this.value);
+		}
+		
+	}
 
 }
