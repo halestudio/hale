@@ -59,6 +59,9 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.core.CoreFunctionWizardsPlugin
 public class UserDefinedFunctionWizardPage extends
 		AbstractSingleComposedCellWizardPage {
 	
+	private String predefinedUdfName = null;
+	private List<IParameter> predefinedParameters = null;
+	
 	/**
 	 * The key represents the name of the template, the value list represents 
 	 * the name of each of the possible parameters.
@@ -210,6 +213,7 @@ public class UserDefinedFunctionWizardPage extends
 		this.saveButton.setToolTipText("Save the current UDF as a template");
 		this.saveButton.addSelectionListener(new SelectionAdapter() {
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (udfName != null && udfName.getText() != null 
@@ -270,6 +274,7 @@ public class UserDefinedFunctionWizardPage extends
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		data.heightHint = 200;
 		table.setLayoutData(data);
+		this.table.setEnabled(false);
 		
 		this.tableViewer = new TableViewer(this.table);
 		this.tableViewer.setContentProvider(ArrayContentProvider.getInstance());
@@ -324,7 +329,16 @@ public class UserDefinedFunctionWizardPage extends
 		    }
 		});
 		
-		this.table.setEnabled(false);
+		if (this.predefinedParameters != null && this.predefinedUdfName != null) {
+			this.udfName.setText(this.predefinedUdfName);
+			this.udfName.setEnabled(true);
+			List<EditableParameter> input = new ArrayList<EditableParameter>();
+			for (IParameter param : this.predefinedParameters) {
+				input.add(new EditableParameter(param.getName(), param.getValue()));
+			}
+			this.tableViewer.setInput(input);
+			this.table.setEnabled(true);
+		}
 	}
 
 	/**
@@ -363,12 +377,20 @@ public class UserDefinedFunctionWizardPage extends
 		return this.udfName.getText();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<IParameter> getUdfParameters() {
 		List<IParameter> result = new ArrayList<IParameter>();
 		for (EditableParameter input: (List<EditableParameter>) this.tableViewer.getInput()) {
 			result.add(input.asParameter());
 		}
 		return result;
+	}
+	
+
+	public void setInitialConfiguration(String udfName,
+			List<IParameter> parameters) {
+		this.predefinedParameters = parameters;
+		this.predefinedUdfName = udfName.replace("UserDefinedFunction.", "");
 	}
 	
 	protected class EditableParameter {

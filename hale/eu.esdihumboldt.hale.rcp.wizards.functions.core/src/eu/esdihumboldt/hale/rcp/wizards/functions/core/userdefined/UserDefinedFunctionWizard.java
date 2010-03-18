@@ -11,12 +11,17 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.userdefined;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.cst.align.ext.ITransformation;
+import eu.esdihumboldt.cst.corefunctions.NetworkExpansionFunction;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
@@ -34,21 +39,33 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.core.CoreFunctionWizardsPlugin
 public class UserDefinedFunctionWizard 
 	extends AbstractSingleComposedCellWizard {
 	
-	private UserDefinedFunctionWizardPage mainPage = 
-		new UserDefinedFunctionWizardPage(
-				"Provide information on your user-defined function");
-
+	private UserDefinedFunctionWizardPage mainPage;
+		
 	/**
 	 * @param selection
 	 */
 	public UserDefinedFunctionWizard(AlignmentInfo selection) {
 		super(selection);
+		super.setWindowTitle("Configure Function"); 
 	}
 
 
 	@Override
 	protected void init() {
-		// TODO support editing of cell
+		
+		this.mainPage = new UserDefinedFunctionWizardPage(
+						"Provide information on your user-defined function");
+		
+		ITransformation t = getResultCell().getEntity1().getTransformation();
+		
+		// init expression from cell
+		if (t != null) {
+			List<IParameter> parameters = t.getParameters();
+			String udfName = t.getService().getLocation();
+			if (udfName != null && parameters != null) {
+				this.mainPage.setInitialConfiguration(udfName, parameters);
+			}
+		}
 	}
 
 
@@ -61,7 +78,7 @@ public class UserDefinedFunctionWizard
 		ICell cell = super.getResultCell();
 		
 		Transformation t = new Transformation();
-		t.setService(new Resource("UserDefinedFunction"));
+		t.setService(new Resource("UserDefinedFunction." + this.mainPage.getUdfName()));
 		t.setParameters(this.mainPage.getUdfParameters());
 		((Property)cell.getEntity1()).setTransformation(t);
 		
