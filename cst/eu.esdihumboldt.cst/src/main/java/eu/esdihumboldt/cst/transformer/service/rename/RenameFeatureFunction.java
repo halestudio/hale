@@ -57,7 +57,7 @@ public class RenameFeatureFunction
 
 	private FeatureSplitter splitter = null;
 	
-	private FeatureMerger merger = null;
+	private FeatureAggregator merger = null;
 	private FeatureSpatialJoiner spatialjoiner = null;
 
 	private String newName;
@@ -133,7 +133,7 @@ public class RenameFeatureFunction
 						ip.getValue());
 			}
 			if (ip.getName().equals(PARAMETER_INSTANCE_MERGE_CONDITION)) {
-				this.merger = new FeatureMerger(ip.getValue());
+				this.merger = new FeatureAggregator(((FeatureClass)cell.getEntity1()).getLocalname(),ip.getValue());
 			}
 		}
 		
