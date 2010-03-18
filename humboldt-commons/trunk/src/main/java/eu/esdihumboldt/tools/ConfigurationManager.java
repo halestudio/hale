@@ -13,6 +13,10 @@
 package eu.esdihumboldt.tools;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import java.util.Iterator;
 import java.util.List;
@@ -117,9 +121,10 @@ public class ConfigurationManager {
 	 * loads configuration properties from the file to the configuration object
 	 * additionally stores the system property to the SYSTEM
 	 * @return Configuration 
+	 * @throws MalformedURLException 
+	 *
 	 */
 	private static Configuration loadConfiguration() {
-		//1. unmarshall configuration
 		JAXBContext jc;
 		JAXBElement<Configuration> root = null;
 		try {
@@ -129,10 +134,36 @@ public class ConfigurationManager {
 			// it will debug problems while unmarshalling
 			u.setEventHandler(
 					new javax.xml.bind.helpers.DefaultValidationEventHandler());
+			URL configurationURL = null;
+			String configurationPath = null;
+			try {
+				configurationPath = ConfigurationManager.class.getResource(COMPONENT_CONFIGURATION_FILE).toURI().toString();
+			} catch (URISyntaxException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
 			
-			root = u.unmarshal(new StreamSource(ClassLoader.getSystemResourceAsStream(COMPONENT_CONFIGURATION_FILE)),
-					Configuration.class);
+			try {
+				configurationURL = new URL(configurationPath);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				try {
+					configurationURL = new URL("file", null,configurationPath);
+				} catch (MalformedURLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}finally{
+			
+			try {
+				root = u.unmarshal(new StreamSource(configurationURL.openStream()),
+						Configuration.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			configuration = root.getValue();
+			}
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
