@@ -36,10 +36,9 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.core.math.MathExpressionFieldE
 
 
 /**
- * TODO The page of the ordinate to geometrical point wizard
- * 
  * @author Stefan Gessner
- * @version $Id$
+ * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @version $Id$ 
  */
 public class OrdinatesPointWizardPage extends
 		AbstractSingleComposedCellWizardPage {
@@ -57,7 +56,6 @@ public class OrdinatesPointWizardPage extends
 	public OrdinatesPointWizardPage(String pageName) {
 		super(pageName);
 		setTitle(pageName);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -93,45 +91,27 @@ public class OrdinatesPointWizardPage extends
 		configurationGroup.setLayoutData(configurationAreaGD);
 		configurationGroup.setSize(configurationGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		configurationGroup.setFont(parent.getFont());
-		
-		final Composite configurationComposite = new Composite(configurationGroup, SWT.NONE);
-		configurationComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		GridLayout fileSelectionLayout = new GridLayout();
 		fileSelectionLayout.numColumns = 3;
 		fileSelectionLayout.makeColumnsEqualWidth = false;
-		fileSelectionLayout.marginWidth = 0;
-		fileSelectionLayout.marginHeight = 0;
-		configurationComposite.setLayout(fileSelectionLayout);
+		fileSelectionLayout.marginWidth = 5;
+		fileSelectionLayout.marginHeight = 5;
+		configurationGroup.setLayout(fileSelectionLayout);
 		
-		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(DefinitionLabelFactory.class);
-		TreeSet sourceTreeSet = (TreeSet) getParent().getSourceItems();
-		TreeSet targetTreeSet = (TreeSet) getParent().getTargetItems();
+		TreeSet<SchemaItem> sourceTreeSet = (TreeSet<SchemaItem>) getParent().getSourceItems();
 		
 		// expression
 		Set<String> variablesX = new TreeSet<String>();
-//		SchemaItem p = getParent().getSourceItem();
-//		for (SchemaItem var : p.getParent().getChildren()) {
-//			if (Number.class.isAssignableFrom(
-//					var.getPropertyType().getBinding()) 
-//					|| String.class.isAssignableFrom(
-//							var.getPropertyType().getBinding())) {
-//				variables.add(var.getName().getLocalPart());
-//			}
-//		}
-		
-		final Label inputAttributeLabel = new Label(configurationComposite, SWT.NONE);
-		inputAttributeLabel.setText("X:");
-		Control inputAttributeText = dlf.createLabel(configurationComposite, ((SchemaItem)sourceTreeSet.first()).getDefinition(), false);
-		inputAttributeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		variablesX.add(sourceTreeSet.first().getName().getLocalPart());
 		
 		// Expression X editor initiation
 		this.expressionEditorX = new MathExpressionFieldEditor(
-				"expression", "", configurationComposite, variablesX);
+				"expression", "X: ", configurationGroup, variablesX);
 		if (this.initialExpression != null && !this.initialExpression.equals("")) {
 			this.expressionEditorX.setStringValue(this.initialExpression);
 		}
-	
+		this.expressionEditorX.insert(((SchemaItem)sourceTreeSet.first()).getName().getLocalPart());
 		this.expressionEditorX.setEmptyStringAllowed(false);
 		this.expressionEditorX.setPage(this);
 		this.expressionEditorX.setPropertyChangeListener(new IPropertyChangeListener() {
@@ -145,26 +125,15 @@ public class OrdinatesPointWizardPage extends
 		
 		// expression
 		Set<String> variablesY = new TreeSet<String>();
-//		SchemaItem p = getParent().getSourceItem();
-//		for (SchemaItem var : p.getParent().getChildren()) {
-//			if (Number.class.isAssignableFrom(
-//					var.getPropertyType().getBinding()) 
-//					|| String.class.isAssignableFrom(
-//							var.getPropertyType().getBinding())) {
-//				variables.add(var.getName().getLocalPart());
-//			}
-//		}
+		variablesY.add(sourceTreeSet.last().getName().getLocalPart());
 		
-		final Label blaAttributeLabel = new Label(configurationComposite, SWT.NONE);
-		blaAttributeLabel.setText("Y:");
-		Control blaAttributeText = dlf.createLabel(configurationComposite, ((SchemaItem)sourceTreeSet.last()).getDefinition(), false);
-		blaAttributeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		// Expression Y editor initiation
 		this.expressionEditorY = new MathExpressionFieldEditor(
-				"expression", "" , configurationComposite, variablesY);
+				"expression","Y: ", configurationGroup, variablesY);
 		if (this.initialExpression != null && !this.initialExpression.equals("")) {
 			this.expressionEditorY.setStringValue(this.initialExpression);
 		}
+		this.expressionEditorY.insert(((SchemaItem)sourceTreeSet.last()).getName().getLocalPart());
 		
 		this.expressionEditorY.setEmptyStringAllowed(false);
 		this.expressionEditorY.setPage(this);
@@ -177,10 +146,11 @@ public class OrdinatesPointWizardPage extends
 			}
 		});
 		
-		final Label AttributeLabel = new Label(configurationComposite, SWT.NONE);
-		AttributeLabel.setText("Geometrical Point:");
-		Control AttributeText = dlf.createLabel(configurationComposite, getParent().getFirstTargetItem().getDefinition(), false);
-		AttributeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		final Label geoAttributeLabel = new Label(configurationGroup, SWT.NONE);
+		geoAttributeLabel.setText("Geometrical Point:");
+		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(DefinitionLabelFactory.class);
+		Control geoAttributeText = dlf.createLabel(configurationGroup, getParent().getFirstTargetItem().getDefinition(), false);
+		geoAttributeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 	}
 	

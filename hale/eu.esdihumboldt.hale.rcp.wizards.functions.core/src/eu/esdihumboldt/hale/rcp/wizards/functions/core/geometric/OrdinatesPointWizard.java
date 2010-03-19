@@ -11,13 +11,23 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.wizard.Wizard;
 
+import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.cst.corefunctions.OrdinatesToPointFunction;
+import eu.esdihumboldt.goml.oml.ext.Parameter;
+import eu.esdihumboldt.goml.oml.ext.Transformation;
+import eu.esdihumboldt.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 
 /**
- * @author Thorsten Reitz
+ * @author Stefan Gessner
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
@@ -26,7 +36,11 @@ public class OrdinatesPointWizard
 	
 	private OrdinatesPointWizardPage mainPage;
 
-
+	/**
+	 * Constructor
+	 * 
+	 * @param selection the AlignmentInfo
+	 */
 	public OrdinatesPointWizard(AlignmentInfo selection) {
 		super(selection);
 	}
@@ -34,13 +48,28 @@ public class OrdinatesPointWizard
 	@Override
 	protected void init() {
 		// TODO Auto-generated method stub
-		this.mainPage = new OrdinatesPointWizardPage("");
+		this.mainPage = new OrdinatesPointWizardPage("Ordinates To Point Function");
+		mainPage.setDescription("Calculates a point out of two Doubles.") ;
+		super.setWindowTitle("Ordinates To Point Function"); 
 	}
 
 	@Override
 	public boolean performFinish() {
-		// TODO Auto-generated method stub
-		return false;
+		ICell cell = super.getResultCell();
+		
+		Transformation t = new Transformation();
+		t.setService(new Resource(OrdinatesToPointFunction.class.getName()));
+		List<IParameter> parameters = new ArrayList<IParameter>();
+		parameters.add(new Parameter(
+				OrdinatesToPointFunction.X_EXPRESSION_PARAMETER, 
+				this.mainPage.getExpansionX()));
+		parameters.add(new Parameter(
+				OrdinatesToPointFunction.Y_EXPRESSION_PARAMETER, 
+				this.mainPage.getExpansionY()));
+		t.setParameters(parameters);
+		((ComposedProperty)cell.getEntity1()).setTransformation(t);
+		
+		return true;
 	}
 	
 	/**

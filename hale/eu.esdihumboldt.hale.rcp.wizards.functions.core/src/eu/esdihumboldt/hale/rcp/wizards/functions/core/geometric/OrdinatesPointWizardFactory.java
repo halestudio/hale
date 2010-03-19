@@ -19,7 +19,7 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
 
 /**
- * @author Thorsten Reitz
+ * @author Stefan Gessner
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
