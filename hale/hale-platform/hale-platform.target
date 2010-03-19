@@ -41,5 +41,6 @@
 <unit id="org.eclipse.zest.source.feature.group" version="1.1.1.v20090724-1146-6608yD5DH8G6N4GNJ53563"/>
 <repository location="http://download.eclipse.org/tools/gef/updates/releases/"/>
 </location>
+<location path="${project_loc:hale-platform}/target/org.codehaus.castor" type="Directory"/>
 </locations>
 </target>
