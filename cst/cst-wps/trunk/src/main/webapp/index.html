@@ -3,18 +3,35 @@
     <head>
         <title>Humboldt CST IOBridge Web client</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link rel="stylesheet" type="text/css" href="js/ext-3.1.1/resources/css/ext-all.css">
-        <script type="text/javascript" src="js/ext-3.1.1/adapter/ext/ext-base.js"></script>
-        <script type="text/javascript" src="js/ext-3.1.1/ext-all.js"></script>
         <script type="text/javascript" src="js/cst-client.js"></script>
-        <script type="text/javascript" src="js/ProcessForm.js"></script>
         <script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>
         <script type="text/javascript" src="js/WPS.js"></script>
     </head>
 
-    <body>
-        <div id="wps-div"></div>
+    <body onload="init()">
+        <h1>Humboldt CST html client</h1>
+        <div id="wps-div">
+            <form name="cst" action="http://localhost:8080/cst-wps/upload" enctype="multipart/form-data" method="post">
+                <fieldset>
+                    <legend>Transformation inputs</legend>
+                    <label for="gml">Input GML file</label>
+                    <input name="gml" id="gml" type="file" />
+                    <br />
+
+                    <label for="oml">Input OML file</label>
+                    <input name="oml" id="oml" type="file" />
+                    <br />
+
+                    <label for="schema">Schema</label>
+                    <select name="schema" id="schema"></select>
+                    <img id="indicator" src="images/indicator.gif" />
+                </fieldset>
+
+                <input type="submit" value="Execute" />
+            </form>
+        </div>
         <div id="wps-results"></div>
+        <iframe id="upload_target" style="display: none; border: 1px solid rgb(204, 204, 204); width: 400px; height: 50px;" src="" name="upload_target"></iframe>
     </body>
 </html>
 

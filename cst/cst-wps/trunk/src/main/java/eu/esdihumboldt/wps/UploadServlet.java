@@ -71,7 +71,8 @@ public class UploadServlet extends HttpServlet {
 			}
 
                         resp.setContentType("text/html");
-			String r = "{success:true, oml:\"files/tmp/"+omlFile.getName()+"\", gml:\"files/tmp/"+gmlFile.getName()+"\"}";
+                        String r = "<script type=\"text/javascript\">window.parent.handleResponse({success:true, oml:'files/tmp/"+omlFile.getName()+"', gml:'files/tmp/"+gmlFile.getName()+"'})</script>";
+
 			
 			resp.getWriter().write(r);
 		} catch (Exception e) {

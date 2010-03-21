@@ -643,7 +643,6 @@ OpenLayers.WPS = OpenLayers.Class({
      * identifier
      */
     execute: function(identifier) {
-
         if(this.executeUrlPost) {
             this.executePost(identifier);
         }
