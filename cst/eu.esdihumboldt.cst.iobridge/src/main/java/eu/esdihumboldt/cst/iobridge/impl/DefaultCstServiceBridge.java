@@ -36,6 +36,7 @@ import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.gmlparser.HaleGMLParser;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
 
@@ -101,9 +102,9 @@ public class DefaultCstServiceBridge
 		try {
 			Schema schema = asp.loadSchema(new URI(schemaFilename), null);
 			if (schema != null) {
-				for (TypeDefinition td : schema.getTypes().values()) {
-					if (td.getFeatureType() != null) {
-						result.add(td.getFeatureType());
+				for (SchemaElement se : schema.getElements().values()) {
+					if (se.getFeatureType() != null) {
+						result.add(se.getFeatureType());
 					}
 				}
 			}

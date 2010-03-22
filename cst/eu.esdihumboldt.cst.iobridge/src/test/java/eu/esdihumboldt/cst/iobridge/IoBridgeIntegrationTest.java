@@ -12,11 +12,9 @@
 package eu.esdihumboldt.cst.iobridge;
 
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Map;
-
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,7 +23,6 @@ import org.junit.Test;
 import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.iobridge.IoBridgeFactory.BridgeType;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
-import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 
 /**
  * This class contains tests that test the integration of the different 
@@ -36,13 +33,7 @@ import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
  */
 public class IoBridgeIntegrationTest {
 	
-	/*final String omlPath = "J:/thorsten/hale-workspace/" +
-			"eu.esdihumboldt.cst.iobridge/src/test/resource/" +
-			"eu/esdihumboldt/cst/iobridge/testproject_hydro_withmapping.xml.goml";*/
 	final URL omlURL = IoBridgeIntegrationTest.class.getResource("testproject_hydro_withmapping.xml.goml");
-	/*final String gmlPath = "J:/thorsten/hale-workspace/" +
-			"eu.esdihumboldt.cst.iobridge/src/test/resource/" +
-			"eu/esdihumboldt/cst/iobridge/wfs_va.gml";*/
 	final URL gmlURL = IoBridgeIntegrationTest.class.getResource("wfs_va.gml");
 	
 
@@ -64,29 +55,22 @@ public class IoBridgeIntegrationTest {
 	
 	@Test
 	public void testTransform() {
-//		URL oml = this.getClass().getResource("testproject_hydro_withmapping.xml.goml");
-//		URL gml = this.getClass().getResource("wfs_va.gml");
-		
-		
+			
 		try {
 	
 			URL xsd = this.getClass().getResource(
 					"D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/HY/Hydrography.xsd");		
 			
-			
 			CstServiceBridge csb = IoBridgeFactory.getIoBridge(BridgeType.preloaded);
 			System.out.println(xsd.toURI().toString());
 			System.out.println(omlURL.toURI().toString());
 			System.out.println(gmlURL.toURI().toString());
-			csb.transform(
+			String result = csb.transform(
 					xsd.toURI().toString(),
 					omlURL.toURI().toString(), 
 			        gmlURL.toURI().toString());
+			System.out.println(result);
 			
-		/*	System.out.println(csb.transform(
-									xsd.toURI().toString(),
-									omlURL.toURI().toString(), 
-							        gmlURL.toURI().toString()));*/
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
