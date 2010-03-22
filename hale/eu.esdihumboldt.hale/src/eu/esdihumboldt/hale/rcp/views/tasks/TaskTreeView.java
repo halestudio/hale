@@ -46,7 +46,7 @@ import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MapTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.SortedMapTreeNode;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.task.ResolvedTask;
 import eu.esdihumboldt.hale.task.Task;
 import eu.esdihumboldt.hale.task.TaskUtils;
@@ -76,9 +76,9 @@ public class TaskTreeView extends ViewPart {
 	
 	private SchemaService schemaService;
 	
-	private MapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>> sourceNode;
+	private MapTreeNode<SchemaElement, MapTreeNode<ResolvedTask, TreeNode>> sourceNode;
 	
-	private MapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>> targetNode;
+	private MapTreeNode<SchemaElement, MapTreeNode<ResolvedTask, TreeNode>> targetNode;
 	
 	private final Map<Task, DefaultTreeNode> taskNodes = new HashMap<Task, DefaultTreeNode>();
 	
@@ -245,8 +245,8 @@ public class TaskTreeView extends ViewPart {
 							Task task = (Task) value;
 							onDoubleClick(task.getMainContext().getIdentifier());
 						}
-						else if (value instanceof TypeDefinition) {
-							TypeDefinition type = (TypeDefinition) value;
+						else if (value instanceof SchemaElement) {
+							SchemaElement type = (SchemaElement) value;
 							onDoubleClick(type.getIdentifier());
 						}
 					}
@@ -287,8 +287,8 @@ public class TaskTreeView extends ViewPart {
 		TaskService taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
 		
 		final Collection<TreeNode> input = new ArrayList<TreeNode>();
-		sourceNode = new SortedMapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>>(Messages.TaskTreeView_SourceNodeTitle);
-		targetNode = new SortedMapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>>(Messages.TaskTreeView_TargetNodeTitle);
+		sourceNode = new SortedMapTreeNode<SchemaElement, MapTreeNode<ResolvedTask, TreeNode>>(Messages.TaskTreeView_SourceNodeTitle);
+		targetNode = new SortedMapTreeNode<SchemaElement, MapTreeNode<ResolvedTask, TreeNode>>(Messages.TaskTreeView_TargetNodeTitle);
 		input.add(sourceNode);
 		input.add(targetNode);
 		
@@ -352,7 +352,7 @@ public class TaskTreeView extends ViewPart {
 				taskNodes.remove(task);
 				// remove empty nodes
 				if (!parent.hasChildren()) {
-					MapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>> root = (MapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>>) parent.getParent();
+					MapTreeNode<SchemaElement, MapTreeNode<ResolvedTask, TreeNode>> root = (MapTreeNode<SchemaElement, MapTreeNode<ResolvedTask, TreeNode>>) parent.getParent();
 					root.removeChildNode(parent);
 					tree.refresh(root, true);
 				}
@@ -407,12 +407,12 @@ public class TaskTreeView extends ViewPart {
 	 * @return the parent node
 	 */
 	private MapTreeNode<ResolvedTask, TreeNode> getParentNode(ResolvedTask task, boolean allowCreate) {
-		TypeDefinition group = TaskUtils.getGroup(task);
-		if (group.getName().getNamespaceURI().equals(schemaService.getSourceNameSpace())) {
+		SchemaElement group = TaskUtils.getGroup(task);
+		if (group.getElementName().getNamespaceURI().equals(schemaService.getSourceNameSpace())) {
 			// source task
 			return getGroupNode(sourceNode, group, allowCreate);
 		}
-		else if (group.getName().getNamespaceURI().equals(schemaService.getTargetNameSpace())) {
+		else if (group.getElementName().getNamespaceURI().equals(schemaService.getTargetNameSpace())) {
 			// target task
 			return getGroupNode(targetNode, group, allowCreate);
 		}
@@ -436,8 +436,8 @@ public class TaskTreeView extends ViewPart {
 	 * @return the group node
 	 */
 	private MapTreeNode<ResolvedTask, TreeNode> getGroupNode(
-			MapTreeNode<TypeDefinition, MapTreeNode<ResolvedTask, TreeNode>> rootNode,
-			TypeDefinition group, boolean allowCreate) {
+			MapTreeNode<SchemaElement, MapTreeNode<ResolvedTask, TreeNode>> rootNode,
+			SchemaElement group, boolean allowCreate) {
 		MapTreeNode<ResolvedTask, TreeNode> groupNode = rootNode.getChild(group);
 		if (groupNode == null && allowCreate) {
 			groupNode = new SortedMapTreeNode<ResolvedTask, TreeNode>(group);

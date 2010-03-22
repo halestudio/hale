@@ -34,8 +34,7 @@ import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.FeatureTypeHelper;
-import eu.esdihumboldt.hale.rcp.views.map.Messages;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
  * Drop-down action for style editing of data set feature types
@@ -103,10 +102,10 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 	public void fillMenu(Menu menu) {
 		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
-		Collection<TypeDefinition> tmp = (dataset == DatasetType.reference)?(schema.getSourceSchema()):(schema.getTargetSchema());
+		Collection<SchemaElement> tmp = (dataset == DatasetType.reference)?(schema.getSourceSchema()):(schema.getTargetSchema());
 		List<FeatureType> types = new ArrayList<FeatureType>();
-		for (TypeDefinition type : tmp) {
-			types.add((FeatureType) type.getType());
+		for (SchemaElement element : tmp) {
+			types.add(element.getFeatureType());
 		}
 		Collections.sort(types, new Comparator<FeatureType>() {
 
@@ -154,9 +153,9 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 	public void update(UpdateMessage message) {
 		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
-		Collection<TypeDefinition> types = (dataset == DatasetType.reference)?(schema.getSourceSchema()):(schema.getTargetSchema());
+		Collection<SchemaElement> elements = (dataset == DatasetType.reference)?(schema.getSourceSchema()):(schema.getTargetSchema());
 		
-		setEnabled(types != null);
+		setEnabled(elements != null);
 	}
 
 }

@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.ViewerComparator;
 
 import eu.esdihumboldt.hale.rcp.utils.tree.AbstractMultiColumnTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.task.ResolvedTask;
 
@@ -49,10 +50,10 @@ public class TaskTreeComparator extends ViewerComparator {
 			Object value1 = ((AbstractMultiColumnTreeNode) e1).getFirstValue();
 			Object value2 = ((AbstractMultiColumnTreeNode) e2).getFirstValue();
 			
-			if (value1 instanceof TypeDefinition && value2 instanceof TypeDefinition) {
+			if (value1 instanceof SchemaElement && value2 instanceof SchemaElement) {
 				return getComparator().compare( 
-						((TypeDefinition) value1).getIdentifier(),
-						((TypeDefinition) value2).getIdentifier());
+						((SchemaElement) value1).getIdentifier(),
+						((SchemaElement) value2).getIdentifier());
 			}
 			else {
 				return getComparator().compare(value1, value2);

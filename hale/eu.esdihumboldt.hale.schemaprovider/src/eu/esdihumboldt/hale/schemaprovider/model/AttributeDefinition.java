@@ -111,27 +111,37 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	 */
 	public TypeDefinition getAttributeType() {
 		if (attributeType == null) {
-			AttributeType type = createAttributeType();
-			attributeType = new TypeDefinition(typeName, type, null);
-			String desc = "HALE: Generated empty attribute type";
-			if (getDescription() != null) {
-				setDescription(desc + "\n\n" + getDescription());
-			}
-			else {
-				setDescription(desc);
-			}
-			//XXX log message?
+			attributeType = getDefaultAttributeType();
 		}
 		
 		return attributeType;
 	}
 
 	/**
+	 * Get the attribute type if none was set
+	 * 
+	 * @return the attribute type definition
+	 */
+	protected TypeDefinition getDefaultAttributeType() {
+		AttributeType type = createDefaultAttributeType();
+		TypeDefinition attributeType = new TypeDefinition(typeName, type, null);
+		String desc = "HALE: Generated empty attribute type";
+		if (getDescription() != null) {
+			setDescription(desc + "\n\n" + getDescription());
+		}
+		else {
+			setDescription(desc);
+		}
+		//XXX log message?
+		return attributeType;
+	}
+
+	/**
 	 * Create an attribute type if none was set
 	 * 
-	 * @return the atrribute type 
+	 * @return the attribute type 
 	 */
-	protected AttributeType createAttributeType() {
+	protected AttributeType createDefaultAttributeType() {
 		AttributeTypeBuilder builder = new AttributeTypeBuilder();
 		builder.setName(typeName.getLocalPart());
 		builder.setNamespaceURI(typeName.getNamespaceURI());
@@ -282,5 +292,13 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	 * @return the attribute definition
 	 */
 	public abstract AttributeDefinition copyAttribute(TypeDefinition parentType);
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "[attribute] " + getIdentifier();
+	}
 	
 }

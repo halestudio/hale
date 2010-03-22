@@ -28,7 +28,7 @@ import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
  * Implementation of {@link SchemaService}. It uses a {@link SchemaProvider}
@@ -116,15 +116,15 @@ public class SchemaProviderService<T extends SchemaProvider>
 	/**
 	 * @see SchemaService#getSourceSchema()
 	 */
-	public Collection<TypeDefinition> getSourceSchema() {
-		return sourceSchema.getTypes().values();
+	public Collection<SchemaElement> getSourceSchema() {
+		return sourceSchema.getElements().values();
 	}
 
 	/**
 	 * @see SchemaService#getTargetSchema()
 	 */
-	public Collection<TypeDefinition> getTargetSchema() {
-		return targetSchema.getTypes().values();
+	public Collection<SchemaElement> getTargetSchema() {
+		return targetSchema.getElements().values();
 	}
 
 	/**
@@ -174,35 +174,35 @@ public class SchemaProviderService<T extends SchemaProvider>
 	}
 
 	/**
-	 * @see SchemaService#getFeatureTypeByName(String)
+	 * @see SchemaService#getElementByName(String)
 	 */
-	public TypeDefinition getFeatureTypeByName(String name) {
-		TypeDefinition result = null;
+	public SchemaElement getElementByName(String name) {
+		SchemaElement result = null;
 		// handles cases where a full name was given.
 		if (!getSourceNameSpace().equals("") && name.contains(getSourceNameSpace())) {
-			for (TypeDefinition ft : getSourceSchema()) {
-				if (ft.getName().getLocalPart().equals(name)) {
-					result = ft;
+			for (SchemaElement element : getSourceSchema()) {
+				if (element.getElementName().getLocalPart().equals(name)) {
+					result = element;
 					break;
 				}
 			}
 		}
 		else if (!getTargetNameSpace().equals("") && name.contains(getTargetNameSpace())) {
-			for (TypeDefinition ft : getTargetSchema()) {
-				if (ft.getName().getLocalPart().equals(name)) {
-					result = ft;
+			for (SchemaElement element : getTargetSchema()) {
+				if (element.getElementName().getLocalPart().equals(name)) {
+					result = element;
 					break;
 				}
 			}
 		}
 		// handle case where only the local part was given.
 		else {
-			Collection<TypeDefinition> allFTs = new HashSet<TypeDefinition>();
-			allFTs.addAll(getSourceSchema());
-			allFTs.addAll(getTargetSchema());
-			for (TypeDefinition ft : allFTs) {
-				if (ft.getName().getLocalPart().equals(name)) {
-					result = ft;
+			Collection<SchemaElement> allElements = new HashSet<SchemaElement>();
+			allElements.addAll(getSourceSchema());
+			allElements.addAll(getTargetSchema());
+			for (SchemaElement element : allElements) {
+				if (element.getElementName().getLocalPart().equals(name)) {
+					result = element;
 					break;
 				}
 			}
@@ -213,7 +213,7 @@ public class SchemaProviderService<T extends SchemaProvider>
 	/**
 	 * @see SchemaService#getSchema(SchemaService.SchemaType)
 	 */
-	public Collection<TypeDefinition> getSchema(SchemaType schemaType) {
+	public Collection<SchemaElement> getSchema(SchemaType schemaType) {
 		if (SchemaType.SOURCE.equals(schemaType)) {
 			return getSourceSchema();
 		}
@@ -246,7 +246,7 @@ public class SchemaProviderService<T extends SchemaProvider>
 
 	private Definition getDefinition(String identifier, Schema schema) {
 		//XXX improve implementation?
-		Definition result = schema.getTypes().get(identifier);
+		Definition result = schema.getElements().get(identifier);
 		
 		if (result == null) {
 			// not found as type, may be attribute
@@ -255,11 +255,11 @@ public class SchemaProviderService<T extends SchemaProvider>
 				String subIdentifier = identifier.substring(0, index);
 				String attributeName = identifier.substring(index + 1);
 				
-				TypeDefinition type = schema.getTypes().get(subIdentifier);
+				SchemaElement type = schema.getElements().get(subIdentifier);
 				
 				if (type != null) {
 					// try to find attribute
-					for (AttributeDefinition attribute : type.getAttributes()) {
+					for (AttributeDefinition attribute : type.getType().getAttributes()) {
 						if (attribute.getName().equals(attributeName)) {
 							return attribute;
 						}

@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.task;
 
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -32,13 +33,14 @@ public abstract class TaskUtils {
 	 * 
 	 * @return the group type definition
 	 */
-	public static TypeDefinition getGroup(Task task) {
+	public static SchemaElement getGroup(Task task) {
 		Definition definition = task.getMainContext();
-		if (definition instanceof TypeDefinition) {
-			return (TypeDefinition) definition;
+		if (definition instanceof SchemaElement) {
+			return (SchemaElement) definition;
 		}
 		else if (definition instanceof AttributeDefinition) {
-			return ((AttributeDefinition) definition).getDeclaringType();
+			// get first declaring element
+			return ((AttributeDefinition) definition).getDeclaringType().getDeclaringElements().iterator().next();
 		}
 		else {
 			throw new IllegalArgumentException("Unknown definition type");

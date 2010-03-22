@@ -58,8 +58,11 @@ import eu.esdihumboldt.hale.schemaprovider.LogProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.provider.internal.AbstractSchemaAttribute;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.DependencyOrderedList;
+import eu.esdihumboldt.hale.schemaprovider.provider.internal.ElementReferenceAttribute;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.ProgressURIResolver;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.SchemaAttribute;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.SchemaResult;
@@ -95,8 +98,8 @@ public class ApacheSchemaProvider
 	 * 
 	 * @return the list of attribute definitions
 	 */
-	private List<SchemaAttribute> getAttributesFromParticle(Map<Name, Name> elementTypeMap, Map<Name, Name> importedElementTypeMap, TypeDefinition typeDef, XmlSchemaParticle particle, Map<Name, TypeDefinition> featureTypes, Map<Name, TypeDefinition> importedFeatureTypes) {
-		List<SchemaAttribute> attributeResults = new ArrayList<SchemaAttribute>();
+	private List<AbstractSchemaAttribute> getAttributesFromParticle(Map<Name, SchemaElement> elementTypeMap, Map<Name, SchemaElement> importedElementTypeMap, TypeDefinition typeDef, XmlSchemaParticle particle, Map<Name, TypeDefinition> featureTypes, Map<Name, TypeDefinition> importedFeatureTypes) {
+		List<AbstractSchemaAttribute> attributeResults = new ArrayList<AbstractSchemaAttribute>();
 		
 		if (particle instanceof XmlSchemaSequence) {
 			XmlSchemaSequence sequence = (XmlSchemaSequence)particle;
@@ -119,13 +122,23 @@ public class ApacheSchemaProvider
 								element.getRefName().getNamespaceURI(),
 								element.getRefName().getLocalPart());
 						// local element definition
-						attributeTypeName = elementTypeMap.get(elementName);
-						if (attributeTypeName == null) {
+						SchemaElement reference = elementTypeMap.get(elementName);
+						if (reference == null) {
 							// imported element definition
-							attributeTypeName = importedElementTypeMap.get(elementName);
+							reference = importedElementTypeMap.get(elementName);
 						}
-						if (attributeTypeName == null) {
+						if (reference == null) {
 							_log.error("Reference to element " + element.getRefName().getLocalPart() +" not found");
+						}
+						else {
+							attributeResults.add(
+									new ElementReferenceAttribute(
+											typeDef, 
+											element.getName(), 
+											reference.getTypeName(), 
+											element, 
+											reference));
+							continue;
 						}
 					}
 					else if (element.getSchemaType() != null) {
@@ -154,22 +167,35 @@ public class ApacheSchemaProvider
 								 * to getAttributesFromParticle just returns the
 								 * base type of the property type
 								 */
-								List<SchemaAttribute> attributes = getAttributesFromParticle(elementTypeMap, importedElementTypeMap, typeDef, p, featureTypes, importedFeatureTypes);
+								List<AbstractSchemaAttribute> attributes = getAttributesFromParticle(elementTypeMap, importedElementTypeMap, typeDef, p, featureTypes, importedFeatureTypes);
 								//XXX fix property name
 								if (attributes.size() == 1) {
-									SchemaAttribute org = attributes.get(0);
+									AbstractSchemaAttribute org = attributes.get(0);
 									if (org.getDeclaringType() != null) {
 										// remove wrong property
 										org.getDeclaringType().removeDeclaredAttribute(org);
 									}
 									
-									attributeResults.add(new SchemaAttribute(
-											typeDef,
-											element.getName(), 
-											org.getTypeName(), 
-											element,
-											featureTypes,
-											importedFeatureTypes));
+									if (org instanceof SchemaAttribute) {
+										attributeResults.add(new SchemaAttribute(
+												typeDef,
+												element.getName(), 
+												org.getTypeName(), 
+												element,
+												featureTypes,
+												importedFeatureTypes));
+									}
+									else if (org instanceof ElementReferenceAttribute) {
+										attributeResults.add(new ElementReferenceAttribute(
+												typeDef, 
+												element.getName(), 
+												org.getTypeName(), 
+												element, 
+												((ElementReferenceAttribute) org).getReference()));
+									}
+									else {
+										_log.error("Illegal attribute type, skipping");
+									}
 								}
 								else {
 									attributeResults.addAll(attributes);
@@ -274,98 +300,42 @@ public class ApacheSchemaProvider
 		HashMap<String, SchemaResult> imports = new HashMap<String, SchemaResult>();
 		imports.put(location.toString(), null);
 
-		SchemaResult schemaResult = loadSchema(schema,
+		SchemaResult schemaResult = loadSchema(location.toString(), schema,
 				imports, progress);
 
-		Map<String, TypeDefinition> featureTypes = new HashMap<String, TypeDefinition>();
-		for (TypeDefinition type : schemaResult.getNameToTypeDefinitionMap().values()) {
-			if (type.isComplexType()) {
-				featureTypes.put(type.getIdentifier(), type);
+		Map<String, SchemaElement> elements = new HashMap<String, SchemaElement>();
+		for (SchemaElement element : schemaResult.getElements().values()) {
+			if (element.getType().isComplexType()) {
+				elements.put(element.getIdentifier(), element);
 			}
 		}
 
-		return new Schema(featureTypes, namespace, locationURL);
+		return new Schema(elements, namespace, locationURL);
 	}
 
 	/**
 	 * Load the feature types defined by the given schema
 	 * 
+	 * @param schemaLocation the schema location 
 	 * @param schema the schema
 	 * @param imports the imports/includes that were already
 	 *   loaded or where loading has been started
 	 * @param progress the progress indicator
 	 * @return the map of feature type names and types
 	 */
-	protected SchemaResult loadSchema(XmlSchema schema, Map<String, SchemaResult> imports, ProgressIndicator progress) {
+	protected SchemaResult loadSchema(String schemaLocation, XmlSchema schema, Map<String, SchemaResult> imports, ProgressIndicator progress) {
 		String namespace = schema.getTargetNamespace();
 		if (namespace == null || namespace.isEmpty()) {
 			// default to gml schema
 			namespace = "http://www.opengis.net/gml";
 		}
 		
-		String schemaLocation = schema.getSourceURI();
-		if (schemaLocation == null) {
-			schemaLocation = "namespace:" + namespace;
-		}
-		
 		// Map of type names / types for the result
 		Map<Name, TypeDefinition> featureTypes = new HashMap<Name, TypeDefinition>();
 		// name mapping: element name -> type name
-		Map<Name, Name> elementNames = new HashMap<Name, Name>();
-		
-		// Set of include locations
-		Set<String> includes = new HashSet<String>();
-		
-		// handle imports
-		XmlSchemaObjectCollection externalItems = schema.getIncludes();
-		if (externalItems.getCount() > 0) {
-			_log.info("Loading includes and imports for schema at " + schemaLocation);
-		}
-		
-		for (int i = 0; i < externalItems.getCount(); i++) {
-			try {
-				XmlSchemaExternal imp = (XmlSchemaExternal) externalItems.getItem(i);
-				XmlSchema importedSchema = imp.getSchema();
-				String location = importedSchema.getSourceURI();
-				if (!(imports.containsKey(location))) { // only add schemas that were not already added
-					imports.put(location, null); // place a marker in the map to prevent loading the location in the call to loadSchema 
-					imports.put(location, loadSchema(importedSchema, imports, progress));
-				}
-				if (imp instanceof XmlSchemaInclude) {
-					includes.add(location);
-				}
-			} catch (Throwable e) {
-				_log.error("Error adding imported schema", e);
-			}
-		}
-		
-		_log.info("Creating types for schema at " + schemaLocation);
-		
-		progress.setCurrentTask("Analyzing schema " + namespace);
-		
-		// map for all imported types
-		Map<Name, TypeDefinition> importedFeatureTypes = new HashMap<Name, TypeDefinition>();
-		// name mapping for imported types: element name -> type name
-		Map<Name, Name> importedElementNames = new HashMap<Name, Name>();
-		
-		// add imported types
-		for (Entry<String, SchemaResult> entry : imports.entrySet()) {
-			if (entry.getValue() != null) {
-				if (includes.contains(entry.getKey())) {
-					// is include, add to result
-					featureTypes.putAll(entry.getValue().getNameToTypeDefinitionMap());
-					elementNames.putAll(entry.getValue().getElementToTypeNameMap());
-				}
-				else {
-					// is import, don't add to result
-					importedFeatureTypes.putAll(entry.getValue().getNameToTypeDefinitionMap());
-					importedElementNames.putAll(entry.getValue().getElementToTypeNameMap());
-				}
-			}
-		}
-		
-		// descriptions (element (feature type) name / description)
-		Map<String, String> descriptions = new HashMap<String, String>();
+		Map<Name, SchemaElement> elements = new HashMap<Name, SchemaElement>();
+		// result
+		SchemaResult result = new SchemaResult(featureTypes, elements);
 		
 		// type names for type definitions where is no element
 		Set<String> schemaTypeNames = new HashSet<String>();
@@ -393,21 +363,74 @@ public class ApacheSchemaProvider
 							element.getQName().getLocalPart());
 				} 
 				
-				String elementName = element.getName();
-				elementNames.put(
-						new NameImpl(namespace, elementName), 
-						typeName);
-				
+				Name elementName = new NameImpl(namespace, element.getName());
+				// create schema element
+				SchemaElement schemaElement = new SchemaElement(elementName, typeName, null);
+				// get description
 				String description = SchemaAttribute.getDescription(element);
-				if (description != null) {
-					descriptions.put(elementName, description);
-				}
+				schemaElement.setDescription(description);
+				// store element in map
+				elements.put(elementName, schemaElement);
 			}
 			else if (item instanceof XmlSchemaComplexType) {
 				schemaTypeNames.add(((XmlSchemaComplexType)item).getName());
 			}
 			else if (item instanceof XmlSchemaSimpleType) {
 				schemaTypeNames.add(((XmlSchemaSimpleType)item).getName());
+			}
+		}
+		
+		// Set of include locations
+		Set<String> includes = new HashSet<String>();
+		
+		// handle imports
+		XmlSchemaObjectCollection externalItems = schema.getIncludes();
+		if (externalItems.getCount() > 0) {
+			_log.info("Loading includes and imports for schema at " + schemaLocation);
+		}
+		
+		// add self to imports (allows resolving references to elements that are defined here)
+		imports.put(schemaLocation, result);
+		
+		for (int i = 0; i < externalItems.getCount(); i++) {
+			try {
+				XmlSchemaExternal imp = (XmlSchemaExternal) externalItems.getItem(i);
+				XmlSchema importedSchema = imp.getSchema();
+				String location = importedSchema.getSourceURI();
+				if (!(imports.containsKey(location))) { // only add schemas that were not already added
+					imports.put(location, null); // place a marker in the map to prevent loading the location in the call to loadSchema 
+					imports.put(location, loadSchema(location, importedSchema, imports, progress));
+				}
+				if (imp instanceof XmlSchemaInclude) {
+					includes.add(location);
+				}
+			} catch (Throwable e) {
+				_log.error("Error adding imported schema", e);
+			}
+		}
+		
+		_log.info("Creating types for schema at " + schemaLocation);
+		
+		progress.setCurrentTask("Analyzing schema " + namespace);
+		
+		// map for all imported types
+		Map<Name, TypeDefinition> importedFeatureTypes = new HashMap<Name, TypeDefinition>();
+		// name mapping for imported types: element name -> type name
+		Map<Name, SchemaElement> importedElements = new HashMap<Name, SchemaElement>();
+		
+		// add imported types
+		for (Entry<String, SchemaResult> entry : imports.entrySet()) {
+			if (entry.getValue() != null) {
+				if (includes.contains(entry.getKey())) {
+					// is include, add to result
+					featureTypes.putAll(entry.getValue().getTypes());
+					elements.putAll(entry.getValue().getElements());
+				}
+				else {
+					// is import, don't add to result
+					importedFeatureTypes.putAll(entry.getValue().getTypes());
+					importedElements.putAll(entry.getValue().getElements());
+				}
 			}
 		}
 		
@@ -428,15 +451,12 @@ public class ApacheSchemaProvider
 				name = ((XmlSchemaComplexType)item).getName();
 				
 				// get the attribute type names
-				typeDependencies = getAttributeTypeNames(elementNames, importedElementNames, (XmlSchemaComplexType) item);
+				typeDependencies = getAttributeTypeNames(elements, importedElements, (XmlSchemaComplexType) item);
 				
 				// get the name of the super type 
-				Name superType = (getSuperTypeName((XmlSchemaComplexType)item));
-				if (superType != null) {
-					superTypeName = superType; //XXX getTypeName(names, superType);
-					if (superTypeName != null) {
-						typeDependencies.add(superTypeName);
-					}
+				superTypeName = getSuperTypeName((XmlSchemaComplexType)item);
+				if (superTypeName != null) {
+					typeDependencies.add(superTypeName);
 				}
 				
 			} else if (item instanceof XmlSchemaSimpleType) {
@@ -456,7 +476,7 @@ public class ApacheSchemaProvider
 				if (typeDependencies != null) {
 					for (Name dependency : typeDependencies) {
 						if (dependency.getNamespaceURI().equals(namespace) && 
-								((elementNames.containsValue(dependency) && !featureTypes.containsKey(dependency)) ||
+								((!featureTypes.containsKey(dependency) && referencesType(elements, dependency)) ||
 								schemaTypeNames.contains(dependency.getLocalPart()))) {
 							// local type, add to local dependencies
 							localDependencies.add(dependency);
@@ -553,8 +573,8 @@ public class ApacheSchemaProvider
 				
 				// determine the defined attributes and add them to the declaring type
 				getAttributes(
-						elementNames,
-						importedElementNames,
+						elements,
+						importedElements,
 						typeDef, // definition of the declaring type
 						(XmlSchemaComplexType) item,
 						featureTypes,
@@ -564,19 +584,32 @@ public class ApacheSchemaProvider
 				typeDef.setAbstract(((XmlSchemaComplexType) item).isAbstract());
 				
 				// set description
-				String description = descriptions.get(typeName.getLocalPart());
+				/*XXX moved to schema element - String description = descriptions.get(typeName.getLocalPart());
 				if (description != null) {
 					typeDef.setDescription(description);
-				}
+				}*/
 				
 				// add type definition
 				featureTypes.put(typeName, typeDef);
 			}
 		}
 		
-		return new SchemaResult(featureTypes, elementNames);
+		// populate schema items with type definitions
+		for (SchemaElement element : elements.values()) {
+			element.setType(featureTypes.get(element.getTypeName()));
+		}
+		
+		return result;
 	}
 	
+	private boolean referencesType(Map<Name, SchemaElement> elements,
+			Name dependency) {
+		//elements.containsValue(dependency)
+		//TODO
+		//XXX for now, return false
+		return false;
+	}
+
 	/**
 	 * Get the attributes for the given item
 	 * 
@@ -589,7 +622,7 @@ public class ApacheSchemaProvider
 	 *  
 	 * @return the attributes as a list of {@link SchemaAttribute}s
 	 */
-	private List<SchemaAttribute> getAttributes(Map<Name, Name> elementTypeMap, Map<Name, Name> importedElementTypeMap, TypeDefinition typeDef, XmlSchemaComplexType item, Map<Name, TypeDefinition> featureTypes, Map<Name, TypeDefinition> importedFeatureTypes) {
+	private List<AbstractSchemaAttribute> getAttributes(Map<Name, SchemaElement> elementTypeMap, Map<Name, SchemaElement> importedElementTypeMap, TypeDefinition typeDef, XmlSchemaComplexType item, Map<Name, TypeDefinition> featureTypes, Map<Name, TypeDefinition> importedFeatureTypes) {
 		XmlSchemaContentModel model = item.getContentModel();
 		if (model != null ) {
 			XmlSchemaContent content = model.getContent();
@@ -608,7 +641,7 @@ public class ApacheSchemaProvider
 			}
 		}
 		
-		return new ArrayList<SchemaAttribute>();
+		return new ArrayList<AbstractSchemaAttribute>();
 	}
 	
 	/**
@@ -619,12 +652,12 @@ public class ApacheSchemaProvider
 	 * @param item the complex type item
 	 * @return the attribute type names
 	 */
-	private Set<Name> getAttributeTypeNames(Map<Name, Name> elementTypeMap, Map<Name, Name> importedElementTypeMap, XmlSchemaComplexType item) {
-		List<SchemaAttribute> attributes = getAttributes(elementTypeMap, importedElementTypeMap, null, item, null, null);
+	private Set<Name> getAttributeTypeNames(Map<Name, SchemaElement> elementTypeMap, Map<Name, SchemaElement> importedElementTypeMap, XmlSchemaComplexType item) {
+		List<AbstractSchemaAttribute> attributes = getAttributes(elementTypeMap, importedElementTypeMap, null, item, null, null);
 		
 		Set<Name> typeNames = new HashSet<Name>();
 		
-		for (SchemaAttribute def : attributes) {
+		for (AbstractSchemaAttribute def : attributes) {
 			typeNames.add(def.getTypeName());
 		}
 		

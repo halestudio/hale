@@ -13,9 +13,12 @@
 package eu.esdihumboldt.hale.schemaprovider.model;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.log4j.Logger;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -39,6 +42,8 @@ import eu.esdihumboldt.goml.rdf.About;
 public class TypeDefinition extends AbstractDefinition implements Comparable<TypeDefinition>,
 	Definition {
 	
+	private static final Logger log = Logger.getLogger(TypeDefinition.class);
+	
 	/**
 	 * The type name
 	 */
@@ -60,9 +65,16 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	private final SortedSet<TypeDefinition> subTypes = new TreeSet<TypeDefinition>();
 	
 	/**
+	 * The elements referencing this type
+	 */
+	private final Set<SchemaElement> declaringElements = new HashSet<SchemaElement>();
+	
+	/**
 	 * If the type is abstract
 	 */
 	private boolean abstractType = false; 
+	
+	private final boolean complex;
 	
 	/**
 	 * The list of declared attributes
@@ -87,6 +99,13 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 		this.name = name;
 		this.type = type;
 		this.superType = superType;
+		
+		if (type != null && !(type instanceof FeatureType)) {
+			complex = false;
+		}
+		else {
+			complex = true;
+		}
 		
 		if (superType != null) {
 			superType.subTypes.add(this);
@@ -122,12 +141,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	 * @return if this definition represents a complex type
 	 */
 	public boolean isComplexType() {
-		if (getType() != null) {
-			return getType() instanceof FeatureType;
-		}
-		else {
-			return isFeatureType();
-		}
+		return complex;
 	}
 	
 	/**
@@ -150,6 +164,24 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 		attribute.setDeclaringType(null);
 		declaredAttributes.remove(attribute);
 	}
+	
+	/**
+	 * Add an element that references this type
+	 * 
+	 * @param element the element that references this type
+	 */
+	public void addDeclaringElement(SchemaElement element) {
+		declaringElements.add(element);
+	}
+	
+	/**
+	 * Removes an element that references this type
+	 * 
+	 * @param element the element to remove
+	 */
+	public void removeDeclaringElement(SchemaElement element) {
+		declaringElements.remove(element);
+	}
 
 	/**
 	 * @return the name
@@ -163,7 +195,14 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	 */
 	public AttributeType getType() {
 		if (type == null) {
-			type = createFeatureType();
+			if (!declaringElements.isEmpty()) {
+				//XXX grab first
+				SchemaElement element = declaringElements.iterator().next();
+				return element.getAttributeType();
+			}
+			else {
+				type = createFeatureType(null);
+			}
 		}
 		return type;
 	}
@@ -186,10 +225,13 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	/**
 	 * Create the feature type from the super types and attributes, this method
 	 *   will be called when there was no explicit type provided
+	 *   
+	 * @param name a custom name to use for the type (e.g. the element name)
+	 *   or <code>null</code> 
 	 * 
 	 * @return the feature type
 	 */
-	protected FeatureType createFeatureType() {
+	public FeatureType createFeatureType(Name name) {
 		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
 		
 		if (getSuperType() != null) {
@@ -210,12 +252,18 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 		while (typeDef != null) {
 			// add attributes for current type
 			for (AttributeDefinition attribute : typeDef.getDeclaredAttributes()) {
-				AttributeDescriptor desc = attribute.createAttributeDescriptor();
-				if (desc != null) {
-					builder.add(desc);
-					
-					if (Geometry.class.isAssignableFrom(desc.getType().getBinding())) {
-						builder.setDefaultGeometry(desc.getName().getLocalPart());
+				TypeDefinition attrType = attribute.getAttributeType();
+				if (this.equals(attrType)) {
+					log.warn("Self referencing type: " + getName());
+				}
+				else {
+					AttributeDescriptor desc = attribute.createAttributeDescriptor();
+					if (desc != null) {
+						builder.add(desc);
+						
+						if (Geometry.class.isAssignableFrom(desc.getType().getBinding())) {
+							builder.setDefaultGeometry(desc.getName().getLocalPart());
+						}
 					}
 				}
 			}
@@ -227,7 +275,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 		// other properties
 		builder.setAbstract(abstractType);
 		
-		builder.setName(getName());
+		builder.setName((name != null)?(name):(getName()));
 		return builder.buildFeatureType();
 	}
 
@@ -363,6 +411,21 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	 */
 	public String getDisplayName() {
 		return getName().getLocalPart();
+	}
+
+	/**
+	 * @return the declaringElements
+	 */
+	public Set<SchemaElement> getDeclaringElements() {
+		return declaringElements;
+	}
+	
+	/**
+	 * @see Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "[type] " + getIdentifier();
 	}
 
 }

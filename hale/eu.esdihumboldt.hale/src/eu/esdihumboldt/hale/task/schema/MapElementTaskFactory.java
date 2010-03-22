@@ -18,7 +18,7 @@ import java.util.List;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.task.ServiceProvider;
 import eu.esdihumboldt.hale.task.Task;
 import eu.esdihumboldt.hale.task.TaskFactory;
@@ -34,7 +34,7 @@ import eu.esdihumboldt.hale.task.impl.AlignmentTask;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class MapTypeTaskFactory extends AbstractTaskFactory {
+public class MapElementTaskFactory extends AbstractTaskFactory {
 	
 	/**
 	 * The task 
@@ -45,11 +45,11 @@ public class MapTypeTaskFactory extends AbstractTaskFactory {
 		 * Create a new task
 		 *
 		 * @param serviceProvider the service provider 
-		 * @param type the type to map
+		 * @param element the element to map
 		 */
 		public MapTypeTask(ServiceProvider serviceProvider,
-				TypeDefinition type) {
-			super(serviceProvider, getTaskTypeName(), Collections.singletonList(type));
+				SchemaElement element) {
+			super(serviceProvider, getTaskTypeName(), Collections.singletonList(element));
 		}
 
 		/**
@@ -58,7 +58,7 @@ public class MapTypeTaskFactory extends AbstractTaskFactory {
 		@Override
 		public void cellsAdded(Iterable<ICell> cells) {
 			//TODO check given cells instead of calling validateTask
-			if (!validateTask((TypeDefinition) getMainContext(), alignmentService)) {
+			if (!validateTask((SchemaElement) getMainContext(), alignmentService)) {
 				invalidate();
 			}
 		}
@@ -100,7 +100,7 @@ public class MapTypeTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public String getTitle(Task task) {
-			return "Create a mapping for " + ((TypeDefinition) task.getMainContext()).getName().getLocalPart();
+			return "Create a mapping for " + ((SchemaElement) task.getMainContext()).getElementName().getLocalPart();
 		}
 
 		/**
@@ -126,7 +126,7 @@ public class MapTypeTaskFactory extends AbstractTaskFactory {
 	/**
 	 * Default constructor
 	 */
-	public MapTypeTaskFactory() {
+	public MapElementTaskFactory() {
 		super(BASE_TYPE_NAME);
 		
 		type = new MapTypeTaskType(this);
@@ -138,32 +138,32 @@ public class MapTypeTaskFactory extends AbstractTaskFactory {
 	@Override
 	public Task createTask(ServiceProvider serviceProvider,
 			Definition... definitions) {
-		if (definitions == null || definitions.length < 1 || !(definitions[0] instanceof TypeDefinition)) {
+		if (definitions == null || definitions.length < 1 || !(definitions[0] instanceof SchemaElement)) {
 			return null;
 		}
 		
 		AlignmentService alignmentService = serviceProvider.getService(AlignmentService.class);
 		
-		TypeDefinition type = (TypeDefinition) definitions[0];
-		if (validateTask(type, alignmentService)) {
-			return new MapTypeTask(serviceProvider, type);
+		SchemaElement element = (SchemaElement) definitions[0];
+		if (validateTask(element, alignmentService)) {
+			return new MapTypeTask(serviceProvider, element);
 		}
 		
 		return null;
 	}
 
 	/**
-	 * Determines if the given type definition is valid for a task
+	 * Determines if the given element is valid for a task
 	 * 
-	 * @param type the type definition
+	 * @param element the element
 	 * @param alignmentService the alignment service
 	 * 
 	 * @return if the type is valid
 	 */
-	private static boolean validateTask(TypeDefinition type,
+	private static boolean validateTask(SchemaElement element,
 			AlignmentService alignmentService) {
-		if (type.isFeatureType() && !type.isAbstract()) {
-			List<ICell> cells = alignmentService.getCell(type.getEntity());
+		if (element.getType().isFeatureType() && !element.getType().isAbstract()) {
+			List<ICell> cells = alignmentService.getCell(element.getEntity());
 			if (cells == null || cells.isEmpty()) {
 				return true;
 			}

@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.models.schema.SchemaServiceAdapter;
 import eu.esdihumboldt.hale.rcp.utils.EntityHelper;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.task.Task;
 import eu.esdihumboldt.hale.task.impl.AbstractTaskProvider;
@@ -159,20 +160,20 @@ public abstract class AbstractSchemaTaskProvider extends AbstractTaskProvider {
 		String identifier = EntityHelper.getIdentifier(entity);
 		Definition definition = schemaService.getDefinition(identifier, schemaType);
 		if (definition != null) {
-			if (definition instanceof TypeDefinition) {
+			if (definition instanceof SchemaElement) {
 				// type mapping removed
 				if (checkSuperTypes) {
-					Collection<TypeDefinition> types = new ArrayList<TypeDefinition>();
-					TypeDefinition type = (TypeDefinition) definition;
+					Collection<SchemaElement> elements = new ArrayList<SchemaElement>();
+					TypeDefinition type = ((SchemaElement) definition).getType();
 					while (type != null) {
-						types.add(type);
+						elements.addAll(type.getDeclaringElements());
 						
 						type = type.getSuperType();
 					}
-					generateSchemaTasks(taskService, types);
+					generateSchemaTasks(taskService, elements);
 				}
 				else {
-					generateSchemaTasks(taskService, Collections.singleton((TypeDefinition) definition));
+					generateSchemaTasks(taskService, Collections.singleton((SchemaElement) definition));
 				}
 			}
 			else if (definition instanceof AttributeDefinition) {
@@ -191,15 +192,15 @@ public abstract class AbstractSchemaTaskProvider extends AbstractTaskProvider {
 	 * @param schema the schema
 	 */
 	protected void generateSchemaTasks(TaskService taskService,
-			Collection<TypeDefinition> schema) {
+			Collection<SchemaElement> schema) {
 		Collection<Task> tasks = new ArrayList<Task>();
-		for (TypeDefinition type : schema) {
-			if (type.isFeatureType()) { // restrict to feature types
+		for (SchemaElement element : schema) {
+			if (element.getType().isFeatureType()) { // restrict to feature types
 				// create type tasks
-				generateTypeTasks(type, tasks);
+				generateElementTasks(element, tasks);
 				
 				// create attribute tasks
-				for (AttributeDefinition attribute : type.getDeclaredAttributes()) {
+				for (AttributeDefinition attribute : element.getType().getDeclaredAttributes()) {
 					generateAttributeTasks(attribute, tasks);
 				}
 			}
@@ -218,12 +219,12 @@ public abstract class AbstractSchemaTaskProvider extends AbstractTaskProvider {
 			Collection<Task> taskList);
 
 	/**
-	 * Generate tasks based on the given type
+	 * Generate tasks based on the given element
 	 * 
-	 * @param type the type
+	 * @param element the element
 	 * @param taskList the task list to add created tasks to
 	 */
-	protected abstract void generateTypeTasks(TypeDefinition type,
+	protected abstract void generateElementTasks(SchemaElement element,
 			Collection<Task> taskList);
 
 	/**

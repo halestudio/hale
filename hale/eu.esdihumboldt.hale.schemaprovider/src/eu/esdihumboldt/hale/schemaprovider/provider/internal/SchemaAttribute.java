@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.apache.ws.commons.schema.XmlSchemaDocumentation;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaEnumerationFacet;
 import org.apache.ws.commons.schema.XmlSchemaObject;
@@ -26,14 +25,10 @@ import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.XmlSchemaSimpleTypeRestriction;
 import org.geotools.feature.AttributeTypeBuilder;
 import org.geotools.feature.NameImpl;
-import org.geotools.feature.type.AttributeDescriptorImpl;
 import org.geotools.gml3.GMLSchema;
 import org.geotools.xs.XSSchema;
-import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.Name;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -48,19 +43,13 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class SchemaAttribute extends AttributeDefinition {
+public class SchemaAttribute extends AbstractSchemaAttribute {
 	
 	private static final Logger _log = Logger.getLogger(SchemaAttribute.class);
 	
 	private static final XSSchema xsSchema = new XSSchema();
 	
 	private static final GMLSchema gmlSchema = new GMLSchema();
-	
-	private final boolean nillable;
-	
-	private final long minOccurs;
-	
-	private final long maxOccurs;
 	
 	//private final XmlSchemaElement element;
 
@@ -78,18 +67,7 @@ public class SchemaAttribute extends AttributeDefinition {
 	public SchemaAttribute(TypeDefinition declaringType, String name, Name typeName,
 			XmlSchemaElement element, Map<Name, TypeDefinition> featureTypes, 
 			Map<Name, TypeDefinition> importedFeatureTypes) {
-		super(name, typeName, null);
-		
-		//this.element = element;
-		
-		nillable = element.isNillable(); //XXX correct?
-		minOccurs = element.getMinOccurs(); //XXX correct?
-		maxOccurs = element.getMaxOccurs(); //XXX correct?
-		
-		String description = getDescription(element);
-		if (description != null) {
-			setDescription(description);
-		}
+		super(declaringType, name, typeName, element);
 		
 		if (declaringType != null) {
 			// set the declaring type
@@ -107,44 +85,8 @@ public class SchemaAttribute extends AttributeDefinition {
 	 */
 	protected SchemaAttribute(SchemaAttribute other) {
 		super(other);
-		
-		nillable = other.isNillable();
-		minOccurs = other.getMinOccurs();
-		maxOccurs = other.getMaxOccurs();
 	}
 	
-	/**
-	 * Get the documentation from XML element annotations
-	 * 
-	 * @param element the annotated element
-	 * @return the description or <code>null</code>
-	 */
-	public static String getDescription(XmlSchemaElement element) {
-		if (element.getAnnotation() != null) {
-			XmlSchemaObjectCollection annotationItems = element.getAnnotation().getItems();
-			StringBuffer desc = new StringBuffer();
-			for (int i = 0; i < annotationItems.getCount(); i++) {
-				XmlSchemaObject item = annotationItems.getItem(i);
-				if (item instanceof XmlSchemaDocumentation) {
-					XmlSchemaDocumentation doc = (XmlSchemaDocumentation) item;
-					NodeList markup = doc.getMarkup();
-					for (int j = 0; j < markup.getLength(); j++) {
-						Node node = markup.item(j);
-						desc.append(node.getTextContent());
-						desc.append('\n');
-					}
-				}
-			}
-			
-			String description = desc.toString();
-			if (!description.isEmpty()) {
-				return description;
-			}
-		}
-		
-		return null;
-	}
-
 	/**
 	 * Tries to determine the attribute type
 	 * 
@@ -211,24 +153,7 @@ public class SchemaAttribute extends AttributeDefinition {
 		return typeDef;
 	}
 	
-	/**
-	 * @see AttributeDefinition#createAttributeDescriptor()
-	 */
-	public AttributeDescriptor createAttributeDescriptor() {
-		if (getAttributeType() != null && getAttributeType().getType() != null) {
-			//Name parentName = getDeclaringType().getName();
-			return new AttributeDescriptorImpl(
-					getAttributeType().getType(),
-					new NameImpl(null, /*parentName.getNamespaceURI() + "/" + parentName.getLocalPart(), */getName()),
-					(int) minOccurs,
-					(int) maxOccurs,
-					true, // always nillable, else creating the features fails
-					null); 
-		}
-		else {
-			return null;
-		}
-	}
+	
 
 	/**
 	 * Returns the attribute type for an enumeration.
@@ -316,30 +241,6 @@ public class SchemaAttribute extends AttributeDefinition {
 		else {
 			return null;
 		}
-	}
-
-	/**
-	 * @see AttributeDefinition#getMaxOccurs()
-	 */
-	@Override
-	public long getMaxOccurs() {
-		return maxOccurs;
-	}
-
-	/**
-	 * @see AttributeDefinition#getMinOccurs()
-	 */
-	@Override
-	public long getMinOccurs() {
-		return minOccurs;
-	}
-
-	/**
-	 * @see AttributeDefinition#isNillable()
-	 */
-	@Override
-	public boolean isNillable() {
-		return nillable;
 	}
 
 	/**

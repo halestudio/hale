@@ -22,7 +22,7 @@ import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MapTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNodeLabelProvider;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.task.ResolvedTask;
 import eu.esdihumboldt.hale.task.TaskType.SeverityLevel;
 
@@ -159,9 +159,9 @@ public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvid
 			// task title
 			return ((ResolvedTask) value).getTitle();
 		}
-		else if (value instanceof TypeDefinition) {
+		else if (value instanceof SchemaElement) {
 			// type name
-			return ((TypeDefinition) value).getName().getLocalPart();
+			return ((SchemaElement) value).getDisplayName();
 		}
 		else {
 			return super.getValueText(value, node);

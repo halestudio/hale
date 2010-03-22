@@ -45,7 +45,7 @@ import eu.esdihumboldt.hale.models.instance.InstanceServiceListener;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.AbstractTilePainter;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.TileBackground;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.TileCache;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
  * Painter for Features
@@ -233,10 +233,10 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 							CstService.class);
 				instances.cleanInstances(DatasetType.transformed);
 				
-				Collection<TypeDefinition> targetTypes = schemaService.getTargetSchema();
+				Collection<SchemaElement> targetElements = schemaService.getTargetSchema();
 				Set<FeatureType> fts = new HashSet<FeatureType>();
-				for (TypeDefinition type : targetTypes) {
-					fts.add((FeatureType) type.getType());
+				for (SchemaElement element : targetElements) {
+					fts.add(element.getFeatureType());
 				}
 				
 				FeatureCollection features = (FeatureCollection<FeatureType, Feature>) ts.transform(

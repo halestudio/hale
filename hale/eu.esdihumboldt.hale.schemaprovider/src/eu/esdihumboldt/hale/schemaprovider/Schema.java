@@ -15,7 +15,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
  * Represents a schema
@@ -30,12 +30,12 @@ public class Schema {
 	 * Empty schema instance
 	 */
 	public static final Schema EMPTY_SCHEMA =
-		new Schema(new HashMap<String, TypeDefinition>(), "", null);
+		new Schema(new HashMap<String, SchemaElement>(), "", null);
 	
 	/**
 	 * The feature types
 	 */
-	private final Map<String, TypeDefinition> types;
+	private final Map<String, SchemaElement> elements;
 	
 	/**
 	 * The namespace
@@ -50,14 +50,14 @@ public class Schema {
 	/**
 	 * Constructor
 	 * 
-	 * @param types the type definitions
+	 * @param elements the type definitions
 	 * @param namespace the namespace
 	 * @param location the location
 	 */
-	public Schema(Map<String, TypeDefinition> types, String namespace,
+	public Schema(Map<String, SchemaElement> elements, String namespace,
 			URL location) {
 		super();
-		this.types = types;
+		this.elements = elements;
 		this.namespace = namespace;
 		this.location = location;
 	}
@@ -65,8 +65,8 @@ public class Schema {
 	/**
 	 * @return the featureTypes
 	 */
-	public Map<String, TypeDefinition> getTypes() {
-		return types;
+	public Map<String, SchemaElement> getElements() {
+		return elements;
 	}
 
 	/**

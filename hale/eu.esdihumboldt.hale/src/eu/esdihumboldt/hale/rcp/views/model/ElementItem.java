@@ -13,32 +13,33 @@
 package eu.esdihumboldt.hale.rcp.views.model;
 
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
- * Schema item representing a feature type
+ * Schema item representing an element
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class TypeItem extends TreeParent {
+public class ElementItem extends TreeParent {
 	
-	private final TypeDefinition typeDefinition;
+	private final SchemaElement element;
 
 	/**
-	 * Creates a feature type item
+	 * Creates a element item
 	 * 
-	 * @param type the type definition
+	 * @param element the type definition
 	 */
-	public TypeItem(TypeDefinition type) {
+	public ElementItem(SchemaElement element) {
 		super(
-				type.getName().getLocalPart(), 
-				type.getName(), 
-				determineType(type), 
-				type.getType());
+				element.getElementName().getLocalPart(), 
+				element.getElementName(), 
+				determineType(element.getType()), 
+				element.getAttributeType());
 		
-		this.typeDefinition = type;
+		this.element = element;
 	}
 
 	/**
@@ -65,8 +66,8 @@ public class TypeItem extends TreeParent {
 	/**
 	 * @return the typeDefinition
 	 */
-	public TypeDefinition getTypeDefinition() {
-		return typeDefinition;
+	public SchemaElement getElement() {
+		return element;
 	}
 
 	/**
@@ -74,7 +75,7 @@ public class TypeItem extends TreeParent {
 	 */
 	@Override
 	public Definition getDefinition() {
-		return typeDefinition;
+		return element;
 	}
 
 }

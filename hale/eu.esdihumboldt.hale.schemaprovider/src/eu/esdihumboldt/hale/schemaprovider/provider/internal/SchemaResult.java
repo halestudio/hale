@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.opengis.feature.type.Name;
 
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 
@@ -28,35 +29,35 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  */
 public class SchemaResult {
 	
-	private final Map<Name, TypeDefinition> nameToTypeDefinitionMap;
+	private final Map<Name, TypeDefinition> types;
 	
-	private final Map<Name, Name> elementToTypeNameMap;
+	private final Map<Name, SchemaElement> elements;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param nameToTypeDefinitionMap
-	 * @param elementToTypeNameMap
+	 * @param types
+	 * @param elements
 	 */
-	public SchemaResult(Map<Name, TypeDefinition> nameToTypeDefinitionMap,
-			Map<Name, Name> elementToTypeNameMap) {
+	public SchemaResult(Map<Name, TypeDefinition> types,
+			Map<Name, SchemaElement> elements) {
 		super();
-		this.nameToTypeDefinitionMap = nameToTypeDefinitionMap;
-		this.elementToTypeNameMap = elementToTypeNameMap;
+		this.types = types;
+		this.elements = elements;
 	}
 
 	/**
 	 * @return the nameToTypeDefinition
 	 */
-	public Map<Name, TypeDefinition> getNameToTypeDefinitionMap() {
-		return nameToTypeDefinitionMap;
+	public Map<Name, TypeDefinition> getTypes() {
+		return types;
 	}
 
 	/**
 	 * @return the elementToTypeName
 	 */
-	public Map<Name, Name> getElementToTypeNameMap() {
-		return elementToTypeNameMap;
+	public Map<Name, SchemaElement> getElements() {
+		return elements;
 	}
 
 }

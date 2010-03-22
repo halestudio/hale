@@ -16,7 +16,7 @@ import java.util.Collection;
 
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.task.Task;
 
 /**
@@ -28,7 +28,7 @@ import eu.esdihumboldt.hale.task.Task;
  */
 public class SchemaMappingTaskProvider extends AbstractSchemaTaskProvider {
 	
-	private final MapTypeTaskFactory mapType;
+	private final MapElementTaskFactory mapElement;
 	
 	private final MapAttributeTaskFactory mapAttribute;
 
@@ -42,7 +42,7 @@ public class SchemaMappingTaskProvider extends AbstractSchemaTaskProvider {
 		
 		setReactOnCellAddOrUpdate(true);
 		
-		addFactory(mapType = new MapTypeTaskFactory()); //TODO param?
+		addFactory(mapElement = new MapElementTaskFactory()); //TODO param?
 		addFactory(mapAttribute = new MapAttributeTaskFactory()); //TODO param?
 	}
 
@@ -59,12 +59,12 @@ public class SchemaMappingTaskProvider extends AbstractSchemaTaskProvider {
 	}
 
 	/**
-	 * @see AbstractSchemaTaskProvider#generateTypeTasks(TypeDefinition, Collection)
+	 * @see AbstractSchemaTaskProvider#generateElementTasks(SchemaElement, Collection)
 	 */
 	@Override
-	protected void generateTypeTasks(TypeDefinition type,
+	protected void generateElementTasks(SchemaElement element,
 			Collection<Task> taskList) {
-		Task task = mapType.createTask(serviceProvider, type);
+		Task task = mapElement.createTask(serviceProvider, element);
 		if (task != null) {
 			taskList.add(task);
 		}

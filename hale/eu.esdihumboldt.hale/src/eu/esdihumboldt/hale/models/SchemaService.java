@@ -21,6 +21,7 @@ import org.opengis.feature.type.FeatureType;
 import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -38,14 +39,14 @@ public interface SchemaService
 	 * to the currently loaded source schema, i.e. {@link FeatureType}s which do
 	 * not have a supertype.
 	 */
-	public Collection<TypeDefinition> getSourceSchema();
+	public Collection<SchemaElement> getSourceSchema();
 	
 	/**
 	 * @return the {@link Collection} of all root {@link FeatureType}s belonging
 	 * to the currently loaded target schema, i.e. {@link FeatureType}s which do
 	 * not have a supertype.
 	 */
-	public Collection<TypeDefinition> getTargetSchema();
+	public Collection<SchemaElement> getTargetSchema();
 	
 	/**
 	 * Loads the schema defined under the given URL as the target or source 
@@ -110,7 +111,7 @@ public interface SchemaService
 	 *         
 	 * @return returns a {@link FeatureType} identified by the given name
 	 */
-	public TypeDefinition getFeatureTypeByName(String name);
+	public SchemaElement getElementByName(String name);
 	
 	/**
 	 * Schema type enum
@@ -129,7 +130,7 @@ public interface SchemaService
 	 * 
 	 * @return the feature types
 	 */
-	public Collection<TypeDefinition> getSchema(SchemaType schemaType);
+	public Collection<SchemaElement> getSchema(SchemaType schemaType);
 	
 	/**
 	 * Get the definition for the given identifier if it is part of the given

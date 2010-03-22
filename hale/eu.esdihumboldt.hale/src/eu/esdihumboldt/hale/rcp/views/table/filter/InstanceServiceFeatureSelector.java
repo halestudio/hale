@@ -56,7 +56,7 @@ import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.filter.FeatureFilterField;
 import eu.esdihumboldt.hale.rcp.utils.filter.FeatureFilterField.FilterListener;
 import eu.esdihumboldt.hale.rcp.views.table.Messages;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
  * Selects filtered features
@@ -274,12 +274,12 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 			SchemaType schemaType = getSchemaType();
 			
 			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-			Collection<TypeDefinition> types = ss.getSchema(schemaType);
+			Collection<SchemaElement> elements = ss.getSchema(schemaType);
 			
 			List<FeatureType> filteredTypes = new ArrayList<FeatureType>();
-			for (TypeDefinition type : types) {
-				if (!type.isAbstract() && type.isFeatureType()) {
-					filteredTypes.add((FeatureType) type.getType());
+			for (SchemaElement element : elements) {
+				if (!element.getType().isAbstract() && element.getType().isFeatureType()) {
+					filteredTypes.add(element.getFeatureType());
 				}
 			}
 			

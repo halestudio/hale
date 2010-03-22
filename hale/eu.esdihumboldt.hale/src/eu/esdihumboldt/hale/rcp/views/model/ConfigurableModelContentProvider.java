@@ -20,6 +20,7 @@ import java.util.TreeSet;
 
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
  * Default content provider for the schema model
@@ -135,7 +136,7 @@ public class ConfigurableModelContentProvider
 			if (suppressInheritedAttributes && item.isType()) {
 				Object[] children = super.getChildren(parent);
 				List<SchemaItem> attributes = new ArrayList<SchemaItem>();
-				String id = item.getDefinition().getIdentifier();
+				String id = ((SchemaElement) item.getDefinition()).getType().getIdentifier();
 				
 				for (Object child : children) {
 					if (child instanceof SchemaItem) {

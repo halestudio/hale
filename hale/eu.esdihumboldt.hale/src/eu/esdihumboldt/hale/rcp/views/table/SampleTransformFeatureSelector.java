@@ -51,7 +51,7 @@ import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.rcp.views.table.filter.FeatureSelectionListener;
 import eu.esdihumboldt.hale.rcp.views.table.filter.FeatureSelector;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
  * 
@@ -158,10 +158,10 @@ public class SampleTransformFeatureSelector implements FeatureSelector {
 			final SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 			
 			// target schema
-			Collection<TypeDefinition> targetTypes = schemaService.getTargetSchema();
+			Collection<SchemaElement> targetElements = schemaService.getTargetSchema();
 			Set<FeatureType> fts = new HashSet<FeatureType>();
-			for (TypeDefinition type : targetTypes) {
-				fts.add((FeatureType) type.getType());
+			for (SchemaElement element : targetElements) {
+				fts.add(element.getFeatureType());
 			}
 			
 			// get reference features

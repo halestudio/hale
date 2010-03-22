@@ -38,7 +38,7 @@ import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
 import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
  * This {@link Wizard} is used to import source and target schemas.
@@ -102,7 +102,7 @@ public class SchemaImportWizard
 					try {
 						URI uri = getSchemaURI(result);
 						
-						Collection<TypeDefinition> currentSchema = schemaService.getSchema(schemaType);
+						Collection<SchemaElement> currentSchema = schemaService.getSchema(schemaType);
 						if (currentSchema != null && !currentSchema.isEmpty()) {
 							final String info = ((schemaType == SchemaType.SOURCE)?("source"):("target")); //$NON-NLS-1$ //$NON-NLS-2$
 							

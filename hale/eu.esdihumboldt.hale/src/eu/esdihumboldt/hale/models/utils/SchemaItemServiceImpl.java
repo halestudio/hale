@@ -15,7 +15,9 @@ package eu.esdihumboldt.hale.models.utils;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import org.opengis.feature.type.FeatureType;
@@ -28,9 +30,10 @@ import eu.esdihumboldt.hale.rcp.views.model.AttributeItem;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject;
 import eu.esdihumboldt.hale.rcp.views.model.TreeParent;
-import eu.esdihumboldt.hale.rcp.views.model.TypeItem;
+import eu.esdihumboldt.hale.rcp.views.model.ElementItem;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -172,7 +175,7 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 	 * 
 	 * @return the root item
 	 */
-	private SchemaItem translateSchema(Collection<TypeDefinition> schema, String namespace, SchemaType schemaType) {
+	private SchemaItem translateSchema(Collection<SchemaElement> schema, String namespace, SchemaType schemaType) {
 		Map<String, SchemaItem> itemMap;
 		switch (schemaType) {
 		case SOURCE:
@@ -198,12 +201,45 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 		TreeParent hidden_root = new TreeParent("ROOT", null, TreeObjectType.ROOT, null);
 		TreeParent root = new TreeParent(namespace, null, TreeObjectType.ROOT, null);
 		hidden_root.addChild(root);
+		
+		// collect element types
+		Set<TypeDefinition> elementTypes = new HashSet<TypeDefinition>();
+		for (SchemaElement element : schema) {
+			elementTypes.add(element.getType());
+		}
+		
+		// determine super types that are not present in the element types
+		Queue<TypeDefinition> toTest = new LinkedList<TypeDefinition>(elementTypes);
+		Set<TypeDefinition> tested = new HashSet<TypeDefinition>();
+		Set<TypeDefinition> additions = new HashSet<TypeDefinition>();
+		while (!toTest.isEmpty()) {
+			TypeDefinition type = toTest.poll();
+			tested.add(type);
+			
+			if (!elementTypes.contains(type)) {
+				additions.add(type);
+			}
+			
+			// test super types
+			TypeDefinition superType = type.getSuperType();
+			if (superType != null) {
+				if (!tested.contains(superType)) {
+					toTest.add(superType);
+				}
+			}
+		}
+		
+		Set<SchemaElement> elements = new HashSet<SchemaElement>(schema);
+		// create dummy schema elements for super types
+		for (TypeDefinition type : additions) {
+			elements.add(new SchemaElement(type.getName(), type.getName(), type));
+		}
 
 		// finally, build the tree, starting with those types that don't have
 		// supertypes.
-		for (TypeDefinition type : schema) {
-			if (type.getSuperType() == null) {
-				root.addChild(buildSchemaTree(type, schema, namespace, itemMap));
+		for (SchemaElement element : elements) {
+			if (element.getType().getSuperType() == null) {
+				root.addChild(buildSchemaTree(element, elements, namespace, itemMap));
 			}
 		}
 
@@ -215,24 +251,26 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 	/**
 	 * Recursive method for setting up the inheritance tree.
 	 * 
-	 * @param type the type definition
+	 * @param element the type definition
 	 * @param schema the collection of types to display
 	 * @param namespace the namespace
 	 * @param itemMap map to add the created items to (definition identifier mapped to item)
 	 * @return a {@link SchemaItem} that contains all Properties and all
 	 *         subtypes and their property, starting with the given FT.
 	 */
-	private TreeObject buildSchemaTree(TypeDefinition type, Collection<TypeDefinition> schema, String namespace, Map<String, SchemaItem> itemMap) {
-		TypeItem featureItem = new TypeItem(type);
-		itemMap.put(type.getIdentifier(), featureItem);
+	private TreeObject buildSchemaTree(SchemaElement element, Collection<SchemaElement> schema, String namespace, Map<String, SchemaItem> itemMap) {
+		ElementItem featureItem = new ElementItem(element);
+		itemMap.put(element.getIdentifier(), featureItem);
 		
 		// add properties
-		addProperties(featureItem, type, itemMap);
+		addProperties(featureItem, element.getType(), itemMap);
 		
 		// add children recursively
-		for (TypeDefinition subType : type.getSubTypes()) {
-			if (schema.contains(subType)) {
-				featureItem.addChild(buildSchemaTree(subType, schema, namespace, itemMap));
+		for (TypeDefinition subType : element.getType().getSubTypes()) {
+			for (SchemaElement subTypeElement : subType.getDeclaringElements()) {
+				if (schema.contains(subTypeElement)) {
+					featureItem.addChild(buildSchemaTree(subTypeElement, schema, namespace, itemMap));
+				}
 			}
 		}
 		return featureItem;

@@ -16,7 +16,7 @@ import java.util.Collection;
 
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.task.Task;
 import eu.esdihumboldt.hale.task.TaskFactory;
 
@@ -55,10 +55,10 @@ public class NilAttributeTaskProvider extends AbstractSchemaTaskProvider {
 	}
 
 	/**
-	 * @see AbstractSchemaTaskProvider#generateTypeTasks(TypeDefinition, Collection)
+	 * @see AbstractSchemaTaskProvider#generateElementTasks(SchemaElement, Collection)
 	 */
 	@Override
-	protected void generateTypeTasks(TypeDefinition type,
+	protected void generateElementTasks(SchemaElement element,
 			Collection<Task> taskList) {
 		// ignore
 	}
