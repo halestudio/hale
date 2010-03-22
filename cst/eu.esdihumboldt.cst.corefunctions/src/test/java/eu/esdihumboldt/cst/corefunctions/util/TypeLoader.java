@@ -16,7 +16,7 @@ import java.net.URI;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.schemaprovider.Schema;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
 
 /**
@@ -35,7 +35,7 @@ public class TypeLoader {
 	 * 
 	 * @param localname
 	 * @param schemaFilename
-	 * @return
+	 * @return the feature type
 	 */
 	public static FeatureType getType(String localname, String schemaFilename) {
 		ApacheSchemaProvider asp = new ApacheSchemaProvider();
@@ -43,10 +43,10 @@ public class TypeLoader {
 		try {
 			Schema schema = asp.loadSchema(new URI(schemaFilename), null);
 			if (schema != null) {
-				for (TypeDefinition td : schema.getTypes().values()) {
-					if (td.getFeatureType() != null) {
-						if (localname.equals(td.getName().getLocalPart())) {
-							type = td.getFeatureType();
+				for (SchemaElement element : schema.getElements().values()) {
+					if (element.getFeatureType() != null) {
+						if (localname.equals(element.getElementName().getLocalPart())) {
+							type = element.getFeatureType();
 							break;
 						}
 					}
