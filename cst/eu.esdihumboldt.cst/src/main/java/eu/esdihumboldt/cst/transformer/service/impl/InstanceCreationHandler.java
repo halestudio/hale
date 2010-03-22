@@ -57,6 +57,17 @@ public class InstanceCreationHandler {
 			
 			FeatureCollection sourceFeatures = FeatureCollections.newCollection();
 			List<Feature> features = partitionedSourceFeatures.get(sourceFtName);
+			// FIXME temp solution until solution for correct typename is found.
+			if (features == null) {
+				String modifiedTypeName = null;
+				if (sourceFtName.lastIndexOf("_Type") != -1) {
+					modifiedTypeName = sourceFtName.substring(0, sourceFtName.lastIndexOf("_Type"));
+				}
+				else if (sourceFtName.lastIndexOf("Type") != -1) {
+					modifiedTypeName = sourceFtName.substring(0, sourceFtName.lastIndexOf("Type"));
+				}
+				features = partitionedSourceFeatures.get(modifiedTypeName);
+			}
 			if (features != null && features.size() > 0) {
 				for (Feature f : features) {
 					sourceFeatures.add(f);

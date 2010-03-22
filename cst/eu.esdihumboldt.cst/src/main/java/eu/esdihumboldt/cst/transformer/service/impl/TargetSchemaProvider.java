@@ -35,6 +35,9 @@ public class TargetSchemaProvider {
 		this.targetTypes = new HashMap<String, FeatureType>();
 	}
 	
+	/**
+	 * @return the single instance of the {@link TargetSchemaProvider}.
+	 */
 	public static TargetSchemaProvider getInstance() {
 		return TargetSchemaProvider.instance;
 	}
