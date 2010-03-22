@@ -174,9 +174,17 @@ public class InstanceDataImportWizard
 			});
 			
 		} catch (Exception e) {
-			ExceptionHelper.handleException(
-					Messages.InstanceOpeningError, 
-					HALEActivator.PLUGIN_ID, e);
+			if (e instanceof InvocationTargetException) {
+				ExceptionHelper.handleException(
+						e.getCause().getMessage(), 
+						HALEActivator.PLUGIN_ID, e.getCause());
+			}
+			else {
+				ExceptionHelper.handleException(
+						e.getMessage(), 
+						HALEActivator.PLUGIN_ID, e);
+			}
+			
 			_log.error("Error performing wizard finish", e); //$NON-NLS-1$
 		}
 		
@@ -229,7 +237,7 @@ public class InstanceDataImportWizard
 				(FeatureCollection<FeatureType, Feature>) parser.parse(xml);
 		} catch (Exception ex) {
 			throw new RuntimeException(
-					"Parsing the given GML into a FeatureCollection failed: ", //$NON-NLS-1$
+					"Parsing the given GML into a FeatureCollection failed: " + ex.getMessage(), //$NON-NLS-1$
 					ex);
 		}
 		return result;
