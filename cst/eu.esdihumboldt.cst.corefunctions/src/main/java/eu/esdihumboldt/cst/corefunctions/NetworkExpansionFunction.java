@@ -91,7 +91,6 @@ public class NetworkExpansionFunction extends AbstractCstFunction {
 				BufferBuilder bb = new BufferBuilder(new BufferParameters());
 				new_geometry = bb.buffer(old_geometry, Double.parseDouble(
 						result.toString()));
-//				((SimpleFeatureImpl)target).setDefaultGeometry(new_geometry);
 				((SimpleFeatureImpl)target).setAttribute(
 						this.targetProperty.getLocalname(), new_geometry);
 			} catch (Exception ex) {

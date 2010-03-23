@@ -30,6 +30,11 @@ public class NetworkExpansionTest {
 	private final String targetLocalnamePropertyBGeom = "PropertyBGeom";
 	private final String targetNamespace = "http://xsdi.org";
 	
+	@Test
+	public void testConfigure() {
+		NetworkExpansionFunction nef = new NetworkExpansionFunction();
+		nef.configure(nef.getParameters());
+	}
 	
 	
 	@Test
@@ -50,8 +55,13 @@ public class NetworkExpansionTest {
 		SimpleFeatureType sourcetype = this.getFeatureType(
 				this.sourceNamespace, 
 				this.sourceLocalname, 
+				"geom",
 				Polygon.class);
-		SimpleFeatureType targettype = this.getFeatureType(this.targetNamespace, this.targetLocalname, Polygon.class);
+		SimpleFeatureType targettype = this.getFeatureType(
+				this.targetNamespace, 
+				this.targetLocalname, 
+				this.targetLocalnamePropertyBGeom, 
+				Polygon.class);
 		GeometryFactory fac = new GeometryFactory();
 				
 		
@@ -75,14 +85,18 @@ public class NetworkExpansionTest {
 
 	}
 
-	private SimpleFeatureType getFeatureType(String featureTypeNamespace, String featureTypeName,  Class <? extends Geometry> geom) {
+	private SimpleFeatureType getFeatureType(
+			String featureTypeNamespace, 
+			String featureTypeName, 
+			String featuretypeGeometryPropertyName,
+			Class <? extends Geometry> geom) {
 		
 		SimpleFeatureType ft = null;
 		try {
 			SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
 			ftbuilder.setName(featureTypeName);
 			ftbuilder.setNamespaceURI(featureTypeNamespace);
-			ftbuilder.add("geom", geom);
+			ftbuilder.add(featuretypeGeometryPropertyName, geom);
 			ft = ftbuilder.buildFeatureType();
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
