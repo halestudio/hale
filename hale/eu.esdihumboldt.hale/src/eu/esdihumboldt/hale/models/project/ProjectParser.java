@@ -144,14 +144,14 @@ public class ProjectParser {
 			if (project.getSourceSchema() != null 
 					&& project.getSourceSchema().getPath() != null) {
 				schemaService.loadSchema(
-						new URI(project.getSourceSchema().getPath()), 
+						new URI(project.getSourceSchema().getPath()), null,
 						SchemaType.SOURCE, progress);
 				projectService.setSourceSchemaPath(project.getSourceSchema().getPath());
 			}
 			if (project.getTargetSchema() != null 
 					&& project.getTargetSchema().getPath() != null) {
 				schemaService.loadSchema(
-						new URI(project.getTargetSchema().getPath()), 
+						new URI(project.getTargetSchema().getPath()), null,
 						SchemaType.TARGET, progress);
 				projectService.setTargetSchemaPath(project.getTargetSchema().getPath());
 			}

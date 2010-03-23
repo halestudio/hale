@@ -53,12 +53,13 @@ public interface SchemaService
 	 * schema.
 	 * May point to different source, such as a XSD or a a WFS.
 	 * @param file the {@link URI} to the file from which to load the schema.
+	 * @param schemaFormat the schema format identifier
 	 * @param type the schema type
 	 * @param progress the progress indicator, may be <code>null</code>
 	 * @return true if the loading was successful.
 	 * @throws IOException 
 	 */
-	public boolean loadSchema(URI file, SchemaType type, ProgressIndicator progress) throws IOException;
+	public boolean loadSchema(URI file, String schemaFormat, SchemaType type, ProgressIndicator progress) throws IOException;
 	
 	/**
 	 * Loads multiple schemas into the target or source schema.

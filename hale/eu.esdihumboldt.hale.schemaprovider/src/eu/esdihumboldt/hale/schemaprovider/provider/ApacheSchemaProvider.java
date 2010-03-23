@@ -56,6 +56,7 @@ import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.Name;
 
+import eu.esdihumboldt.hale.schemaprovider.AbstractSchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.HumboldtURIResolver;
 import eu.esdihumboldt.hale.schemaprovider.LogProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
@@ -86,13 +87,24 @@ import eu.esdihumboldt.hale.schemaprovider.provider.internal.TypeUtil;
  * @version $Id$
  */
 public class ApacheSchemaProvider 
-	implements SchemaProvider {
+	extends AbstractSchemaProvider {
 	
 	/**
 	 * The log
 	 */
 	private static Logger _log = Logger.getLogger(ApacheSchemaProvider.class);
 	
+	/**
+	 * Default constructor 
+	 */
+	public ApacheSchemaProvider() {
+		super();
+		
+		addSupportedFormat("xsd");
+		addSupportedFormat("gml");
+		addSupportedFormat("xml");
+	}
+
 	/**
 	 * Extracts attribute definitions from a {@link XmlSchemaParticle}.
 	 * 

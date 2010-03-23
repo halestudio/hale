@@ -118,7 +118,7 @@ public class HaleServiceFactory
 	private SchemaService getSchemaService() {
 		if (schema == null) {
 			try {
-				schema = SchemaProviderService.getInstance(ApacheSchemaProvider.class);
+				schema = new SchemaProviderService(); //SchemaProviderService.getInstance(ApacheSchemaProvider.class);
 			} catch (Exception e) {
 				log.error("Error instantiating schema service", e);
 			}

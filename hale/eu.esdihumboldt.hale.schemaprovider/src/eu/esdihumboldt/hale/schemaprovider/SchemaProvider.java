@@ -36,4 +36,14 @@ public interface SchemaProvider {
 	 * @throws IOException 
 	 */
 	public Schema loadSchema(URI location, ProgressIndicator progress) throws IOException;
+	
+	/**
+	 * Determines if the schema provider supports the given schema format
+	 * 
+	 * @param schemaFormat the schema format
+	 * 
+	 * @return true if the scheam format is supported
+	 */
+	public boolean supportsSchemaFormat(String schemaFormat);
+	
 }

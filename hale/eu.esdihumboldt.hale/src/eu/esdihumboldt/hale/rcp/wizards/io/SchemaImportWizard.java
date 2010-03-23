@@ -141,7 +141,7 @@ public class SchemaImportWizard
 						
 						if (schemaType == SchemaType.SOURCE) {;
 							// load Schema as Source schema
-							schemaService.loadSchema(uri, SchemaType.SOURCE, progress);
+							schemaService.loadSchema(uri, null, SchemaType.SOURCE, progress);
 							// update Alignment
 							Schema schema = new Schema(schemaService.getSourceNameSpace(), 
 									new Formalism("GML 3.2.1 Application Schema",  //$NON-NLS-1$
@@ -151,7 +151,7 @@ public class SchemaImportWizard
 						}
 						else
 						{
-							schemaService.loadSchema(uri, SchemaType.TARGET, progress);
+							schemaService.loadSchema(uri, null, SchemaType.TARGET, progress);
 							// update Alignment
 							Schema schema = new Schema(schemaService.getTargetNameSpace(), 
 									new Formalism("GML 3.2.1 Application Schema",  //$NON-NLS-1$

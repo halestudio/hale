@@ -18,9 +18,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.Set;
 
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
@@ -29,6 +28,7 @@ import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
 
 /**
  * Implementation of {@link SchemaService}. It uses a {@link SchemaProvider}
@@ -36,16 +36,10 @@ import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
  * 
  * @author Simon Templer, Fraunhofer IGD
  * @version $Id$
- * @param <T> 
  */
-public class SchemaProviderService<T extends SchemaProvider> 
+public class SchemaProviderService 
 	extends AbstractSchemaService {
 	
-	/**
-	 * The instance map
-	 */
-	private static final Map<Class<? extends SchemaProvider>, SchemaProviderService<?>> instances = new HashMap<Class<? extends SchemaProvider>, SchemaProviderService<?>>();
-
 	/**
 	 * Source schema
 	 */
@@ -56,41 +50,15 @@ public class SchemaProviderService<T extends SchemaProvider>
 	 */
 	private Schema targetSchema = Schema.EMPTY_SCHEMA;
 	
-	/**
-	 * The schema provider
-	 */
-	private final SchemaProvider schemaProvider;
+	private final Set<SchemaProvider> providers = new HashSet<SchemaProvider>();
 	
 	/**
 	 * Creates the schema service
-	 * 
-	 * @param schemaProviderType the type of the schema provider 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
 	 */
-	private SchemaProviderService(Class<T> schemaProviderType) throws InstantiationException, IllegalAccessException {
+	public SchemaProviderService() {
 		super();
 		
-		schemaProvider = schemaProviderType.newInstance();
-	}
-	
-	/**
-	 * Get the {@link SchemaProviderService} instance
-	 * 
-	 * @param <T> the type of the schema provider
-	 * @param schemaProviderType the type of the schema provider
-	 * 
-	 * @return the {@link SchemaProviderService} instance
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 */
-	public static <T extends SchemaProvider> SchemaService getInstance(Class<T> schemaProviderType) throws InstantiationException, IllegalAccessException {
-		SchemaProviderService<?> instance = instances.get(schemaProviderType);
-		if (instance == null) {
-			instance = new SchemaProviderService<T>(schemaProviderType);
-			instances.put(schemaProviderType, instance);
-		}
-		return instance;
+		providers.add(new ApacheSchemaProvider());
 	}
 
 	/**
@@ -128,11 +96,12 @@ public class SchemaProviderService<T extends SchemaProvider>
 	}
 
 	/**
-	 * @see SchemaService#loadSchema(URI, SchemaType, ProgressIndicator)
+	 * @see SchemaService#loadSchema(URI, String, SchemaType, ProgressIndicator)
 	 */
 	@Override
-	public boolean loadSchema(URI location, SchemaType type, ProgressIndicator progress) throws IOException {
-		Schema schema = schemaProvider.loadSchema(location, progress);
+	public boolean loadSchema(URI location, String schemaFormat, SchemaType type, ProgressIndicator progress) throws IOException {
+		SchemaProvider provider = getSchemaProvider((schemaFormat != null)?(schemaFormat):(determineSchemaFormat(location)));
+		Schema schema = provider.loadSchema(location, progress);
 		
 		if (type.equals(SchemaType.SOURCE)) {
 			sourceSchema = schema;
@@ -143,6 +112,27 @@ public class SchemaProviderService<T extends SchemaProvider>
 		
 		notifySchemaChanged(type);
 		return true;
+	}
+
+	private SchemaProvider getSchemaProvider(String format) {
+		for (SchemaProvider provider : providers) {
+			if (provider.supportsSchemaFormat(format)) {
+				return provider;
+			}
+		}
+		
+		throw new IllegalArgumentException("No schema provider for the given format: " + format);
+	}
+
+	private String determineSchemaFormat(URI location) {
+		String loc = location.toString();
+		int index = loc.lastIndexOf('.');
+		if (index < 0) {
+			throw new IllegalArgumentException("Unable to automatically determine schema format");
+		}
+		else {
+			return loc.substring(index + 1);
+		}
 	}
 
 	/**
