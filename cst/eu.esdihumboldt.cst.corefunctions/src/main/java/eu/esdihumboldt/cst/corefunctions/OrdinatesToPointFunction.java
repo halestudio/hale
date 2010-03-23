@@ -125,11 +125,12 @@ public class OrdinatesToPointFunction
 		
 		// set up environment for calculation of new coordinate
 		Environment env = new Environment();
+
 		double x_value = Double.parseDouble(source.getProperty(this.xOrdinateName).getValue().toString());
 		env.addVariable(this.xOrdinateName,	new Constant(x_value));
 		double y_value = Double.parseDouble(source.getProperty(this.yOrdinateName).getValue().toString());
-		env.addVariable(this.yOrdinateName,	new Constant(y_value));
-		
+		env.addVariable(this.yOrdinateName,	new Constant(y_value));	
+
 		try {
 			Expression xExpr = new Expression(this.xExpression, env);
 			double xResult = Double.parseDouble(xExpr.evaluate().toString());
