@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
@@ -50,6 +51,13 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 	implements IColorProvider {
 	
 	private final Map<RGB, Color> createdColors = new HashMap<RGB, Color>();
+	
+	private Image attribOverlay = AbstractUIPlugin.imageDescriptorFromPlugin(
+				HALEActivator.PLUGIN_ID, "/icons/attrib_overlay2.gif").createImage();
+	
+	private final Map<String, Image> images = new HashMap<String, Image>();
+	
+	private final Map<String, Image> attribImages = new HashMap<String, Image>();
 	
 	@Override
 	public String getText(Object obj) {
@@ -91,15 +99,46 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 			// TODO add image for complex attributes
 		}
 		
+		Image image;
 		if (imageKey == null) {
 			// default
 			imageKey = ISharedImages.IMG_OBJ_ELEMENT;
-			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
+			image = PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
 		}
 		else  {
-			return AbstractUIPlugin.imageDescriptorFromPlugin(
-				HALEActivator.PLUGIN_ID, "/icons/" + imageKey).createImage(); //$NON-NLS-1$
+			image = images.get(imageKey);
+			if (image == null) {
+				image = AbstractUIPlugin.imageDescriptorFromPlugin(
+					HALEActivator.PLUGIN_ID, "/icons/" + imageKey).createImage(); //$NON-NLS-1$
+				images.put(imageKey, image);
+			}
 		}
+		
+		// check for inline attributes
+		if (to instanceof AttributeItem && ((AttributeItem) to).getAttributeDefinition().isAttribute()) {
+			Image attribImage = attribImages.get(imageKey);
+			
+			if (attribImage == null) {
+				Image copy = new Image(image.getDevice(), image.getBounds());
+				
+				// draw on image
+				GC gc = new GC(copy);
+				try {
+					gc.drawImage(image, 0, 0);
+					gc.drawImage(attribOverlay, 0, 0);
+				} finally {
+					gc.dispose();
+				}
+				
+				image = copy;
+				attribImages.put(imageKey, copy);
+			}
+			else {
+				image = attribImage;
+			}
+		}
+		
+		return image;
 	}
 
 	/**
@@ -238,6 +277,16 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 			color.dispose();
 		}
 		createdColors.clear();
+		
+		for (Image image : images.values()) {
+			image.dispose();
+		}
+		images.clear();
+		
+		for (Image image : attribImages.values()) {
+			image.dispose();
+		}
+		attribImages.clear();
 			
 		super.dispose();
 	}

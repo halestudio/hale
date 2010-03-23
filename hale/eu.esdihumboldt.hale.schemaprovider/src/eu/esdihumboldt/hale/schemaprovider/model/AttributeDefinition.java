@@ -47,6 +47,8 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	 *   or a sub type
 	 */
 	private TypeDefinition parentType;
+
+	private final boolean isElement;
 	
 	/**
 	 * Create an attribute definition
@@ -54,13 +56,15 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	 * @param name the attribute name
 	 * @param typeName the name of the attribute type
 	 * @param attributeType the corresponding attribute type, may be <code>null</code>
+	 * @param isElement if the attribute is represented by an element
 	 */
 	public AttributeDefinition(String name, Name typeName,
-			TypeDefinition attributeType) {
+			TypeDefinition attributeType, boolean isElement) {
 		super();
 		this.name = name;
 		this.typeName = typeName;
 		this.attributeType = attributeType;
+		this.isElement = isElement;
 	}
 	
 	/**
@@ -69,7 +73,7 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	 * @param other the attribute definition to copy
 	 */
 	protected AttributeDefinition(AttributeDefinition other) {
-		this(other.getName(), other.getTypeName(), other.getAttributeType());
+		this(other.getName(), other.getTypeName(), other.getAttributeType(), other.isElement);
 		
 		setDescription(other.getDescription());
 		setDeclaringType(other.getDeclaringType());
@@ -250,6 +254,20 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	 * @return the maxOccurs
 	 */
 	public abstract long getMaxOccurs();
+	
+	/**
+	 * @return if the attribute is represented in GML/XML as an element 
+	 */
+	public boolean isElement() {
+		return isElement;
+	}
+	
+	/**
+	 * @return if the attribute is represented in GML/XML as an attribute 
+	 */
+	public boolean isAttribute() {
+		return !isElement;
+	}
 
 	/**
 	 * @see Definition#getEntity()
@@ -292,7 +310,7 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	 * @return the attribute definition
 	 */
 	public abstract AttributeDefinition copyAttribute(TypeDefinition parentType);
-
+	
 	/**
 	 * @see java.lang.Object#toString()
 	 */

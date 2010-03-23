@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class ElementReferenceAttribute extends AbstractSchemaAttribute {
+public class ElementReferenceAttribute extends AbstractElementAttribute {
 	
 	private final SchemaElement reference;
 

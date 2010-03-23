@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.schemaprovider.provider.internal;
 
+import org.apache.ws.commons.schema.XmlSchemaAnnotated;
 import org.apache.ws.commons.schema.XmlSchemaDocumentation;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaObject;
@@ -33,7 +34,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public abstract class AbstractSchemaAttribute extends AttributeDefinition {
+public abstract class AbstractElementAttribute extends AttributeDefinition {
 	
 	private final boolean nillable;
 	
@@ -50,9 +51,9 @@ public abstract class AbstractSchemaAttribute extends AttributeDefinition {
 	 * @param typeName the name of the attribute type
 	 * @param element the element defining the attribute
 	 */
-	public AbstractSchemaAttribute(TypeDefinition declaringType, String name, Name typeName,
+	public AbstractElementAttribute(TypeDefinition declaringType, String name, Name typeName,
 			XmlSchemaElement element) {
-		super(name, typeName, null);
+		super(name, typeName, null, true);
 		
 		nillable = element.isNillable(); //XXX correct?
 		minOccurs = element.getMinOccurs(); //XXX correct?
@@ -74,7 +75,7 @@ public abstract class AbstractSchemaAttribute extends AttributeDefinition {
 	 * 
 	 * @param other
 	 */
-	protected AbstractSchemaAttribute(AbstractSchemaAttribute other) {
+	protected AbstractElementAttribute(AbstractElementAttribute other) {
 		super(other);
 		
 		nillable = other.isNillable();
@@ -83,12 +84,12 @@ public abstract class AbstractSchemaAttribute extends AttributeDefinition {
 	}
 	
 	/**
-	 * Get the documentation from XML element annotations
+	 * Get the documentation from an annotated XML object
 	 * 
 	 * @param element the annotated element
 	 * @return the description or <code>null</code>
 	 */
-	public static String getDescription(XmlSchemaElement element) {
+	public static String getDescription(XmlSchemaAnnotated element) {
 		if (element.getAnnotation() != null) {
 			XmlSchemaObjectCollection annotationItems = element.getAnnotation().getItems();
 			StringBuffer desc = new StringBuffer();

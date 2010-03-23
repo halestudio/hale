@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +32,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Logger;
 import org.apache.ws.commons.schema.XmlSchema;
+import org.apache.ws.commons.schema.XmlSchemaAttribute;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaComplexContentExtension;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
@@ -51,6 +53,7 @@ import org.apache.ws.commons.schema.XmlSchemaSimpleTypeUnion;
 import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.geotools.feature.NameImpl;
+import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.hale.schemaprovider.HumboldtURIResolver;
@@ -59,14 +62,17 @@ import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.model.AnonymousType;
+import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.provider.internal.AbstractSchemaAttribute;
+import eu.esdihumboldt.hale.schemaprovider.provider.internal.AbstractElementAttribute;
+import eu.esdihumboldt.hale.schemaprovider.provider.internal.DefaultAttribute;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.DependencyOrderedList;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.ElementReferenceAttribute;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.ProgressURIResolver;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.SchemaAttribute;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.SchemaResult;
+import eu.esdihumboldt.hale.schemaprovider.provider.internal.TypeUtil;
 
 /**
  * The main functionality of this class is to load an XML schema file (XSD)
@@ -87,8 +93,6 @@ public class ApacheSchemaProvider
 	 */
 	private static Logger _log = Logger.getLogger(ApacheSchemaProvider.class);
 	
-	private int num = 0;
-
 	/**
 	 * Extracts attribute definitions from a {@link XmlSchemaParticle}.
 	 * 
@@ -101,8 +105,8 @@ public class ApacheSchemaProvider
 	 * 
 	 * @return the list of attribute definitions
 	 */
-	private List<AbstractSchemaAttribute> getAttributesFromParticle(Map<Name, SchemaElement> elements, Map<Name, SchemaElement> importedElements, TypeDefinition typeDef, XmlSchemaParticle particle, Map<Name, TypeDefinition> types, Map<Name, TypeDefinition> importedTypes) {
-		List<AbstractSchemaAttribute> attributeResults = new ArrayList<AbstractSchemaAttribute>();
+	private List<AttributeDefinition> getAttributesFromParticle(Map<Name, SchemaElement> elements, Map<Name, SchemaElement> importedElements, TypeDefinition typeDef, XmlSchemaParticle particle, Map<Name, TypeDefinition> types, Map<Name, TypeDefinition> importedTypes) {
+		List<AttributeDefinition> attributeResults = new ArrayList<AttributeDefinition>();
 		
 		// particle:
 		if (particle instanceof XmlSchemaSequence) {
@@ -112,7 +116,7 @@ public class ApacheSchemaProvider
 				XmlSchemaObject object = sequence.getItems().getItem(j);
 				if (object instanceof XmlSchemaElement) {
 					// <element>
-					AbstractSchemaAttribute attribute = getAttributeFromElement(
+					AbstractElementAttribute attribute = getAttributeFromElement(
 							(XmlSchemaElement) object, typeDef, elements, 
 							importedElements, types, importedTypes);
 					if (attribute != null) {
@@ -139,7 +143,7 @@ public class ApacheSchemaProvider
 	 * 
 	 * @return an attribute definition or <code>null</code>
 	 */
-	private AbstractSchemaAttribute getAttributeFromElement(
+	private AbstractElementAttribute getAttributeFromElement(
 			XmlSchemaElement element, TypeDefinition declaringType,
 			Map<Name, SchemaElement> elements, Map<Name, SchemaElement> importedElements,
 			Map<Name, TypeDefinition> types, Map<Name, TypeDefinition> importedTypes) {
@@ -186,8 +190,9 @@ public class ApacheSchemaProvider
 			if (element.getSchemaType() instanceof XmlSchemaComplexType) {
 				// <element ...>
 				//   <complexType>
-				XmlSchemaContentModel model = ((XmlSchemaComplexType)element.getSchemaType()).getContentModel();
-				XmlSchemaParticle particle = ((XmlSchemaComplexType)element.getSchemaType()).getParticle();
+				XmlSchemaComplexType complexType = (XmlSchemaComplexType) element.getSchemaType();
+				XmlSchemaContentModel model = complexType.getContentModel();
+				XmlSchemaParticle particle = complexType.getParticle();
 				if (model != null) {
 					XmlSchemaContent content = model.getContent();
 					
@@ -201,29 +206,21 @@ public class ApacheSchemaProvider
 							Name superTypeName = new NameImpl(qname.getNamespaceURI(), qname.getLocalPart());
 							
 							// try to get the type definition of the super type
-							TypeDefinition superType = types.get(superTypeName);
-							if (superType == null) {
-								superType = importedTypes.get(superTypeName);
-							}
-							
+							TypeDefinition superType = TypeUtil.resolveAttributeType(superTypeName, types, importedTypes);
 							if (superType == null) {
 								_log.error("Couldn't resolve super type: " + superTypeName.getNamespaceURI() + "/" + superTypeName.getLocalPart());
 							}
 							
 							// create an anonymous type that extends the super type
-							XmlSchemaParticle extendParticle = ((XmlSchemaComplexContentExtension)content).getParticle();
-							Name anonymousName = new NameImpl(element.getQName().getNamespaceURI(), superTypeName.getLocalPart() + "_Extend_" + (++num));
+							Name anonymousName = new NameImpl(declaringType.getIdentifier() + "/" + element.getName(), superTypeName.getLocalPart() + "Extension");
 							TypeDefinition anonymousType = new AnonymousType(anonymousName, null, superType);
 							
 							// add attributes to the anonymous type
 							// adding the attributes will happen automatically when the AbstractSchemaAttribute is created
-							/*List<AbstractSchemaAttribute> attributes = */getAttributesFromParticle(
-									elements, importedElements, 
-									anonymousType, extendParticle, types, 
-									importedTypes);
+							getAttributes(elements, importedElements, anonymousType, complexType, types, importedTypes);
 							
-							//XXX add the anonymous type to the type map? - needed for type resolution in SchemaAttribute
-							//XXX it should enough for it to be added to the imported types map
+							// add the anonymous type to the type map - needed for type resolution in SchemaAttribute
+							// it's enough for it to be added to the imported types map
 							importedTypes.put(anonymousName, anonymousType);
 							
 							// create an attribute with the anonymous type
@@ -239,8 +236,33 @@ public class ApacheSchemaProvider
 						qname = ((XmlSchemaSimpleContentExtension)content).getBaseTypeName();
 						
 						if (declaringType != null) {
-							//FIXME here an anonymous type should be created, it extends the type references by qname
-							//FIXME with additional attributes
+							// create an anonymous type that extends the type referenced by qname
+							// with additional attributes
+							Name superTypeName = new NameImpl(qname.getNamespaceURI(), qname.getLocalPart());
+							
+							// try to get the type definition of the super type
+							TypeDefinition superType = TypeUtil.resolveAttributeType(superTypeName, types, importedTypes);
+							if (superType == null) {
+								_log.error("Couldn't resolve super type: " + superTypeName.getNamespaceURI() + "/" + superTypeName.getLocalPart());
+							}
+							
+							// create an anonymous type that extends the super type
+							Name anonymousName = new NameImpl(declaringType.getIdentifier() + "/" + element.getName(), superTypeName.getLocalPart() + "Extension");
+							// for now use the super attribute type, because attributes aren't added as attribute descriptors
+							AttributeType attributeType = superType.getType(); 
+							TypeDefinition anonymousType = new AnonymousType(anonymousName, attributeType, superType);
+							
+							// add attributes to the anonymous type
+							// adding the attributes will happen automatically when the AbstractSchemaAttribute is created
+							getAttributes(elements, importedElements, anonymousType, complexType, types, importedTypes);
+							
+							// add the anonymous type to the type map - needed for type resolution in SchemaAttribute
+							// it's enough for it to be added to the imported types map
+							importedTypes.put(anonymousName, anonymousType);
+							
+							// create an attribute with the anonymous type
+							SchemaAttribute result = new SchemaAttribute(declaringType, element.getName(), anonymousName, element, types, importedTypes);
+							return result;
 						}
 						
 						//   </extension>
@@ -248,11 +270,6 @@ public class ApacheSchemaProvider
 					}
 					
 					if (qname != null) {
-						/*
-						 * FIXME the type is not properly resolved, the call
-						 * to getAttributesFromParticle just returns the
-						 * base type of the property type
-						 */
 						// return base type for dependency resolution
 						return new SchemaAttribute(
 								declaringType,
@@ -273,18 +290,15 @@ public class ApacheSchemaProvider
 					}
 					else {
 						// create an anonymous type
-						Name anonymousName = new NameImpl(element.getQName().getNamespaceURI(), "Anonymous_" + (++num));
+						Name anonymousName = new NameImpl(declaringType.getIdentifier() + "/" + element.getName(), "AnonymousType");
 						TypeDefinition anonymousType = new AnonymousType(anonymousName, null, null);
 						
 						// add attributes to the anonymous type
 						// adding the attributes will happen automatically when the AbstractSchemaAttribute is created
-						/*List<AbstractSchemaAttribute> attributes = */getAttributesFromParticle(
-								elements, importedElements, 
-								anonymousType, particle, types, 
-								importedTypes);
+						getAttributes(elements, importedElements, anonymousType, complexType, types, importedTypes);
 						
-						//XXX add the anonymous type to the type map? - needed for type resolution in SchemaAttribute
-						//XXX it should enough for it to be added to the imported types map
+						// add the anonymous type to the type map - needed for type resolution in SchemaAttribute
+						// it's enough for it to be added to the imported types map
 						importedTypes.put(anonymousName, anonymousType);
 						
 						// create an attribute with the anonymous type
@@ -603,7 +617,7 @@ public class ApacheSchemaProvider
 				TypeDefinition simpleType = null;
 				
 				if (simpleType == null) {
-					simpleType = SchemaAttribute.getEnumAttributeType((XmlSchemaSimpleType) item, typeName);
+					simpleType = TypeUtil.getEnumAttributeType((XmlSchemaSimpleType) item, typeName);
 				}
 				//TODO other methods of resolving the type
 				if (simpleType == null) {
@@ -694,45 +708,108 @@ public class ApacheSchemaProvider
 	/**
 	 * Get the attributes for the given item
 	 * 
-	 * @param elementTypeMap map of element names to type names
-	 * @param importedElementTypeMap map of element names to imported type names
+	 * @param elements map of element names to type names
+	 * @param importedElements map of element names to imported type names
 	 * @param typeDef the definition of the declaring type 
 	 * @param item the complex type item
-	 * @param featureTypes 
-	 * @param importedFeatureTypes 
+	 * @param types 
+	 * @param importedTypes 
 	 *  
 	 * @return the attributes as a list of {@link SchemaAttribute}s
 	 */
-	private List<AbstractSchemaAttribute> getAttributes(Map<Name, SchemaElement> elementTypeMap, Map<Name, SchemaElement> importedElementTypeMap, TypeDefinition typeDef, XmlSchemaComplexType item, Map<Name, TypeDefinition> featureTypes, Map<Name, TypeDefinition> importedFeatureTypes) {
+	private List<AttributeDefinition> getAttributes(Map<Name, SchemaElement> elements, Map<Name, SchemaElement> importedElements, TypeDefinition typeDef, XmlSchemaComplexType item, Map<Name, TypeDefinition> types, Map<Name, TypeDefinition> importedTypes) {
+		ArrayList<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
+		
 		// item:
 		// <complexType ...>
 		XmlSchemaContentModel model = item.getContentModel();
 		if (model != null ) {
-			// <complexContent>
 			XmlSchemaContent content = model.getContent();
 
 			if (content instanceof XmlSchemaComplexContentExtension) {
-				// <extension base="...">
-				if (((XmlSchemaComplexContentExtension)content).getParticle() != null) {
-					XmlSchemaParticle particle = ((XmlSchemaComplexContentExtension)content).getParticle();
-					return getAttributesFromParticle(elementTypeMap, importedElementTypeMap, typeDef, particle, featureTypes, importedFeatureTypes);
+				// <complexContent>
+				//   <extension base="...">
+				XmlSchemaComplexContentExtension extension = (XmlSchemaComplexContentExtension) content;
+				// particle (e.g. sequence)
+				if (extension.getParticle() != null) {
+					XmlSchemaParticle particle = extension.getParticle();
+					attributes.addAll(getAttributesFromParticle(elements, importedElements, typeDef, particle, types, importedTypes));
 				}
-				// </extension>
+				// attributes
+				XmlSchemaObjectCollection attributeCollection = extension.getAttributes();
+				if (attributeCollection != null) {
+					attributes.addAll(getAttributesFromCollection(attributeCollection, typeDef, types, importedTypes));
+				}
+				//   </extension>
+				// </complexContent>
 			}
-			// </complexContent>
+			else if (content instanceof XmlSchemaSimpleContentExtension) {
+				// <simpleContent>
+				//   <extension base="...">
+				XmlSchemaSimpleContentExtension extension = (XmlSchemaSimpleContentExtension) content;
+				// attributes
+				XmlSchemaObjectCollection attributeCollection = extension.getAttributes();
+				if (attributeCollection != null) {
+					attributes.addAll(getAttributesFromCollection(attributeCollection, typeDef, types, importedTypes));
+				}
+				//   </extension>
+				// </simpleContent>
+			}
 		}
 		else if (((XmlSchemaComplexType)item).getParticle() != null) {
 			// no complex content (instead e.g. <sequence>)
-			XmlSchemaParticle particle = ((XmlSchemaComplexType)item).getParticle();
+			XmlSchemaComplexType complexType = ((XmlSchemaComplexType) item);
+			// particle (e.g. sequence)
+			XmlSchemaParticle particle = complexType.getParticle();
 			if (particle instanceof XmlSchemaSequence) {
-				return getAttributesFromParticle(elementTypeMap, importedElementTypeMap, typeDef, particle, featureTypes, importedFeatureTypes);
+				return getAttributesFromParticle(elements, importedElements, typeDef, particle, types, importedTypes);
+			}
+			// attributes
+			XmlSchemaObjectCollection attributeCollection = complexType.getAttributes();
+			if (attributeCollection != null) {
+				attributes.addAll(getAttributesFromCollection(attributeCollection, typeDef, types, importedTypes));
 			}
 		}
 		
-		return new ArrayList<AbstractSchemaAttribute>();
+		return attributes; 
 		// </complexType>
 	}
 	
+	private Collection<AttributeDefinition> getAttributesFromCollection(
+			XmlSchemaObjectCollection attributeCollection, TypeDefinition declaringType,
+			Map<Name, TypeDefinition> types, Map<Name, TypeDefinition> importedTypes) {
+		List<AttributeDefinition> attributeResults = new ArrayList<AttributeDefinition>();
+		
+		for (int index = 0; index < attributeCollection.getCount(); index++) {
+			XmlSchemaObject object = attributeCollection.getItem(index);
+			if (object instanceof XmlSchemaAttribute) {
+				// <attribute ... />
+				XmlSchemaAttribute attribute = (XmlSchemaAttribute) object;
+				
+				//TODO create attributes
+				String attributeName = attribute.getName();
+				QName typeName = attribute.getSchemaTypeName();
+				if (typeName != null) {
+					attributeResults.add(new DefaultAttribute(
+							declaringType, 
+							new NameImpl(typeName.getNamespaceURI(), typeName.getLocalPart()), 
+							attribute, 
+							types, 
+							importedTypes));
+				}
+				else if (attribute.getSchemaType() != null) {
+					//XXX
+					QName test1 = attribute.getQName();
+					QName test2 = attribute.getSchemaType().getQName();
+					
+					System.out.println("Attribute: " + attributeName + " 1 - " + test1 + " 2 - " +test2);
+				}
+			}
+		}
+		
+		return attributeResults;
+	}
+
 	/**
 	 * Get the attributes type names for the given item
 	 * 
@@ -742,11 +819,11 @@ public class ApacheSchemaProvider
 	 * @return the attribute type names
 	 */
 	private Set<Name> getAttributeTypeNames(Map<Name, SchemaElement> elementTypeMap, Map<Name, SchemaElement> importedElementTypeMap, XmlSchemaComplexType item) {
-		List<AbstractSchemaAttribute> attributes = getAttributes(elementTypeMap, importedElementTypeMap, null, item, null, null);
+		List<AttributeDefinition> attributes = getAttributes(elementTypeMap, importedElementTypeMap, null, item, null, null);
 		
 		Set<Name> typeNames = new HashSet<Name>();
 		
-		for (AbstractSchemaAttribute def : attributes) {
+		for (AttributeDefinition def : attributes) {
 			typeNames.add(def.getTypeName());
 		}
 		
