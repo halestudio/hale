@@ -32,14 +32,14 @@ import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.rdf.Resource;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 /**
  * @author Stefan Gessner
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class OrdinatesToPointFunctionTest extends TestCase {
+public class OrdinatesToPointFunctionTest {
 	
 	private final String sourceLocalname = "waterVA/Watercourses_VA_Type";
 	private final String sourceLocalnamePropertyDouble = "LAENGE_ARC";
@@ -56,6 +56,12 @@ public class OrdinatesToPointFunctionTest extends TestCase {
 	private static double x = 23.0;
 	private static double y = 14.0;
 	
+	
+	@Test
+	public void testConfigure() {
+		OrdinatesToPointFunction  otpf = new OrdinatesToPointFunction();
+		otpf.configure(otpf.getParameters());
+	}
 	
 	@Test
 	public void testOrdinatesToPointFunction() {

@@ -23,14 +23,14 @@ package eu.esdihumboldt.cst.corefunctions;
 
 import java.util.Iterator;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.goml.omwg.Property;
 
-public class EntityTypeConditionTest extends TestCase {
+public class EntityTypeConditionTest {
 
 	@Test
 	public void testTypeConditionForProperty() {

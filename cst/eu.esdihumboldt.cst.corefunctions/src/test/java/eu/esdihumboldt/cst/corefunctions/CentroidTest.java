@@ -13,8 +13,8 @@
 package eu.esdihumboldt.cst.corefunctions;
 
 
+import static org.junit.Assert.assertTrue;
 
-import junit.framework.TestCase;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.junit.Test;
@@ -30,7 +30,7 @@ import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 
 
-public class CentroidTest extends TestCase {
+public class CentroidTest {
 	
 	private final String sourceLocalname = "FT1";
 	private final String sourceLocalnamePropertyAGeom = "PropertyAGeom";

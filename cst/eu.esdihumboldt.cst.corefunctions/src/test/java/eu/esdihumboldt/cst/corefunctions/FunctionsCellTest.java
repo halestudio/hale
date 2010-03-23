@@ -6,6 +6,8 @@ import java.util.List;
 import org.junit.Test;
 
 import eu.esdihumboldt.cst.CstFunction;
+import eu.esdihumboldt.cst.corefunctions.inspire.GeographicalNameFunction;
+import eu.esdihumboldt.cst.corefunctions.inspire.IdentifierFunction;
 
 /**
  * Checks the compatibility for getParameters and configure methods.
@@ -39,8 +41,8 @@ public class FunctionsCellTest {
 		func.add(new NetworkExpansionFunction());
 		func.add(new RenameAttributeFunction());
 		func.add(new CentroidFunction());
-		//	func.add(new GeographicalNameFunction());
-		//	func.add(new IdentifierFunction());
+		func.add(new GeographicalNameFunction());
+		func.add(new IdentifierFunction());
 		return func;
 	}
 }

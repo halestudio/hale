@@ -1,5 +1,7 @@
 package eu.esdihumboldt.cst.corefunctions;
 
+import static org.junit.Assert.assertTrue;
+
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.junit.Test;
@@ -16,9 +18,9 @@ import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.rdf.Resource;
-import junit.framework.TestCase;
 
-public class NetworkExpansionTest extends TestCase {
+
+public class NetworkExpansionTest {
 	
 	private final String sourceLocalname = "FT1";
 	private final String sourceLocalnamePropertyAGeom = "PropertyAGeom";

@@ -4,9 +4,10 @@ package eu.esdihumboldt.cst.corefunctions.inspire;
 
 import java.util.Collection;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.feature.simple.SimpleFeatureImpl;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.junit.Test;
 import org.opengis.feature.Feature;
@@ -23,7 +24,7 @@ import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.inspire.data.InspireIdentifier;
 
 
-public class IdentifierTest extends TestCase {
+public class IdentifierTest {
 	private final String sourceLocalname = "FT1";
 	private final String sourceLocalnamePropertyAID = "PropertyAID";
 	private final String sourceNamespace = "http://esdi-humboldt.eu";

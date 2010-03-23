@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.cst.corefunctions;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -34,7 +34,7 @@ import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.rdf.Resource;
 
-public class SpatialTypeConversionTest extends TestCase {
+public class SpatialTypeConversionTest {
 	private final String sourceLocalname = "FT1";
 	private final String sourceLocalnamePropertyAGeom = "PropertyAGeom";
 	private final String sourceNamespace = "http://esdi-humboldt.eu";
