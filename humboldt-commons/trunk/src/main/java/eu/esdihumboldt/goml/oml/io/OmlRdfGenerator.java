@@ -142,22 +142,7 @@ public class OmlRdfGenerator {
 		JAXBContext jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT);
 		Marshaller m = jc.createMarshaller();
 		
-		/*
-		 * marshaller.marshal( new JAXBElement( new
-		 * QName("","rootTag"),Point.class,new Point(...)));
-		 * 
-		 */
-		try {
-			m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
-					new NamespacePrefixMapperImpl());
-			
-		} catch (PropertyException e) {
-			// if the JAXB provider doesn't recognize the prefix mapper,
-			// it will throw this exception. Since being unable to specify
-			// a human friendly prefix is not really a fatal problem,
-			// you can just continue marshalling without failing
-			;
-		}
+		
 
 		// make the output indented. It looks nicer on screen.
 		// this is a JAXB standard property, so it should work with any JAXB
@@ -181,6 +166,20 @@ public class OmlRdfGenerator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
+	}
+	
+	protected void configurePrefixMapper(Marshaller m) {
+		try {
+			m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
+					new NamespacePrefixMapperImpl());
+			
+		} catch (PropertyException e) {
+			// if the JAXB provider doesn't recognize the prefix mapper,
+			// it will throw this exception. Since being unable to specify
+			// a human friendly prefix is not really a fatal problem,
+			// you can just continue marshalling without failing
+			;
+		}
 	}
 
 	/**
