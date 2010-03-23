@@ -153,7 +153,7 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 	@Override
 	public boolean isPageComplete() {
 		boolean isComplete = false;
-		if (attributeValue !=null && !attributeValue.getAsText().equals("")){
+		if (attributeValue !=null && attributeValue.getAsText() != null && !attributeValue.getAsText().equals("")){
 			isComplete = true;
 		}
 		return isComplete;
