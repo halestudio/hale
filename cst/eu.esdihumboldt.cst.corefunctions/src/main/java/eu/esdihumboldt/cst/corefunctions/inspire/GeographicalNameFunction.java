@@ -33,6 +33,7 @@ import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
@@ -231,13 +232,21 @@ public class GeographicalNameFunction
 	
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
-		Property entity1 = new Property(new About(""));
+		ComposedProperty entity1 = new ComposedProperty(new About(""));
 		
 		// ************* SETTING OF TUPE CONDITION FOR ENTITY1  ****************
 		List <String> entityTypes = new ArrayList <String>();
 		entityTypes.add(GeographicalName.class.getName());
 		entityTypes.add(String.class.getName());
 		entity1.setTypeCondition(entityTypes);
+		
+		ComposedProperty cpsp1 = new ComposedProperty(new About(""));
+		
+		Transformation transform = new Transformation();
+		cpsp1.setTransformation(transform);
+		entity1.setTransformation(transform);
+
+		entity1.getCollection().add(cpsp1);
 		
 		// ************* SETTING OF TUPE CONDITION FOR ENTITY2  ****************
 		Property entity2 = new Property(new About(""));
