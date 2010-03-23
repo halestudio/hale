@@ -108,7 +108,7 @@ public class SchemaAttribute extends AbstractSchemaAttribute {
 		
 		if (typeDef == null) {
 			// Bindings for enumeration types
-			typeDef = getEnumAttributeType(element);
+			typeDef = getEnumAttributeType(element, getTypeName());
 		}
 		
 		if (typeDef == null) {
@@ -162,9 +162,9 @@ public class SchemaAttribute extends AbstractSchemaAttribute {
 	 * 
 	 * @return the attribute type or <code>null</code>
 	 */
-	private static TypeDefinition getEnumAttributeType(XmlSchemaElement element) {
+	private static TypeDefinition getEnumAttributeType(XmlSchemaElement element, Name typeName) {
 		if (element.getSchemaType() instanceof XmlSchemaSimpleType) {
-			return getEnumAttributeType((XmlSchemaSimpleType) element.getSchemaType(), null);
+			return getEnumAttributeType((XmlSchemaSimpleType) element.getSchemaType(), typeName);
 		}
 		else {
 			return null;
