@@ -41,7 +41,7 @@ public class AttributeItem extends TreeParent {
 	public AttributeItem(AttributeDefinition attribute) {
 		super(
 				attribute.getName() + ":<" + //$NON-NLS-1$
-					attribute.getTypeName().getLocalPart() + ">",  //$NON-NLS-1$
+					attribute.getAttributeType().getDisplayName() + ">",  //$NON-NLS-1$
 				new NameImpl(attribute.getDeclaringType().getIdentifier(), attribute.getName()), 
 				determineType(attribute), 
 				attribute.getAttributeType().getType());
