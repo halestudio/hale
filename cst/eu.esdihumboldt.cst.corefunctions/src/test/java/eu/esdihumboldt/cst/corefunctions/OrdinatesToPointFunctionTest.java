@@ -152,9 +152,9 @@ public class OrdinatesToPointFunctionTest {
 			String targetPropertyName = ((Property)cell.getEntity2()).getLocalname();
 			Point point = (Point)((SimpleFeatureImpl)target).getAttribute(targetPropertyName);
 			assertTrue(point.getX()== x * x);
-			System.out.println("Test "+this.testInt+" : "+(point.getX()== x * x )+"  "+point.getX()+" = "+x * x);
+//			System.out.println("Test "+this.testInt+" : "+(point.getX()== x * x )+"  "+point.getX()+" = "+x * x);
 			assertTrue(point.getY()== y * y);
-			System.out.println("Test "+this.testInt+" : "+(point.getX()== x * x )+"  "+point.getY()+" = "+y * y);
+//			System.out.println("Test "+this.testInt+" : "+(point.getX()== x * x )+"  "+point.getY()+" = "+y * y);
 		}
 
 	}
