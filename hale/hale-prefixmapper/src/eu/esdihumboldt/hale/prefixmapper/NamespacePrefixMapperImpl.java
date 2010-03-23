@@ -89,6 +89,9 @@ public class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 		// I want the namespace to be mapped to "gml".
 		if ("http://www.opengis.net/gml/".equals(namespaceUri))
 			return "gml";
+		// I want the namespace to be mapped to "gml".
+		if ("http://www.opengis.net/sld/".equals(namespaceUri))
+			return "sld";
         	
 		
 		//map omwg
