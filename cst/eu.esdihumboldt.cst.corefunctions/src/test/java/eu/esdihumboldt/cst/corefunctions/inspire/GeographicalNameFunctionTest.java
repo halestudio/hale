@@ -53,7 +53,6 @@ import eu.esdihumboldt.inspire.data.NativenessValue;
  * @partner 02 / ETRA Research and Development
  * @version $Id$ 
  */
-
 public class GeographicalNameFunctionTest {
 
 	public static String sourceLocalName = "FT1";
