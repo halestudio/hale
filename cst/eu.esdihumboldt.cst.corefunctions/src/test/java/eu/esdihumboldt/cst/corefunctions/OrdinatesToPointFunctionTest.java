@@ -11,6 +11,9 @@
  */
 package eu.esdihumboldt.cst.corefunctions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.opengis.feature.Feature;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureImpl;
@@ -20,6 +23,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 
 import com.vividsolutions.jts.geom.Point;
 
+import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
@@ -49,6 +53,9 @@ public class OrdinatesToPointFunctionTest extends TestCase {
 	private final String targetLocalnamePropertyPoint = "PropertyPoint";
 	private final String targetNamespace = "http://esdi-humboldt.eu";
 	
+	private static double x = 23.0;
+	private static double y = 14.0;
+	
 	
 	@Test
 	public void testOrdinatesToPointFunction() {
@@ -58,8 +65,12 @@ public class OrdinatesToPointFunctionTest extends TestCase {
 
 		Transformation t = new Transformation();
 		t.setService(new Resource(OrdinatesToPointFunction.class.getName()));
-		t.getParameterMap().put("xExpression", new Parameter("xExpression", "23.0d"));
-		t.getParameterMap().put("yExpression", new Parameter("yExpression", "14.0d"));
+		List<IParameter> parameters = new ArrayList<IParameter>();
+		
+		parameters.add(new Parameter("xExpression", "LAENGE_ARC * " + x));
+		parameters.add(new Parameter("yExpression", "LAENGE_ROU * " + y));
+		t.setParameters(parameters);
+		
 		
 		ComposedProperty composedProperty = new ComposedProperty(new About(""));
 		composedProperty.setTransformation(t);
@@ -79,7 +90,7 @@ public class OrdinatesToPointFunctionTest extends TestCase {
 		SimpleFeatureType sourcetype = this.getFeatureType(this.sourceNamespace, this.sourceLocalname, new String[]{this.sourceLocalnamePropertyDouble, this.source2LocalnamePropertyDouble});
 		SimpleFeatureType targettype = this.getFeatureType(this.targetNamespace, this.targetLocalname, new String[]{this.targetLocalnamePropertyPoint});			
 		
-		Feature source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Double(23.0d),new Double(14.0d)}, "1");
+		Feature source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Double(x),new Double(y)}, "1");
 		Feature target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2");
 		
 		// perform actual test
@@ -87,17 +98,11 @@ public class OrdinatesToPointFunctionTest extends TestCase {
 		OrdinatesToPointFunction test = new OrdinatesToPointFunction();
 		test.configure(cell);
 		test.transform(source, target);
-	
-		//so???
-		Point point = (Point) target.getDefaultGeometryProperty().getValue();
-		assertTrue(point.getX()==23.0d);
-		assertTrue(point.getY()==14.0d);
 
-		//oder so???
 		String targetPropertyName = ((Property)cell.getEntity2()).getLocalname();
-		Point point2 = (Point)((SimpleFeatureImpl)target).getAttribute(targetPropertyName);
-		assertTrue(point2.getX()==23);
-		assertTrue(point2.getY()==14);
+		Point point = (Point)((SimpleFeatureImpl)target).getAttribute(targetPropertyName);
+		assertTrue(point.getX()== x * x);
+		assertTrue(point.getY()== y * y);
 
 	}
 	
