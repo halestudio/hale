@@ -9,7 +9,6 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-
 package eu.esdihumboldt.hale.models.project;
 
 import java.io.File;
@@ -152,7 +151,7 @@ public class ProjectGenerator {
 		hproject.setTaskStatus(taskStatus);
 		
 		// serialize mapping and link it in HaleProject 
-		OmlRdfGenerator org = new OmlRdfGenerator();
+		OmlRdfGenerator org = new HaleOmlRdfGenerator();
 		org.write(alignmentService.getAlignment(), xmlPath + ".goml");
 		hproject.setOmlPath(xmlPath + ".goml");
 		
@@ -184,4 +183,5 @@ public class ProjectGenerator {
 		
 		return hproject;
 	}
+	
 }

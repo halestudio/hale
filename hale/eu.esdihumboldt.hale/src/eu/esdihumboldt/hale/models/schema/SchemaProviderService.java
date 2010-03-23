@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
+import eu.esdihumboldt.hale.schemaprovider.provider.ShapeSchemaProvider;
 
 /**
  * Implementation of {@link SchemaService}. It uses a {@link SchemaProvider}
@@ -59,6 +60,7 @@ public class SchemaProviderService
 		super();
 		
 		providers.add(new ApacheSchemaProvider());
+		providers.add(new ShapeSchemaProvider());
 	}
 
 	/**

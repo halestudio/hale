@@ -135,7 +135,7 @@ public class SchemaImportWizardMainPage
 				getWizard().getContainer().updateButtons();
 			}
 		});
-		String[] extensions = new String[] { "*.xsd", "*.gml", "*.xml" }; //NON-NLS-1 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		String[] extensions = new String[] { "*.xsd", "*.gml", "*.xml", "*.shp" }; //NON-NLS-1 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		fileFieldEditor.setFileExtensions(extensions);
 		
 		// read from WFS (DescribeFeatureType)
