@@ -1,4 +1,4 @@
-package test.eu.esdihumboldt.hale.schemaprovider.provider.internal;
+package test.eu.esdihumboldt.hale.schemaprovider.provider;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -15,10 +15,21 @@ import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.provider.ShapeSchemaProvider;
 
+/**
+ * Test class for the {@link ShapeSchemaProvider}.
+ * 
+ * @author Thorsten Reitz
+ * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @version $Id$ 
+ * @since 2.0.0.M2
+ */
 public class ShapeSchemaProviderTest {
 	
 	private static final Logger log = Logger.getLogger(ShapeSchemaProviderTest.class);
 
+	/**
+	 * test for {@link ShapeSchemaProvider#loadSchema(URI, eu.esdihumboldt.hale.schemaprovider.ProgressIndicator)}
+	 */
 	@Test
 	public void testLoadSchema() {
 		
@@ -27,15 +38,14 @@ public class ShapeSchemaProviderTest {
 		ShapeSchemaProvider ssp = new ShapeSchemaProvider();
 		Schema result = null;
 		try {
-			result = ssp.loadSchema(new URI(
-					"file:///C:/workspaces/demodata/departements-shp/DEPARTEMENT.SHP"), 
-					new LogProgressIndicator());
+			URI uri = ShapeSchemaProviderTest.class.getResource("DEPARTEMENT.SHP").toURI();
+			result = ssp.loadSchema(uri, new LogProgressIndicator());
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
 		} 
 		
-		assertTrue(result.getElements().size() == 1);
+		assertTrue(result.getElements().size() == 2);
 		
 		for (SchemaElement se : result.getElements().values()) {
 			log.info(se.getDisplayName());

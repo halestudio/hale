@@ -19,11 +19,15 @@ import java.util.Map;
 import org.geotools.data.DataStore;
 import org.geotools.data.FileDataStoreFinder;
 import org.geotools.feature.NameImpl;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.feature.type.AttributeTypeImpl;
+import org.geotools.feature.type.GeometryTypeImpl;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.Name;
 import org.opengis.feature.type.PropertyDescriptor;
+import org.opengis.feature.type.PropertyType;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -43,6 +47,9 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 public class ShapeSchemaProvider 
 	extends AbstractSchemaProvider {
 	
+	/**
+	 * Default constructor for {@link ShapeSchemaProvider}.
+	 */
 	public ShapeSchemaProvider() {
 		super.addSupportedFormat("shp");
 	}
@@ -55,30 +62,65 @@ public class ShapeSchemaProvider
 		progress.setCurrentTask("Analysing shapefile.");
 		DataStore store = FileDataStoreFinder.getDataStore(location.toURL());
 		
-		
 		progress.setCurrentTask("Extracting Type Definitions.");
 		Map<String, SchemaElement> elements = new HashMap<String, SchemaElement>();
 		
+		// build AbstractfeatureType as root for all types extracted from Shapefile
+		Name aftName = new NameImpl("http://www.opengis.net/gml", "AbstractFeatureType");
+
+		SimpleFeatureType ft = null;
+		try {
+			SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
+			ftbuilder.setName(aftName.getLocalPart());
+			ftbuilder.setNamespaceURI(aftName.getNamespaceURI());
+			ftbuilder.setAbstract(true);
+			ft = ftbuilder.buildFeatureType();
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+		TypeDefinition abstractFeatureType = new TypeDefinition(
+				aftName, ft, null);
+		abstractFeatureType.setAbstract(true);
+		elements.put(aftName.getNamespaceURI() + "/" + aftName.getLocalPart(), 
+				new SchemaElement(aftName, abstractFeatureType.getName(), abstractFeatureType));
+		
+		// build actual FeatureTypes based on Schema extracted by geotools
 		for (Name name : store.getNames()) {
 			SimpleFeatureType sft = store.getSchema(name);
+			try {
+				SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
+				ftbuilder.setName(sft.getName().getLocalPart());
+				ftbuilder.setNamespaceURI("http://www.opengis.net/gml");
+				for (AttributeDescriptor ad : sft.getAttributeDescriptors()) {
+					ftbuilder.add(ad);
+				}
+				ftbuilder.setCRS(sft.getCoordinateReferenceSystem());
+				ftbuilder.setSuperType(ft);
+				sft = ftbuilder.buildFeatureType();
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
 			progress.setCurrentTask("Extracting Type Definition for " 
 					+ sft.getTypeName());
 			
-			
-			TypeDefinition type = new TypeDefinition(name, sft, null);
+			TypeDefinition type = new TypeDefinition(sft.getName(), sft, abstractFeatureType);
 			for (PropertyDescriptor pd : sft.getDescriptors()) {
 				type.addDeclaredAttribute(new ShapeAttributeDefintion(pd));
 			}
 			
-			elements.put(
-					sft.getName().getNamespaceURI() + "/" + sft.getTypeName(), 
-					new SchemaElement(name, type.getType().getName(), type ));
+			SchemaElement se = new SchemaElement(sft.getName(), type.getType().getName(), type);
+			elements.put(sft.getName().getNamespaceURI() + "/" + sft.getTypeName(), 
+					se);
 		}
 
-		String namespace = "http://www.esdi-humboldt.eu/schema/temp";
+		String namespace = "http://www.opengis.net/gml";
 		return new Schema(elements, namespace, location.toURL());
 	}
 	
+	/**
+	 * A specific {@link AttributeDefinition} that applies custom naming etc. 
+	 * rules.
+	 */
 	public class ShapeAttributeDefintion extends AttributeDefinition {
 		
 		private PropertyDescriptor pd = null;
@@ -88,10 +130,13 @@ public class ShapeSchemaProvider
 		 * @param pd
 		 */
 		public ShapeAttributeDefintion(PropertyDescriptor pd) {
-			super(pd.getName().getLocalPart(), ShapeSchemaProvider.getName(pd), 
-					new TypeDefinition(ShapeSchemaProvider.getName(pd), 
-							(AttributeType) pd.getType(), 
-							null), true);
+			super(pd.getName().getLocalPart(), 
+					ShapeSchemaProvider.getName((AttributeType) pd.getType()), 
+					new TypeDefinition(
+							ShapeSchemaProvider.getName((AttributeType) pd.getType()), 
+							ShapeSchemaProvider.getCompletedAttributeType(pd.getType()), 
+							null), 
+					true);
 			this.pd = pd;
 		}
 		
@@ -125,30 +170,67 @@ public class ShapeSchemaProvider
 		
 	}
 	
-	private static Name getName(PropertyDescriptor pd) {
-		if (pd.getType().getBinding().equals(Integer.class)) {
+	/**
+	 * adds namespace and correct typename for given bindings in a passed 
+	 * {@link AttributeType}.
+	 * @param at
+	 * @return
+	 */
+	private static Name getName(PropertyType at) {
+		
+		if (at.getBinding().equals(Integer.class)) {
 			return new NameImpl("http://www.w3.org/2001/XMLSchema", 
 					"int");
 		}
-		else if (pd.getType().getBinding().equals(Long.class)) {
+		else if (at.getBinding().equals(Long.class)) {
 			return new NameImpl("http://www.w3.org/2001/XMLSchema", 
 					"long");
 		}
-		else if (pd.getType().getBinding().equals(Double.class)) {
+		else if (at.getBinding().equals(Double.class)) {
 			return new NameImpl("http://www.w3.org/2001/XMLSchema", 
 					"double");
 		}
-		else if (pd.getType().getBinding().equals(String.class)) {
+		else if (at.getBinding().equals(String.class)) {
 			return new NameImpl("http://www.w3.org/2001/XMLSchema", 
 					"string");
 		}
-		else if (Geometry.class.isAssignableFrom(pd.getType().getBinding())) {
+		else if (Geometry.class.isAssignableFrom(at.getBinding())) {
 			return new NameImpl("http://www.opengis.net/gml", 
-					pd.getType().getBinding().getSimpleName());
+					at.getBinding().getSimpleName());
 		}
 		else {
-			return pd.getType().getName();
+			return at.getName();
 		}
+	}
+	
+	private static AttributeType getCompletedAttributeType(PropertyType pt) {
+		if (pt instanceof AttributeTypeImpl) {
+			AttributeType at = (AttributeType) pt;
+			return new AttributeTypeImpl(
+					getName(at), 
+					at.getBinding(), 
+					at.isIdentified(), 
+					at.isAbstract(), 
+					at.getRestrictions(), 
+					at.getSuper(), 
+					at.getDescription());
+		}
+		else if (pt instanceof GeometryTypeImpl) {
+			GeometryTypeImpl ga = (GeometryTypeImpl) pt;
+			return new GeometryTypeImpl(
+					getName(ga), 
+					ga.getBinding(), 
+					ga.getCoordinateReferenceSystem(), 
+					ga.isIdentified(), 
+					ga.isAbstract(), 
+					ga.getRestrictions(), 
+					ga.getSuper(), 
+					ga.getDescription());
+		}
+		else {
+			return (AttributeType) pt;
+		}
+		
 	}
 
 }
