@@ -142,7 +142,7 @@ public class OmlRdfGenerator {
 		JAXBContext jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT);
 		Marshaller m = jc.createMarshaller();
 		
-		
+		configurePrefixMapper(m);
 
 		// make the output indented. It looks nicer on screen.
 		// this is a JAXB standard property, so it should work with any JAXB
