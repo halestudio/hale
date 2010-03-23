@@ -25,9 +25,9 @@
 	<align:onto2>
 		<align:Ontology rdf:about="inspire">
 			<omwg:label>
-				xmlns:HY="urn:x-HY:specification:gmlas-v31:Hydrography:2.0"</omwg:label>
+				xmlns:HY='urn:x-HY:specification:gmlas-v31:Hydrography:2.0'</omwg:label>
 			<omwg:label>
-				xmlns:GN="urn:x-HY:specification:gmlas-v31:GeographicalNames:2.0"</omwg:label>
+				xmlns:GN='urn:x-HY:specification:gmlas-v31:GeographicalNames:2.0'</omwg:label>
 			<align:location>hydrography.xsd</align:location>
 			<align:formalism>
 				<align:Formalism>
