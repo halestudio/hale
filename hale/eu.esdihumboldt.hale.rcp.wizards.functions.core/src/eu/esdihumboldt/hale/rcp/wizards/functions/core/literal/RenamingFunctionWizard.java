@@ -20,7 +20,6 @@ import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
@@ -119,7 +118,6 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 		Cell c = (Cell) getResultCell();
 		
 		Entity source = (Entity) c.getEntity1();
-		Entity target = (Entity) c.getEntity2();
 		
 		Transformation t = new Transformation();
 		
@@ -143,19 +141,6 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 				// do nothing
 			}
 			c.setRelation(RelationType.Equivalence);
-		}
-		else if (getSourceItem().isAttribute() && getTargetItem().isAttribute()) {
-			// Attribute renaming
-			t.setLabel(RenameAttributeFunction.class.getName());
-			t.setService(new Resource(RenameAttributeFunction.class.getName()));
-			
-			//Add old attribute name
-			t.getParameters().add(new Parameter(
-					RenameAttributeFunction.OLD_ATTRIBUTE_NAME_PARAMETER, 
-					source.getAbout().getAbout()));
-			t.getParameters().add(new Parameter(
-					RenameAttributeFunction.NEW_ATTRIBUTE_NAME_PARAMETER, 
-					target.getAbout().getAbout()));
 		}
 		else {
 			//TODO error message?
