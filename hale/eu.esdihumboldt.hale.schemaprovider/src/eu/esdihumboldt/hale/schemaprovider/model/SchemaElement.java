@@ -78,13 +78,14 @@ public class SchemaElement implements Definition, Comparable<SchemaElement> {
 				throw new IllegalStateException("May not be called yet");
 			}
 			
-			if (type.isComplexType()) {
+			if (!type.isAttributeTypeSet()) {
 				attributeType = type.createFeatureType(elementName);
 			}
 			else {
 				attributeType = type.getType();
 			}
 		}
+		
 		return attributeType;
 	}
 	

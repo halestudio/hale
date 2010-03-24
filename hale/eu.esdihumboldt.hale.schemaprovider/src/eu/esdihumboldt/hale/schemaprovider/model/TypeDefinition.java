@@ -428,4 +428,13 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 		return "[type] " + getIdentifier();
 	}
 
+	/**
+	 * Determine if the attribute type was already set
+	 * 
+	 * @return if the attribute type was set
+	 */
+	public boolean isAttributeTypeSet() {
+		return type != null;
+	}
+
 }
