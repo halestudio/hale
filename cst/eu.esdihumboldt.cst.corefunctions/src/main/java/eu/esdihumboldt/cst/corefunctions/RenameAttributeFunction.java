@@ -44,7 +44,8 @@ import eu.esdihumboldt.goml.rdf.Resource;
  * @author Thorsten Reitz, Jan Jezek
  * @version $Id: RenameAttributeFunction.java 2418 2009-12-22 11:35:12Z jjezek $ 
  */
-public class RenameAttributeFunction extends AbstractCstFunction {
+public class RenameAttributeFunction 
+	extends AbstractCstFunction {
 
 	public static final String NESTED_ATTRIBUTE_PATH = "nestedAttributePath";
 	
