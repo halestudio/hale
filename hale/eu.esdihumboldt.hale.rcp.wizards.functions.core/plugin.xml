@@ -5,33 +5,28 @@
          point="eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory">
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.filter.SimpleFilterWizardFactory"
-            icon="icons/concrete_ft.png"
+            icon="icons/filter.png"
             name="CQL-based filter (String)">
       </factory>
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.filter.FilterWizardFactory"
-            icon="icons/concrete_ft.png"
+            icon="icons/filter.png"
             name="CQL-based filter (Form)">
       </factory>
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.literal.RenamingFunctionWizardFactory"
-            icon="icons/rename.gif"
-            name="Rename wizard">
+            icon="icons/concrete_ft.png"
+            name="Rename Feature Type">
+      </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.RenameAttributeFunctionWizardFactory"
+            icon="icons/string_attribute.png"
+            name="Rename Attribute">
       </factory>
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric.NetworkExpansionFunctionWizardFactory"
             icon="icons/geometry_attribute.png"
             name="Buffer (Line to Surface)">
-      </factory>
-      <factory
-            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric.NetworkFusionFunctionWizardFactory"
-            icon="icons/geometry_attribute.png"
-            name="Network fusion (Line to Line)">
-      </factory>
-      <factory
-            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric.NetworkGeneralizationFunctionWizardFactory"
-            icon="icons/geometry_attribute.png"
-            name="Network generalization (Line to Line)">
       </factory>
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric.OrdinatesPointWizardFactory"
@@ -50,6 +45,7 @@
       </factory>
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.date.DateExtractionFunctionWizardFactory"
+            icon="icons/number_attribute.png"
             name="Date Extraction">
       </factory>
       <factory
@@ -64,17 +60,17 @@
       </factory>
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.IdentifierFunctionWizardFactory"
-            icon="icons/rename.gif"
+            icon="icons/inspire.png"
             name="INSPIRE Identifier">
       </factory>
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.geographicname.GeographicNameFunctionWizardFactory"
-            icon="icons/rename.gif"
+            icon="icons/inspire.png"
             name="INSPIRE Geographic name">
       </factory>
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.augmentation.nilreason.NilReasonWizardFactory"
-            icon="icons/remove.gif"
+            icon="icons/inspire.png"
             name="INSPIRE Nil reason">
       </factory>
       <factory
@@ -84,6 +80,7 @@
       </factory>
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.userdefined.UserDefinedFunctionWizardFactory"
+            icon="icons/userdefined.png"
             name="User defined function">
       </factory>
    </extension>
