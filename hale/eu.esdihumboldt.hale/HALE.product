@@ -3,7 +3,6 @@
 
 <product name="HUMBOLDT Alignment Editor" id="eu.esdihumboldt.hale.product" application="eu.esdihumboldt.hale.application" version="2.0.0.M1" useFeatures="false" includeLaunchers="true">
 
-
    <configIni use="default">
    </configIni>
 
@@ -14,7 +13,6 @@
 
    <windowImages i32="/eu.esdihumboldt.hale/icons/hale_icon.png"/>
 
-
    <launcher name="HALE">
       <solaris/>
       <win useIco="false">
@@ -22,7 +20,6 @@
             winMediumHigh="/eu.esdihumboldt.hale/icons/hale_icon.bmp"/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>
@@ -48,10 +45,11 @@
       <plugin id="com.springsource.org.apache.xerces" fragment="true"/>
       <plugin id="com.springsource.org.apache.xml.resolver"/>
       <plugin id="com.springsource.org.apache.xmlcommons"/>
+      <plugin id="com.springsource.org.castor"/>
       <plugin id="com.springsource.org.dom4j"/>
       <plugin id="com.springsource.org.jvnet.staxex"/>
       <plugin id="com.vividsolutions.jts"/>
-      <plugin id="eu.esdihumboldt.commons"/>
+      <plugin id="eu.esdihumboldt.commons" version="3.0.1"/>
       <plugin id="eu.esdihumboldt.cst.corefunctions"/>
       <plugin id="eu.esdihumboldt.hale"/>
       <plugin id="eu.esdihumboldt.hale.gmlparser"/>
