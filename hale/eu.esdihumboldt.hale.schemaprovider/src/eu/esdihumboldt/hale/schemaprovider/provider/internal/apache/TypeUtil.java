@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.schemaprovider.provider.internal;
+package eu.esdihumboldt.hale.schemaprovider.provider.internal.apache;
 
 import java.util.ArrayList;
 import java.util.List;

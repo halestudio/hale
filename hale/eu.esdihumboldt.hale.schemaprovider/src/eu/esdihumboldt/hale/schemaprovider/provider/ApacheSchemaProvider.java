@@ -66,14 +66,14 @@ import eu.esdihumboldt.hale.schemaprovider.model.AnonymousType;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.provider.internal.AbstractElementAttribute;
-import eu.esdihumboldt.hale.schemaprovider.provider.internal.DefaultAttribute;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.DependencyOrderedList;
-import eu.esdihumboldt.hale.schemaprovider.provider.internal.ElementReferenceAttribute;
-import eu.esdihumboldt.hale.schemaprovider.provider.internal.ProgressURIResolver;
-import eu.esdihumboldt.hale.schemaprovider.provider.internal.SchemaAttribute;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.SchemaResult;
-import eu.esdihumboldt.hale.schemaprovider.provider.internal.TypeUtil;
+import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.AbstractElementAttribute;
+import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.DefaultAttribute;
+import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.ElementReferenceAttribute;
+import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.ProgressURIResolver;
+import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.SchemaAttribute;
+import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.TypeUtil;
 
 /**
  * The main functionality of this class is to load an XML schema file (XSD)
