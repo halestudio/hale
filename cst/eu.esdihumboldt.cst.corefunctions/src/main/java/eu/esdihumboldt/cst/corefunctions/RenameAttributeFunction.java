@@ -16,12 +16,9 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.FeatureType;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -49,17 +46,10 @@ import eu.esdihumboldt.goml.rdf.Resource;
  */
 public class RenameAttributeFunction extends AbstractCstFunction {
 
+	public static final String NESTED_ATTRIBUTE_PATH = "nestedAttributePath";
+	
 	private String oldName;
 	private String newName;
-	
-	public static final String OLD_ATTRIBUTE_NAME_PARAMETER = "ENTITY_1_LOCALNAME";
-	
-	public static final String NEW_ATTRIBUTE_NAME_PARAMETER = "ENTITY_2_LOCALNAME";
-	
-
-	public SimpleFeatureType getTargetType(FeatureType sourceType) {
-		return null;
-	}
 
 	/**
 	 * This transform implementation can copy any literal attribute value 
@@ -126,12 +116,6 @@ public class RenameAttributeFunction extends AbstractCstFunction {
 		}
 		
 		return target;
-	}
-
-	public boolean configure(Map<String, String> parametersValues) {							
-		this.oldName = parametersValues.get(OLD_ATTRIBUTE_NAME_PARAMETER);
-		this.newName = parametersValues.get(NEW_ATTRIBUTE_NAME_PARAMETER);		
-		return true;
 	}
 
 	public boolean configure(ICell cell) {
