@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.rcp.utils.filter.FeatureFilterForm;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -63,7 +64,8 @@ public class FilterWizardMainPage extends AbstractSingleCellWizardPage {
 		page.setLayout(new GridLayout(1, false));
 		
 		
-		filterForm = new FeatureFilterForm((TypeDefinition) getParent().getSourceItem().getDefinition(),
+		filterForm = new FeatureFilterForm(
+				((SchemaElement) getParent().getSourceItem().getDefinition()).getType(),
 				page, SWT.NONE);
 		filterForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
