@@ -27,7 +27,7 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
-import org.opengis.feature.type.PropertyDescriptor;
+import org.opengis.feature.type.PropertyType;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.corefunctions.util.TypeLoader;
@@ -232,10 +232,17 @@ public class GeographicalNameFunctionTest {
 		SimpleFeature target = SimpleFeatureBuilder.build((SimpleFeatureType)targettype, new Object[]{}, "2");
 		
 		// ************* OBTAINING BASIC TYPES OF ATTRIBUTES ****************
-		PropertyDescriptor pd = target.getProperty(targetLocalNameProperty).getDescriptor();
-		SimpleFeatureType SpellingOfNamePropertyType = (SimpleFeatureType)((SimpleFeatureType)pd.getType()).getDescriptor("spelling").getType();
-		SimpleFeatureType SpellingOfNameType = (SimpleFeatureType)(SpellingOfNamePropertyType.getDescriptor("SpellingOfName")).getType();
-		SimpleFeatureType PronunciationOfNameType = (SimpleFeatureType)((SimpleFeatureType)pd.getType()).getDescriptor("pronunciation").getType();
+		PropertyType pt = target.getProperty(
+				targetLocalNameProperty).getType();
+		SimpleFeatureType geoNameType = (SimpleFeatureType)
+						((SimpleFeatureType) pt).getDescriptor("GeographicalName").getType();
+		SimpleFeatureType spellingofnamepropertytype = (SimpleFeatureType) 
+						geoNameType.getDescriptor("spelling").getType();
+		SimpleFeatureType spellingofnametype = (SimpleFeatureType) 
+						(spellingofnamepropertytype.getDescriptor("SpellingOfName")).getType();
+		SimpleFeatureType pronunciationofnametype = (SimpleFeatureType) ((SimpleFeatureType) 
+						(geoNameType).getDescriptor("pronunciation").getType()).getDescriptor("PronunciationOfName").getType();
+
 		
 		// ************* CREATION OF THE COLLECTION OF GEOGRAPHICALNAMES ****************
 		Collection<SimpleFeatureImpl> geographicalnames=new HashSet<SimpleFeatureImpl>();
@@ -245,22 +252,22 @@ public class GeographicalNameFunctionTest {
 		Collection<SimpleFeatureImpl> colecc2=new HashSet<SimpleFeatureImpl>();
 		
 		// ************* SET UP THREE SPELLINGS ****************
-		SimpleFeatureImpl spellingofname1 = (SimpleFeatureImpl) SimpleFeatureBuilder.build(SpellingOfNameType, new Object[]{},"SpellingOfName");
+		SimpleFeatureImpl spellingofname1 = (SimpleFeatureImpl) SimpleFeatureBuilder.build(spellingofnametype, new Object[]{},"SpellingOfName");
 		spellingofname1.setAttribute("script", "script1");
 		spellingofname1.setAttribute("text", name_value);
-		SimpleFeatureImpl spellingofnameproperty1 = (SimpleFeatureImpl)SimpleFeatureBuilder.build(SpellingOfNamePropertyType, new Object[]{},"SpellingOfNameProperty");
+		SimpleFeatureImpl spellingofnameproperty1 = (SimpleFeatureImpl)SimpleFeatureBuilder.build(spellingofnamepropertytype, new Object[]{},"SpellingOfNameProperty");
 		spellingofnameproperty1.setAttribute("SpellingOfName", Collections.singleton(spellingofname1));
 		
-		SimpleFeatureImpl spellingofname2 = (SimpleFeatureImpl) SimpleFeatureBuilder.build(SpellingOfNameType, new Object[]{},"SpellingOfName");
+		SimpleFeatureImpl spellingofname2 = (SimpleFeatureImpl) SimpleFeatureBuilder.build(spellingofnametype, new Object[]{},"SpellingOfName");
 		spellingofname2.setAttribute("script", "script2");
 		spellingofname2.setAttribute("text", nom_value);
-		SimpleFeatureImpl spellingofnameproperty2 = (SimpleFeatureImpl)SimpleFeatureBuilder.build(SpellingOfNamePropertyType, new Object[]{},"SpellingOfNameProperty");
+		SimpleFeatureImpl spellingofnameproperty2 = (SimpleFeatureImpl)SimpleFeatureBuilder.build(spellingofnamepropertytype, new Object[]{},"SpellingOfNameProperty");
 		spellingofnameproperty2.setAttribute("SpellingOfName", Collections.singleton(spellingofname2));
 		
-		SimpleFeatureImpl spellingofname3 = (SimpleFeatureImpl) SimpleFeatureBuilder.build(SpellingOfNameType, new Object[]{},"SpellingOfName");
+		SimpleFeatureImpl spellingofname3 = (SimpleFeatureImpl) SimpleFeatureBuilder.build(spellingofnametype, new Object[]{},"SpellingOfName");
 		spellingofname3.setAttribute("script", "script3");
 		spellingofname3.setAttribute("text", nombre_value);
-		SimpleFeatureImpl spellingofnameproperty3 = (SimpleFeatureImpl)SimpleFeatureBuilder.build(SpellingOfNamePropertyType, new Object[]{},"SpellingOfNameProperty");
+		SimpleFeatureImpl spellingofnameproperty3 = (SimpleFeatureImpl)SimpleFeatureBuilder.build(spellingofnamepropertytype, new Object[]{},"SpellingOfNameProperty");
 		spellingofnameproperty3.setAttribute("SpellingOfName", Collections.singleton(spellingofname3));
 		
 		// ************* JOIN TWO SPELLINGS IN SAME GEOGRAPHICALNAME  ****************
@@ -271,18 +278,18 @@ public class GeographicalNameFunctionTest {
 		colecc2.add(spellingofnameproperty2);
 		
 		// ************* CREATION OF TWO PRONUNCIATIONS (VOID)  ****************
-		SimpleFeatureImpl pronunciation1 = (SimpleFeatureImpl) SimpleFeatureBuilder.build(PronunciationOfNameType, new Object[]{},"PronunctiationOfName");
+		SimpleFeatureImpl pronunciation1 = (SimpleFeatureImpl) SimpleFeatureBuilder.build(pronunciationofnametype, new Object[]{},"PronunctiationOfName");
 		pronunciation1.setAttribute("pronunciationIPA",null);
 		pronunciation1.setAttribute("pronunciationSoundLink",null);
 		
 		
-		SimpleFeatureImpl pronunciation2 = (SimpleFeatureImpl) SimpleFeatureBuilder.build(PronunciationOfNameType, new Object[]{},"PronunctiationOfName");
+		SimpleFeatureImpl pronunciation2 = (SimpleFeatureImpl) SimpleFeatureBuilder.build(pronunciationofnametype, new Object[]{},"PronunctiationOfName");
 		pronunciation2.setAttribute("pronunciationIPA",null);
 		pronunciation2.setAttribute("pronunciationSoundLink",null);
 
 		// ************* SET UP AND FILL TWO GEOGRAPHICALNAMES ****************
-		SimpleFeatureImpl geographicalname1 = (SimpleFeatureImpl) SimpleFeatureBuilder.build((SimpleFeatureType)pd.getType(), new Object[]{},"GeographicalName");
-		SimpleFeatureImpl geographicalname2 = (SimpleFeatureImpl) SimpleFeatureBuilder.build((SimpleFeatureType)pd.getType(), new Object[]{},"GeographicalName");
+		SimpleFeatureImpl geographicalname1 = (SimpleFeatureImpl) SimpleFeatureBuilder.build((SimpleFeatureType)geoNameType, new Object[]{},"GeographicalName");
+		SimpleFeatureImpl geographicalname2 = (SimpleFeatureImpl) SimpleFeatureBuilder.build((SimpleFeatureType)geoNameType, new Object[]{},"GeographicalName");
 		
 		geographicalname1.setAttribute("spelling",colecc);
 		geographicalname1.setAttribute("language",language.toString());

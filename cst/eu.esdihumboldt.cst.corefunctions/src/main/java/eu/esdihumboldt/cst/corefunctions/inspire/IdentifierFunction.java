@@ -97,8 +97,10 @@ public class IdentifierFunction
 	public Feature transform(Feature source, Feature target) {
 		
 		//check if the input features have the expected property name
-		if (target.getProperties(targetProperty.getLocalname()).size()==0) return null;
-		if (source.getProperties(sourceProperty.getLocalname()).size()==0) return null;
+		if (target.getProperties(targetProperty.getLocalname()).size() == 0)
+			return null;
+		if (source.getProperties(sourceProperty.getLocalname()).size() == 0)
+			return null;
 
 		// inject result into target object
 		PropertyDescriptor pd = target.getProperty(
