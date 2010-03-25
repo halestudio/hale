@@ -97,7 +97,7 @@ public class RenamingFunctionWizardMainPage
 		// source area
 		Label sourceLabel = new Label(page, SWT.NONE);
 		sourceLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		sourceLabel.setText("Source " + ((getParent().getSourceItem().isType())?("type"):("attribute")));
+		sourceLabel.setText("Source type:");
 		
 		Text sourceName = new Text(page, SWT.BORDER);
 		sourceName.setText(getParent().getSourceItem().getName().getLocalPart());
@@ -107,7 +107,7 @@ public class RenamingFunctionWizardMainPage
 		// target area
 		Label targetLabel = new Label(page, SWT.NONE);
 		targetLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		targetLabel.setText("Target " + ((getParent().getTargetItem().isType())?("type"):("attribute")));
+		targetLabel.setText("Target type:");
 		
 		Text targetName = new Text(page, SWT.BORDER);
 		targetName.setText(getParent().getTargetItem().getName().getLocalPart());

@@ -45,27 +45,18 @@ public class RenamingFunctionWizardFactory implements FunctionWizardFactory {
 			SchemaItem source = selection.getFirstSourceItem();
 			SchemaItem target = selection.getFirstTargetItem();
 			
-			if (!target.isFeatureType() && !source.isFeatureType()) {
-				return false;
-			}
-			
 			ICell cell = selection.getAlignment(source, target);
 			
 			if (cell != null) {
 				// only allow editing matching transformation
 				try {
 					return cell.getEntity1().getTransformation().getService().getLocation().equals(
-							RenameFeatureFunction.class.getName())
-						/* editing makes only sense for feature type renaming || cell.getEntity1().getTransformation().getService().getLocation().equals(
-								RenameAttributeFunction.class.getName())*/;
+							RenameFeatureFunction.class.getName());
 				} catch (NullPointerException e) {
 					return false;
 				}
 			}
 			else if (source.isFeatureType() && target.isFeatureType()) {
-				return true;
-			}
-			else if (source.isAttribute() && target.isAttribute()) {
 				return true;
 			}
 		}

@@ -19,7 +19,7 @@
             name="Rename Feature Type">
       </factory>
       <factory
-            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.RenameAttributeFunctionWizardFactory"
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.literal.RenameAttributeFunctionWizardFactory"
             icon="icons/string_attribute.png"
             name="Rename Attribute">
       </factory>
