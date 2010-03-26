@@ -17,12 +17,14 @@ import java.util.TreeSet;
 
 import org.eclipse.swt.widgets.Composite;
 import org.opengis.feature.type.AttributeType;
+import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditor;
 import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditorFactory;
 import eu.esdihumboldt.hale.rcp.utils.definition.internal.editors.BooleanAttributeEditor;
 import eu.esdihumboldt.hale.rcp.utils.definition.internal.editors.EnumerationAttributeEditor;
 import eu.esdihumboldt.hale.rcp.utils.definition.internal.editors.StringAttributeEditor;
+import eu.esdihumboldt.hale.rcp.utils.definition.internal.editors.codelist.CodeListAttributeEditor;
 import eu.esdihumboldt.hale.schemaprovider.EnumAttributeType;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -43,6 +45,11 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 	public AttributeEditor<?> createEditor(Composite parent,
 			AttributeDefinition attribute) {
 		TypeDefinition attributeType = attribute.getAttributeType();
+		
+		// Code type
+		if (isCodeType(attributeType)) {
+			return new CodeListAttributeEditor(parent, attribute);
+		}
 		
 		if (attributeType.isComplexType()) {
 			// complex type or type that could not be resolved
@@ -69,6 +76,27 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 			// fall back to string editor
 			return new StringAttributeEditor(parent);
 		}
+	}
+
+	/**
+	 * Determines if the given type definition represents a code type
+	 * 
+	 * @param type the type definition
+	 * 
+	 * @return if the type represents a code type
+	 */
+	public static boolean isCodeType(TypeDefinition type) {
+		while (type != null) {
+			Name typeName = type.getName();
+			//TODO improve check for code type
+			if (typeName.getLocalPart().equals("CodeType") && typeName.getNamespaceURI().toLowerCase().contains("gml")) {
+				return true;
+			}
+			
+			type = type.getSuperType();
+		}
+		
+		return false;
 	}
 
 }

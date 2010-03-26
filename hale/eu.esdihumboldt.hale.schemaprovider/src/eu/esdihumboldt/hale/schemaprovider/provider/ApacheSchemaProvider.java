@@ -690,12 +690,6 @@ public class ApacheSchemaProvider
 				// set additional properties
 				typeDef.setAbstract(((XmlSchemaComplexType) item).isAbstract());
 				
-				// set description
-				/*XXX moved to schema element - String description = descriptions.get(typeName.getLocalPart());
-				if (description != null) {
-					typeDef.setDescription(description);
-				}*/
-				
 				// add type definition
 				featureTypes.put(typeName, typeDef);
 			}

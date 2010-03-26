@@ -47,7 +47,8 @@ public class ConstantValueWizardFactory extends AugmentationWizardFactory {
 	protected boolean supports(SchemaItem item, ICell augmentation) {
 		boolean supports = false;
 		//defined on the attributes of the simple type only
-		if (item.isAttribute()&&(item.getType().equals(TreeObjectType.NUMERIC_ATTRIBUTE)||item.getType().equals(TreeObjectType.STRING_ATTRIBUTE))){
+		if (item.isAttribute()
+				&&(item.getType().equals(TreeObjectType.NUMERIC_ATTRIBUTE)||item.getType().equals(TreeObjectType.STRING_ATTRIBUTE))){
 			supports =(augmentation == null || augmentation.getEntity2().getTransformation().getService().getLocation().equals(ConstantValueFunction.class.getName()));
 		}
 		return supports;

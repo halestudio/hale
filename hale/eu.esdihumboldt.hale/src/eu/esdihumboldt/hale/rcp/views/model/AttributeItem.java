@@ -19,6 +19,7 @@ import java.util.Date;
 import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.PropertyType;
 
+import eu.esdihumboldt.hale.rcp.utils.definition.internal.DefaultAttributeEditorFactory;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 
@@ -82,7 +83,8 @@ public class AttributeItem extends TreeParent {
 			return TreeObjectType.NUMERIC_ATTRIBUTE;
 		}
 		// string
-		else if (String.class.isAssignableFrom(binding)) {
+		else if (String.class.isAssignableFrom(binding) ||
+				DefaultAttributeEditorFactory.isCodeType(attribute.getAttributeType())) { // special case: code type
 			return TreeObjectType.STRING_ATTRIBUTE;
 		}
 		// boolean

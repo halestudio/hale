@@ -260,6 +260,15 @@
                   label="Network Settings..."
                   style="push">
             </command>
+            <separator
+                  name="eu.esdihumboldt.hale.configure.separator1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.window.preferences"
+                  label="Code lists..."
+                  style="push">
+            </command>
          </menu>
       </menuContribution>
       <menuContribution
@@ -343,6 +352,12 @@
                serviceClass="eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditorFactory">
          </service>
       </serviceFactory>
+      <serviceFactory
+            factoryClass="eu.esdihumboldt.hale.rcp.utils.codelist.internal.ServiceFactory">
+         <service
+               serviceClass="eu.esdihumboldt.hale.rcp.utils.codelist.CodeListService">
+         </service>
+      </serviceFactory>
    </extension>
    <extension
          point="org.eclipse.ui.splashHandlers">
@@ -396,6 +411,14 @@
       <initializer
             class="eu.esdihumboldt.hale.task.preferences.TaskPreferenceInitializer">
       </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="eu.esdihumboldt.hale.rcp.utils.codelist.internal.CodeListPreferencePage"
+            id="eu.esdihumboldt.hale.page.preferences.codelist"
+            name="Code lists">
+      </page>
    </extension>
    <!-- <extension
          point="org.eclipse.ui.importWizards">
