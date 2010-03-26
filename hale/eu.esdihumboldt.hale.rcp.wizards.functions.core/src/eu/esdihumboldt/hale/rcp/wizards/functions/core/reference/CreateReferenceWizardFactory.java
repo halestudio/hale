@@ -36,7 +36,7 @@ public class CreateReferenceWizardFactory
 		}
 		SchemaItem target = selection.getFirstTargetItem();
 		SchemaItem source = selection.getFirstSourceItem();
-		if (!target.isAttribute() && !source.isAttribute()) {
+		if (!target.isAttribute() || !source.isAttribute()) {
 			return false;
 		}
 		
