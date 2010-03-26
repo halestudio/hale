@@ -21,6 +21,7 @@ import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.task.ServiceProvider;
 import eu.esdihumboldt.hale.task.Task;
@@ -186,9 +187,11 @@ public class MapNilAttributeTaskFactory extends AbstractTaskFactory {
 		while (!typeMapped && !typeQueue.isEmpty()) {
 			TypeDefinition type = typeQueue.poll();
 			
-			List<ICell> typeCells = alignmentService.getCell(type.getEntity());
-			if (typeCells != null && !typeCells.isEmpty()) {
-				typeMapped = true;
+			for (SchemaElement element : type.getDeclaringElements()) {
+				List<ICell> elementCells = alignmentService.getCell(element.getEntity());
+				if (elementCells != null && !elementCells.isEmpty()) {
+					typeMapped = true;
+				}
 			}
 			
 			typeQueue.addAll(type.getSubTypes());
