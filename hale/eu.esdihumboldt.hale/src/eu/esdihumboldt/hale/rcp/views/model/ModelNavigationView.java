@@ -19,8 +19,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.IContributionManager;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -42,9 +44,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
@@ -264,7 +269,7 @@ public class ModelNavigationView extends ViewPart implements
 				true));
 		List<AbstractContentProviderAction> sourceContentActions = 
 			initSchemaExplorerToolBar(sourceComposite, sourceSchemaFilter, 
-				sourceToggleActions);
+				sourceToggleActions, "Source");
 
 		this.sourceSchemaViewer = this.schemaExplorerSetup(sourceComposite, SchemaType.SOURCE);
 		this.sourceSchemaViewer.addFilter(sourceSchemaFilter);
@@ -338,7 +343,7 @@ public class ModelNavigationView extends ViewPart implements
 				true));
 		List<AbstractContentProviderAction> targetContentActions = 
 			initSchemaExplorerToolBar(targetComposite, targetSchemaFilter, 
-				targetToggleActions);
+				targetToggleActions, "Target");
 
 		this.targetSchemaViewer = this.schemaExplorerSetup(targetComposite,
 				SchemaType.TARGET);
@@ -431,15 +436,23 @@ public class ModelNavigationView extends ViewPart implements
 	}
 
 	private List<AbstractContentProviderAction> initSchemaExplorerToolBar(Composite modelComposite, 
-			PatternViewFilter pvf, List<SimpleToggleAction> toggleActions) {
+			PatternViewFilter pvf, List<SimpleToggleAction> toggleActions, String caption) {
 
-		// create view forms
-		ViewForm schemaViewForm = new ViewForm(modelComposite, SWT.NONE);
+		Composite bar = new Composite(modelComposite, SWT.NONE);
+		GridLayout gridLayout = new GridLayout(2, false);
+		gridLayout.marginWidth = 0;
+		gridLayout.marginHeight = 0;
+		gridLayout.verticalSpacing = 0;
+		gridLayout.horizontalSpacing = 10;
+		bar.setLayout(gridLayout);
+		
+		Label captionLabel = new Label(bar, SWT.NONE);
+		captionLabel.setText(caption);
 
 		// create toolbar
-		ToolBar schemaFilterBar = new ToolBar(schemaViewForm, SWT.FLAT
+		ToolBar schemaFilterBar = new ToolBar(bar, SWT.FLAT
 				| SWT.WRAP);
-		schemaViewForm.setTopRight(schemaFilterBar);
+		schemaFilterBar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		
 		List<AbstractContentProviderAction> actions = new ArrayList<AbstractContentProviderAction>();
 		actions.add(new UseFlatHierarchyAction());
