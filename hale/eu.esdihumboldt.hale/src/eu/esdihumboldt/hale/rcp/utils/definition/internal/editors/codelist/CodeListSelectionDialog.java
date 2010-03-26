@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.window.Window;
@@ -47,16 +48,20 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 	
 	private TabFolder tabFolder;
 	
+	private final String message;
+	
 	/**
 	 * Constructor
 	 * 
 	 * @param parentShell
 	 * @param codeList the current code list
+	 * @param message 
 	 */
-	public CodeListSelectionDialog(Shell parentShell, CodeList codeList) {
+	public CodeListSelectionDialog(Shell parentShell, CodeList codeList, String message) {
 		super(parentShell);
 		
 		this.codeList = codeList;
+		this.message = message;
 	}
 	
 	/**
@@ -87,6 +92,8 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
+		setMessage(message, IMessageProvider.INFORMATION);
+		
 		Composite page = new Composite(parent, SWT.NONE);
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		data.widthHint = 600;

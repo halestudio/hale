@@ -18,15 +18,18 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.rcp.utils.codelist.CodeList;
@@ -97,10 +100,39 @@ public class ListSelector implements CodeListSelector {
 		});
 		listViewer.setInput(codeLists);
 		
-		GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		layoutData.widthHint = SWT.DEFAULT;
-		layoutData.heightHint = 8 * listViewer.getList().getItemHeight();
+		layoutData.heightHint = 10 * listViewer.getList().getItemHeight();
 		listViewer.getControl().setLayoutData(layoutData);
+		
+		// info
+		final Text info = new Text(page, SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
+		
+		layoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		layoutData.widthHint = SWT.DEFAULT;
+		layoutData.heightHint = 6 * listViewer.getList().getItemHeight();
+		info.setLayoutData(layoutData);
+		
+		listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				ISelection selection = event.getSelection();
+				if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
+					CodeList codeList = (CodeList) ((IStructuredSelection) selection).getFirstElement();
+					String desc = codeList.getDescritpion();
+					if (desc != null) {
+						info.setText(desc);
+					}
+					else {
+						info.setText("No description");
+					}
+				}
+				else {
+					info.setText("No description");
+				}
+			}
+		});
 	}
 
 	/**

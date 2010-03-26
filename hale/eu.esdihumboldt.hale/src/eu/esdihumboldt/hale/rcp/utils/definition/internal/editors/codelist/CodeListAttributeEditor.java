@@ -15,8 +15,10 @@ package eu.esdihumboldt.hale.rcp.utils.definition.internal.editors.codelist;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -28,6 +30,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -62,7 +65,7 @@ public class CodeListAttributeEditor implements AttributeEditor<CodeEntry> {
 	
 	private final String codeListName;
 	
-	private final String attributeIdentifier;
+	private final AttributeDefinition attribute;
 	
 	private CodeList codeList;
 	
@@ -92,7 +95,7 @@ public class CodeListAttributeEditor implements AttributeEditor<CodeEntry> {
 		codeListNamespace = attribute.getDeclaringType().getName().getNamespaceURI();
 		String attributeName = attribute.getName();
 		codeListName = Character.toUpperCase(attributeName.charAt(0)) + attributeName.substring(1) + "Value";
-		attributeIdentifier = attribute.getIdentifier();
+		this.attribute = attribute;
 		
 		// add editor
 		updateCodeList();
@@ -126,12 +129,13 @@ public class CodeListAttributeEditor implements AttributeEditor<CodeEntry> {
 	 */
 	protected void selectCodeList() {
 		final Display display = Display.getCurrent();
-		CodeListSelectionDialog dialog = new CodeListSelectionDialog(display.getActiveShell(), codeList);
+		CodeListSelectionDialog dialog = new CodeListSelectionDialog(display.getActiveShell(), codeList,
+				"Please select a code list to assign to " + attribute.getDisplayName());
 		if (dialog.open() == CodeListSelectionDialog.OK) {
 			CodeList newCodeList = dialog.getCodeList();
 			CodeListService codeListService = (CodeListService) PlatformUI.getWorkbench().getService(CodeListService.class);
 				
-			codeListService.assignAttributeCodeList(attributeIdentifier, newCodeList);
+			codeListService.assignAttributeCodeList(attribute.getIdentifier(), newCodeList);
 				
 			updateCodeList();
 		}
@@ -142,7 +146,7 @@ public class CodeListAttributeEditor implements AttributeEditor<CodeEntry> {
 	 */
 	protected void updateCodeList() {
 		CodeListService codeListService = (CodeListService) PlatformUI.getWorkbench().getService(CodeListService.class);
-		codeList = codeListService.findCodeListByAttribute(attributeIdentifier);
+		codeList = codeListService.findCodeListByAttribute(attribute.getIdentifier());
 		if (codeList == null) {
 			codeList = codeListService.findCodeListByIdentifier(codeListNamespace, codeListName);
 		}
@@ -171,6 +175,21 @@ public class CodeListAttributeEditor implements AttributeEditor<CodeEntry> {
 						}
 					}
 					
+				});
+				final Combo combo =  codeEditor.getCombo();
+				codeEditor.addPostSelectionChangedListener(new ISelectionChangedListener() {
+					
+					@Override
+					public void selectionChanged(SelectionChangedEvent event) {
+						ISelection selection = event.getSelection();
+						if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
+							CodeEntry entry = (CodeEntry) ((IStructuredSelection) selection).getFirstElement();
+							combo.setToolTipText(entry.getName() + ":\n\n" + entry.getDescription());
+						}
+						else {
+							combo.setToolTipText(null);
+						}
+					}
 				});
 			}
 			
