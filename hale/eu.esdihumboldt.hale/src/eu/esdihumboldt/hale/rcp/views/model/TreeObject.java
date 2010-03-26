@@ -15,9 +15,7 @@ import org.opengis.feature.type.Name;
 import org.opengis.feature.type.PropertyType;
 
 import eu.esdihumboldt.goml.align.Entity;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 
 /**
  * A TreeObject for TreeViewers.
@@ -55,27 +53,14 @@ public abstract class TreeObject implements SchemaItem, Comparable<TreeObject> {
 	 * @see SchemaItem#getEntity()
 	 */
 	public Entity getEntity() {
-		Entity entity = null;
+		Definition definition = getDefinition();
 		
-		if (isType()) {
-			// feature type
-			if (name != null) {
-				entity = new FeatureClass(
-						new About(name.getNamespaceURI(), 
-								name.getLocalPart()));
-			}
+		if (definition != null) {
+			return definition.getEntity();
 		}
-		else if (isAttribute()) {
-			// attributes
-			if (parent != null && parent.getName() != null) {
-				entity = new Property(
-						new About(parent.getName().getNamespaceURI(), 
-								parent.getName().getLocalPart(),
-								name.getLocalPart()));
-			}
+		else {
+			return null;
 		}
-		
-		return entity;
 	}
 	
 	/**

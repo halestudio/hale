@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.schemaprovider.model;
 
+import java.util.Set;
+
 import org.geotools.feature.AttributeTypeBuilder;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.AttributeType;
@@ -273,9 +275,19 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	 * @see Definition#getEntity()
 	 */
 	public Entity getEntity() {
+		Name parentName;
+		
+		Set<SchemaElement> elements = getParentType().getDeclaringElements();
+		if (elements.isEmpty()) {
+			parentName = getParentType().getName();
+		}
+		else {
+			parentName = elements.iterator().next().getElementName();
+		}
+		
 		return new Property(
-				new About(getParentType().getName().getNamespaceURI(), 
-						getParentType().getName().getLocalPart(),
+				new About(parentName.getNamespaceURI(), 
+						parentName.getLocalPart(),
 						name));
 	}
 
