@@ -18,7 +18,7 @@ import java.io.StringReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -60,7 +60,7 @@ public class XmlCodeList implements CodeList {
 	
 	private final URI location;
 	
-	private final Map<String, CodeEntry> entries = new HashMap<String, CodeEntry>();
+	private final Map<String, CodeEntry> entries = new LinkedHashMap<String, CodeEntry>();
 
 	/**
 	 * Create a code list from an XML document
