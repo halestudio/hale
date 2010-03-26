@@ -95,7 +95,7 @@ public class NetworkExpansionFunctionWizardPage
 		configurationComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		GridLayout fileSelectionLayout = new GridLayout();
-		fileSelectionLayout.numColumns = 2;
+		fileSelectionLayout.numColumns = 3;
 		fileSelectionLayout.makeColumnsEqualWidth = false;
 		fileSelectionLayout.marginWidth = 0;
 		fileSelectionLayout.marginHeight = 0;
@@ -106,12 +106,12 @@ public class NetworkExpansionFunctionWizardPage
 		final Label inputAttributeLabel = new Label(configurationComposite, SWT.NONE);
 		inputAttributeLabel.setText("Source attribute:");
 		Control inputAttributeText = dlf.createLabel(configurationComposite, getParent().getSourceItem().getDefinition(), false);
-		inputAttributeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		inputAttributeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		
 		final Label outputAttributeLabel = new Label(configurationComposite, SWT.NONE);
 		outputAttributeLabel.setText("Target attribute:");
 		Control outputAttributeText = dlf.createLabel(configurationComposite, getParent().getTargetItem().getDefinition(), false);
-		outputAttributeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		outputAttributeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		
 		final Label expansionExpressionLabel = new Label(configurationComposite, SWT.NONE);
 		expansionExpressionLabel.setText("Expansion expression:");
@@ -148,6 +148,9 @@ public class NetworkExpansionFunctionWizardPage
 			}
 		});
 		
+		// re-set the layout because the field editor breaks it and sets its own
+		configurationComposite.setLayout(fileSelectionLayout);
+		configurationComposite.layout(true, true);
 	}
 	
 	private void update() {
