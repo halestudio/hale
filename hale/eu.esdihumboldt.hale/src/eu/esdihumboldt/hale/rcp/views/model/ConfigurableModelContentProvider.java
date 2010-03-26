@@ -98,7 +98,11 @@ public class ConfigurableModelContentProvider
 				TreeParent item = (TreeParent) parent;
 				
 				if (item.getParent() == null) {
-					// item is root, return all types
+					// item is root, return namespace
+					return getFilteredChildren(parent);
+				}
+				else if (item.getParent().getParent() == null) {
+					// item is namespace, return all types
 					return findAllTypes(item).toArray();
 				}
 				else if (item.isType()) {
