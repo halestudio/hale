@@ -20,6 +20,7 @@ import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
 import eu.esdihumboldt.hale.models.AlignmentService;
+import eu.esdihumboldt.hale.models.project.HaleOmlRdfGenerator;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
 
@@ -62,7 +63,7 @@ public class MappingExportWizard
 			AlignmentService alService = (AlignmentService) 
 					PlatformUI.getWorkbench().getService(AlignmentService.class);
 			
-			OmlRdfGenerator orgen = new OmlRdfGenerator();
+			OmlRdfGenerator orgen = new HaleOmlRdfGenerator();
 			
 			try {
 				orgen.write(alService.getAlignment(), result);
