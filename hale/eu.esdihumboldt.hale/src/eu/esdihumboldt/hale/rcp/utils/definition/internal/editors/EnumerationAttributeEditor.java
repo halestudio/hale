@@ -42,11 +42,12 @@ public class EnumerationAttributeEditor implements AttributeEditor<String> {
 	 * 
 	 * @param parent the parent composite
 	 * @param allowedValues the collection of allowed values
+	 * @param otherValuesAllowed 
 	 */
-	public EnumerationAttributeEditor(Composite parent, Collection<String> allowedValues) {
+	public EnumerationAttributeEditor(Composite parent, Collection<String> allowedValues, boolean otherValuesAllowed) {
 		super();
 		
-		viewer = new ComboViewer(parent, SWT.READ_ONLY);
+		viewer = new ComboViewer(parent, ((otherValuesAllowed)?(SWT.NONE):(SWT.READ_ONLY)) | SWT.BORDER);
 		viewer.setContentProvider(ArrayContentProvider.getInstance());
 		viewer.setLabelProvider(new LabelProvider());
 		

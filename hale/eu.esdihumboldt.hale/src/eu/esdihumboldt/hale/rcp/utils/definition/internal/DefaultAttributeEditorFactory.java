@@ -64,8 +64,10 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 			
 			if (type instanceof EnumAttributeType) {
 				// enumeration
-				Set<String> values = ((EnumAttributeType) type).getAllowedValues();
-				return new EnumerationAttributeEditor(parent, new TreeSet<String>(values));
+				EnumAttributeType enumType = (EnumAttributeType) type;
+				Set<String> values = enumType.getAllowedValues();
+				
+				return new EnumerationAttributeEditor(parent, new TreeSet<String>(values), enumType.otherValuesAllowed());
 			}
 			else if (Boolean.class.isAssignableFrom(binding)) {
 				// boolean
