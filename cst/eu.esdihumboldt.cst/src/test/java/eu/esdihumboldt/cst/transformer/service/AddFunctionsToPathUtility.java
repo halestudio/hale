@@ -5,6 +5,12 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+/**
+ * Utility class that adds corefucntions jar to class path in the runtime. 
+ * 
+ * @author jezekjan
+ *
+ */
 public class AddFunctionsToPathUtility {
 	
 	public static AddFunctionsToPathUtility getInstance(){
