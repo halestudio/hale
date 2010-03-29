@@ -34,18 +34,22 @@ public class EnumAttributeTypeImpl extends AbstractAttributeTypeDecorator
 	
 	private final Name name;
 	
+	private final boolean othersAllowed;
+	
 	/**
 	 * Create a enumeration attribute decorator
 	 * 
 	 * @param type the attribute type
 	 * @param values the enumeration values
+	 * @param othersAllowed if other values shall be allowed
 	 * @param name the custom type name or <code>null</code>
 	 */
 	public EnumAttributeTypeImpl(AttributeType type, Collection<String> values,
-			Name name) {
+			boolean othersAllowed, Name name) {
 		super(type);
 		
 		this.name = name;
+		this.othersAllowed = othersAllowed;
 		
 		allowedValues.addAll(values);
 	}
@@ -55,6 +59,13 @@ public class EnumAttributeTypeImpl extends AbstractAttributeTypeDecorator
 	 */
 	public Set<String> getAllowedValues() {
 		return allowedValues;
+	}
+
+	/**
+	 * @see EnumAttributeType#otherValuesAllowed()
+	 */
+	public boolean otherValuesAllowed() {
+		return othersAllowed;
 	}
 
 	/**

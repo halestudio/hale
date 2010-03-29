@@ -47,9 +47,6 @@ import org.apache.ws.commons.schema.XmlSchemaParticle;
 import org.apache.ws.commons.schema.XmlSchemaSequence;
 import org.apache.ws.commons.schema.XmlSchemaSimpleContentExtension;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
-import org.apache.ws.commons.schema.XmlSchemaSimpleTypeContent;
-import org.apache.ws.commons.schema.XmlSchemaSimpleTypeList;
-import org.apache.ws.commons.schema.XmlSchemaSimpleTypeUnion;
 import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.geotools.feature.NameImpl;
@@ -70,6 +67,7 @@ import eu.esdihumboldt.hale.schemaprovider.provider.internal.DependencyOrderedLi
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.SchemaResult;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.AbstractElementAttribute;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.DefaultAttribute;
+import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.DefaultResolveAttribute;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.ElementReferenceAttribute;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.ProgressURIResolver;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.SchemaAttribute;
@@ -569,13 +567,14 @@ public class ApacheSchemaProvider
 			} else if (item instanceof XmlSchemaSimpleType) {
 				name = ((XmlSchemaSimpleType)item).getName();
 				
-				// no dependencies
+				// union/list referencing dependencies
+				typeDependencies = TypeUtil.getSimpleTypeDependencies(new NameImpl(namespace, name), (XmlSchemaSimpleType) item);
 			}
 			
 			// if the item is a type we remember the type definition and determine its local dependencies
 			if (name != null) {
 				// determine the real type name
-				Name typeName = new NameImpl(namespace, name); //XXX getTypeName(names, new NameImpl(namespace, name));
+				Name typeName = new NameImpl(namespace, name);
 				
 				// determine the local dependency set
 				Set<Name> localDependencies = new HashSet<Name>();
@@ -626,28 +625,7 @@ public class ApacheSchemaProvider
 			}
 			else if (item instanceof XmlSchemaSimpleType) {
 				// attribute type from simple schema types
-				TypeDefinition simpleType = null;
-				
-				if (simpleType == null) {
-					simpleType = TypeUtil.getEnumAttributeType((XmlSchemaSimpleType) item, typeName);
-				}
-				//TODO other methods of resolving the type
-				if (simpleType == null) {
-					XmlSchemaSimpleTypeContent content = ((XmlSchemaSimpleType) item).getContent();
-					
-					if (content instanceof XmlSchemaSimpleTypeUnion) {
-						XmlSchemaSimpleTypeUnion union = (XmlSchemaSimpleTypeUnion) content;
-						
-						//TODO handle unions
-						simpleType = new TypeDefinition(typeName, null, null); //XXX
-					}
-					else if (content instanceof XmlSchemaSimpleTypeList) {
-						XmlSchemaSimpleTypeList list = (XmlSchemaSimpleTypeList) content;
-						
-						//TODO handle lists
-						simpleType = new TypeDefinition(typeName, null, null); //XXX
-					}
-				}
+				TypeDefinition simpleType = TypeUtil.resolveSimpleType(typeName, (XmlSchemaSimpleType) item, featureTypes, importedFeatureTypes);
 				
 				if (simpleType != null) {
 					// create a simple type
@@ -792,11 +770,10 @@ public class ApacheSchemaProvider
 				// <attribute ... />
 				XmlSchemaAttribute attribute = (XmlSchemaAttribute) object;
 				
-				//TODO create attributes
-				String attributeName = attribute.getName();
+				// create attributes
 				QName typeName = attribute.getSchemaTypeName();
 				if (typeName != null) {
-					attributeResults.add(new DefaultAttribute(
+					attributeResults.add(new DefaultResolveAttribute(
 							declaringType, 
 							new NameImpl(typeName.getNamespaceURI(), typeName.getLocalPart()), 
 							attribute, 
@@ -804,11 +781,19 @@ public class ApacheSchemaProvider
 							importedTypes));
 				}
 				else if (attribute.getSchemaType() != null) {
-					//XXX
-					QName test1 = attribute.getQName();
-					QName test2 = attribute.getSchemaType().getQName();
-					
-					System.out.println("Attribute: " + attributeName + " 1 - " + test1 + " 2 - " +test2);
+					if (declaringType != null) {
+						QName name = attribute.getSchemaType().getQName();
+						Name attributeTypeName = (name != null)?
+								(new NameImpl(name.getNamespaceURI(), name.getLocalPart())):
+								(new NameImpl(declaringType.getName().getNamespaceURI() + "/" + declaringType.getName().getLocalPart(), "AnonymousAttribute" + index));
+						TypeDefinition attributeType = TypeUtil.resolveSimpleType(
+								attributeTypeName, 
+								attribute.getSchemaType(), 
+								types, 
+								importedTypes);
+						
+						attributeResults.add(new DefaultAttribute(declaringType, attributeTypeName, attribute, attributeType));
+					}
 				}
 			}
 		}

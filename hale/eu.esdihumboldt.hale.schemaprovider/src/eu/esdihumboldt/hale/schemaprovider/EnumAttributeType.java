@@ -31,5 +31,13 @@ public interface EnumAttributeType extends AttributeType {
 	 * @return the allowed values
 	 */
 	public Set<String> getAllowedValues();
+	
+	/**
+	 * Determines if other values than the values returned by {@link #getAllowedValues()}
+	 *   are allowed
+	 *   
+	 * @return true if other values are allowed, false otherwise 
+	 */
+	public boolean otherValuesAllowed();
 
 }

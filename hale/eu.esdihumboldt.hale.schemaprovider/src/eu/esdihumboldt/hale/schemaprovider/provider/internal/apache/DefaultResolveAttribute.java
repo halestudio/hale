@@ -12,8 +12,9 @@
 
 package eu.esdihumboldt.hale.schemaprovider.provider.internal.apache;
 
+import java.util.Map;
+
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
-import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
@@ -26,7 +27,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class DefaultAttribute extends AttributeDefinition {
+public class DefaultResolveAttribute extends DefaultAttribute {
 	
 	/**
 	 * Create a default attribute
@@ -34,20 +35,17 @@ public class DefaultAttribute extends AttributeDefinition {
 	 * @param declaringType the declaring type
 	 * @param typeName the attribute type name
 	 * @param attribute the attribute 
-	 * @param attributeType 
+	 * @param types 
+	 * @param importedTypes 
 	 */
-	public DefaultAttribute(TypeDefinition declaringType, Name typeName,
-			XmlSchemaAttribute attribute, TypeDefinition attributeType) {
-		super(attribute.getName(), typeName, null, false);
-		
-		String description = AbstractElementAttribute.getDescription(attribute);
-		if (description != null) {
-			setDescription(description);
-		}
+	public DefaultResolveAttribute(TypeDefinition declaringType, Name typeName,
+			XmlSchemaAttribute attribute, Map<Name, TypeDefinition> types,
+			Map<Name, TypeDefinition> importedTypes) {
+		super(declaringType, typeName, attribute, null);
 		
 		if (declaringType != null) {
-			// set the declaring type
-			declaringType.addDeclaredAttribute(this);
+			// determine the attribute type
+			determineAttributeType(types, importedTypes);
 		}
 	}
 	
@@ -56,8 +54,20 @@ public class DefaultAttribute extends AttributeDefinition {
 	 * 
 	 * @param other
 	 */
-	protected DefaultAttribute(DefaultAttribute other) {
+	protected DefaultResolveAttribute(DefaultResolveAttribute other) {
 		super(other);
+	}
+	
+	/**
+	 * Tries to determine the attribute type
+	 * 
+	 * @param featureTypes the local feature types
+	 * @param importedFeatureTypes the imported feature types
+	 */
+	protected void determineAttributeType(Map<Name, TypeDefinition> featureTypes, Map<Name, TypeDefinition> importedFeatureTypes) {
+		TypeDefinition typeDef = TypeUtil.resolveAttributeType(getTypeName(), featureTypes, importedFeatureTypes);
+		
+		setAttributeType(typeDef);
 	}
 
 	/**
@@ -65,44 +75,9 @@ public class DefaultAttribute extends AttributeDefinition {
 	 */
 	@Override
 	public AttributeDefinition copyAttribute(TypeDefinition parentType) {
-		DefaultAttribute copy = new DefaultAttribute(this);
+		DefaultResolveAttribute copy = new DefaultResolveAttribute(this);
 		copy.setParentType(parentType);
 		return copy;
 	}
-
-	/**
-	 * @see AttributeDefinition#createAttributeDescriptor()
-	 */
-	@Override
-	public AttributeDescriptor createAttributeDescriptor() {
-		//XXX no attribute descriptors are created for non-element attributes
-		return null;
-	}
-
-	/**
-	 * @see AttributeDefinition#getMaxOccurs()
-	 */
-	@Override
-	public long getMaxOccurs() {
-		return 1;
-	}
-
-	/**
-	 * @see AttributeDefinition#getMinOccurs()
-	 */
-	@Override
-	public long getMinOccurs() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	/**
-	 * @see AttributeDefinition#isNillable()
-	 */
-	@Override
-	public boolean isNillable() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
+	
 }
