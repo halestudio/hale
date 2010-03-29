@@ -43,6 +43,8 @@ import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.schemaprovider.EnumAttributeType;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Dialog showing the properties of a schema item
@@ -189,10 +191,25 @@ public class PropertiesDialog extends TitleAreaDialog {
 			type.addChild(new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleBinding,
 					item.getPropertyType().getBinding().getName()));
 			nodes.add(type);
+			
+			TypeDefinition typeDef = null;
+			if (definition instanceof TypeDefinition) {
+				typeDef = (TypeDefinition) definition;
+			}
+			else if (definition instanceof SchemaElement) {
+				typeDef = ((SchemaElement) definition).getType();
+			}
+			else if (definition instanceof AttributeDefinition) {
+				typeDef = ((AttributeDefinition) definition).getAttributeType();
+			}
+			
+			if (typeDef != null) {
+				type.addChild(new DefaultTreeNode("Identifier", typeDef.getIdentifier()));
+				if (typeDef.getLocation() != null) {
+					type.addChild(new DefaultTreeNode("Location", typeDef.getLocation()));
+				}
+			}
 		}
-		
-		
-		
 		
 		if (item instanceof AttributeItem) {
 			AttributeDefinition property = ((AttributeItem) item).getAttributeDefinition();
@@ -237,6 +254,13 @@ public class PropertiesDialog extends TitleAreaDialog {
 			if (attributes.hasChildren()) {
 				nodes.add(attributes);
 			}
+		}
+		
+		// location
+		String location = definition.getLocation();
+		if (location != null) {
+			DefaultTreeNode locNode = new DefaultTreeNode("Location", location);
+			nodes.add(locNode);
 		}
 		
 		return nodes;
