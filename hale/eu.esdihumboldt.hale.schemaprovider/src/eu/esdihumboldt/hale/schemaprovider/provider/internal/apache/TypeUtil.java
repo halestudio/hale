@@ -27,6 +27,7 @@ import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaEnumerationFacet;
 import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaObjectCollection;
+import org.apache.ws.commons.schema.XmlSchemaPatternFacet;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.XmlSchemaSimpleTypeContent;
 import org.apache.ws.commons.schema.XmlSchemaSimpleTypeList;
@@ -208,7 +209,6 @@ public abstract class TypeUtil {
 				simpleTypeRestriction.getBaseTypeName().getLocalPart());
 		
 		// resolve type
-		//type =  new XSSchema().get(baseTypeName);
 		TypeDefinition baseTypeDef = resolveAttributeType(baseTypeName, types, importedTypes);
 		if (baseTypeDef != null) {
 			type = baseTypeDef.getType();
@@ -221,6 +221,10 @@ public abstract class TypeUtil {
 					String value = ((XmlSchemaEnumerationFacet) facet).getValue().toString();
 					values.add(value);
 				}
+				else if (facet instanceof XmlSchemaPatternFacet) {
+					//TODO support for patterns
+				}
+				//TODO support for other facets?
 			}
 			
 			if (!values.isEmpty()) {
@@ -433,6 +437,9 @@ public abstract class TypeUtil {
 
 	private static Class<?> findCompatibleClass(Class<?> binding,
 			Class<?> binding2) {
+		if (binding == null || binding2 == null) {
+			return Object.class;
+		}
 		if (binding.equals(binding2)) {
 			return binding;
 		}
@@ -443,15 +450,26 @@ public abstract class TypeUtil {
 			return binding2;
 		}
 		else {
-			//TODO more sophisticated check
-			return Object.class;
+			return findCompatibleClass(binding.getSuperclass(), binding2.getSuperclass());
 		}
 	}
 
 	private static AttributeType createListAttributeType(Name typeName, Collection<Name> dependencies, XmlSchemaSimpleTypeList list,
 			Map<Name, TypeDefinition> types, Map<Name, TypeDefinition> importedTypes) {
-		// TODO Auto-generated method stub
-		return null;
+		//TODO use item type information
+		/*if (list.getItemType() == null) {
+		 
+		}
+		else if (list.getItemTypeName() != null) {
+			
+		}*/
+		
+		AttributeTypeBuilder typeBuilder = new AttributeTypeBuilder();
+		typeBuilder.setBinding(List.class);
+		typeBuilder.setName(typeName.getLocalPart());
+		typeBuilder.setNamespaceURI(typeName.getNamespaceURI());
+		typeBuilder.setNillable(true);
+		return typeBuilder.buildType();
 	}
 	
 }
