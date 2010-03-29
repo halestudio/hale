@@ -51,5 +51,12 @@ public interface Definition {
 	 * @return the entity
 	 */
 	public Entity getEntity();
+	
+	/**
+	 * Get the definition location
+	 * 
+	 * @return the location
+	 */
+	public String getLocation();
 
 }

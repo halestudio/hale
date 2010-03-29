@@ -471,6 +471,7 @@ public class ApacheSchemaProvider
 				Name elementName = new NameImpl(namespace, element.getName());
 				// create schema element
 				SchemaElement schemaElement = new SchemaElement(elementName, typeName, null);
+				schemaElement.setLocation(schemaLocation);
 				// get description
 				String description = SchemaAttribute.getDescription(element);
 				schemaElement.setDescription(description);
@@ -655,6 +656,7 @@ public class ApacheSchemaProvider
 				
 				// create type definition
 				TypeDefinition typeDef = new TypeDefinition(typeName, null, superType);
+				typeDef.setLocation(schemaLocation);
 				
 				// determine the defined attributes and add them to the declaring type
 				getAttributes(

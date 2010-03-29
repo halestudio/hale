@@ -27,7 +27,7 @@ import eu.esdihumboldt.goml.rdf.About;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class SchemaElement implements Definition, Comparable<SchemaElement> {
+public class SchemaElement extends AbstractDefinition implements Comparable<SchemaElement> {
 
 	/**
 	 * The element name
@@ -43,11 +43,6 @@ public class SchemaElement implements Definition, Comparable<SchemaElement> {
 	 * The element type
 	 */
 	private TypeDefinition type;
-	
-	/**
-	 * The element description
-	 */
-	private String description;
 	
 	/**
 	 * The attribute/feature type
@@ -138,20 +133,6 @@ public class SchemaElement implements Definition, Comparable<SchemaElement> {
 	 */
 	public Name getTypeName() {
 		return typeName;
-	}
-
-	/**
-	 * @see Definition#getDescription()
-	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	/**

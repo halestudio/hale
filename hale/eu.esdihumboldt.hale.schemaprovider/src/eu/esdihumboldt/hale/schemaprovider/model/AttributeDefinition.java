@@ -79,6 +79,7 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 		
 		setDescription(other.getDescription());
 		setDeclaringType(other.getDeclaringType());
+		setLocation(other.getLocation());
 	}
 	
 	/**

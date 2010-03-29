@@ -23,6 +23,8 @@ public abstract class AbstractDefinition implements Definition {
 
 	private String description = null;
 	
+	private String location = null;
+	
 	/**
 	 * @see Definition#getDescription()
 	 */
@@ -35,6 +37,20 @@ public abstract class AbstractDefinition implements Definition {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	/**
+	 * @see Definition#getLocation()
+	 */
+	public String getLocation() {
+		return location;
+	}
+
+	/**
+	 * @param location the location to set
+	 */
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
 }

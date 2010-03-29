@@ -292,7 +292,16 @@ public abstract class TypeUtil {
 		
 		XmlSchemaSimpleTypeContent content = simpleType.getContent();
 		
-		if (content instanceof XmlSchemaSimpleTypeUnion) {
+		/*if (simpleType.getBaseSchemaTypeName() != null) {
+			Name baseTypeName = new NameImpl(simpleType.getBaseSchemaTypeName().getNamespaceURI(), simpleType.getBaseSchemaTypeName().getLocalPart());
+			if (dependencies == null) {
+				typeDef = resolveAttributeType(baseTypeName, types, importedTypes);
+			}
+			else {
+				dependencies.add(baseTypeName);
+			}
+		}
+		else*/ if (content instanceof XmlSchemaSimpleTypeUnion) {
 			XmlSchemaSimpleTypeUnion union = (XmlSchemaSimpleTypeUnion) content;
 			
 			AttributeType attributeType = createUnionAttributeType(typeName, dependencies, union, types, importedTypes);
