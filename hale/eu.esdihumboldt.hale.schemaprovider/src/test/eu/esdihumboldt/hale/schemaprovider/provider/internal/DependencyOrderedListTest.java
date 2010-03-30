@@ -79,5 +79,39 @@ public class DependencyOrderedListTest {
 		Assert.assertTrue("B must be before Y", b < y);
 		Assert.assertTrue("X must be before Y", x < y);
 	}
+	
+	/**
+	 * Tests if the order of the items in the list is correct
+	 */
+	@Test
+	public void testCycle() {
+		Map<String, Set<String>> dependencies = new HashMap<String, Set<String>>();
+		
+		Set<String> cdep = new HashSet<String>();
+		cdep.add("A");
+		cdep.add("B");
+		dependencies.put("C", cdep);
+		
+		dependencies.put("A", new HashSet<String>());
+		
+		dependencies.put("B", Collections.singleton("C"));
+		
+		DependencyOrderedList<String> dol = new DependencyOrderedList<String>(dependencies);
+		
+		List<String> items = dol.getInternalList();
+		
+		System.out.println(items.toString());
+		
+		int a, b, c;
+		
+		Assert.assertTrue("Item A missing", (a = items.indexOf("A")) >= 0);
+		Assert.assertTrue("Item B missing", (b = items.indexOf("B")) >= 0);
+		Assert.assertTrue("Item C missing", (c = items.indexOf("C")) >= 0);
+		
+		Assert.assertEquals("Wrong list size", 3, items.size());
+		
+		Assert.assertTrue("A must be before B", a < b);
+		Assert.assertTrue("A must be before C", a < c);
+	}
 
 }

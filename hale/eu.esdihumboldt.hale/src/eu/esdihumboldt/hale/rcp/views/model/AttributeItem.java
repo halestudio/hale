@@ -19,7 +19,6 @@ import java.util.Date;
 import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.PropertyType;
 
-import eu.esdihumboldt.hale.rcp.utils.definition.internal.DefaultAttributeEditorFactory;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 
