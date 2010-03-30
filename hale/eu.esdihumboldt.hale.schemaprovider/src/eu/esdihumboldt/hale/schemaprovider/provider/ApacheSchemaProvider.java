@@ -657,7 +657,7 @@ public class ApacheSchemaProvider
 				TypeDefinition superType = null;
 				if (superTypeName != null) {
 					// find super type
-					superType = featureTypes.get(superTypeName);
+					superType = TypeUtil.resolveAttributeType(superTypeName, typeResolver);
 					
 					// create empty super type if it was not found
 					if (superType == null) {
