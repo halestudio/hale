@@ -35,12 +35,12 @@
 <location path="${project_loc:hale-platform}/target/eu.esdihumboldt.hale.prefixmapper" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.eclipse" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.apache.ws" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.codehaus.castor" type="Directory"/>
 <location includeAllPlatforms="false" includeMode="planner" type="InstallableUnit">
-<unit id="org.eclipse.zest.feature.group" version="1.1.1.v20090724-1146-6608yD5DH8G6N4GNJ53563"/>
-<unit id="org.eclipse.zest.sdk.feature.group" version="1.1.1.v20090724-1146-6628CNCSBRDXVPcKmPebkLYNSOSP"/>
-<unit id="org.eclipse.zest.source.feature.group" version="1.1.1.v20090724-1146-6608yD5DH8G6N4GNJ53563"/>
+<unit id="org.eclipse.zest.feature.group" version="1.1.2.v20100111-1352-6618yD6DH8G6N59OM53B2A"/>
+<unit id="org.eclipse.zest.sdk.feature.group" version="1.1.2.v20100111-1352-6658CNDT4R8WTQUMhLVdgPbPObOX"/>
+<unit id="org.eclipse.zest.source.feature.group" version="1.1.2.v20100111-1352-6618yD6DH8G6N59OM53B2A"/>
 <repository location="http://download.eclipse.org/tools/gef/updates/releases/"/>
 </location>
-<location path="${project_loc:hale-platform}/target/org.codehaus.castor" type="Directory"/>
 </locations>
 </target>
