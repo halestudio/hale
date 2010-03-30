@@ -13,7 +13,6 @@
 package eu.esdihumboldt.hale.schemaprovider.provider.internal.apache;
 
 import org.apache.ws.commons.schema.XmlSchemaElement;
-import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -25,7 +24,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class SchemaAttribute extends AbstractElementAttribute {
+public class SchemaTypeAttribute extends AbstractElementAttribute {
 	
 	/**
 	 * Constructor
@@ -33,20 +32,19 @@ public class SchemaAttribute extends AbstractElementAttribute {
 	 * @param declaringType the declaring type, if it is <code>null</code>,
 	 *   the attribute type will not be determined
 	 * @param name the attribute name
-	 * @param typeName the name of the attribute type
 	 * @param element the element defining the attribute
-	 * @param schemaTypes the schema types
+	 * @param attributeType 
 	 */
-	public SchemaAttribute(TypeDefinition declaringType, String name, Name typeName,
-			XmlSchemaElement element, SchemaTypeResolver schemaTypes) {
-		super(declaringType, name, typeName, element);
+	public SchemaTypeAttribute(TypeDefinition declaringType, String name,
+			XmlSchemaElement element, TypeDefinition attributeType) {
+		super(declaringType, name, attributeType.getName(), element);
 		
 		if (declaringType != null) {
 			// set the declaring type
 			declaringType.addDeclaredAttribute(this);
 			
-			// determine the attribute type
-			determineAttributeType(element, schemaTypes);
+			// set attribute type
+			setAttributeType(attributeType);
 		}
 	}
 	
@@ -55,22 +53,8 @@ public class SchemaAttribute extends AbstractElementAttribute {
 	 * 
 	 * @param other the schema attribute to copy
 	 */
-	protected SchemaAttribute(SchemaAttribute other) {
+	protected SchemaTypeAttribute(SchemaTypeAttribute other) {
 		super(other);
-	}
-	
-	/**
-	 * Tries to determine the attribute type
-	 * 
-	 * @param element the schema element 
-	 * @param schemaTypes the schema types 
-	 */
-	protected void determineAttributeType(XmlSchemaElement element, SchemaTypeResolver schemaTypes) {
-		TypeDefinition typeDef = TypeUtil.resolveElementType(element, getTypeName(), schemaTypes);
-		
-		typeDef = checkAttributeType(typeDef);
-		
-		setAttributeType(typeDef);
 	}
 	
 	/**
@@ -78,7 +62,7 @@ public class SchemaAttribute extends AbstractElementAttribute {
 	 */
 	@Override
 	public AttributeDefinition copyAttribute(TypeDefinition parentType) {
-		SchemaAttribute copy = new SchemaAttribute(this);
+		SchemaTypeAttribute copy = new SchemaTypeAttribute(this);
 		copy.setParentType(parentType);
 		return copy;
 	}

@@ -19,6 +19,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
+import org.geotools.feature.NameImpl;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -96,7 +97,12 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	public TypeDefinition(Name name, AttributeType type, 
 			TypeDefinition superType) {
 		super();
-		this.name = name;
+		if (name == null && type != null) {
+			this.name = new NameImpl(type.getName().getNamespaceURI(), type.getName().getLocalPart());
+		}
+		else {
+			this.name = name;
+		}
 		this.type = type;
 		this.superType = superType;
 		

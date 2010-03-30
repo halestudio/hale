@@ -17,12 +17,16 @@ import org.apache.ws.commons.schema.XmlSchemaDocumentation;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaObjectCollection;
+import org.geotools.feature.AttributeTypeBuilder;
 import org.geotools.feature.NameImpl;
 import org.geotools.feature.type.AttributeDescriptorImpl;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.Name;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -81,6 +85,35 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 		nillable = other.isNillable();
 		minOccurs = other.getMinOccurs();
 		maxOccurs = other.getMaxOccurs();
+	}
+	
+	/**
+	 * Check if the given type definition should be set as the attribute type
+	 * 
+	 * @param typeDef the type definition
+	 * 
+	 * @return the type definition that shall be set as the attribute type
+	 */
+	protected TypeDefinition checkAttributeType(TypeDefinition typeDef) {
+		// inspire geometry attributes
+		if (getName().equals("geometry") && typeDef != null && 
+				!Geometry.class.isAssignableFrom(typeDef.getType().getBinding())) {
+			// create an attribute type with a geometry binding
+			AttributeTypeBuilder builder = new AttributeTypeBuilder();
+			builder.setBinding(Geometry.class);
+			builder.setName(getTypeName().getLocalPart());
+			builder.setNamespaceURI(getTypeName().getNamespaceURI());
+			builder.setNillable(true);
+			AttributeType attributeType = builder.buildType();
+			
+			TypeDefinition result = new TypeDefinition(getTypeName(), attributeType, typeDef.getSuperType());
+			result.setDescription(typeDef.getDescription());
+			result.setLocation(typeDef.getLocation());
+			return result;
+		}
+		
+		// default: leave type untouched
+		return typeDef;
 	}
 	
 	/**

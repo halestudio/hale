@@ -72,6 +72,7 @@ import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.DefaultResol
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.ElementReferenceAttribute;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.ProgressURIResolver;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.SchemaAttribute;
+import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.SchemaTypeAttribute;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.SchemaTypeResolver;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.TypeUtil;
 
@@ -327,13 +328,17 @@ public class ApacheSchemaProvider
 			}
 			else if (element.getSchemaType() instanceof XmlSchemaSimpleType) {
 				// simple schema type
-				QName qname = element.getQName();
-				return new SchemaAttribute(
-						declaringType,
-						element.getName(), 
-						new NameImpl(qname.getNamespaceURI(), qname.getLocalPart()), 
-						element,
-						schemaTypes);
+				TypeDefinition type = TypeUtil.resolveSimpleType(null, (XmlSchemaSimpleType) element.getSchemaType(), schemaTypes);
+				if (type != null) {
+					return new SchemaTypeAttribute(
+							declaringType,
+							element.getName(), 
+							element,
+							type);
+				}
+				else {
+					_log.error("Could not resolve type for element " + element.getName());
+				}
 			}
 		}
 		
