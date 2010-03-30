@@ -437,4 +437,13 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 		return type != null;
 	}
 
+	/**
+	 * Set the attribute type
+	 * 
+	 * @param type the attribute type
+	 */
+	public void setType(AttributeType type) {
+		this.type = type;
+	}
+
 }

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -231,7 +232,9 @@ public class ApacheSchemaProvider
 							
 							// add the anonymous type to the type map - needed for type resolution in SchemaAttribute
 							// it's enough for it to be added to the imported types map
-							schemaTypes.getImportedTypes().put(anonymousName, anonymousType);
+							if (schemaTypes != null) {
+								schemaTypes.getImportedTypes().put(anonymousName, anonymousType);
+							}
 							
 							// create an attribute with the anonymous type
 							SchemaAttribute result = new SchemaAttribute(declaringType, element.getName(), anonymousName, element, schemaTypes);
@@ -268,7 +271,9 @@ public class ApacheSchemaProvider
 							
 							// add the anonymous type to the type map - needed for type resolution in SchemaAttribute
 							// it's enough for it to be added to the imported types map
-							schemaTypes.getImportedTypes().put(anonymousName, anonymousType);
+							if (schemaTypes != null) {
+								schemaTypes.getImportedTypes().put(anonymousName, anonymousType);
+							}
 							
 							// create an attribute with the anonymous type
 							SchemaAttribute result = new SchemaAttribute(declaringType, element.getName(), anonymousName, element, schemaTypes);
@@ -308,7 +313,9 @@ public class ApacheSchemaProvider
 						
 						// add the anonymous type to the type map - needed for type resolution in SchemaAttribute
 						// it's enough for it to be added to the imported types map
-						schemaTypes.getImportedTypes().put(anonymousName, anonymousType);
+						if (schemaTypes != null) {
+							schemaTypes.getImportedTypes().put(anonymousName, anonymousType);
+						}
 						
 						// create an attribute with the anonymous type
 						SchemaAttribute result = new SchemaAttribute(declaringType, element.getName(), anonymousName, element, schemaTypes);
@@ -674,12 +681,29 @@ public class ApacheSchemaProvider
 				typeDef.setLocation(schemaLocation);
 				
 				// determine the defined attributes and add them to the declaring type
-				getAttributes(
+				List<AttributeDefinition> attributes = getAttributes(
 						elements,
 						importedElements,
 						typeDef, // definition of the declaring type
 						(XmlSchemaComplexType) item,
 						typeResolver);
+				
+				// reuse the super type's attribute type where appropriate
+				if (superType != null && superType.isAttributeTypeSet()) {
+					// determine if any new elements have been added in the subtype
+					boolean reuseBinding = true;
+					Iterator<AttributeDefinition> it = attributes.iterator();
+					while (reuseBinding && it.hasNext()) {
+						if (it.next().isElement()) {
+							reuseBinding = false;
+						}
+					}
+					
+					if (reuseBinding) {
+						// reuse attribute type
+						typeDef.setType(superType.getType());
+					}
+				}
 				
 				// set additional properties
 				typeDef.setAbstract(((XmlSchemaComplexType) item).isAbstract());
