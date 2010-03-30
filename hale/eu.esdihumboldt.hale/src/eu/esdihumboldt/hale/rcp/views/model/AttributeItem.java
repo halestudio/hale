@@ -83,8 +83,7 @@ public class AttributeItem extends TreeParent {
 			return TreeObjectType.NUMERIC_ATTRIBUTE;
 		}
 		// string
-		else if (String.class.isAssignableFrom(binding) ||
-				DefaultAttributeEditorFactory.isCodeType(attribute.getAttributeType())) { // special case: code type
+		else if (String.class.isAssignableFrom(binding)) {
 			return TreeObjectType.STRING_ATTRIBUTE;
 		}
 		// boolean
