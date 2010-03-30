@@ -186,10 +186,6 @@ public class PropertiesDialog extends TitleAreaDialog {
 			// type & binding
 			DefaultTreeNode type = new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleType, 
 					item.getPropertyType().getName().getNamespaceURI() + "/" + item.getPropertyType().getName().getLocalPart()); //$NON-NLS-1$
-			type.addChild(new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleNamespace, item.getPropertyType().getName().getNamespaceURI()));
-			type.addChild(new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleLocalpart, item.getPropertyType().getName().getLocalPart()));
-			type.addChild(new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleBinding,
-					item.getPropertyType().getBinding().getName()));
 			nodes.add(type);
 			
 			TypeDefinition typeDef = null;
@@ -204,10 +200,7 @@ public class PropertiesDialog extends TitleAreaDialog {
 			}
 			
 			if (typeDef != null) {
-				type.addChild(new DefaultTreeNode("Identifier", typeDef.getIdentifier()));
-				if (typeDef.getLocation() != null) {
-					type.addChild(new DefaultTreeNode("Location", typeDef.getLocation()));
-				}
+				addTypeNodes(typeDef, type);
 			}
 		}
 		
@@ -257,13 +250,35 @@ public class PropertiesDialog extends TitleAreaDialog {
 		}
 		
 		// location
-		String location = definition.getLocation();
-		if (location != null) {
-			DefaultTreeNode locNode = new DefaultTreeNode("Location", location);
-			nodes.add(locNode);
+		if (definition != null) {
+			String location = definition.getLocation();
+			if (location != null) {
+				DefaultTreeNode locNode = new DefaultTreeNode("Location", location);
+				nodes.add(locNode);
+			}
 		}
 		
 		return nodes;
+	}
+
+	private void addTypeNodes(TypeDefinition typeDef,
+			DefaultTreeNode typeNode) {
+		typeNode.addChild(new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleNamespace, typeDef.getName().getNamespaceURI()));
+		typeNode.addChild(new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleLocalpart, typeDef.getName().getLocalPart()));
+		typeNode.addChild(new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleBinding,
+				typeDef.getType().getBinding().getName()));
+		typeNode.addChild(new DefaultTreeNode("Identifier", typeDef.getIdentifier()));
+		if (typeDef.getLocation() != null) {
+			typeNode.addChild(new DefaultTreeNode("Location", typeDef.getLocation()));
+		}
+		
+		TypeDefinition superType = typeDef.getSuperType();
+		if (superType != null) {
+			DefaultTreeNode superNode = new DefaultTreeNode("Supertype", superType.getName().getNamespaceURI() + "/" + superType.getName().getLocalPart());
+			typeNode.addChild(superNode);
+			
+			addTypeNodes(superType, superNode);
+		}
 	}
 
 	/**
