@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.esdihumboldt.cst.CstFunction;
+import eu.esdihumboldt.cst.transformer.CstService;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
@@ -89,4 +90,14 @@ public class CstFunctionFactoryTest {
 
 	}
 
+	/**
+	 * Test CstServiceFactory
+	 */
+	@Test
+	public void testCstServiceFactory() {
+
+		CstService factory = CstServiceFactory.getInstance();				
+		Assert.assertTrue(factory.getCapabilities().getFunctionDescriptions().size() > 0);
+
+	}
 }
