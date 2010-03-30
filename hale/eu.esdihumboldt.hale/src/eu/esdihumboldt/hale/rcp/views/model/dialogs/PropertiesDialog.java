@@ -182,12 +182,8 @@ public class PropertiesDialog extends TitleAreaDialog {
 		
 		nodes.add(name);
 		
+		// type
 		if (item.getPropertyType() != null) {
-			// type & binding
-			DefaultTreeNode type = new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleType, 
-					item.getPropertyType().getName().getNamespaceURI() + "/" + item.getPropertyType().getName().getLocalPart()); //$NON-NLS-1$
-			nodes.add(type);
-			
 			TypeDefinition typeDef = null;
 			if (definition instanceof TypeDefinition) {
 				typeDef = (TypeDefinition) definition;
@@ -200,6 +196,11 @@ public class PropertiesDialog extends TitleAreaDialog {
 			}
 			
 			if (typeDef != null) {
+				// type & binding
+				DefaultTreeNode type = new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleType, 
+						typeDef.getName().getNamespaceURI() + "/" + typeDef.getName().getLocalPart()); //$NON-NLS-1$
+				nodes.add(type);
+				
 				addTypeNodes(typeDef, type);
 			}
 		}
