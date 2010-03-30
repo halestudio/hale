@@ -37,6 +37,8 @@ public class EnumerationAttributeEditor implements AttributeEditor<String> {
 	
 	private final ComboViewer viewer;
 	
+	private boolean otherValuesAllowed;
+	
 	/**
 	 * Create an enumeration attribute editor
 	 * 
@@ -46,6 +48,8 @@ public class EnumerationAttributeEditor implements AttributeEditor<String> {
 	 */
 	public EnumerationAttributeEditor(Composite parent, Collection<String> allowedValues, boolean otherValuesAllowed) {
 		super();
+		
+		this.otherValuesAllowed = otherValuesAllowed;
 		
 		viewer = new ComboViewer(parent, ((otherValuesAllowed)?(SWT.NONE):(SWT.READ_ONLY)) | SWT.BORDER);
 		viewer.setContentProvider(ArrayContentProvider.getInstance());
@@ -75,12 +79,17 @@ public class EnumerationAttributeEditor implements AttributeEditor<String> {
 	 */
 	@Override
 	public String getValue() {
-		ISelection selection = viewer.getSelection();
-		if (selection == null || selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
-			return null;
+		if (otherValuesAllowed) {
+			return viewer.getCombo().getText();
 		}
 		else {
-			return ((IStructuredSelection) selection).getFirstElement().toString();
+			ISelection selection = viewer.getSelection();
+			if (selection == null || selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
+				return null;
+			}
+			else {
+				return ((IStructuredSelection) selection).getFirstElement().toString();
+			}
 		}
 	}
 
@@ -97,7 +106,12 @@ public class EnumerationAttributeEditor implements AttributeEditor<String> {
 	 */
 	@Override
 	public void setValue(String value) {
-		viewer.setSelection(new StructuredSelection(value), true);
+		if (otherValuesAllowed) {
+			viewer.getCombo().setText(value);
+		}
+		else {
+			viewer.setSelection(new StructuredSelection(value), true);
+		}
 	}
 
 }
