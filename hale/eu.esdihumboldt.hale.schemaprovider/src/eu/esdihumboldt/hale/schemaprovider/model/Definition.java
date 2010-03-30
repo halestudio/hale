@@ -46,7 +46,6 @@ public interface Definition {
 
 	/**
 	 * Create an entity for the definition.
-	 * NOTE: the entity for attributes is always associated with the declaring type
 	 * 
 	 * @return the entity
 	 */

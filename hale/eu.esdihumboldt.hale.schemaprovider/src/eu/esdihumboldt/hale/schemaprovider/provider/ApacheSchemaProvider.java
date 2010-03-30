@@ -355,6 +355,13 @@ public class ApacheSchemaProvider
 							((XmlSchemaComplexContentExtension)content).getBaseTypeName().getLocalPart());
 				}
 			}
+			else if (content instanceof XmlSchemaSimpleContentExtension) {
+				if (((XmlSchemaSimpleContentExtension)content).getBaseTypeName() != null) {
+					superType = new NameImpl(
+							((XmlSchemaSimpleContentExtension)content).getBaseTypeName().getNamespaceURI(),
+							((XmlSchemaSimpleContentExtension)content).getBaseTypeName().getLocalPart());
+				}
+			}
 		}
 		
 		return superType;
@@ -410,8 +417,13 @@ public class ApacheSchemaProvider
 
 		Map<String, SchemaElement> elements = new HashMap<String, SchemaElement>();
 		for (SchemaElement element : schemaResult.getElements().values()) {
-			if (element.getType().isComplexType()) {
-				elements.put(element.getIdentifier(), element);
+			if (element.getType() != null) {
+				if (element.getType().isComplexType()) {
+					elements.put(element.getIdentifier(), element);
+				}
+			}
+			else {
+				_log.info("No type definition for element " + element.getElementName().getLocalPart());
 			}
 		}
 
@@ -703,7 +715,8 @@ public class ApacheSchemaProvider
 	 *  
 	 * @return the attributes as a list of {@link SchemaAttribute}s
 	 */
-	private List<AttributeDefinition> getAttributes(Map<Name, SchemaElement> elements, Map<Name, SchemaElement> importedElements, TypeDefinition typeDef, XmlSchemaComplexType item, Map<Name, TypeDefinition> types, Map<Name, TypeDefinition> importedTypes) {
+	private List<AttributeDefinition> getAttributes(Map<Name, SchemaElement> elements, 
+			Map<Name, SchemaElement> importedElements, TypeDefinition typeDef, XmlSchemaComplexType item, Map<Name, TypeDefinition> types, Map<Name, TypeDefinition> importedTypes) {
 		ArrayList<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
 		
 		// item:
