@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -69,20 +68,16 @@ public abstract class TypeUtil {
 	 * Resolve an attribute type
 	 * 
 	 * @param typeName
-	 * @param types
-	 * @param importedTypes
+	 * @param schemaTypes 
 	 * @return the type definition or <code>null</code>
 	 */
-	public static TypeDefinition resolveAttributeType(Name typeName, Map<Name, TypeDefinition> types, Map<Name, TypeDefinition> importedTypes) {
+	public static TypeDefinition resolveAttributeType(Name typeName, SchemaTypeResolver schemaTypes) {
 		TypeDefinition typeDef = getXSType(typeName);
 		
 		// Try to resolve the attribute bindings
 		
-		if (typeDef == null && types != null) {
-			typeDef = getSchemaAttributeType(typeName, types);
-		}
-		if (typeDef == null && importedTypes != null) {
-			typeDef = getSchemaAttributeType(typeName, importedTypes);
+		if (typeDef == null && schemaTypes != null) {
+			typeDef = schemaTypes.getSchemaType(typeName);
 		}
 		
 		if (typeDef == null) {
@@ -90,11 +85,12 @@ public abstract class TypeUtil {
 			AttributeType gmlType = gmlSchema.get(typeName);
 			if (gmlType != null) {
 				typeDef = new TypeDefinition(typeName, gmlType, null);
+				typeDef.setLocation("Geotools GML bindings");
 			}
 		}
 		
 		if (typeDef == null ) {
-			log.warn("Type NOT found: " + typeName.getLocalPart());
+			log.warn("Type could not be resolved: " + typeName.getLocalPart());
 		}
 		
 		return typeDef;
@@ -103,27 +99,23 @@ public abstract class TypeUtil {
 	/**
 	 * Resolve an element type
 	 * 
-	 * @param element 
-	 * @param typeName
-	 * @param types
-	 * @param importedTypes
+	 * @param element the element 
+	 * @param typeName the type name
+	 * @param schemaTypes the schema types
 	 * @return the type definition or <code>null</code>
 	 */
-	public static TypeDefinition resolveElementType(XmlSchemaElement element, Name typeName, Map<Name, TypeDefinition> types, Map<Name, TypeDefinition> importedTypes) {
+	public static TypeDefinition resolveElementType(XmlSchemaElement element, Name typeName, SchemaTypeResolver schemaTypes) {
 		TypeDefinition typeDef = getXSType(typeName);
 	
 		// Try to resolve the attribute bindings
 		
-		if (typeDef == null && types != null) {
-			typeDef = getSchemaAttributeType(typeName, types);
-		}
-		if (typeDef == null && importedTypes != null) {
-			typeDef = getSchemaAttributeType(typeName, importedTypes);
+		if (typeDef == null && schemaTypes != null) {
+			typeDef = schemaTypes.getSchemaType(typeName);
 		}
 		
 		if (typeDef == null) {
 			// Bindings for simple types
-			typeDef = getSimpleAttributeType(element, typeName, types, importedTypes);
+			typeDef = getSimpleAttributeType(element, typeName, schemaTypes);
 		}
 		
 		if (typeDef == null) {
@@ -131,25 +123,14 @@ public abstract class TypeUtil {
 			AttributeType gmlType = gmlSchema.get(typeName);
 			if (gmlType != null) {
 				typeDef = new TypeDefinition(typeName, gmlType, null);
+				typeDef.setLocation("Geotools GML bindings");
 			}
 		}
 		if (typeDef == null ) {
-			log.warn("Type NOT found: " + typeName.getLocalPart());
+			log.warn("Type could not be resolved: " + typeName.getNamespaceURI() + "/" + typeName.getLocalPart());
 		}
 		
 		return typeDef;
-	}
-	
-	/**
-	 * Get an attribute type from a feature type map
-	 * 
-	 * @param name the attribute type name
-	 * @param featureTypes the feature type map
-	 * @return the attribute type or <code>null</code> if the corresponding
-	 *   type was not found in the set
-	 */
-	private static TypeDefinition getSchemaAttributeType(Name name, Map<Name, TypeDefinition> featureTypes) {
-		return featureTypes.get(name);
 	}
 	
 	/**
@@ -163,7 +144,9 @@ public abstract class TypeUtil {
 		AttributeType ty = xsSchema.get(name);
 		
 		if (ty != null) {
-			return new TypeDefinition(name, ty, null);
+			TypeDefinition typeDef = new TypeDefinition(name, ty, null);
+			typeDef.setLocation("Geotools XS bindings");
+			return typeDef;
 		}
 		else {
 			return null;
@@ -174,16 +157,15 @@ public abstract class TypeUtil {
 	 * Returns the attribute type for an enumeration.
 	 * 
 	 * @param element the defining element
-	 * @param typeName 
-	 * @param types 
-	 * @param importedTypes 
+	 * @param typeName the type name
+	 * @param schemaTypes the schema types
 	 * 
 	 * @return the attribute type or <code>null</code>
 	 */
 	private static TypeDefinition getSimpleAttributeType(XmlSchemaElement element, 
-			Name typeName, Map<Name, TypeDefinition> types, Map<Name, TypeDefinition> importedTypes) {
+			Name typeName, SchemaTypeResolver schemaTypes) {
 		if (element.getSchemaType() instanceof XmlSchemaSimpleType) {
-			return resolveSimpleType(typeName, null, (XmlSchemaSimpleType) element.getSchemaType(), types, importedTypes);
+			return resolveSimpleType(typeName, null, (XmlSchemaSimpleType) element.getSchemaType(), schemaTypes);
 		}
 		else {
 			return null;
@@ -195,13 +177,12 @@ public abstract class TypeUtil {
 	 * 
 	 * @param simpleTypeRestriction the simple type
 	 * @param name the custom type name or <code>null</code>
-	 * @param types 
-	 * @param importedTypes 
+	 * @param schemaTypes the schema types
 	 * 
 	 * @return the attribute type or <code>null</code>
 	 */
 	public static TypeDefinition getEnumAttributeType(XmlSchemaSimpleTypeRestriction simpleTypeRestriction, 
-			Name name, Map<Name, TypeDefinition> types, Map<Name, TypeDefinition> importedTypes) {
+			Name name, SchemaTypeResolver schemaTypes) {
 		AttributeType type = null;
 			
 		Name baseTypeName = new NameImpl(
@@ -209,7 +190,7 @@ public abstract class TypeUtil {
 				simpleTypeRestriction.getBaseTypeName().getLocalPart());
 		
 		// resolve type
-		TypeDefinition baseTypeDef = resolveAttributeType(baseTypeName, types, importedTypes);
+		TypeDefinition baseTypeDef = resolveAttributeType(baseTypeName, schemaTypes);
 		if (baseTypeDef != null) {
 			type = baseTypeDef.getType();
 			
@@ -237,6 +218,9 @@ public abstract class TypeUtil {
 		
 		if (type != null) {
 			TypeDefinition typeDef = new TypeDefinition(name, type, null);
+			if (schemaTypes != null) {
+				typeDef.setLocation(schemaTypes.getSchemaLocation());
+			}
 			return typeDef;
 		}
 		else {
@@ -249,14 +233,13 @@ public abstract class TypeUtil {
 	 * 
 	 * @param typeName the type name
 	 * @param simpleType the simple type
-	 * @param types 
-	 * @param importedTypes 
+	 * @param schemaTypes the schema types
 	 * 
 	 * @return the type definition or <code>null</code> if it couldn't be resolved
 	 */
 	public static TypeDefinition resolveSimpleType(Name typeName,
-			XmlSchemaSimpleType simpleType, Map<Name, TypeDefinition> types, Map<Name, TypeDefinition> importedTypes) {
-		return resolveSimpleType(typeName, null, simpleType, types, importedTypes);
+			XmlSchemaSimpleType simpleType, SchemaTypeResolver schemaTypes) {
+		return resolveSimpleType(typeName, null, simpleType, schemaTypes);
 	}
 	
 	/**
@@ -270,7 +253,7 @@ public abstract class TypeUtil {
 	public static Set<Name> getSimpleTypeDependencies(Name typeName,
 			XmlSchemaSimpleType simpleType) {
 		Set<Name> dependencies = new LinkedHashSet<Name>();
-		resolveSimpleType(typeName, dependencies, simpleType, null, null);
+		resolveSimpleType(typeName, dependencies, simpleType, null);
 		return dependencies;
 	}
 
@@ -281,52 +264,46 @@ public abstract class TypeUtil {
 	 * @param dependencies the list to add the dependency names to. if this parameter is not null,
 	 *   no type definition must be returned
 	 * @param simpleType the simple type
-	 * @param types 
-	 * @param importedTypes 
+	 * @param schemaTypes the schema types
 	 * 
 	 * @return the type definition or <code>null</code> if it couldn't be resolved
 	 */
 	private static TypeDefinition resolveSimpleType(Name typeName, Collection<Name> dependencies,
-			XmlSchemaSimpleType simpleType, Map<Name, TypeDefinition> types, Map<Name, TypeDefinition> importedTypes) {
+			XmlSchemaSimpleType simpleType, SchemaTypeResolver schemaTypes) {
 		TypeDefinition typeDef = null;
 		
 		XmlSchemaSimpleTypeContent content = simpleType.getContent();
 		
-		/*if (simpleType.getBaseSchemaTypeName() != null) {
-			Name baseTypeName = new NameImpl(simpleType.getBaseSchemaTypeName().getNamespaceURI(), simpleType.getBaseSchemaTypeName().getLocalPart());
-			if (dependencies == null) {
-				typeDef = resolveAttributeType(baseTypeName, types, importedTypes);
-			}
-			else {
-				dependencies.add(baseTypeName);
-			}
-		}
-		else*/ if (content instanceof XmlSchemaSimpleTypeUnion) {
+		if (content instanceof XmlSchemaSimpleTypeUnion) {
 			XmlSchemaSimpleTypeUnion union = (XmlSchemaSimpleTypeUnion) content;
 			
-			AttributeType attributeType = createUnionAttributeType(typeName, dependencies, union, types, importedTypes);
+			AttributeType attributeType = createUnionAttributeType(typeName, dependencies, union, schemaTypes);
 			
 			typeDef = new TypeDefinition(typeName, attributeType, null);
 		}
 		else if (content instanceof XmlSchemaSimpleTypeList) {
 			XmlSchemaSimpleTypeList list = (XmlSchemaSimpleTypeList) content;
 			
-			AttributeType attributeType = createListAttributeType(typeName, dependencies, list, types, importedTypes);
+			AttributeType attributeType = createListAttributeType(typeName, dependencies, list, schemaTypes);
 			
 			typeDef = new TypeDefinition(typeName, attributeType, null);
 		}
 		else if (content instanceof XmlSchemaSimpleTypeRestriction) {
-			typeDef = getEnumAttributeType((XmlSchemaSimpleTypeRestriction) content, typeName, types, importedTypes);
+			typeDef = getEnumAttributeType((XmlSchemaSimpleTypeRestriction) content, typeName, schemaTypes);
 		}
 		else {
 			log.warn("unrecognized simple type");
+		}
+		
+		if (typeDef != null && schemaTypes != null) {
+			typeDef.setLocation(schemaTypes.getSchemaLocation());
 		}
 		
 		return typeDef;
 	}
 	
 	private static AttributeType createUnionAttributeType(Name typeName, Collection<Name> dependencies, XmlSchemaSimpleTypeUnion union, 
-			Map<Name, TypeDefinition> types, Map<Name, TypeDefinition> importedTypes) {
+			SchemaTypeResolver schemaTypes) {
 		XmlSchemaObjectCollection baseTypes = union.getBaseTypes();
 		Class<?> binding = null;
 		boolean restrictToValues = true;
@@ -347,7 +324,7 @@ public abstract class TypeUtil {
 						// anonymous type
 						baseName = new NameImpl(typeName.getNamespaceURI() + "/" + typeName.getLocalPart(), "AnonymousType" + i);
 					}
-					TypeDefinition baseDef = resolveSimpleType(baseName, dependencies, simpleType, types, importedTypes);
+					TypeDefinition baseDef = resolveSimpleType(baseName, dependencies, simpleType, schemaTypes);
 					
 					if (dependencies == null) {
 						if (baseDef != null) {
@@ -393,7 +370,7 @@ public abstract class TypeUtil {
 						dependencies.add(baseName);
 					}
 					else {
-						TypeDefinition nameDef = resolveAttributeType(baseName, types, importedTypes);
+						TypeDefinition nameDef = resolveAttributeType(baseName, schemaTypes);
 						
 						if (nameDef != null) {
 							AttributeType type = nameDef.getType();
@@ -464,7 +441,7 @@ public abstract class TypeUtil {
 	}
 
 	private static AttributeType createListAttributeType(Name typeName, Collection<Name> dependencies, XmlSchemaSimpleTypeList list,
-			Map<Name, TypeDefinition> types, Map<Name, TypeDefinition> importedTypes) {
+			SchemaTypeResolver schemaTypes) {
 		//TODO use item type information
 		/*if (list.getItemType() == null) {
 		 

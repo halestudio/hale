@@ -25,10 +25,18 @@ import org.opengis.feature.type.Name;
 public class AnonymousType extends TypeDefinition {
 	
 	/**
-	 * @see TypeDefinition#TypeDefinition(Name, AttributeType, TypeDefinition)
+	 * Create an anonymous type
+	 * 
+	 * @param name the type name
+	 * @param type the attribute type
+	 * @param superType the super type
+	 * @param location the location of the anonymous type definition
 	 */
-	public AnonymousType(Name name, AttributeType type, TypeDefinition superType) {
+	public AnonymousType(Name name, AttributeType type, TypeDefinition superType,
+			String location) {
 		super(name, type, superType);
+		
+		setLocation(location);
 	}
 
 	/**

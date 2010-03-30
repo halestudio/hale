@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.hale.schemaprovider.provider.internal.apache;
 
-import java.util.Map;
-
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.geotools.feature.AttributeTypeBuilder;
 import org.opengis.feature.type.AttributeType;
@@ -41,12 +39,10 @@ public class SchemaAttribute extends AbstractElementAttribute {
 	 * @param name the attribute name
 	 * @param typeName the name of the attribute type
 	 * @param element the element defining the attribute
-	 * @param featureTypes the local feature types
-	 * @param importedFeatureTypes the imported feature types
+	 * @param schemaTypes the schema types
 	 */
 	public SchemaAttribute(TypeDefinition declaringType, String name, Name typeName,
-			XmlSchemaElement element, Map<Name, TypeDefinition> featureTypes, 
-			Map<Name, TypeDefinition> importedFeatureTypes) {
+			XmlSchemaElement element, SchemaTypeResolver schemaTypes) {
 		super(declaringType, name, typeName, element);
 		
 		if (declaringType != null) {
@@ -54,7 +50,7 @@ public class SchemaAttribute extends AbstractElementAttribute {
 			declaringType.addDeclaredAttribute(this);
 			
 			// determine the attribute type
-			determineAttributeType(element, featureTypes, importedFeatureTypes);
+			determineAttributeType(element, schemaTypes);
 		}
 	}
 	
@@ -71,11 +67,10 @@ public class SchemaAttribute extends AbstractElementAttribute {
 	 * Tries to determine the attribute type
 	 * 
 	 * @param element the schema element 
-	 * @param featureTypes the local feature types
-	 * @param importedFeatureTypes the imported feature types
+	 * @param schemaTypes the schema types 
 	 */
-	protected void determineAttributeType(XmlSchemaElement element, Map<Name, TypeDefinition> featureTypes, Map<Name, TypeDefinition> importedFeatureTypes) {
-		TypeDefinition typeDef = TypeUtil.resolveElementType(element, getTypeName(), featureTypes, importedFeatureTypes);
+	protected void determineAttributeType(XmlSchemaElement element, SchemaTypeResolver schemaTypes) {
+		TypeDefinition typeDef = TypeUtil.resolveElementType(element, getTypeName(), schemaTypes);
 		
 		typeDef = checkAttributeType(typeDef);
 		
@@ -101,7 +96,10 @@ public class SchemaAttribute extends AbstractElementAttribute {
 			builder.setNillable(true);
 			AttributeType attributeType = builder.buildType();
 			
-			return new TypeDefinition(getTypeName(), attributeType, null);
+			TypeDefinition result = new TypeDefinition(getTypeName(), attributeType, typeDef.getSuperType());
+			result.setDescription(typeDef.getDescription());
+			result.setLocation(typeDef.getLocation());
+			return result;
 		}
 		
 		// default: leave type untouched

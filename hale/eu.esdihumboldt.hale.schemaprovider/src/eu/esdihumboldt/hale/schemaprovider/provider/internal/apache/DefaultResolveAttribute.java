@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.hale.schemaprovider.provider.internal.apache;
 
-import java.util.Map;
-
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
 import org.opengis.feature.type.Name;
 
@@ -35,17 +33,15 @@ public class DefaultResolveAttribute extends DefaultAttribute {
 	 * @param declaringType the declaring type
 	 * @param typeName the attribute type name
 	 * @param attribute the attribute 
-	 * @param types 
-	 * @param importedTypes 
+	 * @param schemaTypes the schema types 
 	 */
 	public DefaultResolveAttribute(TypeDefinition declaringType, Name typeName,
-			XmlSchemaAttribute attribute, Map<Name, TypeDefinition> types,
-			Map<Name, TypeDefinition> importedTypes) {
+			XmlSchemaAttribute attribute, SchemaTypeResolver schemaTypes) {
 		super(declaringType, typeName, attribute, null);
 		
 		if (declaringType != null) {
 			// determine the attribute type
-			determineAttributeType(types, importedTypes);
+			determineAttributeType(schemaTypes);
 		}
 	}
 	
@@ -61,11 +57,10 @@ public class DefaultResolveAttribute extends DefaultAttribute {
 	/**
 	 * Tries to determine the attribute type
 	 * 
-	 * @param featureTypes the local feature types
-	 * @param importedFeatureTypes the imported feature types
+	 * @param schemaTypes the schema types 
 	 */
-	protected void determineAttributeType(Map<Name, TypeDefinition> featureTypes, Map<Name, TypeDefinition> importedFeatureTypes) {
-		TypeDefinition typeDef = TypeUtil.resolveAttributeType(getTypeName(), featureTypes, importedFeatureTypes);
+	protected void determineAttributeType(SchemaTypeResolver schemaTypes) {
+		TypeDefinition typeDef = TypeUtil.resolveAttributeType(getTypeName(), schemaTypes);
 		
 		setAttributeType(typeDef);
 	}
