@@ -28,7 +28,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -41,8 +40,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.geotools.data.DataStore;
-import org.geotools.data.wfs.WFSDataStore;
 import org.opengis.feature.type.FeatureType;
 
 public class WFSDataReaderDialog extends Dialog {
@@ -225,41 +222,38 @@ public class WFSDataReaderDialog extends Dialog {
 						//url_result = new URL(hostPortText.getText());
 						String capabilities = hostPortText.getText();
 						
-						// build DescribeFeatureType URL
-						DataStore data = GetCapabilititiesRetriever.getDataStore(capabilities);
+						String getFeature = null;
+						int x = capabilities.toLowerCase().indexOf("request=getcapabilities");
+						if (x >= 0) {
+							String repl = capabilities.substring(x, x + "request=getcapabilities".length());
+							getFeature = capabilities.replace(repl, "REQUEST=GetFeature");
+						}
 						
-						// collect type names
-						StringBuffer typeNames = new StringBuffer();
-						String firstType = null;
-						boolean first = true;
-						for (FeatureType type : selection.getSelection()) { //data.getTypeNames()) {
-							String typeName = type.getName().getLocalPart();
+						if (getFeature != null) {
+							StringBuffer typeNames = new StringBuffer();
+							boolean first = true;
+							for (FeatureType type : selection.getSelection()) {
+								String typeName = type.getName().getLocalPart();
+								if (first) {
+									first = false;
+								}
+								else {
+									typeNames.append(',');
+								}
+								typeNames.append(typeName);
+							}
 							
-							if (first) {
-								first = false;
-								firstType = typeName;
+							getFeature = getFeature.concat("&TYPENAME=" + URLEncoder.encode(typeNames.toString(), "UTF-8"));
+							
+							if (!filterText.getStringValue().isEmpty()) {
+								getFeature = getFeature.concat("&FILTER=" + filterText.getStringValue());
 							}
-							else {
-								typeNames.append(',');
-							}
-							typeNames.append(typeName);
 						}
 						
 						// get the URL
-						//XXX replaced by code below - url_result = ((WFSDataStore) data).getDescribeFeatureTypeURL(typeNames.toString());
-						//XXX we have to trick because the geotools implementation of the WFS 1.1.0 protocol is limited to one feature type
-						//TODO better solution
-						if (firstType != null) {
-							String temp = ((WFSDataStore) data).getDescribeFeatureTypeURL(firstType).toString();
-							String repl = URLEncoder.encode(firstType);
-							if (temp.indexOf(repl) < 0) {
-								repl = firstType;
-							}
-							temp = temp.replaceAll(repl, URLEncoder.encode(typeNames.toString()));
-							url_result = new URL(temp);
-						}
+						url_result = new URL(getFeature);
 						
-						_log.info("DescribeFeatureType URL: " + url_result.toString()); //$NON-NLS-1$
+						_log.info("GetFeature URL: " + url_result.toString()); //$NON-NLS-1$
 					} catch (MalformedURLException e) {
 						_log.error("An error occured when parsing the " + //$NON-NLS-1$
 								"selected host to a URL:", e); //$NON-NLS-1$
