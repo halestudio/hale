@@ -116,6 +116,7 @@ public class InstanceDataImportWizard
 						InterruptedException {
 					monitor.beginTask(Messages.ImportDataStatusText, IProgressMonitor.UNKNOWN);
 					
+					/*
 					// retrieve required parameters, specifically the location and the namespace of the source schema.
 					String namespace = schemaService.getSourceNameSpace();
 					if (namespace == null) {
@@ -128,12 +129,18 @@ public class InstanceDataImportWizard
 						ExceptionHelper.handleException(message, HALEActivator.PLUGIN_ID, null);
 						return;
 					}
+					*/
 					
 					// retrieve and parse result from the Wizard.
 					URL gml_location = null;
 					try {
-						File f = new File(result);
-						gml_location = f.toURI().toURL();
+						if (iit.equals(InstanceInterfaceType.FILE)) {
+							File f = new File(result);
+							gml_location = f.toURI().toURL();
+						}
+						else if (iit.equals(InstanceInterfaceType.WFS)) {
+							gml_location = new URL(result);
+						}
 					} catch (MalformedURLException e) {
 						// it is ensured that only a valid URL is passed before
 						ExceptionHelper.handleException(result + Messages.UrlParsingFailure,
@@ -142,15 +149,7 @@ public class InstanceDataImportWizard
 					}
 					
 					// build FeatureCollection from the selected source.
-					FeatureCollection<FeatureType, Feature> features = null;
-					
-					if (iit.equals(InstanceInterfaceType.FILE)) {
-						// FIXME handle shapefiles in addition to GML
-						features = parseGML(namespace, schema_location, gml_location);
-					}
-					else if (iit.equals(InstanceInterfaceType.WFS)) {
-						
-					}
+					FeatureCollection<FeatureType, Feature> features = parseGML(gml_location);
 					
 					final FeatureCollection<FeatureType, Feature> deployFeatures = features;
 					
@@ -235,6 +234,25 @@ public class InstanceDataImportWizard
 			HaleGMLParser parser = new HaleGMLParser(configuration);
 			result = 
 				(FeatureCollection<FeatureType, Feature>) parser.parse(xml);
+		} catch (Exception ex) {
+			throw new RuntimeException(
+					"Parsing the given GML into a FeatureCollection failed: " + ex.getMessage(), //$NON-NLS-1$
+					ex);
+		}
+		return result;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private FeatureCollection<FeatureType, Feature> parseGML(URL gml_location) {
+		
+		FeatureCollection<FeatureType, Feature> result = null;
+		try {
+			Configuration configuration = new GMLConfiguration();
+
+			_log.info("Using this GML location: " + gml_location.toString()); //$NON-NLS-1$
+			
+			HaleGMLParser parser = new HaleGMLParser(configuration);
+			result = (FeatureCollection<FeatureType, Feature>) parser.parse(gml_location.openStream());
 		} catch (Exception ex) {
 			throw new RuntimeException(
 					"Parsing the given GML into a FeatureCollection failed: " + ex.getMessage(), //$NON-NLS-1$
