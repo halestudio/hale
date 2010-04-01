@@ -70,8 +70,6 @@ public class Messages extends NLS {
 	public static String SaveAlignmentProjectWizardMainPage_ProjectNameText;
 	public static String SaveAlignmentProjectWizardMainPage_ProjectSavingText;
 	public static String SchemaImportWizard_ErrorMessage1;
-	public static String SchemaImportWizard_ErrorMessage2;
-	public static String SchemaImportWizard_ErrorMessage3;
 	public static String SchemaImportWizard_ImportSchemaDescription;
 	public static String SchemaImportWizard_ImportSchemaTitle;
 	public static String SchemaImportWizard_JobError;

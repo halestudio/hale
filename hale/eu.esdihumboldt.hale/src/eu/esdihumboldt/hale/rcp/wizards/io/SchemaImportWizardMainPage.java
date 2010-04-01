@@ -275,4 +275,11 @@ public class SchemaImportWizardMainPage
 		else return SchemaType.TARGET;
 	}
 	
+	/**
+	 * @return true if the user has selected to load from a WFS. 
+	 */
+	public boolean useWfs() {
+		return this.useWfsRadio.getSelection();
+	}
+	
 }

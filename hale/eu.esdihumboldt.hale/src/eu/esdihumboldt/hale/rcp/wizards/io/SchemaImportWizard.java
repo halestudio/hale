@@ -82,6 +82,8 @@ public class SchemaImportWizard
 		final String result = mainPage.getResult();
 		final SchemaType schemaType = mainPage.getSchemaType();
 		
+		final boolean useWfs = mainPage.useWfs();
+		
 		final AtomicBoolean succeeded = new AtomicBoolean(true);
 		
 		try {
@@ -139,9 +141,15 @@ public class SchemaImportWizard
 							}
 						};
 						
-						if (schemaType == SchemaType.SOURCE) {;
+						String customSchemaFormat = null;
+						if (useWfs) {
+							customSchemaFormat = "xsd";
+						}
+						
+						if (schemaType == SchemaType.SOURCE) {
 							// load Schema as Source schema
-							schemaService.loadSchema(uri, null, SchemaType.SOURCE, progress);
+							schemaService.loadSchema(uri, customSchemaFormat, 
+									SchemaType.SOURCE, progress);
 							// update Alignment
 							Schema schema = new Schema(schemaService.getSourceNameSpace(), 
 									new Formalism("GML 3.2.1 Application Schema",  //$NON-NLS-1$
@@ -151,7 +159,8 @@ public class SchemaImportWizard
 						}
 						else
 						{
-							schemaService.loadSchema(uri, null, SchemaType.TARGET, progress);
+							schemaService.loadSchema(uri, customSchemaFormat, 
+									SchemaType.TARGET, progress);
 							// update Alignment
 							Schema schema = new Schema(schemaService.getTargetNameSpace(), 
 									new Formalism("GML 3.2.1 Application Schema",  //$NON-NLS-1$
@@ -161,9 +170,7 @@ public class SchemaImportWizard
 						}
 					} catch (Exception e2) {
 						ExceptionHelper.handleException(
-								Messages.SchemaImportWizard_ErrorMessage1 +
-								Messages.SchemaImportWizard_ErrorMessage2 +
-								Messages.SchemaImportWizard_ErrorMessage3, 
+								Messages.SchemaImportWizard_ErrorMessage1, 
 								HALEActivator.PLUGIN_ID, e2);
 						succeeded.set(false);
 					}
