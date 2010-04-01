@@ -10,7 +10,7 @@
 	</appender>
 
 	<logger name="org.geotools">
-		<level value="WARN" />
+		<level value="ERROR" />
 	</logger>
 	
 	<logger name="eu.esdihumboldt">
