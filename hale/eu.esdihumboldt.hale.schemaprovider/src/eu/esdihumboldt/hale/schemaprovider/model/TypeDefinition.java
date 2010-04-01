@@ -383,7 +383,9 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 		if (name == null) {
 			if (other.name != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!name.getNamespaceURI().equals(other.name.getNamespaceURI()))
+			return false;
+		else if (!name.getLocalPart().equals(other.name.getLocalPart()))
 			return false;
 		return true;
 	}
