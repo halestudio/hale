@@ -63,6 +63,16 @@ public abstract class TypeUtil {
 	 * The GML schema
 	 */
 	protected static final GMLSchema gmlSchema = new GMLSchema();
+
+	/**
+	 * Geotools bindings location string
+	 */
+	private static final String GEOTOOLS_LOC = "Geotools GML bindings";
+	
+	/**
+	 * Geotools bindings location prefix
+	 */
+	private static final String GEOTOOLS_LOC_PREFIX = "Geotools GML bindings + ";
 	
 	/**
 	 * Resolve an attribute type
@@ -77,20 +87,11 @@ public abstract class TypeUtil {
 		// Try to resolve the attribute bindings
 		
 		if (typeDef == null) {
-			// GML bindings
-			AttributeType gmlType = gmlSchema.get(typeName);
-			if (gmlType != null) {
-				typeDef = new TypeDefinition(typeName, gmlType, null);
-				typeDef.setLocation("Geotools GML bindings");
-			}
-		}
-		
-		if (typeDef == null && schemaTypes != null) {
-			typeDef = schemaTypes.getSchemaType(typeName);
+			typeDef = getSchemaType(typeName, schemaTypes);
 		}
 		
 		if (typeDef == null ) {
-			log.warn("Type could not be resolved: " + typeName.getLocalPart());
+			log.warn("Type could not be resolved: " + typeName.getNamespaceURI() + "/" + typeName.getLocalPart());
 		}
 		
 		return typeDef;
@@ -108,18 +109,9 @@ public abstract class TypeUtil {
 		TypeDefinition typeDef = getXSType(typeName);
 	
 		// Try to resolve the attribute bindings
-		
+
 		if (typeDef == null) {
-			// GML bindings
-			AttributeType gmlType = gmlSchema.get(typeName);
-			if (gmlType != null) {
-				typeDef = new TypeDefinition(typeName, gmlType, null);
-				typeDef.setLocation("Geotools GML bindings");
-			}
-		}
-		
-		if (typeDef == null && schemaTypes != null) {
-			typeDef = schemaTypes.getSchemaType(typeName);
+			typeDef = getSchemaType(typeName, schemaTypes);
 		}
 		
 		if (typeDef == null) {
@@ -148,6 +140,45 @@ public abstract class TypeUtil {
 			TypeDefinition typeDef = new TypeDefinition(name, ty, null);
 			typeDef.setLocation("Geotools XS bindings");
 			return typeDef;
+		}
+		else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Get the type from the schema
+	 * 
+	 * @param typeName the type name
+	 * @param schemaTypes the schema types
+	 * 
+	 * @return the schema type or <code>null</code>
+	 */
+	private static TypeDefinition getSchemaType(Name typeName,
+			SchemaTypeResolver schemaTypes) {
+		if (schemaTypes != null) {
+			TypeDefinition schemaType = schemaTypes.getSchemaType(typeName);
+			
+			// GML bindings
+			AttributeType gmlType = gmlSchema.get(typeName);
+			if (gmlType != null) {
+				if (schemaType != null) {
+					schemaType.setType(gmlType); // replace the internal type with the geotools binding
+					// update location
+					if (schemaType.getLocation() == null) {
+						schemaType.setLocation(GEOTOOLS_LOC);
+					}
+					else if (!schemaType.getLocation().startsWith(GEOTOOLS_LOC_PREFIX)) {
+						schemaType.setLocation(GEOTOOLS_LOC_PREFIX + schemaType.getLocation());
+					}
+				}
+				else {
+					schemaType = new TypeDefinition(typeName, gmlType, null);
+					schemaType.setLocation(GEOTOOLS_LOC);
+				}
+			}
+			
+			return schemaType;
 		}
 		else {
 			return null;
