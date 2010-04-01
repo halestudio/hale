@@ -16,7 +16,7 @@
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.literal.RenamingFunctionWizardFactory"
             icon="icons/concrete_ft.png"
-            name="Rename Feature Type">
+            name="Retype Feature">
       </factory>
       <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.literal.RenameAttributeFunctionWizardFactory"
