@@ -64,17 +64,15 @@ public class AttributeItem extends TreeParent {
 		if (type.toString().matches("^.*?GMLComplexTypes.*")) { //$NON-NLS-1$
 //		if (pd.getType().getName().getNamespaceURI().equals("http://www.opengis.net/gml")) {
 			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
-		} else if (Arrays.asList(binding.getClass().getInterfaces())
-				.contains(org.opengis.feature.type.GeometryType.class)) {
+		} else if (org.opengis.feature.type.GeometryType.class.isAssignableFrom(binding)) {
 			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
-		} else if (checkInterface(binding.getInterfaces(),
-				com.vividsolutions.jts.geom.Puntal.class)) {
+		} else if (com.vividsolutions.jts.geom.Geometry.class.isAssignableFrom(binding)) {
 			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
-		} else if (checkInterface(binding.getInterfaces(),
-				com.vividsolutions.jts.geom.Polygonal.class)) {
+		} else if (com.vividsolutions.jts.geom.Puntal.class.isAssignableFrom(binding)) {
 			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
-		} else if (checkInterface(binding.getInterfaces(),
-				com.vividsolutions.jts.geom.Lineal.class)) {
+		} else if (com.vividsolutions.jts.geom.Polygonal.class.isAssignableFrom(binding)) {
+			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
+		} else if (com.vividsolutions.jts.geom.Lineal.class.isAssignableFrom(binding)) {
 			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
 		}
 		// numeric
@@ -109,17 +107,6 @@ public class AttributeItem extends TreeParent {
 	
 		// default to complex attribute
 		return TreeObjectType.COMPLEX_ATTRIBUTE;
-	}
-	
-	@SuppressWarnings("unchecked")
-	private static boolean checkInterface(Class<?>[] classes, Class classToFind) {
-		for (Class clazz : classes) {
-			if (clazz.equals(classToFind)) return true;
-			for (Class c : clazz.getInterfaces()) {
-				if (c.equals(classToFind)) return true;
-			}
-		}
-		return false;
 	}
 
 	/**
