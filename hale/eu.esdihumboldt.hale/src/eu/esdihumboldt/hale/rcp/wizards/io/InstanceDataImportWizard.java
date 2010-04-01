@@ -11,14 +11,8 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
-import java.net.URLDecoder;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -32,7 +26,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.gml3.ApplicationSchemaConfiguration;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.opengis.feature.Feature;
@@ -41,7 +34,6 @@ import org.opengis.feature.type.FeatureType;
 import eu.esdihumboldt.hale.gmlparser.HaleGMLParser;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
-import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
@@ -98,13 +90,10 @@ public class InstanceDataImportWizard
 		// get service references.
 		final InstanceService instanceService = (InstanceService) PlatformUI.getWorkbench()
 				.getService(InstanceService.class);
-		final SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench()
-				.getService(SchemaService.class);
 		final ProjectService projectService = (ProjectService) PlatformUI.getWorkbench()
 				.getService(ProjectService.class);
 		
-		final String result = mainPage.getResult();
-		final InstanceInterfaceType iit = mainPage.getInterfaceType();
+		final URL result = mainPage.getResult();
 		
 		final Display display = Display.getCurrent();
 		
@@ -116,40 +105,8 @@ public class InstanceDataImportWizard
 						InterruptedException {
 					monitor.beginTask(Messages.ImportDataStatusText, IProgressMonitor.UNKNOWN);
 					
-					/*
-					// retrieve required parameters, specifically the location and the namespace of the source schema.
-					String namespace = schemaService.getSourceNameSpace();
-					if (namespace == null) {
-						// set a default namespace
-						namespace = "http://xsdi.org/default"; //$NON-NLS-1$
-					}
-					URL schema_location = schemaService.getSourceURL();
-					if (schema_location == null) {
-						String message = Messages.LoadSchemaFailure;
-						ExceptionHelper.handleException(message, HALEActivator.PLUGIN_ID, null);
-						return;
-					}
-					*/
-					
-					// retrieve and parse result from the Wizard.
-					URL gml_location = null;
-					try {
-						if (iit.equals(InstanceInterfaceType.FILE)) {
-							File f = new File(result);
-							gml_location = f.toURI().toURL();
-						}
-						else if (iit.equals(InstanceInterfaceType.WFS)) {
-							gml_location = new URL(result);
-						}
-					} catch (MalformedURLException e) {
-						// it is ensured that only a valid URL is passed before
-						ExceptionHelper.handleException(result + Messages.UrlParsingFailure,
-								HALEActivator.PLUGIN_ID, e);
-						return;
-					}
-					
 					// build FeatureCollection from the selected source.
-					FeatureCollection<FeatureType, Feature> features = parseGML(gml_location);
+					FeatureCollection<FeatureType, Feature> features = parseGML(result);
 					
 					final FeatureCollection<FeatureType, Feature> deployFeatures = features;
 					
@@ -168,7 +125,7 @@ public class InstanceDataImportWizard
 					}
 					
 					monitor.done();
-					projectService.setInstanceDataPath(gml_location.toString());
+					projectService.setInstanceDataPath(result.toString());
 				}
 			});
 			
@@ -205,41 +162,6 @@ public class InstanceDataImportWizard
 		super.addPage(this.mainPage);
 //		super.addPage(this.filterPage);
 //		super.addPage(this.verificationPage);
-	}
-	
-	/**
-	 * This method allows to read a {@link FeatureCollection} from a given GML
-	 * file.
-	 * @param namespace the namespace to use in {@link FeatureType} creation.
-	 * @param schema_location the {@link URL} of the schema to use in parsing.
-	 * @param gml_location the {@link URL} identifying the GML file to parse.
-	 * @return a {@link FeatureCollection}.
-	 */
-	@SuppressWarnings("unchecked")
-	private FeatureCollection<FeatureType, Feature> parseGML(
-			String namespace, URL schema_location, URL gml_location) {
-		
-		FeatureCollection<FeatureType, Feature> result = null;
-		try {
-			Configuration configuration = new ApplicationSchemaConfiguration(
-					namespace, schema_location.toExternalForm()); //FIXME is this intentional? configuration is replaced in the next command
-			
-			configuration = new GMLConfiguration();
-
-			_log.info("Using this GML location: " + gml_location.toString()); //$NON-NLS-1$
-			
-			URI file = new URI(URLDecoder.decode(gml_location.toString(), "UTF-8")); //$NON-NLS-1$
-			InputStream xml = new FileInputStream(new File(file));
-			
-			HaleGMLParser parser = new HaleGMLParser(configuration);
-			result = 
-				(FeatureCollection<FeatureType, Feature>) parser.parse(xml);
-		} catch (Exception ex) {
-			throw new RuntimeException(
-					"Parsing the given GML into a FeatureCollection failed: " + ex.getMessage(), //$NON-NLS-1$
-					ex);
-		}
-		return result;
 	}
 	
 	@SuppressWarnings("unchecked")

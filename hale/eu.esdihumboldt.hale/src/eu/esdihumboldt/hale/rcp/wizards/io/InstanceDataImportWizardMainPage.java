@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URL;
 
@@ -44,7 +45,7 @@ public class InstanceDataImportWizardMainPage
 	
 	private boolean useFile = true;
 	
-	private String result;
+	private URL result;
 	
 	private FileFieldEditor fileFieldEditor;
 	
@@ -188,9 +189,8 @@ public class InstanceDataImportWizardMainPage
 					// test whether content of the WFS Field Editor validates to URL.
 					String test = this.wfsFieldEditor.getStringValue();
 					if (test != null && !test.equals("")) { //$NON-NLS-1$
-						new URL(test);
+						this.result = new URL(test);
 						_log.debug("wfsFieldEditor URL was OK."); //$NON-NLS-1$
-						this.result = test;
 					} 
 					else {
 						return false;
@@ -200,10 +200,10 @@ public class InstanceDataImportWizardMainPage
 					// test whether content of the File Field Editor validates to URI.
 					String test = this.fileFieldEditor.getStringValue();
 					if (test != null && !test.equals("")) { //$NON-NLS-1$
-						test = test.replace(" ", "%20"); //$NON-NLS-1$ //$NON-NLS-2$
-						new URI(test.replaceAll("\\\\", "/")); //$NON-NLS-1$ //$NON-NLS-2$
-						_log.debug("fileFieldEditor URI was OK."); //$NON-NLS-1$
-						this.result = test;
+						File file = new File(test);
+						if (file.exists()) {
+							this.result = file.toURI().toURL();
+						}
 					}
 					else {
 						return false;
@@ -224,7 +224,7 @@ public class InstanceDataImportWizardMainPage
 	/**
 	 * @return a String representing the URL or URI to load the schema from.
 	 */
-	public String getResult() {
+	public URL getResult() {
 		return this.result;
 	}
 
