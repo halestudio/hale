@@ -116,6 +116,10 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 		if (superType != null) {
 			superType.subTypes.add(this);
 		}
+		
+		if (type != null) {
+			this.setAbstract(type.isAbstract());
+		}
 	}
 	
 	/**

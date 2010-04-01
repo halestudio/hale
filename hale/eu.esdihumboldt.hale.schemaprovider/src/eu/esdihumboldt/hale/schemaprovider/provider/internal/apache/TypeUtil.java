@@ -76,10 +76,6 @@ public abstract class TypeUtil {
 		
 		// Try to resolve the attribute bindings
 		
-		if (typeDef == null && schemaTypes != null) {
-			typeDef = schemaTypes.getSchemaType(typeName);
-		}
-		
 		if (typeDef == null) {
 			// GML bindings
 			AttributeType gmlType = gmlSchema.get(typeName);
@@ -87,6 +83,10 @@ public abstract class TypeUtil {
 				typeDef = new TypeDefinition(typeName, gmlType, null);
 				typeDef.setLocation("Geotools GML bindings");
 			}
+		}
+		
+		if (typeDef == null && schemaTypes != null) {
+			typeDef = schemaTypes.getSchemaType(typeName);
 		}
 		
 		if (typeDef == null ) {
@@ -109,6 +109,15 @@ public abstract class TypeUtil {
 	
 		// Try to resolve the attribute bindings
 		
+		if (typeDef == null) {
+			// GML bindings
+			AttributeType gmlType = gmlSchema.get(typeName);
+			if (gmlType != null) {
+				typeDef = new TypeDefinition(typeName, gmlType, null);
+				typeDef.setLocation("Geotools GML bindings");
+			}
+		}
+		
 		if (typeDef == null && schemaTypes != null) {
 			typeDef = schemaTypes.getSchemaType(typeName);
 		}
@@ -118,14 +127,6 @@ public abstract class TypeUtil {
 			typeDef = getSimpleAttributeType(element, typeName, schemaTypes);
 		}
 		
-		if (typeDef == null) {
-			// GML bindings
-			AttributeType gmlType = gmlSchema.get(typeName);
-			if (gmlType != null) {
-				typeDef = new TypeDefinition(typeName, gmlType, null);
-				typeDef.setLocation("Geotools GML bindings");
-			}
-		}
 		if (typeDef == null ) {
 			log.warn("Type could not be resolved: " + typeName.getNamespaceURI() + "/" + typeName.getLocalPart());
 		}
