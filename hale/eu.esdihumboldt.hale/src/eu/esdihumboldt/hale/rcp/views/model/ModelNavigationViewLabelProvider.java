@@ -77,26 +77,8 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 			imageKey = ISharedImages.IMG_DEF_VIEW;
 			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
 		}
-		else if (to.getType().equals(TreeObjectType.ABSTRACT_FT)) {
-			imageKey = "abstract_ft.png"; //$NON-NLS-1$
-		}
-		else if (to.getType().equals(TreeObjectType.CONCRETE_FT)) {
-			imageKey = "concrete_ft.png"; //$NON-NLS-1$
-		}
-		else if (to.getType().equals(TreeObjectType.PROPERTY_TYPE)) {
-			//TODO add image for property types
-		}
-		else if (to.getType().equals(TreeObjectType.STRING_ATTRIBUTE)) {
-			imageKey = "string_attribute.png"; //$NON-NLS-1$
-		} 
-		else if (to.getType().equals(TreeObjectType.NUMERIC_ATTRIBUTE)) {
-			imageKey = "number_attribute.png"; //$NON-NLS-1$
-		}
-		else if (to.getType().equals(TreeObjectType.GEOMETRIC_ATTRIBUTE)) {
-			imageKey = "geometry_attribute.png"; //$NON-NLS-1$
-		}
-		else if (to.getType().equals(TreeObjectType.COMPLEX_ATTRIBUTE)) {
-			// TODO add image for complex attributes
+		else {
+			imageKey = ModelNavigationViewLabelProvider.getImageforTreeObjectType(to.getType());
 		}
 		
 		Image image;
@@ -290,4 +272,31 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 			
 		super.dispose();
 	}
+	
+	public static String getImageforTreeObjectType(TreeObjectType tot) {
+		String imageKey = null;
+		if (tot.equals(TreeObjectType.ABSTRACT_FT)) {
+			imageKey = "abstract_ft.png"; //$NON-NLS-1$
+		}
+		else if (tot.equals(TreeObjectType.CONCRETE_FT)) {
+			imageKey = "concrete_ft.png"; //$NON-NLS-1$
+		}
+		else if (tot.equals(TreeObjectType.PROPERTY_TYPE)) {
+			//TODO add image for property types
+		}
+		else if (tot.equals(TreeObjectType.STRING_ATTRIBUTE)) {
+			imageKey = "string_attribute.png"; //$NON-NLS-1$
+		} 
+		else if (tot.equals(TreeObjectType.NUMERIC_ATTRIBUTE)) {
+			imageKey = "number_attribute.png"; //$NON-NLS-1$
+		}
+		else if (tot.equals(TreeObjectType.GEOMETRIC_ATTRIBUTE)) {
+			imageKey = "geometry_attribute.png"; //$NON-NLS-1$
+		}
+		else if (tot.equals(TreeObjectType.COMPLEX_ATTRIBUTE)) {
+			// TODO add image for complex attributes
+		}
+		return imageKey;
+	}
+	
 }
