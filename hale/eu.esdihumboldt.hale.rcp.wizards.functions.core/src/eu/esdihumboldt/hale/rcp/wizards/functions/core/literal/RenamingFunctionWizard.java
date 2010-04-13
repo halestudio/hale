@@ -40,6 +40,12 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.core.literal.RenamingFunctionW
 public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 
 	/**
+	 * Parameter name for the attribute to split/merge on
+	 */
+	public static final String PARAMETER_SELECTED_ATTRIBUTE = "SelectedAttribute";
+	
+	
+	/**
 	 * Parameter name for instance merge condition
 	 */
 	public static final String PARAMETER_INSTANCE_MERGE_CONDITION = "InstanceMergeCondition";
@@ -128,6 +134,9 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 
 			InstanceMappingType type = mainPage.getType();
 			String condition = mainPage.getCondition();
+			String selectedVariable = mainPage.getSelectedVariable();
+			
+			t.getParameters().add(new Parameter(PARAMETER_SELECTED_ATTRIBUTE, selectedVariable));
 			
 			switch (type) {
 			case SPLIT:

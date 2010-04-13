@@ -23,6 +23,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -63,6 +64,8 @@ public class RenamingFunctionWizardMainPage
 	private Text condition; 
 	
 	private ListViewer varList;
+	
+	private String selectedVariable = "";
 
 	/**
 	 * Constructor
@@ -180,7 +183,7 @@ public class RenamingFunctionWizardMainPage
 			new Label(group, SWT.NONE);
 			
 			Label label = new Label(group, SWT.NONE);
-			label.setText("Available variables (double click to insert)");
+			label.setText("Attribute to split on (select one):)");
 			label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false));
 			
 			Set<String> variables = new TreeSet<String>();
@@ -199,22 +202,37 @@ public class RenamingFunctionWizardMainPage
 			varList.getControl().setLayoutData(gd);
 			varList.setContentProvider(new ArrayContentProvider());
 			varList.setInput(variables);
-			varList.getList().addMouseListener(new MouseAdapter() {
-
-				/**
-				 * @see MouseAdapter#mouseDoubleClick(MouseEvent)
-				 */
-				@Override
-				public void mouseDoubleClick(MouseEvent e) {
+			varList.getList().addSelectionListener(new SelectionListener() {
+				
+				public void widgetSelected(SelectionEvent e) {
 					int index = varList.getList().getSelectionIndex();
 					if (index >= 0) {
 						String var = varList.getList().getItem(index);
-						condition.insert(var);
-						condition.setFocus();
+						selectedVariable = var;
 					}
 				}
 				
+				public void widgetDefaultSelected(SelectionEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
 			});
+			
+//			varList.getList().addMouseListener(new MouseAdapter() {
+//
+//				/**
+//				 * @see MouseAdapter#mouseDoubleClick(MouseEvent)
+//				 */
+//				@Override
+//				public void mouseClick(MouseEvent e) {
+//					int index = varList.getList().getSelectionIndex();
+//					if (index >= 0) {
+//						String var = varList.getList().getItem(index);
+//						selectedVariable = var;
+//					}
+//				}
+//				
+//			});
 			
 			update();
 		}
@@ -257,6 +275,10 @@ public class RenamingFunctionWizardMainPage
 	 */
 	public void setInitialCondition(String condition) {
 		this.initialCondition = condition;
+	}
+	
+	public String getSelectedVariable() {
+		return this.selectedVariable;
 	}
 
 }
