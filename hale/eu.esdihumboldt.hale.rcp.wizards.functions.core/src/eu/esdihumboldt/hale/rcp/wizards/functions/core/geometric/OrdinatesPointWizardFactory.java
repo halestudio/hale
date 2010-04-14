@@ -43,17 +43,25 @@ public class OrdinatesPointWizardFactory
 		if (selection.getSourceItemCount() != 2 || selection.getTargetItemCount() != 1) {
 			return false;
 		}
-		
+
 		// target item must be a property
 		SchemaItem target = selection.getFirstTargetItem();
-		if (!target.isAttribute() && !Geometry.class.isAssignableFrom(
+		if (target.getPropertyType() == null ) {
+			return false;
+		}
+		if (!target.isAttribute()
+				|| !Geometry.class.isAssignableFrom(
 				target.getPropertyType().getBinding())) {
 			return false;
 		}
 		
 		// source items must be properties
 		for (SchemaItem source : selection.getSourceItems()) {
-			if (!source.isAttribute() && !Number.class.isAssignableFrom(
+			if (source.getPropertyType() == null ) {
+				return false;
+			}
+			if (!source.isAttribute() 
+					|| !Number.class.isAssignableFrom(
 					source.getPropertyType().getBinding())) {
 				return false;
 			}
