@@ -27,23 +27,41 @@ public class Consequence {
 	
 	private List<DataQualityElement> impact;
 	
+	/**
+	 * build a {@link Consequence} with an empty context and an empty List of
+	 * impacts.
+	 */
 	public Consequence() {
 		this.context = null;
 		this.impact = new ArrayList<DataQualityElement>();
 	}
 
+	/**
+	 * @return the {@link MismatchContext} for this {@link Consequence}.
+	 */
 	public MismatchContext getContext() {
 		return context;
 	}
 
+	/**
+	 * Sets this {@link Consequence}s {@link MismatchContext}.
+	 * @param context the {@link MismatchContext} for this {@link Consequence}
+	 */
 	public void setContext(MismatchContext context) {
 		this.context = context;
 	}
 
+	
+	/**
+	 * @return 
+	 */
 	public List<DataQualityElement> getImpact() {
 		return impact;
 	}
 
+	/**
+	 * @param impact
+	 */
 	public void setImpact(List<DataQualityElement> impact) {
 		this.impact = impact;
 	}
