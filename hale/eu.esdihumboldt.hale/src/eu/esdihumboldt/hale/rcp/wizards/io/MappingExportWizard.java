@@ -18,11 +18,11 @@ import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
+import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.models.project.HaleOmlRdfGenerator;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
+import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.OmlMappingExportProvider;
 
 /**
  * This wizard is used to export the currently active mapping to an gOML file.
@@ -54,22 +54,23 @@ public class MappingExportWizard
 	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
 	 */
 	public boolean performFinish() {
-		String result = this.mainPage.getResult();
-		if (result != null) {
-			if (!result.endsWith(".goml") || !result.endsWith(".oml") 
-					|| !result.endsWith(".xml")) {
-				result = result + ".goml";
+		String path = this.mainPage.getResult();
+		if (path != null) {
+			if (!path.endsWith(".goml") || !path.endsWith(".oml") 
+					|| !path.endsWith(".xml")) {
+				path = path + ".goml";
 			}
 			AlignmentService alService = (AlignmentService) 
 					PlatformUI.getWorkbench().getService(AlignmentService.class);
-			
-			OmlRdfGenerator orgen = new HaleOmlRdfGenerator();
+			Alignment al = alService.getAlignment();
 			
 			try {
-				orgen.write(alService.getAlignment(), result);
+				OmlMappingExportProvider omef = new OmlMappingExportProvider();
+				omef.export(al, path);
 			} catch (Exception e) {
 				String message = Messages.MappingExportWizard_SaveFailed;
-				_log.error(message, e);
+				_log.error(message + ". " + e.getMessage() + ". " 
+						+ e.getCause().getMessage(), e);
 				ExceptionHelper.handleException(
 						message, HALEActivator.PLUGIN_ID, e);
 			}
