@@ -79,7 +79,7 @@ public class TaskProviderFactory {
 		try {
 			return (TaskProvider) conf.createExecutableExtension("class");
 		} catch (CoreException e) {
-			log.error("Error creating the function wizard factory", e);
+			log.error("Error creating the task provider factory", e);
 		}
 		
 		return null;
