@@ -143,7 +143,7 @@ public class InstanceDataImportWizard
 			
 			_log.error("Error performing wizard finish", e); //$NON-NLS-1$
 		}
-		
+		System.gc();
 		return true;
 	}
 
