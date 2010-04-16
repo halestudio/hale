@@ -8,6 +8,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
   <version>0.0.1-SNAPSHOT</version>
   <url>http://community.esdi-humboldt.eu</url>
   
+  <properties>
+  	<geotools.version>2.6.0</geotools.version>
+  	</properties>
+  	
 <dependencies>
 	<dependency>
 		<groupId>org.openarchitectureware</groupId>
@@ -34,6 +38,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 		<artifactId>ea_toolsupport</artifactId>
 		<version>1.7.0-SNAPSHOT</version>
 	</dependency>
+	    <dependency>
+      <groupId>org.geotools.xsd</groupId>
+      <artifactId>gt-xsd-core</artifactId>
+      <version>${geotools.version}</version>
+    </dependency>
+	
 </dependencies>
 <build>
 	<directory>target</directory>
@@ -45,47 +55,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 </build>
 
 <repositories>
-	<!-- <repository>	
-		<id>oaw.repository</id>
-		<name>openArchitectureWare Repository</name>
-		<url>http://www.openarchitectureware.org/m2</url>
-	</repository>-->
-	<!-- <repository>
-		<id>eclipse.repository</id>
-		<name>Eclipse Repository</name>
-		<url>http://repo1.maven.org/eclipse</url>
-	</repository> -->
 	<repository>
 			<id>artifactory.esdi-humboldt.eu</id>
 			<name>Humboldt internal repository</name>
 			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/repo/</url>
 	</repository>
-	<!--
-		<repository>
-		<id>fornax.repository</id>
-		<name>Fornax Repository</name>
-		<url>http://www.fornax-platform.org/m2/repository</url>
-	</repository>-->
 	
 </repositories> 
-	<!-- <pluginRepositories>
-		<pluginRepository>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<id>artifactory.esdi-humboldt.eu</id>
-			<name>plugins-releases</name>
-			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/plugins-releases
-			</url>
-		</pluginRepository>
-		<pluginRepository>
-			<snapshots />
-			<id>artifactory.esdi-humboldt.eu</id>
-			<name>plugins-snapshots</name>
-			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/plugins-snapshots
-			</url>
-		</pluginRepository>
-	</pluginRepositories>   -->
 	<distributionManagement>
 		<repository>
 			<id>artifactory.esdi-humboldt.eu</id>

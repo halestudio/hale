@@ -11,7 +11,7 @@ public class EapToUml2 {
 	public static void main(String[] args)
 	{
 		Map<String,String> properties = new HashMap<String,String>();
-		Map slotContents = new HashMap();
+		Map<String,String> slotContents = new HashMap<String,String>();
 		
 		boolean retrn= wfrunner.run("src//main//java//eu//esdihumboldt//hale//eap2uml//eapconverter//workflow.oaw", new NullProgressMonitor(),properties,slotContents);
 		if(retrn)
