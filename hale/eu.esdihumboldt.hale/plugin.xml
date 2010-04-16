@@ -421,6 +421,20 @@
             name="Code lists">
       </page>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.MappingExport">
+      <MappingExportFactory
+            description="RDF Ontology Mapping Language encoding"
+            extension="*.goml"
+            name="RDF OML"
+            providerClass="eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.OmlMappingExportProvider">
+      </MappingExportFactory>
+      <MappingExportFactory
+            extension="*.xslt"
+            name="XSLT"
+            providerClass="eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.XsltMappingExportProvider">
+      </MappingExportFactory>
+   </extension>
    <!-- <extension
          point="org.eclipse.ui.importWizards">
       <wizard

@@ -11,16 +11,24 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
+import java.util.Map;
+
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+
+import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportExtension;
 
 /**
  * This is the main page of the {@link MappingExportWizard}.
@@ -38,10 +46,12 @@ public class MappingExportWizardMainPage
 	private String result = null;
 	
 	private FileFieldEditor ffe;
+	
+	private String selectedFormat = "";
 
 	/**
-	 * @param string
-	 * @param string2
+	 * @param pageName
+	 * @param pageTitle
 	 */
 	public MappingExportWizardMainPage(String pageName, String pageTitle) {
 		super(pageName, pageTitle, (ImageDescriptor) null);
@@ -57,7 +67,6 @@ public class MappingExportWizardMainPage
 		super.initializeDialogUnits(parent);
         this.setPageComplete(this.isPageComplete());
         
-        
 		// define source group composite
 		Group selectionArea = new Group(parent, SWT.NONE);
 		selectionArea.setText(Messages.MappingExportWizardMainPage_SelectionAreaText);
@@ -69,7 +78,42 @@ public class MappingExportWizardMainPage
 		selectionArea.setSize(selectionArea.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		selectionArea.setFont(parent.getFont());
 		
-		// write to OML file (Model Repository service to be added later on)
+		// select format to export to
+		final Composite formatSelectionArea = new Composite(selectionArea, SWT.NONE);
+		formatSelectionArea.setLayout(new GridLayout(2, false));
+		GridData formatSelectionData = new GridData(
+				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL);
+		formatSelectionData.grabExcessHorizontalSpace = true;
+		formatSelectionArea.setLayoutData(formatSelectionData);
+		Map<String, String> formats = MappingExportExtension.getRegisteredExportProviderInfo();
+		final String[] items = new String[formats.keySet().size()];
+		int i = 0;
+		for (String name : formats.keySet()) {
+			items[i++] = name + " (" + formats.get(name) + ")";
+		}
+		
+		final Label protocolVersionLabel = new Label(formatSelectionArea, SWT.NONE);
+		protocolVersionLabel.setText("Choose a format to export to:");
+		protocolVersionLabel.setToolTipText("Select one of the offered file " +
+				"formats to export your mapping to.");
+		final Combo formatCombo = new Combo (formatSelectionArea, SWT.READ_ONLY);
+		formatCombo.setItems(items);
+		formatCombo.setLayoutData(new GridData(
+				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
+		formatCombo.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				selectedFormat = items[formatCombo.getSelectionIndex()];
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// ignore
+			}
+		});
+		
+		// select path to export to
 		final Composite fileSelectionArea = new Composite(selectionArea, SWT.NONE);
 		GridData fileSelectionData = new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL);
@@ -85,15 +129,13 @@ public class MappingExportWizardMainPage
 		Composite ffe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ffe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		this.ffe = new FileFieldEditor(Messages.MappingExportWizardMainPage_FileSelect, 
-				Messages.MappingExportWizardMainPage_File, ffe_container); //NON-NLS-1 //NON-NLS-2
+		this.ffe = new FileFieldEditor("fileSelect", 
+				Messages.MappingExportWizardMainPage_File, ffe_container);
 		this.ffe.getTextControl(ffe_container).addModifyListener(new ModifyListener(){
 			public void modifyText(ModifyEvent e) {
 				getWizard().getContainer().updateButtons();
 			}
 		});
-		String[] extensions = new String[] { "*.oml", "*.goml", "*.xml" }; //NON-NLS-1 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		this.ffe.setFileExtensions(extensions);
 		
 		setErrorMessage(null);	// should not initially have error message
 		super.setControl(selectionArea);
@@ -104,6 +146,9 @@ public class MappingExportWizardMainPage
 	 */
 	@Override
 	public boolean isPageComplete() {
+		if (this.selectedFormat.equals("")) {
+			return false;
+		}
 		if (this.ffe == null) {
 			return false;
 		}
@@ -121,6 +166,13 @@ public class MappingExportWizardMainPage
 	 */
 	public String getResult() {
 		return this.result;
+	}
+	
+	/**
+	 * @return the name of the selected Format.
+	 */
+	public String getSelectedFormatName() {
+		return this.selectedFormat.substring(0, this.selectedFormat.indexOf(" ("));
 	}
 
 }

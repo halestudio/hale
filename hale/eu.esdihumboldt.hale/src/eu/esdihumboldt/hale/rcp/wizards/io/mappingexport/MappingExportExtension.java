@@ -19,7 +19,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
 /**
- * TODO: Enter Type comment.
+ *handles programmatic access to the configuration of all loaded 
+ *{@link MappingExportProvider}s.
  * 
  * @author Thorsten Reitz
  */
@@ -35,7 +36,8 @@ public class MappingExportExtension {
 	
 	/**
 	 * @return a Map with Information on the formats supported by the 
-	 * registered export providers. 
+	 * registered export providers. The keys of the map are the name of the format,
+	 * the values the file extension that will be used.
 	 */
 	public static Map<String, String> getRegisteredExportProviderInfo() {
 		if (getConfMap() == null) {
@@ -61,7 +63,7 @@ public class MappingExportExtension {
 		IConfigurationElement configElement = confMap.get(name);
 		if (configElement != null) {
 			try {
-				return (MappingExportProvider) configElement.createExecutableExtension("class");
+				return (MappingExportProvider) configElement.createExecutableExtension("providerClass");
 			} catch (CoreException e) {
 				throw new RuntimeException("Error creating the export provider.", e);
 			}

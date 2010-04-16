@@ -22,6 +22,8 @@ import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
+import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportExtension;
+import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.OmlMappingExportProvider;
 
 /**
@@ -55,18 +57,20 @@ public class MappingExportWizard
 	 */
 	public boolean performFinish() {
 		String path = this.mainPage.getResult();
+		String format = this.mainPage.getSelectedFormatName();
+		MappingExportProvider mef = MappingExportExtension.getExportProvider(format);
+		String extension = MappingExportExtension.getRegisteredExportProviderInfo().get(format);
+		extension = extension.substring(1);
 		if (path != null) {
-			if (!path.endsWith(".goml") || !path.endsWith(".oml") 
-					|| !path.endsWith(".xml")) {
-				path = path + ".goml";
+			if (!path.endsWith(extension)) {
+				path = path + extension;
 			}
 			AlignmentService alService = (AlignmentService) 
 					PlatformUI.getWorkbench().getService(AlignmentService.class);
 			Alignment al = alService.getAlignment();
 			
 			try {
-				OmlMappingExportProvider omef = new OmlMappingExportProvider();
-				omef.export(al, path);
+				mef.export(al, path);
 			} catch (Exception e) {
 				String message = Messages.MappingExportWizard_SaveFailed;
 				_log.error(message + ". " + e.getMessage() + ". " 
