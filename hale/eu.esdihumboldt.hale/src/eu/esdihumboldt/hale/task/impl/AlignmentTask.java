@@ -17,7 +17,6 @@ import java.util.List;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
-import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.alignment.AlignmentServiceListener;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
@@ -30,20 +29,13 @@ import eu.esdihumboldt.hale.task.ServiceProvider;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public abstract class AlignmentTask extends DefaultTask implements AlignmentServiceListener {
+public abstract class AlignmentTask extends SchemaTask implements AlignmentServiceListener {
 	
 	/**
 	 * The alignment service
 	 */
 	protected final AlignmentService alignmentService;
 	
-	/**
-	 * The schema service
-	 */
-	protected final SchemaService schemaService;
-
-	private HaleServiceListener schemaListener;
-
 	/**
 	 * Creates an alignment task
 	 * 
@@ -56,25 +48,8 @@ public abstract class AlignmentTask extends DefaultTask implements AlignmentServ
 		super(serviceProvider, typeName, context);
 		
 		this.alignmentService = serviceProvider.getService(AlignmentService.class);
-		this.schemaService = serviceProvider.getService(SchemaService.class);
 		
 		alignmentService.addListener(this);
-		
-		schemaService.addListener(schemaListener = new HaleServiceListener() {
-			
-			@SuppressWarnings("unchecked")
-			@Override
-			public void update(UpdateMessage message) {
-				// check if main context is still available in schema
-				String contextId = getMainContext().getIdentifier();
-				
-				Definition type = schemaService.getDefinition(contextId);
-				
-				if (type == null) {
-					invalidate();
-				}
-			}
-		});
 	}
 
 	/**
@@ -124,7 +99,6 @@ public abstract class AlignmentTask extends DefaultTask implements AlignmentServ
 	@Override
 	public void dispose() {
 		alignmentService.removeListener(this);
-		schemaService.removeListener(schemaListener);
 		
 		super.dispose();
 	}

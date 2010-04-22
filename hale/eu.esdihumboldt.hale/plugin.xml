@@ -406,6 +406,12 @@
             id="eu.esdihumboldt.hale.task.schema.NilAttributeTaskProvider"
             name="%tasks.nilWarningsTaskProvider.name">
       </tasks>
+      <tasks
+            class="eu.esdihumboldt.hale.task.providers.schema.geometry.SchemaSetNoGeometryTaskProvider"
+            defaultEnabled="true"
+            id="eu.esdihumboldt.hale.task.schema.NoGeometry"
+            name="FeatureType geometry check">
+      </tasks>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
