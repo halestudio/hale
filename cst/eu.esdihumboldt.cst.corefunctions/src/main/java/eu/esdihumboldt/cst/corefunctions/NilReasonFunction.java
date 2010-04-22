@@ -138,7 +138,7 @@ public class NilReasonFunction extends AbstractCstFunction {
 	 * @param nrt
 	 */
 	private void setNilReason(Feature target, Property p, NilReasonType nrt) {
-		String key = p.getName().getNamespaceURI() + "/" + p.getName().getLocalPart();
+		String key = p.getName().getNamespaceURI() + "/" + p.getName().getLocalPart() + "<nilReason>";
 		if (target.getUserData().get(XML_ATTRIBUTES) != null) {
 			Map<String, String> oldXmlAttribs = (Map<String, String>) target.getUserData().get(XML_ATTRIBUTES);
 			oldXmlAttribs.put(key, nrt.toString());
