@@ -1,0 +1,65 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>eu.esdihumboldt</groupId>
+  <artifactId>gmlhandler</artifactId>
+  <name>HUMBOLDT GML Handler Component</name>
+  <version>0.0.1-SNAPSHOT</version>
+  <url>http://www.esdi-humboldt.eu</url>
+  <scm>
+  	<connection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/gmlhandler/trunk</connection>
+  	<developerConnection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/gmlhandler/trunk</developerConnection>
+  	<url>http://svn.esdi-humboldt.eu/repo/humboldt2</url>
+  </scm>
+  <build>
+  	<plugins>
+  		<plugin>
+  			<artifactId>maven-compiler-plugin</artifactId>
+  		</plugin>
+  		<plugin>
+  			<artifactId>maven-eclipse-plugin</artifactId>
+  		</plugin>
+  		<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+  			<artifactId>maven-surefire-plugin</artifactId>
+  		</plugin>
+  	</plugins>
+  </build>
+  <repositories>
+  	<repository>
+  		<id>artifactory.esdi-humboldt.eu repo</id>
+  		<name>Humboldt internal repository</name>
+  		<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/repo</url>
+  	</repository>
+  </repositories>
+  <pluginRepositories>
+  	<pluginRepository>
+  		<id>artifactory.esdi-humboldt.eu plugin-releases</id>
+  		<name>plugins-releases</name>
+  		<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/plugins-releases</url>
+  	</pluginRepository>
+  	<pluginRepository>
+  		<id>artifactory.esdi-humboldt.eu plugin-snapshots</id>
+  		<name>plugins-snapshots</name>
+  		<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/plugins-snapshots</url>
+  	</pluginRepository>
+  </pluginRepositories>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.deegree</groupId>
+  		<artifactId>deegree-core</artifactId>
+  		<version>3.0-SNAPSHOT</version>
+  	</dependency>
+  </dependencies>
+  <distributionManagement>
+  	<repository>
+  		<id>artifactory.esdi-humboldt.eu releases</id>
+  		<name>artifactory.esdi-humboldt.eu releases</name>
+  		<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/libs-releases-local</url>
+  	</repository>
+  	<snapshotRepository>
+  		<id>artifactory.esdi-humboldt.eu</id>
+  		<name>artifactory.esdi-humboldt.eu-snapshots snapshots</name>
+  		<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/libs-snapshots-local</url>
+  	</snapshotRepository>
+  </distributionManagement>
+</project>
