@@ -18,11 +18,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
 
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
-import eu.esdihumboldt.hale.rcp.views.table.Messages;
 
 /**
  * Tree item representing a feature type property
@@ -32,6 +32,8 @@ import eu.esdihumboldt.hale.rcp.views.table.Messages;
  * @version $Id$ 
  */
 public class PropertyItem extends DefaultTreeNode {
+	
+	private static final Logger log = Logger.getLogger(PropertyItem.class);
 	
 	/**
 	 * The property name
@@ -106,7 +108,13 @@ public class PropertyItem extends DefaultTreeNode {
 		else {
 			// property of the feature
 			Property property = feature.getProperty(propertyName);
-			return property.getValue();
+			if (property != null) {
+				return property.getValue();
+			}
+			else {
+				log.warn("Error getting property " + propertyName + " from feature of type " + feature.getType().getName().getLocalPart());
+				return "#not defined";
+			}
 		}
 	}
 
