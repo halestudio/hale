@@ -20,8 +20,6 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 import org.geotools.feature.NameImpl;
-import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.FeatureType;
@@ -242,16 +240,11 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	 * @return the feature type
 	 */
 	public FeatureType createFeatureType(Name name) {
-		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+		SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction builder = new SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction();
 		
 		if (getSuperType() != null) {
 			// has super type
-			if (getSuperType().getType() != null && getSuperType().getType() instanceof SimpleFeatureType) {
-				builder.setSuperType((SimpleFeatureType) getSuperType().getType());
-			}
-			else {
-				builder.setSuperType(null);
-			}
+			builder.setSuperType(getSuperType().getType());
 		}
 		else {
 			builder.setSuperType(null);
