@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.task.schema;
+package eu.esdihumboldt.hale.task.providers.schema;
 
 import java.util.Collection;
 

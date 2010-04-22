@@ -10,19 +10,15 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.task.schema;
+package eu.esdihumboldt.hale.task.providers.schema;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.task.ServiceProvider;
 import eu.esdihumboldt.hale.task.Task;
 import eu.esdihumboldt.hale.task.TaskFactory;
@@ -32,28 +28,28 @@ import eu.esdihumboldt.hale.task.impl.AbstractTaskType;
 import eu.esdihumboldt.hale.task.impl.AlignmentTask;
 
 /**
- * Map attribute task factory
+ * Map type task factory
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class MapNilAttributeTaskFactory extends AbstractTaskFactory {
+public class MapElementTaskFactory extends AbstractTaskFactory {
 	
 	/**
 	 * The task 
 	 */
-	private class MapNilAttributeTask extends AlignmentTask {
+	private class MapTypeTask extends AlignmentTask {
 
 		/**
 		 * Create a new task
 		 *
 		 * @param serviceProvider the service provider 
-		 * @param type the type to map
+		 * @param element the element to map
 		 */
-		public MapNilAttributeTask(ServiceProvider serviceProvider,
-				AttributeDefinition type) {
-			super(serviceProvider, getTaskTypeName(), Collections.singletonList(type));
+		public MapTypeTask(ServiceProvider serviceProvider,
+				SchemaElement element) {
+			super(serviceProvider, getTaskTypeName(), Collections.singletonList(element));
 		}
 
 		/**
@@ -62,17 +58,7 @@ public class MapNilAttributeTaskFactory extends AbstractTaskFactory {
 		@Override
 		public void cellsAdded(Iterable<ICell> cells) {
 			//TODO check given cells instead of calling validateTask
-			if (!validateTask((AttributeDefinition) getMainContext(), alignmentService)) {
-				invalidate();
-			}
-		}
-
-		/**
-		 * @see AlignmentTask#cellRemoved(ICell)
-		 */
-		@Override
-		public void cellRemoved(ICell cell) {
-			if (!validateTask((AttributeDefinition) getMainContext(), alignmentService)) {
+			if (!validateTask((SchemaElement) getMainContext(), alignmentService)) {
 				invalidate();
 			}
 		}
@@ -82,14 +68,14 @@ public class MapNilAttributeTaskFactory extends AbstractTaskFactory {
 	/**
 	 * The task type
 	 */
-	private static class MapNilAttributeTaskType extends AbstractTaskType {
+	private static class MapTypeTaskType extends AbstractTaskType {
 		
 		/**
 		 * Constructor
 		 * 
 		 * @param taskFactory the task factory
 		 */
-		public MapNilAttributeTaskType(TaskFactory taskFactory) {
+		public MapTypeTaskType(TaskFactory taskFactory) {
 			super(taskFactory);
 		}
 
@@ -98,7 +84,7 @@ public class MapNilAttributeTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public String getReason(Task task) {
-			return "Non-nillable attribute is not mapped";
+			return "Type not mapped";
 		}
 
 		/**
@@ -106,7 +92,7 @@ public class MapNilAttributeTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public SeverityLevel getSeverityLevel(Task task) {
-			return SeverityLevel.warning;
+			return SeverityLevel.task;
 		}
 
 		/**
@@ -114,7 +100,7 @@ public class MapNilAttributeTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public String getTitle(Task task) {
-			return "Non-nillable attribute " + ((AttributeDefinition) task.getMainContext()).getName() + " is not mapped";
+			return "Create a mapping for " + ((SchemaElement) task.getMainContext()).getElementName().getLocalPart();
 		}
 
 		/**
@@ -122,7 +108,7 @@ public class MapNilAttributeTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public double getValue(Task task) {
-			return 0.4;
+			return 0.6;
 		}
 
 	}
@@ -130,7 +116,7 @@ public class MapNilAttributeTaskFactory extends AbstractTaskFactory {
 	/**
 	 * The type name
 	 */
-	public static final String BASE_TYPE_NAME = "Schema.mapNilAttribute";
+	public static final String BASE_TYPE_NAME = "Schema.mapType";
 	
 	/**
 	 * The task type
@@ -140,10 +126,10 @@ public class MapNilAttributeTaskFactory extends AbstractTaskFactory {
 	/**
 	 * Default constructor
 	 */
-	public MapNilAttributeTaskFactory() {
+	public MapElementTaskFactory() {
 		super(BASE_TYPE_NAME);
 		
-		type = new MapNilAttributeTaskType(this);
+		type = new MapTypeTaskType(this);
 	}
 
 	/**
@@ -152,59 +138,35 @@ public class MapNilAttributeTaskFactory extends AbstractTaskFactory {
 	@Override
 	public Task createTask(ServiceProvider serviceProvider,
 			Definition... definitions) {
-		if (definitions == null || definitions.length < 1 || !(definitions[0] instanceof AttributeDefinition)) {
+		if (definitions == null || definitions.length < 1 || !(definitions[0] instanceof SchemaElement)) {
 			return null;
 		}
 		
 		AlignmentService alignmentService = serviceProvider.getService(AlignmentService.class);
 		
-		AttributeDefinition type = (AttributeDefinition) definitions[0];
-		if (validateTask(type, alignmentService)) {
-			return new MapNilAttributeTask(serviceProvider, type);
+		SchemaElement element = (SchemaElement) definitions[0];
+		if (validateTask(element, alignmentService)) {
+			return new MapTypeTask(serviceProvider, element);
 		}
 		
 		return null;
 	}
 
 	/**
-	 * Determines if the given attribute definition is valid for a task
+	 * Determines if the given element is valid for a task
 	 * 
-	 * @param attribute the attribute definition
+	 * @param element the element
 	 * @param alignmentService the alignment service
 	 * 
 	 * @return if the type is valid
 	 */
-	private static boolean validateTask(AttributeDefinition attribute,
+	private static boolean validateTask(SchemaElement element,
 			AlignmentService alignmentService) {
-		if (attribute.isNillable()) {
-			return false;
-		}
-		
-		// additional condition: declaring type or sub type must be mapped
-		boolean typeMapped = false;
-		Queue<TypeDefinition> typeQueue = new LinkedList<TypeDefinition>();
-		typeQueue.add(attribute.getDeclaringType());
-		while (!typeMapped && !typeQueue.isEmpty()) {
-			TypeDefinition type = typeQueue.poll();
-			
-			for (SchemaElement element : type.getDeclaringElements()) {
-				List<ICell> elementCells = alignmentService.getCell(element.getEntity());
-				if (elementCells != null && !elementCells.isEmpty()) {
-					typeMapped = true;
-				}
+		if (element.getType().isFeatureType() && !element.getType().isAbstract()) {
+			List<ICell> cells = alignmentService.getCell(element.getEntity());
+			if (cells == null || cells.isEmpty()) {
+				return true;
 			}
-			
-			typeQueue.addAll(type.getSubTypes());
-		}
-		if (!typeMapped) {
-			return false;
-		}
-		
-		//TODO check for nil reason?
-		
-		List<ICell> attributeCells = alignmentService.getCell(attribute.getEntity());
-		if (attributeCells == null || attributeCells.isEmpty()) {
-			return true;
 		}
 		
 		return false;

@@ -10,24 +10,24 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.task.schema;
+package eu.esdihumboldt.hale.task.providers.schema;
 
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 
 /**
- * Target schema tasks
+ * Source schema tasks
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class TargetMappingTaskProvider extends SchemaMappingTaskProvider {
+public class SourceMappingTaskProvider extends SchemaMappingTaskProvider {
 
 	/**
 	 * Default constructor
 	 */
-	public TargetMappingTaskProvider() {
-		super(SchemaType.TARGET);
+	public SourceMappingTaskProvider() {
+		super(SchemaType.SOURCE);
 	}
 
 }

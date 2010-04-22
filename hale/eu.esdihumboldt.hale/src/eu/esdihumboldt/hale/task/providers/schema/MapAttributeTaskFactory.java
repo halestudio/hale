@@ -10,15 +10,19 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.task.schema;
+package eu.esdihumboldt.hale.task.providers.schema;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.hale.models.AlignmentService;
+import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.task.ServiceProvider;
 import eu.esdihumboldt.hale.task.Task;
 import eu.esdihumboldt.hale.task.TaskFactory;
@@ -28,28 +32,28 @@ import eu.esdihumboldt.hale.task.impl.AbstractTaskType;
 import eu.esdihumboldt.hale.task.impl.AlignmentTask;
 
 /**
- * Map type task factory
+ * Map attribute task factory
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class MapElementTaskFactory extends AbstractTaskFactory {
+public class MapAttributeTaskFactory extends AbstractTaskFactory {
 	
 	/**
 	 * The task 
 	 */
-	private class MapTypeTask extends AlignmentTask {
+	private class MapAttributeTask extends AlignmentTask {
 
 		/**
 		 * Create a new task
 		 *
 		 * @param serviceProvider the service provider 
-		 * @param element the element to map
+		 * @param type the type to map
 		 */
-		public MapTypeTask(ServiceProvider serviceProvider,
-				SchemaElement element) {
-			super(serviceProvider, getTaskTypeName(), Collections.singletonList(element));
+		public MapAttributeTask(ServiceProvider serviceProvider,
+				AttributeDefinition type) {
+			super(serviceProvider, getTaskTypeName(), Collections.singletonList(type));
 		}
 
 		/**
@@ -58,7 +62,17 @@ public class MapElementTaskFactory extends AbstractTaskFactory {
 		@Override
 		public void cellsAdded(Iterable<ICell> cells) {
 			//TODO check given cells instead of calling validateTask
-			if (!validateTask((SchemaElement) getMainContext(), alignmentService)) {
+			if (!validateTask((AttributeDefinition) getMainContext(), alignmentService)) {
+				invalidate();
+			}
+		}
+		
+		/**
+		 * @see AlignmentTask#cellRemoved(ICell)
+		 */
+		@Override
+		public void cellRemoved(ICell cell) {
+			if (!validateTask((AttributeDefinition) getMainContext(), alignmentService)) {
 				invalidate();
 			}
 		}
@@ -68,14 +82,14 @@ public class MapElementTaskFactory extends AbstractTaskFactory {
 	/**
 	 * The task type
 	 */
-	private static class MapTypeTaskType extends AbstractTaskType {
+	private static class MapAttributeTaskType extends AbstractTaskType {
 		
 		/**
 		 * Constructor
 		 * 
 		 * @param taskFactory the task factory
 		 */
-		public MapTypeTaskType(TaskFactory taskFactory) {
+		public MapAttributeTaskType(TaskFactory taskFactory) {
 			super(taskFactory);
 		}
 
@@ -84,7 +98,7 @@ public class MapElementTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public String getReason(Task task) {
-			return "Type not mapped";
+			return "Attribute not mapped";
 		}
 
 		/**
@@ -100,7 +114,7 @@ public class MapElementTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public String getTitle(Task task) {
-			return "Create a mapping for " + ((SchemaElement) task.getMainContext()).getElementName().getLocalPart();
+			return "Create a mapping for the attribute " + ((AttributeDefinition) task.getMainContext()).getName();
 		}
 
 		/**
@@ -108,7 +122,7 @@ public class MapElementTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public double getValue(Task task) {
-			return 0.6;
+			return 0.3;
 		}
 
 	}
@@ -116,7 +130,7 @@ public class MapElementTaskFactory extends AbstractTaskFactory {
 	/**
 	 * The type name
 	 */
-	public static final String BASE_TYPE_NAME = "Schema.mapType";
+	public static final String BASE_TYPE_NAME = "Schema.mapAttribute";
 	
 	/**
 	 * The task type
@@ -126,10 +140,10 @@ public class MapElementTaskFactory extends AbstractTaskFactory {
 	/**
 	 * Default constructor
 	 */
-	public MapElementTaskFactory() {
+	public MapAttributeTaskFactory() {
 		super(BASE_TYPE_NAME);
 		
-		type = new MapTypeTaskType(this);
+		type = new MapAttributeTaskType(this);
 	}
 
 	/**
@@ -138,35 +152,53 @@ public class MapElementTaskFactory extends AbstractTaskFactory {
 	@Override
 	public Task createTask(ServiceProvider serviceProvider,
 			Definition... definitions) {
-		if (definitions == null || definitions.length < 1 || !(definitions[0] instanceof SchemaElement)) {
+		if (definitions == null || definitions.length < 1 || !(definitions[0] instanceof AttributeDefinition)) {
 			return null;
 		}
 		
 		AlignmentService alignmentService = serviceProvider.getService(AlignmentService.class);
 		
-		SchemaElement element = (SchemaElement) definitions[0];
-		if (validateTask(element, alignmentService)) {
-			return new MapTypeTask(serviceProvider, element);
+		AttributeDefinition type = (AttributeDefinition) definitions[0];
+		if (validateTask(type, alignmentService)) {
+			return new MapAttributeTask(serviceProvider, type);
 		}
 		
 		return null;
 	}
 
 	/**
-	 * Determines if the given element is valid for a task
+	 * Determines if the given attribute definition is valid for a task
 	 * 
-	 * @param element the element
+	 * @param attribute the attribute definition
 	 * @param alignmentService the alignment service
 	 * 
 	 * @return if the type is valid
 	 */
-	private static boolean validateTask(SchemaElement element,
+	private static boolean validateTask(AttributeDefinition attribute,
 			AlignmentService alignmentService) {
-		if (element.getType().isFeatureType() && !element.getType().isAbstract()) {
-			List<ICell> cells = alignmentService.getCell(element.getEntity());
-			if (cells == null || cells.isEmpty()) {
-				return true;
+		// additional condition: declaring type or sub type must be mapped
+		boolean typeMapped = false;
+		Queue<TypeDefinition> typeQueue = new LinkedList<TypeDefinition>();
+		typeQueue.add(attribute.getDeclaringType());
+		while (!typeMapped && !typeQueue.isEmpty()) {
+			TypeDefinition type = typeQueue.poll();
+			
+			for (SchemaElement element : type.getDeclaringElements()) {
+				List<ICell> elementCells = alignmentService.getCell(element.getEntity());
+				if (elementCells != null && !elementCells.isEmpty()) {
+					typeMapped = true;
+				}
 			}
+			
+			typeQueue.addAll(type.getSubTypes());
+		}
+		if (!typeMapped) {
+			return false;
+		}
+		
+		List<ICell> cells = alignmentService.getCell(attribute.getEntity());
+		if (cells == null || cells.isEmpty()) {
+			return true;
 		}
 		
 		return false;

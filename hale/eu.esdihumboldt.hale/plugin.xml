@@ -386,21 +386,21 @@
    <extension
          point="eu.esdihumboldt.hale.task.TaskProvider">
       <tasks
-            class="eu.esdihumboldt.hale.task.schema.SourceMappingTaskProvider"
+            class="eu.esdihumboldt.hale.task.providers.schema.SourceMappingTaskProvider"
             defaultEnabled="true"
             description="%tasks.sourceMappingTaskProvider.description"
             id="eu.esdihumboldt.hale.task.schema.SourceMappingTaskProvider"
             name="%tasks.sourceMappingTaskProvider.name">
       </tasks>
       <tasks
-            class="eu.esdihumboldt.hale.task.schema.TargetMappingTaskProvider"
+            class="eu.esdihumboldt.hale.task.providers.schema.TargetMappingTaskProvider"
             defaultEnabled="false"
             description="%tasks.targetMappingTaskProvider.description"
             id="eu.esdihumboldt.hale.task.schema.TargetMappingTaskProvider"
             name="%tasks.targetMappingTaskProvider.name">
       </tasks>
       <tasks
-            class="eu.esdihumboldt.hale.task.schema.NilAttributeTaskProvider"
+            class="eu.esdihumboldt.hale.task.providers.schema.NilAttributeTaskProvider"
             defaultEnabled="true"
             description="%tasks.nilWarningsTaskProvider.description"
             id="eu.esdihumboldt.hale.task.schema.NilAttributeTaskProvider"
