@@ -15,7 +15,9 @@ package eu.esdihumboldt.cst.corefunctions;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
@@ -43,6 +45,8 @@ public class NilReasonFunction extends AbstractCstFunction {
 	 * Name of the NilReasonType parameter
 	 */
 	public static final String PARAMETER_NIL_REASON_TYPE = "NilReasonType";
+	
+	public static final String XML_ATTRIBUTES = "XmlAttributes";
 	
 	private String nilReason = null;
 	
@@ -127,11 +131,23 @@ public class NilReasonFunction extends AbstractCstFunction {
 		return target;
 	}
 	
-	
+	/**
+	 * contains the method used to set the nilReason attribute.
+	 * @param target
+	 * @param p
+	 * @param nrt
+	 */
 	private void setNilReason(Feature target, Property p, NilReasonType nrt) {
-//		LenientAttribute at = new LenientAttribute(
-//				"<" + p.getName().getLocalPart() +"/>", ((AttributeDescriptor) p.getDescriptor()), null);
-//		((SimpleFeature)target).setAttribute(p.getName(), at);
+		String key = p.getName().getNamespaceURI() + "/" + p.getName().getLocalPart();
+		if (target.getUserData().get(XML_ATTRIBUTES) != null) {
+			Map<String, String> oldXmlAttribs = (Map<String, String>) target.getUserData().get(XML_ATTRIBUTES);
+			oldXmlAttribs.put(key, nrt.toString());
+		}
+		else {
+			Map<String, String> value = new HashMap<String, String>();
+			value.put(key, nrt.toString());
+			target.getUserData().put(XML_ATTRIBUTES, value);
+		}
 	}
 
 
