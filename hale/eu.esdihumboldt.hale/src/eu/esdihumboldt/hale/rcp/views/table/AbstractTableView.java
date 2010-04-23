@@ -20,11 +20,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 import org.opengis.feature.Feature;
-import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.rcp.views.table.filter.FeatureSelectionListener;
 import eu.esdihumboldt.hale.rcp.views.table.filter.FeatureSelector;
-import eu.esdihumboldt.hale.rcp.views.table.tree.FeatureTreeViewer;
+import eu.esdihumboldt.hale.rcp.views.table.tree.DefinitionFeatureTreeViewer;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
  * Table view that shows information about certain features
@@ -38,7 +38,7 @@ public abstract class AbstractTableView extends ViewPart {
 	/**
 	 * The feature tree viewer
 	 */
-	private FeatureTreeViewer tree;
+	private DefinitionFeatureTreeViewer tree;
 	
 	private Composite selectorComposite;
 	
@@ -102,7 +102,7 @@ public abstract class AbstractTableView extends ViewPart {
 		treeComposite.setLayout(layout);
 		
 		// tree viewer
-		tree = new FeatureTreeViewer(treeComposite);
+		tree = new DefinitionFeatureTreeViewer(treeComposite); //new FeatureTreeViewer(treeComposite);
 		
 		// selector
 		setFeatureSelector(featureSelector);
@@ -157,7 +157,7 @@ public abstract class AbstractTableView extends ViewPart {
 		featureSelector.addSelectionListener(new FeatureSelectionListener() {
 			
 			@Override
-			public void selectionChanged(FeatureType type, Iterable<Feature> selection) {
+			public void selectionChanged(SchemaElement type, Iterable<Feature> selection) {
 				tree.setInput(type, selection);
 				onSelectionChange(selection);
 			}

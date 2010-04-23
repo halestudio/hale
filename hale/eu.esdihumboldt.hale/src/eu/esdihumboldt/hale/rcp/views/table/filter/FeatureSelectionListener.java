@@ -13,7 +13,8 @@
 package eu.esdihumboldt.hale.rcp.views.table.filter;
 
 import org.opengis.feature.Feature;
-import org.opengis.feature.type.FeatureType;
+
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
  * Feature selection listener interface
@@ -30,6 +31,6 @@ public interface FeatureSelectionListener {
 	 * @param type the feature type
 	 * @param selection the selected features
 	 */
-	public void selectionChanged(FeatureType type, Iterable<Feature> selection);
+	public void selectionChanged(SchemaElement type, Iterable<Feature> selection);
 	
 }

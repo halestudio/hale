@@ -29,21 +29,22 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.opengis.feature.Feature;
-import org.opengis.feature.type.FeatureType;
-import org.opengis.feature.type.PropertyDescriptor;
-import org.opengis.feature.type.PropertyType;
 
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNodeLabelProvider;
+import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
- * Tree viewer for features of a common feature type
+ * Tree viewer for features of a common feature type, based on the corresponding
+ * {@link SchemaElement}
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class FeatureTreeViewer {
+public class DefinitionFeatureTreeViewer {
 	
 	/**
 	 * Label provider for a feature column
@@ -85,7 +86,7 @@ public class FeatureTreeViewer {
 	 * 
 	 * @param parent the parent composite of the tree widget
 	 */
-	public FeatureTreeViewer(final Composite parent) {
+	public DefinitionFeatureTreeViewer(final Composite parent) {
 		super();
 		
 		treeViewer = new TreeViewer(parent, SWT.SINGLE | SWT.FULL_SELECTION | SWT.BORDER);
@@ -101,10 +102,10 @@ public class FeatureTreeViewer {
 	/**
 	 * Set the tree view input
 	 * 
-	 * @param featureType the feature type
+	 * @param type the feature type
 	 * @param features the features to display
 	 */
-	public void setInput(FeatureType featureType, Iterable<Feature> features) {
+	public void setInput(SchemaElement type, Iterable<Feature> features) {
 		// remove old columns
 		TreeColumn[] columns = treeViewer.getTree().getColumns();
 		if (columns != null) {
@@ -113,10 +114,10 @@ public class FeatureTreeViewer {
 			}
 		}
 		
-		// create row definitions from feature type
-		if (featureType != null) {
+		// create row definitions from type definition
+		if (type != null) {
 			DefaultTreeNode root = new DefaultTreeNode();
-			addProperties(root, featureType);
+			addProperties(root, type.getType());
 			// remove parent
 			for (TreeNode child : root.getChildren()) {
 				child.setParent(null);
@@ -131,9 +132,9 @@ public class FeatureTreeViewer {
 		Layout layout = treeViewer.getTree().getParent().getLayout();
 		
 		// add type column
-		if (featureType != null) {
+		if (type != null) {
 			TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.LEFT);
-			column.getColumn().setText(featureType.getName().getLocalPart());
+			column.getColumn().setText(type.getElementName().getLocalPart());
 			column.setLabelProvider(new TreeColumnViewerLabelProvider(
 					new MultiColumnTreeNodeLabelProvider(0)));
 			if (layout instanceof TreeColumnLayout) {
@@ -165,24 +166,22 @@ public class FeatureTreeViewer {
 	 * @param type the feature type
 	 */
 	private void addProperties(DefaultTreeNode parent,
-			FeatureType type) {
-		SortedMap<String, PropertyDescriptor> sortedProperties = new TreeMap<String, PropertyDescriptor>();
+			TypeDefinition type) {
+		SortedMap<String, AttributeDefinition> sortedProperties = new TreeMap<String, AttributeDefinition>();
 		
-		for (PropertyDescriptor pd : type.getDescriptors()) {
-			sortedProperties.put(pd.getName().getLocalPart(), pd);
+		for (AttributeDefinition attribute : type.getAttributes()) {
+			sortedProperties.put(attribute.getName(), attribute);
 		}
 		
-		for (Entry<String, PropertyDescriptor> entry : sortedProperties.entrySet()) {
+		for (Entry<String, AttributeDefinition> entry : sortedProperties.entrySet()) {
 			String name = entry.getKey();
-			String typeName = entry.getValue().getType().getName().getLocalPart();
+			String typeName = entry.getValue().getAttributeType().getName().getLocalPart();
 			
 			DefaultTreeNode childNode = new PropertyItem(name, name + ":<" + //$NON-NLS-1$
 					typeName + ">"); //$NON-NLS-1$
 			
-			PropertyType childType = entry.getValue().getType();
-			if (childType instanceof FeatureType) {
-				addProperties(childNode, (FeatureType) childType);
-			}
+			TypeDefinition childType = entry.getValue().getAttributeType();
+			addProperties(childNode, childType);
 			
 			parent.addChild(childNode);
 		}

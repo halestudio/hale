@@ -84,7 +84,7 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 		
 		private Iterable<Feature> selection;
 		
-		private FeatureType selectedType;
+		private SchemaElement selectedType;
 		
 		private final Image refreshImage;
 
@@ -150,8 +150,8 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 
 				@Override
 				public String getText(Object element) {
-					if (element instanceof FeatureType) {
-						return ((FeatureType) element).getName().getLocalPart();
+					if (element instanceof SchemaElement) {
+						return ((SchemaElement) element).getElementName().getLocalPart();
 					}
 					return super.getText(element);
 				}
@@ -167,7 +167,7 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 			});
 			
 			// filter field
-			filterField = new FeatureFilterField(selectedType, this, SWT.NONE);
+			filterField = new FeatureFilterField((selectedType == null)?(null):(selectedType.getType()), this, SWT.NONE);
 			filterField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 			filterField.addListener(new FilterListener() {
 				
@@ -276,18 +276,18 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 			Collection<SchemaElement> elements = ss.getSchema(schemaType);
 			
-			List<FeatureType> filteredTypes = new ArrayList<FeatureType>();
+			List<SchemaElement> filteredTypes = new ArrayList<SchemaElement>();
 			for (SchemaElement element : elements) {
 				if (!element.getType().isAbstract() && element.getType().isFeatureType()) {
-					filteredTypes.add(element.getFeatureType());
+					filteredTypes.add(element);
 				}
 			}
 			
-			Collections.sort(filteredTypes, new Comparator<FeatureType>() {
+			Collections.sort(filteredTypes, new Comparator<SchemaElement>() {
 
 				@Override
-				public int compare(FeatureType o1, FeatureType o2) {
-					return o1.getName().getLocalPart().compareTo(o2.getName().getLocalPart());
+				public int compare(SchemaElement o1, SchemaElement o2) {
+					return o1.getElementName().getLocalPart().compareTo(o2.getElementName().getLocalPart());
 				}
 				
 			});
@@ -310,27 +310,28 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 				}
 			}
 			
+			SchemaElement elementToSelect = null;
 			if (typeToSelect != null) {
 				// find type to select in filtered types
-				FeatureType typeFound = null;
-				Iterator<FeatureType> it = filteredTypes.iterator();
+				SchemaElement typeFound = null;
+				Iterator<SchemaElement> it = filteredTypes.iterator();
 				while (typeFound == null && it.hasNext()) {
-					FeatureType type = it.next();
-					if (type.getName().equals(typeToSelect.getName())) {
+					SchemaElement type = it.next();
+					if (type.getFeatureType().getName().equals(typeToSelect.getName())) { //XXX is Name.equals really working?
 						typeFound = type;
 					}
 				}
 				
-				typeToSelect = typeFound;
+				elementToSelect = typeFound;
 			}
 			
 			// fallback selection
-			if (typeToSelect == null && !filteredTypes.isEmpty()) {
-				typeToSelect = filteredTypes.iterator().next();
+			if (elementToSelect == null && !filteredTypes.isEmpty()) {
+				elementToSelect = filteredTypes.iterator().next();
 			}
 			
-			if (typeToSelect != null) {
-				featureTypes.setSelection(new StructuredSelection(typeToSelect));
+			if (elementToSelect != null) {
+				featureTypes.setSelection(new StructuredSelection(elementToSelect));
 			}
 			
 			layout(true, true);
@@ -357,9 +358,9 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 		 */
 		protected void updateSelection() {
 			if (!featureTypes.getSelection().isEmpty()) {
-				FeatureType featureType = (FeatureType) ((IStructuredSelection) featureTypes.getSelection()).getFirstElement();
+				SchemaElement type = (SchemaElement) ((IStructuredSelection) featureTypes.getSelection()).getFirstElement();
 				
-				filterField.setFeatureType(featureType);
+				filterField.setType(type.getType());
 				
 				SchemaType schemaType = getSchemaType();
 				
@@ -375,7 +376,7 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 					if (filter == null) {
 						Collection<? extends Feature> features = is.getFeaturesByType(
 							dataset, 
-							featureType);
+							type.getFeatureType());
 						
 						Iterator<? extends Feature> it = features.iterator();
 						int num = 0;
@@ -399,13 +400,13 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 				}
 				
 				selection = featureList;
-				selectedType = featureType;
+				selectedType = type;
 			}
 			else {
 				selection = null;
 				selectedType = null;
 				
-				filterField.setFeatureType(null);
+				filterField.setType(null);
 			}
 			
 			for (FeatureSelectionListener listener : listeners) {

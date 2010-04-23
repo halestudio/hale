@@ -36,11 +36,11 @@ import org.eclipse.ui.dialogs.ListDialog;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
-import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.filter.Filter;
 
 import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Field for editing a filter
@@ -68,7 +68,7 @@ public class FeatureFilterField extends Composite {
 	private final Button insertVar;
 	private final Button clearFilter;
 	
-	private FeatureType featureType;
+	private TypeDefinition type;
 	
 	private final Image insertVarImage;
 	private final Image openFormImage;
@@ -79,14 +79,14 @@ public class FeatureFilterField extends Composite {
 	/**
 	 * Create a new filter field
 	 * 
-	 * @param featureType the feature type
+	 * @param type the feature type
 	 * @param parent the parent composite
 	 * @param style the composite style
 	 */
-	public FeatureFilterField(FeatureType featureType, Composite parent, int style) {
+	public FeatureFilterField(TypeDefinition type, Composite parent, int style) {
 		super(parent, style);
 		
-		this.featureType = featureType;
+		this.type = type;
 		
 		GridLayout layout = new GridLayout(4, false);
 		layout.horizontalSpacing = 0;
@@ -143,7 +143,8 @@ public class FeatureFilterField extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				SortedSet<String> attributeNames = new TreeSet<String>();
-				for (PropertyDescriptor property : FeatureFilterField.this.featureType.getDescriptors()) {
+				//TODO adapt to TypeDefinition?
+				for (PropertyDescriptor property : FeatureFilterField.this.type.getFeatureType().getDescriptors()) {
 					attributeNames.add(property.getName().getLocalPart());
 				}
 				
@@ -174,7 +175,7 @@ public class FeatureFilterField extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				FeatureFilterFormDialog dialog = new FeatureFilterFormDialog(
-						Display.getCurrent().getActiveShell(), FeatureFilterField.this.featureType);
+						Display.getCurrent().getActiveShell(), FeatureFilterField.this.type.getFeatureType());
 				if (dialog.open() == FeatureFilterFormDialog.OK) {
 					String filter = dialog.getFilterExpression();
 					setFilterExpression(filter);
@@ -183,7 +184,7 @@ public class FeatureFilterField extends Composite {
 			
 		});
 		
-		setFeatureType(featureType);
+		setType(type);
 	}
 	
 	/**
@@ -191,8 +192,8 @@ public class FeatureFilterField extends Composite {
 	 *  
 	 * @param type the feature type
 	 */
-	public void setFeatureType(FeatureType type) {
-		featureType = type;
+	public void setType(TypeDefinition type) {
+		this.type = type;
 		
 		openForm.setEnabled(type != null);
 		insertVar.setEnabled(type != null);
