@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.opengis.feature.Feature;
@@ -36,20 +37,32 @@ public class PropertyItem extends DefaultTreeNode {
 	private static final Logger log = Logger.getLogger(PropertyItem.class);
 	
 	/**
+	 * Feature user data property name for XML attributes
+	 */
+	public static final String XML_ATTRIBUTES = "XmlAttributes";
+	
+	/**
 	 * The property name
 	 */
 	private final String propertyName;
+	
+	/**
+	 * if the property is represented as an XML attribute
+	 */
+	private final boolean isAttribute;
 
 	/**
 	 * Create a new property item
 	 * 
 	 * @param propertyName the property name
 	 * @param label the item label
+	 * @param isAttribute if the property is represented as an XML attribute
 	 */
-	public PropertyItem(String propertyName, String label) {
+	public PropertyItem(String propertyName, String label, boolean isAttribute) {
 		super(label);
 		
 		this.propertyName = propertyName;
+		this.isAttribute = isAttribute;
 	}
 	
 	/**
@@ -74,8 +87,25 @@ public class PropertyItem extends DefaultTreeNode {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private Object getValue(Feature feature) {
-		if (getParent() instanceof PropertyItem) {
+		if (isAttribute) {
+			// retrieve attribute value
+			Map<String, String> attributes = (Map<String, String>) feature.getUserData().get(XML_ATTRIBUTES);
+			if (attributes != null) { 
+				String key = "";
+				if (getParent() instanceof PropertyItem) {
+					key = ((PropertyItem) getParent()).propertyName;
+				}
+				key += "<" + propertyName + ">";
+				
+				return attributes.get(key);
+			}
+			else {
+				return null;
+			}
+		}
+		else if (getParent() instanceof PropertyItem) {
 			// property of a property
 			Object propertyValue = ((PropertyItem) getParent()).getValue(feature);
 			if (propertyValue != null) {

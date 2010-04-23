@@ -178,7 +178,7 @@ public class DefinitionFeatureTreeViewer {
 			String typeName = entry.getValue().getAttributeType().getName().getLocalPart();
 			
 			DefaultTreeNode childNode = new PropertyItem(name, name + ":<" + //$NON-NLS-1$
-					typeName + ">"); //$NON-NLS-1$
+					typeName + ">", entry.getValue().isAttribute()); //$NON-NLS-1$
 			
 			TypeDefinition childType = entry.getValue().getAttributeType();
 			addProperties(childNode, childType);

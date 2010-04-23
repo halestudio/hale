@@ -177,7 +177,7 @@ public class FeatureTreeViewer {
 			String typeName = entry.getValue().getType().getName().getLocalPart();
 			
 			DefaultTreeNode childNode = new PropertyItem(name, name + ":<" + //$NON-NLS-1$
-					typeName + ">"); //$NON-NLS-1$
+					typeName + ">", false); //$NON-NLS-1$
 			
 			PropertyType childType = entry.getValue().getType();
 			if (childType instanceof FeatureType) {
