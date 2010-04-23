@@ -406,11 +406,10 @@ public class SchemaTranslationController {
 						else if (cct[0].equals(CellCardinalityType.one_to_many)) {
 							cct[0] = CellCardinalityType.many_to_many;
 						}
-					} 
-					else {
-						encounteredTargetTypes.add(fc2.getAbout().getAbout());
 					}
 				}
+				
+				encounteredTargetTypes.add(fc2.getAbout().getAbout());
 			}
 		}
 		
