@@ -117,6 +117,7 @@ public class SchemaTranslationController {
 			CellCardinalityType thisInstanceCardinality = this.cardinalities.get(targetFtName)[1];
 			if (thisFTCardinality.equals(CellCardinalityType.one_to_one)) {
 				// there is exactly one relevant source FeatureType, which we now have to find.
+				//FIXME we get here also if there are multiple source feature types
 				String sourceFtName = this.ai.getAllMappedFeatureTypes(targetFtName).iterator().next();
 				if (thisInstanceCardinality.equals(CellCardinalityType.one_to_one)) {
 					// create one new Feature per source Feature

@@ -101,7 +101,9 @@ public class AlignmentIndex {
 				result.add(this.getKeyFromEntity((Entity) cell.getEntity2()));
 			}
 			else if (this.isTargetType(key)) {
-				result.add(this.getKeyFromEntity((Entity) cell.getEntity1()));
+				if (cell.getEntity1().getTransformation() != null) { // no augmentation
+					result.add(this.getKeyFromEntity((Entity) cell.getEntity1()));
+				}
 			}
 			else {
 				throw new RuntimeException("Unknown Entity String.");
