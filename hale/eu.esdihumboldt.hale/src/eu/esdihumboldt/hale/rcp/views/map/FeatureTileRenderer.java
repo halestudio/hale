@@ -46,15 +46,19 @@ public class FeatureTileRenderer implements TileProvider {
 	
 	private boolean contextInitialized = false;
 	
+	private FeaturePaintStatus status;
+	
 	/**
 	 * Creates a new renderer
 	 * 
 	 * @param type the data set type
+	 * @param status 
 	 */
-	public FeatureTileRenderer(final DatasetType type) {
+	public FeatureTileRenderer(final DatasetType type, final FeaturePaintStatus status) {
 		super();
 		
 		this.type = type;
+		this.status = status;
 		
 		configureRenderer();
 	}
@@ -77,7 +81,7 @@ public class FeatureTileRenderer implements TileProvider {
 	 * @param crs the coordinate reference system (may be null)
 	 */
 	public void updateMapContext(CoordinateReferenceSystem crs) {
-		renderer.setContext(MapUtils.buildMapContext(crs, type));
+		renderer.setContext(MapUtils.buildMapContext(crs, type, status));
 		contextInitialized = true;
 	}
 

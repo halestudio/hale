@@ -18,15 +18,18 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Region;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -78,6 +81,8 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	 */
 	private final FeatureTileRenderer transformedRenderer;
 	
+	private final FeaturePaintStatus status;
+	
 	/**
 	 * How the map is split
 	 */
@@ -100,10 +105,12 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	 * @param canvas the control
 	 */
 	public FeatureTilePainter(Control canvas) {
-		referenceRenderer = new FeatureTileRenderer(DatasetType.reference);
+		status = new FeaturePaintStatus();
+		
+		referenceRenderer = new FeatureTileRenderer(DatasetType.reference, status);
 		referenceCache = new TileCache(referenceRenderer, this);
 		
-		transformedRenderer = new FeatureTileRenderer(DatasetType.transformed);
+		transformedRenderer = new FeatureTileRenderer(DatasetType.transformed, status);
 		transformedCache = new TileCache(transformedRenderer, this);
 		
 		init(canvas, determineMapArea());
@@ -267,6 +274,57 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		}
 		
 		return null;
+	}
+
+	/**
+	 * @see AbstractTilePainter#paintControl(PaintEvent)
+	 */
+	@Override
+	public void paintControl(PaintEvent e) {
+		super.paintControl(e);
+		
+		// paint status
+		GC gc = e.gc;
+		
+		int failed = status.getReferenceFailed() + status.getTransformedFailed();
+		if (failed > 0) {
+			String text = failed + " features have no default geometry";
+			
+			Image errorImage = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
+			
+			Color bg = gc.getBackground();
+			
+			Color black = new Color(gc.getDevice(), 0, 0, 0);
+			Color white = new Color(gc.getDevice(), 255, 255, 255);
+			try {
+				gc.setBackground(white);
+				gc.setForeground(black);
+				
+				Point textExtent = gc.textExtent(text);
+				Rectangle imageExtent = (errorImage == null)?(new Rectangle(0, 0, 0, 0)):(errorImage.getBounds());
+				
+				int width = textExtent.x + imageExtent.width;
+				int height = Math.max(textExtent.y, imageExtent.height);
+				
+				// draw box
+				gc.fillRectangle(e.width - width - 3, e.height - height - 3, width + 2, height + 2);
+				gc.drawRectangle(e.width - width - 3, e.height - height - 3, width + 2, height + 2);
+				
+				// draw image
+				if (errorImage != null) {
+					gc.drawImage(errorImage, e.width - width - 2, e.height - height - 1 + ((height - imageExtent.height) / 2));
+				}
+				
+				// draw text
+				gc.drawText(text, e.width - width - 1 + imageExtent.width, e.height - height - 2 + ((height - textExtent.y) / 2), true);
+			}
+			finally {
+				black.dispose();
+				white.dispose();
+				
+				gc.setBackground(bg);
+			}
+		}
 	}
 
 	/**

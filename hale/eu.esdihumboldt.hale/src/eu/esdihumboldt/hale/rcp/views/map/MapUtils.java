@@ -90,11 +90,12 @@ public abstract class MapUtils {
 	/**
 	 * @param crs the {@link CoordinateReferenceSystem} to use.
 	 * @param type the {@link DatasetType} to render.
+	 * @param status 
 	 * @return a {@link MapContext} with the given CRS and the 
 	 * {@link FeatureCollection} identified by the given {@link DatasetType}.
 	 */
 	@SuppressWarnings("unchecked")
-	public static MapContext buildMapContext(CoordinateReferenceSystem crs, DatasetType type) {
+	public static MapContext buildMapContext(CoordinateReferenceSystem crs, DatasetType type, FeaturePaintStatus status) {
 		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 		
@@ -108,6 +109,8 @@ public abstract class MapUtils {
 			log.info("features bounds: " + fc.getBounds()); //$NON-NLS-1$
 			Style style = ss.getStyle(type);
 			
+			int failed = 0;
+			
 			Map<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> groupedFeatures = new HashMap<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>>();
 			Iterator it = fc.iterator();
 			while (it.hasNext()) {
@@ -115,16 +118,33 @@ public abstract class MapUtils {
 				
 				if (tmp instanceof SimpleFeature) {
 					SimpleFeature feature = (SimpleFeature) tmp;
-					FeatureCollection<SimpleFeatureType, SimpleFeature> collection = groupedFeatures.get(feature.getFeatureType());
-					if (collection == null) {
-						collection = new MemoryFeatureCollection(feature.getFeatureType());
-						groupedFeatures.put(feature.getFeatureType(), collection);
+					
+					if (validateFeature(feature)) {
+						FeatureCollection<SimpleFeatureType, SimpleFeature> collection = groupedFeatures.get(feature.getFeatureType());
+						if (collection == null) {
+							collection = new MemoryFeatureCollection(feature.getFeatureType());
+							groupedFeatures.put(feature.getFeatureType(), collection);
+						}
+						
+						collection.add(feature);
 					}
-					collection.add(feature);
+					else {
+						failed++;
+					}
 				}
 				else {
+					failed++;
 					log.error("Unrecognized Feature"); //$NON-NLS-1$
 				}
+			}
+			
+			switch (type) {
+			case reference:
+				status.setReferenceFailed(failed);
+				break;
+			case transformed:
+				status.setTransformedFailed(failed);
+				break;
 			}
 			
 			MapContext mc = new DefaultMapContext(crs);
@@ -137,6 +157,22 @@ public abstract class MapUtils {
 		else {
 			return new DefaultMapContext(crs);
 		}
+	}
+
+	/**
+	 * Validate if the given feature may be added to the layer
+	 * 
+	 * @param feature the feature
+	 * 
+	 * @return if the feature may be added to a layer for painting
+	 */
+	private static boolean validateFeature(SimpleFeature feature) {
+		// check if a default geometry exists
+		if (feature.getDefaultGeometry() == null) {
+			return false;
+		}
+				
+		return true;
 	}
 
 }
