@@ -123,7 +123,7 @@ public class SchemaTranslationController {
 					InstanceMap transformMap = InstanceCreationHandler.oneToOne(
 							targetFtName, sourceFtName, 
 							partitionedSourceFeatures, 
-							ai.getRenameCell(targetFtName).get(0));
+							ai.getRenameCell(targetFtName, sourceFtName));
 					_log.info("Handled FTCardinality.one_to_one/" +
 							"InstanceCardinality.one_to_one, created " 
 							+ transformMap.getTransformedFeatures().size() + " target features.");
@@ -140,7 +140,7 @@ public class SchemaTranslationController {
 					InstanceSplitMap transformMap = InstanceCreationHandler.oneToMany(
 							targetFtName, sourceFtName, 
 							partitionedSourceFeatures, 
-							ai.getRenameCell(targetFtName).get(0));
+							ai.getRenameCell(targetFtName, sourceFtName));
 					_log.info("Handled FTCardinality.one_to_one/" +
 							"InstanceCardinality.one_to_many, created " 
 							+ transformMap.getTransformedFeatures().size() + " target features.");
@@ -171,7 +171,7 @@ public class SchemaTranslationController {
 						InstanceMap transformMap = InstanceCreationHandler.oneToOne(
 								targetFtName, sourceFtName, 
 								partitionedSourceFeatures, 
-								ai.getRenameCell(targetFtName).get(0));
+								ai.getRenameCell(targetFtName, sourceFtName));
 						
 						_log.info("Handled FTCardinality.one_to_many/" +
 								"InstanceCardinality.one_to_one, created " 

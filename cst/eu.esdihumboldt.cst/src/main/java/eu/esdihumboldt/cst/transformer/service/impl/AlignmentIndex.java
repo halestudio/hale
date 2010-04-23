@@ -24,6 +24,7 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
 import eu.esdihumboldt.goml.align.Alignment;
@@ -306,7 +307,7 @@ public class AlignmentIndex {
 	 * @return a {@link List} with all {@link ICell}s containing an 
 	 * Equivalence relation, or an empty list if no such ICell is encountered.
 	 */
-	public List<ICell> getRenameCell(String ftName) {
+	private List<ICell> getRenameCell(String ftName) {
 		List<ICell> result = new ArrayList<ICell>();
 		for (ICell cell : this.getCellsPerEntity(ftName)) {
 			if (ICell.RelationType.Equivalence.equals(cell.getRelation())) {
@@ -314,6 +315,28 @@ public class AlignmentIndex {
 			}
 		}
 		return result;
+	}
+	
+	/**
+	 * Get the rename cell for the mapping from the given source and target
+	 * feature types
+	 * 
+	 * @param targetName the target feature type identifier 
+	 * @param sourceName the source feature type identifier
+	 * 
+	 * @return the rename cell
+	 */
+	public ICell getRenameCell(String targetName, String sourceName) {
+		List<ICell> candidates = getRenameCell(targetName);
+		
+		for (ICell cell : candidates) {
+			IEntity sourceEntity = cell.getEntity1();
+			if (sourceEntity.getAbout().getAbout().equals(sourceName)) {
+				return cell;
+			}
+		}
+		
+		return null;
 	}
 	
 	private String getKeyFromEntity(Entity e) {
