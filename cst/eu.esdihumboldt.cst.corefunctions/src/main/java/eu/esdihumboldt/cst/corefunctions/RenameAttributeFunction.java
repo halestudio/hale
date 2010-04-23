@@ -81,15 +81,18 @@ public class RenameAttributeFunction
 						// nested Feature was not yet created.
 						PropertyDescriptor pd = nestedFeature.getProperty(
 								attributeName).getDescriptor();
-						SimpleFeatureType nestedType = (SimpleFeatureType)((SimpleFeatureType)pd.getType()).getDescriptor(attributeName).getType();
-						SimpleFeatureImpl newNestedFeature = (SimpleFeatureImpl) SimpleFeatureBuilder.build(
+						SimpleFeatureType nestedType = (SimpleFeatureType)
+							((SimpleFeatureType)pd.getType()).getDescriptor(attributeName).getType();
+						SimpleFeatureImpl newNestedFeature = 
+							(SimpleFeatureImpl) SimpleFeatureBuilder.build(
 								nestedType, new Object[]{},	attributeName);
-						((SimpleFeature)nestedFeature).setAttribute(attributeName, Collections.singleton(newNestedFeature));
+						((SimpleFeature)nestedFeature).setAttribute(
+								attributeName, Collections.singleton(newNestedFeature));
 						nestedFeature = newNestedFeature;
 					}
 					else {
 						// nested Feature was already created.
-						// FIXME Thanks to the internal type SimpleFeatureImpl$Attribute, the only possibility could be reconstruction :(((
+						// FIXME Usage of SimpleFeatureImpl$Attribute instead of SFI
 						org.opengis.feature.Property p = nestedFeature.getProperty(attributeName);
 						PropertyDescriptor pd = p.getDescriptor();
 						if (pd.getType() instanceof SimpleFeatureTypeImpl) {
