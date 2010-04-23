@@ -98,8 +98,9 @@ public class NilReasonFunction extends AbstractCstFunction {
 	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.opengis.feature.Feature, org.opengis.feature.Feature)
 	 */
 	public Feature transform(Feature source, Feature target) {
-		if (NilReasonType.unpopulated.equals(this.nilReason)) {
-			if (this.onEntity.getLocalname().equals(target.getName().getLocalPart())) {
+		if (NilReasonType.unpopulated.name().equals(this.nilReason)) {
+			if (this.onEntity.getLocalname().equals(
+					target.getType().getName().getLocalPart())) {
 				// affects the entire entity
 				for (org.opengis.feature.Property p : target.getProperties()) {
 					this.setNilReason(target, p, NilReasonType.unpopulated);
@@ -111,8 +112,9 @@ public class NilReasonFunction extends AbstractCstFunction {
 						this.onEntity.getLocalname()), NilReasonType.unpopulated);
 			}
 		}
-		else if (NilReasonType.unknown.equals(this.nilReason)) {
-			if (this.onEntity.getLocalname().equals(target.getName().getLocalPart())) {
+		else if (NilReasonType.unknown.name().equals(this.nilReason)) {
+			if (this.onEntity.getLocalname().equals(
+					target.getType().getName().getLocalPart())) {
 				// affects the entire entity
 				for (org.opengis.feature.Property p : target.getProperties()) {
 					if (p.getValue() == null) {
@@ -138,7 +140,7 @@ public class NilReasonFunction extends AbstractCstFunction {
 	 * @param nrt
 	 */
 	private void setNilReason(Feature target, Property p, NilReasonType nrt) {
-		String key = p.getName().getNamespaceURI() + "/" + p.getName().getLocalPart() + "<nilReason>";
+		String key = p.getName().getLocalPart() + "<nilReason>";
 		if (target.getUserData().get(XML_ATTRIBUTES) != null) {
 			Map<String, String> oldXmlAttribs = (Map<String, String>) target.getUserData().get(XML_ATTRIBUTES);
 			oldXmlAttribs.put(key, nrt.toString());
