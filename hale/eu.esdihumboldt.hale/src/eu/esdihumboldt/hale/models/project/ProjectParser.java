@@ -211,7 +211,8 @@ public class ProjectParser {
 		monitor.subTask("Instances");
 		if (project.getInstanceData() != null) {
 			try {
-				URI file = new URI(URLDecoder.decode(project.getInstanceData().getPath(), "UTF-8"));
+//				URI file = new URI(URLDecoder.decode(project.getInstanceData().getPath(), "UTF-8"));
+				URI file = new URI(project.getInstanceData().getPath());
 				InputStream xml = new FileInputStream(new File(file));
 				Configuration configuration = new GMLConfiguration();
 				HaleGMLParser parser = new HaleGMLParser(configuration);
