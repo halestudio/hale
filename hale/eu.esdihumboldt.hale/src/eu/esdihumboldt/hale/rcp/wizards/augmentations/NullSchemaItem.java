@@ -115,7 +115,7 @@ public class NullSchemaItem implements SchemaItem {
 	 */
 	@Override
 	public TreeObjectType getType() {
-		return null;
+		return TreeObjectType.ROOT;
 	}
 
 	/**
