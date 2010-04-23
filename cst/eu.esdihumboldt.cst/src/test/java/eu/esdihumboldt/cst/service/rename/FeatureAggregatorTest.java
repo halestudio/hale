@@ -28,17 +28,17 @@ public class FeatureAggregatorTest {
 		ft = ftbuilder.buildFeatureType();
 		SimpleFeatureBuilder builder = new SimpleFeatureBuilder(ft);
 		Feature source1 = SimpleFeatureBuilder.build(
-				ft, new Object[]{"2"}, UUID.randomUUID().toString());
+				ft, new Object[]{new Integer(2)}, UUID.randomUUID().toString());
 		Feature source2 = SimpleFeatureBuilder.build(
-				ft, new Object[]{"3"}, UUID.randomUUID().toString());
+				ft, new Object[]{new Integer(2)}, UUID.randomUUID().toString());
 		List<Feature> features = new ArrayList<Feature>();
 		features.add(source1);
 		features.add(source2);
 
-		FeatureAggregator2 fa = new FeatureAggregator2(NameHelper.sourceLocalname, "aggregate:Collection_Sum");
+		FeatureAggregator2 fa = new FeatureAggregator2("SomeAttr", "aggregate:Collection_Sum");
 		List<Feature>results = fa.aggregate(features, ft);
 		assertTrue(results.size() == 1);
-		assertTrue(results.get(0).getProperty(NameHelper.sourceLocalname).getValue().toString() == "5");
+		assertTrue(results.get(0).getProperty("SomeAttr").getValue().toString().equals("4"));
 	}
 
 }

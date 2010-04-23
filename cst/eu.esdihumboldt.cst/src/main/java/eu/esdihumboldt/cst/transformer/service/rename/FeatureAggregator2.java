@@ -8,7 +8,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import org.geotools.data.DataUtilities;
 import org.geotools.factory.CommonFactoryFinder;
+
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -97,35 +99,12 @@ public class FeatureAggregator2 {
 	public List<Feature> aggregate(Collection<? extends Feature> source, FeatureType targetType) {
 		List<Feature> result = new ArrayList<Feature>();
 		SimpleFeature target = null;
-		
-//		if (this.aggregationRule.equals("Collection_Sum")){
-//			FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
-//			Expression exp = ff.property(this.onAttributeName);
-//			SumVisitor sumVisitor = new SumVisitor(exp);
-//			FeatureCollection sourceFeatures = FeatureCollections.newCollection(); 
-//			for (Feature f : source){
-//				sourceFeatures.add(f);
-//			}
-//			try {
-//				sourceFeatures.accepts(sumVisitor, null);
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			CalcResult res = sumVisitor.getResult();
-//
-//			Object sum = res.getValue();
-//			result.add(target);
-//			return result;
-//
-//		}
-		
-		
-		
 		FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
 		Function sum = ff.function(this.aggregationRule, ff.property(this.onAttributeName));
 		FeatureCollection sourceFeatures = FeatureCollections.newCollection(); 
+
 		for (Feature f : source){
+			
 			sourceFeatures.add(f);
 		}
 		Object value = sum.evaluate(sourceFeatures);
@@ -134,10 +113,8 @@ public class FeatureAggregator2 {
 					UUID.randomUUID().toString());
 			
 		target.setAttribute(this.onAttributeName,value);
-		
 		result.add(target);
 		return result;
-
 	}
 
 }
