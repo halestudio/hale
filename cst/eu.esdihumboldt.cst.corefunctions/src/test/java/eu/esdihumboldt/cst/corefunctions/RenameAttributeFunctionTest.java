@@ -74,6 +74,11 @@ public class RenameAttributeFunctionTest {
 	
 		// TODO add other combinations, including spatial ones, until coverage is 100%
 	}
+	
+	@Test
+	public void testTransformWithNesting() {
+		
+	}
 
 	private Feature buildFeature(String featureTypeName) {
 		SimpleFeatureType sft = this.getFeatureType(

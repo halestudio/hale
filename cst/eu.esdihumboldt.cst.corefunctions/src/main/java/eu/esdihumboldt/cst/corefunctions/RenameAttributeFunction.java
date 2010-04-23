@@ -15,10 +15,16 @@ import java.math.BigInteger;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureImpl;
+import org.geotools.feature.simple.SimpleFeatureTypeImpl;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.PropertyDescriptor;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -31,6 +37,7 @@ import com.vividsolutions.jts.geom.Polygon;
 
 import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
@@ -51,16 +58,57 @@ public class RenameAttributeFunction
 	
 	private String oldName;
 	private String newName;
+	private String nestedAttributePath = null;
 
 	/**
 	 * This transform implementation can copy any literal attribute value 
 	 * (Strings, Numbers).
 	 */
 	public Feature transform(Feature source, Feature target) {
+		
 		Class<?> bindingSource = source.getProperty(this.oldName).getDescriptor()
-								.getType().getBinding();
-		Class<?> bindingTarget = target.getProperty(this.newName).getDescriptor()
-								.getType().getBinding();
+									.getType().getBinding();
+		
+		Class<?> bindingTarget = String.class;
+		
+		if (nestedAttributePath != null) {
+			String[] nestedAttributeNames = this.nestedAttributePath.split("::"); 
+			// check whether nested attributes have already been created. if not, create.
+			Feature nestedFeature = target;
+			for (String attributeName : nestedAttributeNames) {
+				if (nestedFeature.getType() instanceof SimpleFeatureTypeImpl) {
+					if (nestedFeature.getProperty(attributeName) == null) {
+						// nested Feature was not yet created.
+						PropertyDescriptor pd = nestedFeature.getProperty(
+								attributeName).getDescriptor();
+						SimpleFeatureType nestedType = (SimpleFeatureType)((SimpleFeatureType)pd.getType()).getDescriptor(attributeName).getType();
+						SimpleFeatureImpl newNestedFeature = (SimpleFeatureImpl) SimpleFeatureBuilder.build(
+								nestedType, new Object[]{},	attributeName);
+						((SimpleFeature)nestedFeature).setAttribute(attributeName, Collections.singleton(newNestedFeature));
+						nestedFeature = newNestedFeature;
+					}
+					else {
+						// nested Feature was already created.
+						// FIXME Thanks to the internal type SimpleFeatureImpl$Attribute, the only possibility could be reconstruction :(((
+						org.opengis.feature.Property p = nestedFeature.getProperty(attributeName);
+						PropertyDescriptor pd = p.getDescriptor();
+						if (pd.getType() instanceof SimpleFeatureTypeImpl) {
+							nestedFeature = (Feature) nestedFeature.getProperty(attributeName);
+						}
+					}
+				}
+				else {
+					// break if it's not a complex property (i.e. a Feature), since we can't go down anymore
+					break;
+				}
+			}
+			bindingTarget = nestedFeature.getProperty(this.newName).getDescriptor()
+										.getType().getBinding();
+		}
+		else {
+			bindingTarget = target.getProperty(this.newName).getDescriptor()
+										.getType().getBinding();
+		}
 		
 		// only do a direct copy if the two Properties have equal bindings.
 		if (bindingSource.equals(bindingTarget)) {
@@ -122,6 +170,13 @@ public class RenameAttributeFunction
 	public boolean configure(ICell cell) {
 		this.oldName = ((Property)cell.getEntity1()).getLocalname();
 		this.newName = ((Property)cell.getEntity2()).getLocalname();
+		for (IParameter p : cell.getEntity1().getTransformation().getParameters()) {
+			if (p.getName().equals(NESTED_ATTRIBUTE_PATH)) {
+				if (p.getValue() != null && !p.getValue().equals("")) {
+					this.nestedAttributePath = p.getValue();
+				}
+			}
+		}
 		return true;
 	}
 	
