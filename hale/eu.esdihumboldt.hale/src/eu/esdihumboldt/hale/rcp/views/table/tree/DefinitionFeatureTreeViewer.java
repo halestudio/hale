@@ -16,6 +16,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -45,6 +46,8 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @version $Id$ 
  */
 public class DefinitionFeatureTreeViewer {
+	
+	private static Logger _log = Logger.getLogger(DefinitionFeatureTreeViewer.class);
 	
 	/**
 	 * Label provider for a feature column
@@ -175,15 +178,20 @@ public class DefinitionFeatureTreeViewer {
 		
 		for (Entry<String, AttributeDefinition> entry : sortedProperties.entrySet()) {
 			String name = entry.getKey();
-			String typeName = entry.getValue().getAttributeType().getName().getLocalPart();
-			
-			DefaultTreeNode childNode = new PropertyItem(name, name + ":<" + //$NON-NLS-1$
-					typeName + ">", entry.getValue().isAttribute()); //$NON-NLS-1$
-			
-			TypeDefinition childType = entry.getValue().getAttributeType();
-			addProperties(childNode, childType);
-			
-			parent.addChild(childNode);
+			if (entry.getValue().getAttributeType() != null) {
+				String typeName = entry.getValue().getAttributeType().getName().getLocalPart();
+				
+				DefaultTreeNode childNode = new PropertyItem(name, name + ":<" + //$NON-NLS-1$
+						typeName + ">", entry.getValue().isAttribute()); //$NON-NLS-1$
+				
+				TypeDefinition childType = entry.getValue().getAttributeType();
+				addProperties(childNode, childType);
+				
+				parent.addChild(childNode);
+			}
+			else {
+				_log.warn("An attribute without an AttributeType was encountered: " + name);
+			}
 		}
 	}
 
