@@ -334,16 +334,20 @@ public class TileCache implements TileProvider {
 			 */
 			tileBackground.drawTileBackground(gc, 0, 0, width, height);
 			
-			gc.drawImage(
-					sourceImage,
-					partX,
-					partY,
-					partWidth,
-					partHeight,
-					0,
-					0,
-					width,
-					height);
+			try {
+				gc.drawImage(
+						sourceImage,
+						partX,
+						partY,
+						partWidth,
+						partHeight,
+						0,
+						0,
+						width,
+						height);
+			} catch (IllegalArgumentException e) {
+				log.error("Error drawing loading image");
+			}
 			
 			return drawImage.getImageData();
 		}
