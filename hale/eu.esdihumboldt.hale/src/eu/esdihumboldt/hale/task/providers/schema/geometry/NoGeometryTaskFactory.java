@@ -67,7 +67,7 @@ public class NoGeometryTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public String getTitle(Task task) {
-			return "Define a geometry descriptor for " + ((SchemaElement) task.getMainContext()).getElementName().getLocalPart();
+			return "No default geometry descriptor found for " + ((SchemaElement) task.getMainContext()).getElementName().getLocalPart();
 		}
 
 		/**
