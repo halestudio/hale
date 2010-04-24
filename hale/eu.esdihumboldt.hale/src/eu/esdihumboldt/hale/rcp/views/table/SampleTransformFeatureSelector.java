@@ -186,7 +186,7 @@ public class SampleTransformFeatureSelector implements FeatureSelector {
 				Iterator<Feature> it = transformed.iterator();
 				while (it.hasNext()) {
 					Feature feature = it.next();
-					FeatureType type = ((SimpleFeature) feature).getFeatureType();
+					FeatureType type = feature.getType();
 					SchemaElement element = elementMap.get(type);
 					List<Feature> featureList = featureMap.get(element);
 					if (featureList == null) {
