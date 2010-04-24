@@ -12,23 +12,19 @@
 
 package eu.esdihumboldt.cst.transformer.service.rename;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureCollections;
-import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.FeatureImpl;
 import org.geotools.feature.simple.SimpleFeatureImpl;
 import org.opengis.feature.Feature;
+import org.opengis.feature.GeometryAttribute;
 import org.opengis.feature.IllegalAttributeException;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.cst.CstFunction;
+import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.service.impl.TargetSchemaProvider;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
@@ -61,26 +57,6 @@ public class RenameFeatureFunction
 	private FeatureSpatialJoiner spatialjoiner = null;
 
 	private String newName;
-	
-
-	public static final String TARGET_FEATURETYPE_NAME = "ENTITY_2_NAME";
-
-	@SuppressWarnings("unchecked")
-	public FeatureCollection<? extends FeatureType, ? extends Feature> transform(
-			FeatureCollection<? extends FeatureType, ? extends Feature> fc) {
-		
-		FeatureCollection targetfc = FeatureCollections.newCollection();
-		SimpleFeatureType targetType = this.getTargetType(this.newName);
-		for (Iterator<? extends Feature> i = fc.iterator(); i.hasNext();) {
-			Feature source = i.next();
-			Feature target = SimpleFeatureBuilder.build(
-					targetType, new Object[]{}, source.getIdentifier().getID());
-			
-			// copy geometry by default if possible
-			this.copyGeometry(source, target);
-		}
-		return targetfc;
-	}
 
 	/**
 	 * Note that the target parameter is ignored by this transformer.
@@ -88,8 +64,7 @@ public class RenameFeatureFunction
 	 */
 	public Feature transform(Feature source, Feature target) {
 		SimpleFeatureType targetType = this.getTargetType(this.newName);
-		target = SimpleFeatureBuilder.build(
-				targetType, new Object[]{}, source.getIdentifier().getID());
+		target = FeatureBuilder.buildFeature(targetType, source);
 		
 		// copy geometry by default if possible
 		this.copyGeometry(source, target);
@@ -98,19 +73,19 @@ public class RenameFeatureFunction
 	
 	private void copyGeometry(Feature source, Feature target) {
 		try {
-			if (source.getDefaultGeometryProperty() != null 
-					&& target.getDefaultGeometryProperty() != null) {
-				((SimpleFeatureImpl)target).setDefaultGeometry(
-						source.getDefaultGeometryProperty().getValue());
-				
+			if (source.getDefaultGeometryProperty() != null) {
+				Object sourceGeom = source.getDefaultGeometryProperty().getValue();
+				if (target instanceof SimpleFeatureImpl) {
+					((SimpleFeatureImpl)target).setDefaultGeometry(sourceGeom);
+				}
+				else if (target instanceof FeatureImpl) {
+					GeometryAttribute gattr = target.getDefaultGeometryProperty();
+					gattr.setValue(sourceGeom);
+				}
 			}
 		} catch (IllegalAttributeException iea) {
 			throw new RuntimeException(iea.getMessage());
 		}
-	}
-
-	public boolean configure(Map<String, String> parametersValues) {
-		return false;
 	}
 
 	
@@ -163,7 +138,7 @@ public class RenameFeatureFunction
 	 * {@link Feature}s from a single one.
 	 * @param sourceFeature
 	 * @param targetFeatures
-	 * @return
+	 * @return a {@link List} with the splitted {@link Feature}s.
 	 */
 	public List<Feature> transformSplit(Feature sourceFeature, List<Feature> targetFeatures) {
 		if (this.splitter != null) {
@@ -172,4 +147,6 @@ public class RenameFeatureFunction
 		}
 		return targetFeatures;
 	}
+	
+	
 }

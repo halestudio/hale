@@ -9,6 +9,7 @@ Export-Package: eu.esdihumboldt.cst,
  eu.esdihumboldt.cst.transformer.configuration,
  eu.esdihumboldt.cst.transformer.configuration.osgi,
  eu.esdihumboldt.cst.transformer.exceptions,
+ eu.esdihumboldt.cst.transformer.fc,
  eu.esdihumboldt.cst.transformer.service,
  eu.esdihumboldt.cst.transformer.service.rename
 Require-Bundle: eu.esdihumboldt.commons;bundle-version="2.0.1",

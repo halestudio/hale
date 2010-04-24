@@ -24,11 +24,13 @@ import org.apache.log4j.Logger;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.FeatureIterator;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.metadata.iso.lineage.LineageImpl;
 import org.geotools.metadata.iso.lineage.ProcessStepImpl;
 import org.geotools.util.SimpleInternationalString;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.metadata.lineage.Lineage;
 
@@ -37,6 +39,7 @@ import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.transformer.capabilities.impl.FunctionDescriptionImpl;
+import eu.esdihumboldt.cst.transformer.fc.CstFeatureCollection;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory.ToleranceLevel;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
@@ -66,8 +69,10 @@ public class SchemaTranslationController {
 	
 	/**
 	 * Constructor
-	 * @param tl 
-	 * 
+	 * @param tl the {@link ToleranceLevel} that this {@link SchemaTranslationController} 
+	 * should use in handling errors.
+	 * @param createLineage true if {@link Lineage} metadata should be added to 
+	 * transformed features.
 	 * @param alignment the alignment
 	 */
 	public SchemaTranslationController(ToleranceLevel tl, 
@@ -231,7 +236,20 @@ public class SchemaTranslationController {
 		FeatureCollection result = FeatureCollections.newCollection();
 		
 		for (List<Feature> featureList : partitionedTargetFeatures.values()) {
-			result.addAll(featureList);
+			for (Feature complexFeature : featureList) {
+				// create new SimpleFeature from complexFeature
+				Feature simplifiedFeature = SimpleFeatureBuilder.build(
+						(SimpleFeatureType)complexFeature.getType(), 
+						new Object[]{},
+						complexFeature.getIdentifier().getID());
+				for (org.opengis.feature.Property p : complexFeature.getProperties()) {
+					simplifiedFeature.getProperty(p.getName()).setValue(p.getValue());
+					simplifiedFeature.getProperty(p.getName()).getUserData().putAll(p.getUserData());
+				}
+				simplifiedFeature.setDefaultGeometryProperty(
+						complexFeature.getDefaultGeometryProperty());
+				result.add(simplifiedFeature);
+			}
 		}
 		
 		return result;
@@ -338,15 +356,14 @@ public class SchemaTranslationController {
 					+ new FunctionDescriptionImpl(cell).toString()));
 		}	
 		
-		Object o = ((SimpleFeature) target).getUserData().get("METADATA_LINEAGE");
+		Object o = target.getUserData().get("METADATA_LINEAGE");
 		if (o != null) {
 			((LineageImpl)o).getProcessSteps().add(ps);
 		}
 		else {
 			Lineage lineage = new LineageImpl();
 			((LineageImpl)lineage).getProcessSteps().add(ps);
-			((SimpleFeature) target)
-				.getUserData().put("METADATA_LINEAGE", lineage);
+			target.getUserData().put("METADATA_LINEAGE", lineage);
 		}
 	}
 	
