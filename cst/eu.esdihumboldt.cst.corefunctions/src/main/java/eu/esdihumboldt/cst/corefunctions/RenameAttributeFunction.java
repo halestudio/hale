@@ -18,11 +18,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.feature.simple.SimpleFeatureImpl;
-import org.geotools.feature.simple.SimpleFeatureTypeImpl;
+import org.geotools.feature.FeatureImpl;
 import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 
@@ -38,6 +35,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.cst.transformer.service.rename.FeatureBuilder;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
@@ -54,6 +52,9 @@ import eu.esdihumboldt.goml.rdf.Resource;
 public class RenameAttributeFunction 
 	extends AbstractCstFunction {
 
+	/**
+	 * Constant for the nestedAttributePath parameter that this function uses.
+	 */
 	public static final String NESTED_ATTRIBUTE_PATH = "nestedAttributePath";
 	
 	private String oldName;
@@ -71,41 +72,35 @@ public class RenameAttributeFunction
 		
 		Class<?> bindingTarget = String.class;
 		
+		org.opengis.feature.Property targetProperty = target.getProperty(this.newName);
+		
 		if (nestedAttributePath != null) {
 			String[] nestedAttributeNames = this.nestedAttributePath.split("::"); 
 			// check whether nested attributes have already been created. if not, create.
 			Feature nestedFeature = target;
 			for (String attributeName : nestedAttributeNames) {
-				if (nestedFeature.getType() instanceof SimpleFeatureTypeImpl) {
-					if (nestedFeature.getProperty(attributeName) == null) {
-						// nested Feature was not yet created.
-						PropertyDescriptor pd = nestedFeature.getProperty(
-								attributeName).getDescriptor();
-						SimpleFeatureType nestedType = (SimpleFeatureType)
-							((SimpleFeatureType)pd.getType()).getDescriptor(attributeName).getType();
-						SimpleFeatureImpl newNestedFeature = 
-							(SimpleFeatureImpl) SimpleFeatureBuilder.build(
-								nestedType, new Object[]{},	attributeName);
-						((SimpleFeature)nestedFeature).setAttribute(
-								attributeName, Collections.singleton(newNestedFeature));
-						nestedFeature = newNestedFeature;
-					}
-					else {
+				if (nestedFeature instanceof FeatureImpl) {
+					if (nestedFeature.getProperty(attributeName) != null) {
 						// nested Feature was already created.
-						// FIXME Usage of SimpleFeatureImpl$Attribute instead of SFI
-						org.opengis.feature.Property p = nestedFeature.getProperty(attributeName);
-						PropertyDescriptor pd = p.getDescriptor();
-						if (pd.getType() instanceof SimpleFeatureTypeImpl) {
-							nestedFeature = (Feature) nestedFeature.getProperty(attributeName);
+						org.opengis.feature.Property nestedProperty = nestedFeature.getProperty(attributeName);
+						if (nestedProperty.getValue() != null 
+								&& nestedProperty.getType().getBinding().equals(Collection.class)) {
+							nestedFeature = (Feature) ((Collection) nestedProperty.getValue()).iterator().next();
 						}
+						else {
+							break;
+						}
+						
 					}
 				}
 				else {
 					// break if it's not a complex property (i.e. a Feature), since we can't go down anymore
 					break;
 				}
+				
 			}
-			bindingTarget = nestedFeature.getProperty(this.newName).getDescriptor()
+			targetProperty = nestedFeature.getProperty(nestedAttributeNames[nestedAttributeNames.length - 1]);
+			bindingTarget = targetProperty.getDescriptor()
 										.getType().getBinding();
 		}
 		else {
@@ -115,39 +110,39 @@ public class RenameAttributeFunction
 		
 		// only do a direct copy if the two Properties have equal bindings.
 		if (bindingSource.equals(bindingTarget)) {
-			((SimpleFeature)target).setAttribute(
-					this.newName, source.getProperty(this.oldName).getValue());
+			targetProperty.setValue(
+					source.getProperty(this.oldName).getValue());
 		}
 		else if (Geometry.class.isAssignableFrom(bindingSource) 
 				&& Geometry.class.isAssignableFrom(bindingTarget)) {
 			Object value = this.convertSpatialType(
 					bindingSource, bindingTarget, 
 					(Geometry) source.getProperty(this.oldName).getValue());
-			((SimpleFeature)target).setAttribute(this.newName, value);
+			targetProperty.setValue(value);
 		}
 		else if (bindingSource.equals(Integer.class) 
 				&& bindingTarget.equals(Integer.class)) {
 			Integer value = Integer.parseInt(source.getProperty(
 					this.oldName).getValue().toString());
-			((SimpleFeature)target).setAttribute(this.newName, value);
+			targetProperty.setValue(value);
 		}
 		else if (bindingSource.equals(String.class) 
 				&& bindingTarget.equals(Long.class)) {
 			Long value = Long.parseLong(source.getProperty(
 					this.oldName).getValue().toString());
-			((SimpleFeature)target).setAttribute(this.newName, value);
+			targetProperty.setValue(value);
 		}
 		else if (bindingSource.equals(String.class) 
 				&& bindingTarget.equals(Float.class)) {
 			Float value = Float.parseFloat(source.getProperty(
 					this.oldName).getValue().toString());
-			((SimpleFeature)target).setAttribute(this.newName, value);
+			targetProperty.setValue(value);
 		}
 		else if (bindingSource.equals(String.class) 
 				&& bindingTarget.equals(Double.class)) {
 			Double value = Double.parseDouble(source.getProperty(
 					this.oldName).getValue().toString());
-			((SimpleFeature)target).setAttribute(this.newName, value);
+			targetProperty.setValue(value);
 		}
 		else if (bindingTarget.equals(String.class) && 
 				(bindingSource.equals(Float.class) 
@@ -155,9 +150,8 @@ public class RenameAttributeFunction
 						|| bindingSource.equals(Integer.class) 
 						|| bindingSource.equals(Long.class)
 						|| bindingSource.equals(BigInteger.class))) {
-			((SimpleFeature)target).setAttribute(
-					this.newName, source.getProperty(
-							this.oldName).getValue().toString());
+			targetProperty.setValue(
+					source.getProperty(this.oldName).getValue());
 		}
 		else {
 			throw new UnsupportedOperationException("For the given source (" 
