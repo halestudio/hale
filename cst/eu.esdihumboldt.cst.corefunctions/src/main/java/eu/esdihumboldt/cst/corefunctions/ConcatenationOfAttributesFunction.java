@@ -13,18 +13,8 @@ package eu.esdihumboldt.cst.corefunctions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
-import org.geotools.feature.simple.SimpleFeatureImpl;
 import org.opengis.feature.Feature;
-
-import com.iabcinc.jmep.Environment;
-import com.iabcinc.jmep.Expression;
-import com.iabcinc.jmep.XExpression;
-import com.iabcinc.jmep.hooks.Constant;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 
 import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.align.ICell;
@@ -138,9 +128,7 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 				finalConcatString += thisElement;
 			}
 		}
-
-		((SimpleFeatureImpl) target).setAttribute(this.targetPropertyname,
-				finalConcatString);
+		target.getProperty(this.targetPropertyname).setValue(finalConcatString);
 
 		return target;
 	}

@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.geotools.feature.simple.SimpleFeatureImpl;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.PropertyDescriptor;
 
@@ -54,7 +53,14 @@ public class NetworkExpansionFunction extends AbstractCstFunction {
 	private String bufferExpression = "10.0";
 	private int capStyle = BufferParameters.CAP_ROUND;
 	
+	/**
+	 * Name of the Parameter for buffer width.
+	 */
 	public static final String BUFFERWIDTH = "BUFFERWIDTH";
+	
+	/**
+	 * Name of the parameter for the Cap Style (see {@link BufferParameters}).
+	 */
 	public static final String CAPSTYLE = "CAPSSTYLE";
 	
 	protected Map<String, Class<?>>  parameters = new HashMap<String, Class<?>>();
@@ -62,7 +68,7 @@ public class NetworkExpansionFunction extends AbstractCstFunction {
 	
 	
 	
-	public void setBufferExpression(String bufferExpression) {
+	private void setBufferExpression(String bufferExpression) {
 		this.bufferExpression = bufferExpression;
 	}
 
@@ -91,8 +97,8 @@ public class NetworkExpansionFunction extends AbstractCstFunction {
 				BufferBuilder bb = new BufferBuilder(new BufferParameters());
 				new_geometry = bb.buffer(old_geometry, Double.parseDouble(
 						result.toString()));
-				((SimpleFeatureImpl)target).setAttribute(
-						this.targetProperty.getLocalname(), new_geometry);
+				target.getProperty(
+						this.targetProperty.getLocalname()).setValue(new_geometry);
 			} catch (Exception ex) {
 				if (!ex.getClass().equals(TopologyException.class)) {
 					throw new RuntimeException(ex);

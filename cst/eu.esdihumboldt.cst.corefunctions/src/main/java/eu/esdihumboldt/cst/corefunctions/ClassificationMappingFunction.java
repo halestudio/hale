@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.geotools.feature.simple.SimpleFeatureImpl;
 import org.opengis.feature.Feature;
 
 import eu.esdihumboldt.cst.align.ICell;
@@ -112,10 +111,10 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 								this.targetProperty).getType().getBinding())) {
 					Collection<String> c = new ArrayList<String>();
 					c.add(targetClassValue);
-					((SimpleFeatureImpl)target).setAttribute(this.targetProperty, c);
+					target.getProperty(this.targetProperty).setValue(c);
 				}
 				else {
-					((SimpleFeatureImpl)target).setAttribute(this.targetProperty, targetClassValue);
+					target.getProperty(this.targetProperty).setValue(targetClassValue);
 				}
 			}
 		}

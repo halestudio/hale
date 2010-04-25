@@ -31,7 +31,6 @@ public class FunctionsCellTest {
 	
 	public static List<CstFunction> getTestFunctions() {
 		List<CstFunction> func = new ArrayList<CstFunction>();	
-		func.add(new SpatialTypeConversionFunction());
 		func.add(new NilReasonFunction());
 		func.add(new DateExtractionFunction());
 		func.add(new BoundingBoxFunction());

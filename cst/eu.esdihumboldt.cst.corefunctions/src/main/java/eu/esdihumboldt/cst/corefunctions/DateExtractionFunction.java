@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.PropertyDescriptor;
 
 import eu.esdihumboldt.cst.align.ICell;
@@ -132,17 +131,17 @@ public class DateExtractionFunction extends AbstractCstFunction {
 
 		PropertyDescriptor pd = target.getProperty(
 				this.targetProperty.getLocalname()).getDescriptor();
+		
+		org.opengis.feature.Property p = target.getProperty(this.targetProperty.getLocalname());
 
 		if (pd.getType().getBinding().equals(String.class)) {
-			((SimpleFeature) target).setAttribute(this.targetProperty
-					.getLocalname(), sdf.format(sourceDate));
+			p.setValue(sdf.format(sourceDate));
 		}
 		
 		if (pd.getType().getBinding().equals(Date.class) || Date.class.isAssignableFrom(
 				target.getProperty(
 						this.targetProperty.getLocalname()).getType().getBinding())) {
-				((SimpleFeature) target).setAttribute(this.targetProperty
-						.getLocalname(), sourceDate);
+			p.setValue(sourceDate);
 			
 		}
 		

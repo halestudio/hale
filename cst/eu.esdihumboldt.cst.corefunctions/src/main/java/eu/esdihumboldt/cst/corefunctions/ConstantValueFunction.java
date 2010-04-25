@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.PropertyDescriptor;
 
 import eu.esdihumboldt.cst.align.ICell;
@@ -86,38 +85,38 @@ public class ConstantValueFunction extends AbstractCstFunction {
 		PropertyDescriptor pd = target.getProperty(
 				this.targetProperty.getLocalname()).getDescriptor();
 		
+		org.opengis.feature.Property p = target.getProperty(this.targetProperty.getLocalname());
+		
 		if (pd.getType().getBinding().isPrimitive()) {
 			
 			if (pd.getType().getBinding().equals(Integer.class)){
-				((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),(Integer)this.defaultValue);
+				p.setValue((Integer)this.defaultValue);
 			}
 			else if (pd.getType().getBinding().equals(Short.class)){
-				((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),(Short)this.defaultValue);
+				p.setValue((Short)this.defaultValue);
 			}
 			else if (pd.getType().getBinding().equals(Double.class)){
-				((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),(Double)this.defaultValue);
+				p.setValue((Double)this.defaultValue);
 			}
 			else if (pd.getType().getBinding().equals(Long.class)){
-				((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),(Long)this.defaultValue);
+				p.setValue((Long)this.defaultValue);
 			}
 			else if (pd.getType().getBinding().equals(Float.class)){
-				((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),(Float)this.defaultValue);
+				p.setValue((Float)this.defaultValue);
 			}
 			else if (pd.getType().getBinding().equals(Boolean.class)){
-				((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),(Boolean)this.defaultValue);
+				p.setValue((Boolean)this.defaultValue);
 			}
 			else if (pd.getType().getBinding().equals(Byte.class)){
-				((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),(Byte)this.defaultValue);
+				p.setValue((Byte)this.defaultValue);
 			}
 			else {
-				((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),(Character)this.defaultValue);
+				p.setValue((Character)this.defaultValue);
 			}
 
 		}
 		else if (pd.getType().getBinding().equals(String.class)){
-			
-			((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),this.defaultValue.toString());
-
+			p.setValue(this.defaultValue.toString());
 		}
 		
 		return target;

@@ -78,10 +78,12 @@ public class RenameAttributeFunction
 				if (nestedFeature instanceof FeatureImpl) {
 					if (nestedFeature.getProperty(attributeName) != null) {
 						// nested Feature was already created.
-						org.opengis.feature.Property nestedProperty = nestedFeature.getProperty(attributeName);
+						org.opengis.feature.Property nestedProperty = 
+							nestedFeature.getProperty(attributeName);
 						if (nestedProperty.getValue() != null 
 								&& nestedProperty.getType().getBinding().equals(Collection.class)) {
-							nestedFeature = (Feature) ((Collection<?>) nestedProperty.getValue()).iterator().next();
+							nestedFeature = (Feature) ((Collection<?>) 
+									nestedProperty.getValue()).iterator().next();
 						}
 						else {
 							break;

@@ -14,7 +14,6 @@ package eu.esdihumboldt.cst.corefunctions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.geotools.feature.simple.SimpleFeatureImpl;
 import org.opengis.feature.Feature;
 
 import com.iabcinc.jmep.Environment;
@@ -140,7 +139,7 @@ public class OrdinatesToPointFunction
 			GeometryFactory geomFactory = new GeometryFactory();
 			Geometry new_geometry = geomFactory.createPoint(new Coordinate(xResult, yResult));
 			
-			((SimpleFeatureImpl)target).setAttribute(this.targetPropertyname, new_geometry);
+			target.getProperty(this.targetPropertyname).setValue(new_geometry);
 		} catch (XExpression e) {
 			throw new RuntimeException("Evaluation of the given expression failed: ", e);
 		}

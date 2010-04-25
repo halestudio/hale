@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeature;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -55,7 +54,7 @@ public class CentroidFunction extends AbstractCstFunction {
 				this.sourceProperty.getLocalname()).getValue();
 		//get Centroid from old geom and store in new geom
 		Object newGeometry = geom.getCentroid();
-		((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),newGeometry);
+		target.getProperty(this.targetProperty.getLocalname()).setValue(newGeometry);
 
 		return target;
 	}
