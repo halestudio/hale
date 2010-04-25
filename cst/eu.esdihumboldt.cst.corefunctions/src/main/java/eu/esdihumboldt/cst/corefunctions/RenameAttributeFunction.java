@@ -15,13 +15,10 @@ import java.math.BigInteger;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.geotools.feature.FeatureImpl;
 import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.PropertyDescriptor;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -35,7 +32,6 @@ import com.vividsolutions.jts.geom.Polygon;
 import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.transformer.service.rename.FeatureBuilder;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
@@ -85,12 +81,11 @@ public class RenameAttributeFunction
 						org.opengis.feature.Property nestedProperty = nestedFeature.getProperty(attributeName);
 						if (nestedProperty.getValue() != null 
 								&& nestedProperty.getType().getBinding().equals(Collection.class)) {
-							nestedFeature = (Feature) ((Collection) nestedProperty.getValue()).iterator().next();
+							nestedFeature = (Feature) ((Collection<?>) nestedProperty.getValue()).iterator().next();
 						}
 						else {
 							break;
 						}
-						
 					}
 				}
 				else {
