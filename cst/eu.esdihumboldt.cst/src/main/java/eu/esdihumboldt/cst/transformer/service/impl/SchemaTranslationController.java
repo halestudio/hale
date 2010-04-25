@@ -29,17 +29,15 @@ import org.geotools.metadata.iso.lineage.LineageImpl;
 import org.geotools.metadata.iso.lineage.ProcessStepImpl;
 import org.geotools.util.SimpleInternationalString;
 import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.metadata.lineage.Lineage;
 
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
-import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.transformer.capabilities.impl.FunctionDescriptionImpl;
-import eu.esdihumboldt.cst.transformer.fc.CstFeatureCollection;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory.ToleranceLevel;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
@@ -234,7 +232,7 @@ public class SchemaTranslationController {
 			}
 		}
 		FeatureCollection result = FeatureCollections.newCollection();
-		
+		long timeStart = System.currentTimeMillis();
 		for (List<Feature> featureList : partitionedTargetFeatures.values()) {
 			for (Feature complexFeature : featureList) {
 				// create new SimpleFeature from complexFeature
@@ -248,10 +246,11 @@ public class SchemaTranslationController {
 				}
 				simplifiedFeature.setDefaultGeometryProperty(
 						complexFeature.getDefaultGeometryProperty());
+				simplifiedFeature.getUserData().putAll(complexFeature.getUserData());
 				result.add(simplifiedFeature);
 			}
 		}
-		
+		_log.info("Simplifying features took " + (System.currentTimeMillis() - timeStart) + "ms.");
 		return result;
 	}
 	
