@@ -13,9 +13,9 @@
 package eu.esdihumboldt.hale.rcp.views.table.tree;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -79,7 +79,18 @@ public class PropertyItem extends DefaultTreeNode {
 		}
 		else {
 			if (value instanceof Collection<?>) {
-				return Arrays.toString(((Collection<?>) value).toArray());
+				String resultRepresentation = "";
+				Collection<?> c = (Collection<?>) value;
+				for (Iterator<?> iterator = c.iterator(); iterator.hasNext();) {
+					Object o = iterator.next();
+					if (o instanceof Feature) {
+						resultRepresentation += ((Feature)o).getType().getName().getLocalPart();
+					}
+					else {
+						resultRepresentation += o.toString();
+					}
+				}
+				return resultRepresentation;
 			}
 			else {
 				return value.toString();
