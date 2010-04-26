@@ -13,12 +13,14 @@
 package eu.esdihumboldt.gmlhandler;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLOutputFactory;
@@ -26,10 +28,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 
+import org.apache.commons.logging.Log;
 import org.apache.log4j.Logger;
 import org.deegree.commons.xml.XMLParsingException;
 import org.deegree.commons.xml.stax.FormattingXMLStreamWriter;
 import org.deegree.commons.xml.stax.XMLStreamWriterWrapper;
+import org.deegree.cs.exceptions.TransformationException;
 import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.feature.FeatureCollection;
 import org.deegree.feature.types.ApplicationSchema;
@@ -168,42 +172,48 @@ public class GmlHandler {
     /**
      * Encodes a deegree3-based Feature/FeatureCollection instance.
      * @param fc - FeatureCollection to be encoded.
-     * @throws Exception
+     * @throws XMLStreamException 
+     * @throws FileNotFoundException 
+     * @throws TransformationException 
+     * @throws UnknownCRSException 
+     * 
      */
-   
-   /* public  void writeFC(FeatureCollection fc) throws Exception {
+  
+    public  void writeFC(FeatureCollection fc) throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
     	
-		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+		LOG.info("Exporting the gml-instance to the location " + this.targetGmlUrl);
+    	XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
        //will set namespaces if these not set explicitly
 		outputFactory.setProperty( "javax.xml.stream.isRepairingNamespaces", new Boolean( true ) );
         //create XML File Stream Writer
-	
-        XMLStreamWriter xmlStreamWriter = outputFactory.createXMLStreamWriter(new URL(this.targetGmlUrl).toString(),"UTF-8");
-        XMLStreamWriterWrapper writer = new XMLStreamWriterWrapper( xmlStreamWriter, this.schemaUrl);
+		XMLStreamWriter xmlStreamWriter = outputFactory.createXMLStreamWriter(new FileOutputStream(new File(this.targetGmlUrl)),"UTF-8");
+         XMLStreamWriterWrapper writer = new XMLStreamWriterWrapper( xmlStreamWriter, this.schemaUrl);
        
         
         //set namespaces, this should be done explicitly
+        //TODO define a nicer way to set the default namespace 
         writer.setDefaultNamespace("http://www.opengis.net/gml/3.2");
-        writer.setPrefix("gco","http://www.isotc211.org/2005/gco");
-        writer.setPrefix("gmd","http://www.isotc211.org/2005/gmd");
-        writer.setPrefix("gn","urn:x-inspire:specification:gmlas:GeographicalNames:3.0");
-        writer.setPrefix("hy-p","urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0");
-        writer.setPrefix("hy","urn:x-inspire:specification:gmlas:HydroBase:3.0");
-        writer.setPrefix("base","urn:x-inspire:specification:gmlas:BaseTypes:3.2");
-        writer.setPrefix("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-        
-        GMLStreamWriter exporter = GMLOutputFactory.createGMLStreamWriter(GMLVersion.GML_32, new FormattingXMLStreamWriter( writer ));
-        
-       c
-       
-        exporter.write(fc);
-        writer.flush();
-        writer.close();
+        //read the namespaces from the map containing namespaces
+        Set<String> nsPrefixes = this.namespaces.keySet();
+        String nsValue = "";
+        for (String nsPrefix :  nsPrefixes){
+        	nsValue = (String)this.namespaces.get(nsPrefix);
+        	writer.setPrefix(nsPrefix, nsValue);
+        	
+        	
+        }
+      
+      //create exporter to export files
+      GMLStreamWriter exporter = GMLOutputFactory.createGMLStreamWriter(GMLVersion.GML_32, new FormattingXMLStreamWriter( writer ));
+      exporter.write(fc);
+      writer.flush();
+      writer.close();
+      LOG.debug("Gml instance has been exported successfully ");
 		
 	        
 		
 		
-	}*/
+	}
     /**
      * Converts from the Humboldt version to the deegree3 version
      * @param gmlVersion
