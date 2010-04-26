@@ -391,8 +391,11 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 						FeatureIterator<Feature> it = fc.subCollection(filter).features();
 						int num = 0;
 						while (it.hasNext() && num < max) {
-							featureList.add(it.next());
-							num++;
+							Feature feature = it.next();
+							if (feature.getType().getName().getLocalPart().equals(type.getElementName().getLocalPart())) {
+								featureList.add(feature);
+								num++;
+							}
 						}
 					}
 				} catch (Exception e) {
