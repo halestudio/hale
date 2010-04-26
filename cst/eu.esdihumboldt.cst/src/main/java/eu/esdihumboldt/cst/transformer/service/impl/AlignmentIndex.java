@@ -113,16 +113,16 @@ public class AlignmentIndex {
 	}
 	
 	/**
-	 * @param key a {@link String} identifying a {@link FeatureType}
+	 * @param targetFtName a {@link String} identifying a {@link FeatureType}
 	 * @return a {@link List} of all {@link ICell}s that contain the given 
 	 * {@link Entity} String. If a {@link FeatureType} URL is passed, it will also 
 	 * return all property {@link ICell}s below.
 	 */
-	public List<ICell> getCellsPerEntity(String key) {
+	public List<ICell> getCellsPerEntity(String targetFtName) {
 		List<ICell> result = new ArrayList<ICell>();
 		
 		// get FeatureType for the passed typename
-		FeatureType keyType = TargetSchemaProvider.getInstance().getType(key);
+		FeatureType keyType = TargetSchemaProvider.getInstance().getType(targetFtName);
 		
 		// find out all supertypes
 		List<FeatureType> relevantTypes = new ArrayList<FeatureType>();
@@ -146,7 +146,7 @@ public class AlignmentIndex {
 		}
 		
 		// add cells declared directly on the Type identified by the key.
-		result.addAll(this.cellsFtIndex.get(key));
+		result.addAll(this.cellsFtIndex.get(targetFtName));
 		
 		return result;
 	}

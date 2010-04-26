@@ -15,7 +15,6 @@ package eu.esdihumboldt.cst.transformer.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,12 +36,10 @@ import org.opengis.metadata.lineage.Lineage;
 import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.cst.transformer.capabilities.impl.FunctionDescriptionImpl;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory.ToleranceLevel;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
 
 /**
  * This class provides Schema Translation capabilities, including complex 
@@ -58,13 +55,13 @@ public class SchemaTranslationController {
 	
 	private static Logger _log = Logger.getLogger(SchemaTranslationController.class);
 	
-	AlignmentIndex ai = null;
+	private final AlignmentIndex ai;
 	
-	Map<String, CellCardinalityType[]> cardinalities = null;
+	private final MappingInfo mapping;
 	
-	boolean strict = true;
+	private boolean strict = true;
 	
-	boolean addLineage = true;
+	private boolean addLineage = true;
 	
 	/**
 	 * Constructor
@@ -80,7 +77,7 @@ public class SchemaTranslationController {
 		this.ai = new AlignmentIndex(alignment);
 		
 		// Analyze Alignment to determine later processing
-		this.cardinalities = this.determineCardinalities(alignment);
+		this.mapping = this.determineCardinalities(alignment);
 		
 		if (tl != null) {
 			if (ToleranceLevel.lenient.equals(tl)) {
@@ -111,58 +108,119 @@ public class SchemaTranslationController {
 			new HashMap<String, List<Feature>>();
 		
 		// used for verifying whether a given FT has been processed before
-		Set<String> checkTypes = new HashSet<String>();
+		//Set<String> checkTypes = new HashSet<String>();
 
-		for (String targetFtName : this.ai.getTargetTypes()) {
+		for (String targetType : mapping.getTargetTypes()) {
 			List<Feature> transformed = new ArrayList<Feature>();
+			Set<String> sourceTypes = mapping.getSourceTypes(targetType);
 			
-			// build new Feature(s) first, depending on Cardinalities and applying a filter as needed
-			CellCardinalityType thisFTCardinality = this.cardinalities.get(targetFtName)[0];
-			CellCardinalityType thisInstanceCardinality = this.cardinalities.get(targetFtName)[1];
-			switch (thisFTCardinality) {
-			case one_to_one:
-				{
-					// there is exactly one relevant source FeatureType, which we now have to find.
-					String sourceFtName = this.ai.getAllMappedFeatureTypes(targetFtName).iterator().next();
-					if (thisInstanceCardinality.equals(CellCardinalityType.one_to_one)) {
+			// one_to_one, many_to_one (no inter-type instance merge)
+			for (String sourceType : sourceTypes) {
+				RetypeInfo info = mapping.getRetypeInfo(sourceType, targetType);
+				
+				switch (info.getInstanceCardinality()) {
+				case one_to_one:
+					{
 						// create one new Feature per source Feature
 						InstanceMap transformMap = InstanceCreationHandler.oneToOne(
-								targetFtName, sourceFtName, 
+								targetType, sourceType, 
 								partitionedSourceFeatures, 
-								ai.getRenameCell(targetFtName, sourceFtName));
+								info.getRenameCell());
+						
 						_log.info("Handled FTCardinality.one_to_one/" +
 								"InstanceCardinality.one_to_one, created " 
 								+ transformMap.getTransformedFeatures().size() + " target features.");
 						
 						// apply additional attributive transformations
-						for (ICell cell : ai.getAttributiveCellsPerEntity(targetFtName)) {
+						for (ICell cell : info.getAttributiveCells()) {
 							// create CstFunction by using CstFunctionFactory
-							this.applyAttributiveFunction(cell, transformMap);
+							applyAttributiveFunction(cell, transformMap);
 						}
+						
 						transformed.addAll(transformMap.getTransformedFeatures());
 					}
-					else if (thisInstanceCardinality.equals(CellCardinalityType.one_to_many)) {
+					break;
+				case one_to_many: // instance split
+					{
 						// create multiple new Features per source Feature
 						InstanceSplitMap transformMap = InstanceCreationHandler.oneToMany(
-								targetFtName, sourceFtName, 
+								targetType, sourceType, 
 								partitionedSourceFeatures, 
-								ai.getRenameCell(targetFtName, sourceFtName));
+								info.getRenameCell());
+						
 						_log.info("Handled FTCardinality.one_to_one/" +
 								"InstanceCardinality.one_to_many, created " 
 								+ transformMap.getTransformedFeatures().size() + " target features.");
 						
 						// apply additional attributive transformations
-						for (ICell cell : ai.getCellsPerEntity(targetFtName)) {
+						for (ICell cell : info.getAttributiveCells()) {
 							// create CstFunction by using CstFunctionFactory
-							this.applyAttributiveFunction(cell, transformMap);
+							applyAttributiveFunction(cell, transformMap);
 						}
 						for (List<Feature> thisList : transformMap.getTransformedFeatures()) {
 							transformed.addAll(thisList);
 						}
-						
 					}
-					else if (thisInstanceCardinality.equals(CellCardinalityType.many_to_one)) {
-						// TODO aggregate case
+					break;
+				case many_to_one: // instance merge
+					// TODO aggregate case
+					break;
+				}
+			}
+			
+			// build new Feature(s) first, depending on Cardinalities and applying a filter as needed
+			/*CellCardinalityType thisFTCardinality = this.cardinalities.get(targetFtName)[0];
+			CellCardinalityType thisInstanceCardinality = this.cardinalities.get(targetFtName)[1];
+			switch (thisFTCardinality) {
+			case one_to_one:
+			case many_to_one:
+				{
+					// one_to_one: there is exactly one relevant source FeatureType, which we now have to find.
+					// many_to_one: multiple source feature types -> handle each source feature type as a one_to_one case
+					
+					Set<String> sourceFtNames = this.ai.getAllMappedFeatureTypes(targetFtName);
+					
+					for (String sourceFtName : sourceFtNames) {
+						if (thisInstanceCardinality.equals(CellCardinalityType.one_to_one)) {
+							// create one new Feature per source Feature
+							InstanceMap transformMap = InstanceCreationHandler.oneToOne(
+									targetFtName, sourceFtName, 
+									partitionedSourceFeatures, 
+									ai.getRenameCell(targetFtName, sourceFtName));
+							_log.info("Handled FTCardinality.one_to_one/" +
+									"InstanceCardinality.one_to_one, created " 
+									+ transformMap.getTransformedFeatures().size() + " target features.");
+							
+							// apply additional attributive transformations
+							for (ICell cell : ai.getAttributiveCellsPerEntity(targetFtName)) {
+								// create CstFunction by using CstFunctionFactory
+								this.applyAttributiveFunction(cell, transformMap);
+							}
+							transformed.addAll(transformMap.getTransformedFeatures());
+						}
+						else if (thisInstanceCardinality.equals(CellCardinalityType.one_to_many)) {
+							// create multiple new Features per source Feature
+							InstanceSplitMap transformMap = InstanceCreationHandler.oneToMany(
+									targetFtName, sourceFtName, 
+									partitionedSourceFeatures, 
+									ai.getRenameCell(targetFtName, sourceFtName));
+							_log.info("Handled FTCardinality.one_to_one/" +
+									"InstanceCardinality.one_to_many, created " 
+									+ transformMap.getTransformedFeatures().size() + " target features.");
+							
+							// apply additional attributive transformations
+							for (ICell cell : ai.getCellsPerEntity(targetFtName)) {
+								// create CstFunction by using CstFunctionFactory
+								this.applyAttributiveFunction(cell, transformMap);
+							}
+							for (List<Feature> thisList : transformMap.getTransformedFeatures()) {
+								transformed.addAll(thisList);
+							}
+							
+						}
+						else if (thisInstanceCardinality.equals(CellCardinalityType.many_to_one)) {
+							// TODO aggregate case
+						}
 					}
 				}
 				break;
@@ -198,14 +256,6 @@ public class SchemaTranslationController {
 					}
 				}
 				break;
-			case many_to_one:
-				{
-					throw new UnsupportedOperationException(
-							"FeatureType CellCardinalityType.many_to_one not " +
-							"yet implemented");
-					// TODO join features of different types
-				}
-				//break;
 			case many_to_many:
 				{
 					throw new UnsupportedOperationException(
@@ -213,11 +263,11 @@ public class SchemaTranslationController {
 							"yet implemented");
 				}
 				//break;
-			}
+			}*/
 			
 			// add transformed Features to partitionedTargetFeatures
 			if (transformed != null) {
-				partitionedTargetFeatures.put(targetFtName, 
+				partitionedTargetFeatures.put(targetType, 
 						transformed);
 			}
 		}
@@ -387,86 +437,14 @@ public class SchemaTranslationController {
 	 * {@link FeatureType} level cardinality, the second one indicating the 
 	 * {@link Feature} level cardinality (instance splits and merges)
 	 */
-	private Map<String, CellCardinalityType[]> determineCardinalities(IAlignment alignment) {
-		Map<String, CellCardinalityType[]> result = 
-			new HashMap<String, CellCardinalityType[]>();
+	private MappingInfo determineCardinalities(IAlignment alignment) {
+		MappingInfo info = new MappingInfo();
 		
-		// fill map with null values
 		for (ICell cell : alignment.getMap()) {
-			if (cell.getEntity2().getClass().isAssignableFrom(FeatureClass.class)) {
-				String key = cell.getEntity2().getAbout().getAbout();
-				CellCardinalityType[] value = new CellCardinalityType[]{null, null};
-				result.put(key, value);
-			}
+			info.addCell(cell);
 		}
 		
-		// Analyse actual FT cardinalities first
-		Set<String> encounteredTargetTypes = new HashSet<String>();
-		for (ICell cell : alignment.getMap()) {
-			// we're only looking for cells that map FeatureClasses
-			if (cell.getEntity2().getClass().isAssignableFrom(FeatureClass.class)) {
-				FeatureClass fc1 = (FeatureClass)cell.getEntity1();
-				FeatureClass fc2 = (FeatureClass)cell.getEntity2();
-				
-				CellCardinalityType[] cct = result.get(fc2.getAbout().getAbout());
-				
-				if (cct[0] == null) {
-					cct[0] = CellCardinalityType.one_to_one;
-				}
-				else {
-					// look for Filters to identify one_to_many
-					if (fc1.getAttributeValueCondition() != null 
-							&& !fc1.getAttributeValueCondition().isEmpty() 
-							&& fc1.getAttributeValueCondition().get(0).getCqlStr() != null) {
-						if (cct[0].equals(CellCardinalityType.one_to_one)) {
-							cct[0] = CellCardinalityType.one_to_many;
-						}
-						else if (cct[0].equals(CellCardinalityType.many_to_one)) {
-							cct[0] = CellCardinalityType.many_to_many;
-						}
-					}
-					
-					// look for target types that occur more than once to identify many_to_one cases
-					if (encounteredTargetTypes.contains(fc2.getAbout().getAbout())) {
-						if (cct[0].equals(CellCardinalityType.one_to_one)) {
-							cct[0] = CellCardinalityType.many_to_one;
-						}
-						else if (cct[0].equals(CellCardinalityType.one_to_many)) {
-							cct[0] = CellCardinalityType.many_to_many;
-						}
-					}
-				}
-				
-				encounteredTargetTypes.add(fc2.getAbout().getAbout());
-			}
-		}
-		
-		// for instance cardinalities, we're looking for split and merge conditions.
-		for (ICell cell : alignment.getMap()) {
-			// we're only looking for cells that map FeatureClasses
-			if (cell.getEntity2().getClass().isAssignableFrom(FeatureClass.class)) { // Entity2 is always set, also in augmentations
-				CellCardinalityType[] cct = result.get(cell.getEntity2().getAbout().getAbout());
-				if (cell.getEntity1() != null && cell.getEntity1().getTransformation() != null) {
-					ITransformation t = cell.getEntity1().getTransformation();
-					// look for a merge condition (many to one)
-					if (t.getParameters().contains("InstanceMergeCondition")) {
-						cct[1] = CellCardinalityType.many_to_one;
-					}
-					// look for a split condition (one to many)
-					else if (t.getParameters().contains("InstanceSplitCondition")) {
-						cct[1] = CellCardinalityType.one_to_many;
-					}
-					else {
-						cct[1] = CellCardinalityType.one_to_one;
-					}
-				}
-				else if (cell.getEntity2() != null && cell.getEntity2().getTransformation() != null) {
-					// we got an augmentation here - cardinality is always 1 to 1 for these.
-					cct[1] = CellCardinalityType.one_to_one;
-				}
-			}
-		}
-		return result;
+		return info;
 	}
 	
 	private Map<String, List<Feature>> partitionFeaturesByType(
@@ -490,22 +468,6 @@ public class SchemaTranslationController {
 			list.add(f);
 		}
 		return result;
-	}
-	
-	/**
-	 * This enumeration is used to describe both the cardinality a given Cell 
-	 * describes on the level of {@link FeatureType}s and of the {@link Feature}
-	 * instances.
-	 */
-	public enum CellCardinalityType {
-		/** one to one */
-		one_to_one,
-		/** one to many */
-		one_to_many,
-		/** many to one */
-		many_to_one,
-		/** many to many */
-		many_to_many
 	}
 	
 }
