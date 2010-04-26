@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 import org.geotools.feature.FeatureCollection;
@@ -118,90 +119,100 @@ public class SchemaTranslationController {
 			// build new Feature(s) first, depending on Cardinalities and applying a filter as needed
 			CellCardinalityType thisFTCardinality = this.cardinalities.get(targetFtName)[0];
 			CellCardinalityType thisInstanceCardinality = this.cardinalities.get(targetFtName)[1];
-			if (thisFTCardinality.equals(CellCardinalityType.one_to_one)) {
-				// there is exactly one relevant source FeatureType, which we now have to find.
-				String sourceFtName = this.ai.getAllMappedFeatureTypes(targetFtName).iterator().next();
-				if (thisInstanceCardinality.equals(CellCardinalityType.one_to_one)) {
-					// create one new Feature per source Feature
-					InstanceMap transformMap = InstanceCreationHandler.oneToOne(
-							targetFtName, sourceFtName, 
-							partitionedSourceFeatures, 
-							ai.getRenameCell(targetFtName, sourceFtName));
-					_log.info("Handled FTCardinality.one_to_one/" +
-							"InstanceCardinality.one_to_one, created " 
-							+ transformMap.getTransformedFeatures().size() + " target features.");
-					
-					// apply additional attributive transformations
-					for (ICell cell : ai.getAttributiveCellsPerEntity(targetFtName)) {
-						// create CstFunction by using CstFunctionFactory
-						this.applyAttributiveFunction(cell, transformMap);
-					}
-					transformed.addAll(transformMap.getTransformedFeatures());
-				}
-				else if (thisInstanceCardinality.equals(CellCardinalityType.one_to_many)) {
-					// create multiple new Features per source Feature
-					InstanceSplitMap transformMap = InstanceCreationHandler.oneToMany(
-							targetFtName, sourceFtName, 
-							partitionedSourceFeatures, 
-							ai.getRenameCell(targetFtName, sourceFtName));
-					_log.info("Handled FTCardinality.one_to_one/" +
-							"InstanceCardinality.one_to_many, created " 
-							+ transformMap.getTransformedFeatures().size() + " target features.");
-					
-					// apply additional attributive transformations
-					for (ICell cell : ai.getCellsPerEntity(targetFtName)) {
-						// create CstFunction by using CstFunctionFactory
-						this.applyAttributiveFunction(cell, transformMap);
-					}
-					for (List<Feature> thisList : transformMap.getTransformedFeatures()) {
-						transformed.addAll(thisList);
-					}
-					
-				}
-				else if (thisInstanceCardinality.equals(CellCardinalityType.many_to_one)) {
-					// TODO aggregate case
-				}
-			}
-			else if (thisFTCardinality.equals(CellCardinalityType.one_to_many)) {
-				// In this case, there is also exactly one relevant source 
-				// FeatureType, which we now have to find. In addition, we need 
-				// to ensure that the operation is not performed needlessly a 
-				// second time.
-				String sourceFtName = ai.getAllMappedFeatureTypes(targetFtName).iterator().next();
-				if (!checkTypes.contains(sourceFtName)) {
+			switch (thisFTCardinality) {
+			case one_to_one:
+				{
+					// there is exactly one relevant source FeatureType, which we now have to find.
+					String sourceFtName = this.ai.getAllMappedFeatureTypes(targetFtName).iterator().next();
 					if (thisInstanceCardinality.equals(CellCardinalityType.one_to_one)) {
 						// create one new Feature per source Feature
 						InstanceMap transformMap = InstanceCreationHandler.oneToOne(
 								targetFtName, sourceFtName, 
 								partitionedSourceFeatures, 
 								ai.getRenameCell(targetFtName, sourceFtName));
-						
-						_log.info("Handled FTCardinality.one_to_many/" +
+						_log.info("Handled FTCardinality.one_to_one/" +
 								"InstanceCardinality.one_to_one, created " 
-								+ transformMap.getTransformedFeatures().size() 
-								+ " target features.");
+								+ transformMap.getTransformedFeatures().size() + " target features.");
+						
+						// apply additional attributive transformations
+						for (ICell cell : ai.getAttributiveCellsPerEntity(targetFtName)) {
+							// create CstFunction by using CstFunctionFactory
+							this.applyAttributiveFunction(cell, transformMap);
+						}
+						transformed.addAll(transformMap.getTransformedFeatures());
+					}
+					else if (thisInstanceCardinality.equals(CellCardinalityType.one_to_many)) {
+						// create multiple new Features per source Feature
+						InstanceSplitMap transformMap = InstanceCreationHandler.oneToMany(
+								targetFtName, sourceFtName, 
+								partitionedSourceFeatures, 
+								ai.getRenameCell(targetFtName, sourceFtName));
+						_log.info("Handled FTCardinality.one_to_one/" +
+								"InstanceCardinality.one_to_many, created " 
+								+ transformMap.getTransformedFeatures().size() + " target features.");
 						
 						// apply additional attributive transformations
 						for (ICell cell : ai.getCellsPerEntity(targetFtName)) {
 							// create CstFunction by using CstFunctionFactory
 							this.applyAttributiveFunction(cell, transformMap);
 						}
+						for (List<Feature> thisList : transformMap.getTransformedFeatures()) {
+							transformed.addAll(thisList);
+						}
 						
-						transformed.addAll(transformMap.getTransformedFeatures());
 					}
-					checkTypes.add(sourceFtName);
+					else if (thisInstanceCardinality.equals(CellCardinalityType.many_to_one)) {
+						// TODO aggregate case
+					}
 				}
-			}
-			else if (thisFTCardinality.equals(CellCardinalityType.many_to_one)) {
-				throw new UnsupportedOperationException(
-						"FeatureType CellCardinalityType.many_to_one not " +
-						"yet implemented");
-				// TODO join features of different types
-			}
-			else if (thisFTCardinality.equals(CellCardinalityType.many_to_many)) {
-				throw new UnsupportedOperationException(
-						"FeatureType CellCardinalityType.many_to_many not " +
-						"yet implemented");
+				break;
+			case one_to_many:
+				{
+					// In this case, there is also exactly one relevant source 
+					// FeatureType, which we now have to find. In addition, we need 
+					// to ensure that the operation is not performed needlessly a 
+					// second time.
+					String sourceFtName = ai.getAllMappedFeatureTypes(targetFtName).iterator().next();
+					if (!checkTypes.contains(sourceFtName)) {
+						if (thisInstanceCardinality.equals(CellCardinalityType.one_to_one)) {
+							// create one new Feature per source Feature
+							InstanceMap transformMap = InstanceCreationHandler.oneToOne(
+									targetFtName, sourceFtName, 
+									partitionedSourceFeatures, 
+									ai.getRenameCell(targetFtName, sourceFtName));
+							
+							_log.info("Handled FTCardinality.one_to_many/" +
+									"InstanceCardinality.one_to_one, created " 
+									+ transformMap.getTransformedFeatures().size() 
+									+ " target features.");
+							
+							// apply additional attributive transformations
+							for (ICell cell : ai.getCellsPerEntity(targetFtName)) {
+								// create CstFunction by using CstFunctionFactory
+								this.applyAttributiveFunction(cell, transformMap);
+							}
+							
+							transformed.addAll(transformMap.getTransformedFeatures());
+						}
+						checkTypes.add(sourceFtName);
+					}
+				}
+				break;
+			case many_to_one:
+				{
+					throw new UnsupportedOperationException(
+							"FeatureType CellCardinalityType.many_to_one not " +
+							"yet implemented");
+					// TODO join features of different types
+				}
+				//break;
+			case many_to_many:
+				{
+					throw new UnsupportedOperationException(
+							"FeatureType CellCardinalityType.many_to_many not " +
+							"yet implemented");
+				}
+				//break;
 			}
 			
 			// add transformed Features to partitionedTargetFeatures
@@ -213,7 +224,8 @@ public class SchemaTranslationController {
 		
 		// execute Augmentations batchwise per target FeatureType
 		// Augmentations don't create new Features, but change the existing ones.
-		for (String url : partitionedTargetFeatures.keySet()) {
+		for (Entry<String, List<Feature>> entry : partitionedTargetFeatures.entrySet()) {
+			String url = entry.getKey();
 			for (ICell cell : ai.getAugmentationCellsPerEntity(url)) {
 				// create CstFunction by using CstFunctionFactory
 				CstFunction cstf = null;
@@ -225,7 +237,8 @@ public class SchemaTranslationController {
 				}
 				// invoke CstFunction with Target Features List. 
 				if (cstf != null) {
-					for (Feature f : partitionedTargetFeatures.get(url)) {
+					List<Feature> featureList = entry.getValue();
+					for (Feature f : featureList) {
 						f = cstf.transform(f, f);
 					}
 				}
