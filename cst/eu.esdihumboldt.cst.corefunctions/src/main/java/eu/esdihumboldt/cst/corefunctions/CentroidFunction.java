@@ -27,6 +27,7 @@ import java.util.List;
 import org.opengis.feature.Feature;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
 
 import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.cst.align.ICell;
@@ -50,11 +51,13 @@ public class CentroidFunction extends AbstractCstFunction {
 	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.opengis.feature.Feature, org.opengis.feature.Feature)
 	 */
 	public Feature transform(Feature source, Feature target) {		
+		
 		Geometry geom = (Geometry)source.getProperty(
 				this.sourceProperty.getLocalname()).getValue();
 		//get Centroid from old geom and store in new geom
-		Object newGeometry = geom.getCentroid();
-		target.getProperty(this.targetProperty.getLocalname()).setValue(newGeometry);
+		Point newGeometry = (Point)geom.getCentroid();
+		target.getProperty(
+				this.targetProperty.getLocalname()).setValue(newGeometry);
 
 		return target;
 	}
