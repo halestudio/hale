@@ -15,11 +15,8 @@ import org.geotools.xml.EMFUtils;
 
 
 public class Importer {
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
+	
+	public static boolean load(File xmlfile) {
 		  // Create a resource set.
 		  ResourceSet resourceSet = new ResourceSetImpl();
 		  // Register the default resource factory -- only needed for stand-alone!
@@ -27,14 +24,10 @@ public class Importer {
 		  resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
 		  // This is a patch to allow UML2 2.1.0 functionality
 		  resourceSet.getPackageRegistry().put("http://www.eclipse.org/uml2/2.1.0/UML", UMLPackage.eINSTANCE);
-
 		  // Get the URI of the model file.
-		  URI fileURI = URI.createFileURI(new File("adress.xmi").getAbsolutePath());
+		  URI fileURI = URI.createFileURI(xmlfile.getAbsolutePath());
 		  		  
 		  Resource resource = resourceSet.getResource(fileURI, true);	  
-		  		   
-		  // Print the contents of the resource to System.out.
-		  //resource.save(System.out, Collections.EMPTY_MAP);
 		  
 		  // Load the resource into EObject
 		  try {
@@ -56,10 +49,11 @@ public class Importer {
 				  }
 			  }
 			  System.out.println("Charged succesful");
+			  return true;
 		  } catch (IOException e) 
 		  {
 			  System.out.println("Error while charging xmi/xml file");
-			  return;
+			  return false;
 		  }
 		}
 }
