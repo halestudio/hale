@@ -37,7 +37,7 @@ public class ElementItem extends TreeParent {
 				element.getElementName().getLocalPart(), 
 				element.getElementName(), 
 				determineType(element.getType()), 
-				element.getAttributeType());
+				element.getAttributeType(null));
 		
 		this.element = element;
 	}

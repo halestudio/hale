@@ -44,7 +44,7 @@ public class AttributeItem extends TreeParent {
 					attribute.getAttributeType().getDisplayName() + ">",  //$NON-NLS-1$
 				new NameImpl(attribute.getDeclaringType().getIdentifier(), attribute.getName()), 
 				determineType(attribute), 
-				attribute.getAttributeType().getType());
+				attribute.getAttributeType().getType(null));
 		
 		this.attributeDefinition = attribute;
 	}
@@ -58,7 +58,7 @@ public class AttributeItem extends TreeParent {
 	 * @return the tree object type
 	 */
 	private static TreeObjectType determineType(AttributeDefinition attribute) {
-		PropertyType type = attribute.getAttributeType().getType();
+		PropertyType type = attribute.getAttributeType().getType(null);
 		Class<?> binding = type.getBinding();
 		
 		if (type.toString().matches("^.*?GMLComplexTypes.*")) { //$NON-NLS-1$

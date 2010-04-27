@@ -59,7 +59,7 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 		}
 		else {
 			// simple types
-			AttributeType type = attributeType.getType();
+			AttributeType type = attributeType.getType(null);
 			Class<?> binding = type.getBinding();
 			
 			if (type instanceof EnumAttributeType) {

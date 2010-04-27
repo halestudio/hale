@@ -267,7 +267,7 @@ public class PropertiesDialog extends TitleAreaDialog {
 		typeNode.addChild(new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleNamespace, typeDef.getName().getNamespaceURI()));
 		typeNode.addChild(new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleLocalpart, typeDef.getName().getLocalPart()));
 		typeNode.addChild(new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleBinding,
-				typeDef.getType().getBinding().getName()));
+				typeDef.getType(null).getBinding().getName()));
 		typeNode.addChild(new DefaultTreeNode("Identifier", typeDef.getIdentifier()));
 		if (typeDef.getLocation() != null) {
 			typeNode.addChild(new DefaultTreeNode("Location", typeDef.getLocation()));

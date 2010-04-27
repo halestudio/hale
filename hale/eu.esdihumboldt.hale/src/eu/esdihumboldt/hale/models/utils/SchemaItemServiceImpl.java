@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.models.SchemaService;
@@ -44,6 +45,8 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @version $Id$ 
  */
 public class SchemaItemServiceImpl implements SchemaItemService {
+	
+	private static final Logger log = Logger.getLogger(SchemaItemServiceImpl.class);
 	
 	private final SchemaService schemaService;
 	
@@ -263,7 +266,7 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 		itemMap.put(element.getIdentifier(), featureItem);
 		
 		// add properties
-		addProperties(featureItem, element.getType(), itemMap);
+		addProperties(featureItem, element.getType(), itemMap, new HashSet<TypeDefinition>());
 		
 		// add children recursively
 		for (TypeDefinition subType : element.getType().getSubTypes()) {
@@ -283,18 +286,26 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 	 * @param type the type definition
 	 * @param itemMap map to add the created items to (definition identifier mapped to item)
 	 */
-	private static void addProperties(TreeParent parent, TypeDefinition type, Map<String, SchemaItem> itemMap) {
-		for (AttributeDefinition attribute : type.getAttributes()) {
-			if (attribute.getAttributeType() != null) { // only properties with an associated type
-				AttributeItem property = new AttributeItem(attribute);
-				
-				if (itemMap != null) {
-					itemMap.put(attribute.getIdentifier(), property);
+	private static void addProperties(TreeParent parent, TypeDefinition type, Map<String, SchemaItem> itemMap,
+			Set<TypeDefinition> resolving) {
+		if (resolving.contains(type)) {
+			log.debug("Cycle in properties, skipping adding property items");
+		}
+		else {
+			resolving.add(type);
+			
+			for (AttributeDefinition attribute : type.getAttributes()) {
+				if (attribute.getAttributeType() != null) { // only properties with an associated type
+					AttributeItem property = new AttributeItem(attribute);
+					
+					if (itemMap != null) {
+						itemMap.put(attribute.getIdentifier(), property);
+					}
+					
+					addProperties(property, attribute.getAttributeType(), null, new HashSet<TypeDefinition>(resolving)); // null map to prevent adding to item map (would be duplicate)
+					
+					parent.addChild(property);
 				}
-				
-				addProperties(property, attribute.getAttributeType(), null); // null map to prevent adding to item map (would be duplicate)
-				
-				parent.addChild(property);
 			}
 		}
 	}
