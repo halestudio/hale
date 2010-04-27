@@ -13,24 +13,18 @@
 package eu.esdihumboldt.cst.corefunctions;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
-import org.geotools.feature.AttributeImpl;
-import org.geotools.feature.PropertyImpl;
 import org.opengis.feature.Feature;
-import org.opengis.feature.type.AttributeDescriptor;
-import org.opengis.feature.type.PropertyDescriptor;
 
 import com.iabcinc.jmep.Environment;
 import com.iabcinc.jmep.Expression;
 import com.iabcinc.jmep.XExpression;
 import com.iabcinc.jmep.hooks.Constant;
 
+import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
