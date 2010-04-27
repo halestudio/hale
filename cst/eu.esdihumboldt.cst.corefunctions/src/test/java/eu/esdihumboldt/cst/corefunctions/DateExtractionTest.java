@@ -1,9 +1,12 @@
 package eu.esdihumboldt.cst.corefunctions;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -52,14 +55,18 @@ public class DateExtractionTest {
 				this.targetLocalname, this.targetLocalnamePropertyBDate)));
 
 		// build source and target Features
+		Map<String, Class> propsSource = new HashMap<String, Class>();
+		propsSource.put(this.sourceLocalnamePropertyADate, String.class);
 		SimpleFeatureType sourcetype = this.getFeatureType(
 				this.sourceNamespace, 
 				this.sourceLocalname, 
-				new String[]{this.sourceLocalnamePropertyADate});
+				propsSource);
+		Map<String, Class> propsTarget = new HashMap<String, Class>();
+		propsTarget.put(this.targetLocalnamePropertyBDate, String.class);
 		SimpleFeatureType targettype = this.getFeatureType(
 				this.targetNamespace, 
 				this.targetLocalname, 
-				new String[]{this.targetLocalnamePropertyBDate});
+				propsTarget);
 		Feature source = SimpleFeatureBuilder.build(
 				sourcetype, new Object[]{"15.07.1982 16:30"}, "1");
 		Feature target = SimpleFeatureBuilder.build(
@@ -72,8 +79,8 @@ public class DateExtractionTest {
 		def.configure(cell);
 		Feature neu = def.transform(source, target);
 		
-		assertEquals(neu.getProperty(
-				this.targetLocalnamePropertyBDate).getValue().toString(),"07-15-82 4:30 PM");
+		assertTrue(neu.getProperty(
+				this.targetLocalnamePropertyBDate).getValue().toString().equals("07-15-82 4:30 PM"));
 
 	}
 	
@@ -95,24 +102,31 @@ public class DateExtractionTest {
 				this.targetLocalname, this.targetLocalnamePropertyBDate)));
 
 		// build source and target Features
+		Map<String, Class> propsSource = new HashMap<String, Class>();
+		propsSource.put(this.sourceLocalnamePropertyADate, String.class);
 		SimpleFeatureType sourcetype = this.getFeatureType(
 				this.sourceNamespace, 
 				this.sourceLocalname, 
-				new String[]{this.sourceLocalnamePropertyADate});
+				propsSource);
 		
-		SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
-		ftbuilder.setName(this.targetLocalname);
-		ftbuilder.setNamespaceURI(this.targetNamespace);
-		ftbuilder.add(this.targetLocalnamePropertyBDate, Timestamp.class);
-		SimpleFeatureType targettype = ftbuilder.buildFeatureType();
+		Map<String, Class> propsTarget = new HashMap<String, Class>();
+		propsTarget.put(this.targetLocalnamePropertyBDate, Timestamp.class);
+		SimpleFeatureType targettype = this.getFeatureType(
+				this.sourceNamespace, 
+				this.sourceLocalname, 
+				propsTarget);
+		
+		
+//		SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
+//		ftbuilder.setName(this.targetLocalname);
+//		ftbuilder.setNamespaceURI(this.targetNamespace);
+//		ftbuilder.add(this.targetLocalnamePropertyBDate, Timestamp.class);
+//		SimpleFeatureType targettype = ftbuilder.buildFeatureType();
 		
 		Feature source = SimpleFeatureBuilder.build(
 				sourcetype, new Object[]{"15.07.1982 16:30"}, "1");
 		Feature target = SimpleFeatureBuilder.build(
 				targettype, new Object[]{new Timestamp(0)}, "2");
-	
-		System.out.println("Before: " +target.getProperty(
-				this.targetLocalnamePropertyBDate).getValue().toString());
 		
 		// perform actual test
 
@@ -120,21 +134,24 @@ public class DateExtractionTest {
 		def.configure(cell);
 		Feature neu = def.transform(source, target);
 	
-		assertEquals(neu.getProperty(
-				this.targetLocalnamePropertyBDate).getValue().toString(),"1982-07-15 16:30:00.0");
+		assertTrue(neu.getProperty(
+				this.targetLocalnamePropertyBDate).getValue().toString().equals("07-15-82 4:30 PM"));
 
 	}
 	
+	
+	
+	
 	private SimpleFeatureType getFeatureType(String featureTypeNamespace, 
-			String featureTypeName, String[] propertyNames) {
+			String featureTypeName, Map<String, Class> properties) {
 	
 		SimpleFeatureType ft = null;
 		try {
 			SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
 			ftbuilder.setName(featureTypeName);
 			ftbuilder.setNamespaceURI(featureTypeNamespace);
-			for (String s : propertyNames) {
-				ftbuilder.add(s, String.class);
+			for (String s : properties.keySet()) {
+				ftbuilder.add(s, properties.get(s));
 			}
 			ft = ftbuilder.buildFeatureType();
 		} catch (Exception ex) {

@@ -119,6 +119,8 @@ public class DateExtractionFunction extends AbstractCstFunction {
 		//get the date string from the source
 		String dateString = (String) source.getProperty(
 				this.sourceProperty.getLocalname()).getValue();
+				
+		
 		Date sourceDate = null;
 		try {
 			sourceDate = sdf.parse(dateString);
@@ -134,14 +136,17 @@ public class DateExtractionFunction extends AbstractCstFunction {
 		
 		org.opengis.feature.Property p = target.getProperty(this.targetProperty.getLocalname());
 
+		
 		if (pd.getType().getBinding().equals(String.class)) {
 			p.setValue(sdf.format(sourceDate));
 		}
 		
+		
 		if (pd.getType().getBinding().equals(Date.class) || Date.class.isAssignableFrom(
 				target.getProperty(
 						this.targetProperty.getLocalname()).getType().getBinding())) {
-			p.setValue(sourceDate);
+				p.setValue(sdf.format(sourceDate));
+			
 			
 		}
 		
