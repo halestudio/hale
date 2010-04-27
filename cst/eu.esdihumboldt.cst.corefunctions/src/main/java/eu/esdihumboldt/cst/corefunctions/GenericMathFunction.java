@@ -67,9 +67,15 @@ public class GenericMathFunction
 		if (this.expression == null) {
 			throw new RuntimeException("The math_expression must be defined.");
 		}
-		for (Property p : ((ComposedProperty)cell.getEntity1()).getCollection()) {
-			this.variables.add(p);
+		if (cell.getEntity1() instanceof ComposedProperty) {
+			for (Property p : ((ComposedProperty)cell.getEntity1()).getCollection()) {
+				this.variables.add(p);
+			}
 		}
+		else if (cell.getEntity1() instanceof Property) {
+			this.variables.add((Property) cell.getEntity1());
+		}
+		
 		this.targetProperty = (Property) cell.getEntity2();
 		return true;
 	}
@@ -122,18 +128,20 @@ public class GenericMathFunction
 			Object result = ex.evaluate();
 			
 			// inject result into target object
-			PropertyDescriptor pd = target.getProperty(
-					this.targetProperty.getLocalname()).getDescriptor();
-			PropertyImpl p = null;
-			if (pd.getType().getBinding().equals(String.class)) {
-				p = new AttributeImpl(result.toString(), (AttributeDescriptor) pd, null);	
+			org.opengis.feature.Property tProp = target.getProperty(
+					this.targetProperty.getLocalname());
+			if (tProp.getType().getBinding().equals(String.class)) {
+				tProp.setValue(result.toString());	
+			}
+			else if (tProp.getType().getBinding().equals(Double.class)) {
+				tProp.setValue(Double.parseDouble(result.toString()));	
+			}
+			else if (tProp.getType().getBinding().equals(Integer.class)) {
+				tProp.setValue(Integer.parseInt(result.toString()));	
 			}
 			else {
-				p = new AttributeImpl(result, (AttributeDescriptor) pd, null);	
+				tProp.setValue(result);	
 			}
-			Collection<org.opengis.feature.Property> c = new HashSet<org.opengis.feature.Property>();
-			c.add(p);
-			target.setValue(c);
 		} catch (XExpression e) {
 			throw new RuntimeException(e);
 		}
