@@ -51,8 +51,8 @@ public class ShapeSchemaProviderTest {
 			log.info(se.getDisplayName());
 			for (AttributeDefinition ad : se.getType().getAttributes()) {
 				log.info(ad.getDisplayName() + ": " 
-						+ ad.getAttributeType().getType().getBinding().getSimpleName()
-						+ " (" + ad.getAttributeType().getType().getRestrictions() + ")");
+						+ ad.getAttributeType().getType(null).getBinding().getSimpleName()
+						+ " (" + ad.getAttributeType().getType(null).getRestrictions() + ")");
 			}
 		}
 		
