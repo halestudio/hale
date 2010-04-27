@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.zip.ZipException;
 
 /**
  * <p>Title: ReflectionHelper</p>
@@ -481,7 +482,11 @@ public class ReflectionHelper {
         		if (u != null && u.toString().startsWith("jar:file:")) {
         			String p = u.toString().substring(9);
         			p = p.substring(0, p.indexOf("!/"));
-        			jarFile = new JarFile(p);
+        			try {
+        				jarFile = new JarFile(p);
+        			} catch (ZipException e) {
+						throw new IllegalArgumentException("No zip file: " + p, e);
+					}
         		} else {
         			u = getCurrentJarURL();
         			
