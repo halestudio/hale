@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.schemaprovider.model;
 
+import java.util.Set;
+
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
@@ -65,19 +67,22 @@ public class SchemaElement extends AbstractDefinition implements Comparable<Sche
 	}
 	
 	/**
+	 * @param resolving the types that are already in the process of creating a
+	 *   feature type, may be <code>null</code>
+	 * 
 	 * @return the attribute type
 	 */
-	public AttributeType getAttributeType() {
+	public AttributeType getAttributeType(Set<TypeDefinition> resolving) {
 		if (attributeType == null) {
 			if (type == null) {
 				throw new IllegalStateException("May not be called yet");
 			}
 			
 			if (!type.isAttributeTypeSet()) {
-				attributeType = type.createFeatureType(elementName);
+				attributeType = type.createFeatureType(elementName, resolving);
 			}
 			else {
-				attributeType = type.getType();
+				attributeType = type.getType(resolving);
 			}
 		}
 		
@@ -91,8 +96,9 @@ public class SchemaElement extends AbstractDefinition implements Comparable<Sche
 	 *   determined or the type is not a feature type
 	 */
 	public FeatureType getFeatureType() {
-		if (getAttributeType() != null && getAttributeType() instanceof FeatureType) {
-			return (FeatureType) getAttributeType();
+		AttributeType type = getAttributeType(null);
+		if (type != null && type instanceof FeatureType) {
+			return (FeatureType) type;
 		}
 		else {
 			return null;

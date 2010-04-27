@@ -127,7 +127,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	 * @return if this definition represents a feature type
 	 */
 	public boolean isFeatureType() {
-		AttributeType type = getType();
+		AttributeType type = getType(null);
 		
 		if (type != null && !(type instanceof FeatureType)) {
 			return false;
@@ -199,17 +199,21 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	}
 
 	/**
+	 * 
+	 * @param resolving the types that are already in the process of creating a
+	 *   feature type, may be <code>null</code>
+	 * 
 	 * @return the featureType
 	 */
-	public AttributeType getType() {
+	public AttributeType getType(Set<TypeDefinition> resolving) {
 		if (type == null) {
 			if (!declaringElements.isEmpty()) {
 				//XXX grab first
 				SchemaElement element = declaringElements.iterator().next();
-				return element.getAttributeType();
+				return element.getAttributeType(resolving);
 			}
 			else {
-				type = createFeatureType(null);
+				type = createFeatureType(null, resolving);
 			}
 		}
 		return type;
@@ -222,8 +226,9 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	 *   determined or the type is not a feature type
 	 */
 	public FeatureType getFeatureType() {
-		if (getType() != null && getType() instanceof FeatureType) {
-			return (FeatureType) getType();
+		AttributeType type = getType(null);
+		if (type != null && type instanceof FeatureType) {
+			return (FeatureType) type;
 		}
 		else {
 			return null;
@@ -235,16 +240,24 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	 *   will be called when there was no explicit type provided
 	 *   
 	 * @param name a custom name to use for the type (e.g. the element name)
-	 *   or <code>null</code> 
+	 *   or <code>null</code>
+	 *    
+	 * @param resolving the types that are already in the process of creating a feature type
 	 * 
 	 * @return the feature type
 	 */
-	public FeatureType createFeatureType(Name name) {
+	public FeatureType createFeatureType(Name name, Set<TypeDefinition> resolving) {
 		SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction builder = new SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction();
+		
+		if (resolving == null) {
+			resolving = new HashSet<TypeDefinition>();
+		}
+		resolving.add(this);
+		// a new set based on resolving has to be created for each resolve path
 		
 		if (getSuperType() != null) {
 			// has super type
-			builder.setSuperType(getSuperType().getType());
+			builder.setSuperType(getSuperType().getType(new HashSet<TypeDefinition>(resolving)));
 		}
 		else {
 			builder.setSuperType(null);
@@ -260,7 +273,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 					log.warn("Self referencing type: " + getName());
 				}
 				else {
-					AttributeDescriptor desc = attribute.createAttributeDescriptor();
+					AttributeDescriptor desc = attribute.createAttributeDescriptor(new HashSet<TypeDefinition>(resolving));
 					if (desc != null) {
 						builder.add(desc);
 						

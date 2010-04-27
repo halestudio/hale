@@ -85,9 +85,11 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	/**
 	 * Create an attribute descriptor
 	 * 
+	 * @param resolving the types that are already in the process of creating a feature type
+	 * 
 	 * @return the attribute descriptor
 	 */
-	public abstract AttributeDescriptor createAttributeDescriptor();
+	public abstract AttributeDescriptor createAttributeDescriptor(Set<TypeDefinition> resolving);
 
 	/**
 	 * Init the declaring/parent type

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.FileDataStoreFinder;
@@ -108,7 +109,7 @@ public class ShapeSchemaProvider
 				type.addDeclaredAttribute(new ShapeAttributeDefintion(pd));
 			}
 			
-			SchemaElement se = new SchemaElement(sft.getName(), type.getType().getName(), type);
+			SchemaElement se = new SchemaElement(sft.getName(), type.getType(null).getName(), type);
 			elements.put(sft.getName().getNamespaceURI() + "/" + sft.getTypeName(), 
 					se);
 		}
@@ -149,7 +150,7 @@ public class ShapeSchemaProvider
 		}
 
 		@Override
-		public AttributeDescriptor createAttributeDescriptor() {
+		public AttributeDescriptor createAttributeDescriptor(Set<TypeDefinition> resolving) {
 			return (AttributeDescriptor) this.pd;
 		}
 

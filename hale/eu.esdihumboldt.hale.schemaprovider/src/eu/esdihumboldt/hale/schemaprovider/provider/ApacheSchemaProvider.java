@@ -263,7 +263,7 @@ public class ApacheSchemaProvider
 							// create an anonymous type that extends the super type
 							Name anonymousName = new NameImpl(declaringType.getIdentifier() + "/" + element.getName(), superTypeName.getLocalPart() + "Extension");
 							// for now use the super attribute type, because attributes aren't added as attribute descriptors
-							AttributeType attributeType = superType.getType(); 
+							AttributeType attributeType = superType.getType(null); 
 							TypeDefinition anonymousType = new AnonymousType(anonymousName, attributeType, superType, (schemaTypes != null)?(schemaTypes.getSchemaLocation()):(null));
 							
 							// add attributes to the anonymous type
@@ -706,7 +706,7 @@ public class ApacheSchemaProvider
 					
 					if (reuseBinding) {
 						// reuse attribute type
-						typeDef.setType(superType.getType());
+						typeDef.setType(superType.getType(null));
 					}
 				}
 				

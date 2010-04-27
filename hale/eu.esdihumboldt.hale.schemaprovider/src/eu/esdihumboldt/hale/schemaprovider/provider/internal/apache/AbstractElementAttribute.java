@@ -12,6 +12,9 @@
 
 package eu.esdihumboldt.hale.schemaprovider.provider.internal.apache;
 
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 import org.apache.ws.commons.schema.XmlSchemaAnnotated;
 import org.apache.ws.commons.schema.XmlSchemaDocumentation;
 import org.apache.ws.commons.schema.XmlSchemaElement;
@@ -39,6 +42,8 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @version $Id$ 
  */
 public abstract class AbstractElementAttribute extends AttributeDefinition {
+
+	private static final Logger log = Logger.getLogger(AbstractElementAttribute.class);
 	
 	private final boolean nillable;
 	
@@ -97,7 +102,7 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 	protected TypeDefinition checkAttributeType(TypeDefinition typeDef) {
 		// inspire geometry attributes
 		if (getName().equals("geometry") && typeDef != null && 
-				!Geometry.class.isAssignableFrom(typeDef.getType().getBinding())) {
+				!Geometry.class.isAssignableFrom(typeDef.getType(null).getBinding())) {
 			// create an attribute type with a geometry binding
 			AttributeTypeBuilder builder = new AttributeTypeBuilder();
 			builder.setBinding(Geometry.class);
@@ -149,18 +154,32 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 	}
 
 	/**
-	 * @see AttributeDefinition#createAttributeDescriptor()
+	 * @see AttributeDefinition#createAttributeDescriptor(Set)
 	 */
-	public AttributeDescriptor createAttributeDescriptor() {
-		if (getAttributeType() != null && getAttributeType().getType() != null) {
-			//Name parentName = getDeclaringType().getName();
-			return new AttributeDescriptorImpl(
-					getAttributeType().getType(),
-					new NameImpl(null, /*parentName.getNamespaceURI() + "/" + parentName.getLocalPart(), */getName()),
-					(int) minOccurs,
-					(int) maxOccurs,
-					true, // always nillable, else creating the features fails
-					null); 
+	public AttributeDescriptor createAttributeDescriptor(Set<TypeDefinition> resolving) {
+		TypeDefinition attType = getAttributeType();
+		if (attType != null) {
+			if (resolving != null && resolving.contains(attType)) {
+				log.warn("Cycle detected, skipping creation of attribute descriptor "
+						+ getName() + ":" + attType.getDisplayName() + " in " + getDeclaringType().getDisplayName());
+				return null;
+			}
+			else {
+				AttributeType type = attType.getType(resolving);
+				if (type != null) {
+					//Name parentName = getDeclaringType().getName();
+					return new AttributeDescriptorImpl(
+							type,
+							new NameImpl(null, /*parentName.getNamespaceURI() + "/" + parentName.getLocalPart(), */getName()),
+							(int) minOccurs,
+							(int) maxOccurs,
+							true, // always nillable, else creating the features fails
+							null); 
+				}
+				else {
+					return null;
+				}
+			}
 		}
 		else {
 			return null;

@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.schemaprovider.provider.internal.apache;
 
+import java.util.Set;
+
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.Name;
@@ -71,10 +73,10 @@ public class DefaultAttribute extends AttributeDefinition {
 	}
 
 	/**
-	 * @see AttributeDefinition#createAttributeDescriptor()
+	 * @see AttributeDefinition#createAttributeDescriptor(Set)
 	 */
 	@Override
-	public AttributeDescriptor createAttributeDescriptor() {
+	public AttributeDescriptor createAttributeDescriptor(Set<TypeDefinition> resolving) {
 		//XXX no attribute descriptors are created for non-element attributes
 		return null;
 	}

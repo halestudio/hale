@@ -224,7 +224,7 @@ public abstract class TypeUtil {
 		// resolve type
 		TypeDefinition baseTypeDef = resolveAttributeType(baseTypeName, schemaTypes);
 		if (baseTypeDef != null) {
-			type = baseTypeDef.getType();
+			type = baseTypeDef.getType(null);
 			
 			List<String> values = new ArrayList<String>();
 			XmlSchemaObjectCollection facets = simpleTypeRestriction.getFacets();
@@ -360,7 +360,7 @@ public abstract class TypeUtil {
 					
 					if (dependencies == null) {
 						if (baseDef != null) {
-							AttributeType type = baseDef.getType();
+							AttributeType type = baseDef.getType(null);
 							if (binding == null) {
 								binding = type.getBinding();
 							}
@@ -405,7 +405,7 @@ public abstract class TypeUtil {
 						TypeDefinition nameDef = resolveAttributeType(baseName, schemaTypes);
 						
 						if (nameDef != null) {
-							AttributeType type = nameDef.getType();
+							AttributeType type = nameDef.getType(null);
 							if (binding == null) {
 								binding = type.getBinding();
 							}
