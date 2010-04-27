@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -480,8 +481,10 @@ public class ReflectionHelper {
         		//the package may be in a jar file
         		//get the current jar file and search it
         		if (u != null && u.toString().startsWith("jar:file:")) {
-        			String p = u.toString().substring(9);
+        			String p = u.toString().substring(4);
         			p = p.substring(0, p.indexOf("!/"));
+        			File file = new File(URI.create(p));
+        			p = file.getAbsolutePath();
         			try {
         				jarFile = new JarFile(p);
         			} catch (ZipException e) {
@@ -523,7 +526,7 @@ public class ReflectionHelper {
                 	files[n++] = new File(i.next());
                 }
         	}
-        } catch (Exception e) {
+        } catch (Throwable e) {
         	throw new IOException("Could not find package: " + pkg, e);
         }
         
