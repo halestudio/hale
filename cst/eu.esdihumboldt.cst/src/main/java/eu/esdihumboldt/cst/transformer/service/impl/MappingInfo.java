@@ -161,15 +161,15 @@ public class MappingInfo {
 		if (entity instanceof FeatureClass) {
 			identifier = entity.getAbout().getAbout();
 		}
-		else if (entity instanceof Property) {
-			Property property = (Property) entity;
-			identifier = property.getNamespace() + "/" + property.getFeatureClassName();
-		}
 		else if (entity instanceof ComposedProperty) {
 			// FIXME determine if multiple FTs are involved, and if yes, register all of them!
 			Property firstProperty = ((ComposedProperty) entity).getCollection().get(0);
 			identifier = firstProperty.getNamespace() + "/" 
 					+ firstProperty.getFeatureClassName();
+		}
+		else if (entity instanceof Property) {
+			Property property = (Property) entity;
+			identifier = property.getNamespace() + "/" + property.getFeatureClassName();
 		}
 		else {
 			throw new IllegalArgumentException("Unknown entity type");
