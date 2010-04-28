@@ -607,24 +607,23 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	/**
 	 * Source and target Nodes will be drawn and saved in the ArrayLists
 	 * 
-	 * @param schemaSelection
-	 *            gets drawn
+	 * @param schemaSelection gets drawn
 	 */
 	private void drawNodes(SchemaSelection schemaSelection) {
 
 		int y = 10;
 		if (!schemaSelection.getSourceItems().isEmpty()) {
-			for (final SchemaItem schemaItem : schemaSelection.getSourceItems()) {
-				if (schemaItem.getEntity() == null) {
+			for (final SchemaItem sourceSchemaItem : schemaSelection.getSourceItems()) {
+				if (sourceSchemaItem.getEntity() == null) {
 					continue;
 				}
 				GraphNode graphNode = new GraphNode(this.graph, SWT.NONE,
-						schemaItem.getEntity().getLocalname());
+						sourceSchemaItem.getEntity().getLocalname());
 				graphNode.setLocation(10, y);
 
 				// Set image
 				String imageKey = ModelNavigationViewLabelProvider
-						.getImageforTreeObjectType(schemaItem.getType());
+						.getImageforTreeObjectType(sourceSchemaItem.getType());
 				if (imageKey != null) {
 					Image image = AbstractUIPlugin
 							.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID,
@@ -632,7 +631,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 					graphNode.setImage(image);
 				}
 
-				graphNode.setData(schemaItem);
+				graphNode.setData(sourceSchemaItem);
 
 				// Node Style
 				graphNode.setBorderWidth(2);
@@ -651,17 +650,17 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 		}
 		y = 10;
 		if (!schemaSelection.getTargetItems().isEmpty()) {
-			for (SchemaItem schemaItem : schemaSelection.getTargetItems()) {
-				if (schemaItem.getEntity() == null) {
+			for (SchemaItem targetSchemaItem : schemaSelection.getTargetItems()) {
+				if (targetSchemaItem.getEntity() == null) {
 					continue;
 				}
 				GraphNode graphNode = new GraphNode(this.graph, SWT.NONE,
-						schemaItem.getEntity().getLocalname());
+						targetSchemaItem.getEntity().getLocalname());
 				graphNode.setLocation(this.graph.getSize().x * 2 / 3, y);
 
 				// Set image
 				String imageKey = ModelNavigationViewLabelProvider
-						.getImageforTreeObjectType(schemaItem.getType());
+						.getImageforTreeObjectType(targetSchemaItem.getType());
 				if (imageKey != null) {
 					Image image = AbstractUIPlugin
 							.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID,
@@ -669,7 +668,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 					graphNode.setImage(image);
 				}
 
-				graphNode.setData(schemaItem);
+				graphNode.setData(targetSchemaItem);
 
 				// Node Style
 				graphNode.setBorderWidth(2);

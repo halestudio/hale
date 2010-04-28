@@ -75,6 +75,12 @@
             name="%view.transformedTable.name"
             restorable="true">
       </view>
+      <view
+            class="eu.esdihumboldt.hale.rcp.views.mappingGraph.MappingGraphView"
+            id="eu.esdihumboldt.hale.rcp.views.mappingGraph"
+            name="Mapping Graph"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
