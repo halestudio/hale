@@ -83,6 +83,10 @@
             icon="icons/userdefined.png"
             name="User defined function">
       </factory>
+      <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.ConcatenationOfAttributesWizardFactory"
+            name="Concatenation Of Attributes">
+      </factory>
    </extension>
 
 </plugin>
