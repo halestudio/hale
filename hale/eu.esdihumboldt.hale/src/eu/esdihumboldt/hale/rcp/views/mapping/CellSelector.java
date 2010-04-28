@@ -440,39 +440,12 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 	private void update(ISelection selection) {
 		lastSelection = selection;
 		
-		Map<ICell, CellInfo> cells = new HashMap<ICell, CellInfo>();
+		Map<ICell, CellInfo> cells = null;
 		
 		if (selection != null && !selection.isEmpty()
 				&& selection instanceof SchemaSelection) {
 			SchemaSelection schema = (SchemaSelection) selection;
-			
-			Set<SchemaItem> sourceItems = new LinkedHashSet<SchemaItem>(schema.getSourceItems());
-			Set<SchemaItem> targetItems = new LinkedHashSet<SchemaItem>(schema.getTargetItems());
-			
-			sourceItems.addAll(getChildren(sourceItems));
-			targetItems.addAll(getChildren(targetItems));
-			
-			// add NullSchemaItem to find augmentations
-			sourceItems.add(NullSchemaItem.INSTANCE);
-			
-			if (sourceItems != null && targetItems != null) {
-				// for each source item...
-				for (SchemaItem source : sourceItems) {
-					// ...for each target item...
-					for (SchemaItem target : targetItems) {
-						// ...find the mapping cells
-						ICell cell = alignmentService.getCell(
-								source.getEntity(),
-								target.getEntity());
-						
-						if (cell != null) {
-							if (!cells.containsKey(cell)) {
-								cells.put(cell, new CellInfo(cell, source, target));
-							}
-						}
-					}
-				}
-			}
+			cells = schema.getCellsForSelection();
 		}
 		
 		List<CellInfo> cellList = new ArrayList<CellInfo>(cells.values());
