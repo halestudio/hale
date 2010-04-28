@@ -31,7 +31,12 @@ Import-Package: eu.esdihumboldt.hale.prefixmapper,
  eu.esdihumboldt.hale.schemaprovider,
  eu.esdihumboldt.hale.schemaprovider.model,
  eu.esdihumboldt.hale.schemaprovider.provider,
- org.apache.log4j
+ org.apache.log4j,
+ org.eclipse.draw2d,
+ org.eclipse.draw2d.geometry,
+ org.eclipse.zest.core.widgets,
+ org.eclipse.zest.layouts,
+ org.eclipse.zest.layouts.algorithms
 Export-Package: eu.esdihumboldt.hale.rcp.utils.definition,
  eu.esdihumboldt.hale.rcp.utils.filter,
  eu.esdihumboldt.hale.rcp.views.model,

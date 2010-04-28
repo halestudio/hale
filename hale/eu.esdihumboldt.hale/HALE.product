@@ -7,12 +7,13 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-consolelog</programArgs>
+      <programArgs>-clean -consolelog</programArgs>
       <vmArgs>-Xmx384m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
    <windowImages i32="/eu.esdihumboldt.hale/icons/hale_icon.png"/>
+
 
    <launcher name="HALE">
       <solaris/>
@@ -88,6 +89,7 @@
       <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.draw2d"/>
       <plugin id="org.eclipse.emf.common"/>
       <plugin id="org.eclipse.emf.ecore"/>
       <plugin id="org.eclipse.equinox.app"/>
@@ -110,6 +112,8 @@
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.eclipse.xsd"/>
+      <plugin id="org.eclipse.zest.core"/>
+      <plugin id="org.eclipse.zest.layouts"/>
       <plugin id="org.geotools"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.jdom"/>
