@@ -12,11 +12,19 @@
 package eu.esdihumboldt.hale.rcp.views.model;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.PlatformUI;
+
+import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.hale.models.AlignmentService;
+import eu.esdihumboldt.hale.rcp.views.mapping.CellInfo;
+import eu.esdihumboldt.hale.rcp.wizards.augmentations.NullSchemaItem;
 
 /**
  * A selection with source and target {@link SchemaItem}s
@@ -36,6 +44,68 @@ public class SchemaSelection implements ISelection {
 	 */
 	public SchemaSelection() {
 		this(null, null);
+	}
+	
+	public Map<ICell, CellInfo> getCellsForSelection() {
+		Map<ICell, CellInfo> cells = new HashMap<ICell, CellInfo>();
+		
+		AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+			
+		Set<SchemaItem> sourceItems = new LinkedHashSet<SchemaItem>(this
+				.getSourceItems());
+		Set<SchemaItem> targetItems = new LinkedHashSet<SchemaItem>(this
+				.getTargetItems());
+
+		sourceItems.addAll(getChildren(sourceItems));
+		targetItems.addAll(getChildren(targetItems));
+
+		// add NullSchemaItem to find augmentations
+		sourceItems.add(NullSchemaItem.INSTANCE);
+
+		if (sourceItems != null && targetItems != null) {
+			// for each source item...
+			for (SchemaItem source : sourceItems) {
+				// ...for each target item...
+				for (SchemaItem target : targetItems) {
+					// ...find the mapping cells
+					ICell cell = alignmentService.getCell(source.getEntity(),
+							target.getEntity());
+
+					if (cell != null) {
+						if (!cells.containsKey(cell)) {
+							cells.put(cell, new CellInfo(cell, source, target));
+						}
+					}
+				}
+			}
+		}
+		return cells;
+	}
+	
+	/**
+	 * Recursively get the children of the given items
+	 * 
+	 * @param items the items
+	 * @return the set of children
+	 */
+	private Set<? extends SchemaItem> getChildren(
+			Set<SchemaItem> items) {
+		Set<SchemaItem> children = new LinkedHashSet<SchemaItem>();
+		
+		// add children
+		for (SchemaItem item : items) {
+			if (item.hasChildren()) {
+				for (SchemaItem child : item.getChildren()) {
+					children.add(child);
+				}
+			}
+		}
+		
+		if (!children.isEmpty()) {
+			children.addAll(getChildren(children));
+		}
+		
+		return children;
 	}
 	
 	/**
