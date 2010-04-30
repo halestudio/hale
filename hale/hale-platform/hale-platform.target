@@ -42,5 +42,9 @@
 <unit id="org.eclipse.zest.source.feature.group" version="1.1.2.v20100111-1352-6618yD6DH8G6N59OM53B2A"/>
 <repository location="http://download.eclipse.org/tools/gef/updates/releases/"/>
 </location>
+<location path="${project_loc:hale-platform}/target/org.slf4j" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.slf4j" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.slf4j" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.commons" type="Directory"/>
 </locations>
 </target>
