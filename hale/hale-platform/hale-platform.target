@@ -46,5 +46,6 @@
 <location path="${project_loc:hale-platform}/target/org.slf4j" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.slf4j" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.apache.commons" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/javax.mail" type="Directory"/>
 </locations>
 </target>
