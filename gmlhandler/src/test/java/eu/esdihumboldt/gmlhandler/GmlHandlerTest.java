@@ -159,20 +159,25 @@ public class GmlHandlerTest {
 			assertEquals(49, ftypes.length);
 
 		} catch (MalformedURLException e) {
-
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e.getStackTrace().toString());
+			fail(e.getMessage());
+			
 		} catch (ClassCastException e) {
 
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (ClassNotFoundException e) {
 
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (InstantiationException e) {
 
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (IllegalAccessException e) {
 
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		}
 
 	}
@@ -221,37 +226,40 @@ public class GmlHandlerTest {
 
 			}
 
-		} catch (MalformedURLException e1) {
+		} catch (MalformedURLException e) {
 
-			LOG.error(e1.getStackTrace(), e1);
+			LOG.error(e);
+			fail(e.getMessage());
 
 		} catch (XMLParsingException e) {
 
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (ClassCastException e) {
 
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (XMLStreamException e) {
-
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (FactoryConfigurationError e) {
-
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (IOException e) {
-
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (ClassNotFoundException e) {
-
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (InstantiationException e) {
-
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (IllegalAccessException e) {
-
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (UnknownCRSException e) {
-
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		}
 
 	}
@@ -270,38 +278,38 @@ public class GmlHandlerTest {
 		try {
 			gmlHandler.writeFC(gmlHandler.readFC());
 		} catch (XMLParsingException e) {
-			
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (FileNotFoundException e) {
-			
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (ClassCastException e) {
-			
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (XMLStreamException e) {
-			
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (UnknownCRSException e) {
-			
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (TransformationException e) {
-			
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (FactoryConfigurationError e) {
-			
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (IOException e) {
-			
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (ClassNotFoundException e) {
-			
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (InstantiationException e) {
-			
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		} catch (IllegalAccessException e) {
-			
-			LOG.error(e.getStackTrace(), e);
+			LOG.error(e);
+			fail(e.getMessage());
 		}
 		
 
