@@ -16,9 +16,12 @@ import static org.junit.Assert.*;
 
 import java.net.MalformedURLException;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.deegree.feature.types.ApplicationSchema;
+import org.deegree.feature.types.FeatureType;
+import org.deegree.feature.types.property.PropertyType;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -88,8 +91,42 @@ public class GmlHandlerTest {
 		//read application schema
 		try {
 			ApplicationSchema schema = gmlHandler.readSchema();
+			//validate root FeatureTypes
+			FeatureType [] rootFTypes = schema.getRootFeatureTypes();
+			
+			assertEquals(17, rootFTypes.length);
+			for (FeatureType rootType : rootFTypes){
+				LOG.debug("Root Feature Type : "+ rootType.getName().getNamespaceURI() + ":" + rootType.getName().getLocalPart());
+			}
 			//compair the count of the FeatureTypes
-			assertEquals(23, schema.getFeatureTypes().length);
+			 FeatureType [] ftypes =  schema.getFeatureTypes();
+			 for (FeatureType ftype : ftypes){
+				 LOG.debug("Application Schema Type : " + ftype.getName().getNamespaceURI() + ":" + ftype.getName().getLocalPart() );
+				// validate a single Feature Type
+				  if (ftype.getName().getLocalPart().equals("Rapids")){
+					  assertEquals("hy-p", ftype.getName().getPrefix());
+					  assertEquals("urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0", ftype.getName().getNamespaceURI());
+					  //check parent type
+					  FeatureType pType = schema.getParentFt(ftype);
+					  LOG.debug("Parent Typy of hy-p:Rapids is " + pType.getName().toString());
+					  assertEquals("FluvialPoint" , pType.getName().getLocalPart());
+					  //check property declarations list
+					  List<PropertyType> pDeclarations = (List<PropertyType>)ftype.getPropertyDeclarations();
+					  assertEquals(8, pDeclarations.size());
+					  for (PropertyType propType : pDeclarations ){
+						  LOG.debug("Property List of hy-p:Rapids contains : " + propType.getName().toString());
+					  }
+					  
+					  
+				  }
+			 }
+			
+			assertEquals(49, ftypes.length);
+			
+			
+			
+			
+		
 		} catch (MalformedURLException e) {
 			
 			LOG.error(e.getStackTrace(),e);
@@ -114,7 +151,7 @@ public class GmlHandlerTest {
 	 */
 	@Test
 	public final void testReadFC() {
-		fail("Not yet implemented");
+		
 	}
 
 	/**
@@ -122,7 +159,7 @@ public class GmlHandlerTest {
 	 */
 	@Test
 	public final void testWriteFC() {
-		fail("Not yet implemented");
+		
 	}
 
 }
