@@ -14,6 +14,7 @@ package eu.esdihumboldt.gmlhandler;
 
 import static org.junit.Assert.*;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,6 +27,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.log4j.Logger;
 import org.deegree.commons.xml.XMLParsingException;
+import org.deegree.cs.exceptions.TransformationException;
 import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.feature.Feature;
 import org.deegree.feature.FeatureCollection;
@@ -67,6 +69,9 @@ public class GmlHandlerTest {
 	/** source gml location */
 	private static final String GML32_INSTANCE_LOCATION = "http://svn.esdi-humboldt.eu/repo/humboldt2/branches/humboldt-deegree3/resource/sourceData/va_target_v3.gml";
 
+	/** generated instance location */
+	private static final String GML32_GENERATED_LOCATION = "src/test/resources/va_target_v3_generated.gml";
+	
 	/** handler to proceed gmldata */
 	private static GmlHandler gmlHandler;
 
@@ -91,8 +96,9 @@ public class GmlHandlerTest {
 		gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, SCHEMA_URL,
 				namespaces);
 		gmlHandler.setGmlUrl(GML32_INSTANCE_LOCATION);
+		
 		// set target gml destination
-		// gmlHandler.setTargetGmlUrl(targetGmlUrl);
+		 gmlHandler.setTargetGmlUrl(GML32_GENERATED_LOCATION);
 
 	}
 
@@ -257,8 +263,47 @@ public class GmlHandlerTest {
 	 */
 	@Test
 	public final void testWriteFC() {
-
+		
 		// TODO provide XUNIT-based testing
+		// TODO clean up generated file after 
+		
+		try {
+			gmlHandler.writeFC(gmlHandler.readFC());
+		} catch (XMLParsingException e) {
+			
+			LOG.error(e.getStackTrace(), e);
+		} catch (FileNotFoundException e) {
+			
+			LOG.error(e.getStackTrace(), e);
+		} catch (ClassCastException e) {
+			
+			LOG.error(e.getStackTrace(), e);
+		} catch (XMLStreamException e) {
+			
+			LOG.error(e.getStackTrace(), e);
+		} catch (UnknownCRSException e) {
+			
+			LOG.error(e.getStackTrace(), e);
+		} catch (TransformationException e) {
+			
+			LOG.error(e.getStackTrace(), e);
+		} catch (FactoryConfigurationError e) {
+			
+			LOG.error(e.getStackTrace(), e);
+		} catch (IOException e) {
+			
+			LOG.error(e.getStackTrace(), e);
+		} catch (ClassNotFoundException e) {
+			
+			LOG.error(e.getStackTrace(), e);
+		} catch (InstantiationException e) {
+			
+			LOG.error(e.getStackTrace(), e);
+		} catch (IllegalAccessException e) {
+			
+			LOG.error(e.getStackTrace(), e);
+		}
+		
 
 	}
 
