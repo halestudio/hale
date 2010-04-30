@@ -74,4 +74,8 @@
   		<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/libs-snapshots-local</url>
   	</snapshotRepository>
   </distributionManagement>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  
 </project>
