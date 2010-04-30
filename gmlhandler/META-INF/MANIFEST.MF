@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Humboldt GML Handler
+Bundle-SymbolicName: eu.esdihumboldt.gmlhandler;singleton:=true
+Bundle-Version: 0.0.1.SNAPSHOT
+Export-Package: eu.esdihumboldt.gmlhandler
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit4;bundle-version="4.5.0"
