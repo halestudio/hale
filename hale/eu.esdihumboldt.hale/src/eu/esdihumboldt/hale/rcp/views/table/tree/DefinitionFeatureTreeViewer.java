@@ -19,7 +19,6 @@ import java.util.Map.Entry;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeColumnViewerLabelProvider;
 import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.jface.viewers.TreeNodeContentProvider;
@@ -51,9 +50,9 @@ public class DefinitionFeatureTreeViewer {
 	private static Logger _log = Logger.getLogger(DefinitionFeatureTreeViewer.class);
 	
 	/**
-	 * Label provider for a feature column
+	 * Label provider for a feature column, falls back to {@link MultiColumnTreeNodeLabelProvider}
 	 */
-	public static class PropertyItemLabelProvider extends LabelProvider {
+	public static class PropertyItemLabelProvider extends MultiColumnTreeNodeLabelProvider {
 		
 		/**
 		 * The feature representing the column
@@ -64,9 +63,10 @@ public class DefinitionFeatureTreeViewer {
 		 * Creates a new feature column label provider
 		 * 
 		 * @param feature the feature representing the column
+		 * @param columnIndex the column index
 		 */
-		public PropertyItemLabelProvider(Feature feature) {
-			super();
+		public PropertyItemLabelProvider(Feature feature, int columnIndex) {
+			super(columnIndex);
 			
 			this.feature = feature;
 		}
@@ -176,15 +176,18 @@ public class DefinitionFeatureTreeViewer {
 		}
 		
 		// add columns for features
+		int index = 1;
 		if (features != null) {
 			for (Feature feature : features) {
 				TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.LEFT);
 				column.getColumn().setText(feature.getIdentifier().toString());
 				column.setLabelProvider(new TreeColumnViewerLabelProvider(
-						new PropertyItemLabelProvider(feature)));
+						new PropertyItemLabelProvider(feature, index)));
 				if (layout instanceof TreeColumnLayout) {
 					((TreeColumnLayout) layout).setColumnData(column.getColumn(), new ColumnWeightData(1));
 				}
+				
+				index++;
 			}
 		}
 		
