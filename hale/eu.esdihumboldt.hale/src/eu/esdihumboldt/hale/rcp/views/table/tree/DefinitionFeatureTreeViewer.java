@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.opengis.feature.Feature;
+import org.opengis.metadata.lineage.Lineage;
 
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNodeLabelProvider;
@@ -120,7 +121,36 @@ public class DefinitionFeatureTreeViewer {
 		// create row definitions from type definition
 		if (type != null) {
 			DefaultTreeNode root = new DefaultTreeNode();
-			addProperties(root, type.getType());
+			DefaultTreeNode attributes = new DefaultTreeNode("Attributes");
+			root.addChild(attributes);
+			addProperties(attributes, type.getType());
+			
+			DefaultTreeNode metadata = new DefaultTreeNode("Metadata");
+			root.addChild(metadata);
+			
+			// create row defs for metadata
+			if (features != null) {
+				boolean displayLineage = false;
+				int lineageLength = 0;
+				for (Feature f : features) {
+					Lineage l = (Lineage) f.getUserData().get("METADATA_LINEAGE");
+					if (l != null && l.getProcessSteps().size() > 0) {
+						displayLineage = true;
+						if (lineageLength < l.getProcessSteps().size()) {
+							lineageLength = l.getProcessSteps().size();
+						}
+					}
+				}
+				if (displayLineage) {
+					DefaultTreeNode lineage = new DefaultTreeNode("Lineage");
+					metadata.addChild(lineage);
+					for (int i = 0; i < lineageLength; i++) {
+						DefaultTreeNode processStep = new DefaultTreeNode("Process Step " + (i + 1));
+						lineage.addChild(processStep);
+					}
+				}
+			}
+			
 			// remove parent
 			for (TreeNode child : root.getChildren()) {
 				child.setParent(null);
@@ -151,7 +181,7 @@ public class DefinitionFeatureTreeViewer {
 				TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.LEFT);
 				column.getColumn().setText(feature.getIdentifier().toString());
 				column.setLabelProvider(new TreeColumnViewerLabelProvider(
-						new PropertyItemLabelProvider(feature))); //XXX
+						new PropertyItemLabelProvider(feature)));
 				if (layout instanceof TreeColumnLayout) {
 					((TreeColumnLayout) layout).setColumnData(column.getColumn(), new ColumnWeightData(1));
 				}

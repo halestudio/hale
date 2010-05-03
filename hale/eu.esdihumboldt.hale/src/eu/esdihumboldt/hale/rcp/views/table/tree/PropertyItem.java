@@ -75,7 +75,7 @@ public class PropertyItem extends DefaultTreeNode {
 	public String getText(Feature feature) {
 		Object value = getValue(feature);
 		if (value == null) {
-			return "null"; //$NON-NLS-1$
+			return ""; //$NON-NLS-1$
 		}
 		else {
 			if (value instanceof Collection<?>) {
@@ -84,7 +84,7 @@ public class PropertyItem extends DefaultTreeNode {
 				for (Iterator<?> iterator = c.iterator(); iterator.hasNext();) {
 					Object o = iterator.next();
 					if (o instanceof Feature) {
-						resultRepresentation += ((Feature)o).getType().getName().getLocalPart();
+						resultRepresentation += "+";
 					}
 					else {
 						resultRepresentation += o.toString();
