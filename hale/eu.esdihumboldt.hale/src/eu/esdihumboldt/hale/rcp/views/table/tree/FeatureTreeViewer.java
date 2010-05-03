@@ -43,6 +43,7 @@ import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNodeLabelProvider;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
+@Deprecated
 public class FeatureTreeViewer {
 	
 	/**
