@@ -11,9 +11,14 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map.tiles;
 
+import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.SWT;
@@ -28,12 +33,19 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.geotools.coverage.grid.GeneralGridRange;
+import org.geotools.geometry.Envelope2D;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.operation.builder.GridToEnvelopeMapper;
+import org.geotools.renderer.lite.RendererUtilities;
+import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.datum.PixelInCell;
 
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.map.Messages;
@@ -90,6 +102,8 @@ public abstract class AbstractTilePainter implements PaintListener,
 	 * The minimum tile size
 	 */
 	private static final int MIN_TILE_SIZE = 256;
+	
+	private static final Log log = LogFactory.getLog(AbstractTilePainter.class);
 
 	/**
 	 * If panning is currently enabled
@@ -732,6 +746,104 @@ public abstract class AbstractTilePainter implements PaintListener,
 		// update offsets and force refresh
 		setOffsets(getXOffset(), getYOffset());
 		refresh();
+	}
+	
+	/**
+	 * Convert canvas pixel coordinates to map pixel coordinates
+	 * 
+	 * @param x
+	 * @param y
+	 * 
+	 * @return the map pixel coordinates 
+	 */
+	public Point toWorld(int x, int y) {
+		return new Point((int) getXOffset() + x, (int) getYOffset() + y);
+	}
+	
+	/**
+	 * Convert canvas pixel coordinates to geo coordinates
+	 * 
+	 * @param x
+	 * @param y
+	 * 
+	 * @return the point in geo coordinates
+	 */
+	public Point2D toGeoCoordinates(int x, int y) {
+		return toGeoCoordinates(toWorld(x, y), getZoom());
+	}
+	
+	/**
+	 * Convert map pixel coordinates to geo coordinates
+	 * 
+	 * @param mapPixels point in map pixel
+	 * @param zoom the zoom level
+	 * 
+	 * @return the point in geo coordinates
+	 */
+	public Point2D toGeoCoordinates(Point mapPixels, final int zoom) {
+		int mapX = mapPixels.x;
+		int mapY = mapPixels.y;
+		
+		int tileNumX = mapX / getTileWidth();
+		int tileNumY = mapY / getTileHeight();
+		
+		ReferencedEnvelope tileArea = getTileArea(zoom, tileNumX, tileNumY);
+		
+		int tileX = mapX % getTileWidth();
+		int tileY = mapY % getTileHeight();
+		
+		return toGeoCoordinates(tileX, tileY, tileArea);
+	}
+	
+	/**
+     * Helper class for building affine transforms. We use one instance per thread,
+     * in order to avoid the need for {@code synchronized} statements.
+     * 
+     * @see RendererUtilities
+     */
+    private static final ThreadLocal<GridToEnvelopeMapper> gridToEnvelopeMappers =
+            new ThreadLocal<GridToEnvelopeMapper>() {
+                @SuppressWarnings("deprecation")
+				@Override
+                protected GridToEnvelopeMapper initialValue() {
+                    final GridToEnvelopeMapper mapper = new GridToEnvelopeMapper();
+                    mapper.setGridType(PixelInCell.CELL_CORNER);
+                    return mapper;
+                }
+    };
+
+	/**
+	 * Convert tile pixel coordinates to geo coordinates
+	 * 
+	 * @see RendererUtilities#worldToScreenTransform(ReferencedEnvelope, Rectangle)
+	 * 
+	 * @param tileX
+	 * @param tileY
+	 * @param tileArea the tile area
+	 * 
+	 * @return the point in geo coordinates, <code>null</code> if conversion failed
+	 */
+	@SuppressWarnings("deprecation")
+	protected Point2D toGeoCoordinates(int tileX, int tileY,
+			ReferencedEnvelope tileArea) {
+		// creating transformation
+		final Envelope2D genvelope = new Envelope2D(tileArea);
+		final GridToEnvelopeMapper m = (GridToEnvelopeMapper) gridToEnvelopeMappers.get();
+		try {
+            m.setGridRange(new GeneralGridRange(new Rectangle(getTileWidth(), getTileHeight())));
+            m.setEnvelope(genvelope);
+            AffineTransform trans = m.createAffineTransform(); // creating transformation as in RendererUtilities, but without the inversion that is applied there
+            
+            Point2D.Double tile = new Point2D.Double(tileX, tileY);
+            Point2D.Double result = new Point2D.Double(tileX, tileY);
+            
+            trans.transform(tile, result);
+            
+            return result;
+		} catch (MismatchedDimensionException e) {
+			log.error("Error creating transformation", e);
+			return null;
+		}
 	}
 
 }
