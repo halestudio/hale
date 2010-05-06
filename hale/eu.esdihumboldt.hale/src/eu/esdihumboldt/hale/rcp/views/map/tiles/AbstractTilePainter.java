@@ -784,6 +784,10 @@ public abstract class AbstractTilePainter implements PaintListener,
 		int mapX = mapPixels.x;
 		int mapY = mapPixels.y;
 		
+		if (getTileWidth() == 0 || getTileHeight() == 0) {
+			return null;
+		}
+		
 		int tileNumX = mapX / getTileWidth();
 		int tileNumY = mapY / getTileHeight();
 		

@@ -67,6 +67,8 @@ public class MapView extends ViewPart {
 	 */
 	private FeatureTilePainter painter;
 	
+	private PositionStatus status;
+	
 	/**
 	 * @see WorkbenchPart#createPartControl(Composite)
 	 */
@@ -131,6 +133,9 @@ public class MapView extends ViewPart {
 		// create the painter
 		painter = new FeatureTilePainter(mapCanvas);
 		
+		// create position status
+		status = new PositionStatus(painter, mapCanvas, getViewSite(), getTitleImage());
+		
 		// add zoom buttons
 		tm.add(painter.getZoomOutAction());
 		tm.add(painter.getZoomInAction());
@@ -189,6 +194,10 @@ public class MapView extends ViewPart {
 	public void dispose() {
 		if (painter != null) {
 			painter.dispose();
+		}
+		
+		if (status != null) {
+			status.dispose();
 		}
 		
 		super.dispose();
