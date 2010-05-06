@@ -63,13 +63,14 @@ public class ConcatenationOfAttributesWizardFactory implements
 		
 		// source items must be properties
 		for (SchemaItem source : selection.getSourceItems()) {
-				if (!source.isAttribute() && !Number.class.isAssignableFrom(source.getPropertyType().getBinding())){
-					return false;
-				}
-				if (!source.isAttribute() && !String.class.isAssignableFrom(source.getPropertyType().getBinding())){
-					return false;
-				}
+			if (!source.isAttribute()) {
+				return false;
 			}
+			if (!Number.class.isAssignableFrom(source.getPropertyType().getBinding())
+					&& !String.class.isAssignableFrom(source.getPropertyType().getBinding())){
+				return false;
+			}
+		}
 		return true;
 	}
 	

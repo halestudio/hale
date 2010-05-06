@@ -24,6 +24,11 @@
             name="Rename Attribute">
       </factory>
       <factory
+            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.ConcatenationOfAttributesWizardFactory"
+            icon="icons/string_attribute.png"
+            name="Attribute Concatenation">
+      </factory>
+      <factory
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric.NetworkExpansionFunctionWizardFactory"
             icon="icons/geometry_attribute.png"
             name="Buffer (Line to Surface)">
@@ -82,10 +87,6 @@
             class="eu.esdihumboldt.hale.rcp.wizards.functions.core.userdefined.UserDefinedFunctionWizardFactory"
             icon="icons/userdefined.png"
             name="User defined function">
-      </factory>
-      <factory
-            class="eu.esdihumboldt.hale.rcp.wizards.functions.core.ConcatenationOfAttributesWizardFactory"
-            name="Concatenation Of Attributes">
       </factory>
    </extension>
 
