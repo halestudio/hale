@@ -78,4 +78,12 @@ public interface StyleService
 	 */
 	public void clearStyles();
 
+	/**
+	 * Get a style combining all selection styles for the given data set
+	 * 
+	 * @param type the data set
+	 * @return the style
+	 */
+	public Style getSelectionStyle(DatasetType type);
+
 }

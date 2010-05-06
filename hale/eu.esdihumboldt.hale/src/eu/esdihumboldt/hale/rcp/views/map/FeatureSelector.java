@@ -13,16 +13,14 @@
 package eu.esdihumboldt.hale.rcp.views.map;
 
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.factory.CommonFactoryFinder;
@@ -48,7 +46,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class FeatureSelector extends MouseAdapter {
+public class FeatureSelector implements FeatureSelectionProvider, MouseListener {
 	
 	private static final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
 	
@@ -59,6 +57,12 @@ public class FeatureSelector extends MouseAdapter {
 	private final AbstractTilePainter mapPainter;
 	
 	private Set<FeatureId> selectedFeatures = new HashSet<FeatureId>();
+	
+	private boolean lastWasDown = false;
+	
+	private int lastX;
+	
+	private int lastY;
 
 	/**
 	 * @param mapControl
@@ -73,11 +77,36 @@ public class FeatureSelector extends MouseAdapter {
 	}
 
 	/**
+	 * @see MouseAdapter#mouseDown(MouseEvent)
+	 */
+	@Override
+	public void mouseDown(MouseEvent e) {
+		lastX = e.x;
+		lastY = e.y;
+		
+		lastWasDown = true;
+	}
+
+	/**
+	 * @see MouseAdapter#mouseUp(MouseEvent)
+	 */
+	@Override
+	public void mouseUp(MouseEvent e) {
+		if (lastWasDown && lastX == e.x && lastY == e.y) {
+			// only react on clicks, not on drags
+			
+			selectFeatures(e.x, e.y, false);
+		}
+		
+		lastWasDown = false;
+	}
+
+	/**
 	 * @see MouseAdapter#mouseDoubleClick(MouseEvent)
 	 */
 	@Override
 	public void mouseDoubleClick(MouseEvent e) {
-		selectFeatures(e.x, e.y, false);
+		// ignore - selectFeatures(e.x, e.y, false);
 	}
 
 	/**
@@ -96,7 +125,7 @@ public class FeatureSelector extends MouseAdapter {
 			selectedFeatures = ids;
 		}
 		
-		System.out.println(Arrays.toString(selectedFeatures.toArray()));
+		//System.out.println(Arrays.toString(selectedFeatures.toArray()));
 		
 		mapPainter.updateMap();
 	}
@@ -164,6 +193,13 @@ public class FeatureSelector extends MouseAdapter {
 				}
 			}
 		}
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.rcp.views.map.FeatureSelectionProvider#getSelectedFeatures()
+	 */
+	public Set<FeatureId> getSelectedFeatures() {
+		return new HashSet<FeatureId>(selectedFeatures);
 	}
 
 	/**

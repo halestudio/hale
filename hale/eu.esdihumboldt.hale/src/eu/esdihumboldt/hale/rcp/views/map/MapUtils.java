@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.rcp.views.map;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
@@ -29,6 +30,7 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.filter.identity.FeatureId;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import eu.esdihumboldt.hale.models.InstanceService;
@@ -91,11 +93,13 @@ public abstract class MapUtils {
 	 * @param crs the {@link CoordinateReferenceSystem} to use.
 	 * @param type the {@link DatasetType} to render.
 	 * @param status 
+	 * @param selection 
 	 * @return a {@link MapContext} with the given CRS and the 
 	 * {@link FeatureCollection} identified by the given {@link DatasetType}.
 	 */
 	@SuppressWarnings("unchecked")
-	public static MapContext buildMapContext(CoordinateReferenceSystem crs, DatasetType type, FeaturePaintStatus status) {
+	public static MapContext buildMapContext(CoordinateReferenceSystem crs, 
+			DatasetType type, FeaturePaintStatus status, Set<FeatureId> selection) {
 		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 		
@@ -107,11 +111,11 @@ public abstract class MapUtils {
 			
 			log.info("features size: " + fc.size()); //$NON-NLS-1$
 			log.info("features bounds: " + fc.getBounds()); //$NON-NLS-1$
-			Style style = ss.getStyle(type);
 			
 			int failed = 0;
 			
 			Map<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> groupedFeatures = new HashMap<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>>();
+			Map<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> selectedFeatures = new HashMap<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>>();
 			Iterator it = fc.iterator();
 			while (it.hasNext()) {
 				Object tmp = it.next();
@@ -120,10 +124,18 @@ public abstract class MapUtils {
 					SimpleFeature feature = (SimpleFeature) tmp;
 					
 					if (validateFeature(feature)) {
-						FeatureCollection<SimpleFeatureType, SimpleFeature> collection = groupedFeatures.get(feature.getFeatureType());
+						Map<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> collectionMap;
+						if (selection.contains(feature.getIdentifier())) {
+							collectionMap = selectedFeatures;
+						}
+						else {
+							collectionMap = groupedFeatures;
+						}
+						
+						FeatureCollection<SimpleFeatureType, SimpleFeature> collection = collectionMap.get(feature.getFeatureType());
 						if (collection == null) {
 							collection = new MemoryFeatureCollection(feature.getFeatureType());
-							groupedFeatures.put(feature.getFeatureType(), collection);
+							collectionMap.put(feature.getFeatureType(), collection);
 						}
 						
 						collection.add(feature);
@@ -148,7 +160,15 @@ public abstract class MapUtils {
 			}
 			
 			MapContext mc = new DefaultMapContext(crs);
+			// add normal features
+			Style style = ss.getStyle(type);
 			for (Entry<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> entry : groupedFeatures.entrySet()) {
+				mc.addLayer(entry.getValue(), style);
+			}
+			
+			// add selected features
+			style = ss.getSelectionStyle(type);
+			for (Entry<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> entry : selectedFeatures.entrySet()) {
 				mc.addLayer(entry.getValue(), style);
 			}
 			

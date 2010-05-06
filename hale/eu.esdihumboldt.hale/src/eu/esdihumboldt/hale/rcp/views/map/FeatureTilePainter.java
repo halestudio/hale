@@ -92,6 +92,8 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	 * The background color
 	 */
 	private RGB background = new RGB(126, 166, 210);
+	
+	private final FeatureSelector selector;
 
 	private final InstanceServiceListener instanceListener;
 
@@ -106,11 +108,14 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	 */
 	public FeatureTilePainter(Control canvas) {
 		status = new FeaturePaintStatus();
+		selector = new FeatureSelector(canvas, this);
 		
-		referenceRenderer = new FeatureTileRenderer(DatasetType.reference, status);
+		referenceRenderer = new FeatureTileRenderer(DatasetType.reference, 
+				status, selector);
 		referenceCache = new TileCache(referenceRenderer, this);
 		
-		transformedRenderer = new FeatureTileRenderer(DatasetType.transformed, status);
+		transformedRenderer = new FeatureTileRenderer(DatasetType.transformed, 
+				status, selector);
 		transformedCache = new TileCache(transformedRenderer, this);
 		
 		init(canvas, determineMapArea());
@@ -610,6 +615,8 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	 * Dispose the painter
 	 */
 	public void dispose() {
+		selector.dispose();
+		
 		final InstanceService instances = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 		instances.removeListener(instanceListener);
 		

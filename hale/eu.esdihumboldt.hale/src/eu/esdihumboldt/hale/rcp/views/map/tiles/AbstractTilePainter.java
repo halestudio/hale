@@ -269,6 +269,7 @@ public abstract class AbstractTilePainter implements PaintListener,
 	 */
 	public void updateMap() {
 		resetTiles();
+		refresh();
 	}
 	
 	/**

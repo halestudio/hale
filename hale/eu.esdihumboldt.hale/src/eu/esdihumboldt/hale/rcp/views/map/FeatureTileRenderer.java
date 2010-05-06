@@ -46,19 +46,24 @@ public class FeatureTileRenderer implements TileProvider {
 	
 	private boolean contextInitialized = false;
 	
-	private FeaturePaintStatus status;
+	private final FeaturePaintStatus status;
+	
+	private final FeatureSelectionProvider selection;
 	
 	/**
 	 * Creates a new renderer
 	 * 
 	 * @param type the data set type
 	 * @param status 
+	 * @param selection 
 	 */
-	public FeatureTileRenderer(final DatasetType type, final FeaturePaintStatus status) {
+	public FeatureTileRenderer(final DatasetType type, final FeaturePaintStatus status,
+			final FeatureSelectionProvider selection) {
 		super();
 		
 		this.type = type;
 		this.status = status;
+		this.selection = selection;
 		
 		configureRenderer();
 	}
@@ -81,7 +86,7 @@ public class FeatureTileRenderer implements TileProvider {
 	 * @param crs the coordinate reference system (may be null)
 	 */
 	public void updateMapContext(CoordinateReferenceSystem crs) {
-		renderer.setContext(MapUtils.buildMapContext(crs, type, status));
+		renderer.setContext(MapUtils.buildMapContext(crs, type, status, selection.getSelectedFeatures()));
 		contextInitialized = true;
 	}
 

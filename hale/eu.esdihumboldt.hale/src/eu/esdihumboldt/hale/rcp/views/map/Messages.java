@@ -28,7 +28,6 @@ public class Messages extends NLS {
 	public static String RuleEditor_FilterLabel;
 	public static String RuleStylePage_AddRuleButtonToolTippText;
 	public static String RuleStylePage_DownRuleButtonToolTippText;
-	public static String RuleStylePage_FeatureTypeTitle;
 	public static String RuleStylePage_InputDialogDescription;
 	public static String RuleStylePage_InputDialogTitle;
 	public static String RuleStylePage_RemoveRuleButtonToolTippText;
