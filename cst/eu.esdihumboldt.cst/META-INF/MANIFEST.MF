@@ -16,11 +16,11 @@ Require-Bundle: eu.esdihumboldt.commons;bundle-version="2.0.1",
  eu.esdihumboldt.specification;bundle-version="2.0.2",
  org.geotools;bundle-version="2.5.8",
  com.vividsolutions.jts;bundle-version="1.10.0",
- com.springsource.org.apache.log4j;bundle-version="1.2.15",
  org.junit4;bundle-version="4.5.0",
  org.eclipse.ui,
  org.eclipse.core.runtime
-Import-Package: org.osgi.framework
+Import-Package: org.apache.log4j;version="1.2.15",
+ org.osgi.framework
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.cst.transformer.configuration.osgi.CstActivator
 Eclipse-BuddyPolicy: registered
