@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.opengis.feature.Feature;
 import org.opengis.metadata.lineage.Lineage;
+import org.opengis.metadata.lineage.ProcessStep;
 
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNodeLabelProvider;
@@ -132,7 +133,9 @@ public class DefinitionFeatureTreeViewer {
 			if (features != null) {
 				boolean displayLineage = false;
 				int lineageLength = 0;
+				int featuresSize = 0;
 				for (Feature f : features) {
+					featuresSize++;
 					Lineage l = (Lineage) f.getUserData().get("METADATA_LINEAGE");
 					if (l != null && l.getProcessSteps().size() > 0) {
 						displayLineage = true;
@@ -141,11 +144,27 @@ public class DefinitionFeatureTreeViewer {
 						}
 					}
 				}
+				
 				if (displayLineage) {
+					Object[][] processStepsText = new Object[lineageLength][featuresSize + 1];
+					int featureIndex = 0;
+					for (Feature f : features) {
+						Lineage l = (Lineage) f.getUserData().get("METADATA_LINEAGE");
+						if (l != null && l.getProcessSteps().size() > 0) {
+							int psIndex = 0;
+							for (ProcessStep ps : l.getProcessSteps()) {
+								processStepsText[psIndex][featureIndex + 1] = ps.getDescription().toString();
+								psIndex++;
+							}
+						}
+						featureIndex++;
+					}
+					
 					DefaultTreeNode lineage = new DefaultTreeNode("Lineage");
 					metadata.addChild(lineage);
 					for (int i = 0; i < lineageLength; i++) {
-						DefaultTreeNode processStep = new DefaultTreeNode("Process Step " + (i + 1));
+						processStepsText[i][0] = "Process Step " + (i + 1);
+						DefaultTreeNode processStep = new DefaultTreeNode(processStepsText[i]);
 						lineage.addChild(processStep);
 					}
 				}
