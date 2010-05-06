@@ -205,7 +205,7 @@ public class RuleStylePage extends FeatureStylePage {
 			}
 			
 			// create style
-			FeatureTypeStyle fts = styleBuilder.createFeatureTypeStyle(Messages.RuleStylePage_FeatureTypeTitle, ruleArray);
+			FeatureTypeStyle fts = styleBuilder.createFeatureTypeStyle("Feature", ruleArray); //$NON-NLS-1$
 			Style style = styleBuilder.createStyle();
 			style.addFeatureTypeStyle(fts);
 			return style;
