@@ -44,9 +44,6 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 	 */
 	public static final String CONCATENATION = "concatenation";
 	
-	private String sourceName1;
-	private String sourceName2;
-	
 	private String seperator;
 	private String concatenation;
 	
@@ -54,9 +51,6 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 
 	@Override
 	public boolean configure(ICell cell) {
-		List<Property> properties = ((ComposedProperty)cell.getEntity1()).getCollection();
-		this.sourceName1 = properties.get(0).getLocalname();
-		this.sourceName2 = properties.get(1).getLocalname();
 		
 		Transformation t = (Transformation) cell.getEntity1().getTransformation();
 		this.seperator = t.getParameterMap().get(SEPERATOR).getValue();
@@ -106,13 +100,12 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 
 	@Override
 	public Feature transform(Feature source, Feature target) {
-		// set up environment for calculation of new coordinate
-
 		String[] concat = this.concatenation.split("--!-split-!--");
 		String finalConcatString = "";
+		boolean firstElement = true;
 		for (String thisElement : concat) {
 			org.opengis.feature.Property p = source.getProperty(thisElement);
-			if (finalConcatString.length() > 0) {
+			if (!firstElement) {
 				finalConcatString += this.seperator;
 			}
 			
@@ -127,9 +120,9 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 			else {
 				finalConcatString += thisElement;
 			}
+			firstElement = false;
 		}
 		target.getProperty(this.targetPropertyname).setValue(finalConcatString);
-
 		return target;
 	}
 
