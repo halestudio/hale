@@ -265,6 +265,13 @@ public abstract class AbstractTilePainter implements PaintListener,
 	}
 	
 	/**
+	 * Update the map without an area change
+	 */
+	public void updateMap() {
+		resetTiles();
+	}
+	
+	/**
 	 * @see TileCache.TileListener#tileLoaded(int, int, int)
 	 */
 	@Override
