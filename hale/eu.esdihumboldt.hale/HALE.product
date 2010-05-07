@@ -7,13 +7,12 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-clean -consolelog</programArgs>
+      <programArgs>-clean</programArgs>
       <vmArgs>-Xmx384m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
    <windowImages i32="/eu.esdihumboldt.hale/icons/hale_icon.png"/>
-
 
    <launcher name="HALE">
       <solaris/>
