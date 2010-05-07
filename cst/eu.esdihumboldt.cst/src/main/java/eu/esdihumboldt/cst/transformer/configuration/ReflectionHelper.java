@@ -480,8 +480,8 @@ public class ReflectionHelper {
         		
         		//the package may be in a jar file
         		//get the current jar file and search it
-        		if (u != null && u.toString().startsWith("jar:file:")) {
-        			String p = u.toString().substring(4);
+        		if (u != null && u.toURI().toString().startsWith("jar:file:")) {
+        			String p = u.toURI().toString().substring(4);
         			p = p.substring(0, p.indexOf("!/"));
         			File file = new File(URI.create(p));
         			p = file.getAbsolutePath();
