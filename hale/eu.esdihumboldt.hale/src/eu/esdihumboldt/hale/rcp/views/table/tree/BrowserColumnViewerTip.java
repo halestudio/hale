@@ -35,6 +35,8 @@ public abstract class BrowserColumnViewerTip {
 	private final ColumnViewer viewer;
 	
 	private Shell toolShell = null;
+	
+	private int tipCharThreshold = 10;
 
 	/**
 	 * Constructor
@@ -87,7 +89,7 @@ public abstract class BrowserColumnViewerTip {
 			
 			String tipText = getToolTip(element, col, text);
 			
-			if (tipText != null && !tipText.isEmpty()) {
+			if (tipText != null && !tipText.isEmpty() && tipText.length() >= tipCharThreshold) {
 				toolShell = tip.showToolTip(viewer.getControl(), x, y, tipText);
 			}
 		}
