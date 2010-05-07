@@ -103,11 +103,18 @@ public class BrowserTip {
 		    
 		    Point size = toolShell.computeSize( SWT.DEFAULT, SWT.DEFAULT);
 		    int width = Math.min(toolTipWidth, size.x);
-		    int height = Math.min(toolTipHeight, size.y + heightAdjustment);
+		    /* 
+		     * On Windows XP (not on 7) computeSize seems to result in a size where the
+		     * whole text is pressed into one line. We try to fix this by using
+		     * the... "widthFactor"! (only for small computed heights)
+		     */
+		    int widthFactor = (size.y < 30)?(size.x / width):(1); 
+		    int height = Math.min(toolTipHeight, size.y * widthFactor + heightAdjustment);
 		    
 		    int x = (pt.x + width > bounds.x + bounds.width)?(bounds.x + bounds.width - width):(pt.x);
+		    int y = (pt.y + height > bounds.y + bounds.height)?(bounds.y + bounds.height - height):(pt.y);
 		    
-		    toolShell.setBounds(x, pt.y, width, height);
+		    toolShell.setBounds(x, y, width, height);
 		    
 		    final Point initCursor = toolShell.getDisplay().getCursorLocation();
 		    

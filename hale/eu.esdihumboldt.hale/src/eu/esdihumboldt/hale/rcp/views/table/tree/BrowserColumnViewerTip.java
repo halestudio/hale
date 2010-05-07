@@ -59,7 +59,7 @@ public abstract class BrowserColumnViewerTip {
 		});
 		
 		tip = new BrowserTip(width, height, plainText);
-		tip.setHeightAdjustment(0);
+		tip.setHeightAdjustment(5);
 	}
 
 	/**
