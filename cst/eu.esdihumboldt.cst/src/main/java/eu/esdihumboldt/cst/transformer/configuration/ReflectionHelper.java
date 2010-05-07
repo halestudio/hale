@@ -480,16 +480,28 @@ public class ReflectionHelper {
         		
         		//the package may be in a jar file
         		//get the current jar file and search it
-        		if (u != null && u.toURI().toString().startsWith("jar:file:")) {
-        			String p = u.toURI().toString().substring(4);
-        			p = p.substring(0, p.indexOf("!/"));
-        			File file = new File(URI.create(p));
-        			p = file.getAbsolutePath();
+        		if (u != null && u.toString().startsWith("jar:file:")) {
+        			// first try using URL and File
         			try {
-        				jarFile = new JarFile(p);
-        			} catch (ZipException e) {
-						throw new IllegalArgumentException("No zip file: " + p, e);
-					}
+	        			String p = u.toString().substring(4);
+	        			p = p.substring(0, p.indexOf("!/"));
+	        			File file = new File(URI.create(p));
+	        			p = file.getAbsolutePath();
+	        			try {
+	        				jarFile = new JarFile(p);
+	        			} catch (ZipException e) {
+							throw new IllegalArgumentException("No zip file: " + p, e);
+						}
+        			} catch (Throwable e1) {
+        				// second try directly using path
+        				String p = u.toString().substring(9);
+            			p = p.substring(0, p.indexOf("!/"));
+            			try {
+            				jarFile = new JarFile(p);
+            			} catch (ZipException e2) {
+    						throw new IllegalArgumentException("No zip file: " + p, e2);
+    					}
+        			}
         		} else {
         			u = getCurrentJarURL();
         			
