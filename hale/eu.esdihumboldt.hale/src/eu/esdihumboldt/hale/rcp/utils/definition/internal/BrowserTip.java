@@ -103,7 +103,7 @@ public class BrowserTip {
 		    
 		    Point size = toolShell.computeSize( SWT.DEFAULT, SWT.DEFAULT);
 		    int width = Math.min(toolTipWidth, size.x);
-		    int height = Math.min(toolTipHeight, size.y + heightAdjustment );
+		    int height = Math.min(toolTipHeight, size.y + heightAdjustment);
 		    
 		    int x = (pt.x + width > bounds.x + bounds.width)?(bounds.x + bounds.width - width):(pt.x);
 		    
@@ -130,13 +130,18 @@ public class BrowserTip {
 
 							public void run() {
 								// check if cursor is over tooltip
-								Point cursor = toolShell.getDisplay().getCursorLocation();
-								if (!cursor.equals(initCursor)) {
-									Rectangle bounds = toolShell.getBounds();
-									if (!bounds.contains(cursor)) {
-										hideToolTip(toolShell);
-										closeTimer.cancel();
+								if (!toolShell.isDisposed()) {
+									Point cursor = toolShell.getDisplay().getCursorLocation();
+									if (!cursor.equals(initCursor)) {
+										Rectangle bounds = toolShell.getBounds();
+										if (!bounds.contains(cursor)) {
+											hideToolTip(toolShell);
+											closeTimer.cancel();
+										}
 									}
+								}
+								else {
+									closeTimer.cancel();
 								}
 							}
 							

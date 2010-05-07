@@ -50,40 +50,6 @@ public class DefinitionFeatureTreeViewer {
 	
 	private static Logger _log = Logger.getLogger(DefinitionFeatureTreeViewer.class);
 	
-	/**
-	 * Label provider for a feature column, falls back to {@link MultiColumnTreeNodeLabelProvider}
-	 */
-	public static class PropertyItemLabelProvider extends MultiColumnTreeNodeLabelProvider {
-		
-		/**
-		 * The feature representing the column
-		 */
-		private final Feature feature;
-
-		/**
-		 * Creates a new feature column label provider
-		 * 
-		 * @param feature the feature representing the column
-		 * @param columnIndex the column index
-		 */
-		public PropertyItemLabelProvider(Feature feature, int columnIndex) {
-			super(columnIndex);
-			
-			this.feature = feature;
-		}
-
-		@Override
-		public String getText(Object element) {
-			if (element instanceof PropertyItem) {
-				return ((PropertyItem) element).getText(feature);
-			}
-			else {
-				return super.getText(element);
-			}
-		}
-
-	}
-
 	private final TreeViewer treeViewer;
 	
 	/**
@@ -100,6 +66,8 @@ public class DefinitionFeatureTreeViewer {
 		
 		treeViewer.getTree().setHeaderVisible(true);
 		treeViewer.getTree().setLinesVisible(true);
+		
+		treeViewer.getTree().setToolTipText("");
 		
 		setInput(null, null);
 	}
@@ -205,6 +173,9 @@ public class DefinitionFeatureTreeViewer {
 				if (layout instanceof TreeColumnLayout) {
 					((TreeColumnLayout) layout).setColumnData(column.getColumn(), new ColumnWeightData(1));
 				}
+				
+				// add tool tip
+				new ColumnBrowserTip(treeViewer, 400, 300, true, index, null);
 				
 				index++;
 			}
