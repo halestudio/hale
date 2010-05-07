@@ -156,6 +156,7 @@ public class BrowserTip {
 		    }, 2 * HOVER_DELAY, 1000);
 		    
 		    toolShell.setVisible(true);
+		    toolShell.setFocus();
 		    
 		    return toolShell;
 	    }
