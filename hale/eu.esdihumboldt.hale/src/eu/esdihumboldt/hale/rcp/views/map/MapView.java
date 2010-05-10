@@ -216,6 +216,13 @@ public class MapView extends ViewPart {
 	}
 
 	/**
+	 * @return the painter
+	 */
+	public FeatureTilePainter getPainter() {
+		return painter;
+	}
+
+	/**
 	 * @see WorkbenchPart#dispose()
 	 */
 	@Override

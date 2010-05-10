@@ -116,8 +116,8 @@ public abstract class MapUtils {
 				//fc.s
 			}
 			
-			log.info("features size: " + fc.size()); //$NON-NLS-1$
-			log.info("features bounds: " + fc.getBounds()); //$NON-NLS-1$
+			//log.info("features size: " + fc.size()); //$NON-NLS-1$
+			//log.info("features bounds: " + fc.getBounds()); //$NON-NLS-1$
 			
 			int failed = 0;
 			

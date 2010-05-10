@@ -208,13 +208,6 @@
                   style="push"
                   tooltip="%command.openInstanceData.tooltip">
             </command>
-            <command
-                  commandId="HALE.openReferenceData.command"
-                  id="openReferenceData"
-                  label="%command.openReferenceData.label"
-                  style="push"
-                  tooltip="%command.openReferenceData.tooltip">
-            </command>
             <separator
                   name="HALE.separator1"
                   visible="true">
@@ -273,7 +266,7 @@
             </separator>
             <command
                   commandId="org.eclipse.ui.window.preferences"
-                  label="Code lists..."
+                  label="Other settings..."
                   style="push">
             </command>
          </menu>
@@ -424,6 +417,9 @@
       <initializer
             class="eu.esdihumboldt.hale.task.preferences.TaskPreferenceInitializer">
       </initializer>
+      <initializer
+            class="eu.esdihumboldt.hale.models.style.StylePreferences">
+      </initializer>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -431,6 +427,11 @@
             class="eu.esdihumboldt.hale.rcp.utils.codelist.internal.CodeListPreferencePage"
             id="eu.esdihumboldt.hale.page.preferences.codelist"
             name="Code lists">
+      </page>
+      <page
+            class="eu.esdihumboldt.hale.models.style.StylePreferencePage"
+            id="eu.esdihumboldt.hale.page.preferences.style"
+            name="Default styles">
       </page>
    </extension>
    <extension

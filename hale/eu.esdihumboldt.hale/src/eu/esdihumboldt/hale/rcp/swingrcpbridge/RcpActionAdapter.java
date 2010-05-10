@@ -38,6 +38,9 @@ public class RcpActionAdapter
 
 	private final javax.swing.Action action;
 	
+	/**
+	 * The display
+	 */
 	protected final Display display;
 	
 	/**

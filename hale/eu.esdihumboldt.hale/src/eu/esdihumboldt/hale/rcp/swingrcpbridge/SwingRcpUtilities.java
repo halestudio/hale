@@ -226,4 +226,15 @@ public class SwingRcpUtilities {
 		return convertToSWT(img);
 	}
 	
+	/**
+	 * Convert a {@link RGB} to an AWT color
+	 * 
+	 * @param rgb the {@link RGB}
+	 * 
+	 * @return the color
+	 */
+	public static Color convertToColor(RGB rgb) {
+		return new Color(rgb.red, rgb.green, rgb.blue);
+	}
+	
 }

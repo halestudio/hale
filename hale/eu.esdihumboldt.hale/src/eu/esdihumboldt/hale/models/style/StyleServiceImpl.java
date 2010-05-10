@@ -63,10 +63,6 @@ import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 public class StyleServiceImpl extends AbstractUpdateService
 	implements StyleService {
 
-	private static final Color DEF_COLOUR = new Color(57, 75, 95);
-	
-	private static final Color DEF_SELECT_COLOUR = new Color(255, 0, 0);
-
 	private static final Logger _log = Logger.getLogger(StyleServiceImpl.class);
 	
 	private static StyleService instance;
@@ -286,18 +282,21 @@ public class StyleServiceImpl extends AbstractUpdateService
 	private List<Symbolizer> getSelectionSymbolizers(Symbolizer symbolizer) {
 		List<Symbolizer> result = new ArrayList<Symbolizer>();
 		
+		Color color = StylePreferences.getSelectionColor();
+		int width = StylePreferences.getSelectionWidth();
+		
 		if (symbolizer instanceof PolygonSymbolizer) {
-			result.add(createPolygonSymbolizer(DEF_SELECT_COLOUR));
+			result.add(createPolygonSymbolizer(color, width));
 		}
 		else if (symbolizer instanceof LineSymbolizer) {
-			result.add(createLineSymbolizer(DEF_SELECT_COLOUR)); 
+			result.add(createLineSymbolizer(color, width)); 
 		}
 		else if (symbolizer instanceof PointSymbolizer) {
-			result.add(createPointSymbolizer(DEF_SELECT_COLOUR));
+			result.add(createPointSymbolizer(color, width));
 		}
 		else {
-			// fall-back to original symbolizer
-			result.add(symbolizer);
+			// do not fall-back to original symbolizer
+			//result.add(symbolizer);
 		}
 		
 		return result;
@@ -330,19 +329,22 @@ public class StyleServiceImpl extends AbstractUpdateService
 		
 		FeatureTypeStyle result;
 		
+		Color defColor = StylePreferences.getDefaultColor();
+		int defWidth = StylePreferences.getDefaultWidth();
+		
 		if (type != null) {
 			if (type.isAssignableFrom(Polygon.class)
 					|| type.isAssignableFrom(MultiPolygon.class)) {
-				result = createPolygonStyle(DEF_COLOUR);
+				result = createPolygonStyle(defColor, defWidth);
 			} else if (type.isAssignableFrom(LineString.class)
 					|| type.isAssignableFrom(MultiLineString.class)) {
-				result = createLineStyle(DEF_COLOUR);
+				result = createLineStyle(defColor, defWidth);
 			} else {
-				result = createPointStyle(DEF_COLOUR);
+				result = createPointStyle(defColor, defWidth);
 			}
 		}
 		else {
-			result = createPointStyle(DEF_COLOUR);
+			result = createPointStyle(defColor, defWidth);
 		}
 		
 		result.setFeatureTypeName(ft.getName().getLocalPart());
@@ -447,10 +449,11 @@ public class StyleServiceImpl extends AbstractUpdateService
 	 * Manually create a Point Style for a FeatureType. Used methods are going
 	 * to be removed in GT 2.6, so has to be updated in case of migration.
 	 * @param color the point color
+	 * @param width 
 	 * @return a Style for Point objects.
 	 */
-	private static FeatureTypeStyle createPointStyle(Color color) {
-		PointSymbolizer symbolizer = createPointSymbolizer(color);
+	private static FeatureTypeStyle createPointStyle(Color color, double width) {
+		PointSymbolizer symbolizer = createPointSymbolizer(color, width);
 		//symbolizer.getGraphic().setSize(filterFactory.literal(1));
 		Rule rule = styleFactory.createRule();
 		rule.setSymbolizers(new Symbolizer[] { symbolizer });
@@ -459,20 +462,21 @@ public class StyleServiceImpl extends AbstractUpdateService
 		return fts;
 	}
 
-	private static PointSymbolizer createPointSymbolizer(Color color) {
+	private static PointSymbolizer createPointSymbolizer(Color color, double width) {
 		return styleBuilder.createPointSymbolizer(styleBuilder.createGraphic(
 				null, styleBuilder.createMark(StyleBuilder.MARK_SQUARE, styleBuilder.createFill(color), 
-						styleBuilder.createStroke(color)), null));
+						styleBuilder.createStroke(color, width)), null));
 	}
 
 	/**
 	 * Manually create a Line Style for a FeatureType. Used methods are going
 	 * to be removed in GT 2.6, so has to be updated in case of migration.
 	 * @param color the line color
+	 * @param width 
 	 * @return a Style for Line/LineString objects.
 	 */
-	private static FeatureTypeStyle createLineStyle(Color color) {
-		LineSymbolizer symbolizer = createLineSymbolizer(color);
+	private static FeatureTypeStyle createLineStyle(Color color, double width) {
+		LineSymbolizer symbolizer = createLineSymbolizer(color, width);
 		
 		Rule rule = styleFactory.createRule();
 		rule.setSymbolizers(new Symbolizer[] { symbolizer });
@@ -481,10 +485,10 @@ public class StyleServiceImpl extends AbstractUpdateService
 		return fts;
 	}
 
-	private static LineSymbolizer createLineSymbolizer(Color color) {
+	private static LineSymbolizer createLineSymbolizer(Color color, double width) {
 		LineSymbolizer symbolizer = styleFactory.createLineSymbolizer();
 		SLD.setLineColour(symbolizer, color);
-		symbolizer.getStroke().setWidth(filterFactory.literal(1));
+		symbolizer.getStroke().setWidth(filterFactory.literal(width));
 		return symbolizer;
 	}
 
@@ -492,10 +496,11 @@ public class StyleServiceImpl extends AbstractUpdateService
 	 * Manually create a Polygon Style for a FeatureType. Used methods are going
 	 * to be removed in GT 2.6, so has to be updated in case of migration.
 	 * @param color the polygon color
+	 * @param width 
 	 * @return a Style for Polygon objects.
 	 */
-	private static FeatureTypeStyle createPolygonStyle(Color color) {
-		PolygonSymbolizer symbolizer = createPolygonSymbolizer(color);
+	private static FeatureTypeStyle createPolygonStyle(Color color, double width) {
+		PolygonSymbolizer symbolizer = createPolygonSymbolizer(color, width);
 		Rule rule = styleFactory.createRule();
 		rule.setSymbolizers(new Symbolizer[] { symbolizer });
 		FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle();
@@ -503,12 +508,12 @@ public class StyleServiceImpl extends AbstractUpdateService
 		return fts;
 	}
 
-	private static PolygonSymbolizer createPolygonSymbolizer(Color color) {
+	private static PolygonSymbolizer createPolygonSymbolizer(Color color, double width) {
 		PolygonSymbolizer symbolizer = styleFactory.createPolygonSymbolizer();
 		SLD.setPolyColour(symbolizer, color);
-		symbolizer.getStroke().setWidth(filterFactory.literal(1));
-		Fill fill = styleFactory.createFill(filterFactory.literal("#FFAA00"),
-				filterFactory.literal(0.5));
+		symbolizer.getStroke().setWidth(filterFactory.literal(width));
+		Fill fill = styleFactory.createFill(filterFactory.literal(color),
+				filterFactory.literal(0.3));
 		symbolizer.setFill(fill);
 		return symbolizer;
 	}

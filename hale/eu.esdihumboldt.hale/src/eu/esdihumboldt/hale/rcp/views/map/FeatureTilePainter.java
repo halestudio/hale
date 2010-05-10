@@ -46,6 +46,7 @@ import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.models.instance.InstanceServiceListener;
+import eu.esdihumboldt.hale.models.style.StylePreferences;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.AbstractTilePainter;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.TileBackground;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.TileCache;
@@ -114,7 +115,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	/**
 	 * The background color
 	 */
-	private RGB background = new RGB(126, 166, 210);
+	private RGB background = null;
 	
 	private final FeatureSelector selector;
 
@@ -612,7 +613,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	public void drawTileBackground(GC gc, int x, int y, int tileWidth, int tileHeight) {
 		Color bg = gc.getBackground();
 		
-		Color color = new Color(gc.getDevice(), background);
+		Color color = new Color(gc.getDevice(), getBackground());
 		gc.setBackground(color);
 		gc.fillRectangle(x, y, tileWidth, tileHeight);
 		color.dispose();
@@ -690,7 +691,12 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	 * @return the background
 	 */
 	public RGB getBackground() {
-		return background;
+		if (background != null) {
+			return background;
+		}
+		else {
+			return StylePreferences.getDefaultBackground();
+		}
 	}
 
 	/**
