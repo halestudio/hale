@@ -109,6 +109,8 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	 */
 	private SplitStyle splitStyle = SplitStyle.SOURCE;
 	
+	private boolean invertSplit = false;
+	
 	/**
 	 * The background color
 	 */
@@ -484,6 +486,18 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 			break;
 		}
 		
+		// handle inversion (only if both regions are set)
+		if (referenceRegion != null && transformedRegion != null && invertSplit) {
+			Region tmpRegion = referenceRegion;
+			boolean tmpDraw = drawReference;
+			
+			referenceRegion = transformedRegion;
+			drawReference = drawTransformed;
+			
+			transformedRegion = tmpRegion;
+			drawTransformed = tmpDraw;
+		}
+		
 		try {
 			// configure GC
 			gc.setAntialias(SWT.ON);
@@ -652,6 +666,22 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	 */
 	public void setSplitStyle(SplitStyle splitStyle) {
 		this.splitStyle = splitStyle;
+		
+		refresh();
+	}
+
+	/**
+	 * @return the invertSplit
+	 */
+	public boolean isInvertSplit() {
+		return invertSplit;
+	}
+
+	/**
+	 * @param invertSplit the invertSplit to set
+	 */
+	public void setInvertSplit(boolean invertSplit) {
+		this.invertSplit = invertSplit;
 		
 		refresh();
 	}

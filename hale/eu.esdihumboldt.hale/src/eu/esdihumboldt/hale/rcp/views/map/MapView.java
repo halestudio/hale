@@ -23,9 +23,13 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Combo;
@@ -34,7 +38,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.map.style.DropdownAction;
 import eu.esdihumboldt.hale.rcp.views.map.style.LoadStylesAction;
 import eu.esdihumboldt.hale.rcp.views.map.style.SaveStylesAction;
@@ -69,6 +75,8 @@ public class MapView extends ViewPart {
 	
 	private PositionStatus status;
 	
+	private Image invertImage;
+	
 	/**
 	 * @see WorkbenchPart#createPartControl(Composite)
 	 */
@@ -81,7 +89,7 @@ public class MapView extends ViewPart {
 		// add SLD area
 		Composite sldComposite = new Composite(mapComposite, SWT.BEGINNING);
 		layout = new GridLayout();
-		layout.numColumns = 4;
+		layout.numColumns = 5;
 		layout.makeColumnsEqualWidth = false;
 		sldComposite.setLayout(layout);
 		sldComposite.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
@@ -160,6 +168,22 @@ public class MapView extends ViewPart {
 			}
 			
 		});
+		
+		// invert button
+		final Button invert = new Button(sldComposite, SWT.TOGGLE);
+		if (invertImage == null) {
+			invertImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/invert.gif").createImage(); //$NON-NLS-1$
+		}
+		invert.setImage(invertImage);
+		invert.setToolTipText("Invert split");
+		invert.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				painter.setInvertSplit(invert.getSelection());
+			}
+			
+		});
 	}
 
 	/**
@@ -196,6 +220,10 @@ public class MapView extends ViewPart {
 	 */
 	@Override
 	public void dispose() {
+		if (invertImage != null) {
+			invertImage.dispose();
+		}
+		
 		if (painter != null) {
 			painter.dispose();
 		}
