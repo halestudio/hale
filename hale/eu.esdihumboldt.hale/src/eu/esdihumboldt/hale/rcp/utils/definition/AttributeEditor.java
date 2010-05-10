@@ -59,5 +59,12 @@ public interface AttributeEditor<T> {
 	 * @return the text representation of the editor value
 	 */
 	public String getAsText();
+	
+	/**
+	 * Determines if the user has entered a valid value
+	 * 
+	 * @return if the value is valid
+	 */
+	public boolean isValid();
 
 }

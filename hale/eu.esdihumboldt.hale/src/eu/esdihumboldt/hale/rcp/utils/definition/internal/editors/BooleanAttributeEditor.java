@@ -90,5 +90,13 @@ public class BooleanAttributeEditor implements AttributeEditor<Boolean> {
 	public void setValue(Boolean value) {
 		combo.setSelection(new StructuredSelection(value));
 	}
+
+	/**
+	 * @see AttributeEditor#isValid()
+	 */
+	@Override
+	public boolean isValid() {
+		return true;
+	}
 	
 }

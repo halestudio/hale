@@ -22,7 +22,11 @@ import org.opengis.feature.type.Name;
 import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditor;
 import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditorFactory;
 import eu.esdihumboldt.hale.rcp.utils.definition.internal.editors.BooleanAttributeEditor;
+import eu.esdihumboldt.hale.rcp.utils.definition.internal.editors.DoubleAttributeEditor;
 import eu.esdihumboldt.hale.rcp.utils.definition.internal.editors.EnumerationAttributeEditor;
+import eu.esdihumboldt.hale.rcp.utils.definition.internal.editors.FloatAttributeEditor;
+import eu.esdihumboldt.hale.rcp.utils.definition.internal.editors.IntegerAttributeEditor;
+import eu.esdihumboldt.hale.rcp.utils.definition.internal.editors.LongAttributeEditor;
 import eu.esdihumboldt.hale.rcp.utils.definition.internal.editors.StringAttributeEditor;
 import eu.esdihumboldt.hale.rcp.utils.definition.internal.editors.codelist.CodeListAttributeEditor;
 import eu.esdihumboldt.hale.schemaprovider.EnumAttributeType;
@@ -72,6 +76,22 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 			else if (Boolean.class.isAssignableFrom(binding)) {
 				// boolean
 				return new BooleanAttributeEditor(parent);
+			}
+			else if (Double.class.equals(binding) || double.class.equals(binding)) {
+				// double
+				return new DoubleAttributeEditor(parent);
+			}
+			else if (Float.class.equals(binding) || float.class.equals(binding)) {
+				// float
+				return new FloatAttributeEditor(parent);
+			}
+			else if (Integer.class.equals(binding) || int.class.equals(binding)) {
+				// int
+				return new IntegerAttributeEditor(parent);
+			}
+			else if (Long.class.equals(binding) || long.class.equals(binding)) {
+				// long
+				return new LongAttributeEditor(parent);
 			}
 			//TODO other editors
 			

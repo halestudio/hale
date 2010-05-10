@@ -114,4 +114,12 @@ public class EnumerationAttributeEditor implements AttributeEditor<String> {
 		}
 	}
 
+	/**
+	 * @see AttributeEditor#isValid()
+	 */
+	@Override
+	public boolean isValid() {
+		return true;
+	}
+
 }

@@ -79,4 +79,12 @@ public class StringAttributeEditor implements AttributeEditor<String> {
 		text.setText(value);
 	}
 
+	/**
+	 * @see AttributeEditor#isValid()
+	 */
+	@Override
+	public boolean isValid() {
+		return true;
+	}
+
 }

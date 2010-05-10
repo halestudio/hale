@@ -298,4 +298,12 @@ public class CodeListAttributeEditor implements AttributeEditor<CodeEntry> {
 		}
 	}
 
+	/**
+	 * @see AttributeEditor#isValid()
+	 */
+	@Override
+	public boolean isValid() {
+		return true;
+	}
+
 }
