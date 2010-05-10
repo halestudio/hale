@@ -51,8 +51,8 @@ public class TransformedTableView extends AbstractTableView {
 	public TransformedTableView() {
 		super(new InstanceServiceFeatureSelector(SchemaType.TARGET));
 		
-		//TODO another selector based on the reference sample service
-		secondSelector = new SampleTransformFeatureSelector(); //new InstanceServiceFeatureSelector(SchemaType.SOURCE);
+		// another selector based on the reference sample service
+		secondSelector = new SampleTransformFeatureSelector();
 	}
 
 	/**

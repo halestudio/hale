@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.rcp.views.map;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -51,4 +52,19 @@ public class FeatureSelection extends StructuredSelection {
 		super(id);
 	}
 
+	/**
+	 * Get the selected feature IDs
+	 * 
+	 * @return the feature IDs
+	 */
+	public Set<FeatureId> getFeatureIds() {
+		Set<FeatureId> result = new HashSet<FeatureId>();
+		for (Object id : toList()) {
+			if (id instanceof FeatureId) {
+				result.add((FeatureId) id);
+			}
+		}
+		return result;
+	}
+	
 }
