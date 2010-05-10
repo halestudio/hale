@@ -18,6 +18,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -45,7 +49,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class FeatureSelector implements FeatureSelectionProvider, MouseListener {
+public class FeatureSelector implements FeatureSelectionProvider, MouseListener, ISelectionProvider {
 	
 	private static final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
 	
@@ -58,6 +62,10 @@ public class FeatureSelector implements FeatureSelectionProvider, MouseListener 
 	private Set<FeatureId> selectedFeatures = new HashSet<FeatureId>();
 	
 	private boolean lastWasDown = false;
+	
+	private ISelection selection = null;
+	
+	private final Set<ISelectionChangedListener> selectionListeners = new HashSet<ISelectionChangedListener>();
 	
 	private int lastX;
 	
@@ -126,7 +134,7 @@ public class FeatureSelector implements FeatureSelectionProvider, MouseListener 
 		
 		//System.out.println(Arrays.toString(selectedFeatures.toArray()));
 		
-		mapPainter.updateSelection();
+		updateSelection();
 	}
 	
 	/**
@@ -195,7 +203,7 @@ public class FeatureSelector implements FeatureSelectionProvider, MouseListener 
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.rcp.views.map.FeatureSelectionProvider#getSelectedFeatures()
+	 * @see FeatureSelectionProvider#getSelectedFeatures()
 	 */
 	public Set<FeatureId> getSelectedFeatures() {
 		return new HashSet<FeatureId>(selectedFeatures);
@@ -208,6 +216,53 @@ public class FeatureSelector implements FeatureSelectionProvider, MouseListener 
 		if (!mapControl.isDisposed()) {
 			mapControl.removeMouseListener(this);
 		}
+	}
+
+	/**
+	 * @see ISelectionProvider#addSelectionChangedListener(ISelectionChangedListener)
+	 */
+	@Override
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		selectionListeners.add(listener);
+	}
+
+	/**
+	 * @see ISelectionProvider#getSelection()
+	 */
+	@Override
+	public ISelection getSelection() {
+		return selection;
+	}
+
+	/**
+	 * @see ISelectionProvider#removeSelectionChangedListener(ISelectionChangedListener)
+	 */
+	@Override
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		selectionListeners.remove(listener);
+	}
+
+	/**
+	 * @see ISelectionProvider#setSelection(ISelection)
+	 */
+	@Override
+	public void setSelection(ISelection selection) {
+		this.selection = selection;
+	}
+	
+	/**
+	 * Update the selection, notify any listeners and repaint the selection in the map
+	 */
+	protected void updateSelection() {
+		selection = new FeatureSelection(selectedFeatures);
+
+		SelectionChangedEvent event = new SelectionChangedEvent(this, selection);
+		for (ISelectionChangedListener listener : selectionListeners) {
+			listener.selectionChanged(event );
+		}
+		
+		mapPainter.updateSelection();
 	}
 	
 }

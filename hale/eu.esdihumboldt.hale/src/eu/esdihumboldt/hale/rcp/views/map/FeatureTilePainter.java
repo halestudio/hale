@@ -17,6 +17,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.graphics.Color;
@@ -483,41 +484,51 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 			break;
 		}
 		
-		// configure GC
-		gc.setAntialias(SWT.ON);
-		
-		// paint background
-		if (drawReference || drawTransformed) {
-			drawTileBackground(gc, x, y, tileWidth, tileHeight);
+		try {
+			// configure GC
+			gc.setAntialias(SWT.ON);
+			
+			// paint background
+			if (drawReference || drawTransformed) {
+				drawTileBackground(gc, x, y, tileWidth, tileHeight);
+			}
+			
+			// reference
+			if (drawReference) {
+				drawTile(gc, referenceCache, referenceRegion, tileX, tileY, zoom, 
+						x, y, tileWidth, tileHeight, false);
+			}
+			
+			// transformed
+			if (drawTransformed) {
+				drawTile(gc, transformedCache, transformedRegion, tileX, tileY, zoom, 
+						x, y, tileWidth, tileHeight, false);
+			}
+			
+			// reference selection
+			if (drawReference) {
+				drawTile(gc, referenceSelectionCache, referenceRegion, tileX, tileY, 
+						zoom, x, y, tileWidth, tileHeight, true);
+			}
+			
+			// transformed selection
+			if (drawTransformed) {
+				drawTile(gc, transformedSelectionCache, transformedRegion, tileX, 
+						tileY, zoom, x, y, tileWidth, tileHeight, true);
+			}
+			
+			// separator
+			if (separator != null) {
+				gc.fillPolygon(separator);
+			}
 		}
-		
-		// reference
-		if (drawReference) {
-			drawTile(gc, referenceCache, referenceRegion, tileX, tileY, zoom, 
-					x, y, tileWidth, tileHeight, false);
-		}
-		
-		// transformed
-		if (drawTransformed) {
-			drawTile(gc, transformedCache, transformedRegion, tileX, tileY, zoom, 
-					x, y, tileWidth, tileHeight, false);
-		}
-		
-		// reference selection
-		if (drawReference) {
-			drawTile(gc, referenceSelectionCache, referenceRegion, tileX, tileY, 
-					zoom, x, y, tileWidth, tileHeight, true);
-		}
-		
-		// transformed selection
-		if (drawTransformed) {
-			drawTile(gc, transformedSelectionCache, transformedRegion, tileX, 
-					tileY, zoom, x, y, tileWidth, tileHeight, true);
-		}
-		
-		// separator
-		if (separator != null) {
-			gc.fillPolygon(separator);
+		finally {
+			if (referenceRegion != null) {
+				referenceRegion.dispose();
+			}
+			if (transformedRegion != null) {
+				transformedRegion.dispose();
+			}
 		}
 	}
 
@@ -576,10 +587,6 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		} finally {
 			if (image != null) {
 				image.dispose();
-			}
-			if (region != null) {
-				region.dispose();
-				region = null;
 			}
 		}
 	}
@@ -692,6 +699,15 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	public void updateSelection() {
 		resetSelectionTiles();
 		refresh();
+	}
+
+	/**
+	 * Get the selection provider
+	 * 
+	 * @return the selection provider or <code>null</code>
+	 */
+	public ISelectionProvider getSelectionProvider() {
+		return selector;
 	}
 
 }

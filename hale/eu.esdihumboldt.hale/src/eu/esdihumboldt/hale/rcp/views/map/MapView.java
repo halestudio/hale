@@ -133,6 +133,8 @@ public class MapView extends ViewPart {
 		// create the painter
 		painter = new FeatureTilePainter(mapCanvas);
 		
+		getSite().setSelectionProvider(painter.getSelectionProvider());
+		
 		// create position status
 		status = new PositionStatus(painter, mapCanvas, getViewSite(), getTitleImage());
 		
@@ -166,7 +168,9 @@ public class MapView extends ViewPart {
 	@Override
 	public void setFocus() {
 		// set focus to the canvas for it to receive mouse wheel events
-		mapCanvas.setFocus();
+		if (mapCanvas != null) {
+			mapCanvas.setFocus();
+		}
 	}
 	
 	/**
