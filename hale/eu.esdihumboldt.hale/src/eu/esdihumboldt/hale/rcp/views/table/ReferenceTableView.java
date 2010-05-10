@@ -28,7 +28,6 @@ import org.opengis.feature.Feature;
 
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
-import eu.esdihumboldt.hale.rcp.views.table.filter.FeatureSelector;
 import eu.esdihumboldt.hale.rcp.views.table.filter.InstanceServiceFeatureSelector;
 
 
@@ -48,7 +47,11 @@ public class ReferenceTableView extends AbstractTableView {
 	
 	private Image mapImage;
 	
-	private FeatureSelector secondSelector;
+	private Image instanceImage;
+	
+	private InstanceServiceFeatureSelector instanceSelector;
+	
+	private MapFeatureSelector mapSelector;
 
 	/**
 	 * Default constructor
@@ -56,8 +59,9 @@ public class ReferenceTableView extends AbstractTableView {
 	public ReferenceTableView() {
 		super(new InstanceServiceFeatureSelector(SchemaType.SOURCE));
 		
+		instanceSelector = (InstanceServiceFeatureSelector) getFeatureSelector();
 		// another selector based on the map selection
-		secondSelector = new MapFeatureSelector(SchemaType.SOURCE);
+		mapSelector = new MapFeatureSelector(SchemaType.SOURCE);
 	}
 
 	/**
@@ -82,38 +86,43 @@ public class ReferenceTableView extends AbstractTableView {
 	 */
 	@Override
 	protected void provideCustomControls(Composite parent) {
-		GridLayout layout = new GridLayout(1, false);
+		GridLayout layout = new GridLayout(1, true);
 		layout.marginWidth = 0;
 		layout.marginHeight = 0;
 		layout.horizontalSpacing = 0;
 		layout.verticalSpacing = 0;
 		parent.setLayout(layout);
 		
-		final Button synch = new Button(parent, SWT.TOGGLE);
-		if (mapImage == null) {
-			mapImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/map.gif").createImage(); //$NON-NLS-1$
+		final Button instanceButton = new Button(parent, SWT.RADIO);
+		if (instanceImage == null) {
+			instanceImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/random.gif").createImage(); //$NON-NLS-1$
 		}
-		synch.setImage(mapImage);
-		synch.setToolTipText("Synchronizer with map selection");
-		synch.addSelectionListener(new SelectionAdapter() {
+		instanceButton.setImage(instanceImage);
+		instanceButton.setToolTipText("Random reference data instances");
+		instanceButton.setSelection(true);
+		instanceButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				toggleFeatureSelector();
+				setFeatureSelector(instanceSelector);
 			}
 			
 		});
-	}
-	
-	/**
-	 * Toggle the feature selector
-	 */
-	protected void toggleFeatureSelector() {
-		FeatureSelector tmp = getFeatureSelector();
 		
-		setFeatureSelector(secondSelector);
-		
-		secondSelector = tmp;
+		final Button mapButton = new Button(parent, SWT.RADIO);
+		if (mapImage == null) {
+			mapImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/map.gif").createImage(); //$NON-NLS-1$
+		}
+		mapButton.setImage(mapImage);
+		mapButton.setToolTipText("Synchronize with map selection");
+		mapButton.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				setFeatureSelector(mapSelector);
+			}
+			
+		});
 	}
 
 	/**
@@ -123,6 +132,9 @@ public class ReferenceTableView extends AbstractTableView {
 	public void dispose() {
 		if (mapImage != null) {
 			mapImage.dispose();
+		}
+		if (instanceImage != null) {
+			instanceImage.dispose();
 		}
 		
 		super.dispose();
