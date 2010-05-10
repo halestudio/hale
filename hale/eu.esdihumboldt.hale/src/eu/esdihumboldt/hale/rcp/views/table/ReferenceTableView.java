@@ -98,7 +98,7 @@ public class ReferenceTableView extends AbstractTableView {
 			instanceImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/random.gif").createImage(); //$NON-NLS-1$
 		}
 		instanceButton.setImage(instanceImage);
-		instanceButton.setToolTipText("Random reference data instances");
+		instanceButton.setToolTipText("Random/filtered reference data instances");
 		instanceButton.setSelection(true);
 		instanceButton.addSelectionListener(new SelectionAdapter() {
 

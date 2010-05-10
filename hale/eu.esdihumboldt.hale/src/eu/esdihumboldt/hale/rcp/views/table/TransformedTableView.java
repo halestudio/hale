@@ -82,7 +82,7 @@ public class TransformedTableView extends AbstractTableView {
 			instanceImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/random.gif").createImage(); //$NON-NLS-1$
 		}
 		instanceButton.setImage(instanceImage);
-		instanceButton.setToolTipText("Random transformed instances");
+		instanceButton.setToolTipText("Random/filtered transformed instances");
 		instanceButton.setSelection(true);
 		instanceButton.addSelectionListener(new SelectionAdapter() {
 
