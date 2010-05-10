@@ -50,20 +50,24 @@ public class FeatureTileRenderer implements TileProvider {
 	
 	private final FeatureSelectionProvider selection;
 	
+	private final boolean selectionOnly;
+	
 	/**
 	 * Creates a new renderer
 	 * 
 	 * @param type the data set type
 	 * @param status 
 	 * @param selection 
+	 * @param selectionOnly 
 	 */
 	public FeatureTileRenderer(final DatasetType type, final FeaturePaintStatus status,
-			final FeatureSelectionProvider selection) {
+			final FeatureSelectionProvider selection, boolean selectionOnly) {
 		super();
 		
 		this.type = type;
 		this.status = status;
 		this.selection = selection;
+		this.selectionOnly = selectionOnly;
 		
 		configureRenderer();
 	}
@@ -86,7 +90,9 @@ public class FeatureTileRenderer implements TileProvider {
 	 * @param crs the coordinate reference system (may be null)
 	 */
 	public void updateMapContext(CoordinateReferenceSystem crs) {
-		renderer.setContext(MapUtils.buildMapContext(crs, type, status, selection.getSelectedFeatures()));
+		//TODO would the performance be better if we create a map context for each tile?
+		renderer.setContext(MapUtils.buildMapContext(crs, type, status, 
+				selection.getSelectedFeatures(), selectionOnly));
 		contextInitialized = true;
 	}
 

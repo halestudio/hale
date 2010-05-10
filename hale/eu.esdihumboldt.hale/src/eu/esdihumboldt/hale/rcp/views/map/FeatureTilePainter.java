@@ -81,6 +81,26 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	 */
 	private final FeatureTileRenderer transformedRenderer;
 	
+	/**
+	 * The reference data tile cache
+	 */
+	private final TileCache referenceSelectionCache;
+	
+	/**
+	 * The reference data renderer
+	 */
+	private final FeatureTileRenderer referenceSelectionRenderer;
+	
+	/**
+	 * The transformed data tile cache
+	 */
+	private final TileCache transformedSelectionCache;
+	
+	/**
+	 * The transformed data renderer
+	 */
+	private final FeatureTileRenderer transformedSelectionRenderer;
+	
 	private final FeaturePaintStatus status;
 	
 	/**
@@ -111,12 +131,20 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		selector = new FeatureSelector(canvas, this);
 		
 		referenceRenderer = new FeatureTileRenderer(DatasetType.reference, 
-				status, selector);
-		referenceCache = new TileCache(referenceRenderer, this);
+				status, selector, false);
+		referenceCache = new TileCache(referenceRenderer, this, true);
 		
 		transformedRenderer = new FeatureTileRenderer(DatasetType.transformed, 
-				status, selector);
-		transformedCache = new TileCache(transformedRenderer, this);
+				status, selector, false);
+		transformedCache = new TileCache(transformedRenderer, this, true);
+		
+		referenceSelectionRenderer = new FeatureTileRenderer(DatasetType.reference, 
+				status, selector, true);
+		referenceSelectionCache = new TileCache(referenceSelectionRenderer, this, false);
+		
+		transformedSelectionRenderer = new FeatureTileRenderer(DatasetType.transformed, 
+				status, selector, true);
+		transformedSelectionCache = new TileCache(transformedSelectionRenderer, this, false);
 		
 		init(canvas, determineMapArea());
 		
@@ -222,6 +250,9 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		
 		referenceCache.addTileListener(this);
 		transformedCache.addTileListener(this);
+		
+		referenceSelectionCache.addTileListener(this);
+		transformedSelectionCache.addTileListener(this);
 	}
 
 	/**
@@ -462,12 +493,26 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		
 		// reference
 		if (drawReference) {
-			drawTile(gc, referenceCache, referenceRegion, tileX, tileY, zoom, x, y, tileWidth, tileHeight);
+			drawTile(gc, referenceCache, referenceRegion, tileX, tileY, zoom, 
+					x, y, tileWidth, tileHeight, false);
 		}
 		
 		// transformed
 		if (drawTransformed) {
-			drawTile(gc, transformedCache, transformedRegion, tileX, tileY, zoom, x, y, tileWidth, tileHeight);
+			drawTile(gc, transformedCache, transformedRegion, tileX, tileY, zoom, 
+					x, y, tileWidth, tileHeight, false);
+		}
+		
+		// reference selection
+		if (drawReference) {
+			drawTile(gc, referenceSelectionCache, referenceRegion, tileX, tileY, 
+					zoom, x, y, tileWidth, tileHeight, true);
+		}
+		
+		// transformed selection
+		if (drawTransformed) {
+			drawTile(gc, transformedSelectionCache, transformedRegion, tileX, 
+					tileY, zoom, x, y, tileWidth, tileHeight, true);
 		}
 		
 		// separator
@@ -489,10 +534,11 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	 * @param y the tile y position
 	 * @param tileWidth the tile width
 	 * @param tileHeight the tile height
+	 * @param overlay if this is an overlay
 	 */
 	private void drawTile(GC gc, TileCache cache,
 			Region region, int tileX, int tileY, int zoom, int x, int y,
-			int tileWidth, int tileHeight) {
+			int tileWidth, int tileHeight, boolean overlay) {
 		ImageData imageData;
 		try {
 			imageData = cache.getTile(this, zoom, tileX, tileY);
@@ -515,7 +561,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 			if (image != null) {
 				gc.drawImage(image, x, y);
 			}
-			else {
+			else if (!overlay) {
 				Color bg = gc.getBackground();
 				
 				gc.setBackground(gc.getDevice().getSystemColor(SWT.COLOR_DARK_GRAY));
@@ -563,11 +609,24 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		
 		referenceRenderer.updateMapContext(getCRS());
 		transformedRenderer.updateMapContext(getCRS());
+		
+		resetSelectionTiles();
 	}
 	
+	private void resetSelectionTiles() {
+		referenceSelectionCache.clear();
+		transformedSelectionCache.clear();
+		
+		referenceSelectionRenderer.updateMapContext(getCRS());
+		transformedSelectionRenderer.updateMapContext(getCRS());
+	}
+
 	private void resetTransformedTiles() {
 		transformedCache.clear();
 		transformedRenderer.updateMapContext(getCRS());
+		
+		transformedSelectionCache.clear();
+		transformedSelectionRenderer.updateMapContext(getCRS());
 	}
 
 	/**
@@ -625,6 +684,14 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		
 		final AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
 		alService.removeListener(alignmentListener);
+	}
+
+	/**
+	 * Repaint the selection overlay
+	 */
+	public void updateSelection() {
+		resetSelectionTiles();
+		refresh();
 	}
 
 }

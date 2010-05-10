@@ -58,6 +58,7 @@ import eu.esdihumboldt.hale.rcp.views.map.tiles.TileCache.TileListener;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
+@SuppressWarnings("deprecation")
 public abstract class AbstractTilePainter implements PaintListener,
 		MouseWheelListener, MouseMoveListener, MouseListener,
 		MouseTrackListener, TileConstraints, ControlListener,
@@ -191,10 +192,12 @@ public abstract class AbstractTilePainter implements PaintListener,
 		
 		this.control = control;
 		
-		defCursor = new Cursor(control.getDisplay(), SWT.CURSOR_HAND);
-		panCursor = new Cursor(control.getDisplay(), SWT.CURSOR_SIZEALL);
+		if (control != null) {
+			defCursor = new Cursor(control.getDisplay(), SWT.CURSOR_HAND);
+			panCursor = new Cursor(control.getDisplay(), SWT.CURSOR_SIZEALL);
 		
-		control.setCursor(defCursor);
+			control.setCursor(defCursor);
+		}
 		
 		if (this.control != null) {
 			this.control.addPaintListener(this);
@@ -265,14 +268,6 @@ public abstract class AbstractTilePainter implements PaintListener,
 	}
 	
 	/**
-	 * Update the map without an area change
-	 */
-	public void updateMap() {
-		resetTiles();
-		refresh();
-	}
-	
-	/**
 	 * @see TileCache.TileListener#tileLoaded(int, int, int)
 	 */
 	@Override
@@ -281,10 +276,10 @@ public abstract class AbstractTilePainter implements PaintListener,
 			if (currentZoom != zoom)
 				return;
 			
-			if ((x + 1) * tileWidth < xOffset || x * tileWidth > xOffset + control.getBounds().width)
+			if ((x + 1) * tileWidth < xOffset || (long)x * (long)tileWidth > xOffset + control.getBounds().width)
 				return;
 			
-			if ((y + 1) * tileHeight < yOffset || y * tileHeight > yOffset + control.getBounds().height)
+			if ((y + 1) * tileHeight < yOffset || (long)y * (long)tileHeight > yOffset + control.getBounds().height)
 				return;
 			
 			refresh();
@@ -815,7 +810,6 @@ public abstract class AbstractTilePainter implements PaintListener,
      */
     private static final ThreadLocal<GridToEnvelopeMapper> gridToEnvelopeMappers =
             new ThreadLocal<GridToEnvelopeMapper>() {
-                @SuppressWarnings("deprecation")
 				@Override
                 protected GridToEnvelopeMapper initialValue() {
                     final GridToEnvelopeMapper mapper = new GridToEnvelopeMapper();
@@ -835,7 +829,6 @@ public abstract class AbstractTilePainter implements PaintListener,
 	 * 
 	 * @return the point in geo coordinates, <code>null</code> if conversion failed
 	 */
-	@SuppressWarnings("deprecation")
 	protected Point2D toGeoCoordinates(int tileX, int tileY,
 			ReferencedEnvelope tileArea) {
 		// creating transformation

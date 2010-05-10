@@ -36,7 +36,6 @@ import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
-import eu.esdihumboldt.hale.rcp.views.map.tiles.AbstractTilePainter;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
@@ -54,7 +53,7 @@ public class FeatureSelector implements FeatureSelectionProvider, MouseListener 
 
 	private final Control mapControl;
 	
-	private final AbstractTilePainter mapPainter;
+	private final FeatureTilePainter mapPainter;
 	
 	private Set<FeatureId> selectedFeatures = new HashSet<FeatureId>();
 	
@@ -68,7 +67,7 @@ public class FeatureSelector implements FeatureSelectionProvider, MouseListener 
 	 * @param mapControl
 	 * @param mapPainter
 	 */
-	public FeatureSelector(Control mapControl, AbstractTilePainter mapPainter) {
+	public FeatureSelector(Control mapControl, FeatureTilePainter mapPainter) {
 		super();
 		this.mapControl = mapControl;
 		this.mapPainter = mapPainter;
@@ -127,7 +126,7 @@ public class FeatureSelector implements FeatureSelectionProvider, MouseListener 
 		
 		//System.out.println(Arrays.toString(selectedFeatures.toArray()));
 		
-		mapPainter.updateMap();
+		mapPainter.updateSelection();
 	}
 	
 	/**

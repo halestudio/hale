@@ -90,17 +90,23 @@ public class TileCache implements TileProvider {
 	 */
 	private ImageData mainImage;
 	
+	private final boolean useLoadingImage;
+	
 	/**
 	 * Creates a tile cache for the given tile provider
 	 * 
 	 * @param tileProvider the tile provider
 	 * @param tileBackground the tile background painter
+	 * @param useLoadingImage if a (non-transparent) loading image shall be
+	 *   tried to calculate from other tiles
 	 */
-	public TileCache(TileProvider tileProvider, TileBackground tileBackground) {
+	public TileCache(TileProvider tileProvider, TileBackground tileBackground,
+			boolean useLoadingImage) {
 		super();
 		
 		this.tileProvider = tileProvider;
 		this.tileBackground = tileBackground;
+		this.useLoadingImage = useLoadingImage;
 	}
 	
 	/**
@@ -121,6 +127,13 @@ public class TileCache implements TileProvider {
 		listeners.remove(listener);
 	}
 	
+	/**
+	 * Notify listeners that a tile has been loaded
+	 * 
+	 * @param zoom
+	 * @param x
+	 * @param y
+	 */
 	protected void notifyTileLoaded(int zoom, int x, int y) {
 		for (TileListener listener : listeners) {
 			listener.tileLoaded(zoom, x, y);
@@ -206,7 +219,7 @@ public class TileCache implements TileProvider {
 				};
 				
 				tileJob.setSystem(true);
-				tileJob.setRule(exclusiveRule );
+				tileJob.setRule(exclusiveRule);
 				
 				tileJob.addJobChangeListener(new JobChangeAdapter() {
 
@@ -229,7 +242,7 @@ public class TileCache implements TileProvider {
 				tileJob.schedule();
 					
 				// determine loading image
-				ImageData loadingImage = getLoadingImage(constraints, zoom, x, y);
+				ImageData loadingImage = (useLoadingImage)?(getLoadingImage(constraints, zoom, x, y)):(null);
 				
 				// put loading (dummy) image in cache
 				if (xCache != null) {
@@ -302,8 +315,16 @@ public class TileCache implements TileProvider {
 	}
 
 	/**
+	 * Draw a loading image
+	 * 
 	 * @param img
-	 * @return
+	 * @param constraints 
+	 * @param partX 
+	 * @param partY 
+	 * @param partWidth 
+	 * @param partHeight 
+	 * 
+	 * @return the loading image's image data or <code>null</code>
 	 */
 	private ImageData drawLoadingImage(ImageData img, TileConstraints constraints,
 			int partX, int partY, int partWidth, int partHeight) {

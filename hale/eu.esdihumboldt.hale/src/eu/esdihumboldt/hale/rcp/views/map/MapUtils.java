@@ -94,12 +94,14 @@ public abstract class MapUtils {
 	 * @param type the {@link DatasetType} to render.
 	 * @param status 
 	 * @param selection 
+	 * @param selectionOnly 
 	 * @return a {@link MapContext} with the given CRS and the 
 	 * {@link FeatureCollection} identified by the given {@link DatasetType}.
 	 */
 	@SuppressWarnings("unchecked")
 	public static MapContext buildMapContext(CoordinateReferenceSystem crs, 
-			DatasetType type, FeaturePaintStatus status, Set<FeatureId> selection) {
+			DatasetType type, FeaturePaintStatus status, Set<FeatureId> selection, 
+			boolean selectionOnly) {
 		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 		
@@ -107,6 +109,11 @@ public abstract class MapUtils {
 		if (fc != null && fc.size() > 0) {
 			if (crs == null) {
 				crs = determineCRS(is.getFeatures(DatasetType.reference)); // TODO always use source CRS! (Check whether OK)
+			}
+			
+			if (selectionOnly) {
+				//TODO apply a filter for the selected features?
+				//fc.s
 			}
 			
 			log.info("features size: " + fc.size()); //$NON-NLS-1$
@@ -125,20 +132,25 @@ public abstract class MapUtils {
 					
 					if (validateFeature(feature)) {
 						Map<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> collectionMap;
-						if (selection.contains(feature.getIdentifier())) {
+						if (selectionOnly && selection.contains(feature.getIdentifier())) {
 							collectionMap = selectedFeatures;
 						}
-						else {
+						else if (!selectionOnly) {
 							collectionMap = groupedFeatures;
 						}
-						
-						FeatureCollection<SimpleFeatureType, SimpleFeature> collection = collectionMap.get(feature.getFeatureType());
-						if (collection == null) {
-							collection = new MemoryFeatureCollection(feature.getFeatureType());
-							collectionMap.put(feature.getFeatureType(), collection);
+						else {
+							collectionMap = null;
 						}
 						
-						collection.add(feature);
+						if (collectionMap != null) {
+							FeatureCollection<SimpleFeatureType, SimpleFeature> collection = collectionMap.get(feature.getFeatureType());
+							if (collection == null) {
+								collection = new MemoryFeatureCollection(feature.getFeatureType());
+								collectionMap.put(feature.getFeatureType(), collection);
+							}
+							
+							collection.add(feature);
+						}
 					}
 					else {
 						failed++;
