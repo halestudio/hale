@@ -26,6 +26,7 @@ import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
+import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
@@ -90,12 +91,17 @@ public class MappingInfo {
 			// for instance cardinalities, we're looking for split and merge conditions.
 			if (cell.getEntity1() != null && cell.getEntity1().getTransformation() != null) {
 				ITransformation t = cell.getEntity1().getTransformation();
+				Set<String> parameterNames = new HashSet<String>();
+				for (IParameter param : t.getParameters()) {
+					parameterNames.add(param.getName());
+				}
+				
 				// look for a merge condition (many to one)
-				if (t.getParameters().contains("InstanceMergeCondition")) {
+				if (parameterNames.contains("InstanceMergeCondition")) {
 					info.updateInstanceCardinality(CellCardinalityType.many_to_one);
 				}
 				// look for a split condition (one to many)
-				else if (t.getParameters().contains("InstanceSplitCondition")) {
+				else if (parameterNames.contains("InstanceSplitCondition")) {
 					info.updateInstanceCardinality(CellCardinalityType.one_to_many);
 				}
 				else {
