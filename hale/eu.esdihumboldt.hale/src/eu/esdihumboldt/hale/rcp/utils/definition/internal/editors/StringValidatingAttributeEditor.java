@@ -111,13 +111,22 @@ public abstract class StringValidatingAttributeEditor<T> implements
 		
 		if (valid == null) {
 			errorLabel.setImage(okImage);
-			errorLabel.setToolTipText("The value you entered is valid");
+			errorLabel.setToolTipText(getValidToolTip());
 		}
 		else {
 			errorLabel.setImage(getErrorImage());
 			errorLabel.setToolTipText(valid);
 		}
-		container.getParent().layout(true, true);
+		container.layout(true, true);
+	}
+
+	/**
+	 * Get the tooltip for a valid value
+	 * 
+	 * @return the tooltip for a valid value
+	 */
+	protected String getValidToolTip() {
+		return "The value you entered is valid";
 	}
 
 	/**

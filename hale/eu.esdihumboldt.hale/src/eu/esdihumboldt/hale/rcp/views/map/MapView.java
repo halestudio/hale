@@ -198,24 +198,6 @@ public class MapView extends ViewPart {
 	}
 	
 	/**
-	 * Get the map background
-	 * 
-	 * @return the map background
-	 */
-	public RGB getBackground() {
-		return painter.getBackground();
-	}
-	
-	/**
-	 * Set the map background
-	 * 
-	 * @param background the map background
-	 */
-	public void setBackground(RGB background) {
-		painter.setBackground(background);
-	}
-
-	/**
 	 * @return the painter
 	 */
 	public FeatureTilePainter getPainter() {

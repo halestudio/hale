@@ -686,6 +686,15 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		
 		refresh();
 	}
+	
+	/**
+	 * Get if the background is the default background
+	 * 
+	 * @return if the background is the default background
+	 */
+	public boolean isDefaultBackground() {
+		return background == null;
+	}
 
 	/**
 	 * @return the background
@@ -700,7 +709,8 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	}
 
 	/**
-	 * @param background the background to set
+	 * @param background the background to set, <code>null</code> to reset it to
+	 *   the default background
 	 */
 	public void setBackground(RGB background) {
 		if (background == null) return;

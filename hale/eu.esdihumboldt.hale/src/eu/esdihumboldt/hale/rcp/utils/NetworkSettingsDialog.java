@@ -23,7 +23,7 @@ import eu.esdihumboldt.hale.rcp.wizards.io.Messages;
 
 
 /**
- * TODO add type comment
+ * Dialog for network settings
  * 
  * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -31,14 +31,17 @@ import eu.esdihumboldt.hale.rcp.wizards.io.Messages;
  */
 public class NetworkSettingsDialog extends Dialog {
 
-
+	/**
+	 * Constructor
+	 * 
+	 * @param parent the parent shell
+	 */
 	public NetworkSettingsDialog(Shell parent) {
 		super(parent);
 	}
 	
 	/**
-	 * @see org.eclipse.swt.widgets.Dialog
-	 * @return any Object.
+	 * Open the dialog
 	 */
 	public void open () {
 		Shell parent = super.getParent();

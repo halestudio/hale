@@ -48,6 +48,14 @@ public class FloatAttributeEditor extends StringValidatingAttributeEditor<Float>
 			return "No valid input for Float";
 		}
 	}
+	
+	/**
+	 * @see StringValidatingAttributeEditor#getValidToolTip()
+	 */
+	@Override
+	protected String getValidToolTip() {
+		return "The value you entered is a valid Float";
+	}
 
 	/**
 	 * @see StringValidatingAttributeEditor#stringFromValue(Object)
@@ -57,6 +65,9 @@ public class FloatAttributeEditor extends StringValidatingAttributeEditor<Float>
 		return value.toString();
 	}
 
+	/**
+	 * @see StringValidatingAttributeEditor#valueFromString(String)
+	 */
 	@Override
 	protected Float valueFromString(String text) {
 		return Float.parseFloat(text);

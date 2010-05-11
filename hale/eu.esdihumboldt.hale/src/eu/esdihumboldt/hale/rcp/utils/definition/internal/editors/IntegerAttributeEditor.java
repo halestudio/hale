@@ -48,6 +48,14 @@ public class IntegerAttributeEditor extends StringValidatingAttributeEditor<Inte
 			return "No valid input for Integer";
 		}
 	}
+	
+	/**
+	 * @see StringValidatingAttributeEditor#getValidToolTip()
+	 */
+	@Override
+	protected String getValidToolTip() {
+		return "The value you entered is a valid Integer";
+	}
 
 	/**
 	 * @see StringValidatingAttributeEditor#stringFromValue(Object)
@@ -57,6 +65,9 @@ public class IntegerAttributeEditor extends StringValidatingAttributeEditor<Inte
 		return value.toString();
 	}
 
+	/**
+	 * @see StringValidatingAttributeEditor#valueFromString(String)
+	 */
 	@Override
 	protected Integer valueFromString(String text) {
 		return Integer.parseInt(text);

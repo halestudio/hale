@@ -175,7 +175,12 @@ public class ProjectGenerator {
 			// background
 			MapView map = (MapView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(MapView.ID);
 			if (map != null) {
-				styles.setBackground(StringConverter.asString(map.getBackground()));
+				if (!map.getPainter().isDefaultBackground()) {
+					styles.setBackground(StringConverter.asString(map.getPainter().getBackground()));
+				}
+				else {
+					styles.setBackground(null);
+				}
 			}
 			
 			hproject.setStyles(styles);

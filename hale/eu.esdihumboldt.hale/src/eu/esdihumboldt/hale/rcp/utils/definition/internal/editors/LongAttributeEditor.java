@@ -48,6 +48,13 @@ public class LongAttributeEditor extends StringValidatingAttributeEditor<Long> {
 			return "No valid input for Long";
 		}
 	}
+	/**
+	 * @see StringValidatingAttributeEditor#getValidToolTip()
+	 */
+	@Override
+	protected String getValidToolTip() {
+		return "The value you entered is a valid Long";
+	}
 
 	/**
 	 * @see StringValidatingAttributeEditor#stringFromValue(Object)
@@ -57,6 +64,9 @@ public class LongAttributeEditor extends StringValidatingAttributeEditor<Long> {
 		return value.toString();
 	}
 
+	/**
+	 * @see StringValidatingAttributeEditor#valueFromString(String)
+	 */
 	@Override
 	protected Long valueFromString(String text) {
 		return Long.parseLong(text);

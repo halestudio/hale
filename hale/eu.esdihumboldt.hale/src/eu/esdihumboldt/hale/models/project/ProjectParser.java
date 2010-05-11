@@ -184,26 +184,24 @@ public class ProjectParser {
 			}
 			// background
 			final String color = project.getStyles().getBackground();
-			if (color != null) {
-				if (Display.getCurrent() != null) {
-					MapView map = (MapView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(MapView.ID);
-					if (map != null) {
-						map.setBackground(StringConverter.asRGB(color));
-					}
+			if (Display.getCurrent() != null) {
+				MapView map = (MapView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(MapView.ID);
+				if (map != null) {
+					map.getPainter().setBackground((color == null)?(null):(StringConverter.asRGB(color)));
 				}
-				else {
-					final Display display = PlatformUI.getWorkbench().getDisplay();
-					display.syncExec(new Runnable() {
-						
-						@Override
-						public void run() {
-							MapView map = (MapView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(MapView.ID);
-							if (map != null) {
-								map.setBackground(StringConverter.asRGB(color));
-							}
+			}
+			else {
+				final Display display = PlatformUI.getWorkbench().getDisplay();
+				display.syncExec(new Runnable() {
+					
+					@Override
+					public void run() {
+						MapView map = (MapView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(MapView.ID);
+						if (map != null) {
+							map.getPainter().setBackground((color == null)?(null):(StringConverter.asRGB(color)));
 						}
-					});
-				}
+					}
+				});
 			}
 		}
 		

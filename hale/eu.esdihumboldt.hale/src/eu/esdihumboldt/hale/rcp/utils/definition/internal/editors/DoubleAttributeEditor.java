@@ -50,6 +50,14 @@ public class DoubleAttributeEditor extends StringValidatingAttributeEditor<Doubl
 	}
 
 	/**
+	 * @see StringValidatingAttributeEditor#getValidToolTip()
+	 */
+	@Override
+	protected String getValidToolTip() {
+		return "The value you entered is a valid Double";
+	}
+
+	/**
 	 * @see StringValidatingAttributeEditor#stringFromValue(Object)
 	 */
 	@Override
@@ -57,6 +65,9 @@ public class DoubleAttributeEditor extends StringValidatingAttributeEditor<Doubl
 		return value.toString();
 	}
 
+	/**
+	 * @see StringValidatingAttributeEditor#valueFromString(String)
+	 */
 	@Override
 	protected Double valueFromString(String text) {
 		return Double.parseDouble(text);
