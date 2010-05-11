@@ -128,6 +128,14 @@ public class SchemaProviderService
 
 	private String determineSchemaFormat(URI location) {
 		String loc = location.toString();
+		
+		// special cases
+		
+		// WFS describe feature type
+		if (loc.toLowerCase().contains("request=describefeaturetype")) {
+			return "xsd";
+		}
+		
 		int index = loc.lastIndexOf('.');
 		if (index < 0) {
 			throw new IllegalArgumentException("Unable to automatically determine schema format");

@@ -211,7 +211,7 @@ public class ProjectParser {
 			try {
 //				URI file = new URI(URLDecoder.decode(project.getInstanceData().getPath(), "UTF-8"));
 				URI file = new URI(project.getInstanceData().getPath());
-				InputStream xml = new FileInputStream(new File(file));
+				InputStream xml = file.toURL().openStream(); //new FileInputStream(new File(file));
 				Configuration configuration = new GMLConfiguration();
 				HaleGMLParser parser = new HaleGMLParser(configuration);
 				if (project.getInstanceData().getEpsgcode() != null) {
