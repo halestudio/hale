@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.cst.transformer.service.rename;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.geotools.feature.FeatureImpl;
@@ -35,7 +36,7 @@ import eu.esdihumboldt.goml.rdf.About;
  * CstFunction for feature renaming, i.e. the creation of new {@link Feature}s 
  * in the target schema. Also copies the default geometry if possible.
  * 
- * @author Thorsten Reitz, Jan Jezek
+ * @author Thorsten Reitz, Jan Jezek, Ulrich Schaeffler
  * @version $Id: RenameFeatureFunction.java 2418 2009-12-22 11:35:12Z jjezek $ 
  */
 public class RenameFeatureFunction 
@@ -50,10 +51,13 @@ public class RenameFeatureFunction
 	 * Parameter name for instance split condition
 	 */
 	public static final String PARAMETER_INSTANCE_SPLIT_CONDITION = "InstanceSplitCondition";
+	
+	public static final String ONATTRIBUTE = "SelectedAttribute";
 
 	private FeatureSplitter splitter = null;
 	
-	private FeatureAggregator merger = null;
+	private FeatureAggregator2 merger = null;
+	//TODO: Spatial Joiner
 	private FeatureSpatialJoiner spatialjoiner = null;
 
 	private String newName;
@@ -101,15 +105,30 @@ public class RenameFeatureFunction
 
 	public boolean configure(ICell cell) {
 		this.newName = cell.getEntity2().getAbout().getAbout();
-		for (IParameter ip : cell.getEntity1().getTransformation().getParameters()) {
+		List<IParameter> paramList = cell.getEntity1().getTransformation().getParameters();
+		String mode = null;
+		String rule = null;
+		String onAttribute = null;
+
+		for (IParameter ip : paramList) {
 			if (ip.getName().equals(PARAMETER_INSTANCE_SPLIT_CONDITION)) {
-				this.splitter = new FeatureSplitter(
-						((FeatureClass)cell.getEntity1()).getLocalname(), 
-						ip.getValue());
+				mode = "split";
+				rule = ip.getValue();
 			}
 			if (ip.getName().equals(PARAMETER_INSTANCE_MERGE_CONDITION)) {
-				this.merger = new FeatureAggregator(((FeatureClass)cell.getEntity1()).getLocalname(),ip.getValue());
+				mode = "merge";
+				rule = ip.getValue();
 			}
+			if (ip.getName().equals(ONATTRIBUTE)){
+				onAttribute = ip.getValue();
+			}
+		}
+		
+		if (mode.equals("split") && rule != null && onAttribute!=null){
+			this.splitter = new FeatureSplitter(onAttribute, rule);
+		}
+		else if (mode.equals("merge") && rule != null && onAttribute!=null){
+			this.merger = new FeatureAggregator2(onAttribute, rule);
 		}
 		
 		if (this.splitter != null && this.merger != null) {
@@ -143,6 +162,23 @@ public class RenameFeatureFunction
 	public List<Feature> transformSplit(Feature sourceFeature, List<Feature> targetFeatures) {
 		if (this.splitter != null) {
 			targetFeatures = this.splitter.split(sourceFeature, 
+					this.getTargetType(this.newName));
+		}
+		return targetFeatures;
+	}
+	
+	
+	
+	/**
+	 * A non-standard operation for CstFunctions which allows merging of 
+	 * {@link Feature}s.
+	 * @param sourceFeature
+	 * @param targetFeatures
+	 * @return a {@link List} with the merged {@link Feature}s.
+	 */
+	public List<Feature> transformMerge(Collection<? extends Feature> sourceFeature, List<Feature> targetFeatures) {
+		if (this.merger != null) {
+			targetFeatures = this.merger.aggregate(sourceFeature, 
 					this.getTargetType(this.newName));
 		}
 		return targetFeatures;
