@@ -24,11 +24,16 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
@@ -57,7 +62,7 @@ public class ListSelector implements CodeListSelector {
 	 */
 	public ListSelector(Composite parent) {
 		page = new Composite(parent, SWT.NONE);
-		GridLayout gridLayout = new GridLayout(1, false);
+		GridLayout gridLayout = new GridLayout(2, false);
 		gridLayout.marginWidth = 0;
 		gridLayout.marginHeight = 0;
 		gridLayout.verticalSpacing = 0;
@@ -82,6 +87,19 @@ public class ListSelector implements CodeListSelector {
 			
 		});
 		
+		// search field
+		String tip = "Filter the code lists by a string contained in their identifiers, namespaces or descriptions";
+		
+		Label searchLabel = new Label(page, SWT.NONE);
+		searchLabel.setText("Filter: ");
+		searchLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
+		searchLabel.setToolTipText(tip);
+		
+		final Text searchText = new Text(page, SWT.SINGLE | SWT.BORDER | SWT.SEARCH | SWT.ICON_CANCEL);
+		searchText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		searchText.setToolTipText(tip);
+		
+		// list viewer
 		listViewer = new ListViewer(page, SWT.V_SCROLL | SWT.BORDER | SWT.H_SCROLL | SWT.SINGLE);
 		listViewer.setContentProvider(ArrayContentProvider.getInstance());
 		listViewer.setLabelProvider(new LabelProvider() {
@@ -100,7 +118,7 @@ public class ListSelector implements CodeListSelector {
 		});
 		listViewer.setInput(codeLists);
 		
-		GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1);
 		layoutData.widthHint = SWT.DEFAULT;
 		layoutData.heightHint = 10 * listViewer.getList().getItemHeight();
 		listViewer.getControl().setLayoutData(layoutData);
@@ -108,7 +126,7 @@ public class ListSelector implements CodeListSelector {
 		// info
 		final Text info = new Text(page, SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
 		
-		layoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		layoutData = new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1);
 		layoutData.widthHint = SWT.DEFAULT;
 		layoutData.heightHint = 6 * listViewer.getList().getItemHeight();
 		info.setLayoutData(layoutData);
@@ -131,6 +149,44 @@ public class ListSelector implements CodeListSelector {
 				else {
 					info.setText("No description");
 				}
+			}
+		});
+		
+		// search filter & update
+		listViewer.addFilter(new ViewerFilter() {
+			
+			@Override
+			public boolean select(Viewer viewer, Object parentElement, Object element) {
+				String filterText = searchText.getText();
+				// handle empty filter
+				if (filterText == null || filterText.isEmpty()) {
+					return true;
+				}
+				
+				if (element instanceof CodeList) {
+					CodeList codeList = (CodeList) element;
+					filterText = filterText.toLowerCase();
+					
+					if (codeList.getIdentifier().toLowerCase().contains(filterText)) {
+						return true;
+					}
+					if (codeList.getNamespace().toLowerCase().contains(filterText)) {
+						return true;
+					}
+					if (codeList.getDescritpion().toLowerCase().contains(filterText)) {
+						return true;
+					}
+				}
+				
+				return false;
+			}
+		});
+		searchText.addModifyListener(new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent e) {
+				// refilter
+				listViewer.refresh();
 			}
 		});
 	}
