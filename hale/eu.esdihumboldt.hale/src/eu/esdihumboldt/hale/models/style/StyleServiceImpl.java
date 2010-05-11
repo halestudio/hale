@@ -464,7 +464,7 @@ public class StyleServiceImpl extends AbstractUpdateService
 
 	private static PointSymbolizer createPointSymbolizer(Color color, double width) {
 		return styleBuilder.createPointSymbolizer(styleBuilder.createGraphic(
-				null, styleBuilder.createMark(StyleBuilder.MARK_SQUARE, styleBuilder.createFill(color), 
+				null, styleBuilder.createMark(StyleBuilder.MARK_X, styleBuilder.createFill(color), 
 						styleBuilder.createStroke(color, width)), null));
 	}
 
