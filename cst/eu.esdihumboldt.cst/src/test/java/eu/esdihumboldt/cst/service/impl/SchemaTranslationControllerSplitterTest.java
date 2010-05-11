@@ -105,7 +105,7 @@ public class SchemaTranslationControllerSplitterTest {
 		SimpleFeatureTypeBuilder ftbuilder2 = new SimpleFeatureTypeBuilder();
 		ftbuilder2.setName(NameHelper.targetLocalname);
 		ftbuilder2.setNamespaceURI(NameHelper.targetNamespace);
-		ftbuilder2.add("the_geom2", MultiLineString.class);
+		ftbuilder2.add("the_geom2", LineString.class);
 		ftbuilder2.setDefaultGeometry("the_geom2");
 		targetType = ftbuilder2.buildFeatureType();
 
