@@ -53,6 +53,7 @@ public class RenameFeatureFunction
 	public static final String PARAMETER_INSTANCE_SPLIT_CONDITION = "InstanceSplitCondition";
 	
 	public static final String ONATTRIBUTE = "SelectedAttribute";
+	enum Mode { split, merge, join }
 
 	private FeatureSplitter splitter = null;
 	
@@ -106,17 +107,19 @@ public class RenameFeatureFunction
 	public boolean configure(ICell cell) {
 		this.newName = cell.getEntity2().getAbout().getAbout();
 		List<IParameter> paramList = cell.getEntity1().getTransformation().getParameters();
-		String mode = null;
+		Mode mode = null;
+		
+
 		String rule = null;
 		String onAttribute = null;
 
 		for (IParameter ip : paramList) {
 			if (ip.getName().equals(PARAMETER_INSTANCE_SPLIT_CONDITION)) {
-				mode = "split";
+				mode = Mode.split;
 				rule = ip.getValue();
 			}
 			if (ip.getName().equals(PARAMETER_INSTANCE_MERGE_CONDITION)) {
-				mode = "merge";
+				mode = Mode.merge;
 				rule = ip.getValue();
 			}
 			if (ip.getName().equals(ONATTRIBUTE)){
@@ -124,10 +127,10 @@ public class RenameFeatureFunction
 			}
 		}
 		
-		if (mode.equals("split") && rule != null && onAttribute!=null){
+		if (mode.equals(Mode.split) && rule != null && onAttribute!=null){
 			this.splitter = new FeatureSplitter(onAttribute, rule);
 		}
-		else if (mode.equals("merge") && rule != null && onAttribute!=null){
+		else if (mode.equals(Mode.merge) && rule != null && onAttribute!=null){
 			this.merger = new FeatureAggregator2(onAttribute, rule);
 		}
 		
