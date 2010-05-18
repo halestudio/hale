@@ -31,6 +31,7 @@ import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.goml.align.Formalism;
 import eu.esdihumboldt.goml.align.Schema;
+import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
@@ -151,9 +152,13 @@ public class SchemaImportWizard
 							schemaService.loadSchema(uri, customSchemaFormat, 
 									SchemaType.SOURCE, progress);
 							// update Alignment
-							Schema schema = new Schema(schemaService.getSourceNameSpace(), 
-									new Formalism("GML 3.2.1 Application Schema",  //$NON-NLS-1$
-											new URI("http://www.opengis.net/gml"))); // FIXME //$NON-NLS-1$
+							Schema schema = new Schema(null, null);
+							schema.setLocation(uri.toASCIIString());
+							schema.setAbout(new About(schemaService.getSourceNameSpace()));
+							schema.setFormalism(new Formalism(
+									"GML Application Schema",  //FIXME Use predefined formalism objects
+									new URI("http://www.opengis.net/gml")));
+							
 							alService.getAlignment().setSchema1(schema);
 							projectService.setSourceSchemaPath(uri.toString());
 						}
@@ -162,9 +167,12 @@ public class SchemaImportWizard
 							schemaService.loadSchema(uri, customSchemaFormat, 
 									SchemaType.TARGET, progress);
 							// update Alignment
-							Schema schema = new Schema(schemaService.getTargetNameSpace(), 
-									new Formalism("GML 3.2.1 Application Schema",  //$NON-NLS-1$
-											new URI("http://www.opengis.net/gml"))); // FIXME //$NON-NLS-1$
+							Schema schema = new Schema(null, null);
+							schema.setLocation(uri.toASCIIString());
+							schema.setAbout(new About(schemaService.getTargetNameSpace()));
+							schema.setFormalism(new Formalism(
+									"GML Application Schema",  //FIXME Use predefined formalism objects
+									new URI("http://www.opengis.net/gml")));
 							alService.getAlignment().setSchema2(schema);
 							projectService.setTargetSchemaPath(uri.toString());
 						}
