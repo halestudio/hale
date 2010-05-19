@@ -42,25 +42,8 @@ public class NewProjectHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		if (MessageDialog.openQuestion(HandlerUtil.getActiveShell(event), 
 				"New Alignment Project", "This will reset the Alignment Project, unsaved changes will be lost. Do you want to continue?")) {
-			// clean alignment service
-			AlignmentService as = (AlignmentService) 
-					PlatformUI.getWorkbench().getService(AlignmentService.class);
-			as.cleanModel();
 			
-			// clean instance service
-			InstanceService is = (InstanceService) 
-					PlatformUI.getWorkbench().getService(InstanceService.class);
-			is.cleanInstances();
-			
-			// clean schema service
-			SchemaService ss = (SchemaService) 
-					PlatformUI.getWorkbench().getService(SchemaService.class);
-			ss.cleanSourceSchema();
-			ss.cleanTargetSchema();
-			
-			// clear user tasks
-			TaskService taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
-			taskService.clearUserTasks();
+			cleanup();
 			
 			// clean the project Service
 			ProjectService ps = (ProjectService) 
@@ -74,6 +57,31 @@ public class NewProjectHandler extends AbstractHandler {
 		}
 		
 		return null;
+	}
+
+	/**
+	 * Clean mapping, schemas, instances and tasks
+	 */
+	public static void cleanup() {
+		// clean alignment service
+		AlignmentService as = (AlignmentService) 
+				PlatformUI.getWorkbench().getService(AlignmentService.class);
+		as.cleanModel();
+		
+		// clean instance service
+		InstanceService is = (InstanceService) 
+				PlatformUI.getWorkbench().getService(InstanceService.class);
+		is.cleanInstances();
+		
+		// clean schema service
+		SchemaService ss = (SchemaService) 
+				PlatformUI.getWorkbench().getService(SchemaService.class);
+		ss.cleanSourceSchema();
+		ss.cleanTargetSchema();
+		
+		// clear user tasks
+		TaskService taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
+		taskService.clearUserTasks();
 	}
 
 }

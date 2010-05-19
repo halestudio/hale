@@ -23,6 +23,7 @@ import org.eclipse.ui.IWorkbench;
 
 import eu.esdihumboldt.hale.models.project.ProjectParser;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.commandHandlers.NewProjectHandler;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
 
 /**
@@ -64,6 +65,10 @@ public class OpenAlignmentProjectWizard
 					public void run(IProgressMonitor monitor) throws InvocationTargetException,
 							InterruptedException {
 						try {
+							// clean up
+							NewProjectHandler.cleanup();
+							
+							// load project
 							ProjectParser.read(result, monitor);
 						} catch (Exception e) {
 							String message = Messages.OpenAlignmentProjectWizard_Failed;
