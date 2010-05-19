@@ -626,29 +626,29 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	 */
 	@Override
 	protected void resetTiles() {
-		referenceCache.clear();
-		transformedCache.clear();
-		
 		referenceRenderer.updateMapContext(getCRS());
 		transformedRenderer.updateMapContext(getCRS());
+		
+		referenceCache.clear();
+		transformedCache.clear();
 		
 		resetSelectionTiles();
 	}
 	
 	private void resetSelectionTiles() {
-		referenceSelectionCache.clear();
-		transformedSelectionCache.clear();
-		
 		referenceSelectionRenderer.updateMapContext(getCRS());
 		transformedSelectionRenderer.updateMapContext(getCRS());
+		
+		referenceSelectionCache.clear();
+		transformedSelectionCache.clear();
 	}
 
 	private void resetTransformedTiles() {
-		transformedCache.clear();
 		transformedRenderer.updateMapContext(getCRS());
-		
-		transformedSelectionCache.clear();
+		transformedCache.clear();
+
 		transformedSelectionRenderer.updateMapContext(getCRS());
+		transformedSelectionCache.clear();
 	}
 
 	/**

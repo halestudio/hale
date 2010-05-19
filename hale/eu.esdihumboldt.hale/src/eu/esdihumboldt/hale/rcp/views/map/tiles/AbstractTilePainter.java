@@ -228,6 +228,7 @@ public abstract class AbstractTilePainter implements PaintListener,
 			if (mapArea == null || mapArea.getWidth() == 0 || mapArea.getHeight() == 0) {
 				// invalid area
 				this.mapArea = null;
+				resetTiles();
 				refresh();
 				return;
 			}
