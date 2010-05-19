@@ -91,7 +91,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	/**
 	 * Saves the last cellSelection for refresh function
 	 */
-	private CellSelection temporaryCellSelection = null;
+	CellSelection temporaryCellSelection = null;
 
 	/**
 	 * The graph of zest
@@ -166,6 +166,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 				.getService(SchemaItemService.class);
 
 		this.temporarySchemaSelection = new SchemaSelection();
+		this.temporaryCellSelection = new CellSelection();
 
 		// Instantiate the Buttons
 		org.eclipse.swt.layout.GridLayout gridLayout2 = new GridLayout();
@@ -230,7 +231,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 				button2.setSelection(false);
 				button3.setSelection(true);
 				MappingGraphView.this.selectionChanged(null,
-						MappingGraphView.this.temporarySchemaSelection);
+						MappingGraphView.this.temporaryCellSelection);
 			}
 		});
 
@@ -265,7 +266,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 
 		// setting the MouseListener for the entity node
 		this.setNodeMouseListener();
-
+		
 	}
 
 	/**
