@@ -293,8 +293,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 				instances.addInstances(DatasetType.transformed, features); // target schema
 			}
 			else {
-				log.warn("No instance data was provided, or the " + //$NON-NLS-1$
-						"alignment was not initialized correctly."); //$NON-NLS-1$
+				instances.cleanInstances(DatasetType.transformed);
 			}
 			
 		}
