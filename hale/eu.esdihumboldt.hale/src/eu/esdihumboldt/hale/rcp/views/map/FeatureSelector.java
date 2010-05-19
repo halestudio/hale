@@ -53,7 +53,7 @@ public class FeatureSelector implements FeatureSelectionProvider, MouseListener,
 	
 	private static final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
 	
-	private static final int SELECTION_BUFFER = 2;
+	private static final int SELECTION_BUFFER = 3;
 
 	private final Control mapControl;
 	
