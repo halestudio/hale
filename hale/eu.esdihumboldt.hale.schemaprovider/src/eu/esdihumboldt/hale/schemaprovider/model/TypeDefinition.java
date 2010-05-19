@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.schemaprovider.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,6 +21,7 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 import org.geotools.feature.NameImpl;
+import org.geotools.xs.XSSchema;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.FeatureType;
@@ -30,6 +32,8 @@ import com.vividsolutions.jts.geom.Geometry;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.hale.schemaprovider.EnumAttributeTypeImpl;
+import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.CustomDefaultAttribute;
 
 /**
  * Represents a type definition
@@ -117,6 +121,31 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 		
 		if (type != null) {
 			this.setAbstract(type.isAbstract());
+		}
+		
+		if (this.name != null) {
+			// special cases TODO refactor/outsource?
+		
+			// ReferenceType
+			if (this.name.getNamespaceURI().startsWith("http://www.opengis.net/gml/") && this.name.getLocalPart().equals("ReferenceType")) {
+				Name hrefName = new NameImpl("http://www.w3.org/2001/XMLSchema", "anyURI");
+				TypeDefinition hrefType = new TypeDefinition(hrefName, XSSchema.ANYURI_TYPE, null);
+				AttributeDefinition hrefAttribute = new CustomDefaultAttribute("href", hrefName , hrefType);
+				addDeclaredAttribute(hrefAttribute);
+				Collection<String> values = new ArrayList<String>();
+				values.add("none");
+				values.add("simple");
+				values.add("resource");
+				values.add("extended");
+				values.add("locator");
+				values.add("arc");
+				values.add("title");
+				Name typeName = new NameImpl("http://www.w3.org/2001/XMLSchema", "string");
+				TypeDefinition typeType = new TypeDefinition(typeName, new EnumAttributeTypeImpl(XSSchema.STRING_TYPE, values , false, null), null);
+				AttributeDefinition typeAttribute = new CustomDefaultAttribute("type", 
+						typeName, typeType);
+				addDeclaredAttribute(typeAttribute);
+			}
 		}
 	}
 	

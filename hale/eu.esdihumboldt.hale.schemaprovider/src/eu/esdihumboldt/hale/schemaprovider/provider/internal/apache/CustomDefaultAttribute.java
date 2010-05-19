@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.hale.schemaprovider.provider.internal.apache;
 
-
-import org.apache.ws.commons.schema.XmlSchemaAttribute;
 import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
@@ -26,38 +24,23 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class DefaultAttribute extends AbstractDefaultAttribute {
-	
-	/**
-	 * Create a default attribute
-	 * 
-	 * @param declaringType the declaring type
-	 * @param typeName the attribute type name
-	 * @param attribute the attribute 
-	 * @param attributeType 
-	 */
-	public DefaultAttribute(TypeDefinition declaringType, Name typeName,
-			XmlSchemaAttribute attribute, TypeDefinition attributeType) {
-		super(attribute.getName(), typeName, null);
-		
-		String description = AbstractElementAttribute.getDescription(attribute);
-		if (description != null) {
-			setDescription(description);
-		}
-		
-		if (declaringType != null) {
-			// set the declaring type
-			declaringType.addDeclaredAttribute(this);
-		}
-	}
-	
+public class CustomDefaultAttribute extends AbstractDefaultAttribute {
+
 	/**
 	 * Copy constructor
 	 * 
 	 * @param other
 	 */
-	protected DefaultAttribute(DefaultAttribute other) {
+	protected CustomDefaultAttribute(AbstractDefaultAttribute other) {
 		super(other);
+	}
+
+	/**
+	 * @see AbstractDefaultAttribute#AbstractDefaultAttribute(String, Name, TypeDefinition)
+	 */
+	public CustomDefaultAttribute(String name, Name typeName,
+			TypeDefinition attributeType) {
+		super(name, typeName, attributeType);
 	}
 
 	/**
@@ -65,7 +48,7 @@ public class DefaultAttribute extends AbstractDefaultAttribute {
 	 */
 	@Override
 	public AttributeDefinition copyAttribute(TypeDefinition parentType) {
-		DefaultAttribute copy = new DefaultAttribute(this);
+		CustomDefaultAttribute copy = new CustomDefaultAttribute(this);
 		copy.setParentType(parentType);
 		return copy;
 	}
