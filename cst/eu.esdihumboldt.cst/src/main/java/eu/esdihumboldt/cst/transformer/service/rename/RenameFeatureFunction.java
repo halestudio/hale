@@ -28,7 +28,6 @@ import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.service.impl.TargetSchemaProvider;
 import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 
@@ -53,7 +52,7 @@ public class RenameFeatureFunction
 	public static final String PARAMETER_INSTANCE_SPLIT_CONDITION = "InstanceSplitCondition";
 	
 	public static final String ONATTRIBUTE = "SelectedAttribute";
-	enum Mode { split, merge, join }
+	enum Mode { normal, split, merge, join }
 
 	private FeatureSplitter splitter = null;
 	
@@ -107,8 +106,7 @@ public class RenameFeatureFunction
 	public boolean configure(ICell cell) {
 		this.newName = cell.getEntity2().getAbout().getAbout();
 		List<IParameter> paramList = cell.getEntity1().getTransformation().getParameters();
-		Mode mode = null;
-		
+		Mode mode = Mode.normal; // default
 
 		String rule = null;
 		String onAttribute = null;
