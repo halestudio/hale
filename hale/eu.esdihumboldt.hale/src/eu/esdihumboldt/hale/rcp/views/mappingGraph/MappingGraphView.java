@@ -52,6 +52,7 @@ import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.utils.SchemaItemService;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.definition.internal.BrowserTip;
+import eu.esdihumboldt.hale.rcp.views.mapping.CellSelection;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationViewLabelProvider;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
@@ -86,6 +87,11 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	 * Saves the last schemaSelection for refresh function
 	 */
 	SchemaSelection temporarySchemaSelection = null;
+
+	/**
+	 * Saves the last cellSelection for refresh function
+	 */
+	private CellSelection temporaryCellSelection = null;
 
 	/**
 	 * The graph of zest
@@ -169,26 +175,24 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 		Image image = HALEActivator
 				.getImageDescriptor("icons/refresh.gif").createImage(); //$NON-NLS-1$
 
-		final Button button1 = new Button(parent, SWT.NONE);
-		button1.setBackground(new Color(this.display, 200, 0, 0));
-		final Button button2 = new Button(parent, SWT.NONE);
-		final Button button3 = new Button(parent, SWT.NONE);
-		final Color oldBackgroundColor = button2.getBackground();
+		final Button button1 = new Button(parent, SWT.TOGGLE);
+		final Button button2 = new Button(parent, SWT.TOGGLE);
+		final Button button3 = new Button(parent, SWT.TOGGLE);
 
-		button1.setText("Show All");
-		button1.setToolTipText("Shows the entire Schema Explorer");
+		button1.setText("Show All Cells");
+		button1.setToolTipText("Shows all existing Cells");
 		button1.setImage(image);
 		button1.setLayoutData(gridData4);
+		button1.setSelection(true);
 
 		// Button Listener
 		button1.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
 				MappingGraphView.this.schemaSelectionInt = 1;
-				button1.setBackground(new Color(MappingGraphView.this.display,
-						200, 0, 0));
-				button2.setBackground(oldBackgroundColor);
-				button3.setBackground(oldBackgroundColor);
+				button1.setSelection(true);
+				button2.setSelection(false);
+				button3.setSelection(false);
 				MappingGraphView.this.selectionChanged(null,
 						MappingGraphView.this.temporarySchemaSelection);
 			}
@@ -204,10 +208,9 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 			@Override
 			public void handleEvent(Event event) {
 				MappingGraphView.this.schemaSelectionInt = 2;
-				button2.setBackground(new Color(MappingGraphView.this.display,
-						200, 0, 0));
-				button1.setBackground(oldBackgroundColor);
-				button3.setBackground(oldBackgroundColor);
+				button1.setSelection(false);
+				button2.setSelection(true);
+				button3.setSelection(false);
 				MappingGraphView.this.selectionChanged(null,
 						MappingGraphView.this.temporarySchemaSelection);
 			}
@@ -223,10 +226,9 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 			@Override
 			public void handleEvent(Event event) {
 				MappingGraphView.this.schemaSelectionInt = 3;
-				button3.setBackground(new Color(MappingGraphView.this.display,
-						200, 0, 0));
-				button2.setBackground(oldBackgroundColor);
-				button1.setBackground(oldBackgroundColor);
+				button1.setSelection(false);
+				button2.setSelection(false);
+				button3.setSelection(true);
 				MappingGraphView.this.selectionChanged(null,
 						MappingGraphView.this.temporarySchemaSelection);
 			}
@@ -354,7 +356,6 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 		String toolTipText = "";
 
 		if (!parameterList.isEmpty()) {
-			toolTipText = toolTipText + "Parameter : " + "\r\n";
 			for (IParameter parameter : parameterList) {
 				toolTipText = toolTipText + parameter.getName() + " : ";
 				toolTipText = toolTipText + parameter.getValue() + "\r\n";
@@ -530,9 +531,11 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 			for (int k = 0; k < this.entityNodeList.size(); k++) {
 				if (this.entityNodeList.get(k).getText().equals(
 						graphConnectionNodeName)) {
+					
+					//Target side
 					for (Iterator<GraphConnection> iterator = this.entityNodeList
-							.get(k).getTargetConnections().iterator(); iterator
-							.hasNext();) {
+							.get(k).getTargetConnections().iterator();iterator.hasNext();) {
+						
 						GraphConnection graphConnection = iterator.next();
 						String targetName1 = graphConnection.getDestination()
 								.getText();
@@ -541,7 +544,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 						List<String> temp = getFilters(((Cell) this.entityNodeList
 								.get(k).getData()));
 						String compare2 = this.listToString(temp);
-
+						
 						if ((targetName1.equals(this.sourceGraphNode.getText()) || targetName2
 								.equals(this.sourceGraphNode.getText()))) {
 
@@ -564,7 +567,45 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 							}
 						}
 					}
-				} else {
+					
+					//Source side
+					for (Iterator<GraphConnection> iterator = this.entityNodeList
+							.get(k).getSourceConnections().iterator();iterator.hasNext();) {
+						
+						GraphConnection graphConnection = iterator.next();
+						String targetName1 = graphConnection.getDestination()
+								.getText();
+						String targetName2 = graphConnection.getSource()
+								.getText();
+						List<String> temp = getFilters(((Cell) this.entityNodeList
+								.get(k).getData()));
+						String compare2 = this.listToString(temp);
+						
+						if ((targetName1.equals(this.sourceGraphNode.getText()) || targetName2
+								.equals(this.sourceGraphNode.getText()))) {
+
+							// If content equals content which is already there
+							// than no second entityNode will be drawn
+							if (compare1.equals(compare2)) {
+								this.entityNode = this.entityNodeList.get(k);
+								this.sourceGraphNodeAlreadyThere = this.sourceGraphNode;
+							}
+						}
+						if (targetName1.equals(this.targetGraphNode.getText())
+								|| targetName2.equals(this.targetGraphNode
+										.getText())) {
+
+							// If content equals content which is already there
+							// than no second entityNode will be drawn
+							if (compare1.equals(compare2)) {
+								this.targetGraphNodeAlreadyThere = this.targetGraphNode;
+								this.entityNode = this.entityNodeList.get(k);
+							}
+						}
+					}
+					
+				} 
+				else {
 					this.sourceGraphNodeAlreadyThere = null;
 					this.targetGraphNodeAlreadyThere = null;
 					this.entityNode = null;
@@ -831,34 +872,30 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 		if (this.entityNode == null) {
 			final GraphNode newEntityNode = new GraphNode(this.graph, SWT.NONE,
 					graphConnectionNodeName);
+			
+			//Set the cell as data into the node
 			newEntityNode.setData(resultCell);
 
 			// figure out the y-ordinate for the entity node and set the
 			// location
 			if (this.entityNodeList.isEmpty()) {
-				newEntityNode
-						.setLocation(
-								this.graph.getSize().x * 1 / 3,
-								(this.sourceGraphNode.getLocation().y + this.targetGraphNode
-										.getLocation().y) / 2);
-			} else if (((this.sourceGraphNode.getLocation().y + this.targetGraphNode
-					.getLocation().y) / 2)
-					- (this.entityNodeList.get(this.entityNodeList.size() - 1)
-							.getLocation().y) > 20) {
-				newEntityNode
-						.setLocation(
-								this.graph.getSize().x * 1 / 3,
-								(this.sourceGraphNode.getLocation().y + this.targetGraphNode
-										.getLocation().y) / 2);
+				newEntityNode.setLocation(this.graph.getSize().x * 1 / 3,
+						(this.sourceGraphNode.getLocation().y + 
+						this.targetGraphNode.getLocation().y) / 2);
+				
+			} else if (((this.sourceGraphNode.getLocation().y + 
+					this.targetGraphNode.getLocation().y) / 2)
+					> (this.entityNodeList.get(this.entityNodeList.size() - 1)
+							.getLocation().y)+30) {
+				newEntityNode.setLocation(this.graph.getSize().x * 1 / 3,
+					(this.sourceGraphNode.getLocation().y + 
+					this.targetGraphNode.getLocation().y) / 2);
 			} else {
-				newEntityNode
-						.setLocation(
-								this.graph.getSize().x * 1 / 3,
-								(this.sourceGraphNode.getLocation().y + this.targetGraphNode
-										.getLocation().y) / 2 + 15);
+				newEntityNode.setLocation(this.graph.getSize().x * 1 / 3,
+						(this.entityNodeList.get(this.entityNodeList.size() - 1)
+								.getLocation().y) + 30);
 			}
 			this.entityNode = newEntityNode;
-
 		}
 	}
 
@@ -962,174 +999,35 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	 */
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+
 		SchemaSelection schemaSelection = null;
+		CellSelection cellSelection = null;
 
 		if (selection instanceof SchemaSelection) {
 			schemaSelection = (SchemaSelection) selection; // SchemaSelectionHelper.getSchemaSelection();
 			this.temporarySchemaSelection = schemaSelection;
 		}
+		
+		if (selection instanceof CellSelection) {
+			cellSelection = (CellSelection) selection;
+			this.temporaryCellSelection = cellSelection;
+		}
 
+		//Schema handling from here -->
 		if (schemaSelection != null) {
 
-			// if the schemaSelectionInt is 1, than the whole SchemaExplorer
+			// if the schemaSelectionInt is 1, all cells of the MappingView
 			// will be drawn
 			if (this.schemaSelectionInt == 1) {
-				SchemaSelection schemaSelectionAll = new SchemaSelection();
 
+				//Schema will be built
+				SchemaSelection schemaSelectionAll = new SchemaSelection();
 				SchemaItem sourceRoot = this.schemaItemService
 						.getRoot(SchemaType.SOURCE);
 				SchemaItem targetRoot = this.schemaItemService
 						.getRoot(SchemaType.TARGET);
 				this.rekursiveGetChildren(schemaSelectionAll, true, sourceRoot);
-				this
-						.rekursiveGetChildren(schemaSelectionAll, false,
-								targetRoot);
-
-				schemaSelection = schemaSelectionAll;
-
-				// Resets the arrays before the nodes going to be redrawn
-				this.arrayReset();
-
-				// Draws the source and target nodes
-				this.drawNodes(schemaSelection);
-
-				// Makes the stepping of the Nodes
-				this.makeNodeStepping();
-
-				/**
-				 * Source and target Nodes will be scanned for accordances at
-				 * the Entities. After that these accordances (called cells)
-				 * will be drawn and connected by lines in the middle of the
-				 * Mapping Graph. In the end the cells and the connections will
-				 * be cached in the ArrayLists.
-				 */
-				if (!this.sourceNodeList.isEmpty()
-						&& !this.targetNodeList.isEmpty()) {
-					for (GraphNode sourceGraphNode : this.sourceNodeList) {
-						SchemaItem sourceSchemaItem = (SchemaItem) sourceGraphNode
-								.getData();
-						this.sourceGraphNode = sourceGraphNode;
-						for (GraphNode targetGraphNode : this.targetNodeList) {
-							String cellName = null;
-							SchemaItem targetSchemaItem = (SchemaItem) targetGraphNode
-									.getData();
-							this.targetGraphNode = targetGraphNode;
-							Cell resultCell = null;
-
-							resultCell = ((Cell) this.alignmentService.getCell(
-									sourceSchemaItem.getEntity(),
-									targetSchemaItem.getEntity()));
-							if (resultCell != null) {
-								if (resultCell.getEntity1().getTransformation() == null) {
-									cellName = resultCell.getEntity2()
-											.getTransformation().getService()
-											.getLocation();
-								} else {
-									cellName = resultCell.getEntity1()
-											.getTransformation().getService()
-											.getLocation();
-								}
-								String[] tempSplit = cellName.split("\\.");
-								String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
-
-								// Checks the old connections and takes the
-								// right one
-								this.checkForExistingConnections(
-										graphConnectionNodeName, resultCell);
-								// Creates a new entity node if there is no old
-								// one
-								this.createNewEntityNode(
-										graphConnectionNodeName, resultCell);
-								// Creates the connections between the nodes.
-								this.createGraphConnections();
-								this.entityNodeList.add(this.entityNode);
-							}
-						}
-					}
-				}
-
-			}
-
-			// if the schemaSelectionInt is 2, than the selection in the
-			// SchemaExplorer will be drawn
-			if (this.schemaSelectionInt == 2) {
-				// Resets the arrays before the nodes going to be redrawn
-				this.arrayReset();
-
-				// Draws the source and target nodes
-				this.drawNodes(schemaSelection);
-
-				// Makes the stepping of the Nodes
-				this.makeNodeStepping();
-
-				/**
-				 * Source and target Nodes will be scanned for accordances at
-				 * the Entities. After that these accordances (called cells)
-				 * will be drawn and connected by lines in the middle of the
-				 * Mapping Graph. In the end the cells and the connections will
-				 * be cached in the ArrayLists.
-				 */
-				if (!this.sourceNodeList.isEmpty()
-						&& !this.targetNodeList.isEmpty()) {
-					for (GraphNode sourceGraphNode : this.sourceNodeList) {
-						SchemaItem sourceSchemaItem = (SchemaItem) sourceGraphNode
-								.getData();
-						this.sourceGraphNode = sourceGraphNode;
-						for (GraphNode targetGraphNode : this.targetNodeList) {
-							String cellName = null;
-							SchemaItem targetSchemaItem = (SchemaItem) targetGraphNode
-									.getData();
-							this.targetGraphNode = targetGraphNode;
-							Cell resultCell = null;
-
-							resultCell = ((Cell) this.alignmentService.getCell(
-									sourceSchemaItem.getEntity(),
-									targetSchemaItem.getEntity()));
-							if (resultCell != null) {
-								if (resultCell.getEntity1().getTransformation() == null) {
-									cellName = resultCell.getEntity2()
-											.getTransformation().getService()
-											.getLocation();
-								} else {
-									cellName = resultCell.getEntity1()
-											.getTransformation().getService()
-											.getLocation();
-								}
-								String[] tempSplit = cellName.split("\\.");
-								String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
-
-								// Checks the old connections and takes the
-								// right one
-								this.checkForExistingConnections(
-										graphConnectionNodeName, resultCell);
-								// Creates a new entity node if there is no old
-								// one
-								this.createNewEntityNode(
-										graphConnectionNodeName, resultCell);
-								// Creates the connections between the nodes.
-								this.createGraphConnections();
-								this.entityNodeList.add(this.entityNode);
-							}
-						}
-					}
-				}
-			}
-
-			// if the schemaSelectionInt is 3, than the cells of the MappingView
-			// will be drawn
-			if (this.schemaSelectionInt == 3) {
-
-				SchemaSelection schemaSelectionAll = new SchemaSelection();
-
-				SchemaItem sourceRoot = this.schemaItemService
-						.getRoot(SchemaType.SOURCE);
-				SchemaItem targetRoot = this.schemaItemService
-						.getRoot(SchemaType.TARGET);
-				this.rekursiveGetChildren(schemaSelectionAll, true, sourceRoot);
-				this
-						.rekursiveGetChildren(schemaSelectionAll, false,
-								targetRoot);
-
+				this.rekursiveGetChildren(schemaSelectionAll, false,targetRoot);
 				schemaSelection = schemaSelectionAll;
 
 				// Resets the arrays before the nodes going to be redrawn
@@ -1193,6 +1091,152 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 					}
 				}
 			}
+			
+			// if the schemaSelectionInt is 2, the selection in the
+			// SchemaExplorer will be drawn
+			if (this.schemaSelectionInt == 2) {
+				// Resets the arrays before the nodes going to be redrawn
+				this.arrayReset();
+
+				// Draws the source and target nodes
+				this.drawNodes(schemaSelection);
+
+				// Makes the stepping of the Nodes
+				this.makeNodeStepping();
+
+				/**
+				 * Source and target Nodes will be scanned for accordances at
+				 * the Entities. After that these accordances (called cells)
+				 * will be drawn and connected by lines in the middle of the
+				 * Mapping Graph. In the end the cells and the connections will
+				 * be cached in the ArrayLists.
+				 */
+				if (!this.sourceNodeList.isEmpty()
+						&& !this.targetNodeList.isEmpty()) {
+					for (GraphNode sourceGraphNode : this.sourceNodeList) {
+						SchemaItem sourceSchemaItem = (SchemaItem) sourceGraphNode
+								.getData();
+						this.sourceGraphNode = sourceGraphNode;
+						for (GraphNode targetGraphNode : this.targetNodeList) {
+							String cellName = null;
+							SchemaItem targetSchemaItem = (SchemaItem) targetGraphNode
+									.getData();
+							this.targetGraphNode = targetGraphNode;
+							Cell resultCell = null;
+
+							resultCell = ((Cell) this.alignmentService.getCell(
+									sourceSchemaItem.getEntity(),
+									targetSchemaItem.getEntity()));
+							if (resultCell != null) {
+								if (resultCell.getEntity1().getTransformation() == null) {
+									cellName = resultCell.getEntity2()
+											.getTransformation().getService()
+											.getLocation();
+								} else {
+									cellName = resultCell.getEntity1()
+											.getTransformation().getService()
+											.getLocation();
+								}
+								String[] tempSplit = cellName.split("\\.");
+								String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
+
+								// Checks the old connections and takes the
+								// right one
+								this.checkForExistingConnections(
+										graphConnectionNodeName, resultCell);
+								// Creates a new entity node if there is no old
+								// one
+								this.createNewEntityNode(
+										graphConnectionNodeName, resultCell);
+								// Creates the connections between the nodes.
+								this.createGraphConnections();
+								this.entityNodeList.add(this.entityNode);
+							}
+						}
+					}
+				}
+			}
 		}
+		
+		//Cell handling from here -->
+		
+		// if the schemaSelectionInt is 3, the selected cell in the
+		// MappingView will be drawn
+		if (this.schemaSelectionInt == 3) {
+
+			if(cellSelection != null){
+				
+				//Schema will be built
+				SchemaSelection schemaSelectionAll = new SchemaSelection();
+				for(SchemaItem schemaItem : this.temporaryCellSelection.getCellInfo().getSourceItems()){
+					schemaSelectionAll.addSourceItem(schemaItem);
+				}
+				for(SchemaItem schemaItem : this.temporaryCellSelection.getCellInfo().getTargetItems()){
+					schemaSelectionAll.addTargetItem(schemaItem);
+				}
+				schemaSelection = schemaSelectionAll;
+
+				// Resets the arrays before the nodes going to be redrawn
+				this.arrayReset();
+
+				// Draws the source and target nodes
+				this.drawNodesOnlyWithConnection(schemaSelection);
+
+				// Makes the stepping of the Nodes
+				this.makeNodeStepping();
+
+				/**
+				 * Source and target Nodes will be scanned for accordances at
+				 * the Entities. After that these accordances (called cells)
+				 * will be drawn and connected by lines in the middle of the
+				 * Mapping Graph. In the end the cells and the connections will
+				 * be cached in the ArrayLists.
+				 */
+				if (!this.sourceNodeList.isEmpty()
+						&& !this.targetNodeList.isEmpty()) {
+					for (GraphNode sourceGraphNode : this.sourceNodeList) {
+						SchemaItem sourceSchemaItem = (SchemaItem) sourceGraphNode
+								.getData();
+						this.sourceGraphNode = sourceGraphNode;
+						for (GraphNode targetGraphNode : this.targetNodeList) {
+							String cellName = null;
+							SchemaItem targetSchemaItem = (SchemaItem) targetGraphNode
+									.getData();
+							this.targetGraphNode = targetGraphNode;
+							Cell resultCell = null;
+
+							resultCell = ((Cell) this.alignmentService.getCell(
+									sourceSchemaItem.getEntity(),
+									targetSchemaItem.getEntity()));
+							if (resultCell != null) {
+								if (resultCell.getEntity1().getTransformation() == null) {
+									cellName = resultCell.getEntity2()
+											.getTransformation().getService()
+											.getLocation();
+								} else {
+									cellName = resultCell.getEntity1()
+											.getTransformation().getService()
+											.getLocation();
+								}
+								String[] tempSplit = cellName.split("\\.");
+								String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
+
+								// Checks the old connections and takes the
+								// right one
+								this.checkForExistingConnections(
+										graphConnectionNodeName, resultCell);
+								// Creates a new entity node if there is no old
+								// one
+								this.createNewEntityNode(
+										graphConnectionNodeName, resultCell);
+								// Creates the connections between the nodes.
+								this.createGraphConnections();
+								this.entityNodeList.add(this.entityNode);
+							}
+						}
+					}
+				}
+			}
+		}	
 	}
 }
