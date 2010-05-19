@@ -26,6 +26,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Fill;
 import org.geotools.styling.LineSymbolizer;
+import org.geotools.styling.Mark;
 import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.PolygonSymbolizer;
 import org.geotools.styling.Rule;
@@ -292,14 +293,31 @@ public class StyleServiceImpl extends AbstractUpdateService
 			result.add(createLineSymbolizer(color, width)); 
 		}
 		else if (symbolizer instanceof PointSymbolizer) {
-			result.add(createPointSymbolizer(color, width));
+			result.add(mutateSymbolizer((PointSymbolizer) symbolizer, color, width));
+			//result.add(createPointSymbolizer(color, width));
 		}
 		else {
-			// do not fall-back to original symbolizer
+			// do not fall-back to original symbolizer cause we are painting over it
 			//result.add(symbolizer);
 		}
 		
 		return result;
+	}
+
+	private Symbolizer mutateSymbolizer(PointSymbolizer symbolizer,
+			Color color, int width) {
+		// mutate mark
+		Mark mark = SLD.mark(symbolizer);
+		
+		Mark mutiMark = styleBuilder.createMark(mark.getWellKnownName(), 
+				styleBuilder.createFill(color), 
+				styleBuilder.createStroke(color, width));
+		mutiMark.setSize(mark.getSize());
+		mutiMark.setRotation(mark.getRotation());
+		
+		// create new symbolizer
+		return styleBuilder.createPointSymbolizer(styleBuilder.createGraphic(
+				null, mutiMark, null));
 	}
 
 	/**
