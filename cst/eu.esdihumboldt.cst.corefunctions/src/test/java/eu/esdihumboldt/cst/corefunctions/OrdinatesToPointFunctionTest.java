@@ -25,6 +25,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
 import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.cst.transformer.service.rename.FeatureBuilder;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
@@ -124,24 +125,21 @@ public class OrdinatesToPointFunctionTest {
 			switch(this.testInt){
 			case 1:
 				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Double(x),new Double(y)}, "1");
-				target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2");
 				break;
 			case 2:
 				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new String(x2),new String(y2)}, "1");
-				target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2");
 				break;
 			case 3:
 				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Double(x),new String(y2)}, "1");
-				target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2");
 				break;
 			case 4:
 				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new String(x2),new Double(y)}, "1");
-				target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2");
 				break;
 			default:
 				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Double(x),new Double(y)}, "1");
-				target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2");
 			}
+			
+			target = FeatureBuilder.buildFeature(targettype, source);
 			
 			// perform actual test
 			
@@ -150,7 +148,7 @@ public class OrdinatesToPointFunctionTest {
 			test.transform(source, target);
 	
 			String targetPropertyName = ((Property)cell.getEntity2()).getLocalname();
-			Point point = (Point)((SimpleFeatureImpl)target).getAttribute(targetPropertyName);
+			Point point = (Point)target.getProperty(targetPropertyName).getValue();
 			assertTrue(point.getX()== x * x);
 //			System.out.println("Test "+this.testInt+" : "+(point.getX()== x * x )+"  "+point.getX()+" = "+x * x);
 			assertTrue(point.getY()== y * y);
