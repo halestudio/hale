@@ -34,6 +34,8 @@ import eu.esdihumboldt.hale.rcp.wizards.io.GetCapabilititiesRetriever;
 public abstract class AbstractTypesPage<T extends WfsConfiguration> extends AbstractWfsPage<T> {
 	
 	private final CapabilitiesPage capsPage;
+	
+	private String lastUrl = null;
 
 	/**
 	 * Constructor
@@ -54,31 +56,35 @@ public abstract class AbstractTypesPage<T extends WfsConfiguration> extends Abst
 	@Override
 	protected void onShowPage() {
 		final String url = capsPage.getCapabilitiesURL();
-		final Display display = Display.getCurrent();
 		
-		try {
-			getContainer().run(true, true, new IRunnableWithProgress() {
-				
-				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException,
-						InterruptedException {
-					try {
-						final List<FeatureType> types = GetCapabilititiesRetriever.readFeatureTypes(url, monitor);
-						display.asyncExec(new Runnable() {
-							
-							@Override
-							public void run() {
-								update(types);
-							}
-							
-						});
-					} catch (IOException e) {
-						setErrorMessage("Error getting feature types: " + e.getLocalizedMessage());
+		if (lastUrl == null || !lastUrl.equals(url)) {
+			final Display display = Display.getCurrent();
+			
+			try {
+				getContainer().run(true, true, new IRunnableWithProgress() {
+					
+					@Override
+					public void run(IProgressMonitor monitor) throws InvocationTargetException,
+							InterruptedException {
+						try {
+							final List<FeatureType> types = GetCapabilititiesRetriever.readFeatureTypes(url, monitor);
+							display.asyncExec(new Runnable() {
+								
+								@Override
+								public void run() {
+									update(types);
+									lastUrl = url;
+								}
+								
+							});
+						} catch (IOException e) {
+							setErrorMessage("Error getting feature types: " + e.getLocalizedMessage());
+						}
 					}
-				}
-			});
-		} catch (Throwable e) {
-			setErrorMessage("Error retrieving feature types: " + e.getLocalizedMessage());
+				});
+			} catch (Throwable e) {
+				setErrorMessage("Error retrieving feature types: " + e.getLocalizedMessage());
+			}
 		}
 	}
 
