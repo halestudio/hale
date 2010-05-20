@@ -1,31 +1,56 @@
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.opengis.feature.type.FeatureType;
 
 /**
  * Component for selecting {@link FeatureType}s with a common namespace 
- * @author Jan Kolar
- * @partner 01 / Intergraph CS
+ * 
+ * @author Jan Kolar, Simon Templer
+ * @partner ?? / Intergraph CS, 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id: FeatureTypeList.java 1862 2009-09-10 10:28:10Z jkolar $ 
  */
 public class FeatureTypeList extends Composite {
+	
+	/**
+	 * Selection listener interface
+	 */
+	public static interface TypeSelectionListener {
+		
+		/**
+		 * Called when the selection was changed 
+		 */
+		public void selectionChanged();
+	}
+	
 	private org.eclipse.swt.widgets.List _featuresList;
+	
 	private final Map<String, List<FeatureType>> _types = new HashMap<String, List<FeatureType>>();
+	
 	private Combo _namespaces;
+	
+	private final Set<TypeSelectionListener> listeners = new HashSet<TypeSelectionListener>();
 
+	/**
+	 * Constructor
+	 * 
+	 * @param parent the parent composite
+	 */
 	public FeatureTypeList(Composite parent) {
 		super(parent, SWT.NONE);
 		
@@ -59,9 +84,23 @@ public class FeatureTypeList extends Composite {
 		this._featuresList = new org.eclipse.swt.widgets.List(this, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
 		this._featuresList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
+		_featuresList.addSelectionListener(new SelectionAdapter() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				notifySelectionChanged();
+			}
+			
+		});
+		
 		this.updateNamespaces();
 	}
 	
+	/**
+	 * Set the available feature types
+	 * 
+	 * @param types the feature types to set
+	 */
 	public void setFeatureTypes(List<FeatureType> types) {
 		this._types.clear();
 		
@@ -81,10 +120,12 @@ public class FeatureTypeList extends Composite {
 	}
 	
 	/**
+	 * Get the selected feature types
+	 * 
 	 * @return the selected {@link FeatureType}s
 	 */
-	public Collection<FeatureType> getSelection() {
-		Collection<FeatureType> selectedFeatureTypes = new ArrayList<FeatureType>();
+	public List<FeatureType> getSelection() {
+		List<FeatureType> selectedFeatureTypes = new ArrayList<FeatureType>();
 		
 		List<FeatureType> types = null;
 		
@@ -101,11 +142,17 @@ public class FeatureTypeList extends Composite {
 		}
 		
 		String[] selection = _featuresList.getSelection();
-		for (int i=0; i<selection.length; i++) {
-			for (FeatureType type: types) {
-				if (type.getName().getLocalPart().equals(selection[i])) {
-					selectedFeatureTypes.add(type);
-					break;
+		if (selection == null || selection.length == 0) {
+			// default to all
+			selectedFeatureTypes.addAll(types);
+		}
+		else {
+			for (int i=0; i<selection.length; i++) {
+				for (FeatureType type: types) {
+					if (type.getName().getLocalPart().equals(selection[i])) {
+						selectedFeatureTypes.add(type);
+						break;
+					}
 				}
 			}
 		}
@@ -118,7 +165,7 @@ public class FeatureTypeList extends Composite {
 	 */
 	private void updateNamespaces() {
 		this._namespaces.removeAll();
-		this._namespaces.add(""); //$NON-NLS-1$
+		// don't use an empty namespace because mixing features from different namespaces is not allowed - this._namespaces.add(""); //$NON-NLS-1$
 		
 		String first = null;
 		for (String namespace : this._types.keySet()) {
@@ -152,7 +199,7 @@ public class FeatureTypeList extends Composite {
 			}
 			this._featuresList.setEnabled(true);
 		}
-		else if (namespace.equals("") && (this._featuresList != null)) { //$NON-NLS-1$
+		else if (namespace.equals("")) { //$NON-NLS-1$
 			Set<String> keys = this._types.keySet();
 			for (String key: keys) {
 				types = this._types.get(key);
@@ -161,6 +208,35 @@ public class FeatureTypeList extends Composite {
 				}
 			}
 			this._featuresList.setEnabled(true);
+		}
+		
+		notifySelectionChanged();
+	}
+	
+	/**
+	 * Add a type selection listener
+	 * 
+	 * @param listener the listener to add
+	 */
+	public void addTypeSelectionListener(TypeSelectionListener listener) {
+		listeners.add(listener);
+	}
+	
+	/**
+	 * Remove a type selection listener
+	 * 
+	 * @param listener the listener to add
+	 */
+	public void removeTypeSelectionListener(TypeSelectionListener listener) {
+		listeners.remove(listener);
+	}
+	
+	/**
+	 * Notify listeners that the selection has changed
+	 */
+	protected void notifySelectionChanged() {
+		for (TypeSelectionListener listener : listeners) {
+			listener.selectionChanged();
 		}
 	}
 

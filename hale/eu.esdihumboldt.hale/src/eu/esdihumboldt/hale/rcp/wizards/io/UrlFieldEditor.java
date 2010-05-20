@@ -15,7 +15,15 @@ import java.net.URL;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.preference.StringButtonFieldEditor;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Composite;
+
+import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
+import eu.esdihumboldt.hale.rcp.wizards.io.wfs.WfsDescribeFeatureConfiguration;
+import eu.esdihumboldt.hale.rcp.wizards.io.wfs.WfsDescribeFeatureWizard;
+import eu.esdihumboldt.hale.rcp.wizards.io.wfs.WfsGetFeatureConfiguration;
+import eu.esdihumboldt.hale.rcp.wizards.io.wfs.WfsGetFeatureWizard;
 
 /**
  * This editor can be used to select a valid {@link URL} for a WFS to retrieve
@@ -52,12 +60,32 @@ public class UrlFieldEditor
 		URL result = null;
 		
 		if (!this._getFeatures) {
-			WFSFeatureTypesReaderDialog wfsDialog = new WFSFeatureTypesReaderDialog(this.getShell(), Messages.UrlFieldEditor_FeatureServiceTitle);
-			result = wfsDialog.open();
+			//WFSFeatureTypesReaderDialog wfsDialog = new WFSFeatureTypesReaderDialog(this.getShell(), Messages.UrlFieldEditor_FeatureServiceTitle);
+			//result = wfsDialog.open();
+			WfsDescribeFeatureConfiguration conf = new WfsDescribeFeatureConfiguration();
+			WfsDescribeFeatureWizard describeFeatureWizard = new WfsDescribeFeatureWizard(conf);
+			WizardDialog dialog = new WizardDialog(this.getShell(), describeFeatureWizard);
+			if (dialog.open() == WizardDialog.OK) {
+				try {
+					result = conf.getRequestURL();
+				} catch (Throwable e) {
+					ExceptionHelper.handleException("Error getting the request URL", HALEActivator.PLUGIN_ID, e);
+				}
+			}
 		}
 		else {
-			WFSDataReaderDialog wfsDialog = new WFSDataReaderDialog(this.getShell(), Messages.UrlFieldEditor_DataReaderDialogTitle);
-			result = wfsDialog.open();
+			//WFSDataReaderDialog wfsDialog = new WFSDataReaderDialog(this.getShell(), Messages.UrlFieldEditor_DataReaderDialogTitle);
+			//result = wfsDialog.open();
+			WfsGetFeatureConfiguration conf = new WfsGetFeatureConfiguration();
+			WfsGetFeatureWizard getFeatureWizard = new WfsGetFeatureWizard(conf);
+			WizardDialog dialog = new WizardDialog(this.getShell(), getFeatureWizard);
+			if (dialog.open() == WizardDialog.OK) {
+				try {
+					result = conf.getRequestURL();
+				} catch (Throwable e) {
+					ExceptionHelper.handleException("Error getting the request URL", HALEActivator.PLUGIN_ID, e);
+				}
+			}
 		}
 
 		if (result != null) {

@@ -420,6 +420,9 @@
       <initializer
             class="eu.esdihumboldt.hale.models.style.StylePreferences">
       </initializer>
+      <initializer
+            class="eu.esdihumboldt.hale.rcp.wizards.io.wfs.WfsPreferences">
+      </initializer>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
