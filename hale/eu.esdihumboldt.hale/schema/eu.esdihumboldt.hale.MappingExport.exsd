@@ -62,7 +62,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.rcp.wizards.io.MappingExportFactory"/>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider"/>
                </appInfo>
             </annotation>
          </attribute>
