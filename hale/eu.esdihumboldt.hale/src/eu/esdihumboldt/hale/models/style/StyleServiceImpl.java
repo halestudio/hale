@@ -65,7 +65,12 @@ public class StyleServiceImpl extends AbstractUpdateService
 	implements StyleService {
 
 	private static final Logger _log = Logger.getLogger(StyleServiceImpl.class);
-	
+
+	/**
+	 * Default fill opacity
+	 */
+	private static final double DEFAULT_FILL_OPACITY = 0.3;
+
 	private static StyleService instance;
 	
 	private final Map<FeatureType, FeatureTypeStyle> styles;
@@ -310,7 +315,7 @@ public class StyleServiceImpl extends AbstractUpdateService
 		Mark mark = SLD.mark(symbolizer);
 		
 		Mark mutiMark = styleBuilder.createMark(mark.getWellKnownName(), 
-				styleBuilder.createFill(color), 
+				styleBuilder.createFill(color, DEFAULT_FILL_OPACITY), 
 				styleBuilder.createStroke(color, width));
 		mutiMark.setSize(mark.getSize());
 		mutiMark.setRotation(mark.getRotation());
@@ -482,7 +487,7 @@ public class StyleServiceImpl extends AbstractUpdateService
 
 	private static PointSymbolizer createPointSymbolizer(Color color, double width) {
 		return styleBuilder.createPointSymbolizer(styleBuilder.createGraphic(
-				null, styleBuilder.createMark(StyleBuilder.MARK_X, styleBuilder.createFill(color), 
+				null, styleBuilder.createMark(StyleBuilder.MARK_X, styleBuilder.createFill(color, DEFAULT_FILL_OPACITY), 
 						styleBuilder.createStroke(color, width)), null));
 	}
 
@@ -531,7 +536,7 @@ public class StyleServiceImpl extends AbstractUpdateService
 		SLD.setPolyColour(symbolizer, color);
 		symbolizer.getStroke().setWidth(filterFactory.literal(width));
 		Fill fill = styleFactory.createFill(filterFactory.literal(color),
-				filterFactory.literal(0.3));
+				filterFactory.literal(DEFAULT_FILL_OPACITY));
 		symbolizer.setFill(fill);
 		return symbolizer;
 	}
