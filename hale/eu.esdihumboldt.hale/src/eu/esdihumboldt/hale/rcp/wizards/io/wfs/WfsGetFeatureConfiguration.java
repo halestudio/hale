@@ -95,9 +95,13 @@ public class WfsGetFeatureConfiguration extends WfsConfiguration {
 					if (filters != null && filters.size() > i) {
 						filter = filters.get(i);
 					}
-					filterString.append('(');
+					if (types.size() > 1) {
+						filterString.append('(');
+					}
 					filterString.append((filter == null)?(""):(filter));
-					filterString.append(')');
+					if (types.size() > 1) {
+						filterString.append(')');
+					}
 					
 					if (filter != null && !filter.isEmpty()) {
 						filterPresent = true;
