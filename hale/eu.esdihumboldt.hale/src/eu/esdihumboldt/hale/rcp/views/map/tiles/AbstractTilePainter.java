@@ -840,22 +840,27 @@ public abstract class AbstractTilePainter implements PaintListener,
 	 */
 	protected Point2D toGeoCoordinates(int tileX, int tileY,
 			ReferencedEnvelope tileArea) {
-		// creating transformation
-		final Envelope2D genvelope = new Envelope2D(tileArea);
-		final GridToEnvelopeMapper m = (GridToEnvelopeMapper) gridToEnvelopeMappers.get();
 		try {
-            m.setGridRange(new GeneralGridRange(new Rectangle(getTileWidth(), getTileHeight())));
-            m.setEnvelope(genvelope);
-            AffineTransform trans = m.createAffineTransform(); // creating transformation as in RendererUtilities, but without the inversion that is applied there
-            
-            Point2D.Double tile = new Point2D.Double(tileX, tileY);
-            Point2D.Double result = new Point2D.Double(tileX, tileY);
-            
-            trans.transform(tile, result);
-            
-            return result;
-		} catch (MismatchedDimensionException e) {
-			log.error("Error creating transformation", e);
+			// creating transformation
+			final Envelope2D genvelope = new Envelope2D(tileArea);
+			final GridToEnvelopeMapper m = (GridToEnvelopeMapper) gridToEnvelopeMappers.get();
+			try {
+	            m.setGridRange(new GeneralGridRange(new Rectangle(getTileWidth(), getTileHeight())));
+	            m.setEnvelope(genvelope);
+	            AffineTransform trans = m.createAffineTransform(); // creating transformation as in RendererUtilities, but without the inversion that is applied there
+	            
+	            Point2D.Double tile = new Point2D.Double(tileX, tileY);
+	            Point2D.Double result = new Point2D.Double(tileX, tileY);
+	            
+	            trans.transform(tile, result);
+	            
+	            return result;
+			} catch (MismatchedDimensionException e) {
+				log.error("Error creating transformation", e);
+				return null;
+			}
+		} catch (Throwable e) {
+			log.warn("Error determinating geo coordinates", e);
 			return null;
 		}
 	}
