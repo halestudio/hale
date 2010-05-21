@@ -199,7 +199,8 @@ public class FilterPage extends AbstractWfsPage<WfsGetFeatureConfiguration> {
 		// create edit button
 		editButton = new Button(page, SWT.PUSH);
 		editButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
-		editButton.setText("Form...");
+		editButton.setText("Create...");
+		editButton.setToolTipText("Create a filter using a form");
 		editButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
