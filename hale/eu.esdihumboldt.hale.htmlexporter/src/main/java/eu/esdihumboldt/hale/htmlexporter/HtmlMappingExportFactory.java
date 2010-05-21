@@ -52,7 +52,7 @@ public class HtmlMappingExportFactory
 		Vector vec = new Vector();
 		vec.addElement( p1 );
 		vec.addElement( p2 );
-		URL templatePath = this.getClass().getResource("/resources/template.vm"); 
+		URL templatePath = this.getClass().getResource("template.vm"); 
 //		URL templatePath = this.getClass().getResource("/WEB-INF/template.vm"); 
 //		Velocity.addProperty("resource.loader", "MYO");
 //		Velocity.addProperty(Velocity.RESOURCE_LOADER, new org.apache.velocity.runtime.resource.loader.URLResourceLoader());
@@ -83,6 +83,7 @@ public class HtmlMappingExportFactory
 			try {
 				if(templatePath!=null){
 					template = Velocity.getTemplate(templatePath.toString());
+					System.out.println("asdf");
 				}
 			} catch (ResourceNotFoundException e) {
 				// TODO Auto-generated catch block
