@@ -139,6 +139,12 @@ public class OGCFilterBuilder extends Composite {
 		return list.toArray(ar);
 	}
 	
+	/**
+	 * Build the filter string
+	 * 
+	 * @return the filter string
+	 * @throws IllegalStateException
+	 */
 	public String buildFilter() throws IllegalStateException {
 		List<Condition> conditions = data.getConditions();
 		
@@ -212,13 +218,24 @@ public class OGCFilterBuilder extends Composite {
 			operation = lop;
 		}
 		
-		StringWriter stringWriter = new StringWriter();
-		PrintWriter writer = new PrintWriter(stringWriter);
-		writer.print("<Filter>");
-		operation.serialize(writer);
-		writer.print("</Filter>");
-		
-		return stringWriter.toString();
+		if (operation != null) {
+			StringWriter stringWriter = new StringWriter();
+			PrintWriter writer = new PrintWriter(stringWriter);
+			writer.println("<Filter>");
+			operation.serialize(writer, 1);
+			writer.print("</Filter>");
+			
+			return stringWriter.toString();
+		}
+		else {
+			return ""; // no filter
+		}
+	}
+	
+	private static void printIndent(PrintWriter w, int indent) {
+		for (int i = 0; i < indent; i++) {
+			w.print('\t');
+		}
 	}
 	
 	Op getOperation(Condition c) {
@@ -233,15 +250,15 @@ public class OGCFilterBuilder extends Composite {
 	}
 	
 	
-	abstract class Op {
+	private static abstract class Op {
 		String name;
 		public Op(String name) {
 			this.name = name;
 		}
-		public abstract void serialize(PrintWriter out); 
+		public abstract void serialize(PrintWriter out, int indent); 
 	}
 	
-	class LogicalOp extends Op {
+	private static class LogicalOp extends Op {
 		List<Op> ops;
 		public LogicalOp(String name) {
 			super(name);
@@ -250,16 +267,18 @@ public class OGCFilterBuilder extends Composite {
 		public void addOp(Op op) {
 			ops.add(op);
 		}
-		public void serialize(PrintWriter out) {
-			out.print("<" + name + ">");
+		public void serialize(PrintWriter out, int indent) {
+			printIndent(out, indent);
+			out.println("<" + name + ">");
 			for (Op op : ops) {
-				op.serialize(out);
+				op.serialize(out, indent + 1);
 			}
-			out.print("</" + name + ">");
+			printIndent(out, indent);
+			out.println("</" + name + ">");
 		}
 	}
 	
-	class ComparisonOp extends Op {
+	private class ComparisonOp extends Op {
 		String property;
 		Object value;
 		public ComparisonOp(String name, String property, Object value) {
@@ -267,14 +286,17 @@ public class OGCFilterBuilder extends Composite {
 			this.property = property;
 			this.value = value;
 		}
-		public void serialize(PrintWriter out) {
+		public void serialize(PrintWriter out, int indent) {
 			if (name.equals("PropertyIsLike")) {
-				out.print("<PropertyIsLike wildCard=\"*\" singleChar=\"?\" escapeChar=\"!\">");
+				printIndent(out, indent);
+				out.println("<PropertyIsLike wildCard=\"*\" singleChar=\"?\" escapeChar=\"!\">");
 			}
 			else {
-				out.print("<" + name + ">");
+				printIndent(out, indent);
+				out.println("<" + name + ">");
 			}
-			out.print("<PropertyName>" + property + "</PropertyName>");
+			printIndent(out, indent + 1);
+			out.println("<PropertyName>" + featureType.getName().getLocalPart() + "/" + property + "</PropertyName>");
 			if (name.equals("PropertyIsBetween")) {
 				String lv = "?";
 				String hv = "?";
@@ -283,17 +305,21 @@ public class OGCFilterBuilder extends Composite {
 					lv = s[0];
 					hv = s[1];
 				}
-				out.print("<LowerBoundary><Literal>" + lv + "</Literal></LowerBoundary>");
-				out.print("<UpperBoundary><Literal>" + hv + "</Literal></UpperBoundary>");
+				printIndent(out, indent + 1);
+				out.println("<LowerBoundary><Literal>" + lv + "</Literal></LowerBoundary>");
+				printIndent(out, indent + 1);
+				out.println("<UpperBoundary><Literal>" + hv + "</Literal></UpperBoundary>");
 			}
 			else if (!name.equals("PropertyIsNull")) {
-				out.print("<Literal>" + value + "</Literal>");
+				printIndent(out, indent + 1);
+				out.println("<Literal>" + value + "</Literal>");
 			}
-			out.print("</" + name + ">");
+			printIndent(out, indent);
+			out.println("</" + name + ">");
 		}
 	}
 	
-	class Condition {
+	private static class Condition {
 		boolean negate;
 		PropertyDescriptor property;
 		String comparison;
@@ -348,7 +374,7 @@ public class OGCFilterBuilder extends Composite {
 		}
 	}
 	
-	class ConditionDataProvider {
+	private static class ConditionDataProvider {
 		List<Condition> conditions = new ArrayList<Condition>();
 		
 		public List<Condition> getConditions() {
@@ -356,7 +382,7 @@ public class OGCFilterBuilder extends Composite {
 		}
 	}
 	
-	class ConditionContentProvider implements IStructuredContentProvider {
+	private static class ConditionContentProvider implements IStructuredContentProvider {
 		public Object[] getElements(Object inputElement) {
 			ConditionDataProvider data = (ConditionDataProvider) inputElement;
 			return data.getConditions().toArray();
@@ -369,7 +395,7 @@ public class OGCFilterBuilder extends Composite {
 		}
 	}
 	
-	class ConditionLabelProvider extends LabelProvider implements ITableLabelProvider {
+	private static class ConditionLabelProvider extends LabelProvider implements ITableLabelProvider {
 		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
@@ -401,7 +427,7 @@ public class OGCFilterBuilder extends Composite {
 		}
 	}
 	
-	class ConditionEditingSupport extends EditingSupport {
+	private class ConditionEditingSupport extends EditingSupport {
 		int column;
 		
 		ComboBoxCellEditor propertyEditor;
@@ -572,7 +598,7 @@ public class OGCFilterBuilder extends Composite {
 		}
 	}
 	
-	class ConditionCheckStateListener implements ICheckStateListener {
+	private static class ConditionCheckStateListener implements ICheckStateListener {
 		public void checkStateChanged(CheckStateChangedEvent event) {
 			Condition condition = (Condition) event.getElement();
 			condition.setNegate(event.getChecked());
