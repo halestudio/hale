@@ -103,6 +103,10 @@ public class WfsLocationFieldEditor extends FieldEditor {
 				timer.cancel();
 			}
 			
+			// invalidate
+			invalidate();
+			
+			// schedule validation
 			timer = new Timer();
 			timer.schedule(new TimerTask() {
 				
@@ -222,6 +226,16 @@ public class WfsLocationFieldEditor extends FieldEditor {
 		if (valid != newValid) {
 			valid = newValid;
 			
+			fireStateChanged(IS_VALID, !valid, valid);
+		}
+	}
+	
+	/**
+	 * Invalidate the editor
+	 */
+	protected void invalidate() {
+		if (valid) {
+			valid = false;
 			fireStateChanged(IS_VALID, !valid, valid);
 		}
 	}
