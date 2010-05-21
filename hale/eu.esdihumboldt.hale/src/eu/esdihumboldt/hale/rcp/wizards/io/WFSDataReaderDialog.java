@@ -173,7 +173,7 @@ public class WFSDataReaderDialog extends Dialog {
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
 		currentStatusLabel.setAlignment(SWT.RIGHT);
 		
-		final FeatureTypeList selection = new FeatureTypeList(urlValidationArea);
+		final FeatureTypeList selection = new FeatureTypeList(urlValidationArea, null);
 		selection.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 	/* Validation Group end*/	

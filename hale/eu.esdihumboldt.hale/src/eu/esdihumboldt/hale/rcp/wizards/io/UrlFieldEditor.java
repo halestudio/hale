@@ -40,20 +40,43 @@ public class UrlFieldEditor
 	extends StringButtonFieldEditor {
 	
 	private final static Logger _log = Logger.getLogger(UrlFieldEditor.class);
+	
 	private boolean _getFeatures = false;
 	
+	private final String schemaNamespace;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param name the preference name
+	 * @param labelText the label text
+	 * @param parent the parent composite
+	 */
 	public UrlFieldEditor(String name, String labelText,
             Composite parent) {
 		super(name, labelText, parent);
+		
+		this.schemaNamespace = null;
 	}
 	
-	public UrlFieldEditor(String name, String labelText,Composite parent,boolean getFeatures) {
+	/**
+	 * Constructor
+	 * 
+	 * @param name the preference name
+	 * @param labelText the label text
+	 * @param parent the parent composite
+	 * @param schemaNamespace the schema namespace, may be <code>null</code>
+	 * @param getFeatures if the editor is for a GetFeature request instead of a DescribeFeature request
+	 */
+	public UrlFieldEditor(String name, String labelText,Composite parent,String schemaNamespace, boolean getFeatures) {
 		super(name, labelText, parent);
 		this._getFeatures = getFeatures;
+		
+		this.schemaNamespace = schemaNamespace;
 	}
 
 	/**
-	 * @see org.eclipse.jface.preference.StringButtonFieldEditor#changePressed()
+	 * @see StringButtonFieldEditor#changePressed()
 	 */
 	@Override
 	protected String changePressed() {
@@ -76,7 +99,7 @@ public class UrlFieldEditor
 		else {
 			//WFSDataReaderDialog wfsDialog = new WFSDataReaderDialog(this.getShell(), Messages.UrlFieldEditor_DataReaderDialogTitle);
 			//result = wfsDialog.open();
-			WfsGetFeatureConfiguration conf = new WfsGetFeatureConfiguration();
+			WfsGetFeatureConfiguration conf = new WfsGetFeatureConfiguration(schemaNamespace);
 			WfsGetFeatureWizard getFeatureWizard = new WfsGetFeatureWizard(conf);
 			WizardDialog dialog = new WizardDialog(this.getShell(), getFeatureWizard);
 			if (dialog.open() == WizardDialog.OK) {

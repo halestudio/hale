@@ -87,6 +87,29 @@ public abstract class AbstractTypesPage<T extends WfsConfiguration> extends Abst
 			}
 		}
 	}
+	
+	/**
+	 * @see AbstractWfsPage#updateConfiguration(WfsConfiguration)
+	 */
+	@Override
+	public boolean updateConfiguration(WfsConfiguration configuration) {
+		List<FeatureType> selection = getSelection();
+		
+		if (selection == null || selection.isEmpty()) {
+			return false;
+		}
+		else {
+			configuration.setFeatureTypes(selection);
+			return true;
+		}
+	}
+
+	/**
+	 * Get the selected feature types
+	 * 
+	 * @return the selected feature types
+	 */
+	protected abstract List<FeatureType> getSelection();
 
 	/**
 	 * Update the page with the given feature types

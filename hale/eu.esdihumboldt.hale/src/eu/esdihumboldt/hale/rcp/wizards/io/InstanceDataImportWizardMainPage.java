@@ -13,10 +13,10 @@
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import java.io.File;
-import java.net.URI;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
@@ -51,19 +51,31 @@ public class InstanceDataImportWizardMainPage
 	
 	private UrlFieldEditor wfsFieldEditor;
 	
+	private final String schemaNamespace;
+	
 	// constructors ............................................................
 
-	protected InstanceDataImportWizardMainPage(String pageName, String pageTitle) {
+	/**
+	 * Constructor
+	 * 
+	 * @param pageName the page name
+	 * @param pageTitle the page title
+	 * @param schemaNamespace the schema namespace
+	 */
+	protected InstanceDataImportWizardMainPage(String pageName, String pageTitle,
+			String schemaNamespace) {
 		super(pageName, pageTitle, (ImageDescriptor) null); // FIXME ImageDescriptor
 		super.setTitle(pageName); //NON-NLS-1
 		super.setDescription(Messages.InstanceDataImportWizardMainPage_LoadGeoDescription1 +
 				Messages.InstanceDataImportWizardMainPage_LoadGeoDescription2);
+		
+		this.schemaNamespace = schemaNamespace;
 	}
 	
 	// methods .................................................................
 
 	/**
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+	 * @see IDialogPage#createControl(Composite)
 	 */
 	public void createControl(Composite parent) {
 		super.initializeDialogUnits(parent);
@@ -75,10 +87,16 @@ public class InstanceDataImportWizardMainPage
         composite.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         composite.setFont(parent.getFont());
 
-        this.createSourceGroup(composite);
-        super.setPageComplete(false);
-        super.setErrorMessage(null);
-		super.setControl(composite);
+        this.createSourceGroup(composite, schemaNamespace);
+        setPageComplete(false);
+		setControl(composite);
+		
+		if (schemaNamespace == null) {
+			setErrorMessage("You have to load a source schema before you can load instance data");
+		}
+		else {
+			setErrorMessage(null);
+		}
 	}
 	
 	/**
@@ -86,8 +104,9 @@ public class InstanceDataImportWizardMainPage
 	 * to be imported.
 	 * 
 	 * @param parent the parent {@link Composite}
+	 * @param schemaNamespace the schema namespace 
 	 */
-	private void createSourceGroup(Composite parent) {
+	private void createSourceGroup(Composite parent, String schemaNamespace) {
 		
 		// define source group composite
 		Group selectionArea = new Group(parent, SWT.NONE);
@@ -134,7 +153,7 @@ public class InstanceDataImportWizardMainPage
 		final Composite ufe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ufe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		this.wfsFieldEditor = new UrlFieldEditor("urlSelect","... WFS GetFeature:", ufe_container,true); //$NON-NLS-1$ //$NON-NLS-2$
+		this.wfsFieldEditor = new UrlFieldEditor("urlSelect","... WFS GetFeature:", ufe_container, schemaNamespace, true); //$NON-NLS-1$ //$NON-NLS-2$
 		this.wfsFieldEditor.setEnabled(false, ufe_container);
 		this.wfsFieldEditor.getTextControl(ufe_container).addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {

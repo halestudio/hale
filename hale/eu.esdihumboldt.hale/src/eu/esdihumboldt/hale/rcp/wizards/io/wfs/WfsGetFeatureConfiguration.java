@@ -21,7 +21,7 @@ import java.util.List;
 import org.opengis.feature.type.FeatureType;
 
 /**
- * 
+ * Configuration for WFS GetFeature
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -29,6 +29,13 @@ import org.opengis.feature.type.FeatureType;
  */
 public class WfsGetFeatureConfiguration extends WfsConfiguration {
 	
+	/**
+	 * @see WfsConfiguration#WfsConfiguration(String)
+	 */
+	public WfsGetFeatureConfiguration(String fixedNamespace) {
+		super(fixedNamespace);
+	}
+
 	/**
 	 * Get the request URL
 	 *  

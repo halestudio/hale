@@ -45,14 +45,19 @@ public class FeatureTypeList extends Composite {
 	private Combo _namespaces;
 	
 	private final Set<TypeSelectionListener> listeners = new HashSet<TypeSelectionListener>();
+	
+	private final String fixedNamespace;
 
 	/**
 	 * Constructor
 	 * 
 	 * @param parent the parent composite
+	 * @param fixedNamespace 
 	 */
-	public FeatureTypeList(Composite parent) {
+	public FeatureTypeList(Composite parent, String fixedNamespace) {
 		super(parent, SWT.NONE);
+		
+		this.fixedNamespace = fixedNamespace;
 		
 		GridLayout layout = new GridLayout(1, false);
 		this.setLayout(layout);
@@ -167,19 +172,31 @@ public class FeatureTypeList extends Composite {
 		this._namespaces.removeAll();
 		// don't use an empty namespace because mixing features from different namespaces is not allowed - this._namespaces.add(""); //$NON-NLS-1$
 		
-		String first = null;
+		String selectNamespace = null;
+		int selectIndex = 0;
+		int index = 0;
 		for (String namespace : this._types.keySet()) {
-			if (first == null) {
-				first = namespace;
+			if (selectNamespace == null || (fixedNamespace != null && fixedNamespace.equals(namespace))) {
+				selectNamespace = namespace;
+				selectIndex = index;
 			}
 			
 			this._namespaces.add(namespace);
+			index++;
 		}
 		
-		if (first != null) {
-			this._namespaces.setText(first);
+		if (selectNamespace != null) {
+			this._namespaces.setText(selectNamespace);
 		}
-		this._namespaces.select(0);
+		this._namespaces.select(selectIndex);
+		
+		/*if (fixedNamespace != null && fixedNamespace.equals(selectNamespace)) {
+			_namespaces.setEnabled(false);
+		}
+		else {
+			_namespaces.setEnabled(true);
+		}*/
+		
 		this.updateFeatures();
 	}
 	
@@ -238,6 +255,15 @@ public class FeatureTypeList extends Composite {
 		for (TypeSelectionListener listener : listeners) {
 			listener.selectionChanged();
 		}
+	}
+
+	/**
+	 * Get the selected namespace
+	 * 
+	 * @return the namespace
+	 */
+	public String getNamespace() {
+		return _namespaces.getText();
 	}
 
 }

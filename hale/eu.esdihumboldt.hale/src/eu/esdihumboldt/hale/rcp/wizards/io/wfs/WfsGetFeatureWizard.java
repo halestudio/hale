@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.rcp.wizards.io.wfs;
 
 
 /**
- * 
+ * WFS GetFeature wizard
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -36,7 +36,7 @@ public class WfsGetFeatureWizard extends AbstractWfsWizard<WfsGetFeatureConfigur
 	public void addPages() {
 		super.addPages();
 		
-		//TODO
+		//addPage(new FilterPage(configuration, getTypes()));
 	}
 
 }

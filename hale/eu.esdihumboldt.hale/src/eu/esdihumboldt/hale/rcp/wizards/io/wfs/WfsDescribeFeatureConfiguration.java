@@ -23,7 +23,7 @@ import org.opengis.feature.type.FeatureType;
 import eu.esdihumboldt.hale.rcp.wizards.io.GetCapabilititiesRetriever;
 
 /**
- * 
+ * Configuration for WFS DescribeFeature
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -31,6 +31,13 @@ import eu.esdihumboldt.hale.rcp.wizards.io.GetCapabilititiesRetriever;
  */
 public class WfsDescribeFeatureConfiguration extends WfsConfiguration {
 	
+	/**
+	 * Default constructor
+	 */
+	public WfsDescribeFeatureConfiguration() {
+		super(null);
+	}
+
 	/**
 	 * Get the request URL
 	 *  

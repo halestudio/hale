@@ -52,25 +52,31 @@ public class InstanceDataImportWizard
 
 	private static Logger _log = Logger.getLogger(InstanceDataImportWizard.class);
 
-	InstanceDataImportWizardMainPage mainPage;
-	InstanceDataImportWizardFilterPage filterPage;
-	InstanceDataImportWizardVerificationPage verificationPage;
-
+	private InstanceDataImportWizardMainPage mainPage;
+	//private InstanceDataImportWizardFilterPage filterPage;
+	//private InstanceDataImportWizardVerificationPage verificationPage;
+	
 	/**
 	 * Default constructor
+	 * 
+	 * @param schemaNamespace the schema namespace
 	 */
-	public InstanceDataImportWizard() {
+	public InstanceDataImportWizard(String schemaNamespace) {
 		super();
-		this.mainPage = new InstanceDataImportWizardMainPage(
-				Messages.InstanceDataImportWizard_MainPageLabel, Messages.ImportGeodataText); // NON-NLS-1
-		this.filterPage = new InstanceDataImportWizardFilterPage(
+		/*this.filterPage = new InstanceDataImportWizardFilterPage(
 				Messages.FilterDataText,
 				Messages.FilterImportGeodataText); // NON-NLS-1
 		this.verificationPage = new InstanceDataImportWizardVerificationPage(
 				Messages.InstanceDataImportTitle,
 				Messages.InstanceDataImportDescription); // NON-NLS-1
-		super.setWindowTitle(Messages.WindowTitle); // NON-NLS-1
-		super.setNeedsProgressMonitor(true);
+		super.setWindowTitle(Messages.WindowTitle); // NON-NLS-1*/
+		
+		setNeedsProgressMonitor(true);
+		
+		mainPage = new InstanceDataImportWizardMainPage(
+				Messages.InstanceDataImportWizard_MainPageLabel, 
+				Messages.ImportGeodataText,
+				schemaNamespace); // NON-NLS-1
 	}
 
 	/**

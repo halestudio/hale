@@ -63,7 +63,7 @@ public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
 		Composite page = new Composite(parent, SWT.NONE);
 		page.setLayout(new GridLayout(1, false));
 		
-		list = new FeatureTypeList(page);
+		list = new FeatureTypeList(page, getConfiguration().getFixedNamespace());
 		list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		list.addTypeSelectionListener(new TypeSelectionListener() {
 			
@@ -76,29 +76,46 @@ public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
 		
 		setControl(page);
 		
-		//update();
+		update();
 	}
 
 	/**
-	 * @see AbstractWfsPage#updateConfiguration(WfsConfiguration)
+	 * @see AbstractTypesPage#getSelection()
 	 */
 	@Override
-	public boolean updateConfiguration(WfsConfiguration configuration) {
-		List<FeatureType> selection = list.getSelection();
-		
-		if (selection == null || selection.isEmpty()) {
-			return false;
-		}
-		else {
-			configuration.setFeatureTypes(selection);
-			return true;
-		}
+	protected List<FeatureType> getSelection() {
+		return list.getSelection();
 	}
-	
+
 	private void update() {
-		List<FeatureType> selection = list.getSelection();
+		boolean valid = true;
 		
-		setPageComplete(selection != null && !selection.isEmpty());
+		// test namespace
+		if (valid) {
+			String ns = getConfiguration().getFixedNamespace();
+			
+			if (ns != null) {
+				valid = list.getNamespace().equals(ns);
+				if (!valid) {
+					setErrorMessage("Namespace must match source schema namespace: " + ns);
+				}
+			}
+		}
+		
+		// test selection
+		if (valid) {
+			List<FeatureType> selection = list.getSelection();
+			valid = selection != null && !selection.isEmpty();
+			if (!valid) {
+				setErrorMessage("Empty selection");
+			}
+		}
+		
+		if (valid) {
+			setErrorMessage(null);
+		}
+		
+		setPageComplete(valid);
 	}
 
 }

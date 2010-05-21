@@ -25,10 +25,29 @@ import org.opengis.feature.type.FeatureType;
  */
 public class WfsConfiguration {
 	
+	private final String fixedNamespace;
+	
 	private String capabilitiesURL;
 	
 	private List<FeatureType> featureTypes;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param fixedNamespace the fixed namespace or <code>null</code>
+	 */
+	public WfsConfiguration(String fixedNamespace) {
+		super();
+		this.fixedNamespace = fixedNamespace;
+	}
+
+	/**
+	 * @return the fixedNamespace
+	 */
+	public String getFixedNamespace() {
+		return fixedNamespace;
+	}
+
 	/**
 	 * @return the capabilitiesURL
 	 */

@@ -36,6 +36,11 @@ public abstract class AbstractWfsWizard<T extends WfsConfiguration> extends Wiza
 	private CapabilitiesPage capabilities;
 	
 	/**
+	 * The types page
+	 */
+	private AbstractTypesPage<? super T> types;
+	
+	/**
 	 * Constructor
 	 * 
 	 * @param configuration the WMS client configuration
@@ -52,7 +57,7 @@ public abstract class AbstractWfsWizard<T extends WfsConfiguration> extends Wiza
 	@Override
 	public void addPages() {
 		addPage(capabilities = new CapabilitiesPage(configuration));
-		addPage(new FeatureTypesPage(configuration, capabilities));
+		addPage(types = new FeatureTypesPage(configuration, capabilities));
 	}
 
 	/**
@@ -75,6 +80,20 @@ public abstract class AbstractWfsWizard<T extends WfsConfiguration> extends Wiza
 		}
 		
 		return success;
+	}
+
+	/**
+	 * @return the capabilities
+	 */
+	public CapabilitiesPage getCapabilities() {
+		return capabilities;
+	}
+
+	/**
+	 * @return the types
+	 */
+	public AbstractTypesPage<? super T> getTypes() {
+		return types;
 	}
 	
 }

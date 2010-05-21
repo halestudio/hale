@@ -15,11 +15,15 @@ package eu.esdihumboldt.hale.rcp.commandHandlers;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.IHandler;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IImportWizard;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.rcp.wizards.io.InstanceDataImportWizard;
 
 /**
@@ -32,13 +36,25 @@ public class LoadInstanceDataHandler
 	extends AbstractHandler {
 
 	/**
-	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
+	 * @see IHandler#execute(ExecutionEvent)
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IImportWizard iw = new InstanceDataImportWizard();
-		Shell shell = HandlerUtil.getActiveShell(event);
-		WizardDialog dialog = new WizardDialog(shell, iw);
-		dialog.open();
+		SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+		String schemaNamespace = schemaService.getSourceNameSpace();
+		boolean schemaPresent = schemaNamespace != null && !schemaNamespace.isEmpty();
+		
+		if (schemaPresent) {
+			IImportWizard iw = new InstanceDataImportWizard(schemaNamespace);
+			Shell shell = HandlerUtil.getActiveShell(event);
+			WizardDialog dialog = new WizardDialog(shell, iw);
+			dialog.open();
+		}
+		else {
+			MessageDialog.openError(HandlerUtil.getActiveShell(event),
+				"No source schema", 
+				"Before loading source data you have to load the corresponding source schema.");
+		}
+		
 		return null;
 	}
 
