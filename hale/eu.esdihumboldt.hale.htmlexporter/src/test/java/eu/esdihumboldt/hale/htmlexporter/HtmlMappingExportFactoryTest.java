@@ -11,7 +11,14 @@
  */
 package eu.esdihumboldt.hale.htmlexporter;
 
+import java.io.File;
+import java.net.URL;
+
 import org.junit.Test;
+
+import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
+import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportException;
 
 /**
  * Test class for HtmlMappingExportFactory
@@ -28,6 +35,18 @@ public class HtmlMappingExportFactoryTest {
 	public void test() {
 		
 		HtmlMappingExportFactory htmlMappingExportFactory = new HtmlMappingExportFactory();
+		String testFile = this.getClass().getResource("TEST.goml").toString();
+		OmlRdfReader reader = new OmlRdfReader();
+		
+		if(testFile!=null){
+			Alignment alignment = reader.read(testFile);
+			try {
+				htmlMappingExportFactory.export(alignment, "bla.html");
+			} catch (MappingExportException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 	}
 
