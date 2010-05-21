@@ -860,7 +860,7 @@ public abstract class AbstractTilePainter implements PaintListener,
 				return null;
 			}
 		} catch (Throwable e) {
-			log.warn("Error determinating geo coordinates", e);
+			log.warn("Error determinating geo coordinates");
 			return null;
 		}
 	}
