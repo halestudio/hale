@@ -55,10 +55,10 @@ public class HtmlMappingExportFactory
 		URL templatePath = this.getClass().getResource("/resources/template.vm"); 
 //		URL templatePath = this.getClass().getResource("/WEB-INF/template.vm"); 
 //		Velocity.addProperty("resource.loader", "MYO");
-		Velocity.addProperty(Velocity.RESOURCE_LOADER, new org.apache.velocity.runtime.resource.loader.URLResourceLoader());
+//		Velocity.addProperty(Velocity.RESOURCE_LOADER, new org.apache.velocity.runtime.resource.loader.URLResourceLoader());
 //		Velocity.addProperty("MYO.resource.loader.root", "");
 //		Velocity.setProperty("resource.loader", "MYO");
-//		Velocity.setProperty("MYO.resource.loader.class", new org.apache.velocity.runtime.resource.loader.URLResourceLoader());
+//		Velocity.setProperty("MYO.resource.loader.class", "org.apache.velocity.runtime.resource.loader.URLResourceLoader");
 //		Velocity.setProperty("MYO.resource.loader.root", "");
 			try {
 
