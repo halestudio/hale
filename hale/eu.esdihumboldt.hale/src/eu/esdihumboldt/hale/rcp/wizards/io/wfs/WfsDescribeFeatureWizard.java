@@ -27,6 +27,8 @@ public class WfsDescribeFeatureWizard extends AbstractWfsWizard<WfsDescribeFeatu
 	 */
 	public WfsDescribeFeatureWizard(WfsDescribeFeatureConfiguration configuration) {
 		super(configuration);
+		
+		setWindowTitle("WFS DescribeFeature");
 	}
 
 }

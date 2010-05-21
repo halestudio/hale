@@ -27,6 +27,8 @@ public class WfsGetFeatureWizard extends AbstractWfsWizard<WfsGetFeatureConfigur
 	 */
 	public WfsGetFeatureWizard(WfsGetFeatureConfiguration configuration) {
 		super(configuration);
+		
+		setWindowTitle("WFS GetFeature");
 	}
 
 	/**
