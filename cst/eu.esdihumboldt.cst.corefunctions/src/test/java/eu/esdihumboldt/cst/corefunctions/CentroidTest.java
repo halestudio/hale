@@ -14,6 +14,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
+import eu.esdihumboldt.cst.transformer.service.rename.FeatureBuilder;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
@@ -66,7 +67,8 @@ public class CentroidTest {
 				
 		
 		Feature source = SimpleFeatureBuilder.build(sourcetype, new Object[] {fac.createPolygon(fac.createLinearRing(new Coordinate[] {new Coordinate(0,0), new Coordinate (2,0), new Coordinate (2,2), new Coordinate(0,2), new Coordinate(0,0)} ),null) }, "1");
-		Feature target = SimpleFeatureBuilder.build(targettype, new Object[]{fac.createPoint(new Coordinate (0,0))}, "2");
+		Feature target = FeatureBuilder.buildFeature(targettype, source);
+		
 		
 		// perform actual test
 		CentroidFunction center = new CentroidFunction();
