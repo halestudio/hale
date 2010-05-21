@@ -29,11 +29,27 @@ import org.opengis.feature.type.FeatureType;
  */
 public class WfsGetFeatureConfiguration extends WfsConfiguration {
 	
+	private List<String> filters;
+	
 	/**
 	 * @see WfsConfiguration#WfsConfiguration(String)
 	 */
 	public WfsGetFeatureConfiguration(String fixedNamespace) {
 		super(fixedNamespace);
+	}
+
+	/**
+	 * @return the filters
+	 */
+	public List<String> getFilters() {
+		return filters;
+	}
+
+	/**
+	 * @param filters the filters to set
+	 */
+	public void setFilters(List<String> filters) {
+		this.filters = filters;
 	}
 
 	/**
@@ -56,28 +72,39 @@ public class WfsGetFeatureConfiguration extends WfsConfiguration {
 		
 		if (getFeature != null) {
 			StringBuffer typeNames = new StringBuffer();
+			StringBuffer filterString = new StringBuffer();
+			
 			boolean first = true;
 			List<FeatureType> types = getFeatureTypes();
 			if (types != null && !types.isEmpty()) {
-				for (FeatureType type : types) {
-					String typeName = type.getName().getLocalPart();
+				for (int i = 0; i < types.size(); i++) {
+					FeatureType type = types.get(i);
 					if (first) {
 						first = false;
 					}
 					else {
 						typeNames.append(',');
 					}
+					
+					String typeName = type.getName().getLocalPart();
 					typeNames.append(typeName);
+					
+					String filter = null;
+					if (filters != null && filters.size() > i) {
+						filter = filters.get(i);
+					}
+					filterString.append('(');
+					filterString.append((filter == null)?(""):(filter));
+					filterString.append(')');
 				}
 			}
 			else throw new IllegalArgumentException("No types specified");
-			
+
+			// types
 			getFeature = getFeature.concat("&TYPENAME=" + URLEncoder.encode(typeNames.toString(), "UTF-8"));
 			
-			//TODO filtering
-			/*if (!filterText.getStringValue().isEmpty()) {
-				getFeature = getFeature.concat("&FILTER=" + filterText.getStringValue());
-			}*/
+			// filters
+			getFeature = getFeature.concat("&FILTER=" + URLEncoder.encode(filterString.toString(), "UTF-8"));
 		}
 		
 		// get the URL

@@ -32,6 +32,8 @@ import org.eclipse.swt.widgets.Composite;
 public abstract class AbstractWfsPage<T extends WfsConfiguration> extends WizardPage {
 	
 	private final T configuration;
+	
+	private Object currentPage = null;
 
 	/**
 	 * Constructor
@@ -87,6 +89,10 @@ public abstract class AbstractWfsPage<T extends WfsConfiguration> extends Wizard
 			((IPageChangeProvider) container).addPageChangedListener(new IPageChangedListener() {
 				
 				public void pageChanged(PageChangedEvent event) {
+					if (currentPage == AbstractWfsPage.this) {
+						onHidePage();
+					}
+					currentPage = event.getSelectedPage();
 					if (event.getSelectedPage() == AbstractWfsPage.this) {
 						onShowPage();
 					}
@@ -101,6 +107,13 @@ public abstract class AbstractWfsPage<T extends WfsConfiguration> extends Wizard
 	 * Called when this page is shown
 	 */
 	protected void onShowPage() {
+		// do nothing
+	}
+	
+	/**
+	 * Called when this page is hidden
+	 */
+	protected void onHidePage() {
 		// do nothing
 	}
 

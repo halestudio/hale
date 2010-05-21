@@ -38,7 +38,7 @@ public class WfsGetFeatureWizard extends AbstractWfsWizard<WfsGetFeatureConfigur
 	public void addPages() {
 		super.addPages();
 		
-		//addPage(new FilterPage(configuration, getTypes()));
+		addPage(new FilterPage(configuration, getTypes()));
 	}
 
 }

@@ -13,11 +13,14 @@
 package eu.esdihumboldt.hale.rcp.wizards.io.wfs;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.rcp.wizards.io.FeatureTypeList;
@@ -53,6 +56,27 @@ public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
 	@Override
 	protected void update(List<FeatureType> types) {
 		list.setFeatureTypes(types);
+		
+		//XXX the update doesn't refresh the buttons when the page is shown the first time
+		//update();
+		
+		//XXX so try something nasty instead
+		final Display display = Display.getCurrent();
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			
+			@Override
+			public void run() {
+				display.asyncExec(new Runnable() {
+					
+					@Override
+					public void run() {
+						FeatureTypesPage.this.update();
+					}
+					
+				});
+			}
+		}, 500);
 	}
 
 	/**
