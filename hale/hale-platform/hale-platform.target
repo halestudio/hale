@@ -47,5 +47,6 @@
 <location path="${project_loc:hale-platform}/target/org.apache.xml.serializer" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.apache.batik" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/javax.mail" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.velocity" type="Directory"/>
 </locations>
 </target>
