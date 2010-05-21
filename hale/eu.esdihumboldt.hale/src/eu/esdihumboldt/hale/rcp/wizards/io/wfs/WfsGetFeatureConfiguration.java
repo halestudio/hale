@@ -74,6 +74,8 @@ public class WfsGetFeatureConfiguration extends WfsConfiguration {
 			StringBuffer typeNames = new StringBuffer();
 			StringBuffer filterString = new StringBuffer();
 			
+			boolean filterPresent = false;
+			
 			boolean first = true;
 			List<FeatureType> types = getFeatureTypes();
 			if (types != null && !types.isEmpty()) {
@@ -96,6 +98,10 @@ public class WfsGetFeatureConfiguration extends WfsConfiguration {
 					filterString.append('(');
 					filterString.append((filter == null)?(""):(filter));
 					filterString.append(')');
+					
+					if (filter != null && !filter.isEmpty()) {
+						filterPresent = true;
+					}
 				}
 			}
 			else throw new IllegalArgumentException("No types specified");
@@ -104,7 +110,9 @@ public class WfsGetFeatureConfiguration extends WfsConfiguration {
 			getFeature = getFeature.concat("&TYPENAME=" + URLEncoder.encode(typeNames.toString(), "UTF-8"));
 			
 			// filters
-			getFeature = getFeature.concat("&FILTER=" + URLEncoder.encode(filterString.toString(), "UTF-8"));
+			if (filterPresent) {
+				getFeature = getFeature.concat("&FILTER=" + URLEncoder.encode(filterString.toString(), "UTF-8"));
+			}
 		}
 		
 		// get the URL
