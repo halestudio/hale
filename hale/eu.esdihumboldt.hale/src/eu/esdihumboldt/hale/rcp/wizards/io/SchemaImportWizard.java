@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IImportWizard;
@@ -79,6 +80,7 @@ public class SchemaImportWizard
 	/**
 	 * @see Wizard#performFinish()
 	 */
+	@Override
 	public boolean performFinish() {
 		final String result = mainPage.getResult();
 		final SchemaType schemaType = mainPage.getSchemaType();
@@ -216,14 +218,16 @@ public class SchemaImportWizard
 	/**
 	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
 	 */
+	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-
+		// do nothing
 	}
 	
 	/**
-     * @see org.eclipse.jface.wizard.IWizard#addPages()
+     * @see IWizard#addPages()
      */
-    public void addPages() {
+    @Override
+	public void addPages() {
         super.addPages(); 
         addPage(mainPage);        
     }

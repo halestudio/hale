@@ -27,7 +27,6 @@ import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
 import org.geotools.xml.XSISAXHandler;
 import org.geotools.xml.gml.GMLComplexTypes;
-import org.geotools.xml.schema.Schema;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -51,6 +50,9 @@ import com.vividsolutions.jts.io.WKTReader;
  */
 public class FeatureCollectionUtilities {
 
+	/**
+	 * The default? namespace
+	 */
 	public static final String namespace = "http://www.esdihumboldt.eu/test/";
 	
 	/**
@@ -105,13 +107,16 @@ public class FeatureCollectionUtilities {
 	
 
 	/**
+	 * Load a feature collection from GML
 	 * 
-	 * @param gml
-	 * @param schema
-	 * @param namespace
-	 * @return
-	 * @throws Exception
+	 * @param gml the location of the GML file
+	 * @param schema the location of the schema
+	 * @param namespace the namespace
+	 * 
+	 * @return the loaded features
+	 * @throws Exception if parsing the GML fails
 	 */
+	@SuppressWarnings("unchecked")
 	public FeatureCollection<SimpleFeatureType, SimpleFeature> loadFeatureCollectionFromGML(
 			URL gml, 
 			URL schema, 
@@ -123,7 +128,7 @@ public class FeatureCollectionUtilities {
 
 		InputStream xml = new FileInputStream(gml.getFile());
 		Parser parser = new org.geotools.xml.Parser(configuration);
-		return (FeatureCollection) parser.parse(xml);
+		return (FeatureCollection<SimpleFeatureType, SimpleFeature>) parser.parse(xml);
 	}
 
 	
@@ -132,7 +137,8 @@ public class FeatureCollectionUtilities {
 	 * 
 	 * @param _geometry_class the {@link Class} of the {@link Geometry} that
 	 * is to be used, such as {@link LineString}.class.
-	 * @param _geometry_name the name of the {@link FeatureType} to use.
+	 * @param _feature_type_name the name of the {@link FeatureType} to use.
+	 * @param _abstract if the feature type shall be abstract
 	 * @return a {@link FeatureType} with one geometric attribute.
 	 */
 	public static FeatureType getFeatureType(
@@ -162,7 +168,7 @@ public class FeatureCollectionUtilities {
 	 * @param _superType the supertype to register for the returned {@link FeatureType}.
 	 * @param _geometryClass the {@link Class} of the {@link Geometry} that
 	 * is to be used, such as {@link LineString}.class.
-	 * @param _geometry_name the name of the {@link FeatureType} to use.
+	 * @param _featureTypeName the name of the {@link FeatureType} to use.
 	 * @param _abstract if the returned {@link FeatureType} should be abstract, 
 	 * make this parameter true.
 	 * @return a {@link FeatureType} with one geometric attribute, a string name 
@@ -196,19 +202,19 @@ public class FeatureCollectionUtilities {
 	 * URL.
 	 * FIXME: compare to SchemaService Solution, integrate!
 	 * 
-	 * @param xsd
-	 * @return
-	 * @throws Exception
+	 * @param xsd the location of the schema
+	 * @return a list of feature types
+	 * @throws Exception if parsing the schema fails
 	 */
 	public static List<FeatureType> readFeatureTypes(URL xsd) throws Exception {
 		XMLReader reader = XMLReaderFactory.createXMLReader();
 		XSISAXHandler schemaHandler = new XSISAXHandler(xsd.toURI());
 		reader.setContentHandler(schemaHandler);
 		reader.parse(new InputSource(xsd.openConnection().getInputStream()));
-		Schema s = schemaHandler.getSchema();
 		List<FeatureType> result = new ArrayList<FeatureType>();
 		SimpleFeatureType ft = GMLComplexTypes.createFeatureType(schemaHandler
 				.getSchema().getElements()[1]);
+		result.add(ft);
 		return result;
 	}
 }

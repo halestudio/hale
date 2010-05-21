@@ -13,10 +13,8 @@
 package eu.esdihumboldt.hale.models.project;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,10 +75,12 @@ public class ProjectParser {
 	private static final String PROJECT_CONTEXT = "eu.esdihumboldt.hale.models.project.generated";
 
 	/**
-	 * @param result
-	 * @param monitor 
+	 * Load a project from a file
+	 * 
+	 * @param filename the file name
+	 * @param monitor the progress monitor
 	 */
-	public static void read(String result, IProgressMonitor monitor) {
+	public static void read(String filename, IProgressMonitor monitor) {
 		monitor.beginTask("Loading alignment project", IProgressMonitor.UNKNOWN);
 		
 		ProjectParser._log.setLevel(Level.INFO);
@@ -92,17 +92,20 @@ public class ProjectParser {
             Unmarshaller u = jc.createUnmarshaller();
 
             u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
-            root = u.unmarshal(new StreamSource(new File(result)),
+            root = u.unmarshal(new StreamSource(new File(filename)),
 					HaleProject.class);
 		} catch (JAXBException e) {
 			_log.error("Unmarshalling the selected HaleProject failed: ", e);
 		}
 		
-		ProjectParser.load(root.getValue(), monitor);
+		if (root != null) {
+			ProjectParser.load(root.getValue(), monitor);
+		}
 		
 		monitor.done();
 	}
 
+	@SuppressWarnings("unchecked")
 	private static void load(HaleProject project, final IProgressMonitor monitor) {
 		// get service references as required.
 		ProjectService projectService = 

@@ -35,19 +35,22 @@ public class HALEActivator extends AbstractUIPlugin {
 	 * Default constructor
 	 */
 	public HALEActivator() {
+		super();
 	}
 
 	/**
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+	 * @see AbstractUIPlugin#start(BundleContext)
 	 */
+	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
 	}
 
 	/**
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+	 * @see AbstractUIPlugin#stop(BundleContext)
 	 */
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);

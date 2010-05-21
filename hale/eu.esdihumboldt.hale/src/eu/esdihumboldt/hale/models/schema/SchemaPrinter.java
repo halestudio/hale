@@ -62,7 +62,7 @@ public class SchemaPrinter {
 				for (int i = 0; i < level; i++)	System.out.print("\t");
 				System.out.println("+" +  type.getName().getLocalPart() );
 
-				printFeatureTypeCollection(featureTypes, (FeatureType)type, level);
+				printFeatureTypeCollection(featureTypes, type, level);
 
 				for (PropertyDescriptor pd : type.getDescriptors()) {
 					for (int i = 0; i < level + 1; i++)	{

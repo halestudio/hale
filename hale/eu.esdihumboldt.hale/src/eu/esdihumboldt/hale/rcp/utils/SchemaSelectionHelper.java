@@ -39,7 +39,7 @@ public abstract class SchemaSelectionHelper {
 	 *   can't be determined
 	 */
 	public static SchemaSelection getSchemaSelection() {
-		ISelectionService ss = (ISelectionService) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
+		ISelectionService ss = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
 		
 		ISelection selection = ss.getSelection(ModelNavigationView.ID);
 		

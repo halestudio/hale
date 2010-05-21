@@ -107,6 +107,7 @@ public class AttributeInputDialog extends Dialog {
 	/**
 	 * @see Window#configureShell(Shell)
 	 */
+	@Override
 	protected void configureShell(Shell shell) {
         super.configureShell(shell);
         if (title != null) {

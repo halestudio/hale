@@ -69,7 +69,8 @@ public class ColorEditor implements Editor<RGB> {
 		updateImage();
         
         button.addSelectionListener(new SelectionAdapter(){
-            public void widgetSelected(SelectionEvent event) {
+            @Override
+			public void widgetSelected(SelectionEvent event) {
                 ColorDialog colorDialog = new ColorDialog(button.getShell());
                 colorDialog.setRGB(ColorEditor.this.color);
                 RGB newColor = colorDialog.open();

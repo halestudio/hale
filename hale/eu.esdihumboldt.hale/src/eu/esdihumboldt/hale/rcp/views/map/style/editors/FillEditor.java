@@ -130,7 +130,7 @@ public class FillEditor implements Editor<Fill> {
 	 * @return the {@link Stroke} opacity
 	 */
 	private float getOpacity() {
-		return ((float) opacity.getSelection()) / 100.0f;
+		return (opacity.getSelection()) / 100.0f;
 	}
 
 	/**

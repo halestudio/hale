@@ -17,14 +17,22 @@ package eu.esdihumboldt.hale.models;
  * 
  * @author Thorsten Reitz 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
+ *  
+ * @param <T> the message object type 
  */
 public class UpdateMessage<T> {
 	
-	private Class sourceClass;
+	private Class<?> sourceClass;
 	private T messageObject;
 
-	public UpdateMessage(Class sourceClass, T messageObject) {
+	/**
+	 * Constructor
+	 * 
+	 * @param sourceClass the source type
+	 * @param messageObject the message object
+	 */
+	public UpdateMessage(Class<?> sourceClass, T messageObject) {
 		this.sourceClass = sourceClass;
 		this.messageObject = messageObject;
 	}
@@ -32,7 +40,7 @@ public class UpdateMessage<T> {
 	/**
 	 * @return the interface class of the service that sent the message.
 	 */
-	public Class getSource(){
+	public Class<?> getSource(){
 		return this.sourceClass;
 	}
 	

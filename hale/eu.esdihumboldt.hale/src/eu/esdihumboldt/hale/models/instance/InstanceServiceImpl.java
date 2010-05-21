@@ -49,6 +49,7 @@ public class InstanceServiceImpl extends AbstractInstanceService {
 	 * Default constructor
 	 */
 	private InstanceServiceImpl() {
+		super();
 	}
 	
 	/**
@@ -79,7 +80,7 @@ public class InstanceServiceImpl extends AbstractInstanceService {
 		Feature f = null;
 		FeatureIterator<? extends Feature> fi = features.features();
 		while (fi.hasNext()) {
-			Feature current_feature = (Feature) fi.next();
+			Feature current_feature = fi.next();
 			String current_feature_id = current_feature.getIdentifier().getID();
 			if (featureID.equals(current_feature_id)) {
 				return current_feature;
@@ -110,7 +111,7 @@ public class InstanceServiceImpl extends AbstractInstanceService {
 		if (features != null) {
 			FeatureIterator<? extends Feature> fi = features.features();
 			while (fi.hasNext()) {
-				Feature current_feature = (Feature) fi.next();
+				Feature current_feature = fi.next();
 				RobustFTKey candidateKey = new RobustFTKey(current_feature.getType());
 				if (searchKey.equals(candidateKey)) {
 					result.add(current_feature);

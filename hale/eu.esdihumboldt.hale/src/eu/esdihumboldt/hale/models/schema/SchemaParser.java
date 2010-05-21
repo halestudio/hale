@@ -13,17 +13,19 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+/**
+ * SchemaParser
+ *
+ * @author ?
+ * @partner ?
+ * @version $Id$
+ */
 public class SchemaParser extends DefaultHandler {
 
 	private String file;
 	
 	private Map<String, String> schemas = new HashMap<String, String>();
 	
-	@Override
-	public void endElement(String namespaceURI, String localName, String qName)
-			throws SAXException {
-	}
-
 	@Override
 	public void startElement(String namespaceURI, String localName,
             String qName, Attributes atts) throws SAXException {
@@ -47,8 +49,10 @@ public class SchemaParser extends DefaultHandler {
 
 	/**
 	 * Returns a list of schemas which are in the import/include tag.
-	 * @param file
-	 * @return
+	 * 
+	 * @param file the file name
+	 * 
+	 * @return schema map
 	 */
 	public Map<String, String> parse(String file) {
 		SAXParserFactory factory = SAXParserFactory.newInstance();

@@ -286,7 +286,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 					fts.add(element.getFeatureType());
 				}
 				
-				FeatureCollection features = (FeatureCollection<FeatureType, Feature>) ts.transform(
+				FeatureCollection features = ts.transform(
 						fc_reference, // Input Features
 						alService.getAlignment(), // Alignment
 						fts);

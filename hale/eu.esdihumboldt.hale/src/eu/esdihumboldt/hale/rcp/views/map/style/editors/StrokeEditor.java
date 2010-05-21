@@ -153,7 +153,7 @@ public class StrokeEditor implements Editor<Stroke> {
 	 * @return the {@link Stroke} opacity
 	 */
 	private float getOpacity() {
-		return ((float) opacity.getSelection()) / 100.0f;
+		return (opacity.getSelection()) / 100.0f;
 	}
 
 	/**
@@ -162,7 +162,7 @@ public class StrokeEditor implements Editor<Stroke> {
 	 * @return the {@link Stroke} width
 	 */
 	private double getWidth() {
-		return ((double) width.getSelection()) / 100.0;
+		return (width.getSelection()) / 100.0;
 	}
 
 	/**

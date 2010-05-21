@@ -843,7 +843,7 @@ public abstract class AbstractTilePainter implements PaintListener,
 		try {
 			// creating transformation
 			final Envelope2D genvelope = new Envelope2D(tileArea);
-			final GridToEnvelopeMapper m = (GridToEnvelopeMapper) gridToEnvelopeMappers.get();
+			final GridToEnvelopeMapper m = gridToEnvelopeMappers.get();
 			try {
 	            m.setGridRange(new GeneralGridRange(new Rectangle(getTileWidth(), getTileHeight())));
 	            m.setEnvelope(genvelope);

@@ -92,6 +92,7 @@ public class InstanceDataImportWizard
 	 * 
 	 * @see Wizard#performFinish()
 	 */
+	@Override
 	public boolean performFinish() {
 		// get service references.
 		final InstanceService instanceService = (InstanceService) PlatformUI.getWorkbench()
@@ -163,6 +164,7 @@ public class InstanceDataImportWizard
 	/**
 	 * @see IWizard#addPages()
 	 */
+	@Override
 	public void addPages() {
 		super.addPages();
 		super.addPage(this.mainPage);

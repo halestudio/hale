@@ -20,6 +20,8 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 /**
  * TODO: Enter an explanation what this type does here.
  * 
@@ -71,7 +73,7 @@ public class FeatureCollectionUtilitiesTest {
 	}
 
 	/**
-	 * Test method for {@link test.eu.esdihumboldt.hale.models.factory.FeatureCollectionUtilities#loadFeatureCollectionFromGML2(java.lang.String)}.
+	 * Test method for FeatureCollectionUtilities#loadFeatureCollectionFromGML2(java.lang.String).
 	 */
 	@Test
 	public void testLoadFeatureCollectionFromGML2() {
@@ -79,12 +81,12 @@ public class FeatureCollectionUtilitiesTest {
 	}
 
 	/**
-	 * Test method for {@link test.eu.esdihumboldt.hale.models.factory.FeatureCollectionUtilities#getFeatureType(java.lang.Class, java.lang.String)}.
+	 * Test method for {@link FeatureCollectionUtilities#getFeatureType(Class, String, boolean)}.
 	 */
 	@Test
 	public void testGetFeatureType() {
 		String testFTName = "TestFTName";
-		Class geometry_class = com.vividsolutions.jts.geom.Polygon.class;
+		Class<? extends Geometry> geometry_class = com.vividsolutions.jts.geom.Polygon.class;
 		FeatureType ft = FeatureCollectionUtilities.getFeatureType(
 				geometry_class, testFTName, false);
 		assertTrue(ft.getName() != null);

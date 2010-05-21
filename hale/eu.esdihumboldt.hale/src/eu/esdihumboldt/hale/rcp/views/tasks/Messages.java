@@ -2,6 +2,7 @@ package eu.esdihumboldt.hale.rcp.views.tasks;
 
 import org.eclipse.osgi.util.NLS;
 
+@SuppressWarnings("all")
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "eu.esdihumboldt.hale.rcp.views.tasks.messages"; //$NON-NLS-1$
 	public static String TaskTreeView_CommentText;

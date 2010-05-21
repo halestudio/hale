@@ -506,7 +506,7 @@ public class ModelNavigationView extends ViewPart implements
 	 */
 	@Override
 	public void setFocus() {
-
+		// ignore
 	}
 
 	/**

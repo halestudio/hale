@@ -71,7 +71,7 @@ public class TreeParent extends TreeObject{
 	 */
 	@Override
 	public SchemaItem[] getChildren() {
-		return (SchemaItem[]) children.toArray(new TreeObject[children.size()]);
+		return children.toArray(new TreeObject[children.size()]);
 	}
 	
 	/**

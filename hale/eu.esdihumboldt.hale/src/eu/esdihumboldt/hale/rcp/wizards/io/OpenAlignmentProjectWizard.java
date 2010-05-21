@@ -17,9 +17,11 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWizard;
 
 import eu.esdihumboldt.hale.models.project.ProjectParser;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
@@ -55,6 +57,7 @@ public class OpenAlignmentProjectWizard
 	/**
 	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
 	 */
+	@Override
 	public boolean performFinish() {
 		final String result = this.mainPage.getResult();
 		if (result != null) {
@@ -89,22 +92,25 @@ public class OpenAlignmentProjectWizard
 	}
 
 	/**
-	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
+	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
 	 */
+	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		
+		// do nothing
 	}
 
 	/**
-	 * @see org.eclipse.jface.wizard.IWizard#addPages()
+	 * @see IWizard#addPages()
 	 */
+	@Override
 	public void addPages() {
 		super.addPage(this.mainPage);
 	}
 
 	/**
-	 * @see org.eclipse.jface.wizard.IWizard#canFinish()
+	 * @see IWizard#canFinish()
 	 */
+	@Override
 	public boolean canFinish() {
 		return this.mainPage.isPageComplete();
 	}

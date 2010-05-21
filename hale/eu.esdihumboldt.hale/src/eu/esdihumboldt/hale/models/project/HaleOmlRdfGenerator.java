@@ -30,6 +30,7 @@ public class HaleOmlRdfGenerator extends OmlRdfGenerator {
 	/**
 	 * @param m the {@link Marshaller} to configure.
 	 */
+	@Override
 	public void configurePrefixMapper(Marshaller m) {
 		try {
 			m.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper",

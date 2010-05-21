@@ -29,6 +29,7 @@ import javax.xml.namespace.QName;
  * 
  */
 @XmlRegistry
+@SuppressWarnings("all")
 public class ObjectFactory {
 
     private final static QName _ContextElement_QNAME = new QName("", "ContextElement");

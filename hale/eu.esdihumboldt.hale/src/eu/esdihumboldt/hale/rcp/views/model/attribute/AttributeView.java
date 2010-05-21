@@ -22,6 +22,7 @@ import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -253,28 +254,14 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 		final TextTransfer textTransfer = TextTransfer.getInstance();
 		types = new Transfer[] { textTransfer };
 		target.setTransfer(types);
-		target.addDropListener(new DropTargetListener() {
+		target.addDropListener(new DropTargetAdapter() {
 
+			@Override
 			public void dragEnter(DropTargetEvent event) {
 				event.detail = DND.FEEDBACK_INSERT_AFTER;
 			}
 
-			public void dragOver(DropTargetEvent event) {
-
-			}
-
-			public void dragOperationChanged(DropTargetEvent event) {
-
-			}
-
-			public void dragLeave(DropTargetEvent event) {
-
-			}
-
-			public void dropAccept(DropTargetEvent event) {
-
-			}
-
+			@Override
 			public void drop(DropTargetEvent event) {
 				if (textTransfer.isSupportedType(event.currentDataType)) {
 					//DropTarget target = (DropTarget) event.widget;
@@ -558,7 +545,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 	 */
 	@Override
 	public void setFocus() {
-
+		// ignore
 	}
 
 	/**

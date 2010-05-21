@@ -25,7 +25,9 @@ public interface HaleServiceListener {
 	/**
 	 * This method is called by the service when it's internal state 
 	 * changes.
+	 * 
+	 * @param message the update message 
 	 */
-	public void update(UpdateMessage message);
+	public void update(UpdateMessage<?> message);
 
 }

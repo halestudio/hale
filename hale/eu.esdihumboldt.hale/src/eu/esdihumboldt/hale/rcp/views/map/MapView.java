@@ -80,6 +80,7 @@ public class MapView extends ViewPart {
 	/**
 	 * @see WorkbenchPart#createPartControl(Composite)
 	 */
+	@Override
 	public void createPartControl(Composite _parent) {
 		Composite mapComposite = new Composite(_parent, SWT.BEGINNING);
 		GridLayout layout = new GridLayout();

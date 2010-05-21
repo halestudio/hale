@@ -30,6 +30,9 @@ public class FunctionWizard
 	
 	SchemaImportWizardMainPage mainPage;
 	
+	/**
+	 * Default constructor
+	 */
 	public FunctionWizard() {
 		super();
 		this.mainPage = new SchemaImportWizardMainPage(
@@ -41,7 +44,7 @@ public class FunctionWizard
 
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		
+		// do nothing
 	}
 
 	@Override

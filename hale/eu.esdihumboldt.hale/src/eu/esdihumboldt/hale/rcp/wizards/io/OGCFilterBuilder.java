@@ -110,7 +110,7 @@ public class OGCFilterBuilder extends Composite {
 					Object obj = sel.getFirstElement();
 					if (obj != null && obj instanceof Condition)
 					{
-						data.getConditions().remove((Condition) obj);
+						data.getConditions().remove(obj);
 						tableViewer.refresh();
 					}
 				}
@@ -267,6 +267,7 @@ public class OGCFilterBuilder extends Composite {
 		public void addOp(Op op) {
 			ops.add(op);
 		}
+		@Override
 		public void serialize(PrintWriter out, int indent) {
 			printIndent(out, indent);
 			out.println("<" + name + ">");
@@ -286,6 +287,7 @@ public class OGCFilterBuilder extends Composite {
 			this.property = property;
 			this.value = value;
 		}
+		@Override
 		public void serialize(PrintWriter out, int indent) {
 			if (name.equals("PropertyIsLike")) {
 				printIndent(out, indent);
@@ -383,15 +385,21 @@ public class OGCFilterBuilder extends Composite {
 	}
 	
 	private static class ConditionContentProvider implements IStructuredContentProvider {
+		
+		@Override
 		public Object[] getElements(Object inputElement) {
 			ConditionDataProvider data = (ConditionDataProvider) inputElement;
 			return data.getConditions().toArray();
 		}
 		
+		@Override
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			// ignore
 		}
 		
+		@Override
 		public void dispose() {
+			// do nothing
 		}
 	}
 	
@@ -431,7 +439,7 @@ public class OGCFilterBuilder extends Composite {
 		int column;
 		
 		ComboBoxCellEditor propertyEditor;
-		List<PropertyDescriptor> propertyList = new ArrayList<PropertyDescriptor>();;
+		List<PropertyDescriptor> propertyList = new ArrayList<PropertyDescriptor>();
 		ComboBoxCellEditor spatialConditionEditor;
 		List<String> spatialConditionList = new ArrayList<String>();
 		String[] spatialConditions = {"Equals", "Disjoint", "Touches", "Within", "Overlaps", "Crosses", 

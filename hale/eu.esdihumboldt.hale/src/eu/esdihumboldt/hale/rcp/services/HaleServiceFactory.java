@@ -64,6 +64,7 @@ public class HaleServiceFactory
 	/**
 	 * @see AbstractServiceFactory#create(Class, IServiceLocator, IServiceLocator)
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Object create(Class serviceInterface, IServiceLocator parentLocator,
 			IServiceLocator locator) {

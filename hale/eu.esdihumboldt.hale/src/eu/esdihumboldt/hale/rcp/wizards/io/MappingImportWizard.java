@@ -58,6 +58,7 @@ public class MappingImportWizard
 	/**
 	 * @see IWizard#performFinish()
 	 */
+	@Override
 	public boolean performFinish() {
 		String result = this.mainPage.getResult();
 		if (result != null) {
@@ -115,6 +116,7 @@ public class MappingImportWizard
 	/**
 	 * @see IWizard#addPages()
 	 */
+	@Override
 	public void addPages() {
 		super.addPage(this.mainPage);
 	}
@@ -122,6 +124,7 @@ public class MappingImportWizard
 	/**
 	 * @see IWizard#canFinish()
 	 */
+	@Override
 	public boolean canFinish() {
 		return this.mainPage.isPageComplete();
 	}
