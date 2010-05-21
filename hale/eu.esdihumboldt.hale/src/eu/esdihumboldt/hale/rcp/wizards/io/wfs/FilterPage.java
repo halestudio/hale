@@ -323,14 +323,16 @@ public class FilterPage extends AbstractWfsPage<WfsGetFeatureConfiguration> {
 	public boolean updateConfiguration(WfsGetFeatureConfiguration configuration) {
 		saveCurrent();
 		
-		List<String> filters = new ArrayList<String>();
-		for (FeatureType type : types) {
-			String filter = getFilter(type);
+		if (types != null) {
+			List<String> filters = new ArrayList<String>();
+			for (FeatureType type : types) {
+				String filter = getFilter(type);
+				
+				filters.add(filter);
+			}
 			
-			filters.add(filter);
+			configuration.setFilters(filters);
 		}
-		
-		configuration.setFilters(filters);
 		
 		return true;
 	}
