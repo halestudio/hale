@@ -12,13 +12,20 @@
 
 package eu.esdihumboldt.hale.rcp.views.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.PropertyType;
 
+import eu.esdihumboldt.cst.rdf.IAbout;
+import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.rdf.DetailedAbout;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 
@@ -30,6 +37,8 @@ import eu.esdihumboldt.hale.schemaprovider.model.Definition;
  * @version $Id$ 
  */
 public class AttributeItem extends TreeParent {
+	
+	private static final Logger log = Logger.getLogger(AttributeItem.class);
 	
 	private final AttributeDefinition attributeDefinition;
 
@@ -124,4 +133,30 @@ public class AttributeItem extends TreeParent {
 		return attributeDefinition;
 	}
 
+	/**
+	 * @see TreeObject#getEntity()
+	 */
+	@Override
+	public Entity getEntity() {
+		// don't use definition entity, because we want the whole property path
+		List<String> properties = new ArrayList<String>();
+		
+		SchemaItem current = this;
+		while (current != null && current.isAttribute()) {
+			properties.add(0, current.getName().getLocalPart());
+			
+			current = current.getParent();
+		}
+		
+		if (current != null && current.isType()) {
+			IAbout about = new DetailedAbout(current.getName().getNamespaceURI(), 
+					current.getName().getLocalPart(), properties);
+			
+			return new Property(about);
+		}
+		else {
+			log.error("Error creating property entity: invalid schema item hierarchy, using definition entity instead");
+			return super.getEntity();
+		}
+	}
 }
