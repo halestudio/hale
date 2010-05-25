@@ -28,6 +28,9 @@ import org.opengis.feature.Property;
 import org.opengis.feature.type.ComplexType;
 import org.opengis.feature.type.PropertyDescriptor;
 
+import eu.esdihumboldt.cst.rdf.IAbout;
+import eu.esdihumboldt.goml.rdf.DetailedAbout;
+
 /**
  * Utilities for setting/getting (nested) property values of a feature
  *
@@ -52,6 +55,20 @@ public class FeatureInspector {
 		}
 
 	}
+	
+	/**
+	 * Set the value of a (nested) property of a feature
+	 * 
+	 * @param <T> the type of the property value
+	 * @param feature the feature
+	 * @param propertyAbout the about specifying the (nested) property
+	 * @param value the property value to set
+	 */
+	public static <T> void setPropertyValue(Feature feature, IAbout propertyAbout, T value) {
+		setPropertyValue(feature, 
+			DetailedAbout.getDetailedAbout(propertyAbout, true).getProperties(), 
+			value);
+	}
 
 	/**
 	 * Set the value of a (nested) property of a feature
@@ -64,6 +81,22 @@ public class FeatureInspector {
 	public static <T> void setPropertyValue(Feature feature, List<String> properties, T value) {
 		Property property = getProperty(feature, properties, true);
 		property.setValue(value);
+	}
+	
+	/**
+	 * Get the value of a (nested) property of a feature
+	 * 
+	 * @param feature the feature
+	 * @param propertyAbout the about specifying the (nested) property
+	 * @param defValue the default value if the property is not present
+	 *  
+	 * @return the property value if it is found, otherwise the default value 
+	 */
+	public static Object getPropertyValue(Feature feature, IAbout propertyAbout,
+			Object defValue) {
+		return getPropertyValue(feature, 
+			DetailedAbout.getDetailedAbout(propertyAbout, true).getProperties(), 
+			defValue);
 	}
 	
 	/**
@@ -85,6 +118,23 @@ public class FeatureInspector {
 		else {
 			return property.getValue();
 		}
+	}
+	
+	/**
+	 * Get the (nested) property of a feature 
+	 * 
+	 * @param feature the feature
+	 * @param propertyAbout the about specifying the (nested) property
+	 * @param create if the property shall be created if it's not present
+	 * 
+	 * @return the property or <code>null</code> if the property is not present
+	 *   and was not created
+	 */
+	public static Property getProperty(ComplexAttribute feature, IAbout propertyAbout,
+			boolean create) {
+		return getProperty(feature, 
+			DetailedAbout.getDetailedAbout(propertyAbout, true).getProperties(), 
+			create);
 	}
 
 	/**
