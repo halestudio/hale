@@ -193,6 +193,14 @@ public class FeatureInspector {
 						property.setValue(value);
 					}
 					
+					// in case the value is wrapped in a collection
+					if (value instanceof Collection<?>) {
+						Collection<?> values = (Collection<?>) value;
+						if (!values.isEmpty()) {
+							value = values.iterator().next();
+						}
+					}
+					
 					if (value instanceof ComplexAttribute) {
 						complex = (ComplexAttribute) value;
 						complexType = complex.getType();
