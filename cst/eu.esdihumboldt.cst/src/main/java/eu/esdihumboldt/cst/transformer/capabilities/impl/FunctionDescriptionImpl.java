@@ -168,7 +168,9 @@ public class FunctionDescriptionImpl
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		for (String key : this.parameters.keySet()) {
-			sb.append(key + ": " + this.parameters.get(key).getName() + "\n");
+			String name = this.parameters.get(key).getName();
+			String shortName = name.substring(name.lastIndexOf('.') + 1);
+			sb.append(key + ": " + shortName + ", ");
 		}
 		return sb.toString();
 	}
