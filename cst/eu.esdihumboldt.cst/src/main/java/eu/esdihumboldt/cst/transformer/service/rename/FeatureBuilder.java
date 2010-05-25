@@ -20,7 +20,6 @@ import java.util.UUID;
 import org.geotools.feature.AttributeImpl;
 import org.geotools.feature.FeatureImpl;
 import org.geotools.feature.GeometryAttributeImpl;
-import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.type.AttributeDescriptorImpl;
 import org.geotools.feature.type.GeometryDescriptorImpl;
 import org.geotools.filter.identity.FeatureIdImpl;
@@ -34,7 +33,7 @@ import org.opengis.filter.identity.Identifier;
 import eu.esdihumboldt.goml.omwg.Property;
 
 /**
- * TODO Add Type comment
+ * A helper class for building {@link FeatureImpl}s.
  * 
  * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -44,12 +43,14 @@ import eu.esdihumboldt.goml.omwg.Property;
 public class FeatureBuilder {
 	
 	/**
-	 * @param ft
-	 * @param source
+	 * @param ft the {@link FeatureType} for which to build a {@link Feature}.
+	 * @param source a source {@link Feature} from which to use the ID.
+	 * @param createNestedFeatures set to true if you want the feature builder 
+	 * to already create one instance for each attribute that is itself a feature.
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static Feature buildFeature(FeatureType ft, Feature source) {
+	public static Feature buildFeature(FeatureType ft, Feature source, boolean createNestedFeatures) {
 		SimpleFeatureType targetType = (SimpleFeatureType) ft;
 		Feature target = null;
 		
@@ -62,11 +63,11 @@ public class FeatureBuilder {
 						null, (GeometryDescriptor)ad, id));
 			}
 			else if (ad instanceof AttributeDescriptorImpl) {
-				if (ad.getType().getBinding().equals(Collection.class)) {
+				if (ad.getType().getBinding().equals(Collection.class) && createNestedFeatures) {
 					if (ad.getType() instanceof FeatureType) {
 						properties.add(
 								new AttributeImpl(Collections.singleton(
-										buildFeature((FeatureType) ad.getType(), null)), 
+										buildFeature((FeatureType) ad.getType(), null, createNestedFeatures)), 
 										ad, id));
 					}
 				}

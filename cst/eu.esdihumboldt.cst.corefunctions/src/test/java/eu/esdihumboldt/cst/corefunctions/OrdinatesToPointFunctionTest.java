@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.opengis.feature.Feature;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.feature.simple.SimpleFeatureImpl;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -139,7 +138,7 @@ public class OrdinatesToPointFunctionTest {
 				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Double(x),new Double(y)}, "1");
 			}
 			
-			target = FeatureBuilder.buildFeature(targettype, source);
+			target = FeatureBuilder.buildFeature(targettype, source, true);
 			
 			// perform actual test
 			

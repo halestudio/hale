@@ -68,7 +68,7 @@ public class RenameFeatureFunction
 	 */
 	public Feature transform(Feature source, Feature target) {
 		SimpleFeatureType targetType = this.getTargetType(this.newName);
-		target = FeatureBuilder.buildFeature(targetType, source);
+		target = FeatureBuilder.buildFeature(targetType, source, true);
 		
 		// copy geometry by default if possible
 		this.copyGeometry(source, target);

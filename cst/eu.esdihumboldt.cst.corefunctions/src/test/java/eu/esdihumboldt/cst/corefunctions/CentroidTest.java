@@ -67,7 +67,7 @@ public class CentroidTest {
 				
 		
 		Feature source = SimpleFeatureBuilder.build(sourcetype, new Object[] {fac.createPolygon(fac.createLinearRing(new Coordinate[] {new Coordinate(0,0), new Coordinate (2,0), new Coordinate (2,2), new Coordinate(0,2), new Coordinate(0,0)} ),null) }, "1");
-		Feature target = FeatureBuilder.buildFeature(targettype, source);
+		Feature target = FeatureBuilder.buildFeature(targettype, source, true);
 		
 		
 		// perform actual test

@@ -413,8 +413,8 @@ public class SchemaTranslationController {
 		else {
 			ps.setDescription(new SimpleInternationalString(
 					"HUMBOLDT Conceptual Schema Transformer 1.0.0: " 
-					+ cstf.getClass().getName() 
-					+ " applied with the following parameters: \n"
+					+ cstf.getClass().getName().substring(cstf.getClass().getName().lastIndexOf('.') + 1)
+					+ " applied with the following parameters: "
 					+ new FunctionDescriptionImpl(cell).toString()));
 		}	
 		
