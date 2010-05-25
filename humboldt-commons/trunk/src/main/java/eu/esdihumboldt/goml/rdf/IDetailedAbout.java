@@ -26,7 +26,7 @@ import eu.esdihumboldt.cst.rdf.IAbout;
 public interface IDetailedAbout extends IAbout {
 	
 	/**
-	 * The main delimiter in the about string between namespace and feature
+	 * The main delimiter in the about string, e.g between namespace and feature
 	 * class
 	 */
 	public static final char MAIN_DELIMITER = '/';

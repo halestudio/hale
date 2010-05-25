@@ -79,26 +79,32 @@ public class DetailedAbout implements IDetailedAbout {
 	 * Create a detailed about from an about string
 	 * 
 	 * @param about the about string
+	 * @param isProperty if the about string represents a property
 	 */
-	public DetailedAbout(String about) {
+	public DetailedAbout(String about, boolean isProperty) {
 		super();
 		
 		// separate in namespace + feature class & properties
 		String main;
 		String propertiesString = null;
-		int propertiesIndex = about.indexOf(PROPERTY_DELIMITER);
-		if (propertiesIndex >= 0) {
-			main = about.substring(0, propertiesIndex);
-			if (propertiesIndex < about.length() + 1) {
-				propertiesString = about.substring(propertiesIndex + 1);
-			}
+		if (!isProperty) {
+			main = about;
 		}
 		else {
-			main = about;
+			int propertiesIndex = about.lastIndexOf(MAIN_DELIMITER);
+			if (propertiesIndex >= 0) {
+				main = about.substring(0, propertiesIndex);
+				if (propertiesIndex < about.length() + 1) {
+					propertiesString = about.substring(propertiesIndex + 1);
+				}
+			}
+			else {
+				main = about;
+			}
 		}
 		
 		// separate in namspace & feature class
-		int typeIndex = main.lastIndexOf('/');
+		int typeIndex = main.lastIndexOf(MAIN_DELIMITER);
 		if (typeIndex >= 0 && typeIndex < main.length() + 1) {
 			namespace = main.substring(0, typeIndex);
 			featureClass = main.substring(typeIndex + 1);
@@ -158,7 +164,7 @@ public class DetailedAbout implements IDetailedAbout {
 		
 		// properties
 		if (properties != null && !properties.isEmpty()) {
-			result.append(PROPERTY_DELIMITER);
+			result.append(MAIN_DELIMITER);
 			
 			boolean first = true;
 			for (String property : properties) {
@@ -197,15 +203,16 @@ public class DetailedAbout implements IDetailedAbout {
 	 * Get a detailed about from an {@link IAbout}
 	 * 
 	 * @param about the about
+	 * @param isProperty if the about represents a property
 	 * 
 	 * @return the detailed about
 	 */
-	public static IDetailedAbout getDetailedAbout(IAbout about) {
+	public static IDetailedAbout getDetailedAbout(IAbout about, boolean isProperty) {
 		if (about instanceof IDetailedAbout) {
 			return (IDetailedAbout) about;
 		}
 		else {
-			DetailedAbout result = new DetailedAbout(about.getAbout());
+			DetailedAbout result = new DetailedAbout(about.getAbout(), isProperty);
 			result.setUid(about.getUid());
 			return result;
 		}
