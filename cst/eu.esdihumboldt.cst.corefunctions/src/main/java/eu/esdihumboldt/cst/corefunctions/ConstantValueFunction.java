@@ -22,28 +22,34 @@ import org.opengis.feature.type.PropertyDescriptor;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.AbstractCstFunction;
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.tools.FeatureInspector;
 
 /**
  * CST Function to set default
  * attribute target values.
  *
- * @author Ulrich Schaeffler, Anna Pitaev
- * @partner 14 / TUM, 04 / Logica
+ * @author Ulrich Schaeffler, Anna Pitaev, Simon Templer
+ * @partner 14 / TUM, 04 / Logica, 01 / Fraunhofer IGD
  * @version $Id$ 
  */
 public class ConstantValueFunction extends AbstractCstFunction {
 	
+	/**
+	 * Parameter name for the default value
+	 */
 	public static final String DEFAULT_VALUE_PARAMETER_NAME = "defaultValue";
+	
 	private Object defaultValue = null;
 	private Property targetProperty = null;
 
 	/**
-	 * @see eu.esdihumboldt.cst.transformer.CstFunction#configure(eu.esdihumboldt.cst.align.ICell)
+	 * @see CstFunction#configure(ICell)
 	 */
 	public boolean configure(ICell cell) {
 		for (IParameter ip : cell.getEntity2().getTransformation().getParameters()) {
@@ -55,6 +61,10 @@ public class ConstantValueFunction extends AbstractCstFunction {
 		return true;
 	}
 	
+	/**
+	 * @see CstFunction#getParameters()
+	 */
+	@Override
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();	
 		Property entity2 = new Property(new About(""));
@@ -79,45 +89,19 @@ public class ConstantValueFunction extends AbstractCstFunction {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.opengis.feature.Feature, org.opengis.feature.Feature)
+	 * @see CstFunction#transform(Feature, Feature)
 	 */
+	@Override
 	public Feature transform(Feature source, Feature target) {
-		PropertyDescriptor pd = target.getProperty(
-				this.targetProperty.getLocalname()).getDescriptor();
+		Object value = defaultValue;
 		
-		org.opengis.feature.Property p = target.getProperty(this.targetProperty.getLocalname());
+		org.opengis.feature.Property pd = FeatureInspector.getProperty(target, targetProperty.getAbout(), true);
 		
-		if (pd.getType().getBinding().isPrimitive()) {
-			
-			if (pd.getType().getBinding().equals(Integer.class)){
-				p.setValue((Integer)this.defaultValue);
-			}
-			else if (pd.getType().getBinding().equals(Short.class)){
-				p.setValue((Short)this.defaultValue);
-			}
-			else if (pd.getType().getBinding().equals(Double.class)){
-				p.setValue((Double)this.defaultValue);
-			}
-			else if (pd.getType().getBinding().equals(Long.class)){
-				p.setValue((Long)this.defaultValue);
-			}
-			else if (pd.getType().getBinding().equals(Float.class)){
-				p.setValue((Float)this.defaultValue);
-			}
-			else if (pd.getType().getBinding().equals(Boolean.class)){
-				p.setValue((Boolean)this.defaultValue);
-			}
-			else if (pd.getType().getBinding().equals(Byte.class)){
-				p.setValue((Byte)this.defaultValue);
-			}
-			else {
-				p.setValue((Character)this.defaultValue);
-			}
-
+		if (pd != null && pd.getType().getBinding().equals(String.class)){
+			value = value.toString();
 		}
-		else if (pd.getType().getBinding().equals(String.class)){
-			p.setValue(this.defaultValue.toString());
-		}
+		
+		FeatureInspector.setPropertyValue(target, targetProperty.getAbout(), value);
 		
 		return target;
 	}
