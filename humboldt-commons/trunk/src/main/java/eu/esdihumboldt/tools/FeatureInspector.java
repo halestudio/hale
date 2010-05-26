@@ -236,6 +236,14 @@ public class FeatureInspector {
 					new FeatureIdImpl(UUID.randomUUID().toString()));
 		}
 		
+		Class<?> binding = pd.getType().getBinding();
+		if (Collection.class.isAssignableFrom(binding)) {
+			// wrap value in collection
+			Collection<Object> collection = new ArrayList<Object>();
+			collection.add(value);
+			value = collection;
+		}
+		
 		return value;
 	}
 
