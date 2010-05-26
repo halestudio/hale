@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.opengis.feature.ComplexAttribute;
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
 
@@ -124,8 +125,8 @@ public class PropertyItem extends DefaultTreeNode {
 				List<Object> values = new ArrayList<Object>();
 				
 				for (Object pValue : propertyValues) {
-					if (pValue instanceof Feature) {
-						Property property = ((Feature) pValue).getProperty(propertyName);
+					if (pValue instanceof ComplexAttribute) {
+						Property property = ((ComplexAttribute) pValue).getProperty(propertyName);
 						if (property != null) {
 							values.add(property.getValue());
 						}
