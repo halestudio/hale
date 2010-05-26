@@ -78,7 +78,7 @@ public class MappingImportWizard
 				Alignment alignment = reader.read(result);
 				
 				if (alignment != null) {
-					String sourceNamespace = alignment.getSchema1().getLocation();
+					String sourceNamespace = alignment.getSchema1().getAbout().getAbout();
 					SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 					if (!sourceNamespace.equals(schemaService.getSourceNameSpace())) {
 						MessageDialog.openWarning(display.getActiveShell(), 
@@ -87,7 +87,7 @@ public class MappingImportWizard
 						return false;
 					}
 					
-					String targetNamespace = alignment.getSchema2().getLocation();
+					String targetNamespace = alignment.getSchema2().getAbout().getAbout();
 					if (!targetNamespace.equals(schemaService.getTargetNameSpace())) {
 						MessageDialog.openWarning(display.getActiveShell(), 
 								Messages.MappingImportWizard_TargetExistTitle, 
