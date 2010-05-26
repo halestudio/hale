@@ -13,7 +13,6 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.literal;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
@@ -30,50 +29,40 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
 public class RenameAttributeFunctionWizardFactory implements
 		FunctionWizardFactory {
 
-	/* (non-Javadoc)
-	 * @see eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory#createWizard(eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo)
+	/**
+	 * @see FunctionWizardFactory#createWizard(AlignmentInfo)
 	 */
 	@Override
 	public FunctionWizard createWizard(AlignmentInfo selection) {
 		return new RenameAttributeWizard(selection);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory#supports(eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo)
+	/**
+	 * @see FunctionWizardFactory#supports(AlignmentInfo)
 	 */
 	@Override
 	public boolean supports(AlignmentInfo selection) {
-		if (selection.getSourceItemCount() == 1 &&
-				(selection.getTargetItemCount() == 1
-						|| selection.getTargetItemCount() == 2)) {
+		if (selection.getSourceItemCount() == 1 && 
+				selection.getTargetItemCount() == 1) {
 			SchemaItem source = selection.getFirstSourceItem();
 			SchemaItem target = selection.getFirstTargetItem();
-			SchemaItem targetNested = null;
-			if (selection.getTargetItemCount() == 2) {
-				for (SchemaItem si : selection.getTargetItems()) {
-					if (!si.equals(target)) {
-						targetNested = si;
-						break;
-					}
-				}
-			}
 			
 			ICell cell = selection.getAlignment(source, target);
 			
 			if (cell != null) {
+				// no editing possible, only removal
+				return false;
+				
 				// only allow editing matching transformation
-				try {
+				/*try {
 					return cell.getEntity1().getTransformation().getService().getLocation().equals(
 							RenameAttributeFunction.class.getName());
 				} catch (NullPointerException e) {
 					return false;
-				}
+				}*/
 			}
 			else {
 				if (source.isAttribute() && target.isAttribute()) {
-					if (targetNested != null && !targetNested.isAttribute()) {
-						return false;
-					}
 					return true;
 				}
 			}

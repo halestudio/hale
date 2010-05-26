@@ -12,39 +12,40 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.literal;
 
+import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 
 /**
- * TODO Add Type comment
+ * Main page of the {@link RenameAttributeWizard}
  * 
- * @author Thorsten Reitz
+ * @author Thorsten Reitz, Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  * @since 2.0.0.M2
  */
 public class RenameAttributeWizardMainPage extends AbstractSingleCellWizardPage {
 	
-	private String nestedAttributePath = "";
-	
-	private Text nestedAttributeName;
-
 	/**
-	 * @param pageName
+	 * @see AbstractSingleCellWizardPage#AbstractSingleCellWizardPage(String)
 	 */
 	public RenameAttributeWizardMainPage(String pageName) {
 		super(pageName);
 	}
 
 	/**
-	 * @param pageName
-	 * @param pageDescription
+	 * Constructor
+	 * 
+	 * @param pageName the page name and title 
+	 * @param pageDescription the page description
 	 */
 	public RenameAttributeWizardMainPage(String pageName, String pageDescription) {
 		this(pageName);
@@ -52,8 +53,8 @@ public class RenameAttributeWizardMainPage extends AbstractSingleCellWizardPage 
 		setDescription(pageDescription);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+	/**
+	 * @see IDialogPage#createControl(Composite)
 	 */
 	@Override
 	public void createControl(Composite parent) {
@@ -74,9 +75,12 @@ public class RenameAttributeWizardMainPage extends AbstractSingleCellWizardPage 
 		sourceLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		sourceLabel.setText("Source attribute: ");
 		
-		Text sourceName = new Text(page, SWT.BORDER);
-		sourceName.setText(getParent().getSourceItem().getName().getLocalPart());
-		sourceName.setEnabled(false);
+		DefinitionLabelFactory labelFactory = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(DefinitionLabelFactory.class);
+		
+		Control sourceName = labelFactory.createLabel(page, getParent().getSourceItem().getDefinition(), false);
+		//Text sourceName = new Text(page, SWT.BORDER);
+		//sourceName.setText(getParent().getSourceItem().getName().getLocalPart());
+		//sourceName.setEnabled(false);
 		sourceName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		// target area
@@ -84,40 +88,11 @@ public class RenameAttributeWizardMainPage extends AbstractSingleCellWizardPage 
 		targetLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		targetLabel.setText("Target attribute: ");
 		
-		Text targetName = new Text(page, SWT.BORDER);
-		targetName.setText(getParent().getTargetItem().getName().getLocalPart());
-		targetName.setEnabled(false);
+		Control targetName = labelFactory.createLabel(page, getParent().getTargetItem().getDefinition(), false);
+		//Text targetName = new Text(page, SWT.BORDER);
+		//targetName.setText(getParent().getTargetItem().getName().getLocalPart());
+		//targetName.setEnabled(false);
 		targetName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		
-		// Nested Attribute path
-		Label nestedAttributeLabel = new Label(page, SWT.NONE);
-		nestedAttributeLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		nestedAttributeLabel.setText("Nested Attribute Path: ");
-		
-		this.nestedAttributeName = new Text(page, SWT.BORDER);
-		this.nestedAttributeName.setText(this.nestedAttributePath);
-		this.nestedAttributeName.setEnabled(true);
-		this.nestedAttributeName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-
-	}
-
-	/**
-	 * Set the path of a nested attribute. Is an optional parameter with the 
-	 * following format: propertyNameA::propertynameB::...
-	 * @param condition
-	 */
-	public void setNestedAttributePath(String condition) {
-		this.nestedAttributePath = condition;
-		if (this.nestedAttributeName != null) {
-			this.nestedAttributeName.setText(condition);
-		}
-	}
-
-	/**
-	 * @return the nestedAttributePath.
-	 */
-	public String getNestedAttributePath() {
-		return this.nestedAttributePath;
 	}
 
 }

@@ -12,26 +12,18 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.literal;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.cst.align.ICell.RelationType;
-import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
-import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.rdf.Resource;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
-import eu.esdihumboldt.hale.rcp.wizards.functions.core.literal.RenamingFunctionWizardMainPage.InstanceMappingType;
 
 /**
  * Wizard for the {@link RenameAttributeFunction}.
@@ -45,97 +37,42 @@ public class RenameAttributeWizard extends AbstractSingleCellWizard {
 	
 	private RenameAttributeWizardMainPage mainPage;
 	
-	private SchemaItem nestedSchemaItem = null;
-	private SchemaItem targetSchemaItem = null;
-
 	/**
 	 * @param selection the current selection in the Schema Explorer
 	 */
 	public RenameAttributeWizard(AlignmentInfo selection) {
 		super(selection);
-		if (selection.getTargetItemCount() == 2) {
-			this.targetSchemaItem = new ArrayList<SchemaItem>(
-					selection.getTargetItems()).get(0);
-			this.nestedSchemaItem = new ArrayList<SchemaItem>(
-					selection.getTargetItems()).get(1);
-		}
-		init2();
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard#init()
-	 */
-	@Override
-	protected void init() {
 		
-	}
-	
-	private void init2() {
 		this.mainPage = new RenameAttributeWizardMainPage(
 				"Configure Attribute Renaming Function",
 				"Configure Attribute Renaming Function");
 		super.setWindowTitle("Configure Function");
 		super.setNeedsProgressMonitor(true);
-		
-		// initialize from cell
-		Cell cell = getResultCell();
-		if (cell.getEntity1().getTransformation() != null) {
-			// a transformation had been assigned before already.
-			String condition = null;
-			List<IParameter> parameters = cell.getEntity1().getTransformation().getParameters();
-			if (parameters != null) {
-				Iterator<IParameter> it = parameters.iterator();
-				while (condition == null && it.hasNext()) {
-					IParameter param = it.next();
-					if (param.getName().equals(RenameAttributeFunction.NESTED_ATTRIBUTE_PATH)
-							&& param.getValue() != null) {
-						condition = param.getValue();
-					}
-				}
-			}
-			if (condition != null) {
-				mainPage.setNestedAttributePath(condition);
-			}
-		}
-		else {
-			// no transformation had been assigned beforehand already.
-			if (this.nestedSchemaItem != null) {
-				String path = this.searchNestedDependency(this.targetSchemaItem);
-				this.mainPage.setNestedAttributePath(path);
-			}
-		}
-	}
-	
-	private String searchNestedDependency(SchemaItem currentSchemaItem) {
-		if (currentSchemaItem.getName().getLocalPart().equals(this.nestedSchemaItem.getName().getLocalPart())) {
-			return this.nestedSchemaItem.getName().getLocalPart();
-		}
-		else {
-			for (SchemaItem si : currentSchemaItem.getChildren()) {
-				String result = this.searchNestedDependency(si);
-				if (result != null) {
-					return currentSchemaItem.getName().getLocalPart() + "::" + result;
-				}
-			}
-		}
-		return null;
 	}
 
 	/**
-	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
+	 * @see AbstractSingleCellWizard#init()
+	 */
+	@Override
+	protected void init() {
+		// do nothing
+	}
+	
+	/**
+	 * @see Wizard#performFinish()
 	 */
 	@Override
 	public boolean performFinish() {
-		Cell c = (Cell) getResultCell();
+		Cell c = getResultCell();
 		Entity source = (Entity) c.getEntity1();
 		Transformation t = new Transformation();
 		t.setLabel(RenameFeatureFunction.class.getName());
 		t.setService(new Resource(RenameAttributeFunction.class.getName()));
-		String path = mainPage.getNestedAttributePath();
+		/*String path = mainPage.getNestedAttributePath();
 		if (path != null && !path.equals("")) {
 			t.getParameters().add(new Parameter(
 					RenameAttributeFunction.NESTED_ATTRIBUTE_PATH, path));
-		}
+		}*/
 		c.setRelation(RelationType.Equivalence);
 		source.setTransformation(t);
 		return true;
