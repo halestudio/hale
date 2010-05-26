@@ -15,21 +15,23 @@ package eu.esdihumboldt.cst.corefunctions;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
 
+import eu.esdihumboldt.cst.AbstractCstFunction;
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
+import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.goml.rdf.DetailedAbout;
+import eu.esdihumboldt.tools.FeatureInspector;
 
 /**
  * This function will populate the nilReason attribute of any properties that 
@@ -46,26 +48,35 @@ public class NilReasonFunction extends AbstractCstFunction {
 	 */
 	public static final String PARAMETER_NIL_REASON_TYPE = "NilReasonType";
 	
-	public static final String XML_ATTRIBUTES = "XmlAttributes";
-	
-	private String nilReason = null;
+	private NilReasonType nilReason = null;
 	
 	private Entity onEntity = null; 
 
 	/**
-	 * @see eu.esdihumboldt.cst.transformer.CstFunction#configure(eu.esdihumboldt.cst.align.ICell)
+	 * @see CstFunction#configure(ICell)
 	 */
 	public boolean configure(ICell cell) {
 		this.onEntity = (Entity) cell.getEntity2();
+		String nilReason = null;
 		for(IParameter ip : cell.getEntity2().getTransformation().getParameters()) {
 			if (ip.getName().equals(PARAMETER_NIL_REASON_TYPE)) {
-				this.nilReason = ip.getValue();
+				nilReason = ip.getValue();
 			}
 		}
-		return false;
+		
+		if (NilReasonType.unknown.name().equals(nilReason)) {
+			this.nilReason = NilReasonType.unknown;
+		}
+		else if (NilReasonType.unpopulated.name().equals(nilReason)) {
+			this.nilReason = NilReasonType.unpopulated;
+		}
+		
+		return true;
 	}
 
-
+	/**
+	 * @see CstFunction#getParameters()
+	 */
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();	
 				
@@ -95,64 +106,36 @@ public class NilReasonFunction extends AbstractCstFunction {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.opengis.feature.Feature, org.opengis.feature.Feature)
+	 * @see CstFunction#transform(Feature, Feature)
 	 */
 	public Feature transform(Feature source, Feature target) {
-		if (NilReasonType.unpopulated.name().equals(this.nilReason)) {
-			if (this.onEntity.getLocalname().equals(
-					target.getType().getName().getLocalPart())) {
-				// affects the entire entity
-				for (org.opengis.feature.Property p : target.getProperties()) {
-					this.setNilReason(target, p, NilReasonType.unpopulated);
-				}
+		if (nilReason != null) {
+			if (onEntity instanceof eu.esdihumboldt.goml.omwg.Property) {
+				// set nilReason on property
+				FeatureInspector.setPropertyValue(
+						target, 
+						new DetailedAbout(onEntity.getAbout().getAbout() + DetailedAbout.PROPERTY_DELIMITER + "nilReason", true), 
+						nilReason.toString());
 			}
-			else {
-				// affects only a single property
-				this.setNilReason(target, target.getProperty(
-						this.onEntity.getLocalname()), NilReasonType.unpopulated);
-			}
-		}
-		else if (NilReasonType.unknown.name().equals(this.nilReason)) {
-			if (this.onEntity.getLocalname().equals(
-					target.getType().getName().getLocalPart())) {
-				// affects the entire entity
-				for (org.opengis.feature.Property p : target.getProperties()) {
-					if (p.getValue() == null) {
-						this.setNilReason(target, p, NilReasonType.unknown);
-					}
-				}
-			}
-			else {
-				// affects only a single property
-				Property p = target.getProperty(this.onEntity.getLocalname());
-				if (p.getValue() == null) { 
-					this.setNilReason(target, p, NilReasonType.unknown);
+			else if (onEntity instanceof FeatureClass) {
+				// apply on all properties
+				//TODO check name?
+				
+				for (Property property : target.getProperties()) {
+					String propertyName = property.getName().getLocalPart();
+					
+					List<String> properties = new ArrayList<String>();
+					properties.add(propertyName);
+					properties.add("nilReason");
+					
+					FeatureInspector.setPropertyValue(target, properties, nilReason.toString());
 				}
 			}
 		}
+		
 		return target;
 	}
 	
-	/**
-	 * contains the method used to set the nilReason attribute.
-	 * @param target
-	 * @param p
-	 * @param nrt
-	 */
-	private void setNilReason(Feature target, Property p, NilReasonType nrt) {
-		String key = p.getName().getLocalPart() + "<nilReason>";
-		if (target.getUserData().get(XML_ATTRIBUTES) != null) {
-			Map<String, String> oldXmlAttribs = (Map<String, String>) target.getUserData().get(XML_ATTRIBUTES);
-			oldXmlAttribs.put(key, nrt.toString());
-		}
-		else {
-			Map<String, String> value = new HashMap<String, String>();
-			value.put(key, nrt.toString());
-			target.getUserData().put(XML_ATTRIBUTES, value);
-		}
-	}
-
-
 	/**
 	 * Nil reason types
 	 */
