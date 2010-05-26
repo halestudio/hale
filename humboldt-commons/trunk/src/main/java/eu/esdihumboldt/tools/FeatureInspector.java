@@ -151,33 +151,50 @@ public class FeatureInspector {
 			boolean create) {
 		Queue<String> propertiesQueue = new LinkedList<String>(properties);
 		
-		ComplexAttribute complex = feature;
-		ComplexType complexType = feature.getType();
+		Property parent = feature;
 		while (!propertiesQueue.isEmpty()) {
 			String propertyName = propertiesQueue.poll();
 			
-			Property property = complex.getProperty(propertyName);
-			if (property == null) {
-				// property is not present or property is attribute
-				PropertyDescriptor pd = complexType.getDescriptor(propertyName);
-				if (pd != null && create) {
-					// create property
-					property = createProperty(pd);
-					
-					// set property to feature type
-					Collection<? extends Property> pvs = complex.getValue();
-					Collection<Property> values = new ArrayList<Property>(pvs);
-					values.add(property);
-					complex.setValue(values);
+			Property property = null;
+			
+			if (parent instanceof ComplexAttribute) {
+				ComplexAttribute complex = (ComplexAttribute) parent;
+				ComplexType complexType = complex.getType();
+				
+				property = complex.getProperty(propertyName);
+				if (property == null) {
+					// property is not present or property is attribute
+					PropertyDescriptor pd = complexType.getDescriptor(propertyName);
+					if (pd != null && create) {
+						// create property
+						property = createProperty(pd);
+						
+						// set property to feature type
+						Collection<? extends Property> pvs = complex.getValue();
+						Collection<Property> values = new ArrayList<Property>(pvs);
+						values.add(property);
+						complex.setValue(values);
+					}
+					else {
+						// no property descriptor - property is attribute or invalid
+						// -> we assume it's an attribute
+						
+						// create attribute property
+						if (propertiesQueue.isEmpty()) {
+							return createAttributeProperty(complex, propertyName);
+						}
+					}
 				}
-				else {
-					// no property descriptor - property is attribute or invalid
-					//TODO create attribute property?
+			}
+			else {
+				// parent is a property, child can only be an attribute property, but we can't descend any more
+				if (propertiesQueue.isEmpty()) {
+					return createAttributeProperty(parent, propertyName);
 				}
 			}
 			
 			if (property == null) {
-				log.debug("Could not find/create property " + propertyName + " in " + complexType.getName().getLocalPart());
+				log.debug("Could not find/create property " + propertyName + " in " + parent.getName().getLocalPart());
 				return null;
 			}
 			else {
@@ -202,12 +219,16 @@ public class FeatureInspector {
 					}
 					
 					if (value instanceof ComplexAttribute) {
-						complex = (ComplexAttribute) value;
-						complexType = complex.getType();
+						// new parent is complex attribute
+						parent = (Property) value;
+					}
+					else if (propertiesQueue.size() == 1) {
+						// new parent is property, attribute property may be set in next iteration 
+						parent = property;
 					}
 					else {
 						// no valid property value
-						log.error("Getting nested property failed: Property " + propertyName + " of type " + complexType.getName().getLocalPart() + " has no complex value");
+						log.error("Getting nested property failed: Property " + propertyName + " of type " + parent.getName().getLocalPart() + " has no complex value");
 						return  null;
 					}
 				}
@@ -216,6 +237,19 @@ public class FeatureInspector {
 		
 		// no propertes were defined
 		throw new IllegalArgumentException("No properties were defined");
+	}
+
+	/**
+	 * Create an attribute property
+	 * 
+	 * @param parent the parent object
+	 * @param propertyName the property name
+	 * 
+	 * @return the attribute property
+	 */
+	private static Property createAttributeProperty(Property parent,
+			String propertyName) {
+		return new AttributeProperty(parent, propertyName);
 	}
 
 	/**
