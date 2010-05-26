@@ -56,7 +56,7 @@ public class ConcatenationOfAttributesWizardFactory implements
 		
 		// target item must be a property
 		SchemaItem target = selection.getFirstTargetItem();
-		if (!target.isAttribute() && !String.class.isAssignableFrom(
+		if (!target.isAttribute() || !String.class.isAssignableFrom(
 				target.getPropertyType().getBinding())) {
 			return false;
 		}
