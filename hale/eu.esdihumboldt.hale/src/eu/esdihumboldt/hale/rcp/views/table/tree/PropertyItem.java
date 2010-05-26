@@ -20,11 +20,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.viewers.TreeNode;
 import org.opengis.feature.ComplexAttribute;
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
 
+import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
+import eu.esdihumboldt.tools.FeatureInspector;
 
 /**
  * Tree item representing a feature type property
@@ -103,7 +106,7 @@ public class PropertyItem extends DefaultTreeNode {
 	private Object getValue(Feature feature) {
 		if (isAttribute) {
 			// retrieve attribute value
-			Map<String, String> attributes = (Map<String, String>) feature.getUserData().get(XML_ATTRIBUTES);
+			/*Map<String, String> attributes = (Map<String, String>) feature.getUserData().get(XML_ATTRIBUTES);
 			if (attributes != null) { 
 				String key = "";
 				if (getParent() instanceof PropertyItem) {
@@ -115,7 +118,24 @@ public class PropertyItem extends DefaultTreeNode {
 			}
 			else {
 				return null;
+			}*/
+			// using feature inspector
+			List<String> properties = new ArrayList<String>();
+			
+			PropertyItem current = this;
+			while (current != null) {
+				properties.add(0, current.propertyName);
+				
+				TreeNode parent = current.getParent();
+				if (parent instanceof PropertyItem) {
+					current = (PropertyItem) parent;
+				}
+				else {
+					current = null;
+				}
 			}
+			
+			return FeatureInspector.getPropertyValue(feature, properties, null);
 		}
 		else if (getParent() instanceof PropertyItem) {
 			// property of a property
