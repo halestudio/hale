@@ -41,6 +41,7 @@ import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.cst.align.ext.IValueClass;
 import eu.esdihumboldt.cst.align.ext.IValueExpression;
+import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.generated.oml.AlignmentType;
 import eu.esdihumboldt.generated.oml.ApplyType;
@@ -193,7 +194,7 @@ public class OmlRdfGenerator {
 		AlignmentType aType = new AlignmentType();
 		// 1. set about,level, ontology1,2
 		if (alignment!=null){
-		if (alignment.getAbout()!= null) aType.setAbout(((About) alignment.getAbout()).getAbout());
+		if (alignment.getAbout()!= null) aType.setAbout(alignment.getAbout().getAbout());
 		if (alignment.getLevel() != null){
 			aType.setLevel(alignment.getLevel());
 		}
@@ -280,7 +281,7 @@ public class OmlRdfGenerator {
 	private OntologyType getOntologyType(ISchema schema) {
 		OntologyType oType = new OntologyType();
 		if (schema != null) {
-			About about = (About) schema.getAbout();
+			IAbout about = schema.getAbout();
 			if (about != null)
 				oType.setAbout(about.getAbout());
 			if (schema.getLocation() != null){
@@ -360,7 +361,7 @@ public class OmlRdfGenerator {
 	private CellType getCellType(ICell cell) {
 		CellType cType = new CellType();
 		if (cell != null) {
-			About about = (About) cell.getAbout();
+			IAbout about = cell.getAbout();
 			if (about != null)
 				cType.setAbout(about.getAbout());
 			//keep Measure optional
@@ -497,10 +498,10 @@ public class OmlRdfGenerator {
 	 */
 	private ClassType getClassType(FeatureClass feature) {
 		ClassType cType = new ClassType();
-		About about = null;
+		IAbout about = null;
 		if (feature != null) {
 			if (feature.getAbout() != null) {
-				 about = ((About) feature.getAbout());
+				 about = feature.getAbout();
 			}
 			if (feature.getLabel() != null) {
 				cType.getLabel().addAll(feature.getLabel());
@@ -793,7 +794,7 @@ public class OmlRdfGenerator {
 	private PropertyType getPropertyType(Property property) {
 		PropertyType pType = new PropertyType();
 		if (property != null) {
-			About about = (About) property.getAbout();
+			IAbout about = property.getAbout();
 			if (about != null)
 				pType.setAbout(about.getAbout());
 			if (property instanceof ComposedProperty
