@@ -84,7 +84,7 @@ public class PropertyItem extends DefaultTreeNode {
 				Collection<?> c = (Collection<?>) value;
 				for (Iterator<?> iterator = c.iterator(); iterator.hasNext();) {
 					Object o = iterator.next();
-					if (o instanceof Feature) {
+					if (o instanceof ComplexAttribute) {
 						resultRepresentation += "+";
 					}
 					else {
