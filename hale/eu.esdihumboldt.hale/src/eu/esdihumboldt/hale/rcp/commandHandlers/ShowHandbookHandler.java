@@ -56,45 +56,47 @@ public class ShowHandbookHandler extends AbstractHandler implements IHandler {
 		tempDir.deleteOnExit();
 
 		File pdfFile = new File(tempDirName + PDFFILE);
-		if (!pdfFile.exists()) {
-			pdfFile.deleteOnExit();
+		if (pdfFile.exists()) {
+			pdfFile.delete();
+		}
+		
+		pdfFile.deleteOnExit();
 
-			URL pdfUrl = this.getClass().getResource("/documentation/" + PDFFILE); //$NON-NLS-1$
-			if (pdfUrl == null) {
-				throw new RuntimeException("Manual could not be retrieved.");
+		URL pdfUrl = this.getClass().getResource("/documentation/" + PDFFILE); //$NON-NLS-1$
+		if (pdfUrl == null) {
+			throw new RuntimeException("Manual could not be retrieved.");
+		}
+
+		InputStream in;
+		try {
+			in = pdfUrl.openStream();
+		} catch (IOException e) {
+			ExceptionHelper.handleException("Could not open Streaming.", //$NON-NLS-1$
+					HALEActivator.PLUGIN_ID, e);
+			return null;
+		}
+
+		FileOutputStream fos = null;
+		byte[] buffer = new byte[4096];
+		int read;
+		try {
+			fos = new FileOutputStream(pdfFile);
+
+			while ((read = in.read(buffer)) != -1) {
+				fos.write(buffer, 0, read);
 			}
-
-			InputStream in;
+		} catch (IOException e) {
+			ExceptionHelper.handleException("Error while reading the file.", //$NON-NLS-1$
+					HALEActivator.PLUGIN_ID, e);
+			return null;
+		} finally {
 			try {
-				in = pdfUrl.openStream();
-			} catch (IOException e) {
-				ExceptionHelper.handleException("Could not open Streaming.", //$NON-NLS-1$
-						HALEActivator.PLUGIN_ID, e);
-				return null;
-			}
-
-			FileOutputStream fos = null;
-			byte[] buffer = new byte[4096];
-			int read;
-			try {
-				fos = new FileOutputStream(pdfFile);
-
-				while ((read = in.read(buffer)) != -1) {
-					fos.write(buffer, 0, read);
+				if (fos != null) {
+					fos.close();
 				}
+				in.close();
 			} catch (IOException e) {
-				ExceptionHelper.handleException("Error while reading the file.", //$NON-NLS-1$
-						HALEActivator.PLUGIN_ID, e);
-				return null;
-			} finally {
-				try {
-					if (fos != null) {
-						fos.close();
-					}
-					in.close();
-				} catch (IOException e) {
-					// ignore
-				}
+				// ignore
 			}
 		}
 
