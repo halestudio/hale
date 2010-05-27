@@ -52,6 +52,9 @@ public class RenameFeatureFunction
 	public static final String PARAMETER_INSTANCE_SPLIT_CONDITION = "InstanceSplitCondition";
 	
 	public static final String ONATTRIBUTE = "SelectedAttribute";
+	
+	public static final String TARGETATTRIBUTE = "TargetAttribute";
+	
 	enum Mode { normal, split, merge, join }
 
 	private FeatureSplitter splitter = null;
@@ -110,6 +113,7 @@ public class RenameFeatureFunction
 
 		String rule = null;
 		String onAttribute = null;
+		String targetAttribute = null;
 
 		for (IParameter ip : paramList) {
 			if (ip.getName().equals(PARAMETER_INSTANCE_SPLIT_CONDITION)) {
@@ -123,10 +127,13 @@ public class RenameFeatureFunction
 			if (ip.getName().equals(ONATTRIBUTE)){
 				onAttribute = ip.getValue();
 			}
+			if (ip.getName().equals(TARGETATTRIBUTE)){
+				targetAttribute = ip.getValue();
+			}
 		}
 		
-		if (mode.equals(Mode.split) && rule != null && onAttribute!=null){
-			this.splitter = new FeatureSplitter(onAttribute, rule);
+		if (mode.equals(Mode.split) && rule != null && onAttribute!=null &&targetAttribute!=null){
+			this.splitter = new FeatureSplitter(onAttribute, rule, targetAttribute);
 		}
 		else if (mode.equals(Mode.merge) && rule != null && onAttribute!=null){
 			this.merger = new FeatureAggregator2(onAttribute, rule);

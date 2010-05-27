@@ -47,11 +47,12 @@ import com.vividsolutions.jts.geom.Polygon;
  * &lt;extractSubstringParameters&gt; ::= &lt;RegularExpression&gt;
  * </pre>
  * 
- * @author Thorsten Reitz
+ * @author Thorsten Reitz, Ulrich Schaeffler
  */
 public class FeatureSplitter {
 	
 	private String onAttributeName = null;
+	private String targetAttribute = null;
 	
 	private Class<? extends Geometry> geometryAtomType = null;
 	
@@ -65,8 +66,10 @@ public class FeatureSplitter {
 	 * DefaultGeometry will be used for a extractSubgeometry case.
 	 * @param splitRule the rule how to split the source {@link Feature}.
 	 */
-	public FeatureSplitter(String onAttributeName, String splitRule) {
+	public FeatureSplitter(String onAttributeName, String splitRule, String targetAttribute) {
 		this.onAttributeName = onAttributeName;
+		this.targetAttribute = targetAttribute;
+		
 		String[] splitrule = splitRule.split(":");
 		if (splitrule[0].equals("split")) {
 			if (splitrule[1].startsWith("extractSubgeometry")) {
@@ -241,7 +244,9 @@ public class FeatureSplitter {
 			SimpleFeature target = SimpleFeatureBuilder.build(
 					(SimpleFeatureType) targetType, new Object[]{}, 
 					source.getIdentifier().getID() + "[" + i++ + "]");
-			target.setDefaultGeometry(geomFactory.createPoint(c));
+			target.getProperty(
+					this.targetAttribute).setValue(geomFactory.createPoint(c));
+//			target.setDefaultGeometry(geomFactory.createPoint(c));
 			result.add(target);
 		}
 		return result;
@@ -256,7 +261,7 @@ public class FeatureSplitter {
 			SimpleFeature target = SimpleFeatureBuilder.build(
 					(SimpleFeatureType) targetType, new Object[]{}, 
 					source.getIdentifier().getID() + "[" + i++ + "]");
-			target.setDefaultGeometry(geomFactory.createLineString(
+			target.getProperty(this.targetAttribute).setValue(geomFactory.createLineString(
 					ls.getCoordinates()));
 			result.add(target);
 		}
@@ -277,7 +282,8 @@ public class FeatureSplitter {
 				interiorPolys[n] = geomFactory.createLinearRing(
 						polygon.getInteriorRingN(n).getCoordinates());
 			}
-			target.setDefaultGeometry(geomFactory.createPolygon(
+			target.getProperty(
+					this.targetAttribute).setValue(geomFactory.createPolygon(
 					geomFactory.createLinearRing(
 							polygon.getExteriorRing().getCoordinates()), 
 							interiorPolys));

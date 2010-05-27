@@ -90,12 +90,12 @@ public class FeatureSplitterTest {
 	 */
 	@Test
 	public void testFeatureSplitter() {
-		new FeatureSplitter("test", "split:extractSubgeometry(Point)");
-		new FeatureSplitter("test", "split:extractSubgeometry(LineString)");
-		new FeatureSplitter("test", "split:extractSubgeometry(Polygon)");
+		new FeatureSplitter("test", "split:extractSubgeometry(Point)", "default_geometry");
+		new FeatureSplitter("test", "split:extractSubgeometry(LineString)", "default_geometry");
+		new FeatureSplitter("test", "split:extractSubgeometry(Polygon)", "default_geometry");
 		
 		try {
-			new FeatureSplitter("test", "split:extractSubgeometry(Blablah)");
+			new FeatureSplitter("test", "split:extractSubgeometry(Blablah)", "default_geometry");
 		}
 		catch (Exception ex) {
 			assertEquals(ex.getMessage(), "You can only extract Points, " +
@@ -109,19 +109,19 @@ public class FeatureSplitterTest {
 	@Test
 	public void testSplit() {
 		List<Feature> features = null;
-		FeatureSplitter fs = new FeatureSplitter(NameHelper.sourceLocalnamePropertyA, "split:extractSubgeometry(Polygon)");
+		FeatureSplitter fs = new FeatureSplitter(NameHelper.sourceLocalnamePropertyA, "split:extractSubgeometry(Polygon)", "default_geometry");
 		for (Feature f : this.testFeaturesPolygons) {
 			features = fs.split(f, this.getTargetFT(Polygon.class));
 		}
 		assertTrue(features.size() == 10);
 		
-		fs = new FeatureSplitter(NameHelper.sourceLocalnamePropertyA, "split:extractSubgeometry(LineString)");
+		fs = new FeatureSplitter(NameHelper.sourceLocalnamePropertyA, "split:extractSubgeometry(LineString)", "default_geometry");
 		for (Feature f : this.testFeaturesLineStrings) {
 			features = fs.split(f, this.getTargetFT(LineString.class));
 		}
 		assertTrue(features.size() == 10);
 		
-		fs = new FeatureSplitter(NameHelper.sourceLocalnamePropertyA, "split:extractSubgeometry(Point)");
+		fs = new FeatureSplitter(NameHelper.sourceLocalnamePropertyA, "split:extractSubgeometry(Point)", "default_geometry");
 		for (Feature f : this.testFeaturesPoints) {
 			features = fs.split(f, this.getTargetFT(Point.class));
 		}

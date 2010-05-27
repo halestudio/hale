@@ -50,6 +50,7 @@ import eu.esdihumboldt.goml.align.Schema;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
+import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.rdf.Resource;
@@ -137,9 +138,9 @@ public class SchemaTranslationControllerSplitterTest {
 		for (int i = 0; i < 10; i++) {
 			Feature f = builder.buildFeature(UUID.randomUUID().toString(), new Object[]{});
 			Geometry geometry = null;
-			LineString[] lineStrings = new LineString[10];
+			LineString[] lineStrings = new LineString[12];
 			for (int i2 = 0; i2 < lineStrings.length; i2++) {
-				Coordinate[] coordinates = new Coordinate[10];
+				Coordinate[] coordinates = new Coordinate[12];
 				for (int n = 0; n < lineStrings.length; n++) {
 					coordinates[n] = new Coordinate(
 							Math.random(), Math.random());
@@ -197,6 +198,9 @@ public class SchemaTranslationControllerSplitterTest {
 				new FeatureClass(new About(
 						NameHelper.sourceNamespace, 
 						NameHelper.sourceLocalname)));
+//		Property entity2 = new Property(new About(NameHelper.targetNamespace,
+//				NameHelper.targetLocalname, "the_geom2"));
+//		cell.setEntity2(entity2);
 		cell.setEntity2(new FeatureClass(new About(
 				NameHelper.targetNamespace, 
 				NameHelper.targetLocalname)));
@@ -213,6 +217,10 @@ public class SchemaTranslationControllerSplitterTest {
 				new Parameter(
 						"InstanceSplitCondition", 
 						"split:extractSubgeometry(LineString)"));
+		t.getParameters().add(
+				new Parameter(
+						"TargetAttribute", 
+						"the_geom2"));
 		((FeatureClass)cell.getEntity1()).setTransformation(t);
 		a.getMap().add(cell);
 		
