@@ -2,11 +2,13 @@ package eu.esdihumboldt.cst.corefunctions;
 
 import static org.junit.Assert.assertTrue;
 
+import org.geotools.data.DataUtilities;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.junit.Test;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -53,6 +55,9 @@ public class CentroidTest {
 		cell.setEntity2(new Property(new About(this.targetNamespace, this.targetLocalname, this.targetLocalnamePropertyBGeom)));
 		p1.setTransformation(t);
 		// build source and target Features
+		
+		
+		
 		SimpleFeatureType sourcetype = this.getFeatureType(
 				this.sourceNamespace, 
 				this.sourceLocalname, 
