@@ -162,8 +162,27 @@ public class SchemaTranslationController {
 						}
 					}
 					break;
-				case many_to_one: // instance merge
-					// TODO aggregate case
+				case many_to_one: // instance aggregate
+				{
+					// create multiple new Features per source Feature
+					InstanceAggregateMap transformMap = InstanceCreationHandler.manyToOne(
+							targetType, sourceType, 
+							partitionedSourceFeatures, 
+							info.getRenameCell());
+					
+					_log.info("Handled FTCardinality.one_to_one/" +
+							"InstanceCardinality.many_to_one, created " 
+							+ transformMap.getTransformedFeatures().size() + " target features.");
+					
+					// apply additional attributive transformations
+					for (ICell cell : info.getAttributiveCells()) {
+						// create CstFunction by using CstFunctionFactory
+						applyAttributiveFunction(cell, transformMap);
+					}
+					for (Feature thisList : transformMap.getTransformedFeatures()) {
+						transformed.add(thisList);
+					}
+				}
 					break;
 				}
 			}
@@ -346,6 +365,48 @@ public class SchemaTranslationController {
 						if (this.addLineage) {
 							this.addLineage(error, cstf, target, cell);
 						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			if (this.strict) {
+				throw new RuntimeException("Executing the requested " +
+						"CstFunction failed: ", e);
+			}
+			else {
+				_log.error("Executing the requested " +
+						"CstFunction failed: ", e);
+			}
+		}
+	}
+	
+	
+	private void applyAttributiveFunction(ICell cell,
+			InstanceAggregateMap transformMap) {
+		try {
+			// create CstFunction by using CstFunctionFactory
+			CstFunction cstf = CstFunctionFactory.getInstance().getCstFunction(cell);
+		
+			// invoke CstFunction with Target Features List. 
+			if (cstf != null && !cstf.getClass().equals(RenameFeatureFunction.class)) {
+				_log.info("Applying a " + cstf.getClass().getName() + " function.");
+				for (int i = 0; i < transformMap.getTransformedFeatures().size(); i++) {
+					String error = null;
+					try {
+						cstf.transform(transformMap.getSourceFeatures().get(i), 
+								transformMap.getTransformedFeatures().get(i));
+					} catch (Exception e) {
+						if (this.strict) {
+							throw new RuntimeException("Executing the requested " +
+									"CstFunction failed: ", e);
+						}
+						else {
+							error = e.getMessage();
+						}
+					}
+					if (this.addLineage) {
+						this.addLineage(error, cstf, 
+								transformMap.getTransformedFeatures().get(i), cell);
 					}
 				}
 			}

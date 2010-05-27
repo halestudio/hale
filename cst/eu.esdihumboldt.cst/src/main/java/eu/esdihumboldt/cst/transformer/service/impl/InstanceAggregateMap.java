@@ -24,11 +24,7 @@ import org.opengis.feature.Feature;
  * @partner 14 / TUM
  * @version $Id$ 
  */
-public class InstanceAggregateMap {
-
-	private final List<List<Feature>> sourceFeatures;
-	
-	private final List<Feature> transformedFeatures;
+public class InstanceAggregateMap extends InstanceMap {
 
 	/**
 	 * Create an instance map
@@ -36,25 +32,10 @@ public class InstanceAggregateMap {
 	 * @param sourceFeatures the source features
 	 * @param transformedFeatures the corresponding target features
 	 */
-	public InstanceAggregateMap(List<List<Feature>> sourceFeatures,
-			List<Feature>transformedFeatures) {
-		super();
-		this.sourceFeatures = sourceFeatures;
-		this.transformedFeatures = transformedFeatures;
+	public InstanceAggregateMap(List<Feature> sourceFeatures,
+			List<Feature> transformedFeatures) {
+		super(sourceFeatures, transformedFeatures);
+		
 	}
 
-	/**
-	 * @return the sourceFeatures
-	 */
-	public List<List<Feature>> getSourceFeatures() {
-		return sourceFeatures;
-	}
-
-	/**
-	 * @return the transformedFeatures
-	 */
-	public List<Feature> getTransformedFeatures() {
-		return transformedFeatures;
-	}
-	
 }
