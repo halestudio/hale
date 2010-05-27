@@ -59,7 +59,7 @@ public class RenameFeatureFunction
 
 	private FeatureSplitter splitter = null;
 	
-	private FeatureAggregator2 merger = null;
+	private FeatureAggregator merger = null;
 	//TODO: Spatial Joiner
 	private FeatureSpatialJoiner spatialjoiner = null;
 
@@ -135,8 +135,8 @@ public class RenameFeatureFunction
 		if (mode.equals(Mode.split) && rule != null && onAttribute!=null &&targetAttribute!=null){
 			this.splitter = new FeatureSplitter(onAttribute, rule, targetAttribute);
 		}
-		else if (mode.equals(Mode.merge) && rule != null && onAttribute!=null){
-			this.merger = new FeatureAggregator2(onAttribute, rule);
+		else if (mode.equals(Mode.merge) && rule != null && onAttribute!=null&&targetAttribute!=null){
+			this.merger = new FeatureAggregator(onAttribute, rule, targetAttribute);
 		}
 		
 		if (this.splitter != null && this.merger != null) {

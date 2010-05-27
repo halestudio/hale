@@ -1,81 +1,98 @@
-/*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
- * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
- * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
- */
+
 package eu.esdihumboldt.cst.transformer.service.rename;
 
 
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
-import org.opengis.feature.type.PropertyDescriptor;
+import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.expression.Function;
+
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 
-/**
- * The FeatureAggregator is used by the {@link RenameFeatureFunction} to handle
- * rename cells with a defined aggregation condition. The aggrgation condition is expressed
- * using the following grammar:
- * 
- * <pre>
- * &lt;AggregationRule&gt;            ::= &lt;Operation&gt;:&lt;Operator&gt;
- * &lt;Operation&gt;                  ::= aggregate
- * &lt;Operator&gt;                   ::= equal() | inBetween(&lt;Double&gt;; &lt;Double&gt;) | lessThan(&lt;Double&gt;) | greaterThan(&lt;Double&gt;) | touches | overlaps | all
- * </pre>
- * @author Ulrich Schaeffler
- * @author Thorsten Reitz
- */
+
+
+
 public class FeatureAggregator {
 	
-	//Constants for aggregation
-	public static final String EQUAL = "equal";
-	public static final String INBETWEEN ="inBetween";
-	public static final String LESSTHAN ="lessThan";
-	public static final String GREATERTHAN ="greaterThan";
-	public static final String TOUCHES ="touches";
-	public static final String OVERLAPS ="overlaps";
-	public static final String ALL ="all";
+	//Aggregation Functions from Geotools
 	
-	
+	public static final String SUM ="Collection_Sum";
+	public static final String AVERAGE ="Collection_Average";
+	public static final String BOUNDS = "Collection_Bounds";
+	public static final String COUNT = "Collection_Count";
+	public static final String MAX = "Collection_Max";	
+	public static final String MEDIAN = "Collection_Median";	
+	public static final String MIN = "Collection_Min";
+	public static final String UNIQUE = "Collection_Unique";
+	public static final String MULTI = "Multi";
+
+
 	private String onAttributeName = null;
+	private String targetAttribute = null;
 	private String aggregationRule = null;
-	private String[] ruleValues = null;
-	
+	//private String groupingAttribute = null;
+/**
+ * 
+ * @param onAttributeName
+ * @param aggregationRule
+ */
+	public FeatureAggregator(String onAttributeName, String aggregationRule, String targetAttribute) {
+		this.onAttributeName = onAttributeName;
+		this.targetAttribute = targetAttribute;
 
-
-	/**
-	 * @param value
-	 */
-	public FeatureAggregator(String onAttributeNames, String aggregationRule) {
-		this.onAttributeName = onAttributeNames;
 		String[] aggrule = aggregationRule.split(":");
 		if (aggrule[0].equals("aggregate")) {
-			if (aggrule[1].startsWith("equal")) {
-				this.aggregationRule = FeatureAggregator.EQUAL;
+			if (aggrule[1].startsWith("Collection_Sum")) {
+				this.aggregationRule = FeatureAggregator.SUM;
 			}
-			else if (aggrule[1].startsWith("greaterThan")) {
-				this.aggregationRule = FeatureAggregator.GREATERTHAN;
+			else if (aggrule[1].startsWith("Collection_Average")) {
+				this.aggregationRule = FeatureAggregator.AVERAGE;
 			}
-			//TODO: Implement all other aggregation rules 
-			
-			try{
-				this.ruleValues =
-					(aggrule[1].substring(aggrule[1].indexOf("(") + 1, aggrule[1].indexOf(")"))).split(";");
+			else if (aggrule[1].startsWith("Collection_Bounds")) {
+				this.aggregationRule = FeatureAggregator.BOUNDS;
 			}
-			catch(Exception e){
-				this.ruleValues[0] =
-					aggrule[1].substring(aggrule[1].indexOf("(") + 1, aggrule[1].indexOf(")"));
+			else if (aggrule[1].startsWith("Collection_Count")) {
+				this.aggregationRule = FeatureAggregator.COUNT;
 			}
+			else if (aggrule[1].startsWith("Collection_Max")) {
+				this.aggregationRule = FeatureAggregator.MAX;
+			}
+			else if (aggrule[1].startsWith("Collection_Median")) {
+				this.aggregationRule = FeatureAggregator.MEDIAN;
+			}
+			else if (aggrule[1].startsWith("Collection_Min")) {
+				this.aggregationRule = FeatureAggregator.MIN;
+			}
+			else if (aggrule[1].startsWith("Collection_Unique")) {
+				this.aggregationRule = FeatureAggregator.UNIQUE;
+			}
+			else if (aggrule[1].startsWith("Multi")) {
+				this.aggregationRule = FeatureAggregator.MULTI;
+			}
+			else{
+				throw new RuntimeException (aggrule[1] + " is not a valid aggregation rule.");
+			}
+
 		}
 		else {
 			throw new RuntimeException("You can only create a " +
@@ -85,48 +102,97 @@ public class FeatureAggregator {
 	
 	
 	
-	public Feature aggregate(List<Feature> source, FeatureType targetType) {
-		List<Feature> filtered = null ;
-		SimpleFeature target = null;
-		if (this.aggregationRule.equals(FeatureAggregator.GREATERTHAN)) {
-			for (Feature f : source){
-				//TODO: Problem: All features must have the same attribute name
-				PropertyDescriptor pd = f.getProperty(
-							this.onAttributeName).getDescriptor();
-				if (pd.getType().getBinding().isAssignableFrom(Number.class)) {
-					Number attribute_value = (Number)((SimpleFeature)f).getAttribute(this.onAttributeName);
-					if (attribute_value.doubleValue() > Double.parseDouble(this.ruleValues[0])){
-						filtered.add(f);
-					}
-					double average= 0;
-					for (int i = 0; i < filtered.size(); i++){
-						average = average + (Double)((SimpleFeature)filtered.get(i)).getAttribute(this.onAttributeName);
-					}
-					average = average / filtered.size();
-					target = SimpleFeatureBuilder.build(
-							(SimpleFeatureType) targetType, new Object[]{}, 
-							UUID.randomUUID().toString());
-					
-					target.setAttribute(this.onAttributeName,average);
-				}
-			}
-			return target;
-		}
-//		else if (this.aggregationRule.equals(FeatureAggregator.TOUCHES)) {
-//			//TODO: Add all other...
-//		}
-		else{
-			return null;
-		}
-
-	}
-	
-	
-	
-	
-	
+	public List<Feature> aggregate(Collection<? extends Feature> source, FeatureType targetType) {
 		
-
-	
-
+		List<Feature> result = new ArrayList<Feature>();
+		SimpleFeature target = null;
+		if (this.aggregationRule.equals(FeatureAggregator.AVERAGE)||
+				this.aggregationRule.equals(FeatureAggregator.BOUNDS)||
+				this.aggregationRule.equals(FeatureAggregator.COUNT)||
+				this.aggregationRule.equals(FeatureAggregator.MAX)||
+				this.aggregationRule.equals(FeatureAggregator.MEDIAN)||
+				this.aggregationRule.equals(FeatureAggregator.MIN)||
+				this.aggregationRule.equals(FeatureAggregator.SUM)||
+				this.aggregationRule.equals(FeatureAggregator.UNIQUE)){
+			
+			FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
+			Function sum = ff.function(this.aggregationRule, ff.property(this.onAttributeName));
+			FeatureCollection sourceFeatures = FeatureCollections.newCollection(); 
+			for (Feature f : source){
+				sourceFeatures.add(f);
+			}
+			Object value = sum.evaluate(sourceFeatures);
+			target = SimpleFeatureBuilder.build(
+						(SimpleFeatureType) targetType, new Object[]{}, 
+						UUID.randomUUID().toString());
+				
+			target.setAttribute(this.targetAttribute,value);
+			result.add(target);
+		}
+		
+		else if (this.aggregationRule.equals(FeatureAggregator.MULTI)){
+			GeometryFactory geomFactory = new GeometryFactory();
+			Object geom = ((SimpleFeature)source.iterator().next()).getAttribute(this.onAttributeName);;
+			Geometry newGeometry = null;
+			System.out.println("targetGEOM " + targetType.getGeometryDescriptor().getType().getBinding());
+			if (geom.getClass().equals(Point.class) && targetType.getGeometryDescriptor().getType().getBinding().equals(MultiPoint.class)) {
+				//Aggregation from multiple point Features to a MultiPoint
+				List<Point> points = new ArrayList<Point>();
+				for (Feature f : source){
+					Point p = (Point)((SimpleFeature)f).getAttribute(this.onAttributeName);
+					points.add(p);
+				}
+				Point[] pointsArray = new Point[points.size()];
+				System.arraycopy(points.toArray(), 0, pointsArray, 0, points.size());
+				newGeometry= geomFactory.createMultiPoint(pointsArray);
+				target = SimpleFeatureBuilder.build(
+						(SimpleFeatureType) targetType, new Object[]{}, 
+						UUID.randomUUID().toString());
+				
+//				target.setDefaultGeometry(newGeometry);
+				target.setAttribute(this.targetAttribute,newGeometry);
+				result.add(target);			
+				
+			}
+			else if (geom.getClass().equals(LineString.class) && targetType.getGeometryDescriptor().getType().getBinding().equals(MultiLineString.class)) {
+				//Aggregation from multiple LineString Features to a MultiLineString
+				List<LineString> lines = new ArrayList<LineString>();
+				for (Feature f : source){
+					LineString l = (LineString)((SimpleFeature)f).getAttribute(this.onAttributeName);
+					lines.add(l);
+				}
+				LineString[] linesArray = new LineString[lines.size()];
+				System.arraycopy(lines.toArray(), 0, linesArray, 0, lines.size());
+				newGeometry= geomFactory.createMultiLineString(linesArray);
+				target = SimpleFeatureBuilder.build(
+						(SimpleFeatureType) targetType, new Object[]{}, 
+						UUID.randomUUID().toString());
+				
+				target.setAttribute(this.targetAttribute,newGeometry);
+				result.add(target);
+			}
+			else if (geom.getClass().equals(Polygon.class) && targetType.getGeometryDescriptor().getType().getBinding().equals(MultiPolygon.class)) {
+				//Aggregation from multiple Polygon Features to a MultiPolygon
+				List<Polygon> polys = new ArrayList<Polygon>();
+				for (Feature f : source){
+					Polygon p = (Polygon)((SimpleFeature)f).getAttribute(this.onAttributeName);
+					polys.add(p);
+				}
+				Polygon[] polysArray = new Polygon[polys.size()];
+				System.arraycopy(polys.toArray(), 0, polysArray, 0, polys.size());
+				newGeometry= geomFactory.createMultiPolygon(polysArray);
+				target = SimpleFeatureBuilder.build(
+						(SimpleFeatureType) targetType, new Object[]{}, 
+						UUID.randomUUID().toString());
+				
+				target.setAttribute(this.targetAttribute,newGeometry);
+				result.add(target);
+			}
+			else{
+				throw new RuntimeException("An aggregate:multi rule was " +
+				"defined on a non-Geometry property.");
+			}
+		}
+		return result;
+	}
 }

@@ -19,7 +19,7 @@ import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
 
 import eu.esdihumboldt.cst.NameHelper;
-import eu.esdihumboldt.cst.transformer.service.rename.FeatureAggregator2;
+import eu.esdihumboldt.cst.transformer.service.rename.FeatureAggregator;
 
 
 public class FeatureAggregatorTest {
@@ -38,13 +38,13 @@ public class FeatureAggregatorTest {
 		SimpleFeatureBuilder builder = new SimpleFeatureBuilder(ft);
 		Feature source1 = SimpleFeatureBuilder.build(
 				ft, new Object[]{new Integer(2)}, UUID.randomUUID().toString());
-		Feature source2 = SimpleFeatureBuilder.build(
+		Feature target = SimpleFeatureBuilder.build(
 				ft, new Object[]{new Integer(2)}, UUID.randomUUID().toString());
 		List<Feature> features = new ArrayList<Feature>();
 		features.add(source1);
-		features.add(source2);
+		features.add(target);
 
-		FeatureAggregator2 fa = new FeatureAggregator2("SomeAttr", "aggregate:Collection_Sum");
+		FeatureAggregator fa = new FeatureAggregator("SomeAttr", "aggregate:Collection_Sum", "SomeAttr");
 		List<Feature>results = fa.aggregate(features, ft);
 		assertTrue(results.size() == 1);
 		assertTrue(results.get(0).getProperty("SomeAttr").getValue().toString().equals("4"));
@@ -66,14 +66,14 @@ public class FeatureAggregatorTest {
 		Feature source1 = SimpleFeatureBuilder.build(
 				ft, new Object[]{geomFactory.createPoint(
 						new Coordinate(Math.random(), Math.random()))}, UUID.randomUUID().toString());
-		Feature source2 = SimpleFeatureBuilder.build(
+		Feature target = SimpleFeatureBuilder.build(
 				ft, new Object[]{geomFactory.createPoint(
 						new Coordinate(Math.random(), Math.random()))}, UUID.randomUUID().toString());
 		List<Feature> features = new ArrayList<Feature>();
 		features.add(source1);
-		features.add(source2);
+		features.add(target);
 
-		FeatureAggregator2 fa = new FeatureAggregator2("SomePoint", "aggregate:Multi");
+		FeatureAggregator fa = new FeatureAggregator("SomePoint", "aggregate:Multi", "SomePoint");
 		List<Feature>results = fa.aggregate(features, this.getTargetFT(MultiPoint.class, "SomePoint"));
 //		System.out.println(results.size());
 		assertTrue(results.size() == 1);
@@ -93,13 +93,13 @@ public class FeatureAggregatorTest {
 		SimpleFeatureBuilder builder = new SimpleFeatureBuilder(ft);
 		Feature source1 = SimpleFeatureBuilder.build(
 				ft, new Object[]{geomFactory.createLineString(new Coordinate[] {new Coordinate(0,2), new Coordinate (2,0), new Coordinate (8,6)})}, UUID.randomUUID().toString());
-		Feature source2 = SimpleFeatureBuilder.build(
+		Feature target = SimpleFeatureBuilder.build(
 				ft, new Object[]{geomFactory.createLineString(new Coordinate[] {new Coordinate(2,2), new Coordinate (3,3), new Coordinate (4,4)})}, UUID.randomUUID().toString());
 		List<Feature> features = new ArrayList<Feature>();
 		features.add(source1);
-		features.add(source2);
+		features.add(target);
 
-		FeatureAggregator2 fa = new FeatureAggregator2("SomeLine", "aggregate:Multi");
+		FeatureAggregator fa = new FeatureAggregator("SomeLine", "aggregate:Multi", "SomeLine");
 		List<Feature>results = fa.aggregate(features, this.getTargetFT(MultiLineString.class, "SomeLine"));
 //		System.out.println(results.size());
 		assertTrue(results.size() == 1);
