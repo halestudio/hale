@@ -143,12 +143,39 @@ public class InstanceCreationHandler {
 	 * @param ai
 	 * @return
 	 */
-	public static InstanceMap manyToOne(String targetFtName,
+	public static InstanceAggregateMap manyToOne(String targetFtName,
 			String sourceFtName,
 			Map<String, List<Feature>> partitionedSourceFeatures,
-			AlignmentIndex ai) {
-		// TODO Auto-generated method stub
-		return null;
+			ICell renameCell) {
+		
+		FeatureCollection sourceFeatures = FeatureCollections.newCollection();
+		List<Feature> features = partitionedSourceFeatures.get(sourceFtName);
+		if (features != null && features.size() > 0) {
+			for (Feature f : features) {
+				sourceFeatures.add(f);
+			}
+		}
+		
+		List<Feature> transformedFeatures = new ArrayList<Feature>();
+		List<Feature> sourceList = new ArrayList<Feature>();
+		
+		// create one new Feature per source Feature
+		RenameFeatureFunction rtf = new RenameFeatureFunction();
+		rtf.configure(renameCell);
+		
+		sourceFeatures = filterCollection(sourceFeatures, renameCell);
+		List<Feature> temp = new ArrayList<Feature>();
+		FeatureIterator<Feature> fi = sourceFeatures.features();
+		while (fi.hasNext()) {
+			Feature sourceFeature = fi.next();
+			temp.add(sourceFeature);
+		}
+		
+		transformedFeatures.addAll(rtf.transformMerge(temp, null));
+		sourceList.addAll(temp);
+		
+		
+		return new InstanceAggregateMap(sourceList, transformedFeatures);
 	}
 	
 	@SuppressWarnings("unchecked")
