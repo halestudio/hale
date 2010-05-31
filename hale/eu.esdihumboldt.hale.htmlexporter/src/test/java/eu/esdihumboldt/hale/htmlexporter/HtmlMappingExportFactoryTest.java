@@ -41,7 +41,7 @@ public class HtmlMappingExportFactoryTest {
 		if(testFile!=null){
 			Alignment alignment = reader.read(testFile);
 			try {
-				htmlMappingExportFactory.export(alignment, "bla.html");
+				htmlMappingExportFactory.export(alignment, "C:\\bla.html");
 			} catch (MappingExportException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
