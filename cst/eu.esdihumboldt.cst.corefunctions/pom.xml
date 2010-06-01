@@ -4,7 +4,7 @@
 	<groupId>eu.esdihumboldt.cst</groupId>
 	<artifactId>corefunctions</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<name>corefunctions</name>
 	<description>A set of core Schema Translation Function implementations</description>
 	<url>http://community.esdi-humboldt.eu/projects/show/cst</url>
