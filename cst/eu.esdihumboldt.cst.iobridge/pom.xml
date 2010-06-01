@@ -92,13 +92,13 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
-			<artifactId>common-library</artifactId>
-			<version>3.0.0</version>
+			<artifactId>commons</artifactId>
+			<version>3.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
 			<artifactId>cst</artifactId>
-			<version>1.0.1-SNAPSHOT</version>
+			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
