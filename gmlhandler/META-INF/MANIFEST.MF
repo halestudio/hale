@@ -5,4 +5,9 @@ Bundle-SymbolicName: eu.esdihumboldt.gmlhandler;singleton:=true
 Bundle-Version: 0.0.1.SNAPSHOT
 Export-Package: eu.esdihumboldt.gmlhandler
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit4;bundle-version="4.5.0"
+Require-Bundle: org.deegree.deegree-core;bundle-version="3.0.0",
+ com.springsource.org.apache.commons.logging;bundle-version="1.1.1",
+ com.springsource.org.apache.log4j;bundle-version="1.2.15",
+ com.springsource.org.junit;bundle-version="4.5.0"
+Bundle-ClassPath: lib/jts-1.10.jar,
+ .
