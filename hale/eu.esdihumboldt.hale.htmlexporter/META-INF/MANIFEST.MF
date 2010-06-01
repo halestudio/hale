@@ -7,4 +7,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: eu.esdihumboldt.hale;bundle-version="2.0.0",
  eu.esdihumboldt.commons;bundle-version="3.0.1",
  org.junit4,
- com.springsource.org.apache.velocity
+ com.springsource.org.apache.velocity,
+ eu.esdihumboldt.specification;bundle-version="2.0.2"

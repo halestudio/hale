@@ -20,7 +20,8 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Vector;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -30,6 +31,7 @@ import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
 import eu.esdihumboldt.goml.align.Alignment;
+
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportException;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider;
 
@@ -40,6 +42,21 @@ import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider;
  * @version $Id$
  */
 public class HtmlMappingExportFactory implements MappingExportProvider {
+	
+	/**
+	 * The context which gets written in the template file
+	 */
+	private VelocityContext context;
+	
+	/**
+	 * The alignment
+	 */
+	private Alignment alignment = null;
+
+	/**
+	 * The path of the export
+	 */
+	private String path;
 
 	/**
      * @param alignment
@@ -49,14 +66,15 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 	 */
 	public void export(Alignment alignment, String path) throws MappingExportException {
 		
-		StringWriter stringWriter = new StringWriter();
+		this.alignment = alignment;
+		this.path = path;
 		
-		String p1 = "Bill";
-		String p2 = "Bob";
-		Vector vec = new Vector();
-		vec.addElement( p1 );
-		vec.addElement( p2 );
-		URL templatePath = this.getClass().getResource("template.vm"); 
+		StringWriter stringWriter = new StringWriter();
+		this.context = new VelocityContext();
+		
+		//Gets the path to the template file and style sheet
+		URL templatePath = this.getClass().getResource("template.html"); 
+		URL cssPath = this.getClass().getResource("style.css"); 
 		
 		//generates a byteArray out of the template
 		byte[] templateByteArray = null;
@@ -95,8 +113,8 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			VelocityContext context = new VelocityContext();
-			context.put("list", vec );
+			//Fill the context-variables with data
+			this.fillContext();
 			Template template = null;
 			
 			try {
@@ -115,7 +133,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			}
 			try {
 				//Merge Content with template
-				template.merge(context,stringWriter);
+				template.merge(this.context,stringWriter);
 			} catch (ResourceNotFoundException e) {
 				e.printStackTrace();
 			} catch (ParseErrorException e) {
@@ -127,14 +145,39 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			}
 			
 			//Create HTML export file
-			 File outputFile = new File(path);
+			 File htmlOutputFile = new File(path);
 			 try {
-				this.stringWriterToFile(outputFile, stringWriter);
+				this.stringWriterToFile(htmlOutputFile, stringWriter);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			
+			//generates a byteArray out of the style sheet
+			byte[] cssByteArray = null;
+			try {
+				cssByteArray = this.urlToByteArray(cssPath);
+			} catch (UnsupportedEncodingException e2) {
+				e2.printStackTrace();
+			} catch (IOException e2) {
+				e2.printStackTrace();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+			
+			//Create CSS export file
+			String cssPathFile = htmlOutputFile.getPath().replace(htmlOutputFile.getName(), "");
+			File cssOutputFile = new File(cssPathFile+"style.css");
+			 try {
+				this.byteArrayToFile(cssOutputFile, cssByteArray);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+
 			
 			//delete tempFile for cleanup
 			tempFile.deleteOnExit();
@@ -142,6 +185,33 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 	}
 	
 	 /**
+	 * Create context-variables and fills them with data
+	 */
+	private void fillContext() {
+		Date date = new Date();
+		SimpleDateFormat dfm = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+
+		this.context.put("title", "Mapping Export of "+ this.path.toString());
+		this.context.put("mapping", "Mapping : "+ this.path.toString());
+		this.context.put("project", "Project : "+ dfm.format(date));
+		this.context.put("schema1", "Schema 1 : "+this.alignment.getSchema1().getLocation());
+		this.context.put("schema2", "Schema 2 : "+this.alignment.getSchema2().getLocation());
+//		this.context.put("title", "Mapping Export");
+		
+		
+
+		
+//		String p1 = "Bill";
+//		String p2 = "Bob";
+//		Vector vec = new Vector();
+//		vec.addElement( p1 );
+//		vec.addElement( p2 );
+//		this.context.put("list", vec );
+		
+		
+	}
+
+	/**
 	 * @param url 
 	 * @return The File as a Byte[]
 	 * @throws Exception

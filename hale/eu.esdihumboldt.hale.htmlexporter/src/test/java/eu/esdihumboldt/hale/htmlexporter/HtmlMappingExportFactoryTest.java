@@ -11,9 +11,6 @@
  */
 package eu.esdihumboldt.hale.htmlexporter;
 
-import java.io.File;
-import java.net.URL;
-
 import org.junit.Test;
 
 import eu.esdihumboldt.goml.align.Alignment;
@@ -29,7 +26,7 @@ import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportException;
 public class HtmlMappingExportFactoryTest {
 
 	/**
-	 * 
+	 *  For testing the export function
 	 */
 	@Test
 	public void test() {
@@ -43,7 +40,6 @@ public class HtmlMappingExportFactoryTest {
 			try {
 				htmlMappingExportFactory.export(alignment, "C:\\bla.html");
 			} catch (MappingExportException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

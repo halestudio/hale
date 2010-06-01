@@ -1,0 +1,33 @@
+<html>
+
+<head>
+<title>$title</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<style type="text/css">
+/* ... hier sind dateispezifische Formate erlaubt ... */
+</style>
+</head>
+
+<body>
+<h1 align="left">$mapping</h1>
+<hr align="left">
+<br>
+$project<br>
+$schema1<br>
+$schema2<br>
+
+<table cellspacing="0" cellpadding="5" width="100%">
+														  <tr>
+    <td bgcolor="#eeeeee" align="center">
+      Names
+    </td>
+  </tr>
+  #foreach ($name in $list)
+  <tr>
+    <td bgcolor="#eeeeee">
+      $name
+    </td>
+  </tr>
+  #end
+</table>
+</html>
