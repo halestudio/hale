@@ -4,6 +4,7 @@ Bundle-Name: Humboldt GML Handler
 Bundle-SymbolicName: eu.esdihumboldt.gmlhandler;singleton:=true
 Bundle-Version: 0.0.1.SNAPSHOT
 Export-Package: eu.esdihumboldt.gmlhandler
+Eclipse-RegisterBuddy: org.deegree.deegree-core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.deegree.deegree-core;bundle-version="3.0.0",
  com.springsource.org.apache.commons.logging;bundle-version="1.1.1",
