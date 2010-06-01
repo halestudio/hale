@@ -40,8 +40,8 @@ public class FunctionsCellTest {
 		func.add(new NetworkExpansionFunction());
 		func.add(new RenameAttributeFunction());
 		func.add(new CentroidFunction());
-		func.add(new GeographicalNameFunction());
-		func.add(new IdentifierFunction());
+		//FIXME func.add(new GeographicalNameFunction());
+		//FIXME func.add(new IdentifierFunction());
 		return func;
 	}
 }
