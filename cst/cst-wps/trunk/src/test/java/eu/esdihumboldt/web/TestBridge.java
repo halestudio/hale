@@ -20,7 +20,7 @@ public class TestBridge {
 		
 		try {
 		File oml = new File("./src/main/webapp/xsds/HY/testproject.xml.goml");		
-		File gml = new File("./src/main/webapp/xsds/wfs_va.gml");		
+		File gml = new File("./src/main/webapp/xsds/HY/wfs_va.gml");		
 		File xsd = new File("./src/main/webapp/xsds/HY/Hydrography.xsd");			
 	
 		System.out.println(xsd.toURI());
@@ -28,7 +28,7 @@ public class TestBridge {
 				IoBridgeFactory.getIoBridge(BridgeType.preloaded)
 				        .transform(xsd.toURI().toString(),
 				        		   oml.getPath(),
-				        		   gml.getPath()					           
+				        		   gml.toURI().toString()					           
 						          ));
 		} catch (Exception e){
 			e.printStackTrace();
