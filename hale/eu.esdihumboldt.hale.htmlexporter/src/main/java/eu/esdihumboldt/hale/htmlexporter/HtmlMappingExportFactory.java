@@ -23,6 +23,7 @@ import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import org.apache.velocity.Template;
@@ -33,6 +34,7 @@ import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
@@ -210,16 +212,20 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		this.context.put("schema2", "<b>Schema 2 : </b>"+this.alignment.getSchema2().getLocation());
 //		this.context.put("title", "Mapping Export");
 		
-		Vector<String> cellVector = new Vector<String>();
+		Vector<Vector> cellListVector = new Vector<Vector>();
+		Vector<String> cellVector;
+		
+		//cell counter
 		int i=1;
+		
 		for (Iterator<ICell> iterator = this.alignment.getMap().iterator();iterator.hasNext();) {
 			ICell cell = iterator.next();
+			cellVector = new Vector<String>();
 
-			//Space holder table row
-			cellVector.addElement("<tr><td>&nbsp;</td></tr>");
 			cellVector.addElement("<b>Cell "+i+" : </b>");
 			cellVector.addElement("<b>Relation : </b>"+cell.getRelation());
 			
+			//Filters
 			/**
 			 * For Entity 1
 			 */
@@ -272,7 +278,31 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 					}
 				}
 			}
-	
+			
+			//Parameters
+			List<IParameter> parameterList;
+			/**
+			 * For Entity 1
+			 */
+			if (cell.getEntity2().getTransformation() == null) {
+				parameterList = cell.getEntity1().getTransformation().getParameters();
+			}
+			/**
+			 * For Entity 2
+			 */
+			else {
+				parameterList = cell.getEntity2().getTransformation().getParameters();
+			}
+
+			if (!parameterList.isEmpty()) {
+				cellVector.addElement("<b>Parameters: </b>");
+				for (IParameter parameter : parameterList) {
+					cellVector.addElement("<b>"+parameter.getName() + " : </b>"+ parameter.getValue());
+				}
+			}
+			
+			cellListVector.addElement(cellVector);
+			i++;
 		}
 
 		
@@ -282,7 +312,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 //		vec.addElement( p1 );
 //		vec.addElement( p2 );
 //		this.context.put("list", vec );
-		this.context.put("cellList", cellVector);
+		this.context.put("cellList", cellListVector);
 		
 	}
 

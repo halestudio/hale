@@ -4,7 +4,7 @@
 <title>$title</title>
 <link rel="stylesheet" type="text/css" href="style.css">
 <style type="text/css">
-/* ... hier sind dateispezifische Formate erlaubt ... */
+/* ... place for extra formats ... */
 </style>
 </head>
 
@@ -24,11 +24,19 @@ $schema2<br>
     </td>
   </tr>
   #foreach ($name in $cellList)
-  <tr>
-    <td bgcolor="#eeeeee">
-      $name
-    </td>
-  </tr>
+        #foreach ($attributename in $name)
+        <tr>
+           <td bgcolor="#eeeeee">
+             $attributename
+           </td>
+        </tr>
+        		#end
+        		
+				        <tr>
+           <td>
+             &nbsp;
+           </td>
+        </tr>
   #end
 </table>
 </html>
