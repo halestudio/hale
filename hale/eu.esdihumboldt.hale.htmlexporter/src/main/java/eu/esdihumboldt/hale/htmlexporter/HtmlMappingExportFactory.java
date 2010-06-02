@@ -22,6 +22,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.Vector;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -30,7 +32,13 @@ import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
+import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.omwg.FeatureClass;
+import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.omwg.Restriction;
 
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportException;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider;
@@ -68,6 +76,10 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		
 		this.alignment = alignment;
 		this.path = path;
+		
+//		// get schema service
+//		this.schemaItemService = (ProjectService) PlatformUI.getWorkbench()
+//				.getService(ProjectService.class);
 		
 		StringWriter stringWriter = new StringWriter();
 		this.context = new VelocityContext();
@@ -192,22 +204,85 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		SimpleDateFormat dfm = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
 		this.context.put("title", "Mapping Export of "+ this.path.toString());
-		this.context.put("mapping", "Mapping : "+ this.path.toString());
-		this.context.put("project", "Project : "+ dfm.format(date));
-		this.context.put("schema1", "Schema 1 : "+this.alignment.getSchema1().getLocation());
-		this.context.put("schema2", "Schema 2 : "+this.alignment.getSchema2().getLocation());
+		this.context.put("mapping", "Mapping : </b>"+ this.path.toString());
+		this.context.put("project", "<b>Project : </b>"+ dfm.format(date));
+		this.context.put("schema1", "<b>Schema 1 : </b>"+this.alignment.getSchema1().getLocation());
+		this.context.put("schema2", "<b>Schema 2 : </b>"+this.alignment.getSchema2().getLocation());
 //		this.context.put("title", "Mapping Export");
 		
-		
+		Vector<String> cellVector = new Vector<String>();
+		int i=1;
+		for (Iterator<ICell> iterator = this.alignment.getMap().iterator();iterator.hasNext();) {
+			ICell cell = iterator.next();
+
+			//Space holder table row
+			cellVector.addElement("<tr><td>&nbsp;</td></tr>");
+			cellVector.addElement("<b>Cell "+i+" : </b>");
+			cellVector.addElement("<b>Relation : </b>"+cell.getRelation());
+			
+			/**
+			 * For Entity 1
+			 */
+			// Filter strings are added to the Vector
+			if (cell.getEntity2().getTransformation() == null) {
+				cellVector.addElement("<b>Entity1: </b>"+cell.getEntity1().getAbout().getAbout());
+				if (cell.getEntity1() instanceof FeatureClass) {
+					if (((FeatureClass) cell.getEntity1())
+							.getAttributeValueCondition() != null) {
+						cellVector.addElement("<b>Filter Rules: </b>");
+						for (Restriction restriction : ((FeatureClass) cell
+								.getEntity1()).getAttributeValueCondition()) {
+							cellVector.addElement(restriction.getCqlStr());
+						}
+					}
+				} else if (cell.getEntity1() instanceof Property) {
+					if (((Property) cell.getEntity1())
+							.getValueCondition() != null) {
+						cellVector.addElement("<b>Filter Rules: </b>");
+						for (Restriction restriction : ((Property) cell
+								.getEntity1()).getValueCondition()) {
+							cellVector.addElement(restriction.getCqlStr());
+						}
+					}
+				}
+			}
+
+			/**
+			 * For Entity 2
+			 */
+			// Filter strings are added to the Vector
+			else {
+				cellVector.addElement("<b>Entity2: </b>"+cell.getEntity1().getAbout().getAbout());
+				if (cell.getEntity2() instanceof FeatureClass) {
+					if (((FeatureClass) cell.getEntity2())
+							.getAttributeValueCondition() != null) {
+						cellVector.addElement("<b>Filter Rules: </b>");
+						for (Restriction restriction : ((FeatureClass) cell
+								.getEntity2()).getAttributeValueCondition()) {
+							cellVector.addElement(restriction.getCqlStr());
+						}
+					}
+				} else if (cell.getEntity2() instanceof Property) {
+					if (((Property) cell.getEntity2()).getValueCondition() != null) {
+						cellVector.addElement("<b>Filter Rules: </b>");
+						for (Restriction restriction : ((Property) cell
+								.getEntity2()).getValueCondition()) {
+							cellVector.addElement(restriction.getCqlStr());
+						}
+					}
+				}
+			}
+	
+		}
 
 		
 //		String p1 = "Bill";
 //		String p2 = "Bob";
-//		Vector vec = new Vector();
+
 //		vec.addElement( p1 );
 //		vec.addElement( p2 );
 //		this.context.put("list", vec );
-		
+		this.context.put("cellList", cellVector);
 		
 	}
 
