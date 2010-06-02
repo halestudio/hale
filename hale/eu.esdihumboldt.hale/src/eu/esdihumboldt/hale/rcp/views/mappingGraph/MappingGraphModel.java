@@ -271,8 +271,8 @@ public class MappingGraphModel {
 					}
 				}
 			} else if (cell.getEntity2() instanceof Property) {
-				if (((FeatureClass) cell.getEntity2())
-						.getAttributeValueCondition() != null) {
+				if (((Property) cell.getEntity2())
+						.getValueCondition() != null) {
 					for (Restriction restriction : ((Property) cell
 							.getEntity2()).getValueCondition()) {
 						filters.add(restriction.getCqlStr() + "\r\n");
@@ -291,14 +291,14 @@ public class MappingGraphModel {
 						.getAttributeValueCondition() != null) {
 					for (Restriction restriction : ((FeatureClass) cell
 							.getEntity1()).getAttributeValueCondition()) {
-						filters.add(restriction.getCqlStr());
+						filters.add(restriction.getCqlStr() + "\r\n");
 					}
 				}
 			} else if (cell.getEntity1() instanceof Property) {
 				if (((Property) cell.getEntity1()).getValueCondition() != null) {
 					for (Restriction restriction : ((Property) cell
 							.getEntity1()).getValueCondition()) {
-						filters.add(restriction.getCqlStr());
+						filters.add(restriction.getCqlStr() + "\r\n");
 					}
 				}
 			}
