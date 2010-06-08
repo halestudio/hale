@@ -16,17 +16,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.batik.svggen.font.table.NameTable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -34,11 +30,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Caret;
 
-import eu.esdihumboldt.cst.corefunctions.inspire.GeographicalNameFunction;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
 import eu.esdihumboldt.inspire.data.GrammaticalGenderValue;
 import eu.esdihumboldt.inspire.data.GrammaticalNumberValue;
@@ -583,12 +576,12 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 	private String[] getItemLocalName() {
 		Set<SchemaItem> items = getParent().getSourceItems();
 		String[] schemaItemLocalNames = new String[items.size()];
-		Iterator iterator = items.iterator();
+		Iterator<SchemaItem> iterator = items.iterator();
 		SchemaItem item = null;
 		String localName;
 		int i = 0;
 		while (iterator.hasNext()) {
-			item = (SchemaItem) iterator.next();
+			item = iterator.next();
 			localName = item.getName().getLocalPart();
 			schemaItemLocalNames[i] = localName;
 			i++;
@@ -678,7 +671,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		SpellingType aSpelling = null;
 		while (iterator.hasNext()) {
 
-			spelling = (SpellingType) iterator.next();
+			spelling = iterator.next();
 			if (spelling.getText().equals(text)) {
 				aSpelling = spelling;
 				break;
