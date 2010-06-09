@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.geographicname;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,17 +20,17 @@ import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.corefunctions.GenericMathFunction;
 import eu.esdihumboldt.cst.corefunctions.inspire.GeographicalNameFunction;
 import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
+import eu.esdihumboldt.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.rdf.Resource;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
-import eu.esdihumboldt.hale.rcp.wizards.functions.core.math.MathFunctionPage;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.geographicname.GeographicNamePage.SpellingType;
 
 /**
  * Wizard for the {@link GeographicNameFunction}.
@@ -68,6 +69,7 @@ public class GeographicNameFunctionWizard extends
 		String nativeness = null;
 		String gender = null;
 		String number = null;
+		
 
 		// init transformation parameters from cell
 		if (cell.getEntity1().getTransformation() != null) {
@@ -137,9 +139,31 @@ public class GeographicNameFunctionWizard extends
 	 */
 	@Override
 	public boolean performFinish() {
-		ICell cell = getResultCell();
+		Cell cell = getResultCell();
+		
+		ComposedProperty maincp=null;
+		try{
+			maincp= (ComposedProperty) cell.getEntity1();
+		}catch(Exception ex){}
+		if (maincp==null)
+			maincp = new ComposedProperty(new About("http://www.esdi-humboldt.eu", "FT1"));
+		ComposedProperty geograf = new ComposedProperty(new About("http://www.esdi-humboldt.eu", "FT1"));
 		Transformation t = new Transformation();
 		t.setService(new Resource(GeographicalNameFunction.class.getName()));
+
+		ArrayList<SpellingType> spellings = page.getSpellings();
+		for(int i=0;i<spellings.size();i++)
+		{
+			Property p = new Property(new About("urn:x-inspire:specification:gmlas-v31:Hydrography:2.0", "FT1","sourceprop"+i));
+			Transformation tp = new Transformation();
+			tp.setService(new Resource(GeographicalNameFunction.class.getName()));
+			tp.getParameters().add(new Parameter ("script", spellings.get(i).getScript()));
+			tp.getParameters().add(new Parameter("text",spellings.get(i).getText()));
+			tp.getParameters().add(new Parameter("transliterationScheme",spellings.get(i).getTransliteration()));
+			p.setTransformation(tp);
+			geograf.getCollection().add(p);
+		}
+
 		// add parameters
 
 		/*
@@ -154,33 +178,34 @@ public class GeographicNameFunctionWizard extends
 		// ipa
 		t.getParameters().add(
 				new Parameter(
-						GeographicalNameFunction.PROPERTY_PRONUNCIATIONIPA,
-						page.getIpa()));
+						GeographicalNameFunction.PROPERTY_PRONUNCIATIONIPA,page.getIpa()));
 		// language
 		t.getParameters().add(
-				new Parameter(GeographicalNameFunction.PROPERTY_LANGUAGE, page
-						.getLanguage()));
+				new Parameter(GeographicalNameFunction.PROPERTY_LANGUAGE, page.getLanguage()));
 		// source of Name
 		t.getParameters().add(
-				new Parameter(GeographicalNameFunction.PROPERTY_SOURCEOFNAME,
-						page.getSourceOfName()));
+				new Parameter(GeographicalNameFunction.PROPERTY_SOURCEOFNAME,page.getSourceOfName()));
 		// name status
 		t.getParameters().add(
-				new Parameter(GeographicalNameFunction.PROPERTY_NAMESTATUS,
-						page.getNameStatus()));
+				new Parameter(GeographicalNameFunction.PROPERTY_NAMESTATUS,page.getNameStatus()));
 		// nativeness
 		t.getParameters().add(
-				new Parameter(GeographicalNameFunction.PROPERTY_NATIVENESS,
-						page.getNativeness()));
+				new Parameter(GeographicalNameFunction.PROPERTY_NATIVENESS,page.getNativeness()));
 		// gender
 		t.getParameters().add(
-				new Parameter(GeographicalNameFunction.PROPERTY_GRAMMA_GENDER,
-						page.getGender()));
+				new Parameter(GeographicalNameFunction.PROPERTY_GRAMMA_GENDER,page.getGender()));
 		// number
 		t.getParameters().add(
-				new Parameter(GeographicalNameFunction.PROPERTY_GRAMMA_NUMBER,
-						page.getNumber()));
-		((Entity) cell.getEntity1()).setTransformation(t);
+				new Parameter(GeographicalNameFunction.PROPERTY_GRAMMA_NUMBER,page.getNumber()));
+		
+		Transformation tsp = new Transformation();
+		tsp.setService(new Resource(GeographicalNameFunction.class.getName()));
+		
+					
+		geograf.setTransformation(t);
+		maincp.getCollection().add(geograf);
+		cell.setEntity1(maincp);
+		//((Entity) cell.getEntity1()).setTransformation(t);
 
 		return true;
 	}
