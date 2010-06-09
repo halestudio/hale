@@ -87,7 +87,7 @@ public class GeographicalNameFunctionTest {
 	public void testTransformFeatureFeature() {
 			
 		// ************* BUIL SOURCE AND TARGET FEATURES ****************
-		SimpleFeatureType sourceType = this.getFeatureType(
+	   SimpleFeatureType sourceType = this.getFeatureType(
 				GeographicalNameFunctionTest.sourceNamespace,
 			    GeographicalNameFunctionTest.sourceLocalName,
 			    String[].class);
@@ -106,7 +106,7 @@ public class GeographicalNameFunctionTest {
 		// ************* PERFORM ACTUAL TEST ****************
 		GeographicalNameFunction gnf = new GeographicalNameFunction();
 		OmlRdfReader reader = new OmlRdfReader();
-		String alignmentUrl = GeographicalNameFunctionTest.class.getResource("haletest.oml").toExternalForm();
+		String alignmentUrl = GeographicalNameFunctionTest.class.getResource("PropertyCompositionTest.xml").toExternalForm();
 		Alignment al = null;
 		try {
 			al = reader.read(new URL(alignmentUrl));
@@ -116,7 +116,7 @@ public class GeographicalNameFunctionTest {
 		}
 		gnf.configure(al.getMap().get(0));
 		//gnf.configure(GeographicalNameFunctionTest.getTestCell());
-		Feature result = gnf.transform(source, target);
+	    Feature result = gnf.transform(source, target);
 				
 		// ************* BUILD THE EXPECTED FEATURE ****************
 		Feature expectedGN = setGeographicalNameResult(targetType);
