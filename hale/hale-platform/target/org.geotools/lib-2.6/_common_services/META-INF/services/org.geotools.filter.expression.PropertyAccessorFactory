@@ -1,0 +1,4 @@
+org.geotools.filter.expression.SimpleFeaturePropertyAccessorFactory
+org.geotools.filter.expression.ThisPropertyAccessorFactory
+org.geotools.filter.expression.DirectPropertyAccessorFactory
+org.geotools.xml.XPathPropertyAccessorFactory
