@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.geotools.coverage.grid.GeneralGridRange;
+import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.geometry.Envelope2D;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.operation.builder.GridToEnvelopeMapper;
@@ -58,7 +58,6 @@ import eu.esdihumboldt.hale.rcp.views.map.tiles.TileCache.TileListener;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-@SuppressWarnings("deprecation")
 public abstract class AbstractTilePainter implements PaintListener,
 		MouseWheelListener, MouseMoveListener, MouseListener,
 		MouseTrackListener, TileConstraints, ControlListener,
@@ -822,7 +821,7 @@ public abstract class AbstractTilePainter implements PaintListener,
 				@Override
                 protected GridToEnvelopeMapper initialValue() {
                     final GridToEnvelopeMapper mapper = new GridToEnvelopeMapper();
-                    mapper.setGridType(PixelInCell.CELL_CORNER);
+                    mapper.setPixelAnchor(PixelInCell.CELL_CORNER);
                     return mapper;
                 }
     };
@@ -845,7 +844,7 @@ public abstract class AbstractTilePainter implements PaintListener,
 			final Envelope2D genvelope = new Envelope2D(tileArea);
 			final GridToEnvelopeMapper m = gridToEnvelopeMappers.get();
 			try {
-	            m.setGridRange(new GeneralGridRange(new Rectangle(getTileWidth(), getTileHeight())));
+	            m.setGridRange(new GeneralGridEnvelope(new Rectangle(getTileWidth(), getTileHeight())));
 	            m.setEnvelope(genvelope);
 	            AffineTransform trans = m.createAffineTransform(); // creating transformation as in RendererUtilities, but without the inversion that is applied there
 	            
