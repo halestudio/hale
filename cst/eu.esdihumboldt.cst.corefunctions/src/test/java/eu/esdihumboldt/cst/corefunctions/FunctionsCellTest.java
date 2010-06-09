@@ -41,7 +41,7 @@ public class FunctionsCellTest {
 		func.add(new RenameAttributeFunction());
 		func.add(new CentroidFunction());
 		//FIXME func.add(new GeographicalNameFunction());
-		//FIXME func.add(new IdentifierFunction());
+		func.add(new IdentifierFunction());
 		return func;
 	}
 }
