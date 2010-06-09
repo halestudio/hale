@@ -29,6 +29,7 @@ import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.inspire.data.InspireIdentifier;
@@ -201,6 +202,9 @@ public class IdentifierFunction
 		entityTypes.add(InspireIdentifier.class.getName());
 		entityTypes.add(String.class.getName());
 		entity1.setTypeCondition(entityTypes);
+		
+		Transformation transf = new Transformation();
+		entity1.setTransformation(transf);
 		
 		Property entity2 = new Property(new About(""));
 		 
