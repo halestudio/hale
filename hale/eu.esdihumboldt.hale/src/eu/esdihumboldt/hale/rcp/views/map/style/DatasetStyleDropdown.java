@@ -105,7 +105,9 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 		Collection<SchemaElement> tmp = (dataset == DatasetType.reference)?(schema.getSourceSchema()):(schema.getTargetSchema());
 		List<FeatureType> types = new ArrayList<FeatureType>();
 		for (SchemaElement element : tmp) {
-			types.add(element.getFeatureType());
+			if (element.getType().isFeatureType() && !element.getType().isAbstract()) {
+				types.add(element.getFeatureType());
+			}
 		}
 		Collections.sort(types, new Comparator<FeatureType>() {
 
@@ -122,14 +124,11 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 		int index = 0;
 		
 		for (FeatureType type : types) {
-			if (!FeatureTypeHelper.isAbstract(type) &&
-					!FeatureTypeHelper.isPropertyType(type)) { // skip abstract types
-				IAction action = new FeatureTypeStyleAction(type);
-				IContributionItem item = new ActionContributionItem(action);
-				item.fill(menu, index);
-				
-				index++;
-			}
+			IAction action = new FeatureTypeStyleAction(type);
+			IContributionItem item = new ActionContributionItem(action);
+			item.fill(menu, index);
+			
+			index++;
 		}
 	}
 

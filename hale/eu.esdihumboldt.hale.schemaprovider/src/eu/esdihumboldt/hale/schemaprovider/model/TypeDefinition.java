@@ -158,11 +158,11 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	public boolean isFeatureType() {
 		AttributeType type = getType(null);
 		
-		if (type != null && !(type instanceof FeatureType)) {
-			return false;
-		}
 		if (name.getLocalPart().equalsIgnoreCase("AbstractFeatureType")) {
 			return true;
+		}
+		else if (type != null && !(type instanceof FeatureType)) {
+			return false;
 		}
 		else if (getSuperType() == null) {
 			return false;
