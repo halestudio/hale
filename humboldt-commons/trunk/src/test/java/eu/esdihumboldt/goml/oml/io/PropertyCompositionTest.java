@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.transform.stream.StreamSource;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -212,13 +214,15 @@ public class PropertyCompositionTest {
 	@Test
 	 public void testOmlRdfRead() throws MalformedURLException{
 		URI uri = null;
-		try {
-			uri = new URI(PropertyCompositionTest.class.getResource("PropertyCompositionTest.xml").getFile());
-		} catch (URISyntaxException e) {
+		/*try {*/
+			//uri = new URI(PropertyCompositionTest.class.getResource("PropertyCompositionTest.xml").);
+	     String url = PropertyCompositionTest.class.getResource("PropertyCompositionTest.xml").toExternalForm();
+		/*} catch (URISyntaxException e) {*/
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Alignment alignment = new OmlRdfReader().read(new URL ("file", null, uri.getPath()));
+	/*		e.printStackTrace();
+		}*/
+		
+		Alignment alignment = new OmlRdfReader().read(new URL(url));
 
 		//test for ComposedProperty
 		ComposedProperty  entity1 = ((ComposedProperty)alignment.getMap().get(0).getEntity1());

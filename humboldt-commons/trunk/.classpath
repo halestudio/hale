@@ -5,5 +5,7 @@
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="target/generated-sources/xjc"/>
+	<classpathentry kind="src" path="src/main/resource"/>
+	<classpathentry kind="src" path="src/test/resource"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
