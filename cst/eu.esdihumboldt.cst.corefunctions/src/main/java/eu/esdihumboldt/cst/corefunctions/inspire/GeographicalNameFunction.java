@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import org.geotools.feature.AttributeImpl;
+import org.geotools.feature.FeatureImpl;
 import org.geotools.feature.PropertyImpl;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureImpl;
@@ -32,6 +33,7 @@ import org.opengis.feature.type.PropertyType;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.cst.transformer.service.rename.FeatureBuilder;
 import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
@@ -127,35 +129,21 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 			for (IParameter ip : p.getTransformation().getParameters()) {
 				if (ip.getName().equals(
 						GeographicalNameFunction.PROPERTY_NAMESTATUS)) {
-					this._nameStatus.add(cellcount, NameStatusValue.valueOf(ip
-							.getValue()));
-				} else if (ip.getName().equals(
-						GeographicalNameFunction.PROPERTY_LANGUAGE)) {
+					this._nameStatus.add(cellcount, NameStatusValue.valueOf(ip.getValue()));
+				} else if (ip.getName().equals(GeographicalNameFunction.PROPERTY_LANGUAGE)) {
 					this._language.add(cellcount, ip.getValue());
-				} else if (ip.getName().equals(
-						GeographicalNameFunction.PROPERTY_NATIVENESS)) {
-					this._nativeness.add(cellcount, NativenessValue.valueOf(ip
-							.getValue()));
-				} else if (ip.getName().equals(
-						GeographicalNameFunction.PROPERTY_SOURCEOFNAME)) {
+				} else if (ip.getName().equals(GeographicalNameFunction.PROPERTY_NATIVENESS)) {
+					this._nativeness.add(cellcount, NativenessValue.valueOf(ip.getValue()));
+				} else if (ip.getName().equals(GeographicalNameFunction.PROPERTY_SOURCEOFNAME)) {
 					this._sourceOfName.add(cellcount, ip.getValue());
-				} else if (ip.getName().equals(
-						GeographicalNameFunction.PROPERTY_PRONUNCIATIONIPA)) {
+				} else if (ip.getName().equals(GeographicalNameFunction.PROPERTY_PRONUNCIATIONIPA)) {
 					this._pronunciationIPA.add(cellcount, ip.getValue());
-				} else if (ip
-						.getName()
-						.equals(
-								GeographicalNameFunction.PROPERTY_PRONUNCIATIONSOUNDLINK)) {
-					this._pronunciationSoundLink.add(cellcount, URI.create(ip
-							.getValue()));
-				} else if (ip.getName().equals(
-						GeographicalNameFunction.PROPERTY_GRAMMA_GENDER)) {
-					this._grammaticalGender.add(cellcount,
-							GrammaticalGenderValue.valueOf(ip.getValue()));
-				} else if (ip.getName().equals(
-						GeographicalNameFunction.PROPERTY_GRAMMA_NUMBER)) {
-					this._grammaticalNumber.add(cellcount,
-							GrammaticalNumberValue.valueOf(ip.getValue()));
+				} else if (ip.getName().equals(GeographicalNameFunction.PROPERTY_PRONUNCIATIONSOUNDLINK)) {
+					this._pronunciationSoundLink.add(cellcount, URI.create(ip.getValue()));
+				} else if (ip.getName().equals(GeographicalNameFunction.PROPERTY_GRAMMA_GENDER)) {
+					this._grammaticalGender.add(cellcount,GrammaticalGenderValue.valueOf(ip.getValue()));
+				} else if (ip.getName().equals(GeographicalNameFunction.PROPERTY_GRAMMA_NUMBER)) {
+					this._grammaticalNumber.add(cellcount,GrammaticalNumberValue.valueOf(ip.getValue()));
 				}
 			}
 			// ************* FORCE TO COMPLETE INDEX FOR ALL ARRAYLISTS
@@ -167,7 +155,7 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 			if (this._nativeness.size() < cellcount + 1)
 				this._nativeness.add(cellcount, null);
 			if (this._sourceOfName.size() < cellcount + 1)
-				this._sourceOfName.add(cellcount, null);
+				this._sourceOfName.add(cellcount, "");
 			if (this._pronunciationIPA.size() < cellcount + 1)
 				this._pronunciationIPA.add(cellcount, null);
 			if (this._pronunciationSoundLink.size() < cellcount + 1)
@@ -221,40 +209,75 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 		SimpleFeatureType pronunciationofnametype = (SimpleFeatureType) ((SimpleFeatureType) 
 						(geoNameType).getDescriptor("pronunciation").getType()).getDescriptor("PronunciationOfName").getType();
 
-		Collection<SimpleFeatureImpl> geographicalnames = new HashSet<SimpleFeatureImpl>();
+		Collection<FeatureImpl> geographicalnames = new HashSet<FeatureImpl>();
 
 		// CREATION OF A COLLECTION OF GEOGRAPHICALNAMES WITH CONFIGURED VALUES
 		for (int i = 0; i < cellcount; i++) {
-			Collection<SimpleFeatureImpl> spellingofnamepropertiescollection = new HashSet<SimpleFeatureImpl>();
+			Collection<FeatureImpl> spellingofnamepropertiescollection = new HashSet<FeatureImpl>();
 			for (int j = 0; j < _script.get(i).size(); j++) {
 				Object sourcepropertyvalue = source.getProperty(
 						this.sourceattributes.get(i).get(j).getLocalname())
 						.getValue();
-				SimpleFeatureImpl spellingofname = (SimpleFeatureImpl) SimpleFeatureBuilder
+				/*SimpleFeatureImpl spellingofname = (SimpleFeatureImpl) SimpleFeatureBuilder
 						.build(spellingofnametype, new Object[] {},
-								"SpellingOfName");
-				spellingofname.setAttribute("script", _script.get(i).get(j));
+								"SpellingOfName");*/
+				FeatureImpl spellingofname = (FeatureImpl)FeatureBuilder.buildFeature(spellingofnametype, null,false);
+				spellingofname.getProperty("script").setValue(_script.get(i).get(j));
+				spellingofname.getProperty("text").setValue(sourcepropertyvalue
+						.toString());
+				spellingofname.getProperty("transliterationScheme").setValue(_transliteration.get(i).get(j));
+				
+				/*spellingofname.setAttribute("script", _script.get(i).get(j));
 				spellingofname.setAttribute("text", sourcepropertyvalue
 						.toString());
 				spellingofname.setAttribute("transliterationScheme",
-						_transliteration.get(i).get(j));
+						_transliteration.get(i).get(j));*/
 
-				SimpleFeatureImpl spellingofnameproperty = (SimpleFeatureImpl) SimpleFeatureBuilder
+				FeatureImpl spellingofnameproperty = (FeatureImpl)FeatureBuilder.buildFeature(spellingofnamepropertytype, null,false);
+				spellingofnameproperty.getProperty("SpellingOfName").setValue(Collections.singleton(spellingofname));
+				/*SimpleFeatureImpl spellingofnameproperty = (SimpleFeatureImpl) SimpleFeatureBuilder
 						.build(spellingofnamepropertytype, new Object[] {},
 								"SpellingOfNameProperty");
 				spellingofnameproperty.setAttribute("SpellingOfName",
-						Collections.singleton(spellingofname));
+						Collections.singleton(spellingofname));*/
 
 				spellingofnamepropertiescollection.add(spellingofnameproperty);
 			}
-			SimpleFeatureImpl geographicalname = (SimpleFeatureImpl) SimpleFeatureBuilder
+			
+			FeatureImpl geographicalname = (FeatureImpl)FeatureBuilder.buildFeature(geoNameType, null,false);
+			geographicalname.getProperty("spelling").setValue(spellingofnamepropertiescollection);
+			geographicalname.getProperty("language").setValue(_language.get(i));
+			geographicalname.getProperty("sourceOfName").setValue(_sourceOfName.get(i));
+			/*SimpleFeatureImpl geographicalname = (SimpleFeatureImpl) SimpleFeatureBuilder
 					.build((SimpleFeatureType) geoNameType, new Object[] {},
 							"GeographicalName");
 			geographicalname.setAttribute("spelling",
 					spellingofnamepropertiescollection);
 			geographicalname.setAttribute("language", _language.get(i));
-			geographicalname.setAttribute("sourceOfName", _sourceOfName.get(i));
+			geographicalname.setAttribute("sourceOfName", _sourceOfName.get(i));*/
+			
 			if (_nativeness.get(i) != null)
+				geographicalname.getProperty("nativeness").setValue(Collections.singleton(_nativeness.get(i).toString()));
+			else
+				geographicalname.getProperty("nativeness").setValue(null);
+			if (_nameStatus.get(i) != null)
+				geographicalname.getProperty("nameStatus").setValue(Collections
+						.singleton(_nameStatus.get(i).toString()));
+			else
+				geographicalname.getProperty("nameStatus").setValue(null);
+			if (_grammaticalGender.get(i) != null)
+				geographicalname.getProperty("grammaticalGender").setValue(Collections
+						.singleton(_grammaticalGender.get(i).toString()));
+			else
+				geographicalname.getProperty("grammaticalGender").setValue(null);
+			if (_grammaticalNumber.get(i) != null)
+				geographicalname.getProperty("grammaticalNumber").setValue(Collections
+						.singleton(_grammaticalNumber.get(i).toString()));
+			else
+				geographicalname.getProperty("grammaticalNumber").setValue(null);
+
+			
+			/*if (_nativeness.get(i) != null)
 				geographicalname.setAttribute("nativeness", Collections
 						.singleton(_nativeness.get(i).toString()));
 			else
@@ -273,8 +296,13 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 				geographicalname.setAttribute("nameStatus", Collections
 						.singleton(_nameStatus.get(i).toString()));
 			else
-				geographicalname.setAttribute("nameStatus", null);
-			SimpleFeatureImpl pronunciation = (SimpleFeatureImpl) SimpleFeatureBuilder
+				geographicalname.setAttribute("nameStatus", null);*/
+			
+			FeatureImpl pronunciation = (FeatureImpl) FeatureBuilder.buildFeature(pronunciationofnametype, null,false);
+			pronunciation.getProperty("pronunciationIPA").setValue(_pronunciationIPA.get(i));
+			pronunciation.getProperty("pronunciationSoundLink").setValue(_pronunciationSoundLink.get(i));
+			geographicalname.getProperty("pronunciation").setValue(Collections.singleton(pronunciation));
+			/*SimpleFeatureImpl pronunciation = (SimpleFeatureImpl) SimpleFeatureBuilder
 					.build(pronunciationofnametype, new Object[] {},
 							"PronunctiationOfName");
 			pronunciation.setAttribute("pronunciationIPA", _pronunciationIPA
@@ -282,12 +310,13 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 			pronunciation.setAttribute("pronunciationSoundLink",
 					_pronunciationSoundLink.get(i));
 			geographicalname.setAttribute("pronunciation", Collections
-					.singleton(pronunciation));
+					.singleton(pronunciation));*/
 			geographicalnames.add(geographicalname);
 		}
 		// SET COLLECTION OF GEOGRAPHICALNAMES AS TARGET INPUT PARAMETER
-		((SimpleFeature) target).setAttribute(targetProperty.getLocalname(),
-				geographicalnames);
+		target.getProperty(targetProperty.getLocalname()).setValue(geographicalnames);
+		/*((SimpleFeature) target).setAttribute(targetProperty.getLocalname(),
+				geographicalnames);*/
 		return target;
 	}
 
