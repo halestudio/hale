@@ -15,6 +15,8 @@ package eu.esdihumboldt.cst.corefunctions.inspire;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -39,6 +41,7 @@ import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
+import eu.esdihumboldt.goml.oml.io.PropertyCompositionTest;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
@@ -90,7 +93,7 @@ public class GeographicalNameFunctionTest {
 			    String[].class);
 
 		String url = getClass().getResource(
-		"/inspire_v3.0_xsd/CadastralParcels.xsd").toString();
+		"inspire_v3.0_xsd/CadastralParcels.xsd").toString();
 		FeatureType targetType = TypeLoader.getType("CadastralZoning", url);
 		
 		Feature source = FeatureBuilder.buildFeature(sourceType, null,false);
@@ -103,7 +106,14 @@ public class GeographicalNameFunctionTest {
 		// ************* PERFORM ACTUAL TEST ****************
 		GeographicalNameFunction gnf = new GeographicalNameFunction();
 		OmlRdfReader reader = new OmlRdfReader();
-		Alignment al = reader.read(new File("D://haletest.goml"));
+		String alignmentUrl = GeographicalNameFunctionTest.class.getResource("haletest.oml").toExternalForm();
+		Alignment al = null;
+		try {
+			al = reader.read(new URL(alignmentUrl));
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		gnf.configure(al.getMap().get(0));
 		//gnf.configure(GeographicalNameFunctionTest.getTestCell());
 		Feature result = gnf.transform(source, target);
