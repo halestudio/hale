@@ -11,24 +11,24 @@
 
 
 	<align:onto1>
-		<align:Ontology rdf:about="targetNamespace-of-source">
-			<align:location>source.xsd</align:location>
+		<align:Ontology rdf:about="http://www.openplans.org/topp">
+			<align:location>http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/hale/eu.esdihumboldt.hale/resources/INSPIRE_Conf_Data/Watercourse/BY/SourceSchema/Watercourses_BY.xml</align:location>
 			<align:formalism>
-				<align:Formalism>
-					<align:uri/>
-					<align:name>XSD</align:name>
-				</align:Formalism>
+				 <align:Formalism>
+                    <align:uri>http://www.opengis.net/gml</align:uri>
+                    <align:name>GML Application Schema</align:name>
+                </align:Formalism>
 			</align:formalism>
 		</align:Ontology>
 	</align:onto1>
 	<align:onto2>
-		<align:Ontology rdf:about="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0">
-			<align:location>HydroPhysicalWaters.xsd</align:location>
+		<align:Ontology rdf:about="urn:x-inspire:specification:gmlas:CadastralParcels:3.0">
+			<align:location>http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst.corefunctions/src/test/resource/eu/esdihumboldt/cst/corefunctions/inspire/inspire_v3.0_xsd/CadastralParcels.xsd</align:location>
 			<align:formalism>
 				<align:Formalism>
-					<align:uri/>
-					<align:name>XSD</align:name>
-				</align:Formalism>
+                    <align:uri>http://www.opengis.net/gml</align:uri>
+                    <align:name>GML Application Schema</align:name>
+                </align:Formalism>
 			</align:formalism>
 		</align:Ontology>
 	</align:onto2>
@@ -48,7 +48,7 @@
 									<omwg:transf rdf:resource="eu.esdihumboldt.cst.transformer.impl.GeographicalNameFunction">
 										<omwg:param>
 											<omwg:name>language</omwg:name>
-											<omwg:value>ger</omwg:value>
+											<omwg:value>eng</omwg:value>
 										</omwg:param>
 										<omwg:param>
 											<omwg:name>nativeness</omwg:name>
@@ -60,7 +60,7 @@
 										</omwg:param>
 										<omwg:param>
 											<omwg:name>sourceOfName</omwg:name>
-											<omwg:value>sourceOfName0</omwg:value>
+											<omwg:value>&lt;enter source if known&gt;</omwg:value>
 										</omwg:param>
 										<omwg:param>
 											<omwg:name>pronunciationIPA</omwg:name>
@@ -72,11 +72,11 @@
 										</omwg:param>
 										<omwg:param>
 											<omwg:name>grammaticalGender</omwg:name>
-											<omwg:value />
+											<omwg:value>feminine</omwg:value>
 										</omwg:param>
 										<omwg:param>
 											<omwg:name>grammaticalNumber</omwg:name>
-											<omwg:value />
+											<omwg:value>singular</omwg:value>
 										</omwg:param>
 									</omwg:transf>
 
@@ -159,11 +159,11 @@
 										</omwg:param>
 										<omwg:param>
 											<omwg:name>grammaticalGender</omwg:name>
-											<omwg:value/>
+											<omwg:value>feminine</omwg:value>
 										</omwg:param>
 										<omwg:param>
 											<omwg:name>grammaticalNumber</omwg:name>
-											<omwg:value/>
+											<omwg:value>singular</omwg:value>
 										</omwg:param>
 									</omwg:transf>
 
