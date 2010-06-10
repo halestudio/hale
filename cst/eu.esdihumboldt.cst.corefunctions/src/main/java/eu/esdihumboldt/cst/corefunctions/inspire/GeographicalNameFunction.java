@@ -141,9 +141,11 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 				} else if (ip.getName().equals(GeographicalNameFunction.PROPERTY_PRONUNCIATIONSOUNDLINK)) {
 					this._pronunciationSoundLink.add(cellcount, URI.create(ip.getValue()));
 				} else if (ip.getName().equals(GeographicalNameFunction.PROPERTY_GRAMMA_GENDER)) {
-					this._grammaticalGender.add(cellcount,GrammaticalGenderValue.valueOf(ip.getValue()));
+					if(ip.getValue()!=null && !ip.getValue().equals(""))
+						this._grammaticalGender.add(cellcount,GrammaticalGenderValue.valueOf(ip.getValue()));
 				} else if (ip.getName().equals(GeographicalNameFunction.PROPERTY_GRAMMA_NUMBER)) {
-					this._grammaticalNumber.add(cellcount,GrammaticalNumberValue.valueOf(ip.getValue()));
+					if(ip.getValue()!=null && !ip.getValue().equals(""))
+						this._grammaticalNumber.add(cellcount,GrammaticalNumberValue.valueOf(ip.getValue()));
 				}
 			}
 			// ************* FORCE TO COMPLETE INDEX FOR ALL ARRAYLISTS
