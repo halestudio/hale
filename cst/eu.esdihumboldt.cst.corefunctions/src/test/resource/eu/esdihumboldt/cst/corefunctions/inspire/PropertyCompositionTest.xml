@@ -203,7 +203,7 @@
 				</omwg:Property>
 			</omwg:entity1>
 			<omwg:entity2>
-				<omwg:Property rdf:about="hy-p:geographicalName">
+				<omwg:Property rdf:about="geographicalName">
 					<!--omwg:transf/-->
 					<domainRestriction>
 						<Class rdf:about="hy-p:Watercourse"/>

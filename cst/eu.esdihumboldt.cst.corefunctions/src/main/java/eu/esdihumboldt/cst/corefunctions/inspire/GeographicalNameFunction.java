@@ -118,12 +118,13 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 						this._transliteration.get(cellcount).add(spellingcount,
 								ip.getValue());
 					}
+				}
 					if (this._script.get(cellcount).size() < spellingcount + 1)
 						this._script.get(cellcount).add(spellingcount, null);
 					if (this._transliteration.get(cellcount).size() < spellingcount + 1)
 						this._transliteration.get(cellcount).add(spellingcount,
 								null);
-				}
+				
 				spellingcount++;
 			}
 			for (IParameter ip : p.getTransformation().getParameters()) {
@@ -217,9 +218,7 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 		for (int i = 0; i < cellcount; i++) {
 			Collection<FeatureImpl> spellingofnamepropertiescollection = new HashSet<FeatureImpl>();
 			for (int j = 0; j < _script.get(i).size(); j++) {
-				Object sourcepropertyvalue = source.getProperty(
-						this.sourceattributes.get(i).get(j).getLocalname())
-						.getValue();
+				Object sourcepropertyvalue = source.getProperty(this.sourceattributes.get(i).get(j).getLocalname()).getValue();
 				/*SimpleFeatureImpl spellingofname = (SimpleFeatureImpl) SimpleFeatureBuilder
 						.build(spellingofnametype, new Object[] {},
 								"SpellingOfName");*/

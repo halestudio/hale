@@ -63,18 +63,18 @@ import eu.esdihumboldt.inspire.data.NativenessValue;
 public class GeographicalNameFunctionTest {
 
 	public static String sourceLocalName = "FT1";
-	public static String sourceLocalnameProperty = "NAME";
-	public static String sourceLocalnameProperty2 = "NOM";
-	public static String sourceLocalnameProperty3 = "NOMBRE";
+	public static String sourceLocalnameProperty = "GermanName_LatnScript";// "NAME";
+	public static String sourceLocalnameProperty2 = "GermanName_GreekScript";//"NOM";
+	public static String sourceLocalnameProperty3 = "EnglishName_LatnScript";//"NOMBRE";
 	public static String sourceNamespace = "http://www.esdi-humboldt.eu";
 	
 	public static String targetLocalName = "FT2";
-	public static String targetLocalNameProperty = "name";
+	public static String targetLocalNameProperty = "geographicalName"; //"name";
 	public static String targetNamespace = "urn:x-inspire:specification:gmlas-v31:Hydrography:2.0";
 	
-	public static String name_value = "Danube";
-	public static String nom_value = "Donau";
-	public static String nombre_value="Danubio";
+	public static String name_value = "GermanName";//"Danube";
+	public static String nom_value = "GermanNameGreekScript";//"Donau";
+	public static String nombre_value= "EnglishName"; //"Danubio";
 	public static Locale language = Locale.ENGLISH;
 	public static Locale language2 = Locale.GERMAN;
 	public static NameStatusValue name_status = NameStatusValue.official;
@@ -91,9 +91,13 @@ public class GeographicalNameFunctionTest {
 			    GeographicalNameFunctionTest.sourceLocalName,
 			    String[].class);
 
-		String url = getClass().getResource(
+		/*String url = getClass().getResource(
 		"inspire_v3.0_xsd/CadastralParcels.xsd").toString();
-		FeatureType targetType = TypeLoader.getType("CadastralZoning", url);
+		FeatureType targetType = TypeLoader.getType("CadastralZoning", url);*/
+	   
+	   String url = getClass().getResource(
+		"inspire_v3.0_xsd/HydroPhysicalWaters.xsd").toString();
+		FeatureType targetType = TypeLoader.getType("SurfaceWater", url);
 		
 		Feature source = FeatureBuilder.buildFeature(sourceType, null,false);
 		source.getProperty(sourceLocalnameProperty).setValue(name_value);
@@ -121,10 +125,10 @@ public class GeographicalNameFunctionTest {
 		Feature expectedGN = setGeographicalNameResult(targetType);
 		
 		// ************* CHECK EQUALITY OF EXPECTED AND RECEIVED FEATURES ****************
-		AttributeImpl resultgn=(AttributeImpl)result.getProperty("name");
+		AttributeImpl resultgn=(AttributeImpl)result.getProperty("geographicalName");
 		
 		
-		AttributeImpl expectedGNgn = (AttributeImpl)expectedGN.getProperty("name");
+		AttributeImpl expectedGNgn = (AttributeImpl)expectedGN.getProperty("geographicalName");
 		
 		assertEquals(resultgn,expectedGNgn);
 		//assertTrue(1==1);
@@ -231,8 +235,8 @@ public class GeographicalNameFunctionTest {
 		
 		// ************* SET MAPPING COMPOSED PROPERTIES WITH PROPERTIES ****************
 		cpsp1.getCollection().add(p1);
-		cpsp1.getCollection().add(p3);
-		cpsp2.getCollection().add(p2);
+		cpsp1.getCollection().add(p2);
+		cpsp2.getCollection().add(p3);
 		
 		// ************* SET MAIN COMPOSED PROPERTY WITH MAPPING ONES ****************
 		cp.getCollection().add(cpsp1);
