@@ -14,6 +14,7 @@ package eu.esdihumboldt.cst.transformer.service.rename;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.geotools.data.DataUtilities;
@@ -41,11 +42,14 @@ import com.vividsolutions.jts.geom.Geometry;
 public class FeatureSpatialJoiner {
 	public static final String INTERSECTS ="intersects";
 	public static final String DWITHIN ="dWithin";
-	
+	public static final String BEYOND ="beyond";
+	public static final String NOT ="not";	
 	
 	private String onAttributeName = null;
 	private boolean spatial;
 	private String joinRule = null;
+	private double value;
+	private String UOM = null;
 	
 	
 	public FeatureSpatialJoiner(String onAttributeName, boolean spatial, String joinRule) {
@@ -61,8 +65,31 @@ public class FeatureSpatialJoiner {
 			}
 			else if (jRule[1].startsWith("dWithin")) {
 				this.joinRule = FeatureSpatialJoiner.DWITHIN;
+				this.value = Double.valueOf(jRule[1].substring(
+						jRule[1].indexOf("(") + 1, 
+						jRule[1].indexOf(";")));
+				this.UOM = jRule[1].substring(
+						jRule[1].indexOf(";") + 1, 
+						jRule[1].indexOf(")"));
 			}
-			
+			else if (jRule[1].startsWith("beyond")) {
+				this.joinRule = FeatureSpatialJoiner.BEYOND;
+				this.value = Double.valueOf(jRule[1].substring(
+						jRule[1].indexOf("(") + 1, 
+						jRule[1].indexOf(";")));
+				this.UOM = jRule[1].substring(
+						jRule[1].indexOf(";") + 1, 
+						jRule[1].indexOf(")"));
+			}
+			else if (jRule[1].startsWith("not")) {
+				this.joinRule = FeatureSpatialJoiner.NOT;
+				this.value = Double.valueOf(jRule[1].substring(
+						jRule[1].indexOf("(") + 1, 
+						jRule[1].indexOf(";")));
+				this.UOM = jRule[1].substring(
+						jRule[1].indexOf(";") + 1, 
+						jRule[1].indexOf(")"));
+			}
 			else{
 				throw new RuntimeException (jRule[1] + " is not a valid join rule.");
 			}
@@ -76,14 +103,14 @@ public class FeatureSpatialJoiner {
 	}
 	
 	
-	public List<Feature> join (List<Collection<? extends Feature>> sources, FeatureType targetType){
+	public List<Feature> join (List<Collection<Feature>> sources, FeatureType targetType){
 		if (spatial) return spatialJoin (sources, targetType);
 		if (!spatial) return join (sources, targetType);
 		else throw new RuntimeException("Error specifying spatial or non spatial join");
 	}
 	
 	
-	public List<Feature> spatialJoin(List<Collection<? extends Feature>> sources, FeatureType targetType) {
+	private List<Feature> spatialJoin(List<Collection<Feature>> sources, FeatureType targetType) {
 		
 			List<Feature> result = new ArrayList<Feature>();
 		
@@ -93,8 +120,6 @@ public class FeatureSpatialJoiner {
 				sourceFeatures0.add(f);
 			}
 			FeatureSource source0 = DataUtilities.source( sourceFeatures0 );
-			
-
 		 	FeatureType schema0 = sourceFeatures0.getSchema();
 	        String typeName0 = schema0.getName().getLocalPart();
 	        String geomName0 = schema0.getGeometryDescriptor().getLocalName();
@@ -106,8 +131,6 @@ public class FeatureSpatialJoiner {
 				sourceFeatures1.add(f);
 			}
 			FeatureSource source1 = DataUtilities.source( sourceFeatures1 );
-			
-
 		 	FeatureType schema1 = sourceFeatures1.getSchema();
 	        String typeName1 = schema1.getName().getLocalPart();
 	        String geomName1 = schema1.getGeometryDescriptor().getLocalName();   
@@ -132,14 +155,19 @@ public class FeatureSpatialJoiner {
 	        				// skip bad data
 	        				continue;
 	        			}
-	        			Filter innerFilter = ff.intersects( ff.property(geomName1), ff.literal( geometry ));
-	        			//Filter innerFilter = ff.dwithin(ff.property(geomName2), ff.literal( geometry ),1.0,"km");
-	        			//Filter innerFilter = ff.beyond(ff.property(geomName2), ff.literal( geometry ),1.0,"km");
-	        			//Filter innerFilter = ff.not( ff.disjoint(ff.property(geomName2), ff.literal( geometry )) );
+	        			Filter innerFilter= null;
+	        			if (this.joinRule.equals(FeatureSpatialJoiner.INTERSECTS))innerFilter= ff.intersects( ff.property(geomName1), ff.literal( geometry ));
+	        			else if (this.joinRule.equals(FeatureSpatialJoiner.DWITHIN))innerFilter= ff.dwithin(ff.property(geomName1), ff.literal( geometry ),1.0,"km");
+	        			else if (this.joinRule.equals(FeatureSpatialJoiner.BEYOND))innerFilter=  ff.beyond(ff.property(geomName1), ff.literal( geometry ),1.0,"km");
+	        			else if (this.joinRule.equals(FeatureSpatialJoiner.NOT))innerFilter=  ff.not( ff.disjoint(ff.property(geomName1), ff.literal( geometry )) );
                     
 	        			DefaultQuery innerQuery = new DefaultQuery( typeName1, innerFilter, DefaultQuery.NO_NAMES );
 	        			FeatureCollection<FeatureType, Feature> join = source1.getFeatures( innerQuery );
-	        			
+	        			for ( Iterator<Feature> i = join.iterator(); i.hasNext(); )
+	        			{
+	        			  result.add(i.next());
+	        			}
+
 	        		}
 	        		catch( Exception skipBadData ){
 	        		}
