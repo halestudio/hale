@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.cst.transformer.service.impl;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -31,7 +32,8 @@ public class IdGenerator {
 	
 	/**
 	 * Uses the {@link #hashCode()} of the source {@link Feature}'s ID to 
-	 * return a new {@link FeatureId}.
+	 * return a new {@link FeatureId}. The {@link FeatureId} of the source 
+	 * {@link Feature} must not be null.
 	 * @param f the {@link Feature} from which the new ID should be derived from.
 	 * @return a int {@link FeatureId} based on the source's {@link FeatureId}.
 	 */
@@ -42,7 +44,8 @@ public class IdGenerator {
 	/**
 	 * Uses the {@link #hashCode()} of the source {@link Feature}'s ID and the 
 	 * {@link #hashCode()} of the {@link Feature} itself to return a new 
-	 * {@link FeatureId}.
+	 * {@link FeatureId}. The {@link FeatureId} of the source {@link Feature} 
+	 * must not be null.
 	 * @param f the {@link Feature} from which the new ID should be derived from. 
 	 * @return a {@link FeatureId} containing a UUID in String form.
 	 */
@@ -55,6 +58,7 @@ public class IdGenerator {
 	 * @param f the {@link Feature} from which the new ID should be derived from.
 	 * @param fieldnames a {@link List} with the local names of the fields that 
 	 * should be used for the calculation of the new {@link FeatureId} content. 
+	 * A field's value may be null, but not all are allowed to be null.
 	 * @return a {@link FeatureId} containing a UUID in String form.
 	 */
 	public static FeatureId getUuidHashcodeId(Feature f, List<String> fieldnames) {
@@ -65,7 +69,29 @@ public class IdGenerator {
 				values.add(p.getValue().toString());
 			}
 		}
-		UUID fid = new UUID(f.getIdentifier().getID().hashCode(), values.hashCode());
+		String mostSignificant = "";
+		String leastSignificant = "";
+		if (values.size() < 1) {
+			throw new InvalidParameterException("The Feature passed in did " +
+					"not have a non-null field to use in ID calculation.");
+		}
+		else if (values.size() == 1) {
+			String input = values.get(0);
+			mostSignificant = input.substring(0, input.length() / 2);
+			leastSignificant = input.substring(input.length() / 2 + 1, input.length() - 1);
+		} 
+		else {
+			for (int i = 0; i < values.size(); i++) {
+				if (i % 2 == 0) {
+					mostSignificant += values.get(i);
+				}
+				else {
+					leastSignificant += values.get(i);
+				}
+			}
+		}
+		UUID fid = new UUID(mostSignificant.hashCode(), 
+				leastSignificant.hashCode());
 		return new FeatureIdImpl(fid.toString());
 	}
 	
