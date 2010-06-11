@@ -33,7 +33,6 @@ import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
-import eu.esdihumboldt.hale.rcp.utils.FeatureTypeHelper;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
@@ -118,7 +117,7 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 			
 		});
 		
-		if (types == null || types.isEmpty())
+		if (types.isEmpty())
 			return;
 		
 		int index = 0;
