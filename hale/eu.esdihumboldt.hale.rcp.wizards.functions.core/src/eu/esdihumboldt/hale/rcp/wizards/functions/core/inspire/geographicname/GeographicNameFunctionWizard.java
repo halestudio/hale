@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.geographicname;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.rdf.DetailedAbout;
 import eu.esdihumboldt.goml.rdf.Resource;
@@ -141,8 +143,20 @@ public class GeographicNameFunctionWizard extends
 	@Override
 	public boolean performFinish() {
 		Cell cell = getResultCell();
+		// 1. configure composed property for the cell
+		 ComposedProperty cp = (ComposedProperty)cell.getEntity1();
+		 if (cp == null){
+			 cp = new ComposedProperty(new About(""));
+		 }
+		 //2. set Transforamtion for the cell
+		 Transformation  cpT = new Transformation(new Resource(GeographicalNameFunction.class.getName()));
+		 //3. create collection of the properties and set it to the ComposedProperty
+		 ArrayList<SpellingType> spellings = page.getSpellings();  
+		 Collection<Property> collection = new ArrayList<Property>();
+		 
+		 
 		
-		ComposedProperty maincp=null;
+		/*ComposedProperty maincp=null;
 		DetailedAbout ab = null;
 		try{
 			maincp= (ComposedProperty) cell.getEntity1();
@@ -178,7 +192,7 @@ public class GeographicNameFunctionWizard extends
 
 		// add parameters
 
-		/*
+		
 		 * // text t.getParameters().add( new
 		 * Parameter(GeographicalNameFunction.PROPERTY_TEXT, page .getText()));
 		 * // script t.getParameters().add( new
@@ -186,7 +200,7 @@ public class GeographicNameFunctionWizard extends
 		 * .getScript())); // transliteration t.getParameters().add( new
 		 * Parameter( GeographicalNameFunction.PROPERTY_TRANSLITERATION, page
 		 * .getTransliteration()));
-		 */
+		 
 		// ipa
 		t.getParameters().add(
 				new Parameter(
@@ -218,7 +232,7 @@ public class GeographicNameFunctionWizard extends
 		maincp.getCollection().add(geograf);
 		cell.setEntity1(maincp);
 		//((Entity) cell.getEntity1()).setTransformation(t);
-
+*/
 		return true;
 	}
 
