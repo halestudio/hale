@@ -27,6 +27,7 @@ import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.goml.rdf.DetailedAbout;
 import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
@@ -142,12 +143,23 @@ public class GeographicNameFunctionWizard extends
 		Cell cell = getResultCell();
 		
 		ComposedProperty maincp=null;
+		DetailedAbout ab = null;
 		try{
 			maincp= (ComposedProperty) cell.getEntity1();
-		}catch(Exception ex){}
+		}catch(Exception ex){
+			try{
+			 Property p = (Property)cell.getEntity1();
+			 ab=(DetailedAbout)p.getAbout();			 
+			}
+			catch(Exception ex2){}
+		}
 		if (maincp==null)
-			maincp = new ComposedProperty(new About("http://www.esdi-humboldt.eu", "FT1"));
-		ComposedProperty geograf = new ComposedProperty(new About("http://www.esdi-humboldt.eu", "FT1"));
+				maincp = new ComposedProperty(new About("http://www.esdi-humboldt.eu", "FT1"));
+		ComposedProperty geograf=null;
+		if(ab==null) 
+			geograf = new ComposedProperty(new About("http://www.esdi-humboldt.eu", "FT1"));
+		else
+			geograf = new ComposedProperty(ab);
 		Transformation t = new Transformation();
 		t.setService(new Resource(GeographicalNameFunction.class.getName()));
 
