@@ -12,7 +12,8 @@
 package eu.esdihumboldt.cst.corefunctions;
 
 import java.math.BigInteger;
-import java.sql.Date;
+import java.util.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -68,51 +69,63 @@ public class RenameAttributeFunction
 		
 		Object value = sourceProperty.getValue();
 		
-		if (bindingSource.equals(bindingTarget)) {
-			// do a direct copy if the two Properties have equal bindings.
-			// value mustn't be changed
-		}
-		else if (Geometry.class.isAssignableFrom(bindingSource) 
-				&& Geometry.class.isAssignableFrom(bindingTarget)) {
-			// geometry conversion
-			value = convertSpatialType(bindingSource, bindingTarget, 
-					(Geometry) value);
-		}
-		else if (bindingSource.equals(String.class) 
-				&& bindingTarget.equals(Integer.class)) {
-			// convert string to int
-			value = Integer.parseInt(value.toString());
-		}
-		else if (bindingSource.equals(String.class) 
-				&& bindingTarget.equals(Long.class)) {
-			// convert string to long
-			value = Long.parseLong(value.toString());
-		}
-		else if (bindingSource.equals(String.class) 
-				&& bindingTarget.equals(Float.class)) {
-			// convert string to float
-			value = Float.parseFloat(value.toString());
-		}
-		else if (bindingSource.equals(String.class) 
-				&& bindingTarget.equals(Double.class)) {
-			// convert string to double
-			value = Double.parseDouble(value.toString());
-		}
-		else if (bindingTarget.equals(String.class) && //XXX why check for the source type?  
-				(bindingSource.equals(Float.class) 
-						|| bindingSource.equals(Double.class) 
-						|| bindingSource.equals(Integer.class) 
-						|| bindingSource.equals(Long.class)
-						|| bindingSource.equals(BigInteger.class))) {
-			// convert to string
-			value = value.toString();
-		}
-		else {
-			throw new UnsupportedOperationException("For the given source (" 
-					+ bindingSource.getName() +
-					") and target (" + bindingTarget.getName() 
-					+ ") attribute bindings, this rename function " +
-					"cannot be used.");
+		if (value != null) {
+			//XXX this would be a nice place to use some sort of converter framework (that can be extended)
+			
+			if (bindingTarget.isAssignableFrom(bindingSource)) {
+				// do a direct copy if the target is directly assignable from the source type
+				// value mustn't be changed
+			}
+			else if (bindingTarget.isAssignableFrom(value.getClass())) {
+				// do a direct copy if the target is directly assignable from the source value
+				// value mustn't be changed
+			}
+			else if (Geometry.class.isAssignableFrom(bindingSource) 
+					&& Geometry.class.isAssignableFrom(bindingTarget)) {
+				// geometry conversion
+				value = convertSpatialType(bindingSource, bindingTarget, 
+						(Geometry) value);
+			}
+			else if (bindingSource.equals(String.class) 
+					&& bindingTarget.equals(Integer.class)) {
+				// convert string to int
+				value = Integer.parseInt(value.toString());
+			}
+			else if (bindingSource.equals(String.class) 
+					&& bindingTarget.equals(Long.class)) {
+				// convert string to long
+				value = Long.parseLong(value.toString());
+			}
+			else if (bindingSource.equals(String.class) 
+					&& bindingTarget.equals(Float.class)) {
+				// convert string to float
+				value = Float.parseFloat(value.toString());
+			}
+			else if (bindingSource.equals(String.class) 
+					&& bindingTarget.equals(Double.class)) {
+				// convert string to double
+				value = Double.parseDouble(value.toString());
+			}
+			else if (bindingTarget.equals(String.class) && //XXX why check for the source type?  
+					(bindingSource.equals(Float.class) 
+							|| bindingSource.equals(Double.class) 
+							|| bindingSource.equals(Integer.class) 
+							|| bindingSource.equals(Long.class)
+							|| bindingSource.equals(BigInteger.class))) {
+				// convert to string
+				value = value.toString();
+			}
+			else if (value instanceof Date && bindingTarget.isAssignableFrom(Timestamp.class)) {
+				// Date to Timestamp
+				value = new Timestamp(((Date) value).getTime());
+			}
+			else {
+				throw new UnsupportedOperationException("For the given source (" 
+						+ bindingSource.getName() +
+						") and target (" + bindingTarget.getName() 
+						+ ") attribute bindings, this rename function " +
+						"cannot be used.");
+			}
 		}
 		
 		// set the target property
