@@ -87,7 +87,9 @@ public class RenameFeatureFunction
 				}
 				else if (target instanceof FeatureImpl) {
 					GeometryAttribute gattr = target.getDefaultGeometryProperty();
-					gattr.setValue(sourceGeom);
+					if (gattr != null) { // only copy geometry if target type has a default geometry property
+						gattr.setValue(sourceGeom);
+					}
 				}
 			}
 		} catch (IllegalAttributeException iea) {
