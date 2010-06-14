@@ -51,7 +51,9 @@ import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.geotools.feature.NameImpl;
+import org.geotools.feature.type.ComplexTypeImpl;
 import org.opengis.feature.type.AttributeType;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.hale.schemaprovider.AbstractSchemaProvider;
@@ -697,6 +699,12 @@ public class ApacheSchemaProvider
 				if (superType != null && superType.isAttributeTypeSet()) {
 					// determine if any new elements have been added in the subtype
 					boolean reuseBinding = true;
+					
+					// special case: super type is AbstractFeatureType but no FeatureType instance
+					if (superType.isFeatureType() && !(superType.getType(null) instanceof FeatureType)) {
+						reuseBinding = false;
+					}
+					
 					Iterator<AttributeDefinition> it = attributes.iterator();
 					while (reuseBinding && it.hasNext()) {
 						if (it.next().isElement()) {
