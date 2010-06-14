@@ -31,6 +31,8 @@ import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.rdf.DetailedAbout;
+import eu.esdihumboldt.goml.rdf.IDetailedAbout;
 
 /**
  * 
@@ -170,12 +172,14 @@ public class MappingInfo {
 		else if (entity instanceof ComposedProperty) {
 			// FIXME determine if multiple FTs are involved, and if yes, register all of them!
 			Property firstProperty = ((ComposedProperty) entity).getCollection().get(0);
-			identifier = firstProperty.getNamespace() + "/" 
-					+ firstProperty.getFeatureClassName();
+			IDetailedAbout about = DetailedAbout.getDetailedAbout(firstProperty.getAbout(), true);
+			identifier = about.getNamespace() + "/" 
+					+ about.getFeatureClass();
 		}
 		else if (entity instanceof Property) {
 			Property property = (Property) entity;
-			identifier = property.getNamespace() + "/" + property.getFeatureClassName();
+			IDetailedAbout about = DetailedAbout.getDetailedAbout(property.getAbout(), true);
+			identifier = about.getNamespace() + "/" + about.getFeatureClass();
 		}
 		else {
 			throw new IllegalArgumentException("Unknown entity type");
