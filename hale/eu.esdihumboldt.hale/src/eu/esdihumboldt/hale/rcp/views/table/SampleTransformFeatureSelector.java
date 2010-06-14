@@ -162,8 +162,11 @@ public class SampleTransformFeatureSelector implements FeatureSelector {
 			Set<FeatureType> fts = new HashSet<FeatureType>();
 			Map<FeatureType, SchemaElement> elementMap = new HashMap<FeatureType, SchemaElement>();
 			for (SchemaElement element : targetElements) {
-				fts.add(element.getFeatureType());
-				elementMap.put(element.getFeatureType(), element);
+				FeatureType type = element.getFeatureType();
+				if (type != null) {
+					fts.add(type);
+					elementMap.put(type, element);
+				}
 			}
 			
 			// get reference features

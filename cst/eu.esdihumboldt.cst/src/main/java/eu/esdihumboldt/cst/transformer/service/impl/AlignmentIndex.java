@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.IAlignment;
@@ -186,11 +187,14 @@ public class AlignmentIndex {
 	}
 	
 	/**
-	 * @param potentialChild
-	 * @param potentialParent
+	 * Check if a type is the child of the given potential parent type
+	 * 
+	 * @param potentialChild the potential child
+	 * @param potentialParent the potential parent
+	 * 
 	 * @return true if potentialParent is a supertype of potentialChild
 	 */
-	private boolean isSuperTypeOf(FeatureType potentialChild, FeatureType potentialParent) {
+	private boolean isSuperTypeOf(AttributeType potentialChild, AttributeType potentialParent) {
 		boolean result = false;
 		if (potentialChild != null && potentialChild.getSuper() != null && potentialParent != null) {
 			if (potentialChild.getSuper().getName().equals(
@@ -199,7 +203,7 @@ public class AlignmentIndex {
 			}
 			else {
 				result = this.isSuperTypeOf(
-						(FeatureType)potentialChild.getSuper(), 
+						potentialChild.getSuper(), 
 						potentialParent);
 			}
 		}

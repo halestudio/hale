@@ -283,7 +283,13 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 				Collection<SchemaElement> targetElements = schemaService.getTargetSchema();
 				Set<FeatureType> fts = new HashSet<FeatureType>();
 				for (SchemaElement element : targetElements) {
-					fts.add(element.getFeatureType());
+					FeatureType type = element.getFeatureType();
+					if (type != null) {
+						fts.add(type);
+					}
+					else {
+						log.debug("No feature type for element " + element.getDisplayName());
+					}
 				}
 				
 				FeatureCollection features = ts.transform(

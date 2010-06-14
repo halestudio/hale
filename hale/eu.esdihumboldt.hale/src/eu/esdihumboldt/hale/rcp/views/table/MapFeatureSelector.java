@@ -147,8 +147,11 @@ public class MapFeatureSelector implements FeatureSelector {
 			Set<FeatureType> fts = new HashSet<FeatureType>();
 			Map<String, SchemaElement> elementMap = new HashMap<String, SchemaElement>();
 			for (SchemaElement element : elements) {
-				fts.add(element.getFeatureType());
-				elementMap.put(getIdentifier(element.getFeatureType()), element);
+				FeatureType type = element.getFeatureType();
+				if (type != null) {
+					fts.add(type);
+					elementMap.put(getIdentifier(type), element);
+				}
 			}
 			
 			// get selected features

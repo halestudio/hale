@@ -317,7 +317,8 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 				Iterator<SchemaElement> it = filteredTypes.iterator();
 				while (typeFound == null && it.hasNext()) {
 					SchemaElement type = it.next();
-					if (type.getFeatureType().getName().equals(typeToSelect.getName())) { //XXX is Name.equals really working?
+					FeatureType t = type.getFeatureType();
+					if (t != null && t.getName().equals(typeToSelect.getName())) { //XXX is Name.equals really working?
 						typeFound = type;
 					}
 				}
