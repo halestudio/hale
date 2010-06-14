@@ -12,6 +12,10 @@
 
 package eu.esdihumboldt.hale.rcp.views.table.tree;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Map.Entry;
@@ -165,7 +169,21 @@ public class DefinitionFeatureTreeViewer {
 		// add columns for features
 		int index = 1;
 		if (features != null) {
-			for (Feature feature : features) {
+			// sort features
+			List<Feature> sortedFeatures = new ArrayList<Feature>();
+			for (Feature f : features) {
+				sortedFeatures.add(f);
+			}
+			Collections.sort(sortedFeatures, new Comparator<Feature>() {
+
+				@Override
+				public int compare(Feature o1, Feature o2) {
+					return o1.getIdentifier().getID().compareTo(o2.getIdentifier().getID());
+				}
+				
+			});
+			
+			for (Feature feature : sortedFeatures) {
 				TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.LEFT);
 				column.getColumn().setText(feature.getIdentifier().toString());
 				column.setLabelProvider(new TreeColumnViewerLabelProvider(
