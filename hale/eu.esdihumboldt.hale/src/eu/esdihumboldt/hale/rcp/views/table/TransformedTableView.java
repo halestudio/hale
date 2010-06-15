@@ -56,11 +56,11 @@ public class TransformedTableView extends AbstractTableView {
 	 * Default constructor
 	 */
 	public TransformedTableView() {
-		super(new InstanceServiceFeatureSelector(SchemaType.TARGET));
+		super(new SampleTransformFeatureSelector());
 		
-		instanceSelector = (InstanceServiceFeatureSelector) getFeatureSelector();
+		instanceSelector = new InstanceServiceFeatureSelector(SchemaType.TARGET);
 		// another selector based on the reference sample service
-		sampleSelector = new SampleTransformFeatureSelector();
+		sampleSelector = (SampleTransformFeatureSelector) getFeatureSelector();
 		// selector base on the map selection
 		mapSelector = new MapFeatureSelector(SchemaType.TARGET);
 	}
@@ -83,7 +83,6 @@ public class TransformedTableView extends AbstractTableView {
 		}
 		instanceButton.setImage(instanceImage);
 		instanceButton.setToolTipText("Random/filtered transformed instances");
-		instanceButton.setSelection(true);
 		instanceButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -98,6 +97,7 @@ public class TransformedTableView extends AbstractTableView {
 			sampleImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/table.gif").createImage(); //$NON-NLS-1$
 		}
 		sampleButton.setImage(sampleImage);
+		sampleButton.setSelection(true);	
 		sampleButton.setToolTipText(Messages.TransformedTableView_SynchToolTipText);
 		sampleButton.addSelectionListener(new SelectionAdapter() {
 
