@@ -1,4 +1,5 @@
 -classpath: lib-2.6/_common_services.jar,\
+lib-2.6/_patch.jar,\
 lib-2.6/batik-anim-1.7.jar,\
 lib-2.6/batik-awt-util-1.7.jar,\
 lib-2.6/batik-bridge-1.7.jar,\
