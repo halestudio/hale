@@ -90,7 +90,7 @@ public class JoinTest {
 	
 
 		FeatureSpatialJoiner fj = new FeatureSpatialJoiner("SomeValues0","SomeValues1", false, "join");
-		List<Feature>results = fj.join(all, ft2);
+		List<Feature>results = fj.join(all);
 		_log.info("JOINSIZE " +results.size());
 
 		assertTrue(results.size()==2);
@@ -164,7 +164,7 @@ public class JoinTest {
 	
 
 		FeatureSpatialJoiner fj = new FeatureSpatialJoiner("1_P","SomeP", true, "join:intersects");
-		List<Feature>results = fj.join(all, ft2);
+		List<Feature>results = fj.join(all);
 		_log.info("JoinSIZE " +results.size());
 
 		assertTrue(results.size()==2);

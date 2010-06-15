@@ -11,27 +11,19 @@
  */
 package eu.esdihumboldt.cst.transformer.service.rename;
 
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
-
-import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.filter.text.cql2.CQL;
-import org.geotools.filter.text.cql2.CQLException;
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
@@ -39,8 +31,6 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
-
 /**
 * @author Ulrich Schaeffler 
 * @partner 14 / TUM
@@ -118,15 +108,15 @@ public class FeatureSpatialJoiner {
 	}
 	
 	
-	public List<Feature> join (List<Collection<Feature>> sources, FeatureType targetType){
+	public List<Feature> join (List<Collection<Feature>> sources){
 		if (spatial){
-			return spatialJoin (sources, targetType);
+			return spatialJoin (sources);
 		}
-		if (!spatial) return alphaJoin (sources, targetType);
+		if (!spatial) return alphaJoin (sources);
 		else throw new RuntimeException("Error specifying spatial or non spatial join");
 	}
 	
-	private List<Feature> alphaJoin (List<Collection<Feature>> sources, FeatureType targetType){
+	private List<Feature> alphaJoin (List<Collection<Feature>> sources){
 
 		List<Feature> result = new ArrayList<Feature>();
 		
@@ -199,7 +189,7 @@ public class FeatureSpatialJoiner {
 	}
 	
 	
-	private List<Feature> spatialJoin (List<Collection<Feature>> sources, FeatureType targetType){
+	private List<Feature> spatialJoin (List<Collection<Feature>> sources){
 		
 		List<Feature> result = new ArrayList<Feature>();
 		
