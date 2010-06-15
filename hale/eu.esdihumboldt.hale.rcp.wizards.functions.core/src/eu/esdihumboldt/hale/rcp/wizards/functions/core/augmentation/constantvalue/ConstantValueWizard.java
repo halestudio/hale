@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.augmentation.constantvalue;
 
-import org.apache.log4j.Logger;
-
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.corefunctions.ConstantValueFunction;
 import eu.esdihumboldt.goml.align.Cell;
@@ -33,12 +31,8 @@ import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizard;
  */
 public class ConstantValueWizard extends AugmentationWizard {
 
-	
-	private static final Logger log = Logger.getLogger(ConstantValueWizard.class);
-	
 	private ConstantValueWizardPage page;
-	
-	
+
 	/**
 	 * @see AugmentationWizard#AugmentationWizard(SchemaItem, ICell)
 	 */
@@ -52,9 +46,10 @@ public class ConstantValueWizard extends AugmentationWizard {
 	 */
 	@Override
 	protected void init() {
-		
+
 		// get and validate the initial value from the cell (if available)
-		page = new ConstantValueWizardPage("mainPage", "Configure Constant Value Augmentation", null);
+		page = new ConstantValueWizardPage("mainPage",
+				"Configure Constant Value Augmentation", null);
 		super.setWindowTitle("Constant Value Augmentation Wizard");
 
 	}
@@ -64,16 +59,22 @@ public class ConstantValueWizard extends AugmentationWizard {
 	 */
 	@Override
 	public boolean performFinish() {
-		//String parameterName = page.getParamName();
+		// String parameterName = page.getParamName();
 		String parameterValue = page.getParamValue();
 		Cell result = getResultCell();
 		Entity entity = (Entity) result.getEntity2();
 		Transformation transformation = new Transformation();
-		transformation.setService(new Resource(ConstantValueFunction.class.getName()));
-		// Simon: replaced parameterName with constant that is used in ConstantValueFunction as the parameter name
-		transformation.getParameters().add(new Parameter(ConstantValueFunction.DEFAULT_VALUE_PARAMETER_NAME /*parameterName*/, parameterValue));
+		transformation.setService(new Resource(ConstantValueFunction.class
+				.getName()));
+		// Simon: replaced parameterName with constant that is used in
+		// ConstantValueFunction as the parameter name
+		transformation
+				.getParameters()
+				.add(new Parameter(
+							ConstantValueFunction.DEFAULT_VALUE_PARAMETER_NAME,
+							parameterValue));
 		entity.setTransformation(transformation);
-		
+
 		return true;
 	}
 
@@ -81,11 +82,10 @@ public class ConstantValueWizard extends AugmentationWizard {
 	public void addPages() {
 		addPage(page);
 	}
-	
+
 	@Override
-	public boolean canFinish(){
+	public boolean canFinish() {
 		return page.isPageComplete();
 	}
-	
-}
 
+}

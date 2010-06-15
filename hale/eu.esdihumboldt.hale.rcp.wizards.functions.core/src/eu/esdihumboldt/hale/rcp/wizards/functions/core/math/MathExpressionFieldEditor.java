@@ -15,7 +15,6 @@ import java.util.Set;
 
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 
 import com.iabcinc.jmep.Environment;
 import com.iabcinc.jmep.Expression;

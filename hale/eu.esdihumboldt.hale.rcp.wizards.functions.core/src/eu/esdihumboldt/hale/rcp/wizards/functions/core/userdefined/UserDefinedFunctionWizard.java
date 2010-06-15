@@ -11,7 +11,6 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.userdefined;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -20,7 +19,6 @@ import org.eclipse.jface.wizard.Wizard;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
-import eu.esdihumboldt.cst.corefunctions.NetworkExpansionFunction;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.Resource;

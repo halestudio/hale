@@ -11,7 +11,6 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.core;
 
-import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;

@@ -10,7 +10,6 @@ import org.eclipse.swt.widgets.Composite;
 import eu.esdihumboldt.hale.rcp.utils.filter.FeatureFilterForm;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Filter wizard page

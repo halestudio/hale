@@ -13,7 +13,6 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.geographicname;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.corefunctions.GenericMathFunction;
 import eu.esdihumboldt.cst.corefunctions.inspire.GeographicalNameFunction;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
@@ -46,7 +45,7 @@ public class GeographicNameFunctionWizardFactory implements
 	 */
 	@Override
 	public boolean supports(AlignmentInfo selection) {
-		boolean supports = true;
+
 		// must be at least one source item and exactly one target item
 		if (selection.getSourceItemCount() < 1
 				|| selection.getTargetItemCount() != 1) {

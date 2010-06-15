@@ -12,9 +12,6 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.core;
 
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -33,38 +30,37 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
 
 /**
  * ConcatenationofAttributesWizardpage
+ * 
  * @author Stefan Gessner
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class ConcatenationOfAttributesWizardPage extends
-AbstractSingleComposedCellWizardPage{
-	
-private final Map<String, Set<String>> classifications = new TreeMap<String, Set<String>>();
-	
+		AbstractSingleComposedCellWizardPage {
+
 	/**
 	 * 
 	 */
-	private final Image addImage = CoreFunctionWizardsPlugin.getImageDescriptor("icons/add.gif").createImage();
-	
+	private final Image addImage = CoreFunctionWizardsPlugin
+			.getImageDescriptor("icons/add.gif").createImage();
+
 	/**
 	 * 
 	 */
-	private final Image removeImage = CoreFunctionWizardsPlugin.getImageDescriptor("icons/remove.gif").createImage();
-	
+	private final Image removeImage = CoreFunctionWizardsPlugin
+			.getImageDescriptor("icons/remove.gif").createImage();
+
 	/**
 	 * 
 	 */
 	ListViewer listViewer;
-	
+
 	/**
 	 * 
 	 */
@@ -85,27 +81,28 @@ private final Map<String, Set<String>> classifications = new TreeMap<String, Set
 	@Override
 	public void createControl(Composite parent) {
 		super.initializeDialogUnits(parent);
-        this.setPageComplete(this.isPageComplete());
-		
-		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(DefinitionLabelFactory.class);
-		
+		this.setPageComplete(this.isPageComplete());
+
 		Composite page = new Composite(parent, SWT.NONE);
 		super.setControl(page);
 		page.setLayout(new GridLayout(3, false));
 		Group sourceGroup = new Group(page, SWT.NONE);
 		sourceGroup.setLayout(new GridLayout(SWT.FILL_WINDING, true));
 		sourceGroup.setText("Source Items");
-		
+
 		final Label seperatorLabel = new Label(sourceGroup, SWT.NONE);
 		seperatorLabel.setText("Seperator: ");
 		this.seperatorText = new Text(sourceGroup, SWT.SINGLE | SWT.BORDER);
-		this.seperatorText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		this.seperatorText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true));
 		this.seperatorText.setText(":");
-		TreeSet<SchemaItem> sourceTreeSet = (TreeSet<SchemaItem>) getParent().getSourceItems();
+		TreeSet<SchemaItem> sourceTreeSet = (TreeSet<SchemaItem>) getParent()
+				.getSourceItems();
 		String[] localNames = new String[sourceTreeSet.size()];
-		int k=0;
-		for(Iterator<SchemaItem> iterator = sourceTreeSet.iterator(); iterator.hasNext();k++) {
-			localNames[k]=iterator.next().getEntity().getLocalname();
+		int k = 0;
+		for (Iterator<SchemaItem> iterator = sourceTreeSet.iterator(); iterator
+				.hasNext(); k++) {
+			localNames[k] = iterator.next().getEntity().getLocalname();
 		}
 
 		// source value selection
@@ -116,7 +113,6 @@ private final Map<String, Set<String>> classifications = new TreeMap<String, Set
 		final ComboViewer comboViewer = new ComboViewer(combo);
 		comboViewer.setContentProvider(new ArrayContentProvider());
 		comboViewer.setInput(localNames);
-		
 
 		// add source value
 		Button addButton = new Button(page, SWT.PUSH);
@@ -126,36 +122,42 @@ private final Map<String, Set<String>> classifications = new TreeMap<String, Set
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if(!combo.getText().equals("")){
-					ConcatenationOfAttributesWizardPage.this.listViewer.add(combo.getText());
+				if (!combo.getText().equals("")) {
+					ConcatenationOfAttributesWizardPage.this.listViewer
+							.add(combo.getText());
 				}
-			}		
+			}
 		});
-		
+
 		// remove target value
 		final Button removeButton = new Button(page, SWT.PUSH);
 		removeButton.setImage(this.removeImage);
-		removeButton.setToolTipText("Remove selected Concatenations Attributes");
+		removeButton
+				.setToolTipText("Remove selected Concatenations Attributes");
 		removeButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if(ConcatenationOfAttributesWizardPage.this.listViewer.getList().getItems().length!=0){
-					for(String selection : ConcatenationOfAttributesWizardPage.this.listViewer.getList().getSelection()){
-						ConcatenationOfAttributesWizardPage.this.listViewer.getList().remove(selection);
+				if (ConcatenationOfAttributesWizardPage.this.listViewer
+						.getList().getItems().length != 0) {
+					for (String selection : ConcatenationOfAttributesWizardPage.this.listViewer
+							.getList().getSelection()) {
+						ConcatenationOfAttributesWizardPage.this.listViewer
+								.getList().remove(selection);
 					}
 				}
-			}	
+			}
 		});
-			
+
 		// list
-		List list = new List(page, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
+		List list = new List(page, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL
+				| SWT.BORDER);
 		list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 		this.listViewer = new ListViewer(list);
-		this.listViewer.setContentProvider(new ArrayContentProvider());	
-		
+		this.listViewer.setContentProvider(new ArrayContentProvider());
+
 	}
-	
+
 	/**
 	 * @return the ListViewer
 	 */

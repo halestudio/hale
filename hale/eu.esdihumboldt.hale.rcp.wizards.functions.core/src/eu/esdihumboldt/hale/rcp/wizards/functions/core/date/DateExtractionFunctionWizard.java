@@ -63,7 +63,6 @@ public class DateExtractionFunctionWizard extends AbstractSingleComposedCellWiza
 	@Override
 	public boolean performFinish() {
 		ICell cell = getResultCell();
-		Entity entity1 = (Entity) cell.getEntity1();
 		
 		Transformation transformation = new Transformation();
 		transformation.setService(new Resource(DateExtractionFunction.class.getName()));

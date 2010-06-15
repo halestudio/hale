@@ -19,8 +19,6 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -37,7 +35,7 @@ import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 
 /**
- * This {@link WizardPage} is used to define a renaming mapping.
+ * This {@link WizardPage} is used to define a Retype feature Mapping.
  * 
  * @author Anna Pitaev
  * @version {$Id}
@@ -217,22 +215,6 @@ public class RenamingFunctionWizardMainPage
 					
 				}
 			});
-			
-//			varList.getList().addMouseListener(new MouseAdapter() {
-//
-//				/**
-//				 * @see MouseAdapter#mouseDoubleClick(MouseEvent)
-//				 */
-//				@Override
-//				public void mouseClick(MouseEvent e) {
-//					int index = varList.getList().getSelectionIndex();
-//					if (index >= 0) {
-//						String var = varList.getList().getItem(index);
-//						selectedVariable = var;
-//					}
-//				}
-//				
-//			});
 			
 			update();
 		}

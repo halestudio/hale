@@ -37,16 +37,17 @@ import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 
 /**
  * Main page of the {@link ConstantValueWizard}
- *
+ * 
  * @author Anna Pitaev, Simon Templer
- * @partner 04 / Logica; 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @partner 04 / Logica; 01 / Fraunhofer Institute for Computer Graphics
+ *          Research
+ * @version $Id$
  */
 public class ConstantValueWizardPage extends AugmentationWizardPage {
 
 	/** text field for the name of the target attribute */
-	//private Text attributeNameText;
-	
+	// private Text attributeNameText;
+
 	/** text field for the default value to set up */
 	private AttributeEditor<?> attributeValue;
 
@@ -69,36 +70,41 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 	@Override
 	public void createControl(Composite parent) {
 		super.initializeDialogUnits(parent);
-		
-		Composite composite = new Composite(parent, SWT.NULL);
-        composite.setLayout(new GridLayout());
-        composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
-                | GridData.HORIZONTAL_ALIGN_FILL));
-        composite.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-        composite.setFont(parent.getFont());
 
-        this.createConfigurationGroup(composite);
-        
-        setErrorMessage(null);	// should not initially have error message
+		Composite composite = new Composite(parent, SWT.NULL);
+		composite.setLayout(new GridLayout());
+		composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
+				| GridData.HORIZONTAL_ALIGN_FILL));
+		composite.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		composite.setFont(parent.getFont());
+
+		this.createConfigurationGroup(composite);
+
+		setErrorMessage(null); // should not initially have error message
 		super.setControl(composite);
 	}
-	
+
 	private void createConfigurationGroup(Composite parent) {
-		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(DefinitionLabelFactory.class);
-		AttributeEditorFactory aef = (AttributeEditorFactory) PlatformUI.getWorkbench().getService(AttributeEditorFactory.class);
-		
+		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI
+				.getWorkbench().getService(DefinitionLabelFactory.class);
+		AttributeEditorFactory aef = (AttributeEditorFactory) PlatformUI
+				.getWorkbench().getService(AttributeEditorFactory.class);
+
 		// define source group composite
 		Group configurationGroup = new Group(parent, SWT.NONE);
-		configurationGroup.setText("Please enter a default value for the attribute");
+		configurationGroup
+				.setText("Please enter a default value for the attribute");
 		configurationGroup.setLayout(new GridLayout());
-		GridData configurationAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
-                | GridData.HORIZONTAL_ALIGN_FILL);
+		GridData configurationAreaGD = new GridData(
+				GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL);
 		configurationAreaGD.grabExcessHorizontalSpace = true;
 		configurationGroup.setLayoutData(configurationAreaGD);
-		configurationGroup.setSize(configurationGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		configurationGroup.setSize(configurationGroup.computeSize(SWT.DEFAULT,
+				SWT.DEFAULT));
 		configurationGroup.setFont(parent.getFont());
-		
-		final Composite configurationComposite = new Composite(configurationGroup, SWT.NONE);
+
+		final Composite configurationComposite = new Composite(
+				configurationGroup, SWT.NONE);
 		GridData configurationLayoutData = new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL);
 		configurationLayoutData.grabExcessHorizontalSpace = true;
@@ -110,60 +116,70 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 		attributeInputLayout.marginWidth = 0;
 		attributeInputLayout.marginHeight = 0;
 		configurationComposite.setLayout(attributeInputLayout);
-		
-		final Label inputAttributeLabel = new Label(configurationComposite, SWT.NONE);
+
+		final Label inputAttributeLabel = new Label(configurationComposite,
+				SWT.NONE);
 		inputAttributeLabel.setText("Attribute name:");
-		Control attributeName = dlf.createLabel(configurationComposite, getParent().getItem().getDefinition(), false);
-		attributeName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		/*this.attributeNameText = new Text(configurationComposite, SWT.BORDER);
-		this.attributeNameText.setLayoutData(configurationLayoutData);
-		this.attributeNameText.setText(getParent().getItem().getName().getLocalPart());
-		this.attributeNameText.setEnabled(false);*/
-		
-		final Label outputAttributeLabel = new Label(configurationComposite, SWT.NONE);
+		Control attributeName = dlf.createLabel(configurationComposite,
+				getParent().getItem().getDefinition(), false);
+		attributeName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+				false));
+
+		final Label outputAttributeLabel = new Label(configurationComposite,
+				SWT.NONE);
 		outputAttributeLabel.setText("Attribute default value:");
-		attributeValue = aef.createEditor(configurationComposite, (AttributeDefinition) getParent().getItem().getDefinition());
-		attributeValue.getControl().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		//if cell already exists and valid, display the old default value
-		if ((getParent().getResultCell()!= null && getParent().getResultCell().getEntity2()!= null && getParent().getResultCell().getEntity2().getTransformation()!=null && getParent().getResultCell().getEntity2().getTransformation().getParameters()!= null)){
+		attributeValue = aef.createEditor(configurationComposite,
+				(AttributeDefinition) getParent().getItem().getDefinition());
+		attributeValue.getControl().setLayoutData(
+				new GridData(SWT.FILL, SWT.CENTER, true, false));
+		// if cell already exists and valid, display the old default value
+		if ((getParent().getResultCell() != null
+				&& getParent().getResultCell().getEntity2() != null
+				&& getParent().getResultCell().getEntity2().getTransformation() != null && getParent()
+				.getResultCell().getEntity2().getTransformation()
+				.getParameters() != null)) {
 			String oldValue = "";
-			List<IParameter> parameters = getParent().getResultCell().getEntity2().getTransformation().getParameters();
+			List<IParameter> parameters = getParent().getResultCell()
+					.getEntity2().getTransformation().getParameters();
 			Iterator<IParameter> iterator = parameters.iterator();
-			while(iterator.hasNext()){
+			while (iterator.hasNext()) {
 				IParameter tmpParameter = iterator.next();
-				if (tmpParameter.getName().equals(ConstantValueFunction.DEFAULT_VALUE_PARAMETER_NAME)) {
+				if (tmpParameter.getName().equals(
+						ConstantValueFunction.DEFAULT_VALUE_PARAMETER_NAME)) {
 					oldValue = tmpParameter.getValue();
 				}
 			}
 			attributeValue.setAsText(oldValue);
-			//XXX this.attributeValueText.setCaretOffset(oldValue.length());
-			
+			// XXX this.attributeValueText.setCaretOffset(oldValue.length());
+
 		}
-		/*XXX this.attributeValueText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e){
-				updatePageComplete();
-				
-			}
-		});*/
+		/*
+		 * XXX this.attributeValueText.addModifyListener(new ModifyListener() {
+		 * public void modifyText(ModifyEvent e){ updatePageComplete();
+		 * 
+		 * } });
+		 */
 	}
-	
+
 	/**
 	 * @see WizardPage#isPageComplete()
 	 */
 	@Override
 	public boolean isPageComplete() {
-		/*XXX boolean isComplete = false;
-		if (attributeValue !=null && attributeValue.getAsText() != null && !attributeValue.getAsText().equals("")){
-			isComplete = true;
-		}
-		return isComplete;*/
+		/*
+		 * XXX boolean isComplete = false; if (attributeValue !=null &&
+		 * attributeValue.getAsText() != null &&
+		 * !attributeValue.getAsText().equals("")){ isComplete = true; } return
+		 * isComplete;
+		 */
 		return true;
 	}
 
-	/*XXX private void updatePageComplete(){
-		setPageComplete(this.isPageComplete());
-	}*/
-	
+	/*
+	 * XXX private void updatePageComplete(){
+	 * setPageComplete(this.isPageComplete()); }
+	 */
+
 	/**
 	 * Returns the default value to be set
 	 * 
