@@ -75,9 +75,13 @@ public class ConcatenationOfAttributesWizard extends AbstractSingleComposedCellW
 				this.mainPage.getSeperatorText().getText()));
 		
 		String temp = "";
+		int i=0;
 		for(String line : this.mainPage.getListViewer().getList().getItems() ){
-//			temp = temp+";"+line;
-			temp = temp+ConcatenationOfAttributesFunction.INTERNALSEPERATOR+line;
+			temp = temp+line;
+			if(i < this.mainPage.getListViewer().getList().getItemCount()-1){
+				temp = temp+ConcatenationOfAttributesFunction.INTERNALSEPERATOR;
+			}
+
 		}
 		parameters.add(new Parameter(
 				ConcatenationOfAttributesFunction.CONCATENATION, 
