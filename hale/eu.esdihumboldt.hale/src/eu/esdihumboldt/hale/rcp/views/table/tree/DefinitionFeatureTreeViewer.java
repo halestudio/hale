@@ -203,7 +203,7 @@ public class DefinitionFeatureTreeViewer {
 		treeViewer.getTree().getParent().layout(true, true);
 		
 		// auto-expand attributes/metadata
-		treeViewer.expandToLevel(1);
+		treeViewer.expandToLevel(2);
 	}
 
 	/**
