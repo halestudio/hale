@@ -52,6 +52,20 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 	<scriptSourceDirectory>./src/main/scripts</scriptSourceDirectory>
 	<outputDirectory>target/classes</outputDirectory>
 	<testOutputDirectory>target/test-classes</testOutputDirectory>
+	
+	<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.6</source>  <!-- The -source argument for the Java compiler. -->
+						<target>1.6</target>  <!-- The -target argument for the Java compiler. -->
+						<encoding>UTF-8</encoding> <!-- The -encoding argument for the Java compiler. -->
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 </build>
 
 <repositories>
