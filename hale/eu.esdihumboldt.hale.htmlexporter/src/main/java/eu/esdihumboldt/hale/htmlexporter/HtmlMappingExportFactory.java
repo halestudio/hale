@@ -35,13 +35,12 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.omwg.Restriction;
 
+import eu.esdihumboldt.hale.rcp.views.mappingGraph.MappingGraphView;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportException;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider;
 
@@ -64,9 +63,20 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 	private Alignment alignment = null;
 
 	/**
-	 * The path of the export
+	 * The path with name
 	 */
 	private String path;
+	
+	/**
+	 * The path of the export
+	 */
+	private String onlyPath;
+	
+	/**
+	 * Set the PictureNames
+	 */
+	private String pictureNames = "image";
+
 
 	/**
      * @param alignment
@@ -76,12 +86,14 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 	 */
 	public void export(Alignment alignment, String path) throws MappingExportException {
 		
+		//Create the images of the cells
+		new MappingGraphView(alignment,this.pictureNames);
+		
 		this.alignment = alignment;
 		this.path = path;
 		
-//		// get schema service
-//		this.schemaItemService = (ProjectService) PlatformUI.getWorkbench()
-//				.getService(ProjectService.class);
+		String[] pathSpilt = path.split("\\\\");
+		this.onlyPath = path.replace(pathSpilt[pathSpilt.length-1] , "");
 		
 		StringWriter stringWriter = new StringWriter();
 		this.context = new VelocityContext();
@@ -134,8 +146,9 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			try {
 				//Load template
 				if(tempFile!=null){
-					//FIXME URLResourceLoader is not working. So the file has 
-					//to be temporary saved to use it.
+					//FIXME URLResourceLoader is not working. So the file can't
+					//be loaded directly in the bundle. 
+					//It has to be temporary saved to use it.
 					template = Velocity.getTemplate(tempFile.getName());
 				}
 			} catch (ResourceNotFoundException e) {
@@ -190,9 +203,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
 
-			
 			//delete tempFile for cleanup
 			tempFile.deleteOnExit();
 			
@@ -206,11 +217,10 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		SimpleDateFormat dfm = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
 		this.context.put("title", "Mapping Export of "+ this.path.toString());
-		this.context.put("mapping", "Mapping : </b>"+ this.path.toString());
-		this.context.put("project", "<b>Project : </b>"+ dfm.format(date));
-		this.context.put("schema1", "<b>Schema 1 : </b>"+this.alignment.getSchema1().getLocation());
-		this.context.put("schema2", "<b>Schema 2 : </b>"+this.alignment.getSchema2().getLocation());
-//		this.context.put("title", "Mapping Export");
+		this.context.put("mapping", "Mapping : "+ this.path.toString());
+		this.context.put("project", "<h3>Project : </h3>"+ dfm.format(date));
+		this.context.put("schema1", "<h3>Schema 1 : </h3>"+this.alignment.getSchema1().getLocation());
+		this.context.put("schema2", "<h3>Schema 2 : </h3>"+this.alignment.getSchema2().getLocation());
 		
 		Vector<Vector> cellListVector = new Vector<Vector>();
 		Vector<String> cellVector;
@@ -222,8 +232,10 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			ICell cell = iterator.next();
 			cellVector = new Vector<String>();
 
-			cellVector.addElement("<b>Cell "+i+" : </b>");
-			cellVector.addElement("<b>Relation : </b>"+cell.getRelation());
+			cellVector.addElement("<h2>Cell "+i+" : </h2>");
+			cellVector.addElement("<h3>Relation : </h3>"+cell.getRelation());
+			cellVector.addElement("<img src='"+this.pictureNames+(i-1)+".png'>");
+//			cellVector.addElement("<h3>Typ : </h3>"+cell.getEntity1());
 			
 			//Filters
 			/**
@@ -231,11 +243,11 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			 */
 			// Filter strings are added to the Vector
 			if (cell.getEntity2().getTransformation() == null) {
-				cellVector.addElement("<b>Entity1: </b>"+cell.getEntity1().getAbout().getAbout());
+				cellVector.addElement("<h3>Entity1: </h3>"+cell.getEntity1().getAbout().getAbout());
 				if (cell.getEntity1() instanceof FeatureClass) {
 					if (((FeatureClass) cell.getEntity1())
 							.getAttributeValueCondition() != null) {
-						cellVector.addElement("<b>Filter Rules: </b>");
+						cellVector.addElement("<h3>Filter Rules: </h3>");
 						for (Restriction restriction : ((FeatureClass) cell
 								.getEntity1()).getAttributeValueCondition()) {
 							cellVector.addElement(restriction.getCqlStr());
@@ -244,7 +256,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 				} else if (cell.getEntity1() instanceof Property) {
 					if (((Property) cell.getEntity1())
 							.getValueCondition() != null) {
-						cellVector.addElement("<b>Filter Rules: </b>");
+						cellVector.addElement("<h3>Filter Rules: </h3>");
 						for (Restriction restriction : ((Property) cell
 								.getEntity1()).getValueCondition()) {
 							cellVector.addElement(restriction.getCqlStr());
@@ -258,11 +270,11 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			 */
 			// Filter strings are added to the Vector
 			else {
-				cellVector.addElement("<b>Entity2: </b>"+cell.getEntity1().getAbout().getAbout());
+				cellVector.addElement("<h3>Entity2: </h3>"+cell.getEntity2().getAbout().getAbout());
 				if (cell.getEntity2() instanceof FeatureClass) {
 					if (((FeatureClass) cell.getEntity2())
 							.getAttributeValueCondition() != null) {
-						cellVector.addElement("<b>Filter Rules: </b>");
+						cellVector.addElement("<h3>Filter Rules: </h3>");
 						for (Restriction restriction : ((FeatureClass) cell
 								.getEntity2()).getAttributeValueCondition()) {
 							cellVector.addElement(restriction.getCqlStr());
@@ -270,7 +282,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 					}
 				} else if (cell.getEntity2() instanceof Property) {
 					if (((Property) cell.getEntity2()).getValueCondition() != null) {
-						cellVector.addElement("<b>Filter Rules: </b>");
+						cellVector.addElement("<h3>Filter Rules: </h3>");
 						for (Restriction restriction : ((Property) cell
 								.getEntity2()).getValueCondition()) {
 							cellVector.addElement(restriction.getCqlStr());
@@ -295,23 +307,15 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			}
 
 			if (!parameterList.isEmpty()) {
-				cellVector.addElement("<b>Parameters: </b>");
+				cellVector.addElement("<h3>Parameters: </h3>");
 				for (IParameter parameter : parameterList) {
-					cellVector.addElement("<b>"+parameter.getName() + " : </b>"+ parameter.getValue());
+					cellVector.addElement("<h3>"+parameter.getName() + " : </h3>"+ parameter.getValue());
 				}
 			}
 			
 			cellListVector.addElement(cellVector);
 			i++;
 		}
-
-		
-//		String p1 = "Bill";
-//		String p2 = "Bob";
-
-//		vec.addElement( p1 );
-//		vec.addElement( p2 );
-//		this.context.put("list", vec );
 		this.context.put("cellList", cellListVector);
 		
 	}
@@ -342,7 +346,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 	 */
 	public void byteArrayToFile(File file, byte [] byteArray) throws 
 	 FileNotFoundException, IOException {
-		if(file.exists() && byteArray!=null){
+		if(byteArray!=null){
 			FileOutputStream fileOutputStream = new FileOutputStream(file);
 			fileOutputStream.write(byteArray);
 			fileOutputStream.close();

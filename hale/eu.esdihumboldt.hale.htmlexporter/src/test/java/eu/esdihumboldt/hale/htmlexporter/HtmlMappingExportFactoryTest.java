@@ -32,7 +32,7 @@ public class HtmlMappingExportFactoryTest {
 	public void test() {
 		
 		HtmlMappingExportFactory htmlMappingExportFactory = new HtmlMappingExportFactory();
-		String testFile = this.getClass().getResource("TEST.goml").toString();
+		String testFile = this.getClass().getResource("TEST2.goml").toString();
 		OmlRdfReader reader = new OmlRdfReader();
 		
 		if(testFile!=null){
