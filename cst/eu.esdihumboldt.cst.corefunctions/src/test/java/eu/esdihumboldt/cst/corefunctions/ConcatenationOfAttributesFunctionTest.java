@@ -16,9 +16,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.feature.simple.SimpleFeatureImpl;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.junit.Test;
 import org.opengis.feature.Feature;
@@ -35,7 +33,7 @@ import eu.esdihumboldt.goml.rdf.Resource;
 
 
 /**
- * TODO Typedescription
+ * TODO Concatenation test-class
  * @author Stefan Gessner
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
@@ -52,26 +50,71 @@ public class ConcatenationOfAttributesFunctionTest {
 	 */
 	public static final String CONCATENATION = "concatenation";
 
+	/**
+	 * 
+	 */
 	private final String sourceLocalname = "waterVA/Watercourses_VA_Type";
+	/**
+	 * 
+	 */
 	private final String sourceLocalnamePropertyDouble = "LAENGE_ARC";
+	/**
+	 * 
+	 */
 	private final String sourceNamespace = "http://esdi-humboldt.org";
 	
+	/**
+	 * 
+	 */
 	private final String source2Localname = "waterVA/Watercourses_VA_Type";
+	/**
+	 * 
+	 */
 	private final String source2LocalnamePropertyDouble = "LAENGE_ROU";
+	/**
+	 * 
+	 */
 	private final String source2Namespace = "http://esdi-humboldt.org";
 	
+	/**
+	 * 
+	 */
 	private final String targetLocalname = "FT3";
+	/**
+	 * 
+	 */
 	private final String targetLocalnamePropertyString = "PropertyString";
+	/**
+	 * 
+	 */
 	private final String targetNamespace = "http://esdi-humboldt.eu";
 	
 	
+	/**
+	 * 
+	 */
 	private static double x = 23.3456;
+	/**
+	 * 
+	 */
 	private static double y = 14.3465;
 	
+	/**
+	 * 
+	 */
 	private static float x2 = (float) 23.3465;
+	/**
+	 * 
+	 */
 	private static float y2 = (float) 14.3456;
 	
+	/**
+	 * 
+	 */
 	private static int x3 = 23;
+	/**
+	 * 
+	 */
 	private static int y3 = 14;
 	
 	private static long x4 = 23;
@@ -80,8 +123,14 @@ public class ConcatenationOfAttributesFunctionTest {
 	private static String concatenationTestString = "LAENGE_ROU--!-split-!--laskjdflk--!-split-!--LAENGE_ARC--!-split-!--aölskdjf";
 	private static String seperatorTestString = "";
 
+	/**
+	 * 
+	 */
 	private int testInt = 1;
 
+	/**
+	 * 
+	 */
 	@Test
 	public void testConfigure() {
 		ConcatenationOfAttributesFunction  coaf = new ConcatenationOfAttributesFunction();
@@ -89,7 +138,10 @@ public class ConcatenationOfAttributesFunctionTest {
 	}
 	
 	//FIXME @Test
-	public void testOrdinatesToPointFunction() {
+	/**
+	 * 
+	 */
+	public void testConcatenationOfAttributesFunction() {
 
 		
 		for(this.testInt =1; this.testInt<7; this.testInt++){
@@ -167,7 +219,7 @@ public class ConcatenationOfAttributesFunctionTest {
 			test.configure(cell);
 			test.transform(source, target);
 			
-			String transformedConcatenation = target.getProperty(targetLocalnamePropertyString).getValue().toString();
+			String transformedConcatenation = target.getProperty(this.targetLocalnamePropertyString).getValue().toString();
 			
 			String[] concat = oldConcatenation.split("--!-split-!--");
 			String finalConcatString = "";
@@ -195,6 +247,12 @@ public class ConcatenationOfAttributesFunctionTest {
 
 	}
 	
+	/**
+	 * @param featureTypeNamespace
+	 * @param featureTypeName
+	 * @param propertyNames
+	 * @return a SimpleFeaturetype
+	 */
 	private SimpleFeatureType getFeatureType(String featureTypeNamespace, 
 			String featureTypeName, String[] propertyNames) {
 	

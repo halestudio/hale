@@ -27,12 +27,17 @@ import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 
 /**
- * TODO Typedescription
+ * ConcatenationOfAttributesFunction
  * @author Stefan Gessner
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
 public class ConcatenationOfAttributesFunction implements CstFunction{
+	
+	/**
+	 * The name of the parameter for the separator.
+	 */
+	public static final String INTERNALSEPERATOR = "--!-split-!--";
 	
 	/**
 	 * The name of the parameter for the separator.
@@ -44,11 +49,26 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 	 */
 	public static final String CONCATENATION = "concatenation";
 	
+	/**
+	 * 
+	 */
 	private String seperator;
+	
+	/**
+	 * 
+	 */
 	private String concatenation;
 	
+	/**
+	 * 
+	 */
 	private String targetPropertyname;
 
+	/**
+	 * @param cell
+	 * @return true
+	 * @see eu.esdihumboldt.cst.CstFunction#configure(eu.esdihumboldt.cst.align.ICell)
+	 */
 	@Override
 	public boolean configure(ICell cell) {
 		
@@ -60,6 +80,10 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 		return true;
 	}
 
+	/**
+	 * @return the parameterCell
+	 * @see eu.esdihumboldt.cst.CstFunction#getParameters()
+	 */
 	@Override
 	public ICell getParameters() {
 
@@ -98,9 +122,15 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 		return parameterCell;
 	}
 
+	/**
+	 * @param source
+	 * @param target
+	 * @return target
+	 * @see eu.esdihumboldt.cst.CstFunction#transform(org.opengis.feature.Feature, org.opengis.feature.Feature)
+	 */
 	@Override
 	public Feature transform(Feature source, Feature target) {
-		String[] concat = this.concatenation.split("--!-split-!--");
+		String[] concat = this.concatenation.split(INTERNALSEPERATOR);
 		String finalConcatString = "";
 		boolean firstElement = true;
 		for (String thisElement : concat) {

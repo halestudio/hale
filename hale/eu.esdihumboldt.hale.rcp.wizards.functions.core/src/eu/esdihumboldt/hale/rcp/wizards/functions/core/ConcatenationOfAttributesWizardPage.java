@@ -11,66 +11,36 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.core;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
-import org.eclipse.jface.dialogs.DialogPage;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.IBaseLabelProvider;
-import org.eclipse.jface.viewers.IDecoration;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ILightweightLabelDecorator;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.ITreePathLabelProvider;
-import org.eclipse.jface.viewers.IViewerLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TreePath;
-import org.eclipse.jface.viewers.ViewerLabel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.TraverseEvent;
-import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.ListDialog;
-import org.eclipse.ui.dialogs.ListSelectionDialog;
 
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.hale.rcp.utils.definition.AttributeInputDialog;
 import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
-import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 
 /**
- * TODO Typedescription
+ * ConcatenationofAttributesWizardpage
  * @author Stefan Gessner
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
@@ -80,16 +50,38 @@ AbstractSingleComposedCellWizardPage{
 	
 private final Map<String, Set<String>> classifications = new TreeMap<String, Set<String>>();
 	
+	/**
+	 * 
+	 */
 	private final Image addImage = CoreFunctionWizardsPlugin.getImageDescriptor("icons/add.gif").createImage();
+	
+	/**
+	 * 
+	 */
 	private final Image removeImage = CoreFunctionWizardsPlugin.getImageDescriptor("icons/remove.gif").createImage();
-	private ListViewer listViewer;
+	
+	/**
+	 * 
+	 */
+	ListViewer listViewer;
+	
+	/**
+	 * 
+	 */
 	private Text seperatorText;
 
+	/**
+	 * @param pageName
+	 */
 	public ConcatenationOfAttributesWizardPage(String pageName) {
 		super(pageName);
 		setTitle(pageName);
 	}
 
+	/**
+	 * @param parent
+	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+	 */
 	@Override
 	public void createControl(Composite parent) {
 		super.initializeDialogUnits(parent);
@@ -106,9 +98,9 @@ private final Map<String, Set<String>> classifications = new TreeMap<String, Set
 		
 		final Label seperatorLabel = new Label(sourceGroup, SWT.NONE);
 		seperatorLabel.setText("Seperator: ");
-		seperatorText = new Text(sourceGroup, SWT.SINGLE | SWT.BORDER);
-		seperatorText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		seperatorText.setText(":");
+		this.seperatorText = new Text(sourceGroup, SWT.SINGLE | SWT.BORDER);
+		this.seperatorText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		this.seperatorText.setText(":");
 		TreeSet<SchemaItem> sourceTreeSet = (TreeSet<SchemaItem>) getParent().getSourceItems();
 		String[] localNames = new String[sourceTreeSet.size()];
 		int k=0;
@@ -128,29 +120,29 @@ private final Map<String, Set<String>> classifications = new TreeMap<String, Set
 
 		// add source value
 		Button addButton = new Button(page, SWT.PUSH);
-		addButton.setImage(addImage);
+		addButton.setImage(this.addImage);
 		addButton.setToolTipText("Add a Concatenation Attribute");
 		addButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if(!combo.getText().equals("")){
-					listViewer.add(combo.getText());
+					ConcatenationOfAttributesWizardPage.this.listViewer.add(combo.getText());
 				}
 			}		
 		});
 		
 		// remove target value
 		final Button removeButton = new Button(page, SWT.PUSH);
-		removeButton.setImage(removeImage);
+		removeButton.setImage(this.removeImage);
 		removeButton.setToolTipText("Remove selected Concatenations Attributes");
 		removeButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if(listViewer.getList().getItems().length!=0){
-					for(String selection : listViewer.getList().getSelection()){
-						listViewer.getList().remove(selection);
+				if(ConcatenationOfAttributesWizardPage.this.listViewer.getList().getItems().length!=0){
+					for(String selection : ConcatenationOfAttributesWizardPage.this.listViewer.getList().getSelection()){
+						ConcatenationOfAttributesWizardPage.this.listViewer.getList().remove(selection);
 					}
 				}
 			}	
@@ -159,23 +151,35 @@ private final Map<String, Set<String>> classifications = new TreeMap<String, Set
 		// list
 		List list = new List(page, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
 		list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
-		listViewer = new ListViewer(list);
-		listViewer.setContentProvider(new ArrayContentProvider());	
+		this.listViewer = new ListViewer(list);
+		this.listViewer.setContentProvider(new ArrayContentProvider());	
 		
 	}
 	
+	/**
+	 * @return the ListViewer
+	 */
 	public ListViewer getListViewer() {
-		return listViewer;
+		return this.listViewer;
 	}
 
+	/**
+	 * @param listViewer
+	 */
 	public void setListViewer(ListViewer listViewer) {
 		this.listViewer = listViewer;
 	}
 
+	/**
+	 * @return the separator
+	 */
 	public Text getSeperatorText() {
-		return seperatorText;
+		return this.seperatorText;
 	}
 
+	/**
+	 * @param seperatorText
+	 */
 	public void setSeperatorText(Text seperatorText) {
 		this.seperatorText = seperatorText;
 	}

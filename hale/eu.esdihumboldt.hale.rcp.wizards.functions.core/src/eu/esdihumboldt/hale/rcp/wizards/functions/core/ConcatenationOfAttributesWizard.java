@@ -11,7 +11,6 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.core;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,37 +19,49 @@ import org.eclipse.jface.wizard.Wizard;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.corefunctions.ConcatenationOfAttributesFunction;
-import eu.esdihumboldt.cst.corefunctions.OrdinatesToPointFunction;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
-import eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric.OrdinatesPointWizardPage;
 
 
 /**
- * TODO Typedescription
+ * ConcatenationOfAttributesWizard
  * @author Stefan Gessner
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
 public class ConcatenationOfAttributesWizard extends AbstractSingleComposedCellWizard {
 
+	/**
+	 * 
+	 */
 	private ConcatenationOfAttributesWizardPage mainPage;
 	
+	/**
+	 * @param selection
+	 */
 	public ConcatenationOfAttributesWizard(AlignmentInfo selection) {
 		super(selection);
 	}
 
+	/**
+	 * 
+	 * @see eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard#init()
+	 */
 	@Override
 	protected void init() {
 		this.mainPage = new ConcatenationOfAttributesWizardPage("Concatenation Of Attributes Function");
-		mainPage.setDescription("Concats two or more strings into one string.") ;
+		this.mainPage.setDescription("Concats two or more strings into one string.") ;
 		super.setWindowTitle("Concatenation Of Attributes Function"); 
 	}
 
+	/**
+	 * @return true
+	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
+	 */
 	@Override
 	public boolean performFinish() {
 		
@@ -64,8 +75,9 @@ public class ConcatenationOfAttributesWizard extends AbstractSingleComposedCellW
 				this.mainPage.getSeperatorText().getText()));
 		
 		String temp = "";
-		for(String line : mainPage.getListViewer().getList().getItems() ){
-			temp = temp+";"+line;
+		for(String line : this.mainPage.getListViewer().getList().getItems() ){
+//			temp = temp+";"+line;
+			temp = temp+ConcatenationOfAttributesFunction.INTERNALSEPERATOR+line;
 		}
 		parameters.add(new Parameter(
 				ConcatenationOfAttributesFunction.CONCATENATION, 
@@ -84,7 +96,7 @@ public class ConcatenationOfAttributesWizard extends AbstractSingleComposedCellW
 	public void addPages() {
 		super.addPages();
 		
-		addPage(mainPage);
+		addPage(this.mainPage);
 	}
 
 }
