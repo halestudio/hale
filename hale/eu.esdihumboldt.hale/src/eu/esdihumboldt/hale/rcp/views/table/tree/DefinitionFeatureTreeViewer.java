@@ -201,6 +201,9 @@ public class DefinitionFeatureTreeViewer {
 		
 		treeViewer.refresh();
 		treeViewer.getTree().getParent().layout(true, true);
+		
+		// auto-expand attributes/metadata
+		treeViewer.expandToLevel(1);
 	}
 
 	/**
