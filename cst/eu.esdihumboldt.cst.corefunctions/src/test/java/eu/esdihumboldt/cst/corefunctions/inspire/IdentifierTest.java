@@ -50,7 +50,7 @@ public class IdentifierTest {
 				new String[]{this.sourceLocalnamePropertyAID});
 		
 		String url = getClass().getResource(
-				"/inspire_v3.0_xsd/CadastralParcels.xsd").toString();
+				"inspire_v3.0_xsd/CadastralParcels.xsd").toString();
 			FeatureType targettype = TypeLoader.getType("CadastralZoning", url);
 		Feature source = SimpleFeatureBuilder.build(
 				sourcetype, new Object[]{"ID1"}, localID);
