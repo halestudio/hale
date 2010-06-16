@@ -285,6 +285,7 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 	 * @param parent the tree parent
 	 * @param type the type definition
 	 * @param itemMap map to add the created items to (definition identifier mapped to item)
+	 * @param resolving the currently resolving types (to prevent loops)
 	 */
 	private static void addProperties(TreeParent parent, TypeDefinition type, Map<String, SchemaItem> itemMap,
 			Set<TypeDefinition> resolving) {

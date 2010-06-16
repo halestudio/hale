@@ -15,7 +15,9 @@ package eu.esdihumboldt.hale.rcp.views.table.tree;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Map.Entry;
@@ -96,7 +98,7 @@ public class DefinitionFeatureTreeViewer {
 			DefaultTreeNode root = new DefaultTreeNode();
 			DefaultTreeNode attributes = new DefaultTreeNode("Attributes");
 			root.addChild(attributes);
-			addProperties(attributes, type.getType());
+			addProperties(attributes, type.getType(), new HashSet<TypeDefinition>());
 			
 			DefaultTreeNode metadata = new DefaultTreeNode("Metadata");
 			root.addChild(metadata);
@@ -211,9 +213,18 @@ public class DefinitionFeatureTreeViewer {
 	 * 
 	 * @param parent the parent node
 	 * @param type the feature type
+	 * @param resolving the currently resolving types (to prevent loops)
 	 */
 	private void addProperties(DefaultTreeNode parent,
-			TypeDefinition type) {
+			TypeDefinition type, Set<TypeDefinition> resolving) {
+		if (resolving.contains(type)) {
+			_log.debug("Cycle in properties, skipping adding property items");
+			return;
+		}
+		else {
+			resolving.add(type);
+		}
+		
 		SortedMap<String, AttributeDefinition> sortedProperties = new TreeMap<String, AttributeDefinition>();
 		
 		for (AttributeDefinition attribute : type.getAttributes()) {
@@ -229,7 +240,7 @@ public class DefinitionFeatureTreeViewer {
 						typeName + ">", entry.getValue().isAttribute()); //$NON-NLS-1$
 				
 				TypeDefinition childType = entry.getValue().getAttributeType();
-				addProperties(childNode, childType);
+				addProperties(childNode, childType, new HashSet<TypeDefinition>(resolving));
 				
 				parent.addChild(childNode);
 			}
