@@ -14,6 +14,7 @@ package eu.esdihumboldt.cst.corefunctions.inspire;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -33,6 +34,7 @@ import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.inspire.data.InspireIdentifier;
+import eu.esdihumboldt.tools.FeatureInspector;
 
 /**
  * This function creates INSPIRE-compliant identifiers like this one
@@ -111,25 +113,17 @@ public class IdentifierFunction
 				&& pd.getType().getName().getNamespaceURI().equals(
 				"urn:x-inspire:specification:gmlas:BaseTypes:3.2") 
 				&& pd.getType().getName().getLocalPart().equals("IdentifierPropertyType")) {
-			// retrieve required Property Descriptors
-			SimpleFeatureType idType = (SimpleFeatureType)((SimpleFeatureType)pd.getType()).getDescriptor("Identifier").getType();
-			SimpleFeatureImpl identifier = (SimpleFeatureImpl) SimpleFeatureBuilder.build(
-					idType, new Object[]{}, 
-					"Identifier");
 			
-			identifier.setAttribute("localId", source.getIdentifier().toString());
-			identifier.setAttribute("namespace", this.getNamespace(target.getType().getName().getLocalPart()));
-			identifier.setAttribute("versionId", this.version);
-			
-			SimpleFeatureImpl identifierPropertyType = (SimpleFeatureImpl)SimpleFeatureBuilder.build(
-					(SimpleFeatureType) pd.getType(), new Object[]{}, 
-					"IdentifierPropertyType");
-			
-			identifierPropertyType.setAttribute("Identifier", Collections.singleton(identifier));
-			
-			((SimpleFeature)target).setAttribute(
-					this.targetProperty.getLocalname(), Collections.singleton(identifierPropertyType));
-			
+			// set attributes
+			FeatureInspector.setPropertyValue(target, 
+					Arrays.asList(targetProperty.getLocalname(), "Identifier", "localId"), 
+					source.getIdentifier().toString()); //FIXME source property is never used?
+			FeatureInspector.setPropertyValue(target, 
+					Arrays.asList(targetProperty.getLocalname(), "Identifier", "namespace"), 
+					getNamespace(target.getType().getName().getLocalPart()));
+			FeatureInspector.setPropertyValue(target, 
+					Arrays.asList(targetProperty.getLocalname(), "Identifier", "versionId"), 
+					this.version);
 		}
 		else if (pd.getType().getBinding().equals(InspireIdentifier.class)) {
 			InspireIdentifier ii=new InspireIdentifier();
