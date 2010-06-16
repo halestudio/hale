@@ -72,7 +72,7 @@ public class IoBridgeIntegrationTest {
 		try {
 	
 			URL xsd = this.getClass().getResource(
-					"D2.8-I_GML-Application-Schemas_v2.0-GML3.1.1/HY/Hydrography.xsd");		
+					"INSPIRE-GML-Schemas-3.0/HydroPhysicalWaters.xsd");		
 			
 			CstServiceBridge csb = IoBridgeFactory.getIoBridge(BridgeType.preloaded);
 			System.out.println(xsd.toURI().toString());
