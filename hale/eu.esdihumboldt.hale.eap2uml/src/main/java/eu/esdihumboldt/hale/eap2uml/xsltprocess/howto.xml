@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<howto>
+  <topic>
+      <title>Java</title>
+      <url>http://www.rgagnon/javahowto.htm</url>
+  </topic>
+    <topic>
+      <title>PowerBuilder</title>
+      <url>http://www.rgagnon/pbhowto.htm</url>
+  </topic>
+      <topic>
+        <title>Javascript</title>
+        <url>http://www.rgagnon/jshowto.htm</url>
+  </topic>
+      <topic>
+        <title>VBScript</title>
+        <url>http://www.rgagnon/vbshowto.htm</url>
+  </topic>
+</howto>
