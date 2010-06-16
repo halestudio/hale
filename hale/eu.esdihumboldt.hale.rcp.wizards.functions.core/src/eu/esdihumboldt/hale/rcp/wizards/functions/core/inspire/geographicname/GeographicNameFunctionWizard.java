@@ -23,6 +23,7 @@ import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.corefunctions.inspire.GeographicalNameFunction;
 import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
@@ -140,17 +141,69 @@ public class GeographicNameFunctionWizard extends
 	@Override
 	public boolean performFinish() {
 		Cell cell = getResultCell();
+		//TODO handle case if the mapping already exists
 		// 1. configure composed property for the cell
 		 ComposedProperty cp = (ComposedProperty)cell.getEntity1();
 		 if (cp == null){
 			 cp = new ComposedProperty(new About(""));
 		 }
-		 //2. set Transforamtion for the cell
+		 //2. set Transformation for the cell
 		 Transformation  cpT = new Transformation(new Resource(GeographicalNameFunction.class.getName()));
+		 //add geographical name common parameters to is transformation
+		 List<IParameter> gnParams = new ArrayList<IParameter>();
+		 //set language
+		 IParameter gnParam = new Parameter (GeographicalNameFunction.PROPERTY_LANGUAGE, this.page.getLanguage());
+		 gnParams.add(gnParam);
+		 //nativeness
+		 gnParam = new Parameter (GeographicalNameFunction.PROPERTY_NATIVENESS, this.page.getNativeness());
+		 gnParams.add(gnParam);
+		 //nameStatus
+		 gnParam = new Parameter (GeographicalNameFunction.PROPERTY_NAMESTATUS, this.page.getNameStatus());
+		 gnParams.add(gnParam);
+		 //sourceOfName
+		 gnParam = new Parameter (GeographicalNameFunction.PROPERTY_SOURCEOFNAME, this.page.getSourceOfName());
+		 gnParams.add(gnParam);
+		 //pronunciationIPA
+		 gnParam = new Parameter (GeographicalNameFunction.PROPERTY_PRONUNCIATIONIPA, this.page.getIpa());
+		 gnParams.add(gnParam);
+		 //pronunciationSoundLink
+		 //gnParam = new Parameter (GeographicalNameFunction.PROPERTY_PRONUNCIATIONSOUNDLINK, this.page.get());
+		 //grammaticalGender
+		 gnParam = new Parameter (GeographicalNameFunction.PROPERTY_GRAMMA_GENDER, this.page.getGender());
+		 gnParams.add(gnParam);
+		 //grammaticalNumber
+		 gnParam = new Parameter (GeographicalNameFunction.PROPERTY_GRAMMA_NUMBER, this.page.getNumber());
+		 gnParams.add(gnParam);
+		 cpT.setParameters(gnParams);
+		 cp.setTransformation(cpT);
 		 //3. create collection of the properties and set it to the ComposedProperty
 		 ArrayList<SpellingType> spellings = page.getSpellings();  
-		 Collection<Property> collection = new ArrayList<Property>();
-		 
+		 List<Property> propCollection = new ArrayList<Property>();
+		 //4. add to the property list a new Composed Property 1 containing a collection of the spelling specific parameters
+		 ComposedProperty compProp1 = new ComposedProperty(new About(""));
+		 //4.a set transformation for comProp1
+		 compProp1.setTransformation(cpT);
+		 //4b. create a list of properties for comProp1
+		 List<Property> props = new ArrayList<Property>();
+		 for (SpellingType spelling : spellings){
+			 Property property = new Property(new About(""));
+			 Transformation transformation = new Transformation(new Resource("some spelling functionSpellingFunction"));
+			 //add spelling parameters to the transformation 
+			 List<IParameter> params = new ArrayList<IParameter>();
+			 IParameter param = new Parameter(GeographicalNameFunction.PROPERTY_TEXT, spelling.getText());
+			 params.add(param);
+			 param = new Parameter(GeographicalNameFunction.PROPERTY_SCRIPT, spelling.getScript());
+			 params.add(param);
+			 param = new Parameter(GeographicalNameFunction.PROPERTY_TRANSLITERATION, spelling.getTransliteration());
+			 transformation.setParameters(params);
+			 props.add(property);
+			 
+		 }
+		compProp1.setCollection(props);
+		propCollection.add(compProp1);
+		cp.setCollection(propCollection);
+		 //6. update Entity 1 in the cell
+		cell.setEntity1(cp);
 		 
 		
 		/*ComposedProperty maincp=null;
