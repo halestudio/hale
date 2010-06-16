@@ -24,6 +24,13 @@ import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.iobridge.IoBridgeFactory.BridgeType;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 
+import org.apache.commons.logging.impl.Log4JLogger;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
+import org.geotools.util.logging.Log4JLoggerFactory;
+import org.geotools.util.logging.Logging;
+
 /**
  * This class contains tests that test the integration of the different 
  * CST components.
@@ -32,14 +39,20 @@ import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
  * @version $Id$
  */
 public class IoBridgeIntegrationTest {
+
+	private static Logger _log = Logger.getLogger(IoBridgeIntegrationTest.class);
 	
-	final URL omlURL = IoBridgeIntegrationTest.class.getResource("testproject_hydro_withmapping.xml.goml");
+	final URL omlURL = IoBridgeIntegrationTest.class.getResource("testproject_hydro_withmapping.goml");
 	final URL gmlURL = IoBridgeIntegrationTest.class.getResource("wfs_va.gml");
 	
 
 	@Before 
 	public void initialize(){
 		addCST();
+		// configure logging
+		Logging.ALL.setLoggerFactory(Log4JLoggerFactory.getInstance());
+		Logger.getLogger(Log4JLogger.class).setLevel(Level.WARN);
+		Logger.getRootLogger().setLevel(Level.WARN);
 	}
 	
 	@Test
@@ -53,7 +66,7 @@ public class IoBridgeIntegrationTest {
 		Assert.assertTrue(functions.size() > 0);
 	}
 	
-	//FIXME @Test
+	@Test
 	public void testTransform() {
 			
 		try {
@@ -78,7 +91,7 @@ public class IoBridgeIntegrationTest {
 
 	public void addCST() {
 		Class<?>[] parameters = new Class[]{URL.class};
-		URL functions = getClass().getResource("corefunctions-1.0.1-SNAPSHOT.jar");		
+		URL functions = getClass().getResource("corefunctions-1.0.2-SNAPSHOT.jar");		
 		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 	      Class<?> sysclass = URLClassLoader.class;
 
