@@ -35,6 +35,8 @@ public class IdentifierFunctionWizardPage extends
 	Text providerName = null;
 	
 	Text productName = null;
+	
+	Text version = null;
 
 	/**
 	 * @param pageName
@@ -92,6 +94,16 @@ public class IdentifierFunctionWizardPage extends
 		this.productName.setEnabled(true);
 		this.productName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
+		// Version
+		Label versionLabel = new Label(page, SWT.NONE);
+		versionLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
+		versionLabel.setText("Version");
+		
+		this.version = new Text(page, SWT.BORDER);
+		this.version.setText("");
+		this.version.setEnabled(true);
+		this.version.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		
 		// Type name
 		Label typenameLabel = new Label(page, SWT.NONE);
 		typenameLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
@@ -100,7 +112,7 @@ public class IdentifierFunctionWizardPage extends
 		Text typeName = new Text(page, SWT.BORDER);
 		typeName.setText(
 				getParent().getSourceItem().getParent().getName().getLocalPart());
-		typeName.setEnabled(true);
+		typeName.setEnabled(false);
 		typeName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 	}
@@ -131,6 +143,16 @@ public class IdentifierFunctionWizardPage extends
 	public String getProductName() {
 		if (this.productName != null) {
 			return this.productName.getText();
+		}
+		return null;
+	}
+	
+	/**
+	 * @return the entered version
+	 */
+	public String getVersion() {
+		if (this.version != null) {
+			return this.version.getText();
 		}
 		return null;
 	}

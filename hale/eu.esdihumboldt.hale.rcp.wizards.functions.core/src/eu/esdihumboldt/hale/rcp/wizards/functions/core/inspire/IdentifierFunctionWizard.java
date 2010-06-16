@@ -72,6 +72,10 @@ public class IdentifierFunctionWizard
 				new Parameter(
 						IdentifierFunction.PRODUCT_PARAMETER_NAME, 
 						mainPage.getProductName()));
+		t.getParameters().add(
+				new Parameter(
+						IdentifierFunction.VERSION, 
+						mainPage.getVersion()));
 		
 		((Entity) cell.getEntity1()).setTransformation(t);
 		

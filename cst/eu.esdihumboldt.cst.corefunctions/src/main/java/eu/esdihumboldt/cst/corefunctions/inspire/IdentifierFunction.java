@@ -15,20 +15,16 @@ package eu.esdihumboldt.cst.corefunctions.inspire;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.feature.simple.SimpleFeatureImpl;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 
+import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
@@ -114,10 +110,13 @@ public class IdentifierFunction
 				"urn:x-inspire:specification:gmlas:BaseTypes:3.2") 
 				&& pd.getType().getName().getLocalPart().equals("IdentifierPropertyType")) {
 			
+			// get the source attribute value
+			Object value = FeatureInspector.getPropertyValue(source, sourceProperty.getAbout(), null);
+			
 			// set attributes
 			FeatureInspector.setPropertyValue(target, 
 					Arrays.asList(targetProperty.getLocalname(), "Identifier", "localId"), 
-					source.getIdentifier().toString()); //FIXME source property is never used?
+					value.toString()); // source.getIdentifier().toString()
 			FeatureInspector.setPropertyValue(target, 
 					Arrays.asList(targetProperty.getLocalname(), "Identifier", "namespace"), 
 					getNamespace(target.getType().getName().getLocalPart()));
