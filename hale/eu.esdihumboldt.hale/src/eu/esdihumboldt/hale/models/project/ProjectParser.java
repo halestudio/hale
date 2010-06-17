@@ -164,13 +164,15 @@ public class ProjectParser {
 		
 		// second, load alignment.
 		monitor.subTask("Mapping");
-		try {
-			OmlRdfReader reader = new OmlRdfReader();
-			alignmentService.addOrUpdateAlignment(
-					reader.read(project.getOmlPath()));
-			_log.info("Number of loaded cells: " + alignmentService.getAlignment().getMap().size());
-		} catch (Exception e) {
-			throw new RuntimeException("Alignment could not be loaded: ", e);
+		if (project.getOmlPath() != null && !project.getOmlPath().isEmpty()) {
+			try {
+				OmlRdfReader reader = new OmlRdfReader();
+				alignmentService.addOrUpdateAlignment(
+						reader.read(project.getOmlPath()));
+				_log.info("Number of loaded cells: " + alignmentService.getAlignment().getMap().size());
+			} catch (Exception e) {
+				throw new RuntimeException("Alignment could not be loaded: ", e);
+			}
 		}
 		
 		// second and a half, load styles

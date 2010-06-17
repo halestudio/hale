@@ -40,6 +40,7 @@ import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.goml.rdf.DetailedAbout;
 import eu.esdihumboldt.inspire.data.GeographicalName;
 import eu.esdihumboldt.inspire.data.GrammaticalGenderValue;
 import eu.esdihumboldt.inspire.data.GrammaticalNumberValue;
@@ -47,6 +48,7 @@ import eu.esdihumboldt.inspire.data.NameStatusValue;
 import eu.esdihumboldt.inspire.data.NativenessValue;
 import eu.esdihumboldt.inspire.data.PronunciationOfName;
 import eu.esdihumboldt.inspire.data.SpellingOfName;
+import eu.esdihumboldt.tools.FeatureInspector;
 
 /**
  * This function enables the creation of an INPSIRE GeographicalName object from
@@ -187,30 +189,32 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 	public Feature transform(Feature source, Feature target) {
 
 		// check whether target Feature has the expected property
-		if (target.getProperties(targetProperty.getLocalname()).size() == 0) {
-			return null;
-		}
+//		if (target.getProperties(targetProperty.getLocalname()).size() == 0) {
+//			return null;
+//		}
 
 		// check whether source Feature has the expected properties
-		for (int i = 0; i < sourceattributes.size(); i++) {
-			for (int j = 0; j < sourceattributes.get(i).size(); j++) {
-				if (source.getProperties(
-						sourceattributes.get(i).get(j).getLocalname()).size() == 0) {
-					return null;
-				}
-			}
-		}
+//		for (int i = 0; i < sourceattributes.size(); i++) {
+//			for (int j = 0; j < sourceattributes.get(i).size(); j++) {
+//				if (source.getProperties(
+//						sourceattributes.get(i).get(j).getLocalname()).size() == 0) {
+//					return null;
+//				}
+//			}
+//		}
 
-		PropertyType pt = target.getProperty(
-				targetProperty.getLocalname()).getType();
-		SimpleFeatureType geoNameType = (SimpleFeatureType)
-						((SimpleFeatureType) pt).getDescriptor("GeographicalName").getType();
+		SimpleFeatureType pt = (SimpleFeatureType) FeatureInspector.getProperty(target, targetProperty.getAbout(), true).getType();
+		//List<String> baseProperties = DetailedAbout.getDetailedAbout(targetProperty.getAbout(), true).getProperties();
+		
+		
+		//SimpleFeatureType geoNameType = (SimpleFeatureType)
+		//				((SimpleFeatureType) pt).getDescriptor("GeographicalName").getType();
 		SimpleFeatureType spellingofnamepropertytype = (SimpleFeatureType) 
-						geoNameType.getDescriptor("spelling").getType();
+						/*geoNameType*/pt.getDescriptor("spelling").getType();
 		SimpleFeatureType spellingofnametype = (SimpleFeatureType) 
 						(spellingofnamepropertytype.getDescriptor("SpellingOfName")).getType();
 		SimpleFeatureType pronunciationofnametype = (SimpleFeatureType) ((SimpleFeatureType) 
-						(geoNameType).getDescriptor("pronunciation").getType()).getDescriptor("PronunciationOfName").getType();
+						/*geoNameType*/pt.getDescriptor("pronunciation").getType()).getDescriptor("PronunciationOfName").getType();
 
 		Collection<FeatureImpl> geographicalnames = new HashSet<FeatureImpl>();
 
@@ -245,7 +249,7 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 				spellingofnamepropertiescollection.add(spellingofnameproperty);
 			}
 			
-			FeatureImpl geographicalname = (FeatureImpl)FeatureBuilder.buildFeature(geoNameType, null,false);
+			FeatureImpl geographicalname = (FeatureImpl)FeatureBuilder.buildFeature(pt, null,false);
 			geographicalname.getProperty("spelling").setValue(spellingofnamepropertiescollection);
 			geographicalname.getProperty("language").setValue(_language.get(i));
 			geographicalname.getProperty("sourceOfName").setValue(_sourceOfName.get(i));
@@ -315,7 +319,7 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 			geographicalnames.add(geographicalname);
 		}
 		// SET COLLECTION OF GEOGRAPHICALNAMES AS TARGET INPUT PARAMETER
-		target.getProperty(targetProperty.getLocalname()).setValue(geographicalnames);
+		FeatureInspector.setPropertyValue(target, targetProperty.getAbout(), geographicalnames);
 		/*((SimpleFeature) target).setAttribute(targetProperty.getLocalname(),
 				geographicalnames);*/
 		return target;

@@ -17,6 +17,13 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
@@ -31,6 +38,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
 import eu.esdihumboldt.inspire.data.GrammaticalGenderValue;
@@ -84,7 +93,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 
 	private static final String TRANSLITERATION_LABEL_TEXT = "Transliteration";
 
-	private Combo nameSpellingText;
+	private ComboViewer nameSpellingText;
 	private StyledText nameSpellingScript;
 	private StyledText nameSpellingTransliteration;
 	private Text namePronounciationSounds;
@@ -471,57 +480,65 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		spellingLayout.marginWidth = 0;
 		spellingLayout.marginHeight = 0;
 		configurationComposite.setLayout(spellingLayout);
+		
+		// init spelling types
+		spellings = new ArrayList<SpellingType>();
+		for (SchemaItem item : getParent().getSourceItems()) {
+			Entity entity = item.getEntity();
+			if (entity instanceof Property) {
+				spellings.add(new SpellingType((Property) entity));
+			}
+		}
 
 		// Text
 		final Label nameSpellingTextLabel = new Label(configurationComposite,
 				SWT.NONE);
 		nameSpellingTextLabel.setText(SPELLING_TEXT_LABEL_TEXT);
-		this.nameSpellingText = new Combo(configurationComposite, SWT.DROP_DOWN
-				| SWT.READ_ONLY);
-		this.nameSpellingText.setLayoutData(configurationLayoutData);
-		this.nameSpellingText.setItems(getItemLocalName());
-		// default set selection to the first element on the list
-		this.nameSpellingText.select(0);
-		this.nameSpellingText.setEnabled(true);
-		SpellingType firstSpelling = null;
-		// if a new alignment creat a Spelling object based on the list of
-		// SourceItems
-		if (getSpellings().size() == 0) {
-			// create a new spelling object and add it to the spellings
-			// collection.
-			firstSpelling = new SpellingType(this.nameSpellingText.getItem(0));
-			this.getSpellings().add(firstSpelling);
-		} else {
-			// retrieve the the current spelling based on the nameSpellingText
-			for (SpellingType spelling : this.spellings) {
-				if (spelling.getText().equals(this.nameSpellingText)) {
-					firstSpelling = spelling;
-					break;
+		this.nameSpellingText = new ComboViewer(configurationComposite, 
+				SWT.DROP_DOWN | SWT.READ_ONLY);
+		this.nameSpellingText.getControl().setLayoutData(configurationLayoutData);
+		this.nameSpellingText.setContentProvider(ArrayContentProvider.getInstance());
+		this.nameSpellingText.setLabelProvider(new LabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				if (element instanceof SpellingType) {
+					return ((SpellingType) element).getProperty().getLocalname();
 				}
+				return super.getText(element);
 			}
+			
+		});
+		this.nameSpellingText.setInput(spellings);
+		// default set selection to the first element on the list
+		if (!spellings.isEmpty()) {
+			this.activeSpelling = spellings.iterator().next();
+			this.nameSpellingText.setSelection(new StructuredSelection(activeSpelling));
 		}
 		// set active spelling
-		this.activeSpelling = firstSpelling;
-		this.nameSpellingText.addSelectionListener(new SelectionAdapter() {
+		nameSpellingText.addSelectionChangedListener(new ISelectionChangedListener() {
+			
 			@Override
-			public void widgetSelected(SelectionEvent event) {
-				String script = ISO_CODE_ENG;
-				String transliteration = "";
-				activeSpelling = getActiveSpelling(nameSpellingText.getText());
-				if (activeSpelling.getScript() != null
-						&& !activeSpelling.getScript().equals(""))
-					script = activeSpelling.getScript();
-				if (activeSpelling.getTransliteration() != null
-						&& !activeSpelling.getTransliteration().equals(""))
-					transliteration = activeSpelling.getTransliteration();
-				nameSpellingScript.setText(script);
-				nameSpellingScript.setCaretOffset(script.length());
-				nameSpellingTransliteration.setText(transliteration);
-				nameSpellingTransliteration.setCaretOffset(transliteration
-						.length());
-
+			public void selectionChanged(SelectionChangedEvent event) {
+				if (!event.getSelection().isEmpty() && event.getSelection() instanceof IStructuredSelection) {
+					SpellingType selected = (SpellingType) ((IStructuredSelection) event.getSelection()).getFirstElement();
+					
+					String script = ISO_CODE_ENG;
+					String transliteration = "";
+					activeSpelling = selected;
+					if (activeSpelling.getScript() != null
+							&& !activeSpelling.getScript().equals(""))
+						script = activeSpelling.getScript();
+					if (activeSpelling.getTransliteration() != null
+							&& !activeSpelling.getTransliteration().equals(""))
+						transliteration = activeSpelling.getTransliteration();
+					nameSpellingScript.setText(script);
+					nameSpellingScript.setCaretOffset(script.length());
+					nameSpellingTransliteration.setText(transliteration);
+					nameSpellingTransliteration.setCaretOffset(transliteration
+							.length());
+				}
 			}
-
 		});
 
 		// Script
@@ -606,18 +623,18 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 	 * An inner class for the Geographicalname Spelling attribute
 	 * 
 	 */
-	public class SpellingType {
+	public static class SpellingType {
 
 		/**
 		 * name of the source attribute read
 		 */
-		private final String text;
+		private final Property property;
 
 		/**
 		 * @return the text
 		 */
-		public String getText() {
-			return text;
+		public Property getProperty() {
+			return property;
 		}
 
 		/**
@@ -647,10 +664,10 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		/**
 		 * Constructor
 		 * 
-		 * @param text
+		 * @param property
 		 */
-		public SpellingType(String text) {
-			this.text = text;
+		public SpellingType(Property property) {
+			this.property = property;
 		}
 
 		/**
@@ -673,10 +690,10 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 	/**
 	 * Returns a spelling assigned to source attribute name
 	 * 
-	 * @param text
+	 * @param property
 	 * @return
 	 */
-	protected SpellingType getActiveSpelling(String text) {
+	protected SpellingType getActiveSpelling(Property property) {
 		// 1. check if the spelling object already exists
 		Iterator<SpellingType> iterator = getSpellings().iterator();
 		SpellingType spelling;
@@ -684,7 +701,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		while (iterator.hasNext()) {
 
 			spelling = iterator.next();
-			if (spelling.getText().equals(text)) {
+			if (spelling.getProperty().equals(property)) {
 				aSpelling = spelling;
 				break;
 			}
@@ -692,7 +709,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		}
 		// if active spelling does not exist
 		if (aSpelling == null) {
-			aSpelling = new SpellingType(text);
+			aSpelling = new SpellingType(property);
 			this.spellings.add(aSpelling);
 		}
 		return aSpelling;
