@@ -12,6 +12,7 @@
 package eu.esdihumboldt.hale.rcp.views.mapping;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -71,7 +72,7 @@ public class CellInfo {
 		this.sourceItems = determineItems(cell.getEntity1(), sourceItem);
 		this.targetItems = determineItems(cell.getEntity2(), targetItem);
 	}
-
+	
 	/**
 	 * Determine the schema items for a given entity
 	 * 
@@ -81,30 +82,38 @@ public class CellInfo {
 	 * @return the schema items represented by the given entity
 	 */
 	private Set<SchemaItem> determineItems(IEntity entity, SchemaItem item) {
-		final List<? extends IEntity> entities;
-		
-		// composed property
-		if (entity instanceof ComposedProperty) {
-			entities = new ArrayList<Property>(((ComposedProperty) entity).getCollection());
-		}
-		// composed feature type
-		else if (entity instanceof ComposedFeatureClass) {
-			entities = new ArrayList<FeatureClass>(((ComposedFeatureClass) entity).getCollection());
-		}
-		// default case
-		else {
-			entities = Collections.singletonList(entity);
-		}
-		
+		return determineItems(Collections.singleton(entity), item);
+	}
+
+	/**
+	 * Determine the schema items for a given entity
+	 * 
+	 * @param entities the entities
+	 * @param item a schema item of the entity's schema
+	 * 
+	 * @return the schema items represented by the given entity
+	 */
+	private Set<SchemaItem> determineItems(Collection<? extends IEntity> entities, SchemaItem item) {
 		final Set<SchemaItem> result = new HashSet<SchemaItem>();
 		for (IEntity candidate : entities) {
-			SchemaItem candidateItem = findItem(candidate, item);
-			if (candidateItem != null) {
-				result.add(candidateItem);
+			if (candidate instanceof ComposedProperty) {
+				// composed property
+				result.addAll(determineItems(((ComposedProperty) candidate).getCollection(), item));
+			}
+			else if (candidate instanceof ComposedFeatureClass) {
+				// composed feature class
+				result.addAll(determineItems(((ComposedFeatureClass) candidate).getCollection(), item));
 			}
 			else {
-				throw new RuntimeException("Schema item for entity " + //$NON-NLS-1$
-						candidate.getAbout().getAbout() + " not found."); //$NON-NLS-1$
+				// default case
+				SchemaItem candidateItem = findItem(candidate, item);
+				if (candidateItem != null) {
+					result.add(candidateItem);
+				}
+				else {
+					throw new RuntimeException("Schema item for entity " + //$NON-NLS-1$
+							candidate.getAbout().getAbout() + " not found."); //$NON-NLS-1$
+				}
 			}
 		}
 		return result;
