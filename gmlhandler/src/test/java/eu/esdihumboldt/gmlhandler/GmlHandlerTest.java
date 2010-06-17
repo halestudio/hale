@@ -60,11 +60,11 @@ public class GmlHandlerTest {
 	private static final Logger LOG = Logger.getLogger(GmlHandlerTest.class);
 
 	/** application schema location */
-	private static final String SCHEMA_LOCATION_GML32 = "urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0 http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst.corefunctions/src/test/resource/inspire_v3.0_xsd/"
+	private static final String SCHEMA_LOCATION_GML32 = "urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0 http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst.corefunctions/src/test/resource/eu/esdihumboldt/cst/corefunctions/inspire/inspire_v3.0_xsd"
 			+ "HydroPhysicalWaters.xsd";
 
 	/** http-based URL for the application schema */
-	private static final String SCHEMA_URL = "http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst.corefunctions/src/test/resource/inspire_v3.0_xsd/"
+	private static final String SCHEMA_URL = "http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst.corefunctions/src/test/resource/eu/esdihumboldt/cst/corefunctions/inspire/inspire_v3.0_xsd/"
 			+ "HydroPhysicalWaters.xsd";
 	/** source gml location */
 	private static final String GML32_INSTANCE_LOCATION = "http://svn.esdi-humboldt.eu/repo/humboldt2/branches/humboldt-deegree3/resource/sourceData/va_target_v3.gml";
