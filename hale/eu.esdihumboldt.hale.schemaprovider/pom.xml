@@ -93,8 +93,8 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
-			<artifactId>common-library</artifactId>
-			<version>3.0.0</version>
+			<artifactId>commons</artifactId>
+			<version>3.0.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>

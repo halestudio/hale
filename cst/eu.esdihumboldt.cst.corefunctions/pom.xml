@@ -105,7 +105,7 @@
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
 			<artifactId>commons</artifactId>
-			<version>3.0.2-SNAPSHOT</version>
+			<version>3.0.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
