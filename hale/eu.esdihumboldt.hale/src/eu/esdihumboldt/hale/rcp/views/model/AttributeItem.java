@@ -102,7 +102,7 @@ public class AttributeItem extends TreeParent {
 			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
 		}
 		// default geographical name attribute
-		else if (attribute.getName().equalsIgnoreCase("geographicalname")) { //$NON-NLS-1$
+		else if (attribute.getName().equals("GeographicalName")) { //$NON-NLS-1$
 			return TreeObjectType.GEOGRAPHICAl_NAME_ATTRIBUTE;
 		}
 		else if (Arrays.asList(type.getClass().getInterfaces())
