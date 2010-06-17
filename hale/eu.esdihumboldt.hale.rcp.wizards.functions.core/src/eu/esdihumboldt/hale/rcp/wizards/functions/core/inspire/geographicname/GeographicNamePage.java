@@ -483,10 +483,23 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		// default set selection to the first element on the list
 		this.nameSpellingText.select(0);
 		this.nameSpellingText.setEnabled(true);
-		// create a new spelling object and add it to the spellings collection.
-		SpellingType firstSpelling = new SpellingType(this.nameSpellingText
-				.getItem(0));
-		this.getSpellings().add(firstSpelling);
+		SpellingType firstSpelling = null;
+		// if a new alignment creat a Spelling object based on the list of
+		// SourceItems
+		if (getSpellings().size() == 0) {
+			// create a new spelling object and add it to the spellings
+			// collection.
+			firstSpelling = new SpellingType(this.nameSpellingText.getItem(0));
+			this.getSpellings().add(firstSpelling);
+		} else {
+			// retrieve the the current spelling based on the nameSpellingText
+			for (SpellingType spelling : this.spellings) {
+				if (spelling.getText().equals(this.nameSpellingText)) {
+					firstSpelling = spelling;
+					break;
+				}
+			}
+		}
 		// set active spelling
 		this.activeSpelling = firstSpelling;
 		this.nameSpellingText.addSelectionListener(new SelectionAdapter() {
@@ -545,7 +558,6 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		this.nameSpellingTransliteration.setLayoutData(configurationLayoutData);
 		this.nameSpellingTransliteration.setEnabled(true);
 		this.nameSpellingTransliteration.setTabs(0);
-		// FIXME show default alignments from the existing oml
 		// read script from the active spelling
 		String transliteration = "";
 		if (activeSpelling.getTransliteration() != null)
