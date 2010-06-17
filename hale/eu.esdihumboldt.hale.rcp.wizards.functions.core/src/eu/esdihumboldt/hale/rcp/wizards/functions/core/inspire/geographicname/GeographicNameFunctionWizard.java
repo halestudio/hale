@@ -73,6 +73,7 @@ public class GeographicNameFunctionWizard extends
 		
 
 		// init transformation parameters from cell
+		//TODO change cell structure
 		if (cell.getEntity1().getTransformation() != null) {
 			List<IParameter> parameters = cell.getEntity1().getTransformation()
 					.getParameters();
@@ -126,12 +127,8 @@ public class GeographicNameFunctionWizard extends
 		this.page.setNameStatus(nameStatus);
 		this.page.setNativeness(nativeness);
 		this.page.setNumber(number);
-		/*
-		 * this.page.setTransliteration(transliteration);
-		 * this.page.setText(text);
-		 */
 		this.page.setSourceOfName(sourceOfName);
-		/* this.page.setScript(script); */
+	
 
 	}
 
@@ -152,12 +149,11 @@ public class GeographicNameFunctionWizard extends
 			cp = (ComposedProperty)cell.getEntity1();
 		}
 			
-		//TODO handle case if the mapping already exists
 		// 1. configure composed property for the cell
-		// ComposedProperty cp = (ComposedProperty)cell.getEntity1();
-		
-		 //2. set Transformation for the cell
-		 Transformation  cpT = new Transformation(new Resource(GeographicalNameFunction.class.getName()));
+		// 2. set Transformation for the cell
+		 //Transformation  cpT = new Transformation(new Resource(GeographicalNameFunction.class.getName()));
+		 Transformation cpT = new Transformation();
+		 cpT.setService(new Resource(GeographicalNameFunction.class.getName()));
 		 //add geographical name common parameters to is transformation
 		 List<IParameter> gnParams = new ArrayList<IParameter>();
 		 //set language
@@ -196,7 +192,8 @@ public class GeographicNameFunctionWizard extends
 		 List<Property> props = new ArrayList<Property>();
 		 for (SpellingType spelling : spellings){
 			 Property property = new Property(cp.getAbout());
-			 Transformation transformation = new Transformation(new Resource("some spelling functionSpellingFunction"));
+			 Transformation transformation = new Transformation();
+			 transformation.setService((new Resource("some spelling functionSpellingFunction")));
 			 //add spelling parameters to the transformation 
 			 List<IParameter> params = new ArrayList<IParameter>();
 			 IParameter param = new Parameter(GeographicalNameFunction.PROPERTY_TEXT, spelling.getText());
@@ -205,6 +202,7 @@ public class GeographicNameFunctionWizard extends
 			 params.add(param);
 			 param = new Parameter(GeographicalNameFunction.PROPERTY_TRANSLITERATION, spelling.getTransliteration());
 			 transformation.setParameters(params);
+			 property.setTransformation(transformation);
 			 props.add(property);
 			 
 		 }
