@@ -235,11 +235,13 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 			public void modifyText(ModifyEvent e) {
 
 				// if source of name defined by user
-				if (!sourceOfName.equals(SOURCE_OF_NAME_PROMT)) {
+				if (!nameSourceText.getText().equals(SOURCE_OF_NAME_PROMT)) {
 					setSourceOfName(nameSourceText.getText());
 				}
 				// FIXME replace with constant from new commons release
-				setSourceOfName("uknown");
+				else {
+					setSourceOfName("unknown");
+				}
 
 			}
 		});
@@ -749,6 +751,10 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 	 * @return the sourceOfName
 	 */
 	public String getSourceOfName() {
+		if (sourceOfName != null && sourceOfName.equals(SOURCE_OF_NAME_PROMT)) {
+			return "unknown";
+		}
+		
 		return sourceOfName;
 	}
 
