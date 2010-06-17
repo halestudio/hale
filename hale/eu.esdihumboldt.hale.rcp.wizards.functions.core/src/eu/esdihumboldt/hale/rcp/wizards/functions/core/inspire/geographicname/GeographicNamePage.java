@@ -206,7 +206,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		this.nameLanguageText.setTabs(0);
 		this.nameLanguageText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				setLanguage(language);
+				setLanguage(nameLanguageText.getText());
 
 			}
 
