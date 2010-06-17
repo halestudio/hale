@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -170,11 +171,13 @@ public class MappingInfo {
 			identifier = entity.getAbout().getAbout();
 		}
 		else if (entity instanceof ComposedProperty) {
-			// FIXME determine if multiple FTs are involved, and if yes, register all of them!
-			Property firstProperty = ((ComposedProperty) entity).getCollection().get(0);
-			IDetailedAbout about = DetailedAbout.getDetailedAbout(firstProperty.getAbout(), true);
-			identifier = about.getNamespace() + "/" 
-					+ about.getFeatureClass();
+			List<Property> properties = ((ComposedProperty) entity).getCollection();
+			for (Property p : properties) {
+				if (isRelevantEntity(p, type)) {
+					return true;
+				}
+			}
+			return false;
 		}
 		else if (entity instanceof Property) {
 			Property property = (Property) entity;
@@ -184,6 +187,8 @@ public class MappingInfo {
 		else {
 			throw new IllegalArgumentException("Unknown entity type");
 		}
+		
+		//TODO handle ComposedFeatureClass?
 		
 		return isRelevantEntity(identifier, type);
 	}
