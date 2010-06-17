@@ -52,7 +52,7 @@
       <plugin id="com.springsource.org.dom4j"/>
       <plugin id="com.springsource.org.jvnet.staxex"/>
       <plugin id="com.vividsolutions.jts"/>
-      <plugin id="eu.esdihumboldt.commons" version="3.0.2"/>
+      <plugin id="eu.esdihumboldt.commons" version="3.0.3"/>
       <plugin id="eu.esdihumboldt.cst.corefunctions"/>
       <plugin id="eu.esdihumboldt.hale"/>
       <plugin id="eu.esdihumboldt.hale.gmlparser"/>
