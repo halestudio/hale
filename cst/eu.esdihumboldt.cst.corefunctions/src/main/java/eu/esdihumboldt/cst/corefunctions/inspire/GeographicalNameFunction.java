@@ -262,22 +262,23 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 			geographicalname.setAttribute("sourceOfName", _sourceOfName.get(i));*/
 			
 			if (_nativeness.get(i) != null)
-				geographicalname.getProperty("nativeness").setValue(Collections.singleton(_nativeness.get(i).toString()));
+				geographicalname.getProperty("nativeness").setValue(
+						_nativeness.get(i).toString());
 			else
 				geographicalname.getProperty("nativeness").setValue(null);
 			if (_nameStatus.get(i) != null)
-				geographicalname.getProperty("nameStatus").setValue(Collections
-						.singleton(_nameStatus.get(i).toString()));
+				geographicalname.getProperty("nameStatus").setValue(
+						_nameStatus.get(i).toString());
 			else
 				geographicalname.getProperty("nameStatus").setValue(null);
 			if (_grammaticalGender.get(i) != null)
-				geographicalname.getProperty("grammaticalGender").setValue(Collections
-						.singleton(_grammaticalGender.get(i).toString()));
+				geographicalname.getProperty("grammaticalGender").setValue(
+						_grammaticalGender.get(i).toString());
 			else
 				geographicalname.getProperty("grammaticalGender").setValue(null);
 			if (_grammaticalNumber.get(i) != null)
-				geographicalname.getProperty("grammaticalNumber").setValue(Collections
-						.singleton(_grammaticalNumber.get(i).toString()));
+				geographicalname.getProperty("grammaticalNumber").setValue(
+						_grammaticalNumber.get(i).toString());
 			else
 				geographicalname.getProperty("grammaticalNumber").setValue(null);
 
