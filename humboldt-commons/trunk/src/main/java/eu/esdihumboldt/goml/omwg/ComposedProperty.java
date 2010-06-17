@@ -102,6 +102,24 @@ public class ComposedProperty
 	// getters / setters .......................................................
 	
 	/**
+	 * @see eu.esdihumboldt.goml.omwg.Property#getFeatureClassName()
+	 */
+	@Override
+	public String getFeatureClassName() {
+		// TODO what should the composed property return here?
+		return getLocalname();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.goml.omwg.Property#getNamespace()
+	 */
+	@Override
+	public String getNamespace() {
+		return this.getAbout().getAbout().substring(
+				0, (this.getAbout().getAbout().lastIndexOf("/")));
+	}
+
+	/**
 	 * @return the collection
 	 */
 	public List<Property> getCollection() {

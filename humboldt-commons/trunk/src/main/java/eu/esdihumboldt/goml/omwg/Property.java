@@ -21,6 +21,7 @@ import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.goml.rdf.DetailedAbout;
 
 /**
  * This class represents omwg:PropertyType.
@@ -63,16 +64,11 @@ public class Property
 	}
 	
 	public String getNamespace() {
-		String[] nameparts = this.getAbout().getAbout().split("/");
-		
-		return this.getAbout().getAbout().substring(
-				0, (this.getAbout().getAbout().lastIndexOf(
-								nameparts[nameparts.length - 2])) - 1);
+		return DetailedAbout.getDetailedAbout(getAbout(), true).getNamespace();
 	}
 	
 	public String getFeatureClassName() {
-		String[] nameparts = this.getAbout().getAbout().split("/");
-		return nameparts[nameparts.length - 2];
+		return DetailedAbout.getDetailedAbout(getAbout(), true).getFeatureClass();
 	}
 
 	// getters/setters .........................................................
