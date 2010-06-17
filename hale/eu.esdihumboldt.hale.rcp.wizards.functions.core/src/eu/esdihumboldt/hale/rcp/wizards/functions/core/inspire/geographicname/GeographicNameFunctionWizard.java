@@ -141,12 +141,21 @@ public class GeographicNameFunctionWizard extends
 	@Override
 	public boolean performFinish() {
 		Cell cell = getResultCell();
+		ComposedProperty cp = null;
+		//check if  Entity1 is ComposedProperty
+		if (! (cell.getEntity1() instanceof ComposedProperty) ){
+			//create Composed Property
+			Property property = (Property) cell.getEntity1();
+			cp = new ComposedProperty(new About(property.getNamespace()));
+			
+		}else{
+			cp = (ComposedProperty)cell.getEntity1();
+		}
+			
 		//TODO handle case if the mapping already exists
 		// 1. configure composed property for the cell
-		 ComposedProperty cp = (ComposedProperty)cell.getEntity1();
-		 if (cp == null){
-			 cp = new ComposedProperty(new About(""));
-		 }
+		// ComposedProperty cp = (ComposedProperty)cell.getEntity1();
+		
 		 //2. set Transformation for the cell
 		 Transformation  cpT = new Transformation(new Resource(GeographicalNameFunction.class.getName()));
 		 //add geographical name common parameters to is transformation
@@ -180,13 +189,13 @@ public class GeographicNameFunctionWizard extends
 		 ArrayList<SpellingType> spellings = page.getSpellings();  
 		 List<Property> propCollection = new ArrayList<Property>();
 		 //4. add to the property list a new Composed Property 1 containing a collection of the spelling specific parameters
-		 ComposedProperty compProp1 = new ComposedProperty(new About(""));
+		 ComposedProperty compProp1 = new ComposedProperty(cp.getAbout());
 		 //4.a set transformation for comProp1
 		 compProp1.setTransformation(cpT);
 		 //4b. create a list of properties for comProp1
 		 List<Property> props = new ArrayList<Property>();
 		 for (SpellingType spelling : spellings){
-			 Property property = new Property(new About(""));
+			 Property property = new Property(cp.getAbout());
 			 Transformation transformation = new Transformation(new Resource("some spelling functionSpellingFunction"));
 			 //add spelling parameters to the transformation 
 			 List<IParameter> params = new ArrayList<IParameter>();
