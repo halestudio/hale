@@ -420,9 +420,12 @@ public class ModelNavigationView extends ViewPart implements
 
 	private List<SimpleToggleAction> getToggleActions(PatternViewFilter pvf) {
 		List<SimpleToggleAction> result = new ArrayList<SimpleToggleAction>();
-		result.add(new SimpleToggleAction(TreeObjectType.PROPERTY_TYPE, 
-				Messages.ModelNavigationView_PropertyHide, Messages.ModelNavigationView_PropertyShow, 
-				"/icons/placeholder.gif", pvf)); //$NON-NLS-1$
+//		result.add(new SimpleToggleAction(TreeObjectType.PROPERTY_TYPE, 
+//				Messages.ModelNavigationView_PropertyHide, Messages.ModelNavigationView_PropertyShow, 
+//				"/icons/placeholder.gif", pvf)); //$NON-NLS-1$
+		result.add(new SimpleToggleAction(TreeObjectType.ABSTRACT_FT, 
+				"Hide abstract types", "Show abstract types", 
+				"/icons/see_abstract_ft.png", pvf)); 
 		result.add(new SimpleToggleAction(TreeObjectType.STRING_ATTRIBUTE, 
 				Messages.ModelNavigationView_StringHide, Messages.ModelNavigationView_StringShow, 
 				"/icons/see_string_attribute.png", pvf)); //$NON-NLS-1$
