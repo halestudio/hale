@@ -12,8 +12,10 @@
 
 package eu.esdihumboldt.gmlhandler;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -35,14 +37,9 @@ import org.deegree.feature.property.Property;
 import org.deegree.feature.types.ApplicationSchema;
 import org.deegree.feature.types.FeatureType;
 import org.deegree.feature.types.property.PropertyType;
-import org.deegree.gml.GMLInputFactory;
-import org.deegree.gml.GMLStreamReader;
-import org.deegree.gml.GMLVersion;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.vividsolutions.jts.io.gml2.GMLHandler;
 
 /**
  * 
@@ -53,25 +50,21 @@ import com.vividsolutions.jts.io.gml2.GMLHandler;
  * @version $Id$
  */
 public class GmlHandlerTest {
-
-	/**
-	 * Logger for this class
-	 */
+	/** Logger for this class */
 	private static final Logger LOG = Logger.getLogger(GmlHandlerTest.class);
 
 	/** application schema location */
-	private static final String SCHEMA_LOCATION_GML32 = "urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0 http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst.corefunctions/src/test/resource/eu/esdihumboldt/cst/corefunctions/inspire/inspire_v3.0_xsd"
-			+ "HydroPhysicalWaters.xsd";
+	private static final String SCHEMA_LOCATION_GML32 = "urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0 http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst.corefunctions/src/test/resource/eu/esdihumboldt/cst/corefunctions/inspire/inspire_v3.0_xsd" + "HydroPhysicalWaters.xsd";
 
 	/** http-based URL for the application schema */
-	private static final String SCHEMA_URL = "http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst.corefunctions/src/test/resource/eu/esdihumboldt/cst/corefunctions/inspire/inspire_v3.0_xsd/"
-			+ "HydroPhysicalWaters.xsd";
+	private static final String SCHEMA_URL = "http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst.corefunctions/src/test/resource/eu/esdihumboldt/cst/corefunctions/inspire/inspire_v3.0_xsd/" + "HydroPhysicalWaters.xsd";
+
 	/** source gml location */
 	private static final String GML32_INSTANCE_LOCATION = "http://svn.esdi-humboldt.eu/repo/humboldt2/branches/humboldt-deegree3/resource/sourceData/va_target_v3.gml";
 
 	/** generated instance location */
 	private static final String GML32_GENERATED_LOCATION = "src/test/resources/va_target_v3_generated.gml";
-	
+
 	/** handler to proceed gmldata */
 	private static GmlHandler gmlHandler;
 
@@ -84,22 +77,18 @@ public class GmlHandlerTest {
 		HashMap<String, String> namespaces = new HashMap<String, String>();
 		namespaces.put("gco", "http://www.isotc211.org/2005/gco");
 		namespaces.put("gmd", "http://www.isotc211.org/2005/gmd");
-		namespaces.put("gn",
-				"urn:x-inspire:specification:gmlas:GeographicalNames:3.0");
-		namespaces.put("hy-p",
-				"urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0");
+		namespaces.put("gn", "urn:x-inspire:specification:gmlas:GeographicalNames:3.0");
+		namespaces.put("hy-p", "urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0");
 		namespaces.put("hy", "urn:x-inspire:specification:gmlas:HydroBase:3.0");
-		namespaces.put("base",
-				"urn:x-inspire:specification:gmlas:BaseTypes:3.2");
+		namespaces.put("base", "urn:x-inspire:specification:gmlas:BaseTypes:3.2");
 		namespaces.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-		// set up GMLHandler with the test configuration
-		gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, SCHEMA_URL,
-				namespaces);
-		gmlHandler.setGmlUrl(GML32_INSTANCE_LOCATION);
-		
-		// set target gml destination
-		 gmlHandler.setTargetGmlUrl(GML32_GENERATED_LOCATION);
 
+		// set up GMLHandler with the test configuration
+		gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, SCHEMA_URL, namespaces);
+		gmlHandler.setGmlUrl(GML32_INSTANCE_LOCATION);
+
+		// set target gml destination
+		gmlHandler.setTargetGmlUrl(GML32_GENERATED_LOCATION);
 	}
 
 	/**
@@ -107,212 +96,145 @@ public class GmlHandlerTest {
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
+		new File(GML32_GENERATED_LOCATION).delete();
 	}
 
 	/**
-	 * Test method for
-	 * {@link eu.esdihumboldt.gmlhandler.GmlHandler#readSchema()}.
+	 * Test method for {@link eu.esdihumboldt.gmlhandler.GmlHandler#readSchema()}.
+	 * 
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws ClassNotFoundException
+	 * @throws ClassCastException
+	 * @throws MalformedURLException
 	 */
 	@Test
-	public final void testReadSchema() {
+	public final void testReadSchema() throws MalformedURLException, ClassCastException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		// read application schema
-		try {
-			ApplicationSchema schema = gmlHandler.readSchema();
-			// validate root FeatureTypes
-			FeatureType[] rootFTypes = schema.getRootFeatureTypes();
+		ApplicationSchema schema = gmlHandler.readSchema();
 
-			assertEquals(17, rootFTypes.length);
-			for (FeatureType rootType : rootFTypes) {
-				LOG.debug("Root Feature Type : "
-						+ rootType.getName().getNamespaceURI() + ":"
-						+ rootType.getName().getLocalPart());
-			}
-			// compair the count of the FeatureTypes
-			FeatureType[] ftypes = schema.getFeatureTypes();
-			for (FeatureType ftype : ftypes) {
-				LOG.debug("Application Schema Type : "
-						+ ftype.getName().getNamespaceURI() + ":"
-						+ ftype.getName().getLocalPart());
-				// validate a single Feature Type
-				if (ftype.getName().getLocalPart().equals("Rapids")) {
-					assertEquals("hy-p", ftype.getName().getPrefix());
-					assertEquals(
-							"urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0",
-							ftype.getName().getNamespaceURI());
-					// check parent type
-					FeatureType pType = schema.getParentFt(ftype);
-					LOG.debug("Parent Typy of hy-p:Rapids is "
-							+ pType.getName().toString());
-					assertEquals("FluvialPoint", pType.getName().getLocalPart());
-					// check property declarations list
-					List<PropertyType> pDeclarations = (List<PropertyType>) ftype
-							.getPropertyDeclarations();
-					assertEquals(8, pDeclarations.size());
-					for (PropertyType propType : pDeclarations) {
-						LOG.debug("Property List of hy-p:Rapids contains : "
-								+ propType.getName().toString());
-					}
-
-				}
-			}
-
-			assertEquals(49, ftypes.length);
-
-		} catch (MalformedURLException e) {
-			LOG.error(e.getStackTrace().toString());
-			fail(e.getMessage());
-			
-		} catch (ClassCastException e) {
-
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (ClassNotFoundException e) {
-
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (InstantiationException e) {
-
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (IllegalAccessException e) {
-
-			LOG.error(e);
-			fail(e.getMessage());
+		// validate root FeatureTypes
+		FeatureType[] rootFTypes = schema.getRootFeatureTypes();
+		assertEquals(17, rootFTypes.length);
+		
+		for (FeatureType rootType : rootFTypes) {
+			LOG.debug("Root Feature Type : " + rootType.getName().getNamespaceURI() + ":" + rootType.getName().getLocalPart());
 		}
 
+		// Compare the count of the FeatureTypes
+		FeatureType[] ftypes = schema.getFeatureTypes();
+		for (FeatureType ftype : ftypes) {
+			LOG.debug("Application Schema Type : " + ftype.getName().getNamespaceURI() + ":" + ftype.getName().getLocalPart());
+			// validate a single Feature Type
+			if (ftype.getName().getLocalPart().equals("Rapids")) {
+				assertEquals("hy-p", ftype.getName().getPrefix());
+				assertEquals("urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0", ftype.getName().getNamespaceURI());
+				// check parent type
+				FeatureType pType = schema.getParentFt(ftype);
+				LOG.debug("Parent Typy of hy-p:Rapids is " + pType.getName().toString());
+				assertEquals("FluvialPoint", pType.getName().getLocalPart());
+				// check property declarations list
+				List<PropertyType> pDeclarations = (List<PropertyType>) ftype.getPropertyDeclarations();
+				assertEquals(8, pDeclarations.size());
+				for (PropertyType propType : pDeclarations) {
+					LOG.debug("Property List of hy-p:Rapids contains : " + propType.getName().toString());
+				}
+			}
+		}
+
+		assertEquals(49, ftypes.length);
+	}
+	
+	
+	/**
+	 * Little test to see if we can read in a local schema, i.e. file protocol.
+	 * 
+	 * @throws MalformedURLException
+	 * @throws ClassCastException
+	 * @throws ClassNotFoundException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	@Test
+	public final void testReadLocalSchema() throws MalformedURLException, ClassCastException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+		String url = "file://" + this.getClass().getResource("./HydroPhysicalwaters.xsd").getFile();
+		gmlHandler.setSchemaUrl(url);
+		
+		// read application schema
+		gmlHandler.readSchema();
 	}
 
 	/**
 	 * Test method for {@link eu.esdihumboldt.gmlhandler.GmlHandler#readFC()}.
+	 * 
+	 * @throws UnknownCRSException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws FactoryConfigurationError
+	 * @throws XMLStreamException
+	 * @throws ClassCastException
+	 * @throws XMLParsingException
 	 */
 	@Test
-	public final void testReadFC() {
+	public final void testReadFC() throws XMLParsingException, ClassCastException, XMLStreamException, FactoryConfigurationError, IOException,
+			ClassNotFoundException, InstantiationException, IllegalAccessException, UnknownCRSException {
 		LOG.info("Reading of source Feature Collection..");
-		try {
-			URL url = new URL(GML32_INSTANCE_LOCATION);
-			// read FeatureCollection
-			FeatureCollection fc = null;
-			fc = gmlHandler.readFC();
 
-			// check feature collection size
-			assertEquals(998, fc.size());
-			LOG.info("Feature Collection made up of " + fc.size());
-			// validate a single feature with id=Watercourses=VA.942
+		URL url = new URL(GML32_INSTANCE_LOCATION);
+		// read FeatureCollection
+		FeatureCollection fc = null;
+		fc = gmlHandler.readFC();
 
-			Iterator<Feature> fcIterator = fc.iterator();
-			LOG.info("Verifying of the single features");
-			while (fcIterator.hasNext()) {
-				Feature feature = fcIterator.next();
-				LOG.debug("Found feature with ID = " + feature.getId());
-				if (feature.getId().equals("Watercourses_VA.942")) {
-					LOG.info("Verifying feature with feature id = Watercourses_VA.942");
-					//check feature name
-					assertEquals("Watercourse", feature.getName().getLocalPart());
-					//check feature property list
-					Property [] props = feature.getProperties();
-	                assertEquals(18, props.length);
-	                //check  property localType
-	                for (Property prop : props){
-	                	LOG.debug("Found property " + prop.getName().toString());
-	                	if (prop.getName().getLocalPart().equals("localType")){
-	                		LOG.info("Verifying of  Property Watercourse:localType");
-	                			assertEquals("Fluss, Bach", prop.getValue().toString());
-	                			
-	                		}
-	                }
-	                
+		// check feature collection size
+		assertEquals(998, fc.size());
+		LOG.info("Feature Collection made up of " + fc.size());
+		// validate a single feature with id=Watercourses=VA.942
 
+		Iterator<Feature> fcIterator = fc.iterator();
+		LOG.info("Verifying of the single features");
+		while (fcIterator.hasNext()) {
+			Feature feature = fcIterator.next();
+			LOG.debug("Found feature with ID = " + feature.getId());
+			if (feature.getId().equals("Watercourses_VA.942")) {
+				LOG.info("Verifying feature with feature id = Watercourses_VA.942");
+				// check feature name
+				assertEquals("Watercourse", feature.getName().getLocalPart());
+				// check feature property list
+				Property[] props = feature.getProperties();
+				assertEquals(18, props.length);
+				// check property localType
+				for (Property prop : props) {
+					LOG.debug("Found property " + prop.getName().toString());
+					if (prop.getName().getLocalPart().equals("localType")) {
+						LOG.info("Verifying of  Property Watercourse:localType");
+						assertEquals("Fluss, Bach", prop.getValue().toString());
+					}
 				}
-
 			}
-
-		} catch (MalformedURLException e) {
-
-			LOG.error(e);
-			fail(e.getMessage());
-
-		} catch (XMLParsingException e) {
-
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (ClassCastException e) {
-
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (XMLStreamException e) {
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (FactoryConfigurationError e) {
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (IOException e) {
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (ClassNotFoundException e) {
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (InstantiationException e) {
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (IllegalAccessException e) {
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (UnknownCRSException e) {
-			LOG.error(e);
-			fail(e.getMessage());
 		}
-
 	}
 
 	/**
-	 * Test method for
-	 * {@link eu.esdihumboldt.gmlhandler.GmlHandler#writeFC(org.deegree.feature.FeatureCollection)}
-	 * .
+	 * Test method for {@link eu.esdihumboldt.gmlhandler.GmlHandler#writeFC(org.deegree.feature.FeatureCollection)} .
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws ClassNotFoundException 
+	 * @throws IOException 
+	 * @throws FactoryConfigurationError 
+	 * @throws TransformationException 
+	 * @throws UnknownCRSException 
+	 * @throws XMLStreamException 
+	 * @throws ClassCastException 
+	 * @throws FileNotFoundException 
+	 * @throws XMLParsingException 
 	 */
 	@Test
-	public final void testWriteFC() {
-		
+	public final void testWriteFC() throws XMLParsingException, FileNotFoundException, ClassCastException, XMLStreamException, UnknownCRSException, TransformationException, FactoryConfigurationError, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		// TODO provide XUNIT-based testing
-		// TODO clean up generated file after 
-		
-		try {
-			gmlHandler.writeFC(gmlHandler.readFC());
-		} catch (XMLParsingException e) {
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (FileNotFoundException e) {
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (ClassCastException e) {
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (XMLStreamException e) {
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (UnknownCRSException e) {
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (TransformationException e) {
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (FactoryConfigurationError e) {
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (IOException e) {
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (ClassNotFoundException e) {
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (InstantiationException e) {
-			LOG.error(e);
-			fail(e.getMessage());
-		} catch (IllegalAccessException e) {
-			LOG.error(e);
-			fail(e.getMessage());
-		}
-		
-
+		// TODO clean up generated file after
+		gmlHandler.writeFC(gmlHandler.readFC());
 	}
 
 }
