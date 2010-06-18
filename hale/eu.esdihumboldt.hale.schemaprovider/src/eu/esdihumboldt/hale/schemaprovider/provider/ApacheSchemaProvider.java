@@ -51,7 +51,6 @@ import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.geotools.feature.NameImpl;
-import org.geotools.feature.type.ComplexTypeImpl;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
@@ -728,7 +727,24 @@ public class ApacheSchemaProvider
 		
 		// populate schema items with type definitions
 		for (SchemaElement element : elements.values()) {
-			element.setType(featureTypes.get(element.getTypeName()));
+			TypeDefinition elementDef = featureTypes.get(element.getTypeName());
+			if (elementDef != null) {
+				element.setType(elementDef);
+			}
+			else {
+				elementDef = element.getType();
+				
+				if (elementDef == null) {
+					elementDef = TypeUtil.resolveAttributeType(element.getTypeName(), typeResolver); //TypeUtil.getXSType(element.getTypeName());
+				}
+				
+				if (elementDef == null) {
+					//_log.warn("Couldn't find definition for element " + element.getDisplayName());
+				}
+				else {
+					element.setType(elementDef);
+				}
+			}
 		}
 		
 		return result;
