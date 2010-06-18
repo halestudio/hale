@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.rcp.utils.definition.internal;
 
+import java.net.URI;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -28,6 +29,7 @@ import eu.esdihumboldt.hale.rcp.utils.definition.internal.editors.FloatAttribute
 import eu.esdihumboldt.hale.rcp.utils.definition.internal.editors.IntegerAttributeEditor;
 import eu.esdihumboldt.hale.rcp.utils.definition.internal.editors.LongAttributeEditor;
 import eu.esdihumboldt.hale.rcp.utils.definition.internal.editors.StringAttributeEditor;
+import eu.esdihumboldt.hale.rcp.utils.definition.internal.editors.URIAttributeEditor;
 import eu.esdihumboldt.hale.rcp.utils.definition.internal.editors.codelist.CodeListAttributeEditor;
 import eu.esdihumboldt.hale.schemaprovider.EnumAttributeType;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
@@ -66,7 +68,11 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 			AttributeType type = attributeType.getType(null);
 			Class<?> binding = type.getBinding();
 			
-			if (type instanceof EnumAttributeType) {
+			if (binding.isAssignableFrom(URI.class)) {
+				// URI
+				return new URIAttributeEditor(parent);
+			}
+			else if (type instanceof EnumAttributeType) {
 				// enumeration
 				EnumAttributeType enumType = (EnumAttributeType) type;
 				Set<String> values = enumType.getAllowedValues();
