@@ -62,7 +62,7 @@ public class PropertiesDialog extends TitleAreaDialog {
 	/**
 	 * Constructor
 	 * 
-	 * @param parentShell
+	 * @param parentShell the parent shell
 	 * @param item the schema item
 	 */
 	public PropertiesDialog(Shell parentShell, SchemaItem item) {
