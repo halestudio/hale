@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.rcp.views.model;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -95,6 +96,10 @@ public class AttributeItem extends TreeParent {
 		// boolean
 		else if (Boolean.class.isAssignableFrom(binding)) {
 			return TreeObjectType.STRING_ATTRIBUTE; //TODO new attribute type?
+		}
+		// URI
+		else if (URI.class.isAssignableFrom(binding)) {
+			return TreeObjectType.STRING_ATTRIBUTE;
 		}
 		// default geometry attribute
 		else if (attribute.getName().equalsIgnoreCase("geometry") || //$NON-NLS-1$
