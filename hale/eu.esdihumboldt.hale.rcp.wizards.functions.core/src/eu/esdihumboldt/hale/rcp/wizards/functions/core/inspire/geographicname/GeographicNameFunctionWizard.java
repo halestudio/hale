@@ -73,9 +73,11 @@ public class GeographicNameFunctionWizard extends
 
 		// init transformation parameters from cell
 
-		if (cell.getEntity1().getTransformation() != null) {
-			List<IParameter> parameters = cell.getEntity1().getTransformation()
-					.getParameters();
+		if (cell.getEntity1()instanceof ComposedProperty && ((ComposedProperty)cell.getEntity1()).getCollection()!= null && ((ComposedProperty)cell.getEntity1()).getCollection().size()==1) {
+			// edit existing cell
+			ComposedProperty outerCP = (ComposedProperty) cell.getEntity1();
+			ComposedProperty innerCP = (ComposedProperty) outerCP.getCollection().get(0);
+			List<IParameter> parameters = innerCP.getTransformation().getParameters();
 
 			if (parameters != null) {
 				Iterator<IParameter> it = parameters.iterator();
@@ -180,7 +182,7 @@ public class GeographicNameFunctionWizard extends
 		ComposedProperty outerCP;
 		ComposedProperty innerCP;
 		
-		if (cell.getEntity1().getTransformation() != null) {
+		if (cell.getEntity1()instanceof ComposedProperty && ((ComposedProperty)cell.getEntity1()).getCollection()!= null && ((ComposedProperty)cell.getEntity1()).getCollection().size()==1) {
 			// edit existing cell
 			outerCP = (ComposedProperty) cell.getEntity1();
 			innerCP = (ComposedProperty) outerCP.getCollection().get(0);
@@ -193,7 +195,8 @@ public class GeographicNameFunctionWizard extends
 				Property property = (Property) cell.getEntity1();
 				innerCP = new ComposedProperty(property.getNamespace());
 				innerCP.setCollection(Collections.singletonList(property));
-				cell.setEntity1(innerCP);
+				//A.P. innerCP included in outerCP
+				//cell.setEntity1(innerCP);
 			} else {
 				innerCP = (ComposedProperty)cell.getEntity1();
 			}
@@ -255,6 +258,7 @@ public class GeographicNameFunctionWizard extends
 					 param = new Parameter(GeographicalNameFunction.PROPERTY_SCRIPT, spelling.getScript());
 					 params.add(param);
 					 param = new Parameter(GeographicalNameFunction.PROPERTY_TRANSLITERATION, spelling.getTransliteration());
+					 params.add(param);
 					 transformation.setParameters(params);
 					 property.setTransformation(transformation);
 				 }
