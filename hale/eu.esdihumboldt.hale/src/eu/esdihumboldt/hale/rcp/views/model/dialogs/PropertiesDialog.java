@@ -146,6 +146,7 @@ public class PropertiesDialog extends TitleAreaDialog {
 		col2.getColumn().setText(Messages.PropertiesDialog_col12Text);
 		col2.setLabelProvider(new TreeColumnViewerLabelProvider(
 				new MultiColumnTreeNodeLabelProvider(1)));
+		col2.setEditingSupport(new ReadOnlyEditingSupport(tree, new MultiColumnTreeNodeLabelProvider(1)));
 		
 		tree.getTree().setHeaderVisible(true);
 		tree.getTree().setLinesVisible(true);
