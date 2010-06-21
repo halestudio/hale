@@ -31,8 +31,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
+import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
@@ -273,6 +275,10 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 		super.dispose();
 	}
 	
+	/**
+	 * @param tot
+	 * @return the right image
+	 */
 	public static String getImageforTreeObjectType(TreeObjectType tot) {
 		String imageKey = null;
 		if (tot.equals(TreeObjectType.ABSTRACT_FT)) {
@@ -294,6 +300,36 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 			imageKey = "geometry_attribute.png"; //$NON-NLS-1$
 		}
 		else if (tot.equals(TreeObjectType.COMPLEX_ATTRIBUTE)) {
+			// TODO add image for complex attributes
+		}
+		return imageKey;
+	}
+	
+	/**
+	 * @param entity
+	 * @return the right image
+	 */
+	public static String getImageforTreeObjectType(IEntity entity) {
+		String imageKey = null;
+		if (entity.equals(TreeObjectType.ABSTRACT_FT)) {
+			imageKey = "abstract_ft.png"; //$NON-NLS-1$
+		}
+		else if (entity.equals(TreeObjectType.CONCRETE_FT)) {
+			imageKey = "concrete_ft.png"; //$NON-NLS-1$
+		}
+		else if (entity.equals(TreeObjectType.PROPERTY_TYPE)) {
+			//TODO add image for property types
+		}
+		else if (entity.equals(TreeObjectType.STRING_ATTRIBUTE)) {
+			imageKey = "string_attribute.png"; //$NON-NLS-1$
+		} 
+		else if (entity.equals(TreeObjectType.NUMERIC_ATTRIBUTE)) {
+			imageKey = "number_attribute.png"; //$NON-NLS-1$
+		}
+		else if (entity.equals(TreeObjectType.GEOMETRIC_ATTRIBUTE)) {
+			imageKey = "geometry_attribute.png"; //$NON-NLS-1$
+		}
+		else if (entity.equals(TreeObjectType.COMPLEX_ATTRIBUTE)) {
 			// TODO add image for complex attributes
 		}
 		return imageKey;
