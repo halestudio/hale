@@ -483,7 +483,8 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		spellingLayout.marginHeight = 0;
 		configurationComposite.setLayout(spellingLayout);
 		
-		// init spelling types
+		// init spelling types if it doesn't exists
+		if(getSpellings() == null || getSpellings().size()==0){
 		spellings = new ArrayList<SpellingType>();
 		for (SchemaItem item : getParent().getSourceItems()) {
 			Entity entity = item.getEntity();
@@ -491,7 +492,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 				spellings.add(new SpellingType((Property) entity));
 			}
 		}
-
+		}
 		// Text
 		final Label nameSpellingTextLabel = new Label(configurationComposite,
 				SWT.NONE);
