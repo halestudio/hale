@@ -463,7 +463,7 @@ public class ModelNavigationView extends ViewPart implements
 		actions.add(new UseAggregationHierarchyAction());
 		
 		// default setting for actions 
-		//actions.get(0).setChecked(true);
+		actions.get(2).setChecked(true);
 
 		ToolBarManager manager = new ToolBarManager(schemaFilterBar);
 		for (AbstractContentProviderAction action : actions) {
@@ -492,7 +492,7 @@ public class ModelNavigationView extends ViewPart implements
 	            | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
 	    TreeViewer schemaViewer = filteredTree.getViewer();
 	    // set the default content provider, settings must match initial action state (be careful: [asIs, invert, invert])
-		schemaViewer.setContentProvider(new ConfigurableModelContentProvider(false, true, true));
+		schemaViewer.setContentProvider(new ConfigurableModelContentProvider(false, false, true));
 		schemaViewer.setLabelProvider(new ModelNavigationViewLabelProvider());
 		schemaViewer.setInput(schemaItemService.getRoot(schemaType));
         schemaViewer
