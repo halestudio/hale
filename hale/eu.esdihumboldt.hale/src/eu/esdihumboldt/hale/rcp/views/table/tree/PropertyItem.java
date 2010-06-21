@@ -174,7 +174,9 @@ public class PropertyItem extends DefaultTreeNode {
 				return property.getValue();
 			}
 			else {
-				log.warn("Error getting property " + propertyName + " from feature of type " + feature.getType().getName().getLocalPart());
+				log.warn("Error getting property " + propertyName 
+						+ " from feature of type " 
+						+ feature.getType().getName().getLocalPart());
 				return "#not defined";
 			}
 		}
