@@ -23,6 +23,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.PropertyDescriptor;
 
 import eu.esdihumboldt.cst.AbstractCstFunction;
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.goml.align.Cell;
@@ -48,6 +49,7 @@ public class IdentifierFunction
 	public static final String DATA_PROVIDER_PARAMETER_NAME = "providerName";
 	public static final String PRODUCT_PARAMETER_NAME = "productName";
 	public static final String VERSION = "version";
+	public static final String VERSION_NIL_REASON = "versionNilReason";
 	
 	public static final String INSPIRE_IDENTIFIER_PREFIX = "urn:x-inspire:object:id";
 	
@@ -55,32 +57,30 @@ public class IdentifierFunction
 	private String dataProviderName= null;
 	private String productName = null;
 	private String version = null;
+	private String versionNilReason = "unknown";
 	
 	private Property sourceProperty = null;
 	private Property targetProperty = null;
 
-	/* (non-Javadoc)
-	 * @see eu.esdihumboldt.cst.transformer.CstFunction#configure(eu.esdihumboldt.cst.align.ICell)
+	/**
+	 * @see CstFunction#configure(ICell)
 	 */
 	public boolean configure(ICell cell) {
 		for (IParameter ip : cell.getEntity1().getTransformation().getParameters()) {
 			if (ip.getName().equals(IdentifierFunction.COUNTRY_PARAMETER_NAME)) {
 				this.countryName = ip.getValue();
 			}
-			else{
-				if (ip.getName().equals(IdentifierFunction.DATA_PROVIDER_PARAMETER_NAME)) {
-					this.dataProviderName = ip.getValue();
-				}	
-				else{
-					if (ip.getName().equals(IdentifierFunction.PRODUCT_PARAMETER_NAME)) {
-						this.productName = ip.getValue();
-					}
-					else {
-						if (ip.getName().equals(IdentifierFunction.VERSION)){
-							this.version = ip.getValue();
-						}
-					}
-				}
+			else if (ip.getName().equals(IdentifierFunction.DATA_PROVIDER_PARAMETER_NAME)) {
+				this.dataProviderName = ip.getValue();
+			}	
+			else if (ip.getName().equals(IdentifierFunction.PRODUCT_PARAMETER_NAME)) {
+				this.productName = ip.getValue();
+			}
+			else if (ip.getName().equals(IdentifierFunction.VERSION)){
+				this.version = ip.getValue();
+			}
+			else if (ip.getName().equals(VERSION_NIL_REASON)) {
+				versionNilReason = ip.getValue();
 			}
 		}
 		
@@ -91,7 +91,8 @@ public class IdentifierFunction
 
 	/**
 	 * This implementation is not null-safe.
-	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.opengis.feature.Feature, org.opengis.feature.Feature)
+	 * 
+	 * @see CstFunction#transform(Feature, Feature)
 	 */
 	public Feature transform(Feature source, Feature target) {
 		
@@ -120,9 +121,17 @@ public class IdentifierFunction
 			FeatureInspector.setPropertyValue(target, 
 					Arrays.asList(targetProperty.getLocalname(), "Identifier", "namespace"), 
 					getNamespace(target.getType().getName().getLocalPart()));
-			FeatureInspector.setPropertyValue(target, 
-					Arrays.asList(targetProperty.getLocalname(), "Identifier", "versionId"), 
-					this.version);
+			
+			if (version != null && !version.isEmpty()) {
+				FeatureInspector.setPropertyValue(target, 
+						Arrays.asList(targetProperty.getLocalname(), "Identifier", "versionId"), 
+						this.version);
+			}
+			else {
+				FeatureInspector.setPropertyValue(target, 
+						Arrays.asList(targetProperty.getLocalname(), "Identifier", "versionId", "nilReason"), 
+						this.versionNilReason);
+			}
 		}
 		else if (pd.getType().getBinding().equals(InspireIdentifier.class)) {
 			InspireIdentifier ii=new InspireIdentifier();
@@ -186,6 +195,9 @@ public class IdentifierFunction
 		return target;
 	}
 	
+	/**
+	 * @see CstFunction#getParameters()
+	 */
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
 		Property entity1 = new Property(new About(""));

@@ -35,7 +35,7 @@ public class IdentifierFunctionWizard
 	private IdentifierFunctionWizardPage mainPage = null;
 
 	/**
-	 * @param selection
+	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(AlignmentInfo)
 	 */
 	public IdentifierFunctionWizard(AlignmentInfo selection) {
 		super(selection);
@@ -43,7 +43,7 @@ public class IdentifierFunctionWizard
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard#init()
+	 * @see AbstractSingleCellWizard#init()
 	 */
 	@Override
 	protected void init() {
@@ -52,7 +52,7 @@ public class IdentifierFunctionWizard
 	}
 
 	/**
-	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
+	 * @see Wizard#performFinish()
 	 */
 	@Override
 	public boolean performFinish() {
@@ -76,6 +76,10 @@ public class IdentifierFunctionWizard
 				new Parameter(
 						IdentifierFunction.VERSION, 
 						mainPage.getVersion()));
+		t.getParameters().add(
+				new Parameter(
+						IdentifierFunction.VERSION_NIL_REASON, 
+						mainPage.getVersionNilReason()));
 		
 		((Entity) cell.getEntity1()).setTransformation(t);
 		
