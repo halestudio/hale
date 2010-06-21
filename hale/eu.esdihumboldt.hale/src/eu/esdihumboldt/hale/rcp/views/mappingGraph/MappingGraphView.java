@@ -126,14 +126,24 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	/**
 	 * The name for the Pictures
 	 */
-	private String pictureNames;
+	private String pictureNames = null;
+	
+	/**
+	 * Default constructor
+	 */
+	public MappingGraphView() {
+		super();
+	}
 	
 	/**
 	 * Constructor
+	 * 
 	 * @param alignment
 	 * @param pictureNames 
 	 */
 	public MappingGraphView(Alignment alignment, String pictureNames){
+		super();
+		
 		this.schemaSelectionInt = 4;
 		this.alignment = alignment;
 		this.pictureNames = pictureNames;
