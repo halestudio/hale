@@ -53,14 +53,8 @@ public class GmlHandlerTest {
 	/** Logger for this class */
 	private static final Logger LOG = Logger.getLogger(GmlHandlerTest.class);
 
-	/** application schema location */
-	private static final String SCHEMA_LOCATION_GML32 = "urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0 http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst.corefunctions/src/test/resource/eu/esdihumboldt/cst/corefunctions/inspire/inspire_v3.0_xsd" + "HydroPhysicalWaters.xsd";
-
 	/** http-based URL for the application schema */
 	private static final String SCHEMA_URL = "http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst.corefunctions/src/test/resource/eu/esdihumboldt/cst/corefunctions/inspire/inspire_v3.0_xsd/" + "HydroPhysicalWaters.xsd";
-
-	/** source gml location */
-	private static final String GML32_INSTANCE_LOCATION = "http://svn.esdi-humboldt.eu/repo/humboldt2/branches/humboldt-deegree3/resource/sourceData/va_target_v3.gml";
 
 	/** generated instance location */
 	private static final String GML32_GENERATED_LOCATION = "src/test/resources/va_target_v3_generated.gml";
@@ -84,8 +78,9 @@ public class GmlHandlerTest {
 		namespaces.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
 
 		// set up GMLHandler with the test configuration
+		
 		gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, SCHEMA_URL, namespaces);
-		gmlHandler.setGmlUrl(GML32_INSTANCE_LOCATION);
+		
 
 		// set target gml destination
 		gmlHandler.setTargetGmlUrl(GML32_GENERATED_LOCATION);
@@ -110,7 +105,9 @@ public class GmlHandlerTest {
 	 */
 	@Test
 	public final void testReadSchema() throws MalformedURLException, ClassCastException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-		// read application schema
+		// read application schema stored locally
+		String url = "file://" + this.getClass().getResource("./HydroPhysicalwaters.xsd").getFile();
+		gmlHandler.setSchemaUrl(url);
 		ApplicationSchema schema = gmlHandler.readSchema();
 
 		// validate root FeatureTypes
@@ -181,7 +178,10 @@ public class GmlHandlerTest {
 			ClassNotFoundException, InstantiationException, IllegalAccessException, UnknownCRSException {
 		LOG.info("Reading of source Feature Collection..");
 
-		URL url = new URL(GML32_INSTANCE_LOCATION);
+		String schemaUrl = "file://" + this.getClass().getResource("./HydroPhysicalwaters.xsd").getFile();
+		gmlHandler.setSchemaUrl(schemaUrl);
+		String urlPath = "file://" + this.getClass().getResource("./va_target_v3.gml").getFile();
+		gmlHandler.setGmlUrl(urlPath);
 		// read FeatureCollection
 		FeatureCollection fc = null;
 		fc = gmlHandler.readFC();
@@ -233,6 +233,10 @@ public class GmlHandlerTest {
 	public final void testWriteFC() throws XMLParsingException, FileNotFoundException, ClassCastException, XMLStreamException, UnknownCRSException, TransformationException, FactoryConfigurationError, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		// TODO provide XUNIT-based testing
 		// TODO clean up generated file after
+		String schemaUrl = "file://" + this.getClass().getResource("./HydroPhysicalwaters.xsd").getFile();
+		gmlHandler.setSchemaUrl(schemaUrl);
+		String urlPath = "file://" + this.getClass().getResource("./va_target_v3.gml").getFile();
+		gmlHandler.setGmlUrl(urlPath);
 		gmlHandler.writeFC(gmlHandler.readFC());
 	}
 
