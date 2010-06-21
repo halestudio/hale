@@ -141,7 +141,6 @@ public class GmlHandlerTest {
 				}
 			}
 		}
-
 		assertEquals(49, ftypes.length);
 	}
 	
