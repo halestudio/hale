@@ -19,6 +19,8 @@ import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
+import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * This is the {@link FunctionWizardFactory} for the
@@ -32,7 +34,7 @@ public class GeographicNameFunctionWizardFactory implements
 		FunctionWizardFactory {
 
 	/**
-	 * @see eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory#createWizard(eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo)
+	 * @see FunctionWizardFactory#createWizard(AlignmentInfo)
 	 */
 	@Override
 	public FunctionWizard createWizard(AlignmentInfo selection) {
@@ -41,7 +43,7 @@ public class GeographicNameFunctionWizardFactory implements
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory#supports(eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo)
+	 * @see FunctionWizardFactory#supports(AlignmentInfo)
 	 */
 	@Override
 	public boolean supports(AlignmentInfo selection) {
@@ -54,8 +56,7 @@ public class GeographicNameFunctionWizardFactory implements
 
 		SchemaItem target = selection.getFirstTargetItem();
 		if (!target.isAttribute()
-				|| !target.getType().equals(
-						TreeObjectType.GEOGRAPHICAl_NAME_ATTRIBUTE)) {
+				|| !isGeographicalNameAttribute((AttributeDefinition) target.getDefinition())) {
 			return false;
 		}
 
@@ -83,6 +84,32 @@ public class GeographicNameFunctionWizardFactory implements
 
 		return true;
 
+	}
+
+	/**
+	 * Determines if the given attribute definition represents a geographical
+	 *   name attribute
+	 * 
+	 * @param definition the attribute definition
+	 * 
+	 * @return if the definition represents a geographical name attribute
+	 */
+	private boolean isGeographicalNameAttribute(AttributeDefinition definition) {
+		TypeDefinition type = definition.getAttributeType();
+		
+		for (AttributeDefinition attr : type.getAttributes()) {
+			/*
+			 * TODO improve "detection"
+			 * - tested w/ INSPIRE 3 HydroPhysicalWaters, ProtectedSitesFull
+			 * - must be kept consistent w/ function implementation
+			 */
+			if (attr.getName().equals("GeographicalName")
+					&& attr.getAttributeType().getName().getLocalPart().equals("GeographicalNameType")) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 }

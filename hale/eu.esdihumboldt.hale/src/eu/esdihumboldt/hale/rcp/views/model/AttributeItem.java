@@ -106,10 +106,6 @@ public class AttributeItem extends TreeParent {
 				attribute.getName().equalsIgnoreCase("the_geom")) { //$NON-NLS-1$
 			return TreeObjectType.GEOMETRIC_ATTRIBUTE;
 		}
-		// default geographical name attribute
-		else if (attribute.getName().equals("GeographicalName")) { //$NON-NLS-1$
-			return TreeObjectType.GEOGRAPHICAl_NAME_ATTRIBUTE;
-		}
 		else if (Arrays.asList(type.getClass().getInterfaces())
 				.contains(org.opengis.feature.type.ComplexType.class)) {
 			return TreeObjectType.COMPLEX_ATTRIBUTE;
