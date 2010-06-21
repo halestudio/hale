@@ -18,36 +18,30 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import org.geotools.feature.AttributeImpl;
+
 import org.geotools.feature.FeatureImpl;
-import org.geotools.feature.PropertyImpl;
-import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.feature.simple.SimpleFeatureImpl;
-import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.AttributeDescriptor;
-import org.opengis.feature.type.PropertyDescriptor;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyType;
 
+import eu.esdihumboldt.cst.AbstractCstFunction;
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.service.rename.FeatureBuilder;
-import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.rdf.DetailedAbout;
+import eu.esdihumboldt.goml.rdf.IDetailedAbout;
 import eu.esdihumboldt.inspire.data.GeographicalName;
 import eu.esdihumboldt.inspire.data.GrammaticalGenderValue;
 import eu.esdihumboldt.inspire.data.GrammaticalNumberValue;
 import eu.esdihumboldt.inspire.data.NameStatusValue;
 import eu.esdihumboldt.inspire.data.NativenessValue;
-import eu.esdihumboldt.inspire.data.PronunciationOfName;
-import eu.esdihumboldt.inspire.data.SpellingOfName;
 import eu.esdihumboldt.tools.FeatureInspector;
 
 /**
@@ -91,12 +85,8 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 	private int cellcount = 0;
 	private int spellingcount = 0;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.esdihumboldt.cst.transformer.CstFunction#configure(eu.esdihumboldt
-	 * .cst.align.ICell)
+	/**
+	 * @see CstFunction#configure(ICell)
 	 */
 	public boolean configure(ICell cell) {
 
@@ -183,8 +173,7 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.opengis.feature.Feature,
-	 *      org.opengis.feature.Feature)
+	 * @see CstFunction#transform(Feature, Feature)
 	 */
 	public Feature transform(Feature source, Feature target) {
 
@@ -203,18 +192,18 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 //			}
 //		}
 
-		SimpleFeatureType pt = (SimpleFeatureType) FeatureInspector.getProperty(target, targetProperty.getAbout(), true).getType();
+		PropertyType pt = FeatureInspector.getProperty(target, targetProperty.getAbout(), true).getType();
 		//List<String> baseProperties = DetailedAbout.getDetailedAbout(targetProperty.getAbout(), true).getProperties();
 		
 		
-		//SimpleFeatureType geoNameType = (SimpleFeatureType)
-		//				((SimpleFeatureType) pt).getDescriptor("GeographicalName").getType();
+		SimpleFeatureType geoNameType = (SimpleFeatureType)
+						((SimpleFeatureType) pt).getDescriptor("GeographicalName").getType();
 		SimpleFeatureType spellingofnamepropertytype = (SimpleFeatureType) 
-						/*geoNameType*/pt.getDescriptor("spelling").getType();
+						geoNameType.getDescriptor("spelling").getType();
 		SimpleFeatureType spellingofnametype = (SimpleFeatureType) 
 						(spellingofnamepropertytype.getDescriptor("SpellingOfName")).getType();
 		SimpleFeatureType pronunciationofnametype = (SimpleFeatureType) ((SimpleFeatureType) 
-						/*geoNameType*/pt.getDescriptor("pronunciation").getType()).getDescriptor("PronunciationOfName").getType();
+						geoNameType.getDescriptor("pronunciation").getType()).getDescriptor("PronunciationOfName").getType();
 
 		Collection<FeatureImpl> geographicalnames = new HashSet<FeatureImpl>();
 
@@ -249,7 +238,7 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 				spellingofnamepropertiescollection.add(spellingofnameproperty);
 			}
 			
-			FeatureImpl geographicalname = (FeatureImpl)FeatureBuilder.buildFeature(pt, null,false);
+			FeatureImpl geographicalname = (FeatureImpl)FeatureBuilder.buildFeature(geoNameType, null,false);
 			geographicalname.getProperty("spelling").setValue(spellingofnamepropertiescollection);
 			geographicalname.getProperty("language").setValue(_language.get(i));
 			geographicalname.getProperty("sourceOfName").setValue(_sourceOfName.get(i));
@@ -317,12 +306,20 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 					_pronunciationSoundLink.get(i));
 			geographicalname.setAttribute("pronunciation", Collections
 					.singleton(pronunciation));*/
-			geographicalnames.add(geographicalname);
+			//geographicalnames.add(geographicalname);
+			
+			FeatureImpl parent = (FeatureImpl)FeatureBuilder.buildFeature((FeatureType) pt, null,false);
+			parent.getProperty("GeographicalName").setValue(Collections.singleton(geographicalname));
+			
+			geographicalnames.add(parent);
 		}
+		
 		// SET COLLECTION OF GEOGRAPHICALNAMES AS TARGET INPUT PARAMETER
+		//IDetailedAbout targetAbout = DetailedAbout.getDetailedAbout(targetProperty.getAbout(), true);
+		//List<String> properties = targetAbout.getProperties();
+		//properties.add("GeographicalName");
 		FeatureInspector.setPropertyValue(target, targetProperty.getAbout(), geographicalnames);
-		/*((SimpleFeature) target).setAttribute(targetProperty.getLocalname(),
-				geographicalnames);*/
+		
 		return target;
 	}
 
