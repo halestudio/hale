@@ -68,7 +68,7 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 			AttributeType type = attributeType.getType(null);
 			Class<?> binding = type.getBinding();
 			
-			if (binding.isAssignableFrom(URI.class)) {
+			if (binding.equals(URI.class)) {
 				// URI
 				return new URIAttributeEditor(parent);
 			}
