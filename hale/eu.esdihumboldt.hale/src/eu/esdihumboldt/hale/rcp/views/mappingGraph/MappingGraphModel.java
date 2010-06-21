@@ -15,6 +15,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.zest.core.widgets.GraphConnection;
 import org.eclipse.zest.core.widgets.GraphNode;
 
@@ -23,6 +28,7 @@ import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.omwg.Restriction;
+import eu.esdihumboldt.hale.rcp.views.map.tiles.TileConstraints;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
 
@@ -124,7 +130,8 @@ public class MappingGraphModel {
 	 * @param graphConnectionNodeName is the name to be searched
 	 * @param resultCell contains content to search
 	 */
-	@SuppressWarnings("unchecked") void checkForExistingConnections(String graphConnectionNodeName,
+	@SuppressWarnings("unchecked") 
+	void checkForExistingConnections(String graphConnectionNodeName,
 			Cell resultCell) {
 
 		List<String> filters = this.getFilters(resultCell);
@@ -454,5 +461,7 @@ public class MappingGraphModel {
 	public void setTargetGraphNode(GraphNode targetGraphNode) {
 		this.targetGraphNode = targetGraphNode;
 	}
+	
+	
 	
 }

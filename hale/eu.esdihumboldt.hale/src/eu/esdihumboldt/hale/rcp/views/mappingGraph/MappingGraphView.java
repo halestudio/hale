@@ -12,17 +12,30 @@
 
 package eu.esdihumboldt.hale.rcp.views.mappingGraph;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+
+import javax.imageio.ImageIO;
+
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.SWTGraphics;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
@@ -31,12 +44,18 @@ import org.eclipse.zest.core.widgets.Graph;
 import org.eclipse.zest.core.widgets.GraphNode;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
+
+import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.utils.SchemaItemService;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.swingrcpbridge.SwingRcpUtilities;
 import eu.esdihumboldt.hale.rcp.utils.definition.internal.BrowserTip;
 import eu.esdihumboldt.hale.rcp.views.mapping.CellSelection;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
@@ -62,6 +81,12 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	 * The schema item service
 	 */
 	private SchemaItemService schemaItemService = null;
+	
+	/**
+	 * If alignment is NULL, the alignmentService get used!
+	 * Otherwise this alignment gets used.
+	 */
+	private Alignment alignment = null;
 
 	/**
 	 * The specific ID of this class
@@ -97,7 +122,25 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	 * The mappingGraphNodeRenderer creates the nodes
 	 */
 	MappingGraphNodeRenderer mappingGraphNodeRenderer;
+
+	/**
+	 * The name for the Pictures
+	 */
+	private String pictureNames;
 	
+	/**
+	 * Constructor
+	 * @param alignment
+	 * @param pictureNames 
+	 */
+	public MappingGraphView(Alignment alignment, String pictureNames){
+		this.schemaSelectionInt = 4;
+		this.alignment = alignment;
+		this.pictureNames = pictureNames;
+//		createPrintView();
+		selectionChanged(null, null);
+	}
+
 	/**
 	 * Creates the view
 	 * @param parent is the parent composite
@@ -213,10 +256,46 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 		gridData.horizontalSpan = 3;
 		gridData.verticalAlignment = GridData.FILL;
 		this.graph.setLayoutData(gridData);
-		
 		// setting the MouseListener for the entity node
 		this.setNodeMouseListener();
+	}
+	
+	/**
+	 * Start for image drawing
+	 * @param x 
+	 * @param y 
+	 */
+	private void createPrintView(int x,int y) {
+		this.temporarySchemaSelection = new SchemaSelection();
+		this.temporaryCellSelection = new CellSelection();
+		this.mappingGraphModel = new MappingGraphModel();
+		this.mappingGraphNodeRenderer = new MappingGraphNodeRenderer(this.mappingGraphModel, this);
 		
+		// Instantiate the graph
+		Shell shell = new Shell();
+		shell.setSize(x, y);
+		shell.setLayout(new FillLayout());
+		
+	    Composite composite = new Composite(shell, SWT.NONE);
+	    composite.setLayout(new FillLayout());
+		composite.setVisible(true);
+		//Workaround to draw in background -->
+		this.graph = new TestGraph(composite, SWT.NONE);
+		this.graph.setLayoutAlgorithm(new TreeLayoutAlgorithm(
+				LayoutStyles.NO_LAYOUT_NODE_RESIZING), true);
+		this.graph.getViewport().setBounds(new Rectangle(0, 0, x, y));
+		shell.setVisible(false);
+		
+		IFigure root = this.graph.getRootLayer();
+		root.setBounds(new Rectangle(0, 0, x, y));
+		for (Object rc : root.getChildren()) {
+			if (rc instanceof IFigure) {
+				((IFigure) rc).setBounds(new Rectangle(0, 0, x, y));
+			}
+		}
+		((TestGraph)this.graph).applyLayout(new TreeLayoutAlgorithm(
+				LayoutStyles.NO_LAYOUT_NODE_RESIZING));
+		//<--
 	}
 
 	/**
@@ -417,7 +496,6 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 										graphConnectionNodeName, resultCell);
 								// Creates the connections between the nodes.
 								this.mappingGraphNodeRenderer.createGraphConnections();
-								this.mappingGraphModel.getEntityNodeList().add(this.mappingGraphModel.getEntityNode());
 							}
 						}
 					}
@@ -482,7 +560,6 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 										graphConnectionNodeName, resultCell);
 								// Creates the connections between the nodes.
 								this.mappingGraphNodeRenderer.createGraphConnections();
-								this.mappingGraphModel.getEntityNodeList().add(this.mappingGraphModel.getEntityNode());
 							}
 						}
 					}
@@ -563,13 +640,81 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 										graphConnectionNodeName, resultCell);
 								// Creates the connections between the nodes.
 								this.mappingGraphNodeRenderer.createGraphConnections();
-								this.mappingGraphModel.getEntityNodeList().add(this.mappingGraphModel.getEntityNode());
 							}
 						}
 					}
 				}
 			}
 		}	
+		
+		//Image draw handling from here -->
+		
+		// if the schemaSelectionInt is 4, ...
+		if (this.schemaSelectionInt == 4) {
+
+			//draw Overview of the cells
+			int k = 1;
+			for (ICell cell : this.alignment.getMap()) {
+				//Counting the nodes for calculating the picture size
+				if(cell.getEntity1() instanceof ComposedProperty ) {
+					k = k +((ComposedProperty) cell.getEntity1()).getCollection().size();
+				}
+				else if(cell.getEntity2() instanceof ComposedProperty ) {
+					if (((ComposedProperty) cell.getEntity2()).getCollection().size()>k){
+						k = k +((ComposedProperty) cell.getEntity2()).getCollection().size();
+					}
+				}
+				else if(cell.getEntity1() instanceof Property){
+					k++;
+				}
+				else if(cell.getEntity2() instanceof Property){
+					k++;
+				}
+			}
+			//Create fitting view for the picture
+//			createPrintView(500 , k*40);
+			createPrintView(1000 , k*30);
+			
+			// Draws the source and target nodes
+			this.mappingGraphNodeRenderer.drawOverviewFromAlignment(this.alignment);
+		
+			//Draws the graph as a png
+//			this.drawGraphAsImage("C:\\", this.pictureNames+"_Overview"+".png", 500, k*40);
+			this.drawGraphAsImage("C:\\", this.pictureNames+"_Overview"+".png", 1000, k*30);
+			
+			//Clean up
+			this.mappingGraphModel.arrayReset();
+			
+
+			//draw single cells
+			int j = 0;
+			for (ICell cell : this.alignment.getMap()) {
+	
+				//Counting the nodes for calculating the picture size
+				int h = 1;
+				if(cell.getEntity1() instanceof ComposedProperty ) {
+					h =((ComposedProperty) cell.getEntity1()).getCollection().size();
+				}
+				if(cell.getEntity2() instanceof ComposedProperty ) {
+					if (((ComposedProperty) cell.getEntity2()).getCollection().size()>h){
+						h =((ComposedProperty) cell.getEntity2()).getCollection().size();
+					}
+				}
+
+				//Create fitting view for the picture
+				createPrintView(500 , h*40);
+				
+				// Draws the source and target nodes
+				this.mappingGraphNodeRenderer.drawNodesFromAlignment(cell);
+			
+				//Draws the graph as a png
+				this.drawGraphAsImage("C:\\", this.pictureNames+j+".png", 500, h*40);
+				
+				//Clean up
+				this.mappingGraphModel.arrayReset();
+				j++;
+			}
+		}
 	}
 
 	/**
@@ -585,4 +730,40 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	public AlignmentService getAlignmentService() {
 		return this.alignmentService;
 	}
+
+	/**
+	 * Draws the graph as an PNG-image 
+	 * @param path 
+	 * @param fileName 
+	 * @param width 
+	 * @param height 
+	 */
+	public void drawGraphAsImage(String path, String fileName, int width, int height){
+		
+		if(path != null && path != "" && fileName != null && fileName != ""){
+			Image drawImage = new Image(Display.getCurrent(), width, height);
+			File file = new File(path+fileName);
+			final GC gc = new GC(drawImage);
+			SWTGraphics graphics = new SWTGraphics(gc); 
+			try {
+				gc.setAntialias(SWT.ON);
+				gc.setInterpolation(SWT.HIGH);
+				//Paint the graph to a image
+				IFigure root = this.graph.getRootLayer();
+				root.paint(graphics);
+				BufferedImage bufferedImage = SwingRcpUtilities.convertToAWT(drawImage.getImageData());
+				try {
+					ImageIO.write(bufferedImage, "png", file);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			finally {
+				gc.dispose();
+				drawImage.dispose();
+			}
+		}
+	}
+	
+	
 }

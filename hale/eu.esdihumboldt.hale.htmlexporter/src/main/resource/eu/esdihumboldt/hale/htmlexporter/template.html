@@ -9,20 +9,40 @@
 </head>
 
 <body>
-<h1 align="left">$mapping</h1>
+$headline
 <hr align="left">
-<br>
+$author<br>
 $project<br>
-$schema1<br>
-$schema2<br>
+$exportdate<br>
+$haleversion<br>
+<br>
+	$sourceschema
+<ul>
+$sourceformalism
+$sourcenamespace
+$sourcelocation
+</ul>
+
+$targetschema
+<ul>
+$targetformalism
+$targetnamespace
+$targetlocation
+</ul>
+
+Target Feature Types this Mapping covers:
+<ul type="1">
+ #foreach ($linkname in $linklist)
+   $linkname
+ #end
+</ul>
+
+Graphical Mapping Overview:<br>
+$overviewpicture
+<br>
+
 <br>
 <table cellspacing="0" cellpadding="5" width="100%">
-														  <tr>
-    <td>
-     <h2>Cells</h2>
-     <hr align="left">
-    </td>
-  </tr>
   #foreach ($name in $cellList)
         #foreach ($attributename in $name)
         <tr>

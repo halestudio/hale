@@ -18,9 +18,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -34,8 +36,11 @@ import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.goml.omwg.ComposedFeatureClass;
+import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.omwg.Restriction;
@@ -63,21 +68,25 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 	private Alignment alignment = null;
 
 	/**
-	 * The path with name
-	 */
-	private String path;
-	
-	/**
-	 * The path of the export
-	 */
-	private String onlyPath;
-	
-	/**
 	 * Set the PictureNames
 	 */
 	private String pictureNames = "image";
-
-
+	
+	/**
+	 * Contains ICells from type retype
+	 */
+	List<ICell> retypes = new ArrayList<ICell>();
+	
+	/**
+	 * Contains ICells from type transformation
+	 */
+	List<ICell> transformations = new ArrayList<ICell>();
+	
+	/**
+	 * Contains ICells from type augmentation
+	 */
+	List<ICell> augmentations = new ArrayList<ICell>();
+	
 	/**
      * @param alignment
 	 * @param path
@@ -90,17 +99,15 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		new MappingGraphView(alignment,this.pictureNames);
 		
 		this.alignment = alignment;
-		this.path = path;
-		
 		String[] pathSpilt = path.split("\\\\");
-		this.onlyPath = path.replace(pathSpilt[pathSpilt.length-1] , "");
+		path.replace(pathSpilt[pathSpilt.length-1] , "");
 		
 		StringWriter stringWriter = new StringWriter();
 		this.context = new VelocityContext();
 		
 		//Gets the path to the template file and style sheet
 		URL templatePath = this.getClass().getResource("template.html"); 
-		URL cssPath = this.getClass().getResource("style.css"); 
+		URL cssPath = this.getClass().getResource("style2.css"); 
 		
 		//generates a byteArray out of the template
 		byte[] templateByteArray = null;
@@ -140,7 +147,11 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 				e.printStackTrace();
 			}
 			//Fill the context-variables with data
-			this.fillContext();
+			try {
+				this.fillContext();
+			} catch (MalformedURLException e1) {
+				throw new RuntimeException(e1);
+			}
 			Template template = null;
 			
 			try {
@@ -209,115 +220,370 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			
 	}
 	
+	/**
+	 * Sorts the alignment into Retypes, Transformations and Augmentations
+	 */
+	private void sortAlignment(){
+		for (Iterator<ICell> iterator = this.alignment.getMap().iterator();iterator.hasNext();) {
+			ICell cell = iterator.next();
+			
+			//Retype
+			String cellName;
+			if (cell.getEntity1().getTransformation() == null) {
+				cellName = cell.getEntity2()
+						.getTransformation().getService()
+						.getLocation();
+			} else {
+				cellName = cell.getEntity1()
+						.getTransformation().getService()
+						.getLocation();
+			}
+			String[] tempSplit = cellName.split("\\.");
+			String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
+			if(graphConnectionNodeName.equals("RenameFeatureFunction")){
+				this.retypes.add(cell);
+			}
+			
+			//Augmentation
+			if(cell.getEntity1().getTransformation() == null || cell.getEntity1().getAbout().getAbout().equals("entity/null")){
+				this.augmentations.add(cell);
+			}
+
+			//Transformation
+			if(cell.getEntity1().getTransformation() != null){
+				this.transformations.add(cell);
+			}
+		}	
+	}
+	
 	 /**
 	 * Create context-variables and fills them with data
+	 * @throws MalformedURLException 
 	 */
-	private void fillContext() {
+	private void fillContext() throws MalformedURLException {
 		Date date = new Date();
 		SimpleDateFormat dfm = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
-		this.context.put("title", "Mapping Export of "+ this.path.toString());
-		this.context.put("mapping", "Mapping : "+ this.path.toString());
-		this.context.put("project", "<h3>Project : </h3>"+ dfm.format(date));
-		this.context.put("schema1", "<h3>Schema 1 : </h3>"+this.alignment.getSchema1().getLocation());
-		this.context.put("schema2", "<h3>Schema 2 : </h3>"+this.alignment.getSchema2().getLocation());
+		//Head informations
+		this.context.put("title", "Mapping Documentation");
+		this.context.put("headline", "<h1>Mapping Documentation</h1>");
+		this.context.put("author", "Project Author : ");
+		this.context.put("project", "Project Name : ");
+		this.context.put("exportdate", "Export Date : "+ dfm.format(date));
+		this.context.put("haleversion", "Hale Version : ");
+		
+		this.context.put("sourceschema", "Source Schema Information : ");
+		this.context.put("sourceformalism", "<li>Formalism : "+this.alignment.getSchema1().getFormalism().getName()+"  <a href='"+this.alignment.getSchema1().getFormalism().getLocation().toURL()+"'>"+this.alignment.getSchema1().getFormalism().getLocation().toString()+"</a></li>");
+		this.context.put("sourcenamespace", "<li>Namespace : "+this.alignment.getSchema1().getAbout().getAbout()+"</li>");
+		this.context.put("sourcelocation", "<li>Schema Location : "+this.alignment.getSchema1().getLocation()+"</li>");
+		
+		this.context.put("targetschema", "Target Schema Information : ");
+		this.context.put("targetformalism", "<li>Formalism : "+this.alignment.getSchema2().getFormalism().getName()+"  <a href='"+this.alignment.getSchema2().getFormalism().getLocation().toURL()+"'>"+this.alignment.getSchema2().getFormalism().getLocation().toString()+"</a></li>");
+		this.context.put("targetnamespace", "<li>Namespace : "+this.alignment.getSchema2().getAbout().getAbout()+"</li>");
+		this.context.put("targetlocation", "<li>Schema Location : "+this.alignment.getSchema2().getLocation()+"</li>");
+		
+		//Sort the alignment
+		this.sortAlignment();
+		
+		//Link-generator
+		Vector<String> linkListVector = new Vector<String>();
+		//link counter
+		int j=1;
+		for (Iterator<ICell> iterator = this.retypes.iterator();iterator.hasNext();) {
+			ICell cell = iterator.next();
+			String[] temp = this.entityNameSplitter(cell.getEntity2());
+			linkListVector.addElement("<li><a href='#link"+j+"'>"+temp[0]+"</a></li>");
+			j++;
+		}
+		this.context.put("linklist", linkListVector);
+		
+		//Overview picture
+		this.context.put("overviewpicture", "<img src='"+this.pictureNames+"_Overview"+".png'>");
 		
 		Vector<Vector> cellListVector = new Vector<Vector>();
 		Vector<String> cellVector;
 		
-		//cell counter
-		int i=1;
-		
-		for (Iterator<ICell> iterator = this.alignment.getMap().iterator();iterator.hasNext();) {
-			ICell cell = iterator.next();
-			cellVector = new Vector<String>();
-
-			cellVector.addElement("<h2>Cell "+i+" : </h2>");
-			cellVector.addElement("<h3>Relation : </h3>"+cell.getRelation());
-			cellVector.addElement("<img src='"+this.pictureNames+(i-1)+".png'>");
-//			cellVector.addElement("<h3>Typ : </h3>"+cell.getEntity1());
+		/**
+		 * Runs through all target FeatureTypes
+		 */
+		//FeatureClass Counter
+		int e = 1;
+		//Cell Counter
+		int i = 1;
+		for(ICell retypeCell : this.retypes){
+			/**
+			 * RETYPE
+			 */
+			String[] retypeSourceName = this.entityNameSplitter(retypeCell.getEntity1());
+			String[] retypeTargetName = this.entityNameSplitter(retypeCell.getEntity2());
+			cellVector = new Vector<String>();			
+			//Hyperlink
+			cellVector.addElement("<a name='link"+e+"'>");
+			//Headline
+			cellVector.addElement("<h2>"+retypeTargetName[0]+"</h2><hr>");
+			//Header
+			cellVector.addElement("<h3>Retypes</h3>");
+			cellVector.addElement("<h4>"+retypeSourceName[0]+" to "+retypeTargetName[0]+"<h4>");
+			cellVector.addElement("Entity 1 : "+retypeSourceName[0]);
+			cellVector.addElement("Entity 2 : "+retypeTargetName[0]);
 			
 			//Filters
-			/**
-			 * For Entity 1
-			 */
-			// Filter strings are added to the Vector
-			if (cell.getEntity2().getTransformation() == null) {
-				cellVector.addElement("<h3>Entity1: </h3>"+cell.getEntity1().getAbout().getAbout());
-				if (cell.getEntity1() instanceof FeatureClass) {
-					if (((FeatureClass) cell.getEntity1())
-							.getAttributeValueCondition() != null) {
-						cellVector.addElement("<h3>Filter Rules: </h3>");
-						for (Restriction restriction : ((FeatureClass) cell
-								.getEntity1()).getAttributeValueCondition()) {
-							cellVector.addElement(restriction.getCqlStr());
-						}
-					}
-				} else if (cell.getEntity1() instanceof Property) {
-					if (((Property) cell.getEntity1())
-							.getValueCondition() != null) {
-						cellVector.addElement("<h3>Filter Rules: </h3>");
-						for (Restriction restriction : ((Property) cell
-								.getEntity1()).getValueCondition()) {
-							cellVector.addElement(restriction.getCqlStr());
-						}
-					}
-				}
-			}
-
-			/**
-			 * For Entity 2
-			 */
-			// Filter strings are added to the Vector
-			else {
-				cellVector.addElement("<h3>Entity2: </h3>"+cell.getEntity2().getAbout().getAbout());
-				if (cell.getEntity2() instanceof FeatureClass) {
-					if (((FeatureClass) cell.getEntity2())
-							.getAttributeValueCondition() != null) {
-						cellVector.addElement("<h3>Filter Rules: </h3>");
-						for (Restriction restriction : ((FeatureClass) cell
-								.getEntity2()).getAttributeValueCondition()) {
-							cellVector.addElement(restriction.getCqlStr());
-						}
-					}
-				} else if (cell.getEntity2() instanceof Property) {
-					if (((Property) cell.getEntity2()).getValueCondition() != null) {
-						cellVector.addElement("<h3>Filter Rules: </h3>");
-						for (Restriction restriction : ((Property) cell
-								.getEntity2()).getValueCondition()) {
-							cellVector.addElement(restriction.getCqlStr());
-						}
-					}
-				}
-			}
+			this.getFilters(cellVector, retypeCell);
 			
 			//Parameters
-			List<IParameter> parameterList;
+			this.getParameters(cellVector, retypeCell);
+			
+			cellListVector.addElement(cellVector);	
+			
 			/**
-			 * For Entity 1
+			 * TRANSFORMATIONS
+			 * Is looking for all appropriate Transformations
 			 */
-			if (cell.getEntity2().getTransformation() == null) {
-				parameterList = cell.getEntity1().getTransformation().getParameters();
+			cellVector = new Vector<String>();	
+			boolean transformationHeader = true;
+			for(ICell transformationCell : this.transformations){
+				if(transformationCell.getEntity2().getAbout().getAbout().contains(retypeTargetName[0])){
+					String[] entity1Name = this.entityNameSplitter(transformationCell.getEntity1());
+					String[] entity2Name = this.entityNameSplitter(transformationCell.getEntity2());
+					
+					String functioncellName;
+					if (transformationCell.getEntity1().getTransformation() == null) {
+						functioncellName = transformationCell.getEntity2()
+								.getTransformation().getService()
+								.getLocation();
+					} else {
+						functioncellName = transformationCell.getEntity1()
+								.getTransformation().getService()
+								.getLocation();
+					}
+					String[] tempSplit = functioncellName.split("\\.");
+					String functionName = tempSplit[tempSplit.length - 1];
+					
+					//Header
+					if(transformationHeader){
+						Vector<String> transformationcellVector = new Vector<String>();
+						transformationcellVector.addElement("<h3>Transformations</h3>");
+						cellListVector.addElement(transformationcellVector);	
+						transformationHeader = false;
+					}
+					cellVector.addElement("<h4>Cell "+i+" : </h4>");
+					cellVector.addElement("Function : "+functionName);
+					
+					//entity1
+					if (transformationCell.getEntity1() instanceof ComposedProperty) {
+						cellVector.addElement("Entity 1 : ComposedProperty");
+						cellVector.addElement("<ul>");
+						for(int z=0; z < entity1Name.length; z++){
+							cellVector.addElement("<li>Entity 1."+z+" : "+entity1Name[z]+"</li>");
+						}
+						cellVector.addElement("</ul>");
+					}
+					else{
+						cellVector.addElement("Entity 1 : "+entity1Name[0]);
+					}
+					
+					//entity2
+					if (transformationCell.getEntity2() instanceof ComposedProperty) {
+						cellVector.addElement("Entity 2 : ComposedProperty");
+						cellVector.addElement("<ul>");
+						for(int z=0; z < entity2Name.length; z++){
+							cellVector.addElement("<li>Entity 2."+z+" : "+entity2Name[z]+"</li>");
+						}
+						cellVector.addElement("</ul>");
+					}
+					else{
+						cellVector.addElement("Entity 2 : "+entity2Name[0]);
+					}
+					
+					//Image
+					cellVector.addElement("<img src='"+this.pictureNames+(i-1)+".png'>");
+					
+					//Filters
+					this.getFilters(cellVector, transformationCell);
+					
+					//Parameters
+					this.getParameters(cellVector, transformationCell);
+					
+					i++;
+				}
 			}
+			cellListVector.addElement(cellVector);	
+			
 			/**
-			 * For Entity 2
+			 * AUGMENTATIONS
+			 * Is looking for all appropriate Augmentations
 			 */
-			else {
-				parameterList = cell.getEntity2().getTransformation().getParameters();
-			}
-
-			if (!parameterList.isEmpty()) {
-				cellVector.addElement("<h3>Parameters: </h3>");
-				for (IParameter parameter : parameterList) {
-					cellVector.addElement("<h3>"+parameter.getName() + " : </h3>"+ parameter.getValue());
+			cellVector = new Vector<String>();	
+			boolean augmentationHeader = true;
+			for(ICell augmentationCell : this.augmentations){
+				if(augmentationCell.getEntity2().getAbout().getAbout().contains(retypeTargetName[0])){
+					String[] entity1Name = this.entityNameSplitter(augmentationCell.getEntity1());
+					String[] entity2Name = this.entityNameSplitter(augmentationCell.getEntity2());
+					
+					String functioncellName;
+					if (augmentationCell.getEntity1().getTransformation() == null) {
+						functioncellName = augmentationCell.getEntity2()
+								.getTransformation().getService()
+								.getLocation();
+					} else {
+						functioncellName = augmentationCell.getEntity1()
+								.getTransformation().getService()
+								.getLocation();
+					}
+					String[] tempSplit = functioncellName.split("\\.");
+					String functionName = tempSplit[tempSplit.length - 1];
+					
+					//Header
+					if(augmentationHeader){
+						Vector<String> augmentationcellVector = new Vector<String>();
+						augmentationcellVector.addElement("<h3>Augmentations</h3>");
+						cellListVector.addElement(augmentationcellVector);	
+						augmentationHeader=false;
+					}
+					
+					cellVector.addElement("<h4>Cell "+i+" : </h4>");
+					cellVector.addElement("Function : "+functionName);
+					
+					//entity1
+					if (augmentationCell.getEntity1() instanceof ComposedProperty) {
+						cellVector.addElement("Entity 1 : ComposedProperty");
+						cellVector.addElement("<ul>");
+						for(int z=0; z < entity1Name.length; z++){
+							cellVector.addElement("<li>Entity 1."+z+" : "+entity1Name[z]+"</li>");
+						}
+						cellVector.addElement("</ul>");
+					}
+					else{
+						cellVector.addElement("Entity 1 : "+entity1Name[0]);
+					}
+					
+					//entity2
+					if (augmentationCell.getEntity2() instanceof ComposedProperty) {
+						cellVector.addElement("Entity 2 : ComposedProperty");
+						cellVector.addElement("<ul>");
+						for(int z=0; z < entity2Name.length; z++){
+							cellVector.addElement("<li>Entity 2."+z+" : "+entity2Name[z]+"</li>");
+						}
+						cellVector.addElement("</ul>");
+					}
+					else{
+						cellVector.addElement("Entity 2 : "+entity2Name[0]);
+					}
+					
+					//Image
+					cellVector.addElement("<img src='"+this.pictureNames+(i-1)+".png'>");
+					
+					//Filters
+					this.getFilters(cellVector, augmentationCell);
+					
+					//Parameters
+					this.getParameters(cellVector, augmentationCell);
+					
+					i++;
 				}
 			}
 			
-			cellListVector.addElement(cellVector);
-			i++;
+			cellListVector.addElement(cellVector);	
+			e++;
 		}
 		this.context.put("cellList", cellListVector);
+	}
+	
+	/**
+	 * Returns the filters
+	 * @param cellVector
+	 * @param cell
+	 */
+	private void getFilters(Vector<String> cellVector, ICell cell){
+		//Filter Rules
+		if(cell.getEntity1() instanceof ComposedProperty){
+			if (((ComposedProperty) cell.getEntity1())
+					.getValueCondition() != null) {
+				// Filter strings are added to the Vector
+				cellVector.addElement("Filter Rules: ");
+				for (Restriction restriction : ((ComposedProperty) cell
+						.getEntity1()).getValueCondition()) {
+					cellVector.addElement(restriction.getCqlStr());
+				}
+			}
+		}
+		else if(cell.getEntity1() instanceof Property){
+			if (((Property) cell.getEntity1())
+					.getValueCondition() != null) {
+				// Filter strings are added to the Vector
+				cellVector.addElement("Filter Rules: ");
+				for (Restriction restriction : ((Property) cell
+						.getEntity1()).getValueCondition()) {
+					cellVector.addElement(restriction.getCqlStr());
+				}
+			}
+		}
+		else if(cell.getEntity1() instanceof ComposedFeatureClass){
+			if (((ComposedFeatureClass) cell.getEntity1())
+					.getAttributeValueCondition() != null) {
+				// Filter strings are added to the Vector
+				cellVector.addElement("Filter Rules: ");
+				for (Restriction restriction : ((ComposedFeatureClass) 
+						cell
+						.getEntity1()).getAttributeValueCondition()) {
+					cellVector.addElement(restriction.getCqlStr());
+				}
+			}
+		}
+		else if(cell.getEntity1() instanceof FeatureClass){
+			if (((FeatureClass) cell.getEntity1())
+					.getAttributeValueCondition() != null) {
+				// Filter strings are added to the Vector
+				cellVector.addElement("Filter Rules: ");
+				for (Restriction restriction : ((FeatureClass) 
+						cell
+						.getEntity1()).getAttributeValueCondition()) {
+					cellVector.addElement(restriction.getCqlStr());
+				}
+			}
+		}
+	}
 		
+	/**
+	 * Returns the parameters
+	 * @param cellVector
+	 * @param cell
+	 */
+	private void getParameters(Vector<String> cellVector, ICell cell){
+		//Parameters
+		List<IParameter> parameterList = new ArrayList<IParameter>();
+		if (cell.getEntity1().getTransformation() != null) {
+			parameterList = cell.getEntity1().getTransformation().getParameters();
+		}
+		if (!parameterList.isEmpty()) {
+			cellVector.addElement("Parameters: ");
+			for (IParameter parameter : parameterList) {
+				cellVector.addElement(parameter.getName() + " : "+ parameter.getValue());
+			}
+		}
+	}
+		
+	/**
+	 * @param entity
+	 * @return cellName
+	 */
+	private String[] entityNameSplitter(IEntity entity){
+		String[] entityNames = new String[1];
+		if(!(entity instanceof ComposedProperty)){
+			String[] entitySpilt = entity.getAbout().getAbout().split("/");
+			entityNames[0] = entitySpilt[entitySpilt.length-1];
+			return entityNames;
+		}
+		else{
+			entityNames = new String[((ComposedProperty)entity).getCollection().size()];
+			int i=0;
+			for(IEntity tempEntity : ((ComposedProperty)entity).getCollection()){
+				String[] entitySpilt = tempEntity.getAbout().getAbout().split("/");
+				entityNames[i] = entitySpilt[entitySpilt.length-1];
+				i++;
+			}
+			return entityNames;
+		}
 	}
 
 	/**
@@ -327,7 +593,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 	 * @throws IOException
 	 * @throws UnsupportedEncodingException
 	 */
-	private byte[] urlToByteArray(URL url) throws Exception, IOException,
+	public byte[] urlToByteArray(URL url) throws Exception, IOException,
      UnsupportedEncodingException {
         URLConnection connection = url.openConnection();
         int contentLength = connection.getContentLength();

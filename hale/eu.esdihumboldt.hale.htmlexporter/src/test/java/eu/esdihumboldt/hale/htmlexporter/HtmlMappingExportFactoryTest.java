@@ -32,13 +32,13 @@ public class HtmlMappingExportFactoryTest {
 	public void test() {
 		
 		HtmlMappingExportFactory htmlMappingExportFactory = new HtmlMappingExportFactory();
-		String testFile = this.getClass().getResource("TEST2.goml").toString();
+		String testFile = this.getClass().getResource("TEST3.goml").toString();
 		OmlRdfReader reader = new OmlRdfReader();
 		
 		if(testFile!=null){
 			Alignment alignment = reader.read(testFile);
 			try {
-				htmlMappingExportFactory.export(alignment, "C:\\bla.html");
+				htmlMappingExportFactory.export(alignment, "C:\\test.html");
 			} catch (MappingExportException e) {
 				e.printStackTrace();
 			}
