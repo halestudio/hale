@@ -493,4 +493,21 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 		this.type = type;
 	}
 
+	/**
+	 * Get the attribute with the given name
+	 * 
+	 * @param name the attribute name
+	 * 
+	 * @return the attribute definition or <code>null</code>
+	 */
+	public AttributeDefinition getAttribute(String name) {
+		for (AttributeDefinition attrib : getAttributes()) {
+			if (attrib.getName().equals(name)) {
+				return attrib;
+			}
+		}
+		
+		return null;
+	}
+
 }
