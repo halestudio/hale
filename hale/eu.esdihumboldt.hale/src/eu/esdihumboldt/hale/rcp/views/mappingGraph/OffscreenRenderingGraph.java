@@ -35,13 +35,13 @@ import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class TestGraph extends Graph {
+public class OffscreenRenderingGraph extends Graph {
 
 	/**
 	 * @param parent
 	 * @param style
 	 */
-	public TestGraph(Composite parent, int style) {
+	public OffscreenRenderingGraph(Composite parent, int style) {
 		super(parent, style);
 		// TODO Auto-generated constructor stub
 	}

@@ -280,7 +280,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	    composite.setLayout(new FillLayout());
 		composite.setVisible(true);
 		//Workaround to draw in background -->
-		this.graph = new TestGraph(composite, SWT.NONE);
+		this.graph = new OffscreenRenderingGraph(composite, SWT.NONE);
 		this.graph.setLayoutAlgorithm(new TreeLayoutAlgorithm(
 				LayoutStyles.NO_LAYOUT_NODE_RESIZING), true);
 		this.graph.getViewport().setBounds(new Rectangle(0, 0, x, y));
@@ -293,7 +293,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 				((IFigure) rc).setBounds(new Rectangle(0, 0, x, y));
 			}
 		}
-		((TestGraph)this.graph).applyLayout(new TreeLayoutAlgorithm(
+		((OffscreenRenderingGraph)this.graph).applyLayout(new TreeLayoutAlgorithm(
 				LayoutStyles.NO_LAYOUT_NODE_RESIZING));
 		//<--
 	}
