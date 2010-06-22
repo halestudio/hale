@@ -153,7 +153,7 @@
 
 
 	<properties>
-		<geotools.version>2.5.8</geotools.version>
+		<geotools.version>2.6.4</geotools.version>
 	</properties>
 
 </project>
