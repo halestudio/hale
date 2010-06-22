@@ -750,7 +750,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	 */
 	public void drawGraphAsImage(String path, String fileName, int width, int height){
 		
-		if(path != null && path != "" && fileName != null && fileName != ""){
+		if(path != null && !path.isEmpty() && fileName != null && !fileName.isEmpty()){
 			Image drawImage = new Image(Display.getCurrent(), width, height);
 			File file = new File(path+fileName);
 			final GC gc = new GC(drawImage);
