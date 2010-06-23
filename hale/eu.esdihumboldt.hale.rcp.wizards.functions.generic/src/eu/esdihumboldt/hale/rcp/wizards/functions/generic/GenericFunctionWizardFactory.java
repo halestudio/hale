@@ -50,8 +50,10 @@ public class GenericFunctionWizardFactory implements FunctionWizardFactory {
 
 	@Override
 	public boolean supports(AlignmentInfo selection) {
-		if (((selection.getFirstSourceItem()) != null && !selection.getFirstSourceItem().isAttribute())
-				|| ((selection.getFirstTargetItem() != null) && !selection.getFirstTargetItem().isAttribute())) 
+		if ((selection.getFirstSourceItem()) != null && !selection.getFirstSourceItem().isAttribute())
+			return false;
+		
+		if ((selection.getFirstTargetItem() != null) && !selection.getFirstTargetItem().isAttribute()) 
 			return false;
 		
 		return true;

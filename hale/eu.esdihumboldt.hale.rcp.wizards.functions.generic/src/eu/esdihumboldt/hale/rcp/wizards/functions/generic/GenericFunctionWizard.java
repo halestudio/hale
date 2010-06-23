@@ -104,8 +104,10 @@ public class GenericFunctionWizard extends Wizard implements FunctionWizard {
 		Entity entity = null;
 		
 		if (algorithmModel.transformationOnEntity1)
-			entity = (Entity) cell.getEntity1();
+			// transformation is on entity1
+			entity = (Entity) cell.getEntity1(); 
 		else
+			// transformation is on entity2
 			entity = (Entity) cell.getEntity2();
 		Transformation transformation = new Transformation();
 		transformation.setService(new Resource(algorithmModel.getFunctionID()));

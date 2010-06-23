@@ -257,52 +257,7 @@ public class GenericFunctionWizardPage extends WizardPage {
 			}	
 	    }
 	
-/*		CstFunctionFactory.getInstance().registerCstPackage(
-		"eu.esdihumboldt.cst.corefunctions");
-		CstFunction f = null;
 
-		for (Iterator<String> i = CstFunctionFactory.getInstance()
-				.getRegisteredFunctions().keySet().iterator(); i.hasNext();) {
-
-			try {
-				System.out.println("..."+CstFunctionFactory.getInstance().getRegisteredFunctions()
-						.get(i.next()));
-				f = CstFunctionFactory.getInstance().getRegisteredFunctions()
-					.get(i.next()).newInstance();
-				//System.out.println("********"+f.getClass().toString());
-			} catch (Exception e) {
-				f = null;
-			}
-			
-			if (f != null){
-				AlgorithmCST alg = null;
-				try{
-					alg = new AlgorithmCST(getAlgorithmName(f.getClass().getSimpleName()), f.getClass().getCanonicalName(), f.getParameters());
-				
-					
-				}
-				catch (NullPointerException e){
-					alg = new AlgorithmCST(getAlgorithmName(f.getClass().getSimpleName()), f.getClass().getCanonicalName(), null);
-				}
-
-				String functionGroup = f.getClass().getName().toString().substring(0, f.getClass().getName().toString().lastIndexOf('.'));
-				functionGroup = functionGroup.substring(functionGroup.lastIndexOf('.')+1);
-				//System.out.println(functionGroup);
-		
-				if (functionGroup.equals("corefunctions")){
-					core.addCoreFunction(alg);
-				}
-				else{
-					if (functionGroup.equals("inspire"))
-						inspire.addInspireFunction(alg);
-					else
-						others.addOthersFunction(alg);
-				}
-			
-				countAlgorithm++;
-				setMaximumParameters(alg);
-			}	
-		}*/
 		setTitle("Toolbox contains "+countAlgorithm+" functions for current selection");
 		return root;
 	}
