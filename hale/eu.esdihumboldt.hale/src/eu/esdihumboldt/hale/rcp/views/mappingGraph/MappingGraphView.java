@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 
@@ -127,6 +128,11 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	 * The name for the Pictures
 	 */
 	private String pictureNames = null;
+
+	/**
+	 * Contains the sections for the pictures
+	 */
+	private Vector<Vector<ICell>> sections;
 	
 	/**
 	 * Default constructor
@@ -141,13 +147,12 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	 * @param alignment
 	 * @param pictureNames 
 	 */
-	public MappingGraphView(Alignment alignment, String pictureNames){
+	public MappingGraphView(Alignment alignment, Vector<Vector<ICell>> sections, String pictureNames){
 		super();
-		
+		this.sections = sections;
 		this.schemaSelectionInt = 4;
 		this.alignment = alignment;
 		this.pictureNames = pictureNames;
-//		createPrintView();
 		selectionChanged(null, null);
 	}
 
@@ -659,12 +664,15 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 		
 		//Image draw handling from here -->
 		
-		// if the schemaSelectionInt is 4, ...
 		if (this.schemaSelectionInt == 4) {
 
-			//draw Overview of the cells
+			/**
+			 * draw Overview of the cells
+			 */
 			int k = 1;
+			Vector<ICell> alignmentVector = new Vector<ICell>();
 			for (ICell cell : this.alignment.getMap()) {
+				alignmentVector.addElement(cell);
 				//Counting the nodes for calculating the picture size
 				if(cell.getEntity1() instanceof ComposedProperty ) {
 					k = k +((ComposedProperty) cell.getEntity1()).getCollection().size();
@@ -674,56 +682,88 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 						k = k +((ComposedProperty) cell.getEntity2()).getCollection().size();
 					}
 				}
-				else if(cell.getEntity1() instanceof Property){
-					k++;
-				}
-				else if(cell.getEntity2() instanceof Property){
+				else{
 					k++;
 				}
 			}
 			//Create fitting view for the picture
-//			createPrintView(500 , k*40);
 			createPrintView(1000 , k*30);
 			
 			// Draws the source and target nodes
-			this.mappingGraphNodeRenderer.drawOverviewFromAlignment(this.alignment);
+			this.mappingGraphNodeRenderer.drawNodeSections(alignmentVector);
 		
 			//Draws the graph as a png
-//			this.drawGraphAsImage("C:\\", this.pictureNames+"_Overview"+".png", 500, k*40);
 			this.drawGraphAsImage("C:\\", this.pictureNames+"_Overview"+".png", 1000, k*30);
 			
 			//Clean up
 			this.mappingGraphModel.arrayReset();
-			
-
-			//draw single cells
-			int j = 0;
-			for (ICell cell : this.alignment.getMap()) {
 	
-				//Counting the nodes for calculating the picture size
-				int h = 1;
-				if(cell.getEntity1() instanceof ComposedProperty ) {
-					h =((ComposedProperty) cell.getEntity1()).getCollection().size();
-				}
-				if(cell.getEntity2() instanceof ComposedProperty ) {
-					if (((ComposedProperty) cell.getEntity2()).getCollection().size()>h){
-						h =((ComposedProperty) cell.getEntity2()).getCollection().size();
+			/**
+			 * draw section cells
+			 */
+			int f = 0;
+			for (Vector<ICell> sectionVector : this.sections) {
+				int p = 1;
+				for (ICell cell  : sectionVector) {
+					//Counting the nodes for calculating the picture size
+					if(cell.getEntity1() instanceof ComposedProperty ) {
+						p = p +((ComposedProperty) cell.getEntity1()).getCollection().size();
+					}
+					else if(cell.getEntity2() instanceof ComposedProperty ) {
+						if (((ComposedProperty) cell.getEntity2()).getCollection().size()>p){
+							p = p +((ComposedProperty) cell.getEntity2()).getCollection().size();
+						}
+					}
+					else{
+						p++;
 					}
 				}
-
 				//Create fitting view for the picture
-				createPrintView(500 , h*40);
+				createPrintView(1000 , p*30);
 				
 				// Draws the source and target nodes
-				this.mappingGraphNodeRenderer.drawNodesFromAlignment(cell);
+				this.mappingGraphNodeRenderer.drawNodeSections(sectionVector);
 			
 				//Draws the graph as a png
-				this.drawGraphAsImage("C:\\", this.pictureNames+j+".png", 500, h*40);
+				this.drawGraphAsImage("C:\\", this.pictureNames+"_Section_"+f+".png", 1000, p*30);
 				
 				//Clean up
 				this.mappingGraphModel.arrayReset();
-				j++;
+				
+				f++;
 			}
+			
+			/**
+			 * draw single cells
+			 */
+//	Is a working function to draw single Cells. But at the moment not needed.
+//			int j = 0;
+//			for (ICell cell : this.alignment.getMap()) {
+//	
+//				//Counting the nodes for calculating the picture size
+//				int h = 1;
+//				if(cell.getEntity1() instanceof ComposedProperty ) {
+//					h =((ComposedProperty) cell.getEntity1()).getCollection().size();
+//				}
+//				if(cell.getEntity2() instanceof ComposedProperty ) {
+//					if (((ComposedProperty) cell.getEntity2()).getCollection().size()>h){
+//						h =((ComposedProperty) cell.getEntity2()).getCollection().size();
+//					}
+//				}
+//
+//				//Create fitting view for the picture
+//				createPrintView(700 , h*36);
+//				
+//				// Draws the source and target nodes
+//				this.mappingGraphNodeRenderer.drawNodesFromAlignment(cell);
+//			
+//				//Draws the graph as a png
+//				this.drawGraphAsImage("C:\\", this.pictureNames+j+".png", 700, h*36);
+//				
+//				//Clean up
+//				this.mappingGraphModel.arrayReset();
+//				j++;
+//			}
 		}
 	}
 
@@ -774,6 +814,5 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 			}
 		}
 	}
-	
-	
+		
 }

@@ -41,6 +41,7 @@ Import-Package: eu.esdihumboldt.hale.prefixmapper,
  org.eclipse.zest.layouts.algorithms
 Export-Package: eu.esdihumboldt.hale.rcp.utils.definition,
  eu.esdihumboldt.hale.rcp.utils.filter,
+ eu.esdihumboldt.hale.rcp.views.mappingGraph,
  eu.esdihumboldt.hale.rcp.views.model,
  eu.esdihumboldt.hale.rcp.wizards.augmentations,
  eu.esdihumboldt.hale.rcp.wizards.functions,

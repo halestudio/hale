@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
@@ -29,7 +30,6 @@ import org.eclipse.zest.core.widgets.GraphNode;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
-import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
@@ -191,7 +191,7 @@ public class MappingGraphNodeRenderer {
 	 */
 	void drawNodesFromAlignment(ICell cell) {
 		Display display = Display.getDefault();
-		int y = 10;
+		int y = 8;
 		
 		//Make node for entity 1
 		IEntity entity = cell.getEntity1();
@@ -269,8 +269,8 @@ public class MappingGraphNodeRenderer {
 				GraphNode targetGraphNode = new GraphNode(this.mappingGraphView.getGraph(), SWT.NONE,
 						property.getFeatureClassName());
 				//Set Location
-				targetGraphNode.getNodeFigure().setLocation(new Point(this.mappingGraphView.getGraph().getViewport().getBounds().width * 2 / 3 +50, y));
-				targetGraphNode.setLocation(this.mappingGraphView.getGraph().getViewport().getBounds().width * 2 / 3 +50, y);
+				targetGraphNode.getNodeFigure().setLocation(new Point(this.mappingGraphView.getGraph().getViewport().getBounds().width * 3 / 5 , y));
+				targetGraphNode.setLocation(this.mappingGraphView.getGraph().getViewport().getBounds().width * 3 / 5 , y);
 				
 				// Set image
 				String targetImageKey = ModelNavigationViewLabelProvider
@@ -304,8 +304,8 @@ public class MappingGraphNodeRenderer {
 			GraphNode targetGraphNode = new GraphNode(this.mappingGraphView.getGraph(), SWT.NONE,
 					targetName[targetName.length-1]);
 			//Set Location
-			targetGraphNode.getNodeFigure().setLocation(new Point(this.mappingGraphView.getGraph().getViewport().getBounds().width * 2 / 3 +50, y));
-			targetGraphNode.setLocation(this.mappingGraphView.getGraph().getViewport().getBounds().width * 2 / 3 +50, y);
+			targetGraphNode.getNodeFigure().setLocation(new Point(this.mappingGraphView.getGraph().getViewport().getBounds().width * 3 / 5, y));
+			targetGraphNode.setLocation(this.mappingGraphView.getGraph().getViewport().getBounds().width * 3 / 5 , y);
 			
 			// Set image
 			String targetImageKey = ModelNavigationViewLabelProvider
@@ -349,8 +349,8 @@ public class MappingGraphNodeRenderer {
 			//Set the cell as data into the node
 			newEntityNode.setData(cell);
 			//Set Location
-			newEntityNode.getNodeFigure().setLocation(new Point(this.mappingGraphView.getGraph().getViewport().getBounds().width * 1 / 3, y));
-			newEntityNode.setLocation(this.mappingGraphView.getGraph().getViewport().getBounds().width * 1 / 3, y);
+			newEntityNode.getNodeFigure().setLocation(new Point(this.mappingGraphView.getGraph().getViewport().getBounds().width * 1 / 4 +20, y));
+			newEntityNode.setLocation(this.mappingGraphView.getGraph().getViewport().getBounds().width * 1 / 4 +20, y);
 			 
 			this.mappingGraphModel.setEntityNode(newEntityNode);
 			this.mappingGraphModel.getEntityNodeList().add(newEntityNode);
@@ -379,9 +379,10 @@ public class MappingGraphNodeRenderer {
 	}
 	
 	/**
-	 * @param alignment
+	 * Draws a Vector of ICells for taking pictures
+	 * @param section
 	 */
-	void drawOverviewFromAlignment(Alignment alignment) {
+	void drawNodeSections(Vector<ICell> section){
 		Display display = Display.getDefault();
 		int highestSource = 10;
 		int tempHighestSource = 10;
@@ -389,7 +390,7 @@ public class MappingGraphNodeRenderer {
 		int tempHighestTarget = 10;
 		int highestEntity = 10;
 		
-		for (ICell cell : alignment.getMap()) {
+		for (ICell cell : section) {
 
 			ArrayList<GraphNode> tempSourceNodeList = new ArrayList<GraphNode>();
 			ArrayList<GraphNode> tempTargetNodeList = new ArrayList<GraphNode>();
@@ -400,8 +401,9 @@ public class MappingGraphNodeRenderer {
 			IEntity entity = cell.getEntity1();
 			if(entity instanceof ComposedProperty ) {
 				for (Property property : ((ComposedProperty) cell.getEntity1()).getCollection()) {
+					String[] sourceName = property.getAbout().getAbout().split("/");
 					GraphNode sourceGraphNode = new GraphNode(this.mappingGraphView.getGraph(), SWT.NONE,
-							property.getFeatureClassName());
+							sourceName[sourceName.length-1]);
 					//Set Location
 					sourceGraphNode.getNodeFigure().setLocation(new Point(10, tempHighestSource));
 					sourceGraphNode.setLocation(10, tempHighestSource);
@@ -437,36 +439,40 @@ public class MappingGraphNodeRenderer {
 			}
 			//No ComposedProperty
 			else{
-				String[] sourceName = cell.getEntity1().getAbout().getAbout().split("/");
-				GraphNode sourceGraphNode = new GraphNode(this.mappingGraphView.getGraph(), SWT.NONE,
-						sourceName[sourceName.length-1]);
-				//Set Location
-				sourceGraphNode.getNodeFigure().setLocation(new Point(10, tempHighestSource));
-				sourceGraphNode.setLocation(10, tempHighestSource);
-				
-				// Set image
-				String sourceImageKey = ModelNavigationViewLabelProvider
-						.getImageforTreeObjectType(cell.getEntity1());
-				if (sourceImageKey != null) {
-					Image image = AbstractUIPlugin
-							.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID,
-									"/icons/" + sourceImageKey).createImage(); //$NON-NLS-1$
-					sourceGraphNode.setImage(image);
+				//Augmentation
+				if(!(cell.getEntity1().getTransformation() == null || cell.getEntity1().getAbout().getAbout().equals("entity/null"))){
+					String[] sourceName = cell.getEntity1().getAbout().getAbout().split("/");
+					GraphNode sourceGraphNode = new GraphNode(this.mappingGraphView.getGraph(), SWT.NONE,
+							sourceName[sourceName.length-1]);
+					//Set Location
+					sourceGraphNode.getNodeFigure().setLocation(new Point(10, tempHighestSource));
+					sourceGraphNode.setLocation(10, tempHighestSource);
+					
+					// Set image
+					String sourceImageKey = ModelNavigationViewLabelProvider
+							.getImageforTreeObjectType(cell.getEntity1());
+					if (sourceImageKey != null) {
+						Image image = AbstractUIPlugin
+								.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID,
+										"/icons/" + sourceImageKey).createImage(); //$NON-NLS-1$
+						sourceGraphNode.setImage(image);
+					}
+		
+					// Node Style
+					sourceGraphNode.setBorderWidth(2);
+					sourceGraphNode.setBorderColor(display
+							.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
+					sourceGraphNode.setBorderHighlightColor(display
+							.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
+					sourceGraphNode.setBackgroundColor(new Color(display, 250, 150,
+							150));
+					sourceGraphNode.setHighlightColor(new Color(display, 230, 70, 70));
+		
+					this.mappingGraphModel.getSourceNodeList().add(sourceGraphNode);
+					tempSourceNodeList.add(sourceGraphNode);
+					this.mappingGraphModel.setSourceGraphNode(sourceGraphNode);
 				}
-	
-				// Node Style
-				sourceGraphNode.setBorderWidth(2);
-				sourceGraphNode.setBorderColor(display
-						.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
-				sourceGraphNode.setBorderHighlightColor(display
-						.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
-				sourceGraphNode.setBackgroundColor(new Color(display, 250, 150,
-						150));
-				sourceGraphNode.setHighlightColor(new Color(display, 230, 70, 70));
-	
-				this.mappingGraphModel.getSourceNodeList().add(sourceGraphNode);
-				tempSourceNodeList.add(sourceGraphNode);
-				this.mappingGraphModel.setSourceGraphNode(sourceGraphNode);
+				tempHighestSource = tempHighestSource + 30;	
 				
 				if(tempHighestSource > highestSource){
 					highestSource = tempHighestSource;
@@ -477,8 +483,9 @@ public class MappingGraphNodeRenderer {
 			IEntity entity2 = cell.getEntity2();
 			if(entity2 instanceof ComposedProperty ) {
 				for (Property property : ((ComposedProperty)cell.getEntity2()).getCollection()) {
+					String[] targetName = property.getAbout().getAbout().split("/");
 					GraphNode targetGraphNode = new GraphNode(this.mappingGraphView.getGraph(), SWT.NONE,
-							property.getFeatureClassName());
+							targetName[targetName.length-1]);
 					//Set Location
 					targetGraphNode.getNodeFigure().setLocation(new Point(this.mappingGraphView.getGraph().getViewport().getBounds().width * 3 / 5, tempHighestTarget));
 					targetGraphNode.setLocation(this.mappingGraphView.getGraph().getViewport().getBounds().width * 3 / 5, tempHighestTarget);
@@ -598,14 +605,14 @@ public class MappingGraphNodeRenderer {
 			tempSourceNodeList.clear();
 			tempTargetNodeList.clear();
 		}	
+		
 	}
 	
 	/**
 	 * Source and target nodes will be drawn and saved in the arrayLists if they
 	 * have Connections
 	 * 
-	 * @param schemaSelection
-	 *            gets drawn
+	 * @param schemaSelection gets drawn
 	 */
 	void drawNodesOnlyWithConnection(SchemaSelection schemaSelection) {
 
