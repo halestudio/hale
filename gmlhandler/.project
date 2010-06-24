@@ -6,12 +6,12 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
-			<name>org.eclipse.jdt.core.javabuilder</name>
+			<name>org.eclipse.wst.common.project.facet.core.builder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>org.maven.ide.eclipse.maven2Builder</name>
+			<name>org.eclipse.jdt.core.javabuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
@@ -25,10 +25,16 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>org.maven.ide.eclipse.maven2Builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.maven.ide.eclipse.maven2Nature</nature>
 		<nature>org.eclipse.pde.PluginNature</nature>
+		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
 	</natures>
 </projectDescription>
