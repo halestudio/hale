@@ -42,32 +42,88 @@ import static org.junit.Assert.*;
  */
 public class OrdinatesToPointFunctionTest {
 	
+	/**
+	 * 
+	 */
 	private final String sourceLocalname = "waterVA/Watercourses_VA_Type";
+	
+	/**
+	 * 
+	 */
 	private final String sourceLocalnamePropertyDouble = "LAENGE_ARC";
+	
+	/**
+	 * 
+	 */
 	private final String sourceNamespace = "http://esdi-humboldt.org";
 	
+	/**
+	 * 
+	 */
 	private final String source2Localname = "waterVA/Watercourses_VA_Type";
+	
+	/**
+	 * 
+	 */
 	private final String source2LocalnamePropertyDouble = "LAENGE_ROU";
+	
+	/**
+	 * 
+	 */
 	private final String source2Namespace = "http://esdi-humboldt.org";
 	
+	/**
+	 * 
+	 */
 	private final String targetLocalname = "FT3";
+	
+	/**
+	 * 
+	 */
 	private final String targetLocalnamePropertyPoint = "PropertyPoint";
+	
+	/**
+	 * 
+	 */
 	private final String targetNamespace = "http://esdi-humboldt.eu";
 	
+	/**
+	 * 
+	 */
 	private static double x = 23.0;
+	
+	/**
+	 * 
+	 */
 	private static double y = 14.0;
 	
+	/**
+	 * 
+	 */
 	private static String x2 ="23.0";
+	
+	/**
+	 * 
+	 */
 	private static String y2 ="14.0";
+	
+	/**
+	 * 
+	 */
 	private int testInt=1;
 	
-	
+	/**
+	 * 
+	 */
 	@Test
 	public void testConfigure() {
 		OrdinatesToPointFunction  otpf = new OrdinatesToPointFunction();
 		otpf.configure(otpf.getParameters());
 	}
 	
+	/**
+	 * 
+	 */
 	@Test
 	public void testOrdinatesToPointFunction() {
 		for(this.testInt=1; this.testInt<5; this.testInt++){
@@ -98,7 +154,6 @@ public class OrdinatesToPointFunctionTest {
 			
 			t.setParameters(parameters);
 			
-			
 			ComposedProperty composedProperty = new ComposedProperty(new About(""));
 			composedProperty.setTransformation(t);
 			
@@ -112,11 +167,9 @@ public class OrdinatesToPointFunctionTest {
 			cell.setEntity1(composedProperty);
 			cell.setEntity2(entity3);
 			
-	
 			// build source Features
 			SimpleFeatureType sourcetype = this.getFeatureType(this.sourceNamespace, this.sourceLocalname, new String[]{this.sourceLocalnamePropertyDouble, this.source2LocalnamePropertyDouble});
-			SimpleFeatureType targettype = this.getFeatureType(this.targetNamespace, this.targetLocalname, new String[]{this.targetLocalnamePropertyPoint});			
-			
+			SimpleFeatureType targettype = this.getFeatureType(this.targetNamespace, this.targetLocalname, new String[]{this.targetLocalnamePropertyPoint});
 			
 			Feature source;
 			Feature target;
@@ -153,9 +206,14 @@ public class OrdinatesToPointFunctionTest {
 			assertTrue(point.getY()== y * y);
 //			System.out.println("Test "+this.testInt+" : "+(point.getX()== x * x )+"  "+point.getY()+" = "+y * y);
 		}
-
 	}
 	
+	/**
+	 * @param featureTypeNamespace
+	 * @param featureTypeName
+	 * @param propertyNames
+	 * @return SimpleFeatureType
+	 */
 	private SimpleFeatureType getFeatureType(String featureTypeNamespace, 
 			String featureTypeName, String[] propertyNames) {
 	
@@ -203,15 +261,6 @@ public class OrdinatesToPointFunctionTest {
 					ftbuilder.add(propertyNames[1], Double.class);
 				}
 				break;	
-			default:
-				for (String s : propertyNames) {
-					if(propertyNames.length==1){
-						ftbuilder.add(s, Geometry.class);
-					}
-					else{
-						ftbuilder.add(s, Double.class);
-					}
-				}
 			}
 			ft = ftbuilder.buildFeatureType();
 		} catch (Exception ex) {
@@ -219,5 +268,4 @@ public class OrdinatesToPointFunctionTest {
 		}
 		return ft;
 	}
-
 }

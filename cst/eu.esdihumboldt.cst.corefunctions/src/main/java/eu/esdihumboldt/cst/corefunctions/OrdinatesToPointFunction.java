@@ -52,14 +52,35 @@ public class OrdinatesToPointFunction
 	 */
 	public static final String Y_EXPRESSION_PARAMETER = "yExpression";
 	
+	/**
+	 * 
+	 */
 	private String xOrdinateName;
+	
+	/**
+	 * 
+	 */
 	private String yOrdinateName;
 	
+	/**
+	 * 
+	 */
 	private String xExpression;
+	/**
+	 * 
+	 */
 	private String yExpression;
 	
+	/**
+	 * 
+	 */
 	private String targetPropertyname;
 	
+	/**
+	 * @param cell
+	 * @return true
+	 * @see eu.esdihumboldt.cst.CstFunction#configure(eu.esdihumboldt.cst.align.ICell)
+	 */
 	@Override
 	public boolean configure(ICell cell) {
 		List<Property> properties = ((ComposedProperty)cell.getEntity1()).getCollection();
@@ -74,14 +95,14 @@ public class OrdinatesToPointFunction
 		return true;
 	}
 	
-	/*
+	/**
+	 * @return parameterCell
 	 * @see eu.esdihumboldt.cst.CstFunction#getParameters()
 	 */
 	@Override
 	public ICell getParameters() {
 
 		Cell parameterCell = new Cell();
-		
 		ComposedProperty composedEntity1 = new ComposedProperty(new About(""));
 		Property entity1 = new Property(new About(""));
 		
@@ -116,7 +137,10 @@ public class OrdinatesToPointFunction
 		return parameterCell;
 	}	
 	
-	/*
+	/**
+	 * @param source
+	 * @param target
+	 * @return target
 	 * @see eu.esdihumboldt.cst.CstFunction#transform(org.opengis.feature.Feature, org.opengis.feature.Feature)
 	 */
 	@Override
@@ -138,7 +162,7 @@ public class OrdinatesToPointFunction
 			
 			GeometryFactory geomFactory = new GeometryFactory();
 			Geometry new_geometry = geomFactory.createPoint(new Coordinate(xResult, yResult));
-			
+
 			target.getProperty(this.targetPropertyname).setValue(new_geometry);
 		} catch (XExpression e) {
 			throw new RuntimeException("Evaluation of the given expression failed: ", e);

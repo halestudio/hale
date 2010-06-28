@@ -49,7 +49,14 @@ import eu.esdihumboldt.tools.FeatureInspector;
 public class RenameAttributeFunction 
 	extends AbstractCstFunction {
 
+	/**
+	 * SourceEntiy
+	 */
 	private Property sourceEntity;
+	
+	/**
+	 * TargetEntity
+	 */
 	private Property targetEntity;
 
 	/**
@@ -59,10 +66,10 @@ public class RenameAttributeFunction
 	 * @see CstFunction#transform(Feature, Feature)
 	 */
 	public Feature transform(Feature source, Feature target) {
-		org.opengis.feature.Property sourceProperty = FeatureInspector.getProperty(source, sourceEntity.getAbout(), true);
+		org.opengis.feature.Property sourceProperty = FeatureInspector.getProperty(source, this.sourceEntity.getAbout(), true);
 		//XXX instead of creating the source property if it is not present, just skip the transformation?
 		
-		org.opengis.feature.Property targetProperty = FeatureInspector.getProperty(target, targetEntity.getAbout(), true);
+		org.opengis.feature.Property targetProperty = FeatureInspector.getProperty(target, this.targetEntity.getAbout(), true);
 		
 		Class<?> bindingSource = sourceProperty.getType().getBinding();
 		Class<?> bindingTarget = targetProperty.getType().getBinding();
@@ -183,6 +190,12 @@ public class RenameAttributeFunction
 		return parameterCell;
 	}
 	
+	/**
+	 * @param bindingSource
+	 * @param bindingTarget
+	 * @param geom
+	 * @return newGeometry
+	 */
 	private Geometry convertSpatialType(Class<?> bindingSource, Class<?> bindingTarget, Geometry geom) {
 		GeometryFactory geomFactory = new GeometryFactory();
 		Geometry newGeometry = null;

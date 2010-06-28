@@ -132,10 +132,13 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 	public Feature transform(Feature source, Feature target) {
 		String[] concat = this.concatenation.split(INTERNALSEPERATOR);
 		String finalConcatString = "";
-		boolean firstElement = true;
+//		boolean firstElement = true;
 		for (String thisElement : concat) {
 			org.opengis.feature.Property p = source.getProperty(thisElement);
-			if (!firstElement) {
+//			if (!firstElement) {
+//				finalConcatString += this.seperator;
+//			}
+			if (finalConcatString.length() > 0) {
 				finalConcatString += this.seperator;
 			}
 			
@@ -150,9 +153,10 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 			else {
 				finalConcatString += thisElement;
 			}
-			firstElement = false;
+//			firstElement = false;
 		}
 		target.getProperty(this.targetPropertyname).setValue(finalConcatString);
+//		firstElement = true;
 		return target;
 	}
 

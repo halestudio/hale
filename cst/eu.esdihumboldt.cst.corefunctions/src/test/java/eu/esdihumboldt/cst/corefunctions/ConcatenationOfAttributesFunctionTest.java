@@ -33,7 +33,7 @@ import eu.esdihumboldt.goml.rdf.Resource;
 
 
 /**
- * TODO Concatenation test-class
+ * Concatenation test-class
  * @author Stefan Gessner
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
@@ -89,7 +89,6 @@ public class ConcatenationOfAttributesFunctionTest {
 	 */
 	private final String targetNamespace = "http://esdi-humboldt.eu";
 	
-	
 	/**
 	 * 
 	 */
@@ -112,16 +111,11 @@ public class ConcatenationOfAttributesFunctionTest {
 	 * 
 	 */
 	private static int x3 = 23;
+	
 	/**
 	 * 
 	 */
 	private static int y3 = 14;
-	
-	private static long x4 = 23;
-	private static long y4 = 14;
-	
-	private static String concatenationTestString = "LAENGE_ROU--!-split-!--laskjdflk--!-split-!--LAENGE_ARC--!-split-!--aölskdjf";
-	private static String seperatorTestString = "";
 
 	/**
 	 * 
@@ -137,13 +131,12 @@ public class ConcatenationOfAttributesFunctionTest {
 		coaf.configure(coaf.getParameters());
 	}
 	
-	//FIXME @Test
 	/**
 	 * 
 	 */
+	@Test
 	public void testConcatenationOfAttributesFunction() {
 
-		
 		for(this.testInt =1; this.testInt<7; this.testInt++){
 			// set up cell to use for testing
 			Cell cell = new Cell();
@@ -154,7 +147,6 @@ public class ConcatenationOfAttributesFunctionTest {
 			parameters.add(new Parameter("seperator", ";"));
 			parameters.add(new Parameter("concatenation", "LAENGE_ROU--!-split-!--laskjdflk--!-split-!--LAENGE_ARC--!-split-!--aölskdjf"));
 			t.setParameters(parameters);
-			
 			
 			ComposedProperty composedProperty = new ComposedProperty(new About(""));
 			composedProperty.setTransformation(t);
@@ -169,14 +161,12 @@ public class ConcatenationOfAttributesFunctionTest {
 			cell.setEntity1(composedProperty);
 			cell.setEntity2(entity3);
 			
-	
 			// build source Features
 			SimpleFeatureType sourcetype = this.getFeatureType(this.sourceNamespace, this.sourceLocalname, new String[]{this.sourceLocalnamePropertyDouble, this.source2LocalnamePropertyDouble});
 			SimpleFeatureType targettype = this.getFeatureType(this.targetNamespace, this.targetLocalname, new String[]{this.targetLocalnamePropertyString});			
 			
-			
-			Feature source;
-			Feature target;
+			Feature source = null;
+			Feature target = null;
 	
 			switch(this.testInt){
 			case 1:
@@ -203,13 +193,9 @@ public class ConcatenationOfAttributesFunctionTest {
 				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Integer(x3),new Float(y2)}, "1");
 				target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2");
 				break;
-			default:
-				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Double(x),new Double(y)}, "1");
-				target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2");
 			}
 			
 			// perform actual test
-			
 			
 			Transformation oldT = (Transformation) cell.getEntity1().getTransformation();
 			String oldConcatenation = oldT.getParameterMap().get(CONCATENATION).getValue();
@@ -244,7 +230,6 @@ public class ConcatenationOfAttributesFunctionTest {
 			
 			assertTrue(transformedConcatenation.equals(finalConcatString));
 		}
-
 	}
 	
 	/**
@@ -324,6 +309,5 @@ public class ConcatenationOfAttributesFunctionTest {
 			throw new RuntimeException(ex);
 		}
 		return ft;
-	}
-		
+	}		
 }
