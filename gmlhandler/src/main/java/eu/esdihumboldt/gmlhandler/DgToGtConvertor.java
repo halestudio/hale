@@ -213,15 +213,27 @@ public class DgToGtConvertor {
 	}
 
 
-	private static CoordinateDimension createCoordDim(
+	/**
+	 * 
+	 * @param geotools Geometry Descriptor
+	 * @return CoordinateDimension
+	 */
+    private static CoordinateDimension createCoordDim(
 			GeometryDescriptor descriptor) {
-		// TODO Auto-generated method stub
-		return null;
+		if (descriptor.getCoordinateReferenceSystem().getCoordinateSystem().getDimension() == 2) return CoordinateDimension.DIM_2;
+		else if (descriptor.getCoordinateReferenceSystem().getCoordinateSystem().getDimension() == 3) return CoordinateDimension.DIM_3;
+		else return CoordinateDimension.DIM_2_OR_3;
+			
+		
 	}
 
-
+    /**
+     * 
+     * @param geotools Geometry Descriptor
+     * @return Geometry Type
+     */
 	private static GeometryType createGeometryType(GeometryDescriptor descriptor) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
