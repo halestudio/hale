@@ -1,43 +1,77 @@
 package eu.esdihumboldt.hale.eap2uml.xsltprocess;
-
-import javax.xml.transform.*;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
-import java.net.*;
 import java.io.*;
-
-
 public class xsltprocess {
+	
+	
+	//Main method
 	public static void main(String[] args)
+    throws javax.xml.transform.TransformerException, IOException 
+    {
+		if (args.length < 2) {
+			System.err.println("Usage:");
+			System.err.println(" java " + Process.class.getName( )
+					+ " xmlFileName xsltFileName1 xsltFileName2...");
+			System.exit(1);
+		}
+
+		// Source xml File
+		File xmlFile = new File("src/main/resources/"+args[0]);
+		
+		// Creation of an array of Files containing xslt files passed as argument
+		File[] xslts = new File[args.length-1];
+		for (int i=1;i<args.length;i++)
+		{
+			xslts[i-1]=new File("src/main/resources/"+args[i]);
+		}
+  
+		//Call to function chaintransform
+		chaintransform(xslts, xmlFile);
+   }
+	
+	public static void chaintransform(File[] xslts, File source)throws javax.xml.transform.TransformerException, IOException
 	{
-	try {
+		// Creation of Source (java Transform API class) containing XML file
+		javax.xml.transform.Source xmlSource=new javax.xml.transform.stream.StreamSource(source);
+		
+		// Creation of Source (java Transform API class) containing first XSLT passed
+		javax.xml.transform.Source xsltSource=new javax.xml.transform.stream.StreamSource(xslts[0]);
+		
+		// Creation of Result (java Transform API class)
+		File resultfile = new File("Output.xml");
+		resultfile.createNewFile();
+		javax.xml.transform.Result result=new javax.xml.transform.stream.StreamResult(resultfile);
 
-	    TransformerFactory tFactory = TransformerFactory.newInstance();
+		// create an instance of TransformerFactory
+		javax.xml.transform.TransformerFactory transFact=javax.xml.transform.TransformerFactory.newInstance( );
+		javax.xml.transform.Transformer trans=transFact.newTransformer(xsltSource);
+		
+		// Perform transformation
+		trans.transform(xmlSource, result);
 
-	    Transformer transformer;
-	    StreamSource source;
-	    StreamResult result;
-	    
-	    // WORKING SIMPLE XSLT --> howto.xslt
-	   // transformer=tFactory.newTransformer(new javax.xml.transform.stream.StreamSource("src/main/java/eu/esdihumboldt/hale/eap2uml/xsltprocess/howto.xslt"));
-	    
-	    // FAILING XSLT --> xmi2gml
-	    transformer =tFactory.newTransformer(new javax.xml.transform.stream.StreamSource("src/main/java/eu/esdihumboldt/hale/eap2uml/xsltprocess/xmi2gml.xslt"));
-
-	    // WORKING SIMPLE SOURCE -->howto.xml
-	    //source = new javax.xml.transform.stream.StreamSource("src/main/java/eu/esdihumboldt/hale/eap2uml/xsltprocess/howto.xml");
-	    
-	    // SOURCE FOR FAILING XSLT --> model2.xmi
-	    source = new javax.xml.transform.stream.StreamSource("src/main/java/eu/esdihumboldt/hale/eap2uml/xsltprocess/model2.xmi");
-	    
-	    // RESULT FILE --> howto.html
-	    result = new javax.xml.transform.stream.StreamResult( new FileOutputStream("src/main/java/eu/esdihumboldt/hale/eap2uml/xsltprocess/howto.html"));
-	    
-	    transformer.transform(source, result);
-	    }
-	  catch (Exception e) {
-	    e.printStackTrace( );
-	    }
+		// If there are more than one XSLT file, continue processing...
+		int i=1;
+		while(i<xslts.length)
+		{
+			xmlSource=new javax.xml.transform.stream.StreamSource(result.getSystemId());
+			xsltSource=new javax.xml.transform.stream.StreamSource(xslts[i]);
+			
+			result=new javax.xml.transform.stream.StreamResult(resultfile);
+			trans=transFact.newTransformer(xsltSource);
+			
+			trans.transform(xmlSource, result);
+			i++;
+		}
+		
+		// Finally Print out the content of result file (output.xml)
+		
+		FileReader reader = new FileReader(resultfile);
+		BufferedReader bf = new BufferedReader(reader);
+		String linea = bf.readLine();
+		while (linea!=null)
+        {
+          	System.out.println (linea);
+          	linea = bf.readLine();
+        }
 	}
+
 }
