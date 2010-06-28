@@ -11,7 +11,10 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.io.mappingexport;
 
+import java.util.Collection;
+
 import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
  * Interface for a Factory used to export mappings to any format.
@@ -24,8 +27,13 @@ public interface MappingExportProvider {
 	 * Export an {@link Alignment} to the location indicated by the path.
 	 * @param al the {@link Alignment} object to export
 	 * @param path the location to export to
+	 * @param sourceSchema a {@link Collection} of {@link SchemaElement}s for the source schema
+	 * @param targetSchema a {@link Collection} of {@link SchemaElement}s for the target schema
 	 * @throws MappingExportException when export failed
 	 */
-	public void export(Alignment al, String path) throws MappingExportException;
+	public void export(Alignment al, String path, 
+			Collection<SchemaElement> sourceSchema, 
+			Collection<SchemaElement> targetSchema) 
+		throws MappingExportException;
 
 }

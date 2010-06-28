@@ -22,6 +22,7 @@ import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.hale.models.AlignmentService;
+import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportExtension;
@@ -71,8 +72,12 @@ public class MappingExportWizard
 					PlatformUI.getWorkbench().getService(AlignmentService.class);
 			Alignment al = alService.getAlignment();
 			
+			SchemaService schemaService = (SchemaService) 
+					PlatformUI.getWorkbench().getService(SchemaService.class);
+			
 			try {
-				mef.export(al, path);
+				mef.export(al, path, schemaService.getSourceSchema(), 
+						schemaService.getTargetSchema());
 			} catch (Exception e) {
 				String message = Messages.MappingExportWizard_SaveFailed;
 				_log.error(message + ". " + e.getMessage() + ". " 

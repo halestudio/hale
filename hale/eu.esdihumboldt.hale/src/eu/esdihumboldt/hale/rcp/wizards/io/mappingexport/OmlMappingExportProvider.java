@@ -11,9 +11,12 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.io.mappingexport;
 
+import java.util.Collection;
+
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
 import eu.esdihumboldt.hale.models.project.HaleOmlRdfGenerator;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
  * {@link MappingExportProvider} implementation for exporting the Alignment to OML.
@@ -25,7 +28,9 @@ public class OmlMappingExportProvider implements MappingExportProvider {
 	/* (non-Javadoc)
 	 * @see eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportFactory#export(eu.esdihumboldt.goml.align.Alignment, java.lang.String)
 	 */
-	public void export(Alignment al, String path) throws MappingExportException {
+	public void export(Alignment al, String path, 
+			Collection<SchemaElement> sourceSchema, 
+			Collection<SchemaElement> targetSchema) throws MappingExportException {
 		OmlRdfGenerator orgen = new HaleOmlRdfGenerator();
 		
 		try {
