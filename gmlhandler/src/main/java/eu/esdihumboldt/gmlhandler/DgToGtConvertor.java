@@ -174,8 +174,13 @@ public class DgToGtConvertor {
 		return dgProp;
 	}
 
-    private static Geometry createDgGeometry(GeometryAttribute gtProp) {
-		// TODO Auto-generated method stub
+    /**
+     * 
+     * @param gtProp GeometryAttribute
+     * @return Geometry
+     */
+	private static Geometry createDgGeometry(GeometryAttribute gtProp) {
+		//retrieve the GeometryType from the GeometryAttribute
 		return null;
 	}
 
@@ -233,8 +238,10 @@ public class DgToGtConvertor {
      * @return Geometry Type
      */
 	private static GeometryType createGeometryType(GeometryDescriptor descriptor) {
-		
-		return null;
+		//1. retrieve the Geometry type name
+		String geometry = descriptor.getType().getBinding().getSimpleName();
+		//2. assign a string value to the GeometryType
+		return GeometryType.fromString(geometry);
 	}
 
 
