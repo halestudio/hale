@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CST Core function implementations
 Bundle-SymbolicName: eu.esdihumboldt.cst.corefunctions;singleton:=true
-Bundle-Version: 1.0.2
+Bundle-Version: 1.0.3
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: eu.esdihumboldt.commons;bundle-version="3.0.3",
- eu.esdihumboldt.specification;bundle-version="2.0.2",
+Require-Bundle: eu.esdihumboldt.commons;bundle-version="3.0.4",
+ eu.esdihumboldt.specification;bundle-version="2.0.4",
  org.geotools;bundle-version="2.6.4",
  com.iabcinc.jmep;bundle-version="0.1.0",
  com.vividsolutions.jts;bundle-version="1.10.0",
