@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HUMBOLDT Common Library Component
 Bundle-SymbolicName: eu.esdihumboldt.commons;singleton:=true
-Bundle-Version: 3.0.3
+Bundle-Version: 3.0.4
 Export-Package: eu.esdihumboldt.goml.align,
  eu.esdihumboldt.goml.oml.ext,
  eu.esdihumboldt.goml.oml.io,
