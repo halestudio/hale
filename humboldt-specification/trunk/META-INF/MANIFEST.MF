@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HUMBOLDT Specification Component
 Bundle-SymbolicName: eu.esdihumboldt.specification;singleton:=true
-Bundle-Version: 2.0.3
+Bundle-Version: 2.0.4
 Eclipse-BuddyPolicy: registered
 Export-Package: eu.esdihumboldt.annotations.concurrency,
  eu.esdihumboldt.annotations.spec,

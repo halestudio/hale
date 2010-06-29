@@ -140,4 +140,13 @@ public class StyleImpl implements Style {
 		return false;
 	}
 
+	/**
+	 * @see org.opengis.style.Style#accept(org.opengis.style.StyleVisitor, java.lang.Object)
+	 */
+	@Override
+	public Object accept(StyleVisitor visitor, Object arg) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
