@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CST
 Bundle-SymbolicName: eu.esdihumboldt.transformer.cst;singleton:=true
-Bundle-Version: 1.0.2
+Bundle-Version: 1.0.3
 Export-Package: eu.esdihumboldt.cst,
  eu.esdihumboldt.cst.transformer,
  eu.esdihumboldt.cst.transformer.capabilities,
@@ -14,7 +14,7 @@ Export-Package: eu.esdihumboldt.cst,
  eu.esdihumboldt.cst.transformer.service.rename
 Require-Bundle: eu.esdihumboldt.commons;bundle-version="3.0.2",
  eu.esdihumboldt.specification;bundle-version="2.0.2",
- org.geotools;bundle-version="2.5.8",
+ org.geotools;bundle-version="2.6.4",
  com.vividsolutions.jts;bundle-version="1.10.0",
  org.junit4;bundle-version="4.5.0",
  org.eclipse.ui,
