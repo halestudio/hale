@@ -26,11 +26,15 @@ import org.opengis.feature.Feature;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IValueExpression;
 import eu.esdihumboldt.cst.AbstractCstFunction;
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.ComparatorType;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.goml.rdf.DetailedAbout;
+import eu.esdihumboldt.goml.rdf.IDetailedAbout;
+import eu.esdihumboldt.tools.FeatureInspector;
 
 /**
  * The {@link ClassificationMappingFunction} allows to map values of an
@@ -44,40 +48,42 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 	/**
 	 * The source property that has a mapping configured.
 	 */
-	private String sourceProperty;
+	private IDetailedAbout sourceProperty;
 	
 	private Set<String> allSourceValues = new HashSet<String>();
 	
 	/**
-	 * The mapping restrictions associated to the {@link sourceProperty} 
+	 * The mapping restrictions associated to the {@link #sourceProperty}
 	 */
-	List<Restriction> sourceRestrictions = null;
+	private List<Restriction> sourceRestrictions = null;
 	
 	/**
 	 * The target property that has a mapping configured.
 	 */
-	private String targetProperty;
+	private IDetailedAbout targetProperty;
 	
 	/**
-	 * The mapping restrictions associated to the {@link targetProperty} 
+	 * The mapping restrictions associated to the {@link #targetProperty} 
 	 */
-	Map<Integer, Restriction> targetRestrictions = null;
+	private Map<Integer, Restriction> targetRestrictions = null;
 	
 
-	/* (non-Javadoc)
-	 * @see eu.esdihumboldt.cst.transformer.CstFunction#configure(eu.esdihumboldt.cst.align.ICell)
+	/**
+	 * @see CstFunction#configure(ICell)
 	 */
 	public boolean configure(ICell cell) {
-		sourceProperty = ((Property)cell.getEntity1()).getLocalname();
+		sourceProperty = DetailedAbout.getDetailedAbout(((Property) cell.getEntity1()).getAbout(), true);
 		sourceRestrictions = ((Property)cell.getEntity1()).getValueCondition();
 		
-		for (Restriction r : this.sourceRestrictions) {
-			for (IValueExpression ive : r.getValue()) {
-				this.allSourceValues.add(ive.getLiteral());
+		if (sourceRestrictions != null) {
+			for (Restriction r : this.sourceRestrictions) {
+				for (IValueExpression ive : r.getValue()) {
+					this.allSourceValues.add(ive.getLiteral());
+				}
 			}
 		}
 		
-		targetProperty = ((Property)cell.getEntity2()).getLocalname();
+		targetProperty = DetailedAbout.getDetailedAbout(((Property) cell.getEntity2()).getAbout(), true);
 		targetRestrictions = new HashMap<Integer, Restriction>();
 		for (Restriction r : ((Property)cell.getEntity2()).getValueCondition()) {
 			targetRestrictions.put(r.getSeq().intValue(), r);
@@ -91,11 +97,11 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.opengis.feature.Feature, org.opengis.feature.Feature)
+	/**
+	 * @see CstFunction#transform(Feature, Feature)
 	 */
 	public Feature transform(Feature source, Feature target) {
-		org.opengis.feature.Property source_property = source.getProperty(this.sourceProperty);
+		org.opengis.feature.Property source_property = FeatureInspector.getProperty(source, sourceProperty, true);
 
 		for(Restriction restriction : this.sourceRestrictions) {
 			ComparatorType comparator = restriction.getComparator();
@@ -106,15 +112,14 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 				// the targetRestrictions
 				String targetClassValue =  targetRestrictions.get(
 						restriction.getSeq().intValue()).getValue().get(0).getLiteral();
-				if (Collection.class.isAssignableFrom(
-						target.getProperty(
-								this.targetProperty).getType().getBinding())) {
+				Class<?> targetBinding = FeatureInspector.getProperty(target, targetProperty, true).getType().getBinding();
+				if (Collection.class.isAssignableFrom(targetBinding)) {
 					Collection<String> c = new ArrayList<String>();
 					c.add(targetClassValue);
-					target.getProperty(this.targetProperty).setValue(c);
+					FeatureInspector.setPropertyValue(target, targetProperty, c);
 				}
 				else {
-					target.getProperty(this.targetProperty).setValue(targetClassValue);
+					FeatureInspector.setPropertyValue(target, targetProperty, targetClassValue);
 				}
 			}
 		}
@@ -123,10 +128,12 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 
 	/**
 	 * Checks a {@link org.opengis.feature.Property} value for matches against a list of sourceValues.
+	 * 
 	 * @param comparator The comparison type to use
 	 * @param sourceValues The list of values used to compare with the source {@link Feature} {@link org.opengis.feature.Property}
 	 * @param sourceProp The property from the source Feature being compared
-	 * @return
+	 * 
+	 * @return if the property value matches the restrictions
 	 */
 	private boolean match(ComparatorType comparator, List<IValueExpression> sourceValues, org.opengis.feature.Property sourceProp) {
 		boolean result = false;
