@@ -21,9 +21,9 @@ Import-Package: com.iabcinc.jmep,
  org.apache.log4j
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.geotools;bundle-version="2.5.8",
- eu.esdihumboldt.commons;bundle-version="2.0.1",
- eu.esdihumboldt.specification;bundle-version="2.0.2",
+ org.geotools;bundle-version="2.6.4",
+ eu.esdihumboldt.commons;bundle-version="3.0.4",
+ eu.esdihumboldt.specification;bundle-version="2.0.4",
  com.vividsolutions.jts;bundle-version="1.10.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.rcp.wizards.functions.core.CoreFunctionWizardsPlugin

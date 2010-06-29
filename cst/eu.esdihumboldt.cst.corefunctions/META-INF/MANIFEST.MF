@@ -10,8 +10,8 @@ Require-Bundle: eu.esdihumboldt.commons;bundle-version="3.0.4",
  com.iabcinc.jmep;bundle-version="0.1.0",
  com.vividsolutions.jts;bundle-version="1.10.0",
  org.junit4;bundle-version="4.5.0",
- eu.esdihumboldt.hale.schemaprovider;bundle-version="1.0.0",
- eu.esdihumboldt.transformer.cst;bundle-version="1.0.2",
+ eu.esdihumboldt.hale.schemaprovider;bundle-version="1.0.1",
+ eu.esdihumboldt.transformer.cst;bundle-version="1.0.3",
  org.apache.ws.commons.schema;bundle-version="1.4.4"
 Export-Package: eu.esdihumboldt.cst.corefunctions,
  eu.esdihumboldt.cst.corefunctions.inspire

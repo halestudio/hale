@@ -4,7 +4,7 @@ Bundle-Name: eu.esdihumboldt.cst.iobridge
 Bundle-SymbolicName: eu.esdihumboldt.cst.iobridge
 Bundle-Version: 2.0.1
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: eu.esdihumboldt.transformer.cst;bundle-version="1.0.2",
+Require-Bundle: eu.esdihumboldt.transformer.cst;bundle-version="1.0.3",
  org.geotools;bundle-version="2.6.4",
  eu.esdihumboldt.commons;bundle-version="3.0.4",
  eu.esdihumboldt.specification;bundle-version="2.0.4",
