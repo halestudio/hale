@@ -67,6 +67,11 @@
 			<artifactId>gt-main</artifactId>
 			<version>${geotools.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.opengis</groupId>
+			<artifactId>geoapi</artifactId>
+			<version>2.3-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<distributionManagement>
 		<repository>
