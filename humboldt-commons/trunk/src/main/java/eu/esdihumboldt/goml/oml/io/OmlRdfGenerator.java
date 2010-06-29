@@ -977,7 +977,7 @@ public class OmlRdfGenerator {
 	private ValueConditionType getValueConditionType(Restriction restriction) {
 		ValueConditionType vcType = new ValueConditionType();
 		vcType.setRestriction(getRestrictionType(restriction));
-		if (restriction.getCqlStr() != null){
+		if (restriction.getSeq() != null){
 			vcType.setSeq(restriction.getSeq());
 		}
 		return vcType;
