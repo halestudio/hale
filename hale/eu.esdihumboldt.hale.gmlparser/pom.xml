@@ -3,7 +3,7 @@
   <groupId>eu.esdihumboldt.hale</groupId>
   <artifactId>gmlparser</artifactId>
   <name>HALE GMLParser</name>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <description>Geotools-based GML 2 and 3.1 Parser</description>
   <url>http://community.esdi-humboldt.eu/projects/show/cst</url>
 
@@ -41,7 +41,12 @@
 		<dependency>
 			<groupId>org.opengis</groupId>
 			<artifactId>geoapi</artifactId>
-			<version>2.2.0</version>
+			<version>2.3-M1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.opengis</groupId>
+			<artifactId>geoapi-pending</artifactId>
+			<version>2.3-M1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.java.dev.jsr-275</groupId>
@@ -114,7 +119,7 @@
 	</distributionManagement>
 
 	<properties>
-		<geotools.version>2.5.8</geotools.version>
+		<geotools.version>2.6.4</geotools.version>
 	</properties>
   
 </project>

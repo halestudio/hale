@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GMLParser
 Bundle-SymbolicName: eu.esdihumboldt.hale.gmlparser
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.1
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
  LIB/com.springsource.org.apache.xerces-2.8.1.jar
-Require-Bundle: org.geotools;bundle-version="2.5.8",
+Require-Bundle: org.geotools;bundle-version="2.6.4",
  org.eclipse.xsd;bundle-version="2.2.2"
 Export-Package: eu.esdihumboldt.hale.gmlparser
