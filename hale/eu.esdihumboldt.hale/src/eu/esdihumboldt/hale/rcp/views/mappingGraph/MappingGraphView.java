@@ -134,6 +134,11 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	private Vector<Vector<ICell>> sections;
 	
 	/**
+	 * Contains the path for the pictures
+	 */
+	String path;
+	
+	/**
 	 * Default constructor
 	 */
 	public MappingGraphView() {
@@ -145,9 +150,11 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	 * @param alignment
 	 * @param sections 
 	 * @param pictureNames 
+	 * @param path 
 	 */
-	public MappingGraphView(Alignment alignment, Vector<Vector<ICell>> sections, String pictureNames){
+	public MappingGraphView(Alignment alignment, Vector<Vector<ICell>> sections, String pictureNames, String path){
 		super();
+		this.path = path;
 		this.sections = sections;
 		this.schemaSelectionInt = 4;
 		this.alignment = alignment;
@@ -692,7 +699,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 			this.mappingGraphNodeRenderer.drawNodeSections(alignmentVector);
 		
 			//Draws the graph as a png
-			this.drawGraphAsImage("C:\\", this.pictureNames+"_Overview"+".png", 1000, k*30);
+			this.drawGraphAsImage(path, this.pictureNames+"_Overview"+".png", 1000, k*30);
 			
 			//Clean up
 			this.mappingGraphModel.arrayReset();
@@ -724,7 +731,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 				this.mappingGraphNodeRenderer.drawNodeSections(sectionVector);
 			
 				//Draws the graph as a png
-				this.drawGraphAsImage("C:\\", this.pictureNames+"_Section_"+f+".png", 1000, p*30);
+				this.drawGraphAsImage(path, this.pictureNames+"_Section_"+f+".png", 1000, p*30);
 				
 				//Clean up
 				this.mappingGraphModel.arrayReset();

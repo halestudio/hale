@@ -121,7 +121,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		this.sortAlignment();
 		
 		//Create the images of the cells
-		new MappingGraphView(alignment, this.makeSections(), this.pictureNames);
+		new MappingGraphView(alignment, this.makeSections(), this.pictureNames, path);
 		
 		String[] pathSpilt = path.split("\\\\");
 		path.replace(pathSpilt[pathSpilt.length-1] , "");
@@ -276,7 +276,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 				e2.printStackTrace();
 			}
 			
-			//Create headline picture
+			//Create link picture
 			
 			File linkOutputFile = new File(cssPathFile+"int_link.png");
 			 try {
@@ -378,12 +378,12 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		this.context.put("haleversion", "Hale Version : ");
 		
 		this.context.put("sourceschema", "Source Schema Information : ");
-		this.context.put("sourceformalism", "<li>Formalism : "+this.alignment.getSchema1().getFormalism().getName()+"  <a href='"+this.alignment.getSchema1().getFormalism().getLocation().toURL()+"'>"+this.alignment.getSchema1().getFormalism().getLocation().toString()+"</a></li>");
+		this.context.put("sourceformalism", "<li>Formalism : "+this.alignment.getSchema1().getFormalism().getName()+"  <img src='int_link.png' alt='linkpicture'><a href='"+this.alignment.getSchema1().getFormalism().getLocation().toURL()+"'>"+this.alignment.getSchema1().getFormalism().getLocation().toString()+"</a></li>");
 		this.context.put("sourcenamespace", "<li>Namespace : "+this.alignment.getSchema1().getAbout().getAbout()+"</li>");
 		this.context.put("sourcelocation", "<li>Schema Location : "+this.alignment.getSchema1().getLocation()+"</li>");
 		
 		this.context.put("targetschema", "Target Schema Information : ");
-		this.context.put("targetformalism", "<li>Formalism : "+this.alignment.getSchema2().getFormalism().getName()+"  <a href='"+this.alignment.getSchema2().getFormalism().getLocation().toURL()+"'>"+this.alignment.getSchema2().getFormalism().getLocation().toString()+"</a></li>");
+		this.context.put("targetformalism", "<li>Formalism : "+this.alignment.getSchema2().getFormalism().getName()+"  <img src='int_link.png' alt='linkpicture'><a href='"+this.alignment.getSchema2().getFormalism().getLocation().toURL()+"'>"+this.alignment.getSchema2().getFormalism().getLocation().toString()+"</a></li>");
 		this.context.put("targetnamespace", "<li>Namespace : "+this.alignment.getSchema2().getAbout().getAbout()+"</li>");
 		this.context.put("targetlocation", "<li>Schema Location : "+this.alignment.getSchema2().getLocation()+"</li>");
 		
@@ -394,13 +394,13 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		for (Iterator<ICell> iterator = this.retypes.iterator();iterator.hasNext();) {
 			ICell cell = iterator.next();
 			String[] temp = this.entityNameSplitter(cell.getEntity2());
-			linkListVector.addElement("<li><a href='#link"+j+"'>"+temp[0]+"</a></li>");
+			linkListVector.addElement("<li><img src='int_link.png' alt='linkpicture'><a href='#link"+j+"'>"+temp[0]+"</a></li>");
 			j++;
 		}
 		this.context.put("linklist", linkListVector);
 		
 		//Overview picture
-		this.context.put("overviewpicture", "<img src='"+this.pictureNames+"_Overview"+".png'>");
+		this.context.put("overviewpicture", "<img src='"+this.pictureNames+"_Overview"+".png'alt='Overview'>");
 		
 		Vector<Vector<String>> cellListVector = new Vector<Vector<String>>();
 		Vector<String> cellVector;
@@ -420,14 +420,14 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			String[] retypeTargetName = this.entityNameSplitter(retypeCell.getEntity2());
 			cellVector = new Vector<String>();			
 			//Link
-			cellVector.addElement("<a name='link"+e+"'>");
+			cellVector.addElement("<a name='link"+e+"'></a>");
 			//Headline
-			cellVector.addElement("<h2>"+retypeTargetName[0]+"</h2><hr>");
+			cellVector.addElement("<h2>"+retypeTargetName[0]+"</h2>");
 			//Image
-			cellVector.addElement("<img src='"+this.pictureNames+"_Section_"+(e-1)+".png'>");
+			cellVector.addElement("<img src='"+this.pictureNames+"_Section_"+(e-1)+".png' alt='picture'>");
 			//Header
 			cellVector.addElement("<h3>Retypes</h3>");
-			cellVector.addElement("<h4>"+retypeSourceName[0]+" to "+retypeTargetName[0]+"<h4>");
+			cellVector.addElement("<h4>"+retypeSourceName[0]+" to "+retypeTargetName[0]+"</h4>");
 			cellVector.addElement("Entity 1 : "+retypeSourceName[0]);
 			cellVector.addElement("Entity 2 : "+retypeTargetName[0]);
 			
@@ -478,11 +478,9 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 					//entity1
 					if (transformationCell.getEntity1() instanceof ComposedProperty) {
 						cellVector.addElement("Entity 1 : ComposedProperty");
-						cellVector.addElement("<ul>");
 						for(int z=0; z < entity1Name.length; z++){
-							cellVector.addElement("<li>Entity 1."+z+" : "+retypeSourceName[0]+" / "+entity1Name[z]+"</li>");
+							cellVector.addElement("<ul><li>Entity 1."+z+" : "+retypeSourceName[0]+" / "+entity1Name[z]+"</li></ul>");
 						}
-						cellVector.addElement("</ul>");
 					}
 					else{
 						cellVector.addElement("Entity 1 : "+retypeSourceName[0]+" / "+entity1Name[0]);
@@ -491,11 +489,9 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 					//entity2
 					if (transformationCell.getEntity2() instanceof ComposedProperty) {
 						cellVector.addElement("Entity 2 : ComposedProperty");
-						cellVector.addElement("<ul>");
 						for(int z=0; z < entity2Name.length; z++){
-							cellVector.addElement("<li>Entity 2."+z+" : "+retypeTargetName[0]+" / "+entity2Name[z]+"</li>");
+							cellVector.addElement("<ul><li>Entity 2."+z+" : "+retypeTargetName[0]+" / "+entity2Name[z]+"</li></ul>");
 						}
-						cellVector.addElement("</ul>");
 					}
 					else{
 						cellVector.addElement("Entity 2 : "+retypeTargetName[0]+" / "+entity2Name[0]);
@@ -570,11 +566,9 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 					//entity2
 					if (augmentationCell.getEntity2() instanceof ComposedProperty) {
 						cellVector.addElement("Entity 2 : ComposedProperty");
-						cellVector.addElement("<ul>");
 						for(int z=0; z < entity2Name.length; z++){
-							cellVector.addElement("<li>Entity 2."+z+" : "+superTypeName+" / "+retypeTargetName[0]+" / "+entity2Name[z]+"</li>");
+							cellVector.addElement("<ul><li>Entity 2."+z+" : "+superTypeName+" / "+retypeTargetName[0]+" / "+entity2Name[z]+"</li></ul>");
 						}
-						cellVector.addElement("</ul>");
 					}
 					else{
 						cellVector.addElement("Entity 2 : "+superTypeName+" / "+retypeTargetName[0]+" / "+entity2Name[0]);
