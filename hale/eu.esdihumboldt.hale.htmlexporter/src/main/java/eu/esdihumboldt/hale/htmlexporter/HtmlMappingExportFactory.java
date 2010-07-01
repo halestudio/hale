@@ -117,14 +117,14 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		this.sourceSchema = sourceSchema;
 		this.targetSchema = targetSchema;
 		
+		String[] pathSpilt = path.split("\\\\");
+		path.replace(pathSpilt[pathSpilt.length-1] , "");
+		
 		//Sort the alignment
 		this.sortAlignment();
 		
 		//Create the images of the cells
 		new MappingGraphView(alignment, this.makeSections(), this.pictureNames, path);
-		
-		String[] pathSpilt = path.split("\\\\");
-		path.replace(pathSpilt[pathSpilt.length-1] , "");
 		
 		StringWriter stringWriter = new StringWriter();
 		this.context = new VelocityContext();
