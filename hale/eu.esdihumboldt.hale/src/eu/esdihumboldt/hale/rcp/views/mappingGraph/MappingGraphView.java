@@ -51,7 +51,6 @@ import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.utils.SchemaItemService;
@@ -143,8 +142,8 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	
 	/**
 	 * Constructor
-	 * 
 	 * @param alignment
+	 * @param sections 
 	 * @param pictureNames 
 	 */
 	public MappingGraphView(Alignment alignment, Vector<Vector<ICell>> sections, String pictureNames){

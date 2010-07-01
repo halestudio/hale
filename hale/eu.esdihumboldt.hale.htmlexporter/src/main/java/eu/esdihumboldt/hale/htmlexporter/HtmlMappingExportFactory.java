@@ -23,6 +23,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -48,6 +49,7 @@ import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.hale.rcp.views.mappingGraph.MappingGraphView;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportException;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
  * Export a Mapping to HTML for documentation purposes.
@@ -88,14 +90,32 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 	List<ICell> augmentations = new ArrayList<ICell>();
 	
 	/**
-     * @param alignment
-	 * @param path
-	 * @throws MappingExportException
-	 * @see eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider#export(eu.esdihumboldt.goml.align.Alignment, java.lang.String)
+	 * 
 	 */
-	public void export(Alignment alignment, String path) throws MappingExportException {
+	Collection<SchemaElement> sourceSchema;
+	
+	/**
+	 * 
+	 */
+	Collection<SchemaElement> targetSchema;
+
+	/**
+	 * @param alignment
+	 * @param path
+	 * @param sourceSchema
+	 * @param targetSchema
+	 * @throws MappingExportException
+	 * @see eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider#export(eu.esdihumboldt.goml.align.Alignment, java.lang.String, java.util.Collection, java.util.Collection)
+	 */
+	@Override
+	public void export(Alignment alignment, String path,
+			Collection<SchemaElement> sourceSchema,
+			Collection<SchemaElement> targetSchema)
+			throws MappingExportException{
 		
 		this.alignment = alignment;
+		this.sourceSchema = sourceSchema;
+		this.targetSchema = targetSchema;
 		
 		//Sort the alignment
 		this.sortAlignment();
@@ -111,7 +131,9 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		
 		//Gets the path to the template file and style sheet
 		URL templatePath = this.getClass().getResource("template.html"); 
-		URL cssPath = this.getClass().getResource("style2.css"); 
+		URL cssPath = this.getClass().getResource("style.css"); 
+		URL headlinePath = this.getClass().getResource("bg-headline.png"); 
+		URL linkPath = this.getClass().getResource("int_link.png"); 
 		
 		//generates a byteArray out of the template
 		byte[] templateByteArray = null;
@@ -213,6 +235,52 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			File cssOutputFile = new File(cssPathFile+"style.css");
 			 try {
 				this.byteArrayToFile(cssOutputFile, cssByteArray);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			//generates a byteArray out of the headline picture
+			byte[] headlineByteArray = null;
+			try {
+				headlineByteArray = this.urlToByteArray(headlinePath);
+			} catch (UnsupportedEncodingException e2) {
+				e2.printStackTrace();
+			} catch (IOException e2) {
+				e2.printStackTrace();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+			
+			//Create headline picture
+			
+			File headlineOutputFile = new File(cssPathFile+"bg-headline.png");
+			 try {
+				this.byteArrayToFile(headlineOutputFile, headlineByteArray);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			//generates a byteArray out of the link picture
+			byte[] linkByteArray = null;
+			try {
+				linkByteArray = this.urlToByteArray(linkPath);
+			} catch (UnsupportedEncodingException e2) {
+				e2.printStackTrace();
+			} catch (IOException e2) {
+				e2.printStackTrace();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+			
+			//Create headline picture
+			
+			File linkOutputFile = new File(cssPathFile+"int_link.png");
+			 try {
+				this.byteArrayToFile(linkOutputFile, linkByteArray);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -412,12 +480,12 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 						cellVector.addElement("Entity 1 : ComposedProperty");
 						cellVector.addElement("<ul>");
 						for(int z=0; z < entity1Name.length; z++){
-							cellVector.addElement("<li>Entity 1."+z+" : "+retypeSourceName[0]+"/"+entity1Name[z]+"</li>");
+							cellVector.addElement("<li>Entity 1."+z+" : "+retypeSourceName[0]+" / "+entity1Name[z]+"</li>");
 						}
 						cellVector.addElement("</ul>");
 					}
 					else{
-						cellVector.addElement("Entity 1 : "+retypeSourceName[0]+"/"+entity1Name[0]);
+						cellVector.addElement("Entity 1 : "+retypeSourceName[0]+" / "+entity1Name[0]);
 					}
 					
 					//entity2
@@ -425,12 +493,12 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 						cellVector.addElement("Entity 2 : ComposedProperty");
 						cellVector.addElement("<ul>");
 						for(int z=0; z < entity2Name.length; z++){
-							cellVector.addElement("<li>Entity 2."+z+" : "+retypeTargetName[0]+"/"+entity2Name[z]+"</li>");
+							cellVector.addElement("<li>Entity 2."+z+" : "+retypeTargetName[0]+" / "+entity2Name[z]+"</li>");
 						}
 						cellVector.addElement("</ul>");
 					}
 					else{
-						cellVector.addElement("Entity 2 : "+retypeTargetName[0]+"/"+entity2Name[0]);
+						cellVector.addElement("Entity 2 : "+retypeTargetName[0]+" / "+entity2Name[0]);
 					}
 					
 					//Image
@@ -454,10 +522,22 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			 * AUGMENTATIONS
 			 * Is looking for all appropriate Augmentations
 			 */
+			String superTypeName="";
+			for (Iterator<SchemaElement> iterator = this.targetSchema.iterator();iterator.hasNext();) {
+				SchemaElement schemaElement = iterator.next();
+				if(schemaElement.getIdentifier().contains(retypeTargetName[0])){
+					String temp = new String();
+					String[] split = schemaElement.getType().getSuperType().getIdentifier().split("/");
+					temp = split[split.length-1];
+					temp = temp.replace("Type", "");
+					superTypeName = temp;
+					break;
+				}
+			}
 			cellVector = new Vector<String>();	
 			boolean augmentationHeader = true;
 			for(ICell augmentationCell : this.augmentations){
-				if(augmentationCell.getEntity2().getAbout().getAbout().contains(retypeTargetName[0])){
+				if(augmentationCell.getEntity2().getAbout().getAbout().contains(superTypeName)){
 					String[] entity1Name = this.entityNameSplitter(augmentationCell.getEntity1());
 					entity1Name[entity1Name.length-1] = entity1Name[entity1Name.length-1].replace(";", " --> ");
 					String[] entity2Name = this.entityNameSplitter(augmentationCell.getEntity2());
@@ -487,30 +567,17 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 					cellVector.addElement("<h4>Cell "+i+" : </h4>");
 					cellVector.addElement("Function : "+functionName);
 					
-					//entity1
-					if (augmentationCell.getEntity1() instanceof ComposedProperty) {
-						cellVector.addElement("Entity 1 : ComposedProperty");
-						cellVector.addElement("<ul>");
-						for(int z=0; z < entity1Name.length; z++){
-							cellVector.addElement("<li>Entity 1."+z+" : "+retypeSourceName[0]+"/"+entity1Name[z]+"</li>");
-						}
-						cellVector.addElement("</ul>");
-					}
-					else{
-						cellVector.addElement("Entity 1 : "+retypeSourceName[0]+"/"+entity1Name[0]);
-					}
-					
 					//entity2
 					if (augmentationCell.getEntity2() instanceof ComposedProperty) {
 						cellVector.addElement("Entity 2 : ComposedProperty");
 						cellVector.addElement("<ul>");
 						for(int z=0; z < entity2Name.length; z++){
-							cellVector.addElement("<li>Entity 2."+z+" : "+retypeTargetName[0]+"/"+entity2Name[z]+"</li>");
+							cellVector.addElement("<li>Entity 2."+z+" : "+superTypeName+" / "+retypeTargetName[0]+" / "+entity2Name[z]+"</li>");
 						}
 						cellVector.addElement("</ul>");
 					}
 					else{
-						cellVector.addElement("Entity 2 : "+retypeTargetName[0]+"/"+entity2Name[0]);
+						cellVector.addElement("Entity 2 : "+superTypeName+" / "+retypeTargetName[0]+" / "+entity2Name[0]);
 					}
 					
 					//Image
@@ -601,6 +668,9 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		if (cell.getEntity1().getTransformation() != null) {
 			parameterList = cell.getEntity1().getTransformation().getParameters();
 		}
+		else{
+			parameterList = cell.getEntity2().getTransformation().getParameters();
+		}
 		if (!parameterList.isEmpty()) {
 			cellVector.addElement("Parameters: ");
 			for (IParameter parameter : parameterList) {
@@ -608,7 +678,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			}
 		}
 	}
-		
+	
 	/**
 	 * @param entity
 	 * @return cellName
@@ -616,16 +686,16 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 	private String[] entityNameSplitter(IEntity entity){
 		String[] entityNames = new String[1];
 		if(!(entity instanceof ComposedProperty)){
-			String[] entitySpilt = entity.getAbout().getAbout().split("/");
-			entityNames[0] = entitySpilt[entitySpilt.length-1];
+			String[] entitySplit = entity.getAbout().getAbout().split("/");
+			entityNames[0] = entitySplit[entitySplit.length-1];
 			return entityNames;
 		}
 		else{
 			entityNames = new String[((ComposedProperty)entity).getCollection().size()];
 			int i=0;
 			for(IEntity tempEntity : ((ComposedProperty)entity).getCollection()){
-				String[] entitySpilt = tempEntity.getAbout().getAbout().split("/");
-				entityNames[i] = entitySpilt[entitySpilt.length-1];
+				String[] entitySplit = tempEntity.getAbout().getAbout().split("/");
+				entityNames[i] = entitySplit[entitySplit.length-1];
 				i++;
 			}
 			return entityNames;

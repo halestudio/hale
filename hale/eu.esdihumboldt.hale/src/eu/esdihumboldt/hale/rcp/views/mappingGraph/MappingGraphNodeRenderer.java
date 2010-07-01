@@ -202,16 +202,6 @@ public class MappingGraphNodeRenderer {
 				//Set Location
 				sourceGraphNode.getNodeFigure().setLocation(new Point(10, y));
 				sourceGraphNode.setLocation(10, y);
-				
-				// Set image
-				String sourceImageKey = ModelNavigationViewLabelProvider
-						.getImageforTreeObjectType(cell.getEntity1());
-				if (sourceImageKey != null) {
-					Image image = AbstractUIPlugin
-							.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID,
-									"/icons/" + sourceImageKey).createImage(); //$NON-NLS-1$
-					sourceGraphNode.setImage(image);
-				}
 
 				// Node Style
 				sourceGraphNode.setBorderWidth(2);
@@ -237,16 +227,6 @@ public class MappingGraphNodeRenderer {
 			//Set Location
 			sourceGraphNode.getNodeFigure().setLocation(new Point(10, y));
 			sourceGraphNode.setLocation(10, y);
-			
-			// Set image
-			String sourceImageKey = ModelNavigationViewLabelProvider
-					.getImageforTreeObjectType(cell.getEntity1());
-			if (sourceImageKey != null) {
-				Image image = AbstractUIPlugin
-						.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID,
-								"/icons/" + sourceImageKey).createImage(); //$NON-NLS-1$
-				sourceGraphNode.setImage(image);
-			}
 
 			// Node Style
 			sourceGraphNode.setBorderWidth(2);
@@ -271,16 +251,6 @@ public class MappingGraphNodeRenderer {
 				//Set Location
 				targetGraphNode.getNodeFigure().setLocation(new Point(this.mappingGraphView.getGraph().getViewport().getBounds().width * 3 / 5 , y));
 				targetGraphNode.setLocation(this.mappingGraphView.getGraph().getViewport().getBounds().width * 3 / 5 , y);
-				
-				// Set image
-				String targetImageKey = ModelNavigationViewLabelProvider
-						.getImageforTreeObjectType(cell.getEntity2());
-				if (targetImageKey != null) {
-					Image image = AbstractUIPlugin
-							.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID,
-									"/icons/" + targetImageKey).createImage(); //$NON-NLS-1$
-					targetGraphNode.setImage(image);
-				}
 
 				// Node Style
 				targetGraphNode.setBorderWidth(2);
@@ -306,16 +276,6 @@ public class MappingGraphNodeRenderer {
 			//Set Location
 			targetGraphNode.getNodeFigure().setLocation(new Point(this.mappingGraphView.getGraph().getViewport().getBounds().width * 3 / 5, y));
 			targetGraphNode.setLocation(this.mappingGraphView.getGraph().getViewport().getBounds().width * 3 / 5 , y);
-			
-			// Set image
-			String targetImageKey = ModelNavigationViewLabelProvider
-					.getImageforTreeObjectType(cell.getEntity2());
-			if (targetImageKey != null) {
-				Image image = AbstractUIPlugin
-						.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID,
-								"/icons/" + targetImageKey).createImage(); //$NON-NLS-1$
-				targetGraphNode.setImage(image);
-			}
 
 			// Node Style
 			targetGraphNode.setBorderWidth(2);
@@ -408,16 +368,6 @@ public class MappingGraphNodeRenderer {
 					sourceGraphNode.getNodeFigure().setLocation(new Point(10, tempHighestSource));
 					sourceGraphNode.setLocation(10, tempHighestSource);
 					
-					// Set image
-					String sourceImageKey = ModelNavigationViewLabelProvider
-							.getImageforTreeObjectType(cell.getEntity1());
-					if (sourceImageKey != null) {
-						Image image = AbstractUIPlugin
-								.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID,
-										"/icons/" + sourceImageKey).createImage(); //$NON-NLS-1$
-						sourceGraphNode.setImage(image);
-					}
-	
 					// Node Style
 					sourceGraphNode.setBorderWidth(2);
 					sourceGraphNode.setBorderColor(display
@@ -448,16 +398,6 @@ public class MappingGraphNodeRenderer {
 					sourceGraphNode.getNodeFigure().setLocation(new Point(10, tempHighestSource));
 					sourceGraphNode.setLocation(10, tempHighestSource);
 					
-					// Set image
-					String sourceImageKey = ModelNavigationViewLabelProvider
-							.getImageforTreeObjectType(cell.getEntity1());
-					if (sourceImageKey != null) {
-						Image image = AbstractUIPlugin
-								.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID,
-										"/icons/" + sourceImageKey).createImage(); //$NON-NLS-1$
-						sourceGraphNode.setImage(image);
-					}
-		
 					// Node Style
 					sourceGraphNode.setBorderWidth(2);
 					sourceGraphNode.setBorderColor(display
@@ -489,16 +429,6 @@ public class MappingGraphNodeRenderer {
 					//Set Location
 					targetGraphNode.getNodeFigure().setLocation(new Point(this.mappingGraphView.getGraph().getViewport().getBounds().width * 3 / 5, tempHighestTarget));
 					targetGraphNode.setLocation(this.mappingGraphView.getGraph().getViewport().getBounds().width * 3 / 5, tempHighestTarget);
-					
-					// Set image
-					String targetImageKey = ModelNavigationViewLabelProvider
-							.getImageforTreeObjectType(cell.getEntity2());
-					if (targetImageKey != null) {
-						Image image = AbstractUIPlugin
-								.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID,
-										"/icons/" + targetImageKey).createImage(); //$NON-NLS-1$
-						targetGraphNode.setImage(image);
-					}
 	
 					// Node Style
 					targetGraphNode.setBorderWidth(2);
@@ -528,16 +458,6 @@ public class MappingGraphNodeRenderer {
 				//Set Location
 				targetGraphNode.getNodeFigure().setLocation(new Point(this.mappingGraphView.getGraph().getViewport().getBounds().width * 3 / 5, tempHighestTarget));
 				targetGraphNode.setLocation(this.mappingGraphView.getGraph().getViewport().getBounds().width * 3 / 5 , tempHighestTarget);
-				
-				// Set image
-				String targetImageKey = ModelNavigationViewLabelProvider
-						.getImageforTreeObjectType(cell.getEntity2());
-				if (targetImageKey != null) {
-					Image image = AbstractUIPlugin
-							.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID,
-									"/icons/" + targetImageKey).createImage(); //$NON-NLS-1$
-					targetGraphNode.setImage(image);
-				}
 	
 				// Node Style
 				targetGraphNode.setBorderWidth(2);
