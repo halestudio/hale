@@ -189,7 +189,8 @@ public class DgToGtConvertor {
 
     /**
      * 
-     * <p>This method provide mapping for the following geometries:
+     * <p>This method provides
+     *  mapping for the following geometries:
      * <ul>
      * <li>POINT</li>
      * <li>MULTIPOINT</li>
