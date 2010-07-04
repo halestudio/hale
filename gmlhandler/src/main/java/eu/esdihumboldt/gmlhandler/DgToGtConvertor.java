@@ -19,6 +19,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.deegree.commons.tom.TypedObjectNode;
+import org.deegree.cs.CRS;
 import org.deegree.feature.GenericFeatureCollection;
 import org.deegree.feature.property.GenericProperty;
 import org.deegree.feature.types.GenericFeatureType;
@@ -27,6 +28,9 @@ import org.deegree.feature.types.property.ValueRepresentation;
 import org.deegree.feature.types.property.GeometryPropertyType.CoordinateDimension;
 import org.deegree.feature.types.property.GeometryPropertyType.GeometryType;
 import org.deegree.geometry.Geometry;
+import org.deegree.geometry.primitive.Ring;
+import org.deegree.geometry.standard.multi.DefaultMultiPolygon;
+import org.deegree.geometry.standard.primitive.DefaultPolygon;
 import org.deegree.gml.GMLVersion;
 import org.deegree.gml.geometry.refs.GeometryReference;
 import org.geotools.data.DataUtilities;
@@ -36,6 +40,7 @@ import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.geometry.jts.Geometries;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.opengis.feature.Feature;
 import org.opengis.feature.GeometryAttribute;
@@ -47,10 +52,14 @@ import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.feature.type.Name;
 import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.feature.type.PropertyType;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * 
@@ -176,11 +185,98 @@ public class DgToGtConvertor {
 
     /**
      * 
+     * <p>This method provide mapping for the following geometries:
+     * <ul>
+     * <li>POINT</li>
+     * <li>MULTIPOINT</li>
+     * <li>POLIGON</li>
+     * <li>MULTIPOLIGON</li>
+     * <li>LINESTRING</li>
+     * <li>MULTILINESTRING</li>
+     * </ul>  
+     * 
      * @param gtProp GeometryAttribute
      * @return Geometry
      */
 	private static Geometry createDgGeometry(GeometryAttribute gtProp) {
-		//retrieve the GeometryType from the GeometryAttribute
+		Geometry dgGeometry = null;
+		String geometryName = gtProp.getDescriptor().getType().getBinding().getSimpleName();
+		// we provide mapping for 
+		Geometries geomType = Geometries.getForBinding((Class<? extends com.vividsolutions.jts.geom.Geometry>) gtProp.getDescriptor().getType().getBinding());
+		//map common attributtes
+		//1. id 
+		//TODO test it
+		String id = gtProp.getIdentifier().getID().toString();
+		//2.crs
+		org.deegree.cs.CRS dgCRS = createCRS(gtProp.getType().getCoordinateReferenceSystem());
+		//3. precision model 
+		//TODO find a nicer way to define it
+		org.deegree.geometry.precision.PrecisionModel pm = org.deegree.geometry.precision.PrecisionModel.DEFAULT_PRECISION_MODEL;
+		
+         		
+		switch (geomType) {
+		     case POLYGON:
+		    	 Polygon gtPoligon = (Polygon) gtProp.getDescriptor().getType(); 
+		    	 Ring exteriorRing = createRing(gtPoligon.getExteriorRing());
+		    	 int numOfInterRings = gtPoligon.getNumInteriorRing();
+		    	 List<Ring> interiorRings = new ArrayList<Ring>(numOfInterRings);
+		    	 Ring interiorRing = null;
+		    	 for (int i = 0; i< numOfInterRings; i++ ){
+		    		 interiorRing = createRing(gtPoligon.getInteriorRingN(i));
+		    		 interiorRings.add(interiorRing);
+		    		 
+		    	 }
+		    	 dgGeometry = new DefaultPolygon (id, dgCRS, pm, exteriorRing,interiorRings );
+		    	 break;
+		     case MULTIPOLYGON:
+		    	 MultiPolygon gtMultiPolygon = (MultiPolygon) gtProp.getDescriptor().getType();
+		    	 int numOfPolygs = gtMultiPolygon.getNumGeometries();
+		    	 List<org.deegree.geometry.primitive.Polygon> dgPolygons = new ArrayList<org.deegree.geometry.primitive.Polygon>(numOfPolygs);
+		    	 org.deegree.geometry.primitive.Polygon dgPolygon;
+		    	 for (int i = 0; i< numOfPolygs; i++){
+		    		 dgPolygon = createDefaultPolygon((Polygon)gtMultiPolygon.getGeometryN(i));
+		    		 dgPolygons.add(dgPolygon);
+		    	}
+		    	 dgGeometry = new DefaultMultiPolygon(id, dgCRS, pm, dgPolygons);
+		         break;
+
+		     case LINESTRING:
+		    	 break;
+		     case MULTILINESTRING:
+		         // do line thing
+		         break;
+
+		     case POINT:
+		    	 break;
+		     case MULTIPOINT:
+		         // do point thing
+		         break;
+
+		     default:
+		         // e.g. unspecified Geometry, GeometryCollection
+		         break;
+		 }
+		 
+		
+		return dgGeometry;
+	}
+
+
+	private static org.deegree.geometry.primitive.Polygon createDefaultPolygon(Polygon geometryN) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	private static Ring createRing(LineString exteriorRing) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	private static CRS createCRS(
+			CoordinateReferenceSystem coordinateReferenceSystem) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
