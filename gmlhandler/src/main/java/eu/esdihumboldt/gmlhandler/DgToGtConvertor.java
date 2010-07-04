@@ -28,8 +28,10 @@ import org.deegree.feature.types.property.ValueRepresentation;
 import org.deegree.feature.types.property.GeometryPropertyType.CoordinateDimension;
 import org.deegree.feature.types.property.GeometryPropertyType.GeometryType;
 import org.deegree.geometry.Geometry;
+import org.deegree.geometry.points.Points;
 import org.deegree.geometry.primitive.Ring;
 import org.deegree.geometry.standard.multi.DefaultMultiPolygon;
+import org.deegree.geometry.standard.primitive.DefaultLineString;
 import org.deegree.geometry.standard.primitive.DefaultPolygon;
 import org.deegree.gml.GMLVersion;
 import org.deegree.gml.geometry.refs.GeometryReference;
@@ -57,6 +59,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
@@ -199,6 +203,7 @@ public class DgToGtConvertor {
      * @return Geometry
      */
 	private static Geometry createDgGeometry(GeometryAttribute gtProp) {
+		//TODO provide junit testcasefor this method --> high priority
 		Geometry dgGeometry = null;
 		String geometryName = gtProp.getDescriptor().getType().getBinding().getSimpleName();
 		// we provide mapping for 
@@ -227,6 +232,7 @@ public class DgToGtConvertor {
 		    		 
 		    	 }
 		    	 dgGeometry = new DefaultPolygon (id, dgCRS, pm, exteriorRing,interiorRings );
+		    	 dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry)dgGeometry).createFromJTS(gtPoligon);
 		    	 break;
 		     case MULTIPOLYGON:
 		    	 MultiPolygon gtMultiPolygon = (MultiPolygon) gtProp.getDescriptor().getType();
@@ -238,27 +244,82 @@ public class DgToGtConvertor {
 		    		 dgPolygons.add(dgPolygon);
 		    	}
 		    	 dgGeometry = new DefaultMultiPolygon(id, dgCRS, pm, dgPolygons);
+		    	 dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry)dgGeometry).createFromJTS(gtMultiPolygon);
 		         break;
 
 		     case LINESTRING:
+		    	 LineString gtLineString = (LineString) gtProp.getDescriptor().getType();
+		    	 Points dgLineStringPoints = createDGPoints(gtLineString.getCoordinates());
+		    	 dgGeometry = new org.deegree.geometry.standard.primitive.DefaultLineString(id , dgCRS, pm, dgLineStringPoints );
+		    	 dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry)dgGeometry).createFromJTS(gtLineString);
 		    	 break;
 		     case MULTILINESTRING:
-		         // do line thing
+		         MultiLineString gtMultiLineString = (MultiLineString) gtProp.getDescriptor().getType();
+		         int numOfLineStrings = gtMultiLineString.getNumGeometries();
+		         List<org.deegree.geometry.primitive.LineString> dgLineStrings = new ArrayList<org.deegree.geometry.primitive.LineString>(numOfLineStrings);
+		         org.deegree.geometry.primitive.LineString dgLineString;
+		         for (int i=0; i< numOfLineStrings; i++){
+		        	 dgLineString = createLineString(gtMultiLineString.getGeometryN(i));
+		        	 dgLineStrings.add(dgLineString);
+		         }
+		         dgGeometry = new org.deegree.geometry.standard.multi.DefaultMultiLineString (id, dgCRS, pm, dgLineStrings);
+		         dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry)dgGeometry).createFromJTS(gtMultiLineString);
 		         break;
 
 		     case POINT:
+		    	 Point gtPoint = (Point)gtProp.getDescriptor().getType();
+		    	 double [] dgCoordinates = createCoordinates(gtPoint.getCoordinates());
+		    	 dgGeometry = new org.deegree.geometry.standard.primitive.DefaultPoint(id, dgCRS, pm, dgCoordinates);
+		    	 dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry)dgGeometry).createFromJTS(gtPoint);
 		    	 break;
 		     case MULTIPOINT:
-		         // do point thing
+		        MultiPoint gtMultiPoint = (MultiPoint)gtProp.getDescriptor().getType();
+		        int numOfPoints = gtMultiPoint.getNumGeometries();
+		        List<org.deegree.geometry.primitive.Point> dgPoints = new ArrayList<org.deegree.geometry.primitive.Point>(numOfPoints); 
+		        org.deegree.geometry.primitive.Point dgPoint;
+		        for (int i = 0; i < numOfPoints; i++){
+		        	dgPoint = createPoint(gtMultiPoint.getGeometryN(i));
+		        	dgPoints.add(dgPoint);
+		        	
+		        }
+		        dgGeometry = new org.deegree.geometry.standard.multi.DefaultMultiPoint(id, dgCRS, pm, dgPoints);
+		        dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry)dgGeometry).createFromJTS(gtMultiPoint);
+
 		         break;
 
 		     default:
-		         // e.g. unspecified Geometry, GeometryCollection
+		    	
 		         break;
 		 }
 		 
 		
 		return dgGeometry;
+	}
+
+
+	private static org.deegree.geometry.primitive.Point createPoint(
+			com.vividsolutions.jts.geom.Geometry geometryN) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	private static double[] createCoordinates(Coordinate[] coordinates) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	private static org.deegree.geometry.primitive.LineString createLineString(
+			com.vividsolutions.jts.geom.Geometry geometryN) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	private static Points createDGPoints(Coordinate[] coordinates) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
