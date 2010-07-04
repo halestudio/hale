@@ -54,7 +54,8 @@ import org.deegree.gml.feature.schema.ApplicationSchemaXSDDecoder;
  * <li>gml_2</li>
  * <li>gml_3_0</li>
  * <li>gml_3_1</li>
- * <li>gml_3_2</li> </li>
+ * <li>gml_3_2</li> 
+ * </ul>
  * </p>
  * 
  * 
