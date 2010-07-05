@@ -15,11 +15,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import javax.xml.namespace.QName;
 
 import org.deegree.commons.tom.TypedObjectNode;
 import org.deegree.cs.CRS;
+import org.deegree.feature.GenericFeature;
 import org.deegree.feature.GenericFeatureCollection;
 import org.deegree.feature.property.GenericProperty;
 import org.deegree.feature.types.GenericFeatureType;
@@ -49,6 +51,7 @@ import org.opengis.feature.GeometryAttribute;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.feature.type.Name;
@@ -173,10 +176,28 @@ public class DgToGtConvertor {
 			
 			
 		}else if (dgPT instanceof org.deegree.feature.types.property.FeaturePropertyType){
-			//TODO implement it if needed
-			
+			//we support inline Features mapping only
+			if (gtProp instanceof SimpleFeature ){
+				
+				//create deegree generic feature based on gtProp 
+				GenericFeatureType ft = createDgFt(((SimpleFeature) gtProp).getFeatureType());
+				//TODO find a nicer way to create fid
+				String fid = java.util.UUID.randomUUID().toString();
+				GMLVersion version = GMLVersion.GML_32;
+				List<org.deegree.feature.property.Property> properties = new ArrayList<org.deegree.feature.property.Property>();
+				org.deegree.feature.property.Property property;
+				//create Property from the gt Attributes
+				List<Object> attrs = ((SimpleFeature)gtProp).getAttributes();
+				for (Object attr : attrs){
+					property = createProperty(attr);
+					//TODOuse geotools Feature Attribute Type
+					//properties.add(property, ((SimpleFeature)gtProp).getAttribute(attr.));
+				}
+				GenericFeature dgSubProperty = new GenericFeature(ft, fid, properties, version);
+			    dgProp = new GenericProperty(dgPT,dgPropName,dgSubProperty );
+			}
 		}else if (dgPT instanceof org.deegree.feature.types.property.CustomPropertyType){
-			//TODO implement it if needed
+			//TODO implement if needed
 		
 		}else if (dgPT instanceof org.deegree.feature.types.property.CodePropertyType){
 			//TODO implement it if needed
@@ -188,6 +209,20 @@ public class DgToGtConvertor {
 	}
 
     /**
+     * 
+     * @param Object Attribute of  geotools Feature 
+     * @return  deegree Property 
+     */
+	private static org.deegree.feature.property.Property createProperty(
+			Object attr) {
+		// Map Primitive Types
+		// Map TypedObjectNode
+		
+		return null;
+	}
+
+
+	/**
      * 
      * <p>This method provides
      *  mapping for the following geometries:
@@ -363,7 +398,6 @@ public class DgToGtConvertor {
 		if (gtPT instanceof FeatureType || gtPT instanceof SimpleFeatureType){
 			//TODO think about complex features
 			//create Feature Property Type
-			
 			dgPT = new org.deegree.feature.types.property.FeaturePropertyType(dgName,minOccurs, maxOccurs, dgFTName, isAbstract, null, ValueRepresentation.BOTH ); 
 		}else if (gtPT instanceof GeometryAttribute){
 			org.deegree.feature.types.property.GeometryPropertyType.GeometryType  dgGeomType = createGeometryType(((GeometryAttribute)gtPT).getDescriptor());
