@@ -19,11 +19,13 @@ import java.util.Random;
 
 import javax.xml.namespace.QName;
 
+import org.apache.xerces.xs.XSTypeDefinition;
 import org.deegree.commons.tom.TypedObjectNode;
 import org.deegree.cs.CRS;
 import org.deegree.feature.GenericFeature;
 import org.deegree.feature.GenericFeatureCollection;
 import org.deegree.feature.property.GenericProperty;
+import org.deegree.feature.types.ApplicationSchema;
 import org.deegree.feature.types.GenericFeatureType;
 import org.deegree.feature.types.property.SimplePropertyType;
 import org.deegree.feature.types.property.ValueRepresentation;
@@ -44,6 +46,7 @@ import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.type.GeometryTypeImpl;
 import org.geotools.geometry.jts.Geometries;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.opengis.feature.Feature;
@@ -52,6 +55,7 @@ import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.feature.type.Name;
@@ -79,9 +83,9 @@ import com.vividsolutions.jts.geom.Polygon;
  * 
  * 
  * 
+ *
  */
 public class DgToGtConvertor {
-
 	
 	/**
 	 * 
@@ -115,7 +119,7 @@ public class DgToGtConvertor {
 	 * @return deegree-based Feature
 	 * 
 	 */
-	private static org.deegree.feature.Feature createDgFeature(Feature gtFeature) {
+	private  static org.deegree.feature.Feature createDgFeature(Feature gtFeature) {
 		 System.out.println(gtFeature.getDefaultGeometryProperty().getType());
 		  FeatureType gtFT = gtFeature.getType();
 		  //convert gtFT to gtFT
@@ -156,7 +160,9 @@ public class DgToGtConvertor {
 		QName dgPropName = new QName(gtProp.getName().getNamespaceURI(), gtProp.getName().getLocalPart());
 		
 		//create deegree based PropertyType from the geotools Objecy
-		org.deegree.feature.types.property.PropertyType dgPT  =  createDgPt(gtProp.getDescriptor());
+		//if prop has xml atttribures map it to the CustomPropertyType
+		boolean hasXMLAttrs = gtProp.getUserData().get("XmlAttributes")!= null; 
+		org.deegree.feature.types.property.PropertyType dgPT  =  createDgPt(gtProp.getDescriptor(),hasXMLAttrs );
 		
 		if (dgPT instanceof org.deegree.feature.types.property.SimplePropertyType){
 			//A PropertyType that defines a property with a primitive value, i.e. a value that can be represented as a single String.
@@ -181,7 +187,8 @@ public class DgToGtConvertor {
 				
 				//create deegree generic feature based on gtProp 
 				GenericFeatureType ft = createDgFt(((SimpleFeature) gtProp).getFeatureType());
-				//TODO find a nicer way to create fid
+				org.deegree.feature.Feature featureProp = createDgFeature((Feature)gtProp);
+				/*//TODO find a nicer way to create fid
 				String fid = java.util.UUID.randomUUID().toString();
 				GMLVersion version = GMLVersion.GML_32;
 				List<org.deegree.feature.property.Property> properties = new ArrayList<org.deegree.feature.property.Property>();
@@ -193,8 +200,8 @@ public class DgToGtConvertor {
 					//TODOuse geotools Feature Attribute Type
 					//properties.add(property, ((SimpleFeature)gtProp).getAttribute(attr.));
 				}
-				GenericFeature dgSubProperty = new GenericFeature(ft, fid, properties, version);
-			    dgProp = new GenericProperty(dgPT,dgPropName,dgSubProperty );
+				GenericFeature dgSubProperty = new GenericFeature(ft, fid, properties, version);*/
+			    dgProp = new GenericProperty(dgPT,dgPropName, featureProp );
 			}
 		}else if (dgPT instanceof org.deegree.feature.types.property.CustomPropertyType){
 			//TODO implement if needed
@@ -208,18 +215,7 @@ public class DgToGtConvertor {
 		return dgProp;
 	}
 
-    /**
-     * 
-     * @param Object Attribute of  geotools Feature 
-     * @return  deegree Property 
-     */
-	private static org.deegree.feature.property.Property createProperty(
-			Object attr) {
-		// Map Primitive Types
-		// Map TypedObjectNode
-		
-		return null;
-	}
+   
 
 
 	/**
@@ -380,31 +376,51 @@ public class DgToGtConvertor {
 
 	/**
 	 * 
+	 * @param hasXMLAttrs 
 	 * @param geotools-based propertyType
 	 * @return deegree-based PropertyType
 	 */
     private static org.deegree.feature.types.property.PropertyType createDgPt(
-			PropertyDescriptor gtPD) {
-		org.deegree.feature.types.property.PropertyType dgPT = null;
+			PropertyDescriptor gtPD, boolean hasXMLAttrs) {
+    	
+    	org.deegree.feature.types.property.PropertyType dgPT = null;
 		//TODO define a better way for the value representation
-		//think about List<PropertyType>substitutions
+		List<org.deegree.feature.types.property.PropertyType> substitutions = new ArrayList<org.deegree.feature.types.property.PropertyType>();
 		PropertyType gtPT = gtPD.getType();
+		Property prop = null;
+		String namespace = gtPD.getName().getNamespaceURI();
+		
 		//define commons attributes
 		QName dgName = new QName(gtPD.getName().getNamespaceURI(), gtPT.getName().getLocalPart());
 		QName dgFTName = new QName(gtPT.getName().getNamespaceURI(), gtPT.getName().getLocalPart());
 		int minOccurs = gtPD.getMinOccurs();
 		int maxOccurs = gtPD.getMaxOccurs();
 		boolean isAbstract = gtPT.isAbstract();
-		if (gtPT instanceof FeatureType || gtPT instanceof SimpleFeatureType){
-			//TODO think about complex features
-			//create Feature Property Type
-			dgPT = new org.deegree.feature.types.property.FeaturePropertyType(dgName,minOccurs, maxOccurs, dgFTName, isAbstract, null, ValueRepresentation.BOTH ); 
-		}else if (gtPT instanceof GeometryAttribute){
-			org.deegree.feature.types.property.GeometryPropertyType.GeometryType  dgGeomType = createGeometryType(((GeometryAttribute)gtPT).getDescriptor());
-			org.deegree.feature.types.property.GeometryPropertyType.CoordinateDimension dgCoordDim = createCoordDim(((GeometryAttribute)gtPT).getDescriptor());
-			dgPT = new org.deegree.feature.types.property.GeometryPropertyType(dgName, minOccurs, maxOccurs, dgGeomType, dgCoordDim, isAbstract, null, ValueRepresentation.BOTH );
+        if (gtPT instanceof org.opengis.feature.type.GeometryType){
+		org.deegree.feature.types.property.GeometryPropertyType.GeometryType  dgGeomType = createGeometryType((GeometryDescriptor)gtPD);
+		org.deegree.feature.types.property.GeometryPropertyType.CoordinateDimension dgCoordDim = createCoordDim((GeometryDescriptor)gtPD);
+		dgPT = new org.deegree.feature.types.property.GeometryPropertyType(dgName, minOccurs, maxOccurs, dgGeomType, dgCoordDim, isAbstract, substitutions, ValueRepresentation.BOTH );
+			
+		}else {
+			if(hasXMLAttrs){
 				
-			}
+				// create CustomPropertyType to handle xml attrs
+				//TODO XSTypeDefinition we need
+				//org.apache.xerces.xs.XSElementDeclaration xs = null;
+				//this.appSchema.getXSModel().getAbstractCurveSegmentElementDeclaration().getEnclosingCTDefinition().
+				//List<org.apache.xerces.xs.XSElementDeclaration> xsDecl = this.appSchema.getXSModel().
+				//2. Qname 
+				//3. namespace - only element declarations in this namespace are returned, set to null for all namespaces
+				//4. transitive - if true, also substitutions for substitutions (and so one) are included
+			    //5. onlyConcrete - if true, only concrete (non-abstract) declarations are returned 
+				//dgPT = new org.deegree.feature.types.property.CustomPropertyType(dgFTName, maxOccurs, maxOccurs, null, isAbstract, substitutions); 
+				
+			}else{
+			//create Feature Property Type
+			dgPT = new org.deegree.feature.types.property.FeaturePropertyType(dgName,minOccurs, maxOccurs, dgFTName, isAbstract, substitutions, ValueRepresentation.BOTH ); 
+			}	
+		}
+			
 		
 		return dgPT;
 	}
@@ -416,10 +432,13 @@ public class DgToGtConvertor {
 	 * @return CoordinateDimension
 	 */
     private static CoordinateDimension createCoordDim(
-			GeometryDescriptor descriptor) {
-		if (descriptor.getCoordinateReferenceSystem().getCoordinateSystem().getDimension() == 2) return CoordinateDimension.DIM_2;
-		else if (descriptor.getCoordinateReferenceSystem().getCoordinateSystem().getDimension() == 3) return CoordinateDimension.DIM_3;
-		else return CoordinateDimension.DIM_2_OR_3;
+			GeometryDescriptor descriptor) { 
+    	if(descriptor.getCoordinateReferenceSystem()!=null && descriptor.getCoordinateReferenceSystem().getCoordinateSystem()!=null){
+    		if (descriptor.getCoordinateReferenceSystem().getCoordinateSystem().getDimension() == 2) return CoordinateDimension.DIM_2;
+    	    if (descriptor.getCoordinateReferenceSystem().getCoordinateSystem().getDimension() == 3) return CoordinateDimension.DIM_3;
+    	}
+    	return CoordinateDimension.DIM_2_OR_3;
+		
 			
 		
 	}
@@ -451,7 +470,7 @@ public class DgToGtConvertor {
 		  //1.1 List<PropertyType>
 		  for (PropertyDescriptor gtPD :gtFT.getDescriptors()){
 			 // create deegree PropertyType
-			 org.deegree.feature.types.property.PropertyType dgPT = createDgPt(gtPD);
+			 org.deegree.feature.types.property.PropertyType dgPT = createDgPt(gtPD, false);
 			 propDecls.add(dgPT);
 		  }
 		  //1.2 boolean isAbstract

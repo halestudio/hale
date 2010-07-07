@@ -50,7 +50,7 @@ public class DgToGtConvertorTest {
 		}
 	}
 
-	@BeforeClass
+	/*@BeforeClass
 	public static void loadDeegreeData() {
 		String SCHEMA_URL = "http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst.corefunctions/src/test/resource/eu/esdihumboldt/cst/corefunctions/inspire/inspire_v3.0_xsd/"
 				+ "HydroPhysicalWaters.xsd";
@@ -87,11 +87,11 @@ public class DgToGtConvertorTest {
 			fail(e.getMessage());
 		}
 
-	}
+	}*/
 
 	@Test
 	public void testConversiontoGT() {
-		DgToGtConvertor.covertDgtoGt(DeegreeFC);
+		//DgToGtConvertor.covertDgtoGt(DeegreeFC);
 		DgToGtConvertor.covertGttoDg(GeoToolsFC);
 
 
