@@ -57,50 +57,57 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 			return new CodeListAttributeEditor(parent, attribute);
 		}
 		
+//		if (attributeType.isComplexType()) {
+//			// complex type or type that could not be resolved
+//			//TODO create composed editor (uses attribute editors and definition labels) XXX check if necessary
+//			//XXX check if binding is collection?
+//			return null;
+//		}
+		
+		AttributeType type = attributeType.getType(null);
+		Class<?> binding = type.getBinding();
+		
+		if (binding.equals(URI.class)) {
+			// URI
+			return new URIAttributeEditor(parent);
+		}
+		else if (type instanceof EnumAttributeType) {
+			// enumeration
+			EnumAttributeType enumType = (EnumAttributeType) type;
+			Set<String> values = enumType.getAllowedValues();
+			
+			return new EnumerationAttributeEditor(parent, new TreeSet<String>(values), enumType.otherValuesAllowed());
+		}
+		else if (Boolean.class.isAssignableFrom(binding)) {
+			// boolean
+			return new BooleanAttributeEditor(parent);
+		}
+		else if (Double.class.equals(binding) || double.class.equals(binding)) {
+			// double
+			return new DoubleAttributeEditor(parent);
+		}
+		else if (Float.class.equals(binding) || float.class.equals(binding)) {
+			// float
+			return new FloatAttributeEditor(parent);
+		}
+		else if (Integer.class.equals(binding) || int.class.equals(binding)) {
+			// int
+			return new IntegerAttributeEditor(parent);
+		}
+		else if (Long.class.equals(binding) || long.class.equals(binding)) {
+			// long
+			return new LongAttributeEditor(parent);
+		}
+		else if (String.class.equals(binding)) {
+			// string
+			return new StringAttributeEditor(parent);
+		}
+		//TODO other editors
+		
 		if (attributeType.isComplexType()) {
-			// complex type or type that could not be resolved
-			//TODO create composed editor (uses attribute editors and definition labels) XXX check if necessary
-			//XXX check if binding is collection?
 			return null;
 		}
 		else {
-			// simple types
-			AttributeType type = attributeType.getType(null);
-			Class<?> binding = type.getBinding();
-			
-			if (binding.equals(URI.class)) {
-				// URI
-				return new URIAttributeEditor(parent);
-			}
-			else if (type instanceof EnumAttributeType) {
-				// enumeration
-				EnumAttributeType enumType = (EnumAttributeType) type;
-				Set<String> values = enumType.getAllowedValues();
-				
-				return new EnumerationAttributeEditor(parent, new TreeSet<String>(values), enumType.otherValuesAllowed());
-			}
-			else if (Boolean.class.isAssignableFrom(binding)) {
-				// boolean
-				return new BooleanAttributeEditor(parent);
-			}
-			else if (Double.class.equals(binding) || double.class.equals(binding)) {
-				// double
-				return new DoubleAttributeEditor(parent);
-			}
-			else if (Float.class.equals(binding) || float.class.equals(binding)) {
-				// float
-				return new FloatAttributeEditor(parent);
-			}
-			else if (Integer.class.equals(binding) || int.class.equals(binding)) {
-				// int
-				return new IntegerAttributeEditor(parent);
-			}
-			else if (Long.class.equals(binding) || long.class.equals(binding)) {
-				// long
-				return new LongAttributeEditor(parent);
-			}
-			//TODO other editors
-			
 			// fall back to string editor
 			return new StringAttributeEditor(parent);
 		}
