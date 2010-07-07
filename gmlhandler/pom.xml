@@ -77,6 +77,11 @@
 			<artifactId>xercesImpl</artifactId>
 			<version>2.9.1</version>
 		</dependency>
+		<dependency>
+			<groupId>eu.esdihumboldt.hale</groupId>
+			<artifactId>gmlparser</artifactId>
+			<version>1.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<distributionManagement>
 		<repository>

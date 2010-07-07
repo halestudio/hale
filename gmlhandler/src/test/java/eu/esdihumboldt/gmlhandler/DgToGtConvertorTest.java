@@ -1,10 +1,11 @@
 package eu.esdihumboldt.gmlhandler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.deegree.feature.FeatureCollection;
 import org.geotools.data.DataUtilities;
@@ -13,19 +14,26 @@ import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.geometry.jts.JTSFactoryFinder;
+import org.geotools.gml3.GMLConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
+import org.xml.sax.SAXException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
+import eu.esdihumboldt.hale.gmlparser.HaleGMLParser;
+
 public class DgToGtConvertorTest {
 
 	private static org.deegree.feature.FeatureCollection DeegreeFC;
 	private static org.geotools.feature.FeatureCollection GeoToolsFC;
+	private static org.geotools.feature.FeatureCollection GeoToolsGMLFC;
 
 	@BeforeClass
 	public static void loadGeotoolsData() {		
@@ -35,11 +43,13 @@ public class DgToGtConvertorTest {
 			SimpleFeatureType TYPE = DataUtilities.createType("Location",
 					"location:Point,name:String"); // see createFeatureType();
 
+			
 			GeometryFactory factory = JTSFactoryFinder.getGeometryFactory(null);
 
 			Point point = factory.createPoint(new Coordinate(15, 50));
 			SimpleFeature feature = SimpleFeatureBuilder.build(TYPE, new Object[] {
 					point, "name" }, null);
+			
 			GeoToolsFC.add(feature);
 		} catch (FactoryRegistryException e) {
 			// TODO Auto-generated catch block
@@ -50,6 +60,28 @@ public class DgToGtConvertorTest {
 		}
 	}
 
+	@BeforeClass
+	public static void loadGeotoolsGMLData() {		
+		try {
+			GeoToolsGMLFC = FeatureCollections.newCollection();
+			URL url = new URL("file://" + (new DgToGtConvertorTest()).getClass().getResource("./inputdata/Watercourses_BY.gml").getFile());			
+			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration());
+			GeoToolsGMLFC =  (org.geotools.feature.FeatureCollection<FeatureType, Feature>) parser.parse(url.openStream());
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	/*@BeforeClass
 	public static void loadDeegreeData() {
 		String SCHEMA_URL = "http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst.corefunctions/src/test/resource/eu/esdihumboldt/cst/corefunctions/inspire/inspire_v3.0_xsd/"
