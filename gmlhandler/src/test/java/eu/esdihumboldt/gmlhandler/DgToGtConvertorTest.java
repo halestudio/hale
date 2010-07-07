@@ -1,5 +1,7 @@
 package eu.esdihumboldt.gmlhandler;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -8,6 +10,7 @@ import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.deegree.feature.FeatureCollection;
+import org.deegree.geometry.standard.primitive.DefaultPoint;
 import org.geotools.data.DataUtilities;
 import org.geotools.factory.FactoryRegistryException;
 import org.geotools.feature.FeatureCollections;
@@ -26,7 +29,6 @@ import org.xml.sax.SAXException;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
-
 import eu.esdihumboldt.hale.gmlparser.HaleGMLParser;
 
 public class DgToGtConvertorTest {
@@ -125,6 +127,26 @@ public class DgToGtConvertorTest {
 	public void testConversiontoGT() {
 		//DgToGtConvertor.covertDgtoGt(DeegreeFC);
 		DgToGtConvertor.covertGttoDg(GeoToolsFC);
+		FeatureCollection dgFC = DgToGtConvertor.covertGttoDg(GeoToolsFC);
+		assertEquals(1, dgFC.size());
+		org.deegree.feature.Feature dgFeature = dgFC.iterator().next();
+		//check feature name
+		assertEquals("Location", dgFeature.getName().getLocalPart());
+		//check properties count
+		assertEquals(2, dgFeature.getProperties().length);
+		//check first property instance
+		org.deegree.feature.property.Property locationProp = dgFeature.getProperties()[0];
+		assertEquals("location", locationProp.getName().getLocalPart());
+		//check property type
+		DefaultPoint point = (DefaultPoint)locationProp.getValue();
+		assertEquals(Point.class, point.getJTSGeometry().getClass());
+		Point jtsPoint = (Point)point.getJTSGeometry();
+		//check property name
+	    Coordinate [] coordinates = jtsPoint.getCoordinates();
+		 assertEquals(1, coordinates.length);
+		 assertEquals(15, coordinates[0].x, 0.0);
+		 assertEquals(50, coordinates[0].y, 0.0);
+		 //check second property
 
 
 	}
