@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import javax.xml.namespace.QName;
 
@@ -177,7 +178,7 @@ public class DgToGtConvertor {
 			
 			//TODO handle case with GeometryReference<Geometry>
 			//convert gt Geometry attribute to deegree Geometry
-			org.deegree.geometry.Geometry dgGeometry = createDgGeometry((GeometryAttribute)gtProp);
+			org.deegree.geometry.Geometry dgGeometry = createDgGeometry(gtProp);
 			dgProp = new GenericProperty( dgPT, dgPropName, dgGeometry );
 			
 			
@@ -234,7 +235,7 @@ public class DgToGtConvertor {
      * @param gtProp GeometryAttribute
      * @return Geometry
      */
-	private static Geometry createDgGeometry(GeometryAttribute gtProp) {
+	private static Geometry createDgGeometry(Property gtProp) {
 		//TODO provide junit testcasefor this method --> high priority
 		Geometry dgGeometry = null;
 		String geometryName = gtProp.getDescriptor().getType().getBinding().getSimpleName();
@@ -243,9 +244,10 @@ public class DgToGtConvertor {
 		//map common attributtes
 		//1. id 
 		//TODO test it
-		String id = gtProp.getIdentifier().getID().toString();
-		//2.crs
-		org.deegree.cs.CRS dgCRS = createCRS(gtProp.getType().getCoordinateReferenceSystem());
+		String id = UUID.randomUUID().toString();
+		//2.TODO figure out CRS
+		//org.deegree.cs.CRS dgCRS = createCRS(gtProp.getType().getCoordinateReferenceSystem());
+		org.deegree.cs.CRS dgCRS = null;
 		//3. precision model 
 		//TODO find a nicer way to define it
 		org.deegree.geometry.precision.PrecisionModel pm = org.deegree.geometry.precision.PrecisionModel.DEFAULT_PRECISION_MODEL;
@@ -299,7 +301,8 @@ public class DgToGtConvertor {
 		         break;
 
 		     case POINT:
-		    	 Point gtPoint = (Point)gtProp.getDescriptor().getType();
+		    	 Point gtPoint = (Point)(gtProp.getValue());
+		    	
 		    	 double [] dgCoordinates = createCoordinates(gtPoint.getCoordinates());
 		    	 dgGeometry = new org.deegree.geometry.standard.primitive.DefaultPoint(id, dgCRS, pm, dgCoordinates);
 		    	 dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry)dgGeometry).createFromJTS(gtPoint);
