@@ -69,6 +69,8 @@ public class DgToGtConvertorTest {
 			URL url = new URL("file://" + (new DgToGtConvertorTest()).getClass().getResource("./inputdata/Watercourses_BY.gml").getFile());			
 			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration());
 			GeoToolsGMLFC =  (org.geotools.feature.FeatureCollection<FeatureType, Feature>) parser.parse(url.openStream());
+			System.out.println(GeoToolsGMLFC.getSchema().getName());
+			
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

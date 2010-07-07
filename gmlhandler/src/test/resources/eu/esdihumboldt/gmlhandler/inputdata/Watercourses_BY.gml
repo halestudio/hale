@@ -116,4 +116,5 @@
 			<topp:VEG>0</topp:VEG>
 			<topp:WDM>1504</topp:WDM>
 		</topp:Watercourses_BY>
+	</gml:featureMembers>
 </wfs:FeatureCollection>
