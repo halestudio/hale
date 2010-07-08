@@ -19,17 +19,26 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+
+import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 
 /**
  * This is the first page of the {@link InstanceDataImportWizard}. It allows to
@@ -52,6 +61,8 @@ public class InstanceDataImportWizardMainPage
 	private UrlFieldEditor wfsFieldEditor;
 	
 	private final String schemaNamespace;
+
+	private ComboViewer configSelector;
 	
 	// constructors ............................................................
 
@@ -192,6 +203,22 @@ public class InstanceDataImportWizardMainPage
 			}
 		});
 		
+		// import options
+		Group optionsGroup = new Group(parent, SWT.NONE);
+		optionsGroup.setText("Import options");
+		optionsGroup.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		optionsGroup.setLayout(new GridLayout());
+		
+		configSelector = new ComboViewer(optionsGroup);
+		configSelector.setContentProvider(ArrayContentProvider.getInstance());
+		configSelector.setLabelProvider(new LabelProvider());
+		configSelector.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		
+		ConfigurationType[] values = ConfigurationType.values();
+		configSelector.setInput(values);
+		
+		configSelector.setSelection(new StructuredSelection(ConfigurationType.GML3));
+		
 		// finish some stuff.
 		fileSelectionArea.moveAbove(null);
 		
@@ -246,14 +273,29 @@ public class InstanceDataImportWizardMainPage
 	public URL getResult() {
 		return this.result;
 	}
-
-	public InstanceInterfaceType getInterfaceType() {
-		if (this.useFile) {
-			return InstanceInterfaceType.FILE;
+	
+	/**
+	 * Get the selected configuration type
+	 * 
+	 * @return the configuration type
+	 */
+	public ConfigurationType getConfiguration() {
+		ISelection sel = configSelector.getSelection();
+		if (sel.isEmpty() || !(sel instanceof IStructuredSelection)) {
+			return ConfigurationType.GML3;
 		}
 		else {
-			return InstanceInterfaceType.WFS;
+			return (ConfigurationType) ((IStructuredSelection) sel).getFirstElement();
 		}
 	}
+
+//	public InstanceInterfaceType getInterfaceType() {
+//		if (this.useFile) {
+//			return InstanceInterfaceType.FILE;
+//		}
+//		else {
+//			return InstanceInterfaceType.WFS;
+//		}
+//	}
 
 }

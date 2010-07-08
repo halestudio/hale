@@ -31,7 +31,9 @@ import org.geotools.xml.Configuration;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.gmlparser.GmlHelper;
 import eu.esdihumboldt.hale.gmlparser.HaleGMLParser;
+import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
@@ -101,6 +103,7 @@ public class InstanceDataImportWizard
 				.getService(ProjectService.class);
 		
 		final URL result = mainPage.getResult();
+		final ConfigurationType type = mainPage.getConfiguration();
 		
 		final Display display = Display.getCurrent();
 		
@@ -113,7 +116,7 @@ public class InstanceDataImportWizard
 					monitor.beginTask(Messages.ImportDataStatusText, IProgressMonitor.UNKNOWN);
 					
 					// build FeatureCollection from the selected source.
-					FeatureCollection<FeatureType, Feature> features = parseGML(result);
+					FeatureCollection<FeatureType, Feature> features = parseGML(result, type);
 					
 					final FeatureCollection<FeatureType, Feature> deployFeatures = features;
 					
@@ -133,6 +136,7 @@ public class InstanceDataImportWizard
 					
 					monitor.done();
 					projectService.setInstanceDataPath(result.toString());
+					projectService.setInstanceDataType(type);
 				}
 			});
 			
@@ -172,17 +176,13 @@ public class InstanceDataImportWizard
 //		super.addPage(this.verificationPage);
 	}
 	
-	@SuppressWarnings("unchecked")
-	private FeatureCollection<FeatureType, Feature> parseGML(URL gml_location) {
+	private FeatureCollection<FeatureType, Feature> parseGML(URL gml_location, ConfigurationType type) {
 		
 		FeatureCollection<FeatureType, Feature> result = null;
 		try {
-			Configuration configuration = new GMLConfiguration();
-
 			_log.info("Using this GML location: " + gml_location.toString()); //$NON-NLS-1$
 			
-			HaleGMLParser parser = new HaleGMLParser(configuration);
-			result = (FeatureCollection<FeatureType, Feature>) parser.parse(gml_location.openStream());
+			result = GmlHelper.loadGml(gml_location.openStream(), type);
 		} catch (Exception ex) {
 			throw new RuntimeException(
 					"Parsing the given GML into a FeatureCollection failed: " + ex.getMessage(), //$NON-NLS-1$

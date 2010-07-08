@@ -127,7 +127,7 @@ public class DefaultCstServiceBridge
 		try {
 			//InputStream xml = new FileInputStream(new File(gmlFilename));
 			InputStream xml = new URL(gmlFilename).openStream();
-			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration());
+			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration()); //TODO use GmlHelper
 			return (FeatureCollection<FeatureType, Feature>) parser.parse(xml);
 		} catch (Exception e) {
 			throw new RuntimeException(e);

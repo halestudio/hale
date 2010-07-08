@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.TaskService;
@@ -40,15 +41,17 @@ public class ProjectServiceImpl
 	
 	private Set<HaleServiceListener> listeners = new HashSet<HaleServiceListener>();
 
-	String instanceDataPath = null;
+	private String instanceDataPath = null;
 	
-	String projectCreatedDate = Calendar.getInstance().getTime().toString();
+	private String projectCreatedDate = Calendar.getInstance().getTime().toString();
 	
-	String sourceSchemaPath = null;
+	private String sourceSchemaPath = null;
 	
-	String targetSchemaPath = null;
+	private String targetSchemaPath = null;
 	
-	String haleVersion = null;
+	private String haleVersion = null;
+	
+	private ConfigurationType instanceDataType;
 	
 	private ProjectServiceImpl(){
 		this.haleVersion = (String) 
@@ -148,6 +151,22 @@ public class ProjectServiceImpl
 	@Override
 	public void removeListener(HaleServiceListener listener) {
 		listeners.remove(listener);
+	}
+
+	/**
+	 * @see ProjectService#getInstanceDataType()
+	 */
+	@Override
+	public ConfigurationType getInstanceDataType() {
+		return instanceDataType;
+	}
+
+	/**
+	 * @see ProjectService#setInstanceDataType(ConfigurationType)
+	 */
+	@Override
+	public void setInstanceDataType(ConfigurationType type) {
+		this.instanceDataType = type;
 	}
 
 }

@@ -30,14 +30,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.gml3.GMLConfiguration;
-import org.geotools.xml.Configuration;
-import org.opengis.feature.Feature;
-import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
-import eu.esdihumboldt.hale.gmlparser.HaleGMLParser;
+import eu.esdihumboldt.hale.gmlparser.GmlHelper;
+import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
@@ -217,8 +213,13 @@ public class ProjectParser {
 //				URI file = new URI(URLDecoder.decode(project.getInstanceData().getPath(), "UTF-8"));
 				URI file = new URI(project.getInstanceData().getPath());
 				InputStream xml = file.toURL().openStream(); //new FileInputStream(new File(file));
-				Configuration configuration = new GMLConfiguration();
-				HaleGMLParser parser = new HaleGMLParser(configuration);
+				ConfigurationType conf;
+				try {
+					conf = ConfigurationType.valueOf(project.getInstanceData().getType());
+				} catch (Exception e) {
+					// fall back to default
+					conf = ConfigurationType.GML3;
+				}
 				if (project.getInstanceData().getEpsgcode() != null) {
 					SelectCRSDialog.setEpsgcode(project.getInstanceData().getEpsgcode());
 				}
@@ -226,8 +227,9 @@ public class ProjectParser {
 					SelectCRSDialog.setWkt(project.getInstanceData().getWkt());
 				}
 				instanceService.addInstances(DatasetType.reference, 
-						(FeatureCollection<FeatureType, Feature>) parser.parse(xml));
+						GmlHelper.loadGml(xml, conf));
 				projectService.setInstanceDataPath(project.getInstanceData().getPath());
+				projectService.setInstanceDataType(conf);
 				
 			} catch (Exception e) {
 				throw new RuntimeException("Instances could not be loaded: ", e);

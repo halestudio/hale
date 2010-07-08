@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.models;
 
+import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
+
 /**
  * The {@link ProjectService} manages additional information on a HaleProject,
  * such as the loaded instance data and paths of used schemas.
@@ -38,5 +40,19 @@ public interface ProjectService extends UpdateService {
 	public void setProjectCreatedDate(String date);
 	
 	public String getHaleVersion();
+
+	/**
+	 * Set the configuration type of the instance data
+	 * 
+	 * @param type the configuiration type
+	 */
+	public void setInstanceDataType(ConfigurationType type);
+	
+	/**
+	 * Get the configuration type of the instance data
+	 * 
+	 * @return the configuration type of the instance data
+	 */
+	public ConfigurationType getInstanceDataType();
 	
 }

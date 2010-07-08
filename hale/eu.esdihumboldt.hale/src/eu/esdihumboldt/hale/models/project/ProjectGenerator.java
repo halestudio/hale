@@ -32,6 +32,7 @@ import org.geotools.styling.Style;
 
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
+import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.StyleService;
@@ -122,6 +123,7 @@ public class ProjectGenerator {
 			else if (SelectCRSDialog.getValueWKT() != null) {
 				id.setWkt(SelectCRSDialog.getValueWKT());
 			}
+			id.setType(projectService.getInstanceDataType().name());
 			hproject.setInstanceData(id);
 		}
 		

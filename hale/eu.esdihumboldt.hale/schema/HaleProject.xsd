@@ -51,9 +51,13 @@
 	<xs:element name="InstanceData" type="InstanceData"/>
 	<xs:complexType name="InstanceData">
 		<xs:sequence>
-			<xs:element name="path" type="xs:string" minOccurs="1" maxOccurs="1"/>
-			<xs:element name="wkt" type="xs:string" minOccurs="0" maxOccurs="1"/>
-			<xs:element name="epsgcode" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="path" type="xs:string" minOccurs="1"
+				maxOccurs="1" />
+			<xs:element name="wkt" type="xs:string" minOccurs="0"
+				maxOccurs="1" />
+			<xs:element name="epsgcode" type="xs:string" minOccurs="0"
+				maxOccurs="1" />
+			<xs:element name="type" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:element name="ContextElement" type="xs:string"/>
