@@ -22,6 +22,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.deegree.commons.tom.TypedObjectNode;
+import org.deegree.commons.tom.primitive.PrimitiveType;
 import org.deegree.cs.CRS;
 import org.deegree.feature.GenericFeature;
 import org.deegree.feature.GenericFeatureCollection;
@@ -184,7 +185,7 @@ public class DgToGtConvertor {
 			
 		}else if (dgPT instanceof org.deegree.feature.types.property.FeaturePropertyType){
 			//we support inline Features mapping only
-			if (gtProp instanceof SimpleFeature ){
+			//if (gtProp instanceof SimpleFeature ){
 				
 				//create deegree generic feature based on gtProp 
 				GenericFeatureType ft = createDgFt(((SimpleFeature) gtProp).getFeatureType());
@@ -203,7 +204,7 @@ public class DgToGtConvertor {
 				}
 				GenericFeature dgSubProperty = new GenericFeature(ft, fid, properties, version);*/
 			    dgProp = new GenericProperty(dgPT,dgPropName, featureProp );
-			}
+			//}
 		}else if (dgPT instanceof org.deegree.feature.types.property.CustomPropertyType){
 			//TODO implement if needed
 		
@@ -403,7 +404,10 @@ public class DgToGtConvertor {
 		org.deegree.feature.types.property.GeometryPropertyType.GeometryType  dgGeomType = createGeometryType((GeometryDescriptor)gtPD);
 		org.deegree.feature.types.property.GeometryPropertyType.CoordinateDimension dgCoordDim = createCoordDim((GeometryDescriptor)gtPD);
 		dgPT = new org.deegree.feature.types.property.GeometryPropertyType(dgName, minOccurs, maxOccurs, dgGeomType, dgCoordDim, isAbstract, substitutions, ValueRepresentation.BOTH );
-			
+        }else if (gtPT instanceof org.opengis.feature.type.AttributeType && !(gtPT instanceof org.opengis.feature.type.ComplexType)){
+        	//TODO find a nicer way to define this binding
+        	PrimitiveType propPrimType = PrimitiveType.determinePrimitiveType(gtPT.getBinding().getName());
+            dgPT = new org.deegree.feature.types.property.SimplePropertyType(dgName, minOccurs, maxOccurs,propPrimType, isAbstract,substitutions);
 		}else {
 			if(hasXMLAttrs){
 				
