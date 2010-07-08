@@ -436,6 +436,11 @@
             id="eu.esdihumboldt.hale.page.preferences.style"
             name="Default styles">
       </page>
+      <page
+            class="eu.esdihumboldt.hale.rcp.utils.crs.CRSPreferencePage"
+            id="eu.esdihumboldt.hale.page.preferences.crs"
+            name="Additional CRS">
+      </page>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.MappingExport">

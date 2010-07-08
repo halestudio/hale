@@ -28,6 +28,7 @@ import org.eclipse.ui.PlatformUI;
 import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Log4JLoggerFactory;
 import org.geotools.util.logging.Logging;
+import eu.esdihumboldt.hale.WKTPreferencesCRSFactory;
 
 /**
  * This class controls all aspects of the application's execution
@@ -64,6 +65,8 @@ public class Application implements IApplication {
 				+ HALEActivator.getDefault().getBundle().getHeaders().get(
 						"Bundle-Version"));
 		Logger.getRootLogger().setLevel(Level.WARN);
+		
+		WKTPreferencesCRSFactory.install();
 		
 		// init HSQL database
 		try {
