@@ -3,7 +3,7 @@ package eu.esdihumboldt.gmlhandler;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.io.InputStream;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -127,8 +127,6 @@ public class DgToGtConvertorTest {
 
 	@Test
 	public void testConversiontoGT() {
-		//DgToGtConvertor.covertDgtoGt(DeegreeFC);
-		DgToGtConvertor.covertGttoDg(GeoToolsFC);
 		FeatureCollection dgFC = DgToGtConvertor.covertGttoDg(GeoToolsFC);
 		assertEquals(1, dgFC.size());
 		org.deegree.feature.Feature dgFeature = dgFC.iterator().next();
@@ -149,6 +147,9 @@ public class DgToGtConvertorTest {
 		 assertEquals(15, coordinates[0].x, 0.0);
 		 assertEquals(50, coordinates[0].y, 0.0);
 		 //check second property
+		 //check second property
+		 org.deegree.feature.property.Property nameProp = dgFeature.getProperties()[1];
+		 assertEquals("name", nameProp.getName().getLocalPart());
 
 
 	}
