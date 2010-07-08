@@ -10,6 +10,8 @@ import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.deegree.feature.FeatureCollection;
+import org.deegree.filter.FilterEvaluationException;
+import org.deegree.filter.IdFilter;
 import org.deegree.geometry.standard.primitive.DefaultPoint;
 import org.geotools.data.DataUtilities;
 import org.geotools.factory.FactoryRegistryException;
@@ -91,6 +93,9 @@ public class GtToDgConvertorTest {
 
 	}
 
+	/**
+	 * Testcase for convertion of the geotools SimpleAttributes created using geotools FeatureBuilder (manuelly).
+	 */
 	@Test
 	public void testSimpleFeatureConversion() {
 		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsFC);
@@ -121,8 +126,38 @@ public class GtToDgConvertorTest {
 
 	}
 
+	
+	/**
+	 * Testcase for convertion of the geotools SimpleAttributes created using HaleParser.
+	 */
 	@Test
-	public void testComplexAttributeConversion() {
-		// TODO provide implementation
+	public void testSimpleAttributeConversion() {
+		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsGMLFC);
+		//check fc  size
+		assertEquals(4, dgFC.size());
+		//check feature with feature id = gml:id="Watercourses_BY.3
+		
+		org.deegree.feature.Feature dgFeature;
+		try {
+			 //check we have only one feature instance with id = "Watercourses_BY.3"
+			 assertEquals(1, dgFC.getMembers(new IdFilter("Watercourses_BY.3")).size());
+			 dgFeature = (org.deegree.feature.Feature)dgFC.getMembers(new IdFilter("Watercourses_BY.3")).iterator().next();
+			 assertEquals(18, dgFeature.getProperties().length);
+		} catch (FilterEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	/**
+	 * Testcase for convertion of the geotools ComplexAttributes created using HaleParser.
+	 */
+	@Test
+	public void testComplexAttributeConversion(){
+		//TODO provide implementation
+		//1. Read a FeatureCollection having ComplexAttributes from the gml-file to the geotools object
+		//2. Convert geotools object to deegree FeatureCollection using GtToDgConvertor
+		//3. Implement assertions
 	}
 }
