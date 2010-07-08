@@ -58,7 +58,7 @@ public abstract class MapUtils {
 	 * 
 	 * @return the coordinate reference system or null
 	 */
-	private static CoordinateReferenceSystem determineCRS(
+	public static CoordinateReferenceSystem determineCRS(
 			FeatureCollection<? extends FeatureType, ? extends Feature> fc) {
 		CoordinateReferenceSystem crs = null;
 		
@@ -101,6 +101,15 @@ public abstract class MapUtils {
 				}
 			}
 		}
+		else {
+			// set crs for the dialog (so the right value will be saved with the project)
+			try {
+				SelectCRSDialog.setEpsgcode(crs.getIdentifiers().iterator().next().toString());
+			} catch (Exception e) {
+				SelectCRSDialog.setWkt(crs.toWKT());
+			}
+		}
+		
 		return crs;
 	}
 	
