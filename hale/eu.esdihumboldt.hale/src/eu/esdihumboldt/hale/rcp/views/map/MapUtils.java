@@ -27,11 +27,14 @@ import org.geotools.map.DefaultMapContext;
 import org.geotools.map.MapContext;
 import org.geotools.styling.Style;
 import org.opengis.feature.Feature;
+import org.opengis.feature.GeometryAttribute;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.StyleService;
@@ -60,10 +63,22 @@ public abstract class MapUtils {
 		CoordinateReferenceSystem crs = null;
 		
 		// try the instance data first.
-		if (fc != null) {
+		if (fc != null && !fc.isEmpty()) {
 			Feature f = fc.features().next();
 			if (f.getDefaultGeometryProperty() != null) {
-				crs = f.getDefaultGeometryProperty().getDescriptor().getCoordinateReferenceSystem();
+				GeometryAttribute gp = f.getDefaultGeometryProperty();
+				crs = gp.getDescriptor().getCoordinateReferenceSystem();
+				
+				if (crs == null) {
+					// next try - user data of value
+					Object value = gp.getValue();
+					if (value instanceof Geometry) {
+						Object userData = ((Geometry) value).getUserData();
+						if (userData instanceof CoordinateReferenceSystem) {
+							crs = (CoordinateReferenceSystem) userData;
+						}
+					}
+				}
 			}
 		}
 		
