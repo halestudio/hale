@@ -249,7 +249,7 @@ public class GtToDgConvertor {
 
 		switch (geomType) {
 		case POLYGON:
-			Polygon gtPoligon = (Polygon) gtProp.getDescriptor().getType();
+			Polygon gtPoligon = (Polygon) gtProp.getValue();
 			Ring exteriorRing = createRing(gtPoligon.getExteriorRing());
 			int numOfInterRings = gtPoligon.getNumInteriorRing();
 			List<Ring> interiorRings = new ArrayList<Ring>(numOfInterRings);
@@ -265,8 +265,7 @@ public class GtToDgConvertor {
 					.createFromJTS(gtPoligon);
 			break;
 		case MULTIPOLYGON:
-			MultiPolygon gtMultiPolygon = (MultiPolygon) gtProp.getDescriptor()
-					.getType();
+			MultiPolygon gtMultiPolygon = (MultiPolygon) gtProp.getValue();
 			int numOfPolygs = gtMultiPolygon.getNumGeometries();
 			List<org.deegree.geometry.primitive.Polygon> dgPolygons = new ArrayList<org.deegree.geometry.primitive.Polygon>(
 					numOfPolygs);
@@ -282,8 +281,7 @@ public class GtToDgConvertor {
 			break;
 
 		case LINESTRING:
-			LineString gtLineString = (LineString) gtProp.getDescriptor()
-					.getType();
+			LineString gtLineString = (LineString) gtProp.getValue();
 			Points dgLineStringPoints = createDGPoints(gtLineString
 					.getCoordinates());
 			dgGeometry = new org.deegree.geometry.standard.primitive.DefaultLineString(
@@ -292,8 +290,7 @@ public class GtToDgConvertor {
 					.createFromJTS(gtLineString);
 			break;
 		case MULTILINESTRING:
-			MultiLineString gtMultiLineString = (MultiLineString) gtProp
-					.getDescriptor().getType();
+			MultiLineString gtMultiLineString = (MultiLineString) gtProp.getValue();
 			int numOfLineStrings = gtMultiLineString.getNumGeometries();
 			List<org.deegree.geometry.primitive.LineString> dgLineStrings = new ArrayList<org.deegree.geometry.primitive.LineString>(
 					numOfLineStrings);
@@ -319,8 +316,7 @@ public class GtToDgConvertor {
 					.createFromJTS(gtPoint);
 			break;
 		case MULTIPOINT:
-			MultiPoint gtMultiPoint = (MultiPoint) gtProp.getDescriptor()
-					.getType();
+			MultiPoint gtMultiPoint = (MultiPoint) gtProp.getValue();
 			int numOfPoints = gtMultiPoint.getNumGeometries();
 			List<org.deegree.geometry.primitive.Point> dgPoints = new ArrayList<org.deegree.geometry.primitive.Point>(
 					numOfPoints);
