@@ -73,7 +73,7 @@ public class PositionStatus extends MouseTrackAdapter implements MouseMoveListen
 		Point2D pos = map.toGeoCoordinates(e.x, e.y);
 		if (pos != null) {
 			String crsString = "";
-			CoordinateReferenceSystem crs = SelectCRSDialog.getValue();
+			CoordinateReferenceSystem crs = map.getCRS();
 			if (crs != null) {
 				crsString = crs.getName().toString() + " - ";
 			}
