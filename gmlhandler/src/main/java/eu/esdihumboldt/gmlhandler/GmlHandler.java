@@ -27,7 +27,6 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.logging.Log;
 import org.apache.log4j.Logger;
 import org.deegree.commons.xml.XMLParsingException;
 import org.deegree.commons.xml.stax.FormattingXMLStreamWriter;
@@ -54,7 +53,7 @@ import org.deegree.gml.feature.schema.ApplicationSchemaXSDDecoder;
  * <li>gml_2</li>
  * <li>gml_3_0</li>
  * <li>gml_3_1</li>
- * <li>gml_3_2</li> 
+ * <li>gml_3_2</li>
  * </ul>
  * </p>
  * 
@@ -94,7 +93,8 @@ public class GmlHandler {
 	 * @param namespaces
 	 *            map storing predefined namespaces.
 	 */
-	public GmlHandler(GMLVersions gmlVersion, String schemaUrl, Map<String, String> namespaces) {
+	public GmlHandler(GMLVersions gmlVersion, String schemaUrl,
+			Map<String, String> namespaces) {
 		this.gmlVersion = getGMLVersion(gmlVersion);
 		this.schemaUrl = schemaUrl;
 		this.namespaces = namespaces;
@@ -110,7 +110,8 @@ public class GmlHandler {
 	 * @throws ClassNotFoundException
 	 * @throws ClassCastException
 	 */
-	public ApplicationSchema readSchema() throws MalformedURLException, ClassCastException, ClassNotFoundException, InstantiationException,
+	public ApplicationSchema readSchema() throws MalformedURLException,
+			ClassCastException, ClassNotFoundException, InstantiationException,
 			IllegalAccessException {
 		LOG.info("Parsing the underlying schema at " + this.schemaUrl);
 
@@ -118,14 +119,14 @@ public class GmlHandler {
 		String schemaURL = new URL(this.schemaUrl).toString();
 
 		// Create the schema-decoder
-		ApplicationSchemaXSDDecoder decoder = new ApplicationSchemaXSDDecoder(this.gmlVersion, this.namespaces, schemaURL);
+		ApplicationSchemaXSDDecoder decoder = new ApplicationSchemaXSDDecoder(
+				this.gmlVersion, this.namespaces, schemaURL);
 
 		// Read in the schema and return the ApplicationSchema
 		ApplicationSchema gmlSchema = decoder.extractFeatureTypeSchema();
 		if (gmlSchema != null) {
 			LOG.info("Schema loaded successfully");
-		}
-		else {
+		} else {
 			LOG.error("Schema is NULL");
 		}
 
@@ -147,19 +148,23 @@ public class GmlHandler {
 	 * @throws XMLParsingException
 	 * @throws Exception
 	 */
-	public FeatureCollection readFC() throws XMLStreamException, FactoryConfigurationError, IOException, ClassCastException, ClassNotFoundException,
-			InstantiationException, IllegalAccessException, XMLParsingException, UnknownCRSException {
+	public FeatureCollection readFC() throws XMLStreamException,
+			FactoryConfigurationError, IOException, ClassCastException,
+			ClassNotFoundException, InstantiationException,
+			IllegalAccessException, XMLParsingException, UnknownCRSException {
 		LOG.info("Reading the gml instance at " + this.gmlUrl);
 		// Converts gml location to the URL format
 		URL url = new URL(this.gmlUrl);
 
 		// Creates reader to parse gml
-		GMLStreamReader gmlStreamReader = GMLInputFactory.createGMLStreamReader(this.gmlVersion, url);
+		GMLStreamReader gmlStreamReader = GMLInputFactory
+				.createGMLStreamReader(this.gmlVersion, url);
 
 		// Sets application schema
 		gmlStreamReader.setApplicationSchema(readSchema());
 
-		FeatureCollection fc = (FeatureCollection) gmlStreamReader.readFeature();
+		FeatureCollection fc = (FeatureCollection) gmlStreamReader
+				.readFeature();
 
 		// resolves local references
 		gmlStreamReader.getIdContext().resolveLocalRefs();
@@ -178,17 +183,22 @@ public class GmlHandler {
 	 * @throws UnknownCRSException
 	 * 
 	 */
-	public void writeFC(FeatureCollection fc) throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
-		LOG.info("Exporting the gml-instance to the location " + this.targetGmlUrl);
+	public void writeFC(FeatureCollection fc) throws FileNotFoundException,
+			XMLStreamException, UnknownCRSException, TransformationException {
+		LOG.info("Exporting the gml-instance to the location "
+				+ this.targetGmlUrl);
 
 		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 
 		// will set namespaces if these not set explicitly
-		outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", new Boolean(true));
+		outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces",
+				new Boolean(true));
 
 		// create XML File Stream Writer
-		XMLStreamWriter xmlStreamWriter = outputFactory.createXMLStreamWriter(new FileOutputStream(new File(this.targetGmlUrl)), "UTF-8");
-		XMLStreamWriterWrapper writer = new XMLStreamWriterWrapper(xmlStreamWriter, this.schemaUrl);
+		XMLStreamWriter xmlStreamWriter = outputFactory.createXMLStreamWriter(
+				new FileOutputStream(new File(this.targetGmlUrl)), "UTF-8");
+		XMLStreamWriterWrapper writer = new XMLStreamWriterWrapper(
+				xmlStreamWriter, this.schemaUrl);
 
 		// set namespaces, this should be done explicitly
 		// TODO define a nicer way to set the default namespace
@@ -198,17 +208,18 @@ public class GmlHandler {
 		Set<String> nsPrefixes = this.namespaces.keySet();
 		String nsValue = "";
 		for (String nsPrefix : nsPrefixes) {
-			nsValue = (String) this.namespaces.get(nsPrefix);
+			nsValue = this.namespaces.get(nsPrefix);
 			writer.setPrefix(nsPrefix, nsValue);
 
 		}
 
 		// create exporter to export files
-		GMLStreamWriter exporter = GMLOutputFactory.createGMLStreamWriter(GMLVersion.GML_32, new FormattingXMLStreamWriter(writer));
+		GMLStreamWriter exporter = GMLOutputFactory.createGMLStreamWriter(
+				GMLVersion.GML_32, new FormattingXMLStreamWriter(writer));
 		exporter.write(fc);
 		writer.flush();
 		writer.close();
-		
+
 		LOG.debug("Gml instance has been exported successfully ");
 	}
 
@@ -222,14 +233,11 @@ public class GmlHandler {
 		GMLVersion version = null;
 		if (gmlVersion.equals(GMLVersions.gml2)) {
 			version = GMLVersion.GML_2;
-		}
-		else if (gmlVersion.equals(GMLVersions.gml3_0)) {
+		} else if (gmlVersion.equals(GMLVersions.gml3_0)) {
 			version = GMLVersion.GML_30;
-		}
-		else if (gmlVersion.equals(GMLVersions.gml3_1)) {
+		} else if (gmlVersion.equals(GMLVersions.gml3_1)) {
 			version = GMLVersion.GML_31;
-		}
-		else if (gmlVersion.equals(GMLVersions.gml3_2_1)) {
+		} else if (gmlVersion.equals(GMLVersions.gml3_2_1)) {
 			version = GMLVersion.GML_32;
 		}
 		return version;
