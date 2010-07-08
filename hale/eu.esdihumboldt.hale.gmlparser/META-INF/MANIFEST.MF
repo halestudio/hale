@@ -6,6 +6,23 @@ Bundle-Version: 1.0.1
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
  LIB/com.springsource.org.apache.xerces-2.8.1.jar
-Require-Bundle: org.geotools;bundle-version="2.6.4",
- org.eclipse.xsd;bundle-version="2.2.2"
 Export-Package: eu.esdihumboldt.hale.gmlparser
+Import-Package: com.vividsolutions.jts.geom,
+ org.eclipse.xsd,
+ org.geotools.data.memory,
+ org.geotools.data.store,
+ org.geotools.feature,
+ org.geotools.feature.collection,
+ org.geotools.geometry.jts,
+ org.geotools.gml2,
+ org.geotools.gml3,
+ org.geotools.gml3.v3_2,
+ org.geotools.xml,
+ org.geotools.xml.impl,
+ org.geotools.xs,
+ org.opengis.feature,
+ org.opengis.feature.type,
+ org.opengis.filter,
+ org.opengis.filter.sort,
+ org.opengis.geometry,
+ org.opengis.util
