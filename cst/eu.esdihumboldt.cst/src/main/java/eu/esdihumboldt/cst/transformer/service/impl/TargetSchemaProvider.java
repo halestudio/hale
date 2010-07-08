@@ -48,8 +48,13 @@ public class TargetSchemaProvider {
 	 */
 	public void addTypes(Collection<FeatureType> types) {
 		for (FeatureType ft : types) {
+			String ns = ft.getName().getNamespaceURI();
+			if (!ns.endsWith("/")) {
+				ns = ns + "/";
+			}
+			
 			this.targetTypes.put(
-					ft.getName().getNamespaceURI() + "/" + ft.getName().getLocalPart(), ft);
+					ns + ft.getName().getLocalPart(), ft);
 		}
 	}
 	
