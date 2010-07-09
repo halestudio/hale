@@ -153,6 +153,14 @@ public class ProjectServiceImpl
 	}
 	
 	/**
+	 * @see ProjectService#isChanged()
+	 */
+	@Override
+	public boolean isChanged() {
+		return changed;
+	}
+
+	/**
 	 * Set that the project content has changed
 	 */
 	protected void setChanged() {

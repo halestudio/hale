@@ -11,10 +11,23 @@
  */
 package eu.esdihumboldt.hale.rcp;
 
+import javax.xml.bind.JAXBException;
+
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IExportWizard;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
+import org.eclipse.ui.handlers.HandlerUtil;
+
+import eu.esdihumboldt.hale.models.ProjectService;
+import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
+import eu.esdihumboldt.hale.rcp.wizards.io.SaveAlignmentProjectWizard;
 
 /**
  * The {@link ApplicationWorkbenchAdvisor} controls the appearance of the 
@@ -53,6 +66,50 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		super.initialize(configurer);
 		
 		configurer.setSaveAndRestore(true);
+	}
+
+	/**
+	 * @see WorkbenchAdvisor#preShutdown()
+	 */
+	@Override
+	public boolean preShutdown() {
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+		if (ps.isChanged()) {
+			Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+			MessageBox mb = new MessageBox(shell, 
+					SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
+    		mb.setMessage("Save changes?");
+    		mb.setText("Exit HALE");
+    		int result = mb.open();
+    		if (result == SWT.CANCEL) {
+    			return false;
+    		}
+    		else if (result == SWT.YES) {
+    			try {
+    				// try saving project
+    				if (!ps.save()) {
+    					// have to use save as
+    					IExportWizard iw = new SaveAlignmentProjectWizard();
+    					// Instantiates the wizard container with the wizard and opens it
+    					WizardDialog dialog = new WizardDialog(shell, iw);
+    					if (dialog.open() == WizardDialog.CANCEL) {
+    						return false;
+    					}
+    				}
+					return true;
+				} catch (JAXBException e) {
+					ExceptionHelper.handleException(
+							"Error saving alignment project", HALEActivator.PLUGIN_ID, e);
+					return false;
+				}
+			}
+    		else {
+    			return true;
+    		}
+		}
+		else {
+			return true;
+		}
 	}
 
 }

@@ -22,7 +22,6 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.models.ProjectService;
-import eu.esdihumboldt.hale.models.project.ProjectGenerator;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
 

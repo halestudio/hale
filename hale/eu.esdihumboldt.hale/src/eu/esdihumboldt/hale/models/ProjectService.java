@@ -46,6 +46,13 @@ public interface ProjectService extends UpdateService {
 	public String getHaleVersion();
 	
 	/**
+	 * Get if the project content is changed
+	 * 
+	 * @return if the project content is changed
+	 */
+	public boolean isChanged();
+	
+	/**
 	 * Set the configuration type of the instance data
 	 * 
 	 * @param type the configuiration type
