@@ -19,13 +19,8 @@ import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IExportWizard;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import eu.esdihumboldt.hale.models.ProjectService;
-import eu.esdihumboldt.hale.rcp.HALEActivator;
-import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
-import eu.esdihumboldt.hale.rcp.wizards.io.Messages;
 import eu.esdihumboldt.hale.rcp.wizards.io.SaveAlignmentProjectWizard;
 
 /**
@@ -34,30 +29,22 @@ import eu.esdihumboldt.hale.rcp.wizards.io.SaveAlignmentProjectWizard;
  * @author Thorsten Reitz
  * @version $Id$
  */
-public class SaveAlignmentProjectHandler extends AbstractHandler implements
+public class SaveAlignmentProjectAsHandler extends AbstractHandler implements
 		IHandler {
 
-	/**
-	 * @see IHandler#execute(ExecutionEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.
+	 * ExecutionEvent)
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
-		try {
-			// try saving project
-			if (!ps.save()) {
-				// have to use save as
-				IExportWizard iw = new SaveAlignmentProjectWizard();
-				// Instantiates the wizard container with the wizard and opens it
-				Shell shell = HandlerUtil.getActiveShell(event);
-				WizardDialog dialog = new WizardDialog(shell, iw);
-				dialog.open();
-			}
-		} catch (Exception e) {
-			String message = Messages.SaveAlignmentProjectWizard_SaveFaild;
-			ExceptionHelper.handleException(
-					message, HALEActivator.PLUGIN_ID, e);
-		}
-		
+		IExportWizard iw = new SaveAlignmentProjectWizard();
+		// Instantiates the wizard container with the wizard and opens it
+		Shell shell = HandlerUtil.getActiveShell(event);
+		WizardDialog dialog = new WizardDialog(shell, iw);
+		dialog.open();
 		return null;
 	}
 }

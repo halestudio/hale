@@ -16,14 +16,23 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.xml.bind.JAXBException;
+
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
+import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
+import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
+import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.UpdateService;
+import eu.esdihumboldt.hale.models.project.generated.HaleProject;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 
 /**
@@ -35,7 +44,7 @@ import eu.esdihumboldt.hale.rcp.HALEActivator;
 public class ProjectServiceImpl 
 	implements ProjectService {
 	
-	static ProjectService instance = new ProjectServiceImpl();
+	private static ProjectService instance = new ProjectServiceImpl();
 	
 	private static Logger _log = Logger.getLogger(ProjectServiceImpl.class);
 	
@@ -53,15 +62,161 @@ public class ProjectServiceImpl
 	
 	private ConfigurationType instanceDataType;
 	
+	private final ProjectParser parser;
+	
+	private final ProjectGenerator generator;
+	
+	private String projectName;
+	
+	private String projectFile;
+	
+	private String appTitle;
+	
+	/**
+	 * Default constructor
+	 */
 	private ProjectServiceImpl(){
-		this.haleVersion = (String) 
-				HALEActivator.getDefault().getBundle().getHeaders().get("Bundle-Version");
+		haleVersion = HALEActivator.getDefault().getBundle().getVersion().toString();
+		parser = new ProjectParser(this);
+		generator = new ProjectGenerator(this);
 	}
 	
+	/**
+	 * Get the project service instance
+	 * 
+	 * @return the project service instance
+	 */
 	public static ProjectService getInstance() {
 		return instance;
 	}
 	
+	/**
+	 * @see ProjectService#clean()
+	 */
+	@Override
+	public synchronized void clean() {
+		projectFile = null;
+		projectName = null;
+		updateWindowTitle();
+		
+		// clean alignment service
+		AlignmentService as = (AlignmentService) 
+				PlatformUI.getWorkbench().getService(AlignmentService.class);
+		as.cleanModel();
+		
+		// clean instance service
+		InstanceService is = (InstanceService) 
+				PlatformUI.getWorkbench().getService(InstanceService.class);
+		is.cleanInstances();
+		
+		// clean schema service
+		SchemaService ss = (SchemaService) 
+				PlatformUI.getWorkbench().getService(SchemaService.class);
+		ss.cleanSourceSchema();
+		ss.cleanTargetSchema();
+		
+		// clear user tasks
+		TaskService taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
+		taskService.clearUserTasks();
+		
+		// clean the project Service
+		ProjectService ps = (ProjectService) 
+				PlatformUI.getWorkbench().getService(ProjectService.class);
+		ps.setInstanceDataPath(null);
+		ps.setProjectCreatedDate(Calendar.getInstance().getTime().toString());
+		ps.setSourceSchemaPath(null);
+		ps.setTargetSchemaPath(null);
+		
+		System.gc();
+	}
+
+	/**
+	 * @see ProjectService#load(String, IProgressMonitor)
+	 */
+	@Override
+	public synchronized void load(String filename, IProgressMonitor monitor) {
+		// load project
+		HaleProject project = parser.read(filename, monitor);
+		
+		if (project != null) {
+			projectName = project.getName();
+			projectFile = filename;
+			updateWindowTitle();
+		}
+		else {
+			projectName = null;
+			projectFile = null;
+			updateWindowTitle();
+		}
+	}
+
+	/**
+	 * Update the window title
+	 */
+	private void updateWindowTitle() {
+		Runnable run = new Runnable() {
+			
+			@Override
+			public void run() {
+				// init appTitle
+				if (appTitle == null) {
+					if (PlatformUI.getWorkbench().getWorkbenchWindowCount() > 0) {
+						appTitle = PlatformUI.getWorkbench()./*getWorkbenchWindows()[0]*/getActiveWorkbenchWindow().getShell().getText();
+					}
+					else {
+						return;
+					}
+				}
+				
+				String title;
+				if (projectFile == null) {
+					title = appTitle;
+				}
+				else {
+					title = appTitle + " - " + projectName + " - " + projectFile;
+				}
+				
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setText(title);
+			}
+		};
+		
+		if (Display.getCurrent() != null) {
+			run.run();
+		}
+		else {
+			PlatformUI.getWorkbench().getDisplay().syncExec(run);
+		}
+	}
+
+	/**
+	 * @see ProjectService#save()
+	 */
+	@Override
+	public synchronized boolean save() throws JAXBException {
+		if (projectFile != null) {
+			if (projectName == null) {
+				projectName = "default";
+			}
+			generator.write(projectFile, projectName);
+			updateWindowTitle();
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	/**
+	 * @see ProjectService#saveAs(String, String)
+	 */
+	@Override
+	public synchronized void saveAs(String filename, String projectName) throws JAXBException {
+		generator.write(filename, projectName);
+		this.projectFile = filename;
+		this.projectName = projectName;
+		updateWindowTitle();
+	}
+
 	/**
 	 * @see eu.esdihumboldt.hale.models.ProjectService#getInstanceDataPath()
 	 */

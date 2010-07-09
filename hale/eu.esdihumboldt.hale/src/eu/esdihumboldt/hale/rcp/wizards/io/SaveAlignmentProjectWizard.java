@@ -19,7 +19,9 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
+import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.project.ProjectGenerator;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
@@ -57,7 +59,8 @@ public class SaveAlignmentProjectWizard
 		String result = this.mainPage.getResult();
 		if (result != null) {
 			try {
-				ProjectGenerator.write(result, "default"); //$NON-NLS-1$
+				ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+				ps.saveAs(result, mainPage.getProjectName());
 			} catch (Exception e) {
 				String message = Messages.SaveAlignmentProjectWizard_SaveFaild;
 				_log.error(message, e);

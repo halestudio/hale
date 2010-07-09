@@ -22,7 +22,9 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
+import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.project.ProjectParser;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.commandHandlers.NewProjectHandler;
@@ -68,11 +70,8 @@ public class OpenAlignmentProjectWizard
 					public void run(IProgressMonitor monitor) throws InvocationTargetException,
 							InterruptedException {
 						try {
-							// clean up
-							NewProjectHandler.cleanup();
-							
-							// load project
-							ProjectParser.read(result, monitor);
+							ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+							ps.load(result, monitor);
 						} catch (Exception e) {
 							String message = Messages.OpenAlignmentProjectWizard_Failed;
 							_log.error(message, e);

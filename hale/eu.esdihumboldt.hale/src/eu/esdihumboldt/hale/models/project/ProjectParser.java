@@ -69,14 +69,28 @@ public class ProjectParser {
 	 * Constant defines the path to the alignment jaxb context
 	 */
 	private static final String PROJECT_CONTEXT = "eu.esdihumboldt.hale.models.project.generated";
+	
+	private final ProjectService projectService;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param projectService the project service
+	 */
+	public ProjectParser(ProjectService projectService) {
+		super();
+		this.projectService = projectService;
+	}
 
 	/**
 	 * Load a project from a file
 	 * 
 	 * @param filename the file name
 	 * @param monitor the progress monitor
+	 * 
+	 * @return the loaded project 
 	 */
-	public static void read(String filename, IProgressMonitor monitor) {
+	public HaleProject read(String filename, IProgressMonitor monitor) {
 		monitor.beginTask("Loading alignment project", IProgressMonitor.UNKNOWN);
 		
 		ProjectParser._log.setLevel(Level.INFO);
@@ -95,19 +109,20 @@ public class ProjectParser {
 		}
 		
 		if (root != null) {
-			ProjectParser.load(root.getValue(), monitor);
+			load(root.getValue(), monitor);
+			monitor.done();
+			return root.getValue();
 		}
-		
-		monitor.done();
+		else {
+			monitor.done();
+			return null;
+		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private static void load(HaleProject project, final IProgressMonitor monitor) {
-		// get service references as required.
-		ProjectService projectService = 
-			(ProjectService) PlatformUI.getWorkbench().getService(
-					ProjectService.class);
+	private void load(HaleProject project, final IProgressMonitor monitor) {
+		projectService.clean();
 		
+		// get service references as required.
 		InstanceService instanceService = 
 			(InstanceService) PlatformUI.getWorkbench().getService(
 					InstanceService.class);
@@ -256,16 +271,16 @@ public class ProjectParser {
 						}
 					}
 					eu.esdihumboldt.hale.task.Task newTask = new BaseTask(task.getTaskType(), definitions);
-					if (newTask != null) {
+//					if (newTask != null) {
 						TaskUserData userData = new TaskUserDataImpl();
 						userData.setUserComment(task.getComment());
 						userData.setTaskStatus(eu.esdihumboldt.hale.task.TaskUserData.TaskStatus.valueOf(task.getTaskStatus()));
 						
 						taskService.setUserData(newTask, userData);
-					}
-					else {
-						_log.error("Task creation of type " + task.getTaskType() + " failed");
-					}
+//					}
+//					else {
+//						_log.error("Task creation of type " + task.getTaskType() + " failed");
+//					}
 				} catch (IllegalStateException e) {
 					_log.error(e.getMessage());
 				}

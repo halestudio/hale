@@ -12,6 +12,10 @@
 
 package eu.esdihumboldt.hale.models;
 
+import javax.xml.bind.JAXBException;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 
 /**
@@ -54,5 +58,36 @@ public interface ProjectService extends UpdateService {
 	 * @return the configuration type of the instance data
 	 */
 	public ConfigurationType getInstanceDataType();
+	
+	/**
+	 * Clean the project, reset all services
+	 */
+	public void clean();
+	
+	/**
+	 * Load a project from a file
+	 * 
+	 * @param filename the project filename
+	 * @param monitor the progress monitor
+	 */
+	public void load(String filename, IProgressMonitor monitor);
+	
+	/**
+	 * Save the project
+	 * @return false, if no project file name was set
+	 * 
+	 * @throws JAXBException if saving the project fails 
+	 */
+	public boolean save() throws JAXBException;
+	
+	/**
+	 * Save the project to the given file
+	 * 
+	 * @param filename the file name
+	 * @param projectName the project name
+	 * 
+	 * @throws JAXBException if saving the project fails
+	 */
+	public void saveAs(String filename, String projectName) throws JAXBException;
 	
 }

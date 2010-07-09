@@ -32,7 +32,6 @@ import org.geotools.styling.Style;
 
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
-import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.StyleService;
@@ -60,7 +59,28 @@ public class ProjectGenerator {
 	
 	private static Logger _log = Logger.getLogger(ProjectGenerator.class);
 
-	public static void write(String xmlPath, String name) throws JAXBException {
+	private final ProjectService projectService;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param projectService the project service
+	 */
+	public ProjectGenerator(ProjectService projectService) {
+		super();
+		this.projectService = projectService;
+	}
+
+	/**
+	 * Write the project to the given file
+	 * 
+	 * @param xmlPath the file name
+	 * @param name the project name
+	 * 
+	 * @throws JAXBException if writing the project fails
+	 */
+	@SuppressWarnings("unchecked")
+	public void write(String xmlPath, String name) throws JAXBException {
 		
 		// add *.xml extension if is wasn't added before
 		if (!xmlPath.endsWith(".xml")) {
@@ -68,7 +88,7 @@ public class ProjectGenerator {
 		}
 		
 		// create HaleProject object from various services.
-		HaleProject hproject = ProjectGenerator.createHaleProject(xmlPath, name);
+		HaleProject hproject = createHaleProject(xmlPath, name);
 		
 		// 2. marshall AlignmentType to xml
 		JAXBContext jc = JAXBContext.newInstance(
@@ -88,13 +108,9 @@ public class ProjectGenerator {
 				HaleProject.class, hproject), new File(xmlPath));
 	}
 	
-	private static HaleProject createHaleProject(String xmlPath, String name) 
+	private HaleProject createHaleProject(String xmlPath, String name) 
 			throws JAXBException {
 		// get service references as required.
-		ProjectService projectService = 
-			(ProjectService) PlatformUI.getWorkbench().getService(
-					ProjectService.class);
-		
 		TaskService taskService = 
 			(TaskService) PlatformUI.getWorkbench().getService(
 					TaskService.class);

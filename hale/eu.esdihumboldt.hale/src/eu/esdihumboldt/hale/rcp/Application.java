@@ -62,8 +62,7 @@ public class Application implements IApplication {
 		Logger.getLogger(Log4JLogger.class).setLevel(Level.WARN);
 		// provide information on HALE version to console.
 		_log.info("HALE Version: " 
-				+ HALEActivator.getDefault().getBundle().getHeaders().get(
-						"Bundle-Version"));
+				+ HALEActivator.getDefault().getBundle().getVersion().toString());
 		Logger.getRootLogger().setLevel(Level.WARN);
 		
 		WKTPreferencesCRSFactory.install();

@@ -126,7 +126,7 @@
             name="%command.openReference.name">
       </command>
       <command
-            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.SaveAlignmentProjectHandler"
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.SaveAlignmentProjectAsHandler"
             id="HALE.saveAlignmentProjectAs.command"
             name="%command.saveProject.name">
       </command>
@@ -165,6 +165,11 @@
             defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.NetworkSettingsHandler"
             id="HALE.networkSettings.command"
             name="Network Settings...">
+      </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.SaveAlignmentProjectHandler"
+            id="HALE.saveAlignmentProject.command"
+            name="Save Alignment Project">
       </command>
    </extension>
    <extension
@@ -212,6 +217,13 @@
                   name="HALE.separator1"
                   visible="true">
             </separator>
+            <command
+                  commandId="HALE.saveAlignmentProject.command"
+                  icon="icons/save.gif"
+                  id="saveAlignmentProject"
+                  label="Save Alignment Project"
+                  style="push">
+            </command>
             <command
                   commandId="HALE.saveAlignmentProjectAs.command"
                   icon="icons/saveas.gif"
@@ -301,6 +313,13 @@
                   icon="icons/open.gif"
                   id="openProject"
                   label="%command.openProject.label"
+                  style="push">
+            </command>
+            <command
+                  commandId="HALE.saveAlignmentProject.command"
+                  icon="icons/save.gif"
+                  id="saveAlignmentProject"
+                  label="Save Alignment Project"
                   style="push">
             </command>
             <command
