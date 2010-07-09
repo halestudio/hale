@@ -30,7 +30,7 @@ public class DetailedAbout implements IDetailedAbout {
 	
 	private UUID uuid;
 	
-	private final String namespace;
+	private String namespace;
 	
 	private final String featureClass;
 	
@@ -70,7 +70,7 @@ public class DetailedAbout implements IDetailedAbout {
 	public DetailedAbout(String namespace, String featureClass,
 			List<String> properties) {
 		super();
-		this.namespace = namespace;
+		setNamespace(namespace);
 		this.featureClass = featureClass;
 		this.properties = properties;
 	}
@@ -106,7 +106,7 @@ public class DetailedAbout implements IDetailedAbout {
 		// separate in namspace & feature class
 		int typeIndex = main.lastIndexOf(MAIN_DELIMITER);
 		if (typeIndex >= 0 && typeIndex < main.length() + 1) {
-			namespace = main.substring(0, typeIndex);
+			setNamespace(main.substring(0, typeIndex));
 			featureClass = main.substring(typeIndex + 1);
 		}
 		else {
@@ -126,6 +126,20 @@ public class DetailedAbout implements IDetailedAbout {
 		else {
 			properties = null;
 		}
+	}
+
+	/**
+	 * Set the namespace
+	 * 
+	 * @param namespace the namespace
+	 */
+	private void setNamespace(String namespace) {
+		// fix namespace
+		while (namespace != null && namespace.endsWith("/")) {
+			namespace = namespace.substring(0, namespace.length() - 1);
+		}
+		
+		this.namespace = namespace;
 	}
 
 	/**
