@@ -211,6 +211,9 @@ public class ProjectServiceImpl
 	 */
 	@Override
 	public synchronized void saveAs(String filename, String projectName) throws JAXBException {
+		if (projectName == null) {
+			projectName = "default";
+		}
 		generator.write(filename, projectName);
 		this.projectFile = filename;
 		this.projectName = projectName;
