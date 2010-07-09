@@ -23,17 +23,23 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.UpdateService;
+import eu.esdihumboldt.hale.models.alignment.AlignmentServiceListener;
 import eu.esdihumboldt.hale.models.project.generated.HaleProject;
+import eu.esdihumboldt.hale.models.task.TaskServiceListener;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.task.ResolvedTask;
+import eu.esdihumboldt.hale.task.Task;
 
 /**
  * Default implementation of the {@link ProjectService}.
@@ -72,6 +78,8 @@ public class ProjectServiceImpl
 	
 	private String appTitle;
 	
+	private boolean changed = false;
+	
 	/**
 	 * Default constructor
 	 */
@@ -79,8 +87,79 @@ public class ProjectServiceImpl
 		haleVersion = HALEActivator.getDefault().getBundle().getVersion().toString();
 		parser = new ProjectParser(this);
 		generator = new ProjectGenerator(this);
+		
+		// add listeners
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+		as.addListener(new AlignmentServiceListener() {
+			
+			@Override
+			public void update(UpdateMessage<?> message) {
+				// ignore
+			}
+			
+			@Override
+			public void cellsUpdated(Iterable<ICell> cells) {
+				setChanged();
+			}
+			
+			@Override
+			public void cellsAdded(Iterable<ICell> cells) {
+				setChanged();
+			}
+			
+			@Override
+			public void cellRemoved(ICell cell) {
+				setChanged();
+			}
+			
+			@Override
+			public void alignmentCleared() {
+				setChanged();
+			}
+		});
+		
+		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+		ss.addListener(new HaleServiceListener() {
+			
+			@Override
+			public void update(UpdateMessage<?> message) {
+				setChanged();
+			}
+		});
+		
+		TaskService ts = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
+		ts.addListener(new TaskServiceListener() {
+			
+			@Override
+			public void update(UpdateMessage<?> message) {
+				// ignore
+			}
+			
+			@Override
+			public void tasksRemoved(Iterable<Task> tasks) {
+				// ignore
+			}
+			
+			@Override
+			public void tasksAdded(Iterable<Task> tasks) {
+				// ignore
+			}
+			
+			@Override
+			public void taskUserDataChanged(ResolvedTask task) {
+				setChanged();
+			}
+		});
 	}
 	
+	/**
+	 * Set that the project content has changed
+	 */
+	protected void setChanged() {
+		changed = true;
+		updateWindowTitle();
+	}
+
 	/**
 	 * Get the project service instance
 	 * 
@@ -97,6 +176,7 @@ public class ProjectServiceImpl
 	public synchronized void clean() {
 		projectFile = null;
 		projectName = null;
+		changed = false;
 		updateWindowTitle();
 		
 		// clean alignment service
@@ -141,6 +221,7 @@ public class ProjectServiceImpl
 		if (project != null) {
 			projectName = project.getName();
 			projectFile = filename;
+			changed = false;
 			updateWindowTitle();
 		}
 		else {
@@ -176,6 +257,10 @@ public class ProjectServiceImpl
 					title = appTitle + " - " + projectName + " - " + projectFile;
 				}
 				
+				if (changed) {
+					title = title + "*";
+				}
+				
 				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setText(title);
 			}
 		};
@@ -198,6 +283,7 @@ public class ProjectServiceImpl
 				projectName = "default";
 			}
 			generator.write(projectFile, projectName);
+			changed = false;
 			updateWindowTitle();
 			return true;
 		}
@@ -217,6 +303,7 @@ public class ProjectServiceImpl
 		generator.write(filename, projectName);
 		this.projectFile = filename;
 		this.projectName = projectName;
+		changed = false;
 		updateWindowTitle();
 	}
 
@@ -255,6 +342,8 @@ public class ProjectServiceImpl
 	@Override
 	public void setInstanceDataPath(String path) {
 		this.instanceDataPath = path;
+		changed = true;
+		updateWindowTitle();
 		updateListeners();
 	}
 
@@ -267,12 +356,16 @@ public class ProjectServiceImpl
 	@Override
 	public void setSourceSchemaPath(String path) {
 		this.sourceSchemaPath = path;
+		changed = true;
+		updateWindowTitle();
 		updateListeners();
 	}
 
 	@Override
 	public void setTargetSchemaPath(String path) {
 		this.targetSchemaPath = path;
+		changed = true;
+		updateWindowTitle();
 		updateListeners();
 	}
 	
@@ -325,6 +418,8 @@ public class ProjectServiceImpl
 	@Override
 	public void setInstanceDataType(ConfigurationType type) {
 		this.instanceDataType = type;
+		changed = true;
+		updateWindowTitle();
 	}
 
 }

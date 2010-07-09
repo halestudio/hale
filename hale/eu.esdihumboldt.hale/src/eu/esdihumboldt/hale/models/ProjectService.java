@@ -44,7 +44,7 @@ public interface ProjectService extends UpdateService {
 	public void setProjectCreatedDate(String date);
 	
 	public String getHaleVersion();
-
+	
 	/**
 	 * Set the configuration type of the instance data
 	 * 
