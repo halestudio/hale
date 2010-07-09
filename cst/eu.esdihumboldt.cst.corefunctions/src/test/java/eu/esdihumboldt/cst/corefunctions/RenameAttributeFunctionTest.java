@@ -224,7 +224,7 @@ public class RenameAttributeFunctionTest {
 					geomFactory.createMultiLineString(linearRingArray), 	// multilinestring
 					new Date(System.currentTimeMillis()), //date
 					new Timestamp(System.currentTimeMillis()), //timestamp
-					new com.sun.jmx.snmp.Timestamp(System.currentTimeMillis()) //timestamp for exception
+					null //timestamp for exception
 		});
 		return f;
 	}
@@ -256,7 +256,7 @@ public class RenameAttributeFunctionTest {
 			ftbuilder.add("multilinestring", MultiLineString.class);
 			ftbuilder.add("date", Date.class);
 			ftbuilder.add("timestamp", Timestamp.class);
-			ftbuilder.add("timestampexception", com.sun.jmx.snmp.Timestamp.class);
+//			ftbuilder.add("timestampexception", com.sun.jmx.snmp.Timestamp.class);
 			ft = ftbuilder.buildFeatureType();
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);

@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.cst.corefunctions;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.sql.Timestamp;
@@ -113,12 +114,19 @@ public class RenameAttributeFunction
 				// convert string to double
 				value = Double.parseDouble(value.toString());
 			}
-			else if (bindingTarget.equals(String.class) && //XXX why check for the source type?  
-					(bindingSource.equals(Float.class) 
+			else if (bindingSource.equals(String.class) 
+					&& bindingTarget.equals(BigDecimal.class)) {
+				value = new BigDecimal(Double.parseDouble(value.toString()));
+			}
+			else if (bindingSource.equals(Float.class) 
 							|| bindingSource.equals(Double.class) 
 							|| bindingSource.equals(Integer.class) 
 							|| bindingSource.equals(Long.class)
-							|| bindingSource.equals(BigInteger.class))) {
+							|| bindingSource.equals(BigInteger.class) 
+					&& bindingTarget.equals(BigDecimal.class)) {
+				value = new BigDecimal(Double.parseDouble(value.toString()));
+			}
+			else if (bindingTarget.equals(String.class)) {
 				// convert to string
 				value = value.toString();
 			}
