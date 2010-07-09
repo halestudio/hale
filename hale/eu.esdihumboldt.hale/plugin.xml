@@ -475,6 +475,18 @@
             providerClass="eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.XsltMappingExportProvider">
       </MappingExportFactory>
    </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="HALE.saveAlignmentProject.command"
+            schemeId="eu.esdihumboldt.hale.scheme"
+            sequence="M1+S">
+      </key>
+      <scheme
+            id="eu.esdihumboldt.hale.scheme"
+            name="HALE Key bindings">
+      </scheme>
+   </extension>
    <!-- <extension
          point="org.eclipse.ui.importWizards">
       <wizard
