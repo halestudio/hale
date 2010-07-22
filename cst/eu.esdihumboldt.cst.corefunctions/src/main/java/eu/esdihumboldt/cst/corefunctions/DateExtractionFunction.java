@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.cst.corefunctions;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,16 +20,17 @@ import java.util.Date;
 import java.util.List;
 
 import org.opengis.feature.Feature;
-import org.opengis.feature.type.PropertyDescriptor;
 
+import eu.esdihumboldt.cst.AbstractCstFunction;
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.tools.FeatureInspector;
 
 /**
  * This function extracts the date/time from a source string and puts it
@@ -45,18 +47,23 @@ import eu.esdihumboldt.goml.rdf.About;
 
 public class DateExtractionFunction extends AbstractCstFunction {
 	
-	
-//	public static final String DATE_STRING = "dateString";
+	/**
+	 * Source date format parameter name
+	 */
 	public static final String DATE_FORMAT_SOURCE = "dateFormatSource";
+	/**
+	 * Target date format parameter name
+	 */
 	public static final String DATE_FORMAT_TARGET = "dateFormatTarget";
 	
-
-
 	private String dateFormatSource = null;
 	private String dateFormatTarget = null;
 	private Property targetProperty = null;
 	private Property sourceProperty = null;
 
+	/**
+	 * @see CstFunction#configure(ICell)
+	 */
 	public boolean configure(ICell cell) {
 		for (IParameter ip : cell.getEntity1().getTransformation().getParameters()) {
 			if (ip.getName().equals(DateExtractionFunction.DATE_FORMAT_SOURCE)) {
@@ -78,6 +85,9 @@ public class DateExtractionFunction extends AbstractCstFunction {
 		return true;
 	}
 
+	/**
+	 * @see CstFunction#getParameters()
+	 */
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();	
 		Property entity1 = new Property(new About(""));
@@ -111,15 +121,16 @@ public class DateExtractionFunction extends AbstractCstFunction {
 		return parameterCell;
 	}
 	
+	/**
+	 * @see CstFunction#transform(Feature, Feature)
+	 */
 	public Feature transform(Feature source, Feature target) {
 		//transform date string
 		SimpleDateFormat sdf = new SimpleDateFormat(); 
 		sdf.applyPattern(this.dateFormatSource);
 		
 		//get the date string from the source
-		String dateString = (String) source.getProperty(
-				this.sourceProperty.getLocalname()).getValue();
-				
+		String dateString = (String) FeatureInspector.getPropertyValue(source, sourceProperty.getAbout(), null); 
 		
 		Date sourceDate = null;
 		try {
@@ -129,25 +140,30 @@ public class DateExtractionFunction extends AbstractCstFunction {
 					+ dateString + " using the supplied format " 
 					+ this.dateFormatSource + " failed.", e);
 		}
-		sdf.applyPattern(this.dateFormatTarget);
 
-		PropertyDescriptor pd = target.getProperty(
-				this.targetProperty.getLocalname()).getDescriptor();
+		org.opengis.feature.Property targetProperty = FeatureInspector.getProperty(target, this.targetProperty.getAbout(), true);
 		
-		org.opengis.feature.Property p = target.getProperty(this.targetProperty.getLocalname());
-
-		
-		if (pd.getType().getBinding().equals(String.class)) {
-			p.setValue(sdf.format(sourceDate));
+		Class<?> targetBinding = targetProperty.getType().getBinding();
+		if (targetBinding.equals(String.class)) {
+			// string target property
+			sdf.applyPattern(this.dateFormatTarget);
+			targetProperty.setValue(sdf.format(sourceDate));
 		}
-		
-		
-		if (pd.getType().getBinding().equals(Date.class) || Date.class.isAssignableFrom(
-				target.getProperty(
-						this.targetProperty.getLocalname()).getType().getBinding())) {
-				p.setValue(sdf.format(sourceDate));
+		if (Date.class.isAssignableFrom(targetBinding)) {
+			// default to the java.util.Date value
+			Date value = sourceDate;
 			
+			// date target property
+			if (targetBinding.equals(Timestamp.class)) {
+				// java.sql.Timestamp binding
+				value = new Timestamp(value.getTime());
+			}
+			else if (targetBinding.equals(java.sql.Date.class)) {
+				// java.sql.Date binding
+				value = new java.sql.Date(value.getTime());
+			}
 			
+			targetProperty.setValue(value);
 		}
 		
 		return target;
