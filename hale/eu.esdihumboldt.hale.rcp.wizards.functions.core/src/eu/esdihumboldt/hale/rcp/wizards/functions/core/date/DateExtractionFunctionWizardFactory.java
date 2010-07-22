@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.date;
 
+import java.util.Date;
+
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.corefunctions.DateExtractionFunction;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
@@ -67,6 +69,21 @@ public class DateExtractionFunctionWizardFactory implements
 				return cell.getEntity1().getTransformation().getService().getLocation().equals(
 						DateExtractionFunction.class.getName());
 			} catch (NullPointerException e) {
+				return false;
+			}
+		}
+		else {
+			// new cell
+			
+			// source item must be a string
+			if (!String.class.isAssignableFrom(source.getPropertyType().getBinding())) {
+				return false;
+			}
+			
+			// target must be a string or a date
+			Class<?> targetBinding = target.getPropertyType().getBinding();
+			if (!String.class.isAssignableFrom(targetBinding)
+					&& !Date.class.isAssignableFrom(targetBinding)) {
 				return false;
 			}
 		}
