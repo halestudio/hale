@@ -143,7 +143,7 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 				for(IValueExpression value : sourceValues) {
 					// TODO Should we be testing the equivalence of the source property value against the literal?
 					// Is literal always populated?  I would have assumed the equal() would have worked on the value object
-					if(sourcePropValue.equals(value.getLiteral())) {
+					if(sourcePropValue.toString().equals(value.getLiteral())) {
 						// We have found one of the values so we can break and return true;
 						result = true;
 						break;
