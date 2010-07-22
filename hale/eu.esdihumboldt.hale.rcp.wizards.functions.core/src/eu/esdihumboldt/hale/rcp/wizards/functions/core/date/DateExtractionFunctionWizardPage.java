@@ -70,7 +70,7 @@ public class DateExtractionFunctionWizardPage extends AbstractSingleCellWizardPa
 		// target format
 		Label providerLabel = new Label(page, SWT.NONE);
 		providerLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		providerLabel.setText("Target date format pattern");
+		providerLabel.setText("Target date format pattern (optional)");
 		
 		this.targetFormat = new Text(page, SWT.BORDER);
 		this.targetFormat.setText("yyyy-MM-dd HH:mm:ss");
