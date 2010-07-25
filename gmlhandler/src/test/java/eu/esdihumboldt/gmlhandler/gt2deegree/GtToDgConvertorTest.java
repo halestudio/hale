@@ -9,9 +9,13 @@ import java.net.URL;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.deegree.commons.tom.primitive.PrimitiveType;
+import org.deegree.commons.tom.primitive.PrimitiveValue;
+import org.deegree.cs.CRS;
 import org.deegree.feature.FeatureCollection;
 import org.deegree.filter.FilterEvaluationException;
 import org.deegree.filter.IdFilter;
+import org.deegree.geometry.standard.multi.DefaultMultiLineString;
 import org.deegree.geometry.standard.primitive.DefaultPoint;
 import org.geotools.data.DataUtilities;
 import org.geotools.factory.FactoryRegistryException;
@@ -30,6 +34,8 @@ import org.xml.sax.SAXException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.Point;
 
 import eu.esdihumboldt.gmlhandler.gt2deegree.GtToDgConvertor;
@@ -133,6 +139,11 @@ public class GtToDgConvertorTest {
 	@Test
 	public void testSimpleAttributeConversion() {
 		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsGMLFC);
+		//TODO check imported schemas 
+		//1. check schema location
+		//2. check namespaces
+		dgFC.getType().getSchema().getXSModel().getNamespaces();
+		//3. check other xml attributes like number of features and time stamp
 		//check fc  size
 		assertEquals(4, dgFC.size());
 		//check feature with feature id = gml:id="Watercourses_BY.3
@@ -143,6 +154,30 @@ public class GtToDgConvertorTest {
 			 assertEquals(1, dgFC.getMembers(new IdFilter("Watercourses_BY.3")).size());
 			 dgFeature = (org.deegree.feature.Feature)dgFC.getMembers(new IdFilter("Watercourses_BY.3")).iterator().next();
 			 assertEquals(18, dgFeature.getProperties().length);
+			 //check geometry property
+			 org.deegree.feature.property.Property [] geomProperty = dgFeature.getGeometryProperties();
+			 assertEquals(1,geomProperty.length);
+			 //check geometry property type
+			 DefaultMultiLineString multiLineString  = (DefaultMultiLineString)geomProperty[0].getValue();
+			 CRS deegreeCRS = multiLineString.getCoordinateSystem();
+			 assertEquals("urn:x-ogc:def:crs:EPSG:31468", deegreeCRS.getName());
+			 assertEquals(MultiLineString.class, multiLineString.getJTSGeometry().getClass());
+			 MultiLineString jtsMultiLineString = (MultiLineString)multiLineString.getJTSGeometry();
+			 assertEquals(1, jtsMultiLineString.getNumGeometries());
+			 LineString jtsLineString = (LineString)jtsMultiLineString.getGeometryN(0);
+			 assertEquals(24, jtsLineString.getCoordinateSequence().size());
+			 Coordinate coordinate = jtsLineString.getCoordinateN(0);
+			 assertEquals(5276443.08, coordinate.x, 0.0);
+			 assertEquals(4322361.16, coordinate.y, 0.0);
+			 //check property <topp:GN>Nonnenbach</topp:GN>
+			 org.deegree.feature.property.Property gnProperty = dgFeature.getProperties()[6];
+			 //test property name including the namespace
+			 assertEquals("topp", gnProperty.getName().getPrefix());
+			 assertEquals("GN", gnProperty.getName().getLocalPart());
+			 assertEquals("Nonnenbach",((PrimitiveValue)gnProperty.getValue()).getAsText());
+			 
+			 
+			 
 		} catch (FilterEvaluationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

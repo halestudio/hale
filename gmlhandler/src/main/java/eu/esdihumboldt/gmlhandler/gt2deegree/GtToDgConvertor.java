@@ -38,6 +38,7 @@ import org.deegree.gml.GMLVersion;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.Geometries;
 import org.opengis.feature.Feature;
+import org.opengis.feature.GeometryAttribute;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.FeatureType;
@@ -227,7 +228,7 @@ public class GtToDgConvertor {
 	 * @return Geometry
 	 */
 	private static Geometry createDgGeometry(Property gtProp) {
-		// TODO provide junit testcasefor this method --> high priority
+		
 		Geometry dgGeometry = null;
 		String geometryName = gtProp.getDescriptor().getType().getBinding()
 				.getSimpleName();
@@ -240,9 +241,9 @@ public class GtToDgConvertor {
 		// TODO test it
 		String id = UUID.randomUUID().toString();
 		// 2.TODO figure out CRS
-		// org.deegree.cs.CRS dgCRS =
-		// createCRS(gtProp.getType().getCoordinateReferenceSystem());
-		org.deegree.cs.CRS dgCRS = null;
+		 CoordinateReferenceSystem crs = ((org.opengis.feature.type.GeometryType)gtProp.getType()).getCoordinateReferenceSystem();
+		 org.deegree.cs.CRS dgCRS = createCRS(crs);
+		
 		// 3. precision model
 		// TODO find a nicer way to define it
 		org.deegree.geometry.precision.PrecisionModel pm = org.deegree.geometry.precision.PrecisionModel.DEFAULT_PRECISION_MODEL;
@@ -250,86 +251,36 @@ public class GtToDgConvertor {
 		switch (geomType) {
 		case POLYGON:
 			Polygon gtPoligon = (Polygon) gtProp.getValue();
-			Ring exteriorRing = createRing(gtPoligon.getExteriorRing());
-			int numOfInterRings = gtPoligon.getNumInteriorRing();
-			List<Ring> interiorRings = new ArrayList<Ring>(numOfInterRings);
-			Ring interiorRing = null;
-			for (int i = 0; i < numOfInterRings; i++) {
-				interiorRing = createRing(gtPoligon.getInteriorRingN(i));
-				interiorRings.add(interiorRing);
-
-			}
-			dgGeometry = new DefaultPolygon(id, dgCRS, pm, exteriorRing,
-					interiorRings);
 			dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry) dgGeometry)
 					.createFromJTS(gtPoligon);
 			break;
 		case MULTIPOLYGON:
 			MultiPolygon gtMultiPolygon = (MultiPolygon) gtProp.getValue();
-			int numOfPolygs = gtMultiPolygon.getNumGeometries();
-			List<org.deegree.geometry.primitive.Polygon> dgPolygons = new ArrayList<org.deegree.geometry.primitive.Polygon>(
-					numOfPolygs);
-			org.deegree.geometry.primitive.Polygon dgPolygon;
-			for (int i = 0; i < numOfPolygs; i++) {
-				dgPolygon = createDefaultPolygon((Polygon) gtMultiPolygon
-						.getGeometryN(i));
-				dgPolygons.add(dgPolygon);
-			}
-			dgGeometry = new DefaultMultiPolygon(id, dgCRS, pm, dgPolygons);
 			dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry) dgGeometry)
 					.createFromJTS(gtMultiPolygon);
 			break;
 
 		case LINESTRING:
 			LineString gtLineString = (LineString) gtProp.getValue();
-			Points dgLineStringPoints = createDGPoints(gtLineString
-					.getCoordinates());
-			dgGeometry = new org.deegree.geometry.standard.primitive.DefaultLineString(
-					id, dgCRS, pm, dgLineStringPoints);
 			dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry) dgGeometry)
 					.createFromJTS(gtLineString);
 			break;
 		case MULTILINESTRING:
 			MultiLineString gtMultiLineString = (MultiLineString) gtProp.getValue();
-			int numOfLineStrings = gtMultiLineString.getNumGeometries();
-			List<org.deegree.geometry.primitive.LineString> dgLineStrings = new ArrayList<org.deegree.geometry.primitive.LineString>(
-					numOfLineStrings);
-			org.deegree.geometry.primitive.LineString dgLineString;
-			for (int i = 0; i < numOfLineStrings; i++) {
-				dgLineString = createLineString(gtMultiLineString
-						.getGeometryN(i));
-				dgLineStrings.add(dgLineString);
-			}
-			dgGeometry = new org.deegree.geometry.standard.multi.DefaultMultiLineString(
-					id, dgCRS, pm, dgLineStrings);
 			dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry) dgGeometry)
 					.createFromJTS(gtMultiLineString);
 			break;
 
 		case POINT:
 			Point gtPoint = (Point) (gtProp.getValue());
-
-			double[] dgCoordinates = createCoordinates(gtPoint.getCoordinates());
-			dgGeometry = new org.deegree.geometry.standard.primitive.DefaultPoint(
-					id, dgCRS, pm, dgCoordinates);
 			dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry) dgGeometry)
 					.createFromJTS(gtPoint);
 			break;
 		case MULTIPOINT:
 			MultiPoint gtMultiPoint = (MultiPoint) gtProp.getValue();
-			int numOfPoints = gtMultiPoint.getNumGeometries();
-			List<org.deegree.geometry.primitive.Point> dgPoints = new ArrayList<org.deegree.geometry.primitive.Point>(
-					numOfPoints);
-			org.deegree.geometry.primitive.Point dgPoint;
-			for (int i = 0; i < numOfPoints; i++) {
-				dgPoint = createPoint(gtMultiPoint.getGeometryN(i));
-				dgPoints.add(dgPoint);
-
-			}
-			dgGeometry = new org.deegree.geometry.standard.multi.DefaultMultiPoint(
-					id, dgCRS, pm, dgPoints);
 			dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry) dgGeometry)
 					.createFromJTS(gtMultiPoint);
+			
 
 			break;
 
@@ -337,47 +288,25 @@ public class GtToDgConvertor {
 
 			break;
 		}
-
+		//set id
+		dgGeometry.setId(id);
+		//set srs
+		dgGeometry.setCoordinateSystem(dgCRS);
+		//set precision model
+		dgGeometry.setPrecision(pm);
 		return dgGeometry;
 	}
 
-	private static org.deegree.geometry.primitive.Point createPoint(
-			com.vividsolutions.jts.geom.Geometry geometryN) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private static double[] createCoordinates(Coordinate[] coordinates) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private static org.deegree.geometry.primitive.LineString createLineString(
-			com.vividsolutions.jts.geom.Geometry geometryN) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private static Points createDGPoints(Coordinate[] coordinates) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private static org.deegree.geometry.primitive.Polygon createDefaultPolygon(
-			Polygon geometryN) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private static Ring createRing(LineString exteriorRing) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
+	/**
+	 * 
+	 * @param geotools coordinateReferenceSystem
+	 * @return deegree-based Coordinate Reference System
+	 */
 	private static CRS createCRS(
 			CoordinateReferenceSystem coordinateReferenceSystem) {
-		// TODO Auto-generated method stub
-		return null;
+		CRS dgCrs = new CRS(org.geotools.referencing.CRS.toSRS(coordinateReferenceSystem));
+		return dgCrs;
 	}
 
 	/**
