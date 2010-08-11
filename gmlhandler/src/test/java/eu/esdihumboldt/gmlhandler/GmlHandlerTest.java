@@ -59,6 +59,10 @@ public class GmlHandlerTest {
 
 	/** handler to proceed gmldata */
 	private static GmlHandler gmlHandler;
+	
+	/** URL of XSD for tests **/
+	private static final String xsdUrl = 	"file://" + (new GmlHandlerTest()).getClass()
+										  .getResource("./HydroPhysicalWaters.xsd").getFile();
 
 	/**
 	 * @throws java.lang.Exception
@@ -84,7 +88,7 @@ public class GmlHandlerTest {
 				namespaces);
 
 		// set target gml destination
-		gmlHandler.setTargetGmlUrl(GML32_GENERATED_LOCATION);
+		gmlHandler.setTargetGmlUrl(GML32_GENERATED_LOCATION);				
 	}
 
 	/**
@@ -110,10 +114,8 @@ public class GmlHandlerTest {
 			ClassCastException, ClassNotFoundException, InstantiationException,
 			IllegalAccessException {
 		// read application schema stored locally
-		String url = "file://"
-				+ this.getClass().getResource("./HydroPhysicalwaters.xsd")
-						.getFile();
-		gmlHandler.setSchemaUrl(url);
+		
+		gmlHandler.setSchemaUrl(xsdUrl);
 		ApplicationSchema schema = gmlHandler.readSchema();
 
 		// validate root FeatureTypes
@@ -168,11 +170,8 @@ public class GmlHandlerTest {
 	@Test
 	public final void testReadLocalSchema() throws MalformedURLException,
 			ClassCastException, ClassNotFoundException, InstantiationException,
-			IllegalAccessException {
-		String url = "file://"
-				+ this.getClass().getResource("./HydroPhysicalwaters.xsd")
-						.getFile();
-		gmlHandler.setSchemaUrl(url);
+			IllegalAccessException {		
+		gmlHandler.setSchemaUrl(xsdUrl);
 
 		// read application schema
 		gmlHandler.readSchema();
@@ -197,11 +196,8 @@ public class GmlHandlerTest {
 			IOException, ClassNotFoundException, InstantiationException,
 			IllegalAccessException, UnknownCRSException {
 		LOG.info("Reading of source Feature Collection..");
-
-		String schemaUrl = "file://"
-				+ this.getClass().getResource("./HydroPhysicalwaters.xsd")
-						.getFile();
-		gmlHandler.setSchemaUrl(schemaUrl);
+		
+		gmlHandler.setSchemaUrl(xsdUrl);
 		String urlPath = "file://"
 				+ this.getClass().getResource("./va_target_v3.gml").getFile();
 		gmlHandler.setGmlUrl(urlPath);
@@ -263,10 +259,8 @@ public class GmlHandlerTest {
 			InstantiationException, IllegalAccessException {
 		// TODO provide XUNIT-based testing
 		// TODO clean up generated file after
-		String schemaUrl = "file://"
-				+ this.getClass().getResource("./HydroPhysicalwaters.xsd")
-						.getFile();
-		gmlHandler.setSchemaUrl(schemaUrl);
+		
+		gmlHandler.setSchemaUrl(xsdUrl);
 		String urlPath = "file://"
 				+ this.getClass().getResource("./va_target_v3.gml").getFile();
 		gmlHandler.setGmlUrl(urlPath);
