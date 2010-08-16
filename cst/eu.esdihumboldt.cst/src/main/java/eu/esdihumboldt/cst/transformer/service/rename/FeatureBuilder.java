@@ -28,8 +28,10 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
+import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.identity.Identifier;
 
+import eu.esdihumboldt.cst.transformer.service.impl.IdGenerator;
 import eu.esdihumboldt.goml.omwg.Property;
 
 /**
@@ -43,11 +45,28 @@ import eu.esdihumboldt.goml.omwg.Property;
 public class FeatureBuilder {
 	
 	/**
+	 * The key for the feature user data where its source feature's
+	 * {@link FeatureId} is put.
+	 */
+	public static final Object SOURCE_ID = "source_feature_id";
+	
+	/**
+	 * Get the source feature ID for a transformed feature
+	 * 
+	 * @param transformed the transformed feature
+	 * 
+	 * @return the source feature ID (if any)
+	 */
+	public static FeatureId getSourceID(Feature transformed) {
+		return (FeatureId) transformed.getUserData().get(SOURCE_ID);
+	}
+
+	/**
 	 * @param ft the {@link FeatureType} for which to build a {@link Feature}.
 	 * @param source a source {@link Feature} from which to use the ID.
 	 * @param createNestedFeatures set to true if you want the feature builder 
 	 * to already create one instance for each attribute that is itself a feature.
-	 * @return
+	 * @return the created feature
 	 */
 	@SuppressWarnings("unchecked")
 	public static Feature buildFeature(FeatureType ft, Feature source, boolean createNestedFeatures) {
@@ -81,7 +100,11 @@ public class FeatureBuilder {
 					new FeatureIdImpl(UUID.randomUUID().toString()));
 		}
 		else {
-			target = new FeatureImpl(properties, targetType, source.getIdentifier());
+			// determine the feature ID for the target feature 
+			FeatureId id = IdGenerator.getTransformationId(source, ft); //source.getIdentifier();
+			target = new FeatureImpl(properties, targetType, id);
+			// store the source feature ID in the user data
+			target.getUserData().put(SOURCE_ID, source.getIdentifier());
 		}
 
 		return target;
