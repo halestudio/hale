@@ -35,9 +35,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.opengis.feature.Feature;
+import org.opengis.filter.identity.FeatureId;
 import org.opengis.metadata.lineage.Lineage;
 import org.opengis.metadata.lineage.ProcessStep;
 
+import eu.esdihumboldt.cst.transformer.service.rename.FeatureBuilder;
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNodeLabelProvider;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
@@ -180,14 +182,28 @@ public class DefinitionFeatureTreeViewer {
 
 				@Override
 				public int compare(Feature o1, Feature o2) {
-					return o1.getIdentifier().getID().compareTo(o2.getIdentifier().getID());
+					FeatureId id1 = FeatureBuilder.getSourceID(o1);
+					if (id1 == null) {
+						id1 = o1.getIdentifier();
+					}
+					
+					FeatureId id2 = FeatureBuilder.getSourceID(o2);
+					if (id2 == null) {
+						id2 = o2.getIdentifier();
+					}
+					
+					return id1.getID().compareTo(id2.getID());
 				}
 				
 			});
 			
 			for (Feature feature : sortedFeatures) {
 				TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.LEFT);
-				column.getColumn().setText(feature.getIdentifier().toString());
+				FeatureId id = FeatureBuilder.getSourceID(feature);
+				if (id == null) {
+					id = feature.getIdentifier();
+				}
+				column.getColumn().setText(id.toString());
 				column.setLabelProvider(new TreeColumnViewerLabelProvider(
 						new PropertyItemLabelProvider(feature, index)));
 				if (layout instanceof TreeColumnLayout) {
