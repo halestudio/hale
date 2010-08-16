@@ -45,6 +45,8 @@ import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.project.generated.HaleProject;
 import eu.esdihumboldt.hale.models.project.generated.Task;
 import eu.esdihumboldt.hale.models.project.generated.TaskStatus;
+import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
 import eu.esdihumboldt.hale.rcp.views.map.MapView;
 import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
 import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
@@ -109,8 +111,23 @@ public class ProjectParser {
 		}
 		
 		if (root != null) {
-			load(root.getValue(), monitor);
+			List<String> errors = load(root.getValue(), monitor);
 			monitor.done();
+			
+			// show error dialog
+			StringBuffer message = new StringBuffer("The project was loaded but " +
+					"the following operations failed:\n\n");
+			for (int i = 0; i < errors.size(); i++) {
+				if (i != 0) {
+					message.append('\n');
+				}
+				message.append("- ");
+				message.append(errors.get(i));
+			}
+			
+			ExceptionHelper.handleException(message.toString(), 
+					HALEActivator.PLUGIN_ID, null);
+			
 			return root.getValue();
 		}
 		else {
@@ -119,7 +136,7 @@ public class ProjectParser {
 		}
 	}
 
-	private void load(HaleProject project, final IProgressMonitor monitor) {
+	private List<String> load(HaleProject project, final IProgressMonitor monitor) {
 		projectService.clean();
 		
 		// get service references as required.
@@ -170,8 +187,11 @@ public class ProjectParser {
 				projectService.setTargetSchemaPath(project.getTargetSchema().getPath());
 			}
 		} catch (Exception e) {
+			// fail
 			throw new RuntimeException("Schema could not be loaded: ", e);
 		}
+		
+		List<String> errors = new ArrayList<String>();
 		
 		// second, load alignment.
 		monitor.subTask("Mapping");
@@ -182,7 +202,11 @@ public class ProjectParser {
 						reader.read(project.getOmlPath()));
 				_log.info("Number of loaded cells: " + alignmentService.getAlignment().getMap().size());
 			} catch (Exception e) {
-				throw new RuntimeException("Alignment could not be loaded: ", e);
+				// continue
+				String message = "Mapping could not be loaded"; 
+				_log.error(message, e);
+				errors.add(message + ": " + e.getMessage());
+				alignmentService.cleanModel();
 			}
 		}
 		
@@ -195,7 +219,11 @@ public class ProjectParser {
 				try {
 					styleService.addStyles(new File(path).toURI().toURL());
 				} catch (Exception e) {
-					_log.warn("Error loading SLD from " + path, e);
+					// continue
+					String message = "Error loading SLD from " + path; 
+					_log.error(message, e);
+					errors.add(message);
+					styleService.clearStyles();
 				}
 			}
 			// background
@@ -247,7 +275,11 @@ public class ProjectParser {
 				projectService.setInstanceDataType(conf);
 				
 			} catch (Exception e) {
-				throw new RuntimeException("Instances could not be loaded: ", e);
+				// continue
+				String message = "Instances could not be loaded"; 
+				_log.error(message, e);
+				errors.add(message + ": " + e.getMessage());
+				instanceService.cleanInstances();
 			}
 		}
 		
@@ -289,6 +321,8 @@ public class ProjectParser {
 		
 		// Finally, initialize other ProjectService values.
 		projectService.setProjectCreatedDate(project.getDateCreated());
+		
+		return errors;
 	}
 
 }
