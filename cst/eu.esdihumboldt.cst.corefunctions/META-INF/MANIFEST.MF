@@ -12,7 +12,8 @@ Require-Bundle: eu.esdihumboldt.commons;bundle-version="3.0.4",
  org.junit4;bundle-version="4.5.0",
  eu.esdihumboldt.hale.schemaprovider;bundle-version="1.0.1",
  eu.esdihumboldt.transformer.cst;bundle-version="1.0.3",
- org.apache.ws.commons.schema;bundle-version="1.4.4"
+ org.apache.ws.commons.schema;bundle-version="1.4.4",
+ org.apache.commons.convert;bundle-version="1.0.0"
 Export-Package: eu.esdihumboldt.cst.corefunctions,
  eu.esdihumboldt.cst.corefunctions.inspire
 Eclipse-RegisterBuddy: eu.esdihumboldt.transformer.cst

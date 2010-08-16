@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.convert.ConversionException;
+import org.apache.commons.convert.Converter;
+import org.apache.commons.convert.Converters;
 import org.opengis.feature.Feature;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -49,7 +52,7 @@ import eu.esdihumboldt.tools.FeatureInspector;
  */
 public class RenameAttributeFunction 
 	extends AbstractCstFunction {
-
+	
 	/**
 	 * SourceEntiy
 	 */
@@ -66,6 +69,7 @@ public class RenameAttributeFunction
 	 * 
 	 * @see CstFunction#transform(Feature, Feature)
 	 */
+	@SuppressWarnings("unchecked")
 	public Feature transform(Feature source, Feature target) {
 		org.opengis.feature.Property sourceProperty = FeatureInspector.getProperty(source, this.sourceEntity.getAbout(), true);
 		//XXX instead of creating the source property if it is not present, just skip the transformation?
@@ -78,8 +82,6 @@ public class RenameAttributeFunction
 		Object value = sourceProperty.getValue();
 		
 		if (value != null) {
-			//XXX this would be a nice place to use some sort of converter framework (that can be extended)
-			
 			if (bindingTarget.isAssignableFrom(bindingSource)) {
 				// do a direct copy if the target is directly assignable from the source type
 				// value mustn't be changed
@@ -88,58 +90,82 @@ public class RenameAttributeFunction
 				// do a direct copy if the target is directly assignable from the source value
 				// value mustn't be changed
 			}
-			else if (Geometry.class.isAssignableFrom(bindingSource) 
-					&& Geometry.class.isAssignableFrom(bindingTarget)) {
-				// geometry conversion
-				value = convertSpatialType(bindingSource, bindingTarget, 
-						(Geometry) value);
-			}
-			else if (bindingSource.equals(String.class) 
-					&& bindingTarget.equals(Integer.class)) {
-				// convert string to int
-				value = Integer.parseInt(value.toString());
-			}
-			else if (bindingSource.equals(String.class) 
-					&& bindingTarget.equals(Long.class)) {
-				// convert string to long
-				value = Long.parseLong(value.toString());
-			}
-			else if (bindingSource.equals(String.class) 
-					&& bindingTarget.equals(Float.class)) {
-				// convert string to float
-				value = Float.parseFloat(value.toString());
-			}
-			else if (bindingSource.equals(String.class) 
-					&& bindingTarget.equals(Double.class)) {
-				// convert string to double
-				value = Double.parseDouble(value.toString());
-			}
-			else if (bindingSource.equals(String.class) 
-					&& bindingTarget.equals(BigDecimal.class)) {
-				value = new BigDecimal(Double.parseDouble(value.toString()));
-			}
-			else if (bindingSource.equals(Float.class) 
-							|| bindingSource.equals(Double.class) 
-							|| bindingSource.equals(Integer.class) 
-							|| bindingSource.equals(Long.class)
-							|| bindingSource.equals(BigInteger.class) 
-					&& bindingTarget.equals(BigDecimal.class)) {
-				value = new BigDecimal(Double.parseDouble(value.toString()));
-			}
-			else if (bindingTarget.equals(String.class)) {
-				// convert to string
-				value = value.toString();
-			}
-			else if (value instanceof Date && bindingTarget.isAssignableFrom(Timestamp.class)) {
-				// Date to Timestamp
-				value = new Timestamp(((Date) value).getTime());
-			}
 			else {
-				throw new UnsupportedOperationException("For the given source (" 
-						+ bindingSource.getName() +
-						") and target (" + bindingTarget.getName() 
-						+ ") attribute bindings, this rename function " +
-						"cannot be used.");
+				Converter<Object, Object> converter;
+				try {
+					converter = (Converter<Object, Object>) Converters.getConverter(bindingSource, bindingTarget);
+				} catch (ClassNotFoundException e) {
+					// no converter could be found
+					converter = null;
+				}
+				
+				boolean success = false;
+				if (converter != null) {
+					try {
+						value = converter.convert(value);
+						success = true;
+					} catch (ConversionException e) {
+						// ignore
+					}
+				}
+				
+				if (!success) {
+					// fall back to internal conversion (as used before)
+					
+					if (Geometry.class.isAssignableFrom(bindingSource) 
+							&& Geometry.class.isAssignableFrom(bindingTarget)) {
+						// geometry conversion
+						value = convertSpatialType(bindingSource, bindingTarget, 
+								(Geometry) value);
+					}
+					else if (bindingSource.equals(String.class) 
+							&& bindingTarget.equals(Integer.class)) {
+						// convert string to int
+						value = Integer.parseInt(value.toString());
+					}
+					else if (bindingSource.equals(String.class) 
+							&& bindingTarget.equals(Long.class)) {
+						// convert string to long
+						value = Long.parseLong(value.toString());
+					}
+					else if (bindingSource.equals(String.class) 
+							&& bindingTarget.equals(Float.class)) {
+						// convert string to float
+						value = Float.parseFloat(value.toString());
+					}
+					else if (bindingSource.equals(String.class) 
+							&& bindingTarget.equals(Double.class)) {
+						// convert string to double
+						value = Double.parseDouble(value.toString());
+					}
+					else if (bindingSource.equals(String.class) 
+							&& bindingTarget.equals(BigDecimal.class)) {
+						value = new BigDecimal(Double.parseDouble(value.toString()));
+					}
+					else if (bindingSource.equals(Float.class) 
+									|| bindingSource.equals(Double.class) 
+									|| bindingSource.equals(Integer.class) 
+									|| bindingSource.equals(Long.class)
+									|| bindingSource.equals(BigInteger.class) 
+							&& bindingTarget.equals(BigDecimal.class)) {
+						value = new BigDecimal(Double.parseDouble(value.toString()));
+					}
+					else if (bindingTarget.equals(String.class)) {
+						// convert to string
+						value = value.toString();
+					}
+					else if (value instanceof Date && bindingTarget.isAssignableFrom(Timestamp.class)) {
+						// Date to Timestamp
+						value = new Timestamp(((Date) value).getTime());
+					}
+					else {
+						throw new UnsupportedOperationException("For the given source (" 
+								+ bindingSource.getName() +
+								") and target (" + bindingTarget.getName() 
+								+ ") attribute bindings, this rename function " +
+								"cannot be used.");
+					}
+				}
 			}
 		}
 		
