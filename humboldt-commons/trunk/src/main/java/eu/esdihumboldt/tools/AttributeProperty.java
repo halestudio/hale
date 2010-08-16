@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.tools;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -152,6 +154,29 @@ public class AttributeProperty implements Property {
 		}
 		
 		attributes.put(getKey(), newValue.toString());
+	}
+
+	/**
+	 * Get the existing attributes
+	 * 
+	 * @param parent the parent of the attribute properties
+	 * 
+	 * @return the existing attribute properties
+	 */
+	@SuppressWarnings("unchecked")
+	public static Collection<? extends Property> getAttributeProperties(
+			Property parent) {
+		Collection<Property> result = new ArrayList<Property>();
+		
+		Object attributes = parent.getUserData().get(XML_ATTRIBUTES);
+		if (attributes instanceof Map<?, ?>) {
+			Map<String, String> attMap = (Map<String, String>) attributes;
+			for (String attributeName : attMap.keySet()) {
+				result.add(new AttributeProperty(parent, attributeName));
+			}
+		}
+		
+		return result;
 	}
 
 }

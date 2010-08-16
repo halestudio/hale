@@ -136,6 +136,35 @@ public class FeatureInspector {
 			DetailedAbout.getDetailedAbout(propertyAbout, true).getProperties(), 
 			create);
 	}
+	
+	/**
+	 * Get the existing properties for the given feature. To get nested 
+	 * properties you will have to call this method on its properties.
+	 *  
+	 * @param feature the feature, complex attribute or property
+	 * 
+	 * @return the feature's properties
+	 */
+	public static Collection<Property> getProperties(Property feature) {
+		Collection<Property> result = new ArrayList<Property>();
+		
+		if (feature instanceof ComplexAttribute) {
+			// property is a complex attribute -> add its properties
+			result.addAll(((ComplexAttribute) feature).getProperties());
+		}
+		else {
+			Object propertyValue = feature.getValue();
+			if (propertyValue instanceof ComplexAttribute) {
+				// value is a complex property -> retrieve its properties
+				result.addAll(getProperties((Property) propertyValue));
+			}
+		}
+		
+		// add attributes
+		result.addAll(AttributeProperty.getAttributeProperties(feature));
+		
+		return result;
+	}
 
 	/**
 	 * Get the (nested) property of a feature 
