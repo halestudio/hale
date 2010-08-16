@@ -63,12 +63,13 @@ public class IoBridgeIntegrationTest {
 				.getRegisteredFunctions();
 		functions.clear();
 		functions = tf.getRegisteredFunctions();
-		Assert.assertTrue(functions.size() > 0);
+		Assert.assertTrue(functions.size() > 2);
 	}
 	
 	@Test
 	public void testTransform() {
-			
+		CstFunctionFactory tf = CstFunctionFactory.getInstance();
+		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
 		try {
 	
 			URL xsd = this.getClass().getResource(
