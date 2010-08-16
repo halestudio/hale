@@ -13,13 +13,18 @@ package eu.esdihumboldt.cst.transformer.service.impl;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 import org.geotools.filter.identity.FeatureIdImpl;
+import org.opengis.feature.ComplexAttribute;
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
+import org.opengis.feature.type.ComplexType;
 import org.opengis.filter.identity.FeatureId;
+
+import eu.esdihumboldt.tools.FeatureInspector;
 
 /**
  * This class provides means of equipping features with repeatable Feature IDs.
@@ -92,6 +97,54 @@ public class IdGenerator {
 		}
 		UUID fid = new UUID(mostSignificant.hashCode(), 
 				leastSignificant.hashCode());
+		return new FeatureIdImpl(fid.toString());
+	}
+	
+	/**
+	 * Create a feature ID for a transformed feature of the given target type
+	 * originating from the given source feature.
+	 * 
+	 * @param source the source feature
+	 * @param targetType the target type
+	 * 
+	 * @return a {@link FeatureId} containing a UUID in String form.
+	 */
+	public static FeatureId getTransformationId(Feature source, ComplexType targetType) {
+		List<String> values = new ArrayList<String>();
+		Collection<? extends Property> properties = FeatureInspector.getProperties(source);
+		
+		// get string property values
+		for (Property p : properties) {
+			//XXX do a selection on the properties? e.g. not using geometry properties
+			Object value = p.getValue();
+			if (value != null) {
+				if (value instanceof ComplexAttribute) {
+					//XXX use inner values?
+				}
+				else {
+					values.add(value.toString());
+				}
+			}
+		}
+		
+		//  target type as most significant part of the UUID
+		String mostSignificant = targetType.getName().getURI();
+		
+		StringBuffer leastSignificant = new StringBuffer();
+		
+		if (values.size() < 1) {
+			// no value - use feature ID
+			leastSignificant.append(source.getIdentifier().toString());
+		}
+		else {
+			for (int i = 0; i < values.size(); i++) {
+				leastSignificant.append(values.get(i));
+			}
+		}
+		
+		UUID fid = new UUID(mostSignificant.hashCode(), 
+				leastSignificant.toString().hashCode());
+		
 		return new FeatureIdImpl(fid.toString());
 	}
 	
