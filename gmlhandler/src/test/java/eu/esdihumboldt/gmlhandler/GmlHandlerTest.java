@@ -62,7 +62,7 @@ public class GmlHandlerTest {
 	
 	/** URL of XSD for tests **/
 	private static final String xsdUrl = 	"file://" + (new GmlHandlerTest()).getClass()
-										  .getResource("./HydroPhysicalWaters.xsd").getFile();
+										  .getResource("./GN_HU_sample.xsd").getFile();
 
 	/**
 	 * @throws java.lang.Exception
@@ -84,20 +84,20 @@ public class GmlHandlerTest {
 
 		// set up GMLHandler with the test configuration
 
-		gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, SCHEMA_URL,
+		gmlHandler = new GmlHandler(GMLVersions.gml3_1, SCHEMA_URL,
 				namespaces);
 
 		// set target gml destination
 		gmlHandler.setTargetGmlUrl(GML32_GENERATED_LOCATION);				
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-		new File(GML32_GENERATED_LOCATION).delete();
-	}
+//	/**
+//	 * @throws java.lang.Exception
+//	 */
+//	@AfterClass
+//	public static void tearDownAfterClass() throws Exception {
+//		new File(GML32_GENERATED_LOCATION).delete();
+//	}
 
 	/**
 	 * Test method for
@@ -109,7 +109,7 @@ public class GmlHandlerTest {
 	 * @throws ClassCastException
 	 * @throws MalformedURLException
 	 */
-	@Test
+	//@Test
 	public final void testReadSchema() throws MalformedURLException,
 			ClassCastException, ClassNotFoundException, InstantiationException,
 			IllegalAccessException {
@@ -167,7 +167,7 @@ public class GmlHandlerTest {
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 */
-	@Test
+	//@Test
 	public final void testReadLocalSchema() throws MalformedURLException,
 			ClassCastException, ClassNotFoundException, InstantiationException,
 			IllegalAccessException {		
@@ -190,7 +190,7 @@ public class GmlHandlerTest {
 	 * @throws ClassCastException
 	 * @throws XMLParsingException
 	 */
-	@Test
+	//@Test
 	public final void testReadFC() throws XMLParsingException,
 			ClassCastException, XMLStreamException, FactoryConfigurationError,
 			IOException, ClassNotFoundException, InstantiationException,
@@ -251,7 +251,7 @@ public class GmlHandlerTest {
 	 * @throws FileNotFoundException
 	 * @throws XMLParsingException
 	 */
-	@Test
+	//@Test
 	public final void testWriteFC() throws XMLParsingException,
 			FileNotFoundException, ClassCastException, XMLStreamException,
 			UnknownCRSException, TransformationException,
@@ -263,6 +263,38 @@ public class GmlHandlerTest {
 		gmlHandler.setSchemaUrl(xsdUrl);
 		String urlPath = "file://"
 				+ this.getClass().getResource("./va_target_v3.gml").getFile();
+		gmlHandler.setGmlUrl(urlPath);
+		gmlHandler.writeFC(gmlHandler.readFC());
+	}
+	/**
+	 * Test method for
+	 * {@link eu.esdihumboldt.gmlhandler.GmlHandler#writeFC(org.deegree.feature.FeatureCollection)}
+	 * .
+	 * 
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws FactoryConfigurationError
+	 * @throws TransformationException
+	 * @throws UnknownCRSException
+	 * @throws XMLStreamException
+	 * @throws ClassCastException
+	 * @throws FileNotFoundException
+	 * @throws XMLParsingException
+	 */
+	@Test
+	public final void testWriteFCDemo() throws XMLParsingException,
+			FileNotFoundException, ClassCastException, XMLStreamException,
+			UnknownCRSException, TransformationException,
+			FactoryConfigurationError, IOException, ClassNotFoundException,
+			InstantiationException, IllegalAccessException {
+		// TODO provide XUNIT-based testing
+		// TODO clean up generated file after
+		
+		gmlHandler.setSchemaUrl(xsdUrl);
+		String urlPath = "file://"
+				+ this.getClass().getResource("./GN_HU_sample.gml").getFile();
 		gmlHandler.setGmlUrl(urlPath);
 		gmlHandler.writeFC(gmlHandler.readFC());
 	}
