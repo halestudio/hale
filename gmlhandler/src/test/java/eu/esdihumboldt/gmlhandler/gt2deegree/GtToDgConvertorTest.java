@@ -2,16 +2,21 @@ package eu.esdihumboldt.gmlhandler.gt2deegree;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
 
 import org.deegree.commons.tom.primitive.PrimitiveType;
 import org.deegree.commons.tom.primitive.PrimitiveValue;
 import org.deegree.cs.CRS;
+import org.deegree.cs.exceptions.TransformationException;
+import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.feature.FeatureCollection;
 import org.deegree.filter.FilterEvaluationException;
 import org.deegree.filter.IdFilter;
@@ -37,15 +42,25 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.io.gml2.GMLHandler;
 
+import eu.esdihumboldt.gmlhandler.GMLVersions;
+import eu.esdihumboldt.gmlhandler.GmlHandler;
+import eu.esdihumboldt.gmlhandler.GmlHandlerTest;
 import eu.esdihumboldt.gmlhandler.gt2deegree.GtToDgConvertor;
 import eu.esdihumboldt.hale.gmlparser.HaleGMLParser;
 
 public class GtToDgConvertorTest {
 
+	/** URL of XSD for tests **/
+	private static final String xsdUrl = "file://" + (new GtToDgConvertorTest()).getClass()
+										  .getResource("./inputdata/GN_HU_sample.xsd").getFile();
+	/** generated instance location */
+	private static final String GML32_GENERATED_LOCATION = "src/test/resources/generated.gml";
 	private static org.deegree.feature.FeatureCollection DeegreeFC;
 	private static org.geotools.feature.FeatureCollection GeoToolsFC;
 	private static org.geotools.feature.FeatureCollection GeoToolsGMLFC;
+	private static org.geotools.feature.FeatureCollection GeoToolsDemoFC;
 
 	@BeforeClass
 	public static void loadGeotoolsData() {
@@ -98,6 +113,35 @@ public class GtToDgConvertorTest {
 		}
 
 	}
+	@BeforeClass
+	public static void loadGeotoolDemoData() {
+		try {
+			System.out.println("Reading source data to geotools model...");
+			GeoToolsDemoFC = FeatureCollections.newCollection();
+			URL url = new URL("file://"
+					+ (new GtToDgConvertorTest()).getClass()
+							.getResource("./inputdata/GN_HU_sample.gml")
+							.getFile());
+			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration());
+			GeoToolsDemoFC = (org.geotools.feature.FeatureCollection<FeatureType, Feature>) parser
+					.parse(url.openStream());
+			System.out.println(GeoToolsDemoFC.getSchema().getName());
+
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 
 	/**
 	 * Testcase for convertion of the geotools SimpleAttributes created using geotools FeatureBuilder (manuelly).
@@ -130,6 +174,41 @@ public class GtToDgConvertorTest {
 				.getProperties()[1];
 		assertEquals("name", nameProp.getName().getLocalPart());
 
+	}
+	
+	/**
+	 * Testcase for convertion of the geotools SimpleAttributes created using geotools FeatureBuilder (manuelly).
+	 * @throws TransformationException 
+	 * @throws UnknownCRSException 
+	 * @throws XMLStreamException 
+	 * @throws FileNotFoundException 
+	 */
+	@Test
+	public void testDemoDataConversion() throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
+		System.out.println("Converion to deegree starts..");
+		
+		//1. Create dgFC
+		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsDemoFC);
+		//2. Create GML Handler
+		HashMap<String, String> namespaces = new HashMap<String, String>();
+		namespaces.put("gco", "http://www.isotc211.org/2005/gco");
+		namespaces.put("gmd", "http://www.isotc211.org/2005/gmd");
+		namespaces.put("gn",
+				"urn:x-inspire:specification:gmlas:GeographicalNames:3.0");
+		namespaces.put("hy-p",
+				"urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0");
+		namespaces.put("hy", "urn:x-inspire:specification:gmlas:HydroBase:3.0");
+		namespaces.put("base",
+				"urn:x-inspire:specification:gmlas:BaseTypes:3.2");
+		namespaces.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+
+		// set up GMLHandler with the test configuration
+		GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_1, xsdUrl,
+				namespaces);
+		// set target gml destination
+		gmlHandler.setTargetGmlUrl(GML32_GENERATED_LOCATION);
+		gmlHandler.writeFC(dgFC);
+		
 	}
 
 	
