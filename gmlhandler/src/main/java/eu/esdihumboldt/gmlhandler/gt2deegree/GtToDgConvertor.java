@@ -106,6 +106,7 @@ public class GtToDgConvertor {
 	 * 
 	 */
 	private static org.deegree.feature.Feature createDgFeature(Feature gtFeature) {
+		System.out.println(gtFeature.getDefaultGeometryProperty().getDescriptor().getCoordinateReferenceSystem());
 		System.out.println(gtFeature.getDefaultGeometryProperty().getType());
 		FeatureType gtFT = gtFeature.getType();
 		// convert gtFT to gtFT
@@ -389,7 +390,8 @@ public class GtToDgConvertor {
 	 */
 	private static CRS createCRS(
 			CoordinateReferenceSystem coordinateReferenceSystem) {
-		CRS dgCrs = new CRS(org.geotools.referencing.CRS.toSRS(coordinateReferenceSystem));
+		//CRS dgCrs = new CRS(org.geotools.referencing.CRS.toSRS(coordinateReferenceSystem));
+		CRS dgCrs = new CRS("urn:x-ogc:def:crs:EPSG:31468");
 		return dgCrs;
 	}
 

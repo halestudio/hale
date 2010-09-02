@@ -55,14 +55,14 @@ public class GmlHandlerTest {
 			+ "HydroPhysicalWaters.xsd";
 
 	/** generated instance location */
-	private static final String GML32_GENERATED_LOCATION = "src/test/resources/va_target_v3_generated.gml";
+	private static final String GML32_GENERATED_LOCATION = "src/test/resources/generated.gml";
 
 	/** handler to proceed gmldata */
 	private static GmlHandler gmlHandler;
 	
 	/** URL of XSD for tests **/
 	private static final String xsdUrl = 	"file://" + (new GmlHandlerTest()).getClass()
-										  .getResource("./GN_HU_sample.xsd").getFile();
+										  .getResource("./Watercourses_BY.xml").getFile();
 
 	/**
 	 * @throws java.lang.Exception
@@ -81,6 +81,7 @@ public class GmlHandlerTest {
 		namespaces.put("base",
 				"urn:x-inspire:specification:gmlas:BaseTypes:3.2");
 		namespaces.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+		namespaces.put("topp", "http://www.openplans.org/topp"); 
 
 		// set up GMLHandler with the test configuration
 
@@ -283,7 +284,7 @@ public class GmlHandlerTest {
 	 * @throws FileNotFoundException
 	 * @throws XMLParsingException
 	 */
-	@Test
+	//@Test
 	public final void testWriteFCDemo() throws XMLParsingException,
 			FileNotFoundException, ClassCastException, XMLStreamException,
 			UnknownCRSException, TransformationException,

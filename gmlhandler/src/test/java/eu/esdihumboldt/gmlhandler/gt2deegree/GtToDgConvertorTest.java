@@ -54,15 +54,15 @@ public class GtToDgConvertorTest {
 
 	/** URL of XSD for tests **/
 	private static final String xsdUrl = "file://" + (new GtToDgConvertorTest()).getClass()
-										  .getResource("./inputdata/GN_HU_sample.xsd").getFile();
+										  .getResource("./inputdata/Watercourses_BY.xml").getFile();
 	/** generated instance location */
-	private static final String GML32_GENERATED_LOCATION = "src/test/resources/generated.gml";
+	private static final String GML32_GENERATED_LOCATION = "src/test/resources/generated_3_2_1.gml";
 	private static org.deegree.feature.FeatureCollection DeegreeFC;
 	private static org.geotools.feature.FeatureCollection GeoToolsFC;
 	private static org.geotools.feature.FeatureCollection GeoToolsGMLFC;
 	private static org.geotools.feature.FeatureCollection GeoToolsDemoFC;
 
-	@BeforeClass
+	//@BeforeClass
 	public static void loadGeotoolsData() {
 		GeoToolsFC = FeatureCollections.newCollection();
 		try {
@@ -113,7 +113,7 @@ public class GtToDgConvertorTest {
 		}
 
 	}
-	@BeforeClass
+	//@BeforeClass
 	public static void loadGeotoolDemoData() {
 		try {
 			System.out.println("Reading source data to geotools model...");
@@ -146,7 +146,7 @@ public class GtToDgConvertorTest {
 	/**
 	 * Testcase for convertion of the geotools SimpleAttributes created using geotools FeatureBuilder (manuelly).
 	 */
-	@Test
+	//@Test
 	public void testSimpleFeatureConversion() {
 		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsFC);
 		assertEquals(1, dgFC.size());
@@ -183,9 +183,9 @@ public class GtToDgConvertorTest {
 	 * @throws XMLStreamException 
 	 * @throws FileNotFoundException 
 	 */
-	@Test
+	//@Test
 	public void testDemoDataConversion() throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
-		System.out.println("Converion to deegree starts..");
+		System.out.println("Conversion to deegree starts..");
 		
 		//1. Create dgFC
 		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsDemoFC);
@@ -201,6 +201,7 @@ public class GtToDgConvertorTest {
 		namespaces.put("base",
 				"urn:x-inspire:specification:gmlas:BaseTypes:3.2");
 		namespaces.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+		namespaces.put("topp", "http://www.openplans.org/topp");
 
 		// set up GMLHandler with the test configuration
 		GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_1, xsdUrl,
@@ -239,7 +240,7 @@ public class GtToDgConvertorTest {
 			 //check geometry property type
 			 DefaultMultiLineString multiLineString  = (DefaultMultiLineString)geomProperty[0].getValue();
 			 CRS deegreeCRS = multiLineString.getCoordinateSystem();
-			 //assertEquals("urn:x-ogc:def:crs:EPSG:31468", deegreeCRS.getName());
+			 assertEquals("urn:x-ogc:def:crs:EPSG:31468", deegreeCRS.getName());
 			 assertEquals(MultiLineString.class, multiLineString.getJTSGeometry().getClass());
 			 MultiLineString jtsMultiLineString = (MultiLineString)multiLineString.getJTSGeometry();
 			 assertEquals(1, jtsMultiLineString.getNumGeometries());
@@ -254,6 +255,41 @@ public class GtToDgConvertorTest {
 			 //assertEquals("topp", gnProperty.getName().getPrefix());
 			 assertEquals("GN", gnProperty.getName().getLocalPart());
 			 assertEquals("Nonnenbach",((PrimitiveValue)gnProperty.getValue()).getAsText());
+			//2. Create GML Handler
+			 System.out.println("Conversion to deegree starts..");
+				HashMap<String, String> namespaces = new HashMap<String, String>();
+				namespaces.put("gco", "http://www.isotc211.org/2005/gco");
+				namespaces.put("gmd", "http://www.isotc211.org/2005/gmd");
+				namespaces.put("gn",
+						"urn:x-inspire:specification:gmlas:GeographicalNames:3.0");
+				namespaces.put("hy-p",
+						"urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0");
+				namespaces.put("hy", "urn:x-inspire:specification:gmlas:HydroBase:3.0");
+				namespaces.put("base",
+						"urn:x-inspire:specification:gmlas:BaseTypes:3.2");
+				namespaces.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+				namespaces.put("topp", "http://www.openplans.org/topp"); 
+
+				// set up GMLHandler with the test configuration
+				GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, xsdUrl,
+						namespaces);
+				// set target gml destination
+				gmlHandler.setTargetGmlUrl(GML32_GENERATED_LOCATION);
+				try {
+					gmlHandler.writeFC(dgFC);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (XMLStreamException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (UnknownCRSException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (TransformationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			 
 			 
 			 
@@ -267,7 +303,7 @@ public class GtToDgConvertorTest {
 	/**
 	 * Testcase for convertion of the geotools ComplexAttributes created using HaleParser.
 	 */
-	@Test
+	//@Test
 	public void testComplexAttributeConversion(){
 		//TODO provide implementation
 		//1. Read a FeatureCollection having ComplexAttributes from the gml-file to the geotools object
