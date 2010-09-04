@@ -164,7 +164,7 @@ public class GtToDgConvertor {
 						dgPropName, null);
 			} else {
 				dgProp = new org.deegree.feature.property.SimpleProperty(
-						(SimplePropertyType) dgPT, (String) gtProp.getValue(),
+						(SimplePropertyType) dgPT, gtProp.getValue().toString(),
 						((SimplePropertyType) dgPT).getPrimitiveType());
 			}
 
