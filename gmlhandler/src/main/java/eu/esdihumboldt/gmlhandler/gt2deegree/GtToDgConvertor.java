@@ -391,7 +391,7 @@ public class GtToDgConvertor {
 	private static CRS createCRS(
 			CoordinateReferenceSystem coordinateReferenceSystem) {
 		//CRS dgCrs = new CRS(org.geotools.referencing.CRS.toSRS(coordinateReferenceSystem));
-		CRS dgCrs = new CRS("urn:x-ogc:def:crs:EPSG:31468");
+		CRS dgCrs = new CRS("http://www.opengis.net/gml/srs/epsg.xml#4258");
 		return dgCrs;
 	}
 
@@ -497,7 +497,7 @@ public class GtToDgConvertor {
 		// 1. retrieve the Geometry type name
 		String geometry = descriptor.getType().getBinding().getSimpleName();
 		// 2. assign a string value to the GeometryType
-		return GeometryType.fromString(geometry);
+		return GeometryType.fromGMLTypeName(geometry);
 	}
 
 	/**
