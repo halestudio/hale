@@ -99,6 +99,7 @@ public class GtToDgConvertorTest {
 			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration());
 			GeoToolsGMLFC = (org.geotools.feature.FeatureCollection<FeatureType, Feature>) parser
 					.parse(url.openStream());
+			org.geotools.feature.FeatureCollection test = GeoToolsGMLFC;
 			System.out.println(GeoToolsGMLFC.getSchema().getName());
 
 		} catch (MalformedURLException e) {
@@ -128,6 +129,7 @@ public class GtToDgConvertorTest {
 			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration());
 			GeoToolsDemoFC = (org.geotools.feature.FeatureCollection<FeatureType, Feature>) parser
 					.parse(url.openStream());
+			org.geotools.feature.FeatureCollection testColl = GeoToolsDemoFC;
 			System.out.println(GeoToolsDemoFC.getSchema().getName());
 
 		} catch (MalformedURLException e) {
