@@ -12,7 +12,7 @@
 package eu.esdihumboldt.cst.iobridge.impl;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +25,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.xml.stream.XMLStreamException;
+
+import org.deegree.cs.exceptions.TransformationException;
+import org.deegree.cs.exceptions.UnknownCRSException;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml3.GMLConfiguration;
 import org.opengis.feature.Feature;
@@ -32,12 +36,13 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.iobridge.CstServiceBridge;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory;
+import eu.esdihumboldt.gmlhandler.GmlHandler;
+import eu.esdihumboldt.gmlhandler.gt2deegree.GtToDgConvertor;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.gmlparser.HaleGMLParser;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
 
 /**
@@ -71,7 +76,25 @@ public class DefaultCstServiceBridge
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("Couldn't create temporary output file: ", e);
 		}
-		this.encodeGML(result, outputFilename, schemaFilename);
+		//this.encodeGML(result, outputFilename, schemaFilename);
+		
+		
+		try {
+			GmlHandler handler = GmlHandler.getDefaultInstance(schemaFilename);	
+			handler.writeFC(GtToDgConvertor.convertGtToDg(result));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (XMLStreamException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnknownCRSException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransformationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return outputFilename.toString();
 	}
 	

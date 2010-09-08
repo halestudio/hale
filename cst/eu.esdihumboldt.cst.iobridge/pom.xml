@@ -44,12 +44,7 @@
 						<encoding>UTF-8</encoding> <!-- The -encoding argument for the Java compiler. -->
 					</configuration>
 				</plugin>
-				<plugin>
-					<artifactId>maven-eclipse-plugin</artifactId>
-					<configuration>
-						<pde>true</pde>
-					</configuration>
-				</plugin>
+				
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -126,11 +121,12 @@
 			<artifactId>gmlparser</artifactId>
 			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>org.eclipse</groupId>
-			<artifactId>xsd</artifactId>
-			<version>2.2.2</version>
+				<dependency>
+			<groupId>eu.esdihumboldt</groupId>
+			<artifactId>gmlhandler</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+
 
 
 	</dependencies>
@@ -145,7 +141,7 @@
 	<pluginRepositories>
 		<pluginRepository>
 			<snapshots>
-				<enabled>false</enabled>
+				<enabled>true</enabled>
 			</snapshots>
 			<id>artifactory.esdi-humboldt.eu</id>
 			<name>plugins-releases</name>
