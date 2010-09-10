@@ -118,7 +118,7 @@ public class GmlHandler {
 
 			// set up GMLHandler with the test configuration
 
-			return new GmlHandler(GMLVersions.gml3_1, xsdUrl,
+			return new GmlHandler(GMLVersions.gml3_2_1, xsdUrl,
 					namespaces);
 	}
 
