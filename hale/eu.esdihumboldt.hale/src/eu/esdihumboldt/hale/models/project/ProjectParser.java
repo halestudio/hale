@@ -270,7 +270,9 @@ public class ProjectParser {
 					SelectCRSDialog.setWkt(project.getInstanceData().getWkt());
 				}
 				instanceService.addInstances(DatasetType.reference, 
-						GmlHelper.loadGml(xml, conf));
+						GmlHelper.loadGml(xml, conf, 
+								schemaService.getSourceNameSpace(), 
+								schemaService.getSourceURL().toString()));
 				projectService.setInstanceDataPath(project.getInstanceData().getPath());
 				projectService.setInstanceDataType(conf);
 				
