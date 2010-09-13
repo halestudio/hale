@@ -13,6 +13,7 @@
 package eu.esdihumboldt.cst.transformer.service;
 
 import java.net.URL;
+import java.util.Iterator;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,6 +21,7 @@ import org.junit.Test;
 
 import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.transformer.CstService;
+import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
@@ -40,7 +42,7 @@ public class CstFunctionFactoryTest {
 	private String localname1 = "LocalName";
 	private String namespace1 = "http://somenamespace.org/path";
 
-	private static final Class[] parameters = new Class[] { URL.class };
+	
 
 	@Before
 	public void addFunctions() {
@@ -48,7 +50,7 @@ public class CstFunctionFactoryTest {
 		 * We should add corefunctions jar to classpath before trying to
 		 * register it.
 		 */
-		AddFunctionsToPathUtility.getInstance().add();
+	 	AddFunctionsToPathUtility.getInstance().add();
 	}
 
 	/**
@@ -96,7 +98,10 @@ public class CstFunctionFactoryTest {
 	@Test
 	public void testCstServiceFactory() {
 
-		CstService factory = CstServiceFactory.getInstance();				
+		CstService factory = CstServiceFactory.getInstance();		
+		for (Iterator<FunctionDescription> it = factory.getCapabilities().getFunctionDescriptions().iterator();it.hasNext();){
+			System.out.println(it.next().getFunctionId());
+		}
 		Assert.assertTrue(factory.getCapabilities().getFunctionDescriptions().size() > 0);
 
 	}
