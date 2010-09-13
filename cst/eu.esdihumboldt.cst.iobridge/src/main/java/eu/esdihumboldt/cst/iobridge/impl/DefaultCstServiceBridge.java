@@ -80,7 +80,7 @@ public class DefaultCstServiceBridge
 		
 		
 		try {
-			GmlHandler handler = GmlHandler.getDefaultInstance(schemaFilename);	
+			GmlHandler handler = GmlHandler.getDefaultInstance(schemaFilename, outputFilename.getPath());	
 			handler.writeFC(GtToDgConvertor.convertGtToDg(result));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
