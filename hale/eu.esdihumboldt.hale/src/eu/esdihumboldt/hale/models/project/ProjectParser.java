@@ -114,19 +114,21 @@ public class ProjectParser {
 			List<String> errors = load(root.getValue(), monitor);
 			monitor.done();
 			
-			// show error dialog
-			StringBuffer message = new StringBuffer("The project was loaded but " +
-					"the following operations failed:\n\n");
-			for (int i = 0; i < errors.size(); i++) {
-				if (i != 0) {
-					message.append('\n');
+			if (errors != null && !errors.isEmpty()) {
+				// show error dialog
+				StringBuffer message = new StringBuffer("The project was loaded but " +
+						"the following operations failed:\n\n");
+				for (int i = 0; i < errors.size(); i++) {
+					if (i != 0) {
+						message.append('\n');
+					}
+					message.append("- ");
+					message.append(errors.get(i));
 				}
-				message.append("- ");
-				message.append(errors.get(i));
+				
+				ExceptionHelper.handleException(message.toString(), 
+						HALEActivator.PLUGIN_ID, null);
 			}
-			
-			ExceptionHelper.handleException(message.toString(), 
-					HALEActivator.PLUGIN_ID, null);
 			
 			return root.getValue();
 		}
