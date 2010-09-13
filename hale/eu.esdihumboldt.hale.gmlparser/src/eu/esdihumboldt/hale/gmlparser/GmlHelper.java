@@ -87,7 +87,7 @@ public class GmlHelper {
 							"location must be specified when using Application " +
 							"Schema parsing configuration");
 				}
-				conf = new ApplicationSchemaConfiguration(namespace, schemaLocation);
+				conf = new HaleSchemaConfiguration(namespace, schemaLocation); //new ApplicationSchemaConfiguration(namespace, schemaLocation);
 				break;
 			case GML3: // fall through
 			default: // default to GML3

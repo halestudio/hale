@@ -57,7 +57,7 @@ public class HaleGMLParser {
         if (configuration == null) {
             throw new NullPointerException("configuration");
         }
-
+        
         handler = new ParserHandler(configuration);
     }
 
@@ -136,7 +136,7 @@ public class HaleGMLParser {
         parser = parser();
         parser.setContentHandler(handler);
         parser.setErrorHandler(handler);
-
+        
         parser.parse(source);
 
         return handler.getValue();
