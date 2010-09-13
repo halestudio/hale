@@ -36,6 +36,7 @@ import eu.esdihumboldt.hale.gmlparser.HaleGMLParser;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
+import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
@@ -182,7 +183,10 @@ public class InstanceDataImportWizard
 		try {
 			_log.info("Using this GML location: " + gml_location.toString()); //$NON-NLS-1$
 			
-			result = GmlHelper.loadGml(gml_location.openStream(), type);
+			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+			
+			result = GmlHelper.loadGml(gml_location.openStream(), type, 
+					ss.getSourceNameSpace(), ss.getSourceURL().toString());
 		} catch (Exception ex) {
 			throw new RuntimeException(
 					"Parsing the given GML into a FeatureCollection failed: " + ex.getMessage(), //$NON-NLS-1$
