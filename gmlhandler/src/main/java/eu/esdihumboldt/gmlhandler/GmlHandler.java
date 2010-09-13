@@ -101,7 +101,7 @@ public class GmlHandler {
 		this.namespaces = namespaces;
 	}
 	
-	public static GmlHandler getDefaultInstance(String xsdUrl){	
+	public static GmlHandler getDefaultInstance(String xsdUrl, String gmlUrl){	
 			// pre-define namespaces
 			HashMap<String, String> namespaces = new HashMap<String, String>();
 			namespaces.put("gco", "http://www.isotc211.org/2005/gco");
@@ -118,8 +118,11 @@ public class GmlHandler {
 
 			// set up GMLHandler with the test configuration
 
-			return new GmlHandler(GMLVersions.gml3_2_1, xsdUrl,
+			GmlHandler handler =  new GmlHandler(GMLVersions.gml3_2_1, xsdUrl,
 					namespaces);
+			handler.setTargetGmlUrl(gmlUrl);
+			return handler;
+			
 	}
 
 	/**
