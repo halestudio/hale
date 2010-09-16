@@ -26,6 +26,7 @@ import org.geotools.xs.XSConfiguration;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeType;
 
+import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -46,24 +47,40 @@ public class HaleSchemaConfiguration extends Configuration {
 	/**
 	 * Constructor
 	 * 
+	 * @param type the configuration type 
 	 * @param namespace the schema namespace
 	 * @param schemaLocation the schema location
 	 * @param elements the schema elements
 	 */
-	public HaleSchemaConfiguration(String namespace, String schemaLocation, Iterable<SchemaElement> elements) {
-        super(new HaleSchemaXSD(namespace, schemaLocation));
+	public HaleSchemaConfiguration(ConfigurationType type, String namespace, String schemaLocation, Iterable<SchemaElement> elements) {
+        super(new HaleSchemaXSD(type, namespace, schemaLocation));
+        
         addDependency(new XSConfiguration());
-        addDependency(new GMLConfiguration());
+        
+        // add GML dependency
+        switch (type) {
+		case GML2:
+			addDependency(new org.geotools.gml2.GMLConfiguration());
+			break;
+		case GML3_2:
+			addDependency(new eu.esdihumboldt.hale.gmlparser.gml3_2.GMLConfiguration());
+			break;
+		case GML3:
+			// fall through
+		default:
+			addDependency(new GMLConfiguration());
+			break;
+		}
         
         this.elements = elements;
     }
 
 	/**
-	 * @see Configuration#registerBindings(Map)
+	 * @see Configuration#configureBindings(Map)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	protected void registerBindings(Map bindings) {
+	protected void configureBindings(Map bindings) {
 		Set<TypeDefinition> defs = new HashSet<TypeDefinition>();
 		
 		// collect type definitions
@@ -77,14 +94,19 @@ public class HaleSchemaConfiguration extends Configuration {
     		
     		AttributeType type = def.getType(null);
     		
-    		//TODO check for existing binding?
-    		//TODO wrap GML bindings to support attributes? How? Needs change to addTypeDefinitions to again get GML types
-    		if (type instanceof SimpleFeatureType) {
-	    		bindings.put(name, 
-	    				new SimpleFeatureTypeBinding(name, (SimpleFeatureType) type));
+    		// check for existing binding
+    		if (bindings.containsKey(name)) {
+    			Object binding = bindings.get(name);
     		}
     		else {
-    			log.warn("No parser binding created for type " + name);
+    		//TODO wrap GML bindings to support attributes? How? Needs change to addTypeDefinitions to again get GML types
+	    		if (type instanceof SimpleFeatureType) {
+		    		bindings.put(name, 
+		    				new SimpleFeatureTypeBinding(name, (SimpleFeatureType) type));
+	    		}
+	    		else {
+	    			log.warn("No parser binding created for type " + name);
+	    		}
     		}
     	}
     	
@@ -103,10 +125,10 @@ public class HaleSchemaConfiguration extends Configuration {
 			TypeDefinition type) {
 		if (type == null) return;
 		
-		if (type.getName().getNamespaceURI().startsWith("http://www.opengis.net/gml")) {
-			// ignore GML types
-			return;
-		}
+//		if (type.getName().getNamespaceURI().startsWith("http://www.opengis.net/gml")) {
+//			// ignore GML types
+//			return;
+//		}
 		
 		if (!type.isComplexType()) {
 			// ignore simple types

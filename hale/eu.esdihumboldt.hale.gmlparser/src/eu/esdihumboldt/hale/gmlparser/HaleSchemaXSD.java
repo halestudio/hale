@@ -24,6 +24,8 @@ import org.geotools.gml3.GML;
 import org.geotools.xml.SchemaLocationResolver;
 import org.geotools.xml.XSD;
 
+import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
+
 /**
  * 
  *
@@ -38,28 +40,57 @@ public class HaleSchemaXSD extends XSD {
 
     /** location of the application schema itself */
     private String schemaLocation;
+    
+    private final ConfigurationType type;
 
-    public HaleSchemaXSD(String namespaceURI, String schemaLocation) {
+    /**
+     * Constructor
+     * 
+     * @param type the configuration type
+     * @param namespaceURI the schema namespace
+     * @param schemaLocation the schema location
+     */
+    public HaleSchemaXSD(ConfigurationType type, String namespaceURI, String schemaLocation) {
         this.namespaceURI = namespaceURI;
         this.schemaLocation = schemaLocation;
+        
+        this.type = type;
     }
 
-    protected void addDependencies(Set dependencies) {
-        dependencies.add(GML.getInstance());
+    @SuppressWarnings("unchecked")
+	@Override
+	protected void addDependencies(Set dependencies) {
+    	switch (type) {
+		case GML2:
+			dependencies.add(org.geotools.gml2.GML.getInstance());
+			break;
+		case GML3_2:
+			dependencies.add(org.geotools.gml3.v3_2.GML.getInstance());
+			break;
+		case GML3:
+			// fall through
+		default:
+			dependencies.add(GML.getInstance());
+			break;
+		}
     }
 
-    public String getNamespaceURI() {
+    @Override
+	public String getNamespaceURI() {
         return namespaceURI;
     }
 
-    public String getSchemaLocation() {
+    @Override
+	public String getSchemaLocation() {
         return schemaLocation;
     }
 	
+	@Override
 	public SchemaLocationResolver createSchemaLocationResolver() {
         return new SchemaLocationResolver(this) {
         	
-                public String resolveSchemaLocation(XSDSchema schema, String uri, String location) {
+                @Override
+				public String resolveSchemaLocation(XSDSchema schema, String uri, String location) {
                     String schemaLocation;
 
                     if (schema == null) {

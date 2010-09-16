@@ -17,29 +17,34 @@ import javax.xml.namespace.QName;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.util.Converters;
 import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.Binding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import org.geotools.xml.impl.InstanceBinding;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.AttributeType;
 
 /**
- * 
+ * Binding for {@link SimpleFeatureType}s
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class SimpleFeatureTypeBinding extends AbstractComplexBinding {
+public class SimpleFeatureTypeBinding extends AbstractComplexBinding
+	implements InstanceBinding {
 
 	private final QName name;
 	
 	private final SimpleFeatureType type;
 	
 	/**
-	 * @param name
-	 * @param featureType
+	 * Constructor
+	 * 
+	 * @param name the qualified type name
+	 * @param featureType the feature type
 	 */
 	public SimpleFeatureTypeBinding(QName name, SimpleFeatureType featureType) {
 		super();
@@ -48,6 +53,9 @@ public class SimpleFeatureTypeBinding extends AbstractComplexBinding {
 		this.type = featureType;
 	}
 
+	/**
+	 * @see AbstractComplexBinding#parse(ElementInstance, Node, Object)
+	 */
 	@Override
 	public Object parse(ElementInstance instance, Node node, Object value)
 			throws Exception {
@@ -84,7 +92,7 @@ public class SimpleFeatureTypeBinding extends AbstractComplexBinding {
 	}
 
 	/**
-	 * @see org.geotools.xml.Binding#getTarget()
+	 * @see Binding#getTarget()
 	 */
 	@Override
 	public QName getTarget() {
@@ -92,8 +100,9 @@ public class SimpleFeatureTypeBinding extends AbstractComplexBinding {
 	}
 
 	/**
-	 * @see org.geotools.xml.Binding#getType()
+	 * @see Binding#getType()
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public Class getType() {
 		return Feature.class;

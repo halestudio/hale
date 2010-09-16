@@ -14,11 +14,9 @@ package eu.esdihumboldt.hale.gmlparser;
 
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import org.geotools.feature.FeatureCollection;
-import org.geotools.gml3.ApplicationSchemaConfiguration;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.opengis.feature.Feature;
@@ -44,9 +42,7 @@ public class GmlHelper {
 		/** GML 3.x */
 		GML3,
 		/** GML 3.2 */
-		GML3_2,
-		/** Application Schema */
-		APPLICATION_SCHEMA
+		GML3_2
 	}
 	
 	/**
@@ -59,7 +55,24 @@ public class GmlHelper {
 	 */
 	public static FeatureCollection<FeatureType, Feature> loadGml(InputStream xml, 
 			ConfigurationType type) {
-		return loadGml(xml, type, null, null, null);
+		return loadGml(xml, type, false, null, null, null);
+	}
+	
+	/**
+	 * Load GML from an input stream and use the application schema for parsing
+	 * 
+	 * @param xml the XML input stream
+	 * @param type the configuration type, defaults to GML3
+	 * @param namespace schema namespace
+	 * @param schemaLocation schema location
+	 * @param elements the schema elements
+	 * 
+	 * @return the loaded feature collection or <code>null</code>
+	 */
+	public static FeatureCollection<FeatureType, Feature> loadGml(InputStream xml, 
+			ConfigurationType type, String namespace, 
+			String schemaLocation, Iterable<SchemaElement> elements) {
+		return loadGml(xml, type, true, namespace, schemaLocation, elements);
 	}
 
 	/**
@@ -67,35 +80,41 @@ public class GmlHelper {
 	 * 
 	 * @param xml the XML input stream
 	 * @param type the configuration type, defaults to GML3
-	 * @param namespace schema namespace (when using {@link ConfigurationType#APPLICATION_SCHEMA})
-	 * @param schemaLocation schema location (when using {@link ConfigurationType#APPLICATION_SCHEMA})
-	 * @param elements 
+	 * @param useAppSchema if the application schema shall be used for parsing
+	 * @param namespace schema namespace
+	 * @param schemaLocation schema location
+	 * @param elements the schema elements
 	 * 
 	 * @return the loaded feature collection or <code>null</code>
 	 */
 	@SuppressWarnings("unchecked")
 	public static FeatureCollection<FeatureType, Feature> loadGml(InputStream xml, 
-			ConfigurationType type, String namespace, String schemaLocation, Iterable<SchemaElement> elements) {
+			ConfigurationType type, boolean useAppSchema, String namespace, 
+			String schemaLocation, Iterable<SchemaElement> elements) {
 		try {
-			Configuration conf;
-			switch (type) {
-			case GML2:
-				conf = new org.geotools.gml2.GMLConfiguration();
-				break;
-			case GML3_2:
-				conf = new org.geotools.gml3.v3_2.GMLConfiguration();
-				break;
-			case APPLICATION_SCHEMA:
+			final Configuration conf;
+			if (useAppSchema) {
 				if (namespace == null || schemaLocation == null) {
 					throw new IllegalStateException("Schema namespace and " +
 							"location must be specified when using Application " +
 							"Schema parsing configuration");
 				}
-				conf = new HaleSchemaConfiguration(namespace, schemaLocation, elements); //new ApplicationSchemaConfiguration(namespace, schemaLocation);
-				break;
-			case GML3: // fall through
-			default: // default to GML3
-				conf = new GMLConfiguration();
+				
+				conf = new HaleSchemaConfiguration(
+						type, namespace, schemaLocation, elements);
+			}
+			else {
+				switch (type) {
+				case GML2:
+					conf = new org.geotools.gml2.GMLConfiguration();
+					break;
+				case GML3_2:
+					conf = new eu.esdihumboldt.hale.gmlparser.gml3_2.GMLConfiguration();
+					break;
+				case GML3: // fall through
+				default: // default to GML3
+					conf = new GMLConfiguration();
+				}
 			}
 			HaleGMLParser parser = new HaleGMLParser(conf);
 			Object result = parser.parse(xml);
