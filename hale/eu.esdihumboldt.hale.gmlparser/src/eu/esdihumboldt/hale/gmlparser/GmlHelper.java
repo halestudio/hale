@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.gmlparser;
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,8 @@ import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
+
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
  * 
@@ -56,7 +59,7 @@ public class GmlHelper {
 	 */
 	public static FeatureCollection<FeatureType, Feature> loadGml(InputStream xml, 
 			ConfigurationType type) {
-		return loadGml(xml, type, null, null);
+		return loadGml(xml, type, null, null, null);
 	}
 
 	/**
@@ -66,12 +69,13 @@ public class GmlHelper {
 	 * @param type the configuration type, defaults to GML3
 	 * @param namespace schema namespace (when using {@link ConfigurationType#APPLICATION_SCHEMA})
 	 * @param schemaLocation schema location (when using {@link ConfigurationType#APPLICATION_SCHEMA})
+	 * @param elements 
 	 * 
 	 * @return the loaded feature collection or <code>null</code>
 	 */
 	@SuppressWarnings("unchecked")
 	public static FeatureCollection<FeatureType, Feature> loadGml(InputStream xml, 
-			ConfigurationType type, String namespace, String schemaLocation) {
+			ConfigurationType type, String namespace, String schemaLocation, Iterable<SchemaElement> elements) {
 		try {
 			Configuration conf;
 			switch (type) {
@@ -87,7 +91,7 @@ public class GmlHelper {
 							"location must be specified when using Application " +
 							"Schema parsing configuration");
 				}
-				conf = new HaleSchemaConfiguration(namespace, schemaLocation); //new ApplicationSchemaConfiguration(namespace, schemaLocation);
+				conf = new HaleSchemaConfiguration(namespace, schemaLocation, elements); //new ApplicationSchemaConfiguration(namespace, schemaLocation);
 				break;
 			case GML3: // fall through
 			default: // default to GML3
@@ -101,9 +105,16 @@ public class GmlHelper {
 			}
 			else if (result instanceof Map<?, ?>) {
 				// extract features from Map
-				List<Feature> features = (List<Feature>) ((Map<?, ?>)result).get("featureMember");
+				Object featureMember = ((Map<?, ?>)result).get("featureMember");
 				CstFeatureCollection fc = new CstFeatureCollection();
-				fc.addAll(features);
+				if (featureMember instanceof Feature) {
+					fc.add((Feature) featureMember);
+				}
+				else {
+					// assume collection
+					Collection<? extends Feature> features = (Collection<? extends Feature>) featureMember;
+					fc.addAll(features);
+				}
 				return fc;
 			}
 			

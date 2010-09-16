@@ -186,7 +186,7 @@ public class InstanceDataImportWizard
 			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 			
 			result = GmlHelper.loadGml(gml_location.openStream(), type, 
-					ss.getSourceNameSpace(), ss.getSourceURL().toString());
+					ss.getSourceNameSpace(), ss.getSourceURL().toString(), ss.getSourceSchema());
 		} catch (Exception ex) {
 			throw new RuntimeException(
 					"Parsing the given GML into a FeatureCollection failed: " + ex.getMessage(), //$NON-NLS-1$

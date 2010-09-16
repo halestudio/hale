@@ -274,7 +274,8 @@ public class ProjectParser {
 				instanceService.addInstances(DatasetType.reference, 
 						GmlHelper.loadGml(xml, conf, 
 								schemaService.getSourceNameSpace(), 
-								schemaService.getSourceURL().toString()));
+								schemaService.getSourceURL().toString(),
+								schemaService.getSourceSchema()));
 				projectService.setInstanceDataPath(project.getInstanceData().getPath());
 				projectService.setInstanceDataType(conf);
 				
