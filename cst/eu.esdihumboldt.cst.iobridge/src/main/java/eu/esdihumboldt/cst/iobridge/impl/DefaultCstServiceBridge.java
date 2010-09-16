@@ -76,8 +76,8 @@ public class DefaultCstServiceBridge
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("Couldn't create temporary output file: ", e);
 		}
-		//this.encodeGML(result, outputFilename, schemaFilename);
-		
+		this.encodeGML(result, outputFilename, schemaFilename);
+		/*
 		
 		try {
 			GmlHandler handler = GmlHandler.getDefaultInstance(schemaFilename, outputFilename.getPath());	
@@ -94,7 +94,7 @@ public class DefaultCstServiceBridge
 		} catch (TransformationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		return outputFilename.toString();
 	}
 	
@@ -110,7 +110,7 @@ public class DefaultCstServiceBridge
 					result.getSchema().getName().getNamespaceURI(), 
 					schemaPath);
 			OutputStream out = new FileOutputStream(
-					new File(outputPath.toString()));
+					new File(outputPath.getPath()));
 			
 			gmlGenerator.encode(result, out);
 		} catch (Exception e) {
@@ -147,7 +147,7 @@ public class DefaultCstServiceBridge
 		return al;
 	}
 
-	private FeatureCollection<?, ?> loadGml(String gmlFilename) {
+	private FeatureCollection<FeatureType, Feature> loadGml(String gmlFilename) {
 		try {
 			//InputStream xml = new FileInputStream(new File(gmlFilename));
 			InputStream xml = new URL(gmlFilename).openStream();
