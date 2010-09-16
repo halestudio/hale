@@ -27,15 +27,12 @@ import org.geotools.util.logging.Logging;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.iobridge.IoBridgeFactory.BridgeType;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
-import eu.esdihumboldt.gmlhandler.gt2deegree.GtToDgConvertorTest;
 import eu.esdihumboldt.hale.gmlparser.HaleGMLParser;
 
 /**
@@ -100,8 +97,7 @@ public class IoBridgeIntegrationTest {
 		try {
 	
 			URL omlURL = IoBridgeIntegrationTest.class.getResource("test.oml");
-			URL gmlURL = IoBridgeIntegrationTest.class.getResource("test_gs.xml");
-			
+			URL gmlURL = IoBridgeIntegrationTest.class.getResource("test_gs.xml");			
 			URL xsd =  IoBridgeIntegrationTest.class.getResource("test_gs_target.xsd");		
 			
 			CstServiceBridge csb = IoBridgeFactory.getIoBridge(BridgeType.preloaded);

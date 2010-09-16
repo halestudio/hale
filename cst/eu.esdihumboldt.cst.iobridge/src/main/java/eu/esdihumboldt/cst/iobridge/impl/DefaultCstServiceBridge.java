@@ -143,7 +143,8 @@ public class DefaultCstServiceBridge
 	
 	private Alignment loadMapping(String omlFilename) {
 		OmlRdfReader reader = new OmlRdfReader();
-		return reader.read(omlFilename);
+		Alignment al = reader.read(omlFilename);
+		return al;
 	}
 
 	private FeatureCollection<?, ?> loadGml(String gmlFilename) {

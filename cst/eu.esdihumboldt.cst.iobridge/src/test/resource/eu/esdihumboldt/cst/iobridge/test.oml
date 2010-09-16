@@ -26,24 +26,6 @@
     <align:map>
         <align:Cell>
             <omwg:entity1>
-                <omwg:Class rdf:about="http://www.openplans.org/topp/tkont_obce1">
-                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction">
-                        <omwg:param>
-                            <omwg:name>SelectedAttribute</omwg:name>
-                            <omwg:value></omwg:value>
-                        </omwg:param>
-                    </omwg:transf>
-                </omwg:Class>
-            </omwg:entity1>
-            <omwg:entity2>
-                <omwg:Class rdf:about="http://www.openplans.org/topp/target"/>
-            </omwg:entity2>
-            <align:relation>Equivalence</align:relation>
-        </align:Cell>
-    </align:map>
-    <align:map>
-        <align:Cell>
-            <omwg:entity1>
                 <omwg:Class rdf:about="http://www.git.zcu.cz/body_sk1">
                     <omwg:transf rdf:resource="eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction">
                         <omwg:param>
@@ -55,6 +37,32 @@
             </omwg:entity1>
             <omwg:entity2>
                 <omwg:Class rdf:about="http://www.git.zcu.cz/body_target"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://www.git.zcu.cz/body_sk1/the_geom">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction"/>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="http://www.git.zcu.cz/body_target/the_geom"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://www.git.zcu.cz/body_sk1/cb">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction"/>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="http://www.git.zcu.cz/body_target/cb"/>
             </omwg:entity2>
             <align:relation>Equivalence</align:relation>
         </align:Cell>
