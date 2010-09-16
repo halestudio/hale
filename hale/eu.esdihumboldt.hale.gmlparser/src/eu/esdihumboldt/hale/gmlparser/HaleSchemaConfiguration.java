@@ -21,12 +21,17 @@ import javax.xml.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.gml3.GMLConfiguration;
+import org.geotools.xml.Binding;
 import org.geotools.xml.Configuration;
+import org.geotools.xml.SimpleBinding;
 import org.geotools.xs.XSConfiguration;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeType;
+import org.opengis.feature.type.ComplexType;
 
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
+import eu.esdihumboldt.hale.gmlparser.binding.SimpleBindingWrapper;
+import eu.esdihumboldt.hale.gmlparser.binding.SimpleFeatureTypeBinding;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -96,22 +101,59 @@ public class HaleSchemaConfiguration extends Configuration {
     		
     		// check for existing binding
     		if (bindings.containsKey(name)) {
-    			Object binding = bindings.get(name);
+//    			Object binding = bindings.get(name);
+    			//TODO wrap GML bindings to support attributes? How?
     		}
     		else {
-    		//TODO wrap GML bindings to support attributes? How? Needs change to addTypeDefinitions to again get GML types
 	    		if (type instanceof SimpleFeatureType) {
 		    		bindings.put(name, 
 		    				new SimpleFeatureTypeBinding(name, (SimpleFeatureType) type));
 	    		}
+	    		else if (type instanceof ComplexType) {
+	    			//TODO ?
+	    			log.warn("No parser binding created for complex type " + name);
+	    		}
 	    		else {
-	    			log.warn("No parser binding created for type " + name);
+	    			// simple type
+	    			
+	    			// try to find binding for type name
+	    			QName aname = new QName(type.getName().getNamespaceURI(), type.getName().getLocalPart());
+	    			Object binding = bindings.get(aname);
+	    			
+	    			if (binding != null) {
+	    				Binding bind = null;
+	    				
+	    				if (binding instanceof Class<?> && Binding.class.isAssignableFrom((Class<?>) binding)) {
+	    					// try to create binding
+	    					try {
+								bind = ((Class<? extends Binding>) binding).newInstance();
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+	    				}
+	    				else if (binding instanceof Binding) {
+	    					bind = (Binding) binding;
+	    				}
+	    				
+	    				if (bind instanceof SimpleBinding) {
+	    					// wrap simple binding
+	    					bind = new SimpleBindingWrapper(name, (SimpleBinding) bind);
+	    				}
+	    				
+	    				if (bind != null) {
+	    					bindings.put(name, bind);
+	    				}
+	    				else {
+	    					log.warn("No parser binding created for type " + name);
+	    				}
+	    			}
+	    			else {
+	    				log.warn("No parser binding created for type " + name);
+	    			}
 	    		}
     		}
     	}
-    	
-    	// add GML 3.2 bindings, because Namespace has changed from 3.0
-    	// container.registerComponentImplementation(GML.FeatureCollectionType, FeatureCollectionTypeBinding.class);
 	}
 
 	/**
@@ -125,11 +167,6 @@ public class HaleSchemaConfiguration extends Configuration {
 			TypeDefinition type) {
 		if (type == null) return;
 		
-//		if (type.getName().getNamespaceURI().startsWith("http://www.opengis.net/gml")) {
-//			// ignore GML types
-//			return;
-//		}
-		
 		if (!type.isComplexType()) {
 			// ignore simple types
 			return;
@@ -139,7 +176,9 @@ public class HaleSchemaConfiguration extends Configuration {
 		
 		for (AttributeDefinition attribute : type.getAttributes()) {
 			TypeDefinition attType = attribute.getAttributeType();
-			addTypeDefinitions(defs, attType);
+			if (attType != null && !defs.contains(attType)) {
+				addTypeDefinitions(defs, attType);
+			}
 		}
 	}
 	
