@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.TreeNode;
@@ -25,7 +24,6 @@ import org.opengis.feature.ComplexAttribute;
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
 
-import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
 import eu.esdihumboldt.tools.FeatureInspector;
 
@@ -95,6 +93,9 @@ public class PropertyItem extends DefaultTreeNode {
 					}
 				}
 				return resultRepresentation;
+			}
+			else if (value instanceof ComplexAttribute) {
+				return "+";
 			}
 			else {
 				return value.toString();
