@@ -98,7 +98,7 @@
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
 			<artifactId>commons</artifactId>
-			<version>3.0.4-SNAPSHOT</version>
+			<version>3.0.5-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>xerces</artifactId>
@@ -109,7 +109,7 @@
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
 			<artifactId>cst</artifactId>
-			<version>1.0.3-SNAPSHOT</version>
+			<version>1.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
