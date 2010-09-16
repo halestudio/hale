@@ -516,8 +516,11 @@ public class SchemaTranslationController {
 		FeatureIterator<Feature> fi = features.features();
 		while (fi.hasNext()) {
 			Feature f = fi.next();
-			String ftk  = f.getType().getName().getNamespaceURI() 
-						+ "/" + f.getType().getName().getLocalPart();
+			String ftk  = f.getType().getName().getNamespaceURI();
+			if (!ftk.endsWith("/")) {
+				ftk += "/";
+			}
+			ftk += f.getType().getName().getLocalPart();
 			List<Feature> list = null;
 			if (result.keySet().contains(ftk)) {
 				list = result.get(ftk);
