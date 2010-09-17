@@ -34,6 +34,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.log4j.Logger;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
+import org.apache.ws.commons.schema.XmlSchemaChoice;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaComplexContentExtension;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
@@ -141,6 +142,26 @@ public class ApacheSchemaProvider
 				}
 			}
 			// </sequence>
+		}
+		else if (particle instanceof XmlSchemaChoice) {
+			//FIXME how to correctly deal with this? for now we add all choices
+			// <choice>
+			XmlSchemaChoice choice = (XmlSchemaChoice) particle;
+			for (int j = 0; j < choice.getItems().getCount(); j++) {
+				XmlSchemaObject object = choice.getItems().getItem(j);
+				if (object instanceof XmlSchemaElement) {
+					// <element>
+					AbstractElementAttribute attribute = getAttributeFromElement(
+							(XmlSchemaElement) object, typeDef, elements, 
+							importedElements, schemaTypes);
+					if (attribute != null) {
+						attribute.setNillable(true); //XXX set nillable because its a choice
+						attributeResults.add(attribute);
+					}
+					// </element>
+				}
+			}
+			// </choice>
 		}
 		
 		return attributeResults;
@@ -810,13 +831,14 @@ public class ApacheSchemaProvider
 				// </simpleContent>
 			}
 		}
-		else if (((XmlSchemaComplexType)item).getParticle() != null) {
+		else if (item.getParticle() != null) {
 			// no complex content (instead e.g. <sequence>)
-			XmlSchemaComplexType complexType = ((XmlSchemaComplexType) item);
+			XmlSchemaComplexType complexType = item;
 			// particle (e.g. sequence)
 			XmlSchemaParticle particle = complexType.getParticle();
-			if (particle instanceof XmlSchemaSequence) {
-				return getAttributesFromParticle(elements, importedElements, typeDef, particle, schemaTypes);
+			List<AttributeDefinition> tmp = getAttributesFromParticle(elements, importedElements, typeDef, particle, schemaTypes);
+			if (tmp != null) {
+				attributes.addAll(tmp);
 			}
 			// attributes
 			XmlSchemaObjectCollection attributeCollection = complexType.getAttributes();

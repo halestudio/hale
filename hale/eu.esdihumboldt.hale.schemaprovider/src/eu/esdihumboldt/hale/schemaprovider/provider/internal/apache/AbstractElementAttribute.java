@@ -45,7 +45,7 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 
 	private static final Logger log = Logger.getLogger(AbstractElementAttribute.class);
 	
-	private final boolean nillable;
+	private boolean nillable;
 	
 	private final long minOccurs;
 	
@@ -217,6 +217,15 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 	@Override
 	public boolean isNillable() {
 		return nillable;
+	}
+
+	/**
+	 * Only use this method if the initial configuration has not been correct
+	 * 
+	 * @param nillable the nillable to set
+	 */
+	public void setNillable(boolean nillable) {
+		this.nillable = nillable;
 	}
 
 }
