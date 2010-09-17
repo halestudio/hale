@@ -103,24 +103,33 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 		// inspire geometry attributes
 		if (getName().equals("geometry") && typeDef != null && 
 				!Geometry.class.isAssignableFrom(typeDef.getType(null).getBinding())) {
-			// create an attribute type with a geometry binding
-			AttributeTypeBuilder builder = new AttributeTypeBuilder();
-			builder.setBinding(Geometry.class);
-			builder.setName(getTypeName().getLocalPart());
-			builder.setNamespaceURI(getTypeName().getNamespaceURI());
-			builder.setNillable(true);
-			AttributeType attributeType = builder.buildType();
-			
-			TypeDefinition result = new TypeDefinition(getTypeName(), attributeType, typeDef.getSuperType());
-			result.setDescription(typeDef.getDescription());
-			result.setLocation(typeDef.getLocation());
-			return result;
+			return createDefaultGeometryType(typeDef);
+		}
+		// geometry property types
+		else if (typeDef != null && typeDef.getName().getLocalPart().equals("GeometryPropertyType") &&
+				!Geometry.class.isAssignableFrom(typeDef.getType(null).getBinding())) {
+			return createDefaultGeometryType(typeDef);
 		}
 		
 		// default: leave type untouched
 		return typeDef;
 	}
 	
+	private TypeDefinition createDefaultGeometryType(TypeDefinition typeDef) {
+		// create an attribute type with a geometry binding
+		AttributeTypeBuilder builder = new AttributeTypeBuilder();
+		builder.setBinding(Geometry.class);
+		builder.setName(getTypeName().getLocalPart());
+		builder.setNamespaceURI(getTypeName().getNamespaceURI());
+		builder.setNillable(true);
+		AttributeType attributeType = builder.buildType();
+		
+		TypeDefinition result = new TypeDefinition(getTypeName(), attributeType, typeDef.getSuperType());
+		result.setDescription(typeDef.getDescription());
+		result.setLocation(typeDef.getLocation());
+		return result;
+	}
+
 	/**
 	 * Get the documentation from an annotated XML object
 	 * 
