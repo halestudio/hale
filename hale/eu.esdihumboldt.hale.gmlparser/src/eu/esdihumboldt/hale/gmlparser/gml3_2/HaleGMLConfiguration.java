@@ -18,7 +18,10 @@ import javax.xml.namespace.QName;
 
 import org.geotools.gml3.bindings.PolygonPatchTypeBinding;
 import org.geotools.gml3.bindings.SurfaceArrayPropertyTypeBinding;
+import org.geotools.gml3.v3_2.GML;
 import org.geotools.xml.Configuration;
+
+import eu.esdihumboldt.hale.gmlparser.binding.HaleReferenceTypeBinding;
 
 /**
  * Extended GML 3.2 configuration
@@ -77,6 +80,8 @@ public class HaleGMLConfiguration extends org.geotools.gml3.v3_2.GMLConfiguratio
 		bindings.put(SurfaceType, HaleSurfaceTypeBinding.class);
 		
 		bindings.put(MultiPolygonType, HaleMultiPolygonTypeBinding.class);
+		
+		bindings.put(GML.ReferenceType, HaleReferenceTypeBinding.class);
 		
 		HaleCurvePropertyTypeBinding curvePropertyTypeBinding = new HaleCurvePropertyTypeBinding();
 		bindings.put(curvePropertyTypeBinding.getTarget(), curvePropertyTypeBinding);
