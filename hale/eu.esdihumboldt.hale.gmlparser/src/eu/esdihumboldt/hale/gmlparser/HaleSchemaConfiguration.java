@@ -107,7 +107,7 @@ public class HaleSchemaConfiguration extends Configuration {
     		else {
 	    		if (type instanceof SimpleFeatureType) {
 	    			if (type.isAbstract()) {
-	    				log.warn("Creating no parser binding for abstract type " + name);
+//	    				log.warn("Creating no parser binding for abstract type " + name);
 	    			}
 	    			else {
 			    		bindings.put(name, 
@@ -133,8 +133,7 @@ public class HaleSchemaConfiguration extends Configuration {
 	    					try {
 								bind = ((Class<? extends Binding>) binding).newInstance();
 							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+								log.debug("Could not create binding for simple type " + name, e);
 							}
 	    				}
 	    				else if (binding instanceof Binding) {

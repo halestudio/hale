@@ -18,6 +18,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.xsd.XSDSchema;
 import org.geotools.data.DataUtilities;
 import org.geotools.gml3.GML;
@@ -34,6 +36,8 @@ import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
  * @version $Id$ 
  */
 public class HaleSchemaXSD extends XSD {
+	
+	private static final Log log = LogFactory.getLog(HaleSchemaXSD.class);
 
 	/** application schema namespace */
     private String namespaceURI;
@@ -130,15 +134,16 @@ public class HaleSchemaXSD extends XSD {
                         locationUri = location;
                     }
                     
-                    java.net.URI u;
-					try {
-						u = new java.net.URI(locationUri);
-						u = u.normalize();
-	                    locationUri = u.toString();
-					} catch (URISyntaxException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+                    if (locationUri != null) {
+                    	java.net.URI u;
+						try {
+							u = new java.net.URI(locationUri);
+							u = u.normalize();
+		                    locationUri = u.toString();
+						} catch (Exception e) {
+							log.warn("Normalizing URI for schema resolving failed", e);
+						}
+                	}
 					
                     return locationUri;
                 }

@@ -20,7 +20,6 @@ import org.geotools.gml3.bindings.FeaturePropertyTypeBinding;
 import org.geotools.gml3.v3_2.GML;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
-import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 
 /**
