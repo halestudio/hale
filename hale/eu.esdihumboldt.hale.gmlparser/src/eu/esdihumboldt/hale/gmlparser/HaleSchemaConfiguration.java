@@ -68,7 +68,7 @@ public class HaleSchemaConfiguration extends Configuration {
 			addDependency(new org.geotools.gml2.GMLConfiguration());
 			break;
 		case GML3_2:
-			addDependency(new eu.esdihumboldt.hale.gmlparser.gml3_2.GMLConfiguration());
+			addDependency(new eu.esdihumboldt.hale.gmlparser.gml3_2.HaleGMLConfiguration());
 			break;
 		case GML3:
 			// fall through
@@ -106,8 +106,13 @@ public class HaleSchemaConfiguration extends Configuration {
     		}
     		else {
 	    		if (type instanceof SimpleFeatureType) {
-		    		bindings.put(name, 
-		    				new SimpleFeatureTypeBinding(name, (SimpleFeatureType) type));
+	    			if (type.isAbstract()) {
+	    				log.warn("Creating no parser binding for abstract type " + name);
+	    			}
+	    			else {
+			    		bindings.put(name, 
+			    				new SimpleFeatureTypeBinding(name, (SimpleFeatureType) type));
+	    			}
 	    		}
 	    		else if (type instanceof ComplexType) {
 	    			//TODO ?

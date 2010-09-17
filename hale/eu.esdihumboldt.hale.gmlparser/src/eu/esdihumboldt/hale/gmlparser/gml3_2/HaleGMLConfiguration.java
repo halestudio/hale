@@ -14,8 +14,6 @@ package eu.esdihumboldt.hale.gmlparser.gml3_2;
 
 import java.util.Map;
 
-import org.geotools.gml3.v3_2.GML;
-
 /**
  * 
  *
@@ -23,18 +21,21 @@ import org.geotools.gml3.v3_2.GML;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class GMLConfiguration extends org.geotools.gml3.v3_2.GMLConfiguration {
+public class HaleGMLConfiguration extends org.geotools.gml3.v3_2.GMLConfiguration {
 
 	/**
 	 * @see org.geotools.xml.Configuration#configureBindings(java.util.Map)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void configureBindings(Map bindings) {
 		super.configureBindings(bindings);
 		
 		HaleDoubleListBinding doubleListBinding = new HaleDoubleListBinding();
-		bindings.put(GML.doubleList, doubleListBinding);
-//		bindings.put(doubleListBinding.getTarget(), doubleListBinding);
+		bindings.put(doubleListBinding.getTarget(), doubleListBinding);
+		
+		HaleFeaturePropertyTypeBinding featurePropertyTypeBinding = new HaleFeaturePropertyTypeBinding();
+		bindings.put(featurePropertyTypeBinding.getTarget(), featurePropertyTypeBinding);
 	}
 
 }

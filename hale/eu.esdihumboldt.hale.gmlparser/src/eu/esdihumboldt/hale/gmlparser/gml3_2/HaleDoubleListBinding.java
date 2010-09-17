@@ -15,6 +15,10 @@ package eu.esdihumboldt.hale.gmlparser.gml3_2;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
+import org.geotools.gml3.bindings.DoubleListBinding;
+import org.geotools.gml3.v3_2.GML;
 import org.geotools.xml.InstanceComponent;
 import org.geotools.xml.impl.InstanceBinding;
 
@@ -51,5 +55,14 @@ public class HaleDoubleListBinding extends org.geotools.gml3.bindings.DoubleList
     		return result.toArray(new Double[result.size()]);
     	}
     }
+
+	/**
+	 * @see DoubleListBinding#getTarget()
+	 */
+	@Override
+	public QName getTarget() {
+		return GML.doubleList;
+	}
+    
 }
 

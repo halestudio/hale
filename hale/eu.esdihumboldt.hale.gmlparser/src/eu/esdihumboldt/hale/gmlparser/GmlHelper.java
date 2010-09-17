@@ -20,6 +20,7 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.opengis.feature.Feature;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
@@ -109,7 +110,7 @@ public class GmlHelper {
 					conf = new org.geotools.gml2.GMLConfiguration();
 					break;
 				case GML3_2:
-					conf = new eu.esdihumboldt.hale.gmlparser.gml3_2.GMLConfiguration();
+					conf = new eu.esdihumboldt.hale.gmlparser.gml3_2.HaleGMLConfiguration();
 					break;
 				case GML3: // fall through
 				default: // default to GML3
@@ -118,9 +119,26 @@ public class GmlHelper {
 			}
 			HaleGMLParser parser = new HaleGMLParser(conf);
 			Object result = parser.parse(xml);
+
+			if (result instanceof Feature && ((Feature) result).getProperty("featureMember") != null) {
+				result = ((Feature) result).getProperty("featureMember").getValue();
+			}
 			
 			if (result instanceof FeatureCollection<?, ?>) {
 				return (FeatureCollection<FeatureType, Feature>) result;
+			}
+			else if (result instanceof SimpleFeature[]) {
+				SimpleFeature[] features = (SimpleFeature[]) result;
+				CstFeatureCollection fc = new CstFeatureCollection();
+				for (int i = 0; i < features.length; i++) {
+					fc.add(features[i]);
+				}
+				return fc;
+			}
+			else if (result instanceof Feature) {
+				CstFeatureCollection fc = new CstFeatureCollection();
+				fc.add((Feature) result);
+				return fc;
 			}
 			else if (result instanceof Map<?, ?>) {
 				// extract features from Map
