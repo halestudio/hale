@@ -96,13 +96,17 @@
 			<artifactId>corefunctions</artifactId>
 			<version>1.0.3-SNAPSHOT</version>
 			<exclusions>
-        	<exclusion>			  			
-  			<groupId>xerces</groupId>
-  			<artifactId>xerces</artifactId>  			
-			 </exclusion>
-     		 </exclusions> 
+				<exclusion>
+					<groupId>xerces</groupId>
+					<artifactId>xerces</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>eu.esdihumboldt</groupId>
+					<artifactId>commons</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-		
+
 
 		<dependency>
 			<groupId>junit</groupId>
