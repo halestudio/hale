@@ -57,10 +57,10 @@
 			<version>1.2.1</version>
 		</dependency>
 		<dependency>
-    <groupId>commons-io</groupId>
-    <artifactId>commons-io</artifactId>
-    <version>1.3.2</version>
-   </dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.3.2</version>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -79,11 +79,7 @@
 			<version>6.1.22</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>eu.esdihumboldt.cst</groupId>
-			<artifactId>corefunctions</artifactId>
-			<version>1.0.3-SNAPSHOT</version>
-		</dependency>
+
 		<dependency>
 			<groupId>cz.hsrs</groupId>
 			<artifactId>pywps</artifactId>
@@ -94,6 +90,20 @@
 			<artifactId>iobridge</artifactId>
 			<version>2.0.1-SNAPSHOT</version>
 		</dependency>
+
+		<dependency>
+			<groupId>eu.esdihumboldt.cst</groupId>
+			<artifactId>corefunctions</artifactId>
+			<version>1.0.3-SNAPSHOT</version>
+			<exclusions>
+        	<exclusion>			  			
+  			<groupId>xerces</groupId>
+  			<artifactId>xerces</artifactId>  			
+			 </exclusion>
+     		 </exclusions> 
+		</dependency>
+		
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
