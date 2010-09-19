@@ -1,38 +1,91 @@
 package eu.esdihumboldt.web;
 
-import java.io.File;
-import java.net.URI;
+import java.lang.reflect.Method;
 import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Map;
 
+import junit.framework.Assert;
+
+import org.apache.commons.logging.impl.Log4JLogger;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.geotools.util.logging.Log4JLoggerFactory;
+import org.geotools.util.logging.Logging;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.esdihumboldt.cst.CstFunction;
+import eu.esdihumboldt.cst.iobridge.CstServiceBridge;
 import eu.esdihumboldt.cst.iobridge.IoBridgeFactory;
 import eu.esdihumboldt.cst.iobridge.IoBridgeFactory.BridgeType;
+import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 
 public class TestBridge {
 
+	
+	@BeforeClass 
+	public static void initialize(){
+		addCST();
+		// configure logging
+		Logging.ALL.setLoggerFactory(Log4JLoggerFactory.getInstance());
+		Logger.getLogger(Log4JLogger.class).setLevel(Level.WARN);
+		Logger.getRootLogger().setLevel(Level.WARN);
+	}
+	
+	@Test
+	public void testCstGetRegisteredTransfomers(){
+	
+		CstFunctionFactory tf = CstFunctionFactory.getInstance();
+		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
+		Map<String, Class<? extends CstFunction>> functions = tf
+				.getRegisteredFunctions();
+		//functions.clear();
+		functions = tf.getRegisteredFunctions();
+		Assert.assertTrue(functions.size() > 2);
+	}
 	/**
 	 * @param args
 	 */
 	@Test
 	public void testBridge() throws Exception{
 		
+		CstFunctionFactory tf = CstFunctionFactory.getInstance();
+		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
 		
-		try {
-		File oml = new File("./src/main/webapp/xsds/HY/testproject.xml.goml");		
-		File gml = new File("./src/main/webapp/xsds/HY/wfs_va.gml");		
-		File xsd = new File("./src/main/webapp/xsds/HY/Hydrography.xsd");			
+			URL omlURL = TestBridge.class.getResource("test.oml");
+			URL gmlURL = TestBridge.class.getResource("test_gs.xml");			
+			URL xsd =  TestBridge.class.getResource("test_gs_target.xsd");		
 	
 		System.out.println(xsd.toURI());
-		System.out.println(
-				IoBridgeFactory.getIoBridge(BridgeType.preloaded)
-				        .transform(xsd.toURI().toString(),
-				        		   oml.getPath(),
-				        		   gml.toURI().toString()					           
-						          ));
-		} catch (Exception e){
-			e.printStackTrace();
-		}
+		CstServiceBridge csb = IoBridgeFactory.getIoBridge(BridgeType.preloaded);
+
+		String result = csb.transform(
+				"file:/media/data2/code/humboldt/trunk/cst/eu.esdihumboldt.cst.iobridge/src/test/resource/eu/esdihumboldt/cst/iobridge/" +
+				"test_gs_target.xsd",
+				"file:/media/data2/code/humboldt/trunk/cst/eu.esdihumboldt.cst.iobridge/src/test/resource/eu/esdihumboldt/cst/iobridge/" +
+				"test.oml",
+				"file:/media/data2/code/humboldt/trunk/cst/eu.esdihumboldt.cst.iobridge/src/test/resource/eu/esdihumboldt/cst/iobridge/" +
+				"test_gs.xml");
+		System.out.println(result);
+		Assert.assertTrue(true);
+
+	}
+	
+	public static void addCST() {
+		Class<?>[] parameters = new Class[]{URL.class};
+		URL functions = (new TestBridge()).getClass().getResource("corefunctions-1.0.2-SNAPSHOT.jar");		
+		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+	      Class<?> sysclass = URLClassLoader.class;
+
+	      try {
+	         Method method = sysclass.getDeclaredMethod("addURL", parameters);
+	         method.setAccessible(true);
+	         method.invoke(sysloader, new Object[]{functions});
+	      } catch (Throwable t) {
+	         t.printStackTrace();
+	         //throw new IOException("Error, could not add URL to system classloader");
+	      }
 
 	}
 

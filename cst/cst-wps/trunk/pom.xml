@@ -90,6 +90,19 @@
 			<artifactId>iobridge</artifactId>
 			<version>2.0.1-SNAPSHOT</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>eu.esdihumboldt</groupId>
+			<artifactId>commons</artifactId>
+			<version>3.0.5-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xerces</groupId>
+					<artifactId>xerces</artifactId>
+				</exclusion>
+				
+			</exclusions>
+		</dependency>
 
 		<dependency>
 			<groupId>eu.esdihumboldt.cst</groupId>
@@ -102,8 +115,9 @@
 				</exclusion>
 				<exclusion>
 					<groupId>eu.esdihumboldt</groupId>
-					<artifactId>commons</artifactId>
+					<artifactId>cst</artifactId>
 				</exclusion>
+				
 			</exclusions>
 		</dependency>
 
