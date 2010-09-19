@@ -95,21 +95,17 @@
 			<artifactId>specification</artifactId>
 			<version>2.0.4-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>eu.esdihumboldt</groupId>
-			<artifactId>commons</artifactId>
-			<version>3.0.5-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>xerces</artifactId>
-					<groupId>xerces</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+		
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
 			<artifactId>cst</artifactId>
 			<version>1.0.4-SNAPSHOT</version>
+			<exclusions>
+        	<exclusion>			  			
+  			<groupId>xerces</groupId>
+  			<artifactId>xerces</artifactId>  			
+			 </exclusion>
+     		 </exclusions> 
 		</dependency>
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
@@ -121,13 +117,16 @@
 			<artifactId>gmlparser</artifactId>
 			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
-				<dependency>
+		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
 			<artifactId>gmlhandler</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
-
+		<dependency>
+			<groupId>eu.esdihumboldt</groupId>
+			<artifactId>gmlhandler</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
 	</dependencies>
 	<repositories>
