@@ -48,9 +48,7 @@ def createIOBridgeProcess():
             transformedGML = None
             import java.lang.NullPointerException
             try:
-                transformedGML = dcsb.transform(schemaUrl,
-                                            omlUrl),
-                                            gmlUrl)
+                transformedGML = dcsb.transform(schemaUrl, omlUrl, gmlUrl)
 
             except java.lang.NullPointerException,e:
                 return "Could not transform GML, got java.lang.NullPointerException: %s" % e
