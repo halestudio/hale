@@ -34,7 +34,11 @@ def createIOBridgeProcess():
             dcsb = DefaultCstServiceBridge()
             cwd = os.path.dirname(os.path.abspath(__file__))
             schemaPath = os.path.join(cwd, self.schema.getValue())
+            omlPath = os.path.join(cwd, self.oml.getValue())
+            gmlPath = os.path.join(cwd, self.gml.getValue())
             schemaUrl = urllib.basejoin("file:",schemaPath)
+            omlUrl = urllib.basejoin("file:",omlPath)
+            gmlUrl = urllib.basejoin("file:",gmlPath)
             self.status.set("Transforming input GML")
 
             tempDir = os.path.join(cwd,"tmp")
@@ -45,34 +49,11 @@ def createIOBridgeProcess():
             import java.lang.NullPointerException
             try:
                 transformedGML = dcsb.transform(schemaUrl,
-                                            os.path.join(tempDir, omlFile),
-                                            os.path.join(tempDir,gmlFile))
+                                            omlUrl),
+                                            gmlUrl)
 
             except java.lang.NullPointerException,e:
                 return "Could not transform GML, got java.lang.NullPointerException: %s" % e
             self.gmlout.setValue(transformedGML)
 
     return IOBridgeProcess()
-
-def getXSDs():
-    cstdir = os.path.dirname(os.path.abspath(__file__))
-    templates = os.path.join(cstdir, "xsds/")
-
-    xsds = []
-
-    def append(xsds, dir, files):
-        if dir.find(".svn") > -1:
-            return
-        for f in files:
-            if f.find(".xsd") > -1:
-                f = os.path.join(dir,f)
-                f = f.replace(templates,"")
-                xsds.append(f)
-                return
-
-    os.path.walk(templates, append, xsds)
-
-    return xsds
-
-if __name__ == "__main__":
-    getXSDs()
