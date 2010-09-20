@@ -17,10 +17,9 @@ def createIOBridgeProcess():
                     storeSupported = True,
                     statusSupported = True)
 
-            self.schema = self.addLiteralInput(identifier="schema",
+            self.schema = self.addComplexInput(identifier="schema",
                             title="Schema file",
-                            type = types.StringType,
-                            allowedValues = getXSDs())
+                            formats = [{"mimeType":"text/xml"}])
             self.oml = self.addComplexInput(identifier="oml",
                             title="Ontology mapping file",
                             formats = [{"mimeType":"text/xml"}])

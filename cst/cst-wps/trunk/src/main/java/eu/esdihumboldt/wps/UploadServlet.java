@@ -46,6 +46,7 @@ public class UploadServlet extends HttpServlet {
 			Iterator iter = items.iterator();
 			File gmlFile = null;
 			File omlFile = null;
+			File schemaFile = null;
 			while (iter.hasNext()) {
 				FileItem item = (FileItem) iter.next();
 
@@ -62,7 +63,13 @@ public class UploadServlet extends HttpServlet {
 								.getRealPath("./tmp")
 								+ "/" + d.getTime() + "." + item.getFieldName());
 						item.write(omlFile);
-					}
+					} else if (item.getFieldName().equals("schema")) {
+						Date d = new Date();
+						schemaFile = new File(this.getServletContext()
+								.getRealPath("./tmp")
+								+ "/" + d.getTime() + "." + item.getFieldName());
+						item.write(schemaFile);
+                                        }
 
 				} else {
 					//throw new IOException("unexpected field "
@@ -71,7 +78,7 @@ public class UploadServlet extends HttpServlet {
 			}
 
                         resp.setContentType("text/html");
-                        String r = "<script type=\"text/javascript\">window.parent.handleResponse({success:true, oml:'files/tmp/"+omlFile.getName()+"', gml:'files/tmp/"+gmlFile.getName()+"'})</script>";
+                        String r = "<script type=\"text/javascript\">window.parent.handleResponse({success:true, schema:'files/tmp/"+schema.getName()+"',oml:'files/tmp/"+omlFile.getName()+"', gml:'files/tmp/"+gmlFile.getName()+"'})</script>";
 
 			
 			resp.getWriter().write(r);

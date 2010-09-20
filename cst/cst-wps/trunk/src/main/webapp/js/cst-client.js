@@ -13,7 +13,7 @@ var init = function(){
     var wps = new OpenLayers.WPS(wpsURL,{onDescribedProcess: onDescribedProcess});
     var iobridge = new OpenLayers.WPS.Process({identifier:"iobridge"});
     wps.addProcess(iobridge);
-    wps.describeProcess("iobridge");
+    //wps.describeProcess("iobridge");
 
     // modify the form
     document.forms[0].onsubmit=function() {
@@ -29,7 +29,7 @@ var init = function(){
  */
 var handleResponse = function(result) {
     document.getElementById("indicator").style.display="none";
-    execute(result.gml,result.oml);
+    execute(result.gml,result.oml,result.schema);
 };
 
 /**
@@ -50,7 +50,7 @@ var onDescribedProcess = function(process){
 /**
  * Files are uploaded, call the execute request
  */
-var execute = function(gml,oml) {
+var execute = function(gml,oml,schema) {
     document.getElementById("indicator").style.display="block";
     // define the WPS instance
     var wps = new OpenLayers.WPS(wpsURL,{onSucceeded: onExecuted,
@@ -58,7 +58,7 @@ var execute = function(gml,oml) {
 
     // define inputs and outputs
     var schemaInput = new OpenLayers.WPS.LiteralPut({identifier:"schema",
-            value: document.forms[0].schema.value});
+            value: schema});
     var omlInput = new OpenLayers.WPS.ComplexPut({identifier:"oml",
             value: oml});
     var gmlInput = new OpenLayers.WPS.ComplexPut({identifier:"gml",
