@@ -32,6 +32,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 
 import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.iobridge.IoBridgeFactory.BridgeType;
+import eu.esdihumboldt.cst.iobridge.impl.DefaultCstServiceBridge;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.hale.gmlparser.HaleGMLParser;
 
@@ -99,15 +100,18 @@ public class IoBridgeIntegrationTest {
 			URL omlURL = IoBridgeIntegrationTest.class.getResource("test.oml");
 			URL gmlURL = IoBridgeIntegrationTest.class.getResource("test_gs.xml");			
 			URL xsd =  IoBridgeIntegrationTest.class.getResource("test_gs_target.xsd");		
-			
-			CstServiceBridge csb = IoBridgeFactory.getIoBridge(BridgeType.preloaded);
+			String out = IoBridgeIntegrationTest.class.getResource("").toExternalForm() + "out.gml";		
+			DefaultCstServiceBridge csb = (DefaultCstServiceBridge)IoBridgeFactory.getIoBridge(BridgeType.preloaded);
 			System.out.println(xsd.toURI().toString());
 			System.out.println(omlURL.toURI().toString());
 			System.out.println(gmlURL.toURI().toString());
+			
+			
 			String result = csb.transform(
 					xsd.toURI().toString(),
 					omlURL.toURI().toString(), 
-			        gmlURL.toURI().toString());
+			        gmlURL.toURI().toString(),
+					out);
 			
 			
 			System.out.println(result);
