@@ -55,7 +55,7 @@ import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
  */
 public class DefaultCstServiceBridge implements CstServiceBridge {
 
-	private URL outputFilename;
+	private URL outputDirectory;
 
 	/*
 	 * (non-Javadoc)
@@ -65,7 +65,7 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 	 * java.lang.String, java.lang.String)
 	 */
 	public String transform(String schemaFilename, String omlFilename,
-			String gmlFilename) {
+			String gmlFilename, String outputFilename)  {
 
 		// perform the transformation
 		FeatureCollection<?, ?> result = CstServiceFactory.getInstance()
@@ -75,17 +75,15 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 
 		// encode the transformed data and store it temporarily, return the
 		// temporary file location
-		if (outputFilename == null) {			
-			try {
-				outputFilename = new URL(this.getClass().getResource("")
-						.toExternalForm()
-						+ UUID.randomUUID() + ".gml");
-			} catch (MalformedURLException e) {
-				throw new RuntimeException(
-						"Couldn't create temporary output file: ", e);
-			}			
-		} 
-		this.encodeGML(result, outputFilename, schemaFilename);
+		
+				
+		try {
+			this.encodeGML(result, new URL(outputFilename), schemaFilename);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			throw new RuntimeException("Couldn't create output file ",e);
+		}
+			
 		/*
 		 * 
 		 * try { GmlHandler handler =
@@ -99,15 +97,15 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 		 * e.printStackTrace(); } catch (TransformationException e) { // TODO
 		 * Auto-generated catch block e.printStackTrace(); }
 		 */
-		return outputFilename.toString();
-	}
-
-	public URL getOutputFilename() {
 		return outputFilename;
 	}
 
-	public void setOutputFilename(URL outputFilename) {
-		this.outputFilename = outputFilename;
+	public URL getOutputDir() {
+		return outputDirectory;
+	}
+
+	public void setOutputDir(URL output) {
+		this.outputDirectory = output;
 	}
 
 	/**
@@ -172,5 +170,16 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public String transform(String schemaFilename, String omlFilename,
+			String gmlFilename) {
+		String outputFilename =(this.getClass().getResource("")
+				.toExternalForm()
+				+ UUID.randomUUID() + ".gml");
+		// TODO Auto-generated method stub
+		return transform(schemaFilename, omlFilename,
+				gmlFilename,  outputFilename);
 	}
 }
