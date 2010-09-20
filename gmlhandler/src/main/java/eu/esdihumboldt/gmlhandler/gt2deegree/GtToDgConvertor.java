@@ -56,6 +56,7 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
+
 /**
  * 
  * 
@@ -350,8 +351,17 @@ public class GtToDgConvertor {
 			
 
 			break;
-
+			
 		default:
+			Geometry gtGeometry = (Geometry) (gtProp.getValue());
+
+			//double[] dgCoordinates = createCoordinates(gtGeometry.get);
+			dgGeometry = new org.deegree.geometry.standard.primitive.DefaultSurface(id, dgCRS, pm, null);
+			dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry) dgGeometry)
+					.createFromJTS((com.vividsolutions.jts.geom.Geometry) gtGeometry);
+			 
+			 
+
 
 			break;
 		}

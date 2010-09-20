@@ -60,12 +60,109 @@ public class GtToDgConvertorTest {
 	/** generated instance location */
 	private static final String GML32_GENERATED_LOCATION = "src/test/resources/generated_3_2_1.gml";
 	private static final String DEMO_GML32_GENERATED_LOCATION = "src/test/resources/demo_generated_3_2_1.gml";
+	private static final String Italy_INSPIRE_xsdUrl = "http://www.gisig.it:8081/geoserver/wfs?service=WFS&version=1.1.0&request=DescribeFeatureType&typeName=Italy:SIC";
+	private static final String DEMO_GML32_Genereted_Italy_INSPIRE = "src/test/resources/italy_inspire_generated_3_2_1.gml";
 	private static org.deegree.feature.FeatureCollection DeegreeFC;
 	private static org.geotools.feature.FeatureCollection GeoToolsFC;
 	private static org.geotools.feature.FeatureCollection GeoToolsGMLFC;
 	private static org.geotools.feature.FeatureCollection GeoToolsDemoFC;
+	private static org.geotools.feature.FeatureCollection GeoToolsItaly_INSPIRE;
+	private static org.geotools.feature.FeatureCollection GeoToolsItaly_TC;
+	private static org.geotools.feature.FeatureCollection GeoToolsSpain_HUMBOLDT;
+	
 
 	@BeforeClass
+	public static void loadItaly_INSPIRE(){
+		try {
+			GeoToolsItaly_INSPIRE = FeatureCollections.newCollection();
+			URL url = new URL("file://"
+					+ (new GtToDgConvertorTest()).getClass()
+							.getResource("./HALE_CST_Italy_INSPIRE/SIC/SIC.gml")
+							.getFile());
+			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration());
+			GeoToolsItaly_INSPIRE = (org.geotools.feature.FeatureCollection<FeatureType, Feature>) parser
+					.parse(url.openStream());
+			org.geotools.feature.FeatureCollection test = GeoToolsItaly_INSPIRE;
+			System.out.println(GeoToolsItaly_INSPIRE.getSchema().getName());
+
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+	}
+	//@BeforeClass
+	public static void loadItaly_TC(){
+		try {
+			GeoToolsItaly_TC = FeatureCollections.newCollection();
+			URL url = new URL("file://"
+					+ (new GtToDgConvertorTest()).getClass()
+							.getResource("././HALE_CST_Italy_TC/lakes/SPECCHI_ACQUA_07.gml")
+							.getFile());
+			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration());
+			GeoToolsItaly_TC = (org.geotools.feature.FeatureCollection<FeatureType, Feature>) parser
+					.parse(url.openStream());
+			org.geotools.feature.FeatureCollection test = GeoToolsItaly_TC;
+			System.out.println(GeoToolsItaly_TC.getSchema().getName());
+
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+	}
+	//@BeforeClass
+	public static void loadSpain_HUMBOLDT(){
+		try {
+			GeoToolsSpain_HUMBOLDT = FeatureCollections.newCollection();
+			URL url = new URL("file://"
+					+ (new GtToDgConvertorTest()).getClass()
+							.getResource("./HALE_CST_Spain_HUMBOLDT/data/ren_ex.gml")
+							.getFile());
+			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration());
+			GeoToolsSpain_HUMBOLDT = (org.geotools.feature.FeatureCollection<FeatureType, Feature>) parser
+					.parse(url.openStream());
+			org.geotools.feature.FeatureCollection test = GeoToolsSpain_HUMBOLDT;
+			System.out.println(GeoToolsSpain_HUMBOLDT.getSchema().getName());
+
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+	}
+	
+	//@BeforeClass
 	public static void loadGeotoolsData() {
 		GeoToolsFC = FeatureCollections.newCollection();
 		try {
@@ -88,7 +185,7 @@ public class GtToDgConvertorTest {
 		}
 	}
 
-	@BeforeClass
+	//@BeforeClass
 	public static void loadGeotoolsGMLData() {
 		try {
 			GeoToolsGMLFC = FeatureCollections.newCollection();
@@ -117,7 +214,7 @@ public class GtToDgConvertorTest {
 		}
 
 	}
-	@BeforeClass
+	//@BeforeClass
 	public static void loadGeotoolDemoData() {
 		try {
 			System.out.println("Reading source data to geotools model...");
@@ -151,7 +248,7 @@ public class GtToDgConvertorTest {
 	/**
 	 * Testcase for convertion of the geotools SimpleAttributes created using geotools FeatureBuilder (manuelly).
 	 */
-	@Test
+	//@Test
 	public void testSimpleFeatureConversion() {
 		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsFC);
 		assertEquals(1, dgFC.size());
@@ -188,7 +285,7 @@ public class GtToDgConvertorTest {
 	 * @throws XMLStreamException 
 	 * @throws FileNotFoundException 
 	 */
-	@Test
+	//@Test
 	public void testDemoDataConversion() throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
 		System.out.println("Conversion to deegree starts..");
 		
@@ -208,12 +305,92 @@ public class GtToDgConvertorTest {
 		gmlHandler.writeFC(dgFC);
 		
 	}
+	/**
+	 * Testcase for convertion of the geotools SimpleAttributes created using geotools FeatureBuilder (manuelly).
+	 * @throws TransformationException 
+	 * @throws UnknownCRSException 
+	 * @throws XMLStreamException 
+	 * @throws FileNotFoundException 
+	 */
+	@Test
+	public void testDemoDataItalyInspire() throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
+		System.out.println("Conversion to deegree starts..");
+		
+		//1. Create dgFC
+		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsItaly_INSPIRE);
+		//2. Create GML Handler
+		HashMap<String, String> namespaces = new HashMap<String, String>();
+		namespaces.put("wfs", "http://www.opengis.net/wfs");
+		namespaces.put("HUMBOLDT","http://www.esdi-humboldt.eu");
+		namespaces.put("xsi","http://www.w3.org/2001/XMLSchema-instance");
 
+		// set up GMLHandler with the test configuration
+		GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, Italy_INSPIRE_xsdUrl,
+				namespaces);
+		// set target gml destination
+		gmlHandler.setTargetGmlUrl(DEMO_GML32_Genereted_Italy_INSPIRE);
+		gmlHandler.writeFC(dgFC);
+		
+	}
+	/**
+	 * Testcase for convertion of the geotools SimpleAttributes created using geotools FeatureBuilder (manuelly).
+	 * @throws TransformationException 
+	 * @throws UnknownCRSException 
+	 * @throws XMLStreamException 
+	 * @throws FileNotFoundException 
+	 */
+	//@Test
+	public void testDemoDataItalyTC() throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
+		System.out.println("Conversion to deegree starts..");
+		
+		//1. Create dgFC
+		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsDemoFC);
+		//2. Create GML Handler
+		HashMap<String, String> namespaces = new HashMap<String, String>();
+		namespaces.put("wfs", "http://www.opengis.net/wfs");
+		namespaces.put("HUMBOLDT","http://www.esdi-humboldt.eu");
+		namespaces.put("xsi","http://www.w3.org/2001/XMLSchema-instance");
+
+		// set up GMLHandler with the test configuration
+		GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, xsdUrl,
+				namespaces);
+		// set target gml destination
+		gmlHandler.setTargetGmlUrl(DEMO_GML32_GENERATED_LOCATION);
+		gmlHandler.writeFC(dgFC);
+		
+	}
+	/**
+	 * Testcase for convertion of the geotools SimpleAttributes created using geotools FeatureBuilder (manuelly).
+	 * @throws TransformationException 
+	 * @throws UnknownCRSException 
+	 * @throws XMLStreamException 
+	 * @throws FileNotFoundException 
+	 */
+	//@Test
+	public void testDemoDataSpainHumboldt() throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
+		System.out.println("Conversion to deegree starts..");
+		
+		//1. Create dgFC
+		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsDemoFC);
+		//2. Create GML Handler
+		HashMap<String, String> namespaces = new HashMap<String, String>();
+		namespaces.put("wfs", "http://www.opengis.net/wfs");
+		namespaces.put("HUMBOLDT","http://www.esdi-humboldt.eu");
+		namespaces.put("xsi","http://www.w3.org/2001/XMLSchema-instance");
+
+		// set up GMLHandler with the test configuration
+		GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, xsdUrl,
+				namespaces);
+		// set target gml destination
+		gmlHandler.setTargetGmlUrl(DEMO_GML32_GENERATED_LOCATION);
+		gmlHandler.writeFC(dgFC);
+		
+	}
 	
 	/**
 	 * Testcase for convertion of the geotools SimpleAttributes created using HaleParser.
 	 */
-	@Test
+	//@Test
 	public void testSimpleAttributeConversion() {
 		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsGMLFC);
 		//TODO check imported schemas 
