@@ -16,9 +16,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.esdihumboldt.cst.CstFunction;
-import eu.esdihumboldt.cst.iobridge.CstServiceBridge;
 import eu.esdihumboldt.cst.iobridge.IoBridgeFactory;
 import eu.esdihumboldt.cst.iobridge.IoBridgeFactory.BridgeType;
+import eu.esdihumboldt.cst.iobridge.impl.DefaultCstServiceBridge;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 
 public class TestBridge {
@@ -58,17 +58,20 @@ public class TestBridge {
 			URL xsd =  TestBridge.class.getResource("test_gs_target.xsd");		
 	
 		System.out.println(xsd.toURI());
-		CstServiceBridge csb = IoBridgeFactory.getIoBridge(BridgeType.preloaded);
+		DefaultCstServiceBridge csb = (DefaultCstServiceBridge)IoBridgeFactory.getIoBridge(BridgeType.preloaded);
 
+			
+		String out = TestBridge.class.getResource("").toExternalForm() + "out.gml";				
+		System.out.println(xsd.toURI().toString());
+		System.out.println(omlURL.toURI().toString());
+		System.out.println(gmlURL.toURI().toString());
+		
+		
 		String result = csb.transform(
-				"file:/media/data2/code/humboldt/trunk/cst/eu.esdihumboldt.cst.iobridge/src/test/resource/eu/esdihumboldt/cst/iobridge/" +
-				"test_gs_target.xsd",
-				"file:/media/data2/code/humboldt/trunk/cst/eu.esdihumboldt.cst.iobridge/src/test/resource/eu/esdihumboldt/cst/iobridge/" +
-				"test.oml",
-				"file:/media/data2/code/humboldt/trunk/cst/eu.esdihumboldt.cst.iobridge/src/test/resource/eu/esdihumboldt/cst/iobridge/" +
-				"test_gs.xml");
-		System.out.println(result);
-		Assert.assertTrue(true);
+				xsd.toURI().toString(),
+				omlURL.toURI().toString(), 
+		        gmlURL.toURI().toString(),
+				out);
 
 	}
 	
