@@ -35,7 +35,7 @@ def createIOBridgeProcess():
             cwd = os.path.dirname(os.path.abspath(__file__))
             schemaPath = os.path.join(cwd, self.schema.getValue())
             omlPath = os.path.join(cwd, self.oml.getValue())
-            gmlPath = os.path.join(cwd, self.gml.getValue())
+            gmlPath = os.path.join(cwd, self.gmlin.getValue())
             schemaUrl = urllib.basejoin("file:",schemaPath)
             omlUrl = urllib.basejoin("file:",omlPath)
             gmlUrl = urllib.basejoin("file:",gmlPath)
