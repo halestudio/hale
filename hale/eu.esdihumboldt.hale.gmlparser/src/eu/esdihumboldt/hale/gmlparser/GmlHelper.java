@@ -13,9 +13,14 @@
 package eu.esdihumboldt.hale.gmlparser;
 
 import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Configuration;
@@ -23,7 +28,9 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
 
 /**
  * 
@@ -33,6 +40,8 @@ import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
  * @version $Id$ 
  */
 public class GmlHelper {
+	
+	private static final Log log = LogFactory.getLog(GmlHelper.class);
 	
 	/**
 	 * Configuration types
@@ -161,4 +170,37 @@ public class GmlHelper {
 		} 
 	}
 
+	/**
+	 * Load GML from an input stream and use the application schema for parsing
+	 * 
+	 * @param xml the XML input stream
+	 * @param type the configuration type, defaults to GML3
+	 * @param namespace schema namespace
+	 * @param schemaLocation schema location
+	 * 
+	 * @return the loaded feature collection or <code>null</code>
+	 */
+	public static FeatureCollection<FeatureType, Feature> loadGml(InputStream xml, 
+			ConfigurationType type, String namespace, 
+			URI schemaLocation) {
+		ApacheSchemaProvider asp = new ApacheSchemaProvider();
+		
+		List<SchemaElement> elements = new ArrayList<SchemaElement>();
+		try {
+			Schema schema = asp.loadSchema(schemaLocation, null);
+			elements.addAll(schema.getElements().values());
+		} catch (Exception e) {
+			log.warn("Could not load source schema");
+		}
+		
+		if (elements.isEmpty()) {
+			// don't use app schema
+			return loadGml(xml, type);
+		}
+		else {
+			// use app schema
+			return loadGml(xml, type, true, namespace, schemaLocation.toString(), elements);
+		}
+	}
+	
 }
