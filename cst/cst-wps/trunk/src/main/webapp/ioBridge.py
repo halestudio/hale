@@ -3,7 +3,7 @@
 from pywps.Process import WPSProcess
 from eu.esdihumboldt.cst.iobridge.impl import DefaultCstServiceBridge
 import types
-import os,urllib
+import os,urllib,sys
 
 def createIOBridgeProcess():
 
@@ -32,24 +32,23 @@ def createIOBridgeProcess():
 
         def execute(self):
             dcsb = DefaultCstServiceBridge()
-            cwd = os.path.dirname(os.path.abspath(__file__))
-            schemaPath = os.path.join(cwd, self.schema.getValue())
-            omlPath = os.path.join(cwd, self.oml.getValue())
-            gmlPath = os.path.join(cwd, self.gmlin.getValue())
+            schemaPath = os.path.abspath(self.schema.getValue())
+            omlPath = os.path.abspath(self.oml.getValue())
+            gmlPath = os.path.abspath(self.gmlin.getValue())
             schemaUrl = urllib.basejoin("file:",schemaPath)
             omlUrl = urllib.basejoin("file:",omlPath)
             gmlUrl = urllib.basejoin("file:",gmlPath)
-            outURL = urllib.basejoin("file:",os.path.abspath(os.path.dirname(__file__)))
+            outUrl = urllib.basejoin("file:",os.path.join(os.path.abspath(os.path.dirname(__file__)),"tmp"))
             self.status.set("Transforming input GML")
 
-            tempDir = os.path.join(cwd,"tmp")
+            tempDir = "tmp"
             omlFile = os.path.basename(self.oml.getValue())
             gmlFile = os.path.basename(self.gmlin.getValue())
 
             transformedGML = None
             import java.lang.NullPointerException
             try:
-                transformedGML = dcsb.transform(schemaUrl, omlUrl, gmlUrl,outURL)
+                transformedGML = dcsb.transform(schemaUrl, omlUrl, gmlUrl,outUrl)
 
             except java.lang.NullPointerException,e:
                 return "Could not transform GML, got java.lang.NullPointerException: %s" % e
