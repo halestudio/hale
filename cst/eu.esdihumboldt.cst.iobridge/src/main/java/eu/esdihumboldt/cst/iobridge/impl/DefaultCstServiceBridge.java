@@ -47,78 +47,92 @@ import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
 
 /**
  * This class is the default implementation of the {@link CstServiceBridge}. It
- * expects to get local paths to the schema, the mapping and the GML it has to 
+ * expects to get local paths to the schema, the mapping and the GML it has to
  * load and process.
  * 
  * @author Thorsten Reitz
  * @version $Id$
  */
-public class DefaultCstServiceBridge 
-	implements CstServiceBridge {
+public class DefaultCstServiceBridge implements CstServiceBridge {
 
-	/* (non-Javadoc)
-	 * @see eu.esdihumboldt.cst.iobridge.CstServiceBridge#transform(java.lang.String, java.lang.String, java.lang.String)
+	private URL outputFilename;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * eu.esdihumboldt.cst.iobridge.CstServiceBridge#transform(java.lang.String,
+	 * java.lang.String, java.lang.String)
 	 */
 	public String transform(String schemaFilename, String omlFilename,
 			String gmlFilename) {
 
 		// perform the transformation
-		FeatureCollection<?, ?> result = CstServiceFactory.getInstance().transform(
-				this.loadGml(gmlFilename), 
-				this.loadMapping(omlFilename), 
-				this.loadSchema(schemaFilename));
-		
-		// encode the transformed data and store it temporarily, return the temporary file location
-		URL outputFilename = null;
-		try {
-			outputFilename = new URL(
-					this.getClass().getResource("").toExternalForm() + UUID.randomUUID() + ".gml");
-		} catch (MalformedURLException e) {
-			throw new RuntimeException("Couldn't create temporary output file: ", e);
-		}
+		FeatureCollection<?, ?> result = CstServiceFactory.getInstance()
+				.transform(this.loadGml(gmlFilename),
+						this.loadMapping(omlFilename),
+						this.loadSchema(schemaFilename));
+
+		// encode the transformed data and store it temporarily, return the
+		// temporary file location
+		if (outputFilename == null) {			
+			try {
+				outputFilename = new URL(this.getClass().getResource("")
+						.toExternalForm()
+						+ UUID.randomUUID() + ".gml");
+			} catch (MalformedURLException e) {
+				throw new RuntimeException(
+						"Couldn't create temporary output file: ", e);
+			}			
+		} 
 		this.encodeGML(result, outputFilename, schemaFilename);
 		/*
-		
-		try {
-			GmlHandler handler = GmlHandler.getDefaultInstance(schemaFilename, outputFilename.getPath());	
-			handler.writeFC(GtToDgConvertor.convertGtToDg(result));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (XMLStreamException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnknownCRSException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TransformationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+		 * 
+		 * try { GmlHandler handler =
+		 * GmlHandler.getDefaultInstance(schemaFilename,
+		 * outputFilename.getPath());
+		 * handler.writeFC(GtToDgConvertor.convertGtToDg(result)); } catch
+		 * (FileNotFoundException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); } catch (XMLStreamException e) { // TODO
+		 * Auto-generated catch block e.printStackTrace(); } catch
+		 * (UnknownCRSException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); } catch (TransformationException e) { // TODO
+		 * Auto-generated catch block e.printStackTrace(); }
+		 */
 		return outputFilename.toString();
 	}
-	
+
+	public URL getOutputFilename() {
+		return outputFilename;
+	}
+
+	public void setOutputFilename(URL outputFilename) {
+		this.outputFilename = outputFilename;
+	}
+
 	/**
 	 * @param result
 	 * @param outputPath
 	 */
-	private void encodeGML(FeatureCollection<?, ?> result, URL outputPath, String schemaPath) {
+	private void encodeGML(FeatureCollection<?, ?> result, URL outputPath,
+			String schemaPath) {
 		// serialize out
 		try {
 			GmlGenerator gmlGenerator = new GmlGenerator(
-					GmlGenerator.GmlVersion.gml3.name(), 
-					result.getSchema().getName().getNamespaceURI(), 
-					schemaPath);
-			OutputStream out = new FileOutputStream(
-					new File(outputPath.getPath()));
-			
+					GmlGenerator.GmlVersion.gml3.name(), result.getSchema()
+							.getName().getNamespaceURI(), schemaPath);
+			OutputStream out = new FileOutputStream(new File(outputPath
+					.getPath()));
+
 			gmlGenerator.encode(result, out);
 		} catch (Exception e) {
-			throw new RuntimeException("An exception occured when trying to write out GML: ", e);
+			e.printStackTrace();
+			throw new RuntimeException(
+					"An exception occured when trying to write out GML: ", e);
 		}
-		
+
 	}
-	
+
 	private Set<FeatureType> loadSchema(String schemaFilename) {
 		ApacheSchemaProvider asp = new ApacheSchemaProvider();
 		Set<FeatureType> result = new HashSet<FeatureType>();
@@ -132,15 +146,15 @@ public class DefaultCstServiceBridge
 				}
 			}
 		} catch (URISyntaxException e) {
-			throw new RuntimeException("Parsing the schema Filename to a URI " +
-					"failed.", e);
+			throw new RuntimeException("Parsing the schema Filename to a URI "
+					+ "failed.", e);
 		} catch (IOException e) {
-			throw new RuntimeException("Reading from the provided schema " +
-					"location failed.", e);
+			throw new RuntimeException("Reading from the provided schema "
+					+ "location failed.", e);
 		}
 		return result;
 	}
-	
+
 	private Alignment loadMapping(String omlFilename) {
 		OmlRdfReader reader = new OmlRdfReader();
 		Alignment al = reader.read(omlFilename);
@@ -149,12 +163,14 @@ public class DefaultCstServiceBridge
 
 	private FeatureCollection<FeatureType, Feature> loadGml(String gmlFilename) {
 		try {
-			//InputStream xml = new FileInputStream(new File(gmlFilename));
+			// InputStream xml = new FileInputStream(new File(gmlFilename));
 			InputStream xml = new URL(gmlFilename).openStream();
-			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration()); //TODO use GmlHelper
+			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration()); // TODO
+																				// use
+																				// GmlHelper
 			return (FeatureCollection<FeatureType, Feature>) parser.parse(xml);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		} 
+		}
 	}
 }
