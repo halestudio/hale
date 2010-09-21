@@ -14,7 +14,7 @@
     </align:onto1>
     <align:onto2>
         <align:Ontology rdf:about="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0">
-            <align:location>file:/C:/HALE_CST_Italy_INSPIRE/models/ProtectedSitesFull.xsd</align:location>
+            <align:location>file:C:/Dokumente und Einstellungen/pitaeva/workspace/eu.esdihumboldt.cst.iobridge/src/test/resource/eu/esdihumboldt/cst/iobridge/HALE_CST_Italy_INSPIRE/models/ProtectedSitesFull.xsd</align:location>
             <align:formalism>
                 <align:Formalism>
                     <align:uri>http://www.opengis.net/gml</align:uri>
