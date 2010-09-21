@@ -38,20 +38,24 @@ def createIOBridgeProcess():
             schemaUrl = urllib.basejoin("file:",schemaPath)
             omlUrl = urllib.basejoin("file:",omlPath)
             gmlUrl = urllib.basejoin("file:",gmlPath)
-            outUrl = urllib.basejoin("file:",os.path.join(os.path.abspath(os.path.dirname(__file__)),"tmp"))
+            outFile = open("output.gml","w")
+            outFile.close()
+            outUrl = urllib.basejoin("file:",os.path.join(os.path.abspath(outFile.name)))
             self.status.set("Transforming input GML")
 
             tempDir = "tmp"
             omlFile = os.path.basename(self.oml.getValue())
             gmlFile = os.path.basename(self.gmlin.getValue())
 
-            transformedGML = None
             import java.lang.NullPointerException
+            import java.lang.RuntimeException
             try:
-                transformedGML = dcsb.transform(schemaUrl, omlUrl, gmlUrl,outUrl)
+                dcsb.transform(schemaUrl, omlUrl, gmlUrl,outUrl)
+            except java.lang.RuntimeException,e:
+                return "Could not transform GML, got java.lang.RuntimeException: %s" % e
 
             except java.lang.NullPointerException,e:
                 return "Could not transform GML, got java.lang.NullPointerException: %s" % e
-            self.gmlout.setValue(transformedGML)
+            self.gmlout.setValue(outFile.name)
 
     return IOBridgeProcess()
