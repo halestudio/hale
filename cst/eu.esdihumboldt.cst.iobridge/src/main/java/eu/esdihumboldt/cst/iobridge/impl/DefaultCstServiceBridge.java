@@ -77,12 +77,12 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 		// temporary file location
 		
 				
-		try {
+		/*try {
 			this.encodeGML(result, new URL(outputFilename), schemaFilename);
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			throw new RuntimeException("Couldn't create output file ",e);
-		}
+		}*/
 			
 		/*
 		 * 
