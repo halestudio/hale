@@ -17,6 +17,8 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
+
 public class UploadServlet extends HttpServlet {
 
 	@Override
@@ -90,7 +92,8 @@ public class UploadServlet extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		// TODO Auto-generated method stub
-		super.init();
+		CstFunctionFactory.getInstance().registerCstPackage(
+		"eu.esdihumboldt.cst.corefunctions");
 	}
 
 }
