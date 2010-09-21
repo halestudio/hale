@@ -72,6 +72,8 @@ import com.vividsolutions.jts.geom.Polygon;
  * 
  */
 public class GtToDgConvertor {
+	
+	
 
 	/**
 	 * 
@@ -135,9 +137,10 @@ public class GtToDgConvertor {
 		// 3. List<Property>
 		List<org.deegree.feature.property.Property> dgProps = new ArrayList<org.deegree.feature.property.Property>();
 		Iterator<Property> gtPropsIter = gtFeature.getProperties().iterator();
+	
 		while (gtPropsIter.hasNext()) {
 			Property gtProp = gtPropsIter.next();
-			org.deegree.feature.property.Property dgProp = createDgProp(gtProp, crs);
+			org.deegree.feature.property.Property dgProp = createDgProp(gtProp, crs, gp);
 			dgProps.add(dgProp);
 		}
 		// 4. GMLVersion
@@ -149,13 +152,14 @@ public class GtToDgConvertor {
 
 	/**
 	 * 
+	 * @param gp 
 	 * @param geotools
 	 *            -based Property
 	 * @return deegree-based Property
 	 * 
 	 */
 	private static org.deegree.feature.property.Property createDgProp(
-			Property gtProp, CoordinateReferenceSystem crs) {
+			Property gtProp, CoordinateReferenceSystem crs, GeometryAttribute gp) {
 		// 1. declare a Property instance: make decision about implementing
 		// class after analyze of the PropertyType
 		org.deegree.feature.property.Property dgProp = null;
@@ -188,7 +192,7 @@ public class GtToDgConvertor {
 
 			// TODO handle case with GeometryReference<Geometry>
 			// convert gt Geometry attribute to deegree Geometry
-			org.deegree.geometry.Geometry dgGeometry = createDgGeometry(gtProp, crs);
+			org.deegree.geometry.Geometry dgGeometry = createDgGeometry(gtProp, crs, gp);
 			dgProp = new GenericProperty(dgPT, dgPropName, dgGeometry);
 
 		} else if (dgPT instanceof org.deegree.feature.types.property.FeaturePropertyType) {
@@ -242,13 +246,19 @@ public class GtToDgConvertor {
 	 * 
 	 * @param gtProp
 	 *            GeometryAttribute
+	 * @param gp 
 	 * @return Geometry
 	 */
-	private static Geometry createDgGeometry(Property gtProp, CoordinateReferenceSystem crs) {
+	private static Geometry createDgGeometry(Property gtProp, CoordinateReferenceSystem crs, GeometryAttribute gp) {
 		
 		Geometry dgGeometry = null;
 		String geometryName = gtProp.getDescriptor().getType().getBinding()
 				.getSimpleName();
+		if (geometryName.equals("Geometry")){
+			geometryName = gp.getDescriptor().getType().getBinding().getSimpleName();
+			gtProp = gp;
+			
+		}
 		// we provide mapping for
 		Geometries geomType = Geometries
 				.getForBinding((Class<? extends com.vividsolutions.jts.geom.Geometry>) gtProp
@@ -353,13 +363,7 @@ public class GtToDgConvertor {
 			break;
 			
 		default:
-			Geometry gtGeometry = (Geometry) (gtProp.getValue());
-
-			//double[] dgCoordinates = createCoordinates(gtGeometry.get);
-			dgGeometry = new org.deegree.geometry.standard.primitive.DefaultSurface(id, dgCRS, pm, null);
-			dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry) dgGeometry)
-					.createFromJTS((com.vividsolutions.jts.geom.Geometry) gtGeometry);
-			 
+			
 			 
 
 
@@ -416,7 +420,10 @@ public class GtToDgConvertor {
 	private static CRS createCRS(
 			CoordinateReferenceSystem coordinateReferenceSystem) {
 		CRS dgCrs = new CRS(org.geotools.referencing.CRS.toSRS(coordinateReferenceSystem));
-		//CRS dgCrs = new CRS("http://www.opengis.net/gml/srs/epsg.xml#4258");
+		//if crs null set default crs
+		if (dgCrs.getName() == null){
+			dgCrs = CRS.EPSG_4326;
+		}
 		return dgCrs;
 	}
 
