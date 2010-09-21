@@ -120,10 +120,11 @@ public class IoBridgeIntegrationTest {
 			throw new RuntimeException(e);
 		}
 	}
+	
 
 	public static void addCST() {
 		Class<?>[] parameters = new Class[]{URL.class};
-		URL functions = (new IoBridgeIntegrationTest()).getClass().getResource("corefunctions-1.0.2-SNAPSHOT.jar");		
+		URL functions = (new IoBridgeIntegrationTest()).getClass().getResource("corefunctions-1.0.3-SNAPSHOT.jar");		
 		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 	      Class<?> sysclass = URLClassLoader.class;
 
