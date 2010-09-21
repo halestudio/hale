@@ -120,11 +120,96 @@ public class IoBridgeIntegrationTest {
 			throw new RuntimeException(e);
 		}
 	}
+	@Test
+	public void testTransformItaly_INSPIRE() {	
+		CstFunctionFactory tf = CstFunctionFactory.getInstance();
+		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
+		try {
 	
-
+			URL omlURL = IoBridgeIntegrationTest.class.getResource("./HALE_CST_Italy_INSPIRE/HALE_CST_Italy_INSPIRE.xml.goml");
+			URL gmlURL = IoBridgeIntegrationTest.class.getResource("./HALE_CST_Italy_INSPIRE/SIC/SIC.gml");			
+			URL xsd =  IoBridgeIntegrationTest.class.getResource("./HALE_CST_Italy_INSPIRE/models/ProtectedSitesFull.xsd");		
+			String out = IoBridgeIntegrationTest.class.getResource("").toExternalForm() + "./HALE_CST_Italy_INSPIRE/SIC/SIC_generated.gml";		
+			DefaultCstServiceBridge csb = (DefaultCstServiceBridge)IoBridgeFactory.getIoBridge(BridgeType.preloaded);
+			System.out.println(xsd.toURI().toString());
+			System.out.println(omlURL.toURI().toString());
+			System.out.println(gmlURL.toURI().toString());
+			
+			
+			String result = csb.transform(
+					xsd.toURI().toString(),
+					omlURL.toURI().toString(), 
+			        gmlURL.toURI().toString(),
+					out);
+			
+			
+			System.out.println(result);
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	@Test
+	public void testTransformItaly_TC() {	
+		CstFunctionFactory tf = CstFunctionFactory.getInstance();
+		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
+		try {
+	
+			URL omlURL = IoBridgeIntegrationTest.class.getResource("./HALE_CST_Italy_TC/HALE_CST_Italy_TC.xml.goml");
+			URL gmlURL = IoBridgeIntegrationTest.class.getResource("./HALE_CST_Italy_TC/lakes/SPECCHI_ACQUA_07.gml");			
+			URL xsd =  IoBridgeIntegrationTest.class.getResource("./HALE_CST_Italy_TC/models/TCS_final_mdv.xsd");		
+			String out = IoBridgeIntegrationTest.class.getResource("").toExternalForm() + "./HALE_CST_Italy_TC/lakes/SPECCHI_ACQUA_07_generated.gml";		
+			DefaultCstServiceBridge csb = (DefaultCstServiceBridge)IoBridgeFactory.getIoBridge(BridgeType.preloaded);
+			System.out.println(xsd.toURI().toString());
+			System.out.println(omlURL.toURI().toString());
+			System.out.println(gmlURL.toURI().toString());
+			
+			
+			String result = csb.transform(
+					xsd.toURI().toString(),
+					omlURL.toURI().toString(), 
+			        gmlURL.toURI().toString(),
+					out);
+			
+			
+			System.out.println(result);
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	@Test
+	public void testTransformSpain_HUMBOLDT() {	
+		CstFunctionFactory tf = CstFunctionFactory.getInstance();
+		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
+		try {
+	
+			URL omlURL = IoBridgeIntegrationTest.class.getResource("./HALE_CST_Spain_HUMBOLDT/HALE_CST_Spain_HUMBOLDT.xml.goml");
+			URL gmlURL = IoBridgeIntegrationTest.class.getResource("./HALE_CST_Spain_HUMBOLDT/data/ren_ex.gml");			
+			URL xsd =  IoBridgeIntegrationTest.class.getResource("./HALE_CST_Spain_HUMBOLDT/models/pa_simple_corr.xsd");		
+			String out = IoBridgeIntegrationTest.class.getResource("").toExternalForm() + "./HALE_CST_Spain_HUMBOLDT/data/ren_ex_generated.gml";		
+			DefaultCstServiceBridge csb = (DefaultCstServiceBridge)IoBridgeFactory.getIoBridge(BridgeType.preloaded);
+			System.out.println(xsd.toURI().toString());
+			System.out.println(omlURL.toURI().toString());
+			System.out.println(gmlURL.toURI().toString());
+			
+			
+			String result = csb.transform(
+					xsd.toURI().toString(),
+					omlURL.toURI().toString(), 
+			        gmlURL.toURI().toString(),
+					out);
+			
+			
+			System.out.println(result);
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 	public static void addCST() {
 		Class<?>[] parameters = new Class[]{URL.class};
-		URL functions = (new IoBridgeIntegrationTest()).getClass().getResource("corefunctions-1.0.3-SNAPSHOT.jar");		
+		URL functions = (new IoBridgeIntegrationTest()).getClass().getResource("corefunctions-1.0.2-SNAPSHOT.jar");		
 		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 	      Class<?> sysclass = URLClassLoader.class;
 
