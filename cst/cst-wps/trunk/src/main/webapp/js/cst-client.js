@@ -57,12 +57,12 @@ var execute = function(gml,oml,schema) {
                                                 onFailed: onFailed});
 
     // define inputs and outputs
-    var schemaInput = new OpenLayers.WPS.LiteralPut({identifier:"schema",
-            value: window.location.href+schema});
+    var schemaInput = new OpenLayers.WPS.ComplexPut({identifier:"schema",
+            value: window.location.href+schema,asReference: true});
     var omlInput = new OpenLayers.WPS.ComplexPut({identifier:"oml",
-            value: window.location.href+oml});
+            value: window.location.href+oml,asReference: true});
     var gmlInput = new OpenLayers.WPS.ComplexPut({identifier:"gml",
-            value: window.location.href+gml});
+            value: window.location.href+gml,asReference: true});
 
     var gmlOutput = new OpenLayers.WPS.ComplexPut({identifier:"gml",
             asReference: true});
