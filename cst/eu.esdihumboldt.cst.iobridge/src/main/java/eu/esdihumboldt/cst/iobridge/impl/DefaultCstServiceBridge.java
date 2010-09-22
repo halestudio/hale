@@ -82,24 +82,29 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 		/*try {
 			this.encodeGML(result, new URL(outputFilename), schemaFilename);
 		} catch (MalformedURLException e) {
+			throw new RuntimeException("Couldn't create temporary output file: ", e);
+		}
+		//this.encodeGML(result, outputFilename, schemaFilename);
+		*/
+		
+		try {
+			GmlHandler handler = GmlHandler.getDefaultInstance(schemaFilename, outputFilename);	
+			org.deegree.feature.FeatureCollection fc = GtToDgConvertor.convertGtToDg(result);
+			handler.writeFC(fc);
+		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
-			throw new RuntimeException("Couldn't create output file ",e);
-		}*/
-			
-		/*
-		 * 
-		 * try { GmlHandler handler =
-		 * GmlHandler.getDefaultInstance(schemaFilename,
-		 * outputFilename.getPath());
-		 * handler.writeFC(GtToDgConvertor.convertGtToDg(result)); } catch
-		 * (FileNotFoundException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); } catch (XMLStreamException e) { // TODO
-		 * Auto-generated catch block e.printStackTrace(); } catch
-		 * (UnknownCRSException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); } catch (TransformationException e) { // TODO
-		 * Auto-generated catch block e.printStackTrace(); }
-		 */
-		return outputFilename;
+			e.printStackTrace();
+		} catch (XMLStreamException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnknownCRSException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransformationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return outputFilename.toString();
 	}
 
 	public URL getOutputDir() {

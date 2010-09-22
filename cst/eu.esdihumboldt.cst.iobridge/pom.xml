@@ -122,11 +122,6 @@
 			<artifactId>gmlhandler</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>eu.esdihumboldt</groupId>
-			<artifactId>gmlhandler</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 
 	</dependencies>
 	<repositories>

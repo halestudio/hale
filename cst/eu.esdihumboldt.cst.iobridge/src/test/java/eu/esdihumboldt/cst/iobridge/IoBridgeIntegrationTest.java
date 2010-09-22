@@ -59,7 +59,7 @@ public class IoBridgeIntegrationTest {
 	}
 	
 	
-	@Test
+	//@Test
 	public void testCstGetRegisteredTransfomers(){
 		CstFunctionFactory tf = CstFunctionFactory.getInstance();
 		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
@@ -70,7 +70,7 @@ public class IoBridgeIntegrationTest {
 		Assert.assertTrue(functions.size() > 2);
 	}
 		
-	@Test
+	//@Test
 	public void testParser() throws Exception{
 		FeatureCollection<SimpleFeatureType, SimpleFeature>  fc = FeatureCollections.newCollection();
 		
@@ -91,7 +91,7 @@ public class IoBridgeIntegrationTest {
 	public void testGenerator(){
 		Assert.assertTrue(true);
 	}*/
-	@Test
+	//@Test
 	public void testTransform() {	
 		CstFunctionFactory tf = CstFunctionFactory.getInstance();
 		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
