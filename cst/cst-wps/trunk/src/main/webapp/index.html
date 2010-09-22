@@ -17,7 +17,7 @@
     <body onload="init()">
         <h1>Humboldt CST html client</h1>
         <div id="wps-div">
-            <form name="cst" action="http://localhost:8080/cst-wps/upload" enctype="multipart/form-data" method="post">
+            <form name="cst" action="upload" enctype="multipart/form-data" method="post">
                 <fieldset>
                     <legend>Transformation inputs</legend>
                     <label for="gml">Input GML file</label>
@@ -30,15 +30,15 @@
 
                     <label for="schema">Schema</label>
                     <input name="schema" id="schema" type="file" />
-                    <img id="indicator" src="images/indicator.gif" />
+                    <img id="indicator" src="images/indicator.gif" style="display: none" />
                 </fieldset>
 
                 <input type="submit" value="Transform" />
                 <!-- input type="button" onclick="execute()" value="Transform" /-->
             </form>
         </div>
-        <div id="map">
-        </div>
+        <!-- div id="map">
+        </div-->
         <div id="wps-results"></div>
         <iframe id="upload_target" style="display: none; border: 1px solid rgb(204, 204, 204); width: 400px; height: 50px;" src="" name="upload_target"></iframe>
     </body>
