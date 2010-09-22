@@ -172,34 +172,43 @@ public class GmlHelper {
 
 	/**
 	 * Load GML from an input stream and use the application schema for parsing
+	 * if possible
 	 * 
 	 * @param xml the XML input stream
 	 * @param type the configuration type, defaults to GML3
-	 * @param namespace schema namespace
-	 * @param schemaLocation schema location
+	 * @param schemaLocation schema location, if it is <code>null</code>
+	 *   the application schema won't be used for parsing
 	 * 
 	 * @return the loaded feature collection or <code>null</code>
 	 */
+	@SuppressWarnings("null")
 	public static FeatureCollection<FeatureType, Feature> loadGml(InputStream xml, 
-			ConfigurationType type, String namespace, 
-			URI schemaLocation) {
+			ConfigurationType type, URI schemaLocation) {
 		ApacheSchemaProvider asp = new ApacheSchemaProvider();
 		
+		Schema schema;
 		List<SchemaElement> elements = new ArrayList<SchemaElement>();
-		try {
-			Schema schema = asp.loadSchema(schemaLocation, null);
-			elements.addAll(schema.getElements().values());
-		} catch (Exception e) {
-			log.warn("Could not load source schema");
+		if (schemaLocation != null) {
+			try {
+				schema = asp.loadSchema(schemaLocation, null);
+				elements.addAll(schema.getElements().values());
+			} catch (Exception e) {
+				schema = null;
+				log.warn("Could not load source schema");
+			}
+		}
+		else {
+			schema = null;
 		}
 		
-		if (elements.isEmpty()) {
+		if (schema == null || elements.isEmpty()) {
 			// don't use app schema
 			return loadGml(xml, type);
 		}
 		else {
 			// use app schema
-			return loadGml(xml, type, true, namespace, schemaLocation.toString(), elements);
+			return loadGml(xml, type, true, schema.getNamespace(), 
+					schemaLocation.toString(), elements);
 		}
 	}
 	
