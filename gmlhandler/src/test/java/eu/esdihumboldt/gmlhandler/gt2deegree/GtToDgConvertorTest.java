@@ -62,6 +62,10 @@ public class GtToDgConvertorTest {
 	private static final String DEMO_GML32_GENERATED_LOCATION = "src/test/resources/demo_generated_3_2_1.gml";
 	private static final String Italy_INSPIRE_xsdUrl = "http://www.gisig.it:8081/geoserver/wfs?service=WFS&version=1.1.0&request=DescribeFeatureType&typeName=Italy:SIC";
 	private static final String DEMO_GML32_Genereted_Italy_INSPIRE = "src/test/resources/italy_inspire_generated_3_2_1.gml";
+	private static final String Italy_TC_xsdUrl = "http://www.gisig.it:8081/geoserver/wfs?service=WFS&;version=1.1.0&;request=DescribeFeatureType&;typeName=Transboundary:ASPECCHI_ACQUA_07";
+	private static final String DEMO_GML32_Genereted_Italy_TC = "src/test/resources/italy_tc_generated_3_2_1.gml";
+	private static final String Spain_HUMBOLDT_xsdUrl = "http://www.gisig.it:8081/geoserver/wfs?service=WFS&version=1.1.0&request=DescribeFeatureType&typeName=Spain:Aren_ex";
+	private static final String DEMO_GML32_Genereted_Spain_HUMBOLDT = "src/test/resources/spain_humboldt_generated_3_2_1.gml";
 	private static org.deegree.feature.FeatureCollection DeegreeFC;
 	private static org.geotools.feature.FeatureCollection GeoToolsFC;
 	private static org.geotools.feature.FeatureCollection GeoToolsGMLFC;
@@ -71,7 +75,7 @@ public class GtToDgConvertorTest {
 	private static org.geotools.feature.FeatureCollection GeoToolsSpain_HUMBOLDT;
 	
 
-	@BeforeClass
+	//@BeforeClass
 	public static void loadItaly_INSPIRE(){
 		try {
 			GeoToolsItaly_INSPIRE = FeatureCollections.newCollection();
@@ -101,7 +105,7 @@ public class GtToDgConvertorTest {
 
 		
 	}
-	//@BeforeClass
+	@BeforeClass
 	public static void loadItaly_TC(){
 		try {
 			GeoToolsItaly_TC = FeatureCollections.newCollection();
@@ -312,7 +316,7 @@ public class GtToDgConvertorTest {
 	 * @throws XMLStreamException 
 	 * @throws FileNotFoundException 
 	 */
-	@Test
+	//@Test
 	public void testDemoDataItalyInspire() throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
 		System.out.println("Conversion to deegree starts..");
 		
@@ -339,12 +343,12 @@ public class GtToDgConvertorTest {
 	 * @throws XMLStreamException 
 	 * @throws FileNotFoundException 
 	 */
-	//@Test
+	@Test
 	public void testDemoDataItalyTC() throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
 		System.out.println("Conversion to deegree starts..");
 		
 		//1. Create dgFC
-		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsDemoFC);
+		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsItaly_TC);
 		//2. Create GML Handler
 		HashMap<String, String> namespaces = new HashMap<String, String>();
 		namespaces.put("wfs", "http://www.opengis.net/wfs");
@@ -352,10 +356,10 @@ public class GtToDgConvertorTest {
 		namespaces.put("xsi","http://www.w3.org/2001/XMLSchema-instance");
 
 		// set up GMLHandler with the test configuration
-		GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, xsdUrl,
+		GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, Italy_TC_xsdUrl,
 				namespaces);
 		// set target gml destination
-		gmlHandler.setTargetGmlUrl(DEMO_GML32_GENERATED_LOCATION);
+		gmlHandler.setTargetGmlUrl(DEMO_GML32_Genereted_Italy_TC);
 		gmlHandler.writeFC(dgFC);
 		
 	}
@@ -371,7 +375,7 @@ public class GtToDgConvertorTest {
 		System.out.println("Conversion to deegree starts..");
 		
 		//1. Create dgFC
-		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsDemoFC);
+		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsSpain_HUMBOLDT);
 		//2. Create GML Handler
 		HashMap<String, String> namespaces = new HashMap<String, String>();
 		namespaces.put("wfs", "http://www.opengis.net/wfs");
@@ -379,10 +383,10 @@ public class GtToDgConvertorTest {
 		namespaces.put("xsi","http://www.w3.org/2001/XMLSchema-instance");
 
 		// set up GMLHandler with the test configuration
-		GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, xsdUrl,
+		GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, Spain_HUMBOLDT_xsdUrl ,
 				namespaces);
 		// set target gml destination
-		gmlHandler.setTargetGmlUrl(DEMO_GML32_GENERATED_LOCATION);
+		gmlHandler.setTargetGmlUrl(DEMO_GML32_Genereted_Spain_HUMBOLDT);
 		gmlHandler.writeFC(dgFC);
 		
 	}

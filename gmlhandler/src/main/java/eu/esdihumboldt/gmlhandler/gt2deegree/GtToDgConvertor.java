@@ -37,10 +37,12 @@ import org.deegree.geometry.standard.primitive.DefaultPolygon;
 import org.deegree.gml.GMLVersion;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.Geometries;
+import org.opengis.feature.ComplexAttribute;
 import org.opengis.feature.Feature;
 import org.opengis.feature.GeometryAttribute;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.type.ComplexType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.feature.type.Name;
@@ -200,8 +202,8 @@ public class GtToDgConvertor {
 			// if (gtProp instanceof SimpleFeature ){
 
 			// create deegree generic feature based on gtProp
-			GenericFeatureType ft = createDgFt(((SimpleFeature) gtProp)
-					.getFeatureType());
+			GenericFeatureType ft = createDgFt(((ComplexAttribute) gtProp)
+					.getType());
 			org.deegree.feature.Feature featureProp = createDgFeature((Feature) gtProp);
 			/*
 			 * //TODO find a nicer way to create fid String fid =
@@ -252,19 +254,31 @@ public class GtToDgConvertor {
 	private static Geometry createDgGeometry(Property gtProp, CoordinateReferenceSystem crs, GeometryAttribute gp) {
 		
 		Geometry dgGeometry = null;
-		String geometryName = gtProp.getDescriptor().getType().getBinding()
-				.getSimpleName();
-		if (geometryName.equals("Geometry")){
-			geometryName = gp.getDescriptor().getType().getBinding().getSimpleName();
-			gtProp = gp;
-			
+		//String geometryName = gtProp.getDescriptor().getType().getBinding()
+		//		.getSimpleName();
+		//if (geometryName.equals("Geometry")){
+		//	geometryName = gp.getDescriptor().getType().getBinding().getSimpleName();
+			//if (geometryName.equals("Geometry")){
+		String geometryName;
+		Geometries geomType;
+		Object jtsGeom = gp.getValue();
+		if (jtsGeom != null && jtsGeom instanceof com.vividsolutions.jts.geom.Geometry ){
+			geometryName = jtsGeom.getClass().getSimpleName();
+			geomType = Geometries.getForBinding((Class<? extends com.vividsolutions.jts.geom.Geometry>) jtsGeom.getClass());
 		}
+		else {
+			return null;
+		}
+			
+		gtProp = gp;
+		
+			
 		// we provide mapping for
-		Geometries geomType = Geometries
+		/*Geometries geomType = Geometries
 				.getForBinding((Class<? extends com.vividsolutions.jts.geom.Geometry>) gtProp
 						.getDescriptor().getType().getBinding());
 		// map common attributtes
-		// 1. id
+*/		// 1. id
 		// TODO test it
 		String id = UUID.randomUUID().toString();
 		// 2.TODO figure out CRS
@@ -540,7 +554,7 @@ public class GtToDgConvertor {
 	 * 
 	 */
 	private static org.deegree.feature.types.GenericFeatureType createDgFt(
-			FeatureType gtFT) {
+			ComplexType gtFT) {
 		// 1.0 QName
 		Name gtFTName = gtFT.getName();
 		QName ftName = new QName(gtFTName.getNamespaceURI(),
