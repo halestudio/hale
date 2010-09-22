@@ -1,5 +1,5 @@
-var wpsURL= "http://localhost:8080/cst-wps/IOBridgeServlet.py";
-var uploadURL= "http://localhost:8080/cst-wps/upload";
+var wpsURL= "IOBridgeServlet.py";
+var uploadURL= "upload";
 var IFrameObj;
 var map;
 var ingml;
@@ -11,9 +11,9 @@ var result;
  */
 var init = function(){
         
-    if (window.location.port != 8080) {
-        OpenLayers.ProxyHost="/cgi-bin/olproxy.cgi?url=";
-    }
+    //if (window.location.port != 8080 && window.location.port != 8180) {
+    //    OpenLayers.ProxyHost="/cgi-bin/olproxy.cgi?url=";
+    //}
     var wps = new OpenLayers.WPS(wpsURL,{onDescribedProcess: onDescribedProcess});
     var iobridge = new OpenLayers.WPS.Process({identifier:"iobridge"});
     wps.addProcess(iobridge);
