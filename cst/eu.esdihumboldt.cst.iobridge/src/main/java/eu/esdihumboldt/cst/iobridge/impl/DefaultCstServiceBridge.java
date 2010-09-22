@@ -40,7 +40,9 @@ import eu.esdihumboldt.gmlhandler.GmlHandler;
 import eu.esdihumboldt.gmlhandler.gt2deegree.GtToDgConvertor;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
+import eu.esdihumboldt.hale.gmlparser.GmlHelper;
 import eu.esdihumboldt.hale.gmlparser.HaleGMLParser;
+import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
@@ -163,10 +165,11 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 		try {
 			// InputStream xml = new FileInputStream(new File(gmlFilename));
 			InputStream xml = new URL(gmlFilename).openStream();
-			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration()); // TODO
-																				// use
-																				// GmlHelper
-			return (FeatureCollection<FeatureType, Feature>) parser.parse(xml);
+			//TODO get source schema location to enable application schema support while parsing
+			URI schemaLocation = null;
+			//TODO determine GML version to use for parser configuration
+			ConfigurationType type = ConfigurationType.GML3;
+			return GmlHelper.loadGml(xml, type, schemaLocation);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
