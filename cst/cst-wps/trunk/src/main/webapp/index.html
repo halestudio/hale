@@ -6,6 +6,12 @@
         <script type="text/javascript" src="js/cst-client.js"></script>
         <script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>
         <script type="text/javascript" src="js/WPS.js"></script>
+        <style>
+            #map {
+                width: 500px;
+                height: 400px;
+            }
+        </style>
     </head>
 
     <body onload="init()">
@@ -27,8 +33,11 @@
                     <img id="indicator" src="images/indicator.gif" />
                 </fieldset>
 
-                <input type="submit" value="Execute" />
+                <input type="submit" value="Transform" />
+                <!-- input type="button" onclick="execute()" value="Transform" /-->
             </form>
+        </div>
+        <div id="map">
         </div>
         <div id="wps-results"></div>
         <iframe id="upload_target" style="display: none; border: 1px solid rgb(204, 204, 204); width: 400px; height: 50px;" src="" name="upload_target"></iframe>

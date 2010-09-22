@@ -1,6 +1,10 @@
 var wpsURL= "http://localhost:8080/cst-wps/IOBridgeServlet.py";
 var uploadURL= "http://localhost:8080/cst-wps/upload";
 var IFrameObj;
+var map;
+var ingml;
+var outgml;
+var result;
 
 /**
  * Initializa the whole application
@@ -22,14 +26,43 @@ var init = function(){
                 return true;
     }
 
+    /*******/
+     return;
+    /*******/
+
+    // init map
+    //
+    map = new OpenLayers.Map( 'map' );
+    layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+            "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
+    map.addLayer(layer);
+    map.zoomToMaxExtent();
+    map.addControl(new OpenLayers.Control.LayerSwitcher());
+
 };
 
 /**
  * Called from the inner frame, from the response of the upload servlet
  */
 var handleResponse = function(result) {
-    document.getElementById("indicator").style.display="none";
+    result = result;
     execute(result.gml,result.oml,result.schema);
+    //try {
+    //document.getElementById("indicator").style.display="none";
+    //if (ingml) {
+    //    map.removeLayer(ingml);
+    //    ingml.destroy();
+    //    ingml = undefined;
+    //}
+    //if (outgml) {
+    //    map.removeLayer(ingml);
+    //    ingml.destroy();
+    //    ingml = undefined;
+    //}
+    //ingml = new OpenLayers.Layer.GML("Input vector data",result.gml);
+    //map.addLayer(ingml);
+    ////map.zoomToExtent(ingml.getDataExtent());
+    //}catch(e){console.log(e)}
 };
 
 /**
