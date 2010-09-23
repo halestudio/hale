@@ -3,7 +3,7 @@
   <groupId>eu.esdihumboldt.hale</groupId>
   <artifactId>gmlparser</artifactId>
   <name>HALE GMLParser</name>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.2-SNAPSHOT</version>
   <description>Geotools-based GML 2 and 3.1 Parser</description>
   <url>http://community.esdi-humboldt.eu/projects/show/cst</url>
 
