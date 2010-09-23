@@ -75,7 +75,7 @@ public class GtToDgConvertorTest {
 	private static org.geotools.feature.FeatureCollection GeoToolsSpain_HUMBOLDT;
 	
 
-	//@BeforeClass
+	@BeforeClass
 	public static void loadItaly_INSPIRE(){
 		try {
 			GeoToolsItaly_INSPIRE = FeatureCollections.newCollection();
@@ -135,7 +135,7 @@ public class GtToDgConvertorTest {
 
 		
 	}
-	//@BeforeClass
+	@BeforeClass
 	public static void loadSpain_HUMBOLDT(){
 		try {
 			GeoToolsSpain_HUMBOLDT = FeatureCollections.newCollection();
@@ -166,7 +166,7 @@ public class GtToDgConvertorTest {
 		
 	}
 	
-	//@BeforeClass
+	@BeforeClass
 	public static void loadGeotoolsData() {
 		GeoToolsFC = FeatureCollections.newCollection();
 		try {
@@ -189,7 +189,7 @@ public class GtToDgConvertorTest {
 		}
 	}
 
-	//@BeforeClass
+	@BeforeClass
 	public static void loadGeotoolsGMLData() {
 		try {
 			GeoToolsGMLFC = FeatureCollections.newCollection();
@@ -218,7 +218,7 @@ public class GtToDgConvertorTest {
 		}
 
 	}
-	//@BeforeClass
+	@BeforeClass
 	public static void loadGeotoolDemoData() {
 		try {
 			System.out.println("Reading source data to geotools model...");
@@ -252,7 +252,7 @@ public class GtToDgConvertorTest {
 	/**
 	 * Testcase for convertion of the geotools SimpleAttributes created using geotools FeatureBuilder (manuelly).
 	 */
-	//@Test
+	@Test
 	public void testSimpleFeatureConversion() {
 		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsFC);
 		assertEquals(1, dgFC.size());
@@ -289,7 +289,7 @@ public class GtToDgConvertorTest {
 	 * @throws XMLStreamException 
 	 * @throws FileNotFoundException 
 	 */
-	//@Test
+	@Test
 	public void testDemoDataConversion() throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
 		System.out.println("Conversion to deegree starts..");
 		
@@ -316,7 +316,7 @@ public class GtToDgConvertorTest {
 	 * @throws XMLStreamException 
 	 * @throws FileNotFoundException 
 	 */
-	//@Test
+	@Test
 	public void testDemoDataItalyInspire() throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
 		System.out.println("Conversion to deegree starts..");
 		
@@ -370,7 +370,7 @@ public class GtToDgConvertorTest {
 	 * @throws XMLStreamException 
 	 * @throws FileNotFoundException 
 	 */
-	//@Test
+	@Test
 	public void testDemoDataSpainHumboldt() throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
 		System.out.println("Conversion to deegree starts..");
 		
@@ -394,7 +394,7 @@ public class GtToDgConvertorTest {
 	/**
 	 * Testcase for convertion of the geotools SimpleAttributes created using HaleParser.
 	 */
-	//@Test
+	@Test
 	public void testSimpleAttributeConversion() {
 		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsGMLFC);
 		//TODO check imported schemas 
