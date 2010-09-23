@@ -16,8 +16,17 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Namespace;
+import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -209,6 +218,78 @@ public class GmlHelper {
 			// use app schema
 			return loadGml(xml, type, true, schema.getNamespace(), 
 					schemaLocation.toString(), elements);
+		}
+	}
+
+	/**
+	 * Try to determine the GML version used from the data
+	 * 
+	 * @param xml the input stream of the source file
+	 * @param def the default version to use as fallback, may not be <code>null</code>
+	 * 
+	 * @return the GML version that was determined or the given default if
+	 *    the detection fails 
+	 */
+	@SuppressWarnings("unchecked")
+	public static ConfigurationType determineVersion(InputStream xml,
+			ConfigurationType def) {
+		ConfigurationType result = null;
+		
+		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+		try {
+			String gmlNamespace = null;
+			
+			XMLEventReader reader = inputFactory.createXMLEventReader(xml);
+			while (result == null && reader.hasNext()) {
+				XMLEvent event = reader.nextEvent();
+				
+				if (gmlNamespace == null) {
+					// try to determine gml namespace
+					if (!event.isStartDocument() && event.isStartElement()) {
+						StartElement element = event.asStartElement();
+						Iterator<Namespace> itNs = element.getNamespaces();
+						while (gmlNamespace == null && itNs.hasNext()) {
+							Namespace ns = itNs.next();
+							if (ns.getNamespaceURI().startsWith("http://www.opengis.net/gml")) {
+								gmlNamespace = ns.getNamespaceURI();
+								
+								// detect GML 3.2 from namespace
+								if (gmlNamespace.equals("http://www.opengis.net/gml/3.2")) {
+									result = ConfigurationType.GML3_2;
+								}
+							}
+						}
+					}
+				}
+				else {
+					// check for elements specific to a GML version
+					if (event.isStartElement()) {
+						StartElement element = event.asStartElement();
+						QName name = element.getName();
+						if (name.getNamespaceURI().equals(gmlNamespace)) {
+							// Geotools GML3 configuration doesn't support gml:coordinates -> GML2
+							if (name.getLocalPart().equals("coordinates")) {
+								result = ConfigurationType.GML2;
+							}
+							
+							// Geotools GML2 configuration doesn't support gml:posList -> GML3
+							if (name.getLocalPart().equals("posList")) {
+								result = ConfigurationType.GML3;
+							}
+						}
+					}
+				}
+			}
+		} catch (XMLStreamException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (result != null) {
+			return result;
+		}
+		else {
+			return def;
 		}
 	}
 	

@@ -176,8 +176,18 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 	private FeatureCollection<FeatureType, Feature> loadGml(String gmlFilename, 
 			String sourceSchema, ConfigurationType sourceVersion) {
 		try {
-			// InputStream xml = new FileInputStream(new File(gmlFilename));
-			InputStream xml = new URL(gmlFilename).openStream();
+			InputStream xml = getGMLStream(gmlFilename);
+			
+			if (sourceVersion == null) {
+				// try to determine type from the data
+				try {
+					sourceVersion = GmlHelper.determineVersion(xml, ConfigurationType.GML3);
+				} finally {
+					xml.close();
+					// reopen stream for parsing
+					xml = getGMLStream(gmlFilename);
+				}
+			}
 			
 			// get source schema location to enable application schema support while parsing
 			URI schemaLocation;
@@ -202,6 +212,12 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private InputStream getGMLStream(String gmlFilename) throws MalformedURLException,
+			IOException {
+		// InputStream xml = new FileInputStream(new File(gmlFilename));
+		return new URL(gmlFilename).openStream();
 	}
 
 	/**
