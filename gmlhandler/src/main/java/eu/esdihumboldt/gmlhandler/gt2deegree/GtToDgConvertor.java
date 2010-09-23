@@ -37,11 +37,13 @@ import org.deegree.geometry.standard.primitive.DefaultPolygon;
 import org.deegree.gml.GMLVersion;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.Geometries;
+import org.opengis.feature.Attribute;
 import org.opengis.feature.ComplexAttribute;
 import org.opengis.feature.Feature;
 import org.opengis.feature.GeometryAttribute;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.ComplexType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
@@ -202,9 +204,11 @@ public class GtToDgConvertor {
 			// if (gtProp instanceof SimpleFeature ){
 
 			// create deegree generic feature based on gtProp
-			GenericFeatureType ft = createDgFt(((ComplexAttribute) gtProp)
+			GenericFeatureType ft = createDgFt(((Attribute) gtProp)
 					.getType());
-			org.deegree.feature.Feature featureProp = createDgFeature((Feature) gtProp);
+			//org.deegree.feature.Feature featureProp = null;
+			
+	    	org.deegree.feature.Feature featureProp = createDgFeature((Attribute) gtProp, ft);
 			/*
 			 * //TODO find a nicer way to create fid String fid =
 			 * java.util.UUID.randomUUID().toString(); GMLVersion version =
@@ -231,6 +235,33 @@ public class GtToDgConvertor {
 			// TODO clear how to retrieve envelope data
 		}
 		return dgProp;
+	}
+
+	/**
+	 * 
+	 * Generates a feature in case the geotools attribute contains a collection of properties
+	 * @param complexAttribute
+	 * @param ft
+	 * @return
+	 */
+	private static org.deegree.feature.Feature createDgFeature(Attribute complexAttribute, GenericFeatureType ft) {
+		
+		// 2. Feature id
+		String fid = java.util.UUID.randomUUID().toString();
+		
+		// 3. List<Property>
+		List<org.deegree.feature.property.Property> dgProps = new ArrayList<org.deegree.feature.property.Property>();
+		Iterator<Property> gtPropsIter = ((Collection)complexAttribute.getValue()).iterator();
+	
+		while (gtPropsIter.hasNext()) {
+			Property gtProp = gtPropsIter.next();
+			org.deegree.feature.property.Property dgProp = createDgProp(gtProp, null, null);
+			dgProps.add(dgProp);
+		}
+		// 4. GMLVersion
+		org.deegree.feature.Feature dgFeature = ft.newFeature(fid, dgProps,
+				GMLVersion.GML_32);
+		return dgFeature;
 	}
 
 	/**
@@ -480,7 +511,15 @@ public class GtToDgConvertor {
 			dgPT = new org.deegree.feature.types.property.SimplePropertyType(
 					dgName, minOccurs, maxOccurs, propPrimType, isAbstract,
 					substitutions);
-		} else {
+		}else if (gtPT instanceof org.opengis.feature.type.AttributeType
+				&& gtPT instanceof org.opengis.feature.type.FeatureType){
+			
+			//dgPT = new org.deegree.feature.types.property.CustomPropertyType(dgName, maxOccurs, maxOccurs, null, isAbstract, substitutions); 
+			dgPT = new org.deegree.feature.types.property.FeaturePropertyType(
+					dgName, minOccurs, maxOccurs, dgFTName, isAbstract,
+					substitutions, ValueRepresentation.BOTH);
+			
+	}else {
 			if (hasXMLAttrs) {
 
 				// create CustomPropertyType to handle xml attrs
@@ -554,21 +593,23 @@ public class GtToDgConvertor {
 	 * 
 	 */
 	private static org.deegree.feature.types.GenericFeatureType createDgFt(
-			ComplexType gtFT) {
+			AttributeType attributeType) {
 		// 1.0 QName
-		Name gtFTName = gtFT.getName();
+		Name gtFTName = attributeType.getName();
 		QName ftName = new QName(gtFTName.getNamespaceURI(),
 				gtFTName.getLocalPart());
 		List<org.deegree.feature.types.property.PropertyType> propDecls = new ArrayList<org.deegree.feature.types.property.PropertyType>();
 		// 1.1 List<PropertyType>
-		for (PropertyDescriptor gtPD : gtFT.getDescriptors()) {
+		if (attributeType instanceof ComplexType){
+		for (PropertyDescriptor gtPD : ((ComplexType)attributeType).getDescriptors()) {
 			// create deegree PropertyType
 			org.deegree.feature.types.property.PropertyType dgPT = createDgPt(
 					gtPD, false);
 			propDecls.add(dgPT);
 		}
+		}
 		// 1.2 boolean isAbstract
-		boolean isAbstract = gtFT.isAbstract();
+		boolean isAbstract = attributeType.isAbstract();
 
 		org.deegree.feature.types.GenericFeatureType dgFT = new org.deegree.feature.types.GenericFeatureType(
 				ftName, propDecls, isAbstract);
