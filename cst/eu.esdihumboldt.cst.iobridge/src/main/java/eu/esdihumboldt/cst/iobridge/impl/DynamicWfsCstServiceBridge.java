@@ -12,6 +12,7 @@
 package eu.esdihumboldt.cst.iobridge.impl;
 
 import eu.esdihumboldt.cst.iobridge.CstServiceBridge;
+import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 
 /**
  * This type implements the {@link CstServiceBridge} interface in such a way
@@ -31,6 +32,17 @@ public class DynamicWfsCstServiceBridge
 	 */
 	public String transform(String schemaFilename, String omlFilename,
 			String gmlFilename) {
+		throw new UnsupportedOperationException("This operation is not yet " +
+			"implemented");
+	}
+
+	/**
+	 * @see CstServiceBridge#transform(String, String, String, String, ConfigurationType)
+	 */
+	@Override
+	public String transform(String schemaFilename, String omlFilename,
+			String gmlFilename, String sourceSchema,
+			ConfigurationType sourceVersion) {
 		throw new UnsupportedOperationException("This operation is not yet " +
 			"implemented");
 	}

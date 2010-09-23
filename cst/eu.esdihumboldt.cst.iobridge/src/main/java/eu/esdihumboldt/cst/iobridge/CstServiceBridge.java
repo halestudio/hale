@@ -11,6 +11,8 @@
  */
 package eu.esdihumboldt.cst.iobridge;
 
+import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
+
 /**
  * TODO: Enter Type comment.
  * 
@@ -31,5 +33,28 @@ public interface CstServiceBridge {
 	 */
 	public String transform(String schemaFilename, String omlFilename, 
 			String gmlFilename);
+	
+	/**
+	 * This method will perform schema transformation based on already loaded 
+	 * instance data.
+	 * 
+	 * @param schemaFilename the filename or URL from which the target schema 
+	 * can be loaded
+	 * @param omlFilename the filename or URL of the OML mapping file to use
+	 * @param gmlFilename the local filename to the GML that is to be used as 
+	 * source data
+	 * 
+	 * @param sourceSchema the filename or URL of the source schema, if
+	 *   <code>null</code> the source schema will be ignored for parsing the
+	 *   source data
+	 * @param sourceVersion the GML version of the source data, if <code>null</code>
+	 *   it is tried to be determined from the data file  
+	 * 
+	 * @return the filename where the result of the CST service execution is 
+	 * stored.
+	 */
+	public String transform(String schemaFilename, String omlFilename, 
+			String gmlFilename, String sourceSchema, 
+			ConfigurationType sourceVersion);
 	
 }

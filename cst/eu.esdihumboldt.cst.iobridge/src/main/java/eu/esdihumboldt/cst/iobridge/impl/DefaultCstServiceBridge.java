@@ -67,11 +67,11 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 	 * java.lang.String, java.lang.String)
 	 */
 	public String transform(String schemaFilename, String omlFilename,
-			String gmlFilename, String outputFilename)  {
+			String gmlFilename, String outputFilename, String sourceSchema, ConfigurationType sourceVersion)  {
 
 		// perform the transformation
 		FeatureCollection<?, ?> result = CstServiceFactory.getInstance()
-				.transform(this.loadGml(gmlFilename),
+				.transform(this.loadGml(gmlFilename, sourceSchema, sourceVersion),
 						this.loadMapping(omlFilename),
 						this.loadSchema(schemaFilename));
 
@@ -160,34 +160,70 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 		return result;
 	}
 
+	/**
+	 * Load the mapping
+	 * 
+	 * @param omlFilename the OML file name
+	 * 
+	 * @return the mapping
+	 */
 	private Alignment loadMapping(String omlFilename) {
 		OmlRdfReader reader = new OmlRdfReader();
 		Alignment al = reader.read(omlFilename);
 		return al;
 	}
 
-	private FeatureCollection<FeatureType, Feature> loadGml(String gmlFilename) {
+	private FeatureCollection<FeatureType, Feature> loadGml(String gmlFilename, 
+			String sourceSchema, ConfigurationType sourceVersion) {
 		try {
 			// InputStream xml = new FileInputStream(new File(gmlFilename));
 			InputStream xml = new URL(gmlFilename).openStream();
-			//TODO get source schema location to enable application schema support while parsing
-			URI schemaLocation = null;
-			//TODO determine GML version to use for parser configuration
-			ConfigurationType type = ConfigurationType.GML3;
-			return GmlHelper.loadGml(xml, type, schemaLocation);
+			
+			// get source schema location to enable application schema support while parsing
+			URI schemaLocation;
+			if (sourceSchema != null) {
+				try {
+					schemaLocation = new URI(sourceSchema);
+				} catch (Exception e) {
+					// try filename
+					try {
+						schemaLocation = new File(sourceSchema).toURI();
+					} catch (Exception e1) {
+						throw new RuntimeException("Reading from the provided " +
+								"source schema location failed.", e);
+					}
+				}
+			}
+			else {
+				schemaLocation = null;
+			}
+			
+			return GmlHelper.loadGml(xml, sourceVersion, schemaLocation);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
+	/**
+	 * @see CstServiceBridge#transform(String, String, String)
+	 */
 	@Override
 	public String transform(String schemaFilename, String omlFilename,
 			String gmlFilename) {
+		return transform(schemaFilename, omlFilename, gmlFilename,
+				null, null);
+	}
+	
+	/**
+	 * @see CstServiceBridge#transform(String, String, String, String, ConfigurationType)
+	 */
+	@Override
+	public String transform(String schemaFilename, String omlFilename,
+			String gmlFilename, String sourceSchema, ConfigurationType sourceVersion) {
 		String outputFilename =(this.getClass().getResource("")
 				.toExternalForm()
 				+ UUID.randomUUID() + ".gml");
-		// TODO Auto-generated method stub
 		return transform(schemaFilename, omlFilename,
-				gmlFilename,  outputFilename);
+				gmlFilename, outputFilename, sourceSchema, sourceVersion);
 	}
 }
