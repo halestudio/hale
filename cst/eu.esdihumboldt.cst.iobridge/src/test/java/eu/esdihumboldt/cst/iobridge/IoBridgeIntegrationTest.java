@@ -111,7 +111,7 @@ public class IoBridgeIntegrationTest {
 					xsd.toURI().toString(),
 					omlURL.toURI().toString(), 
 			        gmlURL.toURI().toString(),
-					out);
+					out, null, null);
 			
 			
 			System.out.println(result);
@@ -140,7 +140,7 @@ public class IoBridgeIntegrationTest {
 					xsd.toURI().toString(),
 					omlURL.toURI().toString(), 
 			        gmlURL.toURI().toString(),
-					out);
+					out, null, null);
 			
 			
 			System.out.println(result);
@@ -170,7 +170,7 @@ public class IoBridgeIntegrationTest {
 					xsd.toURI().toString(),
 					omlURL.toURI().toString(), 
 			        gmlURL.toURI().toString(),
-					out);
+					out, null, null);
 			
 			
 			System.out.println(result);
@@ -199,7 +199,7 @@ public class IoBridgeIntegrationTest {
 					xsd.toURI().toString(),
 					omlURL.toURI().toString(), 
 			        gmlURL.toURI().toString(),
-					out);
+					out, null, null);
 			
 			
 			System.out.println(result);
@@ -210,7 +210,7 @@ public class IoBridgeIntegrationTest {
 	}
 	public static void addCST() {
 		Class<?>[] parameters = new Class[]{URL.class};
-		URL functions = (new IoBridgeIntegrationTest()).getClass().getResource("corefunctions-1.0.2-SNAPSHOT.jar");		
+		URL functions = (new IoBridgeIntegrationTest()).getClass().getResource("corefunctions-1.0.3-SNAPSHOT.jar");		
 		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 	      Class<?> sysclass = URLClassLoader.class;
 
