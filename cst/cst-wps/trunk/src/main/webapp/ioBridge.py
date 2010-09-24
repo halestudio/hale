@@ -50,7 +50,7 @@ def createIOBridgeProcess():
             import java.lang.NullPointerException
             import java.lang.RuntimeException
             try:
-                dcsb.transform(schemaUrl, omlUrl, gmlUrl,outUrl)
+                dcsb.transform(schemaUrl, omlUrl, gmlUrl,outUrl, None, None)
             except java.lang.Exception,e:
                 return "Could not transform GML, got java.lang.Exception: %s" % e
 

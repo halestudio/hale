@@ -20,6 +20,7 @@ import eu.esdihumboldt.cst.iobridge.IoBridgeFactory;
 import eu.esdihumboldt.cst.iobridge.IoBridgeFactory.BridgeType;
 import eu.esdihumboldt.cst.iobridge.impl.DefaultCstServiceBridge;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
+import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 
 public class TestBridge {
 
@@ -44,6 +45,37 @@ public class TestBridge {
 		functions = tf.getRegisteredFunctions();
 		Assert.assertTrue(functions.size() > 2);
 	}
+	
+	
+	@Test
+	public void testTransformItaly_TC() {	
+		CstFunctionFactory tf = CstFunctionFactory.getInstance();
+		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
+		try {
+	
+			URL omlURL =TestBridge.class.getResource(    "./it/HALE_CST_Italy_TC.xml.goml");
+			URL gmlURL = TestBridge.class.getResource("./it/SPECCHI_ACQUA_07.gml");			
+			URL xsd =  TestBridge.class.getResource(  "./it/TCS_final_mdv.xsd");		
+			String out = TestBridge.class.getResource("").toExternalForm() + "out.gml";				//String out = IoBridgeIntegrationTest.class.getResource("").toExternalForm() + "HALE_CST_Italy_TC/lakes/SPECCHI_ACQUA_07_generated.gml";		
+			DefaultCstServiceBridge csb = (DefaultCstServiceBridge)IoBridgeFactory.getIoBridge(BridgeType.preloaded);
+			System.out.println(xsd.toURI().toString());
+			System.out.println(omlURL.toURI().toString());
+			System.out.println(gmlURL.toURI().toString());
+			
+			
+			String result = csb.transform(
+					xsd.toURI().toString(),
+					omlURL.toURI().toString(), 
+			        gmlURL.toURI().toString(),
+					out, null, null);
+			
+			
+			System.out.println(result);
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 	/**
 	 * @param args
 	 */
@@ -61,7 +93,7 @@ public class TestBridge {
 		DefaultCstServiceBridge csb = (DefaultCstServiceBridge)IoBridgeFactory.getIoBridge(BridgeType.preloaded);
 
 			
-		String out = TestBridge.class.getResource("").getFile() + "out.gml";				
+		String out = TestBridge.class.getResource("").toExternalForm() + "out.gml";				
 		System.out.println(xsd.toURI().toString());
 		System.out.println(omlURL.toURI().toString());
 		System.out.println(gmlURL.toURI().toString());
@@ -72,6 +104,8 @@ public class TestBridge {
 				omlURL.toURI().toString(), 
 		        gmlURL.toURI().toString(),
 				out, null, null);
+		
+		 ConfigurationType.valueOf("GML2");
 
 	}
 	
