@@ -30,7 +30,24 @@
 
                     <label for="schema">Schema</label>
                     <input name="schema" id="schema" type="file" />
+                    <br />
+
+                    <label for="sourceschema">Source Schema</label>
+                    <input name="sourceschema" id="sourceschema" type="file" />
+                    <br />
+
+                    <label for="sourceversion">Source Version</label>
+
+                    <select name="sourceversion" id="sourceversion">
+                        <option value="None">Unspecified</option>
+                        <option value="GML2">GML 2.x</option>
+                        <option value="GML3">GML 3.x</option>
+                        <option value="GML3_2">GML 3.2</option>
+                    </select>
+                    <br />
+
                     <img id="indicator" src="images/indicator.gif" style="display: none" />
+
                 </fieldset>
 
                 <input type="submit" value="Transform" />

@@ -49,6 +49,7 @@ public class UploadServlet extends HttpServlet {
 			File gmlFile = null;
 			File omlFile = null;
 			File schemaFile = null;
+			File sourceschemaFile = null;
 			while (iter.hasNext()) {
 				FileItem item = (FileItem) iter.next();
 
@@ -71,6 +72,12 @@ public class UploadServlet extends HttpServlet {
 								.getRealPath("./tmp")
 								+ "/" + d.getTime() + "." + item.getFieldName());
 						item.write(schemaFile);
+					} else if (item.getFieldName().equals("sourceschema")) {
+						Date d = new Date();
+						sourceschemaFile = new File(this.getServletContext()
+								.getRealPath("./tmp")
+								+ "/" + d.getTime() + "." + item.getFieldName());
+						item.write(sourceschemaFile);
                                         }
 
 				} else {
@@ -80,7 +87,13 @@ public class UploadServlet extends HttpServlet {
 			}
 
                         resp.setContentType("text/html");
-                        String r = "<script type=\"text/javascript\">window.parent.handleResponse({success:true, schema:'tmp/"+schemaFile.getName()+"',oml:'tmp/"+omlFile.getName()+"', gml:'tmp/"+gmlFile.getName()+"'})</script>";
+                        String r = "<script type=\"text/javascript\">window.parent.handleResponse({success:true,";
+                        
+                        if (sourceschemaFile.length() > 0) {
+                            r = r + "sourceschema: 'tmp/"+sourceschemaFile.getName()+"',";
+                        }
+
+                        r = r + "schema:'tmp/"+schemaFile.getName()+"',oml:'tmp/"+omlFile.getName()+"', gml:'tmp/"+gmlFile.getName()+"'})</script>";
 
 			
 			resp.getWriter().write(r);

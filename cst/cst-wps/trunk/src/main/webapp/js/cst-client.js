@@ -46,7 +46,7 @@ var init = function(){
  */
 var handleResponse = function(result) {
     result = result;
-    execute(result.gml,result.oml,result.schema);
+    execute(result.gml,result.oml,result.schema,result.sourceschema,document.forms[0].sourceversion.value == "None" ? undefined : document.forms[0].sourceversion.value);
     //try {
     //document.getElementById("indicator").style.display="none";
     //if (ingml) {
@@ -83,7 +83,7 @@ var onDescribedProcess = function(process){
 /**
  * Files are uploaded, call the execute request
  */
-var execute = function(gml,oml,schema) {
+var execute = function(gml,oml,schema,sourceschema,sourceversion) {
     document.getElementById("indicator").style.display="block";
     // define the WPS instance
     var wps = new OpenLayers.WPS(wpsURL,{onSucceeded: onExecuted,
@@ -97,12 +97,26 @@ var execute = function(gml,oml,schema) {
     var gmlInput = new OpenLayers.WPS.ComplexPut({identifier:"gml",
             value: window.location.href+gml,asReference: true});
 
+    var sourceSchemaInput = new OpenLayers.WPS.ComplexPut({identifier:"sourceschema",
+            value: window.location.href+sourceschema,asReference: true});
+
+    var sourceVersionInput = new OpenLayers.WPS.LiteralPut({identifier:"gmlversion",
+            value: sourceversion});
+
     var gmlOutput = new OpenLayers.WPS.ComplexPut({identifier:"gml",
             asReference: true});
 
     // define the iobridge process
+    var inputs =  [schemaInput, omlInput, gmlInput];
+
+    if (sourceschema) {
+        inputs.push(sourceSchemaInput);
+    }
+    if (sourceversion) {
+        inputs.push(sourceVersionInput);
+    }
     var ioBridgeProcess = new OpenLayers.WPS.Process({identifier:"iobridge",
-            inputs: [schemaInput, omlInput, gmlInput],
+            inputs: inputs,
             outputs: [gmlOutput]});
 
     // register process
@@ -110,6 +124,7 @@ var execute = function(gml,oml,schema) {
     
     // execute process
     wps.execute(ioBridgeProcess.identifier);
+    document.getElementById("wps-results").innerHTML = "";
 };
 
 /**
