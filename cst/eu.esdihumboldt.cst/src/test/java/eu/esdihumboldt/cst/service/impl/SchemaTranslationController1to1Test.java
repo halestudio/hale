@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.cst.service.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -20,10 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -41,8 +37,8 @@ import eu.esdihumboldt.cst.NameHelper;
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
-import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.service.AddFunctionsToPathUtility;
+import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory.ToleranceLevel;
 import eu.esdihumboldt.cst.transformer.service.impl.SchemaTranslationController;
 import eu.esdihumboldt.cst.transformer.service.impl.TargetSchemaProvider;
@@ -79,13 +75,13 @@ public class SchemaTranslationController1to1Test {
 	@BeforeClass
 	public static void testSchemaTranslationController() throws URISyntaxException {
 		// set up log4j logger manually if necessary
-		if (!Logger.getRootLogger().getAllAppenders().hasMoreElements()) {
-			Appender appender = new ConsoleAppender(
-					new PatternLayout("%d{ISO8601} %5p %C{1}:%L %m%n"), 
-					ConsoleAppender.SYSTEM_OUT );
-			appender.setName("A1");
-			Logger.getRootLogger().addAppender(appender);
-		}
+//		if (!Logger.getRootLogger().getAllAppenders().hasMoreElements()) {
+//			Appender appender = new ConsoleAppender(
+//					new PatternLayout("%d{ISO8601} %5p %C{1}:%L %m%n"), 
+//					ConsoleAppender.SYSTEM_OUT );
+//			appender.setName("A1");
+//			Logger.getRootLogger().addAppender(appender);
+//		}
 		AddFunctionsToPathUtility.getInstance().add();
 		// configure the CstFunctionFactory
 		CstFunctionFactory.getInstance().registerCstPackage(

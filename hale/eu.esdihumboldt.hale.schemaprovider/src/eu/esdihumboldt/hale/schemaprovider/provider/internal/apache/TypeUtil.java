@@ -21,7 +21,6 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import org.apache.log4j.Logger;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaEnumerationFacet;
 import org.apache.ws.commons.schema.XmlSchemaObject;
@@ -39,6 +38,10 @@ import org.geotools.xs.XSSchema;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.Name;
 
+import de.cs3d.util.logging.AGroup;
+import de.cs3d.util.logging.AGroupFactory;
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.schemaprovider.EnumAttributeType;
 import eu.esdihumboldt.hale.schemaprovider.EnumAttributeTypeImpl;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -52,7 +55,9 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  */
 public abstract class TypeUtil {
 	
-	private static final Logger log = Logger.getLogger(TypeUtil.class);
+	private static final ALogger log = ALoggerFactory.getLogger(TypeUtil.class);
+	
+	private static final AGroup TYPE_RESOLVE = AGroupFactory.getGroup("Types could not be resolved");
 
 	/**
 	 * The XS schema
@@ -77,8 +82,8 @@ public abstract class TypeUtil {
 	/**
 	 * Resolve an attribute type
 	 * 
-	 * @param typeName
-	 * @param schemaTypes 
+	 * @param typeName the type name
+	 * @param schemaTypes the schema type resolver
 	 * @return the type definition or <code>null</code>
 	 */
 	public static TypeDefinition resolveAttributeType(Name typeName, SchemaTypeResolver schemaTypes) {
@@ -91,7 +96,7 @@ public abstract class TypeUtil {
 		}
 		
 		if (typeDef == null ) {
-			log.warn("Type could not be resolved: " + typeName.getNamespaceURI() + "/" + typeName.getLocalPart());
+			log.warn(TYPE_RESOLVE, "Type could not be resolved: " + typeName.getNamespaceURI() + "/" + typeName.getLocalPart());
 		}
 		
 		return typeDef;
@@ -120,7 +125,7 @@ public abstract class TypeUtil {
 		}
 		
 		if (typeDef == null ) {
-			log.warn("Type could not be resolved: " + typeName.getNamespaceURI() + "/" + typeName.getLocalPart());
+			log.warn(TYPE_RESOLVE, "Type could not be resolved: " + typeName.getNamespaceURI() + "/" + typeName.getLocalPart());
 		}
 		
 		return typeDef;
@@ -245,7 +250,7 @@ public abstract class TypeUtil {
 			}
 		}
 		else {
-			log.warn("could not resolve base type: " + baseTypeName.getNamespaceURI() + "/" + baseTypeName.getLocalPart());
+			log.warn(TYPE_RESOLVE, "Could not resolve base type: " + baseTypeName.getNamespaceURI() + "/" + baseTypeName.getLocalPart());
 		}
 		
 		if (type != null) {
@@ -324,7 +329,7 @@ public abstract class TypeUtil {
 			typeDef = getEnumAttributeType((XmlSchemaSimpleTypeRestriction) content, typeName, schemaTypes);
 		}
 		else {
-			log.warn("unrecognized simple type");
+			log.warn(TYPE_RESOLVE, "Unrecognized simple type " + typeName.getNamespaceURI() + "/" + typeName.getLocalPart());
 		}
 		
 		if (typeDef != null && schemaTypes != null) {
@@ -381,12 +386,12 @@ public abstract class TypeUtil {
 							}
 						}
 						else {
-							log.warn("error resolving base type");
+							log.warn(TYPE_RESOLVE, "Error resolving base type " + baseName.getURI());
 						}
 					}
 				}
 				else {
-					log.warn("unrecognized base type");
+					log.warn("Unrecognized base type");
 				}
 			}
 		}
@@ -426,7 +431,7 @@ public abstract class TypeUtil {
 							}
 						}
 						else {
-							log.warn("error resolving base type");
+							log.warn(TYPE_RESOLVE, "Error resolving base type " + baseName.getURI());
 						}
 					}
 				}

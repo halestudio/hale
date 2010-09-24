@@ -1,45 +1,35 @@
 package eu.esdihumboldt.cst.service.impl;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-
 import java.util.UUID;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.metadata.iso.lineage.LineageImpl;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
+
 import eu.esdihumboldt.cst.NameHelper;
 import eu.esdihumboldt.cst.align.IAlignment;
-import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.cst.transformer.service.AddFunctionsToPathUtility;
-import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
-import eu.esdihumboldt.cst.transformer.service.CstServiceFactory.ToleranceLevel;
 import eu.esdihumboldt.cst.transformer.service.impl.SchemaTranslationController;
 import eu.esdihumboldt.cst.transformer.service.impl.TargetSchemaProvider;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
@@ -50,8 +40,6 @@ import eu.esdihumboldt.goml.align.Schema;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.goml.rdf.Resource;
 
@@ -75,13 +63,13 @@ public class SchemaTranslationControllerSplitterTest {
 	@BeforeClass
 	public static void testSchemaTranslationController() throws URISyntaxException {
 		// set up log4j logger manually if necessary
-		if (!Logger.getRootLogger().getAllAppenders().hasMoreElements()) {
-			Appender appender = new ConsoleAppender(
-					new PatternLayout("%d{ISO8601} %5p %C{1}:%L %m%n"), 
-					 ConsoleAppender.SYSTEM_OUT );
-			appender.setName("A1");
-			Logger.getRootLogger().addAppender(appender);
-		}
+//		if (!Logger.getRootLogger().getAllAppenders().hasMoreElements()) {
+//			Appender appender = new ConsoleAppender(
+//					new PatternLayout("%d{ISO8601} %5p %C{1}:%L %m%n"), 
+//					 ConsoleAppender.SYSTEM_OUT );
+//			appender.setName("A1");
+//			Logger.getRootLogger().addAppender(appender);
+//		}
 		AddFunctionsToPathUtility.getInstance().add();
 		// configure the CstFunctionFactory
 //		CstFunctionFactory.getInstance().registerCstPackage(

@@ -16,14 +16,10 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Map;
 
-import org.apache.commons.logging.impl.Log4JLogger;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.gml3.GMLConfiguration;
-import org.geotools.util.logging.Log4JLoggerFactory;
-import org.geotools.util.logging.Logging;
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -53,9 +49,9 @@ public class IoBridgeIntegrationTest {
 	public static void initialize(){
 		addCST();
 		// configure logging
-		Logging.ALL.setLoggerFactory(Log4JLoggerFactory.getInstance());
-		Logger.getLogger(Log4JLogger.class).setLevel(Level.WARN);
-		Logger.getRootLogger().setLevel(Level.WARN);
+//		Logging.ALL.setLoggerFactory(Log4JLoggerFactory.getInstance());
+//		Logger.getLogger(Log4JLogger.class).setLevel(Level.WARN);
+//		Logger.getRootLogger().setLevel(Level.WARN);
 	}
 	
 	

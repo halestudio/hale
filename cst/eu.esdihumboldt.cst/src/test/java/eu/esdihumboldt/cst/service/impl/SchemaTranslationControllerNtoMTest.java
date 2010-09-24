@@ -4,14 +4,10 @@
 package eu.esdihumboldt.cst.service.impl;
 
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URISyntaxException;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -39,13 +35,13 @@ public class SchemaTranslationControllerNtoMTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		// set up log4j logger manually if necessary
-		if (!Logger.getRootLogger().getAllAppenders().hasMoreElements()) {
-			Appender appender = new ConsoleAppender(
-					new PatternLayout("%d{ISO8601} %5p %C{1}:%L %m%n"), 
-					ConsoleAppender.SYSTEM_OUT );
-			appender.setName("A1");
-			Logger.getRootLogger().addAppender(appender);
-		}
+//		if (!Logger.getRootLogger().getAllAppenders().hasMoreElements()) {
+//			Appender appender = new ConsoleAppender(
+//					new PatternLayout("%d{ISO8601} %5p %C{1}:%L %m%n"), 
+//					ConsoleAppender.SYSTEM_OUT );
+//			appender.setName("A1");
+//			Logger.getRootLogger().addAppender(appender);
+//		}
 		
 		/*stc = new SchemaTranslationController(getTestAlignment());
 		sourceType = SchemaTranslationController1to1Test.getFeatureType(

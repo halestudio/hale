@@ -21,6 +21,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+import de.cs3d.util.logging.ATransaction;
+
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
@@ -40,6 +44,8 @@ import eu.esdihumboldt.hale.schemaprovider.provider.ShapeSchemaProvider;
  */
 public class SchemaProviderService 
 	extends AbstractSchemaService {
+	
+	private static ALogger log = ALoggerFactory.getLogger(SchemaProviderService.class); 
 	
 	/**
 	 * Source schema
@@ -102,18 +108,23 @@ public class SchemaProviderService
 	 */
 	@Override
 	public boolean loadSchema(URI location, String schemaFormat, SchemaType type, ProgressIndicator progress) throws IOException {
-		SchemaProvider provider = getSchemaProvider((schemaFormat != null)?(schemaFormat):(determineSchemaFormat(location)));
-		Schema schema = provider.loadSchema(location, progress);
-		
-		if (type.equals(SchemaType.SOURCE)) {
-			sourceSchema = schema;
-		} 
-		else {
-			targetSchema = schema;
+		ATransaction logTrans = log.begin("Loading " + type + " schema from " + location.toString());
+		try {
+			SchemaProvider provider = getSchemaProvider((schemaFormat != null)?(schemaFormat):(determineSchemaFormat(location)));
+			Schema schema = provider.loadSchema(location, progress);
+			
+			if (type.equals(SchemaType.SOURCE)) {
+				sourceSchema = schema;
+			} 
+			else {
+				targetSchema = schema;
+			}
+			
+			notifySchemaChanged(type);
+			return true;
+		} finally {
+			logTrans.end();
 		}
-		
-		notifySchemaChanged(type);
-		return true;
 	}
 
 	private SchemaProvider getSchemaProvider(String format) {

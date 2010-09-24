@@ -5,7 +5,6 @@ import static org.junit.Assert.fail;
 
 import java.net.URI;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
@@ -33,7 +32,7 @@ public class ShapeSchemaProviderTest {
 	@Test
 	public void testLoadSchema() {
 		
-		log.setLevel(Level.INFO);
+//		log.setLevel(Level.INFO);
 		
 		ShapeSchemaProvider ssp = new ShapeSchemaProvider();
 		Schema result = null;

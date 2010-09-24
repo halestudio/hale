@@ -17,7 +17,6 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -30,6 +29,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.goml.align.Formalism;
 import eu.esdihumboldt.goml.align.Schema;
 import eu.esdihumboldt.goml.rdf.About;
@@ -52,7 +53,7 @@ public class SchemaImportWizard
 	extends Wizard 
 	implements IImportWizard {
 	
-	private static Logger _log = Logger.getLogger(SchemaImportWizard.class);
+	private static ALogger _log = ALoggerFactory.getLogger(SchemaImportWizard.class);
 	
 	SchemaImportWizardMainPage mainPage;
 
@@ -179,9 +180,10 @@ public class SchemaImportWizard
 							projectService.setTargetSchemaPath(uri.toString());
 						}
 					} catch (Exception e2) {
-						ExceptionHelper.handleException(
-								Messages.SchemaImportWizard_ErrorMessage1, 
-								HALEActivator.PLUGIN_ID, e2);
+						_log.userError(Messages.SchemaImportWizard_ErrorMessage1, e2);
+//						ExceptionHelper.handleException(
+//								Messages.SchemaImportWizard_ErrorMessage1, 
+//								HALEActivator.PLUGIN_ID, e2);
 						succeeded.set(false);
 					}
 					

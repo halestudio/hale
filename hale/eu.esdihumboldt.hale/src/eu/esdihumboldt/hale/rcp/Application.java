@@ -13,12 +13,7 @@ package eu.esdihumboldt.hale.rcp;
 
 import java.net.URL;
 
-import org.apache.commons.logging.impl.Log4JLogger;
-import org.apache.log4j.Appender;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -26,8 +21,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.referencing.CRS;
-import org.geotools.util.logging.Log4JLoggerFactory;
-import org.geotools.util.logging.Logging;
+import org.slf4j.bridge.SLF4JBridgeHandler;
+
 import eu.esdihumboldt.hale.WKTPreferencesCRSFactory;
 
 /**
@@ -46,24 +41,27 @@ public class Application implements IApplication {
 	 */
 	public Object start(IApplicationContext context) {
 		// set up log4j logger manually if necessary
-		if (!Logger.getRootLogger().getAllAppenders().hasMoreElements()) {
-			Appender appender = new ConsoleAppender(
-					new PatternLayout("%d{ISO8601} %5p %C{1}:%L %m%n"), 
-					ConsoleAppender.SYSTEM_OUT );
-			appender.setName("A1");
-			Logger.getRootLogger().addAppender(appender);
-			
-			_log.info("No Logging configuration available, setting up " +
-					"programmatically.");
-		}
+//		if (!Logger.getRootLogger().getAllAppenders().hasMoreElements()) {
+//			Appender appender = new ConsoleAppender(
+//					new PatternLayout("%d{ISO8601} %5p %C{1}:%L %m%n"), 
+//					ConsoleAppender.SYSTEM_OUT );
+//			appender.setName("A1");
+//			Logger.getRootLogger().addAppender(appender);
+//			
+//			_log.info("No Logging configuration available, setting up " +
+//					"programmatically.");
+//		}
 		
 		// set up log4j logger for GeoTools
-		Logging.ALL.setLoggerFactory(Log4JLoggerFactory.getInstance());
-		Logger.getLogger(Log4JLogger.class).setLevel(Level.WARN);
-		// provide information on HALE version to console.
-		_log.info("HALE Version: " 
-				+ HALEActivator.getDefault().getBundle().getVersion().toString());
-		Logger.getRootLogger().setLevel(Level.WARN);
+//		Logging.ALL.setLoggerFactory(Log4JLoggerFactory.getInstance());
+//		Logger.getLogger(Log4JLogger.class).setLevel(Level.WARN);
+//		// provide information on HALE version to console.
+//		_log.info("HALE Version: " 
+//				+ HALEActivator.getDefault().getBundle().getVersion().toString());
+//		Logger.getRootLogger().setLevel(Level.WARN);
+		
+		// install SLF4J JUL bridge
+		SLF4JBridgeHandler.install();
 		
 		WKTPreferencesCRSFactory.install();
 		

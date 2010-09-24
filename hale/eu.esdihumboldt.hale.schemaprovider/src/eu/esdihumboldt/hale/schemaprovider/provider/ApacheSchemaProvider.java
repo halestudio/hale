@@ -31,7 +31,6 @@ import java.util.Map.Entry;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.log4j.Logger;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
 import org.apache.ws.commons.schema.XmlSchemaChoice;
@@ -56,6 +55,10 @@ import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 
+import de.cs3d.util.logging.AGroup;
+import de.cs3d.util.logging.AGroupFactory;
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.schemaprovider.AbstractSchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.HumboldtURIResolver;
 import eu.esdihumboldt.hale.schemaprovider.LogProgressIndicator;
@@ -95,7 +98,9 @@ public class ApacheSchemaProvider
 	/**
 	 * The log
 	 */
-	private static Logger _log = Logger.getLogger(ApacheSchemaProvider.class);
+	private static ALogger _log = ALoggerFactory.getLogger(ApacheSchemaProvider.class);
+	
+	private static final AGroup NO_DEFINITION = AGroupFactory.getGroup("No type definition found for elements"); 
 	
 	/**
 	 * Default constructor 
@@ -207,7 +212,7 @@ public class ApacheSchemaProvider
 				reference = importedElements.get(elementName);
 			}
 			if (reference == null) {
-				_log.error("Reference to element " + element.getRefName().getNamespaceURI() + "/" + element.getRefName().getLocalPart() +" not found");
+				_log.warn("Reference to element " + element.getRefName().getNamespaceURI() + "/" + element.getRefName().getLocalPart() +" not found");
 				return null;
 			}
 			else {
@@ -455,7 +460,7 @@ public class ApacheSchemaProvider
 				}
 			}
 			else {
-				_log.info("No type definition for element " + element.getElementName().getLocalPart());
+				_log.warn(NO_DEFINITION, "No type definition for element " + element.getElementName().getLocalPart());
 			}
 		}
 

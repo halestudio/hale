@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Log4j Configuration Fragment
-Bundle-SymbolicName: eu.esdihumboldt.hale.log4j.config
-Bundle-Version: 1.0.0
-Fragment-Host: com.springsource.org.apache.log4j;bundle-version="1.2.15"
-Bundle-RequiredExecutionEnvironment: OSGi/Minimum-1.1

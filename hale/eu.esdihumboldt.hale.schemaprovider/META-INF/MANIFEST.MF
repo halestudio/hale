@@ -5,6 +5,7 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.schemaprovider
 Bundle-Version: 1.0.1
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.vividsolutions.jts.geom,
+ de.cs3d.util.logging,
  eu.esdihumboldt.cst.rdf,
  eu.esdihumboldt.goml.align,
  eu.esdihumboldt.goml.omwg,
@@ -32,7 +33,8 @@ Import-Package: com.vividsolutions.jts.geom,
  org.opengis.feature.type,
  org.opengis.filter,
  org.opengis.referencing.crs,
- org.opengis.util
+ org.opengis.util,
+ org.slf4j;version="1.5.6"
 Export-Package: eu.esdihumboldt.hale.schemaprovider,
  eu.esdihumboldt.hale.schemaprovider.model,
  eu.esdihumboldt.hale.schemaprovider.provider

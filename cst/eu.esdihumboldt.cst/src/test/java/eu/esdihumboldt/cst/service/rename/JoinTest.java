@@ -8,20 +8,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeatureType;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
+
 import eu.esdihumboldt.cst.transformer.service.rename.FeatureSpatialJoiner;
 
 public class JoinTest {
@@ -30,13 +29,13 @@ public class JoinTest {
 	@BeforeClass
 	public static void testSchemaTranslationController() throws URISyntaxException {
 		// set up log4j logger manually if necessary
-		if (!Logger.getRootLogger().getAllAppenders().hasMoreElements()) {
-			Appender appender = new ConsoleAppender(
-					new PatternLayout("%d{ISO8601} %5p %C{1}:%L %m%n"), 
-					 ConsoleAppender.SYSTEM_OUT );
-			appender.setName("A1");
-			Logger.getRootLogger().addAppender(appender);
-		}
+//		if (!Logger.getRootLogger().getAllAppenders().hasMoreElements()) {
+//			Appender appender = new ConsoleAppender(
+//					new PatternLayout("%d{ISO8601} %5p %C{1}:%L %m%n"), 
+//					 ConsoleAppender.SYSTEM_OUT );
+//			appender.setName("A1");
+//			Logger.getRootLogger().addAppender(appender);
+//		}
 	}
 	
 	@Test

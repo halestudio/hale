@@ -24,13 +24,14 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+import de.cs3d.util.logging.ATransaction;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
@@ -65,7 +66,7 @@ import eu.esdihumboldt.hale.task.impl.TaskUserDataImpl;
  */
 public class ProjectParser {
 	
-	private static Logger _log = Logger.getLogger(ProjectParser.class);
+	private static ALogger _log = ALoggerFactory.getLogger(ProjectParser.class);
 	
 	/**
 	 * Constant defines the path to the alignment jaxb context
@@ -95,7 +96,7 @@ public class ProjectParser {
 	public HaleProject read(String filename, IProgressMonitor monitor) {
 		monitor.beginTask("Loading alignment project", IProgressMonitor.UNKNOWN);
 		
-		ProjectParser._log.setLevel(Level.INFO);
+//		ProjectParser._log.setLevel(Level.INFO);
 		// 1. unmarshal rdf
 		JAXBContext jc;
 		JAXBElement<HaleProject> root = null;
@@ -290,38 +291,44 @@ public class ProjectParser {
 		
 		// fourth, it's time for loading the tasks.
 		monitor.subTask("Tasks");
-		taskService.clearUserTasks();
-		TaskStatus status = project.getTaskStatus();
-		if (status != null) {
-			for (Task task : status.getTask()) {
-				try {
-					// get identifiers
-					List<Definition> definitions = new ArrayList<Definition>();
-					for (String identifier : task.getContextIdentifier()) {
-						Definition definition = schemaService.getDefinition(identifier);
-						if (definition == null) {
-							throw new IllegalStateException("Unknown identifier " + 
-									identifier + ", failed to load task.");
+		ATransaction taskTrans = _log.begin("Loading tasks");
+		try {
+			taskService.clearUserTasks();
+			TaskStatus status = project.getTaskStatus();
+			if (status != null) {
+				for (Task task : status.getTask()) {
+					try {
+						// get identifiers
+						List<Definition> definitions = new ArrayList<Definition>();
+						for (String identifier : task.getContextIdentifier()) {
+							Definition definition = schemaService.getDefinition(identifier);
+							if (definition == null) {
+								throw new IllegalStateException("Unknown identifier " + 
+										identifier + ", failed to load task.");
+							}
+							else {
+								definitions.add(definition);
+							}
 						}
-						else {
-							definitions.add(definition);
-						}
+						eu.esdihumboldt.hale.task.Task newTask = new BaseTask(task.getTaskType(), definitions);
+//						if (newTask != null) {
+							TaskUserData userData = new TaskUserDataImpl();
+							userData.setUserComment(task.getComment());
+							userData.setTaskStatus(eu.esdihumboldt.hale.task.TaskUserData.TaskStatus.valueOf(task.getTaskStatus()));
+							
+							taskService.setUserData(newTask, userData);
+//						}
+//						else {
+//							_log.error("Task creation of type " + task.getTaskType() + " failed");
+//						}
+					} catch (IllegalStateException e) {
+						_log.error(e.getMessage());
 					}
-					eu.esdihumboldt.hale.task.Task newTask = new BaseTask(task.getTaskType(), definitions);
-//					if (newTask != null) {
-						TaskUserData userData = new TaskUserDataImpl();
-						userData.setUserComment(task.getComment());
-						userData.setTaskStatus(eu.esdihumboldt.hale.task.TaskUserData.TaskStatus.valueOf(task.getTaskStatus()));
-						
-						taskService.setUserData(newTask, userData);
-//					}
-//					else {
-//						_log.error("Task creation of type " + task.getTaskType() + " failed");
-//					}
-				} catch (IllegalStateException e) {
-					_log.error(e.getMessage());
 				}
 			}
+		}
+		finally {
+			taskTrans.end();
 		}
 		
 		// Finally, initialize other ProjectService values.

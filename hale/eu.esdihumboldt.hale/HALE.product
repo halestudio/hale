@@ -26,6 +26,10 @@
    </vm>
 
    <plugins>
+      <plugin id="cal10n.api"/>
+      <plugin id="ch.qos.logback.classic"/>
+      <plugin id="ch.qos.logback.core"/>
+      <plugin id="ch.qos.logback.slf4j" fragment="true"/>
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="com.springsource.com.sun.xml.bind"/>
@@ -41,9 +45,7 @@
       <plugin id="com.springsource.org.apache.commons.collections"/>
       <plugin id="com.springsource.org.apache.commons.jxpath"/>
       <plugin id="com.springsource.org.apache.commons.lang"/>
-      <plugin id="com.springsource.org.apache.commons.logging"/>
       <plugin id="com.springsource.org.apache.commons.pool"/>
-      <plugin id="com.springsource.org.apache.log4j"/>
       <plugin id="com.springsource.org.apache.velocity"/>
       <plugin id="com.springsource.org.apache.xerces" fragment="true"/>
       <plugin id="com.springsource.org.apache.xml.resolver"/>
@@ -52,11 +54,18 @@
       <plugin id="com.springsource.org.dom4j"/>
       <plugin id="com.springsource.org.jvnet.staxex"/>
       <plugin id="com.vividsolutions.jts"/>
+      <plugin id="de.cs3d.ui.util.logging.errorlog"/>
+      <plugin id="de.cs3d.ui.util.logging.userstatus"/>
+      <plugin id="de.cs3d.util.logging"/>
+      <plugin id="de.cs3d.util.logging.logback"/>
+      <plugin id="de.cs3d.util.logging.logback.appender" fragment="true"/>
+      <plugin id="de.cs3d.util.logging.logback.observer"/>
+      <plugin id="edu.umd.cs.findbugs.annotations"/>
       <plugin id="eu.esdihumboldt.commons"/>
       <plugin id="eu.esdihumboldt.cst.corefunctions"/>
       <plugin id="eu.esdihumboldt.hale"/>
       <plugin id="eu.esdihumboldt.hale.gmlparser"/>
-      <plugin id="eu.esdihumboldt.hale.log4j.config" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
       <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.core"/>
@@ -65,6 +74,9 @@
       <plugin id="eu.esdihumboldt.transformer.cst"/>
       <plugin id="gnu.trove"/>
       <plugin id="javax.servlet"/>
+      <plugin id="jcl.over.slf4j"/>
+      <plugin id="jul.to.slf4j"/>
+      <plugin id="log4j.over.slf4j"/>
       <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.convert"/>
       <plugin id="org.apache.commons.httpclient"/>
@@ -111,6 +123,7 @@
       <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.text"/>
       <plugin id="org.eclipse.ui"/>
+      <plugin id="org.eclipse.ui.views.log"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.eclipse.xsd"/>
       <plugin id="org.eclipse.zest.core"/>
@@ -120,10 +133,14 @@
       <plugin id="org.jdom"/>
       <plugin id="org.junit4"/>
       <plugin id="org.libtiff.jai"/>
+      <plugin id="org.slf4j.api"/>
       <plugin id="org.springframework.transaction"/>
+      <plugin id="slf4j.ext"/>
    </plugins>
 
    <configurations>
+      <plugin id="de.cs3d.ui.util.logging.errorlog" autoStart="true" startLevel="2" />
+      <plugin id="de.cs3d.util.logging.logback" autoStart="true" startLevel="1" />
       <plugin id="eu.esdihumboldt.transformer.cst" autoStart="true" startLevel="0" />
    </configurations>
 

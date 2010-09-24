@@ -106,7 +106,7 @@ public class CstServiceImpl
 	 * @see eu.esdihumboldt.cst.transformer.CstService#registerCstFunctions(java.lang.String)
 	 */
 	public List<String> registerCstFunctions(String packageName) {
-		_log.setLevel(Level.INFO);
+//		_log.setLevel(Level.INFO);
 		if (packageName != null) {
 			CstFunctionFactory.getInstance().registerCstPackage(packageName);
 		}

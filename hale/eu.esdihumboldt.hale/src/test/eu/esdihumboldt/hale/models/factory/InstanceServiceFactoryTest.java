@@ -11,12 +11,12 @@
  */
 package test.eu.esdihumboldt.hale.models.factory;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collection;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 import org.geotools.feature.FeatureCollection;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -26,8 +26,6 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.models.instance.InstanceServiceImpl;
-
-import static org.junit.Assert.*;
 
 
 /**
@@ -67,10 +65,10 @@ public class InstanceServiceFactoryTest {
 	}
 
 	private static void setUpLogger() {
-		Appender appender = new ConsoleAppender(
-				new PatternLayout("%d{ISO8601} %5p %C{1}:%L %m%n"), ConsoleAppender.SYSTEM_OUT );
-		appender.setName("A1");
-		Logger.getRootLogger().addAppender(appender);
+//		Appender appender = new ConsoleAppender(
+//				new PatternLayout("%d{ISO8601} %5p %C{1}:%L %m%n"), ConsoleAppender.SYSTEM_OUT );
+//		appender.setName("A1");
+//		Logger.getRootLogger().addAppender(appender);
 	}
 
 	/**

@@ -13,7 +13,6 @@ package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -24,10 +23,11 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+import de.cs3d.util.logging.ATransaction;
 import eu.esdihumboldt.hale.models.ProjectService;
-import eu.esdihumboldt.hale.models.project.ProjectParser;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
-import eu.esdihumboldt.hale.rcp.commandHandlers.NewProjectHandler;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
 
 /**
@@ -43,7 +43,7 @@ public class OpenAlignmentProjectWizard
 	
 	private OpenAlignmentProjectWizardMainPage mainPage = null;
 	
-	private static Logger _log = Logger.getLogger(OpenAlignmentProjectWizard.class);
+	private static ALogger _log = ALoggerFactory.getLogger(OpenAlignmentProjectWizard.class);
 	
 	/**
 	 * Default constructor
@@ -69,14 +69,18 @@ public class OpenAlignmentProjectWizard
 					@Override
 					public void run(IProgressMonitor monitor) throws InvocationTargetException,
 							InterruptedException {
+						ATransaction logTrans = _log.begin("Loading alignment project from " + result);
 						try {
 							ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
 							ps.load(result, monitor);
 						} catch (Exception e) {
 							String message = Messages.OpenAlignmentProjectWizard_Failed;
-							_log.error(message, e);
-							ExceptionHelper.handleException(
-									message, HALEActivator.PLUGIN_ID, e);
+							_log.userError(message, e);
+//							ExceptionHelper.handleException(
+//									message, HALEActivator.PLUGIN_ID, e);
+						}
+						finally {
+							logTrans.end();
 						}
 					}
 				});
