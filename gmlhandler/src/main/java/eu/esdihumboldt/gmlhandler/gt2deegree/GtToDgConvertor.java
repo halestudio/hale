@@ -251,12 +251,15 @@ public class GtToDgConvertor {
 		
 		// 3. List<Property>
 		List<org.deegree.feature.property.Property> dgProps = new ArrayList<org.deegree.feature.property.Property>();
-		Iterator<Property> gtPropsIter = ((Collection)complexAttribute.getValue()).iterator();
+		Collection attributesCollestion = ((Collection)complexAttribute.getValue());
+		if (attributesCollestion != null){
+		Iterator<Property> gtPropsIter = attributesCollestion.iterator();
 	
 		while (gtPropsIter.hasNext()) {
 			Property gtProp = gtPropsIter.next();
 			org.deegree.feature.property.Property dgProp = createDgProp(gtProp, null, null);
 			dgProps.add(dgProp);
+		}
 		}
 		// 4. GMLVersion
 		org.deegree.feature.Feature dgFeature = ft.newFeature(fid, dgProps,
