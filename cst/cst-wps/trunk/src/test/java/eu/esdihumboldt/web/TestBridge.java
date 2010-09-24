@@ -61,7 +61,7 @@ public class TestBridge {
 		DefaultCstServiceBridge csb = (DefaultCstServiceBridge)IoBridgeFactory.getIoBridge(BridgeType.preloaded);
 
 			
-		String out = TestBridge.class.getResource("").toExternalForm() + "out.gml";				
+		String out = TestBridge.class.getResource("").getFile() + "out.gml";				
 		System.out.println(xsd.toURI().toString());
 		System.out.println(omlURL.toURI().toString());
 		System.out.println(gmlURL.toURI().toString());
@@ -71,13 +71,13 @@ public class TestBridge {
 				xsd.toURI().toString(),
 				omlURL.toURI().toString(), 
 		        gmlURL.toURI().toString(),
-				out);
+				out, null, null);
 
 	}
 	
 	public static void addCST() {
 		Class<?>[] parameters = new Class[]{URL.class};
-		URL functions = (new TestBridge()).getClass().getResource("corefunctions-1.0.2-SNAPSHOT.jar");		
+		URL functions = (new TestBridge()).getClass().getResource("corefunctions-1.0.3-SNAPSHOT.jar");		
 		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 	      Class<?> sysclass = URLClassLoader.class;
 
