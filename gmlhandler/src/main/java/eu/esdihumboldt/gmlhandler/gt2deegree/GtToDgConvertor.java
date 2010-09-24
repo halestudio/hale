@@ -209,6 +209,9 @@ public class GtToDgConvertor {
 			//org.deegree.feature.Feature featureProp = null;
 			
 	    	org.deegree.feature.Feature featureProp = createDgFeature((Attribute) gtProp, ft);
+	    	dgProp = new org.deegree.feature.property.GenericProperty(dgPT,
+					dgPropName, featureProp);
+			//dgProp = createDgFeatureProperty((Attribute)gtProp, ft);
 			/*
 			 * //TODO find a nicer way to create fid String fid =
 			 * java.util.UUID.randomUUID().toString(); GMLVersion version =
@@ -223,7 +226,7 @@ public class GtToDgConvertor {
 			 * ((SimpleFeature)gtProp).getAttribute(attr.)); } GenericFeature
 			 * dgSubProperty = new GenericFeature(ft, fid, properties, version);
 			 */
-			dgProp = new GenericProperty(dgPT, dgPropName, featureProp);
+			//dgProp = new GenericProperty(dgPT, dgPropName, featureProp);
 			// }
 		} else if (dgPT instanceof org.deegree.feature.types.property.CustomPropertyType) {
 			// TODO implement if needed
@@ -236,6 +239,21 @@ public class GtToDgConvertor {
 		}
 		return dgProp;
 	}
+
+//	private static org.deegree.feature.property.Property createDgFeatureProperty(
+//			Attribute gtProp, GenericFeatureType ft) {
+//		List<org.deegree.feature.property.Property> dgProps = new ArrayList<org.deegree.feature.property.Property>();
+//		Collection attributesCollestion = ((Collection)gtProp.getValue());
+//		if (attributesCollestion != null){
+//		Iterator<Property> gtPropsIter = attributesCollestion.iterator();
+//		org.deegree.feature.property.Property dgProp;
+//		while (gtPropsIter.hasNext()) {
+//			 gtProp = gtPropsIter.next();
+//			 dgProp = createDgProp(gtProp, null, null);
+//			dgProps.add(dgProp);
+//		}
+//		return dgProp;
+////	}
 
 	/**
 	 * 
@@ -256,9 +274,18 @@ public class GtToDgConvertor {
 		Iterator<Property> gtPropsIter = attributesCollestion.iterator();
 	
 		while (gtPropsIter.hasNext()) {
+			//Find Complex attribute
 			Property gtProp = gtPropsIter.next();
-			org.deegree.feature.property.Property dgProp = createDgProp(gtProp, null, null);
-			dgProps.add(dgProp);
+			if (gtProp instanceof ComplexAttribute){
+				//retrieve a list of properties for the complex Attribute
+				Iterator<Property> simplePropIter = ((ComplexAttribute) gtProp).getProperties().iterator();
+				while(simplePropIter.hasNext()){
+					Property gtSimpleProp = simplePropIter.next();
+					org.deegree.feature.property.Property dgProp = createDgProp(gtSimpleProp, null, null);
+					dgProps.add(dgProp);
+				}
+			}
+			
 		}
 		}
 		// 4. GMLVersion
