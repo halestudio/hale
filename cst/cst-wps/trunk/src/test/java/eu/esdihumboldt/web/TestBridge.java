@@ -69,7 +69,7 @@ public class TestBridge {
 			        gmlURL.toURI().toString(),
 					out, null, null);
 			
-			
+			ConfigurationType.valueOf("");
 			System.out.println(result);
 			
 		} catch (Exception e) {
