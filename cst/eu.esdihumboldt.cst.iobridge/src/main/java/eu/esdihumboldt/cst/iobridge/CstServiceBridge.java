@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.cst.iobridge;
 
+
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 
 /**
@@ -32,7 +33,7 @@ public interface CstServiceBridge {
 	 * stored.
 	 */
 	public String transform(String schemaFilename, String omlFilename, 
-			String gmlFilename);
+			String gmlFilename) throws TransformationException;
 	
 	/**
 	 * This method will perform schema transformation based on already loaded 
@@ -52,9 +53,10 @@ public interface CstServiceBridge {
 	 * 
 	 * @return the filename where the result of the CST service execution is 
 	 * stored.
+	 * @throws TransformationException 
 	 */
 	public String transform(String schemaFilename, String omlFilename, 
 			String gmlFilename, String sourceSchema, 
-			ConfigurationType sourceVersion);
+			ConfigurationType sourceVersion) throws TransformationException;
 	
 }

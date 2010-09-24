@@ -12,7 +12,6 @@
 package eu.esdihumboldt.cst.iobridge.impl;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,23 +24,18 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.xml.stream.XMLStreamException;
-
-import org.deegree.cs.exceptions.TransformationException;
-import org.deegree.cs.exceptions.UnknownCRSException;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.gml3.GMLConfiguration;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.iobridge.CstServiceBridge;
+import eu.esdihumboldt.cst.iobridge.TransformationException;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory;
 import eu.esdihumboldt.gmlhandler.GmlHandler;
 import eu.esdihumboldt.gmlhandler.gt2deegree.GtToDgConvertor;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper;
-import eu.esdihumboldt.hale.gmlparser.HaleGMLParser;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
@@ -67,7 +61,7 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 	 * java.lang.String, java.lang.String)
 	 */
 	public String transform(String schemaFilename, String omlFilename,
-			String gmlFilename, String outputFilename, String sourceSchema, ConfigurationType sourceVersion)  {
+			String gmlFilename, String outputFilename, String sourceSchema, ConfigurationType sourceVersion) throws TransformationException  {
 
 		// perform the transformation
 		FeatureCollection<?, ?> result = CstServiceFactory.getInstance()
@@ -88,22 +82,13 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 		*/
 		
 		try {
-			GmlHandler handler = GmlHandler.getDefaultInstance(schemaFilename, outputFilename);	
+			GmlHandler handler = GmlHandler.getDefaultInstance(schemaFilename, (new URL(outputFilename)).getFile());	
 			org.deegree.feature.FeatureCollection fc = GtToDgConvertor.convertGtToDg(result);
 			handler.writeFC(fc);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (XMLStreamException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnknownCRSException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TransformationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} catch (Exception e) {
+			throw new TransformationException(e);
+		} 
+		
 		return outputFilename.toString();
 	}
 
@@ -225,7 +210,7 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 	 */
 	@Override
 	public String transform(String schemaFilename, String omlFilename,
-			String gmlFilename) {
+			String gmlFilename) throws TransformationException  {
 		return transform(schemaFilename, omlFilename, gmlFilename,
 				null, null);
 	}
@@ -235,7 +220,7 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 	 */
 	@Override
 	public String transform(String schemaFilename, String omlFilename,
-			String gmlFilename, String sourceSchema, ConfigurationType sourceVersion) {
+			String gmlFilename, String sourceSchema, ConfigurationType sourceVersion) throws TransformationException  {
 		String outputFilename =(this.getClass().getResource("")
 				.toExternalForm()
 				+ UUID.randomUUID() + ".gml");
