@@ -1,0 +1,74 @@
+body {
+	background:none repeat scroll 0 0 #F0F0F0;
+	font-family:Helvetica,Arial,sans-serif;
+	margin:0;
+	padding:0;
+}
+
+div#header {
+	-moz-box-shadow:0 0 10px;
+	background:none repeat scroll 0 0 #C81E32;
+	height:110px;
+	margin-bottom:40px;
+	padding-left:16px;
+	padding-top:16px;
+	position:relative;
+	vertical-align:middle;
+}
+
+div#header img {
+	float:left;
+	width:215px;
+}
+
+div#header h1 {
+	color:#F5F5F5;
+	float:left;
+	line-height:120px;
+	margin:-10px 0 0 50px;
+}
+
+div#left {
+	float:left;
+	margin-left: 20px;
+	width:450px
+}
+div#control {
+	-moz-box-shadow:0 0 10px;
+	background:white;
+	margin-top:20px;
+	padding:10px;
+}
+
+div#wps-div form {
+	-moz-box-shadow:0 0 10px;
+	background:none repeat scroll 0 0 white;
+	padding:12px 12px 35px;
+}
+
+div#form_item {
+	display:block;
+	clear:both;
+}
+div#wps-div form label {
+	float:left;
+	width: 120px;
+}
+
+div#wps-div form input,div#wps-div form select {
+	float: right;
+	margin-bottom:5px;
+}
+div#wps-div legend {
+	border: 1px solid black;
+}
+
+div#map {
+	-moz-box-shadow:0 0 10px;
+	background:white;
+	float:right;
+	height: 400px;
+	margin-right:20px;
+	padding-left:20px;
+	width: 470px;
+}

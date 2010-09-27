@@ -1,65 +1,76 @@
 <!DOCTYPE html SYSTEM "about:legacy-compat">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-    <head>
-        <title>Humboldt CST IOBridge Web client</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <script type="text/javascript" src="js/cst-client.js"></script>
-        <script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>
-        <script type="text/javascript" src="js/WPS.js"></script>
-        <style>
-            #map {
-                width: 500px;
-                height: 400px;
-            }
-        </style>
-    </head>
+	<head>
+		<title>Humboldt CST IOBridge Web client</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script type="text/javascript" src="js/cst-client.js"></script>
+		<script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>
+		<script type="text/javascript" src="js/WPS.js"></script>
+	<link rel="stylesheet" typ="text/css" href="css/style.css" />
+	</head>
 
-    <body onload="init()">
-        <h1>Humboldt CST html client</h1>
-        <div id="wps-div">
-            <form name="cst" action="upload" enctype="multipart/form-data" method="post">
-                <fieldset>
-                    <legend>Transformation inputs</legend>
-                    <label for="gml">Input GML file</label>
-                    <input name="gml" id="gml" type="file" />
-                    <br />
+	<body onload="init()">
+	
+		<div id="header">
+			<img src="images/logo.png" />
+			<h1>Humboldt CST html client</h1>
+		</div>
 
-                    <label for="oml">Input OML file</label>
-                    <input name="oml" id="oml" type="file" />
-                    <br />
+		<div id="left">
+			<div id="wps-div">
+				<form name="cst" action="upload" enctype="multipart/form-data" method="post">
+					<fieldset>
+						<legend>Transformation inputs</legend>
 
-                    <label for="schema">Schema</label>
-                    <input name="schema" id="schema" type="file" />
-                    <br />
+						<div id="form_item">
+						<label for="gml">Input GML file</label>
+						<input name="gml" id="gml" type="file" />
+						</div>
+						<div id="form_item">
+						<label for="oml">Input OML file</label>
+						<input name="oml" id="oml" type="file" />
+						</div>
+						<div id="form_item">
 
-                    <label for="sourceschema">Source Schema</label>
-                    <input name="sourceschema" id="sourceschema" type="file" />
-                    <br />
+						<label for="schema">Schema</label>
+						<input name="schema" id="schema" type="file" />
+						</div>
+						<div id="form_item">
 
-                    <label for="sourceversion">Source Version</label>
+						<label for="sourceschema">Source Schema</label>
+						<input name="sourceschema" id="sourceschema" type="file" />
+						</div>
+						<div id="form_item">
 
-                    <select name="sourceversion" id="sourceversion">
-                        <option value="None">Unspecified</option>
-                        <option value="GML2">GML 2.x</option>
-                        <option value="GML3">GML 3.x</option>
-                        <option value="GML3_2">GML 3.2</option>
-                    </select>
-                    <br />
+						<label for="sourceversion">Source Version</label>
 
-                    <img id="indicator" src="images/indicator.gif" style="display: none" />
+						<select name="sourceversion" id="sourceversion">
+							<option value="None">Unspecified</option>
+							<option value="GML2">GML 2.x</option>
+							<option value="GML3">GML 3.x</option>
+							<option value="GML3_2">GML 3.2</option>
+						</select>
+						</div>
 
-                </fieldset>
+						<div id="form_item" class="indicator">
+							<img id="indicator" src="images/indicator.gif" style="display: none" />
+						</div>
 
-                <input type="submit" value="Transform" />
-                <!-- input type="button" onclick="execute()" value="Transform" /-->
-            </form>
-        </div>
-        <!-- div id="map">
-        </div-->
-        <div id="wps-results"></div>
-        <iframe id="upload_target" style="display: none; border: 1px solid rgb(204, 204, 204); width: 400px; height: 50px;" src="" name="upload_target"></iframe>
-        
-        <a href="IOBridgeServlet.py?service=wps&request=getcapabilities">Link to WPS GetCapabilities document</a>
-    </body>
+					</fieldset>
+
+					<input type="submit" value="Transform" />
+					<!-- input type="button" onclick="execute()" value="Transform" /-->
+				</form>
+			</div>
+			<div id="control">
+				<div id="wps-results"></div>
+				<iframe id="upload_target" style="display: none; border: 1px solid rgb(204, 204, 204); width: 400px; height: 50px;" src="" name="upload_target"></iframe>
+			
+				<a href="IOBridgeServlet.py?service=wps&request=getcapabilities">Link to WPS GetCapabilities document</a>
+			</div>
+		</div>
+		<div id="map">
+			<h2>Map</h2>
+		</div>
+	</body>
 </html>
-
