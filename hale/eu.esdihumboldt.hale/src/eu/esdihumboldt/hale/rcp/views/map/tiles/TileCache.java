@@ -115,7 +115,9 @@ public class TileCache implements TileProvider {
 	 * @param listener the tile listener
 	 */
 	public void addTileListener(TileListener listener) {
-		listeners.add(listener);
+		synchronized (listeners) {
+			listeners.add(listener);
+		}
 	}
 	
 	/**
@@ -124,19 +126,23 @@ public class TileCache implements TileProvider {
 	 * @param listener the tile listener
 	 */
 	public void removeTileListener(TileListener listener) {
-		listeners.remove(listener);
+		synchronized (listeners) {
+			listeners.remove(listener);
+		}
 	}
 	
 	/**
 	 * Notify listeners that a tile has been loaded
 	 * 
-	 * @param zoom
-	 * @param x
-	 * @param y
+	 * @param zoom the tile zoom level
+	 * @param x the tile x ordinate
+	 * @param y the tile y ordinate
 	 */
 	protected void notifyTileLoaded(int zoom, int x, int y) {
-		for (TileListener listener : listeners) {
-			listener.tileLoaded(zoom, x, y);
+		synchronized (listeners) {
+			for (TileListener listener : listeners) {
+				listener.tileLoaded(zoom, x, y);
+			}
 		}
 	}
 
@@ -193,20 +199,22 @@ public class TileCache implements TileProvider {
 					protected IStatus run(IProgressMonitor monitor) {
 						try {
 							ImageData img = tileProvider.getTile(constraints, zoom, x, y);
-							if (img == null) {
-								if (jobCache != null) {
-									jobCache.put(y, new SoftReference<ImageData>(EMPTY_IMAGE));
+							synchronized (cache) {
+								if (img == null) {
+									if (jobCache != null) {
+										jobCache.put(y, new SoftReference<ImageData>(EMPTY_IMAGE));
+									}
+									else {
+										mainImage = null;
+									}
 								}
 								else {
-									mainImage = null;
-								}
-							}
-							else {
-								if (jobCache != null) {
-									jobCache.put(y, new SoftReference<ImageData>(img));
-								}
-								else {
-									mainImage = img;
+									if (jobCache != null) {
+										jobCache.put(y, new SoftReference<ImageData>(img));
+									}
+									else {
+										mainImage = img;
+									}
 								}
 							}
 							return Status.OK_STATUS;
