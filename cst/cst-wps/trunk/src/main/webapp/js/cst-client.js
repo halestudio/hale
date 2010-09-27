@@ -2,8 +2,8 @@ var wpsURL= "IOBridgeServlet.py";
 var uploadURL= "upload";
 var IFrameObj;
 var map;
-var ingml;
-var outgml;
+var inGml;
+var outGml;
 var result;
 
 /**
@@ -49,7 +49,17 @@ var init = function(){
  */
 var handleResponse = function(result) {
     result = result;
-    var inGml = new OpenLayers.Layer.GML("Input Vector File",result.gml)
+    if (inGml) {
+        map.removeLayer(inGml);
+        inGml.destroy();
+        inGml = undefined;
+    }
+    if (outGml) {
+        map.removeLayer(outGml);
+        outGml.destroy();
+        outGml = undefined;
+    }
+    inGml = new OpenLayers.Layer.GML("Input Vector File",result.gml)
     map.addLayer(inGml);
     map.zoomToExtent(inGml.getDataExtent());
     execute(result.gml,result.oml,result.schema,result.sourceschema,document.forms[0].sourceversion.value == "None" ? undefined : document.forms[0].sourceversion.value);
@@ -139,7 +149,7 @@ var execute = function(gml,oml,schema,sourceschema,sourceversion) {
 var onExecuted = function(process) {
     document.getElementById("indicator").style.display="none";
     var gmlUrl = process.outputs[0].getValue();
-    var outGml  = new OpenLayers.Layer.GML("Output Vector File",process.outputs[0].getValue());
+    outGml  = new OpenLayers.Layer.GML("Output Vector File",process.outputs[0].getValue());
     map.addLayer(outGml);
     map.zoomToExtent(outGml.getDataExtent());
     document.getElementById("wps-results").innerHTML = gmlUrl;
