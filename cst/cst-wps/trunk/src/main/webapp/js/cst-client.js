@@ -26,15 +26,18 @@ var init = function(){
                 return true;
     }
 
-    /*******/
-     return;
-    /*******/
+
 
     // init map
     //
     map = new OpenLayers.Map( 'map' );
-    layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-            "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
+    layer = new OpenLayers.Layer.WMS( "OSM WMS",
+            "http://osm.ccss.cz/cgi-bin/ows/wms/europe",
+		{
+			layers:'default',
+			format:"agg"},
+			{singleTile: true}
+    );
     map.addLayer(layer);
     map.zoomToMaxExtent();
     map.addControl(new OpenLayers.Control.LayerSwitcher());
@@ -46,6 +49,10 @@ var init = function(){
  */
 var handleResponse = function(result) {
     result = result;
+    alert(result.gml);
+    var inGml = new OpenLayers.Layer.GML("Input Vector File",result.gml)
+    map.addLayer(inGml);
+    map.zoomToExtent(inGml.getDataExtent());
     execute(result.gml,result.oml,result.schema,result.sourceschema,document.forms[0].sourceversion.value == "None" ? undefined : document.forms[0].sourceversion.value);
     //try {
     //document.getElementById("indicator").style.display="none";
@@ -133,6 +140,9 @@ var execute = function(gml,oml,schema,sourceschema,sourceversion) {
 var onExecuted = function(process) {
     document.getElementById("indicator").style.display="none";
     var gmlUrl = process.outputs[0].getValue();
+    var outGml  = new OpenLayers.Layer.GML("Output Vector File",process.outputs[0].getValue());
+    map.addLayer(outGml);
+    map.zoomToExtent(outGml.getDataExtent());
     document.getElementById("wps-results").innerHTML = gmlUrl;
 };
 
