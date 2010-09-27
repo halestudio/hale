@@ -24,6 +24,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.widgets.Display;
@@ -96,6 +97,8 @@ public class ProjectParser {
 	public HaleProject read(String filename, IProgressMonitor monitor) {
 		monitor.beginTask("Loading alignment project", IProgressMonitor.UNKNOWN);
 		
+		String basePath = FilenameUtils.getFullPath(filename);
+		
 //		ProjectParser._log.setLevel(Level.INFO);
 		// 1. unmarshal rdf
 		JAXBContext jc;
@@ -112,7 +115,7 @@ public class ProjectParser {
 		}
 		
 		if (root != null) {
-			List<String> errors = load(root.getValue(), monitor);
+			List<String> errors = load(root.getValue(), basePath, monitor);
 			monitor.done();
 			
 			if (errors != null && !errors.isEmpty()) {
@@ -139,7 +142,8 @@ public class ProjectParser {
 		}
 	}
 
-	private List<String> load(HaleProject project, final IProgressMonitor monitor) {
+	private List<String> load(HaleProject project, String basePath, 
+			final IProgressMonitor monitor) {
 		projectService.clean();
 		
 		// get service references as required.
@@ -177,17 +181,21 @@ public class ProjectParser {
 			
 			if (project.getSourceSchema() != null 
 					&& project.getSourceSchema().getPath() != null) {
+				URI sourceSchemaPath = getLocation(project.getSourceSchema().getPath(), basePath); 
+				
 				schemaService.loadSchema(
-						new URI(project.getSourceSchema().getPath()), null,
+						sourceSchemaPath, null,
 						SchemaType.SOURCE, progress);
-				projectService.setSourceSchemaPath(project.getSourceSchema().getPath());
+				projectService.setSourceSchemaPath(sourceSchemaPath.toString());
 			}
 			if (project.getTargetSchema() != null 
 					&& project.getTargetSchema().getPath() != null) {
+				URI targetSchemaPath = getLocation(project.getTargetSchema().getPath(), basePath);
+				
 				schemaService.loadSchema(
-						new URI(project.getTargetSchema().getPath()), null,
+						targetSchemaPath, null,
 						SchemaType.TARGET, progress);
-				projectService.setTargetSchemaPath(project.getTargetSchema().getPath());
+				projectService.setTargetSchemaPath(targetSchemaPath.toString());
 			}
 		} catch (Exception e) {
 			// fail
@@ -201,8 +209,10 @@ public class ProjectParser {
 		if (project.getOmlPath() != null && !project.getOmlPath().isEmpty()) {
 			try {
 				OmlRdfReader reader = new OmlRdfReader();
+				URI omlPath = getLocation(project.getOmlPath(), basePath);
+				
 				alignmentService.addOrUpdateAlignment(
-						reader.read(project.getOmlPath()));
+						reader.read(omlPath.toURL()));
 				_log.info("Number of loaded cells: " + alignmentService.getAlignment().getMap().size());
 			} catch (Exception e) {
 				// continue
@@ -217,10 +227,12 @@ public class ProjectParser {
 		monitor.subTask("Styles");
 		if (project.getStyles() != null) {
 			String path = project.getStyles().getPath();
+			URI stylesLoc = getLocation(path, basePath);
+			
 			//styleService.clearStyles();
 			if (path != null) {
 				try {
-					styleService.addStyles(new File(path).toURI().toURL());
+					styleService.addStyles(stylesLoc.toURL());
 				} catch (Exception e) {
 					// continue
 					String message = "Error loading SLD from " + path; 
@@ -257,7 +269,7 @@ public class ProjectParser {
 		if (project.getInstanceData() != null) {
 			try {
 //				URI file = new URI(URLDecoder.decode(project.getInstanceData().getPath(), "UTF-8"));
-				URI file = new URI(project.getInstanceData().getPath());
+				URI file = getLocation(project.getInstanceData().getPath(), basePath);
 				InputStream xml = file.toURL().openStream(); //new FileInputStream(new File(file));
 				ConfigurationType conf;
 				try {
@@ -335,6 +347,51 @@ public class ProjectParser {
 		projectService.setProjectCreatedDate(project.getDateCreated());
 		
 		return errors;
+	}
+
+	/**
+	 * Get the location 
+	 * 
+	 * @param file the file path/URI
+	 * @param basePath the possible base path
+	 * 
+	 * @return the file location
+	 */
+	private URI getLocation(String file, String basePath) {
+		try {
+			URI fileUri = new URI(file);
+			String scheme = fileUri.getScheme();
+			
+			if (scheme == null) {
+				// no scheme specified
+				return getFileLocation(file, basePath);
+			}
+			else {
+				return fileUri;
+			}
+		} catch (Exception e) {
+			// assume file path w/o scheme
+			return getFileLocation(file, basePath);
+		}
+	}
+
+	/**
+	 * Get the file location
+	 * 
+	 * @param file the file path (absolute or relative)
+	 * @param basePath the possible base path
+	 * 
+	 * @return the file location
+	 */
+	private URI getFileLocation(String file, String basePath) {
+		File f = new File(file);
+		if (f.exists()) {
+			return f.toURI();
+		}
+		else {
+			File bf = new File(FilenameUtils.concat(basePath, file));
+			return bf.toURI();
+		}
 	}
 
 }

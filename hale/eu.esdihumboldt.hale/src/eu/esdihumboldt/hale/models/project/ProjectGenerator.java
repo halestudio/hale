@@ -13,6 +13,7 @@ package eu.esdihumboldt.hale.models.project;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.net.URI;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map.Entry;
@@ -24,6 +25,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 import javax.xml.namespace.QName;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.ui.PlatformUI;
@@ -110,6 +112,8 @@ public class ProjectGenerator {
 	
 	private HaleProject createHaleProject(String xmlPath, String name) 
 			throws JAXBException {
+		final String basePath = FilenameUtils.getFullPath(xmlPath);
+		
 		// get service references as required.
 		TaskService taskService = 
 			(TaskService) PlatformUI.getWorkbench().getService(
@@ -131,7 +135,7 @@ public class ProjectGenerator {
 		// create InstanceData element
 		if (projectService.getInstanceDataPath() != null) {
 			InstanceData id = new InstanceData();
-			id.setPath(projectService.getInstanceDataPath());
+			id.setPath(getRelativeLocation(projectService.getInstanceDataPath(), basePath));
 			if (SelectCRSDialog.lastWasCode()) {
 				id.setEpsgcode(
 						SelectCRSDialog.getValue().getIdentifiers().iterator().next().toString());
@@ -145,11 +149,11 @@ public class ProjectGenerator {
 		
 		// create MappedSchema elements
 		MappedSchema sourceschema = new MappedSchema();
-		sourceschema.setPath(projectService.getSourceSchemaPath());
+		sourceschema.setPath(getRelativeLocation(projectService.getSourceSchemaPath(), basePath));
 		hproject.setSourceSchema(sourceschema);
 		
 		MappedSchema targetschema = new MappedSchema();
-		targetschema.setPath(projectService.getTargetSchemaPath());
+		targetschema.setPath(getRelativeLocation(projectService.getTargetSchemaPath(), basePath));
 		hproject.setTargetSchema(targetschema);
 		
 		// transfer task status
@@ -171,7 +175,7 @@ public class ProjectGenerator {
 		// serialize mapping and link it in HaleProject 
 		OmlRdfGenerator org = new HaleOmlRdfGenerator();
 		org.write(alignmentService.getAlignment(), xmlPath + ".goml");
-		hproject.setOmlPath(xmlPath + ".goml");
+		hproject.setOmlPath(getRelativeLocation(xmlPath + ".goml", basePath));
 		
 		// save SLD and background
 		Style style = styleService.getStyle();
@@ -188,7 +192,7 @@ public class ProjectGenerator {
 			}
 			
 			Styles styles = new Styles();
-			styles.setPath(stylePath);
+			styles.setPath(getRelativeLocation(stylePath, basePath));
 			
 			// background
 			MapView map = (MapView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(MapView.ID);
@@ -205,6 +209,56 @@ public class ProjectGenerator {
 		}
 		
 		return hproject;
+	}
+
+	/**
+	 * Get the relative location to a file
+	 * 
+	 * @param file the file path or URI
+	 * @param basePath the possible base path
+	 * 
+	 * @return the relative file path if possible, otherwise an URI
+	 */
+	private String getRelativeLocation(String file, String basePath) {
+		try {
+			URI fileUri = new URI(file);
+			String scheme = fileUri.getScheme();
+			
+			if (scheme == null) {
+				// no scheme specified
+				return getRelativePath(file, basePath);
+			}
+			else {
+				try {
+					File f = new File(fileUri);
+					return getRelativePath(f.getAbsolutePath(), basePath);
+				} catch (IllegalArgumentException e) {
+					return fileUri.toString();
+				}
+			}
+		} catch (Exception e) {
+			// assume file path w/o scheme
+			return getRelativePath(file, basePath);
+		}
+	}
+
+	/**
+	 * Get the relative file path
+	 * 
+	 * @param file the file path
+	 * @param basePath the possible base path
+	 * 
+	 * @return the relative file path if possible, otherwise an URI
+	 */
+	private String getRelativePath(String file, String basePath) {
+		if (file.startsWith(basePath)) {
+			// can use relative path
+			return file.substring(basePath.length());
+		}
+		else {
+			// return the path as URI
+			return new File(file).toURI().toString();
+		}
 	}
 	
 }
