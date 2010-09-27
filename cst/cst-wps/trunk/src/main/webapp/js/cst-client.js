@@ -49,7 +49,6 @@ var init = function(){
  */
 var handleResponse = function(result) {
     result = result;
-    alert(result.gml);
     var inGml = new OpenLayers.Layer.GML("Input Vector File",result.gml)
     map.addLayer(inGml);
     map.zoomToExtent(inGml.getDataExtent());
