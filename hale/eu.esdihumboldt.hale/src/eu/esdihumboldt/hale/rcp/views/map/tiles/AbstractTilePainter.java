@@ -45,6 +45,7 @@ import org.geotools.referencing.operation.builder.GridToEnvelopeMapper;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.cs.AxisDirection;
 import org.opengis.referencing.datum.PixelInCell;
 
 import eu.esdihumboldt.hale.rcp.HALEActivator;
@@ -236,31 +237,29 @@ public abstract class AbstractTilePainter implements PaintListener,
 			
 			resetTiles();
 			
-			if (mapArea != null) {
-				// determine current zoom
-				currentZoom = minZoom;
-				
-				// determine tile size
-				double ratio = mapArea.getWidth() / mapArea.getHeight();
-				
-				if (ratio >= 1.0) {
-					// wider than high (or square)
-					tileHeight = MIN_TILE_SIZE;
-					tileWidth = (int) Math.round(tileHeight * ratio);
-				}
-				else {
-					// higher than wide
-					tileWidth = MIN_TILE_SIZE;
-					tileHeight = (int) Math.round(tileWidth / ratio);
-				}
-				
-				// determine x/y offset
-				xOffset = 0;
-				yOffset = 0;
-				
-				for (StateListener listener : listeners) {
-					listener.zoomChanged(currentZoom);
-				}
+			// determine current zoom
+			currentZoom = minZoom;
+			
+			// determine tile size
+			double ratio = mapArea.getWidth() / mapArea.getHeight();
+			
+			if (ratio >= 1.0) {
+				// wider than high (or square)
+				tileHeight = MIN_TILE_SIZE;
+				tileWidth = (int) Math.round(tileHeight * ratio);
+			}
+			else {
+				// higher than wide
+				tileWidth = MIN_TILE_SIZE;
+				tileHeight = (int) Math.round(tileWidth / ratio);
+			}
+			
+			// determine x/y offset
+			xOffset = 0;
+			yOffset = 0;
+			
+			for (StateListener listener : listeners) {
+				listener.zoomChanged(currentZoom);
 			}
 			
 			refresh();
@@ -355,18 +354,54 @@ public abstract class AbstractTilePainter implements PaintListener,
 	@Override
 	public ReferencedEnvelope getTileArea(int zoom, int x, int y) {
 		if (mapArea != null) {
+			AxisDirection xDirection = mapArea.getCoordinateReferenceSystem().getCoordinateSystem().getAxis(0).getDirection();
+			AxisDirection yDirection = mapArea.getCoordinateReferenceSystem().getCoordinateSystem().getAxis(1).getDirection();
+			
+			if (xDirection.equals(AxisDirection.NORTH) || xDirection.equals(AxisDirection.SOUTH)) {
+				// x and y have to be swapped
+				int tmp = x;
+				x = y;
+				y = tmp;
+				
+				// ... and to be inverted
+				x = getTiles(zoom) - 1 - x;
+				y = getTiles(zoom) - 1 - y;
+				
+				AxisDirection tmpDir = xDirection;
+				xDirection = yDirection;
+				yDirection = tmpDir;
+			}
+			
+			// ratios for default: x points east
 			float xMinRatio = (float) x / (float) getTiles(zoom);
 			float xMaxRatio = (float) (x + 1) / (float) getTiles(zoom);
 			
+			if (xDirection.equals(AxisDirection.WEST)) {
+				// x doesn't point east, so invert it
+				xMinRatio = 1 - xMinRatio;
+				xMaxRatio = 1 - xMaxRatio;
+			}
+			
+			// ratios for default: y points north
 			float yMinRatio = 1 - (float) y / (float) getTiles(zoom);
 			float yMaxRatio = 1 - (float) (y + 1) / (float) getTiles(zoom);
 			
-			return new ReferencedEnvelope(
+			if (yDirection.equals(AxisDirection.SOUTH)) {
+				// y doesn't point north -> invert
+				yMinRatio = 1 - yMinRatio;
+				yMaxRatio = 1 - yMaxRatio;
+			}
+			
+			ReferencedEnvelope result = new ReferencedEnvelope(
 					mapArea.getMinX() + mapArea.getWidth() * xMinRatio,
 					mapArea.getMinX() + mapArea.getWidth() * xMaxRatio,
 					mapArea.getMinY() + mapArea.getHeight() * yMinRatio,
 					mapArea.getMinY() + mapArea.getHeight() * yMaxRatio,
 					mapArea.getCoordinateReferenceSystem());
+			
+//			System.out.println("zoom = " + zoom + " x = " + x + ", y = " + y + " : " + result.toString());
+			
+			return result;
 		}
 		
 		return null;
