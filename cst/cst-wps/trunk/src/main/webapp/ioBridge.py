@@ -64,7 +64,7 @@ def createIOBridgeProcess():
             # stup gml version
             gmlversion = self.gmlversion.getValue()
             if gmlversion:
-                from eu.esdihumboldt.hale.gmlparser import ConfigurationType
+                from eu.esdihumboldt.hale.gmlparser.GmlHelper import ConfigurationType
                 gmlversion = ConfigurationType.valueOf(gmlversion)
 
             # create empty output file

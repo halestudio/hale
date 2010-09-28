@@ -68,8 +68,7 @@ public class TestBridge {
 					omlURL.toURI().toString(), 
 			        gmlURL.toURI().toString(),
 					out, null, null);
-			
-			ConfigurationType.valueOf("");
+						
 			System.out.println(result);
 			
 		} catch (Exception e) {
