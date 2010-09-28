@@ -11,7 +11,10 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
-import org.apache.log4j.Logger;
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
@@ -20,11 +23,12 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+import de.cs3d.util.logging.ATransaction;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.rcp.HALEActivator;
-import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportExtension;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider;
 
@@ -41,7 +45,7 @@ public class MappingExportWizard
 	
 	private MappingExportWizardMainPage mainPage;
 	
-	private static Logger _log = Logger.getLogger(MappingExportWizard.class);
+	private static ALogger _log = ALoggerFactory.getLogger(MappingExportWizard.class);
 	
 	/**
 	 * Default constructor
@@ -60,31 +64,47 @@ public class MappingExportWizard
 	@Override
 	public boolean performFinish() {
 		String path = this.mainPage.getResult();
-		String format = this.mainPage.getSelectedFormatName();
-		MappingExportProvider mef = MappingExportExtension.getExportProvider(format);
+		final String format = this.mainPage.getSelectedFormatName();
+		final MappingExportProvider mef = MappingExportExtension.getExportProvider(format);
 		String extension = MappingExportExtension.getRegisteredExportProviderInfo().get(format);
 		extension = extension.substring(1);
 		if (path != null) {
 			if (!path.endsWith(extension)) {
 				path = path + extension;
 			}
-			AlignmentService alService = (AlignmentService) 
-					PlatformUI.getWorkbench().getService(AlignmentService.class);
-			Alignment al = alService.getAlignment();
 			
-			SchemaService schemaService = (SchemaService) 
-					PlatformUI.getWorkbench().getService(SchemaService.class);
-			
+			final String file = path;
 			try {
-				mef.export(al, path, schemaService.getSourceSchema(), 
-						schemaService.getTargetSchema());
+				getContainer().run(true, false, new IRunnableWithProgress() {
+					
+					@Override
+					public void run(IProgressMonitor monitor) throws InvocationTargetException,
+							InterruptedException {
+						AlignmentService alService = (AlignmentService) 
+						PlatformUI.getWorkbench().getService(AlignmentService.class);
+						Alignment al = alService.getAlignment();
+				
+						SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+						
+						ATransaction trans = _log.begin("Exporting mapping");
+						try {
+							//TODO instead give the monitor to the exporter? support for canceling?
+							monitor.beginTask("Exporting mapping", IProgressMonitor.UNKNOWN);
+							mef.export(al, file, schemaService.getSourceSchema(), 
+									schemaService.getTargetSchema());
+						} catch (Throwable e) {
+							String message = Messages.MappingExportWizard_SaveFailed;
+							_log.userError(message + " " + e.getMessage(), e);
+						} finally {
+							monitor.done();
+							trans.end();
+						}
+					}
+				});
 			} catch (Exception e) {
-				String message = Messages.MappingExportWizard_SaveFailed;
-				_log.error(message + ". " + e.getMessage() + ". " 
-						+ e.getCause().getMessage(), e);
-				ExceptionHelper.handleException(
-						message, HALEActivator.PLUGIN_ID, e);
+				_log.userError("Error starting mapping export process", e);
 			}
+			
 		}
 		return true;
 	}

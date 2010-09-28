@@ -67,9 +67,7 @@ public class OpenAlignmentProjectWizard
 				getContainer().run(true, false, createOpenProjectRunnable(result));
 			} catch (Exception e) {
 				String message = Messages.OpenAlignmentProjectWizard_Failed2;
-				_log.error(message, e);
-				ExceptionHelper.handleException(
-						message, HALEActivator.PLUGIN_ID, e);
+				_log.userError(message, e);
 			}
 		}
 		return true;
@@ -94,9 +92,7 @@ public class OpenAlignmentProjectWizard
 					ps.load(filename, monitor);
 				} catch (Exception e) {
 					String message = Messages.OpenAlignmentProjectWizard_Failed;
-//					_log.userError(message, e);
-					ExceptionHelper.handleException(
-							message, HALEActivator.PLUGIN_ID, e);
+					_log.userError(message, e);
 				}
 				finally {
 					logTrans.end();
