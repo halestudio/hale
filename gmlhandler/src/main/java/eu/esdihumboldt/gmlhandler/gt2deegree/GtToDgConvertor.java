@@ -134,7 +134,7 @@ public class GtToDgConvertor {
 		// convert gtFT to gtFT
 
 		// 1. GenericFeatureType
-		GenericFeatureType dgFT = createDgFt(gtFT);
+		GenericFeatureType dgFT = createDgFt(gtFT, null);
 
 		// 2. Feature id
 		String fid = gtFeature.getIdentifier().getID();
@@ -205,7 +205,7 @@ public class GtToDgConvertor {
 
 			// create deegree generic feature based on gtProp
 			GenericFeatureType ft = createDgFt(((Attribute) gtProp)
-					.getType());
+					.getType(), dgPropName);
 			//org.deegree.feature.Feature featureProp = null;
 			
 	    	org.deegree.feature.Feature featureProp = createDgFeature((Attribute) gtProp, ft);
@@ -520,7 +520,7 @@ public class GtToDgConvertor {
 		String namespace = gtPD.getName().getNamespaceURI();
 
 		// define commons attributes
-		QName dgName = new QName(gtPD.getName().getNamespaceURI(), gtPT
+		QName dgName = new QName(gtPD.getName().getNamespaceURI(), gtPD
 				.getName().getLocalPart());
 		QName dgFTName = new QName(gtPT.getName().getNamespaceURI(), gtPT
 				.getName().getLocalPart());
@@ -623,11 +623,16 @@ public class GtToDgConvertor {
 	 * 
 	 */
 	private static org.deegree.feature.types.GenericFeatureType createDgFt(
-			AttributeType attributeType) {
+			AttributeType attributeType, QName dgName) {
+		QName ftName = null;
+		if (dgName == null){
 		// 1.0 QName
 		Name gtFTName = attributeType.getName();
-		QName ftName = new QName(gtFTName.getNamespaceURI(),
-				gtFTName.getLocalPart());
+        ftName = new QName(gtFTName.getNamespaceURI(),
+		gtFTName.getLocalPart());
+		}else{
+			ftName = dgName;
+		}
 		List<org.deegree.feature.types.property.PropertyType> propDecls = new ArrayList<org.deegree.feature.types.property.PropertyType>();
 		// 1.1 List<PropertyType>
 		if (attributeType instanceof ComplexType){
