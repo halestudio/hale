@@ -13,19 +13,23 @@ package eu.esdihumboldt.hale.rcp;
 
 import javax.xml.bind.JAXBException;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IExportWizard;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
-import org.eclipse.ui.handlers.HandlerUtil;
 
 import eu.esdihumboldt.hale.models.ProjectService;
+import eu.esdihumboldt.hale.models.project.RecentFilesService;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
 import eu.esdihumboldt.hale.rcp.wizards.io.SaveAlignmentProjectWizard;
 
@@ -40,6 +44,11 @@ import eu.esdihumboldt.hale.rcp.wizards.io.SaveAlignmentProjectWizard;
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	private static final String PERSPECTIVE_ID = "eu.esdihumboldt.hale.rcp.perspective.Default";
+	
+	/**
+	 * A tag for the list of recent files in the workbench memento
+	 */
+	private static final String TAG_RECENTFILES = "recentFiles"; //$NON-NLS-1$
 
 	/**
 	 * @see WorkbenchAdvisor#createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer)
@@ -110,6 +119,46 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		else {
 			return true;
 		}
+	}
+
+	/**
+	 * @see WorkbenchAdvisor#restoreState(IMemento)
+	 */
+	@Override
+	public IStatus restoreState(IMemento memento) {
+		MultiStatus result = new MultiStatus(PlatformUI.PLUGIN_ID, IStatus.OK,
+				"Restored state", null);
+		
+		result.add(super.restoreState(memento));
+		
+		//restore list of recent files
+    	IWorkbench wb = getWorkbenchConfigurer().getWorkbench();
+    	RecentFilesService rfs = (RecentFilesService)wb.getService(
+    			RecentFilesService.class);
+    	IMemento c = memento.getChild(TAG_RECENTFILES);
+    	result.add(rfs.restoreState(c));
+		
+		return result;
+	}
+
+	/**
+	 * @see WorkbenchAdvisor#saveState(IMemento)
+	 */
+	@Override
+	public IStatus saveState(IMemento memento) {
+		MultiStatus result = new MultiStatus(PlatformUI.PLUGIN_ID, IStatus.OK,
+			"Saved state", null);
+		
+		result.add(super.saveState(memento));
+		
+		//save list of recent files
+    	IWorkbench wb = getWorkbenchConfigurer().getWorkbench();
+    	RecentFilesService rfs = (RecentFilesService)wb.getService(
+    			RecentFilesService.class);
+    	IMemento c = memento.createChild(TAG_RECENTFILES);
+    	result.add(rfs.saveState(c));
+    	
+    	return result;
 	}
 
 }

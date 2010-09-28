@@ -231,6 +231,9 @@ public class ProjectServiceImpl
 			projectFile = filename;
 			changed = false;
 			updateWindowTitle();
+			
+			RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(RecentFilesService.class);
+			rfs.add(filename);
 		}
 		else {
 			projectName = null;
@@ -313,6 +316,9 @@ public class ProjectServiceImpl
 		this.projectName = projectName;
 		changed = false;
 		updateWindowTitle();
+		
+		RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(RecentFilesService.class);
+		rfs.add(filename);
 	}
 
 	/**

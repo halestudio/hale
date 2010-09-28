@@ -24,12 +24,13 @@ import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.alignment.AlignmentServiceImpl;
 import eu.esdihumboldt.hale.models.instance.InstanceServiceImpl;
 import eu.esdihumboldt.hale.models.project.ProjectServiceImpl;
+import eu.esdihumboldt.hale.models.project.RecentFilesService;
+import eu.esdihumboldt.hale.models.project.RecentFilesServiceImpl;
 import eu.esdihumboldt.hale.models.schema.SchemaProviderService;
 import eu.esdihumboldt.hale.models.style.StyleServiceImpl;
 import eu.esdihumboldt.hale.models.task.TaskServiceImpl;
 import eu.esdihumboldt.hale.models.utils.SchemaItemService;
 import eu.esdihumboldt.hale.models.utils.SchemaItemServiceImpl;
-import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
 
 /**
  * This implementation of the {@link AbstractServiceFactory} allows to use the
@@ -53,6 +54,7 @@ public class HaleServiceFactory
 	private AlignmentService alignment;
 	private ProjectService project;
 	private SchemaItemService schemaItem;
+	private RecentFilesService recentFiles;
 
 	/**
 	 * Default constructor
@@ -103,6 +105,12 @@ public class HaleServiceFactory
 				schemaItem = new SchemaItemServiceImpl(getSchemaService());
 			}
 			return schemaItem;
+		}
+		else if (serviceInterface.equals(RecentFilesService.class)) {
+			if (recentFiles == null) {
+				recentFiles = new RecentFilesServiceImpl();
+			}
+			return recentFiles;
 		}
 		else {
 			throw new RuntimeException("For the given serviceInterface (" 

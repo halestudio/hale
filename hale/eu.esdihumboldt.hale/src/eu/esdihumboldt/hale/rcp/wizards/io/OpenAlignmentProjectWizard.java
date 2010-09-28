@@ -64,26 +64,7 @@ public class OpenAlignmentProjectWizard
 		final String result = this.mainPage.getResult();
 		if (result != null) {
 			try {
-				getContainer().run(true, false, new IRunnableWithProgress() {
-					
-					@Override
-					public void run(IProgressMonitor monitor) throws InvocationTargetException,
-							InterruptedException {
-						ATransaction logTrans = _log.begin("Loading alignment project from " + result);
-						try {
-							ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
-							ps.load(result, monitor);
-						} catch (Exception e) {
-							String message = Messages.OpenAlignmentProjectWizard_Failed;
-							_log.userError(message, e);
-//							ExceptionHelper.handleException(
-//									message, HALEActivator.PLUGIN_ID, e);
-						}
-						finally {
-							logTrans.end();
-						}
-					}
-				});
+				getContainer().run(true, false, createOpenProjectRunnable(result));
 			} catch (Exception e) {
 				String message = Messages.OpenAlignmentProjectWizard_Failed2;
 				_log.error(message, e);
@@ -92,6 +73,36 @@ public class OpenAlignmentProjectWizard
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Create a runnable for opening a project
+	 * 
+	 * @param filename the project filename
+	 * 
+	 * @return the runnable
+	 */
+	public static IRunnableWithProgress createOpenProjectRunnable(final String filename) {
+		return new IRunnableWithProgress() {
+			
+			@Override
+			public void run(IProgressMonitor monitor) throws InvocationTargetException,
+					InterruptedException {
+				ATransaction logTrans = _log.begin("Loading alignment project from " + filename);
+				try {
+					ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+					ps.load(filename, monitor);
+				} catch (Exception e) {
+					String message = Messages.OpenAlignmentProjectWizard_Failed;
+//					_log.userError(message, e);
+					ExceptionHelper.handleException(
+							message, HALEActivator.PLUGIN_ID, e);
+				}
+				finally {
+					logTrans.end();
+				}
+			}
+		};
 	}
 
 	/**

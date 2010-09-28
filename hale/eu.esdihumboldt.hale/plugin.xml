@@ -241,6 +241,10 @@
                   name="HALE.separator2"
                   visible="true">
             </separator>
+            <dynamic
+                  class="eu.esdihumboldt.hale.models.project.RecentFilesMenu"
+                  id="eu.esdihumboldt.hale.recentfiles">
+            </dynamic>
             <command
                   commandId="HALE.exit.command"
                   id="exit"
@@ -355,6 +359,9 @@
          </service>
          <service
                serviceClass="eu.esdihumboldt.hale.models.utils.SchemaItemService">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.models.project.RecentFilesService">
          </service>
       </serviceFactory>
       <serviceFactory
