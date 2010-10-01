@@ -411,7 +411,8 @@ public class OmlRdfReader {
 				// 2. set collection of properties, a single property or
 				// relation
 
-				if (propCompType.getCollection().getItem().size() > 0) {
+				if (propCompType.getCollection() != null &&
+						propCompType.getCollection().getItem().size() > 0) {
 					// set collection
 					((ComposedProperty) entity)
 							.setCollection(getPropertyCollection(propCompType
@@ -897,8 +898,15 @@ public class OmlRdfReader {
 		IParameter parameter;
 		while (iterator.hasNext()) {
 			paramType = iterator.next();
-			parameter = new Parameter(paramType.getName(), paramType.getValue()
-					.get(0));
+			List<String> values = paramType.getValue();
+			String value;
+			if (values != null && !values.isEmpty()) {
+				value = values.get(0);
+			}
+			else {
+				value = null; //TODO what should be the default empty value? null or empty string?
+			}
+			parameter = new Parameter(paramType.getName(), value);
 			params.add(parameter);
 		}
 		return params;
