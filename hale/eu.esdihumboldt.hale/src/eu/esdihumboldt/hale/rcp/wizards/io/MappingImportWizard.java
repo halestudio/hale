@@ -13,7 +13,6 @@ package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
@@ -24,6 +23,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.models.AlignmentService;
@@ -42,7 +43,7 @@ public class MappingImportWizard
 	
 	private MappingImportWizardMainPage mainPage;
 	
-	private static Logger _log = Logger.getLogger(MappingImportWizard.class);
+	private static ALogger _log = ALoggerFactory.getLogger(MappingImportWizard.class);
 	
 	/**
 	 * Default constructor
@@ -100,7 +101,8 @@ public class MappingImportWizard
 					alignmentService.addOrUpdateAlignment(alignment);
 				}
 			} catch (Exception e) {
-				throw new RuntimeException("Alignment could not be loaded: ", e); //$NON-NLS-1$
+				_log.userError("Alignment could not be loaded", e); //$NON-NLS-1$
+				return false;
 			}
 		}
 		return true;
