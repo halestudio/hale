@@ -116,7 +116,7 @@
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
 			<artifactId>commons</artifactId>
-			<version>3.0.4-SNAPSHOT</version>
+			<version>3.0.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
