@@ -25,6 +25,7 @@ Import-Package: com.sun.xml.bind.marshaller,
  eu.esdihumboldt.cst.align,
  eu.esdihumboldt.cst.align.ext,
  eu.esdihumboldt.cst.rdf,
+ org.apache.log4j,
  org.dom4j;version="1.6.1";resolution:=optional
 Eclipse-BuddyPolicy: registered
 Bundle-ClassPath: .
@@ -32,8 +33,4 @@ Require-Bundle:
  org.geotools;bundle-version="2.5.8";resolution:=optional,
  eu.esdihumboldt.specification;bundle-version="2.0.2",
  org.junit4;bundle-version="4.5.0",
- com.springsource.org.apache.log4j;bundle-version="1.2.15";resolution:=optional,
- com.springsource.org.castor;bundle-version="1.1.2",
- com.springsource.javax.xml.bind;bundle-version="2.1.7";resolution:=optional
- 
- 
+ com.springsource.org.castor;bundle-version="1.1.2"
