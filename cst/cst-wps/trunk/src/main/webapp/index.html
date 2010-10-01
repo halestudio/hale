@@ -3,8 +3,8 @@
 	<head>
 		<title>Humboldt CST IOBridge Web client</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<script type="text/javascript" src="js/cst-client.js"></script>
 		<script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>
+		<script type="text/javascript" src="js/cst-client.js"></script>
 		<script type="text/javascript" src="js/WPS.js"></script>
 	<link rel="stylesheet" typ="text/css" href="css/style.css" />
 	</head>
@@ -12,65 +12,67 @@
 	<body onload="init()">
 	
 		<div id="header">
-			<img src="images/logo.png" />
-			<h1>Humboldt CST html client</h1>
+			<h1>CST HTML client</h1>
 		</div>
 
-		<div id="left">
-			<div id="wps-div">
-				<form name="cst" action="upload" enctype="multipart/form-data" method="post">
-					<fieldset>
-						<legend>Transformation inputs</legend>
+		<div id="mainDiv">
+			<div id="left">
+				<div id="wps-div">
+					<form name="cst" action="upload" enctype="multipart/form-data" method="post">
+						<fieldset>
+							<legend>Transformation inputs</legend>
 
-						<div id="form_item">
-						<label for="gml">Input GML file</label>
-						<input name="gml" id="gml" type="file" />
-						</div>
-						<div id="form_item">
-						<label for="oml">Input OML file</label>
-						<input name="oml" id="oml" type="file" />
-						</div>
-						<div id="form_item">
+							<div id="form_item">
+							<label for="gml">Input GML file</label>
+							<input name="gml" id="gml" type="file" />
+							</div>
+							<div id="form_item">
+							<label for="oml">Input OML file</label>
+							<input name="oml" id="oml" type="file" />
+							</div>
+							<div id="form_item">
 
-						<label for="schema">Schema</label>
-						<input name="schema" id="schema" type="file" />
-						</div>
-						<div id="form_item">
+							<label for="schema">Schema</label>
+							<input name="schema" id="schema" type="file" />
+							</div>
+							<div id="form_item">
 
-						<label for="sourceschema">Source Schema</label>
-						<input name="sourceschema" id="sourceschema" type="file" />
-						</div>
-						<div id="form_item">
+							<label for="sourceschema">Source Schema</label>
+							<input name="sourceschema" id="sourceschema" type="file" />
+							</div>
+							<div id="form_item">
 
-						<label for="sourceversion">Source Version</label>
+							<label for="sourceversion">Source Version</label>
 
-						<select name="sourceversion" id="sourceversion">
-							<option value="None">Unspecified</option>
-							<option value="GML2">GML 2.x</option>
-							<option value="GML3">GML 3.x</option>
-							<option value="GML3_2">GML 3.2</option>
-						</select>
-						</div>
+							<select name="sourceversion" id="sourceversion">
+								<option value="None">Unspecified</option>
+								<option value="GML2">GML 2.x</option>
+								<option value="GML3">GML 3.x</option>
+								<option value="GML3_2">GML 3.2</option>
+							</select>
+							</div>
 
-						<div id="form_item" class="indicator">
-							<img id="indicator" src="images/indicator.gif" style="display: none" />
-						</div>
+							<div id="form_item" class="indicator">
+								<img id="indicator" src="images/indicator.gif" style="display: none" />
+							</div>
 
-					</fieldset>
+						</fieldset>
 
-					<input type="submit" value="Transform" />
-					<!-- input type="button" onclick="execute()" value="Transform" /-->
-				</form>
+						<input type="submit" value="Transform" />
+						<!-- input type="button" onclick="execute()" value="Transform" /-->
+					</form>
+				</div>
+				<div id="control">
+					<div id="wps-results"></div>
+					<iframe id="upload_target" style="display: none; border: 1px solid rgb(204, 204, 204); width: 400px; height: 50px;" src="" name="upload_target"></iframe>
+				
+					<a href="IOBridgeServlet.py?service=wps&request=getcapabilities">Link to WPS GetCapabilities document</a>
+				</div>
 			</div>
-			<div id="control">
-				<div id="wps-results"></div>
-				<iframe id="upload_target" style="display: none; border: 1px solid rgb(204, 204, 204); width: 400px; height: 50px;" src="" name="upload_target"></iframe>
-			
-				<a href="IOBridgeServlet.py?service=wps&request=getcapabilities">Link to WPS GetCapabilities document</a>
+			<div id="contMap">
+				<div id="map">
+				</div>
 			</div>
-		</div>
-		<div id="map">
-			
 		</div>
 	</body>
 </html>

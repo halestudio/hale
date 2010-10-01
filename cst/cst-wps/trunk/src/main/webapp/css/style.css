@@ -1,19 +1,17 @@
 body {
 	background:none repeat scroll 0 0 #F0F0F0;
-	font-family:Helvetica,Arial,sans-serif;
-	margin:0;
+	font-family: 90% Verdana,Tahoma,Arial,sans-serif;
+	margin: 0 auto;
 	padding:0;
+	width:1024px;
 }
 
 div#header {
-	-moz-box-shadow:0 0 10px;
-	background:none repeat scroll 0 0 #C81E32;
-	height:110px;
-	margin-bottom:40px;
-	padding-left:16px;
-	padding-top:16px;
-	position:relative;
-	vertical-align:middle;
+	background: url("../images/logo.png") no-repeat scroll 0 15px #FFF;
+	height:5.3em;
+	padding:5px 0 0;
+	width:100%;
+	margin-bottom: 10px;
 }
 
 div#header img {
@@ -22,10 +20,17 @@ div#header img {
 }
 
 div#header h1 {
-	color:#F5F5F5;
-	float:left;
-	line-height:120px;
-	margin:-10px 0 0 50px;
+	color:#777777;
+	font-size:1.2em;
+	font-weight:200 !important;
+	margin:13px 0 0 200px;
+	padding:0
+}
+
+div#mainDiv {
+	background:white;
+	overflow: auto;
+	width:100%;
 }
 
 div#left {
@@ -34,14 +39,12 @@ div#left {
 	width:450px
 }
 div#control {
-	-moz-box-shadow:0 0 10px;
 	background:white;
 	margin-top:20px;
 	padding:10px;
 }
 
 div#wps-div form {
-	-moz-box-shadow:0 0 10px;
 	background:none repeat scroll 0 0 white;
 	padding:12px 12px 35px;
 }
@@ -63,12 +66,15 @@ div#wps-div legend {
 	border: 1px solid black;
 }
 
-div#map {
-	-moz-box-shadow:0 0 10px;
-	background:white;
+div#contMap {
 	float:right;
 	height: 400px;
-	margin-right:20px;
-	padding-left:20px;
-	width: 470px;
+	margin:20px;
+	width: 510px;
+}
+
+div#map {
+	border: 1px solid;
+	height: 400px;
+	width: 510px;
 }

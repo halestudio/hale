@@ -57,25 +57,25 @@ public class UploadServlet extends HttpServlet {
 					if (item.getFieldName().equals("gml")) {
 						Date d = new Date();
 						gmlFile = new File(this.getServletContext()
-								.getRealPath("./tmp")
+								.getRealPath("tmp")
 								+ "/" + d.getTime() + "." + item.getFieldName());
 						item.write(gmlFile);
 					} else if (item.getFieldName().equals("oml")) {
 						Date d = new Date();
 						omlFile = new File(this.getServletContext()
-								.getRealPath("./tmp")
+								.getRealPath("tmp")
 								+ "/" + d.getTime() + "." + item.getFieldName());
 						item.write(omlFile);
 					} else if (item.getFieldName().equals("schema")) {
 						Date d = new Date();
 						schemaFile = new File(this.getServletContext()
-								.getRealPath("./tmp")
+								.getRealPath("tmp")
 								+ "/" + d.getTime() + "." + item.getFieldName());
 						item.write(schemaFile);
 					} else if (item.getFieldName().equals("sourceschema")) {
 						Date d = new Date();
 						sourceschemaFile = new File(this.getServletContext()
-								.getRealPath("./tmp")
+								.getRealPath("tmp")
 								+ "/" + d.getTime() + "." + item.getFieldName());
 						item.write(sourceschemaFile);
                                         }

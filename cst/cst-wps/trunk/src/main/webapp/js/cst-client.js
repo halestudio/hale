@@ -1,7 +1,7 @@
 var wpsURL= "IOBridgeServlet.py";
 var uploadURL= "upload";
 var IFrameObj;
-var map;
+var map = '';
 var inGml;
 var outGml;
 var result;
@@ -30,13 +30,32 @@ var init = function(){
 
     // init map
     //
-    map = new OpenLayers.Map( 'map' );
-    layer = new OpenLayers.Layer.WMS( "OSM WMS",
-            "http://osm.ccss.cz/cgi-bin/ows/wms/europe",
+	var options = {
+		maxExtent: new OpenLayers.Bounds(2400000, 1400000, 6000000,5500000),
+		minScale: 40000000,
+		maxScale: 500,
+		units: "m",
+		projection: "EPSG:3035"
+	};
+	map = new OpenLayers.Map( 'map', options );
+	layer = new OpenLayers.Layer.WMS( "OSM WMS",
+		"http://osm.ccss.cz/cgi-bin/ows/wms/europe",
 		{
 			layers:'default',
-			format:"agg"},
-			{singleTile: true}
+			format:"agg"
+		},{
+			displayInLayerSwitcher: true,
+			visibility:true,
+			buffer: 1,
+			ratio: 1,
+			transitionEffect:"resize",
+			singleTile: false,
+			displayOutsideMaxExtent: true,
+			tileSize: new OpenLayers.Size(256,256),
+			attribution: "<a href=\"http://www.openstreetmap.org\">OpenStreetMap</a>",
+			isBaseGroup: true,
+			saveWMC: false
+		}
     );
     map.addLayer(layer);
     map.zoomToMaxExtent();
@@ -49,19 +68,19 @@ var init = function(){
  */
 var handleResponse = function(result) {
     result = result;
-    if (inGml) {
-        map.removeLayer(inGml);
+    if (typeof inGml != 'undefined') {
+	map.removeLayer(inGml);
         inGml.destroy();
         inGml = undefined;
     }
-    if (outGml) {
+    if (typeof outGml != 'undefined') {
         map.removeLayer(outGml);
         outGml.destroy();
         outGml = undefined;
     }
-    inGml = new OpenLayers.Layer.GML("Input Vector File",result.gml)
+    inGml = new OpenLayers.Layer.GML("Input Vector File",result.gml,{projection: "EPSG:4326"})
     map.addLayer(inGml);
-    map.zoomToExtent(inGml.getDataExtent());
+    /*map.zoomToExtent(inGml.getDataExtent());*/
     execute(result.gml,result.oml,result.schema,result.sourceschema,document.forms[0].sourceversion.value == "None" ? undefined : document.forms[0].sourceversion.value);
     //try {
     //document.getElementById("indicator").style.display="none";
@@ -151,7 +170,7 @@ var onExecuted = function(process) {
     var gmlUrl = process.outputs[0].getValue();
     outGml  = new OpenLayers.Layer.GML("Output Vector File",process.outputs[0].getValue());
     map.addLayer(outGml);
-    map.zoomToExtent(outGml.getDataExtent());
+    //map.zoomToExtent(outGml.getDataExtent());
     document.getElementById("wps-results").innerHTML = gmlUrl;
 };
 
