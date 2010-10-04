@@ -28,6 +28,7 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
+import org.eclipse.ui.internal.util.PrefUtil;
 
 /**
  * This is the base class for configuring the workbench window in which the 
@@ -37,6 +38,7 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$
  */
+@SuppressWarnings("restriction")
 public class ApplicationWorkbenchWindowAdvisor 
 	extends WorkbenchWindowAdvisor {
 
@@ -63,6 +65,14 @@ public class ApplicationWorkbenchWindowAdvisor
         // show curved view tabs
 		PlatformUI.getPreferenceStore().setValue(
 				IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS, false);
+	
+		// enable heap status item
+		PrefUtil.getAPIPreferenceStore().setValue(IWorkbenchPreferenceConstants.SHOW_MEMORY_MONITOR, true);
+		
+//      IWorkbenchWindow window = getWindowConfigurer().getWindow();
+//      if (window instanceof WorkbenchWindow) {
+//      	((WorkbenchWindow) window).showHeapStatus(true);
+//      }
 	}
 
 	/**
