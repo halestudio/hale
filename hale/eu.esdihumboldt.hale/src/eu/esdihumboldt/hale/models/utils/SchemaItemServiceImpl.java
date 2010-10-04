@@ -23,6 +23,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.schema.SchemaServiceAdapter;
@@ -61,6 +62,16 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 	 * Target schema items that have an associated defintion
 	 */
 	private final Map<String, SchemaItem> targetSchemaItems = new HashMap<String, SchemaItem>();
+	
+	/**
+	 * Entity about's mapped to source schema items
+	 */
+	private final Map<String, SchemaItem> sourceAboutSchemaItems = new HashMap<String, SchemaItem>();
+	
+	/**
+	 * Entity about's mapped to source schema items
+	 */
+	private final Map<String, SchemaItem> targetAboutSchemaItems = new HashMap<String, SchemaItem>();
 	
 	private SchemaItem sourceRoot;
 	
@@ -144,6 +155,35 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 	}
 
 	/**
+	 * @see SchemaItemService#getSchemaItem(IEntity, SchemaType)
+	 */
+	@Override
+	public SchemaItem getSchemaItem(IEntity entity, SchemaType schemaType) {
+		switch (schemaType) {
+		case SOURCE:
+			return sourceAboutSchemaItems.get(entity.getAbout().getAbout());
+		case TARGET:
+			return targetAboutSchemaItems.get(entity.getAbout().getAbout());
+		default:
+			return null;
+		}
+	}
+
+	/**
+	 * @see SchemaItemService#getSchemaItem(IEntity)
+	 */
+	@Override
+	public SchemaItem getSchemaItem(IEntity entity) {
+		SchemaItem result = getSchemaItem(entity, SchemaType.SOURCE);
+		if (result == null) {
+			return getSchemaItem(entity, SchemaType.TARGET);
+		}
+		else {
+			return result;
+		}
+	}
+
+	/**
 	 * @see SchemaItemService#removeListener(SchemaServiceListener)
 	 */
 	@Override
@@ -180,18 +220,22 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 	 */
 	private SchemaItem translateSchema(Collection<SchemaElement> schema, String namespace, SchemaType schemaType) {
 		Map<String, SchemaItem> itemMap;
+		Map<String, SchemaItem> aboutMap;
 		switch (schemaType) {
 		case SOURCE:
 			itemMap = sourceSchemaItems;
+			aboutMap = sourceAboutSchemaItems;
 			break;
 		case TARGET:
 			itemMap = targetSchemaItems;
+			aboutMap = targetAboutSchemaItems;
 			break;
 		default:
 			throw new RuntimeException("Schema type must be specified");
 		}
 		
 		itemMap.clear();
+		aboutMap.clear();
 		
 		if (schema == null || schema.size() == 0) {
 			return new TreeParent("", null, TreeObjectType.ROOT, null);
@@ -242,7 +286,7 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 		// supertypes.
 		for (SchemaElement element : elements) {
 			if (element.getType().getSuperType() == null) {
-				root.addChild(buildSchemaTree(element, elements, namespace, itemMap));
+				root.addChild(buildSchemaTree(element, elements, namespace, itemMap, aboutMap));
 			}
 		}
 
@@ -258,21 +302,25 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 	 * @param schema the collection of types to display
 	 * @param namespace the namespace
 	 * @param itemMap map to add the created items to (definition identifier mapped to item)
+	 * @param aboutMap map to add the created items to (about string mapped to item) 
 	 * @return a {@link SchemaItem} that contains all Properties and all
 	 *         subtypes and their property, starting with the given FT.
 	 */
-	private TreeObject buildSchemaTree(SchemaElement element, Collection<SchemaElement> schema, String namespace, Map<String, SchemaItem> itemMap) {
+	private TreeObject buildSchemaTree(SchemaElement element, 
+			Collection<SchemaElement> schema, String namespace, 
+			Map<String, SchemaItem> itemMap, Map<String, SchemaItem> aboutMap) {
 		ElementItem featureItem = new ElementItem(element);
 		itemMap.put(element.getIdentifier(), featureItem);
+		aboutMap.put(featureItem.getEntity().getAbout().getAbout(), featureItem);
 		
 		// add properties
-		addProperties(featureItem, element.getType(), itemMap, new HashSet<TypeDefinition>());
+		addProperties(featureItem, element.getType(), itemMap, aboutMap, new HashSet<TypeDefinition>());
 		
 		// add children recursively
 		for (TypeDefinition subType : element.getType().getSubTypes()) {
 			for (SchemaElement subTypeElement : subType.getDeclaringElements()) {
 				if (schema.contains(subTypeElement)) {
-					featureItem.addChild(buildSchemaTree(subTypeElement, schema, namespace, itemMap));
+					featureItem.addChild(buildSchemaTree(subTypeElement, schema, namespace, itemMap, aboutMap));
 				}
 			}
 		}
@@ -285,10 +333,11 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 	 * @param parent the tree parent
 	 * @param type the type definition
 	 * @param itemMap map to add the created items to (definition identifier mapped to item)
+	 * @param aboutMap map to add the created items to (about string mapped to item)
 	 * @param resolving the currently resolving types (to prevent loops)
 	 */
-	private static void addProperties(TreeParent parent, TypeDefinition type, Map<String, SchemaItem> itemMap,
-			Set<TypeDefinition> resolving) {
+	private void addProperties(TreeParent parent, TypeDefinition type, Map<String, SchemaItem> itemMap,
+			Map<String, SchemaItem> aboutMap, Set<TypeDefinition> resolving) {
 		if (resolving.contains(type)) {
 			log.debug("Cycle in properties, skipping adding property items");
 		}
@@ -303,9 +352,11 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 						itemMap.put(attribute.getIdentifier(), property);
 					}
 					
-					addProperties(property, attribute.getAttributeType(), null, new HashSet<TypeDefinition>(resolving)); // null map to prevent adding to item map (would be duplicate)
-					
 					parent.addChild(property);
+					
+					addProperties(property, attribute.getAttributeType(), null, aboutMap, new HashSet<TypeDefinition>(resolving)); // null map to prevent adding to item map (would be duplicate)
+					
+					aboutMap.put(property.getEntity().getAbout().getAbout(), property);
 				}
 			}
 		}

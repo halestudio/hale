@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.hale.models.utils;
 
+import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.schema.SchemaServiceListener;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
@@ -65,5 +66,24 @@ public interface SchemaItemService {
 	 * @return the schema item or <code>null</code>
 	 */
 	public SchemaItem getSchemaItem(String identifier, SchemaType schemaType);
+	
+	/**
+	 * Get the schema item for the given entity
+	 * 
+	 * @param entity an entity (may not be composed)
+	 * 
+	 * @return the the matching schema item or <code>null</code>
+	 */
+	public SchemaItem getSchemaItem(IEntity entity);
+	
+	/**
+	 * Get the schema item for the given entity
+	 * 
+	 * @param entity an entity (may not be composed)
+	 * @param schemaType the schema type
+	 * 
+	 * @return the the matching schema item or <code>null</code>
+	 */
+	public SchemaItem getSchemaItem(IEntity entity, SchemaType schemaType);
 
 }
