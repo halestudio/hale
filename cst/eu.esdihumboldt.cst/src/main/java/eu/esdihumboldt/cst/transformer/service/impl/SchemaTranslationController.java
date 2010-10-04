@@ -302,7 +302,7 @@ public class SchemaTranslationController {
 					cstf = CstFunctionFactory.getInstance().getCstAugmentationFunction(cell);
 				} catch (Exception e) {
 					throw new RuntimeException("Getting the requested " +
-							"CstFunction failed: ", e);
+							"CstFunction failed: " + e.getMessage(), e);
 				}
 				// invoke CstFunction with Target Features List. 
 				if (cstf != null) {
@@ -371,11 +371,11 @@ public class SchemaTranslationController {
 		} catch (Exception e) {
 			if (this.strict) {
 				throw new RuntimeException("Executing the requested " +
-						"CstFunction failed: ", e);
+						"CstFunction failed: " + e.getMessage(), e);
 			}
 			else {
 				_log.error("Executing the requested " +
-						"CstFunction failed: ", e);
+						"CstFunction failed: " + e.getMessage(), e);
 			}
 		}
 	}
@@ -398,7 +398,7 @@ public class SchemaTranslationController {
 					} catch (Exception e) {
 						if (this.strict) {
 							throw new RuntimeException("Executing the requested " +
-									"CstFunction failed: ", e);
+									"CstFunction failed: " + e.getMessage(), e);
 						}
 						else {
 							error = e.getMessage();
@@ -413,11 +413,11 @@ public class SchemaTranslationController {
 		} catch (Exception e) {
 			if (this.strict) {
 				throw new RuntimeException("Executing the requested " +
-						"CstFunction failed: ", e);
+						"CstFunction failed: " + e.getMessage(), e);
 			}
 			else {
 				_log.error("Executing the requested " +
-						"CstFunction failed: ", e);
+						"CstFunction failed: " + e.getMessage(), e);
 			}
 		}
 	}
@@ -438,7 +438,7 @@ public class SchemaTranslationController {
 					} catch (Exception e) {
 						if (this.strict) {
 							throw new RuntimeException("Executing the requested " +
-									"CstFunction failed: ", e);
+									"CstFunction failed: " + e.getMessage(), e);
 						}
 						else {
 							error = e.getMessage();
@@ -453,11 +453,11 @@ public class SchemaTranslationController {
 		} catch (Exception e) {
 			if (this.strict) {
 				throw new RuntimeException("Executing the requested " +
-						"CstFunction failed: ", e);
+						"CstFunction failed: " + e.getMessage(), e);
 			}
 			else {
 				_log.error("Executing the requested " +
-						"CstFunction failed: ", e);
+						"CstFunction failed: " + e.getMessage(), e);
 			}
 		}
 	}
