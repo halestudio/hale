@@ -123,9 +123,14 @@ public class SchemaSelection implements ISelection {
 				List<Property> properties = ((ComposedProperty) entity).getCollection();
 				ArrayList<SchemaItem> result = new ArrayList<SchemaItem>();
 				for (Property property : properties) {
-					SchemaItem item = getSingleSchemaItem(property, type);
-					if (item != null) {
-						result.add(item);
+					if (property instanceof ComposedProperty) {
+						result.addAll(getSchemaItems(property, type));
+					}
+					else {
+						SchemaItem item = getSingleSchemaItem(property, type);
+						if (item != null) {
+							result.add(item);
+						}
 					}
 				}
 				return result;
