@@ -494,6 +494,15 @@
             name="HALE Key bindings">
       </scheme>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="*">
+         <viewShortcut
+               id="org.eclipse.pde.runtime.LogView">
+         </viewShortcut>
+      </perspectiveExtension>
+   </extension>
    <!-- <extension
          point="org.eclipse.ui.importWizards">
       <wizard

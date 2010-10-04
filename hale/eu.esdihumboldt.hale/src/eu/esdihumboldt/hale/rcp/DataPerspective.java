@@ -17,8 +17,10 @@ import org.eclipse.ui.IPerspectiveFactory;
 
 import eu.esdihumboldt.hale.rcp.views.map.MapView;
 import eu.esdihumboldt.hale.rcp.views.mapping.MappingView;
+import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 import eu.esdihumboldt.hale.rcp.views.table.ReferenceTableView;
 import eu.esdihumboldt.hale.rcp.views.table.TransformedTableView;
+import eu.esdihumboldt.hale.rcp.views.tasks.TaskTreeView;
 
 
 /**
@@ -54,6 +56,13 @@ public class DataPerspective implements IPerspectiveFactory {
 		// top right
 		IFolderLayout topRight = _layout.createFolder("topRight", IPageLayout.RIGHT, 0.5f, "topLeft");
 		topRight.addView(ReferenceTableView.ID);
+		
+		_layout.addShowViewShortcut(ModelNavigationView.ID);
+		_layout.addShowViewShortcut(MapView.ID);
+		_layout.addShowViewShortcut(MappingView.ID);
+		_layout.addShowViewShortcut(ReferenceTableView.ID);
+		_layout.addShowViewShortcut(TransformedTableView.ID);
+		_layout.addShowViewShortcut(TaskTreeView.ID);
 		
 		_layout.setEditorAreaVisible(false);
 	}

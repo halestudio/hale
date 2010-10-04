@@ -18,6 +18,8 @@ import org.eclipse.ui.IPerspectiveFactory;
 import eu.esdihumboldt.hale.rcp.views.map.MapView;
 import eu.esdihumboldt.hale.rcp.views.mapping.MappingView;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
+import eu.esdihumboldt.hale.rcp.views.table.ReferenceTableView;
+import eu.esdihumboldt.hale.rcp.views.table.TransformedTableView;
 import eu.esdihumboldt.hale.rcp.views.tasks.TaskTreeView;
 
 
@@ -53,6 +55,13 @@ public class DefaultPerspective implements IPerspectiveFactory {
 		// lesser top right
 		IFolderLayout lesserTopRight = _layout.createFolder("lesserTopRight", IPageLayout.BOTTOM, 0.6f, "topRight");
 		lesserTopRight.addView(MappingView.ID);
+		
+		_layout.addShowViewShortcut(ModelNavigationView.ID);
+		_layout.addShowViewShortcut(MapView.ID);
+		_layout.addShowViewShortcut(MappingView.ID);
+		_layout.addShowViewShortcut(ReferenceTableView.ID);
+		_layout.addShowViewShortcut(TransformedTableView.ID);
+		_layout.addShowViewShortcut(TaskTreeView.ID);
 		
 		_layout.setEditorAreaVisible(false);
 	}
