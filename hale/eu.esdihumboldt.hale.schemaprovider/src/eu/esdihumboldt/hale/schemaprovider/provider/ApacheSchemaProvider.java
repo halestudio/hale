@@ -686,7 +686,7 @@ public class ApacheSchemaProvider
 					featureTypes.put(typeName, simpleType);
 				}
 				else {
-					_log.error("No attribute type generated for simple type " + typeName.toString());
+					_log.warn("No attribute type generated for simple type " + typeName.toString());
 				}
 			}
 			else if (item instanceof XmlSchemaComplexType) {
