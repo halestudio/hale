@@ -356,7 +356,7 @@ public class SchemaTranslationController {
 						} catch (Exception e) {
 							if (this.strict) {
 								throw new RuntimeException("Executing the requested " +
-										"CstFunction failed: ", e);
+										"CstFunction failed: " + e.getMessage(), e);
 							}
 							else {
 								error = e.getMessage();
