@@ -28,7 +28,7 @@ import eu.esdihumboldt.cst.transformer.service.CstServiceFactory;
 public class ServiceFactory 
 	extends AbstractServiceFactory {
 	
-	private CstService transform = CstServiceFactory.getInstance();
+	private CstService transform = new CstServiceWrapper(CstServiceFactory.getInstance());
 	
 	/**
 	 * Default constructor
@@ -40,6 +40,7 @@ public class ServiceFactory
 	/**
 	 * @see AbstractServiceFactory#create(Class, IServiceLocator, IServiceLocator)
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Object create(Class serviceInterface, IServiceLocator parentLocator,
 			IServiceLocator locator) {
