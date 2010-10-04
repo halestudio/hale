@@ -41,7 +41,7 @@ public class RecentFilesServiceImpl implements RecentFilesService {
 	private CircularFifoBuffer _buffer = new CircularFifoBuffer(MAX_FILES);
 	
 	/**
-	 * @see eu.esdihumboldt.hale.models.project.RecentFilesService#add(java.lang.String)
+	 * @see RecentFilesService#add(String)
 	 */
 	public void add(String file) {
 		if (file != null) {
@@ -58,7 +58,7 @@ public class RecentFilesServiceImpl implements RecentFilesService {
 	}
 	
 	/**
-	 * @see eu.esdihumboldt.hale.models.project.RecentFilesService#getRecentFiles()
+	 * @see RecentFilesService#getRecentFiles()
 	 */
 	public String[] getRecentFiles() {
 		String[] result = new String[_buffer.size()];
@@ -71,15 +71,17 @@ public class RecentFilesServiceImpl implements RecentFilesService {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.models.project.RecentFilesService#restoreState(org.eclipse.ui.IMemento)
+	 * @see RecentFilesService#restoreState(IMemento)
 	 */
 	public IStatus restoreState(IMemento memento) {
-		IMemento[] dsms = memento.getChildren(TAG_FILE);
-		if (dsms != null) {
-			for (IMemento dsm : dsms) {
-				String file = restoreFile(dsm);
-				if (file != null) {
-					_buffer.add(file);
+		if (memento != null) {
+			IMemento[] dsms = memento.getChildren(TAG_FILE);
+			if (dsms != null) {
+				for (IMemento dsm : dsms) {
+					String file = restoreFile(dsm);
+					if (file != null) {
+						_buffer.add(file);
+					}
 				}
 			}
 		}
