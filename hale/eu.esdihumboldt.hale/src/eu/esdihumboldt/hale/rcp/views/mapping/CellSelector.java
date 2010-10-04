@@ -448,7 +448,7 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 			cells = schema.getCellsForSelection();
 		}
 		
-		List<CellInfo> cellList = new ArrayList<CellInfo>(cells.values());
+		List<CellInfo> cellList = (cells == null)?(new ArrayList<CellInfo>()):(new ArrayList<CellInfo>(cells.values()));
 		
 		// set the input
 		viewer.setInput(cellList);
