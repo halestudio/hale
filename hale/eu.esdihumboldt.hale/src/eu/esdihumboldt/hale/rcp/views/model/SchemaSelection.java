@@ -11,9 +11,12 @@
  */
 package eu.esdihumboldt.hale.rcp.views.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -22,9 +25,16 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.IEntity;
+import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.goml.omwg.FeatureClass;
+import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.hale.models.AlignmentService;
+import eu.esdihumboldt.hale.models.utils.SchemaItemService;
 import eu.esdihumboldt.hale.rcp.views.mapping.CellInfo;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.NullSchemaItem;
+import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 
 /**
  * A selection with source and target {@link SchemaItem}s
@@ -46,6 +56,11 @@ public class SchemaSelection implements ISelection {
 		this(null, null);
 	}
 	
+	/**
+	 * Get cells and cell infos for the current selection
+	 * 
+	 * @return the matching cells and cell infos
+	 */
 	public Map<ICell, CellInfo> getCellsForSelection() {
 		Map<ICell, CellInfo> cells = new HashMap<ICell, CellInfo>();
 		
@@ -61,19 +76,27 @@ public class SchemaSelection implements ISelection {
 
 		// add NullSchemaItem to find augmentations
 		sourceItems.add(NullSchemaItem.INSTANCE);
-
-		if (sourceItems != null && targetItems != null) {
-			// for each source item...
-			for (SchemaItem source : sourceItems) {
-				// ...for each target item...
-				for (SchemaItem target : targetItems) {
-					// ...find the mapping cells
-					ICell cell = alignmentService.getCell(source.getEntity(),
-							target.getEntity());
-
-					if (cell != null) {
-						if (!cells.containsKey(cell)) {
-							cells.put(cell, new CellInfo(cell, source, target));
+		
+		Collection<ICell> cellList = alignmentService.getCells();
+		for (ICell cell : cellList) {
+			IEntity e1 = cell.getEntity1();
+			IEntity e2 = cell.getEntity2();
+			
+			if (e1 != null && e2 != null) {
+				Collection<SchemaItem> sourceCandidates = getSchemaItems(e1, SchemaType.SOURCE);
+				
+				if (sourceCandidates != null && !sourceCandidates.isEmpty()) {
+					SchemaItem source = containsAny(sourceItems, sourceCandidates);
+					
+					if (source != null) {
+						Collection<SchemaItem> targetCandidates = getSchemaItems(e2, SchemaType.TARGET);
+						
+						if (targetCandidates != null && !targetCandidates.isEmpty()) {
+							SchemaItem target = containsAny(targetItems, targetCandidates);
+						
+							if (target != null) {
+								cells.put(cell, new CellInfo(cell, source, target));
+							}
 						}
 					}
 				}
@@ -82,6 +105,72 @@ public class SchemaSelection implements ISelection {
 		return cells;
 	}
 	
+	/**
+	 * Get all schema items that match the given entity
+	 * 
+	 * @param entity the entity
+	 * @param type the schema type
+	 * 
+	 * @return the schema items
+	 */
+	private Collection<SchemaItem> getSchemaItems(IEntity entity, SchemaType type) {
+		if (entity.equals(Entity.NULL_ENTITY)) {
+			// special case null entity
+			return Collections.singleton(NullSchemaItem.INSTANCE);
+		}
+		else {
+			if (entity instanceof ComposedProperty) {
+				List<Property> properties = ((ComposedProperty) entity).getCollection();
+				ArrayList<SchemaItem> result = new ArrayList<SchemaItem>();
+				for (Property property : properties) {
+					SchemaItem item = getSingleSchemaItem(property, type);
+					if (item != null) {
+						result.add(item);
+					}
+				}
+				return result;
+			}
+			else if (entity instanceof Property || entity instanceof FeatureClass) {
+				return Collections.singleton(getSingleSchemaItem(entity, type));
+			}
+			//TODO check composed feature types
+		}
+		
+		return null;
+	}
+
+	/**
+	 * Get a schema item that matches the given entity
+	 * 
+	 * @param entity the entity which may not be a composed one
+	 * @param type the schema type
+	 * 
+	 * @return the matching schema item or <code>null</code>
+	 */
+	private SchemaItem getSingleSchemaItem(IEntity entity, SchemaType type) {
+		// get the schema item matching the entity
+		SchemaItemService items = (SchemaItemService) PlatformUI.getWorkbench().getService(SchemaItemService.class);
+		return items.getSchemaItem(entity, type);
+	}
+
+	/**
+	 * Checks if any of the candidates is contained in the items and returns it
+	 * 
+	 * @param items the items
+	 * @param candidates the candidates
+	 * @return a candidate that is contained in the items or <code>null</code>
+	 */
+	private SchemaItem containsAny(Set<SchemaItem> items,
+			Collection<SchemaItem> candidates) {
+		for (SchemaItem candidate : candidates) {
+			if (items.contains(candidate)) {
+				return candidate;
+			}
+		}
+		
+		return null;
+	}
+
 	/**
 	 * Recursively get the children of the given items
 	 * 
