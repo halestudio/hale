@@ -55,6 +55,13 @@ public interface AlignmentService
 	public ICell getAlignmentForType(FeatureType type1, FeatureType type2);
 	
 	/**
+	 * Get all cells
+	 * 
+	 * @return a list of all cells (not backed by the service)
+	 */
+	public List<ICell> getCells();
+	
+	/**
 	 * 
 	 * @param cell
 	 * @return 
