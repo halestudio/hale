@@ -114,7 +114,7 @@ public class SchemaSelection implements ISelection {
 	 * @return the schema items
 	 */
 	private Collection<SchemaItem> getSchemaItems(IEntity entity, SchemaType type) {
-		if (entity.equals(Entity.NULL_ENTITY)) {
+		if (entity.getAbout().getAbout().equals(Entity.NULL_ENTITY.getAbout().getAbout())) {
 			// special case null entity
 			return Collections.singleton(NullSchemaItem.INSTANCE);
 		}
