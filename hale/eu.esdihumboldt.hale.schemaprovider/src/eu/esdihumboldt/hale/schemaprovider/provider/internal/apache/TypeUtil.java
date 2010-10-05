@@ -182,14 +182,16 @@ public abstract class TypeUtil {
 				if (schemaType != null) {
 					AttributeType t = schemaType.getType(null);
 					if (t == null || t.getBinding().equals(Collection.class)) {
+						// only replace type if we don't already have a good binding
 						schemaType.setType(gmlType); // replace the internal type with the geotools binding
-					}
-					// update location
-					if (schemaType.getLocation() == null) {
-						schemaType.setLocation(GEOTOOLS_LOC);
-					}
-					else if (!schemaType.getLocation().startsWith(GEOTOOLS_LOC_PREFIX)) {
-						schemaType.setLocation(GEOTOOLS_LOC_PREFIX + schemaType.getLocation());
+						
+						// update location
+						if (schemaType.getLocation() == null) {
+							schemaType.setLocation(GEOTOOLS_LOC);
+						}
+						else if (!schemaType.getLocation().startsWith(GEOTOOLS_LOC_PREFIX)) {
+							schemaType.setLocation(GEOTOOLS_LOC_PREFIX + schemaType.getLocation());
+						}
 					}
 				}
 				else {
