@@ -11,10 +11,10 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -26,13 +26,13 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.gml3.GMLConfiguration;
-import org.geotools.xml.Configuration;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+import de.cs3d.util.logging.ATransaction;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper;
-import eu.esdihumboldt.hale.gmlparser.HaleGMLParser;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
@@ -53,7 +53,7 @@ import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
 public class InstanceDataImportWizard 
 	extends Wizard implements IImportWizard {
 
-	private static Logger _log = Logger.getLogger(InstanceDataImportWizard.class);
+	private static ALogger _log = ALoggerFactory.getLogger(InstanceDataImportWizard.class);
 
 	private InstanceDataImportWizardMainPage mainPage;
 	//private InstanceDataImportWizardFilterPage filterPage;
@@ -185,13 +185,33 @@ public class InstanceDataImportWizard
 			
 			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 			
-			result = GmlHelper.loadGml(gml_location.openStream(), type, 
-					ss.getSourceNameSpace(), ss.getSourceURL().toString(), ss.getSourceSchema());
+			result = loadGML(gml_location, type, ss);
 		} catch (Exception ex) {
 			throw new RuntimeException(
 					"Parsing the given GML into a FeatureCollection failed: " + ex.getMessage(), //$NON-NLS-1$
 					ex);
 		}
 		return result;
+	}
+
+	/**
+	 * Load a GML file from the given location
+	 * 
+	 * @param gmlLocation the location of the file
+	 * @param type the configuration type
+	 * @param ss the schema service
+	 * 
+	 * @return the feature collection with the loaded features
+	 * @throws IOException if an error occurs reading the file
+	 */
+	public static FeatureCollection<FeatureType, Feature> loadGML(URL gmlLocation,
+			ConfigurationType type, SchemaService ss) throws IOException {
+		ATransaction trans = _log.begin("Loading GML features from " + gmlLocation.toString());
+		try {
+			return GmlHelper.loadGml(gmlLocation.openStream(), type, 
+					ss.getSourceNameSpace(), ss.getSourceURL().toString(), ss.getSourceSchema());
+		} finally {
+			trans.end();
+		}
 	}
 }

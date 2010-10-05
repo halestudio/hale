@@ -51,6 +51,7 @@ import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
 import eu.esdihumboldt.hale.rcp.views.map.MapView;
 import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
+import eu.esdihumboldt.hale.rcp.wizards.io.InstanceDataImportWizard;
 import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.task.TaskUserData;
@@ -270,7 +271,6 @@ public class ProjectParser {
 			try {
 //				URI file = new URI(URLDecoder.decode(project.getInstanceData().getPath(), "UTF-8"));
 				URI file = getLocation(project.getInstanceData().getPath(), basePath);
-				InputStream xml = file.toURL().openStream(); //new FileInputStream(new File(file));
 				ConfigurationType conf;
 				try {
 					conf = ConfigurationType.valueOf(project.getInstanceData().getType());
@@ -285,10 +285,7 @@ public class ProjectParser {
 					SelectCRSDialog.setWkt(project.getInstanceData().getWkt());
 				}
 				instanceService.addInstances(DatasetType.reference, 
-						GmlHelper.loadGml(xml, conf, 
-								schemaService.getSourceNameSpace(), 
-								schemaService.getSourceURL().toString(),
-								schemaService.getSourceSchema()));
+						InstanceDataImportWizard.loadGML(file.toURL(), conf, schemaService));
 				projectService.setInstanceDataPath(project.getInstanceData().getPath());
 				projectService.setInstanceDataType(conf);
 				
