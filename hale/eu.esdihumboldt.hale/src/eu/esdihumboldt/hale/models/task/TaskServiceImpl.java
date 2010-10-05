@@ -106,21 +106,28 @@ public class TaskServiceImpl extends AbstractTaskService {
 	 */
 	@Override
 	public void addTask(Task task) {
-		addTaskInternal(task);
-		
-		notifyTasksAdded(Collections.singleton(task));
+		if (addTaskInternal(task)) {
+			notifyTasksAdded(Collections.singleton(task));
+		}
 	}
 
 	/**
 	 * Add a task without notifying the listeners
 	 * 
 	 * @param task the task to add
+	 * @return if the task was added (it was no duplicate)
 	 */
-	private void addTaskInternal(Task task) {
+	private boolean addTaskInternal(Task task) {
 		synchronized (tasks) {
+			if (tasks.contains(task)) {
+				// task is a duplicate
+				task.dispose();
+				return false;
+			}
 			tasks.add(task);
 		}
 		task.setTaskService(this);
+		return true;
 	}
 
 	/**
@@ -128,11 +135,14 @@ public class TaskServiceImpl extends AbstractTaskService {
 	 */
 	@Override
 	public void addTasks(Iterable<Task> tasks) {
+		Collection<Task> added = new ArrayList<Task>();
 		for (Task task : tasks) {
-			addTaskInternal(task);
+			if (addTaskInternal(task)) {
+				added.add(task);
+			}
 		}
 		
-		notifyTasksAdded(tasks);
+		notifyTasksAdded(added);
 	}
 
 	/**
@@ -198,6 +208,12 @@ public class TaskServiceImpl extends AbstractTaskService {
 			
 			tasks.removeAll(toRemove);
 		}
+		
+		for (Task task : toRemove) {
+			// dispose removed tasks
+			task.dispose();
+		}
+		
 		notifyTasksRemoved(toRemove);
 	}
 
