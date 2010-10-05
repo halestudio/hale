@@ -67,8 +67,8 @@ public abstract class TypeUtil {
 	/**
 	 * The GML schema
 	 */
-	protected static final GMLSchema gmlSchema = new GMLSchema();
-
+	protected static final GMLSchema gml3Schema = new GMLSchema();
+	
 	/**
 	 * Geotools bindings location string
 	 */
@@ -78,6 +78,13 @@ public abstract class TypeUtil {
 	 * Geotools bindings location prefix
 	 */
 	private static final String GEOTOOLS_LOC_PREFIX = "Geotools GML bindings + ";
+
+	/**
+	 * GML 3.2 namespace
+	 */
+	private static final String NAMESPACE_GML3_2 = "http://www.opengis.net/gml/3.2";
+
+	private static final String NAMESPACE_GML = "http://www.opengis.net/gml";
 	
 	/**
 	 * Resolve an attribute type
@@ -165,10 +172,18 @@ public abstract class TypeUtil {
 			TypeDefinition schemaType = schemaTypes.getSchemaType(typeName);
 			
 			// GML bindings
-			AttributeType gmlType = gmlSchema.get(typeName);
+			AttributeType gmlType = gml3Schema.get(typeName);
+			if (gmlType == null && typeName.getNamespaceURI().equals(NAMESPACE_GML3_2)) {
+				// try again with GML2/3 namespace
+				gmlType = gml3Schema.get(new NameImpl(NAMESPACE_GML, typeName.getLocalPart()));
+				//FIXME replicate type with correct namespace?
+			}
 			if (gmlType != null) {
 				if (schemaType != null) {
-					schemaType.setType(gmlType); // replace the internal type with the geotools binding
+					AttributeType t = schemaType.getType(null);
+					if (t == null || t.getBinding().equals(Collection.class)) {
+						schemaType.setType(gmlType); // replace the internal type with the geotools binding
+					}
 					// update location
 					if (schemaType.getLocation() == null) {
 						schemaType.setLocation(GEOTOOLS_LOC);
