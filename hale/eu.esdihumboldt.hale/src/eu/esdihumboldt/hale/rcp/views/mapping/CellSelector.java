@@ -457,6 +457,7 @@ public class CellSelector implements ISelectionListener, IDisposable, ISelection
 		if (cellList.isEmpty()) {
 			viewer.setSelection(StructuredSelection.EMPTY);
 			viewer.getControl().setEnabled(false);
+			lastSelected = null; // set last selected to null because it is invalid now
 		}
 		else {
 			if (lastSelected != null && cellList.contains(lastSelected)) {
