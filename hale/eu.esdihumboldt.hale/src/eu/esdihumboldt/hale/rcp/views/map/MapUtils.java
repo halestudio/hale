@@ -129,6 +129,9 @@ public abstract class MapUtils {
 		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 		
+		int failed = 0;
+		MapContext mc;
+		
 		FeatureCollection<?, ?> fc = is.getFeatures(type);
 		if (fc != null && fc.size() > 0) {
 			if (crs == null) {
@@ -142,8 +145,6 @@ public abstract class MapUtils {
 			
 			//log.info("features size: " + fc.size()); //$NON-NLS-1$
 			//log.info("features bounds: " + fc.getBounds()); //$NON-NLS-1$
-			
-			int failed = 0;
 			
 			Map<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> groupedFeatures = new HashMap<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>>();
 			Map<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> selectedFeatures = new HashMap<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>>();
@@ -186,16 +187,7 @@ public abstract class MapUtils {
 				}
 			}
 			
-			switch (type) {
-			case reference:
-				status.setReferenceFailed(failed);
-				break;
-			case transformed:
-				status.setTransformedFailed(failed);
-				break;
-			}
-			
-			MapContext mc = new DefaultMapContext(crs);
+			mc = new DefaultMapContext(crs);
 			// add normal features
 			Style style = ss.getStyle(type);
 			for (Entry<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> entry : groupedFeatures.entrySet()) {
@@ -207,12 +199,27 @@ public abstract class MapUtils {
 			for (Entry<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> entry : selectedFeatures.entrySet()) {
 				mc.addLayer(entry.getValue(), style);
 			}
-			
-			return mc;
 		}
 		else {
-			return new DefaultMapContext(crs);
+			mc = new DefaultMapContext(crs);
 		}
+		
+		switch (type) {
+		case reference:
+			status.setReferenceFailed(failed);
+//			if (failed > 0) {
+//				log.warn(failed + " source features have no default geometry");
+//			}
+			break;
+		case transformed:
+			status.setTransformedFailed(failed);
+//			if (failed > 0) {
+//				log.warn(failed + " transformed features have no default geometry");
+//			}
+			break;
+		}
+		
+		return mc;
 	}
 
 	/**
