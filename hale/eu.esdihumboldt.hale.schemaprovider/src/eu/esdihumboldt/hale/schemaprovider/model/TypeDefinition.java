@@ -14,7 +14,10 @@ package eu.esdihumboldt.hale.schemaprovider.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -294,6 +297,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 		
 		// add all attributes
 		TypeDefinition typeDef = this;
+		List<AttributeDescriptor> geometryCandidates = new ArrayList<AttributeDescriptor>();
 		while (typeDef != null) {
 			// add attributes for current type
 			for (AttributeDefinition attribute : typeDef.getDeclaredAttributes()) {
@@ -307,7 +311,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 						builder.add(desc);
 						
 						if (Geometry.class.isAssignableFrom(desc.getType().getBinding())) {
-							builder.setDefaultGeometry(desc.getName().getLocalPart());
+							geometryCandidates.add(desc);
 						}
 					}
 				}
@@ -317,11 +321,82 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 			typeDef = typeDef.getSuperType();
 		}
 		
+		AttributeDescriptor geoDesc = getDefaultGeometryDescriptor(geometryCandidates);
+		if (geoDesc != null) {
+			builder.setDefaultGeometry(geoDesc.getName().getLocalPart());
+		}
+		
 		// other properties
 		builder.setAbstract(abstractType);
 		
 		builder.setName((name != null)?(name):(getName()));
 		return builder.buildFeatureType();
+	}
+
+	/**
+	 * Get the preferred geometry attribute descriptor for the given set of
+	 * candidates
+	 * 
+	 * @param geometryCandidates the available geometry descriptors
+	 * 
+	 * @return the preferred geometry descriptor
+	 */
+	private static AttributeDescriptor getDefaultGeometryDescriptor(
+			List<AttributeDescriptor> geometryCandidates) {
+		if (geometryCandidates == null || geometryCandidates.isEmpty()) {
+			return null;
+		}
+		else if (geometryCandidates.size() == 1) {
+			return geometryCandidates.iterator().next();
+		}
+		else {
+			Collections.sort(geometryCandidates, new Comparator<AttributeDescriptor>() {
+
+				public int compare(AttributeDescriptor o1,
+						AttributeDescriptor o2) {
+					int result = 0;
+					
+					String name1 = o1.getLocalName();
+					String name2 = o2.getLocalName();
+					
+					if (result == 0) {
+						// name check
+						
+						// prefer properties name geometry - XXX are there any default names for default geometries?
+						if (name1.equals("geometry")) {
+							result = -1;
+						}
+						else if (name2.equals("geometry")) {
+							result = 1;
+						}
+					}
+					
+					Class<?> bind1 = o1.getType().getBinding();
+					Class<?> bind2 = o2.getType().getBinding();
+					
+					if (result == 0) {
+						// binding check
+						
+						// prefer Geometry binding to more concrete binding
+						if (bind1.equals(Geometry.class) && !bind2.equals(Geometry.class)) {
+							result = -1;
+						}
+						else if (!bind1.equals(Geometry.class) && bind2.equals(Geometry.class)) {
+							result = 1;
+						}
+					}
+					
+					if (result == 0) {
+						// fall back to alphabetical order
+						return name1.compareTo(name2);
+					}
+					
+					return result;
+				}
+			});
+			
+			return geometryCandidates.iterator().next();
+		}
 	}
 
 	/**
