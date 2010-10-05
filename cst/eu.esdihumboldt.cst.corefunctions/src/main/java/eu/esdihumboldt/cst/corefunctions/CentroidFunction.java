@@ -30,10 +30,12 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
 import eu.esdihumboldt.cst.AbstractCstFunction;
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.tools.FeatureInspector;
 
 
 /**
@@ -43,27 +45,26 @@ import eu.esdihumboldt.goml.rdf.About;
  * @version $Id$ 
  */
 public class CentroidFunction extends AbstractCstFunction {
-	Property sourceProperty = null;
-	Property targetProperty = null;
+	private Property sourceProperty = null;
+	private Property targetProperty = null;
 
 	
 	/**
-	 * @see eu.esdihumboldt.cst.transformer.CstFunction#transform(org.opengis.feature.Feature, org.opengis.feature.Feature)
+	 * @see CstFunction#transform(Feature, Feature)
 	 */
 	public Feature transform(Feature source, Feature target) {		
-		
-		Geometry geom = (Geometry)source.getProperty(
-				this.sourceProperty.getLocalname()).getValue();
-		//get Centroid from old geom and store in new geom
-		Point newGeometry = (Point)geom.getCentroid();
-		target.getProperty(
-				this.targetProperty.getLocalname()).setValue(newGeometry);
+		Geometry geom = (Geometry) FeatureInspector.getPropertyValue(source, sourceProperty.getAbout(), null);
+		if (geom != null) {
+			//get Centroid from old geom and store in new geom
+			Point newGeometry = geom.getCentroid();
+			FeatureInspector.setPropertyValue(target, targetProperty.getAbout(), newGeometry);
+		}
 
 		return target;
 	}
 
 	/**
-	 * @see eu.esdihumboldt.cst.transformer.CstFunction#configure(eu.esdihumboldt.cst.align.ICell)
+	 * @see CstFunction#configure(ICell)
 	 */
 	public boolean configure(ICell cell) {
 		this.sourceProperty = (Property) cell.getEntity1();
@@ -71,6 +72,9 @@ public class CentroidFunction extends AbstractCstFunction {
 		return true;
 	}
 	
+	/**
+	 * @see CstFunction#getParameters()
+	 */
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
 		Property entity1 = new Property(new About(""));
@@ -87,6 +91,7 @@ public class CentroidFunction extends AbstractCstFunction {
 		entityTypes = new ArrayList <String>();
 		entityTypes.add(com.vividsolutions.jts.geom.Point.class.getName());
 		entityTypes.add(org.opengis.geometry.primitive.Point.class.getName());
+		entityTypes.add(com.vividsolutions.jts.geom.Geometry.class.getName());
 		entity2.setTypeCondition(entityTypes);
 				
 		parameterCell.setEntity1(entity1);
