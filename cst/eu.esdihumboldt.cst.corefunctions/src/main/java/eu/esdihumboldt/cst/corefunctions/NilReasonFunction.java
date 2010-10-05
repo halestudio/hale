@@ -111,24 +111,31 @@ public class NilReasonFunction extends AbstractCstFunction {
 	public Feature transform(Feature source, Feature target) {
 		if (nilReason != null) {
 			if (onEntity instanceof eu.esdihumboldt.goml.omwg.Property) {
-				// set nilReason on property
-				FeatureInspector.setPropertyValue(
-						target, 
-						new DetailedAbout(onEntity.getAbout().getAbout() + DetailedAbout.PROPERTY_DELIMITER + "nilReason", true), 
-						nilReason.toString());
+				// get the property value
+				Object value = FeatureInspector.getPropertyValue(target, onEntity.getAbout(), null);
+				
+				if (value == null) {
+					// set nilReason on property
+					FeatureInspector.setPropertyValue(
+							target, 
+							new DetailedAbout(onEntity.getAbout().getAbout() + DetailedAbout.PROPERTY_DELIMITER + "nilReason", true), 
+							nilReason.toString());
+				}
 			}
 			else if (onEntity instanceof FeatureClass) {
 				// apply on all properties
 				//TODO check name?
 				
-				for (Property property : target.getProperties()) {
-					String propertyName = property.getName().getLocalPart();
-					
-					List<String> properties = new ArrayList<String>();
-					properties.add(propertyName);
-					properties.add("nilReason");
-					
-					FeatureInspector.setPropertyValue(target, properties, nilReason.toString());
+				for (Property property : target.getProperties()) { //XX does this really get all properties? or only the existing ones?
+					if (property.getValue() == null) {
+						String propertyName = property.getName().getLocalPart();
+						
+						List<String> properties = new ArrayList<String>();
+						properties.add(propertyName);
+						properties.add("nilReason");
+						
+						FeatureInspector.setPropertyValue(target, properties, nilReason.toString());
+					}
 				}
 			}
 		}
