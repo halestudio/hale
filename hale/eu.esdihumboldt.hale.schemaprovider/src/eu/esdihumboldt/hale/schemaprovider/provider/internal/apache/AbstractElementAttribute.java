@@ -101,15 +101,15 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 	 */
 	protected TypeDefinition checkAttributeType(TypeDefinition typeDef) {
 		// inspire geometry attributes
-		if (getName().equals("geometry") && typeDef != null && 
-				!Geometry.class.isAssignableFrom(typeDef.getType(null).getBinding())) {
-			return createDefaultGeometryType(typeDef);
-		}
+//		if (getName().equals("geometry") && typeDef != null && 
+//				!Geometry.class.isAssignableFrom(typeDef.getType(null).getBinding())) {
+//			return createDefaultGeometryType(typeDef);
+//		}
 		// geometry property types
-		else if (typeDef != null && typeDef.getName().getLocalPart().equals("GeometryPropertyType") &&
-				!Geometry.class.isAssignableFrom(typeDef.getType(null).getBinding())) {
-			return createDefaultGeometryType(typeDef);
-		}
+//		else if (typeDef != null && typeDef.getName().getLocalPart().equals("GeometryPropertyType") &&
+//				!Geometry.class.isAssignableFrom(typeDef.getType(null).getBinding())) {
+//			return createDefaultGeometryType(typeDef);
+//		}
 		
 		// default: leave type untouched
 		return typeDef;
