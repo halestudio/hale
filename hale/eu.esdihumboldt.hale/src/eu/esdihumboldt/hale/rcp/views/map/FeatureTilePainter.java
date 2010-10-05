@@ -337,7 +337,17 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		
 		int failed = status.getReferenceFailed() + status.getTransformedFailed();
 		if (failed > 0) {
-			String text = failed + " features have no default geometry";
+			String ident;
+			if (status.getReferenceFailed() == 0) {
+				ident = "transformed";
+			}
+			else if (status.getTransformedFailed() == 0) {
+				ident = "source";
+			}
+			else {
+				ident = "source and transformed";
+			}
+			String text = failed + " " + ident + " features have no default geometry";
 			
 			Image errorImage = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
 			
