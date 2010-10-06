@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.simple;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,7 @@ import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
+import eu.esdihumboldt.hale.rcp.wizards.augmentations.NullSchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractFunctionWizardDescriptor;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
@@ -121,17 +123,31 @@ public class SimpleFunctionWizardDescriptor extends
 		public boolean supports(AlignmentInfo selection) {
 			boolean ok = true;
 			
+			ICell cell = null;
 			if (!isAugmentation()) {
 				// check source entity
 				ok = checkEntity(parameterCell.getEntity1(), selection.getSourceItems());
+				
+				if (ok) {
+					// get augmentation cell
+					cell = selection.getAlignment(Collections.singleton(NullSchemaItem.INSTANCE), selection.getTargetItems());
+				}
 			}
 			
 			if (ok) {
 				// check target entity
 				ok = checkEntity(parameterCell.getEntity2(), selection.getTargetItems());
+				
+				if (ok) {
+					cell = selection.getAlignment(selection.getSourceItems(), selection.getTargetItems());
+				}
 			}
 			
 			//TODO check existing cell
+			if (ok && cell != null) {
+				// don't allow editing any cell
+				return false;
+			}
 			
 			return ok;
 		}
