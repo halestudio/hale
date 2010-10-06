@@ -19,10 +19,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.action.IContributionManager;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -36,7 +34,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ViewForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -44,12 +41,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
@@ -420,12 +415,12 @@ public class ModelNavigationView extends ViewPart implements
 
 	private List<SimpleToggleAction> getToggleActions(PatternViewFilter pvf) {
 		List<SimpleToggleAction> result = new ArrayList<SimpleToggleAction>();
-//		result.add(new SimpleToggleAction(TreeObjectType.PROPERTY_TYPE, 
-//				Messages.ModelNavigationView_PropertyHide, Messages.ModelNavigationView_PropertyShow, 
-//				"/icons/placeholder.gif", pvf)); //$NON-NLS-1$
 		result.add(new SimpleToggleAction(TreeObjectType.ABSTRACT_FT, 
 				"Hide abstract types", "Show abstract types", 
-				"/icons/see_abstract_ft.png", pvf)); 
+				"/icons/see_abstract_ft.png", pvf));
+		result.add(new SimpleToggleAction(TreeObjectType.PROPERTY_TYPE, 
+				Messages.ModelNavigationView_PropertyHide, Messages.ModelNavigationView_PropertyShow, 
+				"/icons/see_property_type.gif", pvf)); //$NON-NLS-1$
 		result.add(new SimpleToggleAction(TreeObjectType.STRING_ATTRIBUTE, 
 				Messages.ModelNavigationView_StringHide, Messages.ModelNavigationView_StringShow, 
 				"/icons/see_string_attribute.png", pvf)); //$NON-NLS-1$
