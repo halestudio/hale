@@ -107,6 +107,8 @@ public class GeographicNameFunctionWizard extends
 					} else if (param.getName().equals(
 							GeographicalNameFunction.PROPERTY_TRANSLITERATION)) {
 						transliteration = paramValue;
+					} else if (param.getName().equals(GeographicalNameFunction.PROPERTY_SOURCEOFNAME)) {
+						sourceOfName = paramValue;
 					}
 				}
 			}

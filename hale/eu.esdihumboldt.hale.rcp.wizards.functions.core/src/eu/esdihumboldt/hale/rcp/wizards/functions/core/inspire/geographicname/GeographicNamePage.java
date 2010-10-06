@@ -220,7 +220,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 				| SWT.SINGLE);
 		this.nameSourceText.setLayoutData(configurationLayoutData);
 		String nameSource = null;
-		if (getSourceOfName() != null && !getSourceOfName().equals("")) {
+		if (getSourceOfName() != null && !getSourceOfName().equals("") && !getSourceOfName().equals("unknown")) {
 			nameSource = getSourceOfName();
 
 		} else {
@@ -752,7 +752,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 	 * @return the sourceOfName
 	 */
 	public String getSourceOfName() {
-		if (sourceOfName != null && sourceOfName.equals(SOURCE_OF_NAME_PROMT)) {
+		if (sourceOfName == null || sourceOfName.equals(SOURCE_OF_NAME_PROMT)) {
 			return "unknown";
 		}
 		
