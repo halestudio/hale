@@ -40,8 +40,8 @@ public class SchemaSelectionInfo implements AlignmentInfo {
 	/**
 	 * Constructor
 	 * 
-	 * @param selection
-	 * @param alignment
+	 * @param selection the schema selection
+	 * @param alignment the alignment service
 	 */
 	public SchemaSelectionInfo(SchemaSelection selection,
 			AlignmentService alignment) {

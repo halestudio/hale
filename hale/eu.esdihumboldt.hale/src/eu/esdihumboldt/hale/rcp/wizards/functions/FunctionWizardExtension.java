@@ -17,6 +17,8 @@ import java.util.List;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
+import eu.esdihumboldt.hale.rcp.wizards.functions.simple.SimpleFunctionWizardDescriptor;
+
 /**
  * Utilities for the {@link FunctionWizardFactory} extension
  * 
@@ -43,7 +45,13 @@ public class FunctionWizardExtension {
 		
 		for (IConfigurationElement conf : confArray) {
 			// factory
-			result.add(new FunctionWizardDescriptor(conf));
+			if (conf.getName().equals("factory")) {
+				result.add(new DefaultFunctionWizardDescriptor(conf));
+			}
+			// simple
+			else if (conf.getName().equals("simple")) {
+				result.add(new SimpleFunctionWizardDescriptor(conf));
+			}
 		}
 		
 		return result;
