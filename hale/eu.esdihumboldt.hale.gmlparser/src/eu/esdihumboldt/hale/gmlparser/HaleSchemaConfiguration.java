@@ -24,7 +24,7 @@ import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Binding;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.SimpleBinding;
-import org.geotools.xs.XSConfiguration;
+import org.geotools.xs.XS;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.ComplexType;
@@ -32,6 +32,11 @@ import org.opengis.feature.type.ComplexType;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.gmlparser.binding.SimpleBindingWrapper;
 import eu.esdihumboldt.hale.gmlparser.binding.SimpleFeatureTypeBinding;
+import eu.esdihumboldt.hale.gmlparser.xs.HaleXSConfiguration;
+import eu.esdihumboldt.hale.gmlparser.xs.HaleXSUnsignedByteBinding;
+import eu.esdihumboldt.hale.gmlparser.xs.HaleXSUnsignedIntBinding;
+import eu.esdihumboldt.hale.gmlparser.xs.HaleXSUnsignedLongBinding;
+import eu.esdihumboldt.hale.gmlparser.xs.HaleXSUnsignedShortBinding;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -60,7 +65,7 @@ public class HaleSchemaConfiguration extends Configuration {
 	public HaleSchemaConfiguration(ConfigurationType type, String namespace, String schemaLocation, Iterable<SchemaElement> elements) {
         super(new HaleSchemaXSD(type, namespace, schemaLocation));
         
-        addDependency(new XSConfiguration());
+        addDependency(new HaleXSConfiguration());
         
         // add GML dependency
         switch (type) {
@@ -86,6 +91,13 @@ public class HaleSchemaConfiguration extends Configuration {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void configureBindings(Map bindings) {
+		// add fixed XS bindings, because configuring them in HaleXSConfiguration doesn't work
+		bindings.put(XS.UNSIGNEDLONG, HaleXSUnsignedLongBinding.class);
+		bindings.put(XS.UNSIGNEDINT, HaleXSUnsignedIntBinding.class);
+		bindings.put(XS.UNSIGNEDSHORT, HaleXSUnsignedShortBinding.class);
+		bindings.put(XS.UNSIGNEDBYTE, HaleXSUnsignedByteBinding.class);
+		
+		// bindings based on type definitions
 		Set<TypeDefinition> defs = new HashSet<TypeDefinition>();
 		
 		// collect type definitions
