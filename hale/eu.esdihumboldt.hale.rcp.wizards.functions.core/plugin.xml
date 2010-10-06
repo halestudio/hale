@@ -88,6 +88,11 @@
             icon="icons/userdefined.png"
             name="User defined function">
       </factory>
+      <simple
+            function="eu.esdihumboldt.cst.corefunctions.CentroidFunction"
+            icon="icons/geometry_attribute.png"
+            name="Centroid">
+      </simple>
    </extension>
 
 </plugin>
