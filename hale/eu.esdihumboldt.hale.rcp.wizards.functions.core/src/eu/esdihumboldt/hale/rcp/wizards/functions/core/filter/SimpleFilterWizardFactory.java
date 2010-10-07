@@ -40,12 +40,25 @@ public class SimpleFilterWizardFactory implements FunctionWizardFactory {
 	 */
 	@Override
 	public boolean supports(AlignmentInfo selection) {
-		if (selection.getSourceItemCount() == 1 &&
-				selection.getTargetItemCount() == 1) {
-			SchemaItem source = selection.getFirstSourceItem();
-			SchemaItem target = selection.getFirstTargetItem();
+		if (selection.getSourceItemCount() >= 1 && // at least one source item (no augmentations supported)
+				selection.getTargetItemCount() >= 1) {
+			// ensure that for composed properties the parent feature is the same
+			if (selection.getSourceItemCount() > 1) {
+				SchemaItem type = null;
+				for (SchemaItem item : selection.getSourceItems()) {
+					if (type == null) {
+						type = FilterUtils2.getParentTypeItem(item);
+					}
+					else {
+						SchemaItem type2 = FilterUtils2.getParentTypeItem(item);
+						if (!type.getDefinition().equals(type2.getDefinition())) { // TypeDefinition.equals
+							return false;
+						}
+					}
+				}
+			}
 			
-			ICell cell = selection.getAlignment(source, target);
+			ICell cell = selection.getAlignment(selection.getSourceItems(), selection.getTargetItems());
 			
 			return cell != null;
 		}

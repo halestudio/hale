@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
+import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
 
 /**
  * This class implemets a main page for the FilterWizard
@@ -42,7 +42,7 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
  * @author Anna Pitaev, Logica; Simon Templer, FhG IGD
  * @version $Id$
  */
-public class SimpleFilterWizardMainPage extends AbstractSingleCellWizardPage {
+public class SimpleFilterWizardMainPage extends AbstractSingleComposedCellWizardPage {
 
 	private final String initialCQL;
 	
@@ -113,7 +113,7 @@ public class SimpleFilterWizardMainPage extends AbstractSingleCellWizardPage {
 		
 		// variable list
 		
-		SchemaItem typeItem = FilterUtils2.getParentTypeItem(getParent().getSourceItem());
+		SchemaItem typeItem = FilterUtils2.getParentTypeItem(getParent().getSourceItems().iterator().next());
 		Set<String> variables = new TreeSet<String>();
 		if (typeItem.hasChildren()) {
 			for (SchemaItem child : typeItem.getChildren()) {

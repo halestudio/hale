@@ -11,7 +11,6 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.filter;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,14 +18,9 @@ import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.omwg.Restriction;
-import eu.esdihumboldt.hale.models.utils.EntityUtils;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
+import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 
 /**
@@ -36,7 +30,7 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
  * @author Anna Pitaev, Logica; Simon Templer, Fraunhofer IGD
  * @version $Id$
  */
-public class SimpleFilterWizard extends AbstractSingleCellWizard {
+public class SimpleFilterWizard extends AbstractSingleComposedCellWizard {
 
 	//private static Logger _log = Logger.getLogger(SimpleFilterWizard.class);
 
@@ -47,14 +41,14 @@ public class SimpleFilterWizard extends AbstractSingleCellWizard {
 	private Restriction resUsed;
 
 	/**
-	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(AlignmentInfo)
+	 * @see AbstractSingleComposedCellWizard#AbstractSingleComposedCellWizard(AlignmentInfo)
 	 */
 	public SimpleFilterWizard(AlignmentInfo selection) {
 		super(selection);
 	}
 	
 	/**
-	 * @see AbstractSingleCellWizard#init()
+	 * @see AbstractSingleComposedCellWizard#init()
 	 */
 	@Override
 	protected void init() {
@@ -102,7 +96,7 @@ public class SimpleFilterWizard extends AbstractSingleCellWizard {
 			Restriction r = new Restriction(null);
 			r.setCqlStr(mainPage.getCQL());
 			
-			FilterUtils2.addRestriction(r, cell.getEntity1(), getSourceItem());
+			FilterUtils2.addRestriction(r, cell.getEntity1(), getSourceItems().iterator().next());
 		}
 		
 		return true;
