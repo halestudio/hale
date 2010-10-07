@@ -62,7 +62,7 @@ public class SimpleFilterWizard extends AbstractSingleCellWizard {
 		
 		String initialCQL = null;
 		
-		restrictions = FilterUtils.getRestrictions(cell.getEntity1());
+		restrictions = FilterUtils2.getRestrictions(cell.getEntity1());
 		
 		if (restrictions != null) {
 			resUsed = null;
@@ -102,7 +102,7 @@ public class SimpleFilterWizard extends AbstractSingleCellWizard {
 			Restriction r = new Restriction(null);
 			r.setCqlStr(mainPage.getCQL());
 			
-			FilterUtils.addRestriction(r, cell.getEntity1(), getSourceItem());
+			FilterUtils2.addRestriction(r, cell.getEntity1(), getSourceItem());
 		}
 		
 		return true;

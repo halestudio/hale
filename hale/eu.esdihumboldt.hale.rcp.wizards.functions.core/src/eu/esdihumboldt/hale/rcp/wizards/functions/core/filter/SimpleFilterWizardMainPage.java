@@ -113,7 +113,7 @@ public class SimpleFilterWizardMainPage extends AbstractSingleCellWizardPage {
 		
 		// variable list
 		
-		SchemaItem typeItem = FilterUtils.getParentTypeItem(getParent().getSourceItem());
+		SchemaItem typeItem = FilterUtils2.getParentTypeItem(getParent().getSourceItem());
 		Set<String> variables = new TreeSet<String>();
 		if (typeItem.hasChildren()) {
 			for (SchemaItem child : typeItem.getChildren()) {

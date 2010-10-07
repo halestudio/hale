@@ -18,16 +18,14 @@ import java.util.Map;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.filter.text.cql2.CQL;
-import org.geotools.filter.text.cql2.CQLException;
 import org.opengis.feature.Feature;
+import org.opengis.filter.Filter;
 
 import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.transformer.FilterUtils;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.omwg.Restriction;
 
 /**
  * The {@link InstanceCreationHandler} collects those methods used to control
@@ -143,6 +141,7 @@ public class InstanceCreationHandler {
 	 * @param ai
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public static InstanceAggregateMap manyToOne(String targetFtName,
 			String sourceFtName,
 			Map<String, List<Feature>> partitionedSourceFeatures,
@@ -181,22 +180,11 @@ public class InstanceCreationHandler {
 	@SuppressWarnings("unchecked")
 	private static FeatureCollection filterCollection(FeatureCollection sourceFeatures, ICell renameCell) {
 		// check for any relevant filters on the cell
-		String cql = null;
-		List<Restriction> avclist = ((FeatureClass)renameCell.getEntity1()).getAttributeValueCondition();
-		if (avclist != null 
-				&& avclist.size() > 0 
-				&& avclist.get(0) != null) {
-			cql = avclist.get(0).getCqlStr();
-		}
+		Filter filter = FilterUtils.getFilter(renameCell.getEntity1());
 		
 		// now, create filter and apply to create a subCollection
-		if (cql != null) {
-			try {
-				sourceFeatures = sourceFeatures.subCollection(CQL.toFilter(cql));
-			} catch (CQLException e) {
-				throw new RuntimeException("The given CQL string could not be " +
-						"used to build a Filter: ", e);
-			}
+		if (filter != null) {
+			sourceFeatures = sourceFeatures.subCollection(filter);
 		}
 		return sourceFeatures;
 	}

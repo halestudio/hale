@@ -31,11 +31,13 @@ import org.geotools.util.SimpleInternationalString;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.filter.Filter;
 import org.opengis.metadata.lineage.Lineage;
 
 import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.transformer.FilterUtils;
 import eu.esdihumboldt.cst.transformer.capabilities.impl.FunctionDescriptionImpl;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory.ToleranceLevel;
@@ -244,6 +246,7 @@ public class SchemaTranslationController {
 		try {
 			// create CstFunction by using CstFunctionFactory
 			CstFunction cstf = CstFunctionFactory.getInstance().getCstFunction(cell);
+			Filter filter = FilterUtils.getFilter(cell.getEntity1());
 		
 			// invoke CstFunction with Target Features List. 
 			if (cstf != null && !cstf.getClass().equals(RenameFeatureFunction.class)) {
@@ -252,8 +255,17 @@ public class SchemaTranslationController {
 					for (Feature target : transformMap.getTransformedFeatures().get(i)) {
 						String error = null;
 						try {
+							Feature source = transformMap.getSourceFeatures().get(i);
+							
+							// check if source feature matches filter
+							if (filter != null) {
+								if (!filter.evaluate(source)) {
+									continue;
+								}
+							}
+							
 							cstf.transform(
-									transformMap.getSourceFeatures().get(i), 
+									source, 
 									target);
 							
 						} catch (Exception e) {
@@ -282,13 +294,13 @@ public class SchemaTranslationController {
 			}
 		}
 	}
-	
-	
+
 	private void applyAttributiveFunction(ICell cell,
 			InstanceAggregateMap transformMap) {
 		try {
 			// create CstFunction by using CstFunctionFactory
 			CstFunction cstf = CstFunctionFactory.getInstance().getCstFunction(cell);
+			Filter filter = FilterUtils.getFilter(cell.getEntity1());
 		
 			// invoke CstFunction with Target Features List. 
 			if (cstf != null && !cstf.getClass().equals(RenameFeatureFunction.class)) {
@@ -296,7 +308,16 @@ public class SchemaTranslationController {
 				for (int i = 0; i < transformMap.getTransformedFeatures().size(); i++) {
 					String error = null;
 					try {
-						cstf.transform(transformMap.getSourceFeatures().get(i), 
+						Feature source = transformMap.getSourceFeatures().get(i);
+						
+						// check if source feature matches filter
+						if (filter != null) {
+							if (!filter.evaluate(source)) {
+								continue;
+							}
+						}
+						
+						cstf.transform(source, 
 								transformMap.getTransformedFeatures().get(i));
 					} catch (Exception e) {
 						if (this.strict) {
@@ -329,6 +350,7 @@ public class SchemaTranslationController {
 		try {
 			// create CstFunction by using CstFunctionFactory
 			CstFunction cstf = CstFunctionFactory.getInstance().getCstFunction(cell);
+			Filter filter = FilterUtils.getFilter(cell.getEntity1());
 		
 			// invoke CstFunction with Target Features List. 
 			if (cstf != null && !cstf.getClass().equals(RenameFeatureFunction.class)) {
@@ -336,7 +358,16 @@ public class SchemaTranslationController {
 				for (int i = 0; i < transformMap.getTransformedFeatures().size(); i++) {
 					String error = null;
 					try {
-						cstf.transform(transformMap.getSourceFeatures().get(i), 
+						Feature source = transformMap.getSourceFeatures().get(i);
+						
+						// check if source feature matches filter
+						if (filter != null) {
+							if (!filter.evaluate(source)) {
+								continue;
+							}
+						}
+						
+						cstf.transform(source, 
 								transformMap.getTransformedFeatures().get(i));
 					} catch (Exception e) {
 						if (this.strict) {
