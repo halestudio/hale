@@ -255,6 +255,10 @@ public class ProjectGenerator {
 			// can use relative path
 			return file.substring(basePath.length());
 		}
+		else if (new File(basePath, file).exists()) {
+			// already a relative path
+			return file;
+		}
 		else {
 			// return the path as URI
 			return new File(file).toURI().toString();
