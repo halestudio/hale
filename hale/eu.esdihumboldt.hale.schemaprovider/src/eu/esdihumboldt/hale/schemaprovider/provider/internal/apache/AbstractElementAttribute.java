@@ -110,6 +110,11 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 //				!Geometry.class.isAssignableFrom(typeDef.getType(null).getBinding())) {
 //			return createDefaultGeometryType(typeDef);
 //		}
+		// geometric primitive property types
+		if (typeDef != null && typeDef.getName().getLocalPart().equals("GeometricPrimitivePropertyType") &&
+				!Geometry.class.isAssignableFrom(typeDef.getType(null).getBinding())) {
+			return createDefaultGeometryType(typeDef);
+		}
 		
 		// default: leave type untouched
 		return typeDef;
