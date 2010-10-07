@@ -11,11 +11,17 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.core;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TreeSet;
 
+import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -28,7 +34,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
@@ -59,15 +64,22 @@ public class ConcatenationOfAttributesWizardPage extends
 	/**
 	 * 
 	 */
-	ListViewer listViewer;
+	private ListViewer listViewer;
 
 	/**
 	 * 
 	 */
 	private Text seperatorText;
+	
+	/**
+	 * The initial separator
+	 */
+	private String separator = ":";
+
+	private List<String> parts = new ArrayList<String>();
 
 	/**
-	 * @param pageName
+	 * @see AbstractSingleComposedCellWizardPage#AbstractSingleComposedCellWizardPage(String)
 	 */
 	public ConcatenationOfAttributesWizardPage(String pageName) {
 		super(pageName);
@@ -75,8 +87,7 @@ public class ConcatenationOfAttributesWizardPage extends
 	}
 
 	/**
-	 * @param parent
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+	 * @see IDialogPage#createControl(Composite)
 	 */
 	@Override
 	public void createControl(Composite parent) {
@@ -95,7 +106,7 @@ public class ConcatenationOfAttributesWizardPage extends
 		this.seperatorText = new Text(sourceGroup, SWT.SINGLE | SWT.BORDER);
 		this.seperatorText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
-		this.seperatorText.setText(":");
+		this.seperatorText.setText(separator);
 		TreeSet<SchemaItem> sourceTreeSet = (TreeSet<SchemaItem>) getParent()
 				.getSourceItems();
 		String[] localNames = new String[sourceTreeSet.size()];
@@ -123,8 +134,8 @@ public class ConcatenationOfAttributesWizardPage extends
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (!combo.getText().equals("")) {
-					ConcatenationOfAttributesWizardPage.this.listViewer
-							.add(combo.getText());
+					parts.add(combo.getText());
+					listViewer.refresh();
 				}
 			}
 		});
@@ -138,24 +149,22 @@ public class ConcatenationOfAttributesWizardPage extends
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if (ConcatenationOfAttributesWizardPage.this.listViewer
-						.getList().getItems().length != 0) {
-					for (String selection : ConcatenationOfAttributesWizardPage.this.listViewer
-							.getList().getSelection()) {
-						ConcatenationOfAttributesWizardPage.this.listViewer
-								.getList().remove(selection);
-					}
+				ISelection sel = listViewer.getSelection();
+				if (!sel.isEmpty() && sel instanceof IStructuredSelection) {
+					String item = (String) ((IStructuredSelection) sel).getFirstElement();
+					parts.remove(item);
+					listViewer.refresh();
 				}
 			}
 		});
 
 		// list
-		List list = new List(page, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL
+		this.listViewer = new ListViewer(page, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL
 				| SWT.BORDER);
-		list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
-		this.listViewer = new ListViewer(list);
+		listViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 		this.listViewer.setContentProvider(new ArrayContentProvider());
-
+		listViewer.setLabelProvider(new LabelProvider());
+		listViewer.setInput(parts);
 	}
 
 	/**
@@ -184,6 +193,24 @@ public class ConcatenationOfAttributesWizardPage extends
 	 */
 	public void setSeperatorText(Text seperatorText) {
 		this.seperatorText = seperatorText;
+	}
+
+	/**
+	 * Set the initial separator
+	 * 
+	 * @param separator the separator
+	 */
+	public void setSeparator(String separator) {
+		this.separator = separator;
+	}
+
+	/**
+	 * Set the initial parts
+	 * 
+	 * @param parts the parts
+	 */
+	public void setParts(List<String> parts) {
+		this.parts = parts;
 	}
 
 }
