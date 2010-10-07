@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.TableColumn;
 
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
+import eu.esdihumboldt.cst.transformer.FilterUtils;
 import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.hale.rcp.utils.EntityHelper;
 
@@ -71,12 +71,12 @@ public class CellDetails implements ISelectionChangedListener {
 					List<TableItem> items = new ArrayList<TableItem>();
 					
 					items.add(new TableItem(Messages.CellDetails_Entity1Title, EntityHelper.getShortName(cell.getCell().getEntity1())));
-					if (cell.getCell().getEntity1() instanceof FeatureClass) {
-						FeatureClass feature = (FeatureClass) cell.getCell().getEntity1();
-						if (feature.getAttributeValueCondition() != null) {
-							for (Restriction res : feature.getAttributeValueCondition()) {
-								items.add(new TableItem(Messages.CellDetails_FilterTitle, res.getCqlStr()));
-							}
+					
+					// add filters
+					List<Restriction> restrictions = FilterUtils.getRestrictions(cell.getCell().getEntity1());
+					if (restrictions != null) {
+						for (Restriction res : restrictions) {
+							items.add(new TableItem(Messages.CellDetails_FilterTitle, res.getCqlStr()));
 						}
 					}
 					
