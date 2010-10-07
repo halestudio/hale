@@ -54,7 +54,7 @@ public class SimpleFilterWizardMainPage extends AbstractSingleCellWizardPage {
 	 * 
 	 * @param pageName the page name
 	 * @param title the page title
-	 * @param initialCQL 
+	 * @param initialCQL the initial CQL string
 	 */
 	protected SimpleFilterWizardMainPage(String pageName, String title, String initialCQL) {
 		super(pageName, title, (ImageDescriptor) null);
@@ -113,9 +113,10 @@ public class SimpleFilterWizardMainPage extends AbstractSingleCellWizardPage {
 		
 		// variable list
 		
+		SchemaItem typeItem = FilterUtils.getParentTypeItem(getParent().getSourceItem());
 		Set<String> variables = new TreeSet<String>();
-		if (getParent().getSourceItem().hasChildren()) {
-			for (SchemaItem child : getParent().getSourceItem().getChildren()) {
+		if (typeItem.hasChildren()) {
+			for (SchemaItem child : typeItem.getChildren()) {
 				variables.add(child.getName().getLocalPart());
 			}
 		}

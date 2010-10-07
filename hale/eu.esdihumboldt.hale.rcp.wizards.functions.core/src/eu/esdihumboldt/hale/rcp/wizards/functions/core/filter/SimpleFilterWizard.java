@@ -19,10 +19,13 @@ import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.omwg.Restriction;
+import eu.esdihumboldt.hale.models.utils.EntityUtils;
+import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 
@@ -59,15 +62,7 @@ public class SimpleFilterWizard extends AbstractSingleCellWizard {
 		
 		String initialCQL = null;
 		
-		if (cell.getEntity1() instanceof FeatureClass) {
-			restrictions = ((FeatureClass) cell.getEntity1()).getAttributeValueCondition();
-		}
-		else if (cell.getEntity1() instanceof Property) {
-			restrictions = ((Property) cell.getEntity1()).getValueCondition();
-		}
-		else {
-			restrictions = null;
-		}
+		restrictions = FilterUtils.getRestrictions(cell.getEntity1());
 		
 		if (restrictions != null) {
 			resUsed = null;
@@ -107,16 +102,7 @@ public class SimpleFilterWizard extends AbstractSingleCellWizard {
 			Restriction r = new Restriction(null);
 			r.setCqlStr(mainPage.getCQL());
 			
-			if (cell.getEntity1() instanceof FeatureClass) {
-				FeatureClass fc = (FeatureClass)cell.getEntity1();
-				if (fc.getAttributeValueCondition() == null) {
-					fc.setAttributeValueCondition(new ArrayList<Restriction>());
-				}
-				fc.getAttributeValueCondition().add(r);
-			}
-			if (cell.getEntity1() instanceof Property) {
-				((Property)cell.getEntity1()).getValueCondition().add(r);
-			}
+			FilterUtils.addRestriction(r, cell.getEntity1(), getSourceItem());
 		}
 		
 		return true;
@@ -125,6 +111,7 @@ public class SimpleFilterWizard extends AbstractSingleCellWizard {
 	/**
 	 * @see IWizard#addPages()
 	 */
+	@Override
 	public void addPages() {
 		super.addPages();
 		addPage(mainPage);

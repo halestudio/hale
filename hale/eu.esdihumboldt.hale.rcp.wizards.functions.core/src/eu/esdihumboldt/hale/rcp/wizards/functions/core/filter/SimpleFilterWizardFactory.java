@@ -45,11 +45,6 @@ public class SimpleFilterWizardFactory implements FunctionWizardFactory {
 			SchemaItem source = selection.getFirstSourceItem();
 			SchemaItem target = selection.getFirstTargetItem();
 			
-			if (!source.isFeatureType() || !target.isFeatureType()) {
-				// only feature types supported
-				return false;
-			}
-			
 			ICell cell = selection.getAlignment(source, target);
 			
 			return cell != null;
