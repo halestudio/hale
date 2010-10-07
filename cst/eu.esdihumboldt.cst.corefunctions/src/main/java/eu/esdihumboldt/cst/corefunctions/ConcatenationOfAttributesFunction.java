@@ -12,6 +12,7 @@
 package eu.esdihumboldt.cst.corefunctions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.opengis.feature.Feature;
@@ -25,6 +26,8 @@ import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.goml.rdf.DetailedAbout;
+import eu.esdihumboldt.tools.FeatureInspector;
 
 /**
  * ConcatenationOfAttributesFunction
@@ -60,14 +63,12 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 	private String concatenation;
 	
 	/**
-	 * 
+	 * The target property
 	 */
-	private String targetPropertyname;
+	private Property targetProperty;
 
 	/**
-	 * @param cell
-	 * @return true
-	 * @see eu.esdihumboldt.cst.CstFunction#configure(eu.esdihumboldt.cst.align.ICell)
+	 * @see CstFunction#configure(ICell)
 	 */
 	@Override
 	public boolean configure(ICell cell) {
@@ -76,13 +77,12 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 		this.seperator = t.getParameterMap().get(SEPERATOR).getValue();
 		this.concatenation = t.getParameterMap().get(CONCATENATION).getValue();
 		
-		this.targetPropertyname = ((Property)cell.getEntity2()).getLocalname();
+		this.targetProperty = (Property)cell.getEntity2();
 		return true;
 	}
 
 	/**
-	 * @return the parameterCell
-	 * @see eu.esdihumboldt.cst.CstFunction#getParameters()
+	 * @see CstFunction#getParameters()
 	 */
 	@Override
 	public ICell getParameters() {
@@ -123,40 +123,30 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 	}
 
 	/**
-	 * @param source
-	 * @param target
-	 * @return target
-	 * @see eu.esdihumboldt.cst.CstFunction#transform(org.opengis.feature.Feature, org.opengis.feature.Feature)
+	 * @see CstFunction#transform(Feature, Feature)
 	 */
 	@Override
 	public Feature transform(Feature source, Feature target) {
 		String[] concat = this.concatenation.split(INTERNALSEPERATOR);
 		String finalConcatString = "";
-//		boolean firstElement = true;
 		for (String thisElement : concat) {
-			org.opengis.feature.Property p = source.getProperty(thisElement);
-//			if (!firstElement) {
-//				finalConcatString += this.seperator;
-//			}
+			String[] properties = thisElement.split(String.valueOf(DetailedAbout.PROPERTY_DELIMITER));
+			Object value = FeatureInspector.getPropertyValue(source, Arrays.asList(properties), null);
+			
 			if (finalConcatString.length() > 0) {
 				finalConcatString += this.seperator;
 			}
 			
-			if (p != null) {
-				if (p.getValue() != null) {
-					finalConcatString += p.getValue().toString();
-				}
-				else {
-					finalConcatString += "";
-				}
+			if (value != null) {
+				finalConcatString += value.toString();
 			}
 			else {
-				finalConcatString += thisElement;
+				finalConcatString += "";
 			}
-//			firstElement = false;
 		}
-		target.getProperty(this.targetPropertyname).setValue(finalConcatString);
-//		firstElement = true;
+		
+		FeatureInspector.setPropertyValue(target, targetProperty.getAbout(), finalConcatString);
+		
 		return target;
 	}
 
