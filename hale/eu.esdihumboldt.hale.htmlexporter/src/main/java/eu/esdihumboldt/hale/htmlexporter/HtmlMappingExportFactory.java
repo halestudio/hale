@@ -80,27 +80,27 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 	/**
 	 * Contains ICells from type retype
 	 */
-	List<ICell> retypes = new ArrayList<ICell>();
+	private List<ICell> retypes = new ArrayList<ICell>();
 	
 	/**
 	 * Contains ICells from type transformation
 	 */
-	List<ICell> transformations = new ArrayList<ICell>();
+	private List<ICell> transformations = new ArrayList<ICell>();
 	
 	/**
 	 * Contains ICells from type augmentation
 	 */
-	List<ICell> augmentations = new ArrayList<ICell>();
+	private List<ICell> augmentations = new ArrayList<ICell>();
 	
 	/**
 	 * 
 	 */
-	Collection<SchemaElement> sourceSchema;
+	private Collection<SchemaElement> sourceSchema;
 	
 	/**
 	 * 
 	 */
-	Collection<SchemaElement> targetSchema;
+	private Collection<SchemaElement> targetSchema;
 
 	/**
 	 * @param alignment
@@ -249,8 +249,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			}
 			
 			//Create CSS export file
-			String cssPathFile = htmlOutputFile.getPath().replace(htmlOutputFile.getName(), "");
-			File cssOutputFile = new File(cssPathFile+"style.css");
+			File cssOutputFile = new File(filesDir, "style.css");
 			 try {
 				this.byteArrayToFile(cssOutputFile, cssByteArray);
 			} catch (FileNotFoundException e) {
@@ -273,7 +272,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			
 			//Create headline picture
 			
-			File headlineOutputFile = new File(cssPathFile+"bg-headline.png");
+			File headlineOutputFile = new File(filesDir, "bg-headline.png");
 			 try {
 				this.byteArrayToFile(headlineOutputFile, headlineByteArray);
 			} catch (FileNotFoundException e) {
@@ -296,7 +295,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			
 			//Create link picture
 			
-			File linkOutputFile = new File(cssPathFile+"int_link.png");
+			File linkOutputFile = new File(filesDir, "int_link.png");
 			 try {
 				this.byteArrayToFile(linkOutputFile, linkByteArray);
 			} catch (FileNotFoundException e) {
@@ -399,14 +398,18 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		this.context.put("haleversion", "Hale Version : " + ((ps != null)?(ps.getHaleVersion()):("unknown")));
 		
 		this.context.put("sourceschema", "Source Schema Information : ");
-		this.context.put("sourceformalism", "<li>Formalism : "+this.alignment.getSchema1().getFormalism().getName()+"  <img src='int_link.png' alt='linkpicture'><a href='"+this.alignment.getSchema1().getFormalism().getLocation().toURL()+"'>"+this.alignment.getSchema1().getFormalism().getLocation().toString()+"</a></li>");
+		this.context.put("sourceformalism", "<li>Formalism : "+this.alignment.getSchema1().getFormalism().getName()
+				+"  <img src='" + filesSubDir +"/int_link.png' alt='linkpicture'><a href='"+this.alignment.getSchema1().getFormalism().getLocation().toURL()+"'>"+this.alignment.getSchema1().getFormalism().getLocation().toString()+"</a></li>");
 		this.context.put("sourcenamespace", "<li>Namespace : "+this.alignment.getSchema1().getAbout().getAbout()+"</li>");
 		this.context.put("sourcelocation", "<li>Schema Location : "+this.alignment.getSchema1().getLocation()+"</li>");
 		
 		this.context.put("targetschema", "Target Schema Information : ");
-		this.context.put("targetformalism", "<li>Formalism : "+this.alignment.getSchema2().getFormalism().getName()+"  <img src='int_link.png' alt='linkpicture'><a href='"+this.alignment.getSchema2().getFormalism().getLocation().toURL()+"'>"+this.alignment.getSchema2().getFormalism().getLocation().toString()+"</a></li>");
+		this.context.put("targetformalism", "<li>Formalism : "+this.alignment.getSchema2().getFormalism().getName()
+				+"  <img src='" + filesSubDir + "/int_link.png' alt='linkpicture'><a href='"+this.alignment.getSchema2().getFormalism().getLocation().toURL()+"'>"+this.alignment.getSchema2().getFormalism().getLocation().toString()+"</a></li>");
 		this.context.put("targetnamespace", "<li>Namespace : "+this.alignment.getSchema2().getAbout().getAbout()+"</li>");
 		this.context.put("targetlocation", "<li>Schema Location : "+this.alignment.getSchema2().getLocation()+"</li>");
+		
+		this.context.put("filesDir", filesSubDir);
 		
 		//Link-generator
 		Vector<String> linkListVector = new Vector<String>();
@@ -415,7 +418,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		for (Iterator<ICell> iterator = this.retypes.iterator();iterator.hasNext();) {
 			ICell cell = iterator.next();
 			String[] temp = this.entityNameSplitter(cell.getEntity2());
-			linkListVector.addElement("<li><img src='int_link.png' alt='linkpicture'><a href='#link"+j+"'>"+temp[0]+"</a></li>");
+			linkListVector.addElement("<li><img src='" + filesSubDir + "/int_link.png' alt='linkpicture'><a href='#link"+j+"'>"+temp[0]+"</a></li>");
 			j++;
 		}
 		this.context.put("linklist", linkListVector);
