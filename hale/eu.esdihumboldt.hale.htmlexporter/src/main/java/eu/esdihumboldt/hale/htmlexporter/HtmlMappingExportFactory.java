@@ -35,6 +35,8 @@ import org.apache.velocity.app.Velocity;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
@@ -108,7 +110,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 	 * @see eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider#export(eu.esdihumboldt.goml.align.Alignment, java.lang.String, java.util.Collection, java.util.Collection)
 	 */
 	@Override
-	public void export(Alignment alignment, String path,
+	public void export(final Alignment alignment, final String path,
 			Collection<SchemaElement> sourceSchema,
 			Collection<SchemaElement> targetSchema)
 			throws MappingExportException{
@@ -124,7 +126,19 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		this.sortAlignment();
 		
 		//Create the images of the cells
-		new MappingGraphView(alignment, this.makeSections(), this.pictureNames, path);
+		if (Display.getCurrent() != null) {
+			new MappingGraphView(alignment, this.makeSections(), this.pictureNames, path);
+		}
+		else {
+			Display display =  PlatformUI.getWorkbench().getDisplay();
+			display.syncExec(new Runnable() {
+				
+				@Override
+				public void run() {
+					new MappingGraphView(alignment, makeSections(), pictureNames, path);
+				}
+			});
+		}
 		
 		StringWriter stringWriter = new StringWriter();
 		this.context = new VelocityContext();
