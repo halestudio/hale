@@ -41,7 +41,7 @@ public class SaveAlignmentProjectWizardMainPage extends WizardPage {
 	
 	private Text projectName;
 	
-	private Text projectAuthor;
+//	private Text projectAuthor;
 
 	/**
 	 * @param string
@@ -118,11 +118,11 @@ public class SaveAlignmentProjectWizardMainPage extends WizardPage {
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
 		this.projectName.setText(Messages.SaveAlignmentProjectWizardMainPage_ProjectNameText);
 		this.projectName.setEditable(true);
-		this.projectAuthor = new Text(optionsGroup, SWT.BORDER | SWT.SINGLE);
-		this.projectAuthor.setLayoutData(new GridData(
-				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
-		this.projectAuthor.setText(Messages.SaveAlignmentProjectWizardMainPage_ProjectAuthorText);
-		this.projectAuthor.setEditable(true);
+//		this.projectAuthor = new Text(optionsGroup, SWT.BORDER | SWT.SINGLE);
+//		this.projectAuthor.setLayoutData(new GridData(
+//				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
+//		this.projectAuthor.setText(Messages.SaveAlignmentProjectWizardMainPage_ProjectAuthorText);
+//		this.projectAuthor.setEditable(true);
 		
 		setErrorMessage(null);	// should not initially have error message
 		super.setControl(selectionArea);
@@ -166,13 +166,13 @@ public class SaveAlignmentProjectWizardMainPage extends WizardPage {
 	 * @return the Name given for the Author of the project, or <code>null</code> 
 	 * if none was entered.
 	 */
-	public String getProjectAuthor() {
-		if (!this.projectAuthor.getText().equals("Project Author Name")) { //$NON-NLS-1$
-			return this.projectAuthor.getText();
-		}
-		else {
-			return null;
-		}
-	}
+//	public String getProjectAuthor() {
+//		if (!this.projectAuthor.getText().equals("Project Author Name")) { //$NON-NLS-1$
+//			return this.projectAuthor.getText();
+//		}
+//		else {
+//			return null;
+//		}
+//	}
 
 }
