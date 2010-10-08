@@ -41,6 +41,8 @@ public class SaveAlignmentProjectWizardMainPage extends WizardPage {
 	
 	private Text projectName;
 	
+	private String initialName = Messages.SaveAlignmentProjectWizardMainPage_ProjectNameText;
+	
 //	private Text projectAuthor;
 
 	/**
@@ -116,7 +118,7 @@ public class SaveAlignmentProjectWizardMainPage extends WizardPage {
 		this.projectName = new Text(optionsGroup, SWT.BORDER | SWT.SINGLE);
 		this.projectName.setLayoutData(new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
-		this.projectName.setText(Messages.SaveAlignmentProjectWizardMainPage_ProjectNameText);
+		this.projectName.setText(initialName);
 		this.projectName.setEditable(true);
 //		this.projectAuthor = new Text(optionsGroup, SWT.BORDER | SWT.SINGLE);
 //		this.projectAuthor.setLayoutData(new GridData(
@@ -160,6 +162,15 @@ public class SaveAlignmentProjectWizardMainPage extends WizardPage {
 		else {
 			return null;
 		}
+	}
+	
+	/**
+	 * Set the initial project name
+	 * 
+	 * @param initilName the initial project name
+	 */
+	public void setProjectName(String initilName) {
+		this.initialName = initilName;
 	}
 	
 	/**

@@ -48,6 +48,12 @@ public class SaveAlignmentProjectWizard
 				Messages.SaveAlignmentProjectWizard_SaveAlignmentTitle, Messages.SaveAlignmentProjectWizard_SaveAlignmentDescription); //NON-NLS-1
 		super.setWindowTitle(Messages.SaveAlignmentProjectWizard_WindowTitle); //NON-NLS-1
 		super.setNeedsProgressMonitor(true);
+		
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+		String name = ps.getProjectName();
+		if (name != null) {
+			mainPage.setProjectName(name);
+		}
 	}
 	
 	/**
