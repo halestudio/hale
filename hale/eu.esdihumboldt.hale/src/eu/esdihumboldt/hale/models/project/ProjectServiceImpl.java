@@ -74,6 +74,9 @@ public class ProjectServiceImpl
 	
 	private String projectName;
 	
+	//XXX there is no author defined in the HaleProject class
+//	private String projectAuthor;
+	
 	private String projectFile;
 	
 	private String appTitle;
@@ -184,6 +187,7 @@ public class ProjectServiceImpl
 	public synchronized void clean() {
 		projectFile = null;
 		projectName = null;
+//		projectAuthor = null;
 		changed = false;
 		updateWindowTitle();
 		
@@ -228,6 +232,7 @@ public class ProjectServiceImpl
 		
 		if (project != null) {
 			projectName = project.getName();
+//			projectAuthor = project.get
 			projectFile = filename;
 			changed = false;
 			updateWindowTitle();
@@ -383,6 +388,14 @@ public class ProjectServiceImpl
 		updateListeners();
 	}
 	
+	/**
+	 * @see ProjectService#getProjectName()
+	 */
+	@Override
+	public String getProjectName() {
+		return projectName;
+	}
+
 	/**
 	 * @see eu.esdihumboldt.hale.models.ProjectService#getHaleVersion()
 	 */

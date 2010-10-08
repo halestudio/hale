@@ -136,7 +136,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	/**
 	 * Contains the path for the pictures
 	 */
-	String path;
+	File dir;
 	
 	/**
 	 * Default constructor
@@ -150,11 +150,11 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	 * @param alignment
 	 * @param sections 
 	 * @param pictureNames 
-	 * @param path 
+	 * @param filesDir 
 	 */
-	public MappingGraphView(Alignment alignment, Vector<Vector<ICell>> sections, String pictureNames, String path){
+	public MappingGraphView(Alignment alignment, Vector<Vector<ICell>> sections, String pictureNames, File dir){
 		super();
-		this.path = path;
+		this.dir = dir;
 		this.sections = sections;
 		this.schemaSelectionInt = 4;
 		this.alignment = alignment;
@@ -699,7 +699,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 			this.mappingGraphNodeRenderer.drawNodeSections(alignmentVector);
 		
 			//Draws the graph as a png
-			this.drawGraphAsImage(path, this.pictureNames+"_Overview"+".png", 1000, k*30);
+			this.drawGraphAsImage(dir, this.pictureNames+"_Overview"+".png", 1000, k*30);
 			
 			//Clean up
 			this.mappingGraphModel.arrayReset();
@@ -731,7 +731,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 				this.mappingGraphNodeRenderer.drawNodeSections(sectionVector);
 			
 				//Draws the graph as a png
-				this.drawGraphAsImage(path, this.pictureNames+"_Section_"+f+".png", 1000, p*30);
+				this.drawGraphAsImage(dir, this.pictureNames+"_Section_"+f+".png", 1000, p*30);
 				
 				//Clean up
 				this.mappingGraphModel.arrayReset();
@@ -789,35 +789,38 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 
 	/**
 	 * Draws the graph as an PNG-image 
-	 * @param path 
+	 * @param dir 
 	 * @param fileName 
 	 * @param width 
 	 * @param height 
 	 */
-	public void drawGraphAsImage(String path, String fileName, int width, int height){
+	public void drawGraphAsImage(File dir, String fileName, int width, int height){
+		if (dir == null || fileName == null || fileName.isEmpty()) return;
 		
-		if(path != null && !path.isEmpty() && fileName != null && !fileName.isEmpty()){
-			Image drawImage = new Image(Display.getCurrent(), width, height);
-			File file = new File(path+fileName);
-			final GC gc = new GC(drawImage);
-			SWTGraphics graphics = new SWTGraphics(gc); 
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+		
+		Image drawImage = new Image(Display.getCurrent(), width, height);
+		File file = new File(dir, fileName);
+		final GC gc = new GC(drawImage);
+		SWTGraphics graphics = new SWTGraphics(gc); 
+		try {
+			gc.setAntialias(SWT.ON);
+			gc.setInterpolation(SWT.HIGH);
+			//Paint the graph to a image
+			IFigure root = this.graph.getRootLayer();
+			root.paint(graphics);
+			BufferedImage bufferedImage = SwingRcpUtilities.convertToAWT(drawImage.getImageData());
 			try {
-				gc.setAntialias(SWT.ON);
-				gc.setInterpolation(SWT.HIGH);
-				//Paint the graph to a image
-				IFigure root = this.graph.getRootLayer();
-				root.paint(graphics);
-				BufferedImage bufferedImage = SwingRcpUtilities.convertToAWT(drawImage.getImageData());
-				try {
-					ImageIO.write(bufferedImage, "png", file);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				ImageIO.write(bufferedImage, "png", file);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-			finally {
-				gc.dispose();
-				drawImage.dispose();
-			}
+		}
+		finally {
+			gc.dispose();
+			drawImage.dispose();
 		}
 	}
 		

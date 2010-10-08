@@ -46,6 +46,13 @@ public interface ProjectService extends UpdateService {
 	public String getHaleVersion();
 	
 	/**
+	 * Get the current's project name
+	 * 
+	 * @return the project name, may be <code>null</code>
+	 */
+	public String getProjectName();
+	
+	/**
 	 * Get if the project content is changed
 	 * 
 	 * @return if the project content is changed

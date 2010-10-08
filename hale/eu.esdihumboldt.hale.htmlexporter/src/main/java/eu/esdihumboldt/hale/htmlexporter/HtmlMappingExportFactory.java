@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -47,7 +48,7 @@ import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.omwg.Restriction;
-
+import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.rcp.views.mappingGraph.MappingGraphView;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportException;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider;
@@ -125,9 +126,12 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		//Sort the alignment
 		this.sortAlignment();
 		
+		final String filesSubDir = FilenameUtils.removeExtension(FilenameUtils.getName(path)) + "_files";
+		final File filesDir = new File(FilenameUtils.getFullPath(path), filesSubDir);
+		
 		//Create the images of the cells
 		if (Display.getCurrent() != null) {
-			new MappingGraphView(alignment, this.makeSections(), this.pictureNames, path);
+			new MappingGraphView(alignment, this.makeSections(), this.pictureNames, filesDir);
 		}
 		else {
 			Display display =  PlatformUI.getWorkbench().getDisplay();
@@ -135,7 +139,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 				
 				@Override
 				public void run() {
-					new MappingGraphView(alignment, makeSections(), pictureNames, path);
+					new MappingGraphView(alignment, makeSections(), pictureNames, filesDir);
 				}
 			});
 		}
@@ -188,7 +192,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			}
 			//Fill the context-variables with data
 			try {
-				this.fillContext();
+				this.fillContext(filesSubDir);
 			} catch (MalformedURLException e1) {
 				throw new RuntimeException(e1);
 			}
@@ -377,19 +381,22 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 	
 	 /**
 	 * Create context-variables and fills them with data
+	 * @param filesSubDir the sub-directory where the files reside
 	 * @throws MalformedURLException 
 	 */
-	private void fillContext() throws MalformedURLException {
+	private void fillContext(String filesSubDir) throws MalformedURLException {
 		Date date = new Date();
 		SimpleDateFormat dfm = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+		
 		//Head informations
 		this.context.put("title", "Mapping Documentation");
 		this.context.put("headline", "<h1>Mapping Documentation</h1>");
-		this.context.put("author", "Project Author : ");
-		this.context.put("project", "Project Name : ");
+		this.context.put("author", "Project Author : " + System.getProperty("user.name"));
+		this.context.put("project", "Project Name : " + ((ps != null && ps.getProjectName() != null)?(ps.getProjectName()):("")));
 		this.context.put("exportdate", "Export Date : "+ dfm.format(date));
-		this.context.put("haleversion", "Hale Version : ");
+		this.context.put("haleversion", "Hale Version : " + ((ps != null)?(ps.getHaleVersion()):("unknown")));
 		
 		this.context.put("sourceschema", "Source Schema Information : ");
 		this.context.put("sourceformalism", "<li>Formalism : "+this.alignment.getSchema1().getFormalism().getName()+"  <img src='int_link.png' alt='linkpicture'><a href='"+this.alignment.getSchema1().getFormalism().getLocation().toURL()+"'>"+this.alignment.getSchema1().getFormalism().getLocation().toString()+"</a></li>");
@@ -414,7 +421,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		this.context.put("linklist", linkListVector);
 		
 		//Overview picture
-		this.context.put("overviewpicture", "<img src='"+this.pictureNames+"_Overview"+".png'alt='Overview'>");
+		this.context.put("overviewpicture", "<img src='" + filesSubDir + "/" +this.pictureNames+"_Overview"+".png'alt='Overview'>");
 		
 		Vector<Vector<String>> cellListVector = new Vector<Vector<String>>();
 		Vector<String> cellVector;
@@ -438,7 +445,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			//Headline
 			cellVector.addElement("<h2>"+retypeTargetName[0]+"</h2>");
 			//Image
-			cellVector.addElement("<img src='"+this.pictureNames+"_Section_"+(e-1)+".png' alt='picture'>");
+			cellVector.addElement("<img src='" + filesSubDir + "/" +this.pictureNames+"_Section_"+(e-1)+".png' alt='picture'>");
 			//Header
 			cellVector.addElement("<h3>Retypes</h3>");
 			cellVector.addElement("<h4>"+retypeSourceName[0]+" to "+retypeTargetName[0]+"</h4>");
