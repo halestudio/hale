@@ -22,6 +22,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.goml.align.Alignment;
@@ -106,7 +107,7 @@ public class SaveAlignmentProjectWizardMainPage extends WizardPage {
 		
 		Group optionsGroup = new Group(parent, SWT.NONE);
 		optionsGroup.setText(Messages.SaveAlignmentProjectWizardMainPage_ProjectSavingText);
-		optionsGroup.setLayout(new GridLayout());
+		optionsGroup.setLayout(new GridLayout(2, false));
 		GridData optionsGroupGD = new GridData(GridData.VERTICAL_ALIGN_FILL
                 | GridData.HORIZONTAL_ALIGN_FILL);
 		optionsGroupGD.grabExcessHorizontalSpace = true;
@@ -115,9 +116,12 @@ public class SaveAlignmentProjectWizardMainPage extends WizardPage {
 		optionsGroup.setFont(parent.getFont());
 		
 		// enter a name for the project TODO: add other metadata
+		Label pnLabel = new Label(optionsGroup, SWT.NONE);
+		pnLabel.setText("Project name:");
+		pnLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
+		
 		this.projectName = new Text(optionsGroup, SWT.BORDER | SWT.SINGLE);
-		this.projectName.setLayoutData(new GridData(
-				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
+		this.projectName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		this.projectName.setText(initialName);
 		this.projectName.setEditable(true);
 //		this.projectAuthor = new Text(optionsGroup, SWT.BORDER | SWT.SINGLE);
