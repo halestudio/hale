@@ -104,7 +104,7 @@
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
 			<artifactId>commons</artifactId>
-			<version>3.0.5-SNAPSHOT</version>
+			<version>3.0.6-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>xerces</groupId>
