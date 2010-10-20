@@ -30,6 +30,7 @@ import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.ComplexType;
 
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
+import eu.esdihumboldt.hale.gmlparser.binding.MaskPropertyBinding;
 import eu.esdihumboldt.hale.gmlparser.binding.SimpleBindingWrapper;
 import eu.esdihumboldt.hale.gmlparser.binding.SimpleFeatureTypeBinding;
 import eu.esdihumboldt.hale.gmlparser.xs.HaleXSConfiguration;
@@ -130,6 +131,10 @@ public class HaleSchemaConfiguration extends Configuration {
 	    			//TODO ?
 	    			log.warn("No parser binding created for complex type " + name);
 	    		}
+	    		else if (hasElements(def)) {
+	    			// simple type binding that masks a complex type, e.g. geometry property types
+	    			bindings.put(name, new MaskPropertyBinding(name, type.getBinding()));
+	    		}
 	    		else {
 	    			// simple type
 	    			
@@ -170,6 +175,22 @@ public class HaleSchemaConfiguration extends Configuration {
 	    		}
     		}
     	}
+	}
+
+	/**
+	 * Determines if a type definition has any elements
+	 * 
+	 * @param def the type definitions
+	 * @return if the definition has any elements
+	 */
+	private boolean hasElements(TypeDefinition def) {
+		for (AttributeDefinition att : def.getAttributes()) {
+			if (att.isElement()) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	/**
