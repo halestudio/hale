@@ -766,7 +766,13 @@ public class ApacheSchemaProvider
 							if (t != null) {
 								Class<?> b = t.getBinding();
 								if (Geometry.class.isAssignableFrom(b)) {
-									type = t;
+									if (type == null) {
+										type = t;
+									}
+									else if (!type.getBinding().equals(b) && !type.getBinding().equals(Geometry.class)) {
+										// attribute type with geometry binding if multiple geometry properties with differen bindings are present
+										type = AbstractElementAttribute.createDefaultGeometryAttributeType(typeName);
+									}
 								}
 								else {
 									type = null;

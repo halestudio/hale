@@ -122,17 +122,28 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 	
 	private TypeDefinition createDefaultGeometryType(TypeDefinition typeDef) {
 		// create an attribute type with a geometry binding
-		AttributeTypeBuilder builder = new AttributeTypeBuilder();
-		builder.setBinding(Geometry.class);
-		builder.setName(getTypeName().getLocalPart());
-		builder.setNamespaceURI(getTypeName().getNamespaceURI());
-		builder.setNillable(true);
-		AttributeType attributeType = builder.buildType();
+		AttributeType attributeType = createDefaultGeometryAttributeType(getTypeName());
 		
 		TypeDefinition result = new TypeDefinition(getTypeName(), attributeType, typeDef.getSuperType());
 		result.setDescription(typeDef.getDescription());
 		result.setLocation(typeDef.getLocation());
 		return result;
+	}
+
+	/**
+	 * Create a default attribute type with a geometry binding
+	 * 
+	 * @param name the type name
+	 * 
+	 * @return the attribute type
+	 */
+	public static AttributeType createDefaultGeometryAttributeType(Name name) {
+		AttributeTypeBuilder builder = new AttributeTypeBuilder();
+		builder.setBinding(Geometry.class);
+		builder.setName(name.getLocalPart());
+		builder.setNamespaceURI(name.getNamespaceURI());
+		builder.setNillable(true);
+		return builder.buildType();
 	}
 
 	/**

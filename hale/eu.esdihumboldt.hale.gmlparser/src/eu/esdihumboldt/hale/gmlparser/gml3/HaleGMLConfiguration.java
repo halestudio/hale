@@ -45,6 +45,10 @@ public class HaleGMLConfiguration extends org.geotools.gml3.GMLConfiguration {
 		bindings.put(org.geotools.gml3.GML.MultiPolygonType, HaleMultiPolygonTypeBinding.class);
 		
 		bindings.put(org.geotools.gml3.GML.ReferenceType, HaleReferenceTypeBinding.class);
+		
+//		bindings.put(new QName("http://www.opengis.net/gml","CurvePropertyType"), HaleCurvePropertyTypeBinding.class);
+//		
+//		bindings.put(new QName("http://www.opengis.net/gml","AbstractRingPropertyType"), HaleAbstractRingPropertyTypeBinding.class);
 	}
 
 }
