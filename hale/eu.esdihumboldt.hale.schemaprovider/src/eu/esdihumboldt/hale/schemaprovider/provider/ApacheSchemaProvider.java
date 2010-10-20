@@ -755,13 +755,15 @@ public class ApacheSchemaProvider
 						AttributeDefinition def = it.next();
 						if (def.isElement() && def.getAttributeType() != null && def.getAttributeType().isAttributeTypeSet()) {
 							AttributeType t = def.getAttributeType().getType(null);
-							Class<?> b = t.getBinding();
-							if (Geometry.class.isAssignableFrom(b)) {
-								type = t;
-							}
-							else {
-								type = null;
-								break;
+							if (t != null) {
+								Class<?> b = t.getBinding();
+								if (Geometry.class.isAssignableFrom(b)) {
+									type = t;
+								}
+								else {
+									type = null;
+									break;
+								}
 							}
 						}
 					}
@@ -776,6 +778,13 @@ public class ApacheSchemaProvider
 				
 				// add type definition
 				featureTypes.put(typeName, typeDef);
+				
+				// types that are resolved later may need the type information associated to the schema element
+				for (SchemaElement element : elements.values()) {
+					if (element.getTypeName().equals(typeName)) {
+						element.setType(typeDef);
+					}
+				}
 			}
 		}
 		
