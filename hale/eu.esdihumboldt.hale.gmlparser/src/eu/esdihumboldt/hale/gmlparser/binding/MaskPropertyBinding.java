@@ -19,6 +19,8 @@ import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.geotools.xml.impl.InstanceBinding;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 /**
  * Binding that forwards a value from one child (the property that is masked by
  * the type associated to this binding)
@@ -69,7 +71,16 @@ public class MaskPropertyBinding extends AbstractComplexBinding
 	public Object parse(ElementInstance instance, Node node, Object value)
 			throws Exception {
 		
-		return node.getChildValue(binding);
+		Object result = node.getChildValue(binding);
+		
+		if (result == null && Geometry.class.isAssignableFrom(binding)) {
+			// special case geometry property type: search for other geometries
+			// example Polygon binding - but child value might be a multi-polygon
+			
+			result = node.getChildValue(Geometry.class);
+		}
+		
+		return result;
 	}
 
 }
