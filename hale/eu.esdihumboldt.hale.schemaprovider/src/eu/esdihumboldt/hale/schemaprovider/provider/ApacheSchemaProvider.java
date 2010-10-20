@@ -747,6 +747,29 @@ public class ApacheSchemaProvider
 						typeDef.setType(superType.getType(null));
 					}
 				}
+				// special case geometry property types: use a geometry binding if all elements have geometry bindings
+				else {
+					AttributeType type = null;
+					Iterator<AttributeDefinition> it = attributes.iterator();
+					while (it.hasNext()) {
+						AttributeDefinition def = it.next();
+						if (def.isElement() && def.getAttributeType() != null && def.getAttributeType().isAttributeTypeSet()) {
+							AttributeType t = def.getAttributeType().getType(null);
+							Class<?> b = t.getBinding();
+							if (Geometry.class.isAssignableFrom(b)) {
+								type = t;
+							}
+							else {
+								type = null;
+								break;
+							}
+						}
+					}
+					
+					if (type != null) {
+						typeDef.setType(type);
+					}
+				}
 				
 				// set additional properties
 				typeDef.setAbstract(((XmlSchemaComplexType) item).isAbstract());
