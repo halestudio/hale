@@ -27,6 +27,7 @@ import eu.esdihumboldt.cst.rdf.IAbout;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.DetailedAbout;
+import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 
@@ -47,14 +48,16 @@ public class AttributeItem extends TreeParent {
 	 * Creates a property item
 	 * 
 	 * @param attribute the attribute definition
+	 * @param schemaType the schema type
 	 */
-	public AttributeItem(AttributeDefinition attribute) {
+	public AttributeItem(AttributeDefinition attribute, SchemaType schemaType) {
 		super(
 				attribute.getName() + ":<" + //$NON-NLS-1$
 					attribute.getAttributeType().getDisplayName() + ">",  //$NON-NLS-1$
 				new NameImpl(attribute.getDeclaringType().getIdentifier(), attribute.getName()), 
 				determineType(attribute), 
-				attribute.getAttributeType().getType(null));
+				attribute.getAttributeType().getType(null),
+				schemaType);
 		
 		this.attributeDefinition = attribute;
 	}

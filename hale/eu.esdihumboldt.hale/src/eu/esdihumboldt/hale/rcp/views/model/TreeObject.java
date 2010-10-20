@@ -15,6 +15,7 @@ import org.opengis.feature.type.Name;
 import org.opengis.feature.type.PropertyType;
 
 import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 
 /**
@@ -30,6 +31,7 @@ public abstract class TreeObject implements SchemaItem, Comparable<TreeObject> {
 	private TreeParent parent;
 	private final TreeObjectType type;
 	private final PropertyType propertyType;
+	private final SchemaType schemaType;
 	
 	private final Name name;
 	
@@ -40,13 +42,15 @@ public abstract class TreeObject implements SchemaItem, Comparable<TreeObject> {
 	 * @param name the entity name
 	 * @param type the entity type
 	 * @param propertyType the property type represented by this item, may be <code>null</code>
+	 * @param schemaType the schema type
 	 */
 	public TreeObject(String label, Name name, TreeObjectType type,
-			PropertyType propertyType) {
+			PropertyType propertyType, SchemaType schemaType) {
 		this.label = label;
 		this.type = type;
 		this.name = name;
 		this.propertyType = propertyType;
+		this.schemaType = schemaType;
 	}
 	
 	/**
@@ -63,6 +67,14 @@ public abstract class TreeObject implements SchemaItem, Comparable<TreeObject> {
 		}
 	}
 	
+	/**
+	 * @see SchemaItem#getSchemaType()
+	 */
+	@Override
+	public SchemaType getSchemaType() {
+		return schemaType;
+	}
+
 	/**
 	 * @see eu.esdihumboldt.hale.rcp.views.model.SchemaItem#isAttribute()
 	 */

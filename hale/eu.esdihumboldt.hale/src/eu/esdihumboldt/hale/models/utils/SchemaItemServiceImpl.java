@@ -238,15 +238,15 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 		aboutMap.clear();
 		
 		if (schema == null || schema.size() == 0) {
-			return new TreeParent("", null, TreeObjectType.ROOT, null);
+			return new TreeParent("", null, TreeObjectType.ROOT, null, schemaType);
 		}
 
 		// first, find out a few things about the schema to define the root
 		// type.
 		// TODO add metadata on schema here.
 		// TODO is should be possible to attach attributive data for a flyout.
-		TreeParent hidden_root = new TreeParent("ROOT", null, TreeObjectType.ROOT, null);
-		TreeParent root = new TreeParent(namespace, null, TreeObjectType.ROOT, null);
+		TreeParent hidden_root = new TreeParent("ROOT", null, TreeObjectType.ROOT, null, schemaType);
+		TreeParent root = new TreeParent(namespace, null, TreeObjectType.ROOT, null, schemaType);
 		hidden_root.addChild(root);
 		
 		// collect element types
@@ -286,7 +286,7 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 		// supertypes.
 		for (SchemaElement element : elements) {
 			if (element.getType().getSuperType() == null) {
-				root.addChild(buildSchemaTree(element, elements, namespace, itemMap, aboutMap));
+				root.addChild(buildSchemaTree(element, elements, namespace, itemMap, aboutMap, schemaType));
 			}
 		}
 
@@ -303,24 +303,26 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 	 * @param namespace the namespace
 	 * @param itemMap map to add the created items to (definition identifier mapped to item)
 	 * @param aboutMap map to add the created items to (about string mapped to item) 
+	 * @param schemaType the schema type
 	 * @return a {@link SchemaItem} that contains all Properties and all
 	 *         subtypes and their property, starting with the given FT.
 	 */
 	private TreeObject buildSchemaTree(SchemaElement element, 
 			Collection<SchemaElement> schema, String namespace, 
-			Map<String, SchemaItem> itemMap, Map<String, SchemaItem> aboutMap) {
-		ElementItem featureItem = new ElementItem(element);
+			Map<String, SchemaItem> itemMap, Map<String, SchemaItem> aboutMap,
+			SchemaType schemaType) {
+		ElementItem featureItem = new ElementItem(element, schemaType);
 		itemMap.put(element.getIdentifier(), featureItem);
 		aboutMap.put(featureItem.getEntity().getAbout().getAbout(), featureItem);
 		
 		// add properties
-		addProperties(featureItem, element.getType(), itemMap, aboutMap, new HashSet<TypeDefinition>());
+		addProperties(featureItem, element.getType(), itemMap, aboutMap, new HashSet<TypeDefinition>(), schemaType);
 		
 		// add children recursively
 		for (TypeDefinition subType : element.getType().getSubTypes()) {
 			for (SchemaElement subTypeElement : subType.getDeclaringElements()) {
 				if (schema.contains(subTypeElement)) {
-					featureItem.addChild(buildSchemaTree(subTypeElement, schema, namespace, itemMap, aboutMap));
+					featureItem.addChild(buildSchemaTree(subTypeElement, schema, namespace, itemMap, aboutMap, schemaType));
 				}
 			}
 		}
@@ -335,9 +337,11 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 	 * @param itemMap map to add the created items to (definition identifier mapped to item)
 	 * @param aboutMap map to add the created items to (about string mapped to item)
 	 * @param resolving the currently resolving types (to prevent loops)
+	 * @param schemaType the schema type
 	 */
 	private void addProperties(TreeParent parent, TypeDefinition type, Map<String, SchemaItem> itemMap,
-			Map<String, SchemaItem> aboutMap, Set<TypeDefinition> resolving) {
+			Map<String, SchemaItem> aboutMap, Set<TypeDefinition> resolving,
+			SchemaType schemaType) {
 		if (resolving.contains(type)) {
 			log.debug("Cycle in properties, skipping adding property items");
 		}
@@ -346,7 +350,7 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 			
 			for (AttributeDefinition attribute : type.getAttributes()) {
 				if (attribute.getAttributeType() != null) { // only properties with an associated type
-					AttributeItem property = new AttributeItem(attribute);
+					AttributeItem property = new AttributeItem(attribute, schemaType);
 					
 					if (itemMap != null) {
 						itemMap.put(attribute.getIdentifier(), property);
@@ -354,7 +358,8 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 					
 					parent.addChild(property);
 					
-					addProperties(property, attribute.getAttributeType(), null, aboutMap, new HashSet<TypeDefinition>(resolving)); // null map to prevent adding to item map (would be duplicate)
+					addProperties(property, attribute.getAttributeType(), null, 
+							aboutMap, new HashSet<TypeDefinition>(resolving), schemaType); // null map to prevent adding to item map (would be duplicate)
 					
 					aboutMap.put(property.getEntity().getAbout().getAbout(), property);
 				}

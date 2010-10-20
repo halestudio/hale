@@ -17,6 +17,7 @@ import org.opengis.feature.type.Name;
 import org.opengis.feature.type.PropertyType;
 
 import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 
@@ -34,6 +35,13 @@ public interface SchemaItem {
 	 * @return the item entity, null if determining the entity fails
 	 */
 	public abstract Entity getEntity();
+	
+	/**
+	 * Get the schema type
+	 * 
+	 * @return the schema type (source or target)
+	 */
+	public SchemaType getSchemaType();
 
 	/**
 	 * @return if the tree object represents an attribute

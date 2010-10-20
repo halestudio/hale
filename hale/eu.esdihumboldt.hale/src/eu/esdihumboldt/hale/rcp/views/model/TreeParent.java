@@ -17,6 +17,7 @@ import java.util.TreeSet;
 import org.opengis.feature.type.Name;
 import org.opengis.feature.type.PropertyType;
 
+import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 
 
@@ -37,10 +38,11 @@ public class TreeParent extends TreeObject{
 	 * @param name the item entity name
 	 * @param type the item entity type
 	 * @param propertyType the property type represented by this item, may be <code>null</code>
+	 * @param schemaType the schema type
 	 */
 	public TreeParent(String label, Name name, TreeObjectType type,
-			PropertyType propertyType) {
-		super(label, name, type, propertyType);
+			PropertyType propertyType, SchemaType schemaType) {
+		super(label, name, type, propertyType, schemaType);
 		children = new TreeSet<TreeObject>();
 	}
 	

@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.rcp.views.model;
 
+import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -31,13 +32,15 @@ public class ElementItem extends TreeParent {
 	 * Creates a element item
 	 * 
 	 * @param element the type definition
+	 * @param schemaType the schema type
 	 */
-	public ElementItem(SchemaElement element) {
+	public ElementItem(SchemaElement element, SchemaType schemaType) {
 		super(
 				element.getElementName().getLocalPart(), 
 				element.getElementName(), 
 				determineType(element.getType()), 
-				element.getAttributeType(null));
+				element.getAttributeType(null),
+				schemaType);
 		
 		this.element = element;
 	}
