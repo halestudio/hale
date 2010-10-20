@@ -43,8 +43,8 @@ public abstract class DefaultGeometries {
 	public static String getDefaultGeometryName(Name typeName) {
 		try {
 			prefs.sync();
-			if (prefs.nodeExists(typeName.getNamespaceURI())) {
-				return prefs.node(typeName.getNamespaceURI()).get(typeName.getLocalPart(), null);
+			if (prefs.nodeExists(encodeNodeName(typeName.getNamespaceURI()))) {
+				return prefs.node(encodeNodeName(typeName.getNamespaceURI())).get(typeName.getLocalPart(), null);
 			}
 			else {
 				return null;
@@ -55,6 +55,13 @@ public abstract class DefaultGeometries {
 		}
 	}
 	
+	private static String encodeNodeName(String name) {
+		while (name.contains("//")) {
+			name = name.replaceAll("//", "/");
+		}
+		return name;
+	}
+	
 	/**
 	 * Set the default geometry property name for a given type
 	 * 
@@ -62,7 +69,7 @@ public abstract class DefaultGeometries {
 	 * @param propertyName the geometry property name
 	 */
 	public static void setDefaultGeometryName(Name typeName, String propertyName) {
-		prefs.node(typeName.getNamespaceURI()).put(typeName.getLocalPart(), propertyName);
+		prefs.node(encodeNodeName(typeName.getNamespaceURI())).put(typeName.getLocalPart(), propertyName);
 		try {
 			prefs.flush();
 		} catch (BackingStoreException e) {
