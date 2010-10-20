@@ -55,6 +55,8 @@ import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 import de.cs3d.util.logging.AGroup;
 import de.cs3d.util.logging.AGroupFactory;
 import de.cs3d.util.logging.ALogger;
@@ -730,10 +732,13 @@ public class ApacheSchemaProvider
 						reuseBinding = false;
 					}
 					
-					Iterator<AttributeDefinition> it = attributes.iterator();
-					while (reuseBinding && it.hasNext()) {
-						if (it.next().isElement()) {
-							reuseBinding = false;
+					// check if additional elements are defined
+					if (!Geometry.class.isAssignableFrom(superType.getType(null).getBinding())) { // special case: super type binding is Geometry -> ignore additional elements
+						Iterator<AttributeDefinition> it = attributes.iterator();
+						while (reuseBinding && it.hasNext()) {
+							if (it.next().isElement()) {
+								reuseBinding = false;
+							}
 						}
 					}
 					
