@@ -13,7 +13,6 @@
 package eu.esdihumboldt.hale.models.project;
 
 import java.io.File;
-import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,6 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
-import eu.esdihumboldt.hale.gmlparser.GmlHelper;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.InstanceService;
@@ -286,7 +284,7 @@ public class ProjectParser {
 				}
 				instanceService.addInstances(DatasetType.reference, 
 						InstanceDataImportWizard.loadGML(file.toURL(), conf, schemaService));
-				projectService.setInstanceDataPath(project.getInstanceData().getPath());
+				projectService.setInstanceDataPath(file.toString()); //project.getInstanceData().getPath());
 				projectService.setInstanceDataType(conf);
 				
 			} catch (Exception e) {
