@@ -20,7 +20,9 @@ import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geotools.gml3.GML;
 import org.geotools.gml3.GMLConfiguration;
+import org.geotools.gml3.bindings.SurfacePatchArrayPropertyTypeBinding;
 import org.geotools.xml.Binding;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.SimpleBinding;
@@ -33,6 +35,7 @@ import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.gmlparser.binding.MaskPropertyBinding;
 import eu.esdihumboldt.hale.gmlparser.binding.SimpleBindingWrapper;
 import eu.esdihumboldt.hale.gmlparser.binding.SimpleFeatureTypeBinding;
+import eu.esdihumboldt.hale.gmlparser.gml3.HaleGMLConfiguration;
 import eu.esdihumboldt.hale.gmlparser.xs.HaleXSConfiguration;
 import eu.esdihumboldt.hale.gmlparser.xs.HaleXSUnsignedByteBinding;
 import eu.esdihumboldt.hale.gmlparser.xs.HaleXSUnsignedIntBinding;
@@ -79,7 +82,7 @@ public class HaleSchemaConfiguration extends Configuration {
 		case GML3:
 			// fall through
 		default:
-			addDependency(new GMLConfiguration());
+			addDependency(new HaleGMLConfiguration());
 			break;
 		}
         
@@ -97,6 +100,9 @@ public class HaleSchemaConfiguration extends Configuration {
 		bindings.put(XS.UNSIGNEDINT, HaleXSUnsignedIntBinding.class);
 		bindings.put(XS.UNSIGNEDSHORT, HaleXSUnsignedShortBinding.class);
 		bindings.put(XS.UNSIGNEDBYTE, HaleXSUnsignedByteBinding.class);
+		
+		//XXX
+		bindings.put(GML.SurfacePatchArrayPropertyType, SurfacePatchArrayPropertyTypeBinding.class);
 		
 		// bindings based on type definitions
 		Set<TypeDefinition> defs = new HashSet<TypeDefinition>();

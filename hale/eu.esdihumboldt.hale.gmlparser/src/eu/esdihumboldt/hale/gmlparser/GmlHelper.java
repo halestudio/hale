@@ -31,12 +31,12 @@ import javax.xml.stream.events.XMLEvent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.gmlparser.gml3.HaleGMLConfiguration;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
@@ -132,7 +132,7 @@ public class GmlHelper {
 					break;
 				case GML3: // fall through
 				default: // default to GML3
-					conf = new GMLConfiguration();
+					conf = new HaleGMLConfiguration(); //new GMLConfiguration();
 				}
 			}
 			HaleGMLParser parser = new HaleGMLParser(conf);
