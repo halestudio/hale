@@ -748,7 +748,7 @@ public class ApacheSchemaProvider
 					}
 				}
 				// special case geometry property types: use a geometry binding if all elements have geometry bindings
-				else {
+				if (superType == null) { // only if no super type is defined XXX could be improved to check also for super types with no properties/elements 
 					AttributeType type = null;
 					Iterator<AttributeDefinition> it = attributes.iterator();
 					while (it.hasNext()) {
