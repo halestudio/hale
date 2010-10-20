@@ -29,12 +29,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
-import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
@@ -57,9 +57,14 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 	private Image attribOverlay = AbstractUIPlugin.imageDescriptorFromPlugin(
 				HALEActivator.PLUGIN_ID, "/icons/attrib_overlay2.gif").createImage();
 	
+	private Image defOverlay = AbstractUIPlugin.imageDescriptorFromPlugin(
+			HALEActivator.PLUGIN_ID, "/icons/def_overlay.gif").createImage();
+	
 	private final Map<String, Image> images = new HashMap<String, Image>();
 	
 	private final Map<String, Image> attribImages = new HashMap<String, Image>();
+	
+	private final Map<String, Image> defImages = new HashMap<String, Image>();
 	
 	@Override
 	public String getText(Object obj) {
@@ -121,8 +126,36 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 				image = attribImage;
 			}
 		}
+		// check for default geometries
+		else if (to.isAttribute() && to.getType() == TreeObjectType.GEOMETRIC_ATTRIBUTE 
+				&& to.getParent().isFeatureType() && isDefaultGeometry((FeatureType) to.getParent().getPropertyType(), to.getName().getLocalPart())) {
+			Image defImage = defImages.get(imageKey);
+			
+			if (defImage == null) {
+				Image copy = new Image(image.getDevice(), image.getBounds());
+				
+				// draw on image
+				GC gc = new GC(copy);
+				try {
+					gc.drawImage(image, 0, 0);
+					gc.drawImage(defOverlay, 0, 0);
+				} finally {
+					gc.dispose();
+				}
+				
+				image = copy;
+				defImages.put(imageKey, copy);
+			}
+			else {
+				image = defImage;
+			}
+		}
 		
 		return image;
+	}
+
+	private boolean isDefaultGeometry(FeatureType type, String propertyName) {
+		return type.getGeometryDescriptor().getLocalName().equals(propertyName);
 	}
 
 	/**
@@ -271,6 +304,11 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 			image.dispose();
 		}
 		attribImages.clear();
+		
+		for (Image image : defImages.values()) {
+			image.dispose();
+		}
+		defImages.clear();
 			
 		super.dispose();
 	}
