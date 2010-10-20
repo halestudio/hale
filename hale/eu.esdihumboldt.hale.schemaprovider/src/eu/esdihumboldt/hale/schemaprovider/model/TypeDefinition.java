@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.prefs.Preferences;
 
 import org.apache.log4j.Logger;
 import org.geotools.feature.NameImpl;
@@ -341,7 +342,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	 * 
 	 * @return the preferred geometry descriptor
 	 */
-	private static AttributeDescriptor getDefaultGeometryDescriptor(
+	private AttributeDescriptor getDefaultGeometryDescriptor(
 			List<AttributeDescriptor> geometryCandidates) {
 		if (geometryCandidates == null || geometryCandidates.isEmpty()) {
 			return null;
@@ -358,6 +359,18 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 					
 					String name1 = o1.getLocalName();
 					String name2 = o2.getLocalName();
+					
+					String defName = DefaultGeometries.getDefaultGeometryName(getName());
+					if (defName != null) {
+						// name from preferences check
+						
+						if (name1.equals(defName)) {
+							result = -1;
+						}
+						else if (name2.equals(defName)) {
+							result = 1;
+						}
+					}
 					
 					if (result == 0) {
 						// name check
