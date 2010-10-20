@@ -12,9 +12,30 @@
 
 package eu.esdihumboldt.hale.rcp.views.model;
 
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URL;
+
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.opengis.feature.type.Name;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+import de.cs3d.util.logging.ATransaction;
+import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
+import eu.esdihumboldt.hale.models.InstanceService;
+import eu.esdihumboldt.hale.models.ProjectService;
+import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
+import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.rcp.wizards.io.InstanceDataImportWizard;
+import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.model.DefaultGeometries;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
@@ -28,6 +49,76 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @version $Id$ 
  */
 public class SetAsDefaultGeometryAction extends Action {
+	
+	private static final ALogger log = ALoggerFactory.getLogger(SetAsDefaultGeometryAction.class);
+
+	/**
+	 * Reload source schema and instances
+	 */
+	public static class ReloadSourceRunner implements IRunnableWithProgress {
+
+		/**
+		 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
+		 */
+		@Override
+		public void run(final IProgressMonitor monitor)
+				throws InvocationTargetException, InterruptedException {
+			monitor.beginTask("Reloading source schema and data", IProgressMonitor.UNKNOWN);
+			ATransaction trans = log.begin("Reloading source schema and data");
+			try {
+				// reload source schema and instance data
+				InstanceService instanceService = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+				ProjectService projectService = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+				SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+				
+				// remember instance data info
+				ConfigurationType conf = projectService.getInstanceDataType();
+				String instanceLoc = projectService.getInstanceDataPath();
+				
+				// clean instance data
+				instanceService.cleanInstances();
+	
+				// remember source schema info
+				String schemaLoc = projectService.getSourceSchemaPath();
+				
+				// clean source schema
+				schemaService.cleanSourceSchema();
+				
+				// reload schema
+				try {
+					schemaService.loadSchema(new URI(schemaLoc), (String)null, SchemaType.SOURCE, new ProgressIndicator() {
+						
+						@Override
+						public void setProgress(int percent) {
+							// do nothing
+						}
+						
+						@Override
+						public void setCurrentTask(String taskName) {
+							monitor.subTask(taskName);
+						}
+					});
+				} catch (Exception e) {
+					log.userError("Error reloading source schema", e);
+				}
+				
+				// readd instances
+				monitor.subTask("Loading instances");
+				if (instanceLoc != null && !instanceLoc.isEmpty()) {
+					try {
+						instanceService.addInstances(DatasetType.reference, 
+								InstanceDataImportWizard.loadGML(new URL(instanceLoc), conf, schemaService));
+					} catch (Exception e) {
+						log.userError("Error reloading source data", e);
+					}
+				}
+			} finally {
+				trans.end();
+				monitor.done();
+			}
+		}
+
+	}
 
 	private final SchemaItem item;
 	
@@ -51,9 +142,34 @@ public class SetAsDefaultGeometryAction extends Action {
 		Definition def = parent.getDefinition();
 		Name typeName = (def instanceof TypeDefinition)?(((TypeDefinition) def).getName()):(((SchemaElement) def).getTypeName());
 		
+		IRunnableWithProgress runner = null;
+		Display display = Display.getCurrent();
+		
+		// reload schema and instances
+		switch (item.getSchemaType()) {
+		case SOURCE:
+			if (!MessageDialog.openQuestion(display.getActiveShell(), "Change default geometry", 
+					"Reloading source schema and data is needed when changing" +
+					" the default geometry. Do you want to proceed?")) {
+				return;
+			}
+			runner = new ReloadSourceRunner();
+			break;
+		case TARGET:
+			// reload target schema and transformations
+			break;
+		}
+		
 		DefaultGeometries.setDefaultGeometryName(typeName, propertyName);
 		
-		//TODO reload schema and instances
+		if (runner != null) {
+			try {
+				new ProgressMonitorDialog(display.getActiveShell()).run(true, false, runner);
+			} catch (Exception e) {
+				// ignore
+				log.error("Error starting reload process", e);
+			}
+		}
 	}
 
 }
