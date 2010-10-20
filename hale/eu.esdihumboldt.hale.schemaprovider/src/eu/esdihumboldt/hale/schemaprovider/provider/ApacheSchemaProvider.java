@@ -733,7 +733,11 @@ public class ApacheSchemaProvider
 					}
 					
 					// check if additional elements are defined
-					if (!Geometry.class.isAssignableFrom(superType.getType(null).getBinding())) { // special case: super type binding is Geometry -> ignore additional elements
+					
+					if (Geometry.class.isAssignableFrom(superType.getType(null).getBinding())) {
+						// special case: super type binding is Geometry -> ignore additional elements
+					}
+					else {
 						Iterator<AttributeDefinition> it = attributes.iterator();
 						while (reuseBinding && it.hasNext()) {
 							if (it.next().isElement()) {
@@ -742,7 +746,11 @@ public class ApacheSchemaProvider
 						}
 					}
 					
-					if (reuseBinding) {
+					AttributeType pt = TypeUtil.getPredefinedAttributeType(typeName);
+					if (pt != null && !pt.getBinding().equals(Collection.class) && !pt.getBinding().equals(Object.class)) { //TODO if binding is collection search for super type with better binding?
+						typeDef.setType(pt); // assures e.g. point binding for PointType instead of reusing the geometry binding from the super type
+					}
+					else if (reuseBinding) {
 						// reuse attribute type
 						typeDef.setType(superType.getType(null));
 					}

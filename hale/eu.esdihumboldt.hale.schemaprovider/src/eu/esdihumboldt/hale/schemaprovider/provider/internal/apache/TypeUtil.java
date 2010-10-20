@@ -172,12 +172,7 @@ public abstract class TypeUtil {
 			TypeDefinition schemaType = schemaTypes.getSchemaType(typeName);
 			
 			// GML bindings
-			AttributeType gmlType = gml3Schema.get(typeName);
-			if (gmlType == null && typeName.getNamespaceURI().equals(NAMESPACE_GML3_2)) {
-				// try again with GML2/3 namespace
-				gmlType = gml3Schema.get(new NameImpl(NAMESPACE_GML, typeName.getLocalPart()));
-				//FIXME replicate type with correct namespace?
-			}
+			AttributeType gmlType = getGMLAttributeType(typeName);
 			if (gmlType != null) {
 				if (schemaType != null) {
 					AttributeType t = schemaType.getType(null);
@@ -207,6 +202,40 @@ public abstract class TypeUtil {
 		}
 	}
 	
+	/**
+	 * Get the attribute type for an GML type
+	 * 
+	 * @param typeName the type name
+	 * 
+	 * @return the attribute type or <code>null</code>
+	 */
+	public static AttributeType getGMLAttributeType(Name typeName) {
+		AttributeType gmlType = gml3Schema.get(typeName);
+		if (gmlType == null && typeName.getNamespaceURI().equals(NAMESPACE_GML3_2)) {
+			// try again with GML2/3 namespace
+			gmlType = gml3Schema.get(new NameImpl(NAMESPACE_GML, typeName.getLocalPart()));
+			//FIXME replicate type with correct namespace?
+		}
+		return gmlType;
+	}
+	
+	/**
+	 * Get the predefined attribute type (GML or XS) with the given type name
+	 * 
+	 * @param typeName the type name
+	 * 
+	 * @return the attribute type or <code>null</code>
+	 */
+	public static AttributeType getPredefinedAttributeType(Name typeName) {
+		AttributeType result = xsSchema.get(typeName);
+		
+		if (result == null) {
+			result = getGMLAttributeType(typeName);
+		}
+		
+		return result;
+	}
+
 	/**
 	 * Returns the attribute type for an enumeration.
 	 * 
