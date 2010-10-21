@@ -28,6 +28,7 @@ import javax.xml.namespace.QName;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.resource.StringConverter;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.styling.SLDTransformer;
 import org.geotools.styling.Style;
@@ -44,8 +45,8 @@ import eu.esdihumboldt.hale.models.project.generated.MappedSchema;
 import eu.esdihumboldt.hale.models.project.generated.Styles;
 import eu.esdihumboldt.hale.models.project.generated.Task;
 import eu.esdihumboldt.hale.models.project.generated.TaskStatus;
+import eu.esdihumboldt.hale.models.style.StylePreferences;
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
-import eu.esdihumboldt.hale.rcp.views.map.MapView;
 import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.task.TaskUserData;
@@ -195,14 +196,12 @@ public class ProjectGenerator {
 			styles.setPath(getRelativeLocation(stylePath, basePath));
 			
 			// background
-			MapView map = (MapView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(MapView.ID);
-			if (map != null) {
-				if (!map.getPainter().isDefaultBackground()) {
-					styles.setBackground(StringConverter.asString(map.getPainter().getBackground()));
-				}
-				else {
-					styles.setBackground(null);
-				}
+			RGB back = styleService.getBackground();
+			if (back.equals(StylePreferences.getDefaultBackground())) {
+				styles.setBackground(null);
+			}
+			else {
+				styles.setBackground(StringConverter.asString(back));
 			}
 			
 			hproject.setStyles(styles);

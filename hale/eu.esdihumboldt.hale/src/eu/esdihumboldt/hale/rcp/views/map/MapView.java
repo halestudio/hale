@@ -36,10 +36,12 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.map.style.DropdownAction;
 import eu.esdihumboldt.hale.rcp.views.map.style.LoadStylesAction;
@@ -103,11 +105,12 @@ public class MapView extends ViewPart {
 
 			@Override
 			public void run() {
+				StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 				ColorDialog dialog = new ColorDialog(Display.getCurrent().getActiveShell());
-				dialog.setRGB(painter.getBackground());
+				dialog.setRGB(ss.getBackground());
 				RGB color = dialog.open();
 				if (color != null) {
-					painter.setBackground(color);
+					ss.setBackground(color);
 				}
 			}
 			

@@ -26,7 +26,6 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.StringConverter;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 import de.cs3d.util.logging.ALogger;
@@ -47,7 +46,6 @@ import eu.esdihumboldt.hale.models.project.generated.Task;
 import eu.esdihumboldt.hale.models.project.generated.TaskStatus;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
-import eu.esdihumboldt.hale.rcp.views.map.MapView;
 import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
 import eu.esdihumboldt.hale.rcp.wizards.io.InstanceDataImportWizard;
 import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
@@ -242,25 +240,7 @@ public class ProjectParser {
 			}
 			// background
 			final String color = project.getStyles().getBackground();
-			if (Display.getCurrent() != null) {
-				MapView map = (MapView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(MapView.ID);
-				if (map != null) {
-					map.getPainter().setBackground((color == null)?(null):(StringConverter.asRGB(color)));
-				}
-			}
-			else {
-				final Display display = PlatformUI.getWorkbench().getDisplay();
-				display.syncExec(new Runnable() {
-					
-					@Override
-					public void run() {
-						MapView map = (MapView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(MapView.ID);
-						if (map != null) {
-							map.getPainter().setBackground((color == null)?(null):(StringConverter.asRGB(color)));
-						}
-					}
-				});
-			}
+			styleService.setBackground((color == null)?(null):(StringConverter.asRGB(color)));
 		}
 		
 		// third, load instances.

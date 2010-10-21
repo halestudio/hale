@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Queue;
 
 import org.apache.log4j.Logger;
+import org.eclipse.swt.graphics.RGB;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Fill;
@@ -89,6 +90,8 @@ public class StyleServiceImpl extends AbstractUpdateService
 	 * Queued styles
 	 */
 	private final Queue<FeatureTypeStyle> queuedStyles = new LinkedList<FeatureTypeStyle>();
+
+	private RGB background = null;
 	
 	// Constructor, instance accessor ..........................................
 	
@@ -466,6 +469,29 @@ public class StyleServiceImpl extends AbstractUpdateService
 		}
 	}
 	
+	/**
+	 * @see StyleService#getBackground()
+	 */
+	@Override
+	public RGB getBackground() {
+		if (background == null) {
+			return StylePreferences.getDefaultBackground();
+		}
+		else {
+			return background;
+		}
+	}
+
+	/**
+	 * @see StyleService#setBackground(RGB)
+	 */
+	@Override
+	public void setBackground(RGB color) {
+		this.background = color;
+		
+		updateListeners();
+	}
+
 	/**
 	 * @see StyleService#clearStyles()
 	 */

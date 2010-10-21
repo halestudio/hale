@@ -13,6 +13,7 @@ package eu.esdihumboldt.hale.models;
 
 import java.net.URL;
 
+import org.eclipse.swt.graphics.RGB;
 import org.geotools.styling.Style;
 import org.opengis.feature.type.FeatureType;
 
@@ -94,5 +95,19 @@ public interface StyleService
 	 * @return the feature type style or <code>null</code>
 	 */
 	public Style getDefinedStyle(FeatureType ft);
+	
+	/**
+	 * Get the map background
+	 * 
+	 * @return the map background color
+	 */
+	public RGB getBackground();
+	
+	/**
+	 * Set the map background
+	 * 
+	 * @param color the map background color
+	 */
+	public void setBackground(RGB color);
 
 }

@@ -202,7 +202,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 			}
 		});
 		
-		StyleService styles = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+		final StyleService styles = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 		styles.addListener(styleListener = new HaleServiceListener() {
 			
 			@SuppressWarnings("unchecked")
@@ -210,6 +210,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 			public void update(UpdateMessage message) {
 				synchronized (FeatureTilePainter.this) {
 					if (Display.getCurrent() != null) {
+						background = styles.getBackground();
 						resetTiles();
 						refresh();
 					}
@@ -219,6 +220,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 							
 							@Override
 							public void run() {
+								background = styles.getBackground();
 								resetTiles();
 								refresh();
 							}
@@ -691,6 +693,17 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	}
 
 	/**
+	 * @see AbstractTilePainter#updateMap()
+	 */
+	@Override
+	public void updateMap() {
+		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+		background = ss.getBackground();
+			
+		super.updateMap();
+	}
+
+	/**
 	 * @return the invertSplit
 	 */
 	public boolean isInvertSplit() {
@@ -718,7 +731,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	/**
 	 * @return the background
 	 */
-	public RGB getBackground() {
+	private RGB getBackground() {
 		if (background != null) {
 			return background;
 		}
@@ -731,7 +744,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	 * @param background the background to set, <code>null</code> to reset it to
 	 *   the default background
 	 */
-	public void setBackground(RGB background) {
+	private void setBackground(RGB background) {
 		if (background == null) return;
 		
 		this.background = background;
