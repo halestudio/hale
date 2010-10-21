@@ -234,18 +234,28 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 		List<ICell> cells = as.getCell(entity);
 		
 		List<ITransformation> transformations = new ArrayList<ITransformation>();
+		List<ITransformation> augmentations = new ArrayList<ITransformation>();
 		for (ICell cell : cells) {
 			ITransformation trans = cell.getEntity1().getTransformation();
 			if (trans != null) {
 				transformations.add(trans);
 			}
+			ITransformation augm = cell.getEntity2().getTransformation();
+			if (augm != null) {
+				augmentations.add(augm);
+			}
+		}
+		
+		boolean onlyAugmentations = transformations.isEmpty();
+		if (onlyAugmentations) {
+			transformations = augmentations;
 		}
 		
 		if (background) {
-			return getBackgroundColor(transformations);
+			return getBackgroundColor(transformations, onlyAugmentations);
 		}
 		else {
-			return getForegroundColor(transformations);
+			return getForegroundColor(transformations, onlyAugmentations);
 		}
 	}
 
@@ -253,9 +263,10 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 	 * Get the foreground color for an element with the given transformations
 	 * 
 	 * @param transformations the transformations
+	 * @param onlyAugmentations if the transformations are augmentations
 	 * @return the color's RGB values, <code>null</code> for the default color
 	 */
-	protected RGB getForegroundColor(List<ITransformation> transformations) {
+	protected RGB getForegroundColor(List<ITransformation> transformations, boolean onlyAugmentations) {
 		// default color
 		return null;
 	}
@@ -264,9 +275,10 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 	 * Get the background color for an element with the given transformations
 	 * 
 	 * @param transformations the transformations
+	 * @param onlyAugmentations if the transformations are augmentations
 	 * @return the color's RGB values, <code>null</code> for the default color
 	 */
-	protected RGB getBackgroundColor(List<ITransformation> transformations) {
+	protected RGB getBackgroundColor(List<ITransformation> transformations, boolean onlyAugmentations) {
 		Set<String> names = new HashSet<String>();
 		for (ITransformation trans : transformations) {
 			names.add(trans.getService().getLocation()); //XXX service is null!
@@ -277,8 +289,14 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 				return new RGB(150, 190, 120);
 			}
 			else {
-				// default color
-				return new RGB(190, 220, 170);
+				if (onlyAugmentations) {
+					// augmented cell
+					return new RGB(184, 181, 220);
+				}
+				else {
+					// default color
+					return new RGB(190, 220, 170);
+				}
 			}
 		}
 		
