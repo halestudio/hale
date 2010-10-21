@@ -24,6 +24,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.styling.Style;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
@@ -35,6 +36,7 @@ import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.rcp.wizards.io.InstanceDataImportWizard;
@@ -73,6 +75,10 @@ public class SetAsDefaultGeometryAction extends Action {
 				InstanceService instanceService = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 				ProjectService projectService = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
 				SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+				StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+				
+				// remember style
+				Style style = styleService.getStyle();
 				
 				// remember instance data info
 				ConfigurationType conf = projectService.getInstanceDataType();
@@ -104,6 +110,8 @@ public class SetAsDefaultGeometryAction extends Action {
 				} catch (Exception e) {
 					log.userError("Error reloading source schema", e);
 				}
+				
+				styleService.addStyles(style);
 				
 				// readd instances
 				monitor.subTask("Loading instances");
@@ -141,6 +149,10 @@ public class SetAsDefaultGeometryAction extends Action {
 				InstanceService instanceService = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 				ProjectService projectService = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
 				SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+				StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+				
+				// remember style
+				Style style = styleService.getStyle();
 
 				// remember instance data
 				FeatureCollection<FeatureType, Feature> instances = instanceService.getFeatures(DatasetType.reference);
@@ -171,6 +183,8 @@ public class SetAsDefaultGeometryAction extends Action {
 				} catch (Exception e) {
 					log.userError("Error reloading target schema", e);
 				}
+				
+				styleService.addStyles(style);
 				
 				// trigger retransformation
 				monitor.subTask("Transforming source data");
