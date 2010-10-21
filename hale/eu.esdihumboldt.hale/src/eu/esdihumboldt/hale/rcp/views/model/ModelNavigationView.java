@@ -290,8 +290,7 @@ public class ModelNavigationView extends ViewPart implements
 			@Override
 			public void update(UpdateMessage message) {
 				if (Display.getCurrent() != null) {
-					sourceSchemaViewer.refresh();
-					targetSchemaViewer.refresh();
+					refresh();
 				}
 				else {
 					final Display display = PlatformUI.getWorkbench().getDisplay();
@@ -299,8 +298,7 @@ public class ModelNavigationView extends ViewPart implements
 						
 						@Override
 						public void run() {
-							sourceSchemaViewer.refresh();
-							targetSchemaViewer.refresh();
+							refresh();
 						}
 					});
 				}
@@ -586,6 +584,14 @@ public class ModelNavigationView extends ViewPart implements
 		}
 		
 		super.dispose();
+	}
+
+	/**
+	 * Refresh both tree viewers
+	 */
+	public void refresh() {
+		sourceSchemaViewer.refresh();
+		targetSchemaViewer.refresh();
 	}
 
 }

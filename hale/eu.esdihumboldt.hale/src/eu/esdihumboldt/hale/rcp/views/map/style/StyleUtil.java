@@ -12,8 +12,11 @@
 
 package eu.esdihumboldt.hale.rcp.views.map.style;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.legend.Drawer;
 import org.geotools.styling.LineSymbolizer;
@@ -81,18 +84,15 @@ public abstract class StyleUtil {
 //    				getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(WIDTH, HEIGHT,
 //    				Transparency.TRANSLUCENT);
 			
-//			MapView map = (MapView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(MapView.ID);
-//			if (map != null) {
-//				RGB rgb = map.getPainter().getBackground();
-//				Color color = new Color(rgb.red, rgb.green, rgb.blue);
-//				Graphics2D g = image.createGraphics();
-//				try {
-//					g.setColor(color);
-//					g.fillRect(0, 0, WIDTH, HEIGHT);
-//				} finally {
-//					g.dispose();
-//				}
-//			}
+			RGB rgb = ss.getBackground();
+			Color color = new Color(rgb.red, rgb.green, rgb.blue);
+			Graphics2D g = image.createGraphics();
+			try {
+				g.setColor(color);
+				g.fillRect(0, 0, WIDTH, HEIGHT);
+			} finally {
+				g.dispose();
+			}
 			
 			d.drawDirect(image, feature, style);
 			return image;

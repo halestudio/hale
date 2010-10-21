@@ -21,6 +21,7 @@ import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.map.MapView;
+import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 
 /**
  * 
@@ -77,6 +78,11 @@ public class StylePreferencePage extends FieldEditorPreferencePage
 		MapView map = (MapView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(MapView.ID);
 		if (map != null) {
 			map.getPainter().updateMap(); //updateSelection();
+		}
+		// refresh schema explorer (for legend images change)
+		ModelNavigationView model = (ModelNavigationView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ModelNavigationView.ID);
+		if (model != null) {
+			model.refresh();
 		}
 		
 		return true;
