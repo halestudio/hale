@@ -181,6 +181,22 @@ public class StyleServiceImpl extends AbstractUpdateService
 	}
 	
 	/**
+	 * @see StyleService#getDefinedStyle(FeatureType)
+	 */
+	@SuppressWarnings("deprecation")
+	public Style getDefinedStyle(FeatureType ft) {
+		FeatureTypeStyle fts = styles.get(ft);
+		if (fts != null) {
+			Style style = styleFactory.createStyle();
+			style.addFeatureTypeStyle(fts);
+			return style;
+		}
+		else {
+			return null;
+		}
+	}
+	
+	/**
 	 * @see StyleService#getStyle()
 	 */
 	@SuppressWarnings("deprecation")

@@ -85,5 +85,14 @@ public interface StyleService
 	 * @return the style
 	 */
 	public Style getSelectionStyle(DatasetType type);
+	
+	/**
+	 * Get the defined style for the given feature type. If none is defined,
+	 * <code>null</code> will be returned.
+	 * 
+	 * @param ft the feature type
+	 * @return the feature type style or <code>null</code>
+	 */
+	public Style getDefinedStyle(FeatureType ft);
 
 }

@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.hale.rcp.views.model;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,6 +25,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
@@ -32,7 +34,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
 import eu.esdihumboldt.goml.align.Entity;
@@ -40,6 +41,8 @@ import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.swingrcpbridge.SwingRcpUtilities;
+import eu.esdihumboldt.hale.rcp.views.map.style.StyleUtil;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 
 /**
@@ -65,6 +68,8 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 	private final Map<String, Image> attribImages = new HashMap<String, Image>();
 	
 	private final Map<String, Image> defImages = new HashMap<String, Image>();
+	
+	private final Map<String, Image> styleImages = new HashMap<String, Image>();
 	
 	@Override
 	public String getText(Object obj) {
@@ -103,8 +108,28 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 			}
 		}
 		
+		// legend image
+		if (to.getType() == TreeObjectType.CONCRETE_FT && to.getPropertyType() instanceof FeatureType) {
+			FeatureType type = (FeatureType) to.getPropertyType();
+			BufferedImage img = StyleUtil.getLegendImage(type, true);
+			if (img != null) {
+				// replace image with style image
+				ImageData imgData = SwingRcpUtilities.convertToSWT(img);
+				image = new Image(Display.getCurrent(), imgData);
+				
+				String key = to.getName().getURI();
+				Image old = null;
+				if (styleImages.containsKey(key)) {
+					old = styleImages.get(key);
+				}
+				styleImages.put(key, image);
+				if (old != null) {
+					old.dispose(); // ok here?
+				}
+			}
+		}
 		// check for inline attributes
-		if (to instanceof AttributeItem && ((AttributeItem) to).getAttributeDefinition().isAttribute()) {
+		else if (to instanceof AttributeItem && ((AttributeItem) to).getAttributeDefinition().isAttribute()) {
 			Image attribImage = attribImages.get(imageKey);
 			
 			if (attribImage == null) {
@@ -327,12 +352,19 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 			image.dispose();
 		}
 		defImages.clear();
+		
+		for (Image image : styleImages.values()) {
+			image.dispose();
+		}
+		styleImages.clear();
 			
 		super.dispose();
 	}
 	
 	/**
-	 * @param tot
+	 * Get the image for a tree object
+	 * 
+	 * @param tot the tree object type
 	 * @return the right image
 	 */
 	public static String getImageforTreeObjectType(TreeObjectType tot) {
@@ -356,36 +388,6 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 			imageKey = "geometry_attribute.png"; //$NON-NLS-1$
 		}
 		else if (tot.equals(TreeObjectType.COMPLEX_ATTRIBUTE)) {
-			// TODO add image for complex attributes
-		}
-		return imageKey;
-	}
-	
-	/**
-	 * @param entity
-	 * @return the right image
-	 */
-	public static String getImageforTreeObjectType(IEntity entity) {
-		String imageKey = null;
-		if (entity.equals(TreeObjectType.ABSTRACT_FT)) {
-			imageKey = "abstract_ft.png"; //$NON-NLS-1$
-		}
-		else if (entity.equals(TreeObjectType.CONCRETE_FT)) {
-			imageKey = "concrete_ft.png"; //$NON-NLS-1$
-		}
-		else if (entity.equals(TreeObjectType.PROPERTY_TYPE)) {
-			//TODO add image for property types
-		}
-		else if (entity.equals(TreeObjectType.STRING_ATTRIBUTE)) {
-			imageKey = "string_attribute.png"; //$NON-NLS-1$
-		} 
-		else if (entity.equals(TreeObjectType.NUMERIC_ATTRIBUTE)) {
-			imageKey = "number_attribute.png"; //$NON-NLS-1$
-		}
-		else if (entity.equals(TreeObjectType.GEOMETRIC_ATTRIBUTE)) {
-			imageKey = "geometry_attribute.png"; //$NON-NLS-1$
-		}
-		else if (entity.equals(TreeObjectType.COMPLEX_ATTRIBUTE)) {
 			// TODO add image for complex attributes
 		}
 		return imageKey;

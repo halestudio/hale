@@ -52,6 +52,7 @@ import org.eclipse.ui.part.WorkbenchPart;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.schema.SchemaServiceListener;
@@ -306,6 +307,10 @@ public class ModelNavigationView extends ViewPart implements
 			}
 			
 		});
+		
+		// also add the alignment listener to the style service (for refreshing icons when style changes)
+		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+		styleService.addListener(alignmentListener);
 		
 		MenuManager sourceMenuManager = new MenuManager();
 		sourceMenuManager.setRemoveAllWhenShown(true);
@@ -569,6 +574,8 @@ public class ModelNavigationView extends ViewPart implements
 		if (alignmentListener != null) {
 			AlignmentService as = (AlignmentService) getSite().getService(AlignmentService.class);
 			as.removeListener(alignmentListener);
+			StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+			styleService.removeListener(alignmentListener);
 		}
 		
 		if (functionImage != null) {
