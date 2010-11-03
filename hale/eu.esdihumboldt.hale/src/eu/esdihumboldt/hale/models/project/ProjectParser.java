@@ -31,6 +31,10 @@ import org.eclipse.ui.PlatformUI;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
+import eu.esdihumboldt.cst.align.ISchema;
+import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.goml.align.Formalism;
+import eu.esdihumboldt.goml.align.Schema;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.models.AlignmentService;
@@ -207,9 +211,22 @@ public class ProjectParser {
 			try {
 				OmlRdfReader reader = new OmlRdfReader();
 				URI omlPath = getLocation(project.getOmlPath(), basePath);
+				Alignment alignment = reader.read(omlPath.toURL());
 				
-				alignmentService.addOrUpdateAlignment(
-						reader.read(omlPath.toURL()));
+				// update alignment
+				// source schema location
+				ISchema orgSchema = alignment.getSchema1();
+				Schema newSchema = new Schema(projectService.getSourceSchemaPath(), (Formalism) orgSchema.getFormalism());
+				newSchema.setAbout(orgSchema.getAbout());
+				alignment.setSchema1(newSchema);
+				
+				// target schema location
+				orgSchema = alignment.getSchema2();
+				newSchema = new Schema(projectService.getTargetSchemaPath(), (Formalism) orgSchema.getFormalism());
+				newSchema.setAbout(orgSchema.getAbout());
+				alignment.setSchema2(newSchema);
+				
+				alignmentService.addOrUpdateAlignment(alignment);
 				_log.info("Number of loaded cells: " + alignmentService.getAlignment().getMap().size());
 			} catch (Exception e) {
 				// continue
