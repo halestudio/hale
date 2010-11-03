@@ -25,9 +25,13 @@ import org.eclipse.ui.PlatformUI;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.cst.align.ISchema;
 import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.goml.align.Formalism;
+import eu.esdihumboldt.goml.align.Schema;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.models.AlignmentService;
+import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
 
 /**
@@ -97,6 +101,21 @@ public class MappingImportWizard
 					}
 					
 					_log.info("Number of loaded cells: " + alignment.getMap().size()); //$NON-NLS-1$
+					
+					// update alignment
+					ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+					
+					// source schema
+					ISchema orgSchema = alignment.getSchema1();
+					Schema newSchema = new Schema(ps.getSourceSchemaPath(), (Formalism) orgSchema.getFormalism());
+					newSchema.setAbout(orgSchema.getAbout());
+					alignment.setSchema1(newSchema);
+					
+					// target schema
+					orgSchema = alignment.getSchema2();
+					newSchema = new Schema(ps.getTargetSchemaPath(), (Formalism) orgSchema.getFormalism());
+					newSchema.setAbout(orgSchema.getAbout());
+					alignment.setSchema2(newSchema);
 					
 					alignmentService.addOrUpdateAlignment(alignment);
 				}
