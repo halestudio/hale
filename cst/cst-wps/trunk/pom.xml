@@ -153,14 +153,14 @@
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
-			<id>artifactory.esdi-humboldt.eu</id>
+			<id>artifactory.esdi-humboldt.eu.release</id>
 			<name>plugins-releases</name>
 			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/plugins-releases
 			</url>
 		</pluginRepository>
 		<pluginRepository>
 			<snapshots />
-			<id>artifactory.esdi-humboldt.eu</id>
+			<id>artifactory.esdi-humboldt.eu.snapshot</id>
 			<name>plugins-snapshots</name>
 			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/plugins-snapshots
 			</url>
