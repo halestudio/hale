@@ -22,6 +22,11 @@ import eu.esdihumboldt.cst.iobridge.impl.DefaultCstServiceBridge;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 
+/**
+ * Test IOBridge in CST-WPS environment.
+ * @author jezekjan
+ *
+ */
 public class TestBridge {
 
 	

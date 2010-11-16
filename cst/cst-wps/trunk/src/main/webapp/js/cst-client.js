@@ -23,7 +23,7 @@ var init = function(){
     document.forms[0].onsubmit=function() {
                 document.forms[0].target = "upload_target";
                 document.getElementById("upload_target").contentWindow.location = "server.html";
-                return true;
+                return true;chgfh
     }
 
 
