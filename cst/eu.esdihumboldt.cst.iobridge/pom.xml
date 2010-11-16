@@ -48,7 +48,14 @@
 						<encoding>UTF-8</encoding> <!-- The -encoding argument for the Java compiler. -->
 					</configuration>
 				</plugin>
-				
+				<plugin>
+					<artifactId>maven-release-plugin</artifactId>
+					<configuration>
+						<tagBase>http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/tags</tagBase>
+					</configuration>
+				</plugin>
+
+
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -104,17 +111,17 @@
 			<artifactId>specification</artifactId>
 			<version>2.0.4-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
 			<artifactId>cst</artifactId>
 			<version>1.0.4-SNAPSHOT</version>
 			<exclusions>
-        	<exclusion>			  			
-  			<groupId>xerces</groupId>
-  			<artifactId>xerces</artifactId>  			
-			 </exclusion>
-     		 </exclusions> 
+				<exclusion>
+					<groupId>xerces</groupId>
+					<artifactId>xerces</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
