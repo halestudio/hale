@@ -8,7 +8,11 @@
 	<name>iobridge</name>
 	<description>A bridge between a WPS wrapper (e.g. pyWPS) and the CST Library that handles I/O of schemas, GML data and the OML file to use.</description>
 	<url>http://community.esdi-humboldt.eu/projects/show/cst</url>
-
+	<scm>
+		<connection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst.iobridge</connection>
+		<developerConnection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst.iobridge</developerConnection>
+		<url>http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst.iobridge</url>
+	</scm>
 
 	<build>
 		<directory>target</directory>
