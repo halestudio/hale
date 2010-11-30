@@ -199,6 +199,11 @@ public class AlignmentToModelAlignmentDigester extends
     		return null;
     	}
     	
+    	List<FeatureClass> filter = sourceEntity.getDomainRestriction();
+    	if (filter != null && !filter.isEmpty()) {
+    		report.setWarning(original, "Filters on attributive functions currently not supported in the RIF export");
+    	}
+    	
     	String function = sourceEntity.getTransformation().getService().getLocation();
     	if (!RenameAttributeFunction.class.getName().equals(function)) {
     		report.setWarning(original, "Function " + function + " not recognized");
@@ -254,26 +259,6 @@ public class AlignmentToModelAlignmentDigester extends
         
         return binding;
 	}
-
-//    private Map<String, XSElementDecl> buildFeatureMap(SchemaBrowser sourceBrowser)
-//            throws TranslationException
-//    {
-//        try
-//        {
-//            List<XSElementDecl> sourceFeatureDecls = sourceBrowser.getFeatureClassNames();
-//            Map<String, XSElementDecl> sourceFeatures = new LinkedHashMap<String, XSElementDecl>();
-//            for (XSElementDecl featureDecl : sourceFeatureDecls)
-//            {
-//                sourceFeatures.put(featureDecl.getTargetNamespace() + "/" + featureDecl.getName(),
-//                        featureDecl);
-//            }
-//            return sourceFeatures;
-//        }
-//        catch (SAXException e)
-//        {
-//            throw new TranslationException(e);
-//        }
-//    }
 
     private ModelClassMappingCell createCell(FeatureClass sourceEntity, FeatureClass targetEntity,
             Map<String, SchemaElement> sourceFeatures, Map<String, SchemaElement> targetFeatures)
