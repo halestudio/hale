@@ -142,8 +142,13 @@ public class AlignmentToModelAlignmentDigester extends
         }
         else {
 	        IDetailedAbout targetAbout = DetailedAbout.getDetailedAbout(targetEntity.getAbout(), true);
-	        return new ModelStaticAssignmentCell(
-	        		createAttributePath(targetAbout, targetFeatures), content);
+	        try {
+				return new ModelStaticAssignmentCell(
+						createAttributePath(targetAbout, targetFeatures), content);
+			} catch (TranslationException e) {
+				report.setFailed(original, e.getMessage());
+				return null;
+			}
         }
     }
 
@@ -158,9 +163,14 @@ public class AlignmentToModelAlignmentDigester extends
     	IDetailedAbout sourceAbout = DetailedAbout.getDetailedAbout(sourceEntity.getAbout(), true);
     	IDetailedAbout targetAbout = DetailedAbout.getDetailedAbout(targetEntity.getAbout(), true);
     	
-    	return new ModelAttributeMappingCell(
-    			createAttributePath(sourceAbout, sourceFeatures), 
-    			createAttributePath(targetAbout, targetFeatures));
+    	try {
+			return new ModelAttributeMappingCell(
+					createAttributePath(sourceAbout, sourceFeatures), 
+					createAttributePath(targetAbout, targetFeatures));
+		} catch (TranslationException e) {
+			report.setFailed(original, e.getMessage());
+			return null;
+		}
     }
 
     /**
@@ -169,14 +179,18 @@ public class AlignmentToModelAlignmentDigester extends
 	 * @param about the about
 	 * @param elements the available elements
 	 * @return the attribute path
+     * @throws TranslationException if the attribute path cannot be resolved
 	 */
 	private static GmlAttributePath createAttributePath(
 			IDetailedAbout about,
-			Map<String, SchemaElement> elements) {
+			Map<String, SchemaElement> elements) throws TranslationException {
         GmlAttributePath binding = new GmlAttributePath();
         
         // get the parent class for the entity
         SchemaElement entityParent = elements.get(about.getNamespace() + "/" + about.getFeatureClass());
+        if (entityParent == null) {
+        	throw new TranslationException("Element " + about.getFeatureClass() + " not found");
+        }
         TypeDefinition type = entityParent.getType();
         
         List<String> nestedParts = about.getProperties();
