@@ -44,6 +44,8 @@ public class MappingExportReport {
 	 */
 	public void setFailed(ICell cell, String reason) {
 		failed.put(cell, reason);
+		// remove warning if there was any associated with that cell
+		warnings.remove(cell);
 	}
 	
 	/**
