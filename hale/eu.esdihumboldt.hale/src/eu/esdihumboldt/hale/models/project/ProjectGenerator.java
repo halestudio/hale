@@ -137,12 +137,16 @@ public class ProjectGenerator {
 		if (projectService.getInstanceDataPath() != null) {
 			InstanceData id = new InstanceData();
 			id.setPath(getRelativeLocation(projectService.getInstanceDataPath(), basePath));
-			if (SelectCRSDialog.lastWasCode()) {
-				id.setEpsgcode(
-						SelectCRSDialog.getValue().getIdentifiers().iterator().next().toString());
-			}
-			else if (SelectCRSDialog.getValueWKT() != null) {
-				id.setWkt(SelectCRSDialog.getValueWKT());
+			try {
+				if (SelectCRSDialog.lastWasCode()) {
+					id.setEpsgcode(
+							SelectCRSDialog.getValue().getIdentifiers().iterator().next().toString());
+				}
+				else if (SelectCRSDialog.getValueWKT() != null) {
+					id.setWkt(SelectCRSDialog.getValueWKT());
+				}
+			} catch (Throwable e) {
+				// ignore errors when trying to set CRS
 			}
 			id.setType(projectService.getInstanceDataType().name());
 			hproject.setInstanceData(id);
