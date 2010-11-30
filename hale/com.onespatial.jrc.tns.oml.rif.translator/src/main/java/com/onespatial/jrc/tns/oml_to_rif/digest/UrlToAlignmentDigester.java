@@ -11,7 +11,6 @@
  */
 package com.onespatial.jrc.tns.oml_to_rif.digest;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 
