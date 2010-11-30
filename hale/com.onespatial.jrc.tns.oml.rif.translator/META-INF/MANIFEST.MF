@@ -14,7 +14,8 @@ Require-Bundle: eu.esdihumboldt.commons;bundle-version="3.0.5",
  eu.esdihumboldt.hale.prefixmapper;bundle-version="1.0.1",
  org.geotools;bundle-version="2.6.4",
  com.vividsolutions.jts;bundle-version="1.10.0",
- eu.esdihumboldt.hale.schemaprovider
+ eu.esdihumboldt.hale.schemaprovider,
+ eu.esdihumboldt.cst.corefunctions;bundle-version="1.0.3"
 Export-Package: com.onespatial.jrc.tns.oml_to_rif;version="1.0.0",
  com.onespatial.jrc.tns.oml_to_rif.api;version="1.0.0",
  com.onespatial.jrc.tns.oml_to_rif.digest,

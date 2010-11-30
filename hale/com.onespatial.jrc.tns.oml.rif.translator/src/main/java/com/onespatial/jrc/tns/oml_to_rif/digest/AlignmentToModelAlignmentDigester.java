@@ -28,6 +28,9 @@ import com.onespatial.jrc.tns.oml_to_rif.schema.GmlAttributePath;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.cst.corefunctions.ConstantValueFunction;
+import eu.esdihumboldt.cst.corefunctions.NilReasonFunction;
+import eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
@@ -51,7 +54,6 @@ public class AlignmentToModelAlignmentDigester extends
         AbstractFollowableTranslator<HaleAlignment, ModelAlignment>
 {
 
-	private static final String RENAME_ATTRIBUTE_FUNCTION = "eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction";
 	private final MappingExportReport report;
 	
     /**
@@ -133,25 +135,21 @@ public class AlignmentToModelAlignmentDigester extends
     private ModelStaticAssignmentCell createStaticAssignment(ICell original, 
     		Property targetEntity, Map<String, SchemaElement> targetFeatures)
     {
-        boolean supported = false;
-    	String content = null;
-        for (IParameter param : targetEntity.getTransformation().getParameters())
-        {
-            if (param.getName().equals("defaultValue"))
+    	String function = targetEntity.getTransformation().getService().getLocation();
+    	
+    	if (ConstantValueFunction.class.getName().equals(function)) {
+    		// constant value
+    		String content = null;
+            for (IParameter param : targetEntity.getTransformation().getParameters())
             {
-                content = param.getValue();
-                supported = true;
-                break;
+                if (param.getName().equals(ConstantValueFunction.DEFAULT_VALUE_PARAMETER_NAME))
+                {
+                    content = param.getValue();
+                    break;
+                }
             }
-        }
-        
-        if (!supported) {
-        	//XXX what about other augmentation types?
-        	report.setFailed(original, "Only default value augmentations supported");
-        	return null;
-        }
-        else {
-	        IDetailedAbout targetAbout = DetailedAbout.getDetailedAbout(targetEntity.getAbout(), true);
+            
+            IDetailedAbout targetAbout = DetailedAbout.getDetailedAbout(targetEntity.getAbout(), true);
 	        try {
 				return new ModelStaticAssignmentCell(
 						createAttributePath(targetAbout, targetFeatures), content);
@@ -159,7 +157,36 @@ public class AlignmentToModelAlignmentDigester extends
 				report.setFailed(original, e.getMessage());
 				return null;
 			}
-        }
+    	}
+    	else if (NilReasonFunction.class.getName().equals(function)) {
+    		// nil reason
+    		String reason = null;
+            for (IParameter param : targetEntity.getTransformation().getParameters())
+            {
+                if (param.getName().equals(NilReasonFunction.PARAMETER_NIL_REASON_TYPE))
+                {
+                    reason = param.getValue();
+                    break;
+                }
+            }
+            
+            IDetailedAbout targetAbout = DetailedAbout.getDetailedAbout(targetEntity.getAbout(), true);
+            List<String> properties = new ArrayList<String>(targetAbout.getProperties());
+            properties.add("nilReason"); //XXX this is an attribute does it make any difference?
+			targetAbout = new DetailedAbout(targetAbout.getNamespace(), targetAbout.getFeatureClass(), properties);
+	        try {
+				return new ModelStaticAssignmentCell(
+						createAttributePath(targetAbout, targetFeatures), reason);
+			} catch (TranslationException e) {
+				report.setFailed(original, e.getMessage());
+				return null;
+			}
+    	}
+    	else {
+    		// not supported
+    		report.setFailed(original, "Only default value augmentations supported");
+        	return null;
+    	}
     }
 
     private ModelAttributeMappingCell createAttribute(ICell original, Property sourceEntity, Property targetEntity,
@@ -171,7 +198,7 @@ public class AlignmentToModelAlignmentDigester extends
     	}
     	
     	String function = sourceEntity.getTransformation().getService().getLocation();
-    	if (!RENAME_ATTRIBUTE_FUNCTION.equals(function)) {
+    	if (!RenameAttributeFunction.class.getName().equals(function)) {
     		report.setWarning(original, "Function " + function + " not recognized");
     	}
     	
@@ -212,6 +239,10 @@ public class AlignmentToModelAlignmentDigester extends
 
         for (String attributeName : nestedParts) {
         	AttributeDefinition attDef = type.getAttribute(attributeName);
+        	
+        	if (attDef == null) {
+        		throw new TranslationException("Attribute " + attributeName + " not found");
+        	}
         	
         	GmlAttribute attribute = new GmlAttribute(attDef);
 			binding.add(attribute);
