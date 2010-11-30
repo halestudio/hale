@@ -221,7 +221,8 @@ public class AlignmentToModelAlignmentDigester extends
 
     private List<Restriction> findFilter(FeatureClass sourceEntity)
     {
-        return sourceEntity.getAttributeValueCondition();
+    	List<Restriction> result = sourceEntity.getAttributeValueCondition(); 
+        return (result == null)?(new ArrayList<Restriction>()):(result);
     }
 
     private XSElementDecl findFeatureElementDecl(FeatureClass entity,
