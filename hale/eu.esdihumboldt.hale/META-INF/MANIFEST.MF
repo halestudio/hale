@@ -29,6 +29,9 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: de.cs3d.util.logging,
+ eu.esdihumboldt.hale.instanceprovider,
+ eu.esdihumboldt.hale.instanceprovider.gml,
+ eu.esdihumboldt.hale.instanceprovider.shape,
  eu.esdihumboldt.hale.prefixmapper,
  eu.esdihumboldt.hale.schemaprovider,
  eu.esdihumboldt.hale.schemaprovider.model,

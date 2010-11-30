@@ -114,7 +114,10 @@ public class SchemaProviderService
 	public boolean loadSchema(URI location, String schemaFormat, SchemaType type, ProgressIndicator progress) throws IOException {
 		ATransaction logTrans = log.begin("Loading " + type + " schema from " + location.toString());
 		try {
-			SchemaProvider provider = getSchemaProvider((schemaFormat != null)?(schemaFormat):(determineSchemaFormat(location)));
+			if (schemaFormat == null) {
+				schemaFormat = determineSchemaFormat(location);
+			}
+			SchemaProvider provider = getSchemaProvider(schemaFormat);
 			Schema schema = provider.loadSchema(location, progress);
 			
 			if (type.equals(SchemaType.SOURCE)) {

@@ -14,7 +14,6 @@ package eu.esdihumboldt.hale.rcp.views.model;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.net.URL;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
@@ -118,7 +117,7 @@ public class SetAsDefaultGeometryAction extends Action {
 				if (instanceLoc != null && !instanceLoc.isEmpty()) {
 					try {
 						instanceService.addInstances(DatasetType.reference, 
-								InstanceDataImportWizard.loadGML(new URL(instanceLoc), conf, schemaService));
+								InstanceDataImportWizard.loadInstances(new URI(instanceLoc), conf, null));
 					} catch (Exception e) {
 						log.userError("Error reloading source data", e);
 					}

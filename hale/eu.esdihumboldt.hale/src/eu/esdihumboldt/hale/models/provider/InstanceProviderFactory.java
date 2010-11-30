@@ -11,63 +11,106 @@
  */
 package eu.esdihumboldt.hale.models.provider;
 
-import java.net.URL;
+import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.instanceprovider.InstanceConfiguration;
 import eu.esdihumboldt.hale.instanceprovider.InstanceProvider;
+import eu.esdihumboldt.hale.instanceprovider.gml.GmlInstanceProvider;
+import eu.esdihumboldt.hale.instanceprovider.shape.ShapeInstanceProvider;
 
 /**
  * FIXME Add Type description.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz, Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
 public class InstanceProviderFactory {
 	
-	private static Logger _log = Logger.getLogger(InstanceProviderFactory.class);
+//	private static ALogger _log = ALoggerFactory.getLogger(InstanceProviderFactory.class);
 	
-	private static InstanceProviderFactory instance = new InstanceProviderFactory();
+	/**
+	 * The factory instance
+	 */
+	public static final InstanceProviderFactory INSTANCE = new InstanceProviderFactory();
 	
-	private static Map<String, InstanceProvider> providers;
+	/**
+	 * The available providers
+	 */
+	private final Set<InstanceProvider> providers = new HashSet<InstanceProvider>();
 	
+	/**
+	 * Default constructor
+	 */
 	private InstanceProviderFactory() {
-		InstanceProviderFactory.providers = new HashMap<String, InstanceProvider>();
+		super();
 		
-		// initialize InstanceProviders. TODO: use external config file.
-		List<String> ipClassNames = new ArrayList<String>();
-		ipClassNames.add("eu.esdihumboldt.hale.models.provider.instance.GML3InstanceProvider");
-		for (String ipClassName : ipClassNames) {
-			try {
-				Class<?> instance_provider_class = Class.forName(ipClassName);
-				InstanceProvider instance_provider = (InstanceProvider) instance_provider_class
-						.newInstance();
-				InstanceProviderFactory.providers.put(instance_provider
-						.getSupportedMimeType(), instance_provider);
-			} catch (Exception ex) {
-				_log.error("Unable to instantiate an "
-								+ "InstanceProvider object belonging to the requested instance type."
-								+ " Please specify a valid insance type."
-								+ ex);
-			}
-		}
+		providers.add(new ShapeInstanceProvider());
+		providers.add(new GmlInstanceProvider());
 	}
 	
-	public static FeatureCollection<? extends FeatureType, ? extends Feature> getFeatureCollection(
-			URL location) {
-		// determine what kind geodata has to be read.
+	/**
+	 * Get the {@link InstanceProvider} for the given formats
+	 * @param schemaFormat the schema format
+	 * @param instanceFormat the instance format
+	 * @return the instance provider or <code>null</code> if none matches the
+	 *   formats
+	 */
+	public InstanceProvider getInstanceProvider(String schemaFormat, String instanceFormat) {
+		for (InstanceProvider provider : providers) {
+			if (provider.supportsSchemaFormat(schemaFormat) && provider.supportsInstanceFormat(instanceFormat)) {
+				return provider;
+			}
+		}
 		
-		// FIXME
-		// delegate to the appropriate InstanceProvider
 		return null;
+	}
+	
+	/**
+	 * Get the {@link InstanceProvider}s for the given schema format
+	 * @param schemaFormat the schema format
+	 * @return the instance provider or <code>null</code> if none matches the
+	 *   formats
+	 */
+	public Collection<InstanceProvider> getInstanceProvider(String schemaFormat) {
+		Collection<InstanceProvider> result = new ArrayList<InstanceProvider>();
+		for (InstanceProvider provider : providers) {
+			if (provider.supportsSchemaFormat(schemaFormat)) {
+				result.add(provider);
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Load a feature collection from a given location
+	 * @param location the location
+	 * @param schemaFormat the schema format
+	 * @param instanceFormat the instance format
+	 * @param conf the instance configuration
+	 * @return the feature collection with the loaded features
+	 * @throws IOException if loading the features fails
+	 */
+	public FeatureCollection<? extends FeatureType, ? extends Feature> getFeatureCollection(
+			URI location, String schemaFormat, String instanceFormat, InstanceConfiguration conf) throws IOException {
+		InstanceProvider ip = getInstanceProvider(schemaFormat, instanceFormat);
+		
+		if (ip == null) {
+			throw new RuntimeException("No instance provider found for schema format " 
+					+ schemaFormat + " and instance format " + instanceFormat);
+		}
+		
+		return ip.loadInstances(location, conf, null);
 	}
 
 }
