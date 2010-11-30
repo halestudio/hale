@@ -49,5 +49,6 @@
 <location path="${project_loc:hale-platform}/target/de.cs3d.util" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/ch.qos.logback" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/edu.umd.cs.findbugs" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/com.onespatial" type="Directory"/>
 </locations>
 </target>
