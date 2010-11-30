@@ -6,7 +6,6 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: ONESPATIAL
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: eu.esdihumboldt.hale.rcp.wizards.io.mappingexport,
- eu.esdihumboldt.hale.schemaprovider.model,
  org.apache.log4j
 Require-Bundle: eu.esdihumboldt.commons;bundle-version="3.0.5",
  eu.esdihumboldt.specification;bundle-version="2.0.4",
@@ -14,6 +13,19 @@ Require-Bundle: eu.esdihumboldt.commons;bundle-version="3.0.5",
  com.sun.xsom;bundle-version="1.0.0",
  eu.esdihumboldt.hale.prefixmapper;bundle-version="1.0.1",
  org.geotools;bundle-version="2.6.4",
- com.vividsolutions.jts;bundle-version="1.10.0"
+ com.vividsolutions.jts;bundle-version="1.10.0",
+ eu.esdihumboldt.hale.schemaprovider
 Export-Package: com.onespatial.jrc.tns.oml_to_rif;version="1.0.0",
- com.onespatial.jrc.tns.oml_to_rif.api;version="1.0.0"
+ com.onespatial.jrc.tns.oml_to_rif.api;version="1.0.0",
+ com.onespatial.jrc.tns.oml_to_rif.digest,
+ com.onespatial.jrc.tns.oml_to_rif.document,
+ com.onespatial.jrc.tns.oml_to_rif.model.alignment,
+ com.onespatial.jrc.tns.oml_to_rif.model.rif,
+ com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal,
+ com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.comparison,
+ com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.geometric,
+ com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.logical,
+ com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.terminal,
+ com.onespatial.jrc.tns.oml_to_rif.schema,
+ com.onespatial.jrc.tns.oml_to_rif.translate,
+ com.onespatial.jrc.tns.oml_to_rif.translate.context

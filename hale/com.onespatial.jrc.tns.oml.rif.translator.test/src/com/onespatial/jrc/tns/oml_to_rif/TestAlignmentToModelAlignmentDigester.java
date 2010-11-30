@@ -1,5 +1,13 @@
 /*
- * Copyright (c) 1Spatial Group Ltd.
+ * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
+ * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * 
+ * For more information on the project, please refer to the this web site:
+ * http://www.esdi-humboldt.eu
+ * 
+ * LICENSE: For information on the license under which this program is 
+ * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
+ * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 package com.onespatial.jrc.tns.oml_to_rif;
 
@@ -26,10 +34,14 @@ import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.FilterNode
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.comparison.LessThanNode;
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.logical.AndNode;
 
+import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
+
 /**
  * Unit tests for the {@link AlignmentToModelAlignmentDigester} component.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
+ * @author Simon Templer / Fraunhofer IGD
  */
 public class TestAlignmentToModelAlignmentDigester
 {
@@ -41,7 +53,7 @@ public class TestAlignmentToModelAlignmentDigester
     @Before
     public void setUp()
     {
-        translator = new UrlToAlignmentDigester().connect(new AlignmentToModelAlignmentDigester());
+        translator = new UrlToAlignmentDigester().connect(new AlignmentToModelAlignmentDigester(new MappingExportReport()));
     }
 
     /**
@@ -61,29 +73,27 @@ public class TestAlignmentToModelAlignmentDigester
         assertNotNull(result.getAttributeMappings());
         assertNotNull(result.getStaticAssignments());
 
-        assertNotNull(result.getSourceSchemaBrowser());
-        assertNotNull(result.getTargetSchemaBrowser());
         assertThat(result.getClassMappings().size(), is(1));
 
         ModelClassMappingCell modelClassMappingCell = result.getClassMappings().get(0);
         assertNotNull(modelClassMappingCell);
         assertNotNull(modelClassMappingCell.getSourceClass());
         assertNotNull(modelClassMappingCell.getTargetClass());
-        assertThat(modelClassMappingCell.getSourceClass().getName(), is("ParcelArea"));
-        assertThat(modelClassMappingCell.getTargetClass().getName(), is("CadastralParcel"));
+        assertThat(modelClassMappingCell.getSourceClass().getElementName().getLocalPart(), is("ParcelArea"));
+        assertThat(modelClassMappingCell.getTargetClass().getElementName().getLocalPart(), is("CadastralParcel"));
         // CHECKSTYLE:OFF
         assertThat(result.getAttributeMappings().size(), is(7));
         // CHECKSTYLE:ON
 
         ModelAttributeMappingCell attributeMapping0 = result.getAttributeMappings().get(0);
-        assertThat(attributeMapping0.getSourceAttribute().get(0).getAttributeElement().getName(),
+        assertThat(attributeMapping0.getSourceAttribute().get(0).getDefinition().getName(),
                 is("PCVL_PRCL_"));
-        assertThat(attributeMapping0.getTargetAttribute().get(0).getAttributeElement().getName(),
+        assertThat(attributeMapping0.getTargetAttribute().get(0).getDefinition().getName(),
                 is("inspireId"));
 
         assertThat(result.getStaticAssignments().size(), is(1));
         ModelStaticAssignmentCell assignment0 = result.getStaticAssignments().get(0);
-        assertThat(assignment0.getTarget().get(0).getAttributeElement().getName(), is("inspireId"));
+        assertThat(assignment0.getTarget().get(0).getDefinition().getName(), is("inspireId"));
         assertThat(assignment0.getContent(), is("DP.CAD.CP"));
 
     }
@@ -107,8 +117,6 @@ public class TestAlignmentToModelAlignmentDigester
         assertNotNull(result.getAttributeMappings());
         assertNotNull(result.getStaticAssignments());
 
-        assertNotNull(result.getSourceSchemaBrowser());
-        assertNotNull(result.getTargetSchemaBrowser());
         assertThat(result.getClassMappings().size(), is(1));
 
         ModelClassMappingCell modelClassMappingCell = result.getClassMappings().get(0);
@@ -129,21 +137,21 @@ public class TestAlignmentToModelAlignmentDigester
 
         assertNotNull(lessNode.getRight());
 
-        assertThat(modelClassMappingCell.getSourceClass().getName(), is("ParcelArea"));
-        assertThat(modelClassMappingCell.getTargetClass().getName(), is("CadastralParcel"));
+        assertThat(modelClassMappingCell.getSourceClass().getElementName().getLocalPart(), is("ParcelArea"));
+        assertThat(modelClassMappingCell.getTargetClass().getElementName().getLocalPart(), is("CadastralParcel"));
         // CHECKSTYLE:OFF
         assertThat(result.getAttributeMappings().size(), is(7));
         // CHECKSTYLE:ON
 
         ModelAttributeMappingCell attributeMapping0 = result.getAttributeMappings().get(0);
-        assertThat(attributeMapping0.getSourceAttribute().get(0).getAttributeElement().getName(),
+        assertThat(attributeMapping0.getSourceAttribute().get(0).getDefinition().getName(),
                 is("PCVL_PRCL_"));
-        assertThat(attributeMapping0.getTargetAttribute().get(0).getAttributeElement().getName(),
+        assertThat(attributeMapping0.getTargetAttribute().get(0).getDefinition().getName(),
                 is("inspireId"));
 
         assertThat(result.getStaticAssignments().size(), is(1));
         ModelStaticAssignmentCell assignment0 = result.getStaticAssignments().get(0);
-        assertThat(assignment0.getTarget().get(0).getAttributeElement().getName(), is("inspireId"));
+        assertThat(assignment0.getTarget().get(0).getDefinition().getName(), is("inspireId"));
         assertThat(assignment0.getContent(), is("DP.CAD.CP"));
 
     }
@@ -176,8 +184,6 @@ public class TestAlignmentToModelAlignmentDigester
         assertNotNull(result.getAttributeMappings());
         assertNotNull(result.getStaticAssignments());
 
-        assertNotNull(result.getSourceSchemaBrowser());
-        assertNotNull(result.getTargetSchemaBrowser());
         assertThat(result.getClassMappings().size(), is(1));
 
         ModelClassMappingCell modelClassMappingCell = result.getClassMappings().get(0);
@@ -190,21 +196,21 @@ public class TestAlignmentToModelAlignmentDigester
         assertNotNull(modelClassMappingCell.getMappingConditions().get(0).getRoot());
         FilterNode root = modelClassMappingCell.getMappingConditions().get(0).getRoot();
         assertThat(root, is(instanceOf(AndNode.class)));
-        assertThat(modelClassMappingCell.getSourceClass().getName(), is("ParcelArea"));
-        assertThat(modelClassMappingCell.getTargetClass().getName(), is("CadastralParcel"));
+        assertThat(modelClassMappingCell.getSourceClass().getElementName().getLocalPart(), is("ParcelArea"));
+        assertThat(modelClassMappingCell.getTargetClass().getElementName().getLocalPart(), is("CadastralParcel"));
         // CHECKSTYLE:OFF
         assertThat(result.getAttributeMappings().size(), is(7));
         // CHECKSTYLE:ON
 
         ModelAttributeMappingCell attributeMapping0 = result.getAttributeMappings().get(0);
-        assertThat(attributeMapping0.getSourceAttribute().get(0).getAttributeElement().getName(),
+        assertThat(attributeMapping0.getSourceAttribute().get(0).getDefinition().getName(),
                 is("PCVL_PRCL_"));
-        assertThat(attributeMapping0.getTargetAttribute().get(0).getAttributeElement().getName(),
+        assertThat(attributeMapping0.getTargetAttribute().get(0).getDefinition().getName(),
                 is("inspireId"));
 
         assertThat(result.getStaticAssignments().size(), is(1));
         ModelStaticAssignmentCell assignment0 = result.getStaticAssignments().get(0);
-        assertThat(assignment0.getTarget().get(0).getAttributeElement().getName(), is("inspireId"));
+        assertThat(assignment0.getTarget().get(0).getDefinition().getName(), is("inspireId"));
         assertThat(assignment0.getContent(), is("DP.CAD.CP"));
 
     }

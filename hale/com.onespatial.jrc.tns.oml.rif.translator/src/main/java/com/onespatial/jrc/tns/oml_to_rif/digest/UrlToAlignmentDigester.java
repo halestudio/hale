@@ -11,21 +11,27 @@
  */
 package com.onespatial.jrc.tns.oml_to_rif.digest;
 
+import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 
+import com.onespatial.jrc.tns.oml_to_rif.HaleAlignment;
 import com.onespatial.jrc.tns.oml_to_rif.api.AbstractFollowableTranslator;
 import com.onespatial.jrc.tns.oml_to_rif.api.TranslationException;
 
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
+import eu.esdihumboldt.hale.schemaprovider.Schema;
+import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
 
 /**
  * Translates a document at a particular URL to an {@link Alignment}.
  * 
  * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
  * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
+ * @author Simon Templer / Fraunhofer IGD
  */
-public class UrlToAlignmentDigester extends AbstractFollowableTranslator<URL, Alignment>
+public class UrlToAlignmentDigester extends AbstractFollowableTranslator<URL, HaleAlignment>
 {
     /**
      * Translates an {@link URL} into a HALE {@link Alignment}.
@@ -37,13 +43,25 @@ public class UrlToAlignmentDigester extends AbstractFollowableTranslator<URL, Al
      *             if anything goes wrong during the translation
      */
     @Override
-    public Alignment translate(URL source) throws TranslationException
+    public HaleAlignment translate(URL source) throws TranslationException
     {
         if (source == null)
         {
             throw new TranslationException("url is null");
         }
-        return new OmlRdfReader().read(source);
+        Alignment al = new OmlRdfReader().read(source);
+        
+        ApacheSchemaProvider sp = new ApacheSchemaProvider();
+        Schema s, t;
+        try {
+	        s = sp.loadSchema(new URI(al.getSchema1().getLocation()), null);
+	        t = sp.loadSchema(new URI(al.getSchema2().getLocation()), null);
+        } catch (Exception e) {
+			throw new TranslationException("Error loading schemas", e); 
+		}
+        
+        return new HaleAlignment(al, s.getElements().values(), 
+        		t.getElements().values());
     }
 
 }

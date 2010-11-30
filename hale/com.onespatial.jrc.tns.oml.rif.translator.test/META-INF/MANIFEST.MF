@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test bundle for OML to RIF translator
+Bundle-SymbolicName: com.onespatial.jrc.tns.oml_to_rif.test
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: ONESPATIAL
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: eu.esdihumboldt.goml.align,
+ eu.esdihumboldt.hale.rcp.wizards.io.mappingexport,
+ org.apache.commons.logging,
+ org.custommonkey.xmlunit,
+ org.junit;version="4.5.0",
+ org.w3._2007.rif;version="1.0.0"
+Require-Bundle: com.onespatial.jrc.tns.oml_to_rif;bundle-version="1.0.0",
+ org.hamcrest.core;bundle-version="1.1.0",
+ org.geotools;bundle-version="2.6.4",
+ eu.esdihumboldt.hale.schemaprovider;bundle-version="2.0.0"

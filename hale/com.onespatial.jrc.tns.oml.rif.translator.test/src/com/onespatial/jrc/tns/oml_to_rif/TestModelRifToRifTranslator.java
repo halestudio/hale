@@ -1,12 +1,19 @@
 /*
- * Copyright (c) 1Spatial Group Ltd.
+ * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
+ * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * 
+ * For more information on the project, please refer to the this web site:
+ * http://www.esdi-humboldt.eu
+ * 
+ * LICENSE: For information on the license under which this program is 
+ * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
+ * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 package com.onespatial.jrc.tns.oml_to_rif;
 
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
@@ -35,11 +42,14 @@ import com.onespatial.jrc.tns.oml_to_rif.fixture.DomBasedUnitTest;
 import com.onespatial.jrc.tns.oml_to_rif.translate.ModelAlignmentToModelRifTranslator;
 import com.onespatial.jrc.tns.oml_to_rif.translate.ModelRifToRifTranslator;
 
+import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
+
 /**
  * Tests for the translation of "Model RIF" (the internal proto-format of RIF)
  * into W3C RIF-PRD.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class TestModelRifToRifTranslator extends DomBasedUnitTest
 {
@@ -52,7 +62,7 @@ public class TestModelRifToRifTranslator extends DomBasedUnitTest
     @Before
     public void setUp()
     {
-        translator = new UrlToAlignmentDigester().connect(new AlignmentToModelAlignmentDigester()
+        translator = new UrlToAlignmentDigester().connect(new AlignmentToModelAlignmentDigester(new MappingExportReport())
                 .connect(new ModelAlignmentToModelRifTranslator()
                         .connect(new ModelRifToRifTranslator())));
     }
@@ -182,7 +192,7 @@ public class TestModelRifToRifTranslator extends DomBasedUnitTest
     private void checkDoElements(Do do1)
     {
         assertNotNull(do1.getActionVar());
-        assertThat(do1.getActionVar().size(), is(greaterThanOrEqualTo(1)));
+        assertTrue(do1.getActionVar().size() >= 1);
         // count number of news and frames in the collection
         int numNews = 0;
         int numFrames = 0;
@@ -262,7 +272,7 @@ public class TestModelRifToRifTranslator extends DomBasedUnitTest
     {
         List<Declare> declareList = actualSentence.getImplies().getIf().getExists().getDeclare();
         assertNotNull(declareList);
-        assertThat(declareList.size(), is(greaterThanOrEqualTo(1)));
+        assertTrue(declareList.size() >= 1);
         for (Declare d : declareList)
         {
             assertNotNull(d);
@@ -280,7 +290,7 @@ public class TestModelRifToRifTranslator extends DomBasedUnitTest
     private void checkAndChildren(And and)
     {
         assertNotNull(and.getFormula());
-        assertThat(and.getFormula().size(), is(greaterThanOrEqualTo(1)));
+        assertTrue(and.getFormula().size() >= 1);
         for (Formula formula : and.getFormula())
         {
             if (formula.getMember() != null)
