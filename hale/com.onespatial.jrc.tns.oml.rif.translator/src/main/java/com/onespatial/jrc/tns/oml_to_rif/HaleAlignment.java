@@ -9,7 +9,6 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-
 package com.onespatial.jrc.tns.oml_to_rif;
 
 import java.util.Collection;
