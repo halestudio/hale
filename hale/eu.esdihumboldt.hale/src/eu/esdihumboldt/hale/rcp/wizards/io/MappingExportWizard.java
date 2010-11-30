@@ -15,10 +15,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
@@ -33,6 +36,8 @@ import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.utils.CellUtils;
+import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.StackTraceErrorDialog;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportExtension;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
@@ -99,20 +104,51 @@ public class MappingExportWizard
 									schemaService.getTargetSchema());
 							if (report != null && !report.isEmpty()) {
 								// handle report
-								//TODO provide better user feedback
-								ATransaction reportTrans = _log.begin("Mapping export report");
+								ATransaction reportTrans = _log.begin("Report");
 								try {
-									for (Entry<ICell, String> entry : report.getFailed().entrySet()) {
-										_log.error(AGroupFactory.getGroup(entry.getValue()),
-												CellUtils.asString(entry.getKey()));
+									ATransaction failedTrans = _log.begin("Mapping cells that could not be exported");
+									try {
+										for (Entry<ICell, String> entry : report.getFailed().entrySet()) {
+											_log.error(AGroupFactory.getGroup(entry.getValue()),
+													CellUtils.asString(entry.getKey()));
+										}
+									} finally {
+										failedTrans.end();
 									}
-									for (Entry<ICell, String> entry : report.getWarnings().entrySet()) {
-										_log.warn(AGroupFactory.getGroup(entry.getValue()),
-												CellUtils.asString(entry.getKey()));
+									ATransaction warningsTrans = _log.begin("Warnings/remarks on exported mapping cells");
+									try {
+										for (Entry<ICell, String> entry : report.getWarnings().entrySet()) {
+											_log.warn(AGroupFactory.getGroup(entry.getValue()),
+													CellUtils.asString(entry.getKey()));
+										}
+									} finally {
+										warningsTrans.end();
 									}
 								} finally {
 									reportTrans.end();
 								}
+								
+								final String message = "The mapping has been exported " +
+									"but there have been problems with some " +
+									"cells. See the report in the error log for more details.";
+								
+								PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+									
+									@Override
+									public void run() {
+										StackTraceErrorDialog dialog = new StackTraceErrorDialog(
+												Display.getCurrent().getActiveShell(), 
+												null, 
+												null, 
+												new Status(IStatus.WARNING, HALEActivator.PLUGIN_ID, message), 
+												IStatus.OK | IStatus.INFO | IStatus.WARNING | IStatus.ERROR);
+										dialog.setShowErrorLogLink(true);
+										dialog.open();
+									}
+								});
+							}
+							else {
+								_log.userInfo("Mapping export was successful");
 							}
 						} catch (Throwable e) {
 							String message = Messages.MappingExportWizard_SaveFailed;
