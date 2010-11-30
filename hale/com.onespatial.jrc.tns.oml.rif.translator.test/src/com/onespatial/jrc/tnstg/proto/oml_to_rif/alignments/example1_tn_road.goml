@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<align:Alignment xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:goml="http://www.esdi-humboldt.eu/goml" xmlns:align="http://knowledgeweb.semanticweb.org/heterogeneity/alignment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml/" xsi:schemaLocation="http://knowledgeweb.semanticweb.org/heterogeneity/alignment align.xsd">
+    <align:level></align:level>
+    <align:onto1>
+        <align:Ontology>
+            <align:location>http://geoserver:8080/tnstg-geoserver/wfs?service=WFS&amp;version=1.1.0&amp;request=DescribeFeatureType&amp;typeName=nitn%3ATRANSPORT_point_50k,nitn%3ATRANSPORT_line_50k&amp;outputFormat=text/xml;%20subtype=gml/3.1.1</align:location>
+            <align:formalism>
+                <align:Formalism>
+                    <align:uri>http://www.opengis.net/gml</align:uri>
+                    <align:name>GML 3.2.1 Application Schema</align:name>
+                </align:Formalism>
+            </align:formalism>
+        </align:Ontology>
+    </align:onto1>
+    <align:onto2>
+        <align:Ontology>
+            <align:location>http://server1/inspire/RoadTransportNetwork.xsd</align:location>
+            <align:formalism>
+                <align:Formalism>
+                    <align:uri>http://www.opengis.net/gml</align:uri>
+                    <align:name>GML 3.2.1 Application Schema</align:name>
+                </align:Formalism>
+            </align:formalism>
+        </align:Ontology>
+    </align:onto2>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Class rdf:about="http://jrc.onespatial.com/tn/Example1/TRANSPORT_line_50k">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction"/>
+                    <omwg:attributeValueCondition>
+                        <omwg:Restriction>
+                            <goml:cqlStr>TEMA&lt;&gt;'RL_TUNNEL' OR TEMA&lt;&gt;'CL_RAIL' OR TEMA&lt;&gt;'UNSHOWN_RL'</goml:cqlStr>
+                        </omwg:Restriction>
+                    </omwg:attributeValueCondition>
+                </omwg:Class>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Class rdf:about="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/RoadLink"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://jrc.onespatial.com/tn/Example1/TRANSPORT_line_50k/SURVEY">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction"/>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/RoadLink/beginLifespanVersion"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://jrc.onespatial.com/tn/Example1/TRANSPORT_line_50k/the_geom">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction"/>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/RoadLink/centrelineGeometry"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Class rdf:about="http://jrc.onespatial.com/tn/Example1/TRANSPORT_line_50k">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction"/>
+                    <omwg:attributeValueCondition>
+                        <omwg:Restriction>
+                            <goml:cqlStr>TEMA&lt;&gt;'RL_TUNNEL' OR TEMA&lt;&gt;'CL_RAIL' OR TEMA&lt;&gt;'UNSHOWN_RL'</goml:cqlStr>
+                        </omwg:Restriction>
+                    </omwg:attributeValueCondition>
+                </omwg:Class>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Class rdf:about="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/FormOfWay"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://jrc.onespatial.com/tn/Example1/TRANSPORT_line_50k/SURVEY">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction"/>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/FormOfWay/beginLifespanVersion"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://jrc.onespatial.com/tn/Example1/TRANSPORT_line_50k/TEMA">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.ClassificationMappingFunction"/>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>dualCarriageway</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>motorway</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/FormOfWay/formOfWay">
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>DUAL_CARR</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>MOTORWAY</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                </omwg:Property>
+            </omwg:entity2>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Class rdf:about="http://jrc.onespatial.com/tn/Example1/TRANSPORT_line_50k">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction"/>
+                    <omwg:attributeValueCondition>
+                        <omwg:Restriction>
+                            <goml:cqlStr>TEMA&lt;&gt;'RL_TUNNEL' OR TEMA&lt;&gt;'CL_RAIL' OR TEMA&lt;&gt;'UNSHOWN_RL'</goml:cqlStr>
+                        </omwg:Restriction>
+                    </omwg:attributeValueCondition>
+                </omwg:Class>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Class rdf:about="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/FunctionalRoadClass"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://jrc.onespatial.com/tn/Example1/TRANSPORT_line_50k/SURVEY">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction"/>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/FunctionalRoadClass/beginLifespanVersion"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://jrc.onespatial.com/tn/Example1/TRANSPORT_line_50k/TEMA">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.ClassificationMappingFunction"/>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/FunctionalRoadClass/functionalClass">
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>eighthClass</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>fifthClass</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>firstClass</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>fourthClass</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>mainRoad</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>ninthClass</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>secondClass</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>seventhClass</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>sixthClass</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition>
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>thirdClass</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                </omwg:Property>
+            </omwg:entity2>
+        </align:Cell>
+    </align:map>
+</align:Alignment>

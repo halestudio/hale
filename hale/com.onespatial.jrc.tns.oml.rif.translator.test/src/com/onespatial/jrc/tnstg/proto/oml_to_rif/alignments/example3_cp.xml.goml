@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<align:Alignment xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:goml="http://www.esdi-humboldt.eu/goml" xmlns:align="http://knowledgeweb.semanticweb.org/heterogeneity/alignment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml/" xsi:schemaLocation="http://knowledgeweb.semanticweb.org/heterogeneity/alignment align.xsd">
+    <align:level></align:level>
+    <align:onto1>
+        <align:Ontology rdf:about="http://jrc.onespatial.com/cp/Example3">
+            <align:location>file:${project.build.outputDirectory}/xsd/Example3CP.xsd</align:location>
+            <align:formalism>
+                <align:Formalism>
+                    <align:uri>http://www.opengis.net/gml</align:uri>
+                    <align:name>GML Application Schema</align:name>
+                </align:Formalism>
+            </align:formalism>
+        </align:Ontology>
+    </align:onto1>
+    <align:onto2>
+        <align:Ontology rdf:about="urn:x-inspire:specification:gmlas:CadastralParcels:3.0">
+            <align:location>file:XSD/CadastralParcels.xsd</align:location>
+            <align:formalism>
+                <align:Formalism>
+                    <align:uri>http://www.opengis.net/gml</align:uri>
+                    <align:name>GML Application Schema</align:name>
+                </align:Formalism>
+            </align:formalism>
+        </align:Ontology>
+    </align:onto2>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Class rdf:about="http://jrc.onespatial.com/cp/Example3/ParcelArea">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction">
+                        <omwg:param>
+                            <omwg:name>SelectedAttribute</omwg:name>
+                            <omwg:value></omwg:value>
+                        </omwg:param>
+                    </omwg:transf>
+                </omwg:Class>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Class rdf:about="urn:x-inspire:specification:gmlas:CadastralParcels:3.0/CadastralParcel"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://jrc.onespatial.com/cp/Example3/ParcelArea/PCVL_DATUM">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.DateExtractionFunction">
+                        <omwg:param>
+                            <omwg:name>dateFormatSource</omwg:name>
+                            <omwg:value>yyyy-MM-dd HH:mm:ss</omwg:value>
+                        </omwg:param>
+                        <omwg:param>
+                            <omwg:name>dateFormatTarget</omwg:name>
+                            <omwg:value>yyyy-MM-dd HH:mm:ss</omwg:value>
+                        </omwg:param>
+                    </omwg:transf>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:CadastralParcels:3.0/CadastralParcel/beginLifespanVersion"/>
+            </omwg:entity2>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://jrc.onespatial.com/cp/Example3/ParcelArea/the_geom">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction"/>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:CadastralParcels:3.0/CadastralParcel/geometry"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+</align:Alignment>

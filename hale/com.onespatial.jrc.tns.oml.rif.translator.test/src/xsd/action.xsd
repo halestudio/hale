@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" targetNamespace="http://schema.onespatial.com/radius/studio/v2" xmlns:tns="http://schema.onespatial.com/radius/studio/v2">
+  <xsd:include schemaLocation="rule.xsd"/>
+  <xsd:complexType name="ActionTemplateType">
+    <xsd:complexContent>
+      <xsd:extension base="tns:ObjectOperationType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" ref="tns:Parameter"/>
+          <xsd:element minOccurs="0" ref="tns:AbstractOperation"/>
+          <xsd:element minOccurs="0" ref="tns:AbstractPredicate"/>
+          <xsd:element minOccurs="0" ref="tns:AbstractValue"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="Action">
+    <xsd:annotation>
+      <xsd:documentation>XML Schema for action definitions. 
+			&lt;p&gt;An action happens as a result of patterns being applied to facts.
+			In other words: given some facts, if they meet any of the patterns, perform a defined action. 
+			An action is applied to one or more features, usually when they are found to violate a rule. 
+			For example, an action could modify a geometry or attribute in order to fix it (a fix-up action).
+			&lt;/p&gt;
+</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name="RootOperation">
+          <xsd:annotation>
+            <xsd:documentation>
+							Root operation of an action. This is the main operation to be performed when the
+							action is invoked.						
+						</xsd:documentation>
+          </xsd:annotation>
+          <xsd:complexType>
+            <xsd:complexContent>
+              <xsd:extension base="tns:ObjectOperationType">
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" ref="tns:AbstractOperation"/>
+                </xsd:sequence>
+              </xsd:extension>
+            </xsd:complexContent>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="Template" type="tns:ActionTemplateType">
+        <xsd:annotation>
+          <xsd:documentation>
+					TODO
+					</xsd:documentation>
+					</xsd:annotation>
+        </xsd:element>
+      </xsd:choice>
+      <xsd:attribute name="id" type="xsd:string"/>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="ObjectOperationType">
+    <xsd:attribute name="classLabel" type="xsd:string" use="optional"/>
+    <xsd:attribute name="objLabel" type="xsd:string" use="optional"/>
+  </xsd:complexType>
+  <xsd:element name="AbstractOperation" abstract="true">
+    <xsd:annotation>
+      <xsd:documentation>An arbitrary operation which may be the parent of a concrete
+			operation within a Radius Studio action.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:element name="Operation" substitutionGroup="tns:AbstractOperation">
+  <xsd:annotation>
+    <xsd:documentation>
+			Class representing an operation which may be applied as part of an action 
+			(a rule-based transformation or fixup action).
+		</xsd:documentation>
+</xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="tns:OperationType">
+		    <xsd:sequence>	    
+		        	<xsd:element ref="tns:AbstractPredicate" minOccurs="0" maxOccurs="unbounded"/>
+		        	<xsd:element ref="tns:AbstractValue" minOccurs="0" maxOccurs="unbounded"/>	
+		        	<xsd:element ref="tns:AbstractOperation" minOccurs="0" maxOccurs="unbounded"/>	      		        	
+		    </xsd:sequence>  
+		</xsd:extension>      
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="OperationType">
+    <xsd:complexContent>
+      <xsd:extension base="tns:PredicateType"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="OperationValueType">
+    <xsd:complexContent>
+      <xsd:extension base="tns:PredicateType"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:annotation>
+    <xsd:documentation>Additional value nodes, substitutable for Value elements anywhere in an action</xsd:documentation>
+  </xsd:annotation>
+  <xsd:element name="TemporaryValue" substitutionGroup="tns:AssignableValue">
+    <xsd:annotation>
+      <xsd:documentation>A temporary value</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="tns:OperationValueType">
+          <xsd:attribute name="name" type="xsd:string" use="required"/>
+          <xsd:attribute name="scope" use="required">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="local"/>
+                <xsd:enumeration value="global"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+          <xsd:attribute name="dataType" type="xsd:string" use="optional" />
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:annotation>
+    <xsd:documentation>Operation nodes, substitutable for Operation elements anywhere in an action</xsd:documentation>
+  </xsd:annotation>
+  <xsd:element name="AssignmentOperation" substitutionGroup="tns:AbstractOperation">
+    <xsd:annotation>
+      <xsd:documentation>Assign the second child value to the first</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="tns:OperationType">
+          <xsd:sequence>
+            <xsd:element ref="tns:AbstractValue" minOccurs="2" maxOccurs="2"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="BuiltinOperation" substitutionGroup="tns:AbstractOperation">
+    <xsd:annotation>
+      <xsd:documentation>Apply a built-in operation.  A built-in operation updates the data held 
+			in the Radius Studio cache, which can be exported back to an Oracle database. The built-in 
+			operation returns a value calculated from one or more value node parameters. 
+			&lt;p&gt;There are several types of built-in function which work with different types of data:
+				&lt;ul&gt;
+					&lt;li&gt;Geometry&lt;/li&gt;
+					&lt;li&gt;Conversion&lt;/li&gt;
+					&lt;li&gt;Mathematical&lt;/li&gt;
+					&lt;li&gt;Bit manipulation&lt;/li&gt;
+					&lt;li&gt;String&lt;/li&gt;
+					&lt;li&gt;Collection&lt;/li&gt;
+				&lt;/ul&gt;
+			&lt;/p&gt;
+			</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="tns:OperationType">
+          <xsd:sequence>
+            <xsd:element ref="tns:AbstractValue" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+          <xsd:attribute name="name" type="xsd:string" use="optional"/>
+          <xsd:attribute name="fnName" type="xsd:string" use="required"/>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="ConditionalOperation" substitutionGroup="tns:AbstractOperation">
+    <xsd:annotation>
+      <xsd:documentation>Conditionally apply the first or second child operation 
+			based on the result of the predicate condition, as part of an action. This value should have 
+			a condition to test and two child values to choose between, i.e.
+			&lt;ul&gt;
+				&lt;li&gt;If the condition is true, the result is the value of the first child value.&lt;/li&gt;
+				&lt;li&gt;If the condition is false, the result is the value of the second child value.&lt;/li&gt;
+			&lt;/ul&gt;
+			</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="tns:OperationType">
+          <xsd:sequence>
+            <xsd:element ref="tns:AbstractPredicate"/>
+            <xsd:element ref="tns:AbstractOperation" minOccurs="0" maxOccurs="2"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="SequenceOperation" substitutionGroup="tns:AbstractOperation">
+    <xsd:annotation>
+      <xsd:documentation>Apply a sequence of child operations as part of an action.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="tns:OperationType">
+          <xsd:sequence>
+            <xsd:element ref="tns:AbstractOperation" minOccurs="2" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="WhileLoopOperation" substitutionGroup="tns:AbstractOperation">
+    <xsd:annotation>
+      <xsd:documentation>Apply the child operation while the predicate condition holds, as part of an action.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="tns:OperationType">
+          <xsd:sequence>
+            <xsd:element ref="tns:AbstractPredicate"/>
+            <xsd:element ref="tns:AbstractOperation"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="ForPredicateOperation" substitutionGroup="tns:AbstractOperation">
+    <xsd:annotation>
+      <xsd:documentation>Loop over all objects matching the child predicate and 
+			apply the child operation some or all objects, as part of an action applied to a collection.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="tns:OperationType">
+          <xsd:sequence>
+            <xsd:element ref="tns:AbstractPredicate"/>
+            <xsd:element ref="tns:AbstractOperation"/>
+          </xsd:sequence>
+          <xsd:attribute name="n" use="optional">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:integer">
+                <xsd:minInclusive value="0"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+          <xsd:attribute name="classLabel" type="xsd:string" use="optional"/>
+          <xsd:attribute name="objLabel" type="xsd:string" use="optional"/>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="ForAllElementsOperation" substitutionGroup="tns:AbstractOperation">
+    <xsd:annotation>
+      <xsd:documentation>Loop over all the elements of a collection and apply 
+			the child operation to each, as part of an action applied to a collection.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="tns:OperationType">
+          <xsd:sequence>
+            <xsd:element ref="tns:AbstractValue"/>
+            <xsd:element ref="tns:AbstractOperation"/>
+          </xsd:sequence>
+          <xsd:attribute name="n" use="optional">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:integer">
+                <xsd:minInclusive value="1"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+          <xsd:attribute name="classLabel" type="xsd:string" use="optional"/>
+          <xsd:attribute name="objLabel" type="xsd:string" use="optional"/>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="BreakOperation" substitutionGroup="tns:AbstractOperation">
+    <xsd:annotation>
+      <xsd:documentation>
+			Terminate the current loop or operation. This will stop the execution of the current loop 
+			Operation (a while loop or for predicate Operation), or terminate the current action.
+			</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="tns:OperationType"/>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="ReportOperation" substitutionGroup="tns:AbstractOperation">
+    <xsd:annotation>
+      <xsd:documentation>
+			Report on the values of one or more values. This will produce ReportedValue objects 
+			and set them on the Context (a class that holds context information relating to a Value,
+			Predicate or Operation in a rule or action).  The context information includes 
+			the Gothic dataset Version, the class(es) of object being tested (identified by a class label) 
+			and the current object being considered (identified by an object label). The scope 
+			of the action may be one of: -
+			&lt;ul&gt;
+				&lt;li&gt;per-object: a reporting operation intended to produce output for each object that the
+					action is applied to.&lt;/li&gt;
+				&lt;li&gt;at-end: a reporting operation intended to produce summary output at the end of a
+					task which applies an action to a set of objects.&lt;/li&gt;
+			&lt;/ul&gt;
+			</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="tns:OperationType">
+          <xsd:sequence>
+            <xsd:element ref="tns:AbstractValue" maxOccurs="unbounded"/>
+          </xsd:sequence>
+          <xsd:attribute name="label" type="xsd:string" use="required"/>
+          <xsd:attribute name="scope" use="required">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="per-object"/>
+                <xsd:enumeration value="at-end"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="CreateObjectOperation" substitutionGroup="tns:AbstractOperation">
+    <xsd:annotation>
+      <xsd:documentation>Create an object and apply the (optional) child operation to it</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="tns:OperationType">
+          <xsd:sequence>
+            <xsd:element ref="tns:AbstractOperation" minOccurs="0"/>
+          </xsd:sequence>
+          <xsd:attribute name="classLabel" type="xsd:string" use="required"/>
+          <xsd:attribute name="objLabel" type="xsd:string" use="optional"/>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="DeleteObjectOperation" substitutionGroup="tns:AbstractOperation">
+    <xsd:annotation>
+      <xsd:documentation>Delete an object. This will delete the object referred to by the {classRef, objRef} pair.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="tns:OperationType">
+          <xsd:attribute name="classRef" type="xsd:string" use="optional"/>
+          <xsd:attribute name="objRef" type="xsd:string" use="optional"/>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

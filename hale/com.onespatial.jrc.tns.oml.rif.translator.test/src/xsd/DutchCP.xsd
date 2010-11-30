@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:bcp="http://jrc.onespatial.com/cp/belgium" xmlns:dcp="http://jrc.onespatial.com/cp/dutch" xmlns:gml="http://www.opengis.net/gml" xmlns:nhy="http://jrc.onespatial.com/hy/norwegian" xmlns:nitn="http://jrc.onespatial.com/tn/lpsni" xmlns:outline="http://jrc.onespatial.com/outline" xmlns:shy="http://jrc.onespatial.com/hy/swedish" xmlns:sitn="http://jrc.onespatial.com/tn/osi" elementFormDefault="qualified" targetNamespace="http://jrc.onespatial.com/cp/dutch">
+  <xsd:import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"/>
+  <xsd:complexType name="PerceelvlakType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="the_geom" nillable="true" type="gml:MultiSurfacePropertyType"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="MI_PRINX" nillable="true" type="xsd:double"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="PCVL_VESTI" nillable="true" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="PCVL_PRCL_" nillable="true" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="PCVL_DATUM" nillable="true" type="xsd:dateTime"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="PCVL_DAT00" nillable="true" type="xsd:dateTime"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="Perceelvlak" substitutionGroup="gml:_Feature" type="dcp:PerceelvlakType"/>
+</xsd:schema>

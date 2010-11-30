@@ -1,0 +1,993 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema  
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" 
+	attributeFormDefault="unqualified"
+  	targetNamespace="http://schema.onespatial.com/radius/studio/v2" 
+  	xmlns:tns="http://schema.onespatial.com/radius/studio/v2" 
+  	>
+
+	<xsd:annotation>
+		<xsd:documentation>XML Schema for rule definitions</xsd:documentation>
+	</xsd:annotation>
+	
+	<xsd:element name="Rule">
+		<xsd:annotation>
+			<xsd:documentation>
+				In Radius Studio a rule is one or more tests, against which features can be queried. 
+				Radius Studio reports any features which do not pass the tests. The rule has four components:
+				&lt;ul&gt;
+				&lt;li&gt;Conditions: which define the sequence in which tests are performed&lt;/li&gt;
+				&lt;li&gt;Values: which are numbers, words, calculations or references&lt;/li&gt;
+				&lt;li&gt;Scalar relationships: which compare 2 values and return true or false&lt;/li&gt;
+				&lt;li&gt;Spatial relationships: which compare the boundaries and interiors of 2 geometries and return true or false&lt;/li&gt;
+				&lt;/ul&gt;
+				Rules are independent of a data store's schema.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="tns:RootPredicate" minOccurs="0"/>
+				<xsd:element name="Template" type="tns:RuleTemplateType" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="RootPredicate">
+		 <xsd:annotation>
+		     <xsd:documentation>Root predicate of a rule. This is the top-level property that 
+			 defines membership of the set of features or objects that the rule will analyse.
+			The root predicate is a direct child of the root node and defines the rule structure.
+			 </xsd:documentation>
+		 </xsd:annotation>		 
+		 <xsd:complexType>
+		     <xsd:complexContent>	   
+		        <xsd:extension base="tns:ObjectPredicateType">	        
+			        <xsd:sequence>
+			    	     <xsd:element minOccurs="0" ref="tns:AbstractPredicate"/>
+				     </xsd:sequence>
+			    </xsd:extension>
+	        </xsd:complexContent>
+		</xsd:complexType>		   
+	</xsd:element>
+	
+	<xsd:complexType name="ObjectPredicateType">
+	     <xsd:attribute name="classLabel" type="xsd:string" use="optional"/>	     
+		 <xsd:attribute name="objLabel" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	     
+	<xsd:complexType name="RuleTemplateType">
+	    <xsd:sequence>
+	      	<xsd:element minOccurs="0" maxOccurs="unbounded" ref="tns:Parameter"/>
+	       	<xsd:element minOccurs="0" ref="tns:AbstractPredicate"/>
+	       	<xsd:element minOccurs="0" ref="tns:AbstractValue"/>
+	     </xsd:sequence>	          
+	     <xsd:attribute name="classLabel" type="xsd:string" use="optional"/>
+	     <xsd:attribute name="objLabel" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	
+	<xsd:element name="Parameter">
+		<xsd:complexType>
+			<xsd:attribute name="classLabel" type="xsd:string" use="required"/>
+			<xsd:attribute name="isSub" type="xsd:boolean" use="optional"/>
+			<xsd:attribute name="objLabel" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>	
+	
+	<xsd:annotation>
+		<xsd:documentation>Abstract rule nodes</xsd:documentation>
+	</xsd:annotation>
+	
+	<xsd:element name="AbstractValue" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>An arbitrary value</xsd:documentation>
+		</xsd:annotation>	
+	</xsd:element>
+		
+	<xsd:element name="Value" substitutionGroup="tns:AbstractValue">
+		<xsd:annotation>
+			<xsd:documentation>A value is either a constant, a reference to objects or a calculation, 
+			which is compared using a relationship.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		  <xsd:complexContent>
+		     <xsd:extension base="tns:PredicateType">
+		     	<xsd:sequence>     	
+		        	<xsd:element ref="tns:AbstractPredicate" minOccurs="0" maxOccurs="unbounded"/>
+		        	<xsd:element ref="tns:AbstractValue" minOccurs="0" maxOccurs="unbounded"/>		        	        			        			        		
+		     	</xsd:sequence>		     
+		     </xsd:extension>
+		   </xsd:complexContent>
+		</xsd:complexType>		
+	</xsd:element>
+    
+    <xsd:element name="AssignableValue" abstract="true" substitutionGroup="tns:AbstractValue">
+        <xsd:annotation>
+            <xsd:documentation>An arbitrary value that can be assigned to.  This is known as "Temporary value" in
+			the Radius Studio user interface.  A temporary value may be used in an action but not in a rule.  
+			It is a value which is initially null and which may be used to hold temporary results during an action.
+			The value may have either local or global scope. If it has local scope, the value will be reset to null 
+			before the action is applied to each object. If it has global scope, the value will be reset to null 
+			only at the start of each task.</xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+	
+	<xsd:element name="AbstractRelation" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>An arbitrary relation. Relations can be scalar or spatial.
+			&lt;b&gt;Scalar relationships&lt;/b&gt;: are applied to boolean, integers, real numbers and literal strings.  
+			Each scalar relationship compares two values and returns true or false.
+			&lt;b&gt;Spatial relationships&lt;/b&gt;: A spatial relationship operator is applied to the 
+			boundaries and interiors of two geometries. The two spatial relationships are:
+			&lt;ul&gt;
+			&lt;li&gt;Disjoint: check that neither the boundaries nor the interiors of two geometries intersect.&lt;/li&gt;
+			&lt;li&gt;Intersect: check that either the boundaries or interiors of two geometries intersect.
+				There are 8 types of intersect:
+				&lt;ul&gt;
+					&lt;li&gt;Equal&lt;/li&gt;
+					&lt;li&gt;Touch&lt;/li&gt;
+					&lt;li&gt;Overlap&lt;/li&gt;
+					&lt;li&gt;Cross&lt;/li&gt;
+					&lt;li&gt;Within&lt;/li&gt;
+					&lt;li&gt;Contains&lt;/li&gt;
+					&lt;li&gt;Covers&lt;/li&gt;
+					&lt;li&gt;Covered by&lt;/li&gt;
+				&lt;/ul&gt;
+			  &lt;/li&gt;
+			&lt;/ul&gt;
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="AbstractPredicate" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>An arbitrary predicate, that is, a property that can be used
+			to define a subset of the features in a dataset for the purpose of applying rules.</xsd:documentation>
+		</xsd:annotation>		     
+	</xsd:element>
+	
+	 <xsd:complexType name="PredicateType">		
+	     <xsd:attribute name="template_id" type="xsd:string" use="optional"/>
+	     <xsd:attribute name="template_name" type="xsd:string" use="optional"/>
+	     <xsd:attribute name="template_param" type="xsd:string" use="optional"/>
+	     <xsd:attribute name="template_type" type="xsd:string" use="optional"/>
+	     <xsd:attribute name="template_param_seed" type="xsd:string" use="optional"/>
+	     <xsd:attribute name="template_param_target" type="xsd:string" use="optional"/>	     		     		
+	 </xsd:complexType>	
+	 	     
+	<xsd:annotation>
+		<xsd:documentation>Value nodes, substitutable for Value elements anywhere in a rule</xsd:documentation>
+	</xsd:annotation>
+	
+	<xsd:element name="NullValue" substitutionGroup="tns:AbstractValue">
+		<xsd:annotation>
+			<xsd:documentation>A null value.  This value always evaluates to the null value.  
+			It could be used to verify whether an object attribute value is null. 
+			Note that searching on a null value is not valid for arrays.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		  <xsd:complexContent>
+		     <xsd:extension base="tns:PredicateType" />
+		   </xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="StaticValue" substitutionGroup="tns:AbstractValue">
+		<xsd:annotation>
+			<xsd:documentation>A fixed literal value, that is, a fixed value that does not change.  
+			This may be used on either side of a comparison condition or as part of a more 
+			complicated expression.  It may be a boolean, an integer a real (floating point) 
+			or a string (text).  You must specify both the type of the value and the value itself.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		   <xsd:complexContent>
+		       <xsd:extension base="tns:PredicateType">
+		          <xsd:attribute name="datatype" use="required">
+		             <xsd:simpleType>
+		                <xsd:restriction base="xsd:string">
+		                    <xsd:enumeration value="boolean"/>
+		                    <xsd:enumeration value="integer"/>
+		                    <xsd:enumeration value="real"/>
+		                    <xsd:enumeration value="string"/>
+		                    <xsd:enumeration value="timestamp"/>		                    
+		                </xsd:restriction>
+		             </xsd:simpleType>
+		          </xsd:attribute>		        
+ 		         <xsd:attribute name="value" type="xsd:string" use="required"/>
+ 		       </xsd:extension>
+		    </xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ConstantValue" substitutionGroup="tns:AbstractValue">
+	    <xsd:annotation>
+	        <xsd:documentation>A named constant value.  A named constant is a key word, 
+			which equates to a code used when testing rules or performing actions. 
+			Named constants are listed in the Radius Studio dictionary</xsd:documentation>
+	    </xsd:annotation>
+	    <xsd:complexType>
+	        <xsd:complexContent>
+	            <xsd:extension base="tns:PredicateType">
+	            <xsd:attribute name="datatype" use="required">
+		             <xsd:simpleType>
+		                <xsd:restriction base="xsd:string">
+		                    <xsd:enumeration value="boolean"/>
+		                    <xsd:enumeration value="integer"/>
+		                    <xsd:enumeration value="real"/>
+		                    <xsd:enumeration value="string"/>
+		                    <xsd:enumeration value=""/>
+		                </xsd:restriction>
+		             </xsd:simpleType>
+		          </xsd:attribute>
+		          <xsd:attribute name="metadatastoreId" type="xsd:string" use="required"/>
+		          <xsd:attribute name="classLabel" type="xsd:string" use="required"/>
+		          <xsd:attribute name="key" type="xsd:string" use="required"/>
+	            </xsd:extension>
+	        </xsd:complexContent>
+	    </xsd:complexType>
+	</xsd:element>	
+	<xsd:element name="DynamicValue" substitutionGroup="tns:AssignableValue">
+		<xsd:annotation>
+			<xsd:documentation>A dynamic value evaluated by reading the value of an attribute from an object.  
+			The class of the object and the attribute to read must be specified.  The name of an object 
+			identified in an earlier part of the rule may optionally be specified, if it is necessary 
+			to distinguish between different objects of the same class.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		       <xsd:extension base="tns:PredicateType">
+		          <xsd:attribute name="classRef" type="xsd:string" use="optional"/>
+		          <xsd:attribute name="objRef" type="xsd:string" use="optional"/>
+		          <xsd:attribute name="propName" type="xsd:string" use="required"/>
+		       </xsd:extension>
+		    </xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ObjectValue" substitutionGroup="tns:AssignableValue">
+		<xsd:annotation>
+			<xsd:documentation>An object or an element from a collection (either an array or a reference).</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		       <xsd:extension base="tns:PredicateType">
+		           <xsd:attribute name="classRef" type="xsd:string" use="optional"/>
+		           <xsd:attribute name="objRef" type="xsd:string" use="optional"/>
+		       </xsd:extension>
+		    </xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ClassValue" substitutionGroup="tns:AbstractValue">
+		<xsd:annotation>
+			<xsd:documentation>A value computed by returning the class name of an object. 
+			The class value identifies classes to be queried. If the class value is omitted 
+			from a rule definition then all classes in the dataset are queried. 
+			A class value relates to the root node.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		       <xsd:extension base="tns:PredicateType">
+		           <xsd:attribute name="classRef" type="xsd:string" use="optional"/>
+		           <xsd:attribute name="objRef" type="xsd:string" use="optional"/>
+		       </xsd:extension>
+		    </xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="NestedPropertyValue" substitutionGroup="tns:AssignableValue">
+		<xsd:annotation>
+			<xsd:documentation>A nested value extracted from within another complex value. 
+			To use this value, an attribute must have a child value in the schema. 
+			The value is specified by declaring the attribute path to the required level.</xsd:documentation>
+		</xsd:annotation>
+            <xsd:complexType>
+                <xsd:complexContent>
+                    <xsd:extension base="tns:PredicateType">
+                       <xsd:sequence>
+                           <xsd:element ref="tns:AbstractValue"/>
+                           <xsd:element name="ValuePath" maxOccurs="unbounded">
+   				      <xsd:annotation>
+						<xsd:documentation>Path to nested value to extract</xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:attribute name="propName" type="xsd:string" use="required"/>
+					</xsd:complexType>
+				   </xsd:element>
+			     </xsd:sequence>
+                    </xsd:extension>
+                </xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ArrayElementValue" substitutionGroup="tns:AssignableValue">
+		<xsd:annotation>
+			<xsd:documentation>An element from the first child value (an array) indexed using the other child values.
+			The first value should be the array. The second value should be the index into the array, always starting from 0.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		       <xsd:extension base="tns:PredicateType">
+		          <xsd:sequence>
+		             <xsd:element ref="tns:AbstractValue" minOccurs="2" maxOccurs="unbounded"/>
+		          </xsd:sequence>
+		       </xsd:extension>
+		    </xsd:complexContent> 
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="BuiltinFnValue" substitutionGroup="tns:AbstractValue">
+		<xsd:annotation>
+			<xsd:documentation>A value computed using a built-in function, taking as input 
+			one or more value node parameters.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		   <xsd:complexContent>
+		       <xsd:extension base="tns:PredicateType">
+		          <xsd:sequence>
+		             <xsd:element ref="tns:AbstractValue" minOccurs="0" maxOccurs="unbounded"/>
+		          </xsd:sequence>
+		          <xsd:attribute name="fnName" type="xsd:string" use="required"/>
+		       </xsd:extension>
+		    </xsd:complexContent> 
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="AggregateValue" substitutionGroup="tns:AbstractValue">
+		<xsd:annotation>
+			<xsd:documentation>A value computed by using an aggregate function to aggregate zero or more 
+			values over the set of objects which satisfy the condition specified. Aggregate functions 
+			calculate a single result from one or more input values, specified as the result of a sub-condition.  
+			There are a number of different types of aggregate functions: 
+			&lt;ul&gt;
+				&lt;li&gt;all_distinct: Returns true if all the input values are distinct (different).&lt;/li&gt;
+				&lt;li&gt;all_same: Returns true if all the input values are identical.&lt;/li&gt;
+				&lt;li&gt;avg: Returns the average (mean) of the input values.&lt;/li&gt;
+				&lt;li&gt;count: Counts the number of objects or the number of non-null parameter values. 
+					If no parameters are passed, this function counts the number of objects traversed. 
+					Otherwise it counts the number of objects for which any of the parameters has a non-null value.&lt;/li&gt;
+				&lt;li&gt;count_distinct: Counts the number of distinct groups of the specified value or values.&lt;/li&gt;
+				&lt;li&gt;intersection: Returns the intersection of the input geometries.&lt;/li&gt;
+				&lt;li&gt;max: Returns the maximum value of the parameter over each object traversed. 
+					The values may be either numerical values, booleans or strings. Boolean values are regarded 
+					as being equal to either 1 for true or 0 for false. Strings are compared lexicographically.
+					If numbers are compared to strings, they are converted to strings before being compared.&lt;/li&gt;
+				&lt;li&gt;mbr: Returns the MBR (minimum bounding rectangle) of one or more geometries. The result 
+					is the smallest rectangle, with sides parallel to the x and y axes, containing the input geometries.
+					&lt;ul&gt;
+						&lt;li&gt;Parameter 1 - any geometry.&lt;/li&gt;
+						&lt;li&gt;Parameter etc. (Optional) - additional geometries.&lt;/li&gt;
+						&lt;li&gt;Returns: a geometry equal to the MBR of the input geometries.&lt;/li&gt;
+					&lt;/ul&gt;
+					NOTE: This function does not currently fully support 3D geometries. Any 3D geometries 
+					will be projected down to 2 dimensions.&lt;/li&gt;
+				&lt;li&gt;min: Returns the minimum value of the parameter over each object traversed. The values 
+					may be either numerical values, booleans or strings. Boolean values are regarded as being equal 
+					to either 1 for true or 0 for false. Strings are compared lexicographically. If numbers are 
+					compared to strings, they are converted to strings before being compared.&lt;/li&gt;
+				&lt;li&gt;sum: Returns the sum of the parameter value over each object traversed. The values 
+					may be either numerical values, booleans or strings. Boolean values are regarded as being equal 
+					to either 1 for true or 0 for false. Strings are added together using concatenation. 
+					If numbers are added to strings, they are converted to strings first.&lt;/li&gt;
+				&lt;li&gt;union: Returns the union of two or more geometries.  Any point that lies in any of the 
+					input geometries will also lie in the returned geometry.
+					&lt;ul&gt;
+						&lt;li&gt;Parameter 1 - any geometry.&lt;/li&gt;
+						&lt;li&gt;Parameter 2 - another geometry to combine with the first.&lt;/li&gt;
+						&lt;li&gt;Parameter etc. (Optional) - additional geometries to add to the union.&lt;/li&gt;
+						&lt;li&gt;Returns: a geometry equal to the union of all the input geometries.&lt;/li&gt;
+					&lt;/ul&gt;
+					NOTE: This function does not currently fully support 3D geometries. Any 3D geometries will 
+					be projected down to 2 dimensions.
+				&lt;/li&gt;
+			&lt;/ul&gt;
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		       <xsd:extension base="tns:PredicateType">
+		          <xsd:sequence>
+		             <xsd:element ref="tns:AbstractValue" minOccurs="0" maxOccurs="unbounded"/>
+		             <xsd:element ref="tns:AbstractPredicate"/>
+		          </xsd:sequence>
+		          <xsd:attribute name="fnName" type="xsd:string" use="required"/>
+		          <xsd:attribute name="classLabel" type="xsd:string" use="optional"/>
+		          <xsd:attribute name="objLabel" type="xsd:string" use="optional"/>
+		       </xsd:extension>
+		    </xsd:complexContent> 
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="NegatedValue" substitutionGroup="tns:AbstractValue">
+		<xsd:annotation>
+			<xsd:documentation>A value computed by reversing the sign of another value. This value should have 
+			exactly one child value (an integer or a real number), whose sign is to be inverted.  
+			For example, 1 would become +1 and vice-versa.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		       <xsd:extension base="tns:PredicateType">
+		          <xsd:sequence>
+		             <xsd:element ref="tns:AbstractValue"/>
+		          </xsd:sequence>
+		       </xsd:extension>
+		    </xsd:complexContent> 
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="SummedValue" substitutionGroup="tns:AbstractValue">
+		<xsd:annotation>
+			<xsd:documentation>The sum of two or more other values.  This value should have at least 
+			two child values (integer or real numbers). The overall result is the sum of all the child values. 
+			If the values are strings, they are joined together.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		       <xsd:extension base="tns:PredicateType">
+		          <xsd:sequence>
+		             <xsd:element ref="tns:AbstractValue" minOccurs="2" maxOccurs="unbounded"/>
+		          </xsd:sequence>
+		       </xsd:extension>
+		    </xsd:complexContent> 
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="DifferenceValue" substitutionGroup="tns:AbstractValue">
+		<xsd:annotation>
+			<xsd:documentation>This value should have two child values (integer or real numbers). 
+			The result is obtained by subtracting the second value from the first.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		       <xsd:extension base="tns:PredicateType">
+		          <xsd:sequence>
+		              <xsd:element ref="tns:AbstractValue" minOccurs="2" maxOccurs="2"/>
+		          </xsd:sequence>
+		       </xsd:extension>
+		    </xsd:complexContent> 
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ProductValue" substitutionGroup="tns:AbstractValue">
+		<xsd:annotation>
+			<xsd:documentation>This value should have at least two child values (integer or real numbers). 
+			The overall result is obtained by multiplying together all the child values.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		       <xsd:extension base="tns:PredicateType">
+		           <xsd:sequence>
+		              <xsd:element ref="tns:AbstractValue" minOccurs="2" maxOccurs="unbounded"/>
+		           </xsd:sequence>
+		        </xsd:extension>
+		    </xsd:complexContent> 
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="DivisionValue" substitutionGroup="tns:AbstractValue">
+		<xsd:annotation>
+			<xsd:documentation>This value should have two child values (integer or real numbers). 
+			The result is obtained by dividing the first value by the second.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		       <xsd:extension base="tns:PredicateType">
+		          <xsd:sequence>
+		             <xsd:element ref="tns:AbstractValue" minOccurs="2" maxOccurs="2"/>
+		          </xsd:sequence>
+		       </xsd:extension>
+		    </xsd:complexContent> 
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ModulusValue" substitutionGroup="tns:AbstractValue">
+		<xsd:annotation>
+			<xsd:documentation>Called "Remainder" in the Radius Studio user interface.  
+			This value should have two child values (integer or real numbers). The result is obtained 
+			by taking the remainder after dividing the first value by the second.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		       <xsd:extension base="tns:PredicateType">
+		          <xsd:sequence>
+		              <xsd:element ref="tns:AbstractValue" minOccurs="2" maxOccurs="2"/>
+		          </xsd:sequence>
+		       </xsd:extension>
+		    </xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ConditionalValue" substitutionGroup="tns:AbstractValue">
+		<xsd:annotation>
+			<xsd:documentation>
+				This value should have a condition to test and two child values to choose between. 
+				&lt;ul&gt;
+					&lt;li&gt;If the condition is true, the result is the value of the first child value.&lt;/li&gt;
+					&lt;li&gt;If the condition is false, the result is the value of the second child value.&lt;/li&gt;
+				&lt;/ul&gt;
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		       <xsd:extension base="tns:PredicateType">
+		           <xsd:sequence>
+		              <xsd:element ref="tns:AbstractPredicate"/>
+		              <xsd:element ref="tns:AbstractValue" maxOccurs="2"/>
+		           </xsd:sequence>
+		       </xsd:extension>
+		    </xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:annotation>
+		<xsd:documentation>Relation nodes, substitutable for Relation elements anywhere in a rule</xsd:documentation>
+	</xsd:annotation>
+	<xsd:element name="Relation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Generic Relation Element</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>	
+	<xsd:element name="EqualsRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if two scalar values are equal</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="NotEqualsRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if two scalar values are different</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="LessRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if one scalar value is less than another</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="LessEqualsRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if one scalar value is less than or equal to another</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="GreaterRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if one scalar value is greater than another</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="GreaterEqualsRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if one scalar value is greater than or equal to another</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="BeginsRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if one string value starts with another</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="EndsRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if one string value ends with another</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="ContainsRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if one string value contains another</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="RegExpRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test a string value against a wildcard or regular expression</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="reType" use="optional" default="pcre">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="pcre"/>
+						<xsd:enumeration value="wildcard"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="one_char" type="xsd:string" use="optional" default="?"/>
+			<xsd:attribute name="any_chars" type="xsd:string" use="optional" default="%"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:annotation>
+		<xsd:documentation>OGC spatial relations</xsd:documentation>
+	</xsd:annotation>
+	<xsd:element name="SpatialEqualsRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if two geometries are equal</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="SpatialDisjointRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if two geometries are disjoint (don't intersect)</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="SpatialIntersectsRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if two geometries intersect one another</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="SpatialTouchesRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if two geometries are adjacent</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="SpatialOverlapsRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if two geometries overlap one another</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="SpatialCrossesRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if two geometries cross</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="SpatialCoversRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if two geometries cross</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="SpatialCoveredByRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if two geometries cross</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="SpatialWithinRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if the first geometry is contained within the second</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="SpatialContainsRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if the first geometry contains the second</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="SpatialWithinDistRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if two geometries come within a certain distance of one another</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="distance" type="xsd:double" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="SpatialBeyondRelation" substitutionGroup="tns:AbstractRelation">
+		<xsd:annotation>
+			<xsd:documentation>Test if two geometries are more than a certain distance apart</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="distance" type="xsd:double" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:annotation>
+		<xsd:documentation>Predicate nodes, substitutable for Predicate elements anywhere in a rule</xsd:documentation>
+	</xsd:annotation>
+	<xsd:element name="Predicate" substitutionGroup="tns:AbstractPredicate">
+		<xsd:annotation>
+			<xsd:documentation>
+				A predicate, or condition, is a high-level logical test which defines the syntax for a rule. 
+				A condition can be:
+				&lt;ul&gt;
+					&lt;li&gt;A comparison
+						&lt;ul&gt;
+							&lt;li&gt;Comparison&lt;/li&gt;
+							&lt;li&gt;Reference&lt;/li&gt;
+							&lt;li&gt;Test in Range&lt;/li&gt;
+						&lt;/ul&gt;
+					&lt;/li&gt;
+					&lt;li&gt;A logical operator
+						&lt;ul&gt;
+							&lt;li&gt;AND&lt;/li&gt;
+							&lt;li&gt;OR&lt;/li&gt;
+							&lt;li&gt;XOR&lt;/li&gt;
+							&lt;li&gt;NOT&lt;/li&gt;
+							&lt;li&gt;IF...THEN...ELSE&lt;/li&gt;		
+						&lt;/ul&gt;	
+					&lt;/li&gt;				
+					&lt;li&gt;A looping construct
+						&lt;ul&gt;
+							&lt;li&gt;Existence&lt;/li&gt;
+							&lt;li&gt;For All&lt;/li&gt;
+							&lt;li&gt;Chain&lt;/li&gt;
+						&lt;/ul&gt;
+					&lt;/li&gt;
+					&lt;li&gt;A collection predicate
+						&lt;ul&gt;
+							&lt;li&gt;Existence in Collection&lt;/li&gt;
+							&lt;li&gt;For All in Collection&lt;/li&gt;						
+						&lt;/ul&gt;
+					&lt;/li&gt;
+			  &lt;/ul&gt;
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		   <xsd:complexContent>
+		    <xsd:extension base="tns:PredicateType">  
+		    	<xsd:sequence>  	
+		        	<xsd:element ref="tns:AbstractValue" minOccurs="0" maxOccurs="unbounded"/>
+		        	<xsd:element ref="tns:AbstractRelation" minOccurs="0" maxOccurs="unbounded"/>			    	
+		        	<xsd:element ref="tns:AbstractPredicate" minOccurs="0" maxOccurs="unbounded"/>      	
+		        </xsd:sequence>
+		    </xsd:extension>
+		   </xsd:complexContent>			
+		</xsd:complexType>            
+	</xsd:element>	
+	<xsd:element name="RelationalPredicate" substitutionGroup="tns:AbstractPredicate">
+		<xsd:annotation>
+			<xsd:documentation>Compare two values using any relation</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		   <xsd:complexContent>
+		    <xsd:extension base="tns:PredicateType">
+			  <xsd:sequence>			
+				<xsd:element ref="tns:AbstractValue"/>
+				<xsd:element ref="tns:AbstractRelation"/>
+				<xsd:element ref="tns:AbstractValue"/>
+			  </xsd:sequence>                  
+		    </xsd:extension>
+		   </xsd:complexContent>			
+		</xsd:complexType>            
+	</xsd:element>
+	<xsd:element name="ReferentialPredicate" substitutionGroup="tns:AbstractPredicate">
+		<xsd:annotation>
+			<xsd:documentation>Test if two objects are related via a reference</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		        <xsd:extension base="tns:PredicateType">
+		            <xsd:attribute name="classRef1" type="xsd:string" use="optional"/>
+		            <xsd:attribute name="objRef1" type="xsd:string" use="optional"/>
+		            <xsd:attribute name="refName" type="xsd:string" use="required"/>
+		            <xsd:attribute name="classRef2" type="xsd:string" use="optional"/>
+		            <xsd:attribute name="objRef2" type="xsd:string" use="optional"/>
+		            <xsd:attribute name="ref_pred_template_param" type="xsd:string" use="optional">
+                                <xsd:annotation>
+                                    <xsd:documentation>Used to be used to disambiguate template parameter uses, now ignored except when uploading old back-ups</xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:attribute>
+		            <xsd:attribute name="template_param_1" type="xsd:string" use="optional"/>
+		            <xsd:attribute name="template_param_2" type="xsd:string" use="optional"/>
+		         </xsd:extension>
+		   </xsd:complexContent>	
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="RangePredicate" substitutionGroup="tns:AbstractPredicate">
+		<xsd:annotation>
+			<xsd:documentation>Test if the first value lies in the range between the second and third values</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		        <xsd:extension base="tns:PredicateType">
+		           <xsd:sequence>
+		              <xsd:element ref="tns:AbstractValue" minOccurs="3" maxOccurs="3"/>
+		           </xsd:sequence>
+		           <xsd:attribute name="minInclusive" type="xsd:boolean" use="required"/>
+		           <xsd:attribute name="maxInclusive" type="xsd:boolean" use="required"/>
+		        </xsd:extension>
+		   </xsd:complexContent>	
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="AndPredicate" substitutionGroup="tns:AbstractPredicate">
+		<xsd:annotation>
+			<xsd:documentation>Test if two or more nested predicates are all true</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		        <xsd:extension base="tns:PredicateType">
+		           <xsd:sequence>
+		              <xsd:element ref="tns:AbstractPredicate" minOccurs="2" maxOccurs="unbounded"/>
+		            </xsd:sequence>
+		         </xsd:extension>
+		   </xsd:complexContent>	
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="OrPredicate" substitutionGroup="tns:AbstractPredicate">
+		<xsd:annotation>
+			<xsd:documentation>Test whether any of the nested predicates are true</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		        <xsd:extension base="tns:PredicateType">
+		            <xsd:sequence>
+		               <xsd:element ref="tns:AbstractPredicate" minOccurs="2" maxOccurs="unbounded"/>
+		            </xsd:sequence>
+		         </xsd:extension>
+		   </xsd:complexContent>	 
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="XorPredicate" substitutionGroup="tns:AbstractPredicate">
+		<xsd:annotation>
+			<xsd:documentation>Test whether any of the nested predicates are exclusively true</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		     <xsd:complexContent>
+		        <xsd:extension base="tns:PredicateType">
+		            <xsd:sequence>
+		                <xsd:element ref="tns:AbstractPredicate" minOccurs="2" maxOccurs="unbounded"/>
+		            </xsd:sequence>
+		        </xsd:extension>
+		   </xsd:complexContent>	  
+		</xsd:complexType>
+	</xsd:element>	
+	<xsd:element name="NotPredicate" substitutionGroup="tns:AbstractPredicate">
+		<xsd:annotation>
+			<xsd:documentation>Check that the nested predicate is not true</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		        <xsd:extension base="tns:PredicateType">
+		            <xsd:sequence>
+		                <xsd:element ref="tns:AbstractPredicate"/>
+		            </xsd:sequence>
+		        </xsd:extension>
+		   </xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ConditionalPredicate" substitutionGroup="tns:AbstractPredicate">
+		<xsd:annotation>
+			<xsd:documentation>Conditionally test the second or third nested predicate based on the result of the first nested predicate</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		        <xsd:extension base="tns:PredicateType">
+		           <xsd:sequence>
+		              <xsd:element ref="tns:AbstractPredicate" minOccurs="2" maxOccurs="3"/>
+		           </xsd:sequence>
+		         </xsd:extension>
+		   </xsd:complexContent>
+		 </xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ExistsPredicate" substitutionGroup="tns:AbstractPredicate">
+		<xsd:annotation>
+			<xsd:documentation>Test for the existence or absence of objects matching the nested predicate</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		        <xsd:extension base="tns:PredicateType">
+		           <xsd:sequence>
+		              <xsd:element minOccurs="0" ref="tns:AbstractPredicate"/>
+		           </xsd:sequence>
+		           <xsd:attribute name="qualifier" use="required">
+		               <xsd:simpleType>
+		                   <xsd:restriction base="xsd:string">
+		                        <xsd:enumeration value="at least"/>
+		                        <xsd:enumeration value="at most"/>
+		                        <xsd:enumeration value="exactly"/>
+		                    </xsd:restriction>
+		                 </xsd:simpleType>
+		            </xsd:attribute>
+		            <xsd:attribute name="n" use="required">
+		                 <xsd:simpleType>
+		                     <xsd:restriction base="xsd:integer">
+		                         <xsd:minInclusive value="0"/>
+		                     </xsd:restriction>
+		                  </xsd:simpleType>
+		             </xsd:attribute>
+		             <xsd:attribute name="classLabel" type="xsd:string" use="optional"/>
+		             <xsd:attribute name="objLabel" type="xsd:string" use="optional"/>
+		        </xsd:extension>
+		   </xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ForAllPredicate" substitutionGroup="tns:AbstractPredicate">
+		<xsd:annotation>
+			<xsd:documentation>Check that all objects returned by the first nested predicate also match the second</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		        <xsd:extension base="tns:PredicateType">
+		            <xsd:sequence>
+		               <xsd:element ref="tns:AbstractPredicate" minOccurs="2" maxOccurs="2"/>
+		             </xsd:sequence>
+		             <xsd:attribute name="classLabel" type="xsd:string" use="optional"/>
+		             <xsd:attribute name="objLabel" type="xsd:string" use="optional"/>
+		          </xsd:extension>
+		   </xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ChainPredicate" substitutionGroup="tns:AbstractPredicate">
+		<xsd:annotation>
+			<xsd:documentation>Check that there is a chain of objects linking seed and target objects via the nested predicate</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		        <xsd:extension base="tns:PredicateType">
+		           <xsd:sequence>
+		              <xsd:element ref="tns:AbstractPredicate"/>
+		            </xsd:sequence>
+		            <xsd:attribute name="n" type="xsd:string" use="optional"/>
+		            <xsd:attribute name="classRef" type="xsd:string" use="optional"/>
+		            <xsd:attribute name="objRefSeed" type="xsd:string" use="optional"/>
+		            <xsd:attribute name="objRefTarget" type="xsd:string" use="optional"/>
+		            <xsd:attribute name="objLabelPrior" type="xsd:string" use="optional"/>
+		            <xsd:attribute name="objLabelPost" type="xsd:string" use="optional"/>
+		            <xsd:attribute name="limit" use="optional">
+		                <xsd:simpleType>
+		                    <xsd:restriction base="xsd:integer">
+		                       	<xsd:minInclusive value="0"/>
+		                     </xsd:restriction>
+		                 </xsd:simpleType>
+		            </xsd:attribute>
+		        </xsd:extension>
+		   </xsd:complexContent>   
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ElementExistsPredicate" substitutionGroup="tns:AbstractPredicate">
+		<xsd:annotation>
+			<xsd:documentation>Test for the existence or absence of elements in a collection matching the nested predicate</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		        <xsd:extension base="tns:PredicateType">
+		            <xsd:sequence>
+				        <xsd:element ref="tns:AbstractValue"/>
+				        <xsd:element ref="tns:AbstractPredicate"/>
+			        </xsd:sequence>
+			        <xsd:attribute name="qualifier" use="required">
+				        <xsd:simpleType>
+					         <xsd:restriction base="xsd:string">
+						         <xsd:enumeration value="at least"/>
+						         <xsd:enumeration value="at most"/>
+						         <xsd:enumeration value="exactly"/>
+					         </xsd:restriction>
+				        </xsd:simpleType>
+			        </xsd:attribute>
+			        <xsd:attribute name="n" use="required">
+				        <xsd:simpleType>
+					         <xsd:restriction base="xsd:integer">
+						         <xsd:minInclusive value="0"/>
+					         </xsd:restriction>
+				        </xsd:simpleType>
+			        </xsd:attribute>
+			        <xsd:attribute name="classLabel" type="xsd:string" use="optional"/>
+			        <xsd:attribute name="objLabel" type="xsd:string" use="optional"/>
+			     </xsd:extension>
+			 </xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ForAllElementsPredicate" substitutionGroup="tns:AbstractPredicate">
+		<xsd:annotation>
+			<xsd:documentation>Check that all the elements in a collection match the nested predicate</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		   <xsd:complexContent>
+		        <xsd:extension base="tns:PredicateType">
+			        <xsd:sequence>
+				        <xsd:element ref="tns:AbstractValue"/>
+				        <xsd:element ref="tns:AbstractPredicate"/>
+			        </xsd:sequence>
+			        <xsd:attribute name="classLabel" type="xsd:string" use="optional"/>
+			        <xsd:attribute name="objLabel" type="xsd:string" use="optional"/>
+			     </xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="NearestPredicate" abstract="true" substitutionGroup="tns:AbstractPredicate">
+		<xsd:annotation>
+			<xsd:documentation>Test whether the object is one of the nearest objects to a geometry value, possibly satisfying an additional constraint (not currently implemented)</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+		    <xsd:complexContent>
+		        <xsd:extension base="tns:PredicateType">
+		           <xsd:sequence>
+		              <xsd:element ref="tns:AbstractValue"/>
+		              <xsd:element ref="tns:AbstractPredicate" minOccurs="0"/>
+		            </xsd:sequence>
+		            <xsd:attribute name="classRef" type="xsd:string" use="optional"/>
+		            <xsd:attribute name="objRef" type="xsd:string" use="optional"/>
+		            <xsd:attribute name="n" use="required">
+		                <xsd:simpleType>
+		                   <xsd:restriction base="xsd:integer">
+		                      <xsd:minInclusive value="1"/>
+		                   </xsd:restriction>
+		                 </xsd:simpleType>
+		            </xsd:attribute>
+		            <xsd:attribute name="distance" type="xsd:double" use="optional"/>
+		        </xsd:extension>
+		    </xsd:complexContent>      
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

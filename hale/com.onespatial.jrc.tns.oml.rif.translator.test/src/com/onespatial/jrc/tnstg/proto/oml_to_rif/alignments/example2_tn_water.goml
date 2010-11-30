@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<align:Alignment xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:goml="http://www.esdi-humboldt.eu/goml" xmlns:align="http://knowledgeweb.semanticweb.org/heterogeneity/alignment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml/" xsi:schemaLocation="http://knowledgeweb.semanticweb.org/heterogeneity/alignment align.xsd">
+    <align:level></align:level>
+    <align:onto1>
+        <align:Ontology>
+            <align:location>http://geoserver:8080/tnstg-geoserver/wfs?service=WFS&amp;version=1.1.0&amp;request=DescribeFeatureType&amp;typeName=sitn%3AGENERIC_LINE,sitn%3AGENERIC_POINT&amp;outputFormat=text/xml;%20subtype=gml/3.1.1</align:location>
+            <align:formalism>
+                <align:Formalism>
+                    <align:uri>http://www.opengis.net/gml</align:uri>
+                    <align:name>GML 3.2.1 Application Schema</align:name>
+                </align:Formalism>
+            </align:formalism>
+        </align:Ontology>
+    </align:onto1>
+    <align:onto2>
+        <align:Ontology>
+            <align:location>http://lslbvm41/inspire/WaterTransportNetwork.xsd</align:location>
+            <align:formalism>
+                <align:Formalism>
+                    <align:uri>http://www.opengis.net/gml</align:uri>
+                    <align:name>GML 3.2.1 Application Schema</align:name>
+                </align:Formalism>
+            </align:formalism>
+        </align:Ontology>
+    </align:onto2>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Class rdf:about="http://jrc.onespatial.com/tn/Example2/GENERIC_LINE">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction"/>
+                    <omwg:attributeValueCondition>
+                        <omwg:Restriction>
+                            <goml:cqlStr>FEAT_CODE='5831' OR FEAT_CODE='5833' OR FEAT_CODE='5835'</goml:cqlStr>
+                        </omwg:Restriction>
+                    </omwg:attributeValueCondition>
+                </omwg:Class>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Class rdf:about="urn:x-inspire:specification:gmlas:WaterTransportNetwork:3.0/WaterwayLink"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://jrc.onespatial.com/tn/Example2/GENERIC_LINE/AI">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction"/>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:BaseTypes:3.2/Identifier/localId"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Class rdf:about="entity/null"/>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:BaseTypes:3.2/Identifier/namespace">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.ConstantValueFunction">
+                        <omwg:param>
+                            <omwg:name>defaultValue</omwg:name>
+                            <omwg:value>IE.Example2</omwg:value>
+                        </omwg:param>
+                    </omwg:transf>
+                </omwg:Property>
+            </omwg:entity2>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://jrc.onespatial.com/tn/Example2/GENERIC_LINE/the_geom">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction"/>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:WaterTransportNetwork:3.0/WaterwayLink/centrelineGeometry"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+</align:Alignment>

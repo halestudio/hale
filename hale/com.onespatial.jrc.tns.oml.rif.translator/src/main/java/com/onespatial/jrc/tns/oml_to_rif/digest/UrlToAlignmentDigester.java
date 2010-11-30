@@ -12,6 +12,7 @@
 package com.onespatial.jrc.tns.oml_to_rif.digest;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import com.onespatial.jrc.tns.oml_to_rif.HaleAlignment;
@@ -53,7 +54,14 @@ public class UrlToAlignmentDigester extends AbstractFollowableTranslator<URL, Ha
         ApacheSchemaProvider sp = new ApacheSchemaProvider();
         Schema s, t;
         try {
-	        s = sp.loadSchema(new URI(al.getSchema1().getLocation()), null);
+        	URI suri = new URI(al.getSchema1().getLocation());
+//        	if (!suri.isAbsolute()) {
+//        		suri = source.toURI();
+//				suri = new URI(suri.getScheme(), suri.getUserInfo(), 
+//						suri.getHost(), suri.getPort(), 
+//						al.getSchema1().getLocation(), null, null);
+//        	}
+	        s = sp.loadSchema(suri, null);
 	        t = sp.loadSchema(new URI(al.getSchema2().getLocation()), null);
         } catch (Exception e) {
 			throw new TranslationException("Error loading schemas", e); 

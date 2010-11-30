@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<align:Alignment xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:goml="http://www.esdi-humboldt.eu/goml" xmlns:align="http://knowledgeweb.semanticweb.org/heterogeneity/alignment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml/" xsi:schemaLocation="http://knowledgeweb.semanticweb.org/heterogeneity/alignment align.xsd">
+    <align:level></align:level>
+    <align:onto1>
+        <align:Ontology rdf:about="http://jrc.onespatial.com/cp/Example3">
+            <align:location>http://geoserver:8080/tnstg-geoserver/wfs?service=WFS&amp;version=1.1.0&amp;request=DescribeFeatureType&amp;typeName=dcp%3AParcelArea&amp;outputFormat=text/xml;%20subtype=gml/3.1.1</align:location>
+            <align:formalism>
+                <align:Formalism>
+                    <align:uri>http://www.opengis.net/gml</align:uri>
+                    <align:name>GML Application Schema</align:name>
+                </align:Formalism>
+            </align:formalism>
+        </align:Ontology>
+    </align:onto1>
+    <align:onto2>
+        <align:Ontology rdf:about="urn:x-inspire:specification:gmlas:CadastralParcels:3.0">
+            <align:location>http://lslbvm41/inspire/CadastralParcels.xsd</align:location>
+            <align:formalism>
+                <align:Formalism>
+                    <align:uri>http://www.opengis.net/gml</align:uri>
+                    <align:name>GML Application Schema</align:name>
+                </align:Formalism>
+            </align:formalism>
+        </align:Ontology>
+    </align:onto2>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://jrc.onespatial.com/cp/Example3/ParcelArea/PCVL_PRCL_">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction"/>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:CadastralParcels:3.0/CadastralParcel/inspireId;Identifier;localId"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Class rdf:about="http://jrc.onespatial.com/cp/Example3/ParcelArea">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction">
+                        <omwg:param>
+                            <omwg:name>SelectedAttribute</omwg:name>
+                            <omwg:value></omwg:value>
+                        </omwg:param>                      
+                    </omwg:transf>
+					<omwg:attributeValueCondition>
+                        <omwg:Restriction>
+                            <goml:cqlStr>PCVL_PRCL_ = 'a specific string' and (MI_PRINX &lt; 3.5 or ABSTRACT like '%a certain keyword%')</goml:cqlStr>
+                        </omwg:Restriction>
+                    </omwg:attributeValueCondition>  
+                </omwg:Class>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Class rdf:about="urn:x-inspire:specification:gmlas:CadastralParcels:3.0/CadastralParcel"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Class rdf:about="entity/null"/>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:CadastralParcels:3.0/CadastralParcel/inspireId;Identifier;namespace">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.ConstantValueFunction">
+                        <omwg:param>
+                            <omwg:name>defaultValue</omwg:name>
+                            <omwg:value>NL.KAD.CP</omwg:value>
+                        </omwg:param>
+                    </omwg:transf>
+                </omwg:Property>
+            </omwg:entity2>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://jrc.onespatial.com/cp/Example3/ParcelArea/PCVL_DATUM">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction"/>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:CadastralParcels:3.0/CadastralParcel/beginLifespanVersion"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://jrc.onespatial.com/cp/Example3/ParcelArea/PCVL_DAT00">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction"/>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:CadastralParcels:3.0/CadastralParcel/validTo"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://jrc.onespatial.com/cp/Example3/ParcelArea/PCVL_DATUM">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction"/>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:CadastralParcels:3.0/CadastralParcel/validFrom"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://jrc.onespatial.com/cp/Example3/ParcelArea/PCVL_PRCL_">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction"/>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:CadastralParcels:3.0/CadastralParcel/nationalCadastralReference"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://jrc.onespatial.com/cp/Example3/ParcelArea/PCVL_PRCL_">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction"/>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:CadastralParcels:3.0/CadastralParcel/label"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://jrc.onespatial.com/cp/Example3/ParcelArea/the_geom">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction"/>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:CadastralParcels:3.0/CadastralParcel/geometry"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+</align:Alignment>
