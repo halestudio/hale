@@ -96,7 +96,7 @@ public class MappingExportWizard
 				
 						SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 						
-						ATransaction trans = _log.begin("Exporting mapping");
+						ATransaction trans = _log.begin("Export mapping to " + format);
 						try {
 							//TODO instead give the monitor to the exporter? support for canceling?
 							monitor.beginTask("Exporting mapping", IProgressMonitor.UNKNOWN);
@@ -115,7 +115,7 @@ public class MappingExportWizard
 									} finally {
 										failedTrans.end();
 									}
-									ATransaction warningsTrans = _log.begin("Warnings/remarks on exported mapping cells");
+									ATransaction warningsTrans = _log.begin("Problems with exported mapping cells");
 									try {
 										for (Entry<ICell, String> entry : report.getWarnings().entrySet()) {
 											_log.warn(AGroupFactory.getGroup(entry.getValue()),
@@ -128,9 +128,15 @@ public class MappingExportWizard
 									reportTrans.end();
 								}
 								
+								int failed = report.getFailed().size();
+								int problems = report.getWarnings().size();
+								int all = al.getMap().size();
 								final String message = "The mapping has been exported " +
 									"but there have been problems with some " +
-									"cells. See the report in the error log for more details.";
+									"cells.\n" +
+									"- " + failed + " of " + all + " mapping cells could not be exported\n" +
+									"- for " + problems + " of " + (all - failed) + " exported cells problems have been reported\n" +
+									"\nSee the report in the error log for more details.";
 								
 								PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 									
