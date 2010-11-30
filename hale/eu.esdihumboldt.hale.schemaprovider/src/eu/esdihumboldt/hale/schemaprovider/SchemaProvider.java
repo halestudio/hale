@@ -13,6 +13,7 @@ package eu.esdihumboldt.hale.schemaprovider;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collection;
 
 import org.opengis.feature.type.FeatureType;
 
@@ -33,7 +34,7 @@ public interface SchemaProvider {
 	 * @param location URI which represents a file
 	 * @param progress the progress indicator, may be <code>null</code>
 	 * @return the schema object containing the {@link FeatureType}s
-	 * @throws IOException 
+	 * @throws IOException if loading the schema fails
 	 */
 	public Schema loadSchema(URI location, ProgressIndicator progress) throws IOException;
 	
@@ -42,8 +43,15 @@ public interface SchemaProvider {
 	 * 
 	 * @param schemaFormat the schema format
 	 * 
-	 * @return true if the scheam format is supported
+	 * @return true if the schema format is supported
 	 */
 	public boolean supportsSchemaFormat(String schemaFormat);
+
+	/**
+	 * Get the supported schema formats
+	 * 
+	 * @return the supported schema formats
+	 */
+	public Collection<? extends String> getSupportedSchemaFormats();
 	
 }

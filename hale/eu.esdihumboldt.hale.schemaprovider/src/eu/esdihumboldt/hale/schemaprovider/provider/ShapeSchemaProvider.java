@@ -61,6 +61,7 @@ public class ShapeSchemaProvider
 	public Schema loadSchema(URI location, ProgressIndicator progress)
 			throws IOException {
 		progress.setCurrentTask("Analysing shapefile.");
+//		DataStore store = new ShapefileDataStoreFactory().createDataStore(location.toURL());
 		DataStore store = FileDataStoreFinder.getDataStore(location.toURL());
 		
 		progress.setCurrentTask("Extracting Type Definitions.");

@@ -12,11 +12,12 @@
 
 package eu.esdihumboldt.hale.schemaprovider;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * 
+ * Abstract {@link SchemaProvider} managing the supported schema formats
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -40,6 +41,13 @@ public abstract class AbstractSchemaProvider implements SchemaProvider {
 	 */
 	public void addSupportedFormat(String format) {
 		supportedFormats.add(format.toLowerCase());
+	}
+
+	/**
+	 * @see SchemaProvider#getSupportedSchemaFormats()
+	 */
+	public Collection<? extends String> getSupportedSchemaFormats() {
+		return new HashSet<String>(supportedFormats);
 	}
 
 }

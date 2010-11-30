@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.preference.FileFieldEditor;
@@ -29,7 +30,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 
 /**
@@ -135,7 +138,15 @@ public class SchemaImportWizardMainPage
 				getWizard().getContainer().updateButtons();
 			}
 		});
-		String[] extensions = new String[] { "*.xsd", "*.gml", "*.xml", "*.shp" }; //NON-NLS-1 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+		Set<String> formats = ss.getSupportedSchemaFormats();
+		
+		String[] extensions = new String[formats.size()]; //{ "*.xsd", "*.gml", "*.xml", "*.shp" }; //NON-NLS-1 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		int i = 0;
+		for (String format : formats) {
+			extensions[i++] = "*." + format;
+		}
 		fileFieldEditor.setFileExtensions(extensions);
 		
 		// read from WFS (DescribeFeatureType)

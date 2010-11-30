@@ -281,5 +281,19 @@ public class SchemaProviderService
 		
 		return result;
 	}
+
+	/**
+	 * @see SchemaService#getSupportedSchemaFormats()
+	 */
+	@Override
+	public Set<String> getSupportedSchemaFormats() {
+		Set<String> result = new HashSet<String>();
+		
+		for (SchemaProvider provider : providers) {
+			result.addAll(provider.getSupportedSchemaFormats());
+		}
+		
+		return result;
+	}
 	
 }

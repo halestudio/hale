@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Set;
 
 import org.opengis.feature.type.FeatureType;
 
@@ -154,5 +155,13 @@ public interface SchemaService
 	 *   {@link AttributeDefinition})
 	 */
 	public Definition getDefinition(String identifier);
+
+	/**
+	 * Get the supported schema formats that may be used with
+	 * {@link #loadSchema(URI, String, SchemaType, ProgressIndicator)}
+	 * 
+	 * @return the supported schema formats
+	 */
+	public Set<String> getSupportedSchemaFormats();
 
 }
