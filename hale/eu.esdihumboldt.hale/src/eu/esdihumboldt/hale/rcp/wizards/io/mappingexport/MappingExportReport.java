@@ -70,4 +70,12 @@ public class MappingExportReport {
 		return warnings;
 	}
 
+	/**
+	 * Determines if the report is empty
+	 * 
+	 * @return if the report is empty
+	 */
+	public boolean isEmpty() {
+		return failed.isEmpty() && warnings.isEmpty();
+	}
 }

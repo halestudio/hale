@@ -19,6 +19,8 @@ import java.util.List;
 import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.goml.rdf.DetailedAbout;
+import eu.esdihumboldt.goml.rdf.IDetailedAbout;
 
 /**
  * 
@@ -136,6 +138,22 @@ public class EntityUtils {
 		}
 		
 		return false;
+	}
+
+	/**
+	 * Create a string representation of the given entity
+	 * 
+	 * @param entity the entity
+	 * @return its string representation
+	 */
+	public static String asString(IEntity entity) {
+		IDetailedAbout about = DetailedAbout.getDetailedAbout(entity.getAbout(), entity instanceof Property);
+		StringBuffer result = new StringBuffer(about.getFeatureClass());
+		for (String property : about.getProperties()) {
+			result.append('/');
+			result.append(property);
+		}
+		return result.toString();
 	}
 	
 }

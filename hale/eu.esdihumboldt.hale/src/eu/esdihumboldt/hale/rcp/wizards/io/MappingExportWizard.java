@@ -12,6 +12,7 @@
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -23,14 +24,18 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 
+import de.cs3d.util.logging.AGroupFactory;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
+import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.utils.CellUtils;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportExtension;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider;
+import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
 
 /**
  * This wizard is used to export the currently active mapping to an gOML file.
@@ -45,7 +50,7 @@ public class MappingExportWizard
 	
 	private MappingExportWizardMainPage mainPage;
 	
-	private static ALogger _log = ALoggerFactory.getLogger(MappingExportWizard.class);
+	private static final ALogger _log = ALoggerFactory.getLogger(MappingExportWizard.class);
 	
 	/**
 	 * Default constructor
@@ -90,8 +95,25 @@ public class MappingExportWizard
 						try {
 							//TODO instead give the monitor to the exporter? support for canceling?
 							monitor.beginTask("Exporting mapping", IProgressMonitor.UNKNOWN);
-							mef.export(al, file, schemaService.getSourceSchema(), 
+							MappingExportReport report = mef.export(al, file, schemaService.getSourceSchema(), 
 									schemaService.getTargetSchema());
+							if (report != null && !report.isEmpty()) {
+								// handle report
+								//TODO provide better user feedback
+								ATransaction reportTrans = _log.begin("Mapping export report");
+								try {
+									for (Entry<ICell, String> entry : report.getFailed().entrySet()) {
+										_log.error(AGroupFactory.getGroup(entry.getValue()),
+												CellUtils.asString(entry.getKey()));
+									}
+									for (Entry<ICell, String> entry : report.getWarnings().entrySet()) {
+										_log.warn(AGroupFactory.getGroup(entry.getValue()),
+												CellUtils.asString(entry.getKey()));
+									}
+								} finally {
+									reportTrans.end();
+								}
+							}
 						} catch (Throwable e) {
 							String message = Messages.MappingExportWizard_SaveFailed;
 							_log.userError(message + " " + e.getMessage(), e);
