@@ -170,6 +170,8 @@ public class AlignmentToModelAlignmentDigester extends
                 }
             }
             
+            report.setWarning(original, "The nil reason will be set regardless of whether a value for its parent is set or not");
+            
             IDetailedAbout targetAbout = DetailedAbout.getDetailedAbout(targetEntity.getAbout(), true);
             List<String> properties = new ArrayList<String>(targetAbout.getProperties());
             properties.add("nilReason"); //XXX this is an attribute does it make any difference?
