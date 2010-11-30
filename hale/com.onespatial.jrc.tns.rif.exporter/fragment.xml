@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<fragment>
+   <extension
+         point="eu.esdihumboldt.hale.MappingExport">
+      <MappingExportFactory
+            extension="*.rif"
+            name="RIF-PRD"
+            providerClass="com.onespatial.jrc.hale.ui.RifMappingExportProvider">
+      </MappingExportFactory>
+   </extension>
+
+</fragment>

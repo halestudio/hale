@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: RIF Exporter HALE Plugin
+Bundle-SymbolicName: com.onespatial.jrc.tns.hale.rifexport;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: ONESPATIAL
+Fragment-Host: eu.esdihumboldt.hale;bundle-version="2.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: com.onespatial.jrc.tns.oml_to_rif;bundle-version="1.0.0"

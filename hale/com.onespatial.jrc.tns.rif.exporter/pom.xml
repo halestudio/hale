@@ -1,0 +1,82 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.onespatial.jrc.tnstg</groupId>
+  <artifactId>com.onespatial.jrc.tns.rif.exporter</artifactId>
+  <name>RIF Exporter HALE Plugin</name>
+  <version>1.0.0</version>
+  <build>
+  <plugins>
+   <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-compiler-plugin</artifactId>
+       <version>2.3</version>
+       <configuration>
+           <compilerArgument>-Xbootclasspath/p:${java.home}/../jre/lib/rt.jar</compilerArgument>
+           <source>1.6</source>
+           <target>1.6</target>
+       </configuration>
+     </plugin>  
+	<plugin>
+       	<groupId>org.apache.maven.plugins</groupId>
+       	<artifactId>maven-jar-plugin</artifactId>
+       	<version>2.3.1</version>
+       	<configuration>
+         	<archive>
+           	<manifestEntries>
+           	 	<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+             		<Bundle-Name>%Bundle-Name</Bundle-Name>
+             		<Bundle-SymbolicName> com.onespatial.jrc.tns.hale.rifexport;singleton:=true</Bundle-SymbolicName>
+             		<Bundle-Version>1.0.0</Bundle-Version>
+             		<Bundle-Vendor>%Bundle-Vendor</Bundle-Vendor>
+             		<Fragment-Host>eu.esdihumboldt.hale;bundle-version="2.0.0.M3"</Fragment-Host>
+             		<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
+             		<Export-Package>com.onespatial.jrc.hale.ui;uses:="eu.esdihumboldt.hale.rcp.wizards.io.mappingexport,eu.esdihumboldt.goml.align,org.eclipse.core.commands"</Export-Package>
+             		<Eclipse-BuddyPolicy>registered</Eclipse-BuddyPolicy>
+             		<Require-Bundle>eu.esdihumboldt.commons,
+ com.onespatial.jrc.tns.oml_to_rif;bundle-version="1.0.0"</Require-Bundle>			
+           	</manifestEntries>
+         	</archive>
+       	</configuration>
+    </plugin>
+  </plugins>
+  </build>
+  <dependencies>
+  
+  	<!--  Eclipse dependencies -->
+   <dependency>
+	    <groupId>org.eclipse.core</groupId>
+	    <artifactId>commands</artifactId>
+	    <version>3.5.0.I20090525-2000</version>
+    </dependency>
+    <dependency>
+	    <groupId>org.eclipse.jface</groupId>
+	    <artifactId>jface</artifactId>
+	    <version>3.5.1.M20090826-0800</version>
+    </dependency> 
+    <dependency>
+	    <groupId>org.eclipse.swt.win32</groupId>
+	    <artifactId>win32</artifactId>
+	    <version>x86_3.5.1.v3555a</version>
+    </dependency>
+    <dependency>
+	    <groupId>org.eclipse.ui</groupId>
+	    <artifactId>workbench</artifactId>
+	    <version>3.5.1.M20090826-0800a</version>
+    </dependency>
+    
+    <!--  Humboldt dependencies -->
+    <dependency>
+    	<groupId>eu.esdihumboldt</groupId>
+    	<artifactId>hale</artifactId>
+    	<version>2.0.0.M3</version>
+    </dependency>
+    
+    <!-- 1Spatial dependencies -->
+    <dependency>
+      <groupId>com.onespatial.jrc.tnstg</groupId>
+      <artifactId>com.onespatial.jrc.tns.oml.rif.translator</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    
+  </dependencies>
+</project>
