@@ -142,11 +142,7 @@ public class SchemaImportWizardMainPage
 		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		Set<String> formats = ss.getSupportedSchemaFormats();
 		
-		String[] extensions = new String[formats.size()]; //{ "*.xsd", "*.gml", "*.xml", "*.shp" }; //NON-NLS-1 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		int i = 0;
-		for (String format : formats) {
-			extensions[i++] = "*." + format;
-		}
+		String[] extensions = InstanceDataImportWizardMainPage.buildExtensions(formats);
 		fileFieldEditor.setFileExtensions(extensions);
 		
 		// read from WFS (DescribeFeatureType)

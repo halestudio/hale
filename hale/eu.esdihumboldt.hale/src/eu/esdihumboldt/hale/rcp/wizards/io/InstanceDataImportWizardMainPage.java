@@ -179,11 +179,7 @@ public class InstanceDataImportWizardMainPage
 			}
 		});
 		
-		String[] extensions = new String[instanceFormats.size()]; //{ "*.gml", "*.xml" }; //NON-NLS-1 //$NON-NLS-1$ //$NON-NLS-2$
-		int i = 0;
-		for (String format : instanceFormats) {
-			extensions[i++] = "*." + format;
-		}
+		String[] extensions = buildExtensions(instanceFormats);
 		fileFieldEditor.setFileExtensions(extensions);
 		
 		// read from WFS (GetFeature)
@@ -256,6 +252,39 @@ public class InstanceDataImportWizardMainPage
 		
 	}
 	
+	/**
+	 * Creates an extension array for the given formats. If there are multiple
+	 * formats the first entry will be a combination of all formats.
+	 * 
+	 * @param formats the formats
+	 * @return the extension array
+	 */
+	public static String[] buildExtensions(Set<String> formats) {
+		if (formats.isEmpty()) return new String[]{};
+		
+		String[] extensions = new String[((formats.size() == 1)?(1):(formats.size() + 1))];
+		StringBuffer all = new StringBuffer();
+		int i = (formats.size() == 1)?(0):(1);
+		for (String format : formats) {
+			extensions[i] = "*." + format;
+			
+			if (formats.size() > 1) {
+				if (i != 1) {
+					all.append(";");
+				}
+				
+				all.append(extensions[i]);
+			}
+			
+			i++;
+		}
+		if (formats.size() > 1) {
+			extensions[0] = all.toString();
+		}
+		
+		return extensions;
+	}
+
 	/**
 	 * @see org.eclipse.jface.wizard.WizardPage#isPageComplete()
 	 */
