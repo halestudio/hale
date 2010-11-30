@@ -19,6 +19,8 @@ import com.onespatial.jrc.tns.oml_to_rif.document.RifBindingToDomTranslator;
 import com.onespatial.jrc.tns.oml_to_rif.translate.ModelAlignmentToModelRifTranslator;
 import com.onespatial.jrc.tns.oml_to_rif.translate.ModelRifToRifTranslator;
 
+import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
+
 /**
  * Provides the entry-point to the translation functionality contained within
  * this Java library. An example of how it may be deployed within code is as
@@ -76,15 +78,16 @@ public class AlignmentToRifTranslator
 
     /**
      * Returns the singleton instance of the {@link Translator}.
+     * @param report the export report
      * 
      * @return {@link Translator}&lt;{@link HaleAlignment},
      *         {@link org.w3._2007.rif.Document}&gt;
      */
-    public static Translator<HaleAlignment, Document> getInstance()
+    public static Translator<HaleAlignment, Document> getInstance(MappingExportReport report)
     {
         try
         {
-            return new AlignmentToModelAlignmentDigester()
+            return new AlignmentToModelAlignmentDigester(report)
                     .connect(new ModelAlignmentToModelRifTranslator().connect(
                             new ModelRifToRifTranslator()).connect(new RifBindingToDomTranslator()));
         }

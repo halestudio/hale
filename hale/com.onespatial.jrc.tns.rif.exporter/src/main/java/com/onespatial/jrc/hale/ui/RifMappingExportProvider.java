@@ -63,10 +63,12 @@ public class RifMappingExportProvider implements MappingExportProvider
 			Collection<SchemaElement> sourceSchema,
 			Collection<SchemaElement> targetSchema)
 			throws MappingExportException {
+		MappingExportReport report = new MappingExportReport();
+		
 		try
         {
 			HaleAlignment hal = new HaleAlignment(al, sourceSchema, targetSchema);
-            Document document = AlignmentToRifTranslator.getInstance().translate(hal);
+            Document document = AlignmentToRifTranslator.getInstance(report).translate(hal);
 
             DOMSource source = new DOMSource(document);
             File newFile = new File(path);
@@ -92,7 +94,7 @@ public class RifMappingExportProvider implements MappingExportProvider
             throw new MappingExportException(e.getMessage(), e);
         }
         
-        return null;
+        return report;
 	}
 
 }

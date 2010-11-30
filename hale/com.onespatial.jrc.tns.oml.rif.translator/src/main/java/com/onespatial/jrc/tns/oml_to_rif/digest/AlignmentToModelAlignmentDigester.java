@@ -21,11 +21,13 @@ import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.goml.rdf.DetailedAbout;
 import eu.esdihumboldt.goml.rdf.IDetailedAbout;
+import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -40,7 +42,20 @@ public class AlignmentToModelAlignmentDigester extends
         AbstractFollowableTranslator<HaleAlignment, ModelAlignment>
 {
 
+	private final MappingExportReport report;
+	
     /**
+     * Constructor
+     * 
+	 * @param report the export report
+	 */
+	public AlignmentToModelAlignmentDigester(MappingExportReport report) {
+		super();
+		
+		this.report = report;
+	}
+
+	/**
      * Translates a {@link HaleAlignment} into an intermediate
      * {@link ModelAlignment} format.
      * 
@@ -78,14 +93,20 @@ public class AlignmentToModelAlignmentDigester extends
             else if (!sourceIsFeatureClass && !targetIsFeatureClass)
             {
             	// property mapping
-                attributeMappings.add(createAttribute((Property) sourceEntity,
-                        (Property) targetEntity, sourceFeatures, targetFeatures));
+            	ModelAttributeMappingCell modelCell = createAttribute(cell,
+            			(Property) sourceEntity, (Property) targetEntity, 
+            			sourceFeatures, targetFeatures);
+            	if (modelCell != null) {
+            		attributeMappings.add(modelCell);
+            	}
             }
             else if (sourceIsFeatureClass && !targetIsFeatureClass)
             {
             	// augmentations
-                staticAssigments
-                        .add(createStaticAssignment((Property) targetEntity, targetFeatures));
+            	ModelStaticAssignmentCell modelCell = createStaticAssignment(cell, (Property) targetEntity, targetFeatures);
+            	if (modelCell != null) {
+            		staticAssigments.add(modelCell);
+            	}
             }
             else
             {
@@ -99,28 +120,40 @@ public class AlignmentToModelAlignmentDigester extends
 
     }
 
-    private static ModelStaticAssignmentCell createStaticAssignment(Property targetEntity,
-    		 Map<String, SchemaElement> targetFeatures)
+    private ModelStaticAssignmentCell createStaticAssignment(ICell original, 
+    		Property targetEntity, Map<String, SchemaElement> targetFeatures)
     {
-        String content = null;
+        boolean supported = false;
+    	String content = null;
         for (IParameter param : targetEntity.getTransformation().getParameters())
         {
             if (param.getName().equals("defaultValue"))
             {
                 content = param.getValue();
+                supported = true;
                 break;
             }
-            //XXX what about other augmentation types?
         }
         
-        IDetailedAbout targetAbout = DetailedAbout.getDetailedAbout(targetEntity.getAbout(), true);
-        return new ModelStaticAssignmentCell(
-        		createAttributePath(targetAbout, targetFeatures), content);
+        if (!supported) {
+        	//XXX what about other augmentation types?
+        	report.setFailed(original, "Only default value augmentations supported");
+        	return null;
+        }
+        else {
+	        IDetailedAbout targetAbout = DetailedAbout.getDetailedAbout(targetEntity.getAbout(), true);
+	        return new ModelStaticAssignmentCell(
+	        		createAttributePath(targetAbout, targetFeatures), content);
+        }
     }
 
-    private static ModelAttributeMappingCell createAttribute(Property sourceEntity, Property targetEntity,
+    private ModelAttributeMappingCell createAttribute(ICell original, Property sourceEntity, Property targetEntity,
     		Map<String, SchemaElement> sourceFeatures, Map<String, SchemaElement> targetFeatures) {
     	//FIXME what about composed properties?
+    	if (sourceEntity instanceof ComposedProperty || targetEntity instanceof ComposedProperty) {
+    		report.setFailed(original, "Composed properties not supported");
+    		return null;
+    	}
     	
     	IDetailedAbout sourceAbout = DetailedAbout.getDetailedAbout(sourceEntity.getAbout(), true);
     	IDetailedAbout targetAbout = DetailedAbout.getDetailedAbout(targetEntity.getAbout(), true);
