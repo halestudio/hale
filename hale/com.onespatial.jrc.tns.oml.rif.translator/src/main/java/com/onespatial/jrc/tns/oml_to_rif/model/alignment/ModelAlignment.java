@@ -5,8 +5,6 @@ package com.onespatial.jrc.tns.oml_to_rif.model.alignment;
 
 import java.util.List;
 
-import com.onespatial.jrc.tns.oml_to_rif.schema.SchemaBrowser;
-
 import eu.esdihumboldt.goml.align.Alignment;
 
 /**
@@ -21,14 +19,7 @@ public class ModelAlignment
     private List<ModelAttributeMappingCell> attributeMappings;
     private List<ModelStaticAssignmentCell> staticAssignments;
 
-    private SchemaBrowser sourceSchemaBrowser;
-    private SchemaBrowser targetSchemaBrowser;
-
     /**
-     * @param sourceSchemaBrowser
-     *            {@link SchemaBrowser}
-     * @param targetSchemaBrowser
-     *            {@link SchemaBrowser}
      * @param classMappings
      *            List&lt;{@link ModelClassMappingCell}&gt;
      * @param attributeMappings
@@ -36,14 +27,12 @@ public class ModelAlignment
      * @param staticAssignments
      *            List&lt;{@link ModelStaticAssignmentCell}&gt;
      */
-    public ModelAlignment(SchemaBrowser sourceSchemaBrowser, SchemaBrowser targetSchemaBrowser,
+    public ModelAlignment(
             List<ModelClassMappingCell> classMappings,
             List<ModelAttributeMappingCell> attributeMappings,
             List<ModelStaticAssignmentCell> staticAssignments)
     {
         super();
-        this.sourceSchemaBrowser = sourceSchemaBrowser;
-        this.targetSchemaBrowser = targetSchemaBrowser;
         this.classMappings = classMappings;
         this.attributeMappings = attributeMappings;
         this.staticAssignments = staticAssignments;
@@ -73,19 +62,4 @@ public class ModelAlignment
         return attributeMappings;
     }
 
-    /**
-     * @return {@link SchemaBrowser}
-     */
-    public SchemaBrowser getSourceSchemaBrowser()
-    {
-        return sourceSchemaBrowser;
-    }
-
-    /**
-     * @return {@link SchemaBrowser}
-     */
-    public SchemaBrowser getTargetSchemaBrowser()
-    {
-        return targetSchemaBrowser;
-    }
 }

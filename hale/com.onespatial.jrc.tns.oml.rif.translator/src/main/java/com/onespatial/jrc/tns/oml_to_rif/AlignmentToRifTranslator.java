@@ -19,8 +19,6 @@ import com.onespatial.jrc.tns.oml_to_rif.document.RifBindingToDomTranslator;
 import com.onespatial.jrc.tns.oml_to_rif.translate.ModelAlignmentToModelRifTranslator;
 import com.onespatial.jrc.tns.oml_to_rif.translate.ModelRifToRifTranslator;
 
-import eu.esdihumboldt.goml.align.Alignment;
-
 /**
  * Provides the entry-point to the translation functionality contained within
  * this Java library. An example of how it may be deployed within code is as
@@ -47,6 +45,7 @@ import eu.esdihumboldt.goml.align.Alignment;
  * </pre>
  * 
  * @author simonp
+ * @author Simon Templer
  */
 public class AlignmentToRifTranslator
 {
@@ -78,10 +77,10 @@ public class AlignmentToRifTranslator
     /**
      * Returns the singleton instance of the {@link Translator}.
      * 
-     * @return {@link Translator}&lt;{@link Alignment},
+     * @return {@link Translator}&lt;{@link HaleAlignment},
      *         {@link org.w3._2007.rif.Document}&gt;
      */
-    public static Translator<Alignment, Document> getInstance()
+    public static Translator<HaleAlignment, Document> getInstance()
     {
         try
         {

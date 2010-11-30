@@ -3,25 +3,19 @@
  */
 package com.onespatial.jrc.tns.oml_to_rif.digest;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.xml.sax.SAXException;
-
+import com.onespatial.jrc.tns.oml_to_rif.HaleAlignment;
 import com.onespatial.jrc.tns.oml_to_rif.api.AbstractFollowableTranslator;
 import com.onespatial.jrc.tns.oml_to_rif.api.TranslationException;
 import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelAlignment;
 import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelAttributeMappingCell;
 import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelClassMappingCell;
 import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelStaticAssignmentCell;
-import com.onespatial.jrc.tns.oml_to_rif.schema.Gml311SchemaBrowser;
-import com.onespatial.jrc.tns.oml_to_rif.schema.Gml321SchemaBrowser;
-import com.onespatial.jrc.tns.oml_to_rif.schema.SchemaBrowser;
-import com.sun.xml.xsom.XSElementDecl;
+import com.onespatial.jrc.tns.oml_to_rif.schema.GmlAttribute;
+import com.onespatial.jrc.tns.oml_to_rif.schema.GmlAttributePath;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
@@ -30,61 +24,42 @@ import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.omwg.Restriction;
+import eu.esdihumboldt.goml.rdf.DetailedAbout;
+import eu.esdihumboldt.goml.rdf.IDetailedAbout;
+import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Alignment to model alignment digester.
  * 
  * @author simonp
+ * @author Simon Templer
  */
 public class AlignmentToModelAlignmentDigester extends
-        AbstractFollowableTranslator<Alignment, ModelAlignment>
+        AbstractFollowableTranslator<HaleAlignment, ModelAlignment>
 {
 
-    private static final String PROXY;
-    private static final int PORT;
-
-    static
-    {
-        String env = System.getenv("http_proxy");
-        if (env == null)
-        {
-            env = "http://relay:8080";
-        }
-
-        try
-        {
-            URL url = new URL(env);
-            PROXY = url.getHost();
-            PORT = url.getPort();
-        }
-        catch (MalformedURLException e)
-        {
-            throw new IllegalStateException(e);
-        }
-    }
-
     /**
-     * Translates a HALE {@link Alignment} into an intermediate
+     * Translates a {@link HaleAlignment} into an intermediate
      * {@link ModelAlignment} format.
      * 
-     * @param source
-     *            {@link Alignment}
+     * @param hal the HALE alignment
      * @return {@link ModelAlignment}
      * @throws TranslationException
      *             if any problems occurred during translation
      */
     @Override
-    public ModelAlignment translate(Alignment source) throws TranslationException
+    public ModelAlignment translate(HaleAlignment hal) throws TranslationException
     {
         List<ModelClassMappingCell> classMappings = new ArrayList<ModelClassMappingCell>();
         List<ModelAttributeMappingCell> attributeMappings = new ArrayList<ModelAttributeMappingCell>();
         ArrayList<ModelStaticAssignmentCell> staticAssigments = new ArrayList<ModelStaticAssignmentCell>();
 
-        SchemaBrowser sourceBrowser = getSourceBrowser(source);
-        Map<String, XSElementDecl> sourceFeatures = buildFeatureMap(sourceBrowser);
-
-        SchemaBrowser targetBrowser = getTargetBrowser(source);
-        Map<String, XSElementDecl> targetFeatures = buildFeatureMap(targetBrowser);
+        Alignment source = hal.getAlignment();
+        
+        Map<String, SchemaElement> sourceFeatures = hal.getSourceElements();
+        Map<String, SchemaElement> targetFeatures = hal.getTargetElements();
 
         for (ICell cell : source.getMap())
         {
@@ -96,18 +71,21 @@ public class AlignmentToModelAlignmentDigester extends
 
             if (sourceIsFeatureClass && targetIsFeatureClass)
             {
+            	// type mapping
                 classMappings.add(createCell((FeatureClass) sourceEntity,
                         (FeatureClass) targetEntity, sourceFeatures, targetFeatures));
             }
             else if (!sourceIsFeatureClass && !targetIsFeatureClass)
             {
+            	// property mapping
                 attributeMappings.add(createAttribute((Property) sourceEntity,
-                        (Property) targetEntity, sourceBrowser, targetBrowser));
+                        (Property) targetEntity, sourceFeatures, targetFeatures));
             }
             else if (sourceIsFeatureClass && !targetIsFeatureClass)
             {
+            	// augmentations
                 staticAssigments
-                        .add(createStaticAssignment((Property) targetEntity, targetBrowser));
+                        .add(createStaticAssignment((Property) targetEntity, targetFeatures));
             }
             else
             {
@@ -116,103 +94,94 @@ public class AlignmentToModelAlignmentDigester extends
 
         }
 
-        return new ModelAlignment(sourceBrowser, targetBrowser, classMappings, attributeMappings,
+        return new ModelAlignment(classMappings, attributeMappings,
                 staticAssigments);
 
     }
 
-    private ModelStaticAssignmentCell createStaticAssignment(Property targetEntity,
-            SchemaBrowser targetBrowser) throws TranslationException
+    private static ModelStaticAssignmentCell createStaticAssignment(Property targetEntity,
+    		 Map<String, SchemaElement> targetFeatures)
     {
-        try
+        String content = null;
+        for (IParameter param : targetEntity.getTransformation().getParameters())
         {
-            String content = null;
-            for (IParameter param : targetEntity.getTransformation().getParameters())
+            if (param.getName().equals("defaultValue"))
             {
-                if (param.getName().equals("defaultValue"))
-                {
-                    content = param.getValue();
-                    break;
-                }
+                content = param.getValue();
+                break;
             }
-            return new ModelStaticAssignmentCell(targetBrowser
-                    .decomposeHaleAttributePath(targetEntity.getAbout().getAbout()), content);
+            //XXX what about other augmentation types?
         }
-        catch (SAXException e)
-        {
-            throw new TranslationException(e);
-        }
+        
+        IDetailedAbout targetAbout = DetailedAbout.getDetailedAbout(targetEntity.getAbout(), true);
+        return new ModelStaticAssignmentCell(
+        		createAttributePath(targetAbout, targetFeatures), content);
     }
 
-    private ModelAttributeMappingCell createAttribute(Property sourceEntity, Property targetEntity,
-            SchemaBrowser sourceBrowser, SchemaBrowser targetBrowser) throws TranslationException
-    {
-        try
-        {
-            return new ModelAttributeMappingCell(sourceBrowser
-                    .decomposeHaleAttributePath(sourceEntity.getAbout().getAbout()), targetBrowser
-                    .decomposeHaleAttributePath(targetEntity.getAbout().getAbout()));
-        }
-        catch (SAXException e)
-        {
-            throw new TranslationException(e);
-        }
+    private static ModelAttributeMappingCell createAttribute(Property sourceEntity, Property targetEntity,
+    		Map<String, SchemaElement> sourceFeatures, Map<String, SchemaElement> targetFeatures) {
+    	//FIXME what about composed properties?
+    	
+    	IDetailedAbout sourceAbout = DetailedAbout.getDetailedAbout(sourceEntity.getAbout(), true);
+    	IDetailedAbout targetAbout = DetailedAbout.getDetailedAbout(targetEntity.getAbout(), true);
+    	
+    	return new ModelAttributeMappingCell(
+    			createAttributePath(sourceAbout, sourceFeatures), 
+    			createAttributePath(targetAbout, targetFeatures));
     }
 
-    private Map<String, XSElementDecl> buildFeatureMap(SchemaBrowser sourceBrowser)
-            throws TranslationException
-    {
-        try
-        {
-            List<XSElementDecl> sourceFeatureDecls = sourceBrowser.getFeatureClassNames();
-            Map<String, XSElementDecl> sourceFeatures = new LinkedHashMap<String, XSElementDecl>();
-            for (XSElementDecl featureDecl : sourceFeatureDecls)
-            {
-                sourceFeatures.put(featureDecl.getTargetNamespace() + "/" + featureDecl.getName(),
-                        featureDecl);
-            }
-            return sourceFeatures;
-        }
-        catch (SAXException e)
-        {
-            throw new TranslationException(e);
-        }
-    }
+    /**
+     * Create an attribute path from an {@link IDetailedAbout}
+     * 
+	 * @param about the about
+	 * @param elements the available elements
+	 * @return the attribute path
+	 */
+	private static GmlAttributePath createAttributePath(
+			IDetailedAbout about,
+			Map<String, SchemaElement> elements) {
+        GmlAttributePath binding = new GmlAttributePath();
+        
+        // get the parent class for the entity
+        SchemaElement entityParent = elements.get(about.getNamespace() + "/" + about.getFeatureClass());
+        TypeDefinition type = entityParent.getType();
+        
+        List<String> nestedParts = about.getProperties();
 
-    private SchemaBrowser getTargetBrowser(Alignment source) throws TranslationException
-    {
-        return getBrowser(source.getSchema2().getLocation(), false);
-    }
-
-    private SchemaBrowser getSourceBrowser(Alignment source) throws TranslationException
-    {
-        return getBrowser(source.getSchema1().getLocation(), true);
-    }
-
-    private SchemaBrowser getBrowser(String location, boolean isGml311) throws TranslationException
-    {
-        SchemaBrowser result = null;
-        try
-        {
-            if (isGml311)
-            {
-                result = new Gml311SchemaBrowser(location);
-            }
-            else
-            {
-                result = new Gml321SchemaBrowser(location, PROXY, PORT);
-            }
+        for (String attributeName : nestedParts) {
+        	AttributeDefinition attDef = type.getAttribute(attributeName);
+        	
+        	GmlAttribute attribute = new GmlAttribute(attDef);
+			binding.add(attribute);
+			
+			type = attDef.getAttributeType();
         }
-        catch (MalformedURLException e)
-        {
-            throw new TranslationException(e);
-        }
+        
+        return binding;
+	}
 
-        return result;
-    }
+//    private Map<String, XSElementDecl> buildFeatureMap(SchemaBrowser sourceBrowser)
+//            throws TranslationException
+//    {
+//        try
+//        {
+//            List<XSElementDecl> sourceFeatureDecls = sourceBrowser.getFeatureClassNames();
+//            Map<String, XSElementDecl> sourceFeatures = new LinkedHashMap<String, XSElementDecl>();
+//            for (XSElementDecl featureDecl : sourceFeatureDecls)
+//            {
+//                sourceFeatures.put(featureDecl.getTargetNamespace() + "/" + featureDecl.getName(),
+//                        featureDecl);
+//            }
+//            return sourceFeatures;
+//        }
+//        catch (SAXException e)
+//        {
+//            throw new TranslationException(e);
+//        }
+//    }
 
     private ModelClassMappingCell createCell(FeatureClass sourceEntity, FeatureClass targetEntity,
-            Map<String, XSElementDecl> sourceFeatures, Map<String, XSElementDecl> targetFeatures)
+            Map<String, SchemaElement> sourceFeatures, Map<String, SchemaElement> targetFeatures)
             throws TranslationException
     {
         return new ModelClassMappingCell(findFeatureElementDecl(sourceEntity, sourceFeatures),
@@ -225,11 +194,11 @@ public class AlignmentToModelAlignmentDigester extends
         return (result == null)?(new ArrayList<Restriction>()):(result);
     }
 
-    private XSElementDecl findFeatureElementDecl(FeatureClass entity,
-            Map<String, XSElementDecl> nameToFeatureMap)
+    private SchemaElement findFeatureElementDecl(FeatureClass entity,
+            Map<String, SchemaElement> nameToFeatureMap)
     {
         String featureName = entity.getAbout().getAbout();
-        XSElementDecl result = nameToFeatureMap.get(featureName);
+        SchemaElement result = nameToFeatureMap.get(featureName);
         return result;
     }
 

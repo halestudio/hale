@@ -3,63 +3,43 @@
  */
 package com.onespatial.jrc.tns.oml_to_rif.schema;
 
-import com.sun.xml.xsom.XSElementDecl;
+import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 
 /**
  * A class that represents an XML attribute within a GML document.
  * 
  * @author simonp
+ * @author Simon Templer
  */
 public class GmlAttribute implements Comparable<GmlAttribute>
 {
 
-    private final XSElementDecl objectElement;
-    private final XSElementDecl attributeElement;
-    private final int minOccurs;
-    private final int maxOccurs;
+    private final AttributeDefinition definition;
 
     /**
-     * @param objectElement
-     *            {@link XSElementDecl}
-     * @param attributeElement
-     *            {@link XSElementDecl}
-     * @param minOccurs
-     *            int the min occurs value
-     * @param maxOccurs
-     *            int the max occurs value
+     * Create a GML attribute 
+     * 
+     * @param definition the attribute definition
      */
-    public GmlAttribute(XSElementDecl objectElement, XSElementDecl attributeElement, int minOccurs,
-            int maxOccurs)
+    public GmlAttribute(AttributeDefinition definition)
     {
         super();
-        this.objectElement = objectElement;
-        this.attributeElement = attributeElement;
-        this.minOccurs = minOccurs;
-        this.maxOccurs = maxOccurs;
+        this.definition = definition;
     }
 
     /**
-     * @return {@link XSElementDecl} the parent object in the schema
-     */
-    public XSElementDecl getObjectElement()
-    {
-        return objectElement;
-    }
+	 * @return the definition
+	 */
+	public AttributeDefinition getDefinition() {
+		return definition;
+	}
 
-    /**
-     * @return {@link XSElementDecl} the attribute within the schema
-     */
-    public XSElementDecl getAttributeElement()
-    {
-        return attributeElement;
-    }
-
-    /**
+	/**
      * @return int the min occurs value
      */
     public int getMinOccurs()
     {
-        return minOccurs;
+        return (int) definition.getMinOccurs();
     }
 
     /**
@@ -67,7 +47,7 @@ public class GmlAttribute implements Comparable<GmlAttribute>
      */
     public int getMaxOccurs()
     {
-        return maxOccurs;
+        return (int) definition.getMaxOccurs();
     }
 
     /**
@@ -80,6 +60,6 @@ public class GmlAttribute implements Comparable<GmlAttribute>
     @Override
     public int compareTo(GmlAttribute other)
     {
-        return attributeElement.getName().compareTo(other.attributeElement.getName());
+        return definition.getName().compareTo(other.definition.getName());
     }
 }

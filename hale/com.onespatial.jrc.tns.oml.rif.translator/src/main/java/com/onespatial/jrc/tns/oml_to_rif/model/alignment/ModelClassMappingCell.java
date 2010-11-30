@@ -18,6 +18,7 @@ import com.sun.xml.xsom.XSElementDecl;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.Restriction;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
  * An interim model of a {@link Cell} within an {@link Alignment} that defines a
@@ -28,8 +29,8 @@ import eu.esdihumboldt.goml.omwg.Restriction;
  */
 public class ModelClassMappingCell
 {
-    private XSElementDecl sourceClass;
-    private XSElementDecl targetClass;
+    private SchemaElement sourceClass;
+    private SchemaElement targetClass;
     private List<ModelMappingCondition> mappingConditions;
     private static final Translator<Filter, ModelMappingCondition> DIGESTER;
 
@@ -48,7 +49,7 @@ public class ModelClassMappingCell
      * @throws TranslationException
      *             if unable to build the filters
      */
-    public ModelClassMappingCell(XSElementDecl sourceClass, XSElementDecl targetClass,
+    public ModelClassMappingCell(SchemaElement sourceClass, SchemaElement targetClass,
             List<Restriction> filterRestrictions) throws TranslationException
     {
         super();
@@ -60,7 +61,7 @@ public class ModelClassMappingCell
     /**
      * @return {@link XSElementDecl}
      */
-    public XSElementDecl getSourceClass()
+    public SchemaElement getSourceClass()
     {
         return sourceClass;
     }
@@ -68,7 +69,7 @@ public class ModelClassMappingCell
     /**
      * @return {@link XSElementDecl}
      */
-    public XSElementDecl getTargetClass()
+    public SchemaElement getTargetClass()
     {
         return targetClass;
     }

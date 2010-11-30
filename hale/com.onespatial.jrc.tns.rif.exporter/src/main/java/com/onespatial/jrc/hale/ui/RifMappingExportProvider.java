@@ -18,6 +18,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 
+import com.onespatial.jrc.tns.oml_to_rif.HaleAlignment;
 import com.onespatial.jrc.tns.oml_to_rif.AlignmentToRifTranslator;
 import com.onespatial.jrc.tns.oml_to_rif.api.TranslationException;
 
@@ -62,7 +63,8 @@ public class RifMappingExportProvider implements MappingExportProvider
 			throws MappingExportException {
 		try
         {
-            Document document = AlignmentToRifTranslator.getInstance().translate(al);
+			HaleAlignment hal = new HaleAlignment(al, sourceSchema, targetSchema);
+            Document document = AlignmentToRifTranslator.getInstance().translate(hal);
 
             DOMSource source = new DOMSource(document);
             File newFile = new File(path);

@@ -17,7 +17,11 @@ import static com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.Nod
 import static com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType.OR_NODE;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+
+import org.opengis.feature.type.Name;
 
 import com.onespatial.jrc.tns.oml_to_rif.api.AbstractFollowableTranslator;
 import com.onespatial.jrc.tns.oml_to_rif.api.TranslationException;
@@ -41,7 +45,9 @@ import com.onespatial.jrc.tns.oml_to_rif.schema.GmlAttribute;
 import com.onespatial.jrc.tns.oml_to_rif.schema.GmlAttributePath;
 import com.onespatial.jrc.tns.oml_to_rif.translate.context.RifVariable;
 import com.onespatial.jrc.tns.oml_to_rif.translate.context.RifVariable.Type;
-import com.sun.xml.xsom.XSElementDecl;
+
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * @author simonp
@@ -101,11 +107,11 @@ public class ModelAlignmentToModelRifTranslator extends
         ModelSentence sentence = new ModelSentence();
 
         sentence.setSourceClass(
-                classMapping.getSourceClass().getName().toLowerCase() + "-instance",
-                getName(classMapping.getSourceClass()));
+                classMapping.getSourceClass().getElementName().getLocalPart().toLowerCase() + "-instance",
+                getName(classMapping.getSourceClass().getElementName()));
         sentence.setTargetClass(
-                classMapping.getTargetClass().getName().toLowerCase() + "-instance",
-                getName(classMapping.getTargetClass()));
+                classMapping.getTargetClass().getElementName().getLocalPart().toLowerCase() + "-instance",
+                getName(classMapping.getTargetClass().getElementName()));
 
         for (ModelMappingCondition condition : classMapping.getMappingConditions())
         {
@@ -270,12 +276,12 @@ public class ModelAlignmentToModelRifTranslator extends
             ModelSentence sentence, boolean isSource)
     {
 
-        String propertyName = getName(fragment.getAttributeElement());
+        String propertyName = fragment.getDefinition().getName(); //XXX what name to use here? //getName(fragment.getAttributeElement());
         RifVariable child = sentence.findChildAttribute(current, propertyName);
         if (child == null)
         {
-            String variableName = fragment.getObjectElement().getName() + "-"
-                    + fragment.getAttributeElement().getName();
+            String variableName = fragment.getDefinition().getDeclaringType().getName().getLocalPart() + "-"
+                    + fragment.getDefinition().getName();
             variableName = variableName.toLowerCase();
             if (isSource)
             {
@@ -304,15 +310,15 @@ public class ModelAlignmentToModelRifTranslator extends
      * @return filtered list of assignments.
      */
     private List<ModelStaticAssignmentCell> filter(
-            List<ModelStaticAssignmentCell> staticAssignments, XSElementDecl targetClass)
+            List<ModelStaticAssignmentCell> staticAssignments, SchemaElement targetClass)
     {
 
         List<ModelStaticAssignmentCell> applicableAssigments = new ArrayList<ModelStaticAssignmentCell>();
         for (ModelStaticAssignmentCell candidate : staticAssignments)
         {
 
-            XSElementDecl targetElement = candidate.getTarget().get(0).getObjectElement();
-            if (targetElement.canBeSubstitutedBy(targetClass))
+            TypeDefinition targetElement = candidate.getTarget().get(0).getDefinition().getDeclaringType();
+            if (canBeSubstitutedBy(targetElement, targetClass))
             {
                 applicableAssigments.add(candidate);
             }
@@ -334,17 +340,17 @@ public class ModelAlignmentToModelRifTranslator extends
      *            target class that mapping must apply to.
      * @return filtered list of mappings cells.
      */
-    private List<ModelAttributeMappingCell> filter(
-            List<ModelAttributeMappingCell> attributeMappings, XSElementDecl sourceClass,
-            XSElementDecl targetClass)
+    private static List<ModelAttributeMappingCell> filter(
+            List<ModelAttributeMappingCell> attributeMappings, SchemaElement sourceClass,
+            SchemaElement targetClass)
     {
         List<ModelAttributeMappingCell> applicableMappings = new ArrayList<ModelAttributeMappingCell>();
         for (ModelAttributeMappingCell candidate : attributeMappings)
         {
-            XSElementDecl sourceElement = candidate.getSourceAttribute().get(0).getObjectElement();
-            XSElementDecl targetElement = candidate.getTargetAttribute().get(0).getObjectElement();
-            if (sourceElement.canBeSubstitutedBy(sourceClass)
-                    && targetElement.canBeSubstitutedBy(targetClass))
+            TypeDefinition sourceElement = candidate.getSourceAttribute().get(0).getDefinition().getDeclaringType();
+            TypeDefinition targetElement = candidate.getTargetAttribute().get(0).getDefinition().getDeclaringType();
+            if (canBeSubstitutedBy(sourceElement, sourceClass)
+                    && canBeSubstitutedBy(targetElement, targetClass))
             {
                 applicableMappings.add(candidate);
             }
@@ -354,9 +360,31 @@ public class ModelAlignmentToModelRifTranslator extends
         return applicableMappings;
     }
 
-    private String getName(XSElementDecl element)
+    /**
+     * Determines if the given type can be substituted by the given element
+     * 
+	 * @param type the type definition
+	 * @param element the element
+	 * @return if the type can be substituted by the given element
+	 */
+	private static boolean canBeSubstitutedBy(TypeDefinition type,
+			SchemaElement element) {
+		Queue<TypeDefinition> toTest = new LinkedList<TypeDefinition>();
+		toTest.add(type);
+		
+		while (!toTest.isEmpty()) {
+			TypeDefinition test = toTest.poll();
+			if (test.getDeclaringElements().contains(element)) return true;
+			
+			toTest.addAll(test.getSubTypes());
+		}
+		
+		return false;
+	}
+
+	private String getName(Name element)
     {
-        return element.getTargetNamespace() + ":" + element.getName();
+        return element.getNamespaceURI() + ":" + element.getLocalPart();
     }
 
 }
