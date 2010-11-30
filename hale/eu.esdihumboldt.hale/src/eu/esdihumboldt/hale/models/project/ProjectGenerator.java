@@ -158,8 +158,10 @@ public class ProjectGenerator {
 		hproject.setSourceSchema(sourceschema);
 		
 		MappedSchema targetschema = new MappedSchema();
-		targetschema.setPath(getRelativeLocation(projectService.getTargetSchemaPath(), basePath));
-		hproject.setTargetSchema(targetschema);
+		if (projectService.getTargetSchemaPath() != null) {
+			targetschema.setPath(getRelativeLocation(projectService.getTargetSchemaPath(), basePath));
+			hproject.setTargetSchema(targetschema);
+		}
 		
 		// transfer task status
 		TaskStatus taskStatus = new TaskStatus();
