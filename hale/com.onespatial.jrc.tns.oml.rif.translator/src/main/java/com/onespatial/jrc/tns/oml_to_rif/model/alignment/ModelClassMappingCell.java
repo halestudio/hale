@@ -33,7 +33,8 @@ import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
  * mapping between source and target classes. Used as a stage in translation to
  * RIF-PRD.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class ModelClassMappingCell
 {

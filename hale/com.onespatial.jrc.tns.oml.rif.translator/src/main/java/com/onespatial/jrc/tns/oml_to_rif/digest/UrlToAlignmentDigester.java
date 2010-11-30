@@ -22,7 +22,8 @@ import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 /**
  * Translates a document at a particular URL to an {@link Alignment}.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class UrlToAlignmentDigester extends AbstractFollowableTranslator<URL, Alignment>
 {

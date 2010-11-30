@@ -15,7 +15,8 @@ package com.onespatial.jrc.tns.oml_to_rif.model.rif;
  * The different kinds of operators that can be applied to CQL strings that are
  * mapped to RIF filters.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public enum ComparisonType
 {

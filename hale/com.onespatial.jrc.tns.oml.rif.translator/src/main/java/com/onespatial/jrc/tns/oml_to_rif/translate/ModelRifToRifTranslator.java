@@ -79,7 +79,8 @@ import eu.esdihumboldt.goml.align.Cell;
  * of {@link Sentence} instances. NB {@link Cell}s and {@link Sentence}s do not
  * necessarily (nor usually) align one-to-one.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class ModelRifToRifTranslator extends
         AbstractFollowableTranslator<ModelRifDocument, Document>

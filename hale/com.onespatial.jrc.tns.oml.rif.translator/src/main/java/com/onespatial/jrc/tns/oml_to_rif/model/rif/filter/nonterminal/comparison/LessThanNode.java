@@ -16,7 +16,8 @@ import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType;
 /**
  * A node within a predicate tree that expresses a "less-than" comparison.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class LessThanNode extends AbstractComparisonNode
 {

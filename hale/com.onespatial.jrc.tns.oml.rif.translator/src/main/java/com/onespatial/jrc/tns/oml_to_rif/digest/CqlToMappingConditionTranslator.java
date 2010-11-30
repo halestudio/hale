@@ -41,7 +41,8 @@ import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.terminal.LiteralValue;
  * href="http://docs.codehaus.org/display/GEOTDOC/14+CQL">here</a> for more
  * information.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class CqlToMappingConditionTranslator extends
         AbstractFollowableTranslator<Filter, ModelMappingCondition>

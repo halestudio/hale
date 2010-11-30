@@ -16,8 +16,9 @@ import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 /**
  * A class that represents an XML attribute within a GML document.
  * 
- * @author simonp
- * @author Simon Templer
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
+ * @author Simon Templer / Fraunhofer IGD
  */
 public class GmlAttribute implements Comparable<GmlAttribute>
 {

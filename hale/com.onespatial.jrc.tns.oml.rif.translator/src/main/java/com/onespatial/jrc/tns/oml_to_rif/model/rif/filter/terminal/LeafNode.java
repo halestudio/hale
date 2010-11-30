@@ -14,7 +14,8 @@ package com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.terminal;
 /**
  * Class that represents a leaf node in a predicate tree.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class LeafNode
 {

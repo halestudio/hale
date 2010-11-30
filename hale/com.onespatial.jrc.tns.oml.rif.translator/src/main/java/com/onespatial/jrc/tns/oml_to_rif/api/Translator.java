@@ -14,7 +14,8 @@ package com.onespatial.jrc.tns.oml_to_rif.api;
 /**
  * Translate the contents of the input model into the output model.
  * 
- * @author richards
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
  * @param <IM>
  *            the input model to read.
  * @param <OM>

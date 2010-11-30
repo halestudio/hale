@@ -21,7 +21,8 @@ import eu.esdihumboldt.goml.align.Cell;
  * mapping between source and target classes. Used as a stage in translation to
  * RIF-PRD.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class ModelAttributeMappingCell
 {

@@ -17,7 +17,8 @@ import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType;
 /**
  * A class that contains elements that are common to all logical nodes.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class AbstractLogicalNode extends AbstractFilterNode
 {

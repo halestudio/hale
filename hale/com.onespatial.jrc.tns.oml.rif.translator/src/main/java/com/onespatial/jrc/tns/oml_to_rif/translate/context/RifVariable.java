@@ -12,14 +12,15 @@
 package com.onespatial.jrc.tns.oml_to_rif.translate.context;
 
 /**
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class RifVariable
 {
     /**
-     * @author simonp
+     * 
      */
-    public enum Type
+	public enum Type
     {
         /**
          * Variable type is unknown.

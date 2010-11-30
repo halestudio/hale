@@ -20,7 +20,8 @@ import com.onespatial.jrc.tns.oml_to_rif.translate.context.RifVariable;
  * Models the rule condition filter that determines which instances of a given
  * source feature class will result in instances of the target feature class.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class ModelRifMappingCondition
 {

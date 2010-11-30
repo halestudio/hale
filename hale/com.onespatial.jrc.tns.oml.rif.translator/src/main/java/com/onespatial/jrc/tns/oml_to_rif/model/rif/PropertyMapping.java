@@ -19,7 +19,8 @@ import com.onespatial.jrc.tns.oml_to_rif.translate.context.RifVariable;
  * Holds the data required to construct a property-to-property mapping within a
  * RIF {@link Sentence}.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class PropertyMapping
 {

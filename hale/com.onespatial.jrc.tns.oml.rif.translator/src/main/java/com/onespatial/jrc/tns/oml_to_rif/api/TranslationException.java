@@ -15,7 +15,8 @@ package com.onespatial.jrc.tns.oml_to_rif.api;
  * Translation Exception Thrown when an exception is generated during a
  * translation.
  * 
- * @author richards
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
  */
 public class TranslationException extends Exception
 {

@@ -17,7 +17,8 @@ import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.FilterNode
  * An interim model of a mapping condition that is to be translated into a
  * filter predicate in RIF-PRD.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class ModelMappingCondition
 {

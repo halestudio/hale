@@ -54,8 +54,9 @@ import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
  * 
  * </pre>
  * 
- * @author simonp
- * @author Simon Templer
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
+ * @author Simon Templer / Fraunhofer IGD
  */
 public class AlignmentToRifTranslator
 {

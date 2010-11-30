@@ -15,7 +15,8 @@ package com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.terminal;
  * A class that stores a value that is in one of a variety of datatypes (it can
  * be either {@link String}, {@link Double} or {@link Long}.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public final class LiteralValue
 {

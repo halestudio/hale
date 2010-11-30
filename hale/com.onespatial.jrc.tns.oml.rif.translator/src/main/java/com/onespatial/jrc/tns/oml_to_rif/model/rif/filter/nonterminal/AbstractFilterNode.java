@@ -31,7 +31,8 @@ import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.terminal.LeafNode;
  * Common place for functionality generic to filter nodes. Supports navigation
  * of the filter's predicate tree.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public abstract class AbstractFilterNode implements FilterNode
 {

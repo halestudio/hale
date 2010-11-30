@@ -17,7 +17,8 @@ import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.terminal.LeafNode;
 /**
  * A node that holds things shared by all comparisons.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public abstract class AbstractComparisonNode extends AbstractFilterNode
 {

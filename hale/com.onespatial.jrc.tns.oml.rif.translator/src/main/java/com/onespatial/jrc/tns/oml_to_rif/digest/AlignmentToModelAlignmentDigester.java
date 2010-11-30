@@ -43,8 +43,9 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 /**
  * Alignment to model alignment digester.
  * 
- * @author simonp
- * @author Simon Templer
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
+ * @author Simon Templer / Fraunhofer IGD
  */
 public class AlignmentToModelAlignmentDigester extends
         AbstractFollowableTranslator<HaleAlignment, ModelAlignment>

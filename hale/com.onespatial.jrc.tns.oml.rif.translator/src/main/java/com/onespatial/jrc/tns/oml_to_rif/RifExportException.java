@@ -14,7 +14,8 @@ package com.onespatial.jrc.tns.oml_to_rif;
 /**
  * Specific exception related to the RIF export context.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class RifExportException extends RuntimeException
 {

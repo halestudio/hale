@@ -43,7 +43,8 @@ import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.logical.Or
 /**
  * A factory to create filters nodes as required.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class FilterNodeFactory
 {

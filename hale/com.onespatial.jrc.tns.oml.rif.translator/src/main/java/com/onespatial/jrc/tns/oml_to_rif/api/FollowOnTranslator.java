@@ -16,7 +16,8 @@ package com.onespatial.jrc.tns.oml_to_rif.api;
  * All type checking is done using generics (and therefore at compile time) to
  * avoid runtime costs.
  * 
- * @author richards
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
  * @param <IM>
  *            input model of first translator
  * @param <MM>

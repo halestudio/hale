@@ -18,8 +18,9 @@ import eu.esdihumboldt.goml.align.Alignment;
 /**
  * A model of a HALE {@link Alignment}, used as an interim stage in translation
  * to RIF-PRD.
- * 
- * @author simonp
+ *
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class ModelAlignment
 {

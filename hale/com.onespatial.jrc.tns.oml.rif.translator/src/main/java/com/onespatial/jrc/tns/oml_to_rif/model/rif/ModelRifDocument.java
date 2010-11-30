@@ -19,7 +19,8 @@ import org.w3._2007.rif.Document;
 /**
  * A model of a RIF {@link Document}.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class ModelRifDocument
 {

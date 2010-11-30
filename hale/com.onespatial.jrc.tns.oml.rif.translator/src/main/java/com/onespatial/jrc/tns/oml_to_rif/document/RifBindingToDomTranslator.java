@@ -27,7 +27,8 @@ import com.onespatial.jrc.tns.oml_to_rif.api.TranslationException;
 /**
  * RIF-PRD binding to W3C DOM translator.
  * 
- * @author richards
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
  */
 public class RifBindingToDomTranslator extends
         AbstractFollowableTranslator<org.w3._2007.rif.Document, org.w3c.dom.Document>

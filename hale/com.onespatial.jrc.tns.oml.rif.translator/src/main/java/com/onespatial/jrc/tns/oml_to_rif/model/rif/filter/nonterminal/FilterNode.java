@@ -17,7 +17,8 @@ import java.util.List;
  * Any type of node that can occur within a filter that is stored as a predicate
  * tree.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public interface FilterNode
 {

@@ -18,7 +18,8 @@ import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType;
  * sides of the expression need not be true, but at least one must be true, in
  * order for the filter to return true for any tested fact.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class OrNode extends AbstractLogicalNode
 {

@@ -16,7 +16,8 @@ import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType;
 /**
  * Node for the 'equals' comparison.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class EqualToNode extends AbstractComparisonNode
 {

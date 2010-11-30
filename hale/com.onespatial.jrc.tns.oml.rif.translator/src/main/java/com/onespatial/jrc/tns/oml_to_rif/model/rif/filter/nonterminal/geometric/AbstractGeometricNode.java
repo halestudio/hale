@@ -17,7 +17,8 @@ import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.terminal.LeafNode;
 /**
  * A node within a predicate tree that represents a geometric operation.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public abstract class AbstractGeometricNode extends AbstractFilterNode
 {

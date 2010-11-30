@@ -27,7 +27,8 @@ import eu.esdihumboldt.hale.rcp.wizards.io.MappingExportWizard;
  * initiate an export of a schema mapping definition document to the selected
  * output format.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  * @version $Id$
  */
 public class ExportToFileHandler extends AbstractHandler implements IHandler

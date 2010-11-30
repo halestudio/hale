@@ -18,7 +18,8 @@ import java.util.Iterator;
  * Class that represents a GML attribute path and provides support for comparing
  * two paths.
  * 
- * @author simonp
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  */
 public class GmlAttributePath extends ArrayList<GmlAttribute> implements
         Comparable<GmlAttributePath>

@@ -57,8 +57,9 @@ import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
  *     &lt;/fragment&gt;
  * </pre>
  * 
- * @author simonp
- * @author Simon Templer
+ * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
+ * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
+ * @author Simon Templer / Fraunhofer IGD
  */
 public class RifMappingExportProvider implements MappingExportProvider
 {
