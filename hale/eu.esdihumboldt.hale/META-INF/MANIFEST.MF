@@ -54,4 +54,5 @@ Export-Package: eu.esdihumboldt.hale.models,
  eu.esdihumboldt.hale.rcp.views.model,
  eu.esdihumboldt.hale.rcp.wizards.augmentations,
  eu.esdihumboldt.hale.rcp.wizards.functions,
+ eu.esdihumboldt.hale.rcp.wizards.io,
  eu.esdihumboldt.hale.rcp.wizards.io.mappingexport
