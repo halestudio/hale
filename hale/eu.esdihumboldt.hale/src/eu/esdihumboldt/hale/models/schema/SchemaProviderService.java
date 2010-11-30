@@ -58,6 +58,10 @@ public class SchemaProviderService
 	private Schema targetSchema = Schema.EMPTY_SCHEMA;
 	
 	private final Set<SchemaProvider> providers = new HashSet<SchemaProvider>();
+
+	private String sourceSchemaFormat;
+
+	private String targetSchemaFormat;
 	
 	/**
 	 * Creates the schema service
@@ -115,9 +119,11 @@ public class SchemaProviderService
 			
 			if (type.equals(SchemaType.SOURCE)) {
 				sourceSchema = schema;
+				sourceSchemaFormat = schemaFormat;
 			} 
 			else {
 				targetSchema = schema;
+				targetSchemaFormat = schemaFormat;
 			}
 			
 			notifySchemaChanged(type);
@@ -125,6 +131,22 @@ public class SchemaProviderService
 		} finally {
 			logTrans.end();
 		}
+	}
+
+	/**
+	 * @see SchemaService#getSourceSchemaFormat()
+	 */
+	@Override
+	public String getSourceSchemaFormat() {
+		return sourceSchemaFormat;
+	}
+
+	/**
+	 * @see SchemaService#getTargetSchemaFormat()
+	 */
+	@Override
+	public String getTargetSchemaFormat() {
+		return targetSchemaFormat;
 	}
 
 	private SchemaProvider getSchemaProvider(String format) {

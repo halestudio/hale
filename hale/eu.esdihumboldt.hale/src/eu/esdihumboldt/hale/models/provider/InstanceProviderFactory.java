@@ -22,6 +22,8 @@ import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.instanceprovider.InstanceProvider;
+
 /**
  * FIXME Add Type description.
  * 

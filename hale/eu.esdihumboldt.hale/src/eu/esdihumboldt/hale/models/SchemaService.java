@@ -50,6 +50,20 @@ public interface SchemaService
 	public Collection<SchemaElement> getTargetSchema();
 	
 	/**
+	 * Get the source schema format
+	 * 
+	 * @return the source schema format
+	 */
+	public String getSourceSchemaFormat();
+	
+	/**
+	 * Get the target schema format
+	 * 
+	 * @return the target schema format
+	 */
+	public String getTargetSchemaFormat();
+	
+	/**
 	 * Loads the schema defined under the given URL as the target or source 
 	 * schema.
 	 * May point to different source, such as a XSD or a a WFS.
@@ -58,7 +72,7 @@ public interface SchemaService
 	 * @param type the schema type
 	 * @param progress the progress indicator, may be <code>null</code>
 	 * @return true if the loading was successful.
-	 * @throws IOException 
+	 * @throws IOException if loading the schema fails
 	 */
 	public boolean loadSchema(URI file, String schemaFormat, SchemaType type, ProgressIndicator progress) throws IOException;
 	
