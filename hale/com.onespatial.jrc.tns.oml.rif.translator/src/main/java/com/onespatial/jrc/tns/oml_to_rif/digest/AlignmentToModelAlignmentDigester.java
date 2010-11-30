@@ -42,6 +42,7 @@ public class AlignmentToModelAlignmentDigester extends
         AbstractFollowableTranslator<HaleAlignment, ModelAlignment>
 {
 
+	private static final String RENAME_ATTRIBUTE_FUNCTION = "eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction";
 	private final MappingExportReport report;
 	
     /**
@@ -158,6 +159,11 @@ public class AlignmentToModelAlignmentDigester extends
     	if (sourceEntity instanceof ComposedProperty || targetEntity instanceof ComposedProperty) {
     		report.setFailed(original, "Composed properties not supported");
     		return null;
+    	}
+    	
+    	String function = sourceEntity.getTransformation().getService().getLocation();
+    	if (!RENAME_ATTRIBUTE_FUNCTION.equals(function)) {
+    		report.setWarning(original, "Function " + function + " not recognized");
     	}
     	
     	IDetailedAbout sourceAbout = DetailedAbout.getDetailedAbout(sourceEntity.getAbout(), true);
