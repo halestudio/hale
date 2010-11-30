@@ -25,6 +25,7 @@ import com.onespatial.jrc.tns.oml_to_rif.api.TranslationException;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportException;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider;
+import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
@@ -49,6 +50,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
  * </pre>
  * 
  * @author simonp
+ * @author Simon Templer
  */
 public class RifMappingExportProvider implements MappingExportProvider
 {
@@ -57,7 +59,7 @@ public class RifMappingExportProvider implements MappingExportProvider
 	 * @see MappingExportProvider#export(Alignment, String, Collection, Collection)
 	 */
 	@Override
-	public void export(Alignment al, String path,
+	public MappingExportReport export(Alignment al, String path,
 			Collection<SchemaElement> sourceSchema,
 			Collection<SchemaElement> targetSchema)
 			throws MappingExportException {
@@ -89,6 +91,8 @@ public class RifMappingExportProvider implements MappingExportProvider
         {
             throw new MappingExportException(e.getMessage(), e);
         }
+        
+        return null;
 	}
 
 }

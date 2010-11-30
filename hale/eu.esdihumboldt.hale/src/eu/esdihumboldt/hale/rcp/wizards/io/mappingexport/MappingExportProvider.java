@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
  * Interface for a Factory used to export mappings to any format.
  * 
  * @author Thorsten Reitz
+ * @author Simon Templer
  */
 public interface MappingExportProvider {
 	
@@ -29,9 +30,11 @@ public interface MappingExportProvider {
 	 * @param path the location to export to
 	 * @param sourceSchema a {@link Collection} of {@link SchemaElement}s for the source schema
 	 * @param targetSchema a {@link Collection} of {@link SchemaElement}s for the target schema
+	 * @return a report of the export process, may be
+	 *   <code>null</code> if all cells have been exported successfully
 	 * @throws MappingExportException when export failed
 	 */
-	public void export(Alignment al, String path, 
+	public MappingExportReport export(Alignment al, String path, 
 			Collection<SchemaElement> sourceSchema, 
 			Collection<SchemaElement> targetSchema) 
 		throws MappingExportException;

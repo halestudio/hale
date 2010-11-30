@@ -22,13 +22,14 @@ import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
  * {@link MappingExportProvider} implementation for exporting the Alignment to OML.
  * 
  * @author Thorsten Reitz
+ * @author Simon Templer
  */
 public class OmlMappingExportProvider implements MappingExportProvider {
 
-	/* (non-Javadoc)
-	 * @see eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportFactory#export(eu.esdihumboldt.goml.align.Alignment, java.lang.String)
+	/**
+	 * @see MappingExportProvider#export(Alignment, String, Collection, Collection)
 	 */
-	public void export(Alignment al, String path, 
+	public MappingExportReport export(Alignment al, String path, 
 			Collection<SchemaElement> sourceSchema, 
 			Collection<SchemaElement> targetSchema) throws MappingExportException {
 		OmlRdfGenerator orgen = new HaleOmlRdfGenerator();
@@ -39,6 +40,8 @@ public class OmlMappingExportProvider implements MappingExportProvider {
 			throw new MappingExportException("During the export of the " +
 					"Alignment to the OML format, an error occured.", e);
 		}
+		
+		return null;
 	}
 
 }

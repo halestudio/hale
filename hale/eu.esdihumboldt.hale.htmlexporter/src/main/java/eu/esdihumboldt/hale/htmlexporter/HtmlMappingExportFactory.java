@@ -52,6 +52,7 @@ import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.rcp.views.mappingGraph.MappingGraphView;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportException;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider;
+import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
@@ -103,15 +104,10 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 	private Collection<SchemaElement> targetSchema;
 
 	/**
-	 * @param alignment
-	 * @param path
-	 * @param sourceSchema
-	 * @param targetSchema
-	 * @throws MappingExportException
-	 * @see eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider#export(eu.esdihumboldt.goml.align.Alignment, java.lang.String, java.util.Collection, java.util.Collection)
+	 * @see MappingExportProvider#export(Alignment, String, Collection, Collection)
 	 */
 	@Override
-	public void export(final Alignment alignment, final String path,
+	public MappingExportReport export(final Alignment alignment, final String path,
 			Collection<SchemaElement> sourceSchema,
 			Collection<SchemaElement> targetSchema)
 			throws MappingExportException{
@@ -307,6 +303,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			//delete tempFile for cleanup
 			tempFile.deleteOnExit();
 			
+			return null;
 	}
 	
 	/**
