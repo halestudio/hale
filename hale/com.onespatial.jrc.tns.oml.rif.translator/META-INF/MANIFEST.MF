@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OML to RIF Translator
+Bundle-SymbolicName: com.onespatial.jrc.tns.oml_to_rif
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: ONESPATIAL
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.apache.log4j
+Require-Bundle: eu.esdihumboldt.commons;bundle-version="3.0.5",
+ eu.esdihumboldt.specification;bundle-version="2.0.4",
+ com.onespatial.jrc.tns.jaxb.rifprd;bundle-version="1.0.0",
+ com.sun.xsom;bundle-version="1.0.0",
+ eu.esdihumboldt.hale.prefixmapper;bundle-version="1.0.1",
+ org.geotools;bundle-version="2.6.4",
+ com.vividsolutions.jts;bundle-version="1.10.0"
+Export-Package: com.onespatial.jrc.tns.oml_to_rif;version="1.0.0",
+ com.onespatial.jrc.tns.oml_to_rif.api;version="1.0.0"

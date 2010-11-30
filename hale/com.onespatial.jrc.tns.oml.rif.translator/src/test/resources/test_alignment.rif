@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Document xmlns="http://www.w3.org/2007/rif#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml/" xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment" xmlns:goml="http://www.esdi-humboldt.eu/goml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <payload>
+        <Group>
+            <sentence>
+                <Implies>
+                    <if>
+                        <Exists>
+                            <declare>
+                                <Var>ruleVar0</Var>
+                            </declare>
+                            <declare>
+                                <Var>ruleVar1 ruleVar1</Var>
+                            </declare>
+                            <formula>
+                                <And>
+                                    <formula>
+                                        <Member>
+                                            <instance>
+                                                <Var>ruleVar0</Var>
+                                            </instance>
+                                            <class>
+                                                <Const type="rif:iri">http://www.safe.com/gml/fme:NEWRY_FEATURES</Const>
+                                            </class>
+                                        </Member>
+                                    </formula>
+                                    <formula>
+                                        <Frame>
+                                            <object>
+                                                <Var>ruleVar0</Var>
+                                            </object>
+                                            <slot ordered="yes">
+                                                <Const type="rif:iri">the-missing-attribute</Const>
+                                                <Var>ruleVar1 ruleVar1</Var>
+                                            </slot>
+                                        </Frame>
+                                    </formula>
+                                    <formula>
+                                        <Equal>
+                                            <left>
+                                                <Var>ruleVar1</Var>
+                                            </left>
+                                            <right>
+                                                <Const type="rif:iri">CL_RAIL</Const>
+                                            </right>
+                                        </Equal>
+                                    </formula>
+                                </And>
+                            </formula>
+                        </Exists>
+                    </if>
+                    <then>
+                        <Do>
+                            <actionVar>
+                                <Var>iId</Var>
+                                <New xmlns:ns7="http://www.w3.org/2001/XMLSchema" xsi:type="ns7:string"/>
+                            </actionVar>
+                            <actions ordered="yes">
+                                <Assert>
+                                    <target>
+                                        <Member>
+                                            <instance>
+                                                <Var>anotherone</Var>
+                                            </instance>
+                                            <class>
+                                                <Const type="rif:iri">urn:x-inspire:specification:gmlas:RailwayTransportNetwork:3.0:RailwayLink</Const>
+                                            </class>
+                                        </Member>
+                                    </target>
+                                </Assert>
+                                <Assert>
+                                    <target>
+                                        <Frame>
+                                            <object>
+                                                <Var/>
+                                            </object>
+                                            <slot ordered="yes">
+                                                <Const type="rif:iri">the-missing-attribute</Const>
+                                                <Var>googledygook googledygook</Var>
+                                            </slot>
+                                        </Frame>
+                                    </target>
+                                </Assert>
+                            </actions>
+                        </Do>
+                    </then>
+                </Implies>
+            </sentence>
+        </Group>
+    </payload>
+</Document>
