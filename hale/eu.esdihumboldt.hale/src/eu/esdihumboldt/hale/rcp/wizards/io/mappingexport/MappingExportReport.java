@@ -55,7 +55,7 @@ public class MappingExportReport {
 	 * @param warning the warning/remark
 	 */
 	public void setWarning(ICell cell, String warning) {
-		failed.put(cell, warning);
+		warnings.put(cell, warning);
 	}
 	
 	/**
