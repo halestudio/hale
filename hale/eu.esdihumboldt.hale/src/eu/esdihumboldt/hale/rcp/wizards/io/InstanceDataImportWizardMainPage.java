@@ -14,6 +14,9 @@ package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.IDialogPage;
@@ -31,7 +34,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -39,12 +41,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
+import eu.esdihumboldt.hale.instanceprovider.InstanceProvider;
 
 /**
  * This is the first page of the {@link InstanceDataImportWizard}. It allows to
  * select the principal source of the geodata to be used in HALE.
  * 
  * @author Thorsten Reitz
+ * @author Simon Templer
  * @version $Id$
  */
 public class InstanceDataImportWizardMainPage 
@@ -61,6 +65,10 @@ public class InstanceDataImportWizardMainPage
 	private UrlFieldEditor wfsFieldEditor;
 	
 	private final String schemaNamespace;
+	
+	private final boolean supportsGML;
+	
+	private final Set<String> instanceFormats = new HashSet<String>();
 
 	private ComboViewer configSelector;
 	
@@ -72,15 +80,30 @@ public class InstanceDataImportWizardMainPage
 	 * @param pageName the page name
 	 * @param pageTitle the page title
 	 * @param schemaNamespace the schema namespace
+	 * @param instanceProviders the available instance providers 
+	 * @param schemaFormat the schema format
 	 */
 	protected InstanceDataImportWizardMainPage(String pageName, String pageTitle,
-			String schemaNamespace) {
+			String schemaNamespace, String schemaFormat, Collection<InstanceProvider> instanceProviders) {
 		super(pageName, pageTitle, (ImageDescriptor) null); // FIXME ImageDescriptor
 		super.setTitle(pageName); //NON-NLS-1
 		super.setDescription(Messages.InstanceDataImportWizardMainPage_LoadGeoDescription1 +
 				Messages.InstanceDataImportWizardMainPage_LoadGeoDescription2);
 		
 		this.schemaNamespace = schemaNamespace;
+		
+		boolean gml = false;
+		for (InstanceProvider provider : instanceProviders) {
+			// check for gml (=wfs) support 
+			if (!gml && provider.supportsInstanceFormat("gml")) {
+				gml = true;
+			}
+			
+			// collect available formats
+			instanceFormats.addAll(provider.getSupportedInstanceFormats());
+		}
+		
+		supportsGML = gml;
 	}
 	
 	// methods .................................................................
@@ -155,69 +178,78 @@ public class InstanceDataImportWizardMainPage
 				getWizard().getContainer().updateButtons();
 			}
 		});
-		String[] extensions = new String[] { "*.gml", "*.xml" }; //NON-NLS-1 //$NON-NLS-1$ //$NON-NLS-2$
-		this.fileFieldEditor.setFileExtensions(extensions);
+		
+		String[] extensions = new String[instanceFormats.size()]; //{ "*.gml", "*.xml" }; //NON-NLS-1 //$NON-NLS-1$ //$NON-NLS-2$
+		int i = 0;
+		for (String format : instanceFormats) {
+			extensions[i++] = "*." + format;
+		}
+		fileFieldEditor.setFileExtensions(extensions);
 		
 		// read from WFS (GetFeature)
-		Button useWfsRadio = new Button(fileSelectionArea, SWT.RADIO);
-		useWfsRadio.setEnabled(true);
-		final Composite ufe_container = new Composite(fileSelectionArea, SWT.NULL);
-		ufe_container.setLayoutData(
-				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		this.wfsFieldEditor = new UrlFieldEditor("urlSelect","... WFS GetFeature:", ufe_container, schemaNamespace, true); //$NON-NLS-1$ //$NON-NLS-2$
-		this.wfsFieldEditor.setEnabled(false, ufe_container);
-		this.wfsFieldEditor.getTextControl(ufe_container).addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				getWizard().getContainer().updateButtons();
-			}
-		});
-		
-		// add listeners to radio buttons
-		useFileRadio.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				useFile = ((Button)e.widget).getSelection();
-				if (((Button)e.widget).getSelection()) {
-					fileFieldEditor.setEnabled(true, ffe_container);
-					wfsFieldEditor.setEnabled(false, ufe_container);
+		if (supportsGML) {
+			Button useWfsRadio = new Button(fileSelectionArea, SWT.RADIO);
+			useWfsRadio.setEnabled(true);
+			final Composite ufe_container = new Composite(fileSelectionArea, SWT.NULL);
+			ufe_container.setLayoutData(
+					new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
+			this.wfsFieldEditor = new UrlFieldEditor("urlSelect","... WFS GetFeature:", ufe_container, schemaNamespace, true); //$NON-NLS-1$ //$NON-NLS-2$
+			this.wfsFieldEditor.setEnabled(false, ufe_container);
+			this.wfsFieldEditor.getTextControl(ufe_container).addModifyListener(new ModifyListener() {
+				public void modifyText(ModifyEvent e) {
+					getWizard().getContainer().updateButtons();
 				}
-				else {
-					fileFieldEditor.setEnabled(false, ffe_container);
-					wfsFieldEditor.setEnabled(true, ufe_container);
+			});
+			
+			// add listeners to radio buttons
+			useFileRadio.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					useFile = ((Button)e.widget).getSelection();
+					if (((Button)e.widget).getSelection()) {
+						fileFieldEditor.setEnabled(true, ffe_container);
+						wfsFieldEditor.setEnabled(false, ufe_container);
+					}
+					else {
+						fileFieldEditor.setEnabled(false, ffe_container);
+						wfsFieldEditor.setEnabled(true, ufe_container);
+					}
 				}
-			}
-		});
-		
-		useWfsRadio.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				useFile = !((Button)e.widget).getSelection();
-				if (((Button)e.widget).getSelection()) {
-					fileFieldEditor.setEnabled(false, ffe_container);
-					wfsFieldEditor.setEnabled(true, ufe_container);
+			});
+			
+			useWfsRadio.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					useFile = !((Button)e.widget).getSelection();
+					if (((Button)e.widget).getSelection()) {
+						fileFieldEditor.setEnabled(false, ffe_container);
+						wfsFieldEditor.setEnabled(true, ufe_container);
+					}
+					else {
+						fileFieldEditor.setEnabled(true, ffe_container);
+						wfsFieldEditor.setEnabled(false, ufe_container);
+					}
 				}
-				else {
-					fileFieldEditor.setEnabled(true, ffe_container);
-					wfsFieldEditor.setEnabled(false, ufe_container);
-				}
-			}
-		});
+			});
+		}
 		
 		// import options
-		Group optionsGroup = new Group(parent, SWT.NONE);
-		optionsGroup.setText("Import options");
-		optionsGroup.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		optionsGroup.setLayout(new GridLayout());
-		
-		configSelector = new ComboViewer(optionsGroup);
-		configSelector.setContentProvider(ArrayContentProvider.getInstance());
-		configSelector.setLabelProvider(new LabelProvider());
-		configSelector.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		
-		ConfigurationType[] values = ConfigurationType.values();
-		configSelector.setInput(values);
-		
-		configSelector.setSelection(new StructuredSelection(ConfigurationType.GML3));
+		if (supportsGML) {
+			Group optionsGroup = new Group(parent, SWT.NONE);
+			optionsGroup.setText("Import options");
+			optionsGroup.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+			optionsGroup.setLayout(new GridLayout());
+			
+			configSelector = new ComboViewer(optionsGroup);
+			configSelector.setContentProvider(ArrayContentProvider.getInstance());
+			configSelector.setLabelProvider(new LabelProvider());
+			configSelector.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+			
+			ConfigurationType[] values = ConfigurationType.values();
+			configSelector.setInput(values);
+			
+			configSelector.setSelection(new StructuredSelection(ConfigurationType.GML3));
+		}
 		
 		// finish some stuff.
 		fileSelectionArea.moveAbove(null);
@@ -229,7 +261,7 @@ public class InstanceDataImportWizardMainPage
 	 */
 	@Override
 	public boolean isPageComplete() {
-		if (this.fileFieldEditor != null && this.wfsFieldEditor != null) {
+		if (this.fileFieldEditor != null && (useFile || this.wfsFieldEditor != null)) {
 			try {
 				if (!this.useFile) {
 					// test whether content of the WFS Field Editor validates to URL.
@@ -280,6 +312,10 @@ public class InstanceDataImportWizardMainPage
 	 * @return the configuration type
 	 */
 	public ConfigurationType getConfiguration() {
+		if (configSelector == null) {
+			return ConfigurationType.GML3;
+		}
+		
 		ISelection sel = configSelector.getSelection();
 		if (sel.isEmpty() || !(sel instanceof IStructuredSelection)) {
 			return ConfigurationType.GML3;

@@ -16,6 +16,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -62,6 +64,7 @@ public class InstanceDataImportWizard
 	private static ALogger _log = ALoggerFactory.getLogger(InstanceDataImportWizard.class);
 
 	private InstanceDataImportWizardMainPage mainPage;
+
 	//private InstanceDataImportWizardFilterPage filterPage;
 	//private InstanceDataImportWizardVerificationPage verificationPage;
 	
@@ -80,12 +83,18 @@ public class InstanceDataImportWizard
 				Messages.InstanceDataImportDescription); // NON-NLS-1
 		super.setWindowTitle(Messages.WindowTitle); // NON-NLS-1*/
 		
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+		String schemaFormat = ss.getSourceSchemaFormat();
+		
+		// determine available instance providers
+		Collection<InstanceProvider> instanceProviders = Collections.unmodifiableCollection(InstanceProviderFactory.INSTANCE.getInstanceProvider(schemaFormat));
+		
 		setNeedsProgressMonitor(true);
 		
 		mainPage = new InstanceDataImportWizardMainPage(
 				Messages.InstanceDataImportWizard_MainPageLabel, 
 				Messages.ImportGeodataText,
-				schemaNamespace); // NON-NLS-1
+				schemaNamespace, schemaFormat, instanceProviders); // NON-NLS-1
 	}
 
 	/**
