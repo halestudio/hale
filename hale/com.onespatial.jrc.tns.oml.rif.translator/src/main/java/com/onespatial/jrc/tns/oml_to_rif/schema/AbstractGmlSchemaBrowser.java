@@ -337,7 +337,8 @@ public abstract class AbstractGmlSchemaBrowser implements SchemaBrowser
             {
                 parts = new ArrayList<String>();
                 parts.add(schema.getTargetNamespace());
-                for (String part : attributePath.substring(schema.getTargetNamespace().length())
+                String tns = schema.getTargetNamespace().trim();
+                for (String part : attributePath.substring(tns.length())
                         .split("/"))
                 {
                     part = part.trim();
