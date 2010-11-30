@@ -196,7 +196,7 @@ public class InstanceServiceImpl extends AbstractInstanceService {
 	}
 
 	/**
-	 * @see InstanceService#cleanInstances()
+	 * @see InstanceService#cleanInstances(DatasetType)
 	 */
 	public boolean cleanInstances(DatasetType type) {
 		if (type == null) { 
