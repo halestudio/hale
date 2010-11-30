@@ -222,9 +222,11 @@ public class ProjectParser {
 				
 				// target schema location
 				orgSchema = alignment.getSchema2();
-				newSchema = new Schema(projectService.getTargetSchemaPath(), (Formalism) orgSchema.getFormalism());
-				newSchema.setAbout(orgSchema.getAbout());
-				alignment.setSchema2(newSchema);
+				if (orgSchema != null) {
+					newSchema = new Schema(projectService.getTargetSchemaPath(), (Formalism) orgSchema.getFormalism());
+					newSchema.setAbout(orgSchema.getAbout());
+					alignment.setSchema2(newSchema);
+				}
 				
 				alignmentService.addOrUpdateAlignment(alignment);
 				_log.info("Number of loaded cells: " + alignmentService.getAlignment().getMap().size());
@@ -276,7 +278,7 @@ public class ProjectParser {
 				if (project.getInstanceData().getEpsgcode() != null) {
 					SelectCRSDialog.setEpsgcode(project.getInstanceData().getEpsgcode());
 				}
-				else if (project.getInstanceData() != null) {
+				else if (project.getInstanceData() != null && project.getInstanceData().getWkt() != null) {
 					SelectCRSDialog.setWkt(project.getInstanceData().getWkt());
 				}
 				instanceService.addInstances(DatasetType.reference, 
