@@ -1,0 +1,188 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>eu.esdihumboldt</groupId>
+	<artifactId>cst-wps</artifactId>
+	<packaging>war</packaging>
+	<version>1.0</version>
+	<name>wps Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+
+
+	<scm>
+		<connection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/cst-wps/tags/cst-wps-1.0</connection>
+		<developerConnection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/cst-wps/tags/cst-wps-1.0</developerConnection>
+		<url>http://svn.esdi-humboldt.eu/tags/cst-wps-1.0</url>
+	</scm>
+	<build>
+
+		<resources>
+			<resource>
+				<directory>./src/main/resource</directory>
+			</resource>
+		</resources>
+
+		<testResources>
+			<testResource>
+				<directory>./src/test/resource</directory>
+			</testResource>
+		</testResources>
+
+		<finalName>cst-wps</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>tomcat-maven-plugin</artifactId>
+				<configuration>
+					<url>http://lesp1.lesprojekt.cz:8180/manager/html</url>
+					<server>humboldttomcat</server>
+					<path>/cst-wps</path>
+				</configuration>
+			</plugin>
+		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<!-- ======================================================= -->
+				<!--     Compilation.                                        -->
+				<!-- ======================================================= -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.6</source>  <!-- The -source argument for the Java compiler. -->
+						<target>1.6</target>  <!-- The -target argument for the Java compiler. -->
+						<debug>true</debug>   <!-- Whether to include debugging information.   -->
+						<encoding>UTF-8</encoding> <!-- The -encoding argument for the Java compiler. -->
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.4</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty</artifactId>
+			<version>6.1.22</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>cz.hsrs</groupId>
+			<artifactId>pywps</artifactId>
+			<version>3.2.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.esdihumboldt.cst</groupId>
+			<artifactId>iobridge</artifactId>
+			<version>2.0.2</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>eu.esdihumboldt</groupId>
+			<artifactId>commons</artifactId>
+			<version>3.0.7</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xerces</groupId>
+					<artifactId>xerces</artifactId>
+				</exclusion>
+				
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.esdihumboldt.cst</groupId>
+			<artifactId>corefunctions</artifactId>
+			<version>1.0.4</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xerces</groupId>
+					<artifactId>xerces</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>eu.esdihumboldt</groupId>
+					<artifactId>cst</artifactId>
+				</exclusion>
+				
+			</exclusions>
+		</dependency>
+
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.5</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>artifactory.esdi-humboldt.eu</id>
+			<name>Humboldt internal repository</name>
+			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/repo</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>artifactory.esdi-humboldt.eu.release</id>
+			<name>plugins-releases</name>
+			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/plugins-releases
+			</url>
+		</pluginRepository>
+		<pluginRepository>
+			<snapshots />
+			<id>artifactory.esdi-humboldt.eu.snapshot</id>
+			<name>plugins-snapshots</name>
+			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/plugins-snapshots
+			</url>
+		</pluginRepository>
+	</pluginRepositories>
+	<distributionManagement>
+		<repository>
+			<id>artifactory.esdi-humboldt.eu</id>
+			<name>artifactory.esdi-humboldt.eu-releases</name>
+			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/libs-releases-local
+			</url>
+		</repository>
+		<snapshotRepository>
+			<id>artifactory.esdi-humboldt.eu</id>
+			<name>artifactory.esdi-humboldt.eu-snapshots</name>
+			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/libs-snapshots-local
+			</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+</project>

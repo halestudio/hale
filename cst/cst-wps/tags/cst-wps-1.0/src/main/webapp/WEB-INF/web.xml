@@ -1,0 +1,39 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+	<display-name>cst-wps</display-name>
+	<servlet>
+		<servlet-name>simple</servlet-name>
+		<servlet-class>eu.esdihumboldt.wps.Servlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>simple</servlet-name>
+		<url-pattern>/simple</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>upload</servlet-name>
+		<servlet-class>eu.esdihumboldt.wps.UploadServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>upload</servlet-name>
+		<url-pattern>/upload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>HumboldtServlet</servlet-name>
+		<servlet-class>org.python.util.PyServlet</servlet-class>
+	</servlet>
+
+        <servlet>
+            <servlet-name>PyServlet</servlet-name>
+            <servlet-class>org.python.util.PyServlet</servlet-class>
+            <load-on-startup>1</load-on-startup>
+        </servlet>
+        <servlet-mapping>
+            <servlet-name>PyServlet</servlet-name>
+            <url-pattern>*.py</url-pattern> 
+        </servlet-mapping>
+</web-app>
