@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.esdihumboldt</groupId>
 	<artifactId>commons</artifactId>
-	<version>3.0.6-SNAPSHOT</version>
+	<version>3.0.7</version>
 	<name>HUMBOLDT Common Library Component</name>
 	<url>http://www.esdi-humboldt.eu</url>
 
@@ -110,7 +110,7 @@
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
 			<artifactId>specification</artifactId>
-			<version>2.0.4-SNAPSHOT</version>
+			<version>2.0.5</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>servlet-api</artifactId>

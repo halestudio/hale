@@ -4,7 +4,7 @@
 	<groupId>eu.esdihumboldt</groupId>
 	<artifactId>cst</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.4-SNAPSHOT</version>
+	<version>1.0.5</version>
 	<name>cst</name>
 	<description>The Conceptual Schema Transformer (CST) is a library that is able to apply a schema transformation to a geodata set (expressed in a specific source Application Schema (A)) in order to provide a geodata set (expressed in a specific target Application Schema B). A schema mapping between schema A and schema B has to be defined beforehand in order to accomplish the transformation.</description>
 	<url>http://community.esdi-humboldt.eu/projects/show/cst</url>
@@ -105,12 +105,12 @@
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
 			<artifactId>specification</artifactId>
-			<version>2.0.4-SNAPSHOT</version>
+			<version>2.0.5</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.esdihumboldt</groupId>
 			<artifactId>commons</artifactId>
-			<version>3.0.6-SNAPSHOT</version>
+			<version>3.0.7</version>
 		</dependency>
 		<dependency>
 			<groupId>com.iabcinc</groupId>
