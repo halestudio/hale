@@ -3,15 +3,15 @@
 	<groupId>eu.esdihumboldt</groupId>
 	<artifactId>cst-wps</artifactId>
 	<packaging>war</packaging>
-	<version>1.0</version>
+	<version>1.1-SNAPSHOT</version>
 	<name>wps Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 
 
 	<scm>
-		<connection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/cst-wps/tags/cst-wps-1.0</connection>
-		<developerConnection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/cst-wps/tags/cst-wps-1.0</developerConnection>
-		<url>http://svn.esdi-humboldt.eu/tags/cst-wps-1.0</url>
+		<connection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/cst-wps/trunk</connection>
+		<developerConnection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/cst-wps/trunk</developerConnection>
+		<url>http://svn.esdi-humboldt.eu/</url>
 	</scm>
 	<build>
 
