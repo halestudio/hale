@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="HUMBOLDT Alignment Editor" id="eu.esdihumboldt.hale.product" application="eu.esdihumboldt.hale.application" version="2.0.0" useFeatures="false" includeLaunchers="true">
+<product name="HUMBOLDT Alignment Editor" id="eu.esdihumboldt.hale.product" application="eu.esdihumboldt.hale.application" version="2.0.1" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -32,7 +32,7 @@
       <plugin id="ch.qos.logback.slf4j" fragment="true"/>
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="com.onespatial.jrc.tns.hale.rifexport" fragment="true"/>
+      <plugin id="com.onespatial.jrc.tns.hale.rifexport"/>
       <plugin id="com.onespatial.jrc.tns.jaxb.rifprd"/>
       <plugin id="com.onespatial.jrc.tns.oml_to_rif"/>
       <plugin id="com.springsource.com.sun.xml.bind"/>
