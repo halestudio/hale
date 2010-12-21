@@ -270,35 +270,35 @@ public class GtToDgConvertorTest {
 	/**
 	 * Testcase for convertion of the geotools SimpleAttributes created using geotools FeatureBuilder (manuelly).
 	 */
-	@Test
-	public void testSimpleFeatureConversion() {
-		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsFC);
-		assertEquals(1, dgFC.size());
-		org.deegree.feature.Feature dgFeature = dgFC.iterator().next();
-		// check feature name
-		assertEquals("Location", dgFeature.getName().getLocalPart());
-		// check properties count
-		assertEquals(2, dgFeature.getProperties().length);
-		// check first property instance
-		org.deegree.feature.property.Property locationProp = dgFeature
-				.getProperties()[0];
-		assertEquals("location", locationProp.getName().getLocalPart());
-		// check property type
-		DefaultPoint point = (DefaultPoint) locationProp.getValue();
-		assertEquals(Point.class, point.getJTSGeometry().getClass());
-		Point jtsPoint = (Point) point.getJTSGeometry();
-		// check property name
-		Coordinate[] coordinates = jtsPoint.getCoordinates();
-		assertEquals(1, coordinates.length);
-		assertEquals(15, coordinates[0].x, 0.0);
-		assertEquals(50, coordinates[0].y, 0.0);
-		// check second property
-		// check second property
-		org.deegree.feature.property.Property nameProp = dgFeature
-				.getProperties()[1];
-		assertEquals("name", nameProp.getName().getLocalPart());
-
-	}
+//	@Test
+//	public void testSimpleFeatureConversion() {
+//		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsFC);
+//		assertEquals(1, dgFC.size());
+//		org.deegree.feature.Feature dgFeature = dgFC.iterator().next();
+//		// check feature name
+//		assertEquals("Location", dgFeature.getName().getLocalPart());
+//		// check properties count
+//		assertEquals(2, dgFeature.getProperties().length);
+//		// check first property instance
+//		org.deegree.feature.property.Property locationProp = dgFeature
+//				.getProperties()[0];
+//		assertEquals("location", locationProp.getName().getLocalPart());
+//		// check property type
+//		DefaultPoint point = (DefaultPoint) locationProp.getValue();
+//		assertEquals(Point.class, point.getJTSGeometry().getClass());
+//		Point jtsPoint = (Point) point.getJTSGeometry();
+//		// check property name
+//		Coordinate[] coordinates = jtsPoint.getCoordinates();
+//		assertEquals(1, coordinates.length);
+//		assertEquals(15, coordinates[0].x, 0.0);
+//		assertEquals(50, coordinates[0].y, 0.0);
+//		// check second property
+//		// check second property
+//		org.deegree.feature.property.Property nameProp = dgFeature
+//				.getProperties()[1];
+//		assertEquals("name", nameProp.getName().getLocalPart());
+//
+//	}
 	
 	/**
 	 * Testcase for convertion of the geotools SimpleAttributes created using geotools FeatureBuilder (manuelly).
@@ -307,26 +307,27 @@ public class GtToDgConvertorTest {
 	 * @throws XMLStreamException 
 	 * @throws FileNotFoundException 
 	 */
-	@Test
-	public void testDemoDataConversion() throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
-		System.out.println("Conversion to deegree starts..");
-		
-		//1. Create dgFC
-		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsDemoFC);
-		//2. Create GML Handler
-		HashMap<String, String> namespaces = new HashMap<String, String>();
-		namespaces.put("wfs", "http://www.opengis.net/wfs");
-		namespaces.put("HUMBOLDT","http://www.esdi-humboldt.eu");
-		namespaces.put("xsi","http://www.w3.org/2001/XMLSchema-instance");
-
-		// set up GMLHandler with the test configuration
-		GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, xsdUrl,
-				namespaces);
-		// set target gml destination
-		gmlHandler.setTargetGmlUrl(DEMO_GML32_GENERATED_LOCATION);
-		gmlHandler.writeFC(dgFC, XSD_NAMESPACE);
-		
-	}
+//	@Test
+//	public void testDemoDataConversion() throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
+//		System.out.println("Conversion to deegree starts..");
+//		
+//		//1. Create dgFC
+//		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsDemoFC);
+//		//2. Create GML Handler
+//		HashMap<String, String> namespaces = new HashMap<String, String>();
+//		namespaces.put("wfs", "http://www.opengis.net/wfs");
+//		namespaces.put("HUMBOLDT","http://www.esdi-humboldt.eu");
+//		namespaces.put("xsi","http://www.w3.org/2001/XMLSchema-instance");
+//
+//		// set up GMLHandler with the test configuration
+//		GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, xsdUrl,
+//				namespaces);
+//		// set target gml destination
+//		gmlHandler.setTargetGmlUrl(DEMO_GML32_GENERATED_LOCATION);
+//		gmlHandler.writeFC(dgFC, XSD_NAMESPACE);
+//		
+//	}
+	
 	/**
 	 * Testcase for convertion of the geotools SimpleAttributes created using geotools FeatureBuilder (manuelly).
 	 * @throws TransformationException 
@@ -334,26 +335,27 @@ public class GtToDgConvertorTest {
 	 * @throws XMLStreamException 
 	 * @throws FileNotFoundException 
 	 */
-	@Test
-	public void testDemoDataItalyInspire() throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
-		System.out.println("Conversion to deegree starts..");
-		
-		//1. Create dgFC
-		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsItaly_INSPIRE);
-		//2. Create GML Handler
-		HashMap<String, String> namespaces = new HashMap<String, String>();
-		namespaces.put("wfs", "http://www.opengis.net/wfs");
-		namespaces.put("HUMBOLDT","http://www.esdi-humboldt.eu");
-		namespaces.put("xsi","http://www.w3.org/2001/XMLSchema-instance");
-
-		// set up GMLHandler with the test configuration
-		GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, Italy_INSPIRE_xsdUrl,
-				namespaces);
-		// set target gml destination
-		gmlHandler.setTargetGmlUrl(DEMO_GML32_Genereted_Italy_INSPIRE);
-		gmlHandler.writeFC(dgFC, "Italy");
-		
-	}
+//	@Test
+//	public void testDemoDataItalyInspire() throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
+//		System.out.println("Conversion to deegree starts..");
+//		
+//		//1. Create dgFC
+//		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsItaly_INSPIRE);
+//		//2. Create GML Handler
+//		HashMap<String, String> namespaces = new HashMap<String, String>();
+//		namespaces.put("wfs", "http://www.opengis.net/wfs");
+//		namespaces.put("HUMBOLDT","http://www.esdi-humboldt.eu");
+//		namespaces.put("xsi","http://www.w3.org/2001/XMLSchema-instance");
+//
+//		// set up GMLHandler with the test configuration
+//		GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, Italy_INSPIRE_xsdUrl,
+//				namespaces);
+//		// set target gml destination
+//		gmlHandler.setTargetGmlUrl(DEMO_GML32_Genereted_Italy_INSPIRE);
+//		gmlHandler.writeFC(dgFC, "Italy");
+//		
+//	}
+	
 	/**
 	 * Testcase for convertion of the geotools SimpleAttributes created using geotools FeatureBuilder (manuelly).
 	 * @throws TransformationException 
@@ -361,26 +363,27 @@ public class GtToDgConvertorTest {
 	 * @throws XMLStreamException 
 	 * @throws FileNotFoundException 
 	 */
-	@Test
-	public void testDemoDataItalyTC() throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
-		System.out.println("Conversion to deegree starts..");
-		
-		//1. Create dgFC
-		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsItaly_TC);
-		//2. Create GML Handler
-		HashMap<String, String> namespaces = new HashMap<String, String>();
-		namespaces.put("wfs", "http://www.opengis.net/wfs");
-		namespaces.put("HUMBOLDT","http://www.esdi-humboldt.eu");
-		namespaces.put("xsi","http://www.w3.org/2001/XMLSchema-instance");
-
-		// set up GMLHandler with the test configuration
-		GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, Italy_TC_xsdUrl,
-				namespaces);
-		// set target gml destination
-		gmlHandler.setTargetGmlUrl(DEMO_GML32_Genereted_Italy_TC);
-		gmlHandler.writeFC(dgFC, "Transboundary");
-		
-	}
+//	@Test
+//	public void testDemoDataItalyTC() throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
+//		System.out.println("Conversion to deegree starts..");
+//		
+//		//1. Create dgFC
+//		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsItaly_TC);
+//		//2. Create GML Handler
+//		HashMap<String, String> namespaces = new HashMap<String, String>();
+//		namespaces.put("wfs", "http://www.opengis.net/wfs");
+//		namespaces.put("HUMBOLDT","http://www.esdi-humboldt.eu");
+//		namespaces.put("xsi","http://www.w3.org/2001/XMLSchema-instance");
+//
+//		// set up GMLHandler with the test configuration
+//		GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, Italy_TC_xsdUrl,
+//				namespaces);
+//		// set target gml destination
+//		gmlHandler.setTargetGmlUrl(DEMO_GML32_Genereted_Italy_TC);
+//		gmlHandler.writeFC(dgFC, "Transboundary");
+//		
+//	}
+	
 	/**
 	 * Testcase for convertion of the geotools SimpleAttributes created using geotools FeatureBuilder (manuelly).
 	 * @throws TransformationException 
@@ -388,114 +391,114 @@ public class GtToDgConvertorTest {
 	 * @throws XMLStreamException 
 	 * @throws FileNotFoundException 
 	 */
-	@Test
-	public void testDemoDataSpainHumboldt() throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
-		System.out.println("Conversion to deegree starts..");
-		
-		//1. Create dgFC
-		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsSpain_HUMBOLDT);
-		//2. Create GML Handler
-		HashMap<String, String> namespaces = new HashMap<String, String>();
-		namespaces.put("wfs", "http://www.opengis.net/wfs");
-		namespaces.put("HUMBOLDT","http://www.esdi-humboldt.eu");
-		namespaces.put("xsi","http://www.w3.org/2001/XMLSchema-instance");
-
-		// set up GMLHandler with the test configuration
-		GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, Spain_HUMBOLDT_xsdUrl ,
-				namespaces);
-		// set target gml destination
-		gmlHandler.setTargetGmlUrl(DEMO_GML32_Genereted_Spain_HUMBOLDT);
-		gmlHandler.writeFC(dgFC, "Spain");
-		
-	}
+//	@Test
+//	public void testDemoDataSpainHumboldt() throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
+//		System.out.println("Conversion to deegree starts..");
+//		
+//		//1. Create dgFC
+//		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsSpain_HUMBOLDT);
+//		//2. Create GML Handler
+//		HashMap<String, String> namespaces = new HashMap<String, String>();
+//		namespaces.put("wfs", "http://www.opengis.net/wfs");
+//		namespaces.put("HUMBOLDT","http://www.esdi-humboldt.eu");
+//		namespaces.put("xsi","http://www.w3.org/2001/XMLSchema-instance");
+//
+//		// set up GMLHandler with the test configuration
+//		GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, Spain_HUMBOLDT_xsdUrl ,
+//				namespaces);
+//		// set target gml destination
+//		gmlHandler.setTargetGmlUrl(DEMO_GML32_Genereted_Spain_HUMBOLDT);
+//		gmlHandler.writeFC(dgFC, "Spain");
+//		
+//	}
 	
 	/**
 	 * Testcase for convertion of the geotools SimpleAttributes created using HaleParser.
 	 */
-	@Test
-	public void testSimpleAttributeConversion() {
-		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsGMLFC);
-		//TODO check imported schemas 
-		//1. check schema location
-		//2. check namespaces
-		//dgFC.getType().getSchema().getXSModel().getNamespaces();
-		//3. check other xml attributes like number of features and time stamp
-		//check fc  size
-		//assertEquals(4, dgFC.size());
-		//check feature with feature id = gml:id="Watercourses_BY.3
-		
-		org.deegree.feature.Feature dgFeature;
-		try {
-			 //check we have only one feature instance with id = "Watercourses_BY.3"
-			 assertEquals(1, dgFC.getMembers(new IdFilter("Watercourses_BY.3"), evaluator).size());
-			 dgFeature = (org.deegree.feature.Feature)dgFC.getMembers(new IdFilter("Watercourses_BY.3"), evaluator).iterator().next();
-			 assertEquals(18, dgFeature.getProperties().length);
-			 //check geometry property
-			 org.deegree.feature.property.Property [] geomProperty = dgFeature.getGeometryProperties();
-			 assertEquals(1,geomProperty.length);
-			 //check geometry property type
-			 DefaultMultiLineString multiLineString  = (DefaultMultiLineString)geomProperty[0].getValue();
-			 CRS deegreeCRS = multiLineString.getCoordinateSystem();
-			 //TODO provide fix for the CRS
-			 //assertEquals("urn:x-ogc:def:crs:EPSG:31468", deegreeCRS.getName());
-			 assertEquals(MultiLineString.class, multiLineString.getJTSGeometry().getClass());
-			 MultiLineString jtsMultiLineString = (MultiLineString)multiLineString.getJTSGeometry();
-			 assertEquals(1, jtsMultiLineString.getNumGeometries());
-			 LineString jtsLineString = (LineString)jtsMultiLineString.getGeometryN(0);
-			 assertEquals(12, jtsLineString.getCoordinateSequence().size());
-			 Coordinate coordinate = jtsLineString.getCoordinateN(0);
-			 assertEquals(5276443.08, coordinate.x, 0.0);
-			 assertEquals(4322361.16, coordinate.y, 0.0);
-			 //check property <topp:GN>Nonnenbach</topp:GN>
-			 org.deegree.feature.property.Property gnProperty = dgFeature.getProperties()[9];
-			 //test property name including the namespace
-			 //assertEquals("topp", gnProperty.getName().getPrefix());
-			 assertEquals("GN", gnProperty.getName().getLocalPart());
-			 assertEquals("Nonnenbach",((PrimitiveValue)gnProperty.getValue()).getAsText());
-			//2. Create GML Handler
-			 System.out.println("Conversion to deegree starts..");
-				HashMap<String, String> namespaces = new HashMap<String, String>();
-				namespaces.put("gco", "http://www.isotc211.org/2005/gco");
-				namespaces.put("gmd", "http://www.isotc211.org/2005/gmd");
-				namespaces.put("gn",
-						"urn:x-inspire:specification:gmlas:GeographicalNames:3.0");
-				namespaces.put("hy-p",
-						"urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0");
-				namespaces.put("hy", "urn:x-inspire:specification:gmlas:HydroBase:3.0");
-				namespaces.put("base",
-						"urn:x-inspire:specification:gmlas:BaseTypes:3.2");
-				namespaces.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-				namespaces.put("topp", "http://www.openplans.org/topp"); 
-
-				// set up GMLHandler with the test configuration
-				GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, xsdUrl,
-						namespaces);
-				// set target gml destination
-				gmlHandler.setTargetGmlUrl(GML32_GENERATED_LOCATION);
-				try {
-					gmlHandler.writeFC(dgFC, XSD_NAMESPACE);
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (XMLStreamException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (UnknownCRSException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (TransformationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			 
-			 
-			 
-		} catch (FilterEvaluationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
+//	@Test
+//	public void testSimpleAttributeConversion() {
+//		FeatureCollection dgFC = GtToDgConvertor.convertGtToDg(GeoToolsGMLFC);
+//		//TODO check imported schemas 
+//		//1. check schema location
+//		//2. check namespaces
+//		//dgFC.getType().getSchema().getXSModel().getNamespaces();
+//		//3. check other xml attributes like number of features and time stamp
+//		//check fc  size
+//		//assertEquals(4, dgFC.size());
+//		//check feature with feature id = gml:id="Watercourses_BY.3
+//		
+//		org.deegree.feature.Feature dgFeature;
+//		try {
+//			 //check we have only one feature instance with id = "Watercourses_BY.3"
+//			 assertEquals(1, dgFC.getMembers(new IdFilter("Watercourses_BY.3"), evaluator).size());
+//			 dgFeature = (org.deegree.feature.Feature)dgFC.getMembers(new IdFilter("Watercourses_BY.3"), evaluator).iterator().next();
+//			 assertEquals(18, dgFeature.getProperties().length);
+//			 //check geometry property
+//			 org.deegree.feature.property.Property [] geomProperty = dgFeature.getGeometryProperties();
+//			 assertEquals(1,geomProperty.length);
+//			 //check geometry property type
+//			 DefaultMultiLineString multiLineString  = (DefaultMultiLineString)geomProperty[0].getValue();
+//			 CRS deegreeCRS = multiLineString.getCoordinateSystem();
+//			 //TODO provide fix for the CRS
+//			 //assertEquals("urn:x-ogc:def:crs:EPSG:31468", deegreeCRS.getName());
+//			 assertEquals(MultiLineString.class, multiLineString.getJTSGeometry().getClass());
+//			 MultiLineString jtsMultiLineString = (MultiLineString)multiLineString.getJTSGeometry();
+//			 assertEquals(1, jtsMultiLineString.getNumGeometries());
+//			 LineString jtsLineString = (LineString)jtsMultiLineString.getGeometryN(0);
+//			 assertEquals(12, jtsLineString.getCoordinateSequence().size());
+//			 Coordinate coordinate = jtsLineString.getCoordinateN(0);
+//			 assertEquals(5276443.08, coordinate.x, 0.0);
+//			 assertEquals(4322361.16, coordinate.y, 0.0);
+//			 //check property <topp:GN>Nonnenbach</topp:GN>
+//			 org.deegree.feature.property.Property gnProperty = dgFeature.getProperties()[9];
+//			 //test property name including the namespace
+//			 //assertEquals("topp", gnProperty.getName().getPrefix());
+//			 assertEquals("GN", gnProperty.getName().getLocalPart());
+//			 assertEquals("Nonnenbach",((PrimitiveValue)gnProperty.getValue()).getAsText());
+//			//2. Create GML Handler
+//			 System.out.println("Conversion to deegree starts..");
+//				HashMap<String, String> namespaces = new HashMap<String, String>();
+//				namespaces.put("gco", "http://www.isotc211.org/2005/gco");
+//				namespaces.put("gmd", "http://www.isotc211.org/2005/gmd");
+//				namespaces.put("gn",
+//						"urn:x-inspire:specification:gmlas:GeographicalNames:3.0");
+//				namespaces.put("hy-p",
+//						"urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0");
+//				namespaces.put("hy", "urn:x-inspire:specification:gmlas:HydroBase:3.0");
+//				namespaces.put("base",
+//						"urn:x-inspire:specification:gmlas:BaseTypes:3.2");
+//				namespaces.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+//				namespaces.put("topp", "http://www.openplans.org/topp"); 
+//
+//				// set up GMLHandler with the test configuration
+//				GmlHandler gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, xsdUrl,
+//						namespaces);
+//				// set target gml destination
+//				gmlHandler.setTargetGmlUrl(GML32_GENERATED_LOCATION);
+//				try {
+//					gmlHandler.writeFC(dgFC, XSD_NAMESPACE);
+//				} catch (FileNotFoundException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (XMLStreamException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (UnknownCRSException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (TransformationException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			 
+//			 
+//			 
+//		} catch (FilterEvaluationException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//	}
 	
 	/**
 	 * Testcase for convertion of the geotools ComplexAttributes created using HaleParser.

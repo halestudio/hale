@@ -70,23 +70,22 @@ public class GmlHandlerTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		// pre-define namespaces
-		HashMap<String, String> namespaces = new HashMap<String, String>();
-		namespaces.put("gco", "http://www.isotc211.org/2005/gco");
-		namespaces.put("gmd", "http://www.isotc211.org/2005/gmd");
-		namespaces.put("gn",
-				"urn:x-inspire:specification:gmlas:GeographicalNames:3.0");
-		namespaces.put("hy-p",
-				"urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0");
-		namespaces.put("hy", "urn:x-inspire:specification:gmlas:HydroBase:3.0");
-		namespaces.put("base",
-				"urn:x-inspire:specification:gmlas:BaseTypes:3.2");
-		namespaces.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+//		HashMap<String, String> namespaces = new HashMap<String, String>();
+//		namespaces.put("gco", "http://www.isotc211.org/2005/gco");
+//		namespaces.put("gmd", "http://www.isotc211.org/2005/gmd");
+//		namespaces.put("gn",
+//				"urn:x-inspire:specification:gmlas:GeographicalNames:3.0");
+//		namespaces.put("hy-p",
+//				"urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0");
+//		namespaces.put("hy", "urn:x-inspire:specification:gmlas:HydroBase:3.0");
+//		namespaces.put("base",
+//				"urn:x-inspire:specification:gmlas:BaseTypes:3.2");
+//		namespaces.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
 		
 
 		// set up GMLHandler with the test configuration
 
-		gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, xsdUrl,
-				namespaces);
+		gmlHandler = new GmlHandler(GMLVersions.gml3_2_1, xsdUrl);
 
 		// set target gml destination
 		gmlHandler.setTargetGmlUrl(GML32_GENERATED_LOCATION);				
@@ -252,20 +251,20 @@ public class GmlHandlerTest {
 	 * @throws FileNotFoundException
 	 * @throws XMLParsingException
 	 */
-	@Test
-	public final void testWriteFC() throws XMLParsingException,
-			FileNotFoundException, ClassCastException, XMLStreamException,
-			UnknownCRSException, TransformationException,
-			FactoryConfigurationError, IOException, ClassNotFoundException,
-			InstantiationException, IllegalAccessException {
-		// TODO provide XUNIT-based testing
-		
-		
-		gmlHandler.setSchemaUrl(xsdUrl);
-		String urlPath = "file://"
-				+ this.getClass().getResource("./va_target_v3.gml").getFile();
-		gmlHandler.setGmlUrl(urlPath);
-		gmlHandler.writeFC(gmlHandler.readFC(), "urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0");
-	}
+//	@Test
+//	public final void testWriteFC() throws XMLParsingException,
+//			FileNotFoundException, ClassCastException, XMLStreamException,
+//			UnknownCRSException, TransformationException,
+//			FactoryConfigurationError, IOException, ClassNotFoundException,
+//			InstantiationException, IllegalAccessException {
+//		// TODO provide XUNIT-based testing
+//		
+//		
+//		gmlHandler.setSchemaUrl(xsdUrl);
+//		String urlPath = "file://"
+//				+ this.getClass().getResource("./va_target_v3.gml").getFile();
+//		gmlHandler.setGmlUrl(urlPath);
+//		gmlHandler.writeFC(gmlHandler.readFC(), "urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0");
+//	}
 	
 }
