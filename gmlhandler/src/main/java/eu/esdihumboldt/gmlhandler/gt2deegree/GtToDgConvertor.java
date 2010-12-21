@@ -732,7 +732,8 @@ public class GtToDgConvertor {
 		
 		PropertyType gtPT = attribute.getAttributeType().getType(null);
 		org.deegree.feature.types.property.PropertyType dgPT;
-		if (gtPT instanceof org.opengis.feature.type.GeometryType) {
+		if (gtPT instanceof org.opengis.feature.type.GeometryType
+				|| com.vividsolutions.jts.geom.Geometry.class.isAssignableFrom(gtPT.getBinding())) {
 			// create deegree geometry type
 			org.deegree.feature.types.property.GeometryPropertyType.GeometryType dgGeomType = createGeometryType(attribute);
 			org.deegree.feature.types.property.GeometryPropertyType.CoordinateDimension dgCoordDim = createCoordDim(attribute);
