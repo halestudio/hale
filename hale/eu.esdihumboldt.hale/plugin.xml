@@ -171,6 +171,11 @@
             id="HALE.saveAlignmentProject.command"
             name="Save Alignment Project">
       </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.SaveTransformationResultHandler"
+            id="eu.esdihumboldt.hale.save.transformedgml"
+            name="SaveGML">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -235,6 +240,11 @@
                   commandId="HALE.saveMappingAs.command"
                   id="saveMappingAs"
                   label="%command.saveMapping.label"
+                  style="push">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.save.transformedgml"
+                  label="Save transformation result..."
                   style="push">
             </command>
             <separator

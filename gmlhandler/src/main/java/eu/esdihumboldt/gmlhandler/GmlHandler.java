@@ -42,6 +42,10 @@ import org.deegree.gml.GMLStreamReader;
 import org.deegree.gml.GMLStreamWriter;
 import org.deegree.gml.GMLVersion;
 import org.deegree.gml.feature.schema.ApplicationSchemaXSDDecoder;
+import org.opengis.feature.Feature;
+import org.opengis.feature.type.FeatureType;
+
+import eu.esdihumboldt.gmlhandler.gt2deegree.GtToDgConvertor;
 
 /**
  * <p>
@@ -326,6 +330,21 @@ public class GmlHandler {
 	 */
 	public void setTargetGmlUrl(String targetGmlUrl) {
 		this.targetGmlUrl = targetGmlUrl;
+	}
+
+	/**
+	 * Write Geotools features to the GML file
+	 * 
+	 * @param features
+	 * @throws TransformationException 
+	 * @throws UnknownCRSException 
+	 * @throws XMLStreamException 
+	 * @throws FileNotFoundException 
+	 */
+	public void writeFC(
+			org.geotools.feature.FeatureCollection<FeatureType, Feature> features) throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
+		FeatureCollection fc = GtToDgConvertor.convertGtToDg(features);
+		writeFC(fc);
 	}
 
 }
