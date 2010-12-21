@@ -213,7 +213,21 @@ public class SchemaTranslationController {
 				if (cstf != null) {
 					List<Feature> featureList = entry.getValue();
 					for (Feature f : featureList) {
-						f = cstf.transform(f, f);
+						String error = null;
+						try {
+							f = cstf.transform(f, f);
+						} catch (Exception e) {
+							if (this.strict) {
+								throw new RuntimeException("Executing the requested " +
+										"CstFunction failed: " + e.getMessage(), e);
+							}
+							else {
+								error = e.getMessage();
+							}
+						}
+						if (this.addLineage) {
+							this.addLineage(error, cstf, f, cell);
+						}
 					}
 				}
 			}
