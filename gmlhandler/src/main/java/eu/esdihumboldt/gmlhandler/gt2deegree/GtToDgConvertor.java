@@ -215,7 +215,7 @@ public class GtToDgConvertor {
 			// create deegree generic feature based on gtProp
 			GenericFeatureType ft = createDgFt(attribute.getAttributeType());
 			
-			org.deegree.feature.Feature featureProp = createDgFeature((Attribute) gtProp, attribute, ft);
+			org.deegree.feature.Feature featureProp = createDgFeature(gtProp, attribute, ft);
 	    	dgProp = new org.deegree.feature.property.GenericProperty(dgPT,
 					dgPropName, new InternalFeature(featureProp));
 			//dgProp = createDgFeatureProperty((Attribute)gtProp, ft);
