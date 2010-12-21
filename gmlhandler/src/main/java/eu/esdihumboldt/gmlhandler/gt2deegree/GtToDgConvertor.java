@@ -13,9 +13,7 @@ package eu.esdihumboldt.gmlhandler.gt2deegree;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.namespace.QName;
@@ -26,6 +24,7 @@ import org.deegree.cs.CRS;
 import org.deegree.feature.GenericFeatureCollection;
 import org.deegree.feature.property.GenericProperty;
 import org.deegree.feature.types.GenericFeatureType;
+import org.deegree.feature.types.property.GeometryPropertyType;
 import org.deegree.feature.types.property.SimplePropertyType;
 import org.deegree.feature.types.property.ValueRepresentation;
 import org.deegree.feature.types.property.GeometryPropertyType.CoordinateDimension;
@@ -39,7 +38,6 @@ import org.deegree.gml.GMLVersion;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.Geometries;
 import org.geotools.renderer.lite.StreamingRenderer;
-import org.opengis.feature.Attribute;
 import org.opengis.feature.Feature;
 import org.opengis.feature.GeometryAttribute;
 import org.opengis.feature.Property;
@@ -126,21 +124,6 @@ public class GtToDgConvertor {
 	 * @return deegree-based Feature
 	 */
 	protected org.deegree.feature.Feature createDgFeature(Feature gtFeature) {
-		
-		// test for the CRS
-		CoordinateReferenceSystem crs = null;
-		org.opengis.feature.GeometryAttribute gp = gtFeature.getDefaultGeometryProperty();
-		crs = gp.getDescriptor().getCoordinateReferenceSystem();
-		if (crs == null){
-			//next try - user data of value
-			Object value = gp.getValue();
-			if (value instanceof com.vividsolutions.jts.geom.Geometry){
-				Object userData = ((com.vividsolutions.jts.geom.Geometry)value).getUserData();
-				if (userData instanceof CoordinateReferenceSystem){
-					crs = (CoordinateReferenceSystem) userData;
-				}
-			}
-		}
 		FeatureType gtFT = gtFeature.getType();
 		TypeDefinition type = types.getType(gtFT);
 		// convert gtFT to gtFT
@@ -157,7 +140,7 @@ public class GtToDgConvertor {
 		Collection<Property> properties = FeatureInspector.getProperties(gtFeature);
 		for (Property p : properties) {
 			AttributeDefinition attribute = type.getAttribute(p.getName().getLocalPart());
-			org.deegree.feature.property.Property dgProp = createDgProp(p, attribute, crs, gp);
+			org.deegree.feature.property.Property dgProp = createDgProp(p, attribute);
 			dgProps.add(dgProp);
 		}
 		
@@ -179,8 +162,7 @@ public class GtToDgConvertor {
 	 * @return deegree-based Property
 	 */
 	private static org.deegree.feature.property.Property createDgProp(
-			Property gtProp, AttributeDefinition attribute, 
-			CoordinateReferenceSystem crs, GeometryAttribute gp) {
+			Property gtProp, AttributeDefinition attribute) {
 		// 1. declare a Property instance: make decision about implementing
 		// class after analyze of the PropertyType
 		org.deegree.feature.property.Property dgProp = null;
@@ -216,7 +198,7 @@ public class GtToDgConvertor {
 			// TODO handle case with GeometryReference<Geometry>
 			// convert gt Geometry attribute to deegree Geometry
 			// TODO improve this! crs and gp shouldnt be parameters here
-			org.deegree.geometry.Geometry dgGeometry = createDgGeometry(gtProp, crs, gp);
+			org.deegree.geometry.Geometry dgGeometry = createDgGeometry(gtProp, ((org.deegree.feature.types.property.GeometryPropertyType) dgPT));
 			dgProp = new GenericProperty(dgPT, dgPropName, dgGeometry);
 
 		} else if (dgPT instanceof org.deegree.feature.types.property.FeaturePropertyType) {
@@ -303,7 +285,7 @@ public class GtToDgConvertor {
 				for (Property p : properties) {
 					AttributeDefinition childAttribute = attribute.getAttributeType().getAttribute(p.getName().getLocalPart());
 					if (childAttribute != null) {
-						org.deegree.feature.property.Property dgProp = createDgProp(p, childAttribute, null, null);
+						org.deegree.feature.property.Property dgProp = createDgProp(p, childAttribute);
 						dgProps.add(dgProp);
 					}
 					else {
@@ -337,7 +319,7 @@ public class GtToDgConvertor {
 	 * @param gp 
 	 * @return Geometry
 	 */
-	private static Geometry createDgGeometry(Property gtProp, CoordinateReferenceSystem crs, GeometryAttribute gp) {
+	private static Geometry createDgGeometry(Property gtProp, GeometryPropertyType gt) {
 		
 		Geometry dgGeometry = null;
 		//String geometryName = gtProp.getDescriptor().getType().getBinding()
@@ -347,7 +329,7 @@ public class GtToDgConvertor {
 			//if (geometryName.equals("Geometry")){
 		String geometryName;
 		Geometries geomType;
-		Object jtsGeom = gp.getValue();
+		Object jtsGeom = gtProp.getValue();
 		if (jtsGeom != null && jtsGeom instanceof com.vividsolutions.jts.geom.Geometry ){
 			geometryName = jtsGeom.getClass().getSimpleName();
 			geomType = Geometries.getForBinding((Class<? extends com.vividsolutions.jts.geom.Geometry>) jtsGeom.getClass());
@@ -356,7 +338,23 @@ public class GtToDgConvertor {
 			return null;
 		}
 			
-		gtProp = gp;
+//		gtProp = gp;
+		
+		// test for the CRS
+		CoordinateReferenceSystem crs = null;
+		if (gtProp instanceof GeometryAttribute) {
+			crs = ((GeometryAttribute) gtProp).getDescriptor().getCoordinateReferenceSystem();
+		}
+		if (crs == null){
+			//next try - user data of value
+			Object value = jtsGeom;
+			if (value instanceof com.vividsolutions.jts.geom.Geometry){
+				Object userData = ((com.vividsolutions.jts.geom.Geometry)value).getUserData();
+				if (userData instanceof CoordinateReferenceSystem){
+					crs = (CoordinateReferenceSystem) userData;
+				}
+			}
+		}
 		
 			
 		// we provide mapping for
