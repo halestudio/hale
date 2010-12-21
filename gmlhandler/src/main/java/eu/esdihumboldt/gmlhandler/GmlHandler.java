@@ -105,17 +105,17 @@ public class GmlHandler {
 	public static GmlHandler getDefaultInstance(String xsdUrl, String gmlUrl){
 			// pre-define namespaces
 			HashMap<String, String> namespaces = new HashMap<String, String>();
-			namespaces.put("gco", "http://www.isotc211.org/2005/gco");
-			namespaces.put("gmd", "http://www.isotc211.org/2005/gmd");
-			namespaces.put("gn",
-					"urn:x-inspire:specification:gmlas:GeographicalNames:3.0");
-			namespaces.put("hy-p",
-					"urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0");
-			namespaces.put("hy", "urn:x-inspire:specification:gmlas:HydroBase:3.0");
-			namespaces.put("base",
-					"urn:x-inspire:specification:gmlas:BaseTypes:3.2");
-			namespaces.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-			namespaces.put("topp", "http://www.openplans.org/topp"); 
+//			namespaces.put("gco", "http://www.isotc211.org/2005/gco");
+//			namespaces.put("gmd", "http://www.isotc211.org/2005/gmd");
+//			namespaces.put("gn",
+//					"urn:x-inspire:specification:gmlas:GeographicalNames:3.0");
+//			namespaces.put("hy-p",
+//					"urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0");
+//			namespaces.put("hy", "urn:x-inspire:specification:gmlas:HydroBase:3.0");
+//			namespaces.put("base",
+//					"urn:x-inspire:specification:gmlas:BaseTypes:3.2");
+//			namespaces.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+//			namespaces.put("topp", "http://www.openplans.org/topp"); 
 
 			// set up GMLHandler with the test configuration
 
