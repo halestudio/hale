@@ -69,6 +69,8 @@ public class GtToDgConvertorTest {
 	/** URL of XSD for tests **/
 	private static final String xsdUrl = "file://" + (new GtToDgConvertorTest()).getClass()
 										  .getResource("./inputdata/Watercourses_BY.xml").getFile();
+	/** Namespace of {@link #xsdUrl} */
+	private static final String XSD_NAMESPACE = "http://www.openplans.org/topp";
 	private static final String xsdUrlDemo = "file://" + (new GtToDgConvertorTest()).getClass()
 	  .getResource("./inputdata/Sample_GN_HU_GeoServer.xsd").getFile();
 	/** generated instance location */
@@ -322,7 +324,7 @@ public class GtToDgConvertorTest {
 				namespaces);
 		// set target gml destination
 		gmlHandler.setTargetGmlUrl(DEMO_GML32_GENERATED_LOCATION);
-		gmlHandler.writeFC(dgFC);
+		gmlHandler.writeFC(dgFC, XSD_NAMESPACE);
 		
 	}
 	/**
@@ -349,7 +351,7 @@ public class GtToDgConvertorTest {
 				namespaces);
 		// set target gml destination
 		gmlHandler.setTargetGmlUrl(DEMO_GML32_Genereted_Italy_INSPIRE);
-		gmlHandler.writeFC(dgFC);
+		gmlHandler.writeFC(dgFC, "Italy");
 		
 	}
 	/**
@@ -376,7 +378,7 @@ public class GtToDgConvertorTest {
 				namespaces);
 		// set target gml destination
 		gmlHandler.setTargetGmlUrl(DEMO_GML32_Genereted_Italy_TC);
-		gmlHandler.writeFC(dgFC);
+		gmlHandler.writeFC(dgFC, "Transboundary");
 		
 	}
 	/**
@@ -403,7 +405,7 @@ public class GtToDgConvertorTest {
 				namespaces);
 		// set target gml destination
 		gmlHandler.setTargetGmlUrl(DEMO_GML32_Genereted_Spain_HUMBOLDT);
-		gmlHandler.writeFC(dgFC);
+		gmlHandler.writeFC(dgFC, "Spain");
 		
 	}
 	
@@ -471,7 +473,7 @@ public class GtToDgConvertorTest {
 				// set target gml destination
 				gmlHandler.setTargetGmlUrl(GML32_GENERATED_LOCATION);
 				try {
-					gmlHandler.writeFC(dgFC);
+					gmlHandler.writeFC(dgFC, XSD_NAMESPACE);
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

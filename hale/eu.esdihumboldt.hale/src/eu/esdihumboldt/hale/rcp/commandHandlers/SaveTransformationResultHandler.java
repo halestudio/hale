@@ -61,6 +61,7 @@ public class SaveTransformationResultHandler extends AbstractHandler {
 		final FeatureCollection<FeatureType, Feature> features = is.getFeatures(DatasetType.transformed);
 		
 		final URL targetSchema = ss.getTargetURL();
+		final String targetNamespace = ss.getTargetNameSpace();
 		
 		// determine file output file
 		FileDialog files = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
@@ -83,7 +84,7 @@ public class SaveTransformationResultHandler extends AbstractHandler {
 					monitor.beginTask("Exporting transformed features to GML file", IProgressMonitor.UNKNOWN);
 					GmlHandler handler = GmlHandler.getDefaultInstance(targetSchema.toString(), file.getAbsolutePath()); //(new URL(outputFilename)).getFile());	
 					try {
-						handler.writeFC(features);
+						handler.writeFC(features, targetNamespace);
 					} catch (Exception e) {
 						log.userError("Error saving transformation result to GML file", e);
 					} finally {

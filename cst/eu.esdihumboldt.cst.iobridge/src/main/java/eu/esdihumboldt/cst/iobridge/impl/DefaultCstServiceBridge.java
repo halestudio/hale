@@ -63,11 +63,22 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 	public String transform(String schemaFilename, String omlFilename,
 			String gmlFilename, String outputFilename, String sourceSchema, ConfigurationType sourceVersion) throws TransformationException  {
 
+		Schema schema = this.loadSchema(schemaFilename);
+		
+		Set<FeatureType> types = new HashSet<FeatureType>();
+		if (schema != null) {
+			for (SchemaElement se : schema.getElements().values()) {
+				if (se.getFeatureType() != null) {
+					types.add(se.getFeatureType());
+				}
+			}
+		}
+		
 		// perform the transformation
 		FeatureCollection<?, ?> result = CstServiceFactory.getInstance()
 				.transform(this.loadGml(gmlFilename, sourceSchema, sourceVersion),
 						this.loadMapping(omlFilename),
-						this.loadSchema(schemaFilename));
+						types);
 
 		// encode the transformed data and store it temporarily, return the
 		// temporary file location
@@ -84,7 +95,7 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 		try {
 			GmlHandler handler = GmlHandler.getDefaultInstance(schemaFilename, (new URL(outputFilename)).getFile());	
 			org.deegree.feature.FeatureCollection fc = GtToDgConvertor.convertGtToDg(result);
-			handler.writeFC(fc);
+			handler.writeFC(fc, schema.getNamespace());
 		} catch (Exception e) {
 			throw new TransformationException(e);
 		} 
@@ -123,18 +134,10 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 
 	}
 
-	private Set<FeatureType> loadSchema(String schemaFilename) {
+	private Schema loadSchema(String schemaFilename) {
 		ApacheSchemaProvider asp = new ApacheSchemaProvider();
-		Set<FeatureType> result = new HashSet<FeatureType>();
 		try {
-			Schema schema = asp.loadSchema(new URI(schemaFilename), null);
-			if (schema != null) {
-				for (SchemaElement se : schema.getElements().values()) {
-					if (se.getFeatureType() != null) {
-						result.add(se.getFeatureType());
-					}
-				}
-			}
+			return asp.loadSchema(new URI(schemaFilename), null);
 		} catch (URISyntaxException e) {
 			throw new RuntimeException("Parsing the schema Filename to a URI "
 					+ "failed.", e);
@@ -142,7 +145,6 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 			throw new RuntimeException("Reading from the provided schema "
 					+ "location failed.", e);
 		}
-		return result;
 	}
 
 	/**

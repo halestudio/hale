@@ -30,13 +30,11 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.log4j.Logger;
 import org.deegree.commons.xml.XMLParsingException;
 import org.deegree.commons.xml.stax.IndentingXMLStreamWriter;
-import org.deegree.commons.xml.stax.SchemaLocationXMLStreamWriter;
 import org.deegree.cs.exceptions.TransformationException;
 import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.feature.FeatureCollection;
 import org.deegree.feature.types.ApplicationSchema;
 import org.deegree.gml.GMLInputFactory;
-import org.deegree.gml.GMLOutputFactory;
 import org.deegree.gml.GMLStreamReader;
 import org.deegree.gml.GMLVersion;
 import org.deegree.gml.feature.schema.ApplicationSchemaXSDDecoder;
@@ -205,13 +203,14 @@ public class GmlHandler {
 	 * 
 	 * @param fc
 	 *            - FeatureCollection to be encoded.
+	 * @param defaultNamespace the default namespace 
 	 * @throws XMLStreamException
 	 * @throws FileNotFoundException
 	 * @throws TransformationException
 	 * @throws UnknownCRSException
 	 * 
 	 */
-	public void writeFC(FeatureCollection fc) throws FileNotFoundException,
+	public void writeFC(FeatureCollection fc, String defaultNamespace) throws FileNotFoundException,
 			XMLStreamException, UnknownCRSException, TransformationException {
 		LOG.info("Exporting the gml-instance to the location "
 				+ this.targetGmlUrl);
@@ -230,7 +229,7 @@ public class GmlHandler {
 
 		// set namespaces, this should be done explicitly
 		// TODO define a nicer way to set the default namespace
-		writer.setDefaultNamespace("http://www.opengis.net/gml/3.2");
+		writer.setDefaultNamespace(defaultNamespace);
 
 		// read the namespaces from the map containing namespaces
 		Set<String> nsPrefixes = this.namespaces.keySet();
@@ -343,16 +342,17 @@ public class GmlHandler {
 	/**
 	 * Write Geotools features to the GML file
 	 * 
-	 * @param features
+	 * @param features the features to write
+	 * @param defaultNamespace the default namespace
 	 * @throws TransformationException 
 	 * @throws UnknownCRSException 
 	 * @throws XMLStreamException 
 	 * @throws FileNotFoundException 
 	 */
 	public void writeFC(
-			org.geotools.feature.FeatureCollection<FeatureType, Feature> features) throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
+			org.geotools.feature.FeatureCollection<FeatureType, Feature> features, String defaultNamespace) throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
 		FeatureCollection fc = GtToDgConvertor.convertGtToDg(features);
-		writeFC(fc);
+		writeFC(fc, defaultNamespace);
 	}
 
 }

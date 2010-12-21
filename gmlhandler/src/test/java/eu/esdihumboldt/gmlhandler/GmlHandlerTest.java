@@ -265,7 +265,7 @@ public class GmlHandlerTest {
 		String urlPath = "file://"
 				+ this.getClass().getResource("./va_target_v3.gml").getFile();
 		gmlHandler.setGmlUrl(urlPath);
-		gmlHandler.writeFC(gmlHandler.readFC());
+		gmlHandler.writeFC(gmlHandler.readFC(), "urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0");
 	}
 	
 }
