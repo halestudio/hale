@@ -18,7 +18,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -30,8 +29,8 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.log4j.Logger;
 import org.deegree.commons.xml.XMLParsingException;
-import org.deegree.commons.xml.stax.FormattingXMLStreamWriter;
-import org.deegree.commons.xml.stax.XMLStreamWriterWrapper;
+import org.deegree.commons.xml.stax.IndentingXMLStreamWriter;
+import org.deegree.commons.xml.stax.SchemaLocationXMLStreamWriter;
 import org.deegree.cs.exceptions.TransformationException;
 import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.feature.FeatureCollection;
@@ -226,7 +225,7 @@ public class GmlHandler {
 		// create XML File Stream Writer
 		XMLStreamWriter xmlStreamWriter = outputFactory.createXMLStreamWriter(
 				new FileOutputStream(new File(this.targetGmlUrl)), "UTF-8");
-		XMLStreamWriterWrapper writer = new XMLStreamWriterWrapper(
+		SchemaLocationXMLStreamWriter writer = new SchemaLocationXMLStreamWriter(
 				xmlStreamWriter, this.schemaUrl);
 
 		// set namespaces, this should be done explicitly
@@ -244,7 +243,7 @@ public class GmlHandler {
 
 		// create exporter to export files
 		GMLStreamWriter exporter = GMLOutputFactory.createGMLStreamWriter(
-				GMLVersion.GML_32, new FormattingXMLStreamWriter(writer));
+				GMLVersion.GML_32, new IndentingXMLStreamWriter(writer));
 		exporter.write(fc);
 		writer.flush();
 		writer.close();

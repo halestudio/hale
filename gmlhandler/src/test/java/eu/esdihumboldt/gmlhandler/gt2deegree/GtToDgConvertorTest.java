@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.gmlhandler.gt2deegree;
 
+import static org.deegree.gml.GMLVersion.GML_32;
 import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
@@ -30,6 +31,7 @@ import org.deegree.cs.CRS;
 import org.deegree.cs.exceptions.TransformationException;
 import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.feature.FeatureCollection;
+import org.deegree.feature.xpath.FeatureXPathEvaluator;
 import org.deegree.filter.FilterEvaluationException;
 import org.deegree.filter.IdFilter;
 import org.deegree.geometry.standard.multi.DefaultMultiLineString;
@@ -85,6 +87,8 @@ public class GtToDgConvertorTest {
 	private static org.geotools.feature.FeatureCollection GeoToolsItaly_INSPIRE;
 	private static org.geotools.feature.FeatureCollection GeoToolsItaly_TC;
 	private static org.geotools.feature.FeatureCollection GeoToolsSpain_HUMBOLDT;
+	
+	private static final FeatureXPathEvaluator evaluator = new FeatureXPathEvaluator( GML_32 );
 	
 
 	@BeforeClass
@@ -421,8 +425,8 @@ public class GtToDgConvertorTest {
 		org.deegree.feature.Feature dgFeature;
 		try {
 			 //check we have only one feature instance with id = "Watercourses_BY.3"
-			 assertEquals(1, dgFC.getMembers(new IdFilter("Watercourses_BY.3")).size());
-			 dgFeature = (org.deegree.feature.Feature)dgFC.getMembers(new IdFilter("Watercourses_BY.3")).iterator().next();
+			 assertEquals(1, dgFC.getMembers(new IdFilter("Watercourses_BY.3"), evaluator).size());
+			 dgFeature = (org.deegree.feature.Feature)dgFC.getMembers(new IdFilter("Watercourses_BY.3"), evaluator).iterator().next();
 			 assertEquals(18, dgFeature.getProperties().length);
 			 //check geometry property
 			 org.deegree.feature.property.Property [] geomProperty = dgFeature.getGeometryProperties();

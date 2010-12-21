@@ -42,7 +42,6 @@ import org.opengis.feature.ComplexAttribute;
 import org.opengis.feature.Feature;
 import org.opengis.feature.GeometryAttribute;
 import org.opengis.feature.Property;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.ComplexType;
 import org.opengis.feature.type.FeatureType;
@@ -365,7 +364,7 @@ public class GtToDgConvertor {
 			dgGeometry = new DefaultPolygon(id, dgCRS, pm, exteriorRing,
 					interiorRings);
 			dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry) dgGeometry)
-					.createFromJTS(gtPoligon);
+					.createFromJTS(gtPoligon, dgCRS);
 			break;
 		case MULTIPOLYGON:
 			MultiPolygon gtMultiPolygon = (MultiPolygon) gtProp.getValue();
@@ -380,7 +379,7 @@ public class GtToDgConvertor {
 			}
 			dgGeometry = new DefaultMultiPolygon(id, dgCRS, pm, dgPolygons);
 			dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry) dgGeometry)
-					.createFromJTS(gtMultiPolygon);
+					.createFromJTS(gtMultiPolygon, dgCRS);
 			break;
 
 		case LINESTRING:
@@ -390,7 +389,7 @@ public class GtToDgConvertor {
 			dgGeometry = new org.deegree.geometry.standard.primitive.DefaultLineString(
 					id, dgCRS, pm, dgLineStringPoints);
 			dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry) dgGeometry)
-					.createFromJTS(gtLineString);
+					.createFromJTS(gtLineString, dgCRS);
 			break;
 		case MULTILINESTRING:
 			MultiLineString gtMultiLineString = (MultiLineString) gtProp.getValue();
@@ -406,7 +405,7 @@ public class GtToDgConvertor {
 			dgGeometry = new org.deegree.geometry.standard.multi.DefaultMultiLineString(
 					id, dgCRS, pm, dgLineStrings);
 			dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry) dgGeometry)
-					.createFromJTS(gtMultiLineString);
+					.createFromJTS(gtMultiLineString, dgCRS);
 			break;
 
 		case POINT:
@@ -416,7 +415,7 @@ public class GtToDgConvertor {
 			dgGeometry = new org.deegree.geometry.standard.primitive.DefaultPoint(
 					id, dgCRS, pm, dgCoordinates);
 			dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry) dgGeometry)
-					.createFromJTS(gtPoint);
+					.createFromJTS(gtPoint, dgCRS);
 			break;
 		case MULTIPOINT:
 			MultiPoint gtMultiPoint = (MultiPoint) gtProp.getValue();
@@ -432,7 +431,7 @@ public class GtToDgConvertor {
 			dgGeometry = new org.deegree.geometry.standard.multi.DefaultMultiPoint(
 					id, dgCRS, pm, dgPoints);
 			dgGeometry = ((org.deegree.geometry.standard.AbstractDefaultGeometry) dgGeometry)
-					.createFromJTS(gtMultiPoint);
+					.createFromJTS(gtMultiPoint, dgCRS);
 			
 
 			break;
@@ -527,27 +526,28 @@ public class GtToDgConvertor {
 		int minOccurs = gtPD.getMinOccurs();
 		int maxOccurs = gtPD.getMaxOccurs();
 		boolean isAbstract = gtPT.isAbstract();
+		boolean isNillable = gtPD.isNillable();
 		if (gtPT instanceof org.opengis.feature.type.GeometryType) {
 			org.deegree.feature.types.property.GeometryPropertyType.GeometryType dgGeomType = createGeometryType((GeometryDescriptor) gtPD);
 			org.deegree.feature.types.property.GeometryPropertyType.CoordinateDimension dgCoordDim = createCoordDim((GeometryDescriptor) gtPD);
 			dgPT = new org.deegree.feature.types.property.GeometryPropertyType(
-					dgName, minOccurs, maxOccurs, dgGeomType, dgCoordDim,
-					isAbstract, substitutions, ValueRepresentation.BOTH);
+					dgName, minOccurs, maxOccurs, isAbstract, isNillable, 
+					substitutions, dgGeomType, dgCoordDim, ValueRepresentation.BOTH);
 		} else if (gtPT instanceof org.opengis.feature.type.AttributeType
 				&& !(gtPT instanceof org.opengis.feature.type.ComplexType)) {
 			// TODO find a nicer way to define this binding
 			PrimitiveType propPrimType = PrimitiveType
 					.determinePrimitiveType(gtPT.getBinding().getName());
 			dgPT = new org.deegree.feature.types.property.SimplePropertyType(
-					dgName, minOccurs, maxOccurs, propPrimType, isAbstract,
-					substitutions);
+					dgName, minOccurs, maxOccurs, propPrimType, isAbstract, 
+					isNillable, substitutions);
 		}else if (gtPT instanceof org.opengis.feature.type.AttributeType
 				&& gtPT instanceof org.opengis.feature.type.FeatureType){
 			
 			//dgPT = new org.deegree.feature.types.property.CustomPropertyType(dgName, maxOccurs, maxOccurs, null, isAbstract, substitutions); 
 			dgPT = new org.deegree.feature.types.property.FeaturePropertyType(
-					dgName, minOccurs, maxOccurs, dgFTName, isAbstract,
-					substitutions, ValueRepresentation.BOTH);
+					dgName, minOccurs, maxOccurs, isAbstract, isNillable,
+					substitutions, dgFTName, ValueRepresentation.BOTH);
 			
 	}else {
 			if (hasXMLAttrs) {
@@ -572,8 +572,8 @@ public class GtToDgConvertor {
 			} else {
 				// create Feature Property Type
 				dgPT = new org.deegree.feature.types.property.FeaturePropertyType(
-						dgName, minOccurs, maxOccurs, dgFTName, isAbstract,
-						substitutions, ValueRepresentation.BOTH);
+						dgName, minOccurs, maxOccurs, isAbstract, isNillable,
+						substitutions, dgFTName, ValueRepresentation.BOTH);
 			}
 		}
 
