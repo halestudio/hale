@@ -4,7 +4,7 @@
 	<groupId>eu.esdihumboldt</groupId>
 	<artifactId>cst</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.5</version>
+	<version>1.0.6-SNAPSHOT</version>
 	<name>cst</name>
 	<description>The Conceptual Schema Transformer (CST) is a library that is able to apply a schema transformation to a geodata set (expressed in a specific source Application Schema (A)) in order to provide a geodata set (expressed in a specific target Application Schema B). A schema mapping between schema A and schema B has to be defined beforehand in order to accomplish the transformation.</description>
 	<url>http://community.esdi-humboldt.eu/projects/show/cst</url>
@@ -116,6 +116,56 @@
 			<groupId>com.iabcinc</groupId>
 			<artifactId>JMEP</artifactId>
 			<version>0.1.0</version>
+		</dependency>
+		
+		<!-- logging -->
+		<!-- ALogger extended SLF4J api -->
+		<dependency>
+			<groupId>de.cs3d</groupId>
+			<artifactId>util.logging</artifactId>
+			<version>2.2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>de.cs3d</groupId>
+			<artifactId>util.logging.logback.appender</artifactId>
+			<version>2.2.4</version>
+		</dependency>
+		<!-- slf4j -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.5.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<version>1.5.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>1.5.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+			<version>1.5.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-ext</artifactId>
+			<version>1.5.11</version>
+		</dependency>
+		<!-- logback -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>0.9.19</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>0.9.19</version>
 		</dependency>
 
 	</dependencies>
