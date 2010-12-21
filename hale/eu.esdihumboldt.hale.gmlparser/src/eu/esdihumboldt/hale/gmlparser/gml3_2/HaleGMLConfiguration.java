@@ -83,11 +83,14 @@ public class HaleGMLConfiguration extends org.geotools.gml3.v3_2.GMLConfiguratio
 		
 		bindings.put(GML.ReferenceType, HaleReferenceTypeBinding.class);
 		
+//obsolete		bindings.put(GML.PolygonType, HalePolygonTypeBinding.class);
+		
+		bindings.put(GML.AbstractGeometryType, HaleAbstractGeometryTypeBinding.class);
+		
 		HaleCurvePropertyTypeBinding curvePropertyTypeBinding = new HaleCurvePropertyTypeBinding();
 		bindings.put(curvePropertyTypeBinding.getTarget(), curvePropertyTypeBinding);
 		
-		HaleAbstractRingPropertyTypeBinding ringTypeBinding = new HaleAbstractRingPropertyTypeBinding();
-		bindings.put(ringTypeBinding.getTarget(), ringTypeBinding);
+		bindings.put(new QName("http://www.opengis.net/gml/3.2","AbstractRingPropertyType"), HaleAbstractRingPropertyTypeBinding.class);
 	}
 
 }
