@@ -65,6 +65,7 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 	 * @return
 	 * @throws TransformationException
 	 */
+	@SuppressWarnings("unchecked")
 	public String transform(String schemaFilename, String omlFilename,
 			String gmlFilename, String outputFilename, String sourceSchema, ConfigurationType sourceVersion) throws TransformationException  {
 
@@ -82,7 +83,8 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 		}
 		
 		// perform the transformation
-		FeatureCollection<?, ?> result = CstServiceFactory.getInstance()
+		FeatureCollection<FeatureType, Feature> result = 
+			(FeatureCollection<FeatureType, Feature>) CstServiceFactory.getInstance()
 				.transform(this.loadGml(gmlFilename, sourceSchema, sourceVersion),
 						this.loadMapping(omlFilename),
 						types);
@@ -103,7 +105,7 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 			GmlHandler handler = GmlHandler.getDefaultInstance(schemaFilename, (new URL(outputFilename)).getFile());
 			GtToDgConvertor converter = new GtToDgConvertor(typeIndex);
 			org.deegree.feature.FeatureCollection fc = converter.convertGtToDg(result);
-			handler.writeFC(fc, schema.getNamespace());
+			handler.writeFC(fc, schema.getNamespace(), schema.getPrefixes());
 		} catch (Exception e) {
 			throw new TransformationException(e);
 		} 

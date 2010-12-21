@@ -50,6 +50,7 @@ import org.apache.ws.commons.schema.XmlSchemaSimpleContentExtension;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
 import org.apache.ws.commons.schema.resolver.URIResolver;
+import org.apache.ws.commons.schema.utils.NamespacePrefixList;
 import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.FeatureType;
@@ -447,6 +448,11 @@ public class ApacheSchemaProvider
 		}
 		
 		schema.setSourceURI(location.toString());
+		NamespacePrefixList namespaces = schema.getNamespaceContext();
+		Map<String, String> prefixes = new HashMap<String, String>();
+		for (String prefix : namespaces.getDeclaredPrefixes()) {
+			prefixes.put(namespaces.getNamespaceURI(prefix), prefix);
+		}
 		
 		HashMap<String, SchemaResult> imports = new HashMap<String, SchemaResult>();
 		imports.put(location.toString(), null);
@@ -466,7 +472,7 @@ public class ApacheSchemaProvider
 			}
 		}
 
-		return new Schema(elements, namespace, locationURL);
+		return new Schema(elements, namespace, locationURL, prefixes);
 	}
 
 	/**

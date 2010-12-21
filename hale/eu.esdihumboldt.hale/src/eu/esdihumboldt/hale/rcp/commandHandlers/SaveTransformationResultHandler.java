@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.rcp.commandHandlers;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.Map;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -62,6 +63,7 @@ public class SaveTransformationResultHandler extends AbstractHandler {
 		
 		final URL targetSchema = ss.getTargetURL();
 		final String targetNamespace = ss.getTargetNameSpace();
+		final Map<String, String> prefixes = ss.getTargetPrefixes();
 		
 		// determine file output file
 		FileDialog files = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
@@ -89,7 +91,7 @@ public class SaveTransformationResultHandler extends AbstractHandler {
 					monitor.beginTask("Exporting transformed features to GML file", IProgressMonitor.UNKNOWN);
 					GmlHandler handler = GmlHandler.getDefaultInstance(targetSchema.toString(), file.getAbsolutePath()); //(new URL(outputFilename)).getFile());	
 					try {
-						handler.writeFC(features, types, targetNamespace);
+						handler.writeFC(features, types, targetNamespace, prefixes);
 					} catch (Exception e) {
 						log.userError("Error saving transformation result to GML file", e);
 					} finally {

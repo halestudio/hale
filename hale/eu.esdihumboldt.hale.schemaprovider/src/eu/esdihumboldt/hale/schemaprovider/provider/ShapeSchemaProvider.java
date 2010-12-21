@@ -116,7 +116,7 @@ public class ShapeSchemaProvider
 		}
 
 		String namespace = "http://www.opengis.net/gml";
-		return new Schema(elements, namespace, location.toURL());
+		return new Schema(elements, namespace, location.toURL(), null);
 	}
 	
 	/**

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import org.opengis.feature.type.FeatureType;
@@ -62,6 +63,20 @@ public interface SchemaService
 	 * @return the target schema format
 	 */
 	public String getTargetSchemaFormat();
+	
+	/**
+	 * Get the namespace prefixes of the source schema
+	 * 
+	 * @return namespaces mapped to prefixes or <code>null</code>
+	 */
+	public Map<String, String> getSourcePrefixes();
+	
+	/**
+	 * Get the namespace prefixes of the target schema
+	 * 
+	 * @return namespaces mapped to prefixes or <code>null</code>
+	 */
+	public Map<String, String> getTargetPrefixes();
 	
 	/**
 	 * Loads the schema defined under the given URL as the target or source 

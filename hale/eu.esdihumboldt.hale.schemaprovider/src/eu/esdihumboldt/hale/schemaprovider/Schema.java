@@ -30,12 +30,17 @@ public class Schema {
 	 * Empty schema instance
 	 */
 	public static final Schema EMPTY_SCHEMA =
-		new Schema(new HashMap<String, SchemaElement>(), "", null);
+		new Schema(new HashMap<String, SchemaElement>(), "", null, null);
 	
 	/**
 	 * The feature types
 	 */
 	private final Map<String, SchemaElement> elements;
+	
+	/**
+	 * Maps namespaces to prefixes
+	 */
+	private final Map<String, String> prefixes;
 	
 	/**
 	 * The namespace
@@ -53,13 +58,15 @@ public class Schema {
 	 * @param elements the type definitions
 	 * @param namespace the namespace
 	 * @param location the location
+	 * @param prefixes maps namespaces to prefixes, may be <code>null</code>
 	 */
 	public Schema(Map<String, SchemaElement> elements, String namespace,
-			URL location) {
+			URL location, Map<String, String> prefixes) {
 		super();
 		this.elements = elements;
 		this.namespace = namespace;
 		this.location = location;
+		this.prefixes = prefixes;
 	}
 
 	/**
@@ -81,6 +88,13 @@ public class Schema {
 	 */
 	public URL getLocation() {
 		return location;
+	}
+
+	/**
+	 * @return namespaces mapped to prefixes, may be <code>null</code>
+	 */
+	public Map<String, String> getPrefixes() {
+		return prefixes;
 	}
 
 }

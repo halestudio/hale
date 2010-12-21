@@ -18,9 +18,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLOutputFactory;
@@ -77,9 +76,6 @@ public class GmlHandler {
 	/** schema location */
 	private String schemaUrl;
 
-	/** map storing user defined namespaces */
-	private Map<String, String> namespaces;
-
 	/** data location */
 	private String gmlUrl;
 
@@ -92,39 +88,18 @@ public class GmlHandler {
 	 * @param gmlVersion
 	 *            gml format to be processed,
 	 * @param schemaUrl
-	 *            schema location,
-	 * @param namespaces
-	 *            map storing predefined namespaces.
+	 *            schema location
 	 */
-	public GmlHandler(GMLVersions gmlVersion, String schemaUrl,
-			Map<String, String> namespaces) {
+	public GmlHandler(GMLVersions gmlVersion, String schemaUrl) {
 		this.gmlVersion = getGMLVersion(gmlVersion);
 		this.schemaUrl = schemaUrl;
-		this.namespaces = namespaces;
 	}
 	
 	public static GmlHandler getDefaultInstance(String xsdUrl, String gmlUrl){
-			// pre-define namespaces
-			HashMap<String, String> namespaces = new HashMap<String, String>();
-//			namespaces.put("gco", "http://www.isotc211.org/2005/gco");
-//			namespaces.put("gmd", "http://www.isotc211.org/2005/gmd");
-//			namespaces.put("gn",
-//					"urn:x-inspire:specification:gmlas:GeographicalNames:3.0");
-//			namespaces.put("hy-p",
-//					"urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0");
-//			namespaces.put("hy", "urn:x-inspire:specification:gmlas:HydroBase:3.0");
-//			namespaces.put("base",
-//					"urn:x-inspire:specification:gmlas:BaseTypes:3.2");
-//			namespaces.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-//			namespaces.put("topp", "http://www.openplans.org/topp"); 
-
 			// set up GMLHandler with the test configuration
-
-			GmlHandler handler =  new GmlHandler(GMLVersions.gml3_2_1, xsdUrl,
-					namespaces);
+			GmlHandler handler =  new GmlHandler(GMLVersions.gml3_2_1, xsdUrl);
 			handler.setTargetGmlUrl(gmlUrl);
 			return handler;
-			
 	}
 
 	/**
@@ -147,7 +122,7 @@ public class GmlHandler {
 
 		// Create the schema-decoder
 		ApplicationSchemaXSDDecoder decoder = new ApplicationSchemaXSDDecoder(
-				this.gmlVersion, this.namespaces, schemaURL);
+				this.gmlVersion, null, schemaURL);
 
 		// Read in the schema and return the ApplicationSchema
 		ApplicationSchema gmlSchema = decoder.extractFeatureTypeSchema();
@@ -205,13 +180,15 @@ public class GmlHandler {
 	 * @param fc
 	 *            - FeatureCollection to be encoded.
 	 * @param defaultNamespace the default namespace 
+	 * @param prefixes namespaces mapped to prefixes, may be <code>null</code>
 	 * @throws XMLStreamException
 	 * @throws FileNotFoundException
 	 * @throws TransformationException
 	 * @throws UnknownCRSException
 	 * 
 	 */
-	public void writeFC(FeatureCollection fc, String defaultNamespace) throws FileNotFoundException,
+	public void writeFC(FeatureCollection fc, String defaultNamespace, 
+			Map<String, String> prefixes) throws FileNotFoundException,
 			XMLStreamException, UnknownCRSException, TransformationException {
 		LOG.info("Exporting the gml-instance to the location "
 				+ this.targetGmlUrl);
@@ -233,12 +210,10 @@ public class GmlHandler {
 		writer.setDefaultNamespace(defaultNamespace);
 
 		// read the namespaces from the map containing namespaces
-		Set<String> nsPrefixes = this.namespaces.keySet();
-		String nsValue = "";
-		for (String nsPrefix : nsPrefixes) {
-			nsValue = this.namespaces.get(nsPrefix);
-			writer.setPrefix(nsPrefix, nsValue);
-
+		if (prefixes != null) {
+			for (Entry<String, String> entry : prefixes.entrySet()) {
+				writer.setPrefix(entry.getValue(), entry.getKey());
+			}
 		}
 
 		// create exporter to export files
@@ -296,21 +271,6 @@ public class GmlHandler {
 	}
 
 	/**
-	 * @return the namespaces
-	 */
-	public Map<String, String> getNamespaces() {
-		return namespaces;
-	}
-
-	/**
-	 * @param namespaces
-	 *            the namespaces to set
-	 */
-	public void setNamespaces(Map<String, String> namespaces) {
-		this.namespaces = namespaces;
-	}
-
-	/**
 	 * @return the gmlUrl
 	 */
 	public String getGmlUrl() {
@@ -344,7 +304,9 @@ public class GmlHandler {
 	 * Write Geotools features to the GML file
 	 * 
 	 * @param features the features to write
+	 * @param types the type definitions
 	 * @param defaultNamespace the default namespace
+	 * @param prefixes namespaces mapped to prefixes, may be <code>null</code>
 	 * @throws TransformationException 
 	 * @throws UnknownCRSException 
 	 * @throws XMLStreamException 
@@ -352,10 +314,10 @@ public class GmlHandler {
 	 */
 	public void writeFC(
 			org.geotools.feature.FeatureCollection<FeatureType, Feature> features, 
-			TypeIndex types, String defaultNamespace) throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
+			TypeIndex types, String defaultNamespace, Map<String, String> prefixes) throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
 		GtToDgConvertor converter = new GtToDgConvertor(types);
 		FeatureCollection fc = converter.convertGtToDg(features);
-		writeFC(fc, defaultNamespace);
+		writeFC(fc, defaultNamespace, prefixes);
 	}
 
 }

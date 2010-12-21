@@ -19,6 +19,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import de.cs3d.util.logging.ALogger;
@@ -179,6 +180,22 @@ public class SchemaProviderService
 		else {
 			return loc.substring(index + 1);
 		}
+	}
+
+	/**
+	 * @see SchemaService#getSourcePrefixes()
+	 */
+	@Override
+	public Map<String, String> getSourcePrefixes() {
+		return sourceSchema.getPrefixes();
+	}
+
+	/**
+	 * @see SchemaService#getTargetPrefixes()
+	 */
+	@Override
+	public Map<String, String> getTargetPrefixes() {
+		return targetSchema.getPrefixes();
 	}
 
 	/**
