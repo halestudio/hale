@@ -134,7 +134,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 			if (this.name.getNamespaceURI().startsWith("http://www.opengis.net/gml/") && this.name.getLocalPart().equals("ReferenceType")) {
 				Name hrefName = new NameImpl("http://www.w3.org/2001/XMLSchema", "anyURI");
 				TypeDefinition hrefType = new TypeDefinition(hrefName, XSSchema.ANYURI_TYPE, null);
-				AttributeDefinition hrefAttribute = new CustomDefaultAttribute("href", hrefName , hrefType);
+				AttributeDefinition hrefAttribute = new CustomDefaultAttribute("href", hrefName , hrefType, "http://www.w3.org/1999/xlink");
 				addDeclaredAttribute(hrefAttribute);
 				Collection<String> values = new ArrayList<String>();
 				values.add("none");
@@ -147,7 +147,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 				Name typeName = new NameImpl("http://www.w3.org/2001/XMLSchema", "string");
 				TypeDefinition typeType = new TypeDefinition(typeName, new EnumAttributeTypeImpl(XSSchema.STRING_TYPE, values , false, null), null);
 				AttributeDefinition typeAttribute = new CustomDefaultAttribute("type", 
-						typeName, typeType);
+						typeName, typeType, "http://www.w3.org/1999/xlink");
 				addDeclaredAttribute(typeAttribute);
 			}
 		}

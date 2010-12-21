@@ -49,6 +49,11 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	 *   or a sub type
 	 */
 	private TypeDefinition parentType;
+	
+	/**
+	 * The attribute namespace
+	 */
+	private String namespace;
 
 	private final boolean isElement;
 	
@@ -80,6 +85,7 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 		setDescription(other.getDescription());
 		setDeclaringType(other.getDeclaringType());
 		setLocation(other.getLocation());
+		setNamespace(other.getNamespace());
 	}
 	
 	/**
@@ -171,6 +177,20 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	 */
 	public void setAttributeType(TypeDefinition attributeType) {
 		this.attributeType = attributeType;
+	}
+
+	/**
+	 * @return the namespace
+	 */
+	public String getNamespace() {
+		return namespace;
+	}
+
+	/**
+	 * @param namespace the namespace to set
+	 */
+	public void setNamespace(String namespace) {
+		this.namespace = namespace;
 	}
 
 	/**

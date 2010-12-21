@@ -38,7 +38,7 @@ public class DefaultAttribute extends AbstractDefaultAttribute {
 	 */
 	public DefaultAttribute(TypeDefinition declaringType, Name typeName,
 			XmlSchemaAttribute attribute, TypeDefinition attributeType) {
-		super(attribute.getName(), typeName, null);
+		super(attribute.getName(), typeName, null, getNamespace(attribute));
 		
 		String description = AbstractElementAttribute.getDescription(attribute);
 		if (description != null) {
@@ -51,6 +51,18 @@ public class DefaultAttribute extends AbstractDefaultAttribute {
 		}
 	}
 	
+	private static String getNamespace(XmlSchemaAttribute attribute) {
+		if (attribute.getQName() != null) {
+			return attribute.getQName().getNamespaceURI();
+		}
+		else if (attribute.getRefName() != null) {
+			return attribute.getRefName().getNamespaceURI();
+		}
+		else {
+			return null;
+		}
+	}
+
 	/**
 	 * Copy constructor
 	 * 

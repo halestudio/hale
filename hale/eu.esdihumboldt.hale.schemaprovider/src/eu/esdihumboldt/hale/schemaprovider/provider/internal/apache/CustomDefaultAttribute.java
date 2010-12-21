@@ -39,8 +39,8 @@ public class CustomDefaultAttribute extends AbstractDefaultAttribute {
 	 * @see AbstractDefaultAttribute#AbstractDefaultAttribute(String, Name, TypeDefinition)
 	 */
 	public CustomDefaultAttribute(String name, Name typeName,
-			TypeDefinition attributeType) {
-		super(name, typeName, attributeType);
+			TypeDefinition attributeType, String namespace) {
+		super(name, typeName, attributeType, namespace);
 	}
 
 	/**

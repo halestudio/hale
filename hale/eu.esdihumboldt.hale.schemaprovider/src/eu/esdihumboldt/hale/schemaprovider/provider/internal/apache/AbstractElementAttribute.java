@@ -67,6 +67,7 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 		nillable = element.isNillable(); //XXX correct?
 		minOccurs = element.getMinOccurs(); //XXX correct?
 		maxOccurs = element.getMaxOccurs(); //XXX correct?
+		setNamespace(getNamespace(element));
 		
 		String description = getDescription(element);
 		if (description != null) {
@@ -79,6 +80,17 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 		}
 	}
 	
+	private String getNamespace(XmlSchemaElement element) {
+		if (element.getQName() != null) {
+			return element.getQName().getNamespaceURI();
+		} else if (element.getRefName() != null) {
+			return element.getRefName().getNamespaceURI();
+		}
+		else {
+			return null;
+		}
+	}
+
 	/**
 	 * Copy constructor
 	 * 
@@ -181,6 +193,7 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 	/**
 	 * @see AttributeDefinition#createAttributeDescriptor(Set)
 	 */
+	@Override
 	public AttributeDescriptor createAttributeDescriptor(Set<TypeDefinition> resolving) {
 		TypeDefinition attType = getAttributeType();
 		if (attType != null) {
@@ -195,7 +208,7 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 					//Name parentName = getDeclaringType().getName();
 					return new AttributeDescriptorImpl(
 							type,
-							new NameImpl(null, /*parentName.getNamespaceURI() + "/" + parentName.getLocalPart(), */getName()),
+							new NameImpl(null, getName()), // must be null namespace because otherwise the StreamingRenderer and some other Geotools components choke on it
 							(int) minOccurs,
 							(int) maxOccurs,
 							true, // always nillable, else creating the features fails

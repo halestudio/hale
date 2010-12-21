@@ -36,10 +36,13 @@ public abstract class AbstractDefaultAttribute extends AttributeDefinition {
 	 * @param name the attribute name 
 	 * @param typeName the attribute type name
 	 * @param attributeType the attribute type, may be <code>null</code>
+	 * @param namespace the attribute namespace
 	 */
 	public AbstractDefaultAttribute(String name, Name typeName,
-			TypeDefinition attributeType) {
+			TypeDefinition attributeType, String namespace) {
 		super(name, typeName, attributeType, false);
+		
+		setNamespace(namespace);
 	}
 
 	/**
