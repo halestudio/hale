@@ -12,20 +12,32 @@
 
 package eu.esdihumboldt.hale.rcp.commandHandlers;
 
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+
 import eu.esdihumboldt.gmlhandler.GmlHandler;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
+import eu.esdihumboldt.hale.rcp.wizards.io.OpenAlignmentProjectWizard;
 
 /**
  * 
@@ -35,6 +47,8 @@ import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
  * @version $Id$ 
  */
 public class SaveTransformationResultHandler extends AbstractHandler {
+	
+	private static final ALogger log = ALoggerFactory.getLogger(SaveTransformationResultHandler.class);
 
 	/**
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
@@ -44,16 +58,42 @@ public class SaveTransformationResultHandler extends AbstractHandler {
 		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
-		FeatureCollection<FeatureType, Feature> features = is.getFeatures(DatasetType.transformed);
+		final FeatureCollection<FeatureType, Feature> features = is.getFeatures(DatasetType.transformed);
 		
-		URL targetSchema = ss.getTargetURL();
+		final URL targetSchema = ss.getTargetURL();
 		
-		GmlHandler handler = GmlHandler.getDefaultInstance(targetSchema.toString(), "c:\\Temp\\_out.gml"); //(new URL(outputFilename)).getFile());	
+		// determine file output file
+		FileDialog files = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
+		
+		String[] extensions = new String[2]; 
+		extensions[0]= "*.gml"; //$NON-NLS-1$
+		extensions[1]= "*.xml"; //$NON-NLS-1$
+		files.setFilterExtensions(extensions);
+		
+		String filename = files.open();
+		final File file = new File(filename);
+		
+		Display display = PlatformUI.getWorkbench().getDisplay();
 		try {
-			handler.writeFC(features);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			IRunnableWithProgress op = new IRunnableWithProgress() {
+				
+				@Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException,
+						InterruptedException {
+					monitor.beginTask("Exporting transformed features to GML file", IProgressMonitor.UNKNOWN);
+					GmlHandler handler = GmlHandler.getDefaultInstance(targetSchema.toString(), file.getAbsolutePath()); //(new URL(outputFilename)).getFile());	
+					try {
+						handler.writeFC(features);
+					} catch (Exception e) {
+						log.userError("Error saving transformation result to GML file", e);
+					} finally {
+						monitor.done();
+					}
+				}
+			};
+		    new ProgressMonitorDialog(display.getActiveShell()).run(true, false, op);
+		} catch (Exception e1) {
+			log.userError("Error saving transformation result to GML file", e1);
 		}
 	
 		return null;
