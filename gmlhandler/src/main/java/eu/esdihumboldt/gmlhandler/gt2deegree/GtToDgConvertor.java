@@ -210,7 +210,7 @@ public class GtToDgConvertor {
 			
 			org.deegree.feature.Feature featureProp = createDgFeature(gtProp, attribute, ft);
 	    	dgProp = new org.deegree.feature.property.GenericProperty(dgPT,
-					dgPropName, new InternalFeature(featureProp));
+					dgPropName, (featureProp == null)?(null):(new InternalFeature(featureProp)));
 			//dgProp = createDgFeatureProperty((Attribute)gtProp, ft);
 			/*
 			 * //TODO find a nicer way to create fid String fid =
@@ -256,15 +256,16 @@ public class GtToDgConvertor {
 ////	}
 
 	/**
-	 * 
 	 * Generates a feature in case the geotools attribute contains a collection
 	 * of properties
 	 * 
+	 * @param property 
 	 * @param complexAttribute
 	 * @param attribute 
 	 * @param ft
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	protected static org.deegree.feature.Feature createDgFeature(
 			Property property, AttributeDefinition attribute, 
 			GenericFeatureType ft) {
@@ -273,10 +274,15 @@ public class GtToDgConvertor {
 		String fid = java.util.UUID.randomUUID().toString();
 		
 		// 3. List<Property>
-		Collection<Property> propertyCollection = ((Collection<Property>) property.getValue());
-		
+		Object value = property.getValue();
 		List<org.deegree.feature.property.Property> dgProps = new ArrayList<org.deegree.feature.property.Property>();
-		if (propertyCollection != null) {
+		
+		if (value == null) {
+			return null;
+		}
+		else if (value instanceof Collection<?>) {
+			Collection<Property> propertyCollection = ((Collection<Property>) value);
+			
 			if (propertyCollection.size() > 1) throw new UnsupportedOperationException("Multiple feature in property not really supported");
 			
 			for (Property feature : propertyCollection) {
@@ -293,6 +299,17 @@ public class GtToDgConvertor {
 					}
 				}
 			}
+		}
+		else if (value instanceof com.vividsolutions.jts.geom.Geometry) {
+			// special handling for geometries
+			// geometry must be forwarded downward for property types
+//			for (AttributeDefinition childAttribute : attribute.getAttributeType().getAttributes()) {
+//				if (com.vividsolutions.jts.geom.Geometry.class.isAssignableFrom(childAttribute.getAttributeType().getType(null).getBinding())) {
+//					org.deegree.feature.property.Property dgProp = createDgProp(property, childAttribute);
+//					dgProps.add(dgProp);
+//					break;
+//				}
+//			}
 		}
 		
 		// 4. GMLVersion
@@ -730,16 +747,15 @@ public class GtToDgConvertor {
 		
 		PropertyType gtPT = attribute.getAttributeType().getType(null);
 		org.deegree.feature.types.property.PropertyType dgPT;
-		if (gtPT instanceof org.opengis.feature.type.GeometryType
-				|| com.vividsolutions.jts.geom.Geometry.class.isAssignableFrom(gtPT.getBinding())) {
+		if (com.vividsolutions.jts.geom.Geometry.class.isAssignableFrom(gtPT.getBinding())
+				/*&& attribute.getAttributeType().getAttributes().isEmpty()*/) {
 			// create deegree geometry type
 			org.deegree.feature.types.property.GeometryPropertyType.GeometryType dgGeomType = createGeometryType(attribute);
 			org.deegree.feature.types.property.GeometryPropertyType.CoordinateDimension dgCoordDim = createCoordDim(attribute);
 			dgPT = new org.deegree.feature.types.property.GeometryPropertyType(
 					dgName, minOccurs, maxOccurs, isAbstract, isNillable, 
 					substitutions, dgGeomType, dgCoordDim, ValueRepresentation.BOTH);
-		} else if (gtPT instanceof org.opengis.feature.type.AttributeType
-				&& !(gtPT instanceof org.opengis.feature.type.ComplexType)) {
+		} else if (!attribute.getAttributeType().isComplexType()) {
 			// primitive type
 			// TODO find a nicer way to define this binding
 			PrimitiveType propPrimType = PrimitiveType
