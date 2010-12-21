@@ -44,6 +44,7 @@ import static org.deegree.protocol.wfs.WFSConstants.WFS_NS;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -474,11 +475,23 @@ public class GMLFeatureWriter {
         } else if ( propertyType instanceof SimplePropertyType ) {
             if ( property.isNilled() ) {
                 writeEmptyElementWithNS( propName.getNamespaceURI(), propName.getLocalPart() );
+                //XXX changes start ST
+                if (property instanceof SimplePropertyWithAttributes) {
+                	Collection<? extends org.opengis.feature.Property> props = ((SimplePropertyWithAttributes) property).getAttributes();
+                	writeAttributes(props);
+                }
+                //XXX changes end
                 writer.writeAttribute( XSINS, "nil", "true" );
             } else {
                 // must be a primitive value
                 PrimitiveValue pValue = (PrimitiveValue) value;
                 writeStartElementWithNS( propName.getNamespaceURI(), propName.getLocalPart() );
+                //XXX changes start ST
+                if (property instanceof SimplePropertyWithAttributes) {
+                	Collection<? extends org.opengis.feature.Property> props = ((SimplePropertyWithAttributes) property).getAttributes();
+                	writeAttributes(props);
+                }
+                //XXX changes end
                 if ( pValue != null ) {
                     // TODO
                     if ( pValue.getType() == PrimitiveType.DECIMAL ) {
@@ -616,7 +629,25 @@ public class GMLFeatureWriter {
         }
     }
 
-    private void export( TypedObjectNode node, int currentLevel, int maxInlineLevels )
+    //XXX changes start ST
+	private void writeAttributes(
+			Collection<? extends org.opengis.feature.Property> props) throws XMLStreamException {
+		if (props != null) {
+    		for (org.opengis.feature.Property p : props) {
+    			Object value = p.getValue();
+//    			String ns = p.getName().getNamespaceURI();
+    			if (value != null) {
+	    			writer.writeAttribute(
+	    					//ns, 
+	    					p.getName().getLocalPart(), 
+	    					p.getValue().toString());
+    			}
+    		}
+    	}
+	}
+	//XXX changes end
+
+	private void export( TypedObjectNode node, int currentLevel, int maxInlineLevels )
                             throws XMLStreamException, UnknownCRSException, TransformationException {
         if ( node instanceof GMLObject ) {
             if ( node instanceof Feature ) {

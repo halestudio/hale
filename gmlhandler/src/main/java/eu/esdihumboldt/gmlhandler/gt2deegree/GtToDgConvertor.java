@@ -13,7 +13,9 @@ package eu.esdihumboldt.gmlhandler.gt2deegree;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.namespace.QName;
@@ -59,8 +61,10 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
 import eu.esdihumboldt.gmlhandler.deegree.InternalFeature;
+import eu.esdihumboldt.gmlhandler.deegree.SimplePropertyWithAttributes;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.tools.AttributeProperty;
 import eu.esdihumboldt.tools.FeatureInspector;
 
 
@@ -187,18 +191,25 @@ public class GtToDgConvertor {
 
 		// get property type TODO needn't be done for each property/feature
 		org.deegree.feature.types.property.PropertyType dgPT = createDgPt(attribute);
+		
+		Collection<? extends Property> atts = AttributeProperty.getAttributeProperties(gtProp);
 
 		if (dgPT instanceof org.deegree.feature.types.property.SimplePropertyType) {
 			// A PropertyType that defines a property with a primitive value,
 			// i.e. a value that can be represented as a single String.
 			if (isNilled && gtProp.getValue() == null) {
 //				TypedObjectNode node = null;
-				dgProp = new org.deegree.feature.property.GenericProperty(dgPT,
-						dgPropName, null);
+				//XXX why not SimpleProperty here?
+//				dgProp = new org.deegree.feature.property.GenericProperty(dgPT,
+//						dgPropName, null);
+				dgProp = new SimplePropertyWithAttributes(
+						(SimplePropertyType) dgPT, null, 
+						((SimplePropertyType) dgPT).getPrimitiveType(), atts);
 			} else {
-				dgProp = new org.deegree.feature.property.SimpleProperty(
+				dgProp = new SimplePropertyWithAttributes(
 						(SimplePropertyType) dgPT, gtProp.getValue().toString(),
-						((SimplePropertyType) dgPT).getPrimitiveType());
+						((SimplePropertyType) dgPT).getPrimitiveType(), atts);
+				
 			}
 
 		} else if (dgPT instanceof org.deegree.feature.types.property.GeometryPropertyType) {
