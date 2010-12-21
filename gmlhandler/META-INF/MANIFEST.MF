@@ -8,7 +8,8 @@ Export-Package: eu.esdihumboldt.gmlhandler,
 Require-Bundle: org.geotools;bundle-version="2.6.4",
  com.vividsolutions.jts;bundle-version="1.10.0",
  eu.esdihumboldt.hale.gmlparser;bundle-version="2.0.0",
- eu.esdihumboldt.hale.schemaprovider;bundle-version="2.0.0"
+ eu.esdihumboldt.hale.schemaprovider;bundle-version="2.0.0",
+ eu.esdihumboldt.commons;bundle-version="3.0.6"
 Bundle-ClassPath: .,
  deegree/xercesImpl-2.9.1.jar,
  deegree/xmlParserAPIs-2.0.2.jar,

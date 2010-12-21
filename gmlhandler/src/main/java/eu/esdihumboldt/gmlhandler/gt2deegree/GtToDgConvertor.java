@@ -13,13 +13,12 @@ package eu.esdihumboldt.gmlhandler.gt2deegree;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
 import javax.xml.namespace.QName;
 
-import org.deegree.commons.tom.TypedObjectNode;
+import org.apache.log4j.Logger;
 import org.deegree.commons.tom.primitive.PrimitiveType;
 import org.deegree.cs.CRS;
 import org.deegree.feature.GenericFeatureCollection;
@@ -37,8 +36,8 @@ import org.deegree.geometry.standard.primitive.DefaultPolygon;
 import org.deegree.gml.GMLVersion;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.Geometries;
+import org.geotools.renderer.lite.StreamingRenderer;
 import org.opengis.feature.Attribute;
-import org.opengis.feature.ComplexAttribute;
 import org.opengis.feature.Feature;
 import org.opengis.feature.GeometryAttribute;
 import org.opengis.feature.Property;
@@ -60,6 +59,9 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
 import eu.esdihumboldt.gmlhandler.deegree.InternalFeature;
+import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.tools.FeatureInspector;
 
 
 /**
@@ -72,6 +74,8 @@ import eu.esdihumboldt.gmlhandler.deegree.InternalFeature;
  * @version $Id$
  */
 public class GtToDgConvertor {
+	
+	private static final Logger log = Logger.getLogger(GtToDgConvertor.class);
 	
 	private final TypeIndex types;
 	
@@ -86,21 +90,21 @@ public class GtToDgConvertor {
 	}
 
 	/**
+	 * Convert a feature collection
 	 * 
-	 * @param geotools
-	 *            -based Feature Collection fc
+	 * @param fc geotools-based Feature Collection
 	 * @return deegree-based Feature Collection
 	 */
 
 	public org.deegree.feature.FeatureCollection convertGtToDg(
-			org.geotools.feature.FeatureCollection fc) {
+			org.geotools.feature.FeatureCollection<FeatureType, Feature> fc) {
 
-		Collection<org.deegree.feature.Feature> dgFeatures = new ArrayList();
+		Collection<org.deegree.feature.Feature> dgFeatures = new ArrayList<org.deegree.feature.Feature>();
 		org.deegree.feature.Feature dgFeature = null;
-		List<org.deegree.feature.property.Property> dgProperties = null;
-		List<org.deegree.feature.types.property.PropertyType> dgPropertyTypes = null;
-		for (FeatureIterator i = fc.features(); i.hasNext();) {
-			dgPropertyTypes = new ArrayList<org.deegree.feature.types.property.PropertyType>();
+//		List<org.deegree.feature.property.Property> dgProperties = null;
+//		List<org.deegree.feature.types.property.PropertyType> dgPropertyTypes = null;
+		for (FeatureIterator<Feature> i = fc.features(); i.hasNext();) {
+//			dgPropertyTypes = new ArrayList<org.deegree.feature.types.property.PropertyType>();
 			Feature gtFeature = i.next();
 			dgFeature = createDgFeature(gtFeature);
 			dgFeatures.add(dgFeature);
@@ -112,13 +116,12 @@ public class GtToDgConvertor {
 	}
 
 	/**
+	 * Convert a feature 
 	 * 
-	 * @param geotools
-	 *            -based Feature
+	 * @param gtFeature geotools-based Feature
 	 * @return deegree-based Feature
-	 * 
 	 */
-	private static org.deegree.feature.Feature createDgFeature(Feature gtFeature) {
+	protected org.deegree.feature.Feature createDgFeature(Feature gtFeature) {
 		
 		// test for the CRS
 		CoordinateReferenceSystem crs = null;
@@ -134,25 +137,26 @@ public class GtToDgConvertor {
 				}
 			}
 		}
-//		System.out.println(crs);
-//		System.out.println(gtFeature.getDefaultGeometryProperty().getType());
 		FeatureType gtFT = gtFeature.getType();
+		TypeDefinition type = types.getType(gtFT);
 		// convert gtFT to gtFT
 
 		// 1. GenericFeatureType
-		GenericFeatureType dgFT = createDgFt(gtFT, null);
+		//XXX this needn't be done for every single feature
+		GenericFeatureType dgFT = createDgFt(type);
 
 		// 2. Feature id
 		String fid = gtFeature.getIdentifier().getID();
-		// 3. List<Property>
+		
+		// 3. properties and attributes
 		List<org.deegree.feature.property.Property> dgProps = new ArrayList<org.deegree.feature.property.Property>();
-		Iterator<Property> gtPropsIter = gtFeature.getProperties().iterator();
-	
-		while (gtPropsIter.hasNext()) {
-			Property gtProp = gtPropsIter.next();
-			org.deegree.feature.property.Property dgProp = createDgProp(gtProp, crs, gp);
+		Collection<Property> properties = FeatureInspector.getProperties(gtFeature);
+		for (Property p : properties) {
+			AttributeDefinition attribute = type.getAttribute(p.getName().getLocalPart());
+			org.deegree.feature.property.Property dgProp = createDgProp(p, attribute, crs, gp);
 			dgProps.add(dgProp);
 		}
+		
 		// 4. GMLVersion
 		org.deegree.feature.Feature dgFeature = dgFT.newFeature(fid, dgProps,
 				GMLVersion.GML_32);
@@ -161,35 +165,34 @@ public class GtToDgConvertor {
 	}
 
 	/**
+	 * Create a deegree property from a geotools property
 	 * 
-	 * @param gp 
-	 * @param geotools
-	 *            -based Property
+	 * @param gtProp geotools-based Property
+	 * @param attribute the corresponding attribute definition
+	 * @param crs XXX the CRS
+	 * @param gp XXX the geometry attribute
+	 * 
 	 * @return deegree-based Property
-	 * 
 	 */
 	private static org.deegree.feature.property.Property createDgProp(
-			Property gtProp, CoordinateReferenceSystem crs, GeometryAttribute gp) {
+			Property gtProp, AttributeDefinition attribute, 
+			CoordinateReferenceSystem crs, GeometryAttribute gp) {
 		// 1. declare a Property instance: make decision about implementing
 		// class after analyze of the PropertyType
 		org.deegree.feature.property.Property dgProp = null;
 		// 2. define isNilled isNilled
-		boolean isNilled = gtProp.isNillable();
+		boolean isNilled = attribute.isNillable();
 		// 3. define property name
-		QName dgPropName = new QName(gtProp.getName().getNamespaceURI(), gtProp
-				.getName().getLocalPart());
+		QName dgPropName = new QName(attribute.getNamespace(), attribute.getName());
 
-		// create deegree based PropertyType from the geotools Objecy
-		// if prop has xml atttribures map it to the CustomPropertyType
-		boolean hasXMLAttrs = gtProp.getUserData().get("XmlAttributes") != null;
-		org.deegree.feature.types.property.PropertyType dgPT = createDgPt(
-				gtProp.getDescriptor(), hasXMLAttrs);
+		// get property type TODO needn't be done for each property/feature
+		org.deegree.feature.types.property.PropertyType dgPT = createDgPt(attribute);
 
 		if (dgPT instanceof org.deegree.feature.types.property.SimplePropertyType) {
 			// A PropertyType that defines a property with a primitive value,
 			// i.e. a value that can be represented as a single String.
 			if (isNilled && gtProp.getValue() == null) {
-				TypedObjectNode node = null;
+//				TypedObjectNode node = null;
 				dgProp = new org.deegree.feature.property.GenericProperty(dgPT,
 						dgPropName, null);
 			} else {
@@ -199,9 +202,9 @@ public class GtToDgConvertor {
 			}
 
 		} else if (dgPT instanceof org.deegree.feature.types.property.GeometryPropertyType) {
-
 			// TODO handle case with GeometryReference<Geometry>
 			// convert gt Geometry attribute to deegree Geometry
+			// TODO improve this! crs and gp shouldnt be parameters here
 			org.deegree.geometry.Geometry dgGeometry = createDgGeometry(gtProp, crs, gp);
 			dgProp = new GenericProperty(dgPT, dgPropName, dgGeometry);
 
@@ -210,11 +213,9 @@ public class GtToDgConvertor {
 			// if (gtProp instanceof SimpleFeature ){
 
 			// create deegree generic feature based on gtProp
-			GenericFeatureType ft = createDgFt(((Attribute) gtProp)
-					.getType(), dgPropName);
-			//org.deegree.feature.Feature featureProp = null;
+			GenericFeatureType ft = createDgFt(attribute.getAttributeType());
 			
-	    	org.deegree.feature.Feature featureProp = createDgFeature((Attribute) gtProp, ft);
+			org.deegree.feature.Feature featureProp = createDgFeature((Attribute) gtProp, attribute, ft);
 	    	dgProp = new org.deegree.feature.property.GenericProperty(dgPT,
 					dgPropName, new InternalFeature(featureProp));
 			//dgProp = createDgFeatureProperty((Attribute)gtProp, ft);
@@ -263,37 +264,44 @@ public class GtToDgConvertor {
 
 	/**
 	 * 
-	 * Generates a feature in case the geotools attribute contains a collection of properties
+	 * Generates a feature in case the geotools attribute contains a collection
+	 * of properties
+	 * 
 	 * @param complexAttribute
+	 * @param attribute 
 	 * @param ft
 	 * @return
 	 */
-	private static org.deegree.feature.Feature createDgFeature(Attribute complexAttribute, GenericFeatureType ft) {
+	protected static org.deegree.feature.Feature createDgFeature(
+			Property property, AttributeDefinition attribute, 
+			GenericFeatureType ft) {
 		
 		// 2. Feature id
 		String fid = java.util.UUID.randomUUID().toString();
 		
 		// 3. List<Property>
+		Collection<Property> propertyCollection = ((Collection<Property>) property.getValue());
+		
 		List<org.deegree.feature.property.Property> dgProps = new ArrayList<org.deegree.feature.property.Property>();
-		Collection attributesCollestion = ((Collection)complexAttribute.getValue());
-		if (attributesCollestion != null){
-		Iterator<Property> gtPropsIter = attributesCollestion.iterator();
-	
-		while (gtPropsIter.hasNext()) {
-			//Find Complex attribute
-			Property gtProp = gtPropsIter.next();
-			if (gtProp instanceof ComplexAttribute){
-				//retrieve a list of properties for the complex Attribute
-				Iterator<Property> simplePropIter = ((ComplexAttribute) gtProp).getProperties().iterator();
-				while(simplePropIter.hasNext()){
-					Property gtSimpleProp = simplePropIter.next();
-					org.deegree.feature.property.Property dgProp = createDgProp(gtSimpleProp, null, null);
-					dgProps.add(dgProp);
+		if (propertyCollection != null) {
+			if (propertyCollection.size() > 1) throw new UnsupportedOperationException("Multiple feature in property not really supported");
+			
+			for (Property feature : propertyCollection) {
+				
+				Collection<Property> properties = FeatureInspector.getProperties(feature);
+				for (Property p : properties) {
+					AttributeDefinition childAttribute = attribute.getAttributeType().getAttribute(p.getName().getLocalPart());
+					if (childAttribute != null) {
+						org.deegree.feature.property.Property dgProp = createDgProp(p, childAttribute, null, null);
+						dgProps.add(dgProp);
+					}
+					else {
+						log.error("Attribute " + p.getName().getLocalPart() + " not found in type " + attribute.getAttributeType());
+					}
 				}
 			}
-			
 		}
-		}
+		
 		// 4. GMLVersion
 		org.deegree.feature.Feature dgFeature = ft.newFeature(fid, dgProps,
 				GMLVersion.GML_32);
@@ -623,12 +631,16 @@ public class GtToDgConvertor {
 	}
 
 	/**
+	 * Create a deegree feature type from a geotools feature type 
 	 * 
-	 * @param geotools
-	 *            -based FeatureType
+	 * @param attributeType geotools-based FeatureType
+	 * @param dgName feature type name
 	 * @return deegree-based FeatureType
 	 * 
+	 * @deprecated because namespaces for properties cannot be stored in the
+	 *   geotools feature type because {@link StreamingRenderer} chokes on that
 	 */
+	@Deprecated
 	private static org.deegree.feature.types.GenericFeatureType createDgFt(
 			AttributeType attributeType, QName dgName) {
 		QName ftName = null;
@@ -656,6 +668,121 @@ public class GtToDgConvertor {
 		org.deegree.feature.types.GenericFeatureType dgFT = new org.deegree.feature.types.GenericFeatureType(
 				ftName, propDecls, isAbstract);
 		return dgFT;
+	}
+	
+	/**
+	 * Create a deegree feature type from a {@link TypeDefinition}
+	 * 
+	 * @param type the type definition
+	 * @return deegree-based FeatureType
+	 */
+	protected static org.deegree.feature.types.GenericFeatureType createDgFt(
+			TypeDefinition type) {
+		AttributeType ft = type.getType(null);
+		QName ftName = new QName(ft.getName().getNamespaceURI(), ft.getName().getLocalPart());
+		
+		List<org.deegree.feature.types.property.PropertyType> propDecls = new ArrayList<org.deegree.feature.types.property.PropertyType>();
+		// 1.1 List<PropertyType>
+		for (AttributeDefinition attribute : type.getAttributes()) {
+			// create deegree PropertyType
+			org.deegree.feature.types.property.PropertyType dgPT = createDgPt(
+					attribute);
+			propDecls.add(dgPT);
+		}
+		// 1.2 boolean isAbstract
+		boolean isAbstract = type.isAbstract();
+
+		org.deegree.feature.types.GenericFeatureType dgFT = new org.deegree.feature.types.GenericFeatureType(
+				ftName, propDecls, isAbstract);
+		return dgFT;
+	}
+	
+	/**
+	 * Create a deegree property type from an {@link AttributeDefinition}
+	 * 
+	 * @param attribute the attribute definition
+	 * @return deegree-based PropertyType
+	 */
+	protected static org.deegree.feature.types.property.PropertyType createDgPt(
+			AttributeDefinition attribute) {
+
+		// TODO define a better way for the value representation
+		List<org.deegree.feature.types.property.PropertyType> substitutions = new ArrayList<org.deegree.feature.types.property.PropertyType>();
+
+		// define commons attributes
+		QName dgName = new QName(attribute.getNamespace(), attribute.getName());
+		QName dgFTName = new QName(attribute.getTypeName().getNamespaceURI(), 
+				attribute.getTypeName().getLocalPart());
+		
+		int minOccurs = (int) attribute.getMinOccurs();
+		int maxOccurs = (int) attribute.getMaxOccurs();
+		boolean isAbstract = attribute.getAttributeType().isAbstract();
+		boolean isNillable = attribute.isNillable();
+		
+		PropertyType gtPT = attribute.getAttributeType().getType(null);
+		org.deegree.feature.types.property.PropertyType dgPT;
+		if (gtPT instanceof org.opengis.feature.type.GeometryType) {
+			// create deegree geometry type
+			org.deegree.feature.types.property.GeometryPropertyType.GeometryType dgGeomType = createGeometryType(attribute);
+			org.deegree.feature.types.property.GeometryPropertyType.CoordinateDimension dgCoordDim = createCoordDim(attribute);
+			dgPT = new org.deegree.feature.types.property.GeometryPropertyType(
+					dgName, minOccurs, maxOccurs, isAbstract, isNillable, 
+					substitutions, dgGeomType, dgCoordDim, ValueRepresentation.BOTH);
+		} else if (gtPT instanceof org.opengis.feature.type.AttributeType
+				&& !(gtPT instanceof org.opengis.feature.type.ComplexType)) {
+			// primitive type
+			// TODO find a nicer way to define this binding
+			PrimitiveType propPrimType = PrimitiveType
+					.determinePrimitiveType(gtPT.getBinding().getName());
+			dgPT = new org.deegree.feature.types.property.SimplePropertyType(
+					dgName, minOccurs, maxOccurs, propPrimType, isAbstract, 
+					isNillable, substitutions);
+		} else {
+			// complex or feature type
+			//dgPT = new org.deegree.feature.types.property.CustomPropertyType(dgName, maxOccurs, maxOccurs, null, isAbstract, substitutions); 
+			dgPT = new org.deegree.feature.types.property.FeaturePropertyType(
+					dgName, minOccurs, maxOccurs, isAbstract, isNillable,
+					substitutions, dgFTName, ValueRepresentation.BOTH);
+		}		
+
+		return dgPT;
+	}
+	
+	/**
+	 * Get the CRS dimension for the given geometry attribute definition
+	 * 
+	 * @param attribute the geometry attribute definition
+	 * @return the CRS dimension
+	 */
+	private static CoordinateDimension createCoordDim(
+			AttributeDefinition attribute) {
+		//TODO implement
+//		if (descriptor.getCoordinateReferenceSystem() != null
+//				&& descriptor.getCoordinateReferenceSystem()
+//						.getCoordinateSystem() != null) {
+//			if (descriptor.getCoordinateReferenceSystem().getCoordinateSystem()
+//					.getDimension() == 2)
+//				return CoordinateDimension.DIM_2;
+//			if (descriptor.getCoordinateReferenceSystem().getCoordinateSystem()
+//					.getDimension() == 3)
+//				return CoordinateDimension.DIM_3;
+//		}
+		return CoordinateDimension.DIM_2_OR_3;
+	}
+	
+	/**
+	 * Create the deegree geometry type for the given geometry attribute
+	 * definition
+	 * 
+	 * @param attribute the geometry attribute definition
+	 * @return Geometry Type
+	 */
+	private static GeometryType createGeometryType(
+			AttributeDefinition attribute) {
+		// 1. retrieve the Geometry type name
+		String geometry = attribute.getAttributeType().getType(null).getBinding().getSimpleName();
+		// 2. assign a string value to the GeometryType
+		return GeometryType.fromGMLTypeName(geometry);
 	}
 
 }
