@@ -43,6 +43,7 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.gmlhandler.deegree.GMLStreamWriter;
 import eu.esdihumboldt.gmlhandler.gt2deegree.GtToDgConvertor;
+import eu.esdihumboldt.gmlhandler.gt2deegree.TypeIndex;
 
 /**
  * <p>
@@ -350,8 +351,10 @@ public class GmlHandler {
 	 * @throws FileNotFoundException 
 	 */
 	public void writeFC(
-			org.geotools.feature.FeatureCollection<FeatureType, Feature> features, String defaultNamespace) throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
-		FeatureCollection fc = GtToDgConvertor.convertGtToDg(features);
+			org.geotools.feature.FeatureCollection<FeatureType, Feature> features, 
+			TypeIndex types, String defaultNamespace) throws FileNotFoundException, XMLStreamException, UnknownCRSException, TransformationException {
+		GtToDgConvertor converter = new GtToDgConvertor(types);
+		FeatureCollection fc = converter.convertGtToDg(features);
 		writeFC(fc, defaultNamespace);
 	}
 

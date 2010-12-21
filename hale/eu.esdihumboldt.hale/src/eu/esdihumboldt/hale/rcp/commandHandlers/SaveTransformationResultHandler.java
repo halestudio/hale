@@ -32,12 +32,12 @@ import org.opengis.feature.type.FeatureType;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-
 import eu.esdihumboldt.gmlhandler.GmlHandler;
+import eu.esdihumboldt.gmlhandler.gt2deegree.TypeIndex;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
-import eu.esdihumboldt.hale.rcp.wizards.io.OpenAlignmentProjectWizard;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
  * 
@@ -74,6 +74,11 @@ public class SaveTransformationResultHandler extends AbstractHandler {
 		String filename = files.open();
 		final File file = new File(filename);
 		
+		final TypeIndex types = new TypeIndex();
+		for (SchemaElement se : ss.getTargetSchema()) {
+			types.addType(se.getType());
+		}
+		
 		Display display = PlatformUI.getWorkbench().getDisplay();
 		try {
 			IRunnableWithProgress op = new IRunnableWithProgress() {
@@ -84,7 +89,7 @@ public class SaveTransformationResultHandler extends AbstractHandler {
 					monitor.beginTask("Exporting transformed features to GML file", IProgressMonitor.UNKNOWN);
 					GmlHandler handler = GmlHandler.getDefaultInstance(targetSchema.toString(), file.getAbsolutePath()); //(new URL(outputFilename)).getFile());	
 					try {
-						handler.writeFC(features, targetNamespace);
+						handler.writeFC(features, types, targetNamespace);
 					} catch (Exception e) {
 						log.userError("Error saving transformation result to GML file", e);
 					} finally {

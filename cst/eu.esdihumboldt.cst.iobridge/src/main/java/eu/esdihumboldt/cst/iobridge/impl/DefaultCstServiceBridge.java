@@ -33,6 +33,7 @@ import eu.esdihumboldt.cst.iobridge.TransformationException;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory;
 import eu.esdihumboldt.gmlhandler.GmlHandler;
 import eu.esdihumboldt.gmlhandler.gt2deegree.GtToDgConvertor;
+import eu.esdihumboldt.gmlhandler.gt2deegree.TypeIndex;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper;
@@ -46,30 +47,36 @@ import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
  * expects to get local paths to the schema, the mapping and the GML it has to
  * load and process.
  * 
- * @author Thorsten Reitz
+ * @author Thorsten Reitz, Simon Templer
  * @version $Id$
  */
 public class DefaultCstServiceBridge implements CstServiceBridge {
 
 	private URL outputDirectory;
 
-	/*
-	 * (non-Javadoc)
+	/**
 	 * 
-	 * @see
-	 * eu.esdihumboldt.cst.iobridge.CstServiceBridge#transform(java.lang.String,
-	 * java.lang.String, java.lang.String)
+	 * @param schemaFilename
+	 * @param omlFilename
+	 * @param gmlFilename
+	 * @param outputFilename
+	 * @param sourceSchema
+	 * @param sourceVersion
+	 * @return
+	 * @throws TransformationException
 	 */
 	public String transform(String schemaFilename, String omlFilename,
 			String gmlFilename, String outputFilename, String sourceSchema, ConfigurationType sourceVersion) throws TransformationException  {
 
 		Schema schema = this.loadSchema(schemaFilename);
 		
+		TypeIndex typeIndex = new TypeIndex();
 		Set<FeatureType> types = new HashSet<FeatureType>();
 		if (schema != null) {
 			for (SchemaElement se : schema.getElements().values()) {
 				if (se.getFeatureType() != null) {
 					types.add(se.getFeatureType());
+					typeIndex.addType(se.getType());
 				}
 			}
 		}
@@ -93,8 +100,9 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 		*/
 		
 		try {
-			GmlHandler handler = GmlHandler.getDefaultInstance(schemaFilename, (new URL(outputFilename)).getFile());	
-			org.deegree.feature.FeatureCollection fc = GtToDgConvertor.convertGtToDg(result);
+			GmlHandler handler = GmlHandler.getDefaultInstance(schemaFilename, (new URL(outputFilename)).getFile());
+			GtToDgConvertor converter = new GtToDgConvertor(typeIndex);
+			org.deegree.feature.FeatureCollection fc = converter.convertGtToDg(result);
 			handler.writeFC(fc, schema.getNamespace());
 		} catch (Exception e) {
 			throw new TransformationException(e);

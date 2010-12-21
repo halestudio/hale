@@ -73,7 +73,17 @@ import eu.esdihumboldt.gmlhandler.deegree.InternalFeature;
  */
 public class GtToDgConvertor {
 	
+	private final TypeIndex types;
 	
+	/**
+	 * Create a new converter
+	 * 
+	 * @param types the type index
+	 */
+	public GtToDgConvertor(TypeIndex types) {
+		super();
+		this.types = types;
+	}
 
 	/**
 	 * 
@@ -82,7 +92,7 @@ public class GtToDgConvertor {
 	 * @return deegree-based Feature Collection
 	 */
 
-	public static org.deegree.feature.FeatureCollection convertGtToDg(
+	public org.deegree.feature.FeatureCollection convertGtToDg(
 			org.geotools.feature.FeatureCollection fc) {
 
 		Collection<org.deegree.feature.Feature> dgFeatures = new ArrayList();
