@@ -59,20 +59,17 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
+import eu.esdihumboldt.gmlhandler.deegree.InternalFeature;
+
 
 /**
- * 
- * 
  * This class contains methods to create Deegree3 Structures like Feature,
  * FeatureCollection and so using GeoSpatial data retrieved from the according
  * geotools Objects.
  * 
- * @author Jan Jezek, Anna Pitaev
+ * @author Jan Jezek, Anna Pitaev, Simon Templer
+ * @partner ?, 04 / Logica, 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$
- * 
- * 
- * 
- * 
  */
 public class GtToDgConvertor {
 	
@@ -127,8 +124,8 @@ public class GtToDgConvertor {
 				}
 			}
 		}
-		System.out.println(crs);
-		System.out.println(gtFeature.getDefaultGeometryProperty().getType());
+//		System.out.println(crs);
+//		System.out.println(gtFeature.getDefaultGeometryProperty().getType());
 		FeatureType gtFT = gtFeature.getType();
 		// convert gtFT to gtFT
 
@@ -209,7 +206,7 @@ public class GtToDgConvertor {
 			
 	    	org.deegree.feature.Feature featureProp = createDgFeature((Attribute) gtProp, ft);
 	    	dgProp = new org.deegree.feature.property.GenericProperty(dgPT,
-					dgPropName, featureProp);
+					dgPropName, new InternalFeature(featureProp));
 			//dgProp = createDgFeatureProperty((Attribute)gtProp, ft);
 			/*
 			 * //TODO find a nicer way to create fid String fid =

@@ -38,12 +38,12 @@ import org.deegree.feature.types.ApplicationSchema;
 import org.deegree.gml.GMLInputFactory;
 import org.deegree.gml.GMLOutputFactory;
 import org.deegree.gml.GMLStreamReader;
-import org.deegree.gml.GMLStreamWriter;
 import org.deegree.gml.GMLVersion;
 import org.deegree.gml.feature.schema.ApplicationSchemaXSDDecoder;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.gmlhandler.deegree.GMLStreamWriter;
 import eu.esdihumboldt.gmlhandler.gt2deegree.GtToDgConvertor;
 
 /**
@@ -63,8 +63,8 @@ import eu.esdihumboldt.gmlhandler.gt2deegree.GtToDgConvertor;
  * 
  * 
  * 
- * @author Anna Pitaev
- * @partner 04 / Logica
+ * @author Anna Pitaev, Simon Templer
+ * @partner 04 / Logica, 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$
  */
 public class GmlHandler {
@@ -104,7 +104,7 @@ public class GmlHandler {
 		this.namespaces = namespaces;
 	}
 	
-	public static GmlHandler getDefaultInstance(String xsdUrl, String gmlUrl){	
+	public static GmlHandler getDefaultInstance(String xsdUrl, String gmlUrl){
 			// pre-define namespaces
 			HashMap<String, String> namespaces = new HashMap<String, String>();
 			namespaces.put("gco", "http://www.isotc211.org/2005/gco");
@@ -242,13 +242,22 @@ public class GmlHandler {
 		}
 
 		// create exporter to export files
-		GMLStreamWriter exporter = GMLOutputFactory.createGMLStreamWriter(
+		GMLStreamWriter exporter = createWriter(
 				GMLVersion.GML_32, new IndentingXMLStreamWriter(writer));
-		exporter.write(fc);
-		writer.flush();
-		writer.close();
+		try {
+			exporter.write(fc);
+			writer.flush();
+		} finally {
+			writer.close();
+		}
 
 		LOG.debug("Gml instance has been exported successfully ");
+	}
+
+	private GMLStreamWriter createWriter(GMLVersion version,
+			XMLStreamWriter writer) throws XMLStreamException {
+//		return GMLOutputFactory.createGMLStreamWriter(version, writer);
+		return new GMLStreamWriter(version, writer);
 	}
 
 	/**
