@@ -192,7 +192,7 @@ public class GmlHandler {
 			XMLStreamException, UnknownCRSException, TransformationException {
 		LOG.info("Exporting the gml-instance to the location "
 				+ this.targetGmlUrl);
-
+		
 		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 
 		// will set namespaces if these not set explicitly
@@ -207,7 +207,7 @@ public class GmlHandler {
 
 		// set namespaces, this should be done explicitly
 		// TODO define a nicer way to set the default namespace
-		writer.setDefaultNamespace(defaultNamespace);
+//		writer.setDefaultNamespace(defaultNamespace);
 
 		// read the namespaces from the map containing namespaces
 		if (prefixes != null) {
