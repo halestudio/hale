@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.models.utils;
+package eu.esdihumboldt.cst.transformer;
 
 import java.util.ArrayList;
 import java.util.Iterator;

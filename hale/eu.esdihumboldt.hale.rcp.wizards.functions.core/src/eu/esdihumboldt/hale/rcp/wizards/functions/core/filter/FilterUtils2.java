@@ -17,11 +17,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import eu.esdihumboldt.cst.align.IEntity;
+import eu.esdihumboldt.cst.transformer.EntityUtils;
 import eu.esdihumboldt.cst.transformer.FilterUtils;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.omwg.Restriction;
-import eu.esdihumboldt.hale.models.utils.EntityUtils;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 
 /**

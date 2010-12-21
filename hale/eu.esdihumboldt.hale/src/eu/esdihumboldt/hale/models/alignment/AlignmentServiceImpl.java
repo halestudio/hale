@@ -11,7 +11,7 @@
  */
 package eu.esdihumboldt.hale.models.alignment;
 
-import static eu.esdihumboldt.hale.models.utils.EntityUtils.entitiesMatch;
+import static eu.esdihumboldt.cst.transformer.EntityUtils.entitiesMatch;
 
 import java.net.URI;
 import java.util.ArrayList;
