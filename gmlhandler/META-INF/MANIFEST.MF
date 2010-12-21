@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: gmlhandler
 Bundle-SymbolicName: eu.esdihumboldt.gmlhandler
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.1.0.qualifier
 Export-Package: eu.esdihumboldt.gmlhandler,
  eu.esdihumboldt.gmlhandler.gt2deegree
 Require-Bundle: org.geotools;bundle-version="2.6.4",
