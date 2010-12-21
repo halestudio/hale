@@ -24,15 +24,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.transformer.CstService;
 import eu.esdihumboldt.cst.transformer.capabilities.CstServiceCapabilities;
 import eu.esdihumboldt.cst.transformer.capabilities.impl.CstServiceCapabilitiesImpl;
@@ -47,16 +46,16 @@ import eu.esdihumboldt.cst.transformer.service.CstServiceFactory.ToleranceLevel;
 public class CstServiceImpl 
 	implements CstService {
 	
-	private static Logger _log = Logger.getLogger(CstServiceImpl.class);
-	private static ToleranceLevel tl = null;
-	private static boolean createLineage = true;
+	private static final Logger _log = Logger.getLogger(CstServiceImpl.class);
+	private final ToleranceLevel tl;
+	private boolean createLineage = true;
 
 	/**
 	 * Default {@link CstService} constructor.
 	 * @param tl 
 	 */
 	public CstServiceImpl(ToleranceLevel tl) {
-		CstServiceImpl.tl = tl;
+		this.tl = tl;
 	}
 
 
@@ -68,8 +67,8 @@ public class CstServiceImpl
 			FeatureCollection<? extends FeatureType, ? extends Feature> fc,
 			IAlignment alignment, Set<FeatureType> targetSchema) {
 		TargetSchemaProvider.getInstance().addTypes(targetSchema);
-		SchemaTranslationController stc = new SchemaTranslationController(CstServiceImpl.tl,
-				CstServiceImpl.createLineage, alignment);
+		SchemaTranslationController stc = new SchemaTranslationController(tl,
+				createLineage, alignment);
 		FeatureCollection result = stc.translate((FeatureCollection) fc);
 		return result;
 	}
@@ -120,6 +119,6 @@ public class CstServiceImpl
 
 
 	public void enableLineageCreation(boolean activateLineage) {
-		CstServiceImpl.createLineage = activateLineage;
+		createLineage = activateLineage;
 	}
 }
