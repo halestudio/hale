@@ -223,10 +223,10 @@ public class GmlHandler {
 				new Boolean(true));
 
 		// create XML File Stream Writer
-		XMLStreamWriter xmlStreamWriter = outputFactory.createXMLStreamWriter(
+		XMLStreamWriter writer = outputFactory.createXMLStreamWriter(
 				new FileOutputStream(new File(this.targetGmlUrl)), "UTF-8");
-		SchemaLocationXMLStreamWriter writer = new SchemaLocationXMLStreamWriter(
-				xmlStreamWriter, this.schemaUrl);
+//		SchemaLocationXMLStreamWriter writer = new SchemaLocationXMLStreamWriter(
+//				xmlStreamWriter, this.schemaUrl);
 
 		// set namespaces, this should be done explicitly
 		// TODO define a nicer way to set the default namespace
