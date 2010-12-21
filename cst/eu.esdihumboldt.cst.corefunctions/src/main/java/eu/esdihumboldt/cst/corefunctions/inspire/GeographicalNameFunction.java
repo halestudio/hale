@@ -14,6 +14,7 @@ package eu.esdihumboldt.cst.corefunctions.inspire;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -204,6 +205,8 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 						(spellingofnamepropertytype.getDescriptor("SpellingOfName")).getType();
 		SimpleFeatureType pronunciationofnametype = (SimpleFeatureType) ((SimpleFeatureType) 
 						geoNameType.getDescriptor("pronunciation").getType()).getDescriptor("PronunciationOfName").getType();
+		SimpleFeatureType pronounciationtype = (SimpleFeatureType) 
+						geoNameType.getDescriptor("pronunciation").getType();
 
 		Collection<FeatureImpl> geographicalnames = new HashSet<FeatureImpl>();
 
@@ -293,10 +296,15 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 			else
 				geographicalname.setAttribute("nameStatus", null);*/
 			
-			FeatureImpl pronunciation = (FeatureImpl) FeatureBuilder.buildFeature(pronunciationofnametype, null,false);
-			pronunciation.getProperty("pronunciationIPA").setValue(_pronunciationIPA.get(i));
-			pronunciation.getProperty("pronunciationSoundLink").setValue(_pronunciationSoundLink.get(i));
+			FeatureImpl pronunciationOfName = (FeatureImpl) FeatureBuilder.buildFeature(pronunciationofnametype, null,false);
+			pronunciationOfName.getProperty("pronunciationIPA").setValue(_pronunciationIPA.get(i));
+			pronunciationOfName.getProperty("pronunciationSoundLink").setValue(_pronunciationSoundLink.get(i));
+			
+			FeatureImpl pronunciation = (FeatureImpl) FeatureBuilder.buildFeature(pronounciationtype, null,false);
+			pronunciation.getProperty("PronunciationOfName").setValue(Collections.singleton(pronunciationOfName));
+			
 			geographicalname.getProperty("pronunciation").setValue(Collections.singleton(pronunciation));
+			
 			/*SimpleFeatureImpl pronunciation = (SimpleFeatureImpl) SimpleFeatureBuilder
 					.build(pronunciationofnametype, new Object[] {},
 							"PronunctiationOfName");
