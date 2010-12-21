@@ -248,7 +248,7 @@ public class GmlHandler {
 			exporter.write(fc);
 			writer.flush();
 		} finally {
-			writer.close();
+			exporter.close();
 		}
 
 		LOG.debug("Gml instance has been exported successfully ");
