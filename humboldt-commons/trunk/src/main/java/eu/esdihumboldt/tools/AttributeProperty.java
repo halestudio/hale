@@ -172,7 +172,7 @@ public class AttributeProperty implements Property {
 		if (attributes instanceof Map<?, ?>) {
 			Map<String, String> attMap = (Map<String, String>) attributes;
 			for (String attributeName : attMap.keySet()) {
-				result.add(new AttributeProperty(parent, attributeName));
+				result.add(new AttributeProperty(parent, attributeName.substring(1, attributeName.length() - 1)));
 			}
 		}
 		
