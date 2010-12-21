@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.apache.log4j.Logger;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.FeatureIterator;
@@ -34,11 +33,16 @@ import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.metadata.lineage.Lineage;
 
+import de.cs3d.util.logging.AGroupFactory;
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.transformer.CellUtils;
 import eu.esdihumboldt.cst.transformer.FilterUtils;
 import eu.esdihumboldt.cst.transformer.capabilities.impl.FunctionDescriptionImpl;
+import eu.esdihumboldt.cst.transformer.fc.CstFeatureCollection;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory.ToleranceLevel;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
@@ -55,7 +59,7 @@ import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
  */
 public class SchemaTranslationController {
 	
-	private static Logger _log = Logger.getLogger(SchemaTranslationController.class);
+	private static ALogger _log = ALoggerFactory.getLogger(SchemaTranslationController.class);
 	
 	private final AlignmentIndex ai;
 	
@@ -98,6 +102,11 @@ public class SchemaTranslationController {
 	@SuppressWarnings("unchecked")
 	public FeatureCollection<FeatureType, Feature> translate(
 			FeatureCollection<FeatureType, Feature> features) {
+		int functionErrors = 0;
+		if (features.isEmpty()) {
+			// return early if there are no features
+			return new CstFeatureCollection();
+		}
 		
 		// Order FeatureCollection by FeatureType
 		Map<String, List<Feature>> partitionedSourceFeatures = 
@@ -112,6 +121,7 @@ public class SchemaTranslationController {
 		// used for verifying whether a given FT has been processed before
 		//Set<String> checkTypes = new HashSet<String>();
 
+		int numTransformed = 0;
 		for (String targetType : mapping.getTargetTypes()) {
 			List<Feature> transformed = new ArrayList<Feature>();
 			Set<String> sourceTypes = mapping.getSourceTypes(targetType);
@@ -136,7 +146,9 @@ public class SchemaTranslationController {
 						// apply additional attributive transformations
 						for (ICell cell : info.getAttributiveCells()) {
 							// create CstFunction by using CstFunctionFactory
-							applyAttributiveFunction(cell, transformMap);
+							if (!applyAttributiveFunction(cell, transformMap)) {
+								functionErrors++;
+							}
 						}
 						
 						transformed.addAll(transformMap.getTransformedFeatures());
@@ -157,7 +169,9 @@ public class SchemaTranslationController {
 						// apply additional attributive transformations
 						for (ICell cell : info.getAttributiveCells()) {
 							// create CstFunction by using CstFunctionFactory
-							applyAttributiveFunction(cell, transformMap);
+							if (!applyAttributiveFunction(cell, transformMap)) {
+								functionErrors++;
+							}
 						}
 						for (List<Feature> thisList : transformMap.getTransformedFeatures()) {
 							transformed.addAll(thisList);
@@ -179,7 +193,9 @@ public class SchemaTranslationController {
 					// apply additional attributive transformations
 					for (ICell cell : info.getAttributiveCells()) {
 						// create CstFunction by using CstFunctionFactory
-						applyAttributiveFunction(cell, transformMap);
+						if (!applyAttributiveFunction(cell, transformMap)) {
+							functionErrors++;
+						}
 					}
 					for (Feature thisList : transformMap.getTransformedFeatures()) {
 						transformed.add(thisList);
@@ -193,6 +209,7 @@ public class SchemaTranslationController {
 			if (transformed != null) {
 				partitionedTargetFeatures.put(targetType, 
 						transformed);
+				numTransformed += transformed.size();
 			}
 		}
 		
@@ -217,12 +234,14 @@ public class SchemaTranslationController {
 						try {
 							f = cstf.transform(f, f);
 						} catch (Exception e) {
+							functionErrors++;
 							if (this.strict) {
 								throw new RuntimeException("Executing the requested " +
 										"CstFunction failed: " + e.getMessage(), e);
 							}
 							else {
 								error = e.getMessage();
+								_log.error(AGroupFactory.getGroup(CellUtils.asString(cell)), error);
 							}
 						}
 						if (this.addLineage) {
@@ -232,6 +251,14 @@ public class SchemaTranslationController {
 				}
 			}
 		}
+		
+		if (functionErrors > 0) {
+			_log.userError(functionErrors + " function execution errors occurred " +
+					"while transforming " + numTransformed + " features, " +
+					"please see the error log or the feature lineage for more " +
+					"details.");
+		}
+		
 		FeatureCollection result = FeatureCollections.newCollection();
 		long timeStart = System.currentTimeMillis();
 		for (List<Feature> featureList : partitionedTargetFeatures.values()) {
@@ -255,8 +282,9 @@ public class SchemaTranslationController {
 		return result;
 	}
 	
-	private void applyAttributiveFunction(ICell cell,
+	private boolean applyAttributiveFunction(ICell cell,
 			InstanceSplitMap transformMap) {
+		boolean success = true;
 		try {
 			// create CstFunction by using CstFunctionFactory
 			CstFunction cstf = CstFunctionFactory.getInstance().getCstFunction(cell);
@@ -283,12 +311,14 @@ public class SchemaTranslationController {
 									target);
 							
 						} catch (Exception e) {
+							success = false;
 							if (this.strict) {
 								throw new RuntimeException("Executing the requested " +
 										"CstFunction failed: " + e.getMessage(), e);
 							}
 							else {
 								error = e.getMessage();
+								_log.error(AGroupFactory.getGroup(CellUtils.asString(cell)), error);
 							}
 						}
 						if (this.addLineage) {
@@ -298,6 +328,7 @@ public class SchemaTranslationController {
 				}
 			}
 		} catch (Exception e) {
+			success = false;
 			if (this.strict) {
 				throw new RuntimeException("Executing the requested " +
 						"CstFunction failed: " + e.getMessage(), e);
@@ -307,10 +338,13 @@ public class SchemaTranslationController {
 						"CstFunction failed: " + e.getMessage(), e);
 			}
 		}
+		
+		return success;
 	}
 
-	private void applyAttributiveFunction(ICell cell,
+	private boolean applyAttributiveFunction(ICell cell,
 			InstanceAggregateMap transformMap) {
+		boolean success = true;
 		try {
 			// create CstFunction by using CstFunctionFactory
 			CstFunction cstf = CstFunctionFactory.getInstance().getCstFunction(cell);
@@ -334,12 +368,14 @@ public class SchemaTranslationController {
 						cstf.transform(source, 
 								transformMap.getTransformedFeatures().get(i));
 					} catch (Exception e) {
+						success = false;
 						if (this.strict) {
 							throw new RuntimeException("Executing the requested " +
 									"CstFunction failed: " + e.getMessage(), e);
 						}
 						else {
 							error = e.getMessage();
+							_log.error(AGroupFactory.getGroup(CellUtils.asString(cell)), error);
 						}
 					}
 					if (this.addLineage) {
@@ -349,6 +385,7 @@ public class SchemaTranslationController {
 				}
 			}
 		} catch (Exception e) {
+			success = false;
 			if (this.strict) {
 				throw new RuntimeException("Executing the requested " +
 						"CstFunction failed: " + e.getMessage(), e);
@@ -358,9 +395,11 @@ public class SchemaTranslationController {
 						"CstFunction failed: " + e.getMessage(), e);
 			}
 		}
+		return success;
 	}
 
-	private void applyAttributiveFunction(ICell cell, InstanceMap transformMap) {	
+	private boolean applyAttributiveFunction(ICell cell, InstanceMap transformMap) {
+		boolean success = true;
 		try {
 			// create CstFunction by using CstFunctionFactory
 			CstFunction cstf = CstFunctionFactory.getInstance().getCstFunction(cell);
@@ -384,12 +423,14 @@ public class SchemaTranslationController {
 						cstf.transform(source, 
 								transformMap.getTransformedFeatures().get(i));
 					} catch (Exception e) {
+						success = false;
 						if (this.strict) {
 							throw new RuntimeException("Executing the requested " +
 									"CstFunction failed: " + e.getMessage(), e);
 						}
 						else {
 							error = e.getMessage();
+							_log.error(AGroupFactory.getGroup(CellUtils.asString(cell)), error);
 						}
 					}
 					if (this.addLineage) {
@@ -399,6 +440,7 @@ public class SchemaTranslationController {
 				}
 			}
 		} catch (Exception e) {
+			success = false;
 			if (this.strict) {
 				throw new RuntimeException("Executing the requested " +
 						"CstFunction failed: " + e.getMessage(), e);
@@ -408,6 +450,7 @@ public class SchemaTranslationController {
 						"CstFunction failed: " + e.getMessage(), e);
 			}
 		}
+		return success;
 	}
 	
 	private void addLineage(String error, CstFunction cstf, Feature target, ICell cell) {
