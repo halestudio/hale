@@ -25,7 +25,7 @@ Require-Bundle: org.eclipse.ui,
  org.apache.ws.commons.schema;bundle-version="1.4.4",
  org.eclipse.zest.core;bundle-version="1.1.0",
  org.eclipse.zest.layouts;bundle-version="1.1.0",
- gmlhandler;bundle-version="1.0.0"
+ eu.esdihumboldt.gmlhandler;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

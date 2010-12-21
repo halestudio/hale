@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: gmlhandler
-Bundle-SymbolicName: gmlhandler
+Bundle-SymbolicName: eu.esdihumboldt.gmlhandler
 Bundle-Version: 1.0.0.qualifier
 Export-Package: eu.esdihumboldt.gmlhandler,
  eu.esdihumboldt.gmlhandler.gt2deegree
