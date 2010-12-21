@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.gmlparser.gml3;
 
 import java.util.Map;
 
+import org.geotools.gml3.GML;
 import org.geotools.gml3.bindings.SurfaceArrayPropertyTypeBinding;
 import org.geotools.xml.Configuration;
 
@@ -38,13 +39,15 @@ public class HaleGMLConfiguration extends org.geotools.gml3.GMLConfiguration {
 	protected void configureBindings(Map bindings) {
 		super.configureBindings(bindings);
 		
-		bindings.put(org.geotools.gml3.GML.SurfacePatchArrayPropertyType, SurfaceArrayPropertyTypeBinding.class);
+		bindings.put(GML.SurfacePatchArrayPropertyType, SurfaceArrayPropertyTypeBinding.class);
 		
-		bindings.put(org.geotools.gml3.GML.SurfaceType, HaleSurfaceTypeBinding.class);
+		bindings.put(GML.SurfaceType, HaleSurfaceTypeBinding.class);
 		
-		bindings.put(org.geotools.gml3.GML.MultiPolygonType, HaleMultiPolygonTypeBinding.class);
+		bindings.put(GML.MultiPolygonType, HaleMultiPolygonTypeBinding.class);
 		
-		bindings.put(org.geotools.gml3.GML.ReferenceType, HaleReferenceTypeBinding.class);
+		bindings.put(GML.ReferenceType, HaleReferenceTypeBinding.class);
+		
+		bindings.put(GML.SurfacePropertyType, HaleSurfacePropertyTypeBinding.class);
 		
 //		bindings.put(new QName("http://www.opengis.net/gml","CurvePropertyType"), HaleCurvePropertyTypeBinding.class);
 //		
