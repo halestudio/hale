@@ -12,14 +12,13 @@
 
 package eu.esdihumboldt.hale.rcp.utils.codelist.internal;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -36,6 +35,9 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.rcp.utils.codelist.CodeListService;
+import eu.esdihumboldt.hale.rcp.utils.tree.CollectionTreeNodeContentProvider;
+import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
+import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNodeLabelProvider;
 
 /**
  * Code list preference page
@@ -47,9 +49,9 @@ import eu.esdihumboldt.hale.rcp.utils.codelist.CodeListService;
 public class CodeListPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 	
-	private ListViewer listViewer;
+	private TreeViewer listViewer;
 	
-	private List<String> searchPath;
+	private List<SearchPathNode> searchPath;
 
 	/**
 	 * @see PreferencePage#createContents(Composite)
@@ -65,12 +67,16 @@ public class CodeListPreferencePage extends PreferencePage implements
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false, 2, 1));
 		
 		// search path list
-		listViewer = new ListViewer(page);
-		listViewer.setContentProvider(ArrayContentProvider.getInstance());
-		listViewer.setLabelProvider(new LabelProvider());
+		listViewer = new TreeViewer(page);
+		listViewer.setContentProvider(new CollectionTreeNodeContentProvider());
+		listViewer.setLabelProvider(new MultiColumnTreeNodeLabelProvider(0));
 		listViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		
-		searchPath = CodeListPreferenceInitializer.getSearchPath();
+		List<String> paths = CodeListPreferenceInitializer.getSearchPath();
+		searchPath = new ArrayList<SearchPathNode>(paths.size());
+		for (String path : paths) {
+			searchPath.add(new SearchPathNode(path));
+		}
 		listViewer.setInput(searchPath);
 		
 		// add button (using a directory dialog)
@@ -88,7 +94,7 @@ public class CodeListPreferencePage extends PreferencePage implements
 				dialog.setMessage("Select the search path to add");
 				String path = dialog.open();
 				if (path != null) {
-					searchPath.add(path);
+					searchPath.add(new SearchPathNode(path));
 					listViewer.refresh(false);
 				}
 			}
@@ -105,8 +111,13 @@ public class CodeListPreferencePage extends PreferencePage implements
 			public void widgetSelected(SelectionEvent e) {
 				ISelection selection = listViewer.getSelection();
 				if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
-					String selected = (String) ((IStructuredSelection) selection).getFirstElement();
-					searchPath.remove(selected);
+					Object selected = ((IStructuredSelection) selection).getFirstElement();
+					if (selected instanceof SearchPathNode) {
+						searchPath.remove(selected);
+					}
+					else {
+						searchPath.remove(((DefaultTreeNode) selected).getParent());
+					}
 					listViewer.refresh(false);
 				}
 			}
@@ -122,7 +133,11 @@ public class CodeListPreferencePage extends PreferencePage implements
 	@Override
 	public boolean performOk() {
 		// save preferences
-		CodeListPreferenceInitializer.setSearchPath(searchPath);
+		List<String> paths = new ArrayList<String>(searchPath.size());
+		for (SearchPathNode sp : searchPath) {
+			paths.add(sp.getSearchPath());
+		}
+		CodeListPreferenceInitializer.setSearchPath(paths);
 		
 		// update service
 		CodeListService codeListService = (CodeListService) PlatformUI.getWorkbench().getService(CodeListService.class);
