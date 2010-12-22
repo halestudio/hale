@@ -149,6 +149,7 @@
 					<fileset dir="${platform.dir}">
 						<include name="**/*.jar" />
 						<exclude name="**/lib/" />
+						<exclude name="**/lib-*/" />
 						<exclude name="**/.svn/" />
 					</fileset>
 				</copy>
