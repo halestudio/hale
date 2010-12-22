@@ -61,11 +61,16 @@ public class SaveTransformationResultHandler extends AbstractHandler {
 		
 		final FeatureCollection<FeatureType, Feature> features = is.getFeatures(DatasetType.transformed);
 		
+		if (features == null || features.isEmpty()) {
+			log.userError("No transformed features are available for export.");
+			return null;
+		}
+		
 		final URL targetSchema = ss.getTargetURL();
 		final String targetNamespace = ss.getTargetNameSpace();
 		final Map<String, String> prefixes = ss.getTargetPrefixes();
 		
-		// determine file output file
+		// determine output file
 		FileDialog files = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
 		
 		String[] extensions = new String[2]; 
