@@ -38,10 +38,12 @@ public interface CodeList {
 		private final String namespace;
 
 		/**
-		 * @param name
-		 * @param description
-		 * @param identifier
-		 * @param namespace
+		 * Create a code entry
+		 * 
+		 * @param name the name
+		 * @param description the description
+		 * @param identifier the identifier
+		 * @param namespace the namespace
 		 */
 		public CodeEntry(String name, String description, String identifier,
 				String namespace) {

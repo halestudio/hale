@@ -67,7 +67,7 @@ public class XmlCodeList implements CodeList {
 	 * 
 	 * @param in the input stream of the XML document
 	 * @param location the code list location
-	 * @throws Exception 
+	 * @throws Exception if creating the code list fails
 	 */
 	public XmlCodeList(InputStream in, URI location) throws Exception {
 		this.location = location;

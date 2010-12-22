@@ -58,8 +58,8 @@ public class SearchPathNode extends DefaultTreeNode {
 			for (File candidate : candidates) {
 				try {
 					CodeList codeList = new XmlCodeList(new FileInputStream(candidate), candidate.toURI());
-					addChild(new DefaultTreeNode(codeList.getIdentifier()));
-				} catch (Exception e) {
+					addChild(new CodeListNode(codeList)); //new DefaultTreeNode(codeList.getIdentifier()));
+				} catch (Throwable e) {
 					// ignore
 				}
 			}

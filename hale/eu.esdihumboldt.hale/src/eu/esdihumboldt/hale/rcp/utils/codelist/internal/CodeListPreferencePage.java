@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -36,8 +37,6 @@ import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.rcp.utils.codelist.CodeListService;
 import eu.esdihumboldt.hale.rcp.utils.tree.CollectionTreeNodeContentProvider;
-import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
-import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNodeLabelProvider;
 
 /**
  * Code list preference page
@@ -69,7 +68,7 @@ public class CodeListPreferencePage extends PreferencePage implements
 		// search path list
 		listViewer = new TreeViewer(page);
 		listViewer.setContentProvider(new CollectionTreeNodeContentProvider());
-		listViewer.setLabelProvider(new MultiColumnTreeNodeLabelProvider(0));
+		listViewer.setLabelProvider(new SearchPathLabelProvider()); //new MultiColumnTreeNodeLabelProvider(0));
 		listViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		
 		List<String> paths = CodeListPreferenceInitializer.getSearchPath();
@@ -111,13 +110,11 @@ public class CodeListPreferencePage extends PreferencePage implements
 			public void widgetSelected(SelectionEvent e) {
 				ISelection selection = listViewer.getSelection();
 				if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
-					Object selected = ((IStructuredSelection) selection).getFirstElement();
-					if (selected instanceof SearchPathNode) {
-						searchPath.remove(selected);
+					TreeNode selected = (TreeNode) ((IStructuredSelection) selection).getFirstElement();
+					while (selected.getParent() != null) {
+						selected = selected.getParent();
 					}
-					else {
-						searchPath.remove(((DefaultTreeNode) selected).getParent());
-					}
+					searchPath.remove(selected);
 					listViewer.refresh(false);
 				}
 			}
