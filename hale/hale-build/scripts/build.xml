@@ -84,6 +84,6 @@
 	<dirname property="loc" file="${ant.file.Client Application}"/>
 	
 	<!-- include common build file -->
-	<import file="${loc}/scripts/common.xml" />
+	<import file="${loc}/common/common.xml" />
 	
 </project>
