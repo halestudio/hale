@@ -35,6 +35,9 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+
 import eu.esdihumboldt.hale.rcp.utils.codelist.CodeListService;
 import eu.esdihumboldt.hale.rcp.utils.tree.CollectionTreeNodeContentProvider;
 
@@ -48,10 +51,12 @@ import eu.esdihumboldt.hale.rcp.utils.tree.CollectionTreeNodeContentProvider;
 public class CodeListPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 	
+	private static final ALogger log = ALoggerFactory.getLogger(CodeListPreferencePage.class);
+	
 	private TreeViewer listViewer;
 	
 	private List<SearchPathNode> searchPath;
-
+	
 	/**
 	 * @see PreferencePage#createContents(Composite)
 	 */
@@ -93,8 +98,12 @@ public class CodeListPreferencePage extends PreferencePage implements
 				dialog.setMessage("Select the search path to add");
 				String path = dialog.open();
 				if (path != null) {
-					searchPath.add(new SearchPathNode(path));
+					SearchPathNode node = new SearchPathNode(path);
+					searchPath.add(node);
 					listViewer.refresh(false);
+					if (!node.hasChildren()) {
+						log.userWarn("No code lists found in " + path);
+					}
 				}
 			}
 		});
