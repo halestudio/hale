@@ -45,6 +45,22 @@ public class NilReasonWizardFactory extends AugmentationWizardFactory {
 			return false;
 		}
 		
+		if (item.hasChildren()) {
+			boolean foundNilReason = false;
+			for (SchemaItem child : item.getChildren()) {
+				if (child.getName().getLocalPart().equalsIgnoreCase("nilreason")
+						&& child.isAttribute()) {
+					foundNilReason = true;
+				}
+			}
+			if (!foundNilReason) {
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
+		
 		return augmentation == null || augmentation.getEntity2().getTransformation()
 			.getService().getLocation().equals(NilReasonFunction.class.getName());
 	}
