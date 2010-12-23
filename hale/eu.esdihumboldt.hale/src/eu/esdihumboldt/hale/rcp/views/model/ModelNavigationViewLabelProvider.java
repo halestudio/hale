@@ -44,6 +44,7 @@ import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.swingrcpbridge.SwingRcpUtilities;
 import eu.esdihumboldt.hale.rcp.views.map.style.StyleUtil;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
+import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 
 /**
  * Provides Images for the elements of the data models in the 
@@ -55,19 +56,118 @@ import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 public class ModelNavigationViewLabelProvider extends LabelProvider
 	implements IColorProvider {
 	
+	private static class ImageConf {
+		
+		private final String identifier;
+		
+		private final boolean attribute;
+		
+		private final boolean def;
+		
+		private final boolean mandatory;
+
+		/**
+		 * Constructor
+		 * 
+		 * @param identifier the image identifier/key
+		 * @param attribute if an attribute is represented (not an element)
+		 * @param def if the image is to be marked a default (e.g. default geometry)
+		 * @param mandatory if the image is to be marked as mandatory 
+		 */
+		public ImageConf(String identifier, boolean attribute, boolean def,
+				boolean mandatory) {
+			super();
+			this.identifier = identifier;
+			this.attribute = attribute;
+			this.def = def;
+			this.mandatory = mandatory;
+		}
+
+		/**
+		 * @return the identifier
+		 */
+		public String getIdentifier() {
+			return identifier;
+		}
+
+		/**
+		 * @return the attribute
+		 */
+		public boolean isAttribute() {
+			return attribute;
+		}
+
+		/**
+		 * @return the def
+		 */
+		public boolean isDef() {
+			return def;
+		}
+
+		/**
+		 * @return the mandatory
+		 */
+		public boolean isMandatory() {
+			return mandatory;
+		}
+
+		/**
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + (attribute ? 1231 : 1237);
+			result = prime * result + (def ? 1231 : 1237);
+			result = prime * result
+					+ ((identifier == null) ? 0 : identifier.hashCode());
+			result = prime * result + (mandatory ? 1231 : 1237);
+			return result;
+		}
+
+		/**
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			ImageConf other = (ImageConf) obj;
+			if (attribute != other.attribute)
+				return false;
+			if (def != other.def)
+				return false;
+			if (identifier == null) {
+				if (other.identifier != null)
+					return false;
+			} else if (!identifier.equals(other.identifier))
+				return false;
+			if (mandatory != other.mandatory)
+				return false;
+			return true;
+		}
+		
+	}
+	
 	private final Map<RGB, Color> createdColors = new HashMap<RGB, Color>();
 	
-	private Image attribOverlay = AbstractUIPlugin.imageDescriptorFromPlugin(
+	private final Image attribOverlay = AbstractUIPlugin.imageDescriptorFromPlugin(
 				HALEActivator.PLUGIN_ID, "/icons/attrib_overlay2.gif").createImage();
 	
-	private Image defOverlay = AbstractUIPlugin.imageDescriptorFromPlugin(
+	private final Image defOverlay = AbstractUIPlugin.imageDescriptorFromPlugin(
 			HALEActivator.PLUGIN_ID, "/icons/def_overlay.gif").createImage();
+	
+	private final Image mandatoryOverlay = AbstractUIPlugin.imageDescriptorFromPlugin(
+			HALEActivator.PLUGIN_ID, "/icons/mandatory_ov2.gif").createImage();
 	
 	private final Map<String, Image> images = new HashMap<String, Image>();
 	
-	private final Map<String, Image> attribImages = new HashMap<String, Image>();
-	
-	private final Map<String, Image> defImages = new HashMap<String, Image>();
+	private final Map<ImageConf, Image> overlayedImages = new HashMap<ImageConf, Image>();
 	
 	private final Map<String, Image> styleImages = new HashMap<String, Image>();
 	
@@ -85,6 +185,7 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 		TreeObject to = (TreeObject) obj;
 		String imageKey = null;
 		
+		// determine image key
 		if (to.getType().equals(TreeObjectType.ROOT)) {
 			imageKey = ISharedImages.IMG_DEF_VIEW;
 			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
@@ -93,6 +194,7 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 			imageKey = ModelNavigationViewLabelProvider.getImageforTreeObjectType(to.getType());
 		}
 		
+		// retrieve image for key
 		Image image;
 		if (imageKey == null) {
 			// default
@@ -129,50 +231,52 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 			}
 		}
 		// check for inline attributes
-		else if (to instanceof AttributeItem && ((AttributeItem) to).getAttributeDefinition().isAttribute()) {
-			Image attribImage = attribImages.get(imageKey);
-			
-			if (attribImage == null) {
-				Image copy = new Image(image.getDevice(), image.getBounds());
-				
-				// draw on image
-				GC gc = new GC(copy);
-				try {
-					gc.drawImage(image, 0, 0);
-					gc.drawImage(attribOverlay, 0, 0);
-				} finally {
-					gc.dispose();
-				}
-				
-				image = copy;
-				attribImages.put(imageKey, copy);
+		else {
+			boolean attribute;
+			boolean mandatory;
+			if (to instanceof AttributeItem) {
+				AttributeDefinition def = ((AttributeItem) to).getAttributeDefinition();
+				attribute = def.isAttribute();
+				mandatory = !def.isNillable() && def.getMinOccurs() > 0;
 			}
 			else {
-				image = attribImage;
+				attribute = false;
+				mandatory = false;
 			}
-		}
-		// check for default geometries
-		else if (to.isAttribute() && to.getType() == TreeObjectType.GEOMETRIC_ATTRIBUTE 
-				&& to.getParent().isFeatureType() && isDefaultGeometry((FeatureType) to.getParent().getPropertyType(), to.getName().getLocalPart())) {
-			Image defImage = defImages.get(imageKey);
+			boolean def = to.isAttribute() && to.getType() == TreeObjectType.GEOMETRIC_ATTRIBUTE && to.getParent().isFeatureType() && isDefaultGeometry((FeatureType) to.getParent().getPropertyType(), to.getName().getLocalPart());
 			
-			if (defImage == null) {
-				Image copy = new Image(image.getDevice(), image.getBounds());
+			if (def || mandatory || attribute) {
+				// overlayed image
+				ImageConf conf = new ImageConf(imageKey, attribute, def, mandatory);
+				Image overlayedImage = overlayedImages.get(conf);
 				
-				// draw on image
-				GC gc = new GC(copy);
-				try {
-					gc.drawImage(image, 0, 0);
-					gc.drawImage(defOverlay, 0, 0);
-				} finally {
-					gc.dispose();
+				if (overlayedImage == null) {
+					// apply overlays to image
+					
+					Image copy = new Image(image.getDevice(), image.getBounds());
+					// draw on image
+					GC gc = new GC(copy);
+					try {
+						gc.drawImage(image, 0, 0);
+						if (attribute) {
+							gc.drawImage(attribOverlay, 0, 0);
+						}
+						if (def) {
+							gc.drawImage(defOverlay, 0, 0);
+						}
+						if (mandatory) {
+							gc.drawImage(mandatoryOverlay, 0, 0);
+						}
+					} finally {
+						gc.dispose();
+					}
+					
+					image = copy;
+					overlayedImages.put(conf, copy);
 				}
-				
-				image = copy;
-				defImages.put(imageKey, copy);
-			}
-			else {
-				image = defImage;
+				else {
+					image = overlayedImage;
+				}
 			}
 		}
 		
@@ -343,20 +447,19 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 		}
 		images.clear();
 		
-		for (Image image : attribImages.values()) {
+		for (Image image : overlayedImages.values()) {
 			image.dispose();
 		}
-		attribImages.clear();
-		
-		for (Image image : defImages.values()) {
-			image.dispose();
-		}
-		defImages.clear();
+		overlayedImages.clear();
 		
 		for (Image image : styleImages.values()) {
 			image.dispose();
 		}
 		styleImages.clear();
+		
+		attribOverlay.dispose();
+		defOverlay.dispose();
+		mandatoryOverlay.dispose();
 			
 		super.dispose();
 	}
