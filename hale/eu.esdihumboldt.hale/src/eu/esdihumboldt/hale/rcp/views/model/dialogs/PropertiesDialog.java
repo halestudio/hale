@@ -209,6 +209,9 @@ public class PropertiesDialog extends TitleAreaDialog {
 		if (item instanceof AttributeItem) {
 			AttributeDefinition property = ((AttributeItem) item).getAttributeDefinition();
 			
+			// add namespace to name
+			name.addChild(new DefaultTreeNode("Namespace", property.getNamespace()));
+			
 			// nillable
 			DefaultTreeNode nillable = new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleNillable, 
 					String.valueOf(property.isNillable()));
