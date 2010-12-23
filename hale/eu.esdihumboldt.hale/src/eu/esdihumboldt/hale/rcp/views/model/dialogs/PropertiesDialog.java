@@ -202,7 +202,7 @@ public class PropertiesDialog extends TitleAreaDialog {
 						typeDef.getName().getNamespaceURI() + "/" + typeDef.getName().getLocalPart()); //$NON-NLS-1$
 				nodes.add(type);
 				
-				addTypeNodes(typeDef, type);
+				addTypeNodes(typeDef, type, true, true);
 			}
 		}
 		
@@ -267,7 +267,7 @@ public class PropertiesDialog extends TitleAreaDialog {
 	}
 
 	private void addTypeNodes(TypeDefinition typeDef,
-			DefaultTreeNode typeNode) {
+			DefaultTreeNode typeNode, boolean addSubTypes, boolean addSuperType) {
 		typeNode.addChild(new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleNamespace, typeDef.getName().getNamespaceURI()));
 		typeNode.addChild(new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleLocalpart, typeDef.getName().getLocalPart()));
 		typeNode.addChild(new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleBinding,
@@ -277,12 +277,26 @@ public class PropertiesDialog extends TitleAreaDialog {
 			typeNode.addChild(new DefaultTreeNode("Location", typeDef.getLocation()));
 		}
 		
-		TypeDefinition superType = typeDef.getSuperType();
-		if (superType != null) {
-			DefaultTreeNode superNode = new DefaultTreeNode("Supertype", superType.getName().getNamespaceURI() + "/" + superType.getName().getLocalPart());
-			typeNode.addChild(superNode);
+		if (addSubTypes && typeDef.getSubTypes() != null && !typeDef.getSubTypes().isEmpty()) {
+			DefaultTreeNode subsNode = new DefaultTreeNode("Subtypes");
+			typeNode.addChild(subsNode);
 			
-			addTypeNodes(superType, superNode);
+			for (TypeDefinition subType : typeDef.getSubTypes()) {
+				DefaultTreeNode subNode = new DefaultTreeNode(subType.getName().getLocalPart());
+				subsNode.addChild(subNode);
+				
+				addTypeNodes(subType, subNode, true, false);
+			}
+		}
+		
+		if (addSuperType) {
+			TypeDefinition superType = typeDef.getSuperType();
+			if (superType != null) {
+				DefaultTreeNode superNode = new DefaultTreeNode("Supertype", superType.getName().getNamespaceURI() + "/" + superType.getName().getLocalPart());
+				typeNode.addChild(superNode);
+				
+				addTypeNodes(superType, superNode, false, true);
+			}
 		}
 	}
 
