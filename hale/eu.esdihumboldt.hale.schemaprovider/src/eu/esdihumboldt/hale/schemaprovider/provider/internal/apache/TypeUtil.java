@@ -509,6 +509,7 @@ public abstract class TypeUtil {
 		if (binding == null || binding2 == null) {
 			return Object.class;
 		}
+		
 		if (binding.equals(binding2)) {
 			return binding;
 		}
@@ -517,6 +518,10 @@ public abstract class TypeUtil {
 		}
 		else if (binding2.isAssignableFrom(binding)) {
 			return binding2;
+		}
+		// special treatment for string - if any binding is compatible to String, it is returned
+		else if (String.class.isAssignableFrom(binding) || String.class.isAssignableFrom(binding2)) {
+			return String.class;
 		}
 		else {
 			return findCompatibleClass(binding.getSuperclass(), binding2.getSuperclass());
