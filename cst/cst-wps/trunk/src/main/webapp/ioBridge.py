@@ -5,6 +5,7 @@ from eu.esdihumboldt.cst.iobridge.impl import DefaultCstServiceBridge
 import types
 import os,urllib,sys
 import traceback,pywps
+import logging
 
 def createIOBridgeProcess():
 
