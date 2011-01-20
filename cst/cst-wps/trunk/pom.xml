@@ -7,6 +7,10 @@
 	<name>wps Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 
+ <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
 
 	<scm>
 		<connection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/cst-wps/trunk</connection>
