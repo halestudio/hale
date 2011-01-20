@@ -51,5 +51,6 @@
 <location path="${project_loc:hale-platform}/target/edu.umd.cs.findbugs" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/com.onespatial" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.custommonkey" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/com.hp.hpl.jena" type="Directory"/>
 </locations>
 </target>
