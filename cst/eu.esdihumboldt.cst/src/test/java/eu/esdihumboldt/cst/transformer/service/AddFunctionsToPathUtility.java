@@ -18,7 +18,7 @@ public class AddFunctionsToPathUtility {
 	}
 	public void add() {
 		Class[] parameters = new Class[]{URL.class};
-		URL functions = getClass().getResource("corefunctions-1.0.2-SNAPSHOT.jar");		
+		URL functions = getClass().getResource("/corefunctions-1.0.4.jar");		
 		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 	      Class sysclass = URLClassLoader.class;
 
