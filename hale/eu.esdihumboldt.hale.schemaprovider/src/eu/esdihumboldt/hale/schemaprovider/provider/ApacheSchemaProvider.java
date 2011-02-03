@@ -148,6 +148,12 @@ public class ApacheSchemaProvider
 					}
 					// </element>
 				}
+				else if (object instanceof XmlSchemaParticle) {
+					// contained particles, e.g. a choice TODO wrap those attributes?
+					attributeResults.addAll(getAttributesFromParticle(elements, 
+							importedElements, typeDef, 
+							(XmlSchemaParticle) object, schemaTypes));
+				}
 			}
 			// </sequence>
 		}
@@ -167,6 +173,12 @@ public class ApacheSchemaProvider
 						attributeResults.add(attribute);
 					}
 					// </element>
+				}
+				else if (object instanceof XmlSchemaParticle) {
+					// contained particles, e.g. a choice TODO wrap those attributes?
+					attributeResults.addAll(getAttributesFromParticle(elements, 
+							importedElements, typeDef, 
+							(XmlSchemaParticle) object, schemaTypes));
 				}
 			}
 			// </choice>
