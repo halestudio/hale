@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.xerces.parsers.DOMParser;
+import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
@@ -30,7 +31,7 @@ import org.xml.sax.SAXNotSupportedException;
  */
 public class XercesValidator {
 
-	private static void setFeature(DOMParser parser, String feature,
+	private static void setFeature(SAXParser parser, String feature,
 			boolean setting) {
 
 		try {
@@ -51,15 +52,13 @@ public class XercesValidator {
 	 * @param xml the XML input stream
 	 */
 	public static void validate(InputStream xml) {
-		DOMParser parser = new DOMParser();
+		SAXParser parser = new SAXParser();
 
 		setFeature(parser, "http://xml.org/sax/features/validation", true);
-		setFeature(parser, "http://apache.org/xml/features/validation/schema",
-				true);
-
+		setFeature(parser, "http://apache.org/xml/features/validation/schema", true);
+		
 		try {
 			parser.parse(new InputSource(xml));
-//			Document doc = parser.getDocument();
 		} catch (IOException ie) {
 			System.out.println("Could not read file.");
 		} catch (SAXException e) {
