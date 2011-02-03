@@ -16,7 +16,6 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.Map.Entry;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -188,7 +187,7 @@ public class StreamGmlWriter {
 	 * @throws XMLStreamException if writing the feature fails 
 	 */
 	protected void writeMember(Feature feature, TypeDefinition type) throws XMLStreamException {
-		Name elementName = getElementName(type);
+		Name elementName = GmlWriterUtil.getElementName(type);
 		writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 		
 		// feature id
@@ -218,30 +217,6 @@ public class StreamGmlWriter {
 		writeProperties(feature, type);
 		
 		writer.writeEndElement(); // type element name
-	}
-
-	/**
-	 * Get the element name from a type definition
-	 * 
-	 * @param type the type definition
-	 * @return the element name
-	 */
-	public static Name getElementName(TypeDefinition type) {
-		Set<SchemaElement> elements = type.getDeclaringElements();
-		if (elements == null || elements.isEmpty()) {
-			log.warn("No schema element for type " + type.getDisplayName() + 
-					" found, using type name instead");
-			return type.getName();
-		}
-		else {
-			Name elementName = elements.iterator().next().getElementName();
-			if (elements.size() > 1) {
-				log.warn("Multiple element definitions for type " + 
-						type.getDisplayName() + " found, using element " + 
-						elementName.getLocalPart());
-			}
-			return elementName;
-		}
 	}
 
 	/**

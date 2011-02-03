@@ -318,8 +318,9 @@ public class StreamGeometryWriter {
 		
 		if (candidates.isEmpty()) {
 			// check if there is a direct match
-			if (matches(type, geomType)) {
-				return Collections.singletonList(basePath);
+			DefinitionPath candidate = matchPath(type, geomType, basePath);
+			if (candidate != null) {
+				return Collections.singletonList(candidate);
 			}
 			else {
 				return new ArrayList<DefinitionPath>();
@@ -335,10 +336,13 @@ public class StreamGeometryWriter {
 	 *  
 	 * @param type the type definition
 	 * @param geomType the geometry type
+	 * @param path the current definition path
 	 * 
-	 * @return if the type is compatible to the geometry type
+	 * @return the (eventually updated) definition path if a match is found,
+	 * otherwise <code>null</code>
 	 */
-	protected boolean matches(TypeDefinition type, Class<? extends Geometry> geomType) {
+	protected DefinitionPath matchPath(TypeDefinition type, 
+			Class<? extends Geometry> geomType, DefinitionPath path) {
 		boolean compatible = false;
 		
 		// check compatibility list
@@ -362,9 +366,12 @@ public class StreamGeometryWriter {
 			compatible = type.getType(null).getBinding().equals(geomType);
 		}
 		
-		//TODO check type def structure?!!
+		if (compatible) {
+			//TODO check type def structure?!!
+			return path;
+		}
 		
-		return compatible;
+		return null;
 	}
 
 }

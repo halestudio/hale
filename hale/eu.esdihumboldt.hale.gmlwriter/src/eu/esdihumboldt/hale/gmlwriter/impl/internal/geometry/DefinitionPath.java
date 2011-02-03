@@ -18,7 +18,7 @@ import java.util.List;
 import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.Name;
 
-import eu.esdihumboldt.hale.gmlwriter.impl.internal.StreamGmlWriter;
+import eu.esdihumboldt.hale.gmlwriter.impl.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
@@ -53,7 +53,7 @@ public class DefinitionPath {
 		 */
 		@Override
 		public Name getName() {
-			return StreamGmlWriter.getElementName(subtype);
+			return GmlWriterUtil.getElementName(subtype);
 		}
 
 		/**
@@ -223,6 +223,18 @@ public class DefinitionPath {
 		else {
 			return result.toString();
 		}
+	}
+
+	/**
+	 * Get the last path element
+	 * 
+	 * @return the last path element or <code>null</code> if it's empty
+	 */
+	public PathElement getLastElement() {
+		if (steps.isEmpty()) {
+			return null;
+		}
+		return steps.get(steps.size() - 1);
 	}
 	
 }
