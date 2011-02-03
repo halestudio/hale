@@ -24,9 +24,11 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.geotools.feature.ComplexAttributeImpl;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.NameImpl;
 import org.geotools.gml3.GML;
+import org.geotools.gml3.GMLSchema;
 import org.opengis.feature.ComplexAttribute;
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
@@ -359,7 +361,7 @@ public class StreamGmlWriter {
 			}
 		}
 		
-		writeProperties(feature, type);
+		writeProperties(feature, type, true);
 		
 		writer.writeEndElement(); // type element name
 	}
@@ -369,9 +371,10 @@ public class StreamGmlWriter {
 	 * 
 	 * @param feature the feature
 	 * @param type the feature type
+	 * @param allowElements if element properties may be written
 	 * @throws XMLStreamException if writing the properties fails
 	 */
-	private void writeProperties(ComplexAttribute feature, TypeDefinition type) throws XMLStreamException {
+	private void writeProperties(ComplexAttribute feature, TypeDefinition type, boolean allowElements) throws XMLStreamException {
 		// eventually generate mandatory ID that is not set
 		writeRequiredID(writer, type, feature, true);
 		
@@ -387,13 +390,15 @@ public class StreamGmlWriter {
 			}
 		}
 		
-		for (AttributeDefinition attDef : attributes) {
-			// elements must be handled after attributes
-			if (!attDef.isAttribute()) {
-				Property property = FeatureInspector.getProperty(feature, Arrays.asList(attDef.getName()), false);
-				Object value = (property == null) ? (null) : (property.getValue());
-				
-				writeElement(value, attDef);
+		if (allowElements) {
+			for (AttributeDefinition attDef : attributes) {
+				// elements must be handled after attributes
+				if (!attDef.isAttribute()) {
+					Property property = FeatureInspector.getProperty(feature, Arrays.asList(attDef.getName()), false);
+					Object value = (property == null) ? (null) : (property.getValue());
+					
+					writeElement(value, property, attDef);
+				}
 			}
 		}
 	}
@@ -402,14 +407,16 @@ public class StreamGmlWriter {
 	 * Write a property element
 	 * 
 	 * @param value the element value
+	 * @param property the property that contained the value (needed for 
+	 * attribute values for simple types)
 	 * @param attDef the attribute definition
 	 * @throws XMLStreamException if writing the element fails
 	 */
-	private void writeElement(Object value, AttributeDefinition attDef) throws XMLStreamException {
+	private void writeElement(Object value, Property property, AttributeDefinition attDef) throws XMLStreamException {
 		// for collections call this method for each item
 		if (value instanceof Collection<?>) {
 			for (Object item : ((Collection<?>) value)) {
-				writeElement(item, attDef);
+				writeElement(item, null, attDef);
 			}
 			return;
 		}
@@ -421,6 +428,9 @@ public class StreamGmlWriter {
 			if (attDef.getMinOccurs() > 0) {
 				// write empty element
 				writer.writeEmptyElement(attDef.getNamespace(), attDef.getName());
+				
+				// but may have attributes
+				writeSimpleTypeAttributes(property, attDef);
 				
 				if (!attDef.isNillable()) {
 					log.warn("Non-nillable element " + attDef.getName() + " is null");
@@ -435,19 +445,37 @@ public class StreamGmlWriter {
 			
 			if (value instanceof ComplexAttribute) {
 				// write properties
-				writeProperties((ComplexAttribute) value, attDef.getAttributeType());
+				writeProperties((ComplexAttribute) value, attDef.getAttributeType(), true);
 			}
 			else if (value instanceof Geometry) {
 				// write geometry
-				//XXX maybe in some cases the encasing elements are wrong? -> check
 				writeGeometry(((Geometry) value), attDef.getAttributeType());
 			}
 			else {
+				// write any attributes
+				writeSimpleTypeAttributes(property, attDef);
+				
 				// write value as content
 				writer.writeCharacters(value.toString()); //TODO convert mechanism
 			}
 			
 			writer.writeEndElement();
+		}
+	}
+
+	/**
+	 * Write any attributes for simple type elements
+	 * 
+	 * @param property the property of the simple type element
+	 * @param attDef the attribute definition of the simple type element
+	 * @throws XMLStreamException if an error occurs writing the attributes
+	 */
+	private void writeSimpleTypeAttributes(Property property,
+			AttributeDefinition attDef) throws XMLStreamException {
+		if (property != null) {
+			//XXX create dummy attribute for writeProperties TODO better: FeatureInspector must support Property
+			ComplexAttribute ca = new ComplexAttributeImpl(FeatureInspector.getProperties(property), GMLSchema.ABSTRACTSTYLETYPE_TYPE, null);
+			writeProperties(ca, attDef.getAttributeType(), false);
 		}
 	}
 
