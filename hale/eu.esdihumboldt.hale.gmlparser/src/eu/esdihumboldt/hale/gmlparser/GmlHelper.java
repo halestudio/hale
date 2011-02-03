@@ -93,6 +93,21 @@ public class GmlHelper {
 			String schemaLocation, Iterable<SchemaElement> elements) {
 		return loadGml(xml, type, true, namespace, schemaLocation, elements);
 	}
+	
+	/**
+	 * Load GML from an input stream
+	 * 
+	 * @param xml the XML input stream
+	 * @param type the configuration type, defaults to GML3
+	 * @param schema schema
+	 * 
+	 * @return the loaded feature collection or <code>null</code>
+	 */
+	public static FeatureCollection<FeatureType, Feature> loadGml(
+			InputStream xml, ConfigurationType type, Schema schema) {
+		return loadGml(xml, type, true, schema.getNamespace(),
+			schema.getLocation().toString(), schema.getElements().values());
+	}
 
 	/**
 	 * Load GML from an input stream
@@ -292,5 +307,5 @@ public class GmlHelper {
 			return def;
 		}
 	}
-	
+
 }
