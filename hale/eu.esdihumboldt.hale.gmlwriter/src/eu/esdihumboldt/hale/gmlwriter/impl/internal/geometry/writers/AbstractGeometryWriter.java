@@ -163,7 +163,8 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	 * Verify the verification end point. After reaching the end-point of a
 	 * verification pattern this method is called with the {@link TypeDefinition}
 	 * of the end-point to assure the needed structure is present (e.g. a
-	 * DirectPositionListType element).
+	 * DirectPositionListType element). If no verification pattern is present
+	 * the end-point of the matched base pattern will be verified.
 	 * The default implementation checks for properties with any of the types
 	 * supported for writing coordinates.
 	 * @see #SUPPORTED_COORDINATES_TYPES
@@ -210,15 +211,24 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 					}
 				}
 				
-				if (!verifyPatterns.isEmpty() && !anyVerifyMatch) {
-					// patterns present but none successfully verified
-					return null;
+				if (!verifyPatterns.isEmpty()) {
+					if (!anyVerifyMatch) {
+						// patterns present but none successfully verified
+						return null;
+					}
+				}
+				else {
+					// no verify patterns -> check base pattern end-point
+					boolean ok = verifyEndPoint(path.getLastType());
+					if (!ok) {
+						return null;
+					}
 				}
 				
 				/*
 				 * now either all verification patterns matched and the 
 				 * end-points were valid, or no verification patterns were
-				 * specified
+				 * specified and the base pattern end-point was valid
 				 */
 				return path;
 			}

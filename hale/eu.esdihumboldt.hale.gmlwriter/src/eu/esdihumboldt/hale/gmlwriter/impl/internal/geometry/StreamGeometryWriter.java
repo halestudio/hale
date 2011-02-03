@@ -302,8 +302,13 @@ public class StreamGeometryWriter {
 		
 		List<DefinitionPath> candidates = new ArrayList<DefinitionPath>();
 		
-		// even if there is a direct match we use the paths leading further
-		// because we prefer a path as long as possible
+		// check if there is a direct match
+		DefinitionPath candidate = matchPath(type, geomType, basePath);
+		if (candidate != null) {
+			return Collections.singletonList(candidate);
+		}
+		
+		//TODO breadth first search instead of depth first search?!
 		
 		// step down sub-types
 		for (TypeDefinition subtype : type.getSubTypes()) {
@@ -322,19 +327,7 @@ public class StreamGeometryWriter {
 			}
 		}
 		
-		if (candidates.isEmpty()) {
-			// check if there is a direct match
-			DefinitionPath candidate = matchPath(type, geomType, basePath);
-			if (candidate != null) {
-				return Collections.singletonList(candidate);
-			}
-			else {
-				return new ArrayList<DefinitionPath>();
-			}
-		}
-		else {
-			return candidates;
-		}
+		return candidates;
 	}
 
 	/**
