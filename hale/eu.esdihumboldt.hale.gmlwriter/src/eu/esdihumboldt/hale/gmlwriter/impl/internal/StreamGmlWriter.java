@@ -32,8 +32,11 @@ import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 import org.opengis.filter.identity.FeatureId;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.StreamGeometryWriter;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
@@ -56,10 +59,10 @@ public class StreamGmlWriter {
 	 */
 	private final XMLStreamWriter writer;
 	
-	/**
-	 * The target schema
-	 */
-	private final Schema targetSchema;
+//	/**
+//	 * The target schema
+//	 */
+//	private final Schema targetSchema;
 
 	/**
 	 * The GML namespace
@@ -70,6 +73,11 @@ public class StreamGmlWriter {
 	 * The type index
 	 */
 	private final TypeIndex types;
+	
+	/**
+	 * The geometry writer
+	 */
+	private StreamGeometryWriter geometryWriter;
 
 	/**
 	 * Constructor
@@ -79,7 +87,7 @@ public class StreamGmlWriter {
 	 * @throws XMLStreamException if setting up the stream writer fails
 	 */
 	public StreamGmlWriter(Schema targetSchema, OutputStream out) throws XMLStreamException {
-		this.targetSchema = targetSchema;
+//		this.targetSchema = targetSchema;
 		
 		// create and set-up a writer
 		
@@ -306,6 +314,11 @@ public class StreamGmlWriter {
 				// write properties
 				writeProperties((ComplexAttribute) value, attDef.getAttributeType());
 			}
+			else if (value instanceof Geometry) {
+				// write geometry
+				//XXX maybe in some cases the encasing elements are wrong? -> check
+				writeGeometry(((Geometry) value), attDef.getAttributeType());
+			}
 			else {
 				// write value as content
 				writer.writeCharacters(value.toString()); //TODO convert mechanism
@@ -313,6 +326,29 @@ public class StreamGmlWriter {
 			
 			writer.writeEndElement();
 		}
+	}
+
+	/**
+	 * Write a geometry
+	 * 
+	 * @param geometry the geometry
+	 * @param attributeType the type definition
+	 */
+	private void writeGeometry(Geometry geometry, TypeDefinition attributeType) {
+		getGeometryWriter().write(writer, geometry, attributeType);
+	}
+
+	/**
+	 * Get the geometry writer
+	 * 
+	 * @return the geometry writer instance to use 
+	 */
+	protected StreamGeometryWriter getGeometryWriter() {
+		if (geometryWriter == null) {
+			geometryWriter = StreamGeometryWriter.getDefaultInstance(gmlNs);
+		}
+		
+		return geometryWriter;
 	}
 
 	/**
