@@ -264,6 +264,12 @@ public class StreamGeometryWriter {
 	 */
 	private List<DefinitionPath> findCandidates(TypeDefinition attributeType,
 			Class<? extends Geometry> geomType) {
+		Set<GeometryWriter<?>> writers = geometryWriters.get(geomType);
+		if (writers == null || writers.isEmpty()) {
+			// if no writer is present, we can cancel right here
+			return new ArrayList<DefinitionPath>();
+		}
+		
 		return findCandidates(attributeType, geomType, 
 				new DefinitionPath(attributeType),
 				new HashSet<TypeDefinition>());
@@ -305,9 +311,11 @@ public class StreamGeometryWriter {
 		// step down properties
 		Iterable<AttributeDefinition> properties = (basePath.isEmpty())?(type.getAttributes()):(type.getDeclaredAttributes());
 		for (AttributeDefinition att : properties) {
-			candidates.addAll(findCandidates(att.getAttributeType(), geomType, 
-					new DefinitionPath(basePath).addProperty(att),
-					new HashSet<TypeDefinition>(checkedTypes)));
+			if (att.isElement()) { // only descend into elements
+				candidates.addAll(findCandidates(att.getAttributeType(), geomType, 
+						new DefinitionPath(basePath).addProperty(att),
+						new HashSet<TypeDefinition>(checkedTypes)));
+			}
 		}
 		
 		if (candidates.isEmpty()) {
@@ -334,6 +342,7 @@ public class StreamGeometryWriter {
 	 * 
 	 * @return the (eventually updated) definition path if a match is found,
 	 * otherwise <code>null</code>
+
 	 */
 	protected DefinitionPath matchPath(TypeDefinition type, 
 			Class<? extends Geometry> geomType, DefinitionPath path) {
