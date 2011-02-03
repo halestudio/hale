@@ -305,6 +305,8 @@ public class Pattern {
 				remainingElements = remainingElements.subList(index + 1, remainingElements.size());
 				// for a name match, no sub-type descent is allowed
 				allowSubtypeDescent = false;
+				// but an attribute descent is ok
+				allowAttributeDescent = true;
 			}
 			else {
 				// no name match
