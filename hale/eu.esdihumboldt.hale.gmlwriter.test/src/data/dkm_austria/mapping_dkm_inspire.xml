@@ -3,7 +3,7 @@
     <name>DKM_Inspire</name>
     <haleVersion>2.0.1</haleVersion>
     <dateCreated>Mon Dec 20 14:56:30 CET 2010</dateCreated>
-    <dateModified>Tue Dec 21 11:42:50 CET 2010</dateModified>
+    <dateModified>Thu Feb 03 10:19:42 CET 2011</dateModified>
     <omlPath>mapping_dkm_inspire.xml.goml</omlPath>
     <instanceData>
         <path>KA_14168_EPSG25833.gml</path>
