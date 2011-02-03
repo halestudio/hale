@@ -97,7 +97,7 @@ public class FeatureBuilder {
 		}
 		if (source == null) {
 			target = new FeatureImpl(properties, targetType, 
-					new FeatureIdImpl(UUID.randomUUID().toString()));
+					new FeatureIdImpl("_" + UUID.randomUUID().toString())); // XML ID may only start with _ or letter (no digit)
 		}
 		else {
 			// determine the feature ID for the target feature 
