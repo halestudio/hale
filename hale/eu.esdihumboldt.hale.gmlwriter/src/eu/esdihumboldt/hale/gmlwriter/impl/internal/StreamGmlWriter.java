@@ -222,7 +222,7 @@ public class StreamGmlWriter {
 		}
 		else {
 			Name elementName = elements.iterator().next().getElementName();
-			if (elements.size() > 0) {
+			if (elements.size() > 1) {
 				log.warn("Multiple element definitions for type " + 
 						type.getDisplayName() + " found, using element " + 
 						elementName.getLocalPart());
