@@ -10,6 +10,7 @@ Import-Package: com.vividsolutions.jts.geom,
  eu.esdihumboldt.hale.schemaprovider,
  eu.esdihumboldt.hale.schemaprovider.model,
  eu.esdihumboldt.hale.schemaprovider.provider,
+ eu.esdihumboldt.hale.schemaprovider.provider.internal.apache,
  eu.esdihumboldt.tools,
  org.junit;version="4.5.0"
 Require-Bundle: eu.esdihumboldt.hale.gmlwriter;bundle-version="1.0.0",

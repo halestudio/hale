@@ -16,4 +16,5 @@ Export-Package: eu.esdihumboldt.hale.gmlwriter,
  eu.esdihumboldt.hale.gmlwriter.impl,
  eu.esdihumboldt.hale.gmlwriter.impl.internal,
  eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry,
- eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.converters
+ eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.converters,
+ eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers
