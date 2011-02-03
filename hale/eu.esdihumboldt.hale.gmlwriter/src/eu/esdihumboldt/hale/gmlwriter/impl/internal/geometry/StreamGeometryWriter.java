@@ -32,6 +32,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.GmlWriterUtil;
+import eu.esdihumboldt.hale.gmlwriter.impl.internal.StreamGmlWriter;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.GeometryConverterRegistry.ConversionLadder;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers.MultiLineStringWriter;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
@@ -205,6 +206,8 @@ public class StreamGeometryWriter {
 				// start elements
 				name = step.getName();
 				writer.writeStartElement(name.getNamespaceURI(), name.getLocalPart());
+				// write eventual required ID
+				StreamGmlWriter.writeRequiredID(writer, step.getType(), null, false);
 			}
 			
 			// write geometry

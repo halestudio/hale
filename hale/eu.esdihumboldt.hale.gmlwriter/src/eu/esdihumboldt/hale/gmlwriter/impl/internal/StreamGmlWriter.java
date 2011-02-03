@@ -372,6 +372,9 @@ public class StreamGmlWriter {
 	 * @throws XMLStreamException if writing the properties fails
 	 */
 	private void writeProperties(ComplexAttribute feature, TypeDefinition type) throws XMLStreamException {
+		// eventually generate mandatory ID that is not set
+		writeRequiredID(writer, type, feature, true);
+		
 		// writing the feature is controlled by the type definition
 		Collection<AttributeDefinition> attributes = type.getAttributes();
 		for (AttributeDefinition attDef : attributes) {
