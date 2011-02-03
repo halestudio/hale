@@ -40,7 +40,7 @@ public class DefaultAttribute extends AbstractDefaultAttribute {
 	 */
 	public DefaultAttribute(TypeDefinition declaringType, Name typeName,
 			XmlSchemaAttribute attribute, TypeDefinition attributeType, XmlSchemaUse use) {
-		super(attribute.getName(), typeName, null, getNamespace(attribute),
+		super(attribute.getName(), typeName, attributeType, getNamespace(attribute),
 				use);
 		
 		String description = AbstractElementAttribute.getDescription(attribute);
