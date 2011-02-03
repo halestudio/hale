@@ -221,7 +221,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	}
 	
 	/**
-	 * Write coordinates into a posList or coordinates property
+	 * Write coordinates into a pos, posList or coordinates property
 	 * 
 	 * @param writer the XML stream writer 
 	 * @param coordinates the coordinates to write
@@ -266,7 +266,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 			Coordinate[] coordinates, TypeDefinition elementType, String gmlNs) throws XMLStreamException {
 		AttributeDefinition posAttribute = null;
 		
-		// check for DirectPositionListType
+		// check for DirectPositionType
 		for (AttributeDefinition att : elementType.getAttributes()) {
 			if (att.getTypeName().equals(new NameImpl(gmlNs, "DirectPositionType"))) {
 				posAttribute = att;
@@ -297,7 +297,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	}
 
 	/**
-	 * Write coordinates into a posList or (TODO) coordinates property
+	 * Write coordinates into a posList or coordinates property
 	 * 
 	 * @param writer the XML stream writer 
 	 * @param coordinates the coordinates to write
@@ -309,12 +309,24 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	private static boolean writeList(XMLStreamWriter writer,
 			Coordinate[] coordinates, TypeDefinition elementType, String gmlNs) throws XMLStreamException {
 		AttributeDefinition listAttribute = null;
+		String delimiter = " ";
 		
 		// check for DirectPositionListType
 		for (AttributeDefinition att : elementType.getAttributes()) {
 			if (att.getTypeName().equals(new NameImpl(gmlNs, "DirectPositionListType"))) {
 				listAttribute = att;
 				break;
+			}
+		}
+		
+		if (listAttribute == null) {
+			// check for CoordinatesType
+			for (AttributeDefinition att : elementType.getAttributes()) {
+				if (att.getTypeName().equals(new NameImpl(gmlNs, "CoordinatesType"))) {
+					listAttribute = att;
+					delimiter = ",";
+					break;
+				}
 			}
 		}
 		
@@ -329,12 +341,12 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 					first = false;
 				}
 				else {
-					writer.writeCharacters(" ");
+					writer.writeCharacters(delimiter);
 				}
 				
 				//XXX only supports 2D
 				writer.writeCharacters(String.valueOf(coordinate.x));
-				writer.writeCharacters(" ");
+				writer.writeCharacters(delimiter);
 				writer.writeCharacters(String.valueOf(coordinate.y));
 			}
 			
