@@ -225,7 +225,7 @@ public class DefaultGmlWriterTest {
 			}
 		}
 		return new FeatureImpl(properties, targetType, 
-					new FeatureIdImpl(UUID.randomUUID().toString()));
+					new FeatureIdImpl("_" + UUID.randomUUID().toString())); // ID must start with _ or letter (not with digit)
 	}
 	
 }
