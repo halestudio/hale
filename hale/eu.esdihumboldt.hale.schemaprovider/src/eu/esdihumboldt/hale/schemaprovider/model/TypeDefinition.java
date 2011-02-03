@@ -21,11 +21,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.prefs.Preferences;
 
 import org.apache.log4j.Logger;
 import org.geotools.feature.NameImpl;
-import org.geotools.xs.XSSchema;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.FeatureType;
@@ -36,8 +34,6 @@ import com.vividsolutions.jts.geom.Geometry;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.rdf.About;
-import eu.esdihumboldt.hale.schemaprovider.EnumAttributeTypeImpl;
-import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.CustomDefaultAttribute;
 
 /**
  * Represents a type definition
@@ -84,14 +80,14 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	private final boolean complex;
 	
 	/**
-	 * The list of declared attributes
+	 * The list of declared attributes (list because order must be maintained for writing)
 	 */
-	private final SortedSet<AttributeDefinition> declaredAttributes = new TreeSet<AttributeDefinition>();
+	private final List<AttributeDefinition> declaredAttributes = new ArrayList<AttributeDefinition>();
 	
 	/**
 	 * The inherited attributes
 	 */
-	private SortedSet<AttributeDefinition> inheritedAttributes;
+	private List<AttributeDefinition> inheritedAttributes;
 
 	/**
 	 * Create a new type definition
@@ -193,13 +189,22 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	 */
 	public void addDeclaredAttribute(AttributeDefinition attribute) {
 		attribute.setDeclaringType(this);
-		declaredAttributes.add(attribute);
+		
+		int idx = declaredAttributes.indexOf(attribute);
+		if (idx >= 0) {
+			// replace
+			declaredAttributes.remove(idx);
+			declaredAttributes.add(idx, attribute);
+		}
+		else {
+			declaredAttributes.add(attribute);
+		}
 	}
 	
 	/**
 	 * Removes a declared attribute
 	 * 
-	 * @param attribute
+	 * @param attribute the attribute to remove
 	 */
 	public void removeDeclaredAttribute(AttributeDefinition attribute) {
 		attribute.setDeclaringType(null);
@@ -432,13 +437,13 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	 * @return the attribute definitions
 	 */
 	public Collection<AttributeDefinition> getAttributes() {
-		Collection<AttributeDefinition> attributes = new TreeSet<AttributeDefinition>();
+		Collection<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
 		
 		// add declared attributes
-		attributes.addAll(declaredAttributes);
+		attributes.addAll(declaredAttributes); //TODO must they come first or after inherited attributes?
 		
 		if (inheritedAttributes == null) {
-			inheritedAttributes = new TreeSet<AttributeDefinition>();
+			inheritedAttributes = new ArrayList<AttributeDefinition>();
 			
 			// populate inherited attributes
 			TypeDefinition parent = getSuperType();
