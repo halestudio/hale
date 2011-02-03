@@ -30,6 +30,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 
+import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.GeometryConverterRegistry.ConversionLadder;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
@@ -104,15 +105,36 @@ public class StreamGeometryWriter {
 	 */
 	public void write(XMLStreamWriter writer, Geometry geometry,
 			TypeDefinition attributeType) {
+		// get candidates
 		Class<? extends Geometry> geomType = geometry.getClass();
-		
 		List<DefinitionPath> candidates = findCandidates(attributeType, geomType);
 		
+		// DEBUG
 		for (DefinitionPath candidate : candidates) {
-			log.info(geomType.getName() + " : " + candidate);
+			log.info("Geometry structure match: " + geomType.getSimpleName() + " - " + candidate);
+		}
+		// DEBUG
+		
+		// if no candidate found, try with compatible geometries
+		Class<? extends Geometry> originalType = null;
+		ConversionLadder ladder = GeometryConverterRegistry.getInstance().createLadder(geometry);
+		while (candidates.isEmpty() && ladder.hasNext()) {
+			originalType = geomType;
+			
+			geometry = ladder.next();
+			geomType = geometry.getClass();
+			
+			log.info("Possible structure for writing " + originalType.getSimpleName() + 
+					" not found, trying " + geomType.getSimpleName() + " instead");
+			
+			candidates = findCandidates(attributeType, geomType);
 		}
 		
-		//TODO if no candidate found, try with compatible geometries 
+		// DEBUG
+		for (DefinitionPath candidate : candidates) {
+			log.info("Geometry structure match: " + geomType.getSimpleName() + " - " + candidate);
+		}
+		// DEBUG
 		
 		//TODO determine preferred candidate
 		

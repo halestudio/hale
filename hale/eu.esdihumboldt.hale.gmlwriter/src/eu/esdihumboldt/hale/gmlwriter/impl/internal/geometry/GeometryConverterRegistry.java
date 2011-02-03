@@ -12,12 +12,19 @@
 
 package eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import com.vividsolutions.jts.geom.Geometry;
+
+import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.converters.PolygonToMultiLineString;
 
 /**
  * Registry for {@link GeometryConverter}s
@@ -28,6 +35,129 @@ import com.vividsolutions.jts.geom.Geometry;
  */
 public class GeometryConverterRegistry {
 	
+	/**
+	 * Conversion ladder - offers conversion for a geometry in the style of an
+	 * iterator. Best conversions will be served first.
+	 */
+	public class ConversionLadder implements Iterator<Geometry> {
+		
+		private final Map<Class<? extends Geometry>, Geometry> results = 
+			new HashMap<Class<? extends Geometry>, Geometry>();
+		
+		private final Queue<Geometry> pendingGeometries = new LinkedList<Geometry>();
+		
+		private final Queue<GeometryConverter<?, ?>> pendingConverters = new LinkedList<GeometryConverter<?,?>>();
+
+		/**
+		 * Create a conversion ladder for the given geometry
+		 * 
+		 * @param geometry the geometry
+		 */
+		protected ConversionLadder(Geometry geometry) {
+			Class<? extends Geometry> geomClass = geometry.getClass();
+			results.put(geomClass, geometry);
+			
+			pendingGeometries.add(geometry);
+		}
+
+		/**
+		 * @see Iterator#hasNext()
+		 */
+		@Override
+		public synchronized boolean hasNext() {
+			if (pendingConverters.isEmpty()) {
+				prepareNext();
+			}
+			
+			return !pendingConverters.isEmpty();
+		}
+
+		/**
+		 * Prepare next step
+		 */
+		@SuppressWarnings("unchecked")
+		private void prepareNext() {
+			if (!pendingConverters.isEmpty()) {
+				return;
+			}
+			
+			Geometry geom = pendingGeometries.poll();
+			if (geom != null) {
+				// prepare best conversions reachable from geom
+				Class<? extends Geometry> geomClass = geom.getClass();
+				
+				// find level one converters
+				Set<GeometryConverter<?, ?>> l1 = converters.get(geomClass);
+				if (l1 != null) {
+					// sort by loss/no loss
+					List<GeometryConverter<?, ?>> noloss = new ArrayList<GeometryConverter<?,?>>();
+					List<GeometryConverter<?, ?>> loss = new ArrayList<GeometryConverter<?,?>>();
+					for (GeometryConverter<?, ?> converter : l1) {
+						GeometryConverter conv = converter; // correct source type is assured
+						
+						if (!ignore(converter)) {
+							if (conv.lossOnConversion(geom)) {
+								loss.add(converter);
+							}
+							else {
+								noloss.add(converter);
+							}
+						}
+					}
+					
+					//TODO collect converters through more levels to allow multi-level-noloss is preferred to loss? 
+					
+					pendingConverters.addAll(noloss);
+					pendingConverters.addAll(loss);
+				}
+			}
+		}
+		
+		/**
+		 * Tells if to ignore a converter
+		 * 
+		 * @param converter the converter
+		 * 
+		 * @return if to ignore the converter
+		 */
+		private boolean ignore(GeometryConverter<?, ?> converter) {
+			return results.containsKey(converter.getTargetType());
+		}
+
+		/**
+		 * @see Iterator#next()
+		 */
+		@SuppressWarnings("unchecked")
+		@Override
+		public synchronized Geometry next() {
+			prepareNext();
+			
+			GeometryConverter converter = pendingConverters.poll();
+			
+			if (results.containsKey(converter.getTargetType())) {
+				// for any reason this was already calculated (e.g. preconversion when descending into converter levels)
+				return results.get(results.get(converter.getTargetType()));
+			}
+			
+			// convert
+			Geometry source = results.get(converter.getSourceType());
+			Geometry target = converter.convert(source);
+			results.put(converter.getTargetType(), target);
+			pendingGeometries.add(target);
+			
+			return target;
+		}
+
+		/**
+		 * @see Iterator#remove()
+		 */
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+
+	}
+
 	private static final GeometryConverterRegistry INSTANCE = new GeometryConverterRegistry();
 	
 	/**
@@ -58,6 +188,7 @@ public class GeometryConverterRegistry {
 	 */
 	private void init() {
 		// built-in converters
+		registerConverter(new PolygonToMultiLineString());
 		
 		//TODO other converters?
 	}
@@ -75,6 +206,17 @@ public class GeometryConverterRegistry {
 		}
 		
 		cs.add(converter);
+	}
+	
+	/**
+	 * Create a conversion ladder for the given geometry
+	 * 
+	 * @param geometry the geometry
+	 * 
+	 * @return the conversion ladder
+	 */
+	public ConversionLadder createLadder(Geometry geometry) {
+		return new ConversionLadder(geometry);
 	}
 	
 }
