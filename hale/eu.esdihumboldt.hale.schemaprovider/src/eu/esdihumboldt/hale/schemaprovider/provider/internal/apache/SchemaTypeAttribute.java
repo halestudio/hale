@@ -33,7 +33,7 @@ public class SchemaTypeAttribute extends AbstractElementAttribute {
 	 *   the attribute type will not be determined
 	 * @param name the attribute name
 	 * @param element the element defining the attribute
-	 * @param attributeType 
+	 * @param attributeType the attribute type definition
 	 */
 	public SchemaTypeAttribute(TypeDefinition declaringType, String name,
 			XmlSchemaElement element, TypeDefinition attributeType) {

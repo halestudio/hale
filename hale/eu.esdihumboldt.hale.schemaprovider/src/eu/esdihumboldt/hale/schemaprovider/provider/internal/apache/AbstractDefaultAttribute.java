@@ -15,6 +15,8 @@ package eu.esdihumboldt.hale.schemaprovider.provider.internal.apache;
 
 import java.util.Set;
 
+import org.apache.ws.commons.schema.XmlSchemaUse;
+import org.apache.ws.commons.schema.constants.Constants;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.Name;
 
@@ -29,6 +31,8 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @version $Id$
  */
 public abstract class AbstractDefaultAttribute extends AttributeDefinition {
+	
+	private final XmlSchemaUse use;
 
 	/**
 	 * Constructor
@@ -37,10 +41,13 @@ public abstract class AbstractDefaultAttribute extends AttributeDefinition {
 	 * @param typeName the attribute type name
 	 * @param attributeType the attribute type, may be <code>null</code>
 	 * @param namespace the attribute namespace
+	 * @param use the attribute use
 	 */
 	public AbstractDefaultAttribute(String name, Name typeName,
-			TypeDefinition attributeType, String namespace) {
+			TypeDefinition attributeType, String namespace, XmlSchemaUse use) {
 		super(name, typeName, attributeType, false);
+		
+		this.use = use;
 		
 		setNamespace(namespace);
 	}
@@ -52,6 +59,8 @@ public abstract class AbstractDefaultAttribute extends AttributeDefinition {
 	 */
 	protected AbstractDefaultAttribute(AbstractDefaultAttribute other) {
 		super(other);
+		
+		this.use = other.use;
 	}
 
 	/**
@@ -68,7 +77,12 @@ public abstract class AbstractDefaultAttribute extends AttributeDefinition {
 	 */
 	@Override
 	public long getMaxOccurs() {
-		return 1;
+		if (use.getValue().equals(Constants.BlockConstants.PROHIBITED)) {
+			return 0;
+		}
+		else {
+			return 1;
+		}
 	}
 
 	/**
@@ -76,8 +90,12 @@ public abstract class AbstractDefaultAttribute extends AttributeDefinition {
 	 */
 	@Override
 	public long getMinOccurs() {
-		// TODO Auto-generated method stub
-		return 0;
+		if (use.getValue().equals(Constants.BlockConstants.REQUIRED)) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
 	}
 
 	/**
@@ -85,7 +103,6 @@ public abstract class AbstractDefaultAttribute extends AttributeDefinition {
 	 */
 	@Override
 	public boolean isNillable() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

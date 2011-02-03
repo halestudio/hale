@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.schemaprovider.provider.internal.apache;
 
+import org.apache.ws.commons.schema.XmlSchemaUse;
 import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
@@ -29,18 +30,18 @@ public class CustomDefaultAttribute extends AbstractDefaultAttribute {
 	/**
 	 * Copy constructor
 	 * 
-	 * @param other
+	 * @param other the other attribute
 	 */
 	protected CustomDefaultAttribute(AbstractDefaultAttribute other) {
 		super(other);
 	}
 
 	/**
-	 * @see AbstractDefaultAttribute#AbstractDefaultAttribute(String, Name, TypeDefinition)
+	 * @see AbstractDefaultAttribute#AbstractDefaultAttribute(String, Name, TypeDefinition, String, XmlSchemaUse)
 	 */
 	public CustomDefaultAttribute(String name, Name typeName,
-			TypeDefinition attributeType, String namespace) {
-		super(name, typeName, attributeType, namespace);
+			TypeDefinition attributeType, String namespace, XmlSchemaUse use) {
+		super(name, typeName, attributeType, namespace, use);
 	}
 
 	/**

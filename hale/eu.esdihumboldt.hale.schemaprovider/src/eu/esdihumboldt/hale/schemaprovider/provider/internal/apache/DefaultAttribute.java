@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.schemaprovider.provider.internal.apache;
 
 
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
+import org.apache.ws.commons.schema.XmlSchemaUse;
 import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
@@ -34,11 +35,13 @@ public class DefaultAttribute extends AbstractDefaultAttribute {
 	 * @param declaringType the declaring type
 	 * @param typeName the attribute type name
 	 * @param attribute the attribute 
-	 * @param attributeType 
+	 * @param attributeType the attribute type
+	 * @param use the attribute use
 	 */
 	public DefaultAttribute(TypeDefinition declaringType, Name typeName,
-			XmlSchemaAttribute attribute, TypeDefinition attributeType) {
-		super(attribute.getName(), typeName, null, getNamespace(attribute));
+			XmlSchemaAttribute attribute, TypeDefinition attributeType, XmlSchemaUse use) {
+		super(attribute.getName(), typeName, null, getNamespace(attribute),
+				use);
 		
 		String description = AbstractElementAttribute.getDescription(attribute);
 		if (description != null) {
@@ -66,7 +69,7 @@ public class DefaultAttribute extends AbstractDefaultAttribute {
 	/**
 	 * Copy constructor
 	 * 
-	 * @param other
+	 * @param other the attribute to copy
 	 */
 	protected DefaultAttribute(DefaultAttribute other) {
 		super(other);

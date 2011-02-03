@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.schemaprovider.provider.internal.apache;
 
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
+import org.apache.ws.commons.schema.XmlSchemaUse;
 import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
@@ -34,10 +35,11 @@ public class DefaultResolveAttribute extends DefaultAttribute {
 	 * @param typeName the attribute type name
 	 * @param attribute the attribute 
 	 * @param schemaTypes the schema types 
+	 * @param use the attribute use
 	 */
 	public DefaultResolveAttribute(TypeDefinition declaringType, Name typeName,
-			XmlSchemaAttribute attribute, SchemaTypeResolver schemaTypes) {
-		super(declaringType, typeName, attribute, null);
+			XmlSchemaAttribute attribute, SchemaTypeResolver schemaTypes, XmlSchemaUse use) {
+		super(declaringType, typeName, attribute, null, use);
 		
 		if (declaringType != null) {
 			// determine the attribute type
@@ -48,7 +50,7 @@ public class DefaultResolveAttribute extends DefaultAttribute {
 	/**
 	 * Copy constructor
 	 * 
-	 * @param other
+	 * @param other the attribute top copy
 	 */
 	protected DefaultResolveAttribute(DefaultResolveAttribute other) {
 		super(other);

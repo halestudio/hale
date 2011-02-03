@@ -31,11 +31,13 @@ public class ElementReferenceAttribute extends AbstractElementAttribute {
 	private final SchemaElement reference;
 
 	/**
-	 * @param declaringType
-	 * @param name
-	 * @param typeName
-	 * @param element
-	 * @param reference 
+	 * Constructor
+	 * 
+	 * @param declaringType the declaring type
+	 * @param name the element name
+	 * @param typeName the type name
+	 * @param element the XML element
+	 * @param reference the reference to the schema element
 	 */
 	public ElementReferenceAttribute(TypeDefinition declaringType, String name,
 			Name typeName, XmlSchemaElement element, SchemaElement reference) {
@@ -46,7 +48,8 @@ public class ElementReferenceAttribute extends AbstractElementAttribute {
 
 	/**
 	 * Copy constructor
-	 * @param other
+	 * 
+	 * @param other the attribute top copy
 	 */
 	protected ElementReferenceAttribute(ElementReferenceAttribute other) {
 		super(other);

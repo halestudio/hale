@@ -94,7 +94,7 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 	/**
 	 * Copy constructor
 	 * 
-	 * @param other
+	 * @param other the attribute to copy
 	 */
 	protected AbstractElementAttribute(AbstractElementAttribute other) {
 		super(other);

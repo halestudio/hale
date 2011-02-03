@@ -50,6 +50,7 @@ import org.apache.ws.commons.schema.XmlSchemaParticle;
 import org.apache.ws.commons.schema.XmlSchemaSequence;
 import org.apache.ws.commons.schema.XmlSchemaSimpleContentExtension;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
+import org.apache.ws.commons.schema.XmlSchemaUse;
 import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.apache.ws.commons.schema.utils.NamespacePrefixList;
@@ -989,7 +990,8 @@ public class ApacheSchemaProvider
 				XmlSchemaAttribute attribute = (XmlSchemaAttribute) object;
 				
 				AttributeDefinition attDef = createAttribute(attribute, 
-						declaringType, schemaTypes, referenceResolver, indexPrefix + index);
+						declaringType, schemaTypes, referenceResolver, 
+						indexPrefix + index, null);
 				if (attDef != null) {
 					attributeResults.add(attDef);
 				}
@@ -1032,7 +1034,8 @@ public class ApacheSchemaProvider
 
 	private AttributeDefinition createAttribute(XmlSchemaAttribute attribute, 
 			TypeDefinition declaringType, SchemaTypeResolver schemaTypes, 
-			SchemaReferenceResolver referenceResolver, String index) {
+			SchemaReferenceResolver referenceResolver, String index, 
+			XmlSchemaUse useOverride) {
 		// create attributes
 		QName typeName = attribute.getSchemaTypeName();
 		if (typeName != null) {
@@ -1040,7 +1043,8 @@ public class ApacheSchemaProvider
 					declaringType, 
 					new NameImpl(typeName.getNamespaceURI(), typeName.getLocalPart()), 
 					attribute, 
-					schemaTypes);
+					schemaTypes,
+					(useOverride != null)?(useOverride):(attribute.getUse()));
 		}
 		else if (attribute.getSchemaType() != null) {
 			if (declaringType != null) {
@@ -1053,7 +1057,9 @@ public class ApacheSchemaProvider
 						attribute.getSchemaType(), 
 						schemaTypes);
 				
-				return new DefaultAttribute(declaringType, attributeTypeName, attribute, attributeType);
+				return new DefaultAttribute(declaringType, attributeTypeName, 
+						attribute, attributeType, 
+						(useOverride != null)?(useOverride):(attribute.getUse()));
 			}
 		}
 		else if (attribute.getRefName() != null) {
@@ -1063,7 +1069,7 @@ public class ApacheSchemaProvider
 					attribute.getRefName().getLocalPart()));
 			
 			if (referencedAtt != null) {
-				return createAttribute(referencedAtt, declaringType, schemaTypes, referenceResolver, index);
+				return createAttribute(referencedAtt, declaringType, schemaTypes, referenceResolver, index, attribute.getUse());
 			}
 			else {
 				_log.warn("Reference to attribute " + attribute.getRefName() + " could not be resolved");
