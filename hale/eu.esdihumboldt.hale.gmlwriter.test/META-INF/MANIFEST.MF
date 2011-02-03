@@ -19,3 +19,7 @@ Require-Bundle: eu.esdihumboldt.hale.gmlwriter;bundle-version="1.0.0",
  eu.esdihumboldt.transformer.cst;bundle-version="1.0.6",
  eu.esdihumboldt.commons;bundle-version="3.0.8",
  eu.esdihumboldt.specification;bundle-version="2.0.4"
+Bundle-ClassPath: .,
+ lib/xercesImpl-2.9.1.jar,
+ lib/xml-apis-1.3.02.jar,
+ lib/xmlParserAPIs-2.0.2.jar

@@ -31,12 +31,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.Map.Entry;
 
-import javax.xml.XMLConstants;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
-
 import org.geotools.feature.AttributeImpl;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureImpl;
@@ -52,7 +46,6 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.identity.Identifier;
-import org.xml.sax.SAXException;
 
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory;
@@ -163,6 +156,8 @@ public class DefaultGmlWriterTest {
 		System.out.println(outFile.getAbsolutePath());
 		System.out.println(targetSchema.getLocation().toString());
 		
+		validate(targetSchemaLocation, outFile.toURI());
+		
 		if (DEL_TEMP_FILES) {
 			outFile.deleteOnExit();
 		}
@@ -272,28 +267,30 @@ public class DefaultGmlWriterTest {
 	 * @param xmlLocation the location of the xml file
 	 * @throws IOException if I/O operations fail
 	 * @throws MalformedURLException if a wrong URI is given 
-	 * @throws SAXException if validation fails
 	 */
-	private void validate(URI schemaLocation, URI xmlLocation) throws MalformedURLException, IOException, SAXException {
-		javax.xml.validation.Schema schema;
-		try {
-			// create a SchemaFactory capable of understanding WXS schemas
-		    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-	
-		    // load a WXS schema, represented by a Schema instance
-		    Source schemaFile = new StreamSource(schemaLocation.toURL().openStream());
-		    schema = factory.newSchema(schemaFile);
-		} catch (Exception e) {
-			System.err.println("Parsing the schema for validation failed");
-			e.printStackTrace();
-			return;
-		}
-
-	    // create a Validator instance, which can be used to validate an instance document
-	    Validator validator = schema.newValidator();
-
-	    // validate the XML document
-        validator.validate(new StreamSource(xmlLocation.toURL().openStream()));
+	private void validate(URI schemaLocation, URI xmlLocation) throws MalformedURLException, IOException {
+//		javax.xml.validation.Schema schema;
+//		try {
+//			// create a SchemaFactory capable of understanding WXS schemas
+//		    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+//	
+//		    // load a WXS schema, represented by a Schema instance
+//		    Source schemaFile = new StreamSource(schemaLocation.toURL().openStream());
+//		    schema = factory.newSchema(schemaFile);
+//		} catch (Exception e) {
+//			System.err.println("Parsing the schema for validation failed");
+//			e.printStackTrace();
+//			return;
+//		}
+//
+//	    // create a Validator instance, which can be used to validate an instance document
+//	    Validator validator = schema.newValidator();
+//
+//	    // validate the XML document
+//		validator.validate(new StreamSource(xmlLocation.toURL().openStream()));
+		
+		//TODO some feedback about validation errors
+		XercesValidator.validate(xmlLocation.toURL().openStream());
 	}
 
 	private Feature createFeature(TypeDefinition type) {

@@ -51,6 +51,11 @@ import eu.esdihumboldt.tools.FeatureInspector;
  */
 public class StreamGmlWriter {
 	
+	/**
+	 * 
+	 */
+	private static final String SCHEMA_INSTANCE_NS = "http://www.w3.org/2001/XMLSchema-instance";
+
 	private static final ALogger log = ALoggerFactory.getLogger(StreamGmlWriter.class);
 
 	/**
@@ -58,10 +63,10 @@ public class StreamGmlWriter {
 	 */
 	private final XMLStreamWriter writer;
 	
-//	/**
-//	 * The target schema
-//	 */
-//	private final Schema targetSchema;
+	/**
+	 * The target schema
+	 */
+	private final Schema targetSchema;
 
 	/**
 	 * The GML namespace
@@ -86,7 +91,7 @@ public class StreamGmlWriter {
 	 * @throws XMLStreamException if setting up the stream writer fails
 	 */
 	public StreamGmlWriter(Schema targetSchema, OutputStream out) throws XMLStreamException {
-//		this.targetSchema = targetSchema;
+		this.targetSchema = targetSchema;
 		
 		// create and set-up a writer
 		
@@ -108,6 +113,25 @@ public class StreamGmlWriter {
 				else {
 					tmpWriter.setPrefix(entry.getValue(), entry.getKey());
 				}
+			}
+		}
+		
+		if (tmpWriter.getPrefix(SCHEMA_INSTANCE_NS) == null) {
+			// no prefix for schema instance namespace
+			
+			String prefix = "xsi";
+			String ns = tmpWriter.getNamespaceContext().getNamespaceURI(prefix);
+			if (ns == null) {
+				// add xsi namespace
+				tmpWriter.setPrefix(prefix, SCHEMA_INSTANCE_NS);
+			}
+			else {
+				int i = 0;
+				while (ns != null) {
+					ns = tmpWriter.getNamespaceContext().getNamespaceURI(prefix + "-" + (++i));
+				}
+				
+				tmpWriter.setPrefix(prefix + "-" + i, SCHEMA_INSTANCE_NS);
 			}
 		}
 		
@@ -159,6 +183,12 @@ public class StreamGmlWriter {
 		writer.writeStartDocument();
 		
 		writer.writeStartElement("gml", "FeatureCollection", gmlNs);
+		
+		StringBuffer locations = new StringBuffer();
+		locations.append(targetSchema.getNamespace());
+		locations.append(" ");
+		locations.append(targetSchema.getLocation().toString());
+		writer.writeAttribute(SCHEMA_INSTANCE_NS, "schemaLocation", locations.toString());
 		
 		Iterator<Feature> it = features.iterator();
 		try {
