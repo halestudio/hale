@@ -15,7 +15,10 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.opengis.feature.type.Name;
+
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Represents a schema
@@ -33,9 +36,19 @@ public class Schema {
 		new Schema(new HashMap<String, SchemaElement>(), "", null, null);
 	
 	/**
-	 * The feature types
+	 * The schema elements
 	 */
 	private final Map<String, SchemaElement> elements;
+	
+	/**
+	 * All schema elements (including imports etc.)
+	 */
+	private Map<Name, SchemaElement> allElements;
+	
+	/**
+	 * All type definitions (including imports etc.)
+	 */
+	private Map<Name, TypeDefinition> allTypes;
 	
 	/**
 	 * Maps namespaces to prefixes
@@ -95,6 +108,34 @@ public class Schema {
 	 */
 	public Map<String, String> getPrefixes() {
 		return prefixes;
+	}
+
+	/**
+	 * @return the allElements
+	 */
+	public Map<Name, SchemaElement> getAllElements() {
+		return allElements;
+	}
+
+	/**
+	 * @param allElements the allElements to set
+	 */
+	public void setAllElements(Map<Name, SchemaElement> allElements) {
+		this.allElements = allElements;
+	}
+
+	/**
+	 * @return the allTypes
+	 */
+	public Map<Name, TypeDefinition> getAllTypes() {
+		return allTypes;
+	}
+
+	/**
+	 * @param allTypes the allTypes to set
+	 */
+	public void setAllTypes(Map<Name, TypeDefinition> allTypes) {
+		this.allTypes = allTypes;
 	}
 
 }

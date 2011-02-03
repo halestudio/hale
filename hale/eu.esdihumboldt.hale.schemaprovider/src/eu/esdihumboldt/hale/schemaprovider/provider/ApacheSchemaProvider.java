@@ -484,7 +484,23 @@ public class ApacheSchemaProvider
 			}
 		}
 
-		return new Schema(elements, namespace, locationURL, prefixes);
+		Schema result = new Schema(elements, namespace, locationURL, prefixes);
+		
+		Map<Name, SchemaElement> allElements = new HashMap<Name, SchemaElement>();
+		Map<Name, TypeDefinition> allTypes = new HashMap<Name, TypeDefinition>();
+		
+		allElements.putAll(schemaResult.getElements());
+		allTypes.putAll(schemaResult.getTypes());
+		
+		for (SchemaResult sr : imports.values()) {
+			allElements.putAll(sr.getElements());
+			allTypes.putAll(sr.getTypes());
+		}
+		
+		result.setAllElements(allElements);
+		result.setAllTypes(allTypes);
+		
+		return result;
 	}
 
 	/**
