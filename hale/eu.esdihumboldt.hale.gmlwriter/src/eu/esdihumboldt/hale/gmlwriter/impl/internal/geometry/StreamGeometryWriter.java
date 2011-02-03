@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.gmlwriter.impl.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.StreamGmlWriter;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.GeometryConverterRegistry.ConversionLadder;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers.MultiLineStringWriter;
+import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers.PointWriter;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
@@ -61,6 +62,7 @@ public class StreamGeometryWriter {
 		
 		//TODO configure
 		sgm.registerGeometryWriter(new MultiLineStringWriter());
+		sgm.registerGeometryWriter(new PointWriter());
 		
 		return sgm;
 	}
