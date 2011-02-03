@@ -196,7 +196,7 @@ public class StreamGmlWriter {
 			}
 			else {
 				// manually add fid attribute
-				writer.writeAttribute(gmlNs, "fid", id.toString());
+				writer.writeAttribute("fid", id.toString());
 			}
 		}
 		
