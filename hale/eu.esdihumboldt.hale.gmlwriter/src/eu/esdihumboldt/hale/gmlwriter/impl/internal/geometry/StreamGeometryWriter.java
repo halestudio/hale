@@ -55,6 +55,7 @@ public class StreamGeometryWriter {
 		StreamGeometryWriter sgm = new StreamGeometryWriter(gmlNs);
 		
 		//TODO configure
+		//XXX testing
 		
 		return sgm;
 	}
@@ -114,6 +115,8 @@ public class StreamGeometryWriter {
 		//TODO if no candidate found, try with compatible geometries 
 		
 		//TODO determine preferred candidate
+		
+		//TODO remember for later
 		
 		//TODO write geometry
 	}

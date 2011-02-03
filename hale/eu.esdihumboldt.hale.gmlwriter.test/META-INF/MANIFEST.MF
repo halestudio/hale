@@ -4,7 +4,8 @@ Bundle-Name: HALE GML Writer Test Bundle
 Bundle-SymbolicName: eu.esdihumboldt.hale.gmlwriter.test
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: eu.esdihumboldt.cst.rdf,
+Import-Package: com.vividsolutions.jts.geom,
+ eu.esdihumboldt.cst.rdf,
  eu.esdihumboldt.hale.gmlparser,
  eu.esdihumboldt.hale.schemaprovider,
  eu.esdihumboldt.hale.schemaprovider.model,
