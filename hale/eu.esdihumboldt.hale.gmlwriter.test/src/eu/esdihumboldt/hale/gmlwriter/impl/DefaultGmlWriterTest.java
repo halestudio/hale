@@ -146,6 +146,9 @@ public class DefaultGmlWriterTest {
 					FeatureInspector.getPropertyValue(l, entry.getKey(), null).toString());
 		}
 		
+		System.out.println(outFile.getAbsolutePath());
+		System.out.println(targetSchema.toString());
+		
 		if (DEL_TEMP_FILES) {
 			outFile.deleteOnExit();
 		}
