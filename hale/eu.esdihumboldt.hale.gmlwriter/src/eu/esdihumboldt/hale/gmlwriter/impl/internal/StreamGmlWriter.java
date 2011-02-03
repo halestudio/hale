@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.UUID;
 import java.util.Map.Entry;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -54,7 +55,7 @@ import eu.esdihumboldt.tools.FeatureInspector;
 public class StreamGmlWriter {
 	
 	/**
-	 * 
+	 * Schema instance namespace (for specifying schema locations)
 	 */
 	private static final String SCHEMA_INSTANCE_NS = "http://www.w3.org/2001/XMLSchema-instance";
 
@@ -191,7 +192,7 @@ public class StreamGmlWriter {
 			SchemaElement el = it.next();
 			if (el.getElementName().getLocalPart().contains("FeatureCollection") &&
 					!el.getType().isAbstract() &&
-					el.getType().getAttribute("featureMember") != null) {
+					el.getType().getAttribute("featureMember") != null) { //TODO improve condition?
 				fcElements.add(el);
 			}
 		}
@@ -215,7 +216,10 @@ public class StreamGmlWriter {
 		
 		writer.writeStartElement(fcName.getNamespaceURI(), fcName.getLocalPart());
 		
-		//TODO generate mandatory id attribute?
+		if (fcDefinition != null) {
+			// generate mandatory id attribute
+			writeRequiredID(writer, fcDefinition, null, false);
+		}
 		
 		StringBuffer locations = new StringBuffer();
 		locations.append(targetSchema.getNamespace());
@@ -249,6 +253,75 @@ public class StreamGmlWriter {
         writer.writeEndElement(); // FeatureCollection
         
         writer.writeEndDocument();
+	}
+
+	/**
+	 * Write any required ID attribute, generating a random ID if needed
+	 * 
+	 * @param writer the XML stream writer
+	 * @param type the type definition
+	 * @param parent the parent object, may be <code>null</code>. If it is set
+	 *   the value for the ID will be tried to be retrieved from the parent
+	 *   object, otherwise a random ID will be generated
+	 * @param onlyIfNotSet if the ID shall only be written if no value is set
+	 *   in the parent object
+	 * @throws XMLStreamException if an error occurs writing the ID
+	 */
+	public static void writeRequiredID(XMLStreamWriter writer,
+			TypeDefinition type, ComplexAttribute parent, boolean onlyIfNotSet) throws XMLStreamException {
+		// find ID attribute
+		AttributeDefinition idAtt = null;
+		for (AttributeDefinition att : type.getAttributes()) {
+			if (att.isAttribute() && att.getMinOccurs() > 0 && isID(att.getAttributeType())) {
+				idAtt = att;
+				break; // we assume there is only one ID attribute
+			}
+		}
+		
+		if (idAtt == null) {
+			// no ID attribute found
+			return;
+		}
+		
+		Object value = null;
+		if (parent != null) {
+			Property prop = FeatureInspector.getProperty(parent, Arrays.asList(idAtt.getName()), false);
+			if (prop != null) {
+				value = prop.getValue();
+			}
+			
+			if (value != null && onlyIfNotSet) {
+				// don't write the ID
+				return;
+			}
+		}
+		
+		if (value != null) {
+			writeAttribute(writer, value, idAtt);
+		}
+		else {
+			UUID genID = UUID.randomUUID();
+			writeAttribute(writer, "_" + genID.toString(), idAtt);
+		}
+	}
+
+	/**
+	 * Determines if the given type represents a XML ID
+	 * 
+	 * @param type the type definition
+	 * @return if the type represents an ID
+	 */
+	private static boolean isID(TypeDefinition type) {
+		if (type.getName().equals(new NameImpl("http://www.w3.org/2001/XMLSchema", "ID"))) {
+			return true;
+		}
+		
+		if (type.getSuperType() != null) {
+			return isID(type.getSuperType());
+		}
+		else {
+			return false;
+		}
 	}
 
 	/**
@@ -398,7 +471,7 @@ public class StreamGmlWriter {
 		
 		return geometryWriter;
 	}
-
+	
 	/**
 	 * Write a property attribute
 	 * 
@@ -406,7 +479,21 @@ public class StreamGmlWriter {
 	 * @param attDef the attribute definition
 	 * @throws XMLStreamException if writing the attribute fails 
 	 */
-	private void writeAttribute(Object value, AttributeDefinition attDef) throws XMLStreamException {
+	private void writeAttribute(Object value, 
+			AttributeDefinition attDef) throws XMLStreamException {
+		writeAttribute(writer, value, attDef);
+	}
+
+	/**
+	 * Write a property attribute
+	 * 
+	 * @param writer the XML stream writer 
+	 * @param value the attribute value, may be <code>null</code>
+	 * @param attDef the attribute definition
+	 * @throws XMLStreamException if writing the attribute fails 
+	 */
+	private static void writeAttribute(XMLStreamWriter writer, Object value, 
+			AttributeDefinition attDef) throws XMLStreamException {
 		if (value == null) {
 			if (attDef.getMinOccurs() > 0) {
 				if (!attDef.isNillable()) {
@@ -414,17 +501,18 @@ public class StreamGmlWriter {
 				}
 				else {
 					//XXX write null attribute?!
-					writeAtt(null, attDef);
+					writeAtt(writer, null, attDef);
 				}
 			}
 		}
 		else {
 			//TODO correct conversion of value
-			writeAtt(value.toString(), attDef);
+			writeAtt(writer, value.toString(), attDef);
 		}
 	}
 
-	private void writeAtt(String value, AttributeDefinition attDef) throws XMLStreamException {
+	private static void writeAtt(XMLStreamWriter writer, String value, 
+			AttributeDefinition attDef) throws XMLStreamException {
 		String ns = attDef.getNamespace();
 		if (ns != null && !ns.isEmpty()) {
 			writer.writeAttribute(attDef.getNamespace(), attDef.getName(), value.toString());
