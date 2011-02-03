@@ -298,6 +298,26 @@ public class PropertiesDialog extends TitleAreaDialog {
 				addTypeNodes(superType, superNode, false, true);
 			}
 		}
+		
+		// add declared attributes w/ types
+		//TODO use a lazy model instead for the whole tree to allow displaying the sub/supertypes for the attributes? (else most likely cycles will occur)
+		DefaultTreeNode attsNode = null;
+		for (AttributeDefinition att : typeDef.getDeclaredAttributes()) {
+			if (attsNode == null) {
+				attsNode = new DefaultTreeNode("Declared properties");
+				typeNode.addChild(attsNode);
+			}
+			
+			DefaultTreeNode attNode;
+			if (att.getAttributeType() != null) {
+				attNode = new DefaultTreeNode(att.getName(), att.getAttributeType().getDisplayName());
+				attsNode.addChild(attNode);
+				addTypeNodes(att.getAttributeType(), attNode, false, false);
+			}
+			else {
+				attNode = new DefaultTreeNode(att.getName());
+			}
+		}
 	}
 
 	/**
