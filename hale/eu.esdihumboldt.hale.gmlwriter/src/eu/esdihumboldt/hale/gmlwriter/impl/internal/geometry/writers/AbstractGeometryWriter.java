@@ -131,6 +131,82 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	protected static void writeCoordinates(XMLStreamWriter writer, 
 			Coordinate[] coordinates, TypeDefinition elementType, 
 			String gmlNs) throws XMLStreamException {
+		if (coordinates.length > 1) {
+			if (writeList(writer, coordinates, elementType, gmlNs)) {
+				return;
+			}
+		}
+		
+		if (writePos(writer, coordinates, elementType, gmlNs)) {
+			return;
+		}
+		
+		if (coordinates.length <= 1) {
+			if (writeList(writer, coordinates, elementType, gmlNs)) {
+				return;
+			}
+		}
+		
+		log.error("Unable to write coordinates to element of type " + 
+				elementType.getDisplayName());
+	}
+	
+	/**
+	 * Write coordinates into a pos property
+	 * 
+	 * @param writer the XML stream writer 
+	 * @param coordinates the coordinates to write
+	 * @param elementType the type of the encompassing element
+	 * @param gmlNs the GML namespace
+	 * @return if writing the coordinates was successful
+	 * @throws XMLStreamException if an error occurs writing the coordinates
+	 */
+	private static boolean writePos(XMLStreamWriter writer,
+			Coordinate[] coordinates, TypeDefinition elementType, String gmlNs) throws XMLStreamException {
+		AttributeDefinition posAttribute = null;
+		
+		// check for DirectPositionListType
+		for (AttributeDefinition att : elementType.getAttributes()) {
+			if (att.getTypeName().equals(new NameImpl(gmlNs, "DirectPositionType"))) {
+				posAttribute = att;
+				break;
+			}
+		}
+		
+		if (posAttribute != null) {
+			
+			writer.writeStartElement(posAttribute.getNamespace(), posAttribute.getName());
+			
+			// write coordinates separated by spaces
+			if (coordinates.length > 0) {
+				Coordinate coordinate = coordinates[0];
+				
+				//XXX only supports 2D
+				writer.writeCharacters(String.valueOf(coordinate.x));
+				writer.writeCharacters(" ");
+				writer.writeCharacters(String.valueOf(coordinate.y));
+			}
+			
+			writer.writeEndElement();
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	/**
+	 * Write coordinates into a posList or (TODO) coordinates property
+	 * 
+	 * @param writer the XML stream writer 
+	 * @param coordinates the coordinates to write
+	 * @param elementType the type of the encompassing element
+	 * @param gmlNs the GML namespace
+	 * @return if writing the coordinates was successful
+	 * @throws XMLStreamException if an error occurs writing the coordinates
+	 */
+	private static boolean writeList(XMLStreamWriter writer,
+			Coordinate[] coordinates, TypeDefinition elementType, String gmlNs) throws XMLStreamException {
 		AttributeDefinition listAttribute = null;
 		
 		// check for DirectPositionListType
@@ -162,10 +238,10 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 			}
 			
 			writer.writeEndElement();
+			return true;
 		}
 		else {
-			log.error("Unable to write coordinates to element of type " + 
-					elementType.getDisplayName());
+			return false;
 		}
 	}
 
