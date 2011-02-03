@@ -90,12 +90,12 @@ public class PatternTest {
 		
 		// create the segments property for curve
 		TypeDefinition segArray = new TypeDefinition(new NameImpl(GML_NS, "CurveSegmentArrayPropertyType"), null, null);
-		curve.addDeclaredAttribute(new CustomDefaultAttribute("segments", segArray.getName(), segArray, GML_NS));
+		curve.addDeclaredAttribute(new CustomDefaultAttribute("segments", segArray.getName(), segArray, GML_NS, null));
 		
 		// create the AbstractCurveSegement property for segArray
 		TypeDefinition absSeg = new TypeDefinition(new NameImpl(GML_NS, "AbstractCurveSegementType"), null, null);
 		absSeg.setAbstract(true);
-		segArray.addDeclaredAttribute(new CustomDefaultAttribute("AbstractCurveSegment", absSeg.getName(), absSeg, GML_NS));
+		segArray.addDeclaredAttribute(new CustomDefaultAttribute("AbstractCurveSegment", absSeg.getName(), absSeg, GML_NS, null));
 		
 		// add dummy sub-type
 		new TypeDefinition(new NameImpl("somespace", "SomeSegmentType"), null, absSeg);

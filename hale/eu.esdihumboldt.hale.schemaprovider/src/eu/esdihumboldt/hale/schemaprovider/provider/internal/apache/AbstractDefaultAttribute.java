@@ -41,7 +41,8 @@ public abstract class AbstractDefaultAttribute extends AttributeDefinition {
 	 * @param typeName the attribute type name
 	 * @param attributeType the attribute type, may be <code>null</code>
 	 * @param namespace the attribute namespace
-	 * @param use the attribute use
+	 * @param use the attribute use, may be <code>null</code> (will behave
+	 * similar as with an optional use)
 	 */
 	public AbstractDefaultAttribute(String name, Name typeName,
 			TypeDefinition attributeType, String namespace, XmlSchemaUse use) {
@@ -77,7 +78,7 @@ public abstract class AbstractDefaultAttribute extends AttributeDefinition {
 	 */
 	@Override
 	public long getMaxOccurs() {
-		if (use.getValue().equals(Constants.BlockConstants.PROHIBITED)) {
+		if (use != null && use.getValue().equals(Constants.BlockConstants.PROHIBITED)) {
 			return 0;
 		}
 		else {
@@ -90,7 +91,7 @@ public abstract class AbstractDefaultAttribute extends AttributeDefinition {
 	 */
 	@Override
 	public long getMinOccurs() {
-		if (use.getValue().equals(Constants.BlockConstants.REQUIRED)) {
+		if (use != null && use.getValue().equals(Constants.BlockConstants.REQUIRED)) {
 			return 1;
 		}
 		else {
