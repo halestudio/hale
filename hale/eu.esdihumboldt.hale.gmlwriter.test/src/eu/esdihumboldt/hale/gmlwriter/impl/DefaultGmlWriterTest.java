@@ -104,7 +104,8 @@ public class DefaultGmlWriterTest {
 				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(),
 				getClass().getResource("/data/sample_wva/watercourse_va.xml.goml").toURI(),
 				getClass().getResource("/data/sample_wva/inspire3/HydroPhysicalWaters.xsd").toURI(),
-				"transformWrite_WVA");
+				"transformWrite_WVA",
+				true);
 	}
 	
 	/**
@@ -119,11 +120,13 @@ public class DefaultGmlWriterTest {
 				getClass().getResource("/data/dkm_austria/KA_14168_EPSG25833.xsd").toURI(),
 				getClass().getResource("/data/dkm_austria/mapping_dkm_inspire.xml.goml").toURI(),
 				getClass().getResource("/data/dkm_austria/inspire3/CadastralParcels.xsd").toURI(),
-				"transformWrite_DKM");
+				"transformWrite_DKM",
+				true);
 	}
 	
 	private void transformTest(URI sourceData, URI sourceSchemaLocation,
-			URI mappingLocation, URI targetSchemaLocation, String testName)
+			URI mappingLocation, URI targetSchemaLocation, String testName,
+			boolean onlyOne)
 			throws Exception {
 		// load both schemas
 		SchemaProvider sp = new ApacheSchemaProvider();
@@ -140,6 +143,13 @@ public class DefaultGmlWriterTest {
 		// transform
 		FeatureCollection<FeatureType, Feature> result = transform(fc, 
 				alignment, targetSchema);
+		
+		if (onlyOne && result.size() > 1) {
+			// only retain one feature
+			Feature one = result.iterator().next();
+			result.clear();
+			result.add(one);
+		}
 		
 		// write
 		// write to file
