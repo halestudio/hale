@@ -324,20 +324,30 @@ public class StreamGmlWriter {
 	 */
 	private void writeAttribute(Object value, AttributeDefinition attDef) throws XMLStreamException {
 		if (value == null) {
-			if (!attDef.isNillable()) {
-				log.warn("Non-nillable attribute " + attDef.getName() + " is null");
+			if (attDef.getMinOccurs() > 0) {
+				if (!attDef.isNillable()) {
+					log.warn("Non-nillable attribute " + attDef.getName() + " is null");
+				}
+				else {
+					//XXX write null attribute?!
+					writeAtt(null, attDef);
+				}
 			}
 		}
 		else {
 			//TODO correct conversion of value
-			String ns = attDef.getNamespace();
-			if (ns != null && !ns.isEmpty()) {
-				writer.writeAttribute(attDef.getNamespace(), attDef.getName(), value.toString());
-			}
-			else {
-				// no namespace
-				writer.writeAttribute(attDef.getName(), value.toString());
-			}
+			writeAtt(value.toString(), attDef);
+		}
+	}
+
+	private void writeAtt(String value, AttributeDefinition attDef) throws XMLStreamException {
+		String ns = attDef.getNamespace();
+		if (ns != null && !ns.isEmpty()) {
+			writer.writeAttribute(attDef.getNamespace(), attDef.getName(), value.toString());
+		}
+		else {
+			// no namespace
+			writer.writeAttribute(attDef.getName(), value.toString());
 		}
 	}
 
