@@ -473,9 +473,12 @@ public class StreamGmlWriter {
 	private void writeSimpleTypeAttributes(Property property,
 			AttributeDefinition attDef) throws XMLStreamException {
 		if (property != null) {
-			//XXX create dummy attribute for writeProperties TODO better: FeatureInspector must support Property
-			ComplexAttribute ca = new ComplexAttributeImpl(FeatureInspector.getProperties(property), GMLSchema.ABSTRACTSTYLETYPE_TYPE, null);
-			writeProperties(ca, attDef.getAttributeType(), false);
+			Collection<Property> properties = FeatureInspector.getProperties(property);
+			if (properties != null && !properties.isEmpty()) {
+				//XXX create dummy attribute for writeProperties TODO better: FeatureInspector must support Property
+				ComplexAttribute ca = new ComplexAttributeImpl(properties, GMLSchema.ABSTRACTSTYLETYPE_TYPE, null);
+				writeProperties(ca, attDef.getAttributeType(), false);
+			}
 		}
 	}
 
