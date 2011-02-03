@@ -86,14 +86,29 @@ public class StreamGmlWriter {
 		outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces",
 				new Boolean(true));
 		// create XML stream writer with UTF-8 encoding
-		writer = outputFactory.createXMLStreamWriter(out, "UTF-8");
+		XMLStreamWriter tmpWriter = outputFactory.createXMLStreamWriter(out, "UTF-8");
 
+		String defNamespace = null;
+		
 		// read the namespaces from the map containing namespaces
 		if (targetSchema.getPrefixes() != null) {
 			for (Entry<String, String> entry : targetSchema.getPrefixes().entrySet()) {
-				writer.setPrefix(entry.getValue(), entry.getKey());
+				if (entry.getValue().isEmpty()) {
+					defNamespace = entry.getKey();
+				}
+				else if (!entry.getKey().equals(targetSchema.getNamespace())) {
+					tmpWriter.setPrefix(entry.getValue(), entry.getKey());
+				}
 			}
 		}
+		
+		if (defNamespace == null) {
+			defNamespace = targetSchema.getNamespace();
+		}
+		
+		tmpWriter.setDefaultNamespace(defNamespace);
+		
+		writer = new IndentingXMLStreamWriter(tmpWriter);
 		
 		// determine GML namespace from target schema
 		String gml = null;
