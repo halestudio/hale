@@ -15,6 +15,9 @@ package eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opengis.feature.type.Name;
+
+import eu.esdihumboldt.hale.gmlwriter.impl.internal.StreamGmlWriter;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
@@ -34,6 +37,7 @@ public class DefinitionPath {
 	public class PathElement {
 		
 		private final String name;
+		private final String namespace;
 		private final TypeDefinition type;
 		private final boolean property;
 		
@@ -41,14 +45,17 @@ public class DefinitionPath {
 		 * Constructor
 		 * 
 		 * @param name the path element name
+		 * @param namespace the namespace
 		 * @param type the path element type definition
 		 * @param property if the path element represents a property
 		 */
-		public PathElement(String name, TypeDefinition type, boolean property) {
+		public PathElement(String name, String namespace, TypeDefinition type, 
+				boolean property) {
 			super();
 			this.name = name;
 			this.type = type;
 			this.property = property;
+			this.namespace = namespace;
 		}
 
 		/**
@@ -78,6 +85,13 @@ public class DefinitionPath {
 		 */
 		public boolean isProperty() {
 			return property;
+		}
+
+		/**
+		 * @return the namespace
+		 */
+		public String getNamespace() {
+			return namespace;
 		}
 
 	}
@@ -110,7 +124,17 @@ public class DefinitionPath {
 	 * @return this path for chaining 
 	 */
 	public DefinitionPath addSubType(TypeDefinition type) {
-		steps.add(new PathElement(type.getName().getLocalPart(), type, false));
+		// 1. sub-type must override previous sub-type
+		// 2. sub-type must override a previous property XXX check this!!! or only the first?
+		// XXX -> there removing the previous path element
+		if (steps.size() > 0) {
+			steps.remove(steps.size() - 1);
+		}
+		
+		Name elementName = StreamGmlWriter.getElementName(type);
+		
+		steps.add(new PathElement(elementName.getLocalPart(),
+				elementName.getNamespaceURI(), type, false));
 		
 		return this;
 	}
@@ -123,7 +147,8 @@ public class DefinitionPath {
 	 * @return this path for chaining 
 	 */
 	public DefinitionPath addProperty(AttributeDefinition property) {
-		steps.add(new PathElement(property.getName(), 
+		steps.add(new PathElement(property.getName(),
+				property.getNamespace(),
 				property.getAttributeType(), true));
 		
 		return this;

@@ -226,7 +226,7 @@ public class StreamGmlWriter {
 	 * @param type the type definition
 	 * @return the element name
 	 */
-	private Name getElementName(TypeDefinition type) {
+	public static Name getElementName(TypeDefinition type) {
 		Set<SchemaElement> elements = type.getDeclaringElements();
 		if (elements == null || elements.isEmpty()) {
 			log.warn("No schema element for type " + type.getDisplayName() + 
@@ -333,8 +333,9 @@ public class StreamGmlWriter {
 	 * 
 	 * @param geometry the geometry
 	 * @param attributeType the type definition
+	 * @throws XMLStreamException if an error occurs writing the geometry  
 	 */
-	private void writeGeometry(Geometry geometry, TypeDefinition attributeType) {
+	private void writeGeometry(Geometry geometry, TypeDefinition attributeType) throws XMLStreamException {
 		getGeometryWriter().write(writer, geometry, attributeType);
 	}
 

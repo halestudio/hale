@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.geotools.feature.NameImpl;
@@ -30,6 +31,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 
+import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.DefinitionPath.PathElement;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.GeometryConverterRegistry.ConversionLadder;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -61,10 +63,22 @@ public class StreamGeometryWriter {
 		return sgm;
 	}
 	
+	/**
+	 * The GML namespace
+	 */
 	private final String gmlNs;
 	
+	/**
+	 * Geometry types mapped to compatible type names
+	 */
 	private final Map<Class<? extends Geometry>, Set<Name>> compatibleTypes =
-		new HashMap<Class<? extends Geometry>, Set<Name>>(); 
+		new HashMap<Class<? extends Geometry>, Set<Name>>();
+	
+	/**
+	 * Types mapped to geometry types mapped to matched definition paths
+	 */
+	private final Map<TypeDefinition, Map<Class<? extends Geometry>, DefinitionPath>> storedPaths = 
+		new HashMap<TypeDefinition, Map<Class<? extends Geometry>,DefinitionPath>>(); 
 
 	/**
 	 * Constructor
@@ -102,45 +116,133 @@ public class StreamGeometryWriter {
 	 * @param writer the XML stream writer
 	 * @param geometry the geometry
 	 * @param attributeType the attribute type
+	 * @throws XMLStreamException if any error occurs writing the geometry
 	 */
 	public void write(XMLStreamWriter writer, Geometry geometry,
-			TypeDefinition attributeType) {
-		// get candidates
+			TypeDefinition attributeType) throws XMLStreamException {
 		Class<? extends Geometry> geomType = geometry.getClass();
-		List<DefinitionPath> candidates = findCandidates(attributeType, geomType);
 		
-		// DEBUG
-		for (DefinitionPath candidate : candidates) {
-			log.info("Geometry structure match: " + geomType.getSimpleName() + " - " + candidate);
-		}
-		// DEBUG
+		// remember if we already found a solution to this problem
+		DefinitionPath path = restoreCandidate(attributeType, geomType);
 		
-		// if no candidate found, try with compatible geometries
-		Class<? extends Geometry> originalType = null;
-		ConversionLadder ladder = GeometryConverterRegistry.getInstance().createLadder(geometry);
-		while (candidates.isEmpty() && ladder.hasNext()) {
-			originalType = geomType;
+		if (path == null) {
+			// find candidates
+			List<DefinitionPath> candidates = findCandidates(attributeType, geomType);
 			
-			geometry = ladder.next();
-			geomType = geometry.getClass();
+			// DEBUG
+			for (DefinitionPath candidate : candidates) {
+				log.info("Geometry structure match: " + geomType.getSimpleName() + " - " + candidate);
+			}
+			// DEBUG
 			
-			log.info("Possible structure for writing " + originalType.getSimpleName() + 
-					" not found, trying " + geomType.getSimpleName() + " instead");
+			// if no candidate found, try with compatible geometries
+			Class<? extends Geometry> originalType = geomType;
+			Geometry originalGeometry = geometry;
+			ConversionLadder ladder = GeometryConverterRegistry.getInstance().createLadder(geometry);
+			while (candidates.isEmpty() && ladder.hasNext()) {
+				geometry = ladder.next();
+				geomType = geometry.getClass();
+				
+				log.info("Possible structure for writing " + originalType.getSimpleName() + 
+						" not found, trying " + geomType.getSimpleName() + " instead");
+				
+				candidates = findCandidates(attributeType, geomType);
+			}
 			
-			candidates = findCandidates(attributeType, geomType);
+			// DEBUG
+			for (DefinitionPath candidate : candidates) {
+				log.info("Geometry structure match: " + geomType.getSimpleName() + " - " + candidate);
+			}
+			// DEBUG
+			
+			if (candidates.isEmpty()) {
+				log.error("No geometry structure match for " + 
+						originalType.getSimpleName() + " found, writing WKT " +
+						"representation instead");
+				
+				writer.writeCharacters(originalGeometry.toText());
+				return;
+			}
+			
+			// determine preferred candidate
+			//XXX for now: first one
+			path = candidates.get(0);
+			
+			// remember for later
+			// ignores geometry specific information loss in the future
+			// but usually this is acceptable because the geometries in
+			// the same property behave similar
+			storeCandidate(attributeType, originalType, path);
+			if (!geomType.equals(originalType)) {
+				storeCandidate(attributeType, geomType, path);
+			}
 		}
 		
-		// DEBUG
-		for (DefinitionPath candidate : candidates) {
-			log.info("Geometry structure match: " + geomType.getSimpleName() + " - " + candidate);
+		// write geometry
+		writeGeometry(writer, geometry, path);
+	}
+
+	/**
+	 * Write the geometry using the given path
+	 * 
+	 * @param writer the XML stream writer
+	 * @param geometry the geometry
+	 * @param path the definition path to use
+	 * @throws XMLStreamException if writing the geometry fails
+	 */
+	private void writeGeometry(XMLStreamWriter writer, Geometry geometry,
+			DefinitionPath path) throws XMLStreamException {
+		if (path.isEmpty()) {
+			//TODO directly write geometry
+			//XXX wrap with attribute name (would be needed as additional parameter)
 		}
-		// DEBUG
-		
-		//TODO determine preferred candidate
-		
-		//TODO remember for later
-		
-		//TODO write geometry
+		else {
+			for (PathElement step : path.getSteps()) {
+				// start elements
+				writer.writeStartElement(step.getNamespace(), step.getName());
+			}
+			
+			//TODO write geometry
+			
+			for (int i = 0; i < path.getSteps().size(); i++) {
+				// end elements
+				writer.writeEndElement();
+			}
+		}
+	}
+
+	/**
+	 * Store the candidate for later use
+	 * 
+	 * @param type the attribute type definition
+	 * @param geomType the geometry type
+	 * @param path the definition path
+	 */
+	private void storeCandidate(TypeDefinition type,
+			Class<? extends Geometry> geomType, DefinitionPath path) {
+		Map<Class<? extends Geometry>, DefinitionPath> paths = storedPaths.get(type);
+		if (paths == null) {
+			paths = new HashMap<Class<? extends Geometry>, DefinitionPath>();
+			storedPaths.put(type, paths);
+		}
+		paths.put(geomType, path);
+	}
+	
+	/**
+	 * Restore the candidate matching the given types
+	 * 
+	 * @param type the attribute type definition
+	 * @param geomType the geometry type
+	 * 
+	 * @return a previously found path or <code>null</code> 
+	 */
+	private DefinitionPath restoreCandidate(TypeDefinition type,
+			Class<? extends Geometry> geomType) {
+		Map<Class<? extends Geometry>, DefinitionPath> paths = storedPaths.get(type);
+		if (paths != null) {
+			return paths.get(geomType);
+		}
+		return null;
 	}
 
 	/**
