@@ -119,15 +119,15 @@ public class DefaultGmlWriterTest {
 	 * 
 	 * @throws Exception if any error occurs
 	 */
-//	@Test
-//	public void testTransformWrite_DKM() throws Exception {
-//		transformTest(
-//				getClass().getResource("/data/dkm_austria/KA_14168_EPSG25833.gml").toURI(),
-//				getClass().getResource("/data/dkm_austria/KA_14168_EPSG25833.xsd").toURI(),
-//				getClass().getResource("/data/dkm_austria/mapping_dkm_inspire.xml.goml").toURI(),
-//				getClass().getResource("/data/dkm_austria/inspire3/CadastralParcels.xsd").toURI(),
-//				"transformWrite_DKM");
-//	}
+	@Test
+	public void testTransformWrite_DKM() throws Exception {
+		transformTest(
+				getClass().getResource("/data/dkm_austria/KA_14168_EPSG25833.gml").toURI(),
+				getClass().getResource("/data/dkm_austria/KA_14168_EPSG25833.xsd").toURI(),
+				getClass().getResource("/data/dkm_austria/mapping_dkm_inspire.xml.goml").toURI(),
+				getClass().getResource("/data/dkm_austria/inspire3/CadastralParcels.xsd").toURI(),
+				"transformWrite_DKM");
+	}
 	
 	private void transformTest(URI sourceData, URI sourceSchemaLocation,
 			URI mappingLocation, URI targetSchemaLocation, String testName)
