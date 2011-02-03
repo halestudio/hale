@@ -42,7 +42,7 @@ public class MultiLineStringWriter extends
 		super(MultiLineString.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new NameImpl("Curve"));
+		addCompatibleType(new NameImpl("CurveType"));
 		
 		// patterns for matching inside compatible types
 		addPattern("**/LineStringSegment");
