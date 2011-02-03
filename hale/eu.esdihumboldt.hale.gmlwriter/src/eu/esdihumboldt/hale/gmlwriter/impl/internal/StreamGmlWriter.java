@@ -98,7 +98,7 @@ public class StreamGmlWriter {
 				if (entry.getValue().isEmpty()) {
 					defNamespace = entry.getKey();
 				}
-				else if (!entry.getKey().equals(targetSchema.getNamespace())) {
+				else {
 					tmpWriter.setPrefix(entry.getValue(), entry.getKey());
 				}
 			}
@@ -106,6 +106,8 @@ public class StreamGmlWriter {
 		
 		if (defNamespace == null) {
 			defNamespace = targetSchema.getNamespace();
+			
+			//TODO remove prefix for target schema namespace?
 		}
 		
 		tmpWriter.setDefaultNamespace(defNamespace);
