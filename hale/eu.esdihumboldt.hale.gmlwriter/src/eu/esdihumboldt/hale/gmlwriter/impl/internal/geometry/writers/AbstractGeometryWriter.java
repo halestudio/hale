@@ -51,7 +51,9 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	
 	private final Set<Name> compatibleTypes = new HashSet<Name>();
 	
-	private final Set<Pattern> patterns = new HashSet<Pattern>();
+	private final Set<Pattern> basePatterns = new HashSet<Pattern>();
+	
+	private final Set<Pattern> verifyPatterns = new HashSet<Pattern>();
 	
 	/**
 	 * Constructor
@@ -90,19 +92,55 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	}
 	
 	/**
-	 * Add an encoding pattern.
+	 * Add a base pattern. When matching the path the pattern path is appended
+	 * to the base path.
 	 * 
 	 * @param pattern the pattern string
 	 * @see Pattern#parse(String)
 	 */
-	public void addPattern(String pattern) {
+	public void addBasePattern(String pattern) {
 		Pattern p = Pattern.parse(pattern);
 		if (p.isValid()) {
-			patterns.add(p);
+			basePatterns.add(p);
 		}
 		else {
 			log.warn("Ignoring invalid pattern: " + pattern);
 		}
+	}
+	
+	/**
+	 * Add a verification pattern. If a match for a base pattern is found the
+	 * verification patterns will be used to verify the structure. For a path to
+	 * be accepted, all verification patterns must match and the resulting
+	 * end-points of the verification patterns must be valid.
+	 * @see #verifyEndPoint(TypeDefinition)
+	 * 
+	 * @param pattern the pattern string
+	 * @see Pattern#parse(String)
+	 */
+	public void addVerificationPattern(String pattern) {
+		Pattern p = Pattern.parse(pattern);
+		if (p.isValid()) {
+			verifyPatterns.add(p);
+		}
+		else {
+			log.warn("Ignoring invalid pattern: " + pattern);
+		}
+	}
+	
+	/**
+	 * Verify the verification end point. After reaching the end-point of a
+	 * verification pattern this method is called with the {@link TypeDefinition}
+	 * of the end-point to assure the needed structure is present (e.g. a
+	 * DirectPositionListType element)
+	 * 
+	 * @param endPoint the end-point type definition 
+	 *  
+	 * @return if the end-point is valid for writing the geometry
+	 */
+	protected boolean verifyEndPoint(TypeDefinition endPoint) {
+		//TODO check for something
+		return true;
 	}
 
 	/**
@@ -111,10 +149,32 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	@Override
 	public DefinitionPath match(TypeDefinition type, DefinitionPath basePath,
 			String gmlNs) {
-		// try to match each pattern
-		for (Pattern pattern : patterns) {
+		// try to match each base pattern
+		for (Pattern pattern : basePatterns) {
 			DefinitionPath path = pattern.match(type, basePath, gmlNs);
 			if (path != null) {
+				// verification patterns
+				for (Pattern verPattern : verifyPatterns) {
+					DefinitionPath endPoint = verPattern.match(path.getLastType(), new DefinitionPath(path), gmlNs);
+					if (endPoint != null) {
+						// verify end-point
+						boolean ok = verifyEndPoint(endPoint.getLastType());
+						if (!ok) {
+							// all end-points must be valid
+							return null;
+						}
+					}
+					else {
+						// all verification patterns must match
+						return null;
+					}
+				}
+				
+				/*
+				 * now either all verification patterns matched and the 
+				 * end-points were valid, or no verification patterns were
+				 * specified
+				 */
 				return path;
 			}
 		}

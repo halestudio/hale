@@ -44,7 +44,11 @@ public class PolygonWriter extends AbstractGeometryWriter<Polygon> {
 		addCompatibleType(new NameImpl("PolygonType"));
 		
 		// patterns for matching inside compatible types
-		addPattern("*"); // matches any compatible type
+		addBasePattern("*"); // matches any compatible type element
+		
+		// verification patterns
+		addVerificationPattern("*/exterior/LinearRing"); // both exterior
+		addVerificationPattern("*/interior/LinearRing"); // and interior elements must be present
 	}
 
 	/**

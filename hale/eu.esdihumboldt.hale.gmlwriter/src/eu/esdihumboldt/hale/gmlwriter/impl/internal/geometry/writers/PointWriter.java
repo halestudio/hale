@@ -43,7 +43,7 @@ public class PointWriter extends AbstractGeometryWriter<Point> {
 		addCompatibleType(new NameImpl("PointType"));
 		
 		// patterns for matching inside compatible types
-		addPattern("*"); // matches any compatible type
+		addBasePattern("*"); // matches any compatible type element
 	}
 
 	/**

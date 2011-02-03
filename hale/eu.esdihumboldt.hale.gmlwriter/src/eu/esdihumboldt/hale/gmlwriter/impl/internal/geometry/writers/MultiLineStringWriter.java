@@ -45,7 +45,7 @@ public class MultiLineStringWriter extends
 		addCompatibleType(new NameImpl("CurveType"));
 		
 		// patterns for matching inside compatible types
-		addPattern("**/LineStringSegment");
+		addBasePattern("**/LineStringSegment");
 	}
 
 	/**
