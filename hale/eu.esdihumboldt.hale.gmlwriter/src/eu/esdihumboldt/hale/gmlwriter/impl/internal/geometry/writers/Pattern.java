@@ -355,19 +355,20 @@ public class Pattern {
 	}
 
 	/**
-	 * Determines if the pattern is valid. To be valid it must at least contain
-	 * one named element
+	 * Determines if the pattern is valid.
 	 * 
 	 * @return if the pattern is valid
 	 */
 	public boolean isValid() {
-		for (PatternElement element : elements) {
-			if (element.getType().equals(ElementType.NAMED_ELEMENT)) {
-				return true;
-			}
-		}
-		
-		return false;
+//		for (PatternElement element : elements) {
+//			if (element.getType().equals(ElementType.NAMED_ELEMENT)) {
+//				return true;
+//			}
+//		}
+//		
+//		return false;
+		//XXX for now assume any pattern is valid
+		return true;
 	}
 
 	/**
