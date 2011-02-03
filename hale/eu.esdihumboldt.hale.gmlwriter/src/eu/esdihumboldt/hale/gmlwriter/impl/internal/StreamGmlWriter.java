@@ -187,18 +187,23 @@ public class StreamGmlWriter {
 		FeatureId id = feature.getIdentifier();
 		
 		if (id != null) {
-			AttributeDefinition idDef = type.getAttribute("fid");
+			String idAttribute = "fid"; //XXX GML 2/3 ?
+			AttributeDefinition idDef = type.getAttribute(idAttribute);
+			if (idDef == null) {
+				idAttribute = "id"; // GML 3.2
+				idDef = type.getAttribute(idAttribute);
+			}
 			if (idDef != null && idDef.isAttribute()) {
-				// fid attribute present in type
-				Object idProp = FeatureInspector.getPropertyValue(feature, Arrays.asList("fid"), null);
+				// id attribute present in type
+				Object idProp = FeatureInspector.getPropertyValue(feature, Arrays.asList(idAttribute), null);
 				if (idProp == null) {
-					// set fid attribute on feature if not set
-					FeatureInspector.setPropertyValue(feature, Arrays.asList("fid"), id);
+					// set id attribute on feature if not set
+					FeatureInspector.setPropertyValue(feature, Arrays.asList(idAttribute), id);
 				}
 			}
 			else {
-				// manually add fid attribute
-				writer.writeAttribute("fid", id.toString());
+				// manually add id attribute
+				writer.writeAttribute(idAttribute, id.toString());
 			}
 		}
 		
