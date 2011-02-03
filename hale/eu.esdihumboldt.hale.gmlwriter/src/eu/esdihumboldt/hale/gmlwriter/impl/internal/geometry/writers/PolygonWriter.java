@@ -19,28 +19,29 @@ import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.Name;
 
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.Polygon;
 
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.GeometryWriter;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
- * {@link Point} writer
+ * {@link Polygon} writer 
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class PointWriter extends AbstractGeometryWriter<Point> {
+public class PolygonWriter extends AbstractGeometryWriter<Polygon> {
 
 	/**
 	 * Default constructor
 	 */
-	public PointWriter() {
-		super(Point.class);
+	public PolygonWriter() {
+		super(Polygon.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new NameImpl("PointType"));
+		addCompatibleType(new NameImpl("PolygonType"));
 		
 		// patterns for matching inside compatible types
 		addPattern("*"); // matches any compatible type
@@ -50,7 +51,7 @@ public class PointWriter extends AbstractGeometryWriter<Point> {
 	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition, Name, String)
 	 */
 	@Override
-	public void write(XMLStreamWriter writer, Point geometry,
+	public void write(XMLStreamWriter writer, Polygon polygon,
 			TypeDefinition elementType, Name elementName, String gmlNs)
 			throws XMLStreamException {
 		/*
@@ -58,7 +59,18 @@ public class PointWriter extends AbstractGeometryWriter<Point> {
 		 * the patterns. The corresponding element name and its type definition
 		 * are given.
 		 */
-		writeCoordinates(writer, geometry.getCoordinates(), elementType, gmlNs);
+		
+		// write exterior ring
+		LineString exterior = polygon.getExteriorRing();
+		descendAndwriteCoordinates(writer, Pattern.parse("*/exterior/LinearRing"), 
+				exterior.getCoordinates(), elementType, gmlNs);
+		
+		// write interior rings
+		for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
+			LineString interior = polygon.getInteriorRingN(i);
+			descendAndwriteCoordinates(writer, Pattern.parse("*/interior/LinearRing"), 
+					interior.getCoordinates(), elementType, gmlNs);
+		}
 	}
 
 }

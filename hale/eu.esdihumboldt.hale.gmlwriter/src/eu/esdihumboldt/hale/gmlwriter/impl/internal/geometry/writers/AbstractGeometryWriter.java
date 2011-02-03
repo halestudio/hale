@@ -27,8 +27,11 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.gmlwriter.impl.internal.GmlWriterUtil;
+import eu.esdihumboldt.hale.gmlwriter.impl.internal.StreamGmlWriter;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.DefinitionPath;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.GeometryWriter;
+import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.PathElement;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
@@ -117,6 +120,44 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Write coordinates into a posList or coordinates property
+	 * 
+	 * @param writer the XML stream writer 
+	 * @param descendPattern the pattern to descend
+	 * @param coordinates the coordinates to write
+	 * @param elementType the type of the encompassing element
+	 * @param gmlNs the GML namespace
+	 * @throws XMLStreamException if an error occurs writing the coordinates
+	 */
+	protected static void descendAndwriteCoordinates(XMLStreamWriter writer, 
+			Pattern descendPattern, Coordinate[] coordinates, 
+			TypeDefinition elementType, String gmlNs) throws XMLStreamException {
+		DefinitionPath path = descendPattern.match(elementType, new DefinitionPath(elementType), gmlNs);
+		
+		if (path.isEmpty()) {
+			writeCoordinates(writer, coordinates, elementType, gmlNs);
+			return;
+		}
+		
+		Name name = GmlWriterUtil.getElementName(path.getLastType()); //XXX the element name used may be wrong, is this an issue?
+		for (PathElement step : path.getSteps()) {
+			// start elements
+			name = step.getName();
+			writer.writeStartElement(name.getNamespaceURI(), name.getLocalPart());
+			// write eventual required ID
+			StreamGmlWriter.writeRequiredID(writer, step.getType(), null, false);
+		}
+		
+		// write geometry
+		writeCoordinates(writer, coordinates, path.getLastType(), gmlNs);
+		
+		for (int i = 0; i < path.getSteps().size(); i++) {
+			// end elements
+			writer.writeEndElement();
+		}
 	}
 	
 	/**

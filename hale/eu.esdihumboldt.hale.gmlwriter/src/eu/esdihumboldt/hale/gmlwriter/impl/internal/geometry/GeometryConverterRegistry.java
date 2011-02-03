@@ -24,6 +24,7 @@ import java.util.Set;
 
 import com.vividsolutions.jts.geom.Geometry;
 
+import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.converters.MultiPolygonToPolygonConverter;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.converters.PolygonToMultiLineString;
 
 /**
@@ -189,6 +190,7 @@ public class GeometryConverterRegistry {
 	private void init() {
 		// built-in converters
 		registerConverter(new PolygonToMultiLineString());
+		registerConverter(new MultiPolygonToPolygonConverter());
 		
 		//TODO other converters?
 	}
