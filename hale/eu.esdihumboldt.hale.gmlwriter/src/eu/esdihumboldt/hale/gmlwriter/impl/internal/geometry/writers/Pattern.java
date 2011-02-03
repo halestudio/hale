@@ -112,6 +112,8 @@ public class Pattern {
 		
 		String[] parts = pattern.split(ELEMENT_DELIMITER);
 		
+		//TODO - * or ** after ** not allowed
+		
 		for (int i = 0; i < parts.length; i++) {
 			String part = parts[i];
 			
