@@ -109,6 +109,8 @@ public class ApacheSchemaProvider
 	
 	private static final AGroup NO_DEFINITION = AGroupFactory.getGroup("No type definition found for elements"); 
 	
+	private static final AGroup MISSING_ATTRIBUTE_REF = AGroupFactory.getGroup("Could not resolve attribute reference");
+	
 	/**
 	 * Default constructor 
 	 */
@@ -1072,7 +1074,7 @@ public class ApacheSchemaProvider
 				return createAttribute(referencedAtt, declaringType, schemaTypes, referenceResolver, index, attribute.getUse());
 			}
 			else {
-				_log.warn("Reference to attribute " + attribute.getRefName() + " could not be resolved");
+				_log.warn(MISSING_ATTRIBUTE_REF, "Reference to attribute " + attribute.getRefName() + " could not be resolved");
 			}
 		}
 		
