@@ -14,6 +14,8 @@ package eu.esdihumboldt.hale.schemaprovider.provider.internal;
 
 import java.util.Map;
 
+import org.apache.ws.commons.schema.XmlSchemaAttribute;
+import org.apache.ws.commons.schema.XmlSchemaAttributeGroup;
 import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
@@ -21,7 +23,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 
 /**
- * 
+ * Wraps up a schema parsing result
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -33,17 +35,27 @@ public class SchemaResult {
 	
 	private final Map<Name, SchemaElement> elements;
 
+	private final Map<Name, XmlSchemaAttributeGroup> schemaAttributeGroups;
+
+	private final Map<Name, XmlSchemaAttribute> schemaAttributes;
+
 	/**
 	 * Constructor
 	 * 
-	 * @param types
-	 * @param elements
+	 * @param types the type definitions
+	 * @param elements the element definitions
+	 * @param schemaAttributes the attribute definitions
+	 * @param schemaAttributeGroups the attribute group definitions
 	 */
 	public SchemaResult(Map<Name, TypeDefinition> types,
-			Map<Name, SchemaElement> elements) {
+			Map<Name, SchemaElement> elements, 
+			Map<Name, XmlSchemaAttribute> schemaAttributes, 
+			Map<Name, XmlSchemaAttributeGroup> schemaAttributeGroups) {
 		super();
 		this.types = types;
 		this.elements = elements;
+		this.schemaAttributes = schemaAttributes;
+		this.schemaAttributeGroups = schemaAttributeGroups;
 	}
 
 	/**
@@ -58,6 +70,20 @@ public class SchemaResult {
 	 */
 	public Map<Name, SchemaElement> getElements() {
 		return elements;
+	}
+
+	/**
+	 * @return the schemaAttributeGroups
+	 */
+	public Map<Name, XmlSchemaAttributeGroup> getSchemaAttributeGroups() {
+		return schemaAttributeGroups;
+	}
+
+	/**
+	 * @return the schemaAttributes
+	 */
+	public Map<Name, XmlSchemaAttribute> getSchemaAttributes() {
+		return schemaAttributes;
 	}
 
 }

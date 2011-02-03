@@ -82,6 +82,7 @@ import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.DefaultResol
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.ElementReferenceAttribute;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.ProgressURIResolver;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.SchemaAttribute;
+import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.SchemaReferenceResolver;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.SchemaTypeAttribute;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.SchemaTypeResolver;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.TypeUtil;
@@ -121,20 +122,15 @@ public class ApacheSchemaProvider
 	/**
 	 * Extracts attribute definitions from a {@link XmlSchemaParticle}.
 	 * 
-	 * @param elements local element definitions
-	 * @param importedElements imported element definitions
 	 * @param typeDef the definition of the declaring type
 	 * @param particle the particle
 	 * @param schemaTypes the schema types 
-	 * @param schemaAttributes the schema attributes
-	 * @param schemaAttributeGroups the schema attribute groups
+	 * @param referenceResolver the reference resolver
 	 * 
 	 * @return the list of attribute definitions
 	 */
-	private List<AttributeDefinition> getAttributesFromParticle(Map<Name, SchemaElement> elements, 
-			Map<Name, SchemaElement> importedElements, TypeDefinition typeDef, XmlSchemaParticle particle, 
-			SchemaTypeResolver schemaTypes, Map<Name, XmlSchemaAttribute> schemaAttributes, 
-			Map<Name, XmlSchemaAttributeGroup> schemaAttributeGroups) {
+	private List<AttributeDefinition> getAttributesFromParticle(TypeDefinition typeDef, XmlSchemaParticle particle, 
+			SchemaTypeResolver schemaTypes, SchemaReferenceResolver referenceResolver) {
 		List<AttributeDefinition> attributeResults = new ArrayList<AttributeDefinition>();
 		
 		// particle:
@@ -146,9 +142,8 @@ public class ApacheSchemaProvider
 				if (object instanceof XmlSchemaElement) {
 					// <element>
 					AbstractElementAttribute attribute = getAttributeFromElement(
-							(XmlSchemaElement) object, typeDef, elements, 
-							importedElements, schemaTypes, schemaAttributes, 
-							schemaAttributeGroups);
+							(XmlSchemaElement) object, typeDef, schemaTypes, 
+							referenceResolver);
 					if (attribute != null) {
 						attributeResults.add(attribute);
 					}
@@ -156,10 +151,9 @@ public class ApacheSchemaProvider
 				}
 				else if (object instanceof XmlSchemaParticle) {
 					// contained particles, e.g. a choice TODO wrap those attributes?
-					attributeResults.addAll(getAttributesFromParticle(elements, 
-							importedElements, typeDef, 
+					attributeResults.addAll(getAttributesFromParticle(typeDef, 
 							(XmlSchemaParticle) object, schemaTypes, 
-							schemaAttributes, schemaAttributeGroups));
+							referenceResolver));
 				}
 			}
 			// </sequence>
@@ -173,9 +167,8 @@ public class ApacheSchemaProvider
 				if (object instanceof XmlSchemaElement) {
 					// <element>
 					AbstractElementAttribute attribute = getAttributeFromElement(
-							(XmlSchemaElement) object, typeDef, elements, 
-							importedElements, schemaTypes, schemaAttributes, 
-							schemaAttributeGroups);
+							(XmlSchemaElement) object, typeDef, schemaTypes, 
+							referenceResolver);
 					if (attribute != null) {
 						attribute.setNillable(true); //XXX set nillable because its a choice
 						attributeResults.add(attribute);
@@ -184,10 +177,9 @@ public class ApacheSchemaProvider
 				}
 				else if (object instanceof XmlSchemaParticle) {
 					// contained particles, e.g. a choice TODO wrap those attributes?
-					attributeResults.addAll(getAttributesFromParticle(elements, 
-							importedElements, typeDef, 
+					attributeResults.addAll(getAttributesFromParticle(typeDef, 
 							(XmlSchemaParticle) object, schemaTypes, 
-							schemaAttributes, schemaAttributeGroups));
+							referenceResolver));
 				}
 			}
 			// </choice>
@@ -201,19 +193,14 @@ public class ApacheSchemaProvider
 	 * 
 	 * @param element the schema element
 	 * @param declaringType the definition of the declaring type
-	 * @param elements local element definitions
-	 * @param importedElements imported element definitions
 	 * @param schemaTypes the schema types
-	 * @param schemaAttributes the schema attributes
-	 * @param schemaAttributeGroups the schema attribute groups
+	 * @param referenceResolver the reference resolver
 	 * 
 	 * @return an attribute definition or <code>null</code>
 	 */
 	private AbstractElementAttribute getAttributeFromElement(
 			XmlSchemaElement element, TypeDefinition declaringType,
-			Map<Name, SchemaElement> elements, Map<Name, SchemaElement> importedElements,
-			SchemaTypeResolver schemaTypes, Map<Name, XmlSchemaAttribute> schemaAttributes, 
-			Map<Name, XmlSchemaAttributeGroup> schemaAttributeGroups) {
+			SchemaTypeResolver schemaTypes, SchemaReferenceResolver referenceResolver) {
 		if (element.getSchemaTypeName() != null) {
 			// element referencing a type
 			// <element name="ELEMENT_NAME" type="SCHEMA_TYPE_NAME" />
@@ -233,11 +220,7 @@ public class ApacheSchemaProvider
 					element.getRefName().getLocalPart());
 			
 			// local element definition
-			SchemaElement reference = elements.get(elementName);
-			if (reference == null) {
-				// imported element definition
-				reference = importedElements.get(elementName);
-			}
+			SchemaElement reference = referenceResolver.getSchemaElement(elementName);
 			if (reference == null) {
 				_log.warn("Reference to element " + element.getRefName().getNamespaceURI() + "/" + element.getRefName().getLocalPart() +" not found");
 				return null;
@@ -283,7 +266,7 @@ public class ApacheSchemaProvider
 							
 							// add attributes to the anonymous type
 							// adding the attributes will happen automatically when the AbstractSchemaAttribute is created
-							getAttributes(elements, importedElements, anonymousType, complexType, schemaTypes, schemaAttributes, schemaAttributeGroups);
+							getAttributes(anonymousType, complexType, schemaTypes, referenceResolver);
 							
 							// add the anonymous type to the type map - needed for type resolution in SchemaAttribute
 							// it's enough for it to be added to the imported types map
@@ -322,7 +305,7 @@ public class ApacheSchemaProvider
 							
 							// add attributes to the anonymous type
 							// adding the attributes will happen automatically when the AbstractSchemaAttribute is created
-							getAttributes(elements, importedElements, anonymousType, complexType, schemaTypes, schemaAttributes, schemaAttributeGroups);
+							getAttributes(anonymousType, complexType, schemaTypes, referenceResolver);
 							
 							// add the anonymous type to the type map - needed for type resolution in SchemaAttribute
 							// it's enough for it to be added to the imported types map
@@ -364,7 +347,7 @@ public class ApacheSchemaProvider
 						
 						// add attributes to the anonymous type
 						// adding the attributes will happen automatically when the AbstractSchemaAttribute is created
-						getAttributes(elements, importedElements, anonymousType, complexType, schemaTypes, schemaAttributes, schemaAttributeGroups);
+						getAttributes(anonymousType, complexType, schemaTypes, referenceResolver);
 						
 						// add the anonymous type to the type map - needed for type resolution in SchemaAttribute
 						// it's enough for it to be added to the imported types map
@@ -536,13 +519,13 @@ public class ApacheSchemaProvider
 		Map<Name, XmlSchemaAttribute> schemaAttributes = new HashMap<Name, XmlSchemaAttribute>();
 		// attribute group name mapped to attribute group definition
 		Map<Name, XmlSchemaAttributeGroup> schemaAttributeGroups = new HashMap<Name, XmlSchemaAttributeGroup>();
-		
 		// Map of type names / types for the result
 		Map<Name, TypeDefinition> featureTypes = new HashMap<Name, TypeDefinition>();
 		// name mapping: element name -> type name
 		Map<Name, SchemaElement> elements = new HashMap<Name, SchemaElement>();
 		// result
-		SchemaResult result = new SchemaResult(featureTypes, elements);
+		SchemaResult result = new SchemaResult(featureTypes, elements, 
+				schemaAttributes, schemaAttributeGroups);
 		
 		// type names for type definitions where is no element
 		Set<String> schemaTypeNames = new HashSet<String>();
@@ -645,6 +628,10 @@ public class ApacheSchemaProvider
 		Map<Name, TypeDefinition> importedFeatureTypes = new HashMap<Name, TypeDefinition>();
 		// name mapping for imported types: element name -> type name
 		Map<Name, SchemaElement> importedElements = new HashMap<Name, SchemaElement>();
+		// imported attributes
+		Map<Name, XmlSchemaAttribute> importedSchemaAttributes = new HashMap<Name, XmlSchemaAttribute>();
+		// imported attribute groups
+		Map<Name, XmlSchemaAttributeGroup> importedSchemaAttributeGroups = new HashMap<Name, XmlSchemaAttributeGroup>();
 		
 		// add imported types
 		for (Entry<String, SchemaResult> entry : imports.entrySet()) {
@@ -653,17 +640,27 @@ public class ApacheSchemaProvider
 					// is include, add to result
 					featureTypes.putAll(entry.getValue().getTypes());
 					elements.putAll(entry.getValue().getElements());
+					schemaAttributes.putAll(entry.getValue().getSchemaAttributes());
+					schemaAttributeGroups.putAll(entry.getValue().getSchemaAttributeGroups());
 				}
 				else {
 					// is import, don't add to result
 					importedFeatureTypes.putAll(entry.getValue().getTypes());
 					importedElements.putAll(entry.getValue().getElements());
+					importedSchemaAttributes.putAll(entry.getValue().getSchemaAttributes());
+					importedSchemaAttributeGroups.putAll(entry.getValue().getSchemaAttributeGroups());
 				}
 			}
 		}
 		
 		// schema type resolver combining the informations for resolving types
 		SchemaTypeResolver typeResolver = new SchemaTypeResolver(featureTypes, importedFeatureTypes, schemaLocation);
+		
+		// schema reference resolver combining the informations for resolving schema elements, attributes and attribute groups
+		SchemaReferenceResolver referenceResolver = new SchemaReferenceResolver(
+				elements, importedElements, schemaAttributes, 
+				importedSchemaAttributes, schemaAttributeGroups, 
+				importedSchemaAttributeGroups);
 		
 		// Map of type names to definitions
 		Map<Name, XmlSchemaObject> typeDefinitions = new HashMap<Name, XmlSchemaObject>();
@@ -682,7 +679,7 @@ public class ApacheSchemaProvider
 				name = ((XmlSchemaComplexType)item).getName();
 				
 				// get the attribute type names
-				typeDependencies = getAttributeTypeNames(elements, importedElements, (XmlSchemaComplexType) item, schemaAttributes, schemaAttributeGroups);
+				typeDependencies = getAttributeTypeNames((XmlSchemaComplexType) item, referenceResolver);
 				
 				// get the name of the super type 
 				superTypeName = getSuperTypeName((XmlSchemaComplexType)item);
@@ -787,13 +784,10 @@ public class ApacheSchemaProvider
 				
 				// determine the defined attributes and add them to the declaring type
 				List<AttributeDefinition> attributes = getAttributes(
-						elements,
-						importedElements,
 						typeDef, // definition of the declaring type
 						(XmlSchemaComplexType) item,
 						typeResolver,
-						schemaAttributes,
-						schemaAttributeGroups);
+						referenceResolver);
 				
 				// reuse the super type's attribute type where appropriate
 				if (superType != null && superType.isAttributeTypeSet()) {
@@ -911,20 +905,15 @@ public class ApacheSchemaProvider
 	/**
 	 * Get the attributes for the given item
 	 * 
-	 * @param elements map of element names to type names
-	 * @param importedElements map of element names to imported type names
 	 * @param typeDef the definition of the declaring type 
 	 * @param item the complex type item
 	 * @param schemaTypes the schema types
-	 * @param schemaAttributes the schema attributes 
-	 * @param schemaAttributeGroups the schema attribute groups
+	 * @param referenceResolver the reference resolver
 	 *  
 	 * @return the attributes as a list of {@link SchemaAttribute}s
 	 */
-	private List<AttributeDefinition> getAttributes(Map<Name, SchemaElement> elements, 
-			Map<Name, SchemaElement> importedElements, TypeDefinition typeDef, XmlSchemaComplexType item,
-			SchemaTypeResolver schemaTypes, Map<Name, XmlSchemaAttribute> schemaAttributes, 
-			Map<Name, XmlSchemaAttributeGroup> schemaAttributeGroups) {
+	private List<AttributeDefinition> getAttributes(TypeDefinition typeDef, XmlSchemaComplexType item,
+			SchemaTypeResolver schemaTypes, SchemaReferenceResolver referenceResolver) {
 		ArrayList<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
 		
 		// item:
@@ -940,12 +929,12 @@ public class ApacheSchemaProvider
 				// particle (e.g. sequence)
 				if (extension.getParticle() != null) {
 					XmlSchemaParticle particle = extension.getParticle();
-					attributes.addAll(getAttributesFromParticle(elements, importedElements, typeDef, particle, schemaTypes, schemaAttributes, schemaAttributeGroups));
+					attributes.addAll(getAttributesFromParticle(typeDef, particle, schemaTypes, referenceResolver));
 				}
 				// attributes
 				XmlSchemaObjectCollection attributeCollection = extension.getAttributes();
 				if (attributeCollection != null) {
-					attributes.addAll(getAttributesFromCollection(attributeCollection, typeDef, schemaTypes, schemaAttributes, schemaAttributeGroups, null));
+					attributes.addAll(getAttributesFromCollection(attributeCollection, typeDef, schemaTypes, referenceResolver, null));
 				}
 				//   </extension>
 				// </complexContent>
@@ -957,7 +946,7 @@ public class ApacheSchemaProvider
 				// attributes
 				XmlSchemaObjectCollection attributeCollection = extension.getAttributes();
 				if (attributeCollection != null) {
-					attributes.addAll(getAttributesFromCollection(attributeCollection, typeDef, schemaTypes, schemaAttributes, schemaAttributeGroups, null));
+					attributes.addAll(getAttributesFromCollection(attributeCollection, typeDef, schemaTypes, referenceResolver, null));
 				}
 				//   </extension>
 				// </simpleContent>
@@ -968,14 +957,14 @@ public class ApacheSchemaProvider
 			XmlSchemaComplexType complexType = item;
 			// particle (e.g. sequence)
 			XmlSchemaParticle particle = complexType.getParticle();
-			List<AttributeDefinition> tmp = getAttributesFromParticle(elements, importedElements, typeDef, particle, schemaTypes, schemaAttributes, schemaAttributeGroups);
+			List<AttributeDefinition> tmp = getAttributesFromParticle(typeDef, particle, schemaTypes, referenceResolver);
 			if (tmp != null) {
 				attributes.addAll(tmp);
 			}
 			// attributes
 			XmlSchemaObjectCollection attributeCollection = complexType.getAttributes();
 			if (attributeCollection != null) {
-				attributes.addAll(getAttributesFromCollection(attributeCollection, typeDef, schemaTypes, schemaAttributes, schemaAttributeGroups, null));
+				attributes.addAll(getAttributesFromCollection(attributeCollection, typeDef, schemaTypes, referenceResolver, null));
 			}
 		}
 		
@@ -985,8 +974,7 @@ public class ApacheSchemaProvider
 	
 	private Collection<AttributeDefinition> getAttributesFromCollection(
 			XmlSchemaObjectCollection attributeCollection, TypeDefinition declaringType,
-			SchemaTypeResolver schemaTypes, Map<Name, XmlSchemaAttribute> schemaAttributes,
-			Map<Name, XmlSchemaAttributeGroup> schemaAttributeGroups,
+			SchemaTypeResolver schemaTypes, SchemaReferenceResolver referenceResolver,
 			String indexPrefix) {
 		if (indexPrefix == null) {
 			indexPrefix = "";
@@ -1001,7 +989,7 @@ public class ApacheSchemaProvider
 				XmlSchemaAttribute attribute = (XmlSchemaAttribute) object;
 				
 				AttributeDefinition attDef = createAttribute(attribute, 
-						declaringType, schemaTypes, schemaAttributes, indexPrefix + index);
+						declaringType, schemaTypes, referenceResolver, indexPrefix + index);
 				if (attDef != null) {
 					attributeResults.add(attDef);
 				}
@@ -1010,20 +998,19 @@ public class ApacheSchemaProvider
 				XmlSchemaAttributeGroup group = (XmlSchemaAttributeGroup) object;
 				
 				attributeResults.addAll(createAttributes(group, declaringType, 
-						schemaTypes, schemaAttributes, schemaAttributeGroups, indexPrefix + index));
+						schemaTypes, referenceResolver, indexPrefix + index));
 			}
 			else if (object instanceof XmlSchemaAttributeGroupRef) {
 				XmlSchemaAttributeGroupRef groupRef = (XmlSchemaAttributeGroupRef) object;
 				
 				if (groupRef.getRefName() != null) {
-					XmlSchemaAttributeGroup group = schemaAttributeGroups.get(new NameImpl(
+					XmlSchemaAttributeGroup group = referenceResolver.getSchemaAttributeGroup(new NameImpl(
 							groupRef.getRefName().getNamespaceURI(), 
 							groupRef.getRefName().getLocalPart()));
 					
 					if (group != null) {
 						attributeResults.addAll(createAttributes(group, 
-								declaringType, schemaTypes, schemaAttributes, 
-								schemaAttributeGroups, indexPrefix + index));
+								declaringType, schemaTypes, referenceResolver, indexPrefix + index));
 					}
 					else {
 						_log.warn("Reference to attribute group " + groupRef.getRefName() + " could not be resolved");
@@ -1037,16 +1024,15 @@ public class ApacheSchemaProvider
 
 	private Collection<? extends AttributeDefinition> createAttributes(
 			XmlSchemaAttributeGroup group, TypeDefinition declaringType,
-			SchemaTypeResolver schemaTypes, Map<Name, XmlSchemaAttribute> schemaAttributes, 
-			Map<Name, XmlSchemaAttributeGroup> schemaAttributeGroups, String index) {
+			SchemaTypeResolver schemaTypes, SchemaReferenceResolver referenceResolver, 
+			String index) {
 		return getAttributesFromCollection(group.getAttributes(), 
-				declaringType, schemaTypes, schemaAttributes, 
-				schemaAttributeGroups, index + "_");
+				declaringType, schemaTypes, referenceResolver, index + "_");
 	}
 
 	private AttributeDefinition createAttribute(XmlSchemaAttribute attribute, 
 			TypeDefinition declaringType, SchemaTypeResolver schemaTypes, 
-			Map<Name, XmlSchemaAttribute> schemaAttributes, String index) {
+			SchemaReferenceResolver referenceResolver, String index) {
 		// create attributes
 		QName typeName = attribute.getSchemaTypeName();
 		if (typeName != null) {
@@ -1072,12 +1058,12 @@ public class ApacheSchemaProvider
 		}
 		else if (attribute.getRefName() != null) {
 			// <attribute ref="REF_NAME" />
-			XmlSchemaAttribute referencedAtt = schemaAttributes.get(new NameImpl(
+			XmlSchemaAttribute referencedAtt = referenceResolver.getSchemaAttribute(new NameImpl(
 					attribute.getRefName().getNamespaceURI(), 
 					attribute.getRefName().getLocalPart()));
 			
 			if (referencedAtt != null) {
-				return createAttribute(referencedAtt, declaringType, schemaTypes, schemaAttributes, index);
+				return createAttribute(referencedAtt, declaringType, schemaTypes, referenceResolver, index);
 			}
 			else {
 				_log.warn("Reference to attribute " + attribute.getRefName() + " could not be resolved");
@@ -1090,20 +1076,14 @@ public class ApacheSchemaProvider
 	/**
 	 * Get the attributes type names for the given item
 	 * 
-	 * @param elementTypeMap map of element names to type names 
-	 * @param importedElementTypeMap map of element names to imported type names
 	 * @param item the complex type item
-	 * @param schemaAttributes the schema attributes
-	 * @param schemaAttributeGroups the schema attribute groups
+	 * @param referenceResolver the reference resolver
 	 * @return the attribute type names
 	 */
-	private Set<Name> getAttributeTypeNames(Map<Name, SchemaElement> elementTypeMap, 
-			Map<Name, SchemaElement> importedElementTypeMap, XmlSchemaComplexType item, 
-			Map<Name, XmlSchemaAttribute> schemaAttributes, 
-			Map<Name, XmlSchemaAttributeGroup> schemaAttributeGroups) {
-		List<AttributeDefinition> attributes = getAttributes(elementTypeMap, 
-				importedElementTypeMap, null, item, null, schemaAttributes, 
-				schemaAttributeGroups);
+	private Set<Name> getAttributeTypeNames(XmlSchemaComplexType item, 
+			SchemaReferenceResolver referenceResolver) {
+		List<AttributeDefinition> attributes = getAttributes(null, item, null, 
+				referenceResolver);
 		
 		Set<Name> typeNames = new HashSet<Name>();
 		
