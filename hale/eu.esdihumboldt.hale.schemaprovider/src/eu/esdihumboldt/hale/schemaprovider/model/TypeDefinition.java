@@ -439,9 +439,6 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	public Collection<AttributeDefinition> getAttributes() {
 		Collection<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
 		
-		// add declared attributes
-		attributes.addAll(declaredAttributes); //TODO must they come first or after inherited attributes?
-		
 		if (inheritedAttributes == null) {
 			inheritedAttributes = new ArrayList<AttributeDefinition>();
 			
@@ -460,6 +457,9 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 		
 		// add inherited attributes
 		attributes.addAll(inheritedAttributes);
+		
+		// add declared attributes afterwards - correct order for output
+		attributes.addAll(declaredAttributes);
 		
 		return attributes;
 	}
