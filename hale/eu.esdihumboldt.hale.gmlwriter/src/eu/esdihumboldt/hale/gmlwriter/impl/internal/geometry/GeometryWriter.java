@@ -12,6 +12,9 @@
 
 package eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry;
 
+import java.util.Set;
+
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.opengis.feature.type.Name;
@@ -46,25 +49,31 @@ public interface GeometryWriter<T extends Geometry> {
 	 * @return the type names, a <code>null</code> namespace in a name
 	 * references the GML namespace
 	 */
-	public Iterable<Name> getCompatibleTypes();
+	public Set<Name> getCompatibleTypes();
 	
 	/**
 	 * Matches the type against the encoding patterns.
 	 * 
 	 * @param type the type definition
-	 * @param path the definition path
+	 * @param basePath the definition path
+	 * @param gmlNs the GML namespace
 	 * 
 	 * @return the new path if there is a match, <code>null</code> otherwise
 	 */
-	public DefinitionPath match(TypeDefinition type, DefinitionPath path);
+	public DefinitionPath match(TypeDefinition type, DefinitionPath basePath,
+			String gmlNs);
 	
 	/**
 	 * Write a geometry
 	 * 
 	 * @param writer the XML stream writer
 	 * @param geometry the geometry to write
-	 * @param type the last type definition in the matching path
+	 * @param elementType the last type definition in the matching path
+	 * @param elementName the corresponding element name
+	 * @param gmlNs the GML namespace
+	 * @throws XMLStreamException if an error occurs writing the geometry
 	 */
-	public void write(XMLStreamWriter writer, T geometry, TypeDefinition type);
+	public void write(XMLStreamWriter writer, T geometry, 
+			TypeDefinition elementType, Name elementName, String gmlNs) throws XMLStreamException;
 	
 }

@@ -16,15 +16,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.xml.stream.XMLStreamWriter;
-
 import org.opengis.feature.type.Name;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.DefinitionPath;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.GeometryWriter;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -61,8 +59,8 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	 * @see GeometryWriter#getCompatibleTypes()
 	 */
 	@Override
-	public Iterable<Name> getCompatibleTypes() {
-		return Collections.unmodifiableCollection(compatibleTypes);
+	public Set<Name> getCompatibleTypes() {
+		return Collections.unmodifiableSet(compatibleTypes);
 	}
 	
 	/**
@@ -100,23 +98,33 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	}
 
 	/**
-	 * @see GeometryWriter#match(TypeDefinition, DefinitionPath)
+	 * @see GeometryWriter#match(TypeDefinition, DefinitionPath, String)
 	 */
 	@Override
-	public DefinitionPath match(TypeDefinition type, DefinitionPath path) {
-		// TODO Auto-generated method stub
+	public DefinitionPath match(TypeDefinition type, DefinitionPath basePath,
+			String gmlNs) {
+		// try to match each pattern
+		for (Pattern pattern : patterns) {
+			DefinitionPath path = pattern.match(type, basePath, gmlNs);
+			if (path != null) {
+				return path;
+			}
+		}
+		
 		return null;
 	}
 	
-	
-
 	/**
-	 * @see eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.GeometryWriter#write(javax.xml.stream.XMLStreamWriter, com.vividsolutions.jts.geom.Geometry, eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition)
+	 * Write coordinates into a posList or coordinates property
+	 * 
+	 * @param coordinates the coordinates to write
+	 * @param elementType the type of the encompassing element
+	 * @param gmlNs the GML namespace
 	 */
-	@Override
-	public void write(XMLStreamWriter writer, T geometry, TypeDefinition type) {
+	protected static void writeCoordinates(Coordinate[] coordinates,
+			TypeDefinition elementType, String gmlNs) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Writing coordinates not yet implemented");
 	}
 
 }

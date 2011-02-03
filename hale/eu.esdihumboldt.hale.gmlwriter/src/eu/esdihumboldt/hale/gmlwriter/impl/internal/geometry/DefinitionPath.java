@@ -117,6 +117,8 @@ public class DefinitionPath {
 	
 	private TypeDefinition lastType;
 	
+	private GeometryWriter<?> geometryWriter;
+	
 	/**
 	 * Create a definition path beginning with the given base path
 	 * 
@@ -172,6 +174,20 @@ public class DefinitionPath {
 		lastType = property.getAttributeType();
 		
 		return this;
+	}
+
+	/**
+	 * @return the geometryWriter
+	 */
+	public GeometryWriter<?> getGeometryWriter() {
+		return geometryWriter;
+	}
+
+	/**
+	 * @param geometryWriter the geometryWriter to set
+	 */
+	public void setGeometryWriter(GeometryWriter<?> geometryWriter) {
+		this.geometryWriter = geometryWriter;
 	}
 
 	/**

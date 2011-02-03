@@ -31,7 +31,9 @@ import com.vividsolutions.jts.geom.Geometry;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 
+import eu.esdihumboldt.hale.gmlwriter.impl.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.GeometryConverterRegistry.ConversionLadder;
+import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers.MultiLineStringWriter;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
@@ -57,7 +59,7 @@ public class StreamGeometryWriter {
 		StreamGeometryWriter sgm = new StreamGeometryWriter(gmlNs);
 		
 		//TODO configure
-		//XXX testing
+		sgm.registerGeometryWriter(new MultiLineStringWriter());
 		
 		return sgm;
 	}
@@ -68,10 +70,10 @@ public class StreamGeometryWriter {
 	private final String gmlNs;
 	
 	/**
-	 * Geometry types mapped to compatible type names
+	 * Geometry types mapped to compatible writers
 	 */
-	private final Map<Class<? extends Geometry>, Set<Name>> compatibleTypes =
-		new HashMap<Class<? extends Geometry>, Set<Name>>();
+	private final Map<Class<? extends Geometry>, Set<GeometryWriter<?>>> geometryWriters =
+		new HashMap<Class<? extends Geometry>, Set<GeometryWriter<?>>>();
 	
 	/**
 	 * Types mapped to geometry types mapped to matched definition paths
@@ -91,22 +93,19 @@ public class StreamGeometryWriter {
 	}
 	
 	/**
-	 * Register a compatible type for a geometry type
+	 * Register a geometry writer
 	 *  
-	 * @param geomType the geometry type 
-	 * @param typeName the compatible type name
-	 * @param namespace the compatible type namespace or <code>null</code> for 
-	 *   any GML namespace
+	 * @param writer the geometry writer
 	 */
-	public void registerCompatibleType(Class<? extends Geometry> geomType, 
-			String typeName, String namespace) {
-		Set<Name> names = compatibleTypes.get(geomType);
-		if (names == null) {
-			names = new HashSet<Name>();
-			compatibleTypes.put(geomType, names);
+	public void registerGeometryWriter(GeometryWriter<?> writer) {
+		Class<? extends Geometry> geomType = writer.getGeometryType();
+		Set<GeometryWriter<?>> writers = geometryWriters.get(geomType);
+		if (writers == null) {
+			writers = new HashSet<GeometryWriter<?>>();
+			geometryWriters.put(geomType, writers);
 		}
 		
-		names.add(new NameImpl(namespace, typeName));
+		writers.add(writer);
 	}
 
 	/**
@@ -190,40 +189,32 @@ public class StreamGeometryWriter {
 	 * @param path the definition path to use
 	 * @throws XMLStreamException if writing the geometry fails
 	 */
+	@SuppressWarnings("unchecked")
 	private void writeGeometry(XMLStreamWriter writer, Geometry geometry,
 			DefinitionPath path) throws XMLStreamException {
+		GeometryWriter geomWriter = path.getGeometryWriter();
+		
+		Name name = GmlWriterUtil.getElementName(path.getLastType()); //XXX the element name used may be wrong, is this an issue?
+		
 		if (path.isEmpty()) {
 			// directly write geometry
-			writeGeometry(writer, geometry, path.getLastType());
+			geomWriter.write(writer, geometry, path.getLastType(), name, gmlNs); 
 		}
 		else {
 			for (PathElement step : path.getSteps()) {
 				// start elements
-				Name name = step.getName();
+				name = step.getName();
 				writer.writeStartElement(name.getNamespaceURI(), name.getLocalPart());
 			}
 			
 			// write geometry
-			writeGeometry(writer, geometry, path.getLastType());
+			geomWriter.write(writer, geometry, path.getLastType(), name, gmlNs);
 			
 			for (int i = 0; i < path.getSteps().size(); i++) {
 				// end elements
 				writer.writeEndElement();
 			}
 		}
-	}
-
-	/**
-	 * Write a geometry
-	 * 
-	 * @param writer the XML stream writer
-	 * @param geometry the geometry
-	 * @param type the type definition for the GML geometry type 
-	 */
-	private void writeGeometry(XMLStreamWriter writer, Geometry geometry,
-			TypeDefinition type) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	/**
@@ -343,32 +334,51 @@ public class StreamGeometryWriter {
 	 */
 	protected DefinitionPath matchPath(TypeDefinition type, 
 			Class<? extends Geometry> geomType, DefinitionPath path) {
-		boolean compatible = false;
 		
 		// check compatibility list
-		Set<Name> names = compatibleTypes.get(geomType);
-		if (names != null) {
-			if (names.contains(type.getName())) {
-				// check type name
-				compatible = true;
-			}
-			
-			if (!compatible && type.getName().getNamespaceURI().equals(gmlNs)) {
-				// check GML type name
-				compatible = names.contains(new NameImpl(null, type.getName().getLocalPart()));
+		Set<GeometryWriter<?>> writers = geometryWriters.get(geomType);
+		if (writers != null) {
+			for (GeometryWriter<?> writer : writers) {
+				boolean compatible = false;
+				Set<Name> names = writer.getCompatibleTypes();
+				if (names != null) {
+					if (names.contains(type.getName())) {
+						// check type name
+						compatible = true;
+					}
+					
+					if (!compatible && type.getName().getNamespaceURI().equals(gmlNs)) {
+						// check GML type name
+						compatible = names.contains(new NameImpl(null, type.getName().getLocalPart()));
+					}
+					
+					if (compatible) {
+						// check structure / match writer
+						DefinitionPath candidate = writer.match(type, path, gmlNs);
+						if (candidate != null) {
+							// set appropriate writer for path and return it
+							candidate.setGeometryWriter(writer);
+							return candidate;
+						}
+					}
+				}
 			}
 		}
 		
 		// fall back to binding test
-		if (!compatible) {
-			// check for equality because we don't want a match for the property types
-			//XXX will this really work? e.g. for a point property type? - structure check needed
-			compatible = type.getType(null).getBinding().equals(geomType);
-		}
+		// check for equality because we don't want a match for the property types
+		boolean compatible = type.getType(null).getBinding().equals(geomType);
 		
 		if (compatible) {
-			//TODO check type def structure?!!
-			return path;
+			// check structure / match writers
+			for (GeometryWriter<?> writer : writers) {
+				DefinitionPath candidate = writer.match(type, path, gmlNs);
+				if (candidate != null) {
+					// set appropriate writer for path and return it
+					candidate.setGeometryWriter(writer);
+					return candidate;
+				}
+			}
 		}
 		
 		return null;
