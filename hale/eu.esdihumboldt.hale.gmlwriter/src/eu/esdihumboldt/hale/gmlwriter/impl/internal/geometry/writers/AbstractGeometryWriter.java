@@ -16,6 +16,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+
+import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.Name;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -25,6 +29,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.DefinitionPath;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.GeometryWriter;
+import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -117,14 +122,51 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	/**
 	 * Write coordinates into a posList or coordinates property
 	 * 
+	 * @param writer the XML stream writer 
 	 * @param coordinates the coordinates to write
 	 * @param elementType the type of the encompassing element
 	 * @param gmlNs the GML namespace
+	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
-	protected static void writeCoordinates(Coordinate[] coordinates,
-			TypeDefinition elementType, String gmlNs) {
-		// TODO Auto-generated method stub
-		System.out.println("Writing coordinates not yet implemented");
+	protected static void writeCoordinates(XMLStreamWriter writer, 
+			Coordinate[] coordinates, TypeDefinition elementType, 
+			String gmlNs) throws XMLStreamException {
+		AttributeDefinition listAttribute = null;
+		
+		// check for DirectPositionListType
+		for (AttributeDefinition att : elementType.getAttributes()) {
+			if (att.getTypeName().equals(new NameImpl(gmlNs, "DirectPositionListType"))) {
+				listAttribute = att;
+				break;
+			}
+		}
+		
+		if (listAttribute != null) {
+			
+			writer.writeStartElement(listAttribute.getNamespace(), listAttribute.getName());
+			
+			boolean first = true;
+			// write coordinates separated by spaces
+			for (Coordinate coordinate : coordinates) {
+				if (first) {
+					first = false;
+				}
+				else {
+					writer.writeCharacters(" ");
+				}
+				
+				//XXX only supports 2D
+				writer.writeCharacters(String.valueOf(coordinate.x));
+				writer.writeCharacters(" ");
+				writer.writeCharacters(String.valueOf(coordinate.y));
+			}
+			
+			writer.writeEndElement();
+		}
+		else {
+			log.error("Unable to write coordinates to element of type " + 
+					elementType.getDisplayName());
+		}
 	}
 
 }

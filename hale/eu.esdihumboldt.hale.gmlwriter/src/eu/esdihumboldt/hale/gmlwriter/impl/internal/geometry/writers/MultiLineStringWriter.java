@@ -67,7 +67,7 @@ public class MultiLineStringWriter extends
 			}
 			
 			LineString line = (LineString) geometry.getGeometryN(i);
-			writeCoordinates(line.getCoordinates(), elementType, gmlNs);
+			writeCoordinates(writer, line.getCoordinates(), elementType, gmlNs);
 			
 			if (i < geometry.getNumGeometries() - 1) {
 				writer.writeEndElement();
