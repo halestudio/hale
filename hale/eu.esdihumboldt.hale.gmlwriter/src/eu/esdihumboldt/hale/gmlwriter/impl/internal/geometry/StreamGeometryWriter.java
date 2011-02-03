@@ -31,7 +31,6 @@ import com.vividsolutions.jts.geom.Geometry;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 
-import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.DefinitionPath.PathElement;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.GeometryConverterRegistry.ConversionLadder;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -199,7 +198,8 @@ public class StreamGeometryWriter {
 		else {
 			for (PathElement step : path.getSteps()) {
 				// start elements
-				writer.writeStartElement(step.getNamespace(), step.getName());
+				Name name = step.getName();
+				writer.writeStartElement(name.getNamespaceURI(), name.getLocalPart());
 			}
 			
 			//TODO write geometry

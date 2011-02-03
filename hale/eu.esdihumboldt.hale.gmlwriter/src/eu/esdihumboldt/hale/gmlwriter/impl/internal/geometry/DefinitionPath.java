@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.StreamGmlWriter;
@@ -32,66 +33,82 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 public class DefinitionPath {
 
 	/**
-	 * A path element 
+	 * Sub-type path element
 	 */
-	public class PathElement {
-		
-		private final String name;
-		private final String namespace;
-		private final TypeDefinition type;
-		private final boolean property;
+	private class SubTypeElement implements PathElement {
+
+		private final TypeDefinition subtype;
 		
 		/**
 		 * Constructor
 		 * 
-		 * @param name the path element name
-		 * @param namespace the namespace
-		 * @param type the path element type definition
-		 * @param property if the path element represents a property
+		 * @param subtype the sub-type
 		 */
-		public PathElement(String name, String namespace, TypeDefinition type, 
-				boolean property) {
-			super();
-			this.name = name;
-			this.type = type;
-			this.property = property;
-			this.namespace = namespace;
+		public SubTypeElement(TypeDefinition subtype) {
+			this.subtype = subtype;
 		}
 
 		/**
-		 * Get the path element name. This is either a property or a subtype
-		 * name
-		 * 
-		 * @return the element name
+		 * @see PathElement#getName()
 		 */
-		public String getName() {
-			return name;
+		@Override
+		public Name getName() {
+			return StreamGmlWriter.getElementName(subtype);
+		}
+
+		/**
+		 * @see PathElement#getType()
+		 */
+		@Override
+		public TypeDefinition getType() {
+			return subtype;
+		}
+
+		/**
+		 * @see PathElement#isProperty()
+		 */
+		@Override
+		public boolean isProperty() {
+			return false;
+		}
+
+	}
+
+	/**
+	 * A property path element 
+	 */
+	public class PropertyElement implements PathElement {
+		
+		private final AttributeDefinition attdef;
+
+		/**
+		 * Constructor
+		 * 
+		 * @param attdef the attribute definition
+		 */
+		public PropertyElement(AttributeDefinition attdef) {
+			this.attdef = attdef;
+		}
+
+		/**
+		 * @see PathElement#getName()
+		 */
+		public Name getName() {
+			return new NameImpl(attdef.getNamespace(), attdef.getName());
 		}
 		
 		/**
-		 * Get the path element type definition
-		 * 
-		 * @return the path element type definition
+		 * @see PathElement#getType()
 		 */
 		public TypeDefinition getType() {
-			return type;
+			return attdef.getAttributeType();
 		}
 		
 		/**
-		 * Determines if this path element represents a property, otherwise it
-		 * represents a sub-type
-		 * 
-		 * @return if this path element represents a property
+		 * @see PathElement#isProperty()
 		 */
 		public boolean isProperty() {
-			return property;
-		}
-
-		/**
-		 * @return the namespace
-		 */
-		public String getNamespace() {
-			return namespace;
+			return true;
 		}
 
 	}
@@ -131,10 +148,7 @@ public class DefinitionPath {
 			steps.remove(steps.size() - 1);
 		}
 		
-		Name elementName = StreamGmlWriter.getElementName(type);
-		
-		steps.add(new PathElement(elementName.getLocalPart(),
-				elementName.getNamespaceURI(), type, false));
+		steps.add(new SubTypeElement(type));
 		
 		return this;
 	}
@@ -147,9 +161,7 @@ public class DefinitionPath {
 	 * @return this path for chaining 
 	 */
 	public DefinitionPath addProperty(AttributeDefinition property) {
-		steps.add(new PathElement(property.getName(),
-				property.getNamespace(),
-				property.getAttributeType(), true));
+		steps.add(new PropertyElement(property));
 		
 		return this;
 	}
