@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE GML Writer Default Implementation
+Bundle-SymbolicName: eu.esdihumboldt.hale.gmlwriter
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.geotools;bundle-version="2.6.4"
+Import-Package: de.cs3d.util.logging,
+ eu.esdihumboldt.cst.rdf,
+ eu.esdihumboldt.hale.schemaprovider,
+ eu.esdihumboldt.hale.schemaprovider.model,
+ eu.esdihumboldt.tools,
+ org.slf4j;version="1.5.11"
+Export-Package: eu.esdihumboldt.hale.gmlwriter,
+ eu.esdihumboldt.hale.gmlwriter.impl,
+ eu.esdihumboldt.hale.gmlwriter.impl.internal
