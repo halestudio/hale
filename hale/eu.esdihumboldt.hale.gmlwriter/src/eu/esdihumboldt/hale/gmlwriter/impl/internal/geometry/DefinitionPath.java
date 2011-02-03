@@ -115,22 +115,28 @@ public class DefinitionPath {
 
 	private final List<PathElement> steps = new ArrayList<PathElement>();
 	
+	private TypeDefinition lastType;
+	
 	/**
 	 * Create a definition path beginning with the given base path
 	 * 
 	 * @param basePath the base path
 	 */
 	public DefinitionPath(DefinitionPath basePath) {
-		this();
+		this(basePath.lastType);
 		
 		steps.addAll(basePath.getSteps());
 	}
 
 	/**
 	 * Create an empty definition path
+	 * 
+	 * @param firstType the type starting the path 
 	 */
-	public DefinitionPath() {
+	public DefinitionPath(TypeDefinition firstType) {
 		super();
+		
+		lastType = firstType;
 	}
 
 	/**
@@ -149,6 +155,7 @@ public class DefinitionPath {
 		}
 		
 		steps.add(new SubTypeElement(type));
+		lastType = type;
 		
 		return this;
 	}
@@ -162,6 +169,7 @@ public class DefinitionPath {
 	 */
 	public DefinitionPath addProperty(AttributeDefinition property) {
 		steps.add(new PropertyElement(property));
+		lastType = property.getAttributeType();
 		
 		return this;
 	}
@@ -180,6 +188,16 @@ public class DefinitionPath {
 	 */
 	public boolean isEmpty() {
 		return steps.isEmpty();
+	}
+
+	/**
+	 * Get the last type of the path. For empty paths this will be the type
+	 * specified in creation
+	 * 
+	 * @return the last type
+	 */
+	public TypeDefinition getLastType() {
+		return lastType;
 	}
 
 	/**

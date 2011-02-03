@@ -192,8 +192,8 @@ public class StreamGeometryWriter {
 	private void writeGeometry(XMLStreamWriter writer, Geometry geometry,
 			DefinitionPath path) throws XMLStreamException {
 		if (path.isEmpty()) {
-			//TODO directly write geometry
-			//XXX wrap with attribute name (would be needed as additional parameter)
+			// directly write geometry
+			writeGeometry(writer, geometry, path.getLastType());
 		}
 		else {
 			for (PathElement step : path.getSteps()) {
@@ -202,13 +202,27 @@ public class StreamGeometryWriter {
 				writer.writeStartElement(name.getNamespaceURI(), name.getLocalPart());
 			}
 			
-			//TODO write geometry
+			// write geometry
+			writeGeometry(writer, geometry, path.getLastType());
 			
 			for (int i = 0; i < path.getSteps().size(); i++) {
 				// end elements
 				writer.writeEndElement();
 			}
 		}
+	}
+
+	/**
+	 * Write a geometry
+	 * 
+	 * @param writer the XML stream writer
+	 * @param geometry the geometry
+	 * @param type the type definition for the GML geometry type 
+	 */
+	private void writeGeometry(XMLStreamWriter writer, Geometry geometry,
+			TypeDefinition type) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/**
@@ -255,7 +269,8 @@ public class StreamGeometryWriter {
 	 */
 	private List<DefinitionPath> findCandidates(TypeDefinition attributeType,
 			Class<? extends Geometry> geomType) {
-		return findCandidates(attributeType, geomType, new DefinitionPath(),
+		return findCandidates(attributeType, geomType, 
+				new DefinitionPath(attributeType),
 				new HashSet<TypeDefinition>());
 	}
 	
