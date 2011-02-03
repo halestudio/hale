@@ -10,26 +10,32 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.gmlwriter.impl;
+package eu.esdihumboldt.hale.gmlvalidate.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.xerces.parsers.DOMParser;
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+import de.cs3d.util.logging.ATransaction;
+import eu.esdihumboldt.hale.gmlvalidate.Report;
+import eu.esdihumboldt.hale.gmlvalidate.Validator;
+
 /**
- * Methods for validating XML using Xerces
+ * Validate using Xerces directly.
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$
  */
-public class XercesValidator {
+public class XercesValidator implements Validator {
+	
+	private static final ALogger log = ALoggerFactory.getLogger(XercesValidator.class);
 
 	private static void setFeature(SAXParser parser, String feature,
 			boolean setting) {
@@ -47,29 +53,31 @@ public class XercesValidator {
 	}
 
 	/**
-	 * Validate an XML document using a Xerces {@link DOMParser}
-	 * 
-	 * @param xml the XML input stream
+	 * @see Validator#validate(InputStream)
 	 */
-	public static void validate(InputStream xml) {
+	@Override
+	public Report validate(InputStream xml) {
+		final ReportImpl report = new ReportImpl();
 		SAXParser parser = new SAXParser();
 
 		setFeature(parser, "http://xml.org/sax/features/validation", true);
 		setFeature(parser, "http://apache.org/xml/features/validation/schema", true);
 		
+		parser.setErrorHandler(new ReportErrorHandler(report));
+		
+		ATransaction trans = log.begin("Validating XML file");
 		try {
 			parser.parse(new InputSource(xml));
-		} catch (IOException ie) {
-			System.out.println("Could not read file.");
-		} catch (SAXException e) {
-			System.out.print("Could not create Document: ");
-			System.out.println(e.getMessage());
+			return report;
+		} catch (Exception e) {
+			throw new IllegalStateException("Error validating XML file", e);
 		} finally {
 			try {
 				xml.close();
 			} catch (IOException e) {
 				// ignore
 			}
+			trans.end();
 		}
 
 	}

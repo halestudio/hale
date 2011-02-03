@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.gmlwriter.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -56,6 +57,8 @@ import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.gmlparser.CstFeatureCollection;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
+import eu.esdihumboldt.hale.gmlvalidate.Report;
+import eu.esdihumboldt.hale.gmlvalidate.ValidatorFactory;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
@@ -89,9 +92,11 @@ public class DefaultGmlWriterTest {
 		values.put(Arrays.asList("LENGTH"), Double.valueOf(10.2));
 		values.put(Arrays.asList("NAME"), "Test");
 		
-		fillFeatureTest(
+		Report report = fillFeatureTest(
 				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(), 
 				values, "fillWrite_WVA");
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
 	}
 	
 	/**
@@ -101,13 +106,15 @@ public class DefaultGmlWriterTest {
 	 */
 	@Test
 	public void testTransformWrite_WVA() throws Exception {
-		transformTest(
+		Report report = transformTest(
 				getClass().getResource("/data/sample_wva/wfs_va_sample.gml").toURI(),
 				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(),
 				getClass().getResource("/data/sample_wva/watercourse_va.xml.goml").toURI(),
 				getClass().getResource("/data/sample_wva/inspire3/HydroPhysicalWaters.xsd").toURI(),
 				"transformWrite_WVA",
 				true);
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
 	}
 	
 	/**
@@ -117,16 +124,18 @@ public class DefaultGmlWriterTest {
 	 */
 	@Test
 	public void testTransformWrite_DKM() throws Exception {
-		transformTest(
+		Report report = transformTest(
 				getClass().getResource("/data/dkm_austria/KA_14168_EPSG25833.gml").toURI(),
 				getClass().getResource("/data/dkm_austria/KA_14168_EPSG25833.xsd").toURI(),
 				getClass().getResource("/data/dkm_austria/mapping_dkm_inspire.xml.goml").toURI(),
 				getClass().getResource("/data/dkm_austria/inspire3/CadastralParcels.xsd").toURI(),
 				"transformWrite_DKM",
 				true);
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
 	}
 	
-	private void transformTest(URI sourceData, URI sourceSchemaLocation,
+	private Report transformTest(URI sourceData, URI sourceSchemaLocation,
 			URI mappingLocation, URI targetSchemaLocation, String testName,
 			boolean onlyOne)
 			throws Exception {
@@ -180,10 +189,13 @@ public class DefaultGmlWriterTest {
 		System.out.println(outFile.getAbsolutePath());
 		System.out.println(targetSchema.getLocation().toString());
 		
-		validate(targetSchemaLocation, outFile.toURI());
-		
-		if (DEL_TEMP_FILES) {
-			outFile.deleteOnExit();
+		try {
+			return validate(targetSchema, outFile.toURI());
+		}
+		finally {
+			if (DEL_TEMP_FILES) {
+				outFile.deleteOnExit();
+			}
 		}
 	}
 
@@ -199,7 +211,7 @@ public class DefaultGmlWriterTest {
 		return (FeatureCollection<FeatureType, Feature>) CstServiceFactory.getInstance().transform(fc, alignment, types);
 	}
 
-	private void fillFeatureTest(URI targetSchema, Map<List<String>, 
+	private Report fillFeatureTest(URI targetSchema, Map<List<String>, 
 			Object> values, String testName) throws Exception {
 		SchemaProvider sp = new ApacheSchemaProvider();
 		
@@ -233,8 +245,7 @@ public class DefaultGmlWriterTest {
 //			Desktop.getDesktop().open(outFile);
 //		}
 		
-		URI schemaLocation = schema.getLocation().toURI();
-		validate(schemaLocation, outFile.toURI());
+		Report report = validate(schema, outFile.toURI());
 		
 		// load file
 		FeatureCollection<FeatureType, Feature> loaded = loadGML(
@@ -257,6 +268,8 @@ public class DefaultGmlWriterTest {
 		if (DEL_TEMP_FILES) {
 			outFile.deleteOnExit();
 		}
+		
+		return report;
 	}
 
 	/**
@@ -287,34 +300,17 @@ public class DefaultGmlWriterTest {
 	/**
 	 * Validate an XML file against a schema
 	 * 
-	 * @param schemaLocation the location of the schema
+	 * @param schema the schema
 	 * @param xmlLocation the location of the xml file
+	 * @return the validation report
 	 * @throws IOException if I/O operations fail
 	 * @throws MalformedURLException if a wrong URI is given 
 	 */
-	private void validate(URI schemaLocation, URI xmlLocation) throws MalformedURLException, IOException {
-//		javax.xml.validation.Schema schema;
-//		try {
-//			// create a SchemaFactory capable of understanding WXS schemas
-//		    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-//	
-//		    // load a WXS schema, represented by a Schema instance
-//		    Source schemaFile = new StreamSource(schemaLocation.toURL().openStream());
-//		    schema = factory.newSchema(schemaFile);
-//		} catch (Exception e) {
-//			System.err.println("Parsing the schema for validation failed");
-//			e.printStackTrace();
-//			return;
-//		}
-//
-//	    // create a Validator instance, which can be used to validate an instance document
-//	    Validator validator = schema.newValidator();
-//
-//	    // validate the XML document
-//		validator.validate(new StreamSource(xmlLocation.toURL().openStream()));
-		
-		//TODO some feedback about validation errors
-		XercesValidator.validate(xmlLocation.toURL().openStream());
+	private Report validate(Schema schema, URI xmlLocation) throws MalformedURLException, IOException {
+		// validate using xerces directly
+		return ValidatorFactory.getInstance().createValidator().validate(xmlLocation.toURL().openStream());
+		// validate using the XML api
+//		return ValidatorFactory.getInstance().createValidator(schema).validate(xmlLocation.toURL().openStream());
 	}
 
 	private Feature createFeature(TypeDefinition type) {
