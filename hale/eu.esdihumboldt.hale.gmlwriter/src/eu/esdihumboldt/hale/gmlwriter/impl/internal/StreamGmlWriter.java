@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.gmlwriter.impl.internal;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
@@ -23,6 +24,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.NameImpl;
 import org.geotools.gml3.GML;
 import org.opengis.feature.ComplexAttribute;
 import org.opengis.feature.Feature;
@@ -182,7 +184,38 @@ public class StreamGmlWriter {
 	public void write(FeatureCollection<FeatureType, Feature> features) throws XMLStreamException {
 		writer.writeStartDocument();
 		
-		writer.writeStartElement("gml", "FeatureCollection", gmlNs);
+		// try to find FeatureCollection element
+		Iterator<SchemaElement> it = targetSchema.getAllElements().values().iterator();
+		Collection<SchemaElement> fcElements = new HashSet<SchemaElement>();
+		while (it.hasNext()) {
+			SchemaElement el = it.next();
+			if (el.getElementName().getLocalPart().contains("FeatureCollection") &&
+					!el.getType().isAbstract() &&
+					el.getType().getAttribute("featureMember") != null) {
+				fcElements.add(el);
+			}
+		}
+		
+		TypeDefinition fcDefinition = null;
+		Name fcName;
+		if (fcElements.isEmpty()) {
+			log.warn("No element describing a FeatureCollection found");
+			//TODO include an additional schema with a FC-definition?
+			fcName = new NameImpl(gmlNs, "FeatureCollection");
+		}
+		else {
+			// select fc element TODO priorized selection
+			SchemaElement fcElement = fcElements.iterator().next();
+			fcDefinition = fcElement.getType();
+			fcName = fcElement.getElementName();
+			
+			log.info("Found " + fcElements.size() + " possible FeatureCollection elements" +
+					", using element " + fcElement.getElementName());
+		}
+		
+		writer.writeStartElement(fcName.getNamespaceURI(), fcName.getLocalPart());
+		
+		//TODO generate mandatory id attribute?
 		
 		StringBuffer locations = new StringBuffer();
 		locations.append(targetSchema.getNamespace());
@@ -190,18 +223,27 @@ public class StreamGmlWriter {
 		locations.append(targetSchema.getLocation().toString());
 		writer.writeAttribute(SCHEMA_INSTANCE_NS, "schemaLocation", locations.toString());
 		
-		Iterator<Feature> it = features.iterator();
+		Iterator<Feature> itFeature = features.iterator();
 		try {
-			Feature feature = it.next();
-			
-			TypeDefinition type = types.getType(feature.getType());
-			
-			// write the feature
-            writer.writeStartElement( gmlNs, "featureMember" );
-            writeMember(feature, type);
-            writer.writeEndElement(); // featureMember
+			while (itFeature.hasNext()) {
+				Feature feature = itFeature.next();
+				
+				// write the feature
+				if (fcDefinition != null) {
+					AttributeDefinition memberAtt = fcDefinition.getAttribute("featureMember");
+					writer.writeStartElement(memberAtt.getNamespace(), memberAtt.getName());
+				}
+				else {
+					writer.writeStartElement(gmlNs, "featureMember");
+				}
+	            
+	            TypeDefinition type = types.getType(feature.getType());
+	            writeMember(feature, type);
+	            
+	            writer.writeEndElement(); // featureMember
+			}
 		} finally {
-			features.close(it);
+			features.close(itFeature);
 		}
         
         writer.writeEndElement(); // FeatureCollection
@@ -240,7 +282,7 @@ public class StreamGmlWriter {
 			}
 			else {
 				// manually add id attribute
-				writer.writeAttribute(idAttribute, id.toString());
+				writer.writeAttribute(gmlNs, idAttribute, id.toString());
 			}
 		}
 		
