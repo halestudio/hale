@@ -131,25 +131,25 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 			// special cases TODO refactor/outsource?
 		
 			// ReferenceType
-			if (this.name.getNamespaceURI().startsWith("http://www.opengis.net/gml/") && this.name.getLocalPart().equals("ReferenceType")) {
-				Name hrefName = new NameImpl("http://www.w3.org/2001/XMLSchema", "anyURI");
-				TypeDefinition hrefType = new TypeDefinition(hrefName, XSSchema.ANYURI_TYPE, null);
-				AttributeDefinition hrefAttribute = new CustomDefaultAttribute("href", hrefName , hrefType, "http://www.w3.org/1999/xlink");
-				addDeclaredAttribute(hrefAttribute);
-				Collection<String> values = new ArrayList<String>();
-				values.add("none");
-				values.add("simple");
-				values.add("resource");
-				values.add("extended");
-				values.add("locator");
-				values.add("arc");
-				values.add("title");
-				Name typeName = new NameImpl("http://www.w3.org/2001/XMLSchema", "string");
-				TypeDefinition typeType = new TypeDefinition(typeName, new EnumAttributeTypeImpl(XSSchema.STRING_TYPE, values , false, null), null);
-				AttributeDefinition typeAttribute = new CustomDefaultAttribute("type", 
-						typeName, typeType, "http://www.w3.org/1999/xlink");
-				addDeclaredAttribute(typeAttribute);
-			}
+//			if (this.name.getNamespaceURI().startsWith("http://www.opengis.net/gml/") && this.name.getLocalPart().equals("ReferenceType")) {
+//				Name hrefName = new NameImpl("http://www.w3.org/2001/XMLSchema", "anyURI");
+//				TypeDefinition hrefType = new TypeDefinition(hrefName, XSSchema.ANYURI_TYPE, null);
+//				AttributeDefinition hrefAttribute = new CustomDefaultAttribute("href", hrefName , hrefType, "http://www.w3.org/1999/xlink");
+//				addDeclaredAttribute(hrefAttribute);
+//				Collection<String> values = new ArrayList<String>();
+//				values.add("none");
+//				values.add("simple");
+//				values.add("resource");
+//				values.add("extended");
+//				values.add("locator");
+//				values.add("arc");
+//				values.add("title");
+//				Name typeName = new NameImpl("http://www.w3.org/2001/XMLSchema", "string");
+//				TypeDefinition typeType = new TypeDefinition(typeName, new EnumAttributeTypeImpl(XSSchema.STRING_TYPE, values , false, null), null);
+//				AttributeDefinition typeAttribute = new CustomDefaultAttribute("type", 
+//						typeName, typeType, "http://www.w3.org/1999/xlink");
+//				addDeclaredAttribute(typeAttribute);
+//			}
 		}
 	}
 	
