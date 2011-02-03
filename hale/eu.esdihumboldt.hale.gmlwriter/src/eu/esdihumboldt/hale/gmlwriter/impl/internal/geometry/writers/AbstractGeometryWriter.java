@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -54,6 +55,17 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	private final Set<Pattern> basePatterns = new HashSet<Pattern>();
 	
 	private final Set<Pattern> verifyPatterns = new HashSet<Pattern>();
+
+	/**
+	 * The attribute type names supported for writing coordinates with
+	 * {@link #writeCoordinates(XMLStreamWriter, Coordinate[], TypeDefinition, String)} or
+	 * {@link #descendAndwriteCoordinates(XMLStreamWriter, Pattern, Coordinate[], TypeDefinition, String)}.
+	 * 
+	 * Use for validating end-points.
+	 */
+	private final static Set<String> SUPPORTED_COORDINATES_TYPES = Collections.unmodifiableSet(
+			new HashSet<String>(Arrays.asList("DirectPositionType", 
+					"DirectPositionListType", "CoordinatesType")));
 	
 	/**
 	 * Constructor
@@ -151,15 +163,24 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	 * Verify the verification end point. After reaching the end-point of a
 	 * verification pattern this method is called with the {@link TypeDefinition}
 	 * of the end-point to assure the needed structure is present (e.g. a
-	 * DirectPositionListType element)
+	 * DirectPositionListType element).
+	 * The default implementation checks for properties with any of the types
+	 * supported for writing coordinates.
+	 * @see #SUPPORTED_COORDINATES_TYPES
 	 * 
 	 * @param endPoint the end-point type definition 
 	 *  
 	 * @return if the end-point is valid for writing the geometry
 	 */
 	protected boolean verifyEndPoint(TypeDefinition endPoint) {
-		//TODO check for something
-		return true;
+		for (AttributeDefinition attribute : endPoint.getAttributes()) {
+			if (SUPPORTED_COORDINATES_TYPES.contains(attribute.getTypeName().getLocalPart())) {
+				// a valid property was found
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	/**
