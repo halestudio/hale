@@ -21,10 +21,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -145,10 +147,22 @@ public class DefaultGmlWriterTest {
 				alignment, targetSchema);
 		
 		if (onlyOne && result.size() > 1) {
-			// only retain one feature
-			Feature one = result.iterator().next();
+			// only retain one feature of each type
+			Set<FeatureType> types = new HashSet<FeatureType>();
+			List<Feature> features = new ArrayList<Feature>();
+			
+			Iterator<Feature> it = result.iterator();
+			while (it.hasNext()) {
+				Feature feature = it.next();
+				
+				if (!types.contains(feature.getType())) {
+					features.add(feature);
+					types.add(feature.getType());
+				}
+			}
+			
 			result.clear();
-			result.add(one);
+			result.addAll(features);
 		}
 		
 		// write
