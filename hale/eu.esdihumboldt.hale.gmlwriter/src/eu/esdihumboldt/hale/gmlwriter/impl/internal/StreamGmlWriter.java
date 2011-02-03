@@ -328,9 +328,8 @@ public class StreamGmlWriter {
 				writer.writeAttribute(attDef.getNamespace(), attDef.getName(), value.toString());
 			}
 			else {
-				// get namespace from declaring type XXX is this the correct solution? or should the namespace just be omitted
-				ns = attDef.getDeclaringType().getName().getNamespaceURI();
-				writer.writeAttribute(ns, attDef.getName(), value.toString());
+				// no namespace
+				writer.writeAttribute(attDef.getName(), value.toString());
 			}
 		}
 	}
