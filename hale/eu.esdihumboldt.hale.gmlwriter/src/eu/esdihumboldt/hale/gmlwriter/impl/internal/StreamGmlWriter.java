@@ -435,6 +435,10 @@ public class StreamGmlWriter {
 				if (!attDef.isNillable()) {
 					log.warn("Non-nillable element " + attDef.getName() + " is null");
 				}
+				else {
+					// nillable -> we may mark it as nil
+					writer.writeAttribute(SCHEMA_INSTANCE_NS, "nil", "true");
+				}
 			}
 			// otherwise just skip it
 		}
