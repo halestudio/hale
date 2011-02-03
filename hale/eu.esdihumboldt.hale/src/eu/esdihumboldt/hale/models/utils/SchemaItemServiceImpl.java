@@ -348,7 +348,7 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 		else {
 			resolving.add(type);
 			
-			for (AttributeDefinition attribute : type.getAttributes()) {
+			for (AttributeDefinition attribute : type.getSortedAttributes()) {
 				if (attribute.getAttributeType() != null) { // only properties with an associated type
 					AttributeItem property = new AttributeItem(attribute, schemaType);
 					

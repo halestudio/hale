@@ -432,6 +432,16 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	}
 	
 	/**
+	 * Get the declared attributes and the super type attributes sorted
+	 * alphabetically
+	 * 
+	 * @return the attribute definitions
+	 */
+	public SortedSet<AttributeDefinition> getSortedAttributes() {
+		return new TreeSet<AttributeDefinition>(getAttributes());
+	}
+	
+	/**
 	 * Get the declared attributes and the super type attributes
 	 * 
 	 * @return the attribute definitions
