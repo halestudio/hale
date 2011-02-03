@@ -19,9 +19,6 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
 
-import org.w3c.dom.ls.LSInput;
-import org.w3c.dom.ls.LSResourceResolver;
-
 import eu.esdihumboldt.hale.gmlvalidate.Report;
 import eu.esdihumboldt.hale.gmlvalidate.Validator;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
@@ -56,16 +53,7 @@ public class XMLApiValidator implements Validator {
 		try {
 			// create a SchemaFactory capable of understanding WXS schemas
 		    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		    LSResourceResolver resourceResolver = new LSResourceResolver() {
-				
-				@Override
-				public LSInput resolveResource(String type, String namespaceURI,
-						String publicId, String systemId, String baseURI) {
-					// TODO Auto-generated method stub
-					return null;
-				}
-			};
-			factory.setResourceResolver(resourceResolver);
+		    factory.setResourceResolver(new SchemaResolver(this.schema.getLocation().toURI()));		    
 	
 		    // load a WXS schema, represented by a Schema instance
 		    Source schemaFile = new StreamSource(this.schema.getLocation().openStream());

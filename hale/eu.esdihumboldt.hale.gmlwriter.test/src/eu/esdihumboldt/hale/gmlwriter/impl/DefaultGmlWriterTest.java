@@ -308,9 +308,9 @@ public class DefaultGmlWriterTest {
 	 */
 	private Report validate(Schema schema, URI xmlLocation) throws MalformedURLException, IOException {
 		// validate using xerces directly
-		return ValidatorFactory.getInstance().createValidator().validate(xmlLocation.toURL().openStream());
+//		return ValidatorFactory.getInstance().createValidator().validate(xmlLocation.toURL().openStream());
 		// validate using the XML api
-//		return ValidatorFactory.getInstance().createValidator(schema).validate(xmlLocation.toURL().openStream());
+		return ValidatorFactory.getInstance().createValidator(schema).validate(xmlLocation.toURL().openStream());
 	}
 
 	private Feature createFeature(TypeDefinition type) {
