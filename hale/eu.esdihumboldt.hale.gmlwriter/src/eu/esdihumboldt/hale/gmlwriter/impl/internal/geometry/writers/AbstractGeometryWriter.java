@@ -123,8 +123,8 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	/**
 	 * Add a verification pattern. If a match for a base pattern is found the
 	 * verification patterns will be used to verify the structure. For a path to
-	 * be accepted, one verification pattern must match and the resulting
-	 * end-point of the verification pattern must be valid.
+	 * be accepted, all verification patterns must match and the resulting
+	 * end-points of the verification patterns must be valid.
 	 * @see #verifyEndPoint(TypeDefinition)
 	 * 
 	 * @param pattern the pattern string
@@ -143,8 +143,8 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	/**
 	 * Add a verification pattern. If a match for a base pattern is found the
 	 * verification patterns will be used to verify the structure. For a path to
-	 * be accepted, one verification pattern must match and the resulting
-	 * end-point of the verification pattern must be valid.
+	 * be accepted, all verification patterns must match and the resulting
+	 * end-points of the verification patterns must be valid.
 	 * @see #verifyEndPoint(TypeDefinition)
 	 * 
 	 * @param pattern the pattern
@@ -195,26 +195,21 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 			DefinitionPath path = pattern.match(type, basePath, gmlNs);
 			if (path != null) {
 				// verification patterns
-				boolean anyVerifyMatch = false;
-				for (Pattern verPattern : verifyPatterns) {
-					DefinitionPath endPoint = verPattern.match(path.getLastType(), new DefinitionPath(path), gmlNs);
-					if (endPoint != null) {
-						// verify end-point
-						boolean ok = verifyEndPoint(endPoint.getLastType());
-						if (!ok) {
-							// all end-points must be valid
-							return null;
+				if (verifyPatterns != null && !verifyPatterns.isEmpty()) {
+					for (Pattern verPattern : verifyPatterns) {
+						DefinitionPath endPoint = verPattern.match(path.getLastType(), new DefinitionPath(path), gmlNs);
+						if (endPoint != null) {
+							// verify end-point
+							boolean ok = verifyEndPoint(endPoint.getLastType());
+							if (!ok) {
+								// all end-points must be valid
+								return null;
+							}
 						}
 						else {
-							anyVerifyMatch = true;
+							// all verification patterns must match
+							return null;
 						}
-					}
-				}
-				
-				if (!verifyPatterns.isEmpty()) {
-					if (!anyVerifyMatch) {
-						// patterns present but none successfully verified
-						return null;
 					}
 				}
 				else {
