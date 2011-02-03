@@ -145,7 +145,7 @@ public class IdGenerator {
 		UUID fid = new UUID(mostSignificant.hashCode(), 
 				leastSignificant.toString().hashCode());
 		
-		return new FeatureIdImpl(fid.toString());
+		return new FeatureIdImpl("_" + fid.toString());
 	}
 	
 	/**
