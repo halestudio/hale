@@ -145,7 +145,14 @@ public class StreamGeometryWriter {
 				log.info("Possible structure for writing " + originalType.getSimpleName() + 
 						" not found, trying " + geomType.getSimpleName() + " instead");
 				
-				candidates = findCandidates(attributeType, geomType);
+				DefinitionPath candPath = restoreCandidate(attributeType, geomType);
+				if (candPath != null) {
+					// use stored candidate
+					candidates = Collections.singletonList(candPath);
+				}
+				else {
+					candidates = findCandidates(attributeType, geomType);
+				}
 			}
 			
 			// DEBUG
@@ -168,13 +175,7 @@ public class StreamGeometryWriter {
 			path = candidates.get(0);
 			
 			// remember for later
-			// ignores geometry specific information loss in the future
-			// but usually this is acceptable because the geometries in
-			// the same property behave similar
-			storeCandidate(attributeType, originalType, path);
-			if (!geomType.equals(originalType)) {
-				storeCandidate(attributeType, geomType, path);
-			}
+			storeCandidate(attributeType, geomType, path);
 		}
 		
 		// write geometry
