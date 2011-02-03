@@ -17,8 +17,10 @@ import java.io.InputStream;
 
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.SAXParseException;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -63,7 +65,19 @@ public class XercesValidator implements Validator {
 		setFeature(parser, "http://xml.org/sax/features/validation", true);
 		setFeature(parser, "http://apache.org/xml/features/validation/schema", true);
 		
-		parser.setErrorHandler(new ReportErrorHandler(report));
+		parser.setErrorHandler(new ReportErrorHandler(report) {
+
+			@Override
+			public void error(SAXParseException e) throws SAXException {
+				//XXX this error occurs even if the element is present
+				if (e.getMessage().equals("cvc-elt.1: Cannot find the declaration of element 'gml:FeatureCollection'.")){
+					return;
+				}
+				
+				super.error(e);
+			}
+			
+		});
 		
 		ATransaction trans = log.begin("Validating XML file");
 		try {

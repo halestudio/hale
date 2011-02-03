@@ -50,8 +50,7 @@ public class ReportErrorHandler implements ErrorHandler {
 	
 	@Override
 	public void fatalError(SAXParseException e) throws SAXException {
-		log.error(e.getLocalizedMessage());
-		report.addError(e);
+		error(e);
 	}
 	
 	@Override
