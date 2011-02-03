@@ -111,8 +111,8 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	/**
 	 * Add a verification pattern. If a match for a base pattern is found the
 	 * verification patterns will be used to verify the structure. For a path to
-	 * be accepted, all verification patterns must match and the resulting
-	 * end-points of the verification patterns must be valid.
+	 * be accepted, one verification pattern must match and the resulting
+	 * end-point of the verification pattern must be valid.
 	 * @see #verifyEndPoint(TypeDefinition)
 	 * 
 	 * @param pattern the pattern string
@@ -122,6 +122,25 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 		Pattern p = Pattern.parse(pattern);
 		if (p.isValid()) {
 			verifyPatterns.add(p);
+		}
+		else {
+			log.warn("Ignoring invalid pattern: " + pattern);
+		}
+	}
+	
+	/**
+	 * Add a verification pattern. If a match for a base pattern is found the
+	 * verification patterns will be used to verify the structure. For a path to
+	 * be accepted, one verification pattern must match and the resulting
+	 * end-point of the verification pattern must be valid.
+	 * @see #verifyEndPoint(TypeDefinition)
+	 * 
+	 * @param pattern the pattern
+	 * @see Pattern#parse(String)
+	 */
+	public void addVerificationPattern(Pattern pattern) {
+		if (pattern.isValid()) {
+			verifyPatterns.add(pattern);
 		}
 		else {
 			log.warn("Ignoring invalid pattern: " + pattern);
@@ -154,6 +173,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 			DefinitionPath path = pattern.match(type, basePath, gmlNs);
 			if (path != null) {
 				// verification patterns
+				boolean anyVerifyMatch = false;
 				for (Pattern verPattern : verifyPatterns) {
 					DefinitionPath endPoint = verPattern.match(path.getLastType(), new DefinitionPath(path), gmlNs);
 					if (endPoint != null) {
@@ -163,11 +183,15 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 							// all end-points must be valid
 							return null;
 						}
+						else {
+							anyVerifyMatch = true;
+						}
 					}
-					else {
-						// all verification patterns must match
-						return null;
-					}
+				}
+				
+				if (!verifyPatterns.isEmpty() && !anyVerifyMatch) {
+					// patterns present but none successfully verified
+					return null;
 				}
 				
 				/*

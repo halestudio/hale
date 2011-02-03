@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +36,18 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @version $Id$ 
  */
 public class Pattern {
+
+	/**
+	 * Pattern type
+	 */
+	private enum PatternType {
+		/** combines multiple patterns with an AND relation */
+		AND,
+		/** combines multiple patterns with an OR relation */
+		OR,
+		/** matches a pattern */
+		MATCH
+	}
 
 	/**
 	 * Valid pattern element types
@@ -171,24 +184,58 @@ public class Pattern {
 			}
 		}
 		
-		return new Pattern(pattern, elements);
+		return new Pattern(PatternType.MATCH, pattern, elements, null);
+	}
+	
+	/**
+	 * Create a pattern that combines multiple patterns with a logical OR. When
+	 * matching, the path of the first pattern that matches is returned.
+	 *  
+	 * @param patterns the sub-patterns
+	 * 
+	 * @return the OR pattern
+	 */
+	public static Pattern or(Pattern... patterns) {
+		return new Pattern(PatternType.OR, null, null, Arrays.asList(patterns));
+	}
+	
+	/**
+	 * Create a pattern that combines multiple patterns with a logical AND. When
+	 * matching, all patterns must match and the path of the first pattern is 
+	 * returned.
+	 *  
+	 * @param patterns the sub-patterns
+	 * 
+	 * @return the AND pattern
+	 */
+	public static Pattern and(Pattern... patterns) {
+		return new Pattern(PatternType.AND, null, null, Arrays.asList(patterns));
 	}
 
 	private final List<PatternElement> elements;
 	
+	private final List<Pattern> subPatterns;
+	
 	private final String patternString;
+	
+	private final PatternType type;
 	
 	/**
 	 * Constructor
 	 * 
+	 * @param type the pattern type 
 	 * @param patternString the pattern string 
 	 * @param elements the pattern elements
+	 * @param subPatterns the sub-patterns
 	 */
-	private Pattern(String patternString, List<PatternElement> elements) {
+	private Pattern(PatternType type, String patternString, 
+			List<PatternElement> elements, List<Pattern> subPatterns) {
 		super();
 		
 		this.patternString = patternString;
 		this.elements = elements;
+		this.subPatterns = subPatterns;
+		this.type = type;
 	}
 	
 	/**
@@ -202,8 +249,37 @@ public class Pattern {
 	 */
 	public DefinitionPath match(TypeDefinition type, DefinitionPath path,
 			String gmlNs) {
-		return match(type, path, gmlNs, new HashSet<TypeDefinition>(),
-				new LinkedList<PatternElement>(elements));
+		switch (this.type) {
+		case AND: {
+			DefinitionPath fPath = null;
+			for (Pattern pattern : subPatterns) {
+				DefinitionPath res = pattern.match(type, path, gmlNs);
+				if (res == null) {
+					// all must match
+					return null;
+				}
+				else if (fPath == null) {
+					// remember the first path
+					fPath = res;
+				}
+			}
+			return fPath;
+		}
+		case OR: {
+			for (Pattern pattern : subPatterns) {
+				DefinitionPath res = pattern.match(type, path, gmlNs);
+				if (res != null) {
+					// any must match
+					return res;
+				}
+			}
+			return null; // none matched
+		}
+		case MATCH:
+		default:
+			return match(type, path, gmlNs, new HashSet<TypeDefinition>(),
+					new LinkedList<PatternElement>(elements));
+		}
 	}
 	
 	/**
@@ -214,7 +290,7 @@ public class Pattern {
 	 * @param gmlNs the GML namespace
 	 * @param checkedTypes the type definitions that have already been checked
 	 *   (to prevent cycles)
-	 * @param remainingElements the remeining elements to match
+	 * @param remainingElements the remaining elements to match
 	 * 
 	 * @return the new path if there is a match, <code>null</code> otherwise
 	 */
@@ -378,7 +454,35 @@ public class Pattern {
 	 */
 	@Override
 	public String toString() {
-		return patternString;
+		switch (type) {
+		case AND:
+			return relationString(" AND ");
+		case OR:
+			return relationString(" OR ");
+		case MATCH:
+		default:
+			return patternString;
+		}
+	}
+
+	private String relationString(String delimiter) {
+		if (subPatterns == null) throw new IllegalStateException("Sub-patterns must be set for AND/OR patterns");
+		
+		StringBuffer result = new StringBuffer("(");
+		boolean first = true;
+		for (Pattern pattern : subPatterns) {
+			if (first) {
+				first = false;
+			}
+			else {
+				result.append(delimiter);
+			}
+			
+			result.append(pattern.toString());
+		}
+		result.append(")");
+		
+		return result.toString();
 	}
 	
 }

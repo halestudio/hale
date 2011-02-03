@@ -47,8 +47,9 @@ public class PolygonWriter extends AbstractGeometryWriter<Polygon> {
 		addBasePattern("*"); // matches any compatible type element
 		
 		// verification patterns
-		addVerificationPattern("*/exterior/LinearRing"); // both exterior
-		addVerificationPattern("*/interior/LinearRing"); // and interior elements must be present
+		addVerificationPattern(Pattern.and(
+				Pattern.parse("*/exterior/LinearRing"),   // both exterior
+				Pattern.parse("*/interior/LinearRing"))); // and interior elements must be present
 	}
 
 	/**
