@@ -20,6 +20,7 @@ import java.util.List;
 import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.Name;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.DefinitionPath;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.PathElement;
@@ -107,6 +108,7 @@ public class Pattern {
 	 * 
 	 * @return the parsed pattern
 	 */
+	@SuppressWarnings(value = "SBSC_USE_STRINGBUFFER_CONCATENATION", justification = "More convenient at this point and number of parts will not be large")
 	public static Pattern parse(String pattern) {
 		List<PatternElement> elements = new ArrayList<PatternElement>();
 		

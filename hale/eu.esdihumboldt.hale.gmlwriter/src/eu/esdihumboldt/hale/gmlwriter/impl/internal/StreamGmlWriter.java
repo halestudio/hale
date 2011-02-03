@@ -101,7 +101,7 @@ public class StreamGmlWriter {
 		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 		// will set namespaces if these not set explicitly
 		outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces",
-				new Boolean(true));
+				Boolean.valueOf(true));
 		// create XML stream writer with UTF-8 encoding
 		XMLStreamWriter tmpWriter = outputFactory.createXMLStreamWriter(out, "UTF-8");
 
@@ -518,11 +518,13 @@ public class StreamGmlWriter {
 			AttributeDefinition attDef) throws XMLStreamException {
 		String ns = attDef.getNamespace();
 		if (ns != null && !ns.isEmpty()) {
-			writer.writeAttribute(attDef.getNamespace(), attDef.getName(), value.toString());
+			writer.writeAttribute(attDef.getNamespace(), attDef.getName(), 
+					(value != null)?(value.toString()):(null));
 		}
 		else {
 			// no namespace
-			writer.writeAttribute(attDef.getName(), value.toString());
+			writer.writeAttribute(attDef.getName(), 
+					(value != null)?(value.toString()):(null));
 		}
 	}
 

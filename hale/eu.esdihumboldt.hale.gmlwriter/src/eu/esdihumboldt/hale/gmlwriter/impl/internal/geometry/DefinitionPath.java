@@ -35,7 +35,7 @@ public class DefinitionPath {
 	/**
 	 * Sub-type path element
 	 */
-	private class SubTypeElement implements PathElement {
+	private static class SubTypeElement implements PathElement {
 
 		private final TypeDefinition subtype;
 		
@@ -77,7 +77,7 @@ public class DefinitionPath {
 	/**
 	 * A property path element 
 	 */
-	public class PropertyElement implements PathElement {
+	public static class PropertyElement implements PathElement {
 		
 		private final AttributeDefinition attdef;
 

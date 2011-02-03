@@ -7,6 +7,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.geotools;bundle-version="2.6.4"
 Import-Package: com.vividsolutions.jts.geom,
  de.cs3d.util.logging,
+ edu.umd.cs.findbugs.annotations,
  eu.esdihumboldt.cst.rdf,
  eu.esdihumboldt.hale.schemaprovider,
  eu.esdihumboldt.hale.schemaprovider.model,
