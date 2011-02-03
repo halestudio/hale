@@ -23,8 +23,12 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
@@ -81,10 +85,22 @@ public class DefaultGmlWriterTest {
 	 */
 	@Test
 	public void testSimpleWrite() throws Exception {
+		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
+		
+		values.put(Arrays.asList("LENGTH"), Double.valueOf(10.2));
+		values.put(Arrays.asList("NAME"), "Test");
+		
+		fillFeatureTest(
+				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(), 
+				values, "simpleWrite");
+	}
+	
+	private void fillFeatureTest(URI targetSchema, Map<List<String>, 
+			Object> values, String testName) throws Exception {
 		SchemaProvider sp = new ApacheSchemaProvider();
 		
 		// load the sample schema
-		Schema schema = sp.loadSchema(getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(), null);
+		Schema schema = sp.loadSchema(targetSchema, null);
 		
 		FeatureCollection<FeatureType, Feature> fc = new CstFeatureCollection();
 		
@@ -92,14 +108,15 @@ public class DefaultGmlWriterTest {
 		Feature feature = createFeature(schema.getElements().values().iterator().next().getType());
 		
 		// set some values
-		FeatureInspector.setPropertyValue(feature, Arrays.asList("LENGTH"), 10.2);
-		FeatureInspector.setPropertyValue(feature, Arrays.asList("NAME"), "Test");
+		for (Entry<List<String>, Object> entry : values.entrySet()) {
+			FeatureInspector.setPropertyValue(feature, entry.getKey(), entry.getValue());
+		}
 		
 		fc.add(feature );
 		
 		// write to file
 		DefaultGmlWriter writer = new DefaultGmlWriter();
-		File outFile = File.createTempFile("simpleWrite", ".gml"); 
+		File outFile = File.createTempFile(testName, ".gml"); 
 		OutputStream out = new FileOutputStream(outFile);
 		try {
 			writer.writeFeatures(fc, schema, out );
@@ -121,9 +138,13 @@ public class DefaultGmlWriterTest {
 		assertEquals(1, loaded.size());
 		
 		Feature l = loaded.iterator().next();
-		//XXX conversion?
-		assertEquals("10.2", FeatureInspector.getPropertyValue(l, Arrays.asList("LENGTH"), null));
-		assertEquals("Test", FeatureInspector.getPropertyValue(l, Arrays.asList("NAME"), null));
+		// test values
+		for (Entry<List<String>, Object> entry : values.entrySet()) {
+			//XXX conversion?
+			assertEquals(
+					entry.getValue().toString(), 
+					FeatureInspector.getPropertyValue(l, entry.getKey(), null).toString());
+		}
 		
 		if (DEL_TEMP_FILES) {
 			outFile.deleteOnExit();
