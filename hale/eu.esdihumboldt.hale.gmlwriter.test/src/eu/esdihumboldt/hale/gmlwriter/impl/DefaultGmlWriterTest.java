@@ -12,9 +12,9 @@
 
 package eu.esdihumboldt.hale.gmlwriter.impl;
 
-import java.awt.Desktop;
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.Map.Entry;
 
@@ -53,16 +54,19 @@ import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.identity.Identifier;
 import org.xml.sax.SAXException;
 
+import eu.esdihumboldt.cst.align.IAlignment;
+import eu.esdihumboldt.cst.transformer.service.CstServiceFactory;
+import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.gmlparser.CstFeatureCollection;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
 import eu.esdihumboldt.tools.FeatureInspector;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for {@link DefaultGmlWriter}
@@ -79,12 +83,12 @@ public class DefaultGmlWriterTest {
 	private static final boolean DEL_TEMP_FILES = false;
 
 	/**
-	 * Test writing a simple feature from a simple schema
+	 * Test writing a simple feature from a simple schema (Watercourses VA)
 	 * 
 	 * @throws Exception if any error occurs 
 	 */
 	@Test
-	public void testSimpleWrite() throws Exception {
+	public void testFillWrite_WatercourseVA() throws Exception {
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
 		
 		values.put(Arrays.asList("LENGTH"), Double.valueOf(10.2));
@@ -92,9 +96,90 @@ public class DefaultGmlWriterTest {
 		
 		fillFeatureTest(
 				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(), 
-				values, "simpleWrite");
+				values, "fillWrite_WVA");
 	}
 	
+	/**
+	 * Test writing the result from a CST transformation
+	 * 
+	 * @throws Exception if any error occurs
+	 */
+	@Test
+	public void testTransformWrite_WVA() throws Exception {
+		transformTest(
+				getClass().getResource("/data/sample_wva/wfs_va_sample.gml").toURI(),
+				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(),
+				getClass().getResource("/data/sample_wva/watercourse_va.xml.goml").toURI(),
+				getClass().getResource("/data/sample_wva/inspire3/HydroPhysicalWaters.xsd").toURI(),
+				"transformWrite_WVA");
+	}
+	
+	/**
+	 * Test writing the result from a CST transformation
+	 * 
+	 * @throws Exception if any error occurs
+	 */
+//	@Test
+//	public void testTransformWrite_DKM() throws Exception {
+//		transformTest(
+//				getClass().getResource("/data/dkm_austria/KA_14168_EPSG25833.gml").toURI(),
+//				getClass().getResource("/data/dkm_austria/KA_14168_EPSG25833.xsd").toURI(),
+//				getClass().getResource("/data/dkm_austria/mapping_dkm_inspire.xml.goml").toURI(),
+//				getClass().getResource("/data/dkm_austria/inspire3/CadastralParcels.xsd").toURI(),
+//				"transformWrite_DKM");
+//	}
+	
+	private void transformTest(URI sourceData, URI sourceSchemaLocation,
+			URI mappingLocation, URI targetSchemaLocation, String testName)
+			throws Exception {
+		// load both schemas
+		SchemaProvider sp = new ApacheSchemaProvider();
+		Schema sourceSchema = sp.loadSchema(sourceSchemaLocation, null);
+		Schema targetSchema = sp.loadSchema(targetSchemaLocation, null);
+		
+		// load source data
+		FeatureCollection<FeatureType, Feature> fc = loadGML(sourceData, sourceSchema);
+		
+		// load alignment
+		OmlRdfReader reader = new OmlRdfReader();
+		Alignment alignment = reader.read(mappingLocation.toURL());
+		
+		// transform
+		FeatureCollection<FeatureType, Feature> result = transform(fc, 
+				alignment, targetSchema);
+		
+		// write
+		// write to file
+		DefaultGmlWriter writer = new DefaultGmlWriter();
+		File outFile = File.createTempFile(testName, ".gml"); 
+		OutputStream out = new FileOutputStream(outFile);
+		try {
+			writer.writeFeatures(result, targetSchema, out);
+		} finally {
+			out.flush();
+			out.close();
+		}
+		
+		System.out.println(outFile.getAbsolutePath());
+		System.out.println(targetSchema.getLocation().toString());
+		
+		if (DEL_TEMP_FILES) {
+			outFile.deleteOnExit();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private FeatureCollection<FeatureType, Feature> transform(
+			FeatureCollection<FeatureType, Feature> fc, IAlignment alignment, Schema targetSchema) {
+		Set<FeatureType> types = new HashSet<FeatureType>();
+		for (SchemaElement se : targetSchema.getElements().values()) {
+			if (se.getFeatureType() != null) {
+				types.add(se.getFeatureType());
+			}
+		}
+		return (FeatureCollection<FeatureType, Feature>) CstServiceFactory.getInstance().transform(fc, alignment, types);
+	}
+
 	private void fillFeatureTest(URI targetSchema, Map<List<String>, 
 			Object> values, String testName) throws Exception {
 		SchemaProvider sp = new ApacheSchemaProvider();
@@ -125,15 +210,16 @@ public class DefaultGmlWriterTest {
 			out.close();
 		}
 		
-		//XXX
-		if (!DEL_TEMP_FILES && Desktop.isDesktopSupported()) {
-			Desktop.getDesktop().open(outFile);
-		}
+//		if (!DEL_TEMP_FILES && Desktop.isDesktopSupported()) {
+//			Desktop.getDesktop().open(outFile);
+//		}
 		
 		URI schemaLocation = schema.getLocation().toURI();
 		validate(schemaLocation, outFile.toURI());
 		
-		FeatureCollection<FeatureType, Feature> loaded = loadGML(outFile, schemaLocation);
+		// load file
+		FeatureCollection<FeatureType, Feature> loaded = loadGML(
+				outFile.toURI(), schema);
 		
 		assertEquals(1, loaded.size());
 		
@@ -157,13 +243,13 @@ public class DefaultGmlWriterTest {
 	/**
 	 * Load GML from a file
 	 * 
-	 * @param gmlFile the GML file 
-	 * @param schemaLocation the schema location
+	 * @param sourceData the GML file 
+	 * @param schema the schema location
 	 * @return the features
 	 * @throws IOException if loading the file fails
 	 */
-	private FeatureCollection<FeatureType, Feature> loadGML(File gmlFile, URI schemaLocation) throws IOException {
-		InputStream in = new FileInputStream(gmlFile);
+	private FeatureCollection<FeatureType, Feature> loadGML(URI sourceData, Schema schema) throws IOException {
+		InputStream in = sourceData.toURL().openStream();
 		ConfigurationType type;
 		try {
 			type = GmlHelper.determineVersion(in, ConfigurationType.GML3);
@@ -171,9 +257,9 @@ public class DefaultGmlWriterTest {
 			in.close();
 		}
 		
-		in = new FileInputStream(gmlFile);
+		in = sourceData.toURL().openStream();
 		try {
-			return GmlHelper.loadGml(in, type, schemaLocation);
+			return GmlHelper.loadGml(in, type, schema);
 		} finally {
 			in.close();
 		}
