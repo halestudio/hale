@@ -371,12 +371,14 @@ public class StreamGeometryWriter {
 		
 		if (compatible) {
 			// check structure / match writers
-			for (GeometryWriter<?> writer : writers) {
-				DefinitionPath candidate = writer.match(type, path, gmlNs);
-				if (candidate != null) {
-					// set appropriate writer for path and return it
-					candidate.setGeometryWriter(writer);
-					return candidate;
+			if (writers != null) {
+				for (GeometryWriter<?> writer : writers) {
+					DefinitionPath candidate = writer.match(type, path, gmlNs);
+					if (candidate != null) {
+						// set appropriate writer for path and return it
+						candidate.setGeometryWriter(writer);
+						return candidate;
+					}
 				}
 			}
 		}
