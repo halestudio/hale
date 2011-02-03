@@ -52,5 +52,6 @@
 <location path="${project_loc:hale-platform}/target/com.onespatial" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.custommonkey" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/com.hp.hpl.jena" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/net.java" type="Directory"/>
 </locations>
 </target>
