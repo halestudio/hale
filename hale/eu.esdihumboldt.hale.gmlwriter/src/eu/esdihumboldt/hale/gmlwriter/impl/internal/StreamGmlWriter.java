@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -28,6 +29,7 @@ import org.opengis.feature.ComplexAttribute;
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.Name;
 import org.opengis.filter.identity.FeatureId;
 
 import de.cs3d.util.logging.ALogger;
@@ -176,7 +178,8 @@ public class StreamGmlWriter {
 	 * @throws XMLStreamException if writing the feature fails 
 	 */
 	protected void writeMember(Feature feature, TypeDefinition type) throws XMLStreamException {
-		writer.writeStartElement(type.getName().getNamespaceURI(), type.getName().getLocalPart()); //TODO instead use element names
+		Name elementName = getElementName(type);
+		writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 		
 		// feature id
 		FeatureId id = feature.getIdentifier();
@@ -200,6 +203,30 @@ public class StreamGmlWriter {
 		writeProperties(feature, type);
 		
 		writer.writeEndElement(); // type element name
+	}
+
+	/**
+	 * Get the element name from a type definition
+	 * 
+	 * @param type the type definition
+	 * @return the element name
+	 */
+	private Name getElementName(TypeDefinition type) {
+		Set<SchemaElement> elements = type.getDeclaringElements();
+		if (elements == null || elements.isEmpty()) {
+			log.warn("No schema element for type " + type.getDisplayName() + 
+					" found, using type name instead");
+			return type.getName();
+		}
+		else {
+			Name elementName = elements.iterator().next().getElementName();
+			if (elements.size() > 0) {
+				log.warn("Multiple element definitions for type " + 
+						type.getDisplayName() + " found, using element " + 
+						elementName.getLocalPart());
+			}
+			return elementName;
+		}
 	}
 
 	/**
