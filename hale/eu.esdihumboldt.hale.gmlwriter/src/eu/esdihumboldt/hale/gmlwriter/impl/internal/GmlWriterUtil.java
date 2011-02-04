@@ -42,7 +42,7 @@ public abstract class GmlWriterUtil {
 	public static Name getElementName(TypeDefinition type) {
 		Set<SchemaElement> elements = type.getDeclaringElements();
 		if (elements == null || elements.isEmpty()) {
-			log.warn("No schema element for type " + type.getDisplayName() + 
+			log.debug("No schema element for type " + type.getDisplayName() + 
 					" found, using type name instead");
 			return type.getName();
 		}
