@@ -24,6 +24,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.xmlbeans.XmlAnySimpleType;
 import org.geotools.feature.ComplexAttributeImpl;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.NameImpl;
@@ -41,6 +42,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.StreamGeometryWriter;
+import eu.esdihumboldt.hale.gmlwriter.impl.internal.simpletype.SimpleTypeUtil;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
@@ -60,7 +62,7 @@ public class StreamGmlWriter {
 	 * Schema instance namespace (for specifying schema locations)
 	 */
 	private static final String SCHEMA_INSTANCE_NS = "http://www.w3.org/2001/XMLSchema-instance";
-
+	
 	private static final ALogger log = ALoggerFactory.getLogger(StreamGmlWriter.class);
 
 	/**
@@ -460,7 +462,7 @@ public class StreamGmlWriter {
 				writeSimpleTypeAttributes(property, attDef);
 				
 				// write value as content
-				writer.writeCharacters(value.toString()); //TODO convert mechanism
+				writer.writeCharacters(SimpleTypeUtil.convert(value, attDef.getAttributeType()));
 			}
 			
 			writer.writeEndElement();
@@ -544,8 +546,7 @@ public class StreamGmlWriter {
 			}
 		}
 		else {
-			//TODO correct conversion of value
-			writeAtt(writer, value.toString(), attDef);
+			writeAtt(writer, SimpleTypeUtil.convert(value, attDef.getAttributeType()), attDef);
 		}
 	}
 
@@ -554,12 +555,12 @@ public class StreamGmlWriter {
 		String ns = attDef.getNamespace();
 		if (ns != null && !ns.isEmpty()) {
 			writer.writeAttribute(attDef.getNamespace(), attDef.getName(), 
-					(value != null)?(value.toString()):(null));
+					(value != null)?(value):(null));
 		}
 		else {
 			// no namespace
 			writer.writeAttribute(attDef.getName(), 
-					(value != null)?(value.toString()):(null));
+					(value != null)?(value):(null));
 		}
 	}
 
