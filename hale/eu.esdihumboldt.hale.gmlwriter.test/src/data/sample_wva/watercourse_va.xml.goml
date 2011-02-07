@@ -3,7 +3,7 @@
     <align:level></align:level>
     <align:onto1>
         <align:Ontology rdf:about="http://www.esdi-humboldt.org/waterVA">
-            <align:location>file:/C:/Users/sitemple/Entwicklung/humboldt2/_testdata/watercourse/wfs_va.xsd</align:location>
+            <align:location>file:/E:/Coding/h2trunk/hale/eu.esdihumboldt.hale.gmlwriter.test/src/data/sample_wva/wfs_va.xsd</align:location>
             <align:formalism>
                 <align:Formalism>
                     <align:uri>http://www.opengis.net/gml</align:uri>
@@ -14,7 +14,7 @@
     </align:onto1>
     <align:onto2>
         <align:Ontology rdf:about="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0">
-            <align:location>file:/C:/Users/sitemple/Entwicklung/humboldt2/_testdata/watercourse/inspire3/HydroPhysicalWaters.xsd</align:location>
+            <align:location>file:/E:/Coding/h2trunk/hale/eu.esdihumboldt.hale.gmlwriter.test/src/data/sample_wva/inspire3/HydroPhysicalWaters.xsd</align:location>
             <align:formalism>
                 <align:Formalism>
                     <align:uri>http://www.opengis.net/gml</align:uri>
@@ -50,19 +50,6 @@
             </omwg:entity1>
             <omwg:entity2>
                 <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/SurfaceWater/geometry"/>
-            </omwg:entity2>
-            <align:relation>Equivalence</align:relation>
-        </align:Cell>
-    </align:map>
-    <align:map>
-        <align:Cell>
-            <omwg:entity1>
-                <omwg:Property rdf:about="http://www.esdi-humboldt.org/waterVA/Watercourses_VA/LEVEL">
-                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction"/>
-                </omwg:Property>
-            </omwg:entity1>
-            <omwg:entity2>
-                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/Watercourse/level"/>
             </omwg:entity2>
             <align:relation>Equivalence</align:relation>
         </align:Cell>
@@ -155,7 +142,7 @@
         </omwg:param>
     </omwg:transf>
 </omwg:Property>
-<omwg:Relation/>
+<omwg:Relation rdf:about=""/>
                             </omwg:propertyComposition>
                         </omwg:Property>
                         <omwg:Relation/>
@@ -164,6 +151,180 @@
             </omwg:entity1>
             <omwg:entity2>
                 <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/SurfaceWater/geographicalName"/>
+            </omwg:entity2>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://www.esdi-humboldt.org/waterVA/Watercourses_VA/LEVEL">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.ClassificationMappingFunction"/>
+                    <omwg:valueCondition seq="1">
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>3</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition seq="2">
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>2</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition seq="3">
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>1</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/Watercourse/level">
+                    <omwg:valueCondition seq="1">
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>onGroundSurface</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition seq="2">
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>suspendedOrElevated</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                    <omwg:valueCondition seq="3">
+                        <omwg:Restriction>
+                            <omwg:comparator>oneOf</omwg:comparator>
+                            <goml:ValueClass>
+<omwg:value>
+    <omwg:literal>underground</omwg:literal>
+</omwg:value>
+                            </goml:ValueClass>
+                        </omwg:Restriction>
+                    </omwg:valueCondition>
+                </omwg:Property>
+            </omwg:entity2>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Class rdf:about="entity/null"/>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/Watercourse/delineationKnown">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.ConstantValueFunction">
+                        <omwg:param>
+                            <omwg:name>defaultValue</omwg:name>
+                            <omwg:value>false</omwg:value>
+                        </omwg:param>
+                    </omwg:transf>
+                </omwg:Property>
+            </omwg:entity2>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Class rdf:about="entity/null"/>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/Watercourse/length">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.NilReasonFunction">
+                        <omwg:param>
+                            <omwg:name>NilReasonType</omwg:name>
+                            <omwg:value>unpopulated</omwg:value>
+                        </omwg:param>
+                    </omwg:transf>
+                </omwg:Property>
+            </omwg:entity2>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Class rdf:about="entity/null"/>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/SurfaceWater/beginLifespanVersion">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.ConstantValueFunction">
+                        <omwg:param>
+                            <omwg:name>defaultValue</omwg:name>
+                            <omwg:value>2009-12-23 12:13:14</omwg:value>
+                        </omwg:param>
+                    </omwg:transf>
+                </omwg:Property>
+            </omwg:entity2>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://www.esdi-humboldt.org/waterVA/Watercourses_VA/FGW_ID">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.inspire.IdentifierFunction">
+                        <omwg:param>
+                            <omwg:name>countryName</omwg:name>
+                            <omwg:value>de</omwg:value>
+                        </omwg:param>
+                        <omwg:param>
+                            <omwg:name>providerName</omwg:name>
+                            <omwg:value>fraunhofer</omwg:value>
+                        </omwg:param>
+                        <omwg:param>
+                            <omwg:name>productName</omwg:name>
+                            <omwg:value>humboldt-sample-transformed-data</omwg:value>
+                        </omwg:param>
+                        <omwg:param>
+                            <omwg:name>version</omwg:name>
+                            <omwg:value></omwg:value>
+                        </omwg:param>
+                        <omwg:param>
+                            <omwg:name>versionNilReason</omwg:name>
+                            <omwg:value>unknown</omwg:value>
+                        </omwg:param>
+                    </omwg:transf>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/SurfaceWater/inspireId"/>
+            </omwg:entity2>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Class rdf:about="entity/null"/>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/Watercourse/length;uom">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.ConstantValueFunction">
+                        <omwg:param>
+                            <omwg:name>defaultValue</omwg:name>
+                            <omwg:value>m</omwg:value>
+                        </omwg:param>
+                    </omwg:transf>
+                </omwg:Property>
             </omwg:entity2>
         </align:Cell>
     </align:map>
