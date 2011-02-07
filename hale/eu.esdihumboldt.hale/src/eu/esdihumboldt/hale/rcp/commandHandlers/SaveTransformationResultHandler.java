@@ -36,6 +36,7 @@ import org.opengis.feature.type.FeatureType;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import de.cs3d.util.logging.ATransaction;
 import eu.esdihumboldt.hale.gmlwriter.GmlWriter;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
@@ -102,12 +103,14 @@ public class SaveTransformationResultHandler extends AbstractHandler {
 						monitor.done();
 						return;
 					}
+					ATransaction trans = log.begin("Writing transformed features to GML file: " + file.getAbsolutePath());
 					try {
 						gmlWriter.writeFeatures(features, targetSchema, out, commonSrsName);
 //						handler.writeFC(features, types, targetNamespace, prefixes);
 					} catch (Exception e) {
 						log.userError("Error saving transformation result to GML file", e);
 					} finally {
+						trans.end();
 						try {
 							out.close();
 						} catch (IOException e) {
