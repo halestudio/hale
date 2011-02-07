@@ -17,14 +17,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.xmlbeans.XmlAnySimpleType;
 import org.geotools.feature.ComplexAttributeImpl;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.NameImpl;
@@ -81,6 +80,11 @@ public class StreamGmlWriter {
 	private final String gmlNs;
 	
 	/**
+	 * The common SRS name, may be <code>null</code>
+	 */
+	private final String commonSrsName;
+	
+	/**
 	 * The type index
 	 */
 	private final TypeIndex types;
@@ -95,10 +99,13 @@ public class StreamGmlWriter {
 	 * 
 	 * @param targetSchema the target schema
 	 * @param out the output stream
+	 * @param commonSrsName the common SRS name, may be <code>null</code>
 	 * @throws XMLStreamException if setting up the stream writer fails
 	 */
-	public StreamGmlWriter(Schema targetSchema, OutputStream out) throws XMLStreamException {
+	public StreamGmlWriter(Schema targetSchema, OutputStream out,
+			String commonSrsName) throws XMLStreamException {
 		this.targetSchema = targetSchema;
+		this.commonSrsName = commonSrsName;
 		
 		// create and set-up a writer
 		
@@ -455,7 +462,7 @@ public class StreamGmlWriter {
 			}
 			else if (value instanceof Geometry) {
 				// write geometry
-				writeGeometry(((Geometry) value), attDef.getAttributeType());
+				writeGeometry(((Geometry) value), attDef.getAttributeType(), commonSrsName);
 			}
 			else {
 				// write any attributes
@@ -493,10 +500,12 @@ public class StreamGmlWriter {
 	 * 
 	 * @param geometry the geometry
 	 * @param attributeType the type definition
+	 * @param srsName the common SRS name, may be <code>null</code> 
 	 * @throws XMLStreamException if an error occurs writing the geometry  
 	 */
-	private void writeGeometry(Geometry geometry, TypeDefinition attributeType) throws XMLStreamException {
-		getGeometryWriter().write(writer, geometry, attributeType);
+	private void writeGeometry(Geometry geometry, TypeDefinition attributeType, 
+			String srsName) throws XMLStreamException {
+		getGeometryWriter().write(writer, geometry, attributeType, srsName);
 	}
 
 	/**
@@ -532,7 +541,7 @@ public class StreamGmlWriter {
 	 * @param attDef the attribute definition
 	 * @throws XMLStreamException if writing the attribute fails 
 	 */
-	private static void writeAttribute(XMLStreamWriter writer, Object value, 
+	public static void writeAttribute(XMLStreamWriter writer, Object value, 
 			AttributeDefinition attDef) throws XMLStreamException {
 		if (value == null) {
 			if (attDef.getMinOccurs() > 0) {

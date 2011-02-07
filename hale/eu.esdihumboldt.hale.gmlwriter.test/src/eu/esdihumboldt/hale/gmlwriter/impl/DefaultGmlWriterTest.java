@@ -94,7 +94,7 @@ public class DefaultGmlWriterTest {
 		
 		Report report = fillFeatureTest(
 				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(), 
-				values, "fillWrite_WVA");
+				values, "fillWrite_WVA", "EPSG:31251");
 		
 		assertTrue("Expected GML output to be valid", report.isValid());
 	}
@@ -112,7 +112,8 @@ public class DefaultGmlWriterTest {
 				getClass().getResource("/data/sample_wva/watercourse_va.xml.goml").toURI(),
 				getClass().getResource("/data/sample_wva/inspire3/HydroPhysicalWaters.xsd").toURI(),
 				"transformWrite_WVA",
-				true);
+				true,
+				"EPSG:31251");
 		
 		assertTrue("Expected GML output to be valid", report.isValid());
 	}
@@ -130,14 +131,15 @@ public class DefaultGmlWriterTest {
 				getClass().getResource("/data/dkm_austria/mapping_dkm_inspire.xml.goml").toURI(),
 				getClass().getResource("/data/dkm_austria/inspire3/CadastralParcels.xsd").toURI(),
 				"transformWrite_DKM",
-				true);
+				true,
+				"EPSG:25833");
 		
 		assertTrue("Expected GML output to be valid", report.isValid());
 	}
 	
 	private Report transformTest(URI sourceData, URI sourceSchemaLocation,
 			URI mappingLocation, URI targetSchemaLocation, String testName,
-			boolean onlyOne)
+			boolean onlyOne, String srsName)
 			throws Exception {
 		// load both schemas
 		SchemaProvider sp = new ApacheSchemaProvider();
@@ -180,7 +182,7 @@ public class DefaultGmlWriterTest {
 		File outFile = File.createTempFile(testName, ".gml"); 
 		OutputStream out = new FileOutputStream(outFile);
 		try {
-			writer.writeFeatures(result, targetSchema, out);
+			writer.writeFeatures(result, targetSchema, out, srsName);
 		} finally {
 			out.flush();
 			out.close();
@@ -212,7 +214,7 @@ public class DefaultGmlWriterTest {
 	}
 
 	private Report fillFeatureTest(URI targetSchema, Map<List<String>, 
-			Object> values, String testName) throws Exception {
+			Object> values, String testName, String srsName) throws Exception {
 		SchemaProvider sp = new ApacheSchemaProvider();
 		
 		// load the sample schema
@@ -235,7 +237,7 @@ public class DefaultGmlWriterTest {
 		File outFile = File.createTempFile(testName, ".gml"); 
 		OutputStream out = new FileOutputStream(outFile);
 		try {
-			writer.writeFeatures(fc, schema, out );
+			writer.writeFeatures(fc, schema, out, srsName);
 		} finally {
 			out.flush();
 			out.close();

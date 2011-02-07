@@ -168,10 +168,15 @@ public class StreamGeometryWriter {
 	 * @param writer the XML stream writer
 	 * @param geometry the geometry
 	 * @param attributeType the attribute type
+	 * @param srsName the SRS name of a common SRS for the whole 
+	 *   document, may be <code>null</code>
 	 * @throws XMLStreamException if any error occurs writing the geometry
 	 */
 	public void write(XMLStreamWriter writer, Geometry geometry,
-			TypeDefinition attributeType) throws XMLStreamException {
+			TypeDefinition attributeType, String srsName) throws XMLStreamException {
+		// write any srsName attribute on the parent element
+		writeSrsName(writer, attributeType, geometry, srsName);
+		
 		Class<? extends Geometry> geomType = geometry.getClass();
 		
 		// remember if we already found a solution to this problem
@@ -224,7 +229,7 @@ public class StreamGeometryWriter {
 		}
 		
 		// write geometry
-		writeGeometry(writer, geometry, path);
+		writeGeometry(writer, geometry, path, srsName);
 	}
 
 	/**
@@ -233,11 +238,13 @@ public class StreamGeometryWriter {
 	 * @param writer the XML stream writer
 	 * @param geometry the geometry
 	 * @param path the definition path to use
+	 * @param srsName the SRS name of a common SRS for the whole 
+	 *   document, may be <code>null</code>
 	 * @throws XMLStreamException if writing the geometry fails
 	 */
 	@SuppressWarnings("unchecked")
 	private void writeGeometry(XMLStreamWriter writer, Geometry geometry,
-			DefinitionPath path) throws XMLStreamException {
+			DefinitionPath path, String srsName) throws XMLStreamException {
 		GeometryWriter geomWriter = path.getGeometryWriter();
 		
 		Name name = GmlWriterUtil.getElementName(path.getLastType()); //XXX the element name used may be wrong, is this an issue?
@@ -253,6 +260,8 @@ public class StreamGeometryWriter {
 				writer.writeStartElement(name.getNamespaceURI(), name.getLocalPart());
 				// write eventual required ID
 				StreamGmlWriter.writeRequiredID(writer, step.getType(), null, false);
+				// write eventual srsName
+				writeSrsName(writer, step.getType(), geometry, srsName);
 			}
 			
 			// write geometry
@@ -261,6 +270,37 @@ public class StreamGeometryWriter {
 			for (int i = 0; i < path.getSteps().size(); i++) {
 				// end elements
 				writer.writeEndElement();
+			}
+		}
+	}
+
+	/**
+	 * Write the SRS name if a corresponding attribute is present
+	 * 
+	 * @param writer the XML stream writer
+	 * @param type the element type definition
+	 * @param geometry the geometry
+	 * @param srsName the common SRS name, may be <code>null</code>
+	 * @throws XMLStreamException if writing the SRS name fails
+	 */
+	private void writeSrsName(XMLStreamWriter writer, TypeDefinition type,
+			Geometry geometry, String srsName) throws XMLStreamException {
+		//TODO can SRS be extracted from geometry?
+		
+		if (srsName != null) {
+			AttributeDefinition srsAtt = null;
+			for (AttributeDefinition att : type.getAttributes()) {
+				if (att.getName().equals("srsName") //TODO improve condition?
+						&& (att.getNamespace() == null || 
+								att.getNamespace().equals(gmlNs) || 
+								att.getNamespace().isEmpty())) {
+					srsAtt = att;
+					break;
+				}
+			}
+			
+			if (srsAtt != null) {
+				StreamGmlWriter.writeAttribute(writer, srsName, srsAtt);
 			}
 		}
 	}

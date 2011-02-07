@@ -34,13 +34,13 @@ import eu.esdihumboldt.hale.schemaprovider.Schema;
 public class DefaultGmlWriter implements GmlWriter {
 
 	/**
-	 * @see GmlWriter#writeFeatures(FeatureCollection, Schema, OutputStream)
+	 * @see GmlWriter#writeFeatures(FeatureCollection, Schema, OutputStream, String)
 	 */
 	@Override
 	public void writeFeatures(FeatureCollection<FeatureType, Feature> features,
-			Schema targetSchema, OutputStream out) {
+			Schema targetSchema, OutputStream out, String commonSrsName) {
 		try {
-			new StreamGmlWriter(targetSchema, out).write(features);
+			new StreamGmlWriter(targetSchema, out, commonSrsName).write(features);
 		} catch (XMLStreamException e) {
 			throw new RuntimeException("Error writing GML", e);
 		}

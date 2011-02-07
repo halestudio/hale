@@ -36,8 +36,10 @@ public interface GmlWriter {
 	 * @param targetSchema the target schema
 	 * @param out the output stream to write the GML to, the caller is 
 	 *   responsible for closing it 
+	 * @param commonSrsName the name of the common SRS of the features,
+	 *   may be <code>null</code>
 	 */
 	public void writeFeatures(FeatureCollection<FeatureType, Feature> features,
-			Schema targetSchema, OutputStream out);
+			Schema targetSchema, OutputStream out, String commonSrsName);
 
 }
