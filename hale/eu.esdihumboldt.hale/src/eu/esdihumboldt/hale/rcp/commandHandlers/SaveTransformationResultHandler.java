@@ -12,36 +12,25 @@
 
 package eu.esdihumboldt.hale.rcp.commandHandlers;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import de.cs3d.util.logging.ATransaction;
-import eu.esdihumboldt.hale.gmlwriter.GmlWriter;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
+import eu.esdihumboldt.hale.rcp.wizards.io.gml.GmlExportWizard;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 
 /**
@@ -72,58 +61,13 @@ public class SaveTransformationResultHandler extends AbstractHandler {
 		
 		final Schema targetSchema = ss.getTargetSchema();
 		
-		// determine output file
-		FileDialog files = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
-		
-		String[] extensions = new String[2]; 
-		extensions[0]= "*.gml"; //$NON-NLS-1$
-		extensions[1]= "*.xml"; //$NON-NLS-1$
-		files.setFilterExtensions(extensions);
-		
-		String filename = files.open();
-		final File file = new File(filename);
-		
 		// determine SRS
 		final String commonSrsName = SelectCRSDialog.getValue().getIdentifiers().iterator().next().toString();
 		
-		Display display = PlatformUI.getWorkbench().getDisplay();
-		try {
-			IRunnableWithProgress op = new IRunnableWithProgress() {
-				
-				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException,
-						InterruptedException {
-					monitor.beginTask("Exporting transformed features to GML file", IProgressMonitor.UNKNOWN);
-//					GmlHandler handler = GmlHandler.getDefaultInstance(targetSchema.toString(), file.getAbsolutePath());
-					GmlWriter gmlWriter = (GmlWriter) PlatformUI.getWorkbench().getService(GmlWriter.class);
-					OutputStream out;
-					try {
-						out = new FileOutputStream(file);
-					} catch (FileNotFoundException e1) {
-						monitor.done();
-						return;
-					}
-					ATransaction trans = log.begin("Writing transformed features to GML file: " + file.getAbsolutePath());
-					try {
-						gmlWriter.writeFeatures(features, targetSchema, out, commonSrsName);
-//						handler.writeFC(features, types, targetNamespace, prefixes);
-					} catch (Exception e) {
-						log.userError("Error saving transformation result to GML file", e);
-					} finally {
-						trans.end();
-						try {
-							out.close();
-						} catch (IOException e) {
-							// ignore
-						}
-						monitor.done();
-					}
-				}
-			};
-		    new ProgressMonitorDialog(display.getActiveShell()).run(true, false, op);
-		} catch (Exception e1) {
-			log.userError("Error saving transformation result to GML file", e1);
-		}
+		GmlExportWizard wizard = new GmlExportWizard(features, targetSchema, commonSrsName); 
+		Shell shell = HandlerUtil.getActiveShell(event);
+		WizardDialog dialog = new WizardDialog(shell, wizard);
+		dialog.open();
 	
 		return null;
 	}
