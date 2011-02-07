@@ -10,10 +10,15 @@
 	<url>http://community.esdi-humboldt.eu/projects/show/cst</url>
 
 
+	<scm>
+		<connection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst</connection>
+		<developerConnection>scm:svn:http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst</developerConnection>
+		<url>http://svn.esdi-humboldt.eu/repo/humboldt2</url>
+	</scm>
 	<build>
 		<directory>target</directory>
 		<outputDirectory>target/classes</outputDirectory>
-		<finalName>${artifactId}-${version}</finalName>
+		<finalName>${project.artifactId}-${project.version}</finalName>
 		<testOutputDirectory>target/test-classes</testOutputDirectory>
 		<scriptSourceDirectory>./src/main/scripts</scriptSourceDirectory>
 		<sourceDirectory>./src/main/java</sourceDirectory>
@@ -175,6 +180,7 @@
 		</dependency>
 
 	</dependencies>
+	
 	<repositories>
 		<repository>
 			<id>artifactory.esdi-humboldt.eu</id>
@@ -182,18 +188,21 @@
 			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/repo/</url>
 		</repository>
 	</repositories>
+	
 	<pluginRepositories>
 		<pluginRepository>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
-			<id>artifactory.esdi-humboldt.eu</id>
+<!--			<id>artifactory.esdi-humboldt.eu</id>-->
+			<id>plugin-releases</id>
 			<name>plugins-releases</name>
 			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/plugins-releases</url>
 		</pluginRepository>
 		<pluginRepository>
 			<snapshots />
-			<id>artifactory.esdi-humboldt.eu</id>
+<!--			<id>artifactory.esdi-humboldt.eu</id>-->
+			<id>plugin-snapshots</id>
 			<name>plugins-snapshots</name>
 			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/plugins-snapshots</url>
 		</pluginRepository>
