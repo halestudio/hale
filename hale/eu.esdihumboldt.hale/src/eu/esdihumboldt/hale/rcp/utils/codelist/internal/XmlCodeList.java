@@ -38,7 +38,7 @@ import org.xml.sax.SAXException;
 import eu.esdihumboldt.hale.rcp.utils.codelist.CodeList;
 
 /**
- * 
+ * Reads an XML based code list
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -51,10 +51,12 @@ public class XmlCodeList implements CodeList {
 	private static final DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 	
 	private static final XPathFactory xpathFactory = XPathFactory.newInstance();
+
+	private static final String DEF_NS = "http://www.opengis.net/gml";
 	
 	private final String identifier;
 	
-	private final String namespace;
+	private String namespace;
 	
 	private String description;
 	
@@ -87,17 +89,41 @@ public class XmlCodeList implements CodeList {
 			Document doc = builder.parse(in);
 			
 			XPath xpath = xpathFactory.newXPath();
+			String id = null;
 			// determine identifier
-			Node identifier = ((NodeList) xpath.evaluate("Dictionary/identifier", doc, XPathConstants.NODESET)).item(0);
-			this.namespace = identifier.getAttributes().getNamedItem("codeSpace").getTextContent();
-			this.identifier = identifier.getTextContent();
+			try {
+				Node identifier = ((NodeList) xpath.evaluate("Dictionary/identifier", doc, XPathConstants.NODESET)).item(0);
+				this.namespace = identifier.getAttributes().getNamedItem("codeSpace").getTextContent();
+				id = identifier.getTextContent();
+			} catch (Throwable e) {
+				// ignore
+			}
+			
+			if (id == null) {
+				try {
+					Node identifier = ((NodeList) xpath.evaluate("Dictionary/name", doc, XPathConstants.NODESET)).item(0);
+					id = identifier.getTextContent();
+				} catch (Throwable e) {
+					// ignore
+				}
+			}
+			
+			if (id == null) {
+				id = location.getPath();
+				int idx = id.lastIndexOf("/");
+				if (idx >= 0 && idx + 1 < id.length()) {
+					id = id.substring(idx + 1);
+				}
+			}
+			
+			this.identifier = id;
 			
 			// determine description
 			try {
 				Node description = ((NodeList) xpath.evaluate("Dictionary/description", doc, XPathConstants.NODESET)).item(0);
 				this.description = description.getTextContent();
 			}
-			catch (Exception e) {
+			catch (Throwable e) {
 				// is optional
 				this.description = null;
 			}
@@ -105,6 +131,11 @@ public class XmlCodeList implements CodeList {
 			// determine entries
 			NodeList entries = (NodeList) xpath.evaluate("Dictionary/dictionaryEntry/Definition", doc, XPathConstants.NODESET);
 			addEntries(entries);
+			
+			if (this.namespace == null) {
+				// use default namespace
+				this.namespace = DEF_NS;
+			}
 		} catch (Exception e) {
 			log.error("Error determinating type name(s)", e);
 			throw e;
@@ -124,10 +155,11 @@ public class XmlCodeList implements CodeList {
 			for (int j = 0; j < children.getLength(); j++) {
 				Node child = children.item(j);
 				
-				if (child.getNodeName().equals("description")) {
+				if (child.getNodeName().endsWith("description")) {
 					description = child.getTextContent();
 				}
-				else if (child.getNodeName().equals("identifier")) {
+				else if (child.getNodeName().endsWith("identifier") ||
+						(child.getNodeName().endsWith("name") && child.getAttributes().getNamedItem("codeSpace") != null)) {
 					identifier = child.getTextContent();
 					try {
 						namespace = child.getAttributes().getNamedItem("codeSpace").getTextContent();
@@ -135,8 +167,18 @@ public class XmlCodeList implements CodeList {
 						// optional
 					}
 				}
-				else if (child.getNodeName().equals("name")) {
+				else if (child.getNodeName().endsWith("name")) {
 					name = child.getTextContent();
+				}
+			}
+			
+			if (this.namespace == null) {
+				if (namespace == null) {
+					// use a default namespace
+					this.namespace = DEF_NS;
+				}
+				else {
+					this.namespace = namespace;
 				}
 			}
 			
