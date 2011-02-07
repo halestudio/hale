@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.rcp.wizards.io.gml;
 import java.io.File;
 
 import org.eclipse.jface.dialogs.IDialogPage;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -22,6 +23,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.rcp.wizards.io.SaveFileFieldEditor;
@@ -38,6 +40,8 @@ public class GmlExportPage
 //	private static Logger _log = Logger.getLogger(GmlExportPage.class);
 	
 	private SaveFileFieldEditor file;
+	
+	private Button validate;
 	
 	/**
 	 * Constructor
@@ -61,14 +65,22 @@ public class GmlExportPage
         composite.setLayout(new GridLayout(3, false));
         composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        this.file = new SaveFileFieldEditor("file", "Save to", composite);
-        this.file.getTextControl(composite).addModifyListener(new ModifyListener(){
+        file = new SaveFileFieldEditor("file", "Save to", composite);
+        file.getTextControl(composite).addModifyListener(new ModifyListener(){
 			public void modifyText(ModifyEvent e) {
 				getWizard().getContainer().updateButtons();
 			}
 		});
-        this.file.setEmptyStringAllowed(false);
-        this.file.setFileExtensions(new String[]{"*.gml", "*.xml"});
+        file.setEmptyStringAllowed(false);
+        file.setFileExtensions(new String[]{"*.gml", "*.xml"});
+        
+        Composite sep = new Composite(composite, SWT.NONE);
+		sep.setLayoutData(GridDataFactory.swtDefaults().hint(0, 0).create());
+        
+        validate = new Button(composite, SWT.CHECK);
+        validate.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
+        validate.setText("validate exported file (this may take a while)");
+        validate.setSelection(true);
         
         setPageComplete(false);
 		setControl(composite);
@@ -94,6 +106,15 @@ public class GmlExportPage
 	 */
 	public File getTargetFile() {
 		return new File(file.getStringValue());
+	}
+	
+	/**
+	 * Get if the GML file shall be validated
+	 * 
+	 * @return if the GML file shall be validated
+	 */
+	public boolean getValidate() {
+		return validate.getSelection();
 	}
 	
 }

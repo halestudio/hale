@@ -13,9 +13,11 @@
 package eu.esdihumboldt.hale.rcp.wizards.io.gml;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 
@@ -33,6 +35,9 @@ import org.opengis.feature.type.FeatureType;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
+import eu.esdihumboldt.hale.gmlvalidate.Report;
+import eu.esdihumboldt.hale.gmlvalidate.Validator;
+import eu.esdihumboldt.hale.gmlvalidate.ValidatorFactory;
 import eu.esdihumboldt.hale.gmlwriter.GmlWriter;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 
@@ -67,6 +72,7 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 		super();
 		
 		setWindowTitle("Save transformation result");
+		setNeedsProgressMonitor(true);
 		
 		this.features = features;
 		this.schema = schema;
@@ -97,6 +103,7 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 	@Override
 	public boolean performFinish() {
 		final File targetFile = exportPage.getTargetFile();
+		final boolean validate = exportPage.getValidate();
 		
 		try {
 			getContainer().run(true, false, new IRunnableWithProgress() {
@@ -110,7 +117,6 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 					try {
 						out = new FileOutputStream(targetFile);
 					} catch (FileNotFoundException e1) {
-						monitor.done();
 						return;
 					}
 					ATransaction trans = log.begin("Writing transformed features to GML file: " + 
@@ -126,8 +132,43 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 						} catch (IOException e) {
 							// ignore
 						}
-						monitor.done();
 					}
+					
+					if (validate) {
+						monitor.setTaskName("Validating output file");
+						
+						// validate output file
+						Validator validator = ValidatorFactory.getInstance().createValidator(schema);
+						InputStream xml;
+						try {
+							xml = new FileInputStream(targetFile);
+						} catch (FileNotFoundException e) {
+							log.error("File not found for validation: " + targetFile.getAbsolutePath());
+							return;
+						}
+						trans = log.begin("Validating GML file: " + targetFile.getAbsolutePath());
+						Report report;
+						try {
+							report = validator.validate(xml);
+						} finally {
+							trans.end();
+							try {
+								xml.close();
+							} catch (IOException e) {
+								// ignore
+							}
+						}
+						
+						if (report.isValid()) {
+							log.userInfo("GML file exported, validation successful.");
+						}
+						else {
+							log.userError("Validation of the exported GML file failed, see the error log for more details.");
+							//TODO show some report window (with line numbers etc)
+						}
+					}
+					
+					monitor.done();
 				}
 			});
 		} catch (Exception e) {
