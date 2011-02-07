@@ -37,7 +37,7 @@
 		<pluginManagement>
 			<plugins>
 				<!-- ======================================================= -->
-				<!--     Compilation.                                        -->
+				<!-- Compilation. -->
 				<!-- ======================================================= -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -45,7 +45,7 @@
 					<configuration>
 						<source>1.6</source>  <!-- The -source argument for the Java compiler. -->
 						<target>1.6</target>  <!-- The -target argument for the Java compiler. -->
-						<debug>true</debug>   <!-- Whether to include debugging information.   -->
+						<debug>true</debug>   <!-- Whether to include debugging information. -->
 						<encoding>UTF-8</encoding> <!-- The -encoding argument for the Java compiler. -->
 						<excludes>
 							<exclude>**/eu/esdihumboldt/cst/transformer/configuration/osgi/*.java</exclude>
@@ -122,13 +122,13 @@
 			<artifactId>JMEP</artifactId>
 			<version>0.1.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-convert</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.0-HUMBOLDT</version>
 		</dependency>
-		
+
 		<!-- logging -->
 		<!-- ALogger extended SLF4J api -->
 		<dependency>
@@ -180,7 +180,7 @@
 		</dependency>
 
 	</dependencies>
-	
+
 	<repositories>
 		<repository>
 			<id>artifactory.esdi-humboldt.eu</id>
@@ -188,20 +188,20 @@
 			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/repo/</url>
 		</repository>
 	</repositories>
-	
+
 	<pluginRepositories>
 		<pluginRepository>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
-<!--			<id>artifactory.esdi-humboldt.eu</id>-->
+			<!-- <id>artifactory.esdi-humboldt.eu</id> -->
 			<id>plugin-releases</id>
 			<name>plugins-releases</name>
 			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/plugins-releases</url>
 		</pluginRepository>
 		<pluginRepository>
 			<snapshots />
-<!--			<id>artifactory.esdi-humboldt.eu</id>-->
+			<!-- <id>artifactory.esdi-humboldt.eu</id> -->
 			<id>plugin-snapshots</id>
 			<name>plugins-snapshots</name>
 			<url>http://artifactory.esdi-humboldt.eu:8070/artifactory/plugins-snapshots</url>
