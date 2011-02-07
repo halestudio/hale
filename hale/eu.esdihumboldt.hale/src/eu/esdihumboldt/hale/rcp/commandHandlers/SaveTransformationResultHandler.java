@@ -13,13 +13,16 @@
 package eu.esdihumboldt.hale.rcp.commandHandlers;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.util.Map;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -33,15 +36,15 @@ import org.opengis.feature.type.FeatureType;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.gmlhandler.GmlHandler;
-import eu.esdihumboldt.gmlhandler.gt2deegree.TypeIndex;
+import eu.esdihumboldt.hale.gmlwriter.GmlWriter;
 import eu.esdihumboldt.hale.models.InstanceService;
-import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
+import eu.esdihumboldt.hale.schemaprovider.Schema;
 
 /**
- * 
+ * Save the transformation result to a GML file
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -52,7 +55,7 @@ public class SaveTransformationResultHandler extends AbstractHandler {
 	private static final ALogger log = ALoggerFactory.getLogger(SaveTransformationResultHandler.class);
 
 	/**
-	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
+	 * @see IHandler#execute(ExecutionEvent)
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -66,9 +69,7 @@ public class SaveTransformationResultHandler extends AbstractHandler {
 			return null;
 		}
 		
-		final URL targetSchema = ss.getTargetURL();
-		final String targetNamespace = ss.getTargetNameSpace();
-		final Map<String, String> prefixes = ss.getTargetPrefixes();
+		final Schema targetSchema = ss.getTargetSchema();
 		
 		// determine output file
 		FileDialog files = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
@@ -81,10 +82,8 @@ public class SaveTransformationResultHandler extends AbstractHandler {
 		String filename = files.open();
 		final File file = new File(filename);
 		
-		final TypeIndex types = new TypeIndex();
-		for (SchemaElement se : ss.getTargetSchema()) {
-			types.addType(se.getType());
-		}
+		// determine SRS
+		final String commonSrsName = SelectCRSDialog.getValue().getIdentifiers().iterator().next().toString();
 		
 		Display display = PlatformUI.getWorkbench().getDisplay();
 		try {
@@ -94,12 +93,26 @@ public class SaveTransformationResultHandler extends AbstractHandler {
 				public void run(IProgressMonitor monitor) throws InvocationTargetException,
 						InterruptedException {
 					monitor.beginTask("Exporting transformed features to GML file", IProgressMonitor.UNKNOWN);
-					GmlHandler handler = GmlHandler.getDefaultInstance(targetSchema.toString(), file.getAbsolutePath()); //(new URL(outputFilename)).getFile());	
+//					GmlHandler handler = GmlHandler.getDefaultInstance(targetSchema.toString(), file.getAbsolutePath());
+					GmlWriter gmlWriter = (GmlWriter) PlatformUI.getWorkbench().getService(GmlWriter.class);
+					OutputStream out;
 					try {
-						handler.writeFC(features, types, targetNamespace, prefixes);
+						out = new FileOutputStream(file);
+					} catch (FileNotFoundException e1) {
+						monitor.done();
+						return;
+					}
+					try {
+						gmlWriter.writeFeatures(features, targetSchema, out, commonSrsName);
+//						handler.writeFC(features, types, targetNamespace, prefixes);
 					} catch (Exception e) {
 						log.userError("Error saving transformation result to GML file", e);
 					} finally {
+						try {
+							out.close();
+						} catch (IOException e) {
+							// ignore
+						}
 						monitor.done();
 					}
 				}

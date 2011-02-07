@@ -101,7 +101,7 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 	public void fillMenu(Menu menu) {
 		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
-		Collection<SchemaElement> tmp = (dataset == DatasetType.reference)?(schema.getSourceSchema()):(schema.getTargetSchema());
+		Collection<SchemaElement> tmp = (dataset == DatasetType.reference)?(schema.getSourceSchemaElements()):(schema.getTargetSchemaElements());
 		List<FeatureType> types = new ArrayList<FeatureType>();
 		for (SchemaElement element : tmp) {
 			if (element.getType().isFeatureType() && !element.getType().isAbstract()) {
@@ -151,7 +151,7 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 	public void update(UpdateMessage message) {
 		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
-		Collection<SchemaElement> elements = (dataset == DatasetType.reference)?(schema.getSourceSchema()):(schema.getTargetSchema());
+		Collection<SchemaElement> elements = (dataset == DatasetType.reference)?(schema.getSourceSchemaElements()):(schema.getTargetSchemaElements());
 		
 		setEnabled(elements != null);
 	}

@@ -199,11 +199,11 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 	private void updateRoot(SchemaType schemaType) {
 		switch (schemaType) {
 		case SOURCE:
-			sourceRoot = translateSchema(schemaService.getSourceSchema(), 
+			sourceRoot = translateSchema(schemaService.getSourceSchemaElements(), 
 					schemaService.getSourceNameSpace(), schemaType);
 			break;
 		case TARGET:
-			targetRoot = translateSchema(schemaService.getTargetSchema(), 
+			targetRoot = translateSchema(schemaService.getTargetSchemaElements(), 
 					schemaService.getTargetNameSpace(), schemaType);
 			break;
 		}

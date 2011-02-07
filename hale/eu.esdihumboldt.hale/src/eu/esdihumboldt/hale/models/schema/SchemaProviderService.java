@@ -19,13 +19,11 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
-
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
@@ -95,16 +93,16 @@ public class SchemaProviderService
 	}
 
 	/**
-	 * @see SchemaService#getSourceSchema()
+	 * @see SchemaService#getSourceSchemaElements()
 	 */
-	public Collection<SchemaElement> getSourceSchema() {
+	public Collection<SchemaElement> getSourceSchemaElements() {
 		return sourceSchema.getElements().values();
 	}
 
 	/**
-	 * @see SchemaService#getTargetSchema()
+	 * @see SchemaService#getTargetSchemaElements()
 	 */
-	public Collection<SchemaElement> getTargetSchema() {
+	public Collection<SchemaElement> getTargetSchemaElements() {
 		return targetSchema.getElements().values();
 	}
 
@@ -183,19 +181,19 @@ public class SchemaProviderService
 	}
 
 	/**
-	 * @see SchemaService#getSourcePrefixes()
+	 * @see SchemaService#getTargetSchema()
 	 */
 	@Override
-	public Map<String, String> getSourcePrefixes() {
-		return sourceSchema.getPrefixes();
+	public Schema getTargetSchema() {
+		return targetSchema;
 	}
 
 	/**
-	 * @see SchemaService#getTargetPrefixes()
+	 * @see SchemaService#getSourceSchema()
 	 */
 	@Override
-	public Map<String, String> getTargetPrefixes() {
-		return targetSchema.getPrefixes();
+	public Schema getSourceSchema() {
+		return sourceSchema;
 	}
 
 	/**
@@ -233,7 +231,7 @@ public class SchemaProviderService
 		SchemaElement result = null;
 		// handles cases where a full name was given.
 		if (!getSourceNameSpace().equals("") && name.contains(getSourceNameSpace())) {
-			for (SchemaElement element : getSourceSchema()) {
+			for (SchemaElement element : getSourceSchemaElements()) {
 				if (element.getElementName().getLocalPart().equals(name)) {
 					result = element;
 					break;
@@ -241,7 +239,7 @@ public class SchemaProviderService
 			}
 		}
 		else if (!getTargetNameSpace().equals("") && name.contains(getTargetNameSpace())) {
-			for (SchemaElement element : getTargetSchema()) {
+			for (SchemaElement element : getTargetSchemaElements()) {
 				if (element.getElementName().getLocalPart().equals(name)) {
 					result = element;
 					break;
@@ -251,8 +249,8 @@ public class SchemaProviderService
 		// handle case where only the local part was given.
 		else {
 			Collection<SchemaElement> allElements = new HashSet<SchemaElement>();
-			allElements.addAll(getSourceSchema());
-			allElements.addAll(getTargetSchema());
+			allElements.addAll(getSourceSchemaElements());
+			allElements.addAll(getTargetSchemaElements());
 			for (SchemaElement element : allElements) {
 				if (element.getElementName().getLocalPart().equals(name)) {
 					result = element;
@@ -268,10 +266,10 @@ public class SchemaProviderService
 	 */
 	public Collection<SchemaElement> getSchema(SchemaType schemaType) {
 		if (SchemaType.SOURCE.equals(schemaType)) {
-			return getSourceSchema();
+			return getSourceSchemaElements();
 		}
 		else {
-			return getTargetSchema();
+			return getTargetSchemaElements();
 		}
 	}
 

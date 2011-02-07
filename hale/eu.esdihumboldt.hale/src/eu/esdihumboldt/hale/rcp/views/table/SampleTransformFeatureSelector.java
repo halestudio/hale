@@ -158,7 +158,7 @@ public class SampleTransformFeatureSelector implements FeatureSelector {
 			final SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 			
 			// target schema
-			Collection<SchemaElement> targetElements = schemaService.getTargetSchema();
+			Collection<SchemaElement> targetElements = schemaService.getTargetSchemaElements();
 			Set<FeatureType> fts = new HashSet<FeatureType>();
 			Map<FeatureType, SchemaElement> elementMap = new HashMap<FeatureType, SchemaElement>();
 			for (SchemaElement element : targetElements) {

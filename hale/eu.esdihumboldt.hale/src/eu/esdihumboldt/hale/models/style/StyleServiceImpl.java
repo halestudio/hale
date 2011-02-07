@@ -232,7 +232,7 @@ public class StyleServiceImpl extends AbstractUpdateService
 	
 	@SuppressWarnings("deprecation")
 	private Style getStyle(final DatasetType dataset, boolean selected) {
-		Collection<SchemaElement> elements = (dataset == DatasetType.reference)?(schemaService.getSourceSchema()):(schemaService.getTargetSchema());
+		Collection<SchemaElement> elements = (dataset == DatasetType.reference)?(schemaService.getSourceSchemaElements()):(schemaService.getTargetSchemaElements());
 		
 		if (elements == null) {
 			elements = new ArrayList<SchemaElement>();

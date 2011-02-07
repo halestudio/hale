@@ -15,12 +15,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
+import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
@@ -41,14 +41,14 @@ public interface SchemaService
 	 * to the currently loaded source schema, i.e. {@link FeatureType}s which do
 	 * not have a supertype.
 	 */
-	public Collection<SchemaElement> getSourceSchema();
+	public Collection<SchemaElement> getSourceSchemaElements();
 	
 	/**
 	 * @return the {@link Collection} of all root {@link FeatureType}s belonging
 	 * to the currently loaded target schema, i.e. {@link FeatureType}s which do
 	 * not have a supertype.
 	 */
-	public Collection<SchemaElement> getTargetSchema();
+	public Collection<SchemaElement> getTargetSchemaElements();
 	
 	/**
 	 * Get the source schema format
@@ -65,20 +65,6 @@ public interface SchemaService
 	public String getTargetSchemaFormat();
 	
 	/**
-	 * Get the namespace prefixes of the source schema
-	 * 
-	 * @return namespaces mapped to prefixes or <code>null</code>
-	 */
-	public Map<String, String> getSourcePrefixes();
-	
-	/**
-	 * Get the namespace prefixes of the target schema
-	 * 
-	 * @return namespaces mapped to prefixes or <code>null</code>
-	 */
-	public Map<String, String> getTargetPrefixes();
-	
-	/**
 	 * Loads the schema defined under the given URL as the target or source 
 	 * schema.
 	 * May point to different source, such as a XSD or a a WFS.
@@ -90,6 +76,20 @@ public interface SchemaService
 	 * @throws IOException if loading the schema fails
 	 */
 	public boolean loadSchema(URI file, String schemaFormat, SchemaType type, ProgressIndicator progress) throws IOException;
+	
+	/**
+	 * Get the target schema
+	 * 
+	 * @return the target schema
+	 */
+	public Schema getTargetSchema();
+	
+	/**
+	 * Get the source schema
+	 * 
+	 * @return the source schema
+	 */
+	public Schema getSourceSchema();
 	
 	/**
 	 * Loads multiple schemas into the target or source schema.

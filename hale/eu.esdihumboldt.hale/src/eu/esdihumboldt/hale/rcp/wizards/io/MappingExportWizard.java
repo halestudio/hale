@@ -100,8 +100,8 @@ public class MappingExportWizard
 						try {
 							//TODO instead give the monitor to the exporter? support for canceling?
 							monitor.beginTask("Exporting mapping", IProgressMonitor.UNKNOWN);
-							MappingExportReport report = mef.export(al, file, schemaService.getSourceSchema(), 
-									schemaService.getTargetSchema());
+							MappingExportReport report = mef.export(al, file, schemaService.getSourceSchemaElements(), 
+									schemaService.getTargetSchemaElements());
 							if (report != null && !report.isEmpty()) {
 								// handle report
 								ATransaction reportTrans = _log.begin("Report");
