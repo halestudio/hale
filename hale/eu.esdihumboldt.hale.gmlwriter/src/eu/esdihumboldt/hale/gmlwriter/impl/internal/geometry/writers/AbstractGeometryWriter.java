@@ -337,7 +337,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 				writer.writeCharacters(String.valueOf(coordinate.x));
 				writer.writeCharacters(" ");
 				writer.writeCharacters(String.valueOf(coordinate.y));
-				if (coordinate.z != Coordinate.NULL_ORDINATE) {
+				if (!Double.isNaN(coordinate.z)) {
 					writer.writeCharacters(" ");
 					writer.writeCharacters(String.valueOf(coordinate.z));
 				}
@@ -402,7 +402,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 				writer.writeCharacters(String.valueOf(coordinate.x));
 				writer.writeCharacters(delimiter);
 				writer.writeCharacters(String.valueOf(coordinate.y));
-				if (coordinate.z != Coordinate.NULL_ORDINATE) {
+				if (!Double.isNaN(coordinate.z)) {
 					writer.writeCharacters(delimiter);
 					writer.writeCharacters(String.valueOf(coordinate.z));
 				}
