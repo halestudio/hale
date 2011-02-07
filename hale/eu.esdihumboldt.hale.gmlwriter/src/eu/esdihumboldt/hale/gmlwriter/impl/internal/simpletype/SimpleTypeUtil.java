@@ -54,6 +54,7 @@ public class SimpleTypeUtil {
 	 */
 	private static void init() {
 		if (!initialized) {
+			//TODO additional converters
 			Converters.loadContainedConverters(DateTimeConverters.class);
 			
 			initialized = true;
@@ -66,11 +67,16 @@ public class SimpleTypeUtil {
 	 * @param <T> the type of the value
 	 * @param value the value
 	 * @param type the type definition of the simple type
-	 * @return the string representation of the value
+	 * @return the string representation of the value or 
+	 * <code>null</code> if the value is <code>null</code>
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> String convert(T value, TypeDefinition type) {
 		init();
+		
+		if (value == null) {
+			return null;
+		}
 		
 		Class<? extends XmlAnySimpleType> simpleType = getSimpleType(type);
 		
@@ -90,6 +96,23 @@ public class SimpleTypeUtil {
 			} catch (ConversionException e) {
 				// ignore
 			}
+		}
+		
+		// try to convert to string
+		try {
+			Converter<T, String> converter = 
+				(Converter<T, String>) Converters.getConverter(value.getClass(), String.class);
+			
+			if (converter != null) {
+				String stringValue = converter.convert(value);
+				if (stringValue != null) {
+					return stringValue;
+				}
+			}
+		} catch (ClassNotFoundException e) {
+			// ignore
+		} catch (ConversionException e) {
+			// ignore
 		}
 		
 		// fall-back
