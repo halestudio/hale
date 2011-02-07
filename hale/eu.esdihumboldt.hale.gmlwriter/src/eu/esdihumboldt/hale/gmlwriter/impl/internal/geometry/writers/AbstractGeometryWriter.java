@@ -324,18 +324,23 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 			}
 		}
 		
+		//TODO support for CoordType
+		
 		if (posAttribute != null) {
-			
+			//TODO possibly write repeated positions
 			writer.writeStartElement(posAttribute.getNamespace(), posAttribute.getName());
 			
 			// write coordinates separated by spaces
 			if (coordinates.length > 0) {
 				Coordinate coordinate = coordinates[0];
 				
-				//XXX only supports 2D
 				writer.writeCharacters(String.valueOf(coordinate.x));
 				writer.writeCharacters(" ");
 				writer.writeCharacters(String.valueOf(coordinate.y));
+				if (coordinate.z != Coordinate.NULL_ORDINATE) {
+					writer.writeCharacters(" ");
+					writer.writeCharacters(String.valueOf(coordinate.z));
+				}
 			}
 			
 			writer.writeEndElement();
@@ -394,10 +399,13 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 					writer.writeCharacters(delimiter);
 				}
 				
-				//XXX only supports 2D
 				writer.writeCharacters(String.valueOf(coordinate.x));
 				writer.writeCharacters(delimiter);
 				writer.writeCharacters(String.valueOf(coordinate.y));
+				if (coordinate.z != Coordinate.NULL_ORDINATE) {
+					writer.writeCharacters(delimiter);
+					writer.writeCharacters(String.valueOf(coordinate.z));
+				}
 			}
 			
 			writer.writeEndElement();
