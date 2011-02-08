@@ -451,10 +451,11 @@
 			regexp=".*/(.+)_.*"
 			select="\1" />
 			
-		<!-- copy osgi test bundle to plugins (need test executor) -->
+		<!-- copy osgi test bundle to plugins (need test executor inside test framework instance) -->
 		<copy todir="${plugins}">
 			<fileset dir="${common.loc}/test">
 				<include name="de.cs3d.util.osgi.test_*.jar" />
+				<include name="de.fhg.igd.osgi.util_*.jar" />
 			</fileset>
 		</copy>
 		
@@ -474,7 +475,7 @@
 					<include name="de.cs3d.util.osgi.test_*.jar" />
 				</fileset-->
 				<fileset dir="${common.loc}/test">
-          <include name="*.jar" />
+          <include name="de.cs3d.util.osgi.test_*.jar" />
         </fileset>
 			</classpath>
 		</java>
@@ -482,6 +483,7 @@
 		<!-- remove osgi test bundle -->
 		<delete verbose="true">
 			<fileset dir="${plugins}" includes="de.cs3d.util.osgi.test_*.jar" />
+			<fileset dir="${plugins}" includes="de.fhg.igd.osgi.util_*.jar" />
 		</delete>
 	</target>
 	
