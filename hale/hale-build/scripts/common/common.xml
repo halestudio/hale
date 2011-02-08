@@ -450,6 +450,13 @@
 			input="${unixTestBundle}"
 			regexp=".*/(.+)_.*"
 			select="\1" />
+			
+		<!-- copy osgi test bundle to plugins (need test executor) -->
+		<copy todir="${plugins}">
+			<fileset dir="${common.loc}/test">
+				<include name="de.cs3d.util.osgi.test_*.jar" />
+			</fileset>
+		</copy>
 		
 		<!-- execute unit test -->
 		<echo message="Executing unit tests for bundle ${testBundleName}..." />
@@ -471,6 +478,11 @@
         </fileset>
 			</classpath>
 		</java>
+		
+		<!-- remove osgi test bundle -->
+		<delete verbose="true">
+			<fileset dir="${plugins}" includes="de.cs3d.util.osgi.test_*.jar" />
+		</delete>
 	</target>
 	
 	<!-- build and pack the client -->
