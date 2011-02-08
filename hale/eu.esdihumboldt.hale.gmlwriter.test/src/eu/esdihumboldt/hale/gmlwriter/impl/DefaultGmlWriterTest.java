@@ -78,7 +78,7 @@ public class DefaultGmlWriterTest {
 	/**
 	 * If temporary files shall be deleted
 	 */
-	private static final boolean DEL_TEMP_FILES = false;
+	private static final boolean DEL_TEMP_FILES = true;
 
 	/**
 	 * Test writing a simple feature from a simple schema (Watercourses VA)
