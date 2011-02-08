@@ -26,4 +26,4 @@ Import-Package: de.cs3d.util.logging,
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.cst.transformer.configuration.osgi.CstActivator
 Eclipse-BuddyPolicy: registered
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
