@@ -453,7 +453,7 @@
 		
 		<!-- execute unit test -->
 		<echo message="Executing unit tests for bundle ${testBundleName}..." />
-		<java classname="de.cs3d.common.osgi.test.OSGITestRunner"
+		<java classname="de.cs3d.util.osgi.test.OSGITestRunner"
 			fork="true" failonerror="false" maxmemory="512M">
 			<arg value="-formatter" />
 			<arg value="xml" />
