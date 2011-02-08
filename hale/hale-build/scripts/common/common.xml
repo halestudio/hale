@@ -434,7 +434,7 @@
 			<path>
 				<fileset dir="${plugins}">
 					<include name="*.test_*.jar" />
-					<exclude name="de.cs3d.common.osgi.test_*.jar" />
+					<exclude name="de.cs3d.util.osgi.test_*.jar" />
 				</fileset>
 			</path>
 		</foreach>
@@ -463,9 +463,12 @@
 			<sysproperty key="osgi.test.plugins" value="${plugins}" />
 			<classpath>
 				<pathelement path="${plugins}/org.eclipse.osgi_3.5.1.R35x_v20090827.jar" />
-				<fileset dir="${plugins}">
-					<include name="de.cs3d.common.osgi.test_*.jar" />
-				</fileset>
+				<!--fileset dir="${plugins}">
+					<include name="de.cs3d.util.osgi.test_*.jar" />
+				</fileset-->
+				<fileset dir="${common.loc}/test">
+          <include name="*.jar" />
+        </fileset>
 			</classpath>
 		</java>
 	</target>
