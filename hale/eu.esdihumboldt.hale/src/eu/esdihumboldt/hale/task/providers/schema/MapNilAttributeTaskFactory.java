@@ -176,7 +176,7 @@ public class MapNilAttributeTaskFactory extends AbstractTaskFactory {
 	 */
 	private static boolean validateTask(AttributeDefinition attribute,
 			AlignmentService alignmentService) {
-		if (attribute.isNillable()) {
+		if (attribute.getMinOccurs() == 0 || attribute.isNillable()) {
 			return false;
 		}
 		
