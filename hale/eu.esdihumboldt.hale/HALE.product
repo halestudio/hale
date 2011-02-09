@@ -68,7 +68,6 @@
       <plugin id="edu.umd.cs.findbugs.annotations"/>
       <plugin id="eu.esdihumboldt.commons"/>
       <plugin id="eu.esdihumboldt.cst.corefunctions"/>
-      <plugin id="eu.esdihumboldt.gmlhandler" fragment=""/>
       <plugin id="eu.esdihumboldt.hale"/>
       <plugin id="eu.esdihumboldt.hale.gmlparser"/>
       <plugin id="eu.esdihumboldt.hale.gmlvalidate"/>
