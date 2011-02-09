@@ -46,6 +46,7 @@ import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.tools.AttributeProperty;
 import eu.esdihumboldt.tools.FeatureInspector;
 
 /**
@@ -485,7 +486,8 @@ public class StreamGmlWriter {
 	 */
 	private void writeSimpleTypeAttributes(Property property,
 			AttributeDefinition attDef) throws XMLStreamException {
-		if (property != null) {
+		if (property != null && attDef.isElement() // only elements may have properties
+				&& !(property instanceof AttributeProperty)) { //XXX this is a dirty hack - find a better solution
 			Collection<Property> properties = FeatureInspector.getProperties(property);
 			if (properties != null && !properties.isEmpty()) {
 				//XXX create dummy attribute for writeProperties TODO better: FeatureInspector must support Property
