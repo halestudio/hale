@@ -46,6 +46,52 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  */
 public abstract class AbstractGeometryWriter<T extends Geometry> implements GeometryWriter<T> {
 	
+	/**
+	 * Represents a descent in the document, must be used to end elements 
+	 * started with 
+	 */
+	public static class Descent {
+		
+		private final XMLStreamWriter writer;
+		
+		private final DefinitionPath path;
+
+		/**
+		 * Constructor
+		 * 
+		 * @param writer the XMl stream writer
+		 * @param path the descent path
+		 */
+		private Descent(XMLStreamWriter writer, DefinitionPath path) {
+			super();
+			this.path = path;
+			this.writer = writer;
+		}
+
+		/**
+		 * @return the path
+		 */
+		public DefinitionPath getPath() {
+			return path;
+		}
+
+		/**
+		 * Close the descent
+		 * 
+		 * @throws XMLStreamException if an error occurs closing the elements
+		 */
+		public void close() throws XMLStreamException {
+			if (path.isEmpty()) {
+				return;
+			}
+			
+			for (int i = 0; i < path.getSteps().size(); i++) {
+				writer.writeEndElement();
+			}
+		}
+		
+	}
+
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractGeometryWriter.class);
 
 	private final Class<T> geometryType;
@@ -59,7 +105,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	/**
 	 * The attribute type names supported for writing coordinates with
 	 * {@link #writeCoordinates(XMLStreamWriter, Coordinate[], TypeDefinition, String)} or
-	 * {@link #descendAndwriteCoordinates(XMLStreamWriter, Pattern, Coordinate[], TypeDefinition, String)}.
+	 * {@link #descendAndWriteCoordinates(XMLStreamWriter, Pattern, Coordinate[], TypeDefinition, String)}.
 	 * 
 	 * Use for validating end-points.
 	 */
@@ -242,14 +288,35 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	 * @param gmlNs the GML namespace
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
-	protected static void descendAndwriteCoordinates(XMLStreamWriter writer, 
+	protected static void descendAndWriteCoordinates(XMLStreamWriter writer, 
 			Pattern descendPattern, Coordinate[] coordinates, 
 			TypeDefinition elementType, String gmlNs) throws XMLStreamException {
+		Descent descent = descend(writer, descendPattern, elementType, gmlNs);
+		
+		// write geometry
+		writeCoordinates(writer, coordinates, descent.getPath().getLastType(), gmlNs);
+		
+		descent.close();
+	}
+	
+	/**
+	 * Descend the given pattern
+	 * 
+	 * @param writer the XML stream writer 
+	 * @param descendPattern the pattern to descend
+	 * @param elementType the type of the encompassing element
+	 * @param gmlNs the GML namespace
+	 * @return the descent that was opened, it must be closed to close the
+	 *   opened elements
+	 * @throws XMLStreamException if an error occurs writing the coordinates
+	 */
+	protected static Descent descend(XMLStreamWriter writer, 
+			Pattern descendPattern, TypeDefinition elementType, 
+			String gmlNs) throws XMLStreamException {
 		DefinitionPath path = descendPattern.match(elementType, new DefinitionPath(elementType), gmlNs);
 		
 		if (path.isEmpty()) {
-			writeCoordinates(writer, coordinates, elementType, gmlNs);
-			return;
+			return new Descent(writer, path);
 		}
 		
 		Name name = GmlWriterUtil.getElementName(path.getLastType()); //XXX the element name used may be wrong, is this an issue?
@@ -261,13 +328,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 			StreamGmlWriter.writeRequiredID(writer, step.getType(), null, false);
 		}
 		
-		// write geometry
-		writeCoordinates(writer, coordinates, path.getLastType(), gmlNs);
-		
-		for (int i = 0; i < path.getSteps().size(); i++) {
-			// end elements
-			writer.writeEndElement();
-		}
+		return new Descent(writer, path); 
 	}
 	
 	/**

@@ -19,61 +19,74 @@ import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.Name;
 
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.GeometryWriter;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
- * {@link Polygon} writer 
+ * Writes {@link MultiPolygon}s
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class PolygonWriter extends AbstractGeometryWriter<Polygon> {
+public class MultiPolygonWriter extends AbstractGeometryWriter<MultiPolygon> {
+	
+	private final PolygonWriter polygonWriter = new PolygonWriter();
 
 	/**
 	 * Default constructor
 	 */
-	public PolygonWriter() {
-		super(Polygon.class);
+	public MultiPolygonWriter() {
+		super(MultiPolygon.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new NameImpl("PolygonType"));
+		addCompatibleType(new NameImpl("MultiPolygonType"));
+		addCompatibleType(new NameImpl("CompositeSurfaceType"));
 		
 		// patterns for matching inside compatible types
-		addBasePattern("*"); // matches any compatible type element
+		addBasePattern("**/polygonMember");
+		addBasePattern("**/surfaceMember");
 		
-		// verification patterns
-		addVerificationPattern("*/exterior/LinearRing"); // both exterior
-		addVerificationPattern("*/interior/LinearRing"); // and interior elements must be present
+		// verification patterns (from PolygonWriter)
+		addVerificationPattern("*/Polygon/exterior/LinearRing"); // both exterior
+		addVerificationPattern("*/Polygon/interior/LinearRing"); // and interior elements must be present for contained polygons
 	}
 
 	/**
 	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition, Name, String)
 	 */
 	@Override
-	public void write(XMLStreamWriter writer, Polygon polygon,
+	public void write(XMLStreamWriter writer, MultiPolygon geometry,
 			TypeDefinition elementType, Name elementName, String gmlNs)
 			throws XMLStreamException {
 		/*
 		 * At this point we can assume that the wrapping element matches on of 
-		 * the base patterns. The corresponding element name and its type
+		 * the base patterns. The corresponding element name and its type 
 		 * definition are given.
 		 */
-		
-		// write exterior ring
-		LineString exterior = polygon.getExteriorRing();
-		descendAndWriteCoordinates(writer, Pattern.parse("*/exterior/LinearRing"), 
-				exterior.getCoordinates(), elementType, gmlNs);
-		
-		// write interior rings
-		for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
-			LineString interior = polygon.getInteriorRingN(i);
-			descendAndWriteCoordinates(writer, Pattern.parse("*/interior/LinearRing"), 
-					interior.getCoordinates(), elementType, gmlNs);
+		for (int i = 0; i < geometry.getNumGeometries(); i++) {
+			if (i > 0) {
+				writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
+			}
+			
+			Descent descent = descend(writer, Pattern.parse("*/Polygon"), elementType, gmlNs);
+			
+			Polygon poly = (Polygon) geometry.getGeometryN(i);
+			polygonWriter.write(
+					writer, 
+					poly, 
+					descent.getPath().getLastType(), 
+					descent.getPath().getLastElement().getName(), 
+					gmlNs);
+			
+			descent.close();
+			
+			if (i < geometry.getNumGeometries() - 1) {
+				writer.writeEndElement();
+			}
 		}
 	}
 

@@ -56,6 +56,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
@@ -143,11 +144,7 @@ public class DefaultGmlWriterTest {
 	@Test
 	public void testGeometryPrimitive_32_Polygon() throws Exception {
 		// create the geometry
-		LinearRing shell = geomFactory.createLinearRing(new Coordinate[]{
-				new Coordinate(-1.0, 0.0), new Coordinate(0.0, 1.0),
-				new Coordinate(1.0, 0.0), new Coordinate(0.0, -1.0),
-				new Coordinate(-1.0, 0.0)});
-		Polygon polygon = geomFactory.createPolygon(shell, null);
+		Polygon polygon = createPolygon(0.0);
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
 		values.put(Arrays.asList("geometry"), polygon);
@@ -159,6 +156,21 @@ public class DefaultGmlWriterTest {
 		assertTrue("Expected GML output to be valid", report.isValid());
 	}
 	
+	/**
+	 * Create a polygon
+	 * 
+	 * @param offset the offset along both axes
+	 * 
+	 * @return the created polygon
+	 */
+	private Polygon createPolygon(double offset) {
+		LinearRing shell = geomFactory.createLinearRing(new Coordinate[]{
+				new Coordinate(-1.0 + offset, offset), new Coordinate(offset, 1.0 + offset),
+				new Coordinate(1.0 + offset, offset), new Coordinate(offset, -1.0 + offset),
+				new Coordinate(-1.0 + offset, offset)});
+		return geomFactory.createPolygon(shell, null);
+	}
+
 	/**
 	 * Test writing a {@link LineString} to a GML 3.2 geometry primitive type
 	 * 
@@ -174,7 +186,7 @@ public class DefaultGmlWriterTest {
 		
 		Report report = fillFeatureTest(
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
-				values, "geometryPrimitive_32_Polygon", DEF_SRS_NAME);
+				values, "geometryPrimitive_32_LineString", DEF_SRS_NAME);
 		
 		assertTrue("Expected GML output to be valid", report.isValid());
 	}
@@ -201,7 +213,7 @@ public class DefaultGmlWriterTest {
 	@Test
 	public void testGeometryPrimitive_32_MultiLineString() throws Exception {
 		// create the geometry
-		MultiLineString mls =geomFactory.createMultiLineString(
+		MultiLineString mls = geomFactory.createMultiLineString(
 				new LineString[]{createLineString(0.0), createLineString(1.0),
 						createLineString(2.0)});
 		
@@ -210,7 +222,30 @@ public class DefaultGmlWriterTest {
 		
 		Report report = fillFeatureTest(
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
-				values, "geometryPrimitive_32_Polygon", DEF_SRS_NAME);
+				values, "geometryPrimitive_32_MultiLineString", DEF_SRS_NAME);
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
+	}
+	
+	/**
+	 * Test writing a {@link MultiPolygon} to a GML 3.2 geometry primitive type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometryPrimitive_32_MultiPolygon() throws Exception {
+		// create the geometry
+		MultiPolygon mp = geomFactory.createMultiPolygon(new Polygon[]{
+				createPolygon(0.0), createPolygon(1.0), createPolygon(-1.0) 
+		});
+		
+		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
+		values.put(Arrays.asList("geometry"), mp);
+		
+		Report report = fillFeatureTest(
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
+				values, "geometryPrimitive_32_MultiPolygon", DEF_SRS_NAME,
+				true); //XXX no value equality check because Geotools parser doesn't seem to support CompositeSurface and only creates a Polygon instead of a MultiPolygon
 		
 		assertTrue("Expected GML output to be valid", report.isValid());
 	}
@@ -328,9 +363,41 @@ public class DefaultGmlWriterTest {
 		}
 		return (FeatureCollection<FeatureType, Feature>) CstServiceFactory.getInstance().transform(fc, alignment, types);
 	}
-
+	
+	/**
+	 * Create a feature, fill it with values, write it as GML, validate the GML
+	 * and load the GML file again to compare the loaded values with the ones
+	 * that were written
+	 * 
+	 * @param targetSchema the schema to use, the first element will be used 
+	 *   for the type of the feature
+	 * @param values the values to set on the feature
+	 * @param testName the name of the test
+	 * @param srsName the SRS name
+	 * @return the validation report
+	 * @throws Exception if any error occurs
+	 */
 	private Report fillFeatureTest(URI targetSchema, Map<List<String>, 
 			Object> values, String testName, String srsName) throws Exception {
+		return fillFeatureTest(targetSchema, values, testName, srsName, false);
+	}
+
+	/**
+	 * Create a feature, fill it with values, write it as GML, validate the GML
+	 * and load the GML file again to compare the loaded values with the ones
+	 * that were written
+	 * 
+	 * @param targetSchema the schema to use, the first element will be used 
+	 *   for the type of the feature
+	 * @param values the values to set on the feature
+	 * @param testName the name of the test
+	 * @param srsName the SRS name
+	 * @param skipValueTest if the check for equality shall be skipped
+	 * @return the validation report
+	 * @throws Exception if any error occurs
+	 */
+	private Report fillFeatureTest(URI targetSchema, Map<List<String>, 
+			Object> values, String testName, String srsName, boolean skipValueTest) throws Exception {
 		SchemaProvider sp = new ApacheSchemaProvider();
 		
 		// load the sample schema
@@ -371,13 +438,15 @@ public class DefaultGmlWriterTest {
 		
 		assertEquals(1, loaded.size());
 		
-		Feature l = loaded.iterator().next();
-		// test values
-		for (Entry<List<String>, Object> entry : values.entrySet()) {
-			//XXX conversion?
-			assertEquals(
-					entry.getValue().toString(), 
-					FeatureInspector.getPropertyValue(l, entry.getKey(), null).toString());
+		if (!skipValueTest) {
+			Feature l = loaded.iterator().next();
+			// test values
+			for (Entry<List<String>, Object> entry : values.entrySet()) {
+				//XXX conversion?
+				assertEquals(
+						entry.getValue().toString(), 
+						FeatureInspector.getPropertyValue(l, entry.getKey(), null).toString());
+			}
 		}
 		
 		System.out.println(outFile.getAbsolutePath());
