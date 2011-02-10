@@ -19,7 +19,9 @@ import org.apache.commons.convert.ConversionException;
 import org.apache.commons.convert.Converter;
 import org.apache.commons.convert.Converters;
 import org.apache.xmlbeans.XmlAnySimpleType;
+import org.apache.xmlbeans.XmlDate;
 import org.apache.xmlbeans.XmlDateTime;
+import org.apache.xmlbeans.XmlTime;
 
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.simpletype.converters.DateTimeConverters;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -43,8 +45,14 @@ public class SimpleTypeUtil {
 	 */
 	private static final Map<String, Class<? extends XmlAnySimpleType>> TYPE_MAP = new HashMap<String, Class<? extends XmlAnySimpleType>>();
 	static {
-		//TODO additional configuration
+		//TODO add additional simple types
+		
+		// assuming number and string types are correctly converted using toString
+		
+		// time/date types
 		TYPE_MAP.put("dateTime", XmlDateTime.class);
+		TYPE_MAP.put("date", XmlDate.class);
+		TYPE_MAP.put("time", XmlTime.class);
 	}
 	
 	private static boolean initialized = false;
@@ -54,7 +62,7 @@ public class SimpleTypeUtil {
 	 */
 	private static void init() {
 		if (!initialized) {
-			//TODO additional converters
+			//TODO add additional converters
 			Converters.loadContainedConverters(DateTimeConverters.class);
 			
 			initialized = true;

@@ -16,7 +16,10 @@ import java.util.Date;
 
 import org.apache.commons.convert.AbstractConverter;
 import org.apache.commons.convert.ConversionException;
+import org.apache.xmlbeans.GDate;
+import org.apache.xmlbeans.XmlDate;
 import org.apache.xmlbeans.XmlDateTime;
+import org.apache.xmlbeans.XmlTime;
 
 /**
  * Converters for xs:datetime
@@ -27,18 +30,61 @@ import org.apache.xmlbeans.XmlDateTime;
  */
 public interface DateTimeConverters {
 	
-	public class DateToXML extends AbstractConverter<Date, XmlDateTime> {
+	/**
+	 * Convert {@link Date} to xs:datetime 
+	 */
+	public class DateToXmlDateTime extends AbstractConverter<Date, XmlDateTime> {
 
 		/**
 		 * Default constructor
 		 */
-		public DateToXML() {
+		public DateToXmlDateTime() {
 			super(Date.class, XmlDateTime.class);
 		}
 
 		@Override
 		public XmlDateTime convert(Date value) throws ConversionException {
 			XmlDateTime result = XmlDateTime.Factory.newInstance();
+			result.setDateValue(value);
+			return result;
+		}
+	}
+	
+	/**
+	 * Convert {@link Date} to xs:time 
+	 */
+	public class DateToXmlTime extends AbstractConverter<Date, XmlTime> {
+
+		/**
+		 * Default constructor
+		 */
+		public DateToXmlTime() {
+			super(Date.class, XmlTime.class);
+		}
+
+		@Override
+		public XmlTime convert(Date value) throws ConversionException {
+			XmlTime result = XmlTime.Factory.newInstance();
+			result.setGDateValue(new GDate(value));
+			return result;
+		}
+	}
+	
+	/**
+	 * Convert {@link Date} to xs:date
+	 */
+	public class DateToXmlDate extends AbstractConverter<Date, XmlDate> {
+
+		/**
+		 * Default constructor
+		 */
+		public DateToXmlDate() {
+			super(Date.class, XmlDate.class);
+		}
+
+		@Override
+		public XmlDate convert(Date value) throws ConversionException {
+			XmlDate result = XmlDate.Factory.newInstance();
 			result.setDateValue(value);
 			return result;
 		}
