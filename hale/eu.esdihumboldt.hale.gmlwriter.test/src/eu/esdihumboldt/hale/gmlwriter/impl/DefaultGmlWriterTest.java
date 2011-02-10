@@ -53,7 +53,9 @@ import org.opengis.filter.identity.Identifier;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory;
@@ -83,7 +85,7 @@ public class DefaultGmlWriterTest {
 	/**
 	 * If temporary files shall be deleted
 	 */
-	private static final boolean DEL_TEMP_FILES = false;
+	private static final boolean DEL_TEMP_FILES = true;
 
 	private static final String DEF_SRS_NAME = "EPSG:31467";
 	
@@ -127,6 +129,30 @@ public class DefaultGmlWriterTest {
 		Report report = fillFeatureTest(
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
 				values, "geometryPrimitive_32_Point", DEF_SRS_NAME);
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
+	}
+	
+	/**
+	 * Test writing a {@link Polygon} to a GML 3.2 geometry primitive type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometryPrimitive_32_Polygon() throws Exception {
+		// create the geometry
+		LinearRing shell = geomFactory.createLinearRing(new Coordinate[]{
+				new Coordinate(-1.0, 0.0), new Coordinate(0.0, 1.0),
+				new Coordinate(1.0, 0.0), new Coordinate(0.0, -1.0),
+				new Coordinate(-1.0, 0.0)});
+		Polygon polygon = geomFactory.createPolygon(shell, null);
+		
+		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
+		values.put(Arrays.asList("geometry"), polygon);
+		
+		Report report = fillFeatureTest(
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
+				values, "geometryPrimitive_32_Polygon", DEF_SRS_NAME);
 		
 		assertTrue("Expected GML output to be valid", report.isValid());
 	}
