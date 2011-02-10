@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.gmlwriter.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -50,6 +51,10 @@ import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.identity.Identifier;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
+
 import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory;
 import eu.esdihumboldt.goml.align.Alignment;
@@ -78,7 +83,14 @@ public class DefaultGmlWriterTest {
 	/**
 	 * If temporary files shall be deleted
 	 */
-	private static final boolean DEL_TEMP_FILES = true;
+	private static final boolean DEL_TEMP_FILES = false;
+
+	private static final String DEF_SRS_NAME = "EPSG:31467";
+	
+	/**
+	 * The geometry factory
+	 */
+	private final GeometryFactory geomFactory = new GeometryFactory();
 
 	/**
 	 * Test writing a simple feature from a simple schema (Watercourses VA)
@@ -95,6 +107,26 @@ public class DefaultGmlWriterTest {
 		Report report = fillFeatureTest(
 				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(), 
 				values, "fillWrite_WVA", "EPSG:31251");
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
+	}
+	
+	/**
+	 * Test writing a {@link Point} to a GML 3.2 geometry primitive type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometryPrimitive_32_Point() throws Exception {
+		// create the geometry
+		Point point = geomFactory.createPoint(new Coordinate(12.0, 11.1));
+		
+		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
+		values.put(Arrays.asList("geometry"), point);
+		
+		Report report = fillFeatureTest(
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
+				values, "geometryPrimitive_32_Point", DEF_SRS_NAME);
 		
 		assertTrue("Expected GML output to be valid", report.isValid());
 	}
@@ -243,9 +275,9 @@ public class DefaultGmlWriterTest {
 			out.close();
 		}
 		
-//		if (!DEL_TEMP_FILES && Desktop.isDesktopSupported()) {
-//			Desktop.getDesktop().open(outFile);
-//		}
+		if (!DEL_TEMP_FILES && Desktop.isDesktopSupported()) {
+			Desktop.getDesktop().open(outFile);
+		}
 		
 		Report report = validate(schema, outFile.toURI());
 		

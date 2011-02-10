@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:hale="eu:esdihumboldt:hale:test" xmlns:gml="http://www.opengis.net/gml/3.2" elementFormDefault="qualified" targetNamespace="eu:esdihumboldt:hale:test">
+
+  <!--import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/-->
+  <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="./gml/3.2.1/gml.xsd"/>
+
+  <element name="PrimitiveTest" substitutionGroup="gml:AbstractFeature" type="hale:PrimitiveTestType" />
+    
+  <complexType name="PrimitiveTestType">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element name="geometry" type="gml:GeometricPrimitivePropertyType" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  
+</schema>
