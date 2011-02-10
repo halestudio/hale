@@ -55,8 +55,8 @@ public class PointWriter extends AbstractGeometryWriter<Point> {
 			throws XMLStreamException {
 		/*
 		 * At this point we can assume that the wrapping element matches on of 
-		 * the patterns. The corresponding element name and its type definition
-		 * are given.
+		 * the base patterns. The corresponding element name and its type 
+		 * definition are given.
 		 */
 		writeCoordinates(writer, geometry.getCoordinates(), elementType, gmlNs);
 	}

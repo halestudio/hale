@@ -60,8 +60,8 @@ public class PolygonWriter extends AbstractGeometryWriter<Polygon> {
 			throws XMLStreamException {
 		/*
 		 * At this point we can assume that the wrapping element matches on of 
-		 * the patterns. The corresponding element name and its type definition
-		 * are given.
+		 * the base patterns. The corresponding element name and its type
+		 * definition are given.
 		 */
 		
 		// write exterior ring
