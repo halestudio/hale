@@ -55,6 +55,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
@@ -166,13 +167,46 @@ public class DefaultGmlWriterTest {
 	@Test
 	public void testGeometryPrimitive_32_LineString() throws Exception {
 		// create the geometry
-		LineString lineString = geomFactory.createLineString(new Coordinate[]{
-				new Coordinate(0.0, 0.0), new Coordinate(1.0, 1.0),
-				new Coordinate(2.0, 2.0), new Coordinate(3.0, 1.0),
-				new Coordinate(4.0, 0.0)});
+		LineString lineString = createLineString(0.0);
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
 		values.put(Arrays.asList("geometry"), lineString);
+		
+		Report report = fillFeatureTest(
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
+				values, "geometryPrimitive_32_Polygon", DEF_SRS_NAME);
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
+	}
+	
+	/**
+	 * Create a line string geometry
+	 * 
+	 * @param offset the line y-offset
+	 * 
+	 * @return the line string
+	 */
+	private LineString createLineString(double offset) {
+		return geomFactory.createLineString(new Coordinate[]{
+				new Coordinate(0.0, offset), new Coordinate(1.0, 1.0 + offset),
+				new Coordinate(2.0, 2.0 + offset), new Coordinate(3.0, 1.0 + offset),
+				new Coordinate(4.0, offset)});
+	}
+	
+	/**
+	 * Test writing a {@link MultiLineString} to a GML 3.2 geometry primitive type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometryPrimitive_32_MultiLineString() throws Exception {
+		// create the geometry
+		MultiLineString mls =geomFactory.createMultiLineString(
+				new LineString[]{createLineString(0.0), createLineString(1.0),
+						createLineString(2.0)});
+		
+		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
+		values.put(Arrays.asList("geometry"), mls);
 		
 		Report report = fillFeatureTest(
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
