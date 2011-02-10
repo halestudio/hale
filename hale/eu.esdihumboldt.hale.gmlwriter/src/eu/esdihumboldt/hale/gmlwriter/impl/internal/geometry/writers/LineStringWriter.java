@@ -20,59 +20,40 @@ import org.opengis.feature.type.Name;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
 
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.GeometryWriter;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
- * {@link MultiLineString} writer
+ * Writer for {@link LineString}s 
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class MultiLineStringWriter extends
-		AbstractGeometryWriter<MultiLineString> {
+public class LineStringWriter extends AbstractGeometryWriter<LineString> {
 
 	/**
 	 * Default constructor
 	 */
-	public MultiLineStringWriter() {
-		super(MultiLineString.class);
+	public LineStringWriter() {
+		super(LineString.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new NameImpl("CurveType"));
+		addCompatibleType(new NameImpl("LineStringType"));
 		
 		// patterns for matching inside compatible types
-		addBasePattern("**/LineStringSegment");
+		addBasePattern("*");
 	}
 
 	/**
 	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition, Name, String)
 	 */
 	@Override
-	public void write(XMLStreamWriter writer, MultiLineString geometry,
-			TypeDefinition elementType, Name elementName, String gmlNs) 
+	public void write(XMLStreamWriter writer, LineString geometry,
+			TypeDefinition elementType, Name elementName, String gmlNs)
 			throws XMLStreamException {
-		/*
-		 * At this point we can assume that the wrapping element matches on of 
-		 * the base patterns. The corresponding element name and its type 
-		 * definition are given.
-		 */
-		
-		for (int i = 0; i < geometry.getNumGeometries(); i++) {
-			if (i > 0) {
-				writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
-			}
-			
-			LineString line = (LineString) geometry.getGeometryN(i);
-			writeCoordinates(writer, line.getCoordinates(), elementType, gmlNs);
-			
-			if (i < geometry.getNumGeometries() - 1) {
-				writer.writeEndElement();
-			}
-		}
+		writeCoordinates(writer, geometry.getCoordinates(), elementType, gmlNs);
 	}
 
 }

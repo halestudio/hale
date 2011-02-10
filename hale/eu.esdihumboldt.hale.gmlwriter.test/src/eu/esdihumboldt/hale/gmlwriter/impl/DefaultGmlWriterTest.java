@@ -53,6 +53,7 @@ import org.opengis.filter.identity.Identifier;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
@@ -149,6 +150,29 @@ public class DefaultGmlWriterTest {
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
 		values.put(Arrays.asList("geometry"), polygon);
+		
+		Report report = fillFeatureTest(
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
+				values, "geometryPrimitive_32_Polygon", DEF_SRS_NAME);
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
+	}
+	
+	/**
+	 * Test writing a {@link LineString} to a GML 3.2 geometry primitive type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometryPrimitive_32_LineString() throws Exception {
+		// create the geometry
+		LineString lineString = geomFactory.createLineString(new Coordinate[]{
+				new Coordinate(0.0, 0.0), new Coordinate(1.0, 1.0),
+				new Coordinate(2.0, 2.0), new Coordinate(3.0, 1.0),
+				new Coordinate(4.0, 0.0)});
+		
+		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
+		values.put(Arrays.asList("geometry"), lineString);
 		
 		Report report = fillFeatureTest(
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
