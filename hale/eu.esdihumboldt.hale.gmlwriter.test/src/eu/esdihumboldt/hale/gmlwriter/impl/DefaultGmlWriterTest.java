@@ -243,6 +243,26 @@ public class DefaultGmlWriterTest {
 	private Point createPoint(double x) {
 		return geomFactory.createPoint(new Coordinate(x, x + 1));
 	}
+	
+	/**
+	 * Test writing a {@link Polygon} to a GML 2 geometry type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometry_2_Polygon() throws Exception {
+		// create the geometry
+		Polygon polygon = createPolygon(0.0);
+		
+		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
+		values.put(Arrays.asList("geometry"), polygon);
+		
+		Report report = fillFeatureTest("Test",
+				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(), 
+				values, "geometry_2_Polygon", DEF_SRS_NAME);
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
+	}
 
 	/**
 	 * Test writing a {@link Polygon} to a GML 3.2 geometry primitive type
@@ -354,6 +374,28 @@ public class DefaultGmlWriterTest {
 	}
 	
 	/**
+	 * Test writing a {@link MultiLineString} to a GML 2 geometry type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometry_2_MultiLineString() throws Exception {
+		// create the geometry
+		MultiLineString mls = geomFactory.createMultiLineString(
+				new LineString[]{createLineString(0.0), createLineString(1.0),
+						createLineString(2.0)});
+		
+		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
+		values.put(Arrays.asList("geometry"), mls);
+		
+		Report report = fillFeatureTest("Test",
+				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(), 
+				values, "geometry_2_MultiLineString", DEF_SRS_NAME);
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
+	}
+	
+	/**
 	 * Test writing a {@link MultiLineString} to a GML 3.2 geometry primitive type
 	 * 
 	 * @throws Exception if an error occurs
@@ -394,6 +436,28 @@ public class DefaultGmlWriterTest {
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
 				values, "geometryAggregate_32_MultiLineString", DEF_SRS_NAME,
 				true); //XXX in a MultiCurve Geotools only creates a LineString for each curve
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
+	}
+	
+	/**
+	 * Test writing a {@link MultiPolygon} to a GML 2 geometry type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometry_2_MultiPolygon() throws Exception {
+		// create the geometry
+		MultiPolygon mp = geomFactory.createMultiPolygon(new Polygon[]{
+				createPolygon(0.0), createPolygon(1.0), createPolygon(-1.0) 
+		});
+		
+		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
+		values.put(Arrays.asList("geometry"), mp);
+		
+		Report report = fillFeatureTest("Test",
+				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(), 
+				values, "geometry_2_MultiPolygon", DEF_SRS_NAME);
 		
 		assertTrue("Expected GML output to be valid", report.isValid());
 	}
