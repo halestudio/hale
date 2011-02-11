@@ -309,6 +309,28 @@ public class DefaultGmlWriterTest {
 	}
 	
 	/**
+	 * Test writing a {@link MultiPolygon} to a GML 3.2 geometry aggregate type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometryAggregate_32_MultiPolygon() throws Exception {
+		// create the geometry
+		MultiPolygon mp = geomFactory.createMultiPolygon(new Polygon[]{
+				createPolygon(0.0), createPolygon(1.0), createPolygon(-1.0) 
+		});
+		
+		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
+		values.put(Arrays.asList("geometry"), mp);
+		
+		Report report = fillFeatureTest("AggregateTest",
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
+				values, "geometryAggregate_32_MultiPolygon", DEF_SRS_NAME);
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
+	}
+	
+	/**
 	 * Test writing the result from a CST transformation
 	 * 
 	 * @throws Exception if any error occurs
