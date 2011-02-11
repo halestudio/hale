@@ -58,12 +58,6 @@ public class PolygonWriter extends AbstractGeometryWriter<Polygon> {
 	public void write(XMLStreamWriter writer, Polygon polygon,
 			TypeDefinition elementType, Name elementName, String gmlNs)
 			throws XMLStreamException {
-		/*
-		 * At this point we can assume that the wrapping element matches on of 
-		 * the base patterns. The corresponding element name and its type
-		 * definition are given.
-		 */
-		
 		// write exterior ring
 		LineString exterior = polygon.getExteriorRing();
 		descendAndWriteCoordinates(writer, Pattern.parse("*/exterior/LinearRing"), 

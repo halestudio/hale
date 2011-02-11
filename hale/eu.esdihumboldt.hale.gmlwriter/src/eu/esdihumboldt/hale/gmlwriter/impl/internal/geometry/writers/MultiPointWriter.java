@@ -59,11 +59,6 @@ public class MultiPointWriter extends AbstractGeometryWriter<MultiPoint> {
 	public void write(XMLStreamWriter writer, MultiPoint geometry,
 			TypeDefinition elementType, Name elementName, String gmlNs)
 			throws XMLStreamException {
-		/*
-		 * At this point we can assume that the wrapping element matches on of 
-		 * the base patterns. The corresponding element name and its type 
-		 * definition are given.
-		 */
 		for (int i = 0; i < geometry.getNumGeometries(); i++) {
 			if (i > 0) {
 				writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());

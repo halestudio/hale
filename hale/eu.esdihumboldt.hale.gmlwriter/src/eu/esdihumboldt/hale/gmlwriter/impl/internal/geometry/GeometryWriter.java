@@ -64,7 +64,11 @@ public interface GeometryWriter<T extends Geometry> {
 			String gmlNs);
 	
 	/**
-	 * Write a geometry
+	 * Write a geometry.
+	 * 
+	 * At this point we can assume that the wrapping element matches one of 
+	 * the base patterns. The corresponding element name and its type 
+	 * definition are given.
 	 * 
 	 * @param writer the XML stream writer
 	 * @param geometry the geometry to write
