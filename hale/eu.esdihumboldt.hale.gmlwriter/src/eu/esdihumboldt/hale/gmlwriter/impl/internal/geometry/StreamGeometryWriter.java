@@ -36,6 +36,7 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.StreamGmlWriter;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.GeometryConverterRegistry.ConversionLadder;
+import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers.LegacyMultiPolygonWriter;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers.LegacyPolygonWriter;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers.LineStringWriter;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers.CurveWriter;
@@ -124,6 +125,7 @@ public class StreamGeometryWriter {
 		sgm.registerGeometryWriter(new MultiPointWriter());
 		sgm.registerGeometryWriter(new MultiLineStringWriter());
 		sgm.registerGeometryWriter(new LegacyPolygonWriter());
+		sgm.registerGeometryWriter(new LegacyMultiPolygonWriter());
 		
 		return sgm;
 	}
