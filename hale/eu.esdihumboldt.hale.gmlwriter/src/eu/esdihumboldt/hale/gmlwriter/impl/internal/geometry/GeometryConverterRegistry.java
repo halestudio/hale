@@ -50,13 +50,18 @@ public class GeometryConverterRegistry {
 		private final Queue<Geometry> pendingGeometries = new LinkedList<Geometry>();
 		
 		private final Queue<GeometryConverter<?, ?>> pendingConverters = new LinkedList<GeometryConverter<?,?>>();
+		
+		private final boolean noLossOnly;
 
 		/**
 		 * Create a conversion ladder for the given geometry
 		 * 
 		 * @param geometry the geometry
+		 * @param noLossOnly if only no-loss converters may be used
 		 */
-		protected ConversionLadder(Geometry geometry) {
+		protected ConversionLadder(Geometry geometry, boolean noLossOnly) {
+			this.noLossOnly = noLossOnly;
+			
 			Class<? extends Geometry> geomClass = geometry.getClass();
 			results.put(geomClass, geometry);
 			
@@ -111,7 +116,9 @@ public class GeometryConverterRegistry {
 					//TODO collect converters through more levels to allow multi-level-noloss is preferred to loss? 
 					
 					pendingConverters.addAll(noloss);
-					pendingConverters.addAll(loss);
+					if (!noLossOnly) {
+						pendingConverters.addAll(loss);
+					}
 				}
 			}
 		}
@@ -222,7 +229,19 @@ public class GeometryConverterRegistry {
 	 * @return the conversion ladder
 	 */
 	public ConversionLadder createLadder(Geometry geometry) {
-		return new ConversionLadder(geometry);
+		return new ConversionLadder(geometry, false);
+	}
+	
+	/**
+	 * Create a conversion ladder for the given geometry that does only no-loss
+	 * conversions.
+	 * 
+	 * @param geometry the geometry
+	 * 
+	 * @return the conversion ladder
+	 */
+	public ConversionLadder createNoLossLadder(Geometry geometry) {
+		return new ConversionLadder(geometry, true);
 	}
 	
 }
