@@ -250,6 +250,26 @@ public class DefaultGmlWriterTest {
 	}
 	
 	/**
+	 * Test writing a {@link LineString} to a GML 3.2 geometry aggregate type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometryAggregate_32_LineString() throws Exception {
+		// create the geometry
+		LineString lineString = createLineString(0.0);
+		
+		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
+		values.put(Arrays.asList("geometry"), lineString);
+		
+		Report report = fillFeatureTest("AggregateTest",
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
+				values, "geometryAggregate_32_LineString", DEF_SRS_NAME);
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
+	}
+	
+	/**
 	 * Create a line string geometry
 	 * 
 	 * @param offset the line y-offset
