@@ -111,8 +111,14 @@ public class DefaultGmlWriterTest {
 	public void testFillWrite_WatercourseVA() throws Exception {
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
 		
+		// create the geometry
+		MultiLineString mls = geomFactory.createMultiLineString(
+				new LineString[]{createLineString(0.0), createLineString(1.0),
+						createLineString(2.0)});
+		
 		values.put(Arrays.asList("LENGTH"), Double.valueOf(10.2));
 		values.put(Arrays.asList("NAME"), "Test");
+		values.put(Arrays.asList("the_geom"), mls);
 		
 		Report report = fillFeatureTest("Watercourses_VA",
 				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(), 
