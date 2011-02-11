@@ -15,4 +15,16 @@
     </complexContent>
   </complexType>
   
+  <element name="MultiTest" substitutionGroup="gml:_Feature" type="hale:MultiTestType" />
+  
+  <complexType name="MultiTestType">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element name="geometry" type="gml:MultiGeometryPropertyType" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  
 </schema>
