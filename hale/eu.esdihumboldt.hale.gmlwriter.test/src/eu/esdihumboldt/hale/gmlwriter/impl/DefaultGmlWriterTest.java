@@ -190,6 +190,28 @@ public class DefaultGmlWriterTest {
 	}
 	
 	/**
+	 * Test writing a {@link MultiPoint} to a GML 2 geometry type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometry_2_MultiPoint() throws Exception {
+		// create the geometry
+		MultiPoint mp = geomFactory.createMultiPoint(new Point[]{
+				createPoint(0.0), createPoint(1.0), createPoint(2.0) 
+		});
+		
+		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
+		values.put(Arrays.asList("geometry"), mp);
+		
+		Report report = fillFeatureTest("Test",
+				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(), 
+				values, "geometry_2_MultiPoint", DEF_SRS_NAME);
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
+	}
+	
+	/**
 	 * Test writing a {@link MultiPoint} to a GML 3.2 geometry aggregate type
 	 * 
 	 * @throws Exception if an error occurs
