@@ -37,7 +37,9 @@ import org.apache.ws.commons.schema.XmlSchemaAttributeGroup;
 import org.apache.ws.commons.schema.XmlSchemaAttributeGroupRef;
 import org.apache.ws.commons.schema.XmlSchemaChoice;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.apache.ws.commons.schema.XmlSchemaComplexContent;
 import org.apache.ws.commons.schema.XmlSchemaComplexContentExtension;
+import org.apache.ws.commons.schema.XmlSchemaComplexContentRestriction;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaContent;
 import org.apache.ws.commons.schema.XmlSchemaContentModel;
@@ -49,6 +51,7 @@ import org.apache.ws.commons.schema.XmlSchemaObjectCollection;
 import org.apache.ws.commons.schema.XmlSchemaParticle;
 import org.apache.ws.commons.schema.XmlSchemaSequence;
 import org.apache.ws.commons.schema.XmlSchemaSimpleContentExtension;
+import org.apache.ws.commons.schema.XmlSchemaSimpleContentRestriction;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.XmlSchemaUse;
 import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
@@ -249,10 +252,19 @@ public class ApacheSchemaProvider
 					XmlSchemaContent content = model.getContent();
 					
 					QName qname = null;
-					if (content instanceof XmlSchemaComplexContentExtension) {
+					if (content instanceof XmlSchemaComplexContentExtension || 
+							content instanceof XmlSchemaComplexContentRestriction) { //XXX for now the restriction is only treated different from the extension in the fact that in getSuperTypeName for the restriction no super type is returned
 						// <complexContent>
-						//   <extension base="...">
-						qname = ((XmlSchemaComplexContentExtension)content).getBaseTypeName();
+						//   <extension base="..."> / <restriction ...>
+						String nameExt;
+						if (content instanceof XmlSchemaComplexContentExtension) {
+							qname = ((XmlSchemaComplexContentExtension) content).getBaseTypeName();
+							nameExt = "Extension";
+						}
+						else {
+							qname = ((XmlSchemaComplexContentRestriction) content).getBaseTypeName();
+							nameExt = "Restriction";
+						}
 						
 						if (declaringType != null) {
 							Name superTypeName = new NameImpl(qname.getNamespaceURI(), qname.getLocalPart());
@@ -264,7 +276,7 @@ public class ApacheSchemaProvider
 							}
 							
 							// create an anonymous type that extends the super type
-							Name anonymousName = new NameImpl(declaringType.getIdentifier() + "/" + element.getName(), superTypeName.getLocalPart() + "Extension");
+							Name anonymousName = new NameImpl(declaringType.getIdentifier() + "/" + element.getName(), superTypeName.getLocalPart() + nameExt);
 							TypeDefinition anonymousType = new AnonymousType(anonymousName, null, superType, (schemaTypes != null)?(schemaTypes.getSchemaLocation()):(null));
 							
 							// add attributes to the anonymous type
@@ -282,12 +294,21 @@ public class ApacheSchemaProvider
 							return result;
 						}
 						
-						//   </extension>
+						//   </extension> / </restriction>
 						// </complexContent>
-					} else if (content instanceof XmlSchemaSimpleContentExtension) {
+					} else if (content instanceof XmlSchemaSimpleContentExtension
+							|| content instanceof XmlSchemaSimpleContentRestriction) { //XXX for now the restriction is only treated different from the extension in the fact that in getSuperTypeName for the restriction no super type is returned
 						// <simpleContent>
-						//   <extension base="...">
-						qname = ((XmlSchemaSimpleContentExtension)content).getBaseTypeName();
+						//   <extension base="..."> / <restriction ...>
+						String nameExt;
+						if (content instanceof XmlSchemaSimpleContentExtension) {
+							qname = ((XmlSchemaSimpleContentExtension) content).getBaseTypeName();
+							nameExt = "Extension";
+						}
+						else {
+							qname = ((XmlSchemaSimpleContentRestriction) content).getBaseTypeName();
+							nameExt = "Restriction";
+						}
 						
 						if (declaringType != null) {
 							// create an anonymous type that extends the type referenced by qname
@@ -301,7 +322,7 @@ public class ApacheSchemaProvider
 							}
 							
 							// create an anonymous type that extends the super type
-							Name anonymousName = new NameImpl(declaringType.getIdentifier() + "/" + element.getName(), superTypeName.getLocalPart() + "Extension");
+							Name anonymousName = new NameImpl(declaringType.getIdentifier() + "/" + element.getName(), superTypeName.getLocalPart() + nameExt);
 							// for now use the super attribute type, because attributes aren't added as attribute descriptors
 							AttributeType attributeType = superType.getType(null); 
 							TypeDefinition anonymousType = new AnonymousType(anonymousName, attributeType, superType, (schemaTypes != null)?(schemaTypes.getSchemaLocation()):(null));
@@ -942,6 +963,24 @@ public class ApacheSchemaProvider
 				//   </extension>
 				// </complexContent>
 			}
+			else if (content instanceof XmlSchemaComplexContentRestriction) {
+				// <complexContent>
+				//   <restriction base="...">
+				//XXX for now the restriction is only treated different from the extension in the fact that in getSuperTypeName for the restriction no super type is returned
+				XmlSchemaComplexContentRestriction restriction = (XmlSchemaComplexContentRestriction) content;
+				// particle (e.g. sequence)
+				if (restriction.getParticle() != null) {
+					XmlSchemaParticle particle = restriction.getParticle();
+					attributes.addAll(getAttributesFromParticle(typeDef, particle, schemaTypes, referenceResolver));
+				}
+				// attributes
+				XmlSchemaObjectCollection attributeCollection = restriction.getAttributes();
+				if (attributeCollection != null) {
+					attributes.addAll(getAttributesFromCollection(attributeCollection, typeDef, schemaTypes, referenceResolver, null));
+				}
+				//   </restriction>
+				// </complexContent>
+			}
 			else if (content instanceof XmlSchemaSimpleContentExtension) {
 				// <simpleContent>
 				//   <extension base="...">
@@ -952,6 +991,19 @@ public class ApacheSchemaProvider
 					attributes.addAll(getAttributesFromCollection(attributeCollection, typeDef, schemaTypes, referenceResolver, null));
 				}
 				//   </extension>
+				// </simpleContent>
+			}
+			else if (content instanceof XmlSchemaSimpleContentRestriction) {
+				// <simpleContent>
+				//   <restriction base="...">
+				//XXX for now the restriction is only treated different from the extension in the fact that in getSuperTypeName for the restriction no super type is returned
+				XmlSchemaSimpleContentRestriction restriction = (XmlSchemaSimpleContentRestriction) content;
+				// attributes
+				XmlSchemaObjectCollection attributeCollection = restriction.getAttributes();
+				if (attributeCollection != null) {
+					attributes.addAll(getAttributesFromCollection(attributeCollection, typeDef, schemaTypes, referenceResolver, null));
+				}
+				//   </restriction>
 				// </simpleContent>
 			}
 		}
