@@ -53,10 +53,12 @@ import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.identity.Identifier;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
@@ -70,6 +72,8 @@ import eu.esdihumboldt.hale.gmlparser.GmlHelper;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.gmlvalidate.Report;
 import eu.esdihumboldt.hale.gmlvalidate.ValidatorFactory;
+import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.GeometryConverterRegistry;
+import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.GeometryConverterRegistry.ConversionLadder;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
@@ -125,7 +129,7 @@ public class DefaultGmlWriterTest {
 	@Test
 	public void testGeometryPrimitive_32_Point() throws Exception {
 		// create the geometry
-		Point point = geomFactory.createPoint(new Coordinate(12.0, 11.1));
+		Point point = createPoint(10.0);
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
 		values.put(Arrays.asList("geometry"), point);
@@ -137,6 +141,59 @@ public class DefaultGmlWriterTest {
 		assertTrue("Expected GML output to be valid", report.isValid());
 	}
 	
+	/**
+	 * Test writing a {@link Point} to a GML 3.2 geometry aggregate type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometryAggregate_32_Point() throws Exception {
+		// create the geometry
+		Point point = createPoint(10.0);
+		
+		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
+		values.put(Arrays.asList("geometry"), point);
+		
+		Report report = fillFeatureTest("AggregateTest",
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
+				values, "geometryAggregate_32_Point", DEF_SRS_NAME);
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
+	}
+	
+	/**
+	 * Test writing a {@link MultiPoint} to a GML 3.2 geometry aggregate type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometryAggregate_32_MultiPoint() throws Exception {
+		// create the geometry
+		MultiPoint mp = geomFactory.createMultiPoint(new Point[]{
+				createPoint(0.0), createPoint(1.0), createPoint(2.0) 
+		});
+		
+		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
+		values.put(Arrays.asList("geometry"), mp);
+		
+		Report report = fillFeatureTest("AggregateTest",
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
+				values, "geometryAggregate_32_MultiPoint", DEF_SRS_NAME);
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
+	}
+	
+	/**
+	 * Create a point
+	 * 
+	 * @param x the x ordinate
+	 * 
+	 * @return a point
+	 */
+	private Point createPoint(double x) {
+		return geomFactory.createPoint(new Coordinate(x, x + 1));
+	}
+
 	/**
 	 * Test writing a {@link Polygon} to a GML 3.2 geometry primitive type
 	 * 
@@ -471,9 +528,18 @@ public class DefaultGmlWriterTest {
 			// test values
 			for (Entry<List<String>, Object> entry : values.entrySet()) {
 				//XXX conversion?
-				assertEquals(
-						entry.getValue().toString(), 
-						FeatureInspector.getPropertyValue(l, entry.getKey(), null).toString());
+				
+				Object expected = entry.getValue();
+				Object value = FeatureInspector.getPropertyValue(l, entry.getKey(), null);
+				
+				if (expected instanceof Geometry && value instanceof Geometry) {
+					matchGeometries((Geometry) expected, (Geometry) value);
+				}
+				else {
+					assertEquals(
+							expected.toString(), 
+							value.toString());
+				}
 			}
 		}
 		
@@ -485,6 +551,31 @@ public class DefaultGmlWriterTest {
 		}
 		
 		return report;
+	}
+
+	/**
+	 * Let the test fail if the given geometries don't match
+	 * 
+	 * @param expected the expected geometry
+	 * @param value the geometry value
+	 */
+	private void matchGeometries(Geometry expected, Geometry value) {
+		if (expected.toString().equals(value.toString())) {
+			// direct match
+			return;
+		}
+		
+		// check match for all no-loss conversions on value
+		ConversionLadder ladder = GeometryConverterRegistry.getInstance().createNoLossLadder(value);
+		while (ladder.hasNext()) {
+			Geometry converted = ladder.next();
+			if (expected.toString().equals(converted.toString())) {
+				// match
+				return;
+			}
+		}
+		
+		assertEquals("Geometry not compatible to expected geometry", expected.toString(), value.toString());
 	}
 
 	/**
