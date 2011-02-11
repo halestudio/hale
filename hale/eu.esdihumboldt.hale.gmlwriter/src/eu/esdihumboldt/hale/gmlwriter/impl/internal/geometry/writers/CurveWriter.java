@@ -32,13 +32,13 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class MultiLineStringWriter extends
+public class CurveWriter extends
 		AbstractGeometryWriter<MultiLineString> {
 
 	/**
 	 * Default constructor
 	 */
-	public MultiLineStringWriter() {
+	public CurveWriter() {
 		super(MultiLineString.class);
 		
 		// compatible types to serve as entry point
