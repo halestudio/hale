@@ -42,6 +42,11 @@ public class SchemaElement extends AbstractDefinition implements Comparable<Sche
 	private final Name typeName;
 	
 	/**
+	 * The substitution group
+	 */
+	private final Name substitutionGroup;
+	
+	/**
 	 * The element type
 	 */
 	private TypeDefinition type;
@@ -58,10 +63,14 @@ public class SchemaElement extends AbstractDefinition implements Comparable<Sche
 	 * @param typeName the type name
 	 * @param type the corresponding type definition, may be <code>null</code>
 	 *   for later assignment
+	 * @param substitutionGroup the substitution group element name, may be 
+	 *   <code>null</code>
 	 */
-	public SchemaElement(Name elementName, Name typeName, TypeDefinition type) {
+	public SchemaElement(Name elementName, Name typeName, TypeDefinition type,
+			Name substitutionGroup) {
 		this.elementName = elementName;
 		this.typeName = typeName;
+		this.substitutionGroup = substitutionGroup;
 		
 		setType(type);
 	}
@@ -164,6 +173,13 @@ public class SchemaElement extends AbstractDefinition implements Comparable<Sche
 		return elementName.getNamespaceURI() + "/" + elementName.getLocalPart();
 	}
 	
+	/**
+	 * @return the substitutionGroup
+	 */
+	public Name getSubstitutionGroup() {
+		return substitutionGroup;
+	}
+
 	/**
 	 * @see Comparable#compareTo(Object)
 	 */

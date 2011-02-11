@@ -84,7 +84,8 @@ public class ShapeSchemaProvider
 				aftName, ft, null);
 		abstractFeatureType.setAbstract(true);
 		elements.put(aftName.getNamespaceURI() + "/" + aftName.getLocalPart(), 
-				new SchemaElement(aftName, abstractFeatureType.getName(), abstractFeatureType));
+				new SchemaElement(aftName, abstractFeatureType.getName(), 
+						abstractFeatureType, null));
 		
 		// build actual FeatureTypes based on Schema extracted by geotools
 		for (Name name : store.getNames()) {
@@ -110,7 +111,8 @@ public class ShapeSchemaProvider
 				type.addDeclaredAttribute(new ShapeAttributeDefintion(pd));
 			}
 			
-			SchemaElement se = new SchemaElement(sft.getName(), type.getType(null).getName(), type);
+			SchemaElement se = new SchemaElement(sft.getName(), 
+					type.getType(null).getName(), type, null);
 			elements.put(sft.getName().getNamespaceURI() + "/" + sft.getTypeName(), 
 					se);
 		}

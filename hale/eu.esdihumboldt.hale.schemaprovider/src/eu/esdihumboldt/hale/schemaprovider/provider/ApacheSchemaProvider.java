@@ -602,8 +602,15 @@ public class ApacheSchemaProvider
 				} 
 				
 				Name elementName = new NameImpl(namespace, element.getName());
+				Name subGroup = null;
+				if (element.getSubstitutionGroup() != null) {
+					subGroup = new NameImpl(
+							element.getSubstitutionGroup().getNamespaceURI(), 
+							element.getSubstitutionGroup().getLocalPart());
+				}
 				// create schema element
-				SchemaElement schemaElement = new SchemaElement(elementName, typeName, null);
+				SchemaElement schemaElement = new SchemaElement(elementName, 
+						typeName, null, subGroup);
 				schemaElement.setLocation(schemaLocation);
 				// get description
 				String description = SchemaAttribute.getDescription(element);

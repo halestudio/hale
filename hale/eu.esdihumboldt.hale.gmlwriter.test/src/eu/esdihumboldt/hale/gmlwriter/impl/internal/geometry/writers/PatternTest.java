@@ -91,7 +91,7 @@ public class PatternTest {
 	private TypeDefinition createCurveType() {
 		// create the curve type
 		TypeDefinition curve = new TypeDefinition(new NameImpl(GML_NS, "CurveType"), null, null);
-		curve.addDeclaringElement(new SchemaElement(CURVE_ELEMENT, curve.getName(), curve));
+		curve.addDeclaringElement(new SchemaElement(CURVE_ELEMENT, curve.getName(), curve, null));
 		
 		// create the segments property for curve
 		TypeDefinition segArray = new TypeDefinition(new NameImpl(GML_NS, "CurveSegmentArrayPropertyType"), null, null);
@@ -107,7 +107,7 @@ public class PatternTest {
 		
 		// create the LineStringSegmentType sub-type
 		TypeDefinition lineSeg = new TypeDefinition(new NameImpl(GML_NS, "LineStringSegmentType"), null, absSeg);
-		lineSeg.addDeclaringElement(new SchemaElement(new NameImpl(GML_NS, "LineStringSegment"), lineSeg.getName(), lineSeg));
+		lineSeg.addDeclaringElement(new SchemaElement(new NameImpl(GML_NS, "LineStringSegment"), lineSeg.getName(), lineSeg, null));
 		
 		return curve;
 	}
