@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.gmlwriter.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -109,7 +110,7 @@ public class DefaultGmlWriterTest {
 		values.put(Arrays.asList("LENGTH"), Double.valueOf(10.2));
 		values.put(Arrays.asList("NAME"), "Test");
 		
-		Report report = fillFeatureTest(
+		Report report = fillFeatureTest("Watercourses_VA",
 				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(), 
 				values, "fillWrite_WVA", "EPSG:31251");
 		
@@ -129,7 +130,7 @@ public class DefaultGmlWriterTest {
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
 		values.put(Arrays.asList("geometry"), point);
 		
-		Report report = fillFeatureTest(
+		Report report = fillFeatureTest("PrimitiveTest",
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
 				values, "geometryPrimitive_32_Point", DEF_SRS_NAME);
 		
@@ -149,7 +150,7 @@ public class DefaultGmlWriterTest {
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
 		values.put(Arrays.asList("geometry"), polygon);
 		
-		Report report = fillFeatureTest(
+		Report report = fillFeatureTest("PrimitiveTest",
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
 				values, "geometryPrimitive_32_Polygon", DEF_SRS_NAME);
 		
@@ -184,7 +185,7 @@ public class DefaultGmlWriterTest {
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
 		values.put(Arrays.asList("geometry"), lineString);
 		
-		Report report = fillFeatureTest(
+		Report report = fillFeatureTest("PrimitiveTest",
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
 				values, "geometryPrimitive_32_LineString", DEF_SRS_NAME);
 		
@@ -220,7 +221,7 @@ public class DefaultGmlWriterTest {
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
 		values.put(Arrays.asList("geometry"), mls);
 		
-		Report report = fillFeatureTest(
+		Report report = fillFeatureTest("PrimitiveTest",
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
 				values, "geometryPrimitive_32_MultiLineString", DEF_SRS_NAME);
 		
@@ -242,7 +243,7 @@ public class DefaultGmlWriterTest {
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
 		values.put(Arrays.asList("geometry"), mp);
 		
-		Report report = fillFeatureTest(
+		Report report = fillFeatureTest("PrimitiveTest",
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
 				values, "geometryPrimitive_32_MultiPolygon", DEF_SRS_NAME,
 				true); //XXX no value equality check because Geotools parser doesn't seem to support CompositeSurface and only creates a Polygon instead of a MultiPolygon
@@ -369,6 +370,8 @@ public class DefaultGmlWriterTest {
 	 * and load the GML file again to compare the loaded values with the ones
 	 * that were written
 	 * 
+	 * @param elementName the element name of the feature type to use, if
+	 *   <code>null</code> a random element will be used
 	 * @param targetSchema the schema to use, the first element will be used 
 	 *   for the type of the feature
 	 * @param values the values to set on the feature
@@ -377,9 +380,9 @@ public class DefaultGmlWriterTest {
 	 * @return the validation report
 	 * @throws Exception if any error occurs
 	 */
-	private Report fillFeatureTest(URI targetSchema, Map<List<String>, 
+	private Report fillFeatureTest(String elementName, URI targetSchema, Map<List<String>, 
 			Object> values, String testName, String srsName) throws Exception {
-		return fillFeatureTest(targetSchema, values, testName, srsName, false);
+		return fillFeatureTest(elementName, targetSchema, values, testName, srsName, false);
 	}
 
 	/**
@@ -387,6 +390,8 @@ public class DefaultGmlWriterTest {
 	 * and load the GML file again to compare the loaded values with the ones
 	 * that were written
 	 * 
+	 * @param elementName the element name of the feature type to use, if
+	 *   <code>null</code> a random element will be used
 	 * @param targetSchema the schema to use, the first element will be used 
 	 *   for the type of the feature
 	 * @param values the values to set on the feature
@@ -396,7 +401,7 @@ public class DefaultGmlWriterTest {
 	 * @return the validation report
 	 * @throws Exception if any error occurs
 	 */
-	private Report fillFeatureTest(URI targetSchema, Map<List<String>, 
+	private Report fillFeatureTest(String elementName, URI targetSchema, Map<List<String>, 
 			Object> values, String testName, String srsName, boolean skipValueTest) throws Exception {
 		SchemaProvider sp = new ApacheSchemaProvider();
 		
@@ -405,8 +410,31 @@ public class DefaultGmlWriterTest {
 		
 		FeatureCollection<FeatureType, Feature> fc = new CstFeatureCollection();
 		
+		SchemaElement element = null;
+		if (elementName == null) {
+			element = schema.getElements().values().iterator().next();
+			if (element == null) {
+				fail("No element found in the schema");
+			}
+		}
+		else {
+			for (SchemaElement candidate : schema.getElements().values()) {
+				if (candidate.getElementName().getLocalPart().equals(elementName)) {
+					element = candidate;
+					break;
+				}
+			}
+			if (element == null) {
+				fail("Element " + elementName + " not found in the schema");
+			}
+		}
+		
+		if (element == null) {
+			throw new IllegalStateException();
+		}
+		
 		// create feature
-		Feature feature = createFeature(schema.getElements().values().iterator().next().getType());
+		Feature feature = createFeature(element.getType());
 		
 		// set some values
 		for (Entry<List<String>, Object> entry : values.entrySet()) {
