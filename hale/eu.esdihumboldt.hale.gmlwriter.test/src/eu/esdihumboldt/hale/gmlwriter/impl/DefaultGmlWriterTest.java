@@ -130,6 +130,26 @@ public class DefaultGmlWriterTest {
 	}
 	
 	/**
+	 * Test writing a {@link Point} to a GML 2 geometry type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometry_2_Point() throws Exception {
+		// create the geometry
+		Point point = createPoint(10.0);
+		
+		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
+		values.put(Arrays.asList("geometry"), point);
+		
+		Report report = fillFeatureTest("Test",
+				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(), 
+				values, "geometry_2_Point", DEF_SRS_NAME);
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
+	}
+	
+	/**
 	 * Test writing a {@link Point} to a GML 3.2 geometry primitive type
 	 * 
 	 * @throws Exception if an error occurs
@@ -235,6 +255,26 @@ public class DefaultGmlWriterTest {
 				new Coordinate(1.0 + offset, offset), new Coordinate(offset, -1.0 + offset),
 				new Coordinate(-1.0 + offset, offset)});
 		return geomFactory.createPolygon(shell, null);
+	}
+	
+	/**
+	 * Test writing a {@link LineString} to a GML 2 geometry type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometry_2_LineString() throws Exception {
+		// create the geometry
+		LineString lineString = createLineString(0.0);
+		
+		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
+		values.put(Arrays.asList("geometry"), lineString);
+		
+		Report report = fillFeatureTest("Test",
+				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(), 
+				values, "geometry_2_LineString", DEF_SRS_NAME);
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
 	}
 
 	/**
