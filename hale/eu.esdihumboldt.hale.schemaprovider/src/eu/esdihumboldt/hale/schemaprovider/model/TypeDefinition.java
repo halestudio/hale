@@ -80,6 +80,11 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	private final boolean complex;
 	
 	/**
+	 * If the super type relation is a restriction
+	 */
+	private final boolean restriction;
+	
+	/**
 	 * The list of declared attributes (list because order must be maintained for writing)
 	 */
 	private final List<AttributeDefinition> declaredAttributes = new ArrayList<AttributeDefinition>();
@@ -88,7 +93,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	 * The inherited attributes
 	 */
 	private List<AttributeDefinition> inheritedAttributes;
-
+	
 	/**
 	 * Create a new type definition
 	 * 
@@ -98,7 +103,23 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	 */
 	public TypeDefinition(Name name, AttributeType type, 
 			TypeDefinition superType) {
+		this(name, type, superType, false);
+	}
+
+	/**
+	 * Create a new type definition
+	 * 
+	 * @param name the type name 
+	 * @param type the corresponding feature type, may be <code>null</code>
+	 * @param superType the super type, may be <code>null</code>
+	 * @param restriction if the super type relation is a restriction
+	 */
+	public TypeDefinition(Name name, AttributeType type, 
+			TypeDefinition superType, boolean restriction) {
 		super();
+		
+		this.restriction = restriction;
+		
 		if (name == null && type != null) {
 			this.name = new NameImpl(type.getName().getNamespaceURI(), type.getName().getLocalPart());
 		}
@@ -449,29 +470,40 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	public Collection<AttributeDefinition> getAttributes() {
 		Collection<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
 		
-		if (inheritedAttributes == null) {
-			inheritedAttributes = new ArrayList<AttributeDefinition>();
-			
-			// populate inherited attributes
-			TypeDefinition parent = getSuperType();
-			while (parent != null) {
-				for (AttributeDefinition parentAttribute : parent.getDeclaredAttributes()) {
-					// create attribute definition copy
-					AttributeDefinition attribute = parentAttribute.copyAttribute(this);
-					inheritedAttributes.add(attribute);
-				}
+		if (!restriction) { //FIXME for now we assume that for a restriction all properties are redefined - let's how we fare with that
+			if (inheritedAttributes == null) {
+				inheritedAttributes = new ArrayList<AttributeDefinition>();
 				
-				parent = parent.getSuperType();
+				// populate inherited attributes
+				TypeDefinition parent = getSuperType();
+				while (parent != null) {
+					for (AttributeDefinition parentAttribute : parent.getDeclaredAttributes()) {
+						// create attribute definition copy
+						AttributeDefinition attribute = parentAttribute.copyAttribute(this);
+						inheritedAttributes.add(attribute);
+					}
+					
+					parent = parent.getSuperType();
+				}
 			}
+			
+			// add inherited attributes
+			attributes.addAll(inheritedAttributes);
 		}
-		
-		// add inherited attributes
-		attributes.addAll(inheritedAttributes);
 		
 		// add declared attributes afterwards - correct order for output
 		attributes.addAll(declaredAttributes);
 		
 		return attributes;
+	}
+
+	/**
+	 * Get if the relation to the super type is a restriction
+	 * 
+	 * @return the restriction
+	 */
+	public boolean isRestriction() {
+		return restriction;
 	}
 
 	/**

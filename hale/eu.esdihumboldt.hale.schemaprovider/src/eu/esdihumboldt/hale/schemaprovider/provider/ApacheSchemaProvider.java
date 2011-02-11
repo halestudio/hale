@@ -253,7 +253,7 @@ public class ApacheSchemaProvider
 					
 					QName qname = null;
 					if (content instanceof XmlSchemaComplexContentExtension || 
-							content instanceof XmlSchemaComplexContentRestriction) { //XXX for now the restriction is only treated different from the extension in the fact that in getSuperTypeName for the restriction no super type is returned
+							content instanceof XmlSchemaComplexContentRestriction) {
 						// <complexContent>
 						//   <extension base="..."> / <restriction ...>
 						String nameExt;
@@ -297,7 +297,7 @@ public class ApacheSchemaProvider
 						//   </extension> / </restriction>
 						// </complexContent>
 					} else if (content instanceof XmlSchemaSimpleContentExtension
-							|| content instanceof XmlSchemaSimpleContentRestriction) { //XXX for now the restriction is only treated different from the extension in the fact that in getSuperTypeName for the restriction no super type is returned
+							|| content instanceof XmlSchemaSimpleContentRestriction) { 
 						// <simpleContent>
 						//   <extension base="..."> / <restriction ...>
 						String nameExt;
@@ -419,23 +419,47 @@ public class ApacheSchemaProvider
 		XmlSchemaContentModel model = item.getContentModel();
 		if (model != null ) {
 			XmlSchemaContent content = model.getContent();
+			QName qname = null;
 			if (content instanceof XmlSchemaComplexContentExtension) {
-				if (((XmlSchemaComplexContentExtension)content).getBaseTypeName() != null) {
-					superType = new NameImpl(
-							((XmlSchemaComplexContentExtension)content).getBaseTypeName().getNamespaceURI(),
-							((XmlSchemaComplexContentExtension)content).getBaseTypeName().getLocalPart());
-				}
+				qname = ((XmlSchemaComplexContentExtension) content).getBaseTypeName();
+			}
+			else if (content instanceof XmlSchemaComplexContentRestriction) { // restriction
+				qname = ((XmlSchemaComplexContentRestriction) content).getBaseTypeName();
 			}
 			else if (content instanceof XmlSchemaSimpleContentExtension) {
-				if (((XmlSchemaSimpleContentExtension)content).getBaseTypeName() != null) {
-					superType = new NameImpl(
-							((XmlSchemaSimpleContentExtension)content).getBaseTypeName().getNamespaceURI(),
-							((XmlSchemaSimpleContentExtension)content).getBaseTypeName().getLocalPart());
-				}
+				qname = ((XmlSchemaSimpleContentExtension) content).getBaseTypeName();
+			}
+			else if (content instanceof XmlSchemaSimpleContentRestriction) { // restriction
+				qname = ((XmlSchemaSimpleContentRestriction) content).getBaseTypeName();
+			}
+	
+			if (qname != null) {
+				superType = new NameImpl(
+						qname.getNamespaceURI(),
+						qname.getLocalPart());
 			}
 		}
 		
 		return superType;
+	}
+	
+	/**
+	 * Determines if the super type relation of the given item is a restriction
+	 * 
+	 * @param item the complex type defining a super type
+	 * 
+	 * @return if the super type relation of the given item is a restriction
+	 */
+	private boolean isRestriction(XmlSchemaComplexType item) {
+		XmlSchemaContentModel model = item.getContentModel();
+		if (model != null ) {
+			XmlSchemaContent content = model.getContent();
+			if (content instanceof XmlSchemaComplexContentRestriction || content instanceof XmlSchemaSimpleContentRestriction) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -786,6 +810,7 @@ public class ApacheSchemaProvider
 			else if (item instanceof XmlSchemaComplexType) {
 				// determine the super type name
 				Name superTypeName = getSuperTypeName((XmlSchemaComplexType) item);
+				boolean isRestriction = isRestriction((XmlSchemaComplexType) item);
 				
 				TypeDefinition superType = null;
 				if (superTypeName != null) {
@@ -803,7 +828,8 @@ public class ApacheSchemaProvider
 				}
 				
 				// create type definition
-				TypeDefinition typeDef = new TypeDefinition(typeName, null, superType);
+				TypeDefinition typeDef = new TypeDefinition(typeName, null, 
+						superType, isRestriction);
 				typeDef.setLocation(schemaLocation);
 				
 				// determine the defined attributes and add them to the declaring type
@@ -966,7 +992,6 @@ public class ApacheSchemaProvider
 			else if (content instanceof XmlSchemaComplexContentRestriction) {
 				// <complexContent>
 				//   <restriction base="...">
-				//XXX for now the restriction is only treated different from the extension in the fact that in getSuperTypeName for the restriction no super type is returned
 				XmlSchemaComplexContentRestriction restriction = (XmlSchemaComplexContentRestriction) content;
 				// particle (e.g. sequence)
 				if (restriction.getParticle() != null) {
@@ -996,7 +1021,6 @@ public class ApacheSchemaProvider
 			else if (content instanceof XmlSchemaSimpleContentRestriction) {
 				// <simpleContent>
 				//   <restriction base="...">
-				//XXX for now the restriction is only treated different from the extension in the fact that in getSuperTypeName for the restriction no super type is returned
 				XmlSchemaSimpleContentRestriction restriction = (XmlSchemaSimpleContentRestriction) content;
 				// attributes
 				XmlSchemaObjectCollection attributeCollection = restriction.getAttributes();
