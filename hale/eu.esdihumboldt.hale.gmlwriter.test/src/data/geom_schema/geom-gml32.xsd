@@ -16,4 +16,24 @@
     </complexContent>
   </complexType>
   
+  <element name="AggregateTest" substitutionGroup="gml:AbstractFeature" type="hale:AggregateTestType" />
+    
+  <complexType name="AggregateTestType">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element name="geometry" type="hale:GeometricAggregatePropertyType" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  
+  <complexType name="GeometricAggregatePropertyType">
+		<sequence minOccurs="0">
+			<element ref="gml:AbstractGeometricAggregate"/>
+		</sequence>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+  
 </schema>
