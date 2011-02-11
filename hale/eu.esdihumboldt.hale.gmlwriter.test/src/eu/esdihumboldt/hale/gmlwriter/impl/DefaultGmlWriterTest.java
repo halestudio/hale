@@ -286,6 +286,29 @@ public class DefaultGmlWriterTest {
 	}
 	
 	/**
+	 * Test writing a {@link MultiLineString} to a GML 3.2 geometry aggregate type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometryAggregate_32_MultiLineString() throws Exception {
+		// create the geometry
+		MultiLineString mls = geomFactory.createMultiLineString(
+				new LineString[]{createLineString(0.0), createLineString(1.0),
+						createLineString(2.0)});
+		
+		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
+		values.put(Arrays.asList("geometry"), mls);
+		
+		Report report = fillFeatureTest("AggregateTest",
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
+				values, "geometryAggregate_32_MultiLineString", DEF_SRS_NAME,
+				true); //XXX in a MultiCurve Geotools only creates a LineString for each curve
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
+	}
+	
+	/**
 	 * Test writing a {@link MultiPolygon} to a GML 3.2 geometry primitive type
 	 * 
 	 * @throws Exception if an error occurs
