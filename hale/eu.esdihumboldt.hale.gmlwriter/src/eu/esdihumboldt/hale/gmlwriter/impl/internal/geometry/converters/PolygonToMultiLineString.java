@@ -34,6 +34,13 @@ public class PolygonToMultiLineString extends
 		AbstractGeometryConverter<Polygon, MultiLineString> {
 
 	/**
+	 * Default constructor
+	 */
+	public PolygonToMultiLineString() {
+		super(Polygon.class, MultiLineString.class);
+	}
+
+	/**
 	 * @see GeometryConverter#convert(Geometry)
 	 */
 	@Override
@@ -67,22 +74,6 @@ public class PolygonToMultiLineString extends
 			
 			return geomFactory.createMultiLineString(segments);
 		}
-	}
-
-	/**
-	 * @see GeometryConverter#getSourceType()
-	 */
-	@Override
-	public Class<Polygon> getSourceType() {
-		return Polygon.class;
-	}
-
-	/**
-	 * @see GeometryConverter#getTargetType()
-	 */
-	@Override
-	public Class<MultiLineString> getTargetType() {
-		return MultiLineString.class;
 	}
 
 	/**

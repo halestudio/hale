@@ -33,5 +33,37 @@ public abstract class AbstractGeometryConverter<S extends Geometry, T extends Ge
 	 * The geometry factory
 	 */
 	protected static final GeometryFactory geomFactory = new GeometryFactory();
+	
+	private final Class<S> sourceType;
+	
+	private final Class<T> targetType;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param sourceType the source geometry type
+	 * @param targetType the target geometry type
+	 */
+	public AbstractGeometryConverter(Class<S> sourceType, Class<T> targetType) {
+		super();
+		this.sourceType = sourceType;
+		this.targetType = targetType;
+	}
+
+	/**
+	 * @see GeometryConverter#getSourceType()
+	 */
+	@Override
+	public Class<S> getSourceType() {
+		return sourceType;
+	}
+
+	/**
+	 * @see GeometryConverter#getTargetType()
+	 */
+	@Override
+	public Class<T> getTargetType() {
+		return targetType;
+	}
 
 }
