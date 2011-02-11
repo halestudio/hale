@@ -67,7 +67,8 @@ public class MultiPolygonWriter extends AbstractGeometryWriter<MultiPolygon> {
 				writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 			}
 			
-			Descent descent = descend(writer, Pattern.parse("*/Polygon"), elementType, gmlNs);
+			Descent descent = descend(writer, Pattern.parse("*/Polygon"), 
+					elementType, elementName, gmlNs);
 			
 			Polygon poly = (Polygon) geometry.getGeometryN(i);
 			polygonWriter.write(

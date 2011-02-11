@@ -41,13 +41,18 @@ public class PatternTest {
 	private static final String GML_NS = "http://www.opengis.net/gml";
 	
 	/**
+	 * The curve element name
+	 */
+	private static final NameImpl CURVE_ELEMENT = new NameImpl(GML_NS, "Curve");
+	
+	/**
 	 * Test a direct match
 	 */
 	@Test
 	public void testDirect() {
 		Pattern pattern = Pattern.parse("Curve");
 		TypeDefinition start = createCurveType();
-		DefinitionPath path = pattern.match(start, new DefinitionPath(start), GML_NS);
+		DefinitionPath path = pattern.match(start, new DefinitionPath(start, CURVE_ELEMENT), GML_NS);
 		assertNotNull("A match should have been found", path);
 		assertTrue("Path should be empty", path.isEmpty());
 		assertEquals(start, path.getLastType());
@@ -60,7 +65,7 @@ public class PatternTest {
 	public void testDirectFail() {
 		Pattern pattern = Pattern.parse("CurveType");
 		TypeDefinition start = createCurveType();
-		DefinitionPath path = pattern.match(start, new DefinitionPath(start), GML_NS);
+		DefinitionPath path = pattern.match(start, new DefinitionPath(start, CURVE_ELEMENT), GML_NS);
 		assertNull("A match should not have been found", path);
 	}
 	
@@ -71,7 +76,7 @@ public class PatternTest {
 	public void testDescent() {
 		Pattern pattern = Pattern.parse("**/LineStringSegment");
 		TypeDefinition start = createCurveType();
-		DefinitionPath path = pattern.match(start, new DefinitionPath(start), GML_NS);
+		DefinitionPath path = pattern.match(start, new DefinitionPath(start, CURVE_ELEMENT), GML_NS);
 		assertNotNull("A match should have been found", path);
 		assertFalse("Path should not be empty", path.isEmpty());
 		List<PathElement> steps = path.getSteps();
@@ -86,7 +91,7 @@ public class PatternTest {
 	private TypeDefinition createCurveType() {
 		// create the curve type
 		TypeDefinition curve = new TypeDefinition(new NameImpl(GML_NS, "CurveType"), null, null);
-		curve.addDeclaringElement(new SchemaElement(new NameImpl(GML_NS, "Curve"), curve.getName(), curve));
+		curve.addDeclaringElement(new SchemaElement(CURVE_ELEMENT, curve.getName(), curve));
 		
 		// create the segments property for curve
 		TypeDefinition segArray = new TypeDefinition(new NameImpl(GML_NS, "CurveSegmentArrayPropertyType"), null, null);

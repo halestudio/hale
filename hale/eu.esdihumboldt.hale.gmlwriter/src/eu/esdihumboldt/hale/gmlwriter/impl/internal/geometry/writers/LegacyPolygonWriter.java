@@ -61,13 +61,13 @@ public class LegacyPolygonWriter extends AbstractGeometryWriter<Polygon> {
 		// write exterior ring
 		LineString exterior = polygon.getExteriorRing();
 		descendAndWriteCoordinates(writer, Pattern.parse("*/outerBoundaryIs/LinearRing"), 
-				exterior.getCoordinates(), elementType, gmlNs);
+				exterior.getCoordinates(), elementType, elementName, gmlNs);
 		
 		// write interior rings
 		for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
 			LineString interior = polygon.getInteriorRingN(i);
 			descendAndWriteCoordinates(writer, Pattern.parse("*/innerBoundaryIs/LinearRing"), 
-					interior.getCoordinates(), elementType, gmlNs);
+					interior.getCoordinates(), elementType, elementName, gmlNs);
 		}
 	}
 

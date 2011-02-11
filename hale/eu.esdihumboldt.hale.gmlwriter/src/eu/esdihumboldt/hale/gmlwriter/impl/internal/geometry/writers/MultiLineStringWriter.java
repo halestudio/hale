@@ -63,7 +63,8 @@ public class MultiLineStringWriter extends
 				writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 			}
 			
-			Descent descent = descend(writer, Pattern.parse("*/LineString"), elementType, gmlNs);
+			Descent descent = descend(writer, Pattern.parse("*/LineString"), 
+					elementType, elementName, gmlNs);
 			
 			LineString line = (LineString) geometry.getGeometryN(i);
 			writeCoordinates(writer, line.getCoordinates(), 

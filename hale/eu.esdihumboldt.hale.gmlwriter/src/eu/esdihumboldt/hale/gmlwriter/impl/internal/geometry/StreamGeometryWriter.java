@@ -367,7 +367,7 @@ public class StreamGeometryWriter {
 		
 		Queue<PathCandidate> candidates = new LinkedList<PathCandidate>();
 		PathCandidate base = new PathCandidate(attributeType, 
-				new DefinitionPath(attributeType),
+				new DefinitionPath(attributeType, GmlWriterUtil.getElementName(attributeType)),
 				new HashSet<TypeDefinition>());
 		candidates.add(base);
 		

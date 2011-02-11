@@ -61,13 +61,13 @@ public class PolygonWriter extends AbstractGeometryWriter<Polygon> {
 		// write exterior ring
 		LineString exterior = polygon.getExteriorRing();
 		descendAndWriteCoordinates(writer, Pattern.parse("*/exterior/LinearRing"), 
-				exterior.getCoordinates(), elementType, gmlNs);
+				exterior.getCoordinates(), elementType, elementName, gmlNs);
 		
 		// write interior rings
 		for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
 			LineString interior = polygon.getInteriorRingN(i);
 			descendAndWriteCoordinates(writer, Pattern.parse("*/interior/LinearRing"), 
-					interior.getCoordinates(), elementType, gmlNs);
+					interior.getCoordinates(), elementType, elementName, gmlNs);
 		}
 	}
 

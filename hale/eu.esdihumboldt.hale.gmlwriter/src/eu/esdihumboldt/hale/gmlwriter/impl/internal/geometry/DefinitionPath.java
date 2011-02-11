@@ -117,6 +117,8 @@ public class DefinitionPath {
 	
 	private TypeDefinition lastType;
 	
+	private Name lastName;
+	
 	private GeometryWriter<?> geometryWriter;
 	
 	/**
@@ -125,7 +127,7 @@ public class DefinitionPath {
 	 * @param basePath the base path
 	 */
 	public DefinitionPath(DefinitionPath basePath) {
-		this(basePath.lastType);
+		this(basePath.lastType, basePath.lastName);
 		
 		steps.addAll(basePath.getSteps());
 	}
@@ -134,11 +136,13 @@ public class DefinitionPath {
 	 * Create an empty definition path
 	 * 
 	 * @param firstType the type starting the path 
+	 * @param elementName the corresponding element name
 	 */
-	public DefinitionPath(TypeDefinition firstType) {
+	public DefinitionPath(TypeDefinition firstType, Name elementName) {
 		super();
 		
 		lastType = firstType;
+		lastName = elementName;
 	}
 
 	/**
@@ -156,12 +160,17 @@ public class DefinitionPath {
 			steps.remove(steps.size() - 1);
 		}
 		
-		steps.add(new SubTypeElement(type));
-		lastType = type;
+		addStep(new SubTypeElement(type));
 		
 		return this;
 	}
 	
+	private void addStep(PathElement step) {
+		steps.add(step);
+		lastType = step.getType();
+		lastName = step.getName();
+	}
+
 	/**
 	 * Add a property
 	 * 
@@ -170,8 +179,7 @@ public class DefinitionPath {
 	 * @return this path for chaining 
 	 */
 	public DefinitionPath addProperty(AttributeDefinition property) {
-		steps.add(new PropertyElement(property));
-		lastType = property.getAttributeType();
+		addStep(new PropertyElement(property));
 		
 		return this;
 	}
@@ -208,12 +216,22 @@ public class DefinitionPath {
 
 	/**
 	 * Get the last type of the path. For empty paths this will be the type
-	 * specified in creation
+	 * specified on creation
 	 * 
 	 * @return the last type
 	 */
 	public TypeDefinition getLastType() {
 		return lastType;
+	}
+	
+	/**
+	 * Get the last name of the path. For empty paths this will be the name
+	 * specified on creation
+	 * 
+	 * @return the last type
+	 */
+	public Name getLastName() {
+		return lastName;
 	}
 
 	/**

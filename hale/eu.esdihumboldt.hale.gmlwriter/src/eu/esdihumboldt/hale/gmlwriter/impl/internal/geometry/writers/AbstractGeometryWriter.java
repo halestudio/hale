@@ -28,7 +28,6 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.gmlwriter.impl.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.StreamGmlWriter;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.DefinitionPath;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.GeometryWriter;
@@ -105,7 +104,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	/**
 	 * The attribute type names supported for writing coordinates with
 	 * {@link #writeCoordinates(XMLStreamWriter, Coordinate[], TypeDefinition, String)} or
-	 * {@link #descendAndWriteCoordinates(XMLStreamWriter, Pattern, Coordinate[], TypeDefinition, String)}.
+	 * {@link #descendAndWriteCoordinates(XMLStreamWriter, Pattern, Coordinate[], TypeDefinition, Name, String)}.
 	 * 
 	 * Use for validating end-points.
 	 */
@@ -285,13 +284,15 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	 * @param descendPattern the pattern to descend
 	 * @param coordinates the coordinates to write
 	 * @param elementType the type of the encompassing element
+	 * @param elementName the encompassing element name
 	 * @param gmlNs the GML namespace
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
 	protected static void descendAndWriteCoordinates(XMLStreamWriter writer, 
 			Pattern descendPattern, Coordinate[] coordinates, 
-			TypeDefinition elementType, String gmlNs) throws XMLStreamException {
-		Descent descent = descend(writer, descendPattern, elementType, gmlNs);
+			TypeDefinition elementType, Name elementName, String gmlNs) throws XMLStreamException {
+		Descent descent = descend(writer, descendPattern, elementType, 
+				elementName, gmlNs);
 		
 		// write geometry
 		writeCoordinates(writer, coordinates, descent.getPath().getLastType(), gmlNs);
@@ -305,21 +306,23 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	 * @param writer the XML stream writer 
 	 * @param descendPattern the pattern to descend
 	 * @param elementType the type of the encompassing element
+	 * @param elementName the encompassing element name
 	 * @param gmlNs the GML namespace
 	 * @return the descent that was opened, it must be closed to close the
 	 *   opened elements
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
 	protected static Descent descend(XMLStreamWriter writer, 
-			Pattern descendPattern, TypeDefinition elementType, 
+			Pattern descendPattern, TypeDefinition elementType, Name elementName, 
 			String gmlNs) throws XMLStreamException {
-		DefinitionPath path = descendPattern.match(elementType, new DefinitionPath(elementType), gmlNs);
+		DefinitionPath path = descendPattern.match(elementType, 
+				new DefinitionPath(elementType, elementName), gmlNs);
 		
 		if (path.isEmpty()) {
 			return new Descent(writer, path);
 		}
 		
-		Name name = GmlWriterUtil.getElementName(path.getLastType()); //XXX the element name used may be wrong, is this an issue?
+		Name name = path.getLastName(); //XXX the element name used may be wrong, is this an issue?
 		for (PathElement step : path.getSteps()) {
 			// start elements
 			name = step.getName();
