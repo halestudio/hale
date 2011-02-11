@@ -426,6 +426,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 			Coordinate[] coordinates, TypeDefinition elementType, String gmlNs) throws XMLStreamException {
 		AttributeDefinition listAttribute = null;
 		String delimiter = " ";
+		String setDelimiter = " ";
 		
 		// check for DirectPositionListType
 		for (AttributeDefinition att : elementType.getAttributes()) {
@@ -457,7 +458,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 					first = false;
 				}
 				else {
-					writer.writeCharacters(delimiter);
+					writer.writeCharacters(setDelimiter);
 				}
 				
 				writer.writeCharacters(String.valueOf(coordinate.x));
