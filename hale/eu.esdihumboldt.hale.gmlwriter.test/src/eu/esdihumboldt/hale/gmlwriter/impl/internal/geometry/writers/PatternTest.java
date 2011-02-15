@@ -107,7 +107,8 @@ public class PatternTest {
 		
 		// create the LineStringSegmentType sub-type
 		TypeDefinition lineSeg = new TypeDefinition(new NameImpl(GML_NS, "LineStringSegmentType"), null, absSeg);
-		lineSeg.addDeclaringElement(new SchemaElement(new NameImpl(GML_NS, "LineStringSegment"), lineSeg.getName(), lineSeg, null));
+		lineSeg.addDeclaringElement(new SchemaElement(new NameImpl(GML_NS, "LineStringSegment"), 
+				lineSeg.getName(), lineSeg, new NameImpl(GML_NS, "AbstractCurveSegment")));
 		
 		return curve;
 	}
