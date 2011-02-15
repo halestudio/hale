@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -27,6 +28,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
@@ -114,17 +116,22 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 					monitor.beginTask("Exporting transformed features to GML file", IProgressMonitor.UNKNOWN);
 					GmlWriter gmlWriter = (GmlWriter) PlatformUI.getWorkbench().getService(GmlWriter.class);
 					OutputStream out;
+					
 					try {
 						out = new FileOutputStream(targetFile);
 					} catch (FileNotFoundException e1) {
+						log.userError("Could not write output file: " + 
+								targetFile.getAbsolutePath(), e1);
 						return;
 					}
 					ATransaction trans = log.begin("Writing transformed features to GML file: " + 
 							targetFile.getAbsolutePath());
+					List<Schema> addSchemas = null;
 					try {
-						gmlWriter.writeFeatures(features, schema, out, commonSrsName);
+						addSchemas = gmlWriter.writeFeatures(features, schema, out, commonSrsName);
 					} catch (Exception e) {
 						log.userError("Error saving transformation result to GML file", e);
+						return;
 					} finally {
 						trans.end();
 						try {
@@ -138,7 +145,18 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 						monitor.setTaskName("Validating output file");
 						
 						// validate output file
-						Validator validator = ValidatorFactory.getInstance().createValidator(schema);
+						Validator validator;
+						if (addSchemas == null || addSchemas.isEmpty()) {
+							validator = ValidatorFactory.getInstance().createValidator(schema);
+						}
+						else {
+							Schema[] schemas = new Schema[addSchemas.size() + 1];
+							schemas[0] = schema;
+							for (int i = 1; i <= addSchemas.size(); i++) {
+								schemas[i] = addSchemas.get(i - 1);
+							}
+							validator = ValidatorFactory.getInstance().createValidator(schemas);
+						}
 						InputStream xml;
 						try {
 							xml = new FileInputStream(targetFile);

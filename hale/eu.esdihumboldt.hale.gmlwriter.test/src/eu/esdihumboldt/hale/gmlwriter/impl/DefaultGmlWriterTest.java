@@ -630,8 +630,9 @@ public class DefaultGmlWriterTest {
 		DefaultGmlWriter writer = new DefaultGmlWriter();
 		File outFile = File.createTempFile(testName, ".gml"); 
 		OutputStream out = new FileOutputStream(outFile);
+		List<Schema> addSchemas;
 		try {
-			writer.writeFeatures(result, targetSchema, out, srsName);
+			addSchemas = writer.writeFeatures(result, targetSchema, out, srsName);
 		} finally {
 			out.flush();
 			out.close();
@@ -641,7 +642,7 @@ public class DefaultGmlWriterTest {
 		System.out.println(targetSchema.getLocation().toString());
 		
 		try {
-			return validate(targetSchema, outFile.toURI());
+			return validate(targetSchema, outFile.toURI(), addSchemas);
 		}
 		finally {
 			if (DEL_TEMP_FILES) {
@@ -744,8 +745,9 @@ public class DefaultGmlWriterTest {
 		DefaultGmlWriter writer = new DefaultGmlWriter();
 		File outFile = File.createTempFile(testName, ".gml"); 
 		OutputStream out = new FileOutputStream(outFile);
+		List<Schema> addSchema;
 		try {
-			writer.writeFeatures(fc, schema, out, srsName);
+			addSchema = writer.writeFeatures(fc, schema, out, srsName);
 		} finally {
 			out.flush();
 			out.close();
@@ -755,7 +757,7 @@ public class DefaultGmlWriterTest {
 			Desktop.getDesktop().open(outFile);
 		}
 		
-		Report report = validate(schema, outFile.toURI());
+		Report report = validate(schema, outFile.toURI(), addSchema);
 		
 		// load file
 		FeatureCollection<FeatureType, Feature> loaded = loadGML(
@@ -848,15 +850,24 @@ public class DefaultGmlWriterTest {
 	 * 
 	 * @param schema the schema
 	 * @param xmlLocation the location of the xml file
+	 * @param additionalSchemas additional schemas needed for validation
 	 * @return the validation report
 	 * @throws IOException if I/O operations fail
 	 * @throws MalformedURLException if a wrong URI is given 
 	 */
-	private Report validate(Schema schema, URI xmlLocation) throws MalformedURLException, IOException {
-		// validate using xerces directly
-//		return ValidatorFactory.getInstance().createValidator().validate(xmlLocation.toURL().openStream());
+	private Report validate(Schema schema, URI xmlLocation, List<Schema> additionalSchemas) throws MalformedURLException, IOException {
 		// validate using the XML api
-		return ValidatorFactory.getInstance().createValidator(schema).validate(xmlLocation.toURL().openStream());
+		if (additionalSchemas == null || additionalSchemas.isEmpty()) {
+			return ValidatorFactory.getInstance().createValidator(schema).validate(xmlLocation.toURL().openStream());
+		}
+		else {
+			Schema[] schemas = new Schema[additionalSchemas.size() + 1];
+			schemas[0] = schema;
+			for (int i = 1; i <= additionalSchemas.size(); i++) {
+				schemas[i] = additionalSchemas.get(i - 1);
+			}
+			return ValidatorFactory.getInstance().createValidator(schemas).validate(xmlLocation.toURL().openStream());
+		}
 	}
 
 	private Feature createFeature(TypeDefinition type) {

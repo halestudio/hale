@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.gmlwriter.impl;
 
 import java.io.OutputStream;
+import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -37,10 +38,10 @@ public class DefaultGmlWriter implements GmlWriter {
 	 * @see GmlWriter#writeFeatures(FeatureCollection, Schema, OutputStream, String)
 	 */
 	@Override
-	public void writeFeatures(FeatureCollection<FeatureType, Feature> features,
+	public List<Schema> writeFeatures(FeatureCollection<FeatureType, Feature> features,
 			Schema targetSchema, OutputStream out, String commonSrsName) {
 		try {
-			new StreamGmlWriter(targetSchema, out, commonSrsName).write(features);
+			return new StreamGmlWriter(targetSchema, out, commonSrsName).write(features);
 		} catch (XMLStreamException e) {
 			throw new RuntimeException("Error writing GML", e);
 		}

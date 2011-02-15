@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.gmlwriter;
 
 import java.io.OutputStream;
+import java.util.List;
 
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
@@ -38,8 +39,10 @@ public interface GmlWriter {
 	 *   responsible for closing it 
 	 * @param commonSrsName the name of the common SRS of the features,
 	 *   may be <code>null</code>
+	 * @return additional schemas used in the document that are needed for 
+	 * validation, may be <code>null</code>
 	 */
-	public void writeFeatures(FeatureCollection<FeatureType, Feature> features,
+	public List<Schema> writeFeatures(FeatureCollection<FeatureType, Feature> features,
 			Schema targetSchema, OutputStream out, String commonSrsName);
 
 }

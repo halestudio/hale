@@ -13,10 +13,15 @@
 package eu.esdihumboldt.hale.gmlwriter.impl.internal;
 
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.Map.Entry;
 
@@ -46,6 +51,7 @@ import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
 import eu.esdihumboldt.tools.AttributeProperty;
 import eu.esdihumboldt.tools.FeatureInspector;
 
@@ -94,6 +100,11 @@ public class StreamGmlWriter {
 	 * The geometry writer
 	 */
 	private StreamGeometryWriter geometryWriter;
+	
+	/**
+	 * Additional schemas included in the document
+	 */
+	private final Set<Schema> additionalSchemas = new HashSet<Schema>(); 
 
 	/**
 	 * Constructor
@@ -205,20 +216,41 @@ public class StreamGmlWriter {
 	 * Write the given features
 	 * 
 	 * @param features the feature collection
+	 * @return the additional schemas needed for validation
 	 * @throws XMLStreamException if writing the feature collection fails 
 	 */
-	public void write(FeatureCollection<FeatureType, Feature> features) throws XMLStreamException {
-		writer.writeStartDocument();
-		
+	public List<Schema> write(FeatureCollection<FeatureType, Feature> features) throws XMLStreamException {
 		// try to find FeatureCollection element
 		Iterator<SchemaElement> it = targetSchema.getAllElements().values().iterator();
 		Collection<SchemaElement> fcElements = new HashSet<SchemaElement>();
 		while (it.hasNext()) {
 			SchemaElement el = it.next();
-			if (el.getElementName().getLocalPart().contains("FeatureCollection") &&
-					!el.getType().isAbstract() &&
-					el.getType().getAttribute("featureMember") != null) { //TODO improve condition?
+			if (isFeatureCollection(el)) {
 				fcElements.add(el);
+			}
+		}
+		
+		if (fcElements.isEmpty() && gmlNs.equals("http://www.opengis.net/gml")) {
+			// no FeatureCollection defined and "old" namespace -> GML 2
+			// include WFS 1.0.0 for the FeatureCollection element
+			try {
+				URI location = getClass().getResource("/schemas/wfs/1.0.0/WFS-basic.xsd").toURI();
+				Schema wfsSchema = new ApacheSchemaProvider().loadSchema(location, null);
+				// replace location for verification
+				wfsSchema = new Schema(wfsSchema.getElements(), wfsSchema.getNamespace(), 
+						new URL("http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd"), 
+						wfsSchema.getPrefixes());
+				// add as additional schema
+				additionalSchemas.add(wfsSchema);
+				// add namespace
+				addNamespace(writer, wfsSchema.getNamespace(), "wfs");
+				for (SchemaElement el : wfsSchema.getElements().values()) {
+					if (isFeatureCollection(el)) {
+						fcElements.add(el);
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Using WFS schema for the FeatureCollection definition failed", e);
 			}
 		}
 		
@@ -226,6 +258,7 @@ public class StreamGmlWriter {
 		Name fcName;
 		if (fcElements.isEmpty()) {
 			log.warn("No element describing a FeatureCollection found");
+			
 			//TODO include an additional schema with a FC-definition?
 			fcName = new NameImpl(gmlNs, "FeatureCollection");
 		}
@@ -238,7 +271,8 @@ public class StreamGmlWriter {
 			log.info("Found " + fcElements.size() + " possible FeatureCollection elements" +
 					", using element " + fcElement.getElementName());
 		}
-		
+
+		writer.writeStartDocument();
 		writer.writeStartElement(fcName.getNamespaceURI(), fcName.getLocalPart());
 		
 		if (fcDefinition != null) {
@@ -250,7 +284,25 @@ public class StreamGmlWriter {
 		locations.append(targetSchema.getNamespace());
 		locations.append(" ");
 		locations.append(targetSchema.getLocation().toString());
+		for (Schema schema : additionalSchemas) {
+			locations.append(" ");
+			locations.append(schema.getNamespace());
+			locations.append(" ");
+			locations.append(schema.getLocation().toString());
+		}
 		writer.writeAttribute(SCHEMA_INSTANCE_NS, "schemaLocation", locations.toString());
+		
+		// boundedBy is needed for GML 2 FeatureCollections
+		if (fcDefinition != null) {
+			AttributeDefinition boundedBy = fcDefinition.getAttribute("boundedBy");
+			if (boundedBy.getMinOccurs() > 0) {
+				writer.writeStartElement(boundedBy.getNamespace(), boundedBy.getName());
+				writer.writeStartElement(gmlNs, "null");
+				writer.writeCharacters("missing");
+				writer.writeEndElement();
+				writer.writeEndElement();
+			}
+		}
 		
 		Iterator<Feature> itFeature = features.iterator();
 		try {
@@ -278,6 +330,15 @@ public class StreamGmlWriter {
         writer.writeEndElement(); // FeatureCollection
         
         writer.writeEndDocument();
+        
+        return new ArrayList<Schema>(additionalSchemas);
+	}
+
+	private boolean isFeatureCollection(SchemaElement el) {
+		//TODO improve condition?
+		return el.getElementName().getLocalPart().contains("FeatureCollection") &&
+			!el.getType().isAbstract() &&
+			el.getType().getAttribute("featureMember") != null;
 	}
 
 	/**
