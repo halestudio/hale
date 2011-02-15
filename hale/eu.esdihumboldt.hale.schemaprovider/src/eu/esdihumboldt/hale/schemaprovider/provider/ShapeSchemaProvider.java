@@ -140,7 +140,7 @@ public class ShapeSchemaProvider
 							ShapeSchemaProvider.getName((AttributeType) pd.getType()), 
 							ShapeSchemaProvider.getCompletedAttributeType(pd.getType()), 
 							null), 
-					true);
+					true, null);
 			this.pd = pd;
 		}
 		

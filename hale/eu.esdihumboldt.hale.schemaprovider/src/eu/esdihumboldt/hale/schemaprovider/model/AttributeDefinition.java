@@ -37,6 +37,8 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	
 	private final Name typeName;
 	
+	private final Name substitutionGroup;
+	
 	private TypeDefinition attributeType;
 	
 	/**
@@ -64,14 +66,17 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	 * @param typeName the name of the attribute type
 	 * @param attributeType the corresponding attribute type, may be <code>null</code>
 	 * @param isElement if the attribute is represented by an element
+	 * @param substitutionGroup the element substitution group, may be <code>null</code>
 	 */
 	public AttributeDefinition(String name, Name typeName,
-			TypeDefinition attributeType, boolean isElement) {
+			TypeDefinition attributeType, boolean isElement,
+			Name substitutionGroup) {
 		super();
 		this.name = name;
 		this.typeName = typeName;
 		this.attributeType = attributeType;
 		this.isElement = isElement;
+		this.substitutionGroup = substitutionGroup;
 	}
 	
 	/**
@@ -80,7 +85,8 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	 * @param other the attribute definition to copy
 	 */
 	protected AttributeDefinition(AttributeDefinition other) {
-		this(other.getName(), other.getTypeName(), other.getAttributeType(), other.isElement);
+		this(other.getName(), other.getTypeName(), other.getAttributeType(), 
+				other.isElement, other.substitutionGroup);
 		
 		setDescription(other.getDescription());
 		setDeclaringType(other.getDeclaringType());
@@ -334,6 +340,13 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	 */
 	protected void setParentType(TypeDefinition parentType) {
 		this.parentType = parentType;
+	}
+
+	/**
+	 * @return the substitution group name, may be <code>null</code>
+	 */
+	public Name getSubstitutionGroup() {
+		return substitutionGroup;
 	}
 
 	/**

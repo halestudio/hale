@@ -24,7 +24,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
- * 
+ * Attribute represented as attribute in XML
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -46,7 +46,7 @@ public abstract class AbstractDefaultAttribute extends AttributeDefinition {
 	 */
 	public AbstractDefaultAttribute(String name, Name typeName,
 			TypeDefinition attributeType, String namespace, XmlSchemaUse use) {
-		super(name, typeName, attributeType, false);
+		super(name, typeName, attributeType, false, null);
 		
 		this.use = use;
 		

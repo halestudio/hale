@@ -35,7 +35,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
- * 
+ * Attribute represented as element in XML
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -62,7 +62,10 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 	 */
 	public AbstractElementAttribute(TypeDefinition declaringType, String name, Name typeName,
 			XmlSchemaElement element) {
-		super(name, typeName, null, true);
+		super(name, typeName, null, true, 
+				((element.getSubstitutionGroup() == null)?(null):(new NameImpl(
+						element.getSubstitutionGroup().getNamespaceURI(), 
+						element.getSubstitutionGroup().getLocalPart()))));
 		
 		nillable = element.isNillable(); //XXX correct?
 		minOccurs = element.getMinOccurs(); //XXX correct?
