@@ -18,8 +18,8 @@ import java.util.List;
 import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.Name;
 
-import eu.esdihumboldt.hale.gmlwriter.impl.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -35,17 +35,17 @@ public class DefinitionPath {
 	/**
 	 * Sub-type path element
 	 */
-	private static class SubTypeElement implements PathElement {
+	private static class SubstitutionElement implements PathElement {
 
-		private final TypeDefinition subtype;
+		private final SchemaElement element;
 		
 		/**
 		 * Constructor
 		 * 
-		 * @param subtype the sub-type
+		 * @param element the substitution element
 		 */
-		public SubTypeElement(TypeDefinition subtype) {
-			this.subtype = subtype;
+		public SubstitutionElement(SchemaElement element) {
+			this.element = element;
 		}
 
 		/**
@@ -53,7 +53,7 @@ public class DefinitionPath {
 		 */
 		@Override
 		public Name getName() {
-			return GmlWriterUtil.getElementName(subtype);
+			return element.getElementName();
 		}
 
 		/**
@@ -61,7 +61,7 @@ public class DefinitionPath {
 		 */
 		@Override
 		public TypeDefinition getType() {
-			return subtype;
+			return element.getType();
 		}
 
 		/**
@@ -146,13 +146,13 @@ public class DefinitionPath {
 	}
 
 	/**
-	 * Add a sub-type
+	 * Add a substitution
 	 * 
-	 * @param type the sub-type
+	 * @param element the substitution element
 	 * 
 	 * @return this path for chaining 
 	 */
-	public DefinitionPath addSubType(TypeDefinition type) {
+	public DefinitionPath addSubstitution(SchemaElement element) {
 		// 1. sub-type must override previous sub-type
 		// 2. sub-type must override a previous property XXX check this!!! or only the first?
 		// XXX -> there removing the previous path element
@@ -160,7 +160,7 @@ public class DefinitionPath {
 			steps.remove(steps.size() - 1);
 		}
 		
-		addStep(new SubTypeElement(type));
+		addStep(new SubstitutionElement(element));
 		
 		return this;
 	}

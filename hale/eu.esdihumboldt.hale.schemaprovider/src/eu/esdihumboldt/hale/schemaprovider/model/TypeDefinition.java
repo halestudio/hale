@@ -531,14 +531,12 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	 * Get the schema elements representing sub-types of this type definition
 	 * that may substitute the given property.
 	 * 
-	 * @param property the property definition
+	 * @param elementName the name of the element to substitute
 	 * 
 	 * @return the schema elements that may substitute the property
 	 */
-	public Collection<SchemaElement> getSubstitutions(AttributeDefinition property) {
-		Name groupName = property.getSubstitutionGroup();
-		
-		if (groupName == null) {
+	public Collection<SchemaElement> getSubstitutions(Name elementName) {
+		if (elementName == null) {
 			// no substitution allowed?
 			return new ArrayList<SchemaElement>();
 		}
@@ -547,8 +545,10 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 			for (TypeDefinition type : subTypes) {
 				Set<SchemaElement> elements = type.getDeclaringElements();
 				for (SchemaElement element : elements) {
-					//TODO check if element is may substitute the property
-					result.add(element); //XXX
+					// check if element is may substitute the property
+					if (element.getSubstitutionGroup() != null && element.getSubstitutionGroup().equals(elementName)) {
+						result.add(element);
+					}
 				}
 			}
 			

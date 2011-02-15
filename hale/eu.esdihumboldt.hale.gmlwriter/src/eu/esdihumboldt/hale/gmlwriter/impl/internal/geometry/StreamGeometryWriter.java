@@ -32,20 +32,19 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-
-import eu.esdihumboldt.hale.gmlwriter.impl.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.StreamGmlWriter;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.GeometryConverterRegistry.ConversionLadder;
+import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers.CurveWriter;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers.LegacyMultiPolygonWriter;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers.LegacyPolygonWriter;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers.LineStringWriter;
-import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers.CurveWriter;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers.MultiLineStringWriter;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers.MultiPointWriter;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers.MultiPolygonWriter;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers.PointWriter;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.writers.PolygonWriter;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -260,7 +259,7 @@ public class StreamGeometryWriter {
 			DefinitionPath path, String srsName) throws XMLStreamException {
 		GeometryWriter geomWriter = path.getGeometryWriter();
 		
-		Name name = GmlWriterUtil.getElementName(path.getLastType()); //XXX the element name used may be wrong, is this an issue?
+		Name name = path.getLastName();
 		
 		if (path.isEmpty()) {
 			// directly write geometry
@@ -408,9 +407,14 @@ public class StreamGeometryWriter {
 			}
 			
 			// step down sub-types
-			for (TypeDefinition subtype : type.getSubTypes()) {
-				candidates.add(new PathCandidate(subtype,
-						new DefinitionPath(basePath).addSubType(subtype),
+//			for (TypeDefinition subtype : type.getSubTypes()) {
+//				candidates.add(new PathCandidate(subtype,
+//						new DefinitionPath(basePath).addSubType(subtype),
+//						new HashSet<TypeDefinition>(checkedTypes)));
+//			}
+			for (SchemaElement element : type.getSubstitutions(basePath.getLastName())) {
+				candidates.add(new PathCandidate(element.getType(),
+						new DefinitionPath(basePath).addSubstitution(element),
 						new HashSet<TypeDefinition>(checkedTypes)));
 			}
 		}

@@ -22,10 +22,9 @@ import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.Name;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-import eu.esdihumboldt.hale.gmlwriter.impl.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.DefinitionPath;
-import eu.esdihumboldt.hale.gmlwriter.impl.internal.geometry.PathElement;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -351,15 +350,7 @@ public class Pattern {
 		
 		if (checkAgainst != null) {
 			// get the last path element
-			Name elementName;
-			PathElement pe = path.getLastElement();
-			if (pe != null) {
-				elementName = pe.getName();
-			}
-			else {
-				// path is empty -> use type element name
-				elementName = GmlWriterUtil.getElementName(type);
-			}
+			Name elementName = path.getLastName();
 			
 			Name name = checkAgainst.getName();
 			// inject namespace if needed
@@ -394,10 +385,22 @@ public class Pattern {
 		
 		if (allowSubtypeDescent) {
 			// step down sub-types
-			for (TypeDefinition subtype : type.getSubTypes()) {
+//			for (TypeDefinition subtype : type.getSubTypes()) {
+//				DefinitionPath candidate = match(
+//						subtype, 
+//						new DefinitionPath(path).addSubType(subtype), 
+//						gmlNs, 
+//						new HashSet<TypeDefinition>(checkedTypes), 
+//						new ArrayList<PatternElement>(remainingElements));
+//				
+//				if (candidate != null) {
+//					return candidate;
+//				}
+//			}
+			for (SchemaElement element : type.getSubstitutions(path.getLastName())) {
 				DefinitionPath candidate = match(
-						subtype, 
-						new DefinitionPath(path).addSubType(subtype), 
+						element.getType(), 
+						new DefinitionPath(path).addSubstitution(element), 
 						gmlNs, 
 						new HashSet<TypeDefinition>(checkedTypes), 
 						new ArrayList<PatternElement>(remainingElements));
