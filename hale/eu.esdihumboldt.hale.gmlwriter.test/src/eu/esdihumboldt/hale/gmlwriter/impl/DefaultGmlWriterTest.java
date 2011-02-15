@@ -263,7 +263,48 @@ public class DefaultGmlWriterTest {
 		
 		assertTrue("Expected GML output to be valid", report.isValid());
 	}
+	
+	// deactivated test because schema is invalid (according to xerces)
+//	/**
+//	 * Test writing a {@link Polygon} to a GML 3.0 geometry primitive type
+//	 * 
+//	 * @throws Exception if an error occurs
+//	 */
+//	@Test
+//	public void testGeometryPrimitive_3_Polygon() throws Exception {
+//		// create the geometry
+//		Polygon polygon = createPolygon(0.0);
+//		
+//		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
+//		values.put(Arrays.asList("geometry"), polygon);
+//		
+//		Report report = fillFeatureTest("PrimitiveTest",
+//				getClass().getResource("/data/geom_schema/geom-gml3.xsd").toURI(), 
+//				values, "geometryPrimitive_3_Polygon", DEF_SRS_NAME);
+//		
+//		assertTrue("Expected GML output to be valid", report.isValid());
+//	}
 
+	/**
+	 * Test writing a {@link Polygon} to a GML 3.1 geometry primitive type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometryPrimitive_31_Polygon() throws Exception {
+		// create the geometry
+		Polygon polygon = createPolygon(0.0);
+		
+		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
+		values.put(Arrays.asList("geometry"), polygon);
+		
+		Report report = fillFeatureTest("PrimitiveTest",
+				getClass().getResource("/data/geom_schema/geom-gml31.xsd").toURI(), 
+				values, "geometryPrimitive_31_Polygon", DEF_SRS_NAME);
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
+	}
+	
 	/**
 	 * Test writing a {@link Polygon} to a GML 3.2 geometry primitive type
 	 * 
