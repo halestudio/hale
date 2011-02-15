@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.gmlvalidate.internal;
 
 import java.io.InputStream;
+import java.net.URI;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
@@ -32,16 +33,16 @@ import eu.esdihumboldt.hale.schemaprovider.Schema;
  */
 public class XMLApiValidator implements Validator {
 
-	private final Schema schema;
+	private final Schema[] schemas;
 	
 	/**
 	 * Constructor
 	 * 
-	 * @param schema the schema
+	 * @param schemas the schema
 	 */
-	public XMLApiValidator(Schema schema) {
+	public XMLApiValidator(Schema[] schemas) {
 		super();
-		this.schema = schema;
+		this.schemas = schemas;
 	}
 
 	/**
@@ -49,21 +50,30 @@ public class XMLApiValidator implements Validator {
 	 */
 	@Override
 	public Report validate(InputStream xml) {
-		javax.xml.validation.Schema schema;
+		javax.xml.validation.Schema validateSchema;
 		try {
+			URI mainUri = null;
+			Source[] sources = new Source[schemas.length];
+			for (int i = 0; i < this.schemas.length; i++) {
+				Schema schema = this.schemas[i];
+						    
+				if (mainUri == null) { // use first schema location for main URI
+					mainUri = schema.getLocation().toURI();
+				}
+		
+			    // load a WXS schema, represented by a Schema instance
+			    sources[i] = new StreamSource(schema.getLocation().openStream());
+			}
 			// create a SchemaFactory capable of understanding WXS schemas
 		    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		    factory.setResourceResolver(new SchemaResolver(this.schema.getLocation().toURI()));		    
-	
-		    // load a WXS schema, represented by a Schema instance
-		    Source schemaFile = new StreamSource(this.schema.getLocation().openStream());
-		    schema = factory.newSchema(schemaFile);
+		    factory.setResourceResolver(new SchemaResolver(mainUri));
+		    validateSchema = factory.newSchema(sources);
 		} catch (Exception e) {
 			throw new IllegalStateException("Error parsing schema for XML validation", e);
 		}
 
 	    // create a Validator instance, which can be used to validate an instance document
-	    javax.xml.validation.Validator validator = schema.newValidator();
+	    javax.xml.validation.Validator validator = validateSchema.newValidator();
 	    ReportImpl report = new ReportImpl();
 		validator.setErrorHandler(new ReportErrorHandler(report));
 	    

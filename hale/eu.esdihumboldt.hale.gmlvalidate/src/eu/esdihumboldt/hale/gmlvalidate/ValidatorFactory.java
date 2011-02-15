@@ -59,12 +59,12 @@ public class ValidatorFactory {
 	/**
 	 * Create a validator that relies on the given schema for validation.
 	 * 
-	 * @param schema the schema 
+	 * @param schemas the schemas 
 	 * 
 	 * @return the validator
 	 */
-	public Validator createValidator(Schema schema) {
-		return new XMLApiValidator(schema);
+	public Validator createValidator(Schema... schemas) {
+		return new XMLApiValidator(schemas);
 	}
 
 }
