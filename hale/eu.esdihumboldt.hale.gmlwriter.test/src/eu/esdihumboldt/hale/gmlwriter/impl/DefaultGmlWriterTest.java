@@ -586,6 +586,25 @@ public class DefaultGmlWriterTest {
 		assertTrue("Expected GML output to be valid", report.isValid());
 	}
 	
+	/**
+	 * Test writing the result from a CST transformation
+	 * 
+	 * @throws Exception if any error occurs
+	 */
+	@Test
+	public void testTransformWrite_ERM() throws Exception {
+		Report report = transformTest(
+				getClass().getResource("/data/erm/ERM_Watercourse_FME.gml").toURI(),
+				getClass().getResource("/data/erm/ERM_Watercourse_FME.xsd").toURI(),
+				getClass().getResource("/data/erm/_watrcrsl_inspire.xml.goml").toURI(),
+				getClass().getResource("/data/erm/inspire3/HydroPhysicalWaters.xsd").toURI(),
+				"transformWrite_ERM",
+				true,
+				"EPSG:4326");
+		
+		assertTrue("Expected GML output to be valid", report.isValid());
+	}
+	
 	private Report transformTest(URI sourceData, URI sourceSchemaLocation,
 			URI mappingLocation, URI targetSchemaLocation, String testName,
 			boolean onlyOne, String srsName)
