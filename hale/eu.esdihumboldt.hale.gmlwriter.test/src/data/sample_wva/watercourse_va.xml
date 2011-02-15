@@ -8,7 +8,7 @@
     <instanceData>
         <path>wfs_va_sample.gml</path>
         <epsgcode>EPSG:31251</epsgcode>
-        <type>GML3</type>
+        <type>GML2</type>
     </instanceData>
     <sourceSchema>
         <path>wfs_va.xsd</path>
