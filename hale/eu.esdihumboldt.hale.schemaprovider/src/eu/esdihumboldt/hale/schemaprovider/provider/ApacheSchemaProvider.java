@@ -37,7 +37,6 @@ import org.apache.ws.commons.schema.XmlSchemaAttributeGroup;
 import org.apache.ws.commons.schema.XmlSchemaAttributeGroupRef;
 import org.apache.ws.commons.schema.XmlSchemaChoice;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
-import org.apache.ws.commons.schema.XmlSchemaComplexContent;
 import org.apache.ws.commons.schema.XmlSchemaComplexContentExtension;
 import org.apache.ws.commons.schema.XmlSchemaComplexContentRestriction;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
@@ -176,7 +175,7 @@ public class ApacheSchemaProvider
 							(XmlSchemaElement) object, typeDef, schemaTypes, 
 							referenceResolver);
 					if (attribute != null) {
-						attribute.setNillable(true); //XXX set nillable because its a choice
+						attribute.setMinOccurs(0); //XXX set minOccurs to zero because its a choice
 						attributeResults.add(attribute);
 					}
 					// </element>
