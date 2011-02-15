@@ -526,6 +526,35 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	public Collection<TypeDefinition> getSubTypes() {
 		return subTypes;
 	}
+	
+	/**
+	 * Get the schema elements representing sub-types of this type definition
+	 * that may substitute the given property.
+	 * 
+	 * @param property the property definition
+	 * 
+	 * @return the schema elements that may substitute the property
+	 */
+	public Collection<SchemaElement> getSubstitutions(AttributeDefinition property) {
+		Name groupName = property.getSubstitutionGroup();
+		
+		if (groupName == null) {
+			// no substitution allowed?
+			return new ArrayList<SchemaElement>();
+		}
+		else {
+			List<SchemaElement> result = new ArrayList<SchemaElement>();
+			for (TypeDefinition type : subTypes) {
+				Set<SchemaElement> elements = type.getDeclaringElements();
+				for (SchemaElement element : elements) {
+					//TODO check if element is may substitute the property
+					result.add(element); //XXX
+				}
+			}
+			
+			return result;
+		}
+	}
 
 	/**
 	 * @see Object#hashCode()
