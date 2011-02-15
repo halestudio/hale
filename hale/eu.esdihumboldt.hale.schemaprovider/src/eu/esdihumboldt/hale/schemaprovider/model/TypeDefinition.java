@@ -544,8 +544,12 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 			List<SchemaElement> result = new ArrayList<SchemaElement>();
 			for (TypeDefinition type : subTypes) {
 				Set<SchemaElement> elements = type.getDeclaringElements();
+				
+				// substitutions for subtypes
+				result.addAll(type.getSubstitutions(elementName));
+				
 				for (SchemaElement element : elements) {
-					// check if element is may substitute the property
+					// check if element may substitute the property
 					if (element.getSubstitutionGroup() != null && element.getSubstitutionGroup().equals(elementName)) {
 						result.add(element);
 					}
