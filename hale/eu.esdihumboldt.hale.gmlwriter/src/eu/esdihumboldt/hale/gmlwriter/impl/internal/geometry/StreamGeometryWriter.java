@@ -144,6 +144,7 @@ public class StreamGeometryWriter {
 	/**
 	 * Types mapped to geometry types mapped to matched definition paths
 	 */
+	//XXX stored paths instead per attribute definition?
 	private final Map<TypeDefinition, Map<Class<? extends Geometry>, DefinitionPath>> storedPaths = 
 		new HashMap<TypeDefinition, Map<Class<? extends Geometry>,DefinitionPath>>(); 
 
@@ -179,24 +180,24 @@ public class StreamGeometryWriter {
 	 * 
 	 * @param writer the XML stream writer
 	 * @param geometry the geometry
-	 * @param attributeType the attribute type
+	 * @param property the geometry property
 	 * @param srsName the SRS name of a common SRS for the whole 
 	 *   document, may be <code>null</code>
 	 * @throws XMLStreamException if any error occurs writing the geometry
 	 */
 	public void write(XMLStreamWriter writer, Geometry geometry,
-			TypeDefinition attributeType, String srsName) throws XMLStreamException {
+			AttributeDefinition property, String srsName) throws XMLStreamException {
 		// write any srsName attribute on the parent element
-		writeSrsName(writer, attributeType, geometry, srsName);
+		writeSrsName(writer, property.getAttributeType(), geometry, srsName);
 		
 		Class<? extends Geometry> geomType = geometry.getClass();
 		
 		// remember if we already found a solution to this problem
-		DefinitionPath path = restoreCandidate(attributeType, geomType);
+		DefinitionPath path = restoreCandidate(property.getAttributeType(), geomType);
 		
 		if (path == null) {
 			// find candidates
-			List<DefinitionPath> candidates = findCandidates(attributeType, geomType);
+			List<DefinitionPath> candidates = findCandidates(property, geomType);
 			
 			// if no candidate found, try with compatible geometries
 			Class<? extends Geometry> originalType = geomType;
@@ -209,13 +210,13 @@ public class StreamGeometryWriter {
 				log.info("Possible structure for writing " + originalType.getSimpleName() + 
 						" not found, trying " + geomType.getSimpleName() + " instead");
 				
-				DefinitionPath candPath = restoreCandidate(attributeType, geomType);
+				DefinitionPath candPath = restoreCandidate(property.getAttributeType(), geomType);
 				if (candPath != null) {
 					// use stored candidate
 					candidates = Collections.singletonList(candPath);
 				}
 				else {
-					candidates = findCandidates(attributeType, geomType);
+					candidates = findCandidates(property, geomType);
 				}
 			}
 			
@@ -237,7 +238,7 @@ public class StreamGeometryWriter {
 			path = candidates.get(0);
 			
 			// remember for later
-			storeCandidate(attributeType, geomType, path);
+			storeCandidate(property.getAttributeType(), geomType, path);
 		}
 		
 		// write geometry
@@ -354,12 +355,12 @@ public class StreamGeometryWriter {
 	/**
 	 * Find candidates for a possible path to use for writing the geometry
 	 * 
-	 * @param attributeType the start attribute type
+	 * @param property the start property
 	 * @param geomType the geometry type
 	 * 
 	 * @return the path candidates
 	 */
-	private List<DefinitionPath> findCandidates(TypeDefinition attributeType,
+	private List<DefinitionPath> findCandidates(AttributeDefinition property,
 			Class<? extends Geometry> geomType) {
 		Set<GeometryWriter<?>> writers = geometryWriters.get(geomType);
 		if (writers == null || writers.isEmpty()) {
@@ -368,8 +369,9 @@ public class StreamGeometryWriter {
 		}
 		
 		Queue<PathCandidate> candidates = new LinkedList<PathCandidate>();
-		PathCandidate base = new PathCandidate(attributeType, 
-				new DefinitionPath(attributeType, GmlWriterUtil.getElementName(attributeType)),
+		PathCandidate base = new PathCandidate(property.getAttributeType(), 
+				new DefinitionPath(property.getAttributeType(), 
+				new NameImpl(property.getNamespace(), property.getName())),
 				new HashSet<TypeDefinition>());
 		candidates.add(base);
 		

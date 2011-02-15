@@ -537,7 +537,7 @@ public class StreamGmlWriter {
 			}
 			else if (value instanceof Geometry) {
 				// write geometry
-				writeGeometry(((Geometry) value), attDef.getAttributeType(), commonSrsName);
+				writeGeometry(((Geometry) value), attDef, commonSrsName);
 			}
 			else {
 				// write any attributes
@@ -575,13 +575,13 @@ public class StreamGmlWriter {
 	 * Write a geometry
 	 * 
 	 * @param geometry the geometry
-	 * @param attributeType the type definition
+	 * @param property the geometry property
 	 * @param srsName the common SRS name, may be <code>null</code> 
 	 * @throws XMLStreamException if an error occurs writing the geometry  
 	 */
-	private void writeGeometry(Geometry geometry, TypeDefinition attributeType, 
+	private void writeGeometry(Geometry geometry, AttributeDefinition property, 
 			String srsName) throws XMLStreamException {
-		getGeometryWriter().write(writer, geometry, attributeType, srsName);
+		getGeometryWriter().write(writer, geometry, property, srsName);
 	}
 
 	/**
