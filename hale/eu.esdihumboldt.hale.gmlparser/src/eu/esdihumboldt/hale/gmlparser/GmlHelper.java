@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.gmlparser;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -33,13 +34,16 @@ import org.apache.commons.logging.LogFactory;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.xml.Configuration;
 import org.opengis.feature.Feature;
+import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.filter.identity.FeatureId;
 
 import eu.esdihumboldt.hale.gmlparser.gml3.HaleGMLConfiguration;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
+import eu.esdihumboldt.tools.FeatureInspector;
 
 /**
  * 
@@ -157,8 +161,10 @@ public class GmlHelper {
 				result = ((Feature) result).getProperty("featureMember").getValue();
 			}
 			
+			FeatureCollection<FeatureType, Feature> featureCollection = null;
+			
 			if (result instanceof FeatureCollection<?, ?>) {
-				return (FeatureCollection<FeatureType, Feature>) result;
+				featureCollection = (FeatureCollection<FeatureType, Feature>) result;
 			}
 			else if (result instanceof SimpleFeature[]) {
 				SimpleFeature[] features = (SimpleFeature[]) result;
@@ -166,12 +172,12 @@ public class GmlHelper {
 				for (int i = 0; i < features.length; i++) {
 					fc.add(features[i]);
 				}
-				return fc;
+				featureCollection = fc;
 			}
 			else if (result instanceof Feature) {
 				CstFeatureCollection fc = new CstFeatureCollection();
 				fc.add((Feature) result);
-				return fc;
+				featureCollection = fc;
 			}
 			else if (result instanceof Map<?, ?>) {
 				// extract features from Map
@@ -185,13 +191,51 @@ public class GmlHelper {
 					Collection<? extends Feature> features = (Collection<? extends Feature>) featureMember;
 					fc.addAll(features);
 				}
-				return fc;
+				featureCollection = fc;
 			}
 			
-			return null;
-		} catch (Exception e) {
+			if (featureCollection != null) {
+				postProcess(featureCollection, type);
+			}
+			
+			return featureCollection;
+		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		} 
+	}
+
+	/**
+	 * Post processing after a feature collection has been read
+	 * 
+	 * @param featureCollection the feature collection
+	 * @param type the configuration type
+	 */
+	private static void postProcess(
+			FeatureCollection<FeatureType, Feature> featureCollection, ConfigurationType type) {
+		Iterator<Feature> it = featureCollection.iterator();
+		try {
+			while (it.hasNext()) {
+				Feature feature = it.next();
+				FeatureId id = feature.getIdentifier();
+				
+				Property idProp;
+				switch (type) {
+				case GML2:
+					idProp = FeatureInspector.getProperty(feature, Arrays.asList("fid"), true);
+					break;
+				case GML3: // fall through
+				case GML3_2: // fall through
+				default:
+					idProp = FeatureInspector.getProperty(feature, Arrays.asList("id"), true);
+				}
+				
+				if (idProp.getValue() == null) {
+					idProp.setValue(id.toString());
+				}
+			}
+		} finally {
+			featureCollection.close(it);
+		}
 	}
 
 	/**
