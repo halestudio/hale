@@ -17,8 +17,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -131,24 +131,7 @@ public class StreamGmlWriter {
 			}
 		}
 		
-		if (tmpWriter.getPrefix(SCHEMA_INSTANCE_NS) == null) {
-			// no prefix for schema instance namespace
-			
-			String prefix = "xsi";
-			String ns = tmpWriter.getNamespaceContext().getNamespaceURI(prefix);
-			if (ns == null) {
-				// add xsi namespace
-				tmpWriter.setPrefix(prefix, SCHEMA_INSTANCE_NS);
-			}
-			else {
-				int i = 0;
-				while (ns != null) {
-					ns = tmpWriter.getNamespaceContext().getNamespaceURI(prefix + "-" + (++i));
-				}
-				
-				tmpWriter.setPrefix(prefix + "-" + i, SCHEMA_INSTANCE_NS);
-			}
-		}
+		addNamespace(tmpWriter, SCHEMA_INSTANCE_NS, "xsi");
 		
 		if (defNamespace == null) {
 			defNamespace = targetSchema.getNamespace();
@@ -185,6 +168,36 @@ public class StreamGmlWriter {
 		types = new TypeIndex();
 		for (SchemaElement element : targetSchema.getElements().values()) {
 			types.addType(element.getType());
+		}
+	}
+
+	/**
+	 * Add a namespace to XML stream writer
+	 * 
+	 * @param writer the XML stream writer
+	 * @param namespace the namespace to add
+	 * @param preferredPrefix the preferred prefix
+	 * @throws XMLStreamException if setting a prefix for the namespace fails
+	 */
+	private void addNamespace(XMLStreamWriter writer,
+			String namespace, String preferredPrefix) throws XMLStreamException {
+		if (writer.getPrefix(namespace) == null) {
+			// no prefix for schema instance namespace
+			
+			String prefix = preferredPrefix;
+			String ns = writer.getNamespaceContext().getNamespaceURI(prefix);
+			if (ns == null) {
+				// add xsi namespace
+				writer.setPrefix(prefix, namespace);
+			}
+			else {
+				int i = 0;
+				while (ns != null) {
+					ns = writer.getNamespaceContext().getNamespaceURI(prefix + "-" + (++i));
+				}
+				
+				writer.setPrefix(prefix + "-" + i, namespace);
+			}
 		}
 	}
 
