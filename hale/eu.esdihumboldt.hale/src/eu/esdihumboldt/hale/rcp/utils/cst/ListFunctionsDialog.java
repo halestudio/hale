@@ -15,15 +15,23 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.cst.transformer.CstService;
@@ -52,6 +60,37 @@ public class ListFunctionsDialog extends TitleAreaDialog {
 			
 			return function.getFunctionId().toString();
 		}
+
+	}
+	
+	public static class FunctionDescriptionFunctions extends ColumnLabelProvider {
+
+		/**
+		 * @see LabelProvider#getText(java.lang.Object)
+		 */
+		@Override
+		public String getText(Object element) {
+			FunctionDescription function = (FunctionDescription) element;
+			
+			return function.getFunctionId().toString();
+		}
+
+	}
+	
+	public static class FunctionDescriptionDescriptions extends ColumnLabelProvider {
+
+		/**
+		 * @see LabelProvider#getText(java.lang.Object)
+		 */
+		@Override
+		public String getText(Object element) {
+			FunctionDescription function = (FunctionDescription) element;
+			String descr = "";
+			if (function.getFunctionDescription()!=null)
+				descr = function.getFunctionDescription().toString().trim();
+			return descr;
+		}
+		
 
 	}
 
@@ -96,17 +135,82 @@ public class ListFunctionsDialog extends TitleAreaDialog {
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		page.setLayoutData(data);
 		
-		page.setLayout(new GridLayout(1, false));
+		page.setLayout(new GridLayout(2, false));
 		
 		CstService cst = (CstService) PlatformUI.getWorkbench().getService(CstService.class);
 		List<FunctionDescription> functions = cst.getCapabilities().getFunctionDescriptions();
+	
+		final TableViewer tablev = new TableViewer(page,SWT.FULL_SELECTION);
+		tablev.getTable().setCapture(false);		
+		tablev.setContentProvider(new ArrayContentProvider());
 		
-		ListViewer list = new ListViewer(page);
-		list.setContentProvider(new ArrayContentProvider());
-		list.setLabelProvider(new FunctionDescriptionLabels());
-		list.setInput(functions);
+		// 1st Column
 		
-		list.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		TableViewerColumn vColumn1 = new TableViewerColumn(tablev,SWT.WRAP);
+		TableColumn column = vColumn1.getColumn();
+		column.setText("Function");
+		column.setResizable(false);
+		vColumn1.setLabelProvider(new FunctionDescriptionFunctions());		
+		// 2nd Column
+		TableViewerColumn vColumn2 = new TableViewerColumn(tablev,SWT.WRAP);
+		TableColumn column2 = vColumn2.getColumn();
+		column2.setText("Description");
+		column2.setResizable(false);
+		vColumn2.setLabelProvider(new FunctionDescriptionDescriptions());		
+		tablev.setInput(functions);
+		tablev.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		tablev.getTable().setHeaderVisible(true);
+		
+		column.pack();
+		column2.pack();
+		
+		for (int i=0;i<tablev.getTable().getItemCount();i++){
+			TableItem titem = tablev.getTable().getItem(i);
+			String titemdescription = titem.getText(1).trim();
+			if(titemdescription.startsWith("link:"))
+			{
+				Color col = Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);
+				titem.setForeground(1,col);
+				titem.setText(1,titemdescription.substring(5).trim());
+			}
+		}
+		column2.pack();
+		
+		tablev.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(final SelectionChangedEvent arg0) {
+				TableItem selecteditem = tablev.getTable().getItem(tablev.getTable().getSelectionIndex());
+				System.out.println(selecteditem.getForeground(1).toString());
+				System.out.println(selecteditem.getDisplay().getSystemColor(SWT.COLOR_BLUE));
+				if(selecteditem.getForeground(1).equals(selecteditem.getDisplay().getSystemColor(SWT.COLOR_BLUE)))
+				{
+					if( !java.awt.Desktop.isDesktopSupported() ) {
+
+			            System.err.println( "Desktop is not supported (fatal)" );
+			            System.exit( 1 );
+			        }
+
+			       java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
+
+			        if( !desktop.isSupported( java.awt.Desktop.Action.BROWSE ) ) {
+
+			            System.err.println( "Desktop doesn't support the browse action (fatal)" );
+			            System.exit( 1 );
+			        }
+
+			       
+			            try {
+
+			                java.net.URI uri = new java.net.URI(selecteditem.getText(1));
+			                desktop.browse( uri );
+			            }
+			            catch ( Exception e ) {
+
+			                System.err.println( e.getMessage() );
+			            }
+				}
+			}
+		});
 		
 		return page;
 	}
