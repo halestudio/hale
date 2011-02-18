@@ -15,10 +15,11 @@
    <windowImages i32="/eu.esdihumboldt.hale/icons/hale_icon.png"/>
 
    <launcher name="HALE">
+      <macosx icon="/eu.esdihumboldt.hale/icons/hale.icns"/>
       <solaris/>
-      <win useIco="false">
-         <bmp
-            winMediumHigh="/eu.esdihumboldt.hale/icons/hale_icon.bmp"/>
+      <win useIco="true">
+         <ico path="/eu.esdihumboldt.hale/icons/hale.ico"/>
+         <bmp/>
       </win>
    </launcher>
 
