@@ -268,5 +268,10 @@ public class RenameAttributeFunction
 		}
 		return newGeometry;
 	}
+
+	@Override
+	public String getDescription() {
+		return "CstFunction for attribute renaming, i.e. the copying of attributes of the same type from a source to a target property.";
+	}
 	
 }

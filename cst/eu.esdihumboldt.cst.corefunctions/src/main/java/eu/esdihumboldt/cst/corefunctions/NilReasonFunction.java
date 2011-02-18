@@ -153,5 +153,10 @@ public class NilReasonFunction extends AbstractCstFunction {
 		unknown
 	}
 
+	@Override
+	public String getDescription() {
+		return "This function will populate the nilReason attribute of any properties that have not yet been assigned a value.";
+	}
+
 	
 }

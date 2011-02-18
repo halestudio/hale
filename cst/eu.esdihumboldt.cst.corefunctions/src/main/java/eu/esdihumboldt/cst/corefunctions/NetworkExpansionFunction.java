@@ -155,4 +155,9 @@ public class NetworkExpansionFunction extends AbstractCstFunction {
 		return parameterCell;
 	}
 
+	@Override
+	public String getDescription() {
+		return "This function applies a geometric buffer to a Feature";
+	}
+
 }

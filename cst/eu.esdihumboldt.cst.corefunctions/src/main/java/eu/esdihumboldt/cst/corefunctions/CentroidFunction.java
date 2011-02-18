@@ -98,6 +98,12 @@ public class CentroidFunction extends AbstractCstFunction {
 		parameterCell.setEntity2(entity2);
 		return parameterCell;
 	}
+
+	@Override
+	public String getDescription() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 }

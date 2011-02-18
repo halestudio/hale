@@ -171,4 +171,10 @@ public class OrdinatesToPointFunction
 		return target;
 	}
 
+	@Override
+	public String getDescription() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -227,4 +227,9 @@ public class IdentifierFunction
 				+ featureTypeName;
 	}
 
+	@Override
+	public String getDescription() {
+		return "This function creates INSPIRE-compliant identifiers like this one urn:de:fraunhofer:exampleDataset:exampleFeatureTypeName:localID based on the localId of the given source attribute.";
+	}
+
 }

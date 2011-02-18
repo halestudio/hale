@@ -238,4 +238,9 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 		return parameterCell;
 	}
 
+	@Override
+	public String getDescription() {
+		return "This Function allows to map values of an attribute to a different classification system";
+	}
+
 }

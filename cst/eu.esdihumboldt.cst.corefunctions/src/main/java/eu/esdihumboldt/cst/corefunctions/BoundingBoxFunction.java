@@ -82,6 +82,11 @@ public class BoundingBoxFunction extends AbstractCstFunction {
 		parameterCell.setEntity2(entity2);
 		return parameterCell;
 	}
+
+	@Override
+	public String getDescription() {
+		return "";
+	}
 		
 }
 

@@ -168,4 +168,9 @@ public class DateExtractionFunction extends AbstractCstFunction {
 		
 		return target;
 	}
+
+	@Override
+	public String getDescription() {
+		return "This function extracts the date/time from a source string and puts it reformatted to the target, based on a format parameter for the date/time pattern of the source and the target";
+	}
 }

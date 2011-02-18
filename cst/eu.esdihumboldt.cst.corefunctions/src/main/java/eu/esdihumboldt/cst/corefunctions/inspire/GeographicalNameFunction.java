@@ -358,4 +358,9 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 		return parameterCell;
 	}
 
+	@Override
+	public String getDescription() {
+		return "This function enables the creation of an INPSIRE GeographicalName object from a set of simple string parameters.";
+	}
+
 }
