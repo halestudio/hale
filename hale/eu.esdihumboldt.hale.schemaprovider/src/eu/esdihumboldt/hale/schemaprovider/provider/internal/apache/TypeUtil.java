@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.schemaprovider.provider.internal.apache;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -33,6 +34,7 @@ import org.apache.ws.commons.schema.XmlSchemaSimpleTypeRestriction;
 import org.apache.ws.commons.schema.XmlSchemaSimpleTypeUnion;
 import org.geotools.feature.AttributeTypeBuilder;
 import org.geotools.feature.NameImpl;
+import org.geotools.feature.type.AttributeTypeImpl;
 import org.geotools.gml3.GMLSchema;
 import org.geotools.xs.XSSchema;
 import org.opengis.feature.type.AttributeType;
@@ -145,8 +147,15 @@ public abstract class TypeUtil {
 	 * 
 	 * @return the type definition or <code>null</code>
 	 */
+	@SuppressWarnings("unchecked")
 	private static TypeDefinition getXSType(Name name) {
 		AttributeType ty = xsSchema.get(name);
+		
+		// special case: ID - assure String binding
+		if (ty != null && name.getLocalPart().equals("ID")) {
+			ty = new AttributeTypeImpl(name, java.lang.String.class, false, false,
+	                Collections.EMPTY_LIST, XSSchema.NCNAME_TYPE, null);
+		}
 		
 		if (ty != null) {
 			TypeDefinition typeDef = new TypeDefinition(name, ty, null);
