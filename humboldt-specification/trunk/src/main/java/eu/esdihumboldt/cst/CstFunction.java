@@ -47,5 +47,12 @@ public interface CstFunction {
 	 * conditions if appropriate. Parameter values are left empty.
 	 */
 	public ICell getParameters(); 
+	
+	/**
+	 * @return the description of the function. It can be just a short String, or a link to a
+	 * documented Web page (in this case, the returned string must begin with "link;", for example,
+	 * "link:http://community.esdi-humboldt.eu").
+	 */
+	public String getDescription(); 
 
 }
