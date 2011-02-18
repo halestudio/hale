@@ -29,6 +29,8 @@ public interface FunctionDescription {
 	
 	public URL getFunctionId();
 	
+	public String getFunctionDescription();
+	
 	/**
 	 * @return a Map of Parameter names (any strings allowed) and type names, 
 	 * as strings. For type names, the following are allowed:

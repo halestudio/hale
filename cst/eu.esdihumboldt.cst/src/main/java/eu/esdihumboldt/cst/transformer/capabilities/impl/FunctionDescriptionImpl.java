@@ -38,6 +38,7 @@ public class FunctionDescriptionImpl
 	implements FunctionDescription {
 
 	private final URL url;
+	private final String description;
 	private final Map<String, Class<?>> parameters = new TreeMap<String, Class<?>>();
 	
 	public FunctionDescriptionImpl(CstFunction function) {
@@ -45,6 +46,7 @@ public class FunctionDescriptionImpl
 		// create Identifier for function
 		try {
 			this.url = new URL("file://java/" + function.getClass().getName());
+			this.description=function.getDescription();
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}
@@ -67,6 +69,7 @@ public class FunctionDescriptionImpl
 				cstfname = cell.getEntity2().getTransformation().getService().getLocation();
 			}
 			this.url = new URL("file://java/" + cstfname);
+			this.description = "";
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}
@@ -159,7 +162,10 @@ public class FunctionDescriptionImpl
 	public URL getFunctionId() {
 		return url;
 	}
-
+	
+	public String getFunctionDescription() {
+		return description;
+	}
 
 	public Map<String, Class<?>> getParameterConfiguration() {
 		return parameters;

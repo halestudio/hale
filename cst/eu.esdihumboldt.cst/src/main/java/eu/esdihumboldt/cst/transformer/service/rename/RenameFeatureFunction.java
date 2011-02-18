@@ -193,6 +193,11 @@ public class RenameFeatureFunction
 		}
 		return targetFeatures;
 	}
+
+	@Override
+	public String getDescription() {
+		return "CstFunction for feature renaming, i.e. the creation of new Features in the target schema. Also copies the default geometry if possible.";
+	}
 	
 	
 }
