@@ -37,7 +37,7 @@ import eu.esdihumboldt.tools.FeatureInspector;
  * This function will populate the nilReason attribute of any properties that 
  * have not yet been assigned a value.
  *
- * @author Thorsten Reitz
+ * @author Thorsten Reitz, Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
@@ -48,7 +48,7 @@ public class NilReasonFunction extends AbstractCstFunction {
 	 */
 	public static final String PARAMETER_NIL_REASON_TYPE = "NilReasonType";
 	
-	private NilReasonType nilReason = null;
+	private String nilReason = null;
 	
 	private Entity onEntity = null; 
 
@@ -57,18 +57,10 @@ public class NilReasonFunction extends AbstractCstFunction {
 	 */
 	public boolean configure(ICell cell) {
 		this.onEntity = (Entity) cell.getEntity2();
-		String nilReason = null;
 		for(IParameter ip : cell.getEntity2().getTransformation().getParameters()) {
 			if (ip.getName().equals(PARAMETER_NIL_REASON_TYPE)) {
 				nilReason = ip.getValue();
 			}
-		}
-		
-		if (NilReasonType.unknown.name().equals(nilReason)) {
-			this.nilReason = NilReasonType.unknown;
-		}
-		else if (NilReasonType.unpopulated.name().equals(nilReason)) {
-			this.nilReason = NilReasonType.unpopulated;
 		}
 		
 		return true;
@@ -142,21 +134,10 @@ public class NilReasonFunction extends AbstractCstFunction {
 		
 		return target;
 	}
-	
-	/**
-	 * Nil reason types
-	 */
-	public enum NilReasonType {
-		/** unpopulated: there was no corresponding data in the source at all */
-		unpopulated,
-		/** unknown: there was no corresponding data in a single source instance */
-		unknown
-	}
 
 	@Override
 	public String getDescription() {
 		return "This function will populate the nilReason attribute of any properties that have not yet been assigned a value.";
 	}
-
 	
 }

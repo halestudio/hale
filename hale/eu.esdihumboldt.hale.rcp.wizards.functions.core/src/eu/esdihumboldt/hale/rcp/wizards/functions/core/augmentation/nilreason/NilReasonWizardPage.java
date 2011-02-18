@@ -15,17 +15,19 @@ package eu.esdihumboldt.hale.rcp.wizards.functions.core.augmentation.nilreason;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.cst.corefunctions.NilReasonFunction.NilReasonType;
+import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditor;
+import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditorFactory;
+import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizardPage;
+import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 
 /**
  * Main {@link NilReasonWizard} page
@@ -36,14 +38,26 @@ import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizardPage;
  */
 public class NilReasonWizardPage extends AugmentationWizardPage {
 	
-	private NilReasonType type = NilReasonType.unknown;
+	private final String initialNilReason;
+	private AttributeEditor<?> attributeValue;
 
 	/**
+	 * Constructor
+	 * 
+	 * @param pageName the page name 
+	 * @param title the page title
+	 * @param titleImage the title image
+	 * @param initialNilReason the initial nil reason
+	 *  
 	 * @see AugmentationWizardPage#AugmentationWizardPage(String, String, ImageDescriptor)
 	 */
 	public NilReasonWizardPage(String pageName, String title,
-			ImageDescriptor titleImage) {
+			ImageDescriptor titleImage, String initialNilReason) {
 		super(pageName, title, titleImage);
+		
+		setDescription("Specify the reason why a property is not set");
+		
+		this.initialNilReason = initialNilReason;
 	}
 
 	/**
@@ -53,73 +67,36 @@ public class NilReasonWizardPage extends AugmentationWizardPage {
 	public void createControl(Composite parent) {
 		Composite page = new Composite(parent, SWT.NONE);
 		
-		page.setLayout(new GridLayout(1, false));
+		page.setLayout(new GridLayout(2, false));
+		
+		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI
+			.getWorkbench().getService(DefinitionLabelFactory.class);
+		AttributeEditorFactory aef = (AttributeEditorFactory) PlatformUI
+			.getWorkbench().getService(AttributeEditorFactory.class);
 		
 		SchemaItem item = getParent().getItem();
+		AttributeDefinition property = (AttributeDefinition) item.getDefinition();
+		AttributeDefinition nilReason = property.getAttributeType().getAttribute("nilReason");
 		
-		String ftName;
-		String atName;
-		if (item.isAttribute()) {
-			ftName = item.getParent().getName().getLocalPart();
-			atName = item.getName().getLocalPart();
-		}
-		else {
-			ftName = item.getName().getLocalPart();
-			atName = null;
-		}
+		final Label inputAttributeLabel = new Label(page,
+				SWT.NONE);
+		inputAttributeLabel.setText("Property");
+		inputAttributeLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false,
+				false));
+		Control attributeName = dlf.createLabel(page,
+				item.getDefinition(), false);
+		attributeName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+				false));
 		
-		Group group = new Group(page, SWT.NONE);
-		group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		group.setLayout(new GridLayout(1, false));
-		if (atName != null) {
-			group.setText("Please select a Nil reason for " + 
-					ftName + "." + atName + ":");
-		}
-		else {
-			group.setText("Please select a default Nil reason for the attributes of " + 
-					ftName + ":");
-		}
+		Control nilReasonLabel = dlf.createLabel(page,
+				nilReason, false);
+		nilReasonLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false,
+				false));
 		
-		Button unpopulated = new Button(group, SWT.RADIO);
-		unpopulated.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				type = NilReasonType.unpopulated;
-			}
-			
-		});
-		if (atName != null) {
-			unpopulated.setText("unpopulated (all instances of " + ftName + " will have no value for " + atName + ")");
-		}
-		else {
-			unpopulated.setText("unpopulated (if an attribute has no value then all instances of " + ftName + " will have no value for this attribute)");
-		}
-		
-		Button unknown = new Button(group, SWT.RADIO);
-		unknown.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				type = NilReasonType.unknown;
-			}
-			
-		});
-		if (atName != null) {
-			unknown.setText("unknown (only some instances of " + ftName + " will have no value for " + atName + ")");
-		}
-		else {
-			unknown.setText("unknown (if an attribute has no value that doesn't mean that all instances of " + ftName + " have no value for this attribute)");
-		}
-		
-		switch (type) {
-		case unpopulated:
-			unpopulated.setSelection(true);
-			break;
-		default:
-			unknown.setSelection(true);
-			break;
-		}
+		attributeValue = aef.createEditor(page, nilReason);
+		attributeValue.getControl().setLayoutData(
+				new GridData(SWT.FILL, SWT.CENTER, true, false));
+		attributeValue.setAsText(initialNilReason);
 		
 		setControl(page);
 	}
@@ -127,15 +104,8 @@ public class NilReasonWizardPage extends AugmentationWizardPage {
 	/**
 	 * @return the type
 	 */
-	public NilReasonType getType() {
-		return type;
-	}
-
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(NilReasonType type) {
-		this.type = type;
+	public String getNilReason() {
+		return attributeValue.getAsText();
 	}
 
 }

@@ -21,7 +21,6 @@ import org.eclipse.jface.wizard.Wizard;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.corefunctions.NilReasonFunction;
-import eu.esdihumboldt.cst.corefunctions.NilReasonFunction.NilReasonType;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
@@ -58,19 +57,19 @@ public class NilReasonWizard extends AugmentationWizard {
 		Cell cell = getResultCell();
 		
 		// get initial value from the cell (if available)
-		NilReasonType type = null;
+		String nilReason = null;
 		
-		if (cell.getEntity1().getTransformation() != null) {
-			List<IParameter> parameters = cell.getEntity1().getTransformation().getParameters();
+		if (cell.getEntity2().getTransformation() != null) {
+			List<IParameter> parameters = cell.getEntity2().getTransformation().getParameters();
 			
 			if (parameters != null) {
 				Iterator<IParameter> it = parameters.iterator();
-				while (it.hasNext() && type == null) {
+				while (it.hasNext() && nilReason == null) {
 					IParameter param = it.next();
 					if (param.getName().equals(
 							NilReasonFunction.PARAMETER_NIL_REASON_TYPE)) {
 						try {
-							type = NilReasonType.valueOf(param.getValue());
+							nilReason = param.getValue();
 						} catch (IllegalArgumentException e) {
 							log.warn("Illegal value for Nil reason type");
 						}
@@ -79,7 +78,13 @@ public class NilReasonWizard extends AugmentationWizard {
 			}
 		}
 		
-		page = new NilReasonWizardPage("mainPage", "Select a Nil reason", null);
+		if (nilReason == null) {
+			// default value
+			nilReason = "unknown";
+		}
+		
+		page = new NilReasonWizardPage("mainPage", "Select a Nil reason", null,
+				nilReason);
 	}
 
 	@Override
@@ -92,7 +97,7 @@ public class NilReasonWizard extends AugmentationWizard {
 	 */
 	@Override
 	public boolean performFinish() {
-		NilReasonType type = page.getType();
+		String nilReason = page.getNilReason();
 		
 		Cell result = getResultCell();
 		
@@ -103,7 +108,7 @@ public class NilReasonWizard extends AugmentationWizard {
 		transformation.getParameters().add(
 				new Parameter(
 						NilReasonFunction.PARAMETER_NIL_REASON_TYPE, 
-						type.toString()));
+						nilReason));
 		
 		entity.setTransformation(transformation);
 		

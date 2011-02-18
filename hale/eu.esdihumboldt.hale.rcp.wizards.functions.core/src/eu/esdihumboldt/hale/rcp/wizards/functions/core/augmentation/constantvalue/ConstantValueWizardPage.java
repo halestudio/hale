@@ -52,11 +52,7 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 	private AttributeEditor<?> attributeValue;
 
 	/**
-	 * Constructor
-	 * 
-	 * @param pageName
-	 * @param title
-	 * @param titleImage
+	 * @see AugmentationWizardPage#AugmentationWizardPage(String, String, ImageDescriptor)
 	 */
 	public ConstantValueWizardPage(String pageName, String title,
 			ImageDescriptor titleImage) {
