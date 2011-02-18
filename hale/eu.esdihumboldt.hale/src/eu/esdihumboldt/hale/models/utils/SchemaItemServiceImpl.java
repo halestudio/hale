@@ -23,6 +23,8 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.opengis.feature.type.FeatureType;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
@@ -359,8 +361,13 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 					
 					parent.addChild(property);
 					
-					addProperties(property, attribute.getAttributeType(), null, 
-							aboutMap, new HashSet<TypeDefinition>(resolving), schemaType); // null map to prevent adding to item map (would be duplicate)
+					// don't add children if there is a geometry binding
+					boolean addChildren = !Geometry.class.isAssignableFrom(attribute.getAttributeType().getType(null).getBinding());
+					
+					if (addChildren) {
+						addProperties(property, attribute.getAttributeType(), null, 
+								aboutMap, new HashSet<TypeDefinition>(resolving), schemaType); // null map to prevent adding to item map (would be duplicate)
+					}
 					
 					aboutMap.put(property.getEntity().getAbout().getAbout(), property);
 				}
