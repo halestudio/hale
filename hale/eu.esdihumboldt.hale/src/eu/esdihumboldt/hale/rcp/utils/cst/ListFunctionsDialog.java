@@ -34,6 +34,9 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.PlatformUI;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+
 import eu.esdihumboldt.cst.transformer.CstService;
 import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
 
@@ -45,6 +48,8 @@ import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
  * @version $Id$ 
  */
 public class ListFunctionsDialog extends TitleAreaDialog {
+	
+	private static final ALogger log = ALoggerFactory.getLogger(ListFunctionsDialog.class);
 	
 	/**
 	 * Label provider for function descriptions
@@ -180,22 +185,18 @@ public class ListFunctionsDialog extends TitleAreaDialog {
 			@Override
 			public void selectionChanged(final SelectionChangedEvent arg0) {
 				TableItem selecteditem = tablev.getTable().getItem(tablev.getTable().getSelectionIndex());
-				System.out.println(selecteditem.getForeground(1).toString());
-				System.out.println(selecteditem.getDisplay().getSystemColor(SWT.COLOR_BLUE));
 				if(selecteditem.getForeground(1).equals(selecteditem.getDisplay().getSystemColor(SWT.COLOR_BLUE)))
 				{
 					if( !java.awt.Desktop.isDesktopSupported() ) {
-
-			            System.err.println( "Desktop is not supported (fatal)" );
-			            System.exit( 1 );
+						log.error("Desktop Java API is not supported. Can not open default Web Browser");
+						return;
 			        }
 
 			       java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
 
 			        if( !desktop.isSupported( java.awt.Desktop.Action.BROWSE ) ) {
-
-			            System.err.println( "Desktop doesn't support the browse action (fatal)" );
-			            System.exit( 1 );
+			        	log.error("Desktop Java API doesn't support the browse action. Can not open default Web Browser");
+						return;
 			        }
 
 			       
@@ -205,8 +206,7 @@ public class ListFunctionsDialog extends TitleAreaDialog {
 			                desktop.browse( uri );
 			            }
 			            catch ( Exception e ) {
-
-			                System.err.println( e.getMessage() );
+			            	log.error(e.getMessage(),e);
 			            }
 				}
 			}
