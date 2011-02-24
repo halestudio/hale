@@ -39,6 +39,7 @@ import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.goml.oml.ext.ValueExpression;
 import eu.esdihumboldt.goml.omwg.ComposedFeatureClass;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
@@ -120,7 +121,7 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 		this.sortAlignment();
 		
 		final String filesSubDir = FilenameUtils.removeExtension(FilenameUtils.getName(path)) + "_files";
-		final File filesDir = new File(FilenameUtils.getFullPath(path), filesSubDir);
+		//final File filesDir = new File(FilenameUtils.getFullPath(path), filesSubDir);
 		
 		StringWriter stringWriter = new StringWriter();
 		this.context = new VelocityContext();
@@ -235,20 +236,26 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 						.getTransformation().getService()
 						.getLocation();
 			}
+			
+			
 			String[] tempSplit = cellName.split("\\.");
 			String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
+			
 			if(graphConnectionNodeName.equals("RenameFeatureFunction")){
 				this.retypes.add(cell);
+				continue;
 			}
 			
 			//Augmentation
 			if(cell.getEntity1().getTransformation() == null || cell.getEntity1().getAbout().getAbout().equals("entity/null")){
 				this.augmentations.add(cell);
+				continue;
 			}
 
 			//Transformation
 			if(cell.getEntity1().getTransformation() != null){
 				this.transformations.add(cell);
+				continue;
 			}
 		}	
 	}
@@ -257,25 +264,25 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 	 * Is looking for all appropriate ICells for the Retypes
 	 * @return Vector with Vector which contains ICells
 	 */
-	private Vector<Vector<ICell>> makeSections(){
+	/*private Vector<Vector<ICell>> makeSections(){
 		Vector<Vector<ICell>> sectionVector = new Vector<Vector<ICell>>();	
 		for(ICell retypeCell : this.retypes){
 			Vector<ICell> icellVector = new Vector<ICell>();
 			String[] retypeTargetName = this.entityNameSplitter(retypeCell.getEntity2());
-			/**
+			**
 			 * TRANSFORMATIONS
 			 * Is looking for all appropriate Transformations
-			 */
+			 *
 			for(ICell transformationCell : this.transformations){
 				if(transformationCell.getEntity2().getAbout().getAbout().contains(retypeTargetName[0])){
 					icellVector.addElement(transformationCell);
 				}
 			}
 			
-			/**
+			**
 			 * AUGMENTATIONS
 			 * Is looking for all appropriate Augmentations
-			 */
+			 *
 			for(ICell augmentationCell : this.augmentations){
 				if(augmentationCell.getEntity2().getAbout().getAbout().contains(retypeTargetName[0])){
 					icellVector.addElement(augmentationCell);
@@ -284,7 +291,7 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 			sectionVector.addElement(icellVector);
 		}
 		return sectionVector;
-	}
+	}*/
 	
 	 /**
 	 * Create context-variables and fills them with data
@@ -326,13 +333,13 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 			row+="\""+retypeTargetName[0]+"\"";
 			row+=separator;
 			//Filters
-			row+="\""+this.getFilters(retypeCell)+"\"";
+			row+="\""+this.getFilters(retypeCell,1)+"\"";
 			row+=separator;
 			//Parameters
 			row+="\""+this.getParameters(retypeCell)+"\"";
 			cellVector.addElement(row);			
 			cellListVector.addElement(cellVector);	
-			
+		}
 			/**
 			 * TRANSFORMATIONS
 			 * Is looking for all appropriate Transformations
@@ -340,6 +347,8 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 			for(ICell transformationCell : this.transformations){
 				cellVector = new Vector<String>();
 				row=new String();
+				String[] retypeSourceName = this.entityNameSplitter(transformationCell.getEntity1());
+				String[] retypeTargetName = this.entityNameSplitter(transformationCell.getEntity2());
 				if(transformationCell.getEntity2().getAbout().getAbout().contains(retypeTargetName[0])){
 					String[] entity1Name = this.entityNameSplitter(transformationCell.getEntity1());
 					entity1Name[entity1Name.length-1] = entity1Name[entity1Name.length-1].replace(";", " --> ");
@@ -362,7 +371,6 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 					//Header
 					row+="\"Transformation\"";
 					row+=separator;
-					//cellVector.addElement("Cell "+i+" : ");
 					row+="\""+functionName+"\"";
 					row+=separator;
 					row+="\"";
@@ -400,7 +408,7 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 					row+="\"";
 					row+=separator;
 					//Filters
-					row+="\""+this.getFilters(transformationCell)+"\"";
+					row+="\""+this.getFilters(transformationCell,1)+"\"";
 					row+=separator;
 					//Parameters
 					row+="\""+this.getParameters(transformationCell)+"\"";
@@ -415,21 +423,29 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 			 * AUGMENTATIONS
 			 * Is looking for all appropriate Augmentations
 			 */
-			String superTypeName="";
-			for (Iterator<SchemaElement> iterator = this.targetSchema.iterator();iterator.hasNext();) {
-				SchemaElement schemaElement = iterator.next();
-				if(schemaElement.getIdentifier().contains(retypeTargetName[0])){
-					String temp = new String();
-					String[] split = schemaElement.getType().getSuperType().getIdentifier().split("/");
-					temp = split[split.length-1];
-					temp = temp.replace("Type", "");
-					superTypeName = temp;
-					break;
-				}
-			}	
+	
 			for(ICell augmentationCell : this.augmentations){
 				cellVector = new Vector<String>();
 				row=new String();
+				String[] retypeSourceName = this.entityNameSplitter(augmentationCell.getEntity1());
+				String[] retypeTargetName = this.entityNameSplitter(augmentationCell.getEntity2());
+				
+				String superTypeName="";
+				if(superTypeName.equals(""))
+				{
+				for (Iterator<SchemaElement> iterator = this.targetSchema.iterator();iterator.hasNext();) {
+					SchemaElement schemaElement = iterator.next();
+					if(schemaElement.getIdentifier().contains(retypeTargetName[0])){
+						String temp = new String();
+						String[] split = schemaElement.getType().getSuperType().getIdentifier().split("/");
+						temp = split[split.length-1];
+						temp = temp.replace("Type", "");
+						superTypeName = temp;
+						break;
+					}
+				}
+				}
+				
 				if(augmentationCell.getEntity2().getAbout().getAbout().contains(superTypeName)){
 					String[] entity1Name = this.entityNameSplitter(augmentationCell.getEntity1());
 					entity1Name[entity1Name.length-1] = entity1Name[entity1Name.length-1].replace(";", " --> ");
@@ -474,7 +490,7 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 					row+=separator;
 					row+="\"";
 					//Filters
-					row+=this.getFilters(augmentationCell);
+					row+=this.getFilters(augmentationCell,1);
 					row+="\"";
 					row+=separator;
 					row+="\"";
@@ -488,7 +504,6 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 			}
 				
 			e++;
-		}
 		this.context.put("cellList", cellListVector);
 	}
 	
@@ -497,16 +512,31 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 	 * @param cellVector
 	 * @param cell
 	 */
-	private String getFilters(ICell cell){
+	private String getFilters(ICell cell,int entity){
 		//Filter Rules
 		String row="";
+		if(entity==1)
+		{
+		Boolean searchentity2 = false;
 		if(cell.getEntity1() instanceof ComposedProperty){
 			if (((ComposedProperty) cell.getEntity1())
 					.getValueCondition() != null) {
 				// Filter strings are added to the Vector
 				for (Restriction restriction : ((ComposedProperty) cell
 						.getEntity1()).getValueCondition()) {
-					row+=restriction.getCqlStr();
+					if(restriction.getCqlStr()!=null)
+						row+=restriction.getCqlStr();
+					else
+					{
+						searchentity2=true;
+						List values = restriction.getValue();
+						for(int i=0;i<values.size();i++)
+						{
+							row+=((ValueExpression)values.get(0)).getLiteral();
+							if(i!=values.size()-1)
+								row+="|";
+						}
+					}
 					row+=";";
 				}
 				if(row.length()>1)
@@ -519,7 +549,19 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 				// Filter strings are added to the Vector
 				for (Restriction restriction : ((Property) cell
 						.getEntity1()).getValueCondition()) {
-					row+=restriction.getCqlStr();
+					if(restriction.getCqlStr()!=null)
+						row+=restriction.getCqlStr();
+					else
+					{
+						searchentity2=true;
+						List values = restriction.getValue();
+						for(int i=0;i<values.size();i++)
+						{
+							row+=((ValueExpression)values.get(0)).getLiteral();
+							if(i!=values.size()-1)
+								row+="|";
+						}
+					}
 					row+=";";
 				}
 				if(row.length()>1)
@@ -533,7 +575,19 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 				for (Restriction restriction : ((ComposedFeatureClass) 
 						cell
 						.getEntity1()).getAttributeValueCondition()) {
-					row+=restriction.getCqlStr();
+					if(restriction.getCqlStr()!=null)
+						row+=restriction.getCqlStr();
+					else
+					{
+						searchentity2=true;
+						List values = restriction.getValue();
+						for(int i=0;i<values.size();i++)
+						{
+							row+=((ValueExpression)values.get(0)).getLiteral();
+							if(i!=values.size()-1)
+								row+="|";
+						}
+					}
 					row+=";";
 				}
 				if(row.length()>1)
@@ -547,14 +601,133 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 				for (Restriction restriction : ((FeatureClass) 
 						cell
 						.getEntity1()).getAttributeValueCondition()) {
-					row+=restriction.getCqlStr();
+					if(restriction.getCqlStr()!=null)
+						row+=restriction.getCqlStr();
+					else
+					{
+						searchentity2=true;
+						List values = restriction.getValue();
+						for(int i=0;i<values.size();i++)
+						{
+							row+=((ValueExpression)values.get(0)).getLiteral();
+							if(i!=values.size()-1)
+								row+="|";
+						}
+					}
 					row+=";";
 				}
 				if (row.length()>1)
 					row=row.substring(0,row.length()-1);
 			}
 		}
+		if(searchentity2)
+		{
+			row="["+row+"]->["+getFilters(cell, 2)+"]";
+		}
 		return row;
+		}
+		else
+		{
+			if(cell.getEntity2() instanceof ComposedProperty){
+				if (((ComposedProperty) cell.getEntity2())
+						.getValueCondition() != null) {
+					// Filter strings are added to the Vector
+					for (Restriction restriction : ((ComposedProperty) cell
+							.getEntity2()).getValueCondition()) {
+						if(restriction.getCqlStr()!=null)
+							row+=restriction.getCqlStr();
+						else
+						{
+							List values = restriction.getValue();
+							for(int i=0;i<values.size();i++)
+							{
+								row+=((ValueExpression)values.get(0)).getLiteral();
+								if(i!=values.size()-1)
+									row+="|";
+							}
+						}
+						row+=";";
+					}
+					if(row.length()>1)
+						row=row.substring(0,row.length()-1);
+				}
+			}
+			else if(cell.getEntity2() instanceof Property){
+				if (((Property) cell.getEntity2())
+						.getValueCondition() != null) {
+					// Filter strings are added to the Vector
+					for (Restriction restriction : ((Property) cell
+							.getEntity2()).getValueCondition()) {
+						if(restriction.getCqlStr()!=null)
+							row+=restriction.getCqlStr();
+						else
+						{
+							List values = restriction.getValue();
+							for(int i=0;i<values.size();i++)
+							{
+								row+=((ValueExpression)values.get(0)).getLiteral();
+								if(i!=values.size()-1)
+									row+="|";
+							}
+						}
+						row+=";";
+					}
+					if(row.length()>1)
+						row=row.substring(0,row.length()-1);
+				}
+			}
+			else if(cell.getEntity2() instanceof ComposedFeatureClass){
+				if (((ComposedFeatureClass) cell.getEntity2())
+						.getAttributeValueCondition() != null) {
+					// Filter strings are added to the Vector
+					for (Restriction restriction : ((ComposedFeatureClass) 
+							cell
+							.getEntity2()).getAttributeValueCondition()) {
+						if(restriction.getCqlStr()!=null)
+							row+=restriction.getCqlStr();
+						else
+						{
+							List values = restriction.getValue();
+							for(int i=0;i<values.size();i++)
+							{
+								row+=((ValueExpression)values.get(0)).getLiteral();
+								if(i!=values.size()-1)
+									row+="|";
+							}
+						}
+						row+=";";
+					}
+					if(row.length()>1)
+						row=row.substring(0,row.length()-1);
+				}
+			}
+			else if(cell.getEntity2() instanceof FeatureClass){
+				if (((FeatureClass) cell.getEntity2())
+						.getAttributeValueCondition() != null) {
+					// Filter strings are added to the Vector
+					for (Restriction restriction : ((FeatureClass) 
+							cell
+							.getEntity2()).getAttributeValueCondition()) {
+						if(restriction.getCqlStr()!=null)
+							row+=restriction.getCqlStr();
+						else
+						{
+							List values = restriction.getValue();
+							for(int i=0;i<values.size();i++)
+							{
+								row+=((ValueExpression)values.get(0)).getLiteral();
+								if(i!=values.size()-1)
+									row+="|";
+							}
+						}
+						row+=";";
+					}
+					if (row.length()>1)
+						row=row.substring(0,row.length()-1);
+				}
+			}
+			return row;
+		}
 	}
 		
 	/**

@@ -37,7 +37,7 @@ public class CsvMappingExportFactoryTest {
 	public void test() {
 		
 		CsvMappingExportFactory csvMappingExportFactory = new CsvMappingExportFactory();
-		String testFile = this.getClass().getResource("TEST3.goml").toString();
+		String testFile = this.getClass().getResource("withm4_xp.goml").toString();
 		OmlRdfReader reader = new OmlRdfReader();
 		
 		SchemaProvider sp = new ApacheSchemaProvider();
@@ -45,9 +45,9 @@ public class CsvMappingExportFactoryTest {
 		Schema target = null;
 		try {
 			source = sp.loadSchema(new URI(
-					this.getClass().getResource("wfs_va.xsd").toString()), null);
+					this.getClass().getResource("source_geofla_wfs.xsd").toString()), null);
 			target = sp.loadSchema(new URI(
-					this.getClass().getResource("XSD/HydroPhysicalWaters.xsd").toString()), null);
+					this.getClass().getResource("XSD/AdministrativeUnits.xsd").toString()), null);
 		} catch (Exception e1) {
 			throw new RuntimeException(e1);
 		} 
@@ -56,7 +56,7 @@ public class CsvMappingExportFactoryTest {
 			Alignment alignment = reader.read(testFile);
 			try {
 				csvMappingExportFactory.export(alignment, 
-						"C:\\testcsv.csv", 
+						"C:\\test_marian_conventionxp.csv", 
 						source.getElements().values(), 
 						target.getElements().values());
 			} catch (MappingExportException e) {
