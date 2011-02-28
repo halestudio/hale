@@ -3,16 +3,18 @@
 
 <product name="HUMBOLDT Alignment Editor" id="eu.esdihumboldt.hale.product" application="eu.esdihumboldt.hale.application" version="2.1.0.M1" useFeatures="false" includeLaunchers="true">
 
+
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
       <programArgs>-clean</programArgs>
-      <vmArgs>-Xmx384m</vmArgs>
+      <vmArgs>-Xmx512m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
    <windowImages i32="/eu.esdihumboldt.hale/icons/hale_icon.png"/>
+
 
    <launcher name="HALE">
       <macosx icon="/eu.esdihumboldt.hale/icons/hale.icns"/>
@@ -22,6 +24,7 @@
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
