@@ -109,7 +109,7 @@ public class ProxyUtil {
         	InetSocketAddress proxyAddress = (InetSocketAddress) proxy.address();
         	
         	// set the proxy
-        	HttpHost proxyHost = new HttpHost("localhost", proxyAddress.getPort());
+        	HttpHost proxyHost = new HttpHost(proxyAddress.getHostName(), proxyAddress.getPort());
         	client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxyHost);
         	
         	String user = System.getProperty("http.proxyUser");
