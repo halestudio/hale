@@ -516,7 +516,7 @@
       </perspectiveExtension>
    </extension>
    <extension
-         id="id1"
+         id="eu.esdihumboldt.hale.password.default"
          point="org.eclipse.equinox.security.secureStorage">
       <provider
             class="eu.esdihumboldt.hale.rcp.utils.proxy.DefaultPasswordProvider"
