@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="HUMBOLDT Alignment Editor" id="eu.esdihumboldt.hale.product" application="eu.esdihumboldt.hale.application" version="2.0.1" useFeatures="false" includeLaunchers="true">
+<product name="HUMBOLDT Alignment Editor" id="eu.esdihumboldt.hale.product" application="eu.esdihumboldt.hale.application" version="2.1.0.M1" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -33,9 +33,9 @@
       <plugin id="ch.qos.logback.slf4j" fragment="true"/>
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="com.onespatial.jrc.tns.hale.rifexport" fragment=""/>
+      <plugin id="com.onespatial.jrc.tns.hale.rifexport"/>
       <plugin id="com.onespatial.jrc.tns.jaxb.rifprd"/>
-      <plugin id="com.onespatial.jrc.tns.oml_to_rif" fragment=""/>
+      <plugin id="com.onespatial.jrc.tns.oml_to_rif"/>
       <plugin id="com.springsource.com.sun.xml.bind"/>
       <plugin id="com.springsource.com.sun.xml.fastinfoset"/>
       <plugin id="com.springsource.javax.activation"/>
@@ -81,7 +81,7 @@
       <plugin id="eu.esdihumboldt.hale.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
-      <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.core" fragment=""/>
+      <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.core"/>
       <plugin id="eu.esdihumboldt.hale.schemaprovider"/>
       <plugin id="eu.esdihumboldt.hale.userstatus.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.specification"/>
