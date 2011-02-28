@@ -100,7 +100,8 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 		}
 		else if (String.class.equals(binding)) {
 			// string
-			return new StringAttributeEditor(parent);
+//			return new StringAttributeEditor(parent);
+			return new CodeListAttributeEditor(parent, attribute);
 		}
 		//TODO other editors
 		
