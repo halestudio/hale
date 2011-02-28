@@ -173,7 +173,7 @@ public class ListSelector implements CodeListSelector {
 					if (codeList.getNamespace().toLowerCase().contains(filterText)) {
 						return true;
 					}
-					if (codeList.getDescritpion().toLowerCase().contains(filterText)) {
+					if (codeList.getDescritpion() != null && codeList.getDescritpion().toLowerCase().contains(filterText)) {
 						return true;
 					}
 				}
