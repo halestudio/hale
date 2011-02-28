@@ -280,12 +280,6 @@
                      id="HALE.dynamic.tasks">
                </dynamic>
             </menu>
-            <command
-                  commandId="HALE.networkSettings.command"
-                  id="networkSettings"
-                  label="Network Settings..."
-                  style="push">
-            </command>
             <separator
                   name="eu.esdihumboldt.hale.configure.separator1"
                   visible="true">
@@ -479,6 +473,11 @@
             class="eu.esdihumboldt.hale.rcp.utils.crs.CRSPreferencePage"
             id="eu.esdihumboldt.hale.page.preferences.crs"
             name="Additional CRS">
+      </page>
+      <page
+            class="eu.esdihumboldt.hale.rcp.utils.proxy.ProxyPreferencePage"
+            id="eu.esdihumboldt.hale.page.preferences.proxy"
+            name="Proxy Settings">
       </page>
    </extension>
    <extension
