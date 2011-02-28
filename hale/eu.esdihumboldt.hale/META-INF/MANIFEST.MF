@@ -24,7 +24,9 @@ Require-Bundle: org.eclipse.ui,
  org.junit4;bundle-version="4.5.0",
  org.apache.ws.commons.schema;bundle-version="1.4.4",
  org.eclipse.zest.core;bundle-version="1.1.0",
- org.eclipse.zest.layouts;bundle-version="1.1.0"
+ org.eclipse.zest.layouts;bundle-version="1.1.0",
+ org.eclipse.equinox.security,
+ org.apache.httpcomponents.httpclient
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
@@ -41,9 +43,14 @@ Import-Package: de.cs3d.util.logging,
  eu.esdihumboldt.hale.schemaprovider.provider,
  org.apache.commons.io;version="1.4.0",
  org.apache.commons.logging;version="1.1.1",
+ org.apache.http,
+ org.apache.http.auth,
+ org.apache.http.impl.client,
+ org.apache.http.params,
  org.apache.log4j,
  org.eclipse.draw2d,
  org.eclipse.draw2d.geometry,
+ org.eclipse.equinox.security.storage,
  org.eclipse.zest.core.widgets,
  org.eclipse.zest.layouts,
  org.eclipse.zest.layouts.algorithms,
