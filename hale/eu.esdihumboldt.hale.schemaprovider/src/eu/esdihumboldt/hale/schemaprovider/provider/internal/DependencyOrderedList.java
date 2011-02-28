@@ -103,6 +103,14 @@ public class DependencyOrderedList<T> {
 	}
 	
 	/**
+	 * Add an object where it is sure that none of the others depends on it
+	 * @param object the object to append
+	 */
+	public void append(T object) {
+		list.add(object);
+	}
+	
+	/**
 	 * Get an {@link Iterable} over the list's items
 	 * 
 	 * @return the list's items

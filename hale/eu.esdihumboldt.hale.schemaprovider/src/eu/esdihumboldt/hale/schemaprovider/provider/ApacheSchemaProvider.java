@@ -580,6 +580,8 @@ public class ApacheSchemaProvider
 		// the schema items
 		XmlSchemaObjectCollection items = schema.getItems();
 		
+		Map<XmlSchemaElement, Name> anonymousTypes = new HashMap<XmlSchemaElement, Name>();
+		
 		// first pass - find names for types
 		for (int i = 0; i < items.getCount(); i++) {
 			XmlSchemaObject item = items.getItem(i);
@@ -589,7 +591,13 @@ public class ApacheSchemaProvider
 				// retrieve local name part of XmlSchemaElement and of 
 				// XmlSchemaComplexType to substitute name later on.
 				Name typeName = null;
-				if (element.getSchemaTypeName() != null) {
+				if (element.getSchemaType() != null) {
+					// element has internal type definition, generate anonymous type name
+					typeName = new NameImpl(element.getQName().getNamespaceURI(),
+							element.getQName().getLocalPart() + "_AnonymousType");
+					anonymousTypes.put(element, typeName);
+				}
+				else if (element.getSchemaTypeName() != null) {
 					typeName = new NameImpl(
 							element.getSchemaTypeName().getNamespaceURI(), 
 							element.getSchemaTypeName().getLocalPart());
@@ -792,6 +800,12 @@ public class ApacheSchemaProvider
 		
 		// create dependency ordered list
 		DependencyOrderedList<Name> typeNames = new DependencyOrderedList<Name>(dependencies);
+		
+		// append anonymous types
+		for (Entry<XmlSchemaElement, Name> entry : anonymousTypes.entrySet()) {
+			typeNames.append(entry.getValue());
+			typeDefinitions.put(entry.getValue(), entry.getKey().getSchemaType());
+		}
 		
 		// 3rd pass: create feature types 
 		for (Name typeName : typeNames.getItems()) {
