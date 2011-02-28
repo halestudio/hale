@@ -224,7 +224,7 @@ public class CodeListAttributeEditor implements AttributeEditor<CodeEntry> {
 	public String getAsText() {
 		CodeEntry value = getValue();
 		if (value != null) {
-			return value.getName();
+			return value.getIdentifier();
 		}
 		else {
 			return null;
@@ -278,7 +278,12 @@ public class CodeListAttributeEditor implements AttributeEditor<CodeEntry> {
 	@Override
 	public void setAsText(String text) {
 		if (codeList != null) {
-			setValue(codeList.getEntry(text));
+			CodeEntry value = codeList.getEntryByIdentifier(text);
+			if (value == null) {
+				// try entry by name as fall-back
+				value = codeList.getEntryByName(text);
+			}
+			setValue(value);
 		}
 		else {
 			setValue(createCustomEntry((text == null)?(""):(text)));

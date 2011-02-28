@@ -62,7 +62,9 @@ public class XmlCodeList implements CodeList {
 	
 	private final URI location;
 	
-	private final Map<String, CodeEntry> entries = new LinkedHashMap<String, CodeEntry>();
+	private final Map<String, CodeEntry> entriesByName = new LinkedHashMap<String, CodeEntry>();
+	
+	private final Map<String, CodeEntry> entriesByIdentifier = new LinkedHashMap<String, CodeEntry>();
 
 	/**
 	 * Create a code list from an XML document
@@ -188,7 +190,8 @@ public class XmlCodeList implements CodeList {
 			
 			if (name != null && identifier != null) {
 				CodeEntry entry = new CodeEntry(name, description, identifier, namespace);
-				this.entries.put(name, entry);
+				this.entriesByName.put(name, entry);
+				this.entriesByIdentifier.put(identifier, entry);
 			}
 		}
 	}
@@ -198,7 +201,7 @@ public class XmlCodeList implements CodeList {
 	 */
 	@Override
 	public Collection<CodeEntry> getEntries() {
-		return new ArrayList<CodeEntry>(entries.values());
+		return new ArrayList<CodeEntry>(entriesByIdentifier.values());
 	}
 
 	/**
@@ -226,11 +229,19 @@ public class XmlCodeList implements CodeList {
 	}
 
 	/**
-	 * @see CodeList#getEntry(String)
+	 * @see CodeList#getEntryByName(String)
 	 */
 	@Override
-	public CodeEntry getEntry(String name) {
-		return entries.get(name);
+	public CodeEntry getEntryByName(String name) {
+		return entriesByName.get(name);
+	}
+	
+	/**
+	 * @see CodeList#getEntryByIdentifier(String)
+	 */
+	@Override
+	public CodeEntry getEntryByIdentifier(String identifier) {
+		return entriesByIdentifier.get(identifier);
 	}
 
 	/**
@@ -242,7 +253,7 @@ public class XmlCodeList implements CodeList {
 	}
 
 	/**
-	 * @see java.lang.Object#hashCode()
+	 * @see Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -258,7 +269,7 @@ public class XmlCodeList implements CodeList {
 	}
 
 	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @see Object#equals(Object)
 	 */
 	@Override
 	public boolean equals(Object obj) {

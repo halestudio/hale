@@ -120,7 +120,16 @@ public interface CodeList {
 	 * 
 	 * @return the entry or <code>null</code>
 	 */
-	public CodeEntry getEntry(String name);
+	public CodeEntry getEntryByName(String name);
+	
+	/**
+	 * Get the entry with the given identifier
+	 * 
+	 * @param identifier the entry identifier
+	 * 
+	 * @return the entry or <code>null</code>
+	 */
+	public CodeEntry getEntryByIdentifier(String identifier);
 	
 	/**
 	 * Get the code list location
