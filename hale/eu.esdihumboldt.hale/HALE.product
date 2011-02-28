@@ -47,6 +47,8 @@
       <plugin id="com.springsource.javax.xml.stream"/>
       <plugin id="com.springsource.org.apache.commons.beanutils"/>
       <plugin id="com.springsource.org.apache.commons.collections"/>
+      <plugin id="com.springsource.org.apache.commons.configuration"/>
+      <plugin id="com.springsource.org.apache.commons.digester"/>
       <plugin id="com.springsource.org.apache.commons.jxpath"/>
       <plugin id="com.springsource.org.apache.commons.lang"/>
       <plugin id="com.springsource.org.apache.commons.pool"/>
@@ -124,7 +126,6 @@
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
-      <plugin id="org.eclipse.equinox.security.ui"/>
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.jface.databinding"/>

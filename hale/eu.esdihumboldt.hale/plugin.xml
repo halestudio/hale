@@ -515,6 +515,15 @@
          </viewShortcut>
       </perspectiveExtension>
    </extension>
+   <extension
+         id="id1"
+         point="org.eclipse.equinox.security.secureStorage">
+      <provider
+            class="eu.esdihumboldt.hale.rcp.utils.proxy.DefaultPasswordProvider"
+            description="Default password provider"
+            priority="4">
+      </provider>
+   </extension>
    <!-- <extension
          point="org.eclipse.ui.importWizards">
       <wizard

@@ -16,7 +16,6 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
@@ -24,6 +23,7 @@ import org.geotools.referencing.CRS;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import eu.esdihumboldt.hale.WKTPreferencesCRSFactory;
+import eu.esdihumboldt.hale.rcp.utils.proxy.ProxySettings;
 
 /**
  * This class controls all aspects of the application's execution
@@ -80,17 +80,9 @@ public class Application implements IApplication {
 		Application.basepath = location_path;
 		
 		// read and set proxy settings
-		try {
-			IPreferenceStore preferences = HALEActivator.getDefault().getPreferenceStore();
-			String host = preferences.getString("http.proxyHost");
-			String port = preferences.getString("http.proxyPort");
-			
-			if (port != null && !port.equals("")) {
-				System.setProperty("http.proxyPort", port);
-			}
-			if (host != null && !host.equals("")) {
-				System.setProperty("http.proxyHost", host);
-			}
+		
+		try {	        
+			ProxySettings.install();
 		}
 		catch (Exception ex) {
 			_log.warn("Setting the Proxy configuration failed: " + ex.getMessage());
