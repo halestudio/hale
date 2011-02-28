@@ -591,16 +591,16 @@ public class ApacheSchemaProvider
 				// retrieve local name part of XmlSchemaElement and of 
 				// XmlSchemaComplexType to substitute name later on.
 				Name typeName = null;
-				if (element.getSchemaType() != null) {
+				if (element.getSchemaTypeName() != null) {
+					typeName = new NameImpl(
+							element.getSchemaTypeName().getNamespaceURI(), 
+							element.getSchemaTypeName().getLocalPart());
+				}
+				else if (element.getSchemaType() != null) {
 					// element has internal type definition, generate anonymous type name
 					typeName = new NameImpl(element.getQName().getNamespaceURI(),
 							element.getQName().getLocalPart() + "_AnonymousType");
 					anonymousTypes.put(element, typeName);
-				}
-				else if (element.getSchemaTypeName() != null) {
-					typeName = new NameImpl(
-							element.getSchemaTypeName().getNamespaceURI(), 
-							element.getSchemaTypeName().getLocalPart());
 				}
 				else if (element.getQName() != null) {
 					typeName = new NameImpl(
