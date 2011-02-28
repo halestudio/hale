@@ -54,5 +54,6 @@
 <location path="${project_loc:hale-platform}/target/com.hp.hpl.jena" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/net.java" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.apache.xmlbeans" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.httpcomponents" type="Directory"/>
 </locations>
 </target>

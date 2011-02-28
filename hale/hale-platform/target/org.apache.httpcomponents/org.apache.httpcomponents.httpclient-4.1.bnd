@@ -1,0 +1,7 @@
+-classpath: lib/org.apache.httpcomponents.httpclient_4.1/commons-codec-1.4.jar,lib/org.apache.httpcomponents.httpclient_4.1/httpclient-4.1.jar,lib/org.apache.httpcomponents.httpclient_4.1/httpclient-cache-4.1.jar,lib/org.apache.httpcomponents.httpclient_4.1/httpmime-4.1.jar
+-output: org.apache.httpcomponents.httpclient-4.1.jar
+Export-Package: *;-split-package:=merge-last;-noimport:=true
+Import-Package: *,net.spy.memcached;resolution:=optional,net.sf.ehcache;resolution:=optional
+Bundle-Version: 4.1.0
+Bundle-Name: Apache HttpClient Client
+Bundle-SymbolicName: org.apache.httpcomponents.httpclient
