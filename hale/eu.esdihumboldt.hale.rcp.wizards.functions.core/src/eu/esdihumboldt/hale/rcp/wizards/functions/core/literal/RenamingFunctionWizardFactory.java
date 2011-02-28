@@ -50,7 +50,8 @@ public class RenamingFunctionWizardFactory implements FunctionWizardFactory {
 			if (cell != null) {
 				// only allow editing matching transformation
 				try {
-					return cell.getEntity1().getTransformation().getService().getLocation().equals(
+					return cell.getEntity1().getTransformation() != null && 
+						cell.getEntity1().getTransformation().getService().getLocation().equals(
 							RenameFeatureFunction.class.getName());
 				} catch (NullPointerException e) {
 					return false;
