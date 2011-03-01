@@ -81,6 +81,13 @@
             name="Mapping Graph"
             restorable="true">
       </view>
+      <view
+            class="eu.esdihumboldt.hale.rcp.views.report.ReportView"
+            icon="icons/ft_stylelist.gif"
+            id="eu.esdihumboldt.hale.rcp.views.reportView"
+            name="Report View"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -391,6 +398,12 @@
                serviceClass="eu.esdihumboldt.hale.rcp.utils.codelist.CodeListService">
          </service>
       </serviceFactory>
+      <serviceFactory
+            factoryClass="eu.esdihumboldt.hale.rcp.views.report.service.ServiceFactory">
+         <service
+               serviceClass="eu.esdihumboldt.hale.rcp.views.report.service.ReportService">
+         </service>
+      </serviceFactory>
    </extension>
    <extension
          point="org.eclipse.ui.splashHandlers">
@@ -516,7 +529,11 @@
       </perspectiveExtension>
    </extension>
    <extension
+<<<<<<< HEAD
          id="eu.esdihumboldt.hale.password.default"
+=======
+         id="id1"
+>>>>>>> Work on #282.
          point="org.eclipse.equinox.security.secureStorage">
       <provider
             class="eu.esdihumboldt.hale.rcp.utils.proxy.DefaultPasswordProvider"
