@@ -41,9 +41,6 @@ import eu.esdihumboldt.hale.gmlvalidate.Report;
 import eu.esdihumboldt.hale.gmlvalidate.Validator;
 import eu.esdihumboldt.hale.gmlvalidate.ValidatorFactory;
 import eu.esdihumboldt.hale.gmlwriter.GmlWriter;
-import eu.esdihumboldt.hale.models.HaleServiceListener;
-import eu.esdihumboldt.hale.models.UpdateMessage;
-import eu.esdihumboldt.hale.rcp.views.report.ReportModel;
 import eu.esdihumboldt.hale.rcp.views.report.service.ReportService;
 import eu.esdihumboldt.hale.rcp.views.report.service.ReportServiceImpl;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
@@ -187,8 +184,7 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 						}
 						else {
 							log.userError("Validation of the exported GML file failed, see the error log for more details.");
-							//TODO show some report window (with line numbers etc)
-
+							
 							final Report report2 = report;
 							Runnable r = new Runnable(){
 								public void run(){

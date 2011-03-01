@@ -18,6 +18,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.geotools.feature.FeatureCollection;
@@ -57,6 +58,13 @@ public class SaveTransformationResultHandler extends AbstractHandler {
 		if (features == null || features.isEmpty()) {
 			log.userError("No transformed features are available for export.");
 			return null;
+		}
+		
+		// display Report Viewer
+		try {
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("eu.esdihumboldt.hale.rcp.views.reportView");
+		} catch (PartInitException e) {
+			log.error("Could not open reportView", e);
 		}
 		
 		final Schema targetSchema = ss.getTargetSchema();

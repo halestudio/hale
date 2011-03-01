@@ -18,7 +18,6 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -51,8 +50,6 @@ public class ProjectServiceImpl
 	implements ProjectService {
 	
 	private static ProjectService instance = new ProjectServiceImpl();
-	
-	private static Logger _log = Logger.getLogger(ProjectServiceImpl.class);
 	
 	private Set<HaleServiceListener> listeners = new HashSet<HaleServiceListener>();
 
