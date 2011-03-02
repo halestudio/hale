@@ -428,8 +428,8 @@
          </property>
       </product>
    </extension>
-   <extension
-         point="eu.esdihumboldt.hale.task.TaskProvider">
+   <extension 
+   		point="eu.esdihumboldt.hale.task.TaskProvider">
       <tasks
             class="eu.esdihumboldt.hale.task.providers.schema.SourceMappingTaskProvider"
             defaultEnabled="true"
@@ -529,11 +529,7 @@
       </perspectiveExtension>
    </extension>
    <extension
-<<<<<<< HEAD
          id="eu.esdihumboldt.hale.password.default"
-=======
-         id="id1"
->>>>>>> Work on #282.
          point="org.eclipse.equinox.security.secureStorage">
       <provider
             class="eu.esdihumboldt.hale.rcp.utils.proxy.DefaultPasswordProvider"
