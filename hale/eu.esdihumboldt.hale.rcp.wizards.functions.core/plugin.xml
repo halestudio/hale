@@ -93,6 +93,16 @@
             icon="icons/geometry_attribute.png"
             name="Centroid">
       </simple>
+      <simple
+            function="eu.esdihumboldt.cst.corefunctions.CalculateArea"
+            icon="icons/geometry_attribute.png"
+            name="Calculate Area">
+      </simple>
+      <simple
+            function="eu.esdihumboldt.cst.corefunctions.CalculateLength"
+            icon="icons/geometry_attribute.png"
+            name="Calculate Length">
+      </simple>
    </extension>
 
 </plugin>
