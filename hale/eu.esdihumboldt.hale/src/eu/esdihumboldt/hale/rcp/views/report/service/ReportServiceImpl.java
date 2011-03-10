@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.UpdateService;
 import eu.esdihumboldt.hale.rcp.views.report.ReportModel;
+import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
 
 /**
  * 
@@ -36,7 +37,8 @@ public class ReportServiceImpl implements ReportService {
 	/**
 	 * Contains all {@link Report}s.
 	 */
-	private ArrayList<Report> reports = new ArrayList<Report>();
+	@SuppressWarnings("rawtypes")
+	private ArrayList reports = new ArrayList();
 	
 	@Override
 	public boolean addListener(HaleServiceListener sl) {
@@ -58,19 +60,43 @@ public class ReportServiceImpl implements ReportService {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void addReport(Report report) {
+		this.reports.add(report);
+		this.updateListeners();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void addReport(MappingExportReport report) {
 		this.reports.add(report);
 		this.updateListeners();
 	}
 
 	@Override
 	public ReportModel getLastReport() {
-		ReportModel model = new ReportModel(this.reports.get(this.reports.size()-1));
+		ReportModel model;
+		Object obj = this.reports.get(this.reports.size()-1);
+		
+		if (obj instanceof Report) {
+			model = new ReportModel((Report) obj);
+		} else {
+			model = new ReportModel((MappingExportReport) obj);
+		}
+		
 		return model;
 	}
 	
 	public ReportModel getReport(int index) {
-		return new ReportModel(this.reports.get(index));
+		ReportModel model;
+		Object obj = this.reports.get(index);
+		
+		if (obj instanceof Report) {
+			model = new ReportModel((Report) obj);
+		} else {
+			model = new ReportModel((MappingExportReport) obj);
+		}
+		
+		return model;
 	}
 }

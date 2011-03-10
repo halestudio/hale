@@ -65,6 +65,9 @@ public class TransformationResultItem {
 	 * @param line occurrence
 	 */
 	public void addLine(String line) {
+		if (line.isEmpty()) {
+			return;
+		}
 		this.lines.add(line);
 	}
 	

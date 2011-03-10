@@ -14,10 +14,14 @@ package eu.esdihumboldt.hale.rcp.views.report;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.xml.sax.SAXParseException;
 
+import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.transformer.CellUtils;
 import eu.esdihumboldt.hale.gmlvalidate.Report;
+import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
 
 /**
  * The model for {@link ReportView#viewer}.
@@ -28,8 +32,13 @@ import eu.esdihumboldt.hale.gmlvalidate.Report;
  */
 public class ReportModel {
 	
-	private List<SAXParseException> warning = new ArrayList<SAXParseException>();
-	private List<SAXParseException> error = new ArrayList<SAXParseException>();
+	@SuppressWarnings("rawtypes")
+	private List warning = new ArrayList();
+	
+	@SuppressWarnings("rawtypes")
+	private List error = new ArrayList();
+	
+	private String identifier = "";
 	
 	/**
 	 * Constructor.
@@ -39,6 +48,26 @@ public class ReportModel {
 	public ReportModel(Report report) {
 		this.setSAXParseExceptionError(report.getErrors());
 		this.setSAXParseExceptionWarning(report.getWarnings());
+		
+		this.identifier = "GML Export";
+	}
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param report report to analyze
+	 */
+	@SuppressWarnings("unchecked")
+	public ReportModel(MappingExportReport report) {
+		for (Entry<ICell, String> entry : report.getFailed().entrySet()) {
+			this.error.add(entry.getValue()+" "+CellUtils.asString(entry.getKey()));
+		}
+		
+		for (Entry<ICell, String> entry : report.getWarnings().entrySet()) {
+			this.warning.add(entry.getValue()+" "+CellUtils.asString(entry.getKey()));
+		}
+		
+		this.identifier = "Mapping Export";
 	}
 	
 	/**
@@ -46,8 +75,12 @@ public class ReportModel {
 	 * 
 	 * @return sorted list
 	 */
+	@SuppressWarnings("unchecked")
 	public List<TransformationResultItem> getWarnings() {
-		return this.getList(this.warning);
+		if (!this.warning.isEmpty() && this.warning.get(0) instanceof SAXParseException) {
+			return this.getList((ArrayList<SAXParseException>) this.warning);
+		}
+		return this.getListString(this.warning);
 	}
 	
 	/**
@@ -55,8 +88,20 @@ public class ReportModel {
 	 * 
 	 * @return sorted list
 	 */
+	@SuppressWarnings("unchecked")
 	public List<TransformationResultItem> getErrors() {
-		return this.getList(this.error);
+		if (!this.warning.isEmpty() && this.warning.get(0) instanceof SAXParseException) {
+			return this.getList((ArrayList<SAXParseException>) this.error);
+		}
+		return this.getListString(this.error);
+	}
+	
+	/**
+	 * 
+	 * @return the identifier
+	 */
+	public String getIdentifier() {
+		return this.identifier;
 	}
 	
 	/**
@@ -96,6 +141,23 @@ public class ReportModel {
 			if (!added) {
 				items.add(new TransformationResultItem(e.getLocalizedMessage(), e.getLineNumber()));
 			}
+		}
+		
+		return items;
+	}
+	
+	/**
+	 * Creates a sorted list.
+	 * 
+	 * @param list the list to sort
+	 * 
+	 * @return sorted list
+	 */
+	private List<TransformationResultItem> getListString(List<String> list) {
+		List<TransformationResultItem> items = new ArrayList<TransformationResultItem>();
+		
+		for (String str : list) {
+			items.add(new TransformationResultItem(str, ""));
 		}
 		
 		return items;

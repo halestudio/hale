@@ -116,7 +116,7 @@ public class ReportView extends ViewPart implements HaleServiceListener {
 		ProjectServiceImpl projectService = (ProjectServiceImpl)PlatformUI.getWorkbench().getService(ProjectService.class);
 		
 		// add entry and select it
-		combo.add(projectService.getProjectName()+" - "+id);
+		combo.add(reportService.getLastReport().getIdentifier()+" "+projectService.getProjectName()+" - "+id);
 		combo.select(combo.getItemCount()-1);
 	}
 

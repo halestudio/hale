@@ -38,6 +38,8 @@ import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.StackTraceErrorDialog;
+import eu.esdihumboldt.hale.rcp.views.report.service.ReportService;
+import eu.esdihumboldt.hale.rcp.views.report.service.ReportServiceImpl;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportExtension;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
@@ -152,6 +154,16 @@ public class MappingExportWizard
 										dialog.open();
 									}
 								});
+								
+								final MappingExportReport report2 = report;
+								Runnable r = new Runnable(){
+									public void run(){
+										ReportServiceImpl reportService = (ReportServiceImpl)PlatformUI.getWorkbench().getService(ReportService.class);
+										reportService.addReport(report2);
+									}
+								};
+
+								PlatformUI.getWorkbench().getDisplay().asyncExec(r);
 							}
 							else {
 								_log.userInfo("Mapping export was successful");

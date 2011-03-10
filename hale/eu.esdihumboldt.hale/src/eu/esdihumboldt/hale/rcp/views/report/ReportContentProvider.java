@@ -97,7 +97,13 @@ public class ReportContentProvider implements ITreeContentProvider {
 		}
 		
 		if (this.item.size() > 0 && element instanceof TransformationResultItem) {
-			hasChildren = true;
+			TransformationResultItem item = (TransformationResultItem)element;
+
+			if (item.getLines().size() > 0) {
+				hasChildren = true;
+			} else{
+				hasChildren = false;
+			}
 		}
 		
 		return hasChildren;

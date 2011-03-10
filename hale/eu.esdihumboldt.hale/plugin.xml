@@ -85,7 +85,7 @@
             class="eu.esdihumboldt.hale.rcp.views.report.ReportView"
             icon="icons/ft_stylelist.gif"
             id="eu.esdihumboldt.hale.rcp.views.reportView"
-            name="GML Export Report"
+            name="Export Report"
             restorable="true">
       </view>
    </extension>
