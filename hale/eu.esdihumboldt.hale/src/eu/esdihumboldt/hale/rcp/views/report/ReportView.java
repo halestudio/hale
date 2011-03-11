@@ -58,18 +58,10 @@ public class ReportView extends ViewPart implements HaleServiceListener {
 		reportService.addListener(this);
 		
 		// bar and TreeView
-		page.setLayout(new GridLayout(2, false));
-
-		Composite bar = new Composite(page, SWT.FILL);
-		bar.setLayout(new GridLayout(2, true));
-		
-		Label label = new Label(bar, SWT.NONE);
-		label.setText("GML Export Report");
-		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 1));
+		page.setLayout(new GridLayout(2, true));
 	
-		combo = new Combo(bar, SWT.READ_ONLY);
-		combo.setLayoutData(new GridData(SWT.END, SWT.CENTER, true, false, 1, 1));
-		// TODO increase the combo size
+		combo = new Combo(page, SWT.READ_ONLY | SWT.FILL);
+		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
 		viewer = new TreeViewer(page);
 		viewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
