@@ -17,12 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opengis.feature.Feature;
-import org.opengis.feature.type.PropertyDescriptor;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.cst.CstFunction;
+import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
@@ -45,7 +44,7 @@ public class ConstantValueFunction extends AbstractCstFunction {
 	 */
 	public static final String DEFAULT_VALUE_PARAMETER_NAME = "defaultValue";
 	
-	private Object defaultValue = null;
+	private String defaultValue = null;
 	private Property targetProperty = null;
 
 	/**
@@ -93,7 +92,12 @@ public class ConstantValueFunction extends AbstractCstFunction {
 	 */
 	@Override
 	public Feature transform(Feature source, Feature target) {
-		Object value = defaultValue;
+		String value = defaultValue;
+		/*
+		 * FIXME as the value given is always a string (because cell parameters 
+		 * can only be strings) there must be some conversion mechanism e.g.
+		 * for dates and numbers
+		 */
 		
 		org.opengis.feature.Property pd = FeatureInspector.getProperty(target, targetProperty.getAbout(), true);
 		
