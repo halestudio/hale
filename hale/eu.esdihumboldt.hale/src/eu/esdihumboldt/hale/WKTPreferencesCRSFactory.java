@@ -92,7 +92,8 @@ public class WKTPreferencesCRSFactory extends AbstractFactory implements CRSAuth
      * @param factory the CRS factory to use 
      */
     protected WKTPreferencesCRSFactory(final CRSFactory factory ) {
-        super(MINIMUM_PRIORITY); // Select other factories first
+        super(MAXIMUM_PRIORITY); // allow overriding CRS definitions in the database 
+        	//MINIMUM_PRIORITY); // Select other factories first
         this.crsFactory = factory;
     }
     
