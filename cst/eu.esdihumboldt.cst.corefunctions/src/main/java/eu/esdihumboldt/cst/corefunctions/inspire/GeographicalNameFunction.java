@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.cst.corefunctions.inspire;
 
+import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -360,7 +361,9 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 
 	@Override
 	public String getDescription() {
-		return "This function enables the creation of an INPSIRE GeographicalName object from a set of simple string parameters.";
+		//return "This function enables the creation of an INPSIRE GeographicalName object from a set of simple string parameters.";
+		File desc = new File(GeographicalNameFunction.class.getProtectionDomain().getCodeSource().getLocation().getPath()+"/src/main/resource/GeographicalNameDescription.html");
+		return desc.toURI().toString();
 	}
 
 }
