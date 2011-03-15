@@ -11,6 +11,9 @@
  */
 package eu.esdihumboldt.hale.rcp.utils.cst;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.net.MalformedURLException;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -23,15 +26,31 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTError;
+import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.LocationEvent;
+import org.eclipse.swt.browser.LocationListener;
+import org.eclipse.swt.browser.ProgressEvent;
+import org.eclipse.swt.browser.ProgressListener;
+import org.eclipse.swt.browser.TitleEvent;
+import org.eclipse.swt.browser.TitleListener;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.PlatformUI;
 
 import de.cs3d.util.logging.ALogger;
@@ -43,13 +62,20 @@ import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
 /**
  * Dialog showing the functions registered with the CST
  * 
- * @author Simon Templer
+ * @author Simon Templer and Jose Ignacio Gisbert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @partner 02 / Etra I+D
  * @version $Id$ 
  */
 public class ListFunctionsDialog extends TitleAreaDialog {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(ListFunctionsDialog.class);
+	
+	private static Composite parentcomp;
+	private static Browser browser=null;
+	private static String[] urls;
+	private static String[] titles;
+	private static int index;
 	
 	/**
 	 * Label provider for function descriptions
@@ -136,7 +162,9 @@ public class ListFunctionsDialog extends TitleAreaDialog {
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		Composite page = new Composite(parent, SWT.NONE);
+		
+		
+		/*Composite page = new Composite(parent, SWT.NONE);
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		page.setLayoutData(data);
 		
@@ -212,7 +240,151 @@ public class ListFunctionsDialog extends TitleAreaDialog {
 			}
 		});
 		
-		return page;
+		return page;*/
+		
+		
+		
+		//Composite page = new Composite(parent,SWT.NONE);
+		
+		
+		/*Composite compTools = new Composite(parent, SWT.NONE);
+		GridData data = new GridData(GridData.FILL_HORIZONTAL);
+		compTools.setLayoutData(data);
+		compTools.setLayout(new GridLayout(2, false));
+		ToolBar tocBar = new ToolBar(compTools, SWT.NONE);
+		ToolItem openItem = new ToolItem(tocBar, SWT.PUSH);
+		openItem.setText("Browse");
+		ToolBar navBar = new ToolBar(compTools, SWT.NONE);
+		navBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.HORIZONTAL_ALIGN_END));
+		final ToolItem back = new ToolItem(navBar, SWT.PUSH);
+		back.setText("Back");
+		back.setEnabled(false);
+		final ToolItem forward = new ToolItem(navBar, SWT.PUSH);
+		forward.setText("Forward");
+		forward.setEnabled(false);*/
+		
+		
+		parentcomp = parent;
+		Composite comp = new Composite(parent,SWT.NONE);
+		GridData data = new GridData(GridData.FILL_BOTH);
+		comp.setLayoutData(data);
+		comp.setLayout(new FillLayout());
+		final SashForm form = new SashForm(comp, SWT.HORIZONTAL|SWT.BORDER);
+		
+		form.setLayout(new FillLayout());
+		
+		CstService cst = (CstService) PlatformUI.getWorkbench().getService(CstService.class);
+		List<FunctionDescription> functions = cst.getCapabilities().getFunctionDescriptions();
+		
+		final org.eclipse.swt.widgets.List list = new org.eclipse.swt.widgets.List(form, SWT.SINGLE |SWT.BORDER);
+				
+		titles = new String[functions.size()];
+		urls = new String[functions.size()];
+		for (int i=0;i<functions.size();i++)
+		{
+			list.add(functions.get(i).getFunctionId().getFile());
+			
+			titles[i]=functions.get(i).getFunctionDescription();
+			urls[i]=functions.get(i).getFunctionDescription();
+			if (urls[i]==null) urls[i]="";
+		}
+		try {
+			browser = new Browser(form, SWT.NONE|SWT.WRAP);
+		} catch (SWTError e) {
+			MessageBox messageBox = new MessageBox(parent.getShell(), SWT.ICON_ERROR | SWT.OK);
+			messageBox.setMessage("Closing application. The Browser could not be initialized.");
+			messageBox.setText("Error during browser initialization");
+			messageBox.open();
+		}
+		/*back.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				browser.back();
+			}
+		});
+		forward.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				browser.forward();
+			}
+		});*/
+		list.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				int index = list.getSelectionIndex();
+				if(urls[index].startsWith("file:")||urls[index].startsWith("http:"))
+					browser.setUrl(urls[index]);
+				else
+					browser.setText(urls[index]);
+			}
+		});
+		/*final LocationListener locationListener = new LocationListener() {
+			public void changed(LocationEvent event) {
+				Browser browser = (Browser)event.widget;
+				back.setEnabled(browser.isBackEnabled());
+				forward.setEnabled(browser.isForwardEnabled());
+			}
+			public void changing(LocationEvent event) {
+			}
+		};*/
+		/* Build a table of contents. Open each HTML file
+		 * found in the given folder to retrieve their title.
+		 */
+		final TitleListener tocTitleListener = new TitleListener() {
+			public void changed(TitleEvent event) {
+				titles[index] = event.title;
+			}
+		};
+		/*final ProgressListener tocProgressListener = new ProgressListener() {
+			public void changed(ProgressEvent event) {
+			}
+			public void completed(ProgressEvent event) {
+				Browser browser = (Browser)event.widget;
+				index++;
+				boolean tocCompleted = index >= titles.length;
+				if (tocCompleted) {
+					browser.dispose();
+					browser = new Browser(form, SWT.NONE);
+					browser = browser;
+					form.layout(true);
+					browser.addLocationListener(locationListener);
+					list.removeAll();
+					for (int i = 0; i < titles.length; i++) list.add(titles[i]);
+					list.select(0);
+					browser.setUrl(urls[0]);
+					parentcomp.getShell().setText("SWT Browser - Documentation Viewer");
+					return;
+				}
+				parentcomp.getShell().setText("Building index "+index+"/"+urls.length);
+				browser.setUrl(urls[index]);
+			}
+		};
+		openItem.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				DirectoryDialog dialog = new DirectoryDialog(parentcomp.getShell());
+				String folder = dialog.open();
+				if (folder == null) return;
+				File file = new File(folder);
+				File[] files = file.listFiles(new FilenameFilter() {
+					public boolean accept(File dir, String name) {
+						return name.endsWith(".html") || name.endsWith(".htm");
+					}
+				});
+				if (files.length == 0) return;
+				urls = new String[files.length];
+				titles = new String[files.length];
+				index = 0;
+				for (int i = 0; i < files.length; i++) {
+					try {
+						String url = files[i].toURL().toString();
+						urls[i] = url;
+					} catch (MalformedURLException ex) {}
+				}
+				parentcomp.getShell().setText("Building index");
+				browser.addTitleListener(tocTitleListener);
+				browser.addProgressListener(tocProgressListener);
+				if (urls.length > 0) browser.setUrl(urls[0]);
+			}
+		});*/
+		
+		return comp;
 	}
 
 
