@@ -65,6 +65,7 @@ import eu.esdihumboldt.hale.rcp.views.model.filtering.SimpleToggleAction;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.UseAggregationHierarchyAction;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.UseFlatHierarchyAction;
 import eu.esdihumboldt.hale.rcp.views.model.filtering.UseInheritanceHierarchyAction;
+import eu.esdihumboldt.hale.rcp.views.table.tree.ColumnBrowserTip;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardContribution;
 
 /**
@@ -419,7 +420,8 @@ public class ModelNavigationView extends ViewPart implements
 	    TreeViewer schemaViewer = filteredTree.getViewer();
 	    // set the default content provider, settings must match initial action state (be careful: [asIs, invert, invert])
 		schemaViewer.setContentProvider(new ConfigurableModelContentProvider(false, false, true));
-		schemaViewer.setLabelProvider(new ModelNavigationViewLabelProvider());
+		ModelNavigationViewLabelProvider labelProvider = new ModelNavigationViewLabelProvider();
+		schemaViewer.setLabelProvider(labelProvider);
 		schemaViewer.setInput(schemaItemService.getRoot(schemaType));
         schemaViewer
 				.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -427,6 +429,10 @@ public class ModelNavigationView extends ViewPart implements
 						updateSelection();
 					}
 				});
+        
+        // add tool tip
+		new ColumnBrowserTip(schemaViewer, 400, 300, true, 0, labelProvider);
+        
 		return schemaViewer;
 	}
 

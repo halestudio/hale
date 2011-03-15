@@ -44,6 +44,7 @@ import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.swingrcpbridge.SwingRcpUtilities;
 import eu.esdihumboldt.hale.rcp.views.map.style.StyleUtil;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
+import eu.esdihumboldt.hale.rcp.views.table.tree.TipProvider;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 
 /**
@@ -54,7 +55,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
  * @version $Id$
  */
 public class ModelNavigationViewLabelProvider extends LabelProvider
-	implements IColorProvider {
+	implements IColorProvider, TipProvider {
 	
 	private static class ImageConf {
 		
@@ -176,6 +177,21 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 		return obj.toString();
 	}
 	
+	/**
+	 * @see TipProvider#getToolTip(Object)
+	 */
+	@Override
+	public String getToolTip(Object element) {
+		if (element instanceof SchemaItem) {
+			String description = ((SchemaItem) element).getDefinition().getDescription();
+			if (description != null && !description.isEmpty()) {
+				return description;
+			}
+		}
+		
+		return null;
+	}
+
 	/**
 	 * Returns an adjusted image depending on the type of the object passed in.
 	 * @return an Image
