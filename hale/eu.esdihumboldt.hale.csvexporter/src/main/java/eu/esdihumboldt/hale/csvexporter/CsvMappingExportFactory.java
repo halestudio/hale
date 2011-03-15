@@ -473,6 +473,10 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 					row+="\"";
 					row+=separator;
 					row+="\"";
+					//entity1 --> There is no Entity1 in augmentation function
+					row+="\"";
+					row+=separator;
+					row+="\"";
 					//entity2
 					if (augmentationCell.getEntity2() instanceof ComposedProperty) {
 						cellVector.addElement("Entity 2 : ComposedProperty");
@@ -532,7 +536,7 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 						List values = restriction.getValue();
 						for(int i=0;i<values.size();i++)
 						{
-							row+=((ValueExpression)values.get(0)).getLiteral();
+							row+=((ValueExpression)values.get(i)).getLiteral();
 							if(i!=values.size()-1)
 								row+="|";
 						}
@@ -557,7 +561,7 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 						List values = restriction.getValue();
 						for(int i=0;i<values.size();i++)
 						{
-							row+=((ValueExpression)values.get(0)).getLiteral();
+							row+=((ValueExpression)values.get(i)).getLiteral();
 							if(i!=values.size()-1)
 								row+="|";
 						}
@@ -583,7 +587,7 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 						List values = restriction.getValue();
 						for(int i=0;i<values.size();i++)
 						{
-							row+=((ValueExpression)values.get(0)).getLiteral();
+							row+=((ValueExpression)values.get(i)).getLiteral();
 							if(i!=values.size()-1)
 								row+="|";
 						}
@@ -609,7 +613,7 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 						List values = restriction.getValue();
 						for(int i=0;i<values.size();i++)
 						{
-							row+=((ValueExpression)values.get(0)).getLiteral();
+							row+=((ValueExpression)values.get(i)).getLiteral();
 							if(i!=values.size()-1)
 								row+="|";
 						}
@@ -641,7 +645,7 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 							List values = restriction.getValue();
 							for(int i=0;i<values.size();i++)
 							{
-								row+=((ValueExpression)values.get(0)).getLiteral();
+								row+=((ValueExpression)values.get(i)).getLiteral();
 								if(i!=values.size()-1)
 									row+="|";
 							}
@@ -665,7 +669,7 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 							List values = restriction.getValue();
 							for(int i=0;i<values.size();i++)
 							{
-								row+=((ValueExpression)values.get(0)).getLiteral();
+								row+=((ValueExpression)values.get(i)).getLiteral();
 								if(i!=values.size()-1)
 									row+="|";
 							}
@@ -690,7 +694,7 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 							List values = restriction.getValue();
 							for(int i=0;i<values.size();i++)
 							{
-								row+=((ValueExpression)values.get(0)).getLiteral();
+								row+=((ValueExpression)values.get(i)).getLiteral();
 								if(i!=values.size()-1)
 									row+="|";
 							}
@@ -715,7 +719,7 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 							List values = restriction.getValue();
 							for(int i=0;i<values.size();i++)
 							{
-								row+=((ValueExpression)values.get(0)).getLiteral();
+								row+=((ValueExpression)values.get(i)).getLiteral();
 								if(i!=values.size()-1)
 									row+="|";
 							}
