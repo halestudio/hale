@@ -15,17 +15,17 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for Styles complex type.
+ * <p>Java class for configSchema complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Styles">
+ * &lt;complexType name="configSchema">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="path" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="background" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="key" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="value" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -35,62 +35,63 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Styles", propOrder = {
-    "path",
-    "background"
+@XmlType(name = "configSchema", propOrder = {
+    "key",
+    "value"
 })
-public class Styles {
+public class ConfigSchema {
 
     @XmlElement(required = true)
-    protected String path;
-    protected String background;
+    protected String key;
+    @XmlElement(required = true)
+    protected String value;
 
     /**
-     * Gets the value of the path property.
+     * Gets the value of the key property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getPath() {
-        return path;
+    public String getKey() {
+        return key;
     }
 
     /**
-     * Sets the value of the path property.
+     * Sets the value of the key property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setPath(String value) {
-        this.path = value;
+    public void setKey(String value) {
+        this.key = value;
     }
 
     /**
-     * Gets the value of the background property.
+     * Gets the value of the value property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getBackground() {
-        return background;
+    public String getValue() {
+        return value;
     }
 
     /**
-     * Sets the value of the background property.
+     * Sets the value of the value property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setBackground(String value) {
-        this.background = value;
+    public void setValue(String value) {
+        this.value = value;
     }
 
 }

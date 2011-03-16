@@ -39,7 +39,10 @@
 				minOccurs="1" maxOccurs="1" />
 			<xs:element name="taskStatus" type="TaskStatus"
 				minOccurs="1" maxOccurs="1" />
-			<xs:element name="styles" type="Styles" maxOccurs="1" minOccurs="0"></xs:element>
+			<xs:element name="styles" type="Styles" maxOccurs="1"
+				minOccurs="0">
+			</xs:element>
+			<xs:element name="configSchema" type="configSchema" maxOccurs="unbounded" minOccurs="0"></xs:element>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:element name="MappedSchema" type="MappedSchema"/>
@@ -68,4 +71,15 @@
 			<xs:element name="background" type="xs:string" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
+
+	<xs:complexType name="configSchema">
+		<xs:sequence>
+			<xs:element name="key" type="xs:string" maxOccurs="1"
+				minOccurs="1">
+			</xs:element>
+
+			<xs:element name="value" type="xs:string"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
 </xs:schema>
