@@ -124,12 +124,12 @@ public abstract class AbstractTilePainter implements PaintListener,
 	/**
 	 * The minimum zoom (for display) [0 <= {@link #minZoom} <= {@link #maxZoom}]
 	 */
-	private int minZoom = 0;
+	private final int minZoom = 0;
 	
 	/**
 	 * The maximum zoom (for display) [0 <= {@link #minZoom} <= {@link #maxZoom}]
 	 */
-	private int maxZoom = 120;
+	private final int maxZoom = 24;
 	
 	/**
 	 * The tile width in pixels
@@ -529,10 +529,7 @@ public abstract class AbstractTilePainter implements PaintListener,
 			
 			@Override
 			public void zoomChanged(int zoom) {
-//				setEnabled(zoom != maxZoom);
-				if (zoom == maxZoom) {
-					maxZoom++;
-				}
+				setEnabled(zoom != maxZoom);
 			}
 		
 			@Override
