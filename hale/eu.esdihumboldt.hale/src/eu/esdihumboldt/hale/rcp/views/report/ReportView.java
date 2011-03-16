@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.rcp.views.report;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -23,7 +24,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
@@ -99,16 +99,15 @@ public class ReportView extends ViewPart implements HaleServiceListener {
 		viewer.setInput(reportService.getLastReport());
 
 		// get current time
-		// TODO remove deprecated functions Date.get*()
+		DateFormat date = DateFormat.getTimeInstance();
 		Date time = Calendar.getInstance().getTime();
-		@SuppressWarnings("deprecation")
-		String id = time.getHours()+":"+time.getMinutes()+"."+time.getSeconds();
+		String id = date.format(time);
 		
 		// get project information
 		ProjectServiceImpl projectService = (ProjectServiceImpl)PlatformUI.getWorkbench().getService(ProjectService.class);
 		
 		// add entry and select it
-		combo.add(reportService.getLastReport().getIdentifier()+" "+projectService.getProjectName()+" - "+id);
+		combo.add(reportService.getLastReport().getIdentifier()+": "+projectService.getProjectName()+" - "+id);
 		combo.select(combo.getItemCount()-1);
 	}
 

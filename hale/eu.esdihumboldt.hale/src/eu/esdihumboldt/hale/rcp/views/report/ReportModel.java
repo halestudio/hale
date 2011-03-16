@@ -78,7 +78,7 @@ public class ReportModel {
 	@SuppressWarnings("unchecked")
 	public List<TransformationResultItem> getWarnings() {
 		if (!this.warning.isEmpty() && this.warning.get(0) instanceof SAXParseException) {
-			return this.getList((ArrayList<SAXParseException>) this.warning);
+			return this.getList(this.warning);
 		}
 		return this.getListString(this.warning);
 	}
@@ -90,8 +90,8 @@ public class ReportModel {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<TransformationResultItem> getErrors() {
-		if (!this.warning.isEmpty() && this.warning.get(0) instanceof SAXParseException) {
-			return this.getList((ArrayList<SAXParseException>) this.error);
+		if (!this.error.isEmpty() && this.error.get(0) instanceof SAXParseException) {
+			return this.getList(this.error);
 		}
 		return this.getListString(this.error);
 	}
