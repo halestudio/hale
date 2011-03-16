@@ -243,6 +243,12 @@ public abstract class AbstractTilePainter implements PaintListener,
 			// determine tile size
 			double ratio = mapArea.getWidth() / mapArea.getHeight();
 			
+			AxisDirection xDirection = mapArea.getCoordinateReferenceSystem().getCoordinateSystem().getAxis(0).getDirection();
+			if (xDirection.equals(AxisDirection.NORTH) || xDirection.equals(AxisDirection.SOUTH)) {
+				// x and y have to be swapped -> invert ratio
+				ratio = 1.0 / ratio; 
+			}
+			
 			if (ratio >= 1.0) {
 				// wider than high (or square)
 				tileHeight = MIN_TILE_SIZE;
