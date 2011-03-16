@@ -50,6 +50,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.WKTPreferencesCRSFactory;
 
 /**
@@ -82,7 +83,7 @@ public class CRSPreferencePage extends PreferencePage implements
 		page.setLayout(new GridLayout(2, true));
 		
 		Label label = new Label(page, SWT.NONE);
-		label.setText("Additional CRSes specified by an EPSG code and a WKT");
+		label.setText(Messages.getString("CRSPreferencePage.0")); //$NON-NLS-1$
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false, 2, 1));
 		
 		// code list
@@ -133,27 +134,27 @@ public class CRSPreferencePage extends PreferencePage implements
 		
 		// create initial document
 		IDocument doc = new Document();
-		doc.set("");
+		doc.set(""); //$NON-NLS-1$
 		wktEditor.setInput(doc);
 		
 		// add button (using a directory dialog)
 		Button add = new Button(page, SWT.PUSH);
 		add.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-		add.setText("Add...");
-		add.setToolTipText("Add a CRS");
+		add.setText(Messages.getString("CRSPreferencePage.2")); //$NON-NLS-1$
+		add.setToolTipText(Messages.getString("CRSPreferencePage.3")); //$NON-NLS-1$
 		add.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				final Display display = Display.getCurrent();
 				InputDialog dialog = new InputDialog(display.getActiveShell(), 
-						"Add CRS", "Enter the CRS code", 
+						Messages.getString("CRSPreferencePage.4"), Messages.getString("CRSPreferencePage.5"),  //$NON-NLS-1$ //$NON-NLS-2$
 						WKTPreferencesCRSFactory.AUTHORITY_PREFIX, new IInputValidator() {
 							
 							@Override
 							public String isValid(String newText) {
 								if (!newText.startsWith(WKTPreferencesCRSFactory.AUTHORITY_PREFIX)) {
-									return "Code must start with " + WKTPreferencesCRSFactory.AUTHORITY_PREFIX;
+									return Messages.getString("CRSPreferencePage.6") + WKTPreferencesCRSFactory.AUTHORITY_PREFIX; //$NON-NLS-1$
 								}
 								
 								return null;
@@ -171,8 +172,8 @@ public class CRSPreferencePage extends PreferencePage implements
 		// remove button
 		Button remove = new Button(page, SWT.PUSH);
 		remove.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-		remove.setText("Remove");
-		remove.setToolTipText("Remove the selected code");
+		remove.setText(Messages.getString("CRSPreferencePage.7")); //$NON-NLS-1$
+		remove.setToolTipText(Messages.getString("CRSPreferencePage.8")); //$NON-NLS-1$
 		remove.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -223,7 +224,7 @@ public class CRSPreferencePage extends PreferencePage implements
 		else {
 			wktEditor.getControl().setEnabled(false);
 			wktEditor.setEditable(false);
-			doc.set("");
+			doc.set(""); //$NON-NLS-1$
 		}
 	}
 	
@@ -242,7 +243,7 @@ public class CRSPreferencePage extends PreferencePage implements
 //		}
 		
 		if (wkt == null) {
-			wkt = "";
+			wkt = ""; //$NON-NLS-1$
 		}
 		
 		return wkt;
@@ -297,7 +298,7 @@ public class CRSPreferencePage extends PreferencePage implements
 		}
 		
 		if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), 
-				"Apply CRS changes", "For changes to the CRS definitions to take effect you might have to restart the application. Do you want to restart now?")) {
+				Messages.getString("CRSPreferencePage.11"), Messages.getString("CRSPreferencePage.12"))) { //$NON-NLS-1$ //$NON-NLS-2$
 			Display.getCurrent().asyncExec(new Runnable() {
 	            @Override
 	            public void run() {
