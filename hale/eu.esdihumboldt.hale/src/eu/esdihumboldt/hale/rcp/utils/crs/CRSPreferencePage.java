@@ -19,6 +19,7 @@ import java.util.Map.Entry;
 
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
@@ -47,6 +48,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.WKTPreferencesCRSFactory;
 
@@ -292,6 +294,19 @@ public class CRSPreferencePage extends PreferencePage implements
 					WKTPreferencesCRSFactory.getInstance().addWKT(code, wkt);
 				}
 			}
+		}
+		
+		if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), 
+				"Apply CRS changes", "For changes to the CRS definitions to take effect you might have to restart the application. Do you want to restart now?")) {
+			Display.getCurrent().asyncExec(new Runnable() {
+	            @Override
+	            public void run() {
+	                IWorkbench wb = PlatformUI.getWorkbench();
+	                if (wb != null && !wb.isClosing()) {
+	                    wb.restart();
+	                }
+	            }
+	        }); 
 		}
 		
 		return true;
