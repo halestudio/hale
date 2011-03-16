@@ -41,6 +41,8 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * This utility class is used to build and handle WFS GetCapabilities Requests
  * and Responses.

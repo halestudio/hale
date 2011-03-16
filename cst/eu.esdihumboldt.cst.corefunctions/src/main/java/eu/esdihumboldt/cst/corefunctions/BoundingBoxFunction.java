@@ -85,7 +85,7 @@ public class BoundingBoxFunction extends AbstractCstFunction {
 
 	@Override
 	public String getDescription() {
-		return "";
+		return Messages.getString("BoundingBoxFunction.2"); //$NON-NLS-1$
 	}
 		
 }

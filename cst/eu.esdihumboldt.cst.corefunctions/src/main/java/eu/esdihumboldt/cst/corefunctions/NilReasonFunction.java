@@ -137,7 +137,7 @@ public class NilReasonFunction extends AbstractCstFunction {
 
 	@Override
 	public String getDescription() {
-		return "This function will populate the nilReason attribute of any properties that have not yet been assigned a value.";
+		return Messages.getString("NilReasonFunction.1"); //$NON-NLS-1$
 	}
 	
 }

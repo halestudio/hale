@@ -27,7 +27,7 @@ import org.geotools.styling.PolygonSymbolizer;
 import org.geotools.styling.StyleBuilder;
 import org.geotools.styling.Symbolizer;
 
-import eu.esdihumboldt.hale.rcp.views.map.Messages;
+import eu.esdihumboldt.hale.Messages;
 
 /**
  * Symbolizer dialog

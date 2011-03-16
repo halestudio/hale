@@ -38,7 +38,7 @@ import eu.esdihumboldt.hale.rcp.utils.EntityHelper;
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNodeLabelProvider;
 import eu.esdihumboldt.hale.rcp.views.model.AttributeItem;
-import eu.esdihumboldt.hale.rcp.views.model.Messages;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.schemaprovider.EnumAttributeType;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;

@@ -82,7 +82,7 @@ public class CalculateArea extends AbstractCstFunction {
 
 	@Override
 	public String getDescription() {
-		return "Calculates the area of a given geometry.";
+		return Messages.getString("CalculateArea.2"); //$NON-NLS-1$
 	}
 
 }

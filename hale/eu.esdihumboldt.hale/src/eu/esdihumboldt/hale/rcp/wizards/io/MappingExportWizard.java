@@ -34,6 +34,7 @@ import de.cs3d.util.logging.ATransaction;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.transformer.CellUtils;
 import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.rcp.HALEActivator;

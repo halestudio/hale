@@ -50,11 +50,11 @@ public class DateExtractionFunction extends AbstractCstFunction {
 	/**
 	 * Source date format parameter name
 	 */
-	public static final String DATE_FORMAT_SOURCE = "dateFormatSource";
+	public static final String DATE_FORMAT_SOURCE = "dateFormatSource"; //$NON-NLS-1$
 	/**
 	 * Target date format parameter name
 	 */
-	public static final String DATE_FORMAT_TARGET = "dateFormatTarget";
+	public static final String DATE_FORMAT_TARGET = "dateFormatTarget"; //$NON-NLS-1$
 	
 	private String dateFormatSource = null;
 	private String dateFormatTarget = null;
@@ -71,7 +71,7 @@ public class DateExtractionFunction extends AbstractCstFunction {
 			} else if (ip.getName().equals(DateExtractionFunction.DATE_FORMAT_TARGET)) {
 				// if dateFormatTarget is not set use the format of the source
 				if (ip.getValue() != null
-						|| !ip.getValue().toString().equals("")) {
+						|| !ip.getValue().toString().equals("")) { //$NON-NLS-1$
 					this.dateFormatTarget = ip.getValue();
 				}
 			}
@@ -90,15 +90,15 @@ public class DateExtractionFunction extends AbstractCstFunction {
 	 */
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();	
-		Property entity1 = new Property(new About(""));
+		Property entity1 = new Property(new About("")); //$NON-NLS-1$
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
-		entityTypes.add("java.lang.String");
-		entityTypes.add("java.util.Date");
+		entityTypes.add("java.lang.String"); //$NON-NLS-1$
+		entityTypes.add("java.util.Date"); //$NON-NLS-1$
 		entity1.setTypeCondition(entityTypes);
 
-		Property entity2 = new Property(new About(""));
+		Property entity2 = new Property(new About("")); //$NON-NLS-1$
 	
 		// Setting of type condition for entity2
 		// 	entity2 has same type conditions as entity1
@@ -108,9 +108,9 @@ public class DateExtractionFunction extends AbstractCstFunction {
 		List<IParameter> params = new ArrayList<IParameter>(); 
 			
 		Parameter p_source   = 
-			new Parameter(DateExtractionFunction.DATE_FORMAT_SOURCE,"");
+			new Parameter(DateExtractionFunction.DATE_FORMAT_SOURCE,""); //$NON-NLS-1$
 		Parameter p_targert = 
-			new Parameter(DateExtractionFunction.DATE_FORMAT_TARGET,"");
+			new Parameter(DateExtractionFunction.DATE_FORMAT_TARGET,""); //$NON-NLS-1$
 		
 		params.add(p_source);
 		params.add(p_targert);
@@ -136,9 +136,9 @@ public class DateExtractionFunction extends AbstractCstFunction {
 		try {
 			sourceDate = sdf.parse(dateString);
 		} catch (ParseException e) {
-			throw new RuntimeException("Parsing the given date string " 
-					+ dateString + " using the supplied format " 
-					+ this.dateFormatSource + " failed.", e);
+			throw new RuntimeException("Parsing the given date string "  //$NON-NLS-1$
+					+ dateString + " using the supplied format "  //$NON-NLS-1$
+					+ this.dateFormatSource + " failed.", e); //$NON-NLS-1$
 		}
 
 		org.opengis.feature.Property targetProperty = FeatureInspector.getProperty(target, this.targetProperty.getAbout(), true);
@@ -171,6 +171,6 @@ public class DateExtractionFunction extends AbstractCstFunction {
 
 	@Override
 	public String getDescription() {
-		return "This function extracts the date/time from a source string and puts it reformatted to the target, based on a format parameter for the date/time pattern of the source and the target";
+		return Messages.getString("DateExtractionFunction.1"); //$NON-NLS-1$
 	}
 }

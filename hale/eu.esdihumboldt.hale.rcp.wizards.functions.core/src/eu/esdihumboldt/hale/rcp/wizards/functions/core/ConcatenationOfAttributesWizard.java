@@ -74,9 +74,9 @@ public class ConcatenationOfAttributesWizard extends AbstractSingleComposedCellW
 			}
 		}
 		
-		this.mainPage = new ConcatenationOfAttributesWizardPage("Concatenation Of Attributes Function");
-		this.mainPage.setDescription("Concats two or more strings into one string.") ;
-		super.setWindowTitle("Concatenation Of Attributes Function");
+		this.mainPage = new ConcatenationOfAttributesWizardPage(Messages.ConcatenationOfAttributesWizard_0);
+		this.mainPage.setDescription(Messages.ConcatenationOfAttributesWizard_1) ;
+		super.setWindowTitle(Messages.ConcatenationOfAttributesWizard_2);
 		
 		if (separator != null) {
 			mainPage.setSeparator(separator);

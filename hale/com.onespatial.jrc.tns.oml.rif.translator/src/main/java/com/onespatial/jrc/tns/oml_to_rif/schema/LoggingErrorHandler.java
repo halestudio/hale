@@ -70,12 +70,12 @@ class LoggingErrorHandler implements ErrorHandler
     private String processException(SAXParseException exception)
     {
         StringBuilder bld = new StringBuilder();
-        bld.append(exception.getLocalizedMessage()).append(" conext-");
-        bld.append("public-id:").append(exception.getPublicId());
-        bld.append(" system-id:").append(exception.getSystemId());
-        bld.append(" line:").append(exception.getLineNumber());
-        bld.append(" column:").append(exception.getColumnNumber());
-        bld.append("]");
+        bld.append(exception.getLocalizedMessage()).append(" conext-"); //$NON-NLS-1$
+        bld.append("public-id:").append(exception.getPublicId()); //$NON-NLS-1$
+        bld.append(" system-id:").append(exception.getSystemId()); //$NON-NLS-1$
+        bld.append(" line:").append(exception.getLineNumber()); //$NON-NLS-1$
+        bld.append(" column:").append(exception.getColumnNumber()); //$NON-NLS-1$
+        bld.append("]"); //$NON-NLS-1$
         return bld.toString();
     }
 }

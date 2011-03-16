@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-   <extension-point id="eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory" name="FunctionWizardFactory" schema="schema/eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory.exsd"/>
-   <extension-point id="eu.esdihumboldt.hale.task.TaskProvider" name="TaskProvider" schema="schema/eu.esdihumboldt.hale.task.TaskProvider.exsd"/>
-   <extension-point id="eu.esdihumboldt.hale.MappingExport" name="MappingExport" schema="schema/eu.esdihumboldt.hale.MappingExport.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory" name="%extension-point.name" schema="schema/eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.task.TaskProvider" name="%extension-point.name.0" schema="schema/eu.esdihumboldt.hale.task.TaskProvider.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.MappingExport" name="%extension-point.name.1" schema="schema/eu.esdihumboldt.hale.MappingExport.exsd"/>
 
    <extension
          id="application"
@@ -455,7 +455,7 @@
             class="eu.esdihumboldt.hale.task.providers.schema.geometry.SchemaSetNoGeometryTaskProvider"
             defaultEnabled="true"
             id="eu.esdihumboldt.hale.task.schema.NoGeometry"
-            name="FeatureType geometry check">
+            name="%tasks.name">
       </tasks>
    </extension>
    <extension
@@ -533,7 +533,7 @@
          point="org.eclipse.equinox.security.secureStorage">
       <provider
             class="eu.esdihumboldt.hale.rcp.utils.proxy.DefaultPasswordProvider"
-            description="Default password provider"
+            description="%provider.description"
             priority="4">
       </provider>
    </extension>

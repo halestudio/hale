@@ -122,7 +122,7 @@ public class AlignmentToModelAlignmentDigester extends
             }
             else
             {
-                throw new TranslationException("Unhandled combination");
+                throw new TranslationException("Unhandled combination"); //$NON-NLS-1$
             }
 
         }
@@ -170,11 +170,11 @@ public class AlignmentToModelAlignmentDigester extends
                 }
             }
             
-            report.setWarning(original, "The nil reason will be set regardless of whether a value for its parent is set or not");
+            report.setWarning(original, "The nil reason will be set regardless of whether a value for its parent is set or not"); //$NON-NLS-1$
             
             IDetailedAbout targetAbout = DetailedAbout.getDetailedAbout(targetEntity.getAbout(), true);
             List<String> properties = new ArrayList<String>(targetAbout.getProperties());
-            properties.add("nilReason"); //XXX this is an attribute does it make any difference?
+            properties.add("nilReason"); //XXX this is an attribute does it make any difference? //$NON-NLS-1$
 			targetAbout = new DetailedAbout(targetAbout.getNamespace(), targetAbout.getFeatureClass(), properties);
 	        try {
 				return new ModelStaticAssignmentCell(
@@ -186,7 +186,7 @@ public class AlignmentToModelAlignmentDigester extends
     	}
     	else {
     		// not supported
-    		report.setFailed(original, "Only default value augmentations supported");
+    		report.setFailed(original, "Only default value augmentations supported"); //$NON-NLS-1$
         	return null;
     	}
     }
@@ -195,18 +195,18 @@ public class AlignmentToModelAlignmentDigester extends
     		Map<String, SchemaElement> sourceFeatures, Map<String, SchemaElement> targetFeatures) {
     	//FIXME what about composed properties?
     	if (sourceEntity instanceof ComposedProperty || targetEntity instanceof ComposedProperty) {
-    		report.setFailed(original, "Composed properties not supported");
+    		report.setFailed(original, "Composed properties not supported"); //$NON-NLS-1$
     		return null;
     	}
     	
     	List<FeatureClass> filter = sourceEntity.getDomainRestriction();
     	if (filter != null && !filter.isEmpty()) {
-    		report.setWarning(original, "Filters on attributive functions currently not supported in the RIF export");
+    		report.setWarning(original, "Filters on attributive functions currently not supported in the RIF export"); //$NON-NLS-1$
     	}
     	
     	String function = sourceEntity.getTransformation().getService().getLocation();
     	if (!RenameAttributeFunction.class.getName().equals(function)) {
-    		report.setWarning(original, "Function " + function + " not recognized");
+    		report.setWarning(original, "Function " + function + " not recognized"); //$NON-NLS-1$ //$NON-NLS-2$
     	}
     	
     	IDetailedAbout sourceAbout = DetailedAbout.getDetailedAbout(sourceEntity.getAbout(), true);
@@ -236,9 +236,9 @@ public class AlignmentToModelAlignmentDigester extends
         GmlAttributePath binding = new GmlAttributePath();
         
         // get the parent class for the entity
-        SchemaElement entityParent = elements.get(about.getNamespace() + "/" + about.getFeatureClass());
+        SchemaElement entityParent = elements.get(about.getNamespace() + "/" + about.getFeatureClass()); //$NON-NLS-1$
         if (entityParent == null) {
-        	throw new TranslationException("Element " + about.getFeatureClass() + " not found");
+        	throw new TranslationException("Element " + about.getFeatureClass() + " not found"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         TypeDefinition type = entityParent.getType();
         
@@ -248,7 +248,7 @@ public class AlignmentToModelAlignmentDigester extends
         	AttributeDefinition attDef = type.getAttribute(attributeName);
         	
         	if (attDef == null) {
-        		throw new TranslationException("Attribute " + attributeName + " not found");
+        		throw new TranslationException("Attribute " + attributeName + " not found"); //$NON-NLS-1$ //$NON-NLS-2$
         	}
         	
         	GmlAttribute attribute = new GmlAttribute(attDef);

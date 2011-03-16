@@ -23,6 +23,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * This is the main page of the {@link MappingImportWizard}.
  * 

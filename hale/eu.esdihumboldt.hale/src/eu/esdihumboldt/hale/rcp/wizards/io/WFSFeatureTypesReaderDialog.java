@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.MessageFormat;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -38,6 +39,8 @@ import org.eclipse.swt.widgets.Text;
 import org.geotools.data.DataStore;
 import org.geotools.data.wfs.WFSDataStore;
 import org.opengis.feature.type.FeatureType;
+
+import eu.esdihumboldt.hale.Messages;
 
 /**
  * The {@link WFSFeatureTypesReaderDialog} enables a user to select a WFS from
@@ -305,8 +308,7 @@ public class WFSFeatureTypesReaderDialog
 										public void run() {
 											selection.setFeatureTypes(types);
 											
-											currentStatusLabel.setText(Messages.WFSFeatureTypesReaderDialog_ValdationOKText1 
-													+ types.size() + Messages.WFSFeatureTypesReaderDialog_ValdationOKText2);
+											currentStatusLabel.setText(MessageFormat.format(Messages.WFSFeatureTypesReaderDialog_ValdationOKText, types.size()));
 											finish.setEnabled(true);
 										}
 										

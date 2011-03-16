@@ -90,8 +90,8 @@ public class GenericFunctionWizard extends Wizard implements FunctionWizard {
 	 */
 	//@Override
 	protected void init() {
-		this.mainPage = new GenericFunctionWizardPage(""); 
-		super.setWindowTitle("Generic Wizard"); 
+		this.mainPage = new GenericFunctionWizardPage("");  //$NON-NLS-1$
+		super.setWindowTitle(Messages.GenericFunctionWizard_1); 
 		super.setNeedsProgressMonitor(true);
 	}
 
@@ -145,7 +145,7 @@ public class GenericFunctionWizard extends Wizard implements FunctionWizard {
        // super.addPages(); 
     	
         addPage(this.mainPage);
-        algorithmPage = new AlgorithmWizardPage("Algorithm");
+        algorithmPage = new AlgorithmWizardPage(Messages.GenericFunctionWizard_2);
 		addPage(this.algorithmPage);
 		
     }

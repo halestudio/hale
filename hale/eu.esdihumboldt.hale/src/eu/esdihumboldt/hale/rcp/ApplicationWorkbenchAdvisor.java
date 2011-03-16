@@ -28,6 +28,7 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.project.RecentFilesService;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
@@ -43,7 +44,7 @@ import eu.esdihumboldt.hale.rcp.wizards.io.SaveAlignmentProjectWizard;
  */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
-	private static final String PERSPECTIVE_ID = "eu.esdihumboldt.hale.rcp.perspective.Default";
+	private static final String PERSPECTIVE_ID = "eu.esdihumboldt.hale.rcp.perspective.Default"; //$NON-NLS-1$
 	
 	/**
 	 * A tag for the list of recent files in the workbench memento
@@ -87,8 +88,8 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 			Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
 			MessageBox mb = new MessageBox(shell, 
 					SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
-    		mb.setMessage("Save changes?");
-    		mb.setText("Exit HALE");
+    		mb.setMessage(Messages.getString("ApplicationWorkbenchAdvisor.1")); //$NON-NLS-1$
+    		mb.setText(Messages.getString("ApplicationWorkbenchAdvisor.2")); //$NON-NLS-1$
     		int result = mb.open();
     		if (result == SWT.CANCEL) {
     			return false;
@@ -108,7 +109,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 					return true;
 				} catch (JAXBException e) {
 					ExceptionHelper.handleException(
-							"Error saving alignment project", HALEActivator.PLUGIN_ID, e);
+							"Error saving alignment project", HALEActivator.PLUGIN_ID, e); //$NON-NLS-1$
 					return false;
 				}
 			}
@@ -127,7 +128,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	@Override
 	public IStatus restoreState(IMemento memento) {
 		MultiStatus result = new MultiStatus(PlatformUI.PLUGIN_ID, IStatus.OK,
-				"Restored state", null);
+				"Restored state", null); //$NON-NLS-1$
 		
 		result.add(super.restoreState(memento));
 		
@@ -147,7 +148,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	@Override
 	public IStatus saveState(IMemento memento) {
 		MultiStatus result = new MultiStatus(PlatformUI.PLUGIN_ID, IStatus.OK,
-			"Saved state", null);
+			"Saved state", null); //$NON-NLS-1$
 		
 		result.add(super.saveState(memento));
 		

@@ -31,7 +31,7 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.widgets.Display;
 
-import eu.esdihumboldt.hale.rcp.views.map.Messages;
+import eu.esdihumboldt.hale.Messages;
 
 import gnu.trove.TIntObjectHashMap;
 

@@ -17,6 +17,8 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import java.text.MessageFormat;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -34,6 +36,7 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.goml.align.Formalism;
 import eu.esdihumboldt.goml.align.Schema;
 import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
@@ -118,9 +121,9 @@ public class SchemaImportWizard
 								
 								@Override
 								public void run() {
-									if (MessageDialog.openQuestion(getShell(), "Replace " + info + " schema", //$NON-NLS-1$ //$NON-NLS-2$
-											"A " + info +  //$NON-NLS-1$
-											Messages.SchemaImportWizard_SchemaQuestion)) {
+									if (MessageDialog.openQuestion(getShell(), 
+											MessageFormat.format(Messages.SchemaImportWizard_SchemaQuestion0, info),
+											MessageFormat.format(Messages.SchemaImportWizard_SchemaQuestion1, info))) {
 										loadSchema.set(true);
 									}
 								}

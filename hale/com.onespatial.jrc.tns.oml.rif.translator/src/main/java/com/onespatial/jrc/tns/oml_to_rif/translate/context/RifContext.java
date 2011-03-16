@@ -135,8 +135,8 @@ public class RifContext
         if (variable == null)
         {
 
-            throw new IllegalArgumentException("Attempting to access undefined variable " + name
-                    + " context " + this);
+            throw new IllegalArgumentException("Attempting to access undefined variable " + name //$NON-NLS-1$
+                    + " context " + this); //$NON-NLS-1$
         }
 
         return variable;
@@ -152,7 +152,7 @@ public class RifContext
         StringBuilder builder = new StringBuilder();
         for (RifVariable variable : getVariables())
         {
-            builder.append("\n\t").append(variable.summary());
+            builder.append("\n\t").append(variable.summary()); //$NON-NLS-1$
         }
         return builder.toString();
     }

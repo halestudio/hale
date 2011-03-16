@@ -72,7 +72,7 @@ public class FilterNodeFactory
         {
             return createLikeNode();
         }
-        throw new UnsupportedOperationException("Filter is not supported: "
+        throw new UnsupportedOperationException("Filter is not supported: " //$NON-NLS-1$
                 + source.getClass().getCanonicalName());
     }
 
@@ -95,7 +95,7 @@ public class FilterNodeFactory
         {
             return createNotNode((NotImpl) logicFilter);
         }
-        throw new UnsupportedOperationException("Unrecognised type "
+        throw new UnsupportedOperationException("Unrecognised type " //$NON-NLS-1$
                 + logicFilter.getClass().getCanonicalName());
     }
 
@@ -118,7 +118,7 @@ public class FilterNodeFactory
         {
             return createIntersectsNode();
         }
-        throw new UnsupportedOperationException("Unsupported filter type: "
+        throw new UnsupportedOperationException("Unsupported filter type: " //$NON-NLS-1$
                 + geometricFilter.getClass().getCanonicalName());
     }
 

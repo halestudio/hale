@@ -18,7 +18,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.model.ConfigurableModelContentProvider;
-import eu.esdihumboldt.hale.rcp.views.model.Messages;
+import eu.esdihumboldt.hale.Messages;
 
 /**
  * TODO Explain the purpose of this type here.

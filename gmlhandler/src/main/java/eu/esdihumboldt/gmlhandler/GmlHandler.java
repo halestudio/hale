@@ -115,7 +115,7 @@ public class GmlHandler {
 	public ApplicationSchema readSchema() throws MalformedURLException,
 			ClassCastException, ClassNotFoundException, InstantiationException,
 			IllegalAccessException {
-		LOG.info("Parsing the underlying schema at " + this.schemaUrl);
+		LOG.info("Parsing the underlying schema at " + this.schemaUrl); //$NON-NLS-1$
 
 		// Convert the schema location to the URL format
 		String schemaURL = new URL(this.schemaUrl).toString();
@@ -127,9 +127,9 @@ public class GmlHandler {
 		// Read in the schema and return the ApplicationSchema
 		ApplicationSchema gmlSchema = decoder.extractFeatureTypeSchema();
 		if (gmlSchema != null) {
-			LOG.info("Schema loaded successfully");
+			LOG.info("Schema loaded successfully"); //$NON-NLS-1$
 		} else {
-			LOG.error("Schema is NULL");
+			LOG.error("Schema is NULL"); //$NON-NLS-1$
 		}
 
 		return gmlSchema;
@@ -154,7 +154,7 @@ public class GmlHandler {
 			FactoryConfigurationError, IOException, ClassCastException,
 			ClassNotFoundException, InstantiationException,
 			IllegalAccessException, XMLParsingException, UnknownCRSException {
-		LOG.info("Reading the gml instance at " + this.gmlUrl);
+		LOG.info("Reading the gml instance at " + this.gmlUrl); //$NON-NLS-1$
 		// Converts gml location to the URL format
 		URL url = new URL(this.gmlUrl);
 
@@ -190,18 +190,18 @@ public class GmlHandler {
 	public void writeFC(FeatureCollection fc, String defaultNamespace, 
 			Map<String, String> prefixes) throws FileNotFoundException,
 			XMLStreamException, UnknownCRSException, TransformationException {
-		LOG.info("Exporting the gml-instance to the location "
+		LOG.info("Exporting the gml-instance to the location " //$NON-NLS-1$
 				+ this.targetGmlUrl);
 		
 		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 
 		// will set namespaces if these not set explicitly
-		outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces",
+		outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", //$NON-NLS-1$
 				new Boolean(true));
 
 		// create XML File Stream Writer
 		XMLStreamWriter writer = outputFactory.createXMLStreamWriter(
-				new FileOutputStream(new File(this.targetGmlUrl)), "UTF-8");
+				new FileOutputStream(new File(this.targetGmlUrl)), "UTF-8"); //$NON-NLS-1$
 //		SchemaLocationXMLStreamWriter writer = new SchemaLocationXMLStreamWriter(
 //				xmlStreamWriter, this.schemaUrl);
 
@@ -226,7 +226,7 @@ public class GmlHandler {
 			exporter.close();
 		}
 
-		LOG.debug("Gml instance has been exported successfully ");
+		LOG.debug("Gml instance has been exported successfully "); //$NON-NLS-1$
 	}
 
 	private GMLStreamWriter createWriter(GMLVersion version,

@@ -24,8 +24,8 @@ public class GreaterThanNode extends AbstractComparisonNode
     /**
      * IRI for the predicate to be deployed in the RIF output.
      */
-    public static final String RIF_PREDICATE_IRI = "http://"
-            + "www.w3.org/2007/rif-builtin-predicate#numeric-greater-than";
+    public static final String RIF_PREDICATE_IRI = "http://" //$NON-NLS-1$
+            + "www.w3.org/2007/rif-builtin-predicate#numeric-greater-than"; //$NON-NLS-1$
 
     /**
      * Set as protected in case this class is extended.

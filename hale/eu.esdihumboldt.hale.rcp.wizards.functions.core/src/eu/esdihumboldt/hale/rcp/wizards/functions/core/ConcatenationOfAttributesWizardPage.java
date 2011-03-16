@@ -53,13 +53,13 @@ public class ConcatenationOfAttributesWizardPage extends
 	 * 
 	 */
 	private final Image addImage = CoreFunctionWizardsPlugin
-			.getImageDescriptor("icons/add.gif").createImage();
+			.getImageDescriptor("icons/add.gif").createImage(); //$NON-NLS-1$
 
 	/**
 	 * 
 	 */
 	private final Image removeImage = CoreFunctionWizardsPlugin
-			.getImageDescriptor("icons/remove.gif").createImage();
+			.getImageDescriptor("icons/remove.gif").createImage(); //$NON-NLS-1$
 
 	/**
 	 * 
@@ -74,7 +74,7 @@ public class ConcatenationOfAttributesWizardPage extends
 	/**
 	 * The initial separator
 	 */
-	private String separator = ":";
+	private String separator = ":"; //$NON-NLS-1$
 
 	private List<String> parts = new ArrayList<String>();
 
@@ -99,10 +99,10 @@ public class ConcatenationOfAttributesWizardPage extends
 		page.setLayout(new GridLayout(3, false));
 		Group sourceGroup = new Group(page, SWT.NONE);
 		sourceGroup.setLayout(new GridLayout(SWT.FILL_WINDING, true));
-		sourceGroup.setText("Source Items");
+		sourceGroup.setText(Messages.ConcatenationOfAttributesWizardPage_3);
 
 		final Label seperatorLabel = new Label(sourceGroup, SWT.NONE);
-		seperatorLabel.setText("Seperator: ");
+		seperatorLabel.setText(Messages.ConcatenationOfAttributesWizardPage_4);
 		this.seperatorText = new Text(sourceGroup, SWT.SINGLE | SWT.BORDER);
 		this.seperatorText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
@@ -118,7 +118,7 @@ public class ConcatenationOfAttributesWizardPage extends
 
 		// source value selection
 		final Label comboLabel = new Label(sourceGroup, SWT.NONE);
-		comboLabel.setText("Source Items: ");
+		comboLabel.setText(Messages.ConcatenationOfAttributesWizardPage_5);
 		final Combo combo = new Combo(sourceGroup, SWT.DROP_DOWN | SWT.NONE);
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		final ComboViewer comboViewer = new ComboViewer(combo);
@@ -128,7 +128,7 @@ public class ConcatenationOfAttributesWizardPage extends
 		// add source value
 		Button addButton = new Button(page, SWT.PUSH);
 		addButton.setImage(this.addImage);
-		addButton.setToolTipText("Add a Concatenation Attribute");
+		addButton.setToolTipText(Messages.ConcatenationOfAttributesWizardPage_6);
 		addButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -144,7 +144,7 @@ public class ConcatenationOfAttributesWizardPage extends
 		final Button removeButton = new Button(page, SWT.PUSH);
 		removeButton.setImage(this.removeImage);
 		removeButton
-				.setToolTipText("Remove selected Concatenations Attributes");
+				.setToolTipText(Messages.ConcatenationOfAttributesWizardPage_8);
 		removeButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override

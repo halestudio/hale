@@ -24,7 +24,7 @@ import org.geotools.styling.Symbolizer;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 
-import eu.esdihumboldt.hale.rcp.views.map.Messages;
+import eu.esdihumboldt.hale.Messages;
 
 /**
  * Editor for {@link Rule}s

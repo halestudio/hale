@@ -49,7 +49,7 @@ import org.opengis.referencing.cs.AxisDirection;
 import org.opengis.referencing.datum.PixelInCell;
 
 import eu.esdihumboldt.hale.rcp.HALEActivator;
-import eu.esdihumboldt.hale.rcp.views.map.Messages;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.views.map.tiles.TileCache.TileListener;
 
 /**

@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Text;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.InstanceService;
 
 /**

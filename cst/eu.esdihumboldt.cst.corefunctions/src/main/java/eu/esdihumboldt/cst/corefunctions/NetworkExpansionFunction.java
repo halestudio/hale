@@ -157,7 +157,7 @@ public class NetworkExpansionFunction extends AbstractCstFunction {
 
 	@Override
 	public String getDescription() {
-		return "This function applies a geometric buffer to a Feature";
+		return Messages.getString("NetworkExpansionFunction.7"); //$NON-NLS-1$
 	}
 
 }

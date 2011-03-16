@@ -165,7 +165,7 @@ public class OrdinatesToPointFunction
 
 			target.getProperty(this.targetPropertyname).setValue(new_geometry);
 		} catch (XExpression e) {
-			throw new RuntimeException("Evaluation of the given expression failed: ", e);
+			throw new RuntimeException(Messages.getString("OrdinatesToPointFunction.7"), e); //$NON-NLS-1$
 		}
 
 		return target;

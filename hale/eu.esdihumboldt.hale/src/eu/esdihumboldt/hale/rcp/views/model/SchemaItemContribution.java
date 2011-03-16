@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.map.style.FeatureTypeStyleAction;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;

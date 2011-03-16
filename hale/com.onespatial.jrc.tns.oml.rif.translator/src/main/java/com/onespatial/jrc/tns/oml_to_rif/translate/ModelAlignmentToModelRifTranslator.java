@@ -116,10 +116,10 @@ public class ModelAlignmentToModelRifTranslator extends
         ModelSentence sentence = new ModelSentence();
 
         sentence.setSourceClass(
-                classMapping.getSourceClass().getElementName().getLocalPart().toLowerCase() + "-instance",
+                classMapping.getSourceClass().getElementName().getLocalPart().toLowerCase() + "-instance", //$NON-NLS-1$
                 getName(classMapping.getSourceClass().getElementName()));
         sentence.setTargetClass(
-                classMapping.getTargetClass().getElementName().getLocalPart().toLowerCase() + "-instance",
+                classMapping.getTargetClass().getElementName().getLocalPart().toLowerCase() + "-instance", //$NON-NLS-1$
                 getName(classMapping.getTargetClass().getElementName()));
 
         for (ModelMappingCondition condition : classMapping.getMappingConditions())
@@ -249,7 +249,7 @@ public class ModelAlignmentToModelRifTranslator extends
         String className = contextVariable.getClassName();
         String variableName = className.substring(className.lastIndexOf(':') + 1, className
                 .length())
-                + "-" + leaf.getPropertyName().toLowerCase() + "-filter";
+                + "-" + leaf.getPropertyName().toLowerCase() + "-filter"; //$NON-NLS-1$ //$NON-NLS-2$
         RifVariable variable = sentence.createVariable(variableName);
         variable.setContextVariable(sentence.getSourceClass());
 
@@ -289,7 +289,7 @@ public class ModelAlignmentToModelRifTranslator extends
         RifVariable child = sentence.findChildAttribute(current, propertyName);
         if (child == null)
         {
-            String variableName = fragment.getDefinition().getDeclaringType().getName().getLocalPart() + "-"
+            String variableName = fragment.getDefinition().getDeclaringType().getName().getLocalPart() + "-" //$NON-NLS-1$
                     + fragment.getDefinition().getName();
             variableName = variableName.toLowerCase();
             if (isSource)
@@ -393,7 +393,7 @@ public class ModelAlignmentToModelRifTranslator extends
 
 	private String getName(Name element)
     {
-        return element.getNamespaceURI() + ":" + element.getLocalPart();
+        return element.getNamespaceURI() + ":" + element.getLocalPart(); //$NON-NLS-1$
     }
 
 }

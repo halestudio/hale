@@ -11,6 +11,8 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * The split styles for displaying the map
  * 

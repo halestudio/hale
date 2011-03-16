@@ -81,7 +81,7 @@ public class CalculateLength extends AbstractCstFunction {
 
 	@Override
 	public String getDescription() {
-		return "Calculates the length of a given geometry.";
+		return Messages.getString("CalculateLength.2"); //$NON-NLS-1$
 	}
 
 }

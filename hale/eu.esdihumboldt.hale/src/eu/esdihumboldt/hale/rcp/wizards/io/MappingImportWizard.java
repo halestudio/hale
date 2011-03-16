@@ -12,6 +12,7 @@
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import java.io.File;
+import java.text.MessageFormat;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -30,6 +31,7 @@ import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Formalism;
 import eu.esdihumboldt.goml.align.Schema;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
@@ -88,7 +90,7 @@ public class MappingImportWizard
 					if (!sourceNamespace.equals(schemaService.getSourceNameSpace())) {
 						MessageDialog.openWarning(display.getActiveShell(), 
 								Messages.MappingImportWizard_SourceExistTitle, 
-								Messages.MappingImportWizard_SourceExistDescription + sourceNamespace);
+								MessageFormat.format(Messages.MappingImportWizard_SourceExistDescription, sourceNamespace));
 						return false;
 					}
 					
@@ -96,7 +98,7 @@ public class MappingImportWizard
 					if (!targetNamespace.equals(schemaService.getTargetNameSpace())) {
 						MessageDialog.openWarning(display.getActiveShell(), 
 								Messages.MappingImportWizard_TargetExistTitle, 
-								Messages.MappingImportWizard_TargetExistDescription + targetNamespace);
+								MessageFormat.format(Messages.MappingImportWizard_TargetExistDescription, targetNamespace));
 						return false;
 					}
 					

@@ -11,6 +11,8 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map.style;
 
+import java.text.MessageFormat;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogPage;
@@ -25,7 +27,7 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
-import eu.esdihumboldt.hale.rcp.views.map.Messages;
+import eu.esdihumboldt.hale.Messages;
 
 /**
  * Dialog for editing feature type styles
@@ -85,8 +87,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 				temp = oldPage.getStyle(false);
 			} catch (Exception e) {
 				if (MessageDialog.openConfirm(getShell(), Messages.FeatureStyleDialog_SwitchStyleTitle,
-						Messages.FeatureStyleDialog_SwitchStyleDescription
-						+ "\n\nError message:\n" + e.getMessage())) { //$NON-NLS-1$
+						MessageFormat.format(Messages.FeatureStyleDialog_SwitchStyleDescription, e.getMessage()))) { 
 					// revert changes
 					temp = null;
 				}
@@ -171,8 +172,8 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 			temp = page.getStyle(true);
 		} catch (Exception e) {
 			MessageDialog.openError(getShell(), Messages.FeatureStyleDialog_ErrorMessageTitle,
-					Messages.FeatureStyleDialog_ErrorMessageDescription
-					+ e.getMessage());
+					MessageFormat.format(Messages.FeatureStyleDialog_ErrorMessageDescription
+							, e.getMessage()));
 			return false;
 		}
 		

@@ -17,7 +17,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.model.ConfigurableModelContentProvider;
-import eu.esdihumboldt.hale.rcp.views.model.Messages;
+import eu.esdihumboldt.hale.Messages;
 
 /**
  * Enabling this action will switch the affected SchemaExplorer to display it's 

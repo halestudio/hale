@@ -6,6 +6,8 @@ import org.eclipse.jface.preference.StringButtonFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.Messages;
+
 public class OGCFilterText extends StringButtonFieldEditor {
 	FeatureTypeList selection;
 

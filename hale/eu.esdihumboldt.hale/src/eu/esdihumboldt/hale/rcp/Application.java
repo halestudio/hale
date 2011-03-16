@@ -67,15 +67,15 @@ public class Application implements IApplication {
 		
 		// init HSQL database
 		try {
-			CRS.decode("EPSG:4326");
+			CRS.decode("EPSG:4326"); //$NON-NLS-1$
 		} catch (Exception e) {
-			_log.error("Error while initializing epsg database", e);
+			_log.error("Error while initializing epsg database", e); //$NON-NLS-1$
 		}
 		
 		// find base path of the application.
 		URL location = this.getClass().getProtectionDomain().getCodeSource().getLocation();
-		String location_path = location.getPath().replace(" ", "+");
-		location_path = location_path.replace("bin/", "");
+		String location_path = location.getPath().replace(" ", "+"); //$NON-NLS-1$ //$NON-NLS-2$
+		location_path = location_path.replace("bin/", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		_log.debug(location_path);
 		Application.basepath = location_path;
 		
@@ -85,7 +85,7 @@ public class Application implements IApplication {
 			ProxySettings.install();
 		}
 		catch (Exception ex) {
-			_log.warn("Setting the Proxy configuration failed: " + ex.getMessage());
+			_log.warn("Setting the Proxy configuration failed: " + ex.getMessage()); //$NON-NLS-1$
 		}
 		
 		// initialize UI

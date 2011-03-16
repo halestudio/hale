@@ -126,7 +126,7 @@ public class CqlToMappingConditionTranslator extends
         }
         else
         {
-            throw new UnsupportedOperationException("Filter operation is not supported: "
+            throw new UnsupportedOperationException("Filter operation is not supported: " //$NON-NLS-1$
                     + node.getClass().getCanonicalName());
         }
     }
@@ -146,8 +146,8 @@ public class CqlToMappingConditionTranslator extends
             LiteralExpressionImpl literal = (LiteralExpressionImpl) expression;
             if (literal.getValue() instanceof com.vividsolutions.jts.geom.Geometry)
             {
-                throw new IllegalArgumentException("Geometric literals are "
-                        + "not supported! Found "
+                throw new IllegalArgumentException("Geometric literals are " //$NON-NLS-1$
+                        + "not supported! Found " //$NON-NLS-1$
                         + literal.getValue().getClass().getCanonicalName());
             }
             node.setLiteralValue(LiteralValue.getNew(literal.getValue()));
@@ -159,7 +159,7 @@ public class CqlToMappingConditionTranslator extends
         }
         else
         {
-            throw new IllegalArgumentException("Unsupported expression type: "
+            throw new IllegalArgumentException("Unsupported expression type: " //$NON-NLS-1$
                     + expression.getClass().getCanonicalName());
         }
         return node;

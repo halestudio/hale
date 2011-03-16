@@ -33,8 +33,8 @@ public class EqualToNode extends AbstractComparisonNode
          * RIF-DTB support numeric equality tests as a predicate, which is made
          * available here to support building up the RIF output.
          */
-        public static final String NUMERIC_EQUALS_PREDICATE_IRI = "http://"
-                + "www.w3.org/2007/rif-builtin-predicate#numeric-equal";
+        public static final String NUMERIC_EQUALS_PREDICATE_IRI = "http://" //$NON-NLS-1$
+                + "www.w3.org/2007/rif-builtin-predicate#numeric-equal"; //$NON-NLS-1$
 
     }
 
@@ -46,8 +46,8 @@ public class EqualToNode extends AbstractComparisonNode
          * two parameters, which is made available here to support building up
          * the RIF output.
          */
-        public static final String STRING_COMPARE_FUNCTION_IRI = "http://"
-                + "www.w3.org/2007/rif-builtin-function#compare";
+        public static final String STRING_COMPARE_FUNCTION_IRI = "http://" //$NON-NLS-1$
+                + "www.w3.org/2007/rif-builtin-function#compare"; //$NON-NLS-1$
 
     }
 

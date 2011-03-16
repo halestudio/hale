@@ -17,7 +17,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 
-import eu.esdihumboldt.hale.rcp.views.map.Messages;
+import eu.esdihumboldt.hale.Messages;
 
 /**
  * Page for editing a style as XML.

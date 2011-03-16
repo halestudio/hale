@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.models.StyleService;
-import eu.esdihumboldt.hale.rcp.views.map.Messages;
+import eu.esdihumboldt.hale.Messages;
 
 /**
  * Action that loads styles from a SLD file

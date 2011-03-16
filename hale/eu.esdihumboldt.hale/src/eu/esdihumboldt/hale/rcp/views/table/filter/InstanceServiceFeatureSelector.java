@@ -55,7 +55,7 @@ import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.filter.FeatureFilterField;
 import eu.esdihumboldt.hale.rcp.utils.filter.FeatureFilterField.FilterListener;
-import eu.esdihumboldt.hale.rcp.views.table.Messages;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**

@@ -48,20 +48,20 @@ public enum ComparisonType
     /**
      * RIF IRI for the numeric 'greater-than' predicate.
      */
-    public static final String NUMBER_GREATER_THAN_RIF_PREDICATE_IRI = "http://"
-            + "www.w3.org/2007/rif-builtin-predicate#numeric-greater-than";
+    public static final String NUMBER_GREATER_THAN_RIF_PREDICATE_IRI = "http://" //$NON-NLS-1$
+            + "www.w3.org/2007/rif-builtin-predicate#numeric-greater-than"; //$NON-NLS-1$
 
     /**
      * RIF IRI for the numeric 'less-than' predicate.
      */
-    public static final String NUMBER_LESS_THAN_RIF_PREDICATE_IRI = "http://"
-            + "www.w3.org/2007/rif-builtin-predicate#numeric-less-than";
+    public static final String NUMBER_LESS_THAN_RIF_PREDICATE_IRI = "http://" //$NON-NLS-1$
+            + "www.w3.org/2007/rif-builtin-predicate#numeric-less-than"; //$NON-NLS-1$
 
     /**
      * RIF IRI for the string 'contains' predicate.
      */
-    public static final String STRING_CONTAINS_RIF_PREDICATE_IRI = "http://"
-            + "www.w3.org/2007/rif-builtin-predicate#contains";
+    public static final String STRING_CONTAINS_RIF_PREDICATE_IRI = "http://" //$NON-NLS-1$
+            + "www.w3.org/2007/rif-builtin-predicate#contains"; //$NON-NLS-1$
 
     /**
      * @return String

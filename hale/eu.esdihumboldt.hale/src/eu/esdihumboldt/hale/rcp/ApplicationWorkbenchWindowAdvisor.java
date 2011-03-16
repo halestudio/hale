@@ -30,6 +30,8 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.internal.util.PrefUtil;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * This is the base class for configuring the workbench window in which the 
  * {@link IPerspectiveFactory}s reside.
@@ -56,7 +58,7 @@ public class ApplicationWorkbenchWindowAdvisor
 	public void preWindowOpen() {
 		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
 		configurer.setInitialSize(new Point(1280,1024));
-		configurer.setTitle("HUMBOLDT Alignment Editor " + 
+		configurer.setTitle(Messages.getString("ApplicationWorkbenchWindowAdvisor.0") +  //$NON-NLS-1$
 				HALEActivator.getDefault().getBundle().getVersion().toString());
 		configurer.setShowCoolBar(true); // this reserves space for action bars on top.
 		configurer.setShowPerspectiveBar(true); // this reserves space for the selection of perspectives.
@@ -95,8 +97,8 @@ public class ApplicationWorkbenchWindowAdvisor
 				IContributionItem item = ContributionItemFactory.VIEWS_SHORTLIST
 						.create(configurer.getWindowConfigurer().getWindow());
 				
-				IMenuManager windowMenu = new MenuManager("Configure", "configure");
-				IMenuManager viewMenu = new MenuManager("Show view");
+				IMenuManager windowMenu = new MenuManager(Messages.getString("ApplicationWorkbenchWindowAdvisor.1"), Messages.getString("ApplicationWorkbenchWindowAdvisor.2")); //$NON-NLS-1$ //$NON-NLS-2$
+				IMenuManager viewMenu = new MenuManager(Messages.getString("ApplicationWorkbenchWindowAdvisor.3")); //$NON-NLS-1$
 				windowMenu.add(viewMenu);
 				viewMenu.add(item);
 				

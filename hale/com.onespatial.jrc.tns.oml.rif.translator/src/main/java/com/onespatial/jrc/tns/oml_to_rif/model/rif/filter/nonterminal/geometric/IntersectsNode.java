@@ -25,8 +25,8 @@ public class IntersectsNode extends AbstractGeometricNode
     /**
      * IRI for the predicate to be deployed in the RIF output.
      */
-    public static final String INTERSECTS_PREDICATE_IRI = "http://"
-            + "www.opengeospatial.org/standards/sfa/Geometry#intersects";
+    public static final String INTERSECTS_PREDICATE_IRI = "http://" //$NON-NLS-1$
+            + "www.opengeospatial.org/standards/sfa/Geometry#intersects"; //$NON-NLS-1$
 
     /**
      * Set as protected in case this class is extended.

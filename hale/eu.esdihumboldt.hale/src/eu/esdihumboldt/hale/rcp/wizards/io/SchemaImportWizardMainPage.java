@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 
@@ -132,7 +133,7 @@ public class SchemaImportWizardMainPage
 		ffe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
 		fileFieldEditor = new FileFieldEditor(Messages.SchemaImportWizardMainPage_FileSelect, 
-				Messages.SchemaImportWizardMainPage_File, ffe_container); //NON-NLS-1 //NON-NLS-2
+				Messages.SchemaImportWizardMainPage_File, ffe_container);
 		fileFieldEditor.getTextControl(ffe_container).addModifyListener(new ModifyListener(){
 			public void modifyText(ModifyEvent e) {
 				getWizard().getContainer().updateButtons();
@@ -150,8 +151,8 @@ public class SchemaImportWizardMainPage
 		this.ufe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ufe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		wfsFieldEditor = new UrlFieldEditor("urlSelect",  //$NON-NLS-1$
-				"... WFS DescribeFeatureType:", ufe_container); //$NON-NLS-1$
+		wfsFieldEditor = new UrlFieldEditor(Messages.getString("SchemaImportWizardMainPage.0"),  //$NON-NLS-1$
+				Messages.getString("SchemaImportWizardMainPage.1"), ufe_container); //$NON-NLS-1$
 		wfsFieldEditor.setEnabled(false, ufe_container);
 		wfsFieldEditor.getTextControl(ufe_container).addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -228,7 +229,7 @@ public class SchemaImportWizardMainPage
 				String test = this.getResult();
 				if (this.useWfsRadio.getSelection()) {
 					// test whether content of the WFS Field Editor validates to URL.
-					if (test != null && !test.equals("")) { //$NON-NLS-1$
+					if (test != null && !test.equals("")) { 
 						URL url = new URL(test);
 						_log.info("wfsFieldEditor URL was OK: " + url.toString()); //$NON-NLS-1$
 					} 

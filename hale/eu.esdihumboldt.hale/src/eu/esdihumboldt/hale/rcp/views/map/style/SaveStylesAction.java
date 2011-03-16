@@ -24,7 +24,7 @@ import org.eclipse.ui.PlatformUI;
 import org.geotools.styling.SLDTransformer;
 
 import eu.esdihumboldt.hale.models.StyleService;
-import eu.esdihumboldt.hale.rcp.views.map.Messages;
+import eu.esdihumboldt.hale.Messages;
 
 /**
  * @author Simon Templer

@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditorFactory;
 import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizardPage;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 
 /**
@@ -55,7 +56,7 @@ public class NilReasonWizardPage extends AugmentationWizardPage {
 			ImageDescriptor titleImage, String initialNilReason) {
 		super(pageName, title, titleImage);
 		
-		setDescription("Specify the reason why a property is not set");
+		setDescription(Messages.NilReasonWizardPage_0);
 		
 		this.initialNilReason = initialNilReason;
 	}
@@ -76,11 +77,11 @@ public class NilReasonWizardPage extends AugmentationWizardPage {
 		
 		SchemaItem item = getParent().getItem();
 		AttributeDefinition property = (AttributeDefinition) item.getDefinition();
-		AttributeDefinition nilReason = property.getAttributeType().getAttribute("nilReason");
+		AttributeDefinition nilReason = property.getAttributeType().getAttribute("nilReason"); //$NON-NLS-1$
 		
 		final Label inputAttributeLabel = new Label(page,
 				SWT.NONE);
-		inputAttributeLabel.setText("Property");
+		inputAttributeLabel.setText(Messages.NilReasonWizardPage_2);
 		inputAttributeLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false,
 				false));
 		Control attributeName = dlf.createLabel(page,

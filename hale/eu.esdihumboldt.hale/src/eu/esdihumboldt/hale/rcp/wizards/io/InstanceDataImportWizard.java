@@ -37,6 +37,7 @@ import org.opengis.feature.type.FeatureType;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.instanceprovider.InstanceConfiguration;
 import eu.esdihumboldt.hale.instanceprovider.InstanceProvider;

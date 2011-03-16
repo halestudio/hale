@@ -151,33 +151,33 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 				}
 				break;
 			case BETWEEN:
-				throw new RuntimeException(comparator + " not yet supported");
+				throw new RuntimeException(comparator + " not yet supported"); //$NON-NLS-1$
 			case COLLECTION_CONTAINS:
-				throw new RuntimeException(comparator + " not yet supported");
+				throw new RuntimeException(comparator + " not yet supported"); //$NON-NLS-1$
 			case CONTAINS:
-				throw new RuntimeException(comparator + " not yet supported");
+				throw new RuntimeException(comparator + " not yet supported"); //$NON-NLS-1$
 			case EMPTY:
-				throw new RuntimeException(comparator + " not yet supported");
+				throw new RuntimeException(comparator + " not yet supported"); //$NON-NLS-1$
 			case ENDS_WITH:
-				throw new RuntimeException(comparator + " not yet supported");
+				throw new RuntimeException(comparator + " not yet supported"); //$NON-NLS-1$
 			case EQUAL:
-				throw new RuntimeException(comparator + " not yet supported");
+				throw new RuntimeException(comparator + " not yet supported"); //$NON-NLS-1$
 			case GREATER_THAN:
-				throw new RuntimeException(comparator + " not yet supported");
+				throw new RuntimeException(comparator + " not yet supported"); //$NON-NLS-1$
 			case GREATER_THAN_OR_EQUAL:
-				throw new RuntimeException(comparator + " not yet supported");
+				throw new RuntimeException(comparator + " not yet supported"); //$NON-NLS-1$
 			case INCLUDES:
-				throw new RuntimeException(comparator + " not yet supported");
+				throw new RuntimeException(comparator + " not yet supported"); //$NON-NLS-1$
 			case INCLUDES_STRICTLY:
-				throw new RuntimeException(comparator + " not yet supported");
+				throw new RuntimeException(comparator + " not yet supported"); //$NON-NLS-1$
 			case LESS_THAN:
-				throw new RuntimeException(comparator + " not yet supported");
+				throw new RuntimeException(comparator + " not yet supported"); //$NON-NLS-1$
 			case LESS_THAN_OR_EQUAL:
-				throw new RuntimeException(comparator + " not yet supported");
+				throw new RuntimeException(comparator + " not yet supported"); //$NON-NLS-1$
 			case MATCHES:
-				throw new RuntimeException(comparator + " not yet supported");
+				throw new RuntimeException(comparator + " not yet supported"); //$NON-NLS-1$
 			case NOT_EQUAL:
-				throw new RuntimeException(comparator + " not yet supported");
+				throw new RuntimeException(comparator + " not yet supported"); //$NON-NLS-1$
 			case OTHERWISE:
 				if (!this.allSourceValues.contains(sourcePropValue)) {
 					// Value is in none of the other classes so we can break and return true;
@@ -185,9 +185,9 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 					break;
 				}
 			case STARTS_WITH:
-				throw new RuntimeException(comparator + " not yet supported");
+				throw new RuntimeException(comparator + " not yet supported"); //$NON-NLS-1$
 			default:
-				throw new RuntimeException(comparator + " is an unrecognised ComparatorType");
+				throw new RuntimeException(comparator + " is an unrecognised ComparatorType"); //$NON-NLS-1$
 		}
 		return result;
 	}
@@ -201,7 +201,7 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 	 */
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
-		Property entity1 = new Property(new About(""));
+		Property entity1 = new Property(new About("")); //$NON-NLS-1$
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
@@ -213,13 +213,13 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 
 		List<IValueExpression> valueExpressions = new ArrayList<IValueExpression>();
 		Restriction r = new Restriction(valueExpressions);
-		r.setSeq(new BigInteger("1"));
+		r.setSeq(new BigInteger("1")); //$NON-NLS-1$
 
 		List<Restriction> valueConditions = new ArrayList<Restriction>();
 		valueConditions.add(r);
 		entity1.setValueCondition(valueConditions);
 
-		Property entity2 = new Property(new About(""));
+		Property entity2 = new Property(new About("")); //$NON-NLS-1$
 
 		// Setting of type condition for entity2
 			// 	entity2 has same type conditions as entity1
@@ -227,7 +227,7 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 		
 		List<IValueExpression> valueExpressions2 = new ArrayList<IValueExpression>();
 		Restriction r2 = new Restriction(valueExpressions2);
-		r2.setSeq(new BigInteger("1"));
+		r2.setSeq(new BigInteger("1")); //$NON-NLS-1$
 		
 		List<Restriction> valueConditions2 = new ArrayList<Restriction>();
 		valueConditions2.add(r2);
@@ -240,7 +240,7 @@ public class ClassificationMappingFunction extends AbstractCstFunction {
 
 	@Override
 	public String getDescription() {
-		return "This Function allows to map values of an attribute to a different classification system";
+		return Messages.getString("ClassificationMappingFunction.1"); //$NON-NLS-1$
 	}
 
 }

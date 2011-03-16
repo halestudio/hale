@@ -144,7 +144,7 @@ public class RifVariable
     @Override
     public String toString()
     {
-        return "?" + name + "";
+        return "?" + name; //$NON-NLS-1$
     }
 
     /**
@@ -156,31 +156,31 @@ public class RifVariable
     public String summary()
     {
         StringBuilder builder = new StringBuilder();
-        builder.append("?").append(name).append(" (");
+        builder.append("?").append(name).append(" ("); //$NON-NLS-1$ //$NON-NLS-2$
 
         if (contextVariable != null)
         {
-            builder.append("Context=").append(contextVariable.getName()).append(" ");
+            builder.append("Context=").append(contextVariable.getName()).append(" "); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         if (type == Type.INSTANCE)
         {
-            builder.append(" Class=").append(className).append(" ");
+            builder.append(" Class=").append(className).append(" "); //$NON-NLS-1$ //$NON-NLS-2$
             if (isNew)
             {
-                builder.append(" New ");
+                builder.append(" New "); //$NON-NLS-1$
             }
         }
         else if (type == Type.ATTRIBUTE)
         {
-            builder.append(" Property=").append(propertyName).append(" ");
+            builder.append(" Property=").append(propertyName).append(" "); //$NON-NLS-1$ //$NON-NLS-2$
         }
         else
         {
-            builder.append(" Unknown Type");
+            builder.append(" Unknown Type"); //$NON-NLS-1$
         }
 
-        builder.append(")");
+        builder.append(")"); //$NON-NLS-1$
 
         return builder.toString();
     }
@@ -210,7 +210,7 @@ public class RifVariable
             if (contextVariable == null)
             {
                 throw new IllegalArgumentException(
-                        "Attribute with no context found while trype to find instance variable.");
+                        "Attribute with no context found while trype to find instance variable."); //$NON-NLS-1$
             }
             else
             {
@@ -220,7 +220,7 @@ public class RifVariable
         else
         {
             throw new IllegalArgumentException(
-                    "Variable of unknown type encounter while trying to find instance variable.");
+                    "Variable of unknown type encounter while trying to find instance variable."); //$NON-NLS-1$
         }
     }
 

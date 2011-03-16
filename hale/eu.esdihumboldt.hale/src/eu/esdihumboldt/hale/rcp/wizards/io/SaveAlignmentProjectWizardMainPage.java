@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.hale.Messages;
 
 /**
  * This {@link WizardPage} contains the controls for saving an {@link Alignment} 
@@ -74,8 +75,7 @@ public class SaveAlignmentProjectWizardMainPage extends WizardPage {
         
 		// define source group composite
 		Group selectionArea = new Group(parent, SWT.NONE);
-		selectionArea.setText(Messages.SaveAlignmentProjectWizardMainPage_LocationText1 +
-				Messages.SaveAlignmentProjectWizardMainPage_LocationText2);
+		selectionArea.setText(Messages.SaveAlignmentProjectWizardMainPage_LocationText);
 		selectionArea.setLayout(new GridLayout());
 		GridData selectionAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
                 | GridData.HORIZONTAL_ALIGN_FILL);

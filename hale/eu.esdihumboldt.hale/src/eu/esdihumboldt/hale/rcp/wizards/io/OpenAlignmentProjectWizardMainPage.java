@@ -23,6 +23,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * FIXME Add Type description.
  * 

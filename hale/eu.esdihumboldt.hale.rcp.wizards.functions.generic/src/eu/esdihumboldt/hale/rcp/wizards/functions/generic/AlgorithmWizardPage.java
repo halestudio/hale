@@ -75,7 +75,7 @@ public class AlgorithmWizardPage extends WizardPage  {
         setErrorMessage(null);	
         
 		Group configurationGroup = new Group(composite, SWT.NONE);
-		configurationGroup.setText("Parameters:");
+		configurationGroup.setText(Messages.AlgorithmWizardPage_0);
 		configurationGroup.setLayout(new GridLayout());
 		GridData configurationAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
                 | GridData.HORIZONTAL_ALIGN_FILL);
@@ -98,17 +98,17 @@ public class AlgorithmWizardPage extends WizardPage  {
 		
 		wizard = (GenericFunctionWizard) getWizard();
 		final Label inputAttributeLabel = new Label(configurationComposite, SWT.NONE);
-		inputAttributeLabel.setText("Source attribute:");
+		inputAttributeLabel.setText(Messages.AlgorithmWizardPage_1);
 		this.inputAttributeText = new Text(configurationComposite, SWT.BORDER);
 		this.inputAttributeText.setLayoutData(configurationLayoutData);
 		if (wizard.getSourceItem() != null)
 			this.inputAttributeText.setText(wizard.getSourceItem().getName().getLocalPart());
 		else
-			this.inputAttributeText.setText("None");
+			this.inputAttributeText.setText(Messages.AlgorithmWizardPage_2);
 		inputAttributeText.setEnabled(false);
 		
 		final Label outputAttributeLabel = new Label(configurationComposite, SWT.NONE);
-		outputAttributeLabel.setText("Target attribute:");
+		outputAttributeLabel.setText(Messages.AlgorithmWizardPage_3);
 		this.outputAttributeText = new Text(configurationComposite, SWT.BORDER);
 		this.outputAttributeText.setLayoutData(configurationLayoutData);
 		this.outputAttributeText.setText(wizard.getTargetItem().getName().getLocalPart());
@@ -120,10 +120,10 @@ public class AlgorithmWizardPage extends WizardPage  {
 		for (int i=0; i<params.length; i++){
 			
 			labels[i] = new Label(configurationComposite, SWT.NONE);			
-			labels[i].setText("                                        ");
+			labels[i].setText(Messages.AlgorithmWizardPage_4);
 			params[i] = new Text(configurationComposite, SWT.BORDER);
 			params[i].setLayoutData(configurationLayoutData);
-			params[i].setToolTipText("                                                              ");
+			params[i].setToolTipText(Messages.AlgorithmWizardPage_5);
 			params[i].addModifyListener(new ModifyListener(){
 				public void modifyText(ModifyEvent e){
 					GenericFunctionWizard wizard = (GenericFunctionWizard)getWizard();

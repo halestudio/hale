@@ -21,6 +21,7 @@ import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizard;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
 /**
  * Wizard for the {@link ConstantValueFunction} augmentation
@@ -48,9 +49,9 @@ public class ConstantValueWizard extends AugmentationWizard {
 	protected void init() {
 
 		// get and validate the initial value from the cell (if available)
-		page = new ConstantValueWizardPage("mainPage",
-				"Configure Constant Value Augmentation", null);
-		super.setWindowTitle("Constant Value Augmentation Wizard");
+		page = new ConstantValueWizardPage("mainPage", //$NON-NLS-1$
+				Messages.ConstantValueWizard_1, null);
+		super.setWindowTitle(Messages.ConstantValueWizard_2);
 
 	}
 

@@ -30,7 +30,7 @@ import org.geotools.styling.SLD;
 import org.geotools.styling.Stroke;
 import org.geotools.styling.StyleBuilder;
 
-import eu.esdihumboldt.hale.rcp.views.map.Messages;
+import eu.esdihumboldt.hale.Messages;
 
 /**
  * Editor for {@link Fill}s

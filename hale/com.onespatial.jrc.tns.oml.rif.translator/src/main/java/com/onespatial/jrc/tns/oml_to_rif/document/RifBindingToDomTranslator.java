@@ -54,7 +54,7 @@ public class RifBindingToDomTranslator extends
     public RifBindingToDomTranslator() throws JAXBException, ParserConfigurationException,
             FactoryConfigurationError
     {
-        this(JAXBContext.newInstance("org.w3._2007.rif"));
+        this(JAXBContext.newInstance("org.w3._2007.rif")); //$NON-NLS-1$
     }
 
     /**

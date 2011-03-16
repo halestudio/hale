@@ -20,7 +20,7 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.FeatureTypeHelper;
-import eu.esdihumboldt.hale.rcp.views.map.Messages;
+import eu.esdihumboldt.hale.Messages;
 
 /**
  * Action that opens a style editor for a certain feature type

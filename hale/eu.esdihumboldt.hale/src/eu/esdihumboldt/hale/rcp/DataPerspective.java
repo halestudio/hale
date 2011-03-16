@@ -15,6 +15,7 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.views.map.MapView;
 import eu.esdihumboldt.hale.rcp.views.mapping.MappingView;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
@@ -41,20 +42,20 @@ public class DataPerspective implements IPerspectiveFactory {
 		
 		// bottom left
 		IFolderLayout bottomLeft = _layout.createFolder(
-				"bottomLeft", IPageLayout.BOTTOM, 0.5f, editorArea);
+				"bottomLeft", IPageLayout.BOTTOM, 0.5f, editorArea); //$NON-NLS-1$
 		bottomLeft.addView(MapView.ID);
 		
 		// bottom right
-		IFolderLayout bottomRight = _layout.createFolder("bottomRight", IPageLayout.RIGHT, 0.5f, "bottomLeft");
+		IFolderLayout bottomRight = _layout.createFolder("bottomRight", IPageLayout.RIGHT, 0.5f, "bottomLeft"); //$NON-NLS-1$ //$NON-NLS-2$
 		bottomRight.addView(TransformedTableView.ID);
 		
 		// top left
 		IFolderLayout topLeft = _layout.createFolder(
-				"topLeft", IPageLayout.TOP, 0.5f, editorArea);
+				"topLeft", IPageLayout.TOP, 0.5f, editorArea); //$NON-NLS-1$
 		topLeft.addView(MappingView.ID);
 		
 		// top right
-		IFolderLayout topRight = _layout.createFolder("topRight", IPageLayout.RIGHT, 0.5f, "topLeft");
+		IFolderLayout topRight = _layout.createFolder("topRight", IPageLayout.RIGHT, 0.5f, "topLeft"); //$NON-NLS-1$ //$NON-NLS-2$
 		topRight.addView(ReferenceTableView.ID);
 		
 		_layout.addShowViewShortcut(ModelNavigationView.ID);

@@ -42,7 +42,7 @@ import eu.esdihumboldt.goml.rdf.About;
 public class GenericMathFunction 
 	extends AbstractCstFunction {
 	
-	public static final String EXPRESSION_PARAMETER_NAME = "math_expression";
+	public static final String EXPRESSION_PARAMETER_NAME = "math_expression"; //$NON-NLS-1$
 	
 	private String expression = null;
 	private List<Property> variables = new ArrayList<Property>();
@@ -59,7 +59,7 @@ public class GenericMathFunction
 			}
 		}
 		if (this.expression == null) {
-			throw new RuntimeException("The math_expression must be defined.");
+			throw new RuntimeException("The math_expression must be defined."); //$NON-NLS-1$
 		}
 		if (cell.getEntity1() instanceof ComposedProperty) {
 			for (Property p : ((ComposedProperty)cell.getEntity1()).getCollection()) {
@@ -92,7 +92,7 @@ public class GenericMathFunction
 		entity2.setTypeCondition(entityTypes);
 		
 		List<IParameter> params = new ArrayList<IParameter>();
-		IParameter p = new Parameter(GenericMathFunction.EXPRESSION_PARAMETER_NAME, "");
+		IParameter p = new Parameter(GenericMathFunction.EXPRESSION_PARAMETER_NAME, ""); //$NON-NLS-1$
 		params.add(p);
 		Transformation t = new Transformation();
 		t.setParameters(params);

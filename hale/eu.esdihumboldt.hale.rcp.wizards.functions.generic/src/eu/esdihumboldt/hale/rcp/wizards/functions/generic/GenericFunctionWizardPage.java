@@ -23,6 +23,7 @@ package eu.esdihumboldt.hale.rcp.wizards.functions.generic;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.text.MessageFormat;
 
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -99,7 +100,7 @@ public class GenericFunctionWizardPage extends WizardPage {
     							((GenericFunctionWizard)getWizard()).algorithmModel = (AlgorithmCST) domain;
     							((GenericFunctionWizard)getWizard()).algorithmPage.algorithmIsSelected = true;
     							((GenericFunctionWizard)getWizard()).algorithmPage.setPageParameters();
-    							((GenericFunctionWizard)getWizard()).algorithmPage.setTitle("Algorithm: "+((GenericFunctionWizard)getWizard()).algorithmModel.getName().toUpperCase());
+    							((GenericFunctionWizard)getWizard()).algorithmPage.setTitle(Messages.GenericFunctionWizardPage_0+((GenericFunctionWizard)getWizard()).algorithmModel.getName().toUpperCase());
         						
     						}
     						else{
@@ -138,9 +139,9 @@ public class GenericFunctionWizardPage extends WizardPage {
 		int countAlgorithm = 0;   
 		FunctionType root = new FunctionType();
 		
-		FunctionType core = new FunctionType("Core functions");
-		FunctionType inspire = new FunctionType("Inspire functions");
-		FunctionType others = new FunctionType("Other functions"); 
+		FunctionType core = new FunctionType(Messages.GenericFunctionWizardPage_1);
+		FunctionType inspire = new FunctionType(Messages.GenericFunctionWizardPage_2);
+		FunctionType others = new FunctionType(Messages.GenericFunctionWizardPage_3); 
 		root.addBox(core);
 		root.addBox(inspire);
 		root.addBox(others);
@@ -258,7 +259,7 @@ public class GenericFunctionWizardPage extends WizardPage {
 	    }
 	
 
-		setTitle("Toolbox contains "+countAlgorithm+" functions for current selection");
+		setTitle(MessageFormat.format(Messages.GenericFunctionWizardPage_4, countAlgorithm));
 		return root;
 	}
 	

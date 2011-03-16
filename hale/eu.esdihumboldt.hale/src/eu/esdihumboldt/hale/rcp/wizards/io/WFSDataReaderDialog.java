@@ -42,6 +42,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.Messages;
+
 public class WFSDataReaderDialog extends Dialog {
 	private final static Logger _log = Logger.getLogger(WFSDataReaderDialog.class);
 	URL url_result;
@@ -86,7 +88,7 @@ public class WFSDataReaderDialog extends Dialog {
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) display.sleep();
 		}
-		_log.debug("returning result.");
+		_log.debug("returning result."); //$NON-NLS-1$
 		
 		return this.url_result;
 	}
@@ -211,7 +213,7 @@ public class WFSDataReaderDialog extends Dialog {
 		
 		final Button finish = new Button(buttons, SWT.NONE);
 		finish.setAlignment(SWT.RIGHT);
-		finish.setText("   Use this WFS    "); //$NON-NLS-1$
+		finish.setText(Messages.getString("WFSDataReaderDialog.1")); //$NON-NLS-1$
 		finish.setEnabled(false);
 		finish.setSize(100, 24);
 		finish.addListener(SWT.Selection, new Listener () {
@@ -223,10 +225,10 @@ public class WFSDataReaderDialog extends Dialog {
 						String capabilities = hostPortText.getText();
 						
 						String getFeature = null;
-						int x = capabilities.toLowerCase().indexOf("request=getcapabilities");
+						int x = capabilities.toLowerCase().indexOf("request=getcapabilities"); //$NON-NLS-1$
 						if (x >= 0) {
-							String repl = capabilities.substring(x, x + "request=getcapabilities".length());
-							getFeature = capabilities.replace(repl, "REQUEST=GetFeature");
+							String repl = capabilities.substring(x, x + "request=getcapabilities".length()); //$NON-NLS-1$
+							getFeature = capabilities.replace(repl, "REQUEST=GetFeature"); //$NON-NLS-1$
 						}
 						
 						if (getFeature != null) {
@@ -243,10 +245,10 @@ public class WFSDataReaderDialog extends Dialog {
 								typeNames.append(typeName);
 							}
 							
-							getFeature = getFeature.concat("&TYPENAME=" + URLEncoder.encode(typeNames.toString(), "UTF-8"));
+							getFeature = getFeature.concat("&TYPENAME=" + URLEncoder.encode(typeNames.toString(), "UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
 							
 							if (!filterText.getStringValue().isEmpty()) {
-								getFeature = getFeature.concat("&FILTER=" + filterText.getStringValue());
+								getFeature = getFeature.concat("&FILTER=" + filterText.getStringValue()); //$NON-NLS-1$
 							}
 						}
 						

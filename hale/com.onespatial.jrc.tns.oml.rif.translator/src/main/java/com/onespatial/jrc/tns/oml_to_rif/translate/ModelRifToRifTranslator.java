@@ -233,7 +233,7 @@ public class ModelRifToRifTranslator extends
 
     private void createLogicalFilter(List<Formula> list, ModelRifMappingCondition mappingCondition)
     {
-        log.fine("Creating logical filter");
+        log.fine("Creating logical filter"); //$NON-NLS-1$
         Formula logicFilterFormula = factory.createFormula();
         if (mappingCondition.getLogicalType().equals(NOT))
         {
@@ -244,7 +244,7 @@ public class ModelRifToRifTranslator extends
             // notList.add(subNegationFormula);
             createChildFilters(mappingCondition, notList);
             negation.setFormula(notList.get(0));
-            log.fine("Filter is a NOT filter");
+            log.fine("Filter is a NOT filter"); //$NON-NLS-1$
         }
         else
         {
@@ -253,7 +253,7 @@ public class ModelRifToRifTranslator extends
                 And and1 = factory.createAnd();
                 logicFilterFormula.setAnd(and1);
                 createChildFilters(mappingCondition, and1.getFormula());
-                log.fine("Filter is an AND filter");
+                log.fine("Filter is an AND filter"); //$NON-NLS-1$
 
             }
             else if (mappingCondition.getLogicalType().equals(OR))
@@ -261,7 +261,7 @@ public class ModelRifToRifTranslator extends
                 Or or = factory.createOr();
                 logicFilterFormula.setOr(or);
                 createChildFilters(mappingCondition, or.getFormula());
-                log.fine("Filter is an OR filter");
+                log.fine("Filter is an OR filter"); //$NON-NLS-1$
 
             }
         }
@@ -271,7 +271,7 @@ public class ModelRifToRifTranslator extends
     private void createComparativeFilter(List<Formula> list,
             ModelRifMappingCondition mappingCondition)
     {
-        log.fine("Creating comparative filter");
+        log.fine("Creating comparative filter"); //$NON-NLS-1$
         Formula filterFormula = factory.createFormula();
         list.add(filterFormula);
         if (mappingCondition.getOperator().equals(ComparisonType.NUMBER_EQUALS)
@@ -287,7 +287,7 @@ public class ModelRifToRifTranslator extends
         }
         else
         {
-            throw new UnsupportedOperationException("Comparison type is not supported: "
+            throw new UnsupportedOperationException("Comparison type is not supported: " //$NON-NLS-1$
                     + mappingCondition.getOperator().toString());
         }
     }
@@ -306,12 +306,12 @@ public class ModelRifToRifTranslator extends
         ArgsUNITERMType args = factory.createArgsUNITERMType();
         atom.setOp(op);
         Const opConst = factory.createConst();
-        opConst.setType("rif:iri");
+        opConst.setType("rif:iri"); //$NON-NLS-1$
         opConst.getContent().add(mappingCondition.getOperator().getRifPredicate());
         op.setConst(opConst);
 
         atom.setArgs(args);
-        args.setOrdered("yes");
+        args.setOrdered("yes"); //$NON-NLS-1$
         Var var = factory.createVar();
         var.getContent().add(mappingCondition.getLeft().getName());
         args.getTERM().add(var);
@@ -321,11 +321,11 @@ public class ModelRifToRifTranslator extends
         // remove any wildcards
         if (mappingCondition.getOperator().equals(ComparisonType.STRING_CONTAINS))
         {
-            literalValue = literalValue.replaceAll("%", "");
+            literalValue = literalValue.replaceAll("%", ""); //$NON-NLS-1$ //$NON-NLS-2$
         }
         argsConst.getContent().add(literalValue);
         args.getTERM().add(argsConst);
-        log.fine("Filter is a " + mappingCondition.getOperator().toString() + " filter");
+        log.fine("Filter is a " + mappingCondition.getOperator().toString() + " filter"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private void createEqualsFilter(ModelRifMappingCondition mappingCondition, Formula filterFormula)
@@ -344,20 +344,20 @@ public class ModelRifToRifTranslator extends
         const1.setType(getLiteralTypeFor(mappingCondition.getLiteralClass()));
         right.setConst(const1);
         const1.getContent().add(mappingCondition.getLiteralValue());
-        log.fine("Filter is a " + mappingCondition.getOperator().toString() + " filter");
+        log.fine("Filter is a " + mappingCondition.getOperator().toString() + " filter"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private String getLiteralTypeFor(Class<?> literalClass)
     {
         if (Long.class.isAssignableFrom(literalClass))
         {
-            return "http://www.w3.org/2001/XMLSchema#integer";
+            return "http://www.w3.org/2001/XMLSchema#integer"; //$NON-NLS-1$
         }
         if (Double.class.isAssignableFrom(literalClass))
         {
-            return "http://www.w3.org/2001/XMLSchema#double";
+            return "http://www.w3.org/2001/XMLSchema#double"; //$NON-NLS-1$
         }
-        return "http://www.w3.org/2001/XMLSchema#string";
+        return "http://www.w3.org/2001/XMLSchema#string"; //$NON-NLS-1$
     }
 
     private void createChildFilters(ModelRifMappingCondition mappingCondition, List<Formula> list)
@@ -371,13 +371,13 @@ public class ModelRifToRifTranslator extends
     private void createStaticAssignmentSlot(StaticAssignment staticAssignment, Frame frame)
     {
         SlotFrameType slot = factory.createSlotFrameType();
-        slot.setOrdered("yes");
+        slot.setOrdered("yes"); //$NON-NLS-1$
         Const const1 = factory.createConst();
         const1.getContent().add(staticAssignment.getTarget().getPropertyName());
-        const1.setType("rif:iri");
+        const1.setType("rif:iri"); //$NON-NLS-1$
         slot.getContent().add(const1);
         Const const2 = factory.createConst();
-        const2.setType("http://www.w3.org/2001/XMLSchema#string");
+        const2.setType("http://www.w3.org/2001/XMLSchema#string"); //$NON-NLS-1$
         const2.getContent().add(staticAssignment.getContent());
         slot.getContent().add(const2);
         frame.getSlot().add(slot);
@@ -386,10 +386,10 @@ public class ModelRifToRifTranslator extends
     private void createAssignmentSlot(PropertyMapping mapping, Frame frame)
     {
         SlotFrameType slot = factory.createSlotFrameType();
-        slot.setOrdered("yes");
+        slot.setOrdered("yes"); //$NON-NLS-1$
         Const const1 = factory.createConst();
         const1.getContent().add(mapping.getTarget().getPropertyName());
-        const1.setType("rif:iri");
+        const1.setType("rif:iri"); //$NON-NLS-1$
         slot.getContent().add(const1);
         Var var1 = factory.createVar();
         var1.getContent().add(mapping.getSource().getName());
@@ -470,7 +470,7 @@ public class ModelRifToRifTranslator extends
         String name = sentence.getSourceClass().getName();
         var.getContent().add(name);
         Const const1 = factory.createConst();
-        const1.setType("rif:iri");
+        const1.setType("rif:iri"); //$NON-NLS-1$
         const1.getContent().add(instanceVariable.getClassName());
         org.w3._2007.rif.Class clazz = factory.createClass();
         instance.setVar(var);
@@ -494,7 +494,7 @@ public class ModelRifToRifTranslator extends
         member.setInstance(instance);
         org.w3._2007.rif.Class clazz = factory.createClass();
         Const const1 = factory.createConst();
-        const1.setType("rif:iri");
+        const1.setType("rif:iri"); //$NON-NLS-1$
         const1.getContent().add(instanceVariable.getClassName());
         clazz.setConst(const1);
         member.setClazz(clazz);
@@ -506,10 +506,10 @@ public class ModelRifToRifTranslator extends
     private void createBindingSlot(RifVariable child, Frame frame)
     {
         SlotFrameType slot = factory.createSlotFrameType();
-        slot.setOrdered("yes");
+        slot.setOrdered("yes"); //$NON-NLS-1$
         Const const1 = factory.createConst();
         const1.getContent().add(child.getPropertyName());
-        const1.setType("rif:iri");
+        const1.setType("rif:iri"); //$NON-NLS-1$
         slot.getContent().add(const1);
         Var var1 = factory.createVar();
         var1.getContent().add(child.getName());
@@ -525,7 +525,7 @@ public class ModelRifToRifTranslator extends
         targetInstanceActionVar.setVar(var);
         if (variable.getType() == Type.INSTANCE)
         {
-            targetInstanceActionVar.setNew(createElement("New"));
+            targetInstanceActionVar.setNew(createElement("New")); //$NON-NLS-1$
         }
         else
         {

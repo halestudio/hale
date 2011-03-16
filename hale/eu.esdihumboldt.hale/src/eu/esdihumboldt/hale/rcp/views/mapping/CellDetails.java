@@ -28,6 +28,7 @@ import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.align.ext.ITransformation;
 import eu.esdihumboldt.cst.transformer.FilterUtils;
 import eu.esdihumboldt.goml.omwg.Restriction;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.utils.EntityHelper;
 
 /**

@@ -28,7 +28,7 @@ public class CoreFunctionWizardsPlugin extends AbstractUIPlugin {
 	/**
 	 * The plug-in ID
 	 */
-	public static final String PLUGIN_ID = "eu.esdihumboldt.hale.rcp.wizards.functions.core";
+	public static final String PLUGIN_ID = "eu.esdihumboldt.hale.rcp.wizards.functions.core"; //$NON-NLS-1$
 	
 	/**
 	 * The shared instance of this plug-in

@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditor;
 import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditorFactory;
 import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizardPage;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 
 /**
@@ -89,7 +90,7 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 		// define source group composite
 		Group configurationGroup = new Group(parent, SWT.NONE);
 		configurationGroup
-				.setText("Please enter a default value for the attribute");
+				.setText(Messages.ConstantValueWizardPage_0);
 		configurationGroup.setLayout(new GridLayout());
 		GridData configurationAreaGD = new GridData(
 				GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL);
@@ -115,7 +116,7 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 
 		final Label inputAttributeLabel = new Label(configurationComposite,
 				SWT.NONE);
-		inputAttributeLabel.setText("Attribute name:");
+		inputAttributeLabel.setText(Messages.ConstantValueWizardPage_1);
 		Control attributeName = dlf.createLabel(configurationComposite,
 				getParent().getItem().getDefinition(), false);
 		attributeName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
@@ -123,7 +124,7 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 
 		final Label outputAttributeLabel = new Label(configurationComposite,
 				SWT.NONE);
-		outputAttributeLabel.setText("Attribute default value:");
+		outputAttributeLabel.setText(Messages.ConstantValueWizardPage_2);
 		attributeValue = aef.createEditor(configurationComposite,
 				(AttributeDefinition) getParent().getItem().getDefinition());
 		attributeValue.getControl().setLayoutData(
@@ -134,7 +135,7 @@ public class ConstantValueWizardPage extends AugmentationWizardPage {
 				&& getParent().getResultCell().getEntity2().getTransformation() != null && getParent()
 				.getResultCell().getEntity2().getTransformation()
 				.getParameters() != null)) {
-			String oldValue = "";
+			String oldValue = ""; //$NON-NLS-1$
 			List<IParameter> parameters = getParent().getResultCell()
 					.getEntity2().getTransformation().getParameters();
 			Iterator<IParameter> iterator = parameters.iterator();

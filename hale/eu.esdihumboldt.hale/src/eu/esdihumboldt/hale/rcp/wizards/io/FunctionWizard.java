@@ -16,6 +16,8 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * This is the supertype to extend for adding Wizards for transformation 
  * functions offered by the CST.

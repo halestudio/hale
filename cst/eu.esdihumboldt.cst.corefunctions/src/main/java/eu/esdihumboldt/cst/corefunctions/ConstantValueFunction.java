@@ -42,7 +42,7 @@ public class ConstantValueFunction extends AbstractCstFunction {
 	/**
 	 * Parameter name for the default value
 	 */
-	public static final String DEFAULT_VALUE_PARAMETER_NAME = "defaultValue";
+	public static final String DEFAULT_VALUE_PARAMETER_NAME = "defaultValue"; //$NON-NLS-1$
 	
 	private String defaultValue = null;
 	private Property targetProperty = null;
@@ -66,20 +66,20 @@ public class ConstantValueFunction extends AbstractCstFunction {
 	@Override
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();	
-		Property entity2 = new Property(new About(""));
+		Property entity2 = new Property(new About("")); //$NON-NLS-1$
 		
 		// Setting of type condition for entity2
 		List <String> entity2Types = new ArrayList <String>();
-		entity2Types.add("java.lang.String");
-		entity2Types.add("java.lang.Number");
-		entity2Types.add("java.lang.Boolean");
-		entity2Types.add("java.util.Date");		
+		entity2Types.add("java.lang.String"); //$NON-NLS-1$
+		entity2Types.add("java.lang.Number"); //$NON-NLS-1$
+		entity2Types.add("java.lang.Boolean"); //$NON-NLS-1$
+		entity2Types.add("java.util.Date");		 //$NON-NLS-1$
 		entity2.setTypeCondition(entity2Types);
 		
 				
 		Transformation t = new Transformation();
 		List<IParameter> params = new ArrayList<IParameter>(); 
-		Parameter p = new Parameter(ConstantValueFunction.DEFAULT_VALUE_PARAMETER_NAME,"");
+		Parameter p = new Parameter(ConstantValueFunction.DEFAULT_VALUE_PARAMETER_NAME,""); //$NON-NLS-1$
 		params.add(p);
 		t.setParameters(params);
 		entity2.setTransformation(t);

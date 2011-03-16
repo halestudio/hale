@@ -48,7 +48,7 @@ import org.opengis.filter.Filter;
 
 import eu.esdihumboldt.hale.models.style.StyleServiceImpl;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
-import eu.esdihumboldt.hale.rcp.views.map.Messages;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.views.map.style.editors.Editor;
 import eu.esdihumboldt.hale.rcp.views.map.style.editors.EditorFactory;
 import eu.esdihumboldt.hale.rcp.views.map.style.editors.LineSymbolizerEditor;
