@@ -80,17 +80,18 @@ public class CRSPreferencePage extends PreferencePage implements
 	protected Control createContents(Composite parent) {
 		Composite page = new Composite(parent, SWT.NONE);
 		
-		page.setLayout(new GridLayout(2, true));
+		page.setLayout(new GridLayout(1, false));
+		page.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
 		Label label = new Label(page, SWT.NONE);
 		label.setText(Messages.getString("CRSPreferencePage.0")); //$NON-NLS-1$
-		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false, 2, 1));
+		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 		
 		// code list
 		listViewer = new ComboViewer(page);
 		listViewer.setContentProvider(ArrayContentProvider.getInstance());
 		listViewer.setLabelProvider(new LabelProvider());
-		listViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
+		listViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		
 		codes = WKTPreferencesCRSFactory.getInstance().getCodes();
 		listViewer.setInput(codes);
@@ -127,7 +128,7 @@ public class CRSPreferencePage extends PreferencePage implements
 		ruler.addDecorator(0, lineNumbers);
 		
 		wktEditor = new SourceViewer(page, ruler, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		wktEditor.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		wktEditor.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		wktEditor.getTextWidget().setFont(JFaceResources.getTextFont());
 		SourceViewerConfiguration conf = new SourceViewerConfiguration();
 		wktEditor.configure(conf);
@@ -137,8 +138,13 @@ public class CRSPreferencePage extends PreferencePage implements
 		doc.set(""); //$NON-NLS-1$
 		wktEditor.setInput(doc);
 		
+		// button bar
+		Composite bar = new Composite(page, SWT.NONE);
+		bar.setLayout(new GridLayout(2, true));
+		bar.setLayoutData(new GridData(SWT.FILL, SWT.END, true, false));
+		
 		// add button (using a directory dialog)
-		Button add = new Button(page, SWT.PUSH);
+		Button add = new Button(bar, SWT.PUSH);
 		add.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 		add.setText(Messages.getString("CRSPreferencePage.2")); //$NON-NLS-1$
 		add.setToolTipText(Messages.getString("CRSPreferencePage.3")); //$NON-NLS-1$
@@ -170,7 +176,7 @@ public class CRSPreferencePage extends PreferencePage implements
 		});
 		
 		// remove button
-		Button remove = new Button(page, SWT.PUSH);
+		Button remove = new Button(bar, SWT.PUSH);
 		remove.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 		remove.setText(Messages.getString("CRSPreferencePage.7")); //$NON-NLS-1$
 		remove.setToolTipText(Messages.getString("CRSPreferencePage.8")); //$NON-NLS-1$
