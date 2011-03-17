@@ -65,6 +65,20 @@ public class BrowserTip {
 		this.toolTipHeight = toolTipHeight;
 		this.plainText = plainText;
 	}
+	
+	/**
+	 * Show the tool tip
+	 * 
+	 * @param control the tip control 
+	 * @param posx the x-position 
+	 * @param posy the y-position
+	 * @param toolTip the tool tip string
+	 * 
+	 * @return the tool shell
+	 */
+	public Shell showToolTip(Control control, int posx, int posy, String toolTip) {
+		return showToolTip(control, posx, posy, toolTip, null, null);
+	}
 
 	/**
 	 * Show the tool tip
@@ -72,11 +86,18 @@ public class BrowserTip {
 	 * @param control the tip control 
 	 * @param posx the x-position 
 	 * @param posy the y-position
-	 * 
 	 * @param toolTip the tool tip string
+	 * @param addBounds additional bounds that will be treated as if in the
+	 *   tooltip (the tooltip won't hide if the cursor is inside these bounds),
+	 *   may be <code>null</code>
+	 * @param addBoundsControl the control the addBounds coordinates are
+	 *   relative to, <code>null</code> if addBounds is in display coordinates
+	 *   or no addBounds is provided
+	 *   
 	 * @return the tool shell
 	 */
-	public Shell showToolTip(Control control, int posx, int posy, String toolTip) {
+	public Shell showToolTip(Control control, int posx, int posy, String toolTip,
+			final Rectangle addBounds, final Control addBoundsControl) {
 		final Shell toolShell = new Shell (control.getShell(), SWT.ON_TOP | SWT.NO_FOCUS
 	            | SWT.TOOL);
 	    FillLayout layout = new FillLayout ();
@@ -132,7 +153,7 @@ public class BrowserTip {
 
 				@Override
 				public void run() {
-					if (toolShell != null && !toolShell.isDisposed()) {
+					if (!toolShell.isDisposed()) {
 						toolShell.getDisplay().asyncExec(new Runnable() {
 
 							public void run() {
@@ -141,6 +162,20 @@ public class BrowserTip {
 									Point cursor = toolShell.getDisplay().getCursorLocation();
 									if (!cursor.equals(initCursor)) {
 										Rectangle bounds = toolShell.getBounds();
+										if (addBounds != null) {
+											Rectangle add;
+											if (addBoundsControl != null) {
+												Point addP = addBoundsControl.toDisplay(addBounds.x, addBounds.y);
+												add = new Rectangle(addP.x,
+														addP.y, addBounds.width, 
+														addBounds.height);
+											}
+											else {
+												add = addBounds;
+											}
+											bounds = bounds.union(add);
+										}
+											
 										if (!bounds.contains(cursor)) {
 											hideToolTip(toolShell);
 											closeTimer.cancel();
@@ -184,6 +219,20 @@ public class BrowserTip {
 			shell.close();
 			shell.dispose();
 		}
+	}
+	
+	/**
+	 * Determines if the tool tip is visible
+	 * 
+	 * @param shell the tip shell
+	 *  
+	 * @return if the tool tip is visible 
+	 */
+	public static boolean toolTipVisible(Shell shell) {
+		if (shell != null && !shell.isDisposed()) {
+			return true;
+		}
+		return false;
 	}
 
 	/**

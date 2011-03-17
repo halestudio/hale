@@ -17,12 +17,13 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Shell;
 
 import eu.esdihumboldt.hale.rcp.utils.definition.internal.BrowserTip;
 
 /**
- * 
+ * Enables a tool tip for a {@link ColumnViewer}
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -36,15 +37,17 @@ public abstract class BrowserColumnViewerTip {
 	
 	private Shell toolShell = null;
 	
+	private ViewerCell toolCell = null;
+	
 	private int tipCharThreshold = 10;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param viewer 
-	 * @param width 
-	 * @param height 
-	 * @param plainText 
+	 * @param viewer the viewer
+	 * @param width the maximum tip width
+	 * @param height the maximum tip height
+	 * @param plainText if the tip text is plain text or HTML
 	 */
 	public BrowserColumnViewerTip(ColumnViewer viewer, int width, int height, boolean plainText) {
 		super();
@@ -67,13 +70,19 @@ public abstract class BrowserColumnViewerTip {
 	/**
 	 * Show tooltip for the cell at the given position
 	 * 
-	 * @param x
-	 * @param y
+	 * @param x the widget relative x ordinate 
+	 * @param y the widget relative y ordinate
 	 */
 	protected void showToolTip(int x, int y) {
-		BrowserTip.hideToolTip(toolShell);
-		
 		ViewerCell cell = viewer.getCell(new Point(x, y));
+		
+		if (toolCell != null && toolCell.equals(cell) && BrowserTip.toolTipVisible(toolShell)) {
+			// tooltip already visible -> do nothing
+			return;
+		}
+		
+		toolCell = cell;
+		BrowserTip.hideToolTip(toolShell);
 		
 		if (cell != null) {
 			Object element = cell.getElement();
@@ -90,7 +99,11 @@ public abstract class BrowserColumnViewerTip {
 			String tipText = getToolTip(element, col, text);
 			
 			if (tipText != null && !tipText.isEmpty() && tipText.length() >= tipCharThreshold) {
-				toolShell = tip.showToolTip(viewer.getControl(), x, y, tipText);
+				Rectangle cellBounds = cell.getBounds();
+//				toolShell = tip.showToolTip(viewer.getControl(), x, y, tipText);
+				toolShell = tip.showToolTip(viewer.getControl(), cellBounds.x, 
+						cellBounds.y + cellBounds.height, tipText, cellBounds,
+						viewer.getControl());
 			}
 		}
 	}
