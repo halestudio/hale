@@ -89,6 +89,17 @@ public abstract class TypeUtil {
 	private static final String NAMESPACE_GML = "http://www.opengis.net/gml";
 	
 	/**
+	 * Set of XML schema types that should get a String binding but don't get
+	 * one through the Geotools bindings
+	 */
+	private static final Set<String> XS_STRING_TYPES = new HashSet<String>();
+	static {
+		XS_STRING_TYPES.add("ID");
+		XS_STRING_TYPES.add("IDREF");
+		XS_STRING_TYPES.add("NCName");
+	}
+	
+	/**
 	 * Resolve an attribute type
 	 * 
 	 * @param typeName the type name
@@ -151,8 +162,8 @@ public abstract class TypeUtil {
 	private static TypeDefinition getXSType(Name name) {
 		AttributeType ty = xsSchema.get(name);
 		
-		// special case: ID - assure String binding
-		if (ty != null && name.getLocalPart().equals("ID")) {
+		// special case: ID etc. - assure String binding
+		if (ty != null && XS_STRING_TYPES.contains(name.getLocalPart())) {
 			ty = new AttributeTypeImpl(name, java.lang.String.class, false, false,
 	                Collections.EMPTY_LIST, XSSchema.NCNAME_TYPE, null);
 		}
