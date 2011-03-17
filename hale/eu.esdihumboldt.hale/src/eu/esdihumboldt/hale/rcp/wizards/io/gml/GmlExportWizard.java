@@ -144,56 +144,60 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 					}
 					
 					if (validate) {
-						monitor.setTaskName("Validating output file");
-						
-						// validate output file
-						Validator validator;
-						if (addSchemas == null || addSchemas.isEmpty()) {
-							validator = ValidatorFactory.getInstance().createValidator(schema);
-						}
-						else {
-							Schema[] schemas = new Schema[addSchemas.size() + 1];
-							schemas[0] = schema;
-							for (int i = 1; i <= addSchemas.size(); i++) {
-								schemas[i] = addSchemas.get(i - 1);
-							}
-							validator = ValidatorFactory.getInstance().createValidator(schemas);
-						}
-						InputStream xml;
 						try {
-							xml = new FileInputStream(targetFile);
-						} catch (FileNotFoundException e) {
-							log.error("File not found for validation: " + targetFile.getAbsolutePath());
-							return;
-						}
-						trans = log.begin("Validating GML file: " + targetFile.getAbsolutePath());
-						Report report;
-						try {
-							report = validator.validate(xml);
-						} finally {
-							trans.end();
-							try {
-								xml.close();
-							} catch (IOException e) {
-								// ignore
-							}
-						}
-						
-						if (report.isValid()) {
-							log.userInfo("GML file exported, validation successful.");
-						}
-						else {
-							log.userError("Validation of the exported GML file failed, see the error log for more details.");
+							monitor.setTaskName("Validating output file");
 							
-							final Report report2 = report;
-							Runnable r = new Runnable(){
-								public void run(){
-									ReportServiceImpl reportService = (ReportServiceImpl)PlatformUI.getWorkbench().getService(ReportService.class);
-									reportService.addReport(report2);
+							// validate output file
+							Validator validator;
+							if (addSchemas == null || addSchemas.isEmpty()) {
+								validator = ValidatorFactory.getInstance().createValidator(schema);
+							}
+							else {
+								Schema[] schemas = new Schema[addSchemas.size() + 1];
+								schemas[0] = schema;
+								for (int i = 1; i <= addSchemas.size(); i++) {
+									schemas[i] = addSchemas.get(i - 1);
 								}
-							};
-
-							getContainer().getShell().getDisplay().asyncExec(r);
+								validator = ValidatorFactory.getInstance().createValidator(schemas);
+							}
+							InputStream xml;
+							try {
+								xml = new FileInputStream(targetFile);
+							} catch (FileNotFoundException e) {
+								log.error("File not found for validation: " + targetFile.getAbsolutePath());
+								return;
+							}
+							trans = log.begin("Validating GML file: " + targetFile.getAbsolutePath());
+							Report report;
+							try {
+								report = validator.validate(xml);
+							} finally {
+								trans.end();
+								try {
+									xml.close();
+								} catch (IOException e) {
+									// ignore
+								}
+							}
+							
+							if (report.isValid()) {
+								log.userInfo("GML file exported, validation successful.");
+							}
+							else {
+								log.userError("Validation of the exported GML file failed, see the error log for more details.");
+								
+								final Report report2 = report;
+								Runnable r = new Runnable(){
+									public void run(){
+										ReportServiceImpl reportService = (ReportServiceImpl)PlatformUI.getWorkbench().getService(ReportService.class);
+										reportService.addReport(report2);
+									}
+								};
+	
+								getContainer().getShell().getDisplay().asyncExec(r);
+							}
+						} catch (Throwable e) {
+							log.userError("An error occurred while validating exported GML file", e);
 						}
 					}
 					
