@@ -12,8 +12,11 @@
 
 package eu.esdihumboldt.hale.rcp.utils.definition.internal;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
@@ -47,23 +50,46 @@ public class BrowserTip {
 	
 	private final boolean plainText;
 	
+	private final ScheduledExecutorService scheduleService;
+	
 	/**
 	 * The height adjustment when using the computed size
 	 */
 	private int heightAdjustment = 50;
-
+	
 	/**
-	 * Constructor
+	 * Create a browser tip using its own {@link ScheduledExecutorService}
 	 * 
 	 * @param toolTipWidth the maximum with
 	 * @param toolTipHeight the maximum height
-	 * @param plainText if the content will be plain text instead of html
+	 * @param plainText if the content will be plain text instead of HTML
 	 */
 	public BrowserTip(int toolTipWidth, int toolTipHeight, boolean plainText) {
+		this(toolTipWidth, toolTipHeight, plainText, null);
+	}
+
+	/**
+	 * Create a browser tip with using given {@link ScheduledExecutorService}
+	 * 
+	 * @param toolTipWidth the maximum with
+	 * @param toolTipHeight the maximum height
+	 * @param plainText if the content will be plain text instead of HTML
+	 * @param scheduleService the scheduled executor service to use, if
+	 *   <code>null</code> a service will be created
+	 */
+	public BrowserTip(int toolTipWidth, int toolTipHeight, boolean plainText,
+			ScheduledExecutorService scheduleService) {
 		super();
 		this.toolTipWidth = toolTipWidth;
 		this.toolTipHeight = toolTipHeight;
 		this.plainText = plainText;
+		
+		if (scheduleService != null) {
+			this.scheduleService = scheduleService;
+		}
+		else {
+			this.scheduleService = Executors.newScheduledThreadPool(1);
+		}
 	}
 	
 	/**
@@ -100,7 +126,7 @@ public class BrowserTip {
 			final Rectangle addBounds, final Control addBoundsControl) {
 		final Shell toolShell = new Shell (control.getShell(), SWT.ON_TOP | SWT.NO_FOCUS
 	            | SWT.TOOL);
-	    FillLayout layout = new FillLayout ();
+	    FillLayout layout = new FillLayout();
 	    toolShell.setLayout (layout);
 	    try {
 	    	if (plainText) {
@@ -148,9 +174,9 @@ public class BrowserTip {
 		    	
 		    });
 		    
-		    final Timer closeTimer = new Timer(true);
-		    closeTimer.scheduleAtFixedRate(new TimerTask() {
-
+		    final AtomicReference<ScheduledFuture<?>> closeTimerRef = new AtomicReference<ScheduledFuture<?>>();
+		    ScheduledFuture<?> closeTimer = scheduleService.scheduleAtFixedRate(new Runnable() {
+				
 				@Override
 				public void run() {
 					if (!toolShell.isDisposed()) {
@@ -178,12 +204,14 @@ public class BrowserTip {
 											
 										if (!bounds.contains(cursor)) {
 											hideToolTip(toolShell);
-											closeTimer.cancel();
+											ScheduledFuture<?> closeTimer = closeTimerRef.get();
+											if (closeTimer != null) closeTimer.cancel(true);
 										}
 									}
 								}
 								else {
-									closeTimer.cancel();
+									ScheduledFuture<?> closeTimer = closeTimerRef.get();
+									if (closeTimer != null) closeTimer.cancel(true);
 								}
 							}
 							
@@ -191,11 +219,12 @@ public class BrowserTip {
 					}
 					else {
 						// disposed -> cancel timer
-						closeTimer.cancel();
+						ScheduledFuture<?> closeTimer = closeTimerRef.get();
+						if (closeTimer != null) closeTimer.cancel(true);
 					}
 				}
-		    	
-		    }, 2 * HOVER_DELAY, 1000);
+			}, 2 * HOVER_DELAY, 1000, TimeUnit.MILLISECONDS);
+		    closeTimerRef.set(closeTimer);
 		    
 		    toolShell.setVisible(true);
 		    toolShell.setFocus();
