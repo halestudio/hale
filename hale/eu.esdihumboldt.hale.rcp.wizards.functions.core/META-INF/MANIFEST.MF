@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.iabcinc.jmep,
  com.iabcinc.jmep.hooks,
+ de.cs3d.util.logging,
  eu.esdihumboldt.cst.corefunctions,
  eu.esdihumboldt.cst.corefunctions.inspire,
  eu.esdihumboldt.cst.transformer,
@@ -19,7 +20,8 @@ Import-Package: com.iabcinc.jmep,
  eu.esdihumboldt.hale.rcp.wizards.functions,
  eu.esdihumboldt.hale.schemaprovider,
  eu.esdihumboldt.hale.schemaprovider.model,
- org.apache.log4j
+ org.apache.log4j,
+ org.slf4j;version="1.5.11"
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.geotools;bundle-version="2.6.4",

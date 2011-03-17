@@ -14,10 +14,11 @@ package eu.esdihumboldt.hale.rcp.wizards.functions.core.literal;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
@@ -55,7 +56,7 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 	 */
 	public static final String PARAMETER_INSTANCE_SPLIT_CONDITION = "InstanceSplitCondition";
 
-	private static Logger _log = Logger.getLogger(RenamingFunctionWizard.class);
+	private static ALogger _log = ALoggerFactory.getLogger(RenamingFunctionWizard.class);
 
 	private RenamingFunctionWizardMainPage mainPage;
 
@@ -121,13 +122,13 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 
 	@Override
 	public boolean performFinish() {
-		Cell c = (Cell) getResultCell();
+		Cell c = getResultCell();
 		
 		Entity source = (Entity) c.getEntity1();
 		
 		Transformation t = new Transformation();
 		
-		if (getSourceItem().isFeatureType() && getTargetItem().isFeatureType()) {
+		if (getSourceItem().isType() && getTargetItem().isType()) {
 			// Type renaming
 			t.setLabel(RenameFeatureFunction.class.getName());
 			t.setService(new Resource(RenameFeatureFunction.class.getName()));
@@ -150,15 +151,15 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 				// do nothing
 			}
 			c.setRelation(RelationType.Equivalence);
+			
+			source.setTransformation(t);
+			
+			return true;
 		}
 		else {
-			//TODO error message?
+			_log.userError("It is only possible to define this function on type definitions");
 			return false;
 		}
-
-		source.setTransformation(t);
-
-		return true;
 	}
 
 	/**

@@ -115,7 +115,7 @@ public class RenamingFunctionWizardMainPage
 		targetName.setEnabled(false);
 		targetName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
-		if (getParent().getSourceItem().isFeatureType() && getParent().getTargetItem().isFeatureType()) {
+		if (getParent().getSourceItem().isType() && getParent().getTargetItem().isType()) {
 			new Composite(page, SWT.NONE);
 			
 			// instance mapping

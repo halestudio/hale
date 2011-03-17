@@ -57,7 +57,8 @@ public class RenamingFunctionWizardFactory implements FunctionWizardFactory {
 					return false;
 				}
 			}
-			else if (source.isFeatureType() && target.isFeatureType()) {
+//			else if (source.isFeatureType() && target.isFeatureType()) {
+			else if (source.isType() && target.isType()) {
 				return true;
 			}
 		}
