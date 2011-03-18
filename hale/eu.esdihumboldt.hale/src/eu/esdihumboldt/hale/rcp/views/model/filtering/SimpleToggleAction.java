@@ -109,4 +109,8 @@ public class SimpleToggleAction
 		this.actionTarget = tv;
 	}
 
+	@Override
+	public void setChecked(boolean checked) {
+		super.setChecked(checked);
+	}
 }

@@ -68,4 +68,9 @@ public abstract class AbstractContentProviderAction extends Action {
 	 */
 	protected abstract void updateContentProvider(
 			ConfigurableModelContentProvider contentProvider);	
+	
+	@Override
+	public void setChecked(boolean checked) {
+		super.setChecked(checked);
+	}
 }
