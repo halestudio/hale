@@ -71,7 +71,7 @@ public class NilReasonWizard extends AugmentationWizard {
 						try {
 							nilReason = param.getValue();
 						} catch (IllegalArgumentException e) {
-							log.warn("Illegal value for Nil reason type");
+							log.warn("Illegal value for Nil reason type"); //$NON-NLS-1$
 						}
 					}
 				}
@@ -80,10 +80,10 @@ public class NilReasonWizard extends AugmentationWizard {
 		
 		if (nilReason == null) {
 			// default value
-			nilReason = "unknown";
+			nilReason = "unknown"; //$NON-NLS-1$
 		}
 		
-		page = new NilReasonWizardPage("mainPage", "Select a Nil reason", null,
+		page = new NilReasonWizardPage("mainPage", "Select a Nil reason", null, //$NON-NLS-1$ //$NON-NLS-2$
 				nilReason);
 	}
 

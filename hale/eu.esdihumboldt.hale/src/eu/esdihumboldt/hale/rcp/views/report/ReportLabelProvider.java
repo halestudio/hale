@@ -30,17 +30,17 @@ public class ReportLabelProvider extends LabelProvider {
 		if (element instanceof SAXParseException) {
 			SAXParseException e = (SAXParseException) element;
 			
-			output = e.getLocalizedMessage()+" at line "+e.getLineNumber();
+			output = e.getLocalizedMessage()+" at line "+e.getLineNumber(); //$NON-NLS-1$
 		}
 		else if (element instanceof TransformationResultItem) {
 			output = ((TransformationResultItem) element).getMessage();
 		}
 		else {
-			if (((String)element).startsWith("Warning") ||
-					((String)element).startsWith("Error")	) {
+			if (((String)element).startsWith("Warning") || //$NON-NLS-1$
+					((String)element).startsWith("Error")	) { //$NON-NLS-1$
 				output = element.toString();
 			} else {
-				output = "line "+element.toString();
+				output = "line "+element.toString(); //$NON-NLS-1$
 			}
 		}
 		

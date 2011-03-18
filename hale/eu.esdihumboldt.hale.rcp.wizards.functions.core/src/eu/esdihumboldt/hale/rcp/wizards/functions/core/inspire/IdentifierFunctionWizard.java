@@ -21,6 +21,7 @@ import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
 /**
  * FIXME Add Type description.
@@ -39,7 +40,7 @@ public class IdentifierFunctionWizard
 	 */
 	public IdentifierFunctionWizard(AlignmentInfo selection) {
 		super(selection);
-		this.mainPage = new IdentifierFunctionWizardPage("Identifier Definition");
+		this.mainPage = new IdentifierFunctionWizardPage(Messages.IdentifierFunctionWizard_0);
 	}
 
 	/**

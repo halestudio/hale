@@ -99,17 +99,17 @@ public class MappingExportWizard
 				
 						SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 						
-						ATransaction trans = _log.begin("Export mapping to " + format);
+						ATransaction trans = _log.begin("Export mapping to " + format); //$NON-NLS-1$
 						try {
 							//TODO instead give the monitor to the exporter? support for canceling?
-							monitor.beginTask("Exporting mapping", IProgressMonitor.UNKNOWN);
+							monitor.beginTask(Messages.getString("MappingExportWizard.1"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 							MappingExportReport report = mef.export(al, file, schemaService.getSourceSchemaElements(), 
 									schemaService.getTargetSchemaElements());
 							if (report != null && !report.isEmpty()) {
 								// handle report
-								ATransaction reportTrans = _log.begin("Report");
+								ATransaction reportTrans = _log.begin("Report"); //$NON-NLS-1$
 								try {
-									ATransaction failedTrans = _log.begin("Mapping cells that could not be exported");
+									ATransaction failedTrans = _log.begin("Mapping cells that could not be exported"); //$NON-NLS-1$
 									try {
 										for (Entry<ICell, String> entry : report.getFailed().entrySet()) {
 											_log.error(AGroupFactory.getGroup(entry.getValue()),
@@ -118,7 +118,7 @@ public class MappingExportWizard
 									} finally {
 										failedTrans.end();
 									}
-									ATransaction warningsTrans = _log.begin("Problems with exported mapping cells");
+									ATransaction warningsTrans = _log.begin("Problems with exported mapping cells"); //$NON-NLS-1$
 									try {
 										for (Entry<ICell, String> entry : report.getWarnings().entrySet()) {
 											_log.warn(AGroupFactory.getGroup(entry.getValue()),
@@ -134,12 +134,12 @@ public class MappingExportWizard
 								int failed = report.getFailed().size();
 								int problems = report.getWarnings().size();
 								int all = al.getMap().size();
-								final String message = "The mapping has been exported " +
-									"but there have been problems with some " +
-									"cells.\n" +
-									"- " + failed + " of " + all + " mapping cells could not be exported\n" +
-									"- for " + problems + " of " + (all - failed) + " exported cells problems have been reported\n" +
-									"\nSee the report in the error log for more details.";
+								final String message = "The mapping has been exported " + //$NON-NLS-1$
+									"but there have been problems with some " + //$NON-NLS-1$
+									"cells.\n" + //$NON-NLS-1$
+									"- " + failed + " of " + all + " mapping cells could not be exported\n" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+									"- for " + problems + " of " + (all - failed) + " exported cells problems have been reported\n" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+									"\nSee the report in the error log for more details."; //$NON-NLS-1$
 								
 								PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 									
@@ -167,11 +167,11 @@ public class MappingExportWizard
 								PlatformUI.getWorkbench().getDisplay().asyncExec(r);
 							}
 							else {
-								_log.userInfo("Mapping export was successful");
+								_log.userInfo("Mapping export was successful"); //$NON-NLS-1$
 							}
 						} catch (Throwable e) {
 							String message = Messages.MappingExportWizard_SaveFailed;
-							_log.userError(message + " " + e.getMessage(), e);
+							_log.userError(message + " " + e.getMessage(), e); //$NON-NLS-1$
 						} finally {
 							monitor.done();
 							trans.end();
@@ -179,7 +179,7 @@ public class MappingExportWizard
 					}
 				});
 			} catch (Exception e) {
-				_log.userError("Error starting mapping export process", e);
+				_log.userError("Error starting mapping export process", e); //$NON-NLS-1$
 			}
 			
 		}

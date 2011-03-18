@@ -47,9 +47,9 @@ public class ShapeInstanceProvider extends AbstractInstanceProvider {
 	 * Default constructor
 	 */
 	public ShapeInstanceProvider() {
-		addSupportedSchemaFormat("shp");
+		addSupportedSchemaFormat("shp"); //$NON-NLS-1$
 		
-		addSupportedInstanceFormat("shp");
+		addSupportedInstanceFormat("shp"); //$NON-NLS-1$
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class ShapeInstanceProvider extends AbstractInstanceProvider {
 	@Override
 	public FeatureCollection<FeatureType, Feature> loadInstances(URI location,
 			InstanceConfiguration configuration, ProgressIndicator progress) throws IOException {
-		ATransaction trans = log.begin("Loading GML features from " + location.toString());
+		ATransaction trans = log.begin("Loading GML features from " + location.toString()); //$NON-NLS-1$
 		try {
 			DataStore store = FileDataStoreFinder.getDataStore(location.toURL());
 			CstFeatureCollection fc = new CstFeatureCollection();

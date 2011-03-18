@@ -14,6 +14,8 @@ package eu.esdihumboldt.hale.rcp.utils.definition.internal.editors;
 
 import org.eclipse.swt.widgets.Composite;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * 
  *
@@ -45,7 +47,7 @@ public class FloatAttributeEditor extends StringValidatingAttributeEditor<Float>
 			return null;
 		}
 		catch (NumberFormatException e) {
-			return "No valid input for Float";
+			return Messages.getString("FloatAttributeEditor.0"); //$NON-NLS-1$
 		}
 	}
 	
@@ -54,7 +56,7 @@ public class FloatAttributeEditor extends StringValidatingAttributeEditor<Float>
 	 */
 	@Override
 	protected String getValidToolTip() {
-		return "The value you entered is a valid Float";
+		return Messages.getString("FloatAttributeEditor.1"); //$NON-NLS-1$
 	}
 
 	/**

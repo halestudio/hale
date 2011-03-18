@@ -13,10 +13,10 @@ public class EapToUml2 {
 	{
 		Map<String,String> slotContents = new HashMap<String,String>();
 		Map<String,String> properties = new HashMap<String,String>();
-		properties.put("ea_file",eap_file.getPath());
-		properties.put("model_file",model_file.getPath());
-		properties.put("model_pkg",eap_package);
-		boolean retrn= wfrunner.run("src//main//java//eu//esdihumboldt//hale//eap2uml//eapconverter//workflow.oaw", new NullProgressMonitor(),properties,slotContents);
+		properties.put("ea_file",eap_file.getPath()); //$NON-NLS-1$
+		properties.put("model_file",model_file.getPath()); //$NON-NLS-1$
+		properties.put("model_pkg",eap_package); //$NON-NLS-1$
+		boolean retrn= wfrunner.run("src//main//java//eu//esdihumboldt//hale//eap2uml//eapconverter//workflow.oaw", new NullProgressMonitor(),properties,slotContents); //$NON-NLS-1$
 		return retrn;
 	}
 }

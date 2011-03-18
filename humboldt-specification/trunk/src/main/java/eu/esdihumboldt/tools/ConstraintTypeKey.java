@@ -47,8 +47,8 @@ public class ConstraintTypeKey
 					ctk.constraint, this.constraint) == 0;
 		}
 		else {
-			throw new ClassCastException("The object passed in was not a " +
-					"ConstraintTypeKey: " + obj.getClass());
+			throw new ClassCastException("The object passed in was not a " + //$NON-NLS-1$
+					"ConstraintTypeKey: " + obj.getClass()); //$NON-NLS-1$
 		}
 	}
 
@@ -62,8 +62,8 @@ public class ConstraintTypeKey
 					ctk.constraint, this.constraint);
 		}
 		else {
-			throw new ClassCastException("The object passed in was not a " +
-					"ConstraintTypeKey: " + obj.getClass());
+			throw new ClassCastException("The object passed in was not a " + //$NON-NLS-1$
+					"ConstraintTypeKey: " + obj.getClass()); //$NON-NLS-1$
 		}
 	}
 

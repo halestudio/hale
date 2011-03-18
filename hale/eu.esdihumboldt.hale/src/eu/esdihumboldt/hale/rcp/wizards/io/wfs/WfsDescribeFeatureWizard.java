@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.io.wfs;
 
+import eu.esdihumboldt.hale.Messages;
+
 
 /**
  * WFS DescribeFeature wizard
@@ -28,7 +30,7 @@ public class WfsDescribeFeatureWizard extends AbstractWfsWizard<WfsDescribeFeatu
 	public WfsDescribeFeatureWizard(WfsDescribeFeatureConfiguration configuration) {
 		super(configuration);
 		
-		setWindowTitle("WFS DescribeFeature");
+		setWindowTitle(Messages.getString("WfsDescribeFeatureWizard_0")); //$NON-NLS-1$
 	}
 
 }

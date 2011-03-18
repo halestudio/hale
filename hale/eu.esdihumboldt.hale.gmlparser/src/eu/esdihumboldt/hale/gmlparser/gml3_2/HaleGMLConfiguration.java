@@ -35,32 +35,32 @@ public class HaleGMLConfiguration extends org.geotools.gml3.v3_2.GMLConfiguratio
 	/**
 	 * GML 3.2 Qualified Name for PolygonPatchType
 	 */
-	public static final QName PolygonPatchType = new QName("http://www.opengis.net/gml/3.2",
-		"PolygonPatchType");
+	public static final QName PolygonPatchType = new QName("http://www.opengis.net/gml/3.2", //$NON-NLS-1$
+		"PolygonPatchType"); //$NON-NLS-1$
 	
 	/**
 	 * GML 3.2 Qualified Name for AbstractRingType
 	 */
-	public static final QName AbstractRingType = new QName("http://www.opengis.net/gml/3.2",
-    	"AbstractRingType");
+	public static final QName AbstractRingType = new QName("http://www.opengis.net/gml/3.2", //$NON-NLS-1$
+    	"AbstractRingType"); //$NON-NLS-1$
 	
 	/**
 	 * GML 3.2 Qualified Name for SurfacePatchArrayPropertyType
 	 */
-	public static final QName SurfacePatchArrayPropertyType = new QName("http://www.opengis.net/gml/3.2",
-		"SurfacePatchArrayPropertyType");
+	public static final QName SurfacePatchArrayPropertyType = new QName("http://www.opengis.net/gml/3.2", //$NON-NLS-1$
+		"SurfacePatchArrayPropertyType"); //$NON-NLS-1$
 	
 	/**
 	 * GML 3.2 Qualified Name for SurfaceType
 	 */
-	public static final QName SurfaceType = new QName("http://www.opengis.net/gml/3.2",
-		"SurfaceType");
+	public static final QName SurfaceType = new QName("http://www.opengis.net/gml/3.2", //$NON-NLS-1$
+		"SurfaceType"); //$NON-NLS-1$
 	
 	/**
 	 * GML 3.2 Qualified Name for MultiPolygonType
 	 */
-	public static final QName MultiPolygonType = new QName("http://www.opengis.net/gml/3.2",
-		"MultiPolygonType");
+	public static final QName MultiPolygonType = new QName("http://www.opengis.net/gml/3.2", //$NON-NLS-1$
+		"MultiPolygonType"); //$NON-NLS-1$
 	
 	/**
 	 * @see Configuration#configureBindings(java.util.Map)
@@ -90,7 +90,7 @@ public class HaleGMLConfiguration extends org.geotools.gml3.v3_2.GMLConfiguratio
 		HaleCurvePropertyTypeBinding curvePropertyTypeBinding = new HaleCurvePropertyTypeBinding();
 		bindings.put(curvePropertyTypeBinding.getTarget(), curvePropertyTypeBinding);
 		
-		bindings.put(new QName("http://www.opengis.net/gml/3.2","AbstractRingPropertyType"), HaleAbstractRingPropertyTypeBinding.class);
+		bindings.put(new QName("http://www.opengis.net/gml/3.2","AbstractRingPropertyType"), HaleAbstractRingPropertyTypeBinding.class); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 }

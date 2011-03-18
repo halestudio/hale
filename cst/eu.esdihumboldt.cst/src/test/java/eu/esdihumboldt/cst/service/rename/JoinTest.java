@@ -43,25 +43,25 @@ public class JoinTest {
 		GeometryFactory geomFactory = new GeometryFactory();
 		SimpleFeatureType ft = null;
 		SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
-		ftbuilder.setName("FirstType");
-		ftbuilder.setNamespaceURI("http://first.de");
-		ftbuilder.add("1_P", Point.class);
-		ftbuilder.add("SomeValues0", Integer.class);
+		ftbuilder.setName("FirstType"); //$NON-NLS-1$
+		ftbuilder.setNamespaceURI("http://first.de"); //$NON-NLS-1$
+		ftbuilder.add("1_P", Point.class); //$NON-NLS-1$
+		ftbuilder.add("SomeValues0", Integer.class); //$NON-NLS-1$
 		ft = ftbuilder.buildFeatureType();
 		SimpleFeatureBuilder builder = new SimpleFeatureBuilder(ft);
 		Feature sourceFt1_1 = builder.build(
 				ft, new Object[]{geomFactory.createPoint(
-						new Coordinate(20.0,20.0)), new Integer (2)}, "first");
+						new Coordinate(20.0,20.0)), new Integer (2)}, "first"); //$NON-NLS-1$
 		Feature sourceFt1_2 = builder.build(
 				ft, new Object[]{geomFactory.createPoint(
-						new Coordinate(100.0,200.0)), new Integer (3)}, "second");
+						new Coordinate(100.0,200.0)), new Integer (3)}, "second"); //$NON-NLS-1$
 
 		SimpleFeatureType ft2 = null;
 		SimpleFeatureTypeBuilder ftbuilder2 = new SimpleFeatureTypeBuilder();
-		ftbuilder2.setName("SecondType");
-		ftbuilder2.setNamespaceURI("http://second.de");
-		ftbuilder2.add("SomeP", Point.class);
-		ftbuilder2.add("SomeValues1", Integer.class);
+		ftbuilder2.setName("SecondType"); //$NON-NLS-1$
+		ftbuilder2.setNamespaceURI("http://second.de"); //$NON-NLS-1$
+		ftbuilder2.add("SomeP", Point.class); //$NON-NLS-1$
+		ftbuilder2.add("SomeValues1", Integer.class); //$NON-NLS-1$
 		ft2 = ftbuilder2.buildFeatureType();
 		SimpleFeatureBuilder builder2 = new SimpleFeatureBuilder(ft2);
 		Feature sourceFt2_1 = builder2.build(
@@ -88,23 +88,23 @@ public class JoinTest {
 		all.add(features2);
 	
 
-		FeatureSpatialJoiner fj = new FeatureSpatialJoiner("SomeValues0","SomeValues1", false, "join");
+		FeatureSpatialJoiner fj = new FeatureSpatialJoiner("SomeValues0","SomeValues1", false, "join"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		List<Feature>results = fj.join(all);
-		_log.info("JOINSIZE " +results.size());
+		_log.info("JOINSIZE " +results.size()); //$NON-NLS-1$
 
 		assertTrue(results.size()==2);
 		SimpleFeatureType joinedFt = null;
 		SimpleFeatureTypeBuilder ftbuilder3 = new SimpleFeatureTypeBuilder();
-		ftbuilder3.setName("Joined_" + "FirstType"+ "_"+"SecondType");
-		ftbuilder3.setNamespaceURI("http://first.de");
-		ftbuilder3.add("1_P", Point.class);
-		ftbuilder3.add("SomeValues0", Integer.class);
-		ftbuilder3.add("SomeP", Point.class);
-		ftbuilder3.add("SomeValues1", Integer.class);
+		ftbuilder3.setName("Joined_" + "FirstType"+ "_"+"SecondType"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		ftbuilder3.setNamespaceURI("http://first.de"); //$NON-NLS-1$
+		ftbuilder3.add("1_P", Point.class); //$NON-NLS-1$
+		ftbuilder3.add("SomeValues0", Integer.class); //$NON-NLS-1$
+		ftbuilder3.add("SomeP", Point.class); //$NON-NLS-1$
+		ftbuilder3.add("SomeValues1", Integer.class); //$NON-NLS-1$
 		joinedFt = ftbuilder3.buildFeatureType();
 		for (Feature f : results){
-			_log.info("RESULT__________________________________");
-			_log.info("RESULT " + f);
+			_log.info("RESULT__________________________________"); //$NON-NLS-1$
+			_log.info("RESULT " + f); //$NON-NLS-1$
 			assertTrue(f.getType().equals(joinedFt));
 		}
 
@@ -117,25 +117,25 @@ public class JoinTest {
 		GeometryFactory geomFactory = new GeometryFactory();
 		SimpleFeatureType ft = null;
 		SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
-		ftbuilder.setName("FirstType");
-		ftbuilder.setNamespaceURI("http://first.de");
-		ftbuilder.add("1_P", Polygon.class);
-		ftbuilder.add("SomeValues0", Integer.class);
+		ftbuilder.setName("FirstType"); //$NON-NLS-1$
+		ftbuilder.setNamespaceURI("http://first.de"); //$NON-NLS-1$
+		ftbuilder.add("1_P", Polygon.class); //$NON-NLS-1$
+		ftbuilder.add("SomeValues0", Integer.class); //$NON-NLS-1$
 		ft = ftbuilder.buildFeatureType();
 		SimpleFeatureBuilder builder = new SimpleFeatureBuilder(ft);
 		Feature sourceFt1_1 = builder.build(
 				ft, new Object[]{geomFactory.createPolygon(
-						geomFactory.createLinearRing(new Coordinate[] {new Coordinate (0.0, 0.0), new Coordinate(1.0, 0.0),new Coordinate(0.0, 1.0), new Coordinate(1.0, 1.0), new Coordinate(0.0, 0.0)}), null), new Integer (2)}, "first");
+						geomFactory.createLinearRing(new Coordinate[] {new Coordinate (0.0, 0.0), new Coordinate(1.0, 0.0),new Coordinate(0.0, 1.0), new Coordinate(1.0, 1.0), new Coordinate(0.0, 0.0)}), null), new Integer (2)}, "first"); //$NON-NLS-1$
 		Feature sourceFt1_2 = builder.build(
 				ft, new Object[]{geomFactory.createPolygon(
-						geomFactory.createLinearRing(new Coordinate[] {new Coordinate (100.0, 100.0), new Coordinate(200.0, 100.0),new Coordinate(100.0, 200.0), new Coordinate(200.0, 200.0), new Coordinate(100.0, 100.0)}), null), new Integer (3)}, "second");
+						geomFactory.createLinearRing(new Coordinate[] {new Coordinate (100.0, 100.0), new Coordinate(200.0, 100.0),new Coordinate(100.0, 200.0), new Coordinate(200.0, 200.0), new Coordinate(100.0, 100.0)}), null), new Integer (3)}, "second"); //$NON-NLS-1$
 
 		SimpleFeatureType ft2 = null;
 		SimpleFeatureTypeBuilder ftbuilder2 = new SimpleFeatureTypeBuilder();
-		ftbuilder2.setName("SecondType");
-		ftbuilder2.setNamespaceURI("http://second.de");
-		ftbuilder2.add("SomeP", Polygon.class);
-		ftbuilder2.add("SomeValues1", Integer.class);
+		ftbuilder2.setName("SecondType"); //$NON-NLS-1$
+		ftbuilder2.setNamespaceURI("http://second.de"); //$NON-NLS-1$
+		ftbuilder2.add("SomeP", Polygon.class); //$NON-NLS-1$
+		ftbuilder2.add("SomeValues1", Integer.class); //$NON-NLS-1$
 		ft2 = ftbuilder2.buildFeatureType();
 		SimpleFeatureBuilder builder2 = new SimpleFeatureBuilder(ft2);
 		Feature sourceFt2_1 = builder2.build(
@@ -162,23 +162,23 @@ public class JoinTest {
 		all.add(features2);
 	
 
-		FeatureSpatialJoiner fj = new FeatureSpatialJoiner("1_P","SomeP", true, "join:intersects");
+		FeatureSpatialJoiner fj = new FeatureSpatialJoiner("1_P","SomeP", true, "join:intersects"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		List<Feature>results = fj.join(all);
-		_log.info("JoinSIZE " +results.size());
+		_log.info("JoinSIZE " +results.size()); //$NON-NLS-1$
 
 		assertTrue(results.size()==2);
 		SimpleFeatureType joinedFt = null;
 		SimpleFeatureTypeBuilder ftbuilder3 = new SimpleFeatureTypeBuilder();
-		ftbuilder3.setName("Joined_" + "FirstType"+ "_"+"SecondType");
-		ftbuilder3.setNamespaceURI("http://first.de");
-		ftbuilder3.add("1_P", Polygon.class);
-		ftbuilder3.add("SomeValues0", Integer.class);
-		ftbuilder3.add("SomeP", Polygon.class);
-		ftbuilder3.add("SomeValues1", Integer.class);
+		ftbuilder3.setName("Joined_" + "FirstType"+ "_"+"SecondType"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		ftbuilder3.setNamespaceURI("http://first.de"); //$NON-NLS-1$
+		ftbuilder3.add("1_P", Polygon.class); //$NON-NLS-1$
+		ftbuilder3.add("SomeValues0", Integer.class); //$NON-NLS-1$
+		ftbuilder3.add("SomeP", Polygon.class); //$NON-NLS-1$
+		ftbuilder3.add("SomeValues1", Integer.class); //$NON-NLS-1$
 		joinedFt = ftbuilder3.buildFeatureType();
 		for (Feature f : results){
-			_log.info("RESULT__________________________________");
-			_log.info("RESULT " + f);
+			_log.info("RESULT__________________________________"); //$NON-NLS-1$
+			_log.info("RESULT " + f); //$NON-NLS-1$
 			assertTrue(f.getType().equals(joinedFt));
 		}
 

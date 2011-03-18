@@ -229,7 +229,7 @@ public class SchemaImportWizardMainPage
 				String test = this.getResult();
 				if (this.useWfsRadio.getSelection()) {
 					// test whether content of the WFS Field Editor validates to URL.
-					if (test != null && !test.equals("")) { 
+					if (test != null && !test.equals("")) {  //$NON-NLS-1$
 						URL url = new URL(test);
 						_log.info("wfsFieldEditor URL was OK: " + url.toString()); //$NON-NLS-1$
 					} 

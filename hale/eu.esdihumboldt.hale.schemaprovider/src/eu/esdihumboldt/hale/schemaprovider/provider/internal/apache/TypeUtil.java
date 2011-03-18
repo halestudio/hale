@@ -46,6 +46,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.schemaprovider.EnumAttributeType;
 import eu.esdihumboldt.hale.schemaprovider.EnumAttributeTypeImpl;
+import eu.esdihumboldt.hale.schemaprovider.Messages;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -59,7 +60,7 @@ public abstract class TypeUtil {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(TypeUtil.class);
 	
-	private static final AGroup TYPE_RESOLVE = AGroupFactory.getGroup("Types could not be resolved");
+	private static final AGroup TYPE_RESOLVE = AGroupFactory.getGroup(Messages.getString("TypeUtil.0")); //$NON-NLS-1$
 
 	/**
 	 * The XS schema
@@ -74,19 +75,19 @@ public abstract class TypeUtil {
 	/**
 	 * Geotools bindings location string
 	 */
-	private static final String GEOTOOLS_LOC = "Geotools GML bindings";
+	private static final String GEOTOOLS_LOC = Messages.getString("TypeUtil.1"); //$NON-NLS-1$
 	
 	/**
 	 * Geotools bindings location prefix
 	 */
-	private static final String GEOTOOLS_LOC_PREFIX = "Geotools GML bindings + ";
+	private static final String GEOTOOLS_LOC_PREFIX = Messages.getString("TypeUtil.2"); //$NON-NLS-1$
 
 	/**
 	 * GML 3.2 namespace
 	 */
-	private static final String NAMESPACE_GML3_2 = "http://www.opengis.net/gml/3.2";
+	private static final String NAMESPACE_GML3_2 = "http://www.opengis.net/gml/3.2"; //$NON-NLS-1$
 
-	private static final String NAMESPACE_GML = "http://www.opengis.net/gml";
+	private static final String NAMESPACE_GML = "http://www.opengis.net/gml"; //$NON-NLS-1$
 	
 	/**
 	 * Set of XML schema types that should get a String binding but don't get
@@ -116,7 +117,7 @@ public abstract class TypeUtil {
 		}
 		
 		if (typeDef == null ) {
-			log.warn(TYPE_RESOLVE, "Type could not be resolved: " + typeName.getNamespaceURI() + "/" + typeName.getLocalPart());
+			log.warn(TYPE_RESOLVE, "Type could not be resolved: " + typeName.getNamespaceURI() + "/" + typeName.getLocalPart()); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		
 		return typeDef;
@@ -145,7 +146,7 @@ public abstract class TypeUtil {
 		}
 		
 		if (typeDef == null ) {
-			log.warn(TYPE_RESOLVE, "Type could not be resolved: " + typeName.getNamespaceURI() + "/" + typeName.getLocalPart());
+			log.warn(TYPE_RESOLVE, "Type could not be resolved: " + typeName.getNamespaceURI() + "/" + typeName.getLocalPart()); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		
 		return typeDef;
@@ -170,7 +171,7 @@ public abstract class TypeUtil {
 		
 		if (ty != null) {
 			TypeDefinition typeDef = new TypeDefinition(name, ty, null);
-			typeDef.setLocation("Geotools XS bindings");
+			typeDef.setLocation(Messages.getString("TypeUtil.10")); //$NON-NLS-1$
 			return typeDef;
 		}
 		else {
@@ -316,7 +317,7 @@ public abstract class TypeUtil {
 			}
 		}
 		else {
-			log.warn(TYPE_RESOLVE, "Could not resolve base type: " + baseTypeName.getNamespaceURI() + "/" + baseTypeName.getLocalPart());
+			log.warn(TYPE_RESOLVE, "Could not resolve base type: " + baseTypeName.getNamespaceURI() + "/" + baseTypeName.getLocalPart()); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		
 		if (type != null) {
@@ -395,7 +396,7 @@ public abstract class TypeUtil {
 			typeDef = getEnumAttributeType((XmlSchemaSimpleTypeRestriction) content, typeName, schemaTypes);
 		}
 		else {
-			log.warn(TYPE_RESOLVE, "Unrecognized simple type " + typeName.getNamespaceURI() + "/" + typeName.getLocalPart());
+			log.warn(TYPE_RESOLVE, "Unrecognized simple type " + typeName.getNamespaceURI() + "/" + typeName.getLocalPart()); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		
 		if (typeDef != null && schemaTypes != null) {
@@ -425,7 +426,7 @@ public abstract class TypeUtil {
 					}
 					else {
 						// anonymous type
-						baseName = new NameImpl(typeName.getNamespaceURI() + "/" + typeName.getLocalPart(), "AnonymousType" + i);
+						baseName = new NameImpl(typeName.getNamespaceURI() + "/" + typeName.getLocalPart(), "AnonymousType" + i); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 					TypeDefinition baseDef = resolveSimpleType(baseName, dependencies, simpleType, schemaTypes);
 					
@@ -452,12 +453,12 @@ public abstract class TypeUtil {
 							}
 						}
 						else {
-							log.warn(TYPE_RESOLVE, "Error resolving base type " + baseName.getURI());
+							log.warn(TYPE_RESOLVE, "Error resolving base type " + baseName.getURI()); //$NON-NLS-1$
 						}
 					}
 				}
 				else {
-					log.warn("Unrecognized base type");
+					log.warn("Unrecognized base type"); //$NON-NLS-1$
 				}
 			}
 		}
@@ -497,7 +498,7 @@ public abstract class TypeUtil {
 							}
 						}
 						else {
-							log.warn(TYPE_RESOLVE, "Error resolving base type " + baseName.getURI());
+							log.warn(TYPE_RESOLVE, "Error resolving base type " + baseName.getURI()); //$NON-NLS-1$
 						}
 					}
 				}

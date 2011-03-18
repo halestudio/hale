@@ -53,7 +53,7 @@ public class FeatureCollectionUtilities {
 	/**
 	 * The default? namespace
 	 */
-	public static final String namespace = "http://www.esdihumboldt.eu/test/";
+	public static final String namespace = "http://www.esdihumboldt.eu/test/"; //$NON-NLS-1$
 	
 	/**
 	 * This method allows to load a {@link FeatureCollection} from an Well Known 
@@ -84,7 +84,7 @@ public class FeatureCollectionUtilities {
 			//ftbuilder.setSRS("EPSG:4326");
 			  
 			// add attributes to FT
-			ftbuilder.add( "the_geom", geom.getClass() );
+			ftbuilder.add( "the_geom", geom.getClass() ); //$NON-NLS-1$
 			SimpleFeatureType ft = ftbuilder.buildFeatureType();
 			
 			// build Feature itself, using the created type and the geometry.
@@ -99,8 +99,8 @@ public class FeatureCollectionUtilities {
 		}
 		catch (Exception ex) {
 			throw new RuntimeException(
-					"An exception occured trying to build a FeatureCollection" +
-					" from the given file " + _filename + ".", ex);
+					"An exception occured trying to build a FeatureCollection" + //$NON-NLS-1$
+					" from the given file " + _filename + ".", ex); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return fc;
 	}
@@ -153,7 +153,7 @@ public class FeatureCollectionUtilities {
 			ftbuilder.setNamespaceURI(namespace);
 			ftbuilder.setAbstract(_abstract);
 			if (_geometry_class != null) {
-				ftbuilder.add("the_geom", _geometry_class);
+				ftbuilder.add("the_geom", _geometry_class); //$NON-NLS-1$
 			}
 			ft = ftbuilder.buildFeatureType();
 		} catch (Exception ex) {
@@ -187,9 +187,9 @@ public class FeatureCollectionUtilities {
 			ftbuilder.setNamespaceURI(namespace);
 			ftbuilder.setAbstract(_abstract);
 			if (_geometryClass != null) {
-				ftbuilder.add("the_geom", _geometryClass);
+				ftbuilder.add("the_geom", _geometryClass); //$NON-NLS-1$
 			}
-			ftbuilder.add("name", String.class);
+			ftbuilder.add("name", String.class); //$NON-NLS-1$
 			ft = ftbuilder.buildFeatureType();
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);

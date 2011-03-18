@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.utils.codelist.CodeList;
 
 /**
@@ -72,7 +73,7 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 		Control control = super.createContents(parent);
 		
 		//setMessage("");
-		setTitle("Assign a code list");
+		setTitle(Messages.getString("CodeListSelectionDialog.0")); //$NON-NLS-1$
 		
 		return control;
 	}
@@ -84,7 +85,7 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		
-		newShell.setText("Code lists");
+		newShell.setText(Messages.getString("CodeListSelectionDialog.1")); //$NON-NLS-1$
 	}
 
 	/**
@@ -111,14 +112,14 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 		
 		// list
 		TabItem listItem = new TabItem(tabFolder, SWT.NONE);
-		listItem.setText("From search path");
+		listItem.setText(Messages.getString("CodeListSelectionDialog.2")); //$NON-NLS-1$
 		ListSelector listSelector = new ListSelector(tabFolder);
 		listItem.setControl(listSelector.getControl());
 		selectors.add(listSelector);
 		
 		// file
 		TabItem fileItem = new TabItem(tabFolder, SWT.NONE);
-		fileItem.setText("From file or URL");
+		fileItem.setText(Messages.getString("CodeListSelectionDialog.3")); //$NON-NLS-1$
 		FileSelector fileSelector = new FileSelector(tabFolder);
 		fileItem.setControl(fileSelector.getControl());
 		selectors.add(fileSelector);
@@ -148,7 +149,7 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL,
 				false);
 		
-		createButton(parent, NONE_ID, "Assign none",
+		createButton(parent, NONE_ID, Messages.getString("CodeListSelectionDialog.4"), //$NON-NLS-1$
 				false);
 	}
 
@@ -168,7 +169,7 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 		}
 		else {
 			//setErrorMessage("Invalid code list selection");
-			MessageDialog.openError(getShell(), "Code list", "Error loading code list, please verify your selection.");
+			MessageDialog.openError(getShell(), Messages.getString("CodeListSelectionDialog.5"), Messages.getString("CodeListSelectionDialog.6")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 

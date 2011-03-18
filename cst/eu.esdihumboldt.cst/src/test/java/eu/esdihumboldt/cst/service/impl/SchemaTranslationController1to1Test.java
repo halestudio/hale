@@ -85,9 +85,9 @@ public class SchemaTranslationController1to1Test {
 		AddFunctionsToPathUtility.getInstance().add();
 		// configure the CstFunctionFactory
 		CstFunctionFactory.getInstance().registerCstPackage(
-				"eu.esdihumboldt.cst.corefunctions");
+				"eu.esdihumboldt.cst.corefunctions"); //$NON-NLS-1$
 		CstFunctionFactory.getInstance().registerCstPackage(
-				"eu.esdihumboldt.cst.corefunctions.inspire");
+				"eu.esdihumboldt.cst.corefunctions.inspire"); //$NON-NLS-1$
 		
 		// set up the Schema Translation Controller to use for testing
 		stc = new SchemaTranslationController(null, true, getTestAlignment());
@@ -124,7 +124,7 @@ public class SchemaTranslationController1to1Test {
 		
 		// build source Feature(s)
 		Feature source = SimpleFeatureBuilder.build(
-				sourceType, new Object[]{"4.5", "2", "1"}, "1");
+				sourceType, new Object[]{"4.5", "2", "1"}, "1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		features.add(source);
 		
 		// now it's time to actually execute the translation
@@ -138,8 +138,8 @@ public class SchemaTranslationController1to1Test {
 		SimpleFeature target = (SimpleFeature) result.features().next();
 		Property prop = target.getProperty(
 				NameHelper.targetLocalnamePropertyD);
-		assertTrue(prop.getValue().toString().equals("5.0"));
-		LineageImpl li = (LineageImpl) target.getUserData().get("METADATA_LINEAGE");
+		assertTrue(prop.getValue().toString().equals("5.0")); //$NON-NLS-1$
+		LineageImpl li = (LineageImpl) target.getUserData().get("METADATA_LINEAGE"); //$NON-NLS-1$
 		assertTrue(li.getProcessSteps().size() > 0);
 	}
 	
@@ -157,7 +157,7 @@ public class SchemaTranslationController1to1Test {
 		// build source Feature(s)
 		for (int i = 0; i < 1000; i++) {
 			Feature source = SimpleFeatureBuilder.build(
-					sourceType, new Object[]{"" + i, "" + i * 2, "" + i / 2.0}, "" + i);
+					sourceType, new Object[]{"" + i, "" + i * 2, "" + i / 2.0}, "" + i); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			features.add(source);
 		}
 		
@@ -183,7 +183,7 @@ public class SchemaTranslationController1to1Test {
 		for (ICell cell : a.getMap()) {
 			if (RelationType.Equivalence.equals(cell.getRelation())) {
 				Restriction r = new Restriction(null);
-				r.setCqlStr("PropertyA < 500");
+				r.setCqlStr("PropertyA < 500"); //$NON-NLS-1$
 				List<Restriction> attributeValueConditions = new ArrayList<Restriction>();
 				attributeValueConditions.add(r);
 				((FeatureClass) cell.getEntity1()).setAttributeValueCondition(attributeValueConditions );
@@ -197,7 +197,7 @@ public class SchemaTranslationController1to1Test {
 		// build source Feature(s)
 		for (int i = 0; i < 1000; i++) {
 			Feature source = SimpleFeatureBuilder.build(
-					sourceType, new Object[]{i * 1.0, i * 2.0, i / 2.0}, "" + i);
+					sourceType, new Object[]{i * 1.0, i * 2.0, i / 2.0}, "" + i); //$NON-NLS-1$
 			features.add(source);
 		}
 		
@@ -218,14 +218,14 @@ public class SchemaTranslationController1to1Test {
 	private static IAlignment getTestAlignment(){
 		// first, use an alignment created by a different test as a basis.
 		Alignment a = new Alignment();
-		a.setAbout(new About("lala"));
+		a.setAbout(new About("lala")); //$NON-NLS-1$
 		try {
 			a.setSchema1(new Schema(
 					NameHelper.sourceNamespace, new Formalism(
-							"GML", new URI("http://schemas.opengis.org/gml"))));
+							"GML", new URI("http://schemas.opengis.org/gml")))); //$NON-NLS-1$ //$NON-NLS-2$
 			a.setSchema2(new Schema(
 					NameHelper.targetNamespace, new Formalism(
-							"GML", new URI("http://schemas.opengis.org/gml"))));
+							"GML", new URI("http://schemas.opengis.org/gml")))); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
@@ -293,11 +293,11 @@ public class SchemaTranslationController1to1Test {
 				new About(NameHelper.sourceNamespace, NameHelper.sourceLocalname, 
 						NameHelper.sourceLocalnamePropertyC)));
 		Transformation t = new Transformation();
-		t.setService(new Resource("eu.esdihumboldt.cst.corefunctions.GenericMathFunction"));
+		t.setService(new Resource("eu.esdihumboldt.cst.corefunctions.GenericMathFunction")); //$NON-NLS-1$
 		t.getParameters().add(
 				new Parameter(
-						"math_expression", 
-						"0.5 * (PropertyA * PropertyB + PropertyC)"));
+						"math_expression",  //$NON-NLS-1$
+						"0.5 * (PropertyA * PropertyB + PropertyC)")); //$NON-NLS-1$
 		cp.setTransformation(t);
 		cell.setEntity1(cp);
 		cell.setEntity2(new eu.esdihumboldt.goml.omwg.Property(

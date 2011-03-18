@@ -32,8 +32,8 @@ public class DynamicWfsCstServiceBridge
 	 */
 	public String transform(String schemaFilename, String omlFilename,
 			String gmlFilename) {
-		throw new UnsupportedOperationException("This operation is not yet " +
-			"implemented");
+		throw new UnsupportedOperationException("This operation is not yet " + //$NON-NLS-1$
+			"implemented"); //$NON-NLS-1$
 	}
 
 	/**
@@ -43,8 +43,8 @@ public class DynamicWfsCstServiceBridge
 	public String transform(String schemaFilename, String omlFilename,
 			String gmlFilename, String sourceSchema,
 			ConfigurationType sourceVersion) {
-		throw new UnsupportedOperationException("This operation is not yet " +
-			"implemented");
+		throw new UnsupportedOperationException("This operation is not yet " + //$NON-NLS-1$
+			"implemented"); //$NON-NLS-1$
 	}
 
 }

@@ -13,6 +13,8 @@ import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
 
+import eu.esdihumboldt.hale.Messages;
+
 
 /**
  * This object contains factory methods for each 
@@ -31,13 +33,13 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _ContextElement_QNAME = new QName("", "ContextElement");
-    private final static QName _InstanceData_QNAME = new QName("", "InstanceData");
-    private final static QName _Task_QNAME = new QName("", "Task");
-    private final static QName _MappedSchema_QNAME = new QName("", "MappedSchema");
-    private final static QName _TaskStatus_QNAME = new QName("", "TaskStatus");
-    private final static QName _HaleProject_QNAME = new QName("", "HaleProject");
-    private final static QName _Styles_QNAME = new QName("", "Styles");
+    private final static QName _ContextElement_QNAME = new QName("", "ContextElement"); //$NON-NLS-1$ //$NON-NLS-2$
+    private final static QName _InstanceData_QNAME = new QName("", "InstanceData"); //$NON-NLS-1$ //$NON-NLS-2$
+    private final static QName _Task_QNAME = new QName("", "Task"); //$NON-NLS-1$ //$NON-NLS-2$
+    private final static QName _MappedSchema_QNAME = new QName("", "MappedSchema"); //$NON-NLS-1$ //$NON-NLS-2$
+    private final static QName _TaskStatus_QNAME = new QName("", "TaskStatus"); //$NON-NLS-1$ //$NON-NLS-2$
+    private final static QName _HaleProject_QNAME = new QName("", "HaleProject"); //$NON-NLS-1$ //$NON-NLS-2$
+    private final static QName _Styles_QNAME = new QName("", "Styles"); //$NON-NLS-1$ //$NON-NLS-2$
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: eu.esdihumboldt.hale.models.project.generated

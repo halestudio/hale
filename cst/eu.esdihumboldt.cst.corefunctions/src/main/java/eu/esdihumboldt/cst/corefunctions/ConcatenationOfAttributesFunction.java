@@ -40,17 +40,17 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 	/**
 	 * The name of the parameter for the separator.
 	 */
-	public static final String INTERNALSEPERATOR = "--!-split-!--";
+	public static final String INTERNALSEPERATOR = "--!-split-!--"; //$NON-NLS-1$
 	
 	/**
 	 * The name of the parameter for the separator.
 	 */
-	public static final String SEPERATOR = "seperator";
+	public static final String SEPERATOR = "seperator"; //$NON-NLS-1$
 	
 	/**
 	 * The name of the parameter for the concatenation.
 	 */
-	public static final String CONCATENATION = "concatenation";
+	public static final String CONCATENATION = "concatenation"; //$NON-NLS-1$
 	
 	/**
 	 * 
@@ -89,8 +89,8 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 
 		Cell parameterCell = new Cell();
 		
-		ComposedProperty composedEntity1 = new ComposedProperty(new About(""));
-		Property entity1 = new Property(new About(""));
+		ComposedProperty composedEntity1 = new ComposedProperty(new About("")); //$NON-NLS-1$
+		Property entity1 = new Property(new About("")); //$NON-NLS-1$
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
@@ -98,7 +98,7 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 		entityTypes.add(String.class.getName());
 		entity1.setTypeCondition(entityTypes);
 		
-		Property entity2 = new Property(new About(""));
+		Property entity2 = new Property(new About("")); //$NON-NLS-1$
 		 
 		// Setting of type condition for entity2
 		entityTypes = new ArrayList <String>();
@@ -107,8 +107,8 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 		
 		List<IParameter> params = new ArrayList<IParameter>();
 		Transformation t = new Transformation();
-		IParameter seperator = new Parameter(ConcatenationOfAttributesFunction.SEPERATOR , "");
-		IParameter concatenation = new Parameter(ConcatenationOfAttributesFunction.CONCATENATION , "");
+		IParameter seperator = new Parameter(ConcatenationOfAttributesFunction.SEPERATOR , ""); //$NON-NLS-1$
+		IParameter concatenation = new Parameter(ConcatenationOfAttributesFunction.CONCATENATION , ""); //$NON-NLS-1$
 		params.add(seperator);
 		params.add(concatenation);
 		t.setParameters(params);
@@ -128,7 +128,7 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 	@Override
 	public Feature transform(Feature source, Feature target) {
 		String[] concat = this.concatenation.split(INTERNALSEPERATOR);
-		String finalConcatString = "";
+		String finalConcatString = ""; //$NON-NLS-1$
 		for (String thisElement : concat) {
 			String[] properties = thisElement.split(String.valueOf(DetailedAbout.PROPERTY_DELIMITER));
 			Object value = FeatureInspector.getPropertyValue(source, Arrays.asList(properties), null);
@@ -141,7 +141,7 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 				finalConcatString += value.toString();
 			}
 			else {
-				finalConcatString += "";
+				finalConcatString += ""; //$NON-NLS-1$
 			}
 		}
 		

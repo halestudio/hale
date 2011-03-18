@@ -50,7 +50,7 @@ public class DefaultDefinitionLabelFactory implements DefinitionLabelFactory {
 		String description = definition.getDescription();
 		if (description != null && !description.isEmpty()) {
 			// link for displaying documentation
-			String linkText = "<a href=\"" + definition.getIdentifier() + "\">" + name + "</a>";
+			String linkText = "<a href=\"" + definition.getIdentifier() + "\">" + name + "</a>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			
 			final Map<String, String> tips = new HashMap<String, String>();
 			tips.put(definition.getIdentifier(), description);
@@ -60,11 +60,11 @@ public class DefaultDefinitionLabelFactory implements DefinitionLabelFactory {
 				String typeDescription = parentType.getDescription();
 				if (typeDescription != null) {
 					tips.put(parentType.getIdentifier(), typeDescription);
-					linkText = "<a href=\"" + parentType.getIdentifier() + "\">" + 
-						parentType.getDisplayName() + "</a>." + linkText;
+					linkText = "<a href=\"" + parentType.getIdentifier() + "\">" +  //$NON-NLS-1$ //$NON-NLS-2$
+						parentType.getDisplayName() + "</a>." + linkText; //$NON-NLS-1$
 				}
 				else {
-					linkText = parentType.getDisplayName() + "." + linkText;
+					linkText = parentType.getDisplayName() + "." + linkText; //$NON-NLS-1$
 				}
 			}
 			
@@ -97,7 +97,7 @@ public class DefaultDefinitionLabelFactory implements DefinitionLabelFactory {
 			Label label = new Label(parent, SWT.NONE);
 			if (verbose && definition instanceof AttributeDefinition) {
 				label.setText(((AttributeDefinition) definition).getParentType().getDisplayName() +
-						"." + name);
+						"." + name); //$NON-NLS-1$
 			}
 			else {
 				label.setText(name);

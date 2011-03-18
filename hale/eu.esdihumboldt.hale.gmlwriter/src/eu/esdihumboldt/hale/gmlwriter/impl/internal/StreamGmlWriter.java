@@ -67,7 +67,7 @@ public class StreamGmlWriter {
 	/**
 	 * Schema instance namespace (for specifying schema locations)
 	 */
-	private static final String SCHEMA_INSTANCE_NS = "http://www.w3.org/2001/XMLSchema-instance";
+	private static final String SCHEMA_INSTANCE_NS = "http://www.w3.org/2001/XMLSchema-instance"; //$NON-NLS-1$
 	
 	private static final ALogger log = ALoggerFactory.getLogger(StreamGmlWriter.class);
 
@@ -123,10 +123,10 @@ public class StreamGmlWriter {
 		
 		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 		// will set namespaces if these not set explicitly
-		outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces",
+		outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", //$NON-NLS-1$
 				Boolean.valueOf(true));
 		// create XML stream writer with UTF-8 encoding
-		XMLStreamWriter tmpWriter = outputFactory.createXMLStreamWriter(out, "UTF-8");
+		XMLStreamWriter tmpWriter = outputFactory.createXMLStreamWriter(out, "UTF-8"); //$NON-NLS-1$
 
 		String defNamespace = null;
 		
@@ -142,7 +142,7 @@ public class StreamGmlWriter {
 			}
 		}
 		
-		addNamespace(tmpWriter, SCHEMA_INSTANCE_NS, "xsi");
+		addNamespace(tmpWriter, SCHEMA_INSTANCE_NS, "xsi"); //$NON-NLS-1$
 		
 		if (defNamespace == null) {
 			defNamespace = targetSchema.getNamespace();
@@ -158,7 +158,7 @@ public class StreamGmlWriter {
 		String gml = null;
 		if (targetSchema.getPrefixes() != null) {
 			for (String ns : targetSchema.getPrefixes().keySet()) {
-				if (ns.startsWith("http://www.opengis.net/gml")) {
+				if (ns.startsWith("http://www.opengis.net/gml")) { //$NON-NLS-1$
 					gml = ns;
 					break;
 				}
@@ -172,7 +172,7 @@ public class StreamGmlWriter {
 		
 		gmlNs = gml;
 		if (log.isDebugEnabled()) {
-			log.debug("GML namespace is " + gmlNs);
+			log.debug("GML namespace is " + gmlNs); //$NON-NLS-1$
 		}
 		
 		// fill type index with root types
@@ -204,10 +204,10 @@ public class StreamGmlWriter {
 			else {
 				int i = 0;
 				while (ns != null) {
-					ns = writer.getNamespaceContext().getNamespaceURI(prefix + "-" + (++i));
+					ns = writer.getNamespaceContext().getNamespaceURI(prefix + "-" + (++i)); //$NON-NLS-1$
 				}
 				
-				writer.setPrefix(prefix + "-" + i, namespace);
+				writer.setPrefix(prefix + "-" + i, namespace); //$NON-NLS-1$
 			}
 		}
 	}
@@ -230,37 +230,37 @@ public class StreamGmlWriter {
 			}
 		}
 		
-		if (fcElements.isEmpty() && gmlNs.equals("http://www.opengis.net/gml")) {
+		if (fcElements.isEmpty() && gmlNs.equals("http://www.opengis.net/gml")) { //$NON-NLS-1$
 			// no FeatureCollection defined and "old" namespace -> GML 2
 			// include WFS 1.0.0 for the FeatureCollection element
 			try {
-				URI location = getClass().getResource("/schemas/wfs/1.0.0/WFS-basic.xsd").toURI();
+				URI location = getClass().getResource("/schemas/wfs/1.0.0/WFS-basic.xsd").toURI(); //$NON-NLS-1$
 				Schema wfsSchema = new ApacheSchemaProvider().loadSchema(location, null);
 				// replace location for verification
 				wfsSchema = new Schema(wfsSchema.getElements(), wfsSchema.getNamespace(), 
-						new URL("http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd"), 
+						new URL("http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd"),  //$NON-NLS-1$
 						wfsSchema.getPrefixes());
 				// add as additional schema
 				additionalSchemas.add(wfsSchema);
 				// add namespace
-				addNamespace(writer, wfsSchema.getNamespace(), "wfs");
+				addNamespace(writer, wfsSchema.getNamespace(), "wfs"); //$NON-NLS-1$
 				for (SchemaElement el : wfsSchema.getElements().values()) {
 					if (isFeatureCollection(el)) {
 						fcElements.add(el);
 					}
 				}
 			} catch (Exception e) {
-				log.warn("Using WFS schema for the FeatureCollection definition failed", e);
+				log.warn("Using WFS schema for the FeatureCollection definition failed", e); //$NON-NLS-1$
 			}
 		}
 		
 		TypeDefinition fcDefinition = null;
 		Name fcName;
 		if (fcElements.isEmpty()) {
-			log.warn("No element describing a FeatureCollection found");
+			log.warn("No element describing a FeatureCollection found"); //$NON-NLS-1$
 			
 			//TODO include an additional schema with a FC-definition?
-			fcName = new NameImpl(gmlNs, "FeatureCollection");
+			fcName = new NameImpl(gmlNs, "FeatureCollection"); //$NON-NLS-1$
 		}
 		else {
 			// select fc element TODO priorized selection
@@ -268,8 +268,8 @@ public class StreamGmlWriter {
 			fcDefinition = fcElement.getType();
 			fcName = fcElement.getElementName();
 			
-			log.info("Found " + fcElements.size() + " possible FeatureCollection elements" +
-					", using element " + fcElement.getElementName());
+			log.info("Found " + fcElements.size() + " possible FeatureCollection elements" + //$NON-NLS-1$ //$NON-NLS-2$
+					", using element " + fcElement.getElementName()); //$NON-NLS-1$
 		}
 
 		writer.writeStartDocument();
@@ -282,23 +282,23 @@ public class StreamGmlWriter {
 		
 		StringBuffer locations = new StringBuffer();
 		locations.append(targetSchema.getNamespace());
-		locations.append(" ");
+		locations.append(" "); //$NON-NLS-1$
 		locations.append(targetSchema.getLocation().toString());
 		for (Schema schema : additionalSchemas) {
-			locations.append(" ");
+			locations.append(" "); //$NON-NLS-1$
 			locations.append(schema.getNamespace());
-			locations.append(" ");
+			locations.append(" "); //$NON-NLS-1$
 			locations.append(schema.getLocation().toString());
 		}
-		writer.writeAttribute(SCHEMA_INSTANCE_NS, "schemaLocation", locations.toString());
+		writer.writeAttribute(SCHEMA_INSTANCE_NS, "schemaLocation", locations.toString()); //$NON-NLS-1$
 		
 		// boundedBy is needed for GML 2 FeatureCollections
 		if (fcDefinition != null) {
-			AttributeDefinition boundedBy = fcDefinition.getAttribute("boundedBy");
+			AttributeDefinition boundedBy = fcDefinition.getAttribute("boundedBy"); //$NON-NLS-1$
 			if (boundedBy.getMinOccurs() > 0) {
 				writer.writeStartElement(boundedBy.getNamespace(), boundedBy.getName());
-				writer.writeStartElement(gmlNs, "null");
-				writer.writeCharacters("missing");
+				writer.writeStartElement(gmlNs, "null"); //$NON-NLS-1$
+				writer.writeCharacters("missing"); //$NON-NLS-1$
 				writer.writeEndElement();
 				writer.writeEndElement();
 			}
@@ -311,11 +311,11 @@ public class StreamGmlWriter {
 				
 				// write the feature
 				if (fcDefinition != null) {
-					AttributeDefinition memberAtt = fcDefinition.getAttribute("featureMember");
+					AttributeDefinition memberAtt = fcDefinition.getAttribute("featureMember"); //$NON-NLS-1$
 					writer.writeStartElement(memberAtt.getNamespace(), memberAtt.getName());
 				}
 				else {
-					writer.writeStartElement(gmlNs, "featureMember");
+					writer.writeStartElement(gmlNs, "featureMember"); //$NON-NLS-1$
 				}
 	            
 	            TypeDefinition type = types.getType(feature.getType());
@@ -336,9 +336,9 @@ public class StreamGmlWriter {
 
 	private boolean isFeatureCollection(SchemaElement el) {
 		//TODO improve condition?
-		return el.getElementName().getLocalPart().contains("FeatureCollection") &&
+		return el.getElementName().getLocalPart().contains("FeatureCollection") && //$NON-NLS-1$
 			!el.getType().isAbstract() &&
-			el.getType().getAttribute("featureMember") != null;
+			el.getType().getAttribute("featureMember") != null; //$NON-NLS-1$
 	}
 
 	/**
@@ -387,7 +387,7 @@ public class StreamGmlWriter {
 		}
 		else {
 			UUID genID = UUID.randomUUID();
-			writeAttribute(writer, "_" + genID.toString(), idAtt);
+			writeAttribute(writer, "_" + genID.toString(), idAtt); //$NON-NLS-1$
 		}
 	}
 
@@ -398,7 +398,7 @@ public class StreamGmlWriter {
 	 * @return if the type represents an ID
 	 */
 	private static boolean isID(TypeDefinition type) {
-		if (type.getName().equals(new NameImpl("http://www.w3.org/2001/XMLSchema", "ID"))) {
+		if (type.getName().equals(new NameImpl("http://www.w3.org/2001/XMLSchema", "ID"))) { //$NON-NLS-1$ //$NON-NLS-2$
 			return true;
 		}
 		
@@ -425,10 +425,10 @@ public class StreamGmlWriter {
 		FeatureId id = feature.getIdentifier();
 		
 		if (id != null) {
-			String idAttribute = "fid"; //XXX GML 2/3 ?
+			String idAttribute = "fid"; //XXX GML 2/3 ? //$NON-NLS-1$
 			AttributeDefinition idDef = type.getAttribute(idAttribute);
 			if (idDef == null) {
-				idAttribute = "id"; // GML 3.2
+				idAttribute = "id"; // GML 3.2 //$NON-NLS-1$
 				idDef = type.getAttribute(idAttribute);
 			}
 			if (idDef != null && idDef.isAttribute()) {
@@ -517,11 +517,11 @@ public class StreamGmlWriter {
 				writeSimpleTypeAttributes(property, attDef);
 				
 				if (!attDef.isNillable()) {
-					log.warn("Non-nillable element " + attDef.getName() + " is null");
+					log.warn("Non-nillable element " + attDef.getName() + " is null"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				else {
 					// nillable -> we may mark it as nil
-					writer.writeAttribute(SCHEMA_INSTANCE_NS, "nil", "true");
+					writer.writeAttribute(SCHEMA_INSTANCE_NS, "nil", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}
 			// otherwise just skip it
@@ -622,7 +622,7 @@ public class StreamGmlWriter {
 		if (value == null) {
 			if (attDef.getMinOccurs() > 0) {
 				if (!attDef.isNillable()) {
-					log.warn("Non-nillable attribute " + attDef.getName() + " is null");
+					log.warn("Non-nillable attribute " + attDef.getName() + " is null"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				else {
 					//XXX write null attribute?!

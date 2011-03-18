@@ -106,7 +106,7 @@ public class ClassificationMappingFunctionWizard extends
 			}
 		}
 		
-		mainPage = new ClassificationMappingPage("main", "Classification", null);
+		mainPage = new ClassificationMappingPage("main", "Classification", null); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		// add classifications if target is an enumeration
 		if (getTargetItem().getPropertyType() instanceof EnumAttributeType) {

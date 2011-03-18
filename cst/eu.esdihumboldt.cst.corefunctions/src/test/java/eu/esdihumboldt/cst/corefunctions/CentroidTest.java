@@ -26,13 +26,13 @@ import eu.esdihumboldt.goml.rdf.Resource;
 
 public class CentroidTest {
 	
-	private final String sourceLocalname = "FT1";
-	private final String sourceLocalnamePropertyAGeom = "PropertyAGeom";
-	private final String sourceNamespace = "http://esdi-humboldt.eu";
+	private final String sourceLocalname = "FT1"; //$NON-NLS-1$
+	private final String sourceLocalnamePropertyAGeom = "PropertyAGeom"; //$NON-NLS-1$
+	private final String sourceNamespace = "http://esdi-humboldt.eu"; //$NON-NLS-1$
 	
-	private final String targetLocalname = "FT2";
-	private final String targetLocalnamePropertyBGeom = "PropertyBGeom";
-	private final String targetNamespace = "http://xsdi.org";
+	private final String targetLocalname = "FT2"; //$NON-NLS-1$
+	private final String targetLocalnamePropertyBGeom = "PropertyBGeom"; //$NON-NLS-1$
+	private final String targetNamespace = "http://xsdi.org"; //$NON-NLS-1$
 	
 	@Test
 	public void testConfigure() {
@@ -71,7 +71,7 @@ public class CentroidTest {
 		GeometryFactory fac = new GeometryFactory();
 				
 		
-		Feature source = SimpleFeatureBuilder.build(sourcetype, new Object[] {fac.createPolygon(fac.createLinearRing(new Coordinate[] {new Coordinate(0,0), new Coordinate (2,0), new Coordinate (2,2), new Coordinate(0,2), new Coordinate(0,0)} ),null) }, "1");
+		Feature source = SimpleFeatureBuilder.build(sourcetype, new Object[] {fac.createPolygon(fac.createLinearRing(new Coordinate[] {new Coordinate(0,0), new Coordinate (2,0), new Coordinate (2,2), new Coordinate(0,2), new Coordinate(0,0)} ),null) }, "1"); //$NON-NLS-1$
 		Feature target = FeatureBuilder.buildFeature(targettype, source, true);
 		
 		

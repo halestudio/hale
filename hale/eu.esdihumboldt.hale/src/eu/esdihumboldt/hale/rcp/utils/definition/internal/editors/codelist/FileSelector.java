@@ -23,6 +23,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.utils.codelist.CodeList;
 import eu.esdihumboldt.hale.rcp.utils.codelist.internal.XmlCodeList;
 
@@ -49,9 +50,9 @@ public class FileSelector implements CodeListSelector {
 	public FileSelector(Composite parent) {
 		fileComposite = new Composite(parent, SWT.NONE);
 		fileComposite.setLayout(new GridLayout(3, false));
-		fileEditor = new FileFieldEditor("file", "File name or URL", fileComposite);
+		fileEditor = new FileFieldEditor("file", Messages.getString("FileSelector.1"), fileComposite); //$NON-NLS-1$ //$NON-NLS-2$
 		fileEditor.setEmptyStringAllowed(false);
-		fileEditor.setFileExtensions(new String[]{"*.xml"});
+		fileEditor.setFileExtensions(new String[]{"*.xml"}); //$NON-NLS-1$
 	}
 
 	/**
@@ -75,7 +76,7 @@ public class FileSelector implements CodeListSelector {
 			XmlCodeList codeList = new XmlCodeList(location.toURL().openStream(), location);
 			return codeList;
 		} catch (Exception e) {
-			log.error("Error loading code list");
+			log.error("Error loading code list"); //$NON-NLS-1$
 			return null;
 		}
 	}

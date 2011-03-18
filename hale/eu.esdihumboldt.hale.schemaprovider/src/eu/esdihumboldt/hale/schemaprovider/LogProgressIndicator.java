@@ -25,7 +25,7 @@ public class LogProgressIndicator implements ProgressIndicator {
 	
 	private static final Logger log = Logger.getLogger(LogProgressIndicator.class);
 	
-	private String currentTask = "Task";
+	private String currentTask = "Task"; //$NON-NLS-1$
 	
 	private int progress = -1;
 
@@ -47,7 +47,7 @@ public class LogProgressIndicator implements ProgressIndicator {
 
 	private void trigger() {
 		if (progress >= 0) {
-			log.info(currentTask + " " + progress + "%");
+			log.info(currentTask + " " + progress + "%"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		else {
 			log.info(currentTask);

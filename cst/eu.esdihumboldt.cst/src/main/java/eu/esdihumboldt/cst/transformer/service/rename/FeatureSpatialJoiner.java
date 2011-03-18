@@ -12,6 +12,7 @@
 package eu.esdihumboldt.cst.transformer.service.rename;
 
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,6 +32,8 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 
 import com.vividsolutions.jts.geom.Geometry;
+
+import eu.esdihumboldt.cst.transformer.Messages;
 /**
 * @author Ulrich Schaeffler 
 * @partner 14 / TUM
@@ -38,10 +41,10 @@ import com.vividsolutions.jts.geom.Geometry;
 **/
 
 public class FeatureSpatialJoiner {
-	public static final String INTERSECTS ="intersects";
-	public static final String DWITHIN ="dWithin";
-	public static final String BEYOND ="beyond";
-	public static final String NOT ="not";	
+	public static final String INTERSECTS ="intersects"; //$NON-NLS-1$
+	public static final String DWITHIN ="dWithin"; //$NON-NLS-1$
+	public static final String BEYOND ="beyond"; //$NON-NLS-1$
+	public static final String NOT ="not";	 //$NON-NLS-1$
 	
 	private String onAttributeName0 = null;
 	private String onAttributeName1 = null;
@@ -58,51 +61,51 @@ public class FeatureSpatialJoiner {
 		this.joinRule = joinRule;
 		
 		//TODO:Repalca join with enum
-		if (joinRule.startsWith("join")){
-			if (joinRule.contains(":")){
-				String[] jRule = joinRule.split(":");
-				if (jRule[1].startsWith("intersects")) {
+		if (joinRule.startsWith("join")){ //$NON-NLS-1$
+			if (joinRule.contains(":")){ //$NON-NLS-1$
+				String[] jRule = joinRule.split(":"); //$NON-NLS-1$
+				if (jRule[1].startsWith("intersects")) { //$NON-NLS-1$
 					this.joinRule = FeatureSpatialJoiner.INTERSECTS;
 				}
-				else if (jRule[1].startsWith("dWithin")) {
+				else if (jRule[1].startsWith("dWithin")) { //$NON-NLS-1$
 					this.joinRule = FeatureSpatialJoiner.DWITHIN;
 					this.value = Double.valueOf(jRule[1].substring(
-							jRule[1].indexOf("(") + 1, 
-							jRule[1].indexOf(";")));
+							jRule[1].indexOf("(") + 1,  //$NON-NLS-1$
+							jRule[1].indexOf(";"))); //$NON-NLS-1$
 					this.UOM = jRule[1].substring(
-							jRule[1].indexOf(";") + 1, 
-							jRule[1].indexOf(")"));
+							jRule[1].indexOf(";") + 1,  //$NON-NLS-1$
+							jRule[1].indexOf(")")); //$NON-NLS-1$
 				}
-				else if (jRule[1].startsWith("beyond")) {
+				else if (jRule[1].startsWith("beyond")) { //$NON-NLS-1$
 					this.joinRule = FeatureSpatialJoiner.BEYOND;
 					this.value = Double.valueOf(jRule[1].substring(
-							jRule[1].indexOf("(") + 1, 
-							jRule[1].indexOf(";")));
+							jRule[1].indexOf("(") + 1,  //$NON-NLS-1$
+							jRule[1].indexOf(";"))); //$NON-NLS-1$
 					this.UOM = jRule[1].substring(
-							jRule[1].indexOf(";") + 1, 
-							jRule[1].indexOf(")"));
+							jRule[1].indexOf(";") + 1,  //$NON-NLS-1$
+							jRule[1].indexOf(")")); //$NON-NLS-1$
 				}
-				else if (jRule[1].startsWith("not")) {
+				else if (jRule[1].startsWith("not")) { //$NON-NLS-1$
 					this.joinRule = FeatureSpatialJoiner.NOT;
 					this.value = Double.valueOf(jRule[1].substring(
-							jRule[1].indexOf("(") + 1, 
-							jRule[1].indexOf(";")));
+							jRule[1].indexOf("(") + 1,  //$NON-NLS-1$
+							jRule[1].indexOf(";"))); //$NON-NLS-1$
 					this.UOM = jRule[1].substring(
-							jRule[1].indexOf(";") + 1, 
-							jRule[1].indexOf(")"));
+							jRule[1].indexOf(";") + 1,  //$NON-NLS-1$
+							jRule[1].indexOf(")")); //$NON-NLS-1$
 				}
 				else{
-					throw new RuntimeException (jRule[1] + " is not a valid join rule.");
+					throw new RuntimeException (jRule[1] + " is not a valid join rule."); //$NON-NLS-1$
 				}
 			}
 			else{
-				this.joinRule = "alpha";
+				this.joinRule = "alpha"; //$NON-NLS-1$
 			}
 		}
 
 		else {
-			throw new RuntimeException("You can only create a " +
-				"Feature Joiner from a valid join rule.");
+			throw new RuntimeException("You can only create a " + //$NON-NLS-1$
+				"Feature Joiner from a valid join rule."); //$NON-NLS-1$
 		}
 
 	}
@@ -113,7 +116,7 @@ public class FeatureSpatialJoiner {
 			return spatialJoin (sources);
 		}
 		if (!spatial) return alphaJoin (sources);
-		else throw new RuntimeException("Error specifying spatial or non spatial join");
+		else throw new RuntimeException("Error specifying spatial or non spatial join"); //$NON-NLS-1$
 	}
 	
 	private List<Feature> alphaJoin (List<Collection<Feature>> sources){
@@ -138,7 +141,7 @@ public class FeatureSpatialJoiner {
         //Build synthetic FT from source0 and source 1
         SimpleFeatureType joinedFt = null;
 		SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
-		ftbuilder.setName("Joined_" + typeName0+ "_"+typeName1);
+		ftbuilder.setName(MessageFormat.format(Messages.FeatureSpatialJoiner_2, typeName0, typeName1));
 		//TODO: Which namespace for synthetic FT?
 		ftbuilder.setNamespaceURI(schema0.getName().getNamespaceURI());
 		for (PropertyDescriptor p :schema0.getDescriptors()){
@@ -211,7 +214,7 @@ public class FeatureSpatialJoiner {
         //Build synthetic FT from source0 and source 1
         SimpleFeatureType joinedFt = null;
 		SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
-		ftbuilder.setName("Joined_" + typeName0+ "_"+typeName1);
+		ftbuilder.setName(MessageFormat.format(Messages.FeatureSpatialJoiner_3, typeName0, typeName1));
 		//TODO: Which namespace for synthetic FT?
 		ftbuilder.setNamespaceURI(schema0.getName().getNamespaceURI());
 		for (PropertyDescriptor p :schema0.getDescriptors()){
@@ -232,8 +235,8 @@ public class FeatureSpatialJoiner {
         		Feature feature = (Feature) iterator.next();
         		Filter	innerFilter = ff.equals( ff.property(this.onAttributeName1), ff.literal( feature.getProperty(this.onAttributeName0).getValue() ));
         		if (this.joinRule.equals(FeatureSpatialJoiner.INTERSECTS))innerFilter= ff.intersects( ff.property(this.onAttributeName1), ff.literal( (Geometry)feature.getProperty(this.onAttributeName0).getValue() ));
-    			else if (this.joinRule.equals(FeatureSpatialJoiner.DWITHIN))innerFilter= ff.dwithin(ff.property(this.onAttributeName1), ff.literal( (Geometry)feature.getProperty(this.onAttributeName0).getValue() ),1.0,"km");
-    			else if (this.joinRule.equals(FeatureSpatialJoiner.BEYOND))innerFilter=  ff.beyond(ff.property(this.onAttributeName1), ff.literal( (Geometry)feature.getProperty(this.onAttributeName0).getValue() ),1.0,"km");
+    			else if (this.joinRule.equals(FeatureSpatialJoiner.DWITHIN))innerFilter= ff.dwithin(ff.property(this.onAttributeName1), ff.literal( (Geometry)feature.getProperty(this.onAttributeName0).getValue() ),1.0,""); //$NON-NLS-1$
+    			else if (this.joinRule.equals(FeatureSpatialJoiner.BEYOND))innerFilter=  ff.beyond(ff.property(this.onAttributeName1), ff.literal( (Geometry)feature.getProperty(this.onAttributeName0).getValue() ),1.0,""); //$NON-NLS-1$
     			else if (this.joinRule.equals(FeatureSpatialJoiner.NOT))innerFilter=  ff.not( ff.disjoint(ff.property(this.onAttributeName1), ff.literal( (Geometry)feature.getProperty(this.onAttributeName0).getValue() )) );
         		FeatureCollection join = sourceFeatures1.subCollection(innerFilter);
         		if (join.size()>0){

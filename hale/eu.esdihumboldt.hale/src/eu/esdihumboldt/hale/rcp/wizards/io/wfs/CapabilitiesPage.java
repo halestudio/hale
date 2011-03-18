@@ -19,6 +19,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * Page for specifying the capabilities URL
  *
@@ -39,10 +41,10 @@ public class CapabilitiesPage extends AbstractWfsPage<WfsConfiguration> {
 	 * @param configuration the WFS configuration
 	 */
 	public CapabilitiesPage(WfsConfiguration configuration) {
-		super(configuration, "Capabilities");
+		super(configuration, Messages.getString("CapabilitiesPage.0")); //$NON-NLS-1$
 		
-		setTitle("Import from WFS");
-		setMessage("Please specify the GetCapabilities URL of the WFS");
+		setTitle(Messages.getString("CapabilitiesPage.1")); //$NON-NLS-1$
+		setMessage(Messages.getString("CapabilitiesPage.2")); //$NON-NLS-1$
 	}
 
 	/**
@@ -53,7 +55,7 @@ public class CapabilitiesPage extends AbstractWfsPage<WfsConfiguration> {
 		Composite page = new Composite(parent, SWT.NONE);
 		page.setLayout(new GridLayout(2, false));
 		
-		location = new WfsLocationFieldEditor("location", "GetCapabilities URL", page);
+		location = new WfsLocationFieldEditor(Messages.getString("CapabilitiesPage.3"), Messages.getString("CapabilitiesPage.4"), page); //$NON-NLS-1$ //$NON-NLS-2$
 		location.setPage(this);
 		location.setPropertyChangeListener(new IPropertyChangeListener() {
 			

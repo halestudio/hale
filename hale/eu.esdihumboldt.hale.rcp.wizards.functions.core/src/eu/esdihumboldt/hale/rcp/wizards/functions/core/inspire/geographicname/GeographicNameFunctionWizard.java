@@ -30,6 +30,7 @@ import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.geographicname.GeographicNamePage.SpellingType;
 
 /**
@@ -162,9 +163,9 @@ public class GeographicNameFunctionWizard extends
 			}
 		}
 
-		this.page = new GeographicNamePage("main",
-				"Configure Geographic Name Function", null);
-		super.setWindowTitle("INSPIRE Geographic Name Function Wizard");
+		this.page = new GeographicNamePage("main", //$NON-NLS-1$
+				Messages.GeographicNameFunctionWizard_1, null);
+		super.setWindowTitle(Messages.GeographicNameFunctionWizard_2);
 		this.page.setGender(gender);
 		this.page.setIpa(ipa);
 		this.page.setLanguage(language);
@@ -252,7 +253,7 @@ public class GeographicNameFunctionWizard extends
 			 for (SpellingType spelling : spellings){
 				 if (property.getAbout().getAbout().equals(spelling.getProperty().getAbout().getAbout())) {
 					 Transformation transformation = new Transformation();
-					 transformation.setService((new Resource("some spelling functionSpellingFunction")));
+					 transformation.setService((new Resource(Messages.GeographicNameFunctionWizard_3)));
 					 //add spelling parameters to the transformation 
 					 List<IParameter> params = new ArrayList<IParameter>();
 					 IParameter param = new Parameter(GeographicalNameFunction.PROPERTY_TEXT, spelling.getProperty().getLocalname());

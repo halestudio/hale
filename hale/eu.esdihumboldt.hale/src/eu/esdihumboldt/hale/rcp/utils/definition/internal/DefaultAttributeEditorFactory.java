@@ -125,7 +125,7 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 		while (type != null) {
 			Name typeName = type.getName();
 			//TODO improve check for code type
-			if (typeName.getLocalPart().equals("CodeType") && typeName.getNamespaceURI().toLowerCase().contains("gml")) {
+			if (typeName.getLocalPart().equals("CodeType") && typeName.getNamespaceURI().toLowerCase().contains("gml")) { //$NON-NLS-1$ //$NON-NLS-2$
 				return true;
 			}
 			

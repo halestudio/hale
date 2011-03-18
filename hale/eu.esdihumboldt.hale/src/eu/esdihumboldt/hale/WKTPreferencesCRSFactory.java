@@ -52,12 +52,12 @@ public class WKTPreferencesCRSFactory extends AbstractFactory implements CRSAuth
     /**
      * The authority
      */
-	public static final String AUTHORITY = "EPSG";
+	public static final String AUTHORITY = "EPSG"; //$NON-NLS-1$
     
 	/**
 	 * The authority prefix
 	 */
-    public static final String AUTHORITY_PREFIX = "EPSG:";
+    public static final String AUTHORITY_PREFIX = "EPSG:"; //$NON-NLS-1$
     
     /**
      * The one and only factory instance
@@ -142,7 +142,7 @@ public class WKTPreferencesCRSFactory extends AbstractFactory implements CRSAuth
     	try {
 			node.sync();
 		} catch (BackingStoreException e) {
-			_log.warn("Error saving preferences", e);
+			_log.warn("Error saving preferences", e); //$NON-NLS-1$
 		}
 		
 		//XXX maybe have to reinstall it
@@ -164,7 +164,7 @@ public class WKTPreferencesCRSFactory extends AbstractFactory implements CRSAuth
     	try {
 			node.sync();
 		} catch (BackingStoreException e) {
-			_log.warn("Error saving preferences", e);
+			_log.warn("Error saving preferences", e); //$NON-NLS-1$
 		}
 		
 		//XXX maybe have to reinstall it
@@ -199,7 +199,7 @@ public class WKTPreferencesCRSFactory extends AbstractFactory implements CRSAuth
 			}
 			return result;
 		} catch (BackingStoreException e) {
-			_log.warn("Error accessing preferences", e);
+			_log.warn("Error accessing preferences", e); //$NON-NLS-1$
 			return new ArrayList<String>();
 		}
     }
@@ -214,7 +214,7 @@ public class WKTPreferencesCRSFactory extends AbstractFactory implements CRSAuth
             return null;
         }
         if(!code.startsWith(AUTHORITY_PREFIX)){
-            throw new NoSuchAuthorityCodeException( "This factory only understands EPSG codes", AUTHORITY, code);
+            throw new NoSuchAuthorityCodeException( "This factory only understands EPSG codes", AUTHORITY, code); //$NON-NLS-1$
         }
         final String epsgNumber = code.substring(code.indexOf(':') + 1).trim();
         
@@ -229,18 +229,18 @@ public class WKTPreferencesCRSFactory extends AbstractFactory implements CRSAuth
         try {
 			node.sync();
 		} catch (BackingStoreException e) {
-			_log.warn("Error synchronizing preferences", e);
+			_log.warn("Error synchronizing preferences", e); //$NON-NLS-1$
 		}
         
         String wkt = node.get(epsgNumber, null);
         if(wkt == null) {
-            throw new NoSuchAuthorityCodeException( "Unknown EPSG code", AUTHORITY, code);
+            throw new NoSuchAuthorityCodeException( "Unknown EPSG code", AUTHORITY, code); //$NON-NLS-1$
         }
         if(wkt.indexOf(epsgNumber) == -1){
         	wkt = wkt.trim();
         	wkt = wkt.substring(0, wkt.length()-1 );
-        	wkt += ",AUTHORITY[\"EPSG\",\""+epsgNumber+"\"]]";
-        	_log.warn("EPSG:"+epsgNumber+" lacks a proper identifying authority in its Well-Known Text. It is being added programmatically.");
+        	wkt += ",AUTHORITY[\"EPSG\",\""+epsgNumber+"\"]]"; //$NON-NLS-1$ //$NON-NLS-2$
+        	_log.warn("EPSG:"+epsgNumber+" lacks a proper identifying authority in its Well-Known Text. It is being added programmatically."); //$NON-NLS-1$ //$NON-NLS-2$
         }
         try {
             CoordinateReferenceSystem crs = crsFactory.createFromWKT(wkt);
@@ -298,20 +298,20 @@ public class WKTPreferencesCRSFactory extends AbstractFactory implements CRSAuth
 	        } else if (clazz.getName().equalsIgnoreCase(GeographicCRS.class.getName())) {
 	            for(String number : node.keys()) {
 	                String wkt = node.get(number, null);
-	                if (wkt != null && wkt.startsWith("GEOGCS")) {
+	                if (wkt != null && wkt.startsWith("GEOGCS")) { //$NON-NLS-1$
 	                	all.add(AUTHORITY_PREFIX + number);   
 	                }
 	            }  
 	        } else if (clazz.getName().equalsIgnoreCase(ProjectedCRS.class.getName())) {
 	        	for(String number : node.keys()) {
 	                String wkt = node.get(number, null);
-	                if (wkt != null && wkt.startsWith("PROJCS")) {
+	                if (wkt != null && wkt.startsWith("PROJCS")) { //$NON-NLS-1$
 	                	all.add(AUTHORITY_PREFIX + number);   
 	                }
 	            }  
 	        }
     	} catch (BackingStoreException e) {
-			throw new RuntimeException("Could not access preferences", e);
+			throw new RuntimeException("Could not access preferences", e); //$NON-NLS-1$
 		}
         
         return all;
@@ -331,13 +331,13 @@ public class WKTPreferencesCRSFactory extends AbstractFactory implements CRSAuth
         if (code == null) {
             return null;
         }
-        if (code.startsWith("EPSG:")) {
+        if (code.startsWith("EPSG:")) { //$NON-NLS-1$
             code = code.substring(5);
         }
         code = code.trim();
         String wkt = node.get(code, null);
         if( wkt == null ) {
-            throw new FactoryException("Unknown EPSG code: '"+code+"'" );
+            throw new FactoryException("Unknown EPSG code: '"+code+"'" ); //$NON-NLS-1$ //$NON-NLS-2$
         }
         wkt = wkt.trim();
         int start = wkt.indexOf('"');
@@ -349,48 +349,48 @@ public class WKTPreferencesCRSFactory extends AbstractFactory implements CRSAuth
      * @see CRSAuthorityFactory#createCompoundCRS(String)
      */
     public org.opengis.referencing.crs.CompoundCRS createCompoundCRS(String str) throws FactoryException {
-        throw new FactoryException("Not implemented");
+        throw new FactoryException("Not implemented"); //$NON-NLS-1$
     }
         
     /**
      * @see CRSAuthorityFactory#createDerivedCRS(String)
      */
     public org.opengis.referencing.crs.DerivedCRS createDerivedCRS(String str) throws FactoryException {
-        throw new FactoryException("Not implemented");
+        throw new FactoryException("Not implemented"); //$NON-NLS-1$
     }
     
     /**
      * @see CRSAuthorityFactory#createEngineeringCRS(String)
      */
     public org.opengis.referencing.crs.EngineeringCRS createEngineeringCRS(String str) throws FactoryException {
-        throw new FactoryException("Not implemented");
+        throw new FactoryException("Not implemented"); //$NON-NLS-1$
     }
     
     /**
      * @see CRSAuthorityFactory#createGeocentricCRS(String)
      */
     public org.opengis.referencing.crs.GeocentricCRS createGeocentricCRS(String str) throws FactoryException {
-        throw new FactoryException("Not implemented");
+        throw new FactoryException("Not implemented"); //$NON-NLS-1$
     }
     
     /**
      * @see CRSAuthorityFactory#createImageCRS(String)
      */
     public org.opengis.referencing.crs.ImageCRS createImageCRS(String str) throws FactoryException {
-        throw new FactoryException("Not implemented");
+        throw new FactoryException("Not implemented"); //$NON-NLS-1$
     }
     
     /**
      * @see CRSAuthorityFactory#createTemporalCRS(String)
      */
     public org.opengis.referencing.crs.TemporalCRS createTemporalCRS(String str) throws FactoryException {
-        throw new FactoryException("Not implemented");
+        throw new FactoryException("Not implemented"); //$NON-NLS-1$
     }
     
     /**
      * @see CRSAuthorityFactory#createVerticalCRS(String)
      */
     public org.opengis.referencing.crs.VerticalCRS createVerticalCRS(String str) throws FactoryException {
-        throw new FactoryException("Not implemented");
+        throw new FactoryException("Not implemented"); //$NON-NLS-1$
     }
 }

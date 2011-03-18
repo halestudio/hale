@@ -43,51 +43,51 @@ public class ConcatenationOfAttributesFunctionTest {
 	/**
 	 * The name of the parameter for the separator.
 	 */
-	public static final String SEPERATOR = "seperator";
+	public static final String SEPERATOR = "seperator"; //$NON-NLS-1$
 	
 	/**
 	 * The name of the parameter for the concatenation.
 	 */
-	public static final String CONCATENATION = "concatenation";
+	public static final String CONCATENATION = "concatenation"; //$NON-NLS-1$
 
 	/**
 	 * 
 	 */
-	private final String sourceLocalname = "waterVA/Watercourses_VA_Type";
+	private final String sourceLocalname = "waterVA/Watercourses_VA_Type"; //$NON-NLS-1$
 	/**
 	 * 
 	 */
-	private final String sourceLocalnamePropertyDouble = "LAENGE_ARC";
+	private final String sourceLocalnamePropertyDouble = "LAENGE_ARC"; //$NON-NLS-1$
 	/**
 	 * 
 	 */
-	private final String sourceNamespace = "http://esdi-humboldt.org";
+	private final String sourceNamespace = "http://esdi-humboldt.org"; //$NON-NLS-1$
 	
 	/**
 	 * 
 	 */
-	private final String source2Localname = "waterVA/Watercourses_VA_Type";
+	private final String source2Localname = "waterVA/Watercourses_VA_Type"; //$NON-NLS-1$
 	/**
 	 * 
 	 */
-	private final String source2LocalnamePropertyDouble = "LAENGE_ROU";
+	private final String source2LocalnamePropertyDouble = "LAENGE_ROU"; //$NON-NLS-1$
 	/**
 	 * 
 	 */
-	private final String source2Namespace = "http://esdi-humboldt.org";
+	private final String source2Namespace = "http://esdi-humboldt.org"; //$NON-NLS-1$
 	
 	/**
 	 * 
 	 */
-	private final String targetLocalname = "FT3";
+	private final String targetLocalname = "FT3"; //$NON-NLS-1$
 	/**
 	 * 
 	 */
-	private final String targetLocalnamePropertyString = "PropertyString";
+	private final String targetLocalnamePropertyString = "PropertyString"; //$NON-NLS-1$
 	/**
 	 * 
 	 */
-	private final String targetNamespace = "http://esdi-humboldt.eu";
+	private final String targetNamespace = "http://esdi-humboldt.eu"; //$NON-NLS-1$
 	
 	/**
 	 * 
@@ -144,11 +144,11 @@ public class ConcatenationOfAttributesFunctionTest {
 			Transformation t = new Transformation();
 			t.setService(new Resource(ConcatenationOfAttributesFunction.class.getName()));
 			List<IParameter> parameters = new ArrayList<IParameter>();
-			parameters.add(new Parameter("seperator", ";"));
-			parameters.add(new Parameter("concatenation", "LAENGE_ROU--!-split-!--laskjdflk--!-split-!--LAENGE_ARC--!-split-!--aölskdjf"));
+			parameters.add(new Parameter("seperator", ";")); //$NON-NLS-1$ //$NON-NLS-2$
+			parameters.add(new Parameter("concatenation", "LAENGE_ROU--!-split-!--laskjdflk--!-split-!--LAENGE_ARC--!-split-!--aölskdjf")); //$NON-NLS-1$ //$NON-NLS-2$
 			t.setParameters(parameters);
 			
-			ComposedProperty composedProperty = new ComposedProperty(new About(""));
+			ComposedProperty composedProperty = new ComposedProperty(new About("")); //$NON-NLS-1$
 			composedProperty.setTransformation(t);
 			
 			Property entity1 = new Property(new About(this.sourceNamespace, this.sourceLocalname, this.sourceLocalnamePropertyDouble));
@@ -170,28 +170,28 @@ public class ConcatenationOfAttributesFunctionTest {
 	
 			switch(this.testInt){
 			case 1:
-				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Double(x),new Double(y)}, "1");
-				target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2");
+				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Double(x),new Double(y)}, "1"); //$NON-NLS-1$
+				target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2"); //$NON-NLS-1$
 				break;
 			case 2:
-				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Integer(x3),new Integer(y3)}, "1");
-				target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2");
+				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Integer(x3),new Integer(y3)}, "1"); //$NON-NLS-1$
+				target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2"); //$NON-NLS-1$
 				break;
 			case 3:
-				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Float(x2),new Float(y2)}, "1");
-				target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2");
+				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Float(x2),new Float(y2)}, "1"); //$NON-NLS-1$
+				target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2"); //$NON-NLS-1$
 				break;
 			case 4:
-				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Double(x),new Integer(y3)}, "1");
-				target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2");
+				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Double(x),new Integer(y3)}, "1"); //$NON-NLS-1$
+				target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2"); //$NON-NLS-1$
 				break;
 			case 5:
-				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Double(x),new Float(y2)}, "1");
-				target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2");
+				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Double(x),new Float(y2)}, "1"); //$NON-NLS-1$
+				target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2"); //$NON-NLS-1$
 				break;
 			case 6:
-				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Integer(x3),new Float(y2)}, "1");
-				target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2");
+				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Integer(x3),new Float(y2)}, "1"); //$NON-NLS-1$
+				target = (Feature) SimpleFeatureBuilder.build(targettype, new Object[] {}, "2"); //$NON-NLS-1$
 				break;
 			}
 			
@@ -207,8 +207,8 @@ public class ConcatenationOfAttributesFunctionTest {
 			
 			String transformedConcatenation = target.getProperty(this.targetLocalnamePropertyString).getValue().toString();
 			
-			String[] concat = oldConcatenation.split("--!-split-!--");
-			String finalConcatString = "";
+			String[] concat = oldConcatenation.split("--!-split-!--"); //$NON-NLS-1$
+			String finalConcatString = ""; //$NON-NLS-1$
 			for (String thisElement : concat) {
 				org.opengis.feature.Property p = source.getProperty(thisElement);
 				if (finalConcatString.length() > 0) {
@@ -220,7 +220,7 @@ public class ConcatenationOfAttributesFunctionTest {
 						finalConcatString += p.getValue().toString();
 					}
 					else {
-						finalConcatString += "";
+						finalConcatString += ""; //$NON-NLS-1$
 					}
 				}
 				else {

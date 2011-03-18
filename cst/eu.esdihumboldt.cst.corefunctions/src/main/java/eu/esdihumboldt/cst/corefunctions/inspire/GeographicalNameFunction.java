@@ -58,18 +58,18 @@ import eu.esdihumboldt.tools.FeatureInspector;
  */
 public class GeographicalNameFunction extends AbstractCstFunction {
 
-	public static final String PROPERTY_TEXT = "text";
-	public static final String PROPERTY_SCRIPT = "script";
-	public static final String PROPERTY_TRANSLITERATION = "transliterationScheme";
-	public static final String PROPERTY_NAMESTATUS = "nameStatus";
-	public static final String PROPERTY_LANGUAGE = "language";
-	public static final String PROPERTY_NATIVENESS = "nativeness";
-	public static final String PROPERTY_SOURCEOFNAME = "sourceOfName";
-	public static final String PROPERTY_PRONUNCIATIONIPA = "pronunciationIPA";
-	public static final String PROPERTY_PRONUNCIATIONSOUNDLINK = "pronunciationSoundLink";
-	public static final String PROPERTY_GRAMMA_GENDER = "grammaticalGender";
-	public static final String PROPERTY_GRAMMA_NUMBER = "grammaticalNumber";
-	public static final String INSPIRE_IDENTIFIER_PREFIX = "urn:x-inspire:object:id";
+	public static final String PROPERTY_TEXT = "text"; //$NON-NLS-1$
+	public static final String PROPERTY_SCRIPT = "script"; //$NON-NLS-1$
+	public static final String PROPERTY_TRANSLITERATION = "transliterationScheme"; //$NON-NLS-1$
+	public static final String PROPERTY_NAMESTATUS = "nameStatus"; //$NON-NLS-1$
+	public static final String PROPERTY_LANGUAGE = "language"; //$NON-NLS-1$
+	public static final String PROPERTY_NATIVENESS = "nativeness"; //$NON-NLS-1$
+	public static final String PROPERTY_SOURCEOFNAME = "sourceOfName"; //$NON-NLS-1$
+	public static final String PROPERTY_PRONUNCIATIONIPA = "pronunciationIPA"; //$NON-NLS-1$
+	public static final String PROPERTY_PRONUNCIATIONSOUNDLINK = "pronunciationSoundLink"; //$NON-NLS-1$
+	public static final String PROPERTY_GRAMMA_GENDER = "grammaticalGender"; //$NON-NLS-1$
+	public static final String PROPERTY_GRAMMA_NUMBER = "grammaticalNumber"; //$NON-NLS-1$
+	public static final String INSPIRE_IDENTIFIER_PREFIX = "urn:x-inspire:object:id"; //$NON-NLS-1$
 
 	private ArrayList<ArrayList<Property>> sourceattributes = new ArrayList<ArrayList<Property>>();
 	private Property targetProperty = null;
@@ -136,10 +136,10 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 				} else if (ip.getName().equals(GeographicalNameFunction.PROPERTY_PRONUNCIATIONSOUNDLINK)) {
 					this._pronunciationSoundLink.add(cellcount, URI.create(ip.getValue()));
 				} else if (ip.getName().equals(GeographicalNameFunction.PROPERTY_GRAMMA_GENDER)) {
-					if(ip.getValue()!=null && !ip.getValue().equals(""))
+					if(ip.getValue()!=null && !ip.getValue().equals("")) //$NON-NLS-1$
 						this._grammaticalGender.add(cellcount,GrammaticalGenderValue.valueOf(ip.getValue()));
 				} else if (ip.getName().equals(GeographicalNameFunction.PROPERTY_GRAMMA_NUMBER)) {
-					if(ip.getValue()!=null && !ip.getValue().equals(""))
+					if(ip.getValue()!=null && !ip.getValue().equals("")) //$NON-NLS-1$
 						this._grammaticalNumber.add(cellcount,GrammaticalNumberValue.valueOf(ip.getValue()));
 				}
 			}
@@ -152,7 +152,7 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 			if (this._nativeness.size() < cellcount + 1)
 				this._nativeness.add(cellcount, null);
 			if (this._sourceOfName.size() < cellcount + 1)
-				this._sourceOfName.add(cellcount, "");
+				this._sourceOfName.add(cellcount, ""); //$NON-NLS-1$
 			if (this._pronunciationIPA.size() < cellcount + 1)
 				this._pronunciationIPA.add(cellcount, null);
 			if (this._pronunciationSoundLink.size() < cellcount + 1)
@@ -166,10 +166,10 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 		this.targetProperty = (Property) cell.getEntity2();
 
 		if (this.sourceattributes.size() == 0) {
-			throw new RuntimeException("The Source property must be defined.");
+			throw new RuntimeException("The Source property must be defined."); //$NON-NLS-1$
 		}
 		if (this.targetProperty == null) {
-			throw new RuntimeException("The Target property must be defined.");
+			throw new RuntimeException("The Target property must be defined."); //$NON-NLS-1$
 		}
 		return true;
 	}
@@ -199,15 +199,15 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 		
 		
 		SimpleFeatureType geoNameType = (SimpleFeatureType)
-						((SimpleFeatureType) pt).getDescriptor("GeographicalName").getType();
+						((SimpleFeatureType) pt).getDescriptor("GeographicalName").getType(); //$NON-NLS-1$
 		SimpleFeatureType spellingofnamepropertytype = (SimpleFeatureType) 
-						geoNameType.getDescriptor("spelling").getType();
+						geoNameType.getDescriptor("spelling").getType(); //$NON-NLS-1$
 		SimpleFeatureType spellingofnametype = (SimpleFeatureType) 
-						(spellingofnamepropertytype.getDescriptor("SpellingOfName")).getType();
+						(spellingofnamepropertytype.getDescriptor("SpellingOfName")).getType(); //$NON-NLS-1$
 		SimpleFeatureType pronunciationofnametype = (SimpleFeatureType) ((SimpleFeatureType) 
-						geoNameType.getDescriptor("pronunciation").getType()).getDescriptor("PronunciationOfName").getType();
+						geoNameType.getDescriptor("pronunciation").getType()).getDescriptor("PronunciationOfName").getType(); //$NON-NLS-1$ //$NON-NLS-2$
 		SimpleFeatureType pronounciationtype = (SimpleFeatureType) 
-						geoNameType.getDescriptor("pronunciation").getType();
+						geoNameType.getDescriptor("pronunciation").getType(); //$NON-NLS-1$
 
 		Collection<FeatureImpl> geographicalnames = new HashSet<FeatureImpl>();
 
@@ -220,10 +220,10 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 						.build(spellingofnametype, new Object[] {},
 								"SpellingOfName");*/
 				FeatureImpl spellingofname = (FeatureImpl)FeatureBuilder.buildFeature(spellingofnametype, null,false);
-				spellingofname.getProperty("script").setValue(_script.get(i).get(j));
-				spellingofname.getProperty("text").setValue(sourcepropertyvalue
+				spellingofname.getProperty("script").setValue(_script.get(i).get(j)); //$NON-NLS-1$
+				spellingofname.getProperty("text").setValue(sourcepropertyvalue //$NON-NLS-1$
 						.toString());
-				spellingofname.getProperty("transliterationScheme").setValue(_transliteration.get(i).get(j));
+				spellingofname.getProperty("transliterationScheme").setValue(_transliteration.get(i).get(j)); //$NON-NLS-1$
 				
 				/*spellingofname.setAttribute("script", _script.get(i).get(j));
 				spellingofname.setAttribute("text", sourcepropertyvalue
@@ -232,7 +232,7 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 						_transliteration.get(i).get(j));*/
 
 				FeatureImpl spellingofnameproperty = (FeatureImpl)FeatureBuilder.buildFeature(spellingofnamepropertytype, null,false);
-				spellingofnameproperty.getProperty("SpellingOfName").setValue(Collections.singleton(spellingofname));
+				spellingofnameproperty.getProperty("SpellingOfName").setValue(Collections.singleton(spellingofname)); //$NON-NLS-1$
 				/*SimpleFeatureImpl spellingofnameproperty = (SimpleFeatureImpl) SimpleFeatureBuilder
 						.build(spellingofnamepropertytype, new Object[] {},
 								"SpellingOfNameProperty");
@@ -243,9 +243,9 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 			}
 			
 			FeatureImpl geographicalname = (FeatureImpl)FeatureBuilder.buildFeature(geoNameType, null,false);
-			geographicalname.getProperty("spelling").setValue(spellingofnamepropertiescollection);
-			geographicalname.getProperty("language").setValue(_language.get(i));
-			geographicalname.getProperty("sourceOfName").setValue(_sourceOfName.get(i));
+			geographicalname.getProperty("spelling").setValue(spellingofnamepropertiescollection); //$NON-NLS-1$
+			geographicalname.getProperty("language").setValue(_language.get(i)); //$NON-NLS-1$
+			geographicalname.getProperty("sourceOfName").setValue(_sourceOfName.get(i)); //$NON-NLS-1$
 			/*SimpleFeatureImpl geographicalname = (SimpleFeatureImpl) SimpleFeatureBuilder
 					.build((SimpleFeatureType) geoNameType, new Object[] {},
 							"GeographicalName");
@@ -255,25 +255,25 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 			geographicalname.setAttribute("sourceOfName", _sourceOfName.get(i));*/
 			
 			if (_nativeness.get(i) != null)
-				geographicalname.getProperty("nativeness").setValue(
+				geographicalname.getProperty("nativeness").setValue( //$NON-NLS-1$
 						_nativeness.get(i).toString());
 			else
-				geographicalname.getProperty("nativeness").setValue(null);
+				geographicalname.getProperty("nativeness").setValue(null); //$NON-NLS-1$
 			if (_nameStatus.get(i) != null)
-				geographicalname.getProperty("nameStatus").setValue(
+				geographicalname.getProperty("nameStatus").setValue( //$NON-NLS-1$
 						_nameStatus.get(i).toString());
 			else
-				geographicalname.getProperty("nameStatus").setValue(null);
+				geographicalname.getProperty("nameStatus").setValue(null); //$NON-NLS-1$
 			if (_grammaticalGender.get(i) != null)
-				geographicalname.getProperty("grammaticalGender").setValue(
+				geographicalname.getProperty("grammaticalGender").setValue( //$NON-NLS-1$
 						_grammaticalGender.get(i).toString());
 			else
-				geographicalname.getProperty("grammaticalGender").setValue(null);
+				geographicalname.getProperty("grammaticalGender").setValue(null); //$NON-NLS-1$
 			if (_grammaticalNumber.get(i) != null)
-				geographicalname.getProperty("grammaticalNumber").setValue(
+				geographicalname.getProperty("grammaticalNumber").setValue( //$NON-NLS-1$
 						_grammaticalNumber.get(i).toString());
 			else
-				geographicalname.getProperty("grammaticalNumber").setValue(null);
+				geographicalname.getProperty("grammaticalNumber").setValue(null); //$NON-NLS-1$
 
 			
 			/*if (_nativeness.get(i) != null)
@@ -298,13 +298,13 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 				geographicalname.setAttribute("nameStatus", null);*/
 			
 			FeatureImpl pronunciationOfName = (FeatureImpl) FeatureBuilder.buildFeature(pronunciationofnametype, null,false);
-			pronunciationOfName.getProperty("pronunciationIPA").setValue(_pronunciationIPA.get(i));
-			pronunciationOfName.getProperty("pronunciationSoundLink").setValue(_pronunciationSoundLink.get(i));
+			pronunciationOfName.getProperty("pronunciationIPA").setValue(_pronunciationIPA.get(i)); //$NON-NLS-1$
+			pronunciationOfName.getProperty("pronunciationSoundLink").setValue(_pronunciationSoundLink.get(i)); //$NON-NLS-1$
 			
 			FeatureImpl pronunciation = (FeatureImpl) FeatureBuilder.buildFeature(pronounciationtype, null,false);
-			pronunciation.getProperty("PronunciationOfName").setValue(Collections.singleton(pronunciationOfName));
+			pronunciation.getProperty("PronunciationOfName").setValue(Collections.singleton(pronunciationOfName)); //$NON-NLS-1$
 			
-			geographicalname.getProperty("pronunciation").setValue(Collections.singleton(pronunciation));
+			geographicalname.getProperty("pronunciation").setValue(Collections.singleton(pronunciation)); //$NON-NLS-1$
 			
 			/*SimpleFeatureImpl pronunciation = (SimpleFeatureImpl) SimpleFeatureBuilder
 					.build(pronunciationofnametype, new Object[] {},
@@ -318,7 +318,7 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 			//geographicalnames.add(geographicalname);
 			
 			FeatureImpl parent = (FeatureImpl)FeatureBuilder.buildFeature((FeatureType) pt, null,false);
-			parent.getProperty("GeographicalName").setValue(Collections.singleton(geographicalname));
+			parent.getProperty("GeographicalName").setValue(Collections.singleton(geographicalname)); //$NON-NLS-1$
 			
 			geographicalnames.add(parent);
 		}
@@ -334,7 +334,7 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
-		ComposedProperty entity1 = new ComposedProperty(new About(""));
+		ComposedProperty entity1 = new ComposedProperty(new About("")); //$NON-NLS-1$
 
 		// ************* SETTING OF TYPE CONDITION FOR ENTITY1 ****************
 		List<String> entityTypes = new ArrayList<String>();
@@ -342,7 +342,7 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 		entityTypes.add(String.class.getName());
 		entity1.setTypeCondition(entityTypes);
 
-		ComposedProperty cpsp1 = new ComposedProperty(new About(""));
+		ComposedProperty cpsp1 = new ComposedProperty(new About("")); //$NON-NLS-1$
 
 		Transformation transform = new Transformation();
 		cpsp1.setTransformation(transform);
@@ -351,7 +351,7 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 		entity1.getCollection().add(cpsp1);
 
 		// ************* SETTING OF TYPE CONDITION FOR ENTITY2 ****************
-		Property entity2 = new Property(new About(""));
+		Property entity2 = new Property(new About("")); //$NON-NLS-1$
 		entity2.setTypeCondition(entityTypes);
 
 		parameterCell.setEntity1(entity1);
@@ -362,7 +362,7 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 	@Override
 	public String getDescription() {
 		//return "This function enables the creation of an INPSIRE GeographicalName object from a set of simple string parameters.";
-		File desc = new File(GeographicalNameFunction.class.getProtectionDomain().getCodeSource().getLocation().getPath()+"/src/main/resource/GeographicalNameDescription.html");
+		File desc = new File(GeographicalNameFunction.class.getProtectionDomain().getCodeSource().getLocation().getPath()+"/src/main/resource/GeographicalNameDescription.html"); //$NON-NLS-1$
 		return desc.toURI().toString();
 	}
 

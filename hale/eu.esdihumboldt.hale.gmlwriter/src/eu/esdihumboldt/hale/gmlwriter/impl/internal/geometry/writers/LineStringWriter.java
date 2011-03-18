@@ -40,10 +40,10 @@ public class LineStringWriter extends AbstractGeometryWriter<LineString> {
 		super(LineString.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new NameImpl("LineStringType"));
+		addCompatibleType(new NameImpl("LineStringType")); //$NON-NLS-1$
 		
 		// patterns for matching inside compatible types
-		addBasePattern("*");
+		addBasePattern("*"); //$NON-NLS-1$
 	}
 
 	/**

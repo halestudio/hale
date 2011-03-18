@@ -45,12 +45,12 @@ public class GmlInstanceProvider extends AbstractInstanceProvider {
 	/**
 	 * GML 3 version
 	 */
-	public static final Version GML3 = new Version("3.0.0");
+	public static final Version GML3 = new Version("3.0.0"); //$NON-NLS-1$
 	
 	/**
 	 * GML 3.2 version
 	 */
-	public static final Version GML32 = new Version("3.2.0");
+	public static final Version GML32 = new Version("3.2.0"); //$NON-NLS-1$
 
 	/**
 	 * Default constructor 
@@ -58,12 +58,12 @@ public class GmlInstanceProvider extends AbstractInstanceProvider {
 	public GmlInstanceProvider() {
 		super();
 		
-		addSupportedSchemaFormat("xsd");
-		addSupportedSchemaFormat("xml");
-		addSupportedSchemaFormat("gml");
+		addSupportedSchemaFormat("xsd"); //$NON-NLS-1$
+		addSupportedSchemaFormat("xml"); //$NON-NLS-1$
+		addSupportedSchemaFormat("gml"); //$NON-NLS-1$
 		
-		addSupportedInstanceFormat("gml");
-		addSupportedInstanceFormat("xml");
+		addSupportedInstanceFormat("gml"); //$NON-NLS-1$
+		addSupportedInstanceFormat("xml"); //$NON-NLS-1$
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class GmlInstanceProvider extends AbstractInstanceProvider {
 	public FeatureCollection<FeatureType, Feature> loadInstances(URI location,
 			InstanceConfiguration configuration, ProgressIndicator progress)
 			throws IOException {
-		ATransaction trans = log.begin("Loading GML features from " + location.toString());
+		ATransaction trans = log.begin("Loading GML features from " + location.toString()); //$NON-NLS-1$
 		try {
 			Version version = configuration.getInstanceVersion();
 			ConfigurationType type;

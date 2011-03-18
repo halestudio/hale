@@ -43,16 +43,16 @@ public class MultiPolygonWriter extends AbstractGeometryWriter<MultiPolygon> {
 		super(MultiPolygon.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new NameImpl("MultiPolygonType"));
-		addCompatibleType(new NameImpl("CompositeSurfaceType"));
+		addCompatibleType(new NameImpl("MultiPolygonType")); //$NON-NLS-1$
+		addCompatibleType(new NameImpl("CompositeSurfaceType")); //$NON-NLS-1$
 		
 		// patterns for matching inside compatible types
-		addBasePattern("**/polygonMember");
-		addBasePattern("**/surfaceMember");
+		addBasePattern("**/polygonMember"); //$NON-NLS-1$
+		addBasePattern("**/surfaceMember"); //$NON-NLS-1$
 		
 		// verification patterns (from PolygonWriter)
-		addVerificationPattern("*/Polygon/exterior/LinearRing"); // both exterior
-		addVerificationPattern("*/Polygon/interior/LinearRing"); // and interior elements must be present for contained polygons
+		addVerificationPattern("*/Polygon/exterior/LinearRing"); // both exterior //$NON-NLS-1$
+		addVerificationPattern("*/Polygon/interior/LinearRing"); // and interior elements must be present for contained polygons //$NON-NLS-1$
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class MultiPolygonWriter extends AbstractGeometryWriter<MultiPolygon> {
 				writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 			}
 			
-			Descent descent = descend(writer, Pattern.parse("*/Polygon"), 
+			Descent descent = descend(writer, Pattern.parse("*/Polygon"),  //$NON-NLS-1$
 					elementType, elementName, gmlNs);
 			
 			Polygon poly = (Polygon) geometry.getGeometryN(i);

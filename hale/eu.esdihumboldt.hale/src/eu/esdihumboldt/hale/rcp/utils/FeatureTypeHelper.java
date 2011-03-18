@@ -31,7 +31,7 @@ public abstract class FeatureTypeHelper {
 	 */
 	public static boolean isAbstract(FeatureType ft) {
 		return ft.isAbstract() || 
-			(ft.getSuper() == null && ft.getName().getLocalPart().equalsIgnoreCase("AbstractFeatureType"));
+			(ft.getSuper() == null && ft.getName().getLocalPart().equalsIgnoreCase("AbstractFeatureType")); //$NON-NLS-1$
 	}
 	
 	/**
@@ -41,7 +41,7 @@ public abstract class FeatureTypeHelper {
 	 * @return if the feature type is a property type
 	 */
 	public static boolean isPropertyType(FeatureType ft) {
-		if (ft.getName().getLocalPart().equalsIgnoreCase("AbstractFeatureType")) {
+		if (ft.getName().getLocalPart().equalsIgnoreCase("AbstractFeatureType")) { //$NON-NLS-1$
 			return false;
 		}
 		else {

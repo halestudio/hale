@@ -190,7 +190,7 @@ public class MapFeatureSelector implements FeatureSelector {
 		}
 
 		private String getIdentifier(FeatureType featureType) {
-			return featureType.getName().getNamespaceURI() + "/" + featureType.getName().getLocalPart();
+			return featureType.getName().getNamespaceURI() + "/" + featureType.getName().getLocalPart(); //$NON-NLS-1$
 		}
 
 		/**

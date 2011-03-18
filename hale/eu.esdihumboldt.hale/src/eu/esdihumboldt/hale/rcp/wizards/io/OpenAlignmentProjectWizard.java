@@ -87,7 +87,7 @@ public class OpenAlignmentProjectWizard
 			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException,
 					InterruptedException {
-				ATransaction logTrans = _log.begin("Loading alignment project from " + filename);
+				ATransaction logTrans = _log.begin("Loading alignment project from " + filename); //$NON-NLS-1$
 				try {
 					ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
 					ps.load(filename, monitor);

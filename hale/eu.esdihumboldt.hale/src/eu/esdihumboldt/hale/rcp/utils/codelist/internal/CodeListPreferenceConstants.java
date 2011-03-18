@@ -24,16 +24,16 @@ public interface CodeListPreferenceConstants {
 	/**
 	 * The name of the search path key prefix
 	 */
-	public final String KEY_SEARCH_PATH_PREFIX = "codelist.searchpath.path";
+	public final String KEY_SEARCH_PATH_PREFIX = "codelist.searchpath.path"; //$NON-NLS-1$
 	
 	/**
 	 * The name of the search path count key
 	 */
-	public final String KEY_SEARCH_PATH_COUNT = "codelist.searchpath.count";
+	public final String KEY_SEARCH_PATH_COUNT = "codelist.searchpath.count"; //$NON-NLS-1$
 	
 	/**
 	 * The name of the attribute key prefix
 	 */
-	public final String KEY_ATTRIBUTE_PREFIX = "codelist.attribute:";
+	public final String KEY_ATTRIBUTE_PREFIX = "codelist.attribute:"; //$NON-NLS-1$
 
 }

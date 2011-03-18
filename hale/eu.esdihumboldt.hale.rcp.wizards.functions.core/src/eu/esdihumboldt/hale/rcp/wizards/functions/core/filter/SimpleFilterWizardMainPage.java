@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
 /**
  * This class implemets a main page for the FilterWizard
@@ -59,9 +60,9 @@ public class SimpleFilterWizardMainPage extends AbstractSingleComposedCellWizard
 	protected SimpleFilterWizardMainPage(String pageName, String title, String initialCQL) {
 		super(pageName, title, (ImageDescriptor) null);
 		setTitle(pageName); 
-		setDescription("Enter your CQL-Expression to proceed filter operation.");
+		setDescription(Messages.SimpleFilterWizardMainPage_0);
 		
-		this.initialCQL = (initialCQL == null)?(""):(initialCQL);
+		this.initialCQL = (initialCQL == null)?(""):(initialCQL); //$NON-NLS-1$
 	}
 
 	/**
@@ -92,10 +93,10 @@ public class SimpleFilterWizardMainPage extends AbstractSingleComposedCellWizard
 		FontData labelFontData = parent.getFont().getFontData()[0];
 		labelFontData.setStyle(SWT.BOLD);
 		this.CQLLabel.setFont(new Font(parent.getDisplay(), labelFontData));
-		this.CQLLabel.setText("CQL Filter Expression");
+		this.CQLLabel.setText(Messages.SimpleFilterWizardMainPage_2);
 		
 		Label label = new Label(composite, SWT.NONE);
-		label.setText("Available variables\n(double click to insert)");
+		label.setText(Messages.SimpleFilterWizardMainPage_3);
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 
 		// source area
@@ -146,12 +147,12 @@ public class SimpleFilterWizardMainPage extends AbstractSingleComposedCellWizard
 		});
 		
 		Button clearButton = new Button(composite, SWT.PUSH);
-		clearButton.setText("Clear/remove filter");
+		clearButton.setText(Messages.SimpleFilterWizardMainPage_4);
 		clearButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				CQLEditor.setText("");
+				CQLEditor.setText(""); //$NON-NLS-1$
 			}
 			
 		});

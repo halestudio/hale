@@ -569,7 +569,7 @@ public class SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction {
 	        return crs( null );
 	    }
 	    
-	    return crs( decode( "EPSG:" + srid ) );
+	    return crs( decode( "EPSG:" + srid ) ); //$NON-NLS-1$
 	}
 	
 	/**
@@ -683,7 +683,7 @@ public class SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction {
                 return descriptor;
             }
         }
-        throw new IllegalArgumentException(attributeName+" is not an existing attribute descriptor in this builder");
+        throw new IllegalArgumentException(attributeName+" is not an existing attribute descriptor in this builder"); //$NON-NLS-1$
     }
 
 	/**
@@ -776,7 +776,7 @@ public class SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction {
 	        return;
 	    }
 	    
-	    add( name, binding, decode( "EPSG:" + srid ) );
+	    add( name, binding, decode( "EPSG:" + srid ) ); //$NON-NLS-1$
 	}
 	
 	/**
@@ -832,8 +832,8 @@ public class SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction {
 			}
 			
 			if (defaultGeometry == null) {
-			    String msg = "'" + this.defaultGeometry + " specified as default" +
-		    		" but could find no such attribute.";
+			    String msg = "'" + this.defaultGeometry + " specified as default" + //$NON-NLS-1$ //$NON-NLS-2$
+		    		" but could find no such attribute."; //$NON-NLS-1$
 			    throw new IllegalArgumentException( msg );
 			}
 		}
@@ -953,7 +953,7 @@ public class SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction {
 	    try {
             return CRS.decode(srs);
         } catch (Exception  e) {
-            String msg = "SRS '" + srs + "' unknown:" + e.getLocalizedMessage(); 
+            String msg = "SRS '" + srs + "' unknown:" + e.getLocalizedMessage();  //$NON-NLS-1$ //$NON-NLS-2$
             throw (IllegalArgumentException) new IllegalArgumentException( msg ).initCause( e );
         }
 	}

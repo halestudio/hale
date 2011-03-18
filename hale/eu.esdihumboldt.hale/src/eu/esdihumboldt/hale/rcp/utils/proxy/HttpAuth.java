@@ -24,8 +24,8 @@ import java.net.PasswordAuthentication;
  * @version $Id$
  */
 public class HttpAuth extends Authenticator {
-	private String user = "";
-	private String password = "";
+	private String user = ""; //$NON-NLS-1$
+	private String password = ""; //$NON-NLS-1$
 	
 	/**
 	 * Constructor.

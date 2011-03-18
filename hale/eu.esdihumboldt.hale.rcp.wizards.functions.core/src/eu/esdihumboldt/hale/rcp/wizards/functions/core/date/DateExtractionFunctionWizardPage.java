@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
 /**
  * FIXME Add Type description.
@@ -37,7 +38,7 @@ public class DateExtractionFunctionWizardPage extends AbstractSingleCellWizardPa
 	public DateExtractionFunctionWizardPage(String pageName) {
 		super(pageName);
 		setTitle(pageName);
-		setDescription("Configure the date/time extraction.");
+		setDescription(Messages.DateExtractionFunctionWizardPage_0);
 	}
 	
 	/* (non-Javadoc)
@@ -60,20 +61,20 @@ public class DateExtractionFunctionWizardPage extends AbstractSingleCellWizardPa
 		// source format
 		Label ccLabel = new Label(page, SWT.NONE);
 		ccLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		ccLabel.setText("Source date format pattern");
+		ccLabel.setText(Messages.DateExtractionFunctionWizardPage_1);
 		
 		this.sourceFormat = new Text(page, SWT.BORDER);
-		this.sourceFormat.setText("yyyy-MM-dd HH:mm:ss");
+		this.sourceFormat.setText(Messages.DateExtractionFunctionWizardPage_2);
 		this.sourceFormat.setEnabled(true);
 		this.sourceFormat.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		// target format
 		Label providerLabel = new Label(page, SWT.NONE);
 		providerLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		providerLabel.setText("Target date format pattern (optional)");
+		providerLabel.setText(Messages.DateExtractionFunctionWizardPage_3);
 		
 		this.targetFormat = new Text(page, SWT.BORDER);
-		this.targetFormat.setText("yyyy-MM-dd HH:mm:ss");
+		this.targetFormat.setText(Messages.DateExtractionFunctionWizardPage_4);
 		this.targetFormat.setEnabled(true);
 		this.targetFormat.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 

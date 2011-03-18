@@ -41,13 +41,13 @@ public interface TaskUserData {
 		public String toString() {
 			switch (this) {
 			case NEW:
-				return "New";
+				return "New"; //$NON-NLS-1$
 			case ACTIVE:
-				return "Active";
+				return "Active"; //$NON-NLS-1$
 			case IGNORED:
-				return "Ignored";
+				return "Ignored"; //$NON-NLS-1$
 			case COMPLETED:
-				return "Completed";
+				return "Completed"; //$NON-NLS-1$
 			default:
 				return super.toString();
 			}

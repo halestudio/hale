@@ -25,6 +25,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Text;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * Password field editor that uses {@link ISecurePreferences}
  * 
@@ -101,10 +103,10 @@ public class PasswordFieldEditor extends FieldEditor {
 	@Override
 	protected void doLoad() {
 		try {
-			text.setText(SecurePreferencesFactory.getDefault().node(secureNodeName).get(keyName, ""));
+			text.setText(SecurePreferencesFactory.getDefault().node(secureNodeName).get(keyName, "")); //$NON-NLS-1$
 		} catch (StorageException e) {
-			text.setText("");
-			log.warn("Can't access secure preferences", e);
+			text.setText(""); //$NON-NLS-1$
+			log.warn("Can't access secure preferences", e); //$NON-NLS-1$
 		}
 	}
 
@@ -113,7 +115,7 @@ public class PasswordFieldEditor extends FieldEditor {
 	 */
 	@Override
 	protected void doLoadDefault() {
-		text.setText("");
+		text.setText(""); //$NON-NLS-1$
 	}
 
 	/**
@@ -126,7 +128,7 @@ public class PasswordFieldEditor extends FieldEditor {
 			SecurePreferencesFactory.getDefault().node(secureNodeName).put(
 					keyName, password, password != null && !password.isEmpty());
 		} catch (StorageException e) {
-			log.error("Unable to save password to secure preferences", e);
+			log.error("Unable to save password to secure preferences", e); //$NON-NLS-1$
 		}
 	}
 

@@ -143,8 +143,6 @@ public class Messages {
 
 	public static String SchemaImportWizard_SchemaImport;
 
-	public static String SchemaImportWizard_SchemaQuestion1;
-
 	public static String SchemaImportWizard_ErrorMessage1;
 
 	public static String SchemaImportWizard_JobError;
@@ -329,10 +327,12 @@ public class Messages {
 	public static String TaskTreeView_value_tooltip;
 
 	public static String SchemaImportWizard_SchemaQuestion0;
+	public static String SchemaImportWizard_SchemaQuestion1;
 
 	public static String WFSFeatureTypesReaderDialog_ValdationOKText;
 
 	public static String SaveAlignmentProjectWizardMainPage_LocationText;
+
 	
 	static {
 		// initialize resource bundle

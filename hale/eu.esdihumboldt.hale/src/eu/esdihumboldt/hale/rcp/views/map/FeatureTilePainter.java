@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.hale.rcp.views.map;
 
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,6 +39,7 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.transformer.CstService;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.InstanceService;
@@ -290,7 +292,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 						fts.add(type);
 					}
 					else {
-						log.debug("No feature type for element " + element.getDisplayName());
+						log.debug("No feature type for element " + element.getDisplayName()); //$NON-NLS-1$
 					}
 				}
 				
@@ -341,15 +343,15 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		if (failed > 0) {
 			String ident;
 			if (status.getReferenceFailed() == 0) {
-				ident = "transformed";
+				ident = "transformed"; //$NON-NLS-1$
 			}
 			else if (status.getTransformedFailed() == 0) {
-				ident = "source";
+				ident = "source"; //$NON-NLS-1$
 			}
 			else {
-				ident = "source and transformed";
+				ident = "source and transformed"; //$NON-NLS-1$
 			}
-			String text = failed + " " + ident + " features have no default geometry";
+			String text = MessageFormat.format(Messages.getString("FeatureTilePainter.0"), failed, ident); //$NON-NLS-1$
 			
 			Image errorImage = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
 			

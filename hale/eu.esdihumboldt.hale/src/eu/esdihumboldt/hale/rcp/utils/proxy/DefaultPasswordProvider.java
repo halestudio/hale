@@ -17,6 +17,8 @@ import javax.crypto.spec.PBEKeySpec;
 import org.eclipse.equinox.security.storage.provider.IPreferencesContainer;
 import org.eclipse.equinox.security.storage.provider.PasswordProvider;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * Password provider that provides a default password
  * @author Simon Templer
@@ -29,7 +31,7 @@ public class DefaultPasswordProvider extends PasswordProvider {
 	@Override
 	public PBEKeySpec getPassword(IPreferencesContainer container,
 			int passwordType) {
-		return new PBEKeySpec("rXMKSx2eAqshIh0j2JnyLCdc".toCharArray());
+		return new PBEKeySpec("rXMKSx2eAqshIh0j2JnyLCdc".toCharArray()); //$NON-NLS-1$
 	}
 
 }

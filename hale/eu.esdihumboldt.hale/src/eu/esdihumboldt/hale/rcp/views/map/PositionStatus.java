@@ -44,7 +44,7 @@ public class PositionStatus extends MouseTrackAdapter implements MouseMoveListen
 	private final Control control;
 	
 	private final DecimalFormat format = new DecimalFormat(
-			"0.####", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+			"0.####", DecimalFormatSymbols.getInstance(Locale.ENGLISH)); //$NON-NLS-1$
 
 	/**
 	 * Constructor
@@ -72,16 +72,16 @@ public class PositionStatus extends MouseTrackAdapter implements MouseMoveListen
 	public void mouseMove(MouseEvent e) {
 		Point2D pos = map.toGeoCoordinates(e.x, e.y);
 		if (pos != null) {
-			String crsString = "";
+			String crsString = ""; //$NON-NLS-1$
 			CoordinateReferenceSystem crs = map.getCRS();
 			if (crs != null) {
-				crsString = crs.getName().toString() + " - ";
+				crsString = crs.getName().toString() + " - "; //$NON-NLS-1$
 			}
 			
 			site.getActionBars().getStatusLineManager().setMessage(
 					image,
 					crsString +
-					format.format(pos.getX()) + " / " + 
+					format.format(pos.getX()) + " / " +  //$NON-NLS-1$
 					format.format(pos.getY()));
 		}
 		else {

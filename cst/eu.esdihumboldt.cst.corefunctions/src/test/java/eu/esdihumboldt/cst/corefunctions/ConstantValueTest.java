@@ -37,9 +37,9 @@ public class ConstantValueTest {
 	 */
 
 	
-	private final String targetLocalname = "FT2";
-	private final String targetLocalnamePropertyBConst = "PropertyBConst";
-	private final String targetNamespace = "http://xsdi.org";
+	private final String targetLocalname = "FT2"; //$NON-NLS-1$
+	private final String targetLocalnamePropertyBConst = "PropertyBConst"; //$NON-NLS-1$
+	private final String targetNamespace = "http://xsdi.org"; //$NON-NLS-1$
 	
 	
 	
@@ -52,7 +52,7 @@ public class ConstantValueTest {
 	
 		Transformation t = new Transformation();
 		t.setService(new Resource(ConstantValueFunction.class.toString()));
-		t.getParameters().add(new Parameter("defaultValue", "Spingfield"));
+		t.getParameters().add(new Parameter("defaultValue", "Spingfield")); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		Property p1 = new Property(new About(this.targetNamespace, this.targetLocalname, this.targetLocalnamePropertyBConst));
 		p1.setTransformation(t);
@@ -67,7 +67,7 @@ public class ConstantValueTest {
 				new String[]{this.targetLocalnamePropertyBConst});
 		
 		Feature target = SimpleFeatureBuilder.build(
-				targettype, new Object[]{"City"}, "1");
+				targettype, new Object[]{"City"}, "1"); //$NON-NLS-1$ //$NON-NLS-2$
 		// perform actual test
 		
 		ConstantValueFunction constFunc = new ConstantValueFunction();
@@ -76,7 +76,7 @@ public class ConstantValueTest {
 		Feature neu = constFunc.transform(null, target);
 		
 		assertTrue(neu.getProperty(
-				this.targetLocalnamePropertyBConst).getValue().toString().equals("Spingfield"));
+				this.targetLocalnamePropertyBConst).getValue().toString().equals("Spingfield")); //$NON-NLS-1$
 	
 	}
 	

@@ -25,6 +25,7 @@ import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.CoreFunctionWizardsPlugin;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
 /**
  * Wizard for the User Defined Function (UDF). A UDF is more or less a 
@@ -44,7 +45,7 @@ public class UserDefinedFunctionWizard
 	 */
 	public UserDefinedFunctionWizard(AlignmentInfo selection) {
 		super(selection);
-		super.setWindowTitle("Configure Function"); 
+		super.setWindowTitle(Messages.UserDefinedFunctionWizard_0); 
 	}
 
 
@@ -52,7 +53,7 @@ public class UserDefinedFunctionWizard
 	protected void init() {
 		
 		this.mainPage = new UserDefinedFunctionWizardPage(
-						"Provide information on your user-defined function");
+						Messages.UserDefinedFunctionWizard_1);
 		
 		ITransformation t = getResultCell().getEntity1().getTransformation();
 		
@@ -70,13 +71,13 @@ public class UserDefinedFunctionWizard
 	@Override
 	public boolean performFinish() {
 		IPreferenceStore preferences = CoreFunctionWizardsPlugin.plugin.getPreferenceStore();
-		preferences.putValue("eu.esdihumboldt.udfPreferences", this.mainPage.getEncodedUdfTemplates());
+		preferences.putValue("eu.esdihumboldt.udfPreferences", this.mainPage.getEncodedUdfTemplates()); //$NON-NLS-1$
 		
 		// create adequate cell
 		ICell cell = super.getResultCell();
 		
 		Transformation t = new Transformation();
-		t.setService(new Resource("UserDefinedFunction." + this.mainPage.getUdfName()));
+		t.setService(new Resource(Messages.UserDefinedFunctionWizard_3 + this.mainPage.getUdfName()));
 		t.setParameters(this.mainPage.getUdfParameters());
 		((Property)cell.getEntity1()).setTransformation(t);
 		

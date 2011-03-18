@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.rcp.views.mappingGraph;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Vector;
 
@@ -51,6 +52,7 @@ import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.utils.SchemaItemService;
@@ -91,7 +93,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	/**
 	 * The specific ID of this class
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.rcp.views.mappingGraph.MappingGraphView";
+	public static final String ID = "eu.esdihumboldt.hale.rcp.views.mappingGraph.MappingGraphView"; //$NON-NLS-1$
 
 	/**
 	 * Saves the last schemaSelection for refresh function
@@ -194,8 +196,8 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 		final Button button2 = new Button(parent, SWT.TOGGLE);
 		final Button button3 = new Button(parent, SWT.TOGGLE);
 
-		button1.setText("Show All Cells");
-		button1.setToolTipText("Shows all existing Cells");
+		button1.setText(Messages.getString("MappingGraphView_1")); //$NON-NLS-1$
+		button1.setToolTipText(Messages.getString("MappingGraphView_2")); //$NON-NLS-1$
 		button1.setImage(image);
 		button1.setLayoutData(gridData4);
 		button1.setSelection(true);
@@ -213,8 +215,8 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 			}
 		});
 
-		button2.setText("Schema Explorer Syncronize");
-		button2.setToolTipText("Syncronize with Schema Explorer");
+		button2.setText(Messages.getString("MappingGraphView_3")); //$NON-NLS-1$
+		button2.setToolTipText(Messages.getString("MappingGraphView_4")); //$NON-NLS-1$
 		button2.setImage(image);
 		button2.setLayoutData(gridData5);
 
@@ -231,8 +233,8 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 			}
 		});
 
-		button3.setText("Mapping Syncronize");
-		button3.setToolTipText("Syncronize with Mapping");
+		button3.setText(Messages.getString("MappingGraphView_5")); //$NON-NLS-1$
+		button3.setToolTipText(Messages.getString("MappingGraphView_6")); //$NON-NLS-1$
 		button3.setImage(image);
 		button3.setLayoutData(gridData6);
 
@@ -354,15 +356,12 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 		}
 
 		// Filter and Parameters gets transformed into one string
-		String toolTipText = "";
+		String toolTipText = ""; //$NON-NLS-1$
 		if (!filterList.isEmpty()) {
-			toolTipText = toolTipText + "Filter : " + "\r\n";
-			toolTipText = toolTipText + this.mappingGraphModel.listToString(filterList);
+			toolTipText = MessageFormat.format(Messages.getString("MappingGraphView.0"), toolTipText, this.mappingGraphModel.listToString(filterList)); //$NON-NLS-1$
 		}
 		if (!parameterList.isEmpty()) {
-			toolTipText = toolTipText + "Parameter : " + "\r\n";
-			toolTipText = toolTipText
-					+ this.mappingGraphModel.parameterListToString(parameterList);
+			toolTipText = MessageFormat.format(Messages.getString("MappingGraphView.1"), toolTipText, this.mappingGraphModel.parameterListToString(parameterList)); //$NON-NLS-1$
 		}
 
 		// BrowserToolTip gets created
@@ -504,7 +503,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 											.getTransformation().getService()
 											.getLocation();
 								}
-								String[] tempSplit = cellName.split("\\.");
+								String[] tempSplit = cellName.split("\\."); //$NON-NLS-1$
 								String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
 
 								// Checks the old connections and takes the
@@ -568,7 +567,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 											.getTransformation().getService()
 											.getLocation();
 								}
-								String[] tempSplit = cellName.split("\\.");
+								String[] tempSplit = cellName.split("\\."); //$NON-NLS-1$
 								String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
 
 								// Checks the old connections and takes the
@@ -648,7 +647,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 											.getTransformation().getService()
 											.getLocation();
 								}
-								String[] tempSplit = cellName.split("\\.");
+								String[] tempSplit = cellName.split("\\."); //$NON-NLS-1$
 								String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
 
 								// Checks the old connections and takes the
@@ -699,7 +698,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 			this.mappingGraphNodeRenderer.drawNodeSections(alignmentVector);
 		
 			//Draws the graph as a png
-			this.drawGraphAsImage(dir, this.pictureNames+"_Overview"+".png", 1000, k*30);
+			this.drawGraphAsImage(dir, this.pictureNames+"_Overview.png", 1000, k*30); //$NON-NLS-1$
 			
 			//Clean up
 			this.mappingGraphModel.arrayReset();
@@ -731,7 +730,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 				this.mappingGraphNodeRenderer.drawNodeSections(sectionVector);
 			
 				//Draws the graph as a png
-				this.drawGraphAsImage(dir, this.pictureNames+"_Section_"+f+".png", 1000, p*30);
+				this.drawGraphAsImage(dir, MessageFormat.format("{0}_Section_{1}.png", this.pictureNames, f), 1000, p*30); //$NON-NLS-1$
 				
 				//Clean up
 				this.mappingGraphModel.arrayReset();
@@ -813,7 +812,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 			root.paint(graphics);
 			BufferedImage bufferedImage = SwingRcpUtilities.convertToAWT(drawImage.getImageData());
 			try {
-				ImageIO.write(bufferedImage, "png", file);
+				ImageIO.write(bufferedImage, "png", file); //$NON-NLS-1$
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

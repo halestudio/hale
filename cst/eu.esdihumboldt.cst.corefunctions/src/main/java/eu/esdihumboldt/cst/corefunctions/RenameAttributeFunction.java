@@ -159,11 +159,11 @@ public class RenameAttributeFunction
 						value = new Timestamp(((Date) value).getTime());
 					}
 					else {
-						throw new UnsupportedOperationException("For the given source (" 
+						throw new UnsupportedOperationException("For the given source ("  //$NON-NLS-1$
 								+ bindingSource.getName() +
-								") and target (" + bindingTarget.getName() 
-								+ ") attribute bindings, this rename function " +
-								"cannot be used.");
+								") and target (" + bindingTarget.getName()  //$NON-NLS-1$
+								+ ") attribute bindings, this rename function " + //$NON-NLS-1$
+								"cannot be used."); //$NON-NLS-1$
 					}
 				}
 			}
@@ -197,7 +197,7 @@ public class RenameAttributeFunction
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
 		
-		Property entity1 = new Property(new About(""));
+		Property entity1 = new Property(new About("")); //$NON-NLS-1$
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
 		entityTypes.add(com.vividsolutions.jts.geom.Geometry.class.getName());
@@ -209,7 +209,7 @@ public class RenameAttributeFunction
 		entityTypes.add(Collection.class.getName());
 		entity1.setTypeCondition(entityTypes);
 
-		Property entity2 = new Property(new About(""));
+		Property entity2 = new Property(new About("")); //$NON-NLS-1$
 		// Setting of type condition for entity2
 			// 	entity2 has same type conditions as entity1
 		entity2.setTypeCondition(entityTypes);
@@ -263,8 +263,8 @@ public class RenameAttributeFunction
 		}
 		else {
 			throw new RuntimeException(
-					"Spatial type conversion from " + bindingSource.getName() 
-					+ " to " + bindingTarget.getName() + " is not supported.");
+					"Spatial type conversion from " + bindingSource.getName()  //$NON-NLS-1$
+					+ " to " + bindingTarget.getName() + " is not supported."); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return newGeometry;
 	}

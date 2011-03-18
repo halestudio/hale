@@ -23,6 +23,7 @@ import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
 /**
  * This {@link Wizard} is used to invoke a Renaming CstFunction for the Source
@@ -50,8 +51,8 @@ public class FilterWizard extends AbstractSingleCellWizard {
 	@Override
 	protected void init() {
 		this.mainPage = new FilterWizardMainPage(
-				"Configure Filter Expression", "Configure Filter Expression");
-		super.setWindowTitle("Configure Function");
+				Messages.FilterWizard_0, Messages.FilterWizard_1);
+		super.setWindowTitle(Messages.FilterWizard_2);
 		super.setNeedsProgressMonitor(true);
 	}
 
@@ -60,7 +61,7 @@ public class FilterWizard extends AbstractSingleCellWizard {
 	 */
 	@Override
 	public boolean canFinish() {
-		_log.debug("Wizard.canFinish: " + this.mainPage.isPageComplete());
+		_log.debug("Wizard.canFinish: " + this.mainPage.isPageComplete()); //$NON-NLS-1$
 		return true;
 	}
 

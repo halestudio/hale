@@ -133,7 +133,7 @@ public class ConcatenationOfAttributesWizardPage extends
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if (!combo.getText().equals("")) {
+				if (!combo.getText().equals("")) { //$NON-NLS-1$
 					parts.add(combo.getText());
 					listViewer.refresh();
 				}

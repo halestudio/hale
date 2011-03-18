@@ -154,7 +154,7 @@ public abstract class AbstractSchemaTaskProvider extends AbstractTaskProvider {
 			entity = cell.getEntity2();
 			break;
 		default:
-			throw new RuntimeException("Invalid schema type");
+			throw new RuntimeException("Invalid schema type"); //$NON-NLS-1$
 		}
 		// get definition
 		String identifier = EntityHelper.getIdentifier(entity);

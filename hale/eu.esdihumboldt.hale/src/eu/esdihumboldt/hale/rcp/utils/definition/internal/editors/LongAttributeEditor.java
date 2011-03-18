@@ -14,6 +14,8 @@ package eu.esdihumboldt.hale.rcp.utils.definition.internal.editors;
 
 import org.eclipse.swt.widgets.Composite;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * 
  *
@@ -45,7 +47,7 @@ public class LongAttributeEditor extends StringValidatingAttributeEditor<Long> {
 			return null;
 		}
 		catch (NumberFormatException e) {
-			return "No valid input for Long";
+			return Messages.getString("LongAttributeEditor.0"); //$NON-NLS-1$
 		}
 	}
 	/**
@@ -53,7 +55,7 @@ public class LongAttributeEditor extends StringValidatingAttributeEditor<Long> {
 	 */
 	@Override
 	protected String getValidToolTip() {
-		return "The value you entered is a valid Long";
+		return Messages.getString("LongAttributeEditor.1"); //$NON-NLS-1$
 	}
 
 	/**

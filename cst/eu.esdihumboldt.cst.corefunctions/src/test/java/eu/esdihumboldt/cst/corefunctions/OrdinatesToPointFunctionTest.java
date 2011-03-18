@@ -45,47 +45,47 @@ public class OrdinatesToPointFunctionTest {
 	/**
 	 * 
 	 */
-	private final String sourceLocalname = "waterVA/Watercourses_VA_Type";
+	private final String sourceLocalname = "waterVA/Watercourses_VA_Type"; //$NON-NLS-1$
 	
 	/**
 	 * 
 	 */
-	private final String sourceLocalnamePropertyDouble = "LAENGE_ARC";
+	private final String sourceLocalnamePropertyDouble = "LAENGE_ARC"; //$NON-NLS-1$
 	
 	/**
 	 * 
 	 */
-	private final String sourceNamespace = "http://esdi-humboldt.org";
+	private final String sourceNamespace = "http://esdi-humboldt.org"; //$NON-NLS-1$
 	
 	/**
 	 * 
 	 */
-	private final String source2Localname = "waterVA/Watercourses_VA_Type";
+	private final String source2Localname = "waterVA/Watercourses_VA_Type"; //$NON-NLS-1$
 	
 	/**
 	 * 
 	 */
-	private final String source2LocalnamePropertyDouble = "LAENGE_ROU";
+	private final String source2LocalnamePropertyDouble = "LAENGE_ROU"; //$NON-NLS-1$
 	
 	/**
 	 * 
 	 */
-	private final String source2Namespace = "http://esdi-humboldt.org";
+	private final String source2Namespace = "http://esdi-humboldt.org"; //$NON-NLS-1$
 	
 	/**
 	 * 
 	 */
-	private final String targetLocalname = "FT3";
+	private final String targetLocalname = "FT3"; //$NON-NLS-1$
 	
 	/**
 	 * 
 	 */
-	private final String targetLocalnamePropertyPoint = "PropertyPoint";
+	private final String targetLocalnamePropertyPoint = "PropertyPoint"; //$NON-NLS-1$
 	
 	/**
 	 * 
 	 */
-	private final String targetNamespace = "http://esdi-humboldt.eu";
+	private final String targetNamespace = "http://esdi-humboldt.eu"; //$NON-NLS-1$
 	
 	/**
 	 * 
@@ -100,12 +100,12 @@ public class OrdinatesToPointFunctionTest {
 	/**
 	 * 
 	 */
-	private static String x2 ="23.0";
+	private static String x2 ="23.0"; //$NON-NLS-1$
 	
 	/**
 	 * 
 	 */
-	private static String y2 ="14.0";
+	private static String y2 ="14.0"; //$NON-NLS-1$
 	
 	/**
 	 * 
@@ -136,25 +136,25 @@ public class OrdinatesToPointFunctionTest {
 			
 			switch(this.testInt){
 			case 1:
-				parameters.add(new Parameter("xExpression", "LAENGE_ARC * " + x));
-				parameters.add(new Parameter("yExpression", "LAENGE_ROU * " + y));
+				parameters.add(new Parameter("xExpression", "LAENGE_ARC * " + x)); //$NON-NLS-1$ //$NON-NLS-2$
+				parameters.add(new Parameter("yExpression", "LAENGE_ROU * " + y)); //$NON-NLS-1$ //$NON-NLS-2$
 				break;
 			case 2:
-				parameters.add(new Parameter("xExpression", "LAENGE_ARC * " + x2));
-				parameters.add(new Parameter("yExpression", "LAENGE_ROU * " + y2));
+				parameters.add(new Parameter("xExpression", "LAENGE_ARC * " + x2)); //$NON-NLS-1$ //$NON-NLS-2$
+				parameters.add(new Parameter("yExpression", "LAENGE_ROU * " + y2)); //$NON-NLS-1$ //$NON-NLS-2$
 				break;
 			case 3:
-				parameters.add(new Parameter("xExpression", "LAENGE_ARC * " + x));
-				parameters.add(new Parameter("yExpression", "LAENGE_ROU * " + y2));
+				parameters.add(new Parameter("xExpression", "LAENGE_ARC * " + x)); //$NON-NLS-1$ //$NON-NLS-2$
+				parameters.add(new Parameter("yExpression", "LAENGE_ROU * " + y2)); //$NON-NLS-1$ //$NON-NLS-2$
 				break;
 			case 4:
-				parameters.add(new Parameter("xExpression", "LAENGE_ARC * " + x2));
-				parameters.add(new Parameter("yExpression", "LAENGE_ROU * " + y));
+				parameters.add(new Parameter("xExpression", "LAENGE_ARC * " + x2)); //$NON-NLS-1$ //$NON-NLS-2$
+				parameters.add(new Parameter("yExpression", "LAENGE_ROU * " + y)); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			
 			t.setParameters(parameters);
 			
-			ComposedProperty composedProperty = new ComposedProperty(new About(""));
+			ComposedProperty composedProperty = new ComposedProperty(new About("")); //$NON-NLS-1$
 			composedProperty.setTransformation(t);
 			
 			Property entity1 = new Property(new About(this.sourceNamespace, this.sourceLocalname, this.sourceLocalnamePropertyDouble));
@@ -176,19 +176,19 @@ public class OrdinatesToPointFunctionTest {
 	
 			switch(this.testInt){
 			case 1:
-				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Double(x),new Double(y)}, "1");
+				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Double(x),new Double(y)}, "1"); //$NON-NLS-1$
 				break;
 			case 2:
-				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new String(x2),new String(y2)}, "1");
+				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new String(x2),new String(y2)}, "1"); //$NON-NLS-1$
 				break;
 			case 3:
-				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Double(x),new String(y2)}, "1");
+				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Double(x),new String(y2)}, "1"); //$NON-NLS-1$
 				break;
 			case 4:
-				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new String(x2),new Double(y)}, "1");
+				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new String(x2),new Double(y)}, "1"); //$NON-NLS-1$
 				break;
 			default:
-				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Double(x),new Double(y)}, "1");
+				source = (Feature) SimpleFeatureBuilder.build(sourcetype, new Object[] {new Double(x),new Double(y)}, "1"); //$NON-NLS-1$
 			}
 			
 			target = FeatureBuilder.buildFeature(targettype, source, true);

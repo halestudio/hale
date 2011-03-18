@@ -47,7 +47,7 @@ public class WPSTest {
 	@Test
 	public void testWPSInfo() {
 		CstFunctionFactory.getInstance().registerCstPackage(
-				"eu.esdihumboldt.cst.corefunctions");
+				"eu.esdihumboldt.cst.corefunctions"); //$NON-NLS-1$
 
 		CstServiceCapabilitiesImpl service = new CstServiceCapabilitiesImpl();
 		for (Iterator<FunctionDescription> i = service

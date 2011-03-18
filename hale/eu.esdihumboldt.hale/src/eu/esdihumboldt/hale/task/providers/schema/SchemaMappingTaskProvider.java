@@ -38,7 +38,7 @@ public class SchemaMappingTaskProvider extends AbstractSchemaTaskProvider {
 	 * @param schemaType the schema type
 	 */
 	public SchemaMappingTaskProvider(SchemaType schemaType) {
-		super((schemaType == SchemaType.SOURCE)?("source."):("target."), schemaType);
+		super((schemaType == SchemaType.SOURCE)?("source."):("target."), schemaType); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		setReactOnCellAddOrUpdate(true);
 		

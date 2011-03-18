@@ -35,11 +35,11 @@ public class FunctionDescriptionImplTest {
 	@Test
 	public void testFunctionDescriptionImpl() {
 		CstFunctionFactory cff = CstFunctionFactory.getInstance();
-		cff.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
-		cff.registerCstPackage("eu.esdihumboldt.cst.corefunctions.inspire");
+		cff.registerCstPackage("eu.esdihumboldt.cst.corefunctions"); //$NON-NLS-1$
+		cff.registerCstPackage("eu.esdihumboldt.cst.corefunctions.inspire"); //$NON-NLS-1$
 
 		for (Class<? extends CstFunction> functionClass : cff.getRegisteredFunctions().values()) {
-			System.out.println("=== Test for class: " + functionClass.getName() + " ===");
+			System.out.println("=== Test for class: " + functionClass.getName() + " ==="); //$NON-NLS-1$ //$NON-NLS-2$
 			FunctionDescription fd = null;
 			try {
 				fd = new FunctionDescriptionImpl(functionClass.newInstance());
@@ -47,7 +47,7 @@ public class FunctionDescriptionImplTest {
 				fail(e.getMessage());
 			}
 			for (String key : fd.getParameterConfiguration().keySet()) {
-				System.out.println("    " + key + ": "
+				System.out.println("    " + key + ": " //$NON-NLS-1$ //$NON-NLS-2$
 						+ fd.getParameterConfiguration().get(key).getName());
 			}
 			assertTrue(fd.getFunctionId() != null);

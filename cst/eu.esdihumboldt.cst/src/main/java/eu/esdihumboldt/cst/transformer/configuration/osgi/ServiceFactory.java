@@ -48,9 +48,9 @@ public class ServiceFactory
 			return this.transform;
 		}
 		else {
-			throw new RuntimeException("For the given serviceInterface (" 
+			throw new RuntimeException("For the given serviceInterface ("  //$NON-NLS-1$
 					+ serviceInterface.getCanonicalName() 
-					+ "), no service implementation is known.");
+					+ "), no service implementation is known."); //$NON-NLS-1$
 		}
 	}
 

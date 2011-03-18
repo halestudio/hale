@@ -221,7 +221,7 @@ public class MappingGraphNodeRenderer {
 		}
 		//No ComposedProperty
 		else{
-			String[] sourceName = cell.getEntity1().getAbout().getAbout().split("/");
+			String[] sourceName = cell.getEntity1().getAbout().getAbout().split("/"); //$NON-NLS-1$
 			GraphNode sourceGraphNode = new GraphNode(this.mappingGraphView.getGraph(), SWT.NONE,
 					sourceName[sourceName.length-1]);
 			//Set Location
@@ -270,7 +270,7 @@ public class MappingGraphNodeRenderer {
 		}
 		//No ComposedProperty
 		else{
-			String[] targetName = cell.getEntity2().getAbout().getAbout().split("/");
+			String[] targetName = cell.getEntity2().getAbout().getAbout().split("/"); //$NON-NLS-1$
 			GraphNode targetGraphNode = new GraphNode(this.mappingGraphView.getGraph(), SWT.NONE,
 					targetName[targetName.length-1]);
 			//Set Location
@@ -303,7 +303,7 @@ public class MappingGraphNodeRenderer {
 						.getTransformation().getService()
 						.getLocation();
 			}
-			String[] tempSplit = cellName.split("\\.");
+			String[] tempSplit = cellName.split("\\."); //$NON-NLS-1$
 			String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
 			GraphNode newEntityNode = new GraphNode(this.mappingGraphView.getGraph(), SWT.NONE, graphConnectionNodeName);
 			//Set the cell as data into the node
@@ -361,7 +361,7 @@ public class MappingGraphNodeRenderer {
 			IEntity entity = cell.getEntity1();
 			if(entity instanceof ComposedProperty ) {
 				for (Property property : ((ComposedProperty) cell.getEntity1()).getCollection()) {
-					String[] sourceName = property.getAbout().getAbout().split("/");
+					String[] sourceName = property.getAbout().getAbout().split("/"); //$NON-NLS-1$
 					GraphNode sourceGraphNode = new GraphNode(this.mappingGraphView.getGraph(), SWT.NONE,
 							sourceName[sourceName.length-1]);
 					//Set Location
@@ -390,8 +390,8 @@ public class MappingGraphNodeRenderer {
 			//No ComposedProperty
 			else{
 				//Augmentation
-				if(!(cell.getEntity1().getTransformation() == null || cell.getEntity1().getAbout().getAbout().equals("entity/null"))){
-					String[] sourceName = cell.getEntity1().getAbout().getAbout().split("/");
+				if(!(cell.getEntity1().getTransformation() == null || cell.getEntity1().getAbout().getAbout().equals("entity/null"))){ //$NON-NLS-1$
+					String[] sourceName = cell.getEntity1().getAbout().getAbout().split("/"); //$NON-NLS-1$
 					GraphNode sourceGraphNode = new GraphNode(this.mappingGraphView.getGraph(), SWT.NONE,
 							sourceName[sourceName.length-1]);
 					//Set Location
@@ -423,7 +423,7 @@ public class MappingGraphNodeRenderer {
 			IEntity entity2 = cell.getEntity2();
 			if(entity2 instanceof ComposedProperty ) {
 				for (Property property : ((ComposedProperty)cell.getEntity2()).getCollection()) {
-					String[] targetName = property.getAbout().getAbout().split("/");
+					String[] targetName = property.getAbout().getAbout().split("/"); //$NON-NLS-1$
 					GraphNode targetGraphNode = new GraphNode(this.mappingGraphView.getGraph(), SWT.NONE,
 							targetName[targetName.length-1]);
 					//Set Location
@@ -452,7 +452,7 @@ public class MappingGraphNodeRenderer {
 			}
 			//No ComposedProperty
 			else{
-				String[] targetName = cell.getEntity2().getAbout().getAbout().split("/");
+				String[] targetName = cell.getEntity2().getAbout().getAbout().split("/"); //$NON-NLS-1$
 				GraphNode targetGraphNode = new GraphNode(this.mappingGraphView.getGraph(), SWT.NONE,
 						targetName[targetName.length-1]);
 				//Set Location
@@ -488,7 +488,7 @@ public class MappingGraphNodeRenderer {
 						.getTransformation().getService()
 						.getLocation();
 			}
-			String[] tempSplit = cellName.split("\\.");
+			String[] tempSplit = cellName.split("\\."); //$NON-NLS-1$
 			String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
 			GraphNode newEntityNode = new GraphNode(this.mappingGraphView.getGraph(), SWT.NONE, graphConnectionNodeName);
 			//Set the cell as data into the node

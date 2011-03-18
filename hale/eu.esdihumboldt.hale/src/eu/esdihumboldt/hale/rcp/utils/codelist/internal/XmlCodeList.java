@@ -52,7 +52,7 @@ public class XmlCodeList implements CodeList {
 	
 	private static final XPathFactory xpathFactory = XPathFactory.newInstance();
 
-	private static final String DEF_NS = "http://www.opengis.net/gml";
+	private static final String DEF_NS = "http://www.opengis.net/gml"; //$NON-NLS-1$
 	
 	private final String identifier;
 	
@@ -84,7 +84,7 @@ public class XmlCodeList implements CodeList {
 	            public InputSource resolveEntity(String publicId, String systemId)
 	                throws SAXException, IOException
 	            {
-	                return new InputSource(new StringReader(""));
+	                return new InputSource(new StringReader("")); //$NON-NLS-1$
 	            }
 	        });
 
@@ -94,8 +94,8 @@ public class XmlCodeList implements CodeList {
 			String id = null;
 			// determine identifier
 			try {
-				Node identifier = ((NodeList) xpath.evaluate("Dictionary/identifier", doc, XPathConstants.NODESET)).item(0);
-				this.namespace = identifier.getAttributes().getNamedItem("codeSpace").getTextContent();
+				Node identifier = ((NodeList) xpath.evaluate("Dictionary/identifier", doc, XPathConstants.NODESET)).item(0); //$NON-NLS-1$
+				this.namespace = identifier.getAttributes().getNamedItem("codeSpace").getTextContent(); //$NON-NLS-1$
 				id = identifier.getTextContent();
 			} catch (Throwable e) {
 				// ignore
@@ -103,7 +103,7 @@ public class XmlCodeList implements CodeList {
 			
 			if (id == null) {
 				try {
-					Node identifier = ((NodeList) xpath.evaluate("Dictionary/name", doc, XPathConstants.NODESET)).item(0);
+					Node identifier = ((NodeList) xpath.evaluate("Dictionary/name", doc, XPathConstants.NODESET)).item(0); //$NON-NLS-1$
 					id = identifier.getTextContent();
 				} catch (Throwable e) {
 					// ignore
@@ -112,7 +112,7 @@ public class XmlCodeList implements CodeList {
 			
 			if (id == null) {
 				id = location.getPath();
-				int idx = id.lastIndexOf("/");
+				int idx = id.lastIndexOf("/"); //$NON-NLS-1$
 				if (idx >= 0 && idx + 1 < id.length()) {
 					id = id.substring(idx + 1);
 				}
@@ -122,7 +122,7 @@ public class XmlCodeList implements CodeList {
 			
 			// determine description
 			try {
-				Node description = ((NodeList) xpath.evaluate("Dictionary/description", doc, XPathConstants.NODESET)).item(0);
+				Node description = ((NodeList) xpath.evaluate("Dictionary/description", doc, XPathConstants.NODESET)).item(0); //$NON-NLS-1$
 				this.description = description.getTextContent();
 			}
 			catch (Throwable e) {
@@ -131,7 +131,7 @@ public class XmlCodeList implements CodeList {
 			}
 			
 			// determine entries
-			NodeList entries = (NodeList) xpath.evaluate("Dictionary/dictionaryEntry/Definition", doc, XPathConstants.NODESET);
+			NodeList entries = (NodeList) xpath.evaluate("Dictionary/dictionaryEntry/Definition", doc, XPathConstants.NODESET); //$NON-NLS-1$
 			addEntries(entries);
 			
 			if (this.namespace == null) {
@@ -139,7 +139,7 @@ public class XmlCodeList implements CodeList {
 				this.namespace = DEF_NS;
 			}
 		} catch (Exception e) {
-			log.error("Error determinating type name(s)", e);
+			log.error("Error determinating type name(s)", e); //$NON-NLS-1$
 			throw e;
 		}
 	}
@@ -157,19 +157,19 @@ public class XmlCodeList implements CodeList {
 			for (int j = 0; j < children.getLength(); j++) {
 				Node child = children.item(j);
 				
-				if (child.getNodeName().endsWith("description")) {
+				if (child.getNodeName().endsWith("description")) { //$NON-NLS-1$
 					description = child.getTextContent();
 				}
-				else if (child.getNodeName().endsWith("identifier") ||
-						(child.getNodeName().endsWith("name") && child.getAttributes().getNamedItem("codeSpace") != null)) {
+				else if (child.getNodeName().endsWith("identifier") || //$NON-NLS-1$
+						(child.getNodeName().endsWith("name") && child.getAttributes().getNamedItem("codeSpace") != null)) { //$NON-NLS-1$ //$NON-NLS-2$
 					identifier = child.getTextContent();
 					try {
-						namespace = child.getAttributes().getNamedItem("codeSpace").getTextContent();
+						namespace = child.getAttributes().getNamedItem("codeSpace").getTextContent(); //$NON-NLS-1$
 					} catch (Exception e) {
 						// optional
 					}
 				}
-				else if (child.getNodeName().endsWith("name")) {
+				else if (child.getNodeName().endsWith("name")) { //$NON-NLS-1$
 					name = child.getTextContent();
 				}
 			}

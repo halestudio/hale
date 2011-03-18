@@ -41,9 +41,9 @@ public class FeatureIndex {
 	
 	private Collection<Feature> groupBy(Feature queryFeature) {
 		if (queryFeature.getProperty(propertyType.getName()) == null) {
-			throw new RuntimeException("You have to use a Feature that has the " +
-					"Property used for this index (" 
-					+ this.propertyType.getName() + ")");
+			throw new RuntimeException("You have to use a Feature that has the " + //$NON-NLS-1$
+					"Property used for this index ("  //$NON-NLS-1$
+					+ this.propertyType.getName() + ")"); //$NON-NLS-1$
 		}
 		
 		Collection<Feature> result = new ArrayList<Feature>();

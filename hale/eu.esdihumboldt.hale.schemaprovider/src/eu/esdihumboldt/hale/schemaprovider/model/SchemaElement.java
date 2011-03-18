@@ -84,7 +84,7 @@ public class SchemaElement extends AbstractDefinition implements Comparable<Sche
 	public AttributeType getAttributeType(Set<TypeDefinition> resolving) {
 		if (attributeType == null) {
 			if (type == null) {
-				throw new IllegalStateException("May not be called yet");
+				throw new IllegalStateException("May not be called yet"); //$NON-NLS-1$
 			}
 			
 			if (!type.isAttributeTypeSet()) {
@@ -170,7 +170,7 @@ public class SchemaElement extends AbstractDefinition implements Comparable<Sche
 	 * @see Definition#getIdentifier()
 	 */
 	public String getIdentifier() {
-		return elementName.getNamespaceURI() + "/" + elementName.getLocalPart();
+		return elementName.getNamespaceURI() + "/" + elementName.getLocalPart(); //$NON-NLS-1$
 	}
 	
 	/**
@@ -197,7 +197,7 @@ public class SchemaElement extends AbstractDefinition implements Comparable<Sche
 	 */
 	@Override
 	public String toString() {
-		return "[element] " + getIdentifier();
+		return "[element] " + getIdentifier(); //$NON-NLS-1$
 	}
 	
 }

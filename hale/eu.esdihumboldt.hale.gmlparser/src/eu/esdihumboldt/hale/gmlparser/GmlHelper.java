@@ -133,9 +133,9 @@ public class GmlHelper {
 			final Configuration conf;
 			if (useAppSchema) {
 				if (namespace == null || schemaLocation == null) {
-					throw new IllegalStateException("Schema namespace and " +
-							"location must be specified when using Application " +
-							"Schema parsing configuration");
+					throw new IllegalStateException("Schema namespace and " + //$NON-NLS-1$
+							"location must be specified when using Application " + //$NON-NLS-1$
+							"Schema parsing configuration"); //$NON-NLS-1$
 				}
 				
 				conf = new HaleSchemaConfiguration(
@@ -157,8 +157,8 @@ public class GmlHelper {
 			HaleGMLParser parser = new HaleGMLParser(conf);
 			Object result = parser.parse(xml);
 
-			if (result instanceof Feature && ((Feature) result).getProperty("featureMember") != null) {
-				result = ((Feature) result).getProperty("featureMember").getValue();
+			if (result instanceof Feature && ((Feature) result).getProperty("featureMember") != null) { //$NON-NLS-1$
+				result = ((Feature) result).getProperty("featureMember").getValue(); //$NON-NLS-1$
 			}
 			
 			FeatureCollection<FeatureType, Feature> featureCollection = null;
@@ -181,7 +181,7 @@ public class GmlHelper {
 			}
 			else if (result instanceof Map<?, ?>) {
 				// extract features from Map
-				Object featureMember = ((Map<?, ?>)result).get("featureMember");
+				Object featureMember = ((Map<?, ?>)result).get("featureMember"); //$NON-NLS-1$
 				CstFeatureCollection fc = new CstFeatureCollection();
 				if (featureMember instanceof Feature) {
 					fc.add((Feature) featureMember);
@@ -221,12 +221,12 @@ public class GmlHelper {
 				Property idProp;
 				switch (type) {
 				case GML2:
-					idProp = FeatureInspector.getProperty(feature, Arrays.asList("fid"), true);
+					idProp = FeatureInspector.getProperty(feature, Arrays.asList("fid"), true); //$NON-NLS-1$
 					break;
 				case GML3: // fall through
 				case GML3_2: // fall through
 				default:
-					idProp = FeatureInspector.getProperty(feature, Arrays.asList("id"), true);
+					idProp = FeatureInspector.getProperty(feature, Arrays.asList("id"), true); //$NON-NLS-1$
 				}
 				
 				if (idProp.getValue() == null) {
@@ -262,7 +262,7 @@ public class GmlHelper {
 				elements.addAll(schema.getElements().values());
 			} catch (Exception e) {
 				schema = null;
-				log.warn("Could not load source schema");
+				log.warn("Could not load source schema"); //$NON-NLS-1$
 			}
 		}
 		else {
@@ -309,11 +309,11 @@ public class GmlHelper {
 						Iterator<Namespace> itNs = element.getNamespaces();
 						while (gmlNamespace == null && itNs.hasNext()) {
 							Namespace ns = itNs.next();
-							if (ns.getNamespaceURI().startsWith("http://www.opengis.net/gml")) {
+							if (ns.getNamespaceURI().startsWith("http://www.opengis.net/gml")) { //$NON-NLS-1$
 								gmlNamespace = ns.getNamespaceURI();
 								
 								// detect GML 3.2 from namespace
-								if (gmlNamespace.equals("http://www.opengis.net/gml/3.2")) {
+								if (gmlNamespace.equals("http://www.opengis.net/gml/3.2")) { //$NON-NLS-1$
 									result = ConfigurationType.GML3_2;
 								}
 							}
@@ -327,12 +327,12 @@ public class GmlHelper {
 						QName name = element.getName();
 						if (name.getNamespaceURI().equals(gmlNamespace)) {
 							// Geotools GML3 configuration doesn't support gml:coordinates -> GML2
-							if (name.getLocalPart().equals("coordinates")) {
+							if (name.getLocalPart().equals("coordinates")) { //$NON-NLS-1$
 								result = ConfigurationType.GML2;
 							}
 							
 							// Geotools GML2 configuration doesn't support gml:posList -> GML3
-							if (name.getLocalPart().equals("posList")) {
+							if (name.getLocalPart().equals("posList")) { //$NON-NLS-1$
 								result = ConfigurationType.GML3;
 							}
 						}

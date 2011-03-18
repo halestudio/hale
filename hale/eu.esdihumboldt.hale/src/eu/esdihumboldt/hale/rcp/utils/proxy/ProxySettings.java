@@ -19,6 +19,7 @@ import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 import org.eclipse.equinox.security.storage.StorageException;
 import org.eclipse.jface.preference.IPreferenceStore;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 
 /**
@@ -38,7 +39,7 @@ public class ProxySettings {
 		try {
 			applyCurrentSettings();
 		} catch (Throwable e) {
-			log.info("Proxy settings not applied, scheduling it for doing it later on demand", e);
+			log.info("Proxy settings not applied, scheduling it for doing it later on demand", e); //$NON-NLS-1$
 			ProxyUtil.addInitializer(new Runnable() {
 				
 				@Override
@@ -65,8 +66,8 @@ public class ProxySettings {
 			// support additional delimiters for nonProxyHosts: comma and semicolon
 			// the java mechanism needs the pipe as delimiter 
 			// see also ProxyPreferencePage.performOk
-			nonProxyHosts = nonProxyHosts.replaceAll(",", "|");
-			nonProxyHosts = nonProxyHosts.replaceAll(";", "|");
+			nonProxyHosts = nonProxyHosts.replaceAll(",", "|"); //$NON-NLS-1$ //$NON-NLS-2$
+			nonProxyHosts = nonProxyHosts.replaceAll(";", "|"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		
 		if (host == null || host.isEmpty()) {
@@ -74,8 +75,8 @@ public class ProxySettings {
 			System.clearProperty("http.proxyPort"); //$NON-NLS-1$
 			System.clearProperty("http.nonProxyHosts"); //$NON-NLS-1$
 			
-			System.clearProperty("http.proxyUser");
-			System.clearProperty("http.proxyPassword");
+			System.clearProperty("http.proxyUser"); //$NON-NLS-1$
+			System.clearProperty("http.proxyPassword"); //$NON-NLS-1$
 		} else {
 			System.setProperty("http.proxyHost", host); //$NON-NLS-1$
 			System.setProperty("http.proxyPort", String.valueOf(port)); //$NON-NLS-1$
@@ -88,7 +89,7 @@ public class ProxySettings {
 			// only check user/password if host is set
 			String proxyUser = prefs.getString(PreferenceConstants.CONNECTION_PROXY_USER);
 			if (proxyUser != null && !proxyUser.isEmpty()) {
-				System.setProperty("http.proxyUser", proxyUser);
+				System.setProperty("http.proxyUser", proxyUser); //$NON-NLS-1$
 				
 				try {
 					String password = SecurePreferencesFactory.getDefault()
@@ -96,20 +97,20 @@ public class ProxySettings {
 						.get(PreferenceConstants.CONNECTION_PROXY_PASSWORD, null);
 
 					if (password != null) {
-						System.setProperty("http.proxyPassword", password);
+						System.setProperty("http.proxyPassword", password); //$NON-NLS-1$
 						
 						Authenticator.setDefault(new HttpAuth(proxyUser, password));
 					}
 					else {
-						System.clearProperty("http.proxyPassword");
+						System.clearProperty("http.proxyPassword"); //$NON-NLS-1$
 					}
 				} catch (StorageException e) {
-					log.error("Error accessing secure preferences for proxy password");
+					log.error("Error accessing secure preferences for proxy password"); //$NON-NLS-1$
 				}
 			}
 			else {
-				System.clearProperty("http.proxyUser");
-				System.clearProperty("http.proxyPassword");
+				System.clearProperty("http.proxyUser"); //$NON-NLS-1$
+				System.clearProperty("http.proxyPassword"); //$NON-NLS-1$
 			}
 		}
 	}

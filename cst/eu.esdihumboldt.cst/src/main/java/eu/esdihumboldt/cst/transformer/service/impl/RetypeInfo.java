@@ -74,7 +74,7 @@ public class RetypeInfo {
 				this.instanceCardinality = cardinality;
 				break;
 			default:
-				log.warn("Instance cardinality was tried to set multiple times");
+				log.warn("Instance cardinality was tried to set multiple times"); //$NON-NLS-1$
 			}
 		}
 	}

@@ -4,6 +4,8 @@ import java.util.Collection;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 
+import eu.esdihumboldt.hale.Messages;
+
 /*
  * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
  * EU Integrated Project #030962                  01.10.2006 - 30.09.2010
@@ -42,7 +44,7 @@ public class SchemaPrinter {
 	
 	static private void printFeatureTypeCollection(Collection<FeatureType> featureTypes, FeatureType superType, int level) {
 		level++;
-		if (level == 0) System.out.println("Size of feature type collection: " + featureTypes.size());
+		if (level == 0) System.out.println("Size of feature type collection: " + featureTypes.size()); //$NON-NLS-1$
 		if (level == 10) return;
 		for(FeatureType type : featureTypes) {
 			if (level == 0 && type.getSuper() == null) {
@@ -52,23 +54,23 @@ public class SchemaPrinter {
 
 				for (PropertyDescriptor pd : type.getDescriptors()) {
 					for (int i = 0; i < level + 1; i++)	{
-						System.out.print("\t");
+						System.out.print("\t"); //$NON-NLS-1$
 					}
-					System.out.println("-" + pd.getName().getLocalPart() + ":<" + pd.getType().getBinding().getSimpleName() + ">");
+					System.out.println("-" + pd.getName().getLocalPart() + ":<" + pd.getType().getBinding().getSimpleName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				}
 				
 			} else if (type.getSuper() != null && superType != null && superType.getName().getLocalPart().equals(type.getSuper().getName().getLocalPart())) {
 					
-				for (int i = 0; i < level; i++)	System.out.print("\t");
-				System.out.println("+" +  type.getName().getLocalPart() );
+				for (int i = 0; i < level; i++)	System.out.print("\t"); //$NON-NLS-1$
+				System.out.println("+" +  type.getName().getLocalPart() ); //$NON-NLS-1$
 
 				printFeatureTypeCollection(featureTypes, type, level);
 
 				for (PropertyDescriptor pd : type.getDescriptors()) {
 					for (int i = 0; i < level + 1; i++)	{
-						System.out.print("\t");
+						System.out.print("\t"); //$NON-NLS-1$
 					}
-					System.out.println("oo " + pd.getName().getLocalPart() + ":<" + pd.getType() + ">");
+					System.out.println("oo " + pd.getName().getLocalPart() + ":<" + pd.getType() + ">"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				}
 			}
 		}

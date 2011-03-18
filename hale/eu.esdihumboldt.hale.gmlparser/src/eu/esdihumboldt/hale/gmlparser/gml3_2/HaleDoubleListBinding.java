@@ -41,7 +41,7 @@ public class HaleDoubleListBinding extends org.geotools.gml3.bindings.DoubleList
     	}
     	else {
     		// parse double list from instance
-    		String[] items = instance.getText().split("\\s");
+    		String[] items = instance.getText().split("\\s"); //$NON-NLS-1$
     		List<Double> result = new ArrayList<Double>();
     		for (String item : items) {
     			if (!item.isEmpty()) {

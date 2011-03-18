@@ -85,8 +85,8 @@ public class SchemaTranslationControllerAggregateTest {
 		SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
 		ftbuilder.setName(NameHelper.sourceLocalname);
 		ftbuilder.setNamespaceURI(NameHelper.sourceNamespace);
-		ftbuilder.add("the_geom", LineString.class);
-		ftbuilder.setDefaultGeometry("the_geom");
+		ftbuilder.add("the_geom", LineString.class); //$NON-NLS-1$
+		ftbuilder.setDefaultGeometry("the_geom"); //$NON-NLS-1$
 		sourceType = ftbuilder.buildFeatureType();
 		
 
@@ -94,8 +94,8 @@ public class SchemaTranslationControllerAggregateTest {
 		SimpleFeatureTypeBuilder ftbuilder2 = new SimpleFeatureTypeBuilder();
 		ftbuilder2.setName(NameHelper.targetLocalname);
 		ftbuilder2.setNamespaceURI(NameHelper.targetNamespace);
-		ftbuilder2.add("the_geom2", MultiLineString.class);
-		ftbuilder2.setDefaultGeometry("the_geom2");
+		ftbuilder2.add("the_geom2", MultiLineString.class); //$NON-NLS-1$
+		ftbuilder2.setDefaultGeometry("the_geom2"); //$NON-NLS-1$
 		targetType = ftbuilder2.buildFeatureType();
 
 
@@ -142,7 +142,7 @@ public class SchemaTranslationControllerAggregateTest {
 		// and finally, we have to assert that what we got back is what we expected.
 		assertTrue(result != null);
 		
-		_log.info("RESULT Size: " +result.size());
+		_log.info("RESULT Size: " +result.size()); //$NON-NLS-1$
 		
 		assertTrue(result.getSchema().getName().getLocalPart().equals(
 				NameHelper.targetLocalname));
@@ -150,7 +150,7 @@ public class SchemaTranslationControllerAggregateTest {
 		for ( Iterator i = result.iterator(); i.hasNext(); )
 		{
 		  SimpleFeature target = (SimpleFeature) i.next();
-		  _log.info("Target def Geom: " + target.getDefaultGeometry()); 
+		  _log.info("Target def Geom: " + target.getDefaultGeometry());  //$NON-NLS-1$
 		}
 
 	}
@@ -163,14 +163,14 @@ public class SchemaTranslationControllerAggregateTest {
 	private static IAlignment getTestAlignment(){
 		// first, use an alignment created by a different test as a basis.
 		Alignment a = new Alignment();
-		a.setAbout(new About("lala"));
+		a.setAbout(new About("lala")); //$NON-NLS-1$
 		try {
 			a.setSchema1(new Schema(
 					NameHelper.sourceNamespace, new Formalism(
-							"GML", new URI("http://schemas.opengis.org/gml"))));
+							"GML", new URI("http://schemas.opengis.org/gml")))); //$NON-NLS-1$ //$NON-NLS-2$
 			a.setSchema2(new Schema(
 					NameHelper.targetNamespace, new Formalism(
-							"GML", new URI("http://schemas.opengis.org/gml"))));
+							"GML", new URI("http://schemas.opengis.org/gml")))); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
@@ -192,16 +192,16 @@ public class SchemaTranslationControllerAggregateTest {
 		t.setService(new Resource(RenameFeatureFunction.class.getName()));
 		t.getParameters().add(
 				new Parameter(
-						"SelectedAttribute", 
-						"the_geom"));
+						"SelectedAttribute",  //$NON-NLS-1$
+						"the_geom")); //$NON-NLS-1$
 		t.getParameters().add(
 				new Parameter(
-						"InstanceMergeCondition", 
-						"aggregate:Multi"));
+						"InstanceMergeCondition",  //$NON-NLS-1$
+						"aggregate:Multi")); //$NON-NLS-1$
 		t.getParameters().add(
 				new Parameter(
-						"TargetAttribute", 
-						"the_geom2"));
+						"TargetAttribute",  //$NON-NLS-1$
+						"the_geom2")); //$NON-NLS-1$
 		((FeatureClass)cell.getEntity1()).setTransformation(t);
 		a.getMap().add(cell);
 		

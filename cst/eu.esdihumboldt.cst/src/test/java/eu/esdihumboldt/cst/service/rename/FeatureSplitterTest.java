@@ -61,7 +61,7 @@ public class FeatureSplitterTest {
 		for (int i = 0; i < 10; i++) {
 			this.testFeaturesPoints.add(this.getFeature(
 					NameHelper.sourceNamespace, 
-					NameHelper.sourceLocalname + "_MPoint", 
+					NameHelper.sourceLocalname + "_MPoint",  //$NON-NLS-1$
 					NameHelper.sourceLocalnamePropertyA, 
 					MultiPoint.class));
 		}
@@ -70,7 +70,7 @@ public class FeatureSplitterTest {
 		for (int i = 0; i < 10; i++) {
 			this.testFeaturesLineStrings.add(this.getFeature(
 					NameHelper.sourceNamespace, 
-					NameHelper.sourceLocalname + "_MLineString", 
+					NameHelper.sourceLocalname + "_MLineString",  //$NON-NLS-1$
 					NameHelper.sourceLocalnamePropertyA, 
 					MultiLineString.class));
 		}
@@ -79,7 +79,7 @@ public class FeatureSplitterTest {
 		for (int i = 0; i < 10; i++) {
 			this.testFeaturesPolygons.add(this.getFeature(
 					NameHelper.sourceNamespace, 
-					NameHelper.sourceLocalname + "_MPolygon", 
+					NameHelper.sourceLocalname + "_MPolygon",  //$NON-NLS-1$
 					NameHelper.sourceLocalnamePropertyA, 
 					MultiPolygon.class));
 		}
@@ -90,16 +90,16 @@ public class FeatureSplitterTest {
 	 */
 	@Test
 	public void testFeatureSplitter() {
-		new FeatureSplitter("test", "split:extractSubgeometry(Point)", "default_geometry");
-		new FeatureSplitter("test", "split:extractSubgeometry(LineString)", "default_geometry");
-		new FeatureSplitter("test", "split:extractSubgeometry(Polygon)", "default_geometry");
+		new FeatureSplitter("test", "split:extractSubgeometry(Point)", "default_geometry"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		new FeatureSplitter("test", "split:extractSubgeometry(LineString)", "default_geometry"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		new FeatureSplitter("test", "split:extractSubgeometry(Polygon)", "default_geometry"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
 		try {
-			new FeatureSplitter("test", "split:extractSubgeometry(Blablah)", "default_geometry");
+			new FeatureSplitter("test", "split:extractSubgeometry(Blablah)", "default_geometry"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 		catch (Exception ex) {
-			assertEquals(ex.getMessage(), "You can only extract Points, " +
-					"Polygons and LineStrings.");
+			assertEquals(ex.getMessage(), "You can only extract Points, " + //$NON-NLS-1$
+					"Polygons and LineStrings."); //$NON-NLS-1$
 		}
 	}
 
@@ -109,19 +109,19 @@ public class FeatureSplitterTest {
 	@Test
 	public void testSplit() {
 		List<Feature> features = null;
-		FeatureSplitter fs = new FeatureSplitter(NameHelper.sourceLocalnamePropertyA, "split:extractSubgeometry(Polygon)", "default_geometry");
+		FeatureSplitter fs = new FeatureSplitter(NameHelper.sourceLocalnamePropertyA, "split:extractSubgeometry(Polygon)", "default_geometry"); //$NON-NLS-1$ //$NON-NLS-2$
 		for (Feature f : this.testFeaturesPolygons) {
 			features = fs.split(f, this.getTargetFT(Polygon.class));
 		}
 		assertTrue(features.size() == 10);
 		
-		fs = new FeatureSplitter(NameHelper.sourceLocalnamePropertyA, "split:extractSubgeometry(LineString)", "default_geometry");
+		fs = new FeatureSplitter(NameHelper.sourceLocalnamePropertyA, "split:extractSubgeometry(LineString)", "default_geometry"); //$NON-NLS-1$ //$NON-NLS-2$
 		for (Feature f : this.testFeaturesLineStrings) {
 			features = fs.split(f, this.getTargetFT(LineString.class));
 		}
 		assertTrue(features.size() == 10);
 		
-		fs = new FeatureSplitter(NameHelper.sourceLocalnamePropertyA, "split:extractSubgeometry(Point)", "default_geometry");
+		fs = new FeatureSplitter(NameHelper.sourceLocalnamePropertyA, "split:extractSubgeometry(Point)", "default_geometry"); //$NON-NLS-1$ //$NON-NLS-2$
 		for (Feature f : this.testFeaturesPoints) {
 			features = fs.split(f, this.getTargetFT(Point.class));
 		}
@@ -143,8 +143,8 @@ public class FeatureSplitterTest {
 			SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
 			ftbuilder.setName(NameHelper.targetLocalname);
 			ftbuilder.setNamespaceURI(NameHelper.targetNamespace);
-			ftbuilder.add("default_geometry", geometryClass);
-			ftbuilder.setDefaultGeometry("default_geometry");
+			ftbuilder.add("default_geometry", geometryClass); //$NON-NLS-1$
+			ftbuilder.setDefaultGeometry("default_geometry"); //$NON-NLS-1$
 			ft = ftbuilder.buildFeatureType();
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);

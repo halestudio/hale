@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditor;
 
@@ -57,7 +58,7 @@ public abstract class StringValidatingAttributeEditor<T> implements
 	public StringValidatingAttributeEditor(Composite parent) {
 		super();
 		
-		okImage = HALEActivator.getImageDescriptor("icons/ok.gif").createImage();
+		okImage = HALEActivator.getImageDescriptor("icons/ok.gif").createImage(); //$NON-NLS-1$
 		
 		container = new Composite(parent, SWT.NONE);
 		
@@ -126,7 +127,7 @@ public abstract class StringValidatingAttributeEditor<T> implements
 	 * @return the tooltip for a valid value
 	 */
 	protected String getValidToolTip() {
-		return "The value you entered is valid";
+		return Messages.getString("StringValidatingAttributeEditor.1"); //$NON-NLS-1$
 	}
 
 	/**
@@ -192,7 +193,7 @@ public abstract class StringValidatingAttributeEditor<T> implements
 	@Override
 	public void setAsText(String text) {
 		if (text == null && emptyStringIsNull()) {
-			editor.setText("");
+			editor.setText(""); //$NON-NLS-1$
 		}
 		else {
 			editor.setText(text);

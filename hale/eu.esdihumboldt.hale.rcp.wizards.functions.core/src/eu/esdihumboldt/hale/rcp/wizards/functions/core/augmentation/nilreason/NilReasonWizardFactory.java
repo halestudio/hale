@@ -48,7 +48,7 @@ public class NilReasonWizardFactory extends AugmentationWizardFactory {
 		if (item.hasChildren()) {
 			boolean foundNilReason = false;
 			for (SchemaItem child : item.getChildren()) {
-				if (child.getName().getLocalPart().equalsIgnoreCase("nilreason")
+				if (child.getName().getLocalPart().equalsIgnoreCase("nilreason") //$NON-NLS-1$
 						&& child.isAttribute()) {
 					foundNilReason = true;
 				}

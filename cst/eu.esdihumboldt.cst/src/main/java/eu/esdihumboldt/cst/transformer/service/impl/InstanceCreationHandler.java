@@ -58,11 +58,11 @@ public class InstanceCreationHandler {
 			// FIXME temp solution until solution for correct typename is found.
 			if (features == null) {
 				String modifiedTypeName = null;
-				if (sourceFtName.lastIndexOf("_Type") != -1) {
-					modifiedTypeName = sourceFtName.substring(0, sourceFtName.lastIndexOf("_Type"));
+				if (sourceFtName.lastIndexOf("_Type") != -1) { //$NON-NLS-1$
+					modifiedTypeName = sourceFtName.substring(0, sourceFtName.lastIndexOf("_Type")); //$NON-NLS-1$
 				}
-				else if (sourceFtName.lastIndexOf("Type") != -1) {
-					modifiedTypeName = sourceFtName.substring(0, sourceFtName.lastIndexOf("Type"));
+				else if (sourceFtName.lastIndexOf("Type") != -1) { //$NON-NLS-1$
+					modifiedTypeName = sourceFtName.substring(0, sourceFtName.lastIndexOf("Type")); //$NON-NLS-1$
 				}
 				features = partitionedSourceFeatures.get(modifiedTypeName);
 			}

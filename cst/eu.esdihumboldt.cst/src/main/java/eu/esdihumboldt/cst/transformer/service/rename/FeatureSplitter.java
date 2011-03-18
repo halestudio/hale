@@ -70,36 +70,36 @@ public class FeatureSplitter {
 		this.onAttributeName = onAttributeName;
 		this.targetAttribute = targetAttribute;
 		
-		String[] splitrule = splitRule.split(":");
-		if (splitrule[0].equals("split")) {
-			if (splitrule[1].startsWith("extractSubgeometry")) {
+		String[] splitrule = splitRule.split(":"); //$NON-NLS-1$
+		if (splitrule[0].equals("split")) { //$NON-NLS-1$
+			if (splitrule[1].startsWith("extractSubgeometry")) { //$NON-NLS-1$
 				String extractGeometryParameter = splitrule[1].substring(
-						splitrule[1].indexOf("(") + 1, 
-						splitrule[1].indexOf(")"));
-				if (extractGeometryParameter.equals("Point")) {
+						splitrule[1].indexOf("(") + 1,  //$NON-NLS-1$
+						splitrule[1].indexOf(")")); //$NON-NLS-1$
+				if (extractGeometryParameter.equals("Point")) { //$NON-NLS-1$
 					this.geometryAtomType = Point.class;
 				}
-				else if (extractGeometryParameter.equals("LineString")) {
+				else if (extractGeometryParameter.equals("LineString")) { //$NON-NLS-1$
 					this.geometryAtomType = LineString.class;
 				}
-				else if (extractGeometryParameter.equals("Polygon")) {
+				else if (extractGeometryParameter.equals("Polygon")) { //$NON-NLS-1$
 					this.geometryAtomType = Polygon.class;
 				}
 				else {
-					throw new RuntimeException("You can only extract Points, " +
-							"Polygons and LineStrings.");
+					throw new RuntimeException("You can only extract Points, " + //$NON-NLS-1$
+							"Polygons and LineStrings."); //$NON-NLS-1$
 				}
 			}
-			else if (splitrule[1].startsWith("extractSubstring")) {
+			else if (splitrule[1].startsWith("extractSubstring")) { //$NON-NLS-1$
 				String extractSubstringParameters = splitrule[1].substring(
-						splitrule[1].indexOf("("), 
-						splitrule[1].indexOf(")"));
+						splitrule[1].indexOf("("),  //$NON-NLS-1$
+						splitrule[1].indexOf(")")); //$NON-NLS-1$
 				this.pattern = Pattern.compile(extractSubstringParameters);
 			}
 		}
 		else {
-			throw new RuntimeException("You can only create a " +
-				"FeatureSplitter from a split rule.");
+			throw new RuntimeException("You can only create a " + //$NON-NLS-1$
+				"FeatureSplitter from a split rule."); //$NON-NLS-1$
 		}
 	}
 	
@@ -136,9 +136,9 @@ public class FeatureSplitter {
 		}
 		
 		if (Geometry.class.isAssignableFrom(attribute_value.getClass())) {
-			String preparedErrorMsg = "It is not possible to extract "
-					+ this.geometryAtomType + " from the "
-					+ "given geometry type: "
+			String preparedErrorMsg = "It is not possible to extract " //$NON-NLS-1$
+					+ this.geometryAtomType + " from the " //$NON-NLS-1$
+					+ "given geometry type: " //$NON-NLS-1$
 					+ attribute_value.getClass().getName();
 			
 			if (attribute_value.getClass().equals(MultiLineString.class)) {
@@ -223,14 +223,14 @@ public class FeatureSplitter {
 				}
 			}
 			else {
-				throw new RuntimeException("The geometry attribute to " +
-						"split is of an unknow type: " + 
+				throw new RuntimeException("The geometry attribute to " + //$NON-NLS-1$
+						"split is of an unknow type: " +  //$NON-NLS-1$
 						attribute_value.getClass().getName());
 			}
 		}
 		else {
-			throw new RuntimeException("An extractSubgeometry rule was " +
-					"defined on a non-Geometry property.");
+			throw new RuntimeException("An extractSubgeometry rule was " + //$NON-NLS-1$
+					"defined on a non-Geometry property."); //$NON-NLS-1$
 		}
 		return result;
 	}
@@ -243,7 +243,7 @@ public class FeatureSplitter {
 		for (Coordinate c : coordinates) {
 			SimpleFeature target = SimpleFeatureBuilder.build(
 					(SimpleFeatureType) targetType, new Object[]{}, 
-					source.getIdentifier().getID() + "[" + i++ + "]");
+					source.getIdentifier().getID() + "[" + i++ + "]"); //$NON-NLS-1$ //$NON-NLS-2$
 			target.getProperty(
 					this.targetAttribute).setValue(geomFactory.createPoint(c));
 //			target.setDefaultGeometry(geomFactory.createPoint(c));
@@ -260,7 +260,7 @@ public class FeatureSplitter {
 		for (LineString ls : lineStrings) {
 			SimpleFeature target = SimpleFeatureBuilder.build(
 					(SimpleFeatureType) targetType, new Object[]{}, 
-					source.getIdentifier().getID() + "[" + i++ + "]");
+					source.getIdentifier().getID() + "[" + i++ + "]"); //$NON-NLS-1$ //$NON-NLS-2$
 			target.getProperty(this.targetAttribute).setValue(geomFactory.createLineString(
 					ls.getCoordinates()));
 			result.add(target);
@@ -276,7 +276,7 @@ public class FeatureSplitter {
 		for (Polygon polygon : polygons) {
 			SimpleFeature target = SimpleFeatureBuilder.build(
 					(SimpleFeatureType) targetType, new Object[]{}, 
-					source.getIdentifier().getID() + "[" + i++ + "]");
+					source.getIdentifier().getID() + "[" + i++ + "]"); //$NON-NLS-1$ //$NON-NLS-2$
 			LinearRing[] interiorPolys = new LinearRing[polygon.getNumInteriorRing()];
 			for (int n = 0; n < polygon.getNumInteriorRing(); n++) {
 				interiorPolys[n] = geomFactory.createLinearRing(

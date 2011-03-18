@@ -150,7 +150,7 @@ public class SchemaImportWizard
 						
 						String customSchemaFormat = null;
 						if (useWfs) {
-							customSchemaFormat = "xsd";
+							customSchemaFormat = "xsd"; //$NON-NLS-1$
 						}
 						
 						if (schemaType == SchemaType.SOURCE) {
@@ -162,8 +162,8 @@ public class SchemaImportWizard
 							schema.setLocation(uri.toASCIIString());
 							schema.setAbout(new About(schemaService.getSourceNameSpace()));
 							schema.setFormalism(new Formalism(
-									"GML Application Schema",  //FIXME Use predefined formalism objects
-									new URI("http://www.opengis.net/gml")));
+									"GML Application Schema",  //FIXME Use predefined formalism objects //$NON-NLS-1$
+									new URI("http://www.opengis.net/gml"))); //$NON-NLS-1$
 							
 							alService.getAlignment().setSchema1(schema);
 							projectService.setSourceSchemaPath(uri.toString());
@@ -177,8 +177,8 @@ public class SchemaImportWizard
 							schema.setLocation(uri.toASCIIString());
 							schema.setAbout(new About(schemaService.getTargetNameSpace()));
 							schema.setFormalism(new Formalism(
-									"GML Application Schema",  //FIXME Use predefined formalism objects
-									new URI("http://www.opengis.net/gml")));
+									"GML Application Schema",  //FIXME Use predefined formalism objects //$NON-NLS-1$
+									new URI("http://www.opengis.net/gml"))); //$NON-NLS-1$
 							alService.getAlignment().setSchema2(schema);
 							projectService.setTargetSchemaPath(uri.toString());
 						}

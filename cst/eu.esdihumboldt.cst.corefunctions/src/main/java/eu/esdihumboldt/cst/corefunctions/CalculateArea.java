@@ -59,7 +59,7 @@ public class CalculateArea extends AbstractCstFunction {
 	@Override
 	public ICell getParameters() {
 		Cell parameterCell = new Cell();
-		Property entity1 = new Property(new About(""));
+		Property entity1 = new Property(new About("")); //$NON-NLS-1$
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
@@ -67,7 +67,7 @@ public class CalculateArea extends AbstractCstFunction {
 		entityTypes.add(org.opengis.geometry.Geometry.class.getName());
 		entity1.setTypeCondition(entityTypes);
 		
-		Property entity2 = new Property(new About(""));
+		Property entity2 = new Property(new About("")); //$NON-NLS-1$
 
 		// Setting of type condition for entity2
 		entityTypes = new ArrayList <String>();

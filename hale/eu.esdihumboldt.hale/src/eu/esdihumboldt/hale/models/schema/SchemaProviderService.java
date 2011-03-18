@@ -111,7 +111,7 @@ public class SchemaProviderService
 	 */
 	@Override
 	public boolean loadSchema(URI location, String schemaFormat, SchemaType type, ProgressIndicator progress) throws IOException {
-		ATransaction logTrans = log.begin("Loading " + type + " schema from " + location.toString());
+		ATransaction logTrans = log.begin("Loading " + type + " schema from " + location.toString()); //$NON-NLS-1$ //$NON-NLS-2$
 		try {
 			if (schemaFormat == null) {
 				schemaFormat = determineSchemaFormat(location);
@@ -158,7 +158,7 @@ public class SchemaProviderService
 			}
 		}
 		
-		throw new IllegalArgumentException("No schema provider for the given format: " + format);
+		throw new IllegalArgumentException("No schema provider for the given format: " + format); //$NON-NLS-1$
 	}
 
 	private String determineSchemaFormat(URI location) {
@@ -167,13 +167,13 @@ public class SchemaProviderService
 		// special cases
 		
 		// WFS describe feature type
-		if (loc.toLowerCase().contains("request=describefeaturetype")) {
-			return "xsd";
+		if (loc.toLowerCase().contains("request=describefeaturetype")) { //$NON-NLS-1$
+			return "xsd"; //$NON-NLS-1$
 		}
 		
 		int index = loc.lastIndexOf('.');
 		if (index < 0) {
-			throw new IllegalArgumentException("Unable to automatically determine schema format");
+			throw new IllegalArgumentException("Unable to automatically determine schema format"); //$NON-NLS-1$
 		}
 		else {
 			return loc.substring(index + 1);
@@ -230,7 +230,7 @@ public class SchemaProviderService
 	public SchemaElement getElementByName(String name) {
 		SchemaElement result = null;
 		// handles cases where a full name was given.
-		if (!getSourceNameSpace().equals("") && name.contains(getSourceNameSpace())) {
+		if (!getSourceNameSpace().equals("") && name.contains(getSourceNameSpace())) { //$NON-NLS-1$
 			for (SchemaElement element : getSourceSchemaElements()) {
 				if (element.getElementName().getLocalPart().equals(name)) {
 					result = element;
@@ -238,7 +238,7 @@ public class SchemaProviderService
 				}
 			}
 		}
-		else if (!getTargetNameSpace().equals("") && name.contains(getTargetNameSpace())) {
+		else if (!getTargetNameSpace().equals("") && name.contains(getTargetNameSpace())) { //$NON-NLS-1$
 			for (SchemaElement element : getTargetSchemaElements()) {
 				if (element.getElementName().getLocalPart().equals(name)) {
 					result = element;

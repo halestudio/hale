@@ -31,17 +31,17 @@ public class GmlHelperTest {
 	
 	@Test
 	public void testDetermineVersionGML2() {
-		Assert.assertEquals(ConfigurationType.GML2, determineGMLVersion("d_ogr.gml"));
+		Assert.assertEquals(ConfigurationType.GML2, determineGMLVersion("d_ogr.gml")); //$NON-NLS-1$
 	}
 	
 	@Test
 	public void testDetermineVersionGML3() {
-		Assert.assertEquals(ConfigurationType.GML3, determineGMLVersion("Italy_SIC_data.xml"));
+		Assert.assertEquals(ConfigurationType.GML3, determineGMLVersion("Italy_SIC_data.xml")); //$NON-NLS-1$
 	}
 	
 	@Test
 	public void testDetermineVersionGML3_2() {
-		Assert.assertEquals(ConfigurationType.GML3_2, determineGMLVersion("Bestandsdatenauszug_FC.xml"));
+		Assert.assertEquals(ConfigurationType.GML3_2, determineGMLVersion("Bestandsdatenauszug_FC.xml")); //$NON-NLS-1$
 	}
 	
 	private Object determineGMLVersion(String filename) {

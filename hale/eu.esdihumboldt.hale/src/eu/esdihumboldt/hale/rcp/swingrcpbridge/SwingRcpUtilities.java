@@ -53,7 +53,7 @@ public class SwingRcpUtilities {
 	public static void setup() {
 		if (!initialized) {
 			// reduce flicker on Windows
-			System.setProperty("sun.awt.noerasebackground", "true");
+			System.setProperty("sun.awt.noerasebackground", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 
 			// setup look and feel
 			setupLookAndFeel();
@@ -75,7 +75,7 @@ public class SwingRcpUtilities {
 				UIManager.setLookAndFeel(UIManager
 						.getSystemLookAndFeelClassName());
 			} catch (Exception e) {
-				_log.error("Error setting system look and feel", e);
+				_log.error("Error setting system look and feel", e); //$NON-NLS-1$
 			}
 
 			lafInitialized = true;

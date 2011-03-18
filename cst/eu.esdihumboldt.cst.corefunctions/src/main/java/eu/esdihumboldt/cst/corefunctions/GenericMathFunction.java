@@ -77,7 +77,7 @@ public class GenericMathFunction
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
 	
-		ComposedProperty  entity1 = new ComposedProperty(new About(""));
+		ComposedProperty  entity1 = new ComposedProperty(new About(Messages.getString("GenericMathFunction.0"))); //$NON-NLS-1$
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
@@ -85,7 +85,7 @@ public class GenericMathFunction
 		entityTypes.add(Number.class.getName());
 		entity1.setTypeCondition(entityTypes);
 		
-		Property entity2 = new Property(new About(""));	
+		Property entity2 = new Property(new About(Messages.getString("GenericMathFunction.1")));	 //$NON-NLS-1$
 		
 		// Setting of type condition for entity2
 			// 	entity2 has same type conditions as entity1

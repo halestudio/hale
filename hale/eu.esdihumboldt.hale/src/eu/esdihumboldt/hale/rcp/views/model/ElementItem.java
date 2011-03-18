@@ -54,9 +54,9 @@ public class ElementItem extends TreeParent {
 	 */
 	private static TreeObjectType determineType(TypeDefinition type) {
 		// special case: treat AbstractGMLType as abstract FeatureType (if it has an AbstractFeatureType sub-type)
-		if (type.getName().getLocalPart().equals("AbstractGMLType")) {
+		if (type.getName().getLocalPart().equals("AbstractGMLType")) { //$NON-NLS-1$
 			for (TypeDefinition subtype : type.getSubTypes()) {
-				if (subtype.getName().getLocalPart().equals("AbstractFeatureType")) {
+				if (subtype.getName().getLocalPart().equals("AbstractFeatureType")) { //$NON-NLS-1$
 					return TreeObjectType.ABSTRACT_FT;
 				}
 			}

@@ -15,6 +15,7 @@ import java.util.Collection;
 
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.project.HaleOmlRdfGenerator;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
@@ -37,8 +38,8 @@ public class OmlMappingExportProvider implements MappingExportProvider {
 		try {
 			orgen.write(al, path);
 		} catch (Exception e) {
-			throw new MappingExportException("During the export of the " +
-					"Alignment to the OML format, an error occured.", e);
+			throw new MappingExportException("During the export of the " + //$NON-NLS-1$
+					"Alignment to the OML format, an error occured.", e); //$NON-NLS-1$
 		}
 		
 		return null;

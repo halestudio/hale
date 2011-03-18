@@ -77,8 +77,8 @@ public class AlignmentIndex {
 					this.abstractTargetTypes.add(getKeyFromEntity(p));
 				}
 			}
-			_log.info("Recognized " + this.abstractTargetTypes.size() 
-					+ " orphan cells.");
+			_log.info("Recognized " + this.abstractTargetTypes.size()  //$NON-NLS-1$
+					+ " orphan cells."); //$NON-NLS-1$
 		}
 		
 		this.determineCellsPerFeatureType(al);
@@ -107,7 +107,7 @@ public class AlignmentIndex {
 				}
 			}
 			else {
-				throw new RuntimeException("Unknown Entity String.");
+				throw new RuntimeException("Unknown Entity String."); //$NON-NLS-1$
 			}
 		}
 		return result;
@@ -142,7 +142,7 @@ public class AlignmentIndex {
 		// add cells for the identified relevant types
 		for (FeatureType type: relevantTypes) {
 			result.addAll(this.cellsFtIndex.get(
-					type.getName().getNamespaceURI() + "/" 
+					type.getName().getNamespaceURI() + "/"  //$NON-NLS-1$
 					+ type.getName().getLocalPart()));
 		}
 		
@@ -294,12 +294,12 @@ public class AlignmentIndex {
 	 * @return a {@link String} for a {@link FeatureType} key.
 	 */
 	public static String getFeatureTypeKey(String key, String namespace) {
-		if (!namespace.endsWith("/")) {
-			namespace = namespace + "/";
+		if (!namespace.endsWith("/")) { //$NON-NLS-1$
+			namespace = namespace + "/"; //$NON-NLS-1$
 		}
-		String localpart = key.replace(namespace, "");
-		if (localpart.contains("/")) {
-			String[] localpartSubstrings = localpart.split("\\/");
+		String localpart = key.replace(namespace, ""); //$NON-NLS-1$
+		if (localpart.contains("/")) { //$NON-NLS-1$
+			String[] localpartSubstrings = localpart.split("\\/"); //$NON-NLS-1$
 			return namespace + localpartSubstrings[0];
 		}
 		else {
@@ -351,13 +351,13 @@ public class AlignmentIndex {
 			key = e.getAbout().getAbout();
 		}
 		else if (e.getClass().isAssignableFrom(Property.class)) {
-			key = ((Property)e).getNamespace() + "/" 
+			key = ((Property)e).getNamespace() + "/"  //$NON-NLS-1$
 					+ ((Property)e).getFeatureClassName();
 		}
 		else if (e.getClass().isAssignableFrom(ComposedProperty.class)) {
 			// FIXME determine if multiple FTs are involved, and if yes, register all of them!
 			Property firstProperty = ((ComposedProperty)e).getCollection().get(0);
-			key = firstProperty.getNamespace() + "/" 
+			key = firstProperty.getNamespace() + "/"  //$NON-NLS-1$
 					+ firstProperty.getFeatureClassName();
 		}
 		return key;

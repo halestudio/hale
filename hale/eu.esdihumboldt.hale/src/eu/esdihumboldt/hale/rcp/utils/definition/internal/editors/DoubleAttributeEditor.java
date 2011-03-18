@@ -14,6 +14,8 @@ package eu.esdihumboldt.hale.rcp.utils.definition.internal.editors;
 
 import org.eclipse.swt.widgets.Composite;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * 
  *
@@ -45,7 +47,7 @@ public class DoubleAttributeEditor extends StringValidatingAttributeEditor<Doubl
 			return null;
 		}
 		catch (NumberFormatException e) {
-			return "No valid input for Double";
+			return Messages.getString("DoubleAttributeEditor.0"); //$NON-NLS-1$
 		}
 	}
 
@@ -54,7 +56,7 @@ public class DoubleAttributeEditor extends StringValidatingAttributeEditor<Doubl
 	 */
 	@Override
 	protected String getValidToolTip() {
-		return "The value you entered is a valid Double";
+		return Messages.getString("DoubleAttributeEditor.1"); //$NON-NLS-1$
 	}
 
 	/**

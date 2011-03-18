@@ -20,6 +20,8 @@ import com.iabcinc.jmep.Environment;
 import com.iabcinc.jmep.Expression;
 import com.iabcinc.jmep.hooks.Constant;
 
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+
 /**
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -73,7 +75,7 @@ public class MathExpressionFieldEditor extends StringFieldEditor {
 				setErrorMessage(e.getLocalizedMessage());
 			}
 			else {
-				setErrorMessage("Invalid variable");
+				setErrorMessage(Messages.MathExpressionFieldEditor_0);
 			}
 			
 			return false;

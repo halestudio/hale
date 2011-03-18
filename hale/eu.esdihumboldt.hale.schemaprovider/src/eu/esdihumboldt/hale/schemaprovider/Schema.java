@@ -33,7 +33,7 @@ public class Schema {
 	 * Empty schema instance
 	 */
 	public static final Schema EMPTY_SCHEMA =
-		new Schema(new HashMap<String, SchemaElement>(), "", null, null);
+		new Schema(new HashMap<String, SchemaElement>(), "", null, null); //$NON-NLS-1$
 	
 	/**
 	 * The schema elements

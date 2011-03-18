@@ -47,7 +47,7 @@ public class SearchPathNode extends DefaultTreeNode {
 			
 			@Override
 			public boolean accept(File dir, String name) {
-				return name.toLowerCase().endsWith(".xml");
+				return name.toLowerCase().endsWith(".xml"); //$NON-NLS-1$
 			}
 		});
 		

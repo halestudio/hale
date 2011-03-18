@@ -245,14 +245,14 @@ public class DefinitionPath {
 				result = new StringBuffer();
 			}
 			else {
-				result.append(", ");
+				result.append(", "); //$NON-NLS-1$
 			}
 			
 			result.append(step.getName());
 		}
 		
 		if (result == null) {
-			return "empty";
+			return "empty"; //$NON-NLS-1$
 		}
 		else {
 			return result.toString();

@@ -55,7 +55,7 @@ public class HaleGMLParser {
      */
     public HaleGMLParser(Configuration configuration) {
         if (configuration == null) {
-            throw new NullPointerException("configuration");
+            throw new NullPointerException("configuration"); //$NON-NLS-1$
         }
         
         handler = new ParserHandler(configuration);
@@ -265,12 +265,12 @@ public class HaleGMLParser {
         SAXParser parser = new SAXParser();
 
         //set the appropriate features
-        parser.setFeature("http://xml.org/sax/features/namespaces", true);
+        parser.setFeature("http://xml.org/sax/features/namespaces", true); //$NON-NLS-1$
 
         if (handler.isValidating()) {
-            parser.setFeature("http://xml.org/sax/features/validation", true);
-            parser.setFeature("http://apache.org/xml/features/validation/schema", true);
-            parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
+            parser.setFeature("http://xml.org/sax/features/validation", true); //$NON-NLS-1$
+            parser.setFeature("http://apache.org/xml/features/validation/schema", true); //$NON-NLS-1$
+            parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true); //$NON-NLS-1$
         }
 
         //set the schema sources of this configuration, and all dependent ones
@@ -286,21 +286,21 @@ public class HaleGMLParser {
 
             //seperate entries by space
             if (schemaLocation.length() > 0) {
-                schemaLocation.append(" ");
+                schemaLocation.append(" "); //$NON-NLS-1$
             }
 
             //add the entry
             schemaLocation.append(dependency.getNamespaceURI());
-            schemaLocation.append(" ");
+            schemaLocation.append(" "); //$NON-NLS-1$
             schemaLocation.append(dependency.getSchemaFileURL());
         }
 
         //set hte property to map namespaces to schema locations
-        parser.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",
+        parser.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", //$NON-NLS-1$
             schemaLocation.toString());
 
         //set the default location
-        parser.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation",
+        parser.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation", //$NON-NLS-1$
             handler.getConfiguration().getSchemaFileURL());
 
         return parser;

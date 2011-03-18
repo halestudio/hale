@@ -41,14 +41,14 @@ public class LegacyPolygonWriter extends AbstractGeometryWriter<Polygon> {
 		super(Polygon.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new NameImpl("http://www.opengis.net/gml", "PolygonType"));
+		addCompatibleType(new NameImpl("http://www.opengis.net/gml", "PolygonType")); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		// patterns for matching inside compatible types
-		addBasePattern("*"); // matches any compatible type element
+		addBasePattern("*"); // matches any compatible type element //$NON-NLS-1$
 		
 		// verification patterns
-		addVerificationPattern("*/outerBoundaryIs/LinearRing"); // both exterior
-		addVerificationPattern("*/innerBoundaryIs/LinearRing"); // and interior elements must be present
+		addVerificationPattern("*/outerBoundaryIs/LinearRing"); // both exterior //$NON-NLS-1$
+		addVerificationPattern("*/innerBoundaryIs/LinearRing"); // and interior elements must be present //$NON-NLS-1$
 	}
 
 	/**
@@ -60,13 +60,13 @@ public class LegacyPolygonWriter extends AbstractGeometryWriter<Polygon> {
 			throws XMLStreamException {
 		// write exterior ring
 		LineString exterior = polygon.getExteriorRing();
-		descendAndWriteCoordinates(writer, Pattern.parse("*/outerBoundaryIs/LinearRing"), 
+		descendAndWriteCoordinates(writer, Pattern.parse("*/outerBoundaryIs/LinearRing"),  //$NON-NLS-1$
 				exterior.getCoordinates(), elementType, elementName, gmlNs);
 		
 		// write interior rings
 		for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
 			LineString interior = polygon.getInteriorRingN(i);
-			descendAndWriteCoordinates(writer, Pattern.parse("*/innerBoundaryIs/LinearRing"), 
+			descendAndWriteCoordinates(writer, Pattern.parse("*/innerBoundaryIs/LinearRing"),  //$NON-NLS-1$
 					interior.getCoordinates(), elementType, elementName, gmlNs);
 		}
 	}

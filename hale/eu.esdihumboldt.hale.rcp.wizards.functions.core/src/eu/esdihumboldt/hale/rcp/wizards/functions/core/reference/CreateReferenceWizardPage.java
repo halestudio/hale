@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
 /**
  * TODO: clarify whether both normal xlinks and gml:ReferenceTypes are needed 
@@ -40,7 +41,7 @@ public class CreateReferenceWizardPage
 	public CreateReferenceWizardPage(String pageName) {
 		super(pageName);
 		setTitle(pageName);
-		setDescription("Define how to create a reference to another spatial object.");
+		setDescription(Messages.CreateReferenceWizardPage_0);
 	}
 
 	@Override
@@ -63,17 +64,17 @@ public class CreateReferenceWizardPage
 		// Prefix to reference ID
 		Label ccLabel = new Label(page, SWT.NONE);
 		ccLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		ccLabel.setText("Prefix to key:");
+		ccLabel.setText(Messages.CreateReferenceWizardPage_1);
 		
 		this.prefix = new Text(page, SWT.BORDER);
-		this.prefix.setText("");
+		this.prefix.setText(""); //$NON-NLS-1$
 		this.prefix.setEnabled(true);
 		this.prefix.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		// Type name
 		Label typenameLabel = new Label(page, SWT.NONE);
 		typenameLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		typenameLabel.setText("Key local name:");
+		typenameLabel.setText(Messages.CreateReferenceWizardPage_3);
 		
 		Text typeName = new Text(page, SWT.BORDER);
 		typeName.setText(
@@ -84,10 +85,10 @@ public class CreateReferenceWizardPage
 		// Postfix to reference ID
 		Label providerLabel = new Label(page, SWT.NONE);
 		providerLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		providerLabel.setText("Postfix to key:");
+		providerLabel.setText(Messages.CreateReferenceWizardPage_4);
 		
 		this.postfix = new Text(page, SWT.BORDER);
-		this.postfix.setText("");
+		this.postfix.setText(""); //$NON-NLS-1$
 		this.postfix.setEnabled(true);
 		this.postfix.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 

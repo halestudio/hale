@@ -18,6 +18,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  *handles programmatic access to the configuration of all loaded 
  *{@link MappingExportProvider}s.
@@ -29,7 +31,7 @@ public class MappingExportExtension {
 	/**
 	 * The extension point ID
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.MappingExport";
+	public static final String ID = "eu.esdihumboldt.hale.MappingExport"; //$NON-NLS-1$
 	
 	
 	private static Map<String, IConfigurationElement> confMap = null;
@@ -46,8 +48,8 @@ public class MappingExportExtension {
 		Map<String, String> result = new HashMap<String, String>();
 		for (IConfigurationElement confElement : confMap.values()) {
 			result.put(
-					confElement.getAttribute("name"), 
-					confElement.getAttribute("extension"));
+					confElement.getAttribute("name"),  //$NON-NLS-1$
+					confElement.getAttribute("extension")); //$NON-NLS-1$
 		}
 		return result;
 	}
@@ -63,14 +65,14 @@ public class MappingExportExtension {
 		IConfigurationElement configElement = confMap.get(name);
 		if (configElement != null) {
 			try {
-				return (MappingExportProvider) configElement.createExecutableExtension("providerClass");
+				return (MappingExportProvider) configElement.createExecutableExtension("providerClass"); //$NON-NLS-1$
 			} catch (CoreException e) {
-				throw new RuntimeException("Error creating the export provider.", e);
+				throw new RuntimeException("Error creating the export provider.", e); //$NON-NLS-1$
 			}
 		}
 		else {
-			throw new RuntimeException("The name " + name + " does notindicate " +
-					"a known MappingExportProvider.");
+			throw new RuntimeException("The name " + name + " does notindicate " + //$NON-NLS-1$ //$NON-NLS-2$
+					"a known MappingExportProvider."); //$NON-NLS-1$
 		}
 	}
 	
@@ -82,7 +84,7 @@ public class MappingExportExtension {
 		IConfigurationElement[] confArray = Platform.getExtensionRegistry().getConfigurationElementsFor(ID);
 		confMap = new HashMap<String, IConfigurationElement>();
 		for (IConfigurationElement conf : confArray) {
-			confMap.put(conf.getAttribute("name"), conf);
+			confMap.put(conf.getAttribute("name"), conf); //$NON-NLS-1$
 		}
 	}
 

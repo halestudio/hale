@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.wizards.io.OGCFilterDialog;
 
 /**
@@ -93,12 +94,12 @@ public class FilterPage extends AbstractWfsPage<WfsGetFeatureConfiguration> {
 	 * @param typesPage the types page
 	 */
 	public FilterPage(WfsGetFeatureConfiguration configuration, AbstractTypesPage<?> typesPage) {
-		super(configuration, "Filters");
+		super(configuration, Messages.getString("FilterPage.0")); //$NON-NLS-1$
 		
 		this.typesPage = typesPage;
 		
-		setTitle("Filters");
-		setMessage("Define filters for the feature types");
+		setTitle(Messages.getString("FilterPage.1")); //$NON-NLS-1$
+		setMessage(Messages.getString("FilterPage.2")); //$NON-NLS-1$
 	}
 
 	/**
@@ -135,7 +136,7 @@ public class FilterPage extends AbstractWfsPage<WfsGetFeatureConfiguration> {
 		page.setLayout(new GridLayout(3, false));
 		
 		Label typeLabel = new Label(page, SWT.NONE);
-		typeLabel.setText("Feature type: ");
+		typeLabel.setText(Messages.getString("FilterPage.3")); //$NON-NLS-1$
 		typeLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		
 		// init combo
@@ -173,7 +174,7 @@ public class FilterPage extends AbstractWfsPage<WfsGetFeatureConfiguration> {
 		});
 		
 		Label editorLabel = new Label(page, SWT.NONE);
-		editorLabel.setText("Filter: ");
+		editorLabel.setText(Messages.getString("FilterPage.4")); //$NON-NLS-1$
 		editorLabel.setLayoutData(new GridData(SWT.END, SWT.BEGINNING, false, false));
 		
 		// init editor
@@ -193,14 +194,14 @@ public class FilterPage extends AbstractWfsPage<WfsGetFeatureConfiguration> {
 		
 		// create initial document
 		IDocument doc = new Document();
-		doc.set("");
+		doc.set(""); //$NON-NLS-1$
 		filterEditor.setInput(doc);
 		
 		// create edit button
 		editButton = new Button(page, SWT.PUSH);
 		editButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
-		editButton.setText("Create...");
-		editButton.setToolTipText("Create a filter using a form");
+		editButton.setText(Messages.getString("FilterPage.6")); //$NON-NLS-1$
+		editButton.setToolTipText(Messages.getString("FilterPage.7")); //$NON-NLS-1$
 		editButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -209,7 +210,7 @@ public class FilterPage extends AbstractWfsPage<WfsGetFeatureConfiguration> {
 					FeatureType type = lastSelected;
 					
 					OGCFilterDialog dialog = new OGCFilterDialog(display.getActiveShell(), 
-							"Filter for " + type.getName().getLocalPart());
+							Messages.getString("FilterPage.8") + type.getName().getLocalPart()); //$NON-NLS-1$
 					dialog.setFeatureType(type);
 					String filter = dialog.open();
 					if (filter != null) {
@@ -289,7 +290,7 @@ public class FilterPage extends AbstractWfsPage<WfsGetFeatureConfiguration> {
 	 */
 	protected String createDefaultFilter(FeatureType type) {
 		// no filtering as default
-		return "";
+		return ""; //$NON-NLS-1$
 	}
 
 	/**
@@ -313,7 +314,7 @@ public class FilterPage extends AbstractWfsPage<WfsGetFeatureConfiguration> {
 	 * @return the key
 	 */
 	protected String getKey(FeatureType type) {
-		return type.getName().getNamespaceURI() + "/" + type.getName().getLocalPart();
+		return type.getName().getNamespaceURI() + "/" + type.getName().getLocalPart(); //$NON-NLS-1$
 	}
 
 	/**

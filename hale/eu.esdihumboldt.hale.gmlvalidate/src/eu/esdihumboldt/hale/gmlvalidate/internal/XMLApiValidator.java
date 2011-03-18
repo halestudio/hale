@@ -69,7 +69,7 @@ public class XMLApiValidator implements Validator {
 		    factory.setResourceResolver(new SchemaResolver(mainUri));
 		    validateSchema = factory.newSchema(sources);
 		} catch (Exception e) {
-			throw new IllegalStateException("Error parsing schema for XML validation", e);
+			throw new IllegalStateException("Error parsing schema for XML validation", e); //$NON-NLS-1$
 		}
 
 	    // create a Validator instance, which can be used to validate an instance document
@@ -82,7 +82,7 @@ public class XMLApiValidator implements Validator {
 			validator.validate(new StreamSource(xml));
 			return report;
 		} catch (Exception e) {
-			throw new IllegalStateException("Error validating XML file", e);
+			throw new IllegalStateException("Error validating XML file", e); //$NON-NLS-1$
 		}
 	}
 

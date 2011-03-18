@@ -151,7 +151,7 @@ public class InstanceDataImportWizard
 						projectService.setInstanceDataPath(result.toString());
 						projectService.setInstanceDataType(type);
 					} catch (Throwable e) {
-						_log.userError("Error loading instance data", e);
+						_log.userError("Error loading instance data", e); //$NON-NLS-1$
 					}
 					
 					monitor.done();
@@ -201,7 +201,7 @@ public class InstanceDataImportWizard
 		
 		if (ip == null) {
 			// use default instance format
-			ip = InstanceProviderFactory.INSTANCE.getInstanceProvider(schemaFormat, "gml");
+			ip = InstanceProviderFactory.INSTANCE.getInstanceProvider(schemaFormat, "gml"); //$NON-NLS-1$
 		}
 		
 		Version instanceVersion;
@@ -210,7 +210,7 @@ public class InstanceDataImportWizard
 			instanceVersion = GmlInstanceProvider.GML32;
 			break;
 		case GML2:
-			instanceVersion = new Version("2.0.0");
+			instanceVersion = new Version("2.0.0"); //$NON-NLS-1$
 			break;
 		case GML3:
 		default:

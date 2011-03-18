@@ -26,6 +26,7 @@ import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
 /**
  * @author Simon Templer
@@ -71,7 +72,7 @@ public class GenericMathFunctionWizard extends
 		}
 		
 		mainPage = new MathFunctionPage(
-				"main", "Mathematical expression", null);
+				"main", Messages.GenericMathFunctionWizard_1, null); //$NON-NLS-1$
 		
 		mainPage.setInitialExpression(expression);
 	}

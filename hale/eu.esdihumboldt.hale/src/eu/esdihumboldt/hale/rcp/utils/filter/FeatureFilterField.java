@@ -39,6 +39,7 @@ import org.geotools.filter.text.cql2.CQLException;
 import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.filter.Filter;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
@@ -96,16 +97,16 @@ public class FeatureFilterField extends Composite {
 		setLayout(layout);
 		
 		// images
-		insertVarImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/insert.gif").createImage();
-		openFormImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/form.gif").createImage();
-		clearFilterImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/remove.gif").createImage();
+		insertVarImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/insert.gif").createImage(); //$NON-NLS-1$
+		openFormImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/form.gif").createImage(); //$NON-NLS-1$
+		clearFilterImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/remove.gif").createImage(); //$NON-NLS-1$
 		
 		// create components
 		
 		// text field
 		filterText = new Text(this, SWT.SINGLE | SWT.BORDER);
 		filterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		filterText.setToolTipText("Filter expression");
+		filterText.setToolTipText(Messages.getString("FeatureFilterField.3")); //$NON-NLS-1$
 		filterText.addModifyListener(new ModifyListener() {
 			
 			@Override
@@ -120,13 +121,13 @@ public class FeatureFilterField extends Composite {
 		clearFilter = new Button(this, SWT.PUSH);
 		clearFilter.setEnabled(false);
 		clearFilter.setImage(clearFilterImage);
-		clearFilter.setToolTipText("Clear filter");
+		clearFilter.setToolTipText(Messages.getString("FeatureFilterField.0")); //$NON-NLS-1$
 		clearFilter.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 		clearFilter.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				filterText.setText("");
+				filterText.setText(Messages.getString("FeatureFilterField.5")); //$NON-NLS-1$
 				clearFilter.setEnabled(false);
 				notifyListeners();
 			}
@@ -136,7 +137,7 @@ public class FeatureFilterField extends Composite {
 		// insert variable
 		insertVar = new Button(this, SWT.PUSH);
 		insertVar.setImage(insertVarImage);
-		insertVar.setToolTipText("Insert attribute name");
+		insertVar.setToolTipText(Messages.getString("FeatureFilterField.6")); //$NON-NLS-1$
 		insertVar.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 		insertVar.addSelectionListener(new SelectionAdapter() {
 
@@ -149,8 +150,8 @@ public class FeatureFilterField extends Composite {
 				}
 				
 				ListDialog dialog = new ListDialog(Display.getCurrent().getActiveShell());
-				dialog.setTitle("Insert attribute name");
-				dialog.setMessage("Select an attribute name to insert:");
+				dialog.setTitle(Messages.getString("FeatureFilterField.7")); //$NON-NLS-1$
+				dialog.setMessage(Messages.getString("FeatureFilterField.8")); //$NON-NLS-1$
 				dialog.setContentProvider(ArrayContentProvider.getInstance());
 				dialog.setLabelProvider(new LabelProvider());
 				dialog.setInput(attributeNames);
@@ -168,7 +169,7 @@ public class FeatureFilterField extends Composite {
 		// open form
 		openForm = new Button(this, SWT.PUSH);
 		openForm.setImage(openFormImage);
-		openForm.setToolTipText("Open filter form");
+		openForm.setToolTipText(Messages.getString("FeatureFilterField.9")); //$NON-NLS-1$
 		openForm.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 		openForm.addSelectionListener(new SelectionAdapter() {
 

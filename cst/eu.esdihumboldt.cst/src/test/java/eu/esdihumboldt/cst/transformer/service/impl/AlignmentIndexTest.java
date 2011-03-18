@@ -49,10 +49,10 @@ public class AlignmentIndexTest {
 	 */
 	@Test
 	public void testGetFeatureTypeKey() {
-		String key1 = "http://xsdi.org/namespace/FeatureTypeName";
-		String key2 = "http://xsdi.org/namespace/FeatureTypeName/AttributeName";
-		String namespace1 = "http://xsdi.org/namespace";
-		String namespace2 = "http://xsdi.org/namespace/";
+		String key1 = "http://xsdi.org/namespace/FeatureTypeName"; //$NON-NLS-1$
+		String key2 = "http://xsdi.org/namespace/FeatureTypeName/AttributeName"; //$NON-NLS-1$
+		String namespace1 = "http://xsdi.org/namespace"; //$NON-NLS-1$
+		String namespace2 = "http://xsdi.org/namespace/"; //$NON-NLS-1$
 		
 		String[] results = new String[4];
 		
@@ -71,15 +71,15 @@ public class AlignmentIndexTest {
 	public void testGetCellsPerEntity() {
 		// create four FeatureTypes and put into TSP.
 		SimpleFeatureType ftA = getFeatureType(NameHelper.sourceNamespace, 
-				NameHelper.sourceLocalname + "_A", null);
+				NameHelper.sourceLocalname + "_A", null); //$NON-NLS-1$
 		SimpleFeatureType ftB = getFeatureType(NameHelper.sourceNamespace, 
-				NameHelper.sourceLocalname + "_B", ftA);
+				NameHelper.sourceLocalname + "_B", ftA); //$NON-NLS-1$
 		SimpleFeatureType ftC = getFeatureType(NameHelper.sourceNamespace, 
-				NameHelper.sourceLocalname + "_C", ftB);
+				NameHelper.sourceLocalname + "_C", ftB); //$NON-NLS-1$
 		SimpleFeatureType ftD = getFeatureType(NameHelper.sourceNamespace, 
-				NameHelper.sourceLocalname + "_D", ftA);
+				NameHelper.sourceLocalname + "_D", ftA); //$NON-NLS-1$
 		SimpleFeatureType ftE = getFeatureType(NameHelper.sourceNamespace, 
-				NameHelper.sourceLocalname + "_E", null);
+				NameHelper.sourceLocalname + "_E", null); //$NON-NLS-1$
 		Collection<FeatureType> types = new HashSet<FeatureType>();
 		types.add(ftA);
 		types.add(ftB);
@@ -96,10 +96,10 @@ public class AlignmentIndexTest {
 		
 		AlignmentIndex ai = new AlignmentIndex(al);
 		
-		List<ICell> cells_A = ai.getCellsPerEntity(ftA.getName().getNamespaceURI() + "/" + ftA.getName().getLocalPart());
-		List<ICell> cells_B = ai.getCellsPerEntity(ftB.getName().getNamespaceURI() + "/" + ftB.getName().getLocalPart());
-		List<ICell> cells_C = ai.getCellsPerEntity(ftC.getName().getNamespaceURI() + "/" + ftC.getName().getLocalPart());
-		List<ICell> cells_D = ai.getCellsPerEntity(ftD.getName().getNamespaceURI() + "/" + ftD.getName().getLocalPart());
+		List<ICell> cells_A = ai.getCellsPerEntity(ftA.getName().getNamespaceURI() + "/" + ftA.getName().getLocalPart()); //$NON-NLS-1$
+		List<ICell> cells_B = ai.getCellsPerEntity(ftB.getName().getNamespaceURI() + "/" + ftB.getName().getLocalPart()); //$NON-NLS-1$
+		List<ICell> cells_C = ai.getCellsPerEntity(ftC.getName().getNamespaceURI() + "/" + ftC.getName().getLocalPart()); //$NON-NLS-1$
+		List<ICell> cells_D = ai.getCellsPerEntity(ftD.getName().getNamespaceURI() + "/" + ftD.getName().getLocalPart()); //$NON-NLS-1$
 		
 		assertTrue(cells_A.size() == 1);
 		assertTrue(cells_B.size() == 2);

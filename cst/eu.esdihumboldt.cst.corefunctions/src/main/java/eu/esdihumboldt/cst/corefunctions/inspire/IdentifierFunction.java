@@ -26,6 +26,7 @@ import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.cst.corefunctions.Messages;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.Property;
@@ -45,19 +46,19 @@ import eu.esdihumboldt.tools.FeatureInspector;
 public class IdentifierFunction 
 	extends AbstractCstFunction {
 	
-	public static final String COUNTRY_PARAMETER_NAME = "countryName";
-	public static final String DATA_PROVIDER_PARAMETER_NAME = "providerName";
-	public static final String PRODUCT_PARAMETER_NAME = "productName";
-	public static final String VERSION = "version";
-	public static final String VERSION_NIL_REASON = "versionNilReason";
+	public static final String COUNTRY_PARAMETER_NAME = "countryName"; //$NON-NLS-1$
+	public static final String DATA_PROVIDER_PARAMETER_NAME = "providerName"; //$NON-NLS-1$
+	public static final String PRODUCT_PARAMETER_NAME = "productName"; //$NON-NLS-1$
+	public static final String VERSION = "version"; //$NON-NLS-1$
+	public static final String VERSION_NIL_REASON = "versionNilReason"; //$NON-NLS-1$
 	
-	public static final String INSPIRE_IDENTIFIER_PREFIX = "urn:x-inspire:object:id";
+	public static final String INSPIRE_IDENTIFIER_PREFIX = "urn:x-inspire:object:id"; //$NON-NLS-1$
 	
 	private String countryName = null;
 	private String dataProviderName= null;
 	private String productName = null;
 	private String version = null;
-	private String versionNilReason = "unknown";
+	private String versionNilReason = "unknown"; //$NON-NLS-1$
 	
 	private Property sourceProperty = null;
 	private Property targetProperty = null;
@@ -108,35 +109,35 @@ public class IdentifierFunction
 
 		if (pd.getType().getName().getNamespaceURI() != null 
 				&& pd.getType().getName().getNamespaceURI().equals(
-				"urn:x-inspire:specification:gmlas:BaseTypes:3.2") 
-				&& pd.getType().getName().getLocalPart().equals("IdentifierPropertyType")) {
+				"urn:x-inspire:specification:gmlas:BaseTypes:3.2")  //$NON-NLS-1$
+				&& pd.getType().getName().getLocalPart().equals("IdentifierPropertyType")) { //$NON-NLS-1$
 			
 			// get the source attribute value
 			Object value = FeatureInspector.getPropertyValue(source, sourceProperty.getAbout(), null);
 			
 			// set attributes
 			FeatureInspector.setPropertyValue(target, 
-					Arrays.asList(targetProperty.getLocalname(), "Identifier", "localId"), 
+					Arrays.asList(targetProperty.getLocalname(), "Identifier", "localId"),  //$NON-NLS-1$ //$NON-NLS-2$
 					value.toString()); // source.getIdentifier().toString()
 			FeatureInspector.setPropertyValue(target, 
-					Arrays.asList(targetProperty.getLocalname(), "Identifier", "namespace"), 
+					Arrays.asList(targetProperty.getLocalname(), "Identifier", "namespace"),  //$NON-NLS-1$ //$NON-NLS-2$
 					getNamespace(target.getType().getName().getLocalPart()));
 			
 			if (version != null && !version.isEmpty()) {
 				FeatureInspector.setPropertyValue(target, 
-						Arrays.asList(targetProperty.getLocalname(), "Identifier", "versionId"), 
+						Arrays.asList(targetProperty.getLocalname(), "Identifier", "versionId"),  //$NON-NLS-1$ //$NON-NLS-2$
 						this.version);
 			}
 			else {
 				FeatureInspector.setPropertyValue(target, 
-						Arrays.asList(targetProperty.getLocalname(), "Identifier", "versionId", "nilReason"), 
+						Arrays.asList(targetProperty.getLocalname(), "Identifier", "versionId", "nilReason"),  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 						this.versionNilReason);
 			}
 		}
 		else if (pd.getType().getBinding().equals(InspireIdentifier.class)) {
 			InspireIdentifier ii=new InspireIdentifier();
 			String localID = null;
-			if (source.getIdentifier().getID()==null || source.getIdentifier().getID().equalsIgnoreCase("")){
+			if (source.getIdentifier().getID()==null || source.getIdentifier().getID().equalsIgnoreCase("")){ //$NON-NLS-1$
 				localID = UUID.randomUUID().toString();
 			}
 			else {
@@ -146,16 +147,16 @@ public class IdentifierFunction
 			ii.setLocalID(localID);
 			
 			String featureTypeName = source.getType().getName().getLocalPart();
-			ii.setNameSpace(this.countryName + ":"
-					+ this.dataProviderName + ":" + this.productName + ":"
+			ii.setNameSpace(this.countryName + ":" //$NON-NLS-1$
+					+ this.dataProviderName + ":" + this.productName + ":" //$NON-NLS-1$ //$NON-NLS-2$
 					+ featureTypeName);
 			
 		
-			if (this.version != null && !this.version.equals("")){
+			if (this.version != null && !this.version.equals("")){ //$NON-NLS-1$
 				ii.setVersionID(this.version);
 			}
 			else{
-				ii.setVersionID("");
+				ii.setVersionID(""); //$NON-NLS-1$
 			}
 
 			((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),ii);
@@ -165,28 +166,28 @@ public class IdentifierFunction
 		else if (pd.getType().getBinding().equals(String.class)){
 			// define String to use
 			String localID = null;
-			if (source.getIdentifier().getID()==null || source.getIdentifier().getID().equalsIgnoreCase("")){
+			if (source.getIdentifier().getID()==null || source.getIdentifier().getID().equalsIgnoreCase("")){ //$NON-NLS-1$
 				localID = UUID.randomUUID().toString();
 			}
 			else {
 				localID = source.getIdentifier().getID();
 			}
 
-			if (this.version != null && !this.version.equals("")){
+			if (this.version != null && !this.version.equals("")){ //$NON-NLS-1$
 
 					String featureTypeName = source.getType().getName().getLocalPart();
-					String inspireIDString = INSPIRE_IDENTIFIER_PREFIX + ":" + this.countryName + ":"
-							+ this.dataProviderName + ":" + this.productName + ":"
-							+ featureTypeName + ":" + localID + ":"+this.version;	
+					String inspireIDString = INSPIRE_IDENTIFIER_PREFIX + ":" + this.countryName + ":" //$NON-NLS-1$ //$NON-NLS-2$
+							+ this.dataProviderName + ":" + this.productName + ":" //$NON-NLS-1$ //$NON-NLS-2$
+							+ featureTypeName + ":" + localID + ":"+this.version;	 //$NON-NLS-1$ //$NON-NLS-2$
 					// set to target feature
 					((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),inspireIDString);
 			}
 				
 				else{
 					String featureTypeName = source.getType().getName().getLocalPart();
-					String inspireIDString = INSPIRE_IDENTIFIER_PREFIX + ":" + this.countryName + ":"
-							+ this.dataProviderName + ":" + this.productName + ":"
-							+ featureTypeName + ":" + localID;
+					String inspireIDString = INSPIRE_IDENTIFIER_PREFIX + ":" + this.countryName + ":" //$NON-NLS-1$ //$NON-NLS-2$
+							+ this.dataProviderName + ":" + this.productName + ":" //$NON-NLS-1$ //$NON-NLS-2$
+							+ featureTypeName + ":" + localID; //$NON-NLS-1$
 					// set to target feature
 					((SimpleFeature)target).setAttribute(this.targetProperty.getLocalname(),inspireIDString);
 				}
@@ -200,7 +201,7 @@ public class IdentifierFunction
 	 */
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
-		Property entity1 = new Property(new About(""));
+		Property entity1 = new Property(new About("")); //$NON-NLS-1$
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
@@ -211,7 +212,7 @@ public class IdentifierFunction
 		Transformation transf = new Transformation();
 		entity1.setTransformation(transf);
 		
-		Property entity2 = new Property(new About(""));
+		Property entity2 = new Property(new About("")); //$NON-NLS-1$
 		 
 		// Setting of type condition for entity2
 			// 	entity2 has same type conditions as entity1
@@ -222,14 +223,14 @@ public class IdentifierFunction
 	}
 	
 	private String getNamespace(String featureTypeName) {
-		return this.countryName + ":"
-				+ this.dataProviderName + ":" + this.productName + ":"
+		return this.countryName + ":" //$NON-NLS-1$
+				+ this.dataProviderName + ":" + this.productName + ":" //$NON-NLS-1$ //$NON-NLS-2$
 				+ featureTypeName;
 	}
 
 	@Override
 	public String getDescription() {
-		return "This function creates INSPIRE-compliant identifiers like this one urn:de:fraunhofer:exampleDataset:exampleFeatureTypeName:localID based on the localId of the given source attribute.";
+		return Messages.getString("IdentifierFunction.42"); //$NON-NLS-1$
 	}
 
 }

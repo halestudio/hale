@@ -104,7 +104,7 @@ public class HaleSchemaXSD extends XSD {
 
                     String locationUri = null;
 
-                    if ((null != schemaLocation) && !("".equals(schemaLocation))) {
+                    if ((null != schemaLocation) && !("".equals(schemaLocation))) { //$NON-NLS-1$
                         String schemaLocationFolder = schemaLocation;
                         int lastSlash = schemaLocation.lastIndexOf('/');
 
@@ -112,13 +112,13 @@ public class HaleSchemaXSD extends XSD {
                             schemaLocationFolder = schemaLocation.substring(0, lastSlash);
                         }
 
-                        if (schemaLocationFolder.startsWith("file:")) {
+                        if (schemaLocationFolder.startsWith("file:")) { //$NON-NLS-1$
                             try {
                                 schemaLocationFolder = DataUtilities.urlToFile(
                                         new URL(schemaLocationFolder)).getPath();
                             } catch (MalformedURLException e) {
                                 // this can't be a good outcome, but try anyway
-                                schemaLocationFolder = schemaLocationFolder.substring("file:".length());
+                                schemaLocationFolder = schemaLocationFolder.substring("file:".length()); //$NON-NLS-1$
                             }
                         }
 
@@ -129,7 +129,7 @@ public class HaleSchemaXSD extends XSD {
                         }
                     }
 
-                    if ((locationUri == null) && (location != null) && location.startsWith("http:")) {
+                    if ((locationUri == null) && (location != null) && location.startsWith("http:")) { //$NON-NLS-1$
                         locationUri = location;
                     }
                     
@@ -140,7 +140,7 @@ public class HaleSchemaXSD extends XSD {
 							u = u.normalize();
 		                    locationUri = u.toString();
 						} catch (Exception e) {
-							log.warn("Normalizing URI for schema resolving failed", e);
+							log.warn("Normalizing URI for schema resolving failed", e); //$NON-NLS-1$
 						}
                 	}
 					

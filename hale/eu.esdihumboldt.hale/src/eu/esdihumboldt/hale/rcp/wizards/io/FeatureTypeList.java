@@ -137,7 +137,7 @@ public class FeatureTypeList extends Composite {
 		List<FeatureType> types = null;
 		
 		String namespace = this._namespaces.getText();
-		if (namespace.equals("") && (_featuresList != null)) {
+		if (namespace.equals("") && (_featuresList != null)) { //$NON-NLS-1$
 			types = new ArrayList<FeatureType>();
 			Set<String> keys = _types.keySet();
 			for (String key: keys) {

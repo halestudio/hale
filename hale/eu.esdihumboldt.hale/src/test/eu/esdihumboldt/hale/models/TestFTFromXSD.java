@@ -26,15 +26,15 @@ public class TestFTFromXSD {
 		reader.setContentHandler(schemaHandler);
 		reader.parse(new InputSource(xsd));
 		Schema s = schemaHandler.getSchema();
-		System.out.println("FeatureTypes for xsd: " + xsd);
+		System.out.println("FeatureTypes for xsd: " + xsd); //$NON-NLS-1$
 		if (s!=null){ 
 			if (s.getComplexTypes()!=null) System.out.println(s.getComplexTypes().length); 
 			if (s.getAttributes()!=null) System.out.println(s.getAttributes().length); 
 		}
 		for (ComplexType compType :s.getComplexTypes()){
-			System.out.println( compType +  " Type has ");
+			System.out.println( compType +  " Type has "); //$NON-NLS-1$
 			for (Element child : compType.getChildElements()){
-				System.out.println( " Element name: " + child.getName() + " type :" + child.getType());
+				System.out.println( " Element name: " + child.getName() + " type :" + child.getType()); //$NON-NLS-1$ //$NON-NLS-2$
 				
 			}
 		}
@@ -48,8 +48,8 @@ public class TestFTFromXSD {
 	}
 	public static void main(String [] args){
 		try {
-			String pathToSourceSchema = "resources/INSPIRE_Conf_Data/Watercourse/BY/SourceSchema/Watercourses_BY.xml" ;
-	    	String pathToSecondSourceSchema = "resources/INSPIRE_Conf_Data/Watercourse/VA/SourceSchema/Watercourses_VA.xml" ;
+			String pathToSourceSchema = "resources/INSPIRE_Conf_Data/Watercourse/BY/SourceSchema/Watercourses_BY.xml" ; //$NON-NLS-1$
+	    	String pathToSecondSourceSchema = "resources/INSPIRE_Conf_Data/Watercourse/VA/SourceSchema/Watercourses_VA.xml" ; //$NON-NLS-1$
 			//getFeatureType2("file:///D:/HUMBOLDT/HALE/workspace/HALE-Client/resources/schema/source/roadsGermany212.xsd");
 	    	getFeatureType2(pathToSourceSchema);
 	    	getFeatureType2(pathToSourceSchema);

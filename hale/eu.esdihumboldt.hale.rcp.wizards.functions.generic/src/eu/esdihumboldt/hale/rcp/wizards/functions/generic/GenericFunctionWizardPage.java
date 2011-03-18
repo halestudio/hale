@@ -150,7 +150,7 @@ public class GenericFunctionWizardPage extends WizardPage {
 		PlatformUI.getWorkbench().getService(
 				CstService.class);
 		CstServiceCapabilities tCapabilities = ts.getCapabilities();
-		CstFunctionFactory.getInstance().registerCstPackage("eu.esdihumboldt.cst.corefunctions");
+		CstFunctionFactory.getInstance().registerCstPackage("eu.esdihumboldt.cst.corefunctions"); //$NON-NLS-1$
 		Map <String, Class<? extends CstFunction>> registredFunctions = CstFunctionFactory.getInstance().getRegisteredFunctions();
 	   
 	    wizard = (GenericFunctionWizard) getWizard();
@@ -179,11 +179,11 @@ public class GenericFunctionWizardPage extends WizardPage {
 	    					functionGroup = functionGroup.substring(functionGroup.lastIndexOf('.')+1);
 	    					//System.out.println(functionGroup);
 	    					
-	    					if (functionGroup.equals("corefunctions")){
+	    					if (functionGroup.equals("corefunctions")){ //$NON-NLS-1$
 	    						core.addCoreFunction(alg);
 	    					}
 	    					else{
-	    						if (functionGroup.equals("inspire"))
+	    						if (functionGroup.equals("inspire")) //$NON-NLS-1$
 	    							inspire.addInspireFunction(alg);
 	    						else
 	    							others.addOthersFunction(alg);
@@ -223,11 +223,11 @@ public class GenericFunctionWizardPage extends WizardPage {
 				String functionGroup = f.getClass().getName().toString().substring(0, f.getClass().getName().toString().lastIndexOf('.'));
 				functionGroup = functionGroup.substring(functionGroup.lastIndexOf('.')+1);
 								
-				if (functionGroup.equals("corefunctions")){
+				if (functionGroup.equals("corefunctions")){ //$NON-NLS-1$
 					core.addCoreFunction(alg);
 				}
 				else{
-					if (functionGroup.equals("inspire"))
+					if (functionGroup.equals("inspire")) //$NON-NLS-1$
 						inspire.addInspireFunction(alg);
 					else
 						others.addOthersFunction(alg);
@@ -236,9 +236,9 @@ public class GenericFunctionWizardPage extends WizardPage {
 				countAlgorithm++;
 				setMaximumParameters(alg);
 				
-				if (!functionLocation.equals("eu.esdihumboldt.cst.corefunctions.NilReasonFunction")){ //.class.getName())){
+				if (!functionLocation.equals("eu.esdihumboldt.cst.corefunctions.NilReasonFunction")){ //.class.getName())){ //$NON-NLS-1$
 					try {
-						f = CstFunctionFactory.getInstance().getRegisteredFunctions().get("eu.esdihumboldt.cst.corefunctions.NilReasonFunction").newInstance();//NilReasonFunction.class.getName()).newInstance();
+						f = CstFunctionFactory.getInstance().getRegisteredFunctions().get("eu.esdihumboldt.cst.corefunctions.NilReasonFunction").newInstance();//NilReasonFunction.class.getName()).newInstance(); //$NON-NLS-1$
 					}
 					catch (Exception e) {
 						f = null;
@@ -295,11 +295,11 @@ public class GenericFunctionWizardPage extends WizardPage {
 
 
 		//testing - if function need to set entity1
-		if (!description.containsKey("entity1"))
+		if (!description.containsKey("entity1")) //$NON-NLS-1$
 			entity1IsCorrect = true;
 		else{
 			for (int i=0;;i++){
-				String key = "entity1.typeCondition["+i+"]";
+				String key = "entity1.typeCondition["+i+"]"; //$NON-NLS-1$ //$NON-NLS-2$
 				if ((entity1Class != null) && description.containsKey(key)){
 					
 					Class <?> conditionType = (Class<?>) description.get(key);
@@ -315,7 +315,7 @@ public class GenericFunctionWizardPage extends WizardPage {
 		}
 		
 		for (int i=0;;i++){
-			String key = "entity2.typeCondition["+i+"]";
+			String key = "entity2.typeCondition["+i+"]"; //$NON-NLS-1$ //$NON-NLS-2$
 			if (description.containsKey(key)){
 				Class <?> conditionType = (Class<?>) description.get(key);
 				if (conditionType.isAssignableFrom(entity2Class)){
@@ -345,7 +345,7 @@ public class GenericFunctionWizardPage extends WizardPage {
 		String s = className.toString();
 		s = s.substring(s.lastIndexOf('.')+1);
 		String ss = s.toLowerCase();
-		String name = "";
+		String name = ""; //$NON-NLS-1$
 		int index = 0;
 		for (int i=1; i<ss.length(); i++){
 			if (s.charAt(i)!=ss.charAt(i)){

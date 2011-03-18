@@ -24,26 +24,26 @@ public interface StylePreferenceConstants {
 	/**
 	 * The name of the default style color key
 	 */
-	public final String KEY_DEFAULT_COLOR = "styles.default.color";
+	public final String KEY_DEFAULT_COLOR = "styles.default.color"; //$NON-NLS-1$
 	
 	/**
 	 * The name of the default style width key
 	 */
-	public final String KEY_DEFAULT_WIDTH = "styles.default.width";
+	public final String KEY_DEFAULT_WIDTH = "styles.default.width"; //$NON-NLS-1$
 	
 	/**
 	 * The name of the default style color key
 	 */
-	public final String KEY_SELECTION_COLOR = "styles.selection.color";
+	public final String KEY_SELECTION_COLOR = "styles.selection.color"; //$NON-NLS-1$
 	
 	/**
 	 * The name of the default style width key
 	 */
-	public final String KEY_SELECTION_WIDTH = "styles.selection.width";
+	public final String KEY_SELECTION_WIDTH = "styles.selection.width"; //$NON-NLS-1$
 	
 	/**
 	 * The name of the default background key
 	 */
-	public final String KEY_DEFAULT_BACKGROUND = "styles.default.background";
+	public final String KEY_DEFAULT_BACKGROUND = "styles.default.background"; //$NON-NLS-1$
 	
 }

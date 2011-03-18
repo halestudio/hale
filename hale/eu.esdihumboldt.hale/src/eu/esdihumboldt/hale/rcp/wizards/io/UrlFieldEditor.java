@@ -18,6 +18,7 @@ import org.eclipse.jface.preference.StringButtonFieldEditor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Composite;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
 import eu.esdihumboldt.hale.rcp.wizards.io.wfs.WfsDescribeFeatureConfiguration;
@@ -92,7 +93,7 @@ public class UrlFieldEditor
 				try {
 					result = conf.getRequestURL();
 				} catch (Throwable e) {
-					ExceptionHelper.handleException("Error getting the request URL", HALEActivator.PLUGIN_ID, e);
+					ExceptionHelper.handleException("Error getting the request URL", HALEActivator.PLUGIN_ID, e); //$NON-NLS-1$
 				}
 			}
 		}
@@ -106,7 +107,7 @@ public class UrlFieldEditor
 				try {
 					result = conf.getRequestURL();
 				} catch (Throwable e) {
-					ExceptionHelper.handleException("Error getting the request URL", HALEActivator.PLUGIN_ID, e);
+					ExceptionHelper.handleException("Error getting the request URL", HALEActivator.PLUGIN_ID, e); //$NON-NLS-1$
 				}
 			}
 		}

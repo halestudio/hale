@@ -16,6 +16,7 @@ import org.eclipse.jface.wizard.IWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
 /**
  * @author Thorsten Reitz
@@ -37,7 +38,7 @@ public class CreateReferenceWizard
 	@Override
 	protected void init() {
 		this.mainPage = new CreateReferenceWizardPage(
-				"Set up a reference to another spatial object");
+				Messages.CreateReferenceWizard_0);
 
 	}
 

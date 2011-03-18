@@ -14,6 +14,8 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.Messages;
+
 public class OGCFilterDialog extends Dialog {
 	private final static Logger _log = Logger.getLogger(WFSDataReaderDialog.class);
 	private String _filter = null;
@@ -64,7 +66,7 @@ public class OGCFilterDialog extends Dialog {
 		buttons.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 		
 		final Button finishButton = new Button(buttons, SWT.NONE);
-		finishButton.setText("Use this filter");
+		finishButton.setText(Messages.getString("OGCFilterDialog.0")); //$NON-NLS-1$
 		finishButton.addListener(SWT.Selection, new Listener () {
 			public void handleEvent(Event event) {
 				// do finish
@@ -74,7 +76,7 @@ public class OGCFilterDialog extends Dialog {
 				}
 				catch (IllegalStateException e) {
 					MessageBox box = new MessageBox(shell, SWT.ICON_ERROR | SWT.OK);
-					box.setText("OGC Filter error");
+					box.setText(Messages.getString("OGCFilterDialog.1")); //$NON-NLS-1$
 					box.setMessage(e.getMessage());
 					box.open();
 				}
@@ -82,7 +84,7 @@ public class OGCFilterDialog extends Dialog {
 		});
 		
 		final Button cancelButton = new Button(buttons, SWT.NONE);
-		cancelButton.setText("     Cancel     ");
+		cancelButton.setText(Messages.getString("OGCFilterDialog.2")); //$NON-NLS-1$
 		cancelButton.addListener(SWT.Selection, new Listener () {
 			public void handleEvent(Event event) {
 				shell.dispose();

@@ -233,21 +233,21 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 			aboutMap = targetAboutSchemaItems;
 			break;
 		default:
-			throw new RuntimeException("Schema type must be specified");
+			throw new RuntimeException("Schema type must be specified"); //$NON-NLS-1$
 		}
 		
 		itemMap.clear();
 		aboutMap.clear();
 		
 		if (schema == null || schema.size() == 0) {
-			return new TreeParent("", null, TreeObjectType.ROOT, null, schemaType);
+			return new TreeParent("", null, TreeObjectType.ROOT, null, schemaType); //$NON-NLS-1$
 		}
 
 		// first, find out a few things about the schema to define the root
 		// type.
 		// TODO add metadata on schema here.
 		// TODO is should be possible to attach attributive data for a flyout.
-		TreeParent hidden_root = new TreeParent("ROOT", null, TreeObjectType.ROOT, null, schemaType);
+		TreeParent hidden_root = new TreeParent("ROOT", null, TreeObjectType.ROOT, null, schemaType); //$NON-NLS-1$
 		TreeParent root = new TreeParent(namespace, null, TreeObjectType.ROOT, null, schemaType);
 		hidden_root.addChild(root);
 		
@@ -346,7 +346,7 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 			Map<String, SchemaItem> aboutMap, Set<TypeDefinition> resolving,
 			SchemaType schemaType) {
 		if (resolving.contains(type)) {
-			log.debug("Cycle in properties, skipping adding property items");
+			log.debug("Cycle in properties, skipping adding property items"); //$NON-NLS-1$
 		}
 		else {
 			resolving.add(type);

@@ -70,6 +70,7 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.schemaprovider.AbstractSchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.HumboldtURIResolver;
 import eu.esdihumboldt.hale.schemaprovider.LogProgressIndicator;
+import eu.esdihumboldt.hale.schemaprovider.Messages;
 import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
@@ -109,9 +110,9 @@ public class ApacheSchemaProvider
 	 */
 	private static ALogger _log = ALoggerFactory.getLogger(ApacheSchemaProvider.class);
 	
-	private static final AGroup NO_DEFINITION = AGroupFactory.getGroup("No type definition found for elements"); 
+	private static final AGroup NO_DEFINITION = AGroupFactory.getGroup(Messages.getString("ApacheSchemaProvider.0"));  //$NON-NLS-1$
 	
-	private static final AGroup MISSING_ATTRIBUTE_REF = AGroupFactory.getGroup("Could not resolve attribute reference");
+	private static final AGroup MISSING_ATTRIBUTE_REF = AGroupFactory.getGroup(Messages.getString("ApacheSchemaProvider.1")); //$NON-NLS-1$
 	
 	/**
 	 * Default constructor 
@@ -119,9 +120,9 @@ public class ApacheSchemaProvider
 	public ApacheSchemaProvider() {
 		super();
 		
-		addSupportedFormat("xsd");
-		addSupportedFormat("gml");
-		addSupportedFormat("xml");
+		addSupportedFormat("xsd"); //$NON-NLS-1$
+		addSupportedFormat("gml"); //$NON-NLS-1$
+		addSupportedFormat("xml"); //$NON-NLS-1$
 	}
 
 	/**
@@ -227,7 +228,7 @@ public class ApacheSchemaProvider
 			// local element definition
 			SchemaElement reference = referenceResolver.getSchemaElement(elementName);
 			if (reference == null) {
-				_log.warn("Reference to element " + element.getRefName().getNamespaceURI() + "/" + element.getRefName().getLocalPart() +" not found");
+				_log.warn("Reference to element " + element.getRefName().getNamespaceURI() + "/" + element.getRefName().getLocalPart() +" not found"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				return null;
 			}
 			else {
@@ -258,11 +259,11 @@ public class ApacheSchemaProvider
 						String nameExt;
 						if (content instanceof XmlSchemaComplexContentExtension) {
 							qname = ((XmlSchemaComplexContentExtension) content).getBaseTypeName();
-							nameExt = "Extension";
+							nameExt = Messages.getString("ApacheSchemaProvider.8"); //$NON-NLS-1$
 						}
 						else {
 							qname = ((XmlSchemaComplexContentRestriction) content).getBaseTypeName();
-							nameExt = "Restriction";
+							nameExt = Messages.getString("ApacheSchemaProvider.9"); //$NON-NLS-1$
 						}
 						
 						if (declaringType != null) {
@@ -271,11 +272,11 @@ public class ApacheSchemaProvider
 							// try to get the type definition of the super type
 							TypeDefinition superType = TypeUtil.resolveAttributeType(superTypeName, schemaTypes);
 							if (superType == null) {
-								_log.error("Couldn't resolve super type: " + superTypeName.getNamespaceURI() + "/" + superTypeName.getLocalPart());
+								_log.error("Couldn't resolve super type: " + superTypeName.getNamespaceURI() + "/" + superTypeName.getLocalPart()); //$NON-NLS-1$ //$NON-NLS-2$
 							}
 							
 							// create an anonymous type that extends the super type
-							Name anonymousName = new NameImpl(declaringType.getIdentifier() + "/" + element.getName(), superTypeName.getLocalPart() + nameExt);
+							Name anonymousName = new NameImpl(declaringType.getIdentifier() + "/" + element.getName(), superTypeName.getLocalPart() + nameExt); //$NON-NLS-1$
 							TypeDefinition anonymousType = new AnonymousType(anonymousName, null, superType, (schemaTypes != null)?(schemaTypes.getSchemaLocation()):(null));
 							
 							// add attributes to the anonymous type
@@ -302,11 +303,11 @@ public class ApacheSchemaProvider
 						String nameExt;
 						if (content instanceof XmlSchemaSimpleContentExtension) {
 							qname = ((XmlSchemaSimpleContentExtension) content).getBaseTypeName();
-							nameExt = "Extension";
+							nameExt = Messages.getString("ApacheSchemaProvider.8"); //$NON-NLS-1$
 						}
 						else {
 							qname = ((XmlSchemaSimpleContentRestriction) content).getBaseTypeName();
-							nameExt = "Restriction";
+							nameExt = Messages.getString("ApacheSchemaProvider.9"); //$NON-NLS-1$
 						}
 						
 						if (declaringType != null) {
@@ -317,11 +318,11 @@ public class ApacheSchemaProvider
 							// try to get the type definition of the super type
 							TypeDefinition superType = TypeUtil.resolveAttributeType(superTypeName, schemaTypes);
 							if (superType == null) {
-								_log.error("Couldn't resolve super type: " + superTypeName.getNamespaceURI() + "/" + superTypeName.getLocalPart());
+								_log.error("Couldn't resolve super type: " + superTypeName.getNamespaceURI() + "/" + superTypeName.getLocalPart()); //$NON-NLS-1$ //$NON-NLS-2$
 							}
 							
 							// create an anonymous type that extends the super type
-							Name anonymousName = new NameImpl(declaringType.getIdentifier() + "/" + element.getName(), superTypeName.getLocalPart() + nameExt);
+							Name anonymousName = new NameImpl(declaringType.getIdentifier() + "/" + element.getName(), superTypeName.getLocalPart() + nameExt); //$NON-NLS-1$
 							// for now use the super attribute type, because attributes aren't added as attribute descriptors
 							AttributeType attributeType = superType.getType(null); 
 							TypeDefinition anonymousType = new AnonymousType(anonymousName, attributeType, superType, (schemaTypes != null)?(schemaTypes.getSchemaLocation()):(null));
@@ -365,7 +366,7 @@ public class ApacheSchemaProvider
 					}
 					else {
 						// create an anonymous type
-						Name anonymousName = new NameImpl(declaringType.getIdentifier() + "/" + element.getName(), "AnonymousType");
+						Name anonymousName = new NameImpl(declaringType.getIdentifier() + "/" + element.getName(), Messages.getString("ApacheSchemaProvider.19")); //$NON-NLS-1$ //$NON-NLS-2$
 						TypeDefinition anonymousType = new AnonymousType(anonymousName, null, null, (schemaTypes != null)?(schemaTypes.getSchemaLocation()):(null));
 						
 						// add attributes to the anonymous type
@@ -397,7 +398,7 @@ public class ApacheSchemaProvider
 							type);
 				}
 				else {
-					_log.error("Could not resolve type for element " + element.getName());
+					_log.error("Could not resolve type for element " + element.getName()); //$NON-NLS-1$
 				}
 			}
 		}
@@ -475,7 +476,7 @@ public class ApacheSchemaProvider
 		locationURL = location.toURL();
 		is = locationURL.openStream();
 		
-		progress.setCurrentTask("Loading schema");
+		progress.setCurrentTask(Messages.getString("ApacheSchemaProvider.21")); //$NON-NLS-1$
 
 		XmlSchema schema = null;
 		XmlSchemaCollection schemaCol = new XmlSchemaCollection();
@@ -483,9 +484,9 @@ public class ApacheSchemaProvider
 		if (location.getHost() == null) {
 			schemaCol.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress));
 			schemaCol.setBaseUri(findBaseUri(location));
-		} else if (location.getScheme().equals("bundleresource")) {
+		} else if (location.getScheme().equals("bundleresource")) { //$NON-NLS-1$
 			schemaCol.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress));
-			schemaCol.setBaseUri(findBaseUri(location) + "/");
+			schemaCol.setBaseUri(findBaseUri(location) + "/"); //$NON-NLS-1$
 		}
 		else {
 			URIResolver resolver = schemaCol.getSchemaResolver();
@@ -498,7 +499,7 @@ public class ApacheSchemaProvider
 		String namespace = schema.getTargetNamespace();
 		if (namespace == null || namespace.isEmpty()) {
 			// default to gml schema
-			namespace = "http://www.opengis.net/gml";
+			namespace = "http://www.opengis.net/gml"; //$NON-NLS-1$
 		}
 		
 		schema.setSourceURI(location.toString());
@@ -522,7 +523,7 @@ public class ApacheSchemaProvider
 				}
 			}
 			else {
-				_log.warn(NO_DEFINITION, "No type definition for element " + element.getElementName().getLocalPart());
+				_log.warn(NO_DEFINITION, "No type definition for element " + element.getElementName().getLocalPart()); //$NON-NLS-1$
 			}
 		}
 
@@ -559,7 +560,7 @@ public class ApacheSchemaProvider
 		String namespace = schema.getTargetNamespace();
 		if (namespace == null || namespace.isEmpty()) {
 			// default to gml schema
-			namespace = "http://www.opengis.net/gml";
+			namespace = "http://www.opengis.net/gml"; //$NON-NLS-1$
 		}
 
 		// attribute name mapped to attribute definition
@@ -599,7 +600,7 @@ public class ApacheSchemaProvider
 				else if (element.getSchemaType() != null) {
 					// element has internal type definition, generate anonymous type name
 					typeName = new NameImpl(element.getQName().getNamespaceURI(),
-							element.getQName().getLocalPart() + "_AnonymousType");
+							element.getQName().getLocalPart() + Messages.getString("ApacheSchemaProvider.2")); //$NON-NLS-1$
 					anonymousTypes.put(element, typeName);
 				}
 				else if (element.getQName() != null) {
@@ -638,7 +639,7 @@ public class ApacheSchemaProvider
 					schemaAttributes.put(new NameImpl(att.getQName().getNamespaceURI(), att.getQName().getLocalPart()), att);
 				}
 				else {
-					_log.warn("Attribute not processed: " + att.getName());
+					_log.warn("Attribute not processed: " + att.getName()); //$NON-NLS-1$
 				}
 			}
 			else if (item instanceof XmlSchemaAttributeGroup) {
@@ -648,7 +649,7 @@ public class ApacheSchemaProvider
 					schemaAttributeGroups.put(new NameImpl(group.getName().getNamespaceURI(), group.getName().getLocalPart()), group);
 				}
 				else {
-					_log.warn("Attribute group not processed");
+					_log.warn("Attribute group not processed"); //$NON-NLS-1$
 				}
 			}
 		}
@@ -659,7 +660,7 @@ public class ApacheSchemaProvider
 		// handle imports
 		XmlSchemaObjectCollection externalItems = schema.getIncludes();
 		if (externalItems.getCount() > 0) {
-			_log.info("Loading includes and imports for schema at " + schemaLocation);
+			_log.info("Loading includes and imports for schema at " + schemaLocation); //$NON-NLS-1$
 		}
 		
 		// add self to imports (allows resolving references to elements that are defined here)
@@ -678,13 +679,13 @@ public class ApacheSchemaProvider
 					includes.add(location);
 				}
 			} catch (Throwable e) {
-				_log.error("Error adding imported schema", e);
+				_log.error("Error adding imported schema", e); //$NON-NLS-1$
 			}
 		}
 		
-		_log.info("Creating types for schema at " + schemaLocation);
+		_log.info("Creating types for schema at " + schemaLocation); //$NON-NLS-1$
 		
-		progress.setCurrentTask("Analyzing schema " + namespace);
+		progress.setCurrentTask(Messages.getString("ApacheSchemaProvider.33") + namespace); //$NON-NLS-1$
 		
 		// map for all imported types
 		Map<Name, TypeDefinition> importedFeatureTypes = new HashMap<Name, TypeDefinition>();
@@ -812,7 +813,7 @@ public class ApacheSchemaProvider
 			XmlSchemaObject item = typeDefinitions.get(typeName);
 
 			if (item == null) {
-				_log.error("No definition for " + typeName.toString());
+				_log.error("No definition for " + typeName.toString()); //$NON-NLS-1$
 			}
 			else if (item instanceof XmlSchemaSimpleType) {
 				// attribute type from simple schema types
@@ -824,7 +825,7 @@ public class ApacheSchemaProvider
 					featureTypes.put(typeName, simpleType);
 				}
 				else {
-					_log.warn("No attribute type generated for simple type " + typeName.toString());
+					_log.warn("No attribute type generated for simple type " + typeName.toString()); //$NON-NLS-1$
 				}
 			}
 			else if (item instanceof XmlSchemaComplexType) {
@@ -840,7 +841,7 @@ public class ApacheSchemaProvider
 					// create empty super type if it was not found
 					if (superType == null) {
 						superType = new TypeDefinition(superTypeName, null, null);
-						superType.setLocation("Empty type generated by HALE");
+						superType.setLocation(Messages.getString("ApacheSchemaProvider.36")); //$NON-NLS-1$
 						superType.setAbstract(true);
 						// add super type to feature map
 						featureTypes.put(superTypeName, superType);
@@ -1076,7 +1077,7 @@ public class ApacheSchemaProvider
 			SchemaTypeResolver schemaTypes, SchemaReferenceResolver referenceResolver,
 			String indexPrefix) {
 		if (indexPrefix == null) {
-			indexPrefix = "";
+			indexPrefix = ""; //$NON-NLS-1$
 		}
 		
 		List<AttributeDefinition> attributeResults = new ArrayList<AttributeDefinition>();
@@ -1113,7 +1114,7 @@ public class ApacheSchemaProvider
 								declaringType, schemaTypes, referenceResolver, indexPrefix + index));
 					}
 					else {
-						_log.warn("Reference to attribute group " + groupRef.getRefName() + " could not be resolved");
+						_log.warn("Reference to attribute group " + groupRef.getRefName() + " could not be resolved"); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 			}
@@ -1127,7 +1128,7 @@ public class ApacheSchemaProvider
 			SchemaTypeResolver schemaTypes, SchemaReferenceResolver referenceResolver, 
 			String index) {
 		return getAttributesFromCollection(group.getAttributes(), 
-				declaringType, schemaTypes, referenceResolver, index + "_");
+				declaringType, schemaTypes, referenceResolver, index + "_"); //$NON-NLS-1$
 	}
 
 	private AttributeDefinition createAttribute(XmlSchemaAttribute attribute, 
@@ -1149,7 +1150,7 @@ public class ApacheSchemaProvider
 				QName name = attribute.getSchemaType().getQName();
 				Name attributeTypeName = (name != null)?
 						(new NameImpl(name.getNamespaceURI(), name.getLocalPart())):
-						(new NameImpl(declaringType.getName().getNamespaceURI() + "/" + declaringType.getName().getLocalPart(), "AnonymousAttribute" + index));
+						(new NameImpl(declaringType.getName().getNamespaceURI() + "/" + declaringType.getName().getLocalPart(), Messages.getString("ApacheSchemaProvider.42") + index)); //$NON-NLS-1$ //$NON-NLS-2$
 				TypeDefinition attributeType = TypeUtil.resolveSimpleType(
 						attributeTypeName, 
 						attribute.getSchemaType(), 
@@ -1170,7 +1171,7 @@ public class ApacheSchemaProvider
 				return createAttribute(referencedAtt, declaringType, schemaTypes, referenceResolver, index, attribute.getUse());
 			}
 			else {
-				_log.warn(MISSING_ATTRIBUTE_REF, "Reference to attribute " + attribute.getRefName() + " could not be resolved");
+				_log.warn(MISSING_ATTRIBUTE_REF, "Reference to attribute " + attribute.getRefName() + " could not be resolved"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 		
@@ -1206,12 +1207,12 @@ public class ApacheSchemaProvider
 	 * @return the base URI as string
 	 */
 	private String findBaseUri(URI uri) {
-		String baseUri = "";
+		String baseUri = ""; //$NON-NLS-1$
 		baseUri = uri.toString();
-		if (baseUri.matches("^.*?\\/.+")) {
-			baseUri = baseUri.substring(0, baseUri.lastIndexOf("/"));
+		if (baseUri.matches("^.*?\\/.+")) { //$NON-NLS-1$
+			baseUri = baseUri.substring(0, baseUri.lastIndexOf("/")); //$NON-NLS-1$
 		}
-		_log.info("Base URI for schemas to be used: " + baseUri);
+		_log.info("Base URI for schemas to be used: " + baseUri); //$NON-NLS-1$
 		return baseUri;
 	}
 	

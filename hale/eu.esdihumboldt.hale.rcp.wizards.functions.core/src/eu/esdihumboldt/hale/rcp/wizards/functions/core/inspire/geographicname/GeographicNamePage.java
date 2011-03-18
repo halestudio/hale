@@ -42,6 +42,7 @@ import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 import eu.esdihumboldt.inspire.data.GrammaticalGenderValue;
 import eu.esdihumboldt.inspire.data.GrammaticalNumberValue;
 import eu.esdihumboldt.inspire.data.NameStatusValue;
@@ -59,39 +60,39 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 	/**
 	 * constants for the wizard page labels
 	 */
-	private final static String SOURCE_OF_NAME_PROMT = "<enter source if known>";
+	private final static String SOURCE_OF_NAME_PROMT = Messages.GeographicNamePage_0;
 
-	private static final String GENDER_NULL_VAUE_MENU_ENTRY = "";
+	private static final String GENDER_NULL_VAUE_MENU_ENTRY = Messages.GeographicNamePage_1;
 
-	private static final String NUMBER_NULL_VALUE_MENU_ENTRY = "";
+	private static final String NUMBER_NULL_VALUE_MENU_ENTRY = Messages.GeographicNamePage_2;
 
-	private static final String LANGUAGE_LABEL_TEXT = "Language";
+	private static final String LANGUAGE_LABEL_TEXT = Messages.GeographicNamePage_3;
 
-	private static final String ISO_CODE_ENG = "eng";
+	private static final String ISO_CODE_ENG = Messages.GeographicNamePage_4;
 
-	private static final String SOURCE_OF_NAME_LABEL_TEXT = "Source of Name";
+	private static final String SOURCE_OF_NAME_LABEL_TEXT = Messages.GeographicNamePage_5;
 
-	private static final String NAME_STATUS_LABEL_TEXT = "Name Status";
+	private static final String NAME_STATUS_LABEL_TEXT = Messages.GeographicNamePage_6;
 
-	private static final String NATIVENESS_LABEL_TEXT = "Nativeness";
+	private static final String NATIVENESS_LABEL_TEXT = Messages.GeographicNamePage_7;
 
-	private static final String GRAMMATICAL_GENDER_LABEL_TEXT = "Grammatical Gender";
+	private static final String GRAMMATICAL_GENDER_LABEL_TEXT = Messages.GeographicNamePage_8;
 
-	private static final String GRAMMATICAL_NUMBER_LABEL_TEXT = "Grammatical Number";
+	private static final String GRAMMATICAL_NUMBER_LABEL_TEXT = Messages.GeographicNamePage_9;
 
-	private static final String PRONOUNCIATION_GRPOUP_TEXT = "Pronounciation";
+	private static final String PRONOUNCIATION_GRPOUP_TEXT = Messages.GeographicNamePage_10;
 
-	private static final String SOUNDLINK_LABEL_TEXT = "Soundlink        ";
+	private static final String SOUNDLINK_LABEL_TEXT = Messages.GeographicNamePage_11;
 
-	private static final String IPA_LABEL_TEXT = "IPA";
+	private static final String IPA_LABEL_TEXT = Messages.GeographicNamePage_12;
 
-	private static final String SPELLING_GROUP_TEXT = "Spelling";
+	private static final String SPELLING_GROUP_TEXT = Messages.GeographicNamePage_13;
 
-	private static final String SPELLING_TEXT_LABEL_TEXT = "Text";
+	private static final String SPELLING_TEXT_LABEL_TEXT = Messages.GeographicNamePage_14;
 
-	private static final String SCRIPT_LABEL_TEXT = "Script";
+	private static final String SCRIPT_LABEL_TEXT = Messages.GeographicNamePage_15;
 
-	private static final String TRANSLITERATION_LABEL_TEXT = "Transliteration";
+	private static final String TRANSLITERATION_LABEL_TEXT = Messages.GeographicNamePage_16;
 
 	private ComboViewer nameSpellingText;
 	private StyledText nameSpellingScript;
@@ -191,7 +192,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 				SWT.BORDER | SWT.SINGLE);
 		this.nameLanguageText.setLayoutData(configurationLayoutData);
 		String languageCode = null;
-		if (getLanguage() != null && !getLanguage().equals("")) {
+		if (getLanguage() != null && !getLanguage().equals("")) { //$NON-NLS-1$
 			languageCode = getLanguage();
 			this.nameLanguageText.setCaretOffset(languageCode.length());
 
@@ -220,7 +221,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 				| SWT.SINGLE);
 		this.nameSourceText.setLayoutData(configurationLayoutData);
 		String nameSource = null;
-		if (getSourceOfName() != null && !getSourceOfName().equals("") && !getSourceOfName().equals("unknown")) {
+		if (getSourceOfName() != null && !getSourceOfName().equals("") && !getSourceOfName().equals("unknown")) { //$NON-NLS-1$ //$NON-NLS-2$
 			nameSource = getSourceOfName();
 
 		} else {
@@ -240,7 +241,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 				}
 				// FIXME replace with constant from new commons release
 				else {
-					setSourceOfName("unknown");
+					setSourceOfName("unknown"); //$NON-NLS-1$
 				}
 
 			}
@@ -434,8 +435,8 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		this.namePronounciationIPA.setLayoutData(configurationLayoutData);
 		this.namePronounciationIPA.setEnabled(true);
 		this.namePronounciationIPA.setTabs(0);
-		String ipa = "";
-		if (getIpa() != null && !getIpa().equals("")) {
+		String ipa = ""; //$NON-NLS-1$
+		if (getIpa() != null && !getIpa().equals("")) { //$NON-NLS-1$
 			ipa = getIpa();
 
 		}
@@ -527,13 +528,13 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 					SpellingType selected = (SpellingType) ((IStructuredSelection) event.getSelection()).getFirstElement();
 					
 					String script = ISO_CODE_ENG;
-					String transliteration = "";
+					String transliteration = ""; //$NON-NLS-1$
 					activeSpelling = selected;
 					if (activeSpelling.getScript() != null
-							&& !activeSpelling.getScript().equals(""))
+							&& !activeSpelling.getScript().equals("")) //$NON-NLS-1$
 						script = activeSpelling.getScript();
 					if (activeSpelling.getTransliteration() != null
-							&& !activeSpelling.getTransliteration().equals(""))
+							&& !activeSpelling.getTransliteration().equals("")) //$NON-NLS-1$
 						transliteration = activeSpelling.getTransliteration();
 					nameSpellingScript.setText(script);
 					nameSpellingScript.setCaretOffset(script.length());
@@ -553,7 +554,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		this.nameSpellingScript.setLayoutData(configurationLayoutData);
 		this.nameSpellingScript.setEnabled(true);
 		this.nameSpellingScript.setTabs(0);
-		String script = "eng";
+		String script = "eng"; //$NON-NLS-1$
 		// read script from the active spelling
 		if (activeSpelling.getScript() != null)
 			script = activeSpelling.getScript();
@@ -579,7 +580,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		this.nameSpellingTransliteration.setEnabled(true);
 		this.nameSpellingTransliteration.setTabs(0);
 		// read script from the active spelling
-		String transliteration = "";
+		String transliteration = ""; //$NON-NLS-1$
 		if (activeSpelling.getTransliteration() != null)
 			transliteration = activeSpelling.getTransliteration();
 		// set default value for transliteration
@@ -753,7 +754,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 	 */
 	public String getSourceOfName() {
 		if (sourceOfName == null || sourceOfName.equals(SOURCE_OF_NAME_PROMT)) {
-			return "unknown";
+			return "unknown"; //$NON-NLS-1$
 		}
 		
 		return sourceOfName;

@@ -94,7 +94,7 @@ public class MultiColumnTreeNodeLabelProvider extends LabelProvider {
 	 * @return the default text
 	 */
 	protected String getDefaultText() {
-		return "";
+		return ""; //$NON-NLS-1$
 	}
 	
 	/**

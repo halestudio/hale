@@ -36,18 +36,18 @@ public class FeatureCollectionUtilitiesTest {
 	@Test
 	public void testLoadFeatureCollectionFromWKT() {
 		// run a series of tests with different geometry types.
-		String testFTName = "TestFTName";
-		String testFeatureName = "TestFeatureName";
+		String testFTName = "TestFTName"; //$NON-NLS-1$
+		String testFeatureName = "TestFeatureName"; //$NON-NLS-1$
 		
 		// load collections from files.
-		String basepath = "D:/humboldt-workspace/HALE/";
+		String basepath = "D:/humboldt-workspace/HALE/"; //$NON-NLS-1$
 		FeatureCollection<SimpleFeatureType, SimpleFeature> fc_linestring = 
 			FeatureCollectionUtilities.loadFeatureCollectionFromWKT(basepath +
-				"resources/test.eu.esdihumboldt.hale.models.factory/linestring.wkt", 
+				"resources/test.eu.esdihumboldt.hale.models.factory/linestring.wkt",  //$NON-NLS-1$
 				testFTName, testFeatureName);
 		FeatureCollection<SimpleFeatureType, SimpleFeature> fc_polygon = 
 			FeatureCollectionUtilities.loadFeatureCollectionFromWKT(basepath +
-				"resources/test.eu.esdihumboldt.hale.models.factory/polygon.wkt", 
+				"resources/test.eu.esdihumboldt.hale.models.factory/polygon.wkt",  //$NON-NLS-1$
 				testFTName, testFeatureName);
 		
 		// make assertions on the result to ensure completeness of results
@@ -85,14 +85,14 @@ public class FeatureCollectionUtilitiesTest {
 	 */
 	@Test
 	public void testGetFeatureType() {
-		String testFTName = "TestFTName";
+		String testFTName = "TestFTName"; //$NON-NLS-1$
 		Class<? extends Geometry> geometry_class = com.vividsolutions.jts.geom.Polygon.class;
 		FeatureType ft = FeatureCollectionUtilities.getFeatureType(
 				geometry_class, testFTName, false);
 		assertTrue(ft.getName() != null);
 		assertEquals(ft.getName().getLocalPart(), testFTName);
 		assertTrue(ft.getDescriptors().size() == 1);
-		assertTrue(ft.getDescriptor("the_geom") != null);
+		assertTrue(ft.getDescriptor("the_geom") != null); //$NON-NLS-1$
 	}
 
 }

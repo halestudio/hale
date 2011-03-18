@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.rcp.utils.filter.FeatureFilterForm;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
@@ -39,7 +40,7 @@ public class FilterWizardMainPage extends AbstractSingleCellWizardPage {
 	protected FilterWizardMainPage(String pageName, String title) {
 		super(pageName, title, (ImageDescriptor) null);
 		setTitle(pageName);
-		setDescription("Configure your CQL-Expression to proceed filter operation.");
+		setDescription(Messages.FilterWizardMainPage_0);
 	}
 
 	/**

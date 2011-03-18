@@ -22,13 +22,13 @@ import eu.esdihumboldt.goml.rdf.Resource;
 
 public class NetworkExpansionTest {
 	
-	private final String sourceLocalname = "FT1";
-	private final String sourceLocalnamePropertyAGeom = "PropertyAGeom";
-	private final String sourceNamespace = "http://esdi-humboldt.eu";
+	private final String sourceLocalname = "FT1"; //$NON-NLS-1$
+	private final String sourceLocalnamePropertyAGeom = "PropertyAGeom"; //$NON-NLS-1$
+	private final String sourceNamespace = "http://esdi-humboldt.eu"; //$NON-NLS-1$
 	
-	private final String targetLocalname = "FT2";
-	private final String targetLocalnamePropertyBGeom = "PropertyBGeom";
-	private final String targetNamespace = "http://xsdi.org";
+	private final String targetLocalname = "FT2"; //$NON-NLS-1$
+	private final String targetLocalnamePropertyBGeom = "PropertyBGeom"; //$NON-NLS-1$
+	private final String targetNamespace = "http://xsdi.org"; //$NON-NLS-1$
 	
 	@Test
 	public void testConfigure() {
@@ -55,7 +55,7 @@ public class NetworkExpansionTest {
 		SimpleFeatureType sourcetype = this.getFeatureType(
 				this.sourceNamespace, 
 				this.sourceLocalname, 
-				"geom",
+				"geom", //$NON-NLS-1$
 				Polygon.class);
 		SimpleFeatureType targettype = this.getFeatureType(
 				this.targetNamespace, 
@@ -65,8 +65,8 @@ public class NetworkExpansionTest {
 		GeometryFactory fac = new GeometryFactory();
 				
 		
-		Feature source = SimpleFeatureBuilder.build(sourcetype, new Object[] {fac.createPolygon(fac.createLinearRing(new Coordinate[] {new Coordinate(0,2), new Coordinate (2,0), new Coordinate (8,6), new Coordinate(0,2)} ),null) }, "1");
-		Feature target = SimpleFeatureBuilder.build(targettype, new Object[]{}, "2");
+		Feature source = SimpleFeatureBuilder.build(sourcetype, new Object[] {fac.createPolygon(fac.createLinearRing(new Coordinate[] {new Coordinate(0,2), new Coordinate (2,0), new Coordinate (8,6), new Coordinate(0,2)} ),null) }, "1"); //$NON-NLS-1$
+		Feature target = SimpleFeatureBuilder.build(targettype, new Object[]{}, "2"); //$NON-NLS-1$
 		
 		// perform actual test
 		NetworkExpansionFunction buffer = new NetworkExpansionFunction();

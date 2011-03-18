@@ -195,7 +195,7 @@ public class ModelNavigationView extends ViewPart implements
 				true));
 		List<AbstractContentProviderAction> sourceContentActions = 
 			initSchemaExplorerToolBar(sourceComposite, sourceSchemaFilter, 
-				sourceToggleActions, "Source");
+				sourceToggleActions, "Source"); //$NON-NLS-1$
 
 		this.sourceSchemaViewer = this.schemaExplorerSetup(sourceComposite, SchemaType.SOURCE);
 		this.sourceSchemaViewer.addFilter(sourceSchemaFilter);
@@ -269,7 +269,7 @@ public class ModelNavigationView extends ViewPart implements
 				true));
 		List<AbstractContentProviderAction> targetContentActions = 
 			initSchemaExplorerToolBar(targetComposite, targetSchemaFilter, 
-				targetToggleActions, "Target");
+				targetToggleActions, "Target"); //$NON-NLS-1$
 
 		this.targetSchemaViewer = this.schemaExplorerSetup(targetComposite,
 				SchemaType.TARGET);
@@ -349,8 +349,8 @@ public class ModelNavigationView extends ViewPart implements
 	private List<SimpleToggleAction> getToggleActions(PatternViewFilter pvf) {
 		List<SimpleToggleAction> result = new ArrayList<SimpleToggleAction>();
 		result.add(new SimpleToggleAction(TreeObjectType.ABSTRACT_FT, 
-				"Hide abstract types", "Show abstract types", 
-				"/icons/see_abstract_ft.png", pvf));
+				Messages.getString("ModelNavigationView.2"), Messages.getString("ModelNavigationView.3"),  //$NON-NLS-1$ //$NON-NLS-2$
+				"/icons/see_abstract_ft.png", pvf)); //$NON-NLS-1$
 		result.add(new SimpleToggleAction(TreeObjectType.PROPERTY_TYPE, 
 				Messages.ModelNavigationView_PropertyHide, Messages.ModelNavigationView_PropertyShow, 
 				"/icons/see_property_type.gif", pvf)); //$NON-NLS-1$

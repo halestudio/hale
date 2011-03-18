@@ -67,21 +67,21 @@ import eu.esdihumboldt.hale.gmlparser.HaleGMLParser;
 public class GtToDgConvertorTest {
 
 	/** URL of XSD for tests **/
-	private static final String xsdUrl = "file://" + (new GtToDgConvertorTest()).getClass()
-										  .getResource("./inputdata/Watercourses_BY.xml").getFile();
+	private static final String xsdUrl = "file://" + (new GtToDgConvertorTest()).getClass() //$NON-NLS-1$
+										  .getResource("./inputdata/Watercourses_BY.xml").getFile(); //$NON-NLS-1$
 	/** Namespace of {@link #xsdUrl} */
-	private static final String XSD_NAMESPACE = "http://www.openplans.org/topp";
-	private static final String xsdUrlDemo = "file://" + (new GtToDgConvertorTest()).getClass()
-	  .getResource("./inputdata/Sample_GN_HU_GeoServer.xsd").getFile();
+	private static final String XSD_NAMESPACE = "http://www.openplans.org/topp"; //$NON-NLS-1$
+	private static final String xsdUrlDemo = "file://" + (new GtToDgConvertorTest()).getClass() //$NON-NLS-1$
+	  .getResource("./inputdata/Sample_GN_HU_GeoServer.xsd").getFile(); //$NON-NLS-1$
 	/** generated instance location */
-	private static final String GML32_GENERATED_LOCATION = "src/test/resources/generated_3_2_1.gml";
-	private static final String DEMO_GML32_GENERATED_LOCATION = "src/test/resources/demo_generated_3_2_1.gml";
-	private static final String Italy_INSPIRE_xsdUrl = "http://www.gisig.it:8081/geoserver/wfs?service=WFS&version=1.1.0&request=DescribeFeatureType&typeName=Italy:SIC";
-	private static final String DEMO_GML32_Genereted_Italy_INSPIRE = "src/test/resources/italy_inspire_generated_3_2_1.gml";
-	private static final String Italy_TC_xsdUrl = "http://www.gisig.it:8081/geoserver/wfs?service=WFS&;version=1.1.0&;request=DescribeFeatureType&;typeName=Transboundary:ASPECCHI_ACQUA_07";
-	private static final String DEMO_GML32_Genereted_Italy_TC = "src/test/resources/italy_tc_generated_3_2_1.gml";
-	private static final String Spain_HUMBOLDT_xsdUrl = "http://www.gisig.it:8081/geoserver/wfs?service=WFS&version=1.1.0&request=DescribeFeatureType&typeName=Spain:Aren_ex";
-	private static final String DEMO_GML32_Genereted_Spain_HUMBOLDT = "src/test/resources/spain_humboldt_generated_3_2_1.gml";
+	private static final String GML32_GENERATED_LOCATION = "src/test/resources/generated_3_2_1.gml"; //$NON-NLS-1$
+	private static final String DEMO_GML32_GENERATED_LOCATION = "src/test/resources/demo_generated_3_2_1.gml"; //$NON-NLS-1$
+	private static final String Italy_INSPIRE_xsdUrl = "http://www.gisig.it:8081/geoserver/wfs?service=WFS&version=1.1.0&request=DescribeFeatureType&typeName=Italy:SIC"; //$NON-NLS-1$
+	private static final String DEMO_GML32_Genereted_Italy_INSPIRE = "src/test/resources/italy_inspire_generated_3_2_1.gml"; //$NON-NLS-1$
+	private static final String Italy_TC_xsdUrl = "http://www.gisig.it:8081/geoserver/wfs?service=WFS&;version=1.1.0&;request=DescribeFeatureType&;typeName=Transboundary:ASPECCHI_ACQUA_07"; //$NON-NLS-1$
+	private static final String DEMO_GML32_Genereted_Italy_TC = "src/test/resources/italy_tc_generated_3_2_1.gml"; //$NON-NLS-1$
+	private static final String Spain_HUMBOLDT_xsdUrl = "http://www.gisig.it:8081/geoserver/wfs?service=WFS&version=1.1.0&request=DescribeFeatureType&typeName=Spain:Aren_ex"; //$NON-NLS-1$
+	private static final String DEMO_GML32_Genereted_Spain_HUMBOLDT = "src/test/resources/spain_humboldt_generated_3_2_1.gml"; //$NON-NLS-1$
 	private static org.deegree.feature.FeatureCollection DeegreeFC;
 	private static org.geotools.feature.FeatureCollection GeoToolsFC;
 	private static org.geotools.feature.FeatureCollection GeoToolsGMLFC;
@@ -97,9 +97,9 @@ public class GtToDgConvertorTest {
 	public static void loadItaly_INSPIRE(){
 		try {
 			GeoToolsItaly_INSPIRE = FeatureCollections.newCollection();
-			URL url = new URL("file://"
+			URL url = new URL("file://" //$NON-NLS-1$
 					+ (new GtToDgConvertorTest()).getClass()
-							.getResource("./HALE_CST_Italy_INSPIRE/SIC/SIC.gml")
+							.getResource("./HALE_CST_Italy_INSPIRE/SIC/SIC.gml") //$NON-NLS-1$
 							.getFile());
 			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration());
 			GeoToolsItaly_INSPIRE = (org.geotools.feature.FeatureCollection<FeatureType, Feature>) parser
@@ -127,9 +127,9 @@ public class GtToDgConvertorTest {
 	public static void loadItaly_TC(){
 		try {
 			GeoToolsItaly_TC = FeatureCollections.newCollection();
-			URL url = new URL("file://"
+			URL url = new URL("file://" //$NON-NLS-1$
 					+ (new GtToDgConvertorTest()).getClass()
-							.getResource("././HALE_CST_Italy_TC/lakes/SPECCHI_ACQUA_07.gml")
+							.getResource("././HALE_CST_Italy_TC/lakes/SPECCHI_ACQUA_07.gml") //$NON-NLS-1$
 							.getFile());
 			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration());
 			GeoToolsItaly_TC = (org.geotools.feature.FeatureCollection<FeatureType, Feature>) parser
@@ -157,9 +157,9 @@ public class GtToDgConvertorTest {
 	public static void loadSpain_HUMBOLDT(){
 		try {
 			GeoToolsSpain_HUMBOLDT = FeatureCollections.newCollection();
-			URL url = new URL("file://"
+			URL url = new URL("file://" //$NON-NLS-1$
 					+ (new GtToDgConvertorTest()).getClass()
-							.getResource("./HALE_CST_Spain_HUMBOLDT/data/ren_ex.gml")
+							.getResource("./HALE_CST_Spain_HUMBOLDT/data/ren_ex.gml") //$NON-NLS-1$
 							.getFile());
 			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration());
 			GeoToolsSpain_HUMBOLDT = (org.geotools.feature.FeatureCollection<FeatureType, Feature>) parser
@@ -188,14 +188,14 @@ public class GtToDgConvertorTest {
 	public static void loadGeotoolsData() {
 		GeoToolsFC = FeatureCollections.newCollection();
 		try {
-			SimpleFeatureType TYPE = DataUtilities.createType("Location",
-					"location:Point,name:String"); // see createFeatureType();
+			SimpleFeatureType TYPE = DataUtilities.createType("Location", //$NON-NLS-1$
+					"location:Point,name:String"); // see createFeatureType(); //$NON-NLS-1$
 
 			GeometryFactory factory = JTSFactoryFinder.getGeometryFactory(null);
 
 			Point point = factory.createPoint(new Coordinate(15, 50));
 			SimpleFeature feature = SimpleFeatureBuilder.build(TYPE,
-					new Object[] { point, "name" }, null);
+					new Object[] { point, "name" }, null); //$NON-NLS-1$
 
 			GeoToolsFC.add(feature);
 		} catch (FactoryRegistryException e) {
@@ -211,9 +211,9 @@ public class GtToDgConvertorTest {
 	public static void loadGeotoolsGMLData() {
 		try {
 			GeoToolsGMLFC = FeatureCollections.newCollection();
-			URL url = new URL("file://"
+			URL url = new URL("file://" //$NON-NLS-1$
 					+ (new GtToDgConvertorTest()).getClass()
-							.getResource("./inputdata/Watercourses_BY.gml")
+							.getResource("./inputdata/Watercourses_BY.gml") //$NON-NLS-1$
 							.getFile());
 			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration());
 			GeoToolsGMLFC = (org.geotools.feature.FeatureCollection<FeatureType, Feature>) parser
@@ -239,11 +239,11 @@ public class GtToDgConvertorTest {
 	@BeforeClass
 	public static void loadGeotoolDemoData() {
 		try {
-			System.out.println("Reading source data to geotools model...");
+			System.out.println("Reading source data to geotools model..."); //$NON-NLS-1$
 			GeoToolsDemoFC = FeatureCollections.newCollection();
-			URL url = new URL("file://"
+			URL url = new URL("file://" //$NON-NLS-1$
 					+ (new GtToDgConvertorTest()).getClass()
-							.getResource("./inputdata/Sample_GN_HU_GeoServer.gml")
+							.getResource("./inputdata/Sample_GN_HU_GeoServer.gml") //$NON-NLS-1$
 							.getFile());
 			HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration());
 			GeoToolsDemoFC = (org.geotools.feature.FeatureCollection<FeatureType, Feature>) parser

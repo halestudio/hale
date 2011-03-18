@@ -13,6 +13,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * SchemaParser
  *
@@ -33,15 +35,15 @@ public class SchemaParser extends DefaultHandler {
 //		for ( int i = 0; i < atts.getLength(); i++ ) System.out.println(atts.getQName(i));
 		
 		
-		if ((qName.indexOf("import") > -1 || qName.indexOf("include") > -1) && atts.getIndex("schemaLocation") > -1) {
+		if ((qName.indexOf("import") > -1 || qName.indexOf("include") > -1) && atts.getIndex("schemaLocation") > -1) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 //			System.out.println("schemaLocation: " + atts.getValue("schemaLocation"));
 			SchemaParser parser = new SchemaParser();
-			String path = file.substring(0, file.lastIndexOf("/") );
+			String path = file.substring(0, file.lastIndexOf("/") ); //$NON-NLS-1$
 			
-			schemas.put(atts.getValue("schemaLocation"), path + "/" + atts.getValue("schemaLocation"));
+			schemas.put(atts.getValue("schemaLocation"), path + "/" + atts.getValue("schemaLocation")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-			Map<String, String> map = parser.parse( path + "/" + atts.getValue("schemaLocation") );
-			System.out.println("***************************" + path + "/"  + atts.getValue("schemaLocation"));
+			Map<String, String> map = parser.parse( path + "/" + atts.getValue("schemaLocation") ); //$NON-NLS-1$ //$NON-NLS-2$
+			System.out.println("***************************" + path + "/"  + atts.getValue("schemaLocation")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			schemas.putAll(map);
 		}
 
@@ -67,7 +69,7 @@ public class SchemaParser extends DefaultHandler {
 		} catch (SAXException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			System.out.println("File " + file + " does not exist!");
+			System.out.println("File " + file + " does not exist!"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		
 		return schemas;

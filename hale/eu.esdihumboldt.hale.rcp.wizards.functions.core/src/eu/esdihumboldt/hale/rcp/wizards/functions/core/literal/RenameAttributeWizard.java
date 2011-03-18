@@ -24,6 +24,7 @@ import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
 /**
  * Wizard for the {@link RenameAttributeFunction}.
@@ -44,9 +45,9 @@ public class RenameAttributeWizard extends AbstractSingleCellWizard {
 		super(selection);
 		
 		this.mainPage = new RenameAttributeWizardMainPage(
-				"Configure Attribute Renaming Function",
-				"Configure Attribute Renaming Function");
-		super.setWindowTitle("Configure Function");
+				Messages.RenameAttributeWizard_0,
+				Messages.RenameAttributeWizard_1);
+		super.setWindowTitle(Messages.RenameAttributeWizard_2);
 		super.setNeedsProgressMonitor(true);
 	}
 

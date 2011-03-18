@@ -39,6 +39,8 @@ import org.opengis.feature.type.PropertyDescriptor;
 
 import com.vividsolutions.jts.geom.Geometry;
 
+import eu.esdihumboldt.hale.Messages;
+
 public class OGCFilterBuilder extends Composite {
 	
 	FeatureType featureType;
@@ -56,7 +58,7 @@ public class OGCFilterBuilder extends Composite {
 		final Group conditionsGroup = new Group(this, SWT.NONE);
 		conditionsGroup.setLayout(new GridLayout(1, false));
 		conditionsGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
-		conditionsGroup.setText("Filter conditions");
+		conditionsGroup.setText(Messages.getString("OGCFilterBuilder.0")); //$NON-NLS-1$
 		
 		Table table = new Table(conditionsGroup, SWT.CHECK | SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION);
 		table.setLinesVisible(true);
@@ -65,7 +67,7 @@ public class OGCFilterBuilder extends Composite {
 		
 		tableViewer = new CheckboxTableViewer(table);
 
-		String[] titles = {"Negate", "Property", "Comparison", "Value", "Union"};
+		String[] titles = {Messages.getString("OGCFilterBuilder.1"), Messages.getString("OGCFilterBuilder.2"), Messages.getString("OGCFilterBuilder.3"), Messages.getString("OGCFilterBuilder.4"), Messages.getString("OGCFilterBuilder.5")}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		int[] widths = {50, 100, 185, 155, 50};
 		for (int i = 0; i < titles.length; i++) {
 			TableViewerColumn columnViewer = new TableViewerColumn(tableViewer, SWT.NONE);
@@ -90,8 +92,8 @@ public class OGCFilterBuilder extends Composite {
 		conditionButtons.setLayout(layout);
 		
 		final Button addConditionButton = new Button(conditionButtons, SWT.NONE);
-		addConditionButton.setText("Add");
-		addConditionButton.setToolTipText("Appends new condition");
+		addConditionButton.setText(Messages.getString("OGCFilterBuilder.6")); //$NON-NLS-1$
+		addConditionButton.setToolTipText(Messages.getString("OGCFilterBuilder.7")); //$NON-NLS-1$
 		addConditionButton.addListener(SWT.Selection, new Listener () {
 			public void handleEvent(Event event) {
 				data.getConditions().add(new Condition());
@@ -100,8 +102,8 @@ public class OGCFilterBuilder extends Composite {
 		});
 		
 		final Button removeConditionButton = new Button(conditionButtons, SWT.NONE);
-		removeConditionButton.setText("Remove");
-		removeConditionButton.setToolTipText("Removes selected condition");
+		removeConditionButton.setText(Messages.getString("OGCFilterBuilder.8")); //$NON-NLS-1$
+		removeConditionButton.setToolTipText(Messages.getString("OGCFilterBuilder.9")); //$NON-NLS-1$
 		removeConditionButton.addListener(SWT.Selection, new Listener () {
 			public void handleEvent(Event event) {
 				ISelection selection = tableViewer.getSelection();
@@ -155,27 +157,27 @@ public class OGCFilterBuilder extends Composite {
 			
 			if (condition.getProperty() == null) {
 				table.setSelection(i);
-				throw new IllegalStateException("Property must be set at selected condition.");
+				throw new IllegalStateException("Property must be set at selected condition."); //$NON-NLS-1$
 			}
 			
 			if (condition.getComparison() == null) {
 				table.setSelection(i);
-				throw new IllegalStateException("Comparison must be set at selected condition.");
+				throw new IllegalStateException("Comparison must be set at selected condition."); //$NON-NLS-1$
 			}
 			
 			if (condition.getComparison() == null || condition.getValue().toString().isEmpty())
 			{
-				if (!condition.getComparison().equals("PropertyIsNull")) {
+				if (!condition.getComparison().equals(Messages.getString("OGCFilterBuilder.12"))) { //$NON-NLS-1$
 					table.setSelection(i);
-					throw new IllegalStateException("Value must be set at selected condition.");
+					throw new IllegalStateException("Value must be set at selected condition."); //$NON-NLS-1$
 				}
 			}
 			
-			if (condition.getComparison().equals("PropertyIsBetween")) {
-				String[] s = removeEmpty(condition.getValue().toString().split(" |,|;"));
+			if (condition.getComparison().equals("PropertyIsBetween")) { //$NON-NLS-1$
+				String[] s = removeEmpty(condition.getValue().toString().split(" |,|;")); //$NON-NLS-1$
 				if (s.length != 2) {
 					table.setSelection(i);
-					throw new IllegalStateException("Lower and upper value must be set, separated by space, comma or semicolon.");
+					throw new IllegalStateException("Lower and upper value must be set, separated by space, comma or semicolon."); //$NON-NLS-1$
 				}
 				else {
 					condition.setValue(s);
@@ -184,7 +186,7 @@ public class OGCFilterBuilder extends Composite {
 			
 			if (i < conditions.size()-1 && condition.getUnion() == null) {
 				table.setSelection(i);
-				throw new IllegalStateException("Logical union must be set at selected condition.");
+				throw new IllegalStateException("Logical union must be set at selected condition."); //$NON-NLS-1$
 			}
 		}
 		
@@ -221,14 +223,14 @@ public class OGCFilterBuilder extends Composite {
 		if (operation != null) {
 			StringWriter stringWriter = new StringWriter();
 			PrintWriter writer = new PrintWriter(stringWriter);
-			writer.println("<Filter>");
+			writer.println("<Filter>"); //$NON-NLS-1$
 			operation.serialize(writer, 1);
-			writer.print("</Filter>");
+			writer.print("</Filter>"); //$NON-NLS-1$
 			
 			return stringWriter.toString();
 		}
 		else {
-			return ""; // no filter
+			return ""; // no filter //$NON-NLS-1$
 		}
 	}
 	
@@ -242,7 +244,7 @@ public class OGCFilterBuilder extends Composite {
 		Op operation = new ComparisonOp(c.getComparison(), 
 				c.getProperty().getName().getLocalPart(), c.getValue());
 		if (c.isNegate()) {
-			LogicalOp negOp = new LogicalOp("Not");
+			LogicalOp negOp = new LogicalOp("Not"); //$NON-NLS-1$
 			negOp.addOp(operation);
 			operation = negOp;
 		}
@@ -270,12 +272,12 @@ public class OGCFilterBuilder extends Composite {
 		@Override
 		public void serialize(PrintWriter out, int indent) {
 			printIndent(out, indent);
-			out.println("<" + name + ">");
+			out.println("<" + name + ">"); //$NON-NLS-1$ //$NON-NLS-2$
 			for (Op op : ops) {
 				op.serialize(out, indent + 1);
 			}
 			printIndent(out, indent);
-			out.println("</" + name + ">");
+			out.println("</" + name + ">"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 	
@@ -289,35 +291,35 @@ public class OGCFilterBuilder extends Composite {
 		}
 		@Override
 		public void serialize(PrintWriter out, int indent) {
-			if (name.equals("PropertyIsLike")) {
+			if (name.equals("PropertyIsLike")) { //$NON-NLS-1$
 				printIndent(out, indent);
-				out.println("<PropertyIsLike wildCard=\"*\" singleChar=\"?\" escapeChar=\"!\">");
+				out.println("<PropertyIsLike wildCard=\"*\" singleChar=\"?\" escapeChar=\"!\">"); //$NON-NLS-1$
 			}
 			else {
 				printIndent(out, indent);
-				out.println("<" + name + ">");
+				out.println("<" + name + ">"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			printIndent(out, indent + 1);
-			out.println("<PropertyName>" + featureType.getName().getLocalPart() + "/" + property + "</PropertyName>");
-			if (name.equals("PropertyIsBetween")) {
-				String lv = "?";
-				String hv = "?";
+			out.println("<PropertyName>" + featureType.getName().getLocalPart() + "/" + property + "</PropertyName>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			if (name.equals("PropertyIsBetween")) { //$NON-NLS-1$
+				String lv = "?"; //$NON-NLS-1$
+				String hv = "?"; //$NON-NLS-1$
 				String[] s = (String[]) value;
 				if (s.length == 2) {
 					lv = s[0];
 					hv = s[1];
 				}
 				printIndent(out, indent + 1);
-				out.println("<LowerBoundary><Literal>" + lv + "</Literal></LowerBoundary>");
+				out.println("<LowerBoundary><Literal>" + lv + "</Literal></LowerBoundary>"); //$NON-NLS-1$ //$NON-NLS-2$
 				printIndent(out, indent + 1);
-				out.println("<UpperBoundary><Literal>" + hv + "</Literal></UpperBoundary>");
+				out.println("<UpperBoundary><Literal>" + hv + "</Literal></UpperBoundary>"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
-			else if (!name.equals("PropertyIsNull")) {
+			else if (!name.equals("PropertyIsNull")) { //$NON-NLS-1$
 				printIndent(out, indent + 1);
-				out.println("<Literal>" + value + "</Literal>");
+				out.println("<Literal>" + value + "</Literal>"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			printIndent(out, indent);
-			out.println("</" + name + ">");
+			out.println("</" + name + ">"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 	
@@ -442,16 +444,16 @@ public class OGCFilterBuilder extends Composite {
 		List<PropertyDescriptor> propertyList = new ArrayList<PropertyDescriptor>();
 		ComboBoxCellEditor spatialConditionEditor;
 		List<String> spatialConditionList = new ArrayList<String>();
-		String[] spatialConditions = {"Equals", "Disjoint", "Touches", "Within", "Overlaps", "Crosses", 
-				"Intersects", "Contains", "DWithin", "Beyond", "BBOX"};
+		String[] spatialConditions = {Messages.getString("OGCFilterBuilder.45"), Messages.getString("OGCFilterBuilder.46"), Messages.getString("OGCFilterBuilder.47"), Messages.getString("OGCFilterBuilder.48"), Messages.getString("OGCFilterBuilder.49"), Messages.getString("OGCFilterBuilder.50"),  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+				Messages.getString("OGCFilterBuilder.51"), Messages.getString("OGCFilterBuilder.52"), Messages.getString("OGCFilterBuilder.53"), Messages.getString("OGCFilterBuilder.54"), Messages.getString("OGCFilterBuilder.55")}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		ComboBoxCellEditor comparisonConditionEditor;
 		List<String> comparisonConditionList = new ArrayList<String>();
-		String[] comparisonConditions = {"PropertyIsEqualTo", "PropertyIsNotEqualTo", "PropertyIsLessThan",
-				"PropertyIsGreaterThan", "PropertyIsLessThanOrEqualTo", "PropertyIsGreaterThanOrEqualTo", 
-				"PropertyIsLike", "PropertyIsNull", "PropertyIsBetween"};
+		String[] comparisonConditions = {Messages.getString("OGCFilterBuilder.56"), Messages.getString("OGCFilterBuilder.57"), Messages.getString("OGCFilterBuilder.58"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				Messages.getString("OGCFilterBuilder.59"), Messages.getString("OGCFilterBuilder.60"), Messages.getString("OGCFilterBuilder.61"),  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				Messages.getString("OGCFilterBuilder.62"), Messages.getString("OGCFilterBuilder.63"), Messages.getString("OGCFilterBuilder.64")}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		ComboBoxCellEditor logicalUnionEditor;
 		List<String> logicalUnionList = new ArrayList<String>();
-		String[] logicalUnions = {"And", "Or"};
+		String[] logicalUnions = {Messages.getString("OGCFilterBuilder.65"), Messages.getString("OGCFilterBuilder.66")}; //$NON-NLS-1$ //$NON-NLS-2$
 		TextCellEditor textEditor;
 	
 		public ConditionEditingSupport(ColumnViewer viewer, int column) {
@@ -527,7 +529,7 @@ public class OGCFilterBuilder extends Composite {
 			else if (column == 3) {
 				Object value = condition.getValue();
 				if (value == null) {
-					value = "";
+					value = ""; //$NON-NLS-1$
 				}
 				return value.toString();
 			}

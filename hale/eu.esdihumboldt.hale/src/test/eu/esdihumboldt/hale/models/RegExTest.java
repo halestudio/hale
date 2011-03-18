@@ -16,10 +16,10 @@ public class RegExTest {
 	@Test
 	public void testNestedComposedProperty() {
 		Cell cell = new Cell();
-		ComposedProperty cp1 = new ComposedProperty(new About("OuterComposedProperty"));
-		ComposedProperty cp2 = new ComposedProperty(new About("NestedComposedProperty"));
-		Property p1 = new Property(new About("InnerProperty1"));
-		Property p2 = new Property(new About("InnerProperty2"));
+		ComposedProperty cp1 = new ComposedProperty(new About("OuterComposedProperty")); //$NON-NLS-1$
+		ComposedProperty cp2 = new ComposedProperty(new About("NestedComposedProperty")); //$NON-NLS-1$
+		Property p1 = new Property(new About("InnerProperty1")); //$NON-NLS-1$
+		Property p2 = new Property(new About("InnerProperty2")); //$NON-NLS-1$
 		
 		cp2.getCollection().add(p1);
 		cp2.getCollection().add(p2);
@@ -33,7 +33,7 @@ public class RegExTest {
 		OmlRdfGenerator org = new OmlRdfGenerator();
 		
 		try {
-			org.write(al, "d://test-nested-composedproperty.oml");
+			org.write(al, "d://test-nested-composedproperty.oml"); //$NON-NLS-1$
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}

@@ -9,14 +9,14 @@ package eu.esdihumboldt.cst;
  */
 public class NameHelper {
 	
-	public static String sourceLocalname = "FT1";
-	public static String sourceLocalnamePropertyA = "PropertyA";
-	public static String sourceLocalnamePropertyB = "PropertyB";
-	public static String sourceLocalnamePropertyC = "PropertyC";
-	public static String sourceNamespace = "http://esdi-humboldt.eu";
+	public static String sourceLocalname = "FT1"; //$NON-NLS-1$
+	public static String sourceLocalnamePropertyA = "PropertyA"; //$NON-NLS-1$
+	public static String sourceLocalnamePropertyB = "PropertyB"; //$NON-NLS-1$
+	public static String sourceLocalnamePropertyC = "PropertyC"; //$NON-NLS-1$
+	public static String sourceNamespace = "http://esdi-humboldt.eu"; //$NON-NLS-1$
 	
-	public static String targetLocalname = "FT2";
-	public static String targetLocalnamePropertyD = "PropertyD";
-	public static String targetNamespace = "http://xsdi.org";
+	public static String targetLocalname = "FT2"; //$NON-NLS-1$
+	public static String targetLocalnamePropertyD = "PropertyD"; //$NON-NLS-1$
+	public static String targetNamespace = "http://xsdi.org"; //$NON-NLS-1$
 
 }

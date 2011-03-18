@@ -35,6 +35,7 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
 /**
  * @author Simon Templer
@@ -85,8 +86,8 @@ public class MathFunctionPage extends AbstractSingleComposedCellWizardPage {
 		attributeLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		
 		// expression
-		expressionEditor = new MathExpressionFieldEditor("expression",
-				"=", page,
+		expressionEditor = new MathExpressionFieldEditor("expression", //$NON-NLS-1$
+				"=", page, //$NON-NLS-1$
 				variables);
 		expressionEditor.setStringValue(initialExpression);
 		expressionEditor.setEmptyStringAllowed(false);
@@ -106,7 +107,7 @@ public class MathFunctionPage extends AbstractSingleComposedCellWizardPage {
 		
 		// variables
 		Label label = new Label(page, SWT.NONE);
-		label.setText("Available variables (double click to insert)");
+		label.setText(Messages.MathFunctionPage_2);
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 		
 		// spacer
@@ -142,7 +143,7 @@ public class MathFunctionPage extends AbstractSingleComposedCellWizardPage {
 		
 		setControl(page);
 		
-		setMessage("Enter a mathematical expression", DialogPage.INFORMATION);
+		setMessage(Messages.MathFunctionPage_3, DialogPage.INFORMATION);
 		
 		update();
 	}

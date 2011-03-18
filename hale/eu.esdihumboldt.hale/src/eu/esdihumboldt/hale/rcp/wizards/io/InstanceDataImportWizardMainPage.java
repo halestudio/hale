@@ -96,7 +96,7 @@ public class InstanceDataImportWizardMainPage
 		boolean gml = false;
 		for (InstanceProvider provider : instanceProviders) {
 			// check for gml (=wfs) support 
-			if (!gml && provider.supportsInstanceFormat("gml")) {
+			if (!gml && provider.supportsInstanceFormat("gml")) { //$NON-NLS-1$
 				gml = true;
 			}
 			
@@ -127,7 +127,7 @@ public class InstanceDataImportWizardMainPage
 		setControl(composite);
 		
 		if (schemaNamespace == null) {
-			setErrorMessage("You have to load a source schema before you can load instance data");
+			setErrorMessage(Messages.getString("InstanceDataImportWizardMainPage.1")); //$NON-NLS-1$
 		}
 		else {
 			setErrorMessage(null);
@@ -233,7 +233,7 @@ public class InstanceDataImportWizardMainPage
 		// import options
 		if (supportsGML) {
 			Group optionsGroup = new Group(parent, SWT.NONE);
-			optionsGroup.setText("Import options");
+			optionsGroup.setText(Messages.getString("InstanceDataImportWizardMainPage.2")); //$NON-NLS-1$
 			optionsGroup.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 			optionsGroup.setLayout(new GridLayout());
 			
@@ -267,11 +267,11 @@ public class InstanceDataImportWizardMainPage
 		StringBuffer all = new StringBuffer();
 		int i = (formats.size() == 1)?(0):(1);
 		for (String format : formats) {
-			extensions[i] = "*." + format;
+			extensions[i] = "*." + format; //$NON-NLS-1$
 			
 			if (formats.size() > 1) {
 				if (i != 1) {
-					all.append(";");
+					all.append(";"); //$NON-NLS-1$
 				}
 				
 				all.append(extensions[i]);

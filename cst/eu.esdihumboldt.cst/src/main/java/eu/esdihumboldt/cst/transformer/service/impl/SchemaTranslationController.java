@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.cst.transformer.service.impl;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,6 +42,7 @@ import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.transformer.CellUtils;
 import eu.esdihumboldt.cst.transformer.FilterUtils;
+import eu.esdihumboldt.cst.transformer.Messages;
 import eu.esdihumboldt.cst.transformer.capabilities.impl.FunctionDescriptionImpl;
 import eu.esdihumboldt.cst.transformer.fc.CstFeatureCollection;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
@@ -139,9 +141,9 @@ public class SchemaTranslationController {
 								partitionedSourceFeatures, 
 								info.getRenameCell());
 						
-						_log.info("Handled FTCardinality.one_to_one/" +
-								"InstanceCardinality.one_to_one, created " 
-								+ transformMap.getTransformedFeatures().size() + " target features.");
+						_log.info("Handled FTCardinality.one_to_one/" + //$NON-NLS-1$
+								"InstanceCardinality.one_to_one, created "  //$NON-NLS-1$
+								+ transformMap.getTransformedFeatures().size() + " target features."); //$NON-NLS-1$
 						
 						// apply additional attributive transformations
 						for (ICell cell : info.getAttributiveCells()) {
@@ -162,9 +164,9 @@ public class SchemaTranslationController {
 								partitionedSourceFeatures, 
 								info.getRenameCell());
 						
-						_log.info("Handled FTCardinality.one_to_one/" +
-								"InstanceCardinality.one_to_many, created " 
-								+ transformMap.getTransformedFeatures().size() + " target features.");
+						_log.info("Handled FTCardinality.one_to_one/" + //$NON-NLS-1$
+								"InstanceCardinality.one_to_many, created "  //$NON-NLS-1$
+								+ transformMap.getTransformedFeatures().size() + " target features."); //$NON-NLS-1$
 						
 						// apply additional attributive transformations
 						for (ICell cell : info.getAttributiveCells()) {
@@ -186,9 +188,9 @@ public class SchemaTranslationController {
 							partitionedSourceFeatures, 
 							info.getRenameCell());
 					
-					_log.info("Handled FTCardinality.one_to_one/" +
-							"InstanceCardinality.many_to_one, created " 
-							+ transformMap.getTransformedFeatures().size() + " target features.");
+					_log.info("Handled FTCardinality.one_to_one/" + //$NON-NLS-1$
+							"InstanceCardinality.many_to_one, created "  //$NON-NLS-1$
+							+ transformMap.getTransformedFeatures().size() + " target features."); //$NON-NLS-1$
 					
 					// apply additional attributive transformations
 					for (ICell cell : info.getAttributiveCells()) {
@@ -223,8 +225,8 @@ public class SchemaTranslationController {
 				try {
 					cstf = CstFunctionFactory.getInstance().getCstAugmentationFunction(cell);
 				} catch (Exception e) {
-					throw new RuntimeException("Getting the requested " +
-							"CstFunction failed: " + e.getMessage(), e);
+					throw new RuntimeException("Getting the requested " + //$NON-NLS-1$
+							"CstFunction failed: " + e.getMessage(), e); //$NON-NLS-1$
 				}
 				// invoke CstFunction with Target Features List. 
 				if (cstf != null) {
@@ -236,8 +238,8 @@ public class SchemaTranslationController {
 						} catch (Exception e) {
 							functionErrors++;
 							if (this.strict) {
-								throw new RuntimeException("Executing the requested " +
-										"CstFunction failed: " + e.getMessage(), e);
+								throw new RuntimeException("Executing the requested " + //$NON-NLS-1$
+										"CstFunction failed: " + e.getMessage(), e); //$NON-NLS-1$
 							}
 							else {
 								error = e.getMessage();
@@ -253,10 +255,10 @@ public class SchemaTranslationController {
 		}
 		
 		if (functionErrors > 0) {
-			_log.userError(functionErrors + " function execution errors occurred " +
-					"while transforming " + numTransformed + " features, " +
-					"please see the error log or the feature lineage for more " +
-					"details.");
+			_log.userError(functionErrors + " function execution errors occurred " + //$NON-NLS-1$
+					"while transforming " + numTransformed + " features, " + //$NON-NLS-1$ //$NON-NLS-2$
+					"please see the error log or the feature lineage for more " + //$NON-NLS-1$
+					"details."); //$NON-NLS-1$
 		}
 		
 		FeatureCollection result = FeatureCollections.newCollection();
@@ -278,7 +280,7 @@ public class SchemaTranslationController {
 				result.add(simplifiedFeature);
 			}
 		}
-		_log.info("Simplifying features took " + (System.currentTimeMillis() - timeStart) + "ms.");
+		_log.info("Simplifying features took " + (System.currentTimeMillis() - timeStart) + "ms."); //$NON-NLS-1$ //$NON-NLS-2$
 		return result;
 	}
 	
@@ -292,7 +294,7 @@ public class SchemaTranslationController {
 		
 			// invoke CstFunction with Target Features List. 
 			if (cstf != null && !cstf.getClass().equals(RenameFeatureFunction.class)) {
-				_log.info("Applying a " + cstf.getClass().getName() + " function.");
+				_log.info("Applying a " + cstf.getClass().getName() + " function."); //$NON-NLS-1$ //$NON-NLS-2$
 				for (int i = 0; i < transformMap.getTransformedFeatures().size(); i++) {
 					for (Feature target : transformMap.getTransformedFeatures().get(i)) {
 						String error = null;
@@ -313,8 +315,8 @@ public class SchemaTranslationController {
 						} catch (Exception e) {
 							success = false;
 							if (this.strict) {
-								throw new RuntimeException("Executing the requested " +
-										"CstFunction failed: " + e.getMessage(), e);
+								throw new RuntimeException("Executing the requested " + //$NON-NLS-1$
+										"CstFunction failed: " + e.getMessage(), e); //$NON-NLS-1$
 							}
 							else {
 								error = e.getMessage();
@@ -330,12 +332,12 @@ public class SchemaTranslationController {
 		} catch (Exception e) {
 			success = false;
 			if (this.strict) {
-				throw new RuntimeException("Executing the requested " +
-						"CstFunction failed: " + e.getMessage(), e);
+				throw new RuntimeException("Executing the requested " + //$NON-NLS-1$
+						"CstFunction failed: " + e.getMessage(), e); //$NON-NLS-1$
 			}
 			else {
-				_log.error("Executing the requested " +
-						"CstFunction failed: " + e.getMessage(), e);
+				_log.error("Executing the requested " + //$NON-NLS-1$
+						"CstFunction failed: " + e.getMessage(), e); //$NON-NLS-1$
 			}
 		}
 		
@@ -352,7 +354,7 @@ public class SchemaTranslationController {
 		
 			// invoke CstFunction with Target Features List. 
 			if (cstf != null && !cstf.getClass().equals(RenameFeatureFunction.class)) {
-				_log.info("Applying a " + cstf.getClass().getName() + " function.");
+				_log.info("Applying a " + cstf.getClass().getName() + " function."); //$NON-NLS-1$ //$NON-NLS-2$
 				for (int i = 0; i < transformMap.getTransformedFeatures().size(); i++) {
 					String error = null;
 					try {
@@ -370,8 +372,8 @@ public class SchemaTranslationController {
 					} catch (Exception e) {
 						success = false;
 						if (this.strict) {
-							throw new RuntimeException("Executing the requested " +
-									"CstFunction failed: " + e.getMessage(), e);
+							throw new RuntimeException("Executing the requested " + //$NON-NLS-1$
+									"CstFunction failed: " + e.getMessage(), e); //$NON-NLS-1$
 						}
 						else {
 							error = e.getMessage();
@@ -387,12 +389,12 @@ public class SchemaTranslationController {
 		} catch (Exception e) {
 			success = false;
 			if (this.strict) {
-				throw new RuntimeException("Executing the requested " +
-						"CstFunction failed: " + e.getMessage(), e);
+				throw new RuntimeException("Executing the requested " + //$NON-NLS-1$
+						"CstFunction failed: " + e.getMessage(), e); //$NON-NLS-1$
 			}
 			else {
-				_log.error("Executing the requested " +
-						"CstFunction failed: " + e.getMessage(), e);
+				_log.error("Executing the requested " + //$NON-NLS-1$
+						"CstFunction failed: " + e.getMessage(), e); //$NON-NLS-1$
 			}
 		}
 		return success;
@@ -407,7 +409,7 @@ public class SchemaTranslationController {
 		
 			// invoke CstFunction with Target Features List. 
 			if (cstf != null && !cstf.getClass().equals(RenameFeatureFunction.class)) {
-				_log.info("Applying a " + cstf.getClass().getName() + " function.");
+				_log.info("Applying a " + cstf.getClass().getName() + " function."); //$NON-NLS-1$ //$NON-NLS-2$
 				for (int i = 0; i < transformMap.getTransformedFeatures().size(); i++) {
 					String error = null;
 					try {
@@ -425,8 +427,8 @@ public class SchemaTranslationController {
 					} catch (Exception e) {
 						success = false;
 						if (this.strict) {
-							throw new RuntimeException("Executing the requested " +
-									"CstFunction failed: " + e.getMessage(), e);
+							throw new RuntimeException("Executing the requested " + //$NON-NLS-1$
+									"CstFunction failed: " + e.getMessage(), e); //$NON-NLS-1$
 						}
 						else {
 							error = e.getMessage();
@@ -442,12 +444,12 @@ public class SchemaTranslationController {
 		} catch (Exception e) {
 			success = false;
 			if (this.strict) {
-				throw new RuntimeException("Executing the requested " +
-						"CstFunction failed: " + e.getMessage(), e);
+				throw new RuntimeException("Executing the requested " + //$NON-NLS-1$
+						"CstFunction failed: " + e.getMessage(), e); //$NON-NLS-1$
 			}
 			else {
-				_log.error("Executing the requested " +
-						"CstFunction failed: " + e.getMessage(), e);
+				_log.error("Executing the requested " + //$NON-NLS-1$
+						"CstFunction failed: " + e.getMessage(), e); //$NON-NLS-1$
 			}
 		}
 		return success;
@@ -459,25 +461,21 @@ public class SchemaTranslationController {
 		ps.setDate(new Date());
 		if (error != null) {
 			ps.setDescription(new SimpleInternationalString(
-					"HUMBOLDT Conceptual Schema Transformer 1.0.0: " +
-					cstf.getClass().getName() + " execution error: " + error));
+					MessageFormat.format(Messages.SchemaTranslationController_0, cstf.getClass().getName(), error)));
 		}
 		else {
 			ps.setDescription(new SimpleInternationalString(
-					"HUMBOLDT Conceptual Schema Transformer 1.0.0: " 
-					+ cstf.getClass().getName().substring(cstf.getClass().getName().lastIndexOf('.') + 1)
-					+ " applied with the following parameters: "
-					+ new FunctionDescriptionImpl(cell).toString()));
+					MessageFormat.format(Messages.SchemaTranslationController_1, cstf.getClass().getName().substring(cstf.getClass().getName().lastIndexOf('.') + 1), new FunctionDescriptionImpl(cell).toString())));
 		}	
 		
-		Object o = target.getUserData().get("METADATA_LINEAGE");
+		Object o = target.getUserData().get("METADATA_LINEAGE"); //$NON-NLS-1$
 		if (o != null) {
 			((LineageImpl)o).getProcessSteps().add(ps);
 		}
 		else {
 			Lineage lineage = new LineageImpl();
 			((LineageImpl)lineage).getProcessSteps().add(ps);
-			target.getUserData().put("METADATA_LINEAGE", lineage);
+			target.getUserData().put("METADATA_LINEAGE", lineage); //$NON-NLS-1$
 		}
 	}
 	
@@ -508,8 +506,8 @@ public class SchemaTranslationController {
 		while (fi.hasNext()) {
 			Feature f = fi.next();
 			String ftk  = f.getType().getName().getNamespaceURI();
-			if (!ftk.endsWith("/")) {
-				ftk += "/";
+			if (!ftk.endsWith("/")) { //$NON-NLS-1$
+				ftk += "/"; //$NON-NLS-1$
 			}
 			ftk += f.getType().getName().getLocalPart();
 			List<Feature> list = null;

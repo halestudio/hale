@@ -24,6 +24,7 @@ import org.opengis.feature.ComplexAttribute;
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
 import eu.esdihumboldt.tools.FeatureInspector;
 
@@ -41,7 +42,7 @@ public class PropertyItem extends DefaultTreeNode {
 	/**
 	 * Feature user data property name for XML attributes
 	 */
-	public static final String XML_ATTRIBUTES = "XmlAttributes";
+	public static final String XML_ATTRIBUTES = "XmlAttributes"; //$NON-NLS-1$
 	
 	/**
 	 * The property name
@@ -81,12 +82,12 @@ public class PropertyItem extends DefaultTreeNode {
 		}
 		else {
 			if (value instanceof Collection<?>) {
-				String resultRepresentation = "";
+				String resultRepresentation = ""; //$NON-NLS-1$
 				Collection<?> c = (Collection<?>) value;
 				for (Iterator<?> iterator = c.iterator(); iterator.hasNext();) {
 					Object o = iterator.next();
 					if (o instanceof ComplexAttribute) {
-						resultRepresentation += "+";
+						resultRepresentation += "+"; //$NON-NLS-1$
 					}
 					else {
 						resultRepresentation += o.toString();
@@ -95,7 +96,7 @@ public class PropertyItem extends DefaultTreeNode {
 				return resultRepresentation;
 			}
 			else if (value instanceof ComplexAttribute) {
-				return "+";
+				return "+"; //$NON-NLS-1$
 			}
 			else {
 				return value.toString();
@@ -175,10 +176,10 @@ public class PropertyItem extends DefaultTreeNode {
 				return property.getValue();
 			}
 			else {
-				log.warn("Error getting property " + propertyName 
-						+ " from feature of type " 
+				log.warn("Error getting property " + propertyName  //$NON-NLS-1$
+						+ " from feature of type "  //$NON-NLS-1$
 						+ feature.getType().getName().getLocalPart());
-				return "#not defined";
+				return "#not defined"; //$NON-NLS-1$
 			}
 		}
 	}

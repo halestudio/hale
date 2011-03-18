@@ -28,6 +28,8 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
+import eu.esdihumboldt.cst.transformer.Messages;
+
 
 
 
@@ -36,15 +38,15 @@ public class FeatureAggregator {
 	
 	//Aggregation Functions from Geotools
 	
-	public static final String SUM ="Collection_Sum";
-	public static final String AVERAGE ="Collection_Average";
-	public static final String BOUNDS = "Collection_Bounds";
-	public static final String COUNT = "Collection_Count";
-	public static final String MAX = "Collection_Max";	
-	public static final String MEDIAN = "Collection_Median";	
-	public static final String MIN = "Collection_Min";
-	public static final String UNIQUE = "Collection_Unique";
-	public static final String MULTI = "Multi";
+	public static final String SUM ="Collection_Sum"; //$NON-NLS-1$
+	public static final String AVERAGE ="Collection_Average"; //$NON-NLS-1$
+	public static final String BOUNDS = "Collection_Bounds"; //$NON-NLS-1$
+	public static final String COUNT = "Collection_Count"; //$NON-NLS-1$
+	public static final String MAX = "Collection_Max";	 //$NON-NLS-1$
+	public static final String MEDIAN = "Collection_Median";	 //$NON-NLS-1$
+	public static final String MIN = "Collection_Min"; //$NON-NLS-1$
+	public static final String UNIQUE = "Collection_Unique"; //$NON-NLS-1$
+	public static final String MULTI = "Multi"; //$NON-NLS-1$
 
 
 	private String onAttributeName = null;
@@ -60,43 +62,43 @@ public class FeatureAggregator {
 		this.onAttributeName = onAttributeName;
 		this.targetAttribute = targetAttribute;
 
-		String[] aggrule = aggregationRule.split(":");
-		if (aggrule[0].equals("aggregate")) {
-			if (aggrule[1].startsWith("Collection_Sum")) {
+		String[] aggrule = aggregationRule.split(":"); //$NON-NLS-1$
+		if (aggrule[0].equals("aggregate")) { //$NON-NLS-1$
+			if (aggrule[1].startsWith("Collection_Sum")) { //$NON-NLS-1$
 				this.aggregationRule = FeatureAggregator.SUM;
 			}
-			else if (aggrule[1].startsWith("Collection_Average")) {
+			else if (aggrule[1].startsWith("Collection_Average")) { //$NON-NLS-1$
 				this.aggregationRule = FeatureAggregator.AVERAGE;
 			}
-			else if (aggrule[1].startsWith("Collection_Bounds")) {
+			else if (aggrule[1].startsWith("Collection_Bounds")) { //$NON-NLS-1$
 				this.aggregationRule = FeatureAggregator.BOUNDS;
 			}
-			else if (aggrule[1].startsWith("Collection_Count")) {
+			else if (aggrule[1].startsWith("Collection_Count")) { //$NON-NLS-1$
 				this.aggregationRule = FeatureAggregator.COUNT;
 			}
-			else if (aggrule[1].startsWith("Collection_Max")) {
+			else if (aggrule[1].startsWith("Collection_Max")) { //$NON-NLS-1$
 				this.aggregationRule = FeatureAggregator.MAX;
 			}
-			else if (aggrule[1].startsWith("Collection_Median")) {
+			else if (aggrule[1].startsWith("Collection_Median")) { //$NON-NLS-1$
 				this.aggregationRule = FeatureAggregator.MEDIAN;
 			}
-			else if (aggrule[1].startsWith("Collection_Min")) {
+			else if (aggrule[1].startsWith("Collection_Min")) { //$NON-NLS-1$
 				this.aggregationRule = FeatureAggregator.MIN;
 			}
-			else if (aggrule[1].startsWith("Collection_Unique")) {
+			else if (aggrule[1].startsWith("Collection_Unique")) { //$NON-NLS-1$
 				this.aggregationRule = FeatureAggregator.UNIQUE;
 			}
-			else if (aggrule[1].startsWith("Multi")) {
+			else if (aggrule[1].startsWith("Multi")) { //$NON-NLS-1$
 				this.aggregationRule = FeatureAggregator.MULTI;
 			}
 			else{
-				throw new RuntimeException (aggrule[1] + " is not a valid aggregation rule.");
+				throw new RuntimeException (aggrule[1] + " is not a valid aggregation rule."); //$NON-NLS-1$
 			}
 
 		}
 		else {
-			throw new RuntimeException("You can only create a " +
-				"FeatureAggregator from a aggregate rule.");
+			throw new RuntimeException("You can only create a " + //$NON-NLS-1$
+				"FeatureAggregator from a aggregate rule."); //$NON-NLS-1$
 		}
 	}
 	
@@ -134,7 +136,7 @@ public class FeatureAggregator {
 			GeometryFactory geomFactory = new GeometryFactory();
 			Object geom = ((SimpleFeature)source.iterator().next()).getAttribute(this.onAttributeName);;
 			Geometry newGeometry = null;
-			System.out.println("targetGEOM " + targetType.getGeometryDescriptor().getType().getBinding());
+			System.out.println("targetGEOM " + targetType.getGeometryDescriptor().getType().getBinding()); //$NON-NLS-1$
 			if (geom.getClass().equals(Point.class) && targetType.getGeometryDescriptor().getType().getBinding().equals(MultiPoint.class)) {
 				//Aggregation from multiple point Features to a MultiPoint
 				List<Point> points = new ArrayList<Point>();
@@ -189,8 +191,8 @@ public class FeatureAggregator {
 				result.add(target);
 			}
 			else{
-				throw new RuntimeException("An aggregate:multi rule was " +
-				"defined on a non-Geometry property.");
+				throw new RuntimeException("An aggregate:multi rule was " + //$NON-NLS-1$
+				"defined on a non-Geometry property."); //$NON-NLS-1$
 			}
 		}
 		return result;

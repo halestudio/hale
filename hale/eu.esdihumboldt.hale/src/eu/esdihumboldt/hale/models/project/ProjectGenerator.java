@@ -86,8 +86,8 @@ public class ProjectGenerator {
 	public void write(String xmlPath, String name) throws JAXBException {
 		
 		// add *.xml extension if is wasn't added before
-		if (!xmlPath.endsWith(".xml")) {
-			xmlPath = xmlPath + ".xml";
+		if (!xmlPath.endsWith(".xml")) { //$NON-NLS-1$
+			xmlPath = xmlPath + ".xml"; //$NON-NLS-1$
 		}
 		
 		// create HaleProject object from various services.
@@ -95,19 +95,19 @@ public class ProjectGenerator {
 		
 		// 2. marshall AlignmentType to xml
 		JAXBContext jc = JAXBContext.newInstance(
-				"eu.esdihumboldt.hale.models.project.generated", ProjectGenerator.class.getClassLoader());
+				"eu.esdihumboldt.hale.models.project.generated", ProjectGenerator.class.getClassLoader()); //$NON-NLS-1$
 		Marshaller m = jc.createMarshaller();
 
 		try {
-			m.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper",
+			m.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$
 					new NamespacePrefixMapperImpl());
 		} catch (PropertyException e) {
-			_log.warn("JAXB provider doesn't recognize the prefix mapper:", e);
+			_log.warn("JAXB provider doesn't recognize the prefix mapper:", e); //$NON-NLS-1$
 		}
 
 		// make the output indented.
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		m.marshal(new JAXBElement(new QName(null, "HaleProject", "hale"),
+		m.marshal(new JAXBElement(new QName(null, "HaleProject", "hale"), //$NON-NLS-1$ //$NON-NLS-2$
 				HaleProject.class, hproject), new File(xmlPath));
 	}
 	
@@ -181,13 +181,13 @@ public class ProjectGenerator {
 		
 		// serialize mapping and link it in HaleProject 
 		OmlRdfGenerator org = new HaleOmlRdfGenerator();
-		org.write(alignmentService.getAlignment(), xmlPath + ".goml");
-		hproject.setOmlPath(getRelativeLocation(xmlPath + ".goml", basePath));
+		org.write(alignmentService.getAlignment(), xmlPath + ".goml"); //$NON-NLS-1$
+		hproject.setOmlPath(getRelativeLocation(xmlPath + ".goml", basePath)); //$NON-NLS-1$
 		
 		// save SLD and background
 		Style style = styleService.getStyle();
 		if (style != null) {
-			String stylePath = xmlPath + ".sld";
+			String stylePath = xmlPath + ".sld"; //$NON-NLS-1$
 			SLDTransformer trans = new SLDTransformer();
 			trans.setIndentation(2);
 			try {
@@ -195,7 +195,7 @@ public class ProjectGenerator {
 				trans.transform(styleService.getStyle(), writer);
 				writer.close();
 			} catch (Exception e) {
-				_log.error("Error saving SLD file", e);
+				_log.error("Error saving SLD file", e); //$NON-NLS-1$
 			}
 			
 			Styles styles = new Styles();

@@ -158,13 +158,13 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 	private final Map<RGB, Color> createdColors = new HashMap<RGB, Color>();
 	
 	private final Image attribOverlay = AbstractUIPlugin.imageDescriptorFromPlugin(
-				HALEActivator.PLUGIN_ID, "/icons/attrib_overlay2.gif").createImage();
+				HALEActivator.PLUGIN_ID, "/icons/attrib_overlay2.gif").createImage(); //$NON-NLS-1$
 	
 	private final Image defOverlay = AbstractUIPlugin.imageDescriptorFromPlugin(
-			HALEActivator.PLUGIN_ID, "/icons/def_overlay.gif").createImage();
+			HALEActivator.PLUGIN_ID, "/icons/def_overlay.gif").createImage(); //$NON-NLS-1$
 	
 	private final Image mandatoryOverlay = AbstractUIPlugin.imageDescriptorFromPlugin(
-			HALEActivator.PLUGIN_ID, "/icons/mandatory_ov2.gif").createImage();
+			HALEActivator.PLUGIN_ID, "/icons/mandatory_ov2.gif").createImage(); //$NON-NLS-1$
 	
 	private final Map<String, Image> images = new HashMap<String, Image>();
 	

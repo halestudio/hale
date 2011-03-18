@@ -48,7 +48,7 @@ public class TaskProviderFactory {
 	 * @return the wizard name
 	 */
 	public String getName() {
-		return conf.getAttribute("name");
+		return conf.getAttribute("name"); //$NON-NLS-1$
 	}
 	
 	/**
@@ -57,7 +57,7 @@ public class TaskProviderFactory {
 	 * @return the wizard description or <code>null</code>
 	 */
 	public String getDescription() {
-		return conf.getAttribute("description");
+		return conf.getAttribute("description"); //$NON-NLS-1$
 	}
 	
 	/**
@@ -66,7 +66,7 @@ public class TaskProviderFactory {
 	 * @return if the task provider should be enabled by default
 	 */
 	public boolean isDefaultEnabled() {
-		return Boolean.parseBoolean(conf.getAttribute("defaultEnabled"));
+		return Boolean.parseBoolean(conf.getAttribute("defaultEnabled")); //$NON-NLS-1$
 	}
 	
 	/**
@@ -77,9 +77,9 @@ public class TaskProviderFactory {
 	 */
 	public TaskProvider getTaskProvider() {
 		try {
-			return (TaskProvider) conf.createExecutableExtension("class");
+			return (TaskProvider) conf.createExecutableExtension("class"); //$NON-NLS-1$
 		} catch (CoreException e) {
-			log.error("Error creating the task provider factory", e);
+			log.error("Error creating the task provider factory", e); //$NON-NLS-1$
 		}
 		
 		return null;
@@ -91,7 +91,7 @@ public class TaskProviderFactory {
 	 * @return the ID
 	 */
 	public String getId() {
-		return conf.getAttribute("id");
+		return conf.getAttribute("id"); //$NON-NLS-1$
 	}
 
 }

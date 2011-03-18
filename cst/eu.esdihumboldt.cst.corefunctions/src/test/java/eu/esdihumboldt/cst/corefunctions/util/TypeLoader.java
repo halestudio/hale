@@ -53,8 +53,8 @@ public class TypeLoader {
 				}
 			}
 		} catch (Exception e) {
-			throw new RuntimeException("Parsing the schema Filename to a URI " +
-					"failed.", e);
+			throw new RuntimeException("Parsing the schema Filename to a URI " + //$NON-NLS-1$
+					"failed.", e); //$NON-NLS-1$
 		}
 		return type;
 	}

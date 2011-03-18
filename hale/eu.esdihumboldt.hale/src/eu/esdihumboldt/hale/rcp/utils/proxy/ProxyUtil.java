@@ -28,6 +28,8 @@ import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * Proxy utility methods
  * @author Simon Templer
@@ -115,8 +117,8 @@ public class ProxyUtil {
         	HttpHost proxyHost = new HttpHost(proxyAddress.getHostName(), proxyAddress.getPort());
         	client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxyHost);
         	
-        	String user = System.getProperty("http.proxyUser");
-        	String password = System.getProperty("http.proxyPassword");
+        	String user = System.getProperty("http.proxyUser"); //$NON-NLS-1$
+        	String password = System.getProperty("http.proxyPassword"); //$NON-NLS-1$
         	boolean useProxyAuth = user != null && !user.isEmpty();
         	
         	if (useProxyAuth) {
@@ -126,8 +128,8 @@ public class ProxyUtil {
 	                    new UsernamePasswordCredentials(user, password));
         	}
         	
-        	_log.trace("Set proxy to " + proxyAddress.getHostName() + ":" +
-        			proxyAddress.getPort() + ((useProxyAuth)?(" as user " + user):("")));
+        	_log.trace("Set proxy to " + proxyAddress.getHostName() + ":" + //$NON-NLS-1$ //$NON-NLS-2$
+        			proxyAddress.getPort() + ((useProxyAuth)?(" as user " + user):(""))); //$NON-NLS-1$ //$NON-NLS-2$
         }
 		else {
 			// unset proxy
@@ -147,7 +149,7 @@ public class ProxyUtil {
 				try {
 					initializer.run();
 				} catch (Exception e) {
-					_log.error("Error executing proxy initializer", e);
+					_log.error("Error executing proxy initializer", e); //$NON-NLS-1$
 				}
 			}
 			else {
@@ -163,7 +165,7 @@ public class ProxyUtil {
 					try {
 						initializer.run();
 					} catch (Exception e) {
-						_log.error("Error executing proxy initializer", e);
+						_log.error("Error executing proxy initializer", e); //$NON-NLS-1$
 					}
 				}
 				

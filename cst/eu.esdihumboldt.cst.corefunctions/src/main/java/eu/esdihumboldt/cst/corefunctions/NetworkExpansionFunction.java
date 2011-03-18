@@ -50,18 +50,18 @@ import eu.esdihumboldt.goml.rdf.About;
  */
 public class NetworkExpansionFunction extends AbstractCstFunction {
 
-	private String bufferExpression = "10.0";
+	private String bufferExpression = "10.0"; //$NON-NLS-1$
 	private int capStyle = BufferParameters.CAP_ROUND;
 	
 	/**
 	 * Name of the Parameter for buffer width.
 	 */
-	public static final String BUFFERWIDTH = "BUFFERWIDTH";
+	public static final String BUFFERWIDTH = "BUFFERWIDTH"; //$NON-NLS-1$
 	
 	/**
 	 * Name of the parameter for the Cap Style (see {@link BufferParameters}).
 	 */
-	public static final String CAPSTYLE = "CAPSSTYLE";
+	public static final String CAPSTYLE = "CAPSSTYLE"; //$NON-NLS-1$
 	
 	protected Map<String, Class<?>>  parameters = new HashMap<String, Class<?>>();
 	private Property targetProperty = null;
@@ -126,7 +126,7 @@ public class NetworkExpansionFunction extends AbstractCstFunction {
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
 	
-		Property entity1 = new Property(new About(""));
+		Property entity1 = new Property(new About("")); //$NON-NLS-1$
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
@@ -134,15 +134,15 @@ public class NetworkExpansionFunction extends AbstractCstFunction {
 		entityTypes.add(org.opengis.geometry.Geometry.class.getName());
 		entity1.setTypeCondition(entityTypes);
 		
-		Property entity2 = new Property(new About(""));
+		Property entity2 = new Property(new About("")); //$NON-NLS-1$
 		 
 		// Setting of type condition for entity2
 			// 	entity2 has same conditions as entity1
 		entity2.setTypeCondition(entityTypes);
 		
 		List<IParameter> params = new ArrayList<IParameter>();
-		IParameter buffer   = new Parameter(NetworkExpansionFunction.BUFFERWIDTH, "0");
-		IParameter capstyle = new Parameter(NetworkExpansionFunction.CAPSTYLE   , "0");
+		IParameter buffer   = new Parameter(NetworkExpansionFunction.BUFFERWIDTH, "0"); //$NON-NLS-1$
+		IParameter capstyle = new Parameter(NetworkExpansionFunction.CAPSTYLE   , "0"); //$NON-NLS-1$
 		params.add(buffer);
 		params.add(capstyle);
 		Transformation t = new Transformation();

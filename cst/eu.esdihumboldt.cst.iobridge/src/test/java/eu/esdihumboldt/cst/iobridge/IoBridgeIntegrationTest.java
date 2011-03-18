@@ -58,7 +58,7 @@ public class IoBridgeIntegrationTest {
 	//@Test
 	public void testCstGetRegisteredTransfomers(){
 		CstFunctionFactory tf = CstFunctionFactory.getInstance();
-		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
+		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions"); //$NON-NLS-1$
 		Map<String, Class<? extends CstFunction>> functions = tf
 				.getRegisteredFunctions();
 		//functions.clear();
@@ -70,9 +70,9 @@ public class IoBridgeIntegrationTest {
 	public void testParser() throws Exception{
 		FeatureCollection<SimpleFeatureType, SimpleFeature>  fc = FeatureCollections.newCollection();
 		
-		URL url = new URL("file://"
+		URL url = new URL("file://" //$NON-NLS-1$
 				+ getClass()
-						.getResource("./test_gs.xml")
+						.getResource("./test_gs.xml") //$NON-NLS-1$
 						.getFile());		
 		HaleGMLParser parser = new HaleGMLParser(new GMLConfiguration());
 		
@@ -90,13 +90,13 @@ public class IoBridgeIntegrationTest {
 	@Test
 	public void testTransform() {	
 		CstFunctionFactory tf = CstFunctionFactory.getInstance();
-		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
+		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions"); //$NON-NLS-1$
 		try {
 	
-			URL omlURL = IoBridgeIntegrationTest.class.getResource("test.oml");
-			URL gmlURL = IoBridgeIntegrationTest.class.getResource("test_gs.xml");			
-			URL xsd =  IoBridgeIntegrationTest.class.getResource("test_gs_target.xsd");		
-			String out = IoBridgeIntegrationTest.class.getResource("").toExternalForm() + "out.gml";		
+			URL omlURL = IoBridgeIntegrationTest.class.getResource("test.oml"); //$NON-NLS-1$
+			URL gmlURL = IoBridgeIntegrationTest.class.getResource("test_gs.xml");			 //$NON-NLS-1$
+			URL xsd =  IoBridgeIntegrationTest.class.getResource("test_gs_target.xsd");		 //$NON-NLS-1$
+			String out = IoBridgeIntegrationTest.class.getResource("").toExternalForm() + "out.gml";		 //$NON-NLS-1$ //$NON-NLS-2$
 			DefaultCstServiceBridge csb = (DefaultCstServiceBridge)IoBridgeFactory.getIoBridge(BridgeType.preloaded);
 			System.out.println(xsd.toURI().toString());
 			System.out.println(omlURL.toURI().toString());
@@ -119,13 +119,13 @@ public class IoBridgeIntegrationTest {
 	//@Test
 	public void testTransformItaly_INSPIRE() {	
 		CstFunctionFactory tf = CstFunctionFactory.getInstance();
-		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
+		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions"); //$NON-NLS-1$
 		try {
 	
-			URL omlURL = IoBridgeIntegrationTest.class.getResource("./HALE_CST_Italy_INSPIRE/HALE_CST_Italy_INSPIRE.xml.goml");
-			URL gmlURL = IoBridgeIntegrationTest.class.getResource("./HALE_CST_Italy_INSPIRE/SIC/SIC.gml");			
-			URL xsd =  IoBridgeIntegrationTest.class.getResource("./HALE_CST_Italy_INSPIRE/models/ProtectedSitesFull.xsd");		
-			String out =  IoBridgeIntegrationTest.class.getResource("").toExternalForm()+"SIC_generated.gml";		
+			URL omlURL = IoBridgeIntegrationTest.class.getResource("./HALE_CST_Italy_INSPIRE/HALE_CST_Italy_INSPIRE.xml.goml"); //$NON-NLS-1$
+			URL gmlURL = IoBridgeIntegrationTest.class.getResource("./HALE_CST_Italy_INSPIRE/SIC/SIC.gml");			 //$NON-NLS-1$
+			URL xsd =  IoBridgeIntegrationTest.class.getResource("./HALE_CST_Italy_INSPIRE/models/ProtectedSitesFull.xsd");		 //$NON-NLS-1$
+			String out =  IoBridgeIntegrationTest.class.getResource("").toExternalForm()+"SIC_generated.gml";		 //$NON-NLS-1$ //$NON-NLS-2$
 			DefaultCstServiceBridge csb = (DefaultCstServiceBridge)IoBridgeFactory.getIoBridge(BridgeType.preloaded);
 			System.out.println(xsd.toURI().toString());
 			System.out.println(omlURL.toURI().toString());
@@ -148,13 +148,13 @@ public class IoBridgeIntegrationTest {
 	@Test
 	public void testTransformItaly_TC() {	
 		CstFunctionFactory tf = CstFunctionFactory.getInstance();
-		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
+		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions"); //$NON-NLS-1$
 		try {
 	
-			URL omlURL = IoBridgeIntegrationTest.class.getResource("./HALE_CST_Italy_TC/HALE_CST_Italy_TC.xml.goml");
-			URL gmlURL = IoBridgeIntegrationTest.class.getResource("./HALE_CST_Italy_TC/lakes/SPECCHI_ACQUA_07.gml");			
-			URL xsd =  IoBridgeIntegrationTest.class.getResource("./HALE_CST_Italy_TC/models/TCS_final_mdv.xsd");		
-			String out = IoBridgeIntegrationTest.class.getResource("").toExternalForm()+"SPECCHI_ACQUA_07_generated.gml";
+			URL omlURL = IoBridgeIntegrationTest.class.getResource("./HALE_CST_Italy_TC/HALE_CST_Italy_TC.xml.goml"); //$NON-NLS-1$
+			URL gmlURL = IoBridgeIntegrationTest.class.getResource("./HALE_CST_Italy_TC/lakes/SPECCHI_ACQUA_07.gml");			 //$NON-NLS-1$
+			URL xsd =  IoBridgeIntegrationTest.class.getResource("./HALE_CST_Italy_TC/models/TCS_final_mdv.xsd");		 //$NON-NLS-1$
+			String out = IoBridgeIntegrationTest.class.getResource("").toExternalForm()+"SPECCHI_ACQUA_07_generated.gml"; //$NON-NLS-1$ //$NON-NLS-2$
 			//String out = IoBridgeIntegrationTest.class.getResource("").toExternalForm() + "HALE_CST_Italy_TC/lakes/SPECCHI_ACQUA_07_generated.gml";		
 			DefaultCstServiceBridge csb = (DefaultCstServiceBridge)IoBridgeFactory.getIoBridge(BridgeType.preloaded);
 			System.out.println(xsd.toURI().toString());
@@ -178,13 +178,13 @@ public class IoBridgeIntegrationTest {
 	//@Test
 	public void testTransformSpain_HUMBOLDT() {	
 		CstFunctionFactory tf = CstFunctionFactory.getInstance();
-		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions");
+		tf.registerCstPackage("eu.esdihumboldt.cst.corefunctions"); //$NON-NLS-1$
 		try {
 	
-			URL omlURL = IoBridgeIntegrationTest.class.getResource("./HALE_CST_Spain_HUMBOLDT/HALE_CST_Spain_HUMBOLDT.xml.goml");
-			URL gmlURL = IoBridgeIntegrationTest.class.getResource("./HALE_CST_Spain_HUMBOLDT/data/ren_ex.gml");			
-			URL xsd =  IoBridgeIntegrationTest.class.getResource("./HALE_CST_Spain_HUMBOLDT/models/pa_simple_corr.xsd");		
-			String out = IoBridgeIntegrationTest.class.getResource("").toExternalForm()+"ren_ex_generated.gml";		
+			URL omlURL = IoBridgeIntegrationTest.class.getResource("./HALE_CST_Spain_HUMBOLDT/HALE_CST_Spain_HUMBOLDT.xml.goml"); //$NON-NLS-1$
+			URL gmlURL = IoBridgeIntegrationTest.class.getResource("./HALE_CST_Spain_HUMBOLDT/data/ren_ex.gml");			 //$NON-NLS-1$
+			URL xsd =  IoBridgeIntegrationTest.class.getResource("./HALE_CST_Spain_HUMBOLDT/models/pa_simple_corr.xsd");		 //$NON-NLS-1$
+			String out = IoBridgeIntegrationTest.class.getResource("").toExternalForm()+"ren_ex_generated.gml";		 //$NON-NLS-1$ //$NON-NLS-2$
 			DefaultCstServiceBridge csb = (DefaultCstServiceBridge)IoBridgeFactory.getIoBridge(BridgeType.preloaded);
 			System.out.println(xsd.toURI().toString());
 			System.out.println(omlURL.toURI().toString());
@@ -206,12 +206,12 @@ public class IoBridgeIntegrationTest {
 	}
 	public static void addCST() {
 		Class<?>[] parameters = new Class[]{URL.class};
-		URL functions = (new IoBridgeIntegrationTest()).getClass().getResource("corefunctions-1.0.3-SNAPSHOT.jar");		
+		URL functions = (new IoBridgeIntegrationTest()).getClass().getResource("corefunctions-1.0.3-SNAPSHOT.jar");		 //$NON-NLS-1$
 		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 	      Class<?> sysclass = URLClassLoader.class;
 
 	      try {
-	         Method method = sysclass.getDeclaredMethod("addURL", parameters);
+	         Method method = sysclass.getDeclaredMethod("addURL", parameters); //$NON-NLS-1$
 	         method.setAccessible(true);
 	         method.invoke(sysloader, new Object[]{functions});
 	      } catch (Throwable t) {

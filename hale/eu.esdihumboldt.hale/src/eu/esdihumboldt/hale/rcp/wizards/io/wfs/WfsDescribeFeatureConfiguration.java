@@ -20,6 +20,7 @@ import org.geotools.data.DataStore;
 import org.geotools.data.wfs.WFSDataStore;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.wizards.io.GetCapabilititiesRetriever;
 
 /**
@@ -81,7 +82,7 @@ public class WfsDescribeFeatureConfiguration extends WfsConfiguration {
 			return new URL(temp);
 		}
 		else {
-			throw new IllegalArgumentException("No types specified");
+			throw new IllegalArgumentException("No types specified"); //$NON-NLS-1$
 		}
 	}
 

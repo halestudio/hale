@@ -45,7 +45,7 @@ public class FunctionDescriptionImpl
 		
 		// create Identifier for function
 		try {
-			this.url = new URL("file://java/" + function.getClass().getName());
+			this.url = new URL("file://java/" + function.getClass().getName()); //$NON-NLS-1$
 			this.description=function.getDescription();
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
@@ -59,7 +59,7 @@ public class FunctionDescriptionImpl
 		
 		// create Identifier for function
 		try {
-			String cstfname = "";
+			String cstfname = ""; //$NON-NLS-1$
 			if (cell.getEntity1() != null 
 					&& cell.getEntity1().getTransformation() != null) {
 				cstfname = cell.getEntity1().getTransformation().getService().getLocation();
@@ -68,8 +68,8 @@ public class FunctionDescriptionImpl
 					&& cell.getEntity2().getTransformation() != null) {
 				cstfname = cell.getEntity2().getTransformation().getService().getLocation();
 			}
-			this.url = new URL("file://java/" + cstfname);
-			this.description = "";
+			this.url = new URL("file://java/" + cstfname); //$NON-NLS-1$
+			this.description = ""; //$NON-NLS-1$
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}
@@ -81,15 +81,15 @@ public class FunctionDescriptionImpl
 	private void inspectCell(ICell parameter) {
 		try {
 			if (parameter.getEntity1() != null) {
-				parameters.put("entity1", parameter.getEntity1().getClass());
-				inspectObject("entity1", parameter.getEntity1());
+				parameters.put("entity1", parameter.getEntity1().getClass()); //$NON-NLS-1$
+				inspectObject("entity1", parameter.getEntity1()); //$NON-NLS-1$
 			}
 			if (parameter.getEntity2() != null) {
-				parameters.put("entity2", parameter.getEntity2().getClass());
-				inspectObject("entity2", parameter.getEntity2());
+				parameters.put("entity2", parameter.getEntity2().getClass()); //$NON-NLS-1$
+				inspectObject("entity2", parameter.getEntity2()); //$NON-NLS-1$
 			}
 		} catch (Exception e) {
-			throw new RuntimeException("Translating a parameter Cell to KV failed: ", e);
+			throw new RuntimeException("Translating a parameter Cell to KV failed: ", e); //$NON-NLS-1$
 		}
 	}
 
@@ -99,7 +99,7 @@ public class FunctionDescriptionImpl
 		if (parameter.getClass().isPrimitive() 
 				|| Number.class.isAssignableFrom(parameter.getClass())
 				|| String.class.isAssignableFrom(parameter.getClass())) {
-			if (parentname.matches(".*typeCondition\\[.*?\\]$")) {
+			if (parentname.matches(".*typeCondition\\[.*?\\]$")) { //$NON-NLS-1$
 				// special case: when encountering a type condition, use it's value instead of it's type.
 				Class<?> typeConditionClass = String.class;
 				try {
@@ -117,10 +117,10 @@ public class FunctionDescriptionImpl
 			
 			if (parentname.contains(field.getName() ) 
 					|| Modifier.isStatic(field.getModifiers())
-					|| field.getName().equals("count")
-					|| field.getName().equals("hash")
-					|| field.getName().equals("offset")
-					|| field.getName().equals("serialPersistentFields")) {
+					|| field.getName().equals("count") //$NON-NLS-1$
+					|| field.getName().equals("hash") //$NON-NLS-1$
+					|| field.getName().equals("offset") //$NON-NLS-1$
+					|| field.getName().equals("serialPersistentFields")) { //$NON-NLS-1$
 				continue;
 			}
 			field.setAccessible(true);
@@ -128,19 +128,19 @@ public class FunctionDescriptionImpl
 				if (field.getType().isPrimitive() 
 						|| Number.class.isAssignableFrom(field.getType())
 						|| String.class.isAssignableFrom(field.getType())) {
-	        		parameters.put(parentname + "." + field.getName(), field.getType());
+	        		parameters.put(parentname + "." + field.getName(), field.getType()); //$NON-NLS-1$
 	        	}
 				else if (Collection.class.isAssignableFrom(field.getType())) {
-					parameters.put(parentname + "." + field.getName(), field.getType());
+					parameters.put(parentname + "." + field.getName(), field.getType()); //$NON-NLS-1$
 					int i = 0;
 					for (Object o : (Collection<?>)field.get(parameter)) {
-						String name = parentname + "." + field.getName() + "[" + i++ + "]";
+						String name = parentname + "." + field.getName() + "[" + i++ + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 						inspectObject(name, o);
 					}
 				}
 	        	else {
-	        		parameters.put(parentname + "." + field.getName(), field.getType());
-	        		inspectObject(parentname + "." + field.getName(), field.get(parameter));
+	        		parameters.put(parentname + "." + field.getName(), field.getType()); //$NON-NLS-1$
+	        		inspectObject(parentname + "." + field.getName(), field.get(parameter)); //$NON-NLS-1$
 	        	}
 			}
         }
@@ -176,7 +176,7 @@ public class FunctionDescriptionImpl
 		for (String key : this.parameters.keySet()) {
 			String name = this.parameters.get(key).getName();
 			String shortName = name.substring(name.lastIndexOf('.') + 1);
-			sb.append(key + ": " + shortName + ", ");
+			sb.append(key + ": " + shortName + ", "); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return sb.toString();
 	}

@@ -46,7 +46,7 @@ public class NilReasonFunction extends AbstractCstFunction {
 	/**
 	 * Name of the NilReasonType parameter
 	 */
-	public static final String PARAMETER_NIL_REASON_TYPE = "NilReasonType";
+	public static final String PARAMETER_NIL_REASON_TYPE = "NilReasonType"; //$NON-NLS-1$
 	
 	private String nilReason = null;
 	
@@ -73,7 +73,7 @@ public class NilReasonFunction extends AbstractCstFunction {
 		Cell parameterCell = new Cell();	
 				
 		eu.esdihumboldt.goml.omwg.Property entity2 = 
-			new eu.esdihumboldt.goml.omwg.Property(new About(""));
+			new eu.esdihumboldt.goml.omwg.Property(new About("")); //$NON-NLS-1$
 		// Setting of type condition for entity2
 		List <String> entity2Types = new ArrayList <String>();
 		entity2Types.add(com.vividsolutions.jts.geom.Geometry.class.getName());
@@ -89,7 +89,7 @@ public class NilReasonFunction extends AbstractCstFunction {
 		List<IParameter> params = new ArrayList<IParameter>(); 
 			
 		Parameter p   = 
-			new Parameter(PARAMETER_NIL_REASON_TYPE,"");
+			new Parameter(PARAMETER_NIL_REASON_TYPE,""); //$NON-NLS-1$
 		
 		params.add(p);		
 		entity2.setTransformation(t);	
@@ -110,7 +110,7 @@ public class NilReasonFunction extends AbstractCstFunction {
 					// set nilReason on property
 					FeatureInspector.setPropertyValue(
 							target, 
-							new DetailedAbout(onEntity.getAbout().getAbout() + DetailedAbout.PROPERTY_DELIMITER + "nilReason", true), 
+							new DetailedAbout(onEntity.getAbout().getAbout() + DetailedAbout.PROPERTY_DELIMITER + "nilReason", true),  //$NON-NLS-1$
 							nilReason.toString());
 				}
 			}
@@ -124,7 +124,7 @@ public class NilReasonFunction extends AbstractCstFunction {
 						
 						List<String> properties = new ArrayList<String>();
 						properties.add(propertyName);
-						properties.add("nilReason");
+						properties.add("nilReason"); //$NON-NLS-1$
 						
 						FeatureInspector.setPropertyValue(target, properties, nilReason.toString());
 					}

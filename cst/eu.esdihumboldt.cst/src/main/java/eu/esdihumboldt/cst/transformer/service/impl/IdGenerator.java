@@ -43,7 +43,7 @@ public class IdGenerator {
 	 * @return a int {@link FeatureId} based on the source's {@link FeatureId}.
 	 */
 	public static FeatureId getNumericHashcodeId(Feature f) {
-		return new FeatureIdImpl("" + f.getIdentifier().getID().hashCode());
+		return new FeatureIdImpl("" + f.getIdentifier().getID().hashCode()); //$NON-NLS-1$
 	}
 	
 	/**
@@ -74,11 +74,11 @@ public class IdGenerator {
 				values.add(p.getValue().toString());
 			}
 		}
-		String mostSignificant = "";
-		String leastSignificant = "";
+		String mostSignificant = ""; //$NON-NLS-1$
+		String leastSignificant = ""; //$NON-NLS-1$
 		if (values.size() < 1) {
-			throw new InvalidParameterException("The Feature passed in did " +
-					"not have a non-null field to use in ID calculation.");
+			throw new InvalidParameterException("The Feature passed in did " + //$NON-NLS-1$
+					"not have a non-null field to use in ID calculation."); //$NON-NLS-1$
 		}
 		else if (values.size() == 1) {
 			String input = values.get(0);
@@ -145,14 +145,14 @@ public class IdGenerator {
 		UUID fid = new UUID(mostSignificant.hashCode(), 
 				leastSignificant.toString().hashCode());
 		
-		return new FeatureIdImpl("_" + fid.toString());
+		return new FeatureIdImpl("_" + fid.toString()); //$NON-NLS-1$
 	}
 	
 	/**
 	 * @return a {@link FeatureId} with the next sequential long value.
 	 */
 	public static synchronized FeatureId getSequentialId() {
-		return new FeatureIdImpl(++sequence + "");
+		return new FeatureIdImpl(++sequence + ""); //$NON-NLS-1$
 	}
 	
 	/**

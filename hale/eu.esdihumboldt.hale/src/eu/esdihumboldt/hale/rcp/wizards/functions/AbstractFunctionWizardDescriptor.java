@@ -19,6 +19,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.Bundle;
 
+import eu.esdihumboldt.hale.Messages;
+
 
 /**
  * 
@@ -49,14 +51,14 @@ public abstract class AbstractFunctionWizardDescriptor implements
 	 * @see FunctionWizardDescriptor#getName()
 	 */
 	public String getName() {
-		return conf.getAttribute("name");
+		return conf.getAttribute(Messages.getString("AbstractFunctionWizardDescriptor.0")); //$NON-NLS-1$
 	}
 
 	/**
 	 * @see FunctionWizardDescriptor#getIcon()
 	 */
 	public ImageDescriptor getIcon() {
-		URL url = getIconURL("icon");
+		URL url = getIconURL(Messages.getString("AbstractFunctionWizardDescriptor.1")); //$NON-NLS-1$
 		
 		if (url != null) {
 			return ImageDescriptor.createFromURL(url);

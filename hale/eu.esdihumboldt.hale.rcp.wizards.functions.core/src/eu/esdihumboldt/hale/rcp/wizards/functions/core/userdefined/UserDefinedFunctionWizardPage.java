@@ -50,6 +50,7 @@ import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.CoreFunctionWizardsPlugin;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
 /**
  * @author Thorsten Reitz
@@ -78,15 +79,15 @@ public class UserDefinedFunctionWizardPage extends
 	private Button removeButton;
 	
 	private final Image addImage = 
-		CoreFunctionWizardsPlugin.getImageDescriptor("icons/add.gif").createImage();
+		CoreFunctionWizardsPlugin.getImageDescriptor("icons/add.gif").createImage(); //$NON-NLS-1$
 	private final Image removeImage = 
-		CoreFunctionWizardsPlugin.getImageDescriptor("icons/remove.gif").createImage();
+		CoreFunctionWizardsPlugin.getImageDescriptor("icons/remove.gif").createImage(); //$NON-NLS-1$
 	private final Image saveImage = 
-		CoreFunctionWizardsPlugin.getImageDescriptor("icons/save.gif").createImage();
+		CoreFunctionWizardsPlugin.getImageDescriptor("icons/save.gif").createImage(); //$NON-NLS-1$
 
-	private final String udfSeparator = "<udfFunction>";
-	private final String nameParameterSeparator = "<nameParameter>";
-	private final String parameterSeparator = "<parameter>";
+	private final String udfSeparator = "<udfFunction>"; //$NON-NLS-1$
+	private final String nameParameterSeparator = "<nameParameter>"; //$NON-NLS-1$
+	private final String parameterSeparator = "<parameter>"; //$NON-NLS-1$
 
 	/**
 	 * Creates the page with a defined pageName.
@@ -95,7 +96,7 @@ public class UserDefinedFunctionWizardPage extends
 	public UserDefinedFunctionWizardPage(String pageName) {
 		super(pageName);
 		super.setTitle(pageName);
-		super.setDescription("Configure your User Defined Function");
+		super.setDescription(Messages.UserDefinedFunctionWizardPage_6);
 	}
 
 	/**
@@ -105,8 +106,8 @@ public class UserDefinedFunctionWizardPage extends
 	public void createControl(Composite parent) {
 		// load already defined UDF templates
 		IPreferenceStore preferences = CoreFunctionWizardsPlugin.plugin.getPreferenceStore();
-		String storedTemplates = preferences.getString("eu.esdihumboldt.udfPreferences");
-		if (storedTemplates != null && !storedTemplates.equals("")) {
+		String storedTemplates = preferences.getString("eu.esdihumboldt.udfPreferences"); //$NON-NLS-1$
+		if (storedTemplates != null && !storedTemplates.equals("")) { //$NON-NLS-1$
 			String[] separatedTemplates = storedTemplates.split(udfSeparator);
 			for (String tpl : separatedTemplates) {
 				// separate name from parameters
@@ -114,7 +115,7 @@ public class UserDefinedFunctionWizardPage extends
 				if (nameParameters.length == 2) {
 					List<EditableParameter> parameters = new ArrayList<EditableParameter>();
 					for (String key : nameParameters[1].split(parameterSeparator)) {
-						parameters.add(new EditableParameter(key, ""));
+						parameters.add(new EditableParameter(key, "")); //$NON-NLS-1$
 					}
 					this.udfTemplates.put(nameParameters[0], parameters);
 				}
@@ -131,7 +132,7 @@ public class UserDefinedFunctionWizardPage extends
 		
 		// Group 0: Information on the selected Entities
 		Group entityInfoGroup = new Group(page, SWT.NONE);
-		entityInfoGroup.setText("Selected entities:");
+		entityInfoGroup.setText(Messages.UserDefinedFunctionWizardPage_10);
 		entityInfoGroup.setLayout(new GridLayout(2, false));
 		GridData selectionAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
                 | GridData.HORIZONTAL_ALIGN_FILL);
@@ -141,14 +142,14 @@ public class UserDefinedFunctionWizardPage extends
 		entityInfoGroup.setFont(page.getFont());
 		
 		final Label sourceEntitiesLabel = new Label(entityInfoGroup, SWT.NONE);
-		sourceEntitiesLabel.setText("Source:");
+		sourceEntitiesLabel.setText(Messages.UserDefinedFunctionWizardPage_11);
 		
 		Control sourceLabel = dlf.createLabel(entityInfoGroup, 
 				getParent().getFirstSourceItem().getDefinition(), true);
 		sourceLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		
 		final Label targetEntitiesLabel = new Label(entityInfoGroup, SWT.NONE);
-		targetEntitiesLabel.setText("Target:");
+		targetEntitiesLabel.setText(Messages.UserDefinedFunctionWizardPage_12);
 		
 		Control targetLabel = dlf.createLabel(entityInfoGroup, 
 				getParent().getFirstTargetItem().getDefinition(), true);
@@ -156,7 +157,7 @@ public class UserDefinedFunctionWizardPage extends
 		
 		// Group 1: Selection of a UDF template (are stored using eclipse preferences store)
 		Group selectUdfTemplateGroup = new Group(page, SWT.NONE);
-		selectUdfTemplateGroup.setText("Select or create a template for your function:");
+		selectUdfTemplateGroup.setText(Messages.UserDefinedFunctionWizardPage_13);
 		selectUdfTemplateGroup.setLayout(new GridLayout(4, false));
 		selectionAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
                 | GridData.HORIZONTAL_ALIGN_FILL);
@@ -188,16 +189,16 @@ public class UserDefinedFunctionWizardPage extends
 		// add UDF template
 		Button addButton = new Button(selectUdfTemplateGroup, SWT.PUSH);
 		addButton.setImage(addImage);
-		addButton.setToolTipText("Add a new UDF template");
+		addButton.setToolTipText(Messages.UserDefinedFunctionWizardPage_14);
 		addButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				udfName.setText("");
+				udfName.setText(""); //$NON-NLS-1$
 				table.setEnabled(true);
 				List<EditableParameter> emptyParams = new ArrayList<EditableParameter>();
 				for (int i = 0; i < 20; i++) {
-					emptyParams.add(new EditableParameter("", ""));
+					emptyParams.add(new EditableParameter("", "")); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				tableViewer.setInput(emptyParams);
 				udfName.setEnabled(true);
@@ -210,14 +211,14 @@ public class UserDefinedFunctionWizardPage extends
 		this.saveButton = new Button(selectUdfTemplateGroup, SWT.PUSH);
 		this.saveButton.setImage(saveImage);
 		this.saveButton.setEnabled(false);
-		this.saveButton.setToolTipText("Save the current UDF as a template");
+		this.saveButton.setToolTipText(Messages.UserDefinedFunctionWizardPage_18);
 		this.saveButton.addSelectionListener(new SelectionAdapter() {
 
 			@SuppressWarnings("unchecked")
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (udfName != null && udfName.getText() != null 
-						&& !udfName.getText().equals("")) {
+						&& !udfName.getText().equals("")) { //$NON-NLS-1$
 					udfTemplates.put(udfName.getText(), 
 							(List<EditableParameter>) tableViewer.getInput());
 					templates.setInput(udfTemplates.keySet());
@@ -230,13 +231,13 @@ public class UserDefinedFunctionWizardPage extends
 		this.removeButton = new Button(selectUdfTemplateGroup, SWT.PUSH);
 		this.removeButton.setImage(removeImage);
 		this.removeButton.setEnabled(false);
-		this.removeButton.setToolTipText("Remove currently selected UDF template");
+		this.removeButton.setToolTipText(Messages.UserDefinedFunctionWizardPage_20);
 		this.removeButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				udfName.setEnabled(false);
-				udfName.setText("");
+				udfName.setText(""); //$NON-NLS-1$
 				udfTemplates.remove(((StructuredSelection)templates.getSelection()).getFirstElement().toString());
 				templates.setInput(udfTemplates.keySet());
 				tableViewer.setInput(new ArrayList<EditableParameter>());
@@ -246,7 +247,7 @@ public class UserDefinedFunctionWizardPage extends
 		
 		// Group 2: Parameters of the UDF that has been selected
 		Group udfParametersGroup = new Group(page, SWT.NONE);
-		udfParametersGroup.setText("Configure your function:");
+		udfParametersGroup.setText(Messages.UserDefinedFunctionWizardPage_22);
 		udfParametersGroup.setLayout(new GridLayout());
 		selectionAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
                 | GridData.HORIZONTAL_ALIGN_FILL);
@@ -256,8 +257,8 @@ public class UserDefinedFunctionWizardPage extends
 		udfParametersGroup.setFont(page.getFont());
 		
 		final Label udfNameLabel = new Label(udfParametersGroup, SWT.NONE);
-		udfNameLabel.setText("UDF template name:");
-		udfNameLabel.setToolTipText("Enter the (qualified) name for your User Defined Function");
+		udfNameLabel.setText(Messages.UserDefinedFunctionWizardPage_23);
+		udfNameLabel.setToolTipText(Messages.UserDefinedFunctionWizardPage_24);
 		
 		this.udfName = new Text (udfParametersGroup, SWT.BORDER | SWT.SINGLE);
 		this.udfName.setLayoutData(new GridData(
@@ -265,8 +266,8 @@ public class UserDefinedFunctionWizardPage extends
 		this.udfName.setEnabled(false);
 		
 		final Label udfParametersLabel = new Label(udfParametersGroup, SWT.NONE);
-		udfParametersLabel.setText("UDF parameters:");
-		udfParametersLabel.setToolTipText("Enter the names and values of your User Defined Function's parameters");
+		udfParametersLabel.setText(Messages.UserDefinedFunctionWizardPage_25);
+		udfParametersLabel.setToolTipText(Messages.UserDefinedFunctionWizardPage_26);
 		
 		this.table = new Table (udfParametersGroup, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
 		this.table.setLinesVisible (true);
@@ -280,7 +281,7 @@ public class UserDefinedFunctionWizardPage extends
 		this.tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		
 		TableViewerColumn viewerNameColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-		viewerNameColumn.getColumn().setText("Parameter name");
+		viewerNameColumn.getColumn().setText(Messages.UserDefinedFunctionWizardPage_27);
 		viewerNameColumn.getColumn().setWidth(125);
 		viewerNameColumn.setLabelProvider(new CellLabelProvider() {
 		    @Override
@@ -305,7 +306,7 @@ public class UserDefinedFunctionWizardPage extends
 		});
 		
 		TableViewerColumn viewerValueColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-		viewerValueColumn.getColumn().setText("Parameter value");
+		viewerValueColumn.getColumn().setText(Messages.UserDefinedFunctionWizardPage_28);
 		viewerValueColumn.getColumn().setWidth(340);
 		viewerValueColumn.setLabelProvider(new CellLabelProvider() {
 		    @Override
@@ -390,7 +391,7 @@ public class UserDefinedFunctionWizardPage extends
 	public void setInitialConfiguration(String udfName,
 			List<IParameter> parameters) {
 		this.predefinedParameters = parameters;
-		this.predefinedUdfName = udfName.replace("UserDefinedFunction.", "");
+		this.predefinedUdfName = udfName.replace(Messages.UserDefinedFunctionWizardPage_29, Messages.UserDefinedFunctionWizardPage_30);
 	}
 	
 	protected class EditableParameter {

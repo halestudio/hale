@@ -31,7 +31,7 @@ public class CstActivator
 	public void start(BundleContext context) throws Exception {
 		CstActivator.context = context;
 		Class.forName(
-				"eu.esdihumboldt.cst.transformer.configuration.osgi.OSGIPackageResolver");
+				"eu.esdihumboldt.cst.transformer.configuration.osgi.OSGIPackageResolver"); //$NON-NLS-1$
 		
 		CstFunctionExtension.registerFunctions();
 	}

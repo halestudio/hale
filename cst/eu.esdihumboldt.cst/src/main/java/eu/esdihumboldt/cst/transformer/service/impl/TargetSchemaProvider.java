@@ -49,8 +49,8 @@ public class TargetSchemaProvider {
 	public void addTypes(Collection<FeatureType> types) {
 		for (FeatureType ft : types) {
 			String ns = ft.getName().getNamespaceURI();
-			if (!ns.endsWith("/")) {
-				ns = ns + "/";
+			if (!ns.endsWith("/")) { //$NON-NLS-1$
+				ns = ns + "/"; //$NON-NLS-1$
 			}
 			
 			this.targetTypes.put(

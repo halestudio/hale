@@ -39,8 +39,8 @@ import eu.esdihumboldt.goml.rdf.Resource;
  */
 public class CstFunctionFactoryTest {
 
-	private String localname1 = "LocalName";
-	private String namespace1 = "http://somenamespace.org/path";
+	private String localname1 = "LocalName"; //$NON-NLS-1$
+	private String namespace1 = "http://somenamespace.org/path"; //$NON-NLS-1$
 
 	
 
@@ -86,7 +86,7 @@ public class CstFunctionFactoryTest {
 	public void testPackageLoading() {
 
 		CstFunctionFactory.getInstance().registerCstPackage(
-				"eu.esdihumboldt.cst.corefunctions");
+				"eu.esdihumboldt.cst.corefunctions"); //$NON-NLS-1$
 		Assert.assertNotNull(CstFunctionFactory.getInstance()
 				.getRegisteredFunctions().size());
 

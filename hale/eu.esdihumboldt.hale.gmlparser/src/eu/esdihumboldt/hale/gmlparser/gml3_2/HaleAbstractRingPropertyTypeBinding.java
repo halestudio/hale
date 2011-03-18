@@ -59,7 +59,7 @@ public class HaleAbstractRingPropertyTypeBinding extends AbstractRingPropertyTyp
 	 */
 	@Override
 	public QName getTarget() {
-		return new QName("http://www.opengis.net/gml/3.2","AbstractRingPropertyType");
+		return new QName("http://www.opengis.net/gml/3.2","AbstractRingPropertyType"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**

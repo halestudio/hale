@@ -31,6 +31,7 @@ import org.opengis.feature.type.Name;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
@@ -67,8 +68,8 @@ public class SetAsDefaultGeometryAction extends Action {
 		@Override
 		public void run(final IProgressMonitor monitor)
 				throws InvocationTargetException, InterruptedException {
-			monitor.beginTask("Reloading source schema and data", IProgressMonitor.UNKNOWN);
-			ATransaction trans = log.begin("Reloading source schema and data");
+			monitor.beginTask(Messages.getString("SetAsDefaultGeometryAction.0"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+			ATransaction trans = log.begin("Reloading source schema and data"); //$NON-NLS-1$
 			try {
 				// reload source schema and instance data
 				InstanceService instanceService = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
@@ -107,19 +108,19 @@ public class SetAsDefaultGeometryAction extends Action {
 						}
 					});
 				} catch (Exception e) {
-					log.userError("Error reloading source schema", e);
+					log.userError("Error reloading source schema", e); //$NON-NLS-1$
 				}
 				
 				styleService.addStyles(style);
 				
 				// readd instances
-				monitor.subTask("Loading instances");
+				monitor.subTask(Messages.getString("SetAsDefaultGeometryAction.3")); //$NON-NLS-1$
 				if (instanceLoc != null && !instanceLoc.isEmpty()) {
 					try {
 						instanceService.addInstances(DatasetType.reference, 
 								InstanceDataImportWizard.loadInstances(new URI(instanceLoc), conf, null));
 					} catch (Exception e) {
-						log.userError("Error reloading source data", e);
+						log.userError("Error reloading source data", e); //$NON-NLS-1$
 					}
 				}
 			} finally {
@@ -141,8 +142,8 @@ public class SetAsDefaultGeometryAction extends Action {
 		@Override
 		public void run(final IProgressMonitor monitor)
 				throws InvocationTargetException, InterruptedException {
-			monitor.beginTask("Reloading target schema and data", IProgressMonitor.UNKNOWN);
-			ATransaction trans = log.begin("Reloading target schema and data");
+			monitor.beginTask(Messages.getString("SetAsDefaultGeometryAction.5"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+			ATransaction trans = log.begin("Reloading target schema and data"); //$NON-NLS-1$
 			try {
 				// reload source schema and instance data
 				InstanceService instanceService = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
@@ -180,13 +181,13 @@ public class SetAsDefaultGeometryAction extends Action {
 						}
 					});
 				} catch (Exception e) {
-					log.userError("Error reloading target schema", e);
+					log.userError("Error reloading target schema", e); //$NON-NLS-1$
 				}
 				
 				styleService.addStyles(style);
 				
 				// trigger retransformation
-				monitor.subTask("Transforming source data");
+				monitor.subTask(Messages.getString("SetAsDefaultGeometryAction.8")); //$NON-NLS-1$
 				// use a trick to trigger the transformation - add empty feature collection
 				instanceService.addInstances(DatasetType.reference, instances);
 			} finally {
@@ -225,18 +226,16 @@ public class SetAsDefaultGeometryAction extends Action {
 		switch (item.getSchemaType()) {
 		case SOURCE:
 			// reload schema and instances
-			if (!MessageDialog.openQuestion(display.getActiveShell(), "Change default geometry", 
-					"Reloading source schema and data is needed when changing" +
-					" the default geometry. Do you want to proceed?")) {
+			if (!MessageDialog.openQuestion(display.getActiveShell(), Messages.getString("SetAsDefaultGeometryAction.9"),  //$NON-NLS-1$
+					Messages.getString("SetAsDefaultGeometryAction.1"))) { //$NON-NLS-1$
 				return;
 			}
 			runner = new ReloadSourceRunner();
 			break;
 		case TARGET:
 			// reload target schema and transformations
-			if (!MessageDialog.openQuestion(display.getActiveShell(), "Change default geometry", 
-					"Reloading target schema and data is needed when changing" +
-					" the default geometry. Do you want to proceed?")) {
+			if (!MessageDialog.openQuestion(display.getActiveShell(), Messages.getString("SetAsDefaultGeometryAction.12"),  //$NON-NLS-1$
+					Messages.getString("SetAsDefaultGeometryAction.2"))) { //$NON-NLS-1$
 				return;
 			}
 			runner = new ReloadTargetRunner();
@@ -250,7 +249,7 @@ public class SetAsDefaultGeometryAction extends Action {
 				new ProgressMonitorDialog(display.getActiveShell()).run(true, false, runner);
 			} catch (Exception e) {
 				// ignore
-				log.error("Error starting reload process", e);
+				log.error("Error starting reload process", e); //$NON-NLS-1$
 			}
 		}
 	}

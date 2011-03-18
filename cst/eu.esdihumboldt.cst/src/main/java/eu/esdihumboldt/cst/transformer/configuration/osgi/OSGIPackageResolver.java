@@ -55,12 +55,12 @@ public class OSGIPackageResolver implements PackageResolver {
 			//search all other bundles
 			BundleContext ctx = CstActivator.getContext();
 			Bundle[] bundles = ctx.getBundles();
-			String packagePathStr = pkg.replaceAll("\\.", "/");
+			String packagePathStr = pkg.replaceAll("\\.", "/"); //$NON-NLS-1$ //$NON-NLS-2$
 			Path packagePath = new Path(packagePathStr);
 			u = searchBundles(packagePath, bundles);
 			
 			if (u == null) {
-				packagePath = new Path("bin/" + packagePathStr);
+				packagePath = new Path("bin/" + packagePathStr); //$NON-NLS-1$
 				u = searchBundles(packagePath, bundles);
 			}
 		}
@@ -78,7 +78,7 @@ public class OSGIPackageResolver implements PackageResolver {
 		throws IOException  {
 		//prefer non-test bundles
 		for (Bundle bnd : bundles) {
-			if (bnd.getSymbolicName().endsWith(".test")) {
+			if (bnd.getSymbolicName().endsWith(".test")) { //$NON-NLS-1$
 				continue;
 			}
 			URL bu = FileLocator.find(bnd, packagePath, null);
@@ -89,7 +89,7 @@ public class OSGIPackageResolver implements PackageResolver {
 		
 		//now search test bundles also
 		for (Bundle bnd : bundles) {
-			if (!bnd.getSymbolicName().endsWith(".test")) {
+			if (!bnd.getSymbolicName().endsWith(".test")) { //$NON-NLS-1$
 				continue;
 			}
 			URL bu = FileLocator.find(bnd, packagePath, null);

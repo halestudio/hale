@@ -68,7 +68,7 @@ public class RcpActionAdapter
 		
 		this.display = Display.getCurrent();
 		if (this.display == null)
-			throw new IllegalArgumentException("ActionAdapter has to be created in display thread");
+			throw new IllegalArgumentException("ActionAdapter has to be created in display thread"); //$NON-NLS-1$
 		
 		action.addPropertyChangeListener(this);
 		
@@ -86,7 +86,7 @@ public class RcpActionAdapter
 				setImageDescriptor(ImageDescriptor.createFromImageData(
 						SwingRcpUtilities.convertToSWT((ImageIcon) icon)));
 			} catch (Exception e) {
-				_log.warn("Error converting action icon", e);
+				_log.warn("Error converting action icon", e); //$NON-NLS-1$
 			}
 		}
 	}
@@ -139,7 +139,7 @@ public class RcpActionAdapter
 		display.asyncExec(new Runnable() {
 
 			public void run() {
-				firePropertyChange("enabled", old, enabled);
+				firePropertyChange("enabled", old, enabled); //$NON-NLS-1$
 			}
 			
 		});
@@ -158,7 +158,7 @@ public class RcpActionAdapter
 			display.asyncExec(new Runnable() {
 
 				public void run() {
-					firePropertyChange("text", old, text);
+					firePropertyChange("text", old, text); //$NON-NLS-1$
 				}
 				
 			});
@@ -210,7 +210,7 @@ public class RcpActionAdapter
 	public void propertyChange(final PropertyChangeEvent evt) {
 		// propagate property change event
 		// -> enabled
-		if (evt.getPropertyName().equals("enabled"))
+		if (evt.getPropertyName().equals("enabled")) //$NON-NLS-1$
 			display.asyncExec(new Runnable() {
 
 				public void run() {

@@ -24,6 +24,6 @@ public interface TaskPreferenceConstants {
 	/**
 	 * The list of active providers
 	 */
-	public static final String TASK_PROVIDER_PREFIX = "task-provider:";
+	public static final String TASK_PROVIDER_PREFIX = "task-provider:"; //$NON-NLS-1$
 	
 }

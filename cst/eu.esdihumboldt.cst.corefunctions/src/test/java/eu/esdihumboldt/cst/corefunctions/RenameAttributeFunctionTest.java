@@ -50,7 +50,7 @@ public class RenameAttributeFunctionTest {
 	/**
 	 * 
 	 */
-	private final String ns = "http://www.esdi-humboldt.eu/schema/test";
+	private final String ns = "http://www.esdi-humboldt.eu/schema/test"; //$NON-NLS-1$
 
 	/**
 	 * Test method for {@link eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction#transform(org.opengis.feature.Feature, org.opengis.feature.Feature)}.
@@ -58,59 +58,59 @@ public class RenameAttributeFunctionTest {
 	@Test
 	public void testTransform() {
 		// build source and target features
-		Feature source = this.buildFeature("SourceType");
-		Feature target = this.buildFeature("TargetType");
+		Feature source = this.buildFeature("SourceType"); //$NON-NLS-1$
+		Feature target = this.buildFeature("TargetType"); //$NON-NLS-1$
 		
 		// build various cells and execute transformation on them
 		RenameAttributeFunction raf = new RenameAttributeFunction();
-		raf.configure(this.getTestingCell("stringFloat", "double"));
+		raf.configure(this.getTestingCell("stringFloat", "double")); //$NON-NLS-1$ //$NON-NLS-2$
 		raf.transform(source, target);
-		assertTrue(target.getProperty("double").getValue() instanceof Double);
-		String newValue = target.getProperty("double").getValue().toString();
-		assertTrue(newValue.equals(source.getProperty("stringFloat").getValue()));
+		assertTrue(target.getProperty("double").getValue() instanceof Double); //$NON-NLS-1$
+		String newValue = target.getProperty("double").getValue().toString(); //$NON-NLS-1$
+		assertTrue(newValue.equals(source.getProperty("stringFloat").getValue())); //$NON-NLS-1$
 		
-		raf.configure(this.getTestingCell("double", "double"));
+		raf.configure(this.getTestingCell("double", "double")); //$NON-NLS-1$ //$NON-NLS-2$
 		raf.transform(source, target);
-		assertTrue(target.getProperty("double").getValue() instanceof Double);
-		newValue = target.getProperty("double").getValue().toString();
-		assertTrue(newValue.equals(source.getProperty("double").getValue().toString()));
+		assertTrue(target.getProperty("double").getValue() instanceof Double); //$NON-NLS-1$
+		newValue = target.getProperty("double").getValue().toString(); //$NON-NLS-1$
+		assertTrue(newValue.equals(source.getProperty("double").getValue().toString())); //$NON-NLS-1$
 		
-		raf.configure(this.getTestingCell("int", "int"));
+		raf.configure(this.getTestingCell("int", "int")); //$NON-NLS-1$ //$NON-NLS-2$
 		raf.transform(source, target);
-		assertTrue(target.getProperty("int").getValue() instanceof Integer);
-		newValue = target.getProperty("int").getValue().toString();
-		assertTrue(newValue.equals(source.getProperty("int").getValue().toString()));
+		assertTrue(target.getProperty("int").getValue() instanceof Integer); //$NON-NLS-1$
+		newValue = target.getProperty("int").getValue().toString(); //$NON-NLS-1$
+		assertTrue(newValue.equals(source.getProperty("int").getValue().toString())); //$NON-NLS-1$
 		
-		raf.configure(this.getTestingCell("stringInt", "long"));
+		raf.configure(this.getTestingCell("stringInt", "long")); //$NON-NLS-1$ //$NON-NLS-2$
 		raf.transform(source, target);
-		assertTrue(target.getProperty("long").getValue() instanceof Long);
-		newValue = target.getProperty("long").getValue().toString();
-		assertTrue(newValue.equals(source.getProperty("stringInt").getValue()));
+		assertTrue(target.getProperty("long").getValue() instanceof Long); //$NON-NLS-1$
+		newValue = target.getProperty("long").getValue().toString(); //$NON-NLS-1$
+		assertTrue(newValue.equals(source.getProperty("stringInt").getValue())); //$NON-NLS-1$
 		
-		raf.configure(this.getTestingCell("stringInt", "int"));
+		raf.configure(this.getTestingCell("stringInt", "int")); //$NON-NLS-1$ //$NON-NLS-2$
 		raf.transform(source, target);
-		assertTrue(target.getProperty("int").getValue() instanceof Integer);
-		newValue = target.getProperty("int").getValue().toString();
-		assertTrue(newValue.equals(source.getProperty("stringInt").getValue()));
+		assertTrue(target.getProperty("int").getValue() instanceof Integer); //$NON-NLS-1$
+		newValue = target.getProperty("int").getValue().toString(); //$NON-NLS-1$
+		assertTrue(newValue.equals(source.getProperty("stringInt").getValue())); //$NON-NLS-1$
 		
-		raf.configure(this.getTestingCell("stringFloat", "float"));
+		raf.configure(this.getTestingCell("stringFloat", "float")); //$NON-NLS-1$ //$NON-NLS-2$
 		raf.transform(source, target);
-		assertTrue(target.getProperty("float").getValue() instanceof Float);
-		newValue = target.getProperty("float").getValue().toString();
-		assertTrue(newValue.equals(source.getProperty("stringFloat").getValue()));
+		assertTrue(target.getProperty("float").getValue() instanceof Float); //$NON-NLS-1$
+		newValue = target.getProperty("float").getValue().toString(); //$NON-NLS-1$
+		assertTrue(newValue.equals(source.getProperty("stringFloat").getValue())); //$NON-NLS-1$
 		
-		raf.configure(this.getTestingCell("float", "StringFloat"));
+		raf.configure(this.getTestingCell("float", "StringFloat")); //$NON-NLS-1$ //$NON-NLS-2$
 		raf.transform(source, target);
-		assertTrue(source.getProperty("float").getValue() instanceof Float);
-		newValue = source.getProperty("float").getValue().toString();
-		assertTrue(newValue.equals(target.getProperty("stringFloat").getValue()));
+		assertTrue(source.getProperty("float").getValue() instanceof Float); //$NON-NLS-1$
+		newValue = source.getProperty("float").getValue().toString(); //$NON-NLS-1$
+		assertTrue(newValue.equals(target.getProperty("stringFloat").getValue())); //$NON-NLS-1$
 		
 		//Test date
-		raf.configure(this.getTestingCell("date", "timestamp"));
+		raf.configure(this.getTestingCell("date", "timestamp")); //$NON-NLS-1$ //$NON-NLS-2$
 		raf.transform(source, target);
-		assertTrue(source.getProperty("date").getValue() instanceof Date);
-		long newValue2 = ((Date)source.getProperty("date").getValue()).getTime();
-		assertTrue(newValue2==((Timestamp)target.getProperty("timestamp").getValue()).getTime());
+		assertTrue(source.getProperty("date").getValue() instanceof Date); //$NON-NLS-1$
+		long newValue2 = ((Date)source.getProperty("date").getValue()).getTime(); //$NON-NLS-1$
+		assertTrue(newValue2==((Timestamp)target.getProperty("timestamp").getValue()).getTime()); //$NON-NLS-1$
 		
 	}
 	
@@ -120,28 +120,28 @@ public class RenameAttributeFunctionTest {
 	@Test
     public void testGeometry() {
 		// build source and target features
-		Feature source = this.buildFeature("SourceType");
-		Feature target = this.buildFeature("TargetType");
+		Feature source = this.buildFeature("SourceType"); //$NON-NLS-1$
+		Feature target = this.buildFeature("TargetType"); //$NON-NLS-1$
 		
 		// build various cells and execute transformation on them
 		RenameAttributeFunction raf = new RenameAttributeFunction();
-		raf.configure(this.getTestingCell("point", "multipoint"));
+		raf.configure(this.getTestingCell("point", "multipoint")); //$NON-NLS-1$ //$NON-NLS-2$
 		raf.transform(source, target);
-		raf.configure(this.getTestingCell("linestring", "multipoint"));
+		raf.configure(this.getTestingCell("linestring", "multipoint")); //$NON-NLS-1$ //$NON-NLS-2$
 		raf.transform(source, target);
-		raf.configure(this.getTestingCell("polygon", "multipoint"));
+		raf.configure(this.getTestingCell("polygon", "multipoint")); //$NON-NLS-1$ //$NON-NLS-2$
 		raf.transform(source, target);
-		raf.configure(this.getTestingCell("multipolygon", "multipoint"));
+		raf.configure(this.getTestingCell("multipolygon", "multipoint")); //$NON-NLS-1$ //$NON-NLS-2$
 		raf.transform(source, target);
-		raf.configure(this.getTestingCell("multilinestring", "multipoint"));
+		raf.configure(this.getTestingCell("multilinestring", "multipoint")); //$NON-NLS-1$ //$NON-NLS-2$
 		raf.transform(source, target);
-		raf.configure(this.getTestingCell("polygon", "multilinestring"));
+		raf.configure(this.getTestingCell("polygon", "multilinestring")); //$NON-NLS-1$ //$NON-NLS-2$
 		raf.transform(source, target);
-		raf.configure(this.getTestingCell("multipolygon", "multilinestring"));
+		raf.configure(this.getTestingCell("multipolygon", "multilinestring")); //$NON-NLS-1$ //$NON-NLS-2$
 		raf.transform(source, target);
-		raf.configure(this.getTestingCell("polygon", "linestring"));
+		raf.configure(this.getTestingCell("polygon", "linestring")); //$NON-NLS-1$ //$NON-NLS-2$
 		raf.transform(source, target);
-		raf.configure(this.getTestingCell("multipolygon", "linestring"));
+		raf.configure(this.getTestingCell("multipolygon", "linestring")); //$NON-NLS-1$ //$NON-NLS-2$
 		raf.transform(source, target);
     }
 
@@ -152,12 +152,12 @@ public class RenameAttributeFunctionTest {
 	@Test(expected=UnsupportedOperationException.class)
     public void testException() {
 		// build source and target features
-		Feature source = this.buildFeature("SourceType");
-		Feature target = this.buildFeature("TargetType");
+		Feature source = this.buildFeature("SourceType"); //$NON-NLS-1$
+		Feature target = this.buildFeature("TargetType"); //$NON-NLS-1$
 		
 		// build various cells and execute transformation on them
 		RenameAttributeFunction raf = new RenameAttributeFunction();
-		raf.configure(this.getTestingCell("date", "timestampexception"));
+		raf.configure(this.getTestingCell("date", "timestampexception")); //$NON-NLS-1$ //$NON-NLS-2$
 		raf.transform(source, target);
     }
 
@@ -210,8 +210,8 @@ public class RenameAttributeFunctionTest {
 		
 		SimpleFeature f = sfb.buildFeature(String.valueOf(featureTypeName.hashCode()), 
 				new Object[]{
-					new String("12.34"), 	// string
-					new String("1234"),		//stringInt
+					new String("12.34"), 	// string //$NON-NLS-1$
+					new String("1234"),		//stringInt //$NON-NLS-1$
 					new Double(12.34), 	// double
 					new Long(1234), 	// long
 					new Integer(1234), 		// int
@@ -242,20 +242,20 @@ public class RenameAttributeFunctionTest {
 			SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
 			ftbuilder.setName(featureTypeName);
 			ftbuilder.setNamespaceURI(featureTypeNamespace);
-			ftbuilder.add("stringFloat", String.class);
-			ftbuilder.add("stringInt", String.class);
-			ftbuilder.add("double", Double.class);
-			ftbuilder.add("long", Long.class);
-			ftbuilder.add("int", Integer.class);
-			ftbuilder.add("float", Float.class);
-			ftbuilder.add("point", Point.class);
-			ftbuilder.add("linestring", LineString.class);
-			ftbuilder.add("polygon", Polygon.class);
-			ftbuilder.add("multipoint", MultiPoint.class);
-			ftbuilder.add("multipolygon", MultiPolygon.class);
-			ftbuilder.add("multilinestring", MultiLineString.class);
-			ftbuilder.add("date", Date.class);
-			ftbuilder.add("timestamp", Timestamp.class);
+			ftbuilder.add("stringFloat", String.class); //$NON-NLS-1$
+			ftbuilder.add("stringInt", String.class); //$NON-NLS-1$
+			ftbuilder.add("double", Double.class); //$NON-NLS-1$
+			ftbuilder.add("long", Long.class); //$NON-NLS-1$
+			ftbuilder.add("int", Integer.class); //$NON-NLS-1$
+			ftbuilder.add("float", Float.class); //$NON-NLS-1$
+			ftbuilder.add("point", Point.class); //$NON-NLS-1$
+			ftbuilder.add("linestring", LineString.class); //$NON-NLS-1$
+			ftbuilder.add("polygon", Polygon.class); //$NON-NLS-1$
+			ftbuilder.add("multipoint", MultiPoint.class); //$NON-NLS-1$
+			ftbuilder.add("multipolygon", MultiPolygon.class); //$NON-NLS-1$
+			ftbuilder.add("multilinestring", MultiLineString.class); //$NON-NLS-1$
+			ftbuilder.add("date", Date.class); //$NON-NLS-1$
+			ftbuilder.add("timestamp", Timestamp.class); //$NON-NLS-1$
 //			ftbuilder.add("timestampexception", com.sun.jmx.snmp.Timestamp.class);
 			ft = ftbuilder.buildFeatureType();
 		} catch (Exception ex) {
@@ -276,11 +276,11 @@ public class RenameAttributeFunctionTest {
 		Transformation t = new Transformation();
 		t.setService(new Resource(RenameAttributeFunction.class.toString()));
 		Property p1 = new Property(new About(
-				this.ns, "SourceType", sourcePropertyname));
+				this.ns, "SourceType", sourcePropertyname)); //$NON-NLS-1$
 		p1.setTransformation(t);
 		cell.setEntity1(p1);
 		cell.setEntity2(new Property(new About(
-				this.ns, "TargetType", targetPropertyName)));
+				this.ns, "TargetType", targetPropertyName))); //$NON-NLS-1$
 		
 		return cell;
 	}

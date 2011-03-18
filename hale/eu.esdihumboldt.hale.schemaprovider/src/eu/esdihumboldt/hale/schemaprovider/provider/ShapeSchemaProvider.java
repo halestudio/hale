@@ -33,6 +33,7 @@ import org.opengis.feature.type.PropertyType;
 import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.schemaprovider.AbstractSchemaProvider;
+import eu.esdihumboldt.hale.schemaprovider.Messages;
 import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
@@ -52,7 +53,7 @@ public class ShapeSchemaProvider
 	 * Default constructor for {@link ShapeSchemaProvider}.
 	 */
 	public ShapeSchemaProvider() {
-		super.addSupportedFormat("shp");
+		super.addSupportedFormat("shp"); //$NON-NLS-1$
 	}
 
 	/**
@@ -60,15 +61,15 @@ public class ShapeSchemaProvider
 	 */
 	public Schema loadSchema(URI location, ProgressIndicator progress)
 			throws IOException {
-		progress.setCurrentTask("Analysing shapefile.");
+		progress.setCurrentTask(Messages.getString("ShapeSchemaProvider.1")); //$NON-NLS-1$
 //		DataStore store = new ShapefileDataStoreFactory().createDataStore(location.toURL());
 		DataStore store = FileDataStoreFinder.getDataStore(location.toURL());
 		
-		progress.setCurrentTask("Extracting Type Definitions.");
+		progress.setCurrentTask(Messages.getString("ShapeSchemaProvider.2")); //$NON-NLS-1$
 		Map<String, SchemaElement> elements = new HashMap<String, SchemaElement>();
 		
 		// build AbstractfeatureType as root for all types extracted from Shapefile
-		Name aftName = new NameImpl("http://www.opengis.net/gml", "AbstractFeatureType");
+		Name aftName = new NameImpl("http://www.opengis.net/gml", "AbstractFeatureType"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		SimpleFeatureType ft = null;
 		try {
@@ -83,7 +84,7 @@ public class ShapeSchemaProvider
 		TypeDefinition abstractFeatureType = new TypeDefinition(
 				aftName, ft, null);
 		abstractFeatureType.setAbstract(true);
-		elements.put(aftName.getNamespaceURI() + "/" + aftName.getLocalPart(), 
+		elements.put(aftName.getNamespaceURI() + "/" + aftName.getLocalPart(),  //$NON-NLS-1$
 				new SchemaElement(aftName, abstractFeatureType.getName(), 
 						abstractFeatureType, null));
 		
@@ -93,7 +94,7 @@ public class ShapeSchemaProvider
 			try {
 				SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
 				ftbuilder.setName(sft.getName().getLocalPart());
-				ftbuilder.setNamespaceURI("http://www.opengis.net/gml");
+				ftbuilder.setNamespaceURI("http://www.opengis.net/gml"); //$NON-NLS-1$
 				for (AttributeDescriptor ad : sft.getAttributeDescriptors()) {
 					ftbuilder.add(ad);
 				}
@@ -103,7 +104,7 @@ public class ShapeSchemaProvider
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			}
-			progress.setCurrentTask("Extracting Type Definition for " 
+			progress.setCurrentTask(Messages.getString("ShapeSchemaProvider.7")  //$NON-NLS-1$
 					+ sft.getTypeName());
 			
 			TypeDefinition type = new TypeDefinition(sft.getName(), sft, abstractFeatureType);
@@ -113,11 +114,11 @@ public class ShapeSchemaProvider
 			
 			SchemaElement se = new SchemaElement(sft.getName(), 
 					type.getType(null).getName(), type, null);
-			elements.put(sft.getName().getNamespaceURI() + "/" + sft.getTypeName(), 
+			elements.put(sft.getName().getNamespaceURI() + "/" + sft.getTypeName(),  //$NON-NLS-1$
 					se);
 		}
 
-		String namespace = "http://www.opengis.net/gml";
+		String namespace = "http://www.opengis.net/gml"; //$NON-NLS-1$
 		return new Schema(elements, namespace, location.toURL(), null);
 	}
 	
@@ -183,23 +184,23 @@ public class ShapeSchemaProvider
 	private static Name getName(PropertyType at) {
 		
 		if (at.getBinding().equals(Integer.class)) {
-			return new NameImpl("http://www.w3.org/2001/XMLSchema", 
-					"int");
+			return new NameImpl("http://www.w3.org/2001/XMLSchema",  //$NON-NLS-1$
+					"int"); //$NON-NLS-1$
 		}
 		else if (at.getBinding().equals(Long.class)) {
-			return new NameImpl("http://www.w3.org/2001/XMLSchema", 
-					"long");
+			return new NameImpl("http://www.w3.org/2001/XMLSchema",  //$NON-NLS-1$
+					"long"); //$NON-NLS-1$
 		}
 		else if (at.getBinding().equals(Double.class)) {
-			return new NameImpl("http://www.w3.org/2001/XMLSchema", 
-					"double");
+			return new NameImpl("http://www.w3.org/2001/XMLSchema",  //$NON-NLS-1$
+					"double"); //$NON-NLS-1$
 		}
 		else if (at.getBinding().equals(String.class)) {
-			return new NameImpl("http://www.w3.org/2001/XMLSchema", 
-					"string");
+			return new NameImpl("http://www.w3.org/2001/XMLSchema",  //$NON-NLS-1$
+					"string"); //$NON-NLS-1$
 		}
 		else if (Geometry.class.isAssignableFrom(at.getBinding())) {
-			return new NameImpl("http://www.opengis.net/gml", 
+			return new NameImpl("http://www.opengis.net/gml",  //$NON-NLS-1$
 					at.getBinding().getSimpleName());
 		}
 		else {

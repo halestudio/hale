@@ -33,10 +33,10 @@ public class HaleOmlRdfGenerator extends OmlRdfGenerator {
 	// PDE build seems to have a problem with this - @Override
 	public void configurePrefixMapper(Marshaller m) {
 		try {
-			m.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper",
+			m.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$
 					new NamespacePrefixMapperImpl());
 		} catch (PropertyException e) {
-			_log.error("Setting the PrefixMapper failed: ", e);
+			_log.error("Setting the PrefixMapper failed: ", e); //$NON-NLS-1$
 		}
 	}
 	

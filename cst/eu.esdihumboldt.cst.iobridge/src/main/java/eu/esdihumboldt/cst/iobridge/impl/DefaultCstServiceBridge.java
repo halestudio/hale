@@ -139,7 +139,7 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(
-					"An exception occured when trying to write out GML: ", e);
+					"An exception occured when trying to write out GML: ", e); //$NON-NLS-1$
 		}
 
 	}
@@ -149,11 +149,11 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 		try {
 			return asp.loadSchema(new URI(schemaFilename), null);
 		} catch (URISyntaxException e) {
-			throw new RuntimeException("Parsing the schema Filename to a URI "
-					+ "failed.", e);
+			throw new RuntimeException("Parsing the schema Filename to a URI " //$NON-NLS-1$
+					+ "failed.", e); //$NON-NLS-1$
 		} catch (IOException e) {
-			throw new RuntimeException("Reading from the provided schema "
-					+ "location failed.", e);
+			throw new RuntimeException("Reading from the provided schema " //$NON-NLS-1$
+					+ "location failed.", e); //$NON-NLS-1$
 		}
 	}
 
@@ -196,8 +196,8 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 					try {
 						schemaLocation = new File(sourceSchema).toURI();
 					} catch (Exception e1) {
-						throw new RuntimeException("Reading from the provided " +
-								"source schema location failed.", e);
+						throw new RuntimeException("Reading from the provided " + //$NON-NLS-1$
+								"source schema location failed.", e); //$NON-NLS-1$
 					}
 				}
 			}
@@ -233,9 +233,9 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 	@Override
 	public String transform(String schemaFilename, String omlFilename,
 			String gmlFilename, String sourceSchema, ConfigurationType sourceVersion) throws TransformationException  {
-		String outputFilename =(this.getClass().getResource("")
+		String outputFilename =(this.getClass().getResource("") //$NON-NLS-1$
 				.toExternalForm()
-				+ UUID.randomUUID() + ".gml");
+				+ UUID.randomUUID() + ".gml"); //$NON-NLS-1$
 		return transform(schemaFilename, omlFilename,
 				gmlFilename, outputFilename, sourceSchema, sourceVersion);
 	}

@@ -82,7 +82,7 @@ public abstract class FilterUtils {
 			try {
 				return CQL.toFilter(cql);
 			} catch (CQLException e) {
-				throw new RuntimeException("Filter could not be parsed from CQL string", e);
+				throw new RuntimeException("Filter could not be parsed from CQL string", e); //$NON-NLS-1$
 			}
 		}
 	}

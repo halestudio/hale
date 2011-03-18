@@ -45,12 +45,12 @@ public class OrdinatesToPointFunction
 	/**
 	 * The name of the parameter for the x ordinate (latitude) expression.
 	 */
-	public static final String X_EXPRESSION_PARAMETER = "xExpression";
+	public static final String X_EXPRESSION_PARAMETER = "xExpression"; //$NON-NLS-1$
 	
 	/**
 	 * The name of the parameter for the y ordinate (longitude) expression.
 	 */
-	public static final String Y_EXPRESSION_PARAMETER = "yExpression";
+	public static final String Y_EXPRESSION_PARAMETER = "yExpression"; //$NON-NLS-1$
 	
 	/**
 	 * 
@@ -103,8 +103,8 @@ public class OrdinatesToPointFunction
 	public ICell getParameters() {
 
 		Cell parameterCell = new Cell();
-		ComposedProperty composedEntity1 = new ComposedProperty(new About(""));
-		Property entity1 = new Property(new About(""));
+		ComposedProperty composedEntity1 = new ComposedProperty(new About("")); //$NON-NLS-1$
+		Property entity1 = new Property(new About("")); //$NON-NLS-1$
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
@@ -112,7 +112,7 @@ public class OrdinatesToPointFunction
 		entityTypes.add(String.class.getName());
 		entity1.setTypeCondition(entityTypes);
 		
-		Property entity2 = new Property(new About(""));
+		Property entity2 = new Property(new About("")); //$NON-NLS-1$
 		 
 		// Setting of type condition for entity2
 		entityTypes = new ArrayList <String>();
@@ -122,8 +122,8 @@ public class OrdinatesToPointFunction
 		
 		List<IParameter> params = new ArrayList<IParameter>();
 		Transformation t = new Transformation();
-		IParameter xExpression = new Parameter(OrdinatesToPointFunction.X_EXPRESSION_PARAMETER , "");
-		IParameter yExpression = new Parameter(OrdinatesToPointFunction.Y_EXPRESSION_PARAMETER , "");
+		IParameter xExpression = new Parameter(OrdinatesToPointFunction.X_EXPRESSION_PARAMETER , ""); //$NON-NLS-1$
+		IParameter yExpression = new Parameter(OrdinatesToPointFunction.Y_EXPRESSION_PARAMETER , ""); //$NON-NLS-1$
 		params.add(xExpression);
 		params.add(yExpression);
 		t.setParameters(params);

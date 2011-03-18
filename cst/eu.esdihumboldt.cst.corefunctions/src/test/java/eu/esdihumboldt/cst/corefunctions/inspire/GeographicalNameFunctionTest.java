@@ -62,19 +62,19 @@ import eu.esdihumboldt.inspire.data.NativenessValue;
  */
 public class GeographicalNameFunctionTest {
 
-	public static String sourceLocalName = "FT1";
-	public static String sourceLocalnameProperty = "GermanName_LatnScript";// "NAME";
-	public static String sourceLocalnameProperty2 = "GermanName_GreekScript";//"NOM";
-	public static String sourceLocalnameProperty3 = "EnglishName_LatnScript";//"NOMBRE";
-	public static String sourceNamespace = "http://www.esdi-humboldt.eu";
+	public static String sourceLocalName = "FT1"; //$NON-NLS-1$
+	public static String sourceLocalnameProperty = "GermanName_LatnScript";// "NAME"; //$NON-NLS-1$
+	public static String sourceLocalnameProperty2 = "GermanName_GreekScript";//"NOM"; //$NON-NLS-1$
+	public static String sourceLocalnameProperty3 = "EnglishName_LatnScript";//"NOMBRE"; //$NON-NLS-1$
+	public static String sourceNamespace = "http://www.esdi-humboldt.eu"; //$NON-NLS-1$
 	
-	public static String targetLocalName = "FT2";
-	public static String targetLocalNameProperty = "geographicalName"; //"name";
-	public static String targetNamespace = "urn:x-inspire:specification:gmlas-v31:Hydrography:2.0";
+	public static String targetLocalName = "FT2"; //$NON-NLS-1$
+	public static String targetLocalNameProperty = "geographicalName"; //"name"; //$NON-NLS-1$
+	public static String targetNamespace = "urn:x-inspire:specification:gmlas-v31:Hydrography:2.0"; //$NON-NLS-1$
 	
-	public static String name_value = "GermanName";//"Danube";
-	public static String nom_value = "GermanNameGreekScript";//"Donau";
-	public static String nombre_value= "EnglishName"; //"Danubio";
+	public static String name_value = "GermanName";//"Danube"; //$NON-NLS-1$
+	public static String nom_value = "GermanNameGreekScript";//"Donau"; //$NON-NLS-1$
+	public static String nombre_value= "EnglishName"; //"Danubio"; //$NON-NLS-1$
 	public static Locale language = Locale.ENGLISH;
 	public static Locale language2 = Locale.GERMAN;
 	public static NameStatusValue name_status = NameStatusValue.official;
@@ -96,8 +96,8 @@ public class GeographicalNameFunctionTest {
 		FeatureType targetType = TypeLoader.getType("CadastralZoning", url);*/
 	   
 	   String url = getClass().getResource(
-		"inspire_v3.0_xsd/HydroPhysicalWaters.xsd").toString();
-		FeatureType targetType = TypeLoader.getType("SurfaceWater", url);
+		"inspire_v3.0_xsd/HydroPhysicalWaters.xsd").toString(); //$NON-NLS-1$
+		FeatureType targetType = TypeLoader.getType("SurfaceWater", url); //$NON-NLS-1$
 		
 		Feature source = FeatureBuilder.buildFeature(sourceType, null,false);
 		source.getProperty(sourceLocalnameProperty).setValue(name_value);
@@ -109,7 +109,7 @@ public class GeographicalNameFunctionTest {
 		// ************* PERFORM ACTUAL TEST ****************
 		GeographicalNameFunction gnf = new GeographicalNameFunction();
 		OmlRdfReader reader = new OmlRdfReader();
-		String alignmentUrl = GeographicalNameFunctionTest.class.getResource("PropertyCompositionTest.xml").toExternalForm();
+		String alignmentUrl = GeographicalNameFunctionTest.class.getResource("PropertyCompositionTest.xml").toExternalForm(); //$NON-NLS-1$
 		Alignment al = null;
 		try {
 			al = reader.read(new URL(alignmentUrl));
@@ -125,10 +125,10 @@ public class GeographicalNameFunctionTest {
 		Feature expectedGN = setGeographicalNameResult(targetType);
 		
 		// ************* CHECK EQUALITY OF EXPECTED AND RECEIVED FEATURES ****************
-		AttributeImpl resultgn=(AttributeImpl)result.getProperty("geographicalName");
+		AttributeImpl resultgn=(AttributeImpl)result.getProperty("geographicalName"); //$NON-NLS-1$
 		
 		
-		AttributeImpl expectedGNgn = (AttributeImpl)expectedGN.getProperty("geographicalName");
+		AttributeImpl expectedGNgn = (AttributeImpl)expectedGN.getProperty("geographicalName"); //$NON-NLS-1$
 		
 		assertEquals(resultgn,expectedGNgn);
 		//assertTrue(1==1);
@@ -190,44 +190,44 @@ public class GeographicalNameFunctionTest {
 		transform1.setService(new Resource(GeographicalNameFunction.class.getName()));
 		
 		transform1.getParameters().add( 
-				new Parameter ("language", language.toString()));
+				new Parameter ("language", language.toString())); //$NON-NLS-1$
 		transform1.getParameters().add( 
-				new Parameter ("nameStatus", name_status.toString()));
+				new Parameter ("nameStatus", name_status.toString())); //$NON-NLS-1$
 		transform1.getParameters().add( 
-				new Parameter ("nativeness", nativeness.toString()));
+				new Parameter ("nativeness", nativeness.toString())); //$NON-NLS-1$
 		transform1.getParameters().add( 
-				new Parameter ("grammaticalGender", grammatical_gender.toString()));
+				new Parameter ("grammaticalGender", grammatical_gender.toString())); //$NON-NLS-1$
 		transform1.getParameters().add( 
-				new Parameter ("grammaticalNumber", grammatical_number.toString()));
+				new Parameter ("grammaticalNumber", grammatical_number.toString())); //$NON-NLS-1$
 		cpsp1.setTransformation(transform1);
 		
 		Transformation transform2 = new Transformation();
 		transform2.setService(new Resource(GeographicalNameFunction.class.getName()));
 		
 		transform2.getParameters().add( 
-				new Parameter ("language", language2.toString()));
+				new Parameter ("language", language2.toString())); //$NON-NLS-1$
 		transform2.getParameters().add( 
-				new Parameter ("nameStatus", name_status.toString()));
+				new Parameter ("nameStatus", name_status.toString())); //$NON-NLS-1$
 		transform2.getParameters().add( 
-				new Parameter ("nativeness", nativeness.toString()));
+				new Parameter ("nativeness", nativeness.toString())); //$NON-NLS-1$
 		transform2.getParameters().add( 
-				new Parameter ("grammaticalGender", grammatical_gender.toString()));
+				new Parameter ("grammaticalGender", grammatical_gender.toString())); //$NON-NLS-1$
 		transform2.getParameters().add( 
-				new Parameter ("grammaticalNumber", grammatical_number.toString()));
+				new Parameter ("grammaticalNumber", grammatical_number.toString())); //$NON-NLS-1$
 		cpsp2.setTransformation(transform2);
 		
 		// ************* SET TRANSFORMATION OF EACH PROPERTY ****************
 		Transformation tsp1 = new Transformation();
 		tsp1.setService(new Resource(GeographicalNameFunction.class.getName()));
-		tsp1.getParameters().add(new Parameter ("script", "script1"));
+		tsp1.getParameters().add(new Parameter ("script", "script1")); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		Transformation tsp2 = new Transformation();
 		tsp2.setService(new Resource(GeographicalNameFunction.class.getName()));
-		tsp2.getParameters().add(new Parameter ("script", "script2"));
+		tsp2.getParameters().add(new Parameter ("script", "script2")); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		Transformation tsp3 = new Transformation();
 		tsp3.setService(new Resource(GeographicalNameFunction.class.getName()));
-		tsp3.getParameters().add(new Parameter ("script", "script3"));
+		tsp3.getParameters().add(new Parameter ("script", "script3")); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		p1.setTransformation(tsp1);
 		p2.setTransformation(tsp2);
@@ -264,13 +264,13 @@ public class GeographicalNameFunctionTest {
 		PropertyType pt = target.getProperty(
 				targetLocalNameProperty).getType();
 		SimpleFeatureType geoNameType = (SimpleFeatureType)
-						((SimpleFeatureType) pt).getDescriptor("GeographicalName").getType();
+						((SimpleFeatureType) pt).getDescriptor("GeographicalName").getType(); //$NON-NLS-1$
 		SimpleFeatureType spellingofnamepropertytype = (SimpleFeatureType) 
-						geoNameType.getDescriptor("spelling").getType();
+						geoNameType.getDescriptor("spelling").getType(); //$NON-NLS-1$
 		SimpleFeatureType spellingofnametype = (SimpleFeatureType) 
-						(spellingofnamepropertytype.getDescriptor("SpellingOfName")).getType();
+						(spellingofnamepropertytype.getDescriptor("SpellingOfName")).getType(); //$NON-NLS-1$
 		SimpleFeatureType pronunciationofnametype = (SimpleFeatureType) ((SimpleFeatureType) 
-						(geoNameType).getDescriptor("pronunciation").getType()).getDescriptor("PronunciationOfName").getType();
+						(geoNameType).getDescriptor("pronunciation").getType()).getDescriptor("PronunciationOfName").getType(); //$NON-NLS-1$ //$NON-NLS-2$
 
 		
 		// ************* CREATION OF THE COLLECTION OF GEOGRAPHICALNAMES ****************
@@ -282,22 +282,22 @@ public class GeographicalNameFunctionTest {
 		
 		// ************* SET UP THREE SPELLINGS ****************
 		FeatureImpl spellingofname1 = (FeatureImpl)FeatureBuilder.buildFeature(spellingofnametype, null, false);
-		spellingofname1.getProperty("script").setValue("script1");
-		spellingofname1.getProperty("text").setValue(name_value);
+		spellingofname1.getProperty("script").setValue("script1"); //$NON-NLS-1$ //$NON-NLS-2$
+		spellingofname1.getProperty("text").setValue(name_value); //$NON-NLS-1$
 		FeatureImpl spellingofnameproperty1 = (FeatureImpl)FeatureBuilder.buildFeature(spellingofnamepropertytype, null, false);
-		spellingofnameproperty1.getProperty("SpellingOfName").setValue(Collections.singleton(spellingofname1));
+		spellingofnameproperty1.getProperty("SpellingOfName").setValue(Collections.singleton(spellingofname1)); //$NON-NLS-1$
 		
 		FeatureImpl spellingofname2 = (FeatureImpl) FeatureBuilder.buildFeature(spellingofnametype, null, false);
-		spellingofname2.getProperty("script").setValue("script2");
-		spellingofname2.getProperty("text").setValue(nom_value);
+		spellingofname2.getProperty("script").setValue("script2"); //$NON-NLS-1$ //$NON-NLS-2$
+		spellingofname2.getProperty("text").setValue(nom_value); //$NON-NLS-1$
 		FeatureImpl spellingofnameproperty2 = (FeatureImpl)FeatureBuilder.buildFeature(spellingofnamepropertytype,null, false);
-		spellingofnameproperty2.getProperty("SpellingOfName").setValue(Collections.singleton(spellingofname2));
+		spellingofnameproperty2.getProperty("SpellingOfName").setValue(Collections.singleton(spellingofname2)); //$NON-NLS-1$
 		
 		FeatureImpl spellingofname3 = (FeatureImpl) FeatureBuilder.buildFeature(spellingofnametype,null, false);
-		spellingofname3.getProperty("script").setValue("script3");
-		spellingofname3.getProperty("text").setValue(nombre_value);
+		spellingofname3.getProperty("script").setValue("script3"); //$NON-NLS-1$ //$NON-NLS-2$
+		spellingofname3.getProperty("text").setValue(nombre_value); //$NON-NLS-1$
 		FeatureImpl spellingofnameproperty3 = (FeatureImpl)FeatureBuilder.buildFeature(spellingofnamepropertytype, null, false);
-		spellingofnameproperty3.getProperty("SpellingOfName").setValue(Collections.singleton(spellingofname3));
+		spellingofnameproperty3.getProperty("SpellingOfName").setValue(Collections.singleton(spellingofname3)); //$NON-NLS-1$
 		
 		// ************* JOIN TWO SPELLINGS IN SAME GEOGRAPHICALNAME  ****************
 		colecc.add(spellingofnameproperty1);
@@ -308,35 +308,35 @@ public class GeographicalNameFunctionTest {
 		
 		// ************* CREATION OF TWO PRONUNCIATIONS (VOID)  ****************
 		FeatureImpl pronunciation1 = (FeatureImpl) FeatureBuilder.buildFeature(pronunciationofnametype, null, false);
-		pronunciation1.getProperty("pronunciationIPA").setValue(null);
-		pronunciation1.getProperty("pronunciationSoundLink").setValue(null);
+		pronunciation1.getProperty("pronunciationIPA").setValue(null); //$NON-NLS-1$
+		pronunciation1.getProperty("pronunciationSoundLink").setValue(null); //$NON-NLS-1$
 		
 		
 		FeatureImpl pronunciation2 = (FeatureImpl) FeatureBuilder.buildFeature(pronunciationofnametype, null, false);
-		pronunciation2.getProperty("pronunciationIPA").setValue(null);
-		pronunciation2.getProperty("pronunciationSoundLink").setValue(null);
+		pronunciation2.getProperty("pronunciationIPA").setValue(null); //$NON-NLS-1$
+		pronunciation2.getProperty("pronunciationSoundLink").setValue(null); //$NON-NLS-1$
 
 		// ************* SET UP AND FILL TWO GEOGRAPHICALNAMES ****************
 		FeatureImpl geographicalname1 = (FeatureImpl) FeatureBuilder.buildFeature((FeatureType)geoNameType, null, false);
 		FeatureImpl geographicalname2 = (FeatureImpl) FeatureBuilder.buildFeature((FeatureType)geoNameType, null, false);
 		
-		geographicalname1.getProperty("spelling").setValue(colecc);
-		geographicalname1.getProperty("language").setValue(language.toString());
-		geographicalname1.getProperty("sourceOfName").setValue("");
-		geographicalname1.getProperty("nativeness").setValue(Collections.singleton(nativeness.toString()));
-		geographicalname1.getProperty("nameStatus").setValue(Collections.singleton(name_status.toString()));
-		geographicalname1.getProperty("grammaticalGender").setValue(Collections.singleton(grammatical_gender.toString()));
-		geographicalname1.getProperty("grammaticalNumber").setValue(Collections.singleton(grammatical_number.toString()));
-		geographicalname1.getProperty("pronunciation").setValue(Collections.singleton(pronunciation1));
+		geographicalname1.getProperty("spelling").setValue(colecc); //$NON-NLS-1$
+		geographicalname1.getProperty("language").setValue(language.toString()); //$NON-NLS-1$
+		geographicalname1.getProperty("sourceOfName").setValue(""); //$NON-NLS-1$ //$NON-NLS-2$
+		geographicalname1.getProperty("nativeness").setValue(Collections.singleton(nativeness.toString())); //$NON-NLS-1$
+		geographicalname1.getProperty("nameStatus").setValue(Collections.singleton(name_status.toString())); //$NON-NLS-1$
+		geographicalname1.getProperty("grammaticalGender").setValue(Collections.singleton(grammatical_gender.toString())); //$NON-NLS-1$
+		geographicalname1.getProperty("grammaticalNumber").setValue(Collections.singleton(grammatical_number.toString())); //$NON-NLS-1$
+		geographicalname1.getProperty("pronunciation").setValue(Collections.singleton(pronunciation1)); //$NON-NLS-1$
 		
-		geographicalname2.getProperty("spelling").setValue(colecc2);
-		geographicalname2.getProperty("language").setValue(language2.toString());
-		geographicalname2.getProperty("sourceOfName").setValue("");
-		geographicalname2.getProperty("nativeness").setValue(Collections.singleton(nativeness.toString()));
-		geographicalname2.getProperty("nameStatus").setValue(Collections.singleton(name_status.toString()));
-		geographicalname2.getProperty("grammaticalGender").setValue(Collections.singleton(grammatical_gender.toString()));
-		geographicalname2.getProperty("grammaticalNumber").setValue(Collections.singleton(grammatical_number.toString()));
-		geographicalname2.getProperty("pronunciation").setValue(Collections.singleton(pronunciation2));
+		geographicalname2.getProperty("spelling").setValue(colecc2); //$NON-NLS-1$
+		geographicalname2.getProperty("language").setValue(language2.toString()); //$NON-NLS-1$
+		geographicalname2.getProperty("sourceOfName").setValue(""); //$NON-NLS-1$ //$NON-NLS-2$
+		geographicalname2.getProperty("nativeness").setValue(Collections.singleton(nativeness.toString())); //$NON-NLS-1$
+		geographicalname2.getProperty("nameStatus").setValue(Collections.singleton(name_status.toString())); //$NON-NLS-1$
+		geographicalname2.getProperty("grammaticalGender").setValue(Collections.singleton(grammatical_gender.toString())); //$NON-NLS-1$
+		geographicalname2.getProperty("grammaticalNumber").setValue(Collections.singleton(grammatical_number.toString())); //$NON-NLS-1$
+		geographicalname2.getProperty("pronunciation").setValue(Collections.singleton(pronunciation2)); //$NON-NLS-1$
 		
 		
 		geographicalnames.add(geographicalname1);

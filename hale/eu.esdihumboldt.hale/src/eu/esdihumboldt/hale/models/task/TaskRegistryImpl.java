@@ -46,7 +46,7 @@ public class TaskRegistryImpl implements TaskRegistry {
 	@Override
 	public void registerType(TaskType type) throws IllegalStateException {
 		if (types.containsKey(type.getName())) {
-			throw new IllegalStateException("Duplicate task type: " + type.getName());
+			throw new IllegalStateException("Duplicate task type: " + type.getName()); //$NON-NLS-1$
 		}
 		else {
 			types.put(type.getName(), type);

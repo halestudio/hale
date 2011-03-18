@@ -41,7 +41,7 @@ public class CreateReferenceWizardFactory
 		}
 		
 		// target item must be a ReferenceType
-		if (!target.getPropertyType().getName().getLocalPart().equals("ReferenceType")) {
+		if (!target.getPropertyType().getName().getLocalPart().equals("ReferenceType")) { //$NON-NLS-1$
 			return false;
 		}
 		

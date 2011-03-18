@@ -60,7 +60,7 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 	private void initNewAlignment() {
 		this.alignment = new Alignment();
 		this.alignment.setAbout(new About(UUID.randomUUID()));
-		this.alignment.setLevel("");
+		this.alignment.setLevel(""); //$NON-NLS-1$
 		this.alignment.setMap(new ArrayList<ICell>());
 	}
 
@@ -104,7 +104,7 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 		ICell oldCell = getCellInternal(cell.getEntity1(), cell.getEntity2());
 		if (oldCell != null) {
 			alignment.getMap().remove(oldCell);
-			_log.info("Replacing alignment cell");
+			_log.info("Replacing alignment cell"); //$NON-NLS-1$
 			updated.add(cell);
 		}
 		else {
@@ -169,7 +169,7 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 	@Override
 	public boolean loadAlignment(URI uri) {
 		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Not yet implemented, sorry.");
+		throw new UnsupportedOperationException("Not yet implemented, sorry."); //$NON-NLS-1$
 	}
 
 	/**

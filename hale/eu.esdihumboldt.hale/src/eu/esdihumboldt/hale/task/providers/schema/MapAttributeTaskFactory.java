@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Queue;
 
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
@@ -98,7 +99,7 @@ public class MapAttributeTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public String getReason(Task task) {
-			return "Attribute not mapped";
+			return Messages.getString("MapAttributeTaskFactory.0"); //$NON-NLS-1$
 		}
 
 		/**
@@ -114,7 +115,7 @@ public class MapAttributeTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public String getTitle(Task task) {
-			return "Create a mapping for the attribute " + ((AttributeDefinition) task.getMainContext()).getName();
+			return Messages.getString("MapAttributeTaskFactory.1") + ((AttributeDefinition) task.getMainContext()).getName(); //$NON-NLS-1$
 		}
 
 		/**
@@ -130,7 +131,7 @@ public class MapAttributeTaskFactory extends AbstractTaskFactory {
 	/**
 	 * The type name
 	 */
-	public static final String BASE_TYPE_NAME = "Schema.mapAttribute";
+	public static final String BASE_TYPE_NAME = "Schema.mapAttribute"; //$NON-NLS-1$
 	
 	/**
 	 * The task type

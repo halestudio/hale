@@ -36,6 +36,7 @@ import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.Resource;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.NullSchemaItem;
@@ -242,7 +243,7 @@ public class SimpleFunctionWizardDescriptor extends
 								matches = true;
 							}
 						} catch (ClassNotFoundException e) {
-							log.warn("Class for function type condition not found", e);
+							log.warn("Class for function type condition not found", e); //$NON-NLS-1$
 						}
 					}
 					
@@ -273,12 +274,12 @@ public class SimpleFunctionWizardDescriptor extends
 	public SimpleFunctionWizardDescriptor(IConfigurationElement conf) {
 		super(conf);
 		
-		String functionClass = conf.getAttribute("function");
+		String functionClass = conf.getAttribute("function"); //$NON-NLS-1$
 		Map<String, Class<? extends CstFunction>> functions = CstFunctionFactory.getInstance().getRegisteredFunctions();
 		Class<? extends CstFunction> function = functions.get(functionClass);
 		
 		if (function == null) {
-			throw new RuntimeException("Function " + functionClass + " not available in the CST");
+			throw new RuntimeException("Function " + functionClass + " not available in the CST"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		
 		parameterCell = createFunction().getParameters();
@@ -292,7 +293,7 @@ public class SimpleFunctionWizardDescriptor extends
 	 * @return the function class name
 	 */
 	protected String getFunctionClassName() {
-		return conf.getAttribute("function");
+		return conf.getAttribute("function"); //$NON-NLS-1$
 	}
 	
 	/**
@@ -314,9 +315,9 @@ public class SimpleFunctionWizardDescriptor extends
 	 */
 	protected CstFunction createFunction() {
 		try {
-			return (CstFunction) conf.createExecutableExtension("function");
+			return (CstFunction) conf.createExecutableExtension("function"); //$NON-NLS-1$
 		} catch (CoreException e) {
-			log.error("Error creating function", e);
+			log.error("Error creating function", e); //$NON-NLS-1$
 			return null;
 		}
 	}

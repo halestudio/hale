@@ -32,6 +32,7 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.math.MathExpressionFieldEditor;
 
 
@@ -84,7 +85,7 @@ public class OrdinatesPointWizardPage extends
 	private void createConfigurationGroup(Composite parent) {
 		// define source group composite
 		Group configurationGroup = new Group(parent, SWT.NONE);
-		configurationGroup.setText("Define ordinates to geometrical point");
+		configurationGroup.setText(Messages.OrdinatesPointWizardPage_0);
 		configurationGroup.setLayout(new GridLayout());
 		GridData configurationAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL);
 		configurationAreaGD.grabExcessHorizontalSpace = true;
@@ -107,8 +108,8 @@ public class OrdinatesPointWizardPage extends
 		
 		// Expression X editor initiation
 		this.expressionEditorX = new MathExpressionFieldEditor(
-				"expression", "X: ", configurationGroup, variablesX);
-		if (this.initialExpression != null && !this.initialExpression.equals("")) {
+				"expression", "X: ", configurationGroup, variablesX); //$NON-NLS-1$ //$NON-NLS-2$
+		if (this.initialExpression != null && !this.initialExpression.equals("")) { //$NON-NLS-1$
 			this.expressionEditorX.setStringValue(this.initialExpression);
 		}
 		this.expressionEditorX.insert(((SchemaItem)sourceTreeSet.first()).getName().getLocalPart());
@@ -129,8 +130,8 @@ public class OrdinatesPointWizardPage extends
 		
 		// Expression Y editor initiation
 		this.expressionEditorY = new MathExpressionFieldEditor(
-				"expression","Y: ", configurationGroup, variablesY);
-		if (this.initialExpression != null && !this.initialExpression.equals("")) {
+				"expression","Y: ", configurationGroup, variablesY); //$NON-NLS-1$ //$NON-NLS-2$
+		if (this.initialExpression != null && !this.initialExpression.equals("")) { //$NON-NLS-1$
 			this.expressionEditorY.setStringValue(this.initialExpression);
 		}
 		this.expressionEditorY.insert(((SchemaItem)sourceTreeSet.last()).getName().getLocalPart());
@@ -147,7 +148,7 @@ public class OrdinatesPointWizardPage extends
 		});
 		
 		final Label geoAttributeLabel = new Label(configurationGroup, SWT.NONE);
-		geoAttributeLabel.setText("Geometrical Point:");
+		geoAttributeLabel.setText(Messages.OrdinatesPointWizardPage_7);
 		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(DefinitionLabelFactory.class);
 		Control geoAttributeText = dlf.createLabel(configurationGroup, getParent().getFirstTargetItem().getDefinition(), false);
 		geoAttributeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));

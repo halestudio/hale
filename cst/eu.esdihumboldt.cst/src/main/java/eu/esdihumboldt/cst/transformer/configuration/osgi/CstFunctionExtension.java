@@ -31,7 +31,7 @@ public class CstFunctionExtension {
 	/**
 	 * The extension point ID
 	 */
-	public static final String ID = "eu.esdihumboldt.cst.transformer.CstFunction";
+	public static final String ID = "eu.esdihumboldt.cst.transformer.CstFunction"; //$NON-NLS-1$
 	
 	/**
 	 * Register the functions defined by the extension
@@ -42,16 +42,16 @@ public class CstFunctionExtension {
 		CstFunctionFactory ff = CstFunctionFactory.getInstance();
 		
 		for (IConfigurationElement conf : confArray) {
-			if (conf.getName().equals("java")) {
+			if (conf.getName().equals("java")) { //$NON-NLS-1$
 				// java implementation
-				String pkg = conf.getAttribute("package");
-				log.info("Registering functions for package: " + pkg);
+				String pkg = conf.getAttribute("package"); //$NON-NLS-1$
+				log.info("Registering functions for package: " + pkg); //$NON-NLS-1$
 				ff.registerCstPackage(pkg);
 			}
-			else if (conf.getName().equals("wps")) {
+			else if (conf.getName().equals("wps")) { //$NON-NLS-1$
 				// wps
-				String describeProcessUrl = conf.getAttribute("url");
-				log.info("Registering function for WPS: " + describeProcessUrl);
+				String describeProcessUrl = conf.getAttribute("url"); //$NON-NLS-1$
+				log.info("Registering function for WPS: " + describeProcessUrl); //$NON-NLS-1$
 				//TODO register wps function
 			}
 		}

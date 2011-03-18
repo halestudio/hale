@@ -158,7 +158,7 @@ public class TaskServiceImpl extends AbstractTaskService {
 					result.add(resolved);
 				}
 				else {
-					_log.error("Could not resolve task with type " + task.getTypeName());
+					_log.error("Could not resolve task with type " + task.getTypeName()); //$NON-NLS-1$
 				}
 			}
 		}

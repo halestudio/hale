@@ -37,7 +37,7 @@ public class ShapeSchemaProviderTest {
 		ShapeSchemaProvider ssp = new ShapeSchemaProvider();
 		Schema result = null;
 		try {
-			URI uri = ShapeSchemaProviderTest.class.getResource("DEPARTEMENT.SHP").toURI();
+			URI uri = ShapeSchemaProviderTest.class.getResource("DEPARTEMENT.SHP").toURI(); //$NON-NLS-1$
 			result = ssp.loadSchema(uri, new LogProgressIndicator());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -49,9 +49,9 @@ public class ShapeSchemaProviderTest {
 		for (SchemaElement se : result.getElements().values()) {
 			log.info(se.getDisplayName());
 			for (AttributeDefinition ad : se.getType().getAttributes()) {
-				log.info(ad.getDisplayName() + ": " 
+				log.info(ad.getDisplayName() + ": "  //$NON-NLS-1$
 						+ ad.getAttributeType().getType(null).getBinding().getSimpleName()
-						+ " (" + ad.getAttributeType().getType(null).getRestrictions() + ")");
+						+ " (" + ad.getAttributeType().getType(null).getRestrictions() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 		

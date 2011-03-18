@@ -18,6 +18,8 @@ import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * The ContentProvider for {@link ReportView#view}.
  * 
@@ -40,8 +42,8 @@ public class ReportContentProvider implements ITreeContentProvider {
 	@Override
 	public Object[] getElements(Object inputElement) {
 		Object[] ret = new Object[2];
-		ret[0] = new String("Warning ("+model.getWarnings().size()+")");
-		ret[1] = new String("Error ("+model.getErrors().size()+")");
+		ret[0] = new String(Messages.getString("ReportContentProvider.2")+model.getWarnings().size()+")"); //$NON-NLS-1$ //$NON-NLS-2$
+		ret[1] = new String(Messages.getString("ReportContentProvider.3")+model.getErrors().size()+")"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		return ret;
 	}
@@ -59,11 +61,11 @@ public class ReportContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		if (parentElement.toString().startsWith("Error")) {
+		if (parentElement.toString().startsWith("Error")) { //$NON-NLS-1$
 			// get all error messages
 			this.item = this.model.getErrors();
 			return this.item.toArray();
-		} else if (parentElement.toString().startsWith("Warning")) {
+		} else if (parentElement.toString().startsWith(Messages.getString("ReportContentProvider.0"))) { //$NON-NLS-1$
 			// get all warning messages
 			this.item = this.model.getWarnings();
 			return this.item.toArray();
@@ -85,12 +87,12 @@ public class ReportContentProvider implements ITreeContentProvider {
 	public boolean hasChildren(Object element) {
 		boolean hasChildren = false;
 		
-		if (element.toString().contains("Warning")) {
+		if (element.toString().contains(Messages.getString("ReportContentProvider.0"))) { //$NON-NLS-1$
 			if (this.model.getWarnings().size() > 0) {
 				hasChildren = true;
 			}
 		}
-		else if (element.toString().contains("Error")) {
+		else if (element.toString().contains(Messages.getString("ReportContentProvider.1"))) { //$NON-NLS-1$
 			if (this.model.getErrors().size() > 0) {
 				hasChildren = true;
 			}

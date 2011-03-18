@@ -206,8 +206,8 @@ public class StreamGeometryWriter {
 				geometry = ladder.next();
 				geomType = geometry.getClass();
 				
-				log.info("Possible structure for writing " + originalType.getSimpleName() + 
-						" not found, trying " + geomType.getSimpleName() + " instead");
+				log.info("Possible structure for writing " + originalType.getSimpleName() +  //$NON-NLS-1$
+						" not found, trying " + geomType.getSimpleName() + " instead"); //$NON-NLS-1$ //$NON-NLS-2$
 				
 				DefinitionPath candPath = restoreCandidate(property.getAttributeType(), geomType);
 				if (candPath != null) {
@@ -220,13 +220,13 @@ public class StreamGeometryWriter {
 			}
 			
 			for (DefinitionPath candidate : candidates) {
-				log.info("Geometry structure match: " + geomType.getSimpleName() + " - " + candidate);
+				log.info("Geometry structure match: " + geomType.getSimpleName() + " - " + candidate); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			
 			if (candidates.isEmpty()) {
-				log.error("No geometry structure match for " + 
-						originalType.getSimpleName() + " found, writing WKT " +
-						"representation instead");
+				log.error("No geometry structure match for " +  //$NON-NLS-1$
+						originalType.getSimpleName() + " found, writing WKT " + //$NON-NLS-1$
+						"representation instead"); //$NON-NLS-1$
 				
 				writer.writeCharacters(originalGeometry.toText());
 				return;
@@ -302,7 +302,7 @@ public class StreamGeometryWriter {
 		if (srsName != null) {
 			AttributeDefinition srsAtt = null;
 			for (AttributeDefinition att : type.getAttributes()) {
-				if (att.getName().equals("srsName") //TODO improve condition?
+				if (att.getName().equals("srsName") //TODO improve condition? //$NON-NLS-1$
 						&& (att.getNamespace() == null || 
 								att.getNamespace().equals(gmlNs) || 
 								att.getNamespace().isEmpty())) {

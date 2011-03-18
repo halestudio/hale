@@ -56,15 +56,15 @@ public class SaveTransformationResultHandler extends AbstractHandler {
 		final FeatureCollection<FeatureType, Feature> features = is.getFeatures(DatasetType.transformed);
 		
 		if (features == null || features.isEmpty()) {
-			log.userError("No transformed features are available for export.");
+			log.userError("No transformed features are available for export."); //$NON-NLS-1$
 			return null;
 		}
 		
 		// display Report Viewer
 		try {
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("eu.esdihumboldt.hale.rcp.views.reportView");
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("eu.esdihumboldt.hale.rcp.views.reportView"); //$NON-NLS-1$
 		} catch (PartInitException e) {
-			log.error("Could not open reportView", e);
+			log.error("Could not open reportView", e); //$NON-NLS-1$
 		}
 		
 		final Schema targetSchema = ss.getTargetSchema();

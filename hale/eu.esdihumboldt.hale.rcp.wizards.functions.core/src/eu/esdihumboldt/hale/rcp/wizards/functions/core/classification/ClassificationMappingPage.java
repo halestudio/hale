@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.classification;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -52,6 +53,7 @@ import eu.esdihumboldt.hale.rcp.utils.definition.AttributeInputDialog;
 import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.CoreFunctionWizardsPlugin;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 
 /**
@@ -64,9 +66,9 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 	
 	private final Map<String, Set<String>> classifications = new TreeMap<String, Set<String>>();
 	
-	private final Image addImage = CoreFunctionWizardsPlugin.getImageDescriptor("icons/add.gif").createImage();
+	private final Image addImage = CoreFunctionWizardsPlugin.getImageDescriptor("icons/add.gif").createImage(); //$NON-NLS-1$
 	
-	private final Image removeImage = CoreFunctionWizardsPlugin.getImageDescriptor("icons/remove.gif").createImage();
+	private final Image removeImage = CoreFunctionWizardsPlugin.getImageDescriptor("icons/remove.gif").createImage(); //$NON-NLS-1$
 	
 	private ComboViewer classes;
 	
@@ -113,7 +115,7 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 		// add target value
 		Button addButton = new Button(page, SWT.PUSH);
 		addButton.setImage(addImage);
-		addButton.setToolTipText("Add classification value");
+		addButton.setToolTipText(Messages.ClassificationMappingPage_2);
 		addButton.setEnabled(!fixedClassifications);
 		addButton.addSelectionListener(new SelectionAdapter() {
 
@@ -123,8 +125,8 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 				AttributeInputDialog dialog = new AttributeInputDialog(
 						(AttributeDefinition) getParent().getTargetItem().getDefinition(),
 						display.getActiveShell(),
-						"Add classification",
-						"Enter a new classification value for " + targetFt + "." + targetProperty);
+						Messages.ClassificationMappingPage_3,
+						MessageFormat.format(Messages.ClassificationMappingPage_0, targetFt, targetProperty));
 				
 				if (dialog.open() == AttributeInputDialog.OK) {
 					String newClass = dialog.getValueAsText();
@@ -140,7 +142,7 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 		final Button removeButton = new Button(page, SWT.PUSH);
 		removeButton.setImage(removeImage);
 		removeButton.setEnabled(false);
-		removeButton.setToolTipText("Remove currently selected classification");
+		removeButton.setToolTipText(Messages.ClassificationMappingPage_6);
 		removeButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -151,8 +153,8 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 				
 				if (MessageDialog.openQuestion(
 						display.getActiveShell(), 
-						"Remove classification", 
-						"Do you really want to remove the classification for '" + selectedClass + "'?")) {
+						Messages.ClassificationMappingPage_7, 
+						MessageFormat.format(Messages.ClassificationMappingPage_1,selectedClass))) {
 					removeClassification(selectedClass);
 				}
 			}
@@ -179,7 +181,7 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 		
 		final Button valueAdd = new Button(listControls, SWT.PUSH);
 		valueAdd.setImage(addImage);
-		valueAdd.setText("Add value");
+		valueAdd.setText(Messages.ClassificationMappingPage_10);
 		valueAdd.setEnabled(false);
 		valueAdd.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		valueAdd.addSelectionListener(new SelectionAdapter() {
@@ -195,10 +197,8 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 					AttributeInputDialog dialog = new AttributeInputDialog(
 							(AttributeDefinition) getParent().getSourceItem().getDefinition(),
 							display.getActiveShell(), 
-							"Add value", 
-							"Enter a new value for " + sourceFt + "." + sourceProperty +
-							" that is classified as '" + selectedClass + "' in " +
-							targetFt + "." + targetProperty);
+							Messages.ClassificationMappingPage_11, 
+							MessageFormat.format(Messages.ClassificationMappingPage_4, sourceFt, sourceProperty, selectedClass, targetFt, targetProperty));
 					
 					if (dialog.open() == AttributeInputDialog.OK) {
 						String newValue = dialog.getValueAsText();
@@ -214,8 +214,8 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 							allowedValues, 
 							ArrayContentProvider.getInstance(), 
 							new LabelProvider(), 
-							"Select a value that shall be classified as '" + selectedClass + "'");
-					dialog.setTitle("Select a value");
+							MessageFormat.format(Messages.ClassificationMappingPage_5, selectedClass));
+					dialog.setTitle(Messages.ClassificationMappingPage_19);
 					
 					if (dialog.open() == ListDialog.OK) {
 						Object[] result = dialog.getResult();
@@ -234,7 +234,7 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 		
 		final Button valueRemove = new Button(listControls, SWT.PUSH);
 		valueRemove.setImage(removeImage);
-		valueRemove.setText("Remove value");
+		valueRemove.setText(Messages.ClassificationMappingPage_20);
 		valueRemove.setEnabled(false);
 		valueRemove.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		valueRemove.addSelectionListener(new SelectionAdapter() {
@@ -247,9 +247,8 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 				
 				if (MessageDialog.openQuestion(
 						display.getActiveShell(), 
-						"Remove value", 
-						"Do you really want to remove the value '" + selectedValue +
-						"' from the classification?")) {
+						Messages.ClassificationMappingPage_21, 
+						MessageFormat.format(Messages.ClassificationMappingPage_8, selectedValue))) {
 					removeValue(selectedValue);
 				}
 			}
@@ -356,8 +355,8 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 		final String oldClass = getClassification(newValue);
 		if (oldClass == null ||
 			MessageDialog.openConfirm(display.getActiveShell(),
-					"Duplicate value", "The value was already classified as '" + oldClass +
-					"', the old classification will be replaced.")) {
+					Messages.ClassificationMappingPage_24, 
+					MessageFormat.format(Messages.ClassificationMappingPage_9, oldClass))) {
 		
 			// add value
 			Set<String> valueSet = classifications.get(selectedClass);
@@ -425,10 +424,10 @@ public class ClassificationMappingPage extends AbstractSingleCellWizardPage {
 			}
 			
 			if (notMapped.isEmpty()) {
-				setMessage("All values are classified", INFORMATION);
+				setMessage(Messages.ClassificationMappingPage_27, INFORMATION);
 			}
 			else {
-				setMessage("Values that are not classified: " + 
+				setMessage(Messages.ClassificationMappingPage_28 + 
 						Arrays.toString(notMapped.toArray()), WARNING);
 			}
 		}

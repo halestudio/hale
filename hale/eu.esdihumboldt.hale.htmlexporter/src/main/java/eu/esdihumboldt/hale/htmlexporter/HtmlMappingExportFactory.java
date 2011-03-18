@@ -76,7 +76,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 	/**
 	 * Set the PictureNames
 	 */
-	private String pictureNames = "image";
+	private String pictureNames = "image"; //$NON-NLS-1$
 	
 	/**
 	 * Contains ICells from type retype
@@ -116,13 +116,13 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		this.sourceSchema = sourceSchema;
 		this.targetSchema = targetSchema;
 		
-		String[] pathSpilt = path.split("\\\\");
-		path.replace(pathSpilt[pathSpilt.length-1] , "");
+		String[] pathSpilt = path.split("\\\\"); //$NON-NLS-1$
+		path.replace(pathSpilt[pathSpilt.length-1] , ""); //$NON-NLS-1$
 		
 		//Sort the alignment
 		this.sortAlignment();
 		
-		final String filesSubDir = FilenameUtils.removeExtension(FilenameUtils.getName(path)) + "_files";
+		final String filesSubDir = FilenameUtils.removeExtension(FilenameUtils.getName(path)) + "_files"; //$NON-NLS-1$
 		final File filesDir = new File(FilenameUtils.getFullPath(path), filesSubDir);
 		
 		//Create the images of the cells
@@ -144,10 +144,10 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		this.context = new VelocityContext();
 		
 		//Gets the path to the template file and style sheet
-		URL templatePath = this.getClass().getResource("template.html"); 
-		URL cssPath = this.getClass().getResource("style.css"); 
-		URL headlinePath = this.getClass().getResource("bg-headline.png"); 
-		URL linkPath = this.getClass().getResource("int_link.png"); 
+		URL templatePath = this.getClass().getResource("template.html");  //$NON-NLS-1$
+		URL cssPath = this.getClass().getResource("style.css");  //$NON-NLS-1$
+		URL headlinePath = this.getClass().getResource("bg-headline.png");  //$NON-NLS-1$
+		URL linkPath = this.getClass().getResource("int_link.png");  //$NON-NLS-1$
 		
 		//generates a byteArray out of the template
 		byte[] templateByteArray = null;
@@ -164,7 +164,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		//creates the temporary file
 		File tempFile = null;
 		try {
-			tempFile = File.createTempFile("template", ".vm");
+			tempFile = File.createTempFile("template", ".vm"); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -178,8 +178,8 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			e1.printStackTrace();
 		}
 		//Set temporary template path
-		String tempPath = tempFile.getPath().replace(tempFile.getName(), "");
-		Velocity.setProperty("file.resource.loader.path", tempPath);
+		String tempPath = tempFile.getPath().replace(tempFile.getName(), ""); //$NON-NLS-1$
+		Velocity.setProperty("file.resource.loader.path", tempPath); //$NON-NLS-1$
 			try {
 				//Initiate Velocity
 				Velocity.init();
@@ -245,7 +245,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			}
 			
 			//Create CSS export file
-			File cssOutputFile = new File(filesDir, "style.css");
+			File cssOutputFile = new File(filesDir, "style.css"); //$NON-NLS-1$
 			 try {
 				this.byteArrayToFile(cssOutputFile, cssByteArray);
 			} catch (FileNotFoundException e) {
@@ -268,7 +268,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			
 			//Create headline picture
 			
-			File headlineOutputFile = new File(filesDir, "bg-headline.png");
+			File headlineOutputFile = new File(filesDir, "bg-headline.png"); //$NON-NLS-1$
 			 try {
 				this.byteArrayToFile(headlineOutputFile, headlineByteArray);
 			} catch (FileNotFoundException e) {
@@ -291,7 +291,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			
 			//Create link picture
 			
-			File linkOutputFile = new File(filesDir, "int_link.png");
+			File linkOutputFile = new File(filesDir, "int_link.png"); //$NON-NLS-1$
 			 try {
 				this.byteArrayToFile(linkOutputFile, linkByteArray);
 			} catch (FileNotFoundException e) {
@@ -324,14 +324,14 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 						.getTransformation().getService()
 						.getLocation();
 			}
-			String[] tempSplit = cellName.split("\\.");
+			String[] tempSplit = cellName.split("\\."); //$NON-NLS-1$
 			String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
-			if(graphConnectionNodeName.equals("RenameFeatureFunction")){
+			if(graphConnectionNodeName.equals("RenameFeatureFunction")){ //$NON-NLS-1$
 				this.retypes.add(cell);
 			}
 			
 			//Augmentation
-			if(cell.getEntity1().getTransformation() == null || cell.getEntity1().getAbout().getAbout().equals("entity/null")){
+			if(cell.getEntity1().getTransformation() == null || cell.getEntity1().getAbout().getAbout().equals("entity/null")){ //$NON-NLS-1$
 				this.augmentations.add(cell);
 			}
 
@@ -382,31 +382,31 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 	 */
 	private void fillContext(String filesSubDir) throws MalformedURLException {
 		Date date = new Date();
-		SimpleDateFormat dfm = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+		SimpleDateFormat dfm = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss"); //$NON-NLS-1$
 
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
 		
 		//Head informations
-		this.context.put("title", "Mapping Documentation");
-		this.context.put("headline", "<h1>Mapping Documentation</h1>");
-		this.context.put("author", "Project Author : " + System.getProperty("user.name"));
-		this.context.put("project", "Project Name : " + ((ps != null && ps.getProjectName() != null)?(ps.getProjectName()):("")));
-		this.context.put("exportdate", "Export Date : "+ dfm.format(date));
-		this.context.put("haleversion", "Hale Version : " + ((ps != null)?(ps.getHaleVersion()):("unknown")));
+		this.context.put("title", "Mapping Documentation"); //$NON-NLS-1$ //$NON-NLS-2$
+		this.context.put("headline", "<h1>Mapping Documentation</h1>"); //$NON-NLS-1$ //$NON-NLS-2$
+		this.context.put("author", "Project Author : " + System.getProperty("user.name")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		this.context.put("project", "Project Name : " + ((ps != null && ps.getProjectName() != null)?(ps.getProjectName()):(""))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		this.context.put("exportdate", "Export Date : "+ dfm.format(date)); //$NON-NLS-1$ //$NON-NLS-2$
+		this.context.put("haleversion", "Hale Version : " + ((ps != null)?(ps.getHaleVersion()):("unknown"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
-		this.context.put("sourceschema", "Source Schema Information : ");
-		this.context.put("sourceformalism", "<li>Formalism : "+this.alignment.getSchema1().getFormalism().getName()
-				+"  <img src='" + filesSubDir +"/int_link.png' alt='linkpicture'><a href='"+this.alignment.getSchema1().getFormalism().getLocation().toURL()+"'>"+this.alignment.getSchema1().getFormalism().getLocation().toString()+"</a></li>");
-		this.context.put("sourcenamespace", "<li>Namespace : "+this.alignment.getSchema1().getAbout().getAbout()+"</li>");
-		this.context.put("sourcelocation", "<li>Schema Location : "+this.alignment.getSchema1().getLocation()+"</li>");
+		this.context.put("sourceschema", "Source Schema Information : "); //$NON-NLS-1$ //$NON-NLS-2$
+		this.context.put("sourceformalism", "<li>Formalism : "+this.alignment.getSchema1().getFormalism().getName() //$NON-NLS-1$ //$NON-NLS-2$
+				+"  <img src='" + filesSubDir +"/int_link.png' alt='linkpicture'><a href='"+this.alignment.getSchema1().getFormalism().getLocation().toURL()+"'>"+this.alignment.getSchema1().getFormalism().getLocation().toString()+"</a></li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		this.context.put("sourcenamespace", "<li>Namespace : "+this.alignment.getSchema1().getAbout().getAbout()+"</li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		this.context.put("sourcelocation", "<li>Schema Location : "+this.alignment.getSchema1().getLocation()+"</li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
-		this.context.put("targetschema", "Target Schema Information : ");
-		this.context.put("targetformalism", "<li>Formalism : "+this.alignment.getSchema2().getFormalism().getName()
-				+"  <img src='" + filesSubDir + "/int_link.png' alt='linkpicture'><a href='"+this.alignment.getSchema2().getFormalism().getLocation().toURL()+"'>"+this.alignment.getSchema2().getFormalism().getLocation().toString()+"</a></li>");
-		this.context.put("targetnamespace", "<li>Namespace : "+this.alignment.getSchema2().getAbout().getAbout()+"</li>");
-		this.context.put("targetlocation", "<li>Schema Location : "+this.alignment.getSchema2().getLocation()+"</li>");
+		this.context.put("targetschema", "Target Schema Information : "); //$NON-NLS-1$ //$NON-NLS-2$
+		this.context.put("targetformalism", "<li>Formalism : "+this.alignment.getSchema2().getFormalism().getName() //$NON-NLS-1$ //$NON-NLS-2$
+				+"  <img src='" + filesSubDir + "/int_link.png' alt='linkpicture'><a href='"+this.alignment.getSchema2().getFormalism().getLocation().toURL()+"'>"+this.alignment.getSchema2().getFormalism().getLocation().toString()+"</a></li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		this.context.put("targetnamespace", "<li>Namespace : "+this.alignment.getSchema2().getAbout().getAbout()+"</li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		this.context.put("targetlocation", "<li>Schema Location : "+this.alignment.getSchema2().getLocation()+"</li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
-		this.context.put("filesDir", filesSubDir);
+		this.context.put("filesDir", filesSubDir); //$NON-NLS-1$
 		
 		//Link-generator
 		Vector<String> linkListVector = new Vector<String>();
@@ -415,13 +415,13 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 		for (Iterator<ICell> iterator = this.retypes.iterator();iterator.hasNext();) {
 			ICell cell = iterator.next();
 			String[] temp = this.entityNameSplitter(cell.getEntity2());
-			linkListVector.addElement("<li><img src='" + filesSubDir + "/int_link.png' alt='linkpicture'><a href='#link"+j+"'>"+temp[0]+"</a></li>");
+			linkListVector.addElement("<li><img src='" + filesSubDir + "/int_link.png' alt='linkpicture'><a href='#link"+j+"'>"+temp[0]+"</a></li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			j++;
 		}
-		this.context.put("linklist", linkListVector);
+		this.context.put("linklist", linkListVector); //$NON-NLS-1$
 		
 		//Overview picture
-		this.context.put("overviewpicture", "<img src='" + filesSubDir + "/" +this.pictureNames+"_Overview"+".png'alt='Overview'>");
+		this.context.put("overviewpicture", "<img src='" + filesSubDir + "/" +this.pictureNames+"_Overview"+".png'alt='Overview'>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		
 		Vector<Vector<String>> cellListVector = new Vector<Vector<String>>();
 		Vector<String> cellVector;
@@ -441,16 +441,16 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			String[] retypeTargetName = this.entityNameSplitter(retypeCell.getEntity2());
 			cellVector = new Vector<String>();			
 			//Link
-			cellVector.addElement("<a name='link"+e+"'></a>");
+			cellVector.addElement("<a name='link"+e+"'></a>"); //$NON-NLS-1$ //$NON-NLS-2$
 			//Headline
-			cellVector.addElement("<h2>"+retypeTargetName[0]+"</h2>");
+			cellVector.addElement("<h2>"+retypeTargetName[0]+"</h2>"); //$NON-NLS-1$ //$NON-NLS-2$
 			//Image
-			cellVector.addElement("<img src='" + filesSubDir + "/" +this.pictureNames+"_Section_"+(e-1)+".png' alt='picture'>");
+			cellVector.addElement("<img src='" + filesSubDir + "/" +this.pictureNames+"_Section_"+(e-1)+".png' alt='picture'>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			//Header
-			cellVector.addElement("<h3>Retypes</h3>");
-			cellVector.addElement("<h4>"+retypeSourceName[0]+" to "+retypeTargetName[0]+"</h4>");
-			cellVector.addElement("Entity 1 : "+retypeSourceName[0]);
-			cellVector.addElement("Entity 2 : "+retypeTargetName[0]);
+			cellVector.addElement("<h3>Retypes</h3>"); //$NON-NLS-1$
+			cellVector.addElement("<h4>"+retypeSourceName[0]+" to "+retypeTargetName[0]+"</h4>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			cellVector.addElement("Entity 1 : "+retypeSourceName[0]); //$NON-NLS-1$
+			cellVector.addElement("Entity 2 : "+retypeTargetName[0]); //$NON-NLS-1$
 			
 			//Filters
 			this.getFilters(cellVector, retypeCell);
@@ -469,9 +469,9 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			for(ICell transformationCell : this.transformations){
 				if(transformationCell.getEntity2().getAbout().getAbout().contains(retypeTargetName[0])){
 					String[] entity1Name = this.entityNameSplitter(transformationCell.getEntity1());
-					entity1Name[entity1Name.length-1] = entity1Name[entity1Name.length-1].replace(";", " --> ");
+					entity1Name[entity1Name.length-1] = entity1Name[entity1Name.length-1].replace(";", " --> "); //$NON-NLS-1$ //$NON-NLS-2$
 					String[] entity2Name = this.entityNameSplitter(transformationCell.getEntity2());
-					entity2Name[entity2Name.length-1] = entity2Name[entity2Name.length-1].replace(";", " --> ");
+					entity2Name[entity2Name.length-1] = entity2Name[entity2Name.length-1].replace(";", " --> "); //$NON-NLS-1$ //$NON-NLS-2$
 					
 					String functioncellName;
 					if (transformationCell.getEntity1().getTransformation() == null) {
@@ -483,39 +483,39 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 								.getTransformation().getService()
 								.getLocation();
 					}
-					String[] tempSplit = functioncellName.split("\\.");
+					String[] tempSplit = functioncellName.split("\\."); //$NON-NLS-1$
 					String functionName = tempSplit[tempSplit.length - 1];
 					
 					//Header
 					if(transformationHeader){
 						Vector<String> transformationcellVector = new Vector<String>();
-						transformationcellVector.addElement("<h3>Transformations</h3>");
+						transformationcellVector.addElement("<h3>Transformations</h3>"); //$NON-NLS-1$
 						cellListVector.addElement(transformationcellVector);	
 						transformationHeader = false;
 					}
-					cellVector.addElement("<h4>Cell "+i+" : </h4>");
-					cellVector.addElement("Function : "+functionName);
+					cellVector.addElement("<h4>Cell "+i+" : </h4>"); //$NON-NLS-1$ //$NON-NLS-2$
+					cellVector.addElement("Function : "+functionName); //$NON-NLS-1$
 					
 					//entity1
 					if (transformationCell.getEntity1() instanceof ComposedProperty) {
-						cellVector.addElement("Entity 1 : ComposedProperty");
+						cellVector.addElement("Entity 1 : ComposedProperty"); //$NON-NLS-1$
 						for(int z=0; z < entity1Name.length; z++){
-							cellVector.addElement("<ul><li>Entity 1."+z+" : "+retypeSourceName[0]+" / "+entity1Name[z]+"</li></ul>");
+							cellVector.addElement("<ul><li>Entity 1."+z+" : "+retypeSourceName[0]+" / "+entity1Name[z]+"</li></ul>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 						}
 					}
 					else{
-						cellVector.addElement("Entity 1 : "+retypeSourceName[0]+" / "+entity1Name[0]);
+						cellVector.addElement("Entity 1 : "+retypeSourceName[0]+" / "+entity1Name[0]); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 					
 					//entity2
 					if (transformationCell.getEntity2() instanceof ComposedProperty) {
-						cellVector.addElement("Entity 2 : ComposedProperty");
+						cellVector.addElement("Entity 2 : ComposedProperty"); //$NON-NLS-1$
 						for(int z=0; z < entity2Name.length; z++){
-							cellVector.addElement("<ul><li>Entity 2."+z+" : "+retypeTargetName[0]+" / "+entity2Name[z]+"</li></ul>");
+							cellVector.addElement("<ul><li>Entity 2."+z+" : "+retypeTargetName[0]+" / "+entity2Name[z]+"</li></ul>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 						}
 					}
 					else{
-						cellVector.addElement("Entity 2 : "+retypeTargetName[0]+" / "+entity2Name[0]);
+						cellVector.addElement("Entity 2 : "+retypeTargetName[0]+" / "+entity2Name[0]); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 					
 					//Image
@@ -528,7 +528,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 					this.getParameters(cellVector, transformationCell);
 					
 					//Spaceholder
-					cellVector.addElement("&emsp;");
+					cellVector.addElement("&emsp;"); //$NON-NLS-1$
 					
 					i++;
 				}
@@ -539,14 +539,14 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			 * AUGMENTATIONS
 			 * Is looking for all appropriate Augmentations
 			 */
-			String superTypeName="";
+			String superTypeName=""; //$NON-NLS-1$
 			for (Iterator<SchemaElement> iterator = this.targetSchema.iterator();iterator.hasNext();) {
 				SchemaElement schemaElement = iterator.next();
 				if(schemaElement.getIdentifier().contains(retypeTargetName[0])){
 					String temp = new String();
-					String[] split = schemaElement.getType().getSuperType().getIdentifier().split("/");
+					String[] split = schemaElement.getType().getSuperType().getIdentifier().split("/"); //$NON-NLS-1$
 					temp = split[split.length-1];
-					temp = temp.replace("Type", "");
+					temp = temp.replace("Type", ""); //$NON-NLS-1$ //$NON-NLS-2$
 					superTypeName = temp;
 					break;
 				}
@@ -556,9 +556,9 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			for(ICell augmentationCell : this.augmentations){
 				if(augmentationCell.getEntity2().getAbout().getAbout().contains(superTypeName)){
 					String[] entity1Name = this.entityNameSplitter(augmentationCell.getEntity1());
-					entity1Name[entity1Name.length-1] = entity1Name[entity1Name.length-1].replace(";", " --> ");
+					entity1Name[entity1Name.length-1] = entity1Name[entity1Name.length-1].replace(";", " --> "); //$NON-NLS-1$ //$NON-NLS-2$
 					String[] entity2Name = this.entityNameSplitter(augmentationCell.getEntity2());
-					entity2Name[entity2Name.length-1] = entity2Name[entity2Name.length-1].replace(";", " --> ");
+					entity2Name[entity2Name.length-1] = entity2Name[entity2Name.length-1].replace(";", " --> "); //$NON-NLS-1$ //$NON-NLS-2$
 					
 					String functioncellName;
 					if (augmentationCell.getEntity1().getTransformation() == null) {
@@ -570,29 +570,29 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 								.getTransformation().getService()
 								.getLocation();
 					}
-					String[] tempSplit = functioncellName.split("\\.");
+					String[] tempSplit = functioncellName.split("\\."); //$NON-NLS-1$
 					String functionName = tempSplit[tempSplit.length - 1];
 					
 					//Header
 					if(augmentationHeader){
 						Vector<String> augmentationcellVector = new Vector<String>();
-						augmentationcellVector.addElement("<h3>Augmentations</h3>");
+						augmentationcellVector.addElement("<h3>Augmentations</h3>"); //$NON-NLS-1$
 						cellListVector.addElement(augmentationcellVector);	
 						augmentationHeader=false;
 					}
 					
-					cellVector.addElement("<h4>Cell "+i+" : </h4>");
-					cellVector.addElement("Function : "+functionName);
+					cellVector.addElement("<h4>Cell "+i+" : </h4>"); //$NON-NLS-1$ //$NON-NLS-2$
+					cellVector.addElement("Function : "+functionName); //$NON-NLS-1$
 					
 					//entity2
 					if (augmentationCell.getEntity2() instanceof ComposedProperty) {
-						cellVector.addElement("Entity 2 : ComposedProperty");
+						cellVector.addElement("Entity 2 : ComposedProperty"); //$NON-NLS-1$
 						for(int z=0; z < entity2Name.length; z++){
-							cellVector.addElement("<ul><li>Entity 2."+z+" : "+superTypeName+" / "+retypeTargetName[0]+" / "+entity2Name[z]+"</li></ul>");
+							cellVector.addElement("<ul><li>Entity 2."+z+" : "+superTypeName+" / "+retypeTargetName[0]+" / "+entity2Name[z]+"</li></ul>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 						}
 					}
 					else{
-						cellVector.addElement("Entity 2 : "+superTypeName+" / "+retypeTargetName[0]+" / "+entity2Name[0]);
+						cellVector.addElement("Entity 2 : "+superTypeName+" / "+retypeTargetName[0]+" / "+entity2Name[0]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					}
 					
 					//Image
@@ -605,7 +605,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 					this.getParameters(cellVector, augmentationCell);
 					
 					//Spaceholder
-					cellVector.addElement("&emsp;");
+					cellVector.addElement("&emsp;"); //$NON-NLS-1$
 					
 					i++;
 				}
@@ -614,7 +614,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			cellListVector.addElement(cellVector);	
 			e++;
 		}
-		this.context.put("cellList", cellListVector);
+		this.context.put("cellList", cellListVector); //$NON-NLS-1$
 	}
 	
 	/**
@@ -628,10 +628,10 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			if (((ComposedProperty) cell.getEntity1())
 					.getValueCondition() != null) {
 				// Filter strings are added to the Vector
-				cellVector.addElement("Filter Rules: ");
+				cellVector.addElement("Filter Rules: "); //$NON-NLS-1$
 				for (Restriction restriction : ((ComposedProperty) cell
 						.getEntity1()).getValueCondition()) {
-					cellVector.addElement("&emsp;&emsp;"+restriction.getCqlStr());
+					cellVector.addElement("&emsp;&emsp;"+restriction.getCqlStr()); //$NON-NLS-1$
 				}
 			}
 		}
@@ -639,10 +639,10 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			if (((Property) cell.getEntity1())
 					.getValueCondition() != null) {
 				// Filter strings are added to the Vector
-				cellVector.addElement("Filter Rules: ");
+				cellVector.addElement("Filter Rules: "); //$NON-NLS-1$
 				for (Restriction restriction : ((Property) cell
 						.getEntity1()).getValueCondition()) {
-					cellVector.addElement("&emsp;&emsp;"+restriction.getCqlStr());
+					cellVector.addElement("&emsp;&emsp;"+restriction.getCqlStr()); //$NON-NLS-1$
 				}
 			}
 		}
@@ -650,11 +650,11 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			if (((ComposedFeatureClass) cell.getEntity1())
 					.getAttributeValueCondition() != null) {
 				// Filter strings are added to the Vector
-				cellVector.addElement("Filter Rules: ");
+				cellVector.addElement("Filter Rules: "); //$NON-NLS-1$
 				for (Restriction restriction : ((ComposedFeatureClass) 
 						cell
 						.getEntity1()).getAttributeValueCondition()) {
-					cellVector.addElement("&emsp;&emsp;"+restriction.getCqlStr());
+					cellVector.addElement("&emsp;&emsp;"+restriction.getCqlStr()); //$NON-NLS-1$
 				}
 			}
 		}
@@ -662,11 +662,11 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			if (((FeatureClass) cell.getEntity1())
 					.getAttributeValueCondition() != null) {
 				// Filter strings are added to the Vector
-				cellVector.addElement("Filter Rules: ");
+				cellVector.addElement("Filter Rules: "); //$NON-NLS-1$
 				for (Restriction restriction : ((FeatureClass) 
 						cell
 						.getEntity1()).getAttributeValueCondition()) {
-					cellVector.addElement("&emsp;&emsp;"+restriction.getCqlStr());
+					cellVector.addElement("&emsp;&emsp;"+restriction.getCqlStr()); //$NON-NLS-1$
 				}
 			}
 		}
@@ -687,9 +687,9 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			parameterList = cell.getEntity2().getTransformation().getParameters();
 		}
 		if (!parameterList.isEmpty()) {
-			cellVector.addElement("Parameters: ");
+			cellVector.addElement("Parameters: "); //$NON-NLS-1$
 			for (IParameter parameter : parameterList) {
-				cellVector.addElement("&emsp;&emsp;"+parameter.getName() + " : "+ parameter.getValue());
+				cellVector.addElement("&emsp;&emsp;"+parameter.getName() + " : "+ parameter.getValue()); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 	}
@@ -701,7 +701,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 	private String[] entityNameSplitter(IEntity entity){
 		String[] entityNames = new String[1];
 		if(!(entity instanceof ComposedProperty)){
-			String[] entitySplit = entity.getAbout().getAbout().split("/");
+			String[] entitySplit = entity.getAbout().getAbout().split("/"); //$NON-NLS-1$
 			entityNames[0] = entitySplit[entitySplit.length-1];
 			return entityNames;
 		}
@@ -709,7 +709,7 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 			entityNames = new String[((ComposedProperty)entity).getCollection().size()];
 			int i=0;
 			for(IEntity tempEntity : ((ComposedProperty)entity).getCollection()){
-				String[] entitySplit = tempEntity.getAbout().getAbout().split("/");
+				String[] entitySplit = tempEntity.getAbout().getAbout().split("/"); //$NON-NLS-1$
 				entityNames[i] = entitySplit[entitySplit.length-1];
 				i++;
 			}

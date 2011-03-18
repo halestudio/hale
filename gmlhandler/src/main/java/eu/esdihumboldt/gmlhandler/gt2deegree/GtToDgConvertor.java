@@ -283,7 +283,7 @@ public class GtToDgConvertor {
 		else if (value instanceof Collection<?>) {
 			Collection<Property> propertyCollection = ((Collection<Property>) value);
 			
-			if (propertyCollection.size() > 1) throw new UnsupportedOperationException("Multiple feature in property not really supported");
+			if (propertyCollection.size() > 1) throw new UnsupportedOperationException("Multiple feature in property not really supported"); //$NON-NLS-1$
 			
 			for (Property feature : propertyCollection) {
 				
@@ -295,7 +295,7 @@ public class GtToDgConvertor {
 						dgProps.add(dgProp);
 					}
 					else {
-						log.error("Attribute " + p.getName().getLocalPart() + " not found in type " + attribute.getAttributeType());
+						log.error("Attribute " + p.getName().getLocalPart() + " not found in type " + attribute.getAttributeType()); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 			}

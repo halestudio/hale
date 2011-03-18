@@ -26,6 +26,7 @@ import eu.esdihumboldt.cst.AbstractCstFunction;
 import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.cst.transformer.Messages;
 import eu.esdihumboldt.cst.transformer.service.impl.TargetSchemaProvider;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.Property;
@@ -44,16 +45,16 @@ public class RenameFeatureFunction
 	/**
 	 * Parameter name for instance merge condition
 	 */
-	public static final String PARAMETER_INSTANCE_MERGE_CONDITION = "InstanceMergeCondition";
+	public static final String PARAMETER_INSTANCE_MERGE_CONDITION = "InstanceMergeCondition"; //$NON-NLS-1$
 
 	/**
 	 * Parameter name for instance split condition
 	 */
-	public static final String PARAMETER_INSTANCE_SPLIT_CONDITION = "InstanceSplitCondition";
+	public static final String PARAMETER_INSTANCE_SPLIT_CONDITION = "InstanceSplitCondition"; //$NON-NLS-1$
 	
-	public static final String ONATTRIBUTE = "SelectedAttribute";
+	public static final String ONATTRIBUTE = "SelectedAttribute"; //$NON-NLS-1$
 	
-	public static final String TARGETATTRIBUTE = "TargetAttribute";
+	public static final String TARGETATTRIBUTE = "TargetAttribute"; //$NON-NLS-1$
 	
 	enum Mode { normal, split, merge, join }
 
@@ -101,7 +102,7 @@ public class RenameFeatureFunction
 	private SimpleFeatureType getTargetType(String sourceType) {
 		if (sourceType == null) {
 			throw new NullPointerException(
-					"The passed SourceType may not be null.");
+					"The passed SourceType may not be null."); //$NON-NLS-1$
 		}
 		SimpleFeatureType tft = (SimpleFeatureType)
 						TargetSchemaProvider.getInstance().getType(sourceType);
@@ -142,8 +143,8 @@ public class RenameFeatureFunction
 		}
 		
 		if (this.splitter != null && this.merger != null) {
-			throw new RuntimeException("Only a Merge OR a Split condition " +
-					"may be used, not both.");
+			throw new RuntimeException("Only a Merge OR a Split condition " + //$NON-NLS-1$
+					"may be used, not both."); //$NON-NLS-1$
 		}
 		
 		return true;
@@ -154,8 +155,8 @@ public class RenameFeatureFunction
 	 */
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();
-		Property entity1 = new Property(new About(""));
-		Property entity2 = new Property(new About(""));
+		Property entity1 = new Property(new About("")); //$NON-NLS-1$
+		Property entity2 = new Property(new About("")); //$NON-NLS-1$
 	
 		parameterCell.setEntity1(entity1);
 		parameterCell.setEntity2(entity2);
@@ -196,7 +197,7 @@ public class RenameFeatureFunction
 
 	@Override
 	public String getDescription() {
-		return "CstFunction for feature renaming, i.e. the creation of new Features in the target schema. Also copies the default geometry if possible.";
+		return Messages.RenameFeatureFunction_9;
 	}
 	
 	

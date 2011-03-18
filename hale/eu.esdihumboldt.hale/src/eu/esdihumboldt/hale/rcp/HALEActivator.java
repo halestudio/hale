@@ -26,7 +26,7 @@ public class HALEActivator extends AbstractUIPlugin {
 	/**
 	 * The plug-in ID
 	 */
-	public static final String PLUGIN_ID = "eu.esdihumboldt.hale";
+	public static final String PLUGIN_ID = "eu.esdihumboldt.hale"; //$NON-NLS-1$
 
 	// The shared instance
 	private static HALEActivator plugin;

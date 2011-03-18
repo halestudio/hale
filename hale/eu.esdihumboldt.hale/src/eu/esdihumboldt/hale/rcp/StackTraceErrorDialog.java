@@ -40,6 +40,8 @@ import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.statushandlers.StatusManager;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * Extended ErrorDialog which displays the stack trace. Can be configured to
  * also show a link to the error log view.
@@ -52,7 +54,7 @@ public class StackTraceErrorDialog extends ErrorDialog {
 	/**
 	 * ID of the Error Log view
 	 */
-	protected static final String LOG_VIEW_ID = "org.eclipse.pde.runtime.LogView";
+	protected static final String LOG_VIEW_ID = "org.eclipse.pde.runtime.LogView"; //$NON-NLS-1$
 
 	/**
 	 * The status that should be shown
@@ -121,9 +123,9 @@ public class StackTraceErrorDialog extends ErrorDialog {
 		String stackTrace = stackTraceToString(_status.getException());
 		if (stackTrace != null) {
 			//add stack trace to list
-			stackTrace = stackTrace.replaceAll("\r", "");
-			stackTrace = stackTrace.replaceAll("\t", "    ");
-			String[] lines = stackTrace.split("\n");
+			stackTrace = stackTrace.replaceAll("\r", ""); //$NON-NLS-1$ //$NON-NLS-2$
+			stackTrace = stackTrace.replaceAll("\t", "    "); //$NON-NLS-1$ //$NON-NLS-2$
+			String[] lines = stackTrace.split("\n"); //$NON-NLS-1$
 			for (String l : lines) {
 				_list.add(l);
 			}
@@ -178,8 +180,8 @@ public class StackTraceErrorDialog extends ErrorDialog {
 				}
 			}
 		});
-		link.setText(WorkbenchMessages.ErrorLogUtil_ShowErrorLogHyperlink);
-		link.setToolTipText(WorkbenchMessages.ErrorLogUtil_ShowErrorLogTooltip);
+		link.setText(Messages.getString("StackTraceErrorDialog.0")); //$NON-NLS-1$
+		link.setToolTipText(Messages.getString("StackTraceErrorDialog.1")); //$NON-NLS-1$
 		Dialog.applyDialogFont(link);
 		return link;
 	}

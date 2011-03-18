@@ -23,7 +23,7 @@ public class HaleSplashHandler
 	
 	@Override
 	public void init(Shell splash) {
-		splash.setBackgroundImage(new Image(null, Application.getBasePath() + "icons/splash.png"));
+		splash.setBackgroundImage(new Image(null, Application.getBasePath() + "icons/splash.png")); //$NON-NLS-1$
 	}
 
 }

@@ -16,6 +16,7 @@ import org.apache.ws.commons.schema.resolver.CollectionURIResolver;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.xml.sax.InputSource;
 
+import eu.esdihumboldt.hale.schemaprovider.Messages;
 import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 
 /**
@@ -75,7 +76,7 @@ public class ProgressURIResolver implements CollectionURIResolver {
 		InputSource is = decoratee.resolveEntity(targetNamespace, schemaLocation, baseUri);
 		
 		String url = is.getSystemId();
-		progress.setCurrentTask("Loading schema from " + ((url == null)?(schemaLocation):(url)));
+		progress.setCurrentTask(Messages.getString("ProgressURIResolver.0") + ((url == null)?(schemaLocation):(url))); //$NON-NLS-1$
 		
 		return is;
 	}

@@ -78,12 +78,12 @@ public abstract class AbstractTypesPage<T extends WfsConfiguration> extends Abst
 								
 							});
 						} catch (IOException e) {
-							setErrorMessage("Error getting feature types: " + e.getLocalizedMessage());
+							setErrorMessage("Error getting feature types: " + e.getLocalizedMessage()); //$NON-NLS-1$
 						}
 					}
 				});
 			} catch (Throwable e) {
-				setErrorMessage("Error retrieving feature types: " + e.getLocalizedMessage());
+				setErrorMessage("Error retrieving feature types: " + e.getLocalizedMessage()); //$NON-NLS-1$
 			}
 		}
 	}

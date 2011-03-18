@@ -22,6 +22,7 @@ import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
 /**
  * This {@link Wizard} is used to invoke a Renaming CstFunction for the Source
@@ -72,9 +73,9 @@ public class SimpleFilterWizard extends AbstractSingleComposedCellWizard {
 			}
 		}
 		
-		this.mainPage = new SimpleFilterWizardMainPage("Configure Filter Expression",
-			"Configure Filter Expression", initialCQL);
-		super.setWindowTitle("Configure Function");
+		this.mainPage = new SimpleFilterWizardMainPage(Messages.SimpleFilterWizard_0,
+			Messages.SimpleFilterWizard_1, initialCQL);
+		super.setWindowTitle(Messages.SimpleFilterWizard_2);
 		super.setNeedsProgressMonitor(true);
 	}
 

@@ -25,13 +25,13 @@ import eu.esdihumboldt.goml.rdf.Resource;
 public class DateExtractionTest {
 	
 	
-	private final String sourceLocalname = "FT1";
-	private final String sourceLocalnamePropertyADate = "PropertyADate";
-	private final String sourceNamespace = "http://esdi-humboldt.eu";
+	private final String sourceLocalname = "FT1"; //$NON-NLS-1$
+	private final String sourceLocalnamePropertyADate = "PropertyADate"; //$NON-NLS-1$
+	private final String sourceNamespace = "http://esdi-humboldt.eu"; //$NON-NLS-1$
 	
-	private final String targetLocalname = "FT2";
-	private final String targetLocalnamePropertyBDate = "PropertyBdate";
-	private final String targetNamespace = "http://xsdi.org";
+	private final String targetLocalname = "FT2"; //$NON-NLS-1$
+	private final String targetLocalnamePropertyBDate = "PropertyBdate"; //$NON-NLS-1$
+	private final String targetNamespace = "http://xsdi.org"; //$NON-NLS-1$
 
 	
 	@Before
@@ -45,8 +45,8 @@ public class DateExtractionTest {
 		Cell cell = new Cell();
 		Transformation t = new Transformation();
 		t.setService(new Resource(DateExtractionFunction.class.toString()));
-		t.getParameters().add(new Parameter("dateFormatSource", "dd.MM.yyyy HH:mm"));
-		t.getParameters().add(new Parameter("dateFormatTarget", "MM-dd-yy h:mm a"));
+		t.getParameters().add(new Parameter("dateFormatSource", "dd.MM.yyyy HH:mm")); //$NON-NLS-1$ //$NON-NLS-2$
+		t.getParameters().add(new Parameter("dateFormatTarget", "MM-dd-yy h:mm a")); //$NON-NLS-1$ //$NON-NLS-2$
 		Property p1 = new Property(new About(this.sourceNamespace,
 				this.sourceLocalname, this.sourceLocalnamePropertyADate));
 		p1.setTransformation(t);
@@ -68,9 +68,9 @@ public class DateExtractionTest {
 				this.targetLocalname, 
 				propsTarget);
 		Feature source = SimpleFeatureBuilder.build(
-				sourcetype, new Object[]{"15.07.1982 16:30"}, "1");
+				sourcetype, new Object[]{"15.07.1982 16:30"}, "1"); //$NON-NLS-1$ //$NON-NLS-2$
 		Feature target = SimpleFeatureBuilder.build(
-				targettype, new Object[]{"DateHere"}, "2");
+				targettype, new Object[]{"DateHere"}, "2"); //$NON-NLS-1$ //$NON-NLS-2$
 	
 		
 		// perform actual test
@@ -80,7 +80,7 @@ public class DateExtractionTest {
 		Feature neu = def.transform(source, target);
 		
 		assertTrue(neu.getProperty(
-				this.targetLocalnamePropertyBDate).getValue().toString().equals("07-15-82 4:30 PM"));
+				this.targetLocalnamePropertyBDate).getValue().toString().equals("07-15-82 4:30 PM")); //$NON-NLS-1$
 
 	}
 	
@@ -92,8 +92,8 @@ public class DateExtractionTest {
 		Cell cell = new Cell();
 		Transformation t = new Transformation();
 		t.setService(new Resource(DateExtractionFunction.class.toString()));
-		t.getParameters().add(new Parameter("dateFormatSource", "dd.MM.yyyy HH:mm"));
-		t.getParameters().add(new Parameter("dateFormatTarget", "MM-dd-yy h:mm a"));
+		t.getParameters().add(new Parameter("dateFormatSource", "dd.MM.yyyy HH:mm")); //$NON-NLS-1$ //$NON-NLS-2$
+		t.getParameters().add(new Parameter("dateFormatTarget", "MM-dd-yy h:mm a")); //$NON-NLS-1$ //$NON-NLS-2$
 		Property p1 = new Property(new About(this.sourceNamespace,
 				this.sourceLocalname, this.sourceLocalnamePropertyADate));
 		p1.setTransformation(t);
@@ -124,9 +124,9 @@ public class DateExtractionTest {
 //		SimpleFeatureType targettype = ftbuilder.buildFeatureType();
 		
 		Feature source = SimpleFeatureBuilder.build(
-				sourcetype, new Object[]{"15.07.1982 16:30"}, "1");
+				sourcetype, new Object[]{"15.07.1982 16:30"}, "1"); //$NON-NLS-1$ //$NON-NLS-2$
 		Feature target = SimpleFeatureBuilder.build(
-				targettype, new Object[]{new Timestamp(0)}, "2");
+				targettype, new Object[]{new Timestamp(0)}, "2"); //$NON-NLS-1$
 		
 		// perform actual test
 
@@ -135,7 +135,7 @@ public class DateExtractionTest {
 		Feature neu = def.transform(source, target);
 	
 		assertTrue(neu.getProperty(
-				this.targetLocalnamePropertyBDate).getValue().toString().equals("07-15-82 4:30 PM"));
+				this.targetLocalnamePropertyBDate).getValue().toString().equals("07-15-82 4:30 PM")); //$NON-NLS-1$
 
 	}
 	

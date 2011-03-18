@@ -23,6 +23,7 @@ import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
 /**
  * Main page of the {@link RenameAttributeWizard}
@@ -73,7 +74,7 @@ public class RenameAttributeWizardMainPage extends AbstractSingleCellWizardPage 
 		// source area
 		Label sourceLabel = new Label(page, SWT.NONE);
 		sourceLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		sourceLabel.setText("Source attribute: ");
+		sourceLabel.setText(Messages.RenameAttributeWizardMainPage_0);
 		
 		DefinitionLabelFactory labelFactory = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(DefinitionLabelFactory.class);
 		
@@ -86,7 +87,7 @@ public class RenameAttributeWizardMainPage extends AbstractSingleCellWizardPage 
 		// target area
 		Label targetLabel = new Label(page, SWT.NONE);
 		targetLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		targetLabel.setText("Target attribute: ");
+		targetLabel.setText(Messages.RenameAttributeWizardMainPage_1);
 		
 		Control targetName = labelFactory.createLabel(page, getParent().getTargetItem().getDefinition(), false);
 		//Text targetName = new Text(page, SWT.BORDER);

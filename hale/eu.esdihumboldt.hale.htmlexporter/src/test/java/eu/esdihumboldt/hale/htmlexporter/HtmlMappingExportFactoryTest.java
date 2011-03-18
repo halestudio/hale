@@ -36,7 +36,7 @@ public class HtmlMappingExportFactoryTest {
 	public void test() {
 		
 		HtmlMappingExportFactory htmlMappingExportFactory = new HtmlMappingExportFactory();
-		String testFile = this.getClass().getResource("TEST3.goml").toString();
+		String testFile = this.getClass().getResource("TEST3.goml").toString(); //$NON-NLS-1$
 		OmlRdfReader reader = new OmlRdfReader();
 		
 		SchemaProvider sp = new ApacheSchemaProvider();
@@ -44,9 +44,9 @@ public class HtmlMappingExportFactoryTest {
 		Schema target = null;
 		try {
 			source = sp.loadSchema(new URI(
-					this.getClass().getResource("wfs_va.xsd").toString()), null);
+					this.getClass().getResource("wfs_va.xsd").toString()), null); //$NON-NLS-1$
 			target = sp.loadSchema(new URI(
-					this.getClass().getResource("XSD/HydroPhysicalWaters.xsd").toString()), null);
+					this.getClass().getResource("XSD/HydroPhysicalWaters.xsd").toString()), null); //$NON-NLS-1$
 		} catch (Exception e1) {
 			throw new RuntimeException(e1);
 		} 
@@ -55,7 +55,7 @@ public class HtmlMappingExportFactoryTest {
 			Alignment alignment = reader.read(testFile);
 			try {
 				htmlMappingExportFactory.export(alignment, 
-						"C:\\test.html", 
+						"C:\\test.html",  //$NON-NLS-1$
 						source.getElements().values(), 
 						target.getElements().values());
 			} catch (MappingExportException e) {

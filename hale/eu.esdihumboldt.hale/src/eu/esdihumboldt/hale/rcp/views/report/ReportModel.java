@@ -20,6 +20,7 @@ import org.xml.sax.SAXParseException;
 
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.transformer.CellUtils;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.gmlvalidate.Report;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
 
@@ -38,7 +39,7 @@ public class ReportModel {
 	@SuppressWarnings("rawtypes")
 	private List error = new ArrayList();
 	
-	private String identifier = "";
+	private String identifier = ""; //$NON-NLS-1$
 	
 	/**
 	 * Constructor.
@@ -49,7 +50,7 @@ public class ReportModel {
 		this.setSAXParseExceptionError(report.getErrors());
 		this.setSAXParseExceptionWarning(report.getWarnings());
 		
-		this.identifier = "GML Export";
+		this.identifier = Messages.getString("ReportModel.1"); //$NON-NLS-1$
 	}
 	
 	/**
@@ -60,14 +61,14 @@ public class ReportModel {
 	@SuppressWarnings("unchecked")
 	public ReportModel(MappingExportReport report) {
 		for (Entry<ICell, String> entry : report.getFailed().entrySet()) {
-			this.error.add(entry.getValue()+" "+CellUtils.asString(entry.getKey()));
+			this.error.add(entry.getValue()+" "+CellUtils.asString(entry.getKey())); //$NON-NLS-1$
 		}
 		
 		for (Entry<ICell, String> entry : report.getWarnings().entrySet()) {
-			this.warning.add(entry.getValue()+" "+CellUtils.asString(entry.getKey()));
+			this.warning.add(entry.getValue()+" "+CellUtils.asString(entry.getKey())); //$NON-NLS-1$
 		}
 		
-		this.identifier = "Mapping Export";
+		this.identifier = Messages.getString("ReportModel.4"); //$NON-NLS-1$
 	}
 	
 	/**
@@ -157,7 +158,7 @@ public class ReportModel {
 		List<TransformationResultItem> items = new ArrayList<TransformationResultItem>();
 		
 		for (String str : list) {
-			items.add(new TransformationResultItem(str, ""));
+			items.add(new TransformationResultItem(str, "")); //$NON-NLS-1$
 		}
 		
 		return items;

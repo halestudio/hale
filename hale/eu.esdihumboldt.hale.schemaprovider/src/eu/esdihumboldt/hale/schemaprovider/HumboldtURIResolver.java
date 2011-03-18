@@ -66,7 +66,7 @@ public class HumboldtURIResolver
 
 		if (baseUri != null) {
 			try {
-				if (baseUri.startsWith("file:/")) {
+				if (baseUri.startsWith("file:/")) { //$NON-NLS-1$
 					baseUri = new URI(baseUri).getPath();
 				}
 
@@ -99,7 +99,7 @@ public class HumboldtURIResolver
      * @return if the URI is absolute
      */
     protected boolean isAbsolute(String uri) {
-        return uri.startsWith("http://");
+        return uri.startsWith("http://"); //$NON-NLS-1$
     }
 
 //    /**

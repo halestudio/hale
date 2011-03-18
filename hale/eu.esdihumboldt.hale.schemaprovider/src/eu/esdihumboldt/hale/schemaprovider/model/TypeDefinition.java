@@ -179,7 +179,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	public boolean isFeatureType() {
 		AttributeType type = getType(null);
 		
-		if (name.getLocalPart().equalsIgnoreCase("AbstractFeatureType")) {
+		if (name.getLocalPart().equalsIgnoreCase("AbstractFeatureType")) { //$NON-NLS-1$
 			return true;
 		}
 		else if (type != null && !(type instanceof FeatureType)) {
@@ -330,7 +330,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 			for (AttributeDefinition attribute : typeDef.getDeclaredAttributes()) {
 				TypeDefinition attrType = attribute.getAttributeType();
 				if (this.equals(attrType)) {
-					log.warn("Self referencing type: " + getName());
+					log.warn("Self referencing type: " + getName()); //$NON-NLS-1$
 				}
 				else {
 					AttributeDescriptor desc = attribute.createAttributeDescriptor(new HashSet<TypeDefinition>(resolving));
@@ -402,10 +402,10 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 						// name check
 						
 						// prefer properties name geometry - XXX are there any default names for default geometries?
-						if (name1.equals("geometry")) {
+						if (name1.equals("geometry")) { //$NON-NLS-1$
 							result = -1;
 						}
-						else if (name2.equals("geometry")) {
+						else if (name2.equals("geometry")) { //$NON-NLS-1$
 							result = 1;
 						}
 					}
@@ -609,7 +609,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	 * @see Definition#getIdentifier()
 	 */
 	public String getIdentifier() {
-		return name.getNamespaceURI() + "/" + name.getLocalPart();
+		return name.getNamespaceURI() + "/" + name.getLocalPart(); //$NON-NLS-1$
 	}
 	
 	/**
@@ -640,7 +640,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	 */
 	@Override
 	public String toString() {
-		return "[type] " + getIdentifier();
+		return "[type] " + getIdentifier(); //$NON-NLS-1$
 	}
 
 	/**

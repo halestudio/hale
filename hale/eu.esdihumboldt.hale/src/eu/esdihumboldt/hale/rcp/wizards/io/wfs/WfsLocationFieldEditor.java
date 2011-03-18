@@ -160,7 +160,7 @@ public class WfsLocationFieldEditor extends FieldEditor {
 	@Override
 	protected void doLoad() {
 		String value = getPreferenceStore().getString(getPreferenceName());
-		combo.setText((value == null)?(""):(value));
+		combo.setText((value == null)?(""):(value)); //$NON-NLS-1$
 	}
 
 	/**
@@ -169,7 +169,7 @@ public class WfsLocationFieldEditor extends FieldEditor {
 	@Override
 	protected void doLoadDefault() {
 		String value = getPreferenceStore().getDefaultString(getPreferenceName());
-		combo.setText((value == null)?(""):(value));
+		combo.setText((value == null)?(""):(value)); //$NON-NLS-1$
 	}
 
 	/**
@@ -203,7 +203,7 @@ public class WfsLocationFieldEditor extends FieldEditor {
 	 * @param value the value to set
 	 */
 	public void setValue(String value) {
-		combo.setText((value == null)?(""):(value));
+		combo.setText((value == null)?(""):(value)); //$NON-NLS-1$
 		
 		refreshValidState();
 	}

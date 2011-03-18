@@ -32,6 +32,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.rcp.utils.SchemaSelectionHelper;
 import eu.esdihumboldt.hale.rcp.views.mapping.CellSelection;
@@ -215,9 +216,9 @@ public class FunctionWizardContribution extends ContributionItem {
 				info = new CellSelectionInfo(cellSelection);
 			}
 			
-			String augmentations = "Augmentations";
+			String augmentations = Messages.getString("FunctionWizardContribution.0"); //$NON-NLS-1$
 			if (info != null && info.getTargetItemCount() == 1) {
-				augmentations += " for " + info.getFirstTargetItem().getName().getLocalPart();
+				augmentations += Messages.getString("FunctionWizardContribution.1") + info.getFirstTargetItem().getName().getLocalPart(); //$NON-NLS-1$
 			}
 			
 			MenuItem augItem = new MenuItem(menu, SWT.PUSH, index++);
@@ -235,7 +236,7 @@ public class FunctionWizardContribution extends ContributionItem {
 		
 		if (!added) {
 			MenuItem item = new MenuItem(menu, SWT.PUSH, index++);
-			item.setText("No function available");
+			item.setText(Messages.getString("FunctionWizardContribution.2")); //$NON-NLS-1$
 			item.setEnabled(false);
 		}
 	}

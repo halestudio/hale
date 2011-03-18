@@ -67,7 +67,7 @@ public class ReflectionHelper {
 			Class<?> propertyType) {
 		char[] propertyNameArr = property.toCharArray();
 		propertyNameArr[0] = Character.toUpperCase(propertyNameArr[0]);
-		String setterName = "set" + new String(propertyNameArr);
+		String setterName = "set" + new String(propertyNameArr); //$NON-NLS-1$
 		
 		Method result = null;
 		Method[] methods = c.getMethods();
@@ -100,7 +100,7 @@ public class ReflectionHelper {
 
 		char[] propertyNameArr = property.toCharArray();
 		propertyNameArr[0] = Character.toUpperCase(propertyNameArr[0]);
-		String setterName = "set" + new String(propertyNameArr);
+		String setterName = "set" + new String(propertyNameArr); //$NON-NLS-1$
 		
 		Method result = null;
 		//search visible and hidden methods in this class
@@ -142,7 +142,7 @@ public class ReflectionHelper {
 			Class<?> propertyType) {
 		char[] propertyNameArr = property.toCharArray();
 		propertyNameArr[0] = Character.toUpperCase(propertyNameArr[0]);
-		String getterName = "get" + new String(propertyNameArr);
+		String getterName = "get" + new String(propertyNameArr); //$NON-NLS-1$
 		
 		Method result = null;
 		Method[] methods = c.getMethods();
@@ -176,7 +176,7 @@ public class ReflectionHelper {
 
 		char[] propertyNameArr = property.toCharArray();
 		propertyNameArr[0] = Character.toUpperCase(propertyNameArr[0]);
-		String getterName = "get" + new String(propertyNameArr);
+		String getterName = "get" + new String(propertyNameArr); //$NON-NLS-1$
 		
 		Method result = null;
 		//search visible and hidden methods in this class
@@ -312,8 +312,8 @@ public class ReflectionHelper {
 		Method setter = findSetter(bean.getClass(), propertyName,
 				value.getClass());
 		if (setter == null) {
-			throw new NoSuchMethodException("There is " +
-					"no setter for property " + propertyName);
+			throw new NoSuchMethodException("There is " + //$NON-NLS-1$
+					"no setter for property " + propertyName); //$NON-NLS-1$
 		}
 		
 		invokeSetter(bean, setter, value);
@@ -338,8 +338,8 @@ public class ReflectionHelper {
 		Method setter = findDeepSetter(bean.getClass(), propertyName,
 				value.getClass());
 		if (setter == null) {
-			throw new NoSuchMethodException("There is " +
-					"no setter for property " + propertyName);
+			throw new NoSuchMethodException("There is " + //$NON-NLS-1$
+					"no setter for property " + propertyName); //$NON-NLS-1$
 		}
 		
 		invokeSetter(bean, setter, value);
@@ -388,8 +388,8 @@ public class ReflectionHelper {
 		InvocationTargetException, NoSuchMethodException {
 		Method getter = findGetter(bean.getClass(), propertyName, Object.class);
 		if (getter == null) {
-			throw new NoSuchMethodException("There is " +
-					"no getter for property " + propertyName);
+			throw new NoSuchMethodException("There is " + //$NON-NLS-1$
+					"no getter for property " + propertyName); //$NON-NLS-1$
 		}
 		
 		return ReflectionHelper.<T>invokeGetter(bean, getter);
@@ -413,8 +413,8 @@ public class ReflectionHelper {
 		InvocationTargetException, NoSuchMethodException {
 		Method getter = findDeepGetter(bean.getClass(), propertyName, null);
 		if (getter == null) {
-			throw new NoSuchMethodException("There is " +
-					"no getter for property " + propertyName);
+			throw new NoSuchMethodException("There is " + //$NON-NLS-1$
+					"no getter for property " + propertyName); //$NON-NLS-1$
 		}
 		
 		return ReflectionHelper.<T>invokeGetter(bean, getter);
@@ -427,16 +427,16 @@ public class ReflectionHelper {
      */
     public static URL getCurrentJarURL() throws MalformedURLException {
 		String name = ReflectionHelper.class.getCanonicalName();
-		name = name.replaceAll("\\.", "/");
-		name = name + ".class";
+		name = name.replaceAll("\\.", "/"); //$NON-NLS-1$ //$NON-NLS-2$
+		name = name + ".class"; //$NON-NLS-1$
 		URL url = ReflectionHelper.class.getClassLoader().getResource(name);
 		String str = url.toString();
-		int to = str.indexOf("!/");
+		int to = str.indexOf("!/"); //$NON-NLS-1$
 		if (to == -1) {
 			url = ClassLoader.getSystemResource(name);
 			if(url != null){
 				str = url.toString();
-				to = str.indexOf("!/");
+				to = str.indexOf("!/"); //$NON-NLS-1$
 			}else{
 				return null;
 			}			
@@ -456,7 +456,7 @@ public class ReflectionHelper {
         File[] files;
         try {
         	URL u = _packageResolver.resolve(pkg);
-        	if (u != null && !u.toString().startsWith("jar:")) {
+        	if (u != null && !u.toString().startsWith("jar:")) { //$NON-NLS-1$
         		//we got the package as an URL. Simply create a file
     			//from this URL
         		File dir;
@@ -480,26 +480,26 @@ public class ReflectionHelper {
         		
         		//the package may be in a jar file
         		//get the current jar file and search it
-        		if (u != null && u.toString().startsWith("jar:file:")) {
+        		if (u != null && u.toString().startsWith("jar:file:")) { //$NON-NLS-1$
         			// first try using URL and File
         			try {
 	        			String p = u.toString().substring(4);
-	        			p = p.substring(0, p.indexOf("!/"));
+	        			p = p.substring(0, p.indexOf("!/")); //$NON-NLS-1$
 	        			File file = new File(URI.create(p));
 	        			p = file.getAbsolutePath();
 	        			try {
 	        				jarFile = new JarFile(p);
 	        			} catch (ZipException e) {
-							throw new IllegalArgumentException("No zip file: " + p, e);
+							throw new IllegalArgumentException("No zip file: " + p, e); //$NON-NLS-1$
 						}
         			} catch (Throwable e1) {
         				// second try directly using path
         				String p = u.toString().substring(9);
-            			p = p.substring(0, p.indexOf("!/"));
+            			p = p.substring(0, p.indexOf("!/")); //$NON-NLS-1$
             			try {
             				jarFile = new JarFile(p);
             			} catch (ZipException e2) {
-    						throw new IllegalArgumentException("No zip file: " + p, e2);
+    						throw new IllegalArgumentException("No zip file: " + p, e2); //$NON-NLS-1$
     					}
         			}
         		} else {
@@ -513,7 +513,7 @@ public class ReflectionHelper {
         		//enumerate entries and add those that match the package path
         		Enumeration<JarEntry> entries = jarFile.entries();
         		ArrayList<String> file_names = new ArrayList<String>();
-        		String package_path = pkg.replaceAll("\\.", "/");
+        		String package_path = pkg.replaceAll("\\.", "/"); //$NON-NLS-1$ //$NON-NLS-2$
         		boolean slashed = false;
         		if (package_path.charAt(0) == '/') {
         			package_path = package_path.substring(1);
@@ -521,9 +521,9 @@ public class ReflectionHelper {
         		}
         		while (entries.hasMoreElements()) {
                     JarEntry j = entries.nextElement();
-                    if (j.getName().matches("^" + package_path + ".+\\..+")) {
+                    if (j.getName().matches("^" + package_path + ".+\\..+")) { //$NON-NLS-1$ //$NON-NLS-2$
                     	if (slashed) {
-                    		file_names.add("/" + j.getName());
+                    		file_names.add("/" + j.getName()); //$NON-NLS-1$
                     	} else {
                     		file_names.add(j.getName());
                     	}
@@ -539,7 +539,7 @@ public class ReflectionHelper {
                 }
         	}
         } catch (Throwable e) {
-        	throw new IOException("Could not find package: " + pkg, e);
+        	throw new IOException("Could not find package: " + pkg, e); //$NON-NLS-1$
         }
         
         if(files != null && files.length == 0)
@@ -606,10 +606,10 @@ public class ReflectionHelper {
     	File[] files = getFilesFromPackage(pkg);
     	for (File f : files) {
     		String name = f.getName();
-    		if (f.isDirectory() && !name.startsWith(".")) {
-    			l.add(pkg + "." + name);
+    		if (f.isDirectory() && !name.startsWith(".")) { //$NON-NLS-1$
+    			l.add(pkg + "." + name); //$NON-NLS-1$
     			if (recursive) {
-    				getSubPackagesFromPackage(pkg + "." + name, l, true);
+    				getSubPackagesFromPackage(pkg + "." + name, l, true); //$NON-NLS-1$
     			}
     		}
     	}
@@ -621,10 +621,10 @@ public class ReflectionHelper {
     	for (File f : files) {
     		String name = f.getName();
     		if (f.isDirectory() && recursive) {
-    			if (!name.startsWith(".")) {
-    				getClassesFromPackage(pkg + "." + name, l, true);
+    			if (!name.startsWith(".")) { //$NON-NLS-1$
+    				getClassesFromPackage(pkg + "." + name, l, true); //$NON-NLS-1$
     			}
-    		} else if (name.toLowerCase().endsWith(".class")) {
+    		} else if (name.toLowerCase().endsWith(".class")) { //$NON-NLS-1$
     			//the following lines make sure we also handle classes
     			//in subpackages. These subpackages may be returned by
     			//ApplicationContext.getFilesFromPackage() when we are
@@ -637,7 +637,7 @@ public class ReflectionHelper {
     			try {
     				c = Class.forName(className);
     			} catch (ClassNotFoundException e) {
-    				throw new IOException("Could not load class: " +
+    				throw new IOException("Could not load class: " + //$NON-NLS-1$
     						e.getMessage());
     			}
 
@@ -660,7 +660,7 @@ public class ReflectionHelper {
     public static Class<?> findMostSpecificMatch(Class<?> clazz,
     		Collection<Class<?>> group, boolean checkAssignability) {
     	if (clazz == null || group == null)
-    		throw new IllegalArgumentException("");
+    		throw new IllegalArgumentException(""); //$NON-NLS-1$
     	
     	//scale up the type hierarchy until we have found a matching class
 		for (Class<?> c = clazz; c != Object.class; c = c.getSuperclass()) {			

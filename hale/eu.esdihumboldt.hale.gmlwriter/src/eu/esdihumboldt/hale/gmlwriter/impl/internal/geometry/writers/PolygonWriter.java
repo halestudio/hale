@@ -41,14 +41,14 @@ public class PolygonWriter extends AbstractGeometryWriter<Polygon> {
 		super(Polygon.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new NameImpl("PolygonType"));
+		addCompatibleType(new NameImpl("PolygonType")); //$NON-NLS-1$
 		
 		// patterns for matching inside compatible types
-		addBasePattern("*"); // matches any compatible type element
+		addBasePattern("*"); // matches any compatible type element //$NON-NLS-1$
 		
 		// verification patterns
-		addVerificationPattern("*/exterior/LinearRing"); // both exterior
-		addVerificationPattern("*/interior/LinearRing"); // and interior elements must be present
+		addVerificationPattern("*/exterior/LinearRing"); // both exterior //$NON-NLS-1$
+		addVerificationPattern("*/interior/LinearRing"); // and interior elements must be present //$NON-NLS-1$
 	}
 
 	/**
@@ -60,13 +60,13 @@ public class PolygonWriter extends AbstractGeometryWriter<Polygon> {
 			throws XMLStreamException {
 		// write exterior ring
 		LineString exterior = polygon.getExteriorRing();
-		descendAndWriteCoordinates(writer, Pattern.parse("*/exterior/LinearRing"), 
+		descendAndWriteCoordinates(writer, Pattern.parse("*/exterior/LinearRing"),  //$NON-NLS-1$
 				exterior.getCoordinates(), elementType, elementName, gmlNs);
 		
 		// write interior rings
 		for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
 			LineString interior = polygon.getInteriorRingN(i);
-			descendAndWriteCoordinates(writer, Pattern.parse("*/interior/LinearRing"), 
+			descendAndWriteCoordinates(writer, Pattern.parse("*/interior/LinearRing"),  //$NON-NLS-1$
 					interior.getCoordinates(), elementType, elementName, gmlNs);
 		}
 	}

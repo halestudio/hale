@@ -438,12 +438,12 @@ public class StyleServiceImpl extends AbstractUpdateService
 		FeatureTypeStyle old = this.styles.get(ft);
 		if (old != null) {
 			if (!old.equals(fts)) {
-				_log.info("Replacing style for feature type " + ft.getName());
+				_log.info("Replacing style for feature type " + ft.getName()); //$NON-NLS-1$
 				somethingHappened = true;
 			}
 		}
 		else {
-			_log.info("Adding style for feature type " + ft.getName());
+			_log.info("Adding style for feature type " + ft.getName()); //$NON-NLS-1$
 			somethingHappened = true;
 		}
 		
@@ -464,7 +464,7 @@ public class StyleServiceImpl extends AbstractUpdateService
 			
 			return true;
 		} catch (Exception e) {
-			_log.error("Error reading styled layer descriptor", e);
+			_log.error("Error reading styled layer descriptor", e); //$NON-NLS-1$
 			return false;
 		}
 	}

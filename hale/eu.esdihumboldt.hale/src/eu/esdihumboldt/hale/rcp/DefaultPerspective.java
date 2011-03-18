@@ -41,19 +41,19 @@ public class DefaultPerspective implements IPerspectiveFactory {
 		
 		// bottom
 		IFolderLayout bottom = _layout.createFolder(
-				"bottom", IPageLayout.BOTTOM, 0.7f, editorArea);
+				"bottom", IPageLayout.BOTTOM, 0.7f, editorArea); //$NON-NLS-1$
 		bottom.addView(TaskTreeView.ID);
 		
 		// top left
-		IFolderLayout topLeft = _layout.createFolder("topLeft", IPageLayout.LEFT, 0.6f, editorArea);
+		IFolderLayout topLeft = _layout.createFolder("topLeft", IPageLayout.LEFT, 0.6f, editorArea); //$NON-NLS-1$
 		topLeft.addView(ModelNavigationView.ID);
 		
 		// top right
-		IFolderLayout topRight = _layout.createFolder("topRight", IPageLayout.RIGHT, 0.4f, editorArea);
+		IFolderLayout topRight = _layout.createFolder("topRight", IPageLayout.RIGHT, 0.4f, editorArea); //$NON-NLS-1$
 		topRight.addView(MapView.ID);
 		
 		// lesser top right
-		IFolderLayout lesserTopRight = _layout.createFolder("lesserTopRight", IPageLayout.BOTTOM, 0.6f, "topRight");
+		IFolderLayout lesserTopRight = _layout.createFolder("lesserTopRight", IPageLayout.BOTTOM, 0.6f, "topRight"); //$NON-NLS-1$ //$NON-NLS-2$
 		lesserTopRight.addView(MappingView.ID);
 		
 		_layout.addShowViewShortcut(ModelNavigationView.ID);

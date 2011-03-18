@@ -135,7 +135,7 @@ public class HaleSchemaConfiguration extends Configuration {
 	    		}
 	    		else if (type instanceof ComplexType) {
 	    			//TODO ?
-	    			log.warn("No parser binding created for complex type " + name);
+	    			log.warn("No parser binding created for complex type " + name); //$NON-NLS-1$
 	    		}
 	    		else if (hasElements(def)) {
 	    			// simple type binding that masks a complex type, e.g. geometry property types
@@ -156,7 +156,7 @@ public class HaleSchemaConfiguration extends Configuration {
 	    					try {
 								bind = ((Class<? extends Binding>) binding).newInstance();
 							} catch (Exception e) {
-								log.debug("Could not create binding for simple type " + name, e);
+								log.debug("Could not create binding for simple type " + name, e); //$NON-NLS-1$
 							}
 	    				}
 	    				else if (binding instanceof Binding) {
@@ -172,11 +172,11 @@ public class HaleSchemaConfiguration extends Configuration {
 	    					bindings.put(name, bind);
 	    				}
 	    				else {
-	    					log.warn("No parser binding created for type " + name);
+	    					log.warn("No parser binding created for type " + name); //$NON-NLS-1$
 	    				}
 	    			}
 	    			else {
-	    				log.warn("No parser binding created for type " + name);
+	    				log.warn("No parser binding created for type " + name); //$NON-NLS-1$
 	    			}
 	    		}
     		}

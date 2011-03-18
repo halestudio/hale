@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
 /**
  * This {@link WizardPage} is used to define a Retype feature Mapping.
@@ -63,7 +64,7 @@ public class RenamingFunctionWizardMainPage
 	
 	private ListViewer varList;
 	
-	private String selectedVariable = "";
+	private String selectedVariable = ""; //$NON-NLS-1$
 
 	/**
 	 * Constructor
@@ -98,7 +99,7 @@ public class RenamingFunctionWizardMainPage
 		// source area
 		Label sourceLabel = new Label(page, SWT.NONE);
 		sourceLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		sourceLabel.setText("Source type:");
+		sourceLabel.setText(Messages.RenamingFunctionWizardMainPage_1);
 		
 		Text sourceName = new Text(page, SWT.BORDER);
 		sourceName.setText(getParent().getSourceItem().getName().getLocalPart());
@@ -108,7 +109,7 @@ public class RenamingFunctionWizardMainPage
 		// target area
 		Label targetLabel = new Label(page, SWT.NONE);
 		targetLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		targetLabel.setText("Target type:");
+		targetLabel.setText(Messages.RenamingFunctionWizardMainPage_2);
 		
 		Text targetName = new Text(page, SWT.BORDER);
 		targetName.setText(getParent().getTargetItem().getName().getLocalPart());
@@ -122,10 +123,10 @@ public class RenamingFunctionWizardMainPage
 			Group group = new Group(page, SWT.NONE);
 			group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 			group.setLayout(new GridLayout(2, false));
-			group.setText("Instance mapping");
+			group.setText(Messages.RenamingFunctionWizardMainPage_3);
 			
 			Button normal = new Button(group, SWT.RADIO);
-			normal.setText("1:1");
+			normal.setText(Messages.RenamingFunctionWizardMainPage_4);
 			normal.setSelection(type == InstanceMappingType.NORMAL);
 			normal.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
 			normal.addSelectionListener(new SelectionAdapter() {
@@ -139,7 +140,7 @@ public class RenamingFunctionWizardMainPage
 			});
 			
 			Button split = new Button(group, SWT.RADIO);
-			split.setText("1:n (split)");
+			split.setText(Messages.RenamingFunctionWizardMainPage_5);
 			split.setSelection(type == InstanceMappingType.SPLIT);
 			split.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
 			split.addSelectionListener(new SelectionAdapter() {
@@ -153,7 +154,7 @@ public class RenamingFunctionWizardMainPage
 			});
 			
 			Button merge = new Button(group, SWT.RADIO);
-			merge.setText("n:1 (merge)");
+			merge.setText(Messages.RenamingFunctionWizardMainPage_6);
 			merge.setSelection(type == InstanceMappingType.MERGE);
 			merge.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
 			merge.addSelectionListener(new SelectionAdapter() {
@@ -168,7 +169,7 @@ public class RenamingFunctionWizardMainPage
 			
 			// condition
 			Label labelCondition = new Label(group, SWT.NONE);
-			labelCondition.setText("Condition:");
+			labelCondition.setText(Messages.RenamingFunctionWizardMainPage_7);
 			labelCondition.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 			
 			condition = new Text(group, SWT.BORDER);
@@ -181,7 +182,7 @@ public class RenamingFunctionWizardMainPage
 			new Label(group, SWT.NONE);
 			
 			Label label = new Label(group, SWT.NONE);
-			label.setText("Attribute to split on (select one):)");
+			label.setText(Messages.RenamingFunctionWizardMainPage_8);
 			label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false));
 			
 			Set<String> variables = new TreeSet<String>();

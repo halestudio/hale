@@ -40,20 +40,20 @@ public class DependencyOrderedListTest {
 		Map<String, Set<String>> dependencies = new HashMap<String, Set<String>>();
 		
 		Set<String> cdep = new HashSet<String>();
-		cdep.add("A");
-		cdep.add("B");
-		dependencies.put("C", cdep);
+		cdep.add("A"); //$NON-NLS-1$
+		cdep.add("B"); //$NON-NLS-1$
+		dependencies.put("C", cdep); //$NON-NLS-1$
 		
-		dependencies.put("A", new HashSet<String>());
+		dependencies.put("A", new HashSet<String>()); //$NON-NLS-1$
 		
-		dependencies.put("B", Collections.singleton("A"));
+		dependencies.put("B", Collections.singleton("A")); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		dependencies.put("X", new HashSet<String>());
+		dependencies.put("X", new HashSet<String>()); //$NON-NLS-1$
 		
 		Set<String> ydep = new HashSet<String>();
-		ydep.add("B");
-		ydep.add("X");
-		dependencies.put("Y", ydep);
+		ydep.add("B"); //$NON-NLS-1$
+		ydep.add("X"); //$NON-NLS-1$
+		dependencies.put("Y", ydep); //$NON-NLS-1$
 		
 		DependencyOrderedList<String> dol = new DependencyOrderedList<String>(dependencies);
 		
@@ -63,21 +63,21 @@ public class DependencyOrderedListTest {
 		
 		int a, b, c, x, y;
 		
-		Assert.assertTrue("Item A missing", (a = items.indexOf("A")) >= 0);
-		Assert.assertTrue("Item B missing", (b = items.indexOf("B")) >= 0);
-		Assert.assertTrue("Item C missing", (c = items.indexOf("C")) >= 0);
-		Assert.assertTrue("Item X missing", (x = items.indexOf("X")) >= 0);
-		Assert.assertTrue("Item Y missing", (y = items.indexOf("Y")) >= 0);
+		Assert.assertTrue("Item A missing", (a = items.indexOf("A")) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
+		Assert.assertTrue("Item B missing", (b = items.indexOf("B")) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
+		Assert.assertTrue("Item C missing", (c = items.indexOf("C")) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
+		Assert.assertTrue("Item X missing", (x = items.indexOf("X")) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
+		Assert.assertTrue("Item Y missing", (y = items.indexOf("Y")) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		Assert.assertEquals("Wrong list size", 5, items.size());
+		Assert.assertEquals("Wrong list size", 5, items.size()); //$NON-NLS-1$
 		
-		Assert.assertTrue("A must be before C", a < c);
-		Assert.assertTrue("B must be before C", b < c);
+		Assert.assertTrue("A must be before C", a < c); //$NON-NLS-1$
+		Assert.assertTrue("B must be before C", b < c); //$NON-NLS-1$
 		
-		Assert.assertTrue("A must be before B", a < b);
+		Assert.assertTrue("A must be before B", a < b); //$NON-NLS-1$
 		
-		Assert.assertTrue("B must be before Y", b < y);
-		Assert.assertTrue("X must be before Y", x < y);
+		Assert.assertTrue("B must be before Y", b < y); //$NON-NLS-1$
+		Assert.assertTrue("X must be before Y", x < y); //$NON-NLS-1$
 	}
 	
 	/**
@@ -88,13 +88,13 @@ public class DependencyOrderedListTest {
 		Map<String, Set<String>> dependencies = new HashMap<String, Set<String>>();
 		
 		Set<String> cdep = new HashSet<String>();
-		cdep.add("A");
-		cdep.add("B");
-		dependencies.put("C", cdep);
+		cdep.add("A"); //$NON-NLS-1$
+		cdep.add("B"); //$NON-NLS-1$
+		dependencies.put("C", cdep); //$NON-NLS-1$
 		
-		dependencies.put("A", new HashSet<String>());
+		dependencies.put("A", new HashSet<String>()); //$NON-NLS-1$
 		
-		dependencies.put("B", Collections.singleton("C"));
+		dependencies.put("B", Collections.singleton("C")); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		DependencyOrderedList<String> dol = new DependencyOrderedList<String>(dependencies);
 		
@@ -104,14 +104,14 @@ public class DependencyOrderedListTest {
 		
 		int a, b, c;
 		
-		Assert.assertTrue("Item A missing", (a = items.indexOf("A")) >= 0);
-		Assert.assertTrue("Item B missing", (b = items.indexOf("B")) >= 0);
-		Assert.assertTrue("Item C missing", (c = items.indexOf("C")) >= 0);
+		Assert.assertTrue("Item A missing", (a = items.indexOf("A")) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
+		Assert.assertTrue("Item B missing", (b = items.indexOf("B")) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
+		Assert.assertTrue("Item C missing", (c = items.indexOf("C")) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		Assert.assertEquals("Wrong list size", 3, items.size());
+		Assert.assertEquals("Wrong list size", 3, items.size()); //$NON-NLS-1$
 		
-		Assert.assertTrue("A must be before B", a < b);
-		Assert.assertTrue("A must be before C", a < c);
+		Assert.assertTrue("A must be before B", a < b); //$NON-NLS-1$
+		Assert.assertTrue("A must be before C", a < c); //$NON-NLS-1$
 	}
 
 }

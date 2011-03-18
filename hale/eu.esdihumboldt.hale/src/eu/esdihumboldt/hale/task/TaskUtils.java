@@ -43,7 +43,7 @@ public abstract class TaskUtils {
 			return ((AttributeDefinition) definition).getDeclaringType().getDeclaringElements().iterator().next();
 		}
 		else {
-			throw new IllegalArgumentException("Unknown definition type");
+			throw new IllegalArgumentException("Unknown definition type"); //$NON-NLS-1$
 		}
 	}
 

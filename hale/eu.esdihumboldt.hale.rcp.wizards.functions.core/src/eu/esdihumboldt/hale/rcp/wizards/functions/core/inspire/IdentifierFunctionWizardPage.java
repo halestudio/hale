@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditor;
 import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditorFactory;
 import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -56,7 +57,7 @@ public class IdentifierFunctionWizardPage extends
 	public IdentifierFunctionWizardPage(String pageName) {
 		super(pageName);
 		setTitle(pageName);
-		setDescription("Configure the content of your INSPIRE identifer urn.");
+		setDescription(Messages.IdentifierFunctionWizardPage_0);
 	}
 
 	/**
@@ -85,7 +86,7 @@ public class IdentifierFunctionWizardPage extends
 		if (targetDef instanceof AttributeDefinition) {
 			TypeDefinition propertyType = ((AttributeDefinition) targetDef).getAttributeType();
 			for (AttributeDefinition attrib : propertyType.getAttributes()) {
-				if (attrib.getTypeName().getLocalPart().equals("IdentifierType")) {
+				if (attrib.getTypeName().getLocalPart().equals("IdentifierType")) { //$NON-NLS-1$
 					identifierType = attrib.getAttributeType();
 				}
 			}
@@ -93,69 +94,69 @@ public class IdentifierFunctionWizardPage extends
 		
 		// Namespace group
 		Group nsGroup = new Group(page, SWT.NONE);
-		nsGroup.setText("Namespace");
+		nsGroup.setText(Messages.IdentifierFunctionWizardPage_2);
 		nsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		nsGroup.setLayout(new GridLayout(2, false));
 		
 		// localId
 		if (identifierType != null) {
-			AttributeDefinition def = identifierType.getAttribute("namespace");
+			AttributeDefinition def = identifierType.getAttribute("namespace"); //$NON-NLS-1$
 			if (def != null) {
 				Control nsLabel = dlf.createLabel(nsGroup, def, false);
 				nsLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 				
 				Label nsDesc = new Label(nsGroup, SWT.NONE);
-				nsDesc.setText("The namespace is constructed from the following information:");
+				nsDesc.setText(Messages.IdentifierFunctionWizardPage_4);
 			}
 		}
 		
 		// Country code
 		Label ccLabel = new Label(nsGroup, SWT.NONE);
 		ccLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		ccLabel.setText("Country Code");
+		ccLabel.setText(Messages.IdentifierFunctionWizardPage_5);
 		
 		this.countryCode = new Text(nsGroup, SWT.BORDER);
-		this.countryCode.setText("de");
+		this.countryCode.setText(Messages.IdentifierFunctionWizardPage_6);
 		this.countryCode.setEnabled(true);
 		this.countryCode.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		// Provider name
 		Label providerLabel = new Label(nsGroup, SWT.NONE);
 		providerLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		providerLabel.setText("Provider Name");
+		providerLabel.setText(Messages.IdentifierFunctionWizardPage_7);
 		
 		this.providerName = new Text(nsGroup, SWT.BORDER);
-		this.providerName.setText("fraunhofer");
+		this.providerName.setText(Messages.IdentifierFunctionWizardPage_8);
 		this.providerName.setEnabled(true);
 		this.providerName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		// Product name
 		Label productLabel = new Label(nsGroup, SWT.NONE);
 		productLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		productLabel.setText("Product Name");
+		productLabel.setText(Messages.IdentifierFunctionWizardPage_9);
 		
 		this.productName = new Text(nsGroup, SWT.BORDER);
-		this.productName.setText("humboldt-sample-transformed-data");
+		this.productName.setText(Messages.IdentifierFunctionWizardPage_10);
 		this.productName.setEnabled(true);
 		this.productName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		// Local ID group
 		Group idGroup = new Group(page, SWT.NONE);
-		idGroup.setText("Local ID");
+		idGroup.setText(Messages.IdentifierFunctionWizardPage_11);
 		idGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		idGroup.setLayout(new GridLayout(2, false));
 		
 		// localId
 		Control idLabel = null;
 		if (identifierType != null) {
-			AttributeDefinition def = identifierType.getAttribute("localId");
+			AttributeDefinition def = identifierType.getAttribute("localId"); //$NON-NLS-1$
 			if (def != null) {
 				idLabel = dlf.createLabel(idGroup, def, false);
 			}
 		}
 		if (idLabel == null) {
 			idLabel = new Label(idGroup, SWT.NONE);
-			((Label) idLabel).setText("localId");
+			((Label) idLabel).setText("localId"); //$NON-NLS-1$
 		}
 		idLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		
@@ -165,34 +166,34 @@ public class IdentifierFunctionWizardPage extends
 		
 		// Version group
 		Group versGroup = new Group(page, SWT.NONE);
-		versGroup.setText("Version");
+		versGroup.setText(Messages.IdentifierFunctionWizardPage_14);
 		versGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		versGroup.setLayout(new GridLayout(2, false));
 		
 		// Version
 		Control versionLabel = null;
 		if (identifierType != null) {
-			AttributeDefinition def = identifierType.getAttribute("versionId");
+			AttributeDefinition def = identifierType.getAttribute("versionId"); //$NON-NLS-1$
 			if (def != null) {
 				versionLabel = dlf.createLabel(versGroup, def, false);
 			}
 		}
 		if (versionLabel == null) {
 			versionLabel = new Label(versGroup, SWT.NONE);
-			((Label) versionLabel).setText("Version");
+			((Label) versionLabel).setText(Messages.IdentifierFunctionWizardPage_16);
 		}
 		versionLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		
 		this.version = new Text(versGroup, SWT.BORDER);
-		this.version.setText("");
+		this.version.setText(""); //$NON-NLS-1$
 		this.version.setEnabled(true);
 		this.version.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		// version nil reason
 		if (identifierType != null) {
-			AttributeDefinition def = identifierType.getAttribute("versionId");
+			AttributeDefinition def = identifierType.getAttribute("versionId"); //$NON-NLS-1$
 			if (def != null) {
-				def = def.getAttributeType().getAttribute("nilReason");
+				def = def.getAttributeType().getAttribute("nilReason"); //$NON-NLS-1$
 				if (def != null) {
 					// label
 					Control nilLabel = dlf.createLabel(versGroup, def, false);
@@ -201,7 +202,7 @@ public class IdentifierFunctionWizardPage extends
 					// editor
 					nilEditor = aef.createEditor(versGroup, def);
 					nilEditor.getControl().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-					nilEditor.setAsText("unknown"); // default to unknown
+					nilEditor.setAsText("unknown"); // default to unknown //$NON-NLS-1$
 				}
 			}
 		}

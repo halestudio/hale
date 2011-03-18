@@ -44,24 +44,24 @@ public class InstanceServiceFactoryTest {
 		
 		FeatureCollection fc_reference = 
 			FeatureCollectionUtilities.loadFeatureCollectionFromWKT(
-				"D:/humboldt-workspace/HALE/resources/test.eu.esdihumboldt.hale.models.factory/linestring.wkt", 
-				"ReferenceFT", "ReferenceFeatureID");
+				"D:/humboldt-workspace/HALE/resources/test.eu.esdihumboldt.hale.models.factory/linestring.wkt",  //$NON-NLS-1$
+				"ReferenceFT", "ReferenceFeatureID"); //$NON-NLS-1$ //$NON-NLS-2$
 		InstanceServiceImpl.getInstance().addInstances(
 				DatasetType.reference, fc_reference);
 		FeatureCollection fc_transformed = 
 			FeatureCollectionUtilities.loadFeatureCollectionFromWKT(
-				"D:/humboldt-workspace/HALE/resources/test.eu.esdihumboldt.hale.models.factory/polygon.wkt", 
-				"TransformedFT", "TransformedFeatureID");
+				"D:/humboldt-workspace/HALE/resources/test.eu.esdihumboldt.hale.models.factory/polygon.wkt",  //$NON-NLS-1$
+				"TransformedFT", "TransformedFeatureID"); //$NON-NLS-1$ //$NON-NLS-2$
 		InstanceServiceImpl.getInstance().addInstances(
 				DatasetType.transformed, fc_transformed);
-		_log.debug("Set up of FeatureCollections completed.");
+		_log.debug("Set up of FeatureCollections completed."); //$NON-NLS-1$
 	}
 	
 	@AfterClass
 	public static void tearDown() {
 		InstanceServiceImpl.getInstance().cleanInstances(DatasetType.reference);
 		InstanceServiceImpl.getInstance().cleanInstances(DatasetType.transformed);
-		_log.debug("Finished Test.");
+		_log.debug("Finished Test."); //$NON-NLS-1$
 	}
 
 	private static void setUpLogger() {
@@ -90,8 +90,8 @@ public class InstanceServiceFactoryTest {
 		FeatureCollection<FeatureType, Feature> fc_transformed = InstanceServiceImpl.getInstance().getFeatures(DatasetType.transformed);
 		
 		// assertions
-		_log.debug("fc_reference.size(): "+ fc_reference.size());
-		_log.debug("fc_transformed.size(): "+ fc_transformed.size());
+		_log.debug("fc_reference.size(): "+ fc_reference.size()); //$NON-NLS-1$
+		_log.debug("fc_transformed.size(): "+ fc_transformed.size()); //$NON-NLS-1$
 		assertTrue(fc_reference.size() == 1);
 		assertTrue(fc_transformed.size() == 1);
 	}
@@ -102,13 +102,13 @@ public class InstanceServiceFactoryTest {
 	@Test
 	public void testGetFeaturesByType() {
 		FeatureType featureType = FeatureCollectionUtilities.getFeatureType(
-				com.vividsolutions.jts.geom.LineString.class, "TransformedFT", false);
+				com.vividsolutions.jts.geom.LineString.class, "TransformedFT", false); //$NON-NLS-1$
 		
 		Collection<? extends Feature> fc_reference = InstanceServiceImpl.getInstance().getFeaturesByType(DatasetType.reference, featureType);
-		_log.debug("fc_reference.size(): " + fc_reference.size());
+		_log.debug("fc_reference.size(): " + fc_reference.size()); //$NON-NLS-1$
 		assertTrue(fc_reference.size() == 1);
 		FeatureType ft = fc_reference.iterator().next().getType();
-		assertEquals(ft.getName().getLocalPart(), "TransformedFT");
+		assertEquals(ft.getName().getLocalPart(), "TransformedFT"); //$NON-NLS-1$
 	}
 	
 	/**
@@ -116,8 +116,8 @@ public class InstanceServiceFactoryTest {
 	 */
 	@Test
 	public void testGetFeatureByID() {
-		Feature f = InstanceServiceImpl.getInstance().getFeatureByID(DatasetType.reference, "ReferenceFeatureID");
-		assertEquals(f.getIdentifier().getID(), "ReferenceFeatureID");
+		Feature f = InstanceServiceImpl.getInstance().getFeatureByID(DatasetType.reference, "ReferenceFeatureID"); //$NON-NLS-1$
+		assertEquals(f.getIdentifier().getID(), "ReferenceFeatureID"); //$NON-NLS-1$
 	}
 	
 }

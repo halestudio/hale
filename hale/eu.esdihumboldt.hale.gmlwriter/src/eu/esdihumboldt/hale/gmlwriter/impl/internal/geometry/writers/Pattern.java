@@ -103,10 +103,10 @@ public class Pattern {
 		
 	}
 	
-	private static final String ELEMENT_DELIMITER = "/";
-	private static final String WILDCARD_ONE = "*";
-	private static final String WILDCARD_ANY = "**";
-	private static final String NS_MARKER = "\"";
+	private static final String ELEMENT_DELIMITER = "/"; //$NON-NLS-1$
+	private static final String WILDCARD_ONE = "*"; //$NON-NLS-1$
+	private static final String WILDCARD_ANY = "**"; //$NON-NLS-1$
+	private static final String NS_MARKER = "\""; //$NON-NLS-1$
 	
 	/**
 	 * Parse a pattern from the given string. Pattern elements must be separated
@@ -160,7 +160,7 @@ public class Pattern {
 						}
 						
 						if (!isLast) {
-							throw new IllegalArgumentException("No terminating namespace quote found");
+							throw new IllegalArgumentException("No terminating namespace quote found"); //$NON-NLS-1$
 						}
 						else {
 							// separate namespace and name
@@ -345,7 +345,7 @@ public class Pattern {
 			allowAttributeDescent = false; // only allow sub-type descent
 			break;
 		default:
-			throw new IllegalStateException("Unknown pattern element type");
+			throw new IllegalStateException("Unknown pattern element type"); //$NON-NLS-1$
 		}
 		
 		if (checkAgainst != null) {
@@ -459,9 +459,9 @@ public class Pattern {
 	public String toString() {
 		switch (type) {
 		case AND:
-			return relationString(" AND ");
+			return relationString(" AND "); //$NON-NLS-1$
 		case OR:
-			return relationString(" OR ");
+			return relationString(" OR "); //$NON-NLS-1$
 		case MATCH:
 		default:
 			return patternString;
@@ -469,9 +469,9 @@ public class Pattern {
 	}
 
 	private String relationString(String delimiter) {
-		if (subPatterns == null) throw new IllegalStateException("Sub-patterns must be set for AND/OR patterns");
+		if (subPatterns == null) throw new IllegalStateException("Sub-patterns must be set for AND/OR patterns"); //$NON-NLS-1$
 		
-		StringBuffer result = new StringBuffer("(");
+		StringBuffer result = new StringBuffer("("); //$NON-NLS-1$
 		boolean first = true;
 		for (Pattern pattern : subPatterns) {
 			if (first) {
@@ -483,7 +483,7 @@ public class Pattern {
 			
 			result.append(pattern.toString());
 		}
-		result.append(")");
+		result.append(")"); //$NON-NLS-1$
 		
 		return result.toString();
 	}

@@ -41,23 +41,23 @@ public class ClientPerspective implements IPerspectiveFactory {
 		String editorArea = _layout.getEditorArea();
 		
 		IFolderLayout topLeft = _layout.createFolder(
-				"topLeft", IPageLayout.LEFT, 0.6f, editorArea);
+				"topLeft", IPageLayout.LEFT, 0.6f, editorArea); //$NON-NLS-1$
 		topLeft.addView(ModelNavigationView.ID);
 		//_layout.getViewLayout(ModelNavigationView.ID).setCloseable(false);
 		
 		IFolderLayout bottomLeft = _layout.createFolder(
-				"bottomLeft", IPageLayout.BOTTOM, 0.67f, "topLeft");
+				"bottomLeft", IPageLayout.BOTTOM, 0.67f, "topLeft"); //$NON-NLS-1$ //$NON-NLS-2$
 		bottomLeft.addView(MappingView.ID);
 		bottomLeft.addView(AttributeView.ID);
 		
 		IFolderLayout topRight = _layout.createFolder(
-				"topRight", IPageLayout.RIGHT, 0.4f, editorArea);
+				"topRight", IPageLayout.RIGHT, 0.4f, editorArea); //$NON-NLS-1$
 		topRight.addView(MapView.ID);
 		topRight.addView(ReferenceTableView.ID);
 		topRight.addView(TransformedTableView.ID);
 		
 		IFolderLayout bottomRight = _layout.createFolder(
-				"bottomRight", IPageLayout.BOTTOM, 0.67f, "topRight");
+				"bottomRight", IPageLayout.BOTTOM, 0.67f, "topRight"); //$NON-NLS-1$ //$NON-NLS-2$
 		bottomRight.addView(TaskTreeView.ID);
 		
 		_layout.setEditorAreaVisible(false);

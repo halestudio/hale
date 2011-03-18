@@ -64,7 +64,7 @@ public class ShowHandbookHandler extends AbstractHandler implements IHandler {
 
 		URL pdfUrl = this.getClass().getResource("/documentation/" + PDFFILE); //$NON-NLS-1$
 		if (pdfUrl == null) {
-			throw new RuntimeException("Manual could not be retrieved.");
+			throw new RuntimeException("Manual could not be retrieved."); //$NON-NLS-1$
 		}
 
 		InputStream in;

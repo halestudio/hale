@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.wizards.functions.simple.SimpleFunctionWizardDescriptor;
 
 /**
@@ -31,7 +32,7 @@ public class FunctionWizardExtension {
 	/**
 	 * The extension point ID
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory";
+	public static final String ID = "eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory"; //$NON-NLS-1$
 	
 	/**
 	 * Get the defined {@link FunctionWizardFactory}(ie)s
@@ -45,11 +46,11 @@ public class FunctionWizardExtension {
 		
 		for (IConfigurationElement conf : confArray) {
 			// factory
-			if (conf.getName().equals("factory")) {
+			if (conf.getName().equals("factory")) { //$NON-NLS-1$
 				result.add(new DefaultFunctionWizardDescriptor(conf));
 			}
 			// simple
-			else if (conf.getName().equals("simple")) {
+			else if (conf.getName().equals("simple")) { //$NON-NLS-1$
 				result.add(new SimpleFunctionWizardDescriptor(conf));
 			}
 		}

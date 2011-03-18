@@ -49,14 +49,14 @@ public class SchemaResolver implements LSResourceResolver {
 			String publicId, String systemId, String baseURI) {
 		String schemaLocation;
 		if (baseURI != null) {
-			schemaLocation = baseURI.substring(0, baseURI.lastIndexOf("/") + 1);
+			schemaLocation = baseURI.substring(0, baseURI.lastIndexOf("/") + 1); //$NON-NLS-1$
 		}
 		else {
 			String loc = mainSchemaURI.toString();
-			schemaLocation = loc.substring(0, loc.lastIndexOf("/") + 1);
+			schemaLocation = loc.substring(0, loc.lastIndexOf("/") + 1); //$NON-NLS-1$
 		}
 
-		if (systemId.indexOf("http://") < 0) {
+		if (systemId.indexOf("http://") < 0) { //$NON-NLS-1$
 			systemId = schemaLocation + systemId;
 		}
 

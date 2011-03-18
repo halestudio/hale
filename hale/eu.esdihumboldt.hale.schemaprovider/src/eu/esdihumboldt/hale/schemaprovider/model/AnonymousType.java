@@ -45,10 +45,10 @@ public class AnonymousType extends TypeDefinition {
 	@Override
 	public String getDisplayName() {
 		if (getSuperType() == null) {
-			return "?";
+			return "?"; //$NON-NLS-1$
 		}
 		else {
-			return "? extends " + getSuperType().getDisplayName();
+			return "? extends " + getSuperType().getDisplayName(); //$NON-NLS-1$
 		}
 	}
 

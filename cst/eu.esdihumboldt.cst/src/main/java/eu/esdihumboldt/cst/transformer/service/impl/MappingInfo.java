@@ -100,11 +100,11 @@ public class MappingInfo {
 				}
 				
 				// look for a merge condition (many to one)
-				if (parameterNames.contains("InstanceMergeCondition")) {
+				if (parameterNames.contains("InstanceMergeCondition")) { //$NON-NLS-1$
 					info.updateInstanceCardinality(CellCardinalityType.many_to_one);
 				}
 				// look for a split condition (one to many)
-				else if (parameterNames.contains("InstanceSplitCondition")) {
+				else if (parameterNames.contains("InstanceSplitCondition")) { //$NON-NLS-1$
 					info.updateInstanceCardinality(CellCardinalityType.one_to_many);
 				}
 				else {
@@ -182,10 +182,10 @@ public class MappingInfo {
 		else if (entity instanceof Property) {
 			Property property = (Property) entity;
 			IDetailedAbout about = DetailedAbout.getDetailedAbout(property.getAbout(), true);
-			identifier = about.getNamespace() + "/" + about.getFeatureClass();
+			identifier = about.getNamespace() + "/" + about.getFeatureClass(); //$NON-NLS-1$
 		}
 		else {
-			throw new IllegalArgumentException("Unknown entity type");
+			throw new IllegalArgumentException("Unknown entity type"); //$NON-NLS-1$
 		}
 		
 		//TODO handle ComposedFeatureClass?
@@ -234,7 +234,7 @@ public class MappingInfo {
 			if (superType != null) {
 				Name name = superType.getName();
 				if (name != null) {
-					return name.getNamespaceURI() + "/" + name.getLocalPart();
+					return name.getNamespaceURI() + "/" + name.getLocalPart(); //$NON-NLS-1$
 				}
 			}
 		}

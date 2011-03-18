@@ -42,13 +42,13 @@ public class MultiLineStringWriter extends
 		super(MultiLineString.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new NameImpl("http://www.opengis.net/gml", "MultiLineStringType")); // restrict to "old" gml namespace (is depreceated since 3.0) -> use Curve instead in GML 3.2
+		addCompatibleType(new NameImpl("http://www.opengis.net/gml", "MultiLineStringType")); // restrict to "old" gml namespace (is depreceated since 3.0) -> use Curve instead in GML 3.2 //$NON-NLS-1$ //$NON-NLS-2$
 		
 		// patterns for matching inside compatible types
-		addBasePattern("*/lineStringMember");
+		addBasePattern("*/lineStringMember"); //$NON-NLS-1$
 		
 		// verification patterns
-		addVerificationPattern("*/LineString");
+		addVerificationPattern("*/LineString"); //$NON-NLS-1$
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class MultiLineStringWriter extends
 				writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 			}
 			
-			Descent descent = descend(writer, Pattern.parse("*/LineString"), 
+			Descent descent = descend(writer, Pattern.parse("*/LineString"),  //$NON-NLS-1$
 					elementType, elementName, gmlNs);
 			
 			LineString line = (LineString) geometry.getGeometryN(i);

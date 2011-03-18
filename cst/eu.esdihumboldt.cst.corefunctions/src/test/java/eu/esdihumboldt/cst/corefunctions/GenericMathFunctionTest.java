@@ -38,15 +38,15 @@ import eu.esdihumboldt.goml.rdf.Resource;
 
 public class GenericMathFunctionTest {
 
-	public static String sourceLocalname = "FT1";
-	public static String sourceLocalnamePropertyA = "PropertyA";
-	public static String sourceLocalnamePropertyB = "PropertyB";
-	public static String sourceLocalnamePropertyC = "PropertyC";
-	public static String sourceNamespace = "http://esdi-humboldt.eu";
+	public static String sourceLocalname = "FT1"; //$NON-NLS-1$
+	public static String sourceLocalnamePropertyA = "PropertyA"; //$NON-NLS-1$
+	public static String sourceLocalnamePropertyB = "PropertyB"; //$NON-NLS-1$
+	public static String sourceLocalnamePropertyC = "PropertyC"; //$NON-NLS-1$
+	public static String sourceNamespace = "http://esdi-humboldt.eu"; //$NON-NLS-1$
 	
-	public static String targetLocalname = "FT2";
-	public static String targetLocalnamePropertyD = "PropertyD";
-	public static String targetNamespace = "http://xsdi.org";
+	public static String targetLocalname = "FT2"; //$NON-NLS-1$
+	public static String targetLocalnamePropertyD = "PropertyD"; //$NON-NLS-1$
+	public static String targetNamespace = "http://xsdi.org"; //$NON-NLS-1$
 
 	@Test
 	public void testTransformFeatureFeature() {
@@ -63,9 +63,9 @@ public class GenericMathFunctionTest {
 				GenericMathFunctionTest.targetLocalname, 
 				new String[]{GenericMathFunctionTest.targetLocalnamePropertyD});
 		Feature source = SimpleFeatureBuilder.build(
-				sourcetype, new Object[]{"4.5", "2", "1"}, "1");
+				sourcetype, new Object[]{"4.5", "2", "1"}, "1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		Feature target = SimpleFeatureBuilder.build(
-				targettype, new Object[]{}, "2");
+				targettype, new Object[]{}, "2"); //$NON-NLS-1$
 		
 		// perform actual test
 		GenericMathFunction gmf = new GenericMathFunction();
@@ -73,7 +73,7 @@ public class GenericMathFunctionTest {
 		gmf.transform(source, target);
 		
 		assertTrue(target.getProperty(
-				GenericMathFunctionTest.targetLocalnamePropertyD).getValue().toString().equals("5.0"));
+				GenericMathFunctionTest.targetLocalnamePropertyD).getValue().toString().equals("5.0")); //$NON-NLS-1$
 	}
 	
 	private SimpleFeatureType getFeatureType(String featureTypeNamespace, 
@@ -96,14 +96,14 @@ public class GenericMathFunctionTest {
 	
 	public static IAlignment getTestAlignment() {
 		Alignment a = new Alignment();
-		a.setAbout(new About("lala"));
+		a.setAbout(new About("lala")); //$NON-NLS-1$
 		try {
 			a.setSchema1(new Schema(
 					sourceNamespace, new Formalism(
-							"GML", new URI("http://schemas.opengis.org/gml"))));
+							"GML", new URI("http://schemas.opengis.org/gml")))); //$NON-NLS-1$ //$NON-NLS-2$
 			a.setSchema2(new Schema(
 					targetNamespace, new Formalism(
-							"GML", new URI("http://schemas.opengis.org/gml"))));
+							"GML", new URI("http://schemas.opengis.org/gml")))); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
@@ -129,8 +129,8 @@ public class GenericMathFunctionTest {
 		t.setService(new Resource(GenericMathFunction.class.getName()));
 		t.getParameters().add(
 				new Parameter(
-						"math_expression", 
-						"0.5 * (PropertyA * PropertyB + PropertyC)"));
+						"math_expression",  //$NON-NLS-1$
+						"0.5 * (PropertyA * PropertyB + PropertyC)")); //$NON-NLS-1$
 		cp.setTransformation(t);
 		cell.setEntity1(cp);
 		cell.setEntity2(new Property(

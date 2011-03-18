@@ -38,8 +38,8 @@ import eu.esdihumboldt.goml.oml.ext.Parameter;
  */
 public class CstFunctionFactory {
 	
-	public static final String ENTITY_1_NAME = "ENTITY_1_NAME";
-	public static final String ENTITY_2_NAME = "ENTITY_2_NAME";
+	public static final String ENTITY_1_NAME = "ENTITY_1_NAME"; //$NON-NLS-1$
+	public static final String ENTITY_2_NAME = "ENTITY_2_NAME"; //$NON-NLS-1$
 	
 	private static Map<String, Class<? extends CstFunction>> functions = 
 		new HashMap<String, Class<? extends CstFunction>>();
@@ -72,9 +72,9 @@ public class CstFunctionFactory {
 	public CstFunction getCstFunction(ICell cell) {
 		ITransformation transformation = cell.getEntity1().getTransformation();
 		if (transformation == null || transformation.getService() == null) {
-			throw new RuntimeException("The Service element of the passed " +
-					"Transformation has not been initialized correctly with " +
-					"a Resource.");
+			throw new RuntimeException("The Service element of the passed " + //$NON-NLS-1$
+					"Transformation has not been initialized correctly with " + //$NON-NLS-1$
+					"a Resource."); //$NON-NLS-1$
 		}
 		return this.getFunction(transformation.getService().getLocation(), cell);
 	}	
@@ -89,9 +89,9 @@ public class CstFunctionFactory {
 	public CstFunction getCstAugmentationFunction(ICell cell) {
 		ITransformation transformation = cell.getEntity2().getTransformation();
 		if (transformation == null || transformation.getService() == null) {
-			throw new RuntimeException("The Service element of the passed " +
-					"Transformation has not been initialized correctly with " +
-					"a Resource.");
+			throw new RuntimeException("The Service element of the passed " + //$NON-NLS-1$
+					"Transformation has not been initialized correctly with " + //$NON-NLS-1$
+					"a Resource."); //$NON-NLS-1$
 		}
 		return this.getFunction(transformation.getService().getLocation(), cell);
 	}
@@ -103,15 +103,15 @@ public class CstFunctionFactory {
 			try {
 				t = (CstFunction) tclass.newInstance();
 			} catch (Exception e) {
-				throw new RuntimeException("This Function " + operation 
-						+ " could not be instantiated by this CST: ", e);
+				throw new RuntimeException("This Function " + operation  //$NON-NLS-1$
+						+ " could not be instantiated by this CST: ", e); //$NON-NLS-1$
 			}				
 			t.configure(cell);
 			return t;
 		}
 		else {
-			throw new RuntimeException("This Function " + operation 
-					+ " is not known to this CST.");
+			throw new RuntimeException("This Function " + operation  //$NON-NLS-1$
+					+ " is not known to this CST."); //$NON-NLS-1$
 		}
 	}
 	
@@ -148,7 +148,7 @@ public class CstFunctionFactory {
 		try {
 			files = ReflectionHelper.getFilesFromPackage(functionPackage);
 		} catch (IOException e) {
-			throw new RuntimeException("Could not load CstFunctions from function package: ", e);
+			throw new RuntimeException("Could not load CstFunctions from function package: ", e); //$NON-NLS-1$
 		}
         
 		List<Class<? extends CstFunction>> result = null;
@@ -171,12 +171,12 @@ public class CstFunctionFactory {
 		List<Class<? extends CstFunction>> result =
         	new ArrayList<Class<? extends CstFunction>>();
         
-        String package_path = functionPackage.replaceAll("\\.", "/");
+        String package_path = functionPackage.replaceAll("\\.", "/"); //$NON-NLS-1$ //$NON-NLS-2$
         
         String fileString;
         for (int i = 0; i < files.length; i++) {
         	fileString = files[i].toURI().toString();
-            if (!fileString.matches(".*\\.class")) {
+            if (!fileString.matches(".*\\.class")) { //$NON-NLS-1$
             	continue;
             }
 
@@ -185,19 +185,19 @@ public class CstFunctionFactory {
             if (dppp != -1) {
             	//try to preserve sub-directories
             	fileString = fileString.substring(dppp + package_path.length() + 1);
-            	fileString = fileString.replaceAll("\\/", ".");
+            	fileString = fileString.replaceAll("\\/", "."); //$NON-NLS-1$ //$NON-NLS-2$
             } else {
-            	fileString = fileString.replaceAll("(.*/)*", "");
+            	fileString = fileString.replaceAll("(.*/)*", ""); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            fileString = fileString.replaceAll("\\.class$", "");
+            fileString = fileString.replaceAll("\\.class$", ""); //$NON-NLS-1$ //$NON-NLS-2$
             
             //skip unit tests
-            if (fileString.endsWith("Test")) {
+            if (fileString.endsWith("Test")) { //$NON-NLS-1$
             	continue;
             }
 
             try {
-            	Class<?> c = Class.forName(functionPackage + "." + fileString);
+            	Class<?> c = Class.forName(functionPackage + "." + fileString); //$NON-NLS-1$
                 if (c.isInterface() || Modifier.isAbstract(c.getModifiers()) ||
                 	c.isLocalClass() || c.isAnonymousClass() || c.isMemberClass()) {
                 	continue;
@@ -208,8 +208,8 @@ public class CstFunctionFactory {
                 	result.add((Class<? extends CstFunction>)c);
                 } 
             } catch (Exception e) {
-                throw new RuntimeException("CstFunction could not be " +
-                		"instantiated: " + e.getMessage(), e);
+                throw new RuntimeException("CstFunction could not be " + //$NON-NLS-1$
+                		"instantiated: " + e.getMessage(), e); //$NON-NLS-1$
             }
         }
     

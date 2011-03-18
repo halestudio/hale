@@ -51,7 +51,7 @@ public class FunctionTypeLabelProvider extends LabelProvider {
 	public String getText(Object element) {
 		if (element instanceof FunctionType) {
 			if(((FunctionType)element).getName() == null) {
-				return "Box";
+				return "Box"; //$NON-NLS-1$
 			} else {
 				return ((FunctionType)element).getName();
 			}
@@ -65,7 +65,7 @@ public class FunctionTypeLabelProvider extends LabelProvider {
 
 
 	protected RuntimeException unknownElement(Object element) {
-		return new RuntimeException("Unknown type of element in tree of type " + element.getClass().getName());
+		return new RuntimeException("Unknown type of element in tree of type " + element.getClass().getName()); //$NON-NLS-1$
 	}
 
 }

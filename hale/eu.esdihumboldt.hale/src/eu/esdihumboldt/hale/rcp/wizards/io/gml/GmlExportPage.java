@@ -26,6 +26,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.wizards.io.SaveFileFieldEditor;
 
 /**
@@ -52,7 +53,7 @@ public class GmlExportPage
 	protected GmlExportPage(String pageName, String pageTitle) {
 		super(pageName, pageTitle, (ImageDescriptor) null);
 		super.setTitle(pageName);
-		super.setDescription("Options for saving the transformed features to a GML file");
+		super.setDescription(Messages.getString("GmlExportPage.0")); //$NON-NLS-1$
 	}
 	
 	/**
@@ -65,21 +66,21 @@ public class GmlExportPage
         composite.setLayout(new GridLayout(3, false));
         composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        file = new SaveFileFieldEditor("file", "Save to", composite);
+        file = new SaveFileFieldEditor("file", Messages.getString("GmlExportPage.2"), composite); //$NON-NLS-1$ //$NON-NLS-2$
         file.getTextControl(composite).addModifyListener(new ModifyListener(){
 			public void modifyText(ModifyEvent e) {
 				getWizard().getContainer().updateButtons();
 			}
 		});
         file.setEmptyStringAllowed(false);
-        file.setFileExtensions(new String[]{"*.gml", "*.xml"});
+        file.setFileExtensions(new String[]{"*.gml", "*.xml"}); //$NON-NLS-1$ //$NON-NLS-2$
         
         Composite sep = new Composite(composite, SWT.NONE);
 		sep.setLayoutData(GridDataFactory.swtDefaults().hint(0, 0).create());
         
         validate = new Button(composite, SWT.CHECK);
         validate.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
-        validate.setText("validate exported file (this may take a while)");
+        validate.setText(Messages.getString("GmlExportPage.5")); //$NON-NLS-1$
         validate.setSelection(true);
         
         setPageComplete(false);

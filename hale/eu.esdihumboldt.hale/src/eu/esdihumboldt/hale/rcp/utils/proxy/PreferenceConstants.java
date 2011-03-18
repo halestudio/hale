@@ -23,7 +23,7 @@ public interface PreferenceConstants {
 	/**
 	 * Name of the node where passwords are stored in the {@link ISecurePreferences}
 	 */
-	public static final String SECURE_NODE_NAME = "de.cs3d";
+	public static final String SECURE_NODE_NAME = "de.cs3d"; //$NON-NLS-1$
 	
 	/**
 	 * The default spatial reference system
@@ -98,7 +98,7 @@ public interface PreferenceConstants {
 	 * @see de.cs3d.ui.application.commands.SearchDialog
 	 */
 	public static final String SEARCH_METADATA_RECENT_NAMES =
-		"admintool.search.metadata.recentNames";
+		"admintool.search.metadata.recentNames"; //$NON-NLS-1$
 	
 	/**
 	 * A comma-separated list of metadata item values recently used in the
@@ -106,37 +106,37 @@ public interface PreferenceConstants {
 	 * @see de.cs3d.ui.application.commands.SearchDialog
 	 */
 	public static final String SEARCH_METADATA_RECENT_VALUES =
-		"admintool.search.metadata.recentValues";
+		"admintool.search.metadata.recentValues"; //$NON-NLS-1$
 	
 	/**
 	 * A comma-separated list of feature types recently entered by the user
 	 * (for example in the edit-type dialog)
 	 */
 	public static final String RECENT_FEATURE_TYPES =
-		"admintool.recent.featureTypes";
+		"admintool.recent.featureTypes"; //$NON-NLS-1$
 	
 	/**
 	 * A comma-separated list of geometric types recently entered by the user
 	 * (for example in the edit-type dialog)
 	 */
 	public static final String RECENT_GEOMETRIC_TYPES =
-		"admintool.recent.geometricTypes";
+		"admintool.recent.geometricTypes"; //$NON-NLS-1$
 	
 	/**
 	 * A comma-separated list of urls to import
 	 */
 	public static final String URL_USED_FOR_IMPORT =
-		"admintool.import.url";
+		"admintool.import.url"; //$NON-NLS-1$
 	
 	/**
 	 * a character to use as ASCII grid decimal point
 	 */
 	public static final String EXPORT_GRID_TEXT_COMMA = 
-		"admintool.export.pages.grid.commata";
+		"admintool.export.pages.grid.commata"; //$NON-NLS-1$
 	
 	/**
 	 * grid export precision as number of digits
 	 */
 	public static final String EXPORT_GRID_TEXT_Z_PRECISION = 
-		"admintool.export.pages.grid.precision.z";
+		"admintool.export.pages.grid.precision.z"; //$NON-NLS-1$
 }

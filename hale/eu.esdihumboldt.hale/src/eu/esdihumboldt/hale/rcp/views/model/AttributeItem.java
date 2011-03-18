@@ -159,7 +159,7 @@ public class AttributeItem extends TreeParent {
 			return new Property(about);
 		}
 		else {
-			log.error("Error creating property entity: invalid schema item hierarchy, using definition entity instead");
+			log.error("Error creating property entity: invalid schema item hierarchy, using definition entity instead"); //$NON-NLS-1$
 			return super.getEntity();
 		}
 	}

@@ -14,6 +14,8 @@ package eu.esdihumboldt.hale.rcp.utils.definition.internal.editors;
 
 import org.eclipse.swt.widgets.Composite;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * 
  *
@@ -45,7 +47,7 @@ public class IntegerAttributeEditor extends StringValidatingAttributeEditor<Inte
 			return null;
 		}
 		catch (NumberFormatException e) {
-			return "No valid input for Integer";
+			return Messages.getString("IntegerAttributeEditor_0"); //$NON-NLS-1$
 		}
 	}
 	
@@ -54,7 +56,7 @@ public class IntegerAttributeEditor extends StringValidatingAttributeEditor<Inte
 	 */
 	@Override
 	protected String getValidToolTip() {
-		return "The value you entered is a valid Integer";
+		return Messages.getString("IntegerAttributeEditor_1"); //$NON-NLS-1$
 	}
 
 	/**

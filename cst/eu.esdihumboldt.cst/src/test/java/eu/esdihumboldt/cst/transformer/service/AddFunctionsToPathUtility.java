@@ -18,12 +18,12 @@ public class AddFunctionsToPathUtility {
 	}
 	public void add() {
 		Class[] parameters = new Class[]{URL.class};
-		URL functions = getClass().getResource("/corefunctions-1.0.4.jar");		
+		URL functions = getClass().getResource("/corefunctions-1.0.4.jar");		 //$NON-NLS-1$
 		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 	      Class sysclass = URLClassLoader.class;
 
 	      try {
-	         Method method = sysclass.getDeclaredMethod("addURL", parameters);
+	         Method method = sysclass.getDeclaredMethod("addURL", parameters); //$NON-NLS-1$
 	         method.setAccessible(true);
 	         method.invoke(sysloader, new Object[]{functions});
 	      } catch (Throwable t) {

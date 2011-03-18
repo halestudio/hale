@@ -66,7 +66,7 @@ public class IndentingXMLStreamWriter implements XMLStreamWriter {
 	 */
 	public IndentingXMLStreamWriter(XMLStreamWriter xmlStreamWriter) {
 		this.s = xmlStreamWriter;
-		this.indent = "  ";
+		this.indent = "  "; //$NON-NLS-1$
 	}
 
 	/**
@@ -200,18 +200,18 @@ public class IndentingXMLStreamWriter implements XMLStreamWriter {
 
 	public void writeStartDocument() throws XMLStreamException {
 		s.writeStartDocument();
-		s.writeCharacters("\n");
+		s.writeCharacters("\n"); //$NON-NLS-1$
 	}
 
 	public void writeStartDocument(String version) throws XMLStreamException {
 		s.writeStartDocument(version);
-		s.writeCharacters("\n");
+		s.writeCharacters("\n"); //$NON-NLS-1$
 	}
 
 	public void writeStartDocument(String encoding, String version)
 			throws XMLStreamException {
 		s.writeStartDocument(encoding, version);
-		s.writeCharacters("\n");
+		s.writeCharacters("\n"); //$NON-NLS-1$
 	}
 
 	public void writeStartElement(String localName) throws XMLStreamException {
@@ -233,7 +233,7 @@ public class IndentingXMLStreamWriter implements XMLStreamWriter {
 
 	public void writeEndDocument() throws XMLStreamException {
 		s.writeEndDocument();
-		s.writeCharacters("\n");
+		s.writeCharacters("\n"); //$NON-NLS-1$
 	}
 
 	public void writeEndElement() throws XMLStreamException {
@@ -247,7 +247,7 @@ public class IndentingXMLStreamWriter implements XMLStreamWriter {
 			writeIndent(level);
 		}
 		if (level == 0) {
-			s.writeCharacters("\n");
+			s.writeCharacters("\n"); //$NON-NLS-1$
 		}
 		lastWasStart = false;
 	}

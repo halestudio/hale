@@ -109,8 +109,8 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	 * Use for validating end-points.
 	 */
 	private final static Set<String> SUPPORTED_COORDINATES_TYPES = Collections.unmodifiableSet(
-			new HashSet<String>(Arrays.asList("DirectPositionType", 
-					"DirectPositionListType", "CoordinatesType")));
+			new HashSet<String>(Arrays.asList("DirectPositionType",  //$NON-NLS-1$
+					"DirectPositionListType", "CoordinatesType"))); //$NON-NLS-1$ //$NON-NLS-2$
 	
 	/**
 	 * Constructor
@@ -161,7 +161,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 			basePatterns.add(p);
 		}
 		else {
-			log.warn("Ignoring invalid pattern: " + pattern);
+			log.warn("Ignoring invalid pattern: " + pattern); //$NON-NLS-1$
 		}
 	}
 	
@@ -181,7 +181,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 			verifyPatterns.add(p);
 		}
 		else {
-			log.warn("Ignoring invalid pattern: " + pattern);
+			log.warn("Ignoring invalid pattern: " + pattern); //$NON-NLS-1$
 		}
 	}
 	
@@ -200,7 +200,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 			verifyPatterns.add(pattern);
 		}
 		else {
-			log.warn("Ignoring invalid pattern: " + pattern);
+			log.warn("Ignoring invalid pattern: " + pattern); //$NON-NLS-1$
 		}
 	}
 	
@@ -362,7 +362,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 			}
 		}
 		
-		log.error("Unable to write coordinates to element of type " + 
+		log.error("Unable to write coordinates to element of type " +  //$NON-NLS-1$
 				elementType.getDisplayName());
 	}
 	
@@ -382,7 +382,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 		
 		// check for DirectPositionType
 		for (AttributeDefinition att : elementType.getAttributes()) {
-			if (att.getTypeName().equals(new NameImpl(gmlNs, "DirectPositionType"))) {
+			if (att.getTypeName().equals(new NameImpl(gmlNs, "DirectPositionType"))) { //$NON-NLS-1$
 				posAttribute = att;
 				break;
 			}
@@ -399,10 +399,10 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 				Coordinate coordinate = coordinates[0];
 				
 				writer.writeCharacters(String.valueOf(coordinate.x));
-				writer.writeCharacters(" ");
+				writer.writeCharacters(" "); //$NON-NLS-1$
 				writer.writeCharacters(String.valueOf(coordinate.y));
 				if (!Double.isNaN(coordinate.z)) {
-					writer.writeCharacters(" ");
+					writer.writeCharacters(" "); //$NON-NLS-1$
 					writer.writeCharacters(String.valueOf(coordinate.z));
 				}
 			}
@@ -428,12 +428,12 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	private static boolean writeList(XMLStreamWriter writer,
 			Coordinate[] coordinates, TypeDefinition elementType, String gmlNs) throws XMLStreamException {
 		AttributeDefinition listAttribute = null;
-		String delimiter = " ";
-		String setDelimiter = " ";
+		String delimiter = " "; //$NON-NLS-1$
+		String setDelimiter = " "; //$NON-NLS-1$
 		
 		// check for DirectPositionListType
 		for (AttributeDefinition att : elementType.getAttributes()) {
-			if (att.getTypeName().equals(new NameImpl(gmlNs, "DirectPositionListType"))) {
+			if (att.getTypeName().equals(new NameImpl(gmlNs, "DirectPositionListType"))) { //$NON-NLS-1$
 				listAttribute = att;
 				break;
 			}
@@ -442,9 +442,9 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 		if (listAttribute == null) {
 			// check for CoordinatesType
 			for (AttributeDefinition att : elementType.getAttributes()) {
-				if (att.getTypeName().equals(new NameImpl(gmlNs, "CoordinatesType"))) {
+				if (att.getTypeName().equals(new NameImpl(gmlNs, "CoordinatesType"))) { //$NON-NLS-1$
 					listAttribute = att;
-					delimiter = ",";
+					delimiter = ","; //$NON-NLS-1$
 					break;
 				}
 			}

@@ -38,6 +38,7 @@ import org.eclipse.ui.PlatformUI;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.utils.codelist.CodeListService;
 import eu.esdihumboldt.hale.rcp.utils.tree.CollectionTreeNodeContentProvider;
 
@@ -67,7 +68,7 @@ public class CodeListPreferencePage extends PreferencePage implements
 		page.setLayout(new GridLayout(2, true));
 		
 		Label label = new Label(page, SWT.NONE);
-		label.setText("Search paths");
+		label.setText(Messages.getString("CodeListPreferencePage.0")); //$NON-NLS-1$
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false, 2, 1));
 		
 		// search path list
@@ -86,23 +87,23 @@ public class CodeListPreferencePage extends PreferencePage implements
 		// add button (using a directory dialog)
 		Button add = new Button(page, SWT.PUSH);
 		add.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-		add.setText("Add...");
-		add.setToolTipText("Add a search path");
+		add.setText(Messages.getString("CodeListPreferencePage.1")); //$NON-NLS-1$
+		add.setToolTipText(Messages.getString("CodeListPreferencePage.2")); //$NON-NLS-1$
 		add.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				final Display display = Display.getCurrent();
 				DirectoryDialog dialog = new DirectoryDialog(display.getActiveShell());
-				dialog.setText("Add search path");
-				dialog.setMessage("Select the search path to add");
+				dialog.setText(Messages.getString("CodeListPreferencePage.3")); //$NON-NLS-1$
+				dialog.setMessage(Messages.getString("CodeListPreferencePage.4")); //$NON-NLS-1$
 				String path = dialog.open();
 				if (path != null) {
 					SearchPathNode node = new SearchPathNode(path);
 					searchPath.add(node);
 					listViewer.refresh(false);
 					if (!node.hasChildren()) {
-						log.userWarn("No code lists found in " + path);
+						log.userWarn("No code lists found in " + path); //$NON-NLS-1$
 					}
 				}
 			}
@@ -111,8 +112,8 @@ public class CodeListPreferencePage extends PreferencePage implements
 		// remove button
 		Button remove = new Button(page, SWT.PUSH);
 		remove.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-		remove.setText("Remove");
-		remove.setToolTipText("Remove the selected search path");
+		remove.setText(Messages.getString("CodeListPreferencePage.6")); //$NON-NLS-1$
+		remove.setToolTipText(Messages.getString("CodeListPreferencePage.7")); //$NON-NLS-1$
 		remove.addSelectionListener(new SelectionAdapter() {
 
 			@Override

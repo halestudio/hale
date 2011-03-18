@@ -31,6 +31,7 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.math.MathExpressionFieldEditor;
 
 /**
@@ -82,7 +83,7 @@ public class NetworkExpansionFunctionWizardPage
 	private void createConfigurationGroup(Composite parent) {
 		// define source group composite
 		Group configurationGroup = new Group(parent, SWT.NONE);
-		configurationGroup.setText("Define Network to Polygon Expansion");
+		configurationGroup.setText(Messages.NetworkExpansionFunctionWizardPage_0);
 		configurationGroup.setLayout(new GridLayout());
 		GridData configurationAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
                 | GridData.HORIZONTAL_ALIGN_FILL);
@@ -104,17 +105,17 @@ public class NetworkExpansionFunctionWizardPage
 		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(DefinitionLabelFactory.class);
 		
 		final Label inputAttributeLabel = new Label(configurationComposite, SWT.NONE);
-		inputAttributeLabel.setText("Source attribute:");
+		inputAttributeLabel.setText(Messages.NetworkExpansionFunctionWizardPage_1);
 		Control inputAttributeText = dlf.createLabel(configurationComposite, getParent().getSourceItem().getDefinition(), false);
 		inputAttributeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		
 		final Label outputAttributeLabel = new Label(configurationComposite, SWT.NONE);
-		outputAttributeLabel.setText("Target attribute:");
+		outputAttributeLabel.setText(Messages.NetworkExpansionFunctionWizardPage_2);
 		Control outputAttributeText = dlf.createLabel(configurationComposite, getParent().getTargetItem().getDefinition(), false);
 		outputAttributeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		
 		final Label expansionExpressionLabel = new Label(configurationComposite, SWT.NONE);
-		expansionExpressionLabel.setText("Expansion expression:");
+		expansionExpressionLabel.setText(Messages.NetworkExpansionFunctionWizardPage_3);
 		
 		// expression
 		Set<String> variables = new TreeSet<String>();
@@ -129,12 +130,12 @@ public class NetworkExpansionFunctionWizardPage
 		}
 		
 		this.expressionEditor = new MathExpressionFieldEditor(
-				"expression", "=", configurationComposite, variables);
-		if (this.initialExpression != null && !this.initialExpression.equals("")) {
+				"expression", "=", configurationComposite, variables); //$NON-NLS-1$ //$NON-NLS-2$
+		if (this.initialExpression != null && !this.initialExpression.equals("")) { //$NON-NLS-1$
 			this.expressionEditor.setStringValue(this.initialExpression);
 		}
 		else {
-			this.expressionEditor.setStringValue("50");
+			this.expressionEditor.setStringValue("50"); //$NON-NLS-1$
 		}
 		
 		this.expressionEditor.setEmptyStringAllowed(false);

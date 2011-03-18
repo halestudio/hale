@@ -38,7 +38,7 @@ public class SimpleTypeUtil {
 	/**
 	 * Schema namespace
 	 */
-	private static final String SCHEMA_NS = "http://www.w3.org/2001/XMLSchema";
+	private static final String SCHEMA_NS = "http://www.w3.org/2001/XMLSchema"; //$NON-NLS-1$
 
 	/**
 	 * XML simple type names mapped to the corresponding XmlBeans type
@@ -50,9 +50,9 @@ public class SimpleTypeUtil {
 		// assuming number and string types are correctly converted using toString
 		
 		// time/date types
-		TYPE_MAP.put("dateTime", XmlDateTime.class);
-		TYPE_MAP.put("date", XmlDate.class);
-		TYPE_MAP.put("time", XmlTime.class);
+		TYPE_MAP.put("dateTime", XmlDateTime.class); //$NON-NLS-1$
+		TYPE_MAP.put("date", XmlDate.class); //$NON-NLS-1$
+		TYPE_MAP.put("time", XmlTime.class); //$NON-NLS-1$
 	}
 	
 	private static boolean initialized = false;

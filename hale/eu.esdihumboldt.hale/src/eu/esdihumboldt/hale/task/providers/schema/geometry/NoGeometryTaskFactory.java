@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.task.providers.schema.geometry;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -51,7 +52,7 @@ public class NoGeometryTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public String getReason(Task task) {
-			return "No default geometry descriptor found";
+			return Messages.getString("NoGeometryTaskFactory.0"); //$NON-NLS-1$
 		}
 
 		/**
@@ -67,7 +68,7 @@ public class NoGeometryTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public String getTitle(Task task) {
-			return "No default geometry descriptor found for " + ((SchemaElement) task.getMainContext()).getElementName().getLocalPart();
+			return Messages.getString("NoGeometryTaskFactory.1") + ((SchemaElement) task.getMainContext()).getElementName().getLocalPart(); //$NON-NLS-1$
 		}
 
 		/**
@@ -83,7 +84,7 @@ public class NoGeometryTaskFactory extends AbstractTaskFactory {
 	/**
 	 * The type name
 	 */
-	public static final String BASE_TYPE_NAME = "Schema.noGeometryDescriptor";
+	public static final String BASE_TYPE_NAME = Messages.getString("NoGeometryTaskFactory.2"); //$NON-NLS-1$
 	
 	/**
 	 * The task type

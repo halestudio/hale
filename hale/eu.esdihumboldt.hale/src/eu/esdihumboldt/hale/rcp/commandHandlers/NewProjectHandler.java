@@ -19,6 +19,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.ProjectService;
 
 /**
@@ -35,7 +36,7 @@ public class NewProjectHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		if (MessageDialog.openQuestion(HandlerUtil.getActiveShell(event), 
-				"New Alignment Project", "This will reset the Alignment Project, unsaved changes will be lost. Do you want to continue?")) {
+				Messages.getString("NewProjectHandler.0"), Messages.getString("NewProjectHandler.1"))) { //$NON-NLS-1$ //$NON-NLS-2$
 			
 			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
 			ps.clean();

@@ -25,6 +25,7 @@ import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
 /**
  * @author Stefan Gessner
@@ -48,9 +49,9 @@ public class OrdinatesPointWizard
 	@Override
 	protected void init() {
 		// TODO Auto-generated method stub
-		this.mainPage = new OrdinatesPointWizardPage("Ordinates To Point Function");
-		mainPage.setDescription("Calculates a point out of two Doubles.") ;
-		super.setWindowTitle("Ordinates To Point Function"); 
+		this.mainPage = new OrdinatesPointWizardPage(Messages.OrdinatesPointWizard_0);
+		mainPage.setDescription(Messages.OrdinatesPointWizard_1) ;
+		super.setWindowTitle(Messages.OrdinatesPointWizard_2); 
 	}
 
 	@Override

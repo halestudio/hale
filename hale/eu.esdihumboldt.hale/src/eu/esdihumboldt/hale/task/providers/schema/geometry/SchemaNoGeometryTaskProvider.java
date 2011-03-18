@@ -37,7 +37,7 @@ public class SchemaNoGeometryTaskProvider extends AbstractSchemaTaskProvider {
 	 * @param schemaType the schema type 
 	 */
 	public SchemaNoGeometryTaskProvider(SchemaType schemaType) {
-		super((schemaType == SchemaType.SOURCE)?("source."):("target."), schemaType);
+		super((schemaType == SchemaType.SOURCE)?("source."):("target."), schemaType); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		taskFactory = new NoGeometryTaskFactory();
 		

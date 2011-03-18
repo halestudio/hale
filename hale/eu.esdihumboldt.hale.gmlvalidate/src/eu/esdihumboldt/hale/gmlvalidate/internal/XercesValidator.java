@@ -45,10 +45,10 @@ public class XercesValidator implements Validator {
 		try {
 			parser.setFeature(feature, setting);
 		} catch (SAXNotRecognizedException e) {
-			System.out.print("Unrecognized feature: ");
+			System.out.print("Unrecognized feature: "); //$NON-NLS-1$
 			System.out.println(feature);
 		} catch (SAXNotSupportedException e) {
-			System.out.print("Unrecognized feature: ");
+			System.out.print("Unrecognized feature: "); //$NON-NLS-1$
 			System.out.println(feature);
 		}
 
@@ -62,15 +62,15 @@ public class XercesValidator implements Validator {
 		final ReportImpl report = new ReportImpl();
 		SAXParser parser = new SAXParser();
 
-		setFeature(parser, "http://xml.org/sax/features/validation", true);
-		setFeature(parser, "http://apache.org/xml/features/validation/schema", true);
+		setFeature(parser, "http://xml.org/sax/features/validation", true); //$NON-NLS-1$
+		setFeature(parser, "http://apache.org/xml/features/validation/schema", true); //$NON-NLS-1$
 		
 		parser.setErrorHandler(new ReportErrorHandler(report) {
 
 			@Override
 			public void error(SAXParseException e) throws SAXException {
 				//XXX this error occurs even if the element is present
-				if (e.getMessage().equals("cvc-elt.1: Cannot find the declaration of element 'gml:FeatureCollection'.")){
+				if (e.getMessage().equals("cvc-elt.1: Cannot find the declaration of element 'gml:FeatureCollection'.")){ //$NON-NLS-1$
 					return;
 				}
 				
@@ -79,12 +79,12 @@ public class XercesValidator implements Validator {
 			
 		});
 		
-		ATransaction trans = log.begin("Validating XML file");
+		ATransaction trans = log.begin("Validating XML file"); //$NON-NLS-1$
 		try {
 			parser.parse(new InputSource(xml));
 			return report;
 		} catch (Exception e) {
-			throw new IllegalStateException("Error validating XML file", e);
+			throw new IllegalStateException("Error validating XML file", e); //$NON-NLS-1$
 		} finally {
 			try {
 				xml.close();

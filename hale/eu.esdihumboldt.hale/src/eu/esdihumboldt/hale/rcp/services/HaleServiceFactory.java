@@ -122,9 +122,9 @@ public class HaleServiceFactory
 			return gmlWriter;
 		}
 		else {
-			throw new RuntimeException("For the given serviceInterface (" 
+			throw new RuntimeException("For the given serviceInterface ("  //$NON-NLS-1$
 					+ serviceInterface.getCanonicalName() 
-					+ "), no service implementation is known.");
+					+ "), no service implementation is known."); //$NON-NLS-1$
 		}
 	}
 
@@ -138,7 +138,7 @@ public class HaleServiceFactory
 			try {
 				schema = new SchemaProviderService(); //SchemaProviderService.getInstance(ApacheSchemaProvider.class);
 			} catch (Exception e) {
-				log.error("Error instantiating schema service", e);
+				log.error("Error instantiating schema service", e); //$NON-NLS-1$
 			}
 		}
 		return schema;

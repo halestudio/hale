@@ -22,6 +22,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * Dialog showing the filter form
  * 
@@ -56,7 +58,7 @@ public class FeatureFilterFormDialog extends TitleAreaDialog {
 	protected Control createContents(Composite parent) {
 		Control control = super.createContents(parent);
 		
-		setTitle("Define the feature filter");
+		setTitle(Messages.getString("FeatureFilterFormDialog.0")); //$NON-NLS-1$
 		//setMessage("");
 		
 		return control;
@@ -69,7 +71,7 @@ public class FeatureFilterFormDialog extends TitleAreaDialog {
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		
-		newShell.setText("Feature filter");
+		newShell.setText(Messages.getString("FeatureFilterFormDialog.1")); //$NON-NLS-1$
 	}
 
 	/**

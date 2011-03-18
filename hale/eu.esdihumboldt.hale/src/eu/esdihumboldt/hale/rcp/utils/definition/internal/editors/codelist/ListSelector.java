@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.utils.codelist.CodeList;
 import eu.esdihumboldt.hale.rcp.utils.codelist.CodeListService;
 
@@ -88,10 +89,10 @@ public class ListSelector implements CodeListSelector {
 		});
 		
 		// search field
-		String tip = "Filter the code lists by a string contained in their identifiers, namespaces or descriptions";
+		String tip = Messages.getString("ListSelector.0"); //$NON-NLS-1$
 		
 		Label searchLabel = new Label(page, SWT.NONE);
-		searchLabel.setText("Filter: ");
+		searchLabel.setText(Messages.getString("ListSelector.1")); //$NON-NLS-1$
 		searchLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		searchLabel.setToolTipText(tip);
 		
@@ -108,7 +109,7 @@ public class ListSelector implements CodeListSelector {
 			public String getText(Object element) {
 				if (element instanceof CodeList) {
 					CodeList codeList = (CodeList) element;
-					return codeList.getIdentifier() + " (" + codeList.getNamespace() + ")";
+					return codeList.getIdentifier() + " (" + codeList.getNamespace() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				else {
 					return super.getText(element);
@@ -143,11 +144,11 @@ public class ListSelector implements CodeListSelector {
 						info.setText(desc);
 					}
 					else {
-						info.setText("No description");
+						info.setText(Messages.getString("ListSelector.4")); //$NON-NLS-1$
 					}
 				}
 				else {
-					info.setText("No description");
+					info.setText(Messages.getString("ListSelector.5")); //$NON-NLS-1$
 				}
 			}
 		});

@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.wizards.io.FeatureTypeList;
 import eu.esdihumboldt.hale.rcp.wizards.io.FeatureTypeList.TypeSelectionListener;
 
@@ -44,10 +45,10 @@ public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
 	 * @param capsPage the capabilities page
 	 */
 	public FeatureTypesPage(WfsConfiguration configuration, CapabilitiesPage capsPage) {
-		super(configuration, capsPage, "Feature types");
+		super(configuration, capsPage, Messages.getString("FeatureTypesPage.0")); //$NON-NLS-1$
 		
-		setTitle("Feature type selection");
-		setMessage("Select the namespace and feature types for the import");
+		setTitle(Messages.getString("FeatureTypesPage.1")); //$NON-NLS-1$
+		setMessage(Messages.getString("FeatureTypesPage.2")); //$NON-NLS-1$
 	}
 
 	/**
@@ -121,7 +122,7 @@ public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
 			if (ns != null) {
 				valid = list.getNamespace().equals(ns);
 				if (!valid) {
-					setErrorMessage("Namespace must match source schema namespace: " + ns);
+					setErrorMessage(Messages.getString("FeatureTypesPage.3") + ns); //$NON-NLS-1$
 				}
 			}
 		}
@@ -131,7 +132,7 @@ public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
 			List<FeatureType> selection = list.getSelection();
 			valid = selection != null && !selection.isEmpty();
 			if (!valid) {
-				setErrorMessage("Empty selection");
+				setErrorMessage(Messages.getString("FeatureTypesPage.4")); //$NON-NLS-1$
 			}
 		}
 		

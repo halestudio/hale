@@ -50,7 +50,7 @@ public class IdentifierFunctionWizardFactory implements FunctionWizardFactory {
 		if (!target.isAttribute()) {
 			return false;
 		}
-		if (!target.getPropertyType().getName().getLocalPart().equals("IdentifierPropertyType")) {
+		if (!target.getPropertyType().getName().getLocalPart().equals("IdentifierPropertyType")) { //$NON-NLS-1$
 			return false;
 		}
 		

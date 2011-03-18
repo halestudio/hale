@@ -77,7 +77,7 @@ public class TransformationResultItem {
 	 * @param line occurrence
 	 */
 	public void addLine(int line) {
-		this.addLine(""+line);
+		this.addLine(""+line); //$NON-NLS-1$
 	}
 	
 	/**

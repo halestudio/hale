@@ -129,9 +129,9 @@ public class GMLStreamWriter {
     public GMLStreamWriter( GMLVersion version, XMLStreamWriter xmlStream ) throws XMLStreamException {
         this.version = version;
         this.xmlStream = xmlStream;
-        xmlStream.setPrefix( "ogc", OGCNS );
-        xmlStream.setPrefix( "gml", version != GML_32 ? GMLNS : GML3_2_NS );
-        xmlStream.setPrefix( "xlink", XLNNS );
+        xmlStream.setPrefix( "ogc", OGCNS ); //$NON-NLS-1$
+        xmlStream.setPrefix( "gml", version != GML_32 ? GMLNS : GML3_2_NS ); //$NON-NLS-1$
+        xmlStream.setPrefix( "xlink", XLNNS ); //$NON-NLS-1$
     }
 
     /**
@@ -277,7 +277,7 @@ public class GMLStreamWriter {
         } else if ( object instanceof Definition ) {
             write( (Definition) object );
         } else {
-            throw new XMLStreamException( "Unhandled GMLObject: " + object );
+            throw new XMLStreamException( "Unhandled GMLObject: " + object ); //$NON-NLS-1$
         }
     }
 

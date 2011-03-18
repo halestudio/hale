@@ -17,6 +17,8 @@ import java.net.URISyntaxException;
 
 import org.eclipse.swt.widgets.Composite;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * Editor for URIs
  *
@@ -56,7 +58,7 @@ public class URIAttributeEditor extends StringValidatingAttributeEditor<URI> {
 	 */
 	@Override
 	protected String getValidToolTip() {
-		return "The value you entered is a valid URI";
+		return Messages.getString("URIAttributeEditor.0"); //$NON-NLS-1$
 	}
 
 	/**

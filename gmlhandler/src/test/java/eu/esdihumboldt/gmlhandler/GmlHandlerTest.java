@@ -51,18 +51,18 @@ public class GmlHandlerTest {
 	private static final Logger LOG = Logger.getLogger(GmlHandlerTest.class);
 
 	/** http-based URL for the application schema */
-	private static final String SCHEMA_URL = "http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst.corefunctions/src/test/resource/eu/esdihumboldt/cst/corefunctions/inspire/inspire_v3.0_xsd/"
-			+ "HydroPhysicalWaters.xsd";
+	private static final String SCHEMA_URL = "http://svn.esdi-humboldt.eu/repo/humboldt2/trunk/cst/eu.esdihumboldt.cst.corefunctions/src/test/resource/eu/esdihumboldt/cst/corefunctions/inspire/inspire_v3.0_xsd/" //$NON-NLS-1$
+			+ "HydroPhysicalWaters.xsd"; //$NON-NLS-1$
 
 	/** generated instance location */
-	private static final String GML32_GENERATED_LOCATION = "src/test/resources/generated.gml";
+	private static final String GML32_GENERATED_LOCATION = "src/test/resources/generated.gml"; //$NON-NLS-1$
 
 	/** handler to proceed gmldata */
 	private static GmlHandler gmlHandler;
 	
 	/** URL of XSD for tests **/
-	private static final String xsdUrl = 	"file://" + (new GmlHandlerTest()).getClass()
-										  .getResource("./HydroPhysicalWaters.xsd").getFile();
+	private static final String xsdUrl = 	"file://" + (new GmlHandlerTest()).getClass() //$NON-NLS-1$
+										  .getResource("./HydroPhysicalWaters.xsd").getFile(); //$NON-NLS-1$
 
 	/**
 	 * @throws java.lang.Exception
@@ -123,34 +123,34 @@ public class GmlHandlerTest {
 		assertEquals(17, rootFTypes.length);
 
 		for (FeatureType rootType : rootFTypes) {
-			LOG.debug("Root Feature Type : "
-					+ rootType.getName().getNamespaceURI() + ":"
+			LOG.debug("Root Feature Type : " //$NON-NLS-1$
+					+ rootType.getName().getNamespaceURI() + ":" //$NON-NLS-1$
 					+ rootType.getName().getLocalPart());
 		}
 
 		// Compare the count of the FeatureTypes
 		FeatureType[] ftypes = schema.getFeatureTypes();
 		for (FeatureType ftype : ftypes) {
-			LOG.debug("Application Schema Type : "
-					+ ftype.getName().getNamespaceURI() + ":"
+			LOG.debug("Application Schema Type : " //$NON-NLS-1$
+					+ ftype.getName().getNamespaceURI() + ":" //$NON-NLS-1$
 					+ ftype.getName().getLocalPart());
 			// validate a single Feature Type
-			if (ftype.getName().getLocalPart().equals("Rapids")) {
-				assertEquals("hy-p", ftype.getName().getPrefix());
+			if (ftype.getName().getLocalPart().equals("Rapids")) { //$NON-NLS-1$
+				assertEquals("hy-p", ftype.getName().getPrefix()); //$NON-NLS-1$
 				assertEquals(
-						"urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0",
+						"urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0", //$NON-NLS-1$
 						ftype.getName().getNamespaceURI());
 				// check parent type
 				FeatureType pType = schema.getParentFt(ftype);
-				LOG.debug("Parent Typy of hy-p:Rapids is "
+				LOG.debug("Parent Typy of hy-p:Rapids is " //$NON-NLS-1$
 						+ pType.getName().toString());
-				assertEquals("FluvialPoint", pType.getName().getLocalPart());
+				assertEquals("FluvialPoint", pType.getName().getLocalPart()); //$NON-NLS-1$
 				// check property declarations list
 				List<PropertyType> pDeclarations = ftype
 						.getPropertyDeclarations();
 				assertEquals(8, pDeclarations.size());
 				for (PropertyType propType : pDeclarations) {
-					LOG.debug("Property List of hy-p:Rapids contains : "
+					LOG.debug("Property List of hy-p:Rapids contains : " //$NON-NLS-1$
 							+ propType.getName().toString());
 				}
 			}
@@ -195,11 +195,11 @@ public class GmlHandlerTest {
 			ClassCastException, XMLStreamException, FactoryConfigurationError,
 			IOException, ClassNotFoundException, InstantiationException,
 			IllegalAccessException, UnknownCRSException {
-		LOG.info("Reading of source Feature Collection..");
+		LOG.info("Reading of source Feature Collection.."); //$NON-NLS-1$
 		
 		gmlHandler.setSchemaUrl(xsdUrl);
-		String urlPath = "file://"
-				+ this.getClass().getResource("./va_target_v3.gml").getFile();
+		String urlPath = "file://" //$NON-NLS-1$
+				+ this.getClass().getResource("./va_target_v3.gml").getFile(); //$NON-NLS-1$
 		gmlHandler.setGmlUrl(urlPath);
 		// read FeatureCollection
 		FeatureCollection fc = null;
@@ -207,27 +207,27 @@ public class GmlHandlerTest {
 
 		// check feature collection size
 		assertEquals(998, fc.size());
-		LOG.info("Feature Collection made up of " + fc.size());
+		LOG.info("Feature Collection made up of " + fc.size()); //$NON-NLS-1$
 		// validate a single feature with id=Watercourses=VA.942
 
 		Iterator<Feature> fcIterator = fc.iterator();
-		LOG.info("Verifying of the single features");
+		LOG.info("Verifying of the single features"); //$NON-NLS-1$
 		while (fcIterator.hasNext()) {
 			Feature feature = fcIterator.next();
-			LOG.debug("Found feature with ID = " + feature.getId());
-			if (feature.getId().equals("Watercourses_VA.942")) {
-				LOG.info("Verifying feature with feature id = Watercourses_VA.942");
+			LOG.debug("Found feature with ID = " + feature.getId()); //$NON-NLS-1$
+			if (feature.getId().equals("Watercourses_VA.942")) { //$NON-NLS-1$
+				LOG.info("Verifying feature with feature id = Watercourses_VA.942"); //$NON-NLS-1$
 				// check feature name
-				assertEquals("Watercourse", feature.getName().getLocalPart());
+				assertEquals("Watercourse", feature.getName().getLocalPart()); //$NON-NLS-1$
 				// check feature property list
 				Property[] props = feature.getProperties();
 				assertEquals(18, props.length);
 				// check property localType
 				for (Property prop : props) {
-					LOG.debug("Found property " + prop.getName().toString());
-					if (prop.getName().getLocalPart().equals("localType")) {
-						LOG.info("Verifying of  Property Watercourse:localType");
-						assertEquals("Fluss, Bach", prop.getValue().toString());
+					LOG.debug("Found property " + prop.getName().toString()); //$NON-NLS-1$
+					if (prop.getName().getLocalPart().equals("localType")) { //$NON-NLS-1$
+						LOG.info("Verifying of  Property Watercourse:localType"); //$NON-NLS-1$
+						assertEquals("Fluss, Bach", prop.getValue().toString()); //$NON-NLS-1$
 					}
 				}
 			}

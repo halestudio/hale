@@ -50,7 +50,7 @@ public class NetworkSettingsDialog extends Dialog {
 		shell.setLayout(new GridLayout());
 		shell.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
                 | GridData.HORIZONTAL_ALIGN_FILL));
-		shell.setText("Configure your Network Settings");
+		shell.setText("Configure your Network Settings"); //$NON-NLS-1$
 		
 		this.createControls(shell);
 		
@@ -70,35 +70,35 @@ public class NetworkSettingsDialog extends Dialog {
 				GridData.GRAB_VERTICAL | GridData.FILL_VERTICAL));
 		
 		final Group proxyDefinitionArea = new Group(c, SWT.NONE);
-		proxyDefinitionArea.setText("Configure HTTP Proxy");
+		proxyDefinitionArea.setText("Configure HTTP Proxy"); //$NON-NLS-1$
 		proxyDefinitionArea.setLayout(new GridLayout());
 		proxyDefinitionArea.setLayoutData( new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
 		
 		// Proxy Host
 		final Label proxyHostLabel = new Label(proxyDefinitionArea, SWT.NONE);
-		proxyHostLabel.setText("Proxy Server Host");
-		proxyHostLabel.setToolTipText("Enter the Hostname of your Proxy Server");
+		proxyHostLabel.setText("Proxy Server Host"); //$NON-NLS-1$
+		proxyHostLabel.setToolTipText("Enter the Hostname of your Proxy Server"); //$NON-NLS-1$
 		final Text proxyHostText = new Text (proxyDefinitionArea, SWT.BORDER | SWT.SINGLE);
 		proxyHostText.setLayoutData(new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
 		proxyHostText.setText(
-				System.getProperty("http.proxyHost") == null 
-						? "" 
-						: System.getProperty("http.proxyHost"));
+				System.getProperty("http.proxyHost") == null  //$NON-NLS-1$
+						? ""  //$NON-NLS-1$
+						: System.getProperty("http.proxyHost")); //$NON-NLS-1$
 		proxyHostText.setEditable(true);
 		
 		// Proxy Port
 		final Label proxyPortLabel = new Label(proxyDefinitionArea, SWT.NONE);
-		proxyPortLabel.setText("Proxy Server Port");
-		proxyPortLabel.setToolTipText("Enter the Port of your Proxy Server");
+		proxyPortLabel.setText("Proxy Server Port"); //$NON-NLS-1$
+		proxyPortLabel.setToolTipText("Enter the Port of your Proxy Server"); //$NON-NLS-1$
 		final Text proxyPortText = new Text (proxyDefinitionArea, SWT.BORDER | SWT.SINGLE);
 		proxyPortText.setLayoutData(new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
 		proxyPortText.setText(
-				System.getProperty("http.proxyPort") == null 
-				? "" 
-				: System.getProperty("http.proxyPort"));
+				System.getProperty("http.proxyPort") == null  //$NON-NLS-1$
+				? ""  //$NON-NLS-1$
+				: System.getProperty("http.proxyPort")); //$NON-NLS-1$
 		proxyPortText.setEditable(true);
 		
 		// Cancel/Finish buttons
@@ -111,7 +111,7 @@ public class NetworkSettingsDialog extends Dialog {
 		
 		final Button finish = new Button(buttons, SWT.NONE);
 		finish.setAlignment(SWT.RIGHT);
-		finish.setText("Save Network Settings");
+		finish.setText("Save Network Settings"); //$NON-NLS-1$
 		finish.setEnabled(true);
 		finish.setSize(100, 24);
 		finish.addListener(SWT.Selection, new Listener () {
@@ -119,27 +119,27 @@ public class NetworkSettingsDialog extends Dialog {
 				String port = proxyPortText.getText();
 				String host = proxyHostText.getText();
 				// set System properties
-				if (port != null && !port.equals("")) {
-					System.setProperty("http.proxyPort", port);
+				if (port != null && !port.equals("")) { //$NON-NLS-1$
+					System.setProperty("http.proxyPort", port); //$NON-NLS-1$
 				}
 				else {
-					if (System.getProperty("http.proxyPort") != null) {
-						System.clearProperty("http.proxyPort");
+					if (System.getProperty("http.proxyPort") != null) { //$NON-NLS-1$
+						System.clearProperty("http.proxyPort"); //$NON-NLS-1$
 					}
 				}
-				if (host != null && !host.equals("")) {
-					System.setProperty("http.proxyHost", host);
+				if (host != null && !host.equals("")) { //$NON-NLS-1$
+					System.setProperty("http.proxyHost", host); //$NON-NLS-1$
 				}
 				else {
-					if (System.getProperty("http.proxyHost") != null) {
-						System.clearProperty("http.proxyHost");
+					if (System.getProperty("http.proxyHost") != null) { //$NON-NLS-1$
+						System.clearProperty("http.proxyHost"); //$NON-NLS-1$
 					}
 				}
 				
 				// store eclipse preferences for making settings persistent
 				IPreferenceStore preferences = HALEActivator.getDefault().getPreferenceStore();
-				preferences.putValue("http.proxyPort", port);
-				preferences.putValue("http.proxyHost", host);
+				preferences.putValue("http.proxyPort", port); //$NON-NLS-1$
+				preferences.putValue("http.proxyHost", host); //$NON-NLS-1$
 				
 				finish.getParent().getParent().getShell().dispose();
 			}

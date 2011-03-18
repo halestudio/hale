@@ -19,6 +19,7 @@ import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 import org.eclipse.equinox.security.storage.StorageException;
 import org.eclipse.jface.preference.IPreferenceStore;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 
 /**
@@ -75,7 +76,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer
 		// configure proxy user
 		String proxyUser = System.getProperty(CONNECTION_PROXY_USER);
 		if (proxyUser == null) {
-			proxyUser = "";
+			proxyUser = ""; //$NON-NLS-1$
 		}
 		store.setDefault(CONNECTION_PROXY_USER, proxyUser);
 		
@@ -87,19 +88,19 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer
 				secPref.node(SECURE_NODE_NAME).put(CONNECTION_PROXY_PASSWORD, proxyPassword, true);
 			}
 		} catch (StorageException e) {
-			log.warn("Error accessing secure preferences");
+			log.warn("Error accessing secure preferences"); //$NON-NLS-1$
 		}
 		
 		//configure non proxy hosts
 		String nonProxyHosts = System.getProperty(
 				PreferenceConstants.CONNECTION_NON_PROXY_HOSTS);
 		if (nonProxyHosts == null) {
-			nonProxyHosts = "";
+			nonProxyHosts = ""; //$NON-NLS-1$
 		}
 		store.setDefault(PreferenceConstants.CONNECTION_NON_PROXY_HOSTS,
 				nonProxyHosts);
 		
-		store.setDefault(PreferenceConstants.EXPORT_GRID_TEXT_COMMA, ",");
+		store.setDefault(PreferenceConstants.EXPORT_GRID_TEXT_COMMA, ","); //$NON-NLS-1$
 		store.setDefault(PreferenceConstants.EXPORT_GRID_TEXT_Z_PRECISION, 2);
 	}
 }

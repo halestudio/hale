@@ -35,7 +35,7 @@ public abstract class CellUtils {
 		ITransformation trans = cell.getEntity1().getTransformation();
 		String entityString = null;
 		if (trans != null) {
-			entityString = EntityUtils.asString(cell.getEntity1()) + " -> "
+			entityString = EntityUtils.asString(cell.getEntity1()) + " -> " //$NON-NLS-1$
 				+ EntityUtils.asString(cell.getEntity2());
 		}
 		else {
@@ -45,7 +45,7 @@ public abstract class CellUtils {
 		}
 		
 		if (trans != null) {
-			return trans.getService().toString() + " : " + entityString;
+			return trans.getService().toString() + " : " + entityString; //$NON-NLS-1$
 		}
 		else {
 			return entityString;

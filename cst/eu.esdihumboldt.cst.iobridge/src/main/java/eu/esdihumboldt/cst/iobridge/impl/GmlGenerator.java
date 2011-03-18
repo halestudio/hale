@@ -133,7 +133,7 @@ public class GmlGenerator {
 		this.appSchema = new ApplicationSchemaXSD(namespace, schemaLocation);
 
 		// 4. create Qname used by encoder
-		this.qName = new QName("http://www.opengis.net/gml",
+		this.qName = new QName("http://www.opengis.net/gml", //$NON-NLS-1$
 				gmlElement.FeatureCollection.name());
 
 		// 5. create encoder

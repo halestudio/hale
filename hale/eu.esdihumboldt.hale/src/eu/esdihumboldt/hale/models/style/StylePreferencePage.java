@@ -19,6 +19,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.map.MapView;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
@@ -47,7 +48,7 @@ public class StylePreferencePage extends FieldEditorPreferencePage
 		super(GRID);
 		
 		setPreferenceStore(HALEActivator.getDefault().getPreferenceStore());
-		setDescription("Edit the default styles"); 
+		setDescription(Messages.getString("StylePreferencePage.0"));  //$NON-NLS-1$
 	}
 
 	/**
@@ -55,13 +56,13 @@ public class StylePreferencePage extends FieldEditorPreferencePage
 	 */
 	@Override
 	protected void createFieldEditors() {
-		addField(new ColorFieldEditor(KEY_DEFAULT_BACKGROUND, "Default background", getFieldEditorParent()));
+		addField(new ColorFieldEditor(KEY_DEFAULT_BACKGROUND, Messages.getString("StylePreferencePage.1"), getFieldEditorParent())); //$NON-NLS-1$
 		
-		addField(new ColorFieldEditor(KEY_DEFAULT_COLOR, "Default style color", getFieldEditorParent()));
-		addField(new IntegerFieldEditor(KEY_DEFAULT_WIDTH, "Default line width", getFieldEditorParent()));
+		addField(new ColorFieldEditor(KEY_DEFAULT_COLOR, Messages.getString("StylePreferencePage.2"), getFieldEditorParent())); //$NON-NLS-1$
+		addField(new IntegerFieldEditor(KEY_DEFAULT_WIDTH, Messages.getString("StylePreferencePage.3"), getFieldEditorParent())); //$NON-NLS-1$
 		
-		addField(new ColorFieldEditor(KEY_SELECTION_COLOR, "Selection color", getFieldEditorParent()));
-		addField(new IntegerFieldEditor(KEY_SELECTION_WIDTH, "Selection line width", getFieldEditorParent()));
+		addField(new ColorFieldEditor(KEY_SELECTION_COLOR, Messages.getString("StylePreferencePage.4"), getFieldEditorParent())); //$NON-NLS-1$
+		addField(new IntegerFieldEditor(KEY_SELECTION_WIDTH, Messages.getString("StylePreferencePage.5"), getFieldEditorParent())); //$NON-NLS-1$
 	}
 
 	/**

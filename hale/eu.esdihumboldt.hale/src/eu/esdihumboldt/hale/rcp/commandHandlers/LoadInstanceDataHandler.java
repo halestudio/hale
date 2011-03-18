@@ -23,6 +23,7 @@ import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.rcp.wizards.io.InstanceDataImportWizard;
 
@@ -51,8 +52,8 @@ public class LoadInstanceDataHandler
 		}
 		else {
 			MessageDialog.openError(HandlerUtil.getActiveShell(event),
-				"No source schema", 
-				"Before loading source data you have to load the corresponding source schema.");
+				Messages.getString("LoadInstanceDataHandler.0"),  //$NON-NLS-1$
+				Messages.getString("LoadInstanceDataHandler.1")); //$NON-NLS-1$
 		}
 		
 		return null;

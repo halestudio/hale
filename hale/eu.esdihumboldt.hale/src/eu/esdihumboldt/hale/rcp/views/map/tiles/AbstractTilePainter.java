@@ -896,11 +896,11 @@ public abstract class AbstractTilePainter implements PaintListener,
 	            
 	            return result;
 			} catch (MismatchedDimensionException e) {
-				log.error("Error creating transformation", e);
+				log.error("Error creating transformation", e); //$NON-NLS-1$
 				return null;
 			}
 		} catch (Throwable e) {
-			log.debug("Error determinating geo coordinates");
+			log.debug("Error determinating geo coordinates"); //$NON-NLS-1$
 			return null;
 		}
 	}

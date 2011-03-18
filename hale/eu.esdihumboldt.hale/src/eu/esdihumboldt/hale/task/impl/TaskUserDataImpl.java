@@ -25,7 +25,7 @@ public class TaskUserDataImpl implements TaskUserData {
 	
 	private TaskStatus status = TaskStatus.ACTIVE;
 	
-	private String comment = "";
+	private String comment = ""; //$NON-NLS-1$
 
 	/**
 	 * @see TaskUserData#getTaskStatus()

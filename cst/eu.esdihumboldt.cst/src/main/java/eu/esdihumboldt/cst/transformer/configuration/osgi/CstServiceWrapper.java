@@ -72,7 +72,7 @@ public class CstServiceWrapper implements CstService {
 	 * @see CstService#transform(Feature, ICell)
 	 */
 	public Feature transform(Feature f, ICell c) {
-		ATransaction trans = log.begin("CST: Feature transformation");
+		ATransaction trans = log.begin("CST: Feature transformation"); //$NON-NLS-1$
 		try {
 			return cstService.transform(f, c);
 		}
@@ -87,7 +87,7 @@ public class CstServiceWrapper implements CstService {
 	public FeatureCollection<? extends FeatureType, ? extends Feature> transform(
 			FeatureCollection<? extends FeatureType, ? extends Feature> fc,
 			IAlignment al, Set<FeatureType> targetSchema) {
-		ATransaction trans = log.begin("CST: FeatureCollection transformation");
+		ATransaction trans = log.begin("CST: FeatureCollection transformation"); //$NON-NLS-1$
 		try {
 			return cstService.transform(fc, al, targetSchema);
 		}

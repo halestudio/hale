@@ -40,11 +40,11 @@ public class SearchPathLabelProvider extends MultiColumnTreeNodeLabelProvider {
 		super(0);
 		
 		searchpath_img = AbstractUIPlugin.imageDescriptorFromPlugin(
-				HALEActivator.PLUGIN_ID, "/icons/open.gif").createImage();
+				HALEActivator.PLUGIN_ID, "/icons/open.gif").createImage(); //$NON-NLS-1$
 		codelist_img = AbstractUIPlugin.imageDescriptorFromPlugin(
-				HALEActivator.PLUGIN_ID, "/icons/attribute.gif").createImage();
+				HALEActivator.PLUGIN_ID, "/icons/attribute.gif").createImage(); //$NON-NLS-1$
 		value_img = AbstractUIPlugin.imageDescriptorFromPlugin(
-				HALEActivator.PLUGIN_ID, "/icons/ok.gif").createImage();
+				HALEActivator.PLUGIN_ID, "/icons/ok.gif").createImage(); //$NON-NLS-1$
 	}
 
 	/**

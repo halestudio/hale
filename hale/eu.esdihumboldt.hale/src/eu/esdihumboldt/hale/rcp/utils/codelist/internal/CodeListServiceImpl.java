@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.utils.codelist.CodeList;
 import eu.esdihumboldt.hale.rcp.utils.codelist.CodeListService;
 
@@ -61,7 +62,7 @@ public class CodeListServiceImpl implements CodeListService {
 			initialized = true;
 		}
 		
-		String key = namespace + "/" + identifier;
+		String key = namespace + "/" + identifier; //$NON-NLS-1$
 		return searchPathCodeLists.get(key);
 	}
 
@@ -116,7 +117,7 @@ public class CodeListServiceImpl implements CodeListService {
 					cachedAttributeCodeLists.put(attributeIdentifier, codeList);
 					return codeList;
 				} catch (Exception e) {
-					log.error("Error loading code list from " + location);
+					log.error("Error loading code list from " + location); //$NON-NLS-1$
 				}
 			}
 			return null;
@@ -155,12 +156,12 @@ public class CodeListServiceImpl implements CodeListService {
 			
 			@Override
 			public boolean accept(File dir, String name) {
-				return name.toLowerCase().endsWith(".xml");
+				return name.toLowerCase().endsWith(".xml"); //$NON-NLS-1$
 			}
 		});
 		
 		if (candidates == null) {
-			log.warn("No potential code list files found in " + path);
+			log.warn("No potential code list files found in " + path); //$NON-NLS-1$
 		}
 		else {
 			for (File candidate : candidates) {
@@ -182,11 +183,11 @@ public class CodeListServiceImpl implements CodeListService {
 	private void addSearchPathCodeList(InputStream in, URI location) {
 		try {
 			CodeList codeList = new XmlCodeList(in, location);
-			String key = codeList.getNamespace() + "/" + codeList.getIdentifier();
+			String key = codeList.getNamespace() + "/" + codeList.getIdentifier(); //$NON-NLS-1$
 			searchPathCodeLists.put(key, codeList);
 		} catch (Exception e) {
 			// ignore
-			log.debug("Tried to load code list but failed", e);
+			log.debug("Tried to load code list but failed", e); //$NON-NLS-1$
 		}
 	}
 

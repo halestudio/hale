@@ -65,7 +65,7 @@ public class RecentFilesMenu extends ContributionItem {
 				IRunnableWithProgress op = OpenAlignmentProjectWizard.createOpenProjectRunnable(file);
 			    new ProgressMonitorDialog(display.getActiveShell()).run(true, false, op);
 			} catch (Exception e1) {
-				log.userError("Error opening project file: " + file, e1);
+				log.userError("Error opening project file: " + file, e1); //$NON-NLS-1$
 			}
 		}
 	}

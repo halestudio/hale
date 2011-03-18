@@ -40,6 +40,7 @@ import org.opengis.metadata.lineage.Lineage;
 import org.opengis.metadata.lineage.ProcessStep;
 
 import eu.esdihumboldt.cst.transformer.service.rename.FeatureBuilder;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNodeLabelProvider;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
@@ -75,7 +76,7 @@ public class DefinitionFeatureTreeViewer {
 		treeViewer.getTree().setHeaderVisible(true);
 		treeViewer.getTree().setLinesVisible(true);
 		
-		treeViewer.getTree().setToolTipText("");
+		treeViewer.getTree().setToolTipText(Messages.getString("DefinitionFeatureTreeViewer.0")); //$NON-NLS-1$
 		
 		setInput(null, null);
 	}
@@ -98,11 +99,11 @@ public class DefinitionFeatureTreeViewer {
 		// create row definitions from type definition
 		if (type != null) {
 			DefaultTreeNode root = new DefaultTreeNode();
-			DefaultTreeNode attributes = new DefaultTreeNode("Attributes");
+			DefaultTreeNode attributes = new DefaultTreeNode(Messages.getString("DefinitionFeatureTreeViewer.1")); //$NON-NLS-1$
 			root.addChild(attributes);
 			addProperties(attributes, type.getType(), new HashSet<TypeDefinition>());
 			
-			DefaultTreeNode metadata = new DefaultTreeNode("Metadata");
+			DefaultTreeNode metadata = new DefaultTreeNode(Messages.getString("DefinitionFeatureTreeViewer.2")); //$NON-NLS-1$
 			root.addChild(metadata);
 			
 			// create row defs for metadata
@@ -112,7 +113,7 @@ public class DefinitionFeatureTreeViewer {
 				int featuresSize = 0;
 				for (Feature f : features) {
 					featuresSize++;
-					Lineage l = (Lineage) f.getUserData().get("METADATA_LINEAGE");
+					Lineage l = (Lineage) f.getUserData().get("METADATA_LINEAGE"); //$NON-NLS-1$
 					if (l != null && l.getProcessSteps().size() > 0) {
 						displayLineage = true;
 						if (lineageLength < l.getProcessSteps().size()) {
@@ -125,7 +126,7 @@ public class DefinitionFeatureTreeViewer {
 					Object[][] processStepsText = new Object[lineageLength][featuresSize + 1];
 					int featureIndex = 0;
 					for (Feature f : features) {
-						Lineage l = (Lineage) f.getUserData().get("METADATA_LINEAGE");
+						Lineage l = (Lineage) f.getUserData().get("METADATA_LINEAGE"); //$NON-NLS-1$
 						if (l != null && l.getProcessSteps().size() > 0) {
 							int psIndex = 0;
 							for (ProcessStep ps : l.getProcessSteps()) {
@@ -136,10 +137,10 @@ public class DefinitionFeatureTreeViewer {
 						featureIndex++;
 					}
 					
-					DefaultTreeNode lineage = new DefaultTreeNode("Lineage");
+					DefaultTreeNode lineage = new DefaultTreeNode(Messages.getString("DefinitionFeatureTreeViewer.5")); //$NON-NLS-1$
 					metadata.addChild(lineage);
 					for (int i = 0; i < lineageLength; i++) {
-						processStepsText[i][0] = "Process Step " + (i + 1);
+						processStepsText[i][0] = Messages.getString("DefinitionFeatureTreeViewer.6") + (i + 1); //$NON-NLS-1$
 						DefaultTreeNode processStep = new DefaultTreeNode(processStepsText[i]);
 						lineage.addChild(processStep);
 					}
@@ -234,7 +235,7 @@ public class DefinitionFeatureTreeViewer {
 	private void addProperties(DefaultTreeNode parent,
 			TypeDefinition type, Set<TypeDefinition> resolving) {
 		if (resolving.contains(type)) {
-			_log.debug("Cycle in properties, skipping adding property items");
+			_log.debug("Cycle in properties, skipping adding property items"); //$NON-NLS-1$
 			return;
 		}
 		else {
@@ -261,7 +262,7 @@ public class DefinitionFeatureTreeViewer {
 				parent.addChild(childNode);
 			}
 			else {
-				_log.warn("An attribute without an AttributeType was encountered: " + name);
+				_log.warn("An attribute without an AttributeType was encountered: " + name); //$NON-NLS-1$
 			}
 		}
 	}

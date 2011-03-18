@@ -103,7 +103,7 @@ public class ConcatenationOfAttributesWizard extends AbstractSingleComposedCellW
 				ConcatenationOfAttributesFunction.SEPERATOR, this.mainPage
 						.getSeperatorText().getText()));
 
-		String temp = "";
+		String temp = ""; //$NON-NLS-1$
 		int i = 0;
 		for (String line : this.mainPage.getListViewer().getList().getItems()) {
 			temp = temp + line;

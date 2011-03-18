@@ -48,7 +48,7 @@ public class MappingExportWizardMainPage
 	
 	private FileFieldEditor ffe;
 	
-	private String selectedFormat = "";
+	private String selectedFormat = ""; //$NON-NLS-1$
 
 	/**
 	 * @param pageName
@@ -90,13 +90,12 @@ public class MappingExportWizardMainPage
 		final String[] items = new String[formats.keySet().size()];
 		int i = 0;
 		for (String name : formats.keySet()) {
-			items[i++] = name + " (" + formats.get(name) + ")";
+			items[i++] = name + " (" + formats.get(name) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		
 		final Label protocolVersionLabel = new Label(formatSelectionArea, SWT.NONE);
-		protocolVersionLabel.setText("Choose a format to export to:");
-		protocolVersionLabel.setToolTipText("Select one of the offered file " +
-				"formats to export your mapping to.");
+		protocolVersionLabel.setText(Messages.getString("MappingExportWizardMainPage.0")); //$NON-NLS-1$
+		protocolVersionLabel.setToolTipText(Messages.getString("MappingExportWizardMainPage.1")); //$NON-NLS-1$
 		final Combo formatCombo = new Combo (formatSelectionArea, SWT.READ_ONLY);
 		formatCombo.setItems(items);
 		formatCombo.setLayoutData(new GridData(
@@ -130,7 +129,7 @@ public class MappingExportWizardMainPage
 		Composite ffe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ffe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		this.ffe = new FileFieldEditor("fileSelect", 
+		this.ffe = new FileFieldEditor("fileSelect",  //$NON-NLS-1$
 				Messages.MappingExportWizardMainPage_File, ffe_container);
 		this.ffe.getTextControl(ffe_container).addModifyListener(new ModifyListener(){
 			public void modifyText(ModifyEvent e) {
@@ -147,7 +146,7 @@ public class MappingExportWizardMainPage
 	 */
 	@Override
 	public boolean isPageComplete() {
-		if (this.selectedFormat.equals("")) {
+		if (this.selectedFormat.equals("")) { //$NON-NLS-1$
 			return false;
 		}
 		if (this.ffe == null) {
@@ -173,7 +172,7 @@ public class MappingExportWizardMainPage
 	 * @return the name of the selected Format.
 	 */
 	public String getSelectedFormatName() {
-		return this.selectedFormat.substring(0, this.selectedFormat.indexOf(" ("));
+		return this.selectedFormat.substring(0, this.selectedFormat.indexOf(" (")); //$NON-NLS-1$
 	}
 
 }

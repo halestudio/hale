@@ -375,7 +375,7 @@ public class TileCache implements TileProvider {
 						width,
 						height);
 			} catch (IllegalArgumentException e) {
-				log.debug("Error drawing loading image", e);
+				log.debug("Error drawing loading image", e); //$NON-NLS-1$
 			}
 			
 			return drawImage.getImageData();

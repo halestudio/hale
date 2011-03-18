@@ -66,12 +66,12 @@ public class EntityTypeConditionTest {
 						}
 					}
 					catch (ClassNotFoundException e) {
-						fail("typeCondition class can't be created for " +
-								"entity1 in " + f.getClass().toString());
+						fail("typeCondition class can't be created for " + //$NON-NLS-1$
+								"entity1 in " + f.getClass().toString()); //$NON-NLS-1$
 					}
 					catch (NullPointerException e) {
-						fail("typeCondition doesn't exist for entity1 for" +
-								"function " + f.getClass().toString());
+						fail("typeCondition doesn't exist for entity1 for" + //$NON-NLS-1$
+								"function " + f.getClass().toString()); //$NON-NLS-1$
 					}
 
 				}
@@ -85,12 +85,12 @@ public class EntityTypeConditionTest {
 						}
 					}
 					catch (ClassNotFoundException e) {
-						fail("typeCondition class can't be created for " +
-								"entity2 in " + f.getClass().toString());
+						fail("typeCondition class can't be created for " + //$NON-NLS-1$
+								"entity2 in " + f.getClass().toString()); //$NON-NLS-1$
 					}
 					catch (NullPointerException e) {
-						fail("typeCondition doesn't exist for entity2 for" +
-								"function " + f.getClass().toString());
+						fail("typeCondition doesn't exist for entity2 for" + //$NON-NLS-1$
+								"function " + f.getClass().toString()); //$NON-NLS-1$
 					}
 
 				}

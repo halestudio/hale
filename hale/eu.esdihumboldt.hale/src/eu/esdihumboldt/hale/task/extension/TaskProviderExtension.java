@@ -29,7 +29,7 @@ public class TaskProviderExtension {
 	/**
 	 * The extension point ID
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.task.TaskProvider";
+	public static final String ID = "eu.esdihumboldt.hale.task.TaskProvider"; //$NON-NLS-1$
 	
 	/**
 	 * Get the defined task provider factories

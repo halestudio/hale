@@ -116,7 +116,7 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 	 */
 	protected TypeDefinition checkAttributeType(TypeDefinition typeDef) {
 		// inspire geometry attributes
-		if (getName().equalsIgnoreCase("geometry") && typeDef != null && 
+		if (getName().equalsIgnoreCase("geometry") && typeDef != null &&  //$NON-NLS-1$
 				!Geometry.class.isAssignableFrom(typeDef.getType(null).getBinding())) {
 			return createDefaultGeometryType(typeDef);
 		}
@@ -126,7 +126,7 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 //			return createDefaultGeometryType(typeDef);
 //		}
 		// geometric primitive property types
-		else if (typeDef != null && typeDef.getName().getLocalPart().equals("GeometricPrimitivePropertyType") &&
+		else if (typeDef != null && typeDef.getName().getLocalPart().equals("GeometricPrimitivePropertyType") && //$NON-NLS-1$
 				!Geometry.class.isAssignableFrom(typeDef.getType(null).getBinding())) {
 			return createDefaultGeometryType(typeDef);
 		}
@@ -201,8 +201,8 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 		TypeDefinition attType = getAttributeType();
 		if (attType != null) {
 			if (resolving != null && resolving.contains(attType)) {
-				log.warn("Cycle detected, skipping creation of attribute descriptor "
-						+ getName() + ":" + attType.getDisplayName() + " in " + getDeclaringType().getDisplayName());
+				log.warn("Cycle detected, skipping creation of attribute descriptor " //$NON-NLS-1$
+						+ getName() + ":" + attType.getDisplayName() + " in " + getDeclaringType().getDisplayName()); //$NON-NLS-1$ //$NON-NLS-2$
 				return null;
 			}
 			else {

@@ -58,6 +58,7 @@ import de.cs3d.util.logging.ALoggerFactory;
 
 import eu.esdihumboldt.cst.transformer.CstService;
 import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
+import eu.esdihumboldt.hale.Messages;
 
 /**
  * Dialog showing the functions registered with the CST
@@ -116,7 +117,7 @@ public class ListFunctionsDialog extends TitleAreaDialog {
 		@Override
 		public String getText(Object element) {
 			FunctionDescription function = (FunctionDescription) element;
-			String descr = "";
+			String descr = ""; //$NON-NLS-1$
 			if (function.getFunctionDescription()!=null)
 				descr = function.getFunctionDescription().toString().trim();
 			return descr;
@@ -141,7 +142,7 @@ public class ListFunctionsDialog extends TitleAreaDialog {
 	protected Control createContents(Composite parent) {
 		Control control = super.createContents(parent);
 		
-		setTitle("Functions that are currently registered with the CST");
+		setTitle(Messages.getString("ListFunctionsDialog.1")); //$NON-NLS-1$
 		//setMessage("");
 		
 		return control;
@@ -154,7 +155,7 @@ public class ListFunctionsDialog extends TitleAreaDialog {
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		
-		newShell.setText("Available functions");
+		newShell.setText(Messages.getString("ListFunctionsDialog.2")); //$NON-NLS-1$
 	}
 
 	/**
@@ -286,14 +287,14 @@ public class ListFunctionsDialog extends TitleAreaDialog {
 			
 			titles[i]=functions.get(i).getFunctionDescription();
 			urls[i]=functions.get(i).getFunctionDescription();
-			if (urls[i]==null) urls[i]="";
+			if (urls[i]==null) urls[i]=Messages.getString("ListFunctionsDialog.3"); //$NON-NLS-1$
 		}
 		try {
 			browser = new Browser(form, SWT.NONE|SWT.WRAP);
 		} catch (SWTError e) {
 			MessageBox messageBox = new MessageBox(parent.getShell(), SWT.ICON_ERROR | SWT.OK);
-			messageBox.setMessage("Closing application. The Browser could not be initialized.");
-			messageBox.setText("Error during browser initialization");
+			messageBox.setMessage(Messages.getString("ListFunctionsDialog.4")); //$NON-NLS-1$
+			messageBox.setText(Messages.getString("ListFunctionsDialog.5")); //$NON-NLS-1$
 			messageBox.open();
 		}
 		/*back.addListener(SWT.Selection, new Listener() {
@@ -309,7 +310,7 @@ public class ListFunctionsDialog extends TitleAreaDialog {
 		list.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				int index = list.getSelectionIndex();
-				if(urls[index].startsWith("file:")||urls[index].startsWith("http:"))
+				if(urls[index].startsWith("file:")||urls[index].startsWith("http:")) //$NON-NLS-1$ //$NON-NLS-2$
 					browser.setUrl(urls[index]);
 				else
 					browser.setText(urls[index]);

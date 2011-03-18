@@ -80,7 +80,7 @@ public class BaseTask implements Task, Comparable<Task> {
 			return context.get(0);
 		}
 		else {
-			throw new IllegalStateException("No valid task context defined");
+			throw new IllegalStateException("No valid task context defined"); //$NON-NLS-1$
 		}
 	}
 

@@ -35,6 +35,7 @@ import org.opengis.feature.type.PropertyDescriptor;
 
 import com.vividsolutions.jts.geom.Geometry;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
@@ -132,7 +133,7 @@ public class FeatureFilterForm extends Composite {
 		featureTypeLabel.setFont(new Font(parent.getDisplay(),
 				labelFontData));
 
-		featureTypeLabel.setText("FeatureType: ");
+		featureTypeLabel.setText("FeatureType: "); //$NON-NLS-1$
 		
 		Control featureyTypeName;
 		if (definition != null) {
@@ -160,10 +161,10 @@ public class FeatureFilterForm extends Composite {
 		labelFontData.setStyle(SWT.BOLD);
 		extentLabel.setFont(new Font(parent.getDisplay(), labelFontData));
 
-		extentLabel.setText("Extent: ");
+		extentLabel.setText("Extent: "); //$NON-NLS-1$
 		// Xmin,Ymin,Xmax, Ymax area
 		extentXmin = new Text(this, SWT.BORDER);
-		extentXmin.setText("X_MIN");
+		extentXmin.setText("X_MIN"); //$NON-NLS-1$
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
 		gd.horizontalSpan = 1;
@@ -171,7 +172,7 @@ public class FeatureFilterForm extends Composite {
 		extentXmin.setLayoutData(gd);
 		
 		extentYmin = new Text(this, SWT.BORDER);
-		extentYmin.setText("Y_MIN");
+		extentYmin.setText("Y_MIN"); //$NON-NLS-1$
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
 		gd.horizontalSpan = 1;
@@ -179,7 +180,7 @@ public class FeatureFilterForm extends Composite {
 		extentYmin.setLayoutData(gd);
 
 		extentXmax = new Text(this, SWT.BORDER);
-		extentXmax.setText("X_MAX");
+		extentXmax.setText("X_MAX"); //$NON-NLS-1$
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
 		gd.horizontalSpan = 1;
@@ -187,7 +188,7 @@ public class FeatureFilterForm extends Composite {
 		extentXmax.setLayoutData(gd);
 
 		extentYmax = new Text(this, SWT.BORDER);
-		extentYmax.setText("Y_MAX");
+		extentYmax.setText("Y_MAX"); //$NON-NLS-1$
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
 		gd.horizontalSpan = 1;
@@ -206,7 +207,7 @@ public class FeatureFilterForm extends Composite {
 		//gd.grabExcessHorizontalSpace = true;
 		gd.horizontalSpan = 2;
 		this.geomProperties.setLayoutData(gd);
-		this.geomProperties.setText("select geometry property");
+		this.geomProperties.setText("select geometry property"); //$NON-NLS-1$
 		// read attributes from the schema service
 		for (String name : attributeNames) {
 			//TODO determine geometry property types
@@ -214,7 +215,7 @@ public class FeatureFilterForm extends Composite {
 			if (property != null && Geometry.class.isAssignableFrom(property.getType().getBinding())) {
 				geomProperties.add(name);
 			}
-			else if (name.contains("geom")) {	
+			else if (name.contains("geom")) {	 //$NON-NLS-1$
             	geomProperties.add(name);
             }
 		}
@@ -224,7 +225,7 @@ public class FeatureFilterForm extends Composite {
 			@Override
 			public void handleEvent(Event event) {
 				int selectionIndex = geomProperties.getSelectionIndex();
-				_log.debug("Selected Property: "
+				_log.debug("Selected Property: " //$NON-NLS-1$
 						+ geomProperties.getItem(selectionIndex));
 
 				selectedGeomProperty.setText(geomProperties
@@ -236,7 +237,7 @@ public class FeatureFilterForm extends Composite {
 		
 		
 		extentSRS = new Text(this, SWT.BORDER);
-		extentSRS.setText("SRS");
+		extentSRS.setText("SRS"); //$NON-NLS-1$
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
 		gd.horizontalSpan = 2;
@@ -250,14 +251,14 @@ public class FeatureFilterForm extends Composite {
 		labelFontData.setStyle(SWT.BOLD);
 		propertyLabel
 				.setFont(new Font(parent.getDisplay(), labelFontData));
-		propertyLabel.setText("By Property: ");
+		propertyLabel.setText("By Property: "); //$NON-NLS-1$
 		final Combo attributesCombo = new Combo(this, SWT.NULL);
 		selectedAttribute = new Text(attributesCombo, SWT.NULL);
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
 		gd.horizontalSpan = 4;
 		attributesCombo.setLayoutData(gd);
-		attributesCombo.setText("select attribute");
+		attributesCombo.setText("select attribute"); //$NON-NLS-1$
 		// read attributes from the schema service
 		for (String name : attributeNames) {
 			attributesCombo.add(name);
@@ -268,7 +269,7 @@ public class FeatureFilterForm extends Composite {
 			@Override
 			public void handleEvent(Event event) {
 				int selectionIndex = attributesCombo.getSelectionIndex();
-				_log.debug("Selected Property: "
+				_log.debug("Selected Property: " //$NON-NLS-1$
 						+ attributesCombo.getItem(selectionIndex));
 
 				selectedAttribute.setText(attributesCombo
@@ -286,17 +287,17 @@ public class FeatureFilterForm extends Composite {
 		labelFontData.setStyle(SWT.BOLD);
 		operatorsLabel
 				.setFont(new Font(parent.getDisplay(), labelFontData));
-		operatorsLabel.setText("OperatorType: ");
+		operatorsLabel.setText("OperatorType: "); //$NON-NLS-1$
 		final Combo operatorsCombo = new Combo(this, SWT.NULL);
 		selectedOperator = new Text(operatorsCombo, SWT.NULL);
 		operatorsCombo.setLayoutData(gd);
-		operatorsCombo.setText("select Operator Type");
+		operatorsCombo.setText("select Operator Type"); //$NON-NLS-1$
 		// TODO read attributes from the schema service
-		String[] operators = new String[] { "PropertyIsEqualTo",
-				"PropertyIsNotEqualTo", "PropertyIsLessThan",
-				"PropertyIsGreaterThan", "PropertyIsLessThanOrEqualTo",
-				"PropertyIsGreaterThanOrEqualTo", "PropertyIsLike",
-				"PropertyIsNull", "PropertyIsBetween" };
+		String[] operators = new String[] { "PropertyIsEqualTo", //$NON-NLS-1$
+				"PropertyIsNotEqualTo", "PropertyIsLessThan", //$NON-NLS-1$ //$NON-NLS-2$
+				"PropertyIsGreaterThan", "PropertyIsLessThanOrEqualTo", //$NON-NLS-1$ //$NON-NLS-2$
+				"PropertyIsGreaterThanOrEqualTo", "PropertyIsLike", //$NON-NLS-1$ //$NON-NLS-2$
+				"PropertyIsNull", "PropertyIsBetween" }; //$NON-NLS-1$ //$NON-NLS-2$
 		for (int i = 0; i < operators.length; i++) {
 			operatorsCombo.add(operators[i]);
 		}
@@ -310,7 +311,7 @@ public class FeatureFilterForm extends Composite {
 				disposeValueFields();
 				
 				int selectionIndex = operatorsCombo.getSelectionIndex();
-				_log.debug("Selected Operator: "
+				_log.debug("Selected Operator: " //$NON-NLS-1$
 						+ operatorsCombo.getItem(selectionIndex));
 				selectedOperator
 						.setText(operatorsCombo.getItem(selectionIndex));
@@ -342,7 +343,7 @@ public class FeatureFilterForm extends Composite {
 
 					// TODO replace it with the selected source FeatureType
 					// value
-					intervallBegin.setText("Begin");
+					intervallBegin.setText("Begin"); //$NON-NLS-1$
 					GridData gd = new GridData();
 					gd.horizontalAlignment = SWT.FILL;
 					gd.grabExcessHorizontalSpace = true;
@@ -372,7 +373,7 @@ public class FeatureFilterForm extends Composite {
 
 					// TODO replace it with the selected source FeatureType
 					// value
-					intervallEnd.setText("End");
+					intervallEnd.setText("End"); //$NON-NLS-1$
 					gd = new GridData();
 					gd.horizontalAlignment = SWT.FILL;
 					gd.grabExcessHorizontalSpace = true;
@@ -395,14 +396,14 @@ public class FeatureFilterForm extends Composite {
 					comparisonValueLabel.setFont(new Font(FeatureFilterForm.this.getParent()
 							.getDisplay(), labelFontData));
 
-					comparisonValueLabel.setText("Value: ");
+					comparisonValueLabel.setText("Value: "); //$NON-NLS-1$
 					// this.featureTypeEditor = new Text(composite,SWT.BORDER |
 					// SWT.WRAP| SWT.MULTI |SWT.V_SCROLL );
 					attributeValue = new Text(FeatureFilterForm.this, SWT.BORDER);
 
 					// TODO replace it with the selected source FeatureType
 					// value
-					attributeValue.setText("Value");
+					attributeValue.setText("Value"); //$NON-NLS-1$
 					gd = new GridData();
 					gd.horizontalAlignment = SWT.FILL;
 					gd.grabExcessHorizontalSpace = true;
@@ -440,19 +441,19 @@ public class FeatureFilterForm extends Composite {
 	 * @return CQL expression based on the pageinput.
 	 */
 	public String buildCQL() {
-		String CQLexpression = "";
+		String CQLexpression = ""; //$NON-NLS-1$
 		
 		//1. Bild CQL using BBOX
 		
 		CQLexpression = buildBBOX();
 		
-		if (!CQLexpression.equals(""))
-			CQLexpression+= " AND ";
+		if (!CQLexpression.equals("")) //$NON-NLS-1$
+			CQLexpression+= " AND "; //$NON-NLS-1$
 		//2. build using property, comparison operator and comparison value
 
 		// get attribute name - String between ::
 		String fullPropertyName = selectedAttribute.getText();
-		int firstIndexOfColon = fullPropertyName.indexOf(":");
+		int firstIndexOfColon = fullPropertyName.indexOf(":"); //$NON-NLS-1$
 		// String attributeValue = attributeValue.getText();
 		String propertyLocalName = fullPropertyName
 				.substring(firstIndexOfColon + 1);
@@ -460,10 +461,10 @@ public class FeatureFilterForm extends Composite {
 		// ((selectedOperator.getText()).equals(CQLOperators.PropertyIsLike.name()))
 		// attributeValue = "'" + attributeValue + "'";
 		CQLexpression = propertyLocalName
-				+ " "
+				+ " " //$NON-NLS-1$
 				+ getCQLOperator(CQLOperators.valueOf(selectedOperator
 						.getText()));
-		_log.debug("CQL Expression " + CQLexpression);
+		_log.debug("CQL Expression " + CQLexpression); //$NON-NLS-1$
 
 		return CQLexpression;
 	}
@@ -474,10 +475,10 @@ public class FeatureFilterForm extends Composite {
 	 * @return the bounding box string
 	 */
 	private String buildBBOX() {
-		String BBOXCQL = "BBOX(" + selectedGeomProperty.getText() + "," + extentXmin.getText()+ "," + extentYmin.getText()+"," + extentXmax.getText()+  ","+ extentYmax.getText();
+		String BBOXCQL = "BBOX(" + selectedGeomProperty.getText() + "," + extentXmin.getText()+ "," + extentYmin.getText()+"," + extentXmax.getText()+  ","+ extentYmax.getText(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		//SRS Attribute is optional
-	    if (!extentSRS.getText().equals("")) BBOXCQL = BBOXCQL + ","+ extentSRS.getText();
-		BBOXCQL += ")";
+	    if (!extentSRS.getText().equals("")) BBOXCQL = BBOXCQL + ","+ extentSRS.getText(); //$NON-NLS-1$ //$NON-NLS-2$
+		BBOXCQL += ")"; //$NON-NLS-1$
 		return BBOXCQL;
 	}
 
@@ -489,34 +490,34 @@ public class FeatureFilterForm extends Composite {
 	 */
 	private String getCQLOperator(CQLOperators operator) {
 		// The full operator list can be found at
-		String cqlOperator = "";
+		String cqlOperator = ""; //$NON-NLS-1$
 		switch (operator) {
 		case PropertyIsEqualTo:
-			cqlOperator = "== " + attributeValue.getText();
+			cqlOperator = "== " + attributeValue.getText(); //$NON-NLS-1$
 			break;
 		case PropertyIsNotEqualTo:
-			cqlOperator = "<> " + attributeValue.getText();
+			cqlOperator = "<> " + attributeValue.getText(); //$NON-NLS-1$
 			break;
 		case PropertyIsLessThan:
-			cqlOperator = "< " + attributeValue.getText();
+			cqlOperator = "< " + attributeValue.getText(); //$NON-NLS-1$
 			break;
 		case PropertyIsGreaterThan:
-			cqlOperator = "> " + attributeValue.getText();
+			cqlOperator = "> " + attributeValue.getText(); //$NON-NLS-1$
 			break;
 		case PropertyIsLessThanOrEqualTo:
-			cqlOperator = "<= " + attributeValue.getText();
+			cqlOperator = "<= " + attributeValue.getText(); //$NON-NLS-1$
 			break;
 		case PropertyIsGreaterThanOrEqualTo:
-			cqlOperator = ">= " + attributeValue.getText();
+			cqlOperator = ">= " + attributeValue.getText(); //$NON-NLS-1$
 			break;
 		case PropertyIsLike:
-			cqlOperator = "LIKE" + "'" + attributeValue.getText() + "'";
+			cqlOperator = "LIKE" + "'" + attributeValue.getText() + "'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			break;
 		case PropertyIsNull:
-			cqlOperator = "IS NULL";
+			cqlOperator = "IS NULL"; //$NON-NLS-1$
 			break;
 		case PropertyIsBetween:
-			cqlOperator = "BETWEEN " + intervallBegin.getText() + " AND "
+			cqlOperator = "BETWEEN " + intervallBegin.getText() + " AND " //$NON-NLS-1$ //$NON-NLS-2$
 					+ intervallEnd.getText();
 		}
 

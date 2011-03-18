@@ -29,11 +29,11 @@ public interface WfsPreferenceConstants {
 	/**
 	 * The name of the recent WFS key prefix
 	 */
-	public final String KEY_RECENT_WFS_PREFIX = "wfs.recent.url";
+	public final String KEY_RECENT_WFS_PREFIX = "wfs.recent.url"; //$NON-NLS-1$
 	
 	/**
 	 * The name of the recent WFS count key
 	 */
-	public final String KEY_RECENT_WFS_COUNT = "wfs.recent.count";
+	public final String KEY_RECENT_WFS_COUNT = "wfs.recent.count"; //$NON-NLS-1$
 	
 }

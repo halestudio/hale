@@ -42,10 +42,10 @@ public class CurveWriter extends
 		super(MultiLineString.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new NameImpl("CurveType"));
+		addCompatibleType(new NameImpl("CurveType")); //$NON-NLS-1$
 		
 		// patterns for matching inside compatible types
-		addBasePattern("**/LineStringSegment");
+		addBasePattern("**/LineStringSegment"); //$NON-NLS-1$
 	}
 
 	/**

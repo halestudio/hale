@@ -267,11 +267,11 @@ public class ProjectServiceImpl
 					title = appTitle;
 				}
 				else {
-					title = appTitle + " - " + projectName + " - " + projectFile;
+					title = appTitle + " - " + projectName + " - " + projectFile; //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				
 				if (changed) {
-					title = title + "*";
+					title = title + "*"; //$NON-NLS-1$
 				}
 				
 				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setText(title);
@@ -293,7 +293,7 @@ public class ProjectServiceImpl
 	public synchronized boolean save() throws JAXBException {
 		if (projectFile != null) {
 			if (projectName == null) {
-				projectName = "default";
+				projectName = "default"; //$NON-NLS-1$
 			}
 			generator.write(projectFile, projectName);
 			changed = false;
@@ -311,7 +311,7 @@ public class ProjectServiceImpl
 	@Override
 	public synchronized void saveAs(String filename, String projectName) throws JAXBException {
 		if (projectName == null) {
-			projectName = "default";
+			projectName = "default"; //$NON-NLS-1$
 		}
 		generator.write(filename, projectName);
 		this.projectFile = filename;

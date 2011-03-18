@@ -31,7 +31,7 @@ public abstract class DefaultGeometries {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(DefaultGeometries.class);
 	
-	private static final Preferences prefs = Preferences.userNodeForPackage(DefaultGeometries.class).node("defaultGeometries");
+	private static final Preferences prefs = Preferences.userNodeForPackage(DefaultGeometries.class).node("defaultGeometries"); //$NON-NLS-1$
 
 	/**
 	 * Get the default geometry name for a given type name
@@ -50,14 +50,14 @@ public abstract class DefaultGeometries {
 				return null;
 			}
 		} catch (BackingStoreException e) {
-			log.warn("Error accessing the default geometry preferences", e);
+			log.warn("Error accessing the default geometry preferences", e); //$NON-NLS-1$
 			return null;
 		}
 	}
 	
 	private static String encodeNodeName(String name) {
-		while (name.contains("//")) {
-			name = name.replaceAll("//", "/");
+		while (name.contains("//")) { //$NON-NLS-1$
+			name = name.replaceAll("//", "/"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return name;
 	}
@@ -73,7 +73,7 @@ public abstract class DefaultGeometries {
 		try {
 			prefs.flush();
 		} catch (BackingStoreException e) {
-			log.warn("Error writing the default geometry preferences", e);
+			log.warn("Error writing the default geometry preferences", e); //$NON-NLS-1$
 		}
 	}
 

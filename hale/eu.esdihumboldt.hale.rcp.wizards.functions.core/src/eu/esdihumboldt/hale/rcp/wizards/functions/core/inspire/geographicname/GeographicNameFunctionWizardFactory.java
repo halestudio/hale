@@ -103,8 +103,8 @@ public class GeographicNameFunctionWizardFactory implements
 			 * - tested w/ INSPIRE 3 HydroPhysicalWaters, ProtectedSitesFull
 			 * - must be kept consistent w/ function implementation
 			 */
-			if (attr.getName().equals("GeographicalName")
-					&& attr.getAttributeType().getName().getLocalPart().equals("GeographicalNameType")) {
+			if (attr.getName().equals("GeographicalName") //$NON-NLS-1$
+					&& attr.getAttributeType().getName().getLocalPart().equals("GeographicalNameType")) { //$NON-NLS-1$
 				return true;
 			}
 		}

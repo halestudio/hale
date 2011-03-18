@@ -210,7 +210,7 @@ public class PropertiesDialog extends TitleAreaDialog {
 			AttributeDefinition property = ((AttributeItem) item).getAttributeDefinition();
 			
 			// add namespace to name
-			name.addChild(new DefaultTreeNode("Namespace", property.getNamespace()));
+			name.addChild(new DefaultTreeNode("Namespace", property.getNamespace())); //$NON-NLS-1$
 			
 			// nillable
 			DefaultTreeNode nillable = new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleNillable, 
@@ -258,7 +258,7 @@ public class PropertiesDialog extends TitleAreaDialog {
 		if (definition != null) {
 			String location = definition.getLocation();
 			if (location != null) {
-				DefaultTreeNode locNode = new DefaultTreeNode("Location", location);
+				DefaultTreeNode locNode = new DefaultTreeNode("Location", location); //$NON-NLS-1$
 				nodes.add(locNode);
 			}
 		}
@@ -272,13 +272,13 @@ public class PropertiesDialog extends TitleAreaDialog {
 		typeNode.addChild(new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleLocalpart, typeDef.getName().getLocalPart()));
 		typeNode.addChild(new DefaultTreeNode(Messages.PropertiesDialog_TreeNodeTitleBinding,
 				typeDef.getType(null).getBinding().getName()));
-		typeNode.addChild(new DefaultTreeNode("Identifier", typeDef.getIdentifier()));
+		typeNode.addChild(new DefaultTreeNode("Identifier", typeDef.getIdentifier())); //$NON-NLS-1$
 		if (typeDef.getLocation() != null) {
-			typeNode.addChild(new DefaultTreeNode("Location", typeDef.getLocation()));
+			typeNode.addChild(new DefaultTreeNode("Location", typeDef.getLocation())); //$NON-NLS-1$
 		}
 		
 		if (addSubTypes && typeDef.getSubTypes() != null && !typeDef.getSubTypes().isEmpty()) {
-			DefaultTreeNode subsNode = new DefaultTreeNode("Subtypes");
+			DefaultTreeNode subsNode = new DefaultTreeNode("Subtypes"); //$NON-NLS-1$
 			typeNode.addChild(subsNode);
 			
 			for (TypeDefinition subType : typeDef.getSubTypes()) {
@@ -292,7 +292,7 @@ public class PropertiesDialog extends TitleAreaDialog {
 		if (addSuperType) {
 			TypeDefinition superType = typeDef.getSuperType();
 			if (superType != null) {
-				DefaultTreeNode superNode = new DefaultTreeNode("Supertype", superType.getName().getNamespaceURI() + "/" + superType.getName().getLocalPart());
+				DefaultTreeNode superNode = new DefaultTreeNode("Supertype", superType.getName().getNamespaceURI() + "/" + superType.getName().getLocalPart()); //$NON-NLS-1$ //$NON-NLS-2$
 				typeNode.addChild(superNode);
 				
 				addTypeNodes(superType, superNode, false, true);
@@ -304,7 +304,7 @@ public class PropertiesDialog extends TitleAreaDialog {
 		DefaultTreeNode attsNode = null;
 		for (AttributeDefinition att : typeDef.getDeclaredAttributes()) {
 			if (attsNode == null) {
-				attsNode = new DefaultTreeNode("Declared properties");
+				attsNode = new DefaultTreeNode("Declared properties"); //$NON-NLS-1$
 				typeNode.addChild(attsNode);
 			}
 			

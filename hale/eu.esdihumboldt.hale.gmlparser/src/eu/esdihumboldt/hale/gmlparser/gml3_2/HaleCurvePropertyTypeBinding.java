@@ -44,7 +44,7 @@ public class HaleCurvePropertyTypeBinding extends CurvePropertyTypeBinding {
 	 */
 	@Override
 	public QName getTarget() {
-		return new QName("http://www.opengis.net/gml/3.2","CurvePropertyType");
+		return new QName("http://www.opengis.net/gml/3.2","CurvePropertyType"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**

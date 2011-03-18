@@ -36,7 +36,7 @@ public abstract class EntityHelper {
 	 */
 	public static String getShortName(IEntity entity) {
 		if (entity.equals(Entity.NULL_ENTITY)) {
-			return "None";
+			return "None"; //$NON-NLS-1$
 		}
 		
 		if (entity instanceof ComposedProperty) {
@@ -47,7 +47,7 @@ public abstract class EntityHelper {
 				result.append(getShortName(it.next()));
 				
 				if (it.hasNext()) {
-					result.append(" & ");
+					result.append(" & "); //$NON-NLS-1$
 				}
 			}
 			
@@ -56,16 +56,16 @@ public abstract class EntityHelper {
 		
 		if (entity.getAbout() != null && entity.getAbout().getAbout() != null ) {
 			String label = entity.getAbout().getAbout();
-			String[] nameparts = label.split("\\/");
+			String[] nameparts = label.split("\\/"); //$NON-NLS-1$
 			if (entity instanceof Property && nameparts.length >= 2) {
-				return nameparts[nameparts.length - 2] + "." + nameparts[nameparts.length - 1];
+				return nameparts[nameparts.length - 2] + "." + nameparts[nameparts.length - 1]; //$NON-NLS-1$
 			}
 			else {
 				return nameparts[nameparts.length - 1];
 			}
 		}
 		
-		return "unnamed";
+		return "unnamed"; //$NON-NLS-1$
 	}
 	
 	/**

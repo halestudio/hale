@@ -91,7 +91,7 @@ public class CstServiceImpl
 			// Execute the transformer
 			result = function.transform(f, f);
 		} catch (Exception e) {
-			throw new RuntimeException("Transformation failed: " + e);
+			throw new RuntimeException("Transformation failed: " + e); //$NON-NLS-1$
 		}
 
 		return result;
@@ -112,7 +112,7 @@ public class CstServiceImpl
 		List<String> result = new ArrayList<String>();
 		for (Class<? extends CstFunction> type : CstFunctionFactory.getInstance().getRegisteredFunctions().values()) {
 			result.add(type.getName());
-			_log.info("Registered CstFunction: " + type.getName());
+			_log.info("Registered CstFunction: " + type.getName()); //$NON-NLS-1$
 		}
 		return result;
 	}

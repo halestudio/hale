@@ -43,13 +43,13 @@ public class MultiPointWriter extends AbstractGeometryWriter<MultiPoint> {
 		super(MultiPoint.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new NameImpl("MultiPointType"));
+		addCompatibleType(new NameImpl("MultiPointType")); //$NON-NLS-1$
 		
 		// patterns for matching inside compatible types
-		addBasePattern("*/pointMember");
+		addBasePattern("*/pointMember"); //$NON-NLS-1$
 		
 		// verification patterns (contained Point)
-		addVerificationPattern("*/Point");
+		addVerificationPattern("*/Point"); //$NON-NLS-1$
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class MultiPointWriter extends AbstractGeometryWriter<MultiPoint> {
 				writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 			}
 			
-			Descent descent = descend(writer, Pattern.parse("*/Point"), 
+			Descent descent = descend(writer, Pattern.parse("*/Point"),  //$NON-NLS-1$
 					elementType, elementName, gmlNs);
 			
 			Point point = (Point) geometry.getGeometryN(i);

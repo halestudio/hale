@@ -37,6 +37,7 @@ import org.opengis.feature.type.FeatureType;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.gmlvalidate.Report;
 import eu.esdihumboldt.hale.gmlvalidate.Validator;
 import eu.esdihumboldt.hale.gmlvalidate.ValidatorFactory;
@@ -75,7 +76,7 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 			Schema schema, String commonSrsName) {
 		super();
 		
-		setWindowTitle("Save transformation result");
+		setWindowTitle(Messages.getString("GmlExportWizard_0")); //$NON-NLS-1$
 		setNeedsProgressMonitor(true);
 		
 		this.features = features;
@@ -90,7 +91,7 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 	public void addPages() {
 		super.addPages();
 		
-		addPage(exportPage = new GmlExportPage("GML export", "Save transformation result"));
+		addPage(exportPage = new GmlExportPage(Messages.getString("GmlExportWizard_1"), Messages.getString("GmlExportWizard_2"))); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -115,24 +116,24 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException,
 						InterruptedException {
-					monitor.beginTask("Exporting transformed features to GML file", IProgressMonitor.UNKNOWN);
+					monitor.beginTask(Messages.getString("GmlExportWizard_3"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 					GmlWriter gmlWriter = (GmlWriter) PlatformUI.getWorkbench().getService(GmlWriter.class);
 					OutputStream out;
 					
 					try {
 						out = new FileOutputStream(targetFile);
 					} catch (FileNotFoundException e1) {
-						log.userError("Could not write output file: " + 
+						log.userError(Messages.getString("GmlExportWizard_4") +  //$NON-NLS-1$
 								targetFile.getAbsolutePath(), e1);
 						return;
 					}
-					ATransaction trans = log.begin("Writing transformed features to GML file: " + 
+					ATransaction trans = log.begin(Messages.getString("GmlExportWizard_5") +  //$NON-NLS-1$
 							targetFile.getAbsolutePath());
 					List<Schema> addSchemas = null;
 					try {
 						addSchemas = gmlWriter.writeFeatures(features, schema, out, commonSrsName);
 					} catch (Exception e) {
-						log.userError("Error saving transformation result to GML file", e);
+						log.userError("Error saving transformation result to GML file", e); //$NON-NLS-1$
 						return;
 					} finally {
 						trans.end();
@@ -145,7 +146,7 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 					
 					if (validate) {
 						try {
-							monitor.setTaskName("Validating output file");
+							monitor.setTaskName(Messages.getString("GmlExportWizard_7")); //$NON-NLS-1$
 							
 							// validate output file
 							Validator validator;
@@ -164,10 +165,10 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 							try {
 								xml = new FileInputStream(targetFile);
 							} catch (FileNotFoundException e) {
-								log.error("File not found for validation: " + targetFile.getAbsolutePath());
+								log.error("File not found for validation: " + targetFile.getAbsolutePath()); //$NON-NLS-1$
 								return;
 							}
-							trans = log.begin("Validating GML file: " + targetFile.getAbsolutePath());
+							trans = log.begin("Validating GML file: " + targetFile.getAbsolutePath()); //$NON-NLS-1$
 							Report report;
 							try {
 								report = validator.validate(xml);
@@ -181,10 +182,10 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 							}
 							
 							if (report.isValid()) {
-								log.userInfo("GML file exported, validation successful.");
+								log.userInfo("GML file exported, validation successful."); //$NON-NLS-1$
 							}
 							else {
-								log.userError("Validation of the exported GML file failed, see the error log for more details.");
+								log.userError("Validation of the exported GML file failed, see the error log for more details."); //$NON-NLS-1$
 								
 								final Report report2 = report;
 								Runnable r = new Runnable(){
@@ -197,7 +198,7 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 								getContainer().getShell().getDisplay().asyncExec(r);
 							}
 						} catch (Throwable e) {
-							log.userError("An error occurred while validating exported GML file", e);
+							log.userError("An error occurred while validating exported GML file", e); //$NON-NLS-1$
 						}
 					}
 					
@@ -205,7 +206,7 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 				}
 			});
 		} catch (Exception e) {
-			log.userError("Error exporting transformed feature to GML file", e);
+			log.userError("Error exporting transformed feature to GML file", e); //$NON-NLS-1$
 			return false;
 		}
 		

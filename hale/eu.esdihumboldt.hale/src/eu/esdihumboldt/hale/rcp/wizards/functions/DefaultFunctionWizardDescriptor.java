@@ -17,6 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizardFactory;
 
 /**
@@ -48,9 +49,9 @@ public class DefaultFunctionWizardDescriptor extends AbstractFunctionWizardDescr
 	public FunctionWizardFactory getFactory() {
 		if (factory == null) {
 			try {
-				factory = (FunctionWizardFactory) conf.createExecutableExtension("class");
+				factory = (FunctionWizardFactory) conf.createExecutableExtension("class"); //$NON-NLS-1$
 			} catch (CoreException e) {
-				log.error("Error creating the function wizard factory", e);
+				log.error("Error creating the function wizard factory", e); //$NON-NLS-1$
 			}
 		}
 		

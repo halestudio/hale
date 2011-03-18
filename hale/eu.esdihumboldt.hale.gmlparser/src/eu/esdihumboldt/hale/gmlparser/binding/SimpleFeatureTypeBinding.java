@@ -49,7 +49,7 @@ public class SimpleFeatureTypeBinding extends AbstractComplexBinding
 	 * Feature user data property name for XML attributes
 	 * @see eu.esdihumboldt.tools.AttributeProperty XXX add dependency to commons instead of defining it here again
 	 */
-	public static final String XML_ATTRIBUTES = "XmlAttributes";
+	public static final String XML_ATTRIBUTES = "XmlAttributes"; //$NON-NLS-1$
 
 	private final QName name;
 	
@@ -76,11 +76,11 @@ public class SimpleFeatureTypeBinding extends AbstractComplexBinding
 	public Object parse(ElementInstance instance, Node node, Object value)
 			throws Exception {
 		// get feature ID
-        String fid = (String) node.getAttributeValue("fid");
+        String fid = (String) node.getAttributeValue("fid"); //$NON-NLS-1$
 
         if (fid == null) {
             //look for id
-            fid = (String) node.getAttributeValue("id");
+            fid = (String) node.getAttributeValue("id"); //$NON-NLS-1$
         }
         
         // attributes for property map
@@ -134,7 +134,7 @@ public class SimpleFeatureTypeBinding extends AbstractComplexBinding
         		}
         	}
         	else {
-        		log.warn("Property for attribute not found");
+        		log.warn("Property for attribute not found"); //$NON-NLS-1$
         	}
         }
         

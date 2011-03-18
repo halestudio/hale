@@ -110,7 +110,7 @@ public abstract class FilterUtils2 extends FilterUtils {
 			return item;
 		}
 		else {
-			throw new RuntimeException("No parent type found");
+			throw new RuntimeException("No parent type found"); //$NON-NLS-1$
 		}
 	}
 

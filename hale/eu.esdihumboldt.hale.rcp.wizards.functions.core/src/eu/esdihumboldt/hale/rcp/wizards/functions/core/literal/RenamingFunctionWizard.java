@@ -29,6 +29,7 @@ import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.literal.RenamingFunctionWizardMainPage.InstanceMappingType;
 
 /**
@@ -43,18 +44,18 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 	/**
 	 * Parameter name for the attribute to split/merge on
 	 */
-	public static final String PARAMETER_SELECTED_ATTRIBUTE = "SelectedAttribute";
+	public static final String PARAMETER_SELECTED_ATTRIBUTE = Messages.RenamingFunctionWizard_0;
 	
 	
 	/**
 	 * Parameter name for instance merge condition
 	 */
-	public static final String PARAMETER_INSTANCE_MERGE_CONDITION = "InstanceMergeCondition";
+	public static final String PARAMETER_INSTANCE_MERGE_CONDITION = Messages.RenamingFunctionWizard_1;
 
 	/**
 	 * Parameter name for instance split condition
 	 */
-	public static final String PARAMETER_INSTANCE_SPLIT_CONDITION = "InstanceSplitCondition";
+	public static final String PARAMETER_INSTANCE_SPLIT_CONDITION = Messages.RenamingFunctionWizard_2;
 
 	private static ALogger _log = ALoggerFactory.getLogger(RenamingFunctionWizard.class);
 
@@ -73,9 +74,9 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 	@Override
 	protected void init() {
 		this.mainPage = new RenamingFunctionWizardMainPage(
-				"Configure Renaming Function",
-				"Configure Renaming Function");
-		super.setWindowTitle("Configure Function");
+				Messages.RenamingFunctionWizard_3,
+				Messages.RenamingFunctionWizard_4);
+		super.setWindowTitle(Messages.RenamingFunctionWizard_5);
 		super.setNeedsProgressMonitor(true);
 		
 		// initialize from cell
@@ -112,7 +113,7 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 	 */
 	@Override
 	public boolean canFinish() {
-		_log.debug("Wizard.canFinish: " + this.mainPage.isPageComplete());
+		_log.debug("Wizard.canFinish: " + this.mainPage.isPageComplete()); //$NON-NLS-1$
 		return this.mainPage.isPageComplete();
 	}
 

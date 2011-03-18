@@ -43,7 +43,7 @@ public class DefaultGmlWriter implements GmlWriter {
 		try {
 			return new StreamGmlWriter(targetSchema, out, commonSrsName).write(features);
 		} catch (XMLStreamException e) {
-			throw new RuntimeException("Error writing GML", e);
+			throw new RuntimeException("Error writing GML", e); //$NON-NLS-1$
 		}
 	}
 

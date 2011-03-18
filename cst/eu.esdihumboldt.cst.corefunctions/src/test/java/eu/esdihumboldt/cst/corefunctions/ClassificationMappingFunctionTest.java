@@ -68,25 +68,25 @@ public class ClassificationMappingFunctionTest {
 	OmlRdfGenerator org = null;
 	File testFile = null;
 
-	private final static String SOURCE_LOCAL_NAME = "FT1";
-	private final static String SOURCE_LOCAL_NAME_PROPERTY_A = "PropertyA";
-	private final static String SOURCE_NAMESPACE = "http://esdi-humboldt.eu";
+	private final static String SOURCE_LOCAL_NAME = "FT1"; //$NON-NLS-1$
+	private final static String SOURCE_LOCAL_NAME_PROPERTY_A = "PropertyA"; //$NON-NLS-1$
+	private final static String SOURCE_NAMESPACE = "http://esdi-humboldt.eu"; //$NON-NLS-1$
 
-	private final static String TARGET_LOCAL_NAME = "FT2";
-	private final static String TARGET_LOCAL_NAME_PROPERTY_B = "PropertyB";
-	private final static String TARGET_NAMESPACE = "http://xsdi.org";
+	private final static String TARGET_LOCAL_NAME = "FT2"; //$NON-NLS-1$
+	private final static String TARGET_LOCAL_NAME_PROPERTY_B = "PropertyB"; //$NON-NLS-1$
+	private final static String TARGET_NAMESPACE = "http://xsdi.org"; //$NON-NLS-1$
 
 	@Before
 	public void setUp() {
-		System.out.println("Setting up for test...");
+		System.out.println("Setting up for test..."); //$NON-NLS-1$
 		reader = new OmlRdfReader();
 		org = new OmlRdfGenerator();
 		
-		URL oml= getClass().getResource("ClassificationMappingFunctionTest.oml");
+		URL oml= getClass().getResource("ClassificationMappingFunctionTest.oml"); //$NON-NLS-1$
 		testFile = new File(oml.getFile());
 		assertNotNull(testFile);
-		assertTrue("Testing if the test file exists.", testFile.exists());
-		assertTrue("Testing if we can read the test file.", testFile.canRead());
+		assertTrue("Testing if the test file exists.", testFile.exists()); //$NON-NLS-1$
+		assertTrue("Testing if we can read the test file.", testFile.canRead()); //$NON-NLS-1$
 	}
 
 
@@ -121,25 +121,25 @@ public class ClassificationMappingFunctionTest {
 	 */
 	private Alignment createTestAlignment() throws URISyntaxException {
 		Alignment a = new Alignment();
-		a.setAbout(new About("lala"));
-		a.setSchema1(new Schema(SOURCE_NAMESPACE, new Formalism("GML", new URI("http://schemas.opengis.org/gml"))));
-		a.setSchema2(new Schema(TARGET_NAMESPACE, new Formalism("GML", new URI("http://schemas.opengis.org/gml"))));
+		a.setAbout(new About("lala")); //$NON-NLS-1$
+		a.setSchema1(new Schema(SOURCE_NAMESPACE, new Formalism("GML", new URI("http://schemas.opengis.org/gml")))); //$NON-NLS-1$ //$NON-NLS-2$
+		a.setSchema2(new Schema(TARGET_NAMESPACE, new Formalism("GML", new URI("http://schemas.opengis.org/gml")))); //$NON-NLS-1$ //$NON-NLS-2$
 
 		Cell cell = new Cell();
 
-		BigInteger sequenceId = new BigInteger("1");
+		BigInteger sequenceId = new BigInteger("1"); //$NON-NLS-1$
 
 		Property entity1 = new Property(new About(SOURCE_NAMESPACE, SOURCE_LOCAL_NAME, SOURCE_LOCAL_NAME_PROPERTY_A));
 
 		List<IValueExpression> valueExpressions = new ArrayList<IValueExpression>();
-		valueExpressions.add(new ValueExpression("2"));
-		valueExpressions.add(new ValueExpression("3"));
-		valueExpressions.add(new ValueExpression("4"));
-		valueExpressions.add(new ValueExpression("70"));
-		valueExpressions.add(new ValueExpression("71"));
-		valueExpressions.add(new ValueExpression("72"));
-		valueExpressions.add(new ValueExpression("73"));
-		valueExpressions.add(new ValueExpression("74"));
+		valueExpressions.add(new ValueExpression("2")); //$NON-NLS-1$
+		valueExpressions.add(new ValueExpression("3")); //$NON-NLS-1$
+		valueExpressions.add(new ValueExpression("4")); //$NON-NLS-1$
+		valueExpressions.add(new ValueExpression("70")); //$NON-NLS-1$
+		valueExpressions.add(new ValueExpression("71")); //$NON-NLS-1$
+		valueExpressions.add(new ValueExpression("72")); //$NON-NLS-1$
+		valueExpressions.add(new ValueExpression("73")); //$NON-NLS-1$
+		valueExpressions.add(new ValueExpression("74")); //$NON-NLS-1$
 		Restriction r = new Restriction(valueExpressions);
 		r.setSeq(sequenceId);
 		r.setComparator(ComparatorType.ONE_OF);
@@ -151,7 +151,7 @@ public class ClassificationMappingFunctionTest {
 		Property entity2 = new Property(new About(TARGET_NAMESPACE, TARGET_LOCAL_NAME, TARGET_LOCAL_NAME_PROPERTY_B));
 
 		List<IValueExpression> valueExpressions2 = new ArrayList<IValueExpression>();
-		valueExpressions2.add(new ValueExpression("Fluss, Bach"));
+		valueExpressions2.add(new ValueExpression("Fluss, Bach")); //$NON-NLS-1$
 		Restriction r2 = new Restriction(valueExpressions2);
 		r2.setSeq(sequenceId); // key link to other Seq Identifier
 		r2.setComparator(ComparatorType.ONE_OF);
@@ -197,14 +197,14 @@ public class ClassificationMappingFunctionTest {
 		cmf.configure(map.get(0));
 		
 		
-		System.out.println("Creating SimpleFeatures for testing");
+		System.out.println("Creating SimpleFeatures for testing"); //$NON-NLS-1$
 		SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
 		ftbuilder.setName(SOURCE_LOCAL_NAME);
 		ftbuilder.setNamespaceURI(SOURCE_NAMESPACE);
 		ftbuilder.add(SOURCE_LOCAL_NAME_PROPERTY_A, String.class);
 		SimpleFeatureType sourceFeatureType = ftbuilder.buildFeatureType();
-		System.out.println("Creating a source feature which should map to Fluss, Bach in the target");
-		SimpleFeature sourceFeature = SimpleFeatureBuilder.build(sourceFeatureType, new Object[]{"70"}, "1");
+		System.out.println("Creating a source feature which should map to Fluss, Bach in the target"); //$NON-NLS-1$
+		SimpleFeature sourceFeature = SimpleFeatureBuilder.build(sourceFeatureType, new Object[]{"70"}, "1"); //$NON-NLS-1$ //$NON-NLS-2$
 		assertNotNull(sourceFeature);
 		dumpFeatureInfo(sourceFeature);
 		
@@ -212,8 +212,8 @@ public class ClassificationMappingFunctionTest {
 		ftbuilder.setNamespaceURI(TARGET_NAMESPACE);
 		ftbuilder.add(TARGET_LOCAL_NAME_PROPERTY_B, String.class);
 		SimpleFeatureType targetFeatureType = ftbuilder.buildFeatureType();
-		System.out.println("Creating an empty target which should be populated with Fluss, Bach after mapping");
-		SimpleFeature targetFeature = SimpleFeatureBuilder.build(targetFeatureType, new Object[]{}, "2");
+		System.out.println("Creating an empty target which should be populated with Fluss, Bach after mapping"); //$NON-NLS-1$
+		SimpleFeature targetFeature = SimpleFeatureBuilder.build(targetFeatureType, new Object[]{}, "2"); //$NON-NLS-1$
 		assertNotNull(targetFeature);
 		dumpFeatureInfo(targetFeature);
 		
@@ -223,7 +223,7 @@ public class ClassificationMappingFunctionTest {
 		System.out.println(resultValue);
 		
 		// FIXME Hardcoded assert value (expected parameter)!
-		assertEquals("The target Feature Property " + TARGET_LOCAL_NAME_PROPERTY_B + " should have been mapped to Fluss, Bach", "Fluss, Bach", resultValue);
+		assertEquals("The target Feature Property " + TARGET_LOCAL_NAME_PROPERTY_B + " should have been mapped to Fluss, Bach", "Fluss, Bach", resultValue); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 	
 
@@ -233,7 +233,7 @@ public class ClassificationMappingFunctionTest {
 	}
 	
 	private void dumpFeatureInfo(Feature feature) {
-		System.out.println("Feature type name = " + feature.getType().getName());
+		System.out.println("Feature type name = " + feature.getType().getName()); //$NON-NLS-1$
 	}
 }
 

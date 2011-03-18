@@ -26,6 +26,7 @@ import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
 /**
  * A simplified Wizard for the configuration of the Network Expansion function,
@@ -55,8 +56,8 @@ public class NetworkExpansionFunctionWizard
 	@Override
 	protected void init() {
 		this.mainPage = new NetworkExpansionFunctionWizardPage(
-			"Configure Buffer Function"); 
-		super.setWindowTitle("Configure Function"); 
+			Messages.NetworkExpansionFunctionWizard_0); 
+		super.setWindowTitle(Messages.NetworkExpansionFunctionWizard_1); 
 		super.setNeedsProgressMonitor(true);
 		
 		ICell cell = getResultCell();

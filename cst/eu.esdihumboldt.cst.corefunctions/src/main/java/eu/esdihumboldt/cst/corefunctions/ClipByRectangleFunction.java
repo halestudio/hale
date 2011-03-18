@@ -48,10 +48,10 @@ import eu.esdihumboldt.goml.rdf.About;
 
 public class ClipByRectangleFunction extends AbstractCstFunction{
 
-	public static final String YMAX = "YMAX";
-	public static final String YMIN = "YMIN";
-	public static final String XMAX = "XMAX";
-	public static final String XMIN = "XMIN";	
+	public static final String YMAX = "YMAX"; //$NON-NLS-1$
+	public static final String YMIN = "YMIN"; //$NON-NLS-1$
+	public static final String XMAX = "XMAX"; //$NON-NLS-1$
+	public static final String XMIN = "XMIN";	 //$NON-NLS-1$
 	
 	private double YmaxCoord = Double.POSITIVE_INFINITY;
 	private double YminCoord = Double.NEGATIVE_INFINITY;
@@ -128,7 +128,7 @@ public class ClipByRectangleFunction extends AbstractCstFunction{
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();	
 				
-		Property entity1 = new Property(new About(""));
+		Property entity1 = new Property(new About("")); //$NON-NLS-1$
 		
 		// Setting of type condition for entity1
 		List <String> entityTypes = new ArrayList <String>();
@@ -136,7 +136,7 @@ public class ClipByRectangleFunction extends AbstractCstFunction{
 		entityTypes.add(org.opengis.geometry.Geometry.class.getName());
 		entity1.setTypeCondition(entityTypes);
 		
-		Property entity2 = new Property(new About(""));
+		Property entity2 = new Property(new About("")); //$NON-NLS-1$
 		 
 		// Setting of type condition for entity2
 			// 	entity2 has same conditions as entity1
@@ -146,10 +146,10 @@ public class ClipByRectangleFunction extends AbstractCstFunction{
 		Transformation t = new Transformation();
 		List<IParameter> params = new ArrayList<IParameter>(); 
 			
-		Parameter xmax = new Parameter(XMAX,"0");
-		Parameter ymax = new Parameter(YMAX,"0");
-		Parameter xmin = new Parameter(XMIN,"0");
-		Parameter ymin = new Parameter(YMIN,"0");					
+		Parameter xmax = new Parameter(XMAX,"0"); //$NON-NLS-1$
+		Parameter ymax = new Parameter(YMAX,"0"); //$NON-NLS-1$
+		Parameter xmin = new Parameter(XMIN,"0"); //$NON-NLS-1$
+		Parameter ymin = new Parameter(YMIN,"0");					 //$NON-NLS-1$
 		params.add(xmax);
 		params.add(ymax);
 		params.add(xmin);

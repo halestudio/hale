@@ -106,8 +106,8 @@ public class InstanceProviderFactory {
 		InstanceProvider ip = getInstanceProvider(schemaFormat, instanceFormat);
 		
 		if (ip == null) {
-			throw new RuntimeException("No instance provider found for schema format " 
-					+ schemaFormat + " and instance format " + instanceFormat);
+			throw new RuntimeException("No instance provider found for schema format "  //$NON-NLS-1$
+					+ schemaFormat + " and instance format " + instanceFormat); //$NON-NLS-1$
 		}
 		
 		return ip.loadInstances(location, conf, null);

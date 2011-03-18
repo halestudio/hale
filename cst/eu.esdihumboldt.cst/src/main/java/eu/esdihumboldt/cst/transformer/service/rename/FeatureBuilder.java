@@ -48,7 +48,7 @@ public class FeatureBuilder {
 	 * The key for the feature user data where its source feature's
 	 * {@link FeatureId} is put.
 	 */
-	public static final Object SOURCE_ID = "source_feature_id";
+	public static final Object SOURCE_ID = "source_feature_id"; //$NON-NLS-1$
 	
 	/**
 	 * Get the source feature ID for a transformed feature
@@ -97,7 +97,7 @@ public class FeatureBuilder {
 		}
 		if (source == null) {
 			target = new FeatureImpl(properties, targetType, 
-					new FeatureIdImpl("_" + UUID.randomUUID().toString())); // XML ID may only start with _ or letter (no digit)
+					new FeatureIdImpl("_" + UUID.randomUUID().toString())); // XML ID may only start with _ or letter (no digit) //$NON-NLS-1$
 		}
 		else {
 			// determine the feature ID for the target feature 

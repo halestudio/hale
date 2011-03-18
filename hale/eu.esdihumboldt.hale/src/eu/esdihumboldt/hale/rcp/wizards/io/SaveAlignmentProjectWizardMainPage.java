@@ -117,7 +117,7 @@ public class SaveAlignmentProjectWizardMainPage extends WizardPage {
 		
 		// enter a name for the project TODO: add other metadata
 		Label pnLabel = new Label(optionsGroup, SWT.NONE);
-		pnLabel.setText("Project name:");
+		pnLabel.setText(Messages.getString("SaveAlignmentProjectWizardMainPage.0")); //$NON-NLS-1$
 		pnLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		
 		this.projectName = new Text(optionsGroup, SWT.BORDER | SWT.SINGLE);

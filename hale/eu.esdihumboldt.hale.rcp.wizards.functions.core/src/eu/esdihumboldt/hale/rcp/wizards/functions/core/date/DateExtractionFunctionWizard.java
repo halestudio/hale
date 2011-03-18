@@ -22,6 +22,7 @@ import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
 
 /**
@@ -50,8 +51,8 @@ public class DateExtractionFunctionWizard extends AbstractSingleComposedCellWiza
 	@Override
 	protected void init() {
 		this.mainPage = new DateExtractionFunctionWizardPage(
-			"Configure Date/Time Extraction"); 
-		super.setWindowTitle("Date/Time Extraction Function"); 
+			Messages.DateExtractionFunctionWizard_0); 
+		super.setWindowTitle(Messages.DateExtractionFunctionWizard_1); 
 		super.setNeedsProgressMonitor(true);
 	}
 	

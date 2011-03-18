@@ -43,7 +43,7 @@ public class MappingGraphModel {
 	/**
 	 * The specific ID of this class
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.rcp.views.mappingGraph.MappingGraphModel";
+	public static final String ID = "eu.esdihumboldt.hale.rcp.views.mappingGraph.MappingGraphModel"; //$NON-NLS-1$
 
 	/**
 	 * The list which contains the source nodes
@@ -274,7 +274,7 @@ public class MappingGraphModel {
 						.getAttributeValueCondition() != null) {
 					for (Restriction restriction : ((FeatureClass) cell
 							.getEntity2()).getAttributeValueCondition()) {
-						filters.add(restriction.getCqlStr() + "\r\n");
+						filters.add(restriction.getCqlStr() + "\r\n"); //$NON-NLS-1$
 					}
 				}
 			} else if (cell.getEntity2() instanceof Property) {
@@ -282,7 +282,7 @@ public class MappingGraphModel {
 						.getValueCondition() != null) {
 					for (Restriction restriction : ((Property) cell
 							.getEntity2()).getValueCondition()) {
-						filters.add(restriction.getCqlStr() + "\r\n");
+						filters.add(restriction.getCqlStr() + "\r\n"); //$NON-NLS-1$
 					}
 				}
 			}
@@ -298,14 +298,14 @@ public class MappingGraphModel {
 						.getAttributeValueCondition() != null) {
 					for (Restriction restriction : ((FeatureClass) cell
 							.getEntity1()).getAttributeValueCondition()) {
-						filters.add(restriction.getCqlStr() + "\r\n");
+						filters.add(restriction.getCqlStr() + "\r\n"); //$NON-NLS-1$
 					}
 				}
 			} else if (cell.getEntity1() instanceof Property) {
 				if (((Property) cell.getEntity1()).getValueCondition() != null) {
 					for (Restriction restriction : ((Property) cell
 							.getEntity1()).getValueCondition()) {
-						filters.add(restriction.getCqlStr() + "\r\n");
+						filters.add(restriction.getCqlStr() + "\r\n"); //$NON-NLS-1$
 					}
 				}
 			}
@@ -321,11 +321,11 @@ public class MappingGraphModel {
 	 * @return a String out of a List<String>
 	 */
 	String listToString(List<String> list) {
-		String toolTipText = "";
+		String toolTipText = ""; //$NON-NLS-1$
 
 		if (!list.isEmpty()) {
 			for (String stringtext : list) {
-				toolTipText = toolTipText + stringtext + "\r\n";
+				toolTipText = toolTipText + stringtext + "\r\n"; //$NON-NLS-1$
 			}
 		}
 		return toolTipText;
@@ -339,12 +339,12 @@ public class MappingGraphModel {
 	 * @return a String out of a List<IParameter>
 	 */
 	String parameterListToString(List<IParameter> parameterList) {
-		String toolTipText = "";
+		String toolTipText = ""; //$NON-NLS-1$
 
 		if (!parameterList.isEmpty()) {
 			for (IParameter parameter : parameterList) {
-				toolTipText = toolTipText + parameter.getName() + " : ";
-				toolTipText = toolTipText + parameter.getValue() + "\r\n";
+				toolTipText = toolTipText + parameter.getName() + " : "; //$NON-NLS-1$
+				toolTipText = toolTipText + parameter.getValue() + "\r\n"; //$NON-NLS-1$
 			}
 		}
 		return toolTipText;

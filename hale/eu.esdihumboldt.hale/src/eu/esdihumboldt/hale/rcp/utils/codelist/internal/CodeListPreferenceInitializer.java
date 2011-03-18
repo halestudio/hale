@@ -94,7 +94,7 @@ public class CodeListPreferenceInitializer extends
 	public static void assignCodeList(String attributeIdentifier, URI codeListLocation) {
 		IPreferenceStore preferences = HALEActivator.getDefault().getPreferenceStore();
 		
-		preferences.setValue(KEY_ATTRIBUTE_PREFIX + attributeIdentifier, (codeListLocation == null)?(""):(codeListLocation.toString()));
+		preferences.setValue(KEY_ATTRIBUTE_PREFIX + attributeIdentifier, (codeListLocation == null)?(""):(codeListLocation.toString())); //$NON-NLS-1$
 	}
 	
 	/**

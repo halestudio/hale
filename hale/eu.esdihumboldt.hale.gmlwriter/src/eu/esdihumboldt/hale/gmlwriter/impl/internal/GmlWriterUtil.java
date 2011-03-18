@@ -42,15 +42,15 @@ public abstract class GmlWriterUtil {
 	public static Name getElementName(TypeDefinition type) {
 		Set<SchemaElement> elements = type.getDeclaringElements();
 		if (elements == null || elements.isEmpty()) {
-			log.debug("No schema element for type " + type.getDisplayName() + 
-					" found, using type name instead");
+			log.debug("No schema element for type " + type.getDisplayName() +  //$NON-NLS-1$
+					" found, using type name instead"); //$NON-NLS-1$
 			return type.getName();
 		}
 		else {
 			Name elementName = elements.iterator().next().getElementName();
 			if (elements.size() > 1) {
-				log.warn("Multiple element definitions for type " + 
-						type.getDisplayName() + " found, using element " + 
+				log.warn("Multiple element definitions for type " +  //$NON-NLS-1$
+						type.getDisplayName() + " found, using element " +  //$NON-NLS-1$
 						elementName.getLocalPart());
 			}
 			return elementName;

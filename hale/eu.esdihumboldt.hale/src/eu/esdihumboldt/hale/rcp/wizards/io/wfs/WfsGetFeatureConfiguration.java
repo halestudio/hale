@@ -64,10 +64,10 @@ public class WfsGetFeatureConfiguration extends WfsConfiguration {
 		String capabilities = getCapabilitiesURL();
 		
 		String getFeature = null;
-		int x = capabilities.toLowerCase().indexOf("request=getcapabilities");
+		int x = capabilities.toLowerCase().indexOf("request=getcapabilities"); //$NON-NLS-1$
 		if (x >= 0) {
-			String repl = capabilities.substring(x, x + "request=getcapabilities".length());
-			getFeature = capabilities.replace(repl, "REQUEST=GetFeature");
+			String repl = capabilities.substring(x, x + "request=getcapabilities".length()); //$NON-NLS-1$
+			getFeature = capabilities.replace(repl, "REQUEST=GetFeature"); //$NON-NLS-1$
 		}
 		
 		if (getFeature != null) {
@@ -98,7 +98,7 @@ public class WfsGetFeatureConfiguration extends WfsConfiguration {
 					if (types.size() > 1) {
 						filterString.append('(');
 					}
-					filterString.append((filter == null)?(""):(filter));
+					filterString.append((filter == null)?(""):(filter)); //$NON-NLS-1$
 					if (types.size() > 1) {
 						filterString.append(')');
 					}
@@ -108,14 +108,14 @@ public class WfsGetFeatureConfiguration extends WfsConfiguration {
 					}
 				}
 			}
-			else throw new IllegalArgumentException("No types specified");
+			else throw new IllegalArgumentException("No types specified"); //$NON-NLS-1$
 
 			// types
-			getFeature = getFeature.concat("&TYPENAME=" + URLEncoder.encode(typeNames.toString(), "UTF-8"));
+			getFeature = getFeature.concat("&TYPENAME=" + URLEncoder.encode(typeNames.toString(), "UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
 			
 			// filters
 			if (filterPresent) {
-				getFeature = getFeature.concat("&FILTER=" + URLEncoder.encode(filterString.toString(), "UTF-8"));
+				getFeature = getFeature.concat("&FILTER=" + URLEncoder.encode(filterString.toString(), "UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 		
