@@ -30,7 +30,7 @@ public class WfsGetFeatureWizard extends AbstractWfsWizard<WfsGetFeatureConfigur
 	public WfsGetFeatureWizard(WfsGetFeatureConfiguration configuration) {
 		super(configuration);
 		
-		setWindowTitle(Messages.getString("WfsGetFeatureWizard.0")); //$NON-NLS-1$
+		setWindowTitle(Messages.WfsGetFeatureWizard_0); //$NON-NLS-1$
 	}
 
 	/**

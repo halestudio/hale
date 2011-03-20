@@ -83,7 +83,7 @@ public class TransformedTableView extends AbstractTableView {
 			instanceImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/random.gif").createImage(); //$NON-NLS-1$
 		}
 		instanceButton.setImage(instanceImage);
-		instanceButton.setToolTipText(Messages.getString("TransformedTableView.0")); //$NON-NLS-1$
+		instanceButton.setToolTipText(Messages.TransformedTableView_0); //$NON-NLS-1$
 		instanceButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -114,7 +114,7 @@ public class TransformedTableView extends AbstractTableView {
 			mapImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/map.gif").createImage(); //$NON-NLS-1$
 		}
 		mapButton.setImage(mapImage);
-		mapButton.setToolTipText(Messages.getString("TransformedTableView.1")); //$NON-NLS-1$
+		mapButton.setToolTipText(Messages.TransformedTableView_1); //$NON-NLS-1$
 		mapButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override

@@ -142,7 +142,7 @@ public class ListFunctionsDialog extends TitleAreaDialog {
 	protected Control createContents(Composite parent) {
 		Control control = super.createContents(parent);
 		
-		setTitle(Messages.getString("ListFunctionsDialog.1")); //$NON-NLS-1$
+		setTitle(Messages.ListFunctionsDialog_1); //$NON-NLS-1$
 		//setMessage("");
 		
 		return control;
@@ -155,7 +155,7 @@ public class ListFunctionsDialog extends TitleAreaDialog {
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		
-		newShell.setText(Messages.getString("ListFunctionsDialog.2")); //$NON-NLS-1$
+		newShell.setText(Messages.ListFunctionsDialog_2); //$NON-NLS-1$
 	}
 
 	/**
@@ -287,14 +287,14 @@ public class ListFunctionsDialog extends TitleAreaDialog {
 			
 			titles[i]=functions.get(i).getFunctionDescription();
 			urls[i]=functions.get(i).getFunctionDescription();
-			if (urls[i]==null) urls[i]=Messages.getString("ListFunctionsDialog.3"); //$NON-NLS-1$
+			if (urls[i]==null) urls[i]=Messages.ListFunctionsDialog_3; //$NON-NLS-1$
 		}
 		try {
 			browser = new Browser(form, SWT.NONE|SWT.WRAP);
 		} catch (SWTError e) {
 			MessageBox messageBox = new MessageBox(parent.getShell(), SWT.ICON_ERROR | SWT.OK);
-			messageBox.setMessage(Messages.getString("ListFunctionsDialog.4")); //$NON-NLS-1$
-			messageBox.setText(Messages.getString("ListFunctionsDialog.5")); //$NON-NLS-1$
+			messageBox.setMessage(Messages.ListFunctionsDialog_4); //$NON-NLS-1$
+			messageBox.setText(Messages.ListFunctionsDialog_5); //$NON-NLS-1$
 			messageBox.open();
 		}
 		/*back.addListener(SWT.Selection, new Listener() {

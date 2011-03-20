@@ -94,12 +94,12 @@ public class FilterPage extends AbstractWfsPage<WfsGetFeatureConfiguration> {
 	 * @param typesPage the types page
 	 */
 	public FilterPage(WfsGetFeatureConfiguration configuration, AbstractTypesPage<?> typesPage) {
-		super(configuration, Messages.getString("FilterPage.0")); //$NON-NLS-1$
+		super(configuration, Messages.FilterPage_0); //$NON-NLS-1$
 		
 		this.typesPage = typesPage;
 		
-		setTitle(Messages.getString("FilterPage.1")); //$NON-NLS-1$
-		setMessage(Messages.getString("FilterPage.2")); //$NON-NLS-1$
+		setTitle(Messages.FilterPage_1); //$NON-NLS-1$
+		setMessage(Messages.FilterPage_2); //$NON-NLS-1$
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class FilterPage extends AbstractWfsPage<WfsGetFeatureConfiguration> {
 		page.setLayout(new GridLayout(3, false));
 		
 		Label typeLabel = new Label(page, SWT.NONE);
-		typeLabel.setText(Messages.getString("FilterPage.3")); //$NON-NLS-1$
+		typeLabel.setText(Messages.FilterPage_3); //$NON-NLS-1$
 		typeLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		
 		// init combo
@@ -174,7 +174,7 @@ public class FilterPage extends AbstractWfsPage<WfsGetFeatureConfiguration> {
 		});
 		
 		Label editorLabel = new Label(page, SWT.NONE);
-		editorLabel.setText(Messages.getString("FilterPage.4")); //$NON-NLS-1$
+		editorLabel.setText(Messages.FilterPage_4); //$NON-NLS-1$
 		editorLabel.setLayoutData(new GridData(SWT.END, SWT.BEGINNING, false, false));
 		
 		// init editor
@@ -200,8 +200,8 @@ public class FilterPage extends AbstractWfsPage<WfsGetFeatureConfiguration> {
 		// create edit button
 		editButton = new Button(page, SWT.PUSH);
 		editButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
-		editButton.setText(Messages.getString("FilterPage.6")); //$NON-NLS-1$
-		editButton.setToolTipText(Messages.getString("FilterPage.7")); //$NON-NLS-1$
+		editButton.setText(Messages.FilterPage_6); //$NON-NLS-1$
+		editButton.setToolTipText(Messages.FilterPage_7); //$NON-NLS-1$
 		editButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -210,7 +210,7 @@ public class FilterPage extends AbstractWfsPage<WfsGetFeatureConfiguration> {
 					FeatureType type = lastSelected;
 					
 					OGCFilterDialog dialog = new OGCFilterDialog(display.getActiveShell(), 
-							Messages.getString("FilterPage.8") + type.getName().getLocalPart()); //$NON-NLS-1$
+							Messages.FilterPage_8 + type.getName().getLocalPart()); //$NON-NLS-1$
 					dialog.setFeatureType(type);
 					String filter = dialog.open();
 					if (filter != null) {

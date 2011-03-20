@@ -97,7 +97,7 @@ public class ProjectParser {
 	 * @return the loaded project 
 	 */
 	public HaleProject read(String filename, IProgressMonitor monitor) {
-		monitor.beginTask(Messages.getString("ProjectParser.0"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+		monitor.beginTask(Messages.ProjectParser_0, IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 		
 		String basePath = FilenameUtils.getFullPath(filename);
 		
@@ -122,7 +122,7 @@ public class ProjectParser {
 			
 			if (errors != null && !errors.isEmpty()) {
 				// show error dialog
-				StringBuffer message = new StringBuffer(Messages.getString("ProjectParser.1")); //$NON-NLS-1$
+				StringBuffer message = new StringBuffer(Messages.ProjectParser_1); //$NON-NLS-1$
 				for (int i = 0; i < errors.size(); i++) {
 					if (i != 0) {
 						message.append('\n');
@@ -165,7 +165,7 @@ public class ProjectParser {
 		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 		
 		// first, load schemas.
-		monitor.subTask(Messages.getString("ProjectParser.6")); //$NON-NLS-1$
+		monitor.subTask(Messages.ProjectParser_6); //$NON-NLS-1$
 		try {
 			ProgressIndicator progress = new ProgressIndicator() {
 				
@@ -206,7 +206,7 @@ public class ProjectParser {
 		List<String> errors = new ArrayList<String>();
 		
 		// second, load alignment.
-		monitor.subTask(Messages.getString("ProjectParser.8")); //$NON-NLS-1$
+		monitor.subTask(Messages.ProjectParser_8); //$NON-NLS-1$
 		if (project.getOmlPath() != null && !project.getOmlPath().isEmpty()) {
 			try {
 				OmlRdfReader reader = new OmlRdfReader();
@@ -240,7 +240,7 @@ public class ProjectParser {
 		}
 		
 		// second and a half, load styles
-		monitor.subTask(Messages.getString("ProjectParser.12")); //$NON-NLS-1$
+		monitor.subTask(Messages.ProjectParser_12); //$NON-NLS-1$
 		if (project.getStyles() != null) {
 			String path = project.getStyles().getPath();
 			URI stylesLoc = getLocation(path, basePath);
@@ -263,7 +263,7 @@ public class ProjectParser {
 		}
 		
 		// third, load instances.
-		monitor.subTask(Messages.getString("ProjectParser.14")); //$NON-NLS-1$
+		monitor.subTask(Messages.ProjectParser_14); //$NON-NLS-1$
 		if (project.getInstanceData() != null) {
 			try {
 //				URI file = new URI(URLDecoder.decode(project.getInstanceData().getPath(), "UTF-8"));
@@ -296,7 +296,7 @@ public class ProjectParser {
 		}
 		
 		// fourth, it's time for loading the tasks.
-		monitor.subTask(Messages.getString("ProjectParser.17")); //$NON-NLS-1$
+		monitor.subTask(Messages.ProjectParser_17); //$NON-NLS-1$
 		ATransaction taskTrans = _log.begin("Loading tasks"); //$NON-NLS-1$
 		try {
 			taskService.clearUserTasks();

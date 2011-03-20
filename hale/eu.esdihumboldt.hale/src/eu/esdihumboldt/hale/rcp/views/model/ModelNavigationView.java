@@ -349,7 +349,7 @@ public class ModelNavigationView extends ViewPart implements
 	private List<SimpleToggleAction> getToggleActions(PatternViewFilter pvf) {
 		List<SimpleToggleAction> result = new ArrayList<SimpleToggleAction>();
 		result.add(new SimpleToggleAction(TreeObjectType.ABSTRACT_FT, 
-				Messages.getString("ModelNavigationView.2"), Messages.getString("ModelNavigationView.3"),  //$NON-NLS-1$ //$NON-NLS-2$
+				Messages.ModelNavigationView_2, Messages.ModelNavigationView_3,  //$NON-NLS-1$ //$NON-NLS-2$
 				"/icons/see_abstract_ft.png", pvf)); //$NON-NLS-1$
 		result.add(new SimpleToggleAction(TreeObjectType.PROPERTY_TYPE, 
 				Messages.ModelNavigationView_PropertyHide, Messages.ModelNavigationView_PropertyShow, 

@@ -42,7 +42,7 @@ public class ProxyPreferencePage
 	public ProxyPreferencePage() {
 		super(GRID);
 		setPreferenceStore(HALEActivator.getDefault().getPreferenceStore());
-		setDescription(Messages.getString("ProxyPreferencePage.0")); //$NON-NLS-1$
+		setDescription(Messages.ProxyPreferencePage_0); //$NON-NLS-1$
 	}
 	
 	/**
@@ -52,32 +52,32 @@ public class ProxyPreferencePage
 	protected void createFieldEditors() {
 		// proxy host
 		addField(new StringFieldEditor(
-				PreferenceConstants.CONNECTION_PROXY_HOST, Messages.getString("ProxyPreferencePage.1"), //$NON-NLS-1$
+				PreferenceConstants.CONNECTION_PROXY_HOST, Messages.ProxyPreferencePage_1, //$NON-NLS-1$
 				getFieldEditorParent()));
 		// proxy port
 		addField(new IntegerFieldEditor(
-				PreferenceConstants.CONNECTION_PROXY_PORT, Messages.getString("ProxyPreferencePage.2"), //$NON-NLS-1$
+				PreferenceConstants.CONNECTION_PROXY_PORT, Messages.ProxyPreferencePage_2, //$NON-NLS-1$
 				getFieldEditorParent()));
 		// proxy user name
 		addField(new StringFieldEditor(
-				PreferenceConstants.CONNECTION_PROXY_USER, Messages.getString("ProxyPreferencePage.5"), //$NON-NLS-1$
+				PreferenceConstants.CONNECTION_PROXY_USER, Messages.ProxyPreferencePage_5, //$NON-NLS-1$
 				getFieldEditorParent()));
 		// proxy password
 		addField(new PasswordFieldEditor(
 				PreferenceConstants.SECURE_NODE_NAME, 
 				PreferenceConstants.CONNECTION_PROXY_PASSWORD,
-				Messages.getString("ProxyPreferencePage.6"), //$NON-NLS-1$
+				Messages.ProxyPreferencePage_6, //$NON-NLS-1$
 				getFieldEditorParent()));
 		// non proxy hosts
 		addField(new StringFieldEditor(
-				PreferenceConstants.CONNECTION_NON_PROXY_HOSTS, Messages.getString("ProxyPreferencePage.3"), //$NON-NLS-1$
+				PreferenceConstants.CONNECTION_NON_PROXY_HOSTS, Messages.ProxyPreferencePage_3, //$NON-NLS-1$
 				getFieldEditorParent()));
 		// placeholder
 		Composite ph = new Composite(getFieldEditorParent(), SWT.NONE);
 		ph.setLayoutData(GridDataFactory.swtDefaults().hint(0, 0).create());
 		// info label
 		Label info = new Label(getFieldEditorParent(), SWT.NONE);
-		info.setText(Messages.getString("ProxyPreferencePage.4")); //$NON-NLS-1$
+		info.setText(Messages.ProxyPreferencePage_4); //$NON-NLS-1$
 		info.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1));
 	}
 	

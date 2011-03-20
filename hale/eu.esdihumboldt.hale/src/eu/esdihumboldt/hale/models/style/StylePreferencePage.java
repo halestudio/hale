@@ -48,7 +48,7 @@ public class StylePreferencePage extends FieldEditorPreferencePage
 		super(GRID);
 		
 		setPreferenceStore(HALEActivator.getDefault().getPreferenceStore());
-		setDescription(Messages.getString("StylePreferencePage.0"));  //$NON-NLS-1$
+		setDescription(Messages.StylePreferencePage_0);  //$NON-NLS-1$
 	}
 
 	/**
@@ -56,13 +56,13 @@ public class StylePreferencePage extends FieldEditorPreferencePage
 	 */
 	@Override
 	protected void createFieldEditors() {
-		addField(new ColorFieldEditor(KEY_DEFAULT_BACKGROUND, Messages.getString("StylePreferencePage.1"), getFieldEditorParent())); //$NON-NLS-1$
+		addField(new ColorFieldEditor(KEY_DEFAULT_BACKGROUND, Messages.StylePreferencePage_1, getFieldEditorParent())); //$NON-NLS-1$
 		
-		addField(new ColorFieldEditor(KEY_DEFAULT_COLOR, Messages.getString("StylePreferencePage.2"), getFieldEditorParent())); //$NON-NLS-1$
-		addField(new IntegerFieldEditor(KEY_DEFAULT_WIDTH, Messages.getString("StylePreferencePage.3"), getFieldEditorParent())); //$NON-NLS-1$
+		addField(new ColorFieldEditor(KEY_DEFAULT_COLOR, Messages.StylePreferencePage_2, getFieldEditorParent())); //$NON-NLS-1$
+		addField(new IntegerFieldEditor(KEY_DEFAULT_WIDTH, Messages.StylePreferencePage_3, getFieldEditorParent())); //$NON-NLS-1$
 		
-		addField(new ColorFieldEditor(KEY_SELECTION_COLOR, Messages.getString("StylePreferencePage.4"), getFieldEditorParent())); //$NON-NLS-1$
-		addField(new IntegerFieldEditor(KEY_SELECTION_WIDTH, Messages.getString("StylePreferencePage.5"), getFieldEditorParent())); //$NON-NLS-1$
+		addField(new ColorFieldEditor(KEY_SELECTION_COLOR, Messages.StylePreferencePage_4, getFieldEditorParent())); //$NON-NLS-1$
+		addField(new IntegerFieldEditor(KEY_SELECTION_WIDTH, Messages.StylePreferencePage_5, getFieldEditorParent())); //$NON-NLS-1$
 	}
 
 	/**

@@ -216,9 +216,9 @@ public class FunctionWizardContribution extends ContributionItem {
 				info = new CellSelectionInfo(cellSelection);
 			}
 			
-			String augmentations = Messages.getString("FunctionWizardContribution.0"); //$NON-NLS-1$
+			String augmentations = Messages.FunctionWizardContribution_0; //$NON-NLS-1$
 			if (info != null && info.getTargetItemCount() == 1) {
-				augmentations += Messages.getString("FunctionWizardContribution.1") + info.getFirstTargetItem().getName().getLocalPart(); //$NON-NLS-1$
+				augmentations += Messages.FunctionWizardContribution_1 + info.getFirstTargetItem().getName().getLocalPart(); //$NON-NLS-1$
 			}
 			
 			MenuItem augItem = new MenuItem(menu, SWT.PUSH, index++);
@@ -236,7 +236,7 @@ public class FunctionWizardContribution extends ContributionItem {
 		
 		if (!added) {
 			MenuItem item = new MenuItem(menu, SWT.PUSH, index++);
-			item.setText(Messages.getString("FunctionWizardContribution.2")); //$NON-NLS-1$
+			item.setText(Messages.FunctionWizardContribution_2); //$NON-NLS-1$
 			item.setEnabled(false);
 		}
 	}

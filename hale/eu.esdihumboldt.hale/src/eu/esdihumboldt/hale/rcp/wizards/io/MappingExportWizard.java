@@ -102,7 +102,7 @@ public class MappingExportWizard
 						ATransaction trans = _log.begin("Export mapping to " + format); //$NON-NLS-1$
 						try {
 							//TODO instead give the monitor to the exporter? support for canceling?
-							monitor.beginTask(Messages.getString("MappingExportWizard.1"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+							monitor.beginTask(Messages.MappingExportWizard_1, IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 							MappingExportReport report = mef.export(al, file, schemaService.getSourceSchemaElements(), 
 									schemaService.getTargetSchemaElements());
 							if (report != null && !report.isEmpty()) {

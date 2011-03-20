@@ -47,7 +47,7 @@ public class DoubleAttributeEditor extends StringValidatingAttributeEditor<Doubl
 			return null;
 		}
 		catch (NumberFormatException e) {
-			return Messages.getString("DoubleAttributeEditor.0"); //$NON-NLS-1$
+			return Messages.DoubleAttributeEditor_0; //$NON-NLS-1$
 		}
 	}
 
@@ -56,7 +56,7 @@ public class DoubleAttributeEditor extends StringValidatingAttributeEditor<Doubl
 	 */
 	@Override
 	protected String getValidToolTip() {
-		return Messages.getString("DoubleAttributeEditor.1"); //$NON-NLS-1$
+		return Messages.DoubleAttributeEditor_1; //$NON-NLS-1$
 	}
 
 	/**

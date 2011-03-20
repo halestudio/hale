@@ -196,8 +196,8 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 		final Button button2 = new Button(parent, SWT.TOGGLE);
 		final Button button3 = new Button(parent, SWT.TOGGLE);
 
-		button1.setText(Messages.getString("MappingGraphView_1")); //$NON-NLS-1$
-		button1.setToolTipText(Messages.getString("MappingGraphView_2")); //$NON-NLS-1$
+		button1.setText(Messages.MappingGraphView_1); //$NON-NLS-1$
+		button1.setToolTipText(Messages.MappingGraphView_2); //$NON-NLS-1$
 		button1.setImage(image);
 		button1.setLayoutData(gridData4);
 		button1.setSelection(true);
@@ -215,8 +215,8 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 			}
 		});
 
-		button2.setText(Messages.getString("MappingGraphView_3")); //$NON-NLS-1$
-		button2.setToolTipText(Messages.getString("MappingGraphView_4")); //$NON-NLS-1$
+		button2.setText(Messages.MappingGraphView_3); //$NON-NLS-1$
+		button2.setToolTipText(Messages.MappingGraphView_4); //$NON-NLS-1$
 		button2.setImage(image);
 		button2.setLayoutData(gridData5);
 
@@ -233,8 +233,8 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 			}
 		});
 
-		button3.setText(Messages.getString("MappingGraphView_5")); //$NON-NLS-1$
-		button3.setToolTipText(Messages.getString("MappingGraphView_6")); //$NON-NLS-1$
+		button3.setText(Messages.MappingGraphView_5); //$NON-NLS-1$
+		button3.setToolTipText(Messages.MappingGraphView_6); //$NON-NLS-1$
 		button3.setImage(image);
 		button3.setLayoutData(gridData6);
 
@@ -358,10 +358,10 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 		// Filter and Parameters gets transformed into one string
 		String toolTipText = ""; //$NON-NLS-1$
 		if (!filterList.isEmpty()) {
-			toolTipText = MessageFormat.format(Messages.getString("MappingGraphView.0"), toolTipText, this.mappingGraphModel.listToString(filterList)); //$NON-NLS-1$
+			toolTipText = MessageFormat.format(Messages.MappingGraphView_0, toolTipText, this.mappingGraphModel.listToString(filterList)); //$NON-NLS-1$
 		}
 		if (!parameterList.isEmpty()) {
-			toolTipText = MessageFormat.format(Messages.getString("MappingGraphView.1"), toolTipText, this.mappingGraphModel.parameterListToString(parameterList)); //$NON-NLS-1$
+			toolTipText = MessageFormat.format(Messages.MappingGraphView_1, toolTipText, this.mappingGraphModel.parameterListToString(parameterList)); //$NON-NLS-1$
 		}
 
 		// BrowserToolTip gets created

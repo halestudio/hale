@@ -41,10 +41,10 @@ public class CapabilitiesPage extends AbstractWfsPage<WfsConfiguration> {
 	 * @param configuration the WFS configuration
 	 */
 	public CapabilitiesPage(WfsConfiguration configuration) {
-		super(configuration, Messages.getString("CapabilitiesPage.0")); //$NON-NLS-1$
+		super(configuration, Messages.CapabilitiesPage_0); //$NON-NLS-1$
 		
-		setTitle(Messages.getString("CapabilitiesPage.1")); //$NON-NLS-1$
-		setMessage(Messages.getString("CapabilitiesPage.2")); //$NON-NLS-1$
+		setTitle(Messages.CapabilitiesPage_1); //$NON-NLS-1$
+		setMessage(Messages.CapabilitiesPage_2); //$NON-NLS-1$
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class CapabilitiesPage extends AbstractWfsPage<WfsConfiguration> {
 		Composite page = new Composite(parent, SWT.NONE);
 		page.setLayout(new GridLayout(2, false));
 		
-		location = new WfsLocationFieldEditor(Messages.getString("CapabilitiesPage.3"), Messages.getString("CapabilitiesPage.4"), page); //$NON-NLS-1$ //$NON-NLS-2$
+		location = new WfsLocationFieldEditor(Messages.CapabilitiesPage_3, Messages.CapabilitiesPage_4, page); //$NON-NLS-1$ //$NON-NLS-2$
 		location.setPage(this);
 		location.setPropertyChangeListener(new IPropertyChangeListener() {
 			

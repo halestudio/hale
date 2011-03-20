@@ -50,7 +50,7 @@ public class FileSelector implements CodeListSelector {
 	public FileSelector(Composite parent) {
 		fileComposite = new Composite(parent, SWT.NONE);
 		fileComposite.setLayout(new GridLayout(3, false));
-		fileEditor = new FileFieldEditor("file", Messages.getString("FileSelector.1"), fileComposite); //$NON-NLS-1$ //$NON-NLS-2$
+		fileEditor = new FileFieldEditor("file", Messages.FileSelector_1, fileComposite); //$NON-NLS-1$ //$NON-NLS-2$
 		fileEditor.setEmptyStringAllowed(false);
 		fileEditor.setFileExtensions(new String[]{"*.xml"}); //$NON-NLS-1$
 	}

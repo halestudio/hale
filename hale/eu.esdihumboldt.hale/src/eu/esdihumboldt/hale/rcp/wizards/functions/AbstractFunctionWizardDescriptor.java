@@ -51,14 +51,14 @@ public abstract class AbstractFunctionWizardDescriptor implements
 	 * @see FunctionWizardDescriptor#getName()
 	 */
 	public String getName() {
-		return conf.getAttribute(Messages.getString("AbstractFunctionWizardDescriptor.0")); //$NON-NLS-1$
+		return conf.getAttribute(Messages.AbstractFunctionWizardDescriptor_0); //$NON-NLS-1$
 	}
 
 	/**
 	 * @see FunctionWizardDescriptor#getIcon()
 	 */
 	public ImageDescriptor getIcon() {
-		URL url = getIconURL(Messages.getString("AbstractFunctionWizardDescriptor.1")); //$NON-NLS-1$
+		URL url = getIconURL(Messages.AbstractFunctionWizardDescriptor_1); //$NON-NLS-1$
 		
 		if (url != null) {
 			return ImageDescriptor.createFromURL(url);

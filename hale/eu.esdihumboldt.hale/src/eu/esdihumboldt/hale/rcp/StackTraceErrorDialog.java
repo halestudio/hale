@@ -180,8 +180,8 @@ public class StackTraceErrorDialog extends ErrorDialog {
 				}
 			}
 		});
-		link.setText(Messages.getString("StackTraceErrorDialog.0")); //$NON-NLS-1$
-		link.setToolTipText(Messages.getString("StackTraceErrorDialog.1")); //$NON-NLS-1$
+		link.setText(Messages.StackTraceErrorDialog_0); //$NON-NLS-1$
+		link.setToolTipText(Messages.StackTraceErrorDialog_1); //$NON-NLS-1$
 		Dialog.applyDialogFont(link);
 		return link;
 	}

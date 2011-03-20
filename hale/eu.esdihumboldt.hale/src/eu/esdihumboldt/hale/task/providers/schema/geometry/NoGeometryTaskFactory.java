@@ -52,7 +52,7 @@ public class NoGeometryTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public String getReason(Task task) {
-			return Messages.getString("NoGeometryTaskFactory.0"); //$NON-NLS-1$
+			return Messages.NoGeometryTaskFactory_0; //$NON-NLS-1$
 		}
 
 		/**
@@ -68,7 +68,7 @@ public class NoGeometryTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public String getTitle(Task task) {
-			return Messages.getString("NoGeometryTaskFactory.1") + ((SchemaElement) task.getMainContext()).getElementName().getLocalPart(); //$NON-NLS-1$
+			return Messages.NoGeometryTaskFactory_1 + ((SchemaElement) task.getMainContext()).getElementName().getLocalPart(); //$NON-NLS-1$
 		}
 
 		/**
@@ -84,7 +84,7 @@ public class NoGeometryTaskFactory extends AbstractTaskFactory {
 	/**
 	 * The type name
 	 */
-	public static final String BASE_TYPE_NAME = Messages.getString("NoGeometryTaskFactory.2"); //$NON-NLS-1$
+	public static final String BASE_TYPE_NAME = Messages.NoGeometryTaskFactory_2; //$NON-NLS-1$
 	
 	/**
 	 * The task type

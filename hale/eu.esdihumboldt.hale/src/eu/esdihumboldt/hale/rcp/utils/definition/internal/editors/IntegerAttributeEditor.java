@@ -47,7 +47,7 @@ public class IntegerAttributeEditor extends StringValidatingAttributeEditor<Inte
 			return null;
 		}
 		catch (NumberFormatException e) {
-			return Messages.getString("IntegerAttributeEditor_0"); //$NON-NLS-1$
+			return Messages.IntegerAttributeEditor_0; //$NON-NLS-1$
 		}
 	}
 	
@@ -56,7 +56,7 @@ public class IntegerAttributeEditor extends StringValidatingAttributeEditor<Inte
 	 */
 	@Override
 	protected String getValidToolTip() {
-		return Messages.getString("IntegerAttributeEditor_1"); //$NON-NLS-1$
+		return Messages.IntegerAttributeEditor_1; //$NON-NLS-1$
 	}
 
 	/**

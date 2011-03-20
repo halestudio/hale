@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.task.providers.schema;
 
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -99,7 +100,7 @@ public class MapNilAttributeTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public String getReason(Task task) {
-			return Messages.getString("MapNilAttributeTaskFactory.0"); //$NON-NLS-1$
+			return Messages.MapNilAttributeTaskFactory_0; //$NON-NLS-1$
 		}
 
 		/**
@@ -115,7 +116,7 @@ public class MapNilAttributeTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public String getTitle(Task task) {
-			return Messages.getString("MapNilAttributeTaskFactory.1") + ((AttributeDefinition) task.getMainContext()).getName() + Messages.getString("MapNilAttributeTaskFactory.2"); //$NON-NLS-1$ //$NON-NLS-2$
+			return MessageFormat.format(Messages.MapNilAttributeTaskFactory_1, ((AttributeDefinition) task.getMainContext()).getName()); //$NON-NLS-1$
 		}
 
 		/**

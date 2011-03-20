@@ -351,7 +351,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 			else {
 				ident = "source and transformed"; //$NON-NLS-1$
 			}
-			String text = MessageFormat.format(Messages.getString("FeatureTilePainter.0"), failed, ident); //$NON-NLS-1$
+			String text = MessageFormat.format(Messages.FeatureTilePainter_0, failed, ident); //$NON-NLS-1$
 			
 			Image errorImage = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
 			

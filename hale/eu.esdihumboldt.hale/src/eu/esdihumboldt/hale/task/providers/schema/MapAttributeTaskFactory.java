@@ -99,7 +99,7 @@ public class MapAttributeTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public String getReason(Task task) {
-			return Messages.getString("MapAttributeTaskFactory.0"); //$NON-NLS-1$
+			return Messages.MapAttributeTaskFactory_0; //$NON-NLS-1$
 		}
 
 		/**
@@ -115,7 +115,7 @@ public class MapAttributeTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public String getTitle(Task task) {
-			return Messages.getString("MapAttributeTaskFactory.1") + ((AttributeDefinition) task.getMainContext()).getName(); //$NON-NLS-1$
+			return Messages.MapAttributeTaskFactory_1 + ((AttributeDefinition) task.getMainContext()).getName(); //$NON-NLS-1$
 		}
 
 		/**

@@ -122,8 +122,8 @@ public class SchemaImportWizard
 								@Override
 								public void run() {
 									if (MessageDialog.openQuestion(getShell(), 
-											MessageFormat.format(Messages.SchemaImportWizard_SchemaQuestion0, info),
-											MessageFormat.format(Messages.SchemaImportWizard_SchemaQuestion1, info))) {
+											MessageFormat.format(Messages.SchemaImportWizard_SchemaQuestion_0, info),
+											MessageFormat.format(Messages.SchemaImportWizard_SchemaQuestion_1, info))) {
 										loadSchema.set(true);
 									}
 								}

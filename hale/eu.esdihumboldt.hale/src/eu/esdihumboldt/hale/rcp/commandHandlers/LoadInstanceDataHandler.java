@@ -52,8 +52,8 @@ public class LoadInstanceDataHandler
 		}
 		else {
 			MessageDialog.openError(HandlerUtil.getActiveShell(event),
-				Messages.getString("LoadInstanceDataHandler.0"),  //$NON-NLS-1$
-				Messages.getString("LoadInstanceDataHandler.1")); //$NON-NLS-1$
+				Messages.LoadInstanceDataHandler_0,  //$NON-NLS-1$
+				Messages.LoadInstanceDataHandler_1); //$NON-NLS-1$
 		}
 		
 		return null;

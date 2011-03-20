@@ -53,7 +53,7 @@ public class GmlExportPage
 	protected GmlExportPage(String pageName, String pageTitle) {
 		super(pageName, pageTitle, (ImageDescriptor) null);
 		super.setTitle(pageName);
-		super.setDescription(Messages.getString("GmlExportPage.0")); //$NON-NLS-1$
+		super.setDescription(Messages.GmlExportPage_0); //$NON-NLS-1$
 	}
 	
 	/**
@@ -66,7 +66,7 @@ public class GmlExportPage
         composite.setLayout(new GridLayout(3, false));
         composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        file = new SaveFileFieldEditor("file", Messages.getString("GmlExportPage.2"), composite); //$NON-NLS-1$ //$NON-NLS-2$
+        file = new SaveFileFieldEditor("file", Messages.GmlExportPage_2, composite); //$NON-NLS-1$ //$NON-NLS-2$
         file.getTextControl(composite).addModifyListener(new ModifyListener(){
 			public void modifyText(ModifyEvent e) {
 				getWizard().getContainer().updateButtons();
@@ -80,7 +80,7 @@ public class GmlExportPage
         
         validate = new Button(composite, SWT.CHECK);
         validate.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
-        validate.setText(Messages.getString("GmlExportPage.5")); //$NON-NLS-1$
+        validate.setText(Messages.GmlExportPage_5); //$NON-NLS-1$
         validate.setSelection(true);
         
         setPageComplete(false);

@@ -106,7 +106,7 @@ public class FeatureFilterField extends Composite {
 		// text field
 		filterText = new Text(this, SWT.SINGLE | SWT.BORDER);
 		filterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		filterText.setToolTipText(Messages.getString("FeatureFilterField.3")); //$NON-NLS-1$
+		filterText.setToolTipText(Messages.FeatureFilterField_3); //$NON-NLS-1$
 		filterText.addModifyListener(new ModifyListener() {
 			
 			@Override
@@ -121,13 +121,13 @@ public class FeatureFilterField extends Composite {
 		clearFilter = new Button(this, SWT.PUSH);
 		clearFilter.setEnabled(false);
 		clearFilter.setImage(clearFilterImage);
-		clearFilter.setToolTipText(Messages.getString("FeatureFilterField.0")); //$NON-NLS-1$
+		clearFilter.setToolTipText(Messages.FeatureFilterField_0); //$NON-NLS-1$
 		clearFilter.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 		clearFilter.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				filterText.setText(Messages.getString("FeatureFilterField.5")); //$NON-NLS-1$
+				filterText.setText(Messages.FeatureFilterField_5); //$NON-NLS-1$
 				clearFilter.setEnabled(false);
 				notifyListeners();
 			}
@@ -137,7 +137,7 @@ public class FeatureFilterField extends Composite {
 		// insert variable
 		insertVar = new Button(this, SWT.PUSH);
 		insertVar.setImage(insertVarImage);
-		insertVar.setToolTipText(Messages.getString("FeatureFilterField.6")); //$NON-NLS-1$
+		insertVar.setToolTipText(Messages.FeatureFilterField_6); //$NON-NLS-1$
 		insertVar.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 		insertVar.addSelectionListener(new SelectionAdapter() {
 
@@ -150,8 +150,8 @@ public class FeatureFilterField extends Composite {
 				}
 				
 				ListDialog dialog = new ListDialog(Display.getCurrent().getActiveShell());
-				dialog.setTitle(Messages.getString("FeatureFilterField.7")); //$NON-NLS-1$
-				dialog.setMessage(Messages.getString("FeatureFilterField.8")); //$NON-NLS-1$
+				dialog.setTitle(Messages.FeatureFilterField_7); //$NON-NLS-1$
+				dialog.setMessage(Messages.FeatureFilterField_8); //$NON-NLS-1$
 				dialog.setContentProvider(ArrayContentProvider.getInstance());
 				dialog.setLabelProvider(new LabelProvider());
 				dialog.setInput(attributeNames);
@@ -169,7 +169,7 @@ public class FeatureFilterField extends Composite {
 		// open form
 		openForm = new Button(this, SWT.PUSH);
 		openForm.setImage(openFormImage);
-		openForm.setToolTipText(Messages.getString("FeatureFilterField.9")); //$NON-NLS-1$
+		openForm.setToolTipText(Messages.FeatureFilterField_9); //$NON-NLS-1$
 		openForm.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 		openForm.addSelectionListener(new SelectionAdapter() {
 

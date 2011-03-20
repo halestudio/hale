@@ -84,7 +84,7 @@ public class CRSPreferencePage extends PreferencePage implements
 		page.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
 		Label label = new Label(page, SWT.NONE);
-		label.setText(Messages.getString("CRSPreferencePage.0")); //$NON-NLS-1$
+		label.setText(Messages.CRSPreferencePage_0); //$NON-NLS-1$
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 		
 		// code list
@@ -146,21 +146,21 @@ public class CRSPreferencePage extends PreferencePage implements
 		// add button (using a directory dialog)
 		Button add = new Button(bar, SWT.PUSH);
 		add.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-		add.setText(Messages.getString("CRSPreferencePage.2")); //$NON-NLS-1$
-		add.setToolTipText(Messages.getString("CRSPreferencePage.3")); //$NON-NLS-1$
+		add.setText(Messages.CRSPreferencePage_2); //$NON-NLS-1$
+		add.setToolTipText(Messages.CRSPreferencePage_3); //$NON-NLS-1$
 		add.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				final Display display = Display.getCurrent();
 				InputDialog dialog = new InputDialog(display.getActiveShell(), 
-						Messages.getString("CRSPreferencePage.4"), Messages.getString("CRSPreferencePage.5"),  //$NON-NLS-1$ //$NON-NLS-2$
+						Messages.CRSPreferencePage_4, Messages.CRSPreferencePage_5,  //$NON-NLS-1$ //$NON-NLS-2$
 						WKTPreferencesCRSFactory.AUTHORITY_PREFIX, new IInputValidator() {
 							
 							@Override
 							public String isValid(String newText) {
 								if (!newText.startsWith(WKTPreferencesCRSFactory.AUTHORITY_PREFIX)) {
-									return Messages.getString("CRSPreferencePage.6") + WKTPreferencesCRSFactory.AUTHORITY_PREFIX; //$NON-NLS-1$
+									return Messages.CRSPreferencePage_6 + WKTPreferencesCRSFactory.AUTHORITY_PREFIX; //$NON-NLS-1$
 								}
 								
 								return null;
@@ -178,8 +178,8 @@ public class CRSPreferencePage extends PreferencePage implements
 		// remove button
 		Button remove = new Button(bar, SWT.PUSH);
 		remove.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-		remove.setText(Messages.getString("CRSPreferencePage.7")); //$NON-NLS-1$
-		remove.setToolTipText(Messages.getString("CRSPreferencePage.8")); //$NON-NLS-1$
+		remove.setText(Messages.CRSPreferencePage_7); //$NON-NLS-1$
+		remove.setToolTipText(Messages.CRSPreferencePage_8); //$NON-NLS-1$
 		remove.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -304,7 +304,7 @@ public class CRSPreferencePage extends PreferencePage implements
 		}
 		
 		if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), 
-				Messages.getString("CRSPreferencePage.11"), Messages.getString("CRSPreferencePage.12"))) { //$NON-NLS-1$ //$NON-NLS-2$
+				Messages.CRSPreferencePage_11, Messages.CRSPreferencePage_12)) { //$NON-NLS-1$ //$NON-NLS-2$
 			Display.getCurrent().asyncExec(new Runnable() {
 	            @Override
 	            public void run() {

@@ -108,7 +108,7 @@ public class CodeListAttributeEditor implements AttributeEditor<CodeEntry> {
 		
 		Button assign = new Button(main, SWT.PUSH);
 		assign.setImage(assignImage);
-		assign.setToolTipText(Messages.getString("CodeListAttributeEditor.2")); //$NON-NLS-1$
+		assign.setToolTipText(Messages.CodeListAttributeEditor_2); //$NON-NLS-1$
 		assign.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -133,7 +133,7 @@ public class CodeListAttributeEditor implements AttributeEditor<CodeEntry> {
 	protected void selectCodeList() {
 		final Display display = Display.getCurrent();
 		CodeListSelectionDialog dialog = new CodeListSelectionDialog(display.getActiveShell(), codeList,
-				MessageFormat.format(Messages.getString("CodeListAttributeEditor.0"),attribute.getDisplayName())); //$NON-NLS-1$
+				MessageFormat.format(Messages.CodeListAttributeEditor_0,attribute.getDisplayName())); //$NON-NLS-1$
 		if (dialog.open() == CodeListSelectionDialog.OK) {
 			CodeList newCodeList = dialog.getCodeList();
 			CodeListService codeListService = (CodeListService) PlatformUI.getWorkbench().getService(CodeListService.class);

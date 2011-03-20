@@ -73,7 +73,7 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 		Control control = super.createContents(parent);
 		
 		//setMessage("");
-		setTitle(Messages.getString("CodeListSelectionDialog.0")); //$NON-NLS-1$
+		setTitle(Messages.CodeListSelectionDialog_0); //$NON-NLS-1$
 		
 		return control;
 	}
@@ -85,7 +85,7 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		
-		newShell.setText(Messages.getString("CodeListSelectionDialog.1")); //$NON-NLS-1$
+		newShell.setText(Messages.CodeListSelectionDialog_1); //$NON-NLS-1$
 	}
 
 	/**
@@ -112,14 +112,14 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 		
 		// list
 		TabItem listItem = new TabItem(tabFolder, SWT.NONE);
-		listItem.setText(Messages.getString("CodeListSelectionDialog.2")); //$NON-NLS-1$
+		listItem.setText(Messages.CodeListSelectionDialog_2); //$NON-NLS-1$
 		ListSelector listSelector = new ListSelector(tabFolder);
 		listItem.setControl(listSelector.getControl());
 		selectors.add(listSelector);
 		
 		// file
 		TabItem fileItem = new TabItem(tabFolder, SWT.NONE);
-		fileItem.setText(Messages.getString("CodeListSelectionDialog.3")); //$NON-NLS-1$
+		fileItem.setText(Messages.CodeListSelectionDialog_3); //$NON-NLS-1$
 		FileSelector fileSelector = new FileSelector(tabFolder);
 		fileItem.setControl(fileSelector.getControl());
 		selectors.add(fileSelector);
@@ -149,7 +149,7 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL,
 				false);
 		
-		createButton(parent, NONE_ID, Messages.getString("CodeListSelectionDialog.4"), //$NON-NLS-1$
+		createButton(parent, NONE_ID, Messages.CodeListSelectionDialog_4, //$NON-NLS-1$
 				false);
 	}
 
@@ -169,7 +169,7 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 		}
 		else {
 			//setErrorMessage("Invalid code list selection");
-			MessageDialog.openError(getShell(), Messages.getString("CodeListSelectionDialog.5"), Messages.getString("CodeListSelectionDialog.6")); //$NON-NLS-1$ //$NON-NLS-2$
+			MessageDialog.openError(getShell(), Messages.CodeListSelectionDialog_5, Messages.CodeListSelectionDialog_6); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 

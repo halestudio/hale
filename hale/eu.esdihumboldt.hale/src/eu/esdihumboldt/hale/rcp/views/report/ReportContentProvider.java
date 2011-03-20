@@ -42,8 +42,8 @@ public class ReportContentProvider implements ITreeContentProvider {
 	@Override
 	public Object[] getElements(Object inputElement) {
 		Object[] ret = new Object[2];
-		ret[0] = new String(Messages.getString("ReportContentProvider.2")+model.getWarnings().size()+")"); //$NON-NLS-1$ //$NON-NLS-2$
-		ret[1] = new String(Messages.getString("ReportContentProvider.3")+model.getErrors().size()+")"); //$NON-NLS-1$ //$NON-NLS-2$
+		ret[0] = new String(Messages.ReportContentProvider_2+model.getWarnings().size()); //$NON-NLS-1$ //$NON-NLS-2$
+		ret[1] = new String(Messages.ReportContentProvider_3+model.getErrors().size()); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		return ret;
 	}
@@ -65,7 +65,7 @@ public class ReportContentProvider implements ITreeContentProvider {
 			// get all error messages
 			this.item = this.model.getErrors();
 			return this.item.toArray();
-		} else if (parentElement.toString().startsWith(Messages.getString("ReportContentProvider.0"))) { //$NON-NLS-1$
+		} else if (parentElement.toString().startsWith(Messages.ReportContentProvider_0)) { //$NON-NLS-1$
 			// get all warning messages
 			this.item = this.model.getWarnings();
 			return this.item.toArray();
@@ -87,12 +87,12 @@ public class ReportContentProvider implements ITreeContentProvider {
 	public boolean hasChildren(Object element) {
 		boolean hasChildren = false;
 		
-		if (element.toString().contains(Messages.getString("ReportContentProvider.0"))) { //$NON-NLS-1$
+		if (element.toString().contains(Messages.ReportContentProvider_0)) { //$NON-NLS-1$
 			if (this.model.getWarnings().size() > 0) {
 				hasChildren = true;
 			}
 		}
-		else if (element.toString().contains(Messages.getString("ReportContentProvider.1"))) { //$NON-NLS-1$
+		else if (element.toString().contains(Messages.ReportContentProvider_1)) { //$NON-NLS-1$
 			if (this.model.getErrors().size() > 0) {
 				hasChildren = true;
 			}

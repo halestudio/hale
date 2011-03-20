@@ -58,7 +58,7 @@ public class FeatureFilterFormDialog extends TitleAreaDialog {
 	protected Control createContents(Composite parent) {
 		Control control = super.createContents(parent);
 		
-		setTitle(Messages.getString("FeatureFilterFormDialog.0")); //$NON-NLS-1$
+		setTitle(Messages.FeatureFilterFormDialog_0); //$NON-NLS-1$
 		//setMessage("");
 		
 		return control;
@@ -71,7 +71,7 @@ public class FeatureFilterFormDialog extends TitleAreaDialog {
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		
-		newShell.setText(Messages.getString("FeatureFilterFormDialog.1")); //$NON-NLS-1$
+		newShell.setText(Messages.FeatureFilterFormDialog_1); //$NON-NLS-1$
 	}
 
 	/**

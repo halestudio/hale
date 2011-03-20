@@ -127,7 +127,7 @@ public abstract class StringValidatingAttributeEditor<T> implements
 	 * @return the tooltip for a valid value
 	 */
 	protected String getValidToolTip() {
-		return Messages.getString("StringValidatingAttributeEditor.1"); //$NON-NLS-1$
+		return Messages.StringValidatingAttributeEditor_1; //$NON-NLS-1$
 	}
 
 	/**

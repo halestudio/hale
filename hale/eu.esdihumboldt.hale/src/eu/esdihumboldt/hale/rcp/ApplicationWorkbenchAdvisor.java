@@ -88,8 +88,8 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 			Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
 			MessageBox mb = new MessageBox(shell, 
 					SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
-    		mb.setMessage(Messages.getString("ApplicationWorkbenchAdvisor.1")); //$NON-NLS-1$
-    		mb.setText(Messages.getString("ApplicationWorkbenchAdvisor.2")); //$NON-NLS-1$
+    		mb.setMessage(Messages.ApplicationWorkbenchAdvisor_1); //$NON-NLS-1$
+    		mb.setText(Messages.ApplicationWorkbenchAdvisor_2); //$NON-NLS-1$
     		int result = mb.open();
     		if (result == SWT.CANCEL) {
     			return false;

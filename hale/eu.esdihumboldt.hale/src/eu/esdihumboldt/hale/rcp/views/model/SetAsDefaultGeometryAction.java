@@ -68,7 +68,7 @@ public class SetAsDefaultGeometryAction extends Action {
 		@Override
 		public void run(final IProgressMonitor monitor)
 				throws InvocationTargetException, InterruptedException {
-			monitor.beginTask(Messages.getString("SetAsDefaultGeometryAction.0"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+			monitor.beginTask(Messages.SetAsDefaultGeometryAction_0, IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 			ATransaction trans = log.begin("Reloading source schema and data"); //$NON-NLS-1$
 			try {
 				// reload source schema and instance data
@@ -114,7 +114,7 @@ public class SetAsDefaultGeometryAction extends Action {
 				styleService.addStyles(style);
 				
 				// readd instances
-				monitor.subTask(Messages.getString("SetAsDefaultGeometryAction.3")); //$NON-NLS-1$
+				monitor.subTask(Messages.SetAsDefaultGeometryAction_3); //$NON-NLS-1$
 				if (instanceLoc != null && !instanceLoc.isEmpty()) {
 					try {
 						instanceService.addInstances(DatasetType.reference, 
@@ -142,7 +142,7 @@ public class SetAsDefaultGeometryAction extends Action {
 		@Override
 		public void run(final IProgressMonitor monitor)
 				throws InvocationTargetException, InterruptedException {
-			monitor.beginTask(Messages.getString("SetAsDefaultGeometryAction.5"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+			monitor.beginTask(Messages.SetAsDefaultGeometryAction_5, IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 			ATransaction trans = log.begin("Reloading target schema and data"); //$NON-NLS-1$
 			try {
 				// reload source schema and instance data
@@ -187,7 +187,7 @@ public class SetAsDefaultGeometryAction extends Action {
 				styleService.addStyles(style);
 				
 				// trigger retransformation
-				monitor.subTask(Messages.getString("SetAsDefaultGeometryAction.8")); //$NON-NLS-1$
+				monitor.subTask(Messages.SetAsDefaultGeometryAction_8); //$NON-NLS-1$
 				// use a trick to trigger the transformation - add empty feature collection
 				instanceService.addInstances(DatasetType.reference, instances);
 			} finally {
@@ -226,16 +226,16 @@ public class SetAsDefaultGeometryAction extends Action {
 		switch (item.getSchemaType()) {
 		case SOURCE:
 			// reload schema and instances
-			if (!MessageDialog.openQuestion(display.getActiveShell(), Messages.getString("SetAsDefaultGeometryAction.9"),  //$NON-NLS-1$
-					Messages.getString("SetAsDefaultGeometryAction.1"))) { //$NON-NLS-1$
+			if (!MessageDialog.openQuestion(display.getActiveShell(), Messages.SetAsDefaultGeometryAction_9,  //$NON-NLS-1$
+					Messages.SetAsDefaultGeometryAction_1)) { //$NON-NLS-1$
 				return;
 			}
 			runner = new ReloadSourceRunner();
 			break;
 		case TARGET:
 			// reload target schema and transformations
-			if (!MessageDialog.openQuestion(display.getActiveShell(), Messages.getString("SetAsDefaultGeometryAction.12"),  //$NON-NLS-1$
-					Messages.getString("SetAsDefaultGeometryAction.2"))) { //$NON-NLS-1$
+			if (!MessageDialog.openQuestion(display.getActiveShell(), Messages.SetAsDefaultGeometryAction_12,  //$NON-NLS-1$
+					Messages.SetAsDefaultGeometryAction_2)) { //$NON-NLS-1$
 				return;
 			}
 			runner = new ReloadTargetRunner();

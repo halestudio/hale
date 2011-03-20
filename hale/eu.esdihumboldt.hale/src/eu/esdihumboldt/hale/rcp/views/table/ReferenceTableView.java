@@ -99,7 +99,7 @@ public class ReferenceTableView extends AbstractTableView {
 			instanceImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/random.gif").createImage(); //$NON-NLS-1$
 		}
 		instanceButton.setImage(instanceImage);
-		instanceButton.setToolTipText(Messages.getString("ReferenceTableView_0")); //$NON-NLS-1$
+		instanceButton.setToolTipText(Messages.ReferenceTableView_0); //$NON-NLS-1$
 		instanceButton.setSelection(true);
 		instanceButton.addSelectionListener(new SelectionAdapter() {
 
@@ -115,7 +115,7 @@ public class ReferenceTableView extends AbstractTableView {
 			mapImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/map.gif").createImage(); //$NON-NLS-1$
 		}
 		mapButton.setImage(mapImage);
-		mapButton.setToolTipText(Messages.getString("ReferenceTableView_1")); //$NON-NLS-1$
+		mapButton.setToolTipText(Messages.ReferenceTableView_1); //$NON-NLS-1$
 		mapButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override

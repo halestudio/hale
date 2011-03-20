@@ -36,7 +36,7 @@ public class NewProjectHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		if (MessageDialog.openQuestion(HandlerUtil.getActiveShell(event), 
-				Messages.getString("NewProjectHandler.0"), Messages.getString("NewProjectHandler.1"))) { //$NON-NLS-1$ //$NON-NLS-2$
+				Messages.NewProjectHandler_0, Messages.NewProjectHandler_1)) { //$NON-NLS-1$ //$NON-NLS-2$
 			
 			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
 			ps.clean();

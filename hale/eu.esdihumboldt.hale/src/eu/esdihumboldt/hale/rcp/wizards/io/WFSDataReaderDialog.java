@@ -213,7 +213,7 @@ public class WFSDataReaderDialog extends Dialog {
 		
 		final Button finish = new Button(buttons, SWT.NONE);
 		finish.setAlignment(SWT.RIGHT);
-		finish.setText(Messages.getString("WFSDataReaderDialog.1")); //$NON-NLS-1$
+		finish.setText(Messages.WFSDataReaderDialog_1); //$NON-NLS-1$
 		finish.setEnabled(false);
 		finish.setSize(100, 24);
 		finish.addListener(SWT.Selection, new Listener () {

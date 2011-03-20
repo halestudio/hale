@@ -47,7 +47,7 @@ public class FloatAttributeEditor extends StringValidatingAttributeEditor<Float>
 			return null;
 		}
 		catch (NumberFormatException e) {
-			return Messages.getString("FloatAttributeEditor.0"); //$NON-NLS-1$
+			return Messages.FloatAttributeEditor_0; //$NON-NLS-1$
 		}
 	}
 	
@@ -56,7 +56,7 @@ public class FloatAttributeEditor extends StringValidatingAttributeEditor<Float>
 	 */
 	@Override
 	protected String getValidToolTip() {
-		return Messages.getString("FloatAttributeEditor.1"); //$NON-NLS-1$
+		return Messages.FloatAttributeEditor_1; //$NON-NLS-1$
 	}
 
 	/**

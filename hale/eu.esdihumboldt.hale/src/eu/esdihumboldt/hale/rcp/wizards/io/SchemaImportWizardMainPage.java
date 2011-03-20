@@ -151,8 +151,8 @@ public class SchemaImportWizardMainPage
 		this.ufe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ufe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		wfsFieldEditor = new UrlFieldEditor(Messages.getString("SchemaImportWizardMainPage.0"),  //$NON-NLS-1$
-				Messages.getString("SchemaImportWizardMainPage.1"), ufe_container); //$NON-NLS-1$
+		wfsFieldEditor = new UrlFieldEditor(Messages.SchemaImportWizardMainPage_0,  //$NON-NLS-1$
+				Messages.SchemaImportWizardMainPage_1, ufe_container); //$NON-NLS-1$
 		wfsFieldEditor.setEnabled(false, ufe_container);
 		wfsFieldEditor.getTextControl(ufe_container).addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {

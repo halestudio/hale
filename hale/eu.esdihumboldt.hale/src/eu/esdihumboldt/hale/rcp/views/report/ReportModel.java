@@ -50,7 +50,7 @@ public class ReportModel {
 		this.setSAXParseExceptionError(report.getErrors());
 		this.setSAXParseExceptionWarning(report.getWarnings());
 		
-		this.identifier = Messages.getString("ReportModel.1"); //$NON-NLS-1$
+		this.identifier = Messages.ReportModel_1; //$NON-NLS-1$
 	}
 	
 	/**
@@ -68,7 +68,7 @@ public class ReportModel {
 			this.warning.add(entry.getValue()+" "+CellUtils.asString(entry.getKey())); //$NON-NLS-1$
 		}
 		
-		this.identifier = Messages.getString("ReportModel.4"); //$NON-NLS-1$
+		this.identifier = Messages.ReportModel_4; //$NON-NLS-1$
 	}
 	
 	/**

@@ -127,7 +127,7 @@ public class InstanceDataImportWizardMainPage
 		setControl(composite);
 		
 		if (schemaNamespace == null) {
-			setErrorMessage(Messages.getString("InstanceDataImportWizardMainPage.1")); //$NON-NLS-1$
+			setErrorMessage(Messages.InstanceDataImportWizardMainPage_1); //$NON-NLS-1$
 		}
 		else {
 			setErrorMessage(null);
@@ -233,7 +233,7 @@ public class InstanceDataImportWizardMainPage
 		// import options
 		if (supportsGML) {
 			Group optionsGroup = new Group(parent, SWT.NONE);
-			optionsGroup.setText(Messages.getString("InstanceDataImportWizardMainPage.2")); //$NON-NLS-1$
+			optionsGroup.setText(Messages.InstanceDataImportWizardMainPage_2); //$NON-NLS-1$
 			optionsGroup.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 			optionsGroup.setLayout(new GridLayout());
 			

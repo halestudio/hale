@@ -47,7 +47,7 @@ public class LongAttributeEditor extends StringValidatingAttributeEditor<Long> {
 			return null;
 		}
 		catch (NumberFormatException e) {
-			return Messages.getString("LongAttributeEditor.0"); //$NON-NLS-1$
+			return Messages.LongAttributeEditor_0; //$NON-NLS-1$
 		}
 	}
 	/**
@@ -55,7 +55,7 @@ public class LongAttributeEditor extends StringValidatingAttributeEditor<Long> {
 	 */
 	@Override
 	protected String getValidToolTip() {
-		return Messages.getString("LongAttributeEditor.1"); //$NON-NLS-1$
+		return Messages.LongAttributeEditor_1; //$NON-NLS-1$
 	}
 
 	/**

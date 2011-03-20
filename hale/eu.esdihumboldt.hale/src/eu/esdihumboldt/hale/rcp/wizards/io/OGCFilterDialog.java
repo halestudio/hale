@@ -66,7 +66,7 @@ public class OGCFilterDialog extends Dialog {
 		buttons.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 		
 		final Button finishButton = new Button(buttons, SWT.NONE);
-		finishButton.setText(Messages.getString("OGCFilterDialog.0")); //$NON-NLS-1$
+		finishButton.setText(Messages.OGCFilterDialog_0); //$NON-NLS-1$
 		finishButton.addListener(SWT.Selection, new Listener () {
 			public void handleEvent(Event event) {
 				// do finish
@@ -76,7 +76,7 @@ public class OGCFilterDialog extends Dialog {
 				}
 				catch (IllegalStateException e) {
 					MessageBox box = new MessageBox(shell, SWT.ICON_ERROR | SWT.OK);
-					box.setText(Messages.getString("OGCFilterDialog.1")); //$NON-NLS-1$
+					box.setText(Messages.OGCFilterDialog_1); //$NON-NLS-1$
 					box.setMessage(e.getMessage());
 					box.open();
 				}
@@ -84,7 +84,7 @@ public class OGCFilterDialog extends Dialog {
 		});
 		
 		final Button cancelButton = new Button(buttons, SWT.NONE);
-		cancelButton.setText(Messages.getString("OGCFilterDialog.2")); //$NON-NLS-1$
+		cancelButton.setText(Messages.OGCFilterDialog_2); //$NON-NLS-1$
 		cancelButton.addListener(SWT.Selection, new Listener () {
 			public void handleEvent(Event event) {
 				shell.dispose();

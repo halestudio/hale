@@ -58,7 +58,7 @@ public class OGCFilterBuilder extends Composite {
 		final Group conditionsGroup = new Group(this, SWT.NONE);
 		conditionsGroup.setLayout(new GridLayout(1, false));
 		conditionsGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
-		conditionsGroup.setText(Messages.getString("OGCFilterBuilder.0")); //$NON-NLS-1$
+		conditionsGroup.setText(Messages.OGCFilterBuilder_0); //$NON-NLS-1$
 		
 		Table table = new Table(conditionsGroup, SWT.CHECK | SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION);
 		table.setLinesVisible(true);
@@ -67,7 +67,7 @@ public class OGCFilterBuilder extends Composite {
 		
 		tableViewer = new CheckboxTableViewer(table);
 
-		String[] titles = {Messages.getString("OGCFilterBuilder.1"), Messages.getString("OGCFilterBuilder.2"), Messages.getString("OGCFilterBuilder.3"), Messages.getString("OGCFilterBuilder.4"), Messages.getString("OGCFilterBuilder.5")}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+		String[] titles = {Messages.OGCFilterBuilder_1, Messages.OGCFilterBuilder_2, Messages.OGCFilterBuilder_3, Messages.OGCFilterBuilder_4, Messages.OGCFilterBuilder_5}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		int[] widths = {50, 100, 185, 155, 50};
 		for (int i = 0; i < titles.length; i++) {
 			TableViewerColumn columnViewer = new TableViewerColumn(tableViewer, SWT.NONE);
@@ -92,8 +92,8 @@ public class OGCFilterBuilder extends Composite {
 		conditionButtons.setLayout(layout);
 		
 		final Button addConditionButton = new Button(conditionButtons, SWT.NONE);
-		addConditionButton.setText(Messages.getString("OGCFilterBuilder.6")); //$NON-NLS-1$
-		addConditionButton.setToolTipText(Messages.getString("OGCFilterBuilder.7")); //$NON-NLS-1$
+		addConditionButton.setText(Messages.OGCFilterBuilder_6); //$NON-NLS-1$
+		addConditionButton.setToolTipText(Messages.OGCFilterBuilder_7); //$NON-NLS-1$
 		addConditionButton.addListener(SWT.Selection, new Listener () {
 			public void handleEvent(Event event) {
 				data.getConditions().add(new Condition());
@@ -102,8 +102,8 @@ public class OGCFilterBuilder extends Composite {
 		});
 		
 		final Button removeConditionButton = new Button(conditionButtons, SWT.NONE);
-		removeConditionButton.setText(Messages.getString("OGCFilterBuilder.8")); //$NON-NLS-1$
-		removeConditionButton.setToolTipText(Messages.getString("OGCFilterBuilder.9")); //$NON-NLS-1$
+		removeConditionButton.setText(Messages.OGCFilterBuilder_8); //$NON-NLS-1$
+		removeConditionButton.setToolTipText(Messages.OGCFilterBuilder_9); //$NON-NLS-1$
 		removeConditionButton.addListener(SWT.Selection, new Listener () {
 			public void handleEvent(Event event) {
 				ISelection selection = tableViewer.getSelection();
@@ -167,7 +167,7 @@ public class OGCFilterBuilder extends Composite {
 			
 			if (condition.getComparison() == null || condition.getValue().toString().isEmpty())
 			{
-				if (!condition.getComparison().equals(Messages.getString("OGCFilterBuilder.12"))) { //$NON-NLS-1$
+				if (!condition.getComparison().equals(Messages.OGCFilterBuilder_12)) { //$NON-NLS-1$
 					table.setSelection(i);
 					throw new IllegalStateException("Value must be set at selected condition."); //$NON-NLS-1$
 				}
@@ -444,16 +444,16 @@ public class OGCFilterBuilder extends Composite {
 		List<PropertyDescriptor> propertyList = new ArrayList<PropertyDescriptor>();
 		ComboBoxCellEditor spatialConditionEditor;
 		List<String> spatialConditionList = new ArrayList<String>();
-		String[] spatialConditions = {Messages.getString("OGCFilterBuilder.45"), Messages.getString("OGCFilterBuilder.46"), Messages.getString("OGCFilterBuilder.47"), Messages.getString("OGCFilterBuilder.48"), Messages.getString("OGCFilterBuilder.49"), Messages.getString("OGCFilterBuilder.50"),  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-				Messages.getString("OGCFilterBuilder.51"), Messages.getString("OGCFilterBuilder.52"), Messages.getString("OGCFilterBuilder.53"), Messages.getString("OGCFilterBuilder.54"), Messages.getString("OGCFilterBuilder.55")}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+		String[] spatialConditions = {Messages.OGCFilterBuilder_45, Messages.OGCFilterBuilder_46, Messages.OGCFilterBuilder_47, Messages.OGCFilterBuilder_48, Messages.OGCFilterBuilder_49, Messages.OGCFilterBuilder_50,  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+				Messages.OGCFilterBuilder_51, Messages.OGCFilterBuilder_52, Messages.OGCFilterBuilder_53, Messages.OGCFilterBuilder_54, Messages.OGCFilterBuilder_55}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		ComboBoxCellEditor comparisonConditionEditor;
 		List<String> comparisonConditionList = new ArrayList<String>();
-		String[] comparisonConditions = {Messages.getString("OGCFilterBuilder.56"), Messages.getString("OGCFilterBuilder.57"), Messages.getString("OGCFilterBuilder.58"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				Messages.getString("OGCFilterBuilder.59"), Messages.getString("OGCFilterBuilder.60"), Messages.getString("OGCFilterBuilder.61"),  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				Messages.getString("OGCFilterBuilder.62"), Messages.getString("OGCFilterBuilder.63"), Messages.getString("OGCFilterBuilder.64")}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		String[] comparisonConditions = {Messages.OGCFilterBuilder_56, Messages.OGCFilterBuilder_57, Messages.OGCFilterBuilder_58, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				Messages.OGCFilterBuilder_59, Messages.OGCFilterBuilder_60, Messages.OGCFilterBuilder_61,  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				Messages.OGCFilterBuilder_62, Messages.OGCFilterBuilder_63, Messages.OGCFilterBuilder_64}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		ComboBoxCellEditor logicalUnionEditor;
 		List<String> logicalUnionList = new ArrayList<String>();
-		String[] logicalUnions = {Messages.getString("OGCFilterBuilder.65"), Messages.getString("OGCFilterBuilder.66")}; //$NON-NLS-1$ //$NON-NLS-2$
+		String[] logicalUnions = {Messages.OGCFilterBuilder_65, Messages.OGCFilterBuilder_66}; //$NON-NLS-1$ //$NON-NLS-2$
 		TextCellEditor textEditor;
 	
 		public ConditionEditingSupport(ColumnViewer viewer, int column) {

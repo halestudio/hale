@@ -58,7 +58,7 @@ public class URIAttributeEditor extends StringValidatingAttributeEditor<URI> {
 	 */
 	@Override
 	protected String getValidToolTip() {
-		return Messages.getString("URIAttributeEditor.0"); //$NON-NLS-1$
+		return Messages.URIAttributeEditor_0; //$NON-NLS-1$
 	}
 
 	/**

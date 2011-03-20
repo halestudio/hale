@@ -45,10 +45,10 @@ public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
 	 * @param capsPage the capabilities page
 	 */
 	public FeatureTypesPage(WfsConfiguration configuration, CapabilitiesPage capsPage) {
-		super(configuration, capsPage, Messages.getString("FeatureTypesPage.0")); //$NON-NLS-1$
+		super(configuration, capsPage, Messages.FeatureTypesPage_0); //$NON-NLS-1$
 		
-		setTitle(Messages.getString("FeatureTypesPage.1")); //$NON-NLS-1$
-		setMessage(Messages.getString("FeatureTypesPage.2")); //$NON-NLS-1$
+		setTitle(Messages.FeatureTypesPage_1); //$NON-NLS-1$
+		setMessage(Messages.FeatureTypesPage_2); //$NON-NLS-1$
 	}
 
 	/**
@@ -122,7 +122,7 @@ public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
 			if (ns != null) {
 				valid = list.getNamespace().equals(ns);
 				if (!valid) {
-					setErrorMessage(Messages.getString("FeatureTypesPage.3") + ns); //$NON-NLS-1$
+					setErrorMessage(Messages.FeatureTypesPage_3 + ns); //$NON-NLS-1$
 				}
 			}
 		}
@@ -132,7 +132,7 @@ public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
 			List<FeatureType> selection = list.getSelection();
 			valid = selection != null && !selection.isEmpty();
 			if (!valid) {
-				setErrorMessage(Messages.getString("FeatureTypesPage.4")); //$NON-NLS-1$
+				setErrorMessage(Messages.FeatureTypesPage_4); //$NON-NLS-1$
 			}
 		}
 		

@@ -77,7 +77,7 @@ public class SchemaItemContribution extends
 						&& item.getParent() != null && item.getParent().isFeatureType()
 						&& !((FeatureType) item.getParent().getPropertyType()).getGeometryDescriptor().getLocalName().equals(item.getName().getLocalPart())) {
 					IAction action = new SetAsDefaultGeometryAction(item);
-					action.setText(Messages.getString("SchemaItemContribution.0")); //$NON-NLS-1$
+					action.setText(Messages.SchemaItemContribution_0); //$NON-NLS-1$
 					IContributionItem contrib = new ActionContributionItem(action);
 					contrib.fill(menu, index++);
 					

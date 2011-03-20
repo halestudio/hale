@@ -326,13 +326,279 @@ public class Messages {
 	public static String TaskTreeView_TitleDescriptionText;
 	public static String TaskTreeView_value_tooltip;
 
-	public static String SchemaImportWizard_SchemaQuestion0;
-	public static String SchemaImportWizard_SchemaQuestion1;
+	public static String SchemaImportWizard_SchemaQuestion_0;
+	public static String SchemaImportWizard_SchemaQuestion_1;
 
 	public static String WFSFeatureTypesReaderDialog_ValdationOKText;
 
 	public static String SaveAlignmentProjectWizardMainPage_LocationText;
 
+	public static String StackTraceErrorDialog_0;
+
+	public static String StackTraceErrorDialog_1;
+
+	public static String MappingGraphView_0;
+	public static String MappingGraphView_1;
+	public static String MappingGraphView_2;
+	public static String MappingGraphView_3;
+	public static String MappingGraphView_4;
+	public static String MappingGraphView_5;
+	public static String MappingGraphView_6;
+
+	public static String StylePreferencePage_0;
+	public static String StylePreferencePage_1;
+	public static String StylePreferencePage_2;
+	public static String StylePreferencePage_3;
+	public static String StylePreferencePage_4;
+	public static String StylePreferencePage_5;
+
+	public static String URIAttributeEditor_0;
+
+	public static String CodeListSelectionDialog_0;
+	public static String CodeListSelectionDialog_1;
+	public static String CodeListSelectionDialog_2;
+	public static String CodeListSelectionDialog_3;
+	public static String CodeListSelectionDialog_4;
+	public static String CodeListSelectionDialog_5;
+	public static String CodeListSelectionDialog_6;
+
+	public static String DoubleAttributeEditor_0;
+	public static String DoubleAttributeEditor_1;
+
+	public static String ListSelector_0;
+	public static String ListSelector_1;
+	public static String ListSelector_4;
+	public static String ListSelector_5;
+
+	public static String CodeListPreferencePage_0;
+	public static String CodeListPreferencePage_1;
+	public static String CodeListPreferencePage_2;
+	public static String CodeListPreferencePage_3;
+	public static String CodeListPreferencePage_4;
+	public static String CodeListPreferencePage_6;
+	public static String CodeListPreferencePage_7;
+
+	public static String CRSPreferencePage_0;
+	public static String CRSPreferencePage_2;
+	public static String CRSPreferencePage_3;
+	public static String CRSPreferencePage_4;
+	public static String CRSPreferencePage_5;
+	public static String CRSPreferencePage_6;
+	public static String CRSPreferencePage_7;
+	public static String CRSPreferencePage_8;
+	public static String CRSPreferencePage_11;
+	public static String CRSPreferencePage_12;
+
+	public static String CapabilitiesPage_0;
+	public static String CapabilitiesPage_1;
+	public static String CapabilitiesPage_2;
+	public static String CapabilitiesPage_3;
+	public static String CapabilitiesPage_4;
+
+	public static String ReportContentProvider_0;
+	public static String ReportContentProvider_1;
+	public static String ReportContentProvider_2;
+	public static String ReportContentProvider_3;
+
+	public static String StringValidatingAttributeEditor_1;
+
+	public static String NewProjectHandler_0;
+	public static String NewProjectHandler_1;
+
+	public static String LongAttributeEditor_0;
+	public static String LongAttributeEditor_1;
+
+	public static String SetAsDefaultGeometryAction_0;
+	public static String SetAsDefaultGeometryAction_1;
+	public static String SetAsDefaultGeometryAction_2;
+	public static String SetAsDefaultGeometryAction_3;
+	public static String SetAsDefaultGeometryAction_5;
+	public static String SetAsDefaultGeometryAction_8;
+	public static String SetAsDefaultGeometryAction_9;
+	public static String SetAsDefaultGeometryAction_12;
+
+	public static String ReportModel_1;
+	public static String ReportModel_4;
+
+	public static String LoadInstanceDataHandler_0;
+	public static String LoadInstanceDataHandler_1;
+
+	public static String IntegerAttributeEditor_0;
+	public static String IntegerAttributeEditor_1;
+
+	public static String FloatAttributeEditor_0;
+	public static String FloatAttributeEditor_1;
+
+	public static String FileSelector_1;
+
+	public static String CodeListAttributeEditor_0;
+	public static String CodeListAttributeEditor_2;
+
+	public static String ReferenceTableView_0;
+	public static String ReferenceTableView_1;
+
+	public static String WfsGetFeatureWizard_0;
+
+	public static String WfsDescribeFeatureWizard_0;
+
+	public static String NoGeometryTaskFactory_0;
+	public static String NoGeometryTaskFactory_1;
+	public static String NoGeometryTaskFactory_2;
+
+	public static String MapNilAttributeTaskFactory_0;
+	public static String MapNilAttributeTaskFactory_1;
+
+	public static String MapAttributeTaskFactory_0;
+	public static String MapAttributeTaskFactory_1;
+
+	public static String TransformedTableView_0;
+	public static String TransformedTableView_1;
+
+	public static String ModelNavigationView_2;
+	public static String ModelNavigationView_3;
+
+	public static String MapElementTaskFactory_0;
+	public static String MapElementTaskFactory_1;
+
+	public static String DefinitionFeatureTreeViewer_0;
+	public static String DefinitionFeatureTreeViewer_1;
+	public static String DefinitionFeatureTreeViewer_2;
+	public static String DefinitionFeatureTreeViewer_5;
+	public static String DefinitionFeatureTreeViewer_6;
+
+	public static String MapView_0;
+
+	public static String AbstractFunctionWizardDescriptor_0;
+	public static String AbstractFunctionWizardDescriptor_1;
+
+	public static String WFSDataReaderDialog_1;
+
+	public static String SchemaItemContribution_0;
+
+	public static String SchemaImportWizardMainPage_0;
+	public static String SchemaImportWizardMainPage_1;
+
+	public static String SaveAlignmentProjectWizardMainPage_0;
+
+	public static String OGCFilterBuilder_0;
+	public static String OGCFilterBuilder_1;
+	public static String OGCFilterBuilder_2;
+	public static String OGCFilterBuilder_3;
+	public static String OGCFilterBuilder_4;
+	public static String OGCFilterBuilder_5;
+	public static String OGCFilterBuilder_6;
+	public static String OGCFilterBuilder_7;
+	public static String OGCFilterBuilder_8;
+	public static String OGCFilterBuilder_9;
+	public static String OGCFilterBuilder_12;
+	public static String OGCFilterBuilder_45;
+	public static String OGCFilterBuilder_46;
+	public static String OGCFilterBuilder_47;
+	public static String OGCFilterBuilder_48;
+	public static String OGCFilterBuilder_49;
+	public static String OGCFilterBuilder_50;
+	public static String OGCFilterBuilder_51;
+	public static String OGCFilterBuilder_52;
+	public static String OGCFilterBuilder_53;
+	public static String OGCFilterBuilder_54;
+	public static String OGCFilterBuilder_55;
+	public static String OGCFilterBuilder_56;
+	public static String OGCFilterBuilder_57;
+	public static String OGCFilterBuilder_58;
+	public static String OGCFilterBuilder_59;
+	public static String OGCFilterBuilder_60;
+	public static String OGCFilterBuilder_61;
+	public static String OGCFilterBuilder_62;
+	public static String OGCFilterBuilder_63;
+	public static String OGCFilterBuilder_64;
+	public static String OGCFilterBuilder_65;
+	public static String OGCFilterBuilder_66;
+
+	public static String OGCFilterDialog_0;
+	public static String OGCFilterDialog_1;
+	public static String OGCFilterDialog_2;
+
+	public static String MappingExportWizard_1;
+
+	public static String MappingExportWizardMainPage_0;
+	public static String MappingExportWizardMainPage_1;
+
+	public static String InstanceDataImportWizardMainPage_1;
+	public static String InstanceDataImportWizardMainPage_2;
+
+	public static String ListFunctionsDialog_1;
+	public static String ListFunctionsDialog_2;
+	public static String ListFunctionsDialog_3;
+	public static String ListFunctionsDialog_4;
+	public static String ListFunctionsDialog_5;
+
+	public static String FilterPage_0;
+	public static String FilterPage_1;
+	public static String FilterPage_2;
+	public static String FilterPage_3;
+	public static String FilterPage_4;
+	public static String FilterPage_6;
+	public static String FilterPage_7;
+	public static String FilterPage_8;
+
+	public static String GmlExportWizard_0;
+	public static String GmlExportWizard_1;
+	public static String GmlExportWizard_2;
+	public static String GmlExportWizard_3;
+	public static String GmlExportWizard_4;
+	public static String GmlExportWizard_5;
+	public static String GmlExportWizard_7;
+
+	public static String GmlExportPage_0;
+	public static String GmlExportPage_2;
+	public static String GmlExportPage_5;
+
+	public static String FunctionWizardContribution_0;
+	public static String FunctionWizardContribution_1;
+	public static String FunctionWizardContribution_2;
+
+	public static String FeatureTypesPage_0;
+	public static String FeatureTypesPage_1;
+	public static String FeatureTypesPage_2;
+	public static String FeatureTypesPage_3;
+	public static String FeatureTypesPage_4;
+
+	public static String FeatureFilterField_0;
+	public static String FeatureFilterField_3;
+	public static String FeatureFilterField_5;
+	public static String FeatureFilterField_6;
+	public static String FeatureFilterField_7;
+	public static String FeatureFilterField_8;
+	public static String FeatureFilterField_9;
+
+	public static String FeatureTilePainter_0;
+
+	public static String FeatureFilterFormDialog_0;
+	public static String FeatureFilterFormDialog_1;
+
+	public static String ProjectParser_0;
+	public static String ProjectParser_1;
+	public static String ProjectParser_6;
+	public static String ProjectParser_8;
+	public static String ProjectParser_12;
+	public static String ProjectParser_14;
+	public static String ProjectParser_17;
+
+	public static String ApplicationWorkbenchWindowAdvisor_0;
+	public static String ApplicationWorkbenchWindowAdvisor_1;
+	public static String ApplicationWorkbenchWindowAdvisor_2;
+	public static String ApplicationWorkbenchWindowAdvisor_3;
+
+	public static String ApplicationWorkbenchAdvisor_1;
+	public static String ApplicationWorkbenchAdvisor_2;
+
+	public static String ProxyPreferencePage_0;
+	public static String ProxyPreferencePage_1;
+	public static String ProxyPreferencePage_2;
+	public static String ProxyPreferencePage_3;
+	public static String ProxyPreferencePage_4;
+	public static String ProxyPreferencePage_5;
+	public static String ProxyPreferencePage_6;
 	
 	static {
 		// initialize resource bundle

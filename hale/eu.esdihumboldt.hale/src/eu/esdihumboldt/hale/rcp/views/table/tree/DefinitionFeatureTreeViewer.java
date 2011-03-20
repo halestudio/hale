@@ -76,7 +76,7 @@ public class DefinitionFeatureTreeViewer {
 		treeViewer.getTree().setHeaderVisible(true);
 		treeViewer.getTree().setLinesVisible(true);
 		
-		treeViewer.getTree().setToolTipText(Messages.getString("DefinitionFeatureTreeViewer.0")); //$NON-NLS-1$
+		treeViewer.getTree().setToolTipText(Messages.DefinitionFeatureTreeViewer_0); //$NON-NLS-1$
 		
 		setInput(null, null);
 	}
@@ -99,11 +99,11 @@ public class DefinitionFeatureTreeViewer {
 		// create row definitions from type definition
 		if (type != null) {
 			DefaultTreeNode root = new DefaultTreeNode();
-			DefaultTreeNode attributes = new DefaultTreeNode(Messages.getString("DefinitionFeatureTreeViewer.1")); //$NON-NLS-1$
+			DefaultTreeNode attributes = new DefaultTreeNode(Messages.DefinitionFeatureTreeViewer_1); //$NON-NLS-1$
 			root.addChild(attributes);
 			addProperties(attributes, type.getType(), new HashSet<TypeDefinition>());
 			
-			DefaultTreeNode metadata = new DefaultTreeNode(Messages.getString("DefinitionFeatureTreeViewer.2")); //$NON-NLS-1$
+			DefaultTreeNode metadata = new DefaultTreeNode(Messages.DefinitionFeatureTreeViewer_2); //$NON-NLS-1$
 			root.addChild(metadata);
 			
 			// create row defs for metadata
@@ -137,10 +137,10 @@ public class DefinitionFeatureTreeViewer {
 						featureIndex++;
 					}
 					
-					DefaultTreeNode lineage = new DefaultTreeNode(Messages.getString("DefinitionFeatureTreeViewer.5")); //$NON-NLS-1$
+					DefaultTreeNode lineage = new DefaultTreeNode(Messages.DefinitionFeatureTreeViewer_5); //$NON-NLS-1$
 					metadata.addChild(lineage);
 					for (int i = 0; i < lineageLength; i++) {
-						processStepsText[i][0] = Messages.getString("DefinitionFeatureTreeViewer.6") + (i + 1); //$NON-NLS-1$
+						processStepsText[i][0] = Messages.DefinitionFeatureTreeViewer_6 + (i + 1); //$NON-NLS-1$
 						DefaultTreeNode processStep = new DefaultTreeNode(processStepsText[i]);
 						lineage.addChild(processStep);
 					}

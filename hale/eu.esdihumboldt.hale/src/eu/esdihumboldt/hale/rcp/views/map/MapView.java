@@ -180,7 +180,7 @@ public class MapView extends ViewPart {
 			invertImage = AbstractUIPlugin.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID, "icons/invert.gif").createImage(); //$NON-NLS-1$
 		}
 		invert.setImage(invertImage);
-		invert.setToolTipText(Messages.getString("MapView.0")); //$NON-NLS-1$
+		invert.setToolTipText(Messages.MapView_0); //$NON-NLS-1$
 		invert.addSelectionListener(new SelectionAdapter() {
 
 			@Override

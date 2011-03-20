@@ -89,10 +89,10 @@ public class ListSelector implements CodeListSelector {
 		});
 		
 		// search field
-		String tip = Messages.getString("ListSelector.0"); //$NON-NLS-1$
+		String tip = Messages.ListSelector_0; //$NON-NLS-1$
 		
 		Label searchLabel = new Label(page, SWT.NONE);
-		searchLabel.setText(Messages.getString("ListSelector.1")); //$NON-NLS-1$
+		searchLabel.setText(Messages.ListSelector_1); //$NON-NLS-1$
 		searchLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		searchLabel.setToolTipText(tip);
 		
@@ -144,11 +144,11 @@ public class ListSelector implements CodeListSelector {
 						info.setText(desc);
 					}
 					else {
-						info.setText(Messages.getString("ListSelector.4")); //$NON-NLS-1$
+						info.setText(Messages.ListSelector_4); //$NON-NLS-1$
 					}
 				}
 				else {
-					info.setText(Messages.getString("ListSelector.5")); //$NON-NLS-1$
+					info.setText(Messages.ListSelector_5); //$NON-NLS-1$
 				}
 			}
 		});

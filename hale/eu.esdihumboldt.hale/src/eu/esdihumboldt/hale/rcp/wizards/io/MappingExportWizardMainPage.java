@@ -94,8 +94,8 @@ public class MappingExportWizardMainPage
 		}
 		
 		final Label protocolVersionLabel = new Label(formatSelectionArea, SWT.NONE);
-		protocolVersionLabel.setText(Messages.getString("MappingExportWizardMainPage.0")); //$NON-NLS-1$
-		protocolVersionLabel.setToolTipText(Messages.getString("MappingExportWizardMainPage.1")); //$NON-NLS-1$
+		protocolVersionLabel.setText(Messages.MappingExportWizardMainPage_0); //$NON-NLS-1$
+		protocolVersionLabel.setToolTipText(Messages.MappingExportWizardMainPage_1); //$NON-NLS-1$
 		final Combo formatCombo = new Combo (formatSelectionArea, SWT.READ_ONLY);
 		formatCombo.setItems(items);
 		formatCombo.setLayoutData(new GridData(

@@ -58,7 +58,7 @@ public class ApplicationWorkbenchWindowAdvisor
 	public void preWindowOpen() {
 		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
 		configurer.setInitialSize(new Point(1280,1024));
-		configurer.setTitle(Messages.getString("ApplicationWorkbenchWindowAdvisor.0") +  //$NON-NLS-1$
+		configurer.setTitle(Messages.ApplicationWorkbenchWindowAdvisor_0 +  //$NON-NLS-1$
 				HALEActivator.getDefault().getBundle().getVersion().toString());
 		configurer.setShowCoolBar(true); // this reserves space for action bars on top.
 		configurer.setShowPerspectiveBar(true); // this reserves space for the selection of perspectives.
@@ -97,8 +97,8 @@ public class ApplicationWorkbenchWindowAdvisor
 				IContributionItem item = ContributionItemFactory.VIEWS_SHORTLIST
 						.create(configurer.getWindowConfigurer().getWindow());
 				
-				IMenuManager windowMenu = new MenuManager(Messages.getString("ApplicationWorkbenchWindowAdvisor.1"), Messages.getString("ApplicationWorkbenchWindowAdvisor.2")); //$NON-NLS-1$ //$NON-NLS-2$
-				IMenuManager viewMenu = new MenuManager(Messages.getString("ApplicationWorkbenchWindowAdvisor.3")); //$NON-NLS-1$
+				IMenuManager windowMenu = new MenuManager(Messages.ApplicationWorkbenchWindowAdvisor_1, Messages.ApplicationWorkbenchWindowAdvisor_2); //$NON-NLS-1$ //$NON-NLS-2$
+				IMenuManager viewMenu = new MenuManager(Messages.ApplicationWorkbenchWindowAdvisor_3); //$NON-NLS-1$
 				windowMenu.add(viewMenu);
 				viewMenu.add(item);
 				

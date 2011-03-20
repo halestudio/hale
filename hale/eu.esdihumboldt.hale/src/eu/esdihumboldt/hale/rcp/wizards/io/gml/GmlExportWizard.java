@@ -76,7 +76,7 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 			Schema schema, String commonSrsName) {
 		super();
 		
-		setWindowTitle(Messages.getString("GmlExportWizard_0")); //$NON-NLS-1$
+		setWindowTitle(Messages.GmlExportWizard_0); //$NON-NLS-1$
 		setNeedsProgressMonitor(true);
 		
 		this.features = features;
@@ -91,7 +91,7 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 	public void addPages() {
 		super.addPages();
 		
-		addPage(exportPage = new GmlExportPage(Messages.getString("GmlExportWizard_1"), Messages.getString("GmlExportWizard_2"))); //$NON-NLS-1$ //$NON-NLS-2$
+		addPage(exportPage = new GmlExportPage(Messages.GmlExportWizard_1, Messages.GmlExportWizard_2)); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -116,18 +116,18 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException,
 						InterruptedException {
-					monitor.beginTask(Messages.getString("GmlExportWizard_3"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+					monitor.beginTask(Messages.GmlExportWizard_3, IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 					GmlWriter gmlWriter = (GmlWriter) PlatformUI.getWorkbench().getService(GmlWriter.class);
 					OutputStream out;
 					
 					try {
 						out = new FileOutputStream(targetFile);
 					} catch (FileNotFoundException e1) {
-						log.userError(Messages.getString("GmlExportWizard_4") +  //$NON-NLS-1$
+						log.userError(Messages.GmlExportWizard_4 +  //$NON-NLS-1$
 								targetFile.getAbsolutePath(), e1);
 						return;
 					}
-					ATransaction trans = log.begin(Messages.getString("GmlExportWizard_5") +  //$NON-NLS-1$
+					ATransaction trans = log.begin(Messages.GmlExportWizard_5 +  //$NON-NLS-1$
 							targetFile.getAbsolutePath());
 					List<Schema> addSchemas = null;
 					try {
@@ -146,7 +146,7 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 					
 					if (validate) {
 						try {
-							monitor.setTaskName(Messages.getString("GmlExportWizard_7")); //$NON-NLS-1$
+							monitor.setTaskName(Messages.GmlExportWizard_7); //$NON-NLS-1$
 							
 							// validate output file
 							Validator validator;
