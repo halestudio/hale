@@ -127,7 +127,7 @@ public class SaveAlignmentProjectWizardMainPage extends WizardPage {
 //		this.projectAuthor = new Text(optionsGroup, SWT.BORDER | SWT.SINGLE);
 //		this.projectAuthor.setLayoutData(new GridData(
 //				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
-//		this.projectAuthor.setText(Messages.SaveAlignmentProjectWizardMainPage_ProjectAuthorText);
+//		this.projectAuthor.setText("Project Author Name");
 //		this.projectAuthor.setEditable(true);
 		
 		setErrorMessage(null);	// should not initially have error message

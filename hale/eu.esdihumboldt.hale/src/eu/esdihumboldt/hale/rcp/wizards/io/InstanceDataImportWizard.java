@@ -77,12 +77,12 @@ public class InstanceDataImportWizard
 	public InstanceDataImportWizard(String schemaNamespace) {
 		super();
 		/*this.filterPage = new InstanceDataImportWizardFilterPage(
-				Messages.FilterDataText,
-				Messages.FilterImportGeodataText); // NON-NLS-1
+				"Filter Instance Data to be imported",
+				"Filter imported Geodata"); // NON-NLS-1
 		this.verificationPage = new InstanceDataImportWizardVerificationPage(
-				Messages.InstanceDataImportTitle,
-				Messages.InstanceDataImportDescription); // NON-NLS-1
-		super.setWindowTitle(Messages.WindowTitle); // NON-NLS-1*/
+				"Define Constraints for Data to be used in Transformation Verification",
+				"Define Verification Constraints"); // NON-NLS-1
+		super.setWindowTitle("Instance Data Import Wizard"); // NON-NLS-1*/
 		
 		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		String schemaFormat = ss.getSourceSchemaFormat();

@@ -84,7 +84,7 @@ public class UrlFieldEditor
 		URL result = null;
 		
 		if (!this._getFeatures) {
-			//WFSFeatureTypesReaderDialog wfsDialog = new WFSFeatureTypesReaderDialog(this.getShell(), Messages.UrlFieldEditor_FeatureServiceTitle);
+			//WFSFeatureTypesReaderDialog wfsDialog = new WFSFeatureTypesReaderDialog(this.getShell(), "Select a Web Feature Service");
 			//result = wfsDialog.open();
 			WfsDescribeFeatureConfiguration conf = new WfsDescribeFeatureConfiguration();
 			WfsDescribeFeatureWizard describeFeatureWizard = new WfsDescribeFeatureWizard(conf);
@@ -98,7 +98,7 @@ public class UrlFieldEditor
 			}
 		}
 		else {
-			//WFSDataReaderDialog wfsDialog = new WFSDataReaderDialog(this.getShell(), Messages.UrlFieldEditor_DataReaderDialogTitle);
+			//WFSDataReaderDialog wfsDialog = new WFSDataReaderDialog(this.getShell(), "Select a Web Feature Service to load data from");
 			//result = wfsDialog.open();
 			WfsGetFeatureConfiguration conf = new WfsGetFeatureConfiguration(schemaNamespace);
 			WfsGetFeatureWizard getFeatureWizard = new WfsGetFeatureWizard(conf);
