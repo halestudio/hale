@@ -377,6 +377,9 @@
          <service
                serviceClass="eu.esdihumboldt.hale.gmlwriter.GmlWriter">
          </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.models.ConfigSchemaService">
+         </service>
       </serviceFactory>
       <serviceFactory
             factoryClass="eu.esdihumboldt.hale.rcp.views.table.ServiceFactory">

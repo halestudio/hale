@@ -14,7 +14,12 @@ package eu.esdihumboldt.hale.rcp.views.model.filtering;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ContentViewer;
+import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.models.ConfigSchemaService;
+import eu.esdihumboldt.hale.models.HaleServiceListener;
+import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceImpl;
 import eu.esdihumboldt.hale.rcp.views.model.ConfigurableModelContentProvider;
 
 /**
@@ -24,15 +29,29 @@ import eu.esdihumboldt.hale.rcp.views.model.ConfigurableModelContentProvider;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public abstract class AbstractContentProviderAction extends Action {
+public abstract class AbstractContentProviderAction extends Action implements HaleServiceListener {
 	
 	private ContentViewer viewer;
+	
+	private ConfigSchemaServiceImpl config;
+	
+	/**
+	 * Contains "Source" or "Target".
+	 */
+	private String caption = "";
+	
+	/**
+	 * Is the class name as a String.
+	 */
+	private String identifier = "";
 	
 	/**
 	 * Default constructor
 	 */
 	protected AbstractContentProviderAction() {
 		super(null, AS_CHECK_BOX);
+		
+		config = (ConfigSchemaServiceImpl) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
 	}
 	
 	/**
@@ -69,8 +88,42 @@ public abstract class AbstractContentProviderAction extends Action {
 	protected abstract void updateContentProvider(
 			ConfigurableModelContentProvider contentProvider);	
 	
+	/**
+	 * @see Action#setChecked(boolean)
+	 */
 	@Override
 	public void setChecked(boolean checked) {
 		super.setChecked(checked);
+		
+		if (!caption.equals("")) {
+			this.config.add(caption+"_"+this.identifier, ""+this.isChecked());
+		}
+	}
+	
+	/**
+	 * Setter for {@link AbstractContentProviderAction#caption}
+	 * 
+	 * @param caption
+	 */
+	public void setCaption(String caption) {
+		this.caption = caption;
+		
+		this.config.add(caption+"_"+this.identifier, ""+this.isChecked());
+		this.config.addListener(this);
+	}
+	
+	/**
+	 * Setter for {@link AbstractContentProviderAction#identifier}
+	 * @param ident
+	 */
+	public void setIdentifier(String ident) {
+		this.identifier = ident;
+	}
+	
+	/**
+	 * @see HaleServiceListener#update(UpdateMessage)
+	 */
+	public void update(UpdateMessage<?> msg) {
+		this.setChecked(Boolean.parseBoolean(this.config.get(caption+"_"+this.identifier)));
 	}
 }

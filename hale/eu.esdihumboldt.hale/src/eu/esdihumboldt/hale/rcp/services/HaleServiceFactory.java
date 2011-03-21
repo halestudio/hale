@@ -18,12 +18,14 @@ import org.eclipse.ui.services.IServiceLocator;
 import eu.esdihumboldt.hale.gmlwriter.GmlWriter;
 import eu.esdihumboldt.hale.gmlwriter.impl.DefaultGmlWriter;
 import eu.esdihumboldt.hale.models.AlignmentService;
+import eu.esdihumboldt.hale.models.ConfigSchemaService;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.alignment.AlignmentServiceImpl;
+import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceImpl;
 import eu.esdihumboldt.hale.models.instance.InstanceServiceImpl;
 import eu.esdihumboldt.hale.models.project.ProjectServiceImpl;
 import eu.esdihumboldt.hale.models.project.RecentFilesService;
@@ -58,6 +60,7 @@ public class HaleServiceFactory
 	private SchemaItemService schemaItem;
 	private RecentFilesService recentFiles;
 	private GmlWriter gmlWriter;
+	private ConfigSchemaServiceImpl config;
 
 	/**
 	 * Default constructor
@@ -120,6 +123,12 @@ public class HaleServiceFactory
 				gmlWriter = new DefaultGmlWriter();
 			}
 			return gmlWriter;
+		}
+		else if (serviceInterface.equals(ConfigSchemaService.class)) {
+			if (config == null) {
+				config = new ConfigSchemaServiceImpl();
+			}
+			return config;
 		}
 		else {
 			throw new RuntimeException("For the given serviceInterface ("  //$NON-NLS-1$

@@ -39,6 +39,7 @@ import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.models.AlignmentService;
+import eu.esdihumboldt.hale.models.ConfigSchemaService;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
@@ -46,6 +47,7 @@ import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceImpl;
 import eu.esdihumboldt.hale.models.project.generated.HaleProject;
 import eu.esdihumboldt.hale.models.project.generated.Task;
 import eu.esdihumboldt.hale.models.project.generated.TaskStatus;
@@ -159,6 +161,8 @@ public class ProjectParser {
 		SchemaService schemaService = 
 			(SchemaService) PlatformUI.getWorkbench().getService(
 					SchemaService.class);
+		
+		ConfigSchemaServiceImpl config = (ConfigSchemaServiceImpl) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
 		
 		TaskService taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
 		
@@ -336,6 +340,9 @@ public class ProjectParser {
 		finally {
 			taskTrans.end();
 		}
+		
+		// load button configuration
+		config.setAll(project.getConfigSchema());
 		
 		// Finally, initialize other ProjectService values.
 		projectService.setProjectCreatedDate(project.getDateCreated());

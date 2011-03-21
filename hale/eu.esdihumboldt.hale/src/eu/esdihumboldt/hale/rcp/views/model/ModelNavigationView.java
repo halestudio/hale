@@ -396,10 +396,12 @@ public class ModelNavigationView extends ViewPart implements
 		ToolBarManager manager = new ToolBarManager(schemaFilterBar);
 		for (AbstractContentProviderAction action : actions) {
 			manager.add(action);
+			action.setCaption(caption);
 		}
 		manager.add(new Separator());
 		for (SimpleToggleAction sta : toggleActions) {
 			manager.add(sta);
+			sta.setCaption(caption);
 		}
 		manager.update(false);
 		

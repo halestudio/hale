@@ -34,6 +34,10 @@ import eu.esdihumboldt.hale.Messages;
 public class UseInheritanceHierarchyAction 
 	extends AbstractContentProviderAction {
 
+	public UseInheritanceHierarchyAction() {
+		super.setIdentifier("UseInheritanceHierarchyAction");
+	}
+	
 	/**
 	 * @see Action#getToolTipText()
 	 */

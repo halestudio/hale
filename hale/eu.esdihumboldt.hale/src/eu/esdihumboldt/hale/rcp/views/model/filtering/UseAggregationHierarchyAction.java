@@ -30,6 +30,10 @@ import eu.esdihumboldt.hale.Messages;
 public class UseAggregationHierarchyAction 
 	extends AbstractContentProviderAction {
 	
+	public UseAggregationHierarchyAction() {
+		super.setIdentifier("UseAggregationHierarchyAction");
+	}
+	
 	/**
 	 * @see Action#getImageDescriptor()
 	 */

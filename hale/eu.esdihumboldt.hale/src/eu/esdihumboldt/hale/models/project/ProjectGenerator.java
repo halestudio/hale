@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.models.project;
 import java.io.File;
 import java.io.FileWriter;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map.Entry;
@@ -36,9 +37,12 @@ import org.geotools.styling.Style;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
 import eu.esdihumboldt.hale.models.AlignmentService;
+import eu.esdihumboldt.hale.models.ConfigSchemaService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.TaskService;
+import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceImpl;
+import eu.esdihumboldt.hale.models.project.generated.ConfigSchema;
 import eu.esdihumboldt.hale.models.project.generated.HaleProject;
 import eu.esdihumboldt.hale.models.project.generated.InstanceData;
 import eu.esdihumboldt.hale.models.project.generated.MappedSchema;
@@ -126,6 +130,8 @@ public class ProjectGenerator {
 		
 		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 		
+		ConfigSchemaServiceImpl config = (ConfigSchemaServiceImpl) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
+		
 		// setup project and basic attributes
 		HaleProject hproject = new HaleProject();
 		hproject.setHaleVersion(projectService.getHaleVersion());
@@ -178,6 +184,16 @@ public class ProjectGenerator {
 			tasks.add(newTask);
 		}
 		hproject.setTaskStatus(taskStatus);
+		
+		// add all button configurations
+		ArrayList<ConfigSchema> projectConfigList = (ArrayList<ConfigSchema>) hproject.getConfigSchema();
+		ArrayList<ConfigSchema> list = (ArrayList<ConfigSchema>) config.getAll();
+		
+		for(ConfigSchema s : list) {
+			if (!projectConfigList.contains(s)) {
+				projectConfigList.add(s);
+			}
+		}
 		
 		// serialize mapping and link it in HaleProject 
 		OmlRdfGenerator org = new HaleOmlRdfGenerator();

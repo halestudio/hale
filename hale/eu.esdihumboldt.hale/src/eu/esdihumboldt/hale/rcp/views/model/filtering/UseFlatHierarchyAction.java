@@ -30,6 +30,10 @@ import eu.esdihumboldt.hale.Messages;
 public class UseFlatHierarchyAction 
 	extends AbstractContentProviderAction {
 	
+	public UseFlatHierarchyAction() {
+		super.setIdentifier("UseFlatHierarchyAction");
+	}
+	
 	/**
 	 * @see Action#getImageDescriptor()
 	 */

@@ -14,10 +14,14 @@ package eu.esdihumboldt.hale.rcp.views.model.filtering;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import eu.esdihumboldt.hale.models.ConfigSchemaService;
+import eu.esdihumboldt.hale.models.HaleServiceListener;
+import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceImpl;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
-import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 
 /**
@@ -30,7 +34,7 @@ import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
  * @version $Id$ 
  */
 public class SimpleToggleAction 
-	extends Action {
+	extends Action implements HaleServiceListener {
 	
 	private final TreeObjectType objectType;
 	
@@ -44,7 +48,14 @@ public class SimpleToggleAction
 	private String msgDisable = ""; //$NON-NLS-1$
 	private String msgEnable = ""; //$NON-NLS-1$
 	
-	private PatternViewFilter filterListener; 
+	private PatternViewFilter filterListener;
+	
+	/**
+	 * Contains "Source" or "Target".
+	 */
+	private String caption = "";
+	
+	private ConfigSchemaServiceImpl config;
 	
 	/**
 	 * Constructor
@@ -58,13 +69,16 @@ public class SimpleToggleAction
 	public SimpleToggleAction(TreeObjectType objectType, String msgDisable, 
 			String msgEnable, String iconPath, PatternViewFilter pvf) {
 		super(msgDisable, Action.AS_CHECK_BOX);
-		setChecked(true);
+		
 		setToolTipText(msgDisable);
+		config = (ConfigSchemaServiceImpl) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
 		
 		this.objectType = objectType;
 		this.msgDisable = msgDisable;
 		this.msgEnable = msgEnable;
 		this.filterListener = pvf;
+		
+		setChecked(true);
 		
 		setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
 				HALEActivator.PLUGIN_ID, iconPath));
@@ -109,8 +123,32 @@ public class SimpleToggleAction
 		this.actionTarget = tv;
 	}
 
+	/**
+	 * @see Action#setChecked(boolean)
+	 */
 	@Override
 	public void setChecked(boolean checked) {
 		super.setChecked(checked);
+		
+		if (!caption.equals("")) {
+			this.config.add(caption+"_"+this.objectType, ""+this.isChecked());
+		}
+	}
+	
+	/**
+	 * Setter for {@link SimpleToggleAction#caption}
+	 * @param caption
+	 */
+	public void setCaption(String caption) {
+		this.caption = caption;
+		this.config.add(caption+"_"+this.objectType, ""+this.isChecked());
+		this.config.addListener(this);
+	}
+	
+	/**
+	 * @see HaleServiceListener#update(UpdateMessage)
+	 */
+	public void update(UpdateMessage<?> msg) {
+		this.setChecked(Boolean.parseBoolean(this.config.get(caption+"_"+this.objectType)));
 	}
 }
