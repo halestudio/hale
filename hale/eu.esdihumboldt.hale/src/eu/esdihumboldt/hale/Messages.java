@@ -27,6 +27,8 @@ public class Messages {
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
 			.getBundle(BUNDLE_NAME);
 
+	public static String MappingExportWizard_0;
+
 	public static String FeatureTypeList_LabelFilter;
 
 	public static String FeatureTypeList_LabelFeature;

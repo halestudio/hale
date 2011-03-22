@@ -31,7 +31,7 @@ public class UseAggregationHierarchyAction
 	extends AbstractContentProviderAction {
 	
 	public UseAggregationHierarchyAction() {
-		super.setIdentifier("UseAggregationHierarchyAction");
+		super.setIdentifier("UseAggregationHierarchyAction"); //$NON-NLS-1$
 	}
 	
 	/**

@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.rcp.views.report;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,8 +43,8 @@ public class ReportContentProvider implements ITreeContentProvider {
 	@Override
 	public Object[] getElements(Object inputElement) {
 		Object[] ret = new Object[2];
-		ret[0] = new String(Messages.ReportContentProvider_2+model.getWarnings().size()); //$NON-NLS-1$ //$NON-NLS-2$
-		ret[1] = new String(Messages.ReportContentProvider_3+model.getErrors().size()); //$NON-NLS-1$ //$NON-NLS-2$
+		ret[0] = new String(MessageFormat.format(Messages.ReportContentProvider_2, model.getWarnings().size())); //$NON-NLS-1$ //$NON-NLS-2$
+		ret[1] = new String(MessageFormat.format(Messages.ReportContentProvider_3, model.getErrors().size())); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		return ret;
 	}

@@ -12,6 +12,7 @@
 package eu.esdihumboldt.hale.rcp.wizards.io;
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.MessageFormat;
 import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -134,12 +135,7 @@ public class MappingExportWizard
 								int failed = report.getFailed().size();
 								int problems = report.getWarnings().size();
 								int all = al.getMap().size();
-								final String message = "The mapping has been exported " + //$NON-NLS-1$
-									"but there have been problems with some " + //$NON-NLS-1$
-									"cells.\n" + //$NON-NLS-1$
-									"- " + failed + " of " + all + " mapping cells could not be exported\n" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-									"- for " + problems + " of " + (all - failed) + " exported cells problems have been reported\n" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-									"\nSee the report in the error log for more details."; //$NON-NLS-1$
+								final String message = MessageFormat.format(Messages.MappingExportWizard_0, failed, problems, all, (all-failed)); //$NON-NLS-1$
 								
 								PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 									

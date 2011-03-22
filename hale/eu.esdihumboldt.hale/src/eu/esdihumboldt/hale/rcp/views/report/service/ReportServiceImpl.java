@@ -75,16 +75,7 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public ReportModel getLastReport() {
-		ReportModel model;
-		Object obj = this.reports.get(this.reports.size()-1);
-		
-		if (obj instanceof Report) {
-			model = new ReportModel((Report) obj);
-		} else {
-			model = new ReportModel((MappingExportReport) obj);
-		}
-		
-		return model;
+		return this.getReport(this.reports.size()-1);
 	}
 	
 	public ReportModel getReport(int index) {

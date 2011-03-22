@@ -31,7 +31,7 @@ public class UseFlatHierarchyAction
 	extends AbstractContentProviderAction {
 	
 	public UseFlatHierarchyAction() {
-		super.setIdentifier("UseFlatHierarchyAction");
+		super.setIdentifier("UseFlatHierarchyAction"); //$NON-NLS-1$
 	}
 	
 	/**

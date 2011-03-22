@@ -53,7 +53,7 @@ public class SimpleToggleAction
 	/**
 	 * Contains "Source" or "Target".
 	 */
-	private String caption = "";
+	private String caption = ""; //$NON-NLS-1$
 	
 	private ConfigSchemaServiceImpl config;
 	
@@ -130,8 +130,8 @@ public class SimpleToggleAction
 	public void setChecked(boolean checked) {
 		super.setChecked(checked);
 		
-		if (!caption.equals("")) {
-			this.config.add(caption+"_"+this.objectType, ""+this.isChecked());
+		if (!caption.equals("")) { //$NON-NLS-1$
+			this.config.add(caption+"_"+this.objectType, ""+this.isChecked()); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 	
@@ -141,7 +141,7 @@ public class SimpleToggleAction
 	 */
 	public void setCaption(String caption) {
 		this.caption = caption;
-		this.config.add(caption+"_"+this.objectType, ""+this.isChecked());
+		this.config.add(caption+"_"+this.objectType, ""+this.isChecked()); //$NON-NLS-1$ //$NON-NLS-2$
 		this.config.addListener(this);
 	}
 	
@@ -149,6 +149,6 @@ public class SimpleToggleAction
 	 * @see HaleServiceListener#update(UpdateMessage)
 	 */
 	public void update(UpdateMessage<?> msg) {
-		this.setChecked(Boolean.parseBoolean(this.config.get(caption+"_"+this.objectType)));
+		this.setChecked(Boolean.parseBoolean(this.config.get(caption+"_"+this.objectType))); //$NON-NLS-1$
 	}
 }

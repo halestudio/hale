@@ -38,12 +38,12 @@ public abstract class AbstractContentProviderAction extends Action implements Ha
 	/**
 	 * Contains "Source" or "Target".
 	 */
-	private String caption = "";
+	private String caption = ""; //$NON-NLS-1$
 	
 	/**
 	 * Is the class name as a String.
 	 */
-	private String identifier = "";
+	private String identifier = ""; //$NON-NLS-1$
 	
 	/**
 	 * Default constructor
@@ -95,8 +95,8 @@ public abstract class AbstractContentProviderAction extends Action implements Ha
 	public void setChecked(boolean checked) {
 		super.setChecked(checked);
 		
-		if (!caption.equals("")) {
-			this.config.add(caption+"_"+this.identifier, ""+this.isChecked());
+		if (!caption.equals("")) { //$NON-NLS-1$
+			this.config.add(caption+"_"+this.identifier, ""+this.isChecked()); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 	
@@ -108,7 +108,7 @@ public abstract class AbstractContentProviderAction extends Action implements Ha
 	public void setCaption(String caption) {
 		this.caption = caption;
 		
-		this.config.add(caption+"_"+this.identifier, ""+this.isChecked());
+		this.config.add(caption+"_"+this.identifier, ""+this.isChecked()); //$NON-NLS-1$ //$NON-NLS-2$
 		this.config.addListener(this);
 	}
 	
@@ -124,6 +124,6 @@ public abstract class AbstractContentProviderAction extends Action implements Ha
 	 * @see HaleServiceListener#update(UpdateMessage)
 	 */
 	public void update(UpdateMessage<?> msg) {
-		this.setChecked(Boolean.parseBoolean(this.config.get(caption+"_"+this.identifier)));
+		this.setChecked(Boolean.parseBoolean(this.config.get(caption+"_"+this.identifier))); //$NON-NLS-1$
 	}
 }

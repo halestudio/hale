@@ -35,7 +35,7 @@ public class UseInheritanceHierarchyAction
 	extends AbstractContentProviderAction {
 
 	public UseInheritanceHierarchyAction() {
-		super.setIdentifier("UseInheritanceHierarchyAction");
+		super.setIdentifier("UseInheritanceHierarchyAction"); //$NON-NLS-1$
 	}
 	
 	/**
