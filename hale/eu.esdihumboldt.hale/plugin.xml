@@ -78,14 +78,14 @@
       <view
             class="eu.esdihumboldt.hale.rcp.views.mappingGraph.MappingGraphView"
             id="eu.esdihumboldt.hale.rcp.views.mappingGraph"
-            name="%view.mapping_graph.name"
+            name="Mapping Graph"
             restorable="true">
       </view>
       <view
             class="eu.esdihumboldt.hale.rcp.views.report.ReportView"
             icon="icons/ft_stylelist.gif"
             id="eu.esdihumboldt.hale.rcp.views.reportView"
-            name="%view.export_report.name"
+            name="Export Report"
             restorable="true">
       </view>
    </extension>
@@ -176,12 +176,12 @@
       <command
             defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.SaveAlignmentProjectHandler"
             id="HALE.saveAlignmentProject.command"
-            name="%command.savealignment.name">
+            name="Save Alignment Project">
       </command>
       <command
             defaultHandler="eu.esdihumboldt.hale.rcp.commandHandlers.SaveTransformationResultHandler"
             id="eu.esdihumboldt.hale.save.transformedgml"
-            name="%command.savegml.name">
+            name="SaveGML">
       </command>
    </extension>
    <extension
@@ -233,7 +233,7 @@
                   commandId="HALE.saveAlignmentProject.command"
                   icon="icons/save.gif"
                   id="saveAlignmentProject"
-                  label="%command.savealignment.name"
+                  label="Save Alignment Project"
                   style="push">
             </command>
             <command
@@ -251,7 +251,7 @@
             </command>
             <command
                   commandId="eu.esdihumboldt.hale.save.transformedgml"
-                  label="%command.savetransformation.name"
+                  label="Save transformation result..."
                   style="push">
             </command>
             <separator
@@ -293,7 +293,7 @@
             </separator>
             <command
                   commandId="org.eclipse.ui.window.preferences"
-                  label="%command.settings.name"
+                  label="Other settings..."
                   style="push">
             </command>
          </menu>
@@ -334,7 +334,7 @@
                   commandId="HALE.saveAlignmentProject.command"
                   icon="icons/save.gif"
                   id="saveAlignmentProject"
-                  label="%command.savealignment.name"
+                  label="Save Alignment Project"
                   style="push">
             </command>
             <command
@@ -478,22 +478,22 @@
       <page
             class="eu.esdihumboldt.hale.rcp.utils.codelist.internal.CodeListPreferencePage"
             id="eu.esdihumboldt.hale.page.preferences.codelist"
-            name="%preference.codelist.name">
+            name="Code lists">
       </page>
       <page
             class="eu.esdihumboldt.hale.models.style.StylePreferencePage"
             id="eu.esdihumboldt.hale.page.preferences.style"
-            name="%preference.style.name">
+            name="Default styles">
       </page>
       <page
             class="eu.esdihumboldt.hale.rcp.utils.crs.CRSPreferencePage"
             id="eu.esdihumboldt.hale.page.preferences.crs"
-            name="%preference.crs.name">
+            name="Additional CRS">
       </page>
       <page
             class="eu.esdihumboldt.hale.rcp.utils.proxy.ProxyPreferencePage"
             id="eu.esdihumboldt.hale.page.preferences.proxy"
-            name="%preference.proxy.name">
+            name="Proxy Settings">
       </page>
    </extension>
    <extension

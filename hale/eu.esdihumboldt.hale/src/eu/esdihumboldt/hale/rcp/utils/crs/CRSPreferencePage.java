@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.rcp.utils.crs;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -161,7 +160,7 @@ public class CRSPreferencePage extends PreferencePage implements
 							@Override
 							public String isValid(String newText) {
 								if (!newText.startsWith(WKTPreferencesCRSFactory.AUTHORITY_PREFIX)) {
-									return MessageFormat.format(Messages.CRSPreferencePage_6, WKTPreferencesCRSFactory.AUTHORITY_PREFIX); //$NON-NLS-1$
+									return Messages.CRSPreferencePage_6 + WKTPreferencesCRSFactory.AUTHORITY_PREFIX; //$NON-NLS-1$
 								}
 								
 								return null;

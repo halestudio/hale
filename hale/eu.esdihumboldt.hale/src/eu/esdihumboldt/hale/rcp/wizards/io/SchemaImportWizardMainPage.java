@@ -67,7 +67,8 @@ public class SchemaImportWizardMainPage
 	public SchemaImportWizardMainPage(String pageName, String pageTitle) {
 		super(pageName, pageTitle, (ImageDescriptor) null); // FIXME ImageDescriptor
 		setTitle(pageName); //NON-NLS-1
-		setDescription(Messages.SchemaImportWizardMainPage_SchemaImportDescription); //NON-NLS-1
+		setDescription(Messages.SchemaImportWizardMainPage_SchemaImportDescription +
+				Messages.SchemaImportWizardMainPage_SchemaImportDescription2); //NON-NLS-1
 	}
 
 	/**
