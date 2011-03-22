@@ -195,7 +195,7 @@ public class ModelNavigationView extends ViewPart implements
 				true));
 		List<AbstractContentProviderAction> sourceContentActions = 
 			initSchemaExplorerToolBar(sourceComposite, sourceSchemaFilter, 
-				sourceToggleActions, "Source"); //$NON-NLS-1$
+				sourceToggleActions, Messages.ModelNavigationView_Source); //$NON-NLS-1$
 
 		this.sourceSchemaViewer = this.schemaExplorerSetup(sourceComposite, SchemaType.SOURCE);
 		this.sourceSchemaViewer.addFilter(sourceSchemaFilter);
@@ -269,7 +269,7 @@ public class ModelNavigationView extends ViewPart implements
 				true));
 		List<AbstractContentProviderAction> targetContentActions = 
 			initSchemaExplorerToolBar(targetComposite, targetSchemaFilter, 
-				targetToggleActions, "Target"); //$NON-NLS-1$
+				targetToggleActions, Messages.ModelNavigationView_Target); //$NON-NLS-1$
 
 		this.targetSchemaViewer = this.schemaExplorerSetup(targetComposite,
 				SchemaType.TARGET);

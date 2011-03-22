@@ -12,7 +12,9 @@
 
 package eu.esdihumboldt.hale.task.providers.schema.geometry;
 
+
 import eu.esdihumboldt.hale.Messages;
+import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -84,7 +86,7 @@ public class NoGeometryTaskFactory extends AbstractTaskFactory {
 	/**
 	 * The type name
 	 */
-	public static final String BASE_TYPE_NAME = Messages.NoGeometryTaskFactory_2; //$NON-NLS-1$
+	public static final String BASE_TYPE_NAME = "Schema.noGeometryDescriptor"; //$NON-NLS-1$
 	
 	/**
 	 * The task type

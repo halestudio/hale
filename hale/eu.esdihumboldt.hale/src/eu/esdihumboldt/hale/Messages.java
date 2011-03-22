@@ -27,6 +27,10 @@ public class Messages {
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
 			.getBundle(BUNDLE_NAME);
 
+	public static String ModelNavigationView_Target;
+
+	public static String ModelNavigationView_Source;
+
 	public static String MappingExportWizard_0;
 
 	public static String FeatureTypeList_LabelFilter;
@@ -52,8 +56,6 @@ public class Messages {
 	public static String ImportGeodataText;
 
 	public static String InstanceDataImportWizardMainPage_LoadGeoDescription1;
-
-	public static String InstanceDataImportWizardMainPage_LoadGeoDescription2;
 
 	public static String InstanceDataImportWizardMainPage_ReadGeodata;
 
@@ -151,8 +153,6 @@ public class Messages {
 
 	public static String SchemaImportWizardMainPage_SchemaImportDescription;
 
-	public static String SchemaImportWizardMainPage_SchemaImportDescription2;
-
 	public static String SchemaImportWizardMainPage_SchemaImportReadSchema;
 
 	public static String SchemaImportWizardMainPage_FileSelect;
@@ -232,7 +232,6 @@ public class Messages {
 	public static String MarkEditor_StrokeLabel;
 	public static String PolygonSymbolizerEditor_FillLabel;
 	public static String PolygonSymbolizerEditor_StrokeLabel;
-	public static String RuleEditor_ExceptionText;
 	public static String RuleEditor_FilterLabel;
 	public static String RuleStylePage_AddRuleButtonToolTippText;
 	public static String RuleStylePage_DownRuleButtonToolTippText;
@@ -445,7 +444,6 @@ public class Messages {
 
 	public static String NoGeometryTaskFactory_0;
 	public static String NoGeometryTaskFactory_1;
-	public static String NoGeometryTaskFactory_2;
 
 	public static String MapNilAttributeTaskFactory_0;
 	public static String MapNilAttributeTaskFactory_1;
@@ -588,7 +586,6 @@ public class Messages {
 
 	public static String ApplicationWorkbenchWindowAdvisor_0;
 	public static String ApplicationWorkbenchWindowAdvisor_1;
-	public static String ApplicationWorkbenchWindowAdvisor_2;
 	public static String ApplicationWorkbenchWindowAdvisor_3;
 
 	public static String ApplicationWorkbenchAdvisor_1;
