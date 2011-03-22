@@ -216,13 +216,15 @@ public class GeographicalNameFunction extends AbstractCstFunction {
 			Collection<FeatureImpl> spellingofnamepropertiescollection = new HashSet<FeatureImpl>();
 			for (int j = 0; j < _script.get(i).size(); j++) {
 				Object sourcepropertyvalue = source.getProperty(this.sourceattributes.get(i).get(j).getLocalname()).getValue();
+				if (sourcepropertyvalue != null) { //XXX handle different when value is null? e.g. don't create a target value?
+					sourcepropertyvalue = sourcepropertyvalue.toString();
+				}
 				/*SimpleFeatureImpl spellingofname = (SimpleFeatureImpl) SimpleFeatureBuilder
 						.build(spellingofnametype, new Object[] {},
 								"SpellingOfName");*/
 				FeatureImpl spellingofname = (FeatureImpl)FeatureBuilder.buildFeature(spellingofnametype, null,false);
 				spellingofname.getProperty("script").setValue(_script.get(i).get(j)); //$NON-NLS-1$
-				spellingofname.getProperty("text").setValue(sourcepropertyvalue //$NON-NLS-1$
-						.toString());
+				spellingofname.getProperty("text").setValue(sourcepropertyvalue); //$NON-NLS-1$
 				spellingofname.getProperty("transliterationScheme").setValue(_transliteration.get(i).get(j)); //$NON-NLS-1$
 				
 				/*spellingofname.setAttribute("script", _script.get(i).get(j));
