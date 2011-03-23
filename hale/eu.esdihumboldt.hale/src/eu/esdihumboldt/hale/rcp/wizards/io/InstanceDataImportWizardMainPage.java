@@ -88,8 +88,7 @@ public class InstanceDataImportWizardMainPage
 			String schemaNamespace, String schemaFormat, Collection<InstanceProvider> instanceProviders) {
 		super(pageName, pageTitle, (ImageDescriptor) null); // FIXME ImageDescriptor
 		super.setTitle(pageName); //NON-NLS-1
-		super.setDescription(Messages.InstanceDataImportWizardMainPage_LoadGeoDescription1 +
-				Messages.InstanceDataImportWizardMainPage_LoadGeoDescription2);
+		super.setDescription(Messages.InstanceDataImportWizardMainPage_LoadGeoDescription1);
 		
 		this.schemaNamespace = schemaNamespace;
 		
