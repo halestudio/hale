@@ -127,7 +127,7 @@ public class FeatureFilterField extends Composite {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				filterText.setText(Messages.FeatureFilterField_5); //$NON-NLS-1$
+				filterText.setText(""); //$NON-NLS-1$
 				clearFilter.setEnabled(false);
 				notifyListeners();
 			}
@@ -213,7 +213,7 @@ public class FeatureFilterField extends Composite {
 	 * Get the filter
 	 * 
 	 * @return the filter
-	 * @throws CQLException
+	 * @throws CQLException if the filter cannot be created
 	 */
 	public Filter getFilter() throws CQLException {
 		String expr = getFilterExpression();

@@ -351,7 +351,7 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 			else {
 				ident = "source and transformed"; //$NON-NLS-1$
 			}
-			String text = MessageFormat.format(Messages.FeatureTilePainter_0, failed, ident); //$NON-NLS-1$
+			String text = MessageFormat.format(Messages.FeatureTilePainter_0, failed, ident);
 			
 			Image errorImage = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
 			
@@ -746,16 +746,16 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 	 * @param background the background to set, <code>null</code> to reset it to
 	 *   the default background
 	 */
-	private void setBackground(RGB background) {
-		if (background == null) return;
-		
-		this.background = background;
-		
-		synchronized (this) {
-			resetTiles();
-			refresh();
-		}
-	}
+//	private void setBackground(RGB background) {
+//		if (background == null) return;
+//		
+//		this.background = background;
+//		
+//		synchronized (this) {
+//			resetTiles();
+//			refresh();
+//		}
+//	}
 	
 	/**
 	 * Dispose the painter

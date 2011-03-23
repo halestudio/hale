@@ -2,6 +2,7 @@ package eu.esdihumboldt.cst.transformer;
 
 import org.eclipse.osgi.util.NLS;
 
+@SuppressWarnings("all")
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "eu.esdihumboldt.cst.transformer.service.impl.messages"; //$NON-NLS-1$
 	public static String FeatureSpatialJoiner_2;

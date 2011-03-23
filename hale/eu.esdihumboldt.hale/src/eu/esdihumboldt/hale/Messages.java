@@ -12,25 +12,21 @@
 
 package eu.esdihumboldt.hale;
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
 import org.eclipse.osgi.util.NLS;
 
 /**
  * Provides means to access externalized strings.
+ * 
  * @author Michel Kraemer
  */
-public class Messages {
+@SuppressWarnings("all")
+public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "eu.esdihumboldt.hale.messages"; //$NON-NLS-1$
 
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
-			.getBundle(BUNDLE_NAME);
-
 	public static String ModelNavigationView_Target;
-
+	
 	public static String ModelNavigationView_Source;
-
+	
 	public static String MappingExportWizard_0;
 
 	public static String FeatureTypeList_LabelFilter;
@@ -252,7 +248,7 @@ public class Messages {
 	public static String TileCache_JobLoadTitle;
 	public static String XMLStylePage3_SuperTitle;
 	public static String XMLStylePage4_SuperTitle;
-	
+
 	public static String CellDetails_AugmentationTitle;
 	public static String CellDetails_Entity1Title;
 	public static String CellDetails_Entity2Title;
@@ -267,7 +263,7 @@ public class Messages {
 	public static String CellSelector_NextButtonToolTipText;
 	public static String CellSelector_PrevButtonToolTipText;
 	public static String CellSelector_SynchButtonToolTipText;
-	
+
 	public static String ModelNavigationView_ActionText;
 	public static String ModelNavigationView_FunctionButtonToolTipText;
 	public static String ModelNavigationView_GeometryHide;
@@ -296,12 +292,12 @@ public class Messages {
 	public static String UseAggregationHierarchyAction_PropertyAggregationToolTipText;
 	public static String UseFlatHierarchyAction_OrganizeTooltipText;
 	public static String UseInheritanceHierarchyAction_ShowInheritedTooltipText;
-	
+
 	public static String InstanceServiceFeatureSelector_defaultReturnText;
 	public static String InstanceServiceFeatureSelector_SourceReturnText;
 	public static String InstanceServiceFeatureSelector_TargetReturnText;
 	public static String TransformedTableView_SynchToolTipText;
-	
+
 	public static String TaskTreeView_CommentText;
 	public static String TaskTreeView_description_tooltip;
 	public static String TaskTreeView_NumberText;
@@ -443,7 +439,6 @@ public class Messages {
 	public static String MapElementTaskFactory_0;
 	public static String MapElementTaskFactory_1;
 
-	public static String DefinitionFeatureTreeViewer_0;
 	public static String DefinitionFeatureTreeViewer_1;
 	public static String DefinitionFeatureTreeViewer_2;
 	public static String DefinitionFeatureTreeViewer_5;
@@ -544,7 +539,6 @@ public class Messages {
 
 	public static String FeatureFilterField_0;
 	public static String FeatureFilterField_3;
-	public static String FeatureFilterField_5;
 	public static String FeatureFilterField_6;
 	public static String FeatureFilterField_7;
 	public static String FeatureFilterField_8;
@@ -577,29 +571,17 @@ public class Messages {
 	public static String ProxyPreferencePage_4;
 	public static String ProxyPreferencePage_5;
 	public static String ProxyPreferencePage_6;
-	
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
-	
+
 	/**
 	 * Hidden constructor
 	 */
 	private Messages() {
-		//nothing to do here
+		// nothing to do here
 	}
 
-	/**
-	 * Get externalized string
-	 * @param key the string's id
-	 * @return the externalized string
-	 */
-	public static String getString(String key) {
-		try {
-			return RESOURCE_BUNDLE.getString(key);
-		} catch (MissingResourceException e) {
-			return '!' + key + '!';
-		}
-	}
 }

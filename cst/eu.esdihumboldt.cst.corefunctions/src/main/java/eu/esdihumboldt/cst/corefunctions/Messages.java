@@ -3,6 +3,7 @@ package eu.esdihumboldt.cst.corefunctions;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+@SuppressWarnings("all")
 public class Messages {
 	private static final String BUNDLE_NAME = "eu.esdihumboldt.cst.corefunctions.messages"; //$NON-NLS-1$
 

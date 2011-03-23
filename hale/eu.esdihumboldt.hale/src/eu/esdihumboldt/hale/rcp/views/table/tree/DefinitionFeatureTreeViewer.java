@@ -76,7 +76,7 @@ public class DefinitionFeatureTreeViewer {
 		treeViewer.getTree().setHeaderVisible(true);
 		treeViewer.getTree().setLinesVisible(true);
 		
-		treeViewer.getTree().setToolTipText(Messages.DefinitionFeatureTreeViewer_0); //$NON-NLS-1$
+		treeViewer.getTree().setToolTipText(""); //$NON-NLS-1$
 		
 		setInput(null, null);
 	}
