@@ -141,7 +141,7 @@ public class FeatureSpatialJoiner {
         //Build synthetic FT from source0 and source 1
         SimpleFeatureType joinedFt = null;
 		SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
-		ftbuilder.setName(MessageFormat.format(Messages.FeatureSpatialJoiner_2, typeName0, typeName1));
+		ftbuilder.setName(MessageFormat.format("Joined_{0}_{1}", typeName0, typeName1)); //$NON-NLS-1$
 		//TODO: Which namespace for synthetic FT?
 		ftbuilder.setNamespaceURI(schema0.getName().getNamespaceURI());
 		for (PropertyDescriptor p :schema0.getDescriptors()){
@@ -214,7 +214,7 @@ public class FeatureSpatialJoiner {
         //Build synthetic FT from source0 and source 1
         SimpleFeatureType joinedFt = null;
 		SimpleFeatureTypeBuilder ftbuilder = new SimpleFeatureTypeBuilder();
-		ftbuilder.setName(MessageFormat.format(Messages.FeatureSpatialJoiner_3, typeName0, typeName1));
+		ftbuilder.setName(MessageFormat.format("Joined_{0}_{1}", typeName0, typeName1)); //$NON-NLS-1$
 		//TODO: Which namespace for synthetic FT?
 		ftbuilder.setNamespaceURI(schema0.getName().getNamespaceURI());
 		for (PropertyDescriptor p :schema0.getDescriptors()){

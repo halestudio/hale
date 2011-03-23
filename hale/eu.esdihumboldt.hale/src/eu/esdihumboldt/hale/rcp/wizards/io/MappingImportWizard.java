@@ -122,7 +122,7 @@ public class MappingImportWizard
 					alignmentService.addOrUpdateAlignment(alignment);
 				}
 			} catch (Exception e) {
-				_log.userError("Alignment could not be loaded", e); //$NON-NLS-1$
+				_log.userError(Messages.MappingImportWizard_0, e); 
 				return false;
 			}
 		}

@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.rcp.utils.codelist.internal;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,7 +104,7 @@ public class CodeListPreferencePage extends PreferencePage implements
 					searchPath.add(node);
 					listViewer.refresh(false);
 					if (!node.hasChildren()) {
-						log.userWarn("No code lists found in " + path); //$NON-NLS-1$
+						log.userWarn(MessageFormat.format(Messages.CodeListPreferencePage_5, path)); 
 					}
 				}
 			}

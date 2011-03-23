@@ -255,10 +255,7 @@ public class SchemaTranslationController {
 		}
 		
 		if (functionErrors > 0) {
-			_log.userError(functionErrors + " function execution errors occurred " + //$NON-NLS-1$
-					"while transforming " + numTransformed + " features, " + //$NON-NLS-1$ //$NON-NLS-2$
-					"please see the error log or the feature lineage for more " + //$NON-NLS-1$
-					"details."); //$NON-NLS-1$
+			_log.userError(MessageFormat.format(Messages.SchemaTranslationController_2, functionErrors, numTransformed));
 		}
 		
 		FeatureCollection result = FeatureCollections.newCollection();

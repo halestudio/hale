@@ -151,7 +151,7 @@ public class InstanceDataImportWizard
 						projectService.setInstanceDataPath(result.toString());
 						projectService.setInstanceDataType(type);
 					} catch (Throwable e) {
-						_log.userError("Error loading instance data", e); //$NON-NLS-1$
+						_log.userError(Messages.InstanceDataImportWizard_0, e); 
 					}
 					
 					monitor.done();

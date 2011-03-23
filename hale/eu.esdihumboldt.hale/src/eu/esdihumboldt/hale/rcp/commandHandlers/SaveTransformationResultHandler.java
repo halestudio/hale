@@ -27,6 +27,7 @@ import org.opengis.feature.type.FeatureType;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.models.SchemaService;
@@ -56,7 +57,7 @@ public class SaveTransformationResultHandler extends AbstractHandler {
 		final FeatureCollection<FeatureType, Feature> features = is.getFeatures(DatasetType.transformed);
 		
 		if (features == null || features.isEmpty()) {
-			log.userError("No transformed features are available for export."); //$NON-NLS-1$
+			log.userError(Messages.SaveTransformationResultHandler_0); 
 			return null;
 		}
 		

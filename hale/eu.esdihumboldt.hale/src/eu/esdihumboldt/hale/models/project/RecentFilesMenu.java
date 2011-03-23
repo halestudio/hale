@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.models.project;
 
+import java.text.MessageFormat;
+
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -26,6 +28,7 @@ import org.eclipse.ui.PlatformUI;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.wizards.io.OpenAlignmentProjectWizard;
 
 /**
@@ -65,7 +68,7 @@ public class RecentFilesMenu extends ContributionItem {
 				IRunnableWithProgress op = OpenAlignmentProjectWizard.createOpenProjectRunnable(file);
 			    new ProgressMonitorDialog(display.getActiveShell()).run(true, false, op);
 			} catch (Exception e1) {
-				log.userError("Error opening project file: " + file, e1); //$NON-NLS-1$
+				log.userError(MessageFormat.format(Messages.RecentFilesMenu_0, file), e1); 
 			}
 		}
 	}

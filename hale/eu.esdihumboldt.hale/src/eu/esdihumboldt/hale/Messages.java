@@ -53,6 +53,8 @@ public class Messages extends NLS {
 
 	public static String ImportDataStatusText;
 
+	public static String InstanceDataImportWizard_0;
+
 	public static String InstanceDataImportWizard_MainPageLabel;
 
 	public static String ImportGeodataText;
@@ -76,6 +78,8 @@ public class Messages extends NLS {
 	public static String MappingExportWizardMainPage_SelectionAreaText;
 
 	public static String MappingExportWizardMainPage_File;
+
+	public static String MappingImportWizard_0;
 
 	public static String MappingImportWizard_ImportMappingTitle;
 
@@ -360,6 +364,8 @@ public class Messages extends NLS {
 	public static String CodeListPreferencePage_2;
 	public static String CodeListPreferencePage_3;
 	public static String CodeListPreferencePage_4;
+
+	public static String CodeListPreferencePage_5;
 	public static String CodeListPreferencePage_6;
 	public static String CodeListPreferencePage_7;
 
@@ -378,6 +384,8 @@ public class Messages extends NLS {
 	public static String CapabilitiesPage_1;
 	public static String CapabilitiesPage_2;
 	public static String CapabilitiesPage_4;
+
+	public static String RecentFilesMenu_0;
 
 	public static String ReportContentProvider_0;
 	public static String ReportContentProvider_1;
@@ -400,6 +408,12 @@ public class Messages extends NLS {
 	public static String SetAsDefaultGeometryAction_8;
 	public static String SetAsDefaultGeometryAction_9;
 	public static String SetAsDefaultGeometryAction_12;
+
+	public static String SetAsDefaultGeometryAction_4;
+
+	public static String SetAsDefaultGeometryAction_6;
+
+	public static String SetAsDefaultGeometryAction_7;
 
 	public static String ReportModel_1;
 	public static String ReportModel_4;
@@ -458,6 +472,8 @@ public class Messages extends NLS {
 
 	public static String SaveAlignmentProjectWizardMainPage_0;
 
+	public static String SaveTransformationResultHandler_0;
+
 	public static String OGCFilterBuilder_0;
 	public static String OGCFilterBuilder_1;
 	public static String OGCFilterBuilder_2;
@@ -473,6 +489,10 @@ public class Messages extends NLS {
 	public static String OGCFilterDialog_2;
 
 	public static String MappingExportWizard_1;
+
+	public static String MappingExportWizard_2;
+
+	public static String MappingExportWizard_3;
 
 	public static String MappingExportWizardMainPage_0;
 	public static String MappingExportWizardMainPage_1;

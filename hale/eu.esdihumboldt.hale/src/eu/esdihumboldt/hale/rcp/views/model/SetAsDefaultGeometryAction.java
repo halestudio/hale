@@ -108,7 +108,7 @@ public class SetAsDefaultGeometryAction extends Action {
 						}
 					});
 				} catch (Exception e) {
-					log.userError("Error reloading source schema", e); //$NON-NLS-1$
+					log.userError(Messages.SetAsDefaultGeometryAction_4, e); 
 				}
 				
 				styleService.addStyles(style);
@@ -120,7 +120,7 @@ public class SetAsDefaultGeometryAction extends Action {
 						instanceService.addInstances(DatasetType.reference, 
 								InstanceDataImportWizard.loadInstances(new URI(instanceLoc), conf, null));
 					} catch (Exception e) {
-						log.userError("Error reloading source data", e); //$NON-NLS-1$
+						log.userError(Messages.SetAsDefaultGeometryAction_6, e); 
 					}
 				}
 			} finally {
@@ -181,7 +181,7 @@ public class SetAsDefaultGeometryAction extends Action {
 						}
 					});
 				} catch (Exception e) {
-					log.userError("Error reloading target schema", e); //$NON-NLS-1$
+					log.userError(Messages.SetAsDefaultGeometryAction_7, e); 
 				}
 				
 				styleService.addStyles(style);

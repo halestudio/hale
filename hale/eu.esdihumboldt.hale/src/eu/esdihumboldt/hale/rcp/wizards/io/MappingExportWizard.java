@@ -163,7 +163,7 @@ public class MappingExportWizard
 								PlatformUI.getWorkbench().getDisplay().asyncExec(r);
 							}
 							else {
-								_log.userInfo("Mapping export was successful"); //$NON-NLS-1$
+								_log.userInfo(Messages.MappingExportWizard_3); 
 							}
 						} catch (Throwable e) {
 							String message = Messages.MappingExportWizard_SaveFailed;
@@ -175,7 +175,7 @@ public class MappingExportWizard
 					}
 				});
 			} catch (Exception e) {
-				_log.userError("Error starting mapping export process", e); //$NON-NLS-1$
+				_log.userError(Messages.MappingExportWizard_2, e); 
 			}
 			
 		}
