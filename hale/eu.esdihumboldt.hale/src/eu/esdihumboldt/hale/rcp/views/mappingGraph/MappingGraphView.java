@@ -358,10 +358,10 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 		// Filter and Parameters gets transformed into one string
 		String toolTipText = ""; //$NON-NLS-1$
 		if (!filterList.isEmpty()) {
-			toolTipText = MessageFormat.format(Messages.MappingGraphView_0, toolTipText, this.mappingGraphModel.listToString(filterList)); //$NON-NLS-1$
+			toolTipText = MessageFormat.format(Messages.MappingGraphView_0, this.mappingGraphModel.listToString(filterList)); //$NON-NLS-1$
 		}
 		if (!parameterList.isEmpty()) {
-			toolTipText = MessageFormat.format(Messages.MappingGraphView_1, toolTipText, this.mappingGraphModel.parameterListToString(parameterList)); //$NON-NLS-1$
+			toolTipText = MessageFormat.format(Messages.MappingGraphView_1, this.mappingGraphModel.parameterListToString(parameterList)); //$NON-NLS-1$
 		}
 
 		// BrowserToolTip gets created

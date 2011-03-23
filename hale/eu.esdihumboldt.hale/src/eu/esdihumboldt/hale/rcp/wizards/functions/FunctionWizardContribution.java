@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -216,9 +217,12 @@ public class FunctionWizardContribution extends ContributionItem {
 				info = new CellSelectionInfo(cellSelection);
 			}
 			
-			String augmentations = Messages.FunctionWizardContribution_0; //$NON-NLS-1$
+			String augmentations;
 			if (info != null && info.getTargetItemCount() == 1) {
-				augmentations += Messages.FunctionWizardContribution_1 + info.getFirstTargetItem().getName().getLocalPart(); //$NON-NLS-1$
+				augmentations = MessageFormat.format(Messages.FunctionWizardContribution_0, info.getFirstTargetItem().getName().getLocalPart()); 
+			}
+			else {
+				augmentations = Messages.FunctionWizardContribution_1; 
 			}
 			
 			MenuItem augItem = new MenuItem(menu, SWT.PUSH, index++);

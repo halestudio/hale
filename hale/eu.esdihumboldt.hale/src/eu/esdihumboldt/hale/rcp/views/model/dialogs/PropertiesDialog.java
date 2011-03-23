@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.hale.rcp.views.model.dialogs;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -79,7 +80,7 @@ public class PropertiesDialog extends TitleAreaDialog {
 		Control control = super.createContents(parent);
 		
 		//setMessage("");
-		setTitle(Messages.PropertiesDialog_Title + EntityHelper.getShortName(item.getEntity()));
+		setTitle(MessageFormat.format(Messages.PropertiesDialog_Title, EntityHelper.getShortName(item.getEntity())));
 		
 		return control;
 	}

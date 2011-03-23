@@ -29,6 +29,12 @@ public class Messages extends NLS {
 	
 	public static String MappingExportWizard_0;
 
+	public static String FeatureTilePainter_0;
+
+	public static String FeatureTilePainter_1;
+
+	public static String FeatureTilePainter_2;
+
 	public static String FeatureTypeList_LabelFilter;
 
 	public static String FeatureTypeList_LabelFeature;
@@ -314,10 +320,6 @@ public class Messages extends NLS {
 
 	public static String SaveAlignmentProjectWizardMainPage_LocationText;
 
-	public static String StackTraceErrorDialog_0;
-
-	public static String StackTraceErrorDialog_1;
-
 	public static String MappingGraphView_0;
 	public static String MappingGraphView_1;
 	public static String MappingGraphView_2;
@@ -464,30 +466,6 @@ public class Messages extends NLS {
 	public static String OGCFilterBuilder_7;
 	public static String OGCFilterBuilder_8;
 	public static String OGCFilterBuilder_9;
-	public static String OGCFilterBuilder_12;
-	public static String OGCFilterBuilder_45;
-	public static String OGCFilterBuilder_46;
-	public static String OGCFilterBuilder_47;
-	public static String OGCFilterBuilder_48;
-	public static String OGCFilterBuilder_49;
-	public static String OGCFilterBuilder_50;
-	public static String OGCFilterBuilder_51;
-	public static String OGCFilterBuilder_52;
-	public static String OGCFilterBuilder_53;
-	public static String OGCFilterBuilder_54;
-	public static String OGCFilterBuilder_55;
-	public static String OGCFilterBuilder_56;
-	public static String OGCFilterBuilder_57;
-	public static String OGCFilterBuilder_58;
-	public static String OGCFilterBuilder_59;
-	public static String OGCFilterBuilder_60;
-	public static String OGCFilterBuilder_61;
-	public static String OGCFilterBuilder_62;
-	public static String OGCFilterBuilder_63;
-	public static String OGCFilterBuilder_64;
-	public static String OGCFilterBuilder_65;
-	public static String OGCFilterBuilder_66;
-
 	public static String OGCFilterDialog_0;
 	public static String OGCFilterDialog_1;
 	public static String OGCFilterDialog_2;
@@ -502,7 +480,6 @@ public class Messages extends NLS {
 
 	public static String ListFunctionsDialog_1;
 	public static String ListFunctionsDialog_2;
-	public static String ListFunctionsDialog_3;
 	public static String ListFunctionsDialog_4;
 	public static String ListFunctionsDialog_5;
 
@@ -517,18 +494,30 @@ public class Messages extends NLS {
 
 	public static String GmlExportWizard_0;
 	public static String GmlExportWizard_1;
+
+	public static String GmlExportWizard_10;
 	public static String GmlExportWizard_2;
 	public static String GmlExportWizard_3;
+
 	public static String GmlExportWizard_4;
+
 	public static String GmlExportWizard_5;
+
+	public static String GmlExportWizard_6;
 	public static String GmlExportWizard_7;
+
+	public static String GmlExportWizard_8;
+
+	public static String GmlExportWizard_9;
 
 	public static String GmlExportPage_0;
 	public static String GmlExportPage_2;
 	public static String GmlExportPage_5;
 
 	public static String FunctionWizardContribution_0;
+
 	public static String FunctionWizardContribution_1;
+
 	public static String FunctionWizardContribution_2;
 
 	public static String FeatureTypesPage_0;
@@ -543,8 +532,6 @@ public class Messages extends NLS {
 	public static String FeatureFilterField_7;
 	public static String FeatureFilterField_8;
 	public static String FeatureFilterField_9;
-
-	public static String FeatureTilePainter_0;
 
 	public static String FeatureFilterFormDialog_0;
 	public static String FeatureFilterFormDialog_1;

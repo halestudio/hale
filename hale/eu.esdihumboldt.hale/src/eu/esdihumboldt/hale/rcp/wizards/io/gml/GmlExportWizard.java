@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.text.MessageFormat;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -123,17 +124,17 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 					try {
 						out = new FileOutputStream(targetFile);
 					} catch (FileNotFoundException e1) {
-						log.userError(Messages.GmlExportWizard_4 +  //$NON-NLS-1$
-								targetFile.getAbsolutePath(), e1);
+						log.userError(MessageFormat.format(Messages.GmlExportWizard_4,  
+								targetFile.getAbsolutePath()), e1);
 						return;
 					}
-					ATransaction trans = log.begin(Messages.GmlExportWizard_5 +  //$NON-NLS-1$
-							targetFile.getAbsolutePath());
+					ATransaction trans = log.begin(MessageFormat.format("Writing transformed features to GML file: {0}",  //$NON-NLS-1$
+							targetFile.getAbsolutePath()));
 					List<Schema> addSchemas = null;
 					try {
 						addSchemas = gmlWriter.writeFeatures(features, schema, out, commonSrsName);
 					} catch (Exception e) {
-						log.userError("Error saving transformation result to GML file", e); //$NON-NLS-1$
+						log.userError(Messages.GmlExportWizard_5, e); 
 						return;
 					} finally {
 						trans.end();
@@ -182,10 +183,10 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 							}
 							
 							if (report.isValid()) {
-								log.userInfo("GML file exported, validation successful."); //$NON-NLS-1$
+								log.userInfo(Messages.GmlExportWizard_6); 
 							}
 							else {
-								log.userError("Validation of the exported GML file failed, see the error log for more details."); //$NON-NLS-1$
+								log.userError(Messages.GmlExportWizard_8); 
 								
 								final Report report2 = report;
 								Runnable r = new Runnable(){
@@ -198,7 +199,7 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 								getContainer().getShell().getDisplay().asyncExec(r);
 							}
 						} catch (Throwable e) {
-							log.userError("An error occurred while validating exported GML file", e); //$NON-NLS-1$
+							log.userError(Messages.GmlExportWizard_9, e); 
 						}
 					}
 					
@@ -206,7 +207,7 @@ public class GmlExportWizard extends Wizard implements IExportWizard {
 				}
 			});
 		} catch (Exception e) {
-			log.userError("Error exporting transformed feature to GML file", e); //$NON-NLS-1$
+			log.userError(Messages.GmlExportWizard_10, e); 
 			return false;
 		}
 		

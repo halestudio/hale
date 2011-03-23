@@ -167,7 +167,7 @@ public class OGCFilterBuilder extends Composite {
 			
 			if (condition.getComparison() == null || condition.getValue().toString().isEmpty())
 			{
-				if (!condition.getComparison().equals(Messages.OGCFilterBuilder_12)) { //$NON-NLS-1$
+				if (!condition.getComparison().equals("PropertyIsNull")) { //$NON-NLS-1$
 					table.setSelection(i);
 					throw new IllegalStateException("Value must be set at selected condition."); //$NON-NLS-1$
 				}
@@ -444,16 +444,16 @@ public class OGCFilterBuilder extends Composite {
 		List<PropertyDescriptor> propertyList = new ArrayList<PropertyDescriptor>();
 		ComboBoxCellEditor spatialConditionEditor;
 		List<String> spatialConditionList = new ArrayList<String>();
-		String[] spatialConditions = {Messages.OGCFilterBuilder_45, Messages.OGCFilterBuilder_46, Messages.OGCFilterBuilder_47, Messages.OGCFilterBuilder_48, Messages.OGCFilterBuilder_49, Messages.OGCFilterBuilder_50,  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-				Messages.OGCFilterBuilder_51, Messages.OGCFilterBuilder_52, Messages.OGCFilterBuilder_53, Messages.OGCFilterBuilder_54, Messages.OGCFilterBuilder_55}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+		String[] spatialConditions = {"Equals", "Disjoint", "Touches", "Within", "Overlaps", "Crosses",  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+				"Intersects", "Contains", "DWithin", "Beyond", "BBOX"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		ComboBoxCellEditor comparisonConditionEditor;
 		List<String> comparisonConditionList = new ArrayList<String>();
-		String[] comparisonConditions = {Messages.OGCFilterBuilder_56, Messages.OGCFilterBuilder_57, Messages.OGCFilterBuilder_58, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				Messages.OGCFilterBuilder_59, Messages.OGCFilterBuilder_60, Messages.OGCFilterBuilder_61,  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				Messages.OGCFilterBuilder_62, Messages.OGCFilterBuilder_63, Messages.OGCFilterBuilder_64}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		String[] comparisonConditions = {"PropertyIsEqualTo", "PropertyIsNotEqualTo", "PropertyIsLessThan", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				"PropertyIsGreaterThan", "PropertyIsLessThanOrEqualTo", "PropertyIsGreaterThanOrEqualTo",  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				"PropertyIsLike", "PropertyIsNull", "PropertyIsBetween"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		ComboBoxCellEditor logicalUnionEditor;
 		List<String> logicalUnionList = new ArrayList<String>();
-		String[] logicalUnions = {Messages.OGCFilterBuilder_65, Messages.OGCFilterBuilder_66}; //$NON-NLS-1$ //$NON-NLS-2$
+		String[] logicalUnions = {"And", "Or"}; //$NON-NLS-1$ //$NON-NLS-2$
 		TextCellEditor textEditor;
 	
 		public ConditionEditingSupport(ColumnViewer viewer, int column) {

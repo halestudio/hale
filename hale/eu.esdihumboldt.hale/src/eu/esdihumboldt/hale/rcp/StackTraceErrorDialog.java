@@ -40,8 +40,6 @@ import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.statushandlers.StatusManager;
 
-import eu.esdihumboldt.hale.Messages;
-
 /**
  * Extended ErrorDialog which displays the stack trace. Can be configured to
  * also show a link to the error log view.
@@ -180,8 +178,8 @@ public class StackTraceErrorDialog extends ErrorDialog {
 				}
 			}
 		});
-		link.setText(Messages.StackTraceErrorDialog_0); //$NON-NLS-1$
-		link.setToolTipText(Messages.StackTraceErrorDialog_1); //$NON-NLS-1$
+		link.setText(WorkbenchMessages.ErrorLogUtil_ShowErrorLogHyperlink);
+		link.setToolTipText(WorkbenchMessages.ErrorLogUtil_ShowErrorLogTooltip);
 		Dialog.applyDialogFont(link);
 		return link;
 	}

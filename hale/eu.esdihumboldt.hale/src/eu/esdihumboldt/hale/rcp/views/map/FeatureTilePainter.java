@@ -341,17 +341,16 @@ public class FeatureTilePainter extends AbstractTilePainter implements TileBackg
 		
 		int failed = status.getReferenceFailed() + status.getTransformedFailed();
 		if (failed > 0) {
-			String ident;
+			String text;
 			if (status.getReferenceFailed() == 0) {
-				ident = "transformed"; //$NON-NLS-1$
+				text = MessageFormat.format(Messages.FeatureTilePainter_0, failed);
 			}
 			else if (status.getTransformedFailed() == 0) {
-				ident = "source"; //$NON-NLS-1$
+				text = MessageFormat.format(Messages.FeatureTilePainter_1, failed);
 			}
 			else {
-				ident = "source and transformed"; //$NON-NLS-1$
+				text = MessageFormat.format(Messages.FeatureTilePainter_2, failed);
 			}
-			String text = MessageFormat.format(Messages.FeatureTilePainter_0, failed, ident);
 			
 			Image errorImage = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
 			
