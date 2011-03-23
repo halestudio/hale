@@ -58,7 +58,7 @@ public class TestModelAlignmentToModelRif
     public void runIt() throws TranslationException
     {
         translator.translate(getClass().getClassLoader().getResource(
-                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example3_cp.goml"));
+                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example3_cp.goml")); //$NON-NLS-1$
     }
 
     /**
@@ -73,7 +73,7 @@ public class TestModelAlignmentToModelRif
     public void testTranslateFilter() throws TranslationException
     {
         ModelRifDocument result = translator.translate(getClass().getClassLoader().getResource(
-                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example3_cp_filter.goml"));
+                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example3_cp_filter.goml")); //$NON-NLS-1$
         assertNotNull(result);
         assertNotNull(result.getSentences());
         assertThat(result.getSentences().size(), is(1));
@@ -91,7 +91,7 @@ public class TestModelAlignmentToModelRif
     public void testTranslateNegationFilter() throws TranslationException
     {
         ModelRifDocument result = translator.translate(getClass().getClassLoader().getResource(
-                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example1_tn_road.goml"));
+                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example1_tn_road.goml")); //$NON-NLS-1$
         assertNotNull(result);
         assertNotNull(result.getSentences());
         // CHECKSTYLE:OFF

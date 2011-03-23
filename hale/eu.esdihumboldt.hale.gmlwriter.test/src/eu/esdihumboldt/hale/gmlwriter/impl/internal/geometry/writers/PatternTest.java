@@ -38,23 +38,23 @@ import static org.junit.Assert.assertFalse;
  */
 public class PatternTest {
 	
-	private static final String GML_NS = "http://www.opengis.net/gml";
+	private static final String GML_NS = "http://www.opengis.net/gml"; //$NON-NLS-1$
 	
 	/**
 	 * The curve element name
 	 */
-	private static final NameImpl CURVE_ELEMENT = new NameImpl(GML_NS, "Curve");
+	private static final NameImpl CURVE_ELEMENT = new NameImpl(GML_NS, "Curve"); //$NON-NLS-1$
 	
 	/**
 	 * Test a direct match
 	 */
 	@Test
 	public void testDirect() {
-		Pattern pattern = Pattern.parse("Curve");
+		Pattern pattern = Pattern.parse("Curve"); //$NON-NLS-1$
 		TypeDefinition start = createCurveType();
 		DefinitionPath path = pattern.match(start, new DefinitionPath(start, CURVE_ELEMENT), GML_NS);
-		assertNotNull("A match should have been found", path);
-		assertTrue("Path should be empty", path.isEmpty());
+		assertNotNull("A match should have been found", path); //$NON-NLS-1$
+		assertTrue("Path should be empty", path.isEmpty()); //$NON-NLS-1$
 		assertEquals(start, path.getLastType());
 	}
 	
@@ -63,10 +63,10 @@ public class PatternTest {
 	 */
 	@Test
 	public void testDirectFail() {
-		Pattern pattern = Pattern.parse("CurveType");
+		Pattern pattern = Pattern.parse("CurveType"); //$NON-NLS-1$
 		TypeDefinition start = createCurveType();
 		DefinitionPath path = pattern.match(start, new DefinitionPath(start, CURVE_ELEMENT), GML_NS);
-		assertNull("A match should not have been found", path);
+		assertNull("A match should not have been found", path); //$NON-NLS-1$
 	}
 	
 	/**
@@ -74,14 +74,14 @@ public class PatternTest {
 	 */
 	@Test
 	public void testDescent() {
-		Pattern pattern = Pattern.parse("**/LineStringSegment");
+		Pattern pattern = Pattern.parse("**/LineStringSegment"); //$NON-NLS-1$
 		TypeDefinition start = createCurveType();
 		DefinitionPath path = pattern.match(start, new DefinitionPath(start, CURVE_ELEMENT), GML_NS);
-		assertNotNull("A match should have been found", path);
-		assertFalse("Path should not be empty", path.isEmpty());
+		assertNotNull("A match should have been found", path); //$NON-NLS-1$
+		assertFalse("Path should not be empty", path.isEmpty()); //$NON-NLS-1$
 		List<PathElement> steps = path.getSteps();
 		assertEquals(2, steps.size());
-		String[] names = new String[]{"segments", "LineStringSegment"};
+		String[] names = new String[]{"segments", "LineStringSegment"}; //$NON-NLS-1$ //$NON-NLS-2$
 		// check path elements
 		for (int i = 0; i < steps.size(); i++) {
 			assertEquals(names[i], steps.get(i).getName().getLocalPart());
@@ -90,25 +90,25 @@ public class PatternTest {
 	
 	private TypeDefinition createCurveType() {
 		// create the curve type
-		TypeDefinition curve = new TypeDefinition(new NameImpl(GML_NS, "CurveType"), null, null);
+		TypeDefinition curve = new TypeDefinition(new NameImpl(GML_NS, "CurveType"), null, null); //$NON-NLS-1$
 		curve.addDeclaringElement(new SchemaElement(CURVE_ELEMENT, curve.getName(), curve, null));
 		
 		// create the segments property for curve
-		TypeDefinition segArray = new TypeDefinition(new NameImpl(GML_NS, "CurveSegmentArrayPropertyType"), null, null);
-		curve.addDeclaredAttribute(new CustomDefaultAttribute("segments", segArray.getName(), segArray, GML_NS, null));
+		TypeDefinition segArray = new TypeDefinition(new NameImpl(GML_NS, "CurveSegmentArrayPropertyType"), null, null); //$NON-NLS-1$
+		curve.addDeclaredAttribute(new CustomDefaultAttribute("segments", segArray.getName(), segArray, GML_NS, null)); //$NON-NLS-1$
 		
 		// create the AbstractCurveSegement property for segArray
-		TypeDefinition absSeg = new TypeDefinition(new NameImpl(GML_NS, "AbstractCurveSegementType"), null, null);
+		TypeDefinition absSeg = new TypeDefinition(new NameImpl(GML_NS, "AbstractCurveSegementType"), null, null); //$NON-NLS-1$
 		absSeg.setAbstract(true);
-		segArray.addDeclaredAttribute(new CustomDefaultAttribute("AbstractCurveSegment", absSeg.getName(), absSeg, GML_NS, null));
+		segArray.addDeclaredAttribute(new CustomDefaultAttribute("AbstractCurveSegment", absSeg.getName(), absSeg, GML_NS, null)); //$NON-NLS-1$
 		
 		// add dummy sub-type
-		new TypeDefinition(new NameImpl("somespace", "SomeSegmentType"), null, absSeg);
+		new TypeDefinition(new NameImpl("somespace", "SomeSegmentType"), null, absSeg); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		// create the LineStringSegmentType sub-type
-		TypeDefinition lineSeg = new TypeDefinition(new NameImpl(GML_NS, "LineStringSegmentType"), null, absSeg);
-		lineSeg.addDeclaringElement(new SchemaElement(new NameImpl(GML_NS, "LineStringSegment"), 
-				lineSeg.getName(), lineSeg, new NameImpl(GML_NS, "AbstractCurveSegment")));
+		TypeDefinition lineSeg = new TypeDefinition(new NameImpl(GML_NS, "LineStringSegmentType"), null, absSeg); //$NON-NLS-1$
+		lineSeg.addDeclaringElement(new SchemaElement(new NameImpl(GML_NS, "LineStringSegment"),  //$NON-NLS-1$
+				lineSeg.getName(), lineSeg, new NameImpl(GML_NS, "AbstractCurveSegment"))); //$NON-NLS-1$
 		
 		return curve;
 	}

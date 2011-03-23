@@ -13,6 +13,7 @@ package eu.esdihumboldt.hale.schemaprovider.provider;
 
 import java.io.IOException;
 import java.net.URI;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -104,8 +105,8 @@ public class ShapeSchemaProvider
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			}
-			progress.setCurrentTask(Messages.getString("ShapeSchemaProvider.7")  //$NON-NLS-1$
-					+ sft.getTypeName());
+			progress.setCurrentTask(MessageFormat.format(Messages.getString("ShapeSchemaProvider.7"),  //$NON-NLS-1$
+					sft.getTypeName()));
 			
 			TypeDefinition type = new TypeDefinition(sft.getName(), sft, abstractFeatureType);
 			for (PropertyDescriptor pd : sft.getDescriptors()) {

@@ -62,13 +62,13 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 	 */
 	private final static String SOURCE_OF_NAME_PROMT = Messages.GeographicNamePage_0;
 
-	private static final String GENDER_NULL_VAUE_MENU_ENTRY = Messages.GeographicNamePage_1;
+	private static final String GENDER_NULL_VAUE_MENU_ENTRY = ""; //$NON-NLS-1$
 
-	private static final String NUMBER_NULL_VALUE_MENU_ENTRY = Messages.GeographicNamePage_2;
+	private static final String NUMBER_NULL_VALUE_MENU_ENTRY = ""; //$NON-NLS-1$
 
 	private static final String LANGUAGE_LABEL_TEXT = Messages.GeographicNamePage_3;
 
-	private static final String ISO_CODE_ENG = Messages.GeographicNamePage_4;
+	private static final String ISO_CODE_ENG = "eng"; //$NON-NLS-1$
 
 	private static final String SOURCE_OF_NAME_LABEL_TEXT = Messages.GeographicNamePage_5;
 

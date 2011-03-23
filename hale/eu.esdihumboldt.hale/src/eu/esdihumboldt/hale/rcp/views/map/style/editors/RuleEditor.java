@@ -112,7 +112,7 @@ public class RuleEditor<T extends Symbolizer> implements Editor<Rule> {
 	 */
 	@Override
 	public void setValue(Rule value) {
-		throw new UnsupportedOperationException("Setting the value on the rule editor not allowed, use the constructor instead.");
+		throw new UnsupportedOperationException("Setting the value on the rule editor not allowed, use the constructor instead."); //$NON-NLS-1$
 	}
 
 }

@@ -66,7 +66,7 @@ public class TestTransportationDataTheme extends DomBasedUnitTest
             ParserConfigurationException
     {
         URL url = getClass().getClassLoader().getResource(
-                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example2_tn_rail.goml");
+                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example2_tn_rail.goml"); //$NON-NLS-1$
         org.w3._2007.rif.Document doc = translator.translate(url);
         writeDom(getDomFromRif(doc), System.out);
     }
@@ -87,7 +87,7 @@ public class TestTransportationDataTheme extends DomBasedUnitTest
             ParserConfigurationException
     {
         URL url = getClass().getClassLoader().getResource(
-                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example2_tn_road.goml");
+                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example2_tn_road.goml"); //$NON-NLS-1$
         org.w3._2007.rif.Document doc = translator.translate(url);
         writeDom(getDomFromRif(doc), System.out);
     }
@@ -108,7 +108,7 @@ public class TestTransportationDataTheme extends DomBasedUnitTest
             ParserConfigurationException
     {
         URL url = getClass().getClassLoader().getResource(
-                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example2_tn_water.goml");
+                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example2_tn_water.goml"); //$NON-NLS-1$
         org.w3._2007.rif.Document doc = translator.translate(url);
         writeDom(getDomFromRif(doc), System.out);
     }
@@ -129,7 +129,7 @@ public class TestTransportationDataTheme extends DomBasedUnitTest
             ParserConfigurationException
     {
         URL url = getClass().getClassLoader().getResource(
-                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example1_tn_road.goml");
+                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example1_tn_road.goml"); //$NON-NLS-1$
         org.w3._2007.rif.Document doc = translator.translate(url);
         writeDom(getDomFromRif(doc), System.out);
     }
@@ -150,7 +150,7 @@ public class TestTransportationDataTheme extends DomBasedUnitTest
             ParserConfigurationException
     {
         URL url = getClass().getClassLoader().getResource(
-                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example1_tn_rail.goml");
+                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example1_tn_rail.goml"); //$NON-NLS-1$
         org.w3._2007.rif.Document doc = translator.translate(url);
         writeDom(getDomFromRif(doc), System.out);
 

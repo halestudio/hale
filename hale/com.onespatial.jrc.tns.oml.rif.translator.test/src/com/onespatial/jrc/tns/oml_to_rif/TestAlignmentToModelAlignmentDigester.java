@@ -66,7 +66,7 @@ public class TestAlignmentToModelAlignmentDigester
     public void testExample3CP() throws TranslationException
     {
         URL url = getClass().getClassLoader().getResource(
-                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example3_cp.goml");
+                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example3_cp.goml"); //$NON-NLS-1$
         ModelAlignment result = translator.translate(url);
         assertNotNull(result);
         assertNotNull(result.getClassMappings());
@@ -79,22 +79,22 @@ public class TestAlignmentToModelAlignmentDigester
         assertNotNull(modelClassMappingCell);
         assertNotNull(modelClassMappingCell.getSourceClass());
         assertNotNull(modelClassMappingCell.getTargetClass());
-        assertThat(modelClassMappingCell.getSourceClass().getElementName().getLocalPart(), is("ParcelArea"));
-        assertThat(modelClassMappingCell.getTargetClass().getElementName().getLocalPart(), is("CadastralParcel"));
+        assertThat(modelClassMappingCell.getSourceClass().getElementName().getLocalPart(), is("ParcelArea")); //$NON-NLS-1$
+        assertThat(modelClassMappingCell.getTargetClass().getElementName().getLocalPart(), is("CadastralParcel")); //$NON-NLS-1$
         // CHECKSTYLE:OFF
         assertThat(result.getAttributeMappings().size(), is(7));
         // CHECKSTYLE:ON
 
         ModelAttributeMappingCell attributeMapping0 = result.getAttributeMappings().get(0);
         assertThat(attributeMapping0.getSourceAttribute().get(0).getDefinition().getName(),
-                is("PCVL_PRCL_"));
+                is("PCVL_PRCL_")); //$NON-NLS-1$
         assertThat(attributeMapping0.getTargetAttribute().get(0).getDefinition().getName(),
-                is("inspireId"));
+                is("inspireId")); //$NON-NLS-1$
 
         assertThat(result.getStaticAssignments().size(), is(1));
         ModelStaticAssignmentCell assignment0 = result.getStaticAssignments().get(0);
-        assertThat(assignment0.getTarget().get(0).getDefinition().getName(), is("inspireId"));
-        assertThat(assignment0.getContent(), is("DP.CAD.CP"));
+        assertThat(assignment0.getTarget().get(0).getDefinition().getName(), is("inspireId")); //$NON-NLS-1$
+        assertThat(assignment0.getContent(), is("DP.CAD.CP")); //$NON-NLS-1$
 
     }
 
@@ -110,7 +110,7 @@ public class TestAlignmentToModelAlignmentDigester
     public void testExample3CPWithFilter() throws TranslationException
     {
         URL url = getClass().getClassLoader().getResource(
-                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example3_cp_filter.goml");
+                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example3_cp_filter.goml"); //$NON-NLS-1$
         ModelAlignment result = translator.translate(url);
         assertNotNull(result);
         assertNotNull(result.getClassMappings());
@@ -132,27 +132,27 @@ public class TestAlignmentToModelAlignmentDigester
         LessThanNode lessNode = (LessThanNode) root;
         assertNotNull(lessNode.getLeft());
 
-        assertThat(lessNode.getLeft().getPropertyName(), is(equalTo("MI_PRINX")));
-        assertThat(lessNode.getRight().getLiteralValue().toString(), is(equalTo("3.5")));
+        assertThat(lessNode.getLeft().getPropertyName(), is(equalTo("MI_PRINX"))); //$NON-NLS-1$
+        assertThat(lessNode.getRight().getLiteralValue().toString(), is(equalTo("3.5"))); //$NON-NLS-1$
 
         assertNotNull(lessNode.getRight());
 
-        assertThat(modelClassMappingCell.getSourceClass().getElementName().getLocalPart(), is("ParcelArea"));
-        assertThat(modelClassMappingCell.getTargetClass().getElementName().getLocalPart(), is("CadastralParcel"));
+        assertThat(modelClassMappingCell.getSourceClass().getElementName().getLocalPart(), is("ParcelArea")); //$NON-NLS-1$
+        assertThat(modelClassMappingCell.getTargetClass().getElementName().getLocalPart(), is("CadastralParcel")); //$NON-NLS-1$
         // CHECKSTYLE:OFF
         assertThat(result.getAttributeMappings().size(), is(7));
         // CHECKSTYLE:ON
 
         ModelAttributeMappingCell attributeMapping0 = result.getAttributeMappings().get(0);
         assertThat(attributeMapping0.getSourceAttribute().get(0).getDefinition().getName(),
-                is("PCVL_PRCL_"));
+                is("PCVL_PRCL_")); //$NON-NLS-1$
         assertThat(attributeMapping0.getTargetAttribute().get(0).getDefinition().getName(),
-                is("inspireId"));
+                is("inspireId")); //$NON-NLS-1$
 
         assertThat(result.getStaticAssignments().size(), is(1));
         ModelStaticAssignmentCell assignment0 = result.getStaticAssignments().get(0);
-        assertThat(assignment0.getTarget().get(0).getDefinition().getName(), is("inspireId"));
-        assertThat(assignment0.getContent(), is("DP.CAD.CP"));
+        assertThat(assignment0.getTarget().get(0).getDefinition().getName(), is("inspireId")); //$NON-NLS-1$
+        assertThat(assignment0.getContent(), is("DP.CAD.CP")); //$NON-NLS-1$
 
     }
 
@@ -177,7 +177,7 @@ public class TestAlignmentToModelAlignmentDigester
         URL url = getClass()
                 .getClassLoader()
                 .getResource(
-                        "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example3_cp_complex_logical_filter.goml");
+                        "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example3_cp_complex_logical_filter.goml"); //$NON-NLS-1$
         ModelAlignment result = translator.translate(url);
         assertNotNull(result);
         assertNotNull(result.getClassMappings());
@@ -196,22 +196,22 @@ public class TestAlignmentToModelAlignmentDigester
         assertNotNull(modelClassMappingCell.getMappingConditions().get(0).getRoot());
         FilterNode root = modelClassMappingCell.getMappingConditions().get(0).getRoot();
         assertThat(root, is(instanceOf(AndNode.class)));
-        assertThat(modelClassMappingCell.getSourceClass().getElementName().getLocalPart(), is("ParcelArea"));
-        assertThat(modelClassMappingCell.getTargetClass().getElementName().getLocalPart(), is("CadastralParcel"));
+        assertThat(modelClassMappingCell.getSourceClass().getElementName().getLocalPart(), is("ParcelArea")); //$NON-NLS-1$
+        assertThat(modelClassMappingCell.getTargetClass().getElementName().getLocalPart(), is("CadastralParcel")); //$NON-NLS-1$
         // CHECKSTYLE:OFF
         assertThat(result.getAttributeMappings().size(), is(7));
         // CHECKSTYLE:ON
 
         ModelAttributeMappingCell attributeMapping0 = result.getAttributeMappings().get(0);
         assertThat(attributeMapping0.getSourceAttribute().get(0).getDefinition().getName(),
-                is("PCVL_PRCL_"));
+                is("PCVL_PRCL_")); //$NON-NLS-1$
         assertThat(attributeMapping0.getTargetAttribute().get(0).getDefinition().getName(),
-                is("inspireId"));
+                is("inspireId")); //$NON-NLS-1$
 
         assertThat(result.getStaticAssignments().size(), is(1));
         ModelStaticAssignmentCell assignment0 = result.getStaticAssignments().get(0);
-        assertThat(assignment0.getTarget().get(0).getDefinition().getName(), is("inspireId"));
-        assertThat(assignment0.getContent(), is("DP.CAD.CP"));
+        assertThat(assignment0.getTarget().get(0).getDefinition().getName(), is("inspireId")); //$NON-NLS-1$
+        assertThat(assignment0.getContent(), is("DP.CAD.CP")); //$NON-NLS-1$
 
     }
 

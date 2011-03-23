@@ -64,7 +64,7 @@ public class DateExtractionFunctionWizardPage extends AbstractSingleCellWizardPa
 		ccLabel.setText(Messages.DateExtractionFunctionWizardPage_1);
 		
 		this.sourceFormat = new Text(page, SWT.BORDER);
-		this.sourceFormat.setText(Messages.DateExtractionFunctionWizardPage_2);
+		this.sourceFormat.setText("yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
 		this.sourceFormat.setEnabled(true);
 		this.sourceFormat.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
@@ -74,7 +74,7 @@ public class DateExtractionFunctionWizardPage extends AbstractSingleCellWizardPa
 		providerLabel.setText(Messages.DateExtractionFunctionWizardPage_3);
 		
 		this.targetFormat = new Text(page, SWT.BORDER);
-		this.targetFormat.setText(Messages.DateExtractionFunctionWizardPage_4);
+		this.targetFormat.setText("yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
 		this.targetFormat.setEnabled(true);
 		this.targetFormat.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 

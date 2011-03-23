@@ -108,7 +108,7 @@ public abstract class DomBasedUnitTest
         InputStream rifStream = getClass().getResourceAsStream(path);
         if (rifStream == null)
         {
-            throw new IllegalArgumentException("Could not find " + path + " on class path.");
+            throw new IllegalArgumentException("Could not find " + path + " on class path."); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         return builder.parse(rifStream);
@@ -136,9 +136,9 @@ public abstract class DomBasedUnitTest
 
         if (!diff.similar())
         {
-            log.debug("Expected:");
+            log.debug("Expected:"); //$NON-NLS-1$
             writeDom(expectedDom, System.out);
-            log.debug("\n\nActual:");
+            log.debug("\n\nActual:"); //$NON-NLS-1$
             writeDom(actualDom, System.out);
             log.debug(diff);
         }
@@ -161,8 +161,8 @@ public abstract class DomBasedUnitTest
         StreamResult result = new StreamResult(dest);
         try
         {
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2"); //$NON-NLS-1$ //$NON-NLS-2$
             transformer.transform(source, result);
         }
         catch (TransformerException e)
@@ -185,10 +185,10 @@ public abstract class DomBasedUnitTest
             throws JAXBException
     {
         org.w3c.dom.Document domDocument = builder.newDocument();
-        JAXBContext jc = JAXBContext.newInstance("org.w3._2007.rif", getClass().getClassLoader());
+        JAXBContext jc = JAXBContext.newInstance("org.w3._2007.rif", getClass().getClassLoader()); //$NON-NLS-1$
         jc.createMarshaller().marshal(
-                new JAXBElement<org.w3._2007.rif.Document>(new QName("http://www.w3.org/2007/rif#",
-                        "Document", "rif"), org.w3._2007.rif.Document.class, rifDocument),
+                new JAXBElement<org.w3._2007.rif.Document>(new QName("http://www.w3.org/2007/rif#", //$NON-NLS-1$
+                        "Document", "rif"), org.w3._2007.rif.Document.class, rifDocument), //$NON-NLS-1$ //$NON-NLS-2$
                 domDocument);
         return domDocument;
     }

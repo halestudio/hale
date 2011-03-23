@@ -70,7 +70,7 @@ public class TestCqlToMappingConditionTranslator
     @Test
     public void testTranslateSimpleEquality() throws CQLException, TranslationException
     {
-        String cqlPredicate = "ATTR1='17'";
+        String cqlPredicate = "ATTR1='17'"; //$NON-NLS-1$
         ModelMappingCondition result = digester.translate(CQL.toFilter(cqlPredicate));
         assertNotNull(result);
         assertNotNull(result.getRoot());
@@ -78,8 +78,8 @@ public class TestCqlToMappingConditionTranslator
         EqualToNode node = (EqualToNode) result.getRoot();
         assertNotNull(node.getLeft());
         assertNotNull(node.getRight());
-        assertThat(node.getLeft().getPropertyName(), is(equalTo("ATTR1")));
-        assertThat(node.getRight().getLiteralValue().toString(), is(equalTo("17")));
+        assertThat(node.getLeft().getPropertyName(), is(equalTo("ATTR1"))); //$NON-NLS-1$
+        assertThat(node.getRight().getLiteralValue().toString(), is(equalTo("17"))); //$NON-NLS-1$
     }
 
     /**
@@ -94,7 +94,7 @@ public class TestCqlToMappingConditionTranslator
     @Test
     public void testTranslateSimpleLogical() throws CQLException, TranslationException
     {
-        String cqlPredicate = "ATTR1 < 10 AND ATTR2 < 2";
+        String cqlPredicate = "ATTR1 < 10 AND ATTR2 < 2"; //$NON-NLS-1$
         ModelMappingCondition result = digester.translate(CQL.toFilter(cqlPredicate));
         assertNotNull(result);
         assertNotNull(result.getRoot());
@@ -107,20 +107,20 @@ public class TestCqlToMappingConditionTranslator
         LessThanNode less1 = (LessThanNode) firstNode;
         assertNotNull(less1.getLeft());
         assertNotNull(less1.getLeft().getPropertyName());
-        assertThat(less1.getLeft().getPropertyName(), is(equalTo("ATTR1")));
+        assertThat(less1.getLeft().getPropertyName(), is(equalTo("ATTR1"))); //$NON-NLS-1$
         assertNotNull(less1.getRight());
         assertNotNull(less1.getRight().getLiteralValue());
-        assertThat(less1.getRight().getLiteralValue().toString(), is(equalTo("10")));
+        assertThat(less1.getRight().getLiteralValue().toString(), is(equalTo("10"))); //$NON-NLS-1$
 
         FilterNode secondNode = result.getRoot().getChildren().get(1);
         assertThat(secondNode, is(instanceOf(LessThanNode.class)));
         LessThanNode less2 = (LessThanNode) secondNode;
         assertNotNull(less2.getLeft());
         assertNotNull(less2.getLeft().getPropertyName());
-        assertThat(less2.getLeft().getPropertyName(), is(equalTo("ATTR2")));
+        assertThat(less2.getLeft().getPropertyName(), is(equalTo("ATTR2"))); //$NON-NLS-1$
         assertNotNull(less2.getRight());
         assertNotNull(less2.getRight().getLiteralValue());
-        assertThat(less2.getRight().getLiteralValue().toString(), is(equalTo("2")));
+        assertThat(less2.getRight().getLiteralValue().toString(), is(equalTo("2"))); //$NON-NLS-1$
     }
 
     /**
@@ -137,7 +137,7 @@ public class TestCqlToMappingConditionTranslator
     @Test
     public void testTranslateMoreComplexLogical() throws CQLException, TranslationException
     {
-        String cqlPredicate = "ATTR1 < 10.5 AND ATTR2 = 'chocolate' OR ATTR3 > 10";
+        String cqlPredicate = "ATTR1 < 10.5 AND ATTR2 = 'chocolate' OR ATTR3 > 10"; //$NON-NLS-1$
         ModelMappingCondition result = digester.translate(CQL.toFilter(cqlPredicate));
         assertNotNull(result);
         assertNotNull(result.getRoot());
@@ -151,15 +151,15 @@ public class TestCqlToMappingConditionTranslator
 
         assertThat(andNode.getChild(0), is(instanceOf(LessThanNode.class)));
         LessThanNode lessNode = (LessThanNode) andNode.getChild(0);
-        checkComparisonRightLiteral(lessNode, "ATTR1", "10.5");
+        checkComparisonRightLiteral(lessNode, "ATTR1", "10.5"); //$NON-NLS-1$ //$NON-NLS-2$
 
         assertThat(andNode.getChild(1), is(instanceOf(EqualToNode.class)));
         EqualToNode equalNode = (EqualToNode) andNode.getChild(1);
-        checkComparisonRightLiteral(equalNode, "ATTR2", "chocolate");
+        checkComparisonRightLiteral(equalNode, "ATTR2", "chocolate"); //$NON-NLS-1$ //$NON-NLS-2$
 
         assertThat(result.getRoot().getChild(1), is(instanceOf(GreaterThanNode.class)));
         GreaterThanNode greaterNode = (GreaterThanNode) result.getRoot().getChild(1);
-        checkComparisonRightLiteral(greaterNode, "ATTR3", "10");
+        checkComparisonRightLiteral(greaterNode, "ATTR3", "10"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -175,7 +175,7 @@ public class TestCqlToMappingConditionTranslator
     public void testTranslateLogicalPrecedenceOverridden() throws CQLException,
             TranslationException
     {
-        String cqlPredicate = "ATTR1 < 10.5 AND (ATTR2 = 'chocolate' OR ATTR3 > 10)";
+        String cqlPredicate = "ATTR1 < 10.5 AND (ATTR2 = 'chocolate' OR ATTR3 > 10)"; //$NON-NLS-1$
         ModelMappingCondition result = digester.translate(CQL.toFilter(cqlPredicate));
         assertNotNull(result);
         assertNotNull(result.getRoot());
@@ -186,7 +186,7 @@ public class TestCqlToMappingConditionTranslator
 
         assertThat(andNode.getChild(0), is(instanceOf(LessThanNode.class)));
         LessThanNode lessNode = (LessThanNode) andNode.getChild(0);
-        checkComparisonRightLiteral(lessNode, "ATTR1", "10.5");
+        checkComparisonRightLiteral(lessNode, "ATTR1", "10.5"); //$NON-NLS-1$ //$NON-NLS-2$
 
         assertThat(andNode.getChild(1), is(instanceOf(OrNode.class)));
         OrNode orNode = (OrNode) andNode.getChild(1);
@@ -195,11 +195,11 @@ public class TestCqlToMappingConditionTranslator
 
         assertThat(orNode.getChild(0), is(instanceOf(EqualToNode.class)));
         EqualToNode equalNode = (EqualToNode) orNode.getChild(0);
-        checkComparisonRightLiteral(equalNode, "ATTR2", "chocolate");
+        checkComparisonRightLiteral(equalNode, "ATTR2", "chocolate"); //$NON-NLS-1$ //$NON-NLS-2$
 
         assertThat(orNode.getChild(1), is(instanceOf(GreaterThanNode.class)));
         GreaterThanNode greaterNode = (GreaterThanNode) orNode.getChild(1);
-        checkComparisonRightLiteral(greaterNode, "ATTR3", "10");
+        checkComparisonRightLiteral(greaterNode, "ATTR3", "10"); //$NON-NLS-1$ //$NON-NLS-2$
 
     }
 
@@ -215,7 +215,7 @@ public class TestCqlToMappingConditionTranslator
     @Test
     public void testTranslateNegatedEquality() throws CQLException, TranslationException
     {
-        String cqlPredicate = "ATTR1 <> '17'";
+        String cqlPredicate = "ATTR1 <> '17'"; //$NON-NLS-1$
         ModelMappingCondition result = digester.translate(CQL.toFilter(cqlPredicate));
         assertNotNull(result);
         assertNotNull(result.getRoot());
@@ -225,7 +225,7 @@ public class TestCqlToMappingConditionTranslator
         assertThat(notNode.getChild(0), is(instanceOf(EqualToNode.class)));
         EqualToNode equalNode = (EqualToNode) notNode.getChild(0);
         assertThat(equalNode.getChildren().size(), is(equalTo(0)));
-        checkComparisonRightLiteral(equalNode, "ATTR1", "17");
+        checkComparisonRightLiteral(equalNode, "ATTR1", "17"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -240,7 +240,7 @@ public class TestCqlToMappingConditionTranslator
     @Test
     public void testTranslateAndWithThreeChildren() throws CQLException, TranslationException
     {
-        String cqlPredicate = "ATTR1 < 10.5 AND ATTR2 = 'chocolate' AND ATTR3 > 10";
+        String cqlPredicate = "ATTR1 < 10.5 AND ATTR2 = 'chocolate' AND ATTR3 > 10"; //$NON-NLS-1$
         ModelMappingCondition result = digester.translate(CQL.toFilter(cqlPredicate));
         assertNotNull(result);
         assertNotNull(result.getRoot());
@@ -253,15 +253,15 @@ public class TestCqlToMappingConditionTranslator
         AndNode nestedAndNode = (AndNode) andNode.getChild(0);
         assertThat(nestedAndNode.getChild(0), is(instanceOf(LessThanNode.class)));
         LessThanNode lessNode = (LessThanNode) nestedAndNode.getChild(0);
-        checkComparisonRightLiteral(lessNode, "ATTR1", "10.5");
+        checkComparisonRightLiteral(lessNode, "ATTR1", "10.5"); //$NON-NLS-1$ //$NON-NLS-2$
 
         assertThat(nestedAndNode.getChild(1), is(instanceOf(EqualToNode.class)));
         EqualToNode equalNode = (EqualToNode) nestedAndNode.getChild(1);
-        checkComparisonRightLiteral(equalNode, "ATTR2", "chocolate");
+        checkComparisonRightLiteral(equalNode, "ATTR2", "chocolate"); //$NON-NLS-1$ //$NON-NLS-2$
 
         assertThat(andNode.getChild(1), is(instanceOf(GreaterThanNode.class)));
         GreaterThanNode greaterNode = (GreaterThanNode) andNode.getChild(1);
-        checkComparisonRightLiteral(greaterNode, "ATTR3", "10");
+        checkComparisonRightLiteral(greaterNode, "ATTR3", "10"); //$NON-NLS-1$ //$NON-NLS-2$
 
     }
 
@@ -277,14 +277,14 @@ public class TestCqlToMappingConditionTranslator
     @Test
     public void testTranslateEqualityTwoProperties() throws CQLException, TranslationException
     {
-        String cqlPredicate = "ATTR1 < ATTR2";
+        String cqlPredicate = "ATTR1 < ATTR2"; //$NON-NLS-1$
         ModelMappingCondition result = digester.translate(CQL.toFilter(cqlPredicate));
         assertNotNull(result);
         assertNotNull(result.getRoot());
 
         assertThat(result.getRoot(), is(instanceOf(LessThanNode.class)));
         LessThanNode lessNode = (LessThanNode) result.getRoot();
-        checkComparisonRightProperty(lessNode, "ATTR1", "ATTR2");
+        checkComparisonRightProperty(lessNode, "ATTR1", "ATTR2"); //$NON-NLS-1$ //$NON-NLS-2$
 
     }
 
@@ -300,7 +300,7 @@ public class TestCqlToMappingConditionTranslator
     // @Test
     public void testTranslateGeometricWithin() throws CQLException, TranslationException
     {
-        String cqlPredicate = "DWITHIN(ATTR1, POINT(1 2), 10, kilometers)";
+        String cqlPredicate = "DWITHIN(ATTR1, POINT(1 2), 10, kilometers)"; //$NON-NLS-1$
         ModelMappingCondition result = digester.translate(CQL.toFilter(cqlPredicate));
         assertNotNull(result);
         assertNotNull(result.getRoot());
@@ -310,7 +310,7 @@ public class TestCqlToMappingConditionTranslator
         assertThat(withinNode.getLeaves().size(), is(equalTo(2)));
 
         assertNotNull(withinNode.getLeft());
-        assertThat(withinNode.getLeft().getPropertyName(), is(equalTo("ATTR1")));
+        assertThat(withinNode.getLeft().getPropertyName(), is(equalTo("ATTR1"))); //$NON-NLS-1$
 
         assertNotNull(withinNode.getRight());
 
@@ -332,7 +332,7 @@ public class TestCqlToMappingConditionTranslator
     // @Test
     public void testTranslateGeometricContains() throws CQLException, TranslationException
     {
-        String cqlPredicate = "CONTAINS(ATTR1, ATTR2)";
+        String cqlPredicate = "CONTAINS(ATTR1, ATTR2)"; //$NON-NLS-1$
         ModelMappingCondition result = digester.translate(CQL.toFilter(cqlPredicate));
         assertNotNull(result);
         assertNotNull(result.getRoot());
@@ -351,7 +351,7 @@ public class TestCqlToMappingConditionTranslator
     @Test
     public void testTranslateNegation() throws CQLException, TranslationException
     {
-        String cqlPredicate = "TEMA<>'RL_TUNNEL' OR TEMA<>'CL_RAIL' OR TEMA<>'UNSHOWN_RL'";
+        String cqlPredicate = "TEMA<>'RL_TUNNEL' OR TEMA<>'CL_RAIL' OR TEMA<>'UNSHOWN_RL'"; //$NON-NLS-1$
         ModelMappingCondition result = digester.translate(CQL.toFilter(cqlPredicate));
         assertNotNull(result);
         assertNotNull(result.getRoot());

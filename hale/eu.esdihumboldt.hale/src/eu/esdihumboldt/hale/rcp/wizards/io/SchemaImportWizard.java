@@ -183,7 +183,7 @@ public class SchemaImportWizard
 							projectService.setTargetSchemaPath(uri.toString());
 						}
 					} catch (Exception e2) {
-						_log.userError("An error occurred while loading the schema you have selected. Most often, such errors appear when a schema import location could not be resolved.", e2);
+						_log.userError(Messages.SchemaImportWizard_0, e2);
 //						ExceptionHelper.handleException(
 //								Messages.SchemaImportWizard_ErrorMessage1, 
 //								HALEActivator.PLUGIN_ID, e2);

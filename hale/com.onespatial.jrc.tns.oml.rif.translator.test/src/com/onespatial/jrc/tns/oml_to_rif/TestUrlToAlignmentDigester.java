@@ -52,7 +52,7 @@ public class TestUrlToAlignmentDigester
     {
         // use this to save duplication of mapping files
         URL url = getClass().getClassLoader().getResource(
-                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example1_tn.goml");
+                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example1_tn.goml"); //$NON-NLS-1$
         HaleAlignment result = digester.translate(url);
         assertNotNull(result);
     }

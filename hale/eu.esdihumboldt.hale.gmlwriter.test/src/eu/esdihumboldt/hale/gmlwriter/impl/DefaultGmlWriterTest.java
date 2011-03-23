@@ -95,7 +95,7 @@ public class DefaultGmlWriterTest {
 	 */
 	private static final boolean DEL_TEMP_FILES = true;
 
-	private static final String DEF_SRS_NAME = "EPSG:31467";
+	private static final String DEF_SRS_NAME = "EPSG:31467"; //$NON-NLS-1$
 	
 	/**
 	 * The geometry factory
@@ -118,15 +118,15 @@ public class DefaultGmlWriterTest {
 		//XXX for some reason the MultiLineString is converted to a LineString when set a value -> so we are using a LineString instead to allow value comparison
 		LineString mls = createLineString(0.0);
 		
-		values.put(Arrays.asList("LENGTH"), Double.valueOf(10.2));
-		values.put(Arrays.asList("NAME"), "Test");
-		values.put(Arrays.asList("the_geom"), mls);
+		values.put(Arrays.asList("LENGTH"), Double.valueOf(10.2)); //$NON-NLS-1$
+		values.put(Arrays.asList("NAME"), "Test"); //$NON-NLS-1$ //$NON-NLS-2$
+		values.put(Arrays.asList("the_geom"), mls); //$NON-NLS-1$
 		
-		Report report = fillFeatureTest("Watercourses_VA",
-				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(), 
-				values, "fillWrite_WVA", "EPSG:31251");
+		Report report = fillFeatureTest("Watercourses_VA", //$NON-NLS-1$
+				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(),  //$NON-NLS-1$
+				values, "fillWrite_WVA", "EPSG:31251"); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	/**
@@ -140,13 +140,13 @@ public class DefaultGmlWriterTest {
 		Point point = createPoint(10.0);
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-		values.put(Arrays.asList("geometry"), point);
+		values.put(Arrays.asList("geometry"), point); //$NON-NLS-1$
 		
-		Report report = fillFeatureTest("Test",
-				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(), 
-				values, "geometry_2_Point", DEF_SRS_NAME);
+		Report report = fillFeatureTest("Test", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometry_2_Point", DEF_SRS_NAME); //$NON-NLS-1$
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	/**
@@ -160,13 +160,13 @@ public class DefaultGmlWriterTest {
 		Point point = createPoint(10.0);
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-		values.put(Arrays.asList("geometry"), point);
+		values.put(Arrays.asList("geometry"), point); //$NON-NLS-1$
 		
-		Report report = fillFeatureTest("PrimitiveTest",
-				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
-				values, "geometryPrimitive_32_Point", DEF_SRS_NAME);
+		Report report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometryPrimitive_32_Point", DEF_SRS_NAME); //$NON-NLS-1$
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	/**
@@ -180,13 +180,13 @@ public class DefaultGmlWriterTest {
 		Point point = createPoint(10.0);
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-		values.put(Arrays.asList("geometry"), point);
+		values.put(Arrays.asList("geometry"), point); //$NON-NLS-1$
 		
-		Report report = fillFeatureTest("AggregateTest",
-				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
-				values, "geometryAggregate_32_Point", DEF_SRS_NAME);
+		Report report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometryAggregate_32_Point", DEF_SRS_NAME); //$NON-NLS-1$
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	/**
@@ -202,13 +202,13 @@ public class DefaultGmlWriterTest {
 		});
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-		values.put(Arrays.asList("geometry"), mp);
+		values.put(Arrays.asList("geometry"), mp); //$NON-NLS-1$
 		
-		Report report = fillFeatureTest("Test",
-				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(), 
-				values, "geometry_2_MultiPoint", DEF_SRS_NAME);
+		Report report = fillFeatureTest("Test", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometry_2_MultiPoint", DEF_SRS_NAME); //$NON-NLS-1$
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	/**
@@ -224,13 +224,13 @@ public class DefaultGmlWriterTest {
 		});
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-		values.put(Arrays.asList("geometry"), mp);
+		values.put(Arrays.asList("geometry"), mp); //$NON-NLS-1$
 		
-		Report report = fillFeatureTest("AggregateTest",
-				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
-				values, "geometryAggregate_32_MultiPoint", DEF_SRS_NAME);
+		Report report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometryAggregate_32_MultiPoint", DEF_SRS_NAME); //$NON-NLS-1$
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	/**
@@ -255,13 +255,13 @@ public class DefaultGmlWriterTest {
 		Polygon polygon = createPolygon(0.0);
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-		values.put(Arrays.asList("geometry"), polygon);
+		values.put(Arrays.asList("geometry"), polygon); //$NON-NLS-1$
 		
-		Report report = fillFeatureTest("Test",
-				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(), 
-				values, "geometry_2_Polygon", DEF_SRS_NAME);
+		Report report = fillFeatureTest("Test", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometry_2_Polygon", DEF_SRS_NAME); //$NON-NLS-1$
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	// deactivated test because schema is invalid (according to xerces)
@@ -296,13 +296,13 @@ public class DefaultGmlWriterTest {
 		Polygon polygon = createPolygon(0.0);
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-		values.put(Arrays.asList("geometry"), polygon);
+		values.put(Arrays.asList("geometry"), polygon); //$NON-NLS-1$
 		
-		Report report = fillFeatureTest("PrimitiveTest",
-				getClass().getResource("/data/geom_schema/geom-gml31.xsd").toURI(), 
-				values, "geometryPrimitive_31_Polygon", DEF_SRS_NAME);
+		Report report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml31.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometryPrimitive_31_Polygon", DEF_SRS_NAME); //$NON-NLS-1$
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	/**
@@ -316,13 +316,13 @@ public class DefaultGmlWriterTest {
 		Polygon polygon = createPolygon(0.0);
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-		values.put(Arrays.asList("geometry"), polygon);
+		values.put(Arrays.asList("geometry"), polygon); //$NON-NLS-1$
 		
-		Report report = fillFeatureTest("PrimitiveTest",
-				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
-				values, "geometryPrimitive_32_Polygon", DEF_SRS_NAME);
+		Report report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometryPrimitive_32_Polygon", DEF_SRS_NAME); //$NON-NLS-1$
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	/**
@@ -351,13 +351,13 @@ public class DefaultGmlWriterTest {
 		LineString lineString = createLineString(0.0);
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-		values.put(Arrays.asList("geometry"), lineString);
+		values.put(Arrays.asList("geometry"), lineString); //$NON-NLS-1$
 		
-		Report report = fillFeatureTest("Test",
-				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(), 
-				values, "geometry_2_LineString", DEF_SRS_NAME);
+		Report report = fillFeatureTest("Test", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometry_2_LineString", DEF_SRS_NAME); //$NON-NLS-1$
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 
 	/**
@@ -371,13 +371,13 @@ public class DefaultGmlWriterTest {
 		LineString lineString = createLineString(0.0);
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-		values.put(Arrays.asList("geometry"), lineString);
+		values.put(Arrays.asList("geometry"), lineString); //$NON-NLS-1$
 		
-		Report report = fillFeatureTest("PrimitiveTest",
-				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
-				values, "geometryPrimitive_32_LineString", DEF_SRS_NAME);
+		Report report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometryPrimitive_32_LineString", DEF_SRS_NAME); //$NON-NLS-1$
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	/**
@@ -391,13 +391,13 @@ public class DefaultGmlWriterTest {
 		LineString lineString = createLineString(0.0);
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-		values.put(Arrays.asList("geometry"), lineString);
+		values.put(Arrays.asList("geometry"), lineString); //$NON-NLS-1$
 		
-		Report report = fillFeatureTest("AggregateTest",
-				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
-				values, "geometryAggregate_32_LineString", DEF_SRS_NAME);
+		Report report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometryAggregate_32_LineString", DEF_SRS_NAME); //$NON-NLS-1$
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	/**
@@ -427,13 +427,13 @@ public class DefaultGmlWriterTest {
 						createLineString(2.0)});
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-		values.put(Arrays.asList("geometry"), mls);
+		values.put(Arrays.asList("geometry"), mls); //$NON-NLS-1$
 		
-		Report report = fillFeatureTest("Test",
-				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(), 
-				values, "geometry_2_MultiLineString", DEF_SRS_NAME);
+		Report report = fillFeatureTest("Test", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometry_2_MultiLineString", DEF_SRS_NAME); //$NON-NLS-1$
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	/**
@@ -449,13 +449,13 @@ public class DefaultGmlWriterTest {
 						createLineString(2.0)});
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-		values.put(Arrays.asList("geometry"), mls);
+		values.put(Arrays.asList("geometry"), mls); //$NON-NLS-1$
 		
-		Report report = fillFeatureTest("PrimitiveTest",
-				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
-				values, "geometryPrimitive_32_MultiLineString", DEF_SRS_NAME);
+		Report report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometryPrimitive_32_MultiLineString", DEF_SRS_NAME); //$NON-NLS-1$
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	/**
@@ -471,14 +471,14 @@ public class DefaultGmlWriterTest {
 						createLineString(2.0)});
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-		values.put(Arrays.asList("geometry"), mls);
+		values.put(Arrays.asList("geometry"), mls); //$NON-NLS-1$
 		
-		Report report = fillFeatureTest("AggregateTest",
-				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
-				values, "geometryAggregate_32_MultiLineString", DEF_SRS_NAME,
+		Report report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometryAggregate_32_MultiLineString", DEF_SRS_NAME, //$NON-NLS-1$
 				true); //XXX in a MultiCurve Geotools only creates a LineString for each curve
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	/**
@@ -494,13 +494,13 @@ public class DefaultGmlWriterTest {
 		});
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-		values.put(Arrays.asList("geometry"), mp);
+		values.put(Arrays.asList("geometry"), mp); //$NON-NLS-1$
 		
-		Report report = fillFeatureTest("Test",
-				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(), 
-				values, "geometry_2_MultiPolygon", DEF_SRS_NAME);
+		Report report = fillFeatureTest("Test", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometry_2_MultiPolygon", DEF_SRS_NAME); //$NON-NLS-1$
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	/**
@@ -516,14 +516,14 @@ public class DefaultGmlWriterTest {
 		});
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-		values.put(Arrays.asList("geometry"), mp);
+		values.put(Arrays.asList("geometry"), mp); //$NON-NLS-1$
 		
-		Report report = fillFeatureTest("PrimitiveTest",
-				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
-				values, "geometryPrimitive_32_MultiPolygon", DEF_SRS_NAME,
+		Report report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometryPrimitive_32_MultiPolygon", DEF_SRS_NAME, //$NON-NLS-1$
 				true); //XXX no value equality check because Geotools parser doesn't seem to support CompositeSurface and only creates a Polygon instead of a MultiPolygon
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	/**
@@ -539,13 +539,13 @@ public class DefaultGmlWriterTest {
 		});
 		
 		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-		values.put(Arrays.asList("geometry"), mp);
+		values.put(Arrays.asList("geometry"), mp); //$NON-NLS-1$
 		
-		Report report = fillFeatureTest("AggregateTest",
-				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), 
-				values, "geometryAggregate_32_MultiPolygon", DEF_SRS_NAME);
+		Report report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometryAggregate_32_MultiPolygon", DEF_SRS_NAME); //$NON-NLS-1$
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	/**
@@ -556,15 +556,15 @@ public class DefaultGmlWriterTest {
 	@Test
 	public void testTransformWrite_WVA() throws Exception {
 		Report report = transformTest(
-				getClass().getResource("/data/sample_wva/wfs_va_sample.gml").toURI(),
-				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(),
-				getClass().getResource("/data/sample_wva/watercourse_va.xml.goml").toURI(),
-				getClass().getResource("/data/sample_wva/inspire3/HydroPhysicalWaters.xsd").toURI(),
-				"transformWrite_WVA",
+				getClass().getResource("/data/sample_wva/wfs_va_sample.gml").toURI(), //$NON-NLS-1$
+				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(), //$NON-NLS-1$
+				getClass().getResource("/data/sample_wva/watercourse_va.xml.goml").toURI(), //$NON-NLS-1$
+				getClass().getResource("/data/sample_wva/inspire3/HydroPhysicalWaters.xsd").toURI(), //$NON-NLS-1$
+				"transformWrite_WVA", //$NON-NLS-1$
 				true,
-				"EPSG:31251");
+				"EPSG:31251"); //$NON-NLS-1$
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	/**
@@ -575,15 +575,15 @@ public class DefaultGmlWriterTest {
 	@Test
 	public void testTransformWrite_DKM() throws Exception {
 		Report report = transformTest(
-				getClass().getResource("/data/dkm_austria/KA_14168_EPSG25833.gml").toURI(),
-				getClass().getResource("/data/dkm_austria/KA_14168_EPSG25833.xsd").toURI(),
-				getClass().getResource("/data/dkm_austria/mapping_dkm_inspire.xml.goml").toURI(),
-				getClass().getResource("/data/dkm_austria/inspire3/CadastralParcels.xsd").toURI(),
-				"transformWrite_DKM",
+				getClass().getResource("/data/dkm_austria/KA_14168_EPSG25833.gml").toURI(), //$NON-NLS-1$
+				getClass().getResource("/data/dkm_austria/KA_14168_EPSG25833.xsd").toURI(), //$NON-NLS-1$
+				getClass().getResource("/data/dkm_austria/mapping_dkm_inspire.xml.goml").toURI(), //$NON-NLS-1$
+				getClass().getResource("/data/dkm_austria/inspire3/CadastralParcels.xsd").toURI(), //$NON-NLS-1$
+				"transformWrite_DKM", //$NON-NLS-1$
 				true,
-				"EPSG:25833");
+				"EPSG:25833"); //$NON-NLS-1$
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	/**
@@ -594,15 +594,15 @@ public class DefaultGmlWriterTest {
 	@Test
 	public void testTransformWrite_ERM() throws Exception {
 		Report report = transformTest(
-				getClass().getResource("/data/erm/ERM_Watercourse_FME.gml").toURI(),
-				getClass().getResource("/data/erm/ERM_Watercourse_FME.xsd").toURI(),
-				getClass().getResource("/data/erm/_watrcrsl_inspire.xml.goml").toURI(),
-				getClass().getResource("/data/erm/inspire3/HydroPhysicalWaters.xsd").toURI(),
-				"transformWrite_ERM",
+				getClass().getResource("/data/erm/ERM_Watercourse_FME.gml").toURI(), //$NON-NLS-1$
+				getClass().getResource("/data/erm/ERM_Watercourse_FME.xsd").toURI(), //$NON-NLS-1$
+				getClass().getResource("/data/erm/_watrcrsl_inspire.xml.goml").toURI(), //$NON-NLS-1$
+				getClass().getResource("/data/erm/inspire3/HydroPhysicalWaters.xsd").toURI(), //$NON-NLS-1$
+				"transformWrite_ERM", //$NON-NLS-1$
 				true,
-				"EPSG:4326");
+				"EPSG:4326"); //$NON-NLS-1$
 		
-		assertTrue("Expected GML output to be valid", report.isValid());
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	private Report transformTest(URI sourceData, URI sourceSchemaLocation,
@@ -647,7 +647,7 @@ public class DefaultGmlWriterTest {
 		// write
 		// write to file
 		DefaultGmlWriter writer = new DefaultGmlWriter();
-		File outFile = File.createTempFile(testName, ".gml"); 
+		File outFile = File.createTempFile(testName, ".gml");  //$NON-NLS-1$
 		OutputStream out = new FileOutputStream(outFile);
 		List<Schema> addSchemas;
 		try {
@@ -731,7 +731,7 @@ public class DefaultGmlWriterTest {
 		if (elementName == null) {
 			element = schema.getElements().values().iterator().next();
 			if (element == null) {
-				fail("No element found in the schema");
+				fail("No element found in the schema"); //$NON-NLS-1$
 			}
 		}
 		else {
@@ -742,7 +742,7 @@ public class DefaultGmlWriterTest {
 				}
 			}
 			if (element == null) {
-				fail("Element " + elementName + " not found in the schema");
+				fail("Element " + elementName + " not found in the schema"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 		
@@ -762,7 +762,7 @@ public class DefaultGmlWriterTest {
 		
 		// write to file
 		DefaultGmlWriter writer = new DefaultGmlWriter();
-		File outFile = File.createTempFile(testName, ".gml"); 
+		File outFile = File.createTempFile(testName, ".gml");  //$NON-NLS-1$
 		OutputStream out = new FileOutputStream(outFile);
 		List<Schema> addSchema;
 		try {
@@ -836,7 +836,7 @@ public class DefaultGmlWriterTest {
 			}
 		}
 		
-		assertEquals("Geometry not compatible to expected geometry", expected.toString(), value.toString());
+		assertEquals("Geometry not compatible to expected geometry", expected.toString(), value.toString()); //$NON-NLS-1$
 	}
 
 	/**
@@ -904,7 +904,7 @@ public class DefaultGmlWriterTest {
 			}
 		}
 		return new FeatureImpl(properties, targetType, 
-					new FeatureIdImpl("_" + UUID.randomUUID().toString())); // ID must start with _ or letter (not with digit)
+					new FeatureIdImpl("_" + UUID.randomUUID().toString())); // ID must start with _ or letter (not with digit) //$NON-NLS-1$
 	}
 	
 }

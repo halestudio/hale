@@ -95,9 +95,9 @@ public abstract class TypeUtil {
 	 */
 	private static final Set<String> XS_STRING_TYPES = new HashSet<String>();
 	static {
-		XS_STRING_TYPES.add("ID");
-		XS_STRING_TYPES.add("IDREF");
-		XS_STRING_TYPES.add("NCName");
+		XS_STRING_TYPES.add("ID"); //$NON-NLS-1$
+		XS_STRING_TYPES.add("IDREF"); //$NON-NLS-1$
+		XS_STRING_TYPES.add("NCName"); //$NON-NLS-1$
 	}
 	
 	/**

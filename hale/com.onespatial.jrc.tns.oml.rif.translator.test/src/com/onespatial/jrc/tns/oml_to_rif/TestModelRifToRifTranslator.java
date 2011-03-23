@@ -77,7 +77,7 @@ public class TestModelRifToRifTranslator extends DomBasedUnitTest
     public void testTranslateExample3CP() throws TranslationException
     {
         URL url = getClass().getClassLoader().getResource(
-                "com/onespatial/jrc/tnstg/oml_to_rif/alignments/example3_cp.goml");
+                "com/onespatial/jrc/tnstg/oml_to_rif/alignments/example3_cp.goml"); //$NON-NLS-1$
         org.w3._2007.rif.Document doc = translator.translate(url);
         assertNotNull(doc);
         assertNotNull(doc.getPayload());
@@ -101,7 +101,7 @@ public class TestModelRifToRifTranslator extends DomBasedUnitTest
     public void testTranslateExample3CPSimpleFilter() throws TranslationException, JAXBException
     {
         URL url = getClass().getClassLoader().getResource(
-                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example3_cp_filter.goml");
+                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example3_cp_filter.goml"); //$NON-NLS-1$
         org.w3._2007.rif.Document doc = translator.translate(url);
         assertNotNull(doc);
         assertNotNull(doc.getPayload());
@@ -128,7 +128,7 @@ public class TestModelRifToRifTranslator extends DomBasedUnitTest
         URL url = getClass()
                 .getClassLoader()
                 .getResource(
-                        "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example3_complex_logical_filter.goml");
+                        "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example3_complex_logical_filter.goml"); //$NON-NLS-1$
         org.w3._2007.rif.Document doc = translator.translate(url);
         assertNotNull(doc);
         assertNotNull(doc.getPayload());
@@ -153,7 +153,7 @@ public class TestModelRifToRifTranslator extends DomBasedUnitTest
     public void testTranslateExample1NegationFilter() throws TranslationException, JAXBException
     {
         URL url = getClass().getClassLoader().getResource(
-                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example1_tn_road.goml");
+                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example1_tn_road.goml"); //$NON-NLS-1$
         org.w3._2007.rif.Document doc = translator.translate(url);
         assertNotNull(doc);
         assertNotNull(doc.getPayload());
@@ -247,7 +247,7 @@ public class TestModelRifToRifTranslator extends DomBasedUnitTest
             // is(equalTo(6)));
             // add more checks
         }
-        assertTrue("No contents found in Assert", hasContents);
+        assertTrue("No contents found in Assert", hasContents); //$NON-NLS-1$
 
     }
 
@@ -314,15 +314,15 @@ public class TestModelRifToRifTranslator extends DomBasedUnitTest
         assertThat(m.getInstance().getVar().getContent().size(), is(equalTo(1)));
         assertNotNull(m.getInstance().getVar().getContent().get(0));
         assertThat((String) m.getInstance().getVar().getContent().get(0),
-                is(equalTo("parcelarea-instance")));
+                is(equalTo("parcelarea-instance"))); //$NON-NLS-1$
         assertNotNull(m.getClazz());
         assertNotNull(m.getClazz().getConst());
-        assertThat(m.getClazz().getConst().getType(), is(equalTo("rif:iri")));
+        assertThat(m.getClazz().getConst().getType(), is(equalTo("rif:iri"))); //$NON-NLS-1$
         assertNotNull(m.getClazz().getConst().getContent());
         assertThat(m.getClazz().getConst().getContent().size(), is(equalTo(1)));
         assertNotNull(m.getClazz().getConst().getContent().get(0));
         assertThat((String) m.getClazz().getConst().getContent().get(0),
-                is(equalTo("http://jrc.onespatial.com/cp/example3:ParcelArea")));
+                is(equalTo("http://jrc.onespatial.com/cp/example3:ParcelArea"))); //$NON-NLS-1$
         assertNotNull(m.getInstance());
     }
 }

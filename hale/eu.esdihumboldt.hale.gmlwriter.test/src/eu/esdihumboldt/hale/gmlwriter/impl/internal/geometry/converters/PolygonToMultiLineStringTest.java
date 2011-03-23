@@ -47,10 +47,10 @@ public class PolygonToMultiLineStringTest extends AbstractGeometryConverterTest 
 		PolygonToMultiLineString converter = new PolygonToMultiLineString();
 		
 		MultiLineString mls = converter.convert(poly);
-		assertEquals("Expecting 4 lines", 4, mls.getNumGeometries());
+		assertEquals("Expecting 4 lines", 4, mls.getNumGeometries()); //$NON-NLS-1$
 		for (int i = 0; i < mls.getNumGeometries(); i++) {
 			LineString segment = (LineString) mls.getGeometryN(i);
-			assertEquals("Each line should have 2 points", 2, segment.getNumPoints());
+			assertEquals("Each line should have 2 points", 2, segment.getNumPoints()); //$NON-NLS-1$
 			// first point
 			assertEquals(coordinates[i], segment.getCoordinateN(0));
 			// second point

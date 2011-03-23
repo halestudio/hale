@@ -116,7 +116,7 @@ public class IdentifierFunctionWizardPage extends
 		ccLabel.setText(Messages.IdentifierFunctionWizardPage_5);
 		
 		this.countryCode = new Text(nsGroup, SWT.BORDER);
-		this.countryCode.setText(Messages.IdentifierFunctionWizardPage_6);
+		this.countryCode.setText("de"); //$NON-NLS-1$
 		this.countryCode.setEnabled(true);
 		this.countryCode.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
@@ -126,7 +126,7 @@ public class IdentifierFunctionWizardPage extends
 		providerLabel.setText(Messages.IdentifierFunctionWizardPage_7);
 		
 		this.providerName = new Text(nsGroup, SWT.BORDER);
-		this.providerName.setText(Messages.IdentifierFunctionWizardPage_8);
+		this.providerName.setText("fraunhofer"); //$NON-NLS-1$
 		this.providerName.setEnabled(true);
 		this.providerName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
@@ -136,7 +136,7 @@ public class IdentifierFunctionWizardPage extends
 		productLabel.setText(Messages.IdentifierFunctionWizardPage_9);
 		
 		this.productName = new Text(nsGroup, SWT.BORDER);
-		this.productName.setText(Messages.IdentifierFunctionWizardPage_10);
+		this.productName.setText("humboldt-sample-transformed-data"); //$NON-NLS-1$
 		this.productName.setEnabled(true);
 		this.productName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		

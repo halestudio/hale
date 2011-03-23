@@ -158,7 +158,7 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 			return true;
 		}
 		else {
-			_log.userError("It is only possible to define this function on type definitions");
+			_log.userError(Messages.RenamingFunctionWizard_6);
 			return false;
 		}
 	}

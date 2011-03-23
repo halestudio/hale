@@ -78,7 +78,7 @@ public class TestRifBindingToDomTranslator extends DomBasedUnitTest
     public void testTranslate() throws TranslationException
     {
         URL url = getClass().getClassLoader().getResource(
-                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example3_cp.goml");
+                "com/onespatial/jrc/tnstg/proto/oml_to_rif/alignments/example3_cp.goml"); //$NON-NLS-1$
         Document domDocument = translator.translate(url);
         assertNotNull(domDocument);
         writeDom(domDocument, System.out);

@@ -120,10 +120,10 @@ public class AlgorithmWizardPage extends WizardPage  {
 		for (int i=0; i<params.length; i++){
 			
 			labels[i] = new Label(configurationComposite, SWT.NONE);			
-			labels[i].setText(Messages.AlgorithmWizardPage_4);
+			labels[i].setText("                                        "); //$NON-NLS-1$
 			params[i] = new Text(configurationComposite, SWT.BORDER);
 			params[i].setLayoutData(configurationLayoutData);
-			params[i].setToolTipText(Messages.AlgorithmWizardPage_5);
+			params[i].setToolTipText("                                                              "); //$NON-NLS-1$
 			params[i].addModifyListener(new ModifyListener(){
 				public void modifyText(ModifyEvent e){
 					GenericFunctionWizard wizard = (GenericFunctionWizard)getWizard();

@@ -53,9 +53,7 @@ public class Messages extends NLS {
 	public static String DateExtractionFunctionWizard_1;
 	public static String DateExtractionFunctionWizardPage_0;
 	public static String DateExtractionFunctionWizardPage_1;
-	public static String DateExtractionFunctionWizardPage_2;
 	public static String DateExtractionFunctionWizardPage_3;
-	public static String DateExtractionFunctionWizardPage_4;
 	public static String FilterWizard_0;
 	public static String FilterWizard_1;
 	public static String FilterWizard_2;
@@ -65,7 +63,6 @@ public class Messages extends NLS {
 	public static String GeographicNameFunctionWizard_2;
 	public static String GeographicNameFunctionWizard_3;
 	public static String GeographicNamePage_0;
-	public static String GeographicNamePage_1;
 	public static String GeographicNamePage_10;
 	public static String GeographicNamePage_11;
 	public static String GeographicNamePage_12;
@@ -73,9 +70,7 @@ public class Messages extends NLS {
 	public static String GeographicNamePage_14;
 	public static String GeographicNamePage_15;
 	public static String GeographicNamePage_16;
-	public static String GeographicNamePage_2;
 	public static String GeographicNamePage_3;
-	public static String GeographicNamePage_4;
 	public static String GeographicNamePage_5;
 	public static String GeographicNamePage_6;
 	public static String GeographicNamePage_7;
@@ -83,16 +78,13 @@ public class Messages extends NLS {
 	public static String GeographicNamePage_9;
 	public static String IdentifierFunctionWizard_0;
 	public static String IdentifierFunctionWizardPage_0;
-	public static String IdentifierFunctionWizardPage_10;
 	public static String IdentifierFunctionWizardPage_11;
 	public static String IdentifierFunctionWizardPage_14;
 	public static String IdentifierFunctionWizardPage_16;
 	public static String IdentifierFunctionWizardPage_2;
 	public static String IdentifierFunctionWizardPage_4;
 	public static String IdentifierFunctionWizardPage_5;
-	public static String IdentifierFunctionWizardPage_6;
 	public static String IdentifierFunctionWizardPage_7;
-	public static String IdentifierFunctionWizardPage_8;
 	public static String IdentifierFunctionWizardPage_9;
 	public static String MathExpressionFieldEditor_0;
 	public static String MathFunctionPage_2;
@@ -113,6 +105,7 @@ public class Messages extends NLS {
 	public static String RenamingFunctionWizard_3;
 	public static String RenamingFunctionWizard_4;
 	public static String RenamingFunctionWizard_5;
+	public static String RenamingFunctionWizard_6;
 	public static String RenamingFunctionWizardMainPage_1;
 	public static String RenamingFunctionWizardMainPage_2;
 	public static String RenamingFunctionWizardMainPage_3;
@@ -145,8 +138,6 @@ public class Messages extends NLS {
 	public static String UserDefinedFunctionWizardPage_26;
 	public static String UserDefinedFunctionWizardPage_27;
 	public static String UserDefinedFunctionWizardPage_28;
-	public static String UserDefinedFunctionWizardPage_29;
-	public static String UserDefinedFunctionWizardPage_30;
 	public static String UserDefinedFunctionWizardPage_6;
 	static {
 		// initialize resource bundle

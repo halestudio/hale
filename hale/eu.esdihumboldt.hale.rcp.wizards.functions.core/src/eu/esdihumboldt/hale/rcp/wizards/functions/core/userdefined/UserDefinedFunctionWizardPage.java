@@ -391,7 +391,7 @@ public class UserDefinedFunctionWizardPage extends
 	public void setInitialConfiguration(String udfName,
 			List<IParameter> parameters) {
 		this.predefinedParameters = parameters;
-		this.predefinedUdfName = udfName.replace(Messages.UserDefinedFunctionWizardPage_29, Messages.UserDefinedFunctionWizardPage_30);
+		this.predefinedUdfName = udfName.replace("UserDefinedFunction.", ""); //$NON-NLS-1$ //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	protected class EditableParameter {
