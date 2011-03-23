@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.MessageFormat;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -116,7 +117,7 @@ public class WFSDataReaderDialog extends Dialog {
 		// Host + Port
 		final Label hostPortLabel = new Label(urlDefinitionArea, SWT.NONE);
 		hostPortLabel.setText(Messages.WFSDataReaderDialog_HostPortLabel);
-		hostPortLabel.setToolTipText(Messages.WFSDataReaderDialog_HostPortToolTipText + Messages.WFSDataReaderDialog_HostPortToolTipText2);
+		hostPortLabel.setToolTipText(Messages.WFSDataReaderDialog_HostPortToolTipText);
 		final Text hostPortText = new Text (urlDefinitionArea, SWT.BORDER | SWT.SINGLE);
 		hostPortText.setLayoutData(new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
@@ -312,8 +313,7 @@ public class WFSDataReaderDialog extends Dialog {
 										public void run() {
 											selection.setFeatureTypes(types);
 											
-											currentStatusLabel.setText(Messages.WFSDataReaderDialog_ValidationOKText 
-													+ types.size() + Messages.WFSDataReaderDialog_FeatureTypesText);
+											currentStatusLabel.setText(MessageFormat.format(Messages.WFSDataReaderDialog_ValidationOKText, types.size()));
 											finish.setEnabled(true);
 										}
 										

@@ -97,8 +97,6 @@ public class Messages {
 
 	public static String MappingImportWizardMainPage_FileSelect;
 
-	public static String MappingImportWizardMainPage_FileSelectTitle;
-
 	public static String MappingImportWizardMainPage_FileSelectDescription;
 
 	public static String OGCFilterText_CreateFilter;
@@ -117,8 +115,6 @@ public class Messages {
 
 	public static String OpenAlignmentProjectWizardMainPage_SelectProjectText;
 
-	public static String OpenAlignmentProjectWizardMainPage_FileSelectTitle;
-
 	public static String OpenAlignmentProjectWizardMainPage_File;
 
 	public static String SaveAlignmentProjectWizard_SaveAlignmentTitle;
@@ -133,8 +129,6 @@ public class Messages {
 
 	public static String SaveAlignmentProjectWizardMainPage_Description;
 
-	public static String SaveAlignmentProjectWizardMainPage_FileSelectTitle;
-
 	public static String SaveAlignmentProjectWizardMainPage_File;
 
 	public static String SaveAlignmentProjectWizardMainPage_ProjectSavingText;
@@ -147,15 +141,11 @@ public class Messages {
 
 	public static String SchemaImportWizard_SchemaImport;
 
-	public static String SchemaImportWizard_ErrorMessage1;
-
 	public static String SchemaImportWizard_JobError;
 
 	public static String SchemaImportWizardMainPage_SchemaImportDescription;
 
 	public static String SchemaImportWizardMainPage_SchemaImportReadSchema;
-
-	public static String SchemaImportWizardMainPage_FileSelect;
 
 	public static String SchemaImportWizardMainPage_File;
 
@@ -170,8 +160,6 @@ public class Messages {
 	public static String WFSDataReaderDialog_HostPortLabel;
 
 	public static String WFSDataReaderDialog_HostPortToolTipText;
-
-	public static String WFSDataReaderDialog_HostPortToolTipText2;
 
 	public static String WFSDataReaderDialog_URLValidationText;
 
@@ -191,8 +179,6 @@ public class Messages {
 
 	public static String WFSDataReaderDialog_ValidationOKText;
 
-	public static String WFSDataReaderDialog_FeatureTypesText;
-
 	public static String WFSDataReaderDialog_ValidationFailedText2;
 
 	public static String WFSFeatureTypesReaderDialog_UrlEnterText;
@@ -200,8 +186,6 @@ public class Messages {
 	public static String WFSFeatureTypesReaderDialog_HostPortLabelText;
 
 	public static String WFSFeatureTypesReaderDialog_HostPortTooltip1;
-
-	public static String WFSFeatureTypesReaderDialog_HostPortTooltip2;
 
 	public static String WFSFeatureTypesReaderDialog_ValidateText;
 
@@ -393,7 +377,6 @@ public class Messages {
 	public static String CapabilitiesPage_0;
 	public static String CapabilitiesPage_1;
 	public static String CapabilitiesPage_2;
-	public static String CapabilitiesPage_3;
 	public static String CapabilitiesPage_4;
 
 	public static String ReportContentProvider_0;
@@ -472,7 +455,6 @@ public class Messages {
 
 	public static String SchemaItemContribution_0;
 
-	public static String SchemaImportWizardMainPage_0;
 	public static String SchemaImportWizardMainPage_1;
 
 	public static String SaveAlignmentProjectWizardMainPage_0;

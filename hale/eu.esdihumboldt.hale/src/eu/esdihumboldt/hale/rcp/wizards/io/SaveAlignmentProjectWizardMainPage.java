@@ -95,7 +95,7 @@ public class SaveAlignmentProjectWizardMainPage extends WizardPage {
 		Composite ffe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ffe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		this.ffe = new FileFieldEditor(Messages.SaveAlignmentProjectWizardMainPage_FileSelectTitle, 
+		this.ffe = new FileFieldEditor("fileSelect", 
 				Messages.SaveAlignmentProjectWizardMainPage_File, ffe_container); //NON-NLS-1 //NON-NLS-2
 		this.ffe.getTextControl(ffe_container).addModifyListener(new ModifyListener(){
 			public void modifyText(ModifyEvent e) {

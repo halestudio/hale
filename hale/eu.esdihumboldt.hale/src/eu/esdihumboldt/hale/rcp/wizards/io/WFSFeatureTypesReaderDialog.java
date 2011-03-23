@@ -126,8 +126,7 @@ public class WFSFeatureTypesReaderDialog
 		// Host + Port
 		final Label hostPortLabel = new Label(urlDefinitionArea, SWT.NONE);
 		hostPortLabel.setText(Messages.WFSFeatureTypesReaderDialog_HostPortLabelText);
-		hostPortLabel.setToolTipText(Messages.WFSFeatureTypesReaderDialog_HostPortTooltip1 +
-				Messages.WFSFeatureTypesReaderDialog_HostPortTooltip2);
+		hostPortLabel.setToolTipText(Messages.WFSFeatureTypesReaderDialog_HostPortTooltip1);
 		final Text hostPortText = new Text (urlDefinitionArea, SWT.BORDER | SWT.SINGLE);
 		hostPortText.setLayoutData(new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));

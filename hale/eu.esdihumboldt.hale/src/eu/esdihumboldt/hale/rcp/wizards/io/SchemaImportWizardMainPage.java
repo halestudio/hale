@@ -131,7 +131,7 @@ public class SchemaImportWizardMainPage
 		this.ffe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ffe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		fileFieldEditor = new FileFieldEditor(Messages.SchemaImportWizardMainPage_FileSelect, 
+		fileFieldEditor = new FileFieldEditor("fileSelect", 
 				Messages.SchemaImportWizardMainPage_File, ffe_container);
 		fileFieldEditor.getTextControl(ffe_container).addModifyListener(new ModifyListener(){
 			public void modifyText(ModifyEvent e) {
@@ -150,7 +150,7 @@ public class SchemaImportWizardMainPage
 		this.ufe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ufe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		wfsFieldEditor = new UrlFieldEditor(Messages.SchemaImportWizardMainPage_0,  //$NON-NLS-1$
+		wfsFieldEditor = new UrlFieldEditor("urlSelect",  //$NON-NLS-1$
 				Messages.SchemaImportWizardMainPage_1, ufe_container); //$NON-NLS-1$
 		wfsFieldEditor.setEnabled(false, ufe_container);
 		wfsFieldEditor.getTextControl(ufe_container).addModifyListener(new ModifyListener() {
