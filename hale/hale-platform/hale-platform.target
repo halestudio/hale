@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.6"?>
+<?pde version="3.5"?>
 
 <target name="eu.esdihumboldt.hale.platform">
 <locations>
@@ -55,5 +55,6 @@
 <location path="${project_loc:hale-platform}/target/org.geotools" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/edu.umd.cs.findbugs" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.eclipse" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/babel" type="Directory"/>
 </locations>
 </target>

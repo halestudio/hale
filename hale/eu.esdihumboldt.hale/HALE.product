@@ -8,12 +8,13 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-clean</programArgs>
+      <programArgs>-nl en_GB -clean</programArgs>
       <vmArgs>-Xmx512m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
    <windowImages i32="/eu.esdihumboldt.hale/icons/hale_icon.png"/>
+
 
    <launcher name="HALE">
       <macosx icon="/eu.esdihumboldt.hale/icons/hale.icns"/>
@@ -36,9 +37,9 @@
       <plugin id="ch.qos.logback.slf4j" fragment="true"/>
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="com.onespatial.jrc.tns.hale.rifexport" fragment=""/>
+      <plugin id="com.onespatial.jrc.tns.hale.rifexport"/>
       <plugin id="com.onespatial.jrc.tns.jaxb.rifprd"/>
-      <plugin id="com.onespatial.jrc.tns.oml_to_rif" fragment=""/>
+      <plugin id="com.onespatial.jrc.tns.oml_to_rif"/>
       <plugin id="com.springsource.com.sun.xml.bind"/>
       <plugin id="com.springsource.com.sun.xml.fastinfoset"/>
       <plugin id="com.springsource.javax.activation"/>
@@ -75,11 +76,11 @@
       <plugin id="eu.esdihumboldt.commons"/>
       <plugin id="eu.esdihumboldt.cst.corefunctions"/>
       <plugin id="eu.esdihumboldt.hale"/>
-      <plugin id="eu.esdihumboldt.hale.csvexporter"/>
+      <plugin id="eu.esdihumboldt.hale.csvexporter" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.gmlparser"/>
       <plugin id="eu.esdihumboldt.hale.gmlvalidate"/>
       <plugin id="eu.esdihumboldt.hale.gmlwriter"/>
-      <plugin id="eu.esdihumboldt.hale.gmlwriter.test" fragment=""/>
+      <plugin id="eu.esdihumboldt.hale.gmlwriter.test"/>
       <plugin id="eu.esdihumboldt.hale.htmlexporter"/>
       <plugin id="eu.esdihumboldt.hale.instanceprovider"/>
       <plugin id="eu.esdihumboldt.hale.logback.config" fragment="true"/>
