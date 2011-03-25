@@ -63,7 +63,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 					HALEActivator.PLUGIN_ID, "/icons/styles.gif").createImage(); //$NON-NLS-1$
 		}
 		
-		setTitle(Messages.FeatureStyleDialog_Title + type.getName().getLocalPart());
+		setTitle(MessageFormat.format(Messages.FeatureStyleDialog_Title, type.getName().getLocalPart()));
 		setImage(styleImage);
 		
 		styles = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);

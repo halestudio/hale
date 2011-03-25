@@ -13,6 +13,8 @@
 package eu.esdihumboldt.hale.task.providers.schema.geometry;
 
 
+import java.text.MessageFormat;
+
 import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
@@ -70,7 +72,8 @@ public class NoGeometryTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public String getTitle(Task task) {
-			return Messages.NoGeometryTaskFactory_1 + ((SchemaElement) task.getMainContext()).getElementName().getLocalPart(); //$NON-NLS-1$
+			return MessageFormat.format(Messages.NoGeometryTaskFactory_1, 
+					((SchemaElement) task.getMainContext()).getElementName().getLocalPart()); //$NON-NLS-1$
 		}
 
 		/**

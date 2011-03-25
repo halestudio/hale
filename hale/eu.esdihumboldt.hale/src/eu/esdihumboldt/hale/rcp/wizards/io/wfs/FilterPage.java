@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.io.wfs;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -210,7 +211,7 @@ public class FilterPage extends AbstractWfsPage<WfsGetFeatureConfiguration> {
 					FeatureType type = lastSelected;
 					
 					OGCFilterDialog dialog = new OGCFilterDialog(display.getActiveShell(), 
-							Messages.FilterPage_8 + type.getName().getLocalPart()); //$NON-NLS-1$
+							MessageFormat.format(Messages.FilterPage_8, type.getName().getLocalPart())); //$NON-NLS-1$
 					dialog.setFeatureType(type);
 					String filter = dialog.open();
 					if (filter != null) {

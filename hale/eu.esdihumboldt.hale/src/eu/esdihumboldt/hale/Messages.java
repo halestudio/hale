@@ -141,6 +141,14 @@ public class Messages extends NLS {
 
 	public static String SchemaImportWizard_0;
 
+	public static String SchemaImportWizard_1;
+
+	public static String SchemaImportWizard_2;
+
+	public static String SchemaImportWizard_3;
+
+	public static String SchemaImportWizard_4;
+
 	public static String SchemaImportWizard_ImportSchemaTitle;
 
 	public static String SchemaImportWizard_ImportSchemaDescription;
@@ -318,9 +326,6 @@ public class Messages extends NLS {
 	public static String TaskTreeView_TargetNodeTitle;
 	public static String TaskTreeView_TitleDescriptionText;
 	public static String TaskTreeView_value_tooltip;
-
-	public static String SchemaImportWizard_SchemaQuestion_0;
-	public static String SchemaImportWizard_SchemaQuestion_1;
 
 	public static String WFSFeatureTypesReaderDialog_ValdationOKText;
 

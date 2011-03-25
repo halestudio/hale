@@ -17,8 +17,6 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import java.text.MessageFormat;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -113,7 +111,10 @@ public class SchemaImportWizard
 						
 						Collection<SchemaElement> currentSchema = schemaService.getSchema(schemaType);
 						if (currentSchema != null && !currentSchema.isEmpty()) {
-							final String info = ((schemaType == SchemaType.SOURCE)?("source"):("target")); //$NON-NLS-1$ //$NON-NLS-2$
+							final String title = ((schemaType == SchemaType.SOURCE)?(Messages.SchemaImportWizard_1):(Messages.SchemaImportWizard_2));
+							final String message = ((schemaType == SchemaType.SOURCE)
+									?(Messages.SchemaImportWizard_3)
+									:(Messages.SchemaImportWizard_4));
 							
 							final AtomicBoolean loadSchema = new AtomicBoolean(false);
 							final Display display = PlatformUI.getWorkbench().getDisplay();
@@ -122,8 +123,8 @@ public class SchemaImportWizard
 								@Override
 								public void run() {
 									if (MessageDialog.openQuestion(getShell(), 
-											MessageFormat.format(Messages.SchemaImportWizard_SchemaQuestion_0, info),
-											MessageFormat.format(Messages.SchemaImportWizard_SchemaQuestion_1, info))) {
+											title,
+											message)) {
 										loadSchema.set(true);
 									}
 								}

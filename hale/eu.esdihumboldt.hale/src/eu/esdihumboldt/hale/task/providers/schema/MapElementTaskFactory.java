@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.task.providers.schema;
 
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
 
@@ -101,7 +102,7 @@ public class MapElementTaskFactory extends AbstractTaskFactory {
 		 */
 		@Override
 		public String getTitle(Task task) {
-			return Messages.MapElementTaskFactory_1 + ((SchemaElement) task.getMainContext()).getElementName().getLocalPart(); //$NON-NLS-1$
+			return MessageFormat.format(Messages.MapElementTaskFactory_1, ((SchemaElement) task.getMainContext()).getElementName().getLocalPart()); //$NON-NLS-1$
 		}
 
 		/**
