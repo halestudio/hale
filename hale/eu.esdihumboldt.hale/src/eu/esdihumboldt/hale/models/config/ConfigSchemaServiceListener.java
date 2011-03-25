@@ -12,14 +12,31 @@
 
 package eu.esdihumboldt.hale.models.config;
 
-import eu.esdihumboldt.hale.models.HaleServiceListener;
-
 /**
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$
  */
-public interface ConfigSchemaServiceListener extends HaleServiceListener {
-
+public interface ConfigSchemaServiceListener {
+	
+	/**
+	 * 
+	 * @param section the section
+	 * @param message one of the {@link ConfigSchemaServiceListener#Message}
+	 */
+	public void update(String section, Message message);
+	
+	/**
+	 * Contains the status messages for {@link ConfigSchemaServiceListener} updates
+	 * 
+	 * @author Andreas Burchert
+	 * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+	 * @version $Id$
+	 */
+	public enum Message {
+		ITEM_ADDED, ITEM_REMOVED, ITEM_CHANGED,
+		SECTION_ADDED, SECTION_REMOVED,
+		CONFIG_PARSED, CONFIG_GENERATED
+	}
 }

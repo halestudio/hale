@@ -63,5 +63,4 @@ public class UseInheritanceHierarchyAction
 			ConfigurableModelContentProvider contentProvider) {
 		contentProvider.setSuppressInheritedAttributes(!isChecked());
 	}
-
 }

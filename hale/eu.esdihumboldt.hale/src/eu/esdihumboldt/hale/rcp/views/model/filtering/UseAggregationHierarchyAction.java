@@ -59,5 +59,4 @@ public class UseAggregationHierarchyAction
 			ConfigurableModelContentProvider contentProvider) {
 		contentProvider.setSuppressAggregation(!isChecked());
 	}
-
 }

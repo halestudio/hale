@@ -17,9 +17,7 @@ import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.models.ConfigSchemaService;
-import eu.esdihumboldt.hale.models.HaleServiceListener;
-import eu.esdihumboldt.hale.models.UpdateMessage;
-import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceImpl;
+import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceListener;
 import eu.esdihumboldt.hale.rcp.views.model.ConfigurableModelContentProvider;
 
 /**
@@ -29,7 +27,7 @@ import eu.esdihumboldt.hale.rcp.views.model.ConfigurableModelContentProvider;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public abstract class AbstractContentProviderAction extends Action implements HaleServiceListener {
+public abstract class AbstractContentProviderAction extends Action implements ConfigSchemaServiceListener {
 	
 	private ContentViewer viewer;
 	
@@ -108,7 +106,7 @@ public abstract class AbstractContentProviderAction extends Action implements Ha
 	public void setCaption(String caption) {
 		this.caption = caption;
 		this.config.addItem(caption, this.identifier, ""+this.isChecked()); //$NON-NLS-1$ //$NON-NLS-2$
-		this.config.addListener(this);
+		this.config.addListener(this, caption);
 	}
 	
 	/**
@@ -119,10 +117,9 @@ public abstract class AbstractContentProviderAction extends Action implements Ha
 		this.identifier = ident;
 	}
 	
-	/**
-	 * @see HaleServiceListener#update(UpdateMessage)
-	 */
-	public void update(UpdateMessage<?> msg) {
-		this.setChecked(Boolean.parseBoolean(this.config.getSectionData(caption).get(this.identifier)));
+	@Override
+	public void update(String section, Message message) {
+		if (message.equals(Message.ITEM_CHANGED) || message.equals(Message.CONFIG_PARSED))
+			this.setChecked(Boolean.parseBoolean(this.config.getSectionData(caption).get(this.identifier)));
 	}
 }

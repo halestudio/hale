@@ -18,8 +18,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.hale.models.ConfigSchemaService;
-import eu.esdihumboldt.hale.models.HaleServiceListener;
-import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceListener;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 
@@ -33,7 +32,7 @@ import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
  * @version $Id$ 
  */
 public class SimpleToggleAction 
-	extends Action implements HaleServiceListener {
+	extends Action implements ConfigSchemaServiceListener {
 	
 	private final TreeObjectType objectType;
 	
@@ -141,13 +140,12 @@ public class SimpleToggleAction
 	public void setCaption(String caption) {
 		this.caption = caption;
 		this.config.addItem(caption, this.objectType.toString(), ""+this.isChecked()); //$NON-NLS-1$ //$NON-NLS-2$
-		this.config.addListener(this);
+		this.config.addListener(this, caption);
 	}
-	
-	/**
-	 * @see HaleServiceListener#update(UpdateMessage)
-	 */
-	public void update(UpdateMessage<?> msg) {
-		this.setChecked(Boolean.parseBoolean(this.config.getSectionData(caption).get(this.objectType.toString())));
+
+	@Override
+	public void update(String section, Message message) {
+		if (message.equals(Message.ITEM_CHANGED) || message.equals(Message.CONFIG_PARSED))
+			this.setChecked(Boolean.parseBoolean(this.config.getSectionData(caption).get(this.objectType.toString())));
 	}
 }

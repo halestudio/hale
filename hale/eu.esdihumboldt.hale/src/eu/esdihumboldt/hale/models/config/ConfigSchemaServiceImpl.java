@@ -18,9 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import eu.esdihumboldt.hale.models.ConfigSchemaService;
-import eu.esdihumboldt.hale.models.HaleServiceListener;
-import eu.esdihumboldt.hale.models.UpdateMessage;
-import eu.esdihumboldt.hale.models.UpdateService;
+import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceListener.Message;
 import eu.esdihumboldt.hale.models.project.generated.ConfigData;
 import eu.esdihumboldt.hale.models.project.generated.ConfigSection;
 
@@ -37,34 +35,38 @@ public class ConfigSchemaServiceImpl implements ConfigSchemaService {
 	 */
 	private Map<String, HashMap<String, String>> sections = new HashMap<String, HashMap<String, String>>();
 	
-	/**
-	 * Contains all classes which will be notified.
-	 */
-	private ArrayList<HaleServiceListener> listeners = new ArrayList<HaleServiceListener>();
+	private Map<String, List<ConfigSchemaServiceListener>> listeners = new HashMap<String, List<ConfigSchemaServiceListener>>();
 	
-	/**
-	 * @see UpdateService#addListener(HaleServiceListener)
-	 */
-	@Override
-	public boolean addListener(HaleServiceListener sl) {
-		return this.listeners.add(sl);
-	}
-
-	/**
-	 * @see UpdateService#removeListener(HaleServiceListener)
-	 */
-	@Override
-	public void removeListener(HaleServiceListener listener) {
-		listeners.remove(listener);
+	public void addListener(ConfigSchemaServiceListener sl, String section) {
+		List<ConfigSchemaServiceListener> sls = this.listeners.get(section);
+		if (sls == null) {
+			sls = new ArrayList<ConfigSchemaServiceListener>();
+			sls.add(sl);
+			this.listeners.put(section, sls);
+		} else {
+			if (!sls.contains(sl)) {
+				sls.add(sl);
+			}
+		}
 	}
 	
-	/**
-	 * 
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void updateListeners() {
-		for (HaleServiceListener hsl : this.listeners) {
-			hsl.update(new UpdateMessage(ConfigSchemaService.class, null));
+	public void removeListener(String section, ConfigSchemaServiceListener sl) {
+		this.listeners.get(section).remove(sl);
+	}
+	
+	public void removeListener(ConfigSchemaServiceListener sl) {
+		for(Map.Entry<String, List<ConfigSchemaServiceListener>> entry : this.listeners.entrySet()) {
+			entry.getValue().remove(sl);
+		}
+	}
+	
+	private void updateListeners(String section, Message message) {
+		List<ConfigSchemaServiceListener> list = this.listeners.get(section);
+		
+		if (list == null) return;
+		
+		for(ConfigSchemaServiceListener cssl : list) {
+			cssl.update(section, message);
 		}
 	}
 
@@ -76,11 +78,13 @@ public class ConfigSchemaServiceImpl implements ConfigSchemaService {
 	@Override
 	public void addSection(String name, HashMap<String, String> data) {
 		this.sections.put(name, data);
+		this.updateListeners(name, Message.SECTION_ADDED);
 	}
 
 	@Override
 	public void removeSection(String name) {
 		this.sections.remove(name);
+		this.updateListeners(name, Message.SECTION_REMOVED);
 	}
 
 	@Override
@@ -89,11 +93,32 @@ public class ConfigSchemaServiceImpl implements ConfigSchemaService {
 	}
 	
 	@Override
+	public String getItem(String section, String key) {
+		return this.sections.get(section).get(key);
+	}
+	
+	@Override
 	public void addItem(String section, String key, String value) {
+		Message message = Message.ITEM_CHANGED;
+		
 		if (this.sections.get(section) == null) {
+			message = Message.ITEM_ADDED;
 			this.addSection(section);
+			this.sections.get(section).put(key, value);
+			this.updateListeners(section, message);
+			return;
 		}
-		this.sections.get(section).put(key, value);
+		
+		if (this.sections.get(section).get(key) != null) {
+			if (!this.sections.get(section).get(key).equals(value)) {
+				this.sections.get(section).put(key, value);
+				this.updateListeners(section, message);
+			}
+		} else {
+			this.sections.get(section).put(key, value);
+		}
+		
+		
 	}
 
 	@Override
@@ -105,9 +130,9 @@ public class ConfigSchemaServiceImpl implements ConfigSchemaService {
 			for(ConfigData data : section.getData()) {
 				this.addItem(name, data.getKey(), data.getValue());
 			}
+			
+			this.updateListeners(name, Message.CONFIG_PARSED);
 		}
-		
-		this.updateListeners();
 	}
 
 	@Override
@@ -131,6 +156,8 @@ public class ConfigSchemaServiceImpl implements ConfigSchemaService {
 			
 			list.add(configSection);
 		}
+		
+		this.updateListeners("", Message.CONFIG_GENERATED);
 		
 		return list;
 	}

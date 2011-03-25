@@ -59,5 +59,4 @@ public class UseFlatHierarchyAction
 			ConfigurableModelContentProvider contentProvider) {
 		contentProvider.setFlatten(isChecked());
 	}
-
 }
