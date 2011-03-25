@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: %Bundle-Name
+Bundle-Name: HUMBOLDT Alignment Editor
 Bundle-SymbolicName: eu.esdihumboldt.hale;singleton:=true
 Bundle-Version: 2.1.0.M1
 Bundle-Activator: eu.esdihumboldt.hale.rcp.HALEActivator
