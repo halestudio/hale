@@ -60,7 +60,7 @@ public class HaleServiceFactory
 	private SchemaItemService schemaItem;
 	private RecentFilesService recentFiles;
 	private GmlWriter gmlWriter;
-	private ConfigSchemaServiceImpl config;
+	private ConfigSchemaService config;
 
 	/**
 	 * Default constructor

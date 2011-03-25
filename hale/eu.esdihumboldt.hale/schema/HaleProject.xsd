@@ -42,8 +42,12 @@
 			<xs:element name="styles" type="Styles" maxOccurs="1"
 				minOccurs="0">
 			</xs:element>
-			<xs:element name="configSchema" type="configSchema" maxOccurs="unbounded" minOccurs="0"></xs:element>
+			<xs:element name="configSchema" type="configSection"
+				maxOccurs="unbounded" minOccurs="0">
+			</xs:element>
+			
 		</xs:sequence>
+		
 	</xs:complexType>
 	<xs:element name="MappedSchema" type="MappedSchema"/>
 	<xs:complexType name="MappedSchema">
@@ -72,13 +76,21 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="configSchema">
+	<xs:complexType name="configData">
 		<xs:sequence>
 			<xs:element name="key" type="xs:string" maxOccurs="1"
 				minOccurs="1">
 			</xs:element>
 
 			<xs:element name="value" type="xs:string"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+
+	<xs:complexType name="configSection">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="data" type="configData" maxOccurs="unbounded" minOccurs="1"></xs:element>
 		</xs:sequence>
 	</xs:complexType>
 

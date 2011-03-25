@@ -33,7 +33,7 @@ public abstract class AbstractContentProviderAction extends Action implements Ha
 	
 	private ContentViewer viewer;
 	
-	private ConfigSchemaServiceImpl config;
+	private ConfigSchemaService config;
 	
 	/**
 	 * Contains "Source" or "Target".
@@ -51,7 +51,7 @@ public abstract class AbstractContentProviderAction extends Action implements Ha
 	protected AbstractContentProviderAction() {
 		super(null, AS_CHECK_BOX);
 		
-		config = (ConfigSchemaServiceImpl) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
+		config = (ConfigSchemaService) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
 	}
 	
 	/**
@@ -96,7 +96,7 @@ public abstract class AbstractContentProviderAction extends Action implements Ha
 		super.setChecked(checked);
 		
 		if (!caption.equals("")) { //$NON-NLS-1$
-			this.config.add(caption+"_"+this.identifier, ""+this.isChecked()); //$NON-NLS-1$ //$NON-NLS-2$
+			this.config.addItem(caption, this.identifier, ""+this.isChecked()); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 	
@@ -107,8 +107,7 @@ public abstract class AbstractContentProviderAction extends Action implements Ha
 	 */
 	public void setCaption(String caption) {
 		this.caption = caption;
-		
-		this.config.add(caption+"_"+this.identifier, ""+this.isChecked()); //$NON-NLS-1$ //$NON-NLS-2$
+		this.config.addItem(caption, this.identifier, ""+this.isChecked()); //$NON-NLS-1$ //$NON-NLS-2$
 		this.config.addListener(this);
 	}
 	
@@ -124,6 +123,6 @@ public abstract class AbstractContentProviderAction extends Action implements Ha
 	 * @see HaleServiceListener#update(UpdateMessage)
 	 */
 	public void update(UpdateMessage<?> msg) {
-		this.setChecked(Boolean.parseBoolean(this.config.get(caption+"_"+this.identifier))); //$NON-NLS-1$
+		this.setChecked(Boolean.parseBoolean(this.config.getSectionData(caption).get(this.identifier)));
 	}
 }

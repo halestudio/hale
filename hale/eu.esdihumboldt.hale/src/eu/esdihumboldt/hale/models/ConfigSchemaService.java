@@ -12,9 +12,13 @@
 
 package eu.esdihumboldt.hale.models;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import eu.esdihumboldt.hale.models.project.generated.ConfigData;
 import eu.esdihumboldt.hale.models.project.generated.ConfigSchema;
+import eu.esdihumboldt.hale.models.project.generated.ConfigSection;
 
 /**
  * 
@@ -60,4 +64,15 @@ public interface ConfigSchemaService extends UpdateService {
 	 * @param list
 	 */
 	public void setAll(List<ConfigSchema> list);
+	
+	public void addSection(String name);
+	public void addSection(String name, HashMap<String, String> data);
+	public void removeSection(String name);
+	
+	public void addItem(String section, String key, String value);
+	
+	public HashMap<String, String> getSectionData(String name);
+	
+	public void parseConfig(List<ConfigSection> list);
+	public List<ConfigSection> generateConfig();
 }

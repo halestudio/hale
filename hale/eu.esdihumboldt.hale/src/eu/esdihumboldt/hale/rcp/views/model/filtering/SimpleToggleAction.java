@@ -20,7 +20,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import eu.esdihumboldt.hale.models.ConfigSchemaService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.UpdateMessage;
-import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceImpl;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 
@@ -55,7 +54,7 @@ public class SimpleToggleAction
 	 */
 	private String caption = ""; //$NON-NLS-1$
 	
-	private ConfigSchemaServiceImpl config;
+	private ConfigSchemaService config;
 	
 	/**
 	 * Constructor
@@ -71,7 +70,7 @@ public class SimpleToggleAction
 		super(msgDisable, Action.AS_CHECK_BOX);
 		
 		setToolTipText(msgDisable);
-		config = (ConfigSchemaServiceImpl) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
+		config = (ConfigSchemaService) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
 		
 		this.objectType = objectType;
 		this.msgDisable = msgDisable;
@@ -131,7 +130,7 @@ public class SimpleToggleAction
 		super.setChecked(checked);
 		
 		if (!caption.equals("")) { //$NON-NLS-1$
-			this.config.add(caption+"_"+this.objectType, ""+this.isChecked()); //$NON-NLS-1$ //$NON-NLS-2$
+			this.config.addItem(caption, this.objectType.toString(), ""+this.isChecked()); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 	
@@ -141,7 +140,7 @@ public class SimpleToggleAction
 	 */
 	public void setCaption(String caption) {
 		this.caption = caption;
-		this.config.add(caption+"_"+this.objectType, ""+this.isChecked()); //$NON-NLS-1$ //$NON-NLS-2$
+		this.config.addItem(caption, this.objectType.toString(), ""+this.isChecked()); //$NON-NLS-1$ //$NON-NLS-2$
 		this.config.addListener(this);
 	}
 	
@@ -149,6 +148,6 @@ public class SimpleToggleAction
 	 * @see HaleServiceListener#update(UpdateMessage)
 	 */
 	public void update(UpdateMessage<?> msg) {
-		this.setChecked(Boolean.parseBoolean(this.config.get(caption+"_"+this.objectType))); //$NON-NLS-1$
+		this.setChecked(Boolean.parseBoolean(this.config.getSectionData(caption).get(this.objectType.toString())));
 	}
 }

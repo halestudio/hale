@@ -195,7 +195,7 @@ public class ModelNavigationView extends ViewPart implements
 				true));
 		List<AbstractContentProviderAction> sourceContentActions = 
 			initSchemaExplorerToolBar(sourceComposite, sourceSchemaFilter, 
-				sourceToggleActions, Messages.ModelNavigationView_Source); //$NON-NLS-1$
+				sourceToggleActions, Messages.ModelNavigationView_Source, "source"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		this.sourceSchemaViewer = this.schemaExplorerSetup(sourceComposite, SchemaType.SOURCE);
 		this.sourceSchemaViewer.addFilter(sourceSchemaFilter);
@@ -269,7 +269,7 @@ public class ModelNavigationView extends ViewPart implements
 				true));
 		List<AbstractContentProviderAction> targetContentActions = 
 			initSchemaExplorerToolBar(targetComposite, targetSchemaFilter, 
-				targetToggleActions, Messages.ModelNavigationView_Target); //$NON-NLS-1$
+				targetToggleActions, Messages.ModelNavigationView_Target, "target"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		this.targetSchemaViewer = this.schemaExplorerSetup(targetComposite,
 				SchemaType.TARGET);
@@ -367,7 +367,7 @@ public class ModelNavigationView extends ViewPart implements
 	}
 
 	private List<AbstractContentProviderAction> initSchemaExplorerToolBar(Composite modelComposite, 
-			PatternViewFilter pvf, List<SimpleToggleAction> toggleActions, String caption) {
+			PatternViewFilter pvf, List<SimpleToggleAction> toggleActions, String caption, String ident) {
 
 		Composite bar = new Composite(modelComposite, SWT.NONE);
 		GridLayout gridLayout = new GridLayout(2, false);
@@ -396,12 +396,12 @@ public class ModelNavigationView extends ViewPart implements
 		ToolBarManager manager = new ToolBarManager(schemaFilterBar);
 		for (AbstractContentProviderAction action : actions) {
 			manager.add(action);
-			action.setCaption(caption);
+			action.setCaption(ident);
 		}
 		manager.add(new Separator());
 		for (SimpleToggleAction sta : toggleActions) {
 			manager.add(sta);
-			sta.setCaption(caption);
+			sta.setCaption(ident);
 		}
 		manager.update(false);
 		

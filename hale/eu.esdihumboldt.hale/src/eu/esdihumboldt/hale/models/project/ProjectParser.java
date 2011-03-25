@@ -149,26 +149,37 @@ public class ProjectParser {
 			final IProgressMonitor monitor) {
 		projectService.clean();
 		
-		// get service references as required.
-		InstanceService instanceService = 
-			(InstanceService) PlatformUI.getWorkbench().getService(
-					InstanceService.class);
+		// first, load schemas.
+		this.loadSchemas(project, basePath, monitor);
 		
-		AlignmentService alignmentService = 
-			(AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
+		List<String> errors = new ArrayList<String>();
 		
+		// second, load alignment.
+		this.loadAlignment(project, basePath, monitor, errors);
+		
+		// second and a half, load styles
+		this.loadStyle(project, basePath, monitor, errors);
+		
+		// third, load instances.
+		this.loadInstances(project, basePath, monitor, errors);
+		
+		// fourth, it's time for loading the tasks.
+		this.loadTasks(project, basePath, monitor);
+		
+		// last but not least load different config stuff
+		this.loadConfig(project);
+		
+		// Finally, initialize other ProjectService values.
+		projectService.setProjectCreatedDate(project.getDateCreated());
+		
+		return errors;
+	}
+	
+	private void loadSchemas(HaleProject project, String basePath, final IProgressMonitor monitor) {
 		SchemaService schemaService = 
 			(SchemaService) PlatformUI.getWorkbench().getService(
 					SchemaService.class);
 		
-		ConfigSchemaServiceImpl config = (ConfigSchemaServiceImpl) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
-		
-		TaskService taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
-		
-		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
-		
-		// first, load schemas.
 		monitor.subTask(Messages.ProjectParser_6); //$NON-NLS-1$
 		try {
 			ProgressIndicator progress = new ProgressIndicator() {
@@ -206,10 +217,13 @@ public class ProjectParser {
 			// fail
 			throw new RuntimeException("Schema could not be loaded: ", e); //$NON-NLS-1$
 		}
+	}
+	
+	private void loadAlignment(HaleProject project, String basePath, final IProgressMonitor monitor, List<String> errors) {
+		AlignmentService alignmentService = 
+			(AlignmentService) PlatformUI.getWorkbench().getService(
+					AlignmentService.class);
 		
-		List<String> errors = new ArrayList<String>();
-		
-		// second, load alignment.
 		monitor.subTask(Messages.ProjectParser_8); //$NON-NLS-1$
 		if (project.getOmlPath() != null && !project.getOmlPath().isEmpty()) {
 			try {
@@ -242,8 +256,11 @@ public class ProjectParser {
 				alignmentService.cleanModel();
 			}
 		}
+	}
+	
+	private void loadStyle(HaleProject project, String basePath, final IProgressMonitor monitor, List<String> errors) {
+		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 		
-		// second and a half, load styles
 		monitor.subTask(Messages.ProjectParser_12); //$NON-NLS-1$
 		if (project.getStyles() != null) {
 			String path = project.getStyles().getPath();
@@ -265,8 +282,11 @@ public class ProjectParser {
 			final String color = project.getStyles().getBackground();
 			styleService.setBackground((color == null)?(null):(StringConverter.asRGB(color)));
 		}
+	}
+	
+	private void loadInstances(HaleProject project, String basePath, final IProgressMonitor monitor, List<String> errors) {
+		InstanceService instanceService = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 		
-		// third, load instances.
 		monitor.subTask(Messages.ProjectParser_14); //$NON-NLS-1$
 		if (project.getInstanceData() != null) {
 			try {
@@ -298,8 +318,13 @@ public class ProjectParser {
 				instanceService.cleanInstances();
 			}
 		}
+	}
+	
+	private void loadTasks(HaleProject project, String basePath, final IProgressMonitor monitor) {
+		SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
-		// fourth, it's time for loading the tasks.
+		TaskService taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
+		
 		monitor.subTask(Messages.ProjectParser_17); //$NON-NLS-1$
 		ATransaction taskTrans = _log.begin("Loading tasks"); //$NON-NLS-1$
 		try {
@@ -321,16 +346,11 @@ public class ProjectParser {
 							}
 						}
 						eu.esdihumboldt.hale.task.Task newTask = new BaseTask(task.getTaskType(), definitions);
-//						if (newTask != null) {
 							TaskUserData userData = new TaskUserDataImpl();
 							userData.setUserComment(task.getComment());
 							userData.setTaskStatus(eu.esdihumboldt.hale.task.TaskUserData.TaskStatus.valueOf(task.getTaskStatus()));
 							
 							taskService.setUserData(newTask, userData);
-//						}
-//						else {
-//							_log.error("Task creation of type " + task.getTaskType() + " failed");
-//						}
 					} catch (IllegalStateException e) {
 						_log.error(e.getMessage());
 					}
@@ -340,16 +360,13 @@ public class ProjectParser {
 		finally {
 			taskTrans.end();
 		}
-		
-		// load button configuration
-		config.setAll(project.getConfigSchema());
-		
-		// Finally, initialize other ProjectService values.
-		projectService.setProjectCreatedDate(project.getDateCreated());
-		
-		return errors;
 	}
 
+	private void loadConfig(HaleProject project) {
+		ConfigSchemaService config = (ConfigSchemaService) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
+		
+		config.parseConfig(project.getConfigSchema());
+	}
 	/**
 	 * Get the location 
 	 * 

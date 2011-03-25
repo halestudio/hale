@@ -43,6 +43,7 @@ import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceImpl;
 import eu.esdihumboldt.hale.models.project.generated.ConfigSchema;
+import eu.esdihumboldt.hale.models.project.generated.ConfigSection;
 import eu.esdihumboldt.hale.models.project.generated.HaleProject;
 import eu.esdihumboldt.hale.models.project.generated.InstanceData;
 import eu.esdihumboldt.hale.models.project.generated.MappedSchema;
@@ -130,7 +131,7 @@ public class ProjectGenerator {
 		
 		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 		
-		ConfigSchemaServiceImpl config = (ConfigSchemaServiceImpl) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
+		ConfigSchemaService config = (ConfigSchemaService) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
 		
 		// setup project and basic attributes
 		HaleProject hproject = new HaleProject();
@@ -185,15 +186,16 @@ public class ProjectGenerator {
 		}
 		hproject.setTaskStatus(taskStatus);
 		
-		// add all button configurations
-		ArrayList<ConfigSchema> projectConfigList = (ArrayList<ConfigSchema>) hproject.getConfigSchema();
-		ArrayList<ConfigSchema> list = (ArrayList<ConfigSchema>) config.getAll();
+		// add configSections
+		ArrayList<ConfigSection> projectConfigList = (ArrayList<ConfigSection>) hproject.getConfigSchema();
+		ArrayList<ConfigSection> list = (ArrayList<ConfigSection>) config.generateConfig();
 		
-		for(ConfigSchema s : list) {
+		for(ConfigSection s : list) {
 			if (!projectConfigList.contains(s)) {
 				projectConfigList.add(s);
 			}
 		}
+		
 		
 		// serialize mapping and link it in HaleProject 
 		OmlRdfGenerator org = new HaleOmlRdfGenerator();
