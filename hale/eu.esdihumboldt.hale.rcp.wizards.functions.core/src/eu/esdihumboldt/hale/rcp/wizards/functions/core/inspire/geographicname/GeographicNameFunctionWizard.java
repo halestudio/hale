@@ -253,7 +253,8 @@ public class GeographicNameFunctionWizard extends
 			 for (SpellingType spelling : spellings){
 				 if (property.getAbout().getAbout().equals(spelling.getProperty().getAbout().getAbout())) {
 					 Transformation transformation = new Transformation();
-					 transformation.setService((new Resource(Messages.GeographicNameFunctionWizard_3)));
+					 //FIXME if I know one thing it is that the next line shouldn't be like that
+					 transformation.setService((new Resource("some spelling functionSpellingFunction"))); //$NON-NLS-1$
 					 //add spelling parameters to the transformation 
 					 List<IParameter> params = new ArrayList<IParameter>();
 					 IParameter param = new Parameter(GeographicalNameFunction.PROPERTY_TEXT, spelling.getProperty().getLocalname());

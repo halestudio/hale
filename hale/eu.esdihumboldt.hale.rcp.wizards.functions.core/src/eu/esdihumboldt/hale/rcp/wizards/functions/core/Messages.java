@@ -61,7 +61,6 @@ public class Messages extends NLS {
 	public static String GenericMathFunctionWizard_1;
 	public static String GeographicNameFunctionWizard_1;
 	public static String GeographicNameFunctionWizard_2;
-	public static String GeographicNameFunctionWizard_3;
 	public static String GeographicNamePage_0;
 	public static String GeographicNamePage_10;
 	public static String GeographicNamePage_11;
@@ -99,9 +98,6 @@ public class Messages extends NLS {
 	public static String RenameAttributeWizard_2;
 	public static String RenameAttributeWizardMainPage_0;
 	public static String RenameAttributeWizardMainPage_1;
-	public static String RenamingFunctionWizard_0;
-	public static String RenamingFunctionWizard_1;
-	public static String RenamingFunctionWizard_2;
 	public static String RenamingFunctionWizard_3;
 	public static String RenamingFunctionWizard_4;
 	public static String RenamingFunctionWizard_5;

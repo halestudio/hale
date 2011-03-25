@@ -259,11 +259,11 @@ public class ApacheSchemaProvider
 						String nameExt;
 						if (content instanceof XmlSchemaComplexContentExtension) {
 							qname = ((XmlSchemaComplexContentExtension) content).getBaseTypeName();
-							nameExt = Messages.getString("ApacheSchemaProvider.8"); //$NON-NLS-1$
+							nameExt = "Extension"; //$NON-NLS-1$
 						}
 						else {
 							qname = ((XmlSchemaComplexContentRestriction) content).getBaseTypeName();
-							nameExt = Messages.getString("ApacheSchemaProvider.9"); //$NON-NLS-1$
+							nameExt = "Restriction"; //$NON-NLS-1$
 						}
 						
 						if (declaringType != null) {
@@ -303,11 +303,11 @@ public class ApacheSchemaProvider
 						String nameExt;
 						if (content instanceof XmlSchemaSimpleContentExtension) {
 							qname = ((XmlSchemaSimpleContentExtension) content).getBaseTypeName();
-							nameExt = Messages.getString("ApacheSchemaProvider.8"); //$NON-NLS-1$
+							nameExt = "Extension"; //$NON-NLS-1$
 						}
 						else {
 							qname = ((XmlSchemaSimpleContentRestriction) content).getBaseTypeName();
-							nameExt = Messages.getString("ApacheSchemaProvider.9"); //$NON-NLS-1$
+							nameExt = "Restriction"; //$NON-NLS-1$
 						}
 						
 						if (declaringType != null) {
@@ -366,7 +366,7 @@ public class ApacheSchemaProvider
 					}
 					else {
 						// create an anonymous type
-						Name anonymousName = new NameImpl(declaringType.getIdentifier() + "/" + element.getName(), Messages.getString("ApacheSchemaProvider.19")); //$NON-NLS-1$ //$NON-NLS-2$
+						Name anonymousName = new NameImpl(declaringType.getIdentifier() + "/" + element.getName(), "AnonymousType"); //$NON-NLS-1$ //$NON-NLS-2$
 						TypeDefinition anonymousType = new AnonymousType(anonymousName, null, null, (schemaTypes != null)?(schemaTypes.getSchemaLocation()):(null));
 						
 						// add attributes to the anonymous type
@@ -600,7 +600,7 @@ public class ApacheSchemaProvider
 				else if (element.getSchemaType() != null) {
 					// element has internal type definition, generate anonymous type name
 					typeName = new NameImpl(element.getQName().getNamespaceURI(),
-							element.getQName().getLocalPart() + Messages.getString("ApacheSchemaProvider.2")); //$NON-NLS-1$
+							element.getQName().getLocalPart() + "_AnonymousType"); //$NON-NLS-1$
 					anonymousTypes.put(element, typeName);
 				}
 				else if (element.getQName() != null) {
@@ -1150,7 +1150,7 @@ public class ApacheSchemaProvider
 				QName name = attribute.getSchemaType().getQName();
 				Name attributeTypeName = (name != null)?
 						(new NameImpl(name.getNamespaceURI(), name.getLocalPart())):
-						(new NameImpl(declaringType.getName().getNamespaceURI() + "/" + declaringType.getName().getLocalPart(), Messages.getString("ApacheSchemaProvider.42") + index)); //$NON-NLS-1$ //$NON-NLS-2$
+						(new NameImpl(declaringType.getName().getNamespaceURI() + "/" + declaringType.getName().getLocalPart(), "AnonymousAttribute" + index)); //$NON-NLS-1$ //$NON-NLS-2$
 				TypeDefinition attributeType = TypeUtil.resolveSimpleType(
 						attributeTypeName, 
 						attribute.getSchemaType(), 

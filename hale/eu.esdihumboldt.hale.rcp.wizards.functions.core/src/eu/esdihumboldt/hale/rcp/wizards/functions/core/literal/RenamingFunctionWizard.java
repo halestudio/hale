@@ -44,18 +44,18 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 	/**
 	 * Parameter name for the attribute to split/merge on
 	 */
-	public static final String PARAMETER_SELECTED_ATTRIBUTE = Messages.RenamingFunctionWizard_0;
+	public static final String PARAMETER_SELECTED_ATTRIBUTE = "SelectedAttribute"; //$NON-NLS-1$
 	
 	
 	/**
 	 * Parameter name for instance merge condition
 	 */
-	public static final String PARAMETER_INSTANCE_MERGE_CONDITION = Messages.RenamingFunctionWizard_1;
+	public static final String PARAMETER_INSTANCE_MERGE_CONDITION = "InstanceMergeCondition"; //$NON-NLS-1$
 
 	/**
 	 * Parameter name for instance split condition
 	 */
-	public static final String PARAMETER_INSTANCE_SPLIT_CONDITION = Messages.RenamingFunctionWizard_2;
+	public static final String PARAMETER_INSTANCE_SPLIT_CONDITION = "InstanceSplitCondition"; //$NON-NLS-1$
 
 	private static ALogger _log = ALoggerFactory.getLogger(RenamingFunctionWizard.class);
 

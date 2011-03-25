@@ -25,19 +25,19 @@ import eu.esdihumboldt.inspire.data.InspireIdentifier;
 
 
 public class IdentifierTest {
-	private final String sourceLocalname = Messages.getString("IdentifierTest.0"); //$NON-NLS-1$
-	private final String sourceLocalnamePropertyAID = Messages.getString("IdentifierTest.1"); //$NON-NLS-1$
-	private final String sourceNamespace = Messages.getString("IdentifierTest.2"); //$NON-NLS-1$
+	private final String sourceLocalname = "FT1"; //$NON-NLS-1$
+	private final String sourceLocalnamePropertyAID = "PropertyAID"; //$NON-NLS-1$
+	private final String sourceNamespace = "http://esdi-humboldt.eu"; //$NON-NLS-1$
 	
-	private final String targetLocalname = Messages.getString("IdentifierTest.3"); //$NON-NLS-1$
-	private final String targetLocalnamePropertyBID = Messages.getString("IdentifierTest.4"); //$NON-NLS-1$
-	private final String targetNamespace = Messages.getString("IdentifierTest.5"); //$NON-NLS-1$
+	private final String targetLocalname = "FT2"; //$NON-NLS-1$
+	private final String targetLocalnamePropertyBID = "inspireId"; //$NON-NLS-1$
+	private final String targetNamespace = "http://xsdi.org"; //$NON-NLS-1$
 	
-	private String localID = Messages.getString("IdentifierTest.6"); //$NON-NLS-1$
-	private String countryname = Messages.getString("IdentifierTest.7"); //$NON-NLS-1$
-	private String provName = Messages.getString("IdentifierTest.8"); //$NON-NLS-1$
-	private String prodName = Messages.getString("IdentifierTest.9"); //$NON-NLS-1$
-	private String version = Messages.getString("IdentifierTest.10"); //$NON-NLS-1$
+	private String localID = "1"; //$NON-NLS-1$
+	private String countryname = "de"; //$NON-NLS-1$
+	private String provName = "TUM"; //$NON-NLS-1$
+	private String prodName = "SomeProduct"; //$NON-NLS-1$
+	private String version = "150782"; //$NON-NLS-1$
 	
 	@Test
 	public void testTransformTypeBinding() {
@@ -50,12 +50,12 @@ public class IdentifierTest {
 				new String[]{this.sourceLocalnamePropertyAID});
 		
 		String url = getClass().getResource(
-				Messages.getString("IdentifierTest.11")).toString(); //$NON-NLS-1$
-			FeatureType targettype = TypeLoader.getType(Messages.getString("IdentifierTest.12"), url); //$NON-NLS-1$
+				"inspire_v3.0_xsd/CadastralParcels.xsd").toString(); //$NON-NLS-1$
+			FeatureType targettype = TypeLoader.getType("CadastralZoning", url); //$NON-NLS-1$
 		Feature source = SimpleFeatureBuilder.build(
-				sourcetype, new Object[]{Messages.getString("IdentifierTest.13")}, localID); //$NON-NLS-1$
+				sourcetype, new Object[]{"ID1"}, localID); //$NON-NLS-1$
 		Feature target = SimpleFeatureBuilder.build(
-				(SimpleFeatureType) targettype, new Object[]{}, Messages.getString("IdentifierTest.14")); //$NON-NLS-1$
+				(SimpleFeatureType) targettype, new Object[]{}, "2"); //$NON-NLS-1$
 		
 		// perform actual test
 		IdentifierFunction idf = new IdentifierFunction();
@@ -85,23 +85,23 @@ public class IdentifierTest {
 				this.targetLocalname, 
 				new String[]{this.targetLocalnamePropertyBID});
 		Feature source = SimpleFeatureBuilder.build(
-				sourcetype, new Object[]{Messages.getString("IdentifierTest.15")}, localID); //$NON-NLS-1$
+				sourcetype, new Object[]{"ID1"}, localID); //$NON-NLS-1$
 		Feature target = SimpleFeatureBuilder.build(
-				targettype, new Object[]{}, Messages.getString("IdentifierTest.16")); //$NON-NLS-1$
+				targettype, new Object[]{}, "2"); //$NON-NLS-1$
 
 		// perform actual test
 		IdentifierFunction idf = new IdentifierFunction();
 		idf.configure(cell);
 
 		Feature neu = idf.transform(source, target);
-		System.out.println(Messages.getString("IdentifierTest.17")+neu.getProperty( //$NON-NLS-1$
+		System.out.println("With String Binding: "+neu.getProperty( //$NON-NLS-1$
 				this.targetLocalnamePropertyBID).getValue().toString());
 		assertTrue(neu.getProperty(this.targetLocalnamePropertyBID).getValue()
 				.toString().equals(
-						IdentifierFunction.INSPIRE_IDENTIFIER_PREFIX + Messages.getString("IdentifierTest.18") //$NON-NLS-1$
-								+ this.countryname + Messages.getString("IdentifierTest.19") + this.provName + Messages.getString("IdentifierTest.20") //$NON-NLS-1$ //$NON-NLS-2$
-								+ this.prodName + Messages.getString("IdentifierTest.21") + this.sourceLocalname //$NON-NLS-1$
-								+ Messages.getString("IdentifierTest.22") + this.localID + Messages.getString("IdentifierTest.23") + this.version)); //$NON-NLS-1$ //$NON-NLS-2$
+						IdentifierFunction.INSPIRE_IDENTIFIER_PREFIX + ":" //$NON-NLS-1$
+								+ this.countryname + ":" + this.provName + ":" //$NON-NLS-1$ //$NON-NLS-2$
+								+ this.prodName + ":" + this.sourceLocalname //$NON-NLS-1$
+								+ ":" + this.localID + ":" + this.version)); //$NON-NLS-1$ //$NON-NLS-2$
 
 	}
 	
@@ -125,9 +125,9 @@ public class IdentifierTest {
 		
 
 		Feature source = SimpleFeatureBuilder.build(
-				sourcetype, new Object[]{Messages.getString("IdentifierTest.24")}, Messages.getString("IdentifierTest.25")); //$NON-NLS-1$ //$NON-NLS-2$
+				sourcetype, new Object[]{"ID1"}, "1"); //$NON-NLS-1$ //$NON-NLS-2$
 		Feature target = SimpleFeatureBuilder.build(
-				targettype, new Object[]{}, Messages.getString("IdentifierTest.26")); //$NON-NLS-1$
+				targettype, new Object[]{}, "2"); //$NON-NLS-1$
 
 		// perform actual test
 		IdentifierFunction idf = new IdentifierFunction();
@@ -138,7 +138,7 @@ public class IdentifierTest {
 		
 		InspireIdentifier itemp = (InspireIdentifier)neu.getProperty(
 				this.targetLocalnamePropertyBID).getValue();
-		System.out.println(Messages.getString("IdentifierTest.27") + IdentifierFunction.INSPIRE_IDENTIFIER_PREFIX+Messages.getString("IdentifierTest.28")+itemp.getNameSpace()+Messages.getString("IdentifierTest.29")+itemp.getLocalID()+Messages.getString("IdentifierTest.30")+itemp.getVersionID()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		System.out.println("With Inspire Identifier Binding: " + IdentifierFunction.INSPIRE_IDENTIFIER_PREFIX+":"+itemp.getNameSpace()+":"+itemp.getLocalID()+":"+itemp.getVersionID()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		
 		
 		InspireIdentifier expectedII = this.getInspireIDToCheck();
@@ -174,7 +174,7 @@ public class IdentifierTest {
 		// build the expected inspireIdentifier as result
 		InspireIdentifier ii = new InspireIdentifier();
 		ii.setLocalID(localID);
-		ii.setNameSpace(this.countryname+Messages.getString("IdentifierTest.31")+this.provName+Messages.getString("IdentifierTest.32")+this.prodName+Messages.getString("IdentifierTest.33")+this.sourceLocalname); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		ii.setNameSpace(this.countryname+":"+this.provName+":"+this.prodName+":"+this.sourceLocalname); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		ii.setVersionID(this.version);
 		return ii;
 	}
@@ -183,10 +183,10 @@ public class IdentifierTest {
 		Cell cell = new Cell();
 		Transformation t = new Transformation();
 		t.setService(new Resource(IdentifierFunction.class.toString()));
-		t.getParameters().add(new Parameter(Messages.getString("IdentifierTest.34"), this.countryname)); //$NON-NLS-1$
-		t.getParameters().add(new Parameter(Messages.getString("IdentifierTest.35"), this.provName)); //$NON-NLS-1$
-		t.getParameters().add(new Parameter(Messages.getString("IdentifierTest.36"), this.prodName)); //$NON-NLS-1$
-		t.getParameters().add(new Parameter(Messages.getString("IdentifierTest.37"), this.version)); //$NON-NLS-1$
+		t.getParameters().add(new Parameter("countryName", this.countryname)); //$NON-NLS-1$
+		t.getParameters().add(new Parameter("providerName", this.provName)); //$NON-NLS-1$
+		t.getParameters().add(new Parameter("productName", this.prodName)); //$NON-NLS-1$
+		t.getParameters().add(new Parameter("version", this.version)); //$NON-NLS-1$
 		Property p1 = new Property(new About(this.sourceNamespace, this.sourceLocalname, this.sourceLocalnamePropertyAID));
 		p1.setTransformation(t);
 		cell.setEntity1(p1);
