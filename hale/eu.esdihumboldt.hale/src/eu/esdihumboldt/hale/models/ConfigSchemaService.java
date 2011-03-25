@@ -12,12 +12,9 @@
 
 package eu.esdihumboldt.hale.models;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import eu.esdihumboldt.hale.models.project.generated.ConfigData;
-import eu.esdihumboldt.hale.models.project.generated.ConfigSchema;
 import eu.esdihumboldt.hale.models.project.generated.ConfigSection;
 
 /**
@@ -28,43 +25,6 @@ import eu.esdihumboldt.hale.models.project.generated.ConfigSection;
  */
 public interface ConfigSchemaService extends UpdateService {
 
-	/**
-	 * Add a key => value pair to the config.
-	 * 
-	 * @param key
-	 * @param value
-	 */
-	public void add(String key, String value);
-	
-	/**
-	 * Remove an entry at specific key.
-	 * 
-	 * @param key
-	 */
-	public void remove(String key);
-	
-	/**
-	 * Get a value from specific key.
-	 * 
-	 * @param key
-	 * @return value
-	 */
-	public String get(String key);
-	
-	/**
-	 * Retuns a {@link List} with all {@link ConfigSchema} items.
-	 * 
-	 * @return
-	 */
-	public List<ConfigSchema> getAll();
-	
-	/**
-	 * Sets all {@link ConfigSchema} items.
-	 * 
-	 * @param list
-	 */
-	public void setAll(List<ConfigSchema> list);
-	
 	public void addSection(String name);
 	public void addSection(String name, HashMap<String, String> data);
 	public void removeSection(String name);

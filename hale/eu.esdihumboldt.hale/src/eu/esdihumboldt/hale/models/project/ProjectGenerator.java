@@ -41,8 +41,6 @@ import eu.esdihumboldt.hale.models.ConfigSchemaService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.TaskService;
-import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceImpl;
-import eu.esdihumboldt.hale.models.project.generated.ConfigSchema;
 import eu.esdihumboldt.hale.models.project.generated.ConfigSection;
 import eu.esdihumboldt.hale.models.project.generated.HaleProject;
 import eu.esdihumboldt.hale.models.project.generated.InstanceData;
@@ -87,7 +85,7 @@ public class ProjectGenerator {
 	 * 
 	 * @throws JAXBException if writing the project fails
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void write(String xmlPath, String name) throws JAXBException {
 		
 		// add *.xml extension if is wasn't added before
@@ -120,19 +118,6 @@ public class ProjectGenerator {
 			throws JAXBException {
 		final String basePath = FilenameUtils.getFullPath(xmlPath);
 		
-		// get service references as required.
-		TaskService taskService = 
-			(TaskService) PlatformUI.getWorkbench().getService(
-					TaskService.class);
-		
-		AlignmentService alignmentService = 
-			(AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
-		
-		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
-		
-		ConfigSchemaService config = (ConfigSchemaService) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
-		
 		// setup project and basic attributes
 		HaleProject hproject = new HaleProject();
 		hproject.setHaleVersion(projectService.getHaleVersion());
@@ -141,6 +126,28 @@ public class ProjectGenerator {
 		hproject.setName(name);
 		
 		// create InstanceData element
+		this.createInstanceData(hproject, basePath);
+		
+		// create MappedSchema elements
+		this.createMappedSchema(hproject, basePath);
+		
+		// transfer task status
+		this.createTaskStatus(hproject);
+		
+		// add configSections
+		this.createConfigSections(hproject);
+		
+		// serialize mapping and link it in HaleProject 
+		this.createAlignment(hproject, basePath, xmlPath);
+		
+		// save SLD and background
+		this.createStyle(hproject, basePath, xmlPath);
+		
+		return hproject;
+	}
+
+	
+	private void createInstanceData(HaleProject hproject, String basePath) {
 		if (projectService.getInstanceDataPath() != null) {
 			InstanceData id = new InstanceData();
 			id.setPath(getRelativeLocation(projectService.getInstanceDataPath(), basePath));
@@ -158,8 +165,9 @@ public class ProjectGenerator {
 			id.setType(projectService.getInstanceDataType().name());
 			hproject.setInstanceData(id);
 		}
-		
-		// create MappedSchema elements
+	}
+	
+	private void createMappedSchema(HaleProject hproject, String basePath) {
 		MappedSchema sourceschema = new MappedSchema();
 		sourceschema.setPath(getRelativeLocation(projectService.getSourceSchemaPath(), basePath));
 		hproject.setSourceSchema(sourceschema);
@@ -169,8 +177,13 @@ public class ProjectGenerator {
 			targetschema.setPath(getRelativeLocation(projectService.getTargetSchemaPath(), basePath));
 			hproject.setTargetSchema(targetschema);
 		}
+	}
+	
+	private void createTaskStatus(HaleProject hproject) {
+		TaskService taskService = 
+			(TaskService) PlatformUI.getWorkbench().getService(
+					TaskService.class);
 		
-		// transfer task status
 		TaskStatus taskStatus = new TaskStatus();
 		List<Task> tasks = taskStatus.getTask();
 		for (Entry<eu.esdihumboldt.hale.task.Task, TaskUserData> entry : taskService.getUserTasks().entrySet()) {
@@ -185,8 +198,22 @@ public class ProjectGenerator {
 			tasks.add(newTask);
 		}
 		hproject.setTaskStatus(taskStatus);
+	}
+	
+	private void createAlignment(HaleProject hproject, String basePath, String xmlPath) throws JAXBException {
+		AlignmentService alignmentService = 
+			(AlignmentService) PlatformUI.getWorkbench().getService(
+					AlignmentService.class);
 		
-		// add configSections
+		OmlRdfGenerator org = new HaleOmlRdfGenerator();
+		org.write(alignmentService.getAlignment(), xmlPath + ".goml"); //$NON-NLS-1$
+		hproject.setOmlPath(getRelativeLocation(xmlPath + ".goml", basePath)); //$NON-NLS-1$
+		
+	}
+	
+	private void createConfigSections(HaleProject hproject) {
+		ConfigSchemaService config = (ConfigSchemaService) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
+		
 		ArrayList<ConfigSection> projectConfigList = (ArrayList<ConfigSection>) hproject.getConfigSchema();
 		ArrayList<ConfigSection> list = (ArrayList<ConfigSection>) config.generateConfig();
 		
@@ -195,14 +222,11 @@ public class ProjectGenerator {
 				projectConfigList.add(s);
 			}
 		}
+	}
+	
+	private void createStyle(HaleProject hproject, String basePath, String xmlPath) {
+		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 		
-		
-		// serialize mapping and link it in HaleProject 
-		OmlRdfGenerator org = new HaleOmlRdfGenerator();
-		org.write(alignmentService.getAlignment(), xmlPath + ".goml"); //$NON-NLS-1$
-		hproject.setOmlPath(getRelativeLocation(xmlPath + ".goml", basePath)); //$NON-NLS-1$
-		
-		// save SLD and background
 		Style style = styleService.getStyle();
 		if (style != null) {
 			String stylePath = xmlPath + ".sld"; //$NON-NLS-1$
@@ -230,10 +254,8 @@ public class ProjectGenerator {
 			
 			hproject.setStyles(styles);
 		}
-		
-		return hproject;
 	}
-
+	
 	/**
 	 * Get the relative location to a file
 	 * 

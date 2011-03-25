@@ -22,7 +22,6 @@ import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.UpdateService;
 import eu.esdihumboldt.hale.models.project.generated.ConfigData;
-import eu.esdihumboldt.hale.models.project.generated.ConfigSchema;
 import eu.esdihumboldt.hale.models.project.generated.ConfigSection;
 
 /**
@@ -34,12 +33,8 @@ import eu.esdihumboldt.hale.models.project.generated.ConfigSection;
 public class ConfigSchemaServiceImpl implements ConfigSchemaService {
 	
 	/**
-	 * Contains the button configuration.
+	 * Contains the internal representation of configSchema
 	 */
-	private Map<String, String> config = new HashMap<String, String>();
-	
-//	private ArrayList<ConfigSection> sections = new ArrayList<ConfigSection>();
-	//			section			key,	value
 	private Map<String, HashMap<String, String>> sections = new HashMap<String, HashMap<String, String>>();
 	
 	/**
@@ -71,46 +66,6 @@ public class ConfigSchemaServiceImpl implements ConfigSchemaService {
 		for (HaleServiceListener hsl : this.listeners) {
 			hsl.update(new UpdateMessage(ConfigSchemaService.class, null));
 		}
-	}
-
-	@Override
-	public void add(String key, String value) {
-		this.config.put(key, value);
-	}
-
-	@Override
-	public void remove(String key) {
-		this.config.remove(key);
-	}
-
-	@Override
-	public String get(String key) {
-		return this.config.get(key);
-	}
-
-	@Override
-	public List<ConfigSchema> getAll() {
-		List<ConfigSchema> list = new ArrayList<ConfigSchema>();
-		ConfigSchema schema = null;
-		
-		for(Map.Entry<String, String> entry : config.entrySet()) {
-			schema = new ConfigSchema();
-			schema.setKey(entry.getKey());
-			schema.setValue(entry.getValue());
-			
-			list.add(schema);
-		}
-		
-		return list;
-	}
-	
-	@Override
-	public void setAll(List<ConfigSchema> list) {
-		for(ConfigSchema s : list) {
-			this.add(s.getKey(), s.getValue());
-		}
-		
-		this.updateListeners();
 	}
 
 	@Override
