@@ -99,7 +99,7 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 	/**
 	 * Columns separator for CSV format
 	*/
-	private String separator = ","; //$NON-NLS-1$
+	private String separator = ",";
 
 	/**
 	 * @see MappingExportProvider#export(Alignment, String, Collection, Collection)
@@ -114,20 +114,20 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 		this.sourceSchema = sourceSchema;
 		this.targetSchema = targetSchema;
 		
-		String[] pathSpilt = path.split("\\\\"); //$NON-NLS-1$
-		path.replace(pathSpilt[pathSpilt.length-1] , ""); //$NON-NLS-1$
+		String[] pathSpilt = path.split("\\\\");
+		path.replace(pathSpilt[pathSpilt.length-1] , "");
 		
 		//Sort the alignment
 		this.sortAlignment();
 		
-		final String filesSubDir = FilenameUtils.removeExtension(FilenameUtils.getName(path)) + "_files"; //$NON-NLS-1$
+		final String filesSubDir = FilenameUtils.removeExtension(FilenameUtils.getName(path)) + "_files";
 		//final File filesDir = new File(FilenameUtils.getFullPath(path), filesSubDir);
 		
 		StringWriter stringWriter = new StringWriter();
 		this.context = new VelocityContext();
 		
 		//Gets the path to the template file and style sheet
-		URL templatePath = this.getClass().getResource("template.html");  //$NON-NLS-1$
+		URL templatePath = this.getClass().getResource("template.html"); 
 		
 		//generates a byteArray out of the template
 		byte[] templateByteArray = null;
@@ -144,7 +144,7 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 		//creates the temporary file
 		File tempFile = null;
 		try {
-			tempFile = File.createTempFile("template", ".vm"); //$NON-NLS-1$ //$NON-NLS-2$
+			tempFile = File.createTempFile("template", ".vm");
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -158,8 +158,8 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 			e1.printStackTrace();
 		} 
 		//Set temporary template path
-		String tempPath = tempFile.getPath().replace(tempFile.getName(), ""); //$NON-NLS-1$
-		Velocity.setProperty("file.resource.loader.path", tempPath); //$NON-NLS-1$
+		String tempPath = tempFile.getPath().replace(tempFile.getName(), "");
+		Velocity.setProperty("file.resource.loader.path", tempPath);
 			try {
 				//Initiate Velocity
 				Velocity.init();
@@ -238,16 +238,16 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 			}
 			
 			
-			String[] tempSplit = cellName.split("\\."); //$NON-NLS-1$
+			String[] tempSplit = cellName.split("\\.");
 			String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
 			
-			if(graphConnectionNodeName.equals("RenameFeatureFunction")){ //$NON-NLS-1$
+			if(graphConnectionNodeName.equals("RenameFeatureFunction")){
 				this.retypes.add(cell);
 				continue;
 			}
 			
 			//Augmentation
-			if(cell.getEntity1().getTransformation() == null || cell.getEntity1().getAbout().getAbout().equals("entity/null")){ //$NON-NLS-1$
+			if(cell.getEntity1().getTransformation() == null || cell.getEntity1().getAbout().getAbout().equals("entity/null")){
 				this.augmentations.add(cell);
 				continue;
 			}
@@ -305,7 +305,7 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 		String row;
 		
 		cellVector = new Vector<String>();
-		cellVector.addElement("\"Operation Type\",\"Function\",\"Entity 1\",\"Entity 2\",\"Filter Rules\",\"Parameters\""); //$NON-NLS-1$
+		cellVector.addElement("\"Operation Type\",\"Function\",\"Entity 1\",\"Entity 2\",\"Filter Rules\",\"Parameters\"");
 		cellListVector.addElement(cellVector);	
 		
 		/**
@@ -321,22 +321,22 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 			 */
 			row=new String();
 			cellVector = new Vector<String>();	
-			String[] retypeSourceName = this.entityNameSplitter(retypeCell.getEntity1());
-			String[] retypeTargetName = this.entityNameSplitter(retypeCell.getEntity2());
+			String[] retypeSourceName = this.entityNameSplitter(retypeCell.getEntity1(),true);
+			String[] retypeTargetName = this.entityNameSplitter(retypeCell.getEntity2(),true);
 					
 			//Header
-			row+="\"Retype\""; //$NON-NLS-1$
+			row+="\"Retype\"";
 			row+=separator;
 			row+=separator;
-			row+="\""+retypeSourceName[0]+"\""; //$NON-NLS-1$ //$NON-NLS-2$
+			row+="\""+retypeSourceName[0]+"\"";
 			row+=separator;
-			row+="\""+retypeTargetName[0]+"\""; //$NON-NLS-1$ //$NON-NLS-2$
+			row+="\""+retypeTargetName[0]+"\"";
 			row+=separator;
 			//Filters
-			row+="\""+this.getFilters(retypeCell,1)+"\""; //$NON-NLS-1$ //$NON-NLS-2$
+			row+="\""+this.getFilters(retypeCell,1)+"\"";
 			row+=separator;
 			//Parameters
-			row+="\""+this.getParameters(retypeCell)+"\""; //$NON-NLS-1$ //$NON-NLS-2$
+			row+="\""+this.getParameters(retypeCell)+"\"";
 			cellVector.addElement(row);			
 			cellListVector.addElement(cellVector);	
 		}
@@ -347,13 +347,13 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 			for(ICell transformationCell : this.transformations){
 				cellVector = new Vector<String>();
 				row=new String();
-				String[] retypeSourceName = this.entityNameSplitter(transformationCell.getEntity1());
-				String[] retypeTargetName = this.entityNameSplitter(transformationCell.getEntity2());
+				String[] retypeSourceName = this.entityNameSplitter(transformationCell.getEntity1(),true);
+				String[] retypeTargetName = this.entityNameSplitter(transformationCell.getEntity2(),true);
 				if(transformationCell.getEntity2().getAbout().getAbout().contains(retypeTargetName[0])){
-					String[] entity1Name = this.entityNameSplitter(transformationCell.getEntity1());
-					entity1Name[entity1Name.length-1] = entity1Name[entity1Name.length-1].replace(";", " --> "); //$NON-NLS-1$ //$NON-NLS-2$
-					String[] entity2Name = this.entityNameSplitter(transformationCell.getEntity2());
-					entity2Name[entity2Name.length-1] = entity2Name[entity2Name.length-1].replace(";", " --> "); //$NON-NLS-1$ //$NON-NLS-2$
+					String[] entity1Name = this.entityNameSplitter(transformationCell.getEntity1(),false);
+					entity1Name[entity1Name.length-1] = entity1Name[entity1Name.length-1].replace(";", " --> ");
+					String[] entity2Name = this.entityNameSplitter(transformationCell.getEntity2(),false);
+					entity2Name[entity2Name.length-1] = entity2Name[entity2Name.length-1].replace(";", " --> ");
 					
 					String functioncellName;
 					if (transformationCell.getEntity1().getTransformation() == null) {
@@ -365,53 +365,53 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 								.getTransformation().getService()
 								.getLocation();
 					}
-					String[] tempSplit = functioncellName.split("\\."); //$NON-NLS-1$
+					String[] tempSplit = functioncellName.split("\\.");
 					String functionName = tempSplit[tempSplit.length - 1];
 					
 					//Header
-					row+="\"Transformation\""; //$NON-NLS-1$
+					row+="\"Transformation\"";
 					row+=separator;
-					row+="\""+functionName+"\""; //$NON-NLS-1$ //$NON-NLS-2$
+					row+="\""+functionName+"\"";
 					row+=separator;
-					row+="\""; //$NON-NLS-1$
+					row+="\"";
 					//entity1
 					if (transformationCell.getEntity1() instanceof ComposedProperty) {
 						//ComposedProperty
 						for(int z=0; z < entity1Name.length; z++){
-							row+=retypeSourceName[0]+" / "+entity1Name[z]; //$NON-NLS-1$
-							row+=";"; //$NON-NLS-1$
+							row+=retypeSourceName[0]+" / "+entity1Name[z];
+							row+=";";
 						}
 						if (row.length()>1)
 							row=row.substring(0,row.length()-1);
 					}
 					else{
-						row+=retypeSourceName[0]+" / "+entity1Name[0]; //$NON-NLS-1$
+						row+=retypeSourceName[0]+" / "+entity1Name[0];
 					}
-					row+="\""; //$NON-NLS-1$
+					row+="\"";
 					row+=separator;
-					row+="\""; //$NON-NLS-1$
+					row+="\"";
 					//entity2
 					if (transformationCell.getEntity2() instanceof ComposedProperty) {
 						for(int z=0; z < entity2Name.length; z++){
-							row+=retypeTargetName[0]+" / "+entity2Name[z]; //$NON-NLS-1$
-							row+=";"; //$NON-NLS-1$
+							row+=retypeTargetName[0]+" / "+entity2Name[z];
+							row+=";";
 						}
 						if (row.length()>1)
 							row=row.substring(0,row.length()-1);
 					}
 					else{
-						row+=retypeTargetName[0]+" / "+entity2Name[0]; //$NON-NLS-1$
+						row+=retypeTargetName[0]+" / "+entity2Name[0];
 					}
 					
 					//Image
 //					cellVector.addElement("<img src='"+this.pictureNames+(i-1)+".png'>");
-					row+="\""; //$NON-NLS-1$
+					row+="\"";
 					row+=separator;
 					//Filters
-					row+="\""+this.getFilters(transformationCell,1)+"\""; //$NON-NLS-1$ //$NON-NLS-2$
+					row+="\""+this.getFilters(transformationCell,1)+"\"";
 					row+=separator;
 					//Parameters
-					row+="\""+this.getParameters(transformationCell)+"\""; //$NON-NLS-1$ //$NON-NLS-2$
+					row+="\""+this.getParameters(transformationCell)+"\"";
 					i++;
 				}
 				cellVector.addElement(row);
@@ -427,30 +427,27 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 			for(ICell augmentationCell : this.augmentations){
 				cellVector = new Vector<String>();
 				row=new String();
-				String[] retypeSourceName = this.entityNameSplitter(augmentationCell.getEntity1());
-				String[] retypeTargetName = this.entityNameSplitter(augmentationCell.getEntity2());
+				String[] retypeTargetName = this.entityNameSplitter(augmentationCell.getEntity2(),false);
+				String[] retypeTargetNameParent = this.entityNameSplitter(augmentationCell.getEntity2(),true);
 				
-				String superTypeName=""; //$NON-NLS-1$
-				if(superTypeName.equals("")) //$NON-NLS-1$
-				{
+				String superTypeName="";
 				for (Iterator<SchemaElement> iterator = this.targetSchema.iterator();iterator.hasNext();) {
 					SchemaElement schemaElement = iterator.next();
-					if(schemaElement.getIdentifier().contains(retypeTargetName[0])){
+					if(schemaElement.getIdentifier().contains("/"+retypeTargetName[0])){
 						String temp = new String();
-						String[] split = schemaElement.getType().getSuperType().getIdentifier().split("/"); //$NON-NLS-1$
-						temp = split[split.length-1];
-						temp = temp.replace("Type", ""); //$NON-NLS-1$ //$NON-NLS-2$
+						String[] split = schemaElement.getType().getSuperType().getIdentifier().split("/");
+						temp = split[split.length-2];
+						temp = temp.replace("Type", "");
 						superTypeName = temp;
 						break;
 					}
 				}
-				}
 				
 				if(augmentationCell.getEntity2().getAbout().getAbout().contains(superTypeName)){
-					String[] entity1Name = this.entityNameSplitter(augmentationCell.getEntity1());
-					entity1Name[entity1Name.length-1] = entity1Name[entity1Name.length-1].replace(";", " --> "); //$NON-NLS-1$ //$NON-NLS-2$
-					String[] entity2Name = this.entityNameSplitter(augmentationCell.getEntity2());
-					entity2Name[entity2Name.length-1] = entity2Name[entity2Name.length-1].replace(";", " --> "); //$NON-NLS-1$ //$NON-NLS-2$
+					String[] entity1Name = this.entityNameSplitter(augmentationCell.getEntity1(),false);
+					entity1Name[entity1Name.length-1] = entity1Name[entity1Name.length-1].replace(";", " --> ");
+					String[] entity2Name = this.entityNameSplitter(augmentationCell.getEntity2(),false);
+					entity2Name[entity2Name.length-1] = entity2Name[entity2Name.length-1].replace(";", " --> ");
 					
 					String functioncellName;
 					if (augmentationCell.getEntity1().getTransformation() == null) {
@@ -462,45 +459,45 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 								.getTransformation().getService()
 								.getLocation();
 					}
-					String[] tempSplit = functioncellName.split("\\."); //$NON-NLS-1$
+					String[] tempSplit = functioncellName.split("\\.");
 					String functionName = tempSplit[tempSplit.length - 1];
 					
 					//Header
-					row+="\"Augmentation\""; //$NON-NLS-1$
+					row+="\"Augmentation\"";
 					row+=separator;
-					row+="\""; //$NON-NLS-1$
+					row+="\"";
 					row+=functionName;
-					row+="\""; //$NON-NLS-1$
+					row+="\"";
 					row+=separator;
-					row+="\""; //$NON-NLS-1$
+					row+="\"";
 					//entity1 --> There is no Entity1 in augmentation function
-					row+="\""; //$NON-NLS-1$
+					row+="\"";
 					row+=separator;
-					row+="\""; //$NON-NLS-1$
+					row+="\"";
 					//entity2
 					if (augmentationCell.getEntity2() instanceof ComposedProperty) {
-						cellVector.addElement("Entity 2 : ComposedProperty"); //$NON-NLS-1$
+						cellVector.addElement("Entity 2 : ComposedProperty");
 						for(int z=0; z < entity2Name.length; z++){
-							row+=superTypeName+" / "+retypeTargetName[0]+" / "+entity2Name[z]; //$NON-NLS-1$ //$NON-NLS-2$
-							row+=";"; //$NON-NLS-1$
+							row+=superTypeName+" / "+retypeTargetNameParent[0]+" / "+entity2Name[z];
+							row+=";";
 						}
 						if(row.length()>1)
 							row=row.substring(0,row.length()-1);
 					}
 					else{
-						row+=superTypeName+" / "+retypeTargetName[0]+" / "+entity2Name[0]; //$NON-NLS-1$ //$NON-NLS-2$
+						row+=superTypeName+" / "+retypeTargetNameParent[0]+" / "+entity2Name[0];
 					}
-					row+="\""; //$NON-NLS-1$
+					row+="\"";
 					row+=separator;
-					row+="\""; //$NON-NLS-1$
+					row+="\"";
 					//Filters
 					row+=this.getFilters(augmentationCell,1);
-					row+="\""; //$NON-NLS-1$
+					row+="\"";
 					row+=separator;
-					row+="\""; //$NON-NLS-1$
+					row+="\"";
 					//Parameters
 					row+=this.getParameters(augmentationCell);
-					row+="\""; //$NON-NLS-1$
+					row+="\"";
 					i++;
 				}
 				cellVector.addElement(row);
@@ -508,7 +505,7 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 			}
 				
 			e++;
-		this.context.put("cellList", cellListVector); //$NON-NLS-1$
+		this.context.put("cellList", cellListVector);
 	}
 	
 	/**
@@ -518,7 +515,7 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 	 */
 	private String getFilters(ICell cell,int entity){
 		//Filter Rules
-		String row=""; //$NON-NLS-1$
+		String row="";
 		if(entity==1)
 		{
 		Boolean searchentity2 = false;
@@ -538,10 +535,10 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 						{
 							row+=((ValueExpression)values.get(i)).getLiteral();
 							if(i!=values.size()-1)
-								row+="|"; //$NON-NLS-1$
+								row+="|";
 						}
 					}
-					row+=";"; //$NON-NLS-1$
+					row+=";";
 				}
 				if(row.length()>1)
 					row=row.substring(0,row.length()-1);
@@ -563,10 +560,10 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 						{
 							row+=((ValueExpression)values.get(i)).getLiteral();
 							if(i!=values.size()-1)
-								row+="|"; //$NON-NLS-1$
+								row+="|";
 						}
 					}
-					row+=";"; //$NON-NLS-1$
+					row+=";";
 				}
 				if(row.length()>1)
 					row=row.substring(0,row.length()-1);
@@ -589,10 +586,10 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 						{
 							row+=((ValueExpression)values.get(i)).getLiteral();
 							if(i!=values.size()-1)
-								row+="|"; //$NON-NLS-1$
+								row+="|";
 						}
 					}
-					row+=";"; //$NON-NLS-1$
+					row+=";";
 				}
 				if(row.length()>1)
 					row=row.substring(0,row.length()-1);
@@ -615,10 +612,10 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 						{
 							row+=((ValueExpression)values.get(i)).getLiteral();
 							if(i!=values.size()-1)
-								row+="|"; //$NON-NLS-1$
+								row+="|";
 						}
 					}
-					row+=";"; //$NON-NLS-1$
+					row+=";";
 				}
 				if (row.length()>1)
 					row=row.substring(0,row.length()-1);
@@ -626,7 +623,7 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 		}
 		if(searchentity2)
 		{
-			row="["+row+"]->["+getFilters(cell, 2)+"]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			row="["+row+"]->["+getFilters(cell, 2)+"]";
 		}
 		return row;
 		}
@@ -647,10 +644,10 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 							{
 								row+=((ValueExpression)values.get(i)).getLiteral();
 								if(i!=values.size()-1)
-									row+="|"; //$NON-NLS-1$
+									row+="|";
 							}
 						}
-						row+=";"; //$NON-NLS-1$
+						row+=";";
 					}
 					if(row.length()>1)
 						row=row.substring(0,row.length()-1);
@@ -671,10 +668,10 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 							{
 								row+=((ValueExpression)values.get(i)).getLiteral();
 								if(i!=values.size()-1)
-									row+="|"; //$NON-NLS-1$
+									row+="|";
 							}
 						}
-						row+=";"; //$NON-NLS-1$
+						row+=";";
 					}
 					if(row.length()>1)
 						row=row.substring(0,row.length()-1);
@@ -696,10 +693,10 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 							{
 								row+=((ValueExpression)values.get(i)).getLiteral();
 								if(i!=values.size()-1)
-									row+="|"; //$NON-NLS-1$
+									row+="|";
 							}
 						}
-						row+=";"; //$NON-NLS-1$
+						row+=";";
 					}
 					if(row.length()>1)
 						row=row.substring(0,row.length()-1);
@@ -721,10 +718,10 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 							{
 								row+=((ValueExpression)values.get(i)).getLiteral();
 								if(i!=values.size()-1)
-									row+="|"; //$NON-NLS-1$
+									row+="|";
 							}
 						}
-						row+=";"; //$NON-NLS-1$
+						row+=";";
 					}
 					if (row.length()>1)
 						row=row.substring(0,row.length()-1);
@@ -741,7 +738,7 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 	 */
 	private String getParameters(ICell cell){
 		//Parameters
-		String row=""; //$NON-NLS-1$
+		String row="";
 		List<IParameter> parameterList = new ArrayList<IParameter>();
 		if (cell.getEntity1().getTransformation() != null) {
 			parameterList = cell.getEntity1().getTransformation().getParameters();
@@ -751,8 +748,8 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 		}
 		if (!parameterList.isEmpty()) {
 			for (IParameter parameter : parameterList) {
-				row+=parameter.getName() + " : "+ parameter.getValue(); //$NON-NLS-1$
-				row+=";"; //$NON-NLS-1$
+				row+=parameter.getName() + " : "+ parameter.getValue();
+				row+=";";
 			}
 			if (row.length()>1)
 				row=row.substring(0,row.length()-1);
@@ -764,19 +761,25 @@ public class CsvMappingExportFactory implements MappingExportProvider {
 	 * @param entity
 	 * @return cellName
 	 */
-	private String[] entityNameSplitter(IEntity entity){
+	private String[] entityNameSplitter(IEntity entity,boolean wantedparent){
 		String[] entityNames = new String[1];
 		if(!(entity instanceof ComposedProperty)){
-			String[] entitySplit = entity.getAbout().getAbout().split("/"); //$NON-NLS-1$
-			entityNames[0] = entitySplit[entitySplit.length-1];
+			String[] entitySplit = entity.getAbout().getAbout().split("/");
+			if(wantedparent && entitySplit.length>1)
+				entityNames[0] = entitySplit[entitySplit.length-2];
+			else
+				entityNames[0] = entitySplit[entitySplit.length-1];
 			return entityNames;
 		}
 		else{
 			entityNames = new String[((ComposedProperty)entity).getCollection().size()];
 			int i=0;
 			for(IEntity tempEntity : ((ComposedProperty)entity).getCollection()){
-				String[] entitySplit = tempEntity.getAbout().getAbout().split("/"); //$NON-NLS-1$
-				entityNames[i] = entitySplit[entitySplit.length-1];
+				String[] entitySplit = tempEntity.getAbout().getAbout().split("/");
+				if(wantedparent && entitySplit.length>1)
+					entityNames[i] = entitySplit[entitySplit.length-2];
+				else
+					entityNames[i] = entitySplit[entitySplit.length-1];
 				i++;
 			}
 			return entityNames;
