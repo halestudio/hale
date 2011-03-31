@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.task;
 
+import eu.esdihumboldt.hale.Messages;
+
 /**
  * User data of a task
  *
@@ -41,13 +43,13 @@ public interface TaskUserData {
 		public String toString() {
 			switch (this) {
 			case NEW:
-				return "New"; //$NON-NLS-1$
+				return Messages.TaskUserData_0; 
 			case ACTIVE:
-				return "Active"; //$NON-NLS-1$
+				return Messages.TaskUserData_1; 
 			case IGNORED:
-				return "Ignored"; //$NON-NLS-1$
+				return Messages.TaskUserData_2; 
 			case COMPLETED:
-				return "Completed"; //$NON-NLS-1$
+				return Messages.TaskUserData_3; 
 			default:
 				return super.toString();
 			}

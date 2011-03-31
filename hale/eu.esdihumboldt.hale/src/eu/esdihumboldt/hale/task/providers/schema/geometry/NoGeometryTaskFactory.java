@@ -16,7 +16,6 @@ package eu.esdihumboldt.hale.task.providers.schema.geometry;
 import java.text.MessageFormat;
 
 import eu.esdihumboldt.hale.Messages;
-import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -127,7 +126,6 @@ public class NoGeometryTaskFactory extends AbstractTaskFactory {
 	 * Determines if the given element is valid for a task
 	 * 
 	 * @param element the element
-	 * @param alignmentService the alignment service
 	 * 
 	 * @return if the type is valid
 	 */

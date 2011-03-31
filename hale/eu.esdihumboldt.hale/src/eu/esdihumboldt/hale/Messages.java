@@ -327,6 +327,14 @@ public class Messages extends NLS {
 	public static String TaskTreeView_TitleDescriptionText;
 	public static String TaskTreeView_value_tooltip;
 
+	public static String TaskUserData_0;
+
+	public static String TaskUserData_1;
+
+	public static String TaskUserData_2;
+
+	public static String TaskUserData_3;
+
 	public static String WFSFeatureTypesReaderDialog_ValdationOKText;
 
 	public static String SaveAlignmentProjectWizardMainPage_LocationText;
