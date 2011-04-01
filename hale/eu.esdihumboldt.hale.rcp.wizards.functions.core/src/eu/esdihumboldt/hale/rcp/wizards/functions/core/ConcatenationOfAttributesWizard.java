@@ -25,6 +25,7 @@ import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
@@ -115,7 +116,7 @@ public class ConcatenationOfAttributesWizard extends AbstractSingleComposedCellW
 		parameters.add(new Parameter(
 				ConcatenationOfAttributesFunction.CONCATENATION, temp));
 		t.setParameters(parameters);
-		((ComposedProperty) cell.getEntity1()).setTransformation(t);
+		((Property) cell.getEntity1()).setTransformation(t);
 
 		return true;
 	}
