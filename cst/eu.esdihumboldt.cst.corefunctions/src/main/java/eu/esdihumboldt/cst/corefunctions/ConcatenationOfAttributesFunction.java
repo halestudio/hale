@@ -131,7 +131,7 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 		String finalConcatString = ""; //$NON-NLS-1$
 		for (String thisElement : concat) {
 			String[] properties = thisElement.split(String.valueOf(DetailedAbout.PROPERTY_DELIMITER));
-			Object value = FeatureInspector.getPropertyValue(source, Arrays.asList(properties), null);
+			Object value = FeatureInspector.getPropertyValue(source, Arrays.asList(properties), thisElement);
 			
 			if (finalConcatString.length() > 0) {
 				finalConcatString += this.seperator;
@@ -141,7 +141,10 @@ public class ConcatenationOfAttributesFunction implements CstFunction{
 				finalConcatString += value.toString();
 			}
 			else {
-				finalConcatString += ""; //$NON-NLS-1$
+//				finalConcatString += ""; //$NON-NLS-1$
+				// treat variable name as value
+				//FIXME should be further improved to check on the schema information if there is any property defined
+				finalConcatString += thisElement;
 			}
 		}
 		
