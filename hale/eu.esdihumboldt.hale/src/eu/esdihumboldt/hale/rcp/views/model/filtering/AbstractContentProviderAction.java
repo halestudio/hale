@@ -118,8 +118,15 @@ public abstract class AbstractContentProviderAction extends Action implements Co
 	}
 	
 	@Override
-	public void update(String section, Message message) {
-		if (message.equals(Message.ITEM_CHANGED) || message.equals(Message.CONFIG_PARSED))
-			this.setChecked(Boolean.parseBoolean(this.config.getSectionData(caption).get(this.identifier)));
+	public void update(final String section, final Message message) {
+		if (message.equals(Message.ITEM_CHANGED) || message.equals(Message.CONFIG_PARSED)) {
+			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+				@Override
+				public void run() {
+						setChecked(Boolean.parseBoolean(config.getSectionData(caption).get(identifier)));
+						AbstractContentProviderAction.this.run();
+				}
+			});
+		}
 	}
 }
