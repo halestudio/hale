@@ -313,7 +313,9 @@
 			<arg value="${build}/${wxs.file.ui}.wixobj" />
 		</exec>
 		
-		<copy tofile="${dist}/${buildId}-${version}-${tag.hyphen}${language}-${wix.arch}.msi"
+		<!--copy tofile="${dist}/${buildId}-${version}-${tag.hyphen}${language}-${wix.arch}.msi"
+			file="${build}/${buildId}.msi" overwrite="yes" /-->
+    <copy tofile="${dist}/${buildId}-${version}-${tag.hyphen}-${wix.arch}.msi"
 			file="${build}/${buildId}.msi" overwrite="yes" />
 	</target>
 	
