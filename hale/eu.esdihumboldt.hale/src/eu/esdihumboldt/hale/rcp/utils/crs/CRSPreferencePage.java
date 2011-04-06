@@ -73,6 +73,8 @@ public class CRSPreferencePage extends PreferencePage implements
 	private String lastSelected = null;
 
 	private final Map<String, String> tmpWKTs = new HashMap<String, String>();
+	
+	private boolean changed = false;
 
 	/**
 	 * @see PreferencePage#createContents(Composite)
@@ -194,6 +196,7 @@ public class CRSPreferencePage extends PreferencePage implements
 						listViewer.setSelection(new StructuredSelection(codes.get(0)));
 					}
 					tmpWKTs.remove(selected);
+					changed = true; // mark as changed
 				}
 			}
 			
@@ -275,7 +278,13 @@ public class CRSPreferencePage extends PreferencePage implements
 	 * @param wkt the WKT
 	 */
 	protected void setWKT(String code, String wkt) {
+		String old = tmpWKTs.get(code);
+		
 		tmpWKTs.put(code, wkt);
+		
+		if (old == null || !old.equals(wkt)) {
+			changed = true; // mark as changed
+		}
 	}
 
 	/**
@@ -285,36 +294,40 @@ public class CRSPreferencePage extends PreferencePage implements
 	public boolean performOk() {
 		saveCurrent();
 		
-		List<String> orgCodes = WKTPreferencesCRSFactory.getInstance().getCodes();
-		// remove all old ones
-		for (String code : orgCodes) {
-			WKTPreferencesCRSFactory.getInstance().removeWKT(code);
-		}
-		
-		// add new ones
-		for (Entry<String, String> entry : tmpWKTs.entrySet()) {
-			String code = entry.getKey();
-			String wkt = entry.getValue();
+		if (changed) {
+			// only apply changes if there is a possibility of a change
 			
-			if (wkt != null) {
-				wkt = wkt.trim();
-				if (!wkt.isEmpty()) {
-					WKTPreferencesCRSFactory.getInstance().addWKT(code, wkt);
+			List<String> orgCodes = WKTPreferencesCRSFactory.getInstance().getCodes();
+			// remove all old ones
+			for (String code : orgCodes) {
+				WKTPreferencesCRSFactory.getInstance().removeWKT(code);
+			}
+			
+			// add new ones
+			for (Entry<String, String> entry : tmpWKTs.entrySet()) {
+				String code = entry.getKey();
+				String wkt = entry.getValue();
+				
+				if (wkt != null) {
+					wkt = wkt.trim();
+					if (!wkt.isEmpty()) {
+						WKTPreferencesCRSFactory.getInstance().addWKT(code, wkt);
+					}
 				}
 			}
-		}
-		
-		if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), 
-				Messages.CRSPreferencePage_11, Messages.CRSPreferencePage_12)) { //$NON-NLS-1$ //$NON-NLS-2$
-			Display.getCurrent().asyncExec(new Runnable() {
-	            @Override
-	            public void run() {
-	                IWorkbench wb = PlatformUI.getWorkbench();
-	                if (wb != null && !wb.isClosing()) {
-	                    wb.restart();
-	                }
-	            }
-	        }); 
+			
+			if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), 
+					Messages.CRSPreferencePage_11, Messages.CRSPreferencePage_12)) { //$NON-NLS-1$ //$NON-NLS-2$
+				Display.getCurrent().asyncExec(new Runnable() {
+		            @Override
+		            public void run() {
+		                IWorkbench wb = PlatformUI.getWorkbench();
+		                if (wb != null && !wb.isClosing()) {
+		                    wb.restart();
+		                }
+		            }
+		        }); 
+			}
 		}
 		
 		return true;
