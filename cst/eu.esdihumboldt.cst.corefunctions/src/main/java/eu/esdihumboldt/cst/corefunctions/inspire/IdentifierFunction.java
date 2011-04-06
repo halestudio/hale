@@ -100,8 +100,6 @@ public class IdentifierFunction
 		//check if the input features have the expected property name
 		if (target.getProperties(targetProperty.getLocalname()).size() == 0)
 			return null;
-		if (source.getProperties(sourceProperty.getLocalname()).size() == 0)
-			return null;
 
 		// inject result into target object
 		PropertyDescriptor pd = target.getProperty(
