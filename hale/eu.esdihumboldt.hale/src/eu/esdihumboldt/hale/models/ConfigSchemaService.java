@@ -30,7 +30,8 @@ public interface ConfigSchemaService {
 	 * Adds a {@link ConfigSchemaServiceListener}.
 	 * 
 	 * @param sl to be notified
-	 * @param section the section to listen on
+	 * @param section the section to listen on, <code>null</code> if you want to
+	 * listen on changes for any section
 	 */
 	public void addListener(ConfigSchemaServiceListener sl, String section);
 	

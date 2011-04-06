@@ -14,8 +14,10 @@ package eu.esdihumboldt.hale.models.config;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import eu.esdihumboldt.hale.models.ConfigSchemaService;
 import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceListener.Message;
@@ -61,11 +63,21 @@ public class ConfigSchemaServiceImpl implements ConfigSchemaService {
 	}
 	
 	private void updateListeners(String section, Message message) {
+		Set<ConfigSchemaServiceListener> listeners = new HashSet<ConfigSchemaServiceListener>();
+		
+		// get listeners for section
 		List<ConfigSchemaServiceListener> list = this.listeners.get(section);
+		if (list != null) {
+			listeners.addAll(list);
+		}
 		
-		if (list == null) return;
+		// get listeners for any section
+		list = this.listeners.get(null);
+		if (list != null) {
+			listeners.addAll(list);
+		}
 		
-		for(ConfigSchemaServiceListener cssl : list) {
+		for(ConfigSchemaServiceListener cssl : listeners) {
 			cssl.update(section, message);
 		}
 	}

@@ -34,9 +34,13 @@ public interface ConfigSchemaServiceListener {
 	 * @partner 01 / Fraunhofer Institute for Computer Graphics Research
 	 * @version $Id$
 	 */
-	public enum Message {
-		ITEM_ADDED, ITEM_REMOVED, ITEM_CHANGED,
-		SECTION_ADDED, SECTION_REMOVED,
-		CONFIG_PARSED, CONFIG_GENERATED
+	public enum Message { //TODO please comment the entries
+		ITEM_ADDED, 
+		ITEM_REMOVED, 
+		ITEM_CHANGED,
+		SECTION_ADDED, 
+		SECTION_REMOVED,
+		CONFIG_PARSED, 
+		CONFIG_GENERATED
 	}
 }
