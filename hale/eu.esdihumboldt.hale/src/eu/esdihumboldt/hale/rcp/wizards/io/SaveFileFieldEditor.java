@@ -104,7 +104,8 @@ public class SaveFileFieldEditor extends FileFieldEditor {
      * @param extensions a list of file extension, or <code>null</code> 
      * to set the filter to the system's default value
      */
-    public void setFileExtensions(String[] extensions) {
+    @Override
+	public void setFileExtensions(String[] extensions) {
         this.extensions = extensions;
     }
 

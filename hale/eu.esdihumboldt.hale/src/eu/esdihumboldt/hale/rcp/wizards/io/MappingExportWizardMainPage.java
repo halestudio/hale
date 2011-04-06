@@ -129,7 +129,7 @@ public class MappingExportWizardMainPage
 		Composite ffe_container = new Composite(fileSelectionArea, SWT.NULL);
 		ffe_container.setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		this.ffe = new FileFieldEditor("fileSelect",  //$NON-NLS-1$
+		this.ffe = new SaveFileFieldEditor("fileSelect",  //$NON-NLS-1$
 				Messages.MappingExportWizardMainPage_File, ffe_container);
 		this.ffe.getTextControl(ffe_container).addModifyListener(new ModifyListener(){
 			public void modifyText(ModifyEvent e) {

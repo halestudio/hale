@@ -28,7 +28,7 @@ import eu.esdihumboldt.hale.rcp.utils.codelist.CodeList;
 import eu.esdihumboldt.hale.rcp.utils.codelist.internal.XmlCodeList;
 
 /**
- * 
+ * Allows selecting a file as source for a code list
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
