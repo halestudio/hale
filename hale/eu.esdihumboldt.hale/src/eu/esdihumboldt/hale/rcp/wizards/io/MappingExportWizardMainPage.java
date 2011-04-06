@@ -86,7 +86,7 @@ public class MappingExportWizardMainPage
 				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL);
 		formatSelectionData.grabExcessHorizontalSpace = true;
 		formatSelectionArea.setLayoutData(formatSelectionData);
-		Map<String, String> formats = MappingExportExtension.getRegisteredExportProviderInfo();
+		final Map<String, String> formats = MappingExportExtension.getRegisteredExportProviderInfo();
 		final String[] items = new String[formats.keySet().size()];
 		int i = 0;
 		for (String name : formats.keySet()) {
@@ -105,6 +105,9 @@ public class MappingExportWizardMainPage
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				selectedFormat = items[formatCombo.getSelectionIndex()];
+				
+				String ext = formats.get(getSelectedFormatName());
+				ffe.setFileExtensions(new String[]{ext});
 			}
 			
 			@Override
