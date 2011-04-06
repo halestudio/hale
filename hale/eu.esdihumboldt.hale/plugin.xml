@@ -504,11 +504,6 @@
             name="RDF OML"
             providerClass="eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.OmlMappingExportProvider">
       </MappingExportFactory>
-      <MappingExportFactory
-            extension="*.xslt"
-            name="XSLT"
-            providerClass="eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.XsltMappingExportProvider">
-      </MappingExportFactory>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
