@@ -25,6 +25,7 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.models.AlignmentService;
+import eu.esdihumboldt.hale.models.ConfigSchemaService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
@@ -34,6 +35,8 @@ import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.UpdateService;
 import eu.esdihumboldt.hale.models.alignment.AlignmentServiceListener;
+import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceListener;
+import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceListener.Message;
 import eu.esdihumboldt.hale.models.project.generated.HaleProject;
 import eu.esdihumboldt.hale.models.task.TaskServiceListener;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
@@ -150,6 +153,26 @@ public class ProjectServiceImpl
 				setChanged();
 			}
 		});
+		
+		ConfigSchemaService css = (ConfigSchemaService) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
+		css.addListener(new ConfigSchemaServiceListener() {
+			
+			@Override
+			public void update(String section, Message message) {
+				switch (message) {
+				case ITEM_ADDED:
+				case ITEM_CHANGED:
+				case ITEM_REMOVED:
+				case SECTION_ADDED:
+				case SECTION_REMOVED:
+					setChanged();
+					break;
+				case CONFIG_PARSED: // fall through 
+				case CONFIG_GENERATED: // fall through
+					// do nothing
+				}
+			}
+		}, null);
 	}
 	
 	/**
