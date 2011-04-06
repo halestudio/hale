@@ -11,10 +11,18 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.corefunctions.inspire.IdentifierFunction;
+import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Entity;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
@@ -33,14 +41,13 @@ import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 public class IdentifierFunctionWizard 
 	extends AbstractSingleCellWizard {
 	
-	private IdentifierFunctionWizardPage mainPage = null;
+	private IdentifierFunctionWizardPage mainPage;
 
 	/**
 	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(AlignmentInfo)
 	 */
 	public IdentifierFunctionWizard(AlignmentInfo selection) {
 		super(selection);
-		this.mainPage = new IdentifierFunctionWizardPage(Messages.IdentifierFunctionWizard_0);
 	}
 
 	/**
@@ -48,8 +55,44 @@ public class IdentifierFunctionWizard
 	 */
 	@Override
 	protected void init() {
-		// TODO allow for editing of preexisting cell
+		Cell cell = getResultCell();
 		
+		Map<String,String> params = new HashMap<String,String>();
+		
+		if (cell.getEntity1	().getTransformation() != null) {
+          List<IParameter> parameters = cell.getEntity1().getTransformation().getParameters();
+			
+			if (parameters != null) {
+				Iterator<IParameter> it = parameters.iterator();
+				while (it.hasNext()) {
+					IParameter param = it.next();
+					params.put(param.getName(),param.getValue());
+				}
+			}
+		}
+		String country = params.get(IdentifierFunction.COUNTRY_PARAMETER_NAME);
+		if (country == null) {
+			country = Locale.getDefault().getLanguage();		
+		}
+		String provider = params.get(IdentifierFunction.DATA_PROVIDER_PARAMETER_NAME);
+		if (provider == null) {
+			provider = Locale.getDefault().getLanguage();		
+		}
+		String product = params.get(IdentifierFunction.PRODUCT_PARAMETER_NAME);
+		if (product == null) {
+			product = Locale.getDefault().getLanguage();		
+		}
+		String version = params.get(IdentifierFunction.VERSION);
+		if (version == null) {
+			version = Locale.getDefault().getLanguage();		
+		}
+		String versionNil = params.get(IdentifierFunction.VERSION_NIL_REASON);
+		if (versionNil == null) {
+			versionNil = Locale.getDefault().getLanguage();		
+		}
+		
+		this.mainPage = new IdentifierFunctionWizardPage(Messages.IdentifierFunctionWizard_0,
+				country, provider, product, version, versionNil);
 	}
 
 	/**
@@ -92,7 +135,6 @@ public class IdentifierFunctionWizard
 	 */
 	@Override
 	public void addPages() {
-		super.addPages();
 		addPage(mainPage);
 	}
 

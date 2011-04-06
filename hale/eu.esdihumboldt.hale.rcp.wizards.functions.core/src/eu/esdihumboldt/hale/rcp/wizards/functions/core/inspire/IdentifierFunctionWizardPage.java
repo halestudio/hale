@@ -50,14 +50,35 @@ public class IdentifierFunctionWizardPage extends
 	Text version = null;
 
 	private AttributeEditor<?> nilEditor;
-
+    
+	private final String initialCountry;
+	private final String initialprovider;
+	private final String initialproduct;
+	private final String initialversion;
+	private final String initialversionNil;
+	
 	/**
+	 * @param versionNil 
+	 * @param version2 
+	 * @param product 
+	 * @param provider 
 	 * @see AbstractSingleCellWizardPage#AbstractSingleCellWizardPage(String)
 	 */
-	public IdentifierFunctionWizardPage(String pageName) {
+	public IdentifierFunctionWizardPage(String pageName, String initialCountry, String initialprovider, String initialproduct, String initialversion, String initialversionNil) {
 		super(pageName);
 		setTitle(pageName);
 		setDescription(Messages.IdentifierFunctionWizardPage_0);
+		
+		
+		this.initialCountry = initialCountry;
+		this.initialproduct = initialproduct;
+		this.initialprovider = initialprovider;
+		this.initialversion = initialversion;
+		this.initialversionNil = initialversionNil;
+		
+		
+		
+		
 	}
 
 	/**
@@ -116,7 +137,7 @@ public class IdentifierFunctionWizardPage extends
 		ccLabel.setText(Messages.IdentifierFunctionWizardPage_5);
 		
 		this.countryCode = new Text(nsGroup, SWT.BORDER);
-		this.countryCode.setText("de"); //$NON-NLS-1$
+		this.countryCode.setText(initialCountry); //$NON-NLS-1$
 		this.countryCode.setEnabled(true);
 		this.countryCode.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
@@ -126,7 +147,7 @@ public class IdentifierFunctionWizardPage extends
 		providerLabel.setText(Messages.IdentifierFunctionWizardPage_7);
 		
 		this.providerName = new Text(nsGroup, SWT.BORDER);
-		this.providerName.setText("fraunhofer"); //$NON-NLS-1$
+		this.providerName.setText(initialprovider); //$NON-NLS-1$
 		this.providerName.setEnabled(true);
 		this.providerName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
@@ -136,7 +157,7 @@ public class IdentifierFunctionWizardPage extends
 		productLabel.setText(Messages.IdentifierFunctionWizardPage_9);
 		
 		this.productName = new Text(nsGroup, SWT.BORDER);
-		this.productName.setText("humboldt-sample-transformed-data"); //$NON-NLS-1$
+		this.productName.setText(initialproduct); //$NON-NLS-1$
 		this.productName.setEnabled(true);
 		this.productName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
@@ -185,7 +206,7 @@ public class IdentifierFunctionWizardPage extends
 		versionLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		
 		this.version = new Text(versGroup, SWT.BORDER);
-		this.version.setText(""); //$NON-NLS-1$
+		this.version.setText(initialversion); //$NON-NLS-1$
 		this.version.setEnabled(true);
 		this.version.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
@@ -202,7 +223,7 @@ public class IdentifierFunctionWizardPage extends
 					// editor
 					nilEditor = aef.createEditor(versGroup, def);
 					nilEditor.getControl().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-					nilEditor.setAsText("unknown"); // default to unknown //$NON-NLS-1$
+					nilEditor.setAsText(initialversionNil); // default to unknown //$NON-NLS-1$
 				}
 			}
 		}
