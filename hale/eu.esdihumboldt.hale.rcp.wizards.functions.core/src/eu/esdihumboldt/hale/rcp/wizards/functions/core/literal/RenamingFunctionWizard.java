@@ -135,7 +135,7 @@ public class RenamingFunctionWizard extends AbstractSingleCellWizard {
 			t.setService(new Resource(RenameFeatureFunction.class.getName()));
 
 			InstanceMappingType type = mainPage.getType();
-			String condition = mainPage.getCondition();
+			String condition = ""; //mainPage.getCondition();
 			String selectedVariable = mainPage.getSelectedVariable();
 			
 			t.getParameters().add(new Parameter(PARAMETER_SELECTED_ATTRIBUTE, selectedVariable));

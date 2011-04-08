@@ -11,27 +11,16 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.literal;
 
-import java.util.Set;
-import java.util.TreeSet;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 
-import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
@@ -116,7 +105,7 @@ public class RenamingFunctionWizardMainPage
 		targetName.setEnabled(false);
 		targetName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
-		if (getParent().getSourceItem().isType() && getParent().getTargetItem().isType()) {
+		/*if (getParent().getSourceItem().isType() && getParent().getTargetItem().isType()) {
 			new Composite(page, SWT.NONE);
 			
 			// instance mapping
@@ -218,18 +207,18 @@ public class RenamingFunctionWizardMainPage
 			});
 			
 			update();
-		}
+		}*/
 		
 		super.setControl(page);
 	}
 
 	private void update() {
-		if (condition != null) {
+		/*if (condition != null) {
 			condition.setEnabled(type != InstanceMappingType.NORMAL);
 		}
 		if (varList != null) {
 			varList.getControl().setEnabled(type != InstanceMappingType.NORMAL);
-		}
+		}*/
 	}
 
 	/**
@@ -249,9 +238,9 @@ public class RenamingFunctionWizardMainPage
 	/**
 	 * @return the condition
 	 */
-	public String getCondition() {
+	/*public String getCondition() {
 		return condition.getText();
-	}
+	}*/
 
 	/**
 	 * @param condition the condition to set
