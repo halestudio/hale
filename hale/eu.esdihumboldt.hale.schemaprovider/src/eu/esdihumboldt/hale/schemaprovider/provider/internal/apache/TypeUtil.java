@@ -98,6 +98,7 @@ public abstract class TypeUtil {
 		XS_STRING_TYPES.add("ID"); //$NON-NLS-1$
 		XS_STRING_TYPES.add("IDREF"); //$NON-NLS-1$
 		XS_STRING_TYPES.add("NCName"); //$NON-NLS-1$
+		XS_STRING_TYPES.add("token"); //$NON-NLS-1$
 	}
 	
 	/**
