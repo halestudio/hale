@@ -1052,14 +1052,16 @@ public class ApacheSchemaProvider
 				// </simpleContent>
 			}
 		}
-		else if (item.getParticle() != null) {
+		else {
 			// no complex content (instead e.g. <sequence>)
 			XmlSchemaComplexType complexType = item;
 			// particle (e.g. sequence)
-			XmlSchemaParticle particle = complexType.getParticle();
-			List<AttributeDefinition> tmp = getAttributesFromParticle(typeDef, particle, schemaTypes, referenceResolver);
-			if (tmp != null) {
-				attributes.addAll(tmp);
+			if (item.getParticle() != null) {
+				XmlSchemaParticle particle = complexType.getParticle();
+				List<AttributeDefinition> tmp = getAttributesFromParticle(typeDef, particle, schemaTypes, referenceResolver);
+				if (tmp != null) {
+					attributes.addAll(tmp);
+				}
 			}
 			// attributes
 			XmlSchemaObjectCollection attributeCollection = complexType.getAttributes();
