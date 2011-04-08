@@ -92,6 +92,8 @@ public abstract class TypeUtil {
 	/**
 	 * Set of XML schema types that should get a String binding but don't get
 	 * one through the Geotools bindings
+	 * 
+	 * @see "http://www.w3schools.com/Schema/schema_dtypes_string.asp"
 	 */
 	private static final Set<String> XS_STRING_TYPES = new HashSet<String>();
 	static {
@@ -99,6 +101,14 @@ public abstract class TypeUtil {
 		XS_STRING_TYPES.add("IDREF"); //$NON-NLS-1$
 		XS_STRING_TYPES.add("NCName"); //$NON-NLS-1$
 		XS_STRING_TYPES.add("token"); //$NON-NLS-1$
+		XS_STRING_TYPES.add("Name"); //$NON-NLS-1$
+		XS_STRING_TYPES.add("language"); //$NON-NLS-1$
+		XS_STRING_TYPES.add("ENTITY"); //$NON-NLS-1$
+		XS_STRING_TYPES.add("ENTITIES"); //$NON-NLS-1$
+		XS_STRING_TYPES.add("NMTOKEN"); //$NON-NLS-1$
+		XS_STRING_TYPES.add("NMTOKENS"); //$NON-NLS-1$
+		XS_STRING_TYPES.add("normalizedString"); //$NON-NLS-1$
+		XS_STRING_TYPES.add("QName"); //$NON-NLS-1$
 	}
 	
 	/**
