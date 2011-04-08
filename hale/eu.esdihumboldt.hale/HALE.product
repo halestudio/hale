@@ -3,7 +3,6 @@
 
 <product name="HUMBOLDT Alignment Editor" id="eu.esdihumboldt.hale.product" application="eu.esdihumboldt.hale.application" version="2.1.0.M1" useFeatures="false" includeLaunchers="true">
 
-
    <configIni use="default">
    </configIni>
 
@@ -15,7 +14,6 @@
 
    <windowImages i32="/eu.esdihumboldt.hale/icons/hale_icon.png"/>
 
-
    <launcher name="HALE">
       <macosx icon="/eu.esdihumboldt.hale/icons/hale.icns"/>
       <solaris/>
@@ -25,21 +23,20 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
       <plugin id="cal10n.api"/>
       <plugin id="ch.qos.logback.classic"/>
       <plugin id="ch.qos.logback.core"/>
       <plugin id="ch.qos.logback.slf4j" fragment="true"/>
+      <plugin id="com.hp.hpl.jena"/>
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="com.onespatial.jrc.tns.hale.rifexport"/>
+      <plugin id="com.onespatial.jrc.tns.hale.rifexport" fragment=""/>
       <plugin id="com.onespatial.jrc.tns.jaxb.rifprd"/>
-      <plugin id="com.onespatial.jrc.tns.oml_to_rif"/>
+      <plugin id="com.onespatial.jrc.tns.oml_to_rif" fragment=""/>
       <plugin id="com.springsource.com.sun.xml.bind"/>
       <plugin id="com.springsource.com.sun.xml.fastinfoset"/>
       <plugin id="com.springsource.javax.activation"/>
@@ -76,11 +73,11 @@
       <plugin id="eu.esdihumboldt.commons"/>
       <plugin id="eu.esdihumboldt.cst.corefunctions"/>
       <plugin id="eu.esdihumboldt.hale"/>
-      <plugin id="eu.esdihumboldt.hale.csvexporter" fragment=""/>
+      <plugin id="eu.esdihumboldt.hale.csvexporter"/>
       <plugin id="eu.esdihumboldt.hale.gmlparser"/>
       <plugin id="eu.esdihumboldt.hale.gmlvalidate"/>
       <plugin id="eu.esdihumboldt.hale.gmlwriter"/>
-      <plugin id="eu.esdihumboldt.hale.gmlwriter.test"/>
+      <plugin id="eu.esdihumboldt.hale.gmlwriter.test" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.htmlexporter"/>
       <plugin id="eu.esdihumboldt.hale.instanceprovider"/>
       <plugin id="eu.esdihumboldt.hale.logback.config" fragment="true"/>
@@ -91,6 +88,8 @@
       <plugin id="eu.esdihumboldt.hale.userstatus.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.specification"/>
       <plugin id="eu.esdihumboldt.transformer.cst"/>
+      <plugin id="eu.xsdi.mdl"/>
+      <plugin id="eu.xsdi.mdlui"/>
       <plugin id="gnu.trove"/>
       <plugin id="javax.servlet"/>
       <plugin id="jcl.over.slf4j"/>
@@ -145,6 +144,7 @@
       <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.text"/>
       <plugin id="org.eclipse.ui"/>
+      <plugin id="org.eclipse.ui.forms"/>
       <plugin id="org.eclipse.ui.views.log"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.eclipse.xsd"/>
