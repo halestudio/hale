@@ -57,5 +57,6 @@
 <location path="${project_loc:hale-platform}/target/org.apache.httpcomponents" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.slf4j" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.apache.commons" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.w3c.dom.mathml" type="Directory"/>
 </locations>
 </target>
