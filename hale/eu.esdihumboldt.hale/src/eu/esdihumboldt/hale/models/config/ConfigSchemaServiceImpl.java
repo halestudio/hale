@@ -106,6 +106,9 @@ public class ConfigSchemaServiceImpl implements ConfigSchemaService {
 	
 	@Override
 	public String getItem(String section, String key) {
+		if (this.sections.get(section) == null) {
+			return null;
+		}
 		return this.sections.get(section).get(key);
 	}
 	

@@ -10,15 +10,18 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.schemaprovider.model;
+package eu.esdihumboldt.hale.schemaprovider.uiconfig;
 
-import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import org.eclipse.ui.PlatformUI;
 import org.opengis.feature.type.Name;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+
+import eu.esdihumboldt.hale.models.ConfigSchemaService;
+import eu.esdihumboldt.hale.schemaprovider.model.IDefaultGeometries;
 
 /**
  * Manages default geometry preferences
@@ -32,7 +35,7 @@ public class DefaultGeometries implements IDefaultGeometries {
 	private static final ALogger log = ALoggerFactory.getLogger(DefaultGeometries.class);
 	
 	private static final Preferences prefs = Preferences.userNodeForPackage(DefaultGeometries.class).node("defaultGeometries"); //$NON-NLS-1$
-
+	
 	private static DefaultGeometries instance = new DefaultGeometries();
 	
 	public static DefaultGeometries getInstance() {
@@ -47,21 +50,23 @@ public class DefaultGeometries implements IDefaultGeometries {
 	 * @return the default geometry property name or <code>null</code>
 	 */
 	public String getDefaultGeometryName(Name typeName) {
-		try {
-			prefs.sync();
-			if (prefs.nodeExists(encodeNodeName(typeName.getNamespaceURI()))) {
-				return prefs.node(encodeNodeName(typeName.getNamespaceURI())).get(typeName.getLocalPart(), null);
-			}
-			else {
-				return null;
-			}
-		} catch (BackingStoreException e) {
-			log.warn("Error accessing the default geometry preferences", e); //$NON-NLS-1$
-			return null;
-		}
+//		try {
+//			prefs.sync();
+//			if (prefs.nodeExists(encodeNodeName(typeName.getNamespaceURI()))) {
+//				return prefs.node(encodeNodeName(typeName.getNamespaceURI())).get(typeName.getLocalPart(), null);
+//			}
+//			else {
+//				return null;
+//			}
+//		} catch (BackingStoreException e) {
+//			log.warn("Error accessing the default geometry preferences", e); //$NON-NLS-1$
+//			return null;
+//		}
+		ConfigSchemaService css = (ConfigSchemaService)PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
+		return css.getItem("defaultGeometrie", encodeNodeName(typeName.getNamespaceURI()));
 	}
 	
-	private String encodeNodeName(String name) {
+	private static String encodeNodeName(String name) {
 		while (name.contains("//")) { //$NON-NLS-1$
 			name = name.replaceAll("//", "/"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
@@ -75,12 +80,14 @@ public class DefaultGeometries implements IDefaultGeometries {
 	 * @param propertyName the geometry property name
 	 */
 	public void setDefaultGeometryName(Name typeName, String propertyName) {
-		prefs.node(encodeNodeName(typeName.getNamespaceURI())).put(typeName.getLocalPart(), propertyName);
-		try {
-			prefs.flush();
-		} catch (BackingStoreException e) {
-			log.warn("Error writing the default geometry preferences", e); //$NON-NLS-1$
-		}
+//		prefs.node(encodeNodeName(typeName.getNamespaceURI())).put(typeName.getLocalPart(), propertyName);
+//		try {
+//			prefs.flush();
+//		} catch (BackingStoreException e) {
+//			log.warn("Error writing the default geometry preferences", e); //$NON-NLS-1$
+//		}
+		ConfigSchemaService css = (ConfigSchemaService)PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
+		css.addItem("defaultGeometrie", encodeNodeName(typeName.getNamespaceURI()), propertyName);
 	}
 
 }
