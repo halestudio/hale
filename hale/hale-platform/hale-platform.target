@@ -34,7 +34,6 @@
 <location path="${project_loc:hale-platform}/target/ch.qos.logback" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/javax.media.jai" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.apache.ws" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.apache.velocity" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/javax.activation" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.jdom" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.apache.xerces" type="Directory"/>
@@ -58,5 +57,7 @@
 <location path="${project_loc:hale-platform}/target/org.slf4j" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.apache.commons" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.w3c.dom.mathml" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.velocity" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/net.sf.ehcache.core" type="Directory"/>
 </locations>
 </target>

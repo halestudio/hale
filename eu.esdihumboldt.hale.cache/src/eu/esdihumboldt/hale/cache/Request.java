@@ -27,6 +27,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.cache.CacheConfig;
 import org.apache.http.impl.client.cache.CachingHttpClient;
+import org.apache.http.impl.client.cache.ehcache.EhcacheHttpCacheStorage;
 
 public class Request {
 	private CacheConfig cacheConfig;
@@ -42,6 +43,7 @@ public class Request {
 		this.cacheConfig.setSharedCache(true);
 
 		this.client = new CachingHttpClient(new DefaultHttpClient(), this.cacheConfig);
+		this.client = new CachingHttpClient(new EhcacheHttpCacheStorage(), this.cacheConfig);
 	}
 	
 	public static Request getInstance() {
