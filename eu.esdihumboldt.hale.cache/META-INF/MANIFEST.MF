@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Cache
+Bundle-SymbolicName: eu.esdihumboldt.hale.cache
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.apache.http,
+ org.apache.http.client,
+ org.apache.http.client.cache,
+ org.apache.http.client.methods,
+ org.apache.http.impl.client,
+ org.apache.http.impl.client.cache,
+ org.apache.http.protocol,
+ org.apache.http.util
