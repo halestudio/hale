@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -51,7 +52,7 @@ import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.rcp.views.table.filter.FeatureSelectionListener;
 import eu.esdihumboldt.hale.rcp.views.table.filter.FeatureSelector;
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 
 /**
  * 
@@ -69,9 +70,9 @@ public class SampleTransformFeatureSelector implements FeatureSelector {
 		
 		private final ComboViewer featureTypes;
 		
-		private final Map<SchemaElement, List<Feature>> featureMap = new HashMap<SchemaElement, List<Feature>>();
+		private final Map<Definition, List<Feature>> featureMap = new HashMap<Definition, List<Feature>>();
 		
-		private SchemaElement selectedType;
+		private Definition selectedType;
 
 		private final HaleServiceListener referenceListener;
 		
@@ -90,9 +91,9 @@ public class SampleTransformFeatureSelector implements FeatureSelector {
 
 				@Override
 				public int compare(Viewer viewer, Object e1, Object e2) {
-					if (e1 instanceof FeatureType && e2 instanceof FeatureType) {
-						return ((FeatureType) e1).getName().getLocalPart().compareTo(
-								((FeatureType) e2).getName().getLocalPart());
+					if (e1 instanceof Definition && e2 instanceof Definition) {
+						return ((Definition) e1).getDisplayName().compareTo(
+								((Definition) e2).getDisplayName());
 					}
 					return super.compare(viewer, e1, e2);
 				}
@@ -102,8 +103,8 @@ public class SampleTransformFeatureSelector implements FeatureSelector {
 
 				@Override
 				public String getText(Object element) {
-					if (element instanceof SchemaElement) {
-						return ((SchemaElement) element).getElementName().getLocalPart();
+					if (element instanceof Definition) {
+						return ((Definition) element).getDisplayName();
 					}
 					return super.getText(element);
 				}
@@ -158,15 +159,11 @@ public class SampleTransformFeatureSelector implements FeatureSelector {
 			final SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 			
 			// target schema
-			Collection<SchemaElement> targetElements = schemaService.getTargetSchemaElements();
+			Map<Definition, FeatureType> targetTypes = schemaService.getTargetSchema().getTypes();
 			Set<FeatureType> fts = new HashSet<FeatureType>();
-			Map<FeatureType, SchemaElement> elementMap = new HashMap<FeatureType, SchemaElement>();
-			for (SchemaElement element : targetElements) {
-				FeatureType type = element.getFeatureType();
-				if (type != null) {
-					fts.add(type);
-					elementMap.put(type, element);
-				}
+			Map<FeatureType, Definition> elementMap = new HashMap<FeatureType, Definition>();
+			for (Entry<Definition, FeatureType> entry : targetTypes.entrySet()) {
+				elementMap.put(entry.getValue(), entry.getKey());
 			}
 			
 			// get reference features
@@ -190,7 +187,7 @@ public class SampleTransformFeatureSelector implements FeatureSelector {
 				while (it.hasNext()) {
 					Feature feature = it.next();
 					FeatureType type = feature.getType();
-					SchemaElement element = elementMap.get(type);
+					Definition element = elementMap.get(type);
 					List<Feature> featureList = featureMap.get(element);
 					if (featureList == null) {
 						featureList = new ArrayList<Feature>();
@@ -200,7 +197,7 @@ public class SampleTransformFeatureSelector implements FeatureSelector {
 				}
 			}
 			
-			Collection<SchemaElement> selectableTypes = featureMap.keySet();
+			Collection<Definition> selectableTypes = featureMap.keySet();
 			featureTypes.setInput(selectableTypes);
 			
 			if (!selectableTypes.isEmpty()) {
@@ -221,7 +218,7 @@ public class SampleTransformFeatureSelector implements FeatureSelector {
 		 */
 		protected void updateSelection() {
 			if (!featureTypes.getSelection().isEmpty()) {
-				SchemaElement featureType = (SchemaElement) ((IStructuredSelection) featureTypes.getSelection()).getFirstElement();
+				Definition featureType = (Definition) ((IStructuredSelection) featureTypes.getSelection()).getFirstElement();
 				
 				selectedType = featureType;
 			}

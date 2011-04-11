@@ -673,12 +673,7 @@ public class DefaultGmlWriterTest {
 	@SuppressWarnings("unchecked")
 	private FeatureCollection<FeatureType, Feature> transform(
 			FeatureCollection<FeatureType, Feature> fc, IAlignment alignment, Schema targetSchema) {
-		Set<FeatureType> types = new HashSet<FeatureType>();
-		for (SchemaElement se : targetSchema.getElements().values()) {
-			if (se.getFeatureType() != null) {
-				types.add(se.getFeatureType());
-			}
-		}
+		Set<FeatureType> types = new HashSet<FeatureType>(targetSchema.getTypes().values());
 		return (FeatureCollection<FeatureType, Feature>) CstServiceFactory.getInstance().transform(fc, alignment, types);
 	}
 	

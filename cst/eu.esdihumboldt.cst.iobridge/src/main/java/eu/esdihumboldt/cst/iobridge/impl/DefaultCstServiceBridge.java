@@ -20,9 +20,12 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
@@ -39,7 +42,9 @@ import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
 
 /**
@@ -72,14 +77,16 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 		Schema schema = this.loadSchema(schemaFilename);
 		
 		TypeIndex typeIndex = new TypeIndex();
-		Set<FeatureType> types = new HashSet<FeatureType>();
+		Map<Definition, FeatureType> types;
 		if (schema != null) {
-			for (SchemaElement se : schema.getElements().values()) {
-				if (se.getFeatureType() != null) {
-					types.add(se.getFeatureType());
-					typeIndex.addType(se.getType());
-				}
+			types = schema.getTypes();
+			for (Entry<Definition, FeatureType> entry : types.entrySet()) {
+				Definition def = entry.getKey();
+				typeIndex.addType((def instanceof SchemaElement)?(((SchemaElement) def).getType()):((TypeDefinition) def));
 			}
+		}
+		else {
+			types = new HashMap<Definition, FeatureType>();
 		}
 		
 		// perform the transformation
@@ -87,7 +94,7 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 			(FeatureCollection<FeatureType, Feature>) CstServiceFactory.getInstance()
 				.transform(this.loadGml(gmlFilename, sourceSchema, sourceVersion),
 						this.loadMapping(omlFilename),
-						types);
+						new HashSet<FeatureType>(types.values()));
 
 		// encode the transformed data and store it temporarily, return the
 		// temporary file location

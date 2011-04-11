@@ -14,7 +14,9 @@ package eu.esdihumboldt.hale.rcp.views.table.filter;
 
 import org.opengis.feature.Feature;
 
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Feature selection listener interface
@@ -28,9 +30,9 @@ public interface FeatureSelectionListener {
 	/**
 	 * Called when the selection changed
 	 * 
-	 * @param type the feature type
+	 * @param type the definition, either a {@link SchemaElement} or a {@link TypeDefinition}
 	 * @param selection the selected features
 	 */
-	public void selectionChanged(SchemaElement type, Iterable<Feature> selection);
+	public void selectionChanged(Definition type, Iterable<Feature> selection);
 	
 }

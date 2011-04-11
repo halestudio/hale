@@ -44,6 +44,8 @@ import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.rcp.utils.tree.MultiColumnTreeNodeLabelProvider;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
@@ -87,7 +89,7 @@ public class DefinitionFeatureTreeViewer {
 	 * @param type the feature type
 	 * @param features the features to display
 	 */
-	public void setInput(SchemaElement type, Iterable<Feature> features) {
+	public void setInput(Definition type, Iterable<Feature> features) {
 		// remove old columns
 		TreeColumn[] columns = treeViewer.getTree().getColumns();
 		if (columns != null) {
@@ -98,10 +100,12 @@ public class DefinitionFeatureTreeViewer {
 		
 		// create row definitions from type definition
 		if (type != null) {
+			TypeDefinition typeDef = DefinitionUtil.getType(type);
+			
 			DefaultTreeNode root = new DefaultTreeNode();
 			DefaultTreeNode attributes = new DefaultTreeNode(Messages.DefinitionFeatureTreeViewer_1); //$NON-NLS-1$
 			root.addChild(attributes);
-			addProperties(attributes, type.getType(), new HashSet<TypeDefinition>());
+			addProperties(attributes, typeDef, new HashSet<TypeDefinition>());
 			
 			DefaultTreeNode metadata = new DefaultTreeNode(Messages.DefinitionFeatureTreeViewer_2); //$NON-NLS-1$
 			root.addChild(metadata);
@@ -163,7 +167,7 @@ public class DefinitionFeatureTreeViewer {
 		// add type column
 		if (type != null) {
 			TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.LEFT);
-			column.getColumn().setText(type.getElementName().getLocalPart());
+			column.getColumn().setText(type.getDisplayName());
 			column.setLabelProvider(new TreeColumnViewerLabelProvider(
 					new MultiColumnTreeNodeLabelProvider(0)));
 			if (layout instanceof TreeColumnLayout) {

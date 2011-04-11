@@ -13,10 +13,14 @@ package eu.esdihumboldt.hale.schemaprovider;
 
 import java.net.URL;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 
+import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
@@ -87,6 +91,41 @@ public class Schema {
 	 */
 	public Map<String, SchemaElement> getElements() {
 		return elements;
+	}
+	
+	/**
+	 * Return all types that might be used as mapping target or source. 
+	 * Definitions are mapped to feature types. Definitions can be 
+	 * {@link SchemaElement}s or {@link TypeDefinition}s
+	 * 
+	 * @return all types that might be used as mapping target or source
+	 */
+	public Map<Definition, FeatureType> getTypes() {
+		Map<Definition, FeatureType> types = new HashMap<Definition, FeatureType>();
+		for (SchemaElement se : getElements().values()) {
+			// all types with element declarations
+			if (se.getFeatureType() != null) {
+				types.put(se, se.getFeatureType());
+			}
+			
+			// ...and all their subtypes without element declarations
+			Queue<TypeDefinition> test = new LinkedList<TypeDefinition>();
+			test.addAll(se.getType().getSubTypes());
+			while (!test.isEmpty()) {
+				TypeDefinition subtype = test.poll();
+				
+				if (subtype.getDeclaringElements().isEmpty()) {
+					FeatureType ft = subtype.getFeatureType();
+					if (ft != null) {
+						types.put(subtype, ft);
+					}
+				}
+				
+				test.addAll(subtype.getSubTypes());
+			}
+		}
+		
+		return types;
 	}
 
 	/**

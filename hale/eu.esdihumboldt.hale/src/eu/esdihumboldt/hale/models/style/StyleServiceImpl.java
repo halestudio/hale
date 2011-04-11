@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.graphics.RGB;
@@ -52,7 +53,10 @@ import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * A default {@link StyleService} implementation that will provide simple styles
@@ -232,18 +236,20 @@ public class StyleServiceImpl extends AbstractUpdateService
 	
 	@SuppressWarnings("deprecation")
 	private Style getStyle(final DatasetType dataset, boolean selected) {
-		Collection<SchemaElement> elements = (dataset == DatasetType.reference)?(schemaService.getSourceSchemaElements()):(schemaService.getTargetSchemaElements());
+		Map<Definition, FeatureType> elements = (dataset == DatasetType.reference)?(schemaService.getSourceSchema().getTypes()):(schemaService.getTargetSchema().getTypes());
 		
 		if (elements == null) {
-			elements = new ArrayList<SchemaElement>();
+			elements = new HashMap<Definition, FeatureType>();
 		}
 		
 		Style style = styleFactory.createStyle();
 		
-		for (SchemaElement element : elements) {
-			if (!element.getType().isAbstract() && element.getType().isFeatureType()) {
+		for (Entry<Definition, FeatureType> entry : elements.entrySet()) {
+			TypeDefinition typeDef = DefinitionUtil.getType(entry.getKey());
+			
+			if (!typeDef.isAbstract() && typeDef.isFeatureType()) {
 				// only add styles for non-abstract feature types
-				FeatureType ft = element.getFeatureType();
+				FeatureType ft = entry.getValue();
 				
 				FeatureTypeStyle fts = styles.get(ft);
 				if (fts == null) {

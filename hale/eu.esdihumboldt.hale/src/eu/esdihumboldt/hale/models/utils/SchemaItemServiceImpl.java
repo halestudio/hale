@@ -280,11 +280,6 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 		}
 		
 		Set<SchemaElement> elements = new HashSet<SchemaElement>(schema);
-		// create dummy schema elements for super types
-//		for (TypeDefinition type : additions) {
-//			elements.add(new SchemaElement(type.getName(), type.getName(), 
-//					type, null));
-//		}
 
 		// finally, build the tree, starting with those types that don't have
 		// supertypes.

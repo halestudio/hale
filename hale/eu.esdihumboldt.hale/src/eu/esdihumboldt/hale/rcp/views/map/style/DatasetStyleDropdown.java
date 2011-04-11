@@ -16,6 +16,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
@@ -33,7 +35,10 @@ import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Drop-down action for style editing of data set feature types
@@ -101,11 +106,12 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 	public void fillMenu(Menu menu) {
 		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
-		Collection<SchemaElement> tmp = (dataset == DatasetType.reference)?(schema.getSourceSchemaElements()):(schema.getTargetSchemaElements());
+		Map<Definition, FeatureType> tmp = (dataset == DatasetType.reference)?(schema.getSourceSchema().getTypes()):(schema.getTargetSchema().getTypes());
 		List<FeatureType> types = new ArrayList<FeatureType>();
-		for (SchemaElement element : tmp) {
-			if (element.getType().isFeatureType() && !element.getType().isAbstract()) {
-				types.add(element.getFeatureType());
+		for (Entry<Definition, FeatureType> entry : tmp.entrySet()) {
+			TypeDefinition type = DefinitionUtil.getType(entry.getKey());
+			if (type.isFeatureType() && !type.isAbstract()) {
+				types.add(entry.getValue());
 			}
 		}
 		Collections.sort(types, new Comparator<FeatureType>() {
@@ -151,7 +157,7 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 	public void update(UpdateMessage message) {
 		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
-		Collection<SchemaElement> elements = (dataset == DatasetType.reference)?(schema.getSourceSchemaElements()):(schema.getTargetSchemaElements());
+		Map<Definition, FeatureType> elements = (dataset == DatasetType.reference)?(schema.getSourceSchema().getTypes()):(schema.getTargetSchema().getTypes());
 		
 		setEnabled(elements != null);
 	}

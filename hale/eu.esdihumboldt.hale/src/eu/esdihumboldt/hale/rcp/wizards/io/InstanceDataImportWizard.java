@@ -220,7 +220,7 @@ public class InstanceDataImportWizard
 		InstanceConfiguration configuration = new InstanceConfiguration(
 				schemaService.getSourceURL().toURI(), 
 				schemaService.getSourceNameSpace(), 
-				schemaService.getSourceSchemaElements(), 
+				schemaService.getSourceSchemaElements(), //TODO replace?
 				instanceVersion);
 		
 		return ip.loadInstances(location, configuration, null);

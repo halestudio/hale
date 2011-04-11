@@ -105,7 +105,7 @@ public class MappingExportWizard
 							//TODO instead give the monitor to the exporter? support for canceling?
 							monitor.beginTask(Messages.MappingExportWizard_1, IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 							MappingExportReport report = mef.export(al, file, schemaService.getSourceSchemaElements(), 
-									schemaService.getTargetSchemaElements());
+									schemaService.getTargetSchemaElements()); //FIXME use schema objects instead of element lists
 							if (report != null && !report.isEmpty()) {
 								// handle report
 								ATransaction reportTrans = _log.begin("Report"); //$NON-NLS-1$

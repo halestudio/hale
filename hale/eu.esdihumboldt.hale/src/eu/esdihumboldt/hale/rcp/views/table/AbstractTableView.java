@@ -24,7 +24,7 @@ import org.opengis.feature.Feature;
 import eu.esdihumboldt.hale.rcp.views.table.filter.FeatureSelectionListener;
 import eu.esdihumboldt.hale.rcp.views.table.filter.FeatureSelector;
 import eu.esdihumboldt.hale.rcp.views.table.tree.DefinitionFeatureTreeViewer;
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 
 /**
  * Table view that shows information about certain features
@@ -157,7 +157,7 @@ public abstract class AbstractTableView extends ViewPart {
 		featureSelector.addSelectionListener(new FeatureSelectionListener() {
 			
 			@Override
-			public void selectionChanged(SchemaElement type, Iterable<Feature> selection) {
+			public void selectionChanged(Definition type, Iterable<Feature> selection) {
 				tree.setInput(type, selection);
 				onSelectionChange(selection);
 			}
