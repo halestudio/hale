@@ -160,7 +160,7 @@ public class SampleTransformFeatureSelector implements FeatureSelector {
 			
 			// target schema
 			Map<Definition, FeatureType> targetTypes = schemaService.getTargetSchema().getTypes();
-			Set<FeatureType> fts = new HashSet<FeatureType>();
+			Set<FeatureType> fts = new HashSet<FeatureType>(targetTypes.values());
 			Map<FeatureType, Definition> elementMap = new HashMap<FeatureType, Definition>();
 			for (Entry<Definition, FeatureType> entry : targetTypes.entrySet()) {
 				elementMap.put(entry.getValue(), entry.getKey());
