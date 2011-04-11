@@ -195,7 +195,7 @@ public abstract class AbstractSchemaTaskProvider extends AbstractTaskProvider {
 			Collection<SchemaElement> schema) {
 		Collection<Task> tasks = new ArrayList<Task>();
 		for (SchemaElement element : schema) {
-			if (element.getType().isFeatureType()) { // restrict to feature types
+			if (element.getType().isFeatureType()) { // restrict to feature types FIXME really? maybe this should be configurable 
 				// create type tasks
 				generateElementTasks(element, tasks);
 				

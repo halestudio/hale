@@ -194,6 +194,17 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	}
 	
 	/**
+	 * Determines if the type has a geometry attribute
+	 * 
+	 * @return if the type has a geometry attribute
+	 */
+	public boolean hasGeometry() {
+		AttributeType type = getType(null);
+		
+		return type instanceof FeatureType && ((FeatureType) type).getGeometryDescriptor() != null;
+	}
+	
+	/**
 	 * Determines if this type represents a complex type
 	 * 
 	 * @return if this definition represents a complex type

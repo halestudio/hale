@@ -16,6 +16,8 @@ import eu.esdihumboldt.hale.rcp.views.map.style.FeatureTypeStyleAction;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 import eu.esdihumboldt.hale.rcp.views.model.dialogs.PropertiesAction;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardContribution;
+import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Context menu contribution
@@ -60,8 +62,8 @@ public class SchemaItemContribution extends
 				}
 				
 				// SLD
-				if (item.isFeatureType() && item.getPropertyType() instanceof FeatureType
-						&& !((FeatureType) item.getPropertyType()).isAbstract()) {
+				TypeDefinition typeDef = DefinitionUtil.getType(item.getDefinition());
+				if (item.isType() && typeDef.hasGeometry() && !typeDef.isAbstract()) {
 					IAction action = new FeatureTypeStyleAction((FeatureType) item.getPropertyType());
 					action.setText(Messages.ModelNavigationView_ActionText);
 					action.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
@@ -74,7 +76,7 @@ public class SchemaItemContribution extends
 				
 				// default geometry
 				if (item.isAttribute() && item.getType() == TreeObjectType.GEOMETRIC_ATTRIBUTE 
-						&& item.getParent() != null && item.getParent().isFeatureType()
+						&& item.getParent() != null && item.getParent().isType()
 						&& !((FeatureType) item.getParent().getPropertyType()).getGeometryDescriptor().getLocalName().equals(item.getName().getLocalPart())) {
 					IAction action = new SetAsDefaultGeometryAction(item);
 					action.setText(Messages.SchemaItemContribution_0); //$NON-NLS-1$

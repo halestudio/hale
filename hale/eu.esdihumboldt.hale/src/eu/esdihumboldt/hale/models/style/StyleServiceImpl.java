@@ -247,7 +247,7 @@ public class StyleServiceImpl extends AbstractUpdateService
 		for (Entry<Definition, FeatureType> entry : elements.entrySet()) {
 			TypeDefinition typeDef = DefinitionUtil.getType(entry.getKey());
 			
-			if (!typeDef.isAbstract() && typeDef.isFeatureType()) {
+			if (!typeDef.isAbstract() && typeDef.hasGeometry()) {
 				// only add styles for non-abstract feature types
 				FeatureType ft = entry.getValue();
 				

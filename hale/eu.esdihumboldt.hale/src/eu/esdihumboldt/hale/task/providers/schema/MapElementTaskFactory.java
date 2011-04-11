@@ -164,7 +164,7 @@ public class MapElementTaskFactory extends AbstractTaskFactory {
 	 */
 	private static boolean validateTask(SchemaElement element,
 			AlignmentService alignmentService) {
-		if (element.getType().isFeatureType() && !element.getType().isAbstract()) {
+		if (element.getType().isFeatureType() && !element.getType().isAbstract()) { //FIXME only on feature types? configurable?
 			List<ICell> cells = alignmentService.getCell(element.getEntity());
 			if (cells == null || cells.isEmpty()) {
 				return true;

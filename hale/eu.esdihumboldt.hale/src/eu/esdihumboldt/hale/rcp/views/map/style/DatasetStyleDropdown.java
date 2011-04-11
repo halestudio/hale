@@ -12,7 +12,6 @@
 package eu.esdihumboldt.hale.rcp.views.map.style;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -37,7 +36,6 @@ import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -110,7 +108,7 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 		List<FeatureType> types = new ArrayList<FeatureType>();
 		for (Entry<Definition, FeatureType> entry : tmp.entrySet()) {
 			TypeDefinition type = DefinitionUtil.getType(entry.getKey());
-			if (type.isFeatureType() && !type.isAbstract()) {
+			if (type.hasGeometry() && !type.isAbstract()) {
 				types.add(entry.getValue());
 			}
 		}

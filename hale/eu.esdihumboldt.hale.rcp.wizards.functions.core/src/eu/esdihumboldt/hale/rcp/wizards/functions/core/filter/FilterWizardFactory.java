@@ -49,8 +49,8 @@ public class FilterWizardFactory implements FunctionWizardFactory {
 			SchemaItem source = selection.getFirstSourceItem();
 			SchemaItem target = selection.getFirstTargetItem();
 			
-			if (!source.isFeatureType() || !target.isFeatureType()) {
-				// only feature types supported
+			if (!source.isType() || !target.isType()) {
+				// only types supported
 				return false;
 			}
 			

@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.schemaprovider.model;
 
+import org.opengis.feature.type.FeatureType;
+
 /**
  * Utility methods related to {@link Definition}s
  *
@@ -37,6 +39,25 @@ public abstract class DefinitionUtil {
 		}
 		else {
 			return ((AttributeDefinition) def).getAttributeType();
+		}
+	}
+	
+	/**
+	 * Get the feature type from a definition. For 
+	 * {@link AttributeDefinition}s the attribute type will be returned.
+	 * 
+	 * @param def the definition
+	 * @return the feature type, may be <code>null</code>
+	 */
+	public static FeatureType getFeatureType(Definition def) {
+		if (def instanceof SchemaElement) {
+			return ((SchemaElement) def).getFeatureType();
+		}
+		else if (def instanceof TypeDefinition) {
+			return ((TypeDefinition) def).getFeatureType();
+		}
+		else {
+			return ((AttributeDefinition) def).getAttributeType().getFeatureType();
 		}
 	}
 
