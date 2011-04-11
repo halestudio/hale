@@ -259,7 +259,7 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 				attribute = false;
 				mandatory = false;
 			}
-			boolean def = to.isAttribute() && to.getType() == TreeObjectType.GEOMETRIC_ATTRIBUTE && to.getParent().isFeatureType() && isDefaultGeometry((FeatureType) to.getParent().getPropertyType(), to.getName().getLocalPart());
+			boolean def = to.isAttribute() && to.getType() == TreeObjectType.GEOMETRIC_ATTRIBUTE && to.getParent().isType() && isDefaultGeometry((FeatureType) to.getParent().getPropertyType(), to.getName().getLocalPart());
 			
 			if (def || mandatory || attribute) {
 				// overlayed image
