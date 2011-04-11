@@ -388,7 +388,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 					
 					IDefaultGeometries defaultGeometries;
 					try {
-						Class dfImpl = Class.forName("eu.esdihumboldt.hale.schemaprovider.uiconfig.DefaultGeometries");
+						Class<?> dfImpl = Class.forName("eu.esdihumboldt.hale.schemaprovider.uiconfig.DefaultGeometries");
 						defaultGeometries = (IDefaultGeometries) dfImpl.newInstance();
 					} catch (Exception e) {
 						defaultGeometries = new DefaultGeometries();

@@ -148,6 +148,9 @@ public class ProjectParser {
 			final IProgressMonitor monitor) {
 		projectService.clean();
 		
+		// last but not least load different config stuff
+		this.loadConfig(project);
+		
 		// first, load schemas.
 		this.loadSchemas(project, basePath, monitor);
 		
@@ -164,9 +167,6 @@ public class ProjectParser {
 		
 		// fourth, it's time for loading the tasks.
 		this.loadTasks(project, basePath, monitor);
-		
-		// last but not least load different config stuff
-		this.loadConfig(project);
 		
 		// Finally, initialize other ProjectService values.
 		projectService.setProjectCreatedDate(project.getDateCreated());
