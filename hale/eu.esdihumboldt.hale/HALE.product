@@ -34,9 +34,9 @@
       <plugin id="com.hp.hpl.jena"/>
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="com.onespatial.jrc.tns.hale.rifexport" fragment=""/>
+      <plugin id="com.onespatial.jrc.tns.hale.rifexport"/>
       <plugin id="com.onespatial.jrc.tns.jaxb.rifprd"/>
-      <plugin id="com.onespatial.jrc.tns.oml_to_rif" fragment=""/>
+      <plugin id="com.onespatial.jrc.tns.oml_to_rif"/>
       <plugin id="com.springsource.com.sun.xml.bind"/>
       <plugin id="com.springsource.com.sun.xml.fastinfoset"/>
       <plugin id="com.springsource.javax.activation"/>
@@ -77,7 +77,7 @@
       <plugin id="eu.esdihumboldt.hale.gmlparser"/>
       <plugin id="eu.esdihumboldt.hale.gmlvalidate"/>
       <plugin id="eu.esdihumboldt.hale.gmlwriter"/>
-      <plugin id="eu.esdihumboldt.hale.gmlwriter.test" fragment=""/>
+      <plugin id="eu.esdihumboldt.hale.gmlwriter.test"/>
       <plugin id="eu.esdihumboldt.hale.htmlexporter"/>
       <plugin id="eu.esdihumboldt.hale.instanceprovider"/>
       <plugin id="eu.esdihumboldt.hale.logback.config" fragment="true"/>
@@ -85,11 +85,12 @@
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
       <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.core"/>
       <plugin id="eu.esdihumboldt.hale.schemaprovider"/>
+      <plugin id="eu.esdihumboldt.hale.schemaprovider.uiconfig" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.userstatus.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.specification"/>
       <plugin id="eu.esdihumboldt.transformer.cst"/>
-      <plugin id="eu.xsdi.mdl"/>
-      <plugin id="eu.xsdi.mdlui"/>
+      <plugin id="eu.xsdi.mdl" fragment=""/>
+      <plugin id="eu.xsdi.mdlui" fragment=""/>
       <plugin id="gnu.trove"/>
       <plugin id="javax.servlet"/>
       <plugin id="jcl.over.slf4j"/>
