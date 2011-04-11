@@ -25,8 +25,8 @@ public class WithinNode extends AbstractGeometricNode
     /**
      * IRI for the predicate to be deployed in the RIF output.
      */
-    public static final String WITHIN_PREDICATE_IRI = "http://" //$NON-NLS-1$
-            + "www.opengeospatial.org/standards/sfa/Geometry#within"; //$NON-NLS-1$
+    public static final String WITHIN_PREDICATE_IRI = "http://"
+            + "www.opengeospatial.org/standards/sfa/Geometry#within";
 
     private double distance;
     private UnitOfMeasureType distanceUnits;

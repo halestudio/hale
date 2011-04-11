@@ -17,6 +17,7 @@ package com.onespatial.jrc.tns.oml_to_rif.model.rif;
  * 
  * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
  * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
+ * @author Susanne Reinwarth / TU Dresden
  */
 public enum ComparisonType
 {
@@ -43,25 +44,35 @@ public enum ComparisonType
     /**
      * Evaluating whether one number is greater than another number.
      */
-    NUMBER_GREATER_THAN;
+    NUMBER_GREATER_THAN,
+    
+    /**
+     * Evaluating whether an attribute does exist.
+     */
+    EXISTS,
+    
+    /**
+     * Evaluating whether an attribute does not exist.
+     */
+    NOT_EXISTS;
 
     /**
      * RIF IRI for the numeric 'greater-than' predicate.
      */
-    public static final String NUMBER_GREATER_THAN_RIF_PREDICATE_IRI = "http://" //$NON-NLS-1$
-            + "www.w3.org/2007/rif-builtin-predicate#numeric-greater-than"; //$NON-NLS-1$
+    public static final String NUMBER_GREATER_THAN_RIF_PREDICATE_IRI = "http://"
+            + "www.w3.org/2007/rif-builtin-predicate#numeric-greater-than";
 
     /**
      * RIF IRI for the numeric 'less-than' predicate.
      */
-    public static final String NUMBER_LESS_THAN_RIF_PREDICATE_IRI = "http://" //$NON-NLS-1$
-            + "www.w3.org/2007/rif-builtin-predicate#numeric-less-than"; //$NON-NLS-1$
+    public static final String NUMBER_LESS_THAN_RIF_PREDICATE_IRI = "http://"
+            + "www.w3.org/2007/rif-builtin-predicate#numeric-less-than";
 
     /**
      * RIF IRI for the string 'contains' predicate.
      */
-    public static final String STRING_CONTAINS_RIF_PREDICATE_IRI = "http://" //$NON-NLS-1$
-            + "www.w3.org/2007/rif-builtin-predicate#contains"; //$NON-NLS-1$
+    public static final String STRING_CONTAINS_RIF_PREDICATE_IRI = "http://"
+            + "www.w3.org/2007/rif-builtin-predicate#contains";
 
     /**
      * @return String

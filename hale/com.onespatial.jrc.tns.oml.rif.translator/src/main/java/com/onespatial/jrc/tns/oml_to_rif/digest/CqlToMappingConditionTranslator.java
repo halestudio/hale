@@ -16,9 +16,11 @@ import java.util.List;
 import org.geotools.filter.AttributeExpressionImpl;
 import org.geotools.filter.CompareFilterImpl;
 import org.geotools.filter.GeometryFilterImpl;
+import org.geotools.filter.IsNullImpl;
 import org.geotools.filter.LikeFilterImpl;
 import org.geotools.filter.LiteralExpressionImpl;
 import org.geotools.filter.LogicFilterImpl;
+import org.geotools.filter.NotImpl;
 import org.geotools.filter.spatial.ContainsImpl;
 import org.geotools.filter.spatial.IntersectsImpl;
 import org.geotools.filter.spatial.WithinImpl;
@@ -43,6 +45,7 @@ import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.terminal.LiteralValue;
  * 
  * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
  * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
+ * @author Susanne Reinwarth / TU Dresden
  */
 public class CqlToMappingConditionTranslator extends
         AbstractFollowableTranslator<Filter, ModelMappingCondition>
@@ -69,20 +72,34 @@ public class CqlToMappingConditionTranslator extends
         if (isLogical(source))
         {
             LogicFilterImpl logicFilter = (LogicFilterImpl) source;
-            root = factory.createLogicNode(logicFilter);
-            List<?> children = logicFilter.getChildren();
-            for (Object child : children)
+            //filter IS NOT NULL can not be treated as a logical one
+            if (logicFilter instanceof NotImpl && logicFilter.getChildren().get(0) instanceof IsNullImpl)
             {
-                createNode(root, (Filter) child);
+            	CompareFilterImpl compare = (CompareFilterImpl) logicFilter.getChildren().get(0);
+            	AbstractComparisonNode cn = factory.createComparisonNode(compare, true);
+            	cn.setLeft(getLeftContents((AttributeExpressionImpl) compare.getExpression1()));
+            	root = cn;
+            }
+            else
+            {
+            	root = factory.createLogicNode(logicFilter);
+            	List<?> children = logicFilter.getChildren();
+            	for (Object child : children)
+            	{
+            		createNode(root, (Filter) child);
+            	}
             }
         }
         // if it's a comparison filter we assume we are at the start of the tree
         else if (isComparison(source))
         {
             CompareFilterImpl compare = (CompareFilterImpl) source;
-            AbstractComparisonNode cn = factory.createComparisonNode(compare);
+            AbstractComparisonNode cn = factory.createComparisonNode(compare, false);
             cn.setLeft(getLeftContents((AttributeExpressionImpl) compare.getExpression1()));
-            cn.setRight(getRightContents(compare.getExpression2()));
+            if (!(source instanceof IsNullImpl))
+            {
+            	cn.setRight(getRightContents(compare.getExpression2()));
+            }
             root = cn;
         }
         // likewise if it's a geometric filter
@@ -126,7 +143,7 @@ public class CqlToMappingConditionTranslator extends
         }
         else
         {
-            throw new UnsupportedOperationException("Filter operation is not supported: " //$NON-NLS-1$
+            throw new UnsupportedOperationException("Filter operation is not supported: "
                     + node.getClass().getCanonicalName());
         }
     }
@@ -146,8 +163,8 @@ public class CqlToMappingConditionTranslator extends
             LiteralExpressionImpl literal = (LiteralExpressionImpl) expression;
             if (literal.getValue() instanceof com.vividsolutions.jts.geom.Geometry)
             {
-                throw new IllegalArgumentException("Geometric literals are " //$NON-NLS-1$
-                        + "not supported! Found " //$NON-NLS-1$
+                throw new IllegalArgumentException("Geometric literals are "
+                        + "not supported! Found "
                         + literal.getValue().getClass().getCanonicalName());
             }
             node.setLiteralValue(LiteralValue.getNew(literal.getValue()));
@@ -159,7 +176,7 @@ public class CqlToMappingConditionTranslator extends
         }
         else
         {
-            throw new IllegalArgumentException("Unsupported expression type: " //$NON-NLS-1$
+            throw new IllegalArgumentException("Unsupported expression type: "
                     + expression.getClass().getCanonicalName());
         }
         return node;
@@ -184,7 +201,7 @@ public class CqlToMappingConditionTranslator extends
             if (LikeFilterImpl.class.isAssignableFrom(child.getClass()))
             {
                 LikeFilterImpl like = (LikeFilterImpl) child;
-                comparisonNode = factory.createComparisonNode(like);
+                comparisonNode = factory.createComparisonNode(like, false);
                 comparisonNode.setLeft(getLeftContents((AttributeExpressionImpl) like
                         .getExpression()));
                 LeafNode node = new LeafNode();
@@ -194,11 +211,13 @@ public class CqlToMappingConditionTranslator extends
             else
             {
                 CompareFilterImpl compare = (CompareFilterImpl) child;
-                comparisonNode = factory.createComparisonNode(compare);
+                comparisonNode = factory.createComparisonNode(compare, false);
                 comparisonNode.setLeft(getLeftContents((AttributeExpressionImpl) compare
                         .getExpression1()));
-                comparisonNode.setRight(getRightContents(compare.getExpression2()));
-
+                if (!(compare instanceof IsNullImpl))
+                {
+                	comparisonNode.setRight(getRightContents(compare.getExpression2()));
+                }
             }
             childNode = comparisonNode;
         }

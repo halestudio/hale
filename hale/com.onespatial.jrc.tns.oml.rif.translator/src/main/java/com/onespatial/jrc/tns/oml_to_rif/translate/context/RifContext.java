@@ -101,9 +101,9 @@ public class RifContext
         result.addAll(variables.values());
         return result;
     }
-
-    /**
-     * Get all the variables that are explictly in this context.
+    
+   /**
+     * Get all the variables that are explicitly in this context.
      * 
      * @return list of variables in this context.
      */
@@ -135,8 +135,8 @@ public class RifContext
         if (variable == null)
         {
 
-            throw new IllegalArgumentException("Attempting to access undefined variable " + name //$NON-NLS-1$
-                    + " context " + this); //$NON-NLS-1$
+            throw new IllegalArgumentException("Attempting to access undefined variable " + name
+                    + " context " + this);
         }
 
         return variable;
@@ -152,8 +152,18 @@ public class RifContext
         StringBuilder builder = new StringBuilder();
         for (RifVariable variable : getVariables())
         {
-            builder.append("\n\t").append(variable.summary()); //$NON-NLS-1$
+            builder.append("\n\t").append(variable.summary());
         }
         return builder.toString();
+    }
+    
+    /**
+     * Get all variables in context (or ancestor) as a {@link Map}.
+     * 
+     * @return {@link Map}<{@link String}, {@link RifVariable}>
+     */
+    public Map<String, RifVariable> getVariablesMap()
+    {
+    	return variables;
     }
 }

@@ -64,5 +64,14 @@ public class PropertyMapping
     {
         target = att;
     }
+    
+    /**
+     * @param s
+     * 			{@link RifVariable}
+     */
+    public void setSource(RifVariable s)
+    {
+    	source = s;
+    }
 
 }

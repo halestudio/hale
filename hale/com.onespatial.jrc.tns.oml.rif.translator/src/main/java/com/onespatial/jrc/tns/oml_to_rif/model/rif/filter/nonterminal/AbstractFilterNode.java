@@ -16,6 +16,8 @@ import static com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.Nod
 import static com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType.EQUAL_TO_NODE;
 import static com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType.GREATER_THAN_NODE;
 import static com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType.INTERSECTS_NODE;
+import static com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType.IS_NOT_NULL_NODE;
+import static com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType.IS_NULL_NODE;
 import static com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType.LESS_THAN_NODE;
 import static com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType.LIKE_NODE;
 import static com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType.NOT_NODE;
@@ -33,6 +35,7 @@ import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.terminal.LeafNode;
  * 
  * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
  * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
+ * @author Susanne Reinwarth / TU Dresden
  */
 public abstract class AbstractFilterNode implements FilterNode
 {
@@ -129,7 +132,8 @@ public abstract class AbstractFilterNode implements FilterNode
     public boolean isComparison()
     {
         return getNodeType().equals(EQUAL_TO_NODE) || getNodeType().equals(GREATER_THAN_NODE)
-                || getNodeType().equals(LESS_THAN_NODE) || getNodeType().equals(LIKE_NODE);
+                || getNodeType().equals(LESS_THAN_NODE) || getNodeType().equals(LIKE_NODE)
+                || getNodeType().equals(IS_NULL_NODE) || getNodeType().equals(IS_NOT_NULL_NODE);
     }
 
     /**

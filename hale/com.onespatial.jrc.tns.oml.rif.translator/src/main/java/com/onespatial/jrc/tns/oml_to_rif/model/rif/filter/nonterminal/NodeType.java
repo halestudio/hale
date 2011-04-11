@@ -59,5 +59,13 @@ public enum NodeType
     /**
      * Node with a LIKE in it.
      */
-    LIKE_NODE;
+    LIKE_NODE,
+    /**
+     * Node with an IS NULL in it.
+     */
+    IS_NULL_NODE,
+    /**
+     * Node with an IS NOT NULL in it.
+     */
+    IS_NOT_NULL_NODE;
 }

@@ -14,27 +14,23 @@ package com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.compariso
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType;
 
 /**
- * A node within a predicate tree that expresses a "less-than" comparison.
+ * A node within a predicate tree that expresses an "is not null" comparison (tests
+ * whether an attribute does exist.
  * 
- * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
- * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
+ * @author Susanne Reinwarth / TU Dresden
+ *
  */
-public class LessThanNode extends AbstractComparisonNode
-{
-    /**
-     * IRI for the predicate to be deployed in the RIF output.
-     */
-    public static final String RIF_PREDICATE_IRI = "http://"
-            + "www.w3.org/2007/rif-builtin-predicate#numeric-less-than";
+public class IsNotNullNode extends AbstractComparisonNode {
 
-    /**
+	/**
      * Set as protected in case this class is extended.
      */
-    protected NodeType nodeType = NodeType.LESS_THAN_NODE;
+	protected NodeType nodeType = NodeType.IS_NOT_NULL_NODE;
 
     @Override
     public NodeType getNodeType()
     {
         return nodeType;
     }
+
 }

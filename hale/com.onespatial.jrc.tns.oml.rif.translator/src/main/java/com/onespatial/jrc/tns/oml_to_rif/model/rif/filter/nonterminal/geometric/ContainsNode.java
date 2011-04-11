@@ -25,8 +25,8 @@ public class ContainsNode extends AbstractGeometricNode
     /**
      * IRI for the predicate to be deployed in the RIF output.
      */
-    public static final String CONTAINS_PREDICATE_IRI = "http://" //$NON-NLS-1$
-            + "www.opengeospatial.org/standards/sfa/Geometry#contains"; //$NON-NLS-1$
+    public static final String CONTAINS_PREDICATE_IRI = "http://"
+            + "www.opengeospatial.org/standards/sfa/Geometry#contains";
 
     /**
      * Set as protected in case this class is extended.

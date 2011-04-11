@@ -11,6 +11,8 @@
  */
 package com.onespatial.jrc.tns.oml_to_rif.translate;
 
+import static com.onespatial.jrc.tns.oml_to_rif.model.rif.ComparisonType.EXISTS;
+import static com.onespatial.jrc.tns.oml_to_rif.model.rif.ComparisonType.NOT_EXISTS;
 import static com.onespatial.jrc.tns.oml_to_rif.model.rif.ComparisonType.NUMBER_EQUALS;
 import static com.onespatial.jrc.tns.oml_to_rif.model.rif.ComparisonType.NUMBER_GREATER_THAN;
 import static com.onespatial.jrc.tns.oml_to_rif.model.rif.ComparisonType.NUMBER_LESS_THAN;
@@ -21,6 +23,8 @@ import static com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.Nod
 import static com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType.GREATER_THAN_NODE;
 import static com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType.LESS_THAN_NODE;
 import static com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType.LIKE_NODE;
+import static com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType.IS_NOT_NULL_NODE;
+import static com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType.IS_NULL_NODE;
 import static com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType.NOT_NODE;
 import static com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.NodeType.OR_NODE;
 
@@ -33,17 +37,25 @@ import org.opengis.feature.type.Name;
 
 import com.onespatial.jrc.tns.oml_to_rif.api.AbstractFollowableTranslator;
 import com.onespatial.jrc.tns.oml_to_rif.api.TranslationException;
+import com.onespatial.jrc.tns.oml_to_rif.model.alignment.AbstractModelFilter;
+import com.onespatial.jrc.tns.oml_to_rif.model.alignment.GeometryType;
 import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelAlignment;
 import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelAttributeMappingCell;
+import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelCentroidCell;
 import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelClassMappingCell;
+import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelIdentifierCell;
 import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelMappingCondition;
 import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelStaticAssignmentCell;
+import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelConcatenationOfAttributesCell;
+import com.onespatial.jrc.tns.oml_to_rif.model.rif.CentroidMapping;
+import com.onespatial.jrc.tns.oml_to_rif.model.rif.IdentifierMapping;
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.LogicalType;
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.ModelRifDocument;
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.ModelRifMappingCondition;
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.ModelSentence;
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.PropertyMapping;
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.StaticAssignment;
+import com.onespatial.jrc.tns.oml_to_rif.model.rif.ConcatenationMapping;
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.AbstractFilterNode;
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.FilterNode;
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.comparison.AbstractComparisonNode;
@@ -60,6 +72,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 /**
  * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
  * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
+ * @author Susanne Reinwarth / TU Dresden
  */
 public class ModelAlignmentToModelRifTranslator extends
         AbstractFollowableTranslator<ModelAlignment, ModelRifDocument>
@@ -84,16 +97,15 @@ public class ModelAlignmentToModelRifTranslator extends
         // possible for the given elementdecl for the source class
         for (ModelClassMappingCell c : alignment.getClassMappings())
         {
-            result.getSentences().add(translateClassMapping(alignment, c));
+            result.getSentences().addAll(translateClassMapping(alignment, c));
         }
 
         return result;
     }
 
-    private ModelSentence translateClassMapping(ModelAlignment alignment,
+    private List<ModelSentence> translateClassMapping(ModelAlignment alignment,
             ModelClassMappingCell classMapping)
     {
-
         // determine which attribute mappings are applicable to this class
         // mapping.
         List<ModelAttributeMappingCell> applicableAttributeMappings = filter(alignment
@@ -102,65 +114,209 @@ public class ModelAlignmentToModelRifTranslator extends
 
         List<ModelStaticAssignmentCell> applicableStaticAssignments = filter(alignment
                 .getStaticAssignments(), classMapping.getTargetClass());
+        
+        List<ModelConcatenationOfAttributesCell> applicableConcatenationMappings = filterConcatenation(alignment
+        		.getConcatenationMappings(), classMapping.getSourceClass(), classMapping
+        		.getTargetClass());
+        
+        List<ModelCentroidCell> applicableCentroidMappings = filterCentroid(alignment
+        		.getCentroidMappings(), classMapping.getSourceClass(), classMapping
+        		.getTargetClass());
+        
+        List<ModelIdentifierCell> applicableIdentifierMappings = filterIdentifier(alignment
+        		.getIdentifierMappings(), classMapping.getSourceClass(), classMapping.getTargetClass());
 
-        return buildModelSentance(classMapping, applicableAttributeMappings,
-                applicableStaticAssignments);
-
+        return buildModelSentences(classMapping, applicableAttributeMappings,
+                applicableStaticAssignments, applicableConcatenationMappings,
+                applicableCentroidMappings, applicableIdentifierMappings);
     }
 
-    private ModelSentence buildModelSentance(ModelClassMappingCell classMapping,
+	private List<ModelSentence> buildModelSentences(ModelClassMappingCell classMapping,
             List<ModelAttributeMappingCell> attributeMappings,
-            List<ModelStaticAssignmentCell> staticAssignments)
+            List<ModelStaticAssignmentCell> staticAssignments,
+            List<ModelConcatenationOfAttributesCell> concatenationMappings,
+            List<ModelCentroidCell> centroidMappings,
+            List<ModelIdentifierCell> identifierMappings)
     {
+    	// sentence containing class mapping and all non-filter attribute mappings
+    	ModelSentence mainSentence = new ModelSentence();
+    	setSourceAndTargetClass(mainSentence, classMapping);
+    	
+        for (ModelMappingCondition condition : classMapping.getMappingConditions())
+        {
+            mainSentence.addMappingCondition(buildRifMappingCondition(mainSentence,
+                    (AbstractFilterNode) condition.getRoot()));
+        }
+        
+        // contains a sentence for each filter attribute mapping
+    	List<ModelSentence> filterSentences = new ArrayList<ModelSentence>();
+        
+        for (ModelAttributeMappingCell attributeMapping : attributeMappings)
+        {
+        	if (attributeMapping.getMappingConditions().isEmpty()) {
+        		buildPropertyMapping(mainSentence, attributeMapping);
+        	}
+        	else {
+        		ModelSentence filterSentence = buildModelFilterSentence(classMapping, attributeMapping);
+        		buildPropertyMapping(filterSentence, attributeMapping);
+        		filterSentences.add(filterSentence);
+        	}
+        }
+        
+        //HALE does not allow filters for static assignments (ConstantValueFunction)
+        for (ModelStaticAssignmentCell staticAssignment : staticAssignments)
+        {
+        	buildStaticAssignment(mainSentence, staticAssignment);
+        }
+        
+        for (ModelConcatenationOfAttributesCell concatenationMapping : concatenationMappings)
+        {
+        	if (concatenationMapping.getMappingConditions().isEmpty()) {
+        		buildConcatenationMapping(mainSentence, concatenationMapping);
+        	}
+        	else {
+        		ModelSentence filterSentence = buildModelFilterSentence(classMapping, concatenationMapping);
+        		buildConcatenationMapping(filterSentence, concatenationMapping);
+        		filterSentences.add(filterSentence);
+        	}
+        }
+        
+        for (ModelCentroidCell centroidMapping : centroidMappings)
+        {
+        	if (centroidMapping.getMappingConditions().isEmpty()) {
+        		buildCentroidMapping(mainSentence, centroidMapping);
+        	}
+        	else {
+        		ModelSentence filterSentence = buildModelFilterSentence(classMapping, centroidMapping);
+        		buildCentroidMapping(filterSentence, centroidMapping);
+        		filterSentences.add(filterSentence);
+        	}
+        }
+        
+        for (ModelIdentifierCell identifierMapping : identifierMappings)
+        {
+        	if (identifierMapping.getMappingConditions().isEmpty()) {
+        		buildIdentifierMapping(mainSentence, identifierMapping);
+        	}
+        	else {
+        		ModelSentence filterSentence = buildModelFilterSentence(classMapping, identifierMapping);
+        		buildIdentifierMapping(filterSentence, identifierMapping);
+        		filterSentences.add(filterSentence);
+        	}
+        }
+        
+        List<ModelSentence> allSentences = new ArrayList<ModelSentence>();
+        allSentences.add(mainSentence);
+        allSentences.addAll(filterSentences);
+        return allSentences;
+    }
 
-        ModelSentence sentence = new ModelSentence();
-
-        sentence.setSourceClass(
-                classMapping.getSourceClass().getElementName().getLocalPart().toLowerCase() + "-instance", //$NON-NLS-1$
+    private void setSourceAndTargetClass(ModelSentence sentence,
+			ModelClassMappingCell classMapping) {
+    	sentence.setSourceClass(
+                classMapping.getSourceClass().getElementName().getLocalPart().toLowerCase() + "-instance",
                 getName(classMapping.getSourceClass().getElementName()));
         sentence.setTargetClass(
-                classMapping.getTargetClass().getElementName().getLocalPart().toLowerCase() + "-instance", //$NON-NLS-1$
+                classMapping.getTargetClass().getElementName().getLocalPart().toLowerCase() + "-instance",
                 getName(classMapping.getTargetClass().getElementName()));
+	}
 
-        for (ModelMappingCondition condition : classMapping.getMappingConditions())
+    private ModelSentence buildModelFilterSentence (ModelClassMappingCell classMapping, 
+    		AbstractModelFilter mapping)
+    {	
+    	ModelSentence sentence = new ModelSentence();
+    	setSourceAndTargetClass(sentence, classMapping);
+    	sentence.setAttributeFilterSentence(true);
+		for (ModelMappingCondition condition : mapping.getMappingConditions())
         {
             sentence.addMappingCondition(buildRifMappingCondition(sentence,
                     (AbstractFilterNode) condition.getRoot()));
         }
+		return sentence;
+	}
 
-        for (ModelAttributeMappingCell attributeMapping : attributeMappings)
-        {
-            buildPropertyMapping(sentence, attributeMapping);
-        }
-
-        for (ModelStaticAssignmentCell staticAssigment : staticAssignments)
-        {
-            buildStaticAssignment(sentence, staticAssigment);
-        }
-
-        return sentence;
-    }
-
-    private void buildStaticAssignment(ModelSentence sentence,
-            ModelStaticAssignmentCell staticAssigment)
+	private void buildStaticAssignment (ModelSentence sentence,
+            ModelStaticAssignmentCell staticAssignment)
     {
-        RifVariable targetVariable = descendGmlAttributePath(sentence, staticAssigment.getTarget(),
+        RifVariable targetVariable = descendGmlAttributePath(sentence, staticAssignment.getTarget(),
                 false);
-        sentence.addStaticAssigment(new StaticAssignment(targetVariable, staticAssigment
+       
+        if (staticAssignment.isNilReason())
+        {
+        	//create additional property mapping for variable created in static nil reason assignment
+        	RifVariable sourceVar = targetVariable.getContextVariable();
+        	sourceVar.setIsActionVar(true);
+        	sourceVar.setIsNew(true);
+        	RifVariable targetVar = new RifVariable();
+        	targetVar.setType(Type.ATTRIBUTE);
+        	targetVar.setName(staticAssignment.getTarget().get(0).getDefinition().getName());
+        	targetVar.setContextVariable(targetVariable.getContextVariable().getContextVariable());
+        	targetVar.setPropertyName(targetVariable.getContextVariable().getPropertyName());
+        	sentence.addPropertyMapping(new PropertyMapping(sourceVar, targetVar));
+        	targetVariable.setPropertyName("urn:x-inspire:specification:gmlas:BaseTypes:3.2:nilReason");
+        }
+        
+        sentence.addStaticAssigment(new StaticAssignment(targetVariable, staticAssignment
                 .getContent()));
     }
+	
+	private void buildIdentifierMapping (ModelSentence sentence,
+			ModelIdentifierCell identifierMapping)
+	{
+		RifVariable sourceVariable = descendGmlAttributePath(sentence, identifierMapping
+				.getSourceAttribute(), true);
+		
+		RifVariable targetVariable = descendGmlAttributePath(sentence, identifierMapping
+				.getTargetAttribute(), false);
+		
+		sentence.addIdentifierMapping(new IdentifierMapping(sourceVariable, targetVariable,
+				identifierMapping.getNamespace(),
+				identifierMapping.getVersionId(),
+				identifierMapping.getVersionNilReason()));
+	}
 
-    private void buildPropertyMapping(ModelSentence sentence,
+    private void buildPropertyMapping (ModelSentence sentence,
             ModelAttributeMappingCell attributeMapping)
     {
-
-        RifVariable sourceVariable = descendGmlAttributePath(sentence, attributeMapping
+    	RifVariable sourceVariable = descendGmlAttributePath(sentence, attributeMapping
                 .getSourceAttribute(), true);
-
+        
         RifVariable targetVariable = descendGmlAttributePath(sentence, attributeMapping
                 .getTargetAttribute(), false);
 
         sentence.addPropertyMapping(new PropertyMapping(sourceVariable, targetVariable));
+    }
+    
+    private void buildCentroidMapping (ModelSentence sentence, ModelCentroidCell centroidMapping)
+    {
+    	 RifVariable sourceVariable = descendGmlAttributePath(sentence, centroidMapping
+                 .getSourceAttribute(), true);
+         
+         RifVariable targetVariable = descendGmlAttributePath(sentence, centroidMapping
+                 .getTargetAttribute(), false);
+         
+         GeometryType gT = centroidMapping.getGeometryType();
+
+         sentence.addCentroidMapping(new CentroidMapping(sourceVariable, targetVariable, gT));
+    }
+    
+    private void buildConcatenationMapping(ModelSentence sentence,
+    		ModelConcatenationOfAttributesCell concatenationMapping)
+    {
+    	List<RifVariable> sourceVariables = new ArrayList<RifVariable>();
+    	List<GmlAttributePath> sourceAttributes = concatenationMapping.getSourceAttributes();
+    	for (GmlAttributePath sourceAttribute : sourceAttributes)
+    	{
+    		sourceVariables.add(descendGmlAttributePath(sentence, sourceAttribute, true));
+    	}
+    	
+    	RifVariable targetVariable = descendGmlAttributePath(sentence, concatenationMapping
+    			.getTargetAttribute(), false);
+    	
+    	String separator = concatenationMapping.getSeparator();
+    	String concatString = concatenationMapping.getConcatString();
+    	
+    	sentence.addConcatenationMapping(new ConcatenationMapping(sourceVariables, targetVariable, separator, concatString));
     }
 
     private ModelRifMappingCondition buildRifMappingCondition(ModelSentence sentence,
@@ -221,12 +377,22 @@ public class ModelAlignmentToModelRifTranslator extends
                 {
                     rifCondition.setOperator(STRING_CONTAINS);
                 }
+                else if (node.getNodeType().equals(IS_NULL_NODE))
+                {
+                	rifCondition.setOperator(NOT_EXISTS);
+                }
+                else if (node.getNodeType().equals(IS_NOT_NULL_NODE))
+                {
+                	rifCondition.setOperator(EXISTS);
+                }
 
                 rifCondition.setLeft(getContents(sentence, cnode.getLeft()));
-                rifCondition.setLiteralClass(cnode.getRight().getLiteralValue().getValueClass());
-                rifCondition.setLiteralValue(cnode.getRight().getLiteralValue().toString());
-                rifCondition.setRight(getContents(sentence, cnode.getRight()));
-
+                if (!node.getNodeType().equals(IS_NULL_NODE) && !node.getNodeType().equals(IS_NOT_NULL_NODE))
+                {
+                	rifCondition.setLiteralClass(cnode.getRight().getLiteralValue().getValueClass());
+                    rifCondition.setLiteralValue(cnode.getRight().getLiteralValue().toString());
+                    rifCondition.setRight(getContents(sentence, cnode.getRight()));
+                }
             }
             // geometric ones
             else if (node.isGeometric())
@@ -248,8 +414,8 @@ public class ModelAlignmentToModelRifTranslator extends
         RifVariable contextVariable = sentence.getSourceClass();
         String className = contextVariable.getClassName();
         String variableName = className.substring(className.lastIndexOf(':') + 1, className
-                .length())
-                + "-" + leaf.getPropertyName().toLowerCase() + "-filter"; //$NON-NLS-1$ //$NON-NLS-2$
+                .length()).toLowerCase()
+                + "-" + leaf.getPropertyName().toLowerCase() + "-filter";
         RifVariable variable = sentence.createVariable(variableName);
         variable.setContextVariable(sentence.getSourceClass());
 
@@ -284,12 +450,13 @@ public class ModelAlignmentToModelRifTranslator extends
     private RifVariable lazyCreate(RifVariable current, GmlAttribute fragment,
             ModelSentence sentence, boolean isSource)
     {
-
-        String propertyName = fragment.getDefinition().getName(); //XXX what name to use here? //getName(fragment.getAttributeElement());
-        RifVariable child = sentence.findChildAttribute(current, propertyName);
+    	String propertyName = fragment.getDefinition().getNamespace().concat(":").
+    			concat(fragment.getDefinition().getName());
+    	
+    	RifVariable child = sentence.findChildAttribute(current, propertyName);
         if (child == null)
         {
-            String variableName = fragment.getDefinition().getDeclaringType().getName().getLocalPart() + "-" //$NON-NLS-1$
+            String variableName = fragment.getDefinition().getDeclaringType().getName().getLocalPart() + "-"
                     + fragment.getDefinition().getName();
             variableName = variableName.toLowerCase();
             if (isSource)
@@ -336,6 +503,35 @@ public class ModelAlignmentToModelRifTranslator extends
 
         return applicableAssigments;
     }
+    
+    /**
+     * Filter {@link ModelIdentifierCell}s to leave only those that can be
+     * applied to the specified source class.
+     * 
+     * @param identiferMappings
+     *            the assignments to filter.
+     * @param sourceClass
+     *            source class that assignment must apply to.
+     * @return filtered list of assignments.
+     */
+    private List<ModelIdentifierCell> filterIdentifier(
+            List<ModelIdentifierCell> identifierMappings, SchemaElement sourceClass, SchemaElement targetClass)
+    {
+
+        List<ModelIdentifierCell> applicableAssigments = new ArrayList<ModelIdentifierCell>();
+        for (ModelIdentifierCell candidate : identifierMappings)
+        {
+            TypeDefinition sourceElement = candidate.getSourceAttribute().get(0).getDefinition().getDeclaringType();
+            TypeDefinition targetElement = candidate.getTargetAttribute().get(0).getDefinition().getDeclaringType();
+            if (canBeSubstitutedBy(sourceElement, sourceClass) && canBeSubstitutedBy(targetElement, targetClass))
+            {
+                applicableAssigments.add(candidate);
+            }
+            // also test attributes.
+        }
+
+        return applicableAssigments;
+    }
 
     /**
      * Filter {@link ModelAttributeMappingCell}s to leave only those that can
@@ -358,8 +554,7 @@ public class ModelAlignmentToModelRifTranslator extends
         {
             TypeDefinition sourceElement = candidate.getSourceAttribute().get(0).getDefinition().getDeclaringType();
             TypeDefinition targetElement = candidate.getTargetAttribute().get(0).getDefinition().getDeclaringType();
-            if (canBeSubstitutedBy(sourceElement, sourceClass)
-                    && canBeSubstitutedBy(targetElement, targetClass))
+            if (canBeSubstitutedBy(sourceElement, sourceClass) && canBeSubstitutedBy(targetElement, targetClass))
             {
                 applicableMappings.add(candidate);
             }
@@ -368,7 +563,80 @@ public class ModelAlignmentToModelRifTranslator extends
 
         return applicableMappings;
     }
+    
+    /**
+     * Filter {@link ModelCentroidCell}s to leave only those that can
+     * target the specified source and target classes.
+     * 
+     * @param centroidMappings
+     * 				cells to filter.
+     * @param sourceClass
+     * 				source class that mapping must apply to.
+     * @param targetClass
+     * 				target class that mapping must apply to.
+     * @return filtered list of mapping cells.
+     */
+    private static List<ModelCentroidCell> filterCentroid(
+			List<ModelCentroidCell> centroidMappings, SchemaElement sourceClass,
+			SchemaElement targetClass)
+	{
+		List<ModelCentroidCell> applicableMappings = new ArrayList<ModelCentroidCell>();
+		for (ModelCentroidCell candidate : centroidMappings)
+	    {
+			TypeDefinition sourceElement = candidate.getSourceAttribute().get(0).getDefinition().getDeclaringType();
+			TypeDefinition targetElement = candidate.getTargetAttribute().get(0).getDefinition().getDeclaringType();
+	        if (canBeSubstitutedBy(sourceElement, sourceClass) && canBeSubstitutedBy(targetElement, targetClass))
+	        {
+	        	applicableMappings.add(candidate);
+	        }
+	        // also test attributes.
+	    }
+		return applicableMappings;
+	}
+    
+    /**
+     * Filter {@link ModelConcatenationOfAttributesCell}s to leave only those that can
+     * target the specified source and target classes.
+     * 
+     * @param concatenationMappings
+     *            cells to filter.
+     * @param sourceClass
+     *            source class that mapping must apply to.
+     * @param targetClass
+     *            target class that mapping must apply to.
+     * @return filtered list of mappings cells.
+     */
+    private static List<ModelConcatenationOfAttributesCell> filterConcatenation(
+            List<ModelConcatenationOfAttributesCell> concatenationMappings,
+            SchemaElement sourceClass, SchemaElement targetClass)
+    {
+    	List<ModelConcatenationOfAttributesCell> applicableMappings = new ArrayList<ModelConcatenationOfAttributesCell>();
+        for (ModelConcatenationOfAttributesCell candidate : concatenationMappings)
+        {
+            TypeDefinition targetElement = candidate.getTargetAttribute().get(0).getDefinition().getDeclaringType();
+            boolean belongsToTargetClass = canBeSubstitutedBy(targetElement, targetClass);
+            
+            boolean belongsToSourceClass = true;
+            List<GmlAttributePath> sourceAttributes = candidate.getSourceAttributes();
+            for (GmlAttributePath sourceAttribute : sourceAttributes)
+            {
+            	TypeDefinition sourceElement = sourceAttribute.get(0).getDefinition().getDeclaringType();
+            	 if (!canBeSubstitutedBy(sourceElement, sourceClass))
+            	 {
+            		 belongsToSourceClass = false;
+            		 break;
+            	 }
+            }
+            
+            if (belongsToSourceClass && belongsToTargetClass)
+            {
+            	 applicableMappings.add(candidate);
+            }
+        }
 
+        return applicableMappings;
+    }
+    
     /**
      * Determines if the given type can be substituted by the given element
      * 
@@ -393,7 +661,7 @@ public class ModelAlignmentToModelRifTranslator extends
 
 	private String getName(Name element)
     {
-        return element.getNamespaceURI() + ":" + element.getLocalPart(); //$NON-NLS-1$
+        return element.getNamespaceURI() + ":" + element.getLocalPart();
     }
 
 }

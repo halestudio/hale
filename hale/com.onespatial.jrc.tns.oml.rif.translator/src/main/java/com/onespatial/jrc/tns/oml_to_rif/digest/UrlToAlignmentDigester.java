@@ -47,7 +47,7 @@ public class UrlToAlignmentDigester extends AbstractFollowableTranslator<URL, Ha
     {
         if (source == null)
         {
-            throw new TranslationException("url is null"); //$NON-NLS-1$
+            throw new TranslationException("url is null");
         }
         Alignment al = new OmlRdfReader().read(source);
         
@@ -64,7 +64,7 @@ public class UrlToAlignmentDigester extends AbstractFollowableTranslator<URL, Ha
 	        s = sp.loadSchema(suri, null);
 	        t = sp.loadSchema(new URI(al.getSchema2().getLocation()), null);
         } catch (Exception e) {
-			throw new TranslationException("Error loading schemas", e);  //$NON-NLS-1$
+			throw new TranslationException("Error loading schemas", e); 
 		}
         
         return new HaleAlignment(al, s.getElements().values(), 

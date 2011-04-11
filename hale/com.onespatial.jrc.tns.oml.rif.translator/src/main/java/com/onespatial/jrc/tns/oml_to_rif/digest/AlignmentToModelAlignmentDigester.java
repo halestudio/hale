@@ -20,7 +20,10 @@ import com.onespatial.jrc.tns.oml_to_rif.api.AbstractFollowableTranslator;
 import com.onespatial.jrc.tns.oml_to_rif.api.TranslationException;
 import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelAlignment;
 import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelAttributeMappingCell;
+import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelCentroidCell;
+import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelConcatenationOfAttributesCell;
 import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelClassMappingCell;
+import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelIdentifierCell;
 import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelStaticAssignmentCell;
 import com.onespatial.jrc.tns.oml_to_rif.schema.GmlAttribute;
 import com.onespatial.jrc.tns.oml_to_rif.schema.GmlAttributePath;
@@ -28,9 +31,12 @@ import com.onespatial.jrc.tns.oml_to_rif.schema.GmlAttributePath;
 import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.cst.corefunctions.CentroidFunction;
+import eu.esdihumboldt.cst.corefunctions.ConcatenationOfAttributesFunction;
 import eu.esdihumboldt.cst.corefunctions.ConstantValueFunction;
 import eu.esdihumboldt.cst.corefunctions.NilReasonFunction;
 import eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction;
+import eu.esdihumboldt.cst.corefunctions.inspire.IdentifierFunction;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.FeatureClass;
@@ -49,6 +55,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
  * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
  * @author Simon Templer / Fraunhofer IGD
+ * @author Susanne Reinwarth / TU Dresden
  */
 public class AlignmentToModelAlignmentDigester extends
         AbstractFollowableTranslator<HaleAlignment, ModelAlignment>
@@ -81,8 +88,11 @@ public class AlignmentToModelAlignmentDigester extends
     {
         List<ModelClassMappingCell> classMappings = new ArrayList<ModelClassMappingCell>();
         List<ModelAttributeMappingCell> attributeMappings = new ArrayList<ModelAttributeMappingCell>();
+        List<ModelConcatenationOfAttributesCell> concatenationMappings = new ArrayList<ModelConcatenationOfAttributesCell>();
+        List<ModelCentroidCell> centroidMappings = new ArrayList<ModelCentroidCell>();
+        List<ModelIdentifierCell> identifierMappings = new ArrayList<ModelIdentifierCell>();
         ArrayList<ModelStaticAssignmentCell> staticAssigments = new ArrayList<ModelStaticAssignmentCell>();
-
+        
         Alignment source = hal.getAlignment();
         
         Map<String, SchemaElement> sourceFeatures = hal.getSourceElements();
@@ -90,12 +100,12 @@ public class AlignmentToModelAlignmentDigester extends
 
         for (ICell cell : source.getMap())
         {
-            IEntity sourceEntity = cell.getEntity1();
+        	IEntity sourceEntity = cell.getEntity1();
             IEntity targetEntity = cell.getEntity2();
 
             boolean sourceIsFeatureClass = sourceEntity instanceof FeatureClass;
             boolean targetIsFeatureClass = targetEntity instanceof FeatureClass;
-
+        	
             if (sourceIsFeatureClass && targetIsFeatureClass)
             {
             	// type mapping
@@ -104,35 +114,139 @@ public class AlignmentToModelAlignmentDigester extends
             }
             else if (!sourceIsFeatureClass && !targetIsFeatureClass)
             {
+            	String function = sourceEntity.getTransformation().getService().getLocation();
+            	boolean functionIsConcatenationOfAttributes = ConcatenationOfAttributesFunction.class.getName().equals(function);
+            	boolean functionIsCentroidFunction = CentroidFunction.class.getName().equals(function);
+            	boolean functionIsRenameAttributeFunction = RenameAttributeFunction.class.getName().equals(function);
+            	boolean functionIsIdentifierFunction = IdentifierFunction.class.getName().equals(function);
+            	
+            	// concatenation of attributes
+            	if (sourceEntity instanceof ComposedProperty && functionIsConcatenationOfAttributes) {
+            		ModelConcatenationOfAttributesCell modelCell = createConcatenation(cell,
+            			(ComposedProperty) sourceEntity, (Property) targetEntity,
+            			sourceFeatures, targetFeatures);
+            		
+            		if (modelCell != null)
+            			concatenationMappings.add(modelCell);
+            	}
+            	// centroid function
+            	else if (functionIsCentroidFunction)
+            	{
+            		ModelCentroidCell modelCell = createCentroid(cell,
+            				(Property) sourceEntity, (Property) targetEntity,
+            				sourceFeatures, targetFeatures);
+            		
+            		if(modelCell != null) {
+            			centroidMappings.add(modelCell);
+            		}
+            	}
             	// property mapping
-            	ModelAttributeMappingCell modelCell = createAttribute(cell,
+            	else if (functionIsRenameAttributeFunction)
+            	{
+            		ModelAttributeMappingCell modelCell = createAttribute(cell,
             			(Property) sourceEntity, (Property) targetEntity, 
             			sourceFeatures, targetFeatures);
-            	if (modelCell != null) {
-            		attributeMappings.add(modelCell);
+            		            		
+            		if (modelCell != null)
+            			attributeMappings.add(modelCell);
             	}
+            	// INSPIRE identifier
+            	else if (functionIsIdentifierFunction)
+            	{
+            		ModelIdentifierCell modelCell = createIdentifier(cell,
+            				(Property) sourceEntity, (Property) targetEntity, sourceFeatures, targetFeatures);
+            		
+            		if (modelCell != null)
+            		{
+            			identifierMappings.add(modelCell);
+            		}
+            	}
+            	else
+            	{
+            		report.setWarning(cell, "Function " + function + " not recognized");
+                }
             }
+            // augmentations
             else if (sourceIsFeatureClass && !targetIsFeatureClass)
             {
-            	// augmentations
-            	ModelStaticAssignmentCell modelCell = createStaticAssignment(cell, (Property) targetEntity, targetFeatures);
+            	ModelStaticAssignmentCell modelCell = createStaticAssignment(cell,
+            			(Property) targetEntity, targetFeatures);            	
+            	
             	if (modelCell != null) {
             		staticAssigments.add(modelCell);
             	}
             }
             else
             {
-                throw new TranslationException("Unhandled combination"); //$NON-NLS-1$
+                throw new TranslationException("Unhandled combination");
             }
-
         }
 
-        return new ModelAlignment(classMappings, attributeMappings,
-                staticAssigments);
-
+        return new ModelAlignment(classMappings, attributeMappings, staticAssigments,
+        		concatenationMappings, centroidMappings, identifierMappings);
     }
 
-    private ModelStaticAssignmentCell createStaticAssignment(ICell original, 
+    private ModelIdentifierCell createIdentifier(ICell original,
+			Property sourceEntity, Property targetEntity,
+			Map<String, SchemaElement> sourceFeatures, Map<String, SchemaElement> targetFeatures)
+    {		
+    	String namespaceCountry = "";
+    	String namespaceDataProvider  = "";
+    	String namespaceProduct = "";
+    	String versionId = "";
+    	String versionNilReason = "";
+    	
+    	for (IParameter param : sourceEntity.getTransformation().getParameters())
+        {
+            if (param.getName().equals(IdentifierFunction.COUNTRY_PARAMETER_NAME))
+            {
+            	namespaceCountry = param.getValue();
+            }
+            else if (param.getName().equals(IdentifierFunction.DATA_PROVIDER_PARAMETER_NAME))
+            {
+            	namespaceDataProvider = param.getValue();
+            }
+            else if (param.getName().equals(IdentifierFunction.PRODUCT_PARAMETER_NAME))
+            {
+            	namespaceProduct = param.getValue();
+            }
+            else if (param.getName().equals(IdentifierFunction.VERSION))
+            {
+            	versionId = param.getValue();
+            }
+            else if (param.getName().equals(IdentifierFunction.VERSION_NIL_REASON))
+            {
+            	versionNilReason = param.getValue();
+            }
+        }
+    	
+    	IDetailedAbout sourceAbout = DetailedAbout.getDetailedAbout(sourceEntity.getAbout(), true);
+    	IDetailedAbout targetAbout = DetailedAbout.getDetailedAbout(targetEntity.getAbout(), true);
+    	
+    	List<FeatureClass> filter = sourceEntity.getDomainRestriction();
+    	List<Restriction> restrictions = new ArrayList<Restriction>();
+    	
+    	if (filter != null)
+    	{
+    		for (FeatureClass currentFilter : filter)
+    		{
+    			restrictions.addAll(currentFilter.getAttributeValueCondition());
+    		}
+    	}
+    	
+		try {
+			return new ModelIdentifierCell(
+				createAttributePath(sourceAbout, sourceFeatures),
+				createAttributePath(targetAbout, targetFeatures),
+				namespaceCountry + namespaceDataProvider + namespaceProduct,
+				versionId, versionNilReason, restrictions);
+		} catch (TranslationException e) {
+			report.setFailed(original, e.getMessage());
+			return null;
+		}
+	}
+
+	private ModelStaticAssignmentCell createStaticAssignment(ICell original, 
     		Property targetEntity, Map<String, SchemaElement> targetFeatures)
     {
     	String function = targetEntity.getTransformation().getService().getLocation();
@@ -150,14 +264,16 @@ public class AlignmentToModelAlignmentDigester extends
             }
             
             IDetailedAbout targetAbout = DetailedAbout.getDetailedAbout(targetEntity.getAbout(), true);
-	        try {
+            
+            try {
 				return new ModelStaticAssignmentCell(
-						createAttributePath(targetAbout, targetFeatures), content);
+						createAttributePath(targetAbout, targetFeatures), content, false);
 			} catch (TranslationException e) {
 				report.setFailed(original, e.getMessage());
 				return null;
 			}
     	}
+    	
     	else if (NilReasonFunction.class.getName().equals(function)) {
     		// nil reason
     		String reason = null;
@@ -170,15 +286,15 @@ public class AlignmentToModelAlignmentDigester extends
                 }
             }
             
-            report.setWarning(original, "The nil reason will be set regardless of whether a value for its parent is set or not"); //$NON-NLS-1$
+            report.setWarning(original, "The nil reason will be set regardless of whether a value for its parent is set or not");
             
             IDetailedAbout targetAbout = DetailedAbout.getDetailedAbout(targetEntity.getAbout(), true);
             List<String> properties = new ArrayList<String>(targetAbout.getProperties());
-            properties.add("nilReason"); //XXX this is an attribute does it make any difference? //$NON-NLS-1$
+            properties.add("nilReason"); //XXX this is an attribute does it make any difference?
 			targetAbout = new DetailedAbout(targetAbout.getNamespace(), targetAbout.getFeatureClass(), properties);
 	        try {
 				return new ModelStaticAssignmentCell(
-						createAttributePath(targetAbout, targetFeatures), reason);
+						createAttributePath(targetAbout, targetFeatures), reason, true);
 			} catch (TranslationException e) {
 				report.setFailed(original, e.getMessage());
 				return null;
@@ -186,40 +302,110 @@ public class AlignmentToModelAlignmentDigester extends
     	}
     	else {
     		// not supported
-    		report.setFailed(original, "Only default value augmentations supported"); //$NON-NLS-1$
+    		report.setFailed(original, "Only default value augmentations supported");
         	return null;
     	}
     }
 
     private ModelAttributeMappingCell createAttribute(ICell original, Property sourceEntity, Property targetEntity,
     		Map<String, SchemaElement> sourceFeatures, Map<String, SchemaElement> targetFeatures) {
+    	
     	//FIXME what about composed properties?
     	if (sourceEntity instanceof ComposedProperty || targetEntity instanceof ComposedProperty) {
-    		report.setFailed(original, "Composed properties not supported"); //$NON-NLS-1$
+    		report.setFailed(original, "Composed properties not supported");
     		return null;
-    	}
-    	
-    	List<FeatureClass> filter = sourceEntity.getDomainRestriction();
-    	if (filter != null && !filter.isEmpty()) {
-    		report.setWarning(original, "Filters on attributive functions currently not supported in the RIF export"); //$NON-NLS-1$
-    	}
-    	
-    	String function = sourceEntity.getTransformation().getService().getLocation();
-    	if (!RenameAttributeFunction.class.getName().equals(function)) {
-    		report.setWarning(original, "Function " + function + " not recognized"); //$NON-NLS-1$ //$NON-NLS-2$
     	}
     	
     	IDetailedAbout sourceAbout = DetailedAbout.getDetailedAbout(sourceEntity.getAbout(), true);
     	IDetailedAbout targetAbout = DetailedAbout.getDetailedAbout(targetEntity.getAbout(), true);
     	
+    	List<FeatureClass> filter = sourceEntity.getDomainRestriction();
+    	List<Restriction> restrictions = new ArrayList<Restriction>();
+    	if (filter != null) {
+    		for (FeatureClass currentFilter : filter) {
+    			restrictions.addAll(currentFilter.getAttributeValueCondition());
+    		}
+    	}
+    	
     	try {
-			return new ModelAttributeMappingCell(
-					createAttributePath(sourceAbout, sourceFeatures), 
-					createAttributePath(targetAbout, targetFeatures));
-		} catch (TranslationException e) {
-			report.setFailed(original, e.getMessage());
+    		return new ModelAttributeMappingCell(
+    				createAttributePath(sourceAbout, sourceFeatures), 
+    				createAttributePath(targetAbout, targetFeatures),
+    				restrictions);    		
+    	} catch (TranslationException e) {
+    		report.setFailed(original, e.getMessage());
 			return null;
-		}
+    	}
+    }
+    
+    private ModelCentroidCell createCentroid(ICell original, Property sourceEntity, Property targetEntity,
+    		Map<String, SchemaElement> sourceFeatures, Map<String, SchemaElement> targetFeatures) {
+    	
+    	//FIXME what about composed properties?
+    	if (sourceEntity instanceof ComposedProperty) {
+    		report.setFailed(original, "Composed source properties not supported in centroid mapping.");
+    		return null;
+    	}
+    	
+    	IDetailedAbout sourceAbout = DetailedAbout.getDetailedAbout(sourceEntity.getAbout(), true);
+    	IDetailedAbout targetAbout = DetailedAbout.getDetailedAbout(targetEntity.getAbout(), true);
+    	
+    	List<FeatureClass> filter = sourceEntity.getDomainRestriction();
+    	List<Restriction> restrictions = new ArrayList<Restriction>();
+    	if (filter != null) {
+    		for (FeatureClass currentFilter : filter) {
+    			restrictions.addAll(currentFilter.getAttributeValueCondition());
+    		}
+    	}
+    	
+    	try {
+    		return new ModelCentroidCell(
+    				createAttributePath(sourceAbout, sourceFeatures), 
+    				createAttributePath(targetAbout, targetFeatures),
+    				restrictions);    		
+    	} catch (TranslationException e) {
+    		report.setFailed(original, e.getMessage());
+			return null;
+    	}
+    }
+    
+    private ModelConcatenationOfAttributesCell createConcatenation(ICell original, ComposedProperty sourceEntity, Property targetEntity,
+    		Map<String, SchemaElement> sourceFeatures, Map<String, SchemaElement> targetFeatures) {
+    	
+    	
+    	if (targetEntity instanceof ComposedProperty) {
+    		report.setFailed(original, "Composed properties in target entity not supported");
+    		return null;
+    	}
+    		
+    	try {
+    		IDetailedAbout targetAbout = DetailedAbout.getDetailedAbout(targetEntity.getAbout(), true);
+    		GmlAttributePath targetGmlAttributePath = createAttributePath(targetAbout, targetFeatures);
+    		
+    		List<Property> collection = sourceEntity.getCollection();    		
+    		List<GmlAttributePath> sourceGmlAttributePath = new ArrayList<GmlAttributePath>();
+    		for(Property property : collection) {
+    			IDetailedAbout sourceAbout = DetailedAbout.getDetailedAbout(property.getAbout(), true);
+    			sourceGmlAttributePath.add(createAttributePath(sourceAbout, sourceFeatures));
+    		}
+    		
+    		String separator = original.getEntity1().getTransformation().getParameters().get(0).getValue();
+    		String concatString = original.getEntity1().getTransformation().getParameters().get(1).getValue();
+    		
+    		List<FeatureClass> filter = sourceEntity.getDomainRestriction();
+        	List<Restriction> restrictions = new ArrayList<Restriction>();
+        	if (filter != null) {
+        		for (FeatureClass currentFilter : filter) {
+        			restrictions.addAll(currentFilter.getAttributeValueCondition());
+        		}
+        	}
+    		
+    		return new ModelConcatenationOfAttributesCell(
+    			sourceGmlAttributePath, targetGmlAttributePath, separator, concatString, restrictions);
+    	} catch (TranslationException e) {
+    		report.setFailed(original, e.getMessage());
+			return null;
+    	}
     }
 
     /**
@@ -236,9 +422,9 @@ public class AlignmentToModelAlignmentDigester extends
         GmlAttributePath binding = new GmlAttributePath();
         
         // get the parent class for the entity
-        SchemaElement entityParent = elements.get(about.getNamespace() + "/" + about.getFeatureClass()); //$NON-NLS-1$
+        SchemaElement entityParent = elements.get(about.getNamespace() + "/" + about.getFeatureClass());
         if (entityParent == null) {
-        	throw new TranslationException("Element " + about.getFeatureClass() + " not found"); //$NON-NLS-1$ //$NON-NLS-2$
+        	throw new TranslationException("Element " + about.getFeatureClass() + " not found");
         }
         TypeDefinition type = entityParent.getType();
         
@@ -248,7 +434,7 @@ public class AlignmentToModelAlignmentDigester extends
         	AttributeDefinition attDef = type.getAttribute(attributeName);
         	
         	if (attDef == null) {
-        		throw new TranslationException("Attribute " + attributeName + " not found"); //$NON-NLS-1$ //$NON-NLS-2$
+        		throw new TranslationException("Attribute " + attributeName + " not found");
         	}
         	
         	GmlAttribute attribute = new GmlAttribute(attDef);

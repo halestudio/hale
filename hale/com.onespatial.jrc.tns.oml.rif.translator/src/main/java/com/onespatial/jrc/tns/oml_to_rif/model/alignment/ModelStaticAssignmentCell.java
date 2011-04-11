@@ -11,6 +11,7 @@
  */
 package com.onespatial.jrc.tns.oml_to_rif.model.alignment;
 
+import com.onespatial.jrc.tns.oml_to_rif.api.TranslationException;
 import com.onespatial.jrc.tns.oml_to_rif.schema.GmlAttributePath;
 
 /**
@@ -18,23 +19,28 @@ import com.onespatial.jrc.tns.oml_to_rif.schema.GmlAttributePath;
  * 
  * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
  * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
+ * @author Susanne Reinwarth / TU Dresden
  */
 public class ModelStaticAssignmentCell
 {
     private final String content;
     private final GmlAttributePath target;
+    private boolean nilReason = false;
 
     /**
      * @param target
      *            {@link GmlAttributePath}
      * @param content
      *            {@link String}
+     * @throws TranslationException 
      */
-    public ModelStaticAssignmentCell(GmlAttributePath target, String content)
+    public ModelStaticAssignmentCell(GmlAttributePath target,
+    		String content, boolean nilReason)
     {
         super();
         this.target = target;
         this.content = content;
+        this.nilReason = nilReason;
     }
 
     /**
@@ -51,5 +57,13 @@ public class ModelStaticAssignmentCell
     public GmlAttributePath getTarget()
     {
         return target;
+    }
+    
+    /**
+     * @return {@link Boolean}
+     */
+    public boolean isNilReason()
+    {
+    	return nilReason;
     }
 }

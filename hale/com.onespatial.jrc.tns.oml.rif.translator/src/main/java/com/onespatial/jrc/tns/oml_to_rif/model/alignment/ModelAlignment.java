@@ -21,12 +21,16 @@ import eu.esdihumboldt.goml.align.Alignment;
  *
  * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
  * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
+ * @author Susanne Reinwarth / TU Dresden
  */
 public class ModelAlignment
 {
     private List<ModelClassMappingCell> classMappings;
     private List<ModelAttributeMappingCell> attributeMappings;
     private List<ModelStaticAssignmentCell> staticAssignments;
+    private List<ModelConcatenationOfAttributesCell> concatenationMappings;
+    private List<ModelCentroidCell> centroidMappings;
+    private List<ModelIdentifierCell> identifierMappings;
 
     /**
      * @param classMappings
@@ -39,12 +43,18 @@ public class ModelAlignment
     public ModelAlignment(
             List<ModelClassMappingCell> classMappings,
             List<ModelAttributeMappingCell> attributeMappings,
-            List<ModelStaticAssignmentCell> staticAssignments)
+            List<ModelStaticAssignmentCell> staticAssignments,
+            List<ModelConcatenationOfAttributesCell> concatenationMappings,
+    		List<ModelCentroidCell> centroidMappings,
+    		List<ModelIdentifierCell> identifierMappings)
     {
         super();
         this.classMappings = classMappings;
         this.attributeMappings = attributeMappings;
         this.staticAssignments = staticAssignments;
+        this.concatenationMappings = concatenationMappings;
+        this.centroidMappings = centroidMappings;
+        this.identifierMappings = identifierMappings;
     }
 
     /**
@@ -69,6 +79,30 @@ public class ModelAlignment
     public List<ModelAttributeMappingCell> getAttributeMappings()
     {
         return attributeMappings;
+    }
+    
+    /**
+     * @return List&lt;{@link ModelConcatenationOfAttributesCell}&gt;
+     */
+    public List<ModelConcatenationOfAttributesCell> getConcatenationMappings()
+    {
+    	return concatenationMappings;
+    }
+    
+    /**
+     * @return List&lt;{@link ModelCentroidCell}&gt;
+     */
+    public List<ModelCentroidCell> getCentroidMappings()
+    {
+    	return centroidMappings;
+    }
+    
+    /**
+     * @return {@link List}&lt{@link ModelIdentifierCell}&gt
+     */
+    public List<ModelIdentifierCell> getIdentifierMappings()
+    {
+    	return identifierMappings;
     }
 
 }

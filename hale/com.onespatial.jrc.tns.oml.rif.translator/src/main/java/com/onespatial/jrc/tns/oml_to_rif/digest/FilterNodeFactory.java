@@ -18,6 +18,7 @@ import org.geotools.filter.GeometryFilterImpl;
 import org.geotools.filter.IsEqualsToImpl;
 import org.geotools.filter.IsGreaterThanImpl;
 import org.geotools.filter.IsLessThenImpl;
+import org.geotools.filter.IsNullImpl;
 import org.geotools.filter.LikeFilterImpl;
 import org.geotools.filter.LogicFilterImpl;
 import org.geotools.filter.NotImpl;
@@ -30,6 +31,8 @@ import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.FilterNode
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.comparison.AbstractComparisonNode;
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.comparison.EqualToNode;
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.comparison.GreaterThanNode;
+import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.comparison.IsNotNullNode;
+import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.comparison.IsNullNode;
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.comparison.LessThanNode;
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.comparison.LikeNode;
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.geometric.AbstractGeometricNode;
@@ -45,6 +48,7 @@ import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.logical.Or
  * 
  * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.
  * @author Richard Sunderland (Richard.Sunderland@1spatial.com) / 1Spatial Group Ltd.
+ * @author Susanne Reinwarth / TU Dresden
  */
 public class FilterNodeFactory
 {
@@ -54,7 +58,7 @@ public class FilterNodeFactory
      *            {@link CompareFilterImpl}
      * @return {@link AbstractComparisonNode}
      */
-    public AbstractComparisonNode createComparisonNode(AbstractFilter source)
+    public AbstractComparisonNode createComparisonNode(AbstractFilter source, boolean isIsNotNullFilter)
     {
         if (source instanceof IsEqualsToImpl)
         {
@@ -72,10 +76,18 @@ public class FilterNodeFactory
         {
             return createLikeNode();
         }
-        throw new UnsupportedOperationException("Filter is not supported: " //$NON-NLS-1$
+        else if (source instanceof IsNullImpl && !isIsNotNullFilter)
+        {
+        	return createIsNullNode();
+        }
+        else if (source instanceof IsNullImpl && isIsNotNullFilter)
+        {
+        	return createIsNotNullNode();
+        }
+        throw new UnsupportedOperationException("Filter is not supported: "
                 + source.getClass().getCanonicalName());
     }
-
+    
     /**
      * @param logicFilter
      *            {@link LogicFilterImpl}
@@ -95,7 +107,7 @@ public class FilterNodeFactory
         {
             return createNotNode((NotImpl) logicFilter);
         }
-        throw new UnsupportedOperationException("Unrecognised type " //$NON-NLS-1$
+        throw new UnsupportedOperationException("Unrecognised type "
                 + logicFilter.getClass().getCanonicalName());
     }
 
@@ -118,7 +130,7 @@ public class FilterNodeFactory
         {
             return createIntersectsNode();
         }
-        throw new UnsupportedOperationException("Unsupported filter type: " //$NON-NLS-1$
+        throw new UnsupportedOperationException("Unsupported filter type: "
                 + geometricFilter.getClass().getCanonicalName());
     }
 
@@ -171,5 +183,15 @@ public class FilterNodeFactory
     LikeNode createLikeNode()
     {
         return new LikeNode();
+    }
+    
+    IsNullNode createIsNullNode()
+    {
+    	return new IsNullNode();
+    }
+    
+    IsNotNullNode createIsNotNullNode()
+    {
+    	return new IsNotNullNode();
     }
 }
