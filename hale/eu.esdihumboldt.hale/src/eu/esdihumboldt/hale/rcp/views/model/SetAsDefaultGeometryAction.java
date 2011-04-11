@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.rcp.wizards.io.InstanceDataImportWizard;
 import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
+import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.model.DefaultGeometries;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.IDefaultGeometries;
@@ -245,7 +246,8 @@ public class SetAsDefaultGeometryAction extends Action {
 		
 		IDefaultGeometries defaultGeometries;
 		try {
-			Class dfImpl = Class.forName("eu.esdihumboldt.hale.schemaprovider.uiconfig.DefaultGeometries");
+			Class<?> dfImpl = Class.forName("eu.esdihumboldt.hale.schemaprovider.uiconfig.DefaultGeometries",
+					true, SchemaProvider.class.getClassLoader());
 			defaultGeometries = (IDefaultGeometries) dfImpl.newInstance();
 		} catch (Exception e) {
 			defaultGeometries = new DefaultGeometries();
