@@ -1,0 +1,22 @@
+# Lines that start with '#' are comments.
+# For a project mostly in C, the following would be a good set of
+# exclude patterns (uncomment them if you want to use them):
+# *.[oa]
+# *~
+
+# generic part (can be overridden locally using !pattern)
+bin/
+build/
+dist/
+logs/
+classes/
+target/
+_testdata/
+!hale/hale-platform/target/
+!humboldt-mediator-service/MS-TargetPlatform/target
+*.patch
+
+# all hail windows
+Thumbs.db
+
+#.gitignore
