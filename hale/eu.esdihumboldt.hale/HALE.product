@@ -89,8 +89,6 @@
       <plugin id="eu.esdihumboldt.hale.userstatus.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.specification"/>
       <plugin id="eu.esdihumboldt.transformer.cst"/>
-      <plugin id="eu.xsdi.mdl" fragment=""/>
-      <plugin id="eu.xsdi.mdlui" fragment=""/>
       <plugin id="gnu.trove"/>
       <plugin id="javax.servlet"/>
       <plugin id="jcl.over.slf4j"/>
