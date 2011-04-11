@@ -397,7 +397,16 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 					String name1 = o1.getLocalName();
 					String name2 = o2.getLocalName();
 					
-					String defName = DefaultGeometries.getDefaultGeometryName(getName());
+					IDefaultGeometries defaultGeometries;
+					try {
+						Class<?> dfImpl = Class.forName("eu.esdihumboldt.hale.schemaprovider.uiconfig.DefaultGeometries");
+						defaultGeometries = (IDefaultGeometries) dfImpl.newInstance();
+					} catch (Exception e) {
+						defaultGeometries = new DefaultGeometries();
+					}
+//					defaultGeometries = new DefaultGeometries();
+					
+					String defName = defaultGeometries.getDefaultGeometryName(getName());
 					if (defName != null) {
 						// name from preferences check
 						

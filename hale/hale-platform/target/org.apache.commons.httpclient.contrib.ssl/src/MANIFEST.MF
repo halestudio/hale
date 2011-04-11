@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Apache Commons Httpclient Contrib SSL
+Bundle-SymbolicName: org.apache.commons.httpclient.contrib.ssl
+Bundle-Version: 1.0.0
+Export-Package: org.apache.commons.httpclient.contrib.ssl
+Import-Package: org.apache.commons.httpclient,
+ org.apache.commons.httpclient.params,
+ org.apache.commons.httpclient.protocol,
+ org.apache.commons.logging

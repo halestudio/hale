@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.5"?>
+<?pde version="3.6"?>
 
 <target name="eu.esdihumboldt.hale.platform">
 <locations>
@@ -34,18 +34,14 @@
 <location path="${project_loc:hale-platform}/target/ch.qos.logback" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/javax.media.jai" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.apache.ws" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.apache.velocity" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.apache.httpcomponents" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/javax.activation" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.jdom" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.apache.xerces" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.castor" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/com.vividsolutions.jts" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.apache.commons" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/net.java" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/eu.esdihumboldt.commons" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.dom4j" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.slf4j" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/javax.xml.stream" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.w3c.css.sac" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/eu.esdihumboldt.specification" type="Directory"/>
@@ -56,5 +52,12 @@
 <location path="${project_loc:hale-platform}/target/edu.umd.cs.findbugs" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.eclipse" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/babel" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.commons.httpclient.contrib.ssl" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.httpcomponents" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.slf4j" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.commons" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.w3c.dom.mathml" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.velocity" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/net.sf.ehcache.core" type="Directory"/>
 </locations>
 </target>

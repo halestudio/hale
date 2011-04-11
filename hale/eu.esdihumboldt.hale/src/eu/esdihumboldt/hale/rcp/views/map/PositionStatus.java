@@ -75,7 +75,14 @@ public class PositionStatus extends MouseTrackAdapter implements MouseMoveListen
 			String crsString = ""; //$NON-NLS-1$
 			CoordinateReferenceSystem crs = map.getCRS();
 			if (crs != null) {
-				crsString = crs.getName().toString() + " - "; //$NON-NLS-1$
+				String identifier;
+				if (!crs.getIdentifiers().isEmpty()) {
+					identifier = crs.getIdentifiers().iterator().next().toString() + " - ";
+				}
+				else {
+					identifier = "";
+				}
+				crsString = identifier + crs.getName().getCode() + " - "; //$NON-NLS-1$
 			}
 			
 			site.getActionBars().getStatusLineManager().setMessage(

@@ -27,12 +27,18 @@ import de.cs3d.util.logging.ALoggerFactory;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public abstract class DefaultGeometries {
+public class DefaultGeometries implements IDefaultGeometries {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(DefaultGeometries.class);
 	
 	private static final Preferences prefs = Preferences.userNodeForPackage(DefaultGeometries.class).node("defaultGeometries"); //$NON-NLS-1$
 
+	private static DefaultGeometries instance = new DefaultGeometries();
+	
+	public static DefaultGeometries getInstance() {
+		return instance;
+	}
+	
 	/**
 	 * Get the default geometry name for a given type name
 	 * 
@@ -40,7 +46,7 @@ public abstract class DefaultGeometries {
 	 * 
 	 * @return the default geometry property name or <code>null</code>
 	 */
-	public static String getDefaultGeometryName(Name typeName) {
+	public String getDefaultGeometryName(Name typeName) {
 		try {
 			prefs.sync();
 			if (prefs.nodeExists(encodeNodeName(typeName.getNamespaceURI()))) {
@@ -55,7 +61,7 @@ public abstract class DefaultGeometries {
 		}
 	}
 	
-	private static String encodeNodeName(String name) {
+	private String encodeNodeName(String name) {
 		while (name.contains("//")) { //$NON-NLS-1$
 			name = name.replaceAll("//", "/"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
@@ -68,7 +74,7 @@ public abstract class DefaultGeometries {
 	 * @param typeName the type name
 	 * @param propertyName the geometry property name
 	 */
-	public static void setDefaultGeometryName(Name typeName, String propertyName) {
+	public void setDefaultGeometryName(Name typeName, String propertyName) {
 		prefs.node(encodeNodeName(typeName.getNamespaceURI())).put(typeName.getLocalPart(), propertyName);
 		try {
 			prefs.flush();
