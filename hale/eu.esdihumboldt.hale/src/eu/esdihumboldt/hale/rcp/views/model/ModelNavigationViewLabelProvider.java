@@ -46,6 +46,7 @@ import eu.esdihumboldt.hale.rcp.views.map.style.StyleUtil;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 import eu.esdihumboldt.hale.rcp.views.table.tree.TipProvider;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Provides Images for the elements of the data models in the 
@@ -227,7 +228,9 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 		}
 		
 		// legend image
-		if (to.getType() == TreeObjectType.CONCRETE_FT && to.getPropertyType() instanceof FeatureType) {
+		if (to.getDefinition() != null && (to.getDefinition() instanceof TypeDefinition) 
+				&& ((TypeDefinition) to.getDefinition()).hasGeometry() 
+				&& to.getPropertyType() instanceof FeatureType) {
 			FeatureType type = (FeatureType) to.getPropertyType();
 			BufferedImage img = StyleUtil.getLegendImage(type, true);
 			if (img != null) {
