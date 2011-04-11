@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject;
 import eu.esdihumboldt.hale.rcp.views.model.TreeParent;
 import eu.esdihumboldt.hale.rcp.views.model.ElementItem;
+import eu.esdihumboldt.hale.rcp.views.model.TypeItem;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
@@ -280,16 +281,23 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 		
 		Set<SchemaElement> elements = new HashSet<SchemaElement>(schema);
 		// create dummy schema elements for super types
-		for (TypeDefinition type : additions) {
-			elements.add(new SchemaElement(type.getName(), type.getName(), 
-					type, null));
-		}
+//		for (TypeDefinition type : additions) {
+//			elements.add(new SchemaElement(type.getName(), type.getName(), 
+//					type, null));
+//		}
 
 		// finally, build the tree, starting with those types that don't have
 		// supertypes.
+		for (TypeDefinition type : additions) {
+			if (type.getSuperType() == null) {
+				root.addChild(buildSchemaTree(null, type, elements, namespace, 
+						itemMap, aboutMap, schemaType, additions));
+			}
+		}
 		for (SchemaElement element : elements) {
 			if (element.getType().getSuperType() == null) {
-				root.addChild(buildSchemaTree(element, elements, namespace, itemMap, aboutMap, schemaType));
+				root.addChild(buildSchemaTree(element, element.getType(), elements, namespace, 
+						itemMap, aboutMap, schemaType, additions));
 			}
 		}
 
@@ -301,31 +309,70 @@ public class SchemaItemServiceImpl implements SchemaItemService {
 	/**
 	 * Recursive method for setting up the inheritance tree.
 	 * 
-	 * @param element the type definition
+	 * @param element the element declaration, may be <code>null</code>
+	 * @param type the type definition
 	 * @param schema the collection of types to display
 	 * @param namespace the namespace
 	 * @param itemMap map to add the created items to (definition identifier mapped to item)
 	 * @param aboutMap map to add the created items to (about string mapped to item) 
 	 * @param schemaType the schema type
+	 * @param additions set of type definitions that must be added because of the hierarchy
 	 * @return a {@link SchemaItem} that contains all Properties and all
 	 *         subtypes and their property, starting with the given FT.
 	 */
 	private TreeObject buildSchemaTree(SchemaElement element, 
-			Collection<SchemaElement> schema, String namespace, 
+			TypeDefinition type, Collection<SchemaElement> schema, String namespace, 
 			Map<String, SchemaItem> itemMap, Map<String, SchemaItem> aboutMap,
-			SchemaType schemaType) {
-		ElementItem featureItem = new ElementItem(element, schemaType);
-		itemMap.put(element.getIdentifier(), featureItem);
+			SchemaType schemaType, Set<TypeDefinition> additions) {
+		TreeParent featureItem;
+		if (element != null) {
+			featureItem = new ElementItem(element, schemaType);
+			itemMap.put(element.getIdentifier(), featureItem);
+		}
+		else {
+			featureItem = new TypeItem(type, schemaType);
+			itemMap.put(type.getIdentifier(), featureItem);
+		}
 		aboutMap.put(featureItem.getEntity().getAbout().getAbout(), featureItem);
 		
 		// add properties
-		addProperties(featureItem, element.getType(), itemMap, aboutMap, new HashSet<TypeDefinition>(), schemaType);
+		addProperties(featureItem, type, itemMap, aboutMap, new HashSet<TypeDefinition>(), schemaType);
 		
 		// add children recursively
-		for (TypeDefinition subType : element.getType().getSubTypes()) {
-			for (SchemaElement subTypeElement : subType.getDeclaringElements()) {
-				if (schema.contains(subTypeElement)) {
-					featureItem.addChild(buildSchemaTree(subTypeElement, schema, namespace, itemMap, aboutMap, schemaType));
+		for (TypeDefinition subType : type.getSubTypes()) {
+			if (additions.contains(subType)) {
+				// add type item needed for hierarchy 
+				featureItem.addChild(buildSchemaTree(null, subType, schema, namespace, itemMap, aboutMap, schemaType, additions));
+			}
+			else if (subType.getDeclaringElements().isEmpty()) {
+				// subtype w/o element declaration
+				
+				// check if super types have valid schema element
+				TypeDefinition superType = type;
+				boolean parentHasElement = false;
+				while (!parentHasElement && superType != null) {
+					if (additions.contains(superType)) {
+						// ignore elements defined for additions
+						superType = null;
+					}
+					else {
+						parentHasElement = !superType.getDeclaringElements().isEmpty(); //TODO improve check?
+						superType = superType.getSuperType();
+					}
+				}
+				
+				if (parentHasElement) {
+					featureItem.addChild(buildSchemaTree(null, subType, schema, namespace, itemMap, aboutMap, schemaType, additions));
+				}
+			}
+			else {
+				// subtype with element declaration(s)
+				for (SchemaElement subTypeElement : subType.getDeclaringElements()) {
+					if (schema.contains(subTypeElement)) {
+						featureItem.addChild(buildSchemaTree(subTypeElement, 
+								subType, schema, namespace, itemMap, aboutMap, 
+								schemaType, additions));
+					}
 				}
 			}
 		}

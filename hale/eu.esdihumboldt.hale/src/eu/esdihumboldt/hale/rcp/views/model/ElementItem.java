@@ -38,41 +38,11 @@ public class ElementItem extends TreeParent {
 		super(
 				element.getElementName().getLocalPart(), 
 				element.getElementName(), 
-				determineType(element.getType()), 
+				TypeItem.determineType(element.getType()), 
 				element.getAttributeType(null),
 				schemaType);
 		
 		this.element = element;
-	}
-
-	/**
-	 * Determine the {@link TreeObject.TreeObjectType} for a feature type
-	 * 
-	 * @param type the type definition
-	 * 
-	 * @return the tree object type
-	 */
-	private static TreeObjectType determineType(TypeDefinition type) {
-		// special case: treat AbstractGMLType as abstract FeatureType (if it has an AbstractFeatureType sub-type)
-		if (type.getName().getLocalPart().equals("AbstractGMLType")) { //$NON-NLS-1$
-			for (TypeDefinition subtype : type.getSubTypes()) {
-				if (subtype.getName().getLocalPart().equals("AbstractFeatureType")) { //$NON-NLS-1$
-					return TreeObjectType.ABSTRACT_FT;
-				}
-			}
-		}
-		
-		if (type.isFeatureType()) {
-			if (type.isAbstract()) {
-				return TreeObjectType.ABSTRACT_FT;
-			}
-			else {
-				return TreeObjectType.CONCRETE_FT;
-			}
-		}
-		else {
-			return TreeObjectType.PROPERTY_TYPE;
-		}
 	}
 
 	/**

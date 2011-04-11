@@ -140,7 +140,13 @@ public class ConfigurableModelContentProvider
 			if (suppressInheritedAttributes && item.isType()) {
 				Object[] children = super.getChildren(parent);
 				List<SchemaItem> attributes = new ArrayList<SchemaItem>();
-				String id = ((SchemaElement) item.getDefinition()).getType().getIdentifier();
+				String id;
+				if (item.getDefinition() instanceof SchemaElement) {
+					id = ((SchemaElement) item.getDefinition()).getType().getIdentifier();
+				}
+				else {
+					id = item.getDefinition().getIdentifier();
+				}
 				
 				for (Object child : children) {
 					if (child instanceof SchemaItem) {
