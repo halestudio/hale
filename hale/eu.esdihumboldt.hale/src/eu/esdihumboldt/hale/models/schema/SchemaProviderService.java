@@ -18,8 +18,13 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
+
+import org.opengis.feature.type.FeatureType;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -225,35 +230,35 @@ public class SchemaProviderService
 	}
 
 	/**
-	 * @see SchemaService#getElementByName(String)
+	 * @see SchemaService#getTypeByName(String)
 	 */
-	public SchemaElement getElementByName(String name) {
-		SchemaElement result = null;
+	public Definition getTypeByName(String name) {
+		Definition result = null;
 		// handles cases where a full name was given.
 		if (!getSourceNameSpace().equals("") && name.contains(getSourceNameSpace())) { //$NON-NLS-1$
-			for (SchemaElement element : getSourceSchemaElements()) {
-				if (element.getElementName().getLocalPart().equals(name)) {
-					result = element;
+			for (Entry<Definition, FeatureType> entry : getSourceSchema().getTypes().entrySet()) {
+				if (entry.getValue().getName().getLocalPart().equals(name.substring(name.lastIndexOf('/') + 1))) {
+					result = entry.getKey();
 					break;
 				}
 			}
 		}
 		else if (!getTargetNameSpace().equals("") && name.contains(getTargetNameSpace())) { //$NON-NLS-1$
-			for (SchemaElement element : getTargetSchemaElements()) {
-				if (element.getElementName().getLocalPart().equals(name)) {
-					result = element;
+			for (Entry<Definition, FeatureType> entry : getTargetSchema().getTypes().entrySet()) {
+				if (entry.getValue().getName().getLocalPart().equals(name.substring(name.lastIndexOf('/') + 1))) {
+					result = entry.getKey();
 					break;
 				}
 			}
 		}
 		// handle case where only the local part was given.
 		else {
-			Collection<SchemaElement> allElements = new HashSet<SchemaElement>();
-			allElements.addAll(getSourceSchemaElements());
-			allElements.addAll(getTargetSchemaElements());
-			for (SchemaElement element : allElements) {
-				if (element.getElementName().getLocalPart().equals(name)) {
-					result = element;
+			Map<Definition, FeatureType> allElements = new HashMap<Definition, FeatureType>();
+			allElements.putAll(getSourceSchema().getTypes());
+			allElements.putAll(getTargetSchema().getTypes());
+			for (Entry<Definition, FeatureType> entry : allElements.entrySet()) {
+				if (entry.getValue().getName().getLocalPart().equals(name)) {
+					result = entry.getKey();
 					break;
 				}
 			}

@@ -135,14 +135,14 @@ public interface SchemaService
 	public URL getTargetURL();
 	
 	/**
-	 * Get the {@link FeatureType} identified by the given name
+	 * Get the type or element definition identified by the given name
 	 * 
 	 * @param name may either consist of only a local part or of a full
 	 *         name, i.e. namespace + local name part
 	 *         
-	 * @return returns a {@link FeatureType} identified by the given name
+	 * @return returns the definition identified by the given name
 	 */
-	public SchemaElement getElementByName(String name);
+	public Definition getTypeByName(String name);
 	
 	/**
 	 * Schema type enum

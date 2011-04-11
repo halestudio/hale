@@ -55,7 +55,6 @@ import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -115,9 +114,9 @@ public class StyleServiceImpl extends AbstractUpdateService
 				
 				while (!queuedStyles.isEmpty()) {
 					FeatureTypeStyle fts = queuedStyles.poll();
-					SchemaElement element = schemaService.getElementByName(fts.getFeatureTypeName());
-					if (element != null && element.getFeatureType() != null) {
-						if (addStyle(element.getFeatureType(), fts)) {
+					Definition element = schemaService.getTypeByName(fts.getFeatureTypeName());
+					if (element != null && DefinitionUtil.getFeatureType(element) != null) {
+						if (addStyle(DefinitionUtil.getFeatureType(element), fts)) {
 							updateNeeded = true;
 						}
 					}
@@ -410,9 +409,9 @@ public class StyleServiceImpl extends AbstractUpdateService
 		
 		for (Style style : styles) {
 			for (FeatureTypeStyle fts : style.getFeatureTypeStyles()) {
-				SchemaElement element = schemaService.getElementByName(fts.getFeatureTypeName());
-				if (element != null && element.getFeatureType() != null) {
-					if (addStyle(element.getFeatureType(), fts)) {
+				Definition element = schemaService.getTypeByName(fts.getFeatureTypeName());
+				if (element != null && DefinitionUtil.getFeatureType(element) != null) {
+					if (addStyle(DefinitionUtil.getFeatureType(element), fts)) {
 						somethingHappened = true;
 					}
 				}
