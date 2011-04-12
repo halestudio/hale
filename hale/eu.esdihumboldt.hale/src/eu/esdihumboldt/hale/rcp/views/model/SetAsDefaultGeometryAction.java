@@ -250,7 +250,7 @@ public class SetAsDefaultGeometryAction extends Action {
 					true, SchemaProvider.class.getClassLoader());
 			defaultGeometries = (IDefaultGeometries) dfImpl.newInstance();
 		} catch (Exception e) {
-			defaultGeometries = new DefaultGeometries();
+			defaultGeometries = DefaultGeometries.getInstance();
 		}
 		defaultGeometries.setDefaultGeometryName(typeName, propertyName);
 		
