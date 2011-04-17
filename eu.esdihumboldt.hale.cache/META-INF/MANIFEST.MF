@@ -4,7 +4,11 @@ Bundle-Name: Cache
 Bundle-SymbolicName: eu.esdihumboldt.hale.cache;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.apache.http,
+Import-Package: net.sf.ehcache,
+ net.sf.ehcache.config,
+ net.sf.ehcache.management,
+ net.sf.ehcache.store,
+ org.apache.http,
  org.apache.http.client,
  org.apache.http.client.cache,
  org.apache.http.client.methods,
@@ -14,3 +18,4 @@ Import-Package: org.apache.http,
  org.apache.http.protocol,
  org.apache.http.util
 Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.1.0"
+Export-Package: eu.esdihumboldt.hale.cache;uses:="net.sf.ehcache"

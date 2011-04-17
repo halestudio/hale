@@ -12,6 +12,13 @@
 
 package eu.esdihumboldt.hale.cache;
 
-public class CacheManager {
+public class CacheManager extends net.sf.ehcache.CacheManager{
 
+	protected void finalize() {
+		super.shutdown();
+	}
+	
+	public static void flush(String cache) {
+		net.sf.ehcache.CacheManager.getInstance().getCache(cache).flush();
+	}
 }

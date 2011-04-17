@@ -15,67 +15,131 @@ package eu.esdihumboldt.hale.cache;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
+import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.util.EntityUtils;
-import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.cache.CacheResponseStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.cache.CacheConfig;
 import org.apache.http.impl.client.cache.CachingHttpClient;
 import org.apache.http.impl.client.cache.ehcache.EhcacheHttpCacheStorage;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.util.EntityUtils;
 
 public class Request {
 	private CacheConfig cacheConfig;
 	private HttpClient client;
+	public final String cacheName = "HALE_WebRequest";
 	
+	/**
+	 * The instance of {@link Request}
+	 */
 	private static Request instance = new Request();
 	
+	/**
+	 * Constructor.
+	 */
 	private Request() {
+		// new cache configuration
 		this.cacheConfig = new CacheConfig();
-		this.cacheConfig.setMaxCacheEntries(1000);
-		this.cacheConfig.setMaxObjectSizeBytes(8192); // 8MB
 		this.cacheConfig.setHeuristicCachingEnabled(true);
 		this.cacheConfig.setSharedCache(true);
+		
+		// initialize CacheManager
+		CacheManager.create();
+		
+		// create a Cache instance
+		Cache cache = new Cache(this.cacheName, 30, MemoryStoreEvictionPolicy.LRU, true, "", true, 0, 0, true, 0, null);
+		
+		// add it to CacheManger
+		CacheManager.getInstance().addCache(cache);
+		
 
-		this.client = new CachingHttpClient(new DefaultHttpClient(), this.cacheConfig);
-		this.client = new CachingHttpClient(new EhcacheHttpCacheStorage(), this.cacheConfig);
+		// create the http storage cache
+		EhcacheHttpCacheStorage ehcache = new EhcacheHttpCacheStorage(cache, this.cacheConfig);
+		
+		// create the http client
+		this.client = new CachingHttpClient(new DefaultHttpClient(), ehcache, this.cacheConfig);
 	}
 	
+	/**
+	 * Returns the instance of this class
+	 * 
+	 * @return instance
+	 */
 	public static Request getInstance() {
 		return instance;
 	}
 	
-	public InputStream get(URI name) throws ClientProtocolException, IOException {
-		BasicHttpContext localContext = new BasicHttpContext();
-		HttpGet httpget = new HttpGet(name.toString());
-		HttpResponse response = client.execute(httpget, localContext);
-		HttpEntity entity = response.getEntity();
-		
-		EntityUtils.consume(entity);
-		CacheResponseStatus responseStatus = 
-			(CacheResponseStatus) localContext.getAttribute(CachingHttpClient.CACHE_RESPONSE_STATUS);
-		switch (responseStatus) {
-		case CACHE_HIT:
-		    System.out.println("A response was generated from the cache with no requests " +
-		            "sent upstream");
-		    break;
-		case CACHE_MODULE_RESPONSE:
-		    System.out.println("The response was generated directly by the caching module");
-		    break;
-		case CACHE_MISS:
-		    System.out.println("The response came from an upstream server");
-		    break;
-		case VALIDATED:
-		    System.out.println("The response was generated from the cache after validating " +
-		            "the entry with the origin server");
-		    break;
+	public InputStream get(String uri) throws URISyntaxException, Exception {
+		return this.get(new URI(uri));
+	}
+	
+	/**
+	 * This function handles all Request and does the caching.
+	 * 
+	 * @param name
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public InputStream get(URI uri) throws Exception {
+		// check for local files
+		if (uri.toString().startsWith("file:")) {
+			return this.getLocal(uri.toURL());
 		}
 		
+		// get the current cache for webrequests
+		Cache cache = CacheManager.getInstance().getCache(this.cacheName);
+		String name = this.removeSpecialChars(uri.toString());
+		
+		HttpEntity entity;
+		// if the entry does not exist fetch it from the web
+		if (cache.get(name) == null){
+			HttpResponse response = client.execute(new HttpGet(uri.toString()), new BasicHttpContext());
+			entity = response.getEntity();
+			
+			EntityUtils.consume(entity);
+			
+			// and add it to the chache
+			cache.put(new Element(name, entity));
+		} else {
+			entity = (HttpEntity) cache.get(name).getObjectValue();
+		}
+		
+		System.out.println("Cachesize (Memory/Disk): "+CacheManager.getInstance().getCache(this.cacheName).getMemoryStoreSize()+
+				" / "+CacheManager.getInstance().getCache(this.cacheName).getDiskStoreSize());
+		
+		System.out.println(CacheManager.getInstance().getCache(this.cacheName).getStatistics().toString());
+		
 		return entity.getContent();
+	}
+	
+	private InputStream getLocal(URL file) throws IOException {
+		return file.openStream();
+	}
+	
+	/**
+	 * Removes some substrings.
+	 * 
+	 * @param txt String with special chars
+	 * 
+	 * @return clean string
+	 */
+	private String removeSpecialChars(String txt) {
+		txt = txt.replace("http://", "");
+		txt = txt.replace("/", "_");
+		txt = txt.replace(":", "_");
+		System.out.println(txt);
+		
+		return txt;
 	}
 }

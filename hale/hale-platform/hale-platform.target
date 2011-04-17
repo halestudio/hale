@@ -59,5 +59,11 @@
 <location path="${project_loc:hale-platform}/target/org.w3c.dom.mathml" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.apache.velocity" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/net.sf.ehcache.core" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.hibernate" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/net.sf.cglib" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.jgroups" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/javax.persistence" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.antlr" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.jboss.javassist" type="Directory"/>
 </locations>
 </target>
