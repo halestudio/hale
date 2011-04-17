@@ -180,19 +180,26 @@ public class ProjectParser {
 					SchemaService.class);
 		
 		monitor.subTask(Messages.ProjectParser_6); //$NON-NLS-1$
-		try {
-			ProgressIndicator progress = new ProgressIndicator() {
-				
-				@Override
-				public void setProgress(int percent) {
-					// ignore
-				}
-				
-				@Override
-				public void setCurrentTask(String taskName) {
-					monitor.subTask(taskName);
-				}
-			};
+		ProgressIndicator progress = new ProgressIndicator() {
+			
+			@Override
+			public void setProgress(int percent) {
+				// ignore
+			}
+			
+			@Override
+			public void setCurrentTask(String taskName) {
+				monitor.subTask(taskName);
+			}
+		};
+//		try {
+//			
+//		} catch (Exception e) {
+//			// fail
+//			throw new RuntimeException("Schema could not be loaded: ", e); //$NON-NLS-1$
+//		}
+		
+		try{
 			
 			if (project.getSourceSchema() != null 
 					&& project.getSourceSchema().getPath() != null) {
@@ -203,6 +210,11 @@ public class ProjectParser {
 						SchemaType.SOURCE, progress);
 				projectService.setSourceSchemaPath(sourceSchemaPath.toString());
 			}
+		} catch (Exception e) {
+			// fail
+			throw new RuntimeException("Schema could not be loaded: ", e); //$NON-NLS-1$
+		}
+		try{
 			if (project.getTargetSchema() != null 
 					&& project.getTargetSchema().getPath() != null) {
 				URI targetSchemaPath = getLocation(project.getTargetSchema().getPath(), basePath);

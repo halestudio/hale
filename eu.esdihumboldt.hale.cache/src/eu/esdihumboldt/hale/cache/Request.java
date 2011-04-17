@@ -97,6 +97,10 @@ public class Request {
 			return this.getLocal(uri.toURL());
 		}
 		
+		if (uri.getHost() == null) {
+			throw new Exception("Empty host!");
+		}
+		
 		// get the current cache for webrequests
 		Cache cache = CacheManager.getInstance().getCache(this.cacheName);
 		String name = this.removeSpecialChars(uri.toString());

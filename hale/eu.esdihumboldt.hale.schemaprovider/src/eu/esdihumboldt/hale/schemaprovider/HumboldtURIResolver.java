@@ -46,6 +46,8 @@ import org.apache.ws.commons.schema.resolver.CollectionURIResolver;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.xml.sax.InputSource;
 
+import eu.esdihumboldt.hale.cache.Request;
+
 
 /**
  * This resolver provides the means of resolving the imports and includes of a
@@ -80,15 +82,31 @@ public class HumboldtURIResolver
 					}
 				}
 
-				String ref = new URI(baseUri).resolve(new URI(schemaLocation))
-						.toString();
+				String ref = new URI(baseUri).resolve(new URI(schemaLocation)).toString();
+				
+				try {
+					return new InputSource(Request.getInstance().get(ref));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+//					e.printStackTrace();
+				}
 
 				return new InputSource(ref);
 			} catch (URISyntaxException e1) {
 				throw new RuntimeException(e1);
 			}
 		}
-		return new InputSource(schemaLocation);
+		try {
+			return new InputSource(Request.getInstance().get(schemaLocation));
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
     /**
