@@ -210,4 +210,11 @@ public class Request {
 	public void flush() {
 		CacheManager.flush(this.cacheName);
 	}
+	
+	/**
+	 * @see CacheManager#shutdown()
+	 */
+	public void shutdown() {
+		CacheManager.getInstance().shutdown();
+	}
 }
