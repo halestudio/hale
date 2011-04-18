@@ -1,0 +1,83 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:prvIV="http://purl.org/net/provenance/integrity#"
+    xmlns:swp="http://www.w3.org/2004/03/trix/swp-2/"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:prv="http://purl.org/net/provenance/ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+  <owl:Ontology rdf:about="http://purl.org/net/provenance/integrity#">
+    <owl:imports rdf:resource="http://purl.org/net/provenance/ns#"/>
+    <dcterms:title xml:lang="en">Provenance Vocabulary integrity verification module namespace</dcterms:title>
+    <dcterms:description xml:lang="en">Extends the Provenance Vocabulary by defining classes and properties to describe the verification of integrity of data items or information resources.</dcterms:description>
+    <dcterms:creator rdf:resource="http://olafhartig.de/foaf.rdf#olaf"/>
+    <dcterms:creator rdf:resource="http://users.ox.ac.uk/~zool0770/foaf.rdf#me"/>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2009-07-10T12:00:00Z</dcterms:created>
+    <rdfs:comment xml:lang="en">The WOT vocabulary and the SWP vocabulary focus on the description of signatures and on enabling the verification of signatures. WOT, in particular, focuses on PGP only; signing events (wot:SigEvent) represent the act of signing a public key; wot:Endorsement represent a _detached_ signature for a foaf:Document. Our vocabulary, in contrast, focuses on (the process of) the verification itself (i.e. from our point of view the verification has already happened). Nonetheless, we reuse some of the classes of SWP; thus, users can use instances (in particular, the signature methods defined in SWP) from SWP.</rdfs:comment>
+  </owl:Ontology>
+  <owl:Class rdf:about="http://purl.org/net/provenance/integrity#SignatureVerification">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://purl.org/net/provenance/integrity#IntegrityVerification"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">Signature Verification</rdfs:label>
+    <rdfs:comment xml:lang="en">SignatureVerification is a concept that represents the completed verification of a digital signature for an artifact.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/integrity#"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.w3.org/2004/03/trix/swp-2/Authority"/>
+  <owl:Class rdf:about="http://purl.org/net/provenance/integrity#IntegrityVerification">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/ns#Execution"/>
+    <owl:disjointWith rdf:resource="http://purl.org/net/provenance/ns#DataCreation"/>
+    <owl:disjointWith rdf:resource="http://purl.org/net/provenance/ns#DataAccess"/>
+    <rdfs:label xml:lang="en">Integrity Verification</rdfs:label>
+    <rdfs:comment xml:lang="en">IntegrityVerification is a concept that represents the completed verification of the integrity of an artifact.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/integrity#"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/provenance/integrity#VerificationResult">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/ns#Artifact"/>
+    <rdfs:label xml:lang="en">Verification Result</rdfs:label>
+    <rdfs:comment xml:lang="en">VerificationResult is a concept that represents the result of an integrity verification (see concept prvIV:IntegrityVerification).</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/integrity#"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.w3.org/2004/03/trix/swp-2/SignatureMethod"/>
+  <owl:Class rdf:about="http://purl.org/net/provenance/integrity#SignatureMethod">
+    <owl:equivalentClass rdf:resource="http://www.w3.org/2004/03/trix/swp-2/SignatureMethod"/>
+    <rdfs:label xml:lang="en">Signature Method</rdfs:label>
+    <rdfs:comment xml:lang="en">SignatureMethod is a concept that represents a method used to digitally sign artifacts.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/integrity#"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:about="http://purl.org/net/provenance/integrity#usedMethod">
+    <rdfs:label xml:lang="en">used method</rdfs:label>
+    <rdfs:comment xml:lang="en">This property refers to the signature method used for the digital signature that was verified by a signature verification.</rdfs:comment>
+    <rdfs:domain rdf:resource="http://purl.org/net/provenance/integrity#SignatureVerification"/>
+    <rdfs:range rdf:resource="http://purl.org/net/provenance/integrity#SignatureMethod"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/integrity#"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/net/provenance/integrity#signedBy">
+    <rdfs:label xml:lang="en">signed by</rdfs:label>
+    <rdfs:comment xml:lang="en">This property refers to the authority responsible for the digital signature that was verified by a signature verification.</rdfs:comment>
+    <rdfs:domain rdf:resource="http://purl.org/net/provenance/integrity#SignatureVerification"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2004/03/trix/swp-2/Authority"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/integrity#"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/net/provenance/integrity#verifiedBy">
+    <rdfs:label xml:lang="en">checked by</rdfs:label>
+    <rdfs:comment xml:lang="en">This property refers to an integrity verification of an artifact.</rdfs:comment>
+    <rdfs:domain rdf:resource="http://purl.org/net/provenance/ns#Artifact"/>
+    <rdfs:range rdf:resource="http://purl.org/net/provenance/integrity#IntegrityVerification"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/integrity#"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/net/provenance/integrity#obtainedResult">
+    <rdfs:label xml:lang="en">resulted in</rdfs:label>
+    <rdfs:comment xml:lang="en">This property refers to the result of an integrity verification.</rdfs:comment>
+    <rdfs:domain rdf:resource="http://purl.org/net/provenance/integrity#IntegrityVerification"/>
+    <rdfs:range rdf:resource="http://purl.org/net/provenance/integrity#VerificationResult"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/integrity#"/>
+  </owl:ObjectProperty>
+  <foaf:Document rdf:about="http://purl.org/net/provenance/integrity">
+    <rdfs:label xml:lang="en">Document that defines the integrity verification module of the Provenance  Vocabulary</rdfs:label>
+    <foaf:primaryTopic rdf:resource="http://purl.org/net/provenance/integrity#"/>
+  </foaf:Document>
+</rdf:RDF>

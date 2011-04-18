@@ -1,0 +1,168 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:irw="http://www.ontologydesignpatterns.org/ont/web/irw.owl#"
+    xmlns:http="http://www.w3.org/2006/http#"
+    xmlns:prvTypes="http://purl.org/net/provenance/types#"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:prv="http://purl.org/net/provenance/ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+  <owl:Ontology rdf:about="http://purl.org/net/provenance/types#">
+    <owl:imports rdf:resource="http://purl.org/net/provenance/ns#"/>
+    <dcterms:title xml:lang="en">Provenance Vocabulary types module namespace</dcterms:title>
+    <dcterms:description xml:lang="en">Extends the Provenance Vocabulary by defining subclasses of the types of provenance elements introduced in the core ontology.</dcterms:description>
+    <dcterms:creator rdf:resource="http://olafhartig.de/foaf.rdf#olaf"/>
+    <dcterms:creator rdf:resource="http://users.ox.ac.uk/~zool0770/foaf.rdf#me"/>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2009-11-07T12:00:00Z</dcterms:created>
+  </owl:Ontology>
+  <owl:Class rdf:about="http://purl.org/net/provenance/types#TriplifyMapping">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/ns#CreationGuideline"/>
+    <rdfs:label xml:lang="en">Triplify Mapping</rdfs:label>
+    <rdfs:comment xml:lang="en">TriplifyMapping is a concept that represents the mapping defined in a Triplify configuration file.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/types#"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.ontologydesignpatterns.org/ont/web/irw.owl#WebClient"/>
+  <owl:Class rdf:about="http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/ns#DataItem"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/provenance/types#DataCreatingDevice">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/ns#NonHumanActor"/>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://purl.org/net/provenance/types#DataCreator"/>
+    </rdfs:subClassOf>
+    <owl:disjointWith>
+      <owl:Class rdf:about="http://purl.org/net/provenance/types#DataCreatingEntity"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:about="http://purl.org/net/provenance/types#DataCreatingService"/>
+    </owl:disjointWith>
+    <rdfs:label xml:lang="en">Data Creating Device</rdfs:label>
+    <rdfs:comment xml:lang="en">DataCreatingDevice is a concept that represents a device which performed the creation of a data item. Examples for data creating devices are sensors.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/types#"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/provenance/types#QueryResult">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/ns#DataItem"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://purl.org/net/provenance/ns#createdBy"/>
+        <owl:allValuesFrom>
+          <owl:Class rdf:about="http://purl.org/net/provenance/types#QueryExecution"/>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">Query Result</rdfs:label>
+    <rdfs:comment xml:lang="en">QueryResult is the result of a query execution.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/types#"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.w3.org/2004/03/trix/rdfg-1/Graph">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/ns#DataItem"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/provenance/types#HTTPBasedDataAccess">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/ns#DataAccess"/>
+    <rdfs:label xml:lang="en">HTTP-based Data Access</rdfs:label>
+    <rdfs:comment xml:lang="en">An HTTPBasedDataAccess represents the completed execution of accessing a data item using the HTTP protocol.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/types#"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/provenance/types#DataAccessor">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/ns#NonHumanActor"/>
+    <owl:equivalentClass rdf:resource="http://www.ontologydesignpatterns.org/ont/web/irw.owl#WebClient"/>
+    <rdfs:label xml:lang="en">Data Accessor</rdfs:label>
+    <rdfs:comment xml:lang="en">DataAccessor is a concept that represents a system (i.e. a non-human actor) which performed the data access in order to retrieve an information resource from the Web.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/types#"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/provenance/types#DataCreatingEntity">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/ns#HumanActor"/>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://purl.org/net/provenance/types#DataCreator"/>
+    </rdfs:subClassOf>
+    <owl:disjointWith>
+      <owl:Class rdf:about="http://purl.org/net/provenance/types#DataCreatingService"/>
+    </owl:disjointWith>
+    <owl:disjointWith rdf:resource="http://purl.org/net/provenance/types#DataCreatingDevice"/>
+    <rdfs:label xml:lang="en">Data Creating Entity</rdfs:label>
+    <rdfs:comment xml:lang="en">DataCreatingEntity is a concept that represents a human actor who performed the creation of a data item, either directly or by being responsible for a non-human data creator (see the concepts prvTypes:DataCreatingService and prvTypes:DataCreatingDevice).</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/types#"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/provenance/types#QueryTemplate">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/ns#CreationGuideline"/>
+    <rdfs:label xml:lang="en">Query Template</rdfs:label>
+    <rdfs:comment xml:lang="en">A QueryTemplate is a query that contains placeholders which are replaced by actual data to create an executable query.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/types#"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://rdfs.org/ns/void#Dataset">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/ns#DataItem"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/provenance/types#QueryExecution">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/ns#DataCreation"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://purl.org/net/provenance/ns#usedGuideline"/>
+        <owl:someValuesFrom>
+          <owl:Class rdf:about="http://purl.org/net/provenance/types#Query"/>
+        </owl:someValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">Query Execution</rdfs:label>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/types#"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/provenance/types#Query">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/ns#CreationGuideline"/>
+    <rdfs:label xml:lang="en">Query</rdfs:label>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/types#"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.w3.org/2006/http#Message"/>
+  <owl:Class rdf:about="http://purl.org/net/provenance/types#DataCreator">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/ns#Actor"/>
+    <rdfs:label xml:lang="en">Data Creator</rdfs:label>
+    <rdfs:comment xml:lang="en">DataCreator is a concept that represents an actor which performed the creation of a data item.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/types#"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/provenance/types#Measurement">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/ns#DataCreation"/>
+    <rdfs:label xml:lang="en">Measurement</rdfs:label>
+    <rdfs:comment xml:lang="en">Measurement is a concept that represents the execution of a measurement.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/types#"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/provenance/types#SPARQLQuery">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/types#Query"/>
+    <owl:disjointWith>
+      <owl:Class rdf:about="http://purl.org/net/provenance/types#SQLQuery"/>
+    </owl:disjointWith>
+    <rdfs:label xml:lang="en">SPARQL Query</rdfs:label>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/types#"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/provenance/types#SQLQuery">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/types#Query"/>
+    <owl:disjointWith rdf:resource="http://purl.org/net/provenance/types#SPARQLQuery"/>
+    <rdfs:label xml:lang="en">SQL Query</rdfs:label>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/types#"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/provenance/types#DataCreatingService">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/ns#NonHumanActor"/>
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/types#DataCreator"/>
+    <owl:disjointWith rdf:resource="http://purl.org/net/provenance/types#DataCreatingEntity"/>
+    <owl:disjointWith rdf:resource="http://purl.org/net/provenance/types#DataCreatingDevice"/>
+    <rdfs:label xml:lang="en">Data Creating Service</rdfs:label>
+    <rdfs:comment xml:lang="en">DataCreatingService is a concept that represents a software service which performed the creation of a data item. Examples for data creating services are reasoners, query engines, and workflow engines.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/types#"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/provenance/types#Sensor">
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/provenance/types#DataCreatingDevice"/>
+    <rdfs:label xml:lang="en">Sensor</rdfs:label>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/types#"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:about="http://purl.org/net/provenance/types#exchangedHTTPMessage">
+    <rdfs:label xml:lang="en">involved exchange of</rdfs:label>
+    <rdfs:comment xml:lang="en">This property refers to an HTTP message (request or response) that has been exchanged during an HTTP based data access.</rdfs:comment>
+    <rdfs:domain rdf:resource="http://purl.org/net/provenance/ns#DataAccess"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2006/http#Message"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/types#"/>
+  </owl:ObjectProperty>
+  <foaf:Document rdf:about="http://purl.org/net/provenance/types">
+    <rdfs:label xml:lang="en">Document that defines the types module of the Provenance Vocabulary</rdfs:label>
+    <foaf:primaryTopic rdf:resource="http://purl.org/net/provenance/types#"/>
+  </foaf:Document>
+</rdf:RDF>
