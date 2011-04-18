@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               id="eu.xsdi.mdlui.views.MdlEditorView"
+               ratio="0.5"
+               relationship="right"
+               relative="org.eclipse.ui.views.TaskList">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="eu.xsdi.mdlui.views.MdlEditorView"
+            icon="icons/sample.gif"
+            id="eu.xsdi.mdlui.views.MdlEditorView"
+            name="Mismatch Editor">
+      </view>
+   </extension>
+
+</plugin>
