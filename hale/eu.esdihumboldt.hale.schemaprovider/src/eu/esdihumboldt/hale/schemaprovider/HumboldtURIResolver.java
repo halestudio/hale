@@ -84,18 +84,21 @@ public class HumboldtURIResolver
 
 				String ref = new URI(baseUri).resolve(new URI(schemaLocation)).toString();
 				
+				/*
 				try {
 					return new InputSource(Request.getInstance().get(ref));
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-//					e.printStackTrace();
+					return new InputSource(ref);
 				}
+				*/
 
 				return new InputSource(ref);
 			} catch (URISyntaxException e1) {
 				throw new RuntimeException(e1);
 			}
 		}
+		
+		/*
 		try {
 			return new InputSource(Request.getInstance().get(schemaLocation));
 		} catch (URISyntaxException e) {
@@ -107,6 +110,9 @@ public class HumboldtURIResolver
 		}
 		
 		return null;
+		*/
+		
+		return new InputSource(schemaLocation);
 	}
 
     /**
