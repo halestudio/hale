@@ -67,6 +67,7 @@ import de.cs3d.util.logging.AGroup;
 import de.cs3d.util.logging.AGroupFactory;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.cache.Request;
 import eu.esdihumboldt.hale.schemaprovider.AbstractSchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.HumboldtURIResolver;
 import eu.esdihumboldt.hale.schemaprovider.LogProgressIndicator;
@@ -474,7 +475,12 @@ public class ApacheSchemaProvider
 		InputStream is = null;
 		URL locationURL;
 		locationURL = location.toURL();
-		is = locationURL.openStream();
+		
+		try {
+			is = Request.getInstance().get(location);
+		} catch (Exception e) {
+			is = locationURL.openStream();
+		}
 		
 		progress.setCurrentTask(Messages.getString("ApacheSchemaProvider.21")); //$NON-NLS-1$
 

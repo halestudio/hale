@@ -59,6 +59,8 @@ import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.task.TaskUserData;
 import eu.esdihumboldt.hale.task.impl.BaseTask;
 import eu.esdihumboldt.hale.task.impl.TaskUserDataImpl;
+import eu.esdihumboldt.hale.cache.CacheManager;
+import eu.esdihumboldt.hale.cache.Request;
 
 /**
  * The {@link ProjectParser} reads a given project xml file and directly pushes
@@ -170,6 +172,9 @@ public class ProjectParser {
 		
 		// Finally, initialize other ProjectService values.
 		projectService.setProjectCreatedDate(project.getDateCreated());
+		
+		// 
+		Request.getInstance().flush();
 		
 		return errors;
 	}
