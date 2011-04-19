@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A content type definition may contain one content type, the id is required -->
+<contentType id="GML">
+	<!-- Default display name -->
+	<defaultName>GML file</defaultName>
+	<!-- Translated display names -->
+	<name>
+		<locale language="de" country="" />
+		<value>GML-Datei</value>
+	</name>
+	<!-- File extensions -->
+	<fileExtension>xml</fileExtension>
+	<fileExtension>gml</fileExtension>
+	<!-- Tester class name -->
+	<!-- testerClass>eu.esdihumboldt.hale.core.ui.internal.SomeTesterClass</testerClass-->
+</contentType>
