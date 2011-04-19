@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE Main UI
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui
+Bundle-Version: 2.2.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.5.0",
+ org.eclipse.ui;bundle-version="3.5.1"
+Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
+ eu.esdihumboldt.hale.core.io,
+ eu.esdihumboldt.hale.instance.io
