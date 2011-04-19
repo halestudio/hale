@@ -12,3 +12,4 @@ Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
  org.opengis.feature,
  org.opengis.feature.type,
  org.osgi.framework;version="1.3.0"
+Export-Package: eu.esdihumboldt.hale.instance.io
