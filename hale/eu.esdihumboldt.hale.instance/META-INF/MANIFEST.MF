@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE Instance API
+Bundle-SymbolicName: eu.esdihumboldt.hale.instance
+Bundle-Version: 2.2.0.qualifier
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
+ eu.esdihumboldt.hale.core.io,
+ eu.esdihumboldt.hale.schemaprovider,
+ org.geotools.feature,
+ org.opengis.feature,
+ org.opengis.feature.type,
+ org.osgi.framework;version="1.3.0"
