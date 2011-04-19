@@ -110,4 +110,12 @@ public class ExportSelectProviderPage<P extends IOProvider, T extends IOProvider
 		}
 	}
 
+	/**
+	 * @see IOWizardPage#updateConfiguration(IOProvider)
+	 */
+	@Override
+	public boolean updateConfiguration(P provider) {
+		return true;
+	}
+
 }

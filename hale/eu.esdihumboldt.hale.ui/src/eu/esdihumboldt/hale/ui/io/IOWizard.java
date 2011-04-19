@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.ui.io;
 
 import java.util.Collection;
 
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
@@ -52,7 +53,7 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	 * 
 	 * @return the available factories
 	 */
-	protected Collection<T> getFactories() {
+	public Collection<T> getFactories() {
 		return OsgiUtils.getServices(factoryClass);
 	}
 
@@ -62,7 +63,7 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	 * 
 	 * @return the I/O provider
 	 */
-	protected P getProvider() {
+	public P getProvider() {
 		if (provider == null && factory != null) {
 			provider = factory.createProvider();
 		}
@@ -75,11 +76,57 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	 * 
 	 * @param factory the provider to set
 	 */
-	protected void setProviderFactory(T factory) {
+	public void setProviderFactory(T factory) {
 		this.factory = factory;
 		
 		// reset provider
 		provider = null;
+	}
+	
+	/**
+	 * Get the provider factory assigned to the wizard. It will be
+	 * <code>null</code> if no page assigned a provider factory to the wizard 
+	 * yet.
+	 * 
+	 * @return the I/O provider factory
+	 */
+	public T getProviderFactory() {
+		return factory;
+	}
+	
+	/**
+	 * @see Wizard#performFinish()
+	 */
+	@Override
+	public boolean performFinish() {
+		if (getProvider() == null) {
+			return false;
+		}
+		
+		for (IWizardPage page : getPages()) {
+			boolean valid = validatePage(page);
+			if (!valid) {
+				return false;
+			}
+		}
+		
+		return true; //TODO let the provider validate the configuration?
+	}
+
+	/**
+	 * Validate the given page and update the I/O provider
+	 * 
+	 * @param page the wizard page to validate
+	 * @return if the page is valid and updating the I/O provider was successful
+	 */
+	@SuppressWarnings("unchecked")
+	protected boolean validatePage(IWizardPage page) {
+		if (page instanceof IOWizardPage<?, ?, ?>) {
+			return ((IOWizardPage<P, ? extends IOProviderFactory<P>, ?>) page).updateConfiguration(provider);
+		}
+		else {
+			return true;
+		}
 	}
 
 }

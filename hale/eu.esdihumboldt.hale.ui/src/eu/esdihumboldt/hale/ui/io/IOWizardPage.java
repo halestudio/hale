@@ -45,4 +45,12 @@ public abstract class IOWizardPage<P extends IOProvider, T extends IOProviderFac
 		super(pageName);
 	}
 	
+	/**
+	 * Update the configuration (of the I/O provider)
+	 * 
+	 * @param provider the I/O provider to update
+	 * @return if the page is valid and updating the provider was successful
+	 */
+	public abstract boolean updateConfiguration(P provider);
+	
 }

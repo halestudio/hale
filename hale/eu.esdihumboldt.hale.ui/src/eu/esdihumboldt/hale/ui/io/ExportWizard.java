@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.io;
 
+import java.io.File;
+
 import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.hale.core.io.IOProvider;
@@ -27,6 +29,8 @@ import eu.esdihumboldt.hale.core.io.IOProviderFactory;
  */
 public abstract class ExportWizard<P extends IOProvider, T extends IOProviderFactory<P>> extends IOWizard<P, T> {
 
+	private File targetFile;
+	
 	/**
 	 * @see IOWizard#IOWizard(Class)
 	 */
@@ -43,6 +47,21 @@ public abstract class ExportWizard<P extends IOProvider, T extends IOProviderFac
 		
 		// add select provider page
 		addPage(new ExportSelectProviderPage<P, T, ExportWizard<P,T>>());
+		addPage(new ExportSelectTargetPage<P, T, ExportWizard<P,T>>());
+	}
+
+	/**
+	 * @return the targetFile
+	 */
+	protected File getTargetFile() {
+		return targetFile;
+	}
+
+	/**
+	 * @param targetFile the targetFile to set
+	 */
+	public void setTargetFile(File targetFile) {
+		this.targetFile = targetFile;
 	}
 
 }

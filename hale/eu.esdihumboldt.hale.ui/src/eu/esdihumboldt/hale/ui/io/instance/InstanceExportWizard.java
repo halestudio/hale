@@ -31,13 +31,4 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceW
 		super(InstanceWriterFactory.class);
 	}
 
-	/**
-	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
-	 */
-	@Override
-	public boolean performFinish() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

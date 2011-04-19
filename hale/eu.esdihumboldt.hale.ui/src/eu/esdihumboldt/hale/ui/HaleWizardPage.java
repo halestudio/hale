@@ -23,7 +23,8 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 
 /**
- * Abstract wizard page type with some basic functionality added
+ * Abstract wizard page type with some basic functionality added, can only be
+ * added to wizards with the given wizard type <W>
  * @param <W> the concrete wizard type 
  *
  * @author Simon Templer
