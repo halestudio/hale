@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A content type definition may contain one content type, the id is required -->
+<contentType id="Test">
+	<!-- Default display name -->
+	<defaultName>Type for test purposes</defaultName>
+	<!-- Translated display names -->
+	<name>
+		<locale language="de" country="" />
+		<value>Test-Typ</value>
+	</name>
+	<!-- File extensions -->
+	<fileExtension>xml</fileExtension>
+	<!-- Tester class name -->
+	<!-- testerClass>eu.esdihumboldt.hale.core.ui.internal.SomeTesterClass</testerClass-->
+</contentType>
