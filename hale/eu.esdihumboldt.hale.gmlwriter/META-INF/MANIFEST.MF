@@ -4,13 +4,18 @@ Bundle-Name: HALE GML Writer Default Implementation
 Bundle-SymbolicName: eu.esdihumboldt.hale.gmlwriter
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/GmlWriter.xml
 Require-Bundle: org.geotools;bundle-version="2.6.4",
  eu.esdihumboldt.commons;bundle-version="3.0.8"
-Import-Package: com.vividsolutions.jts.geom,
+Import-Package: com.google.common.io;version="1.6.0",
+ com.vividsolutions.jts.geom,
  de.cs3d.util.logging,
  edu.umd.cs.findbugs.annotations,
  eu.esdihumboldt.cst.rdf,
  eu.esdihumboldt.hale.core.io,
+ eu.esdihumboldt.hale.core.io.impl,
+ eu.esdihumboldt.hale.instance.io,
+ eu.esdihumboldt.hale.instance.io.impl,
  eu.esdihumboldt.hale.schemaprovider,
  eu.esdihumboldt.hale.schemaprovider.model,
  eu.esdihumboldt.hale.schemaprovider.provider,

@@ -170,6 +170,7 @@
    <configurations>
       <plugin id="de.cs3d.ui.util.logging.errorlog" autoStart="true" startLevel="2" />
       <plugin id="de.cs3d.util.logging.logback" autoStart="true" startLevel="1" />
+      <plugin id="eu.esdihumboldt.hale.gmlwriter" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.transformer.cst" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
    </configurations>
