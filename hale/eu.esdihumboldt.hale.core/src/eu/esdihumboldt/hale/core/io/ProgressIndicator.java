@@ -10,16 +10,25 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.schemaprovider;
+package eu.esdihumboldt.hale.core.io;
 
 /**
  * Progress indicator
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @since 2.2 
  */
 public interface ProgressIndicator {
+	
+	/**
+	 * Start the progress tracking
+	 * 
+	 * @param taskName the main task name
+	 * @param undetermined if the progress is undetermined (i.e. 
+	 *   {@link #setProgress(float)} will not be called)
+	 */
+	public void begin(String taskName, boolean undetermined);
 	
 	/**
 	 * Sets the current task name
@@ -31,8 +40,20 @@ public interface ProgressIndicator {
 	/**
 	 * Set the current progress
 	 * 
-	 * @param percent the progress in percent
+	 * @param percent the progress in percent [0..100]
 	 */
-	public void setProgress(int percent);
+	public void setProgress(float percent);
+	
+	/**
+	 * States if the execution was canceled
+	 * 
+	 * @return if the execution was canceled
+	 */
+	public boolean isCanceled();
+	
+	/**
+	 * Stop the progress tracking, signaling that the task is done
+	 */
+	public void end();
 
 }

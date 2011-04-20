@@ -17,3 +17,4 @@ Require-Bundle: eu.esdihumboldt.commons;bundle-version="3.0.4",
 Export-Package: eu.esdihumboldt.cst.corefunctions,
  eu.esdihumboldt.cst.corefunctions.inspire
 Eclipse-RegisterBuddy: eu.esdihumboldt.transformer.cst
+Import-Package: eu.esdihumboldt.hale.core.io

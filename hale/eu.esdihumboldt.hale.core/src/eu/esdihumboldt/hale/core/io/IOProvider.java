@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.core.io;
 
+import java.io.IOException;
 import java.util.Set;
 
 /**
@@ -23,7 +24,33 @@ import java.util.Set;
  */
 public interface IOProvider {
 	
-	//TODO configuration stuff?
+	/**
+	 * Execute the I/O provider.
+	 * 
+	 * @param progress the progress indicator, may be <code>null</code>
+	 *  
+	 * @throws IOProviderConfigurationException if the I/O provider was not
+	 *   configured properly 
+	 * @throws IOException if an I/O operation fails
+	 */
+	public void execute(ProgressIndicator progress) throws IOProviderConfigurationException, IOException;
+	
+	/**
+	 * States if the execution of the provider is cancelable
+	 * 
+	 * @return if the execution is cancelable
+	 */
+	public boolean isCancelable();
+	
+	/**
+	 * Validate the I/O provider configuration
+	 * 
+	 * @throws IOProviderConfigurationException if the I/O provider was not
+	 *   configured properly
+	 */
+	public void validate() throws IOProviderConfigurationException;
+	
+	//FIXME configuration parameters any use?
 	
 	/**
 	 * Get the supported configuration parameters.

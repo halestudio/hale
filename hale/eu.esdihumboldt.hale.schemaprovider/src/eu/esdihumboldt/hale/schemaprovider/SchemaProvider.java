@@ -17,6 +17,8 @@ import java.util.Collection;
 
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.core.io.ProgressIndicator;
+
 /**
  * A {@link SchemaProvider} loads a schema from a given URI. A type that
  * implements this interface must have a default constructor

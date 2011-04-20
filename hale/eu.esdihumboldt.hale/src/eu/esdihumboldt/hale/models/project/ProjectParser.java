@@ -37,6 +37,7 @@ import eu.esdihumboldt.goml.align.Formalism;
 import eu.esdihumboldt.goml.align.Schema;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.Messages;
+import eu.esdihumboldt.hale.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.ConfigSchemaService;
@@ -54,7 +55,6 @@ import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
 import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
 import eu.esdihumboldt.hale.rcp.wizards.io.InstanceDataImportWizard;
-import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.task.TaskUserData;
 import eu.esdihumboldt.hale.task.impl.BaseTask;
@@ -184,7 +184,22 @@ public class ProjectParser {
 			ProgressIndicator progress = new ProgressIndicator() {
 				
 				@Override
-				public void setProgress(int percent) {
+				public void begin(String taskName, boolean undetermined) {
+					// ignore
+				}
+
+				@Override
+				public void end() {
+					// ignore
+				}
+
+				@Override
+				public boolean isCanceled() {
+					return false;
+				}
+
+				@Override
+				public void setProgress(float percent) {
 					// ignore
 				}
 				

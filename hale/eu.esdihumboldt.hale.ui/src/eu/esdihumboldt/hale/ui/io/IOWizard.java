@@ -12,13 +12,21 @@
 
 package eu.esdihumboldt.hale.ui.io;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.core.io.IOProvider;
+import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 
 /**
@@ -30,6 +38,8 @@ import eu.esdihumboldt.hale.core.io.IOProviderFactory;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory<P>> extends Wizard {
+	
+	private static final ALogger log = ALoggerFactory.getLogger(IOWizard.class);
 
 	private final Class<T> factoryClass;
 	
@@ -45,6 +55,8 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	public IOWizard(Class<T> factoryClass) {
 		super();
 		this.factoryClass = factoryClass;
+		
+		setNeedsProgressMonitor(true);
 	}
 	
 	/**
@@ -103,6 +115,7 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 			return false;
 		}
 		
+		// process pages
 		for (IWizardPage page : getPages()) {
 			boolean valid = validatePage(page);
 			if (!valid) {
@@ -110,7 +123,56 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 			}
 		}
 		
-		return true; //TODO let the provider validate the configuration?
+		// process wizard
+		updateConfiguration(provider);
+		
+		// validate configuration
+		try {
+			provider.validate();
+		} catch (IOProviderConfigurationException e) {
+			//TODO user feedback? details of configuration error as wizard message? how?
+			log.error("Validation of the provider configuration failed", e);
+			return false;
+		}
+		
+		// execute provider
+		final AtomicBoolean success = new AtomicBoolean(false);
+		try {
+			getContainer().run(true, provider.isCancelable(), new IRunnableWithProgress() {
+				
+				@Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException,
+						InterruptedException {
+					try {
+						provider.execute(new ProgressMonitorIndicator(monitor));
+						success.set(true);
+					} catch (IOProviderConfigurationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return success.get();
+	}
+
+	/**
+	 * Update the provider configuration
+	 * 
+	 * @param provider the I/O provider 
+	 */
+	protected void updateConfiguration(P provider) {
+		// do nothing
 	}
 
 	/**

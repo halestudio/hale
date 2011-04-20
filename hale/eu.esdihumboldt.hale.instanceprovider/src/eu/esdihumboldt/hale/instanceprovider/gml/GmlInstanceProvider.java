@@ -24,12 +24,12 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
 
+import eu.esdihumboldt.hale.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.instanceprovider.AbstractInstanceProvider;
 import eu.esdihumboldt.hale.instanceprovider.InstanceConfiguration;
 import eu.esdihumboldt.hale.instanceprovider.InstanceProvider;
-import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 
 /**
  * {@link InstanceProvider} that loads GML files

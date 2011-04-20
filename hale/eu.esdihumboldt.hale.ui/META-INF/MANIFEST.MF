@@ -6,6 +6,10 @@ Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.5.0",
  org.eclipse.ui;bundle-version="3.5.1"
-Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
+Import-Package: com.google.common.io;version="1.6.0",
+ de.cs3d.util.logging,
+ de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.core.io,
- eu.esdihumboldt.hale.instance.io
+ eu.esdihumboldt.hale.core.io.supplier,
+ eu.esdihumboldt.hale.instance.io,
+ org.slf4j;version="1.5.11"

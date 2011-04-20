@@ -31,6 +31,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: de.cs3d.util.logging,
+ eu.esdihumboldt.hale.core.io,
  eu.esdihumboldt.hale.gmlvalidate,
  eu.esdihumboldt.hale.gmlwriter,
  eu.esdihumboldt.hale.gmlwriter.impl,

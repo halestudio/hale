@@ -8,7 +8,7 @@ import java.net.URI;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
-import eu.esdihumboldt.hale.schemaprovider.LogProgressIndicator;
+import eu.esdihumboldt.hale.core.io.impl.LogProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;

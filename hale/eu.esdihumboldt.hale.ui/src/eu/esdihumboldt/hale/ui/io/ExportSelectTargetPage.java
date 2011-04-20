@@ -18,9 +18,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
+import eu.esdihumboldt.hale.core.io.ExportProvider;
 import eu.esdihumboldt.hale.core.io.HaleIO;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.ui.HaleSharedImages;
 import eu.esdihumboldt.hale.ui.HaleUIPlugin;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
@@ -34,7 +36,7 @@ import eu.esdihumboldt.hale.ui.HaleWizardPage;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ExportSelectTargetPage<P extends IOProvider, T extends IOProviderFactory<P>, 
+public class ExportSelectTargetPage<P extends ExportProvider, T extends IOProviderFactory<P>, 
 	W extends ExportWizard<P, T>> extends IOWizardPage<P, T, W> {
 	
 	SaveFileFieldEditor targetFile;
@@ -80,7 +82,7 @@ public class ExportSelectTargetPage<P extends IOProvider, T extends IOProviderFa
 	@Override
 	public boolean updateConfiguration(P provider) {
 		File file = new File(targetFile.getStringValue());
-		getWizard().setTargetFile(file);
+		provider.setTarget(new FileIOSupplier(file));
 		return true;
 	}
 

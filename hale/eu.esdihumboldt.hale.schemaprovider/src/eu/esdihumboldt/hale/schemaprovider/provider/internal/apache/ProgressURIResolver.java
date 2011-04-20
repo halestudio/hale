@@ -16,8 +16,8 @@ import org.apache.ws.commons.schema.resolver.CollectionURIResolver;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.xml.sax.InputSource;
 
+import eu.esdihumboldt.hale.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.Messages;
-import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 
 /**
  * Decorator for URI resolvers that supports a {@link ProgressIndicator}

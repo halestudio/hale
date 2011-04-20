@@ -33,9 +33,9 @@ import org.opengis.feature.type.PropertyType;
 
 import com.vividsolutions.jts.geom.Geometry;
 
+import eu.esdihumboldt.hale.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.AbstractSchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.Messages;
-import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
@@ -58,7 +58,7 @@ public class ShapeSchemaProvider
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.schemaprovider.SchemaProvider#loadSchema(java.net.URI, eu.esdihumboldt.hale.schemaprovider.ProgressIndicator)
+	 * @see eu.esdihumboldt.hale.schemaprovider.SchemaProvider#loadSchema(java.net.URI, eu.esdihumboldt.hale.core.io.ProgressIndicator)
 	 */
 	public Schema loadSchema(URI location, ProgressIndicator progress)
 			throws IOException {

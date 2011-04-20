@@ -35,13 +35,13 @@ import eu.esdihumboldt.goml.align.Formalism;
 import eu.esdihumboldt.goml.align.Schema;
 import eu.esdihumboldt.goml.rdf.About;
 import eu.esdihumboldt.hale.Messages;
+import eu.esdihumboldt.hale.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
-import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**
@@ -139,7 +139,23 @@ public class SchemaImportWizard
 						ProgressIndicator progress = new ProgressIndicator() {
 							
 							@Override
-							public void setProgress(int percent) {
+							public void begin(String taskName,
+									boolean undetermined) {
+								// ignore
+							}
+
+							@Override
+							public void end() {
+								// ignore
+							}
+
+							@Override
+							public boolean isCanceled() {
+								return false;
+							}
+
+							@Override
+							public void setProgress(float percent) {
 								// ignore
 							}
 							

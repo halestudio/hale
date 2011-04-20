@@ -19,7 +19,7 @@ import java.util.Set;
 
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
+import eu.esdihumboldt.hale.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;

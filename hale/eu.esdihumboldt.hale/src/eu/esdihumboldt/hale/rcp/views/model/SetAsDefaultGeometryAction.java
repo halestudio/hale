@@ -32,6 +32,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
 import eu.esdihumboldt.hale.Messages;
+import eu.esdihumboldt.hale.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
@@ -40,7 +41,6 @@ import eu.esdihumboldt.hale.models.StyleService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.rcp.wizards.io.InstanceDataImportWizard;
-import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.model.DefaultGeometries;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
@@ -100,7 +100,22 @@ public class SetAsDefaultGeometryAction extends Action {
 					schemaService.loadSchema(new URI(schemaLoc), (String)null, SchemaType.SOURCE, new ProgressIndicator() {
 						
 						@Override
-						public void setProgress(int percent) {
+						public void begin(String taskName, boolean undetermined) {
+							// ignore
+						}
+
+						@Override
+						public void end() {
+							// ignore
+						}
+
+						@Override
+						public boolean isCanceled() {
+							return false;
+						}
+
+						@Override
+						public void setProgress(float percent) {
 							// do nothing
 						}
 						
@@ -173,7 +188,22 @@ public class SetAsDefaultGeometryAction extends Action {
 					schemaService.loadSchema(new URI(schemaLoc), (String)null, SchemaType.TARGET, new ProgressIndicator() {
 						
 						@Override
-						public void setProgress(int percent) {
+						public void begin(String taskName, boolean undetermined) {
+							// ignore
+						}
+
+						@Override
+						public void end() {
+							// ignore
+						}
+
+						@Override
+						public boolean isCanceled() {
+							return false;
+						}
+
+						@Override
+						public void setProgress(float percent) {
 							// do nothing
 						}
 						
