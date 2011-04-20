@@ -19,3 +19,8 @@ Import-Package: com.google.common.io;version="1.6.0",
  org.slf4j;version="1.5.11"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.ui.HaleUIPlugin
+Export-Package: eu.esdihumboldt.hale.ui,
+ eu.esdihumboldt.hale.ui.io,
+ eu.esdihumboldt.hale.ui.io.config,
+ eu.esdihumboldt.hale.ui.io.instance,
+ eu.esdihumboldt.hale.ui.io.util
