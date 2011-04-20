@@ -5,8 +5,10 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.instance
 Bundle-Version: 2.2.0.qualifier
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
+Import-Package: com.google.common.io;version="1.6.0",
+ de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.core.io,
+ eu.esdihumboldt.hale.core.io.impl,
  eu.esdihumboldt.hale.schemaprovider,
  org.geotools.feature,
  org.opengis.feature,

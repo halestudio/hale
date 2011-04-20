@@ -64,9 +64,9 @@ public interface InstanceWriter extends ExportProvider {
 	 * Set the common SRS name
 	 * FIXME can we do without?
 	 * 
-	 * @param commonSrsName the name of the common SRS of the instances,
+	 * @param commonSRSName the name of the common SRS of the instances,
 	 *   may be <code>null</code>
 	 */
-	public void setCommonSRSName(String commonSrsName);
+	public void setCommonSRSName(String commonSRSName);
 
 }

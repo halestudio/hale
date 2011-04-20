@@ -27,28 +27,28 @@ public class IOProviderConfigurationException extends Exception {
 	/**
 	 * @see Exception#Exception()
 	 */
-	protected IOProviderConfigurationException() {
+	public IOProviderConfigurationException() {
 		super();
 	}
 
 	/**
 	 * @see Exception#Exception(String, Throwable)
 	 */
-	protected IOProviderConfigurationException(String message, Throwable cause) {
+	public IOProviderConfigurationException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
 	/**
 	 * @see Exception#Exception(String)
 	 */
-	protected IOProviderConfigurationException(String message) {
+	public IOProviderConfigurationException(String message) {
 		super(message);
 	}
 
 	/**
 	 * @see Exception#Exception(Throwable)
 	 */
-	protected IOProviderConfigurationException(Throwable cause) {
+	public IOProviderConfigurationException(Throwable cause) {
 		super(cause);
 	}
 

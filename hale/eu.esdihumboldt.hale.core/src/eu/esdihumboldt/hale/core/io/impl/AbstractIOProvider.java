@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import eu.esdihumboldt.hale.core.io.IOProvider;
+import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 
 /**
  * Abstract base class for implementing {@link IOProvider}s 
@@ -32,6 +33,25 @@ public abstract class AbstractIOProvider implements IOProvider {
 	private final Map<String, String> parameters = new HashMap<String, String>();
 	
 	private final Set<String> supported = new HashSet<String>();
+
+	/**
+	 * @see IOProvider#validate()
+	 */
+	@Override
+	public void validate() throws IOProviderConfigurationException {
+		//TODO check parameters?
+	}
+	
+	/**
+	 * Fail validation or execution if the configuration is not valid
+	 * 
+	 * @param message the error message
+	 * 
+	 * @throws IOProviderConfigurationException always
+	 */
+	protected void fail(String message) throws IOProviderConfigurationException {
+		throw new IOProviderConfigurationException(message);
+	}
 
 	/**
 	 * Add a supported parameter name, should be called in the constructor

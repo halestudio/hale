@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import com.google.common.io.OutputSupplier;
 
 import eu.esdihumboldt.hale.core.io.ExportProvider;
+import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 
 /**
  * Abstract {@link ExportProvider} implementation
@@ -45,6 +46,18 @@ public abstract class AbstractExportProvider extends AbstractIOProvider implemen
 	 */
 	protected OutputSupplier<? extends OutputStream> getTarget() {
 		return target;
+	}
+
+	/**
+	 * @see AbstractIOProvider#validate()
+	 */
+	@Override
+	public void validate() throws IOProviderConfigurationException {
+		super.validate();
+		
+		if (target == null) {
+			fail("No target specified");
+		}
 	}
 
 }
