@@ -27,14 +27,50 @@ import eu.esdihumboldt.hale.core.io.service.ContentTypeService;
  * @since 2.2
  */
 public abstract class HaleIO {
+	
+	/**
+	 * Get the file extensions for the given content type
+	 * 
+	 * @param contentType the content type
+	 * @param prefix the prefix to add before the extensions, e.g. "." or "*.",
+	 *   may be <code>null</code>
+	 * @return the file extensions or <code>null</code>
+	 */
+	public static String[] getFileExtensions(ContentType contentType,
+			String prefix) {
+		SortedSet<String> exts = new TreeSet<String>();
+		
+		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
+		String[] typeExts = cts.getFileExtensions(contentType);
+		if (typeExts != null) {
+			for (String typeExt : typeExts) {
+				if (prefix == null) {
+					exts.add(typeExt);
+				}
+				else {
+					exts.add(prefix + typeExt);
+				}
+			}
+		}
+		
+		if (exts.isEmpty()) {
+			return null;
+		}
+		else {
+			return exts.toArray(new String[exts.size()]);
+		}
+	}
 
 	/**
 	 * Get all file extensions for the given content types
 	 * 
 	 * @param contentTypes the content types
+	 * @param prefix the prefix to add before the extensions, e.g. "." or "*.",
+	 *   may be <code>null</code>
 	 * @return the file extensions or <code>null</code>
 	 */
-	public static String[] getFileExtensions(Iterable<ContentType> contentTypes) {
+	public static String[] getFileExtensions(Iterable<ContentType> contentTypes,
+			String prefix) {
 		SortedSet<String> exts = new TreeSet<String>();
 		
 		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
@@ -42,7 +78,12 @@ public abstract class HaleIO {
 			String[] typeExts = cts.getFileExtensions(contentType);
 			if (typeExts != null) {
 				for (String typeExt : typeExts) {
-					exts.add(typeExt);
+					if (prefix == null) {
+						exts.add(typeExt);
+					}
+					else {
+						exts.add(prefix + typeExt);
+					}
 				}
 			}
 		}

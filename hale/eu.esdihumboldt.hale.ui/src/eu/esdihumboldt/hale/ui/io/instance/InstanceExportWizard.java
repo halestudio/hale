@@ -41,6 +41,8 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceW
 	 */
 	public InstanceExportWizard() {
 		super(InstanceWriterFactory.class);
+		
+		setWindowTitle("Export instances");
 	}
 
 	/**
@@ -68,7 +70,13 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceW
 		Schema targetSchema = ss.getTargetSchema();
 		
 		// determine SRS
-		String commonSRSName = SelectCRSDialog.getValue().getIdentifiers().iterator().next().toString();
+		String commonSRSName;
+		try {
+			commonSRSName = SelectCRSDialog.getValue().getIdentifiers().iterator().next().toString();
+		} catch (Exception e) {
+			// ignore
+			commonSRSName = null;
+		}
 		
 		provider.setInstances(features);
 		provider.setTargetSchema(targetSchema);

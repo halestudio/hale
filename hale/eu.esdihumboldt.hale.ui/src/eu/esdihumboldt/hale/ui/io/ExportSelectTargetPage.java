@@ -14,15 +14,19 @@ package eu.esdihumboldt.hale.ui.io;
 
 import java.io.File;
 
+import org.eclipse.jface.preference.FieldEditor;
+import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.core.io.ExportProvider;
-import eu.esdihumboldt.hale.core.io.HaleIO;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
+import eu.esdihumboldt.hale.ui.io.util.SaveFileFieldEditor;
 
 /**
  * Wizard page that allows selecting a target file
@@ -43,7 +47,7 @@ public class ExportSelectTargetPage<P extends ExportProvider, T extends IOProvid
 	 */
 	public ExportSelectTargetPage() {
 		super("export.selTarget");
-		setTitle("Select destination file");
+		setTitle("Export destination");
 		setDescription("Please select a destination file for the export");
 //		setImageDescriptor(HaleUIPlugin.getDefault().getImageRegistry().getDescriptor(
 //				HaleSharedImages.IMG_EXPORT_WIZARD));
@@ -56,10 +60,27 @@ public class ExportSelectTargetPage<P extends ExportProvider, T extends IOProvid
 	protected void createContent(Composite page) {
 		page.setLayout(new GridLayout(3, false));
 		
-		targetFile = new SaveFileFieldEditor("targetFile", "save to", true, page);
+		targetFile = new SaveFileFieldEditor("targetFile", "Target file:", true,
+				FileFieldEditor.VALIDATE_ON_KEY_STROKE, page);
 		targetFile.setEmptyStringAllowed(false);
+		targetFile.setPage(this);
+		targetFile.setPropertyChangeListener(new IPropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if (event.getProperty().equals(FieldEditor.IS_VALID)) {
+					updateState();
+				}
+			}
+		});
+		
+		updateState();
 	}
 	
+	private void updateState() {
+		setPageComplete(targetFile.isValid());
+	}
+
 	/**
 	 * @see HaleWizardPage#onShowPage()
 	 */
@@ -68,8 +89,7 @@ public class ExportSelectTargetPage<P extends ExportProvider, T extends IOProvid
 		super.onShowPage();
 		
 		// update file editor with possibly changed file extensions
-		targetFile.setFileExtensions(HaleIO.getFileExtensions(
-				getWizard().getProviderFactory().getSupportedTypes()));
+		targetFile.setContentTypes(getWizard().getProviderFactory().getSupportedTypes());
 	}
 
 	/**

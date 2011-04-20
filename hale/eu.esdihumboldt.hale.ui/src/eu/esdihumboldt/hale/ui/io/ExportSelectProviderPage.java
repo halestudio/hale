@@ -49,7 +49,7 @@ public class ExportSelectProviderPage<P extends ExportProvider, T extends IOProv
 	 */
 	public ExportSelectProviderPage() {
 		super("export.selProvider");
-		setTitle("Select a format");
+		setTitle("Export format");
 		setDescription("Please select a format to export to");
 //		setImageDescriptor(HaleUIPlugin.getDefault().getImageRegistry().getDescriptor(
 //				HaleSharedImages.IMG_EXPORT_WIZARD));
