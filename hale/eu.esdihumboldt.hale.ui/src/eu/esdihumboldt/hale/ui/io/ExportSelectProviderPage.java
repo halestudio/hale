@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.io;
 
+import java.util.Collection;
+
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
@@ -19,6 +21,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -74,11 +77,18 @@ public class ExportSelectProviderPage<P extends ExportProvider, T extends IOProv
 			}
 			
 		});
-		providers.setInput(getWizard().getFactories());
+		Collection<T> factories = getWizard().getFactories();
+		providers.setInput(factories);
+		
+		// set selection
+		if (!factories.isEmpty()) {
+			providers.setSelection(new StructuredSelection(
+					factories.iterator().next()), true);
+		}
 		
 		// process current selection
 		ISelection selection = providers.getSelection();
-		setPageComplete(selection.isEmpty());
+		setPageComplete(!selection.isEmpty());
 		updateWizard(selection);
 		
 		// process selection changes
@@ -87,7 +97,7 @@ public class ExportSelectProviderPage<P extends ExportProvider, T extends IOProv
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				ISelection selection = event.getSelection();
-				setPageComplete(selection.isEmpty());
+				setPageComplete(!selection.isEmpty());
 				updateWizard(selection);
 			}
 		});
