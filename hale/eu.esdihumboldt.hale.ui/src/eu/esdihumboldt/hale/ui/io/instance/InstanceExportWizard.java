@@ -12,9 +12,21 @@
 
 package eu.esdihumboldt.hale.ui.io.instance;
 
+import org.eclipse.ui.PlatformUI;
+import org.geotools.feature.FeatureCollection;
+import org.opengis.feature.Feature;
+import org.opengis.feature.type.FeatureType;
+
+import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.instance.io.InstanceWriterFactory;
+import eu.esdihumboldt.hale.models.InstanceService;
+import eu.esdihumboldt.hale.models.SchemaService;
+import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
+import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
+import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.ui.io.ExportWizard;
+import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 /**
  * Wizard for exporting instances
@@ -29,6 +41,38 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceW
 	 */
 	public InstanceExportWizard() {
 		super(InstanceWriterFactory.class);
+	}
+
+	/**
+	 * @see ExportWizard#addPages()
+	 */
+	@Override
+	public void addPages() {
+		super.addPages();
+		
+		//TODO add configuration pages?!!
+	}
+
+	/**
+	 * @see IOWizard#updateConfiguration(IOProvider)
+	 */
+	@Override
+	protected void updateConfiguration(InstanceWriter provider) {
+		super.updateConfiguration(provider);
+		
+		// configure with instances, common SRS, target schema
+		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+		
+		FeatureCollection<FeatureType, Feature> features = is.getFeatures(DatasetType.transformed);
+		Schema targetSchema = ss.getTargetSchema();
+		
+		// determine SRS
+		String commonSRSName = SelectCRSDialog.getValue().getIdentifiers().iterator().next().toString();
+		
+		provider.setInstances(features);
+		provider.setTargetSchema(targetSchema);
+		provider.setCommonSRSName(commonSRSName);
 	}
 
 }

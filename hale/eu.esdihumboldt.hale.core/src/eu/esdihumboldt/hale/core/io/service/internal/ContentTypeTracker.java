@@ -59,17 +59,19 @@ public class ContentTypeTracker extends ContextBundleTracker implements ContentT
 		// load content type definitions
 		Enumeration<URL> files = bundle.findEntries("META-INF/contentType", "*.xml", false);
 		List<BundleContentType> types = null;
-		while (files.hasMoreElements()) {
-			URL file = files.nextElement();
-			
-			try {
-				ContentTypeDefinition def = ContentTypeDefinition.load(file.openStream());
-				if (types == null) {
-					types = new ArrayList<BundleContentType>();
+		if (files != null) {
+			while (files.hasMoreElements()) {
+				URL file = files.nextElement();
+				
+				try {
+					ContentTypeDefinition def = ContentTypeDefinition.load(file.openStream());
+					if (types == null) {
+						types = new ArrayList<BundleContentType>();
+					}
+					types.add(new BundleContentType(bundle, def));
+				} catch(Exception e) {
+					log.error("Error loading content type definition from " + file.toString(), e);
 				}
-				types.add(new BundleContentType(bundle, def));
-			} catch(Exception e) {
-				log.error("Error loading content type definition from " + file.toString(), e);
 			}
 		}
 		

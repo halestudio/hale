@@ -20,14 +20,13 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.core.io.ExportProvider;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
-import eu.esdihumboldt.hale.ui.HaleSharedImages;
-import eu.esdihumboldt.hale.ui.HaleUIPlugin;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 
 /**
@@ -49,20 +48,20 @@ public class ExportSelectProviderPage<P extends ExportProvider, T extends IOProv
 		super("export.selProvider");
 		setTitle("Select a format");
 		setDescription("Please select a format to export to");
-		setImageDescriptor(HaleUIPlugin.getDefault().getImageRegistry().getDescriptor(
-				HaleSharedImages.IMG_EXPORT_WIZARD));
+//		setImageDescriptor(HaleUIPlugin.getDefault().getImageRegistry().getDescriptor(
+//				HaleSharedImages.IMG_EXPORT_WIZARD));
 	}
 
 	/**
 	 * @see HaleWizardPage#createContent(Composite)
 	 */
 	@Override
-	protected void createContent(Composite parent) {
-		Composite page = new Composite(parent, SWT.NONE);
+	protected void createContent(Composite page) {
 		page.setLayout(new GridLayout(1, false));
 		
 		// create provider combo
-		ComboViewer providers = new ComboViewer(page, SWT.SIMPLE | SWT.READ_ONLY);
+		ComboViewer providers = new ComboViewer(page, SWT.DROP_DOWN | SWT.READ_ONLY);
+		providers.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		providers.setContentProvider(ArrayContentProvider.getInstance());
 		providers.setLabelProvider(new LabelProvider() {
 

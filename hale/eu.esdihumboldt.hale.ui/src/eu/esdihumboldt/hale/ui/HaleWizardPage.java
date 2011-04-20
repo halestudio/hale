@@ -20,6 +20,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -78,7 +80,12 @@ public abstract class HaleWizardPage<W extends Wizard> extends WizardPage {
 			});
 		}
 		
-		createContent(parent);
+		Composite page = new Composite(parent, SWT.NONE);
+		page.setLayout(new FillLayout());
+		
+		createContent(page);
+		
+		setControl(page);
 	}
 
 	/**
@@ -91,9 +98,10 @@ public abstract class HaleWizardPage<W extends Wizard> extends WizardPage {
 	/**
 	 * Create the page content
 	 * 
-	 * @param parent the parent composite
+	 * @param page the page composite, implementors may assign a custom layout
+	 *   to this composite
 	 */
-	protected abstract void createContent(Composite parent);
+	protected abstract void createContent(Composite page);
 
 	/**
 	 * @see DialogPage#dispose()

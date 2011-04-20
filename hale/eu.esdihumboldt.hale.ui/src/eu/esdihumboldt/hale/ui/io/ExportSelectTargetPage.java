@@ -14,7 +14,6 @@ package eu.esdihumboldt.hale.ui.io;
 
 import java.io.File;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
@@ -23,8 +22,6 @@ import eu.esdihumboldt.hale.core.io.HaleIO;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.core.io.supplier.FileIOSupplier;
-import eu.esdihumboldt.hale.ui.HaleSharedImages;
-import eu.esdihumboldt.hale.ui.HaleUIPlugin;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 
 /**
@@ -48,16 +45,15 @@ public class ExportSelectTargetPage<P extends ExportProvider, T extends IOProvid
 		super("export.selTarget");
 		setTitle("Select destination file");
 		setDescription("Please select a destination file for the export");
-		setImageDescriptor(HaleUIPlugin.getDefault().getImageRegistry().getDescriptor(
-				HaleSharedImages.IMG_EXPORT_WIZARD));
+//		setImageDescriptor(HaleUIPlugin.getDefault().getImageRegistry().getDescriptor(
+//				HaleSharedImages.IMG_EXPORT_WIZARD));
 	}
 
 	/**
 	 * @see HaleWizardPage#createContent(Composite)
 	 */
 	@Override
-	protected void createContent(Composite parent) {
-		Composite page = new Composite(parent, SWT.NONE);
+	protected void createContent(Composite page) {
 		page.setLayout(new GridLayout(3, false));
 		
 		targetFile = new SaveFileFieldEditor("targetFile", "save to", true, page);
