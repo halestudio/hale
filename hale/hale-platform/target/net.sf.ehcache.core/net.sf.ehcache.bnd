@@ -1,9 +1,7 @@
 -classpath: lib/ehcache-core-1.7.2.jar
 -output: net.sf.ehcache-1.7.2.jar
 Export-Package: *;-split-package:=merge-last;-noimport:=true
-Import-Package: *
+Import-Package: org.hibernate.cache;resolution:=optional,*
 Bundle-Version: 1.7.2
 Bundle-Name: Ehcache
 Bundle-SymbolicName: net.sf.ehcache
-Eclipse-BuddyPolicy: registered
-Eclipse-RegisterBuddy: com.springsource.org.hibernate
