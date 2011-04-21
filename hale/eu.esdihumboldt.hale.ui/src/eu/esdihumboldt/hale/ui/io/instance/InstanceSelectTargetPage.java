@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.io.instance;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,7 +29,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -40,6 +40,7 @@ import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.instance.io.InstanceValidatorFactory;
 import eu.esdihumboldt.hale.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.instance.io.InstanceWriterFactory;
+import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.ExportSelectTargetPage;
 import eu.esdihumboldt.hale.ui.io.IOWizardListener;
 
@@ -105,6 +106,8 @@ public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWri
 				updateWizard(selection);
 			}
 		});
+		
+		getWizard().addIOWizardListener(this);
 	}
 
 	/**
@@ -114,13 +117,26 @@ public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWri
 		//TODO remember last selection and try to retain it?
 		
 		List<Object> input = new ArrayList<Object>();
-		input.add("No validation");
 		
 		ContentType contentType = getWizard().getContentType();
 		if (contentType != null) {
 			Collection<InstanceValidatorFactory> factories = OsgiUtils.getServices(InstanceValidatorFactory.class);
 			factories = HaleIO.filterFactories(factories, contentType);
+			if (!factories.isEmpty()) {
+				input.add("No validation");
+			}
 			input.addAll(factories);
+		}
+		
+		if (input.isEmpty()) {
+			input.add((contentType == null)
+					?("Unrecognized content type")
+					:(MessageFormat.format("No validator available for {0}", 
+							HaleIO.getDisplayName(contentType))));
+			validators.getControl().setEnabled(false);
+		}
+		else {
+			validators.getControl().setEnabled(true);
 		}
 		
 		validators.setInput(input);
@@ -180,6 +196,16 @@ public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWri
 	@Override
 	public void providerFactoryChanged(InstanceWriterFactory providerFactory) {
 		// do nothing
+	}
+
+	/**
+	 * @see HaleWizardPage#dispose()
+	 */
+	@Override
+	public void dispose() {
+		getWizard().removeIOWizardListener(this);
+		
+		super.dispose();
 	}
 
 }

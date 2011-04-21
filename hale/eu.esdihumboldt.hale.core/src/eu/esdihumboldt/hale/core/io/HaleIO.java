@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.core.io.service.ContentTypeService;
@@ -74,72 +72,83 @@ public abstract class HaleIO {
 		return parentType.equals(valueType);
 	}
 
-	/**
-	 * Get the file extensions for the given content type
-	 * 
-	 * @param contentType the content type
-	 * @param prefix the prefix to add before the extensions, e.g. "." or "*.",
-	 *   may be <code>null</code>
-	 * @return the file extensions or <code>null</code>
-	 */
-	public static String[] getFileExtensions(ContentType contentType,
-			String prefix) {
-		SortedSet<String> exts = new TreeSet<String>();
-		
-		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
-		String[] typeExts = cts.getFileExtensions(contentType);
-		if (typeExts != null) {
-			for (String typeExt : typeExts) {
-				if (prefix == null) {
-					exts.add(typeExt);
-				}
-				else {
-					exts.add(prefix + typeExt);
-				}
-			}
-		}
-		
-		if (exts.isEmpty()) {
-			return null;
-		}
-		else {
-			return exts.toArray(new String[exts.size()]);
-		}
-	}
+//	/**
+//	 * Get the file extensions for the given content type
+//	 * 
+//	 * @param contentType the content type
+//	 * @param prefix the prefix to add before the extensions, e.g. "." or "*.",
+//	 *   may be <code>null</code>
+//	 * @return the file extensions or <code>null</code>
+//	 */
+//	public static String[] getFileExtensions(ContentType contentType,
+//			String prefix) {
+//		SortedSet<String> exts = new TreeSet<String>();
+//		
+//		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
+//		String[] typeExts = cts.getFileExtensions(contentType);
+//		if (typeExts != null) {
+//			for (String typeExt : typeExts) {
+//				if (prefix == null) {
+//					exts.add(typeExt);
+//				}
+//				else {
+//					exts.add(prefix + typeExt);
+//				}
+//			}
+//		}
+//		
+//		if (exts.isEmpty()) {
+//			return null;
+//		}
+//		else {
+//			return exts.toArray(new String[exts.size()]);
+//		}
+//	}
+
+//	/**
+//	 * Get all file extensions for the given content types
+//	 * 
+//	 * @param contentTypes the content types
+//	 * @param prefix the prefix to add before the extensions, e.g. "." or "*.",
+//	 *   may be <code>null</code>
+//	 * @return the file extensions or <code>null</code>
+//	 */
+//	public static String[] getFileExtensions(Iterable<ContentType> contentTypes,
+//			String prefix) {
+//		SortedSet<String> exts = new TreeSet<String>();
+//		
+//		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
+//		for (ContentType contentType : contentTypes) {
+//			String[] typeExts = cts.getFileExtensions(contentType);
+//			if (typeExts != null) {
+//				for (String typeExt : typeExts) {
+//					if (prefix == null) {
+//						exts.add(typeExt);
+//					}
+//					else {
+//						exts.add(prefix + typeExt);
+//					}
+//				}
+//			}
+//		}
+//		
+//		if (exts.isEmpty()) {
+//			return null;
+//		}
+//		else {
+//			return exts.toArray(new String[exts.size()]);
+//		}
+//	}
 
 	/**
-	 * Get all file extensions for the given content types
+	 * Get the display name for the given content type
 	 * 
-	 * @param contentTypes the content types
-	 * @param prefix the prefix to add before the extensions, e.g. "." or "*.",
-	 *   may be <code>null</code>
-	 * @return the file extensions or <code>null</code>
+	 * @param contentType the content type
+	 * @return the display name
 	 */
-	public static String[] getFileExtensions(Iterable<ContentType> contentTypes,
-			String prefix) {
-		SortedSet<String> exts = new TreeSet<String>();
-		
+	public static String getDisplayName(ContentType contentType) {
 		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
-		for (ContentType contentType : contentTypes) {
-			String[] typeExts = cts.getFileExtensions(contentType);
-			if (typeExts != null) {
-				for (String typeExt : typeExts) {
-					if (prefix == null) {
-						exts.add(typeExt);
-					}
-					else {
-						exts.add(prefix + typeExt);
-					}
-				}
-			}
-		}
-		
-		if (exts.isEmpty()) {
-			return null;
-		}
-		else {
-			return exts.toArray(new String[exts.size()]);
-		}
+		return cts.getDisplayName(contentType);
 	}
 	
 }
