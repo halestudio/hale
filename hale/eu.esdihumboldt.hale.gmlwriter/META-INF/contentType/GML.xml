@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- A content type definition may contain one content type, the id is required -->
-<contentType id="GML">
+<contentType id="GML" extends="XML">
 	<!-- Default display name -->
 	<defaultName>GML file</defaultName>
 	<!-- Translated display names -->
