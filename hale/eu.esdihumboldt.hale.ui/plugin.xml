@@ -33,6 +33,14 @@
       <handler
             class="eu.esdihumboldt.hale.ui.io.instance.InstanceExportHandler"
             commandId="eu.esdihumboldt.hale.ui.io.instance.export">
+         <enabledWhen>
+            <with
+                  variable="hale.instances.has_transformed">
+               <equals
+                     value="true">
+               </equals>
+            </with>
+         </enabledWhen>
       </handler>
    </extension>
    <extension
