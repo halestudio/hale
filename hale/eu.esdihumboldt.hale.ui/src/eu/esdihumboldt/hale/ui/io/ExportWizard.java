@@ -29,6 +29,10 @@ import eu.esdihumboldt.hale.ui.HaleUIPlugin;
  */
 public abstract class ExportWizard<P extends ExportProvider, T extends IOProviderFactory<P>> extends IOWizard<P, T> {
 
+	private ExportSelectProviderPage<P, T, ? extends ExportWizard<P, T>> selectProviderPage;
+	
+	private ExportSelectTargetPage<P, T, ? extends ExportWizard<P, T>> selectTargetPage;
+
 	/**
 	 * @see IOWizard#IOWizard(Class)
 	 */
@@ -46,8 +50,8 @@ public abstract class ExportWizard<P extends ExportProvider, T extends IOProvide
 	public void addPages() {
 		super.addPages();
 		
-		addPage(createSelectProviderPage());
-		addPage(createSelectTargetPage());
+		addPage(selectProviderPage = createSelectProviderPage());
+		addPage(selectTargetPage = createSelectTargetPage());
 	}
 
 	/**
@@ -66,6 +70,20 @@ public abstract class ExportWizard<P extends ExportProvider, T extends IOProvide
 	 */
 	protected ExportSelectTargetPage<P, T, ? extends ExportWizard<P,T>> createSelectTargetPage() {
 		return new ExportSelectTargetPage<P, T, ExportWizard<P,T>>();
+	}
+
+	/**
+	 * @return the selectProviderPage
+	 */
+	protected ExportSelectProviderPage<P, T, ? extends ExportWizard<P, T>> getSelectProviderPage() {
+		return selectProviderPage;
+	}
+
+	/**
+	 * @return the selectTargetPage
+	 */
+	protected ExportSelectTargetPage<P, T, ? extends ExportWizard<P, T>> getSelectTargetPage() {
+		return selectTargetPage;
 	}
 
 }

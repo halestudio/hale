@@ -12,12 +12,19 @@
 
 package eu.esdihumboldt.hale.ui.io.instance;
 
+import java.io.File;
+import java.util.List;
+
 import org.eclipse.ui.PlatformUI;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
+import com.google.common.io.Files;
+
 import eu.esdihumboldt.hale.core.io.IOProvider;
+import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.instance.io.InstanceValidatorFactory;
 import eu.esdihumboldt.hale.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.instance.io.InstanceWriterFactory;
@@ -57,6 +64,42 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceW
 		super.addPages();
 		
 		//TODO add configuration pages?!!
+	}
+
+	/**
+	 * @see IOWizard#performFinish()
+	 */
+	@Override
+	public boolean performFinish() {
+		boolean success = super.performFinish();
+		
+		if (success && validatorFactory != null) {
+			// validate the written output
+			
+			// create validator
+			InstanceValidator validator = validatorFactory.createProvider();
+			
+			// configure validator
+			List<Schema> schemas = getProvider().getValidationSchemas();
+			validator.setSchemas(schemas.toArray(new Schema[schemas.size()]));
+			String fileName = getSelectTargetPage().getTargetFileName();
+			validator.setSource(Files.newInputStreamSupplier(new File(fileName)));
+			
+			//XXX configuration pages for validator?
+			
+			try {
+				success = validateAndExecute(validator);
+			} catch (IOProviderConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			if (success) {
+				//TODO evaluate validation result
+			}
+		}
+		
+		return success;
 	}
 
 	/**

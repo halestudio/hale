@@ -154,4 +154,13 @@ public class ExportSelectTargetPage<P extends ExportProvider, T extends IOProvid
 		return true;
 	}
 
+	/**
+	 * Get the target file name
+	 *  
+	 * @return the target file name
+	 */
+	public String getTargetFileName() {
+		return targetFile.getStringValue();
+	}
+	
 }

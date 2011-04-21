@@ -179,7 +179,7 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	 * @return if validation and execution were successful
 	 * @throws IOProviderConfigurationException if the provider validation failed
 	 */
-	protected boolean validateAndExecute(final P provider) throws IOProviderConfigurationException {
+	protected boolean validateAndExecute(final IOProvider provider) throws IOProviderConfigurationException {
 		// validate configuration
 		provider.validate();
 		
