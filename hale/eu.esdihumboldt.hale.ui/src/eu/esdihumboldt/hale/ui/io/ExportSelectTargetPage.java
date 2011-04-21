@@ -61,8 +61,6 @@ public class ExportSelectTargetPage<P extends ExportProvider, T extends IOProvid
 		super("export.selTarget");
 		setTitle("Export destination");
 		setDescription("Please select a destination file for the export");
-//		setImageDescriptor(HaleUIPlugin.getDefault().getImageRegistry().getDescriptor(
-//				HaleSharedImages.IMG_EXPORT_WIZARD));
 	}
 
 	/**

@@ -17,6 +17,7 @@ import org.eclipse.jface.wizard.Wizard;
 import eu.esdihumboldt.hale.core.io.ExportProvider;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.ui.HaleUIPlugin;
 
 /**
  * Abstract export wizard
@@ -33,6 +34,9 @@ public abstract class ExportWizard<P extends ExportProvider, T extends IOProvide
 	 */
 	public ExportWizard(Class<T> factoryClass) {
 		super(factoryClass);
+		
+		setDefaultPageImageDescriptor(HaleUIPlugin.imageDescriptorFromPlugin(
+				HaleUIPlugin.PLUGIN_ID, "/icons/banner/export_wiz.png"));
 	}
 
 	/**
