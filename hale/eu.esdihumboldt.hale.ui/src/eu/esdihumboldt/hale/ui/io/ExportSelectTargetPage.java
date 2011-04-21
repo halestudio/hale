@@ -23,6 +23,8 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.ExportProvider;
@@ -44,6 +46,8 @@ import eu.esdihumboldt.hale.ui.io.util.SaveFileFieldEditor;
  */
 public class ExportSelectTargetPage<P extends ExportProvider, T extends IOProviderFactory<P>, 
 	W extends ExportWizard<P, T>> extends IOWizardPage<P, T, W> {
+	
+	private static final ALogger log = ALoggerFactory.getLogger(ExportSelectTargetPage.class);
 	
 	/**
 	 * The file field editor for the target file
@@ -92,21 +96,28 @@ public class ExportSelectTargetPage<P extends ExportProvider, T extends IOProvid
 	 * Update the content type
 	 */
 	private void updateContentType() {
-		ContentType contentType;
+		ContentType contentType = null;
 		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
 		
-		if (targetFile.isValid()) {
+		if (getWizard().getProviderFactory() != null && targetFile.isValid()) {
 			Collection<ContentType> types = getWizard().getProviderFactory().getSupportedTypes();
-			types = cts.findContentTypesFor(types, null, targetFile.getStringValue());
-			if (types.isEmpty()) {
-				contentType = null;
+			if (types != null && !types.isEmpty()) {
+				if (types.size() == 1) {
+					// if only one content type is possible for the export we can assume that it is used
+					contentType = types.iterator().next();
+				}
+				else {
+					Collection<ContentType> filteredTypes = cts.findContentTypesFor(types, null, targetFile.getStringValue());
+					if (!types.isEmpty()) {
+						contentType = filteredTypes.iterator().next();
+					}
+				}
 			}
 			else {
-				contentType = types.iterator().next();
+				// no supported content types!
+				log.error("Export provider {0} doesn't support any content types", 
+						getWizard().getProviderFactory().getDisplayName());
 			}
-		}
-		else {
-			contentType = null;
 		}
 		
 		getWizard().setContentType(contentType);
