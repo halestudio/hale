@@ -12,13 +12,15 @@
 
 package eu.esdihumboldt.hale.ui.io.config;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -44,37 +46,48 @@ public abstract class ConfigurationPageExtension {
 	public static final String EXTENSION_POINT_ID = "eu.esdihumboldt.hale.ui.io.config";
 	
 	/**
-	 * Get the configuration pages registered for the given I/O provider factory
+	 * Get the configuration pages registered for the given I/O provider factories
 	 * @param <P> the {@link IOProvider} type used in the wizard
 	 * @param <T> the {@link IOProviderFactory} type used in the wizard
 	 * 
-	 * @param factory the provider factory
-	 * @return the configuration pages
+	 * @param factories the provider factories
+	 * @return the configuration pages in a multimap where the corresponding 
+	 *   provider identifier is mapped to the configuration page, one page (the
+	 *   same instance) might be mapped for multiple identifiers
 	 */
 	@SuppressWarnings("unchecked")
 	public static <P extends IOProvider, T extends IOProviderFactory<P>> 
-			Collection<AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>> getConfigurationPages(T factory) {
+			Multimap<String, AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>> getConfigurationPages(Iterable<T> factories) {
 		IConfigurationElement[] confArray = Platform.getExtensionRegistry().getConfigurationElementsFor(EXTENSION_POINT_ID);
 		
-		List<AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>> result = new ArrayList<AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>>();
+		// collect factory IDs
+		Set<String> ids = new HashSet<String>(); 
+		for (T factory : factories) {
+			ids.add(factory.getIdentifier());
+		}
+		
+		Multimap<String, AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>> result = HashMultimap.create();
 		
 		for (IConfigurationElement conf : confArray) {
-			IConfigurationElement[] factories = conf.getChildren("providerFactory");
-			boolean match = false;
-			for (int i = 0; i < factories.length && !match; i++) {
-				IConfigurationElement fDef = factories[i];
+			IConfigurationElement[] pageFactories = conf.getChildren("providerFactory");
+			AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>> page = null;
+			for (int i = 0; i < pageFactories.length; i++) {
+				IConfigurationElement fDef = pageFactories[i];
 				String id = fDef.getAttribute("id");
-				if (id != null && id.equals(factory.getIdentifier())) {
+				if (id != null && ids.contains(id)) {
 					// match
-					match = true;
-				}
-			}
-			
-			if (match) {
-				try {
-					result.add((AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>) conf.createExecutableExtension("class"));
-				} catch (CoreException e) {
-					log.error("Error creating configuration page " + conf.getAttribute("class"), e);
+					if (page == null) {
+						try {
+							page = (AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>) conf.createExecutableExtension("class");
+						} catch (CoreException e) {
+							log.error("Error creating configuration page " + conf.getAttribute("class"), e);
+							break;
+						}
+					}
+					
+					if (page != null) {
+						result.put(id, page);
+					}
 				}
 			}
 		}

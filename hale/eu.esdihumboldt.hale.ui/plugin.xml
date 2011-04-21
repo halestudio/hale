@@ -14,7 +14,7 @@
                   commandId="eu.esdihumboldt.hale.ui.io.instance.export"
                   icon="icons/export_wiz.gif"
                   id="export.instance"
-                  label="Save transformation result"
+                  label="Save transformed instances..."
                   mnemonic="t"
                   style="push">
             </command>
