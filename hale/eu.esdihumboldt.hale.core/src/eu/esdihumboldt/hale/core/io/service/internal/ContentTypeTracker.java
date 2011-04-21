@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.core.io.service.internal;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,12 +24,17 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.FilenameUtils;
 import org.osgi.framework.Bundle;
+
+import com.google.common.base.Preconditions;
+import com.google.common.io.InputSupplier;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.fhg.igd.osgi.util.extender.ContextBundleTracker;
 import eu.esdihumboldt.hale.core.io.ContentType;
+import eu.esdihumboldt.hale.core.io.ContentTypeTester;
 import eu.esdihumboldt.hale.core.io.internal.ContentTypeDefinition;
 import eu.esdihumboldt.hale.core.io.service.ContentTypeService;
 
@@ -170,6 +177,78 @@ public class ContentTypeTracker extends ContextBundleTracker implements ContentT
 			type = contentTypes.get(contentType);
 		}
 		return type;
+	}
+
+	/**
+	 * @see ContentTypeService#findContentTypesFor(Iterable, InputSupplier, String)
+	 */
+	@Override
+	public List<ContentType> findContentTypesFor(Iterable<ContentType> types,
+			InputSupplier<? extends InputStream> in, String filename) {
+		Preconditions.checkArgument(filename != null || in != null, 
+				"At least one of input supplier and file name must not be null");
+		
+		List<ContentType> results = new ArrayList<ContentType>();
+		
+		if (filename != null) {
+			// test file extension
+			for (ContentType type : types) {
+				BundleContentType bct = getBundleContentType(type);
+				if (bct != null) {
+					String ext = FilenameUtils.getExtension(filename);
+					if (ext != null && !ext.isEmpty()) {
+						boolean match = bct.getContentType().getFileExtensions().contains(ext) ||
+							bct.getContentType().getFileExtensions().contains("." + ext);
+						if (match) {
+							results.add(type);
+						}
+					}
+				}
+				else {
+					log.warn("No content type definition found for ID {0}", type.getIdentifier());
+				}
+			}
+		}
+		
+		if ((results.isEmpty() || results.size() > 1) && in != null) {
+			// only use the testers if
+			// - we have no results from the filename match
+			// - we have more than one result from the filename match (as we might have to restrict the result)
+			// - the input supplier is set
+			
+			for (ContentType type : types) {
+				BundleContentType bct = getBundleContentType(type);
+				if (bct != null) {
+					ContentTypeTester tester = bct.getTester();
+					if (tester != null) {
+						try {
+							InputStream is = in.getInput();
+							try {
+								if (tester.matchesContentType(is)) {
+									results.add(type);
+								}
+								else {
+									results.remove(type);
+								}
+							} finally {
+								try {
+									is.close();
+								} catch (IOException e) {
+									// ignore
+								}
+							}
+						} catch (IOException e) {
+							log.warn("Could not open input stream for testing the content type, tester for content type {0} is ignored", type);
+						}
+					}
+				}
+				else if (filename == null) { // only warn if we didn't do it before
+					log.warn("No content type definition found for ID {0}", type.getIdentifier());
+				}
+			}
+		}
+		
+		return results;
 	}
 
 	/**

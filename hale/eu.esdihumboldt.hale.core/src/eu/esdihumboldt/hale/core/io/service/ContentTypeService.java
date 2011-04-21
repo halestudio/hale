@@ -12,6 +12,11 @@
 
 package eu.esdihumboldt.hale.core.io.service;
 
+import java.io.InputStream;
+import java.util.List;
+
+import com.google.common.io.InputSupplier;
+
 import eu.esdihumboldt.hale.core.io.ContentType;
 
 /**
@@ -48,6 +53,21 @@ public interface ContentTypeService {
 	public String[] getFileExtensions(ContentType contentType);
 	
 	//TODO as needed: public ContentType findContentTypeFor(InputStream in, String filename);
-	//TODO as needed: public ContentType findContentTypeFor(Iterable<ContentType> types, InputStream in, String filename);
+	
+	/**
+	 * Find the content types that match the given file name and/or input.
+	 * 
+	 * NOTE: The implementation should try to restrict the result to one 
+	 * content type and only use the input supplier if absolutely needed.
+	 * 
+	 * @param types the types to match 
+	 * @param in the input supplier to use for testing, may be <code>null</code>
+	 *   if the file name is not <code>null</code>
+	 * @param filename the file name, may be <code>null</code> if the input
+	 *   supplier is not <code>null</code>
+	 * @return the matched content types
+	 */
+	public List<ContentType> findContentTypesFor(Iterable<ContentType> types, 
+			InputSupplier<? extends InputStream> in, String filename);
 
 }
