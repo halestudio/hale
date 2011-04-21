@@ -65,6 +65,7 @@ Import-Package: de.cs3d.util.logging,
  org.slf4j.impl;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale,
  eu.esdihumboldt.hale.models,
+ eu.esdihumboldt.hale.models.instance,
  eu.esdihumboldt.hale.models.utils,
  eu.esdihumboldt.hale.rcp.utils.definition,
  eu.esdihumboldt.hale.rcp.utils.filter,
