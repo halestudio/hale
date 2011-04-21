@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
@@ -63,8 +65,16 @@ public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWri
 		
 		Group validatorGroup = new Group(page, SWT.NONE);
 		validatorGroup.setText("Validation");
-		validatorGroup.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 3, 1));
-		validatorGroup.setLayout(new GridLayout(1, false));
+		validatorGroup.setLayoutData(GridDataFactory.swtDefaults()
+				.align(SWT.FILL, SWT.BEGINNING)
+				.grab(true, false)
+				.span(3, 1)
+				.indent(8, 10)
+				.create());
+		validatorGroup.setLayout(GridLayoutFactory.swtDefaults()
+				.numColumns(1)
+				.margins(10, 8)
+				.create());
 		
 		Label vabel = new Label(validatorGroup, SWT.NONE);
 		vabel.setText("Please select a validator if you want to validate the exported file");
