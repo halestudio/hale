@@ -19,6 +19,9 @@ import org.eclipse.ui.AbstractSourceProvider;
 import org.eclipse.ui.ISourceProvider;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.PlatformUI;
+import org.geotools.feature.FeatureCollection;
+import org.opengis.feature.Feature;
+import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
@@ -94,7 +97,9 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 	}
 
 	private static boolean hasTransformedInstances(InstanceService is) {
-		return !is.getFeatures(DatasetType.transformed).isEmpty();
+		FeatureCollection<FeatureType, Feature> instances = is.getFeatures(DatasetType.transformed);
+		
+		return instances != null && !instances.isEmpty();
 	}
 
 	/**
