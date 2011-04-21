@@ -34,6 +34,7 @@ public class XmlInstanceValidator extends AbstractInstanceValidator {
 	@Override
 	public void execute(ProgressIndicator progress)
 			throws IOProviderConfigurationException, IOException {
+		progress.begin("Validating XML", true);
 		Validator val = ValidatorFactory.getInstance().createValidator(getSchemas());
 		InputStream in = getSource().getInput();
 		try {
@@ -41,6 +42,7 @@ public class XmlInstanceValidator extends AbstractInstanceValidator {
 			//FIXME use the report/what to do with the report?
 		} finally {
 			in.close();
+			progress.end();
 		}
 	}
 

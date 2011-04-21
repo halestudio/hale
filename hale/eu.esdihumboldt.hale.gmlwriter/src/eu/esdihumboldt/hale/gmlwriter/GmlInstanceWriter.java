@@ -36,9 +36,12 @@ public class GmlInstanceWriter extends AbstractInstanceWriter {
 	@Override
 	public void execute(ProgressIndicator progress)
 			throws IOProviderConfigurationException, IOException {
+		progress.begin("Generating GML", true);
 		GmlWriter writer = new DefaultGmlWriter();
 		OutputStream out = getTarget().getOutput();
+		//FIXME progress indicator should be handed to writer
 		writer.writeFeatures(getInstances(), getTargetSchema(), out , getCommonSRSName());
+		progress.end();
 	}
 
 	/**
