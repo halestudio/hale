@@ -12,11 +12,14 @@
 
 package eu.esdihumboldt.hale.instance.io;
 
+import java.util.List;
+
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.core.io.ExportProvider;
+import eu.esdihumboldt.hale.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 
 /**
@@ -68,5 +71,14 @@ public interface InstanceWriter extends ExportProvider {
 	 *   may be <code>null</code>
 	 */
 	public void setCommonSRSName(String commonSRSName);
+	
+	/**
+	 * Get the schemas needed for validation of the output written using 
+	 * {@link #execute(ProgressIndicator)}, this usually is at least the 
+	 * target schema.
+	 * 
+	 * @return the schemas needed for validation
+	 */
+	public List<Schema> getValidationSchemas();
 
 }

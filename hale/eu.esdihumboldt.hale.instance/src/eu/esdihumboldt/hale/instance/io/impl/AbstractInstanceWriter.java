@@ -12,9 +12,14 @@
 
 package eu.esdihumboldt.hale.instance.io.impl;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
+
+import com.google.common.base.Preconditions;
 
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.impl.AbstractExportProvider;
@@ -49,6 +54,18 @@ public abstract class AbstractInstanceWriter extends AbstractExportProvider impl
 		if (instances == null || instances.isEmpty()) {
 			fail("No instances for export given");
 		}
+	}
+
+	/**
+	 * Returns the target schema; override to return another set of schemas
+	 * 
+	 * @see InstanceWriter#getValidationSchemas()
+	 */
+	@Override
+	public List<Schema> getValidationSchemas() {
+		Preconditions.checkState(targetSchema != null);
+		
+		return Collections.singletonList(targetSchema);
 	}
 
 	/**
