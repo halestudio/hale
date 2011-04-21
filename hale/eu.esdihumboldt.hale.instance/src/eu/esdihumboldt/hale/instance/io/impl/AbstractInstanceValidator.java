@@ -37,6 +37,13 @@ public abstract class AbstractInstanceValidator extends AbstractImportProvider i
 	}
 
 	/**
+	 * @return the schemas
+	 */
+	protected Schema[] getSchemas() {
+		return schemas;
+	}
+
+	/**
 	 * Additionally fails if there are no schemas set
 	 * 
 	 * @see AbstractImportProvider#validate()
