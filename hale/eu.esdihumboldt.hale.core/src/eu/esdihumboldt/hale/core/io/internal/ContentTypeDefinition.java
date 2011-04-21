@@ -70,6 +70,8 @@ public class ContentTypeDefinition {
 	
 	private String identifier;
 	
+	private String parent;
+	
 	private Set<String> fileExtensions = new HashSet<String>();
 	
 	private String defaultName;
@@ -90,6 +92,20 @@ public class ContentTypeDefinition {
 	 */
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
+	}
+
+	/**
+	 * @return the parent
+	 */
+	public String getParent() {
+		return parent;
+	}
+
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(String parent) {
+		this.parent = parent;
 	}
 
 	/**

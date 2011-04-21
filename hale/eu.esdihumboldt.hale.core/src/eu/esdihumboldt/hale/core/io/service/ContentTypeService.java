@@ -44,6 +44,14 @@ public interface ContentTypeService {
 	public String getDisplayName(ContentType contentType);
 	
 	/**
+	 * Get the parent type for a given content type
+	 * 
+	 * @param contentType the content type
+	 * @return the parent type or <code>null</code> if there is none
+	 */
+	public ContentType getParentType(ContentType contentType);
+	
+	/**
 	 * Get the file extensions for the given content type
 	 * 
 	 * @param contentType the content type

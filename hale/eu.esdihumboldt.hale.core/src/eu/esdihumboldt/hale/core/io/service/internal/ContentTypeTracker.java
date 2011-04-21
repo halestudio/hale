@@ -141,6 +141,22 @@ public class ContentTypeTracker extends ContextBundleTracker implements ContentT
 	}
 
 	/**
+	 * @see ContentTypeService#getParentType(ContentType)
+	 */
+	@Override
+	public ContentType getParentType(ContentType contentType) {
+		BundleContentType type = getBundleContentType(contentType);
+		if (type != null) {
+			String parent =  type.getContentType().getParent();
+			if (parent != null) { 
+				return ContentType.getContentType(parent);
+			}
+		}
+		
+		return null;
+	}
+
+	/**
 	 * @see ContentTypeService#getDisplayName(ContentType)
 	 */
 	@Override

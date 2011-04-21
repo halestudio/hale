@@ -68,8 +68,17 @@ public abstract class HaleIO {
 	 */
 	public static boolean isCompatibleContentType(ContentType parentType,
 			ContentType valueType) {
-		//FIXME check for hierarchy match
-		return parentType.equals(valueType);
+		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
+		
+		while (valueType != null) {
+			if (parentType.equals(valueType)) {
+				return true;
+			}
+			
+			valueType = cts.getParentType(valueType);
+		}
+		
+		return false;
 	}
 
 //	/**

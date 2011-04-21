@@ -9,6 +9,10 @@
 			<bind-xml name="id" node="attribute" />
 		</field>
 		
+		<field name="parent" type="string" required="false">
+			<bind-xml name="extends" node="attribute" />
+		</field>
+		
 		<field name="defaultName" type="string" required="true">
 			<bind-xml name="defaultName" node="element" />
 		</field>
