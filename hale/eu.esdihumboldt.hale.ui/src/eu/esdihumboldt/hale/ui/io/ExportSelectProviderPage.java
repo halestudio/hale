@@ -111,13 +111,22 @@ public class ExportSelectProviderPage<P extends ExportProvider, T extends IOProv
 	@SuppressWarnings("unchecked")
 	private void updateWizard(ISelection selection) {
 		if (selection.isEmpty()) {
-			getWizard().setProviderFactory(null);
+			providerFactoryChanged(null);
 		}
 		else if (selection instanceof IStructuredSelection) {
 			IStructuredSelection sel = (IStructuredSelection) selection;
 			Object element = sel.getFirstElement();
-			getWizard().setProviderFactory((T) element);
+			providerFactoryChanged((T) element);
 		}
+	}
+	
+	/**
+	 * Called when the provider factory has been initialized or changed
+	 * 
+	 * @param providerFactory the provider factory
+	 */
+	protected void providerFactoryChanged(T providerFactory) {
+		getWizard().setProviderFactory(providerFactory);
 	}
 
 	/**

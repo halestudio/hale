@@ -15,6 +15,8 @@ package eu.esdihumboldt.hale.ui.io;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -22,9 +24,12 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 
+import com.google.common.base.Objects;
+
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.fhg.igd.osgi.util.OsgiUtils;
+import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
@@ -42,11 +47,15 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	
 	private static final ALogger log = ALoggerFactory.getLogger(IOWizard.class);
 
+	private Set<IOWizardListener<P, T, ? extends IOWizard<P, T>>> listeners = new HashSet<IOWizardListener<P,T,? extends IOWizard<P,T>>>();
+	
 	private final Class<T> factoryClass;
 	
 	private P provider;
 	
 	private T factory;
+	
+	private ContentType contentType;
 
 	/**
 	 * Create an I/O wizard
@@ -87,15 +96,41 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	/**
 	 * Assign an I/O provider factory to the wizard
 	 * 
-	 * @param factory the provider to set
+	 * @param factory the provider factory to set
 	 */
 	public void setProviderFactory(T factory) {
+		if (Objects.equal(factory, this.factory)) return;
+		
 		this.factory = factory;
 		
 		// reset provider
 		provider = null;
+		
+		fireProviderFactoryChanged(factory);
 	}
 	
+	/**
+	 * Get the content type assigned to the wizard
+	 * 
+	 * @return the content type, may be <code>null</code>
+	 */
+	public ContentType getContentType() {
+		return contentType;
+	}
+
+	/**
+	 * Assign a content type to the wizard
+	 * 
+	 * @param contentType the content type to set
+	 */
+	public void setContentType(ContentType contentType) {
+		if (Objects.equal(contentType, this.contentType)) return;
+		
+		this.contentType = contentType;
+		
+		fireContentTypeChanged(contentType);
+	}
+
 	/**
 	 * Get the provider factory assigned to the wizard. It will be
 	 * <code>null</code> if no page assigned a provider factory to the wizard 
@@ -127,14 +162,26 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 		// process wizard
 		updateConfiguration(provider);
 		
-		// validate configuration
+		// validate and execute provider
 		try {
-			provider.validate();
+			return validateAndExecute(provider);
 		} catch (IOProviderConfigurationException e) {
 			//TODO user feedback? details of configuration error as wizard message? how?
 			log.error("Validation of the provider configuration failed", e);
 			return false;
 		}
+	}
+
+	/**
+	 * Validate and execute the given provider
+	 * 
+	 * @param provider the I/O provider
+	 * @return if validation and execution were successful
+	 * @throws IOProviderConfigurationException if the provider validation failed
+	 */
+	protected boolean validateAndExecute(final P provider) throws IOProviderConfigurationException {
+		// validate configuration
+		provider.validate();
 		
 		// execute provider
 		final AtomicBoolean success = new AtomicBoolean(false);
@@ -192,4 +239,42 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 		}
 	}
 
+	/**
+	 * Adds an {@link IOWizardListener}
+	 * 
+	 * @param listener the listener to add
+	 */
+	public void addIOWizardListener(IOWizardListener<P, T, ? extends IOWizard<P, T>> listener) {
+		synchronized (listeners) {
+			listeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes an {@link IOWizardListener}
+	 * 
+	 * @param listener the listener to remove
+	 */
+	public void removeIOWizardListener(IOWizardListener<P, T, ? extends IOWizard<P, T>> listener) {
+		synchronized (listeners) {
+			listeners.remove(listener);
+		}
+	}
+	
+	private void fireProviderFactoryChanged(T providerFactory) {
+		synchronized (listeners) {
+			for (IOWizardListener<P, T, ? extends IOWizard<P, T>> listener : listeners) {
+				listener.providerFactoryChanged(providerFactory);
+			}
+		}
+	}
+	
+	private void fireContentTypeChanged(ContentType contentType) {
+		synchronized (listeners) {
+			for (IOWizardListener<P, T, ? extends IOWizard<P, T>> listener : listeners) {
+				listener.contentTypeChanged(contentType);
+			}
+		}
+	}
+	
 }

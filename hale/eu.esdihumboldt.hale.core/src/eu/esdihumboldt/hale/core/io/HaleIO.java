@@ -12,6 +12,10 @@
 
 package eu.esdihumboldt.hale.core.io;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -28,6 +32,48 @@ import eu.esdihumboldt.hale.core.io.service.ContentTypeService;
  */
 public abstract class HaleIO {
 	
+	/**
+	 * Filter I/O provider factories by content type
+	 * @param <T> the concrete I/O provider factory type
+	 * 
+	 * @param factories the I/O provider factories
+	 * @param contentType the content type factories must support
+	 * @return provider factories that support the given content type 
+	 */
+	public static <T extends IOProviderFactory<?>> List<T> filterFactories(
+			Collection<T> factories, ContentType contentType) {
+		List<T> result = new ArrayList<T>();
+		
+		for (T factory : factories) {
+			Set<ContentType> supportedTypes = factory.getSupportedTypes();
+			
+			// check if contentType is supported
+			for (ContentType test : supportedTypes) {
+				if (isCompatibleContentType(test, contentType)) {
+					result.add(factory);
+					break;
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Test if the given value content type is compatible with the given 
+	 * parent content type
+	 * 
+	 * @param parentType the parent content type
+	 * @param valueType the value content type
+	 * @return if the value content type is compatible with the parent content 
+	 *   type
+	 */
+	public static boolean isCompatibleContentType(ContentType parentType,
+			ContentType valueType) {
+		//FIXME check for hierarchy match
+		return parentType.equals(valueType);
+	}
+
 	/**
 	 * Get the file extensions for the given content type
 	 * 

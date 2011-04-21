@@ -42,9 +42,26 @@ public abstract class ExportWizard<P extends ExportProvider, T extends IOProvide
 	public void addPages() {
 		super.addPages();
 		
-		// add select provider page
-		addPage(new ExportSelectProviderPage<P, T, ExportWizard<P,T>>());
-		addPage(new ExportSelectTargetPage<P, T, ExportWizard<P,T>>());
+		addPage(createSelectProviderPage());
+		addPage(createSelectTargetPage());
+	}
+
+	/**
+	 * Create the page where the provider is selected
+	 * 
+	 * @return the created page
+	 */
+	protected ExportSelectProviderPage<P, T, ? extends ExportWizard<P,T>> createSelectProviderPage() {
+		return new ExportSelectProviderPage<P, T, ExportWizard<P,T>>();
+	}
+	
+	/**
+	 * Create the page where the provider is selected
+	 * 
+	 * @return the created page
+	 */
+	protected ExportSelectTargetPage<P, T, ? extends ExportWizard<P,T>> createSelectTargetPage() {
+		return new ExportSelectTargetPage<P, T, ExportWizard<P,T>>();
 	}
 
 }

@@ -13,7 +13,9 @@
 package eu.esdihumboldt.hale.ui.io;
 
 import java.io.File;
+import java.util.Collection;
 
+import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -21,9 +23,12 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
+import de.fhg.igd.osgi.util.OsgiUtils;
+import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.ExportProvider;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.core.io.service.ContentTypeService;
 import eu.esdihumboldt.hale.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.util.SaveFileFieldEditor;
@@ -40,7 +45,10 @@ import eu.esdihumboldt.hale.ui.io.util.SaveFileFieldEditor;
 public class ExportSelectTargetPage<P extends ExportProvider, T extends IOProviderFactory<P>, 
 	W extends ExportWizard<P, T>> extends IOWizardPage<P, T, W> {
 	
-	SaveFileFieldEditor targetFile;
+	/**
+	 * The file field editor for the target file
+	 */
+	private SaveFileFieldEditor targetFile;
 
 	/**
 	 * Default constructor
@@ -71,13 +79,48 @@ public class ExportSelectTargetPage<P extends ExportProvider, T extends IOProvid
 				if (event.getProperty().equals(FieldEditor.IS_VALID)) {
 					updateState();
 				}
+				else if (event.getProperty().equals(FieldEditor.VALUE)) {
+					updateContentType();
+				}
 			}
 		});
 		
 		updateState();
 	}
 	
+	/**
+	 * Update the content type
+	 */
+	private void updateContentType() {
+		ContentType contentType;
+		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
+		
+		if (targetFile.isValid()) {
+			Collection<ContentType> types = getWizard().getProviderFactory().getSupportedTypes();
+			types = cts.findContentTypesFor(types, null, targetFile.getStringValue());
+			if (types.isEmpty()) {
+				contentType = null;
+			}
+			else {
+				contentType = types.iterator().next();
+			}
+		}
+		else {
+			contentType = null;
+		}
+		
+		getWizard().setContentType(contentType);
+		if (contentType != null) {
+			setMessage(cts.getDisplayName(contentType), DialogPage.INFORMATION);
+		}
+		else {
+			setMessage(null);
+		}
+	}
+
 	private void updateState() {
+		updateContentType();
+		
 		setPageComplete(targetFile.isValid());
 	}
 

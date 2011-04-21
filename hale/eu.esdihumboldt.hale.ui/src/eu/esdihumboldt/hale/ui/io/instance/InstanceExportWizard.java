@@ -18,6 +18,7 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.core.io.IOProvider;
+import eu.esdihumboldt.hale.instance.io.InstanceValidatorFactory;
 import eu.esdihumboldt.hale.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.instance.io.InstanceWriterFactory;
 import eu.esdihumboldt.hale.models.InstanceService;
@@ -25,6 +26,7 @@ import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
+import eu.esdihumboldt.hale.ui.io.ExportSelectTargetPage;
 import eu.esdihumboldt.hale.ui.io.ExportWizard;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 
@@ -35,6 +37,8 @@ import eu.esdihumboldt.hale.ui.io.IOWizard;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceWriterFactory> {
+	
+	private InstanceValidatorFactory validatorFactory;
 
 	/**
 	 * Default constructor
@@ -53,6 +57,14 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceW
 		super.addPages();
 		
 		//TODO add configuration pages?!!
+	}
+
+	/**
+	 * @see ExportWizard#createSelectTargetPage()
+	 */
+	@Override
+	protected ExportSelectTargetPage<InstanceWriter, InstanceWriterFactory, ? extends ExportWizard<InstanceWriter, InstanceWriterFactory>> createSelectTargetPage() {
+		return new InstanceSelectTargetPage();
 	}
 
 	/**
@@ -81,6 +93,20 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceW
 		provider.setInstances(features);
 		provider.setTargetSchema(targetSchema);
 		provider.setCommonSRSName(commonSRSName);
+	}
+
+	/**
+	 * @return the validatorFactory
+	 */
+	public InstanceValidatorFactory getValidatorFactory() {
+		return validatorFactory;
+	}
+
+	/**
+	 * @param validatorFactory the validatorFactory to set
+	 */
+	public void setValidatorFactory(InstanceValidatorFactory validatorFactory) {
+		this.validatorFactory = validatorFactory;
 	}
 
 }
