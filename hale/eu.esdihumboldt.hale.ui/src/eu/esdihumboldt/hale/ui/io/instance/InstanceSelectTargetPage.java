@@ -114,8 +114,10 @@ public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWri
 	 * Update the input of the validator combo viewer
 	 */
 	private void updateInput() {
-		//TODO remember last selection and try to retain it?
+		// remember selection
+		ISelection lastSelection = validators.getSelection();
 		
+		// populate input
 		List<Object> input = new ArrayList<Object>();
 		
 		ContentType contentType = getWizard().getContentType();
@@ -141,9 +143,17 @@ public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWri
 		
 		validators.setInput(input);
 		
-		// set selection
-		validators.setSelection(new StructuredSelection(
-				input.get(0)), true);
+		ISelection newSelection = new StructuredSelection(input.get(0));
+		
+		// retain old selection if possible
+		if (!lastSelection.isEmpty() && lastSelection instanceof IStructuredSelection) {
+			Object selected = ((IStructuredSelection) lastSelection).getFirstElement();
+			if (input.contains(selected)) {
+				newSelection = lastSelection;
+			}
+		}
+		
+		validators.setSelection(newSelection, true);
 		
 		// process current selection
 		ISelection selection = validators.getSelection();
