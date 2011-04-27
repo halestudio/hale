@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.core.io;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -50,7 +51,20 @@ public interface IOProvider {
 	 */
 	public void validate() throws IOProviderConfigurationException;
 	
-	//FIXME configuration parameters any use?
+	/**
+	 * Set the content type. This may be optional if the I/O provider doesn't
+	 * differentiate between content types.
+	 * 
+	 * @param contentType the content type
+	 */
+	public void setContentType(ContentType contentType);
+	
+	/**
+	 * Get the content type
+	 * 
+	 * @return the content type, may be <code>null</code>
+	 */
+	public ContentType getContentType();
 	
 	/**
 	 * Get the supported configuration parameters.
@@ -74,5 +88,19 @@ public interface IOProvider {
 	 * @return the parameter value or <code>null</code>
 	 */
 	public String getParameter(String name);
+	
+	/**
+	 * Load the configuration from a map of key/value pairs
+	 * 
+	 * @param configuration the configuration to load
+	 */
+	public void loadConfiguration(Map<String, String> configuration);
+	
+	/**
+	 * Store the configuration in a map of key/value pairs
+	 * 
+	 * @param configuration the configuration to populate
+	 */
+	public void storeConfiguration(Map<String, String> configuration);
 	
 }

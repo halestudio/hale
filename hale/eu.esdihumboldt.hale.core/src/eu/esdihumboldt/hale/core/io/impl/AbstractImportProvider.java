@@ -13,9 +13,12 @@
 package eu.esdihumboldt.hale.core.io.impl;
 
 import java.io.InputStream;
+import java.net.URI;
+import java.util.Map;
 
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.ImportProvider;
+import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
 
 /**
@@ -28,7 +31,24 @@ import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
 public abstract class AbstractImportProvider extends AbstractIOProvider implements
 		ImportProvider {
 	
+	/**
+	 * The configuration parameter name for the source URI
+	 */
+	public static final String PARAM_SOURCE = "source";
+	
+	/**
+	 * The source
+	 */
 	private LocatableInputSupplier<? extends InputStream> source;
+
+	/**
+	 * Default constructor
+	 */
+	public AbstractImportProvider() {
+		super();
+		
+		addSupportedParameter(PARAM_SOURCE);
+	}
 
 	/**
 	 * @see ImportProvider#setSource(LocatableInputSupplier)
@@ -56,6 +76,35 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 		
 		if (source == null) {
 			fail("No source specified");
+		}
+	}
+
+	/**
+	 * @see AbstractIOProvider#storeConfiguration(Map)
+	 */
+	@Override
+	public void storeConfiguration(Map<String, String> configuration) {
+		// store source if possible
+		if (source != null) {
+			URI location = source.getLocation();
+			if (location != null) {
+				configuration.put(PARAM_SOURCE, location.toString());
+			}
+		}
+		
+		super.storeConfiguration(configuration);
+	}
+
+	/**
+	 * @see AbstractIOProvider#setParameter(String, String)
+	 */
+	@Override
+	public void setParameter(String name, String value) {
+		if (name.equals(PARAM_SOURCE)) {
+			setSource(new DefaultInputSupplier(URI.create(value)));
+		}
+		else {
+			super.setParameter(name, value);
 		}
 	}
 
