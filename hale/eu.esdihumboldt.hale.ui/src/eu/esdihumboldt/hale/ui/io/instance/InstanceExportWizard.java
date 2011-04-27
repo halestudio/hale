@@ -20,10 +20,9 @@ import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
-import com.google.common.io.Files;
-
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.instance.io.InstanceValidatorFactory;
 import eu.esdihumboldt.hale.instance.io.InstanceWriter;
@@ -83,7 +82,7 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceW
 			List<Schema> schemas = getProvider().getValidationSchemas();
 			validator.setSchemas(schemas.toArray(new Schema[schemas.size()]));
 			String fileName = getSelectTargetPage().getTargetFileName();
-			validator.setSource(Files.newInputStreamSupplier(new File(fileName)));
+			validator.setSource(new FileIOSupplier(new File(fileName)));
 			
 			//XXX configuration pages for validator?
 			

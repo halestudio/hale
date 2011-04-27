@@ -10,26 +10,20 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.core.io;
+package eu.esdihumboldt.hale.core.io.supplier;
 
-import java.io.OutputStream;
-
-import eu.esdihumboldt.hale.core.io.supplier.LocatableOutputSupplier;
+import com.google.common.io.OutputSupplier;
 
 /**
- * Base interface for export providers
+ * Locatable {@link OutputSupplier} providing an URI as location
+ * @param <T> the input type
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2  
+ * @since 2.2 
  */
-public interface ExportProvider extends IOProvider {
-	
-	/**
-	 * Set the export target
-	 * 
-	 * @param target the target output supplier
-	 */
-	public void setTarget(LocatableOutputSupplier<? extends OutputStream> target);
+public interface LocatableOutputSupplier<T> extends OutputSupplier<T>, Locatable {
 
+	// combines interfaces OutputSupplier and Locatable
+	
 }

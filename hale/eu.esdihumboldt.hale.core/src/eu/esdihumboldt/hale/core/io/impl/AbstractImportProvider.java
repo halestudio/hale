@@ -14,10 +14,9 @@ package eu.esdihumboldt.hale.core.io.impl;
 
 import java.io.InputStream;
 
-import com.google.common.io.InputSupplier;
-
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.ImportProvider;
+import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
 
 /**
  * Abstract {@link ImportProvider} implementation
@@ -29,13 +28,13 @@ import eu.esdihumboldt.hale.core.io.ImportProvider;
 public abstract class AbstractImportProvider extends AbstractIOProvider implements
 		ImportProvider {
 	
-	private InputSupplier<? extends InputStream> source;
+	private LocatableInputSupplier<? extends InputStream> source;
 
 	/**
-	 * @see ImportProvider#setSource(InputSupplier)
+	 * @see ImportProvider#setSource(LocatableInputSupplier)
 	 */
 	@Override
-	public void setSource(InputSupplier<? extends InputStream> source) {
+	public void setSource(LocatableInputSupplier<? extends InputStream> source) {
 		this.source = source;
 	}
 
@@ -44,7 +43,7 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 	 * 
 	 * @return the source input supplier
 	 */
-	protected InputSupplier<? extends InputStream> getSource() {
+	protected LocatableInputSupplier<? extends InputStream> getSource() {
 		return source;
 	}
 

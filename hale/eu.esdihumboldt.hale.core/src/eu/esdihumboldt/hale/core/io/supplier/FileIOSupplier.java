@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 
 import com.google.common.io.InputSupplier;
 import com.google.common.io.OutputSupplier;
@@ -27,7 +28,7 @@ import com.google.common.io.OutputSupplier;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.2
  */
-public class FileIOSupplier implements InputSupplier<FileInputStream>, OutputSupplier<FileOutputStream> {
+public class FileIOSupplier implements LocatableInputSupplier<FileInputStream>, LocatableOutputSupplier<FileOutputStream> {
 
 	private File file;
 
@@ -55,6 +56,14 @@ public class FileIOSupplier implements InputSupplier<FileInputStream>, OutputSup
 	@Override
 	public FileOutputStream getOutput() throws IOException {
 		return new FileOutputStream(file);
+	}
+
+	/**
+	 * @see Locatable#getLocation()
+	 */
+	@Override
+	public URI getLocation() {
+		return file.toURI();
 	}
 
 }

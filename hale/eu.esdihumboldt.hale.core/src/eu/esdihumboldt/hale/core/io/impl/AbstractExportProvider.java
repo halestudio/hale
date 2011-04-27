@@ -14,10 +14,9 @@ package eu.esdihumboldt.hale.core.io.impl;
 
 import java.io.OutputStream;
 
-import com.google.common.io.OutputSupplier;
-
 import eu.esdihumboldt.hale.core.io.ExportProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.core.io.supplier.LocatableOutputSupplier;
 
 /**
  * Abstract {@link ExportProvider} implementation
@@ -29,13 +28,13 @@ import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 public abstract class AbstractExportProvider extends AbstractIOProvider implements
 		ExportProvider {
 	
-	private OutputSupplier<? extends OutputStream> target;
+	private LocatableOutputSupplier<? extends OutputStream> target;
 
 	/**
-	 * @see ExportProvider#setTarget(OutputSupplier)
+	 * @see ExportProvider#setTarget(LocatableOutputSupplier)
 	 */
 	@Override
-	public void setTarget(OutputSupplier<? extends OutputStream> target) {
+	public void setTarget(LocatableOutputSupplier<? extends OutputStream> target) {
 		this.target = target;
 	}
 
@@ -44,7 +43,7 @@ public abstract class AbstractExportProvider extends AbstractIOProvider implemen
 	 * 
 	 * @return the target output supplier
 	 */
-	protected OutputSupplier<? extends OutputStream> getTarget() {
+	protected LocatableOutputSupplier<? extends OutputStream> getTarget() {
 		return target;
 	}
 

@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.core.io;
 
 import java.io.InputStream;
 
-import com.google.common.io.InputSupplier;
+import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
 
 /**
  * Base interface for import providers
@@ -30,6 +30,6 @@ public interface ImportProvider extends IOProvider {
 	 * 
 	 * @param source the source input supplier
 	 */
-	public void setSource(InputSupplier<? extends InputStream> source);
+	public void setSource(LocatableInputSupplier<? extends InputStream> source);
 
 }
