@@ -18,6 +18,8 @@ import java.io.InputStream;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.core.io.report.IOReport;
+import eu.esdihumboldt.hale.core.io.report.impl.DefaultIOReporter;
 import eu.esdihumboldt.hale.instance.io.impl.AbstractInstanceValidator;
 
 /**
@@ -32,14 +34,29 @@ public class XmlInstanceValidator extends AbstractInstanceValidator {
 	 * @see IOProvider#execute(ProgressIndicator)
 	 */
 	@Override
-	public void execute(ProgressIndicator progress)
+	public IOReport execute(ProgressIndicator progress)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Validating XML", true);
+		DefaultIOReporter result = new DefaultIOReporter(getSource(), false) {
+
+			@Override
+			protected String getFailSummary() {
+				return "Validating the XML file failed";
+			}
+
+			@Override
+			protected String getSuccessSummary() {
+				return "The XML file is valid";
+			}
+			
+		};
 		Validator val = ValidatorFactory.getInstance().createValidator(getSchemas());
 		InputStream in = getSource().getInput();
 		try {
 			Report report = val.validate(in);
-			//FIXME use the report/what to do with the report?
+			//TODO use the report information/replace old report definition
+			result.setSuccess(report.isValid());
+			return result;
 		} finally {
 			in.close();
 			progress.end();

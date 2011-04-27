@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
+import eu.esdihumboldt.hale.core.io.report.IOReport;
+
 /**
  * Interface for I/O providers
  *
@@ -29,12 +31,13 @@ public interface IOProvider {
 	 * Execute the I/O provider.
 	 * 
 	 * @param progress the progress indicator, may be <code>null</code>
+	 * @return the execution report
 	 *  
 	 * @throws IOProviderConfigurationException if the I/O provider was not
 	 *   configured properly 
 	 * @throws IOException if an I/O operation fails
 	 */
-	public void execute(ProgressIndicator progress) throws IOProviderConfigurationException, IOException;
+	public IOReport execute(ProgressIndicator progress) throws IOProviderConfigurationException, IOException;
 	
 	/**
 	 * States if the execution of the provider is cancelable
