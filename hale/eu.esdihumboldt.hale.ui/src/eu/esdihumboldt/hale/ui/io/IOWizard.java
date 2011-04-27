@@ -220,7 +220,8 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	 * @param provider the I/O provider 
 	 */
 	protected void updateConfiguration(P provider) {
-		// do nothing
+		// set the content type
+		provider.setContentType(getContentType());
 	}
 
 	/**
