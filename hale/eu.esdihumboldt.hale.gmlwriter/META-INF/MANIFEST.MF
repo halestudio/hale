@@ -6,18 +6,13 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/GmlWriter.xml
 Require-Bundle: org.geotools;bundle-version="2.6.4",
- eu.esdihumboldt.commons;bundle-version="3.0.8"
+ eu.esdihumboldt.commons;bundle-version="3.0.8",
+ eu.esdihumboldt.hale.core;bundle-version="2.2.0"
 Import-Package: com.google.common.io;version="1.6.0",
  com.vividsolutions.jts.geom,
  de.cs3d.util.logging,
  edu.umd.cs.findbugs.annotations,
  eu.esdihumboldt.cst.rdf,
- eu.esdihumboldt.hale.core.io,
- eu.esdihumboldt.hale.core.io.impl,
- eu.esdihumboldt.hale.core.io.report,
- eu.esdihumboldt.hale.core.io.report.impl,
- eu.esdihumboldt.hale.core.report,
- eu.esdihumboldt.hale.core.report.impl,
  eu.esdihumboldt.hale.instance.io,
  eu.esdihumboldt.hale.instance.io.impl,
  eu.esdihumboldt.hale.schemaprovider,

@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 import eu.esdihumboldt.hale.core.io.report.IOReport;
+import eu.esdihumboldt.hale.core.io.report.IOReporter;
 
 /**
  * Interface for I/O providers
@@ -38,6 +39,16 @@ public interface IOProvider {
 	 * @throws IOException if an I/O operation fails
 	 */
 	public IOReport execute(ProgressIndicator progress) throws IOProviderConfigurationException, IOException;
+	
+	/**
+	 * Create a reporter configured for the execution of this I/O provider.
+	 * 
+	 * This method can also be used internally in the implementation of 
+	 * {@link #execute(ProgressIndicator)}.
+	 * 
+	 * @return the I/O reporter
+	 */
+	public IOReporter createReporter();
 	
 	/**
 	 * States if the execution of the provider is cancelable

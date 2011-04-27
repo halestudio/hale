@@ -18,7 +18,9 @@ import java.io.OutputStream;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.core.io.report.IOReport;
+import eu.esdihumboldt.hale.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.core.io.report.impl.DefaultIOReporter;
 import eu.esdihumboldt.hale.gmlwriter.impl.DefaultGmlWriter;
 import eu.esdihumboldt.hale.instance.io.InstanceWriter;
@@ -33,34 +35,39 @@ import eu.esdihumboldt.hale.instance.io.impl.AbstractInstanceWriter;
 public class GmlInstanceWriter extends AbstractInstanceWriter {
 
 	/**
-	 * @see IOProvider#execute(ProgressIndicator)
+	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
 	 */
 	@Override
-	public IOReport execute(ProgressIndicator progress)
+	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-		DefaultIOReporter report = new DefaultIOReporter(getTarget(), true) {
-			
-			@Override
-			protected String getSuccessSummary() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			protected String getFailSummary() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		};
 		progress.begin("Generating GML", true);
 		GmlWriter writer = new DefaultGmlWriter();
 		OutputStream out = getTarget().getOutput();
 		//FIXME progress indicator should be handed to writer
 		//FIXME ReportLog should be handed to writer
 		writer.writeFeatures(getInstances(), getTargetSchema(), out , getCommonSRSName());
-		report.setSuccess(true);
+		reporter.setSuccess(true);
 		progress.end();
-		return report;
+		return reporter;
+	}
+
+	/**
+	 * @see IOProvider#createReporter()
+	 */
+	@Override
+	public IOReporter createReporter() {
+		return new DefaultIOReporter(getTarget(), "GML export", true) {
+			
+			@Override
+			protected String getSuccessSummary() {
+				return "Generating the GML output was successful";
+			}
+			
+			@Override
+			protected String getFailSummary() {
+				return "Generating the GML output failed";
+			}
+		};
 	}
 
 	/**

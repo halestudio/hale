@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.core.io.report.impl;
 import de.cs3d.util.logging.ALogger;
 import eu.esdihumboldt.hale.core.io.report.IOMessage;
 import eu.esdihumboldt.hale.core.io.report.IOReport;
+import eu.esdihumboldt.hale.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.core.report.impl.DefaultReporter;
 
@@ -26,7 +27,7 @@ import eu.esdihumboldt.hale.core.report.impl.DefaultReporter;
  * @since 2.2 
  */
 public abstract class DefaultIOReporter extends DefaultReporter<IOMessage> implements
-		IOReport {
+		IOReporter {
 	
 	private final Locatable target;
 
@@ -35,13 +36,14 @@ public abstract class DefaultIOReporter extends DefaultReporter<IOMessage> imple
 	 * you should call {@link #setSuccess(boolean)} nonetheless to update the
 	 * timestamp after the task has finished.
 	 * 
-	 * @see DefaultReporter#DefaultReporter(Class, boolean)
+	 * @see DefaultReporter#DefaultReporter(String, Class, boolean)
 	 * 
 	 * @param target the locatable target
+	 * @param taskName the name of the task the report is related to
 	 * @param doLog if added messages shall also be logged using {@link ALogger}
 	 */
-	public DefaultIOReporter(Locatable target, boolean doLog) {
-		super(IOMessage.class, doLog);
+	public DefaultIOReporter(Locatable target, String taskName, boolean doLog) {
+		super(taskName, IOMessage.class, doLog);
 		
 		this.target = target;
 	}

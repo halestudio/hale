@@ -50,19 +50,23 @@ public abstract class DefaultReporter<T extends Message> implements Reporter<T> 
 	private Date timestamp;
 	
 	private final boolean doLog;
+	
+	private final String taskName;
 
 	/**
 	 * Create an empty report. It is set to not successful by default. But you
 	 * should call {@link #setSuccess(boolean)} nonetheless to update the
 	 * timestamp after the task has finished.
 	 * 
+	 * @param taskName the name of the task the report is related to 
 	 * @param messageType the message type
 	 * @param doLog if added messages shall also be logged using {@link ALogger} 
 	 */
-	public DefaultReporter(Class<T> messageType, boolean doLog) {
+	public DefaultReporter(String taskName, Class<T> messageType, boolean doLog) {
 		super();
 		this.messageType = messageType;
 		this.doLog = doLog;
+		this.taskName = taskName;
 		
 		timestamp = new Date();
 	}
@@ -97,6 +101,14 @@ public abstract class DefaultReporter<T extends Message> implements Reporter<T> 
 		}
 	}
 	
+	/**
+	 * @see Report#getTaskName()
+	 */
+	@Override
+	public String getTaskName() {
+		return taskName;
+	}
+
 	/**
 	 * @see Report#getErrors()
 	 */

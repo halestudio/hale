@@ -18,7 +18,9 @@ import java.io.InputStream;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.core.io.report.IOReport;
+import eu.esdihumboldt.hale.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.core.io.report.impl.DefaultIOReporter;
 import eu.esdihumboldt.hale.instance.io.impl.AbstractInstanceValidator;
 
@@ -31,13 +33,31 @@ import eu.esdihumboldt.hale.instance.io.impl.AbstractInstanceValidator;
 public class XmlInstanceValidator extends AbstractInstanceValidator {
 
 	/**
-	 * @see IOProvider#execute(ProgressIndicator)
+	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
 	 */
 	@Override
-	public IOReport execute(ProgressIndicator progress)
+	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Validating XML", true);
-		DefaultIOReporter result = new DefaultIOReporter(getSource(), false) {
+		Validator val = ValidatorFactory.getInstance().createValidator(getSchemas());
+		InputStream in = getSource().getInput();
+		try {
+			Report report = val.validate(in);
+			//TODO use the report information/replace old report definition
+			reporter.setSuccess(report.isValid());
+			return reporter;
+		} finally {
+			in.close();
+			progress.end();
+		}
+	}
+
+	/**
+	 * @see IOProvider#createReporter()
+	 */
+	@Override
+	public IOReporter createReporter() {
+		return new DefaultIOReporter(getSource(), "XML validation", false) {
 
 			@Override
 			protected String getFailSummary() {
@@ -50,17 +70,6 @@ public class XmlInstanceValidator extends AbstractInstanceValidator {
 			}
 			
 		};
-		Validator val = ValidatorFactory.getInstance().createValidator(getSchemas());
-		InputStream in = getSource().getInput();
-		try {
-			Report report = val.validate(in);
-			//TODO use the report information/replace old report definition
-			result.setSuccess(report.isValid());
-			return result;
-		} finally {
-			in.close();
-			progress.end();
-		}
 	}
 
 	/**

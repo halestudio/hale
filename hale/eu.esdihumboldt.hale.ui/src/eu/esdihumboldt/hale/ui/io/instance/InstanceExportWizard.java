@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.ui.io.instance;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 import org.eclipse.ui.PlatformUI;
@@ -20,9 +21,14 @@ import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.core.io.report.IOReport;
+import eu.esdihumboldt.hale.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.instance.io.InstanceValidatorFactory;
 import eu.esdihumboldt.hale.instance.io.InstanceWriter;
@@ -35,6 +41,7 @@ import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.ui.io.ExportSelectTargetPage;
 import eu.esdihumboldt.hale.ui.io.ExportWizard;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
+import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
 /**
  * Wizard for exporting instances
@@ -43,6 +50,8 @@ import eu.esdihumboldt.hale.ui.io.IOWizard;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceWriterFactory> {
+	
+	private static final ALogger log = ALoggerFactory.getLogger(InstanceExportWizard.class);
 	
 	private InstanceValidatorFactory validatorFactory;
 
@@ -82,19 +91,31 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceW
 			List<Schema> schemas = getProvider().getValidationSchemas();
 			validator.setSchemas(schemas.toArray(new Schema[schemas.size()]));
 			String fileName = getSelectTargetPage().getTargetFileName();
-			validator.setSource(new FileIOSupplier(new File(fileName)));
+			LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(new File(fileName));
+			validator.setSource(source );
 			
 			//XXX configuration pages for validator?
 			
-			try {
-				success = validateAndExecute(validator);
-			} catch (IOProviderConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			IOReporter defReport = validator.createReporter();
 			
-			if (success) {
-				//TODO evaluate validation result
+			// validate and execute provider
+			try {
+				IOReport report = validateAndExecute(validator, defReport);
+				// add report to report server
+				ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+				repService.addReport(report);
+				// show message to user
+				if (report.isSuccess()) {
+					// info message
+					log.userInfo(report.getSummary());
+				}
+				else {
+					// error message
+					log.userError(report.getSummary());
+				}
+			} catch (IOProviderConfigurationException e) {
+				log.userError("The validator could not be executed", e);
+				return false;
 			}
 		}
 		

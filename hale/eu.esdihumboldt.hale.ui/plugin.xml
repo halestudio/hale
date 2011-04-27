@@ -52,6 +52,12 @@
                priorityLevel="workbench">
          </variable>
       </sourceProvider>
+      <serviceFactory
+            factoryClass="eu.esdihumboldt.hale.ui.service.internal.HaleServiceFactory">
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.service.report.ReportService">
+         </service>
+      </serviceFactory>
    </extension>
 
 </plugin>

@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.core.io.impl;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +23,9 @@ import java.util.Map.Entry;
 import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.core.io.report.IOReport;
+import eu.esdihumboldt.hale.core.io.report.IOReporter;
 
 /**
  * Abstract base class for implementing {@link IOProvider}s 
@@ -60,6 +64,30 @@ public abstract class AbstractIOProvider implements IOProvider {
 		
 		addSupportedParameter(PARAM_CONTENT_TYPE);
 	}
+
+	/**
+	 * @see IOProvider#execute(ProgressIndicator)
+	 */
+	@Override
+	public IOReport execute(ProgressIndicator progress)
+			throws IOProviderConfigurationException, IOException {
+		return execute(progress, createReporter());
+	}
+
+	/**
+	 * Execute the I/O provider.
+	 * 
+	 * @param progress the progress indicator, may be <code>null</code>
+	 * @param reporter the reporter to use for the execution report
+	 * @return the execution report
+	 *  
+	 * @throws IOProviderConfigurationException if the I/O provider was not
+	 *   configured properly 
+	 * @throws IOException if an I/O operation fails
+	 */
+	protected abstract IOReport execute(ProgressIndicator progress,
+			IOReporter reporter) throws IOProviderConfigurationException,
+			IOException;
 
 	/**
 	 * @see IOProvider#validate()

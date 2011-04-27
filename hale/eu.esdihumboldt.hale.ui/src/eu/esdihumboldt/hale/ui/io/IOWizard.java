@@ -12,17 +12,17 @@
 
 package eu.esdihumboldt.hale.ui.io;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.PlatformUI;
 
 import com.google.common.base.Objects;
 
@@ -33,7 +33,11 @@ import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.core.io.report.IOReport;
+import eu.esdihumboldt.hale.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
+import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
 /**
  * Abstract I/O wizard based on {@link IOProvider} factories
@@ -144,6 +148,8 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	
 	/**
 	 * @see Wizard#performFinish()
+	 * 
+	 * @return <code>true</code> if executing the I/O provider was successful
 	 */
 	@Override
 	public boolean performFinish() {
@@ -162,9 +168,25 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 		// process wizard
 		updateConfiguration(provider);
 		
+		// create default report
+		IOReporter defReport = provider.createReporter();
+		
 		// validate and execute provider
 		try {
-			return validateAndExecute(provider);
+			IOReport report = validateAndExecute(provider, defReport);
+			// add report to report server
+			ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+			repService.addReport(report);
+			// show message to user
+			if (report.isSuccess()) {
+				// no message, we rely on the report being shown/processed
+				return true;
+			}
+			else {
+				// error message
+				log.userError(report.getSummary());
+				return false;
+			}
 		} catch (IOProviderConfigurationException e) {
 			//TODO user feedback? details of configuration error as wizard message? how?
 			log.error("Validation of the provider configuration failed", e);
@@ -176,15 +198,19 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	 * Validate and execute the given provider
 	 * 
 	 * @param provider the I/O provider
-	 * @return if validation and execution were successful
+	 * @param defaultReporter the default reporter that is used if the provider
+	 *   doesn't supply a report
+	 * @return the execution report
 	 * @throws IOProviderConfigurationException if the provider validation failed
 	 */
-	protected boolean validateAndExecute(final IOProvider provider) throws IOProviderConfigurationException {
+	protected IOReport validateAndExecute(final IOProvider provider,
+			final IOReporter defaultReporter) throws IOProviderConfigurationException {
 		// validate configuration
 		provider.validate();
 		
 		// execute provider
-		final AtomicBoolean success = new AtomicBoolean(false);
+		final AtomicReference<IOReport> report = new AtomicReference<IOReport>(defaultReporter);
+		defaultReporter.setSuccess(false);
 		try {
 			getContainer().run(true, provider.isCancelable(), new IRunnableWithProgress() {
 				
@@ -192,26 +218,23 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 				public void run(IProgressMonitor monitor) throws InvocationTargetException,
 						InterruptedException {
 					try {
-						provider.execute(new ProgressMonitorIndicator(monitor));
-						success.set(true);
-					} catch (IOProviderConfigurationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						IOReport result = provider.execute(new ProgressMonitorIndicator(monitor));
+						if (result != null) {
+							report.set(result);
+						}
+						else {
+							defaultReporter.setSuccess(true);
+						}
+					} catch (Throwable e) {
+						defaultReporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 					}
 				}
 			});
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Throwable e) {
+			defaultReporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 		}
 		
-		return success.get();
+		return report.get();
 	}
 
 	/**

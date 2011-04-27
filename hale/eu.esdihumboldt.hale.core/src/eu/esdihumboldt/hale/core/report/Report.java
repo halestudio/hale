@@ -26,6 +26,13 @@ import java.util.Date;
 public interface Report<T extends Message> {
 	
 	/**
+	 * Get the name of the task the report relates to
+	 * 
+	 * @return the task name
+	 */
+	public String getTaskName();
+	
+	/**
 	 * States if the report represents a successful task
 	 * 
 	 * @return if the task was successful
