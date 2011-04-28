@@ -27,10 +27,6 @@ public class ProgressMonitorIndicator implements ProgressIndicator {
 	
 	private final IProgressMonitor monitor;
 	
-	private int worked = 0;
-	
-	private static final int MAX_WORK = 1000;
-	
 	/**
 	 * Create a progress indicator based on an {@link IProgressMonitor}
 	 * 
@@ -41,11 +37,11 @@ public class ProgressMonitorIndicator implements ProgressIndicator {
 	}
 
 	/**
-	 * @see ProgressIndicator#begin(java.lang.String, boolean)
+	 * @see ProgressIndicator#begin(String, int)
 	 */
 	@Override
-	public void begin(String taskName, boolean undetermined) {
-		monitor.beginTask(taskName, (undetermined)?(IProgressMonitor.UNKNOWN):(MAX_WORK));
+	public void begin(String taskName, int totalWork) {
+		monitor.beginTask(taskName, (totalWork == ProgressIndicator.UNKNOWN)?(IProgressMonitor.UNKNOWN):(totalWork));
 	}
 
 	/**
@@ -73,13 +69,11 @@ public class ProgressMonitorIndicator implements ProgressIndicator {
 	}
 
 	/**
-	 * @see ProgressIndicator#setProgress(float)
+	 * @see ProgressIndicator#advance(int)
 	 */
 	@Override
-	public synchronized void setProgress(float percent) {
-		int hasWorked = (int) (percent * MAX_WORK / 100);
-		monitor.worked(hasWorked - worked);
-		worked = hasWorked;
+	public synchronized void advance(int workUnits) {
+		monitor.worked(workUnits);
 	}
 
 }

@@ -22,13 +22,18 @@ package eu.esdihumboldt.hale.core.io;
 public interface ProgressIndicator {
 	
 	/**
+	 * Unknown amount of work units
+	 */
+	public static final int UNKNOWN = 0;
+	
+	/**
 	 * Start the progress tracking
 	 * 
 	 * @param taskName the main task name
-	 * @param undetermined if the progress is undetermined (i.e. 
-	 *   {@link #setProgress(float)} will not be called)
+	 * @param totalWork the total work units for the progress indicator, 
+	 *   if unknown use {@link #UNKNOWN}
 	 */
-	public void begin(String taskName, boolean undetermined);
+	public void begin(String taskName, int totalWork);
 	
 	/**
 	 * Sets the current task name
@@ -38,11 +43,11 @@ public interface ProgressIndicator {
 	public void setCurrentTask(String taskName);
 	
 	/**
-	 * Set the current progress
+	 * Advances the progress by the given work units
 	 * 
-	 * @param percent the progress in percent [0..100]
+	 * @param workUnits the work units
 	 */
-	public void setProgress(float percent);
+	public void advance(int workUnits);
 	
 	/**
 	 * States if the execution was canceled

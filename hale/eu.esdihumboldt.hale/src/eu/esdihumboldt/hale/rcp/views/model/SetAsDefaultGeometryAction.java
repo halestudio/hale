@@ -100,7 +100,7 @@ public class SetAsDefaultGeometryAction extends Action {
 					schemaService.loadSchema(new URI(schemaLoc), (String)null, SchemaType.SOURCE, new ProgressIndicator() {
 						
 						@Override
-						public void begin(String taskName, boolean undetermined) {
+						public void begin(String taskName, int totalWork) {
 							// ignore
 						}
 
@@ -115,7 +115,7 @@ public class SetAsDefaultGeometryAction extends Action {
 						}
 
 						@Override
-						public void setProgress(float percent) {
+						public void advance(int workUnits) {
 							// do nothing
 						}
 						
@@ -188,7 +188,7 @@ public class SetAsDefaultGeometryAction extends Action {
 					schemaService.loadSchema(new URI(schemaLoc), (String)null, SchemaType.TARGET, new ProgressIndicator() {
 						
 						@Override
-						public void begin(String taskName, boolean undetermined) {
+						public void begin(String taskName, int totalWork) {
 							// ignore
 						}
 
@@ -203,7 +203,7 @@ public class SetAsDefaultGeometryAction extends Action {
 						}
 
 						@Override
-						public void setProgress(float percent) {
+						public void advance(int workUnits) {
 							// do nothing
 						}
 						

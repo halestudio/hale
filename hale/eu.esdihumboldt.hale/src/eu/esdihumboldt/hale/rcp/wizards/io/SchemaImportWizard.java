@@ -140,7 +140,7 @@ public class SchemaImportWizard
 							
 							@Override
 							public void begin(String taskName,
-									boolean undetermined) {
+									int totalWork) {
 								// ignore
 							}
 
@@ -155,7 +155,7 @@ public class SchemaImportWizard
 							}
 
 							@Override
-							public void setProgress(float percent) {
+							public void advance(int workUnits) {
 								// ignore
 							}
 							

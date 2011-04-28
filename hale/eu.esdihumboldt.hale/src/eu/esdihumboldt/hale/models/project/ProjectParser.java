@@ -187,7 +187,7 @@ public class ProjectParser {
 		ProgressIndicator progress = new ProgressIndicator() {
 			
 			@Override
-			public void begin(String taskName, boolean undetermined) {
+			public void begin(String taskName, int totalWork) {
 				// ignore
 			}
 
@@ -202,7 +202,7 @@ public class ProjectParser {
 			}
 
 			@Override
-			public void setProgress(float percent) {
+			public void advance(int workUnits) {
 				// ignore
 			}
 			

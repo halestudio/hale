@@ -270,7 +270,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	 */
 	public List<Schema> write(FeatureCollection<FeatureType, Feature> features, 
 			ProgressIndicator progress, IOReporter reporter) throws XMLStreamException {
-		progress.begin("Generating " + getContentType(), true); //TODO not undetermined
+		progress.begin("Generating " + getContentType(), features.size()); //TODO not undetermined
 		
 		// try to find FeatureCollection element
 		Iterator<SchemaElement> it = getTargetSchema().getAllElements().values().iterator();

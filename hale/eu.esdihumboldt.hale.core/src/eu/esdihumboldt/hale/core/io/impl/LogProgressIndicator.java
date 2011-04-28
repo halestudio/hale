@@ -31,7 +31,9 @@ public class LogProgressIndicator implements ProgressIndicator {
 	
 	private String currentTask = "Task"; //$NON-NLS-1$
 	
-	private float progress = -1;
+	private int totalWork = UNKNOWN;
+	
+	private int worked = 0;
 
 	private String mainTaskName;
 
@@ -44,16 +46,17 @@ public class LogProgressIndicator implements ProgressIndicator {
 	}
 
 	/**
-	 * @see ProgressIndicator#setProgress(float)
+	 * @see ProgressIndicator#advance(int)
 	 */
-	public void setProgress(float percent) {
-		this.progress = percent;
+	public void advance(int workUnits) {
+		this.worked += workUnits;
 		trigger();
 	}
 
 	private void trigger() {
-		if (progress >= 0) {
-			log.info(MessageFormat.format("{0} {1,number,percent}", currentTask, progress)); //$NON-NLS-1$
+		if (totalWork > 0 && totalWork != UNKNOWN) {
+			log.info(MessageFormat.format("{0} {1,number,percent}", currentTask, //$NON-NLS-1$ 
+					(float) worked / (float) totalWork)); 
 		}
 		else {
 			log.info(currentTask);
@@ -70,11 +73,13 @@ public class LogProgressIndicator implements ProgressIndicator {
 	}
 
 	/**
-	 * @see ProgressIndicator#begin(String, boolean)
+	 * @see ProgressIndicator#begin(String, int)
 	 */
 	@Override
-	public void begin(String taskName, boolean undetermined) {
+	public void begin(String taskName, int totalWork) {
 		this.mainTaskName = taskName;
+		this.totalWork = totalWork;
+		this.worked = 0;
 		if (mainTaskName != null) {
 			log.info(MessageFormat.format("Starting task {0}...", mainTaskName));
 		}
