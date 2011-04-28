@@ -28,10 +28,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
-import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.DefinitionPath;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryWriter;
-import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.PathElement;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
@@ -43,64 +40,15 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @version $Id$ 
  * @param <T> the geometry type
  */
-public abstract class AbstractGeometryWriter<T extends Geometry> implements GeometryWriter<T> {
+public abstract class AbstractGeometryWriter<T extends Geometry> 
+		extends AbstractTypeMatcher implements GeometryWriter<T> {
 	
-	/**
-	 * Represents a descent in the document, must be used to end elements 
-	 * started with 
-	 */
-	public static class Descent {
-		
-		private final XMLStreamWriter writer;
-		
-		private final DefinitionPath path;
-
-		/**
-		 * Constructor
-		 * 
-		 * @param writer the XMl stream writer
-		 * @param path the descent path
-		 */
-		private Descent(XMLStreamWriter writer, DefinitionPath path) {
-			super();
-			this.path = path;
-			this.writer = writer;
-		}
-
-		/**
-		 * @return the path
-		 */
-		public DefinitionPath getPath() {
-			return path;
-		}
-
-		/**
-		 * Close the descent
-		 * 
-		 * @throws XMLStreamException if an error occurs closing the elements
-		 */
-		public void close() throws XMLStreamException {
-			if (path.isEmpty()) {
-				return;
-			}
-			
-			for (int i = 0; i < path.getSteps().size(); i++) {
-				writer.writeEndElement();
-			}
-		}
-		
-	}
-
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractGeometryWriter.class);
 
 	private final Class<T> geometryType;
 	
 	private final Set<Name> compatibleTypes = new HashSet<Name>();
 	
-	private final Set<Pattern> basePatterns = new HashSet<Pattern>();
-	
-	private final Set<Pattern> verifyPatterns = new HashSet<Pattern>();
-
 	/**
 	 * The attribute type names supported for writing coordinates with
 	 * {@link #writeCoordinates(XMLStreamWriter, Coordinate[], TypeDefinition, String)} or
@@ -149,62 +97,6 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	}
 	
 	/**
-	 * Add a base pattern. When matching the path the pattern path is appended
-	 * to the base path.
-	 * 
-	 * @param pattern the pattern string
-	 * @see Pattern#parse(String)
-	 */
-	public void addBasePattern(String pattern) {
-		Pattern p = Pattern.parse(pattern);
-		if (p.isValid()) {
-			basePatterns.add(p);
-		}
-		else {
-			log.warn("Ignoring invalid pattern: " + pattern); //$NON-NLS-1$
-		}
-	}
-	
-	/**
-	 * Add a verification pattern. If a match for a base pattern is found the
-	 * verification patterns will be used to verify the structure. For a path to
-	 * be accepted, all verification patterns must match and the resulting
-	 * end-points of the verification patterns must be valid.
-	 * @see #verifyEndPoint(TypeDefinition)
-	 * 
-	 * @param pattern the pattern string
-	 * @see Pattern#parse(String)
-	 */
-	public void addVerificationPattern(String pattern) {
-		Pattern p = Pattern.parse(pattern);
-		if (p.isValid()) {
-			verifyPatterns.add(p);
-		}
-		else {
-			log.warn("Ignoring invalid pattern: " + pattern); //$NON-NLS-1$
-		}
-	}
-	
-	/**
-	 * Add a verification pattern. If a match for a base pattern is found the
-	 * verification patterns will be used to verify the structure. For a path to
-	 * be accepted, all verification patterns must match and the resulting
-	 * end-points of the verification patterns must be valid.
-	 * @see #verifyEndPoint(TypeDefinition)
-	 * 
-	 * @param pattern the pattern
-	 * @see Pattern#parse(String)
-	 */
-	public void addVerificationPattern(Pattern pattern) {
-		if (pattern.isValid()) {
-			verifyPatterns.add(pattern);
-		}
-		else {
-			log.warn("Ignoring invalid pattern: " + pattern); //$NON-NLS-1$
-		}
-	}
-	
-	/**
 	 * Verify the verification end point. After reaching the end-point of a
 	 * verification pattern this method is called with the {@link TypeDefinition}
 	 * of the end-point to assure the needed structure is present (e.g. a
@@ -218,6 +110,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 	 *  
 	 * @return if the end-point is valid for writing the geometry
 	 */
+	@Override
 	protected boolean verifyEndPoint(TypeDefinition endPoint) {
 		for (AttributeDefinition attribute : endPoint.getAttributes()) {
 			if (SUPPORTED_COORDINATES_TYPES.contains(attribute.getTypeName().getLocalPart())) {
@@ -229,53 +122,6 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 		return false;
 	}
 
-	/**
-	 * @see GeometryWriter#match(TypeDefinition, DefinitionPath, String)
-	 */
-	@Override
-	public DefinitionPath match(TypeDefinition type, DefinitionPath basePath,
-			String gmlNs) {
-		// try to match each base pattern
-		for (Pattern pattern : basePatterns) {
-			DefinitionPath path = pattern.match(type, basePath, gmlNs);
-			if (path != null) {
-				// verification patterns
-				if (verifyPatterns != null && !verifyPatterns.isEmpty()) {
-					for (Pattern verPattern : verifyPatterns) {
-						DefinitionPath endPoint = verPattern.match(path.getLastType(), new DefinitionPath(path), gmlNs);
-						if (endPoint != null) {
-							// verify end-point
-							boolean ok = verifyEndPoint(endPoint.getLastType());
-							if (!ok) {
-								// all end-points must be valid
-								return null;
-							}
-						}
-						else {
-							// all verification patterns must match
-							return null;
-						}
-					}
-				}
-				else {
-					// no verify patterns -> check base pattern end-point
-					boolean ok = verifyEndPoint(path.getLastType());
-					if (!ok) {
-						return null;
-					}
-				}
-				
-				/*
-				 * now either all verification patterns matched and the 
-				 * end-points were valid, or no verification patterns were
-				 * specified and the base pattern end-point was valid
-				 */
-				return path;
-			}
-		}
-		
-		return null;
-	}
 	
 	/**
 	 * Write coordinates into a posList or coordinates property
@@ -298,40 +144,6 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 		writeCoordinates(writer, coordinates, descent.getPath().getLastType(), gmlNs);
 		
 		descent.close();
-	}
-	
-	/**
-	 * Descend the given pattern
-	 * 
-	 * @param writer the XML stream writer 
-	 * @param descendPattern the pattern to descend
-	 * @param elementType the type of the encompassing element
-	 * @param elementName the encompassing element name
-	 * @param gmlNs the GML namespace
-	 * @return the descent that was opened, it must be closed to close the
-	 *   opened elements
-	 * @throws XMLStreamException if an error occurs writing the coordinates
-	 */
-	protected static Descent descend(XMLStreamWriter writer, 
-			Pattern descendPattern, TypeDefinition elementType, Name elementName, 
-			String gmlNs) throws XMLStreamException {
-		DefinitionPath path = descendPattern.match(elementType, 
-				new DefinitionPath(elementType, elementName), gmlNs);
-		
-		if (path.isEmpty()) {
-			return new Descent(writer, path);
-		}
-		
-		Name name = path.getLastName(); //XXX the element name used may be wrong, is this an issue?
-		for (PathElement step : path.getSteps()) {
-			// start elements
-			name = step.getName();
-			writer.writeStartElement(name.getNamespaceURI(), name.getLocalPart());
-			// write eventual required ID
-			GmlWriterUtil.writeRequiredID(writer, step.getType(), null, false);
-		}
-		
-		return new Descent(writer, path); 
 	}
 	
 	/**
