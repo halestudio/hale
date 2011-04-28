@@ -28,7 +28,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
+import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.DefinitionPath;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.PathElement;
@@ -328,7 +328,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> implements Geom
 			name = step.getName();
 			writer.writeStartElement(name.getNamespaceURI(), name.getLocalPart());
 			// write eventual required ID
-			StreamGmlWriter.writeRequiredID(writer, step.getType(), null, false);
+			GmlWriterUtil.writeRequiredID(writer, step.getType(), null, false);
 		}
 		
 		return new Descent(writer, path); 

@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.Map.Entry;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -163,7 +162,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 			}
 		}
 		
-		addNamespace(tmpWriter, SCHEMA_INSTANCE_NS, "xsi"); //$NON-NLS-1$
+		GmlWriterUtil.addNamespace(tmpWriter, SCHEMA_INSTANCE_NS, "xsi"); //$NON-NLS-1$
 		
 		if (defNamespace == null) {
 			defNamespace = getTargetSchema().getNamespace();
@@ -231,36 +230,6 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	}
 
 	/**
-	 * Add a namespace to the given XML stream writer
-	 * 
-	 * @param writer the XML stream writer
-	 * @param namespace the namespace to add
-	 * @param preferredPrefix the preferred prefix
-	 * @throws XMLStreamException if setting a prefix for the namespace fails
-	 */
-	private static void addNamespace(XMLStreamWriter writer,
-			String namespace, String preferredPrefix) throws XMLStreamException {
-		if (writer.getPrefix(namespace) == null) {
-			// no prefix for schema instance namespace
-			
-			String prefix = preferredPrefix;
-			String ns = writer.getNamespaceContext().getNamespaceURI(prefix);
-			if (ns == null) {
-				// add xsi namespace
-				writer.setPrefix(prefix, namespace);
-			}
-			else {
-				int i = 0;
-				while (ns != null) {
-					ns = writer.getNamespaceContext().getNamespaceURI(prefix + "-" + (++i)); //$NON-NLS-1$
-				}
-				
-				writer.setPrefix(prefix + "-" + i, namespace); //$NON-NLS-1$
-			}
-		}
-	}
-
-	/**
 	 * Write the given instances
 	 * 
 	 * @param features the feature collection
@@ -296,7 +265,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 				// add as additional schema
 				additionalSchemas.add(wfsSchema);
 				// add namespace
-				addNamespace(writer, wfsSchema.getNamespace(), "wfs"); //$NON-NLS-1$
+				GmlWriterUtil.addNamespace(writer, wfsSchema.getNamespace(), "wfs"); //$NON-NLS-1$
 				for (SchemaElement el : wfsSchema.getElements().values()) {
 					if (isFeatureCollection(el)) {
 						fcElements.add(el);
@@ -330,7 +299,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		
 		if (fcDefinition != null) {
 			// generate mandatory id attribute
-			writeRequiredID(writer, fcDefinition, null, false);
+			GmlWriterUtil.writeRequiredID(writer, fcDefinition, null, false);
 		}
 		
 		StringBuffer locations = new StringBuffer();
@@ -397,75 +366,6 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	}
 
 	/**
-	 * Write any required ID attribute, generating a random ID if needed
-	 * 
-	 * @param writer the XML stream writer
-	 * @param type the type definition
-	 * @param parent the parent object, may be <code>null</code>. If it is set
-	 *   the value for the ID will be tried to be retrieved from the parent
-	 *   object, otherwise a random ID will be generated
-	 * @param onlyIfNotSet if the ID shall only be written if no value is set
-	 *   in the parent object
-	 * @throws XMLStreamException if an error occurs writing the ID
-	 */
-	public static void writeRequiredID(XMLStreamWriter writer,
-			TypeDefinition type, ComplexAttribute parent, boolean onlyIfNotSet) throws XMLStreamException {
-		// find ID attribute
-		AttributeDefinition idAtt = null;
-		for (AttributeDefinition att : type.getAttributes()) {
-			if (att.isAttribute() && att.getMinOccurs() > 0 && isID(att.getAttributeType())) {
-				idAtt = att;
-				break; // we assume there is only one ID attribute
-			}
-		}
-		
-		if (idAtt == null) {
-			// no ID attribute found
-			return;
-		}
-		
-		Object value = null;
-		if (parent != null) {
-			Property prop = FeatureInspector.getProperty(parent, Arrays.asList(idAtt.getName()), false);
-			if (prop != null) {
-				value = prop.getValue();
-			}
-			
-			if (value != null && onlyIfNotSet) {
-				// don't write the ID
-				return;
-			}
-		}
-		
-		if (value != null) {
-			writeAttribute(writer, value, idAtt);
-		}
-		else {
-			UUID genID = UUID.randomUUID();
-			writeAttribute(writer, "_" + genID.toString(), idAtt); //$NON-NLS-1$
-		}
-	}
-
-	/**
-	 * Determines if the given type represents a XML ID
-	 * 
-	 * @param type the type definition
-	 * @return if the type represents an ID
-	 */
-	private static boolean isID(TypeDefinition type) {
-		if (type.getName().equals(new NameImpl("http://www.w3.org/2001/XMLSchema", "ID"))) { //$NON-NLS-1$ //$NON-NLS-2$
-			return true;
-		}
-		
-		if (type.getSuperType() != null) {
-			return isID(type.getSuperType());
-		}
-		else {
-			return false;
-		}
-	}
-
-	/**
 	 * Write a given feature
 	 * 
 	 * @param feature the feature to write
@@ -515,7 +415,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	 */
 	private void writeProperties(ComplexAttribute feature, TypeDefinition type, boolean allowElements) throws XMLStreamException {
 		// eventually generate mandatory ID that is not set
-		writeRequiredID(writer, type, feature, true);
+		GmlWriterUtil.writeRequiredID(writer, type, feature, true);
 		
 		// writing the feature is controlled by the type definition
 		Collection<AttributeDefinition> attributes = type.getAttributes();
@@ -661,47 +561,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	 */
 	private void writeAttribute(Object value, 
 			AttributeDefinition attDef) throws XMLStreamException {
-		writeAttribute(writer, value, attDef);
-	}
-
-	/**
-	 * Write a property attribute
-	 * 
-	 * @param writer the XML stream writer 
-	 * @param value the attribute value, may be <code>null</code>
-	 * @param attDef the attribute definition
-	 * @throws XMLStreamException if writing the attribute fails 
-	 */
-	public static void writeAttribute(XMLStreamWriter writer, Object value, 
-			AttributeDefinition attDef) throws XMLStreamException {
-		if (value == null) {
-			if (attDef.getMinOccurs() > 0) {
-				if (!attDef.isNillable()) {
-					log.warn("Non-nillable attribute " + attDef.getName() + " is null"); //$NON-NLS-1$ //$NON-NLS-2$
-				}
-				else {
-					//XXX write null attribute?!
-					writeAtt(writer, null, attDef);
-				}
-			}
-		}
-		else {
-			writeAtt(writer, SimpleTypeUtil.convert(value, attDef.getAttributeType()), attDef);
-		}
-	}
-
-	private static void writeAtt(XMLStreamWriter writer, String value, 
-			AttributeDefinition attDef) throws XMLStreamException {
-		String ns = attDef.getNamespace();
-		if (ns != null && !ns.isEmpty()) {
-			writer.writeAttribute(attDef.getNamespace(), attDef.getName(), 
-					(value != null)?(value):(null));
-		}
-		else {
-			// no namespace
-			writer.writeAttribute(attDef.getName(), 
-					(value != null)?(value):(null));
-		}
+		GmlWriterUtil.writeAttribute(writer, value, attDef);
 	}
 
 }

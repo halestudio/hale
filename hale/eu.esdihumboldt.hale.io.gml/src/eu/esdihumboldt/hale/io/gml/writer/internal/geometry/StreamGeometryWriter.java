@@ -32,7 +32,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
+import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryConverterRegistry.ConversionLadder;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.CurveWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.LegacyMultiPolygonWriter;
@@ -271,7 +271,7 @@ public class StreamGeometryWriter {
 				name = step.getName();
 				writer.writeStartElement(name.getNamespaceURI(), name.getLocalPart());
 				// write eventual required ID
-				StreamGmlWriter.writeRequiredID(writer, step.getType(), null, false);
+				GmlWriterUtil.writeRequiredID(writer, step.getType(), null, false);
 				// write eventual srsName
 				writeSrsName(writer, step.getType(), geometry, srsName);
 			}
@@ -312,7 +312,7 @@ public class StreamGeometryWriter {
 			}
 			
 			if (srsAtt != null) {
-				StreamGmlWriter.writeAttribute(writer, srsName, srsAtt);
+				GmlWriterUtil.writeAttribute(writer, srsName, srsAtt);
 			}
 		}
 	}
