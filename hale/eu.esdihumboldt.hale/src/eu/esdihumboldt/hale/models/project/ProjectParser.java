@@ -37,6 +37,7 @@ import eu.esdihumboldt.goml.align.Formalism;
 import eu.esdihumboldt.goml.align.Schema;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.Messages;
+import eu.esdihumboldt.hale.cache.Request;
 import eu.esdihumboldt.hale.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.models.AlignmentService;
@@ -171,6 +172,9 @@ public class ProjectParser {
 		// Finally, initialize other ProjectService values.
 		projectService.setProjectCreatedDate(project.getDateCreated());
 		
+		// 
+		Request.getInstance().flush();
+		
 		return errors;
 	}
 	
@@ -180,35 +184,35 @@ public class ProjectParser {
 					SchemaService.class);
 		
 		monitor.subTask(Messages.ProjectParser_6); //$NON-NLS-1$
-		try {
-			ProgressIndicator progress = new ProgressIndicator() {
-				
-				@Override
-				public void begin(String taskName, boolean undetermined) {
-					// ignore
-				}
-
-				@Override
-				public void end() {
-					// ignore
-				}
-
-				@Override
-				public boolean isCanceled() {
-					return false;
-				}
-
-				@Override
-				public void setProgress(float percent) {
-					// ignore
-				}
-				
-				@Override
-				public void setCurrentTask(String taskName) {
-					monitor.subTask(taskName);
-				}
-			};
+		ProgressIndicator progress = new ProgressIndicator() {
 			
+			@Override
+			public void begin(String taskName, boolean undetermined) {
+				// ignore
+			}
+
+			@Override
+			public void end() {
+				// ignore
+			}
+
+			@Override
+			public boolean isCanceled() {
+				return false;
+			}
+
+			@Override
+			public void setProgress(float percent) {
+				// ignore
+			}
+			
+			@Override
+			public void setCurrentTask(String taskName) {
+				monitor.subTask(taskName);
+			}
+		};
+		
+		try {
 			if (project.getSourceSchema() != null 
 					&& project.getSourceSchema().getPath() != null) {
 				URI sourceSchemaPath = getLocation(project.getSourceSchema().getPath(), basePath); 
@@ -218,6 +222,11 @@ public class ProjectParser {
 						SchemaType.SOURCE, progress);
 				projectService.setSourceSchemaPath(sourceSchemaPath.toString());
 			}
+		} catch (Exception e) {
+			// fail
+			throw new RuntimeException("Schema could not be loaded: ", e); //$NON-NLS-1$
+		}
+		try{
 			if (project.getTargetSchema() != null 
 					&& project.getTargetSchema().getPath() != null) {
 				URI targetSchemaPath = getLocation(project.getTargetSchema().getPath(), basePath);

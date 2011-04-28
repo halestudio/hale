@@ -46,6 +46,8 @@ import org.apache.ws.commons.schema.resolver.CollectionURIResolver;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.xml.sax.InputSource;
 
+import eu.esdihumboldt.hale.cache.Request;
+
 
 /**
  * This resolver provides the means of resolving the imports and includes of a
@@ -63,6 +65,7 @@ public class HumboldtURIResolver
      */
     public InputSource resolveEntity(String namespace, String schemaLocation,
 			String baseUri) {
+//    	System.err.println(">>> "+namespace); // this part is called everytime a entity is resolved
 
 		if (baseUri != null) {
 			try {
@@ -80,15 +83,36 @@ public class HumboldtURIResolver
 					}
 				}
 
-				String ref = new URI(baseUri).resolve(new URI(schemaLocation))
-						.toString();
+				String ref = new URI(baseUri).resolve(new URI(schemaLocation)).toString();
+				
+				
+				
+				try {
+					InputSource iS = new InputSource(Request.getInstance().get(ref));
+					iS.setSystemId(ref);
+					return iS;
+				} catch (Exception e) {
+					return new InputSource(ref);
+				}
+				
 
-				return new InputSource(ref);
+//				return new InputSource(ref);
 			} catch (URISyntaxException e1) {
 				throw new RuntimeException(e1);
 			}
 		}
-		return new InputSource(schemaLocation);
+		
+		
+		try {
+			return new InputSource(Request.getInstance().get(schemaLocation));
+		} catch (Exception e) {
+			return new InputSource(schemaLocation);
+		}
+		
+//		return null;
+		
+		
+//		return new InputSource(schemaLocation);
 	}
 
     /**

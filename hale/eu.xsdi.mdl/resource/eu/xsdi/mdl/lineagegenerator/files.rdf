@@ -1,0 +1,54 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:prvFiles="http://purl.org/net/provenance/files#"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:prv="http://purl.org/net/provenance/ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+  <owl:Ontology rdf:about="http://purl.org/net/provenance/files#">
+    <owl:imports rdf:resource="http://purl.org/net/provenance/ns#"/>
+    <dcterms:title xml:lang="en">Provenance Vocabulary file module namespace</dcterms:title>
+    <dcterms:description xml:lang="en">Extends the Provenance Vocabulary by defining classes and properties to describe files and file based data creations.</dcterms:description>
+    <dcterms:creator rdf:resource="http://olafhartig.de/foaf.rdf#olaf"/>
+    <dcterms:creator rdf:resource="http://users.ox.ac.uk/~zool0770/foaf.rdf#me"/>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2010-07-09T12:00:00Z</dcterms:created>
+  </owl:Ontology>
+  <owl:ObjectProperty rdf:about="http://purl.org/net/provenance/files#usedGuidelineFile">
+    <rdfs:label xml:lang="en">guided by</rdfs:label>
+    <rdfs:comment xml:lang="en">This property refers to a file encoding a creation guideline which guided the execution of a data creation. Notice, all files encoding creation guidelines have provenance; we strongly encourage to describe this provenance as well, at least as far as available information permits.</rdfs:comment>
+    <rdfs:domain rdf:resource="http://purl.org/net/provenance/ns#DataCreation"/>
+    <rdfs:range rdf:resource="http://purl.org/net/provenance/ns#File"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/files#"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/net/provenance/files#usedDataFile">
+    <rdfs:subPropertyOf rdf:resource="http://purl.org/net/provenance/ns#employedArtifact"/>
+    <rdfs:label xml:lang="en">used</rdfs:label>
+    <rdfs:comment xml:lang="en">This property refers to a file serializing the source data item that has been used during the creation of a data item. Notice, all files that serialize source data have provenance; we strongly encourage to describe this provenance as well, at least as far as available information permits.</rdfs:comment>
+    <rdfs:domain rdf:resource="http://purl.org/net/provenance/ns#DataCreation"/>
+    <rdfs:range rdf:resource="http://purl.org/net/provenance/ns#File"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/net/provenance/files#"/>
+  </owl:ObjectProperty>
+  <rdf:Description rdf:about="http://purl.org/net/provenance/ns#usedGuideline">
+    <owl:propertyChainAxiom rdf:parseType="Collection">
+      <owl:ObjectProperty rdf:about="http://purl.org/net/provenance/files#usedGuidelineFile"/>
+      <owl:ObjectProperty>
+        <owl:inverseOf rdf:resource="http://purl.org/net/provenance/ns#serializedBy"/>
+      </owl:ObjectProperty>
+    </owl:propertyChainAxiom>
+  </rdf:Description>
+  <foaf:Document rdf:about="http://purl.org/net/provenance/files">
+    <rdfs:label xml:lang="en">Document that defines the files module of the Provenance  Vocabulary</rdfs:label>
+    <foaf:primaryTopic rdf:resource="http://purl.org/net/provenance/files#"/>
+  </foaf:Document>
+  <rdf:Description rdf:about="http://purl.org/net/provenance/ns#usedData">
+    <owl:propertyChainAxiom rdf:parseType="Collection">
+      <owl:ObjectProperty rdf:about="http://purl.org/net/provenance/files#usedDataFile"/>
+      <owl:ObjectProperty>
+        <owl:inverseOf rdf:resource="http://purl.org/net/provenance/ns#serializedBy"/>
+      </owl:ObjectProperty>
+    </owl:propertyChainAxiom>
+  </rdf:Description>
+</rdf:RDF>

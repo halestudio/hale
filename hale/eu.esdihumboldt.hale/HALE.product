@@ -77,15 +77,16 @@
       <plugin id="eu.esdihumboldt.commons"/>
       <plugin id="eu.esdihumboldt.cst.corefunctions"/>
       <plugin id="eu.esdihumboldt.hale"/>
+      <plugin id="eu.esdihumboldt.hale.cache"/>
       <plugin id="eu.esdihumboldt.hale.core"/>
       <plugin id="eu.esdihumboldt.hale.csvexporter"/>
       <plugin id="eu.esdihumboldt.hale.gmlparser"/>
-      <plugin id="eu.esdihumboldt.hale.gmlvalidate"/>
-      <plugin id="eu.esdihumboldt.hale.gmlwriter"/>
-      <plugin id="eu.esdihumboldt.hale.gmlwriter.test"/>
       <plugin id="eu.esdihumboldt.hale.htmlexporter"/>
       <plugin id="eu.esdihumboldt.hale.instance"/>
       <plugin id="eu.esdihumboldt.hale.instanceprovider"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.xml"/>
       <plugin id="eu.esdihumboldt.hale.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
@@ -100,6 +101,7 @@
       <plugin id="jcl.over.slf4j"/>
       <plugin id="jul.to.slf4j"/>
       <plugin id="log4j.over.slf4j"/>
+      <plugin id="net.sf.ehcache"/>
       <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.convert"/>
       <plugin id="org.apache.commons.httpclient"/>
@@ -172,8 +174,8 @@
    <configurations>
       <plugin id="de.cs3d.ui.util.logging.errorlog" autoStart="true" startLevel="2" />
       <plugin id="de.cs3d.util.logging.logback" autoStart="true" startLevel="1" />
-      <plugin id="eu.esdihumboldt.hale.gmlvalidate" autoStart="true" startLevel="0" />
-      <plugin id="eu.esdihumboldt.hale.gmlwriter" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.xml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.transformer.cst" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
    </configurations>

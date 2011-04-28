@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" immediate="false" name="XmlValidator">
-	<implementation class="eu.esdihumboldt.hale.gmlvalidate.XmlInstanceValidatorFactory"/>
+	<implementation class="eu.esdihumboldt.hale.io.xml.validator.XmlInstanceValidatorFactory"/>
  <service>
     <provide interface="eu.esdihumboldt.hale.instance.io.InstanceValidatorFactory"/>
  </service>

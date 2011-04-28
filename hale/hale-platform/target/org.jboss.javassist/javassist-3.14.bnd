@@ -1,0 +1,8 @@
+-classpath: lib/javassist-3.14.jar
+-output: javassist-3.14.jar
+Export-Package: *;-noimport:=true
+Import-Package: !com.sun.*, *
+Bundle-Version: 3.14.0
+Bundle-Name: Javassist
+Bundle-SymbolicName: com.springsource.javassist
+Eclipse-BuddyPolicy: registered

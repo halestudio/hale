@@ -18,6 +18,8 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import eu.esdihumboldt.hale.cache.Request;
+
 /**
  * TODO Explain the purpose of this type here.
  * 
@@ -31,6 +33,7 @@ public class ExitHandler
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+		Request.getInstance().shutdown();
 		HandlerUtil.getActiveWorkbenchWindow(event).close();
 		return null;
 	}
