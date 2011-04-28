@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.rcp.views.report.service;
 
 import java.util.ArrayList;
 
-import eu.esdihumboldt.hale.gmlvalidate.Report;
+import eu.esdihumboldt.hale.io.xml.validator.Report;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.UpdateService;

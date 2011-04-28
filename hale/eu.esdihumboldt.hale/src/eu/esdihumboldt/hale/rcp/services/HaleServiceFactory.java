@@ -15,8 +15,8 @@ import org.apache.log4j.Logger;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
-import eu.esdihumboldt.hale.gmlwriter.GmlWriter;
-import eu.esdihumboldt.hale.gmlwriter.impl.DefaultGmlWriter;
+import eu.esdihumboldt.hale.io.gml.writer.GmlWriter;
+import eu.esdihumboldt.hale.io.gml.writer.impl.DefaultGmlWriter;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.ConfigSchemaService;
 import eu.esdihumboldt.hale.models.InstanceService;

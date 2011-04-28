@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.rcp.views.report.service;
 
-import eu.esdihumboldt.hale.gmlvalidate.Report;
+import eu.esdihumboldt.hale.io.xml.validator.Report;
 import eu.esdihumboldt.hale.models.UpdateService;
 import eu.esdihumboldt.hale.rcp.views.report.ReportModel;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
