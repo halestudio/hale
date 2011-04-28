@@ -23,11 +23,12 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @since 2.2
  */
 public class GmlInstanceWriterFactory extends AbstractIOProviderFactory<InstanceWriter>
 		implements InstanceWriterFactory {
 
-	private static final String PROVIDER_ID = "eu.esdihumboldt.hale.gmlwriter";
+	private static final String PROVIDER_ID = "eu.esdihumboldt.hale.io.gml.writer";
 
 	/**
 	 * Default constructor
