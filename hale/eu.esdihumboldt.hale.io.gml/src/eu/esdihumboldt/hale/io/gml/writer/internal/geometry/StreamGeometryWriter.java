@@ -195,9 +195,13 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	}
 
 	/**
-	 * @see AbstractTypeMatcher#findCandidates(AttributeDefinition, Object)
+	 * Find candidates for a possible path to use for writing the geometry
+	 * 
+	 * @param property the start property 
+	 * @param geomType the geometry type
+	 * 
+	 * @return the path candidates
 	 */
-	@Override
 	public List<DefinitionPath> findCandidates(AttributeDefinition property,
 			Class<? extends Geometry> geomType) {
 		Set<GeometryWriter<?>> writers = geometryWriters.get(geomType);
@@ -206,7 +210,8 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 			return new ArrayList<DefinitionPath>();
 		}
 		
-		return super.findCandidates(property, geomType);
+		return super.findCandidates(property.getAttributeType(),
+				new NameImpl(property.getNamespace(), property.getName()), geomType);
 	}
 
 	/**
@@ -325,7 +330,6 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 * 
 	 * @return the (eventually updated) definition path if a match is found,
 	 * otherwise <code>null</code>
-
 	 */
 	@Override
 	protected DefinitionPath matchPath(TypeDefinition type, 

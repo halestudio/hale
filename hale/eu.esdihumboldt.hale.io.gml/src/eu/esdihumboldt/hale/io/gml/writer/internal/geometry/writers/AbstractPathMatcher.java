@@ -22,9 +22,8 @@ import org.opengis.feature.type.Name;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.DefinitionPath;
-import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.PathElement;
+import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.Descent;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -36,52 +35,6 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 public abstract class AbstractPathMatcher {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractPathMatcher.class);
-	
-	/**
-	 * Represents a descent in the document, must be used to end elements 
-	 * started with 
-	 */
-	public static class Descent {
-		
-		private final XMLStreamWriter writer;
-		
-		private final DefinitionPath path;
-
-		/**
-		 * Constructor
-		 * 
-		 * @param writer the XMl stream writer
-		 * @param path the descent path
-		 */
-		private Descent(XMLStreamWriter writer, DefinitionPath path) {
-			super();
-			this.path = path;
-			this.writer = writer;
-		}
-
-		/**
-		 * @return the path
-		 */
-		public DefinitionPath getPath() {
-			return path;
-		}
-
-		/**
-		 * Close the descent
-		 * 
-		 * @throws XMLStreamException if an error occurs closing the elements
-		 */
-		public void close() throws XMLStreamException {
-			if (path.isEmpty()) {
-				return;
-			}
-			
-			for (int i = 0; i < path.getSteps().size(); i++) {
-				writer.writeEndElement();
-			}
-		}
-		
-	}
 	
 	private final Set<Pattern> basePatterns = new HashSet<Pattern>();
 	
@@ -203,31 +156,18 @@ public abstract class AbstractPathMatcher {
 	 * @param descendPattern the pattern to descend
 	 * @param elementType the type of the encompassing element
 	 * @param elementName the encompassing element name
-	 * @param gmlNs the GML namespace
+	 * @param defaultNs the pattern default namespace
 	 * @return the descent that was opened, it must be closed to close the
 	 *   opened elements
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
-	protected static Descent descend(XMLStreamWriter writer, 
+	public static Descent descend(XMLStreamWriter writer, 
 			Pattern descendPattern, TypeDefinition elementType, Name elementName, 
-			String gmlNs) throws XMLStreamException {
+			String defaultNs) throws XMLStreamException {
 		DefinitionPath path = descendPattern.match(elementType, 
-				new DefinitionPath(elementType, elementName), gmlNs);
+				new DefinitionPath(elementType, elementName), defaultNs);
 		
-		if (path.isEmpty()) {
-			return new Descent(writer, path);
-		}
-		
-		Name name = path.getLastName(); //XXX the element name used may be wrong, is this an issue?
-		for (PathElement step : path.getSteps()) {
-			// start elements
-			name = step.getName();
-			writer.writeStartElement(name.getNamespaceURI(), name.getLocalPart());
-			// write eventual required ID
-			GmlWriterUtil.writeRequiredID(writer, step.getType(), null, false);
-		}
-		
-		return new Descent(writer, path); 
+		return Descent.descend(writer, path, true);
 	}
 	
 	/**

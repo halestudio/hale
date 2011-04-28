@@ -44,7 +44,7 @@ public class GmlInstanceWriterFactory extends AbstractIOProviderFactory<Instance
 	 */
 	@Override
 	public InstanceWriter createProvider() {
-		return new StreamGmlWriter();
+		return new StreamGmlWriter(true);
 	}
 
 	/**

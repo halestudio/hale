@@ -591,6 +591,9 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	}
 
 	/**
+	 * Two type definitions are equal if their name is equal (namespace and 
+	 * local part)
+	 * 
 	 * @see Object#equals(Object)
 	 */
 	@Override

@@ -19,7 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import org.geotools.feature.NameImpl;
+import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
@@ -82,19 +82,19 @@ public abstract class AbstractTypeMatcher<T> {
 	}
 	
 	/**
-	 * Find candidates for a possible path to use for writing the geometry
+	 * Find candidates for a possible path
 	 * 
-	 * @param property the start property
+	 * @param elementType the start element type
+	 * @param elementName the start element name
 	 * @param matchParam the match parameter
 	 * 
 	 * @return the path candidates
 	 */
-	public List<DefinitionPath> findCandidates(AttributeDefinition property,
-			T matchParam) {
+	public List<DefinitionPath> findCandidates(TypeDefinition elementType, 
+			Name elementName, T matchParam) {
 		Queue<PathCandidate> candidates = new LinkedList<PathCandidate>();
-		PathCandidate base = new PathCandidate(property.getAttributeType(), 
-				new DefinitionPath(property.getAttributeType(), 
-				new NameImpl(property.getNamespace(), property.getName())),
+		PathCandidate base = new PathCandidate(elementType, 
+				new DefinitionPath(elementType, elementName),
 				new HashSet<TypeDefinition>());
 		candidates.add(base);
 		
