@@ -13,8 +13,10 @@
 package eu.esdihumboldt.hale.ui.io;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -25,6 +27,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.PlatformUI;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Multimap;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -36,6 +39,8 @@ import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.core.io.report.IOReport;
 import eu.esdihumboldt.hale.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
+import eu.esdihumboldt.hale.ui.io.config.ConfigurationPageExtension;
 import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
@@ -61,6 +66,10 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	
 	private ContentType contentType;
 
+	private final Multimap<String, AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>> configPages;
+	
+	private final List<IWizardPage> mainPages = new ArrayList<IWizardPage>();
+
 	/**
 	 * Create an I/O wizard
 	 * 
@@ -70,9 +79,179 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 		super();
 		this.factoryClass = factoryClass;
 		
+		// create possible configuration pages
+		configPages = ConfigurationPageExtension.getConfigurationPages(getFactories());
+		
 		setNeedsProgressMonitor(true);
 	}
+
+	/**
+	 * @see Wizard#addPages()
+	 */
+	@Override
+	public void addPages() {
+		super.addPages();
+		
+		// add configuration pages
+		for (AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>> page : configPages.values()) {
+			addPage(page);
+		}
+	}
+
+	/**
+	 * @see Wizard#addPage(IWizardPage)
+	 */
+	@Override
+	public void addPage(IWizardPage page) {
+		// collect main pages
+		if (!configPages.containsValue(page)) {
+			mainPages.add(page);
+		}
+		
+		super.addPage(page);
+	}
 	
+	/**
+	 * Get the list of configuration pages for the currently selected provider
+	 * factory <code>null</code> if there are none.
+	 * 
+	 * @return the configuration pages for the current provider
+	 */
+	protected List<AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>> getConfigurationPages() {
+		if (factory == null) {
+			return null;
+		}
+
+		// get the provider id
+		String id = factory.getIdentifier();
+		
+		List<AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>> result = 
+			new ArrayList<AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>>(
+					configPages.get(id));
+		
+		return (result.size() > 0 ? result : null);
+	}
+
+	/**
+	 * @see Wizard#canFinish()
+	 */
+	@Override
+	public boolean canFinish() {
+		// check if main pages are complete
+		for (int i = 0; i < mainPages.size(); i++) {
+            if (!(mainPages.get(i)).isPageComplete()) {
+				return false;
+			}
+        }
+		
+		// check if configuration pages are complete
+		List<AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>> confPages = getConfigurationPages();
+		if (confPages != null) {
+			for (int i = 0; i < confPages.size(); i++) {
+	            if (!(confPages.get(i)).isPageComplete()) {
+					return false;
+				}
+	        }
+		}
+		
+        return true;
+	}
+
+	/**
+	 * @see Wizard#getNextPage(IWizardPage)
+	 */
+	@Override
+	public IWizardPage getNextPage(IWizardPage page) {
+		// get main index
+		int mainIndex = mainPages.indexOf(page);
+		
+		if (mainIndex >= 0) {
+			// current page is one of the main pages
+			if (mainIndex < mainPages.size() - 1) {
+				// next main page
+				return mainPages.get(mainIndex + 1); 
+			}
+			else {
+				// first configuration page
+				List<AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>> confPages = getConfigurationPages();
+				if (confPages != null && confPages.size() > 0) {
+					return confPages.get(0);
+				}
+			}
+		}
+		else {
+			// current page is a configuration page
+			List<AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>> confPages = getConfigurationPages();
+			// return the next configuration page
+			if (confPages != null) {
+				for (int i = 0; i < confPages.size() - 1; ++i) {
+					if (confPages.get(i) == page) {
+						return confPages.get(i + 1);
+					}
+				}
+			}
+		}
+		
+		return null;
+	}
+
+	/**
+	 * @see Wizard#getPageCount()
+	 */
+	@Override
+	public int getPageCount() {
+		int count = mainPages.size();
+		List<AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>> confPages = getConfigurationPages();
+		if (confPages != null) {
+			count += confPages.size();
+		}
+		
+		return count;
+	}
+
+	/**
+	 * @see Wizard#getPreviousPage(IWizardPage)
+	 */
+	@Override
+	public IWizardPage getPreviousPage(IWizardPage page) {
+		// get main index
+		int mainIndex = mainPages.indexOf(page);
+		
+		if (mainIndex >= 0) {
+			// current page is one of the main pages
+			if (mainIndex > 0) {
+				// previous main page
+				return mainPages.get(mainIndex - 1); 
+			}
+		}
+		else {
+			// current page is a configuration page
+			List<AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>> confPages = getConfigurationPages();
+			if (confPages != null) {
+				if (confPages.size() > 0 && confPages.get(0) == page) {
+					// return last main page
+					return mainPages.get(mainPages.size() - 1);
+				}
+				// return the previous configuration page
+				for (int i = 1; i < confPages.size(); ++i) {
+					if (confPages.get(i) == page) {
+						return confPages.get(i - 1);
+					}
+				}
+			}
+		}
+		
+		return null;
+	}
+
+	/**
+	 * @see Wizard#getStartingPage()
+	 */
+	@Override
+	public IWizardPage getStartingPage() {
+		return mainPages.get(0);
+	}
+
 	/**
 	 * Get the available factories. 
 	 * To filter or sort them you can override this method.
