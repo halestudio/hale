@@ -122,6 +122,8 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		} catch (Throwable e) {
 			reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 			reporter.setSuccess(false);
+		} finally {
+			progress.end();
 		}
 		
 		return reporter;
@@ -225,8 +227,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	 */
 	@Override
 	public boolean isCancelable() {
-		//TODO make cancelable, e.g. on per feature basis
-		return false;
+		return true;
 	}
 
 	/**
@@ -358,7 +359,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		
 		Iterator<Feature> itFeature = features.iterator();
 		try {
-			while (itFeature.hasNext()) {
+			while (itFeature.hasNext() && !progress.isCanceled()) {
 				Feature feature = itFeature.next();
 				
 				// write the feature
@@ -374,6 +375,8 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	            writeMember(feature, type);
 	            
 	            writer.writeEndElement(); // featureMember
+	            
+	            progress.advance(1);
 			}
 		} finally {
 			features.close(itFeature);
