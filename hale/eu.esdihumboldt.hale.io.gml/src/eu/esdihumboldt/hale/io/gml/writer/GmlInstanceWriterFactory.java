@@ -16,6 +16,7 @@ import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.core.io.impl.AbstractIOProviderFactory;
 import eu.esdihumboldt.hale.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.instance.io.InstanceWriterFactory;
+import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 
 /**
  * Factory for GML {@link InstanceWriter}s
@@ -42,7 +43,7 @@ public class GmlInstanceWriterFactory extends AbstractIOProviderFactory<Instance
 	 */
 	@Override
 	public InstanceWriter createProvider() {
-		return new GmlInstanceWriter();
+		return new StreamGmlWriter();
 	}
 
 	/**
