@@ -31,6 +31,7 @@ import com.google.common.collect.Multimap;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import de.cs3d.util.logging.ATransaction;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.IOProvider;
@@ -396,6 +397,7 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException,
 						InterruptedException {
+					ATransaction trans = log.begin(defaultReporter.getTaskName());
 					try {
 						IOReport result = provider.execute(new ProgressMonitorIndicator(monitor));
 						if (result != null) {
@@ -406,6 +408,8 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 						}
 					} catch (Throwable e) {
 						defaultReporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
+					} finally {
+						trans.end();
 					}
 				}
 			});
