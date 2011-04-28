@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.Map.Entry;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -101,7 +100,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	/**
 	 * Additional schemas included in the document
 	 */
-	private final Set<Schema> additionalSchemas = new HashSet<Schema>();
+	private List<Schema> additionalSchemas;
 	
 	/**
 	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
@@ -116,7 +115,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		}
 		
 		try {
-			write(getInstances(), progress, reporter);
+			additionalSchemas = write(getInstances(), progress, reporter);
 			reporter.setSuccess(true);
 		} catch (Throwable e) {
 			reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
@@ -126,6 +125,18 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		}
 		
 		return reporter;
+	}
+
+	/**
+	 * @see AbstractInstanceWriter#getValidationSchemas()
+	 */
+	@Override
+	public List<Schema> getValidationSchemas() {
+		List<Schema> result = new ArrayList<Schema>(super.getValidationSchemas());
+		if (additionalSchemas != null) {
+			result.addAll(additionalSchemas);
+		}
+		return result;
 	}
 
 	/**
@@ -240,7 +251,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	 */
 	public List<Schema> write(FeatureCollection<FeatureType, Feature> features, 
 			ProgressIndicator progress, IOReporter reporter) throws XMLStreamException {
-		progress.begin("Generating " + getContentType(), features.size()); //TODO not undetermined
+		progress.begin("Generating " + getContentType(), features.size());
 		
 		// try to find FeatureCollection element
 		Iterator<SchemaElement> it = getTargetSchema().getAllElements().values().iterator();
@@ -302,6 +313,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 			GmlWriterUtil.writeRequiredID(writer, fcDefinition, null, false);
 		}
 		
+		// write schema locations
 		StringBuffer locations = new StringBuffer();
 		locations.append(getTargetSchema().getNamespace());
 		locations.append(" "); //$NON-NLS-1$
@@ -326,6 +338,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 			}
 		}
 		
+		// write the instances
 		Iterator<Feature> itFeature = features.iterator();
 		try {
 			while (itFeature.hasNext() && !progress.isCanceled()) {

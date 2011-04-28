@@ -92,7 +92,7 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceW
 			validator.setSchemas(schemas.toArray(new Schema[schemas.size()]));
 			String fileName = getSelectTargetPage().getTargetFileName();
 			LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(new File(fileName));
-			validator.setSource(source );
+			validator.setSource(source);
 			
 			//XXX configuration pages for validator?
 			
