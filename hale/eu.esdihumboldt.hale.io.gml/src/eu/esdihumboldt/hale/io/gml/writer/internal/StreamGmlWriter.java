@@ -130,6 +130,9 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	public StreamGmlWriter(boolean useFeatureCollection) {
 		super();
 		this.useFeatureCollection = useFeatureCollection;
+		
+		addSupportedParameter(PARAM_ROOT_ELEMENT_NAMESPACE);
+		addSupportedParameter(PARAM_ROOT_ELEMENT_NAME);
 	}
 
 	/**

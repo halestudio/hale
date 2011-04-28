@@ -129,6 +129,16 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceW
 	protected ExportSelectTargetPage<InstanceWriter, InstanceWriterFactory, ? extends ExportWizard<InstanceWriter, InstanceWriterFactory>> createSelectTargetPage() {
 		return new InstanceSelectTargetPage();
 	}
+	
+	/**
+	 * Get the target schema
+	 * 
+	 * @return the target schema
+	 */
+	public Schema getTargetSchema() {
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+		return ss.getTargetSchema();
+	}
 
 	/**
 	 * @see IOWizard#updateConfiguration(IOProvider)
@@ -139,10 +149,9 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceW
 		
 		// configure with instances, common SRS, target schema
 		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
 		FeatureCollection<FeatureType, Feature> features = is.getFeatures(DatasetType.transformed);
-		Schema targetSchema = ss.getTargetSchema();
+		Schema targetSchema = getTargetSchema();
 		
 		// determine SRS
 		String commonSRSName;
