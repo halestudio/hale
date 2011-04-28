@@ -16,10 +16,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
@@ -44,7 +42,6 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.MultiPolygon
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.PointWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.PolygonWriter;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -54,55 +51,8 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class StreamGeometryWriter {
+public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Geometry>> {
 	
-	/**
-	 * Path candidate
-	 */
-	private static class PathCandidate {
-
-		private final TypeDefinition type;
-		private final DefinitionPath path;
-		private final HashSet<TypeDefinition> checkedTypes;
-
-		/**
-		 * Constructor
-		 * 
-		 * @param type the associated type
-		 * @param path the definition path
-		 * @param checkedTypes the type definitions that have already been checked
-		 *   (to prevent cycles)
-		 */
-		public PathCandidate(TypeDefinition type,
-				DefinitionPath path, HashSet<TypeDefinition> checkedTypes) {
-			this.type = type;
-			this.path = path;
-			this.checkedTypes = checkedTypes;
-		}
-
-		/**
-		 * @return the attributeType
-		 */
-		public TypeDefinition getType() {
-			return type;
-		}
-
-		/**
-		 * @return the definitionPath
-		 */
-		public DefinitionPath getPath() {
-			return path;
-		}
-
-		/**
-		 * @return the handledTypes
-		 */
-		public HashSet<TypeDefinition> getCheckedTypes() {
-			return checkedTypes;
-		}
-
-	}
-
 	private static final ALogger log = ALoggerFactory.getLogger(StreamGeometryWriter.class);
 	
 	/**
@@ -245,6 +195,21 @@ public class StreamGeometryWriter {
 	}
 
 	/**
+	 * @see AbstractTypeMatcher#findCandidates(AttributeDefinition, Object)
+	 */
+	@Override
+	public List<DefinitionPath> findCandidates(AttributeDefinition property,
+			Class<? extends Geometry> geomType) {
+		Set<GeometryWriter<?>> writers = geometryWriters.get(geomType);
+		if (writers == null || writers.isEmpty()) {
+			// if no writer is present, we can cancel right here
+			return new ArrayList<DefinitionPath>();
+		}
+		
+		return super.findCandidates(property, geomType);
+	}
+
+	/**
 	 * Write the geometry using the given path
 	 * 
 	 * @param writer the XML stream writer
@@ -352,77 +317,6 @@ public class StreamGeometryWriter {
 	}
 
 	/**
-	 * Find candidates for a possible path to use for writing the geometry
-	 * 
-	 * @param property the start property
-	 * @param geomType the geometry type
-	 * 
-	 * @return the path candidates
-	 */
-	private List<DefinitionPath> findCandidates(AttributeDefinition property,
-			Class<? extends Geometry> geomType) {
-		Set<GeometryWriter<?>> writers = geometryWriters.get(geomType);
-		if (writers == null || writers.isEmpty()) {
-			// if no writer is present, we can cancel right here
-			return new ArrayList<DefinitionPath>();
-		}
-		
-		Queue<PathCandidate> candidates = new LinkedList<PathCandidate>();
-		PathCandidate base = new PathCandidate(property.getAttributeType(), 
-				new DefinitionPath(property.getAttributeType(), 
-				new NameImpl(property.getNamespace(), property.getName())),
-				new HashSet<TypeDefinition>());
-		candidates.add(base);
-		
-		while (!candidates.isEmpty()) {
-			PathCandidate candidate = candidates.poll();
-			TypeDefinition type = candidate.getType();
-			DefinitionPath basePath = candidate.getPath();
-			HashSet<TypeDefinition> checkedTypes = candidate.getCheckedTypes();
-			
-			if (checkedTypes.contains(type)) {
-				continue; // prevent cycles
-			}
-			else {
-				checkedTypes.add(type);
-			}
-			
-			// check if there is a direct match
-			DefinitionPath path = matchPath(type, geomType, basePath);
-			if (path != null) {
-				return Collections.singletonList(path); // return instantly
-				//XXX currently always only one path is returned - this might change if we allow matchPath to yield multiple results
-			}
-			
-			if (!type.isAbstract()) { // only allow stepping down properties if the type is not abstract
-				// step down properties
-				Iterable<AttributeDefinition> properties = (basePath.isEmpty() || basePath.getLastElement().isProperty())?(type.getAttributes()):(type.getDeclaredAttributes());
-				for (AttributeDefinition att : properties) {
-					if (att.isElement()) { // only descend into elements
-						candidates.add(new PathCandidate(att.getAttributeType(), 
-								new DefinitionPath(basePath).addProperty(att), 
-								new HashSet<TypeDefinition>(checkedTypes)));
-					}
-				}
-			}
-			
-			// step down sub-types
-//			for (TypeDefinition subtype : type.getSubTypes()) {
-//				candidates.add(new PathCandidate(subtype,
-//						new DefinitionPath(basePath).addSubType(subtype),
-//						new HashSet<TypeDefinition>(checkedTypes)));
-//			}
-			for (SchemaElement element : type.getSubstitutions(basePath.getLastName())) {
-				candidates.add(new PathCandidate(element.getType(),
-						new DefinitionPath(basePath).addSubstitution(element),
-						new HashSet<TypeDefinition>(checkedTypes)));
-			}
-		}
-		
-		return new ArrayList<DefinitionPath>();
-	}
-
-	/**
 	 * Determines if a type definition is compatible to a geometry type
 	 *  
 	 * @param type the type definition
@@ -433,6 +327,7 @@ public class StreamGeometryWriter {
 	 * otherwise <code>null</code>
 
 	 */
+	@Override
 	protected DefinitionPath matchPath(TypeDefinition type, 
 			Class<? extends Geometry> geomType, DefinitionPath path) {
 		

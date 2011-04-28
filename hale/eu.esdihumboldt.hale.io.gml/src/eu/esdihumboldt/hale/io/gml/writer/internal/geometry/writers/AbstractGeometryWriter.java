@@ -41,7 +41,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @param <T> the geometry type
  */
 public abstract class AbstractGeometryWriter<T extends Geometry> 
-		extends AbstractTypeMatcher implements GeometryWriter<T> {
+		extends AbstractPathMatcher implements GeometryWriter<T> {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractGeometryWriter.class);
 
