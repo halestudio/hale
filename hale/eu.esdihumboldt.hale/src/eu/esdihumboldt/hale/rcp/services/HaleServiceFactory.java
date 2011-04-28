@@ -15,8 +15,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
-import eu.esdihumboldt.hale.io.gml.writer.GmlWriter;
-import eu.esdihumboldt.hale.io.gml.writer.impl.DefaultGmlWriter;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.ConfigSchemaService;
 import eu.esdihumboldt.hale.models.InstanceService;
@@ -59,7 +57,6 @@ public class HaleServiceFactory
 	private ProjectService project;
 	private SchemaItemService schemaItem;
 	private RecentFilesService recentFiles;
-	private GmlWriter gmlWriter;
 	private ConfigSchemaService config;
 
 	/**
@@ -117,12 +114,6 @@ public class HaleServiceFactory
 				recentFiles = new RecentFilesServiceImpl();
 			}
 			return recentFiles;
-		}
-		else if (serviceInterface.equals(GmlWriter.class)) {
-			if (gmlWriter == null) {
-				gmlWriter = new DefaultGmlWriter();
-			}
-			return gmlWriter;
 		}
 		else if (serviceInterface.equals(ConfigSchemaService.class)) {
 			if (config == null) {
