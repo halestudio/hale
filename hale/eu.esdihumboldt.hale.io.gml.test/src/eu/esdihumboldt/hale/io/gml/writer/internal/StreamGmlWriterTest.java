@@ -578,6 +578,25 @@ public class StreamGmlWriterTest {
 	 * @throws Exception if any error occurs
 	 */
 	@Test
+	public void testTransformWrite_Buek200() throws Exception {
+		Report report = transformTest(
+				getClass().getResource("/data/buek200/source/cc7910_8710j.gml").toURI(), //$NON-NLS-1$
+				getClass().getResource("/data/buek200/source/cc7910_8710j.xsd").toURI(), //$NON-NLS-1$
+				getClass().getResource("/data/buek200/_gssoil_test_example.xml.goml").toURI(), //$NON-NLS-1$
+				getClass().getResource("/data/buek200/target/Ger_Buek200_ext.xsd").toURI(), //$NON-NLS-1$
+				"transformWrite_Buek200", //$NON-NLS-1$
+				true,
+				"EPSG:25832"); //$NON-NLS-1$
+		
+		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Test writing the result from a CST transformation
+	 * 
+	 * @throws Exception if any error occurs
+	 */
+	@Test
 	public void testTransformWrite_DKM() throws Exception {
 		Report report = transformTest(
 				getClass().getResource("/data/dkm_austria/KA_14168_EPSG25833.gml").toURI(), //$NON-NLS-1$
