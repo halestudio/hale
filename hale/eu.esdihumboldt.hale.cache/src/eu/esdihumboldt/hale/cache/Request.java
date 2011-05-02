@@ -28,22 +28,12 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.cache.CacheConfig;
-import org.apache.http.impl.client.cache.CachingHttpClient;
-import org.apache.http.impl.client.cache.ehcache.EhcacheHttpCacheStorage;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 public class Request {
-	private CacheConfig cacheConfig;
-	private HttpClient client;
+//	private CacheConfig cacheConfig;
+//	private HttpClient client;
 	public final String cacheName = "HALE_WebRequest";
 	
 	private static Logger _log = Logger.getLogger(Request.class);
@@ -57,11 +47,6 @@ public class Request {
 	 * Constructor.
 	 */
 	private Request() {
-		// new cache configuration
-		this.cacheConfig = new CacheConfig();
-		this.cacheConfig.setHeuristicCachingEnabled(true);
-		this.cacheConfig.setSharedCache(true);
-		
 		// initialize CacheManager
 		CacheManager.create();
 		
@@ -70,13 +55,6 @@ public class Request {
 		
 		// add it to CacheManger
 		CacheManager.getInstance().addCache(cache);
-		
-
-		// create the http storage cache
-		EhcacheHttpCacheStorage ehcache = new EhcacheHttpCacheStorage(cache, this.cacheConfig);
-		
-		// create the http client
-		this.client = new CachingHttpClient(new DefaultHttpClient(), ehcache, this.cacheConfig);
 	}
 	
 	/**
@@ -122,18 +100,9 @@ public class Request {
 		
 		// if the entry does not exist fetch it from the web
 		if (cache.get(name) == null){
-			HttpResponse response = client.execute(new HttpGet(uri.toString()), new BasicHttpContext());
-			HttpEntity entity = response.getEntity();
+			InputStream in;
 			
-			EntityUtils.consume(entity);
-			
-			// convert the stream to a string
-			InputStream in = entity.getContent();
-			
-			// sometimes the given InputStream from entity.getContent() is not a working one
-			if (in.available() == 0) {
-				in = uri.toURL().openStream();
-			}
+			in = uri.toURL().openStream();
 			
 			content = this.streamToString(in);
 			
@@ -187,9 +156,7 @@ public class Request {
 			char[] buffer = new char[1024];
 			try {
 				InputStreamReader isr = new InputStreamReader(in);
-//				System.err.println("InputStreamReader.ready() "+isr.ready());
 				Reader reader = new BufferedReader(isr);
-//				System.err.println("Reader.ready() "+reader.ready());
 				int n;
 				while ((n = reader.read(buffer)) != -1) {
 					writer.write(buffer, 0, n);
@@ -216,5 +183,12 @@ public class Request {
 	 */
 	public void shutdown() {
 		CacheManager.getInstance().shutdown();
+	}
+	
+	/**
+	 * @see CacheManager#removalAll()
+	 */
+	public void clear() {
+		CacheManager.getInstance().getCache(cacheName).removeAll();
 	}
 }
