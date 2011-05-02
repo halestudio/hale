@@ -80,9 +80,6 @@
       <plugin id="eu.esdihumboldt.hale.core"/>
       <plugin id="eu.esdihumboldt.hale.csvexporter"/>
       <plugin id="eu.esdihumboldt.hale.gmlparser"/>
-      <plugin id="eu.esdihumboldt.hale.gmlvalidate" fragment=""/>
-      <plugin id="eu.esdihumboldt.hale.gmlwriter" fragment=""/>
-      <plugin id="eu.esdihumboldt.hale.gmlwriter.test" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.htmlexporter"/>
       <plugin id="eu.esdihumboldt.hale.instance"/>
       <plugin id="eu.esdihumboldt.hale.instanceprovider"/>
