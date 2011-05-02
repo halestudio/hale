@@ -27,7 +27,7 @@ import eu.esdihumboldt.hale.core.io.ProgressIndicator;
  */
 public class LogProgressIndicator implements ProgressIndicator {
 	
-	private static final ALogger log = ALoggerFactory.getLogger(LogProgressIndicator.class);
+	private static final ALogger log = ALoggerFactory.getMaskingLogger(LogProgressIndicator.class, null);
 	
 	private String currentTask = "Task"; //$NON-NLS-1$
 	
