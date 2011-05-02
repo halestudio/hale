@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -414,7 +415,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 				else {
 					reporter.warn(new IOMessageImpl(MessageFormat.format(
 							"No compatible member attribute for type {0} found in root element {1}, one instance was skipped", 
-							containerName.getLocalPart(), type.getDisplayName()), null));
+							type.getDisplayName(), containerName.getLocalPart()), null));
 				}
 	            
 	            progress.advance(1);
@@ -456,6 +457,20 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 				if (type.equals(memberType)) {
 					return path;
 				}
+				
+				//XXX special case: FeatureCollection from foreign schema
+				Set<SchemaElement> elements = matchParam.getDeclaringElements();
+				if (!elements.isEmpty() && !type.getDeclaringElements().isEmpty()) {
+					TypeDefinition parent = matchParam.getSuperType();
+					while (parent != null) {
+						if (parent.equals(type)) {
+							return new DefinitionPath(path).addSubstitution(elements.iterator().next());
+						}
+						
+						parent = parent.getSuperType();
+					}
+				}
+				
 				return null;
 			}
 		};
