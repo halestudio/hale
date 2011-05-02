@@ -365,9 +365,6 @@
                serviceClass="eu.esdihumboldt.hale.models.project.RecentFilesService">
          </service>
          <service
-               serviceClass="eu.esdihumboldt.hale.gmlwriter.GmlWriter">
-         </service>
-         <service
                serviceClass="eu.esdihumboldt.hale.models.ConfigSchemaService">
          </service>
       </serviceFactory>
