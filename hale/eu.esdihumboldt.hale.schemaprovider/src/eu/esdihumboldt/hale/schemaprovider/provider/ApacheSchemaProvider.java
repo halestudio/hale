@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -691,7 +692,8 @@ public class ApacheSchemaProvider
 		
 		_log.info("Creating types for schema at " + schemaLocation); //$NON-NLS-1$
 		
-		progress.setCurrentTask(Messages.getString("ApacheSchemaProvider.33") + namespace); //$NON-NLS-1$
+		progress.setCurrentTask(MessageFormat.format(
+				Messages.getString("ApacheSchemaProvider.33"), namespace)); //$NON-NLS-1$
 		
 		// map for all imported types
 		Map<Name, TypeDefinition> importedFeatureTypes = new HashMap<Name, TypeDefinition>();
