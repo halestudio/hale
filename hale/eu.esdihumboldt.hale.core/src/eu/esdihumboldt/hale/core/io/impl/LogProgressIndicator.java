@@ -29,7 +29,7 @@ public class LogProgressIndicator implements ProgressIndicator {
 	
 	private static final ALogger log = ALoggerFactory.getMaskingLogger(LogProgressIndicator.class, null);
 	
-	private String currentTask = "Task"; //$NON-NLS-1$
+	private String currentTask = null; //$NON-NLS-1$
 	
 	private int totalWork = UNKNOWN;
 	
@@ -55,8 +55,8 @@ public class LogProgressIndicator implements ProgressIndicator {
 
 	private void trigger() {
 		if (totalWork > 0 && totalWork != UNKNOWN) {
-			log.info(MessageFormat.format("{0} {1,number,percent}", currentTask, //$NON-NLS-1$ 
-					(float) worked / (float) totalWork)); 
+			log.info(MessageFormat.format((currentTask == null)?("{0} - {1,number,percent}"):("{0} - {1,number,percent} - {2}"), 
+					mainTaskName, (float) worked / (float) totalWork), currentTask); 
 		}
 		else {
 			log.info(currentTask);
