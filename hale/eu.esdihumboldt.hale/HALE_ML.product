@@ -31,6 +31,7 @@
       <plugin id="ch.qos.logback.classic"/>
       <plugin id="ch.qos.logback.core"/>
       <plugin id="ch.qos.logback.slf4j" fragment="true"/>
+      <plugin id="com.google.guava"/>
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="com.onespatial.jrc.tns.hale.rifexport"/>
@@ -68,23 +69,33 @@
       <plugin id="de.cs3d.util.logging.logback"/>
       <plugin id="de.cs3d.util.logging.logback.appender" fragment="true"/>
       <plugin id="de.cs3d.util.logging.logback.observer"/>
+      <plugin id="de.fhg.igd.concurrency"/>
+      <plugin id="de.fhg.igd.eclipse.util"/>
+      <plugin id="de.fhg.igd.osgi.util"/>
       <plugin id="edu.umd.cs.findbugs.annotations"/>
       <plugin id="eu.esdihumboldt.commons"/>
       <plugin id="eu.esdihumboldt.cst.corefunctions"/>
       <plugin id="eu.esdihumboldt.hale"/>
       <plugin id="eu.esdihumboldt.hale.cache"/>
+      <plugin id="eu.esdihumboldt.hale.core"/>
       <plugin id="eu.esdihumboldt.hale.csvexporter"/>
       <plugin id="eu.esdihumboldt.hale.gmlparser"/>
-      <plugin id="eu.esdihumboldt.hale.gmlvalidate"/>
-      <plugin id="eu.esdihumboldt.hale.gmlwriter"/>
-      <plugin id="eu.esdihumboldt.hale.gmlwriter.test"/>
+      <plugin id="eu.esdihumboldt.hale.gmlvalidate" fragment=""/>
+      <plugin id="eu.esdihumboldt.hale.gmlwriter" fragment=""/>
+      <plugin id="eu.esdihumboldt.hale.gmlwriter.test" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.htmlexporter"/>
+      <plugin id="eu.esdihumboldt.hale.instance"/>
       <plugin id="eu.esdihumboldt.hale.instanceprovider"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml.ui"/>
+      <plugin id="eu.esdihumboldt.hale.io.xml"/>
       <plugin id="eu.esdihumboldt.hale.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
       <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.core"/>
       <plugin id="eu.esdihumboldt.hale.schemaprovider"/>
+      <plugin id="eu.esdihumboldt.hale.ui"/>
       <plugin id="eu.esdihumboldt.hale.userstatus.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.specification"/>
       <plugin id="eu.esdihumboldt.transformer.cst"/>
@@ -496,6 +507,7 @@
       <plugin id="org.eclipse.equinox.common.nl_uk" fragment="true"/>
       <plugin id="org.eclipse.equinox.common.nl_zh" fragment="true"/>
       <plugin id="org.eclipse.equinox.common.nl_zh_TW" fragment="true"/>
+      <plugin id="org.eclipse.equinox.ds"/>
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.preferences.nl_ar" fragment="true"/>
       <plugin id="org.eclipse.equinox.preferences.nl_bg" fragment="true"/>
@@ -590,6 +602,7 @@
       <plugin id="org.eclipse.equinox.security.nl_uk" fragment="true"/>
       <plugin id="org.eclipse.equinox.security.nl_zh" fragment="true"/>
       <plugin id="org.eclipse.equinox.security.nl_zh_TW" fragment="true"/>
+      <plugin id="org.eclipse.equinox.util"/>
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.help.nl_ar" fragment="true"/>
       <plugin id="org.eclipse.help.nl_bg" fragment="true"/>
@@ -750,6 +763,7 @@
       <plugin id="org.eclipse.osgi.nl_uk" fragment="true"/>
       <plugin id="org.eclipse.osgi.nl_zh" fragment="true"/>
       <plugin id="org.eclipse.osgi.nl_zh_TW" fragment="true"/>
+      <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.swt"/>
       <plugin id="org.eclipse.swt.cocoa.macosx" fragment="true"/>
       <plugin id="org.eclipse.swt.cocoa.macosx.x86_64" fragment="true"/>
@@ -933,7 +947,10 @@
    <configurations>
       <plugin id="de.cs3d.ui.util.logging.errorlog" autoStart="true" startLevel="2" />
       <plugin id="de.cs3d.util.logging.logback" autoStart="true" startLevel="1" />
+      <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.xml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.transformer.cst" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
    </configurations>
 
 </product>
