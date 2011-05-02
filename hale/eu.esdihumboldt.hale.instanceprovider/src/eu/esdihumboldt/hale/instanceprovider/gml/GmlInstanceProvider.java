@@ -31,6 +31,8 @@ import eu.esdihumboldt.hale.instanceprovider.InstanceConfiguration;
 import eu.esdihumboldt.hale.instanceprovider.InstanceProvider;
 import eu.esdihumboldt.hale.schemaprovider.ProgressIndicator;
 
+import eu.esdihumboldt.hale.cache.Request;
+
 /**
  * {@link InstanceProvider} that loads GML files
  *
@@ -86,10 +88,18 @@ public class GmlInstanceProvider extends AbstractInstanceProvider {
 			else {
 				type = ConfigurationType.GML2;
 			}
-			return GmlHelper.loadGml(location.toURL().openStream(), type, 
+			
+			return GmlHelper.loadGml(Request.getInstance().get(location), type, 
 					configuration.getNamespace(), 
 					configuration.getSchemaLocation().toString(), 
 					configuration.getSchema());
+			
+//			return GmlHelper.loadGml(location.toURL().openStream(), type, 
+//					configuration.getNamespace(), 
+//					configuration.getSchemaLocation().toString(), 
+//					configuration.getSchema());
+		} catch (Exception e) {
+			return null;
 		} finally {
 			trans.end();
 		}

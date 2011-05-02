@@ -5,6 +5,7 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.gmlvalidate
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: de.cs3d.util.logging,
+ eu.esdihumboldt.hale.cache,
  eu.esdihumboldt.hale.schemaprovider,
  org.slf4j;version="1.5.11"
 Bundle-ClassPath: lib/xercesImpl-2.9.1.jar,

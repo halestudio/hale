@@ -42,6 +42,8 @@ import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
 
+import eu.esdihumboldt.hale.cache.Request;
+
 /**
  * This class is the default implementation of the {@link CstServiceBridge}. It
  * expects to get local paths to the schema, the mapping and the GML it has to
@@ -214,7 +216,12 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 	private InputStream getGMLStream(String gmlFilename) throws MalformedURLException,
 			IOException {
 		// InputStream xml = new FileInputStream(new File(gmlFilename));
-		return new URL(gmlFilename).openStream();
+		
+		try {
+			return Request.getInstance().get(gmlFilename);
+		}catch (Exception e) {
+			return new URL(gmlFilename).openStream();
+		}
 	}
 
 	/**
