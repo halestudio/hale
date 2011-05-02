@@ -7,6 +7,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/XmlValidator.xml
 Import-Package: com.google.common.io;version="1.6.0",
  de.cs3d.util.logging,
+ eu.esdihumboldt.hale.cache,
  eu.esdihumboldt.hale.instance.io,
  eu.esdihumboldt.hale.instance.io.impl,
  eu.esdihumboldt.hale.schemaprovider,

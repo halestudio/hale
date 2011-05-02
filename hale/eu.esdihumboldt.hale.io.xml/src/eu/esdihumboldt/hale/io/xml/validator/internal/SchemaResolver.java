@@ -12,13 +12,14 @@
 
 package eu.esdihumboldt.hale.io.xml.validator.internal;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
+
+import eu.esdihumboldt.hale.cache.Request;
 
 /**
  * Resolve imported/included schemas
@@ -71,8 +72,9 @@ public class SchemaResolver implements LSResourceResolver {
 
 		InputStream inputStream;
 		try {
-			inputStream = uri.toURL().openStream();
-		} catch (IOException e) {
+//			inputStream = uri.toURL().openStream();
+			inputStream = Request.getInstance().get(uri);
+		} catch (Exception e) {
 			return null;
 		}
 

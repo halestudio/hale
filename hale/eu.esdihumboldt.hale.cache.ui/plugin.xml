@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+         
+         <page
+            class="eu.esdihumboldt.hale.cache.ui.CachePreferencePage"
+            id="eu.esdihumboldt.hale.page.preferences.cache"
+            name="Cache">
+      </page>
+   </extension>
+  
+</plugin>

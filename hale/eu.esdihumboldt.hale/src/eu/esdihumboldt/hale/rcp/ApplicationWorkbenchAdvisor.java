@@ -29,6 +29,7 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
 import eu.esdihumboldt.hale.Messages;
+import eu.esdihumboldt.hale.cache.Request;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.project.RecentFilesService;
 import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
@@ -83,6 +84,9 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	 */
 	@Override
 	public boolean preShutdown() {
+		// Cache shutdown
+		Request.getInstance().shutdown();
+		
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
 		if (ps.isChanged()) {
 			Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();

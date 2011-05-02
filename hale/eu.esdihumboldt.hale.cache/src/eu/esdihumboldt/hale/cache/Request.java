@@ -26,25 +26,25 @@ import java.net.URL;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.cache.CacheConfig;
-import org.apache.http.impl.client.cache.CachingHttpClient;
-import org.apache.http.impl.client.cache.ehcache.EhcacheHttpCacheStorage;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.jface.preference.PreferenceStore;
+
+import de.fhg.igd.osgi.util.OsgiUtils;
+import de.fhg.igd.osgi.util.configuration.IConfigurationService;
+import de.fhg.igd.osgi.util.configuration.JavaPreferencesConfigurationService;
+import de.fhg.igd.osgi.util.configuration.NamespaceConfigurationServiceDecorator;
 
 public class Request {
-	private CacheConfig cacheConfig;
-	private HttpClient client;
-	public final String cacheName = "HALE_WebRequest";
+
+	private String cacheName = "", cachePath = "";
+	private boolean enabled = true;
+	
+	private static final String DELIMITER = "/";
+	private IConfigurationService org;
 	
 	private static Logger _log = Logger.getLogger(Request.class);
 	
@@ -57,26 +57,59 @@ public class Request {
 	 * Constructor.
 	 */
 	private Request() {
-		// new cache configuration
-		this.cacheConfig = new CacheConfig();
-		this.cacheConfig.setHeuristicCachingEnabled(true);
-		this.cacheConfig.setSharedCache(true);
+		IConfigurationService org = OsgiUtils.getService(IConfigurationService.class);
+		if (org == null) {
+			// if no configuration service is present, fall back to new instance
+			
+			// 1. use user prefs, may not have rights to access system prefs
+		    // 2. no default properties
+		    // 3. don't default to system properties
+			org = new JavaPreferencesConfigurationService(false, null, false);
+		}
 		
-		// initialize CacheManager
-		CacheManager.create();
+		this.org = new NamespaceConfigurationServiceDecorator(
+				org, 
+				Request.class.getPackage().getName().replace(".", DELIMITER),  //$NON-NLS-1$
+				DELIMITER);
 		
-		// create a Cache instance	// TODO provide storage path via settings page? currently system default is used
-		Cache cache = new Cache(this.cacheName, 300, MemoryStoreEvictionPolicy.LRU, true, "", true, 0, 0, true, 0, null);
+		// get saved seeting
+		this.enabled = this.org.getBoolean("cache.enabled", false);
 		
-		// add it to CacheManger
-		CacheManager.getInstance().addCache(cache);
-		
-
-		// create the http storage cache
-		EhcacheHttpCacheStorage ehcache = new EhcacheHttpCacheStorage(cache, this.cacheConfig);
-		
-		// create the http client
-		this.client = new CachingHttpClient(new DefaultHttpClient(), ehcache, this.cacheConfig);
+		// initialize the cache
+		this.init();
+	}
+	
+	private void init() {
+		if (this.enabled) {
+			this.cacheName = this.org.get("cache.name");
+			this.cachePath = this.org.get("cache.path");
+			
+			// use system property to set the proper diskStorePath
+			String tmpDir = System.getProperty("java.io.tmpdir");
+			System.setProperty("java.io.tmpdir", this.cachePath);
+			
+			// this cache has already been initialized
+			if (CacheManager.getInstance().getCache(this.cacheName) != null) {
+				return;
+			}
+			
+			// initialize CacheManager
+			CacheManager.create();
+			
+			// create a Cache instance - providing cachePath has no effect
+			Cache cache = new Cache(this.cacheName, 300, MemoryStoreEvictionPolicy.LRU, 
+					true, this.cachePath, true, 0, 0, true, 0, null);
+			
+			// set disk store path - this has no effect!
+			cache.setDiskStorePath(this.cachePath);
+			
+			
+			// add it to CacheManger
+			CacheManager.getInstance().addCache(cache);
+			
+			// reset java.io.tmpdir
+			System.setProperty("java.io.tmpdir", tmpDir);
+		}
 	}
 	
 	/**
@@ -113,6 +146,11 @@ public class Request {
 			throw new Exception("Empty host!");
 		}
 		
+		// no caching activated
+		if (!this.enabled) {
+			return uri.toURL().openStream();
+		}
+		
 		// get the current cache for webrequests
 		Cache cache = CacheManager.getInstance().getCache(this.cacheName);
 		String name = this.removeSpecialChars(uri.toString());
@@ -122,18 +160,9 @@ public class Request {
 		
 		// if the entry does not exist fetch it from the web
 		if (cache.get(name) == null){
-			HttpResponse response = client.execute(new HttpGet(uri.toString()), new BasicHttpContext());
-			HttpEntity entity = response.getEntity();
+			InputStream in;
 			
-			EntityUtils.consume(entity);
-			
-			// convert the stream to a string
-			InputStream in = entity.getContent();
-			
-			// sometimes the given InputStream from entity.getContent() is not a working one
-			if (in.available() == 0) {
-				in = uri.toURL().openStream();
-			}
+			in = uri.toURL().openStream();
 			
 			content = this.streamToString(in);
 			
@@ -187,9 +216,7 @@ public class Request {
 			char[] buffer = new char[1024];
 			try {
 				InputStreamReader isr = new InputStreamReader(in);
-//				System.err.println("InputStreamReader.ready() "+isr.ready());
 				Reader reader = new BufferedReader(isr);
-//				System.err.println("Reader.ready() "+reader.ready());
 				int n;
 				while ((n = reader.read(buffer)) != -1) {
 					writer.write(buffer, 0, n);
@@ -208,7 +235,8 @@ public class Request {
 	 * @see CacheManager#flush(String)
 	 */
 	public void flush() {
-		CacheManager.flush(this.cacheName);
+		if (this.enabled)
+			CacheManager.flush(this.cacheName);
 	}
 	
 	/**
@@ -216,5 +244,21 @@ public class Request {
 	 */
 	public void shutdown() {
 		CacheManager.getInstance().shutdown();
+	}
+	
+	/**
+	 * @see CacheManager#removalAll()
+	 */
+	public void clear() {
+		CacheManager.getInstance().getCache(cacheName).removeAll();
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+		this.init();
 	}
 }
