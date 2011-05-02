@@ -12,7 +12,8 @@
 
 package eu.esdihumboldt.hale.instance.io;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
+import eu.esdihumboldt.hale.core.io.ContentType;
+import eu.esdihumboldt.hale.core.io.HaleIO;
 
 /**
  * Instance I/O utilities
@@ -28,8 +29,23 @@ public abstract class InstanceIO {
 	 * 
 	 * @return the factories currently registered in the system
 	 */
-	public Iterable<InstanceWriterFactory> getWriterFactories() {
-		return OsgiUtils.getServices(InstanceWriterFactory.class);
+	public static Iterable<InstanceWriterFactory> getWriterFactories() {
+		return HaleIO.getProviderFactories(InstanceWriterFactory.class);
+	}
+	
+	/**
+	 * Creates an instance writer instance
+	 * 
+	 * @param contentType the content type the provider must match, may be 
+	 *   <code>null</code> if providerId is set
+	 * @param providerId the id of the provider to use, may be <code>null</code>
+	 *   if contentType is set
+	 * @return the I/O provider preconfigured with the content type if it was 
+	 *   given or <code>null</code> if no matching I/O provider is found
+	 */
+	public static InstanceWriter createInstanceWriter(ContentType contentType, 
+			String providerId) {
+		return HaleIO.createIOProvider(InstanceWriterFactory.class, contentType, providerId);
 	}
 	
 }

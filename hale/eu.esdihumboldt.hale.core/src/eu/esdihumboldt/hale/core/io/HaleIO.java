@@ -17,6 +17,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.base.Preconditions;
+
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.core.io.service.ContentTypeService;
 
@@ -52,6 +54,63 @@ public abstract class HaleIO {
 					break;
 				}
 			}
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Get the I/O provider factories of a certain type
+	 * @param <T> the provider factory interface type
+	 *
+	 * @param clazz the provider factory interface class
+	 * @return the factories currently registered in the system
+	 */
+	public static <T extends IOProviderFactory<?>> Collection<T> getProviderFactories(Class<T> clazz) {
+		return new ArrayList<T>(OsgiUtils.getServices(clazz));
+	}
+	
+	/**
+	 * Creates an I/O provider instance
+	 * @param <P> the provider interface type
+	 * @param <T> the provider factory interface type 
+	 * 
+	 * @param clazz the provider factory interface class
+	 * @param contentType the content type the provider must match, may be 
+	 *   <code>null</code> if providerId is set
+	 * @param providerId the id of the provider to use, may be <code>null</code>
+	 *   if contentType is set
+	 * @return the I/O provider preconfigured with the content type if it was 
+	 *   given or <code>null</code> if no matching I/O provider is found
+	 */
+	public static <P extends IOProvider, T extends IOProviderFactory<P>> P createIOProvider(
+			Class<T> clazz, ContentType contentType, String providerId) {
+		Preconditions.checkArgument(contentType != null || providerId != null);
+		
+		Collection<T> factories = getProviderFactories(clazz);
+		if (contentType != null) {
+			factories = filterFactories(factories, contentType);
+		}
+		
+		P result = null;
+		
+		if (providerId != null) {
+			for (T factory : factories) {
+				if (factory.getIdentifier().equals(providerId)) {
+					result = factory.createProvider();
+					break;
+				}
+			}
+		}
+		else {
+			//TODO choose priority based?
+			if (!factories.isEmpty()) {
+				result = factories.iterator().next().createProvider();
+			}
+		}
+		
+		if (result != null && contentType != null) {
+			result.setContentType(contentType);
 		}
 		
 		return result;
