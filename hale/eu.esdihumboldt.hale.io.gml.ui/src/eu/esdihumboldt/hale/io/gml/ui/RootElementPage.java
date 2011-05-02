@@ -14,8 +14,16 @@ package eu.esdihumboldt.hale.io.gml.ui;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.FilteredList;
 import org.opengis.feature.type.Name;
 
@@ -69,6 +77,9 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 			}
 		}
 		
+		provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAMESPACE, null);
+		provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAME, null);
+		
 		return false;
 	}
 
@@ -77,9 +88,16 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 	 */
 	@Override
 	protected void createContent(Composite page) {
-		page.setLayout(new FillLayout());
+		page.setLayout(new GridLayout(1, false));
 		
-		list = new FilteredList(page, SWT.SINGLE, new LabelProvider() {
+		// add filter text
+		final Text filterText = new Text(page, SWT.SINGLE | SWT.BORDER);
+        filterText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+        filterText.setText(""); //$NON-NLS-1$
+        
+		// add filtered list
+		list = new FilteredList(page, SWT.SINGLE | SWT.BORDER | SWT.V_SCROLL | 
+				SWT.H_SCROLL, new LabelProvider() {
 
 			@Override
 			public String getText(Object element) {
@@ -90,8 +108,36 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 			}
 			
 		}, true, true, true);
+		list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
-		//TODO need to add filter text etc.
+		// add listeners to filter text
+        Listener listener = new Listener() {
+            public void handleEvent(Event e) {
+                list.setFilter(filterText.getText());
+            }
+        };
+        filterText.addListener(SWT.Modify, listener);
+
+        filterText.addKeyListener(new KeyListener() {
+            public void keyPressed(KeyEvent e) {
+                if (e.keyCode == SWT.ARROW_DOWN) {
+					list.setFocus();
+				}
+            }
+
+            public void keyReleased(KeyEvent e) {
+            	// do nothing
+            }
+        });
+        
+        // page status update
+        list.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				setPageComplete(list.getSelectionIndex() != -1);
+			}
+		});
 		
 		updateList();
 	}
@@ -99,18 +145,7 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 	private void updateList() {
 		Schema targetSchema = getWizard().getTargetSchema();
 		list.setElements(targetSchema.getAllElements().values().toArray());
+		setPageComplete(list.getSelectionIndex() != -1);
 	}
 	
-	//TODO enable/disable - react on provider changes?! or is onShowPage enough?
-
-	/**
-	 * @see HaleWizardPage#onShowPage()
-	 */
-	@Override
-	protected void onShowPage() {
-		
-		// TODO Auto-generated method stub
-		super.onShowPage();
-	}
-
 }
