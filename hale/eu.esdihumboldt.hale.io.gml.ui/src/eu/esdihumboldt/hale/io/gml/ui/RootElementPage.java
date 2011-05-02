@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;
+import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceWriterConfigurationPage;
 
 /**
@@ -138,10 +139,24 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 				setPageComplete(list.getSelectionIndex() != -1);
 			}
 		});
-		
-		updateList();
 	}
 	
+	/**
+	 * @see AbstractConfigurationPage#disable()
+	 */
+	@Override
+	public void disable() {
+		// do nothing
+	}
+
+	/**
+	 * @see AbstractConfigurationPage#enable()
+	 */
+	@Override
+	public void enable() {
+		updateList();
+	}
+
 	private void updateList() {
 		Schema targetSchema = getWizard().getTargetSchema();
 		list.setElements(targetSchema.getAllElements().values().toArray());

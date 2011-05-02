@@ -285,10 +285,26 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	public void setProviderFactory(T factory) {
 		if (Objects.equal(factory, this.factory)) return;
 		
+		// disable old configuration pages
+		List<AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>> pages = getConfigurationPages();
+		if (pages != null) {
+			for (AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>> page : pages) {
+				page.disable();
+			}
+		}
+		
 		this.factory = factory;
 		
 		// reset provider
 		provider = null;
+		
+		// enable new configuration pages
+		pages = getConfigurationPages();
+		if (pages != null) {
+			for (AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>> page : pages) {
+				page.enable();
+			}
+		}
 		
 		fireProviderFactoryChanged(factory);
 	}
