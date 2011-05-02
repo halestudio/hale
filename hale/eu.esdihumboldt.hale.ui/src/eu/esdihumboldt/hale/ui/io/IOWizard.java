@@ -353,12 +353,25 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 			return false;
 		}
 		
-		// process pages
-		for (IWizardPage page : getPages()) {
-			boolean valid = validatePage(page);
+		// process main pages
+		for (int i = 0; i < mainPages.size(); i++) {
+			boolean valid = validatePage(mainPages.get(i));
 			if (!valid) {
+				//TODO error message?!
 				return false;
 			}
+        }
+		
+		// check if configuration pages are complete
+		List<AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>> confPages = getConfigurationPages();
+		if (confPages != null) {
+			for (int i = 0; i < confPages.size(); i++) {
+				boolean valid = validatePage(confPages.get(i));
+				if (!valid) {
+					//TODO error message?!
+					return false;
+				}
+	        }
 		}
 		
 		// process wizard
