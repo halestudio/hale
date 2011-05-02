@@ -26,15 +26,25 @@ import java.net.URL;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
+import org.eclipse.jface.preference.PreferenceStore;
+
+import de.fhg.igd.osgi.util.OsgiUtils;
+import de.fhg.igd.osgi.util.configuration.IConfigurationService;
+import de.fhg.igd.osgi.util.configuration.JavaPreferencesConfigurationService;
+import de.fhg.igd.osgi.util.configuration.NamespaceConfigurationServiceDecorator;
 
 public class Request {
-//	private CacheConfig cacheConfig;
-//	private HttpClient client;
-	public final String cacheName = "HALE_WebRequest";
+
+	private String cacheName = "", cachePath = "";
+	private boolean enabled = true;
+	
+	private static final String DELIMITER = "/";
+	private IConfigurationService org;
 	
 	private static Logger _log = Logger.getLogger(Request.class);
 	
@@ -47,14 +57,59 @@ public class Request {
 	 * Constructor.
 	 */
 	private Request() {
-		// initialize CacheManager
-		CacheManager.create();
+		IConfigurationService org = OsgiUtils.getService(IConfigurationService.class);
+		if (org == null) {
+			// if no configuration service is present, fall back to new instance
+			
+			// 1. use user prefs, may not have rights to access system prefs
+		    // 2. no default properties
+		    // 3. don't default to system properties
+			org = new JavaPreferencesConfigurationService(false, null, false);
+		}
 		
-		// create a Cache instance	// TODO provide storage path via settings page? currently system default is used
-		Cache cache = new Cache(this.cacheName, 300, MemoryStoreEvictionPolicy.LRU, true, "", true, 0, 0, true, 0, null);
+		this.org = new NamespaceConfigurationServiceDecorator(
+				org, 
+				Request.class.getPackage().getName().replace(".", DELIMITER),  //$NON-NLS-1$
+				DELIMITER);
 		
-		// add it to CacheManger
-		CacheManager.getInstance().addCache(cache);
+		// get saved seeting
+		this.enabled = this.org.getBoolean("cache.enabled", false);
+		
+		// initialize the cache
+		this.init();
+	}
+	
+	private void init() {
+		if (this.enabled) {
+			this.cacheName = this.org.get("cache.name");
+			this.cachePath = this.org.get("cache.path");
+			
+			// use system property to set the proper diskStorePath
+			String tmpDir = System.getProperty("java.io.tmpdir");
+			System.setProperty("java.io.tmpdir", this.cachePath);
+			
+			// this cache has already been initialized
+			if (CacheManager.getInstance().getCache(this.cacheName) != null) {
+				return;
+			}
+			
+			// initialize CacheManager
+			CacheManager.create();
+			
+			// create a Cache instance - providing cachePath has no effect
+			Cache cache = new Cache(this.cacheName, 300, MemoryStoreEvictionPolicy.LRU, 
+					true, this.cachePath, true, 0, 0, true, 0, null);
+			
+			// set disk store path - this has no effect!
+			cache.setDiskStorePath(this.cachePath);
+			
+			
+			// add it to CacheManger
+			CacheManager.getInstance().addCache(cache);
+			
+			// reset java.io.tmpdir
+			System.setProperty("java.io.tmpdir", tmpDir);
+		}
 	}
 	
 	/**
@@ -89,6 +144,11 @@ public class Request {
 		
 		if (uri.getHost() == null) {
 			throw new Exception("Empty host!");
+		}
+		
+		// no caching activated
+		if (!this.enabled) {
+			return uri.toURL().openStream();
 		}
 		
 		// get the current cache for webrequests
@@ -175,7 +235,8 @@ public class Request {
 	 * @see CacheManager#flush(String)
 	 */
 	public void flush() {
-		CacheManager.flush(this.cacheName);
+		if (this.enabled)
+			CacheManager.flush(this.cacheName);
 	}
 	
 	/**
@@ -190,5 +251,14 @@ public class Request {
 	 */
 	public void clear() {
 		CacheManager.getInstance().getCache(cacheName).removeAll();
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+		this.init();
 	}
 }
