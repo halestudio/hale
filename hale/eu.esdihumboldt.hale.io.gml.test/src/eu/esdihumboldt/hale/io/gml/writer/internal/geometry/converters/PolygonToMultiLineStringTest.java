@@ -31,6 +31,7 @@ import static org.junit.Assert.assertEquals;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
+@SuppressWarnings("restriction")
 public class PolygonToMultiLineStringTest extends AbstractGeometryConverterTest {
 	
 	/**

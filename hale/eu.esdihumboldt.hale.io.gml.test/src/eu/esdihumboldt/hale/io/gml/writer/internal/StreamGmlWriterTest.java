@@ -13,15 +13,13 @@
 package eu.esdihumboldt.hale.io.gml.writer.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.awt.Desktop;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -67,9 +65,15 @@ import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory;
 import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
+import eu.esdihumboldt.hale.core.io.ContentType;
+import eu.esdihumboldt.hale.core.io.impl.LogProgressIndicator;
+import eu.esdihumboldt.hale.core.io.report.IOReport;
+import eu.esdihumboldt.hale.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.gmlparser.CstFeatureCollection;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
+import eu.esdihumboldt.hale.instance.io.InstanceWriter;
+import eu.esdihumboldt.hale.io.gml.writer.GmlInstanceWriterFactory;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryConverterRegistry;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryConverterRegistry.ConversionLadder;
 import eu.esdihumboldt.hale.io.xml.validator.Report;
@@ -647,22 +651,27 @@ public class StreamGmlWriterTest {
 		
 		// write
 		// write to file
-		DefaultGmlWriter writer = new DefaultGmlWriter();
+		InstanceWriter writer = new GmlInstanceWriterFactory().createProvider();
+		
+		assertNotNull(writer);
+		
+		writer.setContentType(ContentType.getContentType("GML"));
+		writer.setCommonSRSName(srsName);
+		writer.setInstances(result);
+		writer.setTargetSchema(targetSchema);
 		File outFile = File.createTempFile(testName, ".gml");  //$NON-NLS-1$
-		OutputStream out = new FileOutputStream(outFile);
-		List<Schema> addSchemas;
-		try {
-			addSchemas = writer.writeFeatures(result, targetSchema, out, srsName);
-		} finally {
-			out.flush();
-			out.close();
-		}
+		writer.setTarget(new FileIOSupplier(outFile));
+		
+		IOReport report = writer.execute(new LogProgressIndicator());
+		assertTrue("Writing the GML output not successful", report.isSuccess());
+		
+		List<Schema> validationSchemas = writer.getValidationSchemas();
 		
 		System.out.println(outFile.getAbsolutePath());
 		System.out.println(targetSchema.getLocation().toString());
 		
 		try {
-			return validate(targetSchema, outFile.toURI(), addSchemas);
+			return validate(targetSchema, outFile.toURI(), validationSchemas);
 		}
 		finally {
 			if (DEL_TEMP_FILES) {
@@ -757,22 +766,27 @@ public class StreamGmlWriterTest {
 		fc.add(feature );
 		
 		// write to file
-		DefaultGmlWriter writer = new DefaultGmlWriter();
+		InstanceWriter writer = new GmlInstanceWriterFactory().createProvider();
+		
+		assertNotNull(writer);
+		
+		writer.setContentType(ContentType.getContentType("GML"));
+		writer.setCommonSRSName(srsName);
+		writer.setInstances(fc);
+		writer.setTargetSchema(schema);
 		File outFile = File.createTempFile(testName, ".gml");  //$NON-NLS-1$
-		OutputStream out = new FileOutputStream(outFile);
-		List<Schema> addSchema;
-		try {
-			addSchema = writer.writeFeatures(fc, schema, out, srsName);
-		} finally {
-			out.flush();
-			out.close();
-		}
+		writer.setTarget(new FileIOSupplier(outFile));
 		
-		if (!DEL_TEMP_FILES && Desktop.isDesktopSupported()) {
-			Desktop.getDesktop().open(outFile);
-		}
+		IOReport report = writer.execute(new LogProgressIndicator());
+		assertTrue("Writing the GML output not successful", report.isSuccess());
 		
-		Report report = validate(schema, outFile.toURI(), addSchema);
+		List<Schema> validationSchemas = writer.getValidationSchemas();
+		
+//		if (!DEL_TEMP_FILES && Desktop.isDesktopSupported()) {
+//			Desktop.getDesktop().open(outFile);
+//		}
+		
+		Report valReport = validate(schema, outFile.toURI(), validationSchemas);
 		
 		// load file
 		FeatureCollection<FeatureType, Feature> loaded = loadGML(
@@ -807,7 +821,7 @@ public class StreamGmlWriterTest {
 			outFile.deleteOnExit();
 		}
 		
-		return report;
+		return valReport;
 	}
 
 	/**

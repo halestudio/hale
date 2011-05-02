@@ -37,6 +37,7 @@ import static org.junit.Assert.assertFalse;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
+@SuppressWarnings("restriction")
 public class PatternTest {
 	
 	private static final String GML_NS = "http://www.opengis.net/gml"; //$NON-NLS-1$
