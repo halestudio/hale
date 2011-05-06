@@ -74,6 +74,7 @@ import eu.esdihumboldt.hale.gmlparser.GmlHelper;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.io.gml.writer.GmlInstanceWriterFactory;
+import eu.esdihumboldt.hale.io.gml.writer.XmlInstanceWriterFactory;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryConverterRegistry;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryConverterRegistry.ConversionLadder;
 import eu.esdihumboldt.hale.io.xml.validator.Report;
@@ -560,7 +561,7 @@ public class StreamGmlWriterTest {
 	 */
 	@Test
 	public void testTransformWrite_WVA() throws Exception {
-		Report report = transformTest(
+		Report report = transformGmlTest(
 				getClass().getResource("/data/sample_wva/wfs_va_sample.gml").toURI(), //$NON-NLS-1$
 				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(), //$NON-NLS-1$
 				getClass().getResource("/data/sample_wva/watercourse_va.xml.goml").toURI(), //$NON-NLS-1$
@@ -579,14 +580,16 @@ public class StreamGmlWriterTest {
 	 */
 	@Test
 	public void testTransformWrite_Buek200() throws Exception {
-		Report report = transformTest(
+		Report report = transformXmlTest(
 				getClass().getResource("/data/buek200/source/cc7910_8710j.gml").toURI(), //$NON-NLS-1$
 				getClass().getResource("/data/buek200/source/cc7910_8710j.xsd").toURI(), //$NON-NLS-1$
 				getClass().getResource("/data/buek200/_gssoil_test_example.xml.goml").toURI(), //$NON-NLS-1$
 				getClass().getResource("/data/buek200/target/Ger_Buek200_ext.xsd").toURI(), //$NON-NLS-1$
 				"transformWrite_Buek200", //$NON-NLS-1$
 				true,
-				"EPSG:25832"); //$NON-NLS-1$
+				"EPSG:25832",
+				"http://www.SoilML.org",
+				"SoilML_DataFile"); //$NON-NLS-1$
 		
 		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
@@ -598,7 +601,7 @@ public class StreamGmlWriterTest {
 	 */
 	@Test
 	public void testTransformWrite_DKM() throws Exception {
-		Report report = transformTest(
+		Report report = transformGmlTest(
 				getClass().getResource("/data/dkm_austria/KA_14168_EPSG25833.gml").toURI(), //$NON-NLS-1$
 				getClass().getResource("/data/dkm_austria/KA_14168_EPSG25833.xsd").toURI(), //$NON-NLS-1$
 				getClass().getResource("/data/dkm_austria/mapping_dkm_inspire.xml.goml").toURI(), //$NON-NLS-1$
@@ -617,7 +620,7 @@ public class StreamGmlWriterTest {
 	 */
 	@Test
 	public void testTransformWrite_ERM() throws Exception {
-		Report report = transformTest(
+		Report report = transformGmlTest(
 				getClass().getResource("/data/erm/ERM_Watercourse_FME.gml").toURI(), //$NON-NLS-1$
 				getClass().getResource("/data/erm/ERM_Watercourse_FME.xsd").toURI(), //$NON-NLS-1$
 				getClass().getResource("/data/erm/_watrcrsl_inspire.xml.goml").toURI(), //$NON-NLS-1$
@@ -629,9 +632,17 @@ public class StreamGmlWriterTest {
 		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
-	private Report transformTest(URI sourceData, URI sourceSchemaLocation,
+	private Report transformGmlTest(URI sourceData, URI sourceSchemaLocation,
 			URI mappingLocation, URI targetSchemaLocation, String testName,
 			boolean onlyOne, String srsName)
+			throws Exception {
+		return transformXmlTest(sourceData, sourceSchemaLocation, mappingLocation, 
+				targetSchemaLocation, testName, onlyOne, srsName, null, null);
+	}
+	
+	private Report transformXmlTest(URI sourceData, URI sourceSchemaLocation,
+			URI mappingLocation, URI targetSchemaLocation, String testName,
+			boolean onlyOne, String srsName, String rootNs, String rootName)
 			throws Exception {
 		// load both schemas
 		SchemaProvider sp = new ApacheSchemaProvider();
@@ -670,7 +681,16 @@ public class StreamGmlWriterTest {
 		
 		// write
 		// write to file
-		InstanceWriter writer = new GmlInstanceWriterFactory().createProvider();
+		InstanceWriter writer;
+		if (rootName != null) {
+			writer = new XmlInstanceWriterFactory().createProvider();
+			writer.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAMESPACE, rootNs);
+			writer.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAME, rootName);
+		}
+		else {
+			// GML
+			writer = new GmlInstanceWriterFactory().createProvider();
+		}
 		
 		assertNotNull(writer);
 		
