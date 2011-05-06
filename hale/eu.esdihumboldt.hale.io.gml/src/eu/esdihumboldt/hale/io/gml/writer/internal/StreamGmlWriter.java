@@ -61,6 +61,8 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.StreamGeometryWriter
 import eu.esdihumboldt.hale.io.gml.writer.internal.simpletype.SimpleTypeUtil;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
@@ -242,8 +244,11 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		
 		// fill type index with root types
 		types = new TypeIndex();
-		for (SchemaElement element : getTargetSchema().getElements().values()) {
-			types.addType(element.getType());
+//		for (SchemaElement element : getTargetSchema().getElements().values()) {
+//			types.addType(element.getType());
+//		}
+		for (Definition def : getTargetSchema().getTypes().keySet()) {
+			types.addType(DefinitionUtil.getType(def));
 		}
 	}
 
