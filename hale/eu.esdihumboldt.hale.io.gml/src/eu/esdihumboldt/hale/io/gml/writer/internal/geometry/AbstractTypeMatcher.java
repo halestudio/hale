@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 
 import org.opengis.feature.type.Name;
 
@@ -136,10 +137,25 @@ public abstract class AbstractTypeMatcher<T> {
 //						new DefinitionPath(basePath).addSubType(subtype),
 //						new HashSet<TypeDefinition>(checkedTypes)));
 //			}
+			Set<TypeDefinition> substitutionTypes = new HashSet<TypeDefinition>();
 			for (SchemaElement element : type.getSubstitutions(basePath.getLastName())) {
+				substitutionTypes.add(element.getType());
 				candidates.add(new PathCandidate(element.getType(),
 						new DefinitionPath(basePath).addSubstitution(element),
 						new HashSet<TypeDefinition>(checkedTypes)));
+			}
+			
+			// step down sub-types - elements may be downcast using xsi:type
+			if (!type.isAbstract()) { // don't do it for abstract types as they have no element that may be used XXX is this true?
+				for (TypeDefinition subtype : type.getSubTypes()) {
+					if (!substitutionTypes.contains(subtype)) { // only types that are no valid substitutions
+						// add candidate
+//						Name element = basePath.getLastName(); // the element name that will be extended with xsi:type
+						candidates.add(new PathCandidate(subtype,
+								new DefinitionPath(basePath).addDowncast(subtype),
+								new HashSet<TypeDefinition>(checkedTypes)));
+					}
+				}
 			}
 		}
 		

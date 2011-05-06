@@ -17,11 +17,10 @@ import org.opengis.feature.type.Name;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
- * 
+ * Path element in a definition path
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public interface PathElement {
 
@@ -32,7 +31,7 @@ public interface PathElement {
 	 * @return the element name
 	 */
 	public abstract Name getName();
-
+	
 	/**
 	 * Get the path element type definition
 	 * 
@@ -47,5 +46,13 @@ public interface PathElement {
 	 * @return if this path element represents a property
 	 */
 	public abstract boolean isProperty();
+	
+	/**
+	 * Determines if this path element represents a type downcast. This means
+	 * xsi:type has to be used when writing this element
+	 * 
+	 * @return if this path element represents a type downcast
+	 */
+	public boolean isDowncast();
 
 }

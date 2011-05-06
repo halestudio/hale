@@ -80,7 +80,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	/**
 	 * Schema instance namespace (for specifying schema locations)
 	 */
-	private static final String SCHEMA_INSTANCE_NS = "http://www.w3.org/2001/XMLSchema-instance"; //$NON-NLS-1$
+	public static final String SCHEMA_INSTANCE_NS = "http://www.w3.org/2001/XMLSchema-instance"; //$NON-NLS-1$
 	
 	private static final ALogger log = ALoggerFactory.getLogger(StreamGmlWriter.class);
 

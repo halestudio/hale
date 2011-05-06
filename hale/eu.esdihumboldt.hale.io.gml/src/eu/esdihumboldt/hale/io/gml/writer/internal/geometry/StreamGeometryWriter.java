@@ -239,7 +239,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 			for (PathElement step : path.getSteps()) {
 				// start elements
 				name = step.getName();
-				writer.writeStartElement(name.getNamespaceURI(), name.getLocalPart());
+				GmlWriterUtil.writeStartPathElement(writer, step, false);
 				// write eventual required ID
 				GmlWriterUtil.writeRequiredID(writer, step.getType(), null, false);
 				// write eventual srsName

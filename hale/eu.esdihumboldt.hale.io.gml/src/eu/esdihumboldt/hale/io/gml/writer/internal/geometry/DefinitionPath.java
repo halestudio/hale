@@ -31,7 +31,62 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @version $Id$ 
  */
 public class DefinitionPath {
+	
+	/**
+	 * Downcast path element
+	 */
+	private static class DowncastElement implements PathElement {
 
+		private final Name elementName;
+		
+		private final TypeDefinition type;
+		
+		/**
+		 * Constructor
+		 * 
+		 * @param elementName the name of the element the downcast is applied to
+		 * @param type the definition of the type that is downcast to
+		 */
+		public DowncastElement(Name elementName, TypeDefinition type) {
+			super();
+			this.elementName = elementName;
+			this.type = type;
+		}
+
+		/**
+		 * @see PathElement#getName()
+		 */
+		@Override
+		public Name getName() {
+			return elementName;
+		}
+
+		/**
+		 * @see PathElement#getType()
+		 */
+		@Override
+		public TypeDefinition getType() {
+			return type;
+		}
+
+		/**
+		 * @see PathElement#isProperty()
+		 */
+		@Override
+		public boolean isProperty() {
+			return false;
+		}
+
+		/**
+		 * @see PathElement#isDowncast()
+		 */
+		@Override
+		public boolean isDowncast() {
+			return true;
+		}
+
+	}
+	
 	/**
 	 * Sub-type path element
 	 */
@@ -72,12 +127,20 @@ public class DefinitionPath {
 			return false;
 		}
 
+		/**
+		 * @see PathElement#isDowncast()
+		 */
+		@Override
+		public boolean isDowncast() {
+			return false;
+		}
+
 	}
 
 	/**
 	 * A property path element 
 	 */
-	public static class PropertyElement implements PathElement {
+	private static class PropertyElement implements PathElement {
 		
 		private final AttributeDefinition attdef;
 
@@ -109,6 +172,14 @@ public class DefinitionPath {
 		 */
 		public boolean isProperty() {
 			return true;
+		}
+
+		/**
+		 * @see PathElement#isDowncast()
+		 */
+		@Override
+		public boolean isDowncast() {
+			return false;
 		}
 
 	}
@@ -155,7 +226,7 @@ public class DefinitionPath {
 	public DefinitionPath addSubstitution(SchemaElement element) {
 		// 1. sub-type must override previous sub-type
 		// 2. sub-type must override a previous property XXX check this!!! or only the first?
-		// XXX -> there removing the previous path element
+		// XXX -> therefore removing the previous path element
 		if (steps.size() > 0) {
 			steps.remove(steps.size() - 1);
 		}
@@ -164,6 +235,28 @@ public class DefinitionPath {
 		
 		return this;
 	}
+	
+	/**
+	 * Add a downcast
+	 * 
+	 * @param subtype the definition of the sub-type that is to be cast to
+	 * @return this path for chaining
+	 */
+	public DefinitionPath addDowncast(TypeDefinition subtype) {
+		// 1. sub-type must override previous sub-type
+		// 2. sub-type must override a previous property XXX check this!!! or only the first?
+		// XXX -> therefore removing the previous path element
+		Name elementName = getLastName();
+		
+		if (steps.size() > 0) {
+			steps.remove(steps.size() - 1);
+		}
+		
+		addStep(new DowncastElement(elementName, subtype));
+		
+		return this;
+	}
+
 	
 	private void addStep(PathElement step) {
 		steps.add(step);
@@ -270,5 +363,5 @@ public class DefinitionPath {
 		}
 		return steps.get(steps.size() - 1);
 	}
-	
+
 }

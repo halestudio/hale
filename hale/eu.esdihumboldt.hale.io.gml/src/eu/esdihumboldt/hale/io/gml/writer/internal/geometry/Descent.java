@@ -15,8 +15,6 @@ package eu.esdihumboldt.hale.io.gml.writer.internal.geometry;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.opengis.feature.type.Name;
-
 import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
 
 /**
@@ -83,15 +81,9 @@ public class Descent {
 			return new Descent(writer, descendPath);
 		}
 		
-		Name name = descendPath.getLastName(); //XXX the element name used may be wrong, is this an issue?
 		for (PathElement step : descendPath.getSteps()) {
 			// start elements
-			name = step.getName();
-			writer.writeStartElement(name.getNamespaceURI(), name.getLocalPart());
-			// write eventual required ID
-			if (generateRequiredIDs) {
-				GmlWriterUtil.writeRequiredID(writer, step.getType(), null, false);
-			}
+			GmlWriterUtil.writeStartPathElement(writer, step, generateRequiredIDs);
 		}
 		
 		return new Descent(writer, descendPath); 

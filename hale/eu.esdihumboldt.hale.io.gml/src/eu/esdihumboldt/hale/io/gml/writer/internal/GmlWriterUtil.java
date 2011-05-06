@@ -27,6 +27,7 @@ import org.opengis.feature.type.Name;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 
+import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.PathElement;
 import eu.esdihumboldt.hale.io.gml.writer.internal.simpletype.SimpleTypeUtil;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
@@ -203,6 +204,31 @@ public abstract class GmlWriterUtil {
 		else {
 			UUID genID = UUID.randomUUID();
 			writeAttribute(writer, "_" + genID.toString(), idAtt); //$NON-NLS-1$
+		}
+	}
+
+	/**
+	 * Write the opening element of a {@link PathElement} to the given stream 
+	 * writer
+	 * 
+	 * @param writer the stream writer
+	 * @param step the path element
+	 * @param generateRequiredID if required IDs shall be generated for the 
+	 *   path element
+	 * @throws XMLStreamException if writing to the stream writer fails 
+	 */
+	public static void writeStartPathElement(XMLStreamWriter writer, PathElement step, 
+			boolean generateRequiredID) throws XMLStreamException {
+		Name name = step.getName();
+		writer.writeStartElement(name.getNamespaceURI(), name.getLocalPart());
+		if (step.isDowncast()) {
+			// add xsi:type
+			writer.writeAttribute(StreamGmlWriter.SCHEMA_INSTANCE_NS, "type", 
+					step.getType().getName().getLocalPart()); //XXX namespace needed for the attribute value?
+		}
+		// write eventual required ID
+		if (generateRequiredID) {
+			GmlWriterUtil.writeRequiredID(writer, step.getType(), null, false);
 		}
 	}
 
