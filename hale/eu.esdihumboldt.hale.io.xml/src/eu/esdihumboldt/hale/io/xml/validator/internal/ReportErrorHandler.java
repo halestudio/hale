@@ -30,7 +30,7 @@ import de.cs3d.util.logging.ALoggerFactory;
  */
 public class ReportErrorHandler implements ErrorHandler {
 	
-	private static final ALogger log = ALoggerFactory.getMaskingLogger(ReportErrorHandler.class, null);
+	private static final ALogger log = ALoggerFactory.getLogger(ReportErrorHandler.class);
 	
 	private final ReportImpl report;
 
