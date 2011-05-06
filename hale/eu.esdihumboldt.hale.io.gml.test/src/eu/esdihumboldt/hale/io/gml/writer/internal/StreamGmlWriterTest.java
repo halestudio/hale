@@ -607,7 +607,7 @@ public class StreamGmlWriterTest {
 				getClass().getResource("/data/dkm_austria/mapping_dkm_inspire.xml.goml").toURI(), //$NON-NLS-1$
 				getClass().getResource("/data/dkm_austria/inspire3/CadastralParcels.xsd").toURI(), //$NON-NLS-1$
 				"transformWrite_DKM", //$NON-NLS-1$
-				true,
+				false,
 				"EPSG:25833"); //$NON-NLS-1$
 		
 		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
