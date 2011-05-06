@@ -93,6 +93,7 @@ public class Descent {
 
 		List<PathElement> stepDown = descendPath.getSteps();
 		PathElement downFrom = null;
+		PathElement downAfter = null;
 		
 		if (previousDescent != null) {
 			List<PathElement> previousSteps = previousDescent.getPath().getSteps();
@@ -114,24 +115,45 @@ public class Descent {
 				}
 			}
 			
-			if (firstNonUniqueMatch == null) {
-				throw new IllegalStateException(MessageFormat.format(
-						"Previous path ''{0}'' has only unique common elements with path ''{1}'', therefore a sequence of both is not possible", 
-						previousDescent.getPath().toString(), descendPath.toString()));
-			}
-
 			// close previous descent as needed
 			ListIterator<PathElement> itPrev = previousSteps.listIterator(previousSteps.size());
-			while (itPrev.hasPrevious()) {
-				// close step
-				writer.writeEndElement();
+			if (firstNonUniqueMatch == null) {
+				boolean endedSomething = false;
+				while (itPrev.hasPrevious()) {
+					PathElement step = itPrev.previous();
+					if (stepDown.contains(step)) {
+						// step is contained in both paths
+						if (step.isUnique()) {
+							// step may not be closed, as the next path also wants to enter
+							// from the next path all steps before and including this step must be ignored for stepping down
+							downAfter = step;
+	 						break;
+	 					}
+	 				}
+					
+					// close step
+					writer.writeEndElement();
+					endedSomething = true;
+	 			}
 				
-				PathElement step = itPrev.previous();
-				if (firstNonUniqueMatch.equals(step)) {
-					// step after this may not be closed, as the next path also wants to enter
-					// from the next path all steps before this step must be ignored for stepping down
-					downFrom = step;
-					break;
+				if (!endedSomething) {
+					throw new IllegalStateException(MessageFormat.format(
+							"Previous path ''{0}'' has only unique common elements with path ''{1}'', therefore a sequence of both is not possible", 
+							previousDescent.getPath().toString(), descendPath.toString()));
+				}
+			}
+			else {
+				while (itPrev.hasPrevious()) {
+					// close step
+					writer.writeEndElement();
+					
+					PathElement step = itPrev.previous();
+					if (firstNonUniqueMatch.equals(step)) {
+						// step after this may not be closed, as the next path also wants to enter
+						// from the next path all steps before this step must be ignored for stepping down
+						downFrom = step;
+						break;
+					}
 				}
 			}
 		}
@@ -141,9 +163,13 @@ public class Descent {
 				downFrom = null;
 			}
 			
-			if (downFrom == null) {
+			if (downFrom == null && downAfter == null) {
 				// start elements
 				GmlWriterUtil.writeStartPathElement(writer, step, generateRequiredIDs);
+			}
+			
+			if (downAfter != null && downAfter.equals(step)) {
+				downAfter = null;
 			}
 		}
 		
