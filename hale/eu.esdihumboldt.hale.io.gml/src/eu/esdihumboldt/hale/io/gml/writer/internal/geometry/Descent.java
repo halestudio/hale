@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -91,39 +92,58 @@ public class Descent {
 		}
 
 		List<PathElement> stepDown = descendPath.getSteps();
-		PathElement downAfter = null;
+		PathElement downFrom = null;
 		
 		if (previousDescent != null) {
 			List<PathElement> previousSteps = previousDescent.getPath().getSteps();
 			
-			ListIterator<PathElement> itPrev = previousSteps.listIterator(previousSteps.size());
-			while (itPrev.hasPrevious()) {
-				PathElement step = itPrev.previous();
+			// find the first non-unique match in both paths 
+			PathElement firstNonUniqueMatch = null;
+			//XXX should we check from the beginning how far the paths match?
+			for (PathElement step : previousSteps) {
 				if (stepDown.contains(step)) {
-					// step is contained in both paths
-					if (step.isUnique()) {
-						// step may not be closed, as the next path also wants to enter
-						// from the next path all steps before and including this step must be ignored for stepping down
-						downAfter = step;
+					if (!step.isUnique()) {
+						firstNonUniqueMatch = step;
+						// found the first non-unique match
 						break;
 					}
 				}
-				
-				// close step
-				writer.writeEndElement();
+				else {
+					// after the first miss no more valid matches can be found
+					break;
+				}
 			}
 			
+			if (firstNonUniqueMatch == null) {
+				throw new IllegalStateException(MessageFormat.format(
+						"Previous path ''{0}'' has only unique common elements with path ''{1}'', therefore a sequence of both is not possible", 
+						previousDescent.getPath().toString(), descendPath.toString()));
+			}
+
 			// close previous descent as needed
-			
+			ListIterator<PathElement> itPrev = previousSteps.listIterator(previousSteps.size());
+			while (itPrev.hasPrevious()) {
+				// close step
+				writer.writeEndElement();
+				
+				PathElement step = itPrev.previous();
+				if (firstNonUniqueMatch.equals(step)) {
+					// step after this may not be closed, as the next path also wants to enter
+					// from the next path all steps before this step must be ignored for stepping down
+					downFrom = step;
+					break;
+				}
+			}
 		}
 		
 		for (PathElement step : stepDown) {
-			if (downAfter == null) {
+			if (downFrom != null && downFrom.equals(step)) {
+				downFrom = null;
+			}
+			
+			if (downFrom == null) {
 				// start elements
 				GmlWriterUtil.writeStartPathElement(writer, step, generateRequiredIDs);
-			}
-			else if (downAfter.equals(step)) {
-				downAfter = null;
 			}
 		}
 		
