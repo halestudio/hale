@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.io.xml.validator.internal;
 
+import java.text.MessageFormat;
+
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -28,7 +30,7 @@ import de.cs3d.util.logging.ALoggerFactory;
  */
 public class ReportErrorHandler implements ErrorHandler {
 	
-	private static final ALogger log = ALoggerFactory.getLogger(ReportErrorHandler.class);
+	private static final ALogger log = ALoggerFactory.getMaskingLogger(ReportErrorHandler.class, null);
 	
 	private final ReportImpl report;
 
@@ -44,7 +46,8 @@ public class ReportErrorHandler implements ErrorHandler {
 
 	@Override
 	public void warning(SAXParseException e) throws SAXException {
-		log.warn(e.getLocalizedMessage());
+		log.warn(MessageFormat.format("Line {0} - {1}", e.getLineNumber(), 
+				e.getLocalizedMessage()));
 		report.addWarning(e);
 	}
 	
@@ -55,7 +58,8 @@ public class ReportErrorHandler implements ErrorHandler {
 	
 	@Override
 	public void error(SAXParseException e) throws SAXException {
-		log.error(e.getLocalizedMessage());
+		log.error(MessageFormat.format("Line {0} - {1}", e.getLineNumber(), 
+				e.getLocalizedMessage()));
 		report.addError(e);
 	}
 
