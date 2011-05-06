@@ -81,7 +81,7 @@ public class LogProgressIndicator implements ProgressIndicator {
 		this.totalWork = totalWork;
 		this.worked = 0;
 		if (mainTaskName != null) {
-			log.info(MessageFormat.format("Starting task {0}...", mainTaskName));
+			log.info(MessageFormat.format("Starting task ''{0}''...", mainTaskName));
 		}
 		else {
 			log.info("Starting task...");
@@ -94,7 +94,7 @@ public class LogProgressIndicator implements ProgressIndicator {
 	@Override
 	public void end() {
 		if (mainTaskName != null) {
-			log.info(MessageFormat.format("Finished task {0}.", mainTaskName));
+			log.info(MessageFormat.format("Finished task ''{0}''.", mainTaskName));
 		}
 		else {
 			log.info("Finished task.");
