@@ -122,7 +122,7 @@ public abstract class AbstractTypeMatcher<T> {
 				// step down properties
 				Iterable<AttributeDefinition> properties = (basePath.isEmpty() || basePath.getLastElement().isProperty())?(type.getAttributes()):(type.getDeclaredAttributes());
 				for (AttributeDefinition att : properties) {
-					if (att.isElement()) { // only descend into elements
+					if (att.isElement() && att.getAttributeType() != null) { // only descend into elements, only descend if there actually is a type definition available
 						candidates.add(new PathCandidate(att.getAttributeType(), 
 								new DefinitionPath(basePath).addProperty(att), 
 								new HashSet<TypeDefinition>(checkedTypes)));
