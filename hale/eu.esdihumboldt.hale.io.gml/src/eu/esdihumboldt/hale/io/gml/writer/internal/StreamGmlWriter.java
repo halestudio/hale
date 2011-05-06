@@ -414,6 +414,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		// write the instances
 		Iterator<Feature> itFeature = features.iterator();
 		try {
+			Descent lastDescent = null;
 			while (itFeature.hasNext() && !progress.isCanceled()) {
 				Feature feature = itFeature.next();
 				
@@ -425,9 +426,8 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 				DefinitionPath defPath = findMemberAttribute(
 						containerDefinition, containerName, type);
 				if (defPath != null) {
-					Descent descent = Descent.descend(writer, defPath, false);
+					lastDescent = Descent.descend(writer, defPath, lastDescent, false);
 		            writeMember(feature, type);
-		            descent.close();
 				}
 				else {
 					reporter.warn(new IOMessageImpl(MessageFormat.format(
@@ -436,6 +436,9 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 				}
 	            
 	            progress.advance(1);
+			}
+			if (lastDescent != null) {
+				lastDescent.close();
 			}
 		} finally {
 			features.close(itFeature);
@@ -462,7 +465,10 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		for (AttributeDefinition attribute : container.getAttributes()) {
 			// direct match
 			if (attribute.getAttributeType().equals(memberType)) {
-				return new DefinitionPath(attribute.getAttributeType(), new NameImpl(attribute.getNamespace(), attribute.getName()));
+				return new DefinitionPath(
+						attribute.getAttributeType(), 
+						new NameImpl(attribute.getNamespace(), attribute.getName()),
+						attribute.getMaxOccurs() <= 1);
 			}
 		}
 		
@@ -494,7 +500,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		
 		// candidate match
 		List<DefinitionPath> candidates = matcher.findCandidates(container, 
-				containerName, memberType);
+				containerName, true, memberType);
 		if (candidates != null && !candidates.isEmpty()) {
 			return candidates.get(0); //TODO notification? FIXME will this work? possible problem: attribute is selected even though better candidate is in other attribute
 		}

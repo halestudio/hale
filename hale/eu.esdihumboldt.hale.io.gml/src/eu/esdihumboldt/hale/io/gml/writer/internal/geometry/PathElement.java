@@ -54,5 +54,14 @@ public interface PathElement {
 	 * @return if this path element represents a type downcast
 	 */
 	public boolean isDowncast();
+	
+	/**
+	 * Determines if this path element represents an element that can't be
+	 * repeated
+	 * 
+	 * @return if this path element represents an element that can't be
+	 *   repeated
+	 */
+	public boolean isUnique();
 
 }

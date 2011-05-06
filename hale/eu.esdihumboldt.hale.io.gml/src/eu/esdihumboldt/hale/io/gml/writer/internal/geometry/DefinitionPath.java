@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.geotools.feature.NameImpl;
@@ -40,17 +41,22 @@ public class DefinitionPath {
 		private final Name elementName;
 		
 		private final TypeDefinition type;
+
+		private final boolean unique;
 		
 		/**
 		 * Constructor
 		 * 
 		 * @param elementName the name of the element the downcast is applied to
 		 * @param type the definition of the type that is downcast to
+		 * @param unique if the represented element cannot be repeated
 		 */
-		public DowncastElement(Name elementName, TypeDefinition type) {
+		public DowncastElement(Name elementName, TypeDefinition type,
+				boolean unique) {
 			super();
 			this.elementName = elementName;
 			this.type = type;
+			this.unique = unique;
 		}
 
 		/**
@@ -85,6 +91,52 @@ public class DefinitionPath {
 			return true;
 		}
 
+		/**
+		 * @see PathElement#isUnique()
+		 */
+		@Override
+		public boolean isUnique() {
+			return unique;
+		}
+
+		/**
+		 * @see Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((elementName == null) ? 0 : elementName.hashCode());
+			result = prime * result + ((type == null) ? 0 : type.hashCode());
+			return result;
+		}
+
+		/**
+		 * @see Object#equals(java.lang.Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			DowncastElement other = (DowncastElement) obj;
+			if (elementName == null) {
+				if (other.elementName != null)
+					return false;
+			} else if (!elementName.equals(other.elementName))
+				return false;
+			if (type == null) {
+				if (other.type != null)
+					return false;
+			} else if (!type.equals(other.type))
+				return false;
+			return true;
+		}
+
 	}
 	
 	/**
@@ -94,13 +146,17 @@ public class DefinitionPath {
 
 		private final SchemaElement element;
 		
+		private final boolean unique;
+		
 		/**
 		 * Constructor
 		 * 
 		 * @param element the substitution element
+		 * @param unique if the represented element cannot be repeated
 		 */
-		public SubstitutionElement(SchemaElement element) {
+		public SubstitutionElement(SchemaElement element, boolean unique) {
 			this.element = element;
+			this.unique = unique;
 		}
 
 		/**
@@ -133,6 +189,46 @@ public class DefinitionPath {
 		@Override
 		public boolean isDowncast() {
 			return false;
+		}
+
+		/**
+		 * @see PathElement#isUnique()
+		 */
+		@Override
+		public boolean isUnique() {
+			return unique;
+		}
+
+		/**
+		 * @see Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((element == null) ? 0 : element.hashCode());
+			return result;
+		}
+
+		/**
+		 * @see Object#equals(Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			SubstitutionElement other = (SubstitutionElement) obj;
+			if (element == null) {
+				if (other.element != null)
+					return false;
+			} else if (!element.equals(other.element))
+				return false;
+			return true;
 		}
 
 	}
@@ -182,6 +278,46 @@ public class DefinitionPath {
 			return false;
 		}
 
+		/**
+		 * @see PathElement#isUnique()
+		 */
+		@Override
+		public boolean isUnique() {
+			return attdef.getMaxOccurs() <= 1;
+		}
+
+		/**
+		 * @see Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((attdef == null) ? 0 : attdef.hashCode());
+			return result;
+		}
+
+		/**
+		 * @see Object#equals(Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			PropertyElement other = (PropertyElement) obj;
+			if (attdef == null) {
+				if (other.attdef != null)
+					return false;
+			} else if (!attdef.equals(other.attdef))
+				return false;
+			return true;
+		}
+
 	}
 
 	private final List<PathElement> steps = new ArrayList<PathElement>();
@@ -191,6 +327,8 @@ public class DefinitionPath {
 	private Name lastName;
 	
 	private GeometryWriter<?> geometryWriter;
+
+	private boolean lastUnique;
 	
 	/**
 	 * Create a definition path beginning with the given base path
@@ -198,7 +336,7 @@ public class DefinitionPath {
 	 * @param basePath the base path
 	 */
 	public DefinitionPath(DefinitionPath basePath) {
-		this(basePath.lastType, basePath.lastName);
+		this(basePath.lastType, basePath.lastName, basePath.lastUnique);
 		
 		steps.addAll(basePath.getSteps());
 	}
@@ -208,12 +346,14 @@ public class DefinitionPath {
 	 * 
 	 * @param firstType the type starting the path 
 	 * @param elementName the corresponding element name
+	 * @param unique if the element starting the path cannot be repeated
 	 */
-	public DefinitionPath(TypeDefinition firstType, Name elementName) {
+	public DefinitionPath(TypeDefinition firstType, Name elementName, boolean unique) {
 		super();
 		
 		lastType = firstType;
 		lastName = elementName;
+		lastUnique = unique; 
 	}
 
 	/**
@@ -227,11 +367,13 @@ public class DefinitionPath {
 		// 1. sub-type must override previous sub-type
 		// 2. sub-type must override a previous property XXX check this!!! or only the first?
 		// XXX -> therefore removing the previous path element
+		boolean unique = isLastUnique();
+		
 		if (steps.size() > 0) {
 			steps.remove(steps.size() - 1);
 		}
 		
-		addStep(new SubstitutionElement(element));
+		addStep(new SubstitutionElement(element, unique));
 		
 		return this;
 	}
@@ -247,12 +389,13 @@ public class DefinitionPath {
 		// 2. sub-type must override a previous property XXX check this!!! or only the first?
 		// XXX -> therefore removing the previous path element
 		Name elementName = getLastName();
+		boolean unique = isLastUnique();
 		
 		if (steps.size() > 0) {
 			steps.remove(steps.size() - 1);
 		}
 		
-		addStep(new DowncastElement(elementName, subtype));
+		addStep(new DowncastElement(elementName, subtype, unique));
 		
 		return this;
 	}
@@ -262,6 +405,7 @@ public class DefinitionPath {
 		steps.add(step);
 		lastType = step.getType();
 		lastName = step.getName();
+		lastUnique = step.isUnique();
 	}
 
 	/**
@@ -295,7 +439,7 @@ public class DefinitionPath {
 	 * @return the steps
 	 */
 	public List<PathElement> getSteps() {
-		return steps;
+		return Collections.unmodifiableList(steps);
 	}
 	
 	/**
@@ -325,6 +469,17 @@ public class DefinitionPath {
 	 */
 	public Name getLastName() {
 		return lastName;
+	}
+
+	/**
+	 * Get if the last element in the path is unique, which means that it cannot
+	 * be repeated
+	 * 
+	 * @return if the last element in the path is unique, which means that it 
+	 *   cannot be repeated
+	 */
+	public boolean isLastUnique() {
+		return lastUnique;
 	}
 
 	/**

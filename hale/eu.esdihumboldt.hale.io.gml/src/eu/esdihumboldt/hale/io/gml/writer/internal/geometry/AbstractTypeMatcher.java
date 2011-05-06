@@ -87,15 +87,16 @@ public abstract class AbstractTypeMatcher<T> {
 	 * 
 	 * @param elementType the start element type
 	 * @param elementName the start element name
+	 * @param unique if the start element cannot be repeated
 	 * @param matchParam the match parameter
 	 * 
 	 * @return the path candidates
 	 */
 	public List<DefinitionPath> findCandidates(TypeDefinition elementType, 
-			Name elementName, T matchParam) {
+			Name elementName, boolean unique, T matchParam) {
 		Queue<PathCandidate> candidates = new LinkedList<PathCandidate>();
 		PathCandidate base = new PathCandidate(elementType, 
-				new DefinitionPath(elementType, elementName),
+				new DefinitionPath(elementType, elementName, unique),
 				new HashSet<TypeDefinition>());
 		candidates.add(base);
 		

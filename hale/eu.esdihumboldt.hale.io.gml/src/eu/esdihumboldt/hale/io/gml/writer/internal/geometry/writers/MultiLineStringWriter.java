@@ -65,7 +65,7 @@ public class MultiLineStringWriter extends
 			}
 			
 			Descent descent = descend(writer, Pattern.parse("*/LineString"),  //$NON-NLS-1$
-					elementType, elementName, gmlNs);
+					elementType, elementName, gmlNs, false);
 			
 			LineString line = (LineString) geometry.getGeometryN(i);
 			writeCoordinates(writer, line.getCoordinates(), 

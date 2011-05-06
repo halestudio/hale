@@ -54,7 +54,7 @@ public class PatternTest {
 	public void testDirect() {
 		Pattern pattern = Pattern.parse("Curve"); //$NON-NLS-1$
 		TypeDefinition start = createCurveType();
-		DefinitionPath path = pattern.match(start, new DefinitionPath(start, CURVE_ELEMENT), GML_NS);
+		DefinitionPath path = pattern.match(start, new DefinitionPath(start, CURVE_ELEMENT, false), GML_NS);
 		assertNotNull("A match should have been found", path); //$NON-NLS-1$
 		assertTrue("Path should be empty", path.isEmpty()); //$NON-NLS-1$
 		assertEquals(start, path.getLastType());
@@ -67,7 +67,7 @@ public class PatternTest {
 	public void testDirectFail() {
 		Pattern pattern = Pattern.parse("CurveType"); //$NON-NLS-1$
 		TypeDefinition start = createCurveType();
-		DefinitionPath path = pattern.match(start, new DefinitionPath(start, CURVE_ELEMENT), GML_NS);
+		DefinitionPath path = pattern.match(start, new DefinitionPath(start, CURVE_ELEMENT, false), GML_NS);
 		assertNull("A match should not have been found", path); //$NON-NLS-1$
 	}
 	
@@ -78,7 +78,7 @@ public class PatternTest {
 	public void testDescent() {
 		Pattern pattern = Pattern.parse("**/LineStringSegment"); //$NON-NLS-1$
 		TypeDefinition start = createCurveType();
-		DefinitionPath path = pattern.match(start, new DefinitionPath(start, CURVE_ELEMENT), GML_NS);
+		DefinitionPath path = pattern.match(start, new DefinitionPath(start, CURVE_ELEMENT, false), GML_NS);
 		assertNotNull("A match should have been found", path); //$NON-NLS-1$
 		assertFalse("Path should not be empty", path.isEmpty()); //$NON-NLS-1$
 		List<PathElement> steps = path.getSteps();

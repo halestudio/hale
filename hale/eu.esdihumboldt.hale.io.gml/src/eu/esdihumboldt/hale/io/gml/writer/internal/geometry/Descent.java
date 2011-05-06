@@ -12,6 +12,9 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry;
 
+import java.util.List;
+import java.util.ListIterator;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -69,6 +72,8 @@ public class Descent {
 	 * 
 	 * @param writer the XML stream writer 
 	 * @param descendPath the path to descend
+	 * @param previousDescent the previous descent, that will be closed or 
+	 *   partially closed as needed, may be <code>null</code> 
 	 * @param generateRequiredIDs if required IDs shall be generated for the 
 	 *   path elements
 	 * @return the descent that was opened, it must be closed to close the
@@ -76,14 +81,50 @@ public class Descent {
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
 	public static Descent descend(XMLStreamWriter writer, 
-			DefinitionPath descendPath, boolean generateRequiredIDs) throws XMLStreamException {
+			DefinitionPath descendPath, Descent previousDescent, boolean generateRequiredIDs) throws XMLStreamException {
 		if (descendPath.isEmpty()) {
+			if (previousDescent != null) {
+				// close previous descent
+				previousDescent.close();
+			}
 			return new Descent(writer, descendPath);
 		}
+
+		List<PathElement> stepDown = descendPath.getSteps();
+		PathElement downAfter = null;
 		
-		for (PathElement step : descendPath.getSteps()) {
-			// start elements
-			GmlWriterUtil.writeStartPathElement(writer, step, generateRequiredIDs);
+		if (previousDescent != null) {
+			List<PathElement> previousSteps = previousDescent.getPath().getSteps();
+			
+			ListIterator<PathElement> itPrev = previousSteps.listIterator(previousSteps.size());
+			while (itPrev.hasPrevious()) {
+				PathElement step = itPrev.previous();
+				if (stepDown.contains(step)) {
+					// step is contained in both paths
+					if (step.isUnique()) {
+						// step may not be closed, as the next path also wants to enter
+						// from the next path all steps before and including this step must be ignored for stepping down
+						downAfter = step;
+						break;
+					}
+				}
+				
+				// close step
+				writer.writeEndElement();
+			}
+			
+			// close previous descent as needed
+			
+		}
+		
+		for (PathElement step : stepDown) {
+			if (downAfter == null) {
+				// start elements
+				GmlWriterUtil.writeStartPathElement(writer, step, generateRequiredIDs);
+			}
+			else if (downAfter.equals(step)) {
+				downAfter = null;
+			}
 		}
 		
 		return new Descent(writer, descendPath); 

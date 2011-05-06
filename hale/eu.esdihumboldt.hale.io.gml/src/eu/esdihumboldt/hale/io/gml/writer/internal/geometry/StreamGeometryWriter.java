@@ -211,7 +211,8 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 		}
 		
 		return super.findCandidates(property.getAttributeType(),
-				new NameImpl(property.getNamespace(), property.getName()), geomType);
+				new NameImpl(property.getNamespace(), property.getName()), 
+				property.getMaxOccurs() <= 1, geomType);
 	}
 
 	/**

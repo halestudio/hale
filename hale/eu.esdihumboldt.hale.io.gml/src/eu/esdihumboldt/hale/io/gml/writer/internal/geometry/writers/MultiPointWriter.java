@@ -66,7 +66,7 @@ public class MultiPointWriter extends AbstractGeometryWriter<MultiPoint> {
 			}
 			
 			Descent descent = descend(writer, Pattern.parse("*/Point"),  //$NON-NLS-1$
-					elementType, elementName, gmlNs);
+					elementType, elementName, gmlNs, false);
 			
 			Point point = (Point) geometry.getGeometryN(i);
 			pointWriter.write(

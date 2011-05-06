@@ -53,7 +53,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry>
 	/**
 	 * The attribute type names supported for writing coordinates with
 	 * {@link #writeCoordinates(XMLStreamWriter, Coordinate[], TypeDefinition, String)} or
-	 * {@link #descendAndWriteCoordinates(XMLStreamWriter, Pattern, Coordinate[], TypeDefinition, Name, String)}.
+	 * {@link #descendAndWriteCoordinates(XMLStreamWriter, Pattern, Coordinate[], TypeDefinition, Name, String, boolean)}.
 	 * 
 	 * Use for validating end-points.
 	 */
@@ -133,13 +133,14 @@ public abstract class AbstractGeometryWriter<T extends Geometry>
 	 * @param elementType the type of the encompassing element
 	 * @param elementName the encompassing element name
 	 * @param gmlNs the GML namespace
+	 * @param unique if the path's start element cannot be repeated
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
 	protected static void descendAndWriteCoordinates(XMLStreamWriter writer, 
 			Pattern descendPattern, Coordinate[] coordinates, 
-			TypeDefinition elementType, Name elementName, String gmlNs) throws XMLStreamException {
+			TypeDefinition elementType, Name elementName, String gmlNs, boolean unique) throws XMLStreamException {
 		Descent descent = descend(writer, descendPattern, elementType, 
-				elementName, gmlNs);
+				elementName, gmlNs, unique);
 		
 		// write geometry
 		writeCoordinates(writer, coordinates, descent.getPath().getLastType(), gmlNs);

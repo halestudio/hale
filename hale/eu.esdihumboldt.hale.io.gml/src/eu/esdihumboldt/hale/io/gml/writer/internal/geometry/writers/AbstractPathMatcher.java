@@ -157,17 +157,18 @@ public abstract class AbstractPathMatcher {
 	 * @param elementType the type of the encompassing element
 	 * @param elementName the encompassing element name
 	 * @param defaultNs the pattern default namespace
+	 * @param unique if the path's start element cannot be repeated
 	 * @return the descent that was opened, it must be closed to close the
 	 *   opened elements
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
 	public static Descent descend(XMLStreamWriter writer, 
 			Pattern descendPattern, TypeDefinition elementType, Name elementName, 
-			String defaultNs) throws XMLStreamException {
+			String defaultNs, boolean unique) throws XMLStreamException {
 		DefinitionPath path = descendPattern.match(elementType, 
-				new DefinitionPath(elementType, elementName), defaultNs);
+				new DefinitionPath(elementType, elementName, unique), defaultNs);
 		
-		return Descent.descend(writer, path, true);
+		return Descent.descend(writer, path, null, true);
 	}
 	
 	/**
