@@ -45,6 +45,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.ProgressIndicator;
@@ -257,18 +258,28 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	 */
 	@Override
 	public IOReporter createReporter() {
-		return new DefaultIOReporter(getTarget(), "GML export", true) {
+		return new DefaultIOReporter(getTarget(), MessageFormat.format(
+				"{0} export", getTypeName()), true) {
 			
 			@Override
 			protected String getSuccessSummary() {
-				return "Generating the GML output was successful";
+				return MessageFormat.format("Generating the {0} output was successful", getTypeName());
 			}
 			
 			@Override
 			protected String getFailSummary() {
-				return "Generating the GML output failed";
+				return MessageFormat.format("Generating the {0} output failed", getTypeName());
 			}
 		};
+	}
+	
+	private String getTypeName() {
+		ContentType ct = getContentType();
+		if (ct != null) {
+			return ct.toString();
+		}
+		
+		return "GML";
 	}
 
 	/**
@@ -289,7 +300,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	 */
 	public void write(FeatureCollection<FeatureType, Feature> features, 
 			ProgressIndicator progress, IOReporter reporter) throws XMLStreamException {
-		progress.begin("Generating " + getContentType(), features.size());
+		progress.begin("Generating " + getTypeName(), features.size());
 		
 		TypeDefinition containerDefinition = null;
 		Name containerName = null;
