@@ -464,7 +464,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 			final TypeDefinition memberType) {
 		for (AttributeDefinition attribute : container.getAttributes()) {
 			// direct match
-			if (attribute.getAttributeType().equals(memberType)) {
+			if (attribute.getAttributeType() != null && attribute.getAttributeType().equals(memberType)) {
 				return new DefinitionPath(
 						attribute.getAttributeType(), 
 						new NameImpl(attribute.getNamespace(), attribute.getName()),
