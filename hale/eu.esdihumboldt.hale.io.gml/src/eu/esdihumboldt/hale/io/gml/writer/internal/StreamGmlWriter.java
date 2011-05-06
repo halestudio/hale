@@ -410,6 +410,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 				
 				// write the feature
 				//FIXME this information should be stored for further use
+				//TODO specify a maximum descent level? (else searching the container for matches might take _very_ long)
 				DefinitionPath defPath = findMemberAttribute(
 						containerDefinition, containerName, type);
 				if (defPath != null) {
