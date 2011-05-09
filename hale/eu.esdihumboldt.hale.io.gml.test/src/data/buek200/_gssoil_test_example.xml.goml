@@ -36,7 +36,7 @@
                 </omwg:Class>
             </omwg:entity1>
             <omwg:entity2>
-                <omwg:Class rdf:about="http://www.SoilML.org/Buek200_Sheet"/>
+                <omwg:Class rdf:about="http://www.SoilML.org/Buek200_Sheet_Surface"/>
             </omwg:entity2>
             <align:relation>Equivalence</align:relation>
         </align:Cell>
@@ -49,7 +49,7 @@
                 </omwg:Property>
             </omwg:entity1>
             <omwg:entity2>
-                <omwg:Property rdf:about="http://www.SoilML.org/Buek200_Sheet/Number"/>
+                <omwg:Property rdf:about="http://www.SoilML.org/Buek200_Sheet_Surface/concernedMapSheet"/>
             </omwg:entity2>
             <align:relation>Equivalence</align:relation>
         </align:Cell>
@@ -60,11 +60,11 @@
                 <omwg:Class rdf:about="entity/null"/>
             </omwg:entity1>
             <omwg:entity2>
-                <omwg:Property rdf:about="http://www.SoilML.org/Buek200_Sheet/Number;typeDefinitionRef">
+                <omwg:Property rdf:about="http://www.SoilML.org/Buek200_Sheet_Surface/concernedMapSheet;typeDefinitionRef">
                     <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.ConstantValueFunction">
                         <omwg:param>
                             <omwg:name>defaultValue</omwg:name>
-                            <omwg:value>buek200_propertyFile.xml#f1.property_2</omwg:value>
+                            <omwg:value>buek200_propertyFile.xml#f1.property_3</omwg:value>
                         </omwg:param>
                     </omwg:transf>
                 </omwg:Property>
@@ -74,48 +74,14 @@
     <align:map>
         <align:Cell>
             <omwg:entity1>
-                <omwg:Property rdf:about="http://www.safe.com/gml/fme/cc7910_8710_mergedJ/Titel">
+                <omwg:Property rdf:about="http://www.safe.com/gml/fme/cc7910_8710_mergedJ/surfaceProperty">
                     <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction"/>
                 </omwg:Property>
             </omwg:entity1>
             <omwg:entity2>
-                <omwg:Property rdf:about="http://www.SoilML.org/Buek200_Sheet/Title"/>
+                <omwg:Property rdf:about="http://www.SoilML.org/Buek200_Sheet_Surface/shape"/>
             </omwg:entity2>
             <align:relation>Equivalence</align:relation>
-        </align:Cell>
-    </align:map>
-    <align:map>
-        <align:Cell>
-            <omwg:entity1>
-                <omwg:Class rdf:about="entity/null"/>
-            </omwg:entity1>
-            <omwg:entity2>
-                <omwg:Property rdf:about="http://www.SoilML.org/Buek200_Sheet/Title;typeDefinitionRef">
-                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.ConstantValueFunction">
-                        <omwg:param>
-                            <omwg:name>defaultValue</omwg:name>
-                            <omwg:value>buek200_propertyFile.xml#f1.property_1</omwg:value>
-                        </omwg:param>
-                    </omwg:transf>
-                </omwg:Property>
-            </omwg:entity2>
-        </align:Cell>
-    </align:map>
-    <align:map>
-        <align:Cell>
-            <omwg:entity1>
-                <omwg:Class rdf:about="entity/null"/>
-            </omwg:entity1>
-            <omwg:entity2>
-                <omwg:Property rdf:about="http://www.SoilML.org/Buek200_Sheet/concernedProject;ref">
-                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.ConstantValueFunction">
-                        <omwg:param>
-                            <omwg:name>defaultValue</omwg:name>
-                            <omwg:value>Buek200</omwg:value>
-                        </omwg:param>
-                    </omwg:transf>
-                </omwg:Property>
-            </omwg:entity2>
         </align:Cell>
     </align:map>
 </align:Alignment>

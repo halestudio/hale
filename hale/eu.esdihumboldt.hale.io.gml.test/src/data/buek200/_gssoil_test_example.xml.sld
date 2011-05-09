@@ -4,5 +4,17 @@
   <sld:Title/>
   <sld:FeatureTypeStyle>
     <sld:Name>name</sld:Name>
+    <sld:FeatureTypeName>Buek200_Sheet_Surface</sld:FeatureTypeName>
+    <sld:Rule>
+      <sld:PolygonSymbolizer>
+        <sld:Fill>
+          <sld:CssParameter name="fill">#800000</sld:CssParameter>
+          <sld:CssParameter name="fill-opacity">0.30000001192092896</sld:CssParameter>
+        </sld:Fill>
+        <sld:Stroke>
+          <sld:CssParameter name="stroke">#800000</sld:CssParameter>
+        </sld:Stroke>
+      </sld:PolygonSymbolizer>
+    </sld:Rule>
   </sld:FeatureTypeStyle>
 </sld:UserStyle>

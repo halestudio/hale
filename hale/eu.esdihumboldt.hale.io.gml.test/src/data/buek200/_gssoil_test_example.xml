@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <HaleProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml/" xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment" xmlns:goml="http://www.esdi-humboldt.eu/goml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-    <name>GS Soil Test Example</name>
+    <name>GS Soil Simple Mapping Example</name>
     <haleVersion>2.1.0</haleVersion>
     <dateCreated>Tue Apr 12 14:13:23 CEST 2011</dateCreated>
-    <dateModified>Mon May 02 15:31:58 CEST 2011</dateModified>
+    <dateModified>Mon May 09 17:07:40 CEST 2011</dateModified>
     <omlPath>_gssoil_test_example.xml.goml</omlPath>
     <instanceData>
         <path>source\cc7910_8710j.gml</path>
@@ -23,19 +23,19 @@
     <configSchema>
         <name>source</name>
         <data>
-            <key>STRING_ATTRIBUTE</key>
-            <value>true</value>
-        </data>
-        <data>
             <key>PROPERTY_TYPE</key>
             <value>true</value>
         </data>
         <data>
-            <key>NUMERIC_ATTRIBUTE</key>
+            <key>STRING_ATTRIBUTE</key>
             <value>true</value>
         </data>
         <data>
             <key>UseAggregationHierarchyAction</key>
+            <value>true</value>
+        </data>
+        <data>
+            <key>NUMERIC_ATTRIBUTE</key>
             <value>true</value>
         </data>
         <data>
@@ -58,19 +58,19 @@
     <configSchema>
         <name>target</name>
         <data>
-            <key>STRING_ATTRIBUTE</key>
-            <value>true</value>
-        </data>
-        <data>
             <key>PROPERTY_TYPE</key>
             <value>true</value>
         </data>
         <data>
-            <key>NUMERIC_ATTRIBUTE</key>
+            <key>STRING_ATTRIBUTE</key>
             <value>true</value>
         </data>
         <data>
             <key>UseAggregationHierarchyAction</key>
+            <value>true</value>
+        </data>
+        <data>
+            <key>NUMERIC_ATTRIBUTE</key>
             <value>true</value>
         </data>
         <data>
