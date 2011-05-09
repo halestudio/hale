@@ -12,19 +12,24 @@
 
 package eu.esdihumboldt.hale.io.gml.ui;
 
+import java.util.Arrays;
+
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.dialogs.FilteredList;
 import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.hale.core.io.IOProvider;
@@ -47,7 +52,7 @@ import eu.esdihumboldt.hale.ui.io.instance.InstanceWriterConfigurationPage;
 @SuppressWarnings("restriction")
 public class RootElementPage extends InstanceWriterConfigurationPage {
 
-	private FilteredList list;
+	private ListViewer list;
 
 	/**
 	 * Default constructor
@@ -64,10 +69,10 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 	 */
 	@Override
 	public boolean updateConfiguration(InstanceWriter provider) {
-		Object[] sel = list.getSelection();
+		ISelection sel = list.getSelection();
 		
-		if (sel != null && sel.length > 0) {
-			Object selected = sel[0];
+		if (!sel.isEmpty() && sel instanceof IStructuredSelection) {
+			Object selected = ((IStructuredSelection) sel).getFirstElement();
 			
 			if (selected instanceof SchemaElement) {
 				Name name = ((SchemaElement) selected).getElementName();
@@ -97,46 +102,69 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
         filterText.setText(""); //$NON-NLS-1$
         
 		// add filtered list
-		list = new FilteredList(page, SWT.SINGLE | SWT.BORDER | SWT.V_SCROLL | 
-				SWT.H_SCROLL, new LabelProvider() {
+		list = new ListViewer(page, SWT.SINGLE | SWT.BORDER | SWT.V_SCROLL | 
+				SWT.H_SCROLL);
+		list.setLabelProvider(new LabelProvider() {
 
 			@Override
 			public String getText(Object element) {
+				if (element instanceof SchemaElement) {
+					Name name = ((SchemaElement) element).getElementName();
+					
+					return name.getLocalPart() + " (" + name.getNamespaceURI() + ")";
+				}
 				if (element instanceof Definition) {
 					return ((Definition) element).getDisplayName();
 				}
 				return super.getText(element);
 			}
 			
-		}, true, true, true);
-		list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		});
+		list.setContentProvider(ArrayContentProvider.getInstance());
+		GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1);
+		layoutData.widthHint = SWT.DEFAULT;
+		layoutData.heightHint = 8 * list.getList().getItemHeight();
+		list.getControl().setLayoutData(layoutData);
 		
-		// add listeners to filter text
-        Listener listener = new Listener() {
-            public void handleEvent(Event e) {
-                list.setFilter(filterText.getText());
-            }
-        };
-        filterText.addListener(SWT.Modify, listener);
-
-        filterText.addKeyListener(new KeyListener() {
-            public void keyPressed(KeyEvent e) {
-                if (e.keyCode == SWT.ARROW_DOWN) {
-					list.setFocus();
-				}
-            }
-
-            public void keyReleased(KeyEvent e) {
-            	// do nothing
-            }
-        });
-        
         // page status update
-        list.addSelectionListener(new SelectionAdapter() {
-
+        list.addSelectionChangedListener(new ISelectionChangedListener() {
+			
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				setPageComplete(list.getSelectionIndex() != -1);
+			public void selectionChanged(SelectionChangedEvent event) {
+				ISelection selection = event.getSelection();
+				setPageComplete(!selection.isEmpty());
+			}
+		});
+		
+		// search filter & update
+		list.addFilter(new ViewerFilter() {
+			
+			@Override
+			public boolean select(Viewer viewer, Object parentElement, Object element) {
+				String filter = filterText.getText();
+				// handle empty filter
+				if (filter == null || filter.isEmpty()) {
+					return true;
+				}
+				
+				if (element instanceof Definition) {
+					Definition def = (Definition) element;
+					filter = filter.toLowerCase();
+					
+					if (def.getDisplayName().toLowerCase().contains(filter)) {
+						return true;
+					}
+				}
+				
+				return false;
+			}
+		});
+		filterText.addModifyListener(new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent e) {
+				// refilter
+				list.refresh();
 			}
 		});
 	}
@@ -159,8 +187,10 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 
 	private void updateList() {
 		Schema targetSchema = getWizard().getTargetSchema();
-		list.setElements(targetSchema.getAllElements().values().toArray());
-		setPageComplete(list.getSelectionIndex() != -1);
+		Object[] input = targetSchema.getAllElements().values().toArray();
+		Arrays.sort(input);
+		list.setInput(input);
+		setPageComplete(!list.getSelection().isEmpty());
 	}
 	
 }
