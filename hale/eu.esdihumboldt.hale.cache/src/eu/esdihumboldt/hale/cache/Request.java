@@ -26,12 +26,10 @@ import java.net.URL;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
-import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
-import org.eclipse.jface.preference.PreferenceStore;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;

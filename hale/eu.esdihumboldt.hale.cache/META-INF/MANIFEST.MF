@@ -9,11 +9,7 @@ Import-Package: de.fhg.igd.osgi.util,
  net.sf.ehcache,
  net.sf.ehcache.store,
  org.apache.http.client,
- org.apache.log4j,
- org.eclipse.jface.preference,
- org.eclipse.swt,
- org.eclipse.swt.widgets,
- org.eclipse.ui
+ org.apache.log4j
 Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.1.0",
  org.eclipse.jface
 Export-Package: eu.esdihumboldt.hale.cache;uses:="net.sf.ehcache"
