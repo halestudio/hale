@@ -586,12 +586,12 @@ public class StreamGmlWriterTest {
 				getClass().getResource("/data/buek200/_gssoil_test_example.xml.goml").toURI(), //$NON-NLS-1$
 				getClass().getResource("/data/buek200/target/Ger_Buek200_ext.xsd").toURI(), //$NON-NLS-1$
 				"transformWrite_Buek200", //$NON-NLS-1$
-				true,
+				false,
 				"EPSG:25832",
 				"http://www.SoilML.org",
 				"SoilML_DataFile"); //$NON-NLS-1$
 		
-		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
+		assertTrue("Expected XML output to be valid", report.isValid()); //$NON-NLS-1$
 	}
 	
 	/**
