@@ -78,7 +78,9 @@
       <plugin id="eu.esdihumboldt.cst.corefunctions"/>
       <plugin id="eu.esdihumboldt.hale"/>
       <plugin id="eu.esdihumboldt.hale.cache"/>
+      <plugin id="eu.esdihumboldt.hale.cache.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.core"/>
+      <plugin id="eu.esdihumboldt.hale.core.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.csvexporter"/>
       <plugin id="eu.esdihumboldt.hale.gmlparser"/>
       <plugin id="eu.esdihumboldt.hale.htmlexporter"/>
@@ -86,6 +88,7 @@
       <plugin id="eu.esdihumboldt.hale.instanceprovider"/>
       <plugin id="eu.esdihumboldt.hale.io.gml"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.xml"/>
       <plugin id="eu.esdihumboldt.hale.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
