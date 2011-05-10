@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mit XMLSpy v2011 sp1 (http://www.altova.com) von Ulrich Stegger (Bundesanstalt für Geowissenschaften und Rohstoffe) bearbeitet -->
+<!--Created with Liquid XML Studio Developer Edition 8.1.5.2538 (http://www.liquid-technologies.com)-->
+<xs:schema xmlns:sqd="http://www.SoilML.org" xmlns:ka4simplehorizont="http://www.bgr.de/service/bodenkunde/SchemaCatalogue/bgr/produkte/karte/legendeneinheit/profil/horizont/ka4simplehorizont/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml" xmlns:ns1="http://www.SoilML.org" targetNamespace="http://www.SoilML.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="dataFile_core.xsd"/>
+	<xs:import namespace="http://www.bgr.de/service/bodenkunde/SchemaCatalogue/bgr/produkte/karte/legendeneinheit/profil/horizont/ka4simplehorizont/" schemaLocation="http://www.bgr.de/service/bodenkunde/SchemaCatalogue/BGR/Produkte/Karte/Legendeneinheit/Profil/Horizont/ka4simplehorizont/ka4simplehorizont.xsd"/>
+	<xs:import namespace="http://www.opengis.net/gml" schemaLocation="http://www.isotc211.org/2005/gml/geometryBasic2d.xsd"/>
+	<!--=============================================================== -->
+	<!--====================German Soil Overview Map 1: 200.000          ========== -->
+	<!--====================Deutsche Bodenübersichtskarte 1:200.000    ========== -->
+	<!--=============================================================== -->
+	<!--====================    Map Description                                      ========== -->
+	<!--=============================================================== -->
+	<xs:complexType name="Buek200_Sheet">
+		<xs:annotation>
+			<xs:documentation>Extension of soil object Site with map attributes</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="sqd:SiteType">
+				<xs:sequence>
+					<!-- e.g. "Freiburg-Nord" -->
+					<xs:element name="Title">
+					<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:token">
+									<xs:attributeGroup ref="sqd:ProviderPropertyGroup"/>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+					<!-- follows pattern CCxxxx e.g. CC7910 -->
+					<xs:element name="Number">
+					<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:Name">
+									<xs:attributeGroup ref="sqd:ProviderPropertyGroup"/>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Buek200_Sheet_Surface">
+		<xs:annotation>
+			<xs:documentation>Extension of soil object surface with attribute that holds information to which map sheet the following surface refers</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="sqd:SurfaceType">
+				<xs:sequence>
+					<xs:element name="concernedMapSheet" minOccurs="1">
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:string">
+									<xs:attributeGroup ref="sqd:ProviderPropertyGroup"/>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>					
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--=============================================================== -->
+	<!--==================== Soil Mapping Definitions             					==========-->
+	<xs:complexType name="Buek200_SoilMappingUnit">
+		<xs:annotation>
+			<xs:documentation>Extension Soil Mapping Unit for Soil Overview Map 1:200.000</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="sqd:SoilMappingUnitType">
+				<xs:sequence>
+					<xs:element name="Generallegendeneinheit">
+					<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:token">
+									<xs:attributeGroup ref="sqd:ProviderPropertyGroup"/>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>		
+					</xs:element>
+					<xs:element name="Bodenlandschaft">
+					<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:token">
+									<xs:attributeGroup ref="sqd:ProviderPropertyGroup"/>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>		
+					</xs:element>
+					<xs:element name="Bodengroßlandschaft">
+					<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:token">
+									<xs:attributeGroup ref="sqd:ProviderPropertyGroup"/>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>		
+					</xs:element>
+					<xs:element name="Bodenregion">
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:token">
+									<xs:attributeGroup ref="sqd:ProviderPropertyGroup"/>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>		
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--=============================================================== -->
+	<!--====================  Typical Profile - Horizon Type Definition        ==========-->
+	<xs:complexType name="GermanKA4Horizon">
+		<xs:complexContent>
+			<xs:extension base="sqd:HorizonType">
+				<xs:sequence>
+				<xs:element name="HorizonSymbol" minOccurs="0">
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:NMTOKEN">
+									<xs:attributeGroup ref="sqd:ProviderPropertyGroup"/>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Humus" minOccurs="0">
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="ka4simplehorizont:Humusgehalt">
+									<xs:attributeGroup ref="sqd:ProviderPropertyGroup"/>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="CoarseFragments" minOccurs="0">
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="ka4simplehorizont:Grobboden">
+									<xs:attributeGroup ref="sqd:ProviderPropertyGroup"/>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Texture" minOccurs="0">
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="ka4simplehorizont:Bodenart">
+									<xs:attributeGroup ref="sqd:ProviderPropertyGroup"/>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SoilReaction" minOccurs="0">
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:float">
+									<xs:attributeGroup ref="sqd:ProviderPropertyGroup"/>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SoilDensity" minOccurs="0">
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="ka4simplehorizont:LagerungsBzwRohdichte">
+									<xs:attributeGroup ref="sqd:ProviderPropertyGroup"/>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="CarbonContent" minOccurs="0">
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="sqd:CarbonContentList">
+									<xs:attributeGroup ref="sqd:ProviderPropertyGroup"/>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="CarbonateContent" minOccurs="0">
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="sqd:CarbonateContentList">
+									<xs:attributeGroup ref="sqd:ProviderPropertyGroup"/>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="CarbonContentList">
+		<xs:annotation>
+			<xs:documentation>Carbon content Mass-% Corg</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="k1"/>
+			<xs:enumeration value="k2"/>
+			<xs:enumeration value="k3"/>
+			<xs:enumeration value="k4"/>
+			<xs:enumeration value="k5"/>
+			<xs:enumeration value="K"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CarbonateContentList">
+		<xs:annotation>
+			<xs:documentation>Carbonatgehalt-Carbonate content approx. Mass-% </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="c0"/>
+			<xs:enumeration value="c1"/>
+			<xs:enumeration value="c2"/>
+			<xs:enumeration value="c3"/>
+			<xs:enumeration value="c3.2"/>
+			<xs:enumeration value="c3.3"/>
+			<xs:enumeration value="c3.4"/>
+			<xs:enumeration value="c4"/>
+			<xs:enumeration value="c5"/>
+			<xs:enumeration value="c6"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--=============================================================== -->
+	<!--==================== Geometry              										========= -->
+	<xs:complexType name="Buek200_Polygon">
+		<xs:complexContent>
+			<xs:extension base="gml:PolygonType">
+				<xs:attributeGroup ref="sqd:ProviderPropertyGroup"/>
+				<xs:attribute name="LE" type="xs:string" use="required"/>
+				<xs:attribute name="GE" type="xs:string" use="required"/>
+			</xs:extension>
+			<!-- LE = Blattlegendeneinheit -->
+			<!-- GE = Generallegendeneinheit -->
+		</xs:complexContent>
+	</xs:complexType>
+	<!--=============================================================== -->
+</xs:schema>

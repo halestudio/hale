@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mit XMLSpy v2008 rel. 2 sp1 (http://www.altova.com) von Rainer Baritz (BGR) bearbeitet -->
+<xsd:schema xmlns:sqd="http://www.SoilML.org" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gml="http://www.opengis.net/gml" targetNamespace="http://www.SoilML.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="http://www.isotc211.org/2005/gmd/metadataEntity.xsd"/>
+	<xsd:import namespace="http://www.opengis.net/gml" schemaLocation="http://www.isotc211.org/2005/gml/basicTypes.xsd"/>
+	<xsd:import namespace="http://www.opengis.net/gml" schemaLocation="http://www.isotc211.org/2005/gml/geometryBasic0d1d.xsd"/>
+	
+	<!--============================================================================-->
+	<!--=================== Application Schema Root Element and Typ =========================-->
+	<!--============================================================================-->
+	<xsd:complexType name="DataFileType">
+		<xsd:annotation>
+			<xsd:documentation>Data file type (root element type).</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="SoilObjects" type="sqd:SoilObjectsType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="SoilML_DataFile" type="sqd:DataFileType"/>
+	<xsd:complexType name="SoilObjectsType">
+		<xsd:annotation>
+			<xsd:documentation>List of SQ objects.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="sqd:Project" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="sqd:Site" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="sqd:Plot" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="sqd:Profile" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="sqd:ObservationProcess" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="sqd:SoilObservation" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="sqd:SoilTypologicalUnit" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="sqd:SoilMappingUnit" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="sqd:AnalysisRequest" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="sqd:SoilSpecimen" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- SQ Types -->
+	<xsd:complexType name="AbstractSoilObjectType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>Basic type for all SQ objects.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="id" type="xsd:ID" use="required"/>
+	</xsd:complexType>
+	<!--============================================================================-->
+	<!--======================= Global Type: SQ Properties ================================-->
+	<!--============================================================================-->
+	<xsd:attributeGroup name="SQPropertyGroup">
+		<xsd:annotation>
+			<xsd:documentation>Basic attribute group for all properties introduced by ISO 28258.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="observationRef" type="xsd:IDREF" use="optional"/>
+		<xsd:attribute name="typeDefinitionRef" type="xsd:anyURI" use="optional"/>
+	</xsd:attributeGroup>
+	<xsd:attributeGroup name="ProviderPropertyGroup">
+		<xsd:annotation>
+			<xsd:documentation>Basic attribute group for all properties introduce by data provider.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="observationRef" type="xsd:IDREF" use="optional"/>
+		<xsd:attribute name="typeDefinitionRef" type="xsd:anyURI" use="required"/>
+	</xsd:attributeGroup>
+	<xsd:complexType name="AssociationPropertyType">
+		<xsd:annotation>
+			<xsd:documentation>
+Basic type for all SQ association properties.
+Only value provided by reference is supported.
+    </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence/>
+		<xsd:attribute name="ref" type="xsd:IDREF" use="required"/>
+		<xsd:attributeGroup ref="sqd:SQPropertyGroup"/>
+	</xsd:complexType>
+	<xsd:complexType name="CompositionPropertyType">
+		<xsd:annotation>
+			<xsd:documentation>
+Basic type for all SQ composition properties.
+Value provided by reference or inline is supported.
+    </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence minOccurs="0">
+			<xsd:any namespace="##any"/>
+		</xsd:sequence>
+		<xsd:attribute name="ref" type="xsd:IDREF" use="optional"/>
+		<xsd:attributeGroup ref="sqd:SQPropertyGroup"/>
+	</xsd:complexType>
+	<xsd:complexType name="AggregationPropertyType">
+		<xsd:annotation>
+			<xsd:documentation>
+Basic type for all SQ composition properties.
+Value provided inline is supported.
+    </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:any namespace="##any"/>
+		</xsd:sequence>
+		<xsd:attributeGroup ref="sqd:SQPropertyGroup"/>
+	</xsd:complexType>
+	<xsd:complexType name="NamePropertyType">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attributeGroup ref="sqd:SQPropertyGroup"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="ShapePropertyType">
+		<xsd:sequence>
+			<xsd:element ref="gml:AbstractGeometry"/>
+		</xsd:sequence>
+		<xsd:attributeGroup ref="sqd:SQPropertyGroup"/>
+	</xsd:complexType>
+	<!--============================================================================-->
+	<!--===================== Feature (Object) Types: Project Type ===========================-->
+	<!--============================================================================-->
+	<xsd:complexType name="ProjectType">
+		<xsd:annotation>
+			<xsd:documentation>Project type.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="sqd:AbstractSoilObjectType">
+				<xsd:sequence>
+					<xsd:element name="name" type="sqd:NamePropertyType"/>
+					<xsd:element name="siteOfInterest" type="sqd:AssociationPropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xsd:element name="relatedMap" type="sqd:AssociationPropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xsd:element name="requiredAnalysis" type="sqd:AssociationPropertyType" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="Project" type="sqd:ProjectType"/>
+	<xsd:complexType name="ProjectContextType">
+		<xsd:annotation>
+			<xsd:documentation>Subprojeect type</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="relatedProject" type="sqd:AssociationPropertyType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="role" type="sqd:NamePropertyType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!--============================================================================-->
+	<!--====================== Feature (Object) Types: Site Type =============================-->
+	<!--============================================================================-->
+	<xsd:complexType name="SiteType">
+		<xsd:annotation>
+			<xsd:documentation>Site type.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="sqd:AbstractSoilObjectType">
+				<xsd:sequence>
+					<xsd:element name="concernedProject" type="sqd:AssociationPropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xsd:element name="samplingPlot" type="sqd:SamplingPlotPropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xsd:element name="typicalProfile" type="sqd:AssociationPropertyType" minOccurs="0"/>
+					<xsd:element name="shape" type="sqd:ShapePropertyType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="Site" type="sqd:SiteType"/>
+	<xsd:complexType name="SamplingPlotPropertyType">
+		<xsd:complexContent>
+			<xsd:restriction base="sqd:CompositionPropertyType">
+				<xsd:sequence minOccurs="0">
+					<xsd:element ref="sqd:Plot"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--=============================================================================-->
+	<!--======================= Feature (Object) Types: Plot Type ============================-->
+	<!--=============================================================================-->
+	<xsd:complexType name="PlotType">
+		<xsd:annotation>
+			<xsd:documentation>Plot type.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="sqd:AbstractSoilObjectType">
+				<xsd:sequence>
+					<xsd:element name="profile" type="sqd:AssociationPropertyType" minOccurs="0"/>
+					<xsd:element name="shape" type="sqd:ShapePropertyType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="Plot" type="sqd:PlotType"/>
+	<xsd:element name="Surface" type="sqd:SurfaceType" substitutionGroup="sqd:Plot"/>
+	<xsd:complexType name="SurfaceType">
+		<xsd:complexContent>
+			<xsd:extension base="sqd:PlotType"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="TrialPit" type="sqd:TrialPitType" substitutionGroup="sqd:Plot"/>
+	<xsd:complexType name="TrialPitType">
+		<xsd:complexContent>
+			<xsd:extension base="sqd:PlotType"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="Borehole" type="sqd:BoreholeType" substitutionGroup="sqd:Plot"/>
+	<xsd:complexType name="BoreholeType">
+		<xsd:complexContent>
+			<xsd:extension base="sqd:PlotType"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--=============================================================================-->
+	<!--================== Feature (Object) Types: ObservationProcess Type ======================-->
+	<!--=============================================================================-->
+	<xsd:complexType name="ObservationProcessType">
+		<xsd:annotation>
+			<xsd:documentation>Project type.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="sqd:AbstractSoilObjectType">
+				<xsd:sequence>
+					<xsd:element name="description" type="sqd:DescriptionPropertyType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="ObservationProcess" type="sqd:ObservationProcessType"/>
+	<xsd:complexType name="DescriptionPropertyType">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attributeGroup ref="sqd:SQPropertyGroup"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<!--=============================================================================-->
+	<!--=================== Feature (Object) Types: SoilObservation Type ========================-->
+	<!--=============================================================================-->
+	<xsd:complexType name="SoilObservationType">
+		<xsd:annotation>
+			<xsd:documentation>SoilObservation type.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="sqd:AbstractSoilObjectType">
+				<xsd:sequence>
+					<xsd:element name="featureOfInterest" type="sqd:AssociationPropertyType"/>
+					<xsd:element name="observedProperty">
+						<xsd:complexType>
+							<xsd:sequence/>
+							<xsd:attribute name="name" type="xsd:NCName" use="required"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="procedure" type="sqd:AssociationPropertyType"/>
+					<xsd:element name="phenomenonTime">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element ref="gml:AbstractTimeObject"/>
+							</xsd:sequence>
+							<xsd:attributeGroup ref="sqd:SQPropertyGroup"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resultTime">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element ref="gml:TimeInstant"/>
+							</xsd:sequence>
+							<xsd:attributeGroup ref="sqd:SQPropertyGroup"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="validTime" minOccurs="0">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element ref="gml:TimePeriod"/>
+							</xsd:sequence>
+							<xsd:attributeGroup ref="sqd:SQPropertyGroup"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resultQuality" minOccurs="0">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element ref="gmd:AbstractDQ_Element"/>
+							</xsd:sequence>
+							<xsd:attributeGroup ref="sqd:SQPropertyGroup"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="metadata" minOccurs="0">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element ref="gmd:MD_Metadata"/>
+							</xsd:sequence>
+							<xsd:attributeGroup ref="sqd:SQPropertyGroup"/>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="SoilObservation" type="sqd:SoilObservationType"/>
+	<!--=============================================================================-->
+	<!--============== Feature (Object) Types: Horizon, Layer, Profile, ProfileElement Types ============-->
+	<!--=============================================================================-->
+	<xsd:complexType name="HorizonType">
+		<xsd:annotation>
+			<xsd:documentation>Profile Type</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="sqd:ProfileElementType"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="Horizon" type="sqd:HorizonType" substitutionGroup="sqd:ProfileElement"/>
+	<xsd:complexType name="LayerType">
+		<xsd:annotation>
+			<xsd:documentation>Layer type</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="sqd:ProfileElementType">
+				<xsd:sequence minOccurs="0">
+					<xsd:element name="developedHorizon" minOccurs="0" maxOccurs="unbounded">
+						<xsd:complexType>
+							<xsd:attribute name="ref" type="xsd:IDREF" use="required"/>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="Layer" type="sqd:LayerType" substitutionGroup="sqd:ProfileElement"/>
+	<xsd:complexType name="ProfileType">
+		<xsd:annotation>
+			<xsd:documentation>Profile type</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="sqd:AbstractSoilObjectType">
+				<xsd:sequence>
+					<xsd:element name="samplingPlot" type="sqd:AssociationPropertyType" minOccurs="0"/>
+					<xsd:element name="element" type="sqd:ProfileAggregationType" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="Profile" type="sqd:ProfileType"/>
+	<xsd:complexType name="ProfileElementType">
+		<xsd:annotation>
+			<xsd:documentation>Profile Element</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="sqd:AbstractSoilObjectType">
+				<xsd:sequence>
+					<xsd:element name="order" type="xsd:int"/>
+					<xsd:element name="upperDepth" type="sqd:DepthType"/>
+					<xsd:element name="lowerDepth" type="sqd:DepthType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="ProfileElement" type="sqd:ProfileElementType"/>
+	<xsd:complexType name="ProfileAggregationType">
+		<xsd:annotation>
+			<xsd:documentation>Reletion between Profile and ProfileElement</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="sqd:ProfileElement"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!--=============================================================================-->
+	<!--=================== Feature (Object) Types: Soil Mapping Types =========================-->
+	<!--=============================================================================-->
+	<xsd:complexType name="SoilMapType">
+		<xsd:annotation>
+			<xsd:documentation>Soil Map type</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="sqd:AbstractSoilObjectType">
+				<xsd:sequence>
+					<xsd:element name="extent" type="sqd:ShapePropertyType" minOccurs="0"/>
+					<xsd:element name="name" type="sqd:NamePropertyType"/>
+					<xsd:element name="rootCategory" type="sqd:SoilMapAggregationType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="SoilMap" type="sqd:SoilMapType"/>
+	<xsd:complexType name="SoilMappingUnitCategoryType">
+		<xsd:annotation>
+			<xsd:documentation>Soil Mapping Unit Category type</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="sqd:AbstractSoilObjectType">
+				<xsd:sequence>
+					<xsd:element name="name" type="sqd:NamePropertyType"/>
+					<xsd:element name="mappingUnit" type="sqd:MappingUnitPropertyType" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="SoilMappingUnitCategory" type="sqd:SoilMappingUnitCategoryType"/>
+	<xsd:complexType name="SoilMappingUnitType">
+		<xsd:annotation>
+			<xsd:documentation>Soil Mapping Unit type</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="sqd:AbstractSoilObjectType">
+				<xsd:sequence>
+					<xsd:element name="explanation" type="xsd:string"/>
+					<xsd:element name="representedUnit" type="sqd:AssociationPropertyType" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="SoilMappingUnit" type="sqd:SoilMappingUnitType"/>
+	<xsd:complexType name="SoilTypologicalUnitType">
+		<xsd:annotation>
+			<xsd:documentation>Soil Typological Unit type</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="sqd:AbstractSoilObjectType">
+				<xsd:sequence>
+					<xsd:element name="classificationScheme" type="xsd:string"/>
+					<xsd:element name="name" type="sqd:NamePropertyType"/>
+					<xsd:element name="mapRepresentation" type="sqd:AssociationPropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xsd:element name="typicalProfile" type="sqd:AssociationPropertyType" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="SoilTypologicalUnit" type="sqd:SoilTypologicalUnitType"/>
+	<xsd:complexType name="SoilMapAggregationType">
+		<xsd:sequence>
+			<xsd:element ref="sqd:SoilMappingUnitCategory"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="MappingUnitPropertyType">
+		<xsd:complexContent>
+			<xsd:extension base="sqd:CompositionPropertyType"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--=============================================================================-->
+	<!--=================== Feature (Object) Types: Sample =========================-->
+	<!--=============================================================================-->
+	<xsd:complexType name="AnalysisRequestType">
+		<xsd:annotation>
+			<xsd:documentation>Analysis request type</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="sqd:AbstractSoilObjectType">
+				<xsd:sequence>
+					<xsd:element name="order" type="xsd:int" minOccurs="0"/>
+					<xsd:element name="specimenOfInterest" maxOccurs="unbounded"/>
+					<xsd:element name="observationProcess" type="sqd:AssociationPropertyType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="AnalysisRequest" type="sqd:AnalysisRequestType"/>
+	<xsd:complexType name="SoilSpecimenType">
+		<xsd:complexContent>
+			<xsd:extension base="sqd:AbstractSoilObjectType">
+				<xsd:sequence>
+					<xsd:element name="depth" type="sqd:DepthType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="SoilSpecimen" type="sqd:SoilSpecimenType"/>
+	<xsd:complexType name="PreparationProcessType">
+		<xsd:complexContent>
+			<xsd:extension base="sqd:AbstractSoilObjectType"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="PreparationProcess" type="sqd:PreparationProcessType"/>
+	<xsd:complexType name="TransportAndStorageType">
+		<xsd:complexContent>
+			<xsd:extension base="sqd:PreparationProcessType"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="TransportAndStorage" type="sqd:TransportAndStorageType" substitutionGroup="sqd:PreparationProcess"/>
+	<!--=============================================================================-->
+	<!--============================= Depth Type =======================================-->
+	<!--=============================================================================-->
+	<xsd:complexType name="DepthType">
+		<xsd:annotation>
+			<xsd:documentation>Depth type</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="depthRange" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="simpleDepth" type="xsd:float" minOccurs="0"/>
+			<xsd:element name="unitOfMeasure" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="Depth" type="sqd:DepthType"/>
+</xsd:schema>
