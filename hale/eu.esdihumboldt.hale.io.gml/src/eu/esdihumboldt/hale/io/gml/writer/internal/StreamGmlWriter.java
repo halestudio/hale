@@ -19,9 +19,11 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
@@ -414,18 +416,29 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		// write the instances
 		Iterator<Feature> itFeature = features.iterator();
 		try {
+			Map<TypeDefinition, DefinitionPath> paths = new HashMap<TypeDefinition, DefinitionPath>();
+			
 			Descent lastDescent = null;
 			while (itFeature.hasNext() && !progress.isCanceled()) {
 				Feature feature = itFeature.next();
 				
 				TypeDefinition type = types.getType(feature.getType());
 				
-				// write the feature
-				//FIXME this information should be stored for further use
-				//TODO specify a maximum descent level? (else searching the container for matches might take _very_ long)
-				DefinitionPath defPath = findMemberAttribute(
-						containerDefinition, containerName, type);
+				// get stored definition path for the type
+				DefinitionPath defPath;
+				if (paths.containsKey(type)) {
+					defPath = paths.get(type); // get the stored path, may be null
+				}
+				else {
+					// determine a valid definition path in the container
+					//TODO specify a maximum descent level? (else searching the container for matches might take _very_ long)
+					defPath = findMemberAttribute(
+							containerDefinition, containerName, type);
+					// store path (may be null)
+					paths.put(type, defPath);
+				}
 				if (defPath != null) {
+					// write the feature
 					lastDescent = Descent.descend(writer, defPath, lastDescent, false);
 		            writeMember(feature, type);
 				}
