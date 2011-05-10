@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.io.gml.ui;
 
 import java.util.Arrays;
 
+import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -53,6 +54,7 @@ import eu.esdihumboldt.hale.ui.io.instance.InstanceWriterConfigurationPage;
 public class RootElementPage extends InstanceWriterConfigurationPage {
 
 	private ListViewer list;
+	private Text filterText;
 
 	/**
 	 * Default constructor
@@ -97,7 +99,7 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 		page.setLayout(new GridLayout(1, false));
 		
 		// add filter text
-		final Text filterText = new Text(page, SWT.SINGLE | SWT.BORDER);
+		filterText = new Text(page, SWT.SINGLE | SWT.BORDER);
         filterText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
         filterText.setText(""); //$NON-NLS-1$
         
@@ -169,6 +171,16 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 		});
 	}
 	
+	/**
+	 * @see DialogPage#setVisible(boolean)
+	 */
+	@Override
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		
+		filterText.setFocus();
+	}
+
 	/**
 	 * @see AbstractConfigurationPage#disable()
 	 */
