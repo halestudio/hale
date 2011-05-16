@@ -11,5 +11,5 @@ Import-Package: de.fhg.igd.osgi.util,
  org.apache.http.client,
  org.apache.log4j
 Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.1.0",
- org.eclipse.jface
+ org.apache.httpcomponents.httpcore;bundle-version="4.1.0"
 Export-Package: eu.esdihumboldt.hale.cache;uses:="net.sf.ehcache"
