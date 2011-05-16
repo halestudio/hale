@@ -3,8 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: CST
 Bundle-SymbolicName: eu.esdihumboldt.transformer.cst;singleton:=true
 Bundle-Version: 1.0.6
-Export-Package: eu.esdihumboldt.cst,
- eu.esdihumboldt.cst.transformer,
+Export-Package: eu.esdihumboldt.cst.transformer,
  eu.esdihumboldt.cst.transformer.capabilities,
  eu.esdihumboldt.cst.transformer.configuration,
  eu.esdihumboldt.cst.transformer.configuration.osgi,
