@@ -108,7 +108,7 @@ public class OmlRdfGenerator {
 	 * value = 0, property parent element is cell
 	 * value >0 and value < @link{propertyStackSize}, property parent element is ComposedProperty
 	 */
-	private int propertyStack;
+//	private int propertyStack;
 	
 	
 	
@@ -116,7 +116,7 @@ public class OmlRdfGenerator {
 	 * max size of the property stack
 	 */
 	
-	private static final int propertyStackSize = new Integer(ConfigurationManager.getComponentProperty(PROPERTY_STACK_SIZE)).intValue();
+//	private static final int propertyStackSize = new Integer(ConfigurationManager.getComponentProperty(PROPERTY_STACK_SIZE)).intValue();
 
 	
 	/**
@@ -798,8 +798,8 @@ public class OmlRdfGenerator {
 			if (about != null)
 				pType.setAbout(about.getAbout());
 			if (property instanceof ComposedProperty
-					&& this.propertyStack < propertyStackSize) {
-				this.propertyStack++;
+					/*&& this.propertyStack < propertyStackSize*/) {
+//				this.propertyStack++;
 				// in case it is a composed property add the property composition
 				// element
 				PropertyCompositionType propCompType = new PropertyCompositionType();
