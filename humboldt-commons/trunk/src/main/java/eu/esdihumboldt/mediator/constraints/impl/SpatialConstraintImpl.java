@@ -21,7 +21,8 @@ import org.opengis.geometry.Geometry;
 import eu.esdihumboldt.annotations.concurrency.Immutable;
 import eu.esdihumboldt.mediator.constraints.SpatialConstraint;
 import eu.esdihumboldt.mediator.contextservice.hibernate.helpers.GeneralEnvelopeImpl;
-import eu.esdihumboldt.tools.IdentifierManager;
+import eu.esdihumboldt.util.IdentifierManager;
+
 import org.opengis.referencing.ReferenceIdentifier;
 
 /**

@@ -40,11 +40,9 @@
 <location path="${project_loc:hale-platform}/target/org.castor" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/com.vividsolutions.jts" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/net.java" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/eu.esdihumboldt.commons" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.dom4j" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/javax.xml.stream" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.w3c.css.sac" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/eu.esdihumboldt.specification" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.apache.xalan" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/de.cs3d.util" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/javax.mail" type="Directory"/>

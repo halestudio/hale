@@ -9,7 +9,7 @@
  * available, please refer to : http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.tools;
+package eu.esdihumboldt.util;
 
 /**
  * The IdentifierManager is used internally during one session to generate 

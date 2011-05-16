@@ -32,7 +32,7 @@ Export-Package: eu.esdihumboldt.annotations.concurrency,
  eu.esdihumboldt.modelrepository.abstractfc,
  eu.esdihumboldt.modelrepository.abstractfc.mapping,
  eu.esdihumboldt.modelrepository.exceptions,
- eu.esdihumboldt.tools,
+ eu.esdihumboldt.util,
  eu.esdihumboldt.workflow,
  eu.esdihumboldt.workflow.exceptions,
  eu.esdihumboldt.workflow.process,
@@ -65,3 +65,4 @@ Import-Package: org.dom4j;version="1.6.1",
  org.opengis.style,
  org.springframework.transaction;version="2.5.6.A",
  org.springframework.transaction.annotation;version="2.5.6.A"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

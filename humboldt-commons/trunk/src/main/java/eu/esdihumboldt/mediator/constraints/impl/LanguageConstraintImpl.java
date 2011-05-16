@@ -20,7 +20,7 @@ import java.util.UUID;
 
 import eu.esdihumboldt.mediator.constraints.LanguageConstraint;
 import eu.esdihumboldt.mediator.contextservice.hibernate.helpers.DBLocale;
-import eu.esdihumboldt.tools.IdentifierManager;
+import eu.esdihumboldt.util.IdentifierManager;
 
 /**
  * Default implementation of a LanguageConstraint which is {@link Serializable}.

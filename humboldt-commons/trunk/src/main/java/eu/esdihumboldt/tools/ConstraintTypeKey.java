@@ -13,6 +13,7 @@ package eu.esdihumboldt.tools;
 
 import eu.esdihumboldt.mediator.TypeKey;
 import eu.esdihumboldt.mediator.constraints.Constraint;
+import eu.esdihumboldt.util.ConstraintTypeComparator;
 
 /**
  * This serves as a wrapper/proxy to Constraints for determining whether two

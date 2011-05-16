@@ -16,7 +16,8 @@ import java.io.Serializable;
 import java.util.UUID;
 
 import eu.esdihumboldt.mediator.constraints.MetadataConstraint;
-import eu.esdihumboldt.tools.IdentifierManager;
+import eu.esdihumboldt.util.IdentifierManager;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.tools;
+package eu.esdihumboldt.util;
 
 /**
  * This interface declares methods to

@@ -16,7 +16,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 import eu.esdihumboldt.annotations.concurrency.Immutable;
-import eu.esdihumboldt.tools.IdentifierManager;
+import eu.esdihumboldt.util.IdentifierManager;
 import eu.esdihumboldt.mediator.constraints.ServiceConstraint;
 import eu.esdihumboldt.mediator.constraints.Constraint.ConstraintSource;
 

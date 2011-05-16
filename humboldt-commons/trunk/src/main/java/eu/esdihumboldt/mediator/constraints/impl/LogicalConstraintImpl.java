@@ -18,7 +18,7 @@ import java.util.UUID;
 
 import eu.esdihumboldt.mediator.constraints.Constraint;
 import eu.esdihumboldt.mediator.constraints.LogicalConstraint;
-import eu.esdihumboldt.tools.IdentifierManager;
+import eu.esdihumboldt.util.IdentifierManager;
 
 /**
  * This is the default implementation of the LogicalConstraint. It is 

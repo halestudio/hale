@@ -31,7 +31,7 @@ import eu.esdihumboldt.mediator.context.DefaultContext;
 import eu.esdihumboldt.mediator.context.OrganizationContext;
 import eu.esdihumboldt.mediator.usermanagement.Organization;
 import eu.esdihumboldt.mediator.usermanagement.impl.OrganizationImpl;
-import eu.esdihumboldt.tools.ConstraintTypeKey;
+import eu.esdihumboldt.util.ConstraintTypeKey;
 
 /**
  * @author Thorsten Reitz 
