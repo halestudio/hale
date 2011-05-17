@@ -58,17 +58,26 @@ public abstract class AbstractDocumentTest {
 	 */
 	@Test
 	public void testWriteDocument() {
-		ODocument doc = new ODocument(getDb(), "Person");
-		doc.field("name", "Luke");
-		doc.field("surname", "Skywalker");
-		doc.field("city", new ODocument(getDb(), "City").field("name","Rome").field("country", "Italy") );
-		              
-		// save the document
-		doc.save();
+		createLuke(getDb());
 		
 		//XXX what is the difference between class and cluster?
 		assertEquals(1, getDb().countClass("Person")); // schema?
 		assertEquals(1, getDb().countClusterElements("Person")); // schema-less?
+	}
+
+	/**
+	 * Create a Person named Luke in the given DB
+	 * 
+	 * @param db the database
+	 */
+	protected static void createLuke(ODatabaseDocumentTx db) {
+		ODocument doc = new ODocument(db, "Person");
+		doc.field("name", "Luke");
+		doc.field("surname", "Skywalker");
+		doc.field("city", new ODocument(db, "City").field("name","Rome").field("country", "Italy") );
+		              
+		// save the document
+		doc.save();
 	}
 
 	/**
@@ -114,7 +123,7 @@ public abstract class AbstractDocumentTest {
 	/**
 	 * Create persons Mia and Tim and store them in the database
 	 */
-	private void createMiaAndTim() {
+	protected void createMiaAndTim() {
 			ODocument docMia = new ODocument(getDb(), "Person");
 			docMia.field("name", "Mia");
 			docMia.field("surname", "Serenade");
