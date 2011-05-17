@@ -58,5 +58,7 @@
 <location path="${project_loc:hale-platform}/target/org.apache.velocity" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/net.sf.ehcache.core" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/com.google.guava" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/com.orientechnologies" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/javax.persistence" type="Directory"/>
 </locations>
 </target>
