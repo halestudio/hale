@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.orient.embedded;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
@@ -75,6 +76,63 @@ public abstract class AbstractDocumentTest {
 		doc.field("name", "Luke");
 		doc.field("surname", "Skywalker");
 		doc.field("city", new ODocument(db, "City").field("name","Rome").field("country", "Italy") );
+		
+		// save the document
+		doc.save();
+	}
+	
+	/**
+	 * Test writing a document to the database
+	 */
+	@Test
+	public void testComplexWrite() {
+//		OSchema schema = getDb().getMetadata().getSchema();
+//		OClass person = schema.createClass("Person");
+//		person.createProperty("city", OType.EMBEDDEDLIST);
+		
+		createLuke(getDb());
+		createPeter(getDb());
+		
+		//XXX what is the difference between class and cluster?
+		assertEquals(2, getDb().countClass("Person")); // schema?
+		assertEquals(2, getDb().countClusterElements("Person")); // schema-less?
+		
+		List<ODocument> result = getDb().query(
+				  new OSQLSynchQuery<ODocument>("select * from Person where city contains (country like '%land')"));
+		assertEquals(1, result.size());
+		assertEquals("Peter", result.get(0).field("name"));
+		
+		// Luke will not be retrieved if only using contains as he has no list for city
+		// but using the or'ed expression will result in a logged error message 
+//		result = getDb().query(
+//				  new OSQLSynchQuery<ODocument>("select * from Person where (city contains (country = 'Italy')) or (city.country = 'Italy')"));
+//		assertEquals(1, result.size());
+//		assertEquals("Luke", result.get(0).field("name"));
+		
+		// having results that differ will result in a wrong result set
+//		result = getDb().query(
+//				  new OSQLSynchQuery<ODocument>("select * from Person where (city contains (country = '%l%')) or (city.country = '%l%')"));
+//		assertEquals(2, result.size());
+	}
+	
+	/**
+	 * Create a Person named Peter in the given DB that lives in two cities
+	 * 
+	 * @param db the database
+	 */
+	protected static void createPeter(ODatabaseDocumentTx db) {
+		ODocument doc = new ODocument(db, "Person");
+		doc.field("name", "Peter");
+		doc.field("surname", "Pan");
+		
+		List<ODocument> cities = new ArrayList<ODocument>();
+		cities.add(new ODocument(db, "City").field("name","Somewhere").field("country", "Neverland"));
+		cities.add(new ODocument(db, "City").field("name","Dunno").field("country", "England"));
+		
+//		doc.field("city", cities, OType.EMBEDDEDLIST);
+		doc.field("city", cities);
+		
+		doc.field("fictional", Boolean.TRUE);
 		              
 		// save the document
 		doc.save();
@@ -114,7 +172,6 @@ public abstract class AbstractDocumentTest {
 		// query
 		List<ODocument> result = getDb().query(
 			  new OSQLSynchQuery<ODocument>("select * from Person where city.name = 'Tokio'"));
-		
 		
 		assertEquals(1, result.size());
 		assertEquals("Mia", result.get(0).field("name"));
