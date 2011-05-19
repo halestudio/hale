@@ -15,7 +15,9 @@ package eu.esdihumboldt.hale.orient.embedded;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -175,6 +177,33 @@ public abstract class AbstractDocumentTest {
 		
 		assertEquals(1, result.size());
 		assertEquals("Mia", result.get(0).field("name"));
+	}
+	
+	/**
+	 * Test a prepared SQL query
+	 */
+	@Test
+	public void testPreparedQuery() {
+		// tested with some special characters in field names
+		// not supported: '.' '/' '@' '%' '-'
+		// supported: digits, A-Za-z, '_'
+		
+		ODocument doc = new ODocument(getDb(), "Person");
+		doc.field("personalname", "Barack");
+		doc.field("___surname___", "Obama");
+		doc.validate();
+		doc.save();
+		
+		OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(
+				"select * from Person where personalname = :name and ___surname___ = :surname");
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("name", "Barack");
+		params.put("surname", "Obama");
+
+		List<ODocument> result = getDb().command(query).execute(params);
+		
+		assertEquals(1, result.size());
+		assertEquals("Barack", result.get(0).field("personalname"));
 	}
 
 	/**
