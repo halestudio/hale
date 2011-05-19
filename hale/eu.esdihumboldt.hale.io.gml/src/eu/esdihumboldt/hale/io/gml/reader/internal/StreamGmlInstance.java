@@ -70,6 +70,8 @@ public abstract class StreamGmlInstance {
 			}
 		}
 		
+		//FIXME check for xsi:nil!
+		
 		if (hasElements(type)) {
 			// elements
 			int open = 1;
@@ -81,8 +83,27 @@ public abstract class StreamGmlInstance {
 					AttributeDefinition property = type.getAttribute(reader.getLocalName());
 					if (property != null) {
 						//TODO check also namespace?
-						instance.addProperty(property.getName(), 
-								parseInstance(reader, property.getAttributeType())); //XXX use both namespace and local name???
+						if (hasElements(property.getAttributeType())) {
+							// use an instance as value
+							instance.addProperty(property.getName(), 
+									parseInstance(reader, property.getAttributeType())); //XXX use both namespace and local name???
+						}
+						else {
+							if (hasAttributes(property.getAttributeType())) {
+								// no elements but attributes
+								// use an instance as value, it will be assigned an instance value if possible
+								instance.addProperty(property.getName(), 
+										parseInstance(reader, property.getAttributeType())); //XXX use both namespace and local name???
+							}
+							else {
+								// no elements and no attributes
+								// use simple value
+								String value = reader.getElementText();
+								if (value != null) {
+									addSimpleProperty(instance, property, value);
+								}
+							}
+						}
 					}
 					else {
 						log.warn("No property ''{0}'' found in type ''{1}'', value is ignored", 
@@ -100,18 +121,45 @@ public abstract class StreamGmlInstance {
 		else {
 			// try to get text value
 			String value = reader.getElementText();
-//			FIXME addSimpleProperty(instance, ...);
+			if (value != null) {
+				instance.setValue(convertSimple(type, value));
+			}
 		}
 		
 		return instance;
 	}
 
 	/**
-	 * @param type
-	 * @return
+	 * Determines if the given type has properties that are represented
+	 * as XML elements.
+	 * 
+	 * @param type the type definition
+	 * @return if the type has at least one XML element property
 	 */
 	private static boolean hasElements(TypeDefinition type) {
-		// TODO Auto-generated method stub
+		for (AttributeDefinition property : type.getAttributes()) {
+			if (property.isElement()) { // in the future test with constraint?
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Determines if the given type has properties that are represented
+	 * as XML attributes.
+	 * 
+	 * @param type the type definition
+	 * @return if the type has at least one XML attribute property
+	 */
+	private static boolean hasAttributes(TypeDefinition type) {
+		for (AttributeDefinition property : type.getAttributes()) {
+			if (property.isAttribute()) { // in the future test with constraint?
+				return true;
+			}
+		}
+		
 		return false;
 	}
 
@@ -125,9 +173,23 @@ public abstract class StreamGmlInstance {
 	 */
 	private static void addSimpleProperty(MutableInstance instance,
 			AttributeDefinition property, String value) {
-		//TODO Object val = convertSimple(property.getAttributeType(), value);
-		//FIXME for now only added as string
-		instance.addProperty(property.getName(), value); //XXX use both namespace and local name???
+		Object val = convertSimple(property.getAttributeType(), value);
+		instance.addProperty(property.getName(), val); //XXX use both namespace and local name???
+	}
+
+	/**
+	 * Convert a string value from a XML simple type to the binding defined
+	 * by the given type.
+	 * 
+	 * @param type the type associated with the value
+	 * @param value the value
+	 * @return the converted object
+	 */
+	private static Object convertSimple(TypeDefinition type,
+			String value) {
+		// TODO Auto-generated method stub
+		//FIXME for now no conversion
+		return value;
 	}
 
 }
