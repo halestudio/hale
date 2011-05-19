@@ -21,6 +21,11 @@ package eu.esdihumboldt.hale.instance.model;
 public interface InstanceCollection extends Iterable<Instance> {
 	
 	/**
+	 * @see Iterable#iterator()
+	 */
+	public ResourceIterator<Instance> iterator();
+	
+	/**
 	 * Constant for unknown collection size
 	 */
 	public static final int UNKNOWN_SIZE = -1;

@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -54,7 +55,6 @@ import eu.esdihumboldt.hale.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.core.io.report.IOReport;
 import eu.esdihumboldt.hale.core.io.report.IOReporter;
-import eu.esdihumboldt.hale.core.io.report.impl.DefaultIOReporter;
 import eu.esdihumboldt.hale.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.instance.io.impl.AbstractInstanceWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.AbstractTypeMatcher;
@@ -83,7 +83,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	/**
 	 * Schema instance namespace (for specifying schema locations)
 	 */
-	public static final String SCHEMA_INSTANCE_NS = "http://www.w3.org/2001/XMLSchema-instance"; //$NON-NLS-1$
+	public static final String SCHEMA_INSTANCE_NS = XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI; //$NON-NLS-1$
 	
 	private static final ALogger log = ALoggerFactory.getLogger(StreamGmlWriter.class);
 
@@ -256,40 +256,19 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	}
 
 	/**
-	 * @see IOProvider#createReporter()
-	 */
-	@Override
-	public IOReporter createReporter() {
-		return new DefaultIOReporter(getTarget(), MessageFormat.format(
-				"{0} export", getTypeName()), true) {
-			
-			@Override
-			protected String getSuccessSummary() {
-				return MessageFormat.format("Generating the {0} output was successful", getTypeName());
-			}
-			
-			@Override
-			protected String getFailSummary() {
-				return MessageFormat.format("Generating the {0} output failed", getTypeName());
-			}
-		};
-	}
-	
-	private String getTypeName() {
-		ContentType ct = getContentType();
-		if (ct != null) {
-			return ct.toString();
-		}
-		
-		return "GML";
-	}
-
-	/**
 	 * @see IOProvider#isCancelable()
 	 */
 	@Override
 	public boolean isCancelable() {
 		return true;
+	}
+
+	/**
+	 * @see AbstractIOProvider#getDefaultContentType()
+	 */
+	@Override
+	protected ContentType getDefaultContentType() {
+		return ContentType.getContentType("GML");
 	}
 
 	/**

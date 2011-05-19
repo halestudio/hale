@@ -88,6 +88,27 @@ public abstract class AbstractIOProvider implements IOProvider {
 	protected abstract IOReport execute(ProgressIndicator progress,
 			IOReporter reporter) throws IOProviderConfigurationException,
 			IOException;
+	
+	/**
+	 * Get the content type name. By default returns the content type identifier.
+	 * 
+	 * @return the content type name
+	 */
+	protected String getTypeName() {
+		ContentType ct = getContentType();
+		if (ct != null) {
+			return ct.toString();
+		}
+		
+		return getDefaultContentType().toString();
+	}
+
+	/**
+	 * Get the default content type
+	 * 
+	 * @return the default content type
+	 */
+	protected abstract ContentType getDefaultContentType();
 
 	/**
 	 * @see IOProvider#validate()

@@ -10,10 +10,9 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.io.xml.validator;
+package eu.esdihumboldt.hale.io.gml.reader.internal;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.IOProvider;
@@ -22,16 +21,19 @@ import eu.esdihumboldt.hale.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.core.io.report.IOReport;
 import eu.esdihumboldt.hale.core.io.report.IOReporter;
-import eu.esdihumboldt.hale.core.io.report.impl.DefaultIOReporter;
-import eu.esdihumboldt.hale.instance.io.impl.AbstractInstanceValidator;
+import eu.esdihumboldt.hale.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.instance.io.impl.AbstractInstanceReader;
+import eu.esdihumboldt.hale.instance.model.InstanceCollection;
 
 /**
- * Validates XML
+ * Reads XML/GML from a stream
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class XmlInstanceValidator extends AbstractInstanceValidator {
+public class StreamGmlReader extends AbstractInstanceReader {
+
+	private InstanceCollection instances;
 
 	/**
 	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
@@ -39,38 +41,26 @@ public class XmlInstanceValidator extends AbstractInstanceValidator {
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-		progress.begin("Validating XML", ProgressIndicator.UNKNOWN);
-		Validator val = ValidatorFactory.getInstance().createValidator(getSchemas());
-		InputStream in = getSource().getInput();
+		progress.begin("Prepare loading of " + getTypeName(), ProgressIndicator.UNKNOWN);
+		
 		try {
-			Report report = val.validate(in);
-			//TODO use the report information/replace old report definition
-			reporter.setSuccess(report.isValid());
-			return reporter;
-		} finally {
-			in.close();
-			progress.end();
+			instances = new GmlInstanceCollection(getSource(), getSourceSchema(),
+					getContentType());
+			//TODO any kind of analysis on file? e.g. types and size - would also give feedback to the user if the file can be loaded
+			reporter.setSuccess(true);
+		} catch (Throwable e) {
+			reporter.setSuccess(false);
 		}
+		
+		return reporter;
 	}
 
 	/**
-	 * @see IOProvider#createReporter()
+	 * @see InstanceReader#getInstances()
 	 */
 	@Override
-	public IOReporter createReporter() {
-		return new DefaultIOReporter(getSource(), "XML validation", false) {
-
-			@Override
-			protected String getFailSummary() {
-				return "Validating the XML file failed";
-			}
-
-			@Override
-			protected String getSuccessSummary() {
-				return "The XML file is valid";
-			}
-			
-		};
+	public InstanceCollection getInstances() {
+		return instances;
 	}
 
 	/**
@@ -86,6 +76,7 @@ public class XmlInstanceValidator extends AbstractInstanceValidator {
 	 */
 	@Override
 	public boolean isCancelable() {
+		//FIXME for now not
 		return false;
 	}
 
