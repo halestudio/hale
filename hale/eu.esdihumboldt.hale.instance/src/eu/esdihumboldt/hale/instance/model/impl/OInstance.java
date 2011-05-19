@@ -14,15 +14,15 @@ package eu.esdihumboldt.hale.instance.model.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-
 import eu.esdihumboldt.hale.instance.model.Instance;
-import eu.esdihumboldt.hale.instance.model.InstanceModel;
 import eu.esdihumboldt.hale.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -34,8 +34,15 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class OInstance implements MutableInstance {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(OInstance.class);
+	
+	/**
+	 * Name for the special field for an instance value
+	 */
+	public static final String FIELD_VALUE = "___value___";
+	
+	//FIXME do encoding for other field names to support any characters in them? e.g. using OBase64Utils
 	
 	/**
 	 * The document backing the instance
@@ -79,7 +86,27 @@ public class OInstance implements MutableInstance {
 	public OInstance(Instance org) {
 		this(org.getType());
 		
-		InstanceModel.copyProperties(org, this);
+		for (String property : org.getPropertyNames()) {
+			setProperty(property, org.getProperty(property).clone());
+		}
+		
+		setValue(org.getValue());
+	}
+
+	/**
+	 * @see MutableInstance#setValue(Object)
+	 */
+	@Override
+	public void setValue(Object value) {
+		document.field(FIELD_VALUE, value);
+	}
+
+	/**
+	 * @see Instance#getValue()
+	 */
+	@Override
+	public Object getValue() {
+		return document.field(FIELD_VALUE);
 	}
 
 	/**
@@ -232,7 +259,12 @@ public class OInstance implements MutableInstance {
 	 */
 	@Override
 	public Iterable<String> getPropertyNames() {
-		return document.fieldNames();
+		Set<String> fields = new HashSet<String>(document.fieldNames());
+		
+		// remove value field
+		fields.remove(FIELD_VALUE); 
+		
+		return fields;
 	}
 
 	/**

@@ -30,6 +30,15 @@ public interface Instance {
 	public TypeDefinition getType();
 	
 	/**
+	 * Get the instance value.<br>
+	 * <b>NOTE:</b> This is needed for instance for XML elements with text content
+	 * and attributes. It may only be a simple value. 
+	 * 
+	 * @return the instance value if it is defined, otherwise <code>null</code>
+	 */
+	public Object getValue();
+	
+	/**
 	 * Get the values for the property with the given name. Values can also
 	 * be instances.
 	 * 

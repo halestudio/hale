@@ -36,6 +36,14 @@ public interface MutableInstance extends Instance {
 	 */
 	public void setProperty(String propertyName, Object... values);
 	
+	/**
+	 * Set the instance value. It may only be a simple value,
+	 * no collection or {@link Instance}.
+	 * 
+	 * @param value the instance value to set
+	 */
+	public void setValue(Object value);
+	
 	//XXX more manipulation needed? e.g. for transformation?
 
 }
