@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.io.gml.reader.internal;
 
+import java.text.MessageFormat;
+
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -58,19 +60,22 @@ public abstract class StreamGmlInstance {
 		
 		// attributes
 		for (int i = 0; i < reader.getAttributeCount(); i++) {
-			AttributeDefinition property = type.getAttribute(reader.getAttributeLocalName(i));
+			String propertyName = reader.getAttributeLocalName(i);
+			AttributeDefinition property = type.getAttribute(propertyName );
 			if (property != null) {
 				//TODO check also namespace?
 				// add property value
 				addSimpleProperty(instance, property, reader.getAttributeValue(i));
 			}
 			else {
-				log.warn("No property ''{0}'' found in type ''{1}'', value is ignored", 
-						reader.getAttributeLocalName(i), type.getDisplayName());
+				log.warn(MessageFormat.format(
+						"No property ''{0}'' found in type ''{1}'', value is ignored", 
+						propertyName, type.getDisplayName()));
 			}
 		}
 		
 		//FIXME check for xsi:nil!
+		//XXX or use reader.hasText()?
 		
 		if (hasElements(type)) {
 			// elements
@@ -106,11 +111,15 @@ public abstract class StreamGmlInstance {
 						}
 					}
 					else {
-						log.warn("No property ''{0}'' found in type ''{1}'', value is ignored", 
-								reader.getLocalName(), type.getDisplayName());
+						log.warn(MessageFormat.format(
+								"No property ''{0}'' found in type ''{1}'', value is ignored", 
+								reader.getLocalName(), type.getDisplayName()));
 					}
 					
-					open++;
+					if (reader.getEventType() != XMLStreamConstants.END_ELEMENT) {
+						// only increase open if the current event is not already the end element (because we used getElementText)
+						open++;
+					}
 					break;
 				case XMLStreamConstants.END_ELEMENT:
 					open--;

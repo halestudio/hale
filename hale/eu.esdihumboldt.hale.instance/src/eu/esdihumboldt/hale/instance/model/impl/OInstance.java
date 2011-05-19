@@ -143,7 +143,7 @@ public class OInstance implements MutableInstance {
 		}
 		else {
 			// just set the field
-			document.field(propertyName, convertInstance(value));
+			document.field(propertyName, value);
 		}
 	}
 
@@ -224,7 +224,8 @@ public class OInstance implements MutableInstance {
 		if (value == null) {
 			return null;
 		}
-		else if (value instanceof Iterable<?>) {
+		// cannot check for Iterable as ODocument is also an Iterable
+		else if (value instanceof Collection<?> || value.getClass().isArray()) {
 			List<Object> valueList = new ArrayList<Object>();
 			for (Object val : (Iterable<?>) value) {
 				valueList.add(convertDocument(val, propertyName));

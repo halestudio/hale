@@ -99,19 +99,20 @@ public class GmlInstanceCollection implements InstanceCollection {
 				initAllowedTypes();
 			}
 			
-			while (nextType == null) {
-				int event = reader.nextTag();
+			while (nextType == null && reader.hasNext()) {
+				int event = reader.next();
 				if (event == XMLStreamConstants.START_ELEMENT) {
 					// check element and try to determine associated type
-					Definition def = allowedTypes.get(new NameImpl(
-							reader.getNamespaceURI(), 
-							reader.getLocalName()));
+					Name elementName = new NameImpl(reader.getNamespaceURI(), 
+							reader.getLocalName());
+					Definition def = allowedTypes.get(elementName);
 					
 					// also check for xsi:type
 					if (reader.getAttributeCount() > 0) {
 						String xsiType = null;
 						for (int i = 0; i < reader.getAttributeCount() && xsiType == null; i++) {
-							if (reader.getAttributeNamespace(i).equals(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI)
+							String ns = reader.getAttributeNamespace(i);
+							if (ns != null && ns.equals(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI)
 									&& reader.getAttributeLocalName(i).equals("type")) {
 								// found xsi:type
 								xsiType = reader.getAttributeValue(i);
@@ -162,7 +163,15 @@ public class GmlInstanceCollection implements InstanceCollection {
 		 */
 		@Override
 		public synchronized Instance next() {
-			if (reader.getEventType() != XMLStreamConstants.START_ELEMENT 
+			if (nextType == null) {
+				try {
+					proceedToNext();
+				} catch (XMLStreamException e) {
+					throw new IllegalStateException(e);
+				}
+			}
+			
+			if (reader.getEventType() != XMLStreamConstants.START_ELEMENT
 					|| nextType == null) {
 				throw new IllegalStateException();
 			}
@@ -170,7 +179,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 			try {
 				return StreamGmlInstance.parseInstance(reader, nextType);
 			} catch (XMLStreamException e) {
-				throw new IllegalStateException();
+				throw new IllegalStateException(e);
 			} finally {
 				nextType = null;
 			}
@@ -190,7 +199,16 @@ public class GmlInstanceCollection implements InstanceCollection {
 		 * Skip the next object. Can be used instead of {@link #next()}
 		 */
 		public synchronized void skip() {
-			if (reader.getEventType() != XMLStreamConstants.START_ELEMENT) {
+			if (nextType == null) {
+				try {
+					proceedToNext();
+				} catch (XMLStreamException e) {
+					throw new IllegalStateException(e);
+				}
+			}
+			
+			if (reader.getEventType() != XMLStreamConstants.START_ELEMENT
+					|| nextType == null) {
 				throw new IllegalStateException();
 			}
 			
