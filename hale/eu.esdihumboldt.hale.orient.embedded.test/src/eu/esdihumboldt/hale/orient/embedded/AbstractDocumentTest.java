@@ -143,7 +143,6 @@ public abstract class AbstractDocumentTest {
 	/**
 	 * Test a native query
 	 */
-	@SuppressWarnings("serial")
 	@Test
 	public void testNativeQuery() {
 		createMiaAndTim();
@@ -153,6 +152,8 @@ public abstract class AbstractDocumentTest {
 				.query(new ONativeSynchQuery<ODocument, OQueryContextNativeSchema<ODocument>>(
 						getDb(), "Person",
 						new OQueryContextNativeSchema<ODocument>()) {
+					private static final long serialVersionUID = 2603436417957747935L;
+
 					@Override
 					public boolean filter(
 							OQueryContextNativeSchema<ODocument> iRecord) {

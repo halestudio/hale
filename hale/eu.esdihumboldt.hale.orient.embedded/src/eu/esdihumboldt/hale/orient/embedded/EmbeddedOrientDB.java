@@ -31,6 +31,7 @@ public class EmbeddedOrientDB implements BundleActivator {
 	/**
 	 * @see BundleActivator#start(BundleContext)
 	 */
+	@Override
 	public void start(BundleContext context) throws Exception {
 		server = OServerMain.create();
 		//TODO instead configuration through fragment
@@ -61,6 +62,7 @@ public class EmbeddedOrientDB implements BundleActivator {
 	/**
 	 * @see BundleActivator#stop(BundleContext)
 	 */
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		server.shutdown();
 	}

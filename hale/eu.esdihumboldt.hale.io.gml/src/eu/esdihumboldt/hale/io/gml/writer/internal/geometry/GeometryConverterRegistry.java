@@ -101,6 +101,7 @@ public class GeometryConverterRegistry {
 					List<GeometryConverter<?, ?>> noloss = new ArrayList<GeometryConverter<?,?>>();
 					List<GeometryConverter<?, ?>> loss = new ArrayList<GeometryConverter<?,?>>();
 					for (GeometryConverter<?, ?> converter : l1) {
+						@SuppressWarnings("rawtypes")
 						GeometryConverter conv = converter; // correct source type is assured
 						
 						if (!ignore(converter)) {
@@ -142,6 +143,7 @@ public class GeometryConverterRegistry {
 		public synchronized Geometry next() {
 			prepareNext();
 			
+			@SuppressWarnings("rawtypes")
 			GeometryConverter converter = pendingConverters.poll();
 			
 			if (results.containsKey(converter.getTargetType())) {

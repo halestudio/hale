@@ -228,6 +228,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	@SuppressWarnings("unchecked")
 	private void writeGeometry(XMLStreamWriter writer, Geometry geometry,
 			DefinitionPath path, String srsName) throws XMLStreamException {
+		@SuppressWarnings("rawtypes")
 		GeometryWriter geomWriter = path.getGeometryWriter();
 		
 		Name name = path.getLastName();

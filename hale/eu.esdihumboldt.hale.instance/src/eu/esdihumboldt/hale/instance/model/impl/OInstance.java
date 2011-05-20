@@ -130,7 +130,7 @@ public class OInstance implements MutableInstance {
 			}
 			else if (oldValue instanceof Collection<?>) {
 				// add value to collection
-				((Collection) oldValue).add(value);
+				((Collection<Object>) oldValue).add(value);
 			}
 			else if (oldValue.getClass().isArray()) {
 				// create new array

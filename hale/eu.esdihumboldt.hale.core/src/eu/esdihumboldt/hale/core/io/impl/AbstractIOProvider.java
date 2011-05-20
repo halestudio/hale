@@ -203,6 +203,7 @@ public abstract class AbstractIOProvider implements IOProvider {
 	/**
 	 * @see IOProvider#getContentType()
 	 */
+	@Override
 	public ContentType getContentType() {
 		return contentType;
 	}
@@ -210,6 +211,7 @@ public abstract class AbstractIOProvider implements IOProvider {
 	/**
 	 * @see IOProvider#setContentType(ContentType)
 	 */
+	@Override
 	public void setContentType(ContentType contentType) {
 		this.contentType = contentType;
 	}

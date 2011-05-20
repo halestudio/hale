@@ -34,6 +34,7 @@ public class Activator implements BundleActivator {
 	/**
 	 * @see BundleActivator#start(BundleContext)
 	 */
+	@Override
 	public void start(BundleContext context) throws Exception {
 		// do nothing
 		
@@ -47,6 +48,7 @@ public class Activator implements BundleActivator {
 	/**
 	 * @see BundleActivator#stop(BundleContext)
 	 */
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		// unregister service
 		OsgiUtils.unregisterService(contentTypeService);

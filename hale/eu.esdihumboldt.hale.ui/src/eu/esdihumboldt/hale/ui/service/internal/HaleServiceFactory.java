@@ -30,9 +30,8 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 	/**
 	 * @see AbstractServiceFactory#create(Class, IServiceLocator, IServiceLocator)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public Object create(Class serviceInterface, IServiceLocator parentLocator,
+	public Object create(@SuppressWarnings("rawtypes") Class serviceInterface, IServiceLocator parentLocator,
 			IServiceLocator locator) {
 		if (ReportService.class.equals(serviceInterface)) {
 			return new ReportServiceImpl();

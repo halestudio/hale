@@ -23,6 +23,7 @@ public interface InstanceCollection extends Iterable<Instance> {
 	/**
 	 * @see Iterable#iterator()
 	 */
+	@Override
 	public ResourceIterator<Instance> iterator();
 	
 	/**

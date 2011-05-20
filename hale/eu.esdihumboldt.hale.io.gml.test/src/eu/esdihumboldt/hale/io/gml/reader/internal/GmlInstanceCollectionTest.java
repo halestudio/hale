@@ -12,9 +12,13 @@
 
 package eu.esdihumboldt.hale.io.gml.reader.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.junit.Test;
 
@@ -24,8 +28,6 @@ import eu.esdihumboldt.hale.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
-
-import static org.junit.Assert.*;
 
 
 /**
