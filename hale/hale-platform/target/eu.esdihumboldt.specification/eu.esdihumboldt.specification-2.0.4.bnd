@@ -1,7 +1,0 @@
--classpath: lib/specification-2.0.4.jar
--output: eu.esdihumboldt.specification-2.0.4.jar
-Export-Package: *;-split-package:=merge-last;-noimport:=true
-Import-Package: *
-Bundle-Version: 2.0.4
-Bundle-Name: HUMBOLDT Specification
-Bundle-SymbolicName: eu.esdihumboldt.specification

@@ -1,7 +1,0 @@
--classpath: lib/commons-3.0.3.jar
--output: eu.esdihumboldt.commons-3.0.3.jar
-Export-Package: *;-split-package:=merge-last;-noimport:=true
-Import-Package: *
-Bundle-Version: 3.0.3
-Bundle-Name: HUMBOLDT Commons Library
-Bundle-SymbolicName: eu.esdihumboldt.commons
