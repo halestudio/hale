@@ -373,7 +373,6 @@
       <plugin id="org.eclipse.core.jobs.nl_zh" fragment="true"/>
       <plugin id="org.eclipse.core.jobs.nl_zh_TW" fragment="true"/>
       <plugin id="org.eclipse.core.resources"/>
-      <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
       <plugin id="org.eclipse.core.resources.nl_ar" fragment="true"/>
       <plugin id="org.eclipse.core.resources.nl_bg" fragment="true"/>
       <plugin id="org.eclipse.core.resources.nl_cs" fragment="true"/>
