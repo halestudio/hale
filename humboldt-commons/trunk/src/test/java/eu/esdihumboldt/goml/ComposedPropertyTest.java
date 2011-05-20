@@ -12,19 +12,16 @@
 
 package eu.esdihumboldt.goml;
 
+import static org.junit.Assert.assertEquals;
+
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.xml.bind.JAXBException;
-
-import junit.framework.TestCase;
-
-import org.apache.log4j.lf5.util.Resource;
+import org.junit.Before;
 import org.junit.Test;
 
 import eu.esdihumboldt.cst.align.ICell;
@@ -35,16 +32,14 @@ import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.goml.align.Cell;
 import eu.esdihumboldt.goml.align.Formalism;
 import eu.esdihumboldt.goml.align.Schema;
-import eu.esdihumboldt.generated.oml.PropertyOperatorType;
 import eu.esdihumboldt.goml.oml.ext.Parameter;
 import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
 import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.goml.omwg.Property;
 import eu.esdihumboldt.goml.rdf.About;
 
-public class ComposedPropertyTest extends TestCase {
+public class ComposedPropertyTest {
 	
 	private String sourceLocalname = "FT1";
 	private String sourceLocalnamePropertyA = "PropertyA";
@@ -57,7 +52,8 @@ public class ComposedPropertyTest extends TestCase {
 	private String targetNamespace = "http://xsdi.org";
     private Alignment alignment;
 	
-	public  void setUp() {
+    @Before
+	public void setUp() {
 		this.alignment = new Alignment();
 		alignment.setAbout(new About(UUID.randomUUID()));
 		alignment.setLevel("ComposedPropertyTest");
