@@ -30,14 +30,14 @@ import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.rdf.About;
 import eu.xsdi.mdl.model.Consequence;
 import eu.xsdi.mdl.model.Mismatch;
+import eu.xsdi.mdl.model.Mismatch.MismatchType;
 import eu.xsdi.mdl.model.MismatchCell;
 import eu.xsdi.mdl.model.Reason;
-import eu.xsdi.mdl.model.Mismatch.MismatchType;
 import eu.xsdi.mdl.model.Reason.EntityCharacteristic;
 import eu.xsdi.mdl.model.reason.ReasonCondition;
 import eu.xsdi.mdl.model.reason.ReasonRule;

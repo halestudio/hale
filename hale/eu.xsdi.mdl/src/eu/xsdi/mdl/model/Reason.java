@@ -11,7 +11,7 @@
  */
 package eu.xsdi.mdl.model;
 
-import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.commons.goml.align.Entity;
 import eu.xsdi.mdl.model.reason.ReasonRule;
 
 /**

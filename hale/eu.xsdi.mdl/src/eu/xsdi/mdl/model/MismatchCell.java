@@ -14,7 +14,7 @@ package eu.xsdi.mdl.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.align.Cell;
 
 /**
  * TODO Add Type comment
