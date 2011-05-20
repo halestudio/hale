@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.corefunctions.inspire.GeographicalNameFunction;
 import eu.esdihumboldt.cst.corefunctions.inspire.IdentifierFunction;
+import eu.esdihumboldt.specification.cst.CstFunction;
 
 /**
  * Checks the compatibility for getParameters and configure methods.

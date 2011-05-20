@@ -25,23 +25,23 @@ import com.onespatial.jrc.tns.oml_to_rif.model.alignment.ModelStaticAssignmentCe
 import com.onespatial.jrc.tns.oml_to_rif.schema.GmlAttribute;
 import com.onespatial.jrc.tns.oml_to_rif.schema.GmlAttributePath;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.IEntity;
-import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.omwg.Restriction;
+import eu.esdihumboldt.commons.goml.rdf.DetailedAbout;
+import eu.esdihumboldt.commons.goml.rdf.IDetailedAbout;
 import eu.esdihumboldt.cst.corefunctions.ConstantValueFunction;
 import eu.esdihumboldt.cst.corefunctions.NilReasonFunction;
 import eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction;
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.omwg.Restriction;
-import eu.esdihumboldt.goml.rdf.DetailedAbout;
-import eu.esdihumboldt.goml.rdf.IDetailedAbout;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.IEntity;
+import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 
 /**
  * Alignment to model alignment digester.

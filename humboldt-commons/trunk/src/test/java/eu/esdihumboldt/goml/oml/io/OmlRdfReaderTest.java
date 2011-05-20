@@ -23,16 +23,16 @@ import java.net.URL;
 
 import org.junit.Test;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ICell.RelationType;
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
-import eu.esdihumboldt.goml.omwg.ComparatorType;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.omwg.Restriction;
-import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.oml.io.OmlRdfReader;
+import eu.esdihumboldt.commons.goml.omwg.ComparatorType;
+import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.omwg.Restriction;
+import eu.esdihumboldt.commons.goml.rdf.About;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ICell.RelationType;
 
 /**
  * @author Anna Pitaev, Logica
@@ -41,7 +41,7 @@ import eu.esdihumboldt.goml.rdf.About;
 public class OmlRdfReaderTest {
 
 	/**
-	 * Test method for {@link eu.esdihumboldt.goml.oml.io.OmlRdfReader#read(java.lang.String)}.
+	 * Test method for {@link eu.esdihumboldt.commons.goml.oml.io.OmlRdfReader#read(java.lang.String)}.
 	 * @throws MalformedURLException 
 	 */
 	@Test

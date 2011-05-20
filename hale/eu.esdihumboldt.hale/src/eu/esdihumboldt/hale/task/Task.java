@@ -8,7 +8,7 @@ import java.util.Set;
 
 import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
-import eu.esdihumboldt.modelrepository.abstractfc.SchemaElement;
+import eu.esdihumboldt.specification.modelrepository.abstractfc.SchemaElement;
 
 /**
  * A Task is any type of action to be done within the HALE application to 

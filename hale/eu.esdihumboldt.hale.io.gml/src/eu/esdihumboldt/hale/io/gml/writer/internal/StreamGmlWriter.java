@@ -48,6 +48,8 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.commons.tools.AttributeProperty;
+import eu.esdihumboldt.commons.tools.FeatureInspector;
 import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
@@ -69,8 +71,6 @@ import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
-import eu.esdihumboldt.tools.AttributeProperty;
-import eu.esdihumboldt.tools.FeatureInspector;
 
 /**
  * Writes GML/XML using a {@link XMLStreamWriter}

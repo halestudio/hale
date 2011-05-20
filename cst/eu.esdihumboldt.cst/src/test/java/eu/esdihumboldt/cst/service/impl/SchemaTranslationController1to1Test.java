@@ -33,27 +33,27 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.align.Formalism;
+import eu.esdihumboldt.commons.goml.align.Schema;
+import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
+import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
+import eu.esdihumboldt.commons.goml.omwg.Restriction;
+import eu.esdihumboldt.commons.goml.rdf.About;
+import eu.esdihumboldt.commons.goml.rdf.Resource;
 import eu.esdihumboldt.cst.NameHelper;
-import eu.esdihumboldt.cst.align.IAlignment;
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.cst.transformer.service.AddFunctionsToPathUtility;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory.ToleranceLevel;
 import eu.esdihumboldt.cst.transformer.service.impl.SchemaTranslationController;
 import eu.esdihumboldt.cst.transformer.service.impl.TargetSchemaProvider;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.align.Formalism;
-import eu.esdihumboldt.goml.align.Schema;
-import eu.esdihumboldt.goml.oml.ext.Parameter;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.omwg.Restriction;
-import eu.esdihumboldt.goml.rdf.About;
-import eu.esdihumboldt.goml.rdf.Resource;
+import eu.esdihumboldt.specification.cst.align.IAlignment;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ICell.RelationType;
 
 /**
  * This is a simple example test for the {@link SchemaTranslationController}.
@@ -69,7 +69,7 @@ public class SchemaTranslationController1to1Test {
 	private static SimpleFeatureType targetType = null;
 
 	/**
-	 * Set up method using {@link eu.esdihumboldt.cst.transformer.service.impl.SchemaTranslationController#SchemaTranslationController(eu.esdihumboldt.cst.align.IAlignment)}.
+	 * Set up method using {@link eu.esdihumboldt.cst.transformer.service.impl.SchemaTranslationController#SchemaTranslationController(eu.esdihumboldt.specification.cst.align.IAlignment)}.
 	 * @throws URISyntaxException 
 	 */
 	@BeforeClass
@@ -112,7 +112,7 @@ public class SchemaTranslationController1to1Test {
 	 * This is a more complex test that tests the actual translation and makes
 	 * assertions afterwards.
 	 * 
-	 * Test method for {@link eu.esdihumboldt.cst.transformer.service.impl.SchemaTranslationController#translate(eu.esdihumboldt.cst.align.IAlignment, org.geotools.feature.FeatureCollection)}.
+	 * Test method for {@link eu.esdihumboldt.cst.transformer.service.impl.SchemaTranslationController#translate(eu.esdihumboldt.specification.cst.align.IAlignment, org.geotools.feature.FeatureCollection)}.
 	 * @throws URISyntaxException 
 	 */
 	@SuppressWarnings("unchecked")
@@ -283,13 +283,13 @@ public class SchemaTranslationController1to1Test {
 		Cell cell = new Cell();
 		ComposedProperty cp = new ComposedProperty(
 				new About(NameHelper.sourceNamespace, NameHelper.sourceLocalname));
-		cp.getCollection().add(new eu.esdihumboldt.goml.omwg.Property(
+		cp.getCollection().add(new eu.esdihumboldt.commons.goml.omwg.Property(
 				new About(NameHelper.sourceNamespace, NameHelper.sourceLocalname, 
 						NameHelper.sourceLocalnamePropertyA)));
-		cp.getCollection().add(new eu.esdihumboldt.goml.omwg.Property(
+		cp.getCollection().add(new eu.esdihumboldt.commons.goml.omwg.Property(
 				new About(NameHelper.sourceNamespace, NameHelper.sourceLocalname, 
 						NameHelper.sourceLocalnamePropertyB)));
-		cp.getCollection().add(new eu.esdihumboldt.goml.omwg.Property(
+		cp.getCollection().add(new eu.esdihumboldt.commons.goml.omwg.Property(
 				new About(NameHelper.sourceNamespace, NameHelper.sourceLocalname, 
 						NameHelper.sourceLocalnamePropertyC)));
 		Transformation t = new Transformation();
@@ -300,7 +300,7 @@ public class SchemaTranslationController1to1Test {
 						"0.5 * (PropertyA * PropertyB + PropertyC)")); //$NON-NLS-1$
 		cp.setTransformation(t);
 		cell.setEntity1(cp);
-		cell.setEntity2(new eu.esdihumboldt.goml.omwg.Property(
+		cell.setEntity2(new eu.esdihumboldt.commons.goml.omwg.Property(
 				new About(NameHelper.targetNamespace, NameHelper.targetLocalname, 
 						NameHelper.targetLocalnamePropertyD)));
 		

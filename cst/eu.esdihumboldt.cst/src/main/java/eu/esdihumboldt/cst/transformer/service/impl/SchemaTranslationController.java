@@ -37,9 +37,6 @@ import org.opengis.metadata.lineage.Lineage;
 import de.cs3d.util.logging.AGroupFactory;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.cst.CstFunction;
-import eu.esdihumboldt.cst.align.IAlignment;
-import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.transformer.CellUtils;
 import eu.esdihumboldt.cst.transformer.FilterUtils;
 import eu.esdihumboldt.cst.transformer.Messages;
@@ -48,6 +45,9 @@ import eu.esdihumboldt.cst.transformer.fc.CstFeatureCollection;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory.ToleranceLevel;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
+import eu.esdihumboldt.specification.cst.CstFunction;
+import eu.esdihumboldt.specification.cst.align.IAlignment;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * This class provides Schema Translation capabilities, including complex 

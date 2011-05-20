@@ -34,8 +34,8 @@ import org.eclipse.ui.PlatformUI;
 import org.geotools.styling.SLDTransformer;
 import org.geotools.styling.Style;
 
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.oml.io.OmlRdfGenerator;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.ConfigSchemaService;
 import eu.esdihumboldt.hale.models.ProjectService;

@@ -19,11 +19,11 @@ import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.cst.align.IAlignment;
-import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Cell;
 import eu.esdihumboldt.cst.transformer.capabilities.CstServiceCapabilities;
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.specification.cst.align.IAlignment;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * This is the interface used by HALE to access schema transformation 

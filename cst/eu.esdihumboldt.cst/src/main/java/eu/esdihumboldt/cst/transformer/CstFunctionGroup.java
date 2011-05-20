@@ -16,7 +16,7 @@ import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.cst.CstFunction;
+import eu.esdihumboldt.specification.cst.CstFunction;
 
 /**
  * An interface for dealing with multiple {@link CstFunction}s in a schema 

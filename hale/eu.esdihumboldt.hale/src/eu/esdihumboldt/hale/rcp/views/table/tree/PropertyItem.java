@@ -24,9 +24,9 @@ import org.opengis.feature.ComplexAttribute;
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
 
+import eu.esdihumboldt.commons.tools.FeatureInspector;
 import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.utils.tree.DefaultTreeNode;
-import eu.esdihumboldt.tools.FeatureInspector;
 
 /**
  * Tree item representing a feature type property

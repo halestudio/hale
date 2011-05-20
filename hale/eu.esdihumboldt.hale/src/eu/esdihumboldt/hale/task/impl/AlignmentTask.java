@@ -14,13 +14,13 @@ package eu.esdihumboldt.hale.task.impl;
 
 import java.util.List;
 
-import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.alignment.AlignmentServiceListener;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.task.ServiceProvider;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * A task that listens to the alignment service

@@ -16,13 +16,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.goml.align.Entity;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.align.Entity;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * {@link AlignmentInfo} based on a {@link SchemaSelection}

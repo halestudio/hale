@@ -27,24 +27,24 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyType;
 
-import eu.esdihumboldt.cst.AbstractCstFunction;
-import eu.esdihumboldt.cst.CstFunction;
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.rdf.About;
+import eu.esdihumboldt.commons.goml.rdf.DetailedAbout;
+import eu.esdihumboldt.commons.goml.rdf.IDetailedAbout;
+import eu.esdihumboldt.commons.inspire.data.GeographicalName;
+import eu.esdihumboldt.commons.inspire.data.GrammaticalGenderValue;
+import eu.esdihumboldt.commons.inspire.data.GrammaticalNumberValue;
+import eu.esdihumboldt.commons.inspire.data.NameStatusValue;
+import eu.esdihumboldt.commons.inspire.data.NativenessValue;
+import eu.esdihumboldt.commons.tools.FeatureInspector;
 import eu.esdihumboldt.cst.transformer.service.rename.FeatureBuilder;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.rdf.About;
-import eu.esdihumboldt.goml.rdf.DetailedAbout;
-import eu.esdihumboldt.goml.rdf.IDetailedAbout;
-import eu.esdihumboldt.inspire.data.GeographicalName;
-import eu.esdihumboldt.inspire.data.GrammaticalGenderValue;
-import eu.esdihumboldt.inspire.data.GrammaticalNumberValue;
-import eu.esdihumboldt.inspire.data.NameStatusValue;
-import eu.esdihumboldt.inspire.data.NativenessValue;
-import eu.esdihumboldt.tools.FeatureInspector;
+import eu.esdihumboldt.specification.cst.AbstractCstFunction;
+import eu.esdihumboldt.specification.cst.CstFunction;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 
 /**
  * This function enables the creation of an INPSIRE GeographicalName object from

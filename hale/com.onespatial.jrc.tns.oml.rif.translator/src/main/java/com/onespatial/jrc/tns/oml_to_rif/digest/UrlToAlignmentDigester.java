@@ -19,8 +19,8 @@ import com.onespatial.jrc.tns.oml_to_rif.HaleAlignment;
 import com.onespatial.jrc.tns.oml_to_rif.api.AbstractFollowableTranslator;
 import com.onespatial.jrc.tns.oml_to_rif.api.TranslationException;
 
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
 

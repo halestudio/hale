@@ -14,14 +14,14 @@ package eu.esdihumboldt.hale.rcp.wizards.augmentations;
 
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.commons.goml.align.Entity;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.CellSelectionInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * Factory for augmentation function wizards

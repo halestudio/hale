@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.ConfigSchemaService;
@@ -42,6 +41,7 @@ import eu.esdihumboldt.hale.models.task.TaskServiceListener;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.task.ResolvedTask;
 import eu.esdihumboldt.hale.task.Task;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * Default implementation of the {@link ProjectService}.

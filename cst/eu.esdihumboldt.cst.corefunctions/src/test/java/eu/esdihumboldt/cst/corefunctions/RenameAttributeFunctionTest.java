@@ -33,11 +33,11 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.rdf.About;
-import eu.esdihumboldt.goml.rdf.Resource;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.rdf.About;
+import eu.esdihumboldt.commons.goml.rdf.Resource;
 
 /**
  * Test for {@link RenameAttributeFunction}. 
@@ -286,7 +286,7 @@ public class RenameAttributeFunctionTest {
 	}
 
 	/**
-	 * Test method for {@link eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction#configure(eu.esdihumboldt.cst.align.ICell)}.
+	 * Test method for {@link eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction#configure(eu.esdihumboldt.specification.cst.align.ICell)}.
 	 */
 	@Test
 	public void testConfigureICell() {

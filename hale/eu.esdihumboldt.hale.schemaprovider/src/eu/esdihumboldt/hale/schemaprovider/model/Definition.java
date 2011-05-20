@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.schemaprovider.model;
 
-import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.commons.goml.align.Entity;
 
 /**
  * 

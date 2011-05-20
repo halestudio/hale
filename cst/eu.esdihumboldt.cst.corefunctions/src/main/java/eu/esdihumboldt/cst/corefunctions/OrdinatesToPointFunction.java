@@ -24,15 +24,15 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
-import eu.esdihumboldt.cst.CstFunction;
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.oml.ext.Parameter;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
+import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.rdf.About;
+import eu.esdihumboldt.specification.cst.CstFunction;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 
 /**
  * @author Thorsten Reitz, Stefan Gessner
@@ -79,7 +79,7 @@ public class OrdinatesToPointFunction
 	/**
 	 * @param cell
 	 * @return true
-	 * @see eu.esdihumboldt.cst.CstFunction#configure(eu.esdihumboldt.cst.align.ICell)
+	 * @see eu.esdihumboldt.specification.cst.CstFunction#configure(eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	@Override
 	public boolean configure(ICell cell) {
@@ -97,7 +97,7 @@ public class OrdinatesToPointFunction
 	
 	/**
 	 * @return parameterCell
-	 * @see eu.esdihumboldt.cst.CstFunction#getParameters()
+	 * @see eu.esdihumboldt.specification.cst.CstFunction#getParameters()
 	 */
 	@Override
 	public ICell getParameters() {
@@ -141,7 +141,7 @@ public class OrdinatesToPointFunction
 	 * @param source
 	 * @param target
 	 * @return target
-	 * @see eu.esdihumboldt.cst.CstFunction#transform(org.opengis.feature.Feature, org.opengis.feature.Feature)
+	 * @see eu.esdihumboldt.specification.cst.CstFunction#transform(org.opengis.feature.Feature, org.opengis.feature.Feature)
 	 */
 	@Override
 	public Feature transform(Feature source, Feature target) {

@@ -16,6 +16,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import eu.esdihumboldt.commons.tools.ConfigurationManager;
+
 /**
  * An Junittest for ConfigurationManager
  *
@@ -26,7 +28,7 @@ import org.junit.Test;
 public class ConfigurationManagerTest {
 
 	/**
-	 * Test method for {@link eu.esdihumboldt.tools.ConfigurationManager#getComponentProperty(java.lang.String)}.
+	 * Test method for {@link eu.esdihumboldt.commons.tools.ConfigurationManager#getComponentProperty(java.lang.String)}.
 	 */
 	@Test
 	public void testGetComponentProperty() {
@@ -35,7 +37,7 @@ public class ConfigurationManagerTest {
 	}
 
 	/**
-	 * Test method for {@link eu.esdihumboldt.tools.ConfigurationManager#getSystemProperty(java.lang.String)}.
+	 * Test method for {@link eu.esdihumboldt.commons.tools.ConfigurationManager#getSystemProperty(java.lang.String)}.
 	 */
 	@Test
 	public void testGetSystemProperty() {

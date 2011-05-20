@@ -23,8 +23,8 @@ package eu.esdihumboldt.hale.rcp.wizards.functions.generic.model;
 
 import java.util.List;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 
 public class AlgorithmCST extends Model{
 	

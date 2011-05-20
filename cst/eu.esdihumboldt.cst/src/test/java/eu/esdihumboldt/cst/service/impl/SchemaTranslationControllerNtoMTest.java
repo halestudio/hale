@@ -12,8 +12,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-import eu.esdihumboldt.cst.align.IAlignment;
 import eu.esdihumboldt.cst.transformer.service.impl.SchemaTranslationController;
+import eu.esdihumboldt.specification.cst.align.IAlignment;
 
 /**
  * This is a more complex test for the {@link SchemaTranslationController}

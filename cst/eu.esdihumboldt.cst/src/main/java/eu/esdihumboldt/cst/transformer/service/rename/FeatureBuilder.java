@@ -31,8 +31,8 @@ import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.identity.Identifier;
 
+import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.cst.transformer.service.impl.IdGenerator;
-import eu.esdihumboldt.goml.omwg.Property;
 
 /**
  * A helper class for building {@link FeatureImpl}s.

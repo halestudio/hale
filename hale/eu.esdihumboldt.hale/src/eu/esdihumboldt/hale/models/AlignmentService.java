@@ -17,9 +17,9 @@ import java.util.List;
 
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Entity;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * The {@link AlignmentService} provides access to the currently loaded 

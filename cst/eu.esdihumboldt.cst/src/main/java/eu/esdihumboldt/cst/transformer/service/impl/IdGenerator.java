@@ -24,7 +24,7 @@ import org.opengis.feature.Property;
 import org.opengis.feature.type.ComplexType;
 import org.opengis.filter.identity.FeatureId;
 
-import eu.esdihumboldt.tools.FeatureInspector;
+import eu.esdihumboldt.commons.tools.FeatureInspector;
 
 /**
  * This class provides means of equipping features with repeatable Feature IDs.

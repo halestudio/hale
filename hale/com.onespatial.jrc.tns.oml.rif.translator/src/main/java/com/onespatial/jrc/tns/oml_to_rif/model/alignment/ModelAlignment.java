@@ -13,7 +13,7 @@ package com.onespatial.jrc.tns.oml_to_rif.model.alignment;
 
 import java.util.List;
 
-import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Alignment;
 
 /**
  * A model of a HALE {@link Alignment}, used as an interim stage in translation

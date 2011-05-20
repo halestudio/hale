@@ -22,17 +22,17 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.PropertyDescriptor;
 
-import eu.esdihumboldt.cst.AbstractCstFunction;
-import eu.esdihumboldt.cst.CstFunction;
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.IParameter;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.rdf.About;
+import eu.esdihumboldt.commons.inspire.data.InspireIdentifier;
+import eu.esdihumboldt.commons.tools.FeatureInspector;
 import eu.esdihumboldt.cst.corefunctions.Messages;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.rdf.About;
-import eu.esdihumboldt.inspire.data.InspireIdentifier;
-import eu.esdihumboldt.tools.FeatureInspector;
+import eu.esdihumboldt.specification.cst.AbstractCstFunction;
+import eu.esdihumboldt.specification.cst.CstFunction;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 
 /**
  * This function creates INSPIRE-compliant identifiers like this one

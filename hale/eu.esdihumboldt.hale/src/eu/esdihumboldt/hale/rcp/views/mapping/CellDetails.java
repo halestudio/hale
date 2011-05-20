@@ -24,12 +24,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TableColumn;
 
-import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.align.ext.ITransformation;
+import eu.esdihumboldt.commons.goml.omwg.Restriction;
 import eu.esdihumboldt.cst.transformer.FilterUtils;
-import eu.esdihumboldt.goml.omwg.Restriction;
 import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.utils.EntityHelper;
+import eu.esdihumboldt.specification.cst.align.ext.IParameter;
+import eu.esdihumboldt.specification.cst.align.ext.ITransformation;
 
 /**
  * Cell details view

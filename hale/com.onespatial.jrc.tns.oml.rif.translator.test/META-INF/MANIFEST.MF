@@ -5,7 +5,7 @@ Bundle-SymbolicName: com.onespatial.jrc.tns.oml_to_rif.test
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: ONESPATIAL
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: eu.esdihumboldt.goml.align,
+Import-Package: eu.esdihumboldt.commons.goml.align,
  eu.esdihumboldt.hale.rcp.wizards.io.mappingexport,
  org.apache.commons.logging,
  org.custommonkey.xmlunit,

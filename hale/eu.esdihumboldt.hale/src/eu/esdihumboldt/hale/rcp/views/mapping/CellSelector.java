@@ -53,7 +53,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.IDisposable;
 
-import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
@@ -67,6 +66,7 @@ import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.NullSchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardContribution;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * Control for selecting a cell, reacts on {@link SchemaSelection}s

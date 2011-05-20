@@ -58,12 +58,12 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
+import eu.esdihumboldt.commons.tools.AttributeProperty;
+import eu.esdihumboldt.commons.tools.FeatureInspector;
 import eu.esdihumboldt.gmlhandler.deegree.InternalFeature;
 import eu.esdihumboldt.gmlhandler.deegree.SimplePropertyWithAttributes;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
-import eu.esdihumboldt.tools.AttributeProperty;
-import eu.esdihumboldt.tools.FeatureInspector;
 
 
 /**

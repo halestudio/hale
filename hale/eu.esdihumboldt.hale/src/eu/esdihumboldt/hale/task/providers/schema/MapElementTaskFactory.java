@@ -16,7 +16,6 @@ import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
 
-import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
@@ -28,6 +27,7 @@ import eu.esdihumboldt.hale.task.TaskType;
 import eu.esdihumboldt.hale.task.impl.AbstractTaskFactory;
 import eu.esdihumboldt.hale.task.impl.AbstractTaskType;
 import eu.esdihumboldt.hale.task.impl.AlignmentTask;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * Map type task factory

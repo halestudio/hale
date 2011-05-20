@@ -12,11 +12,11 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.literal;
 
-import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * Factory for the {@link RenameAttributeWizard}.

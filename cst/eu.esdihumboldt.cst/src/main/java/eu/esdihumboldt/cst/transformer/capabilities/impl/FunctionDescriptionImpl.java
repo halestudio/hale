@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import eu.esdihumboldt.cst.CstFunction;
-import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
+import eu.esdihumboldt.specification.cst.CstFunction;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * This is an implementation of {@link FunctionDescription}.

@@ -16,11 +16,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import eu.esdihumboldt.cst.align.IEntity;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.rdf.DetailedAbout;
-import eu.esdihumboldt.goml.rdf.IDetailedAbout;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.rdf.DetailedAbout;
+import eu.esdihumboldt.commons.goml.rdf.IDetailedAbout;
+import eu.esdihumboldt.specification.cst.align.IEntity;
 
 /**
  * 

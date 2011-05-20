@@ -21,11 +21,11 @@ import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.Feature;
 import org.opengis.filter.Filter;
 
-import eu.esdihumboldt.cst.CstFunction;
-import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.transformer.FilterUtils;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
+import eu.esdihumboldt.specification.cst.CstFunction;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * The {@link InstanceCreationHandler} collects those methods used to control

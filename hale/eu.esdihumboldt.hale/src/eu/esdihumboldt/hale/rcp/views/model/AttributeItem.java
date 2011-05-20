@@ -23,13 +23,13 @@ import org.apache.log4j.Logger;
 import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.PropertyType;
 
-import eu.esdihumboldt.cst.rdf.IAbout;
-import eu.esdihumboldt.goml.align.Entity;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.rdf.DetailedAbout;
+import eu.esdihumboldt.commons.goml.align.Entity;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.rdf.DetailedAbout;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.specification.cst.rdf.IAbout;
 
 /**
  * Schema item representing a property

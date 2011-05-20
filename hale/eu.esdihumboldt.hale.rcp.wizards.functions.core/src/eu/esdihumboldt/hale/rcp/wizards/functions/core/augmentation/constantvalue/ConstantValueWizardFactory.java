@@ -12,12 +12,12 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.augmentation.constantvalue;
 
-import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.corefunctions.ConstantValueFunction;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizard;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizardFactory;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * Factory for the ConstantValueWizard
@@ -31,7 +31,7 @@ public class ConstantValueWizardFactory extends AugmentationWizardFactory {
 	
 
 	/**
-	 * @see eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizardFactory#createWizard(eu.esdihumboldt.hale.rcp.views.model.SchemaItem, eu.esdihumboldt.cst.align.ICell)
+	 * @see eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizardFactory#createWizard(eu.esdihumboldt.hale.rcp.views.model.SchemaItem, eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	@Override
 	protected AugmentationWizard createWizard(SchemaItem item,
@@ -41,7 +41,7 @@ public class ConstantValueWizardFactory extends AugmentationWizardFactory {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizardFactory#supports(eu.esdihumboldt.hale.rcp.views.model.SchemaItem, eu.esdihumboldt.cst.align.ICell)
+	 * @see eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizardFactory#supports(eu.esdihumboldt.hale.rcp.views.model.SchemaItem, eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	@Override
 	protected boolean supports(SchemaItem item, ICell augmentation) {

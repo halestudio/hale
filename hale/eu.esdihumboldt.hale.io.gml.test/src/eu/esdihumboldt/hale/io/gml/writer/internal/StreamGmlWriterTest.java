@@ -61,10 +61,10 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
-import eu.esdihumboldt.cst.align.IAlignment;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.oml.io.OmlRdfReader;
+import eu.esdihumboldt.commons.tools.FeatureInspector;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory;
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.impl.LogProgressIndicator;
 import eu.esdihumboldt.hale.core.io.report.IOReport;
@@ -84,7 +84,7 @@ import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
-import eu.esdihumboldt.tools.FeatureInspector;
+import eu.esdihumboldt.specification.cst.align.IAlignment;
 
 /**
  * Tests for {@link StreamGmlWriter}

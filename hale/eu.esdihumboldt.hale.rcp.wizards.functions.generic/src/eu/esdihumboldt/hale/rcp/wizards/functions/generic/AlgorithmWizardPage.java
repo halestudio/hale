@@ -37,8 +37,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
+import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 
 public class AlgorithmWizardPage extends WizardPage  {
 

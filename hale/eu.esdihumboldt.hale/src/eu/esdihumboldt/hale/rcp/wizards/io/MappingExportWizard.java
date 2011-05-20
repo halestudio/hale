@@ -32,9 +32,8 @@ import de.cs3d.util.logging.AGroupFactory;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
-import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.commons.goml.align.Alignment;
 import eu.esdihumboldt.cst.transformer.CellUtils;
-import eu.esdihumboldt.goml.align.Alignment;
 import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.SchemaService;
@@ -45,6 +44,7 @@ import eu.esdihumboldt.hale.rcp.views.report.service.ReportServiceImpl;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportExtension;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * This wizard is used to export the currently active mapping to an gOML file.

@@ -18,7 +18,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
@@ -32,6 +31,7 @@ import eu.esdihumboldt.hale.task.TaskType;
 import eu.esdihumboldt.hale.task.impl.AbstractTaskFactory;
 import eu.esdihumboldt.hale.task.impl.AbstractTaskType;
 import eu.esdihumboldt.hale.task.impl.AlignmentTask;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * Map attribute task factory
