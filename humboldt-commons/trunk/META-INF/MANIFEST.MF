@@ -20,8 +20,7 @@ Export-Package: eu.esdihumboldt.goml.align,
  eu.esdihumboldt.mediator.usermanagement.types.impl,
  eu.esdihumboldt.mediator.util,
  eu.esdihumboldt.modelmapping.imm.impl,
- eu.esdihumboldt.tools,
- eu.esdihumboldt.utilities
+ eu.esdihumboldt.tools
 Import-Package: com.sun.xml.bind.marshaller,
  eu.esdihumboldt.cst.align,
  eu.esdihumboldt.cst.align.ext,
