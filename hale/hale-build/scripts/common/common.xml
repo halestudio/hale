@@ -231,11 +231,11 @@
 		<echo message="Using eclipse installation at ${eclipse}" />
 		
 		<!-- run PDE build -->
-		<java classname="org.eclipse.equinox.launcher.Main" fork="true" failonerror="true">
+		<java classname="org.eclipse.core.launcher.Main" fork="true" failonerror="true">
 			<arg value="-application" />
 			<arg value="org.eclipse.ant.core.antRunner" />
 			<arg value="-buildfile" />
-			<arg value="${eclipse}/plugins/org.eclipse.pde.build_3.5.1.R35x_20090820/scripts/productBuild/productBuild.xml" />
+			<arg value="${eclipse}/plugins/org.eclipse.pde.build_3.6.2.R36x_20110203/scripts/productBuild/productBuild.xml" />
 			<arg value="-Dbuilder=${toString:absoluteCommon}" /> <!-- path to build.properties -->
 			<arg value="-DbuildDirectory=${toString:absoluteBuild}" />
 			<arg value="-Dbase=${toString:absoluteEclipse}" />
@@ -245,7 +245,7 @@
 			<arg value="-DtopLevelElementId=${topLevelElementId}" />
 			<arg value="-Dconfigs=${os},${ws},${arch}" />
 			<classpath>
-				<pathelement location="${eclipse}/plugins/org.eclipse.equinox.launcher_1.0.201.R35x_v20090715.jar" />
+				<pathelement location="${eclipse}/plugins/org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar" />
 			</classpath>
 		</java>
 		
@@ -470,7 +470,7 @@
 			<arg value="${testBundleName}" />
 			<sysproperty key="osgi.test.plugins" value="${plugins}" />
 			<classpath>
-				<pathelement path="${plugins}/org.eclipse.osgi_3.5.1.R35x_v20090827.jar" />
+				<pathelement path="${plugins}/org.eclipse.osgi_3.6.2.R36x_v20110210.jar" />
 				<!--fileset dir="${plugins}">
 					<include name="de.cs3d.util.osgi.test_*.jar" />
 				</fileset-->
