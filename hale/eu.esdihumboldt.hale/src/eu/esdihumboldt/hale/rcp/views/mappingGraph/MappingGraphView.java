@@ -450,140 +450,13 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 			// if the schemaSelectionInt is 1, all cells of the MappingView
 			// will be drawn
 			if (this.schemaSelectionInt == 1) {
-
-				//Schema will be built
-				SchemaSelection schemaSelectionAll = new SchemaSelection();
-				SchemaItem sourceRoot = this.schemaItemService
-						.getRoot(SchemaType.SOURCE);
-				SchemaItem targetRoot = this.schemaItemService
-						.getRoot(SchemaType.TARGET);
-				this.mappingGraphModel.rekursiveGetChildren(schemaSelectionAll, true, sourceRoot);
-				this.mappingGraphModel.rekursiveGetChildren(schemaSelectionAll, false,targetRoot);
-				schemaSelection = schemaSelectionAll;
-
-				// Resets the arrays before the nodes going to be redrawn
-				this.mappingGraphModel.arrayReset();
-
-				// Draws the source and target nodes
-				this.mappingGraphNodeRenderer.drawNodesOnlyWithConnection(schemaSelection);
-
-				// Makes the stepping of the Nodes
-				this.mappingGraphNodeRenderer.makeNodeStepping();
-
-				/**
-				 * Source and target Nodes will be scanned for accordances at
-				 * the Entities. After that these accordances (called cells)
-				 * will be drawn and connected by lines in the middle of the
-				 * Mapping Graph. In the end the cells and the connections will
-				 * be cached in the ArrayLists.
-				 */
-				if (!this.mappingGraphModel.getSourceNodeList().isEmpty()
-						&& !this.mappingGraphModel.getTargetNodeList().isEmpty()) {
-					for (GraphNode sourceGraphNode : this.mappingGraphModel.getSourceNodeList()) {
-						SchemaItem sourceSchemaItem = (SchemaItem) sourceGraphNode
-								.getData();
-						this.mappingGraphModel.setSourceGraphNode(sourceGraphNode);
-						for (GraphNode targetGraphNode : this.mappingGraphModel.getTargetNodeList()) {
-							String cellName = null;
-							SchemaItem targetSchemaItem = (SchemaItem) targetGraphNode
-									.getData();
-							this.mappingGraphModel.setTargetGraphNode(targetGraphNode);
-							Cell resultCell = null;
-
-							resultCell = ((Cell) this.alignmentService.getCell(
-									sourceSchemaItem.getEntity(),
-									targetSchemaItem.getEntity()));
-							if (resultCell != null) {
-								if (resultCell.getEntity1().getTransformation() == null) {
-									cellName = resultCell.getEntity2()
-											.getTransformation().getService()
-											.getLocation();
-								} else {
-									cellName = resultCell.getEntity1()
-											.getTransformation().getService()
-											.getLocation();
-								}
-								String[] tempSplit = cellName.split("\\."); //$NON-NLS-1$
-								String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
-
-								// Checks the old connections and takes the
-								// right one
-								this.mappingGraphModel.checkForExistingConnections(
-										graphConnectionNodeName, resultCell);
-								// Creates a new entity node if there is no old
-								// one
-								this.mappingGraphNodeRenderer.createNewEntityNode(
-										graphConnectionNodeName, resultCell);
-								// Creates the connections between the nodes.
-								this.mappingGraphNodeRenderer.createGraphConnections();
-							}
-						}
-					}
-				}
+				this.drawAll(schemaSelection);
 			}
 			
 			// if the schemaSelectionInt is 2, the selection in the
 			// SchemaExplorer will be drawn
 			if (this.schemaSelectionInt == 2) {
-				// Resets the arrays before the nodes going to be redrawn
-				this.mappingGraphModel.arrayReset();
-
-				// Draws the source and target nodes
-				this.mappingGraphNodeRenderer.drawNodes(schemaSelection);
-
-				// Makes the stepping of the Nodes
-				this.mappingGraphNodeRenderer.makeNodeStepping();
-
-				/**
-				 * Source and target Nodes will be scanned for accordances at
-				 * the Entities. After that these accordances (called cells)
-				 * will be drawn and connected by lines in the middle of the
-				 * Mapping Graph. In the end the cells and the connections will
-				 * be cached in the ArrayLists.
-				 */
-				if (!this.mappingGraphModel.getSourceNodeList().isEmpty()
-						&& !this.mappingGraphModel.getTargetNodeList().isEmpty()) {
-					for (GraphNode sourceGraphNode : this.mappingGraphModel.getSourceNodeList()) {
-						SchemaItem sourceSchemaItem = (SchemaItem) sourceGraphNode
-								.getData();
-						this.mappingGraphModel.setSourceGraphNode(sourceGraphNode);
-						for (GraphNode targetGraphNode : this.mappingGraphModel.getTargetNodeList()) {
-							String cellName = null;
-							SchemaItem targetSchemaItem = (SchemaItem) targetGraphNode
-									.getData();
-							this.mappingGraphModel.setTargetGraphNode(targetGraphNode);
-							Cell resultCell = null;
-
-							resultCell = ((Cell) this.alignmentService.getCell(
-									sourceSchemaItem.getEntity(),
-									targetSchemaItem.getEntity()));
-							if (resultCell != null) {
-								if (resultCell.getEntity1().getTransformation() == null) {
-									cellName = resultCell.getEntity2()
-											.getTransformation().getService()
-											.getLocation();
-								} else {
-									cellName = resultCell.getEntity1()
-											.getTransformation().getService()
-											.getLocation();
-								}
-								String[] tempSplit = cellName.split("\\."); //$NON-NLS-1$
-								String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
-
-								// Checks the old connections and takes the
-								// right one
-								this.mappingGraphModel.checkForExistingConnections(
-										graphConnectionNodeName, resultCell);
-								// Creates a new entity node if there is no old
-								// one
-								this.mappingGraphNodeRenderer.createNewEntityNode(
-										graphConnectionNodeName, resultCell);
-								// Creates the connections between the nodes.
-								this.mappingGraphNodeRenderer.createGraphConnections();
-							}
-						}
-					}
-				}
+				this.drawSchemaExplorer(schemaSelection);
 			}
 		}
 		
@@ -592,186 +465,327 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 		// if the schemaSelectionInt is 3, the selected cell in the
 		// MappingView will be drawn
 		if (this.schemaSelectionInt == 3) {
-
-			if(this.temporaryCellSelection != null){
-				
-				//Schema will be built
-				SchemaSelection schemaSelectionAll = new SchemaSelection();
-				for(SchemaItem schemaItem : this.temporaryCellSelection.getCellInfo().getSourceItems()){
-					schemaSelectionAll.addSourceItem(schemaItem);
-				}
-				for(SchemaItem schemaItem : this.temporaryCellSelection.getCellInfo().getTargetItems()){
-					schemaSelectionAll.addTargetItem(schemaItem);
-				}
-				schemaSelection = schemaSelectionAll;
-
-				// Resets the arrays before the nodes going to be redrawn
-				this.mappingGraphModel.arrayReset();
-
-				// Draws the source and target nodes
-				this.mappingGraphNodeRenderer.drawNodesOnlyWithConnection(schemaSelection);
-
-				// Makes the stepping of the Nodes
-				this.mappingGraphNodeRenderer.makeNodeStepping();
-
-				/**
-				 * Source and target Nodes will be scanned for accordances at
-				 * the Entities. After that these accordances (called cells)
-				 * will be drawn and connected by lines in the middle of the
-				 * Mapping Graph. In the end the cells and the connections will
-				 * be cached in the ArrayLists.
-				 */
-				if (!this.mappingGraphModel.getSourceNodeList().isEmpty()
-						&& !this.mappingGraphModel.getTargetNodeList().isEmpty()) {
-					for (GraphNode sourceGraphNode : this.mappingGraphModel.getSourceNodeList()) {
-						SchemaItem sourceSchemaItem = (SchemaItem) sourceGraphNode
-								.getData();
-						this.mappingGraphModel.setSourceGraphNode(sourceGraphNode);
-						for (GraphNode targetGraphNode : this.mappingGraphModel.getTargetNodeList()) {
-							String cellName = null;
-							SchemaItem targetSchemaItem = (SchemaItem) targetGraphNode
-									.getData();
-							this.mappingGraphModel.setTargetGraphNode(targetGraphNode);
-							Cell resultCell = null;
-
-							resultCell = ((Cell) this.alignmentService.getCell(
-									sourceSchemaItem.getEntity(),
-									targetSchemaItem.getEntity()));
-							if (resultCell != null) {
-								if (resultCell.getEntity1().getTransformation() == null) {
-									cellName = resultCell.getEntity2()
-											.getTransformation().getService()
-											.getLocation();
-								} else {
-									cellName = resultCell.getEntity1()
-											.getTransformation().getService()
-											.getLocation();
-								}
-								String[] tempSplit = cellName.split("\\."); //$NON-NLS-1$
-								String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
-
-								// Checks the old connections and takes the
-								// right one
-								this.mappingGraphModel.checkForExistingConnections(
-										graphConnectionNodeName, resultCell);
-								// Creates a new entity node if there is no old
-								// one
-								this.mappingGraphNodeRenderer.createNewEntityNode(
-										graphConnectionNodeName, resultCell);
-								// Creates the connections between the nodes.
-								this.mappingGraphNodeRenderer.createGraphConnections();
-							}
-						}
-					}
-				}
-			}
+			this.drawMappingView();
 		}	
 		
 		//Image draw handling from here -->
-		
 		if (this.schemaSelectionInt == 4) {
-
-			/**
-			 * draw Overview of the cells
-			 */
-			int k = 1;
-			Vector<ICell> alignmentVector = new Vector<ICell>();
-			for (ICell cell : this.alignment.getMap()) {
-				alignmentVector.addElement(cell);
-				//Counting the nodes for calculating the picture size
-				if(cell.getEntity1() instanceof ComposedProperty ) {
-					k = k +((ComposedProperty) cell.getEntity1()).getCollection().size();
-				}
-				else if(cell.getEntity2() instanceof ComposedProperty ) {
-					if (((ComposedProperty) cell.getEntity2()).getCollection().size()>k){
-						k = k +((ComposedProperty) cell.getEntity2()).getCollection().size();
-					}
-				}
-				else{
-					k++;
-				}
-			}
-			//Create fitting view for the picture
-			createPrintView(1000 , k*30);
-			
-			// Draws the source and target nodes
-			this.mappingGraphNodeRenderer.drawNodeSections(alignmentVector);
-		
-			//Draws the graph as a png
-			this.drawGraphAsImage(dir, this.pictureNames+"_Overview.png", 1000, k*30); //$NON-NLS-1$
-			
-			//Clean up
-			this.mappingGraphModel.arrayReset();
+			this.drawImage();
+		}
+	}
 	
-			/**
-			 * draw section cells
-			 */
-			int f = 0;
-			for (Vector<ICell> sectionVector : this.sections) {
-				int p = 1;
-				for (ICell cell  : sectionVector) {
-					//Counting the nodes for calculating the picture size
-					if(cell.getEntity1() instanceof ComposedProperty ) {
-						p = p +((ComposedProperty) cell.getEntity1()).getCollection().size();
-					}
-					else if(cell.getEntity2() instanceof ComposedProperty ) {
-						if (((ComposedProperty) cell.getEntity2()).getCollection().size()>p){
-							p = p +((ComposedProperty) cell.getEntity2()).getCollection().size();
+	private void drawAll(SchemaSelection schemaSelection) {
+		//Schema will be built
+		SchemaSelection schemaSelectionAll = new SchemaSelection();
+		SchemaItem sourceRoot = this.schemaItemService
+				.getRoot(SchemaType.SOURCE);
+		SchemaItem targetRoot = this.schemaItemService
+				.getRoot(SchemaType.TARGET);
+		this.mappingGraphModel.rekursiveGetChildren(schemaSelectionAll, true, sourceRoot);
+		this.mappingGraphModel.rekursiveGetChildren(schemaSelectionAll, false,targetRoot);
+		schemaSelection = schemaSelectionAll;
+
+		// Resets the arrays before the nodes going to be redrawn
+		this.mappingGraphModel.arrayReset();
+
+		// Draws the source and target nodes
+		this.mappingGraphNodeRenderer.drawNodesOnlyWithConnection(schemaSelection);
+
+		// Makes the stepping of the Nodes
+		this.mappingGraphNodeRenderer.makeNodeStepping();
+
+		/**
+		 * Source and target Nodes will be scanned for accordances at
+		 * the Entities. After that these accordances (called cells)
+		 * will be drawn and connected by lines in the middle of the
+		 * Mapping Graph. In the end the cells and the connections will
+		 * be cached in the ArrayLists.
+		 */
+		if (!this.mappingGraphModel.getSourceNodeList().isEmpty()
+				&& !this.mappingGraphModel.getTargetNodeList().isEmpty()) {
+			for (GraphNode sourceGraphNode : this.mappingGraphModel.getSourceNodeList()) {
+				SchemaItem sourceSchemaItem = (SchemaItem) sourceGraphNode
+						.getData();
+				this.mappingGraphModel.setSourceGraphNode(sourceGraphNode);
+				for (GraphNode targetGraphNode : this.mappingGraphModel.getTargetNodeList()) {
+					String cellName = null;
+					SchemaItem targetSchemaItem = (SchemaItem) targetGraphNode
+							.getData();
+					this.mappingGraphModel.setTargetGraphNode(targetGraphNode);
+					Cell resultCell = null;
+
+					resultCell = ((Cell) this.alignmentService.getCell(
+							sourceSchemaItem.getEntity(),
+							targetSchemaItem.getEntity()));
+					if (resultCell != null) {
+						if (resultCell.getEntity1().getTransformation() == null) {
+							cellName = resultCell.getEntity2()
+									.getTransformation().getService()
+									.getLocation();
+						} else {
+							cellName = resultCell.getEntity1()
+									.getTransformation().getService()
+									.getLocation();
 						}
-					}
-					else{
-						p++;
+						String[] tempSplit = cellName.split("\\."); //$NON-NLS-1$
+						String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
+
+						// Checks the old connections and takes the
+						// right one
+						this.mappingGraphModel.checkForExistingConnections(
+								graphConnectionNodeName, resultCell);
+						// Creates a new entity node if there is no old
+						// one
+						this.mappingGraphNodeRenderer.createNewEntityNode(
+								graphConnectionNodeName, resultCell);
+						// Creates the connections between the nodes.
+						this.mappingGraphNodeRenderer.createGraphConnections();
 					}
 				}
-				//Create fitting view for the picture
-				createPrintView(1000 , p*30);
-				
-				// Draws the source and target nodes
-				this.mappingGraphNodeRenderer.drawNodeSections(sectionVector);
-			
-				//Draws the graph as a png
-				this.drawGraphAsImage(dir, MessageFormat.format("{0}_Section_{1}.png", this.pictureNames, f), 1000, p*30); //$NON-NLS-1$
-				
-				//Clean up
-				this.mappingGraphModel.arrayReset();
-				
-				f++;
 			}
-			
-			/**
-			 * draw single cells
-			 */
-//	Is a working function to draw single Cells. But at the moment not needed.
-//			int j = 0;
-//			for (ICell cell : this.alignment.getMap()) {
-//	
-//				//Counting the nodes for calculating the picture size
-//				int h = 1;
-//				if(cell.getEntity1() instanceof ComposedProperty ) {
-//					h =((ComposedProperty) cell.getEntity1()).getCollection().size();
-//				}
-//				if(cell.getEntity2() instanceof ComposedProperty ) {
-//					if (((ComposedProperty) cell.getEntity2()).getCollection().size()>h){
-//						h =((ComposedProperty) cell.getEntity2()).getCollection().size();
-//					}
-//				}
-//
-//				//Create fitting view for the picture
-//				createPrintView(700 , h*36);
-//				
-//				// Draws the source and target nodes
-//				this.mappingGraphNodeRenderer.drawNodesFromAlignment(cell);
-//			
-//				//Draws the graph as a png
-//				this.drawGraphAsImage("C:\\", this.pictureNames+j+".png", 700, h*36);
-//				
-//				//Clean up
-//				this.mappingGraphModel.arrayReset();
-//				j++;
-//			}
 		}
 	}
 
+	private void drawSchemaExplorer(SchemaSelection schemaSelection) {
+		// Resets the arrays before the nodes going to be redrawn
+		this.mappingGraphModel.arrayReset();
+
+		// Draws the source and target nodes
+		this.mappingGraphNodeRenderer.drawNodes(schemaSelection);
+
+		// Makes the stepping of the Nodes
+		this.mappingGraphNodeRenderer.makeNodeStepping();
+
+		/**
+		 * Source and target Nodes will be scanned for accordances at
+		 * the Entities. After that these accordances (called cells)
+		 * will be drawn and connected by lines in the middle of the
+		 * Mapping Graph. In the end the cells and the connections will
+		 * be cached in the ArrayLists.
+		 */
+		if (!this.mappingGraphModel.getSourceNodeList().isEmpty()
+				&& !this.mappingGraphModel.getTargetNodeList().isEmpty()) {
+			for (GraphNode sourceGraphNode : this.mappingGraphModel.getSourceNodeList()) {
+				SchemaItem sourceSchemaItem = (SchemaItem) sourceGraphNode
+						.getData();
+				this.mappingGraphModel.setSourceGraphNode(sourceGraphNode);
+				for (GraphNode targetGraphNode : this.mappingGraphModel.getTargetNodeList()) {
+					String cellName = null;
+					SchemaItem targetSchemaItem = (SchemaItem) targetGraphNode
+							.getData();
+					this.mappingGraphModel.setTargetGraphNode(targetGraphNode);
+					Cell resultCell = null;
+
+					resultCell = ((Cell) this.alignmentService.getCell(
+							sourceSchemaItem.getEntity(),
+							targetSchemaItem.getEntity()));
+					if (resultCell != null) {
+						if (resultCell.getEntity1().getTransformation() == null) {
+							cellName = resultCell.getEntity2()
+									.getTransformation().getService()
+									.getLocation();
+						} else {
+							cellName = resultCell.getEntity1()
+									.getTransformation().getService()
+									.getLocation();
+						}
+						String[] tempSplit = cellName.split("\\."); //$NON-NLS-1$
+						String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
+
+						// Checks the old connections and takes the
+						// right one
+						this.mappingGraphModel.checkForExistingConnections(
+								graphConnectionNodeName, resultCell);
+						// Creates a new entity node if there is no old
+						// one
+						this.mappingGraphNodeRenderer.createNewEntityNode(
+								graphConnectionNodeName, resultCell);
+						// Creates the connections between the nodes.
+						this.mappingGraphNodeRenderer.createGraphConnections();
+					}
+				}
+			}
+		}
+	}
+	
+	private void drawMappingView() {
+		if(this.temporaryCellSelection != null){
+			SchemaSelection schemaSelection;
+			
+			//Schema will be built
+			SchemaSelection schemaSelectionAll = new SchemaSelection();
+			for(SchemaItem schemaItem : this.temporaryCellSelection.getCellInfo().getSourceItems()){
+				schemaSelectionAll.addSourceItem(schemaItem);
+			}
+			for(SchemaItem schemaItem : this.temporaryCellSelection.getCellInfo().getTargetItems()){
+				schemaSelectionAll.addTargetItem(schemaItem);
+			}
+			schemaSelection = schemaSelectionAll;
+
+			// Resets the arrays before the nodes going to be redrawn
+			this.mappingGraphModel.arrayReset();
+
+			// Draws the source and target nodes
+			this.mappingGraphNodeRenderer.drawNodesOnlyWithConnection(schemaSelection);
+
+			// Makes the stepping of the Nodes
+			this.mappingGraphNodeRenderer.makeNodeStepping();
+
+			/**
+			 * Source and target Nodes will be scanned for accordances at
+			 * the Entities. After that these accordances (called cells)
+			 * will be drawn and connected by lines in the middle of the
+			 * Mapping Graph. In the end the cells and the connections will
+			 * be cached in the ArrayLists.
+			 */
+			if (!this.mappingGraphModel.getSourceNodeList().isEmpty()
+					&& !this.mappingGraphModel.getTargetNodeList().isEmpty()) {
+				for (GraphNode sourceGraphNode : this.mappingGraphModel.getSourceNodeList()) {
+					SchemaItem sourceSchemaItem = (SchemaItem) sourceGraphNode
+							.getData();
+					this.mappingGraphModel.setSourceGraphNode(sourceGraphNode);
+					for (GraphNode targetGraphNode : this.mappingGraphModel.getTargetNodeList()) {
+						String cellName = null;
+						SchemaItem targetSchemaItem = (SchemaItem) targetGraphNode
+								.getData();
+						this.mappingGraphModel.setTargetGraphNode(targetGraphNode);
+						Cell resultCell = null;
+
+						resultCell = ((Cell) this.alignmentService.getCell(
+								sourceSchemaItem.getEntity(),
+								targetSchemaItem.getEntity()));
+						if (resultCell != null) {
+							if (resultCell.getEntity1().getTransformation() == null) {
+								cellName = resultCell.getEntity2()
+										.getTransformation().getService()
+										.getLocation();
+							} else {
+								cellName = resultCell.getEntity1()
+										.getTransformation().getService()
+										.getLocation();
+							}
+							String[] tempSplit = cellName.split("\\."); //$NON-NLS-1$
+							String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
+
+							// Checks the old connections and takes the
+							// right one
+							this.mappingGraphModel.checkForExistingConnections(
+									graphConnectionNodeName, resultCell);
+							// Creates a new entity node if there is no old
+							// one
+							this.mappingGraphNodeRenderer.createNewEntityNode(
+									graphConnectionNodeName, resultCell);
+							// Creates the connections between the nodes.
+							this.mappingGraphNodeRenderer.createGraphConnections();
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private void drawImage() {
+
+		/**
+		 * draw Overview of the cells
+		 */
+		int k = 1;
+		Vector<ICell> alignmentVector = new Vector<ICell>();
+		for (ICell cell : this.alignment.getMap()) {
+			alignmentVector.addElement(cell);
+			//Counting the nodes for calculating the picture size
+			if(cell.getEntity1() instanceof ComposedProperty ) {
+				k = k +((ComposedProperty) cell.getEntity1()).getCollection().size();
+			}
+			else if(cell.getEntity2() instanceof ComposedProperty ) {
+				if (((ComposedProperty) cell.getEntity2()).getCollection().size()>k){
+					k = k +((ComposedProperty) cell.getEntity2()).getCollection().size();
+				}
+			}
+			else{
+				k++;
+			}
+		}
+		//Create fitting view for the picture
+		createPrintView(1000 , k*30);
+		
+		// Draws the source and target nodes
+		this.mappingGraphNodeRenderer.drawNodeSections(alignmentVector);
+	
+		//Draws the graph as a png
+		this.drawGraphAsImage(dir, this.pictureNames+"_Overview.png", 1000, k*30); //$NON-NLS-1$
+		
+		//Clean up
+		this.mappingGraphModel.arrayReset();
+
+		/**
+		 * draw section cells
+		 */
+		int f = 0;
+		for (Vector<ICell> sectionVector : this.sections) {
+			int p = 1;
+			for (ICell cell  : sectionVector) {
+				//Counting the nodes for calculating the picture size
+				if(cell.getEntity1() instanceof ComposedProperty ) {
+					p = p +((ComposedProperty) cell.getEntity1()).getCollection().size();
+				}
+				else if(cell.getEntity2() instanceof ComposedProperty ) {
+					if (((ComposedProperty) cell.getEntity2()).getCollection().size()>p){
+						p = p +((ComposedProperty) cell.getEntity2()).getCollection().size();
+					}
+				}
+				else{
+					p++;
+				}
+			}
+			//Create fitting view for the picture
+			createPrintView(1000 , p*30);
+			
+			// Draws the source and target nodes
+			this.mappingGraphNodeRenderer.drawNodeSections(sectionVector);
+		
+			//Draws the graph as a png
+			this.drawGraphAsImage(dir, MessageFormat.format("{0}_Section_{1}.png", this.pictureNames, f), 1000, p*30); //$NON-NLS-1$
+			
+			//Clean up
+			this.mappingGraphModel.arrayReset();
+			
+			f++;
+		}
+		
+		/**
+		 * draw single cells
+		 */
+//Is a working function to draw single Cells. But at the moment not needed.
+//		int j = 0;
+//		for (ICell cell : this.alignment.getMap()) {
+//
+//			//Counting the nodes for calculating the picture size
+//			int h = 1;
+//			if(cell.getEntity1() instanceof ComposedProperty ) {
+//				h =((ComposedProperty) cell.getEntity1()).getCollection().size();
+//			}
+//			if(cell.getEntity2() instanceof ComposedProperty ) {
+//				if (((ComposedProperty) cell.getEntity2()).getCollection().size()>h){
+//					h =((ComposedProperty) cell.getEntity2()).getCollection().size();
+//				}
+//			}
+//
+//			//Create fitting view for the picture
+//			createPrintView(700 , h*36);
+//			
+//			// Draws the source and target nodes
+//			this.mappingGraphNodeRenderer.drawNodesFromAlignment(cell);
+//		
+//			//Draws the graph as a png
+//			this.drawGraphAsImage("C:\\", this.pictureNames+j+".png", 700, h*36);
+//			
+//			//Clean up
+//			this.mappingGraphModel.arrayReset();
+//			j++;
+//		}
+	}
+	
 	/**
 	 * @return The graph
 	 */
