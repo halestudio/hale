@@ -4,7 +4,8 @@ Bundle-Name: gmlhandler
 Bundle-SymbolicName: eu.esdihumboldt.gmlhandler
 Bundle-Version: 0.1.0.qualifier
 Export-Package: eu.esdihumboldt.gmlhandler,
- eu.esdihumboldt.gmlhandler.gt2deegree
+ eu.esdihumboldt.gmlhandler.gt2deegree,
+ org.deegree.feature
 Require-Bundle: org.geotools;bundle-version="2.6.4",
  com.vividsolutions.jts;bundle-version="1.10.0",
  eu.esdihumboldt.hale.gmlparser;bundle-version="2.0.0",
