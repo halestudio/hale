@@ -13,8 +13,8 @@ package com.onespatial.jrc.tns.oml_to_rif.model.alignment;
 
 import com.onespatial.jrc.tns.oml_to_rif.schema.GmlAttributePath;
 
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Cell;
 
 /**
  * An interim model of a {@link Cell} within an {@link Alignment} that defines a

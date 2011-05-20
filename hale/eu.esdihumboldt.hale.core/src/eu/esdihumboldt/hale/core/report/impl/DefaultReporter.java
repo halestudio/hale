@@ -173,6 +173,7 @@ public abstract class DefaultReporter<T extends Message> implements Reporter<T> 
 	 * 
 	 * @param success if the task was successful
 	 */
+	@Override
 	public void setSuccess(boolean success) {
 		this.success = success;
 		

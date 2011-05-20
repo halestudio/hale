@@ -14,10 +14,14 @@ package eu.esdihumboldt.hale.core.io.impl;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.text.MessageFormat;
 import java.util.Map;
 
+import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.ImportProvider;
+import eu.esdihumboldt.hale.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.core.io.report.impl.DefaultIOReporter;
 import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
 
@@ -106,6 +110,26 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 		else {
 			super.setParameter(name, value);
 		}
+	}
+	
+	/**
+	 * @see IOProvider#createReporter()
+	 */
+	@Override
+	public IOReporter createReporter() {
+		return new DefaultIOReporter(getSource(), MessageFormat.format(
+				"{0} import", getTypeName()), true) {
+			
+			@Override
+			protected String getSuccessSummary() {
+				return MessageFormat.format("Loading the {0} input was successful", getTypeName());
+			}
+			
+			@Override
+			protected String getFailSummary() {
+				return MessageFormat.format("Loading the {0} input failed", getTypeName());
+			}
+		};
 	}
 
 }

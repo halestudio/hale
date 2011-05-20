@@ -37,12 +37,14 @@
       <plugin id="com.onespatial.jrc.tns.hale.rifexport"/>
       <plugin id="com.onespatial.jrc.tns.jaxb.rifprd"/>
       <plugin id="com.onespatial.jrc.tns.oml_to_rif"/>
+      <plugin id="com.orientechnologies.orient"/>
       <plugin id="com.springsource.com.sun.xml.bind"/>
       <plugin id="com.springsource.com.sun.xml.fastinfoset"/>
       <plugin id="com.springsource.javax.activation"/>
       <plugin id="com.springsource.javax.el"/>
       <plugin id="com.springsource.javax.media.jai.codec"/>
       <plugin id="com.springsource.javax.media.jai.core"/>
+      <plugin id="com.springsource.javax.persistence"/>
       <plugin id="com.springsource.javax.servlet.jsp"/>
       <plugin id="com.springsource.javax.xml.bind"/>
       <plugin id="com.springsource.javax.xml.stream"/>
@@ -59,6 +61,7 @@
       <plugin id="com.springsource.org.apache.xmlbeans"/>
       <plugin id="com.springsource.org.apache.xmlcommons"/>
       <plugin id="com.springsource.org.castor"/>
+      <plugin id="com.springsource.org.custommonkey.xmlunit"/>
       <plugin id="com.springsource.org.dom4j"/>
       <plugin id="com.springsource.org.jvnet.staxex"/>
       <plugin id="com.sun.xsom"/>
@@ -373,7 +376,6 @@
       <plugin id="org.eclipse.core.jobs.nl_zh" fragment="true"/>
       <plugin id="org.eclipse.core.jobs.nl_zh_TW" fragment="true"/>
       <plugin id="org.eclipse.core.resources"/>
-      <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
       <plugin id="org.eclipse.core.resources.nl_ar" fragment="true"/>
       <plugin id="org.eclipse.core.resources.nl_bg" fragment="true"/>
       <plugin id="org.eclipse.core.resources.nl_cs" fragment="true"/>
@@ -933,6 +935,7 @@
       <plugin id="org.geotools"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.jdom"/>
+      <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
       <plugin id="org.libtiff.jai"/>
       <plugin id="org.slf4j.api"/>

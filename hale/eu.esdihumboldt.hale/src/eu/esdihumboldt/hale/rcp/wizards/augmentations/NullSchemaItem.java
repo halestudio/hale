@@ -16,7 +16,7 @@ import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.Name;
 import org.opengis.feature.type.PropertyType;
 
-import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.commons.goml.align.Entity;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.views.model.TreeObject.TreeObjectType;

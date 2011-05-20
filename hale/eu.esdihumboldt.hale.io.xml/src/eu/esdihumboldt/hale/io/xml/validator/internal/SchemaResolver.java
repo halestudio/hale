@@ -26,7 +26,6 @@ import eu.esdihumboldt.hale.cache.Request;
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$
  */
 public class SchemaResolver implements LSResourceResolver {
 	
@@ -61,7 +60,6 @@ public class SchemaResolver implements LSResourceResolver {
 			systemId = schemaLocation + systemId;
 		}
 
-		LSInput lsin = new LSInputImpl();
 		URI uri;
 		try {
 			uri = new URI(systemId);
@@ -78,6 +76,7 @@ public class SchemaResolver implements LSResourceResolver {
 			return null;
 		}
 
+		LSInput lsin = new LSInputImpl();
 		lsin.setSystemId(uri.toString());
 		lsin.setByteStream(inputStream);
 		return lsin;

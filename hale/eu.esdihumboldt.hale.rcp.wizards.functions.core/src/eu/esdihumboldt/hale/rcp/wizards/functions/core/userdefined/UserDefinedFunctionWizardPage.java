@@ -45,12 +45,12 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.goml.oml.ext.Parameter;
+import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
 import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.CoreFunctionWizardsPlugin;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 
 /**
  * @author Thorsten Reitz

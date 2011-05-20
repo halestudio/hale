@@ -15,7 +15,7 @@ import java.util.List;
 
 import org.eclipse.jface.wizard.IWizard;
 
-import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * Function wizard interface

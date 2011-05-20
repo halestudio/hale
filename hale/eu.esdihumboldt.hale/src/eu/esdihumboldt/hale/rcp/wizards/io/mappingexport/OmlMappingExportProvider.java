@@ -13,8 +13,8 @@ package eu.esdihumboldt.hale.rcp.wizards.io.mappingexport;
 
 import java.util.Collection;
 
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.oml.io.OmlRdfGenerator;
 import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.project.HaleOmlRdfGenerator;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;

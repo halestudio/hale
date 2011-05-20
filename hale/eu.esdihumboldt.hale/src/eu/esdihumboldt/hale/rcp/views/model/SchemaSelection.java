@@ -24,17 +24,17 @@ import java.util.Set;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.IEntity;
-import eu.esdihumboldt.goml.align.Entity;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.align.Entity;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
+import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.utils.SchemaItemService;
 import eu.esdihumboldt.hale.rcp.views.mapping.CellInfo;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.NullSchemaItem;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.IEntity;
 
 /**
  * A selection with source and target {@link SchemaItem}s

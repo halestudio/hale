@@ -27,8 +27,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import eu.esdihumboldt.cst.CstFunction;
-import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.specification.cst.CstFunction;
 
 public class EntityTypeConditionTest {
 

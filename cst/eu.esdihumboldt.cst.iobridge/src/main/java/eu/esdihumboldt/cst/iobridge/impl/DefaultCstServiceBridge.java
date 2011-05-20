@@ -31,14 +31,14 @@ import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.cst.iobridge.CstServiceBridge;
 import eu.esdihumboldt.cst.iobridge.TransformationException;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory;
 import eu.esdihumboldt.gmlhandler.GmlHandler;
 import eu.esdihumboldt.gmlhandler.gt2deegree.GtToDgConvertor;
 import eu.esdihumboldt.gmlhandler.gt2deegree.TypeIndex;
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.schemaprovider.Schema;

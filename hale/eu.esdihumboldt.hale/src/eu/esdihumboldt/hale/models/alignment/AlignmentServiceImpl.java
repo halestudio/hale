@@ -22,13 +22,13 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.IEntity;
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.align.Entity;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Entity;
+import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
+import eu.esdihumboldt.commons.goml.rdf.About;
 import eu.esdihumboldt.hale.models.AlignmentService;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.IEntity;
 
 /**
  * This is a simple default implementation that manages a single Alignment

@@ -7,13 +7,20 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.common.base;version="1.6.0",
  com.google.common.io;version="1.6.0",
+ com.orientechnologies.orient.core.record;version="1.0.0.RC1",
+ com.orientechnologies.orient.core.record.impl;version="1.0.0.RC1",
+ de.cs3d.util.logging,
  de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.core.io,
  eu.esdihumboldt.hale.core.io.impl,
  eu.esdihumboldt.hale.schemaprovider,
+ eu.esdihumboldt.hale.schemaprovider.model,
  org.geotools.feature,
  org.opengis.feature,
  org.opengis.feature.type,
- org.osgi.framework;version="1.3.0"
+ org.osgi.framework;version="1.3.0",
+ org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale.instance.io,
- eu.esdihumboldt.hale.instance.io.impl
+ eu.esdihumboldt.hale.instance.io.impl,
+ eu.esdihumboldt.hale.instance.model,
+ eu.esdihumboldt.hale.instance.model.impl

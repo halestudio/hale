@@ -21,14 +21,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.ITransformation;
-import eu.esdihumboldt.cst.CstFunction;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
 import eu.esdihumboldt.cst.transformer.CstService;
 import eu.esdihumboldt.cst.transformer.configuration.ReflectionHelper;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.oml.ext.Parameter;
+import eu.esdihumboldt.specification.cst.CstFunction;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ext.ITransformation;
 
 /**
  * A class managing instantiation of CstFunction objects.

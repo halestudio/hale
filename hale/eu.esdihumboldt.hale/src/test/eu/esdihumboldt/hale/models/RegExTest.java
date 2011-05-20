@@ -4,12 +4,12 @@ import javax.xml.bind.JAXBException;
 
 import org.junit.Test;
 
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.oml.io.OmlRdfGenerator;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.rdf.About;
 
 public class RegExTest {
 

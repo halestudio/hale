@@ -19,8 +19,8 @@ import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.transformer.CstFunctionGroup;
+import eu.esdihumboldt.specification.cst.CstFunction;
 
 /**
  * Implementation of {@link CstFunctionGroup}.

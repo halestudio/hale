@@ -27,7 +27,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 
-import eu.esdihumboldt.tools.FeatureInspector;
+import eu.esdihumboldt.commons.tools.FeatureInspector;
 
 /**
  * 

@@ -26,18 +26,28 @@ import java.net.URL;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
-import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
-import org.apache.http.client.ClientProtocolException;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
-import org.eclipse.jface.preference.PreferenceStore;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import de.fhg.igd.osgi.util.configuration.JavaPreferencesConfigurationService;
 import de.fhg.igd.osgi.util.configuration.NamespaceConfigurationServiceDecorator;
 
+/**
+ * This class manages requests and caching for remote files.
+ * 
+ * @author Andreas Burchert
+ * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @version $Id$
+ */
 public class Request {
 
 	private String cacheName = "", cachePath = "";
@@ -51,7 +61,7 @@ public class Request {
 	/**
 	 * The instance of {@link Request}
 	 */
-	private static Request instance = new Request();
+	private static Request instance;
 	
 	/**
 	 * Constructor.
@@ -79,6 +89,9 @@ public class Request {
 		this.init();
 	}
 	
+	/**
+	 * Initialize the cache.
+	 */
 	private void init() {
 		if (this.enabled) {
 			this.cacheName = this.org.get("cache.name");
@@ -103,7 +116,6 @@ public class Request {
 			// set disk store path - this has no effect!
 			cache.setDiskStorePath(this.cachePath);
 			
-			
 			// add it to CacheManger
 			CacheManager.getInstance().addCache(cache);
 			
@@ -118,6 +130,9 @@ public class Request {
 	 * @return instance
 	 */
 	public static Request getInstance() {
+		if (instance == null) {
+			instance = new Request();
+		}
 		return instance;
 	}
 	
@@ -131,10 +146,11 @@ public class Request {
 	/**
 	 * This function handles all Request and does the caching.
 	 * 
-	 * @param name
-	 * @return
-	 * @throws ClientProtocolException
-	 * @throws IOException
+	 * @param uri to file
+	 * 
+	 * @return an {@link InputStream} to uri
+	 * 
+	 * @throws Exception
 	 */
 	public InputStream get(URI uri) throws Exception {
 		// check for local files
@@ -142,6 +158,7 @@ public class Request {
 			return this.getLocal(uri.toURL());
 		}
 		
+		// no host given
 		if (uri.getHost() == null) {
 			throw new Exception("Empty host!");
 		}
@@ -153,37 +170,78 @@ public class Request {
 		
 		// get the current cache for webrequests
 		Cache cache = CacheManager.getInstance().getCache(this.cacheName);
-		String name = this.removeSpecialChars(uri.toString());
+		String link = this.removeSpecialChars(uri.toString());
 		
 		InputStream stream = null;
 		String content = "";
 		
 		// if the entry does not exist fetch it from the web
-		if (cache.get(name) == null){
+		if (cache.get(link) == null){
 			InputStream in;
 			
-			in = uri.toURL().openStream();
+			// fallback encoding
+			String encoding = "UTF-8";
 			
-			content = this.streamToString(in);
+			// try to download stuff with HttpGet
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpGet httpget = new HttpGet(uri);
+			HttpResponse response = httpclient.execute(httpget);
+			HttpEntity entity = response.getEntity();
+			
+			// create InputStream
+			in = entity.getContent();
+			
+			// use url.openStream() as fallback if there aren't bytes available
+			if (in.available() <= 0) {
+				in = uri.toURL().openStream();
+			}
+			// if HttpGet was successful we try to get the encoding
+			else if(entity.getContentLength() > 0) {
+				// first from the data itself
+				if (entity.getContentEncoding() != null) {
+					encoding = entity.getContentEncoding().getValue();
+				}
+				// or from the returned header codes
+				else {
+					Header[] header = response.getHeaders("Content-Type");
+					for(Header h : header) {
+						String head = h.getValue();
+						if (head.contains("charset="))
+							encoding = h.getValue().substring(h.getValue().indexOf("charset=")).replace("charset=", "");
+					}
+				}
+			}
+			
+			// create a String out of the Stream
+			content = this.streamToString(in, encoding);
 			
 			// and add it to the cache
-			cache.put(new Element(name, content));
+			cache.put(new Element(link, content));
 		} else {
-			content = (String) cache.get(name).getObjectValue();
+			content = (String) cache.get(link).getObjectValue();
 			
 			// create the result stream
-			stream = new ByteArrayInputStream(content.getBytes());
+			stream = new ByteArrayInputStream(content.getBytes("UTF-8"));
 		}
 		
 		
 		_log.info("Cachesize (Memory/Disk): "+CacheManager.getInstance().getCache(this.cacheName).getMemoryStoreSize()+
 				" / "+CacheManager.getInstance().getCache(this.cacheName).getDiskStoreSize());
 		
-		_log.info(CacheManager.getInstance().getCache(this.cacheName).getStatistics().toString());
+//		_log.info(CacheManager.getInstance().getCache(this.cacheName).getStatistics().toString()); // this may decrease performance
 		
 		return stream;
 	}
 	
+	/**
+	 * This function is used if the url is a local file.
+	 * 
+	 * @param file path to file
+	 * 
+	 * @return {@link InputStream}
+	 * 
+	 * @throws IOException
+	 */
 	private InputStream getLocal(URL file) throws IOException {
 		return file.openStream();
 	}
@@ -205,28 +263,41 @@ public class Request {
 	
 	/**
 	 * Converts a {@link InputStream} to a {@link String}.
-	 * @param in
-	 * @return
+	 * 
+	 * @param in the {@link InputStream}
+	 * @param encoding the encoding
+	 * 
+	 * @return the whole content of in
+	 * 
 	 * @throws IOException
 	 */
-	public String streamToString(InputStream in) throws IOException {
+	public String streamToString(InputStream in, String encoding) throws IOException {
 		if (in != null) {
+			// create a StringWriter
 			Writer writer = new StringWriter();
 			
+			// create a buffer
 			char[] buffer = new char[1024];
 			try {
-				InputStreamReader isr = new InputStreamReader(in);
+				// try to get a InputStreamReader from InputStream with encoding
+				InputStreamReader isr = new InputStreamReader(in, encoding);
 				Reader reader = new BufferedReader(isr);
 				int n;
+				
+				// read all data
 				while ((n = reader.read(buffer)) != -1) {
 					writer.write(buffer, 0, n);
 				}
 			} finally {
+				// close the InputStream
 				in.close();
 			}
 			
+			// and return its data
 			return writer.toString();
-			} else {        
+		}
+		// if the InputStrean is null, return ""
+		else {        
 			return "";
 		}
 	}
@@ -253,10 +324,19 @@ public class Request {
 		CacheManager.getInstance().getCache(cacheName).removeAll();
 	}
 
+	/**
+	 * Is true if caching is enabled.
+	 * 
+	 * @return boolean
+	 */
 	public boolean isEnabled() {
 		return enabled;
 	}
 
+	/**
+	 * 
+	 * @param enabled
+	 */
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 		this.init();

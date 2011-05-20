@@ -39,7 +39,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.transformer.CstService;
 import eu.esdihumboldt.cst.transformer.capabilities.CstServiceCapabilities;
 import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
@@ -47,6 +46,7 @@ import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.AlgorithmCST;
 import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.FunctionType;
 import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.Model;
+import eu.esdihumboldt.specification.cst.CstFunction;
 
 public class GenericFunctionWizardPage extends WizardPage {
 

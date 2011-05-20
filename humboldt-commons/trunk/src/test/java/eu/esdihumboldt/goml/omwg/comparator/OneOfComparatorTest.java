@@ -20,11 +20,13 @@ import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.omwg.Restriction;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.oml.io.OmlRdfReader;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.omwg.Restriction;
+import eu.esdihumboldt.commons.goml.omwg.comparator.IComparator;
+import eu.esdihumboldt.commons.goml.omwg.comparator.OneOfComparator;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * @author Mark Doyle
@@ -89,7 +91,7 @@ public class OneOfComparatorTest {
 
 
 	/**
-	 * Test method for {@link eu.esdihumboldt.goml.omwg.comparator.OneOfComparator#evaluate(eu.esdihumboldt.goml.omwg.Restriction, org.opengis.feature.Property)}.
+	 * Test method for {@link eu.esdihumboldt.commons.goml.omwg.comparator.OneOfComparator#evaluate(eu.esdihumboldt.commons.goml.omwg.Restriction, org.opengis.feature.Property)}.
 	 */
 	@Test
 	public void testEvaluateTrue() {
@@ -104,7 +106,7 @@ public class OneOfComparatorTest {
 	
 	
 	/**
-	 * Test method for {@link eu.esdihumboldt.goml.omwg.comparator.OneOfComparator#evaluate(eu.esdihumboldt.goml.omwg.Restriction, org.opengis.feature.Property)}.
+	 * Test method for {@link eu.esdihumboldt.commons.goml.omwg.comparator.OneOfComparator#evaluate(eu.esdihumboldt.commons.goml.omwg.Restriction, org.opengis.feature.Property)}.
 	 */
 	@Test
 	public void testEvaluateFalse() {

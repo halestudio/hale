@@ -30,7 +30,7 @@ import com.onespatial.jrc.tns.oml_to_rif.HaleAlignment;
 import com.onespatial.jrc.tns.oml_to_rif.AlignmentToRifTranslator;
 import com.onespatial.jrc.tns.oml_to_rif.api.TranslationException;
 
-import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Alignment;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportException;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;

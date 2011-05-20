@@ -18,11 +18,11 @@ import java.util.Map.Entry;
 
 import org.xml.sax.SAXParseException;
 
-import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.transformer.CellUtils;
 import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.io.xml.validator.Report;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * The model for {@link ReportView#viewer}.

@@ -72,7 +72,7 @@ import com.onespatial.jrc.tns.oml_to_rif.model.rif.StaticAssignment;
 import com.onespatial.jrc.tns.oml_to_rif.translate.context.RifVariable;
 import com.onespatial.jrc.tns.oml_to_rif.translate.context.RifVariable.Type;
 
-import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.align.Cell;
 
 /**
  * Translates a collection of {@link ModelSentence} instances into a collection

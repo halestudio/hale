@@ -28,15 +28,15 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.zest.core.widgets.GraphConnection;
 import org.eclipse.zest.core.widgets.GraphNode;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.IEntity;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationViewLabelProvider;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.IEntity;
 
 /**
  * MappingGraphNodeRenderer handles the nodes

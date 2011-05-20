@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Alignment;
 import eu.esdihumboldt.hale.Messages;
 
 /**

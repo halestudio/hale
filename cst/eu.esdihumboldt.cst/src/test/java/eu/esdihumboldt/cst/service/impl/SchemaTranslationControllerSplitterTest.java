@@ -26,22 +26,22 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
 
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.align.Formalism;
+import eu.esdihumboldt.commons.goml.align.Schema;
+import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
+import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
+import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
+import eu.esdihumboldt.commons.goml.rdf.About;
+import eu.esdihumboldt.commons.goml.rdf.Resource;
 import eu.esdihumboldt.cst.NameHelper;
-import eu.esdihumboldt.cst.align.IAlignment;
-import eu.esdihumboldt.cst.align.ICell.RelationType;
 import eu.esdihumboldt.cst.transformer.service.AddFunctionsToPathUtility;
 import eu.esdihumboldt.cst.transformer.service.impl.SchemaTranslationController;
 import eu.esdihumboldt.cst.transformer.service.impl.TargetSchemaProvider;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.align.Formalism;
-import eu.esdihumboldt.goml.align.Schema;
-import eu.esdihumboldt.goml.oml.ext.Parameter;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.rdf.About;
-import eu.esdihumboldt.goml.rdf.Resource;
+import eu.esdihumboldt.specification.cst.align.IAlignment;
+import eu.esdihumboldt.specification.cst.align.ICell.RelationType;
 
 /**
  * This is a simple example test for the {@link SchemaTranslationController} in splitt cases.
@@ -57,7 +57,7 @@ public class SchemaTranslationControllerSplitterTest {
 	private static SimpleFeatureType targetType = null;
 
 	/**
-	 * Set up method using {@link eu.esdihumboldt.cst.transformer.service.impl.SchemaTranslationController#SchemaTranslationController(eu.esdihumboldt.cst.align.IAlignment)}.
+	 * Set up method using {@link eu.esdihumboldt.cst.transformer.service.impl.SchemaTranslationController#SchemaTranslationController(eu.esdihumboldt.specification.cst.align.IAlignment)}.
 	 * @throws URISyntaxException 
 	 */
 	@BeforeClass
@@ -110,7 +110,7 @@ public class SchemaTranslationControllerSplitterTest {
 	 * This is a more complex test that tests the actual translation and makes
 	 * assertions afterwards.
 	 * 
-	 * Test method for {@link eu.esdihumboldt.cst.transformer.service.impl.SchemaTranslationController#translate(eu.esdihumboldt.cst.align.IAlignment, org.geotools.feature.FeatureCollection)}.
+	 * Test method for {@link eu.esdihumboldt.cst.transformer.service.impl.SchemaTranslationController#translate(eu.esdihumboldt.specification.cst.align.IAlignment, org.geotools.feature.FeatureCollection)}.
 	 * @throws URISyntaxException 
 	 */
 	@SuppressWarnings("unchecked")

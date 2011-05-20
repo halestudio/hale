@@ -12,39 +12,34 @@
 
 package eu.esdihumboldt.goml;
 
+import static org.junit.Assert.assertEquals;
+
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.xml.bind.JAXBException;
-
-import junit.framework.TestCase;
-
-import org.apache.log4j.lf5.util.Resource;
+import org.junit.Before;
 import org.junit.Test;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.align.ext.ITransformation;
-import eu.esdihumboldt.cst.rdf.IAbout;
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.align.Formalism;
-import eu.esdihumboldt.goml.align.Schema;
-import eu.esdihumboldt.generated.oml.PropertyOperatorType;
-import eu.esdihumboldt.goml.oml.ext.Parameter;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
-import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.align.Formalism;
+import eu.esdihumboldt.commons.goml.align.Schema;
+import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
+import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
+import eu.esdihumboldt.commons.goml.oml.io.OmlRdfReader;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.rdf.About;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ext.IParameter;
+import eu.esdihumboldt.specification.cst.align.ext.ITransformation;
+import eu.esdihumboldt.specification.cst.rdf.IAbout;
 
-public class ComposedPropertyTest extends TestCase {
+public class ComposedPropertyTest {
 	
 	private String sourceLocalname = "FT1";
 	private String sourceLocalnamePropertyA = "PropertyA";
@@ -57,7 +52,8 @@ public class ComposedPropertyTest extends TestCase {
 	private String targetNamespace = "http://xsdi.org";
     private Alignment alignment;
 	
-	public  void setUp() {
+    @Before
+	public void setUp() {
 		this.alignment = new Alignment();
 		alignment.setAbout(new About(UUID.randomUUID()));
 		alignment.setLevel("ComposedPropertyTest");
@@ -70,7 +66,7 @@ public class ComposedPropertyTest extends TestCase {
 		
 		// set up cell to use for testing
 		Cell cell = new Cell();
-		ComposedProperty cp = new ComposedProperty(eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType.FIRST,
+		ComposedProperty cp = new ComposedProperty(eu.esdihumboldt.commons.goml.omwg.ComposedProperty.PropertyOperatorType.FIRST,
 				new About(this.sourceNamespace, this.sourceLocalname));
 		cp.getCollection().add(new Property(
 				new About(this.sourceNamespace, this.sourceLocalname, 
@@ -82,7 +78,7 @@ public class ComposedPropertyTest extends TestCase {
 				new About(this.sourceNamespace, this.sourceLocalname, 
 						this.sourceLocalnamePropertyC)));
 		Transformation t = new Transformation();
-		t.setService(new eu.esdihumboldt.goml.rdf.Resource("location"));
+		t.setService(new eu.esdihumboldt.commons.goml.rdf.Resource("location"));
 		t.getParameters().add(
 				new Parameter(
 						"math_expression", 
@@ -134,7 +130,7 @@ public class ComposedPropertyTest extends TestCase {
 	    assertEquals("math_expression", parameter.getName());
 	    assertEquals("0.5 * (PropertyA * PropertyB + PropertyC)", parameter.getValue());
 	    //test operator type
-	    assertEquals(eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType.FIRST.name(), compProperty.getPropertyOperatorType().name());
+	    assertEquals(eu.esdihumboldt.commons.goml.omwg.ComposedProperty.PropertyOperatorType.FIRST.name(), compProperty.getPropertyOperatorType().name());
 	}
 	
 	

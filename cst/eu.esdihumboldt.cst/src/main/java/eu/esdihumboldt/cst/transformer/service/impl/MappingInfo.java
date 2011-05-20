@@ -25,15 +25,15 @@ import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.IEntity;
-import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.align.ext.ITransformation;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.rdf.DetailedAbout;
-import eu.esdihumboldt.goml.rdf.IDetailedAbout;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.rdf.DetailedAbout;
+import eu.esdihumboldt.commons.goml.rdf.IDetailedAbout;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.IEntity;
+import eu.esdihumboldt.specification.cst.align.ext.IParameter;
+import eu.esdihumboldt.specification.cst.align.ext.ITransformation;
 
 /**
  * 

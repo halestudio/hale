@@ -16,12 +16,12 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.rdf.About;
+import eu.esdihumboldt.commons.goml.rdf.Resource;
 import eu.esdihumboldt.cst.transformer.service.rename.FeatureBuilder;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.rdf.About;
-import eu.esdihumboldt.goml.rdf.Resource;
 
 
 public class CentroidTest {

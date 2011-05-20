@@ -30,27 +30,28 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.align.ext.ITransformation;
-import eu.esdihumboldt.cst.rdf.IAbout;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.align.Entity;
+import eu.esdihumboldt.commons.goml.align.Formalism;
+import eu.esdihumboldt.commons.goml.align.Schema;
+import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
+import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
+import eu.esdihumboldt.commons.goml.oml.io.OmlRdfReader;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty.PropertyOperatorType;
+import eu.esdihumboldt.commons.goml.rdf.About;
+import eu.esdihumboldt.commons.goml.rdf.Resource;
 import eu.esdihumboldt.goml.ComposedPropertyTest;
 import eu.esdihumboldt.goml.HaleOmlRdfReaderTest;
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.align.Entity;
-import eu.esdihumboldt.goml.align.Formalism;
-import eu.esdihumboldt.goml.align.Schema;
-import eu.esdihumboldt.goml.oml.ext.Parameter;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.omwg.ComposedProperty.PropertyOperatorType;
 
-import eu.esdihumboldt.goml.rdf.About;
-import eu.esdihumboldt.goml.rdf.Resource;
-import eu.esdihumboldt.mediator.TransformationQueueManager.ProcessStatus;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ext.IParameter;
+import eu.esdihumboldt.specification.cst.align.ext.ITransformation;
+import eu.esdihumboldt.specification.cst.rdf.IAbout;
+import eu.esdihumboldt.specification.mediator.TransformationQueueManager.ProcessStatus;
 
 /**
  * A Test for the deserialization of the PropertyComposition.

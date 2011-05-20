@@ -23,9 +23,9 @@ import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.commons.tools.RobustFTKey;
 import eu.esdihumboldt.hale.models.FeatureFilter;
 import eu.esdihumboldt.hale.models.InstanceService;
-import eu.esdihumboldt.tools.RobustFTKey;
 
 /**
  * This class implements the {@link InstanceService} as a Singleton.

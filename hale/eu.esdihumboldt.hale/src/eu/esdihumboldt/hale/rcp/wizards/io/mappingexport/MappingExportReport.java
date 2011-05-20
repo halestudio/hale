@@ -15,7 +15,7 @@ package eu.esdihumboldt.hale.rcp.wizards.io.mappingexport;
 import java.util.HashMap;
 import java.util.Map;
 
-import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * Report of a mapping export process

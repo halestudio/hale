@@ -17,18 +17,18 @@ import java.util.List;
 
 import org.eclipse.jface.wizard.Wizard;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.align.ext.ITransformation;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
+import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.rdf.Resource;
 import eu.esdihumboldt.cst.corefunctions.ConcatenationOfAttributesFunction;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.oml.ext.Parameter;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ext.IParameter;
+import eu.esdihumboldt.specification.cst.align.ext.ITransformation;
 
 
 /**

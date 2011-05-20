@@ -14,8 +14,8 @@ package eu.esdihumboldt.hale.csvexporter;
 import java.net.URI;
 import org.junit.Test;
 
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportException;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;

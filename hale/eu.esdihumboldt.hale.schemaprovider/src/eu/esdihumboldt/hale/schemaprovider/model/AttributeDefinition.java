@@ -19,9 +19,9 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.Name;
 
-import eu.esdihumboldt.goml.align.Entity;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.commons.goml.align.Entity;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.rdf.About;
 import eu.esdihumboldt.hale.schemaprovider.Messages;
 
 /**

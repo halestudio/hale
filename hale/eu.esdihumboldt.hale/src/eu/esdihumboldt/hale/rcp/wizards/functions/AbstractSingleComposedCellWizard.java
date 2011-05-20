@@ -19,9 +19,9 @@ import java.util.TreeSet;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.align.Cell;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * Abstract function wizard working with a single {@link Cell}

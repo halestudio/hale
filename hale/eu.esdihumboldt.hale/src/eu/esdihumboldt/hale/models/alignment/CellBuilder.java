@@ -15,12 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.cst.align.ext.ITransformation;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.align.Entity;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.align.Entity;
+import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ext.IParameter;
+import eu.esdihumboldt.specification.cst.align.ext.ITransformation;
 
 /**
  * This is a utility and helper class that allows to build cells for an 

@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.io.xml.validator;
 import java.io.IOException;
 import java.io.InputStream;
 
+import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.ProgressIndicator;
@@ -70,6 +71,14 @@ public class XmlInstanceValidator extends AbstractInstanceValidator {
 			}
 			
 		};
+	}
+
+	/**
+	 * @see AbstractIOProvider#getDefaultContentType()
+	 */
+	@Override
+	protected ContentType getDefaultContentType() {
+		return ContentType.getContentType("XML");
 	}
 
 	/**

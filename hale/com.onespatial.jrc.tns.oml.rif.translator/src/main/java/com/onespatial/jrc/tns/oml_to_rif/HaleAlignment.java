@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Alignment;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**

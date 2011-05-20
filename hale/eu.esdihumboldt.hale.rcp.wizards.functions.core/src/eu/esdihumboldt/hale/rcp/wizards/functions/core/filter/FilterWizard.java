@@ -17,13 +17,13 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.omwg.Restriction;
+import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.omwg.Restriction;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * This {@link Wizard} is used to invoke a Renaming CstFunction for the Source

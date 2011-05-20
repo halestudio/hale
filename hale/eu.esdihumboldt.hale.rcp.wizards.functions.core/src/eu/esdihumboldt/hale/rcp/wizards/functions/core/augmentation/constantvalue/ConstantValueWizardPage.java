@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.cst.align.ext.IParameter;
 import eu.esdihumboldt.cst.corefunctions.ConstantValueFunction;
 import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditor;
 import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditorFactory;
@@ -35,6 +34,7 @@ import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
+import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 
 /**
  * Main page of the {@link ConstantValueWizard}

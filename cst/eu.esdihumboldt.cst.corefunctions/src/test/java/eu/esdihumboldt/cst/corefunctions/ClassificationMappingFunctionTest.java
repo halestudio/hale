@@ -34,19 +34,19 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.IValueExpression;
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.align.Formalism;
-import eu.esdihumboldt.goml.align.Schema;
-import eu.esdihumboldt.goml.oml.ext.ValueExpression;
-import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
-import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
-import eu.esdihumboldt.goml.omwg.ComparatorType;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.omwg.Restriction;
-import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.align.Formalism;
+import eu.esdihumboldt.commons.goml.align.Schema;
+import eu.esdihumboldt.commons.goml.oml.ext.ValueExpression;
+import eu.esdihumboldt.commons.goml.oml.io.OmlRdfGenerator;
+import eu.esdihumboldt.commons.goml.oml.io.OmlRdfReader;
+import eu.esdihumboldt.commons.goml.omwg.ComparatorType;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.omwg.Restriction;
+import eu.esdihumboldt.commons.goml.rdf.About;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ext.IValueExpression;
 
 /**
  * FIXME Add Type description.
@@ -93,7 +93,7 @@ public class ClassificationMappingFunctionTest {
 
 	/**
 	 * Test method for
-	 * {@link eu.esdihumboldt.cst.transformer.impl.ClassificationMappingFunction#configure(eu.esdihumboldt.cst.align.ICell)}.
+	 * {@link eu.esdihumboldt.cst.transformer.impl.ClassificationMappingFunction#configure(eu.esdihumboldt.specification.cst.align.ICell)}.
 	 * 
 	 * @throws Exception
 	 */

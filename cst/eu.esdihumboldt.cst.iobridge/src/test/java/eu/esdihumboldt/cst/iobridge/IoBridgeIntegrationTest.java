@@ -26,11 +26,11 @@ import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.iobridge.IoBridgeFactory.BridgeType;
 import eu.esdihumboldt.cst.iobridge.impl.DefaultCstServiceBridge;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.hale.gmlparser.HaleGMLParser;
+import eu.esdihumboldt.specification.cst.CstFunction;
 
 /**
  * This class contains tests that test the integration of the different 

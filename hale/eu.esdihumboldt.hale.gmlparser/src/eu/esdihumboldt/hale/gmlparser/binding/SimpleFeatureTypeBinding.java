@@ -47,7 +47,7 @@ public class SimpleFeatureTypeBinding extends AbstractComplexBinding
 
 	/**
 	 * Feature user data property name for XML attributes
-	 * @see eu.esdihumboldt.tools.AttributeProperty XXX add dependency to commons instead of defining it here again
+	 * @see eu.esdihumboldt.commons.tools.AttributeProperty XXX add dependency to commons instead of defining it here again
 	 */
 	public static final String XML_ATTRIBUTES = "XmlAttributes"; //$NON-NLS-1$
 

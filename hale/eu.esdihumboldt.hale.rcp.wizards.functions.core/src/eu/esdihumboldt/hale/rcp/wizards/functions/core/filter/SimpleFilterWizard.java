@@ -17,12 +17,12 @@ import java.util.List;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.omwg.Restriction;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.omwg.Restriction;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * This {@link Wizard} is used to invoke a Renaming CstFunction for the Source

@@ -35,20 +35,20 @@ import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.IEntity;
-import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.oml.ext.ValueExpression;
-import eu.esdihumboldt.goml.omwg.ComposedFeatureClass;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.omwg.Restriction;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.oml.ext.ValueExpression;
+import eu.esdihumboldt.commons.goml.omwg.ComposedFeatureClass;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.omwg.Restriction;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportException;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.IEntity;
+import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 
 /**
  * Export a Mapping to CSV file 

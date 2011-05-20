@@ -12,16 +12,16 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.augmentation.constantvalue;
 
-import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.align.Entity;
+import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
+import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
+import eu.esdihumboldt.commons.goml.rdf.Resource;
 import eu.esdihumboldt.cst.corefunctions.ConstantValueFunction;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.align.Entity;
-import eu.esdihumboldt.goml.oml.ext.Parameter;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * Wizard for the {@link ConstantValueFunction} augmentation

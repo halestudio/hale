@@ -16,7 +16,7 @@ import javax.xml.bind.PropertyException;
 
 import org.apache.log4j.Logger;
 
-import eu.esdihumboldt.goml.oml.io.OmlRdfGenerator;
+import eu.esdihumboldt.commons.goml.oml.io.OmlRdfGenerator;
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
 
 /**

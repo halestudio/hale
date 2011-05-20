@@ -33,22 +33,22 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyType;
 
-import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
+import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
+import eu.esdihumboldt.commons.goml.oml.io.OmlRdfReader;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.rdf.About;
+import eu.esdihumboldt.commons.goml.rdf.Resource;
+import eu.esdihumboldt.commons.inspire.data.GrammaticalGenderValue;
+import eu.esdihumboldt.commons.inspire.data.GrammaticalNumberValue;
+import eu.esdihumboldt.commons.inspire.data.NameStatusValue;
+import eu.esdihumboldt.commons.inspire.data.NativenessValue;
 import eu.esdihumboldt.cst.corefunctions.util.TypeLoader;
 import eu.esdihumboldt.cst.transformer.service.rename.FeatureBuilder;
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.oml.ext.Parameter;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.rdf.About;
-import eu.esdihumboldt.goml.rdf.Resource;
-import eu.esdihumboldt.inspire.data.GrammaticalGenderValue;
-import eu.esdihumboldt.inspire.data.GrammaticalNumberValue;
-import eu.esdihumboldt.inspire.data.NameStatusValue;
-import eu.esdihumboldt.inspire.data.NativenessValue;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 
 

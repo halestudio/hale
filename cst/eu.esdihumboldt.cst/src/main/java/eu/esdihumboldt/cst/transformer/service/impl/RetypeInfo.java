@@ -19,11 +19,11 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ICell.RelationType;
-import eu.esdihumboldt.cst.align.ext.ITransformation;
+import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ICell.RelationType;
+import eu.esdihumboldt.specification.cst.align.ext.ITransformation;
 
 /**
  * 

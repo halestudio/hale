@@ -23,9 +23,9 @@ import com.onespatial.jrc.tns.oml_to_rif.api.Translator;
 import com.onespatial.jrc.tns.oml_to_rif.digest.CqlToMappingConditionTranslator;
 import com.sun.xml.xsom.XSElementDecl;
 
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.omwg.Restriction;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.omwg.Restriction;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 
 /**

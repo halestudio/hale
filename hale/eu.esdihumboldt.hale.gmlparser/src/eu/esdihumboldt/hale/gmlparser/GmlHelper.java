@@ -39,11 +39,11 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.identity.FeatureId;
 
+import eu.esdihumboldt.commons.tools.FeatureInspector;
 import eu.esdihumboldt.hale.gmlparser.gml3.HaleGMLConfiguration;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
-import eu.esdihumboldt.tools.FeatureInspector;
 
 /**
  * 

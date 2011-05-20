@@ -20,18 +20,18 @@ import java.util.List;
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
 
-import eu.esdihumboldt.cst.AbstractCstFunction;
-import eu.esdihumboldt.cst.CstFunction;
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.align.Entity;
-import eu.esdihumboldt.goml.oml.ext.Parameter;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.omwg.FeatureClass;
-import eu.esdihumboldt.goml.rdf.About;
-import eu.esdihumboldt.goml.rdf.DetailedAbout;
-import eu.esdihumboldt.tools.FeatureInspector;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.align.Entity;
+import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
+import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
+import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
+import eu.esdihumboldt.commons.goml.rdf.About;
+import eu.esdihumboldt.commons.goml.rdf.DetailedAbout;
+import eu.esdihumboldt.commons.tools.FeatureInspector;
+import eu.esdihumboldt.specification.cst.AbstractCstFunction;
+import eu.esdihumboldt.specification.cst.CstFunction;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 
 /**
  * This function will populate the nilReason attribute of any properties that 
@@ -72,8 +72,8 @@ public class NilReasonFunction extends AbstractCstFunction {
 	public Cell getParameters() {
 		Cell parameterCell = new Cell();	
 				
-		eu.esdihumboldt.goml.omwg.Property entity2 = 
-			new eu.esdihumboldt.goml.omwg.Property(new About("")); //$NON-NLS-1$
+		eu.esdihumboldt.commons.goml.omwg.Property entity2 = 
+			new eu.esdihumboldt.commons.goml.omwg.Property(new About("")); //$NON-NLS-1$
 		// Setting of type condition for entity2
 		List <String> entity2Types = new ArrayList <String>();
 		entity2Types.add(com.vividsolutions.jts.geom.Geometry.class.getName());
@@ -102,7 +102,7 @@ public class NilReasonFunction extends AbstractCstFunction {
 	 */
 	public Feature transform(Feature source, Feature target) {
 		if (nilReason != null) {
-			if (onEntity instanceof eu.esdihumboldt.goml.omwg.Property) {
+			if (onEntity instanceof eu.esdihumboldt.commons.goml.omwg.Property) {
 				// get the property value
 				Object value = FeatureInspector.getPropertyValue(target, onEntity.getAbout(), null);
 				

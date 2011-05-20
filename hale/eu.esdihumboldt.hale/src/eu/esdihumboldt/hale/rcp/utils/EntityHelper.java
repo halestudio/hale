@@ -13,11 +13,11 @@ package eu.esdihumboldt.hale.rcp.utils;
 
 import java.util.Iterator;
 
-import eu.esdihumboldt.cst.align.IEntity;
-import eu.esdihumboldt.goml.align.Entity;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.align.Entity;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.specification.cst.align.IEntity;
 
 /**
  * Entity utility methods

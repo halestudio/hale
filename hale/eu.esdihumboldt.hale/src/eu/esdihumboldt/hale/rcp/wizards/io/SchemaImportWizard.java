@@ -31,9 +31,9 @@ import org.eclipse.ui.PlatformUI;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.goml.align.Formalism;
-import eu.esdihumboldt.goml.align.Schema;
-import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.commons.goml.align.Formalism;
+import eu.esdihumboldt.commons.goml.align.Schema;
+import eu.esdihumboldt.commons.goml.rdf.About;
 import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.models.AlignmentService;

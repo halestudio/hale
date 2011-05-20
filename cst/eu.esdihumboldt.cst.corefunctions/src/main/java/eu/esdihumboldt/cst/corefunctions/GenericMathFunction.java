@@ -22,15 +22,15 @@ import com.iabcinc.jmep.Expression;
 import com.iabcinc.jmep.XExpression;
 import com.iabcinc.jmep.hooks.Constant;
 
-import eu.esdihumboldt.cst.AbstractCstFunction;
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.IParameter;
-import eu.esdihumboldt.goml.align.Cell;
-import eu.esdihumboldt.goml.oml.ext.Parameter;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.rdf.About;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
+import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.rdf.About;
+import eu.esdihumboldt.specification.cst.AbstractCstFunction;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 
 /**
  * FIXME Add Type description.
@@ -49,7 +49,7 @@ public class GenericMathFunction
 	private Property targetProperty = null;
 
 	/**
-	 * @see eu.esdihumboldt.cst.transformer.CstFunction#configure(eu.esdihumboldt.cst.align.ICell)
+	 * @see eu.esdihumboldt.cst.transformer.CstFunction#configure(eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	public boolean configure(ICell cell) {
 		for (IParameter ip : cell.getEntity1().getTransformation().getParameters()) {

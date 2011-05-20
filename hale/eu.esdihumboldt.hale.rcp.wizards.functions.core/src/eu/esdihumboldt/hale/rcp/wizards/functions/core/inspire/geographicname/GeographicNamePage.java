@@ -38,15 +38,15 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import eu.esdihumboldt.goml.align.Entity;
-import eu.esdihumboldt.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.align.Entity;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.inspire.data.GrammaticalGenderValue;
+import eu.esdihumboldt.commons.inspire.data.GrammaticalNumberValue;
+import eu.esdihumboldt.commons.inspire.data.NameStatusValue;
+import eu.esdihumboldt.commons.inspire.data.NativenessValue;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
-import eu.esdihumboldt.inspire.data.GrammaticalGenderValue;
-import eu.esdihumboldt.inspire.data.GrammaticalNumberValue;
-import eu.esdihumboldt.inspire.data.NameStatusValue;
-import eu.esdihumboldt.inspire.data.NativenessValue;
 
 /**
  * The WizardPage for the {@link GeographicNameFunctionWizard}

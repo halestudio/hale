@@ -13,16 +13,16 @@ package eu.esdihumboldt.hale.rcp.wizards.functions.core.date;
 
 import org.eclipse.jface.wizard.Wizard;
 
-import eu.esdihumboldt.cst.align.ICell;
+import eu.esdihumboldt.commons.goml.align.Entity;
+import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
+import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
+import eu.esdihumboldt.commons.goml.rdf.Resource;
 import eu.esdihumboldt.cst.corefunctions.DateExtractionFunction;
-import eu.esdihumboldt.goml.align.Entity;
-import eu.esdihumboldt.goml.oml.ext.Parameter;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 
 /**

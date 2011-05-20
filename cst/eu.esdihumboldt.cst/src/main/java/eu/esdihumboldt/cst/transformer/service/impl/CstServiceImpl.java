@@ -29,14 +29,14 @@ import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.cst.CstFunction;
-import eu.esdihumboldt.cst.align.IAlignment;
-import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.cst.transformer.CstService;
 import eu.esdihumboldt.cst.transformer.capabilities.CstServiceCapabilities;
 import eu.esdihumboldt.cst.transformer.capabilities.impl.CstServiceCapabilitiesImpl;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.service.CstServiceFactory.ToleranceLevel;
+import eu.esdihumboldt.specification.cst.CstFunction;
+import eu.esdihumboldt.specification.cst.align.IAlignment;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 
 /**

@@ -24,18 +24,18 @@ import java.util.Map.Entry;
 
 import org.eclipse.jface.wizard.Wizard;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.IValueExpression;
+import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
+import eu.esdihumboldt.commons.goml.oml.ext.ValueExpression;
+import eu.esdihumboldt.commons.goml.omwg.ComparatorType;
+import eu.esdihumboldt.commons.goml.omwg.Property;
+import eu.esdihumboldt.commons.goml.omwg.Restriction;
+import eu.esdihumboldt.commons.goml.rdf.Resource;
 import eu.esdihumboldt.cst.corefunctions.ClassificationMappingFunction;
-import eu.esdihumboldt.goml.oml.ext.Transformation;
-import eu.esdihumboldt.goml.oml.ext.ValueExpression;
-import eu.esdihumboldt.goml.omwg.ComparatorType;
-import eu.esdihumboldt.goml.omwg.Property;
-import eu.esdihumboldt.goml.omwg.Restriction;
-import eu.esdihumboldt.goml.rdf.Resource;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.schemaprovider.EnumAttributeType;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ext.IValueExpression;
 
 /**
  * @author Simon Templer

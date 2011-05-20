@@ -10,11 +10,11 @@ import java.net.URISyntaxException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.esdihumboldt.cst.CstFunction;
 import eu.esdihumboldt.cst.transformer.capabilities.FunctionDescription;
 import eu.esdihumboldt.cst.transformer.capabilities.impl.FunctionDescriptionImpl;
 import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.cst.transformer.service.AddFunctionsToPathUtility;
+import eu.esdihumboldt.specification.cst.CstFunction;
 
 /**
  * JUnit 4 Test for the {@link FunctionDescriptionImpl} type.

@@ -11,10 +11,10 @@
  */
 package eu.esdihumboldt.hale.models.utils;
 
-import eu.esdihumboldt.cst.align.IEntity;
 import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.models.schema.SchemaServiceListener;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
+import eu.esdihumboldt.specification.cst.align.IEntity;
 
 /**
  * Provides access to the {@link SchemaItem} trees for the source and target

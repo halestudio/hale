@@ -252,6 +252,7 @@ public class DefinitionPath {
 		/**
 		 * @see PathElement#getName()
 		 */
+		@Override
 		public Name getName() {
 			return new NameImpl(attdef.getNamespace(), attdef.getName());
 		}
@@ -259,6 +260,7 @@ public class DefinitionPath {
 		/**
 		 * @see PathElement#getType()
 		 */
+		@Override
 		public TypeDefinition getType() {
 			return attdef.getAttributeType();
 		}
@@ -266,6 +268,7 @@ public class DefinitionPath {
 		/**
 		 * @see PathElement#isProperty()
 		 */
+		@Override
 		public boolean isProperty() {
 			return true;
 		}

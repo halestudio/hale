@@ -12,9 +12,9 @@
 
 package eu.esdihumboldt.hale.models.alignment;
 
-import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.hale.models.HaleServiceListener;
 import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * 

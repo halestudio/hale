@@ -31,11 +31,10 @@ import org.eclipse.ui.PlatformUI;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
-import eu.esdihumboldt.cst.align.ISchema;
-import eu.esdihumboldt.goml.align.Alignment;
-import eu.esdihumboldt.goml.align.Formalism;
-import eu.esdihumboldt.goml.align.Schema;
-import eu.esdihumboldt.goml.oml.io.OmlRdfReader;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Formalism;
+import eu.esdihumboldt.commons.goml.align.Schema;
+import eu.esdihumboldt.commons.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.cache.Request;
 import eu.esdihumboldt.hale.core.io.ProgressIndicator;
@@ -60,6 +59,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.task.TaskUserData;
 import eu.esdihumboldt.hale.task.impl.BaseTask;
 import eu.esdihumboldt.hale.task.impl.TaskUserDataImpl;
+import eu.esdihumboldt.specification.cst.align.ISchema;
 
 /**
  * The {@link ProjectParser} reads a given project xml file and directly pushes

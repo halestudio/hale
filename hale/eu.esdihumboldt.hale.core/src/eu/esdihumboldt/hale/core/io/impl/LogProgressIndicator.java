@@ -40,6 +40,7 @@ public class LogProgressIndicator implements ProgressIndicator {
 	/**
 	 * @see ProgressIndicator#setCurrentTask(java.lang.String)
 	 */
+	@Override
 	public void setCurrentTask(String taskName) {
 		this.currentTask = taskName;
 		trigger();
@@ -48,6 +49,7 @@ public class LogProgressIndicator implements ProgressIndicator {
 	/**
 	 * @see ProgressIndicator#advance(int)
 	 */
+	@Override
 	public void advance(int workUnits) {
 		this.worked += workUnits;
 		trigger();

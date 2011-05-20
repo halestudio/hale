@@ -11,7 +11,7 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.io.mappingexport;
 
-import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Alignment;
 
 /**
  * Indicates that exporting an {@link Alignment} didn't work as expected.

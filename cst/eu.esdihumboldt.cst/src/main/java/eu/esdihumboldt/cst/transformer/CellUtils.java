@@ -12,9 +12,9 @@
 
 package eu.esdihumboldt.cst.transformer;
 
-import eu.esdihumboldt.cst.align.ICell;
-import eu.esdihumboldt.cst.align.ext.ITransformation;
-import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.align.Cell;
+import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ext.ITransformation;
 
 /**
  * {@link ICell}/{@link Cell} utility methods

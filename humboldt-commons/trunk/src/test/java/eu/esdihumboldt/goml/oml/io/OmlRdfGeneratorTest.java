@@ -36,7 +36,9 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import eu.esdihumboldt.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.oml.io.OmlRdfGenerator;
+import eu.esdihumboldt.commons.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.utilities.TestUtilities;
 
 /**

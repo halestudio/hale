@@ -14,10 +14,10 @@ package eu.esdihumboldt.hale.rcp.wizards.functions;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import eu.esdihumboldt.cst.align.ICell;
 import eu.esdihumboldt.hale.rcp.views.mapping.CellInfo;
 import eu.esdihumboldt.hale.rcp.views.mapping.CellSelection;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * {@link AlignmentInfo} based on {@link CellSelection}
