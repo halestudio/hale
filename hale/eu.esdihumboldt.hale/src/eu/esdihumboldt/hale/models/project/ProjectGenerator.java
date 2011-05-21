@@ -40,7 +40,6 @@ import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.models.ConfigSchemaService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.StyleService;
-import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.project.generated.ConfigSection;
 import eu.esdihumboldt.hale.models.project.generated.HaleProject;
 import eu.esdihumboldt.hale.models.project.generated.InstanceData;
@@ -53,6 +52,7 @@ import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
 import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.task.TaskUserData;
+import eu.esdihumboldt.hale.ui.views.tasks.service.TaskService;
 
 /**
  * The {@link ProjectGenerator} serializes all project info to an xml file.

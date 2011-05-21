@@ -12,10 +12,10 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire;
 
 import eu.esdihumboldt.cst.corefunctions.inspire.IdentifierFunction;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
-import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
-import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
+import eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.ui.model.functions.FunctionWizard;
+import eu.esdihumboldt.hale.ui.model.functions.FunctionWizardFactory;
+import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
@@ -23,12 +23,11 @@ import eu.esdihumboldt.specification.cst.align.ICell;
  * 
  * @author Thorsten Reitz 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class IdentifierFunctionWizardFactory implements FunctionWizardFactory {
 
 	/**
-	 * @see eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory#createWizard(eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo)
+	 * @see eu.esdihumboldt.hale.ui.model.functions.FunctionWizardFactory#createWizard(eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo)
 	 */
 	@Override
 	public FunctionWizard createWizard(AlignmentInfo selection) {
@@ -36,7 +35,7 @@ public class IdentifierFunctionWizardFactory implements FunctionWizardFactory {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory#supports(eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo)
+	 * @see eu.esdihumboldt.hale.ui.model.functions.FunctionWizardFactory#supports(eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo)
 	 */
 	@Override
 	public boolean supports(AlignmentInfo selection) {

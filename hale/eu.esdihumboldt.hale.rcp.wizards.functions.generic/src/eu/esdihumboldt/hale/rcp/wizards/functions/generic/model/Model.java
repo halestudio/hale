@@ -21,7 +21,6 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.generic.model;
 
-import java.net.URL;
 
 public abstract class Model {
 	protected FunctionType parent;

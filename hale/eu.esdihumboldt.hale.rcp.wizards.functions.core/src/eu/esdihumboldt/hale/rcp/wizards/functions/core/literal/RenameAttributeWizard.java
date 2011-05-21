@@ -21,9 +21,9 @@ import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
 import eu.esdihumboldt.commons.goml.rdf.Resource;
 import eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleCellWizard;
+import eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo;
 import eu.esdihumboldt.specification.cst.align.ICell.RelationType;
 
 /**

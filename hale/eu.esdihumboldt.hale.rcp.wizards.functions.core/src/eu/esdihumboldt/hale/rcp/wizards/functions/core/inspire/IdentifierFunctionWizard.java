@@ -25,9 +25,9 @@ import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
 import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
 import eu.esdihumboldt.commons.goml.rdf.Resource;
 import eu.esdihumboldt.cst.corefunctions.inspire.IdentifierFunction;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleCellWizard;
+import eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo;
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 

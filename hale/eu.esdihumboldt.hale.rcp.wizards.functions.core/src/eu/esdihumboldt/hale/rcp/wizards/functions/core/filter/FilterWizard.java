@@ -20,9 +20,9 @@ import org.eclipse.jface.wizard.Wizard;
 import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
 import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.commons.goml.omwg.Restriction;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleCellWizard;
+import eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo;
 import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
@@ -92,6 +92,7 @@ public class FilterWizard extends AbstractSingleCellWizard {
 	/**
 	 * @see IWizard#addPages()
 	 */
+	@Override
 	public void addPages() {
 		super.addPages();
 		addPage(mainPage);

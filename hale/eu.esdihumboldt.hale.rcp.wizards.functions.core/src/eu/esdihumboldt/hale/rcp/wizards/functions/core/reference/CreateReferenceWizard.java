@@ -13,14 +13,13 @@ package eu.esdihumboldt.hale.rcp.wizards.functions.core.reference;
 
 import org.eclipse.jface.wizard.IWizard;
 
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
-import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleCellWizard;
+import eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.ui.model.functions.FunctionWizard;
 
 /**
  * @author Thorsten Reitz
- * @version $Id$
  */
 public class CreateReferenceWizard 
 	extends AbstractSingleCellWizard 
@@ -29,7 +28,7 @@ public class CreateReferenceWizard
 	private CreateReferenceWizardPage mainPage;
 
 	/**
-	 * @param selection
+	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(AlignmentInfo)
 	 */
 	public CreateReferenceWizard(AlignmentInfo selection) {
 		super(selection);
@@ -51,7 +50,8 @@ public class CreateReferenceWizard
 	/**
 	 * @see IWizard#addPages()
      */
-    public void addPages() {
+    @Override
+	public void addPages() {
         super.addPages(); 
         addPage(this.mainPage);
     }

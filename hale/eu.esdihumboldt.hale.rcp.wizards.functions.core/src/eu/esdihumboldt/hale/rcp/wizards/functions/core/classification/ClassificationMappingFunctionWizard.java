@@ -31,17 +31,15 @@ import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.commons.goml.omwg.Restriction;
 import eu.esdihumboldt.commons.goml.rdf.Resource;
 import eu.esdihumboldt.cst.corefunctions.ClassificationMappingFunction;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.schemaprovider.EnumAttributeType;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleCellWizard;
+import eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo;
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.ext.IValueExpression;
 
 /**
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
- *
  */
 public class ClassificationMappingFunctionWizard extends
 		AbstractSingleCellWizard {

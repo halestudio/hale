@@ -33,9 +33,9 @@ import eu.esdihumboldt.commons.goml.align.Entity;
 import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
 import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
 import eu.esdihumboldt.commons.goml.rdf.Resource;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.generic.model.AlgorithmCST;
+import eu.esdihumboldt.hale.ui.model.functions.FunctionWizard;
+import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 

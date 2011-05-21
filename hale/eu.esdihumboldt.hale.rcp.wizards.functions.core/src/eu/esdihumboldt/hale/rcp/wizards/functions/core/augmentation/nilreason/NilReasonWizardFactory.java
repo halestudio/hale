@@ -13,9 +13,9 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.augmentation.nilreason;
 
 import eu.esdihumboldt.cst.corefunctions.NilReasonFunction;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizard;
-import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizardFactory;
+import eu.esdihumboldt.hale.ui.model.augmentations.AugmentationWizard;
+import eu.esdihumboldt.hale.ui.model.augmentations.AugmentationWizardFactory;
+import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
@@ -23,7 +23,6 @@ import eu.esdihumboldt.specification.cst.align.ICell;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class NilReasonWizardFactory extends AugmentationWizardFactory {
 

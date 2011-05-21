@@ -12,17 +12,17 @@
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.classification;
 
 import eu.esdihumboldt.cst.corefunctions.ClassificationMappingFunction;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
-import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
-import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
+import eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.ui.model.functions.FunctionWizard;
+import eu.esdihumboldt.hale.ui.model.functions.FunctionWizardFactory;
+import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
+ * Classification mapping wizard factory
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
- *
  */
 public class ClassificationMappingFunctionWizardFactory implements
 		FunctionWizardFactory {

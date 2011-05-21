@@ -24,9 +24,9 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
-import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
 import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.wizards.io.SaveAlignmentProjectWizard;
+import eu.esdihumboldt.hale.ui.util.ExceptionHelper;
 
 /**
  * This type handles the saving of Alignment Projects.

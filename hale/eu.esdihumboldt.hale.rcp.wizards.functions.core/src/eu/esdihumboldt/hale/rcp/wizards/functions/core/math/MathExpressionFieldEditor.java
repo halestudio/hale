@@ -23,10 +23,10 @@ import com.iabcinc.jmep.hooks.Constant;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 
 /**
+ * Math expression field editor
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
- *
  */
 public class MathExpressionFieldEditor extends StringFieldEditor {
 	

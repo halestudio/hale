@@ -36,15 +36,14 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleComposedCellWizardPage;
+import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 
 /**
  * ConcatenationofAttributesWizardpage
  * 
  * @author Stefan Gessner
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$
  */
 public class ConcatenationOfAttributesWizardPage extends
 		AbstractSingleComposedCellWizardPage {

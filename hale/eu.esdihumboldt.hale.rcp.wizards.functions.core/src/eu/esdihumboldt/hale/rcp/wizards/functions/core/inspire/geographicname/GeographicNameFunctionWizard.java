@@ -26,10 +26,10 @@ import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.commons.goml.rdf.Resource;
 import eu.esdihumboldt.cst.corefunctions.inspire.GeographicalNameFunction;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.inspire.geographicname.GeographicNamePage.SpellingType;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleComposedCellWizard;
+import eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo;
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 
@@ -38,7 +38,6 @@ import eu.esdihumboldt.specification.cst.align.ext.IParameter;
  * 
  * @author Anna Pitaev
  * @partner 04 / Logica
- * @version $Id$
  */
 public class GeographicNameFunctionWizard extends
 		AbstractSingleComposedCellWizard {
@@ -47,22 +46,21 @@ public class GeographicNameFunctionWizard extends
 	private GeographicNamePage page;
 
 	/**
-	 * @param selection
+	 * @see AbstractSingleComposedCellWizard#AbstractSingleComposedCellWizard(AlignmentInfo)
 	 */
 	public GeographicNameFunctionWizard(AlignmentInfo selection) {
 		super(selection);
-
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard#init()
+	 * @see AbstractSingleComposedCellWizard#init()
 	 */
 	@Override
 	protected void init() {
 
 		ICell cell = getResultCell();
-		String text = null;
-		String script = null;
+//		String text = null;
+//		String script = null;
 		String transliteration = null;
 		String ipa = null;
 		String language = null;

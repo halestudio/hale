@@ -44,16 +44,15 @@ import eu.esdihumboldt.commons.inspire.data.GrammaticalGenderValue;
 import eu.esdihumboldt.commons.inspire.data.GrammaticalNumberValue;
 import eu.esdihumboldt.commons.inspire.data.NameStatusValue;
 import eu.esdihumboldt.commons.inspire.data.NativenessValue;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleComposedCellWizardPage;
+import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 
 /**
  * The WizardPage for the {@link GeographicNameFunctionWizard}
  * 
  * @author Anna Pitaev
  * @partner 04 / Logica
- * @version $Id$
  */
 public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 
@@ -206,6 +205,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		this.nameLanguageText.setEnabled(true);
 		this.nameLanguageText.setTabs(0);
 		this.nameLanguageText.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 				setLanguage(nameLanguageText.getText());
 
@@ -233,6 +233,7 @@ public class GeographicNamePage extends AbstractSingleComposedCellWizardPage {
 		this.nameSourceText.setCaretOffset(nameSource.length());
 		this.nameSourceText.setEnabled(true);
 		this.nameSourceText.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 
 				// if source of name defined by user

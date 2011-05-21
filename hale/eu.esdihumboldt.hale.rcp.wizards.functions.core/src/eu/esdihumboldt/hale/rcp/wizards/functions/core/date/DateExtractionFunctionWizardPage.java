@@ -19,15 +19,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleCellWizardPage;
 
 /**
  * FIXME Add Type description.
  * 
  * @author Ulrich Schaeffler
  * @partner 14 / TUM
- * @version $Id$ 
  */
 public class DateExtractionFunctionWizardPage extends AbstractSingleCellWizardPage {
 
@@ -35,6 +34,9 @@ public class DateExtractionFunctionWizardPage extends AbstractSingleCellWizardPa
 	
 	Text targetFormat = null;
 	
+	/**
+	 * @see AbstractSingleCellWizardPage#AbstractSingleCellWizardPage(String)
+	 */
 	public DateExtractionFunctionWizardPage(String pageName) {
 		super(pageName);
 		setTitle(pageName);

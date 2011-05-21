@@ -11,9 +11,9 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric;
 
-import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
-import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
-import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
+import eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.ui.model.functions.FunctionWizard;
+import eu.esdihumboldt.hale.ui.model.functions.FunctionWizardFactory;
 
 /**
  * Factory for {@link NetworkFusionFunctionWizard}s

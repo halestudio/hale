@@ -19,9 +19,9 @@ import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.commons.goml.align.Cell;
 import eu.esdihumboldt.commons.goml.omwg.Restriction;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleComposedCellWizard;
+import eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo;
 import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**

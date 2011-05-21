@@ -7,17 +7,16 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.rcp.utils.filter.FeatureFilterForm;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.ui.common.filter.FeatureFilterForm;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleCellWizardPage;
 
 /**
  * Filter wizard page
  * 
  * @author ?, Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class FilterWizardMainPage extends AbstractSingleCellWizardPage {
 	
@@ -34,8 +33,8 @@ public class FilterWizardMainPage extends AbstractSingleCellWizardPage {
 	/**
 	 * Constructor
 	 * 
-	 * @param pageName
-	 * @param title
+	 * @param pageName the page name
+	 * @param title the page title
 	 */
 	protected FilterWizardMainPage(String pageName, String title) {
 		super(pageName, title, (ImageDescriptor) null);

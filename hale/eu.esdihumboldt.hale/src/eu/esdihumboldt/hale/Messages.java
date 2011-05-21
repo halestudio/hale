@@ -18,7 +18,9 @@ import org.eclipse.osgi.util.NLS;
  * Provides means to access externalized strings.
  * 
  * @author Michel Kraemer
+ * @deprecated
  */
+@Deprecated
 @SuppressWarnings("all")
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "eu.esdihumboldt.hale.messages"; //$NON-NLS-1$

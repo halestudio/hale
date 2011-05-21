@@ -21,18 +21,17 @@ import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
 import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
 import eu.esdihumboldt.commons.goml.rdf.Resource;
 import eu.esdihumboldt.cst.corefunctions.GenericMathFunction;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleComposedCellWizard;
+import eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo;
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 
 /**
+ * Generic math function wizard
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
- *
  */
 public class GenericMathFunctionWizard extends
 		AbstractSingleComposedCellWizard {
@@ -47,7 +46,7 @@ public class GenericMathFunctionWizard extends
 	}
 
 	/**
-	 * @see AbstractSingleCellWizard#init()
+	 * @see AbstractSingleComposedCellWizard#init()
 	 */
 	@Override
 	protected void init() {

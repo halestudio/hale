@@ -21,7 +21,6 @@ import org.osgi.framework.BundleContext;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class CoreFunctionWizardsPlugin extends AbstractUIPlugin {
 	
@@ -38,6 +37,7 @@ public class CoreFunctionWizardsPlugin extends AbstractUIPlugin {
 	/**
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
+	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;

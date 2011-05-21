@@ -29,17 +29,15 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.math.MathExpressionFieldEditor;
-
+import eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleComposedCellWizardPage;
+import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 
 /**
  * @author Stefan Gessner
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class OrdinatesPointWizardPage extends
 		AbstractSingleComposedCellWizardPage {
@@ -181,6 +179,7 @@ public class OrdinatesPointWizardPage extends
 	public String getExpansionX() {
 		return this.expressionEditorX.getStringValue();
 	}
+	
 	public String getExpansionY() {
 		return this.expressionEditorY.getStringValue();
 	}

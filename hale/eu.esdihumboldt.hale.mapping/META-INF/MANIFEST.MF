@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE Mapping API
+Bundle-SymbolicName: eu.esdihumboldt.hale.mapping
+Bundle-Version: 2.2.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: eu.esdihumboldt.commons.goml.align,
+ eu.esdihumboldt.commons.goml.omwg,
+ eu.esdihumboldt.hale.schemaprovider.model,
+ eu.esdihumboldt.specification.cst.align,
+ eu.esdihumboldt.specification.cst.rdf
+Export-Package: eu.esdihumboldt.hale.mapping.helper

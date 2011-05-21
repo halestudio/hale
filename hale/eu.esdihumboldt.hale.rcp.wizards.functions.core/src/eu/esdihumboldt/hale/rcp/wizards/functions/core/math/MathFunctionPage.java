@@ -32,15 +32,16 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+import eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleComposedCellWizardPage;
+import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 
 /**
+ * Generic math function wizard page
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class MathFunctionPage extends AbstractSingleComposedCellWizardPage {
 	
@@ -94,6 +95,7 @@ public class MathFunctionPage extends AbstractSingleComposedCellWizardPage {
 		expressionEditor.setPage(this);
 		expressionEditor.setPropertyChangeListener(new IPropertyChangeListener() {
 			
+			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty().equals(FieldEditor.IS_VALID)) {
 					update();

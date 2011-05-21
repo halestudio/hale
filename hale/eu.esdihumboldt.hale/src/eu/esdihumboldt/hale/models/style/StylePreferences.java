@@ -20,7 +20,7 @@ import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.RGB;
 
 import eu.esdihumboldt.hale.rcp.HALEActivator;
-import eu.esdihumboldt.hale.rcp.swingrcpbridge.SwingRcpUtilities;
+import eu.esdihumboldt.hale.ui.common.swing.SwingRcpUtilities;
 
 /**
  * 

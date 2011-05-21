@@ -18,16 +18,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleCellWizardPage;
+import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 
 /**
  * TODO: clarify whether both normal xlinks and gml:ReferenceTypes are needed 
  * (or whether ReferenceType is just a semantic element saying "by reference only")
  * 
  * @author Thorsten Reitz
- * @version $Id$
  */
 public class CreateReferenceWizardPage 
 	extends AbstractSingleCellWizardPage {

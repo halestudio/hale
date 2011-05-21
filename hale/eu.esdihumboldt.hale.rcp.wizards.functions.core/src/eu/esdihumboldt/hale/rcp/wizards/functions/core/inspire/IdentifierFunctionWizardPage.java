@@ -22,14 +22,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditor;
-import eu.esdihumboldt.hale.rcp.utils.definition.AttributeEditorFactory;
-import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
+import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
+import eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleCellWizardPage;
 
 /**
  * Main page of the {@link IdentifierFunctionWizard}

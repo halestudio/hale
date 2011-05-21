@@ -24,8 +24,8 @@ import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
 import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
 import eu.esdihumboldt.commons.goml.rdf.Resource;
 import eu.esdihumboldt.cst.corefunctions.NilReasonFunction;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizard;
+import eu.esdihumboldt.hale.ui.model.augmentations.AugmentationWizard;
+import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 
@@ -34,7 +34,6 @@ import eu.esdihumboldt.specification.cst.align.ext.IParameter;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class NilReasonWizard extends AugmentationWizard {
 	

@@ -33,15 +33,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 
-import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleComposedCellWizardPage;
+import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 
 /**
  * This class implemets a main page for the FilterWizard
  * 
  * @author Anna Pitaev, Logica; Simon Templer, FhG IGD
- * @version $Id$
  */
 public class SimpleFilterWizardMainPage extends AbstractSingleComposedCellWizardPage {
 

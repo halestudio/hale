@@ -12,15 +12,17 @@
 
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.augmentation.constantvalue;
 
+import org.eclipse.jface.wizard.Wizard;
+
 import eu.esdihumboldt.commons.goml.align.Cell;
 import eu.esdihumboldt.commons.goml.align.Entity;
 import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
 import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
 import eu.esdihumboldt.commons.goml.rdf.Resource;
 import eu.esdihumboldt.cst.corefunctions.ConstantValueFunction;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizard;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+import eu.esdihumboldt.hale.ui.model.augmentations.AugmentationWizard;
+import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
@@ -28,7 +30,6 @@ import eu.esdihumboldt.specification.cst.align.ICell;
  * 
  * @author Anna Pitaev
  * @partner 04 / Logica
- * @version $Id$
  */
 public class ConstantValueWizard extends AugmentationWizard {
 
@@ -43,7 +44,7 @@ public class ConstantValueWizard extends AugmentationWizard {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.rcp.wizards.augmentations.AugmentationWizard#init()
+	 * @see AugmentationWizard#init()
 	 */
 	@Override
 	protected void init() {
@@ -56,7 +57,7 @@ public class ConstantValueWizard extends AugmentationWizard {
 	}
 
 	/**
-	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
+	 * @see Wizard#performFinish()
 	 */
 	@Override
 	public boolean performFinish() {

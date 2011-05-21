@@ -24,7 +24,7 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
-import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
+import eu.esdihumboldt.hale.ui.util.ExceptionHelper;
 
 /**
  * TODO Explain the purpose of this type here.

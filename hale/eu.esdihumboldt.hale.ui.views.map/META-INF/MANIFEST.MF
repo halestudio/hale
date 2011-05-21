@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE Map View
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.map
+Bundle-Version: 2.2.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: eu.esdihumboldt.hale.rcp.views.map,
+ eu.esdihumboldt.hale.rcp.views.map.style

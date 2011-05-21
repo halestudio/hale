@@ -20,11 +20,11 @@ import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
-import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
 import eu.esdihumboldt.hale.rcp.wizards.io.wfs.WfsDescribeFeatureConfiguration;
 import eu.esdihumboldt.hale.rcp.wizards.io.wfs.WfsDescribeFeatureWizard;
 import eu.esdihumboldt.hale.rcp.wizards.io.wfs.WfsGetFeatureConfiguration;
 import eu.esdihumboldt.hale.rcp.wizards.io.wfs.WfsGetFeatureWizard;
+import eu.esdihumboldt.hale.ui.util.ExceptionHelper;
 
 /**
  * This editor can be used to select a valid {@link URL} for a WFS to retrieve

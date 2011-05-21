@@ -18,10 +18,9 @@ import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
 import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
 import eu.esdihumboldt.commons.goml.rdf.Resource;
 import eu.esdihumboldt.cst.corefunctions.DateExtractionFunction;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleComposedCellWizard;
+import eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo;
 import eu.esdihumboldt.specification.cst.align.ICell;
 
 
@@ -30,23 +29,20 @@ import eu.esdihumboldt.specification.cst.align.ICell;
  * 
  * @author Ulrich Schaeffler
  * @partner 14 / TUM
- * @version $Id$
  */
 public class DateExtractionFunctionWizard extends AbstractSingleComposedCellWizard {
 
 	private DateExtractionFunctionWizardPage mainPage;
 	
 	/**
-	 * @see AbstractSingleCellWizard#AbstractSingleCellWizard(AlignmentInfo)
+	 * @see AbstractSingleComposedCellWizard#AbstractSingleComposedCellWizard(AlignmentInfo)
 	 */
 	public DateExtractionFunctionWizard(AlignmentInfo selection) {
 		super(selection);
 	}
 	
-	
-	
 	/**
-	 * @see AbstractSingleCellWizard#init()
+	 * @see AbstractSingleComposedCellWizard#init()
 	 */
 	@Override
 	protected void init() {
@@ -55,8 +51,6 @@ public class DateExtractionFunctionWizard extends AbstractSingleComposedCellWiza
 		super.setWindowTitle(Messages.DateExtractionFunctionWizard_1); 
 		super.setNeedsProgressMonitor(true);
 	}
-	
-	
 
 	/**
 	 * @see Wizard#performFinish()

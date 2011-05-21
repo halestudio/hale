@@ -30,17 +30,17 @@ import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.StyleService;
-import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.models.UpdateService;
 import eu.esdihumboldt.hale.models.alignment.AlignmentServiceListener;
 import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceListener;
 import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceListener.Message;
 import eu.esdihumboldt.hale.models.project.generated.HaleProject;
-import eu.esdihumboldt.hale.models.task.TaskServiceListener;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
 import eu.esdihumboldt.hale.task.ResolvedTask;
 import eu.esdihumboldt.hale.task.Task;
+import eu.esdihumboldt.hale.ui.views.tasks.service.TaskService;
+import eu.esdihumboldt.hale.ui.views.tasks.service.TaskServiceListener;
 import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**

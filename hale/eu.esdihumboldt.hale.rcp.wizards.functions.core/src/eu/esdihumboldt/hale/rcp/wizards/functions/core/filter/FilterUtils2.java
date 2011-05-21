@@ -21,7 +21,7 @@ import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.commons.goml.omwg.Restriction;
 import eu.esdihumboldt.cst.transformer.EntityUtils;
 import eu.esdihumboldt.cst.transformer.FilterUtils;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
+import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 import eu.esdihumboldt.specification.cst.align.IEntity;
 
 /**

@@ -4,9 +4,11 @@ Bundle-Name: Generic Function Wizard
 Bundle-SymbolicName: eu.esdihumboldt.hale.rcp.wizards.functions.generic;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: eu.esdihumboldt.hale.rcp.views.model,
- eu.esdihumboldt.hale.rcp.wizards.augmentations,
- eu.esdihumboldt.hale.rcp.wizards.functions
+Import-Package: eu.esdihumboldt.hale.rcp.wizards.functions,
+ eu.esdihumboldt.hale.ui.model.augmentations,
+ eu.esdihumboldt.hale.ui.model.functions,
+ eu.esdihumboldt.hale.ui.model.schema,
+ eu.esdihumboldt.hale.ui.views.schemas
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  eu.esdihumboldt.commons;bundle-version="3.0.4",

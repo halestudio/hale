@@ -21,7 +21,6 @@ import eu.esdihumboldt.hale.models.InstanceService;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.models.StyleService;
-import eu.esdihumboldt.hale.models.TaskService;
 import eu.esdihumboldt.hale.models.alignment.AlignmentServiceImpl;
 import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceImpl;
 import eu.esdihumboldt.hale.models.instance.InstanceServiceImpl;
@@ -30,9 +29,10 @@ import eu.esdihumboldt.hale.models.project.RecentFilesService;
 import eu.esdihumboldt.hale.models.project.RecentFilesServiceImpl;
 import eu.esdihumboldt.hale.models.schema.SchemaProviderService;
 import eu.esdihumboldt.hale.models.style.StyleServiceImpl;
-import eu.esdihumboldt.hale.models.task.TaskServiceImpl;
-import eu.esdihumboldt.hale.models.utils.SchemaItemService;
-import eu.esdihumboldt.hale.models.utils.SchemaItemServiceImpl;
+import eu.esdihumboldt.hale.ui.service.schemaitem.SchemaItemService;
+import eu.esdihumboldt.hale.ui.service.schemaitem.SchemaItemServiceImpl;
+import eu.esdihumboldt.hale.ui.views.tasks.service.TaskService;
+import eu.esdihumboldt.hale.ui.views.tasks.service.TaskServiceImpl;
 
 /**
  * This implementation of the {@link AbstractServiceFactory} allows to use the

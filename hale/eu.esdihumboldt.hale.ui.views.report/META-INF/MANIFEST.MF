@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE Report View
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.report
+Bundle-Version: 2.2.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: eu.esdihumboldt.cst.transformer,
+ eu.esdihumboldt.hale.io.xml.validator,
+ eu.esdihumboldt.hale.models,
+ eu.esdihumboldt.hale.models.project,
+ eu.esdihumboldt.hale.rcp.wizards.io.mappingexport,
+ eu.esdihumboldt.specification.cst.align
+Require-Bundle: org.eclipse.ui;bundle-version="3.6.2",
+ org.eclipse.core.runtime;bundle-version="3.6.0"

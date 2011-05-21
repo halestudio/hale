@@ -28,17 +28,16 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.rcp.utils.definition.DefinitionLabelFactory;
-import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.math.MathExpressionFieldEditor;
+import eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleCellWizardPage;
+import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 
 /**
  * The WizardPage that contains the UI for the {@link NetworkExpansionFunctionWizard}.
  * 
  * @author Thorsten Reitz
- * @version $Id$
  */
 public class NetworkExpansionFunctionWizardPage 
 	extends AbstractSingleCellWizardPage {
@@ -142,6 +141,7 @@ public class NetworkExpansionFunctionWizardPage
 		this.expressionEditor.setPage(this);
 		this.expressionEditor.setPropertyChangeListener(new IPropertyChangeListener() {
 			
+			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty().equals(FieldEditor.IS_VALID)) {
 					update();
@@ -174,6 +174,11 @@ public class NetworkExpansionFunctionWizardPage
 		return this.expressionEditor.getStringValue();
 	}
 	
+	/**
+	 * Set the initial expression
+	 * 
+	 * @param value the expression to set
+	 */
 	public void setInitialExpression(String value) {
 		this.initialExpression = value;
 	}

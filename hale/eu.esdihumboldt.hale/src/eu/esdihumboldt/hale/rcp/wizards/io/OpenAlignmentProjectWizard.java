@@ -29,7 +29,7 @@ import de.cs3d.util.logging.ATransaction;
 import eu.esdihumboldt.hale.Messages;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
-import eu.esdihumboldt.hale.rcp.utils.ExceptionHelper;
+import eu.esdihumboldt.hale.ui.util.ExceptionHelper;
 
 /**
  * FIXME Add Type description.

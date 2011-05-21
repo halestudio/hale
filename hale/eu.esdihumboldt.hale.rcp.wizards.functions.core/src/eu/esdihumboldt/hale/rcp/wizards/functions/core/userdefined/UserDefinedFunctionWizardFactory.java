@@ -11,9 +11,9 @@
  */
 package eu.esdihumboldt.hale.rcp.wizards.functions.core.userdefined;
 
-import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
-import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizard;
-import eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory;
+import eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.ui.model.functions.FunctionWizard;
+import eu.esdihumboldt.hale.ui.model.functions.FunctionWizardFactory;
 
 /**
  * WizardFactory for the User defined Function. A UDF is more or less a 
@@ -27,7 +27,7 @@ public class UserDefinedFunctionWizardFactory
 	implements FunctionWizardFactory {
 
 	/**
-	 * @see eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory#createWizard(eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo)
+	 * @see eu.esdihumboldt.hale.ui.model.functions.FunctionWizardFactory#createWizard(eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo)
 	 */
 	@Override
 	public FunctionWizard createWizard(AlignmentInfo selection) {
@@ -35,7 +35,7 @@ public class UserDefinedFunctionWizardFactory
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory#supports(eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo)
+	 * @see eu.esdihumboldt.hale.ui.model.functions.FunctionWizardFactory#supports(eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo)
 	 */
 	@Override
 	public boolean supports(AlignmentInfo selection) {

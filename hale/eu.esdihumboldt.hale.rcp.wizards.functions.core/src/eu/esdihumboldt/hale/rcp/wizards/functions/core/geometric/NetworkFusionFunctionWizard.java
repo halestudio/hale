@@ -2,8 +2,8 @@ package eu.esdihumboldt.hale.rcp.wizards.functions.core.geometric;
 
 import org.eclipse.jface.wizard.Wizard;
 
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleCellWizard;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleCellWizard;
+import eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo;
 
 /**
  * Network fusion wizard

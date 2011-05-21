@@ -19,10 +19,10 @@ import org.eclipse.jface.wizard.Wizard;
 import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
 import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.commons.goml.rdf.Resource;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AbstractSingleComposedCellWizard;
-import eu.esdihumboldt.hale.rcp.wizards.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.CoreFunctionWizardsPlugin;
 import eu.esdihumboldt.hale.rcp.wizards.functions.core.Messages;
+import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleComposedCellWizard;
+import eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo;
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 import eu.esdihumboldt.specification.cst.align.ext.ITransformation;
@@ -41,7 +41,7 @@ public class UserDefinedFunctionWizard
 	private UserDefinedFunctionWizardPage mainPage;
 		
 	/**
-	 * @param selection
+	 * @see AbstractSingleComposedCellWizard#AbstractSingleComposedCellWizard(AlignmentInfo)
 	 */
 	public UserDefinedFunctionWizard(AlignmentInfo selection) {
 		super(selection);
