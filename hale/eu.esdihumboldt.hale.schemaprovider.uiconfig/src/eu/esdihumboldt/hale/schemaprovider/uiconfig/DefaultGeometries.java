@@ -15,15 +15,14 @@ package eu.esdihumboldt.hale.schemaprovider.uiconfig;
 import org.eclipse.ui.PlatformUI;
 import org.opengis.feature.type.Name;
 
-import eu.esdihumboldt.hale.models.ConfigSchemaService;
 import eu.esdihumboldt.hale.schemaprovider.model.IDefaultGeometries;
+import eu.esdihumboldt.hale.ui.service.config.ConfigSchemaService;
 
 /**
  * Manages default geometry preferences
  *
  * @author Simon Templer, Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class DefaultGeometries implements IDefaultGeometries {
 	
@@ -50,6 +49,7 @@ public class DefaultGeometries implements IDefaultGeometries {
 	 * 
 	 * @return the default geometry property name or <code>null</code>
 	 */
+	@Override
 	public String getDefaultGeometryName(Name typeName) {
 		ConfigSchemaService css = (ConfigSchemaService)PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
 		return css.getItem(DEFAULT_GEOMETRY, encodeNodeName(typeName.getNamespaceURI()));
@@ -68,6 +68,7 @@ public class DefaultGeometries implements IDefaultGeometries {
 	 * @param typeName the type name
 	 * @param propertyName the geometry property name
 	 */
+	@Override
 	public void setDefaultGeometryName(Name typeName, String propertyName) {
 		ConfigSchemaService css = (ConfigSchemaService)PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
 		css.addItem(DEFAULT_GEOMETRY, encodeNodeName(typeName.getNamespaceURI()), propertyName);

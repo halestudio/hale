@@ -4,13 +4,13 @@ Bundle-Name: csvexporter
 Bundle-SymbolicName: eu.esdihumboldt.hale.csvexporter;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: eu.esdihumboldt.hale;bundle-version="2.0.0",
- eu.esdihumboldt.commons;bundle-version="3.0.4",
+Require-Bundle: eu.esdihumboldt.commons;bundle-version="3.0.4",
  org.junit4;bundle-version="4.5.0",
  com.springsource.org.apache.velocity;bundle-version="1.6.2",
  eu.esdihumboldt.specification;bundle-version="2.0.4",
  eu.esdihumboldt.hale.schemaprovider;bundle-version="1.0.1",
  org.eclipse.core.runtime;bundle-version="3.5.0",
- org.eclipse.ui;bundle-version="3.5.1"
+ org.eclipse.ui;bundle-version="3.5.1",
+ eu.esdihumboldt.hale.ui;bundle-version="2.2.0"
 Import-Package: eu.esdihumboldt.hale.core.io,
  org.apache.commons.io;version="1.4.0"

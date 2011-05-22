@@ -19,14 +19,13 @@ import java.util.Set;
 
 import org.opengis.feature.Feature;
 
-import eu.esdihumboldt.hale.models.HaleServiceListener;
+import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
 
 /**
  * Reference data sample service implementation
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class ReferenceSampleServiceImpl implements ReferenceSampleService {
 	

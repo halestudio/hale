@@ -37,14 +37,14 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 
-import eu.esdihumboldt.hale.models.HaleServiceListener;
-import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.util.tree.CollectionTreeNodeContentProvider;
 import eu.esdihumboldt.hale.ui.util.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.ui.util.tree.MapTreeNode;
 import eu.esdihumboldt.hale.ui.util.tree.SortedMapTreeNode;
+import eu.esdihumboldt.hale.ui.views.schemas.ModelNavigationView;
 import eu.esdihumboldt.hale.ui.views.tasks.internal.Messages;
 import eu.esdihumboldt.hale.ui.views.tasks.model.ResolvedTask;
 import eu.esdihumboldt.hale.ui.views.tasks.model.Task;
@@ -57,14 +57,13 @@ import eu.esdihumboldt.hale.ui.views.tasks.service.TaskServiceAdapter;
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class TaskTreeView extends ViewPart {
 	
 	/**
 	 * The view ID
 	 */
-	public static String ID = "eu.esdihumboldt.hale.rcp.views.tasks.TaskTreeView"; //$NON-NLS-1$
+	public static String ID = "eu.esdihumboldt.hale.ui.views.tasks"; //$NON-NLS-1$
 
 	/**
 	 * The tree viewer

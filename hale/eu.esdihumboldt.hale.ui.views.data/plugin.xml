@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="eu.esdihumboldt.hale.ui.views.data.SourceDataView"
+            icon="icons/table.gif"
+            id="eu.esdihumboldt.hale.ui.views.data.source"
+            name="%view.sourceTable.name"
+            restorable="true">
+      </view>
+      <view
+            class="eu.esdihumboldt.hale.ui.views.data.TransformedDataView"
+            icon="icons/table.gif"
+            id="eu.esdihumboldt.hale.ui.views.data.transformed"
+            name="%view.transformedTable.name"
+            restorable="true">
+      </view>
+   </extension>
+
+</plugin>

@@ -11,9 +11,9 @@
  */
 package eu.esdihumboldt.hale.ui.service.schemaitem;
 
-import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
-import eu.esdihumboldt.hale.models.schema.SchemaServiceListener;
 import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
 import eu.esdihumboldt.specification.cst.align.IEntity;
 
 /**

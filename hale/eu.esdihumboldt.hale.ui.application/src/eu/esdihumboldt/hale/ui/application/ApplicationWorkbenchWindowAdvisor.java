@@ -22,8 +22,8 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
+import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
@@ -31,6 +31,10 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.internal.util.PrefUtil;
 
 import eu.esdihumboldt.hale.ui.application.internal.HALEApplicationPlugin;
+import eu.esdihumboldt.hale.ui.application.internal.Messages;
+import eu.esdihumboldt.hale.ui.util.selection.SelectionTracker;
+import eu.esdihumboldt.hale.ui.util.selection.SelectionTrackerImpl;
+import eu.esdihumboldt.hale.ui.util.selection.SelectionTrackerUtil;
 
 /**
  * This is the base class for configuring the workbench window in which the 
@@ -38,7 +42,6 @@ import eu.esdihumboldt.hale.ui.application.internal.HALEApplicationPlugin;
  * 
  * @author Thorsten Reitz 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$
  */
 @SuppressWarnings("restriction")
 public class ApplicationWorkbenchWindowAdvisor 
@@ -75,6 +78,20 @@ public class ApplicationWorkbenchWindowAdvisor
 //      if (window instanceof WorkbenchWindow) {
 //      	((WorkbenchWindow) window).showHeapStatus(true);
 //      }
+	}
+
+	/**
+	 * @see WorkbenchWindowAdvisor#postWindowOpen()
+	 */
+	@Override
+	public void postWindowOpen() {
+		// register selection tracker if none is defined yet
+		SelectionTracker tracker = SelectionTrackerUtil.getTracker();
+		if (tracker == null) {
+			// create tracker listening on window selection service
+			tracker = new SelectionTrackerImpl(getWindowConfigurer().getWindow().getSelectionService());
+			SelectionTrackerUtil.registerTracker(tracker);
+		}
 	}
 
 	/**

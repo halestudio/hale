@@ -12,9 +12,9 @@
 
 package eu.esdihumboldt.hale.ui.model.schema;
 
-import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
 
 /**
  * Schema item representing an element

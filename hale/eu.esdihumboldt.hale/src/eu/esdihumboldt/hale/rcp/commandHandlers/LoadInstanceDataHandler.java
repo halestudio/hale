@@ -24,8 +24,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import eu.esdihumboldt.hale.Messages;
-import eu.esdihumboldt.hale.models.SchemaService;
 import eu.esdihumboldt.hale.rcp.wizards.io.InstanceDataImportWizard;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
  * This Handler delegates to the Instance data loading wizard.

@@ -29,10 +29,11 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
 import eu.esdihumboldt.hale.cache.Request;
-import eu.esdihumboldt.hale.models.ProjectService;
-import eu.esdihumboldt.hale.models.project.RecentFilesService;
-import eu.esdihumboldt.hale.rcp.wizards.io.SaveAlignmentProjectWizard;
 import eu.esdihumboldt.hale.ui.application.internal.HALEApplicationPlugin;
+import eu.esdihumboldt.hale.ui.application.internal.Messages;
+import eu.esdihumboldt.hale.ui.io.legacy.SaveAlignmentProjectWizard;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
 import eu.esdihumboldt.hale.ui.util.ExceptionHelper;
 
 /**

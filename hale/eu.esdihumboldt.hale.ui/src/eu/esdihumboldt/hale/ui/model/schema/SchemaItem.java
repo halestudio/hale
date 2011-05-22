@@ -17,15 +17,15 @@ import org.opengis.feature.type.Name;
 import org.opengis.feature.type.PropertyType;
 
 import eu.esdihumboldt.commons.goml.align.Entity;
-import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.ui.model.schema.TreeObject.TreeObjectType;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
 
 /**
+ * Schema item
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
- *
  */
 public interface SchemaItem {
 
@@ -93,7 +93,7 @@ public interface SchemaItem {
 	
 	/**
 	 * @return type of the SchemaItem as defined
-	 * @see eu.esdihumboldt.hale.ui.views.schemas.TreeObject.TreeObjectType
+	 * @see TreeObject.TreeObjectType
 	 * 
 	 */
 	public abstract TreeObjectType getType();

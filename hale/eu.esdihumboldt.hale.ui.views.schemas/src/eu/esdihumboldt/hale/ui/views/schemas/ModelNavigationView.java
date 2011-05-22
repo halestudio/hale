@@ -35,6 +35,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -49,22 +50,24 @@ import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 
-import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.models.HaleServiceListener;
-import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
-import eu.esdihumboldt.hale.models.StyleService;
-import eu.esdihumboldt.hale.models.UpdateMessage;
-import eu.esdihumboldt.hale.models.schema.SchemaServiceListener;
 import eu.esdihumboldt.hale.ui.model.functions.FunctionWizardContribution;
 import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 import eu.esdihumboldt.hale.ui.model.schema.TreeObject.TreeObjectType;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
+import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
+import eu.esdihumboldt.hale.ui.service.UpdateMessage;
+import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.ui.service.schemaitem.SchemaItemService;
+import eu.esdihumboldt.hale.ui.style.service.StyleService;
+import eu.esdihumboldt.hale.ui.style.service.StyleServiceListener;
 import eu.esdihumboldt.hale.ui.util.viewer.ColumnBrowserTip;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.ConfigurableModelContentProvider;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.ModelNavigationViewLabelProvider;
+import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.filtering.AbstractContentProviderAction;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.filtering.PatternViewFilter;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.filtering.SimpleToggleAction;
@@ -108,7 +111,7 @@ public class ModelNavigationView extends ViewPart implements
 	/**
 	 * The view id
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.rcp.views.model.ModelNavigationView"; //$NON-NLS-1$
+	public static final String ID = "eu.esdihumboldt.hale.ui.views.schemas"; //$NON-NLS-1$
 
 	/**
 	 * Viewer for the source schema
@@ -140,6 +143,8 @@ public class ModelNavigationView extends ViewPart implements
 	private SchemaServiceListener schemaListener;
 
 	private HaleServiceListener alignmentListener;
+
+	private StyleServiceListener styleListener;
 	
 	/**
 	 * @see WorkbenchPart#createPartControl(Composite)
@@ -292,26 +297,39 @@ public class ModelNavigationView extends ViewPart implements
 
 			@Override
 			public void update(@SuppressWarnings("rawtypes") UpdateMessage message) {
-				if (Display.getCurrent() != null) {
-					refresh();
-				}
-				else {
-					final Display display = PlatformUI.getWorkbench().getDisplay();
-					display.syncExec(new Runnable() {
-						
-						@Override
-						public void run() {
-							refresh();
-						}
-					});
-				}
+				refreshInDisplayThread();
 			}
 			
 		});
 		
 		// also add the alignment listener to the style service (for refreshing icons when style changes)
 		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
-		styleService.addListener(alignmentListener);
+		styleService.addListener(styleListener = new StyleServiceListener() {
+			
+			@Override
+			public void stylesRemoved(StyleService styleService) {
+				// refresh to update legend images
+				refreshInDisplayThread();
+			}
+			
+			@Override
+			public void stylesAdded(StyleService styleService) {
+				// refresh to update legend images
+				refreshInDisplayThread();
+			}
+			
+			@Override
+			public void backgroundChanged(StyleService styleService, RGB background) {
+				// refresh to update legend images
+				refreshInDisplayThread();
+			}
+
+			@Override
+			public void styleSettingsChanged(StyleService styleService) {
+				// refresh to update legend images
+				refreshInDisplayThread();
+			}
+		});
 		
 		MenuManager sourceMenuManager = new MenuManager();
 		sourceMenuManager.setRemoveAllWhenShown(true);
@@ -345,6 +363,25 @@ public class ModelNavigationView extends ViewPart implements
 		
 		getSite().registerContextMenu(sourceMenuManager, sourceSchemaViewer);
 		getSite().registerContextMenu(targetMenuManager, targetSchemaViewer);
+	}
+
+	/**
+	 * Refresh map in the display thread
+	 */
+	protected void refreshInDisplayThread() {
+		if (Display.getCurrent() != null) {
+			refresh();
+		}
+		else {
+			final Display display = PlatformUI.getWorkbench().getDisplay();
+			display.syncExec(new Runnable() {
+				
+				@Override
+				public void run() {
+					refresh();
+				}
+			});
+		}
 	}
 
 	private List<SimpleToggleAction> getToggleActions(PatternViewFilter pvf) {
@@ -429,6 +466,7 @@ public class ModelNavigationView extends ViewPart implements
 		schemaViewer.setInput(schemaItemService.getRoot(schemaType));
         schemaViewer
 				.addSelectionChangedListener(new ISelectionChangedListener() {
+					@Override
 					public void selectionChanged(SelectionChangedEvent event) {
 						updateSelection();
 					}
@@ -583,7 +621,7 @@ public class ModelNavigationView extends ViewPart implements
 			AlignmentService as = (AlignmentService) getSite().getService(AlignmentService.class);
 			as.removeListener(alignmentListener);
 			StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
-			styleService.removeListener(alignmentListener);
+			styleService.removeListener(styleListener);
 		}
 		
 		if (functionImage != null) {

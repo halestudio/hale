@@ -15,10 +15,10 @@ package eu.esdihumboldt.hale.ui.views.report.service;
 import java.util.ArrayList;
 
 import eu.esdihumboldt.hale.io.xml.validator.Report;
-import eu.esdihumboldt.hale.models.HaleServiceListener;
-import eu.esdihumboldt.hale.models.UpdateMessage;
-import eu.esdihumboldt.hale.models.UpdateService;
-import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
+import eu.esdihumboldt.hale.ui.io.legacy.mappingexport.MappingExportReport;
+import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
+import eu.esdihumboldt.hale.ui.service.UpdateMessage;
+import eu.esdihumboldt.hale.ui.service.UpdateService;
 import eu.esdihumboldt.hale.ui.views.report.ReportModel;
 
 /**
@@ -41,8 +41,8 @@ public class ReportServiceImpl implements ReportService {
 	private ArrayList reports = new ArrayList();
 	
 	@Override
-	public boolean addListener(HaleServiceListener sl) {
-		return this.listeners.add(sl);
+	public void addListener(HaleServiceListener sl) {
+		this.listeners.add(sl);
 	}
 
 	/**
@@ -67,6 +67,7 @@ public class ReportServiceImpl implements ReportService {
 		this.updateListeners();
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
 	public void addReport(MappingExportReport report) {
 		this.reports.add(report);
@@ -78,6 +79,7 @@ public class ReportServiceImpl implements ReportService {
 		return this.getReport(this.reports.size()-1);
 	}
 	
+	@Override
 	public ReportModel getReport(int index) {
 		ReportModel model;
 		Object obj = this.reports.get(index);

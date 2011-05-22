@@ -31,10 +31,10 @@ import com.onespatial.jrc.tns.oml_to_rif.AlignmentToRifTranslator;
 import com.onespatial.jrc.tns.oml_to_rif.api.TranslationException;
 
 import eu.esdihumboldt.commons.goml.align.Alignment;
-import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportException;
-import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider;
-import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.ui.io.legacy.mappingexport.MappingExportException;
+import eu.esdihumboldt.hale.ui.io.legacy.mappingexport.MappingExportProvider;
+import eu.esdihumboldt.hale.ui.io.legacy.mappingexport.MappingExportReport;
 
 /**
  * The RIF mapping export provider is an Eclipse RCP plugin that extends the

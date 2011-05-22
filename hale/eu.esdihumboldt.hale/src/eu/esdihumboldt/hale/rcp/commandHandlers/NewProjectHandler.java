@@ -20,7 +20,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import eu.esdihumboldt.hale.Messages;
-import eu.esdihumboldt.hale.models.ProjectService;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
  * @author Simon Templer

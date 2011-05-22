@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="eu.esdihumboldt.hale.ui.common.codelist.internal.CodeListPreferencePage"
+            id="eu.esdihumboldt.hale.ui.common.preferences.codelists"
+            name="%preference.codelist.name">
+      </page>
+   </extension>
+
+</plugin>

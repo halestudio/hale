@@ -48,12 +48,12 @@ import eu.esdihumboldt.commons.goml.align.Entity;
 import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
 import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.commons.goml.omwg.Restriction;
-import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.models.HaleServiceListener;
-import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 import eu.esdihumboldt.hale.ui.model.schema.TreeParent;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
+import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
+import eu.esdihumboldt.hale.ui.service.UpdateMessage;
+import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
 import eu.esdihumboldt.hale.ui.views.schemas.ModelNavigationView;
 import eu.esdihumboldt.hale.ui.views.schemas.SchemaType;
 import eu.esdihumboldt.specification.cst.align.ICell;
@@ -209,6 +209,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 		Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
 		source.setTransfer(types);
 		source.addDragListener(new DragSourceListener() {
+			@Override
 			public void dragStart(DragSourceEvent event) {
 				// System.out.println("drag start");
 				// Only start the drag if some attribute selected
@@ -220,6 +221,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 					event.detail = DND.DROP_LINK;
 			}
 
+			@Override
 			public void dragSetData(DragSourceEvent event) {
 				// System.out.println("drag set data");
 				// Provide the data of the requested type.
@@ -237,6 +239,7 @@ public class AttributeView extends ViewPart implements ISelectionListener {
 				event.data = buff.toString();
 			}
 
+			@Override
 			public void dragFinished(DragSourceEvent event) {
 				// System.out.println("Drag Finished");
 

@@ -26,10 +26,6 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
-import eu.esdihumboldt.hale.models.schema.SchemaServiceAdapter;
-import eu.esdihumboldt.hale.models.schema.SchemaServiceListener;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -40,6 +36,10 @@ import eu.esdihumboldt.hale.ui.model.schema.TreeObject;
 import eu.esdihumboldt.hale.ui.model.schema.TreeObject.TreeObjectType;
 import eu.esdihumboldt.hale.ui.model.schema.TreeParent;
 import eu.esdihumboldt.hale.ui.model.schema.TypeItem;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceAdapter;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.ui.service.schemaitem.SchemaItemService;
 import eu.esdihumboldt.specification.cst.align.IEntity;
 

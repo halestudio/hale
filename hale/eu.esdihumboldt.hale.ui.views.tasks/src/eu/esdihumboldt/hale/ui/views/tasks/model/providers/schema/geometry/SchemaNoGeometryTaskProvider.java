@@ -14,9 +14,9 @@ package eu.esdihumboldt.hale.ui.views.tasks.model.providers.schema.geometry;
 
 import java.util.Collection;
 
-import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.ui.views.tasks.model.Task;
 import eu.esdihumboldt.hale.ui.views.tasks.model.providers.schema.AbstractSchemaTaskProvider;
 

@@ -53,9 +53,9 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 	/**
 	 * Constructor
 	 * 
-	 * @param parentShell
+	 * @param parentShell the parent shell
 	 * @param codeList the current code list
-	 * @param message 
+	 * @param message the message
 	 */
 	public CodeListSelectionDialog(Shell parentShell, CodeList codeList, String message) {
 		super(parentShell);

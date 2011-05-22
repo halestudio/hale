@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.views.tasks.model.providers.schema;
 
-import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
 
 /**
  * Source schema tasks

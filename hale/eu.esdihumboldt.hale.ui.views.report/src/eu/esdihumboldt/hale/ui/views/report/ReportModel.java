@@ -20,7 +20,7 @@ import org.xml.sax.SAXParseException;
 
 import eu.esdihumboldt.cst.transformer.CellUtils;
 import eu.esdihumboldt.hale.io.xml.validator.Report;
-import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
+import eu.esdihumboldt.hale.ui.io.legacy.mappingexport.MappingExportReport;
 import eu.esdihumboldt.hale.ui.views.report.internal.Messages;
 import eu.esdihumboldt.specification.cst.align.ICell;
 

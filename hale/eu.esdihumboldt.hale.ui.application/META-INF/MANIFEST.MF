@@ -1,21 +1,25 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Application Bundle
-Bundle-SymbolicName: eu.esdihumboldt.hale.ui.application
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.application;singleton:=true
 Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
- org.eclipse.ui;bundle-version="3.6.2"
+ org.eclipse.ui;bundle-version="3.6.2",
+ org.eclipse.equinox.security;bundle-version="1.0.200"
 Import-Package: de.cs3d.util.logging,
  eu.esdihumboldt.hale.cache,
  eu.esdihumboldt.hale.models,
  eu.esdihumboldt.hale.models.project,
- eu.esdihumboldt.hale.rcp.views.map,
- eu.esdihumboldt.hale.rcp.wizards.io,
+ eu.esdihumboldt.hale.ui.common.crs,
+ eu.esdihumboldt.hale.ui.io.legacy,
+ eu.esdihumboldt.hale.ui.service.project,
  eu.esdihumboldt.hale.ui.util,
  eu.esdihumboldt.hale.ui.util.proxy,
+ eu.esdihumboldt.hale.ui.util.selection,
  eu.esdihumboldt.hale.ui.views.data,
  eu.esdihumboldt.hale.ui.views.graph,
+ eu.esdihumboldt.hale.ui.views.map,
  eu.esdihumboldt.hale.ui.views.mapping,
  eu.esdihumboldt.hale.ui.views.schemas,
  eu.esdihumboldt.hale.ui.views.schemas.attribute,

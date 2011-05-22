@@ -16,8 +16,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.models.ConfigSchemaService;
-import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceListener;
+import eu.esdihumboldt.hale.ui.service.config.ConfigSchemaService;
+import eu.esdihumboldt.hale.ui.service.config.ConfigSchemaServiceListener;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.ConfigurableModelContentProvider;
 
 /**
@@ -101,7 +101,7 @@ public abstract class AbstractContentProviderAction extends Action implements Co
 	/**
 	 * Setter for {@link AbstractContentProviderAction#caption}
 	 * 
-	 * @param caption
+	 * @param caption the caption
 	 */
 	public void setCaption(String caption) {
 		this.caption = caption;
@@ -111,7 +111,8 @@ public abstract class AbstractContentProviderAction extends Action implements Co
 	
 	/**
 	 * Setter for {@link AbstractContentProviderAction#identifier}
-	 * @param ident
+	 * 
+	 * @param ident the identifier
 	 */
 	public void setIdentifier(String ident) {
 		this.identifier = ident;

@@ -15,15 +15,14 @@ import org.opengis.feature.type.Name;
 import org.opengis.feature.type.PropertyType;
 
 import eu.esdihumboldt.commons.goml.align.Entity;
-import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
 
 /**
  * A TreeObject for TreeViewers.
  *  
  * @author cjauss, Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public abstract class TreeObject implements SchemaItem, Comparable<TreeObject> {
 	
@@ -56,6 +55,7 @@ public abstract class TreeObject implements SchemaItem, Comparable<TreeObject> {
 	/**
 	 * @see SchemaItem#getEntity()
 	 */
+	@Override
 	public Entity getEntity() {
 		Definition definition = getDefinition();
 		
@@ -76,8 +76,9 @@ public abstract class TreeObject implements SchemaItem, Comparable<TreeObject> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.views.schemas.SchemaItem#isAttribute()
+	 * @see SchemaItem#isAttribute()
 	 */
+	@Override
 	public boolean isAttribute() {
 		switch (type) {
 		case ABSTRACT_FT:
@@ -91,15 +92,17 @@ public abstract class TreeObject implements SchemaItem, Comparable<TreeObject> {
 	}
 	
 	/**
-	 * @see eu.esdihumboldt.hale.ui.views.schemas.SchemaItem#isType()
+	 * @see SchemaItem#isType()
 	 */
+	@Override
 	public boolean isType() {
 		return isFeatureType() || type.equals(TreeObjectType.PROPERTY_TYPE);
 	}
 	
 	/**
-	 * @see eu.esdihumboldt.hale.ui.views.schemas.SchemaItem#isFeatureType()
+	 * @see SchemaItem#isFeatureType()
 	 */
+	@Override
 	public boolean isFeatureType() {
 		switch (type) {
 		case ABSTRACT_FT:
@@ -113,6 +116,7 @@ public abstract class TreeObject implements SchemaItem, Comparable<TreeObject> {
 	/**
 	 * @return the type, either ROOT, 
 	 */
+	@Override
 	public TreeObjectType getType() {
 		return type;
 	}
@@ -127,8 +131,9 @@ public abstract class TreeObject implements SchemaItem, Comparable<TreeObject> {
 	}
 	
 	/**
-	 * @see eu.esdihumboldt.hale.ui.views.schemas.SchemaItem#getName()
+	 * @see SchemaItem#getName()
 	 */
+	@Override
 	public Name getName() {
 		return name;
 	}
@@ -147,6 +152,7 @@ public abstract class TreeObject implements SchemaItem, Comparable<TreeObject> {
 	 * 
 	 * @return the parent tree item
 	 */
+	@Override
 	public TreeParent getParent() {
 		return parent;
 	}

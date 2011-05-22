@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.views.tasks.service;
 
-import eu.esdihumboldt.hale.models.HaleServiceListener;
+import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
 import eu.esdihumboldt.hale.ui.views.tasks.model.ResolvedTask;
 import eu.esdihumboldt.hale.ui.views.tasks.model.Task;
 

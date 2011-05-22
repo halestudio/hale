@@ -16,9 +16,9 @@ import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
 
-import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
 import eu.esdihumboldt.hale.ui.views.tasks.internal.Messages;
 import eu.esdihumboldt.hale.ui.views.tasks.model.ServiceProvider;
 import eu.esdihumboldt.hale.ui.views.tasks.model.Task;

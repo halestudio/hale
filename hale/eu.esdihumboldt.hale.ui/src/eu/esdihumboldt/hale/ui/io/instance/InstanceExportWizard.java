@@ -33,15 +33,14 @@ import eu.esdihumboldt.hale.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.instance.io.InstanceValidatorFactory;
 import eu.esdihumboldt.hale.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.instance.io.InstanceWriterFactory;
-import eu.esdihumboldt.hale.models.InstanceService;
-import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
-import eu.esdihumboldt.hale.rcp.views.map.SelectCRSDialog;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.ui.io.ExportSelectTargetPage;
 import eu.esdihumboldt.hale.ui.io.ExportWizard;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
  * Wizard for exporting instances
@@ -156,7 +155,7 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceW
 		// determine SRS
 		String commonSRSName;
 		try {
-			commonSRSName = SelectCRSDialog.getValue().getIdentifiers().iterator().next().toString();
+			commonSRSName = is.getCRS().getCRS().getIdentifiers().iterator().next().toString();
 		} catch (Exception e) {
 			// ignore
 			commonSRSName = null;

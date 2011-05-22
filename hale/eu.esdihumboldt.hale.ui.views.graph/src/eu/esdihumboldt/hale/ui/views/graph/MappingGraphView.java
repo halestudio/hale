@@ -50,14 +50,16 @@ import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import eu.esdihumboldt.commons.goml.align.Alignment;
 import eu.esdihumboldt.commons.goml.align.Cell;
 import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.ui.util.swing.SwingRcpUtilities;
 import eu.esdihumboldt.hale.ui.util.tip.BrowserTip;
+import eu.esdihumboldt.hale.ui.views.graph.internal.GraphViewPlugin;
+import eu.esdihumboldt.hale.ui.views.graph.internal.Messages;
 import eu.esdihumboldt.hale.ui.views.schemas.dialogs.PropertiesAction;
 import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 import eu.esdihumboldt.hale.ui.selection.CellSelection;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
+import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.ui.service.schemaitem.SchemaItemService;
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.ext.IParameter;
@@ -90,7 +92,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	/**
 	 * The specific ID of this class
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.rcp.views.mappingGraph.MappingGraphView"; //$NON-NLS-1$
+	public static final String ID = "eu.esdihumboldt.hale.ui.views.graph"; //$NON-NLS-1$
 
 	/**
 	 * Saves the last schemaSelection for refresh function
@@ -186,8 +188,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 		org.eclipse.swt.layout.GridData gridData4 = new org.eclipse.swt.layout.GridData();
 		org.eclipse.swt.layout.GridData gridData5 = new org.eclipse.swt.layout.GridData();
 		org.eclipse.swt.layout.GridData gridData6 = new org.eclipse.swt.layout.GridData();
-		Image image = HALEActivator
-				.getImageDescriptor("icons/refresh.gif").createImage(); //$NON-NLS-1$
+		Image image = GraphViewPlugin.getImageDescriptor("icons/refresh.gif").createImage(); //$NON-NLS-1$
 
 		final Button button1 = new Button(parent, SWT.TOGGLE);
 		final Button button2 = new Button(parent, SWT.TOGGLE);

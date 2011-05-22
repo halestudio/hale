@@ -46,11 +46,11 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.cst.transformer.CstService;
-import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.models.HaleServiceListener;
-import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
+import eu.esdihumboldt.hale.ui.service.UpdateMessage;
+import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.FeatureSelectionListener;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.FeatureSelector;
 

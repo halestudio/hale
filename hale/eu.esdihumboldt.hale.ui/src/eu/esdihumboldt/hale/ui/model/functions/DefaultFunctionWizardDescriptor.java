@@ -45,6 +45,7 @@ public class DefaultFunctionWizardDescriptor extends AbstractFunctionWizardDescr
 	/**
 	 * @see FunctionWizardDescriptor#getFactory()
 	 */
+	@Override
 	public FunctionWizardFactory getFactory() {
 		if (factory == null) {
 			try {
@@ -60,6 +61,7 @@ public class DefaultFunctionWizardDescriptor extends AbstractFunctionWizardDescr
 	/**
 	 * @see FunctionWizardDescriptor#isAugmentation()
 	 */
+	@Override
 	public boolean isAugmentation() {
 		return getFactory() instanceof AugmentationWizardFactory;
 	}

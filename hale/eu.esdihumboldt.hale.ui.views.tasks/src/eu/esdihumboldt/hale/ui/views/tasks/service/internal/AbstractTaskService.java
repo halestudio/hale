@@ -12,9 +12,9 @@
 
 package eu.esdihumboldt.hale.ui.views.tasks.service.internal;
 
-import eu.esdihumboldt.hale.models.AbstractUpdateService;
-import eu.esdihumboldt.hale.models.HaleServiceListener;
-import eu.esdihumboldt.hale.models.UpdateMessage;
+import eu.esdihumboldt.hale.ui.service.AbstractUpdateService;
+import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
+import eu.esdihumboldt.hale.ui.service.UpdateMessage;
 import eu.esdihumboldt.hale.ui.views.tasks.model.ResolvedTask;
 import eu.esdihumboldt.hale.ui.views.tasks.model.Task;
 import eu.esdihumboldt.hale.ui.views.tasks.service.TaskService;

@@ -28,9 +28,9 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.commons.goml.align.Entity;
 import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.commons.goml.rdf.DetailedAbout;
-import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
 import eu.esdihumboldt.specification.cst.rdf.IAbout;
 
 /**

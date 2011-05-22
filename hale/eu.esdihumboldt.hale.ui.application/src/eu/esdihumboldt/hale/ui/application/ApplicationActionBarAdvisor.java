@@ -21,6 +21,9 @@ import org.eclipse.ui.application.IActionBarConfigurer;
  */
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
+	/**
+	 * @see ActionBarAdvisor#ActionBarAdvisor(IActionBarConfigurer)
+	 */
 	public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
 		super(configurer);
 	}

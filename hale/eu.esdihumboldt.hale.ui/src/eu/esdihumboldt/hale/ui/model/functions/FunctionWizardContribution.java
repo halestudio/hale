@@ -32,11 +32,11 @@ import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.ui.internal.Messages;
-import eu.esdihumboldt.hale.ui.model.schema.SchemaSelectionHelper;
 import eu.esdihumboldt.hale.ui.selection.CellSelection;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
+import eu.esdihumboldt.hale.ui.selection.SchemaSelectionHelper;
+import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
 import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**

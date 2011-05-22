@@ -15,9 +15,9 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
-import eu.esdihumboldt.hale.rcp.views.map.MapView;
-import eu.esdihumboldt.hale.ui.views.data.ReferenceTableView;
-import eu.esdihumboldt.hale.ui.views.data.TransformedTableView;
+import eu.esdihumboldt.hale.ui.views.data.SourceDataView;
+import eu.esdihumboldt.hale.ui.views.data.TransformedDataView;
+import eu.esdihumboldt.hale.ui.views.map.MapView;
 import eu.esdihumboldt.hale.ui.views.mapping.MappingView;
 import eu.esdihumboldt.hale.ui.views.schemas.ModelNavigationView;
 import eu.esdihumboldt.hale.ui.views.schemas.attribute.AttributeView;
@@ -35,6 +35,7 @@ public class ClientPerspective implements IPerspectiveFactory {
 	/**
 	 * @see IPerspectiveFactory#createInitialLayout(IPageLayout)
 	 */
+	@Override
 	public void createInitialLayout(IPageLayout _layout) {
 		String editorArea = _layout.getEditorArea();
 		
@@ -51,8 +52,8 @@ public class ClientPerspective implements IPerspectiveFactory {
 		IFolderLayout topRight = _layout.createFolder(
 				"topRight", IPageLayout.RIGHT, 0.4f, editorArea); //$NON-NLS-1$
 		topRight.addView(MapView.ID);
-		topRight.addView(ReferenceTableView.ID);
-		topRight.addView(TransformedTableView.ID);
+		topRight.addView(SourceDataView.ID);
+		topRight.addView(TransformedDataView.ID);
 		
 		IFolderLayout bottomRight = _layout.createFolder(
 				"bottomRight", IPageLayout.BOTTOM, 0.67f, "topRight"); //$NON-NLS-1$ //$NON-NLS-2$

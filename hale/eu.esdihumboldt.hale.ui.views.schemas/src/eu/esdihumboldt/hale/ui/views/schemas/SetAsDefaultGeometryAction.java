@@ -33,20 +33,20 @@ import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
 import eu.esdihumboldt.hale.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
-import eu.esdihumboldt.hale.models.InstanceService;
-import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
-import eu.esdihumboldt.hale.models.ProjectService;
-import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
-import eu.esdihumboldt.hale.models.StyleService;
-import eu.esdihumboldt.hale.rcp.wizards.io.InstanceDataImportWizard;
 import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.model.DefaultGeometries;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.IDefaultGeometries;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.io.legacy.InstanceDataImportWizard;
 import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceService.DatasetType;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.ui.style.service.StyleService;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
 
 /**
@@ -54,7 +54,6 @@ import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class SetAsDefaultGeometryAction extends Action {
 	
@@ -135,7 +134,7 @@ public class SetAsDefaultGeometryAction extends Action {
 				monitor.subTask(Messages.SetAsDefaultGeometryAction_3); //$NON-NLS-1$
 				if (instanceLoc != null && !instanceLoc.isEmpty()) {
 					try {
-						instanceService.addInstances(DatasetType.reference, 
+						instanceService.addInstances(DatasetType.source, 
 								InstanceDataImportWizard.loadInstances(new URI(instanceLoc), conf, null));
 					} catch (Exception e) {
 						log.userError(Messages.SetAsDefaultGeometryAction_6, e); 
@@ -173,8 +172,7 @@ public class SetAsDefaultGeometryAction extends Action {
 				Style style = styleService.getStyle();
 
 				// remember instance data
-				@SuppressWarnings("unchecked")
-				FeatureCollection<FeatureType, Feature> instances = instanceService.getFeatures(DatasetType.reference);
+				FeatureCollection<FeatureType, Feature> instances = instanceService.getFeatures(DatasetType.source);
 				
 				// clean transformed data
 				instanceService.cleanInstances();
@@ -223,7 +221,7 @@ public class SetAsDefaultGeometryAction extends Action {
 				// trigger retransformation
 				monitor.subTask(Messages.SetAsDefaultGeometryAction_8); //$NON-NLS-1$
 				// use a trick to trigger the transformation - add empty feature collection
-				instanceService.addInstances(DatasetType.reference, instances);
+				instanceService.addInstances(DatasetType.source, instances);
 			} finally {
 				trans.end();
 				monitor.done();

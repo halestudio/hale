@@ -35,14 +35,17 @@ import org.eclipse.zest.layouts.LayoutRelationship;
 public class OffscreenRenderingGraph extends Graph {
 
 	/**
-	 * @param parent
-	 * @param style
+	 * @see Graph#Graph(Composite, int)
 	 */
 	public OffscreenRenderingGraph(Composite parent, int style) {
 		super(parent, style);
-		// TODO Auto-generated constructor stub
 	}
 	
+	/**
+	 * Apply a layout
+	 * 
+	 * @param layoutAlgorithm the layout algorithm
+	 */
 	public void applyLayout(LayoutAlgorithm layoutAlgorithm) {
 
 		if ((this.getNodes().size() == 0)) {

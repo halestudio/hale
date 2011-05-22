@@ -15,20 +15,21 @@ package eu.esdihumboldt.hale.ui.views.data.internal.filter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+
 
 /**
  * Feature selector interface.
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$
  */
 public interface FeatureSelector {
 
 	/**
 	 * Add a listener. A listener that was added should be informed of the
 	 * currently selected features by calling
-	 * {@link FeatureSelectionListener#selectionChanged(org.opengis.feature.type.FeatureType, Iterable)}
+	 * {@link FeatureSelectionListener#selectionChanged(Definition, Iterable)}
 	 * 
 	 * @param listener the listener to add
 	 */

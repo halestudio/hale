@@ -48,6 +48,7 @@ public abstract class AbstractTaskFactory implements TaskFactory {
 	/**
 	 * @see TaskFactory#getTaskTypeName()
 	 */
+	@Override
 	public String getTaskTypeName() {
 		if (prefix == null) {
 			return baseTypeName;

@@ -46,13 +46,14 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.identity.FeatureId;
 
-import eu.esdihumboldt.hale.models.InstanceService;
-import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
-import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
-import eu.esdihumboldt.hale.rcp.views.map.FeatureSelection;
-import eu.esdihumboldt.hale.rcp.views.map.MapView;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.ui.selection.InstanceSelection;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceService.DatasetType;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.ui.util.selection.SelectionTracker;
+import eu.esdihumboldt.hale.ui.util.selection.SelectionTrackerUtil;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.FeatureSelectionListener;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.FeatureSelector;
 
@@ -61,7 +62,6 @@ import eu.esdihumboldt.hale.ui.views.data.internal.filter.FeatureSelector;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class MapFeatureSelector implements FeatureSelector {
 	
@@ -127,8 +127,12 @@ public class MapFeatureSelector implements FeatureSelector {
 			ss.addPostSelectionListener(this);
 			
 			lastSelection = ss.getSelection();
-			if (lastSelection == null || !(lastSelection instanceof FeatureSelection)) {
-				lastSelection = ss.getSelection(MapView.ID);
+			if (lastSelection == null || !(lastSelection instanceof InstanceSelection)) {
+//				lastSelection = ss.getSelection(MapView.ID); //FIXME this is bad
+				SelectionTracker tracker = SelectionTrackerUtil.getTracker();
+				if (tracker != null) {
+					lastSelection = tracker.getSelection(InstanceSelection.class);
+				}
 			}
 			
 			updateFeatureTypesSelection();
@@ -194,20 +198,20 @@ public class MapFeatureSelector implements FeatureSelector {
 		}
 
 		/**
-		 * Get the selected features form the current {@link FeatureSelection}
+		 * Get the selected features form the current {@link InstanceSelection}
 		 * 
 		 * @return the selected features or <code>null</code>
 		 */
 		private Collection<Feature> getSelectedFeatures() {
-			if (lastSelection == null || lastSelection.isEmpty() || !(lastSelection instanceof FeatureSelection)) {
+			if (lastSelection == null || lastSelection.isEmpty() || !(lastSelection instanceof InstanceSelection)) {
 				return null;
 			}
 			else {
-				Set<FeatureId> selectedIds = ((FeatureSelection) lastSelection).getFeatureIds();
+				Set<FeatureId> selectedIds = ((InstanceSelection) lastSelection).getFeatureIds();
 				
 				final InstanceService instanceService = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 				
-				DatasetType type = (schema == SchemaType.SOURCE)?(DatasetType.reference):(DatasetType.transformed);
+				DatasetType type = (schema == SchemaType.SOURCE)?(DatasetType.source):(DatasetType.transformed);
 				FeatureCollection<FeatureType, Feature> collection = instanceService.getFeatures(type);
 				
 				List<Feature> features = new ArrayList<Feature>();
@@ -270,7 +274,7 @@ public class MapFeatureSelector implements FeatureSelector {
 
 		@Override
 		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-			if (selection instanceof FeatureSelection) {
+			if (selection instanceof InstanceSelection) {
 				lastSelection = selection;
 				updateFeatureTypesSelection();
 			}

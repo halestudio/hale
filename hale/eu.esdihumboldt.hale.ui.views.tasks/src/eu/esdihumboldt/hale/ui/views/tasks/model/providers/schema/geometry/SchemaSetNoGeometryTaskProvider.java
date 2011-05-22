@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.ui.views.tasks.model.TaskProvider;
 import eu.esdihumboldt.hale.ui.views.tasks.model.impl.CombinedTaskProvider;
 

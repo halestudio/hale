@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import eu.esdihumboldt.hale.rcp.wizards.io.MappingExportWizard;
+import eu.esdihumboldt.hale.ui.io.legacy.MappingExportWizard;
 
 /**
  * The export to file handler is used by the Humboldt Alignment Editor to

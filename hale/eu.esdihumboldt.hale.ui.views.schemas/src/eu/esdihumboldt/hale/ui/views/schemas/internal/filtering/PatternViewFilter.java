@@ -56,10 +56,20 @@ public class PatternViewFilter
 		return false;
 	}
 	
+	/**
+	 * Adds an attribute filter
+	 * 
+	 * @param filterName the object type filter 
+	 */
 	public void addAttributeFilter(TreeObjectType filterName) {
 		this.attribute_filters.add(filterName);
 	}
 	
+	/**
+	 * Removes an attribute filter
+	 * 
+	 * @param filterName the object type filter
+	 */
 	public void removeAttributeFilter(TreeObjectType filterName) {
 		this.attribute_filters.remove(filterName);
 	}

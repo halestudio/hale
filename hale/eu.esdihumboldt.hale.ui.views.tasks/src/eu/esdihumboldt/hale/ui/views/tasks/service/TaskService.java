@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import eu.esdihumboldt.hale.models.UpdateService;
+import eu.esdihumboldt.hale.ui.service.UpdateService;
 import eu.esdihumboldt.hale.ui.views.tasks.model.ResolvedTask;
 import eu.esdihumboldt.hale.ui.views.tasks.model.Task;
 import eu.esdihumboldt.hale.ui.views.tasks.model.TaskUserData;

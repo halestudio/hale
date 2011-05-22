@@ -82,7 +82,8 @@ public class XmlCodeList implements CodeList {
 			
 			// don't resolve DTDs - else loading the document might fail without internet connection
 			builder.setEntityResolver(new EntityResolver() {
-	            public InputSource resolveEntity(String publicId, String systemId)
+	            @Override
+				public InputSource resolveEntity(String publicId, String systemId)
 	                throws SAXException, IOException
 	            {
 	                return new InputSource(new StringReader("")); //$NON-NLS-1$

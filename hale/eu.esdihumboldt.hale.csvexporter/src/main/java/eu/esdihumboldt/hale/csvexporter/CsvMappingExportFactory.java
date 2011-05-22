@@ -42,10 +42,10 @@ import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
 import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.commons.goml.omwg.Restriction;
-import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportException;
-import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportProvider;
-import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.ui.io.legacy.mappingexport.MappingExportException;
+import eu.esdihumboldt.hale.ui.io.legacy.mappingexport.MappingExportProvider;
+import eu.esdihumboldt.hale.ui.io.legacy.mappingexport.MappingExportReport;
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.IEntity;
 import eu.esdihumboldt.specification.cst.align.ext.IParameter;
@@ -56,7 +56,6 @@ import eu.esdihumboldt.specification.cst.align.ext.IParameter;
  * @author Stefan Gessner & Jose Gisbert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @partner 02 / ETRA I+D
- * @version $Id$
  */
 public class CsvMappingExportFactory implements MappingExportProvider {
 	

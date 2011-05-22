@@ -36,17 +36,16 @@ import eu.esdihumboldt.commons.goml.align.Entity;
 import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
 import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
-import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.rcp.views.map.style.StyleUtil;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.model.schema.AttributeItem;
 import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 import eu.esdihumboldt.hale.ui.model.schema.TreeObject;
 import eu.esdihumboldt.hale.ui.model.schema.TreeObject.TreeObjectType;
+import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
+import eu.esdihumboldt.hale.ui.style.helper.StyleHelper;
 import eu.esdihumboldt.hale.ui.util.swing.SwingRcpUtilities;
 import eu.esdihumboldt.hale.ui.util.viewer.TipProvider;
-import eu.esdihumboldt.hale.ui.views.schemas.SchemasViewPlugin;
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.ext.ITransformation;
 
@@ -87,35 +86,7 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 		}
 
 		/**
-		 * @return the identifier
-		 */
-		public String getIdentifier() {
-			return identifier;
-		}
-
-		/**
-		 * @return the attribute
-		 */
-		public boolean isAttribute() {
-			return attribute;
-		}
-
-		/**
-		 * @return the def
-		 */
-		public boolean isDef() {
-			return def;
-		}
-
-		/**
-		 * @return the mandatory
-		 */
-		public boolean isMandatory() {
-			return mandatory;
-		}
-
-		/**
-		 * @see java.lang.Object#hashCode()
+		 * @see Object#hashCode()
 		 */
 		@Override
 		public int hashCode() {
@@ -130,7 +101,7 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 		}
 
 		/**
-		 * @see java.lang.Object#equals(java.lang.Object)
+		 * @see Object#equals(Object)
 		 */
 		@Override
 		public boolean equals(Object obj) {
@@ -233,7 +204,7 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 				&& ((TypeDefinition) to.getDefinition()).hasGeometry() 
 				&& to.getPropertyType() instanceof FeatureType) {
 			FeatureType type = (FeatureType) to.getPropertyType();
-			BufferedImage img = StyleUtil.getLegendImage(type, true);
+			BufferedImage img = StyleHelper.getLegendImage(type, true);
 			if (img != null) {
 				// replace image with style image
 				ImageData imgData = SwingRcpUtilities.convertToSWT(img);

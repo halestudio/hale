@@ -6,7 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: ONESPATIAL
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: eu.esdihumboldt.commons.goml.align,
- eu.esdihumboldt.hale.rcp.wizards.io.mappingexport,
+ eu.esdihumboldt.hale.ui.io.legacy.mappingexport,
  org.apache.commons.logging,
  org.custommonkey.xmlunit,
  org.junit;version="4.5.0",

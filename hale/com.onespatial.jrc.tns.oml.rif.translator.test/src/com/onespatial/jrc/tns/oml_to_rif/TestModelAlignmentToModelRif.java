@@ -27,7 +27,7 @@ import com.onespatial.jrc.tns.oml_to_rif.digest.UrlToAlignmentDigester;
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.ModelRifDocument;
 import com.onespatial.jrc.tns.oml_to_rif.translate.ModelAlignmentToModelRifTranslator;
 
-import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
+import eu.esdihumboldt.hale.ui.io.legacy.mappingexport.MappingExportReport;
 
 /**
  * @author Simon Payne (Simon.Payne@1spatial.com) / 1Spatial Group Ltd.

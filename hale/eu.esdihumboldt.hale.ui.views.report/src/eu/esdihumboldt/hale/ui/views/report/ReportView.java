@@ -27,10 +27,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
-import eu.esdihumboldt.hale.models.HaleServiceListener;
-import eu.esdihumboldt.hale.models.ProjectService;
-import eu.esdihumboldt.hale.models.UpdateMessage;
-import eu.esdihumboldt.hale.models.project.ProjectServiceImpl;
+import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
+import eu.esdihumboldt.hale.ui.service.UpdateMessage;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.views.report.service.ReportService;
 import eu.esdihumboldt.hale.ui.views.report.service.ReportServiceImpl;
 
@@ -42,6 +41,11 @@ import eu.esdihumboldt.hale.ui.views.report.service.ReportServiceImpl;
  */
 public class ReportView extends ViewPart implements HaleServiceListener {
 
+	/**
+	 * The view ID
+	 */
+	public static String ID = "eu.esdihumboldt.hale.ui.views.report";
+	
 	/**
 	 * Displays all warnings and errors which occurred in the
 	 * parse process.
@@ -103,8 +107,7 @@ public class ReportView extends ViewPart implements HaleServiceListener {
 		String id = date.format(time);
 		
 		// get project information
-		//XXX this is bad
-		ProjectServiceImpl projectService = (ProjectServiceImpl)PlatformUI.getWorkbench().getService(ProjectService.class);
+		ProjectService projectService = (ProjectService)PlatformUI.getWorkbench().getService(ProjectService.class);
 		
 		// add entry and select it
 		combo.add(reportService.getLastReport().getIdentifier()+": "+projectService.getProjectName()+" - "+id); //$NON-NLS-1$ //$NON-NLS-2$

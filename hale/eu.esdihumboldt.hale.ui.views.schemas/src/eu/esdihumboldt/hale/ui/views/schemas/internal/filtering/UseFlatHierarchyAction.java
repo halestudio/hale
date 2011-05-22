@@ -15,9 +15,9 @@ package eu.esdihumboldt.hale.ui.views.schemas.internal.filtering;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 
-import eu.esdihumboldt.hale.ui.views.schemas.SchemasViewPlugin;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.ConfigurableModelContentProvider;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
+import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
 
 /**
  * TODO Explain the purpose of this type here.
@@ -28,6 +28,9 @@ import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
 public class UseFlatHierarchyAction 
 	extends AbstractContentProviderAction {
 	
+	/**
+	 * Default constructor
+	 */
 	public UseFlatHierarchyAction() {
 		super.setIdentifier("UseFlatHierarchyAction"); //$NON-NLS-1$
 	}

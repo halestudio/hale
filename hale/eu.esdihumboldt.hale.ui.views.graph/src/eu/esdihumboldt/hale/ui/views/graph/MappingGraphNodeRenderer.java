@@ -13,9 +13,7 @@ package eu.esdihumboldt.hale.ui.views.graph;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 import java.util.Vector;
 
 import org.eclipse.draw2d.geometry.Point;
@@ -33,6 +31,8 @@ import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
+import eu.esdihumboldt.hale.ui.views.schemas.internal.ModelNavigationViewLabelProvider;
+import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.IEntity;
 
@@ -59,8 +59,10 @@ public class MappingGraphNodeRenderer {
 	private Display display = Display.getCurrent();
 
 	/**
-	 * @param mappingGraphModel
-	 * @param mappingGraphView 
+	 * Constructor
+	 * 
+	 * @param mappingGraphModel the mapping graph model
+	 * @param mappingGraphView the mapping graph view
 	 */
 	public MappingGraphNodeRenderer(MappingGraphModel mappingGraphModel, MappingGraphView mappingGraphView){
 		this.mappingGraphModel = mappingGraphModel;
@@ -116,14 +118,8 @@ public class MappingGraphNodeRenderer {
 				graphNode.setLocation(10, y);
 
 				// Set image
-				String imageKey = ModelNavigationViewLabelProvider
-						.getImageforTreeObjectType(sourceSchemaItem.getType());
-				if (imageKey != null) {
-					Image image = AbstractUIPlugin
-							.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID,
-									"/icons/" + imageKey).createImage(); //$NON-NLS-1$
-					graphNode.setImage(image);
-				}
+				Image image = createSchemaItemImage(sourceSchemaItem);
+				graphNode.setImage(image);
 
 				graphNode.setData(sourceSchemaItem);
 
@@ -153,14 +149,8 @@ public class MappingGraphNodeRenderer {
 				graphNode.setLocation(this.mappingGraphView.getGraph().getSize().x * 2 / 3, y);
 
 				// Set image
-				String imageKey = ModelNavigationViewLabelProvider
-						.getImageforTreeObjectType(targetSchemaItem.getType());
-				if (imageKey != null) {
-					Image image = AbstractUIPlugin
-							.imageDescriptorFromPlugin(HALEActivator.PLUGIN_ID,
-									"/icons/" + imageKey).createImage(); //$NON-NLS-1$
-					graphNode.setImage(image);
-				}
+				Image image = createSchemaItemImage(targetSchemaItem);
+				graphNode.setImage(image);
 
 				graphNode.setData(targetSchemaItem);
 
@@ -181,10 +171,24 @@ public class MappingGraphNodeRenderer {
 		}
 	}
 	
+	private Image createSchemaItemImage(SchemaItem sourceSchemaItem) {
+		//FIXME this is bad: there should be another solution to this
+		String imageKey = ModelNavigationViewLabelProvider
+			.getImageforTreeObjectType(sourceSchemaItem.getType());
+		if (imageKey != null) {
+			Image image = AbstractUIPlugin
+				.imageDescriptorFromPlugin(SchemasViewPlugin.PLUGIN_ID,
+				"/icons/" + imageKey).createImage(); //$NON-NLS-1$
+			return image;
+		}
+		
+		return null;
+	}
+
 	/**
 	 * Source and target nodes will be drawn and saved in the arrayLists out of
 	 * the give alignment
-	 * @param cell 
+	 * @param cell the cell
 	 */
 	void drawNodesFromAlignment(ICell cell) {
 		Display display = Display.getDefault();
@@ -337,7 +341,7 @@ public class MappingGraphNodeRenderer {
 	
 	/**
 	 * Draws a Vector of ICells for taking pictures
-	 * @param section
+	 * @param section the cells
 	 */
 	void drawNodeSections(Vector<ICell> section){
 		Display display = Display.getDefault();
@@ -561,16 +565,8 @@ public class MappingGraphNodeRenderer {
 						graphNode.setLocation(10, y);
 
 						// Set image
-						String imageKey = ModelNavigationViewLabelProvider
-								.getImageforTreeObjectType(sourceSchemaItem
-										.getType());
-						if (imageKey != null) {
-							Image image = AbstractUIPlugin
-									.imageDescriptorFromPlugin(
-											HALEActivator.PLUGIN_ID,
-											"/icons/" + imageKey).createImage(); //$NON-NLS-1$
-							graphNode.setImage(image);
-						}
+						Image image = createSchemaItemImage(sourceSchemaItem);
+						graphNode.setImage(image);
 
 						graphNode.setData(sourceSchemaItem);
 
@@ -618,16 +614,8 @@ public class MappingGraphNodeRenderer {
 						graphNode.setLocation(this.mappingGraphView.getGraph().getSize().x * 2 / 3, y);
 
 						// Set image
-						String imageKey = ModelNavigationViewLabelProvider
-								.getImageforTreeObjectType(targetSchemaItem
-										.getType());
-						if (imageKey != null) {
-							Image image = AbstractUIPlugin
-									.imageDescriptorFromPlugin(
-											HALEActivator.PLUGIN_ID,
-											"/icons/" + imageKey).createImage(); //$NON-NLS-1$
-							graphNode.setImage(image);
-						}
+						Image image = createSchemaItemImage(targetSchemaItem);
+						graphNode.setImage(image);
 
 						graphNode.setData(targetSchemaItem);
 
@@ -676,13 +664,10 @@ public class MappingGraphNodeRenderer {
 				}
 				hm.put(graphNode, counter);
 			}
-			Set<?> set = hm.entrySet();
-			Iterator<?> i = set.iterator();
-			while (i.hasNext()) {
-				Map.Entry me = (Map.Entry) i.next();
-				GraphNode temp = ((GraphNode) me.getKey());
+			for (Entry<GraphNode, Integer> me : hm.entrySet()) {
+				GraphNode temp = me.getKey();
 				temp.setLocation(temp.getLocation().x
-						+ (20 * (Integer) me.getValue()), temp.getLocation().y);
+						+ (20 * me.getValue()), temp.getLocation().y);
 			}
 		}
 
@@ -704,13 +689,10 @@ public class MappingGraphNodeRenderer {
 				}
 				hm.put(graphNode, counter);
 			}
-			Set<?> set = hm.entrySet();
-			Iterator<?> i = set.iterator();
-			while (i.hasNext()) {
-				Map.Entry me = (Map.Entry) i.next();
-				GraphNode temp = ((GraphNode) me.getKey());
+			for (Entry<GraphNode, Integer> me : hm.entrySet()) {
+				GraphNode temp = me.getKey();
 				temp.setLocation(temp.getLocation().x
-						+ (20 * (Integer) me.getValue()), temp.getLocation().y);
+						+ (20 * me.getValue()), temp.getLocation().y);
 			}
 		}
 	}

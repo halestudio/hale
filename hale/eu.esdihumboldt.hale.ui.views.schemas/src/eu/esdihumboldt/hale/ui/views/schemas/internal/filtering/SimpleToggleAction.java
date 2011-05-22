@@ -16,10 +16,10 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.models.ConfigSchemaService;
-import eu.esdihumboldt.hale.models.config.ConfigSchemaServiceListener;
 import eu.esdihumboldt.hale.ui.model.schema.TreeObject.TreeObjectType;
-import eu.esdihumboldt.hale.ui.views.schemas.SchemasViewPlugin;
+import eu.esdihumboldt.hale.ui.service.config.ConfigSchemaService;
+import eu.esdihumboldt.hale.ui.service.config.ConfigSchemaServiceListener;
+import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
 
 /**
  * This is the supertype for all Toggle-type actions used in HALE that have a 
@@ -132,7 +132,8 @@ public class SimpleToggleAction
 	
 	/**
 	 * Setter for {@link SimpleToggleAction#caption}
-	 * @param caption
+	 * 
+	 * @param caption the caption
 	 */
 	public void setCaption(String caption) {
 		this.caption = caption;

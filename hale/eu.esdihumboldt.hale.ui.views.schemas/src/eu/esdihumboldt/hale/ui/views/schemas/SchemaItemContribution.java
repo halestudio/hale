@@ -9,14 +9,15 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Menu;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.rcp.views.map.style.FeatureTypeStyleAction;
 import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.model.functions.FunctionWizardContribution;
 import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 import eu.esdihumboldt.hale.ui.model.schema.TreeObject.TreeObjectType;
+import eu.esdihumboldt.hale.ui.style.FeatureTypeStyleAction;
 import eu.esdihumboldt.hale.ui.views.schemas.dialogs.PropertiesAction;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
+import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
 
 /**
  * Context menu contribution

@@ -8,14 +8,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.splash.AbstractSplashHandler;
 
 /**
- * @author Administrator
- *
+ * HALE splash handler
+ * @author Thorsten Reitz
  */
 public class HaleSplashHandler 
 	extends AbstractSplashHandler {
 
 	/**
-	 * 
+	 * Default constructor
 	 */
 	public HaleSplashHandler() {
 		super();
@@ -23,7 +23,7 @@ public class HaleSplashHandler
 	
 	@Override
 	public void init(Shell splash) {
-		splash.setBackgroundImage(new Image(null, Application.getBasePath() + "icons/splash.png")); //$NON-NLS-1$
+		splash.setBackgroundImage(new Image(null, Application.getBasePath() + "images/splash.png")); //$NON-NLS-1$
 	}
 
 }

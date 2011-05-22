@@ -20,7 +20,6 @@ import org.eclipse.ui.services.IServiceLocator;
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$
  */
 public class ServiceFactory extends AbstractServiceFactory {
 

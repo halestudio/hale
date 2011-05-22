@@ -74,6 +74,17 @@ public class Messages extends NLS {
 
 	public static String FeatureFilterFormDialog_0;
 	public static String FeatureFilterFormDialog_1;
+	
+	public static String CRSPreferencePage_0;
+	public static String CRSPreferencePage_2;
+	public static String CRSPreferencePage_3;
+	public static String CRSPreferencePage_4;
+	public static String CRSPreferencePage_5;
+	public static String CRSPreferencePage_6;
+	public static String CRSPreferencePage_7;
+	public static String CRSPreferencePage_8;
+	public static String CRSPreferencePage_11;
+	public static String CRSPreferencePage_12;
 
 	static {
 		// initialize resource bundle

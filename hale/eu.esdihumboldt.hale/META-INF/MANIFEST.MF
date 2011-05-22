@@ -72,6 +72,4 @@ Export-Package: eu.esdihumboldt.hale,
  eu.esdihumboldt.hale.models.utils,
  eu.esdihumboldt.hale.rcp.utils,
  eu.esdihumboldt.hale.rcp.utils.filter,
- eu.esdihumboldt.hale.rcp.wizards.functions,
- eu.esdihumboldt.hale.rcp.wizards.io,
- eu.esdihumboldt.hale.rcp.wizards.io.mappingexport
+ eu.esdihumboldt.hale.rcp.wizards.functions

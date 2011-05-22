@@ -46,7 +46,7 @@
    <extension
          point="org.eclipse.ui.services">
       <sourceProvider
-            provider="eu.esdihumboldt.hale.ui.service.instance.InstanceServiceSource">
+            provider="eu.esdihumboldt.hale.ui.service.instance.internal.InstanceServiceSource">
          <variable
                name="hale.instances.has_transformed"
                priorityLevel="workbench">
@@ -58,6 +58,13 @@
                serviceClass="eu.esdihumboldt.hale.ui.service.report.ReportService">
          </service>
       </serviceFactory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <scheme
+            id="eu.esdihumboldt.hale.ui.bindings"
+            name="HALE Key bindings">
+      </scheme>
    </extension>
 
 </plugin>

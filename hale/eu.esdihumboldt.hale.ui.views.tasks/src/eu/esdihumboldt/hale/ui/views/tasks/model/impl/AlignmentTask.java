@@ -14,11 +14,11 @@ package eu.esdihumboldt.hale.ui.views.tasks.model.impl;
 
 import java.util.List;
 
-import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.models.HaleServiceListener;
-import eu.esdihumboldt.hale.models.UpdateMessage;
-import eu.esdihumboldt.hale.models.alignment.AlignmentServiceListener;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
+import eu.esdihumboldt.hale.ui.service.UpdateMessage;
+import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.mapping.AlignmentServiceListener;
 import eu.esdihumboldt.hale.ui.views.tasks.model.ServiceProvider;
 import eu.esdihumboldt.specification.cst.align.ICell;
 

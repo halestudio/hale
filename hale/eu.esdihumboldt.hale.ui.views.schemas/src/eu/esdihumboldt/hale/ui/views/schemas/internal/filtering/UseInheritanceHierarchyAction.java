@@ -14,9 +14,9 @@ package eu.esdihumboldt.hale.ui.views.schemas.internal.filtering;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 
-import eu.esdihumboldt.hale.ui.views.schemas.SchemasViewPlugin;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.ConfigurableModelContentProvider;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
+import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
 
 /**
  * Enabling this action will switch the affected SchemaExplorer to display it's 
@@ -32,6 +32,9 @@ import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
 public class UseInheritanceHierarchyAction 
 	extends AbstractContentProviderAction {
 
+	/**
+	 * Default constructor
+	 */
 	public UseInheritanceHierarchyAction() {
 		super.setIdentifier("UseInheritanceHierarchyAction"); //$NON-NLS-1$
 	}

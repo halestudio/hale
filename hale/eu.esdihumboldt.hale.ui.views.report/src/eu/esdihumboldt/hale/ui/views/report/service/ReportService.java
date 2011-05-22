@@ -13,8 +13,8 @@
 package eu.esdihumboldt.hale.ui.views.report.service;
 
 import eu.esdihumboldt.hale.io.xml.validator.Report;
-import eu.esdihumboldt.hale.models.UpdateService;
-import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
+import eu.esdihumboldt.hale.ui.io.legacy.mappingexport.MappingExportReport;
+import eu.esdihumboldt.hale.ui.service.UpdateService;
 import eu.esdihumboldt.hale.ui.views.report.ReportModel;
 
 /**

@@ -24,7 +24,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 
-import eu.esdihumboldt.hale.WKTPreferencesCRSFactory;
+import eu.esdihumboldt.hale.ui.common.crs.WKTPreferencesCRSFactory;
 import eu.esdihumboldt.hale.ui.util.proxy.ProxySettings;
 
 /**
@@ -41,6 +41,7 @@ public class Application implements IApplication {
 	/**
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
 	 */
+	@Override
 	public Object start(IApplicationContext context) {
 		// set up log4j logger manually if necessary
 //		if (!Logger.getRootLogger().getAllAppenders().hasMoreElements()) {
@@ -108,12 +109,14 @@ public class Application implements IApplication {
 	/**
 	 * @see org.eclipse.equinox.app.IApplication#stop()
 	 */
+	@Override
 	public void stop() {
 		final IWorkbench workbench = PlatformUI.getWorkbench();
 		if (workbench == null)
 			return;
 		final Display display = workbench.getDisplay();
 		display.syncExec(new Runnable() {
+			@Override
 			public void run() {
 				if (!display.isDisposed())
 					workbench.close();
@@ -121,6 +124,11 @@ public class Application implements IApplication {
 		});
 	}
 	
+	/**
+	 * Get the base path
+	 * 
+	 * @return the application base path
+	 */
 	public static String getBasePath() {
 		return Application.basepath;
 	}

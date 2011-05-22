@@ -15,13 +15,13 @@ package eu.esdihumboldt.hale.ui.model.augmentations;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.commons.goml.align.Entity;
-import eu.esdihumboldt.hale.models.AlignmentService;
 import eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.ui.model.functions.CellSelectionInfo;
 import eu.esdihumboldt.hale.ui.model.functions.FunctionWizard;
 import eu.esdihumboldt.hale.ui.model.functions.FunctionWizardFactory;
 import eu.esdihumboldt.hale.ui.model.schema.NullSchemaItem;
 import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
+import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
 import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**

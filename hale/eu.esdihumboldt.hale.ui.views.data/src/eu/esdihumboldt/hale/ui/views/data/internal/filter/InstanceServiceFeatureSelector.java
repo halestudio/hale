@@ -47,18 +47,20 @@ import org.opengis.filter.Filter;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.models.HaleServiceListener;
-import eu.esdihumboldt.hale.models.InstanceService;
-import eu.esdihumboldt.hale.models.InstanceService.DatasetType;
-import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
-import eu.esdihumboldt.hale.models.UpdateMessage;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.filter.FeatureFilterField;
 import eu.esdihumboldt.hale.ui.common.filter.FeatureFilterField.FilterListener;
+import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
+import eu.esdihumboldt.hale.ui.service.UpdateMessage;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceService.DatasetType;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.ui.views.data.internal.DataViewPlugin;
 import eu.esdihumboldt.hale.ui.views.data.internal.Messages;
 
@@ -93,7 +95,7 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 
 		private final HaleServiceListener schemaListener;
 
-		private final HaleServiceListener instanceListener;
+		private final InstanceServiceListener instanceListener;
 	
 		/**
 		 * @see Composite#Composite(Composite, int)
@@ -246,10 +248,10 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 			});
 			
 			InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
-			is.addListener(instanceListener = new HaleServiceListener() {
+			is.addListener(instanceListener = new InstanceServiceAdapter() {
 				
 				@Override
-				public void update(@SuppressWarnings("rawtypes") UpdateMessage message) {
+				public void datasetChanged(DatasetType type) {
 					if (Display.getCurrent() != null) {
 						updateSelection();
 					}
@@ -307,9 +309,8 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 			FeatureType typeToSelect = null;
 			
 			// try to determine type to select from data set
-			DatasetType dataset = (schemaType == SchemaType.SOURCE)?(DatasetType.reference):(DatasetType.transformed);
+			DatasetType dataset = (schemaType == SchemaType.SOURCE)?(DatasetType.source):(DatasetType.transformed);
 			InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
-			@SuppressWarnings("unchecked")
 			FeatureCollection<FeatureType, Feature> features = is.getFeatures(dataset);
 			if (features != null) {
 				Iterator<Feature> itFeature = features.iterator();
@@ -381,12 +382,11 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 				InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 				
 				List<Feature> featureList = new ArrayList<Feature>();
-				DatasetType dataset = (schemaType == SchemaType.SOURCE)?(DatasetType.reference):(DatasetType.transformed);
+				DatasetType dataset = (schemaType == SchemaType.SOURCE)?(DatasetType.source):(DatasetType.transformed);
 				try {
 					Filter filter = filterField.getFilter();
 					
 					if (filter == null) {
-						@SuppressWarnings("unchecked")
 						Collection<? extends Feature> features = is.getFeaturesByType(
 							dataset, 
 							DefinitionUtil.getFeatureType(type));
@@ -399,7 +399,6 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 						}
 					}
 					else {
-						@SuppressWarnings("unchecked")
 						FeatureCollection<FeatureType, Feature> fc = is.getFeatures(dataset);
 						
 						FeatureIterator<Feature> it = fc.subCollection(filter).features();
@@ -472,6 +471,7 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 	/**
 	 * @see FeatureSelector#addSelectionListener(FeatureSelectionListener)
 	 */
+	@Override
 	public void addSelectionListener(FeatureSelectionListener listener) {
 		listeners.add(listener);
 		
@@ -483,6 +483,7 @@ public class InstanceServiceFeatureSelector implements FeatureSelector {
 	/**
 	 * @see FeatureSelector#removeSelectionListener(FeatureSelectionListener)
 	 */
+	@Override
 	public void removeSelectionListener(FeatureSelectionListener listener) {
 		listeners.remove(listener);
 	}

@@ -18,20 +18,18 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import eu.esdihumboldt.hale.cache.Request;
-
 /**
- * TODO Explain the purpose of this type here.
+ * Handler for exiting the application
  * 
  * @author Thorsten Reitz
- * @version $Id$
  */
 public class ExitHandler 
 	extends AbstractHandler implements IHandler {
 
 	/**
-	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
+	 * @see IHandler#execute(ExecutionEvent)
 	 */
+	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		HandlerUtil.getActiveWorkbenchWindow(event).close();
 		return null;

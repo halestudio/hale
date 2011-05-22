@@ -16,7 +16,7 @@ import java.util.Collection;
 
 import org.opengis.feature.Feature;
 
-import eu.esdihumboldt.hale.models.HaleServiceListener;
+import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
 
 
 /**
@@ -24,7 +24,6 @@ import eu.esdihumboldt.hale.models.HaleServiceListener;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public interface ReferenceSampleService {
 	

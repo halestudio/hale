@@ -12,21 +12,21 @@
 package eu.esdihumboldt.hale.csvexporter;
 
 import java.net.URI;
+
 import org.junit.Test;
 
 import eu.esdihumboldt.commons.goml.align.Alignment;
 import eu.esdihumboldt.commons.goml.oml.io.OmlRdfReader;
-import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportException;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
+import eu.esdihumboldt.hale.ui.io.legacy.mappingexport.MappingExportException;
 
 /**
  * Test class for CSVMappingExportFactory
  * @author Stefan Gessner & Jose Gisbert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @partner 02 / ETRA I+D
- * @version $Id$ 
  */
 public class CsvMappingExportFactoryTest {
 

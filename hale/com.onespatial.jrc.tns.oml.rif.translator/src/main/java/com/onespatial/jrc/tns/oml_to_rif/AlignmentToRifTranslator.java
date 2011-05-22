@@ -27,7 +27,7 @@ import com.onespatial.jrc.tns.oml_to_rif.document.RifBindingToDomTranslator;
 import com.onespatial.jrc.tns.oml_to_rif.translate.ModelAlignmentToModelRifTranslator;
 import com.onespatial.jrc.tns.oml_to_rif.translate.ModelRifToRifTranslator;
 
-import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
+import eu.esdihumboldt.hale.ui.io.legacy.mappingexport.MappingExportReport;
 
 /**
  * Provides the entry-point to the translation functionality contained within

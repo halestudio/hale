@@ -24,7 +24,6 @@ import eu.esdihumboldt.hale.ui.model.schema.TreeParent;
  *
  * @author cjauss, Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$
  */
 public class ModelContentProvider 
 	implements IStructuredContentProvider, ITreeContentProvider{
@@ -37,6 +36,7 @@ public class ModelContentProvider
 	/**
 	 * @see IContentProvider#inputChanged(Viewer, Object, Object)
 	 */
+	@Override
 	public void inputChanged(Viewer v, Object oldInput, Object newInput){
 		// ignore
 	} 
@@ -44,6 +44,7 @@ public class ModelContentProvider
 	/**
 	 * @see IContentProvider#dispose()
 	 */
+	@Override
 	public void dispose(){
 		// ignore
 	}
@@ -51,6 +52,7 @@ public class ModelContentProvider
 	/**
 	 * @see IStructuredContentProvider#getElements(Object)
 	 */
+	@Override
 	public Object[] getElements(Object parent) {
 		return getChildren(parent);
 	}
@@ -58,6 +60,7 @@ public class ModelContentProvider
 	/**
 	 * @see ITreeContentProvider#getParent(Object)
 	 */
+	@Override
 	public Object getParent(Object child) {
 		if (child instanceof TreeObject) {
 			return ((TreeObject)child).getParent();
@@ -68,6 +71,7 @@ public class ModelContentProvider
 	/**
 	 * @see ITreeContentProvider#getChildren(Object)
 	 */
+	@Override
 	public Object[] getChildren(Object parent) {
 		if (parent instanceof TreeParent) {
 			return ((TreeParent)parent).getChildren();
@@ -78,7 +82,8 @@ public class ModelContentProvider
 	/**
 	 * @see ITreeContentProvider#hasChildren(Object)
 	 */
-    public boolean hasChildren(Object parent) {
+    @Override
+	public boolean hasChildren(Object parent) {
 		if (parent instanceof TreeParent)
 			return ((TreeParent)parent).hasChildren();
 		return false;

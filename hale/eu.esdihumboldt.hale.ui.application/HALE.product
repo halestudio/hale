@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="HUMBOLDT Alignment Editor" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="2.2.0.qualifier" useFeatures="false" includeLaunchers="true">
+
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-nl en_GB -clean</programArgs>
+      <vmArgs>-Xmx512m</vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <windowImages i32="/eu.esdihumboldt.hale.ui.application/images/hale_icon.png"/>
+
+   <splash
+      location="eu.esdihumboldt.hale.ui.application" />
+   <launcher name="HALE">
+      <solaris/>
+      <win useIco="true">
+         <ico path="/eu.esdihumboldt.hale.ui.application/images/hale.ico"/>
+         <bmp/>
+      </win>
+   </launcher>
+
+
+   <vm>
+   </vm>
+
+
+   <plugins>
+      <plugin id="cal10n.api"/>
+      <plugin id="ch.qos.logback.classic"/>
+      <plugin id="ch.qos.logback.core"/>
+      <plugin id="ch.qos.logback.slf4j" fragment="true"/>
+      <plugin id="com.google.guava"/>
+      <plugin id="com.hp.hpl.jena"/>
+      <plugin id="com.iabcinc.jmep"/>
+      <plugin id="com.ibm.icu"/>
+      <plugin id="com.onespatial.jrc.tns.hale.rifexport"/>
+      <plugin id="com.onespatial.jrc.tns.jaxb.rifprd"/>
+      <plugin id="com.onespatial.jrc.tns.oml_to_rif"/>
+      <plugin id="com.onespatial.jrc.tns.oml_to_rif.test"/>
+      <plugin id="com.springsource.com.sun.xml.bind"/>
+      <plugin id="com.springsource.javax.xml.bind"/>
+      <plugin id="com.springsource.org.castor"/>
+      <plugin id="com.springsource.org.custommonkey.xmlunit"/>
+      <plugin id="de.cs3d.ui.util.logging.errorlog"/>
+      <plugin id="de.cs3d.ui.util.logging.userstatus"/>
+      <plugin id="de.cs3d.util.logging"/>
+      <plugin id="de.cs3d.util.logging.logback"/>
+      <plugin id="de.cs3d.util.logging.logback.appender" fragment="true"/>
+      <plugin id="de.cs3d.util.logging.logback.observer"/>
+      <plugin id="eu.esdihumboldt.commons"/>
+      <plugin id="eu.esdihumboldt.cst.corefunctions"/>
+      <plugin id="eu.esdihumboldt.hale"/>
+      <plugin id="eu.esdihumboldt.hale.cache"/>
+      <plugin id="eu.esdihumboldt.hale.cache.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.cache.ui"/>
+      <plugin id="eu.esdihumboldt.hale.core"/>
+      <plugin id="eu.esdihumboldt.hale.core.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.csvexporter"/>
+      <plugin id="eu.esdihumboldt.hale.gmlparser"/>
+      <plugin id="eu.esdihumboldt.hale.htmlexporter"/>
+      <plugin id="eu.esdihumboldt.hale.htmlexporter.test"/>
+      <plugin id="eu.esdihumboldt.hale.instance"/>
+      <plugin id="eu.esdihumboldt.hale.instanceprovider"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml.ui"/>
+      <plugin id="eu.esdihumboldt.hale.io.xml"/>
+      <plugin id="eu.esdihumboldt.hale.logback.config" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.mapping"/>
+      <plugin id="eu.esdihumboldt.hale.orient.embedded"/>
+      <plugin id="eu.esdihumboldt.hale.orient.embedded.test"/>
+      <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
+      <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.core"/>
+      <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.generic"/>
+      <plugin id="eu.esdihumboldt.hale.schema"/>
+      <plugin id="eu.esdihumboldt.hale.schemaprovider"/>
+      <plugin id="eu.esdihumboldt.hale.ui"/>
+      <plugin id="eu.esdihumboldt.hale.ui.application"/>
+      <plugin id="eu.esdihumboldt.hale.ui.common"/>
+      <plugin id="eu.esdihumboldt.hale.ui.style"/>
+      <plugin id="eu.esdihumboldt.hale.ui.util"/>
+      <plugin id="eu.esdihumboldt.hale.ui.views.data"/>
+      <plugin id="eu.esdihumboldt.hale.ui.views.graph"/>
+      <plugin id="eu.esdihumboldt.hale.ui.views.map"/>
+      <plugin id="eu.esdihumboldt.hale.ui.views.mapping"/>
+      <plugin id="eu.esdihumboldt.hale.ui.views.report"/>
+      <plugin id="eu.esdihumboldt.hale.ui.views.schemas"/>
+      <plugin id="eu.esdihumboldt.hale.ui.views.tasks"/>
+      <plugin id="eu.esdihumboldt.hale.userstatus.config" fragment="true"/>
+      <plugin id="eu.esdihumboldt.specification"/>
+      <plugin id="eu.esdihumboldt.transformer.cst"/>
+      <plugin id="eu.xsdi.mdl"/>
+      <plugin id="eu.xsdi.mdlui"/>
+      <plugin id="jcl.over.slf4j"/>
+      <plugin id="jul.to.slf4j"/>
+      <plugin id="log4j.over.slf4j"/>
+      <plugin id="org.castor.core"/>
+      <plugin id="org.castor.xml"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.equinox.ds"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.ui"/>
+      <plugin id="org.junit"/>
+      <plugin id="org.slf4j.api"/>
+      <plugin id="slf4j.ext"/>
+   </plugins>
+
+   <configurations>
+      <plugin id="de.cs3d.ui.util.logging.errorlog" autoStart="true" startLevel="2" />
+      <plugin id="de.cs3d.util.logging.logback" autoStart="true" startLevel="1" />
+      <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.xml" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.transformer.cst" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
+   </configurations>
+
+</product>

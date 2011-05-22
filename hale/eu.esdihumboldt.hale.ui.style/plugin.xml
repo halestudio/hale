@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.services">
+      <serviceFactory
+            factoryClass="eu.esdihumboldt.hale.ui.style.service.internal.StyleServiceFactory">
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.style.service.StyleService"></service>
+      </serviceFactory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="eu.esdihumboldt.hale.ui.style.service.internal.StylePreferencePage"
+            id="eu.esdihumboldt.hale.ui.style.preferences"
+            name="%preference.style.name">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="eu.esdihumboldt.hale.ui.style.service.internal.StylePreferences">
+      </initializer>
+   </extension>
+
+</plugin>

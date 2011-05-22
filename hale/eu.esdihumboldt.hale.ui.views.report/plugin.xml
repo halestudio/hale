@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="eu.esdihumboldt.hale.ui.views.report.ReportView"
+            icon="icons/ft_stylelist.gif"
+            id="eu.esdihumboldt.hale.ui.views.report"
+            name="%view.export_report.name"
+            restorable="true">
+      </view>
+   </extension>
+
+</plugin>

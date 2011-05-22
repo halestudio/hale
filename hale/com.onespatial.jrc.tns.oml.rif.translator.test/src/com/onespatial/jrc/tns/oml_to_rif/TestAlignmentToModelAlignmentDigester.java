@@ -34,7 +34,7 @@ import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.FilterNode
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.comparison.LessThanNode;
 import com.onespatial.jrc.tns.oml_to_rif.model.rif.filter.nonterminal.logical.AndNode;
 
-import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportReport;
+import eu.esdihumboldt.hale.ui.io.legacy.mappingexport.MappingExportReport;
 
 /**
  * Unit tests for the {@link AlignmentToModelAlignmentDigester} component.

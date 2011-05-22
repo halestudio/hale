@@ -46,6 +46,7 @@ public abstract class AbstractFunctionWizardDescriptor implements
 	/**
 	 * @see FunctionWizardDescriptor#getName()
 	 */
+	@Override
 	public String getName() {
 		return conf.getAttribute("name"); //$NON-NLS-1$
 	}
@@ -53,6 +54,7 @@ public abstract class AbstractFunctionWizardDescriptor implements
 	/**
 	 * @see FunctionWizardDescriptor#getIcon()
 	 */
+	@Override
 	public ImageDescriptor getIcon() {
 		URL url = getIconURL("icon"); //$NON-NLS-1$
 		

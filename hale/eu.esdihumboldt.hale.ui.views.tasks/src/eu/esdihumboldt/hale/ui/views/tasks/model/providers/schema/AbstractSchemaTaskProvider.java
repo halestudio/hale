@@ -17,15 +17,15 @@ import java.util.Collection;
 import java.util.Collections;
 
 import eu.esdihumboldt.hale.mapping.helper.EntityHelper;
-import eu.esdihumboldt.hale.models.AlignmentService;
-import eu.esdihumboldt.hale.models.SchemaService;
-import eu.esdihumboldt.hale.models.SchemaService.SchemaType;
-import eu.esdihumboldt.hale.models.alignment.AlignmentServiceAdapter;
-import eu.esdihumboldt.hale.models.schema.SchemaServiceAdapter;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.mapping.AlignmentServiceAdapter;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceAdapter;
 import eu.esdihumboldt.hale.ui.views.tasks.model.Task;
 import eu.esdihumboldt.hale.ui.views.tasks.model.impl.AbstractTaskProvider;
 import eu.esdihumboldt.hale.ui.views.tasks.service.TaskService;
@@ -38,7 +38,6 @@ import eu.esdihumboldt.specification.cst.align.IEntity;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public abstract class AbstractSchemaTaskProvider extends AbstractTaskProvider {
 	

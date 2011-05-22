@@ -4,7 +4,6 @@
 package eu.esdihumboldt.hale.ui.views.tasks.model;
 
 import java.util.List;
-import java.util.Set;
 
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.ui.views.tasks.service.TaskService;
@@ -15,7 +14,6 @@ import eu.esdihumboldt.hale.ui.views.tasks.service.TaskService;
  * 
  * @author Thorsten Reitz, Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public interface Task extends Comparable<Task> {
 	
@@ -34,7 +32,7 @@ public interface Task extends Comparable<Task> {
 	public Definition getMainContext();
 	
 	/**
-	 * @return the {@link Set} of {@link SchemaElement}s that form the context 
+	 * @return the {@link Definition}s that form the context 
 	 * of this {@link Task}, i.e. those which are directly modified by it. An 
 	 * example would be the Mapping to be clarified.
 	 */

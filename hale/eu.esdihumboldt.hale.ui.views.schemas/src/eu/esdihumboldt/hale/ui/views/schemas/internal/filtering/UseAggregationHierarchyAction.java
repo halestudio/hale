@@ -15,20 +15,22 @@ package eu.esdihumboldt.hale.ui.views.schemas.internal.filtering;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 
-import eu.esdihumboldt.hale.ui.views.schemas.SchemasViewPlugin;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.ConfigurableModelContentProvider;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
+import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
 
 /**
  * TODO Explain the purpose of this type here.
  * 
  * @author Thorsten Reitz, Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class UseAggregationHierarchyAction 
 	extends AbstractContentProviderAction {
 	
+	/**
+	 * Default constructor
+	 */
 	public UseAggregationHierarchyAction() {
 		super.setIdentifier("UseAggregationHierarchyAction"); //$NON-NLS-1$
 	}

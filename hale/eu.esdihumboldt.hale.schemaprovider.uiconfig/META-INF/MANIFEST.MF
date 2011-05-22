@@ -5,6 +5,7 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.schemaprovider.uiconfig
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: eu.esdihumboldt.hale.schemaprovider;bundle-version="2.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: eu.esdihumboldt.hale.models
+Import-Package: eu.esdihumboldt.hale.models,
+ eu.esdihumboldt.hale.ui.service.config
 Export-Package: eu.esdihumboldt.hale.schemaprovider.uiconfig;uses:="eu.esdihumboldt.hale.schemaprovider.model,org.opengis.feature.type"
 Require-Bundle: org.eclipse.ui, org.eclipse.core.runtime

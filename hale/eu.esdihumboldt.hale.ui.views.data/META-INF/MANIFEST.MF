@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Data View
-Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.data
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.data;singleton:=true
 Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
@@ -15,6 +15,12 @@ Import-Package: de.cs3d.util.logging,
  eu.esdihumboldt.hale.schemaprovider,
  eu.esdihumboldt.hale.schemaprovider.model,
  eu.esdihumboldt.hale.ui.common.filter,
+ eu.esdihumboldt.hale.ui.selection,
+ eu.esdihumboldt.hale.ui.service,
+ eu.esdihumboldt.hale.ui.service.instance,
+ eu.esdihumboldt.hale.ui.service.mapping,
+ eu.esdihumboldt.hale.ui.service.schema,
+ eu.esdihumboldt.hale.ui.util.selection,
  eu.esdihumboldt.hale.ui.util.tree,
  eu.esdihumboldt.hale.ui.util.viewer,
  eu.esdihumboldt.specification.cst.align,
@@ -29,3 +35,5 @@ Import-Package: de.cs3d.util.logging,
  org.opengis.util,
  org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale.ui.views.data
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: eu.esdihumboldt.hale.ui.views.data.internal.DataViewPlugin
