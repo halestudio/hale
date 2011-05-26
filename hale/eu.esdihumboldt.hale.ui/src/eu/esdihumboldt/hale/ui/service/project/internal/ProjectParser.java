@@ -313,10 +313,6 @@ public class ProjectParser {
 					// fall back to default
 					conf = ConfigurationType.GML3;
 				}
-				instanceService.addInstances(DatasetType.source, 
-						InstanceDataImportWizard.loadInstances(file, conf, null));
-				projectService.setInstanceDataPath(file.toString()); //project.getInstanceData().getPath());
-				projectService.setInstanceDataType(conf);
 				
 				if (project.getInstanceData().getEpsgcode() != null) {
 					instanceService.setCRS(new CodeDefinition(project.getInstanceData().getEpsgcode(), null));
@@ -324,6 +320,10 @@ public class ProjectParser {
 				else if (project.getInstanceData() != null && project.getInstanceData().getWkt() != null) {
 					instanceService.setCRS(new WKTDefinition(project.getInstanceData().getWkt(), null));
 				}
+				instanceService.addInstances(DatasetType.source, 
+						InstanceDataImportWizard.loadInstances(file, conf, null));
+				projectService.setInstanceDataPath(file.toString()); //project.getInstanceData().getPath());
+				projectService.setInstanceDataType(conf);
 			} catch (Exception e) {
 				// continue
 				String message = "Instances could not be loaded";  //$NON-NLS-1$

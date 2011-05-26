@@ -16,8 +16,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.FeatureIterator;
@@ -150,9 +152,9 @@ public class InstanceServiceImpl extends AbstractInstanceService {
 					sourceReferenceFeatures.add(fi.next());
 				}
 			}
-			notifyDatasetChanged(type);
 			// determine crs
 			updateCRS(sourceReferenceFeatures);
+			notifyDatasetChanged(type);
 			return true;
 		}
 		else if (type.equals(DatasetType.transformed)) {
@@ -227,6 +229,7 @@ public class InstanceServiceImpl extends AbstractInstanceService {
 		}
 		if (type.equals(DatasetType.source)) {
 			sourceReferenceFeatures = null;
+			setCRS(null);
 		}
 		notifyDatasetChanged(type);
 		return true;
@@ -239,6 +242,8 @@ public class InstanceServiceImpl extends AbstractInstanceService {
 	public boolean cleanInstances() {
 		transformedFeatures = null;
 		sourceReferenceFeatures = null;
+		
+		setCRS(null);
 		
 		notifyDatasetChanged(null);
 		
@@ -342,8 +347,10 @@ public class InstanceServiceImpl extends AbstractInstanceService {
 
 	private void updateCRS(
 			FeatureCollection<?, Feature> fc) {
-		CRSDefinition crsDef = determineCRS(fc);
-		setCRS(crsDef);
+		if (getCRS() == null) {
+			CRSDefinition crsDef = determineCRS(fc);
+			setCRS(crsDef);
+		}
 	}
 
 	/**
@@ -400,31 +407,37 @@ public class InstanceServiceImpl extends AbstractInstanceService {
 			crs = fc.getSchema().getCoordinateReferenceSystem();
 		}
 		
-		CRSDefinition crsDef = null;
+		final AtomicReference<CRSDefinition> crsDef = new AtomicReference<CRSDefinition>();
 		
 		// if none is available, use a default.
 		if (crs == null) {
-			final Display display = Display.getCurrent();
+			final Display display = PlatformUI.getWorkbench().getDisplay();
 			
-			SelectCRSDialog dialog = new SelectCRSDialog(display.getActiveShell(), null);
-			while (crsDef == null) {
-				if (dialog.open() != SelectCRSDialog.OK) {
-					break;
+			display.syncExec(new Runnable() {
+				
+				@Override
+				public void run() {
+					SelectCRSDialog dialog = new SelectCRSDialog(display.getActiveShell(), null);
+					while (crsDef.get() == null) {
+						if (dialog.open() != SelectCRSDialog.OK) {
+							break;
+						}
+						else {
+							crsDef.set(dialog.getValue());
+						}
+					}
 				}
-				else {
-					crsDef = dialog.getValue();
-				}
-			}
+			});
 		}
 		else {
 			try {
-				crsDef = new CodeDefinition(crs.getIdentifiers().iterator().next().toString(), crs);
+				crsDef.set(new CodeDefinition(crs.getIdentifiers().iterator().next().toString(), crs));
 			} catch (Exception e) {
-				crsDef = new WKTDefinition(crs.toWKT(), crs);
+				crsDef.set(new WKTDefinition(crs.toWKT(), crs));
 			}
 		}
 		
-		return crsDef;
+		return crsDef.get();
 	}
 
 }
