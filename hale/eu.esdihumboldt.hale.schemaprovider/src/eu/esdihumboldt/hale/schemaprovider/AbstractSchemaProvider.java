@@ -30,6 +30,7 @@ public abstract class AbstractSchemaProvider implements SchemaProvider {
 	/**
 	 * @see SchemaProvider#supportsSchemaFormat(String)
 	 */
+	@Override
 	public boolean supportsSchemaFormat(String schemaFormat) {
 		return supportedFormats.contains(schemaFormat.toLowerCase());
 	}
@@ -46,6 +47,7 @@ public abstract class AbstractSchemaProvider implements SchemaProvider {
 	/**
 	 * @see SchemaProvider#getSupportedSchemaFormats()
 	 */
+	@Override
 	public Collection<? extends String> getSupportedSchemaFormats() {
 		return new HashSet<String>(supportedFormats);
 	}

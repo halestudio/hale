@@ -28,6 +28,7 @@ public abstract class AbstractDefinition implements Definition {
 	/**
 	 * @see Definition#getDescription()
 	 */
+	@Override
 	public String getDescription() {
 		return description;
 	}
@@ -42,6 +43,7 @@ public abstract class AbstractDefinition implements Definition {
 	/**
 	 * @see Definition#getLocation()
 	 */
+	@Override
 	public String getLocation() {
 		return location;
 	}

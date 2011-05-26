@@ -31,8 +31,8 @@ import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
+import eu.esdihumboldt.hale.ui.views.graph.internal.GraphViewPlugin;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.ModelNavigationViewLabelProvider;
-import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.IEntity;
 
@@ -177,7 +177,7 @@ public class MappingGraphNodeRenderer {
 			.getImageforTreeObjectType(sourceSchemaItem.getType());
 		if (imageKey != null) {
 			Image image = AbstractUIPlugin
-				.imageDescriptorFromPlugin(SchemasViewPlugin.PLUGIN_ID,
+				.imageDescriptorFromPlugin(GraphViewPlugin.PLUGIN_ID,
 				"/icons/" + imageKey).createImage(); //$NON-NLS-1$
 			return image;
 		}

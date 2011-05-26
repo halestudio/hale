@@ -390,6 +390,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 		else {
 			Collections.sort(geometryCandidates, new Comparator<AttributeDescriptor>() {
 
+				@Override
 				public int compare(AttributeDescriptor o1,
 						AttributeDescriptor o2) {
 					int result = 0;
@@ -618,6 +619,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	/**
 	 * @see Comparable#compareTo(Object)
 	 */
+	@Override
 	public int compareTo(TypeDefinition other) {
 		int result = name.getLocalPart().compareToIgnoreCase(other.name.getLocalPart());
 		if (result == 0) {
@@ -630,6 +632,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	/**
 	 * @see Definition#getIdentifier()
 	 */
+	@Override
 	public String getIdentifier() {
 		return name.getNamespaceURI() + "/" + name.getLocalPart(); //$NON-NLS-1$
 	}
@@ -637,6 +640,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	/**
 	 * @see Definition#getEntity()
 	 */
+	@Override
 	public Entity getEntity() {
 		return new FeatureClass(
 				new About(name.getNamespaceURI(), 
@@ -646,6 +650,7 @@ public class TypeDefinition extends AbstractDefinition implements Comparable<Typ
 	/**
 	 * @see Definition#getDisplayName()
 	 */
+	@Override
 	public String getDisplayName() {
 		return getName().getLocalPart();
 	}

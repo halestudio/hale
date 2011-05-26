@@ -15,8 +15,22 @@ package eu.esdihumboldt.hale.ui.service.internal;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
+import eu.esdihumboldt.hale.ui.service.config.ConfigSchemaService;
+import eu.esdihumboldt.hale.ui.service.config.internal.ConfigSchemaServiceImpl;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
+import eu.esdihumboldt.hale.ui.service.instance.internal.InstanceServiceImpl;
+import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.mapping.internal.AlignmentServiceImpl;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
+import eu.esdihumboldt.hale.ui.service.project.internal.ProjectServiceImpl;
+import eu.esdihumboldt.hale.ui.service.project.internal.RecentFilesServiceImpl;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import eu.esdihumboldt.hale.ui.service.report.internal.ReportServiceImpl;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.hale.ui.service.schema.internal.SchemaProviderService;
+import eu.esdihumboldt.hale.ui.service.schemaitem.SchemaItemService;
+import eu.esdihumboldt.hale.ui.service.schemaitem.internal.SchemaItemServiceImpl;
 
 /**
  * Factory for HALE services
@@ -35,6 +49,35 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 			IServiceLocator locator) {
 		if (ReportService.class.equals(serviceInterface)) {
 			return new ReportServiceImpl();
+		}
+		
+		if (ConfigSchemaService.class.equals(serviceInterface)) {
+			return new ConfigSchemaServiceImpl();
+		}
+		
+		if (InstanceService.class.equals(serviceInterface)) {
+			return InstanceServiceImpl.getInstance();
+		}
+		
+		if (AlignmentService.class.equals(serviceInterface)) {
+			return AlignmentServiceImpl.getInstance();
+		}
+		
+		if (ProjectService.class.equals(serviceInterface)) {
+			return ProjectServiceImpl.getInstance();
+		}
+		
+		if (RecentFilesService.class.equals(serviceInterface)) {
+			return new RecentFilesServiceImpl();
+		}
+		
+		if (SchemaService.class.equals(serviceInterface)) {
+			return new SchemaProviderService();
+		}
+		
+		if (SchemaItemService.class.equals(serviceInterface)) {
+			return new SchemaItemServiceImpl(
+					(SchemaService) locator.getService(SchemaService.class));
 		}
 		
 		return null;

@@ -63,7 +63,8 @@ public class HumboldtURIResolver
     /**
      * @see URIResolver#resolveEntity(String, String, String)
      */
-    public InputSource resolveEntity(String namespace, String schemaLocation,
+    @Override
+	public InputSource resolveEntity(String namespace, String schemaLocation,
 			String baseUri) {
 //    	System.err.println(">>> "+namespace); // this part is called everytime a entity is resolved
 
@@ -212,6 +213,7 @@ public class HumboldtURIResolver
     /**
      * @see CollectionURIResolver#getCollectionBaseURI()
      */
+	@Override
 	public String getCollectionBaseURI() {
 		return collectionBaseURI;
 	}
@@ -219,6 +221,7 @@ public class HumboldtURIResolver
 	/**
 	 * @see CollectionURIResolver#setCollectionBaseURI(String)
 	 */
+	@Override
 	public void setCollectionBaseURI(String collectionBaseURI) {
 		this.collectionBaseURI = collectionBaseURI;
 	}

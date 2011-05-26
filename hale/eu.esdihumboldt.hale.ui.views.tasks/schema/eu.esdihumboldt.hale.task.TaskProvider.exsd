@@ -3,7 +3,7 @@
 <schema targetNamespace="eu.esdihumboldt.hale" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.task.TaskProvider" name="TaskProvider"/>
+         <meta.schema plugin="eu.esdihumboldt.hale.ui.views.tasks" id="eu.esdihumboldt.hale.task.TaskProvider" name="TaskProvider"/>
       </appInfo>
       <documentation>
          Extension point for task providers

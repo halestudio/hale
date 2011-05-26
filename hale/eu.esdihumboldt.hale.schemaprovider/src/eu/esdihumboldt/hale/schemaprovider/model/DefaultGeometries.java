@@ -46,6 +46,7 @@ public class DefaultGeometries implements IDefaultGeometries {
 	 * 
 	 * @return the default geometry property name or <code>null</code>
 	 */
+	@Override
 	public String getDefaultGeometryName(Name typeName) {
 		try {
 			prefs.sync();
@@ -74,6 +75,7 @@ public class DefaultGeometries implements IDefaultGeometries {
 	 * @param typeName the type name
 	 * @param propertyName the geometry property name
 	 */
+	@Override
 	public void setDefaultGeometryName(Name typeName, String propertyName) {
 		prefs.node(encodeNodeName(typeName.getNamespaceURI())).put(typeName.getLocalPart(), propertyName);
 		try {

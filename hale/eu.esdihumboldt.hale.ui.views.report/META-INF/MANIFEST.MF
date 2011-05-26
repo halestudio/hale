@@ -6,8 +6,6 @@ Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: eu.esdihumboldt.cst.transformer,
  eu.esdihumboldt.hale.io.xml.validator,
- eu.esdihumboldt.hale.models,
- eu.esdihumboldt.hale.models.project,
  eu.esdihumboldt.hale.ui.io.legacy.mappingexport,
  eu.esdihumboldt.hale.ui.service,
  eu.esdihumboldt.hale.ui.service.project,

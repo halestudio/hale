@@ -12,6 +12,7 @@
 package eu.esdihumboldt.hale.ui.internal;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -71,5 +72,15 @@ public class HALEUIPlugin extends AbstractUIPlugin {
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
+	}
+	
+	/**
+	 * @see AbstractUIPlugin#initializeImageRegistry(ImageRegistry)
+	 */
+	@Override
+	protected void initializeImageRegistry(ImageRegistry reg) {
+		super.initializeImageRegistry(reg);
+		
+//		reg.put(IMG_EXPORT_WIZARD, imageDescriptorFromPlugin(PLUGIN_ID, "/icons/export_wiz.gif"));
 	}
 }

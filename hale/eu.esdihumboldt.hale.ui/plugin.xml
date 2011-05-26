@@ -2,37 +2,52 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="eu.esdihumboldt.hale.ui.io.config" name="I/O configuration wizard pages" schema="schema/eu.esdihumboldt.hale.ui.io.config.exsd"/>
-   <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            locationURI="menu:org.eclipse.ui.main.menu">
-         <menu
-               id="file"
-               label="File"
-               mnemonic="F">
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.io.instance.export"
-                  icon="icons/export_wiz.gif"
-                  id="export.instance"
-                  label="Save transformed instances..."
-                  mnemonic="t"
-                  style="push">
-            </command>
-         </menu>
-      </menuContribution>
-   </extension>
+   <extension-point id="eu.esdihumboldt.hale.MappingExport" name="Mapping Export Providers" schema="schema/eu.esdihumboldt.hale.MappingExport.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory" name="Function wizards" schema="schema/eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory.exsd"/>
    <extension
          point="org.eclipse.ui.commands">
       <command
-            id="eu.esdihumboldt.hale.ui.io.instance.export"
+            id="eu.esdihumboldt.hale.ui.target.instance.export"
             name="Export instances">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.project.open"
+            name="Open project">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.source.instance.import"
+            name="Import source data">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.project.export"
+            name="Save project as">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.mapping.export"
+            name="Export mapping">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.project.new"
+            name="New project">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.mapping.import"
+            name="Import mapping">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.project.save"
+            name="Save project">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.schema.import"
+            name="Import schema">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
             class="eu.esdihumboldt.hale.ui.io.instance.InstanceExportHandler"
-            commandId="eu.esdihumboldt.hale.ui.io.instance.export">
+            commandId="eu.esdihumboldt.hale.ui.target.instance.export">
          <enabledWhen>
             <with
                   variable="hale.instances.has_transformed">
@@ -41,6 +56,38 @@
                </equals>
             </with>
          </enabledWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.io.legacy.handler.LoadSchemaHandler"
+            commandId="eu.esdihumboldt.hale.ui.schema.import">
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.io.legacy.handler.SaveAlignmentProjectHandler"
+            commandId="eu.esdihumboldt.hale.ui.project.save">
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.io.legacy.handler.ImportMappingHandler"
+            commandId="eu.esdihumboldt.hale.ui.mapping.import">
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.io.legacy.handler.NewProjectHandler"
+            commandId="eu.esdihumboldt.hale.ui.project.new">
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.io.legacy.handler.SaveMappingCommandHandler"
+            commandId="eu.esdihumboldt.hale.ui.mapping.export">
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.io.legacy.handler.SaveAlignmentProjectAsHandler"
+            commandId="eu.esdihumboldt.hale.ui.project.export">
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.io.legacy.handler.LoadInstanceDataHandler"
+            commandId="eu.esdihumboldt.hale.ui.source.instance.import">
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.io.legacy.handler.OpenProjectHandler"
+            commandId="eu.esdihumboldt.hale.ui.project.open">
       </handler>
    </extension>
    <extension
@@ -57,14 +104,37 @@
          <service
                serviceClass="eu.esdihumboldt.hale.ui.service.report.ReportService">
          </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.service.config.ConfigSchemaService">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.service.instance.InstanceService">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.service.mapping.AlignmentService">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.service.project.ProjectService">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.service.project.RecentFilesService">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.service.schema.SchemaService">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.service.schemaitem.SchemaItemService">
+         </service>
       </serviceFactory>
    </extension>
    <extension
-         point="org.eclipse.ui.bindings">
-      <scheme
-            id="eu.esdihumboldt.hale.ui.bindings"
-            name="HALE Key bindings">
-      </scheme>
+         point="eu.esdihumboldt.hale.MappingExport">
+      <MappingExportFactory
+            description="RDF Ontology Mapping Language encoding"
+            extension="*.goml"
+            name="RDF OML"
+            providerClass="eu.esdihumboldt.hale.ui.io.legacy.mappingexport.OmlMappingExportProvider">
+      </MappingExportFactory>
    </extension>
 
 </plugin>

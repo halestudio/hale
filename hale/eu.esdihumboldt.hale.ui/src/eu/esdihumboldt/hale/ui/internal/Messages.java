@@ -280,7 +280,13 @@ public class Messages extends NLS {
 	public static String ProjectParser_6;
 	public static String ProjectParser_8;
 	public static String ProjectParser_14;
-
+	
+	public static String LoadInstanceDataHandler_0;
+	public static String LoadInstanceDataHandler_1;
+	
+	public static String NewProjectHandler_0;
+	public static String NewProjectHandler_1;
+	
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

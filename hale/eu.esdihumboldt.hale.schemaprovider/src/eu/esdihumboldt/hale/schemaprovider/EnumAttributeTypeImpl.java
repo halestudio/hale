@@ -57,6 +57,7 @@ public class EnumAttributeTypeImpl extends AbstractAttributeTypeDecorator
 	/**
 	 * @see EnumAttributeType#getAllowedValues()
 	 */
+	@Override
 	public Set<String> getAllowedValues() {
 		return allowedValues;
 	}
@@ -64,6 +65,7 @@ public class EnumAttributeTypeImpl extends AbstractAttributeTypeDecorator
 	/**
 	 * @see EnumAttributeType#otherValuesAllowed()
 	 */
+	@Override
 	public boolean otherValuesAllowed() {
 		return othersAllowed;
 	}

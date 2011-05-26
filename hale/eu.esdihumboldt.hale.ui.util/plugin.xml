@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="eu.esdihumboldt.hale.ui.util.handler.ExitHandler"
+            commandId="eu.esdihumboldt.hale.ui.util.command.exit">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            description="Exit HALE"
+            id="eu.esdihumboldt.hale.ui.util.command.exit"
+            name="exit">
+      </command>
+   </extension>
+
+</plugin>

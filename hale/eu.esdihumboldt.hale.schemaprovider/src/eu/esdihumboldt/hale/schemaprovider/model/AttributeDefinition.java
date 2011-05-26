@@ -241,6 +241,7 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	/**
 	 * @see Comparable#compareTo(Object)
 	 */
+	@Override
 	public int compareTo(AttributeDefinition other) {
 		int result = name.compareToIgnoreCase(other.name);
 		if (result == 0) {
@@ -264,6 +265,7 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	/**
 	 * @see Definition#getIdentifier()
 	 */
+	@Override
 	public String getIdentifier() {
 		if (parentType == null) {
 			return name;
@@ -305,6 +307,7 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	/**
 	 * @see Definition#getEntity()
 	 */
+	@Override
 	public Entity getEntity() {
 		Name parentName;
 		
@@ -325,6 +328,7 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	/**
 	 * @see Definition#getDisplayName()
 	 */
+	@Override
 	public String getDisplayName() {
 		return getName();
 	}

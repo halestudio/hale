@@ -49,6 +49,7 @@ public abstract class AbstractAttributeTypeDecorator implements AttributeType {
 	/**
 	 * @see AttributeType#getSuper()
 	 */
+	@Override
 	public AttributeType getSuper() {
 		return type.getSuper();
 	}
@@ -56,6 +57,7 @@ public abstract class AbstractAttributeTypeDecorator implements AttributeType {
 	/**
 	 * @see AttributeType#isIdentified()
 	 */
+	@Override
 	public boolean isIdentified() {
 		return type.isIdentified();
 	}
@@ -63,6 +65,7 @@ public abstract class AbstractAttributeTypeDecorator implements AttributeType {
 	/**
 	 * @see PropertyType#getBinding()
 	 */
+	@Override
 	public Class<?> getBinding() {
 		return type.getBinding();
 	}
@@ -70,6 +73,7 @@ public abstract class AbstractAttributeTypeDecorator implements AttributeType {
 	/**
 	 * @see PropertyType#getDescription()
 	 */
+	@Override
 	public InternationalString getDescription() {
 		return type.getDescription();
 	}
@@ -77,6 +81,7 @@ public abstract class AbstractAttributeTypeDecorator implements AttributeType {
 	/**
 	 * @see PropertyType#getName()
 	 */
+	@Override
 	public Name getName() {
 		return type.getName();
 	}
@@ -84,6 +89,7 @@ public abstract class AbstractAttributeTypeDecorator implements AttributeType {
 	/**
 	 * @see PropertyType#getRestrictions()
 	 */
+	@Override
 	public List<Filter> getRestrictions() {
 		return type.getRestrictions();
 	}
@@ -91,6 +97,7 @@ public abstract class AbstractAttributeTypeDecorator implements AttributeType {
 	/**
 	 * @see PropertyType#getUserData()
 	 */
+	@Override
 	public Map<Object, Object> getUserData() {
 		return type.getUserData();
 	}
@@ -98,6 +105,7 @@ public abstract class AbstractAttributeTypeDecorator implements AttributeType {
 	/**
 	 * @see PropertyType#isAbstract()
 	 */
+	@Override
 	public boolean isAbstract() {
 		return type.isAbstract();
 	}

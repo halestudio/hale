@@ -66,7 +66,7 @@ public class ProjectParser {
 	/**
 	 * Constant defines the path to the alignment jaxb context
 	 */
-	private static final String PROJECT_CONTEXT = "eu.esdihumboldt.hale.models.project.generated"; //$NON-NLS-1$
+	private static final String PROJECT_CONTEXT = "eu.esdihumboldt.hale.ui.service.project.internal.generated"; //$NON-NLS-1$
 	
 	private final ProjectService projectService;
 

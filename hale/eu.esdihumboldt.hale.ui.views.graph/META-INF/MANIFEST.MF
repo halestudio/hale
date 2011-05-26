@@ -11,7 +11,6 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.eclipse.zest.layouts;bundle-version="1.1.0"
 Import-Package: eu.esdihumboldt.commons.goml.align,
  eu.esdihumboldt.commons.goml.omwg,
- eu.esdihumboldt.hale.models,
  eu.esdihumboldt.hale.ui.model.mapping,
  eu.esdihumboldt.hale.ui.model.schema,
  eu.esdihumboldt.hale.ui.selection,

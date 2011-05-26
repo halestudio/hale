@@ -20,12 +20,6 @@
       </serviceFactory>
    </extension>
    <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="eu.esdihumboldt.hale.ui.views.tasks.model.preferences.TaskPreferenceInitializer">
-      </initializer>
-   </extension>
-   <extension
          point="eu.esdihumboldt.hale.task.TaskProvider">
       <tasks
             class="eu.esdihumboldt.hale.ui.views.tasks.model.providers.schema.SourceMappingTaskProvider"
@@ -54,6 +48,12 @@
             id="eu.esdihumboldt.hale.task.schema.NoGeometry"
             name="%tasks.name">
       </tasks>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="eu.esdihumboldt.hale.ui.views.tasks.model.preferences.TaskPreferenceInitializer">
+      </initializer>
    </extension>
 
 </plugin>

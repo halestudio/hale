@@ -85,6 +85,11 @@ public class Messages extends NLS {
 	public static String CRSPreferencePage_8;
 	public static String CRSPreferencePage_11;
 	public static String CRSPreferencePage_12;
+	
+	public static String ListFunctionsDialog_1;
+	public static String ListFunctionsDialog_2;
+	public static String ListFunctionsDialog_4;
+	public static String ListFunctionsDialog_5;
 
 	static {
 		// initialize resource bundle

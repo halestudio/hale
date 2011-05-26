@@ -86,7 +86,7 @@ public class ProjectGenerator {
 		
 		// 2. marshall AlignmentType to xml
 		JAXBContext jc = JAXBContext.newInstance(
-				"eu.esdihumboldt.hale.models.project.generated", ProjectGenerator.class.getClassLoader()); //$NON-NLS-1$
+				"eu.esdihumboldt.hale.ui.service.project.internal.generated", ProjectGenerator.class.getClassLoader()); //$NON-NLS-1$
 		Marshaller m = jc.createMarshaller();
 
 		try {

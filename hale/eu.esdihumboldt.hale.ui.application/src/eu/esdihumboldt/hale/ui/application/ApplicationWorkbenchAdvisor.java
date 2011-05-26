@@ -45,7 +45,7 @@ import eu.esdihumboldt.hale.ui.util.ExceptionHelper;
  */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
-	private static final String PERSPECTIVE_ID = "eu.esdihumboldt.hale.rcp.perspective.Default"; //$NON-NLS-1$
+	private static final String PERSPECTIVE_ID = "eu.esdihumboldt.hale.ui.application.perspective.default"; //$NON-NLS-1$
 	
 	/**
 	 * A tag for the list of recent files in the workbench memento

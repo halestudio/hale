@@ -153,6 +153,7 @@ public class SchemaElement extends AbstractDefinition implements Comparable<Sche
 	/**
 	 * @see Definition#getDisplayName()
 	 */
+	@Override
 	public String getDisplayName() {
 		return elementName.getLocalPart();
 	}
@@ -160,6 +161,7 @@ public class SchemaElement extends AbstractDefinition implements Comparable<Sche
 	/**
 	 * @see Definition#getEntity()
 	 */
+	@Override
 	public Entity getEntity() {
 		return new FeatureClass(
 				new About(elementName.getNamespaceURI(), 
@@ -169,6 +171,7 @@ public class SchemaElement extends AbstractDefinition implements Comparable<Sche
 	/**
 	 * @see Definition#getIdentifier()
 	 */
+	@Override
 	public String getIdentifier() {
 		return elementName.getNamespaceURI() + "/" + elementName.getLocalPart(); //$NON-NLS-1$
 	}
@@ -183,6 +186,7 @@ public class SchemaElement extends AbstractDefinition implements Comparable<Sche
 	/**
 	 * @see Comparable#compareTo(Object)
 	 */
+	@Override
 	public int compareTo(SchemaElement other) {
 		int result = elementName.getLocalPart().compareToIgnoreCase(other.elementName.getLocalPart());
 		if (result == 0) {

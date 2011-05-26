@@ -47,6 +47,7 @@ public class ProgressURIResolver implements CollectionURIResolver {
 	/**
 	 * @see CollectionURIResolver#getCollectionBaseURI()
 	 */
+	@Override
 	public String getCollectionBaseURI() {
 		if (decoratee instanceof CollectionURIResolver) {
 			return ((CollectionURIResolver) decoratee).getCollectionBaseURI();
@@ -59,6 +60,7 @@ public class ProgressURIResolver implements CollectionURIResolver {
 	/**
 	 * @see CollectionURIResolver#setCollectionBaseURI(String)
 	 */
+	@Override
 	public void setCollectionBaseURI(String uri) {
 		if (decoratee instanceof CollectionURIResolver) {
 			((CollectionURIResolver) decoratee).setCollectionBaseURI(uri);
@@ -71,6 +73,7 @@ public class ProgressURIResolver implements CollectionURIResolver {
 	/**
 	 * @see URIResolver#resolveEntity(String, String, String)
 	 */
+	@Override
 	public InputSource resolveEntity(String targetNamespace,
 			String schemaLocation, String baseUri) {
 		InputSource is = decoratee.resolveEntity(targetNamespace, schemaLocation, baseUri);

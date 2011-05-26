@@ -9,9 +9,6 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
 Import-Package: de.cs3d.util.logging,
  eu.esdihumboldt.commons.goml.align,
  eu.esdihumboldt.hale.mapping.helper,
- eu.esdihumboldt.hale.models,
- eu.esdihumboldt.hale.models.alignment,
- eu.esdihumboldt.hale.models.schema,
  eu.esdihumboldt.hale.schemaprovider.model,
  eu.esdihumboldt.hale.ui.service,
  eu.esdihumboldt.hale.ui.service.mapping,
@@ -27,3 +24,4 @@ Export-Package: eu.esdihumboldt.hale.ui.views.tasks,
  eu.esdihumboldt.hale.ui.views.tasks.model.extension,
  eu.esdihumboldt.hale.ui.views.tasks.service
 Bundle-ActivationPolicy: lazy
+Bundle-Activator: eu.esdihumboldt.hale.ui.views.tasks.internal.TasksViewPlugin

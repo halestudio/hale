@@ -467,6 +467,7 @@ public class ApacheSchemaProvider
 	/**
 	 * @see SchemaProvider#loadSchema(java.net.URI, ProgressIndicator)
 	 */
+	@Override
 	public Schema loadSchema(URI location, ProgressIndicator progress) throws IOException {
 		if (progress == null) {
 			progress = new LogProgressIndicator();

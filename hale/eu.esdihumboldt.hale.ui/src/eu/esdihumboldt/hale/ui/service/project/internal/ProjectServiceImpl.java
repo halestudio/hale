@@ -81,7 +81,7 @@ public class ProjectServiceImpl
 	 * Default constructor
 	 */
 	private ProjectServiceImpl(){
-		haleVersion = HALEUIPlugin.getDefault().getBundle().getVersion().toString();
+		haleVersion = HALEUIPlugin.getDefault().getBundle().getVersion().toString(); //FIXME: consistency with application plugin?
 		parser = new ProjectParser(this);
 		generator = new ProjectGenerator(this);
 		

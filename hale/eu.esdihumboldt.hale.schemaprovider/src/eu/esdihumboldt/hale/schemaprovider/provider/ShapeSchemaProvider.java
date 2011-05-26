@@ -60,6 +60,7 @@ public class ShapeSchemaProvider
 	/**
 	 * @see eu.esdihumboldt.hale.schemaprovider.SchemaProvider#loadSchema(java.net.URI, eu.esdihumboldt.hale.core.io.ProgressIndicator)
 	 */
+	@Override
 	public Schema loadSchema(URI location, ProgressIndicator progress)
 			throws IOException {
 		progress.setCurrentTask(Messages.getString("ShapeSchemaProvider.1")); //$NON-NLS-1$

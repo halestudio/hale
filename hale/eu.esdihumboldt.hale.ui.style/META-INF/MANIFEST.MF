@@ -14,7 +14,6 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
 Import-Package: com.vividsolutions.jts.geom,
  de.cs3d.util.logging,
  de.fhg.igd.eclipse.util,
- eu.esdihumboldt.hale.models,
  eu.esdihumboldt.hale.schema.helper,
  eu.esdihumboldt.hale.schemaprovider,
  eu.esdihumboldt.hale.schemaprovider.model,
@@ -38,3 +37,4 @@ Import-Package: com.vividsolutions.jts.geom,
  org.opengis.style,
  org.slf4j;version="1.5.11"
 Bundle-ActivationPolicy: lazy
+Bundle-Activator: eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin

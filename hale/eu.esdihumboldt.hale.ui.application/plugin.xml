@@ -61,6 +61,9 @@
             icon="images/hale_icon.png"
             thread="main"
             visible="true">
+         <run
+               class="eu.esdihumboldt.hale.ui.application.Application">
+         </run>
       </application>
    </extension>
    <extension
@@ -69,6 +72,14 @@
       <product
             application="eu.esdihumboldt.hale.ui.application"
             name="HUMBOLDT Alignment Editor">
+         <property
+               name="appName"
+               value="HUMBOLDT Alignment Editor">
+         </property>
+         <property
+               name="windowImages"
+               value="images/hale_icon.png">
+         </property>
       </product>
    </extension>
    <extension
@@ -96,6 +107,166 @@
             </command>
          </menu>
       </menuContribution>
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               id="file"
+               label="%menu.file.label"
+               mnemonic="%menu.file.mnemonic">
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.project.new"
+                  icon="icons/new.gif"
+                  id="newProject"
+                  label="%command.newproject.label"
+                  style="push">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.project.open"
+                  icon="icons/open.gif"
+                  id="openProject"
+                  label="%command.openProject.label"
+                  style="push">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.schema.import"
+                  id="loadSchema"
+                  label="%command.openSchema.label"
+                  style="push"
+                  tooltip="%command.openSchema.tooltip">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.mapping.import"
+                  label="%command.importMapping.label"
+                  style="push">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.source.instance.import"
+                  id="openInstanceData"
+                  label="%command.openInstanceData.label"
+                  style="push"
+                  tooltip="%command.openInstanceData.tooltip">
+            </command>
+            <separator
+                  name="HALE.separator1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.project.save"
+                  icon="icons/save.gif"
+                  id="saveAlignmentProject"
+                  label="%command.savealignment.name"
+                  style="push">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.project.export"
+                  icon="icons/saveas.gif"
+                  id="saveAlignmentProjectAs"
+                  label="%command.saveProject.label"
+                  style="push">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.mapping.export"
+                  id="saveMappingAs"
+                  label="%command.saveMapping.label"
+                  style="push">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.target.instance.export"
+                  icon="icons/export_wiz.gif"
+                  id="export.instance"
+                  label="Save transformed instances..."
+                  mnemonic="t"
+                  style="push">
+            </command>
+            <separator
+                  name="HALE.separator2"
+                  visible="true">
+            </separator>
+            <dynamic
+                  class="eu.esdihumboldt.hale.ui.service.project.RecentFilesMenu"
+                  id="HALE.recentfiles">
+            </dynamic>
+            <command
+                  commandId="org.eclipse.ui.file.exit"
+                  id="exit"
+                  label="%command.exit.label"
+                  style="push">
+            </command>
+         </menu>
+         <menu
+               id="configure"
+               label="%menu.configure.label"
+               mnemonic="%menu.configure.mnemonic">
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.common.functions.list"
+                  id="listFunctions"
+                  label="%command.availableFunctions.label"
+                  style="push">
+            </command>
+            <menu
+                  id="configureTasks"
+                  label="%menu.tasks.label">
+               <dynamic
+                     class="eu.esdihumboldt.hale.ui.views.tasks.TaskProviderMenu"
+                     id="HALE.dynamic.tasks">
+               </dynamic>
+            </menu>
+            <separator
+                  name="HALE.separator1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.window.preferences"
+                  label="%command.settings.name"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="eu.esdihumboldt.hale.ui.application.toolbar.main">
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.project.new"
+                  icon="icons/new.gif"
+                  label="%command.newproject.label"
+                  style="push">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.project.open"
+                  icon="icons/open.gif"
+                  id="openProject"
+                  label="%command.openProject.label"
+                  style="push">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.project.save"
+                  icon="icons/save.gif"
+                  id="saveAlignmentProject"
+                  label="%command.savealignment.name"
+                  style="push">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.project.export"
+                  icon="icons/saveas.gif"
+                  id="saveAlignmentProjectAs"
+                  label="%command.saveProject.label"
+                  style="push">
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <scheme
+            id="eu.esdihumboldt.hale.ui.application.bindings"
+            name="HALE Key bindings">
+      </scheme>
+      <key
+            commandId="eu.esdihumboldt.hale.ui.project.save"
+            schemeId="eu.esdihumboldt.hale.ui.application.bindings"
+            sequence="M1+S">
+      </key>
    </extension>
 
 </plugin>
