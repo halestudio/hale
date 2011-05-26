@@ -48,6 +48,7 @@ public class SimpleBindingWrapper implements SimpleBinding {
 	/**
 	 * @see org.geotools.xml.SimpleBinding#encode(java.lang.Object, java.lang.String)
 	 */
+	@Override
 	public String encode(Object object, String value) throws Exception {
 		return binding.encode(object, value);
 	}
@@ -55,6 +56,7 @@ public class SimpleBindingWrapper implements SimpleBinding {
 	/**
 	 * @see org.geotools.xml.Binding#getExecutionMode()
 	 */
+	@Override
 	public int getExecutionMode() {
 		return binding.getExecutionMode();
 	}
@@ -62,6 +64,7 @@ public class SimpleBindingWrapper implements SimpleBinding {
 	/**
 	 * @see org.geotools.xml.Binding#getTarget()
 	 */
+	@Override
 	public QName getTarget() {
 		return name;
 //		return binding.getTarget();
@@ -70,6 +73,7 @@ public class SimpleBindingWrapper implements SimpleBinding {
 	/**
 	 * @see org.geotools.xml.Binding#getType()
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Class getType() {
 		return binding.getType();
@@ -78,6 +82,7 @@ public class SimpleBindingWrapper implements SimpleBinding {
 	/**
 	 * @see org.geotools.xml.SimpleBinding#parse(org.geotools.xml.InstanceComponent, java.lang.Object)
 	 */
+	@Override
 	public Object parse(InstanceComponent instance, Object value)
 			throws Exception {
 		Object result = binding.parse(instance, value);

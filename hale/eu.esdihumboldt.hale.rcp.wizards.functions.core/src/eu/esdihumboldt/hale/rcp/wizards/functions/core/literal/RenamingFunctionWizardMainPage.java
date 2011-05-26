@@ -73,6 +73,7 @@ public class RenamingFunctionWizardMainPage
 	 * 
 	 * @param parent
 	 */
+	@Override
 	public void createControl(Composite parent) {
 		super.initializeDialogUnits(parent);
 		// create a composite to hold the widgets

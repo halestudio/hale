@@ -13,29 +13,12 @@
 package eu.esdihumboldt.gmlhandler.gt2deegree;
 
 import static org.deegree.gml.GMLVersion.GML_32;
-import static org.junit.Assert.assertEquals;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
-
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLStreamException;
-
-import org.deegree.commons.tom.primitive.PrimitiveType;
-import org.deegree.commons.tom.primitive.PrimitiveValue;
-import org.deegree.cs.CRS;
-import org.deegree.cs.exceptions.TransformationException;
-import org.deegree.cs.exceptions.UnknownCRSException;
-import org.deegree.feature.FeatureCollection;
 import org.deegree.feature.xpath.FeatureXPathEvaluator;
-import org.deegree.filter.FilterEvaluationException;
-import org.deegree.filter.IdFilter;
-import org.deegree.geometry.standard.multi.DefaultMultiLineString;
-import org.deegree.geometry.standard.primitive.DefaultPoint;
 import org.geotools.data.DataUtilities;
 import org.geotools.factory.FactoryRegistryException;
 import org.geotools.feature.FeatureCollections;
@@ -44,7 +27,6 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.gml3.GMLConfiguration;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -53,15 +35,7 @@ import org.xml.sax.SAXException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.io.gml2.GMLHandler;
-
-import eu.esdihumboldt.gmlhandler.GMLVersions;
-import eu.esdihumboldt.gmlhandler.GmlHandler;
-import eu.esdihumboldt.gmlhandler.GmlHandlerTest;
-import eu.esdihumboldt.gmlhandler.gt2deegree.GtToDgConvertor;
 import eu.esdihumboldt.hale.gmlparser.HaleGMLParser;
 
 public class GtToDgConvertorTest {

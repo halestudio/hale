@@ -154,7 +154,7 @@ public class HaleAbstractRingPropertyTypeBinding extends AbstractRingPropertyTyp
 	                seq = csf.create(dps.length, dps[0].getDimension());
 
 	                for (int i = 0; i < dps.length; i++) {
-	                    DirectPosition dp = (DirectPosition) dps[i];
+	                    DirectPosition dp = dps[i];
 
 	                    for (int j = 0; j < dp.getDimension(); j++) {
 	                        seq.setOrdinate(i, j, dp.getOrdinate(j));

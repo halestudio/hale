@@ -128,7 +128,7 @@ public class ShapeSchemaProvider
 	 * A specific {@link AttributeDefinition} that applies custom naming etc. 
 	 * rules.
 	 */
-	public class ShapeAttributeDefintion extends AttributeDefinition {
+	public static class ShapeAttributeDefintion extends AttributeDefinition {
 		
 		private PropertyDescriptor pd = null;
 
@@ -138,9 +138,9 @@ public class ShapeSchemaProvider
 		 */
 		public ShapeAttributeDefintion(PropertyDescriptor pd) {
 			super(pd.getName().getLocalPart(), 
-					ShapeSchemaProvider.getName((AttributeType) pd.getType()), 
+					ShapeSchemaProvider.getName(pd.getType()), 
 					new TypeDefinition(
-							ShapeSchemaProvider.getName((AttributeType) pd.getType()), 
+							ShapeSchemaProvider.getName(pd.getType()), 
 							ShapeSchemaProvider.getCompletedAttributeType(pd.getType()), 
 							null), 
 					true, null);

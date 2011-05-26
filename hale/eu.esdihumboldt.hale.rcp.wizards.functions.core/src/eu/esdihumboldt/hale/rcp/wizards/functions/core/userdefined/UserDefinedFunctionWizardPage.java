@@ -290,16 +290,20 @@ public class UserDefinedFunctionWizardPage extends
 		    }
 		});
 		viewerNameColumn.setEditingSupport(new EditingSupport(tableViewer) {
-		    protected boolean canEdit(Object element) {
+		    @Override
+			protected boolean canEdit(Object element) {
 		        return true;
 		    }
-		    protected CellEditor getCellEditor(Object element) {
+		    @Override
+			protected CellEditor getCellEditor(Object element) {
 		        return new TextCellEditor(tableViewer.getTable());
 		    }
-		    protected Object getValue(Object element) {
+		    @Override
+			protected Object getValue(Object element) {
 		        return ((EditableParameter) element).getName();
 		    }
-		    protected void setValue(Object element, Object value) {
+		    @Override
+			protected void setValue(Object element, Object value) {
 		    	((EditableParameter) element).setName(String.valueOf(value));
 		        tableViewer.refresh(element);
 		    }
@@ -315,16 +319,20 @@ public class UserDefinedFunctionWizardPage extends
 		    }
 		});
 		viewerValueColumn.setEditingSupport(new EditingSupport(tableViewer) {
-		    protected boolean canEdit(Object element) {
+		    @Override
+			protected boolean canEdit(Object element) {
 		        return true;
 		    }
-		    protected CellEditor getCellEditor(Object element) {
+		    @Override
+			protected CellEditor getCellEditor(Object element) {
 		        return new TextCellEditor(tableViewer.getTable());
 		    }
-		    protected Object getValue(Object element) {
+		    @Override
+			protected Object getValue(Object element) {
 		        return ((EditableParameter) element).getValue();
 		    }
-		    protected void setValue(Object element, Object value) {
+		    @Override
+			protected void setValue(Object element, Object value) {
 		    	((EditableParameter) element).setValue(String.valueOf(value));
 		        tableViewer.refresh(element);
 		    }

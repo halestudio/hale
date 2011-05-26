@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import eu.esdihumboldt.hale.ui.model.functions.AbstractSingleCellWizardPage;
 import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 
 public class AlgorithmWizardPage extends WizardPage  {
@@ -125,6 +124,7 @@ public class AlgorithmWizardPage extends WizardPage  {
 			params[i].setLayoutData(configurationLayoutData);
 			params[i].setToolTipText("                                                              "); //$NON-NLS-1$
 			params[i].addModifyListener(new ModifyListener(){
+				@Override
 				public void modifyText(ModifyEvent e){
 					GenericFunctionWizard wizard = (GenericFunctionWizard)getWizard();
 					wizard.parametersCompleted = isPageComplete();

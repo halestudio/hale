@@ -14,10 +14,8 @@ package eu.esdihumboldt.gmlhandler;
 
 import static org.junit.Assert.assertEquals;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,7 +24,6 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.log4j.Logger;
 import org.deegree.commons.xml.XMLParsingException;
-import org.deegree.cs.exceptions.TransformationException;
 import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.feature.Feature;
 import org.deegree.feature.FeatureCollection;

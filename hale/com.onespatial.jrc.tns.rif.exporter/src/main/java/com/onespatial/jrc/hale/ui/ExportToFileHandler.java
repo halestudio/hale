@@ -36,7 +36,8 @@ public class ExportToFileHandler extends AbstractHandler implements IHandler
     /**
      * {@inheritDoc}
      */
-    public Object execute(ExecutionEvent event) throws ExecutionException
+    @Override
+	public Object execute(ExecutionEvent event) throws ExecutionException
     {
         // Instantiates the wizard container with the wizard and opens it
         IExportWizard iw = new MappingExportWizard();

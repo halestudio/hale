@@ -88,7 +88,8 @@ public class GenericFunctionWizardPage extends WizardPage {
        	tree.expandAll();
       
     	tree.addSelectionChangedListener(new ISelectionChangedListener() {
-    			public void selectionChanged(SelectionChangedEvent event) {
+    			@Override
+				public void selectionChanged(SelectionChangedEvent event) {
      				if(event.getSelection().isEmpty()) {
     					return;
     				}

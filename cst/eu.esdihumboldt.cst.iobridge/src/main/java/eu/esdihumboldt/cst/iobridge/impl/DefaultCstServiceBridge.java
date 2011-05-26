@@ -12,10 +12,8 @@
 package eu.esdihumboldt.cst.iobridge.impl;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,7 +21,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.Map.Entry;
 
@@ -128,29 +125,6 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 
 	public void setOutputDir(URL output) {
 		this.outputDirectory = output;
-	}
-
-	/**
-	 * @param result
-	 * @param outputPath
-	 */
-	private void encodeGML(FeatureCollection<?, ?> result, URL outputPath,
-			String schemaPath) {
-		// serialize out
-		try {
-			GmlGenerator gmlGenerator = new GmlGenerator(
-					GmlGenerator.GmlVersion.gml3.name(), result.getSchema()
-							.getName().getNamespaceURI(), schemaPath);
-			OutputStream out = new FileOutputStream(new File(outputPath
-					.getPath()));
-
-			gmlGenerator.encode(result, out);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException(
-					"An exception occured when trying to write out GML: ", e); //$NON-NLS-1$
-		}
-
 	}
 
 	private Schema loadSchema(String schemaFilename) {

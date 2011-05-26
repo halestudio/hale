@@ -56,6 +56,7 @@ public class CstFeatureCollection
      * @see org.geotools.feature.FeatureCollection#accepts(org.opengis.feature.FeatureVisitor,
      *      org.opengis.util.ProgressListener)
      */
+	@Override
 	public void accepts(FeatureVisitor visitor, ProgressListener progress) throws IOException {
         for (Feature feature : this) {
             visitor.visit(feature);
@@ -65,6 +66,7 @@ public class CstFeatureCollection
 	/**
      * @see org.geotools.feature.FeatureCollection#addAll(org.geotools.feature.FeatureCollection)
      */
+	@Override
 	public boolean addAll(
 			FeatureCollection<? extends FeatureType, ? extends Feature> resource) {
 		boolean changed = false;
@@ -79,6 +81,7 @@ public class CstFeatureCollection
     /**
      * @see org.geotools.feature.FeatureCollection#features()
      */
+	@Override
 	public FeatureIterator<Feature> features() {
 		return new FeatureIteratorImpl<Feature>(this);
 	}
@@ -86,6 +89,7 @@ public class CstFeatureCollection
 	/**
 	 * will return null if no Features have been added yet.
 	 */
+	@Override
 	public ReferencedEnvelope getBounds() {
 		synchronized (this) {
 			if (this.bounds == null && this.size() > 0) {
@@ -104,6 +108,7 @@ public class CstFeatureCollection
 	/**
 	 * @see org.geotools.feature.FeatureCollection#getID()
 	 */
+	@Override
 	public String getID() {
 		return this.id;
 	}
@@ -112,6 +117,7 @@ public class CstFeatureCollection
 	 * returns the {@link FeatureType} of the first Feature added to this 
 	 * {@link CstFeatureCollection}.
 	 */
+	@Override
 	public FeatureType getSchema() {
 		FeatureType result = null;
 		if (this.size() > 0) {
@@ -125,24 +131,28 @@ public class CstFeatureCollection
      * 
      * @see org.geotools.feature.FeatureCollection#sort(org.opengis.filter.sort.SortBy)
      */
-    public FeatureCollection<FeatureType, Feature> sort(SortBy order) {
+    @Override
+	public FeatureCollection<FeatureType, Feature> sort(SortBy order) {
         throw new UnsupportedOperationException();
     }
 
 	/**
 	 * @see org.geotools.feature.FeatureCollection#subCollection(org.opengis.filter.Filter)
 	 */
+	@Override
 	public FeatureCollection<FeatureType, Feature> subCollection(Filter filter) {
 		return new FilteringFeatureCollection<FeatureType, Feature>(this, filter);
 	}
 	
 
+	@Override
 	public void addListener(CollectionListener listener)
 			throws NullPointerException {
 		// TODO Auto-generated method stub
 		
 	}
 	
+	@Override
 	public void removeListener(CollectionListener listener)
 		throws NullPointerException {
 		// TODO Auto-generated method stub
@@ -154,7 +164,8 @@ public class CstFeatureCollection
      * 
      * @see org.geotools.feature.FeatureCollection#close(org.geotools.feature.FeatureIterator)
      */
-    public void close(FeatureIterator<Feature> close) {
+    @Override
+	public void close(FeatureIterator<Feature> close) {
         // do nothing
     }
 
@@ -163,14 +174,16 @@ public class CstFeatureCollection
      * 
      * @see org.geotools.feature.FeatureCollection#close(java.util.Iterator)
      */
-    public void close(Iterator<Feature> close) {
+    @Override
+	public void close(Iterator<Feature> close) {
         // do nothing
     }
 
 	/**
      * @see org.geotools.feature.FeatureCollection#purge()
      */
-    public void purge() {
+    @Override
+	public void purge() {
         // do nothing
     }
 

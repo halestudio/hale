@@ -110,11 +110,12 @@ public class OrdinatesPointWizardPage extends
 		if (this.initialExpression != null && !this.initialExpression.equals("")) { //$NON-NLS-1$
 			this.expressionEditorX.setStringValue(this.initialExpression);
 		}
-		this.expressionEditorX.insert(((SchemaItem)sourceTreeSet.first()).getName().getLocalPart());
+		this.expressionEditorX.insert((sourceTreeSet.first()).getName().getLocalPart());
 		this.expressionEditorX.setEmptyStringAllowed(false);
 		this.expressionEditorX.setPage(this);
 		this.expressionEditorX.setPropertyChangeListener(new IPropertyChangeListener() {
 			
+			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty().equals(FieldEditor.IS_VALID)) {
 					updateX();
@@ -132,12 +133,13 @@ public class OrdinatesPointWizardPage extends
 		if (this.initialExpression != null && !this.initialExpression.equals("")) { //$NON-NLS-1$
 			this.expressionEditorY.setStringValue(this.initialExpression);
 		}
-		this.expressionEditorY.insert(((SchemaItem)sourceTreeSet.last()).getName().getLocalPart());
+		this.expressionEditorY.insert((sourceTreeSet.last()).getName().getLocalPart());
 		
 		this.expressionEditorY.setEmptyStringAllowed(false);
 		this.expressionEditorY.setPage(this);
 		this.expressionEditorY.setPropertyChangeListener(new IPropertyChangeListener() {
 			
+			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty().equals(FieldEditor.IS_VALID)) {
 					updateY();

@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.cache;
 
 public class CacheManager extends net.sf.ehcache.CacheManager{
 	
+	@Override
 	protected void finalize() {
 		super.shutdown();
 	}

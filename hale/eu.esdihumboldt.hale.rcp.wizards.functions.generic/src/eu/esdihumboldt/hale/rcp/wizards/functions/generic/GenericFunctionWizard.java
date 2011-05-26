@@ -141,7 +141,8 @@ public class GenericFunctionWizard extends Wizard implements FunctionWizard {
 	/**
 	 * @see IWizard#addPages()
      */
-    public void addPages() {
+    @Override
+	public void addPages() {
        // super.addPages(); 
     	
         addPage(this.mainPage);
