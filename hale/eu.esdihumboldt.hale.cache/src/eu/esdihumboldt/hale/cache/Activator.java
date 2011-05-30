@@ -12,32 +12,32 @@
 
 package eu.esdihumboldt.hale.cache;
 
-import net.sf.ehcache.Cache;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
- * This class extends the provided CacheManager from ehcache
- * and adds useful functions.
+ * Activator for cache bundle.
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @version $Id$
  */
-public class CacheManager extends net.sf.ehcache.CacheManager{
-	
+public class Activator implements BundleActivator {
+
 	/**
-	 * @see Object#finalize()
+	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	@Override
-	protected void finalize() {
-		super.shutdown();
+	public void start(BundleContext context) throws Exception {
+		Request.getInstance();
 	}
-	
+
 	/**
-	 * Flushes cache data (memory) to disk.
-	 * 
-	 * @param cache cache name
-	 * @see Cache#flush()
+	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
-	public static void flush(String cache) {
-		net.sf.ehcache.CacheManager.getInstance().getCache(cache).flush();
+	@Override
+	public void stop(BundleContext context) throws Exception {
+		Request.getInstance().shutdown();
 	}
+
 }
