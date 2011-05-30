@@ -1,0 +1,47 @@
+{
+  "profile":{
+    "administrators":[
+      
+    ],
+    "components":[
+      "org.eclipse.rcp.source.feature.group",
+      "org.eclipse.pde.source.feature.group",
+      "org.eclipse.jdt.source.feature.group",
+      "org.eclipse.platform.feature.group",
+      "org.eclipse.cvs.feature.group",
+      "de.loskutov.BytecodeOutline.feature.feature.group",
+      "com.javadude.workingsets.feature.feature.group",
+      "org.eclipse.sdk.feature.group",
+      "edu.umd.cs.findbugs.plugin.eclipse.feature.group",
+      "org.eclipse.wst.xml_ui.feature.feature.group",
+      "org.eclipse.epp.mpc.feature.group",
+      "org.eclipse.wst.web_ui.feature.feature.group",
+      "org.eclipse.pde.visualization.dependency_feature.feature.group",
+      "org.eclipse.cvs.source.feature.group",
+      "org.eclipse.platform.source.feature.group",
+      "org.eclipse.pde.feature.group",
+      "org.eclipse.rcp.feature.group",
+      "org.eclipse.jdt.feature.group"
+    ],
+    "configurations":[
+      {
+        "id":"launching",
+        "configuration":"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\r\n<!DOCTYPE properties SYSTEM \"http:\/\/java.sun.com\/dtd\/properties.dtd\">\r\n<properties>\r\n<comment\/>\r\n<entry key=\"programArgs\"\/>\r\n<entry key=\"envArgs\"\/>\r\n<entry key=\"vmArgs\">-Xmx1280m&#13;\r\n-Dorg.eclipse.equinox.p2.reconciler.dropins.directory=$CS3DDROPINS$<\/entry>\r\n<\/properties>\r\n"
+      }
+    ],
+    "description":"",
+    "doctype":"profile",
+    "folder":"",
+    "followExperimental":false,
+    "_id":"17feff62a9ed9d70ff2704e686d73ac7",
+    "name":"Eclipse",
+    "owner":"",
+    "placeID":"yoxos",
+    "sliceID":"3.6.2.20110518-2345",
+    "teams":[
+      
+    ],
+    "type":"PRIVATE",
+    "updateStrategy":"CRITICAL"
+  }
+}
