@@ -20,6 +20,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.Proxy;
+import java.net.Proxy.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -57,6 +59,8 @@ public class Request {
 	private IConfigurationService org;
 	
 	private static Logger _log = Logger.getLogger(Request.class);
+	
+	HttpClient httpclient = ClientUtil.createThreadSafeHttpClient();
 	
 	/**
 	 * The instance of {@link Request}
@@ -190,7 +194,7 @@ public class Request {
 			String encoding = "UTF-8";
 			
 			// try to download stuff with HttpGet
-			HttpClient httpclient = new DefaultHttpClient();
+//			HttpClient httpclient = ClientUtil.createThreadSafeHttpClient();
 			HttpGet httpget = new HttpGet(uri);
 			HttpResponse response = httpclient.execute(httpget);
 			HttpEntity entity = response.getEntity();
