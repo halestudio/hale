@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE Shapefile Support
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.shp
+Bundle-Version: 2.2.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/ShapeSchemaReader.xml
+Import-Package: com.google.common.io;version="1.6.0",
+ eu.esdihumboldt.hale.core.io,
+ eu.esdihumboldt.hale.core.io.impl,
+ eu.esdihumboldt.hale.core.io.report,
+ eu.esdihumboldt.hale.core.io.supplier,
+ eu.esdihumboldt.hale.schema.io,
+ eu.esdihumboldt.hale.schema.io.impl,
+ eu.esdihumboldt.hale.schema.model,
+ eu.esdihumboldt.hale.schema.model.constraints,
+ eu.esdihumboldt.hale.schema.model.constraints.property,
+ eu.esdihumboldt.hale.schema.model.constraints.type,
+ eu.esdihumboldt.hale.schema.model.impl,
+ org.eclipse.osgi.util
+Require-Bundle: org.geotools;bundle-version="2.6.4"
