@@ -27,7 +27,7 @@ public interface TypeDefinition extends Definition<TypeConstraint> {
 	 * 
 	 * @return the definitions of the declared properties
 	 */
-	public Iterable<? extends PropertyDefinition> getDeclaredProperties();
+	public Collection<? extends PropertyDefinition> getDeclaredProperties();
 	
 	/**
 	 * Get all properties that an instance of the type may have. Usually these

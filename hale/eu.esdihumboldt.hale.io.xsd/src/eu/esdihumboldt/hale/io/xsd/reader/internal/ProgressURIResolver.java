@@ -17,14 +17,13 @@ import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.xml.sax.InputSource;
 
 import eu.esdihumboldt.hale.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.schemaprovider.Messages;
+import eu.esdihumboldt.hale.io.xsd.internal.Messages;
 
 /**
  * Decorator for URI resolvers that supports a {@link ProgressIndicator}
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class ProgressURIResolver implements CollectionURIResolver {
 	
@@ -35,8 +34,10 @@ public class ProgressURIResolver implements CollectionURIResolver {
 	private String collectionBaseURI;
 
 	/**
-	 * @param decoratee
-	 * @param progress 
+	 * Create an URI resolver that triggers the given progress indicator
+	 * 
+	 * @param decoratee the internal URI resolver
+	 * @param progress the progress indicator
 	 */
 	public ProgressURIResolver(URIResolver decoratee, ProgressIndicator progress) {
 		super();

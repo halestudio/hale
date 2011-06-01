@@ -12,6 +12,13 @@
 
 package eu.esdihumboldt.hale.io.xsd;
 
+import org.apache.ws.commons.schema.XmlSchemaAnnotated;
+import org.apache.ws.commons.schema.XmlSchemaDocumentation;
+import org.apache.ws.commons.schema.XmlSchemaObject;
+import org.apache.ws.commons.schema.XmlSchemaObjectCollection;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import eu.esdihumboldt.hale.core.io.ContentType;
 
 /**
@@ -24,5 +31,37 @@ public abstract class XMLSchemaIO {
 	 * The Shapefile content type
 	 */
 	public static final ContentType XSD_CT = ContentType.getContentType("XSD");
+	
+	/**
+	 * Get the documentation from an annotated XML object
+	 * 
+	 * @param element the annotated element
+	 * @return the description or <code>null</code>
+	 */
+	public static String getDescription(XmlSchemaAnnotated element) {
+		if (element.getAnnotation() != null) {
+			XmlSchemaObjectCollection annotationItems = element.getAnnotation().getItems();
+			StringBuffer desc = new StringBuffer();
+			for (int i = 0; i < annotationItems.getCount(); i++) {
+				XmlSchemaObject item = annotationItems.getItem(i);
+				if (item instanceof XmlSchemaDocumentation) {
+					XmlSchemaDocumentation doc = (XmlSchemaDocumentation) item;
+					NodeList markup = doc.getMarkup();
+					for (int j = 0; j < markup.getLength(); j++) {
+						Node node = markup.item(j);
+						desc.append(node.getTextContent());
+						desc.append('\n');
+					}
+				}
+			}
+			
+			String description = desc.toString();
+			if (!description.isEmpty()) {
+				return description;
+			}
+		}
+		
+		return null;
+	}
 
 }

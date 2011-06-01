@@ -103,15 +103,15 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	 * @see TypeDefinition#getDeclaredProperties()
 	 */
 	@Override
-	public Iterable<? extends DefaultPropertyDefinition> getDeclaredProperties() {
-		return declaredProperties;
+	public Collection<? extends DefaultPropertyDefinition> getDeclaredProperties() {
+		return Collections.unmodifiableCollection(declaredProperties);
 	}
 
 	/**
 	 * @see TypeDefinition#getProperties()
 	 */
 	@Override
-	public Collection<PropertyDefinition> getProperties() {
+	public Collection<? extends PropertyDefinition> getProperties() {
 		Collection<PropertyDefinition> properties = new ArrayList<PropertyDefinition>();
 		
 		if (inheritedProperties == null) {
