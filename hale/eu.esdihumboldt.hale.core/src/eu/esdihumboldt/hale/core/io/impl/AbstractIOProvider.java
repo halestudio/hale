@@ -71,13 +71,13 @@ public abstract class AbstractIOProvider implements IOProvider {
 	@Override
 	public IOReport execute(ProgressIndicator progress)
 			throws IOProviderConfigurationException, IOException {
-		return execute(progress, createReporter());
+		return execute((progress == null)?(new LogProgressIndicator()):(progress), createReporter());
 	}
 
 	/**
 	 * Execute the I/O provider.
 	 * 
-	 * @param progress the progress indicator, may be <code>null</code>
+	 * @param progress the progress indicator
 	 * @param reporter the reporter to use for the execution report
 	 * @return the execution report
 	 *  
