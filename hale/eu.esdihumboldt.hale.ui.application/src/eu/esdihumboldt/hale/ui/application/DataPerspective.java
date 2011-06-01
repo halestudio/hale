@@ -15,12 +15,7 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
-import eu.esdihumboldt.hale.ui.views.data.SourceDataView;
-import eu.esdihumboldt.hale.ui.views.data.TransformedDataView;
-import eu.esdihumboldt.hale.ui.views.map.MapView;
-import eu.esdihumboldt.hale.ui.views.mapping.MappingView;
 import eu.esdihumboldt.hale.ui.views.schemas.ModelNavigationView;
-import eu.esdihumboldt.hale.ui.views.tasks.TaskTreeView;
 
 /**
  * The Perspective, i.e. the top layout element for the client. The Perspective 
@@ -41,27 +36,27 @@ public class DataPerspective implements IPerspectiveFactory {
 		// bottom left
 		IFolderLayout bottomLeft = _layout.createFolder(
 				"bottomLeft", IPageLayout.BOTTOM, 0.5f, editorArea); //$NON-NLS-1$
-		bottomLeft.addView(MapView.ID);
+//		bottomLeft.addView(MapView.ID);
 		
 		// bottom right
 		IFolderLayout bottomRight = _layout.createFolder("bottomRight", IPageLayout.RIGHT, 0.5f, "bottomLeft"); //$NON-NLS-1$ //$NON-NLS-2$
-		bottomRight.addView(TransformedDataView.ID);
+//		bottomRight.addView(TransformedDataView.ID);
 		
 		// top left
 		IFolderLayout topLeft = _layout.createFolder(
 				"topLeft", IPageLayout.TOP, 0.5f, editorArea); //$NON-NLS-1$
-		topLeft.addView(MappingView.ID);
+//		topLeft.addView(MappingView.ID);
 		
 		// top right
 		IFolderLayout topRight = _layout.createFolder("topRight", IPageLayout.RIGHT, 0.5f, "topLeft"); //$NON-NLS-1$ //$NON-NLS-2$
-		topRight.addView(SourceDataView.ID);
+//		topRight.addView(SourceDataView.ID);
 		
 		_layout.addShowViewShortcut(ModelNavigationView.ID);
-		_layout.addShowViewShortcut(MapView.ID);
-		_layout.addShowViewShortcut(MappingView.ID);
-		_layout.addShowViewShortcut(SourceDataView.ID);
-		_layout.addShowViewShortcut(TransformedDataView.ID);
-		_layout.addShowViewShortcut(TaskTreeView.ID);
+//		_layout.addShowViewShortcut(MapView.ID);
+//		_layout.addShowViewShortcut(MappingView.ID);
+//		_layout.addShowViewShortcut(SourceDataView.ID);
+//		_layout.addShowViewShortcut(TransformedDataView.ID);
+//		_layout.addShowViewShortcut(TaskTreeView.ID);
 		
 		_layout.setEditorAreaVisible(false);
 	}
