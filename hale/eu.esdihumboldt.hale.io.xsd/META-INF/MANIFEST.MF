@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE XML Schema Support
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.xsd
+Bundle-Version: 2.2.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: com.google.common.io;version="1.6.0",
+ de.cs3d.util.logging,
+ eu.esdihumboldt.hale.core.io,
+ eu.esdihumboldt.hale.core.io.impl,
+ eu.esdihumboldt.hale.core.io.report,
+ eu.esdihumboldt.hale.core.io.supplier,
+ eu.esdihumboldt.hale.schema.io,
+ eu.esdihumboldt.hale.schema.io.impl,
+ eu.esdihumboldt.hale.schema.model,
+ eu.esdihumboldt.hale.schema.model.constraints,
+ eu.esdihumboldt.hale.schema.model.constraints.property,
+ eu.esdihumboldt.hale.schema.model.constraints.type,
+ eu.esdihumboldt.hale.schema.model.impl,
+ org.apache.ws.commons.schema,
+ org.apache.ws.commons.schema.resolver,
+ org.apache.ws.commons.schema.utils,
+ org.eclipse.osgi.util,
+ org.slf4j;version="1.5.11"
