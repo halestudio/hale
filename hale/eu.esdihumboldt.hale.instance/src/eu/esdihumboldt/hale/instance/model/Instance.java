@@ -12,7 +12,9 @@
 
 package eu.esdihumboldt.hale.instance.model;
 
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import javax.xml.namespace.QName;
+
+import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 
 /**
  * Represents an instance of a type
@@ -45,7 +47,7 @@ public interface Instance {
 	 * @param propertyName the property name
 	 * @return the property values, may be <code>null</code> if none exist
 	 */
-	public Object[] getProperty(String propertyName);
+	public Object[] getProperty(QName propertyName);
 	
 	/**
 	 * Get the property names for which any values exist.
@@ -54,6 +56,6 @@ public interface Instance {
 	 * 
 	 * @return the list of property names with associated values
 	 */
-	public Iterable<String> getPropertyNames();
+	public Iterable<QName> getPropertyNames();
 
 }

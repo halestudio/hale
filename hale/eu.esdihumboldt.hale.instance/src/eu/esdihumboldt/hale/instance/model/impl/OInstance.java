@@ -12,20 +12,25 @@
 
 package eu.esdihumboldt.hale.instance.model.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.serialization.OBase64Utils;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.MutableInstance;
-import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.schema.model.constraints.property.CardinalityConstraint;
 
 /**
  * Instance implementation based on {@link ODocument}s
@@ -86,7 +91,7 @@ public class OInstance implements MutableInstance {
 	public OInstance(Instance org) {
 		this(org.getType());
 		
-		for (String property : org.getPropertyNames()) {
+		for (QName property : org.getPropertyNames()) {
 			setProperty(property, org.getProperty(property).clone());
 		}
 		
@@ -110,23 +115,25 @@ public class OInstance implements MutableInstance {
 	}
 
 	/**
-	 * @see MutableInstance#addProperty(String, Object)
+	 * @see MutableInstance#addProperty(QName, Object)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void addProperty(String propertyName, Object value) {
+	public void addProperty(QName propertyName, Object value) {
 		// convert instances to documents
 		value = convertInstance(value);
+		
+		String pName = encodeProperty(propertyName);
 		
 		boolean collection = isCollectionProperty(propertyName);
 		if (collection) {
 			// combine value with previous ones
-			Object oldValue = document.field(propertyName);
+			Object oldValue = document.field(pName);
 			if (oldValue == null) {
 				// default: use list
 				List<Object> valueList = new ArrayList<Object>();
 				valueList.add(value);
-				document.field(propertyName, valueList); //XXX need to add OType.EMBEDDEDLIST?
+				document.field(pName, valueList); //XXX need to add OType.EMBEDDEDLIST?
 			}
 			else if (oldValue instanceof Collection<?>) {
 				// add value to collection
@@ -138,12 +145,12 @@ public class OInstance implements MutableInstance {
 				Object[] values = new Object[oldArray.length + 1];
 				System.arraycopy(oldArray, 0, values, 0, oldArray.length);
 				values[oldArray.length] = value;
-				document.field(propertyName, values); //XXX need to add OType.EMBEDDEDLIST?
+				document.field(pName, values); //XXX need to add OType.EMBEDDEDLIST?
 			}
 		}
 		else {
 			// just set the field
-			document.field(propertyName, value);
+			document.field(pName, value);
 		}
 	}
 
@@ -175,23 +182,25 @@ public class OInstance implements MutableInstance {
 	 * @param propertyName the property name
 	 * @return if the property can have multiple values
 	 */
-	private boolean isCollectionProperty(String propertyName) {
-		AttributeDefinition property = typeDefinition.getAttribute(propertyName);
+	private boolean isCollectionProperty(QName propertyName) {
+		PropertyDefinition property = typeDefinition.getProperty(propertyName);
 		if (property == null) {
 			// default to true
 			return true;
 		}
 		
-		return property.getMaxOccurs() > 1;
+		return property.getConstraint(CardinalityConstraint.class).getMaxOccurs() > 1;
 	}
 
 	/**
-	 * @see MutableInstance#setProperty(String, Object[])
+	 * @see MutableInstance#setProperty(QName, Object[])
 	 */
 	@Override
-	public void setProperty(String propertyName, Object... values) {
+	public void setProperty(QName propertyName, Object... values) {
+		String pName = encodeProperty(propertyName);
+		
 		if (values == null || values.length == 0) {
-			document.removeField(propertyName);
+			document.removeField(pName);
 			return;
 		}
 		
@@ -203,23 +212,52 @@ public class OInstance implements MutableInstance {
 				log.warn("Attempt to set multiple values on a property that supports only one, using only the first value");
 			}
 			
-			document.field(propertyName, convertInstance(values[0]));
+			document.field(pName, convertInstance(values[0]));
 		}
 		else {
 			List<Object> valueList = new ArrayList<Object>();
 			for (Object value : values) {
 				valueList.add(convertInstance(value));
 			}
-			document.field(propertyName, valueList); //XXX need to add OType.EMBEDDEDLIST?
+			document.field(pName, valueList); //XXX need to add OType.EMBEDDEDLIST?
 		}
 	}
 
 	/**
-	 * @see Instance#getProperty(String)
+	 * Encode a qualified property name to a string
+	 * 
+	 * @param propertyName the qualified property name
+	 * @return the name encoded as a single string
+	 */
+	protected String encodeProperty(QName propertyName) {
+		try {
+			return OBase64Utils.encodeObject(propertyName, OBase64Utils.GZIP);
+		} catch (IOException e) {
+			throw new RuntimeException("Could not encode property name", e);
+		}
+	}
+	
+	/**
+	 * Decode an encoded property name to a qualified name
+	 * 
+	 * @param encodedProperty the encoded property name
+	 * @return the qualified property name
+	 */
+	protected QName decodeProperty(String encodedProperty) {
+		try {
+			return (QName) OBase64Utils.decodeToObject(encodedProperty, OBase64Utils.GZIP, QName.class.getClassLoader());
+		} catch (Throwable e) {
+			throw new RuntimeException("Could not encode property name", e);
+		}
+	}
+
+	/**
+	 * @see Instance#getProperty(QName)
 	 */
 	@Override
-	public Object[] getProperty(String propertyName) {
-		Object value = document.field(propertyName);
+	public Object[] getProperty(QName propertyName) {
+		String pName = encodeProperty(propertyName);
+		Object value = document.field(pName);
 		
 		if (value == null) {
 			return null;
@@ -245,10 +283,10 @@ public class OInstance implements MutableInstance {
 	 * @param propertyName the name of the property the value is associated with
 	 * @return the converted object
 	 */
-	private Object convertDocument(Object value, String propertyName) {
+	private Object convertDocument(Object value, QName propertyName) {
 		if (value instanceof ODocument) {
-			AttributeDefinition property = typeDefinition.getAttribute(propertyName);
-			return new OInstance((ODocument) value, property.getAttributeType());
+			PropertyDefinition property = typeDefinition.getProperty(propertyName);
+			return new OInstance((ODocument) value, property.getPropertyType());
 		}
 		//TODO also treat collections etc?
 		
@@ -259,13 +297,18 @@ public class OInstance implements MutableInstance {
 	 * @see Instance#getPropertyNames()
 	 */
 	@Override
-	public Iterable<String> getPropertyNames() {
+	public Iterable<QName> getPropertyNames() {
 		Set<String> fields = new HashSet<String>(document.fieldNames());
 		
 		// remove value field
-		fields.remove(FIELD_VALUE); 
+		fields.remove(FIELD_VALUE);
 		
-		return fields;
+		Set<QName> qFields = new HashSet<QName>();
+		for (String field : fields) {
+			qFields.add(decodeProperty(field));
+		}
+		
+		return qFields;
 	}
 
 	/**
