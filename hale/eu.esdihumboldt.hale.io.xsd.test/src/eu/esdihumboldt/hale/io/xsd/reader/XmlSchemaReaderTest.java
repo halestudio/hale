@@ -26,12 +26,17 @@ import org.junit.Test;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.io.xsd.XmlSchemaIO;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlIndex;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.schema.model.constraints.property.CardinalityConstraint;
+import eu.esdihumboldt.hale.schema.model.constraints.property.NillableFlag;
+import eu.esdihumboldt.hale.schema.model.constraints.type.BindingConstraint;
+import eu.esdihumboldt.hale.schema.model.constraints.type.SimpleFlag;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultTypeIndex;
 
 /**
@@ -69,10 +74,28 @@ public class XmlSchemaReaderTest {
 		// orderperson
 		PropertyDefinition orderperson = shiporderType.getProperty(new QName(ns, "orderperson"));
 		assertNotNull(orderperson);
+		// property type must be a simple type
+		assertTrue(orderperson.getPropertyType().getConstraint(
+				SimpleFlag.class).isEnabled());
+		// binding must be string
+		assertEquals(String.class, orderperson.getPropertyType().getConstraint(
+				BindingConstraint.class).getBinding());
+		// cardinality
+		CardinalityConstraint cc = orderperson.getConstraint(CardinalityConstraint.class);
+		assertEquals(1, cc.getMinOccurs());
+		assertEquals(1, cc.getMaxOccurs());
+		// not nillable
+		assertFalse(orderperson.getConstraint(NillableFlag.class).isEnabled());
 		
 		// shipto
 		PropertyDefinition shipto = shiporderType.getProperty(new QName(ns, "shipto"));
 		assertNotNull(shipto);
+		// property type must be a complex type
+		assertFalse(shipto.getPropertyType().getConstraint(
+				SimpleFlag.class).isEnabled());
+		// binding must be Instance
+		assertEquals(Instance.class, shipto.getPropertyType().getConstraint(
+				BindingConstraint.class).getBinding());
 		
 		// item
 		PropertyDefinition item = shiporderType.getProperty(new QName(ns, "item"));
@@ -81,6 +104,13 @@ public class XmlSchemaReaderTest {
 		// orderid
 		PropertyDefinition orderid = shiporderType.getProperty(new QName("orderid"));
 		assertNotNull(orderid);
+		// binding must be string
+		assertEquals(String.class, orderid.getPropertyType().getConstraint(
+				BindingConstraint.class).getBinding());
+		// required
+		cc = orderid.getConstraint(CardinalityConstraint.class);
+		assertEquals(1, cc.getMinOccurs());
+		assertEquals(1, cc.getMaxOccurs());
 	}
 	
 	/**
