@@ -79,7 +79,7 @@ public class XmlSchemaReaderTest {
 		assertNotNull(item);
 		
 		// orderid
-		PropertyDefinition orderid = shiporderType.getProperty(new QName(ns, "orderid"));
+		PropertyDefinition orderid = shiporderType.getProperty(new QName("orderid"));
 		assertNotNull(orderid);
 	}
 	
