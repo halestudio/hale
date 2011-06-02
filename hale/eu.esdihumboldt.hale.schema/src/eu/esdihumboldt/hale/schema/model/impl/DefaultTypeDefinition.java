@@ -134,7 +134,7 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 		properties.addAll(inheritedProperties);
 		
 		// add declared properties afterwards - correct order for output
-		properties.addAll(inheritedProperties);
+		properties.addAll(declaredProperties);
 		
 		return properties;
 	}
