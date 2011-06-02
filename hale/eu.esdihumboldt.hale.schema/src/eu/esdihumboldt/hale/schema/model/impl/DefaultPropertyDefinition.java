@@ -49,6 +49,8 @@ public class DefaultPropertyDefinition extends AbstractDefinition<PropertyConstr
 		super(name);
 		this.declaringType = declaringType;
 		this.propertyType = propertyType;
+		
+		declaringType.addDeclaredProperty(this);
 	}
 	
 	/**
