@@ -35,8 +35,20 @@ public final class NillableFlag extends AbstractFlagConstraint implements Proper
 	public static final NillableFlag DISABLED = new NillableFlag(false);
 	
 	/**
+	 * Get the nillable flag
+	 * 
+	 * @param isNillable if the flag shall be enabled
+	 * @return the flag
+	 */
+	public static NillableFlag get(boolean isNillable) {
+		return (isNillable)?(ENABLED):(DISABLED);
+	}
+	
+	/**
 	 * Creates a default nillable flag, which is disabled. If possible, instead
-	 * of creating an instance, use {@link #ENABLED} or {@link #DISABLED}.
+	 * of creating an instance, use {@link #get(boolean)}, {@link #ENABLED} or 
+	 * {@link #DISABLED}.
+	 * 
 	 * @see Constraint
 	 */
 	public NillableFlag() {

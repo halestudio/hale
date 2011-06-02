@@ -35,8 +35,20 @@ public final class AbstractFlag extends AbstractFlagConstraint implements TypeCo
 	public static final AbstractFlag DISABLED = new AbstractFlag(false);
 	
 	/**
+	 * Get the abstract flag
+	 * 
+	 * @param isAbstract if the flag shall be enabled
+	 * @return the flag
+	 */
+	public static AbstractFlag get(boolean isAbstract) {
+		return (isAbstract)?(ENABLED):(DISABLED);
+	}
+	
+	/**
 	 * Creates a default abstract flag, which is disabled. If possible, instead
-	 * of creating an instance, use {@link #ENABLED} or {@link #DISABLED}.
+	 * of creating an instance, use {@link #get(boolean)}, {@link #ENABLED} or 
+	 * {@link #DISABLED}.
+	 * 
 	 * @see Constraint
 	 */
 	public AbstractFlag() {

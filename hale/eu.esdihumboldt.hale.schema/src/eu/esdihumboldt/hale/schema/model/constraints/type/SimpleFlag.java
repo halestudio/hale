@@ -38,6 +38,16 @@ public final class SimpleFlag extends AbstractFlagConstraint implements TypeCons
 	public static final SimpleFlag DISABLED = new SimpleFlag(false);
 	
 	/**
+	 * Get the simple type flag
+	 * 
+	 * @param isSimpleType if the flag shall be enabled
+	 * @return the flag
+	 */
+	public static SimpleFlag get(boolean isSimpleType) {
+		return (isSimpleType)?(ENABLED):(DISABLED);
+	}
+	
+	/**
 	 * Creates a default simple type flag, which is disabled. If possible, 
 	 * instead of creating an instance, use {@link #ENABLED} or {@link #DISABLED}.
 	 * @see Constraint

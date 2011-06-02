@@ -36,8 +36,20 @@ public final class MappableFlag extends AbstractFlagConstraint implements TypeCo
 	public static final MappableFlag DISABLED = new MappableFlag(false);
 	
 	/**
+	 * Get the mappable flag
+	 * 
+	 * @param isMappable if the flag shall be enabled
+	 * @return the flag
+	 */
+	public static MappableFlag get(boolean isMappable) {
+		return (isMappable)?(ENABLED):(DISABLED);
+	}
+	
+	/**
 	 * Creates a default mappable flag, which is enabled. If possible, instead
-	 * of creating an instance, use {@link #ENABLED} or {@link #DISABLED}.
+	 * of creating an instance, use {@link #get(boolean)}, {@link #ENABLED} or 
+	 * {@link #DISABLED}.
+	 * 
 	 * @see Constraint
 	 */
 	public MappableFlag() {
