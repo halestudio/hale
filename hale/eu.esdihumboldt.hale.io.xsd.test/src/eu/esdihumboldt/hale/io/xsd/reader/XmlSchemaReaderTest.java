@@ -46,12 +46,12 @@ import eu.esdihumboldt.hale.schema.model.impl.DefaultTypeIndex;
 public class XmlSchemaReaderTest {
 
 	/**
-	 * Test reading a simple XML schema
+	 * Test reading a simple XML schema that contains one big element
 	 * @throws Exception if reading the schema fails
 	 */
 	@Test
-	public void testRead_shiporder() throws Exception {
-		URI location = getClass().getResource("/testdata/shiporder/shiporder.xsd").toURI();
+	public void testRead_shiporder_one() throws Exception {
+		URI location = getClass().getResource("/testdata/shiporder/shiporder-one.xsd").toURI();
 		LocatableInputSupplier<? extends InputStream> input = new DefaultInputSupplier(location );
 		XmlIndex schema = (XmlIndex) readSchema(input);
 		
@@ -111,6 +111,38 @@ public class XmlSchemaReaderTest {
 		cc = orderid.getConstraint(CardinalityConstraint.class);
 		assertEquals(1, cc.getMinOccurs());
 		assertEquals(1, cc.getMaxOccurs());
+	}
+	
+	/**
+	 * Test reading a simple XML schema that contains several elements
+	 * @throws Exception if reading the schema fails
+	 */
+	@Test
+	public void testRead_shiporder_divided() throws Exception {
+		URI location = getClass().getResource("/testdata/shiporder/shiporder-divided.xsd").toURI();
+		LocatableInputSupplier<? extends InputStream> input = new DefaultInputSupplier(location );
+		XmlIndex schema = (XmlIndex) readSchema(input);
+		
+		String ns = "http://www.example.com";
+		assertEquals(ns , schema.getNamespace());
+		
+		//TODO extend
+	}
+	
+	/**
+	 * Test reading a simple XML schema that uses several custom named types
+	 * @throws Exception if reading the schema fails
+	 */
+	@Test
+	public void testRead_shiporder_types() throws Exception {
+		URI location = getClass().getResource("/testdata/shiporder/shiporder-types.xsd").toURI();
+		LocatableInputSupplier<? extends InputStream> input = new DefaultInputSupplier(location );
+		XmlIndex schema = (XmlIndex) readSchema(input);
+		
+		String ns = "http://www.example.com";
+		assertEquals(ns , schema.getNamespace());
+		
+		//TODO extend
 	}
 	
 	/**
