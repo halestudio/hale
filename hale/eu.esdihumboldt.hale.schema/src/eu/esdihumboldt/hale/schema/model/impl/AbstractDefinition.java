@@ -207,4 +207,22 @@ public abstract class AbstractDefinition<C extends Constraint> implements Defini
 		
 		return result;
 	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.schema.model.Definition#getIdentifier()
+	 */
+	@Override
+	public String getIdentifier() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @see Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return getIdentifier();
+	}
+	
 }

@@ -92,4 +92,12 @@ public class DefaultPropertyDefinition extends AbstractDefinition<PropertyConstr
 		return propertyType;
 	}
 
+	/**
+	 * @see AbstractDefinition#toString()
+	 */
+	@Override
+	public String toString() {
+		return "[property] " + super.toString();
+	}
+
 }

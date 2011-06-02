@@ -217,4 +217,12 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 		return null;
 	}
 
+	/**
+	 * @see AbstractDefinition#toString()
+	 */
+	@Override
+	public String toString() {
+		return "[type] " + super.toString();
+	}
+
 }
