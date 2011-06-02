@@ -1,0 +1,23 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://example.org/prod"
+            targetNamespace="http://example.org/prod"
+            elementFormDefault="qualified">
+
+  <xs:element name="size" type="SizeType"/>
+
+  <xs:complexType name="SizeType">
+    <xs:attribute name="system" type="xs:string" use="required"/>
+    <xs:attribute ref="dim"/>
+    <xs:attribute name="value" default="10">
+      <xs:simpleType>
+        <xs:restriction base="xs:integer">
+          <xs:minInclusive value="2"/>
+          <xs:maxInclusive value="20"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:attribute name="dim" type="xs:integer" fixed="1"/>
+
+</xs:schema>

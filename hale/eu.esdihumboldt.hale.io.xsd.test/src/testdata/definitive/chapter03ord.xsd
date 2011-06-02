@@ -1,0 +1,24 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://example.org/ord"
+            xmlns:ord="http://example.org/ord"
+            xmlns:prod="http://example.org/prod"
+            elementFormDefault="qualified">
+
+  <xs:import namespace="http://example.org/prod"
+              schemaLocation="chapter03prod.xsd"/>
+  <xs:element name="order" type="ord:OrderType"/>
+
+  <xs:complexType name="OrderType">
+    <xs:sequence>
+      <xs:element name="number" type="xs:string"/>
+      <xs:element name="items" type="ord:ItemsType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ItemsType">
+    <xs:sequence>
+      <xs:element ref="prod:product" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>

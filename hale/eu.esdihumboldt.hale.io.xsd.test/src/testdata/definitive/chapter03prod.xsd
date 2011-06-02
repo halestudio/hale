@@ -1,0 +1,39 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://example.org/prod"
+            xmlns="http://example.org/prod"
+            xmlns:prod2="http://example.org/prod2"
+            elementFormDefault="qualified">
+
+  <xs:import namespace="http://example.org/prod2"
+              schemaLocation="chapter03prod2.xsd"/>
+
+  <xs:element name="product" type="ProductType"/>
+
+  <xs:complexType name="ProductType">
+    <xs:sequence>
+      <xs:element name="number" type="ProdNumType"/>
+      <xs:element name="name" type="xs:string"
+                   form="unqualified"/>
+      <xs:element name="size" type="SizeType"/>
+      <xs:element ref="prod2:color"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ProdNumType">
+    <xs:simpleContent>
+      <xs:extension base="xs:integer">
+        <xs:attribute name="id" type="xs:ID"
+                       form="qualified" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="SizeType">
+    <xs:simpleContent>
+      <xs:extension base="xs:integer">
+        <xs:attribute name="system" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>

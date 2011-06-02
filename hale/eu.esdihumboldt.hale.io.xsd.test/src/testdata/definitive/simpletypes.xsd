@@ -1,0 +1,57 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="sizes" type="SizesType"/>
+
+  <xs:complexType name="SizesType">
+    <xs:choice maxOccurs="unbounded">
+      <xs:element name="dressSize" type="DressSizeType"/>
+      <xs:element name="mediumDressSize" type="MediumDressSizeType"/>
+      <xs:element name="smallDressSize" type="SmallDressSizeType"/>
+      <xs:element name="smlxSize" type="SMLXSizeType"/>
+      <xs:element name="xsmlxSize" type="XSMLXSizeType"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:simpleType name="DressSizeType">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="2"/>
+      <xs:maxInclusive value="18"/>
+      <xs:pattern value="\d{1,2}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="MediumDressSizeType">
+    <xs:restriction base="DressSizeType">
+      <xs:minInclusive value="8"/>
+      <xs:maxInclusive value="12"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="SmallDressSizeType">
+    <xs:restriction base="DressSizeType">
+      <xs:minInclusive value="2"/>
+      <xs:maxInclusive value="6"/>
+      <xs:pattern value="\d{1}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="SMLXSizeType">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="small"/>
+      <xs:enumeration value="medium"/>
+      <xs:enumeration value="large"/>
+      <xs:enumeration value="extra large"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="XSMLXSizeType">
+    <xs:union memberTypes="SMLXSizeType">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="extra small"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+
+</xs:schema>

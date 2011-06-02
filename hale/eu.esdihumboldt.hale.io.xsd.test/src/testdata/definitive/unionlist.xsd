@@ -1,0 +1,71 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="sizes" type="SizesType"/>
+
+  <xs:complexType name="SizesType">
+    <xs:choice maxOccurs="unbounded">
+      <xs:element name="size" type="SizeType"/>
+      <xs:element name="smallSize" type="SmallSizeType"/>
+      <xs:element name="internationalSize"
+                   type="InternationalSizeType"/>
+      <xs:element name="availableSizes"
+                   type="AvailableSizesType"/>
+      <xs:element name="applicableSizes"
+                   type="ApplicableSizesType"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:simpleType name="SizeType">
+    <xs:union memberTypes="DressSizeType">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="small"/>
+          <xs:enumeration value="medium"/>
+          <xs:enumeration value="large"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+
+  <xs:simpleType name="DressSizeType">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="2"/>
+      <xs:maxInclusive value="18"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="SmallSizeType">
+    <xs:restriction base="SizeType">
+      <xs:enumeration value="2"/>
+      <xs:enumeration value="4"/>
+      <xs:enumeration value="6"/>
+      <xs:enumeration value="small"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="InternationalSizeType">
+    <xs:union memberTypes="SizeType">
+      <xs:simpleType>
+        <xs:restriction base="xs:integer">
+          <xs:minInclusive value="24"/>
+          <xs:maxInclusive value="54"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+
+  <xs:simpleType name="AvailableSizesType">
+    <xs:list itemType="SizeType"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="ApplicableSizesType">
+    <xs:restriction>
+      <xs:simpleType>
+        <xs:list itemType="SizeType"/>
+      </xs:simpleType>
+      <xs:enumeration value="small medium large"/>
+      <xs:enumeration value="2 4 6 8 10 12 14 16 18"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

@@ -1,0 +1,15 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:doc="http://example.org/doc">
+  <xs:import namespace="http://example.org/prod"
+              schemaLocation="chapter03prod.xsd"/>
+            
+  <xsd:element name="product" type="ProductType">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="en"
+        source="http://example.org/prod.html#product">
+        <doc:description>This element represents a product.
+        </doc:description>
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+</xsd:schema>
