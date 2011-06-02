@@ -16,7 +16,7 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.RestrictionFlag;
+import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultTypeDefinition;
 

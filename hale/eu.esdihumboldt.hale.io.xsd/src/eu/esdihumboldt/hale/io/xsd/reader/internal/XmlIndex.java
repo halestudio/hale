@@ -12,26 +12,30 @@
 
 package eu.esdihumboldt.hale.io.xsd.reader.internal;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.apache.ws.commons.schema.XmlSchemaAttribute;
 import org.apache.ws.commons.schema.XmlSchemaAttributeGroup;
 
+import com.google.common.base.Preconditions;
+
+import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultTypeIndex;
 
 /**
  * XML schema used during schema parsing, manages {@link XmlTypeDefinition}s
  * @author Simon Templer
  */
-public class XmlIndex extends DefaultTypeIndex {
+public class XmlIndex extends DefaultSchema {
 	
 	/**
 	 * XML attribute definitions
 	 */
-	private final Map<QName, XmlSchemaAttribute> attributes = new HashMap<QName, XmlSchemaAttribute>();
+	private final Map<QName, XmlAttribute> attributes = new HashMap<QName, XmlAttribute>();
 	
 	/**
 	 * XML attribute group definitions
@@ -41,7 +45,14 @@ public class XmlIndex extends DefaultTypeIndex {
 	/**
 	 * XML elements
 	 */
-	private final Map<QName, SchemaElement> elements = new HashMap<QName, SchemaElement>();
+	private final Map<QName, XmlElement> elements = new HashMap<QName, XmlElement>();
+	
+	/**
+	 * @see DefaultSchema#DefaultSchema(String, URI)
+	 */
+	public XmlIndex(String namespace, URI location) {
+		super(namespace, location);
+	}
 
 	/**
 	 * Creates a new type definition if no type with the given name is found.
@@ -59,9 +70,20 @@ public class XmlIndex extends DefaultTypeIndex {
 	}
 
 	/**
+	 * @see DefaultTypeIndex#addType(TypeDefinition)
+	 */
+	@Override
+	public void addType(TypeDefinition type) {
+		Preconditions.checkArgument(type instanceof XmlTypeDefinition,
+				"Only XML type definitions may be added to the index");
+		
+		super.addType(type);
+	}
+
+	/**
 	 * @return the attribute definitions
 	 */
-	public Map<QName, XmlSchemaAttribute> getAttributes() {
+	public Map<QName, XmlAttribute> getAttributes() {
 		return attributes;
 	}
 
@@ -75,7 +97,7 @@ public class XmlIndex extends DefaultTypeIndex {
 	/**
 	 * @return the element definitions
 	 */
-	public Map<QName, SchemaElement> getElements() {
+	public Map<QName, XmlElement> getElements() {
 		return elements;
 	}
 

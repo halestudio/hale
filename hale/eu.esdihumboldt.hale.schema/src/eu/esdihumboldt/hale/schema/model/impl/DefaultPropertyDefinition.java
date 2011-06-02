@@ -50,7 +50,7 @@ public class DefaultPropertyDefinition extends AbstractDefinition<PropertyConstr
 		this.declaringType = declaringType;
 		this.propertyType = propertyType;
 	}
-
+	
 	/**
 	 * @see Definition#getIdentifier()
 	 */

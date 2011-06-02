@@ -4,8 +4,10 @@ Bundle-Name: HALE XML Schema Support
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.xsd
 Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: com.google.common.io;version="1.6.0",
+Import-Package: com.google.common.base;version="1.6.0",
+ com.google.common.io;version="1.6.0",
  de.cs3d.util.logging,
+ eu.esdihumboldt.hale.cache,
  eu.esdihumboldt.hale.core.io,
  eu.esdihumboldt.hale.core.io.impl,
  eu.esdihumboldt.hale.core.io.report,
@@ -23,6 +25,7 @@ Import-Package: com.google.common.io;version="1.6.0",
  eu.esdihumboldt.hale.schema.model.impl,
  net.jcip.annotations,
  org.apache.ws.commons.schema,
+ org.apache.ws.commons.schema.constants,
  org.apache.ws.commons.schema.resolver,
  org.apache.ws.commons.schema.utils,
  org.eclipse.osgi.util,

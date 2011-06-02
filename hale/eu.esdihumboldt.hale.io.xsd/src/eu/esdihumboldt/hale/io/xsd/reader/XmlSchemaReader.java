@@ -18,22 +18,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.ws.commons.schema.XmlSchema;
+import org.apache.ws.commons.schema.XmlSchemaAnnotated;
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
 import org.apache.ws.commons.schema.XmlSchemaAttributeGroup;
 import org.apache.ws.commons.schema.XmlSchemaAttributeGroupRef;
@@ -55,7 +50,7 @@ import org.apache.ws.commons.schema.XmlSchemaSimpleContentExtension;
 import org.apache.ws.commons.schema.XmlSchemaSimpleContentRestriction;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.XmlSchemaType;
-import org.apache.ws.commons.schema.XmlSchemaUse;
+import org.apache.ws.commons.schema.constants.Constants;
 import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.apache.ws.commons.schema.utils.NamespacePrefixList;
@@ -68,27 +63,35 @@ import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.core.io.impl.LogProgressIndicator;
+import eu.esdihumboldt.hale.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.core.io.report.IOReport;
 import eu.esdihumboldt.hale.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.instance.model.Instance;
-import eu.esdihumboldt.hale.io.xsd.XMLSchemaIO;
+import eu.esdihumboldt.hale.io.xsd.XmlSchemaIO;
+import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.io.xsd.internal.Messages;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.AnonymousXmlType;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.HumboldtURIResolver;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.ProgressURIResolver;
-import eu.esdihumboldt.hale.io.xsd.reader.internal.SchemaElement;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlAttribute;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlAttributeReferenceProperty;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlElement;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlElementReferenceProperty;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
-import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.RestrictionFlag;
 import eu.esdihumboldt.hale.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.schema.io.impl.AbstractSchemaReader;
 import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.schema.model.constraints.property.CardinalityConstraint;
+import eu.esdihumboldt.hale.schema.model.constraints.property.NillableFlag;
 import eu.esdihumboldt.hale.schema.model.constraints.type.AbstractFlag;
 import eu.esdihumboldt.hale.schema.model.constraints.type.BindingConstraint;
-import eu.esdihumboldt.hale.schema.model.impl.DefaultSchema;
-import eu.esdihumboldt.hale.schema.model.impl.DefaultTypeDefinition;
+import eu.esdihumboldt.hale.schema.model.constraints.type.SimpleFlag;
+import eu.esdihumboldt.hale.schema.model.impl.AbstractDefinition;
+import eu.esdihumboldt.hale.schema.model.impl.DefaultPropertyDefinition;
 
 /**
  * The main functionality of this class is to load an XML schema file (XSD)
@@ -100,13 +103,13 @@ import eu.esdihumboldt.hale.schema.model.impl.DefaultTypeDefinition;
  * @author Bernd Schneiders, Logica; Thorsten Reitz, Fraunhofer IGD;
  *   Simon Templer, Fraunhofer IGD
  */
-public class ApacheSchemaProvider 
+public class XmlSchemaReader 
 	extends AbstractSchemaReader {
 	
 	/**
 	 * The log
 	 */
-	private static ALogger _log = ALoggerFactory.getLogger(ApacheSchemaProvider.class);
+	private static ALogger _log = ALoggerFactory.getLogger(XmlSchemaReader.class);
 	
 	private static final AGroup NO_DEFINITION = AGroupFactory.getGroup(Messages.getString("ApacheSchemaProvider.0"));  //$NON-NLS-1$
 	
@@ -141,8 +144,6 @@ public class ApacheSchemaProvider
 			throws IOProviderConfigurationException, IOException {
 		progress.begin(Messages.getString("ApacheSchemaProvider.21"), ProgressIndicator.UNKNOWN); //$NON-NLS-1$
 		this.reporter = reporter;
-		
-		// use XML Schema to load schema with all its subschema to the memory
 		
 		//XXX cache should be used through supplier mechanism
 //		try {
@@ -185,7 +186,8 @@ public class ApacheSchemaProvider
 			prefixes.put(namespaces.getNamespaceURI(prefix), prefix);
 		}
 		
-		//FIXME continue from here
+		// create index
+		index = new XmlIndex(namespace, location);
 		
 		Set<String> imports = new HashSet<String>();
 		imports.add(location.toString());
@@ -231,7 +233,6 @@ public class ApacheSchemaProvider
 	 * @param imports the imports/includes that were already
 	 *   loaded or where loading has been started
 	 * @param progress the progress indicator
-	 * @return the map of feature type names and types
 	 */
 	protected void loadSchema(String schemaLocation, XmlSchema xmlSchema, 
 			Set<String> imports, ProgressIndicator progress) {
@@ -284,13 +285,11 @@ public class ApacheSchemaProvider
 					QName subGroup = element.getSubstitutionGroup();
 					
 					// create schema element
-					SchemaElement schemaElement = new SchemaElement(elementName, 
+					XmlElement schemaElement = new XmlElement(elementName, 
 							elementType, subGroup);
 					
 					// set metadata
-					String description = XMLSchemaIO.getDescription(element);
-					schemaElement.setDescription(description);
-					schemaElement.setLocation(createLocationURI(schemaLocation, item));
+					setMetadata(schemaElement, element, schemaLocation);
 					
 					//TODO set constraints? (e.g. Mappable)
 					
@@ -310,7 +309,14 @@ public class ApacheSchemaProvider
 				// schema attribute that might be referenced somewhere
 				XmlSchemaAttribute att = (XmlSchemaAttribute) item;
 				if (att.getQName() != null) {
-					index.getAttributes().put(att.getQName(), att);
+					XmlTypeDefinition type = getAttributeType(att, null, schemaLocation);
+					if (type == null) {
+						//XXX if this occurs we might need a attribute referencing attribute
+						throw new IllegalStateException("Could not determine attribute type");
+					}
+					XmlAttribute attribute = new XmlAttribute(att.getQName(), type);
+					
+					index.getAttributes().put(attribute.getName(), attribute);
 				}
 				else {
 					reporter.warn(new IOMessageImpl(MessageFormat.format(
@@ -382,27 +388,20 @@ public class ApacheSchemaProvider
 	 * @param schemaType the schema type
 	 * @param typeName the type name to use for the type, <code>null</code>
 	 *   if the name of the schema type shall be used
-	 * @return the created type definition
+	 * @param schemaLocation the schema location
+	 * @return the created type
 	 */
-	private TypeDefinition createType(XmlSchemaType schemaType, QName typeName,
+	private XmlTypeDefinition createType(XmlSchemaType schemaType, QName typeName,
 			String schemaLocation) {
 		if (typeName == null) {
 			typeName = schemaType.getQName();
 		}
 		
-		// try to get type definition from index
-		XmlTypeDefinition type = (XmlTypeDefinition) index.getType(typeName);
-		
-		// create new type if necessary
-		if (type == null) {
-			type = new XmlTypeDefinition(typeName);
-			index.addType(type);
-		}
+		// get type definition from index
+		XmlTypeDefinition type = index.getType(typeName);
 		
 		if (schemaType instanceof XmlSchemaSimpleType) {
 			// attribute type from simple schema types
-//XXX		TypeDefinition simpleType = TypeUtil.resolveSimpleType(
-//XXX				typeName, (XmlSchemaSimpleType) item, typeResolver);
 			configureSimpleType(type, (XmlSchemaSimpleType) schemaType);
 		}
 		else if (schemaType instanceof XmlSchemaComplexType) {
@@ -423,30 +422,39 @@ public class ApacheSchemaProvider
 				//XXX reuse the super type's attribute type where appropriate?
 			}
 			
-			type.setConstraint(BindingConstraint.getBinding(Instance.class)); //XXX instead object binding?
-			
-			// set metadata
-			type.setLocation(createLocationURI(schemaLocation, schemaType));
-			type.setDescription(XMLSchemaIO.getDescription(complexType));
+			// set type metadata and constraints
+			setMetadataAndConstraints(type, complexType, schemaLocation);
 			
 			// determine the defined properties and add them to the declaring type
-			createProperties(type, complexType);
-			
-			// set additional properties
-			type.setConstraint((complexType.isAbstract())?
-					(AbstractFlag.ENABLED):(AbstractFlag.DISABLED));
+			createProperties(type, complexType, schemaLocation);
 		}
 		else {
 			reporter.warn(new IOMessageImpl("Unrecognized schema type", null,
 					schemaType.getLineNumber(), schemaType.getLinePosition()));
 		}
+		
+		return type;
+	}
+
+	/**
+	 * @param type
+	 * @param schemaType
+	 */
+	private void configureSimpleType(XmlTypeDefinition type,
+			XmlSchemaSimpleType schemaType) {
+		// TODO Auto-generated method stub
+		
+		//XXX TypeDefinition simpleType = TypeUtil.resolveSimpleType(
+		//XXX				typeName, (XmlSchemaSimpleType) item, typeResolver);
+		
 	}
 
 	private URI createLocationURI(String schemaLocation,
 			XmlSchemaObject schemaObject) {
 		//XXX improve
 		try {
-			return new URI(schemaLocation);
+			return new URI(schemaLocation + "#" + schemaObject.getLineNumber() + 
+					":" + schemaObject.getLinePosition());
 		} catch (URISyntaxException e) {
 			// ignore
 			return null;
@@ -458,7 +466,7 @@ public class ApacheSchemaProvider
 	 */
 	@Override
 	protected ContentType getDefaultContentType() {
-		return XMLSchemaIO.XSD_CT;
+		return XmlSchemaIO.XSD_CT;
 	}
 	
 	/**
@@ -466,15 +474,10 @@ public class ApacheSchemaProvider
 	 * 
 	 * @param typeDef the definition of the declaring type
 	 * @param particle the particle
-	 * @param schemaTypes the schema types 
-	 * @param referenceResolver the reference resolver
-	 * 
-	 * @return the list of attribute definitions
+	 * @param schemaLocation the schema location
 	 */
-	private List<AttributeDefinition> getAttributesFromParticle(TypeDefinition typeDef, XmlSchemaParticle particle, 
-			SchemaTypeResolver schemaTypes, SchemaReferenceResolver referenceResolver) {
-		List<AttributeDefinition> attributeResults = new ArrayList<AttributeDefinition>();
-		
+	private void createPropertiesFromParticle(XmlTypeDefinition typeDef, 
+			XmlSchemaParticle particle, String schemaLocation) {
 		// particle:
 		if (particle instanceof XmlSchemaSequence) {
 			// <sequence>
@@ -483,19 +486,14 @@ public class ApacheSchemaProvider
 				XmlSchemaObject object = sequence.getItems().getItem(j);
 				if (object instanceof XmlSchemaElement) {
 					// <element>
-					AbstractElementAttribute attribute = getAttributeFromElement(
-							(XmlSchemaElement) object, typeDef, schemaTypes, 
-							referenceResolver);
-					if (attribute != null) {
-						attributeResults.add(attribute);
-					}
+					createPropertyFromElement((XmlSchemaElement) object, 
+							typeDef, schemaLocation);
 					// </element>
 				}
 				else if (object instanceof XmlSchemaParticle) {
 					// contained particles, e.g. a choice TODO wrap those attributes?
-					attributeResults.addAll(getAttributesFromParticle(typeDef, 
-							(XmlSchemaParticle) object, schemaTypes, 
-							referenceResolver));
+					createPropertiesFromParticle(typeDef, 
+							(XmlSchemaParticle) object, schemaLocation);
 				}
 			}
 			// </sequence>
@@ -508,76 +506,57 @@ public class ApacheSchemaProvider
 				XmlSchemaObject object = choice.getItems().getItem(j);
 				if (object instanceof XmlSchemaElement) {
 					// <element>
-					AbstractElementAttribute attribute = getAttributeFromElement(
-							(XmlSchemaElement) object, typeDef, schemaTypes, 
-							referenceResolver);
-					if (attribute != null) {
-						attribute.setMinOccurs(0); //XXX set minOccurs to zero because its a choice
-						attributeResults.add(attribute);
-					}
+					createPropertyFromElement((XmlSchemaElement) object, 
+							typeDef, schemaLocation);
+					//FIXME how to ensure choice constraint is set? return attributes from create methods?
+//					if (attribute != null) {
+//						attribute.setMinOccurs(0); //XXX set minOccurs to zero because its a choice
+//						attributeResults.add(attribute);
+//					}
 					// </element>
 				}
 				else if (object instanceof XmlSchemaParticle) {
 					// contained particles, e.g. a choice TODO wrap those attributes?
-					attributeResults.addAll(getAttributesFromParticle(typeDef, 
-							(XmlSchemaParticle) object, schemaTypes, 
-							referenceResolver));
+					createPropertiesFromParticle(typeDef, 
+							(XmlSchemaParticle) object, schemaLocation);
 				}
 			}
 			// </choice>
 		}
-		
-		return attributeResults;
 	}
 
 	/**
-	 * Get an attribute from an element
+	 * Create a property from an element
 	 * 
 	 * @param element the schema element
 	 * @param declaringType the definition of the declaring type
-	 * @param schemaTypes the schema types
-	 * @param referenceResolver the reference resolver
-	 * 
-	 * @return an attribute definition or <code>null</code>
+	 * @param schemaLocation the schema location
 	 */
-	private AbstractElementAttribute getAttributeFromElement(
-			XmlSchemaElement element, TypeDefinition declaringType,
-			SchemaTypeResolver schemaTypes, SchemaReferenceResolver referenceResolver) {
+	private void createPropertyFromElement(XmlSchemaElement element, 
+			XmlTypeDefinition declaringType, String schemaLocation) {
 		if (element.getSchemaTypeName() != null) {
 			// element referencing a type
 			// <element name="ELEMENT_NAME" type="SCHEMA_TYPE_NAME" />
-			return new SchemaAttribute(
-					declaringType,
-					element.getName(), 
-					new NameImpl(element.getSchemaTypeName().getNamespaceURI(), 
-							element.getSchemaTypeName().getLocalPart()), 
-					element,
-					schemaTypes);
+			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
+					element.getQName(), declaringType, 
+					index.getType(element.getSchemaTypeName()));
+			
+			// set metadata and constraints
+			setMetadataAndConstraints(property, element, schemaLocation);
 		}
 		else if (element.getRefName() != null) {
 			// references another element
 			// <element ref="REF_NAME" />
-			Name elementName = new NameImpl(
-					element.getRefName().getNamespaceURI(),
-					element.getRefName().getLocalPart());
+			QName elementName = element.getRefName();
 			
-			// local element definition
-			SchemaElement reference = referenceResolver.getSchemaElement(elementName);
-			if (reference == null) {
-				_log.warn("Reference to element " + element.getRefName().getNamespaceURI() + "/" + element.getRefName().getLocalPart() +" not found"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				return null;
-			}
-			else {
-				return new ElementReferenceAttribute(
-						declaringType, 
-						element.getName(), 
-						reference.getTypeName(), 
-						element, 
-						reference);
-			}
+			XmlElementReferenceProperty property = new XmlElementReferenceProperty(
+					element.getRefName(), declaringType, index, elementName);
+			
+			// set metadata and constraints FIXME can the constraints be set at this point? or must the property determine them from the SchemaElement?
+			setMetadataAndConstraints(property, element, schemaLocation);
 		}
 		else if (element.getSchemaType() != null) {
-			// element w/o type or ref
+			// element w/o type name or reference but an internal type definition
 			if (element.getSchemaType() instanceof XmlSchemaComplexType) {
 				// <element ...>
 				//   <complexType>
@@ -587,47 +566,46 @@ public class ApacheSchemaProvider
 				if (model != null) {
 					XmlSchemaContent content = model.getContent();
 					
-					QName qname = null;
+					QName superTypeName = null;
 					if (content instanceof XmlSchemaComplexContentExtension || 
 							content instanceof XmlSchemaComplexContentRestriction) {
 						// <complexContent>
 						//   <extension base="..."> / <restriction ...>
 						String nameExt;
 						if (content instanceof XmlSchemaComplexContentExtension) {
-							qname = ((XmlSchemaComplexContentExtension) content).getBaseTypeName();
+							superTypeName = ((XmlSchemaComplexContentExtension) content).getBaseTypeName();
 							nameExt = "Extension"; //$NON-NLS-1$
 						}
 						else {
-							qname = ((XmlSchemaComplexContentRestriction) content).getBaseTypeName();
+							superTypeName = ((XmlSchemaComplexContentRestriction) content).getBaseTypeName();
 							nameExt = "Restriction"; //$NON-NLS-1$
 						}
 						
 						if (declaringType != null) {
-							Name superTypeName = new NameImpl(qname.getNamespaceURI(), qname.getLocalPart());
-							
 							// try to get the type definition of the super type
-							TypeDefinition superType = TypeUtil.resolveAttributeType(superTypeName, schemaTypes);
-							if (superType == null) {
-								_log.error("Couldn't resolve super type: " + superTypeName.getNamespaceURI() + "/" + superTypeName.getLocalPart()); //$NON-NLS-1$ //$NON-NLS-2$
-							}
+							XmlTypeDefinition superType = (superTypeName == null)?(null):(index.getType(superTypeName));
 							
 							// create an anonymous type that extends the super type
-							Name anonymousName = new NameImpl(declaringType.getIdentifier() + "/" + element.getName(), superTypeName.getLocalPart() + nameExt); //$NON-NLS-1$
-							TypeDefinition anonymousType = new AnonymousType(anonymousName, null, superType, (schemaTypes != null)?(schemaTypes.getSchemaLocation()):(null));
+							QName anonymousName = new QName(
+									declaringType.getIdentifier() + "/" + element.getName(), 
+									superTypeName.getLocalPart() + nameExt); //$NON-NLS-1$
 							
-							// add attributes to the anonymous type
-							// adding the attributes will happen automatically when the AbstractSchemaAttribute is created
-							getAttributes(anonymousType, complexType, schemaTypes, referenceResolver);
+							AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
+							anonymousType.setSuperType(superType);
 							
-							// add the anonymous type to the type map - needed for type resolution in SchemaAttribute
-							// it's enough for it to be added to the imported types map
-							if (schemaTypes != null) {
-								schemaTypes.getImportedTypes().put(anonymousName, anonymousType);
-							}
+							// set metadata and constraints
+							setMetadataAndConstraints(anonymousType, complexType, schemaLocation);
 							
-							// create an attribute with the anonymous type
-							SchemaAttribute result = new SchemaAttribute(declaringType, element.getName(), anonymousName, element, schemaTypes);
-							return result;
+							// add properties to the anonymous type
+							createProperties(anonymousType, complexType,
+									schemaLocation);
+							
+							// create a property with the anonymous type
+							DefaultPropertyDefinition property = new DefaultPropertyDefinition(
+									element.getQName(), declaringType, anonymousType);
+							
+							// set metadata and constraints
+							setMetadataAndConstraints(property, element, schemaLocation);
 						}
 						
 						//   </extension> / </restriction>
@@ -638,108 +616,149 @@ public class ApacheSchemaProvider
 						//   <extension base="..."> / <restriction ...>
 						String nameExt;
 						if (content instanceof XmlSchemaSimpleContentExtension) {
-							qname = ((XmlSchemaSimpleContentExtension) content).getBaseTypeName();
+							superTypeName = ((XmlSchemaSimpleContentExtension) content).getBaseTypeName();
 							nameExt = "Extension"; //$NON-NLS-1$
 						}
 						else {
-							qname = ((XmlSchemaSimpleContentRestriction) content).getBaseTypeName();
+							superTypeName = ((XmlSchemaSimpleContentRestriction) content).getBaseTypeName();
 							nameExt = "Restriction"; //$NON-NLS-1$
 						}
 						
 						if (declaringType != null) {
-							// create an anonymous type that extends the type referenced by qname
-							// with additional attributes
-							Name superTypeName = new NameImpl(qname.getNamespaceURI(), qname.getLocalPart());
-							
 							// try to get the type definition of the super type
-							TypeDefinition superType = TypeUtil.resolveAttributeType(superTypeName, schemaTypes);
-							if (superType == null) {
-								_log.error("Couldn't resolve super type: " + superTypeName.getNamespaceURI() + "/" + superTypeName.getLocalPart()); //$NON-NLS-1$ //$NON-NLS-2$
-							}
+							XmlTypeDefinition superType = (superTypeName == null)?(null):(index.getType(superTypeName));
 							
 							// create an anonymous type that extends the super type
-							Name anonymousName = new NameImpl(declaringType.getIdentifier() + "/" + element.getName(), superTypeName.getLocalPart() + nameExt); //$NON-NLS-1$
-							// for now use the super attribute type, because attributes aren't added as attribute descriptors
-							AttributeType attributeType = superType.getType(null); 
-							TypeDefinition anonymousType = new AnonymousType(anonymousName, attributeType, superType, (schemaTypes != null)?(schemaTypes.getSchemaLocation()):(null));
+							QName anonymousName = new QName(
+									declaringType.getIdentifier() + "/" + element.getName(), 
+									superTypeName.getLocalPart() + nameExt); //$NON-NLS-1$
 							
-							// add attributes to the anonymous type
-							// adding the attributes will happen automatically when the AbstractSchemaAttribute is created
-							getAttributes(anonymousType, complexType, schemaTypes, referenceResolver);
+							AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
+							anonymousType.setSuperType(superType);
 							
-							// add the anonymous type to the type map - needed for type resolution in SchemaAttribute
-							// it's enough for it to be added to the imported types map
-							if (schemaTypes != null) {
-								schemaTypes.getImportedTypes().put(anonymousName, anonymousType);
-							}
+							// set metadata and constraints
+							setMetadata(anonymousType, complexType, schemaLocation);
+							anonymousType.setConstraint(SimpleFlag.ENABLED);
+							//XXX binding?!
+							anonymousType.setConstraint(superType.getConstraint(BindingConstraint.class));
 							
-							// create an attribute with the anonymous type
-							SchemaAttribute result = new SchemaAttribute(declaringType, element.getName(), anonymousName, element, schemaTypes);
-							return result;
+							// add properties to the anonymous type
+							createProperties(anonymousType, complexType,
+									schemaLocation);
+							
+							// create a property with the anonymous type
+							DefaultPropertyDefinition property = new DefaultPropertyDefinition(
+									element.getQName(), declaringType, anonymousType);
+							
+							// set metadata and constraints
+							setMetadataAndConstraints(property, element, schemaLocation);
 						}
 						
 						//   </extension>
 						// </simpleContent>
 					}
-					
-					if (qname != null) {
-						// return base type for dependency resolution
-						return new SchemaAttribute(
-								declaringType,
-								element.getName(), 
-								new NameImpl(qname.getNamespaceURI(), qname.getLocalPart()), 
-								element,
-								schemaTypes);
-					}
-					else {
-						return null;
-					}
 				} else if (particle != null) {
 					// this where we get when there is an anonymous complex type as property type
-					if (declaringType == null) {
-						// called only to get the type name for dependency resolution - not needed for anonymous types
-						return null;
-					}
-					else {
-						// create an anonymous type
-						Name anonymousName = new NameImpl(declaringType.getIdentifier() + "/" + element.getName(), "AnonymousType"); //$NON-NLS-1$ //$NON-NLS-2$
-						TypeDefinition anonymousType = new AnonymousType(anonymousName, null, null, (schemaTypes != null)?(schemaTypes.getSchemaLocation()):(null));
-						
-						// add attributes to the anonymous type
-						// adding the attributes will happen automatically when the AbstractSchemaAttribute is created
-						getAttributes(anonymousType, complexType, schemaTypes, referenceResolver);
-						
-						// add the anonymous type to the type map - needed for type resolution in SchemaAttribute
-						// it's enough for it to be added to the imported types map
-						if (schemaTypes != null) {
-							schemaTypes.getImportedTypes().put(anonymousName, anonymousType);
-						}
-						
-						// create an attribute with the anonymous type
-						SchemaAttribute result = new SchemaAttribute(declaringType, element.getName(), anonymousName, element, schemaTypes);
-						return result;
-					}
+					// create an anonymous type
+					QName anonymousName = new QName(
+							declaringType.getIdentifier() + "/" + element.getName(), 
+							"AnonymousType");
+					
+					// create anonymous type with no super type
+					AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
+					
+					// set metadata and constraints
+					setMetadataAndConstraints(anonymousType, complexType, schemaLocation);
+					
+					// add properties to the anonymous type
+					createProperties(anonymousType, complexType,
+							schemaLocation);
+					
+					// create a property with the anonymous type
+					DefaultPropertyDefinition property = new DefaultPropertyDefinition(
+							element.getQName(), declaringType, anonymousType);
+					
+					// set metadata and constraints
+					setMetadataAndConstraints(property, element, schemaLocation);
 				}
 				//   </complexType>
 				// </element>
 			}
 			else if (element.getSchemaType() instanceof XmlSchemaSimpleType) {
 				// simple schema type
-				TypeDefinition type = TypeUtil.resolveSimpleType(null, (XmlSchemaSimpleType) element.getSchemaType(), schemaTypes);
-				if (type != null) {
-					return new SchemaTypeAttribute(
-							declaringType,
-							element.getName(), 
-							element,
-							type);
-				}
-				else {
-					_log.error("Could not resolve type for element " + element.getName()); //$NON-NLS-1$
-				}
+				XmlSchemaSimpleType simpleType = (XmlSchemaSimpleType) element.getSchemaType();
+				
+				//FIXME is this ok? not sure what to do at this point
+				// create an anonymous type
+				QName anonymousName = new QName(
+						declaringType.getIdentifier() + "/" + element.getName(), 
+						"AnonymousType"); //$NON-NLS-1$
+				
+				AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
+				
+				configureSimpleType(anonymousType, simpleType);
+//				TypeDefinition type = TypeUtil.resolveSimpleType(null, (XmlSchemaSimpleType) element.getSchemaType(), schemaTypes);
+//				if (type != null) {
+//					return new SchemaTypeAttribute(
+//							declaringType,
+//							element.getName(), 
+//							element,
+//							type);
+//				}
+//				else {
+//					_log.error("Could not resolve type for element " + element.getName()); //$NON-NLS-1$
+//				}
 			}
 		}
+	}
+
+	/**
+	 * Set metadata and constraints for a complex type
+	 * 
+	 * @param type the type definition
+	 * @param complexType the complex type definition
+	 * @param schemaLocation the schema location
+	 */
+	private void setMetadataAndConstraints(XmlTypeDefinition type,
+			XmlSchemaComplexType complexType, String schemaLocation) {
+		//TODO type constraints!
+		type.setConstraint(BindingConstraint.getBinding(Instance.class)); //XXX instead object binding?
+		type.setConstraint(AbstractFlag.get(complexType.isAbstract()));
+		type.setConstraint(SimpleFlag.DISABLED);
 		
-		return null;
+		// set metadata
+		setMetadata(type, complexType, schemaLocation);
+	}
+
+	/**
+	 * Set the metadata for a definition
+	 * 
+	 * @param definition the definition
+	 * @param annotated the XML annotated object
+	 * @param schemaLocation the schema location
+	 */
+	private void setMetadata(AbstractDefinition<?> definition,
+			XmlSchemaAnnotated annotated, String schemaLocation) {
+		definition.setDescription(XmlSchemaIO.getDescription(annotated));
+		definition.setLocation(createLocationURI(schemaLocation, annotated));
+	}
+
+	/**
+	 * Set metadata and constraints for a property based on a XML element
+	 * 
+	 * @param property the property
+	 * @param element the XML element
+	 * @param schemaLocation the schema location
+	 */
+	private void setMetadataAndConstraints(DefaultPropertyDefinition property,
+			XmlSchemaElement element, String schemaLocation) {
+		// set constraints
+		property.setConstraint(NillableFlag.get(element.isNillable()));
+		property.setConstraint(CardinalityConstraint.getCardinality(
+				element.getMinOccurs(), element.getMaxOccurs()));
+		
+		// set metadata
+		setMetadata(property, element, schemaLocation);
 	}
 
 	/**
@@ -790,23 +809,16 @@ public class ApacheSchemaProvider
 		
 		return false;
 	}
-	
-	private boolean referencesType(Map<Name, SchemaElement> elements,
-			Name dependency) {
-		//elements.containsValue(dependency)
-		//TODO
-		//XXX for now, return false
-		return false;
-	}
 
 	/**
 	 * Create the properties for the given complex type
 	 * 
 	 * @param typeDef the definition of the declaring type 
 	 * @param item the complex type item
+	 * @param schemaLocation the schema location
 	 */
-	private void createProperties(TypeDefinition typeDef, 
-			XmlSchemaComplexType item) {
+	private void createProperties(XmlTypeDefinition typeDef, 
+			XmlSchemaComplexType item, String schemaLocation) {
 		// item:
 		// <complexType ...>
 		XmlSchemaContentModel model = item.getContentModel();
@@ -820,12 +832,13 @@ public class ApacheSchemaProvider
 				// particle (e.g. sequence)
 				if (extension.getParticle() != null) {
 					XmlSchemaParticle particle = extension.getParticle();
-					createPropertiesFromParticle(typeDef, particle);
+					createPropertiesFromParticle(typeDef, particle, schemaLocation);
 				}
 				// attributes
 				XmlSchemaObjectCollection attributeCollection = extension.getAttributes();
 				if (attributeCollection != null) {
-					createPropertiesFromCollection(attributeCollection, typeDef, null);
+					createAttributesFromCollection(attributeCollection, typeDef, 
+							null, schemaLocation);
 				}
 				//   </extension>
 				// </complexContent>
@@ -837,12 +850,13 @@ public class ApacheSchemaProvider
 				// particle (e.g. sequence)
 				if (restriction.getParticle() != null) {
 					XmlSchemaParticle particle = restriction.getParticle();
-					createPropertiesFromParticle(typeDef, particle);
+					createPropertiesFromParticle(typeDef, particle, schemaLocation);
 				}
 				// attributes
 				XmlSchemaObjectCollection attributeCollection = restriction.getAttributes();
 				if (attributeCollection != null) {
-					createPropertiesFromCollection(attributeCollection, typeDef, null);
+					createAttributesFromCollection(attributeCollection, typeDef, 
+							null, schemaLocation);
 				}
 				//   </restriction>
 				// </complexContent>
@@ -854,7 +868,8 @@ public class ApacheSchemaProvider
 				// attributes
 				XmlSchemaObjectCollection attributeCollection = extension.getAttributes();
 				if (attributeCollection != null) {
-					createPropertiesFromCollection(attributeCollection, typeDef, null);
+					createAttributesFromCollection(attributeCollection, typeDef, 
+							null, schemaLocation);
 				}
 				//   </extension>
 				// </simpleContent>
@@ -866,7 +881,8 @@ public class ApacheSchemaProvider
 				// attributes
 				XmlSchemaObjectCollection attributeCollection = restriction.getAttributes();
 				if (attributeCollection != null) {
-					createPropertiesFromCollection(attributeCollection, typeDef, null);
+					createAttributesFromCollection(attributeCollection, typeDef, 
+							null, schemaLocation);
 				}
 				//   </restriction>
 				// </simpleContent>
@@ -878,21 +894,22 @@ public class ApacheSchemaProvider
 			// particle (e.g. sequence)
 			if (item.getParticle() != null) {
 				XmlSchemaParticle particle = complexType.getParticle();
-				createPropertiesFromParticle(typeDef, particle);
+				createPropertiesFromParticle(typeDef, particle, schemaLocation);
 			}
 			// attributes
 			XmlSchemaObjectCollection attributeCollection = complexType.getAttributes();
 			if (attributeCollection != null) {
-				createPropertiesFromCollection(attributeCollection, typeDef, null);
+				createAttributesFromCollection(attributeCollection, typeDef, 
+						null, schemaLocation);
 			}
 		}
 		
 		// </complexType>
 	}
 	
-	private void createPropertiesFromCollection(
-			XmlSchemaObjectCollection attributeCollection, TypeDefinition declaringType,
-			String indexPrefix) {
+	private void createAttributesFromCollection(
+			XmlSchemaObjectCollection attributeCollection, XmlTypeDefinition declaringType,
+			String indexPrefix, String schemaLocation) {
 		if (indexPrefix == null) {
 			indexPrefix = ""; //$NON-NLS-1$
 		}
@@ -903,12 +920,14 @@ public class ApacheSchemaProvider
 				// <attribute ... />
 				XmlSchemaAttribute attribute = (XmlSchemaAttribute) object;
 				
-				createAttribute(attribute, declaringType, indexPrefix + index, null);
+				createAttribute(attribute, declaringType, indexPrefix + index, 
+						schemaLocation);
 			}
 			else if (object instanceof XmlSchemaAttributeGroup) {
 				XmlSchemaAttributeGroup group = (XmlSchemaAttributeGroup) object;
 				
-				createAttributes(group, declaringType, indexPrefix + index);
+				createAttributes(group, declaringType, indexPrefix + index,
+						schemaLocation);
 			}
 			else if (object instanceof XmlSchemaAttributeGroupRef) {
 				XmlSchemaAttributeGroupRef groupRef = (XmlSchemaAttributeGroupRef) object;
@@ -933,52 +952,94 @@ public class ApacheSchemaProvider
 	}
 
 	private void createAttributes(XmlSchemaAttributeGroup group, 
-			TypeDefinition declaringType, String index) {
-		createPropertiesFromCollection(group.getAttributes(), 
-				declaringType, index + "_"); //$NON-NLS-1$
+			XmlTypeDefinition declaringType, String index, String schemaLocation) {
+		createAttributesFromCollection(group.getAttributes(), 
+				declaringType, index + "_", schemaLocation); //$NON-NLS-1$
 	}
 
 	private void createAttribute(XmlSchemaAttribute attribute, 
-			TypeDefinition declaringType, String index, 
-			XmlSchemaUse useOverride) {
+			XmlTypeDefinition declaringType, String index, 
+			String schemaLocation) {
 		// create attributes
 		QName typeName = attribute.getSchemaTypeName();
 		if (typeName != null) {
-			return new DefaultResolveAttribute(
-					declaringType, 
-					new NameImpl(typeName.getNamespaceURI(), typeName.getLocalPart()), 
-					attribute, 
-					schemaTypes,
-					(useOverride != null)?(useOverride):(attribute.getUse()));
+			// resolve type by name
+			XmlTypeDefinition type = getAttributeType(attribute, index, schemaLocation);
+			
+			// create property
+			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
+					attribute.getQName(), declaringType, type);
+			
+			// set metadata and constraints
+			setMetadataAndConstraints(property, attribute, schemaLocation);
 		}
 		else if (attribute.getSchemaType() != null) {
 			if (declaringType != null) {
 				QName name = attribute.getSchemaType().getQName();
-				Name attributeTypeName = (name != null)?
-						(new NameImpl(name.getNamespaceURI(), name.getLocalPart())):
-						(new NameImpl(declaringType.getName().getNamespaceURI() + "/" + declaringType.getName().getLocalPart(), "AnonymousAttribute" + index)); //$NON-NLS-1$ //$NON-NLS-2$
-				TypeDefinition attributeType = TypeUtil.resolveSimpleType(
-						attributeTypeName, 
-						attribute.getSchemaType(), 
-						schemaTypes);
-				
-				return new DefaultAttribute(declaringType, attributeTypeName, 
-						attribute, attributeType, 
-						(useOverride != null)?(useOverride):(attribute.getUse()));
+				//XXX also use getAttributwType???
+				//FIXME not sure how to handle simple types, need examples/tests
+//				Name attributeTypeName = (name != null)?
+//						(new NameImpl(name.getNamespaceURI(), name.getLocalPart())):
+//						(new NameImpl(declaringType.getName().getNamespaceURI() + "/" + declaringType.getName().getLocalPart(), "AnonymousAttribute" + index)); //$NON-NLS-1$ //$NON-NLS-2$
+//				TypeDefinition attributeType = TypeUtil.resolveSimpleType(
+//						attributeTypeName, 
+//						attribute.getSchemaType(), 
+//						schemaTypes);
+//				
+//				return new DefaultAttribute(declaringType, attributeTypeName, 
+//						attribute, attributeType, 
+//						(useOverride != null)?(useOverride):(attribute.getUse()));
 			}
 		}
 		else if (attribute.getRefName() != null) {
 			// <attribute ref="REF_NAME" />
-			XmlSchemaAttribute referencedAtt = referenceResolver.getSchemaAttribute(new NameImpl(
-					attribute.getRefName().getNamespaceURI(), 
-					attribute.getRefName().getLocalPart()));
+			// reference to a named attribute
+			XmlAttributeReferenceProperty property = new XmlAttributeReferenceProperty(
+					attribute.getRefName(), declaringType, this.index, 
+					attribute.getRefName());
 			
-			if (referencedAtt != null) {
-				return createAttribute(referencedAtt, declaringType, schemaTypes, referenceResolver, index, attribute.getUse());
-			}
-			else {
-				_log.warn(MISSING_ATTRIBUTE_REF, "Reference to attribute " + attribute.getRefName() + " could not be resolved"); //$NON-NLS-1$ //$NON-NLS-2$
-			}
+			// set metadata and constraints
+			setMetadataAndConstraints(property, attribute, schemaLocation);
+		}
+		
+	}
+	
+	/**
+	 * Create the type definition for an attribute, if possible
+	 * 
+	 * @param attribute the XML attribute
+	 * @param index the name index string
+	 * @param schemaLocation the schema location
+	 * @return the type definition or <code>null</code>
+	 */
+	private XmlTypeDefinition getAttributeType(XmlSchemaAttribute attribute, 
+			String index, String schemaLocation) {
+		// create attributes
+		QName typeName = attribute.getSchemaTypeName();
+		if (typeName != null) {
+			// resolve type by name
+			return this.index.getType(typeName);
+		}
+		else if (attribute.getSchemaType() != null) {
+			QName name = attribute.getSchemaType().getQName();
+			//FIXME not sure how to handle simple types, need examples/tests
+//				Name attributeTypeName = (name != null)?
+//						(new NameImpl(name.getNamespaceURI(), name.getLocalPart())):
+//						(new NameImpl(declaringType.getName().getNamespaceURI() + "/" + declaringType.getName().getLocalPart(), "AnonymousAttribute" + index)); //$NON-NLS-1$ //$NON-NLS-2$
+//				TypeDefinition attributeType = TypeUtil.resolveSimpleType(
+//						attributeTypeName, 
+//						attribute.getSchemaType(), 
+//						schemaTypes);
+//				
+//				return new DefaultAttribute(declaringType, attributeTypeName, 
+//						attribute, attributeType, 
+//						(useOverride != null)?(useOverride):(attribute.getUse()));
+		}
+		else if (attribute.getRefName() != null) {
+			// <attribute ref="REF_NAME" />
+			// reference to a named attribute
+			// can't create type
+			return null;
 		}
 		
 		return null;
@@ -1004,6 +1065,30 @@ public class ApacheSchemaProvider
 //		
 //		return typeNames;
 //	}
+
+	/**
+	 * Set metadata and constraints for a property based on a XML attribute
+	 * 
+	 * @param property the property
+	 * @param attribute the XML attribute
+	 * @param schemaLocation the schema location
+	 */
+	private void setMetadataAndConstraints(DefaultPropertyDefinition property,
+			XmlSchemaAttribute attribute, String schemaLocation) {
+		// set constraints
+		property.setConstraint(XmlAttributeFlag.ENABLED);
+		
+		if (attribute.getUse() != null) {
+			long maxOccurs = (attribute.getUse().getValue().equals(Constants.BlockConstants.PROHIBITED))?(0):(1);
+			long minOccurs = (attribute.getUse().getValue().equals(Constants.BlockConstants.REQUIRED))?(1):(0);
+			property.setConstraint(CardinalityConstraint.getCardinality(minOccurs, maxOccurs));
+		}
+		
+		property.setConstraint(NillableFlag.DISABLED);
+		
+		// set metadata
+		setMetadata(property, attribute, schemaLocation);
+	}
 
 	/**
 	 * Get the base URI for the given URI

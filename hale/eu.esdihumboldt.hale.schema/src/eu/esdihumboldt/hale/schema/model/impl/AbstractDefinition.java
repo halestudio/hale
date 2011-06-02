@@ -83,6 +83,19 @@ public abstract class AbstractDefinition<C extends Constraint> implements Defini
 	}
 	
 	/**
+	 * Determines if the constraint with the given type is set explicitly for
+	 * the definition.
+	 * 
+	 * @param constraintType the constraint type
+	 * @return if the constraint is set explicitly
+	 */
+	protected boolean hasConstraint(Class<? extends C> constraintType) {
+		synchronized (constraints) {
+			return constraints.get(constraintType) != null;
+		}
+	}
+	
+	/**
 	 * Set a constraint on the definition
 	 * 
 	 * @param constraint the constraint to set

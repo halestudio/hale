@@ -25,7 +25,7 @@ import eu.esdihumboldt.hale.schema.model.impl.AbstractDefinition;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class SchemaElement extends AbstractDefinition<Constraint> {
+public class XmlElement extends AbstractDefinition<Constraint> {
 
 	/**
 	 * The element type
@@ -44,7 +44,7 @@ public class SchemaElement extends AbstractDefinition<Constraint> {
 	 * @param type the associated type definition
 	 * @param substitutionGroup the substitution group, may be <code>null</code>
 	 */
-	public SchemaElement(QName elementName, TypeDefinition type,
+	public XmlElement(QName elementName, TypeDefinition type,
 			QName substitutionGroup) {
 		super(elementName);
 		

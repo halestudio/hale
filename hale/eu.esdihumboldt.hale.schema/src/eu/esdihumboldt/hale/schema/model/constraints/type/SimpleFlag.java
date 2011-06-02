@@ -21,7 +21,7 @@ import eu.esdihumboldt.hale.schema.model.constraints.AbstractFlagConstraint;
 /**
  * Flags if a type is a simple type, by default enabled for 
  * {@link TypeDefinition}s that have no properties, otherwise disabled by 
- * default.
+ * default. A simple type has a value additional to eventual properties.
  * @author Simon Templer
  */
 @Immutable
