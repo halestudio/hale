@@ -50,7 +50,8 @@ public class XmlSchemaReaderTest {
 		LocatableInputSupplier<? extends InputStream> input = new DefaultInputSupplier(location );
 		XmlIndex schema = (XmlIndex) readSchema(input);
 		
-		assertEquals("http://www.example.com", schema.getNamespace());
+		String ns = "http://www.example.com";
+		assertEquals(ns , schema.getNamespace());
 		
 		// shiporder element
 		assertEquals(1, schema.getElements().size());
@@ -66,19 +67,19 @@ public class XmlSchemaReaderTest {
 		assertEquals(4, properties.size());
 		
 		// orderperson
-		PropertyDefinition orderperson = shiporderType.getProperty(new QName("orderperson"));
+		PropertyDefinition orderperson = shiporderType.getProperty(new QName(ns, "orderperson"));
 		assertNotNull(orderperson);
 		
 		// shipto
-		PropertyDefinition shipto = shiporderType.getProperty(new QName("shipto"));
+		PropertyDefinition shipto = shiporderType.getProperty(new QName(ns, "shipto"));
 		assertNotNull(shipto);
 		
 		// item
-		PropertyDefinition item = shiporderType.getProperty(new QName("item"));
+		PropertyDefinition item = shiporderType.getProperty(new QName(ns, "item"));
 		assertNotNull(item);
 		
 		// orderid
-		PropertyDefinition orderid = shiporderType.getProperty(new QName("orderid"));
+		PropertyDefinition orderid = shiporderType.getProperty(new QName(ns, "orderid"));
 		assertNotNull(orderid);
 	}
 	
