@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.instance.model;
 
-import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 
@@ -22,7 +21,7 @@ import eu.esdihumboldt.hale.schema.model.TypeDefinition;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public interface Instance {
+public interface Instance extends Group {
 	
 	/**
 	 * Get the definition of the type associated with the instance
@@ -39,23 +38,5 @@ public interface Instance {
 	 * @return the instance value if it is defined, otherwise <code>null</code>
 	 */
 	public Object getValue();
-	
-	/**
-	 * Get the values for the property with the given name. Values can also
-	 * be instances.
-	 * 
-	 * @param propertyName the property name
-	 * @return the property values, may be <code>null</code> if none exist
-	 */
-	public Object[] getProperty(QName propertyName);
-	
-	/**
-	 * Get the property names for which any values exist.
-	 * Especially helpful when there is (for whatever reason) no type definition
-	 * associated to the instance.
-	 * 
-	 * @return the list of property names with associated values
-	 */
-	public Iterable<QName> getPropertyNames();
 
 }

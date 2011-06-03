@@ -12,55 +12,57 @@
 
 package eu.esdihumboldt.hale.schema.model.impl;
 
+import java.util.Collection;
+
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.Group;
+import eu.esdihumboldt.hale.schema.model.GroupPropertyConstraint;
 import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
-import eu.esdihumboldt.hale.schema.model.PropertyConstraint;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 
 /**
- * Default {@link PropertyDefinition} implementation
+ * Default {@link GroupPropertyDefinition} implementation
  * @author Simon Templer
  */
-public class DefaultPropertyDefinition extends AbstractChildDefinition<PropertyConstraint> implements
-		PropertyDefinition {
+public class DefaultGroupPropertyDefinition extends AbstractChildDefinition<GroupPropertyConstraint>
+		implements GroupPropertyDefinition {
 	
+	private final Group children = new DefaultGroup();
+
 	/**
-	 * The type associated with the property content
-	 */
-	private final TypeDefinition propertyType;
-	
-	/**
-	 * Create a new property and add it to the parent group
+	 * Create a new group property
 	 * 
-	 * @param name the property qualified name
+	 * @param name the group name
 	 * @param parentGroup the parent group
-	 * @param propertyType the property type
 	 */
-	public DefaultPropertyDefinition(QName name,
-			Group parentGroup,
-			TypeDefinition propertyType) {
+	public DefaultGroupPropertyDefinition(QName name, Group parentGroup) {
 		super(name, parentGroup);
-		this.propertyType = propertyType;
-	}
-	
-	/**
-	 * @see PropertyDefinition#getPropertyType()
-	 */
-	@Override
-	public TypeDefinition getPropertyType() {
-		return propertyType;
 	}
 
 	/**
-	 * @see AbstractDefinition#toString()
+	 * @see Group#getDeclaredChildren()
 	 */
 	@Override
-	public String toString() {
-		return "[property] " + super.toString();
+	public Collection<? extends ChildDefinition<?>> getDeclaredChildren() {
+		return children.getDeclaredChildren();
+	}
+
+	/**
+	 * @see Group#getChild(QName)
+	 */
+	@Override
+	public ChildDefinition<?> getChild(QName name) {
+		return children.getChild(name);
+	}
+
+	/**
+	 * @see Group#addChild(ChildDefinition)
+	 */
+	@Override
+	public void addChild(ChildDefinition<?> child) {
+		children.addChild(child);
 	}
 
 	/**
@@ -68,7 +70,7 @@ public class DefaultPropertyDefinition extends AbstractChildDefinition<PropertyC
 	 */
 	@Override
 	public PropertyDefinition asProperty() {
-		return this;
+		return null;
 	}
 
 	/**
@@ -76,7 +78,15 @@ public class DefaultPropertyDefinition extends AbstractChildDefinition<PropertyC
 	 */
 	@Override
 	public GroupPropertyDefinition asGroup() {
-		return null;
+		return this;
+	}
+	
+	/**
+	 * @see AbstractDefinition#toString()
+	 */
+	@Override
+	public String toString() {
+		return "[group] " + super.toString();
 	}
 
 }

@@ -63,7 +63,7 @@ public final class SimpleFlag extends AbstractFlagConstraint implements TypeCons
 	 * @see Constraint
 	 */
 	public SimpleFlag(TypeDefinition typeDef) {
-		this(typeDef.getProperties().isEmpty());
+		this(typeDef.getChildren().isEmpty());
 	}
 	
 	/**

@@ -19,7 +19,10 @@ import javax.xml.namespace.QName;
 import net.jcip.annotations.Immutable;
 
 import eu.esdihumboldt.hale.core.io.supplier.Locatable;
+import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.Definition;
+import eu.esdihumboldt.hale.schema.model.Group;
+import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.PropertyConstraint;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
@@ -96,11 +99,11 @@ public abstract class AbstractPropertyDecorator implements PropertyDefinition {
 	}
 
 	/**
-	 * @see PropertyDefinition#getDeclaringType()
+	 * @see PropertyDefinition#getDeclaringGroup()
 	 */
 	@Override
-	public TypeDefinition getDeclaringType() {
-		return property.getDeclaringType();
+	public Group getDeclaringGroup() {
+		return property.getDeclaringGroup();
 	}
 
 	/**
@@ -117,6 +120,22 @@ public abstract class AbstractPropertyDecorator implements PropertyDefinition {
 	@Override
 	public TypeDefinition getPropertyType() {
 		return property.getPropertyType();
+	}
+
+	/**
+	 * @see ChildDefinition#asProperty()
+	 */
+	@Override
+	public PropertyDefinition asProperty() {
+		return property.asProperty();
+	}
+
+	/**
+	 * @see ChildDefinition#asGroup()
+	 */
+	@Override
+	public GroupPropertyDefinition asGroup() {
+		return property.asGroup();
 	}
 
 }

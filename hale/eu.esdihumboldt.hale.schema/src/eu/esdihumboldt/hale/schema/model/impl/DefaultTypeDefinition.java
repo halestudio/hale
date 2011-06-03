@@ -15,16 +15,18 @@ package eu.esdihumboldt.hale.schema.model.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
 
+import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.Definition;
-import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.schema.model.Group;
 import eu.esdihumboldt.hale.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.schema.model.impl.internal.ReparentGroupProperty;
 import eu.esdihumboldt.hale.schema.model.impl.internal.ReparentProperty;
 
 /**
@@ -44,14 +46,14 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	private SortedSet<DefaultTypeDefinition> subTypes;
 	
 	/**
-	 * The list of declared properties (list because order must be maintained for writing)
+	 * The declared children
 	 */
-	private final List<DefaultPropertyDefinition> declaredProperties = new ArrayList<DefaultPropertyDefinition>();
+	private final Group declaredChildren = new DefaultGroup();
 	
 	/**
-	 * The inherited properties
+	 * The list of inherited children, names mapped to child definitions
 	 */
-	private List<PropertyDefinition> inheritedProperties;
+	private LinkedHashMap<QName, ChildDefinition<?>> inheritedChildren;
 	
 	/**
 	 * Create a type definition with the given name
@@ -71,72 +73,73 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	}
 	
 	/**
-	 * Add a declared property, this is called by the
-	 * {@link DefaultPropertyDefinition} constructor.
+	 * @see TypeDefinition#getDeclaredChildren()
+	 */
+	@Override
+	public Collection<? extends ChildDefinition<?>> getDeclaredChildren() {
+		return declaredChildren.getDeclaredChildren();
+	}
+
+	/**
+	 * @see Group#addChild(ChildDefinition)
+	 */
+	@Override
+	public void addChild(ChildDefinition<?> child) {
+		declaredChildren.addChild(child);
+	}
+
+	/**
+	 * {@inheritDoc}<br>
+	 * May not be called while creating the model.
 	 * 
-	 * @param property the property definition
-	 */
-	void addDeclaredProperty(DefaultPropertyDefinition property) {
-		int idx = declaredProperties.indexOf(property);
-		if (idx >= 0) {
-			// replace
-			declaredProperties.remove(idx);
-			declaredProperties.add(idx, property);
-		}
-		else {
-			declaredProperties.add(property);
-		}
-	}
-	
-	//XXX needed?
-//	/**
-//	 * Removes a declared property
-//	 * 
-//	 * @param property the property to remove
-//	 */
-//	public void removeDeclaredProperty(DefaultPropertyDefinition property) {
-//		property.setDeclaringType(null);
-//		declaredProperties.remove(property);
-//	}
-
-	/**
-	 * @see TypeDefinition#getDeclaredProperties()
+	 * @see TypeDefinition#getChildren()
 	 */
 	@Override
-	public Collection<? extends DefaultPropertyDefinition> getDeclaredProperties() {
-		return Collections.unmodifiableCollection(declaredProperties);
-	}
-
-	/**
-	 * @see TypeDefinition#getProperties()
-	 */
-	@Override
-	public Collection<? extends PropertyDefinition> getProperties() {
-		Collection<PropertyDefinition> properties = new ArrayList<PropertyDefinition>();
+	public Collection<? extends ChildDefinition<?>> getChildren() {
+		Collection<ChildDefinition<?>> children = new ArrayList<ChildDefinition<?>>();
 		
-		if (inheritedProperties == null) {
-			inheritedProperties = new ArrayList<PropertyDefinition>();
+		initInheritedChildren();
+		
+		// add inherited children
+		children.addAll(inheritedChildren.values());
+		
+		// add declared children afterwards - correct order for output
+		children.addAll(getDeclaredChildren());
+		
+		return children;
+	}
+
+	/**
+	 * Initialize the inherited children.<br>
+	 * May not be called while creating the model.
+	 */
+	private void initInheritedChildren() {
+		if (inheritedChildren == null) {
+			inheritedChildren = new LinkedHashMap<QName, ChildDefinition<?>>();
 			
 			// populate inherited attributes
 			DefaultTypeDefinition parent = getSuperType();
 			while (parent != null) {
-				for (PropertyDefinition parentProperty : parent.getDeclaredProperties()) {
-					// create attribute definition copy
-					PropertyDefinition reparent = new ReparentProperty(parentProperty, this);
-					inheritedProperties.add(reparent);
+				//FIXME wrong order? must the topmost supertype properties should be the first ones? 
+				for (ChildDefinition<?> parentChild : parent.getDeclaredChildren()) {
+					// create reparented copy
+					ChildDefinition<?> reparent;
+					if (parentChild.asProperty() != null) {
+						reparent = new ReparentProperty(parentChild.asProperty(), this);
+					}
+					else if (parentChild.asGroup() != null) {
+						reparent = new ReparentGroupProperty(parentChild.asGroup(), this);
+					}
+					else {
+						throw new IllegalStateException("Illegal child type.");
+					}
+					
+					inheritedChildren.put(reparent.getName(), reparent);
 				}
 				
 				parent = parent.getSuperType();
 			}
 		}
-		
-		// add inherited properties
-		properties.addAll(inheritedProperties);
-		
-		// add declared properties afterwards - correct order for output
-		properties.addAll(declaredProperties);
-		
-		return properties;
 	}
 
 	/**
@@ -203,18 +206,22 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	}
 
 	/**
-	 * @see TypeDefinition#getProperty(QName)
+	 * {@inheritDoc}<br>
+	 * May not be called while creating the model.
+	 * 
+	 * @see TypeDefinition#getChild(QName)
 	 */
 	@Override
-	public PropertyDefinition getProperty(QName name) {
-		//TODO improve, use index?
-		for (PropertyDefinition property : getProperties()) {
-			if (property.getName().equals(name)) {
-				return property;
-			}
+	public ChildDefinition<?> getChild(QName name) {
+		ChildDefinition<?> result = declaredChildren.getChild(name);
+		
+		if (result == null) {
+			initInheritedChildren();
+			
+			result = inheritedChildren.get(name);
 		}
 		
-		return null;
+		return result;
 	}
 
 	/**

@@ -16,27 +16,28 @@ import net.jcip.annotations.Immutable;
 
 import com.google.common.base.Preconditions;
 
-import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.schema.model.impl.AbstractGroupPropertyDecorator;
 import eu.esdihumboldt.hale.schema.model.impl.AbstractPropertyDecorator;
 
 /**
- * Decorator for {@link PropertyDefinition}s that has a changed parent type
+ * Decorator for {@link GroupPropertyDefinition}s that has a changed parent type
  * @author Simon Templer
  */
 @Immutable
-public class ReparentProperty extends AbstractPropertyDecorator {
+public class ReparentGroupProperty extends AbstractGroupPropertyDecorator {
 	
 	private final TypeDefinition parent;
 
 	/**
 	 * Create a decorator for the given property that has a changed parent type
 	 * 
-	 * @param property the property to decorate
+	 * @param propertyGroup the property group to decorate
 	 * @param newParent the new parent type, may not be <code>null</code>
 	 */
-	public ReparentProperty(PropertyDefinition property, TypeDefinition newParent) {
-		super(property);
+	public ReparentGroupProperty(GroupPropertyDefinition propertyGroup, TypeDefinition newParent) {
+		super(propertyGroup);
 		
 		Preconditions.checkNotNull(newParent);
 		

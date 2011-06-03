@@ -12,7 +12,10 @@
 
 package eu.esdihumboldt.hale.io.xsd.reader;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +33,7 @@ import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.io.xsd.XmlSchemaIO;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlIndex;
+import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
@@ -68,11 +72,11 @@ public class XmlSchemaReaderTest {
 		TypeDefinition shiporderType = shiporder.getType();
 		assertNotNull(shiporderType);
 		
-		Collection<? extends PropertyDefinition> properties = shiporderType.getProperties();
+		Collection<? extends ChildDefinition<?>> properties = shiporderType.getChildren();
 		assertEquals(4, properties.size());
 		
 		// orderperson
-		PropertyDefinition orderperson = shiporderType.getProperty(new QName(ns, "orderperson"));
+		PropertyDefinition orderperson = shiporderType.getChild(new QName(ns, "orderperson")).asProperty();
 		assertNotNull(orderperson);
 		// property type must be a simple type
 		assertTrue(orderperson.getPropertyType().getConstraint(
@@ -88,7 +92,7 @@ public class XmlSchemaReaderTest {
 		assertFalse(orderperson.getConstraint(NillableFlag.class).isEnabled());
 		
 		// shipto
-		PropertyDefinition shipto = shiporderType.getProperty(new QName(ns, "shipto"));
+		PropertyDefinition shipto = shiporderType.getChild(new QName(ns, "shipto")).asProperty();
 		assertNotNull(shipto);
 		// property type must be a complex type
 		assertFalse(shipto.getPropertyType().getConstraint(
@@ -98,11 +102,11 @@ public class XmlSchemaReaderTest {
 				BindingConstraint.class).getBinding());
 		
 		// item
-		PropertyDefinition item = shiporderType.getProperty(new QName(ns, "item"));
+		PropertyDefinition item = shiporderType.getChild(new QName(ns, "item")).asProperty();
 		assertNotNull(item);
 		
 		// orderid
-		PropertyDefinition orderid = shiporderType.getProperty(new QName("orderid"));
+		PropertyDefinition orderid = shiporderType.getChild(new QName("orderid")).asProperty();
 		assertNotNull(orderid);
 		// binding must be string
 		assertEquals(String.class, orderid.getPropertyType().getConstraint(

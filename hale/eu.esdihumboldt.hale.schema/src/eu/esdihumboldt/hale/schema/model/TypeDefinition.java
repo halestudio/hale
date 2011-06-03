@@ -14,35 +14,19 @@ package eu.esdihumboldt.hale.schema.model;
 
 import java.util.Collection;
 
-import javax.xml.namespace.QName;
 
 /**
  * Represents a type definition
  * @author Simon Templer
  */
-public interface TypeDefinition extends Definition<TypeConstraint> {
+public interface TypeDefinition extends Definition<TypeConstraint>, Group {
 
-	/**
-	 * Get the properties declared by the type
-	 * 
-	 * @return the definitions of the declared properties
-	 */
-	public Collection<? extends PropertyDefinition> getDeclaredProperties();
-	
-	/**
-	 * Get all properties that an instance of the type may have. Usually these
-	 * are the declared properties and the super type properties.
-	 * 
-	 * @return the property definitions
-	 */
-	public Collection<? extends PropertyDefinition> getProperties();
-	
 	/**
 	 * Get the super type
 	 * 
 	 * @return the super type, may be <code>null</code>
 	 */
-	public TypeDefinition getSuperType();
+	public Group getSuperType();
 	
 	/**
 	 * Get the sub types
@@ -52,13 +36,11 @@ public interface TypeDefinition extends Definition<TypeConstraint> {
 	public Collection<? extends TypeDefinition> getSubTypes();
 	
 	/**
-	 * Get the property with the given name
+	 * Get all children that an instance of the type may have. Usually these
+	 * are the declared children and the super type children.
 	 * 
-	 * @param name the property name
-	 * 
-	 * @return the property definition or <code>null</code> if no property with
-	 *   the given name is available
+	 * @return the child definitions
 	 */
-	public PropertyDefinition getProperty(QName name);
+	public Collection<? extends ChildDefinition<?>> getChildren();
 	
 }

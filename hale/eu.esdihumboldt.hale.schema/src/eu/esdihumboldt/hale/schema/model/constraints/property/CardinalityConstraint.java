@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.schema.model.constraints.property;
 import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.schema.model.Constraint;
 import eu.esdihumboldt.hale.schema.model.PropertyConstraint;
+import eu.esdihumboldt.hale.schema.model.GroupPropertyConstraint;
 
 /**
  * Specifies the cardinality for a property, default is for a property to occur
@@ -22,7 +23,7 @@ import eu.esdihumboldt.hale.schema.model.PropertyConstraint;
  * @author Simon Templer
  */
 @Immutable
-public final class CardinalityConstraint implements PropertyConstraint {
+public final class CardinalityConstraint implements PropertyConstraint, GroupPropertyConstraint {
 
 	/**
 	 * Value for unrestricted {@link #maxOccurs}

@@ -33,11 +33,10 @@ import eu.esdihumboldt.hale.schema.model.constraints.type.MappableFlag;
 import eu.esdihumboldt.hale.schema.model.constraints.type.SimpleFlag;
 
 /**
- * 
+ * Utility methods regarding type resolving
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public abstract class TypeUtil {
 	
@@ -46,7 +45,7 @@ public abstract class TypeUtil {
 //	private static final AGroup TYPE_RESOLVE = AGroupFactory.getGroup(Messages.getString("TypeUtil.0")); //$NON-NLS-1$
 
 	/**
-	 * The XS schema
+	 * The XML simple types schema
 	 */
 	protected static final XSSchema xsSchema = new XSSchema();
 	

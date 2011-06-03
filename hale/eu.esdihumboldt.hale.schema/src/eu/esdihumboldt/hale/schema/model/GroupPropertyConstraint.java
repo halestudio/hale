@@ -12,18 +12,12 @@
 
 package eu.esdihumboldt.hale.schema.model;
 
-
 /**
- * Represents a property definition
+ * Marks constraints for group definitions
  * @author Simon Templer
  */
-public interface PropertyDefinition extends ChildDefinition<PropertyConstraint> {
+public interface GroupPropertyConstraint extends Constraint {
 	
-	/**
-	 * Get the type associated with the property
-	 * 
-	 * @return the property type
-	 */
-	public TypeDefinition getPropertyType();
+	// marker interface
 
 }

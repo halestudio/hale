@@ -17,7 +17,7 @@ import java.util.Collection;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
-import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultTypeDefinition;
 
 /**
@@ -34,17 +34,17 @@ public class XmlTypeDefinition extends DefaultTypeDefinition {
 	}
 
 	/**
-	 * @see DefaultTypeDefinition#getProperties()
+	 * @see DefaultTypeDefinition#getChildren()
 	 */
 	@Override
-	public Collection<? extends PropertyDefinition> getProperties() {
+	public Collection<? extends ChildDefinition<?>> getChildren() {
 		if (getConstraint(RestrictionFlag.class).isEnabled()) {
 			//XXX for restrictions assume that all properties are redefined if needed
 			// only return declared properties
-			return getDeclaredProperties();
+			return getDeclaredChildren();
 		}
 		
-		return super.getProperties();
+		return super.getChildren();
 	}
 
 }

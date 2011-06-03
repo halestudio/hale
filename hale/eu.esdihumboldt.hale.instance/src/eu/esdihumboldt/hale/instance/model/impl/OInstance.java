@@ -183,7 +183,7 @@ public class OInstance implements MutableInstance {
 	 * @return if the property can have multiple values
 	 */
 	private boolean isCollectionProperty(QName propertyName) {
-		PropertyDefinition property = typeDefinition.getProperty(propertyName);
+		PropertyDefinition property = typeDefinition.getChild(propertyName);
 		if (property == null) {
 			// default to true
 			return true;
@@ -285,7 +285,7 @@ public class OInstance implements MutableInstance {
 	 */
 	private Object convertDocument(Object value, QName propertyName) {
 		if (value instanceof ODocument) {
-			PropertyDefinition property = typeDefinition.getProperty(propertyName);
+			PropertyDefinition property = typeDefinition.getChild(propertyName);
 			return new OInstance((ODocument) value, property.getPropertyType());
 		}
 		//TODO also treat collections etc?
