@@ -50,7 +50,9 @@ import eu.esdihumboldt.hale.schema.model.impl.DefaultTypeIndex;
 public class XmlSchemaReaderTest {
 
 	/**
-	 * Test reading a simple XML schema that contains one big element
+	 * Test reading a simple XML schema that contains one big element.
+	 * Focuses on structure, simple type bindings and cardinalities.
+	 * 
 	 * @throws Exception if reading the schema fails
 	 */
 	@Test
@@ -104,6 +106,38 @@ public class XmlSchemaReaderTest {
 		// item
 		PropertyDefinition item = shiporderType.getChild(new QName(ns, "item")).asProperty();
 		assertNotNull(item);
+		// property type must be a complex type
+		assertFalse(item.getPropertyType().getConstraint(
+				SimpleFlag.class).isEnabled());
+		// item cardinality
+		cc = item.getConstraint(CardinalityConstraint.class);
+		assertEquals(1, cc.getMinOccurs());
+		assertEquals(CardinalityConstraint.UNBOUNDED, cc.getMaxOccurs());
+		
+		// item properties
+		TypeDefinition itemType = item.getPropertyType();
+		Collection<? extends ChildDefinition<?>> itemProps = itemType.getChildren();
+		assertEquals(4, itemProps.size());
+		// title
+		assertNotNull(itemType.getChild(new QName(ns, "title")).asProperty());
+		// note
+		PropertyDefinition note = itemType.getChild(new QName(ns, "note")).asProperty();
+		assertNotNull(note);
+		cc = note.getConstraint(CardinalityConstraint.class);
+		assertEquals(0, cc.getMinOccurs());
+		assertEquals(1, cc.getMaxOccurs());
+		// quantity
+		PropertyDefinition quantity = itemType.getChild(new QName(ns, "quantity")).asProperty();
+		assertNotNull(quantity);
+		assertTrue(quantity.getPropertyType().getConstraint(SimpleFlag.class).isEnabled());
+		assertTrue(Number.class.isAssignableFrom(quantity.getPropertyType().getConstraint(
+				BindingConstraint.class).getBinding()));
+		// price
+		PropertyDefinition price = itemType.getChild(new QName(ns, "price")).asProperty();
+		assertNotNull(price);
+		assertTrue(price.getPropertyType().getConstraint(SimpleFlag.class).isEnabled());
+		assertTrue(Number.class.isAssignableFrom(price.getPropertyType().getConstraint(
+				BindingConstraint.class).getBinding()));
 		
 		// orderid
 		PropertyDefinition orderid = shiporderType.getChild(new QName("orderid")).asProperty();

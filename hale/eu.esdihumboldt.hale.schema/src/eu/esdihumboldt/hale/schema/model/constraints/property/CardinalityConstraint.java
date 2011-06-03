@@ -28,7 +28,7 @@ public final class CardinalityConstraint implements PropertyConstraint, GroupPro
 	/**
 	 * Value for unrestricted {@link #maxOccurs}
 	 */
-	public static final long UNRESTRICTED = -1;
+	public static final long UNBOUNDED = -1;
 	
 	/**
 	 * Cardinality constraint for properties that occur exactly once (one)
@@ -43,12 +43,12 @@ public final class CardinalityConstraint implements PropertyConstraint, GroupPro
 	/**
 	 * Cardinality constraint for properties that occur at least once (one to infinity)
 	 */
-	public static final CardinalityConstraint CC_AT_LEAST_ONCE = new CardinalityConstraint(1, UNRESTRICTED);
+	public static final CardinalityConstraint CC_AT_LEAST_ONCE = new CardinalityConstraint(1, UNBOUNDED);
 	
 	/**
 	 * Cardinality constraint for properties that occur in any number (zero to infinity)
 	 */
-	public static final CardinalityConstraint CC_ANY_NUMBER = new CardinalityConstraint(0, UNRESTRICTED);
+	public static final CardinalityConstraint CC_ANY_NUMBER = new CardinalityConstraint(0, UNBOUNDED);
 	
 	/**
 	 * Get the cardinality constraint with the given occurences
@@ -56,7 +56,7 @@ public final class CardinalityConstraint implements PropertyConstraint, GroupPro
 	 * @param minOccurs the number of minimum occurrences of a property, may not
 	 *   be negative
 	 * @param maxOccurs the number of maximum occurrences of a property,
-	 *   {@value #UNRESTRICTED} for an infinite maximum occurrence
+	 *   {@value #UNBOUNDED} for an infinite maximum occurrence
 	 * @return the cardinality constraint
 	 */
 	public static CardinalityConstraint getCardinality(long minOccurs, long maxOccurs) {
@@ -65,7 +65,7 @@ public final class CardinalityConstraint implements PropertyConstraint, GroupPro
 			if (maxOccurs == 1) {
 				return CC_OPTIONAL;
 			}
-			else if (maxOccurs == UNRESTRICTED) {
+			else if (maxOccurs == UNBOUNDED) {
 				return CC_ANY_NUMBER;
 			}
 		}
@@ -73,7 +73,7 @@ public final class CardinalityConstraint implements PropertyConstraint, GroupPro
 			if (maxOccurs == 1) {
 				return CC_EXACTLY_ONCE;
 			}
-			else if (maxOccurs == UNRESTRICTED) {
+			else if (maxOccurs == UNBOUNDED) {
 				return CC_AT_LEAST_ONCE;
 			} 
 		}
@@ -111,7 +111,7 @@ public final class CardinalityConstraint implements PropertyConstraint, GroupPro
 	 * @param minOccurs the number of minimum occurrences of a property, may not
 	 *   be negative
 	 * @param maxOccurs the number of maximum occurrences of a property,
-	 *   {@value #UNRESTRICTED} for an infinite maximum occurrence
+	 *   {@value #UNBOUNDED} for an infinite maximum occurrence
 	 */
 	private CardinalityConstraint(long minOccurs, long maxOccurs) {
 		super();

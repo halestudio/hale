@@ -754,8 +754,9 @@ public class XmlSchemaReader
 			XmlSchemaElement element, String schemaLocation) {
 		// set constraints
 		property.setConstraint(NillableFlag.get(element.isNillable()));
+		long max = (element.getMaxOccurs() == Long.MAX_VALUE)?(CardinalityConstraint.UNBOUNDED):(element.getMaxOccurs());
 		property.setConstraint(CardinalityConstraint.getCardinality(
-				element.getMinOccurs(), element.getMaxOccurs()));
+				element.getMinOccurs(), max ));
 		
 		// set metadata
 		setMetadata(property, element, schemaLocation);
