@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" xmlns="http://www.example.com" targetNamespace="http://www.example.com">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="qualified" xmlns="http://www.example.com" targetNamespace="http://www.example.com">
 
 <xs:simpleType name="stringtype">
   <xs:restriction base="xs:string"/>
