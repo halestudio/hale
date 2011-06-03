@@ -231,6 +231,27 @@ public class XmlSchemaReaderTest {
 	}
 	
 	/**
+	 * Test reading a simple XML schema that uses several custom named types.
+	 * The types are referenced before they are declared.
+	 * @throws Exception if reading the schema fails
+	 */
+	@Test
+	public void testRead_shiporder_types_reverse() throws Exception {
+		URI location = getClass().getResource("/testdata/shiporder/shiporder-types-r.xsd").toURI();
+		LocatableInputSupplier<? extends InputStream> input = new DefaultInputSupplier(location );
+		XmlIndex schema = (XmlIndex) readSchema(input);
+		
+		String ns = "http://www.example.com";
+		assertEquals(ns , schema.getNamespace());
+		
+		// shiporder element
+		assertEquals(1, schema.getElements().size());
+		XmlElement shiporder = schema.getElements().values().iterator().next();
+		
+		testShiporderStructure(shiporder, ns);
+	}
+	
+	/**
 	 * Reads a schema
 	 * 
 	 * @param input the input supplier
