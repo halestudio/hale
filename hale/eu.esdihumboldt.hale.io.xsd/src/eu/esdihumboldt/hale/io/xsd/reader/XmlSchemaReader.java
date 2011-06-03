@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
@@ -270,7 +271,7 @@ public class XmlSchemaReader
 							element.getQName().getLocalPart() + "_AnonymousType"); //$NON-NLS-1$
 					// create type
 					elementType = createType(element.getSchemaType(), typeName,
-							schemaLocation);
+							schemaLocation, namespace);
 				}
 				else if (element.getQName() != null) {
 					// reference to type
@@ -303,7 +304,8 @@ public class XmlSchemaReader
 			}
 			else if (item instanceof XmlSchemaType) {
 				// complex or simple type
-				createType((XmlSchemaType) item, null, schemaLocation);
+				createType((XmlSchemaType) item, null, schemaLocation,
+						namespace);
 			}
 			else if (item instanceof XmlSchemaAttribute) {
 				// schema attribute that might be referenced somewhere
@@ -389,10 +391,11 @@ public class XmlSchemaReader
 	 * @param typeName the type name to use for the type, <code>null</code>
 	 *   if the name of the schema type shall be used
 	 * @param schemaLocation the schema location
+	 * @param schemaNamespace the schema namespace
 	 * @return the created type
 	 */
 	private XmlTypeDefinition createType(XmlSchemaType schemaType, QName typeName,
-			String schemaLocation) {
+			String schemaLocation, String schemaNamespace) {
 		if (typeName == null) {
 			typeName = schemaType.getQName();
 		}
@@ -426,7 +429,7 @@ public class XmlSchemaReader
 			setMetadataAndConstraints(type, complexType, schemaLocation);
 			
 			// determine the defined properties and add them to the declaring type
-			createProperties(type, complexType, schemaLocation);
+			createProperties(type, complexType, schemaLocation, schemaNamespace);
 		}
 		else {
 			reporter.warn(new IOMessageImpl("Unrecognized schema type", null,
@@ -475,9 +478,10 @@ public class XmlSchemaReader
 	 * @param typeDef the definition of the declaring type
 	 * @param particle the particle
 	 * @param schemaLocation the schema location
+	 * @param schemaNamespace the schema namespace
 	 */
 	private void createPropertiesFromParticle(XmlTypeDefinition typeDef, 
-			XmlSchemaParticle particle, String schemaLocation) {
+			XmlSchemaParticle particle, String schemaLocation, String schemaNamespace) {
 		// particle:
 		if (particle instanceof XmlSchemaSequence) {
 			// <sequence>
@@ -487,13 +491,14 @@ public class XmlSchemaReader
 				if (object instanceof XmlSchemaElement) {
 					// <element>
 					createPropertyFromElement((XmlSchemaElement) object, 
-							typeDef, schemaLocation);
+							typeDef, schemaLocation, schemaNamespace);
 					// </element>
 				}
 				else if (object instanceof XmlSchemaParticle) {
 					// contained particles, e.g. a choice TODO wrap those attributes?
 					createPropertiesFromParticle(typeDef, 
-							(XmlSchemaParticle) object, schemaLocation);
+							(XmlSchemaParticle) object, schemaLocation,
+							schemaNamespace);
 				}
 			}
 			// </sequence>
@@ -507,7 +512,7 @@ public class XmlSchemaReader
 				if (object instanceof XmlSchemaElement) {
 					// <element>
 					createPropertyFromElement((XmlSchemaElement) object, 
-							typeDef, schemaLocation);
+							typeDef, schemaLocation, schemaNamespace);
 					//FIXME how to ensure choice constraint is set? return attributes from create methods?
 //					if (attribute != null) {
 //						attribute.setMinOccurs(0); //XXX set minOccurs to zero because its a choice
@@ -518,7 +523,8 @@ public class XmlSchemaReader
 				else if (object instanceof XmlSchemaParticle) {
 					// contained particles, e.g. a choice TODO wrap those attributes?
 					createPropertiesFromParticle(typeDef, 
-							(XmlSchemaParticle) object, schemaLocation);
+							(XmlSchemaParticle) object, schemaLocation,
+							schemaNamespace);
 				}
 			}
 			// </choice>
@@ -531,9 +537,10 @@ public class XmlSchemaReader
 	 * @param element the schema element
 	 * @param declaringType the definition of the declaring type
 	 * @param schemaLocation the schema location
+	 * @param schemaNamespace the schema namespace
 	 */
 	private void createPropertyFromElement(XmlSchemaElement element, 
-			XmlTypeDefinition declaringType, String schemaLocation) {
+			XmlTypeDefinition declaringType, String schemaLocation, String schemaNamespace) {
 		if (element.getSchemaTypeName() != null) {
 			// element referencing a type
 			// <element name="ELEMENT_NAME" type="SCHEMA_TYPE_NAME" />
@@ -548,9 +555,15 @@ public class XmlSchemaReader
 			// references another element
 			// <element ref="REF_NAME" />
 			QName elementName = element.getRefName();
+			if (elementName.getNamespaceURI() == null || elementName.getNamespaceURI().equals(XMLConstants.NULL_NS_URI)) {
+				// if no namespace is defined use the schema namespace for the element reference
+				// the schema namespace may be the empty namespace but it is OK in that case
+				//XXX is this also ok if elementFormDefault="unqualified" ?
+				elementName = new QName(schemaNamespace, elementName.getLocalPart());
+			}
 			
 			XmlElementReferenceProperty property = new XmlElementReferenceProperty(
-					element.getRefName(), declaringType, index, elementName);
+					elementName, declaringType, index, elementName);
 			
 			// set metadata and constraints FIXME can the constraints be set at this point? or must the property determine them from the SchemaElement?
 			setMetadataAndConstraints(property, element, schemaLocation);
@@ -598,7 +611,7 @@ public class XmlSchemaReader
 							
 							// add properties to the anonymous type
 							createProperties(anonymousType, complexType,
-									schemaLocation);
+									schemaLocation, schemaNamespace);
 							
 							// create a property with the anonymous type
 							DefaultPropertyDefinition property = new DefaultPropertyDefinition(
@@ -644,7 +657,7 @@ public class XmlSchemaReader
 							
 							// add properties to the anonymous type
 							createProperties(anonymousType, complexType,
-									schemaLocation);
+									schemaLocation, schemaNamespace);
 							
 							// create a property with the anonymous type
 							DefaultPropertyDefinition property = new DefaultPropertyDefinition(
@@ -672,7 +685,7 @@ public class XmlSchemaReader
 					
 					// add properties to the anonymous type
 					createProperties(anonymousType, complexType,
-							schemaLocation);
+							schemaLocation, schemaNamespace);
 					
 					// create a property with the anonymous type
 					DefaultPropertyDefinition property = new DefaultPropertyDefinition(
@@ -817,9 +830,10 @@ public class XmlSchemaReader
 	 * @param typeDef the definition of the declaring type 
 	 * @param item the complex type item
 	 * @param schemaLocation the schema location
+	 * @param schemaNamespace the scheme namspace
 	 */
 	private void createProperties(XmlTypeDefinition typeDef, 
-			XmlSchemaComplexType item, String schemaLocation) {
+			XmlSchemaComplexType item, String schemaLocation, String schemaNamespace) {
 		// item:
 		// <complexType ...>
 		XmlSchemaContentModel model = item.getContentModel();
@@ -833,13 +847,14 @@ public class XmlSchemaReader
 				// particle (e.g. sequence)
 				if (extension.getParticle() != null) {
 					XmlSchemaParticle particle = extension.getParticle();
-					createPropertiesFromParticle(typeDef, particle, schemaLocation);
+					createPropertiesFromParticle(typeDef, particle, 
+							schemaLocation, schemaNamespace);
 				}
 				// attributes
 				XmlSchemaObjectCollection attributeCollection = extension.getAttributes();
 				if (attributeCollection != null) {
 					createAttributesFromCollection(attributeCollection, typeDef, 
-							null, schemaLocation);
+							null, schemaLocation, schemaNamespace);
 				}
 				//   </extension>
 				// </complexContent>
@@ -851,13 +866,14 @@ public class XmlSchemaReader
 				// particle (e.g. sequence)
 				if (restriction.getParticle() != null) {
 					XmlSchemaParticle particle = restriction.getParticle();
-					createPropertiesFromParticle(typeDef, particle, schemaLocation);
+					createPropertiesFromParticle(typeDef, particle, 
+							schemaLocation, schemaNamespace);
 				}
 				// attributes
 				XmlSchemaObjectCollection attributeCollection = restriction.getAttributes();
 				if (attributeCollection != null) {
 					createAttributesFromCollection(attributeCollection, typeDef, 
-							null, schemaLocation);
+							null, schemaLocation, schemaNamespace);
 				}
 				//   </restriction>
 				// </complexContent>
@@ -870,7 +886,7 @@ public class XmlSchemaReader
 				XmlSchemaObjectCollection attributeCollection = extension.getAttributes();
 				if (attributeCollection != null) {
 					createAttributesFromCollection(attributeCollection, typeDef, 
-							null, schemaLocation);
+							null, schemaLocation, schemaNamespace);
 				}
 				//   </extension>
 				// </simpleContent>
@@ -883,7 +899,7 @@ public class XmlSchemaReader
 				XmlSchemaObjectCollection attributeCollection = restriction.getAttributes();
 				if (attributeCollection != null) {
 					createAttributesFromCollection(attributeCollection, typeDef, 
-							null, schemaLocation);
+							null, schemaLocation, schemaNamespace);
 				}
 				//   </restriction>
 				// </simpleContent>
@@ -895,13 +911,14 @@ public class XmlSchemaReader
 			// particle (e.g. sequence)
 			if (item.getParticle() != null) {
 				XmlSchemaParticle particle = complexType.getParticle();
-				createPropertiesFromParticle(typeDef, particle, schemaLocation);
+				createPropertiesFromParticle(typeDef, particle, schemaLocation,
+						schemaNamespace);
 			}
 			// attributes
 			XmlSchemaObjectCollection attributeCollection = complexType.getAttributes();
 			if (attributeCollection != null) {
 				createAttributesFromCollection(attributeCollection, typeDef, 
-						null, schemaLocation);
+						null, schemaLocation, schemaNamespace);
 			}
 		}
 		
@@ -910,7 +927,7 @@ public class XmlSchemaReader
 	
 	private void createAttributesFromCollection(
 			XmlSchemaObjectCollection attributeCollection, XmlTypeDefinition declaringType,
-			String indexPrefix, String schemaLocation) {
+			String indexPrefix, String schemaLocation, String schemaNamespace) {
 		if (indexPrefix == null) {
 			indexPrefix = ""; //$NON-NLS-1$
 		}
@@ -922,13 +939,13 @@ public class XmlSchemaReader
 				XmlSchemaAttribute attribute = (XmlSchemaAttribute) object;
 				
 				createAttribute(attribute, declaringType, indexPrefix + index, 
-						schemaLocation);
+						schemaLocation, schemaNamespace);
 			}
 			else if (object instanceof XmlSchemaAttributeGroup) {
 				XmlSchemaAttributeGroup group = (XmlSchemaAttributeGroup) object;
 				
 				createAttributes(group, declaringType, indexPrefix + index,
-						schemaLocation);
+						schemaLocation, schemaNamespace);
 			}
 			else if (object instanceof XmlSchemaAttributeGroupRef) {
 				XmlSchemaAttributeGroupRef groupRef = (XmlSchemaAttributeGroupRef) object;
@@ -953,14 +970,15 @@ public class XmlSchemaReader
 	}
 
 	private void createAttributes(XmlSchemaAttributeGroup group, 
-			XmlTypeDefinition declaringType, String index, String schemaLocation) {
+			XmlTypeDefinition declaringType, String index, String schemaLocation, 
+			String schemaNamespace) {
 		createAttributesFromCollection(group.getAttributes(), 
-				declaringType, index + "_", schemaLocation); //$NON-NLS-1$
+				declaringType, index + "_", schemaLocation, schemaNamespace); //$NON-NLS-1$
 	}
 
 	private void createAttribute(XmlSchemaAttribute attribute, 
 			XmlTypeDefinition declaringType, String index, 
-			String schemaLocation) {
+			String schemaLocation, String schemaNamespace) {
 		// create attributes
 		QName typeName = attribute.getSchemaTypeName();
 		if (typeName != null) {
@@ -995,9 +1013,17 @@ public class XmlSchemaReader
 		else if (attribute.getRefName() != null) {
 			// <attribute ref="REF_NAME" />
 			// reference to a named attribute
+			QName attName = attribute.getRefName();
+			if (attName.getNamespaceURI() == null || attName.getNamespaceURI().equals(XMLConstants.NULL_NS_URI)) {
+				// if no namespace is defined use the schema namespace for the attribute reference
+				// the schema namespace may be the empty namespace but it is OK in that case
+				//XXX is this also ok if attributeFormDefault="unqualified" ? XXX seems to be as it is also needed in that case
+				attName = new QName(schemaNamespace, attName.getLocalPart());
+			}
+			
 			XmlAttributeReferenceProperty property = new XmlAttributeReferenceProperty(
-					attribute.getRefName(), declaringType, this.index, 
-					attribute.getRefName());
+					attName, declaringType, this.index, 
+					attName);
 			
 			// set metadata and constraints
 			setMetadataAndConstraints(property, attribute, schemaLocation);

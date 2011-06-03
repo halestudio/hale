@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.io.xsd.reader.internal;
 
+import java.text.MessageFormat;
+
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.schema.model.PropertyConstraint;
@@ -53,7 +55,8 @@ public class XmlAttributeReferenceProperty extends LazyPropertyDefinition {
 		XmlAttribute attribute = resolveAttribute();
 		
 		if (attribute == null) {
-			throw new IllegalStateException("Referenced attribute could not be found");
+			throw new IllegalStateException("Referenced attribute could not be found: " + 
+					attributeName.toString());
 		}
 		
 		return attribute.getType();
