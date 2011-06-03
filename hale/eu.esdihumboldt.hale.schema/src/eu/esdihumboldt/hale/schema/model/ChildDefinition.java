@@ -31,7 +31,7 @@ public interface ChildDefinition<C> extends Definition<C> {
 	/**
 	 * Get the definition of the group declaring the property.
 	 * 
-	 * @return the type declaring the property
+	 * @return the group declaring the property
 	 */
 	public Group getDeclaringGroup();
 	

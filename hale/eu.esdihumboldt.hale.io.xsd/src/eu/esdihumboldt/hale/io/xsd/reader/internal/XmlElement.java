@@ -14,18 +14,18 @@ package eu.esdihumboldt.hale.io.xsd.reader.internal;
 
 import javax.xml.namespace.QName;
 
-import eu.esdihumboldt.hale.schema.model.Constraint;
 import eu.esdihumboldt.hale.schema.model.Definition;
+import eu.esdihumboldt.hale.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.impl.AbstractDefinition;
 
 /**
- * Schema element
+ * Represents a XML schema element
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class XmlElement extends AbstractDefinition<Constraint> {
+public class XmlElement extends AbstractDefinition<TypeConstraint> {
 
 	/**
 	 * The element type

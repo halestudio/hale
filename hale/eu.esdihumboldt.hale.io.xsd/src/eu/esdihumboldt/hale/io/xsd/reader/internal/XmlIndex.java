@@ -18,8 +18,6 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.apache.ws.commons.schema.XmlSchemaAttributeGroup;
-
 import com.google.common.base.Preconditions;
 
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
@@ -40,7 +38,7 @@ public class XmlIndex extends DefaultSchema {
 	/**
 	 * XML attribute group definitions
 	 */
-	private final Map<QName, XmlSchemaAttributeGroup> attributeGroups = new HashMap<QName, XmlSchemaAttributeGroup>();
+	private final Map<QName, XmlAttributeGroup> attributeGroups = new HashMap<QName, XmlAttributeGroup>();
 	
 	/**
 	 * XML elements
@@ -93,7 +91,7 @@ public class XmlIndex extends DefaultSchema {
 	/**
 	 * @return the attribute group definitions
 	 */
-	public Map<QName, XmlSchemaAttributeGroup> getAttributeGroups() {
+	public Map<QName, XmlAttributeGroup> getAttributeGroups() {
 		return attributeGroups;
 	}
 

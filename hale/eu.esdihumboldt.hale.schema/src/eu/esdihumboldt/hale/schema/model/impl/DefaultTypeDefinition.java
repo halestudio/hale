@@ -23,11 +23,10 @@ import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.Definition;
+import eu.esdihumboldt.hale.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.schema.model.Group;
 import eu.esdihumboldt.hale.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.impl.internal.ReparentGroupProperty;
-import eu.esdihumboldt.hale.schema.model.impl.internal.ReparentProperty;
 
 /**
  * Default {@link TypeDefinition} implementation.
@@ -123,16 +122,7 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 				//FIXME wrong order? must the topmost supertype properties should be the first ones? 
 				for (ChildDefinition<?> parentChild : parent.getDeclaredChildren()) {
 					// create reparented copy
-					ChildDefinition<?> reparent;
-					if (parentChild.asProperty() != null) {
-						reparent = new ReparentProperty(parentChild.asProperty(), this);
-					}
-					else if (parentChild.asGroup() != null) {
-						reparent = new ReparentGroupProperty(parentChild.asGroup(), this);
-					}
-					else {
-						throw new IllegalStateException("Illegal child type.");
-					}
+					ChildDefinition<?> reparent = DefinitionUtil.reparentChild(parentChild, this);
 					
 					inheritedChildren.put(reparent.getName(), reparent);
 				}

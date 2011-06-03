@@ -20,7 +20,7 @@ import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.impl.AbstractDefinition;
 
 /**
- * Schema attribute
+ * Represents a XML schema attribute
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research

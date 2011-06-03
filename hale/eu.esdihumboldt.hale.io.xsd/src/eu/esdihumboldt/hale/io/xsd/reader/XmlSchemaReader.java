@@ -77,6 +77,8 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.HumboldtURIResolver;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.ProgressURIResolver;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.TypeUtil;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlAttribute;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlAttributeGroup;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlAttributeGroupReferenceProperty;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlAttributeReferenceProperty;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlElementReferenceProperty;
@@ -84,6 +86,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
 import eu.esdihumboldt.hale.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.schema.io.impl.AbstractSchemaReader;
+import eu.esdihumboldt.hale.schema.model.Group;
 import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.constraints.property.CardinalityConstraint;
@@ -326,14 +329,16 @@ public class XmlSchemaReader
 			}
 			else if (item instanceof XmlSchemaAttributeGroup) {
 				// schema attribute group that might be referenced somewhere
-				XmlSchemaAttributeGroup group = (XmlSchemaAttributeGroup) item;
-				if (group.getName() != null) {
-					index.getAttributeGroups().put(group.getName(), group);
+				XmlSchemaAttributeGroup attributeGroup = (XmlSchemaAttributeGroup) item;
+				if (attributeGroup.getName() != null) {
+					XmlAttributeGroup attGroup = new XmlAttributeGroup();
+					createAttributes(attributeGroup, attGroup, "", schemaLocation, namespace);
+					index.getAttributeGroups().put(attributeGroup.getName(), attGroup);
 				}
 				else {
 					reporter.warn(new IOMessageImpl(
 							"Attribute group could not be processed", 
-							null, group.getLineNumber(), group.getLinePosition()));
+							null, attributeGroup.getLineNumber(), attributeGroup.getLinePosition()));
 				}
 			}
 		}
@@ -938,7 +943,7 @@ public class XmlSchemaReader
 	}
 	
 	private void createAttributesFromCollection(
-			XmlSchemaObjectCollection attributeCollection, XmlTypeDefinition declaringType,
+			XmlSchemaObjectCollection attributeCollection, Group declaringType,
 			String indexPrefix, String schemaLocation, String schemaNamespace) {
 		if (indexPrefix == null) {
 			indexPrefix = ""; //$NON-NLS-1$
@@ -950,8 +955,8 @@ public class XmlSchemaReader
 				// <attribute ... />
 				XmlSchemaAttribute attribute = (XmlSchemaAttribute) object;
 				
-				createAttribute(attribute, declaringType, indexPrefix + index, 
-						schemaLocation, schemaNamespace);
+				createAttribute(attribute, declaringType, schemaLocation, 
+						schemaNamespace);
 			}
 			else if (object instanceof XmlSchemaAttributeGroup) {
 				XmlSchemaAttributeGroup group = (XmlSchemaAttributeGroup) object;
@@ -962,40 +967,40 @@ public class XmlSchemaReader
 			else if (object instanceof XmlSchemaAttributeGroupRef) {
 				XmlSchemaAttributeGroupRef groupRef = (XmlSchemaAttributeGroupRef) object;
 				
-				//XXX reference properties? how? ensure that all groups are in the index before creating the properties?
-				//XXX could a constraint be used? maybe, order doesn't matter with attributes
-//				if (groupRef.getRefName() != null) {
-//					XmlSchemaAttributeGroup group = referenceResolver.getSchemaAttributeGroup(new NameImpl(
-//							groupRef.getRefName().getNamespaceURI(), 
-//							groupRef.getRefName().getLocalPart()));
-//					
-//					if (group != null) {
-//						attributeResults.addAll(createAttributes(group, 
-//								declaringType, schemaTypes, referenceResolver, indexPrefix + index));
-//					}
-//					else {
-//						_log.warn("Reference to attribute group " + groupRef.getRefName() + " could not be resolved"); //$NON-NLS-1$ //$NON-NLS-2$
-//					}
-//				}
+				if (groupRef.getRefName() != null) {
+					QName groupName = groupRef.getRefName();
+					//XXX extend group name with namespace?
+					XmlAttributeGroupReferenceProperty property = new XmlAttributeGroupReferenceProperty(
+							groupName, declaringType, this.index, groupName);
+					//TODO add constraints?
+					
+					// set metadata
+					setMetadata(property, groupRef, schemaLocation);
+				}
+				else {
+					reporter.error(new IOMessageImpl(
+							"Unrecognized attribute group reference", null,
+							object.getLineNumber(), object.getLinePosition()));
+				}
 			}
 		}
 	}
 
 	private void createAttributes(XmlSchemaAttributeGroup group, 
-			XmlTypeDefinition declaringType, String index, String schemaLocation, 
+			Group declaringType, String index, String schemaLocation, 
 			String schemaNamespace) {
 		createAttributesFromCollection(group.getAttributes(), 
 				declaringType, index + "_", schemaLocation, schemaNamespace); //$NON-NLS-1$
 	}
 
 	private void createAttribute(XmlSchemaAttribute attribute, 
-			XmlTypeDefinition declaringType, String index, 
-			String schemaLocation, String schemaNamespace) {
+			Group declaringType, String schemaLocation, 
+			String schemaNamespace) {
 		// create attributes
 		QName typeName = attribute.getSchemaTypeName();
 		if (typeName != null) {
 			// resolve type by name
-			XmlTypeDefinition type = getAttributeType(attribute, index, schemaLocation);
+			XmlTypeDefinition type = this.index.getType(typeName);
 			
 			// create property
 			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
@@ -1005,22 +1010,19 @@ public class XmlSchemaReader
 			setMetadataAndConstraints(property, attribute, schemaLocation);
 		}
 		else if (attribute.getSchemaType() != null) {
-			if (declaringType != null) {
-				QName name = attribute.getSchemaType().getQName();
-				//XXX also use getAttributwType???
-				//FIXME not sure how to handle simple types, need examples/tests
-//				Name attributeTypeName = (name != null)?
-//						(new NameImpl(name.getNamespaceURI(), name.getLocalPart())):
-//						(new NameImpl(declaringType.getName().getNamespaceURI() + "/" + declaringType.getName().getLocalPart(), "AnonymousAttribute" + index)); //$NON-NLS-1$ //$NON-NLS-2$
-//				TypeDefinition attributeType = TypeUtil.resolveSimpleType(
-//						attributeTypeName, 
-//						attribute.getSchemaType(), 
-//						schemaTypes);
-//				
-//				return new DefaultAttribute(declaringType, attributeTypeName, 
-//						attribute, attributeType, 
-//						(useOverride != null)?(useOverride):(attribute.getUse()));
-			}
+			QName name = attribute.getSchemaType().getQName();
+			XmlTypeDefinition attType = this.index.getType(name);
+			
+			// attribute type from simple schema types
+			configureSimpleType(attType, attribute.getSchemaType(),
+					schemaLocation);
+			
+			// create property
+			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
+					attribute.getQName(), declaringType, attType);
+			
+			// set metadata and constraints
+			setMetadataAndConstraints(property, attribute, schemaLocation);
 		}
 		else if (attribute.getRefName() != null) {
 			// <attribute ref="REF_NAME" />
@@ -1061,18 +1063,11 @@ public class XmlSchemaReader
 		}
 		else if (attribute.getSchemaType() != null) {
 			QName name = attribute.getSchemaType().getQName();
-			//FIXME not sure how to handle simple types, need examples/tests
-//				Name attributeTypeName = (name != null)?
-//						(new NameImpl(name.getNamespaceURI(), name.getLocalPart())):
-//						(new NameImpl(declaringType.getName().getNamespaceURI() + "/" + declaringType.getName().getLocalPart(), "AnonymousAttribute" + index)); //$NON-NLS-1$ //$NON-NLS-2$
-//				TypeDefinition attributeType = TypeUtil.resolveSimpleType(
-//						attributeTypeName, 
-//						attribute.getSchemaType(), 
-//						schemaTypes);
-//				
-//				return new DefaultAttribute(declaringType, attributeTypeName, 
-//						attribute, attributeType, 
-//						(useOverride != null)?(useOverride):(attribute.getUse()));
+			XmlTypeDefinition attType = this.index.getType(name);
+			
+			// attribute type from simple schema types
+			configureSimpleType(attType, attribute.getSchemaType(),
+					schemaLocation);
 		}
 		else if (attribute.getRefName() != null) {
 			// <attribute ref="REF_NAME" />
@@ -1083,27 +1078,6 @@ public class XmlSchemaReader
 		
 		return null;
 	}
-
-//	/**
-//	 * Get the attributes type names for the given item
-//	 * 
-//	 * @param item the complex type item
-//	 * @param referenceResolver the reference resolver
-//	 * @return the attribute type names
-//	 */
-//	private Set<Name> getAttributeTypeNames(XmlSchemaComplexType item, 
-//			SchemaReferenceResolver referenceResolver) {
-//		List<AttributeDefinition> attributes = getAttributes(null, item, null, 
-//				referenceResolver);
-//		
-//		Set<Name> typeNames = new HashSet<Name>();
-//		
-//		for (AttributeDefinition def : attributes) {
-//			typeNames.add(def.getTypeName());
-//		}
-//		
-//		return typeNames;
-//	}
 
 	/**
 	 * Set metadata and constraints for a property based on a XML attribute

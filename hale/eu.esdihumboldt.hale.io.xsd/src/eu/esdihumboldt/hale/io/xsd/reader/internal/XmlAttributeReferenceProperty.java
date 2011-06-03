@@ -14,10 +14,10 @@ package eu.esdihumboldt.hale.io.xsd.reader.internal;
 
 import javax.xml.namespace.QName;
 
+import eu.esdihumboldt.hale.schema.model.Group;
 import eu.esdihumboldt.hale.schema.model.PropertyConstraint;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.impl.AbstractDefinition;
-import eu.esdihumboldt.hale.schema.model.impl.DefaultTypeDefinition;
 
 /**
  * Property referencing a XML attribute
@@ -38,7 +38,7 @@ public class XmlAttributeReferenceProperty extends LazyPropertyDefinition {
 	 * @param attributeName the attribute name
 	 */
 	public XmlAttributeReferenceProperty(QName name,
-			DefaultTypeDefinition declaringType, XmlIndex index,
+			Group declaringType, XmlIndex index,
 			QName attributeName) {
 		super(name, declaringType, index);
 		
