@@ -590,9 +590,9 @@ public class XmlSchemaReader
 							nameExt = "Restriction"; //$NON-NLS-1$
 						}
 						
-						if (declaringType != null) {
+						if (superTypeName != null) {
 							// try to get the type definition of the super type
-							XmlTypeDefinition superType = (superTypeName == null)?(null):(index.getType(superTypeName));
+							XmlTypeDefinition superType = index.getType(superTypeName);
 							
 							// create an anonymous type that extends the super type
 							QName anonymousName = new QName(
@@ -616,6 +616,11 @@ public class XmlSchemaReader
 							// set metadata and constraints
 							setMetadataAndConstraints(property, element, schemaLocation);
 						}
+						else {
+							reporter.error(new IOMessageImpl(
+									"Could not determine super type for complex content", 
+									null, content.getLineNumber(), content.getLinePosition()));
+						}
 						
 						//   </extension> / </restriction>
 						// </complexContent>
@@ -633,9 +638,9 @@ public class XmlSchemaReader
 							nameExt = "Restriction"; //$NON-NLS-1$
 						}
 						
-						if (declaringType != null) {
+						if (superTypeName != null) {
 							// try to get the type definition of the super type
-							XmlTypeDefinition superType = (superTypeName == null)?(null):(index.getType(superTypeName));
+							XmlTypeDefinition superType = index.getType(superTypeName);
 							
 							// create an anonymous type that extends the super type
 							QName anonymousName = new QName(
@@ -661,6 +666,11 @@ public class XmlSchemaReader
 							
 							// set metadata and constraints
 							setMetadataAndConstraints(property, element, schemaLocation);
+						}
+						else {
+							reporter.error(new IOMessageImpl(
+									"Could not determine super type for simple content", 
+									null, content.getLineNumber(), content.getLinePosition()));
 						}
 						
 						//   </extension>
