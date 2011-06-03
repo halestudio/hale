@@ -207,8 +207,8 @@ public class XmlSchemaReaderTest {
 		PropertyDefinition effDate = type.getChild(new QName("effDate")).asProperty();
 		assertNotNull(effDate);
 		// binding must be Date
-		assertEquals(Date.class, id.getPropertyType().getConstraint(
-				BindingConstraint.class).getBinding());
+		assertTrue(Date.class.isAssignableFrom(effDate.getPropertyType().getConstraint(
+				BindingConstraint.class).getBinding()));
 	}
 	
 	/**
