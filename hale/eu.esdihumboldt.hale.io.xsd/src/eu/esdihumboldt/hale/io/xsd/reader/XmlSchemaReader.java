@@ -174,10 +174,8 @@ public class XmlSchemaReader
 		is.close();
 
 		String namespace = xmlSchema.getTargetNamespace();
-		if (namespace == null || namespace.isEmpty()) {
-			// default to gml schema
-			//XXX !this doesn't really work well if there is really no namespace!
-			namespace = "http://www.opengis.net/gml"; //$NON-NLS-1$
+		if (namespace == null) {
+			namespace = XMLConstants.NULL_NS_URI;
 		}
 		
 		xmlSchema.setSourceURI(location.toString());
@@ -238,10 +236,8 @@ public class XmlSchemaReader
 	protected void loadSchema(String schemaLocation, XmlSchema xmlSchema, 
 			Set<String> imports, ProgressIndicator progress) {
 		String namespace = xmlSchema.getTargetNamespace();
-		if (namespace == null || namespace.isEmpty()) {
-			// default to gml schema
-			//FIXME
-			namespace = "http://www.opengis.net/gml"; //$NON-NLS-1$
+		if (namespace == null) {
+			namespace = XMLConstants.NULL_NS_URI;
 		}
 	
 		// type names for type definitions where is no element
