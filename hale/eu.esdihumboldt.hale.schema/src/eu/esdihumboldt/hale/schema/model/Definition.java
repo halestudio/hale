@@ -54,7 +54,9 @@ public interface Definition<C> extends Locatable {
 	public String getDescription();
 	
 	/**
-	 * Get the constraint with the given constraint type
+	 * Get the constraint with the given constraint type.<br>
+	 * Should usually not be called while creating the model, exceptions
+	 * can be getting mutable constraints where this is intended.
 	 * @param <T> the constraint type
 	 * 
 	 * @param constraintType the constraint type, see {@link Constraint}

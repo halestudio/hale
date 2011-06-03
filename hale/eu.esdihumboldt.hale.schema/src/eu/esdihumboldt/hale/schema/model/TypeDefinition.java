@@ -26,7 +26,7 @@ public interface TypeDefinition extends Definition<TypeConstraint>, Group {
 	 * 
 	 * @return the super type, may be <code>null</code>
 	 */
-	public Group getSuperType();
+	public TypeDefinition getSuperType();
 	
 	/**
 	 * Get the sub types

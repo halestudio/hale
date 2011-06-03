@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.hale.io.xsd.reader.internal;
 
-import java.text.MessageFormat;
-
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.schema.model.PropertyConstraint;

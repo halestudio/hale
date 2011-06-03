@@ -56,8 +56,6 @@ import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.apache.ws.commons.schema.utils.NamespacePrefixList;
 
-import de.cs3d.util.logging.AGroup;
-import de.cs3d.util.logging.AGroupFactory;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.core.io.ContentType;
@@ -71,11 +69,13 @@ import eu.esdihumboldt.hale.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.io.xsd.XmlSchemaIO;
 import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
+import eu.esdihumboldt.hale.io.xsd.constraint.SuperTypeBinding;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.io.xsd.internal.Messages;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.AnonymousXmlType;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.HumboldtURIResolver;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.ProgressURIResolver;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.TypeUtil;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlAttribute;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlAttributeReferenceProperty;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlElement;
@@ -112,12 +112,14 @@ public class XmlSchemaReader
 	 */
 	private static ALogger _log = ALoggerFactory.getLogger(XmlSchemaReader.class);
 	
-	private static final AGroup NO_DEFINITION = AGroupFactory.getGroup(Messages.getString("ApacheSchemaProvider.0"));  //$NON-NLS-1$
-	
-	private static final AGroup MISSING_ATTRIBUTE_REF = AGroupFactory.getGroup(Messages.getString("ApacheSchemaProvider.1")); //$NON-NLS-1$
-	
+	/**
+	 * The XML definition index
+	 */
 	private XmlIndex index;
 	
+	/**
+	 * The current reporter
+	 */
 	private IOReporter reporter;
 	
 	/**
@@ -401,7 +403,8 @@ public class XmlSchemaReader
 		
 		if (schemaType instanceof XmlSchemaSimpleType) {
 			// attribute type from simple schema types
-			configureSimpleType(type, (XmlSchemaSimpleType) schemaType);
+			configureSimpleType(type, (XmlSchemaSimpleType) schemaType,
+					schemaLocation);
 		}
 		else if (schemaType instanceof XmlSchemaComplexType) {
 			XmlSchemaComplexType complexType = (XmlSchemaComplexType) schemaType;
@@ -436,16 +439,18 @@ public class XmlSchemaReader
 	}
 
 	/**
-	 * @param type
-	 * @param schemaType
+	 * Configure a type definition for a simple type 
+	 * 
+	 * @param type the type definition
+	 * @param schemaType the schema simple type
+	 * @param schemaLocation the schema location
 	 */
 	private void configureSimpleType(XmlTypeDefinition type,
-			XmlSchemaSimpleType schemaType) {
-		// TODO Auto-generated method stub
+			XmlSchemaSimpleType schemaType, String schemaLocation) {
+		TypeUtil.configureSimpleType(type, schemaType, index, reporter);
 		
-		//XXX TypeDefinition simpleType = TypeUtil.resolveSimpleType(
-		//XXX				typeName, (XmlSchemaSimpleType) item, typeResolver);
-		
+		// set metadata
+		setMetadata(type, schemaType, schemaLocation);
 	}
 
 	private URI createLocationURI(String schemaLocation,
@@ -653,8 +658,9 @@ public class XmlSchemaReader
 							// set metadata and constraints
 							setMetadata(anonymousType, complexType, schemaLocation);
 							anonymousType.setConstraint(SimpleFlag.ENABLED);
-							//XXX binding?!
-							anonymousType.setConstraint(superType.getConstraint(BindingConstraint.class));
+							// set super type binding
+							//XXX is this ok? 
+							anonymousType.setConstraint(new SuperTypeBinding(anonymousType));
 							
 							// add properties to the anonymous type
 							createProperties(anonymousType, complexType,
@@ -715,7 +721,7 @@ public class XmlSchemaReader
 				
 				AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
 				
-				configureSimpleType(anonymousType, simpleType);
+				configureSimpleType(anonymousType, simpleType, schemaLocation);
 //				TypeDefinition type = TypeUtil.resolveSimpleType(null, (XmlSchemaSimpleType) element.getSchemaType(), schemaTypes);
 //				if (type != null) {
 //					return new SchemaTypeAttribute(
