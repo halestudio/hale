@@ -19,7 +19,7 @@ import eu.esdihumboldt.hale.schema.model.GroupPropertyConstraint;
 
 /**
  * Specifies the cardinality for a property, default is for a property to occur
- * once or not at all.
+ * exactly once.
  * @author Simon Templer
  */
 @Immutable
@@ -93,14 +93,14 @@ public class CardinalityConstraint implements PropertyConstraint, GroupPropertyC
 	private final long maxOccurs;
 	
 	/**
-	 * Creates a default cardinality constraint with {@link #minOccurs} zero and
+	 * Creates a default cardinality constraint with {@link #minOccurs} and
 	 * {@link #maxOccurs} one.<br>
 	 * <br>
 	 * NOTE: Instead of using the constructor to create new instances please use
 	 * {@link #getCardinality(long, long)} if possible.
 	 */
 	public CardinalityConstraint() {
-		this(0, 1);
+		this(1, 1);
 	}
 	
 	/**
