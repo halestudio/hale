@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Collection;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import org.junit.Test;
@@ -67,6 +68,43 @@ public class XmlSchemaReaderTest {
 		// shiporder element
 		assertEquals(1, schema.getElements().size());
 		XmlElement shiporder = schema.getElements().values().iterator().next();
+		
+		testShiporderStructure(shiporder, ns);
+	}
+	
+	/**
+	 * Test reading a simple XML schema that contains one big element and where
+	 * elementFormDefault/attributeFromDefault is set to unqualified and no
+	 * target namespace is set.
+	 * Focuses on structure, simple type bindings and cardinalities.
+	 * 
+	 * @throws Exception if reading the schema fails
+	 */
+	@Test
+	public void testRead_shiporder_unqualified() throws Exception {
+		URI location = getClass().getResource("/testdata/shiporder/shiporder-unqualified.xsd").toURI();
+		LocatableInputSupplier<? extends InputStream> input = new DefaultInputSupplier(location );
+		XmlIndex schema = (XmlIndex) readSchema(input);
+		
+		String ns = XMLConstants.NULL_NS_URI;
+		assertEquals(ns , schema.getNamespace());
+		
+		// shiporder element
+		assertEquals(1, schema.getElements().size());
+		XmlElement shiporder = schema.getElements().values().iterator().next();
+		
+		//XXX use null namespace XXX not sure how to work with unqualified form
+		//FIXME target namespace no effect?! should the target namespace always be injected?
+		testShiporderStructure(shiporder, ns);
+	}
+	
+	/**
+	 * Test the shiporder structure
+	 * 
+	 * @param shiporder the shiporder element
+	 * @param ns the namespace
+	 */
+	private void testShiporderStructure(XmlElement shiporder, String ns) {
 		assertNotNull(shiporder);
 		assertEquals("shiporder", shiporder.getName().getLocalPart());
 		
@@ -140,7 +178,7 @@ public class XmlSchemaReaderTest {
 				BindingConstraint.class).getBinding()));
 		
 		// orderid
-		PropertyDefinition orderid = shiporderType.getChild(new QName("orderid")).asProperty();
+		PropertyDefinition orderid = shiporderType.getChild(new QName(ns, "orderid")).asProperty();
 		assertNotNull(orderid);
 		// binding must be string
 		assertEquals(String.class, orderid.getPropertyType().getConstraint(
@@ -150,7 +188,7 @@ public class XmlSchemaReaderTest {
 		assertEquals(1, cc.getMinOccurs());
 		assertEquals(1, cc.getMaxOccurs());
 	}
-	
+
 	/**
 	 * Test reading a simple XML schema that contains several elements
 	 * @throws Exception if reading the schema fails
@@ -164,7 +202,12 @@ public class XmlSchemaReaderTest {
 		String ns = "http://www.example.com";
 		assertEquals(ns , schema.getNamespace());
 		
-		//TODO extend
+		// element count
+		assertEquals(12, schema.getElements().size());
+		// shiporder element
+		XmlElement shiporder = schema.getElements().get(new QName(ns, "shiporder"));
+		
+		testShiporderStructure(shiporder, ns);
 	}
 	
 	/**
@@ -180,7 +223,11 @@ public class XmlSchemaReaderTest {
 		String ns = "http://www.example.com";
 		assertEquals(ns , schema.getNamespace());
 		
-		//TODO extend
+		// shiporder element
+		assertEquals(1, schema.getElements().size());
+		XmlElement shiporder = schema.getElements().values().iterator().next();
+		
+		testShiporderStructure(shiporder, ns);
 	}
 	
 	/**
