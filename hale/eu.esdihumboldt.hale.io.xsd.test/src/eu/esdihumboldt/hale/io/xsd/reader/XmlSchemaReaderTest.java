@@ -206,9 +206,42 @@ public class XmlSchemaReaderTest {
 		// effDate
 		PropertyDefinition effDate = type.getChild(new QName("effDate")).asProperty();
 		assertNotNull(effDate);
-		// binding must be Date
+		// binding must be compatible to Date
 		assertTrue(Date.class.isAssignableFrom(effDate.getPropertyType().getConstraint(
 				BindingConstraint.class).getBinding()));
+	}
+	
+	/**
+	 * Test reading a simple XML schema that is split into several files.
+	 * @throws Exception if reading the schema fails
+	 */
+	@Test
+	public void testRead_definitive_chapter03() throws Exception {
+		URI location = getClass().getResource("/testdata/definitive/chapter03env.xsd").toURI();
+		LocatableInputSupplier<? extends InputStream> input = new DefaultInputSupplier(location );
+		XmlIndex schema = (XmlIndex) readSchema(input);
+		
+		// envelope element
+		XmlElement envelope = schema.getElements().get(new QName("envelope"));
+		assertNotNull(envelope);
+		TypeDefinition envType = envelope.getType();
+		
+		// order
+		PropertyDefinition order = envType.getChild(new QName(
+				"http://example.org/ord", "order")).asProperty();
+		assertNotNull(order);
+		TypeDefinition orderType = order.getPropertyType();
+		
+		// number
+		PropertyDefinition number = orderType.getChild(new QName(
+				"http://example.org/ord", "number")).asProperty();
+		assertNotNull(number);
+		// binding must be string
+		assertEquals(String.class, number.getPropertyType().getConstraint(
+				BindingConstraint.class).getBinding());
+		
+		// items
+		//TODO extend
 	}
 	
 	/**
