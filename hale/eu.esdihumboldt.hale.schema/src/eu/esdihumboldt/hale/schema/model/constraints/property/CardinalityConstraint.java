@@ -23,7 +23,8 @@ import eu.esdihumboldt.hale.schema.model.GroupPropertyConstraint;
  * @author Simon Templer
  */
 @Immutable
-public final class CardinalityConstraint implements PropertyConstraint, GroupPropertyConstraint {
+@Constraint(mutable = false)
+public class CardinalityConstraint implements PropertyConstraint, GroupPropertyConstraint {
 
 	/**
 	 * Value for unrestricted {@link #maxOccurs}
@@ -135,14 +136,6 @@ public final class CardinalityConstraint implements PropertyConstraint, GroupPro
 	 */
 	public long getMaxOccurs() {
 		return maxOccurs;
-	}
-
-	/**
-	 * @see Constraint#isMutable()
-	 */
-	@Override
-	public boolean isMutable() {
-		return false;
 	}
 
 }

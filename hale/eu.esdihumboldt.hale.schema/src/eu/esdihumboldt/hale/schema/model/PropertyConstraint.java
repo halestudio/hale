@@ -16,7 +16,7 @@ package eu.esdihumboldt.hale.schema.model;
  * Marks constraints for {@link PropertyDefinition}s
  * @author Simon Templer
  */
-public interface PropertyConstraint extends Constraint {
+public interface PropertyConstraint {
 	
 	// marker interface
 

@@ -23,7 +23,7 @@ import eu.esdihumboldt.hale.core.io.supplier.Locatable;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public interface Definition<C extends Constraint> extends Locatable {
+public interface Definition<C> extends Locatable {
 	
 	/**
 	 * Get the definitions identifier
@@ -54,11 +54,10 @@ public interface Definition<C extends Constraint> extends Locatable {
 	public String getDescription();
 	
 	/**
-	 * Get the constraint with the given type
+	 * Get the constraint with the given constraint type
 	 * @param <T> the constraint type
 	 * 
-	 * @param constraintType the constraint class. This must be a concrete type
-	 *   (@see {@link Constraint})
+	 * @param constraintType the constraint type, see {@link Constraint}
 	 * @return the constraint with the given type
 	 */
 	public <T extends C> T getConstraint(Class<T> constraintType);

@@ -24,34 +24,44 @@ import eu.esdihumboldt.hale.schema.model.Constraint;
 import eu.esdihumboldt.hale.schema.model.Definition;
 
 /**
- * Helper for creating default constraints. Caches immutable default constraints
- * that have a default constructor.
+ * Helper for creating default constraints and dealing with the 
+ * {@link Constraint} annotation. Caches immutable default constraints that 
+ * have a default constructor.
+ * 
  * @see Constraint
  * @see Definition#getConstraint(Class)
  * 
  * @author Simon Templer
  */
-public abstract class DefaultConstraints {
+public abstract class ConstraintUtil {
 	
-	private static final ALogger log = ALoggerFactory.getLogger(DefaultConstraints.class);
+	private static final ALogger log = ALoggerFactory.getLogger(ConstraintUtil.class);
 	
-	private static final Map<Class<? extends Constraint>, Constraint> cachedDefaults = new HashMap<Class<? extends Constraint>, Constraint>();
+	private static final Map<Class<?>, Object> cachedDefaults = new HashMap<Class<?>, Object>();
 
 	/**
 	 * Get the default constraint for the given constraint type.
 	 * @param <T> the constraint type
 	 * 
-	 * @param constraintType the concrete constraint class
+	 * @param constraintType the concrete constraint type, i.e. a type
+	 *   annotated with {@link Constraint} and defining a default constructor
+	 *   and/or a constructor taking a {@link Definition} as an argument
 	 * @param definition the definition the constraint will be associated to
 	 * @return the default constraint of the given type
-	 * @throws IllegalArgumentException if creating the default constraint fails 
+	 * @throws IllegalArgumentException if the given type is no constraint type
+	 *   or creating the default constraint fails 
 	 * 
+	 * @see Constraint
 	 * @see Definition#getConstraint(Class)
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends Constraint> T getDefaultConstraint(
+	public static <T> T getDefaultConstraint(
 			Class<T> constraintType, Definition<?> definition) throws IllegalArgumentException {
-		Constraint cached = cachedDefaults.get(constraintType);
+		if (!constraintType.isAnnotationPresent(Constraint.class)) {
+			throw new IllegalArgumentException("The type " + constraintType.getName() + " is no constraint type.");
+		}
+		
+		Object cached = cachedDefaults.get(constraintType);
 		if (cached != null) {
 			return (T) cached;
 		}
@@ -91,7 +101,7 @@ public abstract class DefaultConstraints {
 		try {
 			Constructor<T> defConstructor = constraintType.getConstructor();
 			T constraint = defConstructor.newInstance();
-			if (!constraint.isMutable()) {
+			if (!isMutableConstraint(constraintType)) {
 				// constraint may be cached
 				cachedDefaults.put(constraintType, constraint);
 			}
@@ -104,6 +114,43 @@ public abstract class DefaultConstraints {
 		throw new IllegalArgumentException("Could not create a default constraint for constraint type " + 
 				constraintType.getSimpleName() + ". Ensure that a concrete constraint type is given and " + 
 				"that the implementation adheres to the contract specified by Constraint");
+	}
+	
+	/**
+	 * Determine the constraint type in the hierarchy of the given type, i.e.
+	 * the type that is marked with {@link Constraint}
+	 * 
+	 * @param type the type to determine the constraint type for
+	 * @return the constraint type
+	 * @throws IllegalArgumentException if no constraint type exists in the type
+	 *   hierarchy
+	 */
+	public static Class<?> getConstraintType(Class<?> type) throws IllegalArgumentException {
+		while (!type.isAnnotationPresent(Constraint.class)) {
+			if (type.equals(Object.class)) {
+				throw new IllegalArgumentException("The type " + type.getName() + " has no constraint type in its hierarchy.");
+			}
+			
+			type = type.getSuperclass();
+		}
+		
+		return type;
+	}
+	
+	/**
+	 * Determine if the constraint type in the hierarchy of the given type is
+	 * mutable.
+	 * 
+	 * @param type the type to determine the constraint type for
+	 * @return if the constraint is mutable
+	 * @throws IllegalArgumentException if no constraint type exists in the type
+	 *   hierarchy
+	 */
+	public static boolean isMutableConstraint(Class<?> type) {
+		type = getConstraintType(type);
+		
+		Constraint constraint = type.getAnnotation(Constraint.class);
+		return constraint.mutable();
 	}
 	
 }

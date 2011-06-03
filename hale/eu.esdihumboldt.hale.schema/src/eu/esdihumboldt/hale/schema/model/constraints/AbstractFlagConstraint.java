@@ -13,14 +13,13 @@
 package eu.esdihumboldt.hale.schema.model.constraints;
 
 import net.jcip.annotations.Immutable;
-import eu.esdihumboldt.hale.schema.model.Constraint;
 
 /**
  * Abstract constraint that represents a flag that can be enabled or disabled
  * @author Simon Templer
  */
 @Immutable
-public abstract class AbstractFlagConstraint implements Constraint {
+public abstract class AbstractFlagConstraint {
 
 	private final boolean enabled;
 	
@@ -32,14 +31,6 @@ public abstract class AbstractFlagConstraint implements Constraint {
 		super();
 		
 		this.enabled = enabled;
-	}
-
-	/**
-	 * @see Constraint#isMutable()
-	 */
-	@Override
-	public boolean isMutable() {
-		return false;
 	}
 
 	/**

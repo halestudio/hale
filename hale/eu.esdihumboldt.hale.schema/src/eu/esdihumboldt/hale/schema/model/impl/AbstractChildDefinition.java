@@ -15,7 +15,6 @@ package eu.esdihumboldt.hale.schema.model.impl;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.schema.model.Constraint;
 import eu.esdihumboldt.hale.schema.model.Definition;
 import eu.esdihumboldt.hale.schema.model.Group;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
@@ -26,7 +25,7 @@ import eu.esdihumboldt.hale.schema.model.TypeDefinition;
  * 
  * @author Simon Templer
  */
-public abstract class AbstractChildDefinition<C extends Constraint> extends AbstractDefinition<C> implements
+public abstract class AbstractChildDefinition<C> extends AbstractDefinition<C> implements
 		ChildDefinition<C> {
 	
 	/**

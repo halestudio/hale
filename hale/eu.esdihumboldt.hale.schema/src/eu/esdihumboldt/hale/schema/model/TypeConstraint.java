@@ -16,7 +16,7 @@ package eu.esdihumboldt.hale.schema.model;
  * Marks constraints for {@link TypeDefinition}s
  * @author Simon Templer
  */
-public interface TypeConstraint extends Constraint {
+public interface TypeConstraint {
 
 	// marker interface
 	

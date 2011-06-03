@@ -24,7 +24,8 @@ import eu.esdihumboldt.hale.schema.model.TypeConstraint;
  * @author Simon Templer
  */
 @Immutable
-public final class BindingConstraint implements TypeConstraint {
+@Constraint(mutable = false)
+public class BindingConstraint implements TypeConstraint {
 	
 	/**
 	 * Binding singletons, binding class mapped to the corresponding binding
@@ -53,7 +54,8 @@ public final class BindingConstraint implements TypeConstraint {
 	private final Class<?> binding;
 
 	/**
-	 * Creates a default binding constraint with {@link Object} binding
+	 * Creates a default binding constraint with {@link Object} binding.
+	 * 
 	 * @see Constraint 
 	 */
 	public BindingConstraint() {
@@ -77,14 +79,6 @@ public final class BindingConstraint implements TypeConstraint {
 	 */
 	public Class<?> getBinding() {
 		return binding;
-	}
-
-	/**
-	 * @see Constraint#isMutable()
-	 */
-	@Override
-	public boolean isMutable() {
-		return false;
 	}
 	
 }

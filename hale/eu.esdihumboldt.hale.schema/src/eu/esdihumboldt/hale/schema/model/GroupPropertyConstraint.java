@@ -16,7 +16,7 @@ package eu.esdihumboldt.hale.schema.model;
  * Marks constraints for group definitions
  * @author Simon Templer
  */
-public interface GroupPropertyConstraint extends Constraint {
+public interface GroupPropertyConstraint {
 	
 	// marker interface
 

@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.schema.model;
  * 
  * @author Simon Templer
  */
-public interface ChildDefinition<C extends Constraint> extends Definition<C> {
+public interface ChildDefinition<C> extends Definition<C> {
 
 	/**
 	 * Get the parent type of the child. This can either be the declaring

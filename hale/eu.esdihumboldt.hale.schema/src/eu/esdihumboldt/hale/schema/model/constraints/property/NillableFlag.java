@@ -22,7 +22,8 @@ import eu.esdihumboldt.hale.schema.model.constraints.AbstractFlagConstraint;
  * @author Simon Templer
  */
 @Immutable
-public final class NillableFlag extends AbstractFlagConstraint implements PropertyConstraint {
+@Constraint(mutable = false)
+public class NillableFlag extends AbstractFlagConstraint implements PropertyConstraint {
 
 	/**
 	 * Enabled nillable flag
@@ -49,7 +50,7 @@ public final class NillableFlag extends AbstractFlagConstraint implements Proper
 	 * of creating an instance, use {@link #get(boolean)}, {@link #ENABLED} or 
 	 * {@link #DISABLED}.
 	 * 
-	 * @see Constraint
+	 * @see CardinalityConstraint
 	 */
 	public NillableFlag() {
 		this(false);

@@ -19,9 +19,8 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.core.io.supplier.Locatable;
-import eu.esdihumboldt.hale.schema.model.Constraint;
 import eu.esdihumboldt.hale.schema.model.Definition;
-import eu.esdihumboldt.hale.schema.model.constraints.DefaultConstraints;
+import eu.esdihumboldt.hale.schema.model.constraints.ConstraintUtil;
 
 /**
  * Basic definition implementation to be subclassed
@@ -29,7 +28,7 @@ import eu.esdihumboldt.hale.schema.model.constraints.DefaultConstraints;
  * 
  * @author Simon Templer
  */
-public abstract class AbstractDefinition<C extends Constraint> implements Definition<C>, Comparable<AbstractDefinition<?>> {
+public abstract class AbstractDefinition<C> implements Definition<C>, Comparable<AbstractDefinition<?>> {
 
 	/**
 	 * The qualified definition name
@@ -76,7 +75,7 @@ public abstract class AbstractDefinition<C extends Constraint> implements Defini
 			}
 			
 			// get default constraint and remember it
-			T defConstraint = DefaultConstraints.getDefaultConstraint(constraintType, this);
+			T defConstraint = ConstraintUtil.getDefaultConstraint(constraintType, this);
 			constraints.put(constraintType, defConstraint);
 			return defConstraint;
 		}
@@ -103,7 +102,9 @@ public abstract class AbstractDefinition<C extends Constraint> implements Defini
 	@SuppressWarnings("unchecked")
 	public void setConstraint(C constraint) {
 		synchronized (constraints) {
-			constraints.put((Class<? extends C>) constraint.getClass(), constraint);
+			// determine constraint type for constraint object
+			Class<?> constraintType = ConstraintUtil.getConstraintType(constraint.getClass());
+			constraints.put((Class<? extends C>) constraintType, constraint);
 		}
 	}
 

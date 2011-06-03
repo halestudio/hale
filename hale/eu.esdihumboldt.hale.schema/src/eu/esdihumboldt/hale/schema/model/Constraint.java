@@ -12,29 +12,37 @@
 
 package eu.esdihumboldt.hale.schema.model;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import eu.esdihumboldt.hale.schema.model.constraints.ConstraintUtil;
+
 /**
- * Marks definition constraints.<br>
+ * Marks constraint types.<br>
  * <br>
- * Concrete implementations must have a default constructor or a constructor
+ * Types using this annotation must have a default constructor or a constructor
  * that takes a {@link Definition} as an argument that will create
- * the constraint with its default settings as this will be used when a 
+ * the constraint with its default settings as this will be used when a
  * constraint of that type is requested for a definition where it does not
  * exist. If both a default and a {@link Definition} constructor are available
  * the constructor that takes a definition is preferred if possible.
- * @see TypeDefinition#getConstraint(Class)
- * @see PropertyDefinition#getConstraint(Class)
+ * 
+ * @see Definition#getConstraint(Class)
+ * @see ConstraintUtil#getDefaultConstraint(Class, Definition)
  * 
  * @author Simon Templer
  */
-public interface Constraint {
-
-	/**
-	 * States if the constraint is mutable and can be manipulated.<br>
-	 * <br>
-	 * NOTE: A mutable constraint is not ensured to be thread safe
-	 * 
-	 * @return if the constraint is mutable
-	 */
-	public boolean isMutable();
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface Constraint {
 	
+	/**
+	 * States if the constraint is mutable.
+	 * 
+	 * @return if the constraint is mutable, <code>true</code> by default
+	 */
+	boolean mutable() default true;
+
 }

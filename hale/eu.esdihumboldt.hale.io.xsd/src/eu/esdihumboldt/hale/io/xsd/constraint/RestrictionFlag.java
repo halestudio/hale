@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.schema.model.constraints.AbstractFlagConstraint;
  * @author Simon Templer
  */
 @Immutable
+@Constraint(mutable = false)
 public final class RestrictionFlag extends AbstractFlagConstraint implements TypeConstraint {
 
 	/**

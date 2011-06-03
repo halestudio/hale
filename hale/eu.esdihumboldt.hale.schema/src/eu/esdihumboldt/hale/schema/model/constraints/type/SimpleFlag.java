@@ -25,7 +25,8 @@ import eu.esdihumboldt.hale.schema.model.constraints.AbstractFlagConstraint;
  * @author Simon Templer
  */
 @Immutable
-public final class SimpleFlag extends AbstractFlagConstraint implements TypeConstraint {
+@Constraint(mutable = false)
+public class SimpleFlag extends AbstractFlagConstraint implements TypeConstraint {
 
 	/**
 	 * Enabled simple type flag
@@ -50,6 +51,7 @@ public final class SimpleFlag extends AbstractFlagConstraint implements TypeCons
 	/**
 	 * Creates a default simple type flag, which is disabled. If possible, 
 	 * instead of creating an instance, use {@link #ENABLED} or {@link #DISABLED}.
+	 * 
 	 * @see Constraint
 	 */
 	public SimpleFlag() {
@@ -60,6 +62,7 @@ public final class SimpleFlag extends AbstractFlagConstraint implements TypeCons
 	 * Creates a default simple type flag from a type definition. The flag is
 	 * enabled if the type has no properties.
 	 * @param typeDef the type definition
+	 * 
 	 * @see Constraint
 	 */
 	public SimpleFlag(TypeDefinition typeDef) {

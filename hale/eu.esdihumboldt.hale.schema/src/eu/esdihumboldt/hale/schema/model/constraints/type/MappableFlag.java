@@ -23,7 +23,8 @@ import eu.esdihumboldt.hale.schema.model.constraints.AbstractFlagConstraint;
  * @author Simon Templer
  */
 @Immutable
-public final class MappableFlag extends AbstractFlagConstraint implements TypeConstraint {
+@Constraint(mutable = false)
+public class MappableFlag extends AbstractFlagConstraint implements TypeConstraint {
 
 	/**
 	 * Enabled mappable flag
