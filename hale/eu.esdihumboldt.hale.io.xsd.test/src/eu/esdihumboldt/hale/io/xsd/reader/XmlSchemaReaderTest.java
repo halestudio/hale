@@ -42,6 +42,7 @@ import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.constraints.property.CardinalityConstraint;
+import eu.esdihumboldt.hale.schema.model.constraints.property.ChoiceFlag;
 import eu.esdihumboldt.hale.schema.model.constraints.property.NillableFlag;
 import eu.esdihumboldt.hale.schema.model.constraints.type.BindingConstraint;
 import eu.esdihumboldt.hale.schema.model.constraints.type.SimpleFlag;
@@ -181,6 +182,8 @@ public class XmlSchemaReaderTest {
 		// IdentifierGroup
 		GroupPropertyDefinition group = type.getChild(new QName("IdentifierGroup")).asGroup();
 		assertNotNull(group);
+		// not a choice
+		assertFalse(group.getConstraint(ChoiceFlag.class).isEnabled());
 		
 		// id
 		PropertyDefinition id = group.getChild(new QName("id")).asProperty();
@@ -242,6 +245,50 @@ public class XmlSchemaReaderTest {
 		
 		// items
 		//TODO extend
+	}
+	
+	/**
+	 * Test reading a simple XML schema with choices and complex types.
+	 * @throws Exception if reading the schema fails
+	 */
+	@Test
+	public void testRead_definitive_choice() throws Exception {
+		URI location = getClass().getResource("/testdata/definitive/choice_complex.xsd").toURI();
+		LocatableInputSupplier<? extends InputStream> input = new DefaultInputSupplier(location );
+		XmlIndex schema = (XmlIndex) readSchema(input);
+		
+		// ItemsType
+		XmlTypeDefinition itemsType = schema.getType(new QName("ItemsType"));
+		assertNotNull(itemsType);
+		
+		Collection<? extends ChildDefinition<?>> children = itemsType.getChildren();
+		assertEquals(1, children.size());
+		
+		// choice
+		GroupPropertyDefinition choice = children.iterator().next().asGroup();
+		assertNotNull(choice);
+		// cardinality
+		CardinalityConstraint cc = choice.getConstraint(CardinalityConstraint.class);
+		assertEquals(0, cc.getMinOccurs());
+		assertEquals(CardinalityConstraint.UNBOUNDED, cc.getMaxOccurs());
+		// choice flag
+		assertTrue(choice.getConstraint(ChoiceFlag.class).isEnabled());
+		// children
+		assertEquals(3, choice.getDeclaredChildren().size());
+		
+		// shirt
+		PropertyDefinition shirt = choice.getChild(new QName("shirt")).asProperty();
+		assertNotNull(shirt);
+		
+		// hat
+		PropertyDefinition hat = choice.getChild(new QName("hat")).asProperty();
+		assertNotNull(hat);
+		
+		// umbrella
+		PropertyDefinition umbrella = choice.getChild(new QName("umbrella")).asProperty();
+		assertNotNull(umbrella);
+		
+		//TODO extend with advanced complex type tests?
 	}
 	
 	/**
