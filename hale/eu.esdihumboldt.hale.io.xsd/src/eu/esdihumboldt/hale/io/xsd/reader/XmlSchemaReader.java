@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -86,26 +87,32 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
 import eu.esdihumboldt.hale.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.schema.io.impl.AbstractSchemaReader;
+import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.Group;
 import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.constraints.property.CardinalityConstraint;
+import eu.esdihumboldt.hale.schema.model.constraints.property.ChoiceFlag;
 import eu.esdihumboldt.hale.schema.model.constraints.property.NillableFlag;
 import eu.esdihumboldt.hale.schema.model.constraints.type.AbstractFlag;
 import eu.esdihumboldt.hale.schema.model.constraints.type.BindingConstraint;
 import eu.esdihumboldt.hale.schema.model.constraints.type.SimpleFlag;
 import eu.esdihumboldt.hale.schema.model.impl.AbstractDefinition;
+import eu.esdihumboldt.hale.schema.model.impl.DefaultGroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultPropertyDefinition;
 
 /**
  * The main functionality of this class is to load an XML schema file (XSD)
- * and create a FeatureType collection. This implementation is based on the
- * Apache XmlSchema library (http://ws.apache.org/commons/XmlSchema/). It is
- * necessary use this library instead of the GeoTools Xml schema loader, because
- * the GeoTools version cannot handle GML 3.2 based files.
+ * and create a {@link Schema} with {@link TypeDefinition}s. This implementation
+ * is based on the Apache XmlSchema library 
+ * ({@link "http://ws.apache.org/commons/XmlSchema/"}).
  * 
- * @author Bernd Schneiders, Logica; Thorsten Reitz, Fraunhofer IGD;
- *   Simon Templer, Fraunhofer IGD
+ * It is necessary use this library instead of the GeoTools XML schema loader, 
+ * because the GeoTools version cannot handle GML 3.2 based files.
+ * 
+ * @author Simon Templer
+ * @author Bernd Schneiders
+ * @author Thorsten Reitz
  */
 public class XmlSchemaReader 
 	extends AbstractSchemaReader {
@@ -138,7 +145,6 @@ public class XmlSchemaReader
 	 */
 	@Override
 	public boolean isCancelable() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -245,13 +251,8 @@ public class XmlSchemaReader
 			namespace = XMLConstants.NULL_NS_URI;
 		}
 	
-		// type names for type definitions where is no element
-//		Set<String> schemaTypeNames = new HashSet<String>();
-		
 		// the schema items
 		XmlSchemaObjectCollection items = xmlSchema.getItems();
-		
-//		Map<XmlSchemaElement, Name> anonymousTypes = new HashMap<XmlSchemaElement, Name>();
 		
 		// go through all schema items
 		for (int i = 0; i < items.getCount(); i++) {
@@ -294,6 +295,7 @@ public class XmlSchemaReader
 					setMetadata(schemaElement, element, schemaLocation);
 					
 					//TODO set constraints? (e.g. Mappable)
+					//TODO extend SchemaElement constraint
 					
 					// store element in index
 					index.getElements().put(elementName, schemaElement);
@@ -373,16 +375,6 @@ public class XmlSchemaReader
 		
 		progress.setCurrentTask(MessageFormat.format(
 				Messages.getString("ApacheSchemaProvider.33"), namespace)); //$NON-NLS-1$
-		
-		// 3rd pass: create feature types 
-//		for (Name typeName : typeNames.getItems()) {
-//			XmlSchemaObject item = typeDefinitions.get(typeName);
-//	
-//			if (item == null) {
-//				_log.error("No definition for " + typeName.toString()); //$NON-NLS-1$
-//			}
-//			
-//		}
 	}
 
 	/**
@@ -481,12 +473,12 @@ public class XmlSchemaReader
 	/**
 	 * Extracts attribute definitions from a {@link XmlSchemaParticle}.
 	 * 
-	 * @param typeDef the definition of the declaring type
+	 * @param declaringGroup the definition of the declaring group
 	 * @param particle the particle
 	 * @param schemaLocation the schema location
 	 * @param schemaNamespace the schema namespace
 	 */
-	private void createPropertiesFromParticle(XmlTypeDefinition typeDef, 
+	private void createPropertiesFromParticle(Group declaringGroup, 
 			XmlSchemaParticle particle, String schemaLocation, String schemaNamespace) {
 		// particle:
 		if (particle instanceof XmlSchemaSequence) {
@@ -497,12 +489,12 @@ public class XmlSchemaReader
 				if (object instanceof XmlSchemaElement) {
 					// <element>
 					createPropertyFromElement((XmlSchemaElement) object, 
-							typeDef, schemaLocation, schemaNamespace);
+							declaringGroup, schemaLocation, schemaNamespace);
 					// </element>
 				}
 				else if (object instanceof XmlSchemaParticle) {
 					// contained particles, e.g. a choice TODO wrap those attributes?
-					createPropertiesFromParticle(typeDef, 
+					createPropertiesFromParticle(declaringGroup, 
 							(XmlSchemaParticle) object, schemaLocation,
 							schemaNamespace);
 				}
@@ -510,25 +502,36 @@ public class XmlSchemaReader
 			// </sequence>
 		}
 		else if (particle instanceof XmlSchemaChoice) {
-			//FIXME how to correctly deal with this? for now we add all choices
 			// <choice>
 			XmlSchemaChoice choice = (XmlSchemaChoice) particle;
+			
+			// create a choice group
+			String choiceName = choice.getId();
+			if (choiceName == null || choiceName.isEmpty()) {
+				choiceName = UUID.randomUUID().toString(); //TODO improve name
+			}
+			DefaultGroupPropertyDefinition choiceGroup = new DefaultGroupPropertyDefinition(
+					new QName(choiceName), declaringGroup);
+			// set cardinality
+			long max = (choice.getMaxOccurs() == Long.MAX_VALUE)?(CardinalityConstraint.UNBOUNDED):(choice.getMaxOccurs());
+			choiceGroup.setConstraint(CardinalityConstraint.getCardinality(
+					choice.getMinOccurs(), max ));
+			// set choice constraint
+			choiceGroup.setConstraint(ChoiceFlag.ENABLED);
+			// set metadata
+			setMetadata(choiceGroup, choice, schemaLocation);
+			
+			// create properties with choiceGroup as parent
 			for (int j = 0; j < choice.getItems().getCount(); j++) {
 				XmlSchemaObject object = choice.getItems().getItem(j);
 				if (object instanceof XmlSchemaElement) {
 					// <element>
 					createPropertyFromElement((XmlSchemaElement) object, 
-							typeDef, schemaLocation, schemaNamespace);
-					//FIXME how to ensure choice constraint is set? return attributes from create methods?
-//					if (attribute != null) {
-//						attribute.setMinOccurs(0); //XXX set minOccurs to zero because its a choice
-//						attributeResults.add(attribute);
-//					}
-					// </element>
+							choiceGroup, schemaLocation, schemaNamespace);
 				}
 				else if (object instanceof XmlSchemaParticle) {
-					// contained particles, e.g. a choice TODO wrap those attributes?
-					createPropertiesFromParticle(typeDef, 
+					// contained particles, e.g. a choice
+					createPropertiesFromParticle(choiceGroup, 
 							(XmlSchemaParticle) object, schemaLocation,
 							schemaNamespace);
 				}
@@ -541,17 +544,17 @@ public class XmlSchemaReader
 	 * Create a property from an element
 	 * 
 	 * @param element the schema element
-	 * @param declaringType the definition of the declaring type
+	 * @param declaringGroup the definition of the declaring group
 	 * @param schemaLocation the schema location
 	 * @param schemaNamespace the schema namespace
 	 */
 	private void createPropertyFromElement(XmlSchemaElement element, 
-			XmlTypeDefinition declaringType, String schemaLocation, String schemaNamespace) {
+			Group declaringGroup, String schemaLocation, String schemaNamespace) {
 		if (element.getSchemaTypeName() != null) {
 			// element referencing a type
 			// <element name="ELEMENT_NAME" type="SCHEMA_TYPE_NAME" />
 			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-					element.getQName(), declaringType, 
+					element.getQName(), declaringGroup, 
 					index.getType(element.getSchemaTypeName()));
 			
 			// set metadata and constraints
@@ -569,7 +572,7 @@ public class XmlSchemaReader
 			}
 			
 			XmlElementReferenceProperty property = new XmlElementReferenceProperty(
-					elementName, declaringType, index, elementName);
+					elementName, declaringGroup, index, elementName);
 			
 			// set metadata and constraints FIXME can the constraints be set at this point? or must the property determine them from the SchemaElement?
 			setMetadataAndConstraints(property, element, schemaLocation);
@@ -606,7 +609,7 @@ public class XmlSchemaReader
 							
 							// create an anonymous type that extends the super type
 							QName anonymousName = new QName(
-									declaringType.getIdentifier() + "/" + element.getName(), 
+									getTypeIdentifier(declaringGroup) + "/" + element.getName(), 
 									superTypeName.getLocalPart() + nameExt); //$NON-NLS-1$
 							
 							AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
@@ -621,7 +624,7 @@ public class XmlSchemaReader
 							
 							// create a property with the anonymous type
 							DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-									element.getQName(), declaringType, anonymousType);
+									element.getQName(), declaringGroup, anonymousType);
 							
 							// set metadata and constraints
 							setMetadataAndConstraints(property, element, schemaLocation);
@@ -654,7 +657,7 @@ public class XmlSchemaReader
 							
 							// create an anonymous type that extends the super type
 							QName anonymousName = new QName(
-									declaringType.getIdentifier() + "/" + element.getName(), 
+									getTypeIdentifier(declaringGroup) + "/" + element.getName(), 
 									superTypeName.getLocalPart() + nameExt); //$NON-NLS-1$
 							
 							AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
@@ -673,7 +676,7 @@ public class XmlSchemaReader
 							
 							// create a property with the anonymous type
 							DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-									element.getQName(), declaringType, anonymousType);
+									element.getQName(), declaringGroup, anonymousType);
 							
 							// set metadata and constraints
 							setMetadataAndConstraints(property, element, schemaLocation);
@@ -691,7 +694,7 @@ public class XmlSchemaReader
 					// this where we get when there is an anonymous complex type as property type
 					// create an anonymous type
 					QName anonymousName = new QName(
-							declaringType.getIdentifier() + "/" + element.getName(), 
+							getTypeIdentifier(declaringGroup) + "/" + element.getName(), 
 							"AnonymousType");
 					
 					// create anonymous type with no super type
@@ -706,7 +709,7 @@ public class XmlSchemaReader
 					
 					// create a property with the anonymous type
 					DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-							element.getQName(), declaringType, anonymousType);
+							element.getQName(), declaringGroup, anonymousType);
 					
 					// set metadata and constraints
 					setMetadataAndConstraints(property, element, schemaLocation);
@@ -718,28 +721,37 @@ public class XmlSchemaReader
 				// simple schema type
 				XmlSchemaSimpleType simpleType = (XmlSchemaSimpleType) element.getSchemaType();
 				
-				//FIXME is this ok? not sure what to do at this point
 				// create an anonymous type
 				QName anonymousName = new QName(
-						declaringType.getIdentifier() + "/" + element.getName(), 
+						getTypeIdentifier(declaringGroup) + "/" + element.getName(), 
 						"AnonymousType"); //$NON-NLS-1$
 				
 				AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
 				
 				configureSimpleType(anonymousType, simpleType, schemaLocation);
-//				TypeDefinition type = TypeUtil.resolveSimpleType(null, (XmlSchemaSimpleType) element.getSchemaType(), schemaTypes);
-//				if (type != null) {
-//					return new SchemaTypeAttribute(
-//							declaringType,
-//							element.getName(), 
-//							element,
-//							type);
-//				}
-//				else {
-//					_log.error("Could not resolve type for element " + element.getName()); //$NON-NLS-1$
-//				}
 			}
 		}
+	}
+
+	/**
+	 * Get a type identifier from the given group. If the group is a type
+	 * definition its identifier will be returned, if it is a child definition
+	 * the identifier of the parent type will be returned.
+	 * 
+	 * @param group the group
+	 * @return the type identifier
+	 * @throws IllegalArgumentException if the group is neither a type nor a
+	 *   child definition
+	 */
+	private static String getTypeIdentifier(Group group) throws IllegalArgumentException {
+		if (group instanceof TypeDefinition) {
+			return ((TypeDefinition) group).getIdentifier();
+		}
+		else if (group instanceof ChildDefinition<?>) {
+			return ((ChildDefinition<?>) group).getParentType().getIdentifier();
+		}
+		
+		return null;
 	}
 
 	/**
