@@ -1,0 +1,19 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="items" type="ItemsType"/>
+
+  <xs:complexType name="ItemsType">
+    <xs:sequence minOccurs="1" maxOccurs="unbounded">
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="id" type="xs:ID"/>
+      <xs:choice>
+      	<xs:sequence>
+      		<xs:element name="one" type="xs:string" />
+      		<xs:element name="two" type="xs:string" />
+      	</xs:sequence>
+      	<xs:element name="single" type="xs:string" />
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>

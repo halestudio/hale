@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -289,6 +290,74 @@ public class XmlSchemaReaderTest {
 		assertNotNull(umbrella);
 		
 		//TODO extend with advanced complex type tests?
+	}
+	
+	/**
+	 * Test reading a simple XML schema with sequences that have to be grouped.
+	 * @throws Exception if reading the schema fails
+	 */
+	@Test
+	public void testRead_definitive_sequencegroup() throws Exception {
+		URI location = getClass().getResource("/testdata/definitive/sequencegroup.xsd").toURI();
+		LocatableInputSupplier<? extends InputStream> input = new DefaultInputSupplier(location );
+		XmlIndex schema = (XmlIndex) readSchema(input);
+		
+		// ItemsType
+		XmlTypeDefinition itemsType = schema.getType(new QName("ItemsType"));
+		assertNotNull(itemsType);
+		
+		assertEquals(1, itemsType.getChildren().size());
+		
+		// sequence group
+		GroupPropertyDefinition sequence = itemsType.getChildren().iterator().next().asGroup();
+		assertNotNull(sequence);
+		// cardinality
+		CardinalityConstraint cc = sequence.getConstraint(CardinalityConstraint.class);
+		assertEquals(1, cc.getMinOccurs());
+		assertEquals(CardinalityConstraint.UNBOUNDED, cc.getMaxOccurs());
+		// choice flag (not a choice)
+		assertFalse(sequence.getConstraint(ChoiceFlag.class).isEnabled());
+		
+		Iterator<? extends ChildDefinition<?>> it = sequence.getDeclaredChildren().iterator();
+		// name
+		PropertyDefinition name = it.next().asProperty();
+		assertNotNull(name);
+		assertEquals("name", name.getName().getLocalPart());
+		
+		// id
+		PropertyDefinition id = it.next().asProperty();
+		assertNotNull(id);
+		assertEquals("id", id.getName().getLocalPart());
+		
+		// choice
+		GroupPropertyDefinition choice = it.next().asGroup();
+		assertNotNull(choice);
+		// cardinality
+		cc = choice.getConstraint(CardinalityConstraint.class);
+		assertEquals(1, cc.getMinOccurs());
+		assertEquals(1, cc.getMaxOccurs());
+		// choice flag
+		assertTrue(choice.getConstraint(ChoiceFlag.class).isEnabled());
+		
+		it = choice.getDeclaredChildren().iterator();
+		// choice sequence
+		GroupPropertyDefinition seqGroup = it.next().asGroup();
+		assertNotNull(seqGroup);
+		// choice flag (not a choice)
+		assertFalse(seqGroup.getConstraint(ChoiceFlag.class).isEnabled());
+		
+		// sequence elements
+		// one
+		PropertyDefinition one = seqGroup.getChild(new QName("one")).asProperty();
+		assertNotNull(one);
+		// two
+		PropertyDefinition two = seqGroup.getChild(new QName("two")).asProperty();
+		assertNotNull(two);
+		
+		// choice element
+		PropertyDefinition single = it.next().asProperty();
+		assertNotNull(single);
+		assertEquals("single", single.getName().getLocalPart());
 	}
 	
 	/**
