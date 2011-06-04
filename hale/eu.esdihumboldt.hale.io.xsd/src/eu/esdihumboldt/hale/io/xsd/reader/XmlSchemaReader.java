@@ -477,13 +477,38 @@ public class XmlSchemaReader
 	 * @param particle the particle
 	 * @param schemaLocation the schema location
 	 * @param schemaNamespace the schema namespace
+	 * @param forceGroup force creating a group (e.g. if the parent is a choice)
 	 */
 	private void createPropertiesFromParticle(Group declaringGroup, 
-			XmlSchemaParticle particle, String schemaLocation, String schemaNamespace) {
+			XmlSchemaParticle particle, String schemaLocation, 
+			String schemaNamespace, boolean forceGroup) {
 		// particle:
 		if (particle instanceof XmlSchemaSequence) {
 			// <sequence>
 			XmlSchemaSequence sequence = (XmlSchemaSequence)particle;
+			
+			// create group only if necessary (sequences that appear exactly once will result in no group if not forced)
+			if (forceGroup || sequence.getMinOccurs() != 1 || sequence.getMaxOccurs() != 1) {
+				// create a sequence group
+				String sequenceName = sequence.getId();
+				if (sequenceName == null || sequenceName.isEmpty()) {
+					sequenceName = UUID.randomUUID().toString(); //TODO improve name
+				}
+				DefaultGroupPropertyDefinition sequenceGroup = new DefaultGroupPropertyDefinition(
+						new QName(sequenceName), declaringGroup);
+				// set cardinality
+				long max = (sequence.getMaxOccurs() == Long.MAX_VALUE)?(CardinalityConstraint.UNBOUNDED):(sequence.getMaxOccurs());
+				sequenceGroup.setConstraint(CardinalityConstraint.getCardinality(
+						sequence.getMinOccurs(), max ));
+				// set choice constraint (no choice)
+				sequenceGroup.setConstraint(ChoiceFlag.DISABLED);
+				// set metadata
+				setMetadata(sequenceGroup, sequence, schemaLocation);
+				
+				// use group as parent
+				declaringGroup = sequenceGroup;
+			}
+			
 			for (int j = 0; j < sequence.getItems().getCount(); j++) {
 				XmlSchemaObject object = sequence.getItems().getItem(j);
 				if (object instanceof XmlSchemaElement) {
@@ -493,10 +518,11 @@ public class XmlSchemaReader
 					// </element>
 				}
 				else if (object instanceof XmlSchemaParticle) {
-					// contained particles, e.g. a choice TODO wrap those attributes?
+					// contained particles, e.g. a choice
+					// content doesn't need to be grouped, it can be decided in the method
 					createPropertiesFromParticle(declaringGroup, 
 							(XmlSchemaParticle) object, schemaLocation,
-							schemaNamespace);
+							schemaNamespace, false);
 				}
 			}
 			// </sequence>
@@ -530,10 +556,11 @@ public class XmlSchemaReader
 							choiceGroup, schemaLocation, schemaNamespace);
 				}
 				else if (object instanceof XmlSchemaParticle) {
-					// contained particles, e.g. a choice
+					// contained particles, e.g. a choice or sequence
+					// inside a choice they must form a group
 					createPropertiesFromParticle(choiceGroup, 
 							(XmlSchemaParticle) object, schemaLocation,
-							schemaNamespace);
+							schemaNamespace, true);
 				}
 			}
 			// </choice>
@@ -877,7 +904,7 @@ public class XmlSchemaReader
 				if (extension.getParticle() != null) {
 					XmlSchemaParticle particle = extension.getParticle();
 					createPropertiesFromParticle(typeDef, particle, 
-							schemaLocation, schemaNamespace);
+							schemaLocation, schemaNamespace, false);
 				}
 				// attributes
 				XmlSchemaObjectCollection attributeCollection = extension.getAttributes();
@@ -896,7 +923,7 @@ public class XmlSchemaReader
 				if (restriction.getParticle() != null) {
 					XmlSchemaParticle particle = restriction.getParticle();
 					createPropertiesFromParticle(typeDef, particle, 
-							schemaLocation, schemaNamespace);
+							schemaLocation, schemaNamespace, false);
 				}
 				// attributes
 				XmlSchemaObjectCollection attributeCollection = restriction.getAttributes();
@@ -941,7 +968,7 @@ public class XmlSchemaReader
 			if (item.getParticle() != null) {
 				XmlSchemaParticle particle = complexType.getParticle();
 				createPropertiesFromParticle(typeDef, particle, schemaLocation,
-						schemaNamespace);
+						schemaNamespace, false);
 			}
 			// attributes
 			XmlSchemaObjectCollection attributeCollection = complexType.getAttributes();
