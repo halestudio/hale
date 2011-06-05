@@ -226,7 +226,8 @@ public class XmlSchemaReaderTest {
 		XmlIndex schema = (XmlIndex) readSchema(input);
 		
 		// envelope element
-		XmlElement envelope = schema.getElements().get(new QName("envelope"));
+		XmlElement envelope = schema.getElements().get(new QName(
+				"http://example.org/ord", "envelope"));
 		assertNotNull(envelope);
 		TypeDefinition envType = envelope.getType();
 		

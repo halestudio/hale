@@ -1,10 +1,11 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-            xmlns:ord="http://example.org/ord">
+            xmlns:ord="http://example.org/ord"
+            targetNamespace="http://example.org/ord"
+            elementFormDefault="qualified">
 
-  <xs:import namespace="http://example.org/ord"
-              schemaLocation="chapter03ord.xsd"/>
+  <xs:include schemaLocation="chapter03ord.xsd"/>
 
-  <xs:element name="envelope" type="EnvelopeType"/>
+  <xs:element name="envelope" type="ord:EnvelopeType"/>
 
   <xs:complexType name="EnvelopeType">
     <xs:sequence>
