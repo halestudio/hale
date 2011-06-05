@@ -265,7 +265,7 @@ public class XmlSchemaReader
 				
 				if (element.getSchemaTypeName() != null) {
 					// reference to type
-					elementType = index.getType(element.getSchemaTypeName());
+					elementType = index.getOrCreateType(element.getSchemaTypeName());
 				}
 				else if (element.getSchemaType() != null) {
 					// element has internal type definition, generate anonymous type name
@@ -277,7 +277,7 @@ public class XmlSchemaReader
 				}
 				else if (element.getQName() != null) {
 					// reference to type
-					elementType = index.getType(element.getQName()); //XXX this really a type???
+					elementType = index.getOrCreateType(element.getQName()); //XXX this really a type???
 				}
 				//XXX what about element.getRefName()? 
 				
@@ -396,7 +396,7 @@ public class XmlSchemaReader
 		}
 		
 		// get type definition from index
-		XmlTypeDefinition type = index.getType(typeName);
+		XmlTypeDefinition type = index.getOrCreateType(typeName);
 		
 		if (schemaType instanceof XmlSchemaSimpleType) {
 			// attribute type from simple schema types
@@ -415,7 +415,7 @@ public class XmlSchemaReader
 			
 			if (superTypeName != null) {
 				// get super type from index
-				XmlTypeDefinition superType = index.getType(superTypeName);
+				XmlTypeDefinition superType = index.getOrCreateType(superTypeName);
 				type.setSuperType(superType);
 				
 				//XXX reuse the super type's attribute type where appropriate?
@@ -582,7 +582,7 @@ public class XmlSchemaReader
 			// <element name="ELEMENT_NAME" type="SCHEMA_TYPE_NAME" />
 			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
 					element.getQName(), declaringGroup, 
-					index.getType(element.getSchemaTypeName()));
+					index.getOrCreateType(element.getSchemaTypeName()));
 			
 			// set metadata and constraints
 			setMetadataAndConstraints(property, element, schemaLocation);
@@ -632,7 +632,7 @@ public class XmlSchemaReader
 						
 						if (superTypeName != null) {
 							// try to get the type definition of the super type
-							XmlTypeDefinition superType = index.getType(superTypeName);
+							XmlTypeDefinition superType = index.getOrCreateType(superTypeName);
 							
 							// create an anonymous type that extends the super type
 							QName anonymousName = new QName(
@@ -680,7 +680,7 @@ public class XmlSchemaReader
 						
 						if (superTypeName != null) {
 							// try to get the type definition of the super type
-							XmlTypeDefinition superType = index.getType(superTypeName);
+							XmlTypeDefinition superType = index.getOrCreateType(superTypeName);
 							
 							// create an anonymous type that extends the super type
 							QName anonymousName = new QName(
@@ -1039,7 +1039,7 @@ public class XmlSchemaReader
 		QName typeName = attribute.getSchemaTypeName();
 		if (typeName != null) {
 			// resolve type by name
-			XmlTypeDefinition type = this.index.getType(typeName);
+			XmlTypeDefinition type = this.index.getOrCreateType(typeName);
 			
 			// create property
 			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
@@ -1050,7 +1050,7 @@ public class XmlSchemaReader
 		}
 		else if (attribute.getSchemaType() != null) {
 			QName name = attribute.getSchemaType().getQName();
-			XmlTypeDefinition attType = this.index.getType(name);
+			XmlTypeDefinition attType = this.index.getOrCreateType(name);
 			
 			// attribute type from simple schema types
 			configureSimpleType(attType, attribute.getSchemaType(),
@@ -1098,11 +1098,11 @@ public class XmlSchemaReader
 		QName typeName = attribute.getSchemaTypeName();
 		if (typeName != null) {
 			// resolve type by name
-			return this.index.getType(typeName);
+			return this.index.getOrCreateType(typeName);
 		}
 		else if (attribute.getSchemaType() != null) {
 			QName name = attribute.getSchemaType().getQName();
-			XmlTypeDefinition attType = this.index.getType(name);
+			XmlTypeDefinition attType = this.index.getOrCreateType(name);
 			
 			// attribute type from simple schema types
 			configureSimpleType(attType, attribute.getSchemaType(),

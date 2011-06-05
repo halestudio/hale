@@ -256,7 +256,7 @@ public abstract class TypeUtil {
 		QName baseTypeName = restriction.getBaseTypeName();
 	
 		// resolve super type
-		XmlTypeDefinition baseTypeDef = index.getType(baseTypeName);
+		XmlTypeDefinition baseTypeDef = index.getOrCreateType(baseTypeName);
 		// set super type
 		type.setSuperType(baseTypeDef);
 		// mark as restriction
@@ -346,7 +346,7 @@ public abstract class TypeUtil {
 					XmlTypeDefinition baseDef;
 					if (simpleType.getQName() != null) {
 						// named type
-						baseDef = index.getType(simpleType.getQName());
+						baseDef = index.getOrCreateType(simpleType.getQName());
 					}
 					else {
 						// anonymous type
@@ -372,7 +372,7 @@ public abstract class TypeUtil {
 		if (members != null) {
 			for (QName name : members) {
 				if (name != null) {
-					XmlTypeDefinition baseDef = index.getType(name);
+					XmlTypeDefinition baseDef = index.getOrCreateType(name);
 					unionTypes.add(baseDef);
 				}
 			}

@@ -36,7 +36,6 @@ import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.io.xsd.XmlSchemaIO;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlIndex;
-import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
@@ -177,7 +176,7 @@ public class XmlSchemaReaderTest {
 		XmlIndex schema = (XmlIndex) readSchema(input);
 		
 		// ShirtType
-		XmlTypeDefinition type = schema.getType(new QName("ShirtType"));
+		TypeDefinition type = schema.getType(new QName("ShirtType"));
 		assertNotNull(type);
 		
 		// IdentifierGroup
@@ -259,7 +258,7 @@ public class XmlSchemaReaderTest {
 		XmlIndex schema = (XmlIndex) readSchema(input);
 		
 		// ItemsType
-		XmlTypeDefinition itemsType = schema.getType(new QName("ItemsType"));
+		TypeDefinition itemsType = schema.getType(new QName("ItemsType"));
 		assertNotNull(itemsType);
 		
 		Collection<? extends ChildDefinition<?>> children = itemsType.getChildren();
@@ -303,7 +302,7 @@ public class XmlSchemaReaderTest {
 		XmlIndex schema = (XmlIndex) readSchema(input);
 		
 		// ItemsType
-		XmlTypeDefinition itemsType = schema.getType(new QName("ItemsType"));
+		TypeDefinition itemsType = schema.getType(new QName("ItemsType"));
 		assertNotNull(itemsType);
 		
 		assertEquals(1, itemsType.getChildren().size());

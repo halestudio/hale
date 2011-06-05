@@ -53,12 +53,12 @@ public class XmlIndex extends DefaultSchema {
 	}
 
 	/**
-	 * Creates a new type definition if no type with the given name is found.
-	 * 
-	 * @see DefaultTypeIndex#getType(QName)
+	 * Get the type definition with the given name. If the type doesn't exist a
+	 * new type definition will be created.
+	 * @param name the type name
+	 * @return the type definition
 	 */
-	@Override
-	public XmlTypeDefinition getType(QName name) {
+	public XmlTypeDefinition getOrCreateType(QName name) {
 		XmlTypeDefinition type = (XmlTypeDefinition) super.getType(name);
 		if (type == null) {
 			type = new XmlTypeDefinition(name);
