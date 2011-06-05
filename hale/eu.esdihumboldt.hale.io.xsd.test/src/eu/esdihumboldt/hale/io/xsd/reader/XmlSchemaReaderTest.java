@@ -30,6 +30,7 @@ import javax.xml.namespace.QName;
 import org.junit.Test;
 
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.core.io.report.IOReport;
 import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.instance.model.Instance;
@@ -454,7 +455,10 @@ public class XmlSchemaReaderTest {
 		reader.setSource(input);
 		
 		reader.validate();
-		reader.execute(null);
+		IOReport report = reader.execute(null);
+		
+		assertTrue(report.isSuccess());
+		assertTrue("Errors are contained in the report", report.getErrors().isEmpty());
 		
 		return reader.getSchema();
 	}
