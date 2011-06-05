@@ -14,6 +14,16 @@
       <xs:element name="items" type="ord:ItemsType"/>
     </xs:sequence>
   </xs:complexType>
+  
+  <xs:complexType name="SpecialOrderType">
+    <xs:complexContent>
+      <xs:extension base="ord:OrderType">
+        <xs:sequence>
+          <xs:element name="comment" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
 
   <xs:complexType name="ItemsType">
     <xs:sequence>

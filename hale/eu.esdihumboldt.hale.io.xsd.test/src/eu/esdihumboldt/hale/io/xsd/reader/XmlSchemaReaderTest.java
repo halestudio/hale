@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.io.xsd.XmlSchemaIO;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
@@ -46,6 +47,7 @@ import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.SimpleFlag;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultTypeIndex;
 
@@ -217,6 +219,7 @@ public class XmlSchemaReaderTest {
 	
 	/**
 	 * Test reading a simple XML schema that is split into several files.
+	 * Tests also the {@link XmlElements} and {@link MappableFlag} constraints
 	 * @throws Exception if reading the schema fails
 	 */
 	@Test
@@ -230,12 +233,21 @@ public class XmlSchemaReaderTest {
 				"http://example.org/ord", "envelope"));
 		assertNotNull(envelope);
 		TypeDefinition envType = envelope.getType();
+		// mappable
+		assertTrue(envType.getConstraint(MappableFlag.class).isEnabled());
+		
+		// XmlElements
+		Collection<? extends XmlElement> elements = envType.getConstraint(XmlElements.class).getElements();
+		assertEquals(1, elements.size());
+		assertEquals(envelope, elements.iterator().next());
 		
 		// order
 		PropertyDefinition order = envType.getChild(new QName(
 				"http://example.org/ord", "order")).asProperty();
 		assertNotNull(order);
 		TypeDefinition orderType = order.getPropertyType();
+		// mappable
+		assertTrue(orderType.getConstraint(MappableFlag.class).isEnabled());
 		
 		// number
 		PropertyDefinition number = orderType.getChild(new QName(
@@ -246,7 +258,31 @@ public class XmlSchemaReaderTest {
 				Binding.class).getBinding());
 		
 		// items
-		//TODO extend
+		PropertyDefinition items = orderType.getChild(new QName(
+				"http://example.org/ord", "items")).asProperty();
+		assertNotNull(items);
+		// not mappable
+		assertFalse(items.getPropertyType().getConstraint(MappableFlag.class).isEnabled());
+		// no elements
+		assertTrue(items.getPropertyType().getConstraint(XmlElements.class).getElements().isEmpty());
+		
+		// SpecialOrderType
+		// extension to OrderType, should be mappable using xsi:type
+		TypeDefinition specialOrderType = schema.getType(new QName(
+				"http://example.org/ord", "SpecialOrderType"));
+		assertNotNull(specialOrderType);
+		// number of declared children
+		assertEquals(1, specialOrderType.getDeclaredChildren().size());
+		// number of children
+		assertEquals(3, specialOrderType.getChildren().size());
+		// mappable
+		assertTrue(specialOrderType.getConstraint(MappableFlag.class).isEnabled());
+		// no elements
+		assertTrue(specialOrderType.getConstraint(XmlElements.class).getElements().isEmpty());
+		
+		// overall mappable types
+		Collection<? extends TypeDefinition> mt = schema.getMappableTypes();
+		assertEquals(3, mt.size()); // envelope, order, special order
 	}
 	
 	/**
