@@ -104,7 +104,7 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 									namespace));
 					
 					// set constraints on property
-					property.setConstraint((ad.isNillable())?(NillableFlag.ENABLED):(NillableFlag.DISABLED)); // nillable
+					property.setConstraint(NillableFlag.get(ad.isNillable())); // nillable
 					property.setConstraint(Cardinality.get(ad.getMinOccurs(), ad.getMaxOccurs())); // cardinality
 					
 					// set metadata
