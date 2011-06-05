@@ -45,11 +45,11 @@ import eu.esdihumboldt.hale.io.xsd.constraint.SuperTypeBinding;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionBindingConstraint;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionEnumerationConstraint;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraints.type.AbstractFlag;
-import eu.esdihumboldt.hale.schema.model.constraints.type.BindingConstraint;
-import eu.esdihumboldt.hale.schema.model.constraints.type.EnumerationConstraint;
-import eu.esdihumboldt.hale.schema.model.constraints.type.MappableFlag;
-import eu.esdihumboldt.hale.schema.model.constraints.type.SimpleFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.AbstractFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.schema.model.constraint.type.Enumeration;
+import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.SimpleFlag;
 
 /**
  * Utility methods regarding type resolving
@@ -57,7 +57,7 @@ import eu.esdihumboldt.hale.schema.model.constraints.type.SimpleFlag;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class TypeUtil {
+public abstract class XmlTypeUtil {
 	
 //	private static final ALogger log = ALoggerFactory.getLogger(TypeUtil.class);
 //	
@@ -184,7 +184,7 @@ public abstract class TypeUtil {
 			// configure type
 			
 			// set binding
-			type.setConstraint(BindingConstraint.getBinding(ty.getBinding()));
+			type.setConstraint(Binding.get(ty.getBinding()));
 			// simple type flag
 			type.setConstraint(SimpleFlag.ENABLED);
 			// not abstract
@@ -285,7 +285,7 @@ public abstract class TypeUtil {
 		if (!values.isEmpty()) {
 			// set enumeration constraint
 			//XXX conversion to be done?
-			type.setConstraint(new EnumerationConstraint<String>(values, false)); 
+			type.setConstraint(new Enumeration<String>(values, false)); 
 		}
 	}
 

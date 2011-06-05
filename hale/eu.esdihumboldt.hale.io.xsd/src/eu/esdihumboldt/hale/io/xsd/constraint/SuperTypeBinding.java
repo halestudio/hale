@@ -13,13 +13,13 @@
 package eu.esdihumboldt.hale.io.xsd.constraint;
 
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraints.type.BindingConstraint;
+import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
 
 /**
  * Binding constraint that uses the binding of the super type if possible.
  * @author Simon Templer
  */
-public class SuperTypeBinding extends BindingConstraint {
+public class SuperTypeBinding extends Binding {
 
 	private final TypeDefinition type;
 	
@@ -35,14 +35,14 @@ public class SuperTypeBinding extends BindingConstraint {
 	}
 
 	/**
-	 * @see BindingConstraint#getBinding()
+	 * @see Binding#getBinding()
 	 */
 	@Override
 	public Class<?> getBinding() {
 		TypeDefinition superType = type.getSuperType();
 		
 		if (superType != null) {
-			return superType.getConstraint(BindingConstraint.class).getBinding();
+			return superType.getConstraint(Binding.class).getBinding();
 		}
 		
 		return super.getBinding();

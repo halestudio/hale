@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.schema.model.constraints.type;
+package eu.esdihumboldt.hale.schema.model.constraint.type;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,13 +25,13 @@ import eu.esdihumboldt.hale.schema.model.TypeConstraint;
  */
 @Immutable
 @Constraint(mutable = false)
-public class BindingConstraint implements TypeConstraint {
+public class Binding implements TypeConstraint {
 	
 	/**
 	 * Binding singletons, binding class mapped to the corresponding binding
 	 * constraint.
 	 */
-	private static final Map<Class<?>, BindingConstraint> singletons = new HashMap<Class<?>, BindingConstraint>();
+	private static final Map<Class<?>, Binding> singletons = new HashMap<Class<?>, Binding>();
 	
 	/**
 	 * Get the binding constraint with the given Java binding
@@ -39,10 +39,10 @@ public class BindingConstraint implements TypeConstraint {
 	 * @param binding the type's Java binding
 	 * @return the binding constraint (which is a singleton)
 	 */
-	public static BindingConstraint getBinding(Class<?> binding) {
-		BindingConstraint bc = singletons.get(binding);
+	public static Binding get(Class<?> binding) {
+		Binding bc = singletons.get(binding);
 		if (bc == null) {
-			bc = new BindingConstraint(binding);
+			bc = new Binding(binding);
 			singletons.put(binding, bc);
 		}
 		return bc;
@@ -58,7 +58,7 @@ public class BindingConstraint implements TypeConstraint {
 	 * 
 	 * @see Constraint 
 	 */
-	public BindingConstraint() {
+	public Binding() {
 		this(Object.class);
 	}
 
@@ -66,7 +66,7 @@ public class BindingConstraint implements TypeConstraint {
 	 * Creates a constraint with the given binding
 	 * @param binding the Java binding
 	 */
-	private BindingConstraint(Class<?> binding) {
+	private Binding(Class<?> binding) {
 		super();
 		
 		this.binding = binding;

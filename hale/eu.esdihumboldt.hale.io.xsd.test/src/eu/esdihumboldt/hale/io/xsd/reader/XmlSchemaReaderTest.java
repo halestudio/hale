@@ -42,11 +42,11 @@ import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraints.property.CardinalityConstraint;
-import eu.esdihumboldt.hale.schema.model.constraints.property.ChoiceFlag;
-import eu.esdihumboldt.hale.schema.model.constraints.property.NillableFlag;
-import eu.esdihumboldt.hale.schema.model.constraints.type.BindingConstraint;
-import eu.esdihumboldt.hale.schema.model.constraints.type.SimpleFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.schema.model.constraint.property.ChoiceFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.property.NillableFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.schema.model.constraint.type.SimpleFlag;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultTypeIndex;
 
 /**
@@ -194,9 +194,9 @@ public class XmlSchemaReaderTest {
 				SimpleFlag.class).isEnabled());
 		// binding must be string
 		assertEquals(String.class, id.getPropertyType().getConstraint(
-				BindingConstraint.class).getBinding());
+				Binding.class).getBinding());
 		// required
-		CardinalityConstraint cc = id.getConstraint(CardinalityConstraint.class);
+		Cardinality cc = id.getConstraint(Cardinality.class);
 		assertEquals(1, cc.getMinOccurs());
 		assertEquals(1, cc.getMaxOccurs());
 		
@@ -212,7 +212,7 @@ public class XmlSchemaReaderTest {
 		assertNotNull(effDate);
 		// binding must be compatible to Date
 		assertTrue(Date.class.isAssignableFrom(effDate.getPropertyType().getConstraint(
-				BindingConstraint.class).getBinding()));
+				Binding.class).getBinding()));
 	}
 	
 	/**
@@ -242,7 +242,7 @@ public class XmlSchemaReaderTest {
 		assertNotNull(number);
 		// binding must be string
 		assertEquals(String.class, number.getPropertyType().getConstraint(
-				BindingConstraint.class).getBinding());
+				Binding.class).getBinding());
 		
 		// items
 		//TODO extend
@@ -269,9 +269,9 @@ public class XmlSchemaReaderTest {
 		GroupPropertyDefinition choice = children.iterator().next().asGroup();
 		assertNotNull(choice);
 		// cardinality
-		CardinalityConstraint cc = choice.getConstraint(CardinalityConstraint.class);
+		Cardinality cc = choice.getConstraint(Cardinality.class);
 		assertEquals(0, cc.getMinOccurs());
-		assertEquals(CardinalityConstraint.UNBOUNDED, cc.getMaxOccurs());
+		assertEquals(Cardinality.UNBOUNDED, cc.getMaxOccurs());
 		// choice flag
 		assertTrue(choice.getConstraint(ChoiceFlag.class).isEnabled());
 		// children
@@ -312,9 +312,9 @@ public class XmlSchemaReaderTest {
 		GroupPropertyDefinition sequence = itemsType.getChildren().iterator().next().asGroup();
 		assertNotNull(sequence);
 		// cardinality
-		CardinalityConstraint cc = sequence.getConstraint(CardinalityConstraint.class);
+		Cardinality cc = sequence.getConstraint(Cardinality.class);
 		assertEquals(1, cc.getMinOccurs());
-		assertEquals(CardinalityConstraint.UNBOUNDED, cc.getMaxOccurs());
+		assertEquals(Cardinality.UNBOUNDED, cc.getMaxOccurs());
 		// choice flag (not a choice)
 		assertFalse(sequence.getConstraint(ChoiceFlag.class).isEnabled());
 		
@@ -333,7 +333,7 @@ public class XmlSchemaReaderTest {
 		GroupPropertyDefinition choice = it.next().asGroup();
 		assertNotNull(choice);
 		// cardinality
-		cc = choice.getConstraint(CardinalityConstraint.class);
+		cc = choice.getConstraint(Cardinality.class);
 		assertEquals(1, cc.getMinOccurs());
 		assertEquals(1, cc.getMaxOccurs());
 		// choice flag
@@ -395,7 +395,7 @@ public class XmlSchemaReaderTest {
 		// ProductPropertyGroup
 		GroupPropertyDefinition prodGroup = it.next().asGroup();
 		// cardinality
-		CardinalityConstraint cc = prodGroup.getConstraint(CardinalityConstraint.class);
+		Cardinality cc = prodGroup.getConstraint(Cardinality.class);
 		assertEquals(0, cc.getMinOccurs());
 		assertEquals(1, cc.getMaxOccurs());
 		// name
@@ -407,7 +407,7 @@ public class XmlSchemaReaderTest {
 		GroupPropertyDefinition descGroup = itProd.next().asGroup();
 		assertNotNull(descGroup);
 		// cardinality
-		cc = descGroup.getConstraint(CardinalityConstraint.class);
+		cc = descGroup.getConstraint(Cardinality.class);
 		assertEquals(1, cc.getMinOccurs());
 		assertEquals(1, cc.getMaxOccurs());
 		
@@ -488,9 +488,9 @@ public class XmlSchemaReaderTest {
 				SimpleFlag.class).isEnabled());
 		// binding must be string
 		assertEquals(String.class, orderperson.getPropertyType().getConstraint(
-				BindingConstraint.class).getBinding());
+				Binding.class).getBinding());
 		// cardinality
-		CardinalityConstraint cc = orderperson.getConstraint(CardinalityConstraint.class);
+		Cardinality cc = orderperson.getConstraint(Cardinality.class);
 		assertEquals(1, cc.getMinOccurs());
 		assertEquals(1, cc.getMaxOccurs());
 		// not nillable
@@ -504,7 +504,7 @@ public class XmlSchemaReaderTest {
 				SimpleFlag.class).isEnabled());
 		// binding must be Instance
 		assertEquals(Instance.class, shipto.getPropertyType().getConstraint(
-				BindingConstraint.class).getBinding());
+				Binding.class).getBinding());
 		
 		// item
 		PropertyDefinition item = shiporderType.getChild(new QName(ns, "item")).asProperty();
@@ -513,9 +513,9 @@ public class XmlSchemaReaderTest {
 		assertFalse(item.getPropertyType().getConstraint(
 				SimpleFlag.class).isEnabled());
 		// item cardinality
-		cc = item.getConstraint(CardinalityConstraint.class);
+		cc = item.getConstraint(Cardinality.class);
 		assertEquals(1, cc.getMinOccurs());
-		assertEquals(CardinalityConstraint.UNBOUNDED, cc.getMaxOccurs());
+		assertEquals(Cardinality.UNBOUNDED, cc.getMaxOccurs());
 		
 		// item properties
 		TypeDefinition itemType = item.getPropertyType();
@@ -526,7 +526,7 @@ public class XmlSchemaReaderTest {
 		// note
 		PropertyDefinition note = itemType.getChild(new QName(ns, "note")).asProperty();
 		assertNotNull(note);
-		cc = note.getConstraint(CardinalityConstraint.class);
+		cc = note.getConstraint(Cardinality.class);
 		assertEquals(0, cc.getMinOccurs());
 		assertEquals(1, cc.getMaxOccurs());
 		// quantity
@@ -534,22 +534,22 @@ public class XmlSchemaReaderTest {
 		assertNotNull(quantity);
 		assertTrue(quantity.getPropertyType().getConstraint(SimpleFlag.class).isEnabled());
 		assertTrue(Number.class.isAssignableFrom(quantity.getPropertyType().getConstraint(
-				BindingConstraint.class).getBinding()));
+				Binding.class).getBinding()));
 		// price
 		PropertyDefinition price = itemType.getChild(new QName(ns, "price")).asProperty();
 		assertNotNull(price);
 		assertTrue(price.getPropertyType().getConstraint(SimpleFlag.class).isEnabled());
 		assertTrue(Number.class.isAssignableFrom(price.getPropertyType().getConstraint(
-				BindingConstraint.class).getBinding()));
+				Binding.class).getBinding()));
 		
 		// orderid
 		PropertyDefinition orderid = shiporderType.getChild(new QName(ns, "orderid")).asProperty();
 		assertNotNull(orderid);
 		// binding must be string
 		assertEquals(String.class, orderid.getPropertyType().getConstraint(
-				BindingConstraint.class).getBinding());
+				Binding.class).getBinding());
 		// required
-		cc = orderid.getConstraint(CardinalityConstraint.class);
+		cc = orderid.getConstraint(Cardinality.class);
 		assertEquals(1, cc.getMinOccurs());
 		assertEquals(1, cc.getMaxOccurs());
 	}

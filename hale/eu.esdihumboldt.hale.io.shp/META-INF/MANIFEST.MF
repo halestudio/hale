@@ -13,9 +13,9 @@ Import-Package: com.google.common.io;version="1.6.0",
  eu.esdihumboldt.hale.schema.io,
  eu.esdihumboldt.hale.schema.io.impl,
  eu.esdihumboldt.hale.schema.model,
- eu.esdihumboldt.hale.schema.model.constraints,
- eu.esdihumboldt.hale.schema.model.constraints.property,
- eu.esdihumboldt.hale.schema.model.constraints.type,
+ eu.esdihumboldt.hale.schema.model.constraint,
+ eu.esdihumboldt.hale.schema.model.constraint.property,
+ eu.esdihumboldt.hale.schema.model.constraint.type,
  eu.esdihumboldt.hale.schema.model.impl,
  org.eclipse.osgi.util
 Require-Bundle: org.geotools;bundle-version="2.6.4"

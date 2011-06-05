@@ -10,56 +10,58 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.schema.model.constraints.type;
+package eu.esdihumboldt.hale.schema.model.constraint.type;
 
 import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.schema.model.Constraint;
 import eu.esdihumboldt.hale.schema.model.TypeConstraint;
-import eu.esdihumboldt.hale.schema.model.constraints.AbstractFlagConstraint;
+import eu.esdihumboldt.hale.schema.model.constraint.AbstractFlagConstraint;
 
 /**
- * Flags if a type is abstract, disabled by default
+ * Flags if a type is mappable, i.e. that it is a valid source or target for a
+ * retype. Disabled by default.
  * @author Simon Templer
  */
 @Immutable
-@Constraint
-public class AbstractFlag extends AbstractFlagConstraint implements TypeConstraint {
+@Constraint(mutable = false)
+public class MappableFlag extends AbstractFlagConstraint implements TypeConstraint {
 
 	/**
-	 * Enabled abstract flag
+	 * Enabled mappable flag
 	 */
-	public static final AbstractFlag ENABLED = new AbstractFlag(true);
+	public static final MappableFlag ENABLED = new MappableFlag(true);
 	
 	/**
-	 * Disabled abstract flag
+	 * Disabled mappable flag
 	 */
-	public static final AbstractFlag DISABLED = new AbstractFlag(false);
+	public static final MappableFlag DISABLED = new MappableFlag(false);
 	
 	/**
-	 * Get the abstract flag
+	 * Get the mappable flag
 	 * 
-	 * @param isAbstract if the flag shall be enabled
+	 * @param isMappable if the flag shall be enabled
 	 * @return the flag
 	 */
-	public static AbstractFlag get(boolean isAbstract) {
-		return (isAbstract)?(ENABLED):(DISABLED);
+	public static MappableFlag get(boolean isMappable) {
+		return (isMappable)?(ENABLED):(DISABLED);
 	}
 	
 	/**
-	 * Creates a default abstract flag, which is disabled. If possible, instead
+	 * Creates a default mappable flag, which is disabled. If possible, instead
 	 * of creating an instance, use {@link #get(boolean)}, {@link #ENABLED} or 
 	 * {@link #DISABLED}.
 	 * 
 	 * @see Constraint
 	 */
-	public AbstractFlag() {
+	public MappableFlag() {
+		// disabled by default because of simple types etc.
 		this(false);
 	}
 	
 	/**
 	 * @see AbstractFlagConstraint#AbstractFlagConstraint(boolean)
 	 */
-	private AbstractFlag(boolean enabled) {
+	private MappableFlag(boolean enabled) {
 		super(enabled);
 	}
 

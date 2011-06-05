@@ -23,7 +23,7 @@ import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeIndex;
-import eu.esdihumboldt.hale.schema.model.constraints.type.MappableFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
 
 /**
  * Default {@link TypeIndex} implementation

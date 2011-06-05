@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.schema.model.constraints;
+package eu.esdihumboldt.hale.schema.model.constraint;
 
 import net.jcip.annotations.Immutable;
 

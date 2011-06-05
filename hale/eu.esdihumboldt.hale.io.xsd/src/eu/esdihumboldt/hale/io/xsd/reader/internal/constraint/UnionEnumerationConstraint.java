@@ -17,13 +17,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraints.type.EnumerationConstraint;
+import eu.esdihumboldt.hale.schema.model.constraint.type.Enumeration;
 
 /**
  * Enumeration constraint for type unions
  * @author Simon Templer
  */
-public class UnionEnumerationConstraint extends EnumerationConstraint<Object> {
+public class UnionEnumerationConstraint extends Enumeration<Object> {
 
 	private Collection<? extends TypeDefinition> unionTypes;
 	
@@ -48,7 +48,7 @@ public class UnionEnumerationConstraint extends EnumerationConstraint<Object> {
 			allowOthers = false;
 			
 			for (TypeDefinition type : unionTypes) {
-				EnumerationConstraint<?> enumeration = type.getConstraint(EnumerationConstraint.class);
+				Enumeration<?> enumeration = type.getConstraint(Enumeration.class);
 				if (enumeration.getValues() == null || enumeration.isAllowOthers()) {
 					allowOthers = true;
 				}
@@ -71,7 +71,7 @@ public class UnionEnumerationConstraint extends EnumerationConstraint<Object> {
 	}
 
 	/**
-	 * @see EnumerationConstraint#getValues()
+	 * @see Enumeration#getValues()
 	 */
 	@Override
 	public Collection<? extends Object> getValues() {
@@ -81,7 +81,7 @@ public class UnionEnumerationConstraint extends EnumerationConstraint<Object> {
 	}
 
 	/**
-	 * @see EnumerationConstraint#isAllowOthers()
+	 * @see Enumeration#isAllowOthers()
 	 */
 	@Override
 	public boolean isAllowOthers() {

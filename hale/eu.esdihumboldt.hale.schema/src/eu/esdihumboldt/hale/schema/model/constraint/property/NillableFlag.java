@@ -10,12 +10,12 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.schema.model.constraints.property;
+package eu.esdihumboldt.hale.schema.model.constraint.property;
 
 import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.schema.model.Constraint;
 import eu.esdihumboldt.hale.schema.model.PropertyConstraint;
-import eu.esdihumboldt.hale.schema.model.constraints.AbstractFlagConstraint;
+import eu.esdihumboldt.hale.schema.model.constraint.AbstractFlagConstraint;
 
 /**
  * Flags if a property is nillable, disabled by default
@@ -50,7 +50,7 @@ public class NillableFlag extends AbstractFlagConstraint implements PropertyCons
 	 * of creating an instance, use {@link #get(boolean)}, {@link #ENABLED} or 
 	 * {@link #DISABLED}.
 	 * 
-	 * @see CardinalityConstraint
+	 * @see Cardinality
 	 */
 	public NillableFlag() {
 		this(false);

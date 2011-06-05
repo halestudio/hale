@@ -16,13 +16,13 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraints.type.BindingConstraint;
+import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
 
 /**
  * Binding constraint for type unions
  * @author Simon Templer
  */
-public class UnionBindingConstraint extends BindingConstraint {
+public class UnionBindingConstraint extends Binding {
 
 	private Collection<? extends TypeDefinition> unionTypes;
 
@@ -36,7 +36,7 @@ public class UnionBindingConstraint extends BindingConstraint {
 	}
 
 	/**
-	 * @see BindingConstraint#getBinding()
+	 * @see Binding#getBinding()
 	 */
 	@Override
 	public Class<?> getBinding() {
@@ -44,11 +44,11 @@ public class UnionBindingConstraint extends BindingConstraint {
 		
 		if (it.hasNext()) {
 			// combine bindings from union types
-			Class<?> binding = it.next().getConstraint(BindingConstraint.class).getBinding();
+			Class<?> binding = it.next().getConstraint(Binding.class).getBinding();
 			
 			while (it.hasNext()) {
 				binding = findCompatibleClass(binding, 
-						it.next().getConstraint(BindingConstraint.class).getBinding());
+						it.next().getConstraint(Binding.class).getBinding());
 			}
 			
 			return binding;

@@ -15,7 +15,7 @@ package eu.esdihumboldt.hale.io.xsd.constraint;
 import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.schema.model.Constraint;
 import eu.esdihumboldt.hale.schema.model.TypeConstraint;
-import eu.esdihumboldt.hale.schema.model.constraints.AbstractFlagConstraint;
+import eu.esdihumboldt.hale.schema.model.constraint.AbstractFlagConstraint;
 
 /**
  * Flags if a type's super type relation is a restriction, disabled by default

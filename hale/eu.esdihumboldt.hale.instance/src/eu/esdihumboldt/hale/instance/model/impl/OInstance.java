@@ -30,7 +30,7 @@ import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraints.property.CardinalityConstraint;
+import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
 
 /**
  * Instance implementation based on {@link ODocument}s
@@ -189,7 +189,7 @@ public class OInstance implements MutableInstance {
 			return true;
 		}
 		
-		return property.getConstraint(CardinalityConstraint.class).getMaxOccurs() > 1;
+		return property.getConstraint(Cardinality.class).getMaxOccurs() > 1;
 	}
 
 	/**

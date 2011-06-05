@@ -68,7 +68,7 @@ public class XmlIndex extends DefaultSchema {
 		if (type == null) {
 			type = new XmlTypeDefinition(name);
 			
-			TypeUtil.configureType(type);
+			XmlTypeUtil.configureType(type);
 			
 			addType(type);
 		}

@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.schema.model.constraints.property;
+package eu.esdihumboldt.hale.schema.model.constraint.property;
 
 import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.schema.model.Constraint;
@@ -24,7 +24,7 @@ import eu.esdihumboldt.hale.schema.model.GroupPropertyConstraint;
  */
 @Immutable
 @Constraint(mutable = false)
-public class CardinalityConstraint implements PropertyConstraint, GroupPropertyConstraint {
+public class Cardinality implements PropertyConstraint, GroupPropertyConstraint {
 
 	/**
 	 * Value for unrestricted {@link #maxOccurs}
@@ -34,22 +34,22 @@ public class CardinalityConstraint implements PropertyConstraint, GroupPropertyC
 	/**
 	 * Cardinality constraint for properties that occur exactly once (one)
 	 */
-	public static final CardinalityConstraint CC_EXACTLY_ONCE = new CardinalityConstraint(1, 1);
+	public static final Cardinality CC_EXACTLY_ONCE = new Cardinality(1, 1);
 	
 	/**
 	 * Cardinality constraint for properties that occur once or not at all (zero to one)
 	 */
-	public static final CardinalityConstraint CC_OPTIONAL = new CardinalityConstraint(0, 1);
+	public static final Cardinality CC_OPTIONAL = new Cardinality(0, 1);
 	
 	/**
 	 * Cardinality constraint for properties that occur at least once (one to infinity)
 	 */
-	public static final CardinalityConstraint CC_AT_LEAST_ONCE = new CardinalityConstraint(1, UNBOUNDED);
+	public static final Cardinality CC_AT_LEAST_ONCE = new Cardinality(1, UNBOUNDED);
 	
 	/**
 	 * Cardinality constraint for properties that occur in any number (zero to infinity)
 	 */
-	public static final CardinalityConstraint CC_ANY_NUMBER = new CardinalityConstraint(0, UNBOUNDED);
+	public static final Cardinality CC_ANY_NUMBER = new Cardinality(0, UNBOUNDED);
 	
 	/**
 	 * Get the cardinality constraint with the given occurences
@@ -60,7 +60,7 @@ public class CardinalityConstraint implements PropertyConstraint, GroupPropertyC
 	 *   {@value #UNBOUNDED} for an infinite maximum occurrence
 	 * @return the cardinality constraint
 	 */
-	public static CardinalityConstraint getCardinality(long minOccurs, long maxOccurs) {
+	public static Cardinality get(long minOccurs, long maxOccurs) {
 		// use singletons if possible
 		if (minOccurs == 0) {
 			if (maxOccurs == 1) {
@@ -79,7 +79,7 @@ public class CardinalityConstraint implements PropertyConstraint, GroupPropertyC
 			} 
 		}
 		
-		return new CardinalityConstraint(minOccurs, maxOccurs);
+		return new Cardinality(minOccurs, maxOccurs);
 	}
 
 	/**
@@ -97,9 +97,9 @@ public class CardinalityConstraint implements PropertyConstraint, GroupPropertyC
 	 * {@link #maxOccurs} one.<br>
 	 * <br>
 	 * NOTE: Instead of using the constructor to create new instances please use
-	 * {@link #getCardinality(long, long)} if possible.
+	 * {@link #get(long, long)} if possible.
 	 */
-	public CardinalityConstraint() {
+	public Cardinality() {
 		this(1, 1);
 	}
 	
@@ -107,14 +107,14 @@ public class CardinalityConstraint implements PropertyConstraint, GroupPropertyC
 	 * Create a cardinality constraint.<br>
 	 * <br>
 	 * NOTE: Instead of using the constructor to create new instances please use
-	 * {@link #getCardinality(long, long)} if possible.
+	 * {@link #get(long, long)} if possible.
 	 * 
 	 * @param minOccurs the number of minimum occurrences of a property, may not
 	 *   be negative
 	 * @param maxOccurs the number of maximum occurrences of a property,
 	 *   {@value #UNBOUNDED} for an infinite maximum occurrence
 	 */
-	private CardinalityConstraint(long minOccurs, long maxOccurs) {
+	private Cardinality(long minOccurs, long maxOccurs) {
 		super();
 		this.minOccurs = minOccurs;
 		this.maxOccurs = maxOccurs;

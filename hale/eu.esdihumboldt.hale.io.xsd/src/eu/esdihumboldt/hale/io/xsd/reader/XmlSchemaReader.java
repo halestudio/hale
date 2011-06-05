@@ -80,7 +80,7 @@ import eu.esdihumboldt.hale.io.xsd.internal.Messages;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.AnonymousXmlType;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.HumboldtURIResolver;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.ProgressURIResolver;
-import eu.esdihumboldt.hale.io.xsd.reader.internal.TypeUtil;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeUtil;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlAttribute;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlAttributeGroup;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlAttributeGroupReferenceProperty;
@@ -97,12 +97,12 @@ import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.Group;
 import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraints.property.CardinalityConstraint;
-import eu.esdihumboldt.hale.schema.model.constraints.property.ChoiceFlag;
-import eu.esdihumboldt.hale.schema.model.constraints.property.NillableFlag;
-import eu.esdihumboldt.hale.schema.model.constraints.type.AbstractFlag;
-import eu.esdihumboldt.hale.schema.model.constraints.type.BindingConstraint;
-import eu.esdihumboldt.hale.schema.model.constraints.type.SimpleFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.schema.model.constraint.property.ChoiceFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.property.NillableFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.AbstractFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.schema.model.constraint.type.SimpleFlag;
 import eu.esdihumboldt.hale.schema.model.impl.AbstractDefinition;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultGroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultPropertyDefinition;
@@ -446,7 +446,7 @@ public class XmlSchemaReader
 	 */
 	private void configureSimpleType(XmlTypeDefinition type,
 			XmlSchemaSimpleType schemaType, String schemaLocation) {
-		TypeUtil.configureSimpleType(type, schemaType, index, reporter);
+		XmlTypeUtil.configureSimpleType(type, schemaType, index, reporter);
 		
 		// set metadata
 		setMetadata(type, schemaType, schemaLocation);
@@ -499,8 +499,8 @@ public class XmlSchemaReader
 				DefaultGroupPropertyDefinition sequenceGroup = new DefaultGroupPropertyDefinition(
 						new QName(sequenceName), declaringGroup);
 				// set cardinality
-				long max = (sequence.getMaxOccurs() == Long.MAX_VALUE)?(CardinalityConstraint.UNBOUNDED):(sequence.getMaxOccurs());
-				sequenceGroup.setConstraint(CardinalityConstraint.getCardinality(
+				long max = (sequence.getMaxOccurs() == Long.MAX_VALUE)?(Cardinality.UNBOUNDED):(sequence.getMaxOccurs());
+				sequenceGroup.setConstraint(Cardinality.get(
 						sequence.getMinOccurs(), max ));
 				// set choice constraint (no choice)
 				sequenceGroup.setConstraint(ChoiceFlag.DISABLED);
@@ -541,8 +541,8 @@ public class XmlSchemaReader
 			DefaultGroupPropertyDefinition choiceGroup = new DefaultGroupPropertyDefinition(
 					new QName(choiceName), declaringGroup);
 			// set cardinality
-			long max = (choice.getMaxOccurs() == Long.MAX_VALUE)?(CardinalityConstraint.UNBOUNDED):(choice.getMaxOccurs());
-			choiceGroup.setConstraint(CardinalityConstraint.getCardinality(
+			long max = (choice.getMaxOccurs() == Long.MAX_VALUE)?(Cardinality.UNBOUNDED):(choice.getMaxOccurs());
+			choiceGroup.setConstraint(Cardinality.get(
 					choice.getMinOccurs(), max ));
 			// set choice constraint
 			choiceGroup.setConstraint(ChoiceFlag.ENABLED);
@@ -576,8 +576,8 @@ public class XmlSchemaReader
 					groupName, declaringGroup, index, groupName);
 			
 			// set cardinality constraint
-			long max = (groupRef.getMaxOccurs() == Long.MAX_VALUE)?(CardinalityConstraint.UNBOUNDED):(groupRef.getMaxOccurs());
-			property.setConstraint(CardinalityConstraint.getCardinality(
+			long max = (groupRef.getMaxOccurs() == Long.MAX_VALUE)?(Cardinality.UNBOUNDED):(groupRef.getMaxOccurs());
+			property.setConstraint(Cardinality.get(
 					groupRef.getMinOccurs(), max));
 			
 			// set metadata
@@ -817,7 +817,7 @@ public class XmlSchemaReader
 	private void setMetadataAndConstraints(XmlTypeDefinition type,
 			XmlSchemaComplexType complexType, String schemaLocation) {
 		//TODO type constraints!
-		type.setConstraint(BindingConstraint.getBinding(Instance.class)); //XXX instead object binding?
+		type.setConstraint(Binding.get(Instance.class)); //XXX instead object binding?
 		type.setConstraint(AbstractFlag.get(complexType.isAbstract()));
 		type.setConstraint(SimpleFlag.DISABLED);
 		
@@ -849,8 +849,8 @@ public class XmlSchemaReader
 			XmlSchemaElement element, String schemaLocation) {
 		// set constraints
 		property.setConstraint(NillableFlag.get(element.isNillable()));
-		long max = (element.getMaxOccurs() == Long.MAX_VALUE)?(CardinalityConstraint.UNBOUNDED):(element.getMaxOccurs());
-		property.setConstraint(CardinalityConstraint.getCardinality(
+		long max = (element.getMaxOccurs() == Long.MAX_VALUE)?(Cardinality.UNBOUNDED):(element.getMaxOccurs());
+		property.setConstraint(Cardinality.get(
 				element.getMinOccurs(), max ));
 		
 		// set metadata
@@ -1159,7 +1159,7 @@ public class XmlSchemaReader
 		if (attribute.getUse() != null) {
 			long maxOccurs = (attribute.getUse().getValue().equals(Constants.BlockConstants.PROHIBITED))?(0):(1);
 			long minOccurs = (attribute.getUse().getValue().equals(Constants.BlockConstants.REQUIRED))?(1):(0);
-			property.setConstraint(CardinalityConstraint.getCardinality(minOccurs, maxOccurs));
+			property.setConstraint(Cardinality.get(minOccurs, maxOccurs));
 		}
 		
 		property.setConstraint(NillableFlag.DISABLED);

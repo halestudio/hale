@@ -16,7 +16,7 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import eu.esdihumboldt.hale.schema.model.constraints.type.MappableFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
 
 /**
  * A type index holds a set of type definitions and a corresponding name index.

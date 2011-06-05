@@ -36,11 +36,11 @@ import eu.esdihumboldt.hale.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.schema.io.impl.AbstractSchemaReader;
 import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraints.property.CardinalityConstraint;
-import eu.esdihumboldt.hale.schema.model.constraints.property.NillableFlag;
-import eu.esdihumboldt.hale.schema.model.constraints.type.BindingConstraint;
-import eu.esdihumboldt.hale.schema.model.constraints.type.MappableFlag;
-import eu.esdihumboldt.hale.schema.model.constraints.type.SimpleFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.schema.model.constraint.property.NillableFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.SimpleFlag;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultTypeDefinition;
@@ -105,7 +105,7 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 					
 					// set constraints on property
 					property.setConstraint((ad.isNillable())?(NillableFlag.ENABLED):(NillableFlag.DISABLED)); // nillable
-					property.setConstraint(CardinalityConstraint.getCardinality(ad.getMinOccurs(), ad.getMaxOccurs())); // cardinality
+					property.setConstraint(Cardinality.get(ad.getMinOccurs(), ad.getMaxOccurs())); // cardinality
 					
 					// set metadata
 					property.setLocation(getSource().getLocation());
@@ -149,7 +149,7 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 			
 			// set constraints
 			typeDef.setConstraint(MappableFlag.DISABLED); // not mappable
-			typeDef.setConstraint(BindingConstraint.getBinding(type.getBinding())); // binding
+			typeDef.setConstraint(Binding.get(type.getBinding())); // binding
 			typeDef.setConstraint(SimpleFlag.ENABLED); // simple type
 			
 			// set metadata

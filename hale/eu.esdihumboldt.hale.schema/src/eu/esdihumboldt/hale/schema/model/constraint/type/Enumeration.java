@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.schema.model.constraints.type;
+package eu.esdihumboldt.hale.schema.model.constraint.type;
 
 import java.util.Collection;
 
@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.schema.model.TypeConstraint;
  */
 @Immutable
 @Constraint(mutable = false)
-public class EnumerationConstraint<T> implements TypeConstraint {
+public class Enumeration<T> implements TypeConstraint {
 	
 	private final Collection<? extends T> values;
 	
@@ -36,7 +36,7 @@ public class EnumerationConstraint<T> implements TypeConstraint {
 	 * Creates a default constraint where no restriction on the allowed values
 	 * is present.
 	 */
-	public EnumerationConstraint() {
+	public Enumeration() {
 		super();
 		values = null;
 		allowOthers = true;
@@ -49,7 +49,7 @@ public class EnumerationConstraint<T> implements TypeConstraint {
 	 *   collection is transferred to the constraint
 	 * @param allowOthers if other values are allowed
 	 */
-	public EnumerationConstraint(Collection<? extends T> values, boolean allowOthers) {
+	public Enumeration(Collection<? extends T> values, boolean allowOthers) {
 		super();
 		this.values = values;
 		this.allowOthers = allowOthers;

@@ -20,7 +20,7 @@ import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.schema.model.Definition;
-import eu.esdihumboldt.hale.schema.model.constraints.ConstraintUtil;
+import eu.esdihumboldt.hale.schema.model.constraint.ConstraintUtil;
 
 /**
  * Basic definition implementation to be subclassed
