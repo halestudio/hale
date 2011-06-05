@@ -107,6 +107,18 @@ public abstract class AbstractDefinition<C> implements Definition<C>, Comparable
 			constraints.put((Class<? extends C>) constraintType, constraint);
 		}
 	}
+	
+	/**
+	 * Set a constraint on the definition if none of the same type has been set
+	 * yet.
+	 * @param constraint the constraint to set
+	 */
+	@SuppressWarnings("unchecked")
+	public void setConstraintIfNoSet(C constraint) {
+		if (!hasConstraint((Class<? extends C>) ConstraintUtil.getConstraintType(constraint.getClass()))) {
+			setConstraint(constraint);
+		}
+	}
 
 	/**
 	 * Set the definition description

@@ -32,21 +32,18 @@ import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
 public class DefaultTypeIndex implements TypeIndex {
 
 	private final Map<QName, TypeDefinition> types = new HashMap<QName, TypeDefinition>();
-	private final Set<TypeDefinition> mappableTypes = new HashSet<TypeDefinition>();
+	private Set<TypeDefinition> mappableTypes;
 
 	/**
-	 * Add a type to the type index. The {@link MappableFlag} constraint on the
-	 * type must have already been set to populate the mappable types list in
-	 * the index correctly.
+	 * Add a type to the type index.
 	 * 
 	 * @param type the type to add
 	 */
 	public void addType(TypeDefinition type) {
 		synchronized (types) {
 			types.put(type.getName(), type);
-			if (type.getConstraint(MappableFlag.class).isEnabled()) {
-				mappableTypes.add(type);
-			}
+			// reset mappable types
+			mappableTypes = null; 
 		}
 	}
 
@@ -69,10 +66,24 @@ public class DefaultTypeIndex implements TypeIndex {
 	}
 
 	/**
+	 * {@inheritDoc}<br>
+	 * This method may not be called during model creation.
+	 * 
 	 * @see TypeIndex#getMappableTypes()
 	 */
 	@Override
 	public Collection<? extends TypeDefinition> getMappableTypes() {
+		synchronized (types) {
+			if (mappableTypes == null) {
+				mappableTypes = new HashSet<TypeDefinition>();
+				for (TypeDefinition type : types.values()) {
+					if (type.getConstraint(MappableFlag.class).isEnabled()) {
+						mappableTypes.add(type);
+					}
+				}
+			}
+		}
+		
 		return Collections.unmodifiableCollection(mappableTypes);
 	}
 

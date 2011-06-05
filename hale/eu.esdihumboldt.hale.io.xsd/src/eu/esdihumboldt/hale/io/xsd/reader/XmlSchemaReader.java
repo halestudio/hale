@@ -74,8 +74,8 @@ import eu.esdihumboldt.hale.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.io.xsd.XmlSchemaIO;
 import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
-import eu.esdihumboldt.hale.io.xsd.constraint.SuperTypeBinding;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.internal.Messages;
 import eu.esdihumboldt.hale.io.xsd.model.XmlAttribute;
 import eu.esdihumboldt.hale.io.xsd.model.XmlAttributeGroup;
@@ -91,6 +91,8 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlAttributeReferenceProperty
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlElementReferenceProperty;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlGroupReferenceProperty;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.MappableUsingXsiType;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SuperTypeBinding;
 import eu.esdihumboldt.hale.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.schema.io.impl.AbstractSchemaReader;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
@@ -102,6 +104,7 @@ import eu.esdihumboldt.hale.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.SimpleFlag;
 import eu.esdihumboldt.hale.schema.model.impl.AbstractDefinition;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultGroupPropertyDefinition;
@@ -208,7 +211,7 @@ public class XmlSchemaReader
 		Set<String> imports = new HashSet<String>();
 		imports.add(location.toString());
 
-		loadSchema(location.toString(), xmlSchema, imports, progress);
+		loadSchema(location.toString(), xmlSchema, imports, progress, true);
 		
 		reporter.setSuccess(true);
 		return reporter;
@@ -222,9 +225,11 @@ public class XmlSchemaReader
 	 * @param imports the imports/includes that were already
 	 *   loaded or where loading has been started
 	 * @param progress the progress indicator
+	 * @param mainSchema states if this is a main schema and therefore elements
+	 *   declared here should be flagged mappable
 	 */
 	protected void loadSchema(String schemaLocation, XmlSchema xmlSchema, 
-			Set<String> imports, ProgressIndicator progress) {
+			Set<String> imports, ProgressIndicator progress, boolean mainSchema) {
 		String namespace = xmlSchema.getTargetNamespace();
 		if (namespace == null) {
 			namespace = XMLConstants.NULL_NS_URI;
@@ -238,9 +243,10 @@ public class XmlSchemaReader
 			XmlSchemaObject item = items.getItem(i);
 			
 			if (item instanceof XmlSchemaElement) {
+				// global element declaration
 				XmlSchemaElement element = (XmlSchemaElement) item;
 				// determine type
-				TypeDefinition elementType = null;
+				XmlTypeDefinition elementType = null;
 				
 				if (element.getSchemaTypeName() != null) {
 					// reference to type
@@ -252,7 +258,7 @@ public class XmlSchemaReader
 							element.getQName().getLocalPart() + "_AnonymousType"); //$NON-NLS-1$
 					// create type
 					elementType = createType(element.getSchemaType(), typeName,
-							schemaLocation, namespace);
+							schemaLocation, namespace, mainSchema);
 				}
 				else if (element.getQName() != null) {
 					// reference to type
@@ -273,8 +279,12 @@ public class XmlSchemaReader
 					// set metadata
 					setMetadata(schemaElement, element, schemaLocation);
 					
-					//TODO set constraints? (e.g. Mappable)
-					//TODO extend SchemaElement constraint
+					// extend XmlElements constraint
+					elementType.getConstraint(XmlElements.class).addElement(schemaElement);
+					
+					// set Mappable constraint (e.g. Mappable)
+					// for types with an associated element it can be determined on the spot if it is mappable
+					elementType.setConstraint(MappableFlag.get(mainSchema));
 					
 					// store element in index
 					index.getElements().put(elementName, schemaElement);
@@ -287,7 +297,7 @@ public class XmlSchemaReader
 			else if (item instanceof XmlSchemaType) {
 				// complex or simple type
 				createType((XmlSchemaType) item, null, schemaLocation,
-						namespace);
+						namespace, mainSchema);
 			}
 			else if (item instanceof XmlSchemaAttribute) {
 				// schema attribute that might be referenced somewhere
@@ -363,7 +373,8 @@ public class XmlSchemaReader
 				String location = importedSchema.getSourceURI();
 				if (!(imports.contains(location))) { // only add schemas that were not already added
 					imports.add(location); // place a marker in the map to prevent loading the location in the call to loadSchema 
-					loadSchema(location, importedSchema, imports, progress);
+					loadSchema(location, importedSchema, imports, progress,
+							mainSchema && imp instanceof XmlSchemaInclude); // is part of main schema if it's a main schema include
 				}
 				if (imp instanceof XmlSchemaInclude) {
 					includes.add(location);
@@ -389,10 +400,12 @@ public class XmlSchemaReader
 	 *   if the name of the schema type shall be used
 	 * @param schemaLocation the schema location
 	 * @param schemaNamespace the schema namespace
+	 * @param mainSchema if the type definition is a global definition in a main
+	 *   schema
 	 * @return the created type
 	 */
 	private XmlTypeDefinition createType(XmlSchemaType schemaType, QName typeName,
-			String schemaLocation, String schemaNamespace) {
+			String schemaLocation, String schemaNamespace, boolean mainSchema) {
 		if (typeName == null) {
 			typeName = schemaType.getQName();
 		}
@@ -423,6 +436,13 @@ public class XmlSchemaReader
 				//XXX reuse the super type's attribute type where appropriate?
 			}
 			
+			// set mappable constraint
+			if (mainSchema) {
+				// only set constraint if not already set by element
+				// if the type is mappable is determined lazily
+				type.setConstraintIfNoSet(new MappableUsingXsiType(type));
+			}
+			
 			// set type metadata and constraints
 			setMetadataAndConstraints(type, complexType, schemaLocation);
 			
@@ -430,7 +450,8 @@ public class XmlSchemaReader
 			createProperties(type, complexType, schemaLocation, schemaNamespace);
 		}
 		else {
-			reporter.warn(new IOMessageImpl("Unrecognized schema type", null,
+			reporter.error(new IOMessageImpl("Unrecognized schema type: " + 
+					schemaType.getClass().getSimpleName(), null,
 					schemaType.getLineNumber(), schemaType.getLinePosition()));
 		}
 		

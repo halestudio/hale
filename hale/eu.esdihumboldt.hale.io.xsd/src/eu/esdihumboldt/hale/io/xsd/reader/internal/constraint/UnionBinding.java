@@ -22,7 +22,7 @@ import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
  * Binding constraint for type unions
  * @author Simon Templer
  */
-public class UnionBindingConstraint extends Binding {
+public class UnionBinding extends Binding {
 
 	private Collection<? extends TypeDefinition> unionTypes;
 
@@ -31,7 +31,7 @@ public class UnionBindingConstraint extends Binding {
 	 * 
 	 * @param unionTypes the definitions of the types contained in the union
 	 */
-	public UnionBindingConstraint(Collection<? extends TypeDefinition> unionTypes) {
+	public UnionBinding(Collection<? extends TypeDefinition> unionTypes) {
 		this.unionTypes = unionTypes;
 	}
 

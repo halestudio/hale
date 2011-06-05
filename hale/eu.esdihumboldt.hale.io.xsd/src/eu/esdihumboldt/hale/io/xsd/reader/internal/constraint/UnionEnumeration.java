@@ -23,7 +23,7 @@ import eu.esdihumboldt.hale.schema.model.constraint.type.Enumeration;
  * Enumeration constraint for type unions
  * @author Simon Templer
  */
-public class UnionEnumerationConstraint extends Enumeration<Object> {
+public class UnionEnumeration extends Enumeration<Object> {
 
 	private Collection<? extends TypeDefinition> unionTypes;
 	
@@ -38,7 +38,7 @@ public class UnionEnumerationConstraint extends Enumeration<Object> {
 	 * 
 	 * @param unionTypes the definitions of the types contained in the union
 	 */
-	public UnionEnumerationConstraint(Collection<? extends TypeDefinition> unionTypes) {
+	public UnionEnumeration(Collection<? extends TypeDefinition> unionTypes) {
 		this.unionTypes = unionTypes;
 	}
 	

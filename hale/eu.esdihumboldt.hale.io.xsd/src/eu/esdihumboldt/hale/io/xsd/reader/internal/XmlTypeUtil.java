@@ -41,10 +41,10 @@ import org.opengis.feature.type.Name;
 import eu.esdihumboldt.hale.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
-import eu.esdihumboldt.hale.io.xsd.constraint.SuperTypeBinding;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
-import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionBindingConstraint;
-import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionEnumerationConstraint;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SuperTypeBinding;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionBinding;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionEnumeration;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
@@ -381,9 +381,9 @@ public abstract class XmlTypeUtil {
 		
 		//TODO set constraints
 		// binding constraint
-		type.setConstraint(new UnionBindingConstraint(unionTypes));
+		type.setConstraint(new UnionBinding(unionTypes));
 		// enumeration constraint
-		type.setConstraint(new UnionEnumerationConstraint(unionTypes));
+		type.setConstraint(new UnionEnumeration(unionTypes));
 	}
 	
 }
