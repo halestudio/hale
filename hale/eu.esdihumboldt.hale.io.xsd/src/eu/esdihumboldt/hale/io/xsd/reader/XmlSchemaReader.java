@@ -31,6 +31,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaAnnotated;
+import org.apache.ws.commons.schema.XmlSchemaAny;
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
 import org.apache.ws.commons.schema.XmlSchemaAttributeGroup;
 import org.apache.ws.commons.schema.XmlSchemaAttributeGroupRef;
@@ -44,6 +45,7 @@ import org.apache.ws.commons.schema.XmlSchemaContentModel;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaExternal;
 import org.apache.ws.commons.schema.XmlSchemaGroup;
+import org.apache.ws.commons.schema.XmlSchemaGroupRef;
 import org.apache.ws.commons.schema.XmlSchemaImport;
 import org.apache.ws.commons.schema.XmlSchemaInclude;
 import org.apache.ws.commons.schema.XmlSchemaObject;
@@ -85,6 +87,8 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlAttributeGroupReferencePro
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlAttributeReferenceProperty;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlElementReferenceProperty;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlGroup;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlGroupReferenceProperty;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
 import eu.esdihumboldt.hale.schema.io.SchemaReader;
@@ -318,6 +322,21 @@ public class XmlSchemaReader
 							null, attributeGroup.getLineNumber(), attributeGroup.getLinePosition()));
 				}
 			}
+			else if (item instanceof XmlSchemaGroup) {
+				// group that might be referenced somewhere
+				XmlSchemaGroup schemaGroup = (XmlSchemaGroup) item;
+				if (schemaGroup.getName() != null) {
+					XmlGroup group = new XmlGroup();
+					createPropertiesFromParticle(group, schemaGroup.getParticle(), 
+							schemaLocation, namespace, false);
+					index.getGroups().put(schemaGroup.getName(), group);
+				}
+				else {
+					reporter.warn(new IOMessageImpl(
+							"Group could not be processed", null, 
+							schemaGroup.getLineNumber(), schemaGroup.getLinePosition()));
+				}
+			}
 			else if (item instanceof XmlSchemaImport || item instanceof XmlSchemaInclude) {
 				// ignore, is treated separately
 			}
@@ -547,6 +566,30 @@ public class XmlSchemaReader
 				}
 			}
 			// </choice>
+		}
+		else if (particle instanceof XmlSchemaGroupRef) {
+			// <group ref="..." />
+			XmlSchemaGroupRef groupRef = (XmlSchemaGroupRef) particle;
+			
+			QName groupName = groupRef.getRefName();
+			XmlGroupReferenceProperty property = new XmlGroupReferenceProperty(
+					groupName, declaringGroup, index, groupName);
+			
+			// set cardinality constraint
+			long max = (groupRef.getMaxOccurs() == Long.MAX_VALUE)?(CardinalityConstraint.UNBOUNDED):(groupRef.getMaxOccurs());
+			property.setConstraint(CardinalityConstraint.getCardinality(
+					groupRef.getMinOccurs(), max));
+			
+			// set metadata
+			setMetadata(property, groupRef, schemaLocation);
+		}
+		else if (particle instanceof XmlSchemaAny) {
+			//XXX ignore for now
+		}
+		else {
+			reporter.error(new IOMessageImpl("Unrecognized particle: " +
+					particle.getClass().getSimpleName(), null, 
+					particle.getLineNumber(), particle.getLinePosition()));
 		}
 	}
 

@@ -19,24 +19,24 @@ import eu.esdihumboldt.hale.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.schema.model.Group;
 
 /**
- * Group property referencing a XML attribute group
+ * Group property referencing a XML group
  * @author Simon Templer
  */
-public class XmlAttributeGroupReferenceProperty extends LazyGroupPropertyDefinition {
+public class XmlGroupReferenceProperty extends LazyGroupPropertyDefinition {
 
 	private final QName groupName;
 	
-	private XmlAttributeGroup referencedGroup;
+	private XmlGroup referencedGroup;
 	
 	/**
-	 * Create a property that references a XML attribute group
+	 * Create a property that references a XML group
 	 * 
 	 * @param name the property name
 	 * @param declaringType the declaring type
 	 * @param index the XML index
-	 * @param groupName the attribute group name
+	 * @param groupName the group name
 	 */
-	public XmlAttributeGroupReferenceProperty(QName name,
+	public XmlGroupReferenceProperty(QName name,
 			Group declaringType, XmlIndex index,
 			QName groupName) {
 		super(name, declaringType, index);
@@ -49,10 +49,10 @@ public class XmlAttributeGroupReferenceProperty extends LazyGroupPropertyDefinit
 	 */
 	@Override
 	protected void initChildren() {
-		XmlAttributeGroup group = resolveAttributeGroup();
+		XmlGroup group = resolveGroup();
 		
 		if (group == null) {
-			throw new IllegalStateException("Referenced attribute group could not be found: " + 
+			throw new IllegalStateException("Referenced group could not be found: " + 
 					groupName.toString());
 		}
 		
@@ -63,9 +63,9 @@ public class XmlAttributeGroupReferenceProperty extends LazyGroupPropertyDefinit
 		}
 	}
 
-	private XmlAttributeGroup resolveAttributeGroup() {
+	private XmlGroup resolveGroup() {
 		if (referencedGroup == null) {
-			referencedGroup = index.getAttributeGroups().get(groupName);
+			referencedGroup = index.getGroups().get(groupName);
 		}
 		
 		return referencedGroup;

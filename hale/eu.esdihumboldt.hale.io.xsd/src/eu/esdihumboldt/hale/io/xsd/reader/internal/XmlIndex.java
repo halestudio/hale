@@ -41,6 +41,11 @@ public class XmlIndex extends DefaultSchema {
 	private final Map<QName, XmlAttributeGroup> attributeGroups = new HashMap<QName, XmlAttributeGroup>();
 	
 	/**
+	 * XML group definitions
+	 */
+	private final Map<QName, XmlGroup> groups = new HashMap<QName, XmlGroup>();
+	
+	/**
 	 * XML elements
 	 */
 	private final Map<QName, XmlElement> elements = new HashMap<QName, XmlElement>();
@@ -100,6 +105,13 @@ public class XmlIndex extends DefaultSchema {
 	 */
 	public Map<QName, XmlElement> getElements() {
 		return elements;
+	}
+
+	/**
+	 * @return the group definitions
+	 */
+	public Map<QName, XmlGroup> getGroups() {
+		return groups;
 	}
 
 }
