@@ -48,10 +48,11 @@ public class XmlElement extends AbstractDefinition<TypeConstraint> {
 			QName substitutionGroup) {
 		super(elementName);
 		
+		//TODO also remember index for resolving the substituted element?
+		//XXX what about the other direction - finding possible substitutions
+		
 		this.type = type;
 		this.substitutionGroup = substitutionGroup;
-		
-		//TODO set schema element constraint on type
 	}
 
 	/**

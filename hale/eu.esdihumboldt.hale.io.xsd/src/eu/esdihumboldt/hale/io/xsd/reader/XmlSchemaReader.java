@@ -271,6 +271,7 @@ public class XmlSchemaReader
 					QName elementName = new QName(namespace, element.getName()); //XXX use element QName instead?
 					// the substitution group
 					QName subGroup = element.getSubstitutionGroup();
+					//TODO do we also need an index for substitutions?
 					
 					// create schema element
 					XmlElement schemaElement = new XmlElement(elementName, 

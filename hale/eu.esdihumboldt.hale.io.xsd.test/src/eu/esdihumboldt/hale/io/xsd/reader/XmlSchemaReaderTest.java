@@ -477,6 +477,24 @@ public class XmlSchemaReaderTest {
 	}
 	
 	/**
+	 * Test reading a simple XML schema containing substitution groups.
+	 * @throws Exception if reading the schema fails
+	 */
+	@Test
+	public void testRead_definitive_substitution() throws Exception {
+		URI location = getClass().getResource("/testdata/definitive/substgroups.xsd").toURI();
+		LocatableInputSupplier<? extends InputStream> input = new DefaultInputSupplier(location );
+		XmlIndex schema = (XmlIndex) readSchema(input);
+		
+		// shirt element
+		XmlElement shirt = schema.getElements().get(new QName("shirt"));
+		assertNotNull(shirt);
+		assertEquals(new QName("product"), shirt.getSubstitutionGroup());
+		
+		//TODO extend
+	}
+	
+	/**
 	 * Reads a schema
 	 * 
 	 * @param input the input supplier
