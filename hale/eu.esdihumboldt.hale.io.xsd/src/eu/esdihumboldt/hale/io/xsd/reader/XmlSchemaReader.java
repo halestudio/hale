@@ -43,6 +43,8 @@ import org.apache.ws.commons.schema.XmlSchemaContent;
 import org.apache.ws.commons.schema.XmlSchemaContentModel;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaExternal;
+import org.apache.ws.commons.schema.XmlSchemaGroup;
+import org.apache.ws.commons.schema.XmlSchemaImport;
 import org.apache.ws.commons.schema.XmlSchemaInclude;
 import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaObjectCollection;
@@ -203,35 +205,8 @@ public class XmlSchemaReader
 		imports.add(location.toString());
 
 		loadSchema(location.toString(), xmlSchema, imports, progress);
-
-//		Map<String, SchemaElement> elements = new HashMap<String, SchemaElement>();
-//		for (SchemaElement element : schemaResult.getElements().values()) {
-//			if (element.getType() != null) {
-//				if (element.getType().isComplexType()) {
-//					elements.put(element.getIdentifier(), element);
-//				}
-//			}
-//			else {
-//				_log.warn(NO_DEFINITION, "No type definition for element " + element.getElementName().getLocalPart()); //$NON-NLS-1$
-//			}
-//		}
-//
-//		Schema result = new Schema(elements, namespace, locationURL, prefixes);
-//		
-//		Map<Name, SchemaElement> allElements = new HashMap<Name, SchemaElement>();
-//		Map<Name, TypeDefinition> allTypes = new HashMap<Name, TypeDefinition>();
-//		
-//		allElements.putAll(schemaResult.getElements());
-//		allTypes.putAll(schemaResult.getTypes());
-//		
-//		for (SchemaResult sr : imports.values()) {
-//			allElements.putAll(sr.getElements());
-//			allTypes.putAll(sr.getTypes());
-//		}
-//		
-//		result.setAllElements(allElements);
-//		result.setAllTypes(allTypes);
 		
+		reporter.setSuccess(true);
 		return reporter;
 	}
 	
@@ -342,6 +317,9 @@ public class XmlSchemaReader
 							"Attribute group could not be processed", 
 							null, attributeGroup.getLineNumber(), attributeGroup.getLinePosition()));
 				}
+			}
+			else if (item instanceof XmlSchemaImport || item instanceof XmlSchemaInclude) {
+				// ignore, is treated separately
 			}
 			else {
 				reporter.error(new IOMessageImpl(
