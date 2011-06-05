@@ -343,6 +343,11 @@ public class XmlSchemaReader
 							null, attributeGroup.getLineNumber(), attributeGroup.getLinePosition()));
 				}
 			}
+			else {
+				reporter.error(new IOMessageImpl(
+						"Unrecognized global definition: " + item.getClass().getSimpleName(), 
+						null, item.getLineNumber(), item.getLinePosition()));
+			}
 		}
 		
 		// Set of include locations
