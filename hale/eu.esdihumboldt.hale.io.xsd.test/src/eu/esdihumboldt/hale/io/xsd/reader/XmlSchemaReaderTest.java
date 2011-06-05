@@ -376,6 +376,69 @@ public class XmlSchemaReaderTest {
 	}
 	
 	/**
+	 * Test reading a simple XML schema containing groups and group references.
+	 * @throws Exception if reading the schema fails
+	 */
+	@Test
+	public void testRead_definitive_groups() throws Exception {
+		URI location = getClass().getResource("/testdata/definitive/groups.xsd").toURI();
+		LocatableInputSupplier<? extends InputStream> input = new DefaultInputSupplier(location );
+		XmlIndex schema = (XmlIndex) readSchema(input);
+		
+		// ShirtType
+		TypeDefinition shirtType = schema.getType(new QName("ShirtType"));
+		assertNotNull(shirtType);
+		assertEquals(4, shirtType.getChildren().size());
+		
+		Iterator<? extends ChildDefinition<?>> it = shirtType.getChildren().iterator();
+		// ProductPropertyGroup
+		GroupPropertyDefinition prodGroup = it.next().asGroup();
+		// cardinality
+		CardinalityConstraint cc = prodGroup.getConstraint(CardinalityConstraint.class);
+		assertEquals(0, cc.getMinOccurs());
+		assertEquals(1, cc.getMaxOccurs());
+		// name
+		assertEquals("ProductPropertyGroup", prodGroup.getName().getLocalPart());
+		
+		assertEquals(3, prodGroup.getDeclaredChildren().size());
+		Iterator<? extends ChildDefinition<?>> itProd = prodGroup.getDeclaredChildren().iterator();
+		// DescriptionGroup
+		GroupPropertyDefinition descGroup = itProd.next().asGroup();
+		assertNotNull(descGroup);
+		// cardinality
+		cc = descGroup.getConstraint(CardinalityConstraint.class);
+		assertEquals(1, cc.getMinOccurs());
+		assertEquals(1, cc.getMaxOccurs());
+		
+		assertEquals(2, descGroup.getDeclaredChildren().size());
+		Iterator<? extends ChildDefinition<?>> itDesc = descGroup.getDeclaredChildren().iterator();
+		// description
+		PropertyDefinition description = itDesc.next().asProperty();
+		assertNotNull(description);
+		assertEquals("description", description.getName().getLocalPart());
+		
+		// comment
+		PropertyDefinition comment = itDesc.next().asProperty();
+		assertNotNull(comment);
+		assertEquals("comment", comment.getName().getLocalPart());
+		
+		// number
+		PropertyDefinition number = itProd.next().asProperty();
+		assertNotNull(number);
+		assertEquals("number", number.getName().getLocalPart());
+		
+		// name
+		PropertyDefinition name = itProd.next().asProperty();
+		assertNotNull(name);
+		assertEquals("name", name.getName().getLocalPart());
+		
+		// size
+		PropertyDefinition size = it.next().asProperty();
+		assertNotNull(size);
+		assertEquals("size", size.getName().getLocalPart());
+	}
+	
+	/**
 	 * Reads a schema
 	 * 
 	 * @param input the input supplier
