@@ -441,7 +441,7 @@ public class XmlSchemaReader
 			if (mainSchema) {
 				// only set constraint if not already set by element
 				// if the type is mappable is determined lazily
-				type.setConstraintIfNoSet(new MappableUsingXsiType(type));
+				type.setConstraintIfNotSet(new MappableUsingXsiType(type));
 			}
 			
 			// set type metadata and constraints

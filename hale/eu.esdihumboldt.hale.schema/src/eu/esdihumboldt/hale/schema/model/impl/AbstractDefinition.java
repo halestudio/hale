@@ -114,7 +114,7 @@ public abstract class AbstractDefinition<C> implements Definition<C>, Comparable
 	 * @param constraint the constraint to set
 	 */
 	@SuppressWarnings("unchecked")
-	public void setConstraintIfNoSet(C constraint) {
+	public void setConstraintIfNotSet(C constraint) {
 		if (!hasConstraint((Class<? extends C>) ConstraintUtil.getConstraintType(constraint.getClass()))) {
 			setConstraint(constraint);
 		}

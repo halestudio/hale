@@ -48,6 +48,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionEnumeration;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.schema.model.constraint.type.ElementType;
 import eu.esdihumboldt.hale.schema.model.constraint.type.Enumeration;
 import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.SimpleFlag;
@@ -301,24 +302,41 @@ public abstract class XmlTypeUtil {
 	 */
 	private static void configureSimpleTypeList(XmlTypeDefinition type,
 			XmlSchemaSimpleTypeList list, XmlIndex index, IOReporter reporter) {
-		//FIXME support for list types
-//		AttributeType attributeType = createListAttributeType(typeName, dependencies, list, schemaTypes);
-//		
-//		typeDef = new TypeDefinition(typeName, attributeType, null);
-		//TODO use item type information
-//		/*if (list.getItemType() == null) {
-//		 
-//		}
-//		else if (list.getItemTypeName() != null) {
-//			
-//		}*/
-//		
-//		AttributeTypeBuilder typeBuilder = new AttributeTypeBuilder();
-//		typeBuilder.setBinding(List.class);
-//		typeBuilder.setName(typeName.getLocalPart());
-//		typeBuilder.setNamespaceURI(typeName.getNamespaceURI());
-//		typeBuilder.setNillable(true);
-//		return typeBuilder.buildType();
+		XmlTypeDefinition elementType = null;
+		if (list.getItemType() == null) {
+			XmlSchemaSimpleType simpleType = list.getItemType();
+			if (simpleType.getQName() != null) {
+				// named type
+				elementType = index.getOrCreateType(simpleType.getQName());
+			}
+			else {
+				// anonymous type
+				QName baseName = new QName(type.getName().getNamespaceURI() + 
+						"/" + type.getName().getLocalPart(), "AnonymousType"); //$NON-NLS-1$ //$NON-NLS-2$
+				
+				elementType = new AnonymousXmlType(baseName);
+			}
+			
+			configureSimpleType(elementType, simpleType, index, reporter);
+		}
+		else if (list.getItemTypeName() != null) {
+			// named type
+			elementType = index.getOrCreateType(list.getItemTypeName());
+		}
+		
+		if (elementType != null) {
+			// set constraints on type
+			
+			// element type
+			type.setConstraint(new ElementType(elementType));
+			// list binding
+			type.setConstraint(Binding.get(List.class));
+		}
+		else {
+			reporter.error(new IOMessageImpl(
+					"Unrecognized base type for simple type list", 
+					null, list.getLineNumber(), list.getLinePosition()));
+		}
 	}
 
 	/**

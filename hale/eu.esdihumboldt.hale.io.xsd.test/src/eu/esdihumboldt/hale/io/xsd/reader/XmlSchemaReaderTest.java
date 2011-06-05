@@ -494,6 +494,19 @@ public class XmlSchemaReaderTest {
 		//TODO extend
 	}
 	
+//	/**
+//	 * Test reading a simple XML schema containing union and list types.
+//	 * @throws Exception if reading the schema fails
+//	 */
+//	@Test
+//	public void testRead_definitive_unionlist() throws Exception {
+//		URI location = getClass().getResource("/testdata/definitive/unionlist.xsd").toURI();
+//		LocatableInputSupplier<? extends InputStream> input = new DefaultInputSupplier(location );
+//		XmlIndex schema = (XmlIndex) readSchema(input);
+//		
+//		//TODO create tests
+//	 }
+	
 	/**
 	 * Reads a schema
 	 * 
