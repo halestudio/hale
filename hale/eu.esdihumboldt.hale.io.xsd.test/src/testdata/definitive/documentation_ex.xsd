@@ -1,6 +1,6 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             xmlns:doc="http://example.org/doc">
-  <xs:import namespace="http://example.org/prod"
+  <xsd:import namespace="http://example.org/prod"
               schemaLocation="chapter03prod.xsd"/>
             
   <xsd:element name="product" type="ProductType">

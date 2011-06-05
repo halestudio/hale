@@ -361,6 +361,22 @@ public class XmlSchemaReaderTest {
 	}
 	
 	/**
+	 * Test reading a simple XML schema with an annotated element.
+	 * @throws Exception if reading the schema fails
+	 */
+	@Test
+	public void testRead_definitive_annotated() throws Exception {
+		URI location = getClass().getResource("/testdata/definitive/documentation_ex.xsd").toURI();
+		LocatableInputSupplier<? extends InputStream> input = new DefaultInputSupplier(location );
+		XmlIndex schema = (XmlIndex) readSchema(input);
+		
+		// product element
+		XmlElement product = schema.getElements().get(new QName("product"));
+		assertNotNull(product);
+		assertTrue(product.getDescription().contains("This element represents a product."));
+	}
+	
+	/**
 	 * Reads a schema
 	 * 
 	 * @param input the input supplier
