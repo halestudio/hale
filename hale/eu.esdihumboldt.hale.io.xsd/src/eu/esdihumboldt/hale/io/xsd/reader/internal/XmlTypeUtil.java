@@ -42,6 +42,7 @@ import eu.esdihumboldt.hale.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.SuperTypeBinding;
+import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionBindingConstraint;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionEnumerationConstraint;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;

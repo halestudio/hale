@@ -14,6 +14,8 @@ package eu.esdihumboldt.hale.io.xsd.reader.internal;
 
 import javax.xml.namespace.QName;
 
+import eu.esdihumboldt.hale.io.xsd.model.XmlAttributeGroup;
+import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.schema.model.Group;

@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.io.xsd.reader.internal;
+package eu.esdihumboldt.hale.io.xsd.model;
 
 import javax.xml.namespace.QName;
 

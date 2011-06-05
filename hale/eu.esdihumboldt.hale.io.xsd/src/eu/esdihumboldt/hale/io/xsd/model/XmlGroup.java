@@ -10,15 +10,15 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.io.xsd.reader.internal;
+package eu.esdihumboldt.hale.io.xsd.model;
 
 import eu.esdihumboldt.hale.schema.model.impl.DefaultGroup;
 
 /**
- * Represents a XML attribute group
+ * Represents a XML group
  * @author Simon Templer
  */
-public class XmlAttributeGroup extends DefaultGroup {
+public class XmlGroup extends DefaultGroup {
 
 	//TODO anything?
 	

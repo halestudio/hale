@@ -35,3 +35,10 @@ Import-Package: com.google.common.base;version="1.6.0",
  org.opengis.feature.type,
  org.opengis.util,
  org.slf4j;version="1.5.11"
+Export-Package: eu.esdihumboldt.hale.io.xsd,
+ eu.esdihumboldt.hale.io.xsd.constraint,
+ eu.esdihumboldt.hale.io.xsd.internal;x-internal:=true,
+ eu.esdihumboldt.hale.io.xsd.model,
+ eu.esdihumboldt.hale.io.xsd.reader,
+ eu.esdihumboldt.hale.io.xsd.reader.internal;x-internal:=true,
+ eu.esdihumboldt.hale.io.xsd.reader.internal.constraint;x-internal:=true

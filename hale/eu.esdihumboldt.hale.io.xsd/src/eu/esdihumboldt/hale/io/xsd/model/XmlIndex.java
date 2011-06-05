@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.io.xsd.reader.internal;
+package eu.esdihumboldt.hale.io.xsd.model;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -20,6 +20,8 @@ import javax.xml.namespace.QName;
 
 import com.google.common.base.Preconditions;
 
+import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeUtil;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultTypeIndex;
