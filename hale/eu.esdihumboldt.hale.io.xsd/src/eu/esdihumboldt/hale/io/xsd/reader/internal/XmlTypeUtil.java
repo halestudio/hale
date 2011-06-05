@@ -278,9 +278,15 @@ public abstract class XmlTypeUtil {
 			}
 			else if (facet instanceof XmlSchemaPatternFacet) {
 				//TODO support for patterns
+				reporter.warn(new IOMessageImpl(
+						"Facet not supported: " + facet.getClass().getSimpleName(), 
+						null, facet.getLineNumber(), facet.getLinePosition()));
 			}
 			else {
 				//TODO support for other facets?
+				reporter.error(new IOMessageImpl(
+						"Unrecognized facet: " + facet.getClass().getSimpleName(), 
+						null, facet.getLineNumber(), facet.getLinePosition()));
 			}
 		}
 		
