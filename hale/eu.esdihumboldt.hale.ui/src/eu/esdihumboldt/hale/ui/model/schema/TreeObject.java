@@ -16,7 +16,7 @@ import org.opengis.feature.type.PropertyType;
 
 import eu.esdihumboldt.commons.goml.align.Entity;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**
  * A TreeObject for TreeViewers.
@@ -30,7 +30,7 @@ public abstract class TreeObject implements SchemaItem, Comparable<TreeObject> {
 	private TreeParent parent;
 	private final TreeObjectType type;
 	private final PropertyType propertyType;
-	private final SchemaType schemaType;
+	private final SchemaSpaceID schemaType;
 	
 	private final Name name;
 	
@@ -44,7 +44,7 @@ public abstract class TreeObject implements SchemaItem, Comparable<TreeObject> {
 	 * @param schemaType the schema type
 	 */
 	public TreeObject(String label, Name name, TreeObjectType type,
-			PropertyType propertyType, SchemaType schemaType) {
+			PropertyType propertyType, SchemaSpaceID schemaType) {
 		this.label = label;
 		this.type = type;
 		this.name = name;
@@ -71,7 +71,7 @@ public abstract class TreeObject implements SchemaItem, Comparable<TreeObject> {
 	 * @see SchemaItem#getSchemaType()
 	 */
 	@Override
-	public SchemaType getSchemaType() {
+	public SchemaSpaceID getSchemaType() {
 		return schemaType;
 	}
 

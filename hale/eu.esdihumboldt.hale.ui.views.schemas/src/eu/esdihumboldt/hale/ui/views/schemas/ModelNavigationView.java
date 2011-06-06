@@ -59,7 +59,7 @@ import eu.esdihumboldt.hale.ui.service.UpdateMessage;
 import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.service.schemaitem.SchemaItemService;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;
 import eu.esdihumboldt.hale.ui.style.service.StyleServiceListener;
@@ -161,7 +161,7 @@ public class ModelNavigationView extends ViewPart implements
 			}
 			
 			@Override
-			public void schemaChanged(final SchemaType schema) {
+			public void schemaChanged(final SchemaSpaceID schema) {
 				if (Display.getCurrent() != null) {
 					ModelNavigationView.this.update(schema);
 				}
@@ -204,7 +204,7 @@ public class ModelNavigationView extends ViewPart implements
 			initSchemaExplorerToolBar(sourceComposite, sourceSchemaFilter, 
 				sourceToggleActions, Messages.ModelNavigationView_Source, "source"); //$NON-NLS-1$ //$NON-NLS-2$
 
-		this.sourceSchemaViewer = this.schemaExplorerSetup(sourceComposite, SchemaType.SOURCE);
+		this.sourceSchemaViewer = this.schemaExplorerSetup(sourceComposite, SchemaSpaceID.SOURCE);
 		this.sourceSchemaViewer.addFilter(sourceSchemaFilter);
 		
 		for (AbstractContentProviderAction cpa : sourceContentActions) {
@@ -279,7 +279,7 @@ public class ModelNavigationView extends ViewPart implements
 				targetToggleActions, Messages.ModelNavigationView_Target, "target"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		this.targetSchemaViewer = this.schemaExplorerSetup(targetComposite,
-				SchemaType.TARGET);
+				SchemaSpaceID.TARGET);
 		
 		this.targetSchemaViewer.addFilter(targetSchemaFilter);
 		
@@ -454,7 +454,7 @@ public class ModelNavigationView extends ViewPart implements
 	 * @param schemaType the viewer type
 	 * @return a {@link TreeViewer} with the currently loaded schema.
 	 */
-	private TreeViewer schemaExplorerSetup(Composite modelComposite, final SchemaType schemaType) {
+	private TreeViewer schemaExplorerSetup(Composite modelComposite, final SchemaSpaceID schemaType) {
 		PatternFilter patternFilter = new PatternFilter();
 	    final FilteredTree filteredTree = new FilteredTree(modelComposite, SWT.MULTI
 	            | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
@@ -491,7 +491,7 @@ public class ModelNavigationView extends ViewPart implements
 	 * 
 	 * @param schema the schema that changed
 	 */
-	protected void update(SchemaType schema) {
+	protected void update(SchemaSpaceID schema) {
 		switch (schema) {
 		case SOURCE:
 			sourceSchemaViewer.setInput(schemaItemService.getRoot(schema));
@@ -545,9 +545,9 @@ public class ModelNavigationView extends ViewPart implements
 	 */
 	public void selectItem(String identifier) {
 		TreeViewer tree;
-		SchemaItem item = schemaItemService.getSchemaItem(identifier, SchemaType.SOURCE);
+		SchemaItem item = schemaItemService.getSchemaItem(identifier, SchemaSpaceID.SOURCE);
 		if (item == null) {
-			item = schemaItemService.getSchemaItem(identifier, SchemaType.TARGET);
+			item = schemaItemService.getSchemaItem(identifier, SchemaSpaceID.TARGET);
 			tree = targetSchemaViewer;
 		}
 		else {

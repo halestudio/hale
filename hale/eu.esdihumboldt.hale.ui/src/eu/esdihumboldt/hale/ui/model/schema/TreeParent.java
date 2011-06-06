@@ -18,7 +18,7 @@ import org.opengis.feature.type.Name;
 import org.opengis.feature.type.PropertyType;
 
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 
 /**
@@ -41,7 +41,7 @@ public class TreeParent extends TreeObject{
 	 * @param schemaType the schema type
 	 */
 	public TreeParent(String label, Name name, TreeObjectType type,
-			PropertyType propertyType, SchemaType schemaType) {
+			PropertyType propertyType, SchemaSpaceID schemaType) {
 		super(label, name, type, propertyType, schemaType);
 		children = new TreeSet<TreeObject>();
 	}

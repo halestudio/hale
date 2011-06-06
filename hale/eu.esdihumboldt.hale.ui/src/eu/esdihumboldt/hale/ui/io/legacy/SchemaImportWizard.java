@@ -41,7 +41,7 @@ import eu.esdihumboldt.hale.ui.internal.Messages;
 import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.util.ExceptionHelper;
 
 /**
@@ -85,7 +85,7 @@ public class SchemaImportWizard
 	@Override
 	public boolean performFinish() {
 		final String result = mainPage.getResult();
-		final SchemaType schemaType = mainPage.getSchemaType();
+		final SchemaSpaceID schemaType = mainPage.getSchemaType();
 		
 		final boolean useWfs = mainPage.useWfs();
 		
@@ -111,8 +111,8 @@ public class SchemaImportWizard
 						
 						Collection<SchemaElement> currentSchema = schemaService.getSchema(schemaType);
 						if (currentSchema != null && !currentSchema.isEmpty()) {
-							final String title = ((schemaType == SchemaType.SOURCE)?(Messages.SchemaImportWizard_1):(Messages.SchemaImportWizard_2));
-							final String message = ((schemaType == SchemaType.SOURCE)
+							final String title = ((schemaType == SchemaSpaceID.SOURCE)?(Messages.SchemaImportWizard_1):(Messages.SchemaImportWizard_2));
+							final String message = ((schemaType == SchemaSpaceID.SOURCE)
 									?(Messages.SchemaImportWizard_3)
 									:(Messages.SchemaImportWizard_4));
 							
@@ -170,10 +170,10 @@ public class SchemaImportWizard
 							customSchemaFormat = "xsd"; //$NON-NLS-1$
 						}
 						
-						if (schemaType == SchemaType.SOURCE) {
+						if (schemaType == SchemaSpaceID.SOURCE) {
 							// load Schema as Source schema
 							schemaService.loadSchema(uri, customSchemaFormat, 
-									SchemaType.SOURCE, progress);
+									SchemaSpaceID.SOURCE, progress);
 							// update Alignment
 							Schema schema = new Schema(null, null);
 							schema.setLocation(uri.toASCIIString());
@@ -188,7 +188,7 @@ public class SchemaImportWizard
 						else
 						{
 							schemaService.loadSchema(uri, customSchemaFormat, 
-									SchemaType.TARGET, progress);
+									SchemaSpaceID.TARGET, progress);
 							// update Alignment
 							Schema schema = new Schema(null, null);
 							schema.setLocation(uri.toASCIIString());

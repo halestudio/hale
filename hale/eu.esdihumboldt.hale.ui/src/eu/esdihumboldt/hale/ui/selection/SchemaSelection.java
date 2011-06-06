@@ -32,7 +32,7 @@ import eu.esdihumboldt.hale.ui.model.mapping.CellInfo;
 import eu.esdihumboldt.hale.ui.model.schema.NullSchemaItem;
 import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.service.schemaitem.SchemaItemService;
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.IEntity;
@@ -84,13 +84,13 @@ public class SchemaSelection implements ISelection {
 			IEntity e2 = cell.getEntity2();
 			
 			if (e1 != null && e2 != null) {
-				Collection<SchemaItem> sourceCandidates = getSchemaItems(e1, SchemaType.SOURCE);
+				Collection<SchemaItem> sourceCandidates = getSchemaItems(e1, SchemaSpaceID.SOURCE);
 				
 				if (sourceCandidates != null && !sourceCandidates.isEmpty()) {
 					SchemaItem source = containsAny(sourceItems, sourceCandidates);
 					
 					if (source != null) {
-						Collection<SchemaItem> targetCandidates = getSchemaItems(e2, SchemaType.TARGET);
+						Collection<SchemaItem> targetCandidates = getSchemaItems(e2, SchemaSpaceID.TARGET);
 						
 						if (targetCandidates != null && !targetCandidates.isEmpty()) {
 							SchemaItem target = containsAny(targetItems, targetCandidates);
@@ -114,7 +114,7 @@ public class SchemaSelection implements ISelection {
 	 * 
 	 * @return the schema items
 	 */
-	private Collection<SchemaItem> getSchemaItems(IEntity entity, SchemaType type) {
+	private Collection<SchemaItem> getSchemaItems(IEntity entity, SchemaSpaceID type) {
 		if (entity.getAbout().getAbout().equals(Entity.NULL_ENTITY.getAbout().getAbout())) {
 			// special case null entity
 			return Collections.singleton(NullSchemaItem.INSTANCE);
@@ -153,7 +153,7 @@ public class SchemaSelection implements ISelection {
 	 * 
 	 * @return the matching schema item or <code>null</code>
 	 */
-	private SchemaItem getSingleSchemaItem(IEntity entity, SchemaType type) {
+	private SchemaItem getSingleSchemaItem(IEntity entity, SchemaSpaceID type) {
 		// get the schema item matching the entity
 		SchemaItemService items = (SchemaItemService) PlatformUI.getWorkbench().getService(SchemaItemService.class);
 		return items.getSchemaItem(entity, type);
@@ -260,7 +260,7 @@ public class SchemaSelection implements ISelection {
 	 * @return the first selected source item or <code>null</code>
 	 */
 	public SchemaItem getFirstSourceItem() {
-		return getFirstItem(SchemaType.SOURCE);
+		return getFirstItem(SchemaSpaceID.SOURCE);
 	}
 	
 	/**
@@ -269,7 +269,7 @@ public class SchemaSelection implements ISelection {
 	 * @return the first selected target item or <code>null</code>
 	 */
 	public SchemaItem getFirstTargetItem() {
-		return getFirstItem(SchemaType.TARGET);
+		return getFirstItem(SchemaSpaceID.TARGET);
 	}
 	
 	/**
@@ -278,7 +278,7 @@ public class SchemaSelection implements ISelection {
 	 * @param schema the schema type
 	 * @return the first selected item or <code>null</code>
 	 */
-	public SchemaItem getFirstItem(SchemaType schema) {
+	public SchemaItem getFirstItem(SchemaSpaceID schema) {
 		try {
 			switch (schema) {
 			case SOURCE:

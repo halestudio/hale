@@ -12,9 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.service.schema;
 
-import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
-import eu.esdihumboldt.hale.ui.service.UpdateMessage;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.schema.model.Schema;
+
 
 /**
  * Schema service listener adapter
@@ -22,21 +21,21 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class SchemaServiceAdapter implements SchemaServiceListener {
+public class SchemaServiceAdapter implements SchemaServiceListener {
 
 	/**
-	 * @see SchemaServiceListener#schemaChanged(SchemaType)
+	 * @see SchemaServiceListener#schemaAdded(SchemaSpaceID, Schema)
 	 */
 	@Override
-	public void schemaChanged(SchemaType schema) {
+	public void schemaAdded(SchemaSpaceID spaceID, Schema schema) {
 		// override me
 	}
 
 	/**
-	 * @see HaleServiceListener#update(UpdateMessage)
+	 * @see SchemaServiceListener#schemasCleared(SchemaSpaceID)
 	 */
 	@Override
-	public void update(@SuppressWarnings("rawtypes") UpdateMessage message) {
+	public void schemasCleared(SchemaSpaceID spaceID) {
 		// override me
 	}
 

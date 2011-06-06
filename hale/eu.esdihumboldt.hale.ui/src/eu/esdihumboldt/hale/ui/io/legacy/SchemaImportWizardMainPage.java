@@ -35,7 +35,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.ui.internal.Messages;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**
  * 
@@ -278,11 +278,11 @@ public class SchemaImportWizardMainPage
 	 * 
 	 * @return the schema type
 	 */
-	public SchemaType getSchemaType() {
+	public SchemaSpaceID getSchemaType() {
 		if (sourceDestination.getSelection()) {
-			return SchemaType.SOURCE;
+			return SchemaSpaceID.SOURCE;
 		}
-		else return SchemaType.TARGET;
+		else return SchemaSpaceID.TARGET;
 	}
 	
 	/**

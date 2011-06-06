@@ -19,7 +19,7 @@ import org.opengis.feature.type.PropertyType;
 import eu.esdihumboldt.commons.goml.align.Entity;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.ui.model.schema.TreeObject.TreeObjectType;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**
  * Schema item
@@ -41,7 +41,7 @@ public interface SchemaItem {
 	 * 
 	 * @return the schema type (source or target)
 	 */
-	public SchemaType getSchemaType();
+	public SchemaSpaceID getSchemaType();
 
 	/**
 	 * @return if the tree object represents an attribute

@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.ui.model.schema;
 
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**
  * Schema item representing an element
@@ -33,7 +33,7 @@ public class TypeItem extends TreeParent {
 	 * @param type the type definition
 	 * @param schemaType the schema type
 	 */
-	public TypeItem(TypeDefinition type, SchemaType schemaType) {
+	public TypeItem(TypeDefinition type, SchemaSpaceID schemaType) {
 		super(
 				type.getDisplayName(), 
 				type.getName(), 

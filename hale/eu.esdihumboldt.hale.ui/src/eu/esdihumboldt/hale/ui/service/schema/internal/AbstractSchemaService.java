@@ -12,11 +12,11 @@
 
 package eu.esdihumboldt.hale.ui.service.schema.internal;
 
-import eu.esdihumboldt.hale.ui.service.AbstractUpdateService;
-import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
-import eu.esdihumboldt.hale.ui.service.UpdateMessage;
+import de.fhg.igd.eclipse.util.TypeSafeListenerList;
+import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**
  * Notification handling for {@link SchemaService}s that support
@@ -25,41 +25,48 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class AbstractSchemaService extends AbstractUpdateService
-		implements SchemaService {
+public abstract class AbstractSchemaService implements SchemaService {
 
-	/**
-	 * The default update message
-	 */
-	private static final UpdateMessage<?> DEF_MESSAGE = new UpdateMessage<Object>(SchemaService.class, null);
+	private final TypeSafeListenerList<SchemaServiceListener> listeners = new TypeSafeListenerList<SchemaServiceListener>();
 	
 	/**
-	 * @see AbstractUpdateService#notifyListeners(UpdateMessage)
-	 * @deprecated use {@link #notifySchemaChanged(SchemaType)} instead
+	 * @see SchemaService#addSchemaServiceListener(SchemaServiceListener)
 	 */
-	@Deprecated
 	@Override
-	protected void notifyListeners(UpdateMessage<?> message) {
-		notifySchemaChanged(null);
+	public void addSchemaServiceListener(SchemaServiceListener listener) {
+		listeners.add(listener);
 	}
 
 	/**
-	 * Call when a schema has changed
-	 * 
-	 * @param schema the schema type, <code>null</code> if both schemas have changed
+	 * @see SchemaService#removeSchemaServiceListener(SchemaServiceListener)
 	 */
-	protected void notifySchemaChanged(SchemaType schema) {
-		for (HaleServiceListener listener : getListeners()) {
-			if (listener instanceof SchemaServiceListener) {
-				if (schema == null) {
-					((SchemaServiceListener) listener).schemaChanged(SchemaType.SOURCE);
-					((SchemaServiceListener) listener).schemaChanged(SchemaType.TARGET);
-				} else {
-					((SchemaServiceListener) listener).schemaChanged(schema);
-				}
-			}
-			
-			listener.update(DEF_MESSAGE);
+	@Override
+	public void removeSchemaServiceListener(SchemaServiceListener listener) {
+		listeners.remove(listener);
+	}
+
+	/**
+	 * Called when a schema has been added to the source or target schema space.
+	 * 
+	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE} 
+	 *   or {@link SchemaSpaceID#TARGET}
+	 * @param schema the schema that was added
+	 */
+	protected void notifySchemaAdded(SchemaSpaceID spaceID, Schema schema) {
+		for (SchemaServiceListener listener : listeners) {
+			listener.schemaAdded(spaceID, schema);
+		}
+	}
+	
+	/**
+	 * Called when the source or target schema space have been cleared.
+	 * 
+	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE} 
+	 *   or {@link SchemaSpaceID#TARGET}
+	 */
+	protected void notifySchemasCleared(SchemaSpaceID spaceID) {
+		for (SchemaServiceListener listener : listeners) {
+			listener.schemasCleared(spaceID);
 		}
 	}
 

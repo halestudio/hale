@@ -28,9 +28,7 @@ import eu.esdihumboldt.hale.ui.service.project.internal.RecentFilesServiceImpl;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import eu.esdihumboldt.hale.ui.service.report.internal.ReportServiceImpl;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
-import eu.esdihumboldt.hale.ui.service.schema.internal.SchemaProviderService;
-import eu.esdihumboldt.hale.ui.service.schemaitem.SchemaItemService;
-import eu.esdihumboldt.hale.ui.service.schemaitem.internal.SchemaItemServiceImpl;
+import eu.esdihumboldt.hale.ui.service.schema.internal.SchemaServiceImpl;
 
 /**
  * Factory for HALE services
@@ -72,12 +70,7 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		}
 		
 		if (SchemaService.class.equals(serviceInterface)) {
-			return new SchemaProviderService();
-		}
-		
-		if (SchemaItemService.class.equals(serviceInterface)) {
-			return new SchemaItemServiceImpl(
-					(SchemaService) locator.getService(SchemaService.class));
+			return new SchemaServiceImpl();
 		}
 		
 		return null;

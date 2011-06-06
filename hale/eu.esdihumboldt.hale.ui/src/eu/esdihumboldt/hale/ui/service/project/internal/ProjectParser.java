@@ -48,7 +48,7 @@ import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.internal.generated.HaleProject;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.util.ExceptionHelper;
 import eu.esdihumboldt.specification.cst.align.ISchema;
 
@@ -209,7 +209,7 @@ public class ProjectParser {
 				
 				schemaService.loadSchema(
 						sourceSchemaPath, null,
-						SchemaType.SOURCE, progress);
+						SchemaSpaceID.SOURCE, progress);
 				projectService.setSourceSchemaPath(sourceSchemaPath.toString());
 			}
 		} catch (Exception e) {
@@ -223,7 +223,7 @@ public class ProjectParser {
 				
 				schemaService.loadSchema(
 						targetSchemaPath, null,
-						SchemaType.TARGET, progress);
+						SchemaSpaceID.TARGET, progress);
 				projectService.setTargetSchemaPath(targetSchemaPath.toString());
 			}
 		} catch (Exception e) {

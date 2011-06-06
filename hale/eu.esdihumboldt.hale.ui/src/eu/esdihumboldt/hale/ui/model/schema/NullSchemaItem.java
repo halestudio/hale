@@ -19,7 +19,7 @@ import org.opengis.feature.type.PropertyType;
 import eu.esdihumboldt.commons.goml.align.Entity;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.ui.model.schema.TreeObject.TreeObjectType;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**
  * Schema item representing the {@link Entity#NULL_ENTITY}
@@ -50,8 +50,8 @@ public class NullSchemaItem implements SchemaItem {
 	 * @see SchemaItem#getSchemaType()
 	 */
 	@Override
-	public SchemaType getSchemaType() {
-		return SchemaType.SOURCE;
+	public SchemaSpaceID getSchemaType() {
+		return SchemaSpaceID.SOURCE;
 	}
 
 	/**

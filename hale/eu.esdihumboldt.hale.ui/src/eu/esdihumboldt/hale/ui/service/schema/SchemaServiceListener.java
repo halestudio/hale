@@ -12,23 +12,32 @@
 
 package eu.esdihumboldt.hale.ui.service.schema;
 
-import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.schema.model.Schema;
+
 
 /**
  * Dedicated listener for {@link SchemaService} events
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
-public interface SchemaServiceListener extends HaleServiceListener {
+public interface SchemaServiceListener {
 
 	/**
-	 * Called when a schema has changed
+	 * Called when a schema has been added to the source or target schema space.
 	 * 
-	 * @param schema the schema type
+	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE} 
+	 *   or {@link SchemaSpaceID#TARGET}
+	 * @param schema the schema that was added
 	 */
-	public void schemaChanged(SchemaType schema);
+	public void schemaAdded(SchemaSpaceID spaceID, Schema schema);
+	
+	/**
+	 * Called when the source or target schema space have been cleared.
+	 * 
+	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE} 
+	 *   or {@link SchemaSpaceID#TARGET}
+	 */
+	public void schemasCleared(SchemaSpaceID spaceID);
 	
 }

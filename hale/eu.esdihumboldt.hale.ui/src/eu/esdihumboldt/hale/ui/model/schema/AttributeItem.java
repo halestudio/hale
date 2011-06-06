@@ -30,7 +30,7 @@ import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.commons.goml.rdf.DetailedAbout;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.specification.cst.rdf.IAbout;
 
 /**
@@ -52,7 +52,7 @@ public class AttributeItem extends TreeParent {
 	 * @param attribute the attribute definition
 	 * @param schemaType the schema type
 	 */
-	public AttributeItem(AttributeDefinition attribute, SchemaType schemaType) {
+	public AttributeItem(AttributeDefinition attribute, SchemaSpaceID schemaType) {
 		super(
 				attribute.getName() + ":<" + //$NON-NLS-1$
 					attribute.getAttributeType().getDisplayName() + ">",  //$NON-NLS-1$

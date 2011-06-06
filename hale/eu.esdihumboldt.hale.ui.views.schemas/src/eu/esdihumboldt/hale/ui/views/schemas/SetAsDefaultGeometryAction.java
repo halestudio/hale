@@ -45,7 +45,7 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
 
@@ -97,7 +97,7 @@ public class SetAsDefaultGeometryAction extends Action {
 				
 				// reload schema
 				try {
-					schemaService.loadSchema(new URI(schemaLoc), (String)null, SchemaType.SOURCE, new ProgressIndicator() {
+					schemaService.loadSchema(new URI(schemaLoc), (String)null, SchemaSpaceID.SOURCE, new ProgressIndicator() {
 						
 						@Override
 						public void begin(String taskName, int totalWork) {
@@ -185,7 +185,7 @@ public class SetAsDefaultGeometryAction extends Action {
 				
 				// reload schema
 				try {
-					schemaService.loadSchema(new URI(schemaLoc), (String)null, SchemaType.TARGET, new ProgressIndicator() {
+					schemaService.loadSchema(new URI(schemaLoc), (String)null, SchemaSpaceID.TARGET, new ProgressIndicator() {
 						
 						@Override
 						public void begin(String taskName, int totalWork) {

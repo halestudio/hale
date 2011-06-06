@@ -11,187 +11,89 @@
  */
 package eu.esdihumboldt.hale.ui.service.schema;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.util.Collection;
-import java.util.Set;
-
-import org.opengis.feature.type.FeatureType;
-
-import eu.esdihumboldt.hale.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.schemaprovider.Schema;
-import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.model.Definition;
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.service.UpdateService;
+import eu.esdihumboldt.hale.schema.model.Schema;
+import eu.esdihumboldt.hale.schema.model.SchemaSpace;
 
 /**
- * The SchemaService is used internally to provide access to the currently 
+ * The schema service is used internally to provide access to the currently 
  * loaded schemas.
  * 
  * @author Thorsten Reitz
- * @version {$Id}
+ * @author Simon Templer
  */
-public interface SchemaService 
-	extends UpdateService {
+public interface SchemaService {
 	
 	/**
-	 * @return the {@link Collection} of all root {@link FeatureType}s belonging
-	 * to the currently loaded source schema, i.e. {@link FeatureType}s which do
-	 * not have a supertype.
-	 */
-	public Collection<SchemaElement> getSourceSchemaElements();
-	
-	/**
-	 * @return the {@link Collection} of all root {@link FeatureType}s belonging
-	 * to the currently loaded target schema, i.e. {@link FeatureType}s which do
-	 * not have a supertype.
-	 */
-	public Collection<SchemaElement> getTargetSchemaElements();
-	
-	/**
-	 * Get the source schema format
+	 * Get the source or target schema space.
 	 * 
-	 * @return the source schema format
+	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE} 
+	 *   or {@link SchemaSpaceID#TARGET}
+	 * @return the schema space
 	 */
-	public String getSourceSchemaFormat();
+	public SchemaSpace getSchemas(SchemaSpaceID spaceID);
 	
 	/**
-	 * Get the target schema format
+	 * Add a schema to the source or target schema space.
 	 * 
-	 * @return the target schema format
+	 * @param schema the schema to add
+	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE} 
+	 *   or {@link SchemaSpaceID#TARGET}
 	 */
-	public String getTargetSchemaFormat();
+	public void addSchema(Schema schema, SchemaSpaceID spaceID);
 	
 	/**
-	 * Loads the schema defined under the given URL as the target or source 
-	 * schema.
-	 * May point to different source, such as a XSD or a a WFS.
-	 * @param file the {@link URI} to the file from which to load the schema.
-	 * @param schemaFormat the schema format identifier
-	 * @param type the schema type
-	 * @param progress the progress indicator, may be <code>null</code>
-	 * @return true if the loading was successful.
-	 * @throws IOException if loading the schema fails
+	 * Removes all schemas from the source or target schema space.
+	 * 
+	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE} 
+	 *   or {@link SchemaSpaceID#TARGET}
 	 */
-	public boolean loadSchema(URI file, String schemaFormat, SchemaType type, ProgressIndicator progress) throws IOException;
+	public void clearSchemas(SchemaSpaceID spaceID);
 	
 	/**
-	 * Get the target schema
+	 * Adds a listener for schema service events
 	 * 
-	 * @return the target schema
+	 * @param listener the listener to add
 	 */
-	public Schema getTargetSchema();
+	public void addSchemaServiceListener(SchemaServiceListener listener); 
 	
 	/**
-	 * Get the source schema
+	 * Removes a listener for schema service events
 	 * 
-	 * @return the source schema
+	 * @param listener the listener to remove
 	 */
-	public Schema getSourceSchema();
+	public void removeSchemaServiceListener(SchemaServiceListener listener);
 	
-	/**
-	 * Loads multiple schemas into the target or source schema.
-	 * 
-	 * @param uris the {@link URI}s to the schemas
-	 * @param type the schema type
-	 * @return if the loading was successful
-	 */
-	//XXX not supported for now - public boolean loadSchema(List<URI> uris, SchemaType type);
-	
-	/**
-	 * Invoke this operation if you want to clear out the source schema stored. 
-	 * @return true if the cleaning was successful.
-	 */
-	public boolean cleanSourceSchema();
-	
-	/**
-	 * Invoke this operation if you want to clear out the target schema stored. 
-	 * @return true if the cleaning was successful.
-	 */
-	public boolean cleanTargetSchema();
-
-	/**
-	 * @return the namespace of the source schema.
-	 */
-	public String getSourceNameSpace();
-	
-	/**
-	 * @return the namespace of the target schema.
-	 */
-	public String getTargetNameSpace();
-
-	/**
-	 * @return the URL that identifies the location from which the source schema
-	 *         was loaded.
-	 */
-	public URL getSourceURL();
-
-	/**
-	 * @return the URL that identifies the location from which the target schema
-	 *         was loaded.
-	 */
-	public URL getTargetURL();
-	
-	/**
-	 * Get the type or element definition identified by the given name
-	 * 
-	 * @param name may either consist of only a local part or of a full
-	 *         name, i.e. namespace + local name part
-	 *         
-	 * @return returns the definition identified by the given name
-	 */
-	public Definition getTypeByName(String name);
-	
-	/**
-	 * Schema type enum
-	 */
-	public enum SchemaType {
-		/** Source schema */
-		SOURCE,
-		/** Target schema */
-		TARGET
-	}
-
-	/**
-	 * Get the feature types for the given schema type
-	 * 
-	 * @param schemaType the schema type
-	 * 
-	 * @return the feature types
-	 */
-	public Collection<SchemaElement> getSchema(SchemaType schemaType);
-	
-	/**
-	 * Get the definition for the given identifier if it is part of the given
-	 *   schema
-	 * 
-	 * @param identifier the identifier
-	 * @param schema the schema type
-	 * 
-	 * @return the definition (either a {@link TypeDefinition} or an
-	 *   {@link AttributeDefinition})
-	 */
-	public Definition getDefinition(String identifier, SchemaType schema);
-
-	/**
-	 * Get the definition for the given identifier
-	 * 
-	 * @param identifier the identifier
-	 * 
-	 * @return the definition (either a {@link TypeDefinition} or an
-	 *   {@link AttributeDefinition})
-	 */
-	public Definition getDefinition(String identifier);
-
-	/**
-	 * Get the supported schema formats that may be used with
-	 * {@link #loadSchema(URI, String, SchemaType, ProgressIndicator)}
-	 * 
-	 * @return the supported schema formats
-	 */
-	public Set<String> getSupportedSchemaFormats();
+	//XXX something like this should be handled in the schema space / schema
+//	/**
+//	 * Get the type or element definition identified by the given name
+//	 * 
+//	 * @param name may either consist of only a local part or of a full
+//	 *         name, i.e. namespace + local name part
+//	 *         
+//	 * @return returns the definition identified by the given name
+//	 */
+//	public Definition getTypeByName(String name);
+//	
+//	/**
+//	 * Get the definition for the given identifier if it is part of the given
+//	 *   schema
+//	 * 
+//	 * @param identifier the identifier
+//	 * @param schema the schema type
+//	 * 
+//	 * @return the definition (either a {@link TypeDefinition} or an
+//	 *   {@link AttributeDefinition})
+//	 */
+//	public Definition getDefinition(String identifier, SchemaSpaceID schema);
+//
+//	/**
+//	 * Get the definition for the given identifier
+//	 * 
+//	 * @param identifier the identifier
+//	 * 
+//	 * @return the definition (either a {@link TypeDefinition} or an
+//	 *   {@link AttributeDefinition})
+//	 */
+//	public Definition getDefinition(String identifier);
 
 }
