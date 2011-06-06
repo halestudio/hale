@@ -147,6 +147,34 @@ public class XmlSchemaReaderTest {
 	}
 	
 	/**
+	 * Test reading a simple XML schema that uses several custom named types and
+	 * has a cycle.
+	 * @throws Exception if reading the schema fails
+	 */
+	@Test
+	public void testRead_shiporder_types_cycle() throws Exception {
+		URI location = getClass().getResource("/testdata/shiporder/shiporder-types-cycle.xsd").toURI();
+		LocatableInputSupplier<? extends InputStream> input = new DefaultInputSupplier(location );
+		XmlIndex schema = (XmlIndex) readSchema(input);
+		
+		String ns = "http://www.example.com";
+		assertEquals(ns , schema.getNamespace());
+		
+		// shiporder element
+		assertEquals(1, schema.getElements().size());
+		XmlElement shiporder = schema.getElements().values().iterator().next();
+		assertNotNull(shiporder);
+		
+		TypeDefinition type = shiporder.getType();
+		assertEquals(5, type.getChildren().size());
+		
+		// contained shiporder element
+		PropertyDefinition s2 = type.getChild(new QName(ns, "shiporder")).asProperty();
+		assertNotNull(s2);
+		assertEquals(type, s2.getPropertyType());
+	}
+	
+	/**
 	 * Test reading a simple XML schema that uses several custom named types.
 	 * The types are referenced before they are declared.
 	 * @throws Exception if reading the schema fails

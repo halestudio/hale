@@ -806,6 +806,11 @@ public class XmlSchemaReader
 				configureSimpleType(anonymousType, simpleType, schemaLocation);
 			}
 		}
+		else {
+			reporter.error(new IOMessageImpl(
+					"Could not create property for element", null, 
+					element.getLineNumber(), element.getLinePosition()));
+		}
 	}
 
 	/**
