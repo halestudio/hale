@@ -12,15 +12,20 @@
 
 package eu.esdihumboldt.hale.ui.views.schemas.explorer;
 
+import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.graphics.Image;
 
 import eu.esdihumboldt.hale.schema.model.Definition;
+import eu.esdihumboldt.hale.ui.model.schema.DefinitionImages;
 
 /**
  * Basic label provider for {@link Definition}s
  * @author Simon Templer
  */
 public class DefinitionLabelProvider extends LabelProvider {
+	
+	private final DefinitionImages images = new DefinitionImages();
 
 	/**
 	 * @see LabelProvider#getText(Object)
@@ -32,6 +37,29 @@ public class DefinitionLabelProvider extends LabelProvider {
 		}
 		
 		return super.getText(element);
+	}
+	
+	/**
+	 * Returns an adjusted image depending on the type of the object passed in.
+	 * @return an Image
+	 */
+	@Override
+	public Image getImage(Object element) {
+		if (element instanceof Definition<?>) {
+			return images.getImage((Definition<?>) element);
+		}
+		
+		return super.getImage(element);
+	}
+
+	/**
+	 * @see BaseLabelProvider#dispose()
+	 */
+	@Override
+	public void dispose() {
+		images.dispose();
+		
+		super.dispose();
 	}
 
 }

@@ -23,7 +23,7 @@ import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeIndex;
 
 /**
- * Lazy tree content provider using a {@link TypeIndex} as root
+ * Tree content provider using a {@link TypeIndex} as root
  * XXX for now not lazy
  * @author Simon Templer
  */
@@ -41,6 +41,14 @@ public class TypeIndexContentProvider implements ITreeContentProvider {
 		this.tree = tree;
 	}
 	
+	/**
+	 * Get the associated tree viewer
+	 * @return the associated tree viewer
+	 */
+	protected TreeViewer getTree() {
+		return tree;
+	}
+
 	/**
 	 * @see ITreeContentProvider#getElements(Object)
 	 */
@@ -114,6 +122,7 @@ public class TypeIndexContentProvider implements ITreeContentProvider {
 	@Override
 	public Object getParent(Object element) {
 		// parent can't be determined for sure, may be multiple possibilities
+		//TODO return the "primary" parent?
 		return null;
 	}
 

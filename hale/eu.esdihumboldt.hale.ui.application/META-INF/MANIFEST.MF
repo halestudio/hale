@@ -18,7 +18,6 @@ Import-Package: de.cs3d.util.logging,
  eu.esdihumboldt.hale.ui.util.proxy.preferences,
  eu.esdihumboldt.hale.ui.util.selection,
  eu.esdihumboldt.hale.ui.views.schemas,
- eu.esdihumboldt.hale.ui.views.schemas.attribute,
  org.geotools.referencing,
  org.slf4j;version="1.5.11",
  org.slf4j.bridge

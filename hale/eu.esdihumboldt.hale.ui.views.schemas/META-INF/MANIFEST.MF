@@ -5,7 +5,6 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.schemas;singleton:=true
 Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: eu.esdihumboldt.hale.ui.views.schemas,
- eu.esdihumboldt.hale.ui.views.schemas.attribute,
  eu.esdihumboldt.hale.ui.views.schemas.dialogs,
  eu.esdihumboldt.hale.ui.views.schemas.internal;x-internal:=true,
  eu.esdihumboldt.hale.ui.views.schemas.internal.filtering;x-internal:=true
