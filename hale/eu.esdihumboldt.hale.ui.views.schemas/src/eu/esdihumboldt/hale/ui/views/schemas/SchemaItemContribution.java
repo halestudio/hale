@@ -13,7 +13,6 @@ import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.model.functions.FunctionWizardContribution;
 import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
-import eu.esdihumboldt.hale.ui.model.schema.TreeObject.TreeObjectType;
 import eu.esdihumboldt.hale.ui.style.FeatureTypeStyleAction;
 import eu.esdihumboldt.hale.ui.views.schemas.dialogs.PropertiesAction;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
@@ -75,16 +74,16 @@ public class SchemaItemContribution extends
 				}
 				
 				// default geometry
-				if (item.isAttribute() && item.getType() == TreeObjectType.GEOMETRIC_ATTRIBUTE 
-						&& item.getParent() != null && item.getParent().isType()
-						&& !((FeatureType) item.getParent().getPropertyType()).getGeometryDescriptor().getLocalName().equals(item.getName().getLocalPart())) {
-					IAction action = new SetAsDefaultGeometryAction(item);
-					action.setText(Messages.SchemaItemContribution_0); //$NON-NLS-1$
-					IContributionItem contrib = new ActionContributionItem(action);
-					contrib.fill(menu, index++);
-					
-					addSep = true;
-				}
+//				if (item.isAttribute() && item.getType() == TreeObjectType.GEOMETRIC_ATTRIBUTE 
+//						&& item.getParent() != null && item.getParent().isType()
+//						&& !((FeatureType) item.getParent().getPropertyType()).getGeometryDescriptor().getLocalName().equals(item.getName().getLocalPart())) {
+//					IAction action = new SetAsDefaultGeometryAction(item);
+//					action.setText(Messages.SchemaItemContribution_0); //$NON-NLS-1$
+//					IContributionItem contrib = new ActionContributionItem(action);
+//					contrib.fill(menu, index++);
+//					
+//					addSep = true;
+//				}
 				
 				if (addSep) {
 					new Separator().fill(menu, index++);

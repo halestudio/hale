@@ -128,11 +128,16 @@
                   style="push">
             </command>
             <command
-                  commandId="eu.esdihumboldt.hale.ui.schema.import"
-                  id="loadSchema"
-                  label="%command.openSchema.label"
-                  style="push"
-                  tooltip="%command.openSchema.tooltip">
+                  commandId="eu.esdihumboldt.hale.ui.source.schema.import"
+                  id="importSourceSchema"
+                  label="Import source schema..."
+                  style="push">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.target.schema.import"
+                  id="importTargetSchema"
+                  label="Import target schema..."
+                  style="push">
             </command>
             <command
                   commandId="eu.esdihumboldt.hale.ui.mapping.import"
