@@ -39,8 +39,12 @@
             name="Save project">
       </command>
       <command
-            id="eu.esdihumboldt.hale.ui.schema.import"
-            name="Import schema">
+            id="eu.esdihumboldt.hale.ui.source.schema.import"
+            name="Import source schema">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.target.schema.import"
+            name="Import target schema">
       </command>
    </extension>
    <extension
@@ -58,8 +62,8 @@
          </enabledWhen>
       </handler>
       <handler
-            class="eu.esdihumboldt.hale.ui.io.legacy.handler.LoadSchemaHandler"
-            commandId="eu.esdihumboldt.hale.ui.schema.import">
+            class="eu.esdihumboldt.hale.ui.io.schema.SourceSchemaImportHandler"
+            commandId="eu.esdihumboldt.hale.ui.source.schema.import">
       </handler>
       <handler
             class="eu.esdihumboldt.hale.ui.io.legacy.handler.SaveAlignmentProjectHandler"
@@ -88,6 +92,10 @@
       <handler
             class="eu.esdihumboldt.hale.ui.io.legacy.handler.OpenProjectHandler"
             commandId="eu.esdihumboldt.hale.ui.project.open">
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.io.schema.TargetSchemaImportHandler"
+            commandId="eu.esdihumboldt.hale.ui.target.schema.import">
       </handler>
    </extension>
    <extension
@@ -121,9 +129,6 @@
          </service>
          <service
                serviceClass="eu.esdihumboldt.hale.ui.service.schema.SchemaService">
-         </service>
-         <service
-               serviceClass="eu.esdihumboldt.hale.ui.service.schemaitem.SchemaItemService">
          </service>
       </serviceFactory>
    </extension>
