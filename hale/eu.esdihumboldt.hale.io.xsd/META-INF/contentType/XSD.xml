@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A content type definition may contain one content type, the id is required -->
+<contentType id="XSD">
+	<!-- Default display name -->
+	<defaultName>XML schema</defaultName>
+	<!-- Translated display names -->
+	<name>
+		<locale language="de" country="" />
+		<value>XML Schema</value>
+	</name>
+	<!-- File extensions -->
+	<fileExtension>xsd</fileExtension>
+	<fileExtension>xml</fileExtension>
+	<!-- Tester class name -->
+	<!-- testerClass>eu.esdihumboldt.hale.core.ui.internal.SomeTesterClass</testerClass-->
+</contentType>
