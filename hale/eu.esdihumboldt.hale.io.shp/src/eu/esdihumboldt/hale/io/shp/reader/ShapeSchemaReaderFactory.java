@@ -34,6 +34,8 @@ public class ShapeSchemaReaderFactory extends
 	 */
 	public ShapeSchemaReaderFactory() {
 		super(PROVIDER_ID);
+		
+		addSupportedContentType(ShapefileIO.SHAPEFILE_CT_ID);
 	}
 
 	/**

@@ -33,6 +33,8 @@ public class XmlSchemaReaderFactory extends
 	 */
 	public XmlSchemaReaderFactory() {
 		super(PROVIDER_ID);
+		
+		addSupportedContentType("XSD");
 	}
 
 	/**

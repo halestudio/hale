@@ -4,6 +4,7 @@ Bundle-Name: HALE XML Schema Support
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.xsd
 Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/XmlSchemaReader.xml
 Import-Package: com.google.common.base;version="1.6.0",
  com.google.common.io;version="1.6.0",
  de.cs3d.util.logging,

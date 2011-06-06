@@ -26,8 +26,13 @@ public abstract class ShapefileIO {
 	public static final String SHAPEFILE_NS = "http://www.esdi-humboldt.eu/hale/shp";
 	
 	/**
+	 * The Shapefile content type identifier 
+	 */
+	public static final String SHAPEFILE_CT_ID = "Shapefile";
+	
+	/**
 	 * The Shapefile content type
 	 */
-	public static final ContentType SHAPEFILE_CT = ContentType.getContentType("Shapefile");
+	public static final ContentType SHAPEFILE_CT = ContentType.getContentType(SHAPEFILE_CT_ID);
 
 }
