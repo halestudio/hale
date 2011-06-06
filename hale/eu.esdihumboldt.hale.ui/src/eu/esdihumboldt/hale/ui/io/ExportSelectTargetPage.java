@@ -106,7 +106,7 @@ public class ExportSelectTargetPage<P extends ExportProvider, T extends IOProvid
 				}
 				else {
 					Collection<ContentType> filteredTypes = cts.findContentTypesFor(types, null, targetFile.getStringValue());
-					if (!types.isEmpty()) {
+					if (!filteredTypes.isEmpty()) {
 						contentType = filteredTypes.iterator().next();
 					}
 				}
