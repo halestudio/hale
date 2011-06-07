@@ -108,6 +108,10 @@ public class OrientInstanceCollection implements InstanceCollection {
 		public Instance next() {
 			if (hasNext()) {
 				ODocument doc = currentIterator.next();
+				//XXX when returned instance needs a database connection! can load prevent this?
+//				doc.load(); 
+//				doc.load("*");
+//				doc.detach(); XXX no effect
 				return new OInstance(doc, getCurrentType());
 			}
 			else {

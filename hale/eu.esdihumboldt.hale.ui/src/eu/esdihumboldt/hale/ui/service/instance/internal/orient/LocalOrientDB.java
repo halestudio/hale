@@ -50,7 +50,7 @@ public class LocalOrientDB {
 		@Override
 		public void dispose() {
 			if (database != null) {
-				database.close();
+//				database.close(); FIXME temporarily removed because of problem with instance loading
 				dbLock.readLock().unlock();
 			}
 		}
@@ -84,7 +84,7 @@ public class LocalOrientDB {
 		@Override
 		public void dispose() {
 			if (database != null) {
-				database.close();
+				database.close(); 
 				//XXX could eventually use read lock
 				dbLock.writeLock().unlock();
 			}
