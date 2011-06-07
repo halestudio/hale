@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.io.gml.reader.internal;
 
 import java.text.MessageFormat;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -24,8 +25,11 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.instance.model.impl.OInstance;
-import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
+import eu.esdihumboldt.hale.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.schema.model.constraint.type.SimpleFlag;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -53,15 +57,13 @@ public abstract class StreamGmlInstance {
 		checkState(reader.getEventType() == XMLStreamConstants.START_ELEMENT);
 		
 		MutableInstance instance = new OInstance(type);
-		//FIXME instance: what about the issue with having an element and an attribute with the same name?
-		//FIXME should the namespace therefore also be used for identifying the property?
 		
 		//TODO fill instance with values
 		
 		// attributes
 		for (int i = 0; i < reader.getAttributeCount(); i++) {
-			String propertyName = reader.getAttributeLocalName(i);
-			AttributeDefinition property = type.getAttribute(propertyName );
+			QName propertyName = reader.getAttributeName(i);
+			PropertyDefinition property = type.getChild(propertyName).asProperty();
 			if (property != null) {
 				//TODO check also namespace?
 				// add property value
@@ -84,21 +86,24 @@ public abstract class StreamGmlInstance {
 				int event = reader.nextTag();
 				switch (event) {
 				case XMLStreamConstants.START_ELEMENT:
-					// get property
-					AttributeDefinition property = type.getAttribute(reader.getLocalName());
-					if (property != null) {
+					// get child
+					ChildDefinition<?> child = type.getChild(reader.getName());
+					if (child != null) {
+						PropertyDefinition property = child.asProperty();
+						checkNotNull(property);
+						
 						//TODO check also namespace?
-						if (hasElements(property.getAttributeType())) {
+						if (hasElements(property.getPropertyType())) {
 							// use an instance as value
 							instance.addProperty(property.getName(), 
-									parseInstance(reader, property.getAttributeType())); //XXX use both namespace and local name???
+									parseInstance(reader, property.getPropertyType()));
 						}
 						else {
-							if (hasAttributes(property.getAttributeType())) {
+							if (hasAttributes(property.getPropertyType())) {
 								// no elements but attributes
 								// use an instance as value, it will be assigned an instance value if possible
 								instance.addProperty(property.getName(), 
-										parseInstance(reader, property.getAttributeType())); //XXX use both namespace and local name???
+										parseInstance(reader, property.getPropertyType()));
 							}
 							else {
 								// no elements and no attributes
@@ -111,10 +116,14 @@ public abstract class StreamGmlInstance {
 						}
 					}
 					else {
-						log.warn(MessageFormat.format(
-								"No property ''{0}'' found in type ''{1}'', value is ignored", 
-								reader.getLocalName(), type.getDisplayName()));
+						//TODO search in groups for property
+						//XXX remember a last group (hierarchy?) and keep it open for following elements?
 					}
+//					else {
+//						log.warn(MessageFormat.format(
+//								"No property ''{0}'' found in type ''{1}'', value is ignored", 
+//								reader.getLocalName(), type.getDisplayName()));
+//					}
 					
 					if (reader.getEventType() != XMLStreamConstants.END_ELEMENT) {
 						// only increase open if the current event is not already the end element (because we used getElementText)
@@ -146,13 +155,15 @@ public abstract class StreamGmlInstance {
 	 * @return if the type has at least one XML element property
 	 */
 	private static boolean hasElements(TypeDefinition type) {
-		for (AttributeDefinition property : type.getAttributes()) {
-			if (property.isElement()) { // in the future test with constraint?
-				return true;
-			}
-		}
+		return !type.getConstraint(SimpleFlag.class).isEnabled();
 		
-		return false;
+//		for (AttributeDefinition property : type.getAttributes()) {
+//			if (property.isElement()) { // in the future test with constraint?
+//				return true;
+//			}
+//		}
+//		
+//		return false;
 	}
 	
 	/**
@@ -163,9 +174,14 @@ public abstract class StreamGmlInstance {
 	 * @return if the type has at least one XML attribute property
 	 */
 	private static boolean hasAttributes(TypeDefinition type) {
-		for (AttributeDefinition property : type.getAttributes()) {
-			if (property.isAttribute()) { // in the future test with constraint?
-				return true;
+		for (ChildDefinition<?> child : type.getChildren()) {
+			if (child.asProperty() != null) {
+				if (child.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()) {
+					return true;
+				}
+			}
+			else if (child.asGroup() != null) {
+				//FIXME what about attribute groups
 			}
 		}
 		
@@ -181,9 +197,9 @@ public abstract class StreamGmlInstance {
 	 * @param value the property value as specified in the XML
 	 */
 	private static void addSimpleProperty(MutableInstance instance,
-			AttributeDefinition property, String value) {
-		Object val = convertSimple(property.getAttributeType(), value);
-		instance.addProperty(property.getName(), val); //XXX use both namespace and local name???
+			PropertyDefinition property, String value) {
+		Object val = convertSimple(property.getPropertyType(), value);
+		instance.addProperty(property.getName(), val);
 	}
 
 	/**

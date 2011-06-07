@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.instance.io;
 
 import eu.esdihumboldt.hale.core.io.ImportProvider;
 import eu.esdihumboldt.hale.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.schemaprovider.Schema;
+import eu.esdihumboldt.hale.schema.model.TypeIndex;
 
 /**
  * Provides support for reading instances
@@ -29,7 +29,7 @@ public interface InstanceReader extends ImportProvider {
 	 * 
 	 * @param sourceSchema the source schema
 	 */
-	public void setSourceSchema(Schema sourceSchema);
+	public void setSourceSchema(TypeIndex sourceSchema);
 
 	/**
 	 * Get the instances

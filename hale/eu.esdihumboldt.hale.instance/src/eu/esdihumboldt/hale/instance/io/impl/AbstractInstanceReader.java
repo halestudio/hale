@@ -15,7 +15,7 @@ package eu.esdihumboldt.hale.instance.io.impl;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.impl.AbstractImportProvider;
 import eu.esdihumboldt.hale.instance.io.InstanceReader;
-import eu.esdihumboldt.hale.schemaprovider.Schema;
+import eu.esdihumboldt.hale.schema.model.TypeIndex;
 
 /**
  * Abstract {@link InstanceReader} base implementation
@@ -26,13 +26,13 @@ import eu.esdihumboldt.hale.schemaprovider.Schema;
 public abstract class AbstractInstanceReader extends AbstractImportProvider implements
 		InstanceReader {
 	
-	private Schema sourceSchema;
+	private TypeIndex sourceSchema;
 
 	/**
-	 * @see InstanceReader#setSourceSchema(Schema)
+	 * @see InstanceReader#setSourceSchema(TypeIndex)
 	 */
 	@Override
-	public void setSourceSchema(Schema sourceSchema) {
+	public void setSourceSchema(TypeIndex sourceSchema) {
 		this.sourceSchema = sourceSchema;
 	}
 
@@ -41,7 +41,7 @@ public abstract class AbstractInstanceReader extends AbstractImportProvider impl
 	 * 
 	 * @return the source schema
 	 */
-	public Schema getSourceSchema() {
+	public TypeIndex getSourceSchema() {
 		return sourceSchema;
 	}
 

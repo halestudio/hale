@@ -20,14 +20,18 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.net.URI;
 
+import javax.xml.namespace.QName;
+
 import org.junit.Test;
 
+import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.core.io.report.IOReport;
 import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.schemaprovider.Schema;
-import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
-import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
+import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
+import eu.esdihumboldt.hale.schema.io.SchemaReader;
+import eu.esdihumboldt.hale.schema.model.Schema;
 
 
 /**
@@ -50,44 +54,46 @@ public class GmlInstanceCollectionTest {
 				getClass().getResource("/data/shiporder/shiporder.xsd").toURI(),
 				getClass().getResource("/data/shiporder/shiporder.xml").toURI());
 		
+		String ns = "http://www.example.com";
+		
 		ResourceIterator<Instance> it = instances.iterator();
 		assertTrue(it.hasNext());
 		
 		Instance instance = it.next();
 		assertNotNull(instance);
 		
-		Object[] orderid = instance.getProperty("orderid");
+		Object[] orderid = instance.getProperty(new QName(ns, "orderid"));
 		assertNotNull(orderid);
 		assertEquals(1, orderid.length);
 		assertEquals("889923", orderid[0]);
 		
-		Object[] orderperson = instance.getProperty("orderperson");
+		Object[] orderperson = instance.getProperty(new QName(ns, "orderperson"));
 		assertNotNull(orderperson);
 		assertEquals(1, orderperson.length);
 		assertEquals("John Smith", orderperson[0]);
 		
-		Object[] shipto = instance.getProperty("shipto");
+		Object[] shipto = instance.getProperty(new QName(ns, "shipto"));
 		assertNotNull(shipto);
 		assertEquals(1, shipto.length);
 		assertTrue(shipto[0] instanceof Instance);
 		Instance shipto1 = (Instance) shipto[0];
 		
-		Object[] shiptoName = shipto1.getProperty("name");
+		Object[] shiptoName = shipto1.getProperty(new QName(ns, "name"));
 		assertNotNull(shiptoName);
 		assertEquals(1, shiptoName.length);
 		assertEquals("Ola Nordmann", shiptoName[0]);
 		
-		Object[] shiptoAddress = shipto1.getProperty("address");
+		Object[] shiptoAddress = shipto1.getProperty(new QName(ns, "address"));
 		assertNotNull(shiptoAddress);
 		assertEquals(1, shiptoAddress.length);
 		assertEquals("Langgt 23", shiptoAddress[0]);
 		
-		Object[] shiptoCity = shipto1.getProperty("city");
+		Object[] shiptoCity = shipto1.getProperty(new QName(ns, "city"));
 		assertNotNull(shiptoCity);
 		assertEquals(1, shiptoCity.length);
 		assertEquals("4000 Stavanger", shiptoCity[0]);
 		
-		Object[] shiptoCountry = shipto1.getProperty("country");
+		Object[] shiptoCountry = shipto1.getProperty(new QName(ns, "country"));
 		assertNotNull(shiptoCountry);
 		assertEquals(1, shiptoCountry.length);
 		assertEquals("Norway", shiptoCountry[0]);
@@ -99,9 +105,13 @@ public class GmlInstanceCollectionTest {
 		it.dispose();
 	}
 
-	private GmlInstanceCollection loadInstances(URI schemaLocation, URI xmlLocation) throws IOException {
-		SchemaProvider sp = new ApacheSchemaProvider();
-		Schema sourceSchema = sp.loadSchema(schemaLocation, null);
+	private GmlInstanceCollection loadInstances(URI schemaLocation, URI xmlLocation) throws IOException, IOProviderConfigurationException {
+		SchemaReader reader = new XmlSchemaReader();
+		reader.setSharedTypes(null);
+		reader.setSource(new DefaultInputSupplier(schemaLocation));
+		IOReport schemaReport = reader.execute(null);
+		assertTrue(schemaReport.isSuccess());
+		Schema sourceSchema = reader.getSchema();
 		
 		return new GmlInstanceCollection(
 				new DefaultInputSupplier(xmlLocation), 

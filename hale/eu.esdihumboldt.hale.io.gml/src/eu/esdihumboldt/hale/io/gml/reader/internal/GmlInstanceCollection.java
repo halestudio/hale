@@ -15,29 +15,27 @@ package eu.esdihumboldt.hale.io.gml.reader.internal;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.geotools.feature.NameImpl;
-import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.schemaprovider.Schema;
-import eu.esdihumboldt.hale.schemaprovider.model.Definition;
-import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
+import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
+import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.schema.model.TypeIndex;
 
 /**
  * Instance collection based on an XML/GML input stream
@@ -56,7 +54,10 @@ public class GmlInstanceCollection implements InstanceCollection {
 		
 		private final XMLStreamReader reader;
 		
-		private Map<Name, Definition> allowedTypes;
+		/**
+		 * Element names associated with type definitions
+		 */
+		private Map<QName, TypeDefinition> allowedTypes;
 		
 		private TypeDefinition nextType;
 
@@ -103,9 +104,9 @@ public class GmlInstanceCollection implements InstanceCollection {
 				int event = reader.next();
 				if (event == XMLStreamConstants.START_ELEMENT) {
 					// check element and try to determine associated type
-					Name elementName = new NameImpl(reader.getNamespaceURI(), 
+					QName elementName = new QName(reader.getNamespaceURI(), 
 							reader.getLocalName());
-					Definition def = allowedTypes.get(elementName);
+					TypeDefinition def = allowedTypes.get(elementName);
 					
 					// also check for xsi:type
 					if (reader.getAttributeCount() > 0) {
@@ -128,33 +129,33 @@ public class GmlInstanceCollection implements InstanceCollection {
 								String ns = reader.getNamespaceURI(prefix);
 								
 								// override with xsi:type
-								def = allowedTypes.get(new NameImpl(ns, type));
+								def = allowedTypes.get(new QName(ns, type));
 							}
 						}
 					}
 					
 					if (def != null) {
-						nextType = DefinitionUtil.getType(def);
+						nextType = def;
 					}
 				}
 			}
 		}
 
 		private void initAllowedTypes() {
-			allowedTypes = new HashMap<Name, Definition>();
+			allowedTypes = new HashMap<QName, TypeDefinition>();
 			
-			for (Definition def : sourceSchema.getTypes().keySet()) {
-				Name name;
-				if (def instanceof SchemaElement) {
-					name = ((SchemaElement) def).getElementName();
-				}
-				else if (def instanceof TypeDefinition) {
-					name = ((TypeDefinition) def).getName();
+			for (TypeDefinition def : sourceSchema.getMappableTypes()) {
+				Collection<? extends XmlElement> elements = def.getConstraint(XmlElements.class).getElements();
+				if (!elements.isEmpty()) {
+					// use element name
+					//XXX MappableFlag also for elements?
+					for (XmlElement element : elements) {
+						allowedTypes.put(element.getName(), def);
+					}
 				}
 				else {
-					continue;
+					allowedTypes.put(def.getName(), def);
 				}
-				allowedTypes.put(name, def);
 			}
 		}
 
@@ -262,7 +263,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 	}
 
 	private final ContentType contentType; //FIXME content type necessary?
-	private final Schema sourceSchema;
+	private final TypeIndex sourceSchema;
 	private final LocatableInputSupplier<? extends InputStream> source;
 
 	/**
@@ -274,7 +275,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 	 */
 	public GmlInstanceCollection(
 			LocatableInputSupplier<? extends InputStream> source,
-			Schema sourceSchema, ContentType contentType) {
+			TypeIndex sourceSchema, ContentType contentType) {
 		this.source = source;
 		this.sourceSchema = sourceSchema;
 		this.contentType = contentType;
