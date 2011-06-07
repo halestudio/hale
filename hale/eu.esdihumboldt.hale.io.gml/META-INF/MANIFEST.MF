@@ -4,7 +4,7 @@ Bundle-Name: HALE GML I/O
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml
 Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Service-Component: OSGI-INF/GmlWriter.xml, OSGI-INF/XmlWriter.xml
+Service-Component: OSGI-INF/GmlWriter.xml, OSGI-INF/XmlWriter.xml, OSGI-INF/XmlReader.xml
 Require-Bundle: org.geotools;bundle-version="2.6.4",
  eu.esdihumboldt.commons;bundle-version="3.0.8",
  eu.esdihumboldt.hale.core;bundle-version="2.2.0"
