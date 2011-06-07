@@ -639,12 +639,6 @@ public class XmlSchemaReader
 			// references another element
 			// <element ref="REF_NAME" />
 			QName elementName = element.getRefName();
-			if (elementName.getNamespaceURI() == null || elementName.getNamespaceURI().equals(XMLConstants.NULL_NS_URI)) {
-				// if no namespace is defined use the schema namespace for the element reference
-				// the schema namespace may be the empty namespace but it is OK in that case
-				//XXX is this also ok if elementFormDefault="unqualified" ?
-				elementName = new QName(schemaNamespace, elementName.getLocalPart());
-			}
 			
 			XmlElementReferenceProperty property = new XmlElementReferenceProperty(
 					elementName, declaringGroup, index, elementName);
@@ -1120,12 +1114,6 @@ public class XmlSchemaReader
 			// <attribute ref="REF_NAME" />
 			// reference to a named attribute
 			QName attName = attribute.getRefName();
-			if (attName.getNamespaceURI() == null || attName.getNamespaceURI().equals(XMLConstants.NULL_NS_URI)) {
-				// if no namespace is defined use the schema namespace for the attribute reference
-				// the schema namespace may be the empty namespace but it is OK in that case
-				//XXX is this also ok if attributeFormDefault="unqualified" ? XXX seems to be as it is also needed in that case
-				attName = new QName(schemaNamespace, attName.getLocalPart());
-			}
 			
 			XmlAttributeReferenceProperty property = new XmlAttributeReferenceProperty(
 					attName, declaringType, this.index, 
