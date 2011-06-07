@@ -167,8 +167,7 @@ public class DefinitionInstanceTreeViewer {
 //				}
 //				column.getColumn().setText(id.toString());
 				column.getColumn().setText(String.valueOf(index)); //XXX identifier?
-				column.setLabelProvider(new TreeColumnViewerLabelProvider(
-						new DefinitionInstanceLabelProvider(instance)));
+				column.setLabelProvider(new DefinitionInstanceLabelProvider(instance));
 				if (layout instanceof TreeColumnLayout) {
 					((TreeColumnLayout) layout).setColumnData(column.getColumn(), new ColumnWeightData(1));
 				}
