@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.instance.model.impl.internal;
+package eu.esdihumboldt.hale.instance.model.impl;
 
 import java.util.BitSet;
 

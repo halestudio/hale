@@ -30,7 +30,6 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.instance.model.Group;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.MutableGroup;
-import eu.esdihumboldt.hale.instance.model.impl.internal.ONameUtil;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;

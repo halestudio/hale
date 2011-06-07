@@ -54,7 +54,7 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		}
 		
 		if (InstanceService.class.equals(serviceInterface)) {
-			return OrientInstanceService.getInstance();
+			return OrientInstanceService.getInstance((SchemaService) locator.getService(SchemaService.class));
 		}
 		
 		if (AlignmentService.class.equals(serviceInterface)) {

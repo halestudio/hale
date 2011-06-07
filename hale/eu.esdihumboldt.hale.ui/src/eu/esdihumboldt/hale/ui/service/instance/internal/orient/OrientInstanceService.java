@@ -22,6 +22,8 @@ import eu.esdihumboldt.hale.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.internal.AbstractInstanceService;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**
  * {@link InstanceService} implementation based on OrientDB. This must be a
@@ -34,23 +36,29 @@ public class OrientInstanceService extends AbstractInstanceService {
 	
 	/**
 	 * Get the service instance
+	 * @param schemaService the schema service
 	 * @return the service instance
 	 */
-	public static final OrientInstanceService getInstance() {
+	public static final OrientInstanceService getInstance(SchemaService schemaService) {
 		if (instance == null) {
-			instance = new OrientInstanceService();
+			instance = new OrientInstanceService(schemaService);
 		}
 		return instance;
 	}
+	
+	private final SchemaService schemaService;
 	
 	private final LocalOrientDB source;
 	private final LocalOrientDB transformed;
 
 	/**
 	 * Default constructor 
+	 * @param schemaService the schema service
 	 */
-	private OrientInstanceService() {
+	private OrientInstanceService(SchemaService schemaService) {
 		super();
+		
+		this.schemaService = schemaService;
 		
 		// setup databases
 		File instanceLoc;
@@ -74,9 +82,9 @@ public class OrientInstanceService extends AbstractInstanceService {
 	public InstanceCollection getInstances(DataSet dataset) {
 		switch (dataset) {
 		case SOURCE:
-			return new OrientInstanceCollection(source);
+			return new OrientInstanceCollection(source, schemaService.getSchemas(SchemaSpaceID.SOURCE));
 		case TRANSFORMED:
-			return new OrientInstanceCollection(transformed);
+			return new OrientInstanceCollection(transformed, schemaService.getSchemas(SchemaSpaceID.TARGET));
 		}
 		
 		throw new IllegalArgumentException("Illegal data set requested: " + dataset);
