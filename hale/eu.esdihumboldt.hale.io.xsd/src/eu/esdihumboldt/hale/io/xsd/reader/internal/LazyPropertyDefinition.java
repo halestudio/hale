@@ -15,7 +15,7 @@ package eu.esdihumboldt.hale.io.xsd.reader.internal;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
-import eu.esdihumboldt.hale.schema.model.Group;
+import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultPropertyDefinition;
 
@@ -44,7 +44,7 @@ public abstract class LazyPropertyDefinition extends DefaultPropertyDefinition {
 	 * @param index the XML index
 	 */
 	public LazyPropertyDefinition(QName name,
-			Group declaringType, XmlIndex index) {
+			DefinitionGroup declaringType, XmlIndex index) {
 		super(name, declaringType, null);
 		
 		this.index = index;

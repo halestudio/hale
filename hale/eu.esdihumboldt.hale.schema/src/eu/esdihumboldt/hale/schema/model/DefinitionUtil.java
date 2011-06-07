@@ -53,7 +53,7 @@ public abstract class DefinitionUtil {
 	 */
 	public static ChildDefinition<?> redeclareChild(
 			ChildDefinition<?> child,
-			Group newParent) {
+			DefinitionGroup newParent) {
 		if (child.asProperty() != null) {
 			return new RedeclareProperty(child.asProperty(), newParent);
 		}

@@ -17,7 +17,7 @@ import java.util.Collection;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.schema.model.Group;
+import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.schema.model.GroupPropertyConstraint;
 import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
@@ -29,7 +29,7 @@ import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 public class DefaultGroupPropertyDefinition extends AbstractChildDefinition<GroupPropertyConstraint>
 		implements GroupPropertyDefinition {
 	
-	private final Group children = new DefaultGroup();
+	private final DefinitionGroup children = new DefaultGroup();
 
 	/**
 	 * Create a new group property
@@ -37,12 +37,12 @@ public class DefaultGroupPropertyDefinition extends AbstractChildDefinition<Grou
 	 * @param name the group name
 	 * @param parentGroup the parent group
 	 */
-	public DefaultGroupPropertyDefinition(QName name, Group parentGroup) {
+	public DefaultGroupPropertyDefinition(QName name, DefinitionGroup parentGroup) {
 		super(name, parentGroup);
 	}
 
 	/**
-	 * @see Group#getDeclaredChildren()
+	 * @see DefinitionGroup#getDeclaredChildren()
 	 */
 	@Override
 	public Collection<? extends ChildDefinition<?>> getDeclaredChildren() {
@@ -50,7 +50,7 @@ public class DefaultGroupPropertyDefinition extends AbstractChildDefinition<Grou
 	}
 
 	/**
-	 * @see Group#getChild(QName)
+	 * @see DefinitionGroup#getChild(QName)
 	 */
 	@Override
 	public ChildDefinition<?> getChild(QName name) {
@@ -58,7 +58,7 @@ public class DefaultGroupPropertyDefinition extends AbstractChildDefinition<Grou
 	}
 
 	/**
-	 * @see Group#addChild(ChildDefinition)
+	 * @see DefinitionGroup#addChild(ChildDefinition)
 	 */
 	@Override
 	public void addChild(ChildDefinition<?> child) {

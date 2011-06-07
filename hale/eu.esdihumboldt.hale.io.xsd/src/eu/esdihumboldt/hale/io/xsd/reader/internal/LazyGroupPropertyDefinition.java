@@ -18,7 +18,7 @@ import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.schema.model.Group;
+import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultGroupPropertyDefinition;
 
 /**
@@ -45,7 +45,7 @@ public abstract class LazyGroupPropertyDefinition extends
 	 * @param parentGroup the parent group
 	 * @param index the XML index 
 	 */
-	public LazyGroupPropertyDefinition(QName name, Group parentGroup,
+	public LazyGroupPropertyDefinition(QName name, DefinitionGroup parentGroup,
 			XmlIndex index) {
 		super(name, parentGroup);
 		

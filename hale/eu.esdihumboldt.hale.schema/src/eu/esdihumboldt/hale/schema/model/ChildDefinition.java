@@ -33,7 +33,7 @@ public interface ChildDefinition<C> extends Definition<C> {
 	 * 
 	 * @return the group declaring the property
 	 */
-	public Group getDeclaringGroup();
+	public DefinitionGroup getDeclaringGroup();
 	
 	/**
 	 * Return as a property definition is possible. This is convenience for 

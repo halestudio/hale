@@ -16,7 +16,7 @@ package eu.esdihumboldt.hale.schema.model;
  * Defines a group property
  * @author Simon Templer
  */
-public interface GroupPropertyDefinition extends Group,
+public interface GroupPropertyDefinition extends DefinitionGroup,
 	ChildDefinition<GroupPropertyConstraint> {
 
 	// concrete typed interface

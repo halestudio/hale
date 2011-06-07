@@ -16,7 +16,7 @@ import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.Definition;
-import eu.esdihumboldt.hale.schema.model.Group;
+import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 
 /**
@@ -31,7 +31,7 @@ public abstract class AbstractChildDefinition<C> extends AbstractDefinition<C> i
 	/**
 	 * The parent group
 	 */
-	private final Group parentGroup;
+	private final DefinitionGroup parentGroup;
 
 	/**
 	 * Creates a new child and adds it to the parent group
@@ -40,7 +40,7 @@ public abstract class AbstractChildDefinition<C> extends AbstractDefinition<C> i
 	 * @param parentGroup the parent group
 	 */
 	public AbstractChildDefinition(QName name,
-			Group parentGroup) {
+			DefinitionGroup parentGroup) {
 		super(name);
 		this.parentGroup = parentGroup;
 		
@@ -51,7 +51,7 @@ public abstract class AbstractChildDefinition<C> extends AbstractDefinition<C> i
 	 * @see ChildDefinition#getDeclaringGroup()
 	 */
 	@Override
-	public Group getDeclaringGroup() {
+	public DefinitionGroup getDeclaringGroup() {
 		return parentGroup;
 	}
 
@@ -60,7 +60,7 @@ public abstract class AbstractChildDefinition<C> extends AbstractDefinition<C> i
 	 */
 	@Override
 	public TypeDefinition getParentType() {
-		Group parent = getDeclaringGroup();
+		DefinitionGroup parent = getDeclaringGroup();
 		
 		if (parent instanceof TypeDefinition) {
 			return (TypeDefinition) parent;

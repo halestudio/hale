@@ -12,32 +12,32 @@
 
 package eu.esdihumboldt.hale.instance.model;
 
-
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import javax.xml.namespace.QName;
 
 /**
- * Represents an instance of a type
+ * A mutable group that allows adding/changing properties
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public interface Instance extends Group {
+public interface MutableGroup extends Group {
 	
 	/**
-	 * Get the definition of the type associated with the instance
+	 * Adds a property value
 	 * 
-	 * @return the instance's type definition
+	 * @param propertyName the property name
+	 * @param value the property value
 	 */
-	@Override
-	public TypeDefinition getDefinition();
+	public void addProperty(QName propertyName, Object value);
 	
 	/**
-	 * Get the instance value.<br>
-	 * <b>NOTE:</b> This is needed for instance for XML elements with text content
-	 * and attributes. It may only be a simple value. 
+	 * Sets values for a property
 	 * 
-	 * @return the instance value if it is defined, otherwise <code>null</code>
+	 * @param propertyName the property name
+	 * @param values the values for the property
 	 */
-	public Object getValue();
+	public void setProperty(QName propertyName, Object... values);
+	
+	//XXX more manipulation needed? e.g. for transformation?
 
 }

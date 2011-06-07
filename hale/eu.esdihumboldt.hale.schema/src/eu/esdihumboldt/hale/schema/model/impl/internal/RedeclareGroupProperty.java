@@ -16,7 +16,7 @@ import net.jcip.annotations.Immutable;
 
 import com.google.common.base.Preconditions;
 
-import eu.esdihumboldt.hale.schema.model.Group;
+import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.impl.AbstractGroupPropertyDecorator;
 
@@ -28,7 +28,7 @@ import eu.esdihumboldt.hale.schema.model.impl.AbstractGroupPropertyDecorator;
 @Immutable
 public class RedeclareGroupProperty extends AbstractGroupPropertyDecorator {
 	
-	private final Group declaringGroup;
+	private final DefinitionGroup declaringGroup;
 
 	/**
 	 * Create a decorator for the given property that has a changed declaring
@@ -39,7 +39,7 @@ public class RedeclareGroupProperty extends AbstractGroupPropertyDecorator {
 	 *   <code>null</code>
 	 */
 	public RedeclareGroupProperty(GroupPropertyDefinition propertyGroup, 
-			Group declaringGroup) {
+			DefinitionGroup declaringGroup) {
 		super(propertyGroup);
 		
 		Preconditions.checkNotNull(declaringGroup);
@@ -51,7 +51,7 @@ public class RedeclareGroupProperty extends AbstractGroupPropertyDecorator {
 	 * @see AbstractGroupPropertyDecorator#getDeclaringGroup()
 	 */
 	@Override
-	public Group getDeclaringGroup() {
+	public DefinitionGroup getDeclaringGroup() {
 		return declaringGroup;
 	}
 

@@ -96,7 +96,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SuperTypeBinding;
 import eu.esdihumboldt.hale.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.schema.io.impl.AbstractSchemaReader;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.schema.model.Group;
+import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
@@ -503,7 +503,7 @@ public class XmlSchemaReader
 	 * @param schemaNamespace the schema namespace
 	 * @param forceGroup force creating a group (e.g. if the parent is a choice)
 	 */
-	private void createPropertiesFromParticle(Group declaringGroup, 
+	private void createPropertiesFromParticle(DefinitionGroup declaringGroup, 
 			XmlSchemaParticle particle, String schemaLocation, 
 			String schemaNamespace, boolean forceGroup) {
 		// particle:
@@ -624,7 +624,7 @@ public class XmlSchemaReader
 	 * @param schemaNamespace the schema namespace
 	 */
 	private void createPropertyFromElement(XmlSchemaElement element, 
-			Group declaringGroup, String schemaLocation, String schemaNamespace) {
+			DefinitionGroup declaringGroup, String schemaLocation, String schemaNamespace) {
 		if (element.getSchemaTypeName() != null) {
 			// element referencing a type
 			// <element name="ELEMENT_NAME" type="SCHEMA_TYPE_NAME" />
@@ -823,7 +823,7 @@ public class XmlSchemaReader
 	 * @throws IllegalArgumentException if the group is neither a type nor a
 	 *   child definition
 	 */
-	private static String getTypeIdentifier(Group group) throws IllegalArgumentException {
+	private static String getTypeIdentifier(DefinitionGroup group) throws IllegalArgumentException {
 		if (group instanceof TypeDefinition) {
 			return ((TypeDefinition) group).getIdentifier();
 		}
@@ -1035,7 +1035,7 @@ public class XmlSchemaReader
 	}
 	
 	private void createAttributesFromCollection(
-			XmlSchemaObjectCollection attributeCollection, Group declaringType,
+			XmlSchemaObjectCollection attributeCollection, DefinitionGroup declaringType,
 			String indexPrefix, String schemaLocation, String schemaNamespace) {
 		if (indexPrefix == null) {
 			indexPrefix = ""; //$NON-NLS-1$
@@ -1079,14 +1079,14 @@ public class XmlSchemaReader
 	}
 
 	private void createAttributes(XmlSchemaAttributeGroup group, 
-			Group declaringType, String index, String schemaLocation, 
+			DefinitionGroup declaringType, String index, String schemaLocation, 
 			String schemaNamespace) {
 		createAttributesFromCollection(group.getAttributes(), 
 				declaringType, index + "_", schemaLocation, schemaNamespace); //$NON-NLS-1$
 	}
 
 	private void createAttribute(XmlSchemaAttribute attribute, 
-			Group declaringType, String schemaLocation, 
+			DefinitionGroup declaringType, String schemaLocation, 
 			String schemaNamespace) {
 		// create attributes
 		QName typeName = attribute.getSchemaTypeName();

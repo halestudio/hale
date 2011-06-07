@@ -14,6 +14,8 @@ package eu.esdihumboldt.hale.instance.model;
 
 import javax.xml.namespace.QName;
 
+import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
+
 /**
  * Represents a group of properties
  * @author Simon Templer
@@ -37,5 +39,12 @@ public interface Group {
 	 * @return the list of property names with associated values
 	 */
 	public Iterable<QName> getPropertyNames();
+	
+	/**
+	 * Get the group definition
+	 * 
+	 * @return the group definition
+	 */
+	public DefinitionGroup getDefinition();
 
 }

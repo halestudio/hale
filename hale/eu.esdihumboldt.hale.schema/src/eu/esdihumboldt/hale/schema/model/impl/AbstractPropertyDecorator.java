@@ -21,7 +21,7 @@ import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.Definition;
-import eu.esdihumboldt.hale.schema.model.Group;
+import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.PropertyConstraint;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
@@ -102,7 +102,7 @@ public abstract class AbstractPropertyDecorator implements PropertyDefinition {
 	 * @see PropertyDefinition#getDeclaringGroup()
 	 */
 	@Override
-	public Group getDeclaringGroup() {
+	public DefinitionGroup getDeclaringGroup() {
 		return property.getDeclaringGroup();
 	}
 

@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.instance.model;
 
-import javax.xml.namespace.QName;
 
 /**
  * A mutable instance that allows adding/changing properties
@@ -20,23 +19,7 @@ import javax.xml.namespace.QName;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public interface MutableInstance extends Instance {
-	
-	/**
-	 * Adds a property value
-	 * 
-	 * @param propertyName the property name
-	 * @param value the property value
-	 */
-	public void addProperty(QName propertyName, Object value);
-	
-	/**
-	 * Sets values for a property
-	 * 
-	 * @param propertyName the property name
-	 * @param values the values for the property
-	 */
-	public void setProperty(QName propertyName, Object... values);
+public interface MutableInstance extends Instance, MutableGroup {
 	
 	/**
 	 * Set the instance value. It may only be a simple value,

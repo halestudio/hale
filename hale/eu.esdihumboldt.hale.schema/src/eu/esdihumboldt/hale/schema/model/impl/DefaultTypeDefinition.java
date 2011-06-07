@@ -24,7 +24,7 @@ import javax.xml.namespace.QName;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.Definition;
 import eu.esdihumboldt.hale.schema.model.DefinitionUtil;
-import eu.esdihumboldt.hale.schema.model.Group;
+import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 
@@ -47,7 +47,7 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	/**
 	 * The declared children
 	 */
-	private final Group declaredChildren = new DefaultGroup();
+	private final DefinitionGroup declaredChildren = new DefaultGroup();
 	
 	/**
 	 * The list of inherited children, names mapped to child definitions
@@ -80,7 +80,7 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	}
 
 	/**
-	 * @see Group#addChild(ChildDefinition)
+	 * @see DefinitionGroup#addChild(ChildDefinition)
 	 */
 	@Override
 	public void addChild(ChildDefinition<?> child) {

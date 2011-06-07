@@ -19,7 +19,7 @@ import java.util.Collection;
  * Represents a type definition
  * @author Simon Templer
  */
-public interface TypeDefinition extends Definition<TypeConstraint>, Group {
+public interface TypeDefinition extends Definition<TypeConstraint>, DefinitionGroup {
 
 	/**
 	 * Get the super type

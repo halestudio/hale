@@ -18,7 +18,7 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlGroup;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.DefinitionUtil;
-import eu.esdihumboldt.hale.schema.model.Group;
+import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 
 /**
  * Group property referencing a XML group
@@ -39,7 +39,7 @@ public class XmlGroupReferenceProperty extends LazyGroupPropertyDefinition {
 	 * @param groupName the group name
 	 */
 	public XmlGroupReferenceProperty(QName name,
-			Group declaringType, XmlIndex index,
+			DefinitionGroup declaringType, XmlIndex index,
 			QName groupName) {
 		super(name, declaringType, index);
 		

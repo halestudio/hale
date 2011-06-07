@@ -15,18 +15,22 @@ package eu.esdihumboldt.hale.schema.model.impl;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.UUID;
 
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.schema.model.Group;
+import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 
 /**
- * Default {@link Group} implementation used internally in 
- * {@link DefaultTypeDefinition} and XXX
+ * Default {@link DefinitionGroup} implementation used internally in 
+ * {@link DefaultTypeDefinition} and {@link DefaultGroupPropertyDefinition}.
+ * It has a random UUID as identifier.
  * @author Simon Templer
  */
-public class DefaultGroup implements Group {
+public class DefaultGroup implements DefinitionGroup {
+	
+	private final String identifier = UUID.randomUUID().toString();
 	
 	/**
 	 * The list of declared children (qualified name mapped to child definition, LinkedHashMap because order must be maintained for writing)
@@ -34,7 +38,7 @@ public class DefaultGroup implements Group {
 	private final LinkedHashMap<QName, ChildDefinition<?>> declaredChildren = new LinkedHashMap<QName, ChildDefinition<?>>();
 
 	/**
-	 * @see Group#getDeclaredChildren()
+	 * @see DefinitionGroup#getDeclaredChildren()
 	 */
 	@Override
 	public Collection<? extends ChildDefinition<?>> getDeclaredChildren() {
@@ -42,7 +46,7 @@ public class DefaultGroup implements Group {
 	}
 
 	/**
-	 * @see Group#getChild(QName)
+	 * @see DefinitionGroup#getChild(QName)
 	 */
 	@Override
 	public ChildDefinition<?> getChild(QName name) {
@@ -50,11 +54,19 @@ public class DefaultGroup implements Group {
 	}
 
 	/**
-	 * @see Group#addChild(ChildDefinition)
+	 * @see DefinitionGroup#addChild(ChildDefinition)
 	 */
 	@Override
 	public void addChild(ChildDefinition<?> child) {
 		declaredChildren.put(child.getName(), child);
+	}
+
+	/**
+	 * @see DefinitionGroup#getIdentifier()
+	 */
+	@Override
+	public String getIdentifier() {
+		return identifier;
 	}
 
 }

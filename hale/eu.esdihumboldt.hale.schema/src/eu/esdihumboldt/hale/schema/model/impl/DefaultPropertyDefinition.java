@@ -15,7 +15,7 @@ package eu.esdihumboldt.hale.schema.model.impl;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.schema.model.Group;
+import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.PropertyConstraint;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
@@ -41,7 +41,7 @@ public class DefaultPropertyDefinition extends AbstractChildDefinition<PropertyC
 	 * @param propertyType the property type
 	 */
 	public DefaultPropertyDefinition(QName name,
-			Group parentGroup,
+			DefinitionGroup parentGroup,
 			TypeDefinition propertyType) {
 		super(name, parentGroup);
 		this.propertyType = propertyType;

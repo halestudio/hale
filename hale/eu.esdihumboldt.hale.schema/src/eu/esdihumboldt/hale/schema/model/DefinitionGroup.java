@@ -22,7 +22,7 @@ import eu.esdihumboldt.hale.schema.model.impl.AbstractChildDefinition;
  * A group of children, which may be properties or property groups
  * @author Simon Templer
  */
-public interface Group {
+public interface DefinitionGroup {
 
 	/**
 	 * Get the properties and property groups declared by the type
@@ -48,5 +48,12 @@ public interface Group {
 	 * @param child the child definition
 	 */
 	public void addChild(ChildDefinition<?> child);
+	
+	/**
+	 * Get the group identifier
+	 * 
+	 * @return the unique name of the group
+	 */
+	public String getIdentifier();
 
 }

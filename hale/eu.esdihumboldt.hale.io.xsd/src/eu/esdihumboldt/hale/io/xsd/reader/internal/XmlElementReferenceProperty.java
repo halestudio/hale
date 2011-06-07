@@ -16,7 +16,7 @@ import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
-import eu.esdihumboldt.hale.schema.model.Group;
+import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 
 /**
@@ -36,7 +36,7 @@ public class XmlElementReferenceProperty extends LazyPropertyDefinition {
 	 * @param elementName the element name
 	 */
 	public XmlElementReferenceProperty(QName name,
-			Group declaringGroup, XmlIndex index,
+			DefinitionGroup declaringGroup, XmlIndex index,
 			QName elementName) {
 		super(name, declaringGroup, index);
 		

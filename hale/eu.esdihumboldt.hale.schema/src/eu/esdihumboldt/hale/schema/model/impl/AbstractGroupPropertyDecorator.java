@@ -21,7 +21,7 @@ import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.Definition;
-import eu.esdihumboldt.hale.schema.model.Group;
+import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.schema.model.GroupPropertyConstraint;
 import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
@@ -93,7 +93,7 @@ public abstract class AbstractGroupPropertyDecorator implements GroupPropertyDef
 	 * @see PropertyDefinition#getDeclaringGroup()
 	 */
 	@Override
-	public Group getDeclaringGroup() {
+	public DefinitionGroup getDeclaringGroup() {
 		return propertyGroup.getDeclaringGroup();
 	}
 
@@ -122,7 +122,7 @@ public abstract class AbstractGroupPropertyDecorator implements GroupPropertyDef
 	}
 
 	/**
-	 * @see Group#getDeclaredChildren()
+	 * @see DefinitionGroup#getDeclaredChildren()
 	 */
 	@Override
 	public Collection<? extends ChildDefinition<?>> getDeclaredChildren() {
@@ -130,7 +130,7 @@ public abstract class AbstractGroupPropertyDecorator implements GroupPropertyDef
 	}
 
 	/**
-	 * @see Group#getChild(QName)
+	 * @see DefinitionGroup#getChild(QName)
 	 */
 	@Override
 	public ChildDefinition<?> getChild(QName name) {
@@ -138,7 +138,7 @@ public abstract class AbstractGroupPropertyDecorator implements GroupPropertyDef
 	}
 
 	/**
-	 * @see Group#addChild(ChildDefinition)
+	 * @see DefinitionGroup#addChild(ChildDefinition)
 	 */
 	@Override
 	public void addChild(ChildDefinition<?> child) {
