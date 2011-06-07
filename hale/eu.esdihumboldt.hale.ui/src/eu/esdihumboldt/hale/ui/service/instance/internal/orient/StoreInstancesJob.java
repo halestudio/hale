@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
  * Store instances in a database
  * @author Simon Templer
  */
-public class StoreInstancesJob extends Job {
+public abstract class StoreInstancesJob extends Job {
 
 	private final InstanceCollection instances;
 	private final LocalOrientDB database;
@@ -99,10 +99,17 @@ public class StoreInstancesJob extends Job {
 			ref.dispose();
 		}
 		
+		onComplete();
+		
 		monitor.done();
 		return new Status((monitor.isCanceled())?(IStatus.CANCEL):(IStatus.OK), 
 				HALEUIPlugin.PLUGIN_ID, MessageFormat.format(
 						"Stored {0} instances in the database", count));
 	}
+
+	/**
+	 * Called when the job has been completed
+	 */
+	protected abstract void onComplete();
 
 }

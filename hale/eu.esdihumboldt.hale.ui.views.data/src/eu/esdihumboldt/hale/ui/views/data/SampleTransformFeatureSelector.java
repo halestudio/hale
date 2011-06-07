@@ -51,8 +51,8 @@ import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
 import eu.esdihumboldt.hale.ui.service.UpdateMessage;
 import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
-import eu.esdihumboldt.hale.ui.views.data.internal.filter.FeatureSelectionListener;
-import eu.esdihumboldt.hale.ui.views.data.internal.filter.FeatureSelector;
+import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelectionListener;
+import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelector;
 
 /**
  * Feature selector based on a transformation sample
@@ -60,7 +60,7 @@ import eu.esdihumboldt.hale.ui.views.data.internal.filter.FeatureSelector;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class SampleTransformFeatureSelector implements FeatureSelector {
+public class SampleTransformFeatureSelector implements InstanceSelector {
 	
 	/**
 	 * Feature selector control
@@ -165,7 +165,7 @@ public class SampleTransformFeatureSelector implements FeatureSelector {
 			}
 			
 			// get reference features
-			Collection<Feature> reference = rss.getReferenceFeatures();
+			Collection<Feature> reference = rss.getReferenceInstances();
 			
 			if (reference != null && !reference.isEmpty()) {
 				// create a feature collection
@@ -224,7 +224,7 @@ public class SampleTransformFeatureSelector implements FeatureSelector {
 				selectedType = null;
 			}
 			
-			for (FeatureSelectionListener listener : listeners) {
+			for (InstanceSelectionListener listener : listeners) {
 				listener.selectionChanged(selectedType, getSelection());
 			}
 		}
@@ -258,15 +258,15 @@ public class SampleTransformFeatureSelector implements FeatureSelector {
 
 	}
 
-	private final Set<FeatureSelectionListener> listeners = new HashSet<FeatureSelectionListener>();
+	private final Set<InstanceSelectionListener> listeners = new HashSet<InstanceSelectionListener>();
 	
 	private FeatureSelectorControl current;
 	
 	/**
-	 * @see FeatureSelector#addSelectionListener(FeatureSelectionListener)
+	 * @see InstanceSelector#addSelectionListener(InstanceSelectionListener)
 	 */
 	@Override
-	public void addSelectionListener(FeatureSelectionListener listener) {
+	public void addSelectionListener(InstanceSelectionListener listener) {
 		listeners.add(listener);
 		
 		if (current != null && !current.isDisposed()) {
@@ -275,7 +275,7 @@ public class SampleTransformFeatureSelector implements FeatureSelector {
 	}
 
 	/**
-	 * @see FeatureSelector#createControl(Composite)
+	 * @see InstanceSelector#createControl(Composite)
 	 */
 	@Override
 	public Control createControl(Composite parent) {
@@ -284,10 +284,10 @@ public class SampleTransformFeatureSelector implements FeatureSelector {
 	}
 
 	/**
-	 * @see FeatureSelector#removeSelectionListener(FeatureSelectionListener)
+	 * @see InstanceSelector#removeSelectionListener(InstanceSelectionListener)
 	 */
 	@Override
-	public void removeSelectionListener(FeatureSelectionListener listener) {
+	public void removeSelectionListener(InstanceSelectionListener listener) {
 		listeners.remove(listener);
 	}
 

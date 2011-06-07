@@ -20,6 +20,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import eu.esdihumboldt.hale.schema.model.TypeIndex;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeIndexContentProvider;
 
 /**
  * Explorer for schema definitions

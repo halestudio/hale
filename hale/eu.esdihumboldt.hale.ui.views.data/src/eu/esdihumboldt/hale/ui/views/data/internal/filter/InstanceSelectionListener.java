@@ -12,27 +12,23 @@
 
 package eu.esdihumboldt.hale.ui.views.data.internal.filter;
 
-import org.opengis.feature.Feature;
-
-import eu.esdihumboldt.hale.schemaprovider.model.Definition;
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.instance.model.Instance;
+import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 
 /**
- * Feature selection listener interface
+ * Instance selection listener interface
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
-public interface FeatureSelectionListener {
+public interface InstanceSelectionListener {
 	
 	/**
 	 * Called when the selection changed
 	 * 
-	 * @param type the definition, either a {@link SchemaElement} or a {@link TypeDefinition}
+	 * @param type the definition
 	 * @param selection the selected features
 	 */
-	public void selectionChanged(Definition type, Iterable<Feature> selection);
+	public void selectionChanged(TypeDefinition type, Iterable<Instance> selection);
 	
 }

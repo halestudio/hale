@@ -15,25 +15,26 @@ package eu.esdihumboldt.hale.ui.views.data.internal.filter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.instance.model.Instance;
+import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 
 
 /**
- * Feature selector interface.
+ * {@link Instance} selector interface.
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public interface FeatureSelector {
+public interface InstanceSelector {
 
 	/**
 	 * Add a listener. A listener that was added should be informed of the
 	 * currently selected features by calling
-	 * {@link FeatureSelectionListener#selectionChanged(Definition, Iterable)}
+	 * {@link InstanceSelectionListener#selectionChanged(TypeDefinition, Iterable)}
 	 * 
 	 * @param listener the listener to add
 	 */
-	public abstract void addSelectionListener(FeatureSelectionListener listener);
+	public abstract void addSelectionListener(InstanceSelectionListener listener);
 
 	/**
 	 * Remove a listener
@@ -41,7 +42,7 @@ public interface FeatureSelector {
 	 * @param listener the listener to remove
 	 */
 	public abstract void removeSelectionListener(
-			FeatureSelectionListener listener);
+			InstanceSelectionListener listener);
 	
 	/**
 	 * Create the selector control. The control must be disposed before creating

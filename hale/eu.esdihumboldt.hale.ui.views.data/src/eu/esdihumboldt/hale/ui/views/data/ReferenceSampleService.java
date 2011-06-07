@@ -14,8 +14,7 @@ package eu.esdihumboldt.hale.ui.views.data;
 
 import java.util.Collection;
 
-import org.opengis.feature.Feature;
-
+import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
 
 
@@ -28,18 +27,18 @@ import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
 public interface ReferenceSampleService {
 	
 	/**
-	 * Set the reference feature sample
+	 * Set the reference instance sample
 	 * 
-	 * @param features the reference feature sample
+	 * @param instances the reference instance sample
 	 */
-	public void setReferenceFeatures(Collection<Feature> features);
+	public void setReferenceInstances(Collection<Instance> instances);
 	
 	/**
-	 * Get the reference feature sample
+	 * Get the reference instance sample
 	 * 
-	 * @return the reference feature sample
+	 * @return the reference instance sample
 	 */
-	public Collection<Feature> getReferenceFeatures();
+	public Collection<Instance> getReferenceInstances();
 	
 	/**
 	 * Adds a listener

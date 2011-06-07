@@ -23,12 +23,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
-import org.opengis.feature.Feature;
 
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.instance.model.Instance;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.views.data.internal.DataViewPlugin;
 import eu.esdihumboldt.hale.ui.views.data.internal.Messages;
-import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceServiceFeatureSelector;
+import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceServiceSelector;
 
 
 /**
@@ -37,7 +37,7 @@ import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceServiceFeature
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class SourceDataView extends AbstractTableView {
+public class SourceDataView extends AbstractDataView {
 	
 	/**
 	 * The view id
@@ -48,40 +48,40 @@ public class SourceDataView extends AbstractTableView {
 	
 	private Image instanceImage;
 	
-	private InstanceServiceFeatureSelector instanceSelector;
+	private InstanceServiceSelector instanceSelector;
 	
-	private MapFeatureSelector mapSelector;
+//	private MapFeatureSelector mapSelector;
 
 	/**
 	 * Default constructor
 	 */
 	public SourceDataView() {
-		super(new InstanceServiceFeatureSelector(SchemaType.SOURCE));
+		super(new InstanceServiceSelector(SchemaSpaceID.SOURCE));
 		
-		instanceSelector = (InstanceServiceFeatureSelector) getFeatureSelector();
+		instanceSelector = (InstanceServiceSelector) getFeatureSelector();
 		// another selector based on the map selection
-		mapSelector = new MapFeatureSelector(SchemaType.SOURCE);
+//		mapSelector = new MapFeatureSelector(SchemaType.SOURCE);
 	}
 
 	/**
-	 * @see AbstractTableView#onSelectionChange(Iterable)
+	 * @see AbstractDataView#onSelectionChange(Iterable)
 	 */
 	@Override
-	protected void onSelectionChange(Iterable<Feature> selection) {
+	protected void onSelectionChange(Iterable<Instance> selection) {
 		ReferenceSampleService rss = (ReferenceSampleService) PlatformUI.getWorkbench().getService(ReferenceSampleService.class);
 		
-		List<Feature> res = new ArrayList<Feature>();
+		List<Instance> res = new ArrayList<Instance>();
 		if (selection != null) {
-			for (Feature feature : selection) {
-				res.add(feature);
+			for (Instance instance : selection) {
+				res.add(instance);
 			}
 		}
 		
-		rss.setReferenceFeatures(res);
+		rss.setReferenceInstances(res);
 	}
 	
 	/**
-	 * @see AbstractTableView#provideCustomControls(Composite)
+	 * @see AbstractDataView#provideCustomControls(Composite)
 	 */
 	@Override
 	protected void provideCustomControls(Composite parent) {
@@ -103,7 +103,7 @@ public class SourceDataView extends AbstractTableView {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				setFeatureSelector(instanceSelector);
+				setInstanceSelector(instanceSelector);
 			}
 			
 		});
@@ -114,18 +114,18 @@ public class SourceDataView extends AbstractTableView {
 		}
 		mapButton.setImage(mapImage);
 		mapButton.setToolTipText(Messages.ReferenceTableView_1); //$NON-NLS-1$
-		mapButton.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				setFeatureSelector(mapSelector);
-			}
-			
-		});
+//		mapButton.addSelectionListener(new SelectionAdapter() {
+//
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				setInstanceSelector(mapSelector);
+//			}
+//			
+//		});
 	}
 
 	/**
-	 * @see AbstractTableView#dispose()
+	 * @see AbstractDataView#dispose()
 	 */
 	@Override
 	public void dispose() {

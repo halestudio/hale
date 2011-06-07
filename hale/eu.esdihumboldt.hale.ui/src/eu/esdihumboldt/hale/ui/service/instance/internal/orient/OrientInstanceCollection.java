@@ -78,14 +78,26 @@ public class OrientInstanceCollection implements InstanceCollection {
 				ref = database.openRead();
 				if (!classQueue.isEmpty()) {
 					currentClass = classQueue.poll();
-					currentIterator = ref.getDatabase().browseClass(currentClass);
+					if (ref.getDatabase().getMetadata().getSchema().getClass(currentClass) != null &&
+							ref.getDatabase().countClass(currentClass) > 0) {
+						currentIterator = ref.getDatabase().browseClass(currentClass);
+					}
+					else {
+						currentIterator = null;
+					}
 				}
 			}
 			
 			// update class if needed
-			while (currentClass != null && !currentIterator.hasNext()) {
+			while (currentClass != null && (currentIterator == null || !currentIterator.hasNext())) {
 				currentClass = classQueue.poll();
-				currentIterator = ref.getDatabase().browseClass(currentClass);
+				if (ref.getDatabase().getMetadata().getSchema().getClass(currentClass) != null &&
+						ref.getDatabase().countClass(currentClass) > 0) {
+					currentIterator = ref.getDatabase().browseClass(currentClass);
+				}
+				else {
+					currentIterator = null;
+				}
 			}
 		}
 

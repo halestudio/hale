@@ -17,8 +17,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.opengis.feature.Feature;
-
+import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
 import eu.esdihumboldt.hale.ui.views.data.ReferenceSampleService;
 
@@ -32,7 +31,7 @@ public class ReferenceSampleServiceImpl implements ReferenceSampleService {
 	
 	private final Set<HaleServiceListener> listeners = new HashSet<HaleServiceListener>();
 	
-	private Collection<Feature> sample = new ArrayList<Feature>();
+	private Collection<Instance> sample = new ArrayList<Instance>();
 
 	/**
 	 * @see ReferenceSampleService#addListener(HaleServiceListener)
@@ -43,10 +42,10 @@ public class ReferenceSampleServiceImpl implements ReferenceSampleService {
 	}
 
 	/**
-	 * @see ReferenceSampleService#getReferenceFeatures()
+	 * @see ReferenceSampleService#getReferenceInstances()
 	 */
 	@Override
-	public Collection<Feature> getReferenceFeatures() {
+	public Collection<Instance> getReferenceInstances() {
 		return sample;
 	}
 
@@ -59,11 +58,11 @@ public class ReferenceSampleServiceImpl implements ReferenceSampleService {
 	}
 
 	/**
-	 * @see ReferenceSampleService#setReferenceFeatures(Collection)
+	 * @see ReferenceSampleService#setReferenceInstances(Collection)
 	 */
 	@Override
-	public void setReferenceFeatures(Collection<Feature> features) {
-		this.sample = features;
+	public void setReferenceInstances(Collection<Instance> instances) {
+		this.sample = instances;
 		
 		for (HaleServiceListener listener : listeners) {
 			listener.update(null);

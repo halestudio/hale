@@ -54,8 +54,8 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionTracker;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionTrackerUtil;
-import eu.esdihumboldt.hale.ui.views.data.internal.filter.FeatureSelectionListener;
-import eu.esdihumboldt.hale.ui.views.data.internal.filter.FeatureSelector;
+import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelectionListener;
+import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelector;
 
 /**
  * 
@@ -63,7 +63,7 @@ import eu.esdihumboldt.hale.ui.views.data.internal.filter.FeatureSelector;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class MapFeatureSelector implements FeatureSelector {
+public class MapFeatureSelector implements InstanceSelector {
 	
 	/**
 	 * Feature selector control
@@ -241,7 +241,7 @@ public class MapFeatureSelector implements FeatureSelector {
 				selectedType = null;
 			}
 			
-			for (FeatureSelectionListener listener : listeners) {
+			for (InstanceSelectionListener listener : listeners) {
 				listener.selectionChanged(selectedType, getSelection());
 			}
 		}
@@ -282,7 +282,7 @@ public class MapFeatureSelector implements FeatureSelector {
 
 	}
 	
-	private final Set<FeatureSelectionListener> listeners = new HashSet<FeatureSelectionListener>();
+	private final Set<InstanceSelectionListener> listeners = new HashSet<InstanceSelectionListener>();
 	
 	private FeatureSelectorControl current;
 	
@@ -298,10 +298,10 @@ public class MapFeatureSelector implements FeatureSelector {
 	}
 
 	/**
-	 * @see FeatureSelector#addSelectionListener(FeatureSelectionListener)
+	 * @see InstanceSelector#addSelectionListener(InstanceSelectionListener)
 	 */
 	@Override
-	public void addSelectionListener(FeatureSelectionListener listener) {
+	public void addSelectionListener(InstanceSelectionListener listener) {
 		listeners.add(listener);
 		
 		if (current != null && !current.isDisposed()) {
@@ -310,7 +310,7 @@ public class MapFeatureSelector implements FeatureSelector {
 	}
 
 	/**
-	 * @see FeatureSelector#createControl(Composite)
+	 * @see InstanceSelector#createControl(Composite)
 	 */
 	@Override
 	public Control createControl(Composite parent) {
@@ -319,10 +319,10 @@ public class MapFeatureSelector implements FeatureSelector {
 	}
 
 	/**
-	 * @see FeatureSelector#removeSelectionListener(FeatureSelectionListener)
+	 * @see InstanceSelector#removeSelectionListener(InstanceSelectionListener)
 	 */
 	@Override
-	public void removeSelectionListener(FeatureSelectionListener listener) {
+	public void removeSelectionListener(InstanceSelectionListener listener) {
 		listeners.remove(listener);
 	}
 

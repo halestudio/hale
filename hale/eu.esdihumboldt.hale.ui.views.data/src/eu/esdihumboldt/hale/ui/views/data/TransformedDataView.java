@@ -24,7 +24,7 @@ import org.eclipse.ui.part.WorkbenchPart;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
 import eu.esdihumboldt.hale.ui.views.data.internal.DataViewPlugin;
 import eu.esdihumboldt.hale.ui.views.data.internal.Messages;
-import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceServiceFeatureSelector;
+import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceServiceSelector;
 
 /**
  * Table for viewing transformed data
@@ -32,7 +32,7 @@ import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceServiceFeature
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class TransformedDataView extends AbstractTableView {
+public class TransformedDataView extends AbstractDataView {
 	
 	/**
 	 * The view id
@@ -45,7 +45,7 @@ public class TransformedDataView extends AbstractTableView {
 	
 	private Image mapImage;
 	
-	private InstanceServiceFeatureSelector instanceSelector;
+	private InstanceServiceSelector instanceSelector;
 	
 	private SampleTransformFeatureSelector sampleSelector;
 	
@@ -57,7 +57,7 @@ public class TransformedDataView extends AbstractTableView {
 	public TransformedDataView() {
 		super(new SampleTransformFeatureSelector());
 		
-		instanceSelector = new InstanceServiceFeatureSelector(SchemaType.TARGET);
+		instanceSelector = new InstanceServiceSelector(SchemaType.TARGET);
 		// another selector based on the reference sample service
 		sampleSelector = (SampleTransformFeatureSelector) getFeatureSelector();
 		// selector base on the map selection
@@ -65,7 +65,7 @@ public class TransformedDataView extends AbstractTableView {
 	}
 
 	/**
-	 * @see AbstractTableView#provideCustomControls(Composite)
+	 * @see AbstractDataView#provideCustomControls(Composite)
 	 */
 	@Override
 	protected void provideCustomControls(Composite parent) {
@@ -86,7 +86,7 @@ public class TransformedDataView extends AbstractTableView {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				setFeatureSelector(instanceSelector);
+				setInstanceSelector(instanceSelector);
 			}
 			
 		});
@@ -102,7 +102,7 @@ public class TransformedDataView extends AbstractTableView {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				setFeatureSelector(sampleSelector);
+				setInstanceSelector(sampleSelector);
 			}
 			
 		});
@@ -117,7 +117,7 @@ public class TransformedDataView extends AbstractTableView {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				setFeatureSelector(mapSelector);
+				setInstanceSelector(mapSelector);
 			}
 			
 		});

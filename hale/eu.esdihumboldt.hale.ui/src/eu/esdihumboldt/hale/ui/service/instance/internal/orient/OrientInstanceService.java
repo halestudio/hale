@@ -96,7 +96,12 @@ public class OrientInstanceService extends AbstractInstanceService {
 	@Override
 	public void addSourceInstances(InstanceCollection sourceInstances) {
 		Job storeInstances = new StoreInstancesJob(
-				"Load source instances into database", source, sourceInstances);
+				"Load source instances into database", source, sourceInstances) {
+					@Override
+					protected void onComplete() {
+						notifyDatasetChanged(DataSet.SOURCE);
+					}
+		};
 		storeInstances.schedule();
 	}
 

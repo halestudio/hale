@@ -19,29 +19,30 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
-import org.opengis.feature.Feature;
 
-import eu.esdihumboldt.hale.schemaprovider.model.Definition;
-import eu.esdihumboldt.hale.ui.views.data.internal.filter.FeatureSelectionListener;
-import eu.esdihumboldt.hale.ui.views.data.internal.filter.FeatureSelector;
-import eu.esdihumboldt.hale.ui.views.data.internal.tree.DefinitionFeatureTreeViewer;
+import eu.esdihumboldt.hale.instance.model.Instance;
+import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelectionListener;
+import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelector;
+import eu.esdihumboldt.hale.ui.views.data.internal.tree.DefinitionInstanceTreeViewer;
 
 /**
  * Table view that shows information about certain features
  * 
- * @author Thorsten Reitz, Simon Templer
+ * @author Thorsten Reitz
+ * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class AbstractTableView extends ViewPart {
+public abstract class AbstractDataView extends ViewPart {
 
 	/**
 	 * The feature tree viewer
 	 */
-	private DefinitionFeatureTreeViewer tree;
+	private DefinitionInstanceTreeViewer tree;
 	
 	private Composite selectorComposite;
 	
-	private FeatureSelector featureSelector;
+	private InstanceSelector featureSelector;
 	
 	private Control selectorControl;
 	
@@ -50,7 +51,7 @@ public abstract class AbstractTableView extends ViewPart {
 	 * 
 	 * @param featureSelector the feature selector
 	 */
-	public AbstractTableView(FeatureSelector featureSelector) {
+	public AbstractDataView(InstanceSelector featureSelector) {
 		super();
 		
 		this.featureSelector = featureSelector;
@@ -101,10 +102,10 @@ public abstract class AbstractTableView extends ViewPart {
 		treeComposite.setLayout(layout);
 		
 		// tree viewer
-		tree = new DefinitionFeatureTreeViewer(treeComposite); //new FeatureTreeViewer(treeComposite);
+		tree = new DefinitionInstanceTreeViewer(treeComposite); //new FeatureTreeViewer(treeComposite);
 		
 		// selector
-		setFeatureSelector(featureSelector);
+		setInstanceSelector(featureSelector);
 	}
 
 	/**
@@ -130,15 +131,15 @@ public abstract class AbstractTableView extends ViewPart {
 	/**
 	 * @return the featureSelector
 	 */
-	public FeatureSelector getFeatureSelector() {
+	public InstanceSelector getFeatureSelector() {
 		return featureSelector;
 	}
 
 	/**
-	 * @param featureSelector the featureSelector to set
+	 * @param instanceSelector the instance selector to set
 	 */
-	public void setFeatureSelector(FeatureSelector featureSelector) {
-		this.featureSelector = featureSelector;
+	public void setInstanceSelector(InstanceSelector instanceSelector) {
+		this.featureSelector = instanceSelector;
 		
 		// remove old control
 		if (selectorControl != null) {
@@ -146,17 +147,17 @@ public abstract class AbstractTableView extends ViewPart {
 		}
 		
 		// create new control
-		selectorControl = featureSelector.createControl(selectorComposite);
+		selectorControl = instanceSelector.createControl(selectorComposite);
 		selectorControl.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		
 		// re-layout
 		selectorComposite.getParent().getParent().layout(true, true);
 		
 		// add listener
-		featureSelector.addSelectionListener(new FeatureSelectionListener() {
+		instanceSelector.addSelectionListener(new InstanceSelectionListener() {
 			
 			@Override
-			public void selectionChanged(Definition type, Iterable<Feature> selection) {
+			public void selectionChanged(TypeDefinition type, Iterable<Instance> selection) {
 				tree.setInput(type, selection);
 				onSelectionChange(selection);
 			}
@@ -168,7 +169,7 @@ public abstract class AbstractTableView extends ViewPart {
 	 * 
 	 * @param selection the current selection 
 	 */
-	protected void onSelectionChange(Iterable<Feature> selection) {
+	protected void onSelectionChange(Iterable<Instance> selection) {
 		// do nothing
 	}
 

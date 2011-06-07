@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.model.schema;
+package eu.esdihumboldt.hale.ui.common.definition;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.schema.model.constraint.property.NillableFlag;
-import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
+import eu.esdihumboldt.hale.ui.common.internal.CommonUIPlugin;
 
 /**
  * Manages images for definitions. Should be {@link #dispose()}d when the images
@@ -108,13 +108,13 @@ public class DefinitionImages {
 		
 	}
 	
-	private final Image attribOverlay = HALEUIPlugin.getImageDescriptor(
+	private final Image attribOverlay = CommonUIPlugin.getImageDescriptor(
 		"/icons/attrib_overlay2.gif").createImage(); //$NON-NLS-1$
 
 //	private final Image defOverlay = HALEUIPlugin.getImageDescriptor(
 //		"/icons/def_overlay.gif").createImage(); //$NON-NLS-1$
 	
-	private final Image mandatoryOverlay = HALEUIPlugin.getImageDescriptor(
+	private final Image mandatoryOverlay = CommonUIPlugin.getImageDescriptor(
 		"/icons/mandatory_ov2.gif").createImage(); //$NON-NLS-1$
 	
 	private final Map<String, Image> images = new HashMap<String, Image>();
@@ -168,7 +168,7 @@ public class DefinitionImages {
 		else  {
 			image = images.get(imageName);
 			if (image == null) {
-				image = HALEUIPlugin.getImageDescriptor(
+				image = CommonUIPlugin.getImageDescriptor(
 					"/icons/" + imageName).createImage(); //$NON-NLS-1$
 				images.put(imageName, image);
 			}

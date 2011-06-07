@@ -10,14 +10,14 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.schemas.explorer;
+package eu.esdihumboldt.hale.ui.common.definition.viewer;
 
 import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 import eu.esdihumboldt.hale.schema.model.Definition;
-import eu.esdihumboldt.hale.ui.model.schema.DefinitionImages;
+import eu.esdihumboldt.hale.ui.common.definition.DefinitionImages;
 
 /**
  * Basic label provider for {@link Definition}s
