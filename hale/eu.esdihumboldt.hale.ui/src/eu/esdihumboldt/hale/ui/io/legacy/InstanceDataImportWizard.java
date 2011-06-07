@@ -43,9 +43,9 @@ import eu.esdihumboldt.hale.instanceprovider.InstanceProvider;
 import eu.esdihumboldt.hale.instanceprovider.gml.GmlInstanceProvider;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.hale.ui.internal.Messages;
+import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceProviderFactory;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
-import eu.esdihumboldt.hale.ui.service.instance.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.util.ExceptionHelper;
@@ -141,7 +141,7 @@ public class InstanceDataImportWizard
 								public void run() {
 									instanceService.cleanInstances();
 //									SelectCRSDialog.resetCustomCRS();
-									instanceService.addInstances(DatasetType.source, features);
+									instanceService.addInstances(DataSet.SOURCE, features);
 									_log.info(features.size() + " instances were added to the InstanceService."); //$NON-NLS-1$
 								}
 							});

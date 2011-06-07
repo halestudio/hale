@@ -18,12 +18,14 @@ package eu.esdihumboldt.hale.instance.model;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public interface InstanceCollection extends Iterable<Instance> {
+public interface InstanceCollection {
 	
 	/**
-	 * @see Iterable#iterator()
+	 * Get an iterator over all instances contained in the collection. The
+	 * iterator must be disposed after use (using {@link ResourceIterator#dispose()}).
+	 * 
+	 * @return an iterator over the instances 
 	 */
-	@Override
 	public ResourceIterator<Instance> iterator();
 	
 	/**
@@ -32,8 +34,7 @@ public interface InstanceCollection extends Iterable<Instance> {
 	public static final int UNKNOWN_SIZE = -1;
 
 	/**
-	 * States if the collection has a known size
-	 * 
+	 * States if the collection has a known size.
 	 * @return if the collection size is known
 	 */
 	public boolean hasSize();
@@ -42,9 +43,16 @@ public interface InstanceCollection extends Iterable<Instance> {
 	 * Get the collection size if known.
 	 * @see #hasSize()
 	 * 
-	 * @return the collection size or 
+	 * @return the collection size or {@link #UNKNOWN_SIZE}
 	 */
 	public int size();
+	
+	/**
+	 * States if the collection has no instances. This must return a valid value
+	 * even if {@link #hasSize()} returns false.
+	 * @return if the collection is empty
+	 */
+	public boolean isEmpty();
 	
 	//TODO what else is needed?
 	// public InstanceCollection filter(Filter filter);

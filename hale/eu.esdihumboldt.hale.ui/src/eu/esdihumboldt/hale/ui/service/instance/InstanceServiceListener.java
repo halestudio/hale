@@ -12,10 +12,6 @@
 
 package eu.esdihumboldt.hale.ui.service.instance;
 
-import eu.esdihumboldt.hale.ui.service.instance.InstanceService.DatasetType;
-import eu.esdihumboldt.hale.ui.service.instance.crs.CRSDefinition;
-
-
 /**
  * Listener for instance services
  *
@@ -29,13 +25,14 @@ public interface InstanceServiceListener {
 	 * 
 	 * @param type the data set type
 	 */
-	public void datasetChanged(DatasetType type);
+	public void datasetChanged(DataSet type);
 	
-	/**
-	 * Called when the coordinate reference system has been changed
-	 * 
-	 * @param crs the new CRS definition 
-	 */
-	public void crsChanged(CRSDefinition crs);
+	//FIXME
+//	/**
+//	 * Called when the coordinate reference system has been changed
+//	 * 
+//	 * @param crs the new CRS definition 
+//	 */
+//	public void crsChanged(CRSDefinition crs);
 
 }

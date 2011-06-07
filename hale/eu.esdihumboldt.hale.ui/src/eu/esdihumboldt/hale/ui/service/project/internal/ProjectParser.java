@@ -40,8 +40,8 @@ import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.hale.ui.internal.Messages;
 import eu.esdihumboldt.hale.ui.io.legacy.InstanceDataImportWizard;
 import eu.esdihumboldt.hale.ui.service.config.ConfigSchemaService;
+import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
-import eu.esdihumboldt.hale.ui.service.instance.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.ui.service.instance.crs.CodeDefinition;
 import eu.esdihumboldt.hale.ui.service.instance.crs.WKTDefinition;
 import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
@@ -320,7 +320,7 @@ public class ProjectParser {
 				else if (project.getInstanceData() != null && project.getInstanceData().getWkt() != null) {
 					instanceService.setCRS(new WKTDefinition(project.getInstanceData().getWkt(), null));
 				}
-				instanceService.addInstances(DatasetType.source, 
+				instanceService.addInstances(DataSet.SOURCE, 
 						InstanceDataImportWizard.loadInstances(file, conf, null));
 				projectService.setInstanceDataPath(file.toString()); //project.getInstanceData().getPath());
 				projectService.setInstanceDataType(conf);

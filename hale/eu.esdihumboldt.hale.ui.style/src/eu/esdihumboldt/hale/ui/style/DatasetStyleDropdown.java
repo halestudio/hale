@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
 import eu.esdihumboldt.hale.ui.service.UpdateMessage;
-import eu.esdihumboldt.hale.ui.service.instance.InstanceService.DatasetType;
+import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
 
@@ -45,7 +45,7 @@ import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
  */
 public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleServiceListener {
 	
-	private final DatasetType dataset;
+	private final DataSet dataset;
 	
 	private Menu menu;
 	
@@ -54,8 +54,8 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 	 * 
 	 * @param dataset the data set
 	 */
-	public DatasetStyleDropdown(final DatasetType dataset) {
-		super((dataset == DatasetType.source)?("Source SLD"):("Target SLD"), //$NON-NLS-1$ //$NON-NLS-2$
+	public DatasetStyleDropdown(final DataSet dataset) {
+		super((dataset == DataSet.SOURCE)?("Source SLD"):("Target SLD"), //$NON-NLS-1$ //$NON-NLS-2$
 				Action.AS_DROP_DOWN_MENU);
 		
 		this.dataset = dataset;
@@ -102,7 +102,7 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 	public void fillMenu(Menu menu) {
 		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
-		Map<Definition, FeatureType> tmp = (dataset == DatasetType.source)?(schema.getSourceSchema().getTypes()):(schema.getTargetSchema().getTypes());
+		Map<Definition, FeatureType> tmp = (dataset == DataSet.SOURCE)?(schema.getSourceSchema().getTypes()):(schema.getTargetSchema().getTypes());
 		List<FeatureType> types = new ArrayList<FeatureType>();
 		for (Entry<Definition, FeatureType> entry : tmp.entrySet()) {
 			TypeDefinition type = DefinitionUtil.getType(entry.getKey());
@@ -153,7 +153,7 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 	public void update(@SuppressWarnings("rawtypes") UpdateMessage message) {
 		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
-		Map<Definition, FeatureType> elements = (dataset == DatasetType.source)?(schema.getSourceSchema().getTypes()):(schema.getTargetSchema().getTypes());
+		Map<Definition, FeatureType> elements = (dataset == DataSet.SOURCE)?(schema.getSourceSchema().getTypes()):(schema.getTargetSchema().getTypes());
 		
 		setEnabled(elements != null);
 	}

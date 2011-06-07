@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.hale.ui.service.instance;
 
-import eu.esdihumboldt.hale.ui.service.instance.InstanceService.DatasetType;
-import eu.esdihumboldt.hale.ui.service.instance.crs.CRSDefinition;
 
 /**
  * Instance service listener adapter
@@ -22,19 +20,19 @@ import eu.esdihumboldt.hale.ui.service.instance.crs.CRSDefinition;
 public class InstanceServiceAdapter implements InstanceServiceListener {
 
 	/**
-	 * @see InstanceServiceListener#datasetChanged(DatasetType)
+	 * @see InstanceServiceListener#datasetChanged(DataSet)
 	 */
 	@Override
-	public void datasetChanged(DatasetType type) {
+	public void datasetChanged(DataSet type) {
 		// please override me
 	}
 
-	/**
-	 * @see InstanceServiceListener#crsChanged(CRSDefinition)
-	 */
-	@Override
-	public void crsChanged(CRSDefinition crs) {
-		// please override me
-	}
+//	/**
+//	 * @see InstanceServiceListener#crsChanged(CRSDefinition)
+//	 */
+//	@Override
+//	public void crsChanged(CRSDefinition crs) {
+//		// please override me
+//	}
 
 }

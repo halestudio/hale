@@ -18,7 +18,7 @@ import org.eclipse.ui.services.IServiceLocator;
 import eu.esdihumboldt.hale.ui.service.config.ConfigSchemaService;
 import eu.esdihumboldt.hale.ui.service.config.internal.ConfigSchemaServiceImpl;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
-import eu.esdihumboldt.hale.ui.service.instance.internal.InstanceServiceImpl;
+import eu.esdihumboldt.hale.ui.service.instance.internal.orient.OrientInstanceService;
 import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.mapping.internal.AlignmentServiceImpl;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
@@ -54,7 +54,7 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		}
 		
 		if (InstanceService.class.equals(serviceInterface)) {
-			return InstanceServiceImpl.getInstance();
+			return OrientInstanceService.getInstance();
 		}
 		
 		if (AlignmentService.class.equals(serviceInterface)) {

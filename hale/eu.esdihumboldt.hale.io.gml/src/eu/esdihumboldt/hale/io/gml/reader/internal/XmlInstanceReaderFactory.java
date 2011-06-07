@@ -28,7 +28,7 @@ public class XmlInstanceReaderFactory extends AbstractIOProviderFactory<Instance
 	/**
 	 * Default constructor
 	 */
-	protected XmlInstanceReaderFactory() {
+	public XmlInstanceReaderFactory() {
 		super(PROVIDER_ID);
 		
 		addSupportedContentType("XML");

@@ -46,7 +46,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
 import eu.esdihumboldt.hale.ui.service.UpdateMessage;
-import eu.esdihumboldt.hale.ui.service.instance.InstanceService.DatasetType;
+import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.style.helper.StyleHelper;
 import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
@@ -220,24 +220,24 @@ public class StyleServiceImpl extends AbstractStyleService {
 	}
 
 	/**
-	 * @see StyleService#getStyle(DatasetType)
+	 * @see StyleService#getStyle(DataSet)
 	 */
 	@Override
-	public Style getStyle(final DatasetType dataset) {
+	public Style getStyle(final DataSet dataset) {
 		return getStyle(dataset, false);
 	}
 
 	/**
-	 * @see StyleService#getSelectionStyle(DatasetType)
+	 * @see StyleService#getSelectionStyle(DataSet)
 	 */
 	@Override
-	public Style getSelectionStyle(DatasetType type) {
+	public Style getSelectionStyle(DataSet type) {
 		return getStyle(type, true);
 	}
 	
 	@SuppressWarnings("deprecation")
-	private Style getStyle(final DatasetType dataset, boolean selected) {
-		Map<Definition, FeatureType> elements = (dataset == DatasetType.source)?(schemaService.getSourceSchema().getTypes()):(schemaService.getTargetSchema().getTypes());
+	private Style getStyle(final DataSet dataset, boolean selected) {
+		Map<Definition, FeatureType> elements = (dataset == DataSet.SOURCE)?(schemaService.getSourceSchema().getTypes()):(schemaService.getTargetSchema().getTypes());
 		
 		if (elements == null) {
 			elements = new HashMap<Definition, FeatureType>();

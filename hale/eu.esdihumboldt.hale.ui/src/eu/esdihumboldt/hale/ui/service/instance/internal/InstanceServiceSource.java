@@ -19,12 +19,10 @@ import org.eclipse.ui.AbstractSourceProvider;
 import org.eclipse.ui.ISourceProvider;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.PlatformUI;
-import org.geotools.feature.FeatureCollection;
-import org.opengis.feature.Feature;
-import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
-import eu.esdihumboldt.hale.ui.service.instance.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
 
@@ -55,12 +53,12 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 		is.addListener(instanceListener = new InstanceServiceAdapter() {
 
 			@Override
-			public void datasetChanged(DatasetType type) {
+			public void datasetChanged(DataSet type) {
 				switch(type) {
-				case transformed:
+				case TRANSFORMED:
 					fireSourceChanged(ISources.WORKBENCH, HAS_TRANSFORMED_INSTANCES, hasTransformedInstances(is));
 					break;
-				case source:
+				case SOURCE:
 					// do nothing (yet)
 					break;
 				}
@@ -92,8 +90,7 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 	}
 
 	private static boolean hasTransformedInstances(InstanceService is) {
-		FeatureCollection<FeatureType, Feature> instances = is.getFeatures(DatasetType.transformed);
-		
+		InstanceCollection instances = is.getInstances(DataSet.TRANSFORMED);
 		return instances != null && !instances.isEmpty();
 	}
 

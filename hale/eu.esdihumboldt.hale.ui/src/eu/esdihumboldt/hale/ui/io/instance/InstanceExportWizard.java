@@ -37,8 +37,8 @@ import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.ui.io.ExportSelectTargetPage;
 import eu.esdihumboldt.hale.ui.io.ExportWizard;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
+import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
-import eu.esdihumboldt.hale.ui.service.instance.InstanceService.DatasetType;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
@@ -149,7 +149,7 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceW
 		// configure with instances, common SRS, target schema
 		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 		
-		FeatureCollection<FeatureType, Feature> features = is.getFeatures(DatasetType.transformed);
+		FeatureCollection<FeatureType, Feature> features = is.getFeatures(DataSet.TRANSFORMED);
 		Schema targetSchema = getTargetSchema();
 		
 		// determine SRS

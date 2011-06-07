@@ -60,7 +60,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 		private Map<QName, TypeDefinition> allowedTypes;
 		
 		private TypeDefinition nextType;
-
+		
 		/**
 		 * Default constructor
 		 */
@@ -265,6 +265,9 @@ public class GmlInstanceCollection implements InstanceCollection {
 	private final ContentType contentType; //FIXME content type necessary?
 	private final TypeIndex sourceSchema;
 	private final LocatableInputSupplier<? extends InputStream> source;
+	
+	private boolean emptyInitialized = false;
+	private boolean empty = false;
 
 	/**
 	 * Create an XMl/GML instance collection based on the given source
@@ -303,6 +306,25 @@ public class GmlInstanceCollection implements InstanceCollection {
 	@Override
 	public ResourceIterator<Instance> iterator() {
 		return new InstanceIterator();
+	}
+
+	/**
+	 * @see InstanceCollection#isEmpty()
+	 */
+	@Override
+	public boolean isEmpty() {
+		if (!emptyInitialized) {
+			ResourceIterator<Instance> it = iterator();
+			try {
+				empty = !it.hasNext();
+			} finally {
+				it.dispose();
+			}
+			
+			emptyInitialized = true;
+		}
+		
+		return empty;
 	}
 
 }

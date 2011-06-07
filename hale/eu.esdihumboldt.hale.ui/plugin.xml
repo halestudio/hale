@@ -86,7 +86,7 @@
             commandId="eu.esdihumboldt.hale.ui.project.export">
       </handler>
       <handler
-            class="eu.esdihumboldt.hale.ui.io.legacy.handler.LoadInstanceDataHandler"
+            class="eu.esdihumboldt.hale.ui.io.instance.InstanceImportHandler"
             commandId="eu.esdihumboldt.hale.ui.source.instance.import">
       </handler>
       <handler

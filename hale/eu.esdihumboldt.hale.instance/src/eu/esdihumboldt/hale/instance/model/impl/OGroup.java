@@ -12,24 +12,25 @@
 
 package eu.esdihumboldt.hale.instance.model.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
-import com.orientechnologies.orient.core.serialization.OBase64Utils;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.instance.model.Group;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.MutableGroup;
+import eu.esdihumboldt.hale.instance.model.impl.internal.ONameUtil;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
@@ -62,10 +63,45 @@ public class OGroup implements MutableGroup {
 	 */
 	public OGroup(DefinitionGroup definition) {
 		document = new ODocument();
-		document.setClassName(definition.getIdentifier());
 		this.definition = definition;
 	}
 	
+	/**
+	 * Configure the internal document with the given database and return it
+	 * @param db the database
+	 * @return the internal document configured with the database
+	 */
+	public ODocument configureDocument(ODatabaseRecord db) {
+		configureDocument(document, db, definition);
+		return document;
+	}
+	
+	private void configureDocument(ODocument document, ODatabaseRecord db,
+			DefinitionGroup definition) {
+		// configure document
+		document.setDatabase(db);
+		// reset class name
+		document.setClassName(ONameUtil.encodeName(definition.getIdentifier()));
+		
+		// configure children
+		for (Entry<String, Object> field : document) {
+			if (field.getValue() instanceof ODocument) {
+				ChildDefinition<?> child = definition.getChild(decodeProperty(field.getKey()));
+				DefinitionGroup childGroup;
+				if (child.asProperty() != null) {
+					childGroup = child.asProperty().getPropertyType();
+				}
+				else if (child.asGroup() != null) {
+					childGroup = child.asGroup();
+				}
+				else {
+					throw new IllegalStateException("Document is associated neither with a property nor a property group.");
+				}
+				configureDocument((ODocument) field.getValue(), db, childGroup);
+			}
+		}
+	}
+
 	/**
 	 * Creates a group based on the given document
 	 * 
@@ -216,11 +252,8 @@ public class OGroup implements MutableGroup {
 	 * @return the name encoded as a single string
 	 */
 	protected String encodeProperty(QName propertyName) {
-		try {
-			return OBase64Utils.encodeObject(propertyName, OBase64Utils.GZIP);
-		} catch (IOException e) {
-			throw new RuntimeException("Could not encode property name", e);
-		}
+		//TODO handle namespace separately (prefix map?)
+		return ONameUtil.encodeName(propertyName.toString());
 	}
 	
 	/**
@@ -231,7 +264,7 @@ public class OGroup implements MutableGroup {
 	 */
 	protected QName decodeProperty(String encodedProperty) {
 		try {
-			return (QName) OBase64Utils.decodeToObject(encodedProperty, OBase64Utils.GZIP, QName.class.getClassLoader());
+			return QName.valueOf(ONameUtil.decodeName(encodedProperty));
 		} catch (Throwable e) {
 			throw new RuntimeException("Could not encode property name", e);
 		}

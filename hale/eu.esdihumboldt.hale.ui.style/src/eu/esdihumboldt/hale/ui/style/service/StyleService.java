@@ -17,7 +17,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.geotools.styling.Style;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.ui.service.instance.InstanceService.DatasetType;
+import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 
 /**
  * The {@link StyleService} provides access to the Styles currently loaded.
@@ -47,7 +47,7 @@ public interface StyleService {
 	 * @param dataset the data set
 	 * @return the style
 	 */
-	public Style getStyle(DatasetType dataset);
+	public Style getStyle(DataSet dataset);
 	
 	/**
 	 * 
@@ -83,7 +83,7 @@ public interface StyleService {
 	 * @param type the data set
 	 * @return the style
 	 */
-	public Style getSelectionStyle(DatasetType type);
+	public Style getSelectionStyle(DataSet type);
 	
 	/**
 	 * Get the defined style for the given feature type. If none is defined,

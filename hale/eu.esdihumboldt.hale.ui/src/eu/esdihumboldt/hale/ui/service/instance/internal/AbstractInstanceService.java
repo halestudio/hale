@@ -13,9 +13,9 @@
 package eu.esdihumboldt.hale.ui.service.instance.internal;
 
 import de.fhg.igd.eclipse.util.TypeSafeListenerList;
+import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
-import eu.esdihumboldt.hale.ui.service.instance.crs.CRSDefinition;
 
 /**
  * Notification handling for {@link InstanceService}s that support
@@ -33,27 +33,27 @@ public abstract class AbstractInstanceService implements InstanceService {
 	 * 
 	 * @param type the data set type, <code>null</code> if both sets have changed
 	 */
-	protected void notifyDatasetChanged(DatasetType type) {
+	protected void notifyDatasetChanged(DataSet type) {
 		for (InstanceServiceListener listener : listeners) {
 			if (type == null) {
-				listener.datasetChanged(DatasetType.source);
-				listener.datasetChanged(DatasetType.transformed);
+				listener.datasetChanged(DataSet.SOURCE);
+				listener.datasetChanged(DataSet.TRANSFORMED);
 			} else {
 				listener.datasetChanged(type);
 			}
 		}
 	}
 	
-	/**
-	 * Notify listeners that the CRS has changed
-	 * 
-	 * @param crs the new CRS definition
-	 */
-	protected void notifyCRSChanged(CRSDefinition crs) {
-		for (InstanceServiceListener listener : listeners) {
-			listener.crsChanged(crs);
-		}
-	}
+//	/**
+//	 * Notify listeners that the CRS has changed
+//	 * 
+//	 * @param crs the new CRS definition
+//	 */
+//	protected void notifyCRSChanged(CRSDefinition crs) {
+//		for (InstanceServiceListener listener : listeners) {
+//			listener.crsChanged(crs);
+//		}
+//	}
 
 	@Override
 	public void addListener(InstanceServiceListener listener) {

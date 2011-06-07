@@ -13,7 +13,7 @@ package eu.esdihumboldt.hale.ui.style;
 
 import org.eclipse.jface.action.ActionContributionItem;
 
-import eu.esdihumboldt.hale.ui.service.instance.InstanceService.DatasetType;
+import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
 import eu.esdihumboldt.hale.ui.style.internal.Messages;
 import eu.esdihumboldt.hale.ui.util.action.DropdownAction;
@@ -35,8 +35,8 @@ public class StyleDropdown extends DropdownAction {
 		setImageDescriptor(InstanceStylePlugin.getImageDescriptor(
 				"/icons/styles.gif")); //$NON-NLS-1$
 		
-		addItem(new ActionContributionItem(new DatasetStyleDropdown(DatasetType.source)));
-		addItem(new ActionContributionItem(new DatasetStyleDropdown(DatasetType.transformed)));
+		addItem(new ActionContributionItem(new DatasetStyleDropdown(DataSet.SOURCE)));
+		addItem(new ActionContributionItem(new DatasetStyleDropdown(DataSet.TRANSFORMED)));
 	}
 	
 }
