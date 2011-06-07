@@ -62,7 +62,7 @@ public class GmlInstanceCollectionTest {
 		Instance instance = it.next();
 		assertNotNull(instance);
 		
-		Object[] orderid = instance.getProperty(new QName(ns, "orderid"));
+		Object[] orderid = instance.getProperty(new QName("orderid")); // attribute form not qualified
 		assertNotNull(orderid);
 		assertEquals(1, orderid.length);
 		assertEquals("889923", orderid[0]);
