@@ -63,11 +63,11 @@ public abstract class StreamGmlInstance {
 		// attributes
 		for (int i = 0; i < reader.getAttributeCount(); i++) {
 			QName propertyName = reader.getAttributeName(i);
-			PropertyDefinition property = type.getChild(propertyName).asProperty();
-			if (property != null) {
-				//TODO check also namespace?
+			//FIXME may (currently) also be inside a group!
+			ChildDefinition<?> child = type.getChild(propertyName);
+			if (child != null && child.asProperty() != null) {
 				// add property value
-				addSimpleProperty(instance, property, reader.getAttributeValue(i));
+				addSimpleProperty(instance, child.asProperty(), reader.getAttributeValue(i));
 			}
 			else {
 				log.warn(MessageFormat.format(
