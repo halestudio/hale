@@ -12,9 +12,16 @@
 
 package eu.esdihumboldt.hale.instance.model.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
@@ -23,10 +30,13 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
+import com.orientechnologies.orient.core.record.ORecordAbstract;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.record.impl.ORecordBytes;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.instance.internal.InstanceBundle;
 import eu.esdihumboldt.hale.instance.model.Group;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.MutableGroup;
@@ -75,28 +85,34 @@ public class OGroup implements MutableGroup {
 		return document;
 	}
 	
-	private void configureDocument(ODocument document, ODatabaseRecord db,
+	private void configureDocument(ORecordAbstract<?> document, ODatabaseRecord db,
 			DefinitionGroup definition) {
 		// configure document
 		document.setDatabase(db);
-		// reset class name
-		document.setClassName(ONameUtil.encodeName(definition.getIdentifier()));
-		
-		// configure children
-		for (Entry<String, Object> field : document) {
-			if (field.getValue() instanceof ODocument) {
-				ChildDefinition<?> child = definition.getChild(decodeProperty(field.getKey()));
-				DefinitionGroup childGroup;
-				if (child.asProperty() != null) {
-					childGroup = child.asProperty().getPropertyType();
+		if (document instanceof ODocument) {
+			// reset class name
+			ODocument doc = (ODocument) document;
+			doc.setClassName(ONameUtil.encodeName(definition.getIdentifier()));
+			
+			// configure children
+			for (Entry<String, Object> field : doc) {
+				if (field.getValue() instanceof ODocument) {
+					ChildDefinition<?> child = definition.getChild(decodeProperty(field.getKey()));
+					DefinitionGroup childGroup;
+					if (child.asProperty() != null) {
+						childGroup = child.asProperty().getPropertyType();
+					}
+					else if (child.asGroup() != null) {
+						childGroup = child.asGroup();
+					}
+					else {
+						throw new IllegalStateException("Document is associated neither with a property nor a property group.");
+					}
+					configureDocument((ODocument) field.getValue(), db, childGroup);
 				}
-				else if (child.asGroup() != null) {
-					childGroup = child.asGroup();
+				else if (field.getValue() instanceof ORecordAbstract<?>) {
+					configureDocument((ORecordAbstract<?>) field.getValue(), db, null);
 				}
-				else {
-					throw new IllegalStateException("Document is associated neither with a property nor a property group.");
-				}
-				configureDocument((ODocument) field.getValue(), db, childGroup);
 			}
 		}
 	}
@@ -180,18 +196,65 @@ public class OGroup implements MutableGroup {
 			return ((OGroup) value).document;
 		}
 		else if (value instanceof Instance) {
-			//FIXME also convert internal instances?
 			OInstance tmp = new OInstance((Instance) value);
 			return tmp.document;
 		}
 		else if (value instanceof Group) {
-			//FIXME also convert internal instances?
 			OGroup tmp = new OGroup((Group) value);
 			return tmp.document;
 		}
 		//TODO also treat collections etc?
 		
+		//TODO objects that are not supported inside document
+		else if (!isSupportedFieldType(value.getClass())) {
+			//TODO try conversion first?!
+			
+			// object serialization
+			ORecordBytes record = new ORecordBytes();
+			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+			try {
+				ObjectOutputStream out = new ObjectOutputStream(bytes);
+				out.writeObject(value);
+			} catch (IOException e) {
+				throw new IllegalStateException("Could not serialize field value.");
+			}
+			record.fromStream(bytes.toByteArray());
+			return record;
+		}
+		
 		return value;
+	}
+
+	/**
+	 * Determines if the given field type is supported directly by the database
+	 * @param type the field type
+	 * @return if the field type is supported
+	 */
+	private boolean isSupportedFieldType(Class<? extends Object> type) {
+		// records
+		if (ORecordAbstract.class.isAssignableFrom(type)) {
+			return true;
+		}
+		// primitives and arrays
+		else if (type.isPrimitive() || type.isArray()) {
+			return true;
+		}
+		// wrapper types
+		else if (Number.class.isAssignableFrom(type) ||
+				String.class.isAssignableFrom(type) ||
+				Boolean.class.isAssignableFrom(type)) {
+			return true;
+		}
+		// date
+		else if (Date.class.isAssignableFrom(type)) {
+			return true;
+		}
+		// collections
+		else if (Collection.class.isAssignableFrom(type)) {
+			return true;
+		}
+		
+		return false;
 	}
 
 	/**
@@ -316,6 +379,27 @@ public class OGroup implements MutableGroup {
 			}
 		}
 		//TODO also treat collections etc?
+		
+		//TODO objects that are not supported inside document
+		else if (value instanceof ORecordBytes) {
+			//TODO try conversion first?!
+			
+			// object deserialization
+			ORecordBytes record = (ORecordBytes) value;
+			ByteArrayInputStream bytes = new ByteArrayInputStream(record.toStream());
+			try {
+				ObjectInputStream in = new ObjectInputStream(bytes) {
+					@Override
+					protected Class<?> resolveClass(ObjectStreamClass desc)
+							throws IOException, ClassNotFoundException {
+						return InstanceBundle.loadClass(desc.getName(), null);
+					}
+				};
+				return in.readObject();
+			} catch (Exception e) {
+				throw new IllegalStateException("Could not deserialize field value.", e);
+			}
+		}
 		
 		return value;
 	}
