@@ -87,10 +87,10 @@ public class DefinitionInstanceLabelProvider extends CellLabelProvider {
 		}
 		
 		//XXX use definition images?
-		Object lastSegment = treePath.getLastSegment();
-		if (lastSegment instanceof Definition) {
-			cell.setImage(images.getImage((Definition<?>) lastSegment));
-		}
+//		Object lastSegment = treePath.getLastSegment();
+//		if (lastSegment instanceof Definition) {
+//			cell.setImage(images.getImage((Definition<?>) lastSegment));
+//		}
 		
 //		cell.setText(getText(element));
 //		Image image = getImage(element);
