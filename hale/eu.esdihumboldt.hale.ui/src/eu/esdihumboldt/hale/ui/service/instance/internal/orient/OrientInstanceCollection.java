@@ -48,7 +48,9 @@ public class OrientInstanceCollection implements InstanceCollection {
 		
 		private String currentClass;
 		
-		private ORecordIteratorClass<ODocument> currentIterator; 
+		private ORecordIteratorClass<ODocument> currentIterator;
+		
+		private DatabaseHandle handle;
 		
 		/**
 		 * @see Iterator#hasNext()
@@ -76,10 +78,12 @@ public class OrientInstanceCollection implements InstanceCollection {
 				}
 				
 				ref = database.openRead();
+				handle = new DatabaseHandle(ref.getDatabase());
 				if (!classQueue.isEmpty()) {
 					currentClass = classQueue.poll();
 					if (ref.getDatabase().getMetadata().getSchema().getClass(currentClass) != null &&
 							ref.getDatabase().countClass(currentClass) > 0) {
+						//XXX set a fetch plan?
 						currentIterator = ref.getDatabase().browseClass(currentClass);
 					}
 					else {
@@ -93,6 +97,7 @@ public class OrientInstanceCollection implements InstanceCollection {
 				currentClass = classQueue.poll();
 				if (ref.getDatabase().getMetadata().getSchema().getClass(currentClass) != null &&
 						ref.getDatabase().countClass(currentClass) > 0) {
+					//XXX set a fetch plan?
 					currentIterator = ref.getDatabase().browseClass(currentClass);
 				}
 				else {
@@ -108,11 +113,9 @@ public class OrientInstanceCollection implements InstanceCollection {
 		public Instance next() {
 			if (hasNext()) {
 				ODocument doc = currentIterator.next();
-				//XXX when returned instance needs a database connection! can load prevent this?
-//				doc.load(); 
-//				doc.load("*");
-//				doc.detach(); XXX no effect
-				return new OInstance(doc, getCurrentType());
+				Instance instance = new OInstance(doc, getCurrentType());
+				handle.addReference(instance);
+				return instance;
 			}
 			else {
 				throw new IllegalStateException("No more instances available, you should have checked hasNext().");
@@ -137,7 +140,10 @@ public class OrientInstanceCollection implements InstanceCollection {
 		@Override
 		public void dispose() {
 			if (ref != null) {
-				ref.dispose();
+				// connection is closed in DatabaseHandle
+				ref.dispose(false);
+				// try closing the database handle (e.g. if no objects were added)
+				handle.tryClose();
 			}
 	
 		}

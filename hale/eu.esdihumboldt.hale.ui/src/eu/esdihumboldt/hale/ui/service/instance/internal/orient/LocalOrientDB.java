@@ -45,14 +45,24 @@ public class LocalOrientDB {
 		}
 
 		/**
+		 * @see DatabaseReference#dispose(boolean)
+		 */
+		@Override
+		public void dispose(boolean closeConnection) {
+			if (database != null) {
+				if (closeConnection) {
+					database.close();
+				}
+				dbLock.readLock().unlock();
+			}
+		}
+
+		/**
 		 * @see DatabaseReference#dispose()
 		 */
 		@Override
 		public void dispose() {
-			if (database != null) {
-//				database.close(); FIXME temporarily removed because of problem with instance loading
-				dbLock.readLock().unlock();
-			}
+			dispose(true);
 		}
 
 	}
@@ -79,15 +89,25 @@ public class LocalOrientDB {
 		}
 
 		/**
+		 * @see DatabaseReference#dispose(boolean)
+		 */
+		@Override
+		public void dispose(boolean closeConnection) {
+			if (database != null) {
+				if (closeConnection) {
+					database.close(); 
+				}
+				//XXX could eventually use read lock
+				dbLock.writeLock().unlock();
+			}
+		}
+
+		/**
 		 * @see DatabaseReference#dispose()
 		 */
 		@Override
 		public void dispose() {
-			if (database != null) {
-				database.close(); 
-				//XXX could eventually use read lock
-				dbLock.writeLock().unlock();
-			}
+			dispose(true);
 		}
 
 	}

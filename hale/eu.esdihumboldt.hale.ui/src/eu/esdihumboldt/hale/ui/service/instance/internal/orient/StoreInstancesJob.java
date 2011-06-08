@@ -95,6 +95,8 @@ public abstract class StoreInstancesJob extends Job {
 			} finally {
 				it.dispose();
 			}
+			
+			db.declareIntent(null);
 		} finally {
 			ref.dispose();
 		}
