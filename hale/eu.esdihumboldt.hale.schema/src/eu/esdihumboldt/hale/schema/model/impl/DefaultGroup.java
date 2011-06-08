@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.schema.model.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -21,6 +22,7 @@ import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
+import eu.esdihumboldt.hale.schema.model.DefinitionUtil;
 
 /**
  * Default {@link DefinitionGroup} implementation used internally in 
@@ -36,13 +38,27 @@ public class DefaultGroup implements DefinitionGroup {
 	 * The list of declared children (qualified name mapped to child definition, LinkedHashMap because order must be maintained for writing)
 	 */
 	private final LinkedHashMap<QName, ChildDefinition<?>> declaredChildren = new LinkedHashMap<QName, ChildDefinition<?>>();
+	
+	private LinkedHashMap<QName, ChildDefinition<?>> flattenedChildren;
+	
+	private final boolean flatten;
+
+	/**
+	 * Create a group
+	 * @param flatten if contained group properties may be replaced by 
+	 *   their children if possible
+	 */
+	public DefaultGroup(boolean flatten) {
+		super();
+		this.flatten = flatten;
+	}
 
 	/**
 	 * @see DefinitionGroup#getDeclaredChildren()
 	 */
 	@Override
 	public Collection<? extends ChildDefinition<?>> getDeclaredChildren() {
-		return Collections.unmodifiableCollection(declaredChildren.values());
+		return Collections.unmodifiableCollection(flattenChildren().values());
 	}
 
 	/**
@@ -50,7 +66,7 @@ public class DefaultGroup implements DefinitionGroup {
 	 */
 	@Override
 	public ChildDefinition<?> getChild(QName name) {
-		return declaredChildren.get(name);
+		return flattenChildren().get(name);
 	}
 
 	/**
@@ -58,6 +74,7 @@ public class DefaultGroup implements DefinitionGroup {
 	 */
 	@Override
 	public void addChild(ChildDefinition<?> child) {
+		flattenedChildren = null;
 		declaredChildren.put(child.getName(), child);
 	}
 
@@ -67,6 +84,46 @@ public class DefaultGroup implements DefinitionGroup {
 	@Override
 	public String getIdentifier() {
 		return identifier;
+	}
+	
+	private LinkedHashMap<QName, ChildDefinition<?>> flattenChildren() {
+		if (flatten) {
+			if (flattenedChildren == null) {
+				Collection<? extends ChildDefinition<?>> flat = flattenIfPossible(declaredChildren.values());
+				flattenedChildren = new LinkedHashMap<QName, ChildDefinition<?>>();
+				for (ChildDefinition<?> child : flat) {
+					flattenedChildren.put(child.getName(), child);
+				}
+			}
+			return flattenedChildren;
+		}
+		else {
+			return declaredChildren;
+		}
+	}
+	
+	/**
+	 * Replace groups with their children where possible
+	 * @param children the children
+	 * @return the flattened children
+	 */
+	private Collection<? extends ChildDefinition<?>> flattenIfPossible(
+			Collection<? extends ChildDefinition<?>> children) {
+		Collection<ChildDefinition<?>> result = new ArrayList<ChildDefinition<?>>();
+		
+		for (ChildDefinition<?> child : children) {
+			if (child.asGroup() != null && child.asGroup().allowFlatten()) {
+				// replace group with children
+				for (ChildDefinition<?> groupChild : child.asGroup().getDeclaredChildren()) {
+					result.add(DefinitionUtil.redeclareChild(groupChild, child.asGroup()));
+				}
+			}
+			else {
+				result.add(child);
+			}
+		}
+		
+		return result;
 	}
 
 }

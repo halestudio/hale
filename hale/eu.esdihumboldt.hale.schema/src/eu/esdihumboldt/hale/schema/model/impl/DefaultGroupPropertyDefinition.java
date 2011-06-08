@@ -29,16 +29,32 @@ import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 public class DefaultGroupPropertyDefinition extends AbstractChildDefinition<GroupPropertyConstraint>
 		implements GroupPropertyDefinition {
 	
-	private final DefinitionGroup children = new DefaultGroup();
+	private final DefinitionGroup children = new DefaultGroup(true);
+	
+	private final boolean allowFlatten;
 
 	/**
 	 * Create a new group property
 	 * 
 	 * @param name the group name
 	 * @param parentGroup the parent group
+	 * @param allowFlatten if the group may be replaced by its children
+	 * 
+	 * @see GroupPropertyDefinition#allowFlatten()
 	 */
-	public DefaultGroupPropertyDefinition(QName name, DefinitionGroup parentGroup) {
+	public DefaultGroupPropertyDefinition(QName name, 
+			DefinitionGroup parentGroup, boolean allowFlatten) {
 		super(name, parentGroup);
+		
+		this.allowFlatten = allowFlatten;
+	}
+
+	/**
+	 * @see GroupPropertyDefinition#allowFlatten()
+	 */
+	@Override
+	public boolean allowFlatten() {
+		return allowFlatten;
 	}
 
 	/**

@@ -20,6 +20,11 @@ import eu.esdihumboldt.hale.schema.model.impl.DefaultGroup;
  */
 public class XmlGroup extends DefaultGroup {
 
-	//TODO anything?
+	/**
+	 * @see DefaultGroup#DefaultGroup(boolean)
+	 */
+	public XmlGroup(boolean flatten) {
+		super(flatten);
+	}
 	
 }

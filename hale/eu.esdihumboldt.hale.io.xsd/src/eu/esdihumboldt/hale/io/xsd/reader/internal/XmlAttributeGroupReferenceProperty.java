@@ -37,11 +37,12 @@ public class XmlAttributeGroupReferenceProperty extends LazyGroupPropertyDefinit
 	 * @param declaringType the declaring type
 	 * @param index the XML index
 	 * @param groupName the attribute group name
+	 * @param allowFlatten if the group may be replaced by its children
 	 */
 	public XmlAttributeGroupReferenceProperty(QName name,
 			DefinitionGroup declaringType, XmlIndex index,
-			QName groupName) {
-		super(name, declaringType, index);
+			QName groupName, boolean allowFlatten) {
+		super(name, declaringType, index, allowFlatten);
 		
 		this.groupName = groupName;
 	}

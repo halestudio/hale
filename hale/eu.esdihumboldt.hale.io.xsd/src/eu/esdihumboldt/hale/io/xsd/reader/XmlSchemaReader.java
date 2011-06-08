@@ -327,7 +327,7 @@ public class XmlSchemaReader
 				// schema attribute group that might be referenced somewhere
 				XmlSchemaAttributeGroup attributeGroup = (XmlSchemaAttributeGroup) item;
 				if (attributeGroup.getName() != null) {
-					XmlAttributeGroup attGroup = new XmlAttributeGroup();
+					XmlAttributeGroup attGroup = new XmlAttributeGroup(true);
 					createAttributes(attributeGroup, attGroup, "", schemaLocation, namespace);
 					index.getAttributeGroups().put(attributeGroup.getName(), attGroup);
 				}
@@ -341,7 +341,7 @@ public class XmlSchemaReader
 				// group that might be referenced somewhere
 				XmlSchemaGroup schemaGroup = (XmlSchemaGroup) item;
 				if (schemaGroup.getName() != null) {
-					XmlGroup group = new XmlGroup();
+					XmlGroup group = new XmlGroup(true);
 					createPropertiesFromParticle(group, schemaGroup.getParticle(), 
 							schemaLocation, namespace, false);
 					index.getGroups().put(schemaGroup.getName(), group);
@@ -524,7 +524,7 @@ public class XmlSchemaReader
 					sequenceName = UUID.randomUUID().toString(); //TODO improve name
 				}
 				DefaultGroupPropertyDefinition sequenceGroup = new DefaultGroupPropertyDefinition(
-						new QName(sequenceName), declaringGroup);
+						new QName(sequenceName), declaringGroup, false);
 				// set cardinality
 				long max = (sequence.getMaxOccurs() == Long.MAX_VALUE)?(Cardinality.UNBOUNDED):(sequence.getMaxOccurs());
 				sequenceGroup.setConstraint(Cardinality.get(
@@ -566,7 +566,7 @@ public class XmlSchemaReader
 				choiceName = UUID.randomUUID().toString(); //TODO improve name
 			}
 			DefaultGroupPropertyDefinition choiceGroup = new DefaultGroupPropertyDefinition(
-					new QName(choiceName), declaringGroup);
+					new QName(choiceName), declaringGroup, false); // no flatten allowed because of choice
 			// set cardinality
 			long max = (choice.getMaxOccurs() == Long.MAX_VALUE)?(Cardinality.UNBOUNDED):(choice.getMaxOccurs());
 			choiceGroup.setConstraint(Cardinality.get(
@@ -599,19 +599,24 @@ public class XmlSchemaReader
 			XmlSchemaGroupRef groupRef = (XmlSchemaGroupRef) particle;
 			
 			QName groupName = groupRef.getRefName();
+			
+			long max = (groupRef.getMaxOccurs() == Long.MAX_VALUE)?(Cardinality.UNBOUNDED):(groupRef.getMaxOccurs());
+			long min = groupRef.getMinOccurs();
+			
 			XmlGroupReferenceProperty property = new XmlGroupReferenceProperty(
-					groupName, declaringGroup, index, groupName);
+					groupName, declaringGroup, index, groupName, 
+					!forceGroup && min == 1 && max ==1); // only allow flatten if group is not forced and appears exactly once 
 			
 			// set cardinality constraint
-			long max = (groupRef.getMaxOccurs() == Long.MAX_VALUE)?(Cardinality.UNBOUNDED):(groupRef.getMaxOccurs());
-			property.setConstraint(Cardinality.get(
-					groupRef.getMinOccurs(), max));
+			property.setConstraint(Cardinality.get(min, max));
 			
 			// set metadata
 			setMetadata(property, groupRef, schemaLocation);
 		}
 		else if (particle instanceof XmlSchemaAny) {
 			//XXX ignore for now
+			reporter.warn(new IOMessageImpl("Particle that allows any element is not supported.", null, 
+					particle.getLineNumber(), particle.getLinePosition()));
 		}
 		else {
 			reporter.error(new IOMessageImpl("Unrecognized particle: " +
@@ -1069,7 +1074,7 @@ public class XmlSchemaReader
 					QName groupName = groupRef.getRefName();
 					//XXX extend group name with namespace?
 					XmlAttributeGroupReferenceProperty property = new XmlAttributeGroupReferenceProperty(
-							groupName, declaringType, this.index, groupName);
+							groupName, declaringType, this.index, groupName, true);
 					//TODO add constraints?
 					
 					// set metadata

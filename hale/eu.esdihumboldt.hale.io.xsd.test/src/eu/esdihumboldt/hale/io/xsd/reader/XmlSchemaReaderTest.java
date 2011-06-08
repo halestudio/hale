@@ -210,14 +210,15 @@ public class XmlSchemaReaderTest {
 		TypeDefinition type = schema.getType(new QName("ShirtType"));
 		assertNotNull(type);
 		
-		// IdentifierGroup
-		GroupPropertyDefinition group = type.getChild(new QName("IdentifierGroup")).asGroup();
-		assertNotNull(group);
-		// not a choice
-		assertFalse(group.getConstraint(ChoiceFlag.class).isEnabled());
+		// not there any more because it is flattened away
+//		// IdentifierGroup
+//		GroupPropertyDefinition group = type.getChild(new QName("IdentifierGroup")).asGroup();
+//		assertNotNull(group);
+//		// not a choice
+//		assertFalse(group.getConstraint(ChoiceFlag.class).isEnabled());
 		
 		// id
-		PropertyDefinition id = group.getChild(new QName("id")).asProperty();
+		PropertyDefinition id = type.getChild(new QName("id")).asProperty();
 		assertNotNull(id);
 		// property type must be a simple type
 		assertTrue(id.getPropertyType().getConstraint(
@@ -231,7 +232,7 @@ public class XmlSchemaReaderTest {
 		assertEquals(1, cc.getMaxOccurs());
 		
 		// version
-		PropertyDefinition version = group.getChild(new QName("version")).asProperty();
+		PropertyDefinition version = type.getChild(new QName("version")).asProperty();
 		assertNotNull(version);
 		// property type must be a simple type
 		assertTrue(version.getPropertyType().getConstraint(
@@ -454,7 +455,7 @@ public class XmlSchemaReaderTest {
 		// ShirtType
 		TypeDefinition shirtType = schema.getType(new QName("ShirtType"));
 		assertNotNull(shirtType);
-		assertEquals(4, shirtType.getChildren().size());
+		assertEquals(5, shirtType.getChildren().size());
 		
 		Iterator<? extends ChildDefinition<?>> it = shirtType.getChildren().iterator();
 		// ProductPropertyGroup
@@ -466,25 +467,26 @@ public class XmlSchemaReaderTest {
 		// name
 		assertEquals("ProductPropertyGroup", prodGroup.getName().getLocalPart());
 		
-		assertEquals(3, prodGroup.getDeclaredChildren().size());
+		assertEquals(4, prodGroup.getDeclaredChildren().size());
 		Iterator<? extends ChildDefinition<?>> itProd = prodGroup.getDeclaredChildren().iterator();
-		// DescriptionGroup
-		GroupPropertyDefinition descGroup = itProd.next().asGroup();
-		assertNotNull(descGroup);
-		// cardinality
-		cc = descGroup.getConstraint(Cardinality.class);
-		assertEquals(1, cc.getMinOccurs());
-		assertEquals(1, cc.getMaxOccurs());
-		
-		assertEquals(2, descGroup.getDeclaredChildren().size());
-		Iterator<? extends ChildDefinition<?>> itDesc = descGroup.getDeclaredChildren().iterator();
+		// not there any more because it is flattened away
+//		// DescriptionGroup
+//		GroupPropertyDefinition descGroup = itProd.next().asGroup();
+//		assertNotNull(descGroup);
+//		// cardinality
+//		cc = descGroup.getConstraint(Cardinality.class);
+//		assertEquals(1, cc.getMinOccurs());
+//		assertEquals(1, cc.getMaxOccurs());
+//		
+//		assertEquals(2, descGroup.getDeclaredChildren().size());
+//		Iterator<? extends ChildDefinition<?>> itDesc = descGroup.getDeclaredChildren().iterator();
 		// description
-		PropertyDefinition description = itDesc.next().asProperty();
+		PropertyDefinition description = itProd.next().asProperty();
 		assertNotNull(description);
 		assertEquals("description", description.getName().getLocalPart());
 		
 		// comment
-		PropertyDefinition comment = itDesc.next().asProperty();
+		PropertyDefinition comment = itProd.next().asProperty();
 		assertNotNull(comment);
 		assertEquals("comment", comment.getName().getLocalPart());
 		

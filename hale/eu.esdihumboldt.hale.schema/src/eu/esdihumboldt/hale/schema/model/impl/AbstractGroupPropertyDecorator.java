@@ -154,4 +154,12 @@ public abstract class AbstractGroupPropertyDecorator implements GroupPropertyDef
 		return propertyGroup.getConstraint(constraintType);
 	}
 
+	/**
+	 * @see GroupPropertyDefinition#allowFlatten()
+	 */
+	@Override
+	public boolean allowFlatten() {
+		return propertyGroup.allowFlatten();
+	}
+
 }

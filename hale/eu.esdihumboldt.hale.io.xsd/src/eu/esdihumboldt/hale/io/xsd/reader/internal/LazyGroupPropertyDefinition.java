@@ -43,11 +43,12 @@ public abstract class LazyGroupPropertyDefinition extends
 	 * 
 	 * @param name the group name
 	 * @param parentGroup the parent group
-	 * @param index the XML index 
+	 * @param index the XML index
+	 * @param allowFlatten if the group may be replaced by its children
 	 */
 	public LazyGroupPropertyDefinition(QName name, DefinitionGroup parentGroup,
-			XmlIndex index) {
-		super(name, parentGroup);
+			XmlIndex index, boolean allowFlatten) {
+		super(name, parentGroup, allowFlatten);
 		
 		this.index = index;
 	}

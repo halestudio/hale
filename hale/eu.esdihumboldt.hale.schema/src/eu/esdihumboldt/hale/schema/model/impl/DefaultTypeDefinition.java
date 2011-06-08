@@ -47,7 +47,7 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	/**
 	 * The declared children
 	 */
-	private final DefinitionGroup declaredChildren = new DefaultGroup();
+	private final DefinitionGroup declaredChildren = new DefaultGroup(true);
 	
 	/**
 	 * The list of inherited children, names mapped to child definitions
