@@ -309,7 +309,7 @@ public abstract class XmlTypeUtil {
 	private static void configureSimpleTypeList(XmlTypeDefinition type,
 			XmlSchemaSimpleTypeList list, XmlIndex index, IOReporter reporter) {
 		XmlTypeDefinition elementType = null;
-		if (list.getItemType() == null) {
+		if (list.getItemType() != null) {
 			XmlSchemaSimpleType simpleType = list.getItemType();
 			if (simpleType.getQName() != null) {
 				// named type

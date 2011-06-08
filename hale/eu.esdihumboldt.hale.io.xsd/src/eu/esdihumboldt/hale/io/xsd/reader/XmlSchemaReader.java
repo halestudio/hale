@@ -304,14 +304,18 @@ public class XmlSchemaReader
 				// schema attribute that might be referenced somewhere
 				XmlSchemaAttribute att = (XmlSchemaAttribute) item;
 				if (att.getQName() != null) {
-					XmlTypeDefinition type = getAttributeType(att, null, schemaLocation);
+					XmlTypeDefinition type = getAttributeType(att, null, 
+							schemaLocation);
 					if (type == null) {
 						//XXX if this occurs we might need a attribute referencing attribute
-						throw new IllegalStateException("Could not determine attribute type");
+						reporter.error(new IOMessageImpl("Could not determine attribute type", 
+								null, att.getLineNumber(), att.getLinePosition()));
 					}
-					XmlAttribute attribute = new XmlAttribute(att.getQName(), type);
-					
-					index.getAttributes().put(attribute.getName(), attribute);
+					else {
+						XmlAttribute attribute = new XmlAttribute(att.getQName(), type);
+						
+						index.getAttributes().put(attribute.getName(), attribute);
+					}
 				}
 				else {
 					reporter.warn(new IOMessageImpl(MessageFormat.format(
@@ -381,7 +385,8 @@ public class XmlSchemaReader
 					includes.add(location);
 				}
 			} catch (Throwable e) {
-				_log.error("Error adding imported schema", e); //$NON-NLS-1$
+				reporter.error(new IOMessageImpl("Error adding imported schema from " + 
+						schemaLocation, e)); //$NON-NLS-1$
 			}
 		}
 		
@@ -798,6 +803,13 @@ public class XmlSchemaReader
 				AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
 				
 				configureSimpleType(anonymousType, simpleType, schemaLocation);
+				
+				// create a property with the anonymous type
+				DefaultPropertyDefinition property = new DefaultPropertyDefinition(
+						element.getQName(), declaringGroup, anonymousType);
+				
+				// set metadata and constraints
+				setMetadataAndConstraints(property, element, schemaLocation);
 			}
 		}
 		else {
@@ -1080,7 +1092,7 @@ public class XmlSchemaReader
 	}
 
 	private void createAttribute(XmlSchemaAttribute attribute, 
-			DefinitionGroup declaringType, String schemaLocation, 
+			DefinitionGroup declaringGroup, String schemaLocation, 
 			String schemaNamespace) {
 		// create attributes
 		QName typeName = attribute.getSchemaTypeName();
@@ -1090,22 +1102,26 @@ public class XmlSchemaReader
 			
 			// create property
 			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-					attribute.getQName(), declaringType, type);
+					attribute.getQName(), declaringGroup, type);
 			
 			// set metadata and constraints
 			setMetadataAndConstraints(property, attribute, schemaLocation);
 		}
 		else if (attribute.getSchemaType() != null) {
-			QName name = attribute.getSchemaType().getQName();
-			XmlTypeDefinition attType = this.index.getOrCreateType(name);
+			XmlSchemaSimpleType simpleType = attribute.getSchemaType();
 			
-			// attribute type from simple schema types
-			configureSimpleType(attType, attribute.getSchemaType(),
-					schemaLocation);
+			// create an anonymous type
+			QName anonymousName = new QName(
+					getTypeIdentifier(declaringGroup) + "/" + attribute.getName(), 
+					"AnonymousType"); //$NON-NLS-1$
+			
+			AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
+			
+			configureSimpleType(anonymousType, simpleType, schemaLocation);
 			
 			// create property
 			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-					attribute.getQName(), declaringType, attType);
+					attribute.getQName(), declaringGroup, anonymousType);
 			
 			// set metadata and constraints
 			setMetadataAndConstraints(property, attribute, schemaLocation);
@@ -1116,7 +1132,7 @@ public class XmlSchemaReader
 			QName attName = attribute.getRefName();
 			
 			XmlAttributeReferenceProperty property = new XmlAttributeReferenceProperty(
-					attName, declaringType, this.index, 
+					attName, declaringGroup, this.index, 
 					attName);
 			
 			// set metadata and constraints
@@ -1142,12 +1158,17 @@ public class XmlSchemaReader
 			return this.index.getOrCreateType(typeName);
 		}
 		else if (attribute.getSchemaType() != null) {
-			QName name = attribute.getSchemaType().getQName();
-			XmlTypeDefinition attType = this.index.getOrCreateType(name);
+			XmlSchemaSimpleType simpleType = attribute.getSchemaType();
 			
-			// attribute type from simple schema types
-			configureSimpleType(attType, attribute.getSchemaType(),
-					schemaLocation);
+			// create an anonymous type
+			QName anonymousName = new QName(attribute.getQName().getNamespaceURI() +
+					"/" + attribute.getName(), "AnonymousType"); //$NON-NLS-1$
+			
+			AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
+			
+			configureSimpleType(anonymousType, simpleType, schemaLocation);
+			
+			return anonymousType;
 		}
 		else if (attribute.getRefName() != null) {
 			// <attribute ref="REF_NAME" />
