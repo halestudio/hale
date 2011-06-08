@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.ui.io.schema;
 
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.schema.io.SchemaReaderFactory;
 import eu.esdihumboldt.hale.schema.model.Schema;
@@ -40,6 +41,18 @@ public class SchemaImportWizard extends ImportWizard<SchemaReader, SchemaReaderF
 		super(SchemaReaderFactory.class);
 		
 		this.spaceID = spaceID;
+	}
+
+	/**
+	 * @see IOWizard#updateConfiguration(IOProvider)
+	 */
+	@Override
+	protected void updateConfiguration(SchemaReader provider) {
+		super.updateConfiguration(provider);
+		
+		// set shared types XXX this is not fixed yet
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+		provider.setSharedTypes(ss.getSchemas(spaceID));
 	}
 
 	/**

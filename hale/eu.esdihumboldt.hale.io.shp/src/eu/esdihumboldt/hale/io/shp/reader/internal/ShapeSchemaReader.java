@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.core.io.report.IOReport;
 import eu.esdihumboldt.hale.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.io.shp.ShapefileIO;
 import eu.esdihumboldt.hale.io.shp.internal.Messages;
 import eu.esdihumboldt.hale.schema.io.SchemaReader;
@@ -38,6 +39,7 @@ import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.schema.model.constraint.property.NillableFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.SimpleFlag;
@@ -96,6 +98,12 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 				DefaultTypeDefinition type = new DefaultTypeDefinition(
 						new QName(namespace, sft.getName().getLocalPart()));
 				
+				// constraints on main type
+				type.setConstraint(MappableFlag.ENABLED);
+				type.setConstraint(SimpleFlag.DISABLED);
+				type.setConstraint(AbstractFlag.DISABLED);
+				type.setConstraint(Binding.get(Instance.class));
+				
 				for (AttributeDescriptor ad : sft.getAttributeDescriptors()) {
 					DefaultPropertyDefinition property = new DefaultPropertyDefinition(
 							new QName(ad.getLocalName()), 
@@ -118,7 +126,8 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 			progress.setCurrentTask(MessageFormat.format(Messages.getString("ShapeSchemaProvider.7"),  //$NON-NLS-1$
 					sft.getTypeName()));
 		}
-
+		
+		reporter.setSuccess(true);
 		return reporter;
 	}
 
@@ -154,7 +163,9 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 			
 			// set metadata
 			typeDef.setLocation(getSource().getLocation());
-			typeDef.setDescription(type.getDescription().toString());
+			if (type.getDescription() != null) {
+				typeDef.setDescription(type.getDescription().toString());
+			}
 			
 			result = typeDef;
 			schema.addType(result);

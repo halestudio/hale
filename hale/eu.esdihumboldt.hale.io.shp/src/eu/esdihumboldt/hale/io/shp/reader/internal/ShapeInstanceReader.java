@@ -101,6 +101,7 @@ public class ShapeInstanceReader extends AbstractInstanceReader {
 			}
 		}
 
+		reporter.setSuccess(true);
 		return reporter;
 	}
 
