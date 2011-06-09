@@ -21,6 +21,7 @@ import javax.xml.namespace.QName;
 import eu.esdihumboldt.hale.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.schema.model.Definition;
 import eu.esdihumboldt.hale.schema.model.constraint.ConstraintUtil;
+import eu.esdihumboldt.hale.schema.model.constraint.DisplayName;
 
 /**
  * Basic definition implementation to be subclassed
@@ -153,6 +154,23 @@ public abstract class AbstractDefinition<C> implements Definition<C>, Comparable
 	 */
 	@Override
 	public String getDisplayName() {
+		// special treatment for DisplayName constraint (as it can't match the generic type at this point)
+		String customName = null;
+		try {
+			DisplayName dn = (DisplayName) constraints.get(DisplayName.class);
+			if (dn != null) {
+				customName = dn.getCustomName();
+			}
+			// creating a default constraint is not done at this point because 
+			// the default behavior of DisplayName is to provide no custom name
+		} catch (Throwable e) {
+			// ignore
+		}
+		
+		if (customName != null) {
+			return customName;
+		}
+		
 		return name.getLocalPart();
 	}
 
