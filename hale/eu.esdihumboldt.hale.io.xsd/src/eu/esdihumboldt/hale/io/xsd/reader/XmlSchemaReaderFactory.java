@@ -15,7 +15,7 @@ package eu.esdihumboldt.hale.io.xsd.reader;
 import eu.esdihumboldt.hale.core.io.HaleIO;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.core.io.impl.AbstractIOProviderFactory;
-import eu.esdihumboldt.hale.io.xsd.XmlSchemaIO;
+import eu.esdihumboldt.hale.io.xsd.XMLSchemaIO;
 import eu.esdihumboldt.hale.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.schema.io.SchemaReaderFactory;
 
@@ -42,7 +42,7 @@ public class XmlSchemaReaderFactory extends
 	 */
 	@Override
 	public String getDisplayName() {
-		return HaleIO.getDisplayName(XmlSchemaIO.XSD_CT);
+		return HaleIO.getDisplayName(XMLSchemaIO.XSD_CT);
 	}
 
 	/**

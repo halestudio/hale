@@ -72,7 +72,7 @@ import eu.esdihumboldt.hale.core.io.report.IOReport;
 import eu.esdihumboldt.hale.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.instance.model.Instance;
-import eu.esdihumboldt.hale.io.xsd.XmlSchemaIO;
+import eu.esdihumboldt.hale.io.xsd.XMLSchemaIO;
 import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
@@ -496,7 +496,7 @@ public class XmlSchemaReader
 	 */
 	@Override
 	protected ContentType getDefaultContentType() {
-		return XmlSchemaIO.XSD_CT;
+		return XMLSchemaIO.XSD_CT;
 	}
 	
 	/**
@@ -872,7 +872,7 @@ public class XmlSchemaReader
 	 */
 	private void setMetadata(AbstractDefinition<?> definition,
 			XmlSchemaAnnotated annotated, String schemaLocation) {
-		definition.setDescription(XmlSchemaIO.getDescription(annotated));
+		definition.setDescription(XMLSchemaIO.getDescription(annotated));
 		definition.setLocation(createLocationURI(schemaLocation, annotated));
 	}
 

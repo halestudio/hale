@@ -34,7 +34,7 @@ import eu.esdihumboldt.hale.core.io.report.IOReport;
 import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.instance.model.Instance;
-import eu.esdihumboldt.hale.io.xsd.XmlSchemaIO;
+import eu.esdihumboldt.hale.io.xsd.XMLSchemaIO;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
@@ -548,7 +548,7 @@ public class XmlSchemaReaderTest {
 	 */
 	private Schema readSchema(LocatableInputSupplier<? extends InputStream> input) throws IOProviderConfigurationException, IOException {
 		XmlSchemaReader reader = new XmlSchemaReader();
-		reader.setContentType(XmlSchemaIO.XSD_CT);
+		reader.setContentType(XMLSchemaIO.XSD_CT);
 		reader.setSharedTypes(new DefaultTypeIndex());
 		reader.setSource(input);
 		

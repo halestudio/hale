@@ -25,7 +25,7 @@ import eu.esdihumboldt.hale.core.io.ContentType;
  * Utilities and constants for XML schemas
  * @author Simon Templer
  */
-public abstract class XmlSchemaIO {
+public abstract class XMLSchemaIO {
 	
 	/**
 	 * The Shapefile content type
