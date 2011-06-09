@@ -34,6 +34,8 @@ public class InstanceImportWizard extends ImportWizard<InstanceReader, InstanceR
 	 */
 	public InstanceImportWizard() {
 		super(InstanceReaderFactory.class);
+		
+		setWindowTitle("Import instances");
 	}
 
 	/**

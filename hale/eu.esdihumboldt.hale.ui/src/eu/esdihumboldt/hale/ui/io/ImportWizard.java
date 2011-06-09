@@ -37,6 +37,8 @@ public abstract class ImportWizard<P extends ImportProvider, T extends IOProvide
 	public ImportWizard(Class<T> factoryClass) {
 		super(factoryClass);
 		
+		setWindowTitle("Import wizard");
+		
 		setDefaultPageImageDescriptor(HALEUIPlugin.imageDescriptorFromPlugin(
 				HALEUIPlugin.PLUGIN_ID, "/icons/banner/import_wiz.png"));
 	}

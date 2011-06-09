@@ -79,8 +79,8 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 	 */
 	public ImportSelectSourcePage() {
 		super("import.selSource");
-		setTitle("Export destination");
-		setDescription("Please select a destination file for the export");
+		setTitle("Import location");
+		setDescription("Please select a source for the import");
 	}
 
 	/**
@@ -103,6 +103,7 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 			supportedTypes.addAll(factory.getSupportedTypes());
 		}
 		
+		sourceFile.setContentTypes(supportedTypes);
 		sourceFile.setPropertyChangeListener(new IPropertyChangeListener() {
 			
 			@Override
@@ -203,10 +204,14 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 				// select first provider
 				providers.setSelection(new StructuredSelection(supported.get(0)), true);
 			}
+			
+			providers.getControl().setEnabled(supported.size() > 1);
 		}
 		else {
 			providers.setInput(null);
+			providers.getControl().setEnabled(false);
 		}
+		
 	}
 
 	/**

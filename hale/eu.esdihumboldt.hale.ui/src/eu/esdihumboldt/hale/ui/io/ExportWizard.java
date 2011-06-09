@@ -39,6 +39,8 @@ public abstract class ExportWizard<P extends ExportProvider, T extends IOProvide
 	public ExportWizard(Class<T> factoryClass) {
 		super(factoryClass);
 		
+		setWindowTitle("Export wizard");
+		
 		setDefaultPageImageDescriptor(HALEUIPlugin.imageDescriptorFromPlugin(
 				HALEUIPlugin.PLUGIN_ID, "/icons/banner/export_wiz.png"));
 	}
