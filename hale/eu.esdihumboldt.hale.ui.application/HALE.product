@@ -89,11 +89,11 @@
       <plugin id="eu.esdihumboldt.hale.htmlexporter.test" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.instance"/>
       <plugin id="eu.esdihumboldt.hale.instanceprovider" fragment=""/>
-      <plugin id="eu.esdihumboldt.hale.io.gml" fragment=""/>
-      <plugin id="eu.esdihumboldt.hale.io.gml.test" fragment=""/>
-      <plugin id="eu.esdihumboldt.hale.io.gml.ui" fragment=""/>
+      <plugin id="eu.esdihumboldt.hale.io.gml"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
-      <plugin id="eu.esdihumboldt.hale.io.xml" fragment=""/>
+      <plugin id="eu.esdihumboldt.hale.io.xml"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.logback.config" fragment="true"/>
@@ -105,13 +105,13 @@
       <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.core" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.generic" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.schema"/>
-      <plugin id="eu.esdihumboldt.hale.schemaprovider" fragment=""/>
+      <plugin id="eu.esdihumboldt.hale.schemaprovider"/>
       <plugin id="eu.esdihumboldt.hale.ui"/>
       <plugin id="eu.esdihumboldt.hale.ui.application"/>
       <plugin id="eu.esdihumboldt.hale.ui.common"/>
       <plugin id="eu.esdihumboldt.hale.ui.style"/>
       <plugin id="eu.esdihumboldt.hale.ui.util"/>
-      <plugin id="eu.esdihumboldt.hale.ui.views.data" fragment=""/>
+      <plugin id="eu.esdihumboldt.hale.ui.views.data"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.graph" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.ui.views.map" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.ui.views.mapping" fragment=""/>
@@ -171,6 +171,7 @@
       <plugin id="org.eclipse.text"/>
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.forms"/>
+      <plugin id="org.eclipse.ui.views.log"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.eclipse.xsd"/>
       <plugin id="org.eclipse.zest.core"/>
