@@ -50,7 +50,7 @@ public class SchemaExplorer {
 		// create tree viewer
 		tree = new TreeViewer(main, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER); //XXX for now not lazy XXX | SWT.VIRTUAL);
 		tree.setUseHashlookup(true);
-		tree.setLabelProvider(new DefinitionLabelProvider());
+		tree.setLabelProvider(new SchemaExplorerLabelProvider());
 		tree.setContentProvider(new TypeIndexContentProvider(tree));
 		tree.getControl().setLayoutData(GridDataFactory.fillDefaults().
 				grab(true, true).create());

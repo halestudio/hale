@@ -18,14 +18,12 @@ import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
-import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.ViewerCell;
 
 import eu.esdihumboldt.hale.instance.model.Group;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.schema.model.Definition;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.DefinitionImages;
 
@@ -115,6 +113,8 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 //		cell.setBackground(getBackground(element));
 //		cell.setForeground(getForeground(element));
 //		cell.setFont(getFont(element));
+		
+		super.update(cell);
 	}
 
 	/**
