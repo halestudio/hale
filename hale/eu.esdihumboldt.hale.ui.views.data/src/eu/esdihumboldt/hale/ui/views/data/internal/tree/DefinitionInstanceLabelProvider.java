@@ -12,8 +12,13 @@
 
 package eu.esdihumboldt.hale.ui.views.data.internal.tree;
 
+import java.text.MessageFormat;
+
 import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.ViewerCell;
 
@@ -29,7 +34,7 @@ import eu.esdihumboldt.hale.ui.common.definition.DefinitionImages;
  * {@link TypeDefinitionContentProvider}
  * @author Simon Templer
  */
-public class DefinitionInstanceLabelProvider extends CellLabelProvider {
+public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 
 	private final Instance instance;
 	
@@ -54,6 +59,7 @@ public class DefinitionInstanceLabelProvider extends CellLabelProvider {
 		TreePath treePath = cell.getViewerRow().getTreePath();
 		
 		// descend in instance
+		int otherValues = 0;
 		Object value = instance;
 		for (int i = 0; value != null && i < treePath.getSegmentCount(); i++) {
 			Object segment = treePath.getSegment(i);
@@ -63,6 +69,7 @@ public class DefinitionInstanceLabelProvider extends CellLabelProvider {
 				if (values != null && values.length > 0) {
 					value = values[0];
 					//FIXME what about the other values? XXX mark cell? XXX create button for cell to see all for this instance?
+					otherValues = values.length - 1;
 				}
 				else {
 					value = null;
@@ -74,17 +81,27 @@ public class DefinitionInstanceLabelProvider extends CellLabelProvider {
 			}
 		}
 		
+		StyledString styledString;
 		if (value == null) {
-			cell.setText("");
+			styledString = new StyledString("no value", StyledString.DECORATIONS_STYLER);
 		}
 		else if (value instanceof Group) {
-			cell.setText("+");
-			//XXX use image instead
+			styledString = new StyledString("+", StyledString.QUALIFIER_STYLER);
 		}
 		else {
 			//TODO some kind of conversion?
-			cell.setText(value.toString());
+			styledString = new StyledString(value.toString(), null);
 		}
+		
+		// mark cell if there are other values
+		if (otherValues > 0) {
+			String decoration = " " + MessageFormat.format("(1 of {0})", 
+					new Object[] { Integer.valueOf(otherValues + 1) });
+			styledString.append(decoration, StyledString.COUNTER_STYLER);
+		}
+		
+		cell.setText(styledString.toString());
+		cell.setStyleRanges(styledString.getStyleRanges());
 		
 		//XXX use definition images?
 //		Object lastSegment = treePath.getLastSegment();
