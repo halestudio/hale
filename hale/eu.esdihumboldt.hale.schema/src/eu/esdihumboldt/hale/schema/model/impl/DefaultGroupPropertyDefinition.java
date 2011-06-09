@@ -54,7 +54,7 @@ public class DefaultGroupPropertyDefinition extends AbstractChildDefinition<Grou
 	 */
 	@Override
 	public boolean allowFlatten() {
-		return allowFlatten;
+		return allowFlatten || getDeclaredChildren().isEmpty(); // always allow flattening (removing) an empty group
 	}
 
 	/**
