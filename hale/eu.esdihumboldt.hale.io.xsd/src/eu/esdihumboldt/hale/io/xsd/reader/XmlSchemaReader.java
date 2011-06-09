@@ -91,6 +91,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlAttributeReferenceProperty
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlElementReferenceProperty;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlGroupReferenceProperty;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.ElementName;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.MappableUsingXsiType;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SuperTypeBinding;
 import eu.esdihumboldt.hale.schema.io.SchemaReader;
@@ -99,6 +100,7 @@ import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.schema.model.constraint.DisplayName;
 import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.property.NillableFlag;
@@ -126,6 +128,11 @@ import eu.esdihumboldt.hale.schema.model.impl.DefaultPropertyDefinition;
 public class XmlSchemaReader 
 	extends AbstractSchemaReader {
 	
+	/**
+	 * 
+	 */
+	private static final DisplayName DISPLAYNAME_CHOICE = new DisplayName("choice");
+
 	/**
 	 * The log
 	 */
@@ -281,7 +288,10 @@ public class XmlSchemaReader
 					setMetadata(schemaElement, element, schemaLocation);
 					
 					// extend XmlElements constraint
-					elementType.getConstraint(XmlElements.class).addElement(schemaElement);
+					XmlElements xmlElements = elementType.getConstraint(XmlElements.class);
+					xmlElements.addElement(schemaElement);
+					// set custom display name
+					elementType.setConstraint(new ElementName(xmlElements));
 					
 					// set Mappable constraint (e.g. Mappable)
 					// for types with an associated element it can be determined on the spot if it is mappable
@@ -521,7 +531,7 @@ public class XmlSchemaReader
 				// create a sequence group
 				String sequenceName = sequence.getId();
 				if (sequenceName == null || sequenceName.isEmpty()) {
-					sequenceName = UUID.randomUUID().toString(); //TODO improve name
+					sequenceName = UUID.randomUUID().toString(); //FIXME name must be the same each time the schema is loaded!
 				}
 				DefaultGroupPropertyDefinition sequenceGroup = new DefaultGroupPropertyDefinition(
 						new QName(sequenceName), declaringGroup, false);
@@ -563,10 +573,12 @@ public class XmlSchemaReader
 			// create a choice group
 			String choiceName = choice.getId();
 			if (choiceName == null || choiceName.isEmpty()) {
-				choiceName = UUID.randomUUID().toString(); //TODO improve name
+				choiceName = UUID.randomUUID().toString(); //FIXME name must be the same each time the schema is loaded
 			}
 			DefaultGroupPropertyDefinition choiceGroup = new DefaultGroupPropertyDefinition(
 					new QName(choiceName), declaringGroup, false); // no flatten allowed because of choice
+			// set custom display name
+			choiceGroup.setConstraint(DISPLAYNAME_CHOICE);
 			// set cardinality
 			long max = (choice.getMaxOccurs() == Long.MAX_VALUE)?(Cardinality.UNBOUNDED):(choice.getMaxOccurs());
 			choiceGroup.setConstraint(Cardinality.get(
@@ -1058,8 +1070,7 @@ public class XmlSchemaReader
 				// <attribute ... />
 				XmlSchemaAttribute attribute = (XmlSchemaAttribute) object;
 				
-				createAttribute(attribute, declaringType, schemaLocation, 
-						schemaNamespace);
+				createAttribute(attribute, declaringType, schemaLocation);
 			}
 			else if (object instanceof XmlSchemaAttributeGroup) {
 				XmlSchemaAttributeGroup group = (XmlSchemaAttributeGroup) object;
@@ -1097,8 +1108,7 @@ public class XmlSchemaReader
 	}
 
 	private void createAttribute(XmlSchemaAttribute attribute, 
-			DefinitionGroup declaringGroup, String schemaLocation, 
-			String schemaNamespace) {
+			DefinitionGroup declaringGroup, String schemaLocation) {
 		// create attributes
 		QName typeName = attribute.getSchemaTypeName();
 		if (typeName != null) {
