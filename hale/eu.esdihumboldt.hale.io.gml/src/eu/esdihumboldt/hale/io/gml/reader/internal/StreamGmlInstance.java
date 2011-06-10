@@ -79,7 +79,7 @@ public abstract class StreamGmlInstance {
 		//FIXME check for xsi:nil!
 		//XXX or use reader.hasText()?
 		
-		if (hasElements(type)) {
+		if (isComplexType(type)) {
 			// elements
 			int open = 1;
 			while (open > 0 && reader.hasNext()) {
@@ -93,7 +93,7 @@ public abstract class StreamGmlInstance {
 						checkNotNull(property);
 						
 						//TODO check also namespace?
-						if (hasElements(property.getPropertyType())) {
+						if (isComplexType(property.getPropertyType())) {
 							// use an instance as value
 							instance.addProperty(property.getName(), 
 									parseInstance(reader, property.getPropertyType()));
@@ -152,18 +152,10 @@ public abstract class StreamGmlInstance {
 	 * as XML elements.
 	 * 
 	 * @param type the type definition
-	 * @return if the type has at least one XML element property
+	 * @return if the type is a complex type
 	 */
-	private static boolean hasElements(TypeDefinition type) {
+	private static boolean isComplexType(TypeDefinition type) {
 		return !type.getConstraint(SimpleFlag.class).isEnabled();
-		
-//		for (AttributeDefinition property : type.getAttributes()) {
-//			if (property.isElement()) { // in the future test with constraint?
-//				return true;
-//			}
-//		}
-//		
-//		return false;
 	}
 	
 	/**
