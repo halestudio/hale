@@ -82,9 +82,9 @@ public class OrientInstanceService extends AbstractInstanceService {
 	public InstanceCollection getInstances(DataSet dataset) {
 		switch (dataset) {
 		case SOURCE:
-			return new OrientInstanceCollection(source, schemaService.getSchemas(SchemaSpaceID.SOURCE));
+			return new BrowseOrientInstanceCollection(source, schemaService.getSchemas(SchemaSpaceID.SOURCE));
 		case TRANSFORMED:
-			return new OrientInstanceCollection(transformed, schemaService.getSchemas(SchemaSpaceID.TARGET));
+			return new BrowseOrientInstanceCollection(transformed, schemaService.getSchemas(SchemaSpaceID.TARGET));
 		}
 		
 		throw new IllegalArgumentException("Illegal data set requested: " + dataset);

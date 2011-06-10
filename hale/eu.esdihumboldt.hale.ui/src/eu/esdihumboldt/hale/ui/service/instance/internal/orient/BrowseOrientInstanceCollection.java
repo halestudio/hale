@@ -36,7 +36,7 @@ import eu.esdihumboldt.hale.schema.model.TypeIndex;
  * Instance collection based on a {@link LocalOrientDB}
  * @author Simon Templer
  */
-public class OrientInstanceCollection implements InstanceCollection {
+public class BrowseOrientInstanceCollection implements InstanceCollection {
 	
 	private class OrientInstanceIterator implements ResourceIterator<Instance> {
 
@@ -99,6 +99,7 @@ public class OrientInstanceCollection implements InstanceCollection {
 						ref.getDatabase().countClass(currentClass) > 0) {
 					//XXX set a fetch plan?
 					currentIterator = ref.getDatabase().browseClass(currentClass);
+					currentIterator.setFetchPlan("*:0");
 				}
 				else {
 					currentIterator = null;
@@ -158,7 +159,7 @@ public class OrientInstanceCollection implements InstanceCollection {
 	 * @param database the database
 	 * @param types the type index
 	 */
-	public OrientInstanceCollection(LocalOrientDB database,
+	public BrowseOrientInstanceCollection(LocalOrientDB database,
 			TypeIndex types) {
 		super();
 		this.database = database;
