@@ -66,6 +66,7 @@ public class ApplicationWorkbenchWindowAdvisor
 		configurer.setShowCoolBar(true); // this reserves space for action bars on top.
 		configurer.setShowPerspectiveBar(true); // this reserves space for the selection of perspectives.
         configurer.setShowMenuBar(true);
+        configurer.setShowProgressIndicator(true);
         
         // show curved view tabs
 		PlatformUI.getPreferenceStore().setValue(
