@@ -98,8 +98,30 @@ public class GmlInstanceCollectionTest {
 		assertEquals(1, shiptoCountry.length);
 		assertEquals("Norway", shiptoCountry[0]);
 		
-		//TODO items
+		// items
+		Object[] items = instance.getProperty(new QName(ns, "item"));
+		assertNotNull(items);
+		assertEquals(2, items.length);
 		
+		// item 1
+		Object item1 = items[0];
+		assertTrue(item1 instanceof Instance);
+		
+		Object[] title1 = ((Instance) item1).getProperty(new QName(ns, "title"));
+		assertNotNull(title1);
+		assertEquals(1, title1.length);
+		assertEquals("Empire Burlesque", title1[0]);
+		
+		// item 2
+		Object item2 = items[1];
+		assertTrue(item2 instanceof Instance);
+		
+		Object[] title2 = ((Instance) item1).getProperty(new QName(ns, "title"));
+		assertNotNull(title2);
+		assertEquals(1, title2.length);
+		assertEquals("Hide your heart", title2[0]);
+		
+		// only one object
 		assertFalse(it.hasNext());
 		
 		it.dispose();
