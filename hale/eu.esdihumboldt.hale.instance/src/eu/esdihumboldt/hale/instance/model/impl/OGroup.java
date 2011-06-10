@@ -265,15 +265,19 @@ public class OGroup implements MutableGroup {
 	 */
 	private boolean isCollectionProperty(QName propertyName) {
 		ChildDefinition<?> child = definition.getChild(propertyName);
+		long max;
 		if (child instanceof PropertyDefinition) {
-			return ((PropertyDefinition) child).getConstraint(Cardinality.class).getMaxOccurs() > 1;
+			max = ((PropertyDefinition) child).getConstraint(Cardinality.class).getMaxOccurs();
 		}
 		else if (child instanceof GroupPropertyDefinition) {
-			return ((GroupPropertyDefinition) child).getConstraint(Cardinality.class).getMaxOccurs() > 1;
+			max = ((GroupPropertyDefinition) child).getConstraint(Cardinality.class).getMaxOccurs();
+		}
+		else {
+			// default to true
+			return true;
 		}
 		
-		// default to true
-		return true;
+		return max == Cardinality.UNBOUNDED || max > 1;
 	}
 
 	/**
