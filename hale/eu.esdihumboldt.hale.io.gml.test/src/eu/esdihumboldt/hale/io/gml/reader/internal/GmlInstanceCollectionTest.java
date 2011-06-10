@@ -137,8 +137,7 @@ public class GmlInstanceCollectionTest {
 		
 		return new GmlInstanceCollection(
 				new DefaultInputSupplier(xmlLocation), 
-				sourceSchema, 
-				null); //XXX content type currently not needed
+				sourceSchema);
 	}
 
 }

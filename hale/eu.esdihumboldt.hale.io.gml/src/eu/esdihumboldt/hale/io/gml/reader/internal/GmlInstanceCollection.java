@@ -27,7 +27,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.InstanceCollection;
@@ -262,7 +261,6 @@ public class GmlInstanceCollection implements InstanceCollection {
 
 	}
 
-	private final ContentType contentType; //FIXME content type necessary?
 	private final TypeIndex sourceSchema;
 	private final LocatableInputSupplier<? extends InputStream> source;
 	
@@ -274,14 +272,12 @@ public class GmlInstanceCollection implements InstanceCollection {
 	 * 
 	 * @param source the source
 	 * @param sourceSchema the source schema
-	 * @param contentType the content type
 	 */
 	public GmlInstanceCollection(
 			LocatableInputSupplier<? extends InputStream> source,
-			TypeIndex sourceSchema, ContentType contentType) {
+			TypeIndex sourceSchema) {
 		this.source = source;
 		this.sourceSchema = sourceSchema;
-		this.contentType = contentType;
 	}
 
 	/**

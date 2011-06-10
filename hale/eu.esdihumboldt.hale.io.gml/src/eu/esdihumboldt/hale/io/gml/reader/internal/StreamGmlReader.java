@@ -44,8 +44,7 @@ public class StreamGmlReader extends AbstractInstanceReader {
 		progress.begin("Prepare loading of " + getTypeName(), ProgressIndicator.UNKNOWN);
 		
 		try {
-			instances = new GmlInstanceCollection(getSource(), getSourceSchema(),
-					getContentType());
+			instances = new GmlInstanceCollection(getSource(), getSourceSchema());
 			//TODO any kind of analysis on file? e.g. types and size - would also give feedback to the user if the file can be loaded
 			reporter.setSuccess(true);
 		} catch (Throwable e) {
