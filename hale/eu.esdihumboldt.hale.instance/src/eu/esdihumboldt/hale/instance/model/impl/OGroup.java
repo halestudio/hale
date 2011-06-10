@@ -45,7 +45,9 @@ import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.schema.model.constraint.type.SimpleFlag;
 
 /**
  * Group implementation based on {@link ODocument}s
@@ -97,7 +99,26 @@ public class OGroup implements MutableGroup {
 			
 			// configure children
 			for (Entry<String, Object> field : doc) {
-				if (field.getValue() instanceof ODocument) {
+				List<ODocument> docs = new ArrayList<ODocument>();
+				List<ORecordAbstract<?>> recs = new ArrayList<ORecordAbstract<?>>();
+				if (field.getValue() instanceof Collection<?>) {
+					for (Object value : (Collection<?>)field.getValue()) {
+						if (value instanceof ODocument) {
+							docs.add((ODocument) value);
+						}
+						else if (value instanceof ORecordAbstract<?>) {
+							recs.add((ORecordAbstract<?>) value);
+						}
+					}
+				}
+				else if (field.getValue() instanceof ODocument) {
+					docs.add((ODocument) field.getValue());
+				}
+				else if (field.getValue() instanceof ORecordAbstract<?>) {
+					recs.add((ORecordAbstract<?>) field.getValue());
+				}
+				
+				for (ODocument valueDoc : docs) {
 					ChildDefinition<?> child = definition.getChild(decodeProperty(field.getKey()));
 					DefinitionGroup childGroup;
 					if (child.asProperty() != null) {
@@ -109,10 +130,11 @@ public class OGroup implements MutableGroup {
 					else {
 						throw new IllegalStateException("Document is associated neither with a property nor a property group.");
 					}
-					configureDocument((ODocument) field.getValue(), db, childGroup);
+					configureDocument(valueDoc, db, childGroup);
 				}
-				else if (field.getValue() instanceof ORecordAbstract<?>) {
-					configureDocument((ORecordAbstract<?>) field.getValue(), db, null);
+				
+				for (ORecordAbstract<?> fieldRec : recs) {
+					configureDocument(fieldRec, db, null);
 				}
 			}
 		}
@@ -163,7 +185,7 @@ public class OGroup implements MutableGroup {
 				// default: use list
 				List<Object> valueList = new ArrayList<Object>();
 				valueList.add(value);
-				document.field(pName, valueList, OType.EMBEDDEDLIST);
+				document.field(pName, valueList, getCollectionType(propertyName));
 			}
 			else if (oldValue instanceof Collection<?>) {
 				// add value to collection
@@ -175,13 +197,41 @@ public class OGroup implements MutableGroup {
 				Object[] values = new Object[oldArray.length + 1];
 				System.arraycopy(oldArray, 0, values, 0, oldArray.length);
 				values[oldArray.length] = value;
-				document.field(pName, values, OType.EMBEDDEDLIST);
+				document.field(pName, values, getCollectionType(propertyName));
 			}
 		}
 		else {
 			// just set the field
 			document.field(pName, value);
 		}
+	}
+
+	/**
+	 * Get the OrientDB collection type for the given property name
+	 * @param propertyName the property name
+	 * @return the collection type, either {@link OType#EMBEDDEDLIST} or 
+	 *   {@link OType#LINKLIST}
+	 */
+	private OType getCollectionType(QName propertyName) {
+		ChildDefinition<?> child = definition.getChild(propertyName);
+		if (child != null) {
+			if (child.asProperty() != null) {
+				TypeDefinition propType = child.asProperty().getPropertyType();
+				if (propType.getConstraint(SimpleFlag.class).isEnabled()) {
+					return OType.EMBEDDEDLIST;
+				}
+				else {
+					return OType.LINKLIST;
+				}
+			}
+			else if (child.asGroup() != null) {
+				// values must be OGroups
+				return OType.LINKLIST;
+			}
+		}
+		
+		// default to embedded llist
+		return OType.EMBEDDEDLIST;
 	}
 
 	/**
@@ -308,7 +358,7 @@ public class OGroup implements MutableGroup {
 			for (Object value : values) {
 				valueList.add(convertInstance(value));
 			}
-			document.field(pName, valueList); //XXX need to add OType.EMBEDDEDLIST?
+			document.field(pName, valueList,getCollectionType(propertyName));
 		}
 	}
 
