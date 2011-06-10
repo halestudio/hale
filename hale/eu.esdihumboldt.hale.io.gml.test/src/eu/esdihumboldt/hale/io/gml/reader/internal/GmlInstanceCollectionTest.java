@@ -116,7 +116,7 @@ public class GmlInstanceCollectionTest {
 		Object item2 = items[1];
 		assertTrue(item2 instanceof Instance);
 		
-		Object[] title2 = ((Instance) item1).getProperty(new QName(ns, "title"));
+		Object[] title2 = ((Instance) item2).getProperty(new QName(ns, "title"));
 		assertNotNull(title2);
 		assertEquals(1, title2.length);
 		assertEquals("Hide your heart", title2[0]);
