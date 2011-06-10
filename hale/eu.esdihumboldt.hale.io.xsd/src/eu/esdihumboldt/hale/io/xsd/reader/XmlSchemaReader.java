@@ -296,6 +296,8 @@ public class XmlSchemaReader
 					// set Mappable constraint (e.g. Mappable)
 					// for types with an associated element it can be determined on the spot if it is mappable
 					elementType.setConstraint(MappableFlag.get(mainSchema));
+					//XXX needed? may result in conflicts when defining mappable types manually XXX the element is also marked with the Mappable constraint, to help with cases where multiple elements are defined for one
+//					schemaElement.setConstraint(MappableFlag.get(mainSchema));
 					
 					// store element in index
 					index.getElements().put(elementName, schemaElement);
