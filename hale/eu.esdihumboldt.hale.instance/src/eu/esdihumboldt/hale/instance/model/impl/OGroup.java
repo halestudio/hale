@@ -30,6 +30,7 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
+import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.ORecordAbstract;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.record.impl.ORecordBytes;
@@ -162,7 +163,7 @@ public class OGroup implements MutableGroup {
 				// default: use list
 				List<Object> valueList = new ArrayList<Object>();
 				valueList.add(value);
-				document.field(pName, valueList); //XXX need to add OType.EMBEDDEDLIST?
+				document.field(pName, valueList, OType.EMBEDDEDLIST);
 			}
 			else if (oldValue instanceof Collection<?>) {
 				// add value to collection
@@ -174,7 +175,7 @@ public class OGroup implements MutableGroup {
 				Object[] values = new Object[oldArray.length + 1];
 				System.arraycopy(oldArray, 0, values, 0, oldArray.length);
 				values[oldArray.length] = value;
-				document.field(pName, values); //XXX need to add OType.EMBEDDEDLIST?
+				document.field(pName, values, OType.EMBEDDEDLIST);
 			}
 		}
 		else {
