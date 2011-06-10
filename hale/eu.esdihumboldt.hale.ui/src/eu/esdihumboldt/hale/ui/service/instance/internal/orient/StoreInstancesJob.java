@@ -23,6 +23,10 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.intent.OIntentMassiveInsert;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+import de.cs3d.util.logging.ATransaction;
+
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.instance.model.ResourceIterator;
@@ -34,6 +38,8 @@ import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
  * @author Simon Templer
  */
 public abstract class StoreInstancesJob extends Job {
+	
+	private static final ALogger log = ALoggerFactory.getLogger(StoreInstancesJob.class);
 
 	private final InstanceCollection instances;
 	private final LocalOrientDB database;
@@ -68,9 +74,12 @@ public abstract class StoreInstancesJob extends Job {
 		// get database connection
 		DatabaseReference<ODatabaseDocumentTx> ref = database.openWrite();
 		ODatabaseDocumentTx db = ref.getDatabase();
+		ATransaction trans = log.begin("Store instances in database");
 		try {
-			//XXX use intent?
+			// use intent
 			db.declareIntent(new OIntentMassiveInsert());
+			
+			//TODO decouple next() and save()?
 			
 			ResourceIterator<Instance> it = instances.iterator();
 			try {
@@ -99,6 +108,7 @@ public abstract class StoreInstancesJob extends Job {
 			db.declareIntent(null);
 		} finally {
 			ref.dispose();
+			trans.end();
 		}
 		
 		onComplete();
