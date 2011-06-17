@@ -12,9 +12,12 @@
 
 package eu.esdihumboldt.hale.ui.io.project;
 
+import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.project.ProjectWriter;
 import eu.esdihumboldt.hale.core.io.project.ProjectWriterFactory;
+import eu.esdihumboldt.hale.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.ui.io.ExportWizard;
+import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 /**
  * Wizard for saving a project
@@ -23,10 +26,33 @@ import eu.esdihumboldt.hale.ui.io.ExportWizard;
 public class SaveProjectWizard extends ExportWizard<ProjectWriter, ProjectWriterFactory> {
 
 	/**
+	 * Advisor identifier for saving a project
+	 */
+	public static final String ADVISOR_PROJECT_SAVE = "project.save";
+
+	/**
 	 * Create a wizard that saves a project
 	 */
 	public SaveProjectWizard() {
 		super(ProjectWriterFactory.class);
+	}
+
+	/**
+	 * @see IOWizard#updateConfiguration(IOProvider)
+	 */
+	@Override
+	protected void updateConfiguration(ProjectWriter provider) {
+		super.updateConfiguration(provider);
+		
+		// project has been set and can be adapted
+		// populate and set the save configuration
+		IOConfiguration saveConfiguration = new IOConfiguration();
+		saveConfiguration.setAdvisorId(ADVISOR_PROJECT_SAVE);
+		saveConfiguration.setProviderId(getProviderFactory().getIdentifier());
+		saveConfiguration.setProviderType(getFactoryClass());
+//		saveConfiguration.setLocation(location); XXX needed?
+		provider.storeConfiguration(saveConfiguration.getProviderConfiguration());
+		provider.getProject().setSaveConfiguration(saveConfiguration);
 	}
 
 }

@@ -498,7 +498,8 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	}
 
 	/**
-	 * Update the provider configuration
+	 * Update the provider configuration. This will be called just before the
+	 * I/O provider is executed.
 	 * 
 	 * @param provider the I/O provider 
 	 */
@@ -524,6 +525,13 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 		else {
 			return true;
 		}
+	}
+
+	/**
+	 * @return the I/O provider factory class
+	 */
+	public Class<T> getFactoryClass() {
+		return factoryClass;
 	}
 
 	/**

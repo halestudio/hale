@@ -101,20 +101,49 @@ public class Project {
 		}
 	}
 	
+	/**
+	 * The project name
+	 */
 	private String name;
 	
+	/**
+	 * The project author
+	 */
 	private String author;
 	
+	/**
+	 * The HALE version
+	 */
 	private Version haleVersion;
 	
+	/**
+	 * The date the project was created
+	 */
 	private Date created;
 	
+	/**
+	 * The date the project was modified
+	 */
 	private Date modified;
 	
+	/**
+	 * The configuration the project was saved with
+	 */
+	private IOConfiguration saveConfiguration;
+	
+	/**
+	 * I/O configurations 
+	 */
 	private final List<IOConfiguration> configurations = new ArrayList<IOConfiguration>();
 
+	/**
+	 * Project properties
+	 */
 	private final Map<String, String> properties = new HashMap<String, String>();
 	
+	/**
+	 * File names and classes of additional project files
+	 */
 	private final Map<String, Class<? extends ProjectFile>> files = new HashMap<String, Class<? extends ProjectFile>>();
 	
 	/**
@@ -206,6 +235,20 @@ public class Project {
 	 */
 	public Map<String, Class<? extends ProjectFile>> getFiles() {
 		return files;
+	}
+
+	/**
+	 * @return the saveConfiguration
+	 */
+	public IOConfiguration getSaveConfiguration() {
+		return saveConfiguration;
+	}
+
+	/**
+	 * @param saveConfiguration the saveConfiguration to set
+	 */
+	public void setSaveConfiguration(IOConfiguration saveConfiguration) {
+		this.saveConfiguration = saveConfiguration;
 	}
 	
 }

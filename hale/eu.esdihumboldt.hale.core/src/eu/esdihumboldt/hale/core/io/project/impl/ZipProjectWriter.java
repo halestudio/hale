@@ -175,6 +175,14 @@ public class ZipProjectWriter extends AbstractExportProvider implements ProjectW
 	}
 
 	/**
+	 * @see ProjectWriter#getProject()
+	 */
+	@Override
+	public Project getProject() {
+		return project;
+	}
+
+	/**
 	 * @see AbstractIOProvider#getDefaultContentType()
 	 */
 	@Override

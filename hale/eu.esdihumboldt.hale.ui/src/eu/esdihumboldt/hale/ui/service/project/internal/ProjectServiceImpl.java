@@ -41,11 +41,14 @@ import eu.esdihumboldt.hale.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.core.io.project.ProjectReader;
+import eu.esdihumboldt.hale.core.io.project.ProjectReaderFactory;
 import eu.esdihumboldt.hale.core.io.project.ProjectWriter;
+import eu.esdihumboldt.hale.core.io.project.ProjectWriterFactory;
 import eu.esdihumboldt.hale.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.core.io.project.model.Project;
 import eu.esdihumboldt.hale.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.core.io.report.IOReport;
+import eu.esdihumboldt.hale.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.hale.ui.io.advisor.IOAdvisorExtension;
 import eu.esdihumboldt.hale.ui.io.advisor.IOAdvisorFactory;
@@ -53,6 +56,7 @@ import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
 import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
 import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
 /**
@@ -126,7 +130,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 	
 	private final ProjectConfigurationService configurationService = new ProjectConfigurationService();
 	
-//	private boolean changed = false;
+	private boolean changed = false;
 	
 	/**
 	 * Default constructor
@@ -145,11 +149,17 @@ public class ProjectServiceImpl extends AbstractProjectService
 			
 			@Override
 			public void handleResults(ProjectReader provider) {
-				main = provider.getProject();
-				projectFile = new File(provider.getSource().getLocation());
-//				changed = false;
-//				RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(RecentFilesService.class);
-//				rfs.add(file.getAbsolutePath());
+				clean();
+				
+				synchronized (ProjectServiceImpl.this) {
+					main = provider.getProject();
+					projectFile = new File(provider.getSource().getLocation());
+					changed = false;
+					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(RecentFilesService.class);
+					rfs.add(projectFile.getAbsolutePath());
+				}
+				
+				updateWindowTitle();
 				
 				// execute loaded I/O configurations
 				executeConfigurations(main.getConfigurations());
@@ -164,15 +174,24 @@ public class ProjectServiceImpl extends AbstractProjectService
 			
 			@Override
 			public void updateConfiguration(ProjectWriter provider) {
-				provider.setProject(main);
-				Map<String, ProjectFile> projectFiles = new HashMap<String, ProjectFile>();
-				notifyBeforeSave(projectFiles); // get additional files from listeners
-				provider.setProjectFiles(projectFiles);
+				synchronized (ProjectServiceImpl.this) {
+					provider.setProject(main);
+					main.setModified(new Date());
+					Map<String, ProjectFile> projectFiles = new HashMap<String, ProjectFile>();
+					notifyBeforeSave(projectFiles); // get additional files from listeners
+					provider.setProjectFiles(projectFiles);
+				}
 			}
 			
 			@Override
 			public void handleResults(ProjectWriter provider) {
-//				changed = false;
+				synchronized (ProjectServiceImpl.this) {
+					projectFile = new File(provider.getTarget().getLocation());
+					changed = false;
+					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(RecentFilesService.class);
+					rfs.add(projectFile.getAbsolutePath());
+				}
+				
 				updateWindowTitle();
 			}
 		};
@@ -262,21 +281,24 @@ public class ProjectServiceImpl extends AbstractProjectService
 //		}, null);
 	}
 	
-//	/**
-//	 * @see ProjectService#isChanged()
-//	 */
-//	@Override
-//	public boolean isChanged() {
-//		return changed;
-//	}
-//
-//	/**
-//	 * Set that the project content has changed
-//	 */
-//	protected void setChanged() {
-//		changed = true;
-//		updateWindowTitle();
-//	}
+	/**
+	 * @see ProjectService#isChanged()
+	 */
+	@Override
+	public boolean isChanged() {
+		return changed;
+	}
+
+	/**
+	 * @see ProjectService#setChanged()
+	 */
+	@Override
+	public void setChanged() {
+		synchronized (this) {
+			changed = true;
+		}
+		updateWindowTitle();
+	}
 
 	/**
 	 * Execute a set of I/O configurations
@@ -374,45 +396,10 @@ public class ProjectServiceImpl extends AbstractProjectService
 	public void clean() {
 		synchronized (this) {
 			main = createDefaultProject();
+			projectFile = null;
+//			changed = false;
 		}
-		
-		//TODO
-//		projectFile = null;
-//		projectName = null;
-////		projectAuthor = null;
-//		changed = false;
-//		updateWindowTitle();
-//		
-//		// clean alignment service
-//		AlignmentService as = (AlignmentService) 
-//				PlatformUI.getWorkbench().getService(AlignmentService.class);
-//		as.cleanModel();
-//		
-//		// clean instance service
-//		InstanceService is = (InstanceService) 
-//				PlatformUI.getWorkbench().getService(InstanceService.class);
-//		is.cleanInstances();
-//		
-//		// clean schema service
-//		SchemaService ss = (SchemaService) 
-//				PlatformUI.getWorkbench().getService(SchemaService.class);
-//		ss.cleanSourceSchema();
-//		ss.cleanTargetSchema();
-//		
-//		// clear user tasks
-//		//XXX tasks in project deactivated for now
-////		TaskService taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
-////		taskService.clearUserTasks();
-//		
-//		// clean the project Service
-//		ProjectService ps = (ProjectService) 
-//				PlatformUI.getWorkbench().getService(ProjectService.class);
-//		ps.setInstanceDataPath(null);
-//		ps.setProjectCreatedDate(Calendar.getInstance().getTime().toString());
-//		ps.setSourceSchemaPath(null);
-//		ps.setTargetSchemaPath(null);
-//		
-//		System.gc();
+		updateWindowTitle();
 		notifyClean();
 	}
 
@@ -421,7 +408,15 @@ public class ProjectServiceImpl extends AbstractProjectService
 	 */
 	@Override
 	public void load(File file) {
-		//TODO use I/O provider and content type mechanisms to enable loading of a project file
+		// use I/O provider and content type mechanisms to enable loading of a project file
+		ProjectReader reader = HaleIO.findIOProvider(ProjectReaderFactory.class, 
+				new FileIOSupplier(file), file.getAbsolutePath());
+		if (reader != null) {
+			executeProvider(reader, openProjectAdvisor);
+		}
+		else {
+			log.userError("The project format is not supported.");
+		}
 	}
 
 	/**
@@ -468,7 +463,50 @@ public class ProjectServiceImpl extends AbstractProjectService
 	@Override
 	public void save() {
 		if (projectFile != null) {
-			//TODO use I/O provider and content type mechanisms to enable saving of the project file
+			Collection<ProjectWriterFactory> providers = 
+				HaleIO.getProviderFactories(ProjectWriterFactory.class);
+			
+			// use configuration from previous save if possible
+			IOConfiguration saveConfig;
+			synchronized (this) {
+				saveConfig = main.getSaveConfiguration();
+			}
+			if (saveConfig != null) {
+				// get provider ...
+				ProjectWriter writer = null;
+				for (ProjectWriterFactory factory : providers) {
+					if (factory.getIdentifier().equals(saveConfig.getProviderId())) {
+						writer = factory.createProvider();
+					}
+				}
+				
+				if (writer != null) {
+					// configure provider
+					writer.loadConfiguration(saveConfig.getProviderConfiguration());
+					// overwrite target with projectFile (as it may have been moved externally)
+					writer.setTarget(new FileIOSupplier(projectFile));
+					
+					executeProvider(writer, saveProjectAdvisor);
+				}
+				else {
+					log.error("The project cannot be saved because the format is not available.");
+					// use save as instead
+					saveAs();
+				}
+			}
+			else {
+				// use I/O provider and content type mechanisms to try saving the project file
+				ProjectWriter writer = HaleIO.findIOProvider(ProjectWriterFactory.class, 
+						new FileIOSupplier(projectFile), projectFile.getAbsolutePath());
+				if (writer != null) {
+					executeProvider(writer, saveProjectAdvisor);
+				}
+				else {
+					log.error("The project cannot be saved because the format is not available.");
+					// use save as instead
+					saveAs();
+				}
+			}
 		}
 		else {
 			saveAs();

@@ -66,12 +66,17 @@ public interface ProjectService {
 	 */
 	public String getProjectName();
 	
-//	/**
-//	 * Get if the project content is changed
-//	 * 
-//	 * @return if the project content is changed
-//	 */
-//	public boolean isChanged();
+	/**
+	 * Get if the project content is changed
+	 * 
+	 * @return if the project content is changed
+	 */
+	public boolean isChanged();
+	
+	/**
+	 * Inform the service about a change in the project content.
+	 */
+	public void setChanged();
 	
 	/**
 	 * Clean the project, reset all services.

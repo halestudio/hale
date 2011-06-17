@@ -13,35 +13,23 @@
 package eu.esdihumboldt.hale.ui.service.project;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.text.MessageFormat;
 
 import org.apache.commons.io.FilenameUtils;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.ContributionItem;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.PlatformUI;
-
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
-import de.cs3d.util.logging.ATransaction;
-import eu.esdihumboldt.hale.ui.internal.Messages;
 
 /**
  * A menu filled with the list of recently opened
  * files (MRU).
  * @author Michel Kraemer
+ * @author Simon Templer
  */
 public class RecentFilesMenu extends ContributionItem {
-	
-	private static final ALogger log = ALoggerFactory.getLogger(RecentFilesMenu.class);
 	
 	/**
 	 * A selection listener for the menu items
@@ -67,43 +55,9 @@ public class RecentFilesMenu extends ContributionItem {
 		 */
 		@Override
 		public void widgetSelected(SelectionEvent e) {
-			Display display = PlatformUI.getWorkbench().getDisplay();
-			try {
-				IRunnableWithProgress op = createOpenProjectRunnable(file);
-			    new ProgressMonitorDialog(display.getActiveShell()).run(true, false, op);
-			} catch (Exception e1) {
-				log.userError(MessageFormat.format(Messages.RecentFilesMenu_0, file), e1); 
-			}
+			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+			ps.load(file);
 		}
-	}
-	
-	/**
-	 * Create a runnable for opening a project
-	 * 
-	 * @param file the project file
-	 * 
-	 * @return the runnable
-	 */
-	public static IRunnableWithProgress createOpenProjectRunnable(final File file) {
-		return new IRunnableWithProgress() {
-			
-			@Override
-			public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
-				ATransaction logTrans = log.begin("Loading alignment project from " + file.getAbsolutePath()); //$NON-NLS-1$
-				try {
-					ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
-					//FIXME
-//					ps.load(file, monitor);
-				} catch (Exception e) {
-					String message = Messages.OpenAlignmentProjectWizard_Failed;
-					log.userError(message, e);
-				}
-				finally {
-					logTrans.end();
-				}
-			}
-		};
 	}
 	
     /**
