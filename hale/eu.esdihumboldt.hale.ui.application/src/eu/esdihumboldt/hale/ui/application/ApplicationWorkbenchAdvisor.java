@@ -11,15 +11,11 @@
  */
 package eu.esdihumboldt.hale.ui.application;
 
-import javax.xml.bind.JAXBException;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
@@ -29,12 +25,9 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
 import eu.esdihumboldt.hale.cache.Request;
-import eu.esdihumboldt.hale.ui.application.internal.HALEApplicationPlugin;
 import eu.esdihumboldt.hale.ui.application.internal.Messages;
-import eu.esdihumboldt.hale.ui.io.legacy.SaveAlignmentProjectWizard;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
-import eu.esdihumboldt.hale.ui.util.ExceptionHelper;
 
 /**
  * The {@link ApplicationWorkbenchAdvisor} controls the appearance of the 
@@ -87,43 +80,33 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		// Cache shutdown
 		Request.getInstance().shutdown();
 		
-//		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
-//		if (ps.isChanged()) {
-//			Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
-//			MessageBox mb = new MessageBox(shell, 
-//					SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
-//    		mb.setMessage(Messages.ApplicationWorkbenchAdvisor_1); //$NON-NLS-1$
-//    		mb.setText(Messages.ApplicationWorkbenchAdvisor_2); //$NON-NLS-1$
-//    		int result = mb.open();
-//    		if (result == SWT.CANCEL) {
-//    			return false;
-//    		}
-//    		else if (result == SWT.YES) {
-//    			try {
-//    				// try saving project
-//    				if (!ps.save()) {
-//    					// have to use save as
-//    					IExportWizard iw = new SaveAlignmentProjectWizard();
-//    					// Instantiates the wizard container with the wizard and opens it
-//    					WizardDialog dialog = new WizardDialog(shell, iw);
-//    					if (dialog.open() == WizardDialog.CANCEL) {
-//    						return false;
-//    					}
-//    				}
-//					return true;
-//				} catch (JAXBException e) {
-//					ExceptionHelper.handleException(
-//							"Error saving alignment project", HALEApplicationPlugin.PLUGIN_ID, e); //$NON-NLS-1$
-//					return false;
-//				}
-//			}
-//    		else {
-//    			return true;
-//    		}
-//		}
-//		else {
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+		if (ps.isChanged()) {
+			Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+			MessageBox mb = new MessageBox(shell, 
+					SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
+    		mb.setMessage(Messages.ApplicationWorkbenchAdvisor_1); //$NON-NLS-1$
+    		mb.setText(Messages.ApplicationWorkbenchAdvisor_2); //$NON-NLS-1$
+    		int result = mb.open();
+    		if (result == SWT.CANCEL) {
+    			return false;
+    		}
+    		else if (result == SWT.YES) {
+				// try saving project
+				ps.save();
+				
+				if (ps.isChanged()) {
+					return false;
+				}
+				return true;
+			}
+    		else {
+    			return true;
+    		}
+		}
+		else {
 			return true;
-//		}
+		}
 	}
 
 	/**
