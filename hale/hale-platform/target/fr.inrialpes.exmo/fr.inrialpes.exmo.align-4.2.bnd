@@ -1,0 +1,11 @@
+-classpath: lib-4.2/procalign.jar
+-output: fr.inrialpes.exmo.align-4.2.jar
+Export-Package: *;-split-package:=merge-last;-noimport:=true
+Import-Package: fr.inrialpes.exmo.ontowrap;resolution:=optional, \
+ fr.inrialpes.exmo.ontowrap.*;resolution:=optional, \
+ fr.inrialpes.exmo.align.service;resoltion:=optional, \
+ fr.inrialpes.exmo.align.service.*;resoltion:=optional, \
+ *
+Bundle-Version: 4.2
+Bundle-Name: Alignment API Implementation
+Bundle-SymbolicName: fr.inrialpes.exmo.align
