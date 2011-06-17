@@ -29,8 +29,6 @@ import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
  */
 public abstract class ExportWizard<P extends ExportProvider, T extends IOProviderFactory<P>> extends IOWizard<P, T> {
 
-	private ExportSelectProviderPage<P, T, ? extends ExportWizard<P, T>> selectProviderPage;
-	
 	private ExportSelectTargetPage<P, T, ? extends ExportWizard<P, T>> selectTargetPage;
 
 	/**
@@ -52,7 +50,13 @@ public abstract class ExportWizard<P extends ExportProvider, T extends IOProvide
 	public void addPages() {
 		super.addPages();
 		
-		addPage(selectProviderPage = createSelectProviderPage());
+		if (getFactories().size() == 1) {
+			// only one possibility, directly set the provider
+			setProviderFactory(getFactories().iterator().next());
+		}
+		else {
+			addPage(new ExportSelectProviderPage<P, T, ExportWizard<P,T>>());
+		}
 		addPage(selectTargetPage = createSelectTargetPage());
 	}
 
@@ -72,13 +76,6 @@ public abstract class ExportWizard<P extends ExportProvider, T extends IOProvide
 	 */
 	protected ExportSelectTargetPage<P, T, ? extends ExportWizard<P,T>> createSelectTargetPage() {
 		return new ExportSelectTargetPage<P, T, ExportWizard<P,T>>();
-	}
-
-	/**
-	 * @return the selectProviderPage
-	 */
-	protected ExportSelectProviderPage<P, T, ? extends ExportWizard<P, T>> getSelectProviderPage() {
-		return selectProviderPage;
 	}
 
 	/**
