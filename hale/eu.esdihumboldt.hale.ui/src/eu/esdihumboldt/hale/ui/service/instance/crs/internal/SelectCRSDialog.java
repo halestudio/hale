@@ -35,10 +35,10 @@ import org.eclipse.swt.widgets.Text;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import eu.esdihumboldt.hale.instance.geometry.CodeDefinition;
+import eu.esdihumboldt.hale.instance.geometry.WKTDefinition;
+import eu.esdihumboldt.hale.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.ui.internal.Messages;
-import eu.esdihumboldt.hale.ui.service.instance.crs.CRSDefinition;
-import eu.esdihumboldt.hale.ui.service.instance.crs.CodeDefinition;
-import eu.esdihumboldt.hale.ui.service.instance.crs.WKTDefinition;
 
 /**
  * Dialog for selecting the CRS to use

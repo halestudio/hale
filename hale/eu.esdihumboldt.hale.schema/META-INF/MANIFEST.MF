@@ -5,14 +5,17 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.schema
 Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.common.base,
+ com.vividsolutions.jts.geom,
  de.cs3d.util.logging,
  eu.esdihumboldt.hale.core.io,
  eu.esdihumboldt.hale.core.io.impl,
  eu.esdihumboldt.hale.core.io.supplier,
  net.jcip.annotations,
  org.opengis.feature.type,
+ org.opengis.referencing.crs,
  org.slf4j;version="1.5.11"
-Export-Package: eu.esdihumboldt.hale.schema.helper,
+Export-Package: eu.esdihumboldt.hale.schema.geometry,
+ eu.esdihumboldt.hale.schema.helper,
  eu.esdihumboldt.hale.schema.io,
  eu.esdihumboldt.hale.schema.io.impl,
  eu.esdihumboldt.hale.schema.model,

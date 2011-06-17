@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.service.instance.crs;
+package eu.esdihumboldt.hale.schema.geometry;
 
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
