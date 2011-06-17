@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.core.io.report.impl;
 
+import java.text.MessageFormat;
+
 import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.core.io.report.IOMessage;
 import eu.esdihumboldt.hale.core.report.impl.MessageImpl;
@@ -51,6 +53,33 @@ public class IOMessageImpl extends MessageImpl implements IOMessage {
 	public IOMessageImpl(String message, Throwable throwable, int lineNumber,
 			int column) {
 		super(message, throwable);
+		this.column = column;
+		this.lineNumber = lineNumber;
+	}
+	
+	/**
+	 * Create a new message and format it using {@link MessageFormat}
+	 * 
+	 * @param pattern the message format pattern
+	 * @param throwable the associated throwable, may be <code>null</code>
+	 * @param arguments the arguments for the message format
+	 */
+	public IOMessageImpl(String pattern, Throwable throwable, Object... arguments) {
+		this(pattern, throwable, -1, -1, arguments);
+	}
+	
+	/**
+	 * Create a new message and format it using {@link MessageFormat}
+	 * 
+	 * @param pattern the message format pattern
+	 * @param throwable the associated throwable, may be <code>null</code>
+	 * @param lineNumber the line number in the file, <code>-1</code> for none
+	 * @param column the column in the line, <code>-1</code> for none
+	 * @param arguments the arguments for the message format
+	 */
+	public IOMessageImpl(String pattern, Throwable throwable, int lineNumber,
+			int column, Object... arguments) {
+		super(MessageFormat.format(pattern, arguments), throwable);
 		this.column = column;
 		this.lineNumber = lineNumber;
 	}
