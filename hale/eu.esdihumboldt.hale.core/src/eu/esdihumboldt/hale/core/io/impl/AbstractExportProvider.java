@@ -12,14 +12,18 @@
 
 package eu.esdihumboldt.hale.core.io.impl;
 
+import java.io.File;
 import java.io.OutputStream;
+import java.net.URI;
 import java.text.MessageFormat;
+import java.util.Map;
 
 import eu.esdihumboldt.hale.core.io.ExportProvider;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.core.io.report.impl.DefaultIOReporter;
+import eu.esdihumboldt.hale.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.core.io.supplier.LocatableOutputSupplier;
 
 /**
@@ -31,6 +35,11 @@ import eu.esdihumboldt.hale.core.io.supplier.LocatableOutputSupplier;
  */
 public abstract class AbstractExportProvider extends AbstractIOProvider implements
 		ExportProvider {
+	
+	/**
+	 * The configuration parameter name for the target URI
+	 */
+	public static final String PARAM_TARGET = "target";
 	
 	private LocatableOutputSupplier<? extends OutputStream> target;
 
@@ -62,6 +71,41 @@ public abstract class AbstractExportProvider extends AbstractIOProvider implemen
 		}
 	}
 	
+	/**
+	 * @see AbstractIOProvider#storeConfiguration(Map)
+	 */
+	@Override
+	public void storeConfiguration(Map<String, String> configuration) {
+		// store target if possible
+		if (target != null) {
+			URI location = target.getLocation();
+			if (location != null) {
+				configuration.put(PARAM_TARGET, location.toString());
+			}
+		}
+		
+		super.storeConfiguration(configuration);
+	}
+
+	/**
+	 * @see AbstractIOProvider#setParameter(String, String)
+	 */
+	@Override
+	public void setParameter(String name, String value) {
+		if (name.equals(PARAM_TARGET)) {
+			try {
+				File file = new File(URI.create(value));
+				setTarget(new FileIOSupplier(file));
+			} catch (IllegalArgumentException e) {
+				// ignore, can't set target
+				//XXX extend with support for other URIs?
+			}
+		}
+		else {
+			super.setParameter(name, value);
+		}
+	}
+
 	/**
 	 * @see IOProvider#createReporter()
 	 */

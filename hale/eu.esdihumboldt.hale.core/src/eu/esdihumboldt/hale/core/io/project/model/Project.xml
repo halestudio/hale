@@ -89,7 +89,8 @@
 			<bind-xml name="depends-on" node="element" />
 		</field>
 		
-		<field name="location" type="string" handler="eu.esdihumboldt.hale.core.io.project.model.internal.URIFieldHandler" required="true">
+		<!-- XXX instead use for relative path? XXX -->
+		<field name="location" type="string" handler="eu.esdihumboldt.hale.core.io.project.model.internal.URIFieldHandler" required="false">
 			<bind-xml name="location" node="element" />
 		</field>
 		

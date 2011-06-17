@@ -27,6 +27,9 @@ public class URIFieldHandler extends GeneralizedFieldHandler {
 	 */
 	@Override
 	public Object convertUponGet(Object value) {
+		if (value == null) {
+			return null;
+		}
 		return value.toString();
 	}
 
