@@ -14,6 +14,8 @@ package eu.esdihumboldt.hale.ui.service.schema.internal;
 
 import de.fhg.igd.eclipse.util.TypeSafeListenerList;
 import eu.esdihumboldt.hale.schema.model.Schema;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
@@ -29,6 +31,25 @@ public abstract class AbstractSchemaService implements SchemaService {
 
 	private final TypeSafeListenerList<SchemaServiceListener> listeners = new TypeSafeListenerList<SchemaServiceListener>();
 	
+	/**
+	 * Create a schema service.
+	 * @param projectService the project service. The schemas will be cleared
+	 *   when the project is cleaned.
+	 */
+	public AbstractSchemaService(ProjectService projectService) {
+		super();
+		
+		projectService.addListener(new ProjectServiceAdapter() {
+
+			@Override
+			public void onClean() {
+				clearSchemas(SchemaSpaceID.TARGET);
+				clearSchemas(SchemaSpaceID.SOURCE);
+			}
+			
+		});
+	}
+
 	/**
 	 * @see SchemaService#addSchemaServiceListener(SchemaServiceListener)
 	 */

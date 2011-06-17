@@ -16,6 +16,8 @@ import de.fhg.igd.eclipse.util.TypeSafeListenerList;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 
 /**
  * Notification handling for {@link InstanceService}s that support
@@ -28,6 +30,24 @@ public abstract class AbstractInstanceService implements InstanceService {
 
 	private TypeSafeListenerList<InstanceServiceListener> listeners = new TypeSafeListenerList<InstanceServiceListener>();
 	
+	/**
+	 * Create an instance service.
+	 * @param projectService the project service. The instances will be cleared
+	 *   when the project is cleaned.
+	 */
+	public AbstractInstanceService(ProjectService projectService) {
+		super();
+		
+		projectService.addListener(new ProjectServiceAdapter() {
+			
+			@Override
+			public void onClean() {
+				clearInstances();
+			}
+			
+		});
+	}
+
 	/**
 	 * Notify listeners that a data set has changed
 	 * 

@@ -20,6 +20,7 @@ import com.google.common.base.Preconditions;
 import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultSchemaSpace;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
@@ -33,6 +34,13 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 	 * Maps schema space IDs to schema spaces
 	 */
 	private static final Map<SchemaSpaceID, DefaultSchemaSpace> spaces = new HashMap<SchemaSpaceID, DefaultSchemaSpace>();
+
+	/**
+	 * @see AbstractSchemaService#AbstractSchemaService(ProjectService)
+	 */
+	public SchemaServiceImpl(ProjectService projectService) {
+		super(projectService);
+	}
 
 	/**
 	 * @see SchemaService#getSchemas(SchemaSpaceID)

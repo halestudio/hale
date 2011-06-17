@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.internal.AbstractInstanceService;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
@@ -37,11 +38,13 @@ public class OrientInstanceService extends AbstractInstanceService {
 	/**
 	 * Get the service instance
 	 * @param schemaService the schema service
+	 * @param projectService the project service
 	 * @return the service instance
 	 */
-	public static final OrientInstanceService getInstance(SchemaService schemaService) {
+	public static final OrientInstanceService getInstance(
+			SchemaService schemaService, ProjectService projectService) {
 		if (instance == null) {
-			instance = new OrientInstanceService(schemaService);
+			instance = new OrientInstanceService(schemaService, projectService);
 		}
 		return instance;
 	}
@@ -54,9 +57,10 @@ public class OrientInstanceService extends AbstractInstanceService {
 	/**
 	 * Default constructor 
 	 * @param schemaService the schema service
+	 * @param projectService the project service 
 	 */
-	private OrientInstanceService(SchemaService schemaService) {
-		super();
+	private OrientInstanceService(SchemaService schemaService, ProjectService projectService) {
+		super(projectService);
 		
 		this.schemaService = schemaService;
 		
