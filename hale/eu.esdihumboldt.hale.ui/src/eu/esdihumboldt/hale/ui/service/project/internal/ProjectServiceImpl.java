@@ -100,6 +100,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 			synchronized (ProjectServiceImpl.this) {
 				main.getProperties().remove(key);
 			}
+			setChanged();
 		}
 
 		/**
@@ -110,6 +111,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 			synchronized (ProjectServiceImpl.this) {
 				main.getProperties().put(key, value);
 			}
+			setChanged();
 		}
 
 	}
@@ -445,10 +447,9 @@ public class ProjectServiceImpl extends AbstractProjectService
 					title = appTitle + " - " + getProjectName() + " - " + projectFile; //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				
-				//XXX
-//				if (changed) {
-//					title = title + "*"; //$NON-NLS-1$
-//				}
+				if (changed) {
+					title = title + "*"; //$NON-NLS-1$
+				}
 				
 				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setText(title);
 			}
@@ -602,6 +603,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 		synchronized (this) {
 			main.getConfigurations().add(conf);
 		}
+		setChanged();
 	}
 
 	/**
