@@ -5,4 +5,5 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.core.test
 Bundle-Version: 2.2.0.qualifier
 Fragment-Host: eu.esdihumboldt.hale.core;bundle-version="2.2.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.junit;version="4.5.0"
+Import-Package: org.junit;version="4.5.0",
+ org.junit.rules;version="4.8.1"
