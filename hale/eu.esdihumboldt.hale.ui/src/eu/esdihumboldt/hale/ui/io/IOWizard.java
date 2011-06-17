@@ -34,6 +34,7 @@ import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.core.io.ContentType;
+import eu.esdihumboldt.hale.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
@@ -65,6 +66,8 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	
 	private T factory;
 	
+	private IOAdvisor<P> advisor;
+	
 	private ContentType contentType;
 
 	private final Multimap<String, AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>> configPages;
@@ -84,6 +87,22 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 		configPages = ConfigurationPageExtension.getConfigurationPages(getFactories());
 		
 		setNeedsProgressMonitor(true);
+	}
+
+	/**
+	 * Get the I/O advisor
+	 * @return the advisor
+	 */
+	protected IOAdvisor<P> getAdvisor() {
+		return advisor;
+	}
+
+	/**
+	 * Set the I/O advisor
+	 * @param advisor the advisor to set
+	 */
+	public void setAdvisor(IOAdvisor<P> advisor) {
+		this.advisor = advisor;
 	}
 
 	/**
@@ -389,6 +408,10 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 			// show message to user
 			if (report.isSuccess()) {
 				// no message, we rely on the report being shown/processed
+				
+				// let advisor handle results
+				advisor.handleResults(getProvider());
+				
 				return true;
 			}
 			else {
@@ -457,6 +480,9 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	protected void updateConfiguration(P provider) {
 		// set the content type
 		provider.setContentType(getContentType());
+		
+		// let advisor update configuration
+		advisor.updateConfiguration(provider);
 	}
 
 	/**

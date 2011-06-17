@@ -4,6 +4,7 @@
    <extension-point id="eu.esdihumboldt.hale.ui.io.config" name="I/O configuration wizard pages" schema="schema/eu.esdihumboldt.hale.ui.io.config.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.MappingExport" name="Mapping Export Providers" schema="schema/eu.esdihumboldt.hale.MappingExport.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory" name="Function wizards" schema="schema/eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.ui.io.advisor" name="I/O advisors in the context of the UI services" schema="schema/eu.esdihumboldt.hale.ui.io.advisor.exsd"/>
    <extension
          point="org.eclipse.ui.commands">
       <command
@@ -140,6 +141,30 @@
             name="RDF OML"
             providerClass="eu.esdihumboldt.hale.ui.io.legacy.mappingexport.OmlMappingExportProvider">
       </MappingExportFactory>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.advisor">
+      <advisor
+            class="eu.esdihumboldt.hale.ui.io.schema.SourceSchemaImportAdvisor"
+            label="Source schema..."
+            priority="-10"
+            providerType="eu.esdihumboldt.hale.schema.io.SchemaReader"
+            wizard="eu.esdihumboldt.hale.ui.io.schema.SchemaImportWizard">
+      </advisor>
+      <advisor
+            class="eu.esdihumboldt.hale.ui.io.schema.TargetSchemaImportAdvisor"
+            label="Target schema..."
+            priority="-9"
+            providerType="eu.esdihumboldt.hale.schema.io.SchemaReader"
+            wizard="eu.esdihumboldt.hale.ui.io.schema.SchemaImportWizard">
+      </advisor>
+      <advisor
+            class="eu.esdihumboldt.hale.ui.io.instance.InstanceImportAdvisor"
+            label="Source data..."
+            priority="-6"
+            providerType="eu.esdihumboldt.hale.instance.io.InstanceReader"
+            wizard="eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard">
+      </advisor>
    </extension>
 
 </plugin>

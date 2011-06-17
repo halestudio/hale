@@ -12,21 +12,19 @@
 
 package eu.esdihumboldt.hale.ui.io.schema;
 
-import eu.esdihumboldt.hale.schema.io.SchemaReader;
-import eu.esdihumboldt.hale.schema.io.SchemaReaderFactory;
-import eu.esdihumboldt.hale.ui.io.ImportWizard;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**
- * Wizard for importing source or target schemas
+ * Advisor for source schema import
  * @author Simon Templer
  */
-public class SchemaImportWizard extends ImportWizard<SchemaReader, SchemaReaderFactory> {
+public class SourceSchemaImportAdvisor extends SchemaImportAdvisor {
 
 	/**
-	 * Create a schema import wizard
+	 * Default constructor
 	 */
-	public SchemaImportWizard() {
-		super(SchemaReaderFactory.class);
+	public SourceSchemaImportAdvisor() {
+		super(SchemaSpaceID.SOURCE);
 	}
 
 }

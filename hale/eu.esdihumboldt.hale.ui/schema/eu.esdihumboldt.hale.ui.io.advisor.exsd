@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="eu.esdihumboldt.hale.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="eu.esdihumboldt.hale.ui" id="eu.esdihumboldt.hale.ui.io.advisor" name="I/O advisors in the context of the UI services"/>
+      </appinfo>
+      <documentation>
+         I/O advisors in the context of the UI services. Needed for any I/O wizard.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="advisor"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="advisor">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The I/O advisor implementation for the given provider type that can be used in the context of the UI services.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.core.io.IOAdvisor"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="wizard" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The associated I/O wizard implementation. Must have a default constructor.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="eu.esdihumboldt.hale.ui.io.IOWizard:"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="providerType" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The supported I/O provider type. Should be a interface.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.core.io.IOProvider"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="label" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The label for the command launching the I/O wizard using the advisor.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="priority" type="string" use="default" value="0">
+            <annotation>
+               <documentation>
+                  Priority number. Advisors with low values will be displayed before advisors with high values.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string">
+            <annotation>
+               <documentation>
+                  The icon for the command launching the I/O wizard using the advisor.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         2.2
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         [Enter extension point usage example here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiinfo"/>
+      </appinfo>
+      <documentation>
+         [Enter API information here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         [Enter information about supplied implementation of this extension point.]
+      </documentation>
+   </annotation>
+
+
+</schema>

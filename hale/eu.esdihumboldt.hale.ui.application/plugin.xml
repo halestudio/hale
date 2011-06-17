@@ -128,34 +128,6 @@
                   style="push">
             </command>
             <command
-                  commandId="eu.esdihumboldt.hale.ui.source.schema.import"
-                  id="importSourceSchema"
-                  label="Import source schema..."
-                  style="push">
-            </command>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.target.schema.import"
-                  id="importTargetSchema"
-                  label="Import target schema..."
-                  style="push">
-            </command>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.mapping.import"
-                  label="%command.importMapping.label"
-                  style="push">
-            </command>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.source.instance.import"
-                  id="openInstanceData"
-                  label="%command.openInstanceData.label"
-                  style="push"
-                  tooltip="%command.openInstanceData.tooltip">
-            </command>
-            <separator
-                  name="HALE.separator1"
-                  visible="true">
-            </separator>
-            <command
                   commandId="eu.esdihumboldt.hale.ui.project.save"
                   icon="icons/save.gif"
                   id="saveAlignmentProject"
@@ -169,20 +141,26 @@
                   label="%command.saveProject.label"
                   style="push">
             </command>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.mapping.export"
-                  id="saveMappingAs"
-                  label="%command.saveMapping.label"
-                  style="push">
-            </command>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.target.instance.export"
+            <separator
+                  name="HALE.separator1"
+                  visible="true">
+            </separator>
+            <menu
+                  icon="icons/import_wiz.gif"
+                  label="Import">
+               <dynamic
+                     class="eu.esdihumboldt.hale.ui.io.advisor.ImportContribution"
+                     id="eu.esdihumboldt.hale.ui.application.import">
+               </dynamic>
+            </menu>
+            <menu
                   icon="icons/export_wiz.gif"
-                  id="export.instance"
-                  label="Save transformed instances..."
-                  mnemonic="t"
-                  style="push">
-            </command>
+                  label="Export">
+               <dynamic
+                     class="eu.esdihumboldt.hale.ui.io.advisor.ExportContribution"
+                     id="eu.esdihumboldt.hale.ui.application.export">
+               </dynamic>
+            </menu>
             <separator
                   name="HALE.separator2"
                   visible="true">

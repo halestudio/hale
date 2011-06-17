@@ -12,16 +12,9 @@
 
 package eu.esdihumboldt.hale.ui.io.instance;
 
-import org.eclipse.ui.PlatformUI;
-
-import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.instance.io.InstanceReaderFactory;
-import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.ImportWizard;
-import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**
  * Wizard for importing instances
@@ -36,33 +29,6 @@ public class InstanceImportWizard extends ImportWizard<InstanceReader, InstanceR
 		super(InstanceReaderFactory.class);
 		
 		setWindowTitle("Import instances");
-	}
-
-	/**
-	 * @see IOWizard#updateConfiguration(IOProvider)
-	 */
-	@Override
-	protected void updateConfiguration(InstanceReader provider) {
-		super.updateConfiguration(provider);
-		
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-		provider.setSourceSchema(ss.getSchemas(SchemaSpaceID.SOURCE));
-	}
-
-	/**
-	 * @see IOWizard#performFinish()
-	 */
-	@Override
-	public boolean performFinish() {
-		boolean success = super.performFinish();
-		
-		if (success) {
-			// add instances to instance service
-			InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
-			is.addSourceInstances(getProvider().getInstances());
-		}
-		
-		return success;
 	}
 
 }
