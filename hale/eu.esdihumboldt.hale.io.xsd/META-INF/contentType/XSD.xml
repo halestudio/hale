@@ -12,5 +12,5 @@
 	<fileExtension>xsd</fileExtension>
 	<fileExtension>xml</fileExtension>
 	<!-- Tester class name -->
-	<!-- testerClass>eu.esdihumboldt.hale.core.ui.internal.SomeTesterClass</testerClass-->
+	<testerClass>eu.esdihumboldt.hale.io.xsd.content.XsdContentTypeTester</testerClass>
 </contentType>
