@@ -51,7 +51,7 @@
          </enabledWhen>
       </handler>
       <handler
-            class="eu.esdihumboldt.hale.ui.io.legacy.handler.SaveAlignmentProjectHandler"
+            class="eu.esdihumboldt.hale.ui.service.project.handler.SaveProjectHandler"
             commandId="eu.esdihumboldt.hale.ui.project.save">
       </handler>
       <handler
@@ -59,7 +59,7 @@
             commandId="eu.esdihumboldt.hale.ui.mapping.import">
       </handler>
       <handler
-            class="eu.esdihumboldt.hale.ui.io.legacy.handler.NewProjectHandler"
+            class="eu.esdihumboldt.hale.ui.service.project.handler.NewProjectHandler"
             commandId="eu.esdihumboldt.hale.ui.project.new">
       </handler>
       <handler

@@ -14,7 +14,6 @@ package eu.esdihumboldt.hale.ui.service.project.internal;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -37,20 +36,16 @@ import de.cs3d.util.logging.ALoggerFactory;
 import de.fhg.igd.osgi.util.configuration.AbstractConfigurationService;
 import de.fhg.igd.osgi.util.configuration.AbstractDefaultConfigurationService;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
-import eu.esdihumboldt.hale.core.io.ExportProvider;
 import eu.esdihumboldt.hale.core.io.HaleIO;
 import eu.esdihumboldt.hale.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
-import eu.esdihumboldt.hale.core.io.ImportProvider;
 import eu.esdihumboldt.hale.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.core.io.project.ProjectWriter;
 import eu.esdihumboldt.hale.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.core.io.project.model.Project;
 import eu.esdihumboldt.hale.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.core.io.report.IOReport;
-import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
-import eu.esdihumboldt.hale.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.hale.ui.io.advisor.IOAdvisorExtension;
 import eu.esdihumboldt.hale.ui.io.advisor.IOAdvisorFactory;
@@ -421,39 +416,13 @@ public class ProjectServiceImpl extends AbstractProjectService
 		notifyClean();
 	}
 
-//	/**
-//	 * @see ProjectService#load(File, IProgressMonitor)
-//	 */
-//	@Override
-//	public synchronized void load(File file, IProgressMonitor monitor) {
-//		ProjectFileService pfs = (ProjectFileService) PlatformUI.getWorkbench().getService(ProjectFileService.class);
-//		
-//		ZipProjectReader reader = new ZipProjectReader();
-//		reader.setProjectFiles(pfs.getProjectFiles()); //TODO advisor?
-//		
-//		IOReport report;
-//		try {
-//			report = reader.execute(new ProgressMonitorIndicator(monitor));
-//		} catch (Exception e) {
-//			// TODO how to handle?
-//			report = null;
-//		}
-//		if (report != null && report.isSuccess()) {
-//			//TODO advisor?
-//			main = reader.getProject();
-//			projectFile = file;
-////			changed = false;
-//			RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(RecentFilesService.class);
-//			rfs.add(file.getAbsolutePath());
-//			//TODO publish report?
-//		}
-//		else {
-//			projectFile = null; //XXX ?
-//			//TODO reset project???
-//		}
-//		
-//		updateWindowTitle();
-//	}
+	/**
+	 * @see ProjectService#load(File)
+	 */
+	@Override
+	public void load(File file) {
+		//TODO use I/O provider and content type mechanisms to enable loading of a project file
+	}
 
 	/**
 	 * Update the window title
@@ -493,37 +462,18 @@ public class ProjectServiceImpl extends AbstractProjectService
 		PlatformUI.getWorkbench().getDisplay().syncExec(run);
 	}
 
-//	/**
-//	 * @see ProjectService#save(IProgressMonitor)
-//	 */
-//	@Override
-//	public synchronized void save(IProgressMonitor monitor) {
-//		if (projectFile != null) {
-//			ProjectFileService pfs = (ProjectFileService) PlatformUI.getWorkbench().getService(ProjectFileService.class);
-//			
-//			ZipProjectWriter writer = new ZipProjectWriter();
-//			//TODO advisor?
-//			writer.setProject(main);
-//			writer.setProjectFiles(pfs.getProjectFiles());
-//			
-//			IOReport report;
-//			try {
-//				report = writer.execute(new ProgressMonitorIndicator(monitor));
-//			} catch (Exception e) {
-//				// TODO how to handle?
-//				report = null;
-//			}
-//			if (report != null && report.isSuccess()) {
-//				//TODO advisor?
-////				changed = false;
-//				updateWindowTitle();
-//				//TODO publish report?
-//			}
-//		}
-//		else {
-//			saveAs();
-//		}
-//	}
+	/**
+	 * @see ProjectService#save()
+	 */
+	@Override
+	public void save() {
+		if (projectFile != null) {
+			//TODO use I/O provider and content type mechanisms to enable saving of the project file
+		}
+		else {
+			saveAs();
+		}
+	}
 
 	/**
 	 * @see ProjectService#getConfigurationService()

@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.service.project;
 
+import java.io.File;
+
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
@@ -76,23 +78,22 @@ public interface ProjectService {
 	 */
 	public void clean();
 	
-//	/**
-//	 * Load a project from a given file.
-//	 * 
-//	 * @param file the project file
-//	 * @param monitor the progress monitor
-//	 */
-//	public void load(File file, IProgressMonitor monitor);
+	/**
+	 * Load a project from a given file.
+	 * 
+	 * @param file the project file
+	 */
+	public void load(File file);
 	
 	/**
 	 * Open a project.
 	 */
 	public void open();
 	
-//	/**
-//	 * Save the project. Calls {@link #saveAs()} if no file name is set yet.
-//	 */
-//	public void save(IProgressMonitor monitor);
+	/**
+	 * Save the project. Calls {@link #saveAs()} if needed.
+	 */
+	public void save();
 	
 	/**
 	 * Save the project to the given file
