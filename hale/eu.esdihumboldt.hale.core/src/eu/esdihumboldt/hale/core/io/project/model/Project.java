@@ -85,6 +85,7 @@ public class Project {
 				Project.class.getResourceAsStream("Project.xml")));
 		        
 		XMLContext context = new XMLContext();
+		context.setProperty("org.exolab.castor.indent", true); // enable indentation for marshaling as project files should be very small
 		context.addMapping(mapping);
 		Marshaller marshaller = context.createMarshaller();
 		Writer writer = new BufferedWriter(new OutputStreamWriter(out));
