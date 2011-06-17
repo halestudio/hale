@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 
@@ -208,8 +209,30 @@ public class ExtendedFileFieldEditor extends FileFieldEditor {
 				extensions.add(filterExtension.toString());
 			}
 		}
+		
+		if ((style & SWT.OPEN) != 0) {
+			// insert filter for all supported files
+			if (extensions.size() > 1) {
+				StringBuffer supportedExtensions = new StringBuffer();
+				boolean first = true;
+				for (String ext : extensions) {
+					if (first) {
+						first = false;
+					}
+					else {
+						supportedExtensions.append(";");
+					}
+					supportedExtensions.append(ext);
+				}
+				
+				filters.add(0, "All supported files");
+				extensions.add(0, supportedExtensions.toString());
+			}
+		}
+		
 		filters.add("All files");
 		extensions.add("*.*");
+		
 		setFileExtensions(extensions.toArray(new String[extensions.size()]));
 		setFilterNames(filters.toArray(new String[filters.size()]));
 	}
