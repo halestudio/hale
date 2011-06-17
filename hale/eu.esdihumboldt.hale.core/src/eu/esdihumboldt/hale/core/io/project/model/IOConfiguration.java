@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.core.io.project;
+package eu.esdihumboldt.hale.core.io.project.model;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import eu.esdihumboldt.hale.core.io.IOProvider;
+import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 
 /**
  * Object holding all information necessary to reproduce an {@link IOProvider}
@@ -36,6 +37,8 @@ public class IOConfiguration {
 	private final Set<String> dependencies = new HashSet<String>();
 	
 	private URI location;
+	
+	private Class<? extends IOProviderFactory<?>> providerType;
 
 	/**
 	 * @return the advisorId
@@ -91,6 +94,20 @@ public class IOConfiguration {
 	 */
 	public Set<String> getDependencies() {
 		return dependencies;
+	}
+
+	/**
+	 * @return the providerType
+	 */
+	public Class<? extends IOProviderFactory<?>> getProviderType() {
+		return providerType;
+	}
+
+	/**
+	 * @param providerType the providerType to set
+	 */
+	public void setProviderType(Class<? extends IOProviderFactory<?>> providerType) {
+		this.providerType = providerType;
 	}
 
 }

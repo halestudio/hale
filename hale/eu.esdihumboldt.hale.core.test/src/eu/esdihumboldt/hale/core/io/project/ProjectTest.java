@@ -28,6 +28,10 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.osgi.framework.Version;
 
+import eu.esdihumboldt.hale.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.core.io.project.model.Project;
+
 /**
  * Test saving and loading a project
  * @author Simon Templer
@@ -44,6 +48,7 @@ public class ProjectTest {
 	 * Test saving and loading an example project
 	 * @throws Exception if an error occurs
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testSaveLoad() throws Exception {
 		// populate project 
@@ -79,6 +84,8 @@ public class ProjectTest {
 		String value2;
 		String key2;
 		conf1.getProviderConfiguration().put(key2 = "some other key", value2 = "some other value");
+		Class<? extends IOProviderFactory<?>> type1;
+		conf1.setProviderType(type1 = (Class<? extends IOProviderFactory<?>>) IOProviderFactory.class);
 		
 		IOConfiguration conf2;
 		project.getConfigurations().add(conf2 = new IOConfiguration());
@@ -88,6 +95,8 @@ public class ProjectTest {
 		conf2.setProviderId(providerId2 = "a special provider");
 		URI location2;
 		conf2.setLocation(location2 = URI.create("http://www.example.com/specials"));
+		Class<ProjectReaderFactory> type2;
+		conf2.setProviderType(type2 = ProjectReaderFactory.class);
 		
 		// write project
 		File projectFile = tmp.newFile("project.xml");
@@ -119,6 +128,7 @@ public class ProjectTest {
 		assertEquals(2, c1.getProviderConfiguration().size());
 		assertTrue(c1.getProviderConfiguration().get(key1).equals(value1));
 		assertTrue(c1.getProviderConfiguration().get(key2).equals(value2));
+		assertEquals(type1, c1.getProviderType());
 		
 		IOConfiguration c2 = it.next();
 		assertNotNull(c2);
@@ -126,6 +136,7 @@ public class ProjectTest {
 		assertEquals(advisorId2, c2.getAdvisorId());
 		assertEquals(providerId2, c2.getProviderId());
 		assertEquals(location2, c2.getLocation());
+		assertEquals(type2, c2.getProviderType());
 	}
 
 }

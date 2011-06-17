@@ -16,11 +16,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ui.IMemento;
 
 /**
- * 
+ * Service that manages recent projects
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public interface RecentFilesService {
 

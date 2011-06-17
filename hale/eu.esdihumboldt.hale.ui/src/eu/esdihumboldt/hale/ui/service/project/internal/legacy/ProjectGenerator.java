@@ -9,7 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.ui.service.project.internal;
+package eu.esdihumboldt.hale.ui.service.project.internal.legacy;
 
 import java.io.File;
 import java.net.URI;
@@ -32,6 +32,7 @@ import eu.esdihumboldt.commons.goml.align.Alignment;
 import eu.esdihumboldt.commons.goml.oml.io.OmlRdfGenerator;
 import eu.esdihumboldt.hale.instance.geometry.CodeDefinition;
 import eu.esdihumboldt.hale.instance.geometry.WKTDefinition;
+import eu.esdihumboldt.hale.mapping.io.HaleOmlRdfGenerator;
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
 import eu.esdihumboldt.hale.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.ui.service.config.ConfigSchemaService;

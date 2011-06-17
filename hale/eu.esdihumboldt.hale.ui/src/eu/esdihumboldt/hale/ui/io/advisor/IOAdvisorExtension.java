@@ -26,9 +26,9 @@ import de.fhg.igd.eclipse.util.extension.AbstractObjectDefinition;
 import de.fhg.igd.eclipse.util.extension.AbstractObjectFactory;
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition;
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
+import eu.esdihumboldt.hale.core.internal.CoreBundle;
 import eu.esdihumboldt.hale.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.core.io.IOProvider;
-import eu.esdihumboldt.hale.instance.internal.InstanceBundle;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 /**
@@ -78,11 +78,12 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 		/**
 		 * @see IOAdvisorFactory#getProviderType()
 		 */
+		@SuppressWarnings("unchecked")
 		@Override
 		public Class<? extends IOProvider> getProviderType() {
 			String bundleName = conf.getContributor().getName();
 			//TODO move method from InstanceBundle to OsgiUtils
-			return (Class<? extends IOProvider>) InstanceBundle.loadClass(conf.getAttribute("providerType"), bundleName);
+			return (Class<? extends IOProvider>) CoreBundle.loadClass(conf.getAttribute("providerType"), bundleName);
 		}
 
 		/**
@@ -138,6 +139,14 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 			}
 		}
 
+		/**
+		 * @see IOAdvisorFactory#isRemember()
+		 */
+		@Override
+		public boolean isRemember() {
+			return Boolean.parseBoolean(conf.getAttribute("remember"));
+		}
+
 	}
 
 	/**
@@ -145,10 +154,23 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.ui.io.advisor";
 	
+	private static IOAdvisorExtension instance;
+	
+	/**
+	 * Get the extension instance
+	 * @return the instance
+	 */
+	public static IOAdvisorExtension getInstance() {
+		if (instance == null) {
+			instance = new IOAdvisorExtension();
+		}
+		return instance;
+	}
+	
 	/**
 	 * Default constructor
 	 */
-	public IOAdvisorExtension() {
+	private IOAdvisorExtension() {
 		super(ID);
 	}
 
@@ -160,6 +182,23 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 			throws Exception {
 		if (conf.getName().equals("advisor")) {
 			return new ConfigurationFactory(conf);
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * XXX should be implemented in {@link AbstractExtension}
+	 * Get the factory for the given identifier
+	 * @param identifier the identifier
+	 * @return the factory with the given identifier or <code>null</code> if it
+	 *   doesn't exist
+	 */
+	public IOAdvisorFactory getFactory(String identifier) {
+		for (IOAdvisorFactory factory : getFactories()) {
+			if (identifier.equals(factory.getIdentifier())) {
+				return factory;
+			}
 		}
 		
 		return null;

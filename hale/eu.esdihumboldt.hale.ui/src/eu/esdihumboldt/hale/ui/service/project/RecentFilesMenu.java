@@ -12,9 +12,12 @@
 
 package eu.esdihumboldt.hale.ui.service.project;
 
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 
 import org.apache.commons.io.FilenameUtils;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -28,8 +31,8 @@ import org.eclipse.ui.PlatformUI;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import de.cs3d.util.logging.ATransaction;
 import eu.esdihumboldt.hale.ui.internal.Messages;
-import eu.esdihumboldt.hale.ui.io.legacy.OpenAlignmentProjectWizard;
 
 /**
  * A menu filled with the list of recently opened
@@ -44,17 +47,18 @@ public class RecentFilesMenu extends ContributionItem {
 	 * A selection listener for the menu items
 	 */
 	private static class MenuItemSelectionListener extends SelectionAdapter {
+		
 		/**
 		 * The data source to open when the menu item has been selected
 		 */
-		private String file;
+		private File file;
 		
 		/**
 		 * Default constructor
 		 * @param file the project file to open when the menu item has
 		 * been selected
 		 */
-		public MenuItemSelectionListener(String file) {
+		public MenuItemSelectionListener(File file) {
 			this.file = file;
 		}
 		
@@ -65,12 +69,41 @@ public class RecentFilesMenu extends ContributionItem {
 		public void widgetSelected(SelectionEvent e) {
 			Display display = PlatformUI.getWorkbench().getDisplay();
 			try {
-				IRunnableWithProgress op = OpenAlignmentProjectWizard.createOpenProjectRunnable(file);
+				IRunnableWithProgress op = createOpenProjectRunnable(file);
 			    new ProgressMonitorDialog(display.getActiveShell()).run(true, false, op);
 			} catch (Exception e1) {
 				log.userError(MessageFormat.format(Messages.RecentFilesMenu_0, file), e1); 
 			}
 		}
+	}
+	
+	/**
+	 * Create a runnable for opening a project
+	 * 
+	 * @param file the project file
+	 * 
+	 * @return the runnable
+	 */
+	public static IRunnableWithProgress createOpenProjectRunnable(final File file) {
+		return new IRunnableWithProgress() {
+			
+			@Override
+			public void run(IProgressMonitor monitor) throws InvocationTargetException,
+					InterruptedException {
+				ATransaction logTrans = log.begin("Loading alignment project from " + file.getAbsolutePath()); //$NON-NLS-1$
+				try {
+					ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+					//FIXME
+//					ps.load(file, monitor);
+				} catch (Exception e) {
+					String message = Messages.OpenAlignmentProjectWizard_Failed;
+					log.userError(message, e);
+				}
+				finally {
+					logTrans.end();
+				}
+			}
+		};
 	}
 	
     /**
@@ -107,7 +140,7 @@ public class RecentFilesMenu extends ContributionItem {
 			}
 			mi.setText(nr + "  " + ustr); //$NON-NLS-1$
 			mi.setData(file);
-			mi.addSelectionListener(new MenuItemSelectionListener(file));
+			mi.addSelectionListener(new MenuItemSelectionListener(new File(file)));
 			--i;
 		}
 	}

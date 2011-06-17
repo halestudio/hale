@@ -12,108 +12,205 @@
 
 package eu.esdihumboldt.hale.ui.service.project.internal;
 
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.text.MessageFormat;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.osgi.framework.Version;
 
-import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.osgi.util.configuration.AbstractConfigurationService;
+import de.fhg.igd.osgi.util.configuration.AbstractDefaultConfigurationService;
+import de.fhg.igd.osgi.util.configuration.IConfigurationService;
+import eu.esdihumboldt.hale.core.io.ExportProvider;
+import eu.esdihumboldt.hale.core.io.HaleIO;
+import eu.esdihumboldt.hale.core.io.IOAdvisor;
+import eu.esdihumboldt.hale.core.io.IOProvider;
+import eu.esdihumboldt.hale.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.core.io.ImportProvider;
+import eu.esdihumboldt.hale.core.io.project.ProjectReader;
+import eu.esdihumboldt.hale.core.io.project.ProjectWriter;
+import eu.esdihumboldt.hale.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.core.io.project.model.Project;
+import eu.esdihumboldt.hale.core.io.project.model.ProjectFile;
+import eu.esdihumboldt.hale.core.io.report.IOReport;
+import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
-import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
-import eu.esdihumboldt.hale.ui.service.UpdateMessage;
-import eu.esdihumboldt.hale.ui.service.UpdateService;
-import eu.esdihumboldt.hale.ui.service.config.ConfigSchemaService;
-import eu.esdihumboldt.hale.ui.service.config.ConfigSchemaServiceListener;
-import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
-import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
-import eu.esdihumboldt.hale.ui.service.mapping.AlignmentServiceListener;
+import eu.esdihumboldt.hale.ui.io.advisor.IOAdvisorExtension;
+import eu.esdihumboldt.hale.ui.io.advisor.IOAdvisorFactory;
+import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
+import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
+import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
-import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
-import eu.esdihumboldt.hale.ui.service.project.internal.generated.HaleProject;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
-import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
 /**
  * Default implementation of the {@link ProjectService}.
  * 
  * @author Thorsten Reitz
+ * @author Simon Templer
  */
-public class ProjectServiceImpl 
+public class ProjectServiceImpl extends AbstractProjectService 
 	implements ProjectService {
 	
-	private static ProjectService instance = new ProjectServiceImpl();
-	
-	private Set<HaleServiceListener> listeners = new HashSet<HaleServiceListener>();
+	/**
+	 * Configuration service backed by the internal {@link Project}
+	 */
+	private class ProjectConfigurationService extends
+			AbstractDefaultConfigurationService implements
+			IConfigurationService {
 
-	private String instanceDataPath = null;
+		/**
+		 * Default constructor
+		 */
+		public ProjectConfigurationService() {
+			super(new Properties());
+		}
+
+		/**
+		 * @see AbstractConfigurationService#getValue(String)
+		 */
+		@Override
+		protected String getValue(String key) {
+			synchronized (ProjectServiceImpl.this) {
+				return main.getProperties().get(key);
+			}
+		}
+
+		/**
+		 * @see AbstractConfigurationService#removeValue(String)
+		 */
+		@Override
+		protected void removeValue(String key) {
+			synchronized (ProjectServiceImpl.this) {
+				main.getProperties().remove(key);
+			}
+		}
+
+		/**
+		 * @see AbstractConfigurationService#setValue(String, String)
+		 */
+		@Override
+		protected void setValue(String key, String value) {
+			synchronized (ProjectServiceImpl.this) {
+				main.getProperties().put(key, value);
+			}
+		}
+
+	}
 	
-	private String projectCreatedDate = Calendar.getInstance().getTime().toString();
+	private static final ALogger log = ALoggerFactory.getLogger(ProjectServiceImpl.class);
+
+	private Project main;
 	
-	private String sourceSchemaPath = null;
+	private final Version haleVersion;
 	
-	private String targetSchemaPath = null;
-	
-	private String haleVersion = null;
-	
-	private ConfigurationType instanceDataType;
-	
-	private final ProjectParser parser;
-	
-	private final ProjectGenerator generator;
-	
-	private String projectName;
-	
-	//XXX there is no author defined in the HaleProject class
-//	private String projectAuthor;
-	
-	private String projectFile;
+	private File projectFile;
 	
 	private String appTitle;
+
+	private final IOAdvisor<ProjectWriter> saveProjectAdvisor;
 	
-	private boolean changed = false;
+	private final IOAdvisor<ProjectReader> openProjectAdvisor;
+	
+	private final ProjectConfigurationService configurationService = new ProjectConfigurationService();
+	
+//	private boolean changed = false;
 	
 	/**
 	 * Default constructor
 	 */
-	private ProjectServiceImpl(){
-		haleVersion = HALEUIPlugin.getDefault().getBundle().getVersion().toString(); //FIXME: consistency with application plugin?
-		parser = new ProjectParser(this);
-		generator = new ProjectGenerator(this);
+	public ProjectServiceImpl(){
+		haleVersion = HALEUIPlugin.getDefault().getBundle().getVersion(); //FIXME: consistency with application plugin?
+		main = createDefaultProject();
+		
+		// create advisors
+		openProjectAdvisor = new IOAdvisor<ProjectReader>() {
+			
+			@Override
+			public void updateConfiguration(ProjectReader provider) {
+				// do nothing
+			}
+			
+			@Override
+			public void handleResults(ProjectReader provider) {
+				main = provider.getProject();
+				projectFile = new File(provider.getSource().getLocation());
+//				changed = false;
+//				RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(RecentFilesService.class);
+//				rfs.add(file.getAbsolutePath());
+				
+				// execute loaded I/O configurations
+				executeConfigurations(main.getConfigurations());
+				
+				// notify listeners
+				Map<String, ProjectFile> projectFiles = provider.getProjectFiles(); //TODO store somewhere for later use?
+				notifyAfterLoad(projectFiles);
+			}
+		};
+		
+		saveProjectAdvisor = new IOAdvisor<ProjectWriter>() {
+			
+			@Override
+			public void updateConfiguration(ProjectWriter provider) {
+				provider.setProject(main);
+				Map<String, ProjectFile> projectFiles = new HashMap<String, ProjectFile>();
+				notifyBeforeSave(projectFiles); // get additional files from listeners
+				provider.setProjectFiles(projectFiles);
+			}
+			
+			@Override
+			public void handleResults(ProjectWriter provider) {
+//				changed = false;
+				updateWindowTitle();
+			}
+		};
 		
 		// add listeners
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
-		as.addListener(new AlignmentServiceListener() {
-			
-			@Override
-			public void update(UpdateMessage<?> message) {
-				// ignore
-			}
-			
-			@Override
-			public void cellsUpdated(Iterable<ICell> cells) {
-				setChanged();
-			}
-			
-			@Override
-			public void cellsAdded(Iterable<ICell> cells) {
-				setChanged();
-			}
-			
-			@Override
-			public void cellRemoved(ICell cell) {
-				setChanged();
-			}
-			
-			@Override
-			public void alignmentCleared() {
-				setChanged();
-			}
-		});
+//		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+//		as.addListener(new AlignmentServiceListener() {
+//			
+//			@Override
+//			public void update(UpdateMessage<?> message) {
+//				// ignore
+//			}
+//			
+//			@Override
+//			public void cellsUpdated(Iterable<ICell> cells) {
+//				setChanged();
+//			}
+//			
+//			@Override
+//			public void cellsAdded(Iterable<ICell> cells) {
+//				setChanged();
+//			}
+//			
+//			@Override
+//			public void cellRemoved(ICell cell) {
+//				setChanged();
+//			}
+//			
+//			@Override
+//			public void alignmentCleared() {
+//				setChanged();
+//			}
+//		});
 		
 		//XXX styles and tasks in project deactivated for now
 //		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
@@ -149,119 +246,210 @@ public class ProjectServiceImpl
 //			}
 //		});
 		
-		ConfigSchemaService css = (ConfigSchemaService) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
-		css.addListener(new ConfigSchemaServiceListener() {
-			
-			@Override
-			public void update(String section, Message message) {
-				switch (message) {
-				case ITEM_ADDED:
-				case ITEM_CHANGED:
-				case ITEM_REMOVED:
-				case SECTION_ADDED:
-				case SECTION_REMOVED:
-					setChanged();
-					break;
-				case CONFIG_PARSED: // fall through 
-				case CONFIG_GENERATED: // fall through
-					// do nothing
-				}
+//		ConfigSchemaService css = (ConfigSchemaService) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
+//		css.addListener(new ConfigSchemaServiceListener() {
+//			
+//			@Override
+//			public void update(String section, Message message) {
+//				switch (message) {
+//				case ITEM_ADDED:
+//				case ITEM_CHANGED:
+//				case ITEM_REMOVED:
+//				case SECTION_ADDED:
+//				case SECTION_REMOVED:
+//					setChanged();
+//					break;
+//				case CONFIG_PARSED: // fall through 
+//				case CONFIG_GENERATED: // fall through
+//					// do nothing
+//				}
+//			}
+//		}, null);
+	}
+	
+//	/**
+//	 * @see ProjectService#isChanged()
+//	 */
+//	@Override
+//	public boolean isChanged() {
+//		return changed;
+//	}
+//
+//	/**
+//	 * Set that the project content has changed
+//	 */
+//	protected void setChanged() {
+//		changed = true;
+//		updateWindowTitle();
+//	}
+
+	/**
+	 * Execute a set of I/O configurations
+	 * @param configurations the I/O configurations
+	 */
+	protected void executeConfigurations(List<IOConfiguration> configurations) {
+		//TODO sort by dependencies
+		
+		for (IOConfiguration conf : configurations) {
+			executeConfiguration(conf);
+		}
+	}
+
+	private void executeConfiguration(IOConfiguration conf) {
+		// get provider ...
+		Collection<? extends IOProviderFactory<?>> providers = HaleIO.getProviderFactories(conf.getProviderType());
+		IOProvider provider = null;
+		for (IOProviderFactory<?> factory : providers) {
+			if (factory.getIdentifier().equals(conf.getProviderId())) {
+				provider = factory.createProvider();
 			}
-		}, null);
-	}
-	
-	/**
-	 * @see ProjectService#isChanged()
-	 */
-	@Override
-	public boolean isChanged() {
-		return changed;
+		}
+		
+		if (provider != null) {
+			// ... and advisor
+			IOAdvisorFactory advisorFactory = IOAdvisorExtension.getInstance().getFactory(conf.getAdvisorId());
+			try {
+				IOAdvisor<?> advisor = advisorFactory.createExtensionObject();
+				// configure location
+				if (provider instanceof ImportProvider) {
+					((ImportProvider) provider).setSource(new DefaultInputSupplier(conf.getLocation()));
+				}
+				else if (provider instanceof ExportProvider) {
+					((ExportProvider) provider).setTarget(new FileIOSupplier(new File(conf.getLocation())));
+				}
+				else {
+					log.warn("Could not set location on I/O provider.");
+				}
+				// configure settings
+				provider.loadConfiguration(conf.getProviderConfiguration());
+				// execute provider
+				executeProvider(provider, advisor);
+			} catch (Exception e) {
+				log.error(MessageFormat.format(
+						"Could not execute I/O configuration, advisor with ID {0} could not be created.",
+						conf.getAdvisorId()), e);
+			}
+		}
+		else {
+			log.error(MessageFormat.format(
+					"Could not execute I/O configuration, provider with ID {0} not found.",
+					conf.getProviderId()));
+		}
 	}
 
-	/**
-	 * Set that the project content has changed
-	 */
-	protected void setChanged() {
-		changed = true;
-		updateWindowTitle();
+	private void executeProvider(final IOProvider provider, @SuppressWarnings("rawtypes") final IOAdvisor advisor) {
+		Display display = PlatformUI.getWorkbench().getDisplay();
+		try {
+			IRunnableWithProgress op = new IRunnableWithProgress() {
+				
+				@SuppressWarnings("unchecked")
+				@Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException,
+						InterruptedException {
+					try {
+						// use advisor to configure provider
+						advisor.updateConfiguration(provider);
+						
+						// execute
+						IOReport report = provider.execute(new ProgressMonitorIndicator(monitor));
+						
+						// publish report
+						ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+						rs.addReport(report);
+						
+						// handle results
+						advisor.handleResults(provider);
+					} catch (Exception e) {
+						log.error("Error executing an I/O provider.", e);
+					}
+				}
+			};
+			//TODO instead in job?
+		    new ProgressMonitorDialog(display.getActiveShell()).run(true, 
+		    		provider.isCancelable(), op);
+		} catch (Throwable e) {
+			log.error("Error executing an I/O provider.");
+		}
 	}
 
-	/**
-	 * Get the project service instance
-	 * 
-	 * @return the project service instance
-	 */
-	public static ProjectService getInstance() {
-		return instance;
-	}
-	
 	/**
 	 * @see ProjectService#clean()
 	 */
 	@Override
 	public synchronized void clean() {
-		projectFile = null;
-		projectName = null;
-//		projectAuthor = null;
-		changed = false;
-		updateWindowTitle();
-		
-		// clean alignment service
-		AlignmentService as = (AlignmentService) 
-				PlatformUI.getWorkbench().getService(AlignmentService.class);
-		as.cleanModel();
-		
-		// clean instance service
-		InstanceService is = (InstanceService) 
-				PlatformUI.getWorkbench().getService(InstanceService.class);
-		is.cleanInstances();
-		
-		// clean schema service
-		SchemaService ss = (SchemaService) 
-				PlatformUI.getWorkbench().getService(SchemaService.class);
-		ss.cleanSourceSchema();
-		ss.cleanTargetSchema();
-		
-		// clear user tasks
-		//XXX tasks in project deactivated for now
-//		TaskService taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
-//		taskService.clearUserTasks();
-		
-		// clean the project Service
-		ProjectService ps = (ProjectService) 
-				PlatformUI.getWorkbench().getService(ProjectService.class);
-		ps.setInstanceDataPath(null);
-		ps.setProjectCreatedDate(Calendar.getInstance().getTime().toString());
-		ps.setSourceSchemaPath(null);
-		ps.setTargetSchemaPath(null);
-		
-		System.gc();
+		//TODO
+//		projectFile = null;
+//		projectName = null;
+////		projectAuthor = null;
+//		changed = false;
+//		updateWindowTitle();
+//		
+//		// clean alignment service
+//		AlignmentService as = (AlignmentService) 
+//				PlatformUI.getWorkbench().getService(AlignmentService.class);
+//		as.cleanModel();
+//		
+//		// clean instance service
+//		InstanceService is = (InstanceService) 
+//				PlatformUI.getWorkbench().getService(InstanceService.class);
+//		is.cleanInstances();
+//		
+//		// clean schema service
+//		SchemaService ss = (SchemaService) 
+//				PlatformUI.getWorkbench().getService(SchemaService.class);
+//		ss.cleanSourceSchema();
+//		ss.cleanTargetSchema();
+//		
+//		// clear user tasks
+//		//XXX tasks in project deactivated for now
+////		TaskService taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
+////		taskService.clearUserTasks();
+//		
+//		// clean the project Service
+//		ProjectService ps = (ProjectService) 
+//				PlatformUI.getWorkbench().getService(ProjectService.class);
+//		ps.setInstanceDataPath(null);
+//		ps.setProjectCreatedDate(Calendar.getInstance().getTime().toString());
+//		ps.setSourceSchemaPath(null);
+//		ps.setTargetSchemaPath(null);
+//		
+//		System.gc();
+		notifyClean();
 	}
 
-	/**
-	 * @see ProjectService#load(String, IProgressMonitor)
-	 */
-	@Override
-	public synchronized void load(String filename, IProgressMonitor monitor) {
-		// load project
-		HaleProject project = parser.read(filename, monitor);
-		
-		if (project != null) {
-			projectName = project.getName();
-//			projectAuthor = project.get
-			projectFile = filename;
-			changed = false;
-			updateWindowTitle();
-			
-			RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(RecentFilesService.class);
-			rfs.add(filename);
-		}
-		else {
-			projectName = null;
-			projectFile = null;
-			updateWindowTitle();
-		}
-	}
+//	/**
+//	 * @see ProjectService#load(File, IProgressMonitor)
+//	 */
+//	@Override
+//	public synchronized void load(File file, IProgressMonitor monitor) {
+//		ProjectFileService pfs = (ProjectFileService) PlatformUI.getWorkbench().getService(ProjectFileService.class);
+//		
+//		ZipProjectReader reader = new ZipProjectReader();
+//		reader.setProjectFiles(pfs.getProjectFiles()); //TODO advisor?
+//		
+//		IOReport report;
+//		try {
+//			report = reader.execute(new ProgressMonitorIndicator(monitor));
+//		} catch (Exception e) {
+//			// TODO how to handle?
+//			report = null;
+//		}
+//		if (report != null && report.isSuccess()) {
+//			//TODO advisor?
+//			main = reader.getProject();
+//			projectFile = file;
+////			changed = false;
+//			RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(RecentFilesService.class);
+//			rfs.add(file.getAbsolutePath());
+//			//TODO publish report?
+//		}
+//		else {
+//			projectFile = null; //XXX ?
+//			//TODO reset project???
+//		}
+//		
+//		updateWindowTitle();
+//	}
 
 	/**
 	 * Update the window title
@@ -286,184 +474,152 @@ public class ProjectServiceImpl
 					title = appTitle;
 				}
 				else {
-					title = appTitle + " - " + projectName + " - " + projectFile; //$NON-NLS-1$ //$NON-NLS-2$
+					title = appTitle + " - " + getProjectName() + " - " + projectFile; //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				
-				if (changed) {
-					title = title + "*"; //$NON-NLS-1$
-				}
+				//XXX
+//				if (changed) {
+//					title = title + "*"; //$NON-NLS-1$
+//				}
 				
 				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setText(title);
 			}
 		};
 		
-		if (Display.getCurrent() != null) {
-			run.run();
-		}
-		else {
-			PlatformUI.getWorkbench().getDisplay().syncExec(run);
-		}
+		PlatformUI.getWorkbench().getDisplay().syncExec(run);
+	}
+
+//	/**
+//	 * @see ProjectService#save(IProgressMonitor)
+//	 */
+//	@Override
+//	public synchronized void save(IProgressMonitor monitor) {
+//		if (projectFile != null) {
+//			ProjectFileService pfs = (ProjectFileService) PlatformUI.getWorkbench().getService(ProjectFileService.class);
+//			
+//			ZipProjectWriter writer = new ZipProjectWriter();
+//			//TODO advisor?
+//			writer.setProject(main);
+//			writer.setProjectFiles(pfs.getProjectFiles());
+//			
+//			IOReport report;
+//			try {
+//				report = writer.execute(new ProgressMonitorIndicator(monitor));
+//			} catch (Exception e) {
+//				// TODO how to handle?
+//				report = null;
+//			}
+//			if (report != null && report.isSuccess()) {
+//				//TODO advisor?
+////				changed = false;
+//				updateWindowTitle();
+//				//TODO publish report?
+//			}
+//		}
+//		else {
+//			saveAs();
+//		}
+//	}
+
+	/**
+	 * @see ProjectService#getConfigurationService()
+	 */
+	@Override
+	public IConfigurationService getConfigurationService() {
+		return configurationService;
 	}
 
 	/**
-	 * @see ProjectService#save()
+	 * @see ProjectService#saveAs()
 	 */
 	@Override
-	public synchronized boolean save() throws JAXBException {
-		if (projectFile != null) {
-			if (projectName == null) {
-				projectName = "default"; //$NON-NLS-1$
+	public void saveAs() {
+		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				SaveProjectWizard wizard = new SaveProjectWizard();
+				wizard.setAdvisor(saveProjectAdvisor, null);
+				
+				Shell shell = Display.getCurrent().getActiveShell();
+				WizardDialog dialog = new WizardDialog(shell, wizard);
+				dialog.open();
 			}
-			generator.write(projectFile, projectName);
-			changed = false;
-			updateWindowTitle();
-			return true;
-		}
-		else {
-			return false;
-		}
+		});
 	}
 
 	/**
-	 * @see ProjectService#saveAs(String, String)
+	 * @see ProjectService#open()
 	 */
 	@Override
-	public synchronized void saveAs(String filename, String projectName) throws JAXBException {
-		if (projectName == null) {
-			projectName = "default"; //$NON-NLS-1$
-		}
-		generator.write(filename, projectName);
-		this.projectFile = filename;
-		this.projectName = projectName;
-		changed = false;
-		updateWindowTitle();
+	public void open() {
+		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				OpenProjectWizard wizard = new OpenProjectWizard();
+				wizard.setAdvisor(openProjectAdvisor, null);
+				
+				Shell shell = Display.getCurrent().getActiveShell();
+				WizardDialog dialog = new WizardDialog(shell, wizard);
+				dialog.open();
+			}
+		});
+	}
+
+	/**
+	 * Create a project with default values
+	 * @return the created project
+	 */
+	private Project createDefaultProject() {
+		Project project = new Project();
 		
-		RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(RecentFilesService.class);
-		rfs.add(filename);
+		project.setCreated(new Date());
+		project.setAuthor(System.getProperty("user.name"));
+		project.setHaleVersion(haleVersion);
+		project.setName("Unnamed");
+		
+		return project;
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#getInstanceDataPath()
+	 * @see ProjectService#rememberIO(IOAdvisorFactory, Class, String, IOProvider)
 	 */
 	@Override
-	public String getInstanceDataPath() {
-		return this.instanceDataPath;
+	public void rememberIO(IOAdvisorFactory advisorFactory,
+			Class<? extends IOProviderFactory<?>> providerType, 
+			String providerId, IOProvider provider) {
+		// populate an IOConfiguration from the given data
+		IOConfiguration conf = new IOConfiguration();
+		conf.setAdvisorId(advisorFactory.getIdentifier());
+		conf.setProviderId(providerId);
+		conf.setProviderType(providerType);
+		URI loc = null;
+		if (provider instanceof ImportProvider) {
+			loc = ((ImportProvider) provider).getSource().getLocation();
+		}
+		else if (provider instanceof ExportProvider) {
+			loc = ((ExportProvider) provider).getTarget().getLocation();
+		}
+		if (loc == null) {
+			throw new IllegalStateException("Could not extract location from I/O provider.");
+		}
+		conf.setLocation(loc);
+		conf.getDependencies().addAll(advisorFactory.getDependencies());
+		provider.storeConfiguration(conf.getProviderConfiguration());
+		
+		// add configuration to project
+		synchronized (this) {
+			main.getConfigurations().add(conf);
+		}
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#getProjectCreatedDate()
-	 */
-	@Override
-	public String getProjectCreatedDate() {
-		return this.projectCreatedDate;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#getSourceSchemaPath()
-	 */
-	@Override
-	public String getSourceSchemaPath() {
-		return this.sourceSchemaPath;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#getTargetSchemaPath()
-	 */
-	@Override
-	public String getTargetSchemaPath() {
-		return this.targetSchemaPath;
-	}
-
-	@Override
-	public void setInstanceDataPath(String path) {
-		this.instanceDataPath = path;
-		changed = true;
-		updateWindowTitle();
-		updateListeners();
-	}
-
-	@Override
-	public void setProjectCreatedDate(String date) {
-		this.projectCreatedDate = date;
-		updateListeners();
-	}
-
-	@Override
-	public void setSourceSchemaPath(String path) {
-		this.sourceSchemaPath = path;
-		changed = true;
-		updateWindowTitle();
-		updateListeners();
-	}
-
-	@Override
-	public void setTargetSchemaPath(String path) {
-		this.targetSchemaPath = path;
-		changed = true;
-		updateWindowTitle();
-		updateListeners();
-	}
-	
 	/**
 	 * @see ProjectService#getProjectName()
 	 */
 	@Override
 	public String getProjectName() {
-		return projectName;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#getHaleVersion()
-	 */
-	@Override
-	public String getHaleVersion() {
-		return this.haleVersion;
-	}
-	
-	// UpdateService operations ................................................
-
-	/**
-	 * @see eu.esdihumboldt.hale.ui.service.UpdateService#addListener(eu.esdihumboldt.hale.ui.service.HaleServiceListener)
-	 */
-	@Override
-	public void addListener(HaleServiceListener sl) {
-		this.listeners.add(sl);
-	}
-	
-	/**
-	 * Inform {@link HaleServiceListener}s of an update.
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void updateListeners() {
-		for (HaleServiceListener hsl : this.listeners) {
-			hsl.update(new UpdateMessage(ProjectService.class, null));
+		synchronized (this) {
+			return main.getName();
 		}
-	}
-
-	/**
-	 * @see UpdateService#removeListener(HaleServiceListener)
-	 */
-	@Override
-	public void removeListener(HaleServiceListener listener) {
-		listeners.remove(listener);
-	}
-
-	/**
-	 * @see ProjectService#getInstanceDataType()
-	 */
-	@Override
-	public ConfigurationType getInstanceDataType() {
-		return instanceDataType;
-	}
-
-	/**
-	 * @see ProjectService#setInstanceDataType(ConfigurationType)
-	 */
-	@Override
-	public void setInstanceDataType(ConfigurationType type) {
-		this.instanceDataType = type;
-		changed = true;
-		updateWindowTitle();
 	}
 
 }

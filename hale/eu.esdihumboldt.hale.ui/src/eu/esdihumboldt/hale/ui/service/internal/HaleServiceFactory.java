@@ -62,7 +62,7 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		}
 		
 		if (ProjectService.class.equals(serviceInterface)) {
-			return ProjectServiceImpl.getInstance();
+			return new ProjectServiceImpl();
 		}
 		
 		if (RecentFilesService.class.equals(serviceInterface)) {

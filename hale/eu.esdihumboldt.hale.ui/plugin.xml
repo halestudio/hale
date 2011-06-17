@@ -16,10 +16,6 @@
             name="Open project">
       </command>
       <command
-            id="eu.esdihumboldt.hale.ui.source.instance.import"
-            name="Import source data">
-      </command>
-      <command
             id="eu.esdihumboldt.hale.ui.project.export"
             name="Save project as">
       </command>
@@ -39,14 +35,6 @@
             id="eu.esdihumboldt.hale.ui.project.save"
             name="Save project">
       </command>
-      <command
-            id="eu.esdihumboldt.hale.ui.source.schema.import"
-            name="Import source schema">
-      </command>
-      <command
-            id="eu.esdihumboldt.hale.ui.target.schema.import"
-            name="Import target schema">
-      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -61,10 +49,6 @@
                </equals>
             </with>
          </enabledWhen>
-      </handler>
-      <handler
-            class="eu.esdihumboldt.hale.ui.io.schema.SourceSchemaImportHandler"
-            commandId="eu.esdihumboldt.hale.ui.source.schema.import">
       </handler>
       <handler
             class="eu.esdihumboldt.hale.ui.io.legacy.handler.SaveAlignmentProjectHandler"
@@ -83,20 +67,12 @@
             commandId="eu.esdihumboldt.hale.ui.mapping.export">
       </handler>
       <handler
-            class="eu.esdihumboldt.hale.ui.io.legacy.handler.SaveAlignmentProjectAsHandler"
+            class="eu.esdihumboldt.hale.ui.service.project.handler.SaveAsProjectHandler"
             commandId="eu.esdihumboldt.hale.ui.project.export">
       </handler>
       <handler
-            class="eu.esdihumboldt.hale.ui.io.instance.InstanceImportHandler"
-            commandId="eu.esdihumboldt.hale.ui.source.instance.import">
-      </handler>
-      <handler
-            class="eu.esdihumboldt.hale.ui.io.legacy.handler.OpenProjectHandler"
+            class="eu.esdihumboldt.hale.ui.service.project.handler.OpenProjectHandler"
             commandId="eu.esdihumboldt.hale.ui.project.open">
-      </handler>
-      <handler
-            class="eu.esdihumboldt.hale.ui.io.schema.TargetSchemaImportHandler"
-            commandId="eu.esdihumboldt.hale.ui.target.schema.import">
       </handler>
    </extension>
    <extension
@@ -150,6 +126,7 @@
             label="Source schema..."
             priority="-10"
             providerType="eu.esdihumboldt.hale.schema.io.SchemaReader"
+            remember="true"
             wizard="eu.esdihumboldt.hale.ui.io.schema.SchemaImportWizard">
       </advisor>
       <advisor
@@ -158,6 +135,7 @@
             label="Target schema..."
             priority="-9"
             providerType="eu.esdihumboldt.hale.schema.io.SchemaReader"
+            remember="true"
             wizard="eu.esdihumboldt.hale.ui.io.schema.SchemaImportWizard">
       </advisor>
       <advisor
@@ -166,6 +144,7 @@
             label="Source data..."
             priority="-6"
             providerType="eu.esdihumboldt.hale.instance.io.InstanceReader"
+            remember="true"
             wizard="eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard">
          <dependsOn
                advisor="eu.esdihumboldt.hale.ui.io.schema.source">

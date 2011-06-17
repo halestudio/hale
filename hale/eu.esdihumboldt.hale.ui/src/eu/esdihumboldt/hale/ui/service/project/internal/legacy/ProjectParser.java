@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.service.project.internal;
+package eu.esdihumboldt.hale.ui.service.project.internal.legacy;
 
 import java.io.File;
 import java.net.URI;

@@ -12,38 +12,50 @@
 
 package eu.esdihumboldt.hale.ui.service.project;
 
-import javax.xml.bind.JAXBException;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-
-import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
-import eu.esdihumboldt.hale.ui.service.UpdateService;
+import de.fhg.igd.osgi.util.configuration.IConfigurationService;
+import eu.esdihumboldt.hale.core.io.IOProvider;
+import eu.esdihumboldt.hale.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.ui.io.advisor.IOAdvisorFactory;
 
 /**
- * The {@link ProjectService} manages additional information on a HaleProject,
- * such as the loaded instance data and paths of used schemas.
+ * The {@link ProjectService} manages information on a HALE project,
+ * such as the loaded schemas, instances etc.
  * 
  * @author Thorsten Reitz
+ * @author Simon Templer
  */
-public interface ProjectService extends UpdateService {
+public interface ProjectService {
+	
+	/**
+	 * Adds a project service listener 
+	 * @param listener the listener to add
+	 */
+	public void addListener(ProjectServiceListener listener);
+	
+	/**
+	 * Removes a project service listener 
+	 * @param listener the listener to remove
+	 */
+	public void removeListener(ProjectServiceListener listener);
 
-	public String getSourceSchemaPath();
+	/**
+	 * Remember I/O operations after the execution of the corresponding I/O 
+	 * provider for storing it in the project.
+	 * 
+	 * @param advisorFactory the advisor factory
+	 * @param providerType the I/O provider type
+	 * @param providerId the I/O provider identifier
+	 * @param provider the I/O provider instance used for the I/O operation
+	 */
+	public void rememberIO(IOAdvisorFactory advisorFactory, 
+			Class<? extends IOProviderFactory<?>> providerType, 
+			String providerId, IOProvider provider);
 	
-	public void setSourceSchemaPath(String path);
-	
-	public String getTargetSchemaPath();
-	
-	public void setTargetSchemaPath(String path);
-	
-	public String getInstanceDataPath();
-	
-	public void setInstanceDataPath(String path);
-	
-	public String getProjectCreatedDate();
-	
-	public void setProjectCreatedDate(String date);
-	
-	public String getHaleVersion();
+	/**
+	 * Get a project scoped configuration service
+	 * @return the configuration service
+	 */
+	public IConfigurationService getConfigurationService();
 	
 	/**
 	 * Get the current's project name
@@ -52,56 +64,39 @@ public interface ProjectService extends UpdateService {
 	 */
 	public String getProjectName();
 	
-	/**
-	 * Get if the project content is changed
-	 * 
-	 * @return if the project content is changed
-	 */
-	public boolean isChanged();
+//	/**
+//	 * Get if the project content is changed
+//	 * 
+//	 * @return if the project content is changed
+//	 */
+//	public boolean isChanged();
 	
 	/**
-	 * Set the configuration type of the instance data
-	 * 
-	 * @param type the configuiration type
-	 */
-	public void setInstanceDataType(ConfigurationType type);
-	
-	/**
-	 * Get the configuration type of the instance data
-	 * 
-	 * @return the configuration type of the instance data
-	 */
-	public ConfigurationType getInstanceDataType();
-	
-	/**
-	 * Clean the project, reset all services
+	 * Clean the project, reset all services.
 	 */
 	public void clean();
 	
-	/**
-	 * Load a project from a file
-	 * 
-	 * @param filename the project filename
-	 * @param monitor the progress monitor
-	 */
-	public void load(String filename, IProgressMonitor monitor);
+//	/**
+//	 * Load a project from a given file.
+//	 * 
+//	 * @param file the project file
+//	 * @param monitor the progress monitor
+//	 */
+//	public void load(File file, IProgressMonitor monitor);
 	
 	/**
-	 * Save the project
-	 * @return false, if no project file name was set
-	 * 
-	 * @throws JAXBException if saving the project fails 
+	 * Open a project.
 	 */
-	public boolean save() throws JAXBException;
+	public void open();
+	
+//	/**
+//	 * Save the project. Calls {@link #saveAs()} if no file name is set yet.
+//	 */
+//	public void save(IProgressMonitor monitor);
 	
 	/**
 	 * Save the project to the given file
-	 * 
-	 * @param filename the file name
-	 * @param projectName the project name
-	 * 
-	 * @throws JAXBException if saving the project fails
 	 */
-	public void saveAs(String filename, String projectName) throws JAXBException;
+	public void saveAs();
 	
 }

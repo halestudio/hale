@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.core.io.project;
+package eu.esdihumboldt.hale.core.io.project.model;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -20,7 +20,9 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
@@ -31,6 +33,7 @@ import org.exolab.castor.xml.ValidationException;
 import org.exolab.castor.xml.XMLContext;
 import org.osgi.framework.Version;
 import org.xml.sax.InputSource;
+
 
 /**
  * Represents a project.
@@ -109,7 +112,9 @@ public class Project {
 	
 	private final List<IOConfiguration> configurations = new ArrayList<IOConfiguration>();
 
-	//TODO other stuff
+	private final Map<String, String> properties = new HashMap<String, String>();
+	
+	private final Map<String, Class<? extends ProjectFile>> files = new HashMap<String, Class<? extends ProjectFile>>();
 	
 	/**
 	 * @return the configurations
@@ -186,6 +191,20 @@ public class Project {
 	 */
 	public void setModified(Date modified) {
 		this.modified = modified;
+	}
+
+	/**
+	 * @return the properties
+	 */
+	public Map<String, String> getProperties() {
+		return properties;
+	}
+
+	/**
+	 * @return the files
+	 */
+	public Map<String, Class<? extends ProjectFile>> getFiles() {
+		return files;
 	}
 	
 }

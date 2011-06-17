@@ -15,8 +15,8 @@ import java.util.Collection;
 
 import eu.esdihumboldt.commons.goml.align.Alignment;
 import eu.esdihumboldt.commons.goml.oml.io.OmlRdfGenerator;
+import eu.esdihumboldt.hale.mapping.io.HaleOmlRdfGenerator;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
-import eu.esdihumboldt.hale.ui.service.project.internal.HaleOmlRdfGenerator;
 
 /**
  * {@link MappingExportProvider} implementation for exporting the Alignment to OML.

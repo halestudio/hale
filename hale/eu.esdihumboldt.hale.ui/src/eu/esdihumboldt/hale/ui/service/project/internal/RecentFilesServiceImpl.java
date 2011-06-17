@@ -94,7 +94,7 @@ public class RecentFilesServiceImpl implements RecentFilesService {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.RecentFilesService#saveState(org.eclipse.ui.IMemento)
+	 * @see RecentFilesService#saveState(IMemento)
 	 */
 	@Override
 	public IStatus saveState(IMemento memento) {

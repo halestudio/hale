@@ -9,7 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.ui.service.project.internal;
+package eu.esdihumboldt.hale.mapping.io;
 
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;

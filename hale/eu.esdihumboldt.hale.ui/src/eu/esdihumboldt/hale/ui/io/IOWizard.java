@@ -41,9 +41,12 @@ import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.core.io.report.IOReport;
 import eu.esdihumboldt.hale.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.ui.io.advisor.IOAdvisorExtension;
+import eu.esdihumboldt.hale.ui.io.advisor.IOAdvisorFactory;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 import eu.esdihumboldt.hale.ui.io.config.ConfigurationPageExtension;
 import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
 /**
@@ -67,6 +70,8 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	private T factory;
 	
 	private IOAdvisor<P> advisor;
+	
+	private String advisorId;
 	
 	private ContentType contentType;
 
@@ -98,11 +103,20 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	}
 
 	/**
+	 * @return the advisor identifier
+	 */
+	protected String getAdvisorId() {
+		return advisorId;
+	}
+
+	/**
 	 * Set the I/O advisor
 	 * @param advisor the advisor to set
+	 * @param advisorId the advisor identifier, <code>null</code> if it has none
 	 */
-	public void setAdvisor(IOAdvisor<P> advisor) {
+	public void setAdvisor(IOAdvisor<P> advisor, String advisorId) {
 		this.advisor = advisor;
+		this.advisorId = advisorId;
 	}
 
 	/**
@@ -412,8 +426,16 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 				// let advisor handle results
 				advisor.handleResults(getProvider());
 				
-				//TODO create IOProviderSetup, inform ProjectService
-//				getProviderFactory().
+				// add to project service if necessary
+				if (advisorId != null) {
+					IOAdvisorFactory factory = IOAdvisorExtension.getInstance().getFactory(advisorId);
+					
+					if (factory.isRemember()) {
+						ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+						ps.rememberIO(factory, factoryClass, 
+								getProviderFactory().getIdentifier(), provider);
+					}
+				}
 				
 				return true;
 			}

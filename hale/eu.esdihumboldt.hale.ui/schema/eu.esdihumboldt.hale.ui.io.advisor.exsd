@@ -49,7 +49,7 @@
 
    <element name="advisor">
       <complexType>
-         <choice minOccurs="1" maxOccurs="unbounded">
+         <choice minOccurs="0" maxOccurs="unbounded">
             <element ref="dependsOn"/>
          </choice>
          <attribute name="class" type="string" use="required">
@@ -113,6 +113,13 @@
             <annotation>
                <documentation>
                   Identifier of the advisor. The identifier should be the same for advisors that have the same semantics but apply to different contexts. Regarding the extension point the identifier must be unique because the context here is always the UI and the services available in the UI.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="remember" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  States if I/O operations based on this advisor shall be remembered, i.e. stored in the project.
                </documentation>
             </annotation>
          </attribute>

@@ -10,33 +10,40 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.instance.internal;
+package eu.esdihumboldt.hale.core.internal;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-/**
- * Instance bundle activator
- * @author Simon Templer
- * @author Michel Krämer
- */
-public class InstanceBundle implements BundleActivator {
-	
-	/**
-	 * Name of the Eclipse Equinox bundle
-	 */
-	public static final String EQUINOX_BUNDLE = "org.eclipse.osgi";
+import de.fhg.igd.osgi.util.OsgiUtils;
 
-	private static InstanceBundle _instance;
+import eu.esdihumboldt.hale.core.io.service.ContentTypeService;
+import eu.esdihumboldt.hale.core.io.service.internal.ContentTypeTracker;
+
+/**
+ * Bundle activator
+ *
+ * @author Simon Templer
+ * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @since 2.2
+ */
+public class CoreBundle implements BundleActivator {
 	
-	private BundleContext context;
+	private ContentTypeTracker contentTypeService;
 	
 	/**
 	 * @see BundleActivator#start(BundleContext)
 	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
+		contentTypeService = new ContentTypeTracker();
+		// start tracking content types
+		contentTypeService.start(context);
+		// register service
+		OsgiUtils.registerService(ContentTypeService.class, contentTypeService);
+		
+		// stuff to allow class loading FIXME move to osgi utils
 		this.context = context;
 		_instance = this;
 	}
@@ -46,8 +53,20 @@ public class InstanceBundle implements BundleActivator {
 	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		// do nothing
+		// unregister service
+		OsgiUtils.unregisterService(contentTypeService);
+		// stop tracking content types
+		contentTypeService.stop();
 	}
+	
+	/**
+	 * Name of the Eclipse Equinox bundle
+	 */
+	public static final String EQUINOX_BUNDLE = "org.eclipse.osgi";
+
+	private static CoreBundle _instance;
+	
+	private BundleContext context;
 	
 	/**
 	 * @return the context

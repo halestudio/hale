@@ -87,43 +87,43 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		// Cache shutdown
 		Request.getInstance().shutdown();
 		
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
-		if (ps.isChanged()) {
-			Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
-			MessageBox mb = new MessageBox(shell, 
-					SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
-    		mb.setMessage(Messages.ApplicationWorkbenchAdvisor_1); //$NON-NLS-1$
-    		mb.setText(Messages.ApplicationWorkbenchAdvisor_2); //$NON-NLS-1$
-    		int result = mb.open();
-    		if (result == SWT.CANCEL) {
-    			return false;
-    		}
-    		else if (result == SWT.YES) {
-    			try {
-    				// try saving project
-    				if (!ps.save()) {
-    					// have to use save as
-    					IExportWizard iw = new SaveAlignmentProjectWizard();
-    					// Instantiates the wizard container with the wizard and opens it
-    					WizardDialog dialog = new WizardDialog(shell, iw);
-    					if (dialog.open() == WizardDialog.CANCEL) {
-    						return false;
-    					}
-    				}
-					return true;
-				} catch (JAXBException e) {
-					ExceptionHelper.handleException(
-							"Error saving alignment project", HALEApplicationPlugin.PLUGIN_ID, e); //$NON-NLS-1$
-					return false;
-				}
-			}
-    		else {
-    			return true;
-    		}
-		}
-		else {
+//		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+//		if (ps.isChanged()) {
+//			Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+//			MessageBox mb = new MessageBox(shell, 
+//					SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
+//    		mb.setMessage(Messages.ApplicationWorkbenchAdvisor_1); //$NON-NLS-1$
+//    		mb.setText(Messages.ApplicationWorkbenchAdvisor_2); //$NON-NLS-1$
+//    		int result = mb.open();
+//    		if (result == SWT.CANCEL) {
+//    			return false;
+//    		}
+//    		else if (result == SWT.YES) {
+//    			try {
+//    				// try saving project
+//    				if (!ps.save()) {
+//    					// have to use save as
+//    					IExportWizard iw = new SaveAlignmentProjectWizard();
+//    					// Instantiates the wizard container with the wizard and opens it
+//    					WizardDialog dialog = new WizardDialog(shell, iw);
+//    					if (dialog.open() == WizardDialog.CANCEL) {
+//    						return false;
+//    					}
+//    				}
+//					return true;
+//				} catch (JAXBException e) {
+//					ExceptionHelper.handleException(
+//							"Error saving alignment project", HALEApplicationPlugin.PLUGIN_ID, e); //$NON-NLS-1$
+//					return false;
+//				}
+//			}
+//    		else {
+//    			return true;
+//    		}
+//		}
+//		else {
 			return true;
-		}
+//		}
 	}
 
 	/**

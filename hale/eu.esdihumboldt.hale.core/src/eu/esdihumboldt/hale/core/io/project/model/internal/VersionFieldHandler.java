@@ -10,17 +10,16 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.core.io.project.internal;
-
-import java.net.URI;
+package eu.esdihumboldt.hale.core.io.project.model.internal;
 
 import org.exolab.castor.mapping.GeneralizedFieldHandler;
+import org.osgi.framework.Version;
 
 /**
- * Field handler for {@link URI}s
+ * Field handler for {@link Version}s
  * @author Simon Templer
  */
-public class URIFieldHandler extends GeneralizedFieldHandler {
+public class VersionFieldHandler extends GeneralizedFieldHandler {
 
 	/**
 	 * @see GeneralizedFieldHandler#convertUponGet(Object)
@@ -35,7 +34,11 @@ public class URIFieldHandler extends GeneralizedFieldHandler {
 	 */
 	@Override
 	public Object convertUponSet(Object value) {
-		return URI.create((String) value);
+		if (value == null) {
+			return Version.emptyVersion;
+		}
+		
+		return Version.parseVersion((String) value);
 	}
 
 	/**
@@ -43,7 +46,7 @@ public class URIFieldHandler extends GeneralizedFieldHandler {
 	 */
 	@Override
 	public Class<?> getFieldType() {
-		return URI.class;
+		return Version.class;
 	}
 
 }

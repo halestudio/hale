@@ -46,4 +46,11 @@ public interface IOAdvisorFactory extends ExtensionObjectFactory<IOAdvisor<?>> {
 	 */
 	public Set<String> getDependencies();
 	
+	/**
+	 * States if I/O operations based on this advisor shall be remembered, 
+	 * i.e. stored in the project.
+	 * @return if operations based on this advisor shall be remembered
+	 */
+	public boolean isRemember();
+	
 }

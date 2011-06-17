@@ -58,7 +58,7 @@ public class IOAdvisorContribution extends
 			try {
 				IOWizard<?, ?> wizard = getFactory().createWizard();
 				IOAdvisor<?> advisor = getFactory().createExtensionObject();
-				((IOWizard) wizard).setAdvisor(advisor);
+				((IOWizard) wizard).setAdvisor(advisor, getFactory().getIdentifier());
 				Shell shell = Display.getCurrent().getActiveShell();
 				WizardDialog dialog = new WizardDialog(shell, wizard);
 				dialog.open();
@@ -99,7 +99,7 @@ public class IOAdvisorContribution extends
 	 */
 	@Override
 	protected IOAdvisorExtension initExtension() {
-		return new IOAdvisorExtension();
+		return IOAdvisorExtension.getInstance();
 	}
 
 	/**

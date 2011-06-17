@@ -37,7 +37,7 @@ import com.orientechnologies.orient.core.record.impl.ORecordBytes;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.instance.internal.InstanceBundle;
+import eu.esdihumboldt.hale.core.internal.CoreBundle;
 import eu.esdihumboldt.hale.instance.model.Group;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.MutableGroup;
@@ -447,7 +447,7 @@ public class OGroup implements MutableGroup {
 					@Override
 					protected Class<?> resolveClass(ObjectStreamClass desc)
 							throws IOException, ClassNotFoundException {
-						return InstanceBundle.loadClass(desc.getName(), null);
+						return CoreBundle.loadClass(desc.getName(), null);
 					}
 				};
 				return in.readObject();
