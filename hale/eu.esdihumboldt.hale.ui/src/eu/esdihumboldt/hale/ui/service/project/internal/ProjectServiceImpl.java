@@ -357,38 +357,44 @@ public class ProjectServiceImpl extends AbstractProjectService
 	}
 
 	private void executeProvider(final IOProvider provider, @SuppressWarnings("rawtypes") final IOAdvisor advisor) {
-		Display display = PlatformUI.getWorkbench().getDisplay();
-		try {
-			IRunnableWithProgress op = new IRunnableWithProgress() {
-				
-				@SuppressWarnings("unchecked")
-				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException,
-						InterruptedException {
-					try {
-						// use advisor to configure provider
-						advisor.updateConfiguration(provider);
-						
-						// execute
-						IOReport report = provider.execute(new ProgressMonitorIndicator(monitor));
-						
-						// publish report
-						ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
-						rs.addReport(report);
-						
-						// handle results
-						advisor.handleResults(provider);
-					} catch (Exception e) {
-						log.error("Error executing an I/O provider.", e);
-					}
+		final Display display = PlatformUI.getWorkbench().getDisplay();
+		final IRunnableWithProgress op = new IRunnableWithProgress() {
+			
+			@SuppressWarnings("unchecked")
+			@Override
+			public void run(IProgressMonitor monitor) throws InvocationTargetException,
+					InterruptedException {
+				try {
+					// use advisor to configure provider
+					advisor.updateConfiguration(provider);
+					
+					// execute
+					IOReport report = provider.execute(new ProgressMonitorIndicator(monitor));
+					
+					// publish report
+					ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+					rs.addReport(report);
+					
+					// handle results
+					advisor.handleResults(provider);
+				} catch (Exception e) {
+					log.error("Error executing an I/O provider.", e);
 				}
-			};
-			//TODO instead in job?
-		    new ProgressMonitorDialog(display.getActiveShell()).run(true, 
-		    		provider.isCancelable(), op);
-		} catch (Throwable e) {
-			log.error("Error executing an I/O provider.");
-		}
+			}
+		};
+		//TODO instead in job? (exclusive execution)
+		display.syncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					new ProgressMonitorDialog(display.getActiveShell()).run(true, 
+				    		provider.isCancelable(), op);
+				} catch (Throwable e) {
+					log.error("Error executing an I/O provider.", e);
+				}
+			}
+		});
 	}
 
 	/**
@@ -414,6 +420,9 @@ public class ProjectServiceImpl extends AbstractProjectService
 		ProjectReader reader = HaleIO.findIOProvider(ProjectReaderFactory.class, 
 				new FileIOSupplier(file), file.getAbsolutePath());
 		if (reader != null) {
+			// configure reader
+			reader.setSource(new FileIOSupplier(file));
+			
 			executeProvider(reader, openProjectAdvisor);
 		}
 		else {
