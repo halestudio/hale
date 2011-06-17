@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.io.xml.content;
+package eu.esdihumboldt.hale.core.io.tester;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -23,28 +23,25 @@ import javax.xml.stream.XMLStreamReader;
 import eu.esdihumboldt.hale.core.io.ContentTypeTester;
 
 /**
- * TODO Type description
+ * Abstract testing class for XML-files by implementing ContentTypeTester
+ * 
  * @author Patrick Lieb
  */
 public abstract class AbstractXmlTester implements ContentTypeTester {
-
-	/**
-	 * 
-	 */
-	public AbstractXmlTester() {
-		super();
-	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.core.io.ContentTypeTester#matchesContentType(java.io.InputStream)
 	 */
 	@Override
 	public boolean matchesContentType(InputStream in) {
-	
+
+		if (in == null)
+			throw new IllegalStateException("Couldn't load instance input");
+
 		BufferedInputStream bin = new BufferedInputStream(in);
-	
+
 		XMLStreamReader reader;
-	
+
 		try {
 			reader = XMLInputFactory.newInstance().createXMLStreamReader(bin);
 		} catch (Throwable e1) {
@@ -54,18 +51,17 @@ public abstract class AbstractXmlTester implements ContentTypeTester {
 				// ignore
 			}
 			return false;
-	
+
 		}
-	
+
 		try {
 			return testReader(reader);
 		} catch (XMLStreamException e) {
 			return false;
-			
+
 		} catch (Throwable e) {
 			throw new IllegalStateException("Couldn't load instance input", e);
-			
-	
+
 		} finally {
 			try {
 				reader.close();
@@ -75,12 +71,15 @@ public abstract class AbstractXmlTester implements ContentTypeTester {
 			}
 		}
 	}
-	
+
 	/**
 	 * @param reader
-	 * @return
+	 *            the XMLStreamReader given by matchesContentType
+	 * @return true if the reader is based on a XML-file otherwise false
 	 * @throws XMLStreamException
+	 *             if the XML-StreamReader can't parse the input
 	 */
-	protected abstract boolean testReader(XMLStreamReader reader) throws XMLStreamException;
+	protected abstract boolean testReader(XMLStreamReader reader)
+			throws XMLStreamException;
 
 }

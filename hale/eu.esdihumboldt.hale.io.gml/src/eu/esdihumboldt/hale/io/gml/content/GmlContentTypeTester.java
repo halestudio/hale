@@ -16,10 +16,10 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import eu.esdihumboldt.hale.io.xml.content.AbstractXmlTester;
+import eu.esdihumboldt.hale.core.io.tester.AbstractXmlTester;
 
 /**
- * TODO Type description
+ * Contenttype-Tester for GML-files based on AbstractXmlTester
  * 
  * @author Patrick
  */
@@ -38,7 +38,6 @@ public class GmlContentTypeTester extends AbstractXmlTester {
 			if (event == XMLStreamConstants.START_ELEMENT) {
 				rightName = reader.getLocalName().equals("FeatureCollection");
 				for (int count = reader.getNamespaceCount() -1; count >= 0; count--) {
-					// TODO GML 3.2
 					rightNS = rightNS
 							|| reader.getNamespaceURI(count).equals(
 									"http://www.opengis.net/gml")

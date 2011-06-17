@@ -18,18 +18,21 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import eu.esdihumboldt.hale.core.io.ContentTypeTester;
+import eu.esdihumboldt.hale.core.io.tester.AbstractXmlTester;
 
 /**
- * TODO Type description
+ * Testing class for XML-files
  * 
  * @author Patrick Lieb
  */
 public class XmlContentTypeTester extends AbstractXmlTester implements ContentTypeTester {
 
 	/**
-	 * @param reader
-	 * @return 
+	 * * @param reader
+	 *            the XMLStreamReader given by matchesContentType
+	 * @return true if the reader is based on a XML-file otherwise false
 	 * @throws XMLStreamException
+	 *             if the XML-StreamReader can't parse the input
 	 */
 	@Override
 	protected boolean testReader(XMLStreamReader reader) throws XMLStreamException {

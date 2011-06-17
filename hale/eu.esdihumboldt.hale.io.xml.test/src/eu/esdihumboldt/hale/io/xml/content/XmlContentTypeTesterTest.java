@@ -15,9 +15,9 @@ package eu.esdihumboldt.hale.io.xml.content;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-
-import org.junit.Before;
 import org.junit.Test;
+
+import eu.esdihumboldt.hale.core.io.tester.AbstractXmlTester;
 
 /**
  * TODO Type description
@@ -26,52 +26,46 @@ import org.junit.Test;
 public class XmlContentTypeTesterTest {
 	
 	/**
-	 * Checks if a XML-File could be identified correctly
+	 * Test loading a XML-file
 	 */
-	
-//	@Before
-//	void loadTester(){
-//		XmlContentTypeTester tester = new XmlContentTypeTester();
-//	}
-	
 	@Test
 	public void testTrueXml(){
 		
 		AbstractXmlTester tester = new XmlContentTypeTester();
-		assertTrue(tester.matchesContentType(tester.getClass().getResourceAsStream("/data/testxml.xml")));
-
+		assertTrue(tester.matchesContentType(getClass().getResourceAsStream("/data/testxml.xml")));
+	
 	}
 	
 	/**
-	 * 
+	 * Test loading a GML-file
 	 */
 	@Test
 	public void testTrueGml(){
 		
 		AbstractXmlTester tester = new XmlContentTypeTester();
-		assertTrue(tester.matchesContentType(tester.getClass().getResourceAsStream("/data/wfs_va_sample.gml")));
+		assertTrue(tester.matchesContentType(getClass().getResourceAsStream("/data/wfs_va_sample.gml")));
 
 	}
 	
 	/**
-	 * 
+	 * Test loading a XSD-file
 	 */
 	@Test
 	public void testTrueXsd(){
 		
 		AbstractXmlTester tester = new XmlContentTypeTester();
-		assertTrue(tester.matchesContentType(tester.getClass().getResourceAsStream("/data/wfs_va.xsd")));
+		assertTrue(tester.matchesContentType(getClass().getResourceAsStream("/data/wfs_va.xsd")));
 
 	}
 	
 	/**
-	 * Checks if a normal textfile is identified as false
+	 * Test loading a text-file
 	 */
 	@Test
 	public void testFalseTxt(){
 		
 		AbstractXmlTester tester = new XmlContentTypeTester();
-		assertFalse(tester.matchesContentType(tester.getClass().getResourceAsStream("/data/testtext.txt")));
+		assertFalse(tester.matchesContentType(getClass().getResourceAsStream("/data/testtext.txt")));
 	}
 
 }

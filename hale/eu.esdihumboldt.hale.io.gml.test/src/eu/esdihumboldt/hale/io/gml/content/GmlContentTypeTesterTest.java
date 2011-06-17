@@ -12,54 +12,47 @@
 
 package eu.esdihumboldt.hale.io.gml.content;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
 
 import org.junit.Test;
 
-import eu.esdihumboldt.hale.io.gml.reader.internal.GmlInstanceCollection;
-import eu.esdihumboldt.hale.io.xml.content.AbstractXmlTester;
-import eu.esdihumboldt.hale.io.xml.content.XmlContentTypeTester;
-
 /**
- * Tests for {@link }
+ * Tests for {@link GmlContentTypeTester}
  *
  * @author Patrick Lieb
  */
 public class GmlContentTypeTesterTest {
 
 	/**
-	 * 
+	 * Test loading a Gml-file
 	 */
 	@Test
 	public void testTrueGml1(){
 		GmlContentTypeTester tester = new GmlContentTypeTester();
-		InputStream input = tester.getClass().getResourceAsStream("/data/wfs_va_sample.gml");
+		InputStream input = getClass().getResourceAsStream("/data/ctttest/wfs_va_sample.gml");
 		assertTrue(tester.matchesContentType(input));
-
 	}
 	
 	/**
-	 * 
+	 * Test loading a Gml-file
 	 */
 	@Test
 	public void testTrueGml2(){
 		GmlContentTypeTester tester = new GmlContentTypeTester();
-		InputStream input = tester.getClass().getResourceAsStream("/data/KA_14168_EPSG25833.gml");
+		InputStream input = getClass().getResourceAsStream("/data/ctttest/KA_14168_EPSG25833.gml");
 		assertTrue(tester.matchesContentType(input));
 	}
 	
 	/**
-	 * 
+	 * Test loading a text file
 	 */
 	@Test
 	public void testFalseText(){
 		GmlContentTypeTester tester = new GmlContentTypeTester();
-		InputStream input = tester.getClass().getResourceAsStream("/data/testtext.txt");
+		InputStream input = getClass().getResourceAsStream("/data/ctttest/testtext.txt");
 		assertFalse(tester.matchesContentType(input));
 	}
 }

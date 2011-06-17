@@ -11,5 +11,5 @@
 	<!-- File extensions -->
 	<fileExtension>xml</fileExtension>
 	<!-- Tester class name -->
-	<!-- testerClass>eu.esdihumboldt.hale.core.ui.internal.SomeTesterClass</testerClass-->
+	<testerClass>eu.esdihumboldt.hale.io.xml.content.XmlContentTypeTester</testerClass>
 </contentType>
