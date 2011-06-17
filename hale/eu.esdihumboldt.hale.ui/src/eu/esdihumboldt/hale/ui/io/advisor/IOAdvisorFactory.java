@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.io.advisor;
 
+import java.util.Set;
+
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 import eu.esdihumboldt.hale.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.core.io.IOProvider;
@@ -36,5 +38,12 @@ public interface IOAdvisorFactory extends ExtensionObjectFactory<IOAdvisor<?>> {
 	 * @return the I/O wizard
 	 */
 	public IOWizard<?, ?> createWizard();
+	
+	/**
+	 * Get the dependencies of the advisor.
+	 * @return the list of identifiers of other advisors the advisor depends on
+	 *   for sequential execution, e.g. when loading a project
+	 */
+	public Set<String> getDependencies();
 	
 }

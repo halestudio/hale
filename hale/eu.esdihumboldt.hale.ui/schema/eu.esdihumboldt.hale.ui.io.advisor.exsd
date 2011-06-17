@@ -49,6 +49,9 @@
 
    <element name="advisor">
       <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="dependsOn"/>
+         </choice>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
@@ -111,6 +114,21 @@
                <documentation>
                   Identifier of the advisor. The identifier should be the same for advisors that have the same semantics but apply to different contexts. Regarding the extension point the identifier must be unique because the context here is always the UI and the services available in the UI.
                </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="dependsOn">
+      <complexType>
+         <attribute name="advisor" type="string" use="required">
+            <annotation>
+               <documentation>
+                  References an advisor that the defined advisor depends on, e.g. for the sequential execution when loading a project.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.ui.io.advisor/advisor/@id"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>

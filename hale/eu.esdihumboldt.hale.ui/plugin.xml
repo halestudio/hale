@@ -167,6 +167,9 @@
             priority="-6"
             providerType="eu.esdihumboldt.hale.instance.io.InstanceReader"
             wizard="eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard">
+         <dependsOn
+               advisor="eu.esdihumboldt.hale.ui.io.schema.source">
+         </dependsOn>
       </advisor>
    </extension>
 

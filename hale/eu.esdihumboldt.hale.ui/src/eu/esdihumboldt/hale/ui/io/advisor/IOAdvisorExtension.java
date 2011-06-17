@@ -13,6 +13,9 @@
 package eu.esdihumboldt.hale.ui.io.advisor;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -112,6 +115,27 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 		@Override
 		public URL getIconURL() {
 			return getIconURL("icon");
+		}
+
+		/**
+		 * @see IOAdvisorFactory#getDependencies()
+		 */
+		@Override
+		public Set<String> getDependencies() {
+			IConfigurationElement[] children = conf.getChildren("dependsOn");
+			
+			if (children != null) {
+				Set<String> result = new HashSet<String>();
+				
+				for (IConfigurationElement child : children) {
+					result.add(child.getAttribute("advisor"));
+				}
+				
+				return result;
+			}
+			else {
+				return Collections.emptySet();
+			}
 		}
 
 	}
