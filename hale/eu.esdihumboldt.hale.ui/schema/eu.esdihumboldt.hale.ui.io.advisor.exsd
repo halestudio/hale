@@ -106,6 +106,13 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Identifier of the advisor. The identifier should be the same for advisors that have the same semantics but apply to different contexts. Regarding the extension point the identifier must be unique because the context here is always the UI and the services available in the UI.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

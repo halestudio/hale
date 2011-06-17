@@ -412,6 +412,9 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 				// let advisor handle results
 				advisor.handleResults(getProvider());
 				
+				//TODO create IOProviderSetup, inform ProjectService
+//				getProviderFactory().
+				
 				return true;
 			}
 			else {

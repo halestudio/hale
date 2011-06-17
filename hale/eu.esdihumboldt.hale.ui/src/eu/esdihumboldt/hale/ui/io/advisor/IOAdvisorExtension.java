@@ -69,8 +69,7 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 		 */
 		@Override
 		public String getIdentifier() {
-			// use advisor class as ID
-			return conf.getAttribute("class");
+			return conf.getAttribute("id");
 		}
 
 		/**
@@ -139,7 +138,6 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 			return new ConfigurationFactory(conf);
 		}
 		
-		//TODO check docu what top do
 		return null;
 	}
 

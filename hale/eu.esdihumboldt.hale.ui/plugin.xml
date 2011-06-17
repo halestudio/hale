@@ -146,6 +146,7 @@
          point="eu.esdihumboldt.hale.ui.io.advisor">
       <advisor
             class="eu.esdihumboldt.hale.ui.io.schema.SourceSchemaImportAdvisor"
+            id="eu.esdihumboldt.hale.ui.io.schema.source"
             label="Source schema..."
             priority="-10"
             providerType="eu.esdihumboldt.hale.schema.io.SchemaReader"
@@ -153,6 +154,7 @@
       </advisor>
       <advisor
             class="eu.esdihumboldt.hale.ui.io.schema.TargetSchemaImportAdvisor"
+            id="eu.esdihumboldt.hale.ui.io.schema.target"
             label="Target schema..."
             priority="-9"
             providerType="eu.esdihumboldt.hale.schema.io.SchemaReader"
@@ -160,6 +162,7 @@
       </advisor>
       <advisor
             class="eu.esdihumboldt.hale.ui.io.instance.InstanceImportAdvisor"
+            id="eu.esdihumboldt.hale.ui.io.instance.source"
             label="Source data..."
             priority="-6"
             providerType="eu.esdihumboldt.hale.instance.io.InstanceReader"
