@@ -43,11 +43,10 @@ public abstract class AbstractExportProvider extends AbstractIOProvider implemen
 	}
 
 	/**
-	 * Get the export target
-	 * 
-	 * @return the target output supplier
+	 * @see ExportProvider#getTarget()
 	 */
-	protected LocatableOutputSupplier<? extends OutputStream> getTarget() {
+	@Override
+	public LocatableOutputSupplier<? extends OutputStream> getTarget() {
 		return target;
 	}
 

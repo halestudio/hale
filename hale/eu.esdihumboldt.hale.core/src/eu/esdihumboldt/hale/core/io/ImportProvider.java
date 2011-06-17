@@ -31,5 +31,12 @@ public interface ImportProvider extends IOProvider {
 	 * @param source the source input supplier
 	 */
 	public void setSource(LocatableInputSupplier<? extends InputStream> source);
+	
+	/**
+	 * Get the import source
+	 * 
+	 * @return the source input supplier
+	 */
+	public LocatableInputSupplier<? extends InputStream> getSource();
 
 }

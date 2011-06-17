@@ -63,11 +63,10 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 	}
 
 	/**
-	 * Get the import source
-	 * 
-	 * @return the source input supplier
+	 * @see ImportProvider#getSource()
 	 */
-	protected LocatableInputSupplier<? extends InputStream> getSource() {
+	@Override
+	public LocatableInputSupplier<? extends InputStream> getSource() {
 		return source;
 	}
 

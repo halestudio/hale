@@ -31,5 +31,12 @@ public interface ExportProvider extends IOProvider {
 	 * @param target the target output supplier
 	 */
 	public void setTarget(LocatableOutputSupplier<? extends OutputStream> target);
+	
+	/**
+	 * Get the export target
+	 * 
+	 * @return the target output supplier
+	 */
+	public LocatableOutputSupplier<? extends OutputStream> getTarget();
 
 }
