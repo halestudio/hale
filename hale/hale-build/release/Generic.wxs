@@ -56,6 +56,16 @@
 					<fw:FirewallException Id="FW_@{BUILDID}" Name="@{TITLE}" Scope="any" />
 					-->
 				</File>
+				<!--
+					see http://wix.sourceforge.net/manual-wix3/wix_xsd_progid.htm
+					see http://stackoverflow.com/questions/138550/how-to-register-file-types-extensions-with-a-wix-installer
+					see http://stackoverflow.com/questions/638201/how-can-i-set-an-icon-for-an-asscociated-file-using-wix
+				-->
+				<ProgId Id='HALE.ProjectFile' Description='HUMBOLDT Alignment Editor project'>
+					<Extension Id='hale' ContentType='application/hale-project'>
+						<Verb Id='open' Sequence='10' Command='Open' TargetFile='@{BUILDID}.exe' Argument='"%1"' />
+					</Extension>
+				</ProgId>
 			</Component>
 			<Component Id="@{BUILDID}.ini" Guid="*">
 				<File Id="@{BUILDID}.ini" Source="@{SRC}\@{BUILDID}.ini" KeyPath="yes" />
