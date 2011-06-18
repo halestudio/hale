@@ -140,11 +140,11 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 		}
 
 		/**
-		 * @see IOAdvisorFactory#isRemember()
+		 * @see IOAdvisorFactory#isProjectResource()
 		 */
 		@Override
-		public boolean isRemember() {
-			return Boolean.parseBoolean(conf.getAttribute("remember"));
+		public boolean isProjectResource() {
+			return Boolean.parseBoolean(conf.getAttribute("projectResource"));
 		}
 
 	}

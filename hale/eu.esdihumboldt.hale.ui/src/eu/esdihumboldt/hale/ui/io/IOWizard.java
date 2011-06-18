@@ -431,7 +431,7 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 				if (advisorId != null) {
 					IOAdvisorFactory factory = IOAdvisorExtension.getInstance().getFactory(advisorId);
 					
-					if (factory.isRemember()) {
+					if (factory.isProjectResource()) {
 						ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
 						ps.rememberIO(factory, factoryClass, 
 								getProviderFactory().getIdentifier(), provider);
