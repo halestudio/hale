@@ -31,21 +31,26 @@ import org.osgi.framework.Version;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.core.io.ContentType;
+import eu.esdihumboldt.hale.core.io.HaleIO;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.core.io.impl.AbstractImportProvider;
 import eu.esdihumboldt.hale.core.io.project.ProjectReader;
+import eu.esdihumboldt.hale.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.core.io.project.model.Project;
 import eu.esdihumboldt.hale.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.core.io.report.IOReport;
 import eu.esdihumboldt.hale.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.instance.io.InstanceReaderFactory;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.ConfigData;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.ConfigSection;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.HaleProject;
 import eu.esdihumboldt.hale.io.project.jaxb.internal.Messages;
+import eu.esdihumboldt.hale.schema.io.SchemaReaderFactory;
 
 /**
  * The project parser reads a given project XML file and populates a 
@@ -143,7 +148,7 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			
 			HaleProject haleProject = root.getValue();
 			
-			//TODO populate project and project files
+			// populate project and project files
 			loadProject(haleProject);
 			loadSchemas(haleProject, basePath);
 			loadAlignment(haleProject, basePath);
@@ -205,23 +210,70 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 	private void loadSchemas(HaleProject haleProject, String basePath) {
 		if (haleProject.getSourceSchema() != null 
 				&& haleProject.getSourceSchema().getPath() != null) {
-			URI sourceSchemaPath = getLocation(haleProject.getSourceSchema().getPath(), basePath); 
+			URI source = getLocation(haleProject.getSourceSchema().getPath(), basePath); 
 			
-			//TODO create IOConfiguration for source schema
+			// configure for source schema
+			IOConfiguration conf = new IOConfiguration();
+			conf.setAdvisorId("eu.esdihumboldt.hale.ui.io.schema.source");
+			loadSchema(conf, source);
 		}
 		
 		if (haleProject.getTargetSchema() != null 
 				&& haleProject.getTargetSchema().getPath() != null) {
-			URI targetSchemaPath = getLocation(haleProject.getTargetSchema().getPath(), basePath);
+			URI source = getLocation(haleProject.getTargetSchema().getPath(), basePath);
 			
-			//TODO create IOConfiguration for target schema
+			// configure for target schema
+			IOConfiguration conf = new IOConfiguration();
+			conf.setAdvisorId("eu.esdihumboldt.hale.ui.io.schema.target");
+			loadSchema(conf, source);
 		}
 	}
 	
+	private void loadSchema(IOConfiguration conf, URI source) {
+		// populate IOConfiguration
+		// advisor ID must be already set
+		
+		// provider type (fixed)
+		conf.setProviderType(SchemaReaderFactory.class);
+		
+		// find provider
+		File file;
+		try {
+			file = new File(source);
+		} catch (IllegalArgumentException e) {
+			file = null;
+		}
+		ContentType ct = HaleIO.findContentType(SchemaReaderFactory.class, 
+				new DefaultInputSupplier(source), (file == null)?(null):(file.getAbsolutePath()));
+		if (ct == null) {
+			report.error(new IOMessageImpl("Could not load schema at {0}, the content type could not be identified.", 
+					null, source));
+			return;
+		}
+		SchemaReaderFactory srf = HaleIO.findIOProviderFactory(SchemaReaderFactory.class, ct, null);
+		if (srf == null) {
+			report.error(new IOMessageImpl("Could not load schema at {0}, no matching I/O provider could be found.", 
+					null, source));
+			return;
+		}
+		conf.setProviderId(srf.getIdentifier());
+		
+		// provider configuration
+		// source
+		conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_SOURCE, source.toString());
+		// content type
+		conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_CONTENT_TYPE, ct.getIdentifier());
+		
+		// no dependencies needed
+		
+		// add configuration to project
+		project.getConfigurations().add(conf);
+	}
+
 	private void loadInstances(HaleProject haleProject, String basePath) {
 		if (haleProject.getInstanceData() != null) {
-//			URI file = new URI(URLDecoder.decode(project.getInstanceData().getPath(), "UTF-8"));
-			URI file = getLocation(haleProject.getInstanceData().getPath(), basePath);
+//			URI source = new URI(URLDecoder.decode(project.getInstanceData().getPath(), "UTF-8"));
+			URI source = getLocation(haleProject.getInstanceData().getPath(), basePath);
 			
 			// not needed as the new XML/GML parser doesn't differentiate between GML versions
 //			String configurationType = haleProject.getInstanceData().getType(); // GML2, GML3 or GML3_2
@@ -234,7 +286,50 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 //				instanceService.setCRS(new WKTDefinition(haleProject.getInstanceData().getWkt(), null));
 //			}
 			
-			//TODO create IOConfiguration for source data
+			// create IOConfiguration for source data
+			IOConfiguration conf = new IOConfiguration();
+			
+			// populate IOConfiguration
+			// set advisor ID
+			conf.setAdvisorId("eu.esdihumboldt.hale.ui.io.instance.source");
+			
+			// provider type (fixed)
+			conf.setProviderType(InstanceReaderFactory.class);
+			
+			// find provider
+			File file;
+			try {
+				file = new File(source);
+			} catch (IllegalArgumentException e) {
+				file = null;
+			}
+			ContentType ct = HaleIO.findContentType(InstanceReaderFactory.class, 
+					new DefaultInputSupplier(source), (file == null)?(null):(file.getAbsolutePath()));
+			if (ct == null) {
+				report.error(new IOMessageImpl("Could not load instance data at {0}, the content type could not be identified.", 
+						null, source));
+				return;
+			}
+			InstanceReaderFactory irf = HaleIO.findIOProviderFactory(InstanceReaderFactory.class, ct, null);
+			if (irf == null) {
+				report.error(new IOMessageImpl("Could not load instance data at {0}, no matching I/O provider could be found.", 
+						null, source));
+				return;
+			}
+			conf.setProviderId(irf.getIdentifier());
+			
+			// provider configuration
+			// source
+			conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_SOURCE, source.toString());
+			// content type
+			conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_CONTENT_TYPE, ct.getIdentifier());
+			//TODO default crs?
+			
+			// dependencies: source schema needed
+			conf.getDependencies().add("eu.esdihumboldt.hale.ui.io.schema.source");
+			
+			// add configuration to project
+			project.getConfigurations().add(conf);
 		}
 	}
 	
