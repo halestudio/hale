@@ -16,20 +16,21 @@ import eu.esdihumboldt.hale.core.io.HaleIO;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.core.io.impl.AbstractIOProviderFactory;
 import eu.esdihumboldt.hale.core.io.project.ProjectReader;
+import eu.esdihumboldt.hale.core.io.project.ProjectReaderFactory;
 
 /**
  * Factory for the {@link ProjectParser}
  * @author Simon Templer
  */
 public class ProjectParserFactory extends
-		AbstractIOProviderFactory<ProjectReader> {
+		AbstractIOProviderFactory<ProjectReader> implements ProjectReaderFactory {
 
 	private static final String ID = "eu.esdihumboldt.hale.io.project.jaxb.parser";
 
 	/**
 	 * Default constructor
 	 */
-	protected ProjectParserFactory() {
+	public ProjectParserFactory() {
 		super(ID);
 		
 		addSupportedContentType("HaleProject");
