@@ -88,7 +88,8 @@ public class Project {
 		context.setProperty("org.exolab.castor.indent", true); // enable indentation for marshaling as project files should be very small
 		context.addMapping(mapping);
 		Marshaller marshaller = context.createMarshaller();
-		Writer writer = new BufferedWriter(new OutputStreamWriter(out));
+//		marshaller.setEncoding("UTF-8"); XXX not possible using the XMLContext but UTF-8 seems to be default, see http://jira.codehaus.org/browse/CASTOR-2846
+		Writer writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
 		try {
 			marshaller.setWriter(writer);
 			marshaller.marshal(project);
