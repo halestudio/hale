@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  * 
  */
+@SuppressWarnings("all")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "configData", propOrder = {
     "key",

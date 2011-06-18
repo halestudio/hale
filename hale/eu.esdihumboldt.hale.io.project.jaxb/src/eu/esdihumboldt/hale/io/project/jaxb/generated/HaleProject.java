@@ -45,6 +45,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  * 
  */
+@SuppressWarnings("all")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "HaleProject", propOrder = {
     "name",
