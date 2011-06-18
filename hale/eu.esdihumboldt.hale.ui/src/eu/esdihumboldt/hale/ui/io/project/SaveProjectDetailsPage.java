@@ -12,11 +12,15 @@
 
 package eu.esdihumboldt.hale.ui.io.project;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.IOProvider;
@@ -37,6 +41,7 @@ public class SaveProjectDetailsPage extends IOWizardPage<ProjectWriter, ProjectW
 	
 	private StringFieldEditor name;
 	private StringFieldEditor author;
+	private Text description;
 
 	/**
 	 * Default constructor
@@ -65,6 +70,14 @@ public class SaveProjectDetailsPage extends IOWizardPage<ProjectWriter, ProjectW
 		author.setEmptyStringAllowed(false);
 		author.setValidateStrategy(StringFieldEditor.VALIDATE_ON_KEY_STROKE);
 		author.setPage(this);
+		
+		// description
+		Label descLabel = new Label(page, SWT.NONE);
+		descLabel.setText("Description:");
+		descLabel.setLayoutData(GridDataFactory.swtDefaults().align(SWT.BEGINNING, SWT.BEGINNING).create());
+		
+		description = new Text(page, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
+		description.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 		
 		// listen for state changes on field editors
 		IPropertyChangeListener stateListener =  new IPropertyChangeListener() {
@@ -103,10 +116,12 @@ public class SaveProjectDetailsPage extends IOWizardPage<ProjectWriter, ProjectW
 			Project p = writer.getProject();
 			name.setStringValue(p.getName());
 			author.setStringValue(p.getAuthor());
+			description.setText((p.getDescription() == null)?(""):(p.getDescription()));
 		}
 		else {
 			name.setStringValue("");
 			author.setStringValue("");
+			description.setText("");
 		}
 	}
 	
@@ -124,6 +139,7 @@ public class SaveProjectDetailsPage extends IOWizardPage<ProjectWriter, ProjectW
 		if (p != null) {
 			p.setName(name.getStringValue());
 			p.setAuthor(author.getStringValue());
+			p.setDescription((description.getText().isEmpty())?(null):(description.getText()));
 			
 			return true;
 		}
