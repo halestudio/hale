@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -134,6 +135,8 @@ public class ProjectServiceImpl extends AbstractProjectService
 	private final ProjectConfigurationService configurationService = new ProjectConfigurationService();
 	
 	private boolean changed = false;
+	
+	private static final ThreadLocal<IProgressMonitor> parentMonitor = new ThreadLocal<IProgressMonitor>();
 	
 	/**
 	 * Default constructor
@@ -277,6 +280,10 @@ public class ProjectServiceImpl extends AbstractProjectService
 			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException,
 					InterruptedException {
+				boolean ownMonitor = parentMonitor.get() == null;
+				if (ownMonitor) {
+					parentMonitor.set(monitor);
+				}
 				try {
 					// use advisor to configure provider
 					advisor.prepareProvider(provider);
@@ -293,22 +300,36 @@ public class ProjectServiceImpl extends AbstractProjectService
 					advisor.handleResults(provider);
 				} catch (Exception e) {
 					log.error("Error executing an I/O provider.", e);
+				} finally {
+					if (ownMonitor) {
+						parentMonitor.remove();
+					}
 				}
 			}
 		};
-		//TODO instead in job? (exclusive execution)
-		display.syncExec(new Runnable() {
-			
-			@Override
-			public void run() {
-				try {
-					new ProgressMonitorDialog(display.getActiveShell()).run(true, 
-				    		provider.isCancelable(), op);
-				} catch (Throwable e) {
-					log.error("Error executing an I/O provider.", e);
-				}
+		IProgressMonitor pm = parentMonitor.get();
+		if (pm != null) {
+			try {
+				op.run(new SubProgressMonitor(pm, 0));
+			} catch (Throwable e) {
+				log.error("Error executing an I/O provider.", e);
 			}
-		});
+		}
+		else {
+			//TODO instead in job? (exclusive execution)
+			display.syncExec(new Runnable() {
+				
+				@Override
+				public void run() {
+					try {
+						new ProgressMonitorDialog(display.getActiveShell()).run(true, 
+					    		provider.isCancelable(), op);
+					} catch (Throwable e) {
+						log.error("Error executing an I/O provider.", e);
+					}
+				}
+			});
+		}
 	}
 
 	/**
