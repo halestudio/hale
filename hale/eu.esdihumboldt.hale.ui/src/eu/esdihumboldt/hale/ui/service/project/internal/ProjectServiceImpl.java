@@ -194,6 +194,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 			@Override
 			public void updateConfiguration(ProjectWriter provider) {
 				provider.getProject().setModified(new Date());
+				provider.getProject().setHaleVersion(haleVersion);
 				Map<String, ProjectFile> projectFiles = new HashMap<String, ProjectFile>();
 				notifyBeforeSave(projectFiles); // get additional files from listeners
 				provider.setProjectFiles(projectFiles);
