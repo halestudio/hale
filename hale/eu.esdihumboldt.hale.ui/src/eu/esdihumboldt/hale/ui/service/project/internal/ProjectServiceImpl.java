@@ -417,7 +417,8 @@ public class ProjectServiceImpl extends AbstractProjectService
 					title = appTitle;
 				}
 				else {
-					title = appTitle + " - " + getProjectName() + " - " + projectFile; //$NON-NLS-1$ //$NON-NLS-2$
+					String pn = getProjectName();
+					title = appTitle + " - " + ((pn == null || pn.isEmpty())?("Unnamed"):(pn)) + " - " + projectFile;
 				}
 				
 				if (changed) {
@@ -544,7 +545,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 		project.setCreated(new Date());
 		project.setAuthor(System.getProperty("user.name"));
 		project.setHaleVersion(haleVersion);
-		project.setName("Unnamed");
+		project.setName(null);
 		
 		return project;
 	}

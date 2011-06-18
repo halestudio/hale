@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.io.project;
 
+import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -63,6 +64,7 @@ public class SaveProjectDetailsPage extends IOWizardPage<ProjectWriter, ProjectW
 		name = new StringFieldEditor("name", "Project name:", page);
 		name.setEmptyStringAllowed(false);
 		name.setValidateStrategy(StringFieldEditor.VALIDATE_ON_KEY_STROKE);
+		name.setErrorMessage("The project name must be specified.");
 		name.setPage(this);
 		
 		// author
@@ -110,6 +112,19 @@ public class SaveProjectDetailsPage extends IOWizardPage<ProjectWriter, ProjectW
 		updateFields();
 	}
 	
+	/**
+	 * @see DialogPage#setVisible(boolean)
+	 */
+	@Override
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		
+		name.setFocus();
+		if (!name.isValid()) {
+			name.showErrorMessage();
+		}
+	}
+
 	private void updateFields() {
 		ProjectWriter writer = getWizard().getProvider();
 		if (writer != null && writer.getProject() != null) {
