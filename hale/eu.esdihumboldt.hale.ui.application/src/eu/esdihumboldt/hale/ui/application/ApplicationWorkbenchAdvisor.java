@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.ui.application;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IMemento;
@@ -45,6 +46,19 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	 */
 	private static final String TAG_RECENTFILES = "recentFiles"; //$NON-NLS-1$
 
+	private final OpenDocumentEventProcessor openDocProcessor;
+
+	/**
+	 * Create the application workbench advisor
+	 * @param openDocProcessor the processor for {@link SWT#OpenDocument} events
+	 */
+	public ApplicationWorkbenchAdvisor(
+			OpenDocumentEventProcessor openDocProcessor) {
+		super();
+		
+		this.openDocProcessor = openDocProcessor;
+	}
+
 	/**
 	 * @see WorkbenchAdvisor#createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer)
 	 */
@@ -70,6 +84,15 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		super.initialize(configurer);
 		
 		configurer.setSaveAndRestore(true);
+	}
+
+	/**
+	 * @see WorkbenchAdvisor#eventLoopIdle(Display)
+	 */
+	@Override
+	public void eventLoopIdle(Display display) {
+		openDocProcessor.openFiles();
+		super.eventLoopIdle(display);
 	}
 
 	/**

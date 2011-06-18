@@ -15,6 +15,7 @@ import java.net.URL;
 
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
@@ -28,9 +29,10 @@ import eu.esdihumboldt.hale.ui.common.crs.WKTPreferencesCRSFactory;
 import eu.esdihumboldt.hale.ui.util.proxy.ProxySettings;
 
 /**
- * This class controls all aspects of the application's execution
+ * This class controls all aspects of the application's execution.
  * 
  * @author Thorsten Reitz
+ * @author Simon Templer
  */
 public class Application implements IApplication {
 	
@@ -39,30 +41,10 @@ public class Application implements IApplication {
 	private static String basepath;
 
 	/**
-	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
+	 * @see IApplication#start(IApplicationContext)
 	 */
 	@Override
 	public Object start(IApplicationContext context) {
-		// set up log4j logger manually if necessary
-//		if (!Logger.getRootLogger().getAllAppenders().hasMoreElements()) {
-//			Appender appender = new ConsoleAppender(
-//					new PatternLayout("%d{ISO8601} %5p %C{1}:%L %m%n"), 
-//					ConsoleAppender.SYSTEM_OUT );
-//			appender.setName("A1");
-//			Logger.getRootLogger().addAppender(appender);
-//			
-//			_log.info("No Logging configuration available, setting up " +
-//					"programmatically.");
-//		}
-		
-		// set up log4j logger for GeoTools
-//		Logging.ALL.setLoggerFactory(Log4JLoggerFactory.getInstance());
-//		Logger.getLogger(Log4JLogger.class).setLevel(Level.WARN);
-//		// provide information on HALE version to console.
-//		_log.info("HALE Version: " 
-//				+ HALEActivator.getDefault().getBundle().getVersion().toString());
-//		Logger.getRootLogger().setLevel(Level.WARN);
-		
 		// install SLF4J JUL bridge
 		SLF4JBridgeHandler.install();
 		
@@ -83,7 +65,6 @@ public class Application implements IApplication {
 		Application.basepath = location_path;
 		
 		// read and set proxy settings
-		
 		try {	        
 			ProxySettings.install();
 		}
@@ -93,9 +74,16 @@ public class Application implements IApplication {
 		
 		// initialize UI
 		Display display = PlatformUI.createDisplay();
+		
+		// register listener for OpenDoc events
+		OpenDocumentEventProcessor openDocProcessor = 
+			new OpenDocumentEventProcessor();
+		display.addListener(SWT.OpenDocument, openDocProcessor);
+		
+		// run application
 		try {
 			int returnCode = PlatformUI.createAndRunWorkbench(
-					display, new ApplicationWorkbenchAdvisor());
+					display, new ApplicationWorkbenchAdvisor(openDocProcessor));
 			if (returnCode == PlatformUI.RETURN_RESTART) {
 				return IApplication.EXIT_RESTART;
 			}
@@ -107,7 +95,7 @@ public class Application implements IApplication {
 	}
 
 	/**
-	 * @see org.eclipse.equinox.app.IApplication#stop()
+	 * @see IApplication#stop()
 	 */
 	@Override
 	public void stop() {
@@ -130,6 +118,6 @@ public class Application implements IApplication {
 	 * @return the application base path
 	 */
 	public static String getBasePath() {
-		return Application.basepath;
+		return basepath;
 	}
 }
