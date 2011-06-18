@@ -23,7 +23,10 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -57,6 +60,7 @@ import eu.esdihumboldt.hale.ui.io.advisor.IOAdvisorFactory;
 import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
 import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
 import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
+import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
@@ -135,8 +139,6 @@ public class ProjectServiceImpl extends AbstractProjectService
 	private final ProjectConfigurationService configurationService = new ProjectConfigurationService();
 	
 	private boolean changed = false;
-	
-	private static final ThreadLocal<IProgressMonitor> parentMonitor = new ThreadLocal<IProgressMonitor>();
 	
 	/**
 	 * Default constructor
@@ -232,11 +234,36 @@ public class ProjectServiceImpl extends AbstractProjectService
 	 * Execute a set of I/O configurations
 	 * @param configurations the I/O configurations
 	 */
-	protected void executeConfigurations(List<IOConfiguration> configurations) {
+	protected void executeConfigurations(final List<IOConfiguration> configurations) {
 		//TODO sort by dependencies
 		
-		for (IOConfiguration conf : configurations) {
-			executeConfiguration(conf);
+		// combine inside job (or with progress monitor?) if no monitor is running
+		if (ThreadProgressMonitor.getCurrent() == null) {
+			Job job = new Job("Load I/O configurations") {
+				
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					ThreadProgressMonitor.register(monitor);
+					try {
+						monitor.beginTask("Load I/O configurations", configurations.size());
+						for (IOConfiguration conf : configurations) {
+							executeConfiguration(conf);
+							monitor.worked(1);
+						}
+						return new Status(IStatus.OK, HALEUIPlugin.PLUGIN_ID, "Loaded I/O configurations");
+					} finally {
+						monitor.done();
+						ThreadProgressMonitor.remove(monitor);
+					}
+				}
+			};
+			job.setUser(true);
+			job.schedule();
+		}
+		else {
+			for (IOConfiguration conf : configurations) {
+				executeConfiguration(conf);
+			}
 		}
 	}
 
@@ -280,10 +307,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException,
 					InterruptedException {
-				boolean ownMonitor = parentMonitor.get() == null;
-				if (ownMonitor) {
-					parentMonitor.set(monitor);
-				}
+				ThreadProgressMonitor.register(monitor);
 				try {
 					// use advisor to configure provider
 					advisor.prepareProvider(provider);
@@ -301,13 +325,11 @@ public class ProjectServiceImpl extends AbstractProjectService
 				} catch (Exception e) {
 					log.error("Error executing an I/O provider.", e);
 				} finally {
-					if (ownMonitor) {
-						parentMonitor.remove();
-					}
+					ThreadProgressMonitor.remove(monitor);
 				}
 			}
 		};
-		IProgressMonitor pm = parentMonitor.get();
+		IProgressMonitor pm = ThreadProgressMonitor.getCurrent();
 		if (pm != null) {
 			try {
 				op.run(new SubProgressMonitor(pm, 0));
