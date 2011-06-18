@@ -12,41 +12,23 @@
 
 package eu.esdihumboldt.hale.io.xsd.content;
 
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import eu.esdihumboldt.hale.core.io.tester.AbstractXmlTester;
-
 import javax.xml.XMLConstants;
 
+import eu.esdihumboldt.hale.core.io.tester.XmlRootElementTester;
+
 /**
- * Contenttype-Tester class for XSD-files
+ * Content type tester for XML schemas. Matches the root element name.
  * 
  * @author Patrick Lieb
  * 
  */
-public class XsdContentTypeTester extends AbstractXmlTester {
-
-	@Override
-	protected boolean testReader(XMLStreamReader reader)
-			throws XMLStreamException {
-
-		boolean rightNS = false;
-		boolean rightName = false;
-		
-		while (reader.hasNext()) {
-			int event = reader.next();
-			if (event == XMLStreamConstants.START_ELEMENT) {
-				rightName = reader.getLocalName().equals("schema");
-				System.out.println(reader.getLocalName());
-				if (reader.getNamespaceURI() == null)
-					return false;
-					rightNS = reader.getNamespaceURI().equals(
-									XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			}
-			return rightNS && rightName;
-		}
-		return false;
+public class XsdContentTypeTester extends XmlRootElementTester {
+	
+	/**
+	 * Default constructor
+	 */
+	public XsdContentTypeTester() {
+		super("schema", XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	}
+
 }
