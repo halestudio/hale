@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A content type definition may contain one content type, the id is required -->
+<contentType id="HaleProject">
+	<!-- Default display name -->
+	<defaultName>HALE project (up to 2.1.1)</defaultName>
+	<!-- Translated display names -->
+	<name>
+		<locale language="de" country="" />
+		<value>HALE-Projekt (bis 2.1.1)</value>
+	</name>
+	<!-- File extensions -->
+	<fileExtension>xml</fileExtension>
+	<!-- Tester class name -->
+	<testerClass>eu.esdihumboldt.hale.io.project.jaxb.HaleProjectContentTester</testerClass>
+</contentType>
