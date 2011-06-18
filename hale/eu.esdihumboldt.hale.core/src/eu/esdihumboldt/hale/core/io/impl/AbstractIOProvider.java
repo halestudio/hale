@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import eu.esdihumboldt.hale.core.io.ContentType;
+import eu.esdihumboldt.hale.core.io.HaleIO;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.ProgressIndicator;
@@ -90,17 +91,17 @@ public abstract class AbstractIOProvider implements IOProvider {
 			IOException;
 	
 	/**
-	 * Get the content type name. By default returns the content type identifier.
+	 * Get the content type name.
 	 * 
 	 * @return the content type name
 	 */
 	protected String getTypeName() {
 		ContentType ct = getContentType();
 		if (ct != null) {
-			return ct.toString();
+			return HaleIO.getDisplayName(ct);
 		}
 		
-		return getDefaultContentType().toString();
+		return HaleIO.getDisplayName(getDefaultContentType());
 	}
 
 	/**
