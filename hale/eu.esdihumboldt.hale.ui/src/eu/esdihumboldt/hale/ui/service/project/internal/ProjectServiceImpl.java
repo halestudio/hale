@@ -37,6 +37,7 @@ import org.osgi.framework.Version;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import de.cs3d.util.logging.ATransaction;
 import de.fhg.igd.osgi.util.configuration.AbstractConfigurationService;
 import de.fhg.igd.osgi.util.configuration.AbstractDefaultConfigurationService;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
@@ -53,6 +54,7 @@ import eu.esdihumboldt.hale.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.core.io.project.model.Project;
 import eu.esdihumboldt.hale.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.core.io.report.IOReport;
+import eu.esdihumboldt.hale.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.hale.ui.io.advisor.IOAdvisorExtension;
@@ -306,6 +308,8 @@ public class ProjectServiceImpl extends AbstractProjectService
 			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException,
 					InterruptedException {
+				IOReporter reporter = provider.createReporter();
+				ATransaction trans = log.begin(reporter.getTaskName());
 				ThreadProgressMonitor.register(monitor);
 				try {
 					// use advisor to configure provider
@@ -320,11 +324,14 @@ public class ProjectServiceImpl extends AbstractProjectService
 					rs.addReport(report);
 					
 					// handle results
-					advisor.handleResults(provider);
+					if (report.isSuccess()) {
+						advisor.handleResults(provider);
+					}
 				} catch (Exception e) {
 					log.error("Error executing an I/O provider.", e);
 				} finally {
 					ThreadProgressMonitor.remove(monitor);
+					trans.end();
 				}
 			}
 		};
@@ -344,6 +351,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException,
 					InterruptedException {
+				ATransaction trans = log.begin("Clean project");
 				monitor.beginTask("Clean project", IProgressMonitor.UNKNOWN);
 				try {
 					synchronized (this) {
@@ -355,6 +363,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 					notifyClean();
 				} finally {
 					monitor.done();
+					trans.end();
 				}
 			}
 		};
