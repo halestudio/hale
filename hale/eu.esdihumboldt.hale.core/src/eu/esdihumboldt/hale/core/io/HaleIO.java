@@ -74,6 +74,48 @@ public abstract class HaleIO {
 	}
 	
 	/**
+	 * Find an I/O provider factory
+	 * @param <P> the provider interface type
+	 * @param <T> the provider factory interface type 
+	 * 
+	 * @param clazz the provider factory interface class
+	 * @param contentType the content type the provider must match, may be 
+	 *   <code>null</code> if providerId is set
+	 * @param providerId the id of the provider to use, may be <code>null</code>
+	 *   if contentType is set
+	 * @return the I/O provider factory or <code>null</code> if no matching 
+	 *   I/O provider factory is found
+	 */
+	public static <P extends IOProvider, T extends IOProviderFactory<P>> T findIOProviderFactory(
+			Class<T> clazz, ContentType contentType, String providerId) {
+		Preconditions.checkArgument(contentType != null || providerId != null);
+		
+		Collection<T> factories = getProviderFactories(clazz);
+		if (contentType != null) {
+			factories = filterFactories(factories, contentType);
+		}
+		
+		T result = null;
+		
+		if (providerId != null) {
+			for (T factory : factories) {
+				if (factory.getIdentifier().equals(providerId)) {
+					result = factory;
+					break;
+				}
+			}
+		}
+		else {
+			//TODO choose priority based?
+			if (!factories.isEmpty()) {
+				result = factories.iterator().next();
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
 	 * Creates an I/O provider instance
 	 * @param <P> the provider interface type
 	 * @param <T> the provider factory interface type 
@@ -88,29 +130,8 @@ public abstract class HaleIO {
 	 */
 	public static <P extends IOProvider, T extends IOProviderFactory<P>> P createIOProvider(
 			Class<T> clazz, ContentType contentType, String providerId) {
-		Preconditions.checkArgument(contentType != null || providerId != null);
-		
-		Collection<T> factories = getProviderFactories(clazz);
-		if (contentType != null) {
-			factories = filterFactories(factories, contentType);
-		}
-		
-		P result = null;
-		
-		if (providerId != null) {
-			for (T factory : factories) {
-				if (factory.getIdentifier().equals(providerId)) {
-					result = factory.createProvider();
-					break;
-				}
-			}
-		}
-		else {
-			//TODO choose priority based?
-			if (!factories.isEmpty()) {
-				result = factories.iterator().next().createProvider();
-			}
-		}
+		T factory = findIOProviderFactory(clazz, contentType, providerId);
+		P result = (factory == null)?(null):(factory.createProvider());
 		
 		if (result != null && contentType != null) {
 			result.setContentType(contentType);
@@ -120,7 +141,7 @@ public abstract class HaleIO {
 	}
 	
 	/**
-	 * Find an I/O provider instance for the given input
+	 * Find the content type for the given input
 	 * @param <P> the provider interface type
 	 * @param <T> the provider factory interface type 
 	 * 
@@ -129,10 +150,10 @@ public abstract class HaleIO {
 	 *   if the file name is not <code>null</code>
 	 * @param filename the file name, may be <code>null</code> if the input
 	 *   supplier is not <code>null</code>
-	 * @return the I/O provider or <code>null</code> if no matching I/O provider 
+	 * @return the content type or <code>null</code> if no matching content type 
 	 *   is found
 	 */
-	public static <P extends IOProvider, T extends IOProviderFactory<P>> P findIOProvider(
+	public static <P extends IOProvider, T extends IOProviderFactory<P>> ContentType findContentType(
 			Class<T> clazz, InputSupplier<? extends InputStream> in, String filename) {
 		Collection<T> providers = getProviderFactories(clazz);
 		
@@ -151,7 +172,28 @@ public abstract class HaleIO {
 		}
 		
 		//TODO choose?
-		ContentType contentType = types.iterator().next();
+		return types.iterator().next();
+	}
+	
+	/**
+	 * Find an I/O provider instance for the given input
+	 * @param <P> the provider interface type
+	 * @param <T> the provider factory interface type 
+	 * 
+	 * @param clazz the provider factory interface class
+	 * @param in the input supplier to use for testing, may be <code>null</code>
+	 *   if the file name is not <code>null</code>
+	 * @param filename the file name, may be <code>null</code> if the input
+	 *   supplier is not <code>null</code>
+	 * @return the I/O provider or <code>null</code> if no matching I/O provider 
+	 *   is found
+	 */
+	public static <P extends IOProvider, T extends IOProviderFactory<P>> P findIOProvider(
+			Class<T> clazz, InputSupplier<? extends InputStream> in, String filename) {
+		ContentType contentType = findContentType(clazz, in, filename);
+		if (contentType == null) {
+			return null;
+		}
 		
 		return HaleIO.createIOProvider(clazz, contentType, null);
 	}
