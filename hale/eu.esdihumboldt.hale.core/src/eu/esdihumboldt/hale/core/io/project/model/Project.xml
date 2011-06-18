@@ -47,7 +47,7 @@
 					</field>
 					<field name="value"
 						type="string">
-						<bind-xml name="value" node="attribute" />
+						<bind-xml node="text" />
 					</field>
 				</class>
 			</bind-xml>
@@ -85,7 +85,7 @@
 					</field>
 					<field name="value"
 						type="string">
-						<bind-xml name="value" node="attribute" />
+						<bind-xml node="text" />
 					</field>
 				</class>
 			</bind-xml>
