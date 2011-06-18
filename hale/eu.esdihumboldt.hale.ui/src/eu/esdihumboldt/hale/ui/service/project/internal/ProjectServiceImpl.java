@@ -155,6 +155,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 				
 				synchronized (ProjectServiceImpl.this) {
 					main = provider.getProject();
+					updatePaths(main);
 					projectFile = new File(provider.getSource().getLocation());
 					changed = false;
 					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(RecentFilesService.class);
@@ -169,6 +170,11 @@ public class ProjectServiceImpl extends AbstractProjectService
 				// notify listeners
 				Map<String, ProjectFile> projectFiles = provider.getProjectFiles(); //TODO store somewhere for later use?
 				notifyAfterLoad(projectFiles);
+			}
+
+			private void updatePaths(Project main) {
+				//TODO check if project file has been moved and if paths of included file resources must be updated (i.e. they don't exist at the given location)
+				//XXX maybe even offer a file dialog to search for the file if fixing the path is not possible
 			}
 		};
 		
