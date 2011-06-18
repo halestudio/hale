@@ -468,15 +468,18 @@ public class ProjectServiceImpl extends AbstractProjectService
 	 */
 	@Override
 	public void save() {
+		File projectFile;
+		IOConfiguration saveConfig;
+		synchronized (this) {
+			projectFile = this.projectFile;
+			saveConfig = main.getSaveConfiguration();
+		}
+		
 		if (projectFile != null) {
 			Collection<ProjectWriterFactory> providers = 
 				HaleIO.getProviderFactories(ProjectWriterFactory.class);
 			
 			// use configuration from previous save if possible
-			IOConfiguration saveConfig;
-			synchronized (this) {
-				saveConfig = main.getSaveConfiguration();
-			}
 			if (saveConfig != null) {
 				// get provider ...
 				ProjectWriter writer = null;
