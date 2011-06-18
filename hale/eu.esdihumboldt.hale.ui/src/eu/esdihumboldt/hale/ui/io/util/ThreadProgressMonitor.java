@@ -13,8 +13,14 @@
 package eu.esdihumboldt.hale.ui.io.util;
 
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Stores current {@link IProgressMonitor}s used in a thread. Allows subtasking
@@ -70,6 +76,40 @@ public class ThreadProgressMonitor {
 		
 			// remove given monitor
 			mons.removeLast();
+		}
+	}
+
+	/**
+	 * Run the given operation in a forked thread with a progress monitor dialog 
+	 * or in the current thread with a sub progress monitor if possible.
+	 * @param op the operation to execute
+	 * @param isCancelable if the operation can be canceled
+	 * @throws Exception if any error occurs executing the operation
+	 */
+	public static void runWithProgressDialog(final IRunnableWithProgress op,
+			final boolean isCancelable) throws Exception {
+		IProgressMonitor pm = getCurrent();
+		if (pm == null) {
+			final Display display = PlatformUI.getWorkbench().getDisplay();
+			final AtomicReference<Exception> error = new AtomicReference<Exception>();
+			display.syncExec(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						new ProgressMonitorDialog(display.getActiveShell()).run(true, 
+					    		isCancelable, op);
+					} catch (Exception e) {
+						error.set(e);
+					}
+				}
+			});
+			if (error.get() != null) {
+				throw error.get();
+			}
+		}
+		else {
+			op.run(new SubProgressMonitor(pm, 0, 
+					SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK));
 		}
 	}
 

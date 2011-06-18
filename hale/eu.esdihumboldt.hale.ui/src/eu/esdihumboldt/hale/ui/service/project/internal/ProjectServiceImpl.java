@@ -300,8 +300,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 	}
 
 	private void executeProvider(final IOProvider provider, @SuppressWarnings("rawtypes") final IOAdvisor advisor) {
-		final Display display = PlatformUI.getWorkbench().getDisplay();
-		final IRunnableWithProgress op = new IRunnableWithProgress() {
+		IRunnableWithProgress op = new IRunnableWithProgress() {
 			
 			@SuppressWarnings("unchecked")
 			@Override
@@ -329,28 +328,10 @@ public class ProjectServiceImpl extends AbstractProjectService
 				}
 			}
 		};
-		IProgressMonitor pm = ThreadProgressMonitor.getCurrent();
-		if (pm != null) {
-			try {
-				op.run(new SubProgressMonitor(pm, 0));
-			} catch (Throwable e) {
-				log.error("Error executing an I/O provider.", e);
-			}
-		}
-		else {
-			//TODO instead in job? (exclusive execution)
-			display.syncExec(new Runnable() {
-				
-				@Override
-				public void run() {
-					try {
-						new ProgressMonitorDialog(display.getActiveShell()).run(true, 
-					    		provider.isCancelable(), op);
-					} catch (Throwable e) {
-						log.error("Error executing an I/O provider.", e);
-					}
-				}
-			});
+		try {
+			ThreadProgressMonitor.runWithProgressDialog(op, provider.isCancelable());
+		} catch (Exception e) {
+			log.error("Error executing an I/O provider.", e);
 		}
 	}
 
@@ -359,13 +340,30 @@ public class ProjectServiceImpl extends AbstractProjectService
 	 */
 	@Override
 	public void clean() {
-		synchronized (this) {
-			main = createDefaultProject();
-			projectFile = null;
-//			changed = false;
+		final IRunnableWithProgress op = new IRunnableWithProgress() {
+			@Override
+			public void run(IProgressMonitor monitor) throws InvocationTargetException,
+					InterruptedException {
+				monitor.beginTask("Clean project", IProgressMonitor.UNKNOWN);
+				try {
+					synchronized (this) {
+						main = createDefaultProject();
+						projectFile = null;
+						changed = false;
+					}
+					updateWindowTitle();
+					notifyClean();
+				} finally {
+					monitor.done();
+				}
+			}
+		};
+		
+		try {
+			ThreadProgressMonitor.runWithProgressDialog(op, false);
+		} catch (Exception e) {
+			log.error("Error cleaning the project.", e);
 		}
-		updateWindowTitle();
-		notifyClean();
 	}
 
 	/**
