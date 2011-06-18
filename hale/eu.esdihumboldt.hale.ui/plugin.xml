@@ -90,9 +90,6 @@
                serviceClass="eu.esdihumboldt.hale.ui.service.report.ReportService">
          </service>
          <service
-               serviceClass="eu.esdihumboldt.hale.ui.service.config.ConfigSchemaService">
-         </service>
-         <service
                serviceClass="eu.esdihumboldt.hale.ui.service.instance.InstanceService">
          </service>
          <service
