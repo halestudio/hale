@@ -9,7 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.ui.service.project.internal.legacy;
+package eu.esdihumboldt.hale.io.project.jaxb;
 
 import java.io.File;
 import java.net.URI;
@@ -32,6 +32,10 @@ import eu.esdihumboldt.commons.goml.align.Alignment;
 import eu.esdihumboldt.commons.goml.oml.io.OmlRdfGenerator;
 import eu.esdihumboldt.hale.instance.geometry.CodeDefinition;
 import eu.esdihumboldt.hale.instance.geometry.WKTDefinition;
+import eu.esdihumboldt.hale.io.project.jaxb.generated.ConfigSection;
+import eu.esdihumboldt.hale.io.project.jaxb.generated.HaleProject;
+import eu.esdihumboldt.hale.io.project.jaxb.generated.InstanceData;
+import eu.esdihumboldt.hale.io.project.jaxb.generated.MappedSchema;
 import eu.esdihumboldt.hale.mapping.io.HaleOmlRdfGenerator;
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
 import eu.esdihumboldt.hale.schema.geometry.CRSDefinition;
@@ -39,10 +43,6 @@ import eu.esdihumboldt.hale.ui.service.config.ConfigSchemaService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
-import eu.esdihumboldt.hale.ui.service.project.internal.generated.ConfigSection;
-import eu.esdihumboldt.hale.ui.service.project.internal.generated.HaleProject;
-import eu.esdihumboldt.hale.ui.service.project.internal.generated.InstanceData;
-import eu.esdihumboldt.hale.ui.service.project.internal.generated.MappedSchema;
 
 /**
  * The {@link ProjectGenerator} serializes all project info to an xml file.

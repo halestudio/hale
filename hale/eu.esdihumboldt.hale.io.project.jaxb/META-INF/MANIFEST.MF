@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Support for legacy projects based on JAXB
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.project.jaxb
+Bundle-Version: 2.2.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: eu.esdihumboldt.hale.io.project.jaxb.generated;x-internal:=true

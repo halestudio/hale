@@ -6,7 +6,7 @@
 //
 
 
-package eu.esdihumboldt.hale.ui.service.project.internal.generated;
+package eu.esdihumboldt.hale.io.project.jaxb.generated;
 
 import java.util.ArrayList;
 import java.util.List;

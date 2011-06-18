@@ -6,7 +6,7 @@
 //
 
 
-package eu.esdihumboldt.hale.ui.service.project.internal.generated;
+package eu.esdihumboldt.hale.io.project.jaxb.generated;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

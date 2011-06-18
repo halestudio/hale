@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.service.project.internal.legacy;
+package eu.esdihumboldt.hale.io.project.jaxb;
 
 import java.io.File;
 import java.net.URI;
@@ -38,6 +38,7 @@ import eu.esdihumboldt.hale.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.instance.geometry.CodeDefinition;
 import eu.esdihumboldt.hale.instance.geometry.WKTDefinition;
+import eu.esdihumboldt.hale.io.project.jaxb.generated.HaleProject;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.hale.ui.internal.Messages;
 import eu.esdihumboldt.hale.ui.io.legacy.InstanceDataImportWizard;
@@ -46,7 +47,6 @@ import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
-import eu.esdihumboldt.hale.ui.service.project.internal.generated.HaleProject;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.util.ExceptionHelper;
