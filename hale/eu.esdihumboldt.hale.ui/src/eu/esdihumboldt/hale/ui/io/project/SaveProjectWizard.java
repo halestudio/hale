@@ -45,12 +45,12 @@ public class SaveProjectWizard extends ExportWizard<ProjectWriter, ProjectWriter
 		super.updateConfiguration(provider);
 		
 		// project has been set and can be adapted
+		
 		// populate and set the save configuration
 		IOConfiguration saveConfiguration = new IOConfiguration();
 		saveConfiguration.setAdvisorId(ADVISOR_PROJECT_SAVE);
 		saveConfiguration.setProviderId(getProviderFactory().getIdentifier());
 		saveConfiguration.setProviderType(getFactoryClass());
-//		saveConfiguration.setLocation(location); XXX needed?
 		provider.storeConfiguration(saveConfiguration.getProviderConfiguration());
 		provider.getProject().setSaveConfiguration(saveConfiguration);
 	}
