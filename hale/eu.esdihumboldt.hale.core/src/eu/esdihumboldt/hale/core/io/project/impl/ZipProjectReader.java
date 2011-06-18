@@ -110,7 +110,7 @@ public class ZipProjectReader extends AbstractImportProvider implements ProjectR
 					} catch (Exception e) {
 						// fail if main project file cannot be loaded 
 						throw new IOProviderConfigurationException(
-								"Source is no valid project file");
+								"Source is no valid project file", e);
 					}
 				}
 				else if (project != null) {
