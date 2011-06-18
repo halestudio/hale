@@ -24,7 +24,6 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
-import eu.esdihumboldt.hale.cache.Request;
 import eu.esdihumboldt.hale.ui.application.internal.Messages;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
@@ -34,6 +33,7 @@ import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
  * application (menus, toolbars, perspectives, etc).
  * 
  * @author Thorsten Reitz 
+ * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
@@ -77,9 +77,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	 */
 	@Override
 	public boolean preShutdown() {
-		// Cache shutdown
-		Request.getInstance().shutdown();
-		
+		// ask for save if thee are changes
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
 		if (ps.isChanged()) {
 			Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
