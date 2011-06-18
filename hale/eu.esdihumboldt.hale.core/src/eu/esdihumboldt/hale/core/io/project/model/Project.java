@@ -127,6 +127,11 @@ public class Project {
 	private Date modified;
 	
 	/**
+	 * A project description
+	 */
+	private String description;
+	
+	/**
 	 * The configuration the project was saved with
 	 */
 	private IOConfiguration saveConfiguration;
@@ -249,6 +254,20 @@ public class Project {
 	 */
 	public void setSaveConfiguration(IOConfiguration saveConfiguration) {
 		this.saveConfiguration = saveConfiguration;
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
 }

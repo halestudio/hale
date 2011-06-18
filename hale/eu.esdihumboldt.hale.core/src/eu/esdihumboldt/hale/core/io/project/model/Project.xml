@@ -13,6 +13,10 @@
 			<bind-xml name="author" node="element" />
 		</field>
 		
+		<field name="description" type="string" required="false">
+			<bind-xml name="description" node="element" />
+		</field>
+		
 		<field name="haleVersion" type="string" handler="eu.esdihumboldt.hale.core.io.project.model.internal.VersionFieldHandler">
 			<bind-xml name="version" node="attribute" />
 		</field>
