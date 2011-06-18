@@ -23,7 +23,18 @@ package eu.esdihumboldt.hale.core.io;
 public interface IOAdvisor<T extends IOProvider> {
 
 	/**
-	 * Update the provider configuration before the execution.
+	 * Prepare the I/O provider when it is created. This may be executed even if
+	 * for the provider no execution takes place.<br>
+	 * <br>
+	 * This for instance allows configuration pages on IOWizards to base on 
+	 * this preparation.
+	 * 
+	 * @param provider the I/O provider
+	 */
+	public void prepareProvider(T provider);
+	
+	/**
+	 * Update the provider configuration directly before the execution.
 	 * 
 	 * @param provider the I/O provider 
 	 */

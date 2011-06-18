@@ -40,6 +40,7 @@ import eu.esdihumboldt.hale.core.io.HaleIO;
 import eu.esdihumboldt.hale.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.core.io.project.ProjectReaderFactory;
 import eu.esdihumboldt.hale.core.io.project.ProjectWriter;
@@ -142,12 +143,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 		main = createDefaultProject();
 		
 		// create advisors
-		openProjectAdvisor = new IOAdvisor<ProjectReader>() {
-			
-			@Override
-			public void updateConfiguration(ProjectReader provider) {
-				// do nothing
-			}
+		openProjectAdvisor = new AbstractIOAdvisor<ProjectReader>() {
 			
 			@Override
 			public void handleResults(ProjectReader provider) {
@@ -176,19 +172,24 @@ public class ProjectServiceImpl extends AbstractProjectService
 				//TODO check if project file has been moved and if paths of included file resources must be updated (i.e. they don't exist at the given location)
 				//XXX maybe even offer a file dialog to search for the file if fixing the path is not possible
 			}
+			
 		};
 		
-		saveProjectAdvisor = new IOAdvisor<ProjectWriter>() {
+		saveProjectAdvisor = new AbstractIOAdvisor<ProjectWriter>() {
 			
 			@Override
-			public void updateConfiguration(ProjectWriter provider) {
+			public void prepareProvider(ProjectWriter provider) {
 				synchronized (ProjectServiceImpl.this) {
 					provider.setProject(main);
-					main.setModified(new Date());
-					Map<String, ProjectFile> projectFiles = new HashMap<String, ProjectFile>();
-					notifyBeforeSave(projectFiles); // get additional files from listeners
-					provider.setProjectFiles(projectFiles);
 				}
+			}
+
+			@Override
+			public void updateConfiguration(ProjectWriter provider) {
+				provider.getProject().setModified(new Date());
+				Map<String, ProjectFile> projectFiles = new HashMap<String, ProjectFile>();
+				notifyBeforeSave(projectFiles); // get additional files from listeners
+				provider.setProjectFiles(projectFiles);
 			}
 			
 			@Override
@@ -278,6 +279,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 					InterruptedException {
 				try {
 					// use advisor to configure provider
+					advisor.prepareProvider(provider);
 					advisor.updateConfiguration(provider);
 					
 					// execute

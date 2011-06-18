@@ -16,6 +16,7 @@ import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.core.io.IOProvider;
+import eu.esdihumboldt.hale.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
@@ -25,7 +26,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
  * Advisor for schema import to the {@link SchemaService}
  * @author Simon Templer
  */
-public class SchemaImportAdvisor implements IOAdvisor<SchemaReader> {
+public class SchemaImportAdvisor extends AbstractIOAdvisor<SchemaReader> {
 
 	private final SchemaSpaceID spaceID;
 
@@ -40,10 +41,10 @@ public class SchemaImportAdvisor implements IOAdvisor<SchemaReader> {
 	}
 
 	/**
-	 * @see IOAdvisor#updateConfiguration(IOProvider)
+	 * @see IOAdvisor#prepareProvider(IOProvider)
 	 */
 	@Override
-	public void updateConfiguration(SchemaReader provider) {
+	public void prepareProvider(SchemaReader provider) {
 		// set shared types XXX this is not fixed yet
 		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		provider.setSharedTypes(ss.getSchemas(spaceID));

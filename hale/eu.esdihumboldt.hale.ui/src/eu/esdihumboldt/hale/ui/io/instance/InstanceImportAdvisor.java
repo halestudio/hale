@@ -16,6 +16,7 @@ import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.core.io.IOProvider;
+import eu.esdihumboldt.hale.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
@@ -25,13 +26,13 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
  * Advisor for importing source instances
  * @author Simon Templer
  */
-public class InstanceImportAdvisor implements IOAdvisor<InstanceReader> {
+public class InstanceImportAdvisor extends AbstractIOAdvisor<InstanceReader> {
 
 	/**
-	 * @see IOAdvisor#updateConfiguration(IOProvider)
+	 * @see IOAdvisor#prepareProvider(IOProvider)
 	 */
 	@Override
-	public void updateConfiguration(InstanceReader provider) {
+	public void prepareProvider(InstanceReader provider) {
 		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		provider.setSourceSchema(ss.getSchemas(SchemaSpaceID.SOURCE));
 	}

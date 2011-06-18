@@ -305,6 +305,7 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	public P getProvider() {
 		if (provider == null && factory != null) {
 			provider = factory.createProvider();
+			advisor.prepareProvider(provider);
 		}
 		
 		return provider;
