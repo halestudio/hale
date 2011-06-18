@@ -38,6 +38,16 @@ public class SaveProjectWizard extends ExportWizard<ProjectWriter, ProjectWriter
 	}
 
 	/**
+	 * @see ExportWizard#addPages()
+	 */
+	@Override
+	public void addPages() {
+		super.addPages();
+		
+		addPage(new SaveProjectDetailsPage());
+	}
+
+	/**
 	 * @see IOWizard#updateConfiguration(IOProvider)
 	 */
 	@Override
