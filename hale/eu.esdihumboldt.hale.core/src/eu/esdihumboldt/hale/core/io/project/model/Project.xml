@@ -14,7 +14,12 @@
 		</field>
 		
 		<field name="description" type="string" required="false">
-			<bind-xml name="description" node="element" />
+			<bind-xml name="description" node="element">
+				<property>
+					<name>xml:space</name>
+					<value>preserve</value>
+				</property>
+			</bind-xml>
 		</field>
 		
 		<field name="haleVersion" type="string" handler="eu.esdihumboldt.hale.core.io.project.model.internal.VersionFieldHandler">
