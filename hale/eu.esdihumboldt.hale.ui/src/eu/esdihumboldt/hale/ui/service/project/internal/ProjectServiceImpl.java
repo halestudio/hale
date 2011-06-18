@@ -335,16 +335,6 @@ public class ProjectServiceImpl extends AbstractProjectService
 			IOAdvisorFactory advisorFactory = IOAdvisorExtension.getInstance().getFactory(conf.getAdvisorId());
 			try {
 				IOAdvisor<?> advisor = advisorFactory.createExtensionObject();
-				// configure location
-//				if (provider instanceof ImportProvider) {
-//					((ImportProvider) provider).setSource(new DefaultInputSupplier(conf.getLocation()));
-//				}
-//				else if (provider instanceof ExportProvider) {
-//					((ExportProvider) provider).setTarget(new FileIOSupplier(new File(conf.getLocation())));
-//				}
-//				else {
-//					log.warn("Could not set location on I/O provider.");
-//				}
 				// configure settings
 				provider.loadConfiguration(conf.getProviderConfiguration());
 				// execute provider
@@ -600,17 +590,6 @@ public class ProjectServiceImpl extends AbstractProjectService
 		conf.setAdvisorId(advisorFactory.getIdentifier());
 		conf.setProviderId(providerId);
 		conf.setProviderType(providerType);
-//		URI loc = null;
-//		if (provider instanceof ImportProvider) {
-//			loc = ((ImportProvider) provider).getSource().getLocation();
-//		}
-//		else if (provider instanceof ExportProvider) {
-//			loc = ((ExportProvider) provider).getTarget().getLocation();
-//		}
-//		if (loc == null) {
-//			throw new IllegalStateException("Could not extract location from I/O provider.");
-//		}
-//		conf.setLocation(loc);
 		conf.getDependencies().addAll(advisorFactory.getDependencies());
 		provider.storeConfiguration(conf.getProviderConfiguration());
 		

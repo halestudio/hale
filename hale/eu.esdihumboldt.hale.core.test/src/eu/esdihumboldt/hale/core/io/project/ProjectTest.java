@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.net.URI;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -72,8 +71,6 @@ public class ProjectTest {
 		conf1.setAdvisorId(advisorId1 = "some advisor");
 		String providerId1;
 		conf1.setProviderId(providerId1 = "some provider");
-		URI location1;
-		conf1.setLocation(location1 = URI.create("http://www.example.com"));
 		String depend1;
 		conf1.getDependencies().add(depend1 = "some dependency");
 		String depend2;
@@ -93,8 +90,6 @@ public class ProjectTest {
 		conf2.setAdvisorId(advisorId2 = "a certain advisor");
 		String providerId2;
 		conf2.setProviderId(providerId2 = "a special provider");
-		URI location2;
-		conf2.setLocation(location2 = URI.create("http://www.example.com/specials"));
 		Class<ProjectReaderFactory> type2;
 		conf2.setProviderType(type2 = ProjectReaderFactory.class);
 		
@@ -121,7 +116,6 @@ public class ProjectTest {
 		
 		assertEquals(advisorId1, c1.getAdvisorId());
 		assertEquals(providerId1, c1.getProviderId());
-		assertEquals(location1, c1.getLocation());
 		assertEquals(2, c1.getDependencies().size());
 		assertTrue(c1.getDependencies().contains(depend1));
 		assertTrue(c1.getDependencies().contains(depend2));
@@ -135,7 +129,6 @@ public class ProjectTest {
 		
 		assertEquals(advisorId2, c2.getAdvisorId());
 		assertEquals(providerId2, c2.getProviderId());
-		assertEquals(location2, c2.getLocation());
 		assertEquals(type2, c2.getProviderType());
 	}
 

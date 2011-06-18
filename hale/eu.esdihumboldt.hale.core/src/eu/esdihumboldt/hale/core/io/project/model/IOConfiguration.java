@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.core.io.project.model;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -35,8 +34,6 @@ public class IOConfiguration {
 	private final Map<String, String> providerConfiguration = new HashMap<String, String>();
 	
 	private final Set<String> dependencies = new HashSet<String>();
-	
-	private URI location;
 	
 	private Class<? extends IOProviderFactory<?>> providerType;
 
@@ -66,20 +63,6 @@ public class IOConfiguration {
 	 */
 	public void setProviderId(String providerId) {
 		this.providerId = providerId;
-	}
-
-	/**
-	 * @return the location
-	 */
-	public URI getLocation() {
-		return location;
-	}
-
-	/**
-	 * @param location the location to set
-	 */
-	public void setLocation(URI location) {
-		this.location = location;
 	}
 
 	/**
