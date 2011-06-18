@@ -63,6 +63,8 @@ public class ProjectTest {
 		project.setModified(modified = new Date());
 		Version haleVersion;
 		project.setHaleVersion(haleVersion = new Version("2.2.0.alpha"));
+		String desc;
+		project.setDescription(desc = "Hallo Welt!\nBist Du auch hier?\nÖhm.");
 		
 		IOConfiguration conf1;
 		project.getConfigurations().add(conf1 = new IOConfiguration());
@@ -95,6 +97,7 @@ public class ProjectTest {
 		
 		// write project
 		File projectFile = tmp.newFile("project.xml");
+		System.out.println(projectFile.getAbsolutePath());
 		
 		Project.save(project, new FileOutputStream(projectFile));
 		
@@ -107,6 +110,7 @@ public class ProjectTest {
 		assertEquals(created, p2.getCreated());
 		assertEquals(modified, p2.getModified());
 		assertEquals(haleVersion, p2.getHaleVersion());
+		assertEquals(desc, p2.getDescription());
 		
 		assertEquals(2, p2.getConfigurations().size());
 		
