@@ -184,6 +184,9 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 	@Override
 	public String getToolTip(Object element) {
 		if (element instanceof SchemaItem) {
+			if (((SchemaItem) element).getDefinition() == null) {
+				return "";
+			}
 			String description = ((SchemaItem) element).getDefinition().getDescription();
 			if (description != null && !description.isEmpty()) {
 				return description;
