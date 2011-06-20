@@ -47,6 +47,8 @@ public abstract class DefaultReporter<T extends Message> implements Reporter<T> 
 	
 	private final List<T> warnings = new ArrayList<T>();
 	
+	private Date startTime;
+	
 	private Date timestamp;
 	
 	private final boolean doLog;
@@ -177,6 +179,9 @@ public abstract class DefaultReporter<T extends Message> implements Reporter<T> 
 	public void setSuccess(boolean success) {
 		this.success = success;
 		
+		if (startTime == null) {
+			startTime = timestamp;
+		}
 		timestamp = new Date();
 	}
 
@@ -186,6 +191,14 @@ public abstract class DefaultReporter<T extends Message> implements Reporter<T> 
 	@Override
 	public boolean isSuccess() {
 		return success;
+	}
+
+	/**
+	 * @see Report#getStartTime()
+	 */
+	@Override
+	public Date getStartTime() {
+		return startTime;
 	}
 
 }

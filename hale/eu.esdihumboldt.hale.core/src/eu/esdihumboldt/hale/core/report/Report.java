@@ -54,6 +54,15 @@ public interface Report<T extends Message> {
 	public Date getTimestamp();
 	
 	/**
+	 * Get the start time of the report.
+	 * This is optional. If a start time is present the {@link #getTimestamp()}
+	 * can be seen as an end time and used to compute a duration.
+	 * 
+	 * @return the start time or <code>null</code>
+	 */
+	public Date getStartTime();
+	
+	/**
 	 * Get the warning messages
 	 * 
 	 * @return the warning messages
