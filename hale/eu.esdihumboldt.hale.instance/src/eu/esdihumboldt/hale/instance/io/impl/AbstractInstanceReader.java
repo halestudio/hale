@@ -14,7 +14,11 @@ package eu.esdihumboldt.hale.instance.io.impl;
 
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.impl.AbstractImportProvider;
+import eu.esdihumboldt.hale.instance.geometry.CRSDefinitionManager;
+import eu.esdihumboldt.hale.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.schema.geometry.CRSDefinition;
+import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeIndex;
 
 /**
@@ -27,6 +31,8 @@ public abstract class AbstractInstanceReader extends AbstractImportProvider impl
 		InstanceReader {
 	
 	private TypeIndex sourceSchema;
+	
+	private CRSProvider defaultCRSProvider;
 
 	/**
 	 * @see InstanceReader#setSourceSchema(TypeIndex)
@@ -55,6 +61,45 @@ public abstract class AbstractInstanceReader extends AbstractImportProvider impl
 		if (sourceSchema == null) {
 			fail("No source schema given for import");
 		}
+	}
+
+	/**
+	 * @see InstanceReader#setDefaultCRSProvider(CRSProvider)
+	 */
+	@Override
+	public void setDefaultCRSProvider(CRSProvider crsProvider) {
+		this.defaultCRSProvider = crsProvider;
+	}
+
+	/**
+	 * Get the CRS definition for values of the given property definition.
+	 * @param property the property definition
+	 * @return the CRS definition or <code>null</code> if it can't be determined
+	 */
+	protected CRSDefinition getDefaultCRS(PropertyDefinition property) {
+		CRSDefinition result = null;
+		
+		// first, try configuration
+		// configuration for property
+		final String pkey = PREFIX_PARAM_CRS + property.getIdentifier();
+		result = CRSDefinitionManager.getInstance().parse(getParameter(pkey));
+		// overall configuration
+		if (result == null) {
+			result = CRSDefinitionManager.getInstance().parse(getParameter(
+					PARAM_DEFAULT_CRS)); 
+		}
+		
+		if (result == null && defaultCRSProvider != null) {
+			// consult default CRS provider
+			result = defaultCRSProvider.getCRS(property);
+			if (result != null) {
+				// store in configuration
+				setParameter(pkey, CRSDefinitionManager.getInstance().asString(
+						result));
+			}
+		}
+		
+		return result;
 	}
 
 }

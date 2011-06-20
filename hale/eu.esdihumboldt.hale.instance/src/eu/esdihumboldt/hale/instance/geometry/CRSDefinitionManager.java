@@ -63,6 +63,10 @@ public class CRSDefinitionManager {
 	 * @return the CRS definition instance or <code>null</code>
 	 */
 	public CRSDefinition parse(String value) {
+		if (value == null || value.isEmpty()) {
+			return null;
+		}
+		
 		for (CRSDefinitionFactory<?> factory : OsgiUtils.getServices(CRSDefinitionFactory.class)) {
 			String prefix = factory.getIdentifier() + ":"; //$NON-NLS-1$
 			if (value.startsWith(prefix)) {
