@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -62,14 +63,12 @@ public class SchemaSelection implements ISelection {
 	 * @return the matching cells and cell infos
 	 */
 	public Map<ICell, CellInfo> getCellsForSelection() {
-		Map<ICell, CellInfo> cells = new HashMap<ICell, CellInfo>();
+		Map<ICell, CellInfo> cells = new LinkedHashMap<ICell, CellInfo>();
 		
 		AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
 			
-		Set<SchemaItem> sourceItems = new LinkedHashSet<SchemaItem>(this
-				.getSourceItems());
-		Set<SchemaItem> targetItems = new LinkedHashSet<SchemaItem>(this
-				.getTargetItems());
+		Set<SchemaItem> sourceItems = new LinkedHashSet<SchemaItem>(this.getSourceItems());
+		Set<SchemaItem> targetItems = new LinkedHashSet<SchemaItem>(this.getTargetItems());
 
 		sourceItems.addAll(getChildren(sourceItems));
 		targetItems.addAll(getChildren(targetItems));
@@ -86,6 +85,7 @@ public class SchemaSelection implements ISelection {
 				Collection<SchemaItem> sourceCandidates = getSchemaItems(e1, SchemaType.SOURCE);
 				
 				if (sourceCandidates != null && !sourceCandidates.isEmpty()) {
+					System.err.println(sourceCandidates.toString());
 					SchemaItem source = containsAny(sourceItems, sourceCandidates);
 					
 					if (source != null) {
