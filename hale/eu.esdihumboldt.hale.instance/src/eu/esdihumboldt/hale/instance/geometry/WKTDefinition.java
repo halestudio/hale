@@ -23,6 +23,8 @@ import eu.esdihumboldt.hale.schema.geometry.CRSDefinition;
  */
 public class WKTDefinition implements CRSDefinition {
 
+	private static final long serialVersionUID = -201452960771910038L;
+	
 	private final String wkt;
 	private CoordinateReferenceSystem crs;
 

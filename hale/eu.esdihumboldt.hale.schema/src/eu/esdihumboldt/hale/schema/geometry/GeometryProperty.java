@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.schema.geometry;
 
+import java.io.Serializable;
+
 import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
@@ -23,13 +25,14 @@ import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
  * @author Simon Templer
  * @since 2.2
  */
-public interface GeometryProperty<T extends Geometry> {
+public interface GeometryProperty<T extends Geometry> extends Serializable {
 	
 	/**
 	 * Get the definition of the coordinate reference system associated with
 	 * the geometry.
 	 * 
-	 * @return the definition of the coordinate reference system
+	 * @return the definition of the coordinate reference system or 
+	 *   <code>null</code>
 	 */
 	public CRSDefinition getCRSDefinition();
 	

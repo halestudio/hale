@@ -23,6 +23,8 @@ import eu.esdihumboldt.hale.schema.geometry.CRSDefinition;
  */
 public class CodeDefinition implements CRSDefinition {
 
+	private static final long serialVersionUID = -7637649402983702957L;
+	
 	private final String code;
 	private CoordinateReferenceSystem crs;
 
