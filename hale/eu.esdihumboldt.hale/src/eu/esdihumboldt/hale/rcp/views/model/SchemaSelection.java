@@ -85,7 +85,6 @@ public class SchemaSelection implements ISelection {
 				Collection<SchemaItem> sourceCandidates = getSchemaItems(e1, SchemaType.SOURCE);
 				
 				if (sourceCandidates != null && !sourceCandidates.isEmpty()) {
-					System.err.println(sourceCandidates.toString());
 					SchemaItem source = containsAny(sourceItems, sourceCandidates);
 					
 					if (source != null) {
