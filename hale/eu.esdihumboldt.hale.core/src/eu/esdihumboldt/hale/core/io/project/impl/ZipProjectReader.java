@@ -153,6 +153,7 @@ public class ZipProjectReader extends AbstractImportProvider implements ProjectR
 			zip.close();
 		}
 		
+		progress.end();
 		reporter.setSuccess(true);
 		return reporter;
 	}
