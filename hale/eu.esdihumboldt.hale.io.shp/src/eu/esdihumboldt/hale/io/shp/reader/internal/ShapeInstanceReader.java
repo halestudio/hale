@@ -21,7 +21,12 @@ import org.geotools.data.DataStore;
 import org.geotools.data.FileDataStoreFinder;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.feature.type.Name;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.IOProvider;
@@ -31,6 +36,8 @@ import eu.esdihumboldt.hale.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.core.io.report.IOReport;
 import eu.esdihumboldt.hale.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.instance.geometry.CRSDefinitionUtil;
+import eu.esdihumboldt.hale.instance.geometry.GeometryPropertyImpl;
 import eu.esdihumboldt.hale.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.instance.io.impl.AbstractInstanceReader;
 import eu.esdihumboldt.hale.instance.model.Instance;
@@ -40,6 +47,7 @@ import eu.esdihumboldt.hale.instance.model.impl.DefaultInstanceCollection;
 import eu.esdihumboldt.hale.instance.model.impl.OInstance;
 import eu.esdihumboldt.hale.io.shp.ShapefileIO;
 import eu.esdihumboldt.hale.io.shp.internal.Messages;
+import eu.esdihumboldt.hale.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 
 /**
@@ -119,6 +127,42 @@ public class ShapeInstanceReader extends AbstractInstanceReader {
 			Object value = property.getValue();
 			QName propertyName = new QName(property.getName().getNamespaceURI(), 
 					property.getName().getLocalPart());
+			
+			// wrap geometry
+			if (value instanceof Geometry) {
+				// try to determine CRS
+				CoordinateReferenceSystem crs = null;
+				
+				// try user data of geometry
+				Object userData = ((Geometry) value).getUserData();
+				if (userData instanceof CoordinateReferenceSystem) {
+					crs = (CoordinateReferenceSystem) userData;
+				}
+				
+				if (crs == null) {
+					// try CRS associated to geometry descriptor
+					AttributeDescriptor pd = feature.getFeatureType().getDescriptor(property.getName());
+					if (pd != null && pd instanceof GeometryDescriptor) {
+						crs = ((GeometryDescriptor) pd).getCoordinateReferenceSystem();
+					}
+				}
+				
+				if (crs == null) {
+					// try CRS associated to feature type
+					crs = feature.getFeatureType().getCoordinateReferenceSystem();
+				}
+				
+				CRSDefinition crsDef;
+				if (crs != null) {
+					crsDef = CRSDefinitionUtil.createDefinition(crs);
+				}
+				else {
+					//FIXME fallback mechanism
+					crsDef = null;
+				}
+				value = new GeometryPropertyImpl<Geometry>(crsDef, (Geometry) value);
+			}
+			
 			//TODO safe add? in respect to binding, existence of property
 			instance.addProperty(propertyName, value);
 		}

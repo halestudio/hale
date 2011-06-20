@@ -23,6 +23,8 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.Name;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
@@ -33,6 +35,7 @@ import eu.esdihumboldt.hale.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.io.shp.ShapefileIO;
 import eu.esdihumboldt.hale.io.shp.internal.Messages;
+import eu.esdihumboldt.hale.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.schema.io.impl.AbstractSchemaReader;
 import eu.esdihumboldt.hale.schema.model.Schema;
@@ -158,7 +161,14 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 			
 			// set constraints
 			typeDef.setConstraint(MappableFlag.DISABLED); // not mappable
-			typeDef.setConstraint(Binding.get(type.getBinding())); // binding
+			// binding
+			if (Geometry.class.isAssignableFrom(type.getBinding())) {
+				// create geometry binding
+				typeDef.setConstraint(Binding.get(GeometryProperty.class));
+			}
+			else {
+				typeDef.setConstraint(Binding.get(type.getBinding()));
+			}
 			typeDef.setConstraint(SimpleFlag.ENABLED); // simple type
 			
 			// set metadata

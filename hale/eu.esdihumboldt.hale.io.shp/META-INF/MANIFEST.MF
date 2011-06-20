@@ -6,16 +6,20 @@ Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/ShapeSchemaReader.xml, OSGI-INF/ShapeInstanceReader.xml
 Import-Package: com.google.common.io;version="1.6.0",
+ com.vividsolutions.jts,
+ com.vividsolutions.jts.geom,
  eu.esdihumboldt.hale.core.io,
  eu.esdihumboldt.hale.core.io.impl,
  eu.esdihumboldt.hale.core.io.report,
  eu.esdihumboldt.hale.core.io.report.impl,
  eu.esdihumboldt.hale.core.io.supplier,
  eu.esdihumboldt.hale.core.report,
+ eu.esdihumboldt.hale.instance.geometry,
  eu.esdihumboldt.hale.instance.io,
  eu.esdihumboldt.hale.instance.io.impl,
  eu.esdihumboldt.hale.instance.model,
  eu.esdihumboldt.hale.instance.model.impl,
+ eu.esdihumboldt.hale.schema.geometry,
  eu.esdihumboldt.hale.schema.io,
  eu.esdihumboldt.hale.schema.io.impl,
  eu.esdihumboldt.hale.schema.model,
@@ -25,3 +29,7 @@ Import-Package: com.google.common.io;version="1.6.0",
  eu.esdihumboldt.hale.schema.model.impl,
  org.eclipse.osgi.util
 Require-Bundle: org.geotools;bundle-version="2.6.4"
+Export-Package: eu.esdihumboldt.hale.io.shp,
+ eu.esdihumboldt.hale.io.shp.internal;x-internal:=true,
+ eu.esdihumboldt.hale.io.shp.reader,
+ eu.esdihumboldt.hale.io.shp.reader.internal;x-internal:=true
