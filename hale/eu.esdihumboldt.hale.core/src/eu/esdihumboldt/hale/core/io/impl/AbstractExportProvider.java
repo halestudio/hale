@@ -36,11 +36,6 @@ import eu.esdihumboldt.hale.core.io.supplier.LocatableOutputSupplier;
 public abstract class AbstractExportProvider extends AbstractIOProvider implements
 		ExportProvider {
 	
-	/**
-	 * The configuration parameter name for the target URI
-	 */
-	public static final String PARAM_TARGET = "target";
-	
 	private LocatableOutputSupplier<? extends OutputStream> target;
 
 	/**

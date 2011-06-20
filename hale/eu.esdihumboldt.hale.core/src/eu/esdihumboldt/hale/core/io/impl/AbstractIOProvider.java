@@ -38,11 +38,6 @@ import eu.esdihumboldt.hale.core.io.report.IOReporter;
 public abstract class AbstractIOProvider implements IOProvider {
 	
 	/**
-	 * The configuration parameter name for the content type 
-	 */
-	public static final String PARAM_CONTENT_TYPE = "contentType";
-	
-	/**
 	 * The configuration parameters
 	 */
 	private final Map<String, String> parameters = new HashMap<String, String>();

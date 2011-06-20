@@ -29,6 +29,11 @@ import eu.esdihumboldt.hale.core.io.report.IOReporter;
 public interface IOProvider {
 	
 	/**
+	 * The configuration parameter name for the content type 
+	 */
+	public static final String PARAM_CONTENT_TYPE = "contentType";
+	
+	/**
 	 * Execute the I/O provider.
 	 * 
 	 * @param progress the progress indicator, may be <code>null</code>

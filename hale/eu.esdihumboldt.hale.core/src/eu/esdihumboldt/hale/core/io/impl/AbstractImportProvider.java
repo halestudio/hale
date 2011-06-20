@@ -36,11 +36,6 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 		ImportProvider {
 	
 	/**
-	 * The configuration parameter name for the source URI
-	 */
-	public static final String PARAM_SOURCE = "source";
-	
-	/**
 	 * The source
 	 */
 	private LocatableInputSupplier<? extends InputStream> source;

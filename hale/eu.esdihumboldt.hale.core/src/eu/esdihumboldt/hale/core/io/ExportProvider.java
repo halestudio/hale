@@ -26,6 +26,11 @@ import eu.esdihumboldt.hale.core.io.supplier.LocatableOutputSupplier;
 public interface ExportProvider extends IOProvider {
 	
 	/**
+	 * The configuration parameter name for the target URI
+	 */
+	public static final String PARAM_TARGET = "target";
+	
+	/**
 	 * Set the export target
 	 * 
 	 * @param target the target output supplier
