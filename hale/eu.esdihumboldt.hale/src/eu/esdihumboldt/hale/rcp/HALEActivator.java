@@ -15,6 +15,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import eu.esdihumboldt.hale.rcp.utils.proxy.ProxySettings;
+
 /**
  * The activator class controls the plug-in life cycle
  * 
@@ -45,6 +47,9 @@ public class HALEActivator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		
+		// setup proxy settings
+		ProxySettings.install();
 	}
 
 	/**
