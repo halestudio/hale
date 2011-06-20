@@ -48,6 +48,7 @@ import eu.esdihumboldt.hale.instance.model.impl.OInstance;
 import eu.esdihumboldt.hale.io.shp.ShapefileIO;
 import eu.esdihumboldt.hale.io.shp.internal.Messages;
 import eu.esdihumboldt.hale.schema.geometry.CRSDefinition;
+import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 
 /**
@@ -157,8 +158,14 @@ public class ShapeInstanceReader extends AbstractInstanceReader {
 					crsDef = CRSDefinitionUtil.createDefinition(crs);
 				}
 				else {
-					//FIXME fallback mechanism
-					crsDef = null;
+					// fallback to provider configuration
+					ChildDefinition<?> child = type.getChild(propertyName);
+					if (child != null && child.asProperty() != null) {
+						crsDef = getDefaultCRS(child.asProperty());
+					}
+					else {
+						crsDef = null;
+					}
 				}
 				value = new DefaultGeometryProperty<Geometry>(crsDef, (Geometry) value);
 			}
