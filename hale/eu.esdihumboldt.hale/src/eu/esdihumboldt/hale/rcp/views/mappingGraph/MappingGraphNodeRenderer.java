@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
 
@@ -36,6 +37,7 @@ import eu.esdihumboldt.hale.rcp.views.mapping.CellInfo;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationViewLabelProvider;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
+import eu.esdihumboldt.hale.rcp.wizards.augmentations.NullSchemaItem;
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.IEntity;
 
@@ -536,67 +538,52 @@ public class MappingGraphNodeRenderer {
 	 * @param schemaSelection gets drawn
 	 */
 	void drawNodesOnlyWithConnection(SchemaSelection schemaSelection) {
-		int y = 10;
-		if (!schemaSelection.getSourceItems().isEmpty()
-				&& !schemaSelection.getTargetItems().isEmpty()) {
-			for (final SchemaItem sourceSchemaItem : schemaSelection
-					.getSourceItems()) {
-				if (sourceSchemaItem.getEntity() == null) {
+		Map<ICell, CellInfo> selectionMap = schemaSelection.getCellsForSelection();
+		Iterator<Entry<ICell, CellInfo>> it = selectionMap.entrySet().iterator();
+		
+		// coordinates
+		int s_y = 10;
+		int t_x = this.mappingGraphView.getGraph().getSize().x * 2 / 3;
+		int t_y = 10;
+		
+		//itereate through all sets
+		while (it.hasNext()) {
+			Entry<ICell, CellInfo> item = it.next();
+			
+			Iterator<SchemaItem> source = item.getValue().getSourceItems().iterator();
+			while (source.hasNext()) {
+				SchemaItem schemaItem = source.next();
+				if (schemaItem instanceof NullSchemaItem) {
 					continue;
 				}
-
-				boolean existsOneTime = false;
-				for (final SchemaItem targetSchemaItem : schemaSelection
-						.getTargetItems()) {
-					if (existsOneTime) {
-						break;
-					}
-					Cell resultCell = null;
-					resultCell = ((Cell) this.mappingGraphView.getAlignmentService().getCell(
-							sourceSchemaItem.getEntity(), targetSchemaItem
-									.getEntity()));
-
-					// if sourceSchemaItem got a cell then save and draw!
-					if (resultCell != null) {
-						GraphNode graphNode = this.createGraphNode(10, y, sourceSchemaItem);
-
-						this.mappingGraphModel.getSourceNodeList().add(graphNode);
-						existsOneTime = true;
-						y = y + 30;
-					}
-				}
+				
+				// create GraphNode
+				GraphNode graphNode = this.createGraphNode(10, s_y, schemaItem);
+				
+				// add to source list
+				this.mappingGraphModel.getSourceNodeList().add(graphNode);
+				
+				//update coordinate
+				s_y = s_y + 30;
 			}
 			
-			y = 10;
-			int x = this.mappingGraphView.getGraph().getSize().x * 2 / 3;
-			for (SchemaItem targetSchemaItem : schemaSelection.getTargetItems()) {
-				if (targetSchemaItem.getEntity() == null) {
+			Iterator<SchemaItem> target = item.getValue().getTargetItems().iterator();
+			while (target.hasNext()) {
+				SchemaItem schemaItem = target.next();
+				if (schemaItem instanceof NullSchemaItem) {
 					continue;
 				}
-
-				boolean existsOneTime = false;
-				for (final SchemaItem sourceSchemaItem : schemaSelection
-						.getSourceItems()) {
-					if (existsOneTime) {
-						break;
-					}
-					Cell resultCell = null;
-					resultCell = ((Cell) this.mappingGraphView.getAlignmentService().getCell(
-							sourceSchemaItem.getEntity(), targetSchemaItem
-									.getEntity()));
-
-					// if sourceSchemaItem got a cell then save and draw!
-					if (resultCell != null) {
-						GraphNode graphNode = this.createGraphNode(x, y, targetSchemaItem);
-
-						this.mappingGraphModel.getTargetNodeList().add(graphNode);
-						existsOneTime = true;
-						y = y + 30;
-					}
-				}
+				
+				// create GraphNode
+				GraphNode graphNode = this.createGraphNode(t_x, t_y, schemaItem);
+				
+				// add to target list
+				this.mappingGraphModel.getTargetNodeList().add(graphNode);
+				
+				//update coordinate
+				t_y = t_y + 30;
 			}
 		}
-		int bp = 0;
 	}
 	
 	/**
