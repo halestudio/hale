@@ -18,6 +18,7 @@ import eu.esdihumboldt.hale.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.ui.io.instance.crs.DialogCRSProvider;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
@@ -35,6 +36,14 @@ public class InstanceImportAdvisor extends AbstractIOAdvisor<InstanceReader> {
 	public void prepareProvider(InstanceReader provider) {
 		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		provider.setSourceSchema(ss.getSchemas(SchemaSpaceID.SOURCE));
+	}
+
+	/**
+	 * @see AbstractIOAdvisor#updateConfiguration(IOProvider)
+	 */
+	@Override
+	public void updateConfiguration(InstanceReader provider) {
+		provider.setDefaultCRSProvider(new DialogCRSProvider());
 	}
 
 	/**
