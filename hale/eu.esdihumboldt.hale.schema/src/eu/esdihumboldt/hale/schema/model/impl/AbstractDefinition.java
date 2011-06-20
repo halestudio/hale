@@ -89,7 +89,7 @@ public abstract class AbstractDefinition<C> implements Definition<C>, Comparable
 	 * @param constraintType the constraint type
 	 * @return if the constraint is set explicitly
 	 */
-	protected boolean hasConstraint(Class<? extends C> constraintType) {
+	public boolean hasConstraint(Class<? extends C> constraintType) {
 		synchronized (constraints) {
 			return constraints.get(constraintType) != null;
 		}

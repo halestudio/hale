@@ -23,6 +23,9 @@ import javax.xml.namespace.QName;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.schema.model.DefinitionUtil;
+import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.schema.model.impl.internal.ConstraintOverrideGroupProperty;
+import eu.esdihumboldt.hale.schema.model.impl.internal.ConstraintOverrideProperty;
 
 /**
  * Default {@link DefinitionGroup} implementation used internally in 
@@ -112,13 +115,61 @@ public class DefaultGroup implements DefinitionGroup {
 		Collection<ChildDefinition<?>> result = new ArrayList<ChildDefinition<?>>();
 		
 		for (ChildDefinition<?> child : children) {
-			if (child.asGroup() != null && child.asGroup().allowFlatten()) {
-				// replace group with children
-				for (ChildDefinition<?> groupChild : child.asGroup().getDeclaredChildren()) {
-					result.add(DefinitionUtil.redeclareChild(groupChild, child.asGroup()));
+			boolean skipAdd = false;
+			if (child.asGroup() != null) {
+				if (child.asGroup().allowFlatten()) {
+					// prevent the group from being added
+					skipAdd = true;
+					
+					// replace group with children
+					for (ChildDefinition<?> groupChild : child.asGroup().getDeclaredChildren()) {
+						result.add(DefinitionUtil.redeclareChild(groupChild, 
+								child.asGroup().getDeclaringGroup()));
+					}
+				}
+				else if (child.asGroup().getDeclaredChildren().size() == 1) { // special case: group has exactly one child
+					// check the cardinality of the group child 
+					ChildDefinition<?> groupChild = child.asGroup().getDeclaredChildren().iterator().next();
+					Cardinality gcc = null;
+					if (groupChild.asProperty() != null) {
+						gcc = groupChild.asProperty().getConstraint(Cardinality.class);
+					}
+					else if (groupChild.asGroup() != null) {
+						gcc = groupChild.asGroup().getConstraint(Cardinality.class);
+					}
+					
+					if (gcc != null && gcc.getMinOccurs() == 1 && gcc.getMaxOccurs() == 1) {
+						// the cardinality of the group child is exactly one
+						// it can take on the group cardinality and replace the group
+						
+						// get group cardinality
+						Cardinality groupCardinality = child.asGroup().getConstraint(Cardinality.class);
+						
+						// redeclare group child
+						ChildDefinition<?> redeclaredChild = DefinitionUtil.redeclareChild(groupChild, 
+								child.asGroup().getDeclaringGroup());
+						
+						// set group cardinality on child
+						if (redeclaredChild.asGroup() != null) {
+							redeclaredChild = new ConstraintOverrideGroupProperty(
+									redeclaredChild.asGroup(), groupCardinality);
+						}
+						else if (redeclaredChild.asProperty() != null) { 
+							redeclaredChild = new ConstraintOverrideProperty(
+									redeclaredChild.asProperty(), groupCardinality);
+						}
+						
+						// prevent the group from being added
+						skipAdd = true;
+						
+						// add child
+						result.add(redeclaredChild);
+					}
 				}
 			}
-			else {
+			
+			if (!skipAdd) {
+				// add child as is
 				result.add(child);
 			}
 		}
