@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.instance.geometry;
+package eu.esdihumboldt.hale.instance.geometry.impl;
 
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -18,24 +18,24 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import eu.esdihumboldt.hale.schema.geometry.CRSDefinition;
 
 /**
- * CRS definition based on a code
+ * CRS definition based on WKT
  * @author Simon Templer
  */
-public class CodeDefinition implements CRSDefinition {
+public class WKTDefinition implements CRSDefinition {
 
-	private static final long serialVersionUID = -7637649402983702957L;
+	private static final long serialVersionUID = -201452960771910038L;
 	
-	private final String code;
+	private final String wkt;
 	private CoordinateReferenceSystem crs;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param code the CRS code (e.g. EPSG:4326)
+	 * @param wkt the WKT defining the CRS
 	 * @param crs the coordinate reference system, may be <code>null</code>
 	 */
-	public CodeDefinition(String code, CoordinateReferenceSystem crs) {
-		this.code = code;
+	public WKTDefinition(String wkt, CoordinateReferenceSystem crs) {
+		this.wkt = wkt;
 		this.crs = crs;
 	}
 
@@ -46,9 +46,9 @@ public class CodeDefinition implements CRSDefinition {
 	public CoordinateReferenceSystem getCRS() {
 		if (crs == null) {
 			try {
-				crs = CRS.decode(code);
+				crs = CRS.parseWKT(wkt);
 			} catch (Exception e) {
-				throw new IllegalStateException("Invalid CRS code", e);
+				throw new IllegalStateException("Invalid WKT for defining a CRS", e);
 			}
 		}
 		
@@ -56,12 +56,12 @@ public class CodeDefinition implements CRSDefinition {
 	}
 
 	/**
-	 * Get the CRS code
+	 * Get the WKT
 	 * 
-	 * @return the code
+	 * @return the well known text representation of the CRS
 	 */
-	public String getCode() {
-		return code;
+	public String getWkt() {
+		return wkt;
 	}
 
 }

@@ -37,7 +37,7 @@ import eu.esdihumboldt.hale.core.io.report.IOReport;
 import eu.esdihumboldt.hale.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.instance.geometry.CRSDefinitionUtil;
-import eu.esdihumboldt.hale.instance.geometry.GeometryPropertyImpl;
+import eu.esdihumboldt.hale.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.instance.io.impl.AbstractInstanceReader;
 import eu.esdihumboldt.hale.instance.model.Instance;
@@ -160,7 +160,7 @@ public class ShapeInstanceReader extends AbstractInstanceReader {
 					//FIXME fallback mechanism
 					crsDef = null;
 				}
-				value = new GeometryPropertyImpl<Geometry>(crsDef, (Geometry) value);
+				value = new DefaultGeometryProperty<Geometry>(crsDef, (Geometry) value);
 			}
 			
 			//TODO safe add? in respect to binding, existence of property

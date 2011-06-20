@@ -25,7 +25,7 @@ import eu.esdihumboldt.hale.schema.geometry.GeometryProperty;
  * 
  * @author Simon Templer
  */
-public class GeometryPropertyImpl<T extends Geometry> implements GeometryProperty<T> {
+public class DefaultGeometryProperty<T extends Geometry> implements GeometryProperty<T> {
 
 	private static final long serialVersionUID = 9160846585636648227L;
 	
@@ -41,7 +41,7 @@ public class GeometryPropertyImpl<T extends Geometry> implements GeometryPropert
 	 *   <code>null</code>
 	 * @param geometry the geometry
 	 */
-	public GeometryPropertyImpl(CRSDefinition crsDef, T geometry) {
+	public DefaultGeometryProperty(CRSDefinition crsDef, T geometry) {
 		super();
 		this.crsDef = crsDef;
 		this.geometry = geometry;

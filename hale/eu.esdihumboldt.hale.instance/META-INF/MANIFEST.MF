@@ -4,6 +4,7 @@ Bundle-Name: HALE Instance API
 Bundle-SymbolicName: eu.esdihumboldt.hale.instance
 Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/CodeDefinitionFactory.xml, OSGI-INF/WKTDefinitionFactory.xml
 Import-Package: com.google.common.base;version="1.6.0",
  com.google.common.io;version="1.6.0",
  com.orientechnologies.orient.core.db.record;version="1.0.0.RC1",
@@ -38,6 +39,8 @@ Import-Package: com.google.common.base;version="1.6.0",
  org.osgi.framework;version="1.3.0",
  org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale.instance.geometry,
+ eu.esdihumboldt.hale.instance.geometry.impl,
+ eu.esdihumboldt.hale.instance.geometry.impl.internal;x-internal:=true,
  eu.esdihumboldt.hale.instance.io,
  eu.esdihumboldt.hale.instance.io.impl,
  eu.esdihumboldt.hale.instance.model,
