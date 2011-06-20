@@ -32,6 +32,7 @@ import eu.esdihumboldt.commons.goml.align.Cell;
 import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.hale.rcp.HALEActivator;
+import eu.esdihumboldt.hale.rcp.views.mapping.CellInfo;
 import eu.esdihumboldt.hale.rcp.views.model.ModelNavigationViewLabelProvider;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaItem;
 import eu.esdihumboldt.hale.rcp.views.model.SchemaSelection;
@@ -535,7 +536,6 @@ public class MappingGraphNodeRenderer {
 	 * @param schemaSelection gets drawn
 	 */
 	void drawNodesOnlyWithConnection(SchemaSelection schemaSelection) {
-
 		int y = 10;
 		if (!schemaSelection.getSourceItems().isEmpty()
 				&& !schemaSelection.getTargetItems().isEmpty()) {
@@ -549,7 +549,7 @@ public class MappingGraphNodeRenderer {
 				for (final SchemaItem targetSchemaItem : schemaSelection
 						.getTargetItems()) {
 					if (existsOneTime) {
-						continue;
+						break;
 					}
 					Cell resultCell = null;
 					resultCell = ((Cell) this.mappingGraphView.getAlignmentService().getCell(
@@ -558,37 +558,7 @@ public class MappingGraphNodeRenderer {
 
 					// if sourceSchemaItem got a cell then save and draw!
 					if (resultCell != null) {
-						GraphNode graphNode = new GraphNode(this.mappingGraphView.getGraph(),
-								SWT.NONE, sourceSchemaItem.getEntity()
-										.getLocalname());
-						graphNode.setLocation(10, y);
-
-						// Set image
-						String imageKey = ModelNavigationViewLabelProvider
-								.getImageforTreeObjectType(sourceSchemaItem
-										.getType());
-						if (imageKey != null) {
-							Image image = AbstractUIPlugin
-									.imageDescriptorFromPlugin(
-											HALEActivator.PLUGIN_ID,
-											"/icons/" + imageKey).createImage(); //$NON-NLS-1$
-							graphNode.setImage(image);
-						}
-
-						graphNode.setData(sourceSchemaItem);
-
-						// Node Style
-						graphNode.setBorderWidth(2);
-						graphNode
-								.setBorderColor(this.display
-										.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
-						graphNode
-								.setBorderHighlightColor(this.display
-										.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
-						graphNode.setBackgroundColor(new Color(this.display,
-								250, 150, 150));
-						graphNode.setHighlightColor(new Color(this.display,
-								230, 70, 70));
+						GraphNode graphNode = this.createGraphNode(10, y, sourceSchemaItem);
 
 						this.mappingGraphModel.getSourceNodeList().add(graphNode);
 						existsOneTime = true;
@@ -596,7 +566,9 @@ public class MappingGraphNodeRenderer {
 					}
 				}
 			}
+			
 			y = 10;
+			int x = this.mappingGraphView.getGraph().getSize().x * 2 / 3;
 			for (SchemaItem targetSchemaItem : schemaSelection.getTargetItems()) {
 				if (targetSchemaItem.getEntity() == null) {
 					continue;
@@ -606,7 +578,7 @@ public class MappingGraphNodeRenderer {
 				for (final SchemaItem sourceSchemaItem : schemaSelection
 						.getSourceItems()) {
 					if (existsOneTime) {
-						continue;
+						break;
 					}
 					Cell resultCell = null;
 					resultCell = ((Cell) this.mappingGraphView.getAlignmentService().getCell(
@@ -615,37 +587,7 @@ public class MappingGraphNodeRenderer {
 
 					// if sourceSchemaItem got a cell then save and draw!
 					if (resultCell != null) {
-						GraphNode graphNode = new GraphNode(this.mappingGraphView.getGraph(),
-								SWT.NONE, targetSchemaItem.getEntity()
-										.getLocalname());
-						graphNode.setLocation(this.mappingGraphView.getGraph().getSize().x * 2 / 3, y);
-
-						// Set image
-						String imageKey = ModelNavigationViewLabelProvider
-								.getImageforTreeObjectType(targetSchemaItem
-										.getType());
-						if (imageKey != null) {
-							Image image = AbstractUIPlugin
-									.imageDescriptorFromPlugin(
-											HALEActivator.PLUGIN_ID,
-											"/icons/" + imageKey).createImage(); //$NON-NLS-1$
-							graphNode.setImage(image);
-						}
-
-						graphNode.setData(targetSchemaItem);
-
-						// Node Style
-						graphNode.setBorderWidth(2);
-						graphNode
-								.setBorderColor(this.display
-										.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
-						graphNode
-								.setBorderHighlightColor(this.display
-										.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
-						graphNode.setBackgroundColor(new Color(this.display,
-								250, 150, 150));
-						graphNode.setHighlightColor(new Color(this.display,
-								230, 70, 70));
+						GraphNode graphNode = this.createGraphNode(x, y, targetSchemaItem);
 
 						this.mappingGraphModel.getTargetNodeList().add(graphNode);
 						existsOneTime = true;
@@ -654,6 +596,7 @@ public class MappingGraphNodeRenderer {
 				}
 			}
 		}
+		int bp = 0;
 	}
 	
 	/**
@@ -756,5 +699,41 @@ public class MappingGraphNodeRenderer {
 			this.mappingGraphModel.setEntityNode(newEntityNode);
 			this.mappingGraphModel.getEntityNodeList().add(newEntityNode);
 		}
+	}
+	
+	/**
+	 * Create a GraphNode for {@link MappingGraphNodeRenderer#drawNodesOnlyWithConnection(SchemaSelection)}
+	 * 
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param item {@link SchemaItem}
+	 * 
+	 * @return {@link GraphNode}
+	 */
+	private GraphNode createGraphNode(int x, int y, SchemaItem item) {
+		GraphNode graphNode = new GraphNode(this.mappingGraphView.getGraph(),
+				SWT.NONE, item.getEntity().getLocalname());
+		graphNode.setLocation(x, y);
+
+		// Set image
+		String imageKey = ModelNavigationViewLabelProvider.getImageforTreeObjectType(item.getType());
+		if (imageKey != null) {
+			Image image = AbstractUIPlugin
+					.imageDescriptorFromPlugin(
+							HALEActivator.PLUGIN_ID,
+							"/icons/" + imageKey).createImage(); //$NON-NLS-1$
+			graphNode.setImage(image);
+		}
+
+		graphNode.setData(item);
+
+		// Node Style
+		graphNode.setBorderWidth(2);
+		graphNode.setBorderColor(this.display.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
+		graphNode.setBorderHighlightColor(this.display.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
+		graphNode.setBackgroundColor(new Color(this.display, 250, 150, 150));
+		graphNode.setHighlightColor(new Color(this.display, 230, 70, 70));
+		
+		return graphNode;
 	}
 }
