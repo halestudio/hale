@@ -15,3 +15,5 @@ Import-Package: de.fhg.igd.osgi.util,
 Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.1.0",
  org.apache.httpcomponents.httpcore;bundle-version="4.1.0"
 Export-Package: eu.esdihumboldt.hale.cache;uses:="net.sf.ehcache"
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: eu.esdihumboldt.hale.cache.Activator
