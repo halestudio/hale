@@ -14,6 +14,9 @@ package eu.esdihumboldt.hale.ui.io.advisor;
 
 import java.util.Set;
 
+import org.eclipse.core.expressions.Expression;
+import org.eclipse.ui.services.IEvaluationService;
+
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 import eu.esdihumboldt.hale.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.core.io.IOProvider;
@@ -54,5 +57,14 @@ public interface IOAdvisorFactory extends ExtensionObjectFactory<IOAdvisor<?>> {
 	 * @return if operations based on this advisor shall be remembered
 	 */
 	public boolean isProjectResource();
+	
+	/**
+	 * Get the expression that specifies whether the command to show the
+	 * I/O wizard for the advisor should be enabled.
+	 * @see IEvaluationService
+	 * @return the expression or <code>null</code> if the command should always
+	 *   be enabled 
+	 */
+	public Expression getEnabledWhen();
 	
 }

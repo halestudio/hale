@@ -105,6 +105,17 @@
                serviceClass="eu.esdihumboldt.hale.ui.service.schema.SchemaService">
          </service>
       </serviceFactory>
+      <sourceProvider
+            provider="eu.esdihumboldt.hale.ui.service.schema.internal.SchemaServiceSource">
+         <variable
+               name="hale.schemas.has_source"
+               priorityLevel="workbench">
+         </variable>
+         <variable
+               name="hale.schemas.has_target"
+               priorityLevel="workbench">
+         </variable>
+      </sourceProvider>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.MappingExport">
@@ -146,6 +157,14 @@
          <dependsOn
                advisor="eu.esdihumboldt.hale.ui.io.schema.source">
          </dependsOn>
+         <enabledWhen>
+            <with
+                  variable="hale.schemas.has_source">
+               <equals
+                     value="true">
+               </equals>
+            </with>
+         </enabledWhen>
       </advisor>
    </extension>
 

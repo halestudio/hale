@@ -12,11 +12,16 @@
 
 package eu.esdihumboldt.hale.ui.io.advisor;
 
+import org.eclipse.core.expressions.Expression;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.services.IEvaluationService;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -47,6 +52,20 @@ public class IOAdvisorContribution extends
 		 */
 		public IOWizardAction(IOAdvisorFactory factory) {
 			super(factory, IAction.AS_PUSH_BUTTON);
+			
+			Expression enabledWhen = factory.getEnabledWhen();
+			if (enabledWhen != null) {
+				IEvaluationService es = (IEvaluationService) PlatformUI.getWorkbench().getService(IEvaluationService.class);
+				es.addEvaluationListener(enabledWhen, new IPropertyChangeListener() {
+					
+					@Override
+					public void propertyChange(PropertyChangeEvent event) {
+						setEnabled((Boolean) event.getNewValue());
+					}
+				}, "enabled");
+				// listener should be removed when not needed, but there is no dispose method
+				// as AbstractExtensionContribution caches the action it is OK like this (the action is only created once per contribution)
+			}
 		}
 
 		/**

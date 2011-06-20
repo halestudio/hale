@@ -17,9 +17,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.expressions.ElementHandler;
+import org.eclipse.core.expressions.Expression;
+import org.eclipse.core.expressions.ExpressionConverter;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
 import de.fhg.igd.eclipse.util.extension.AbstractExtension;
 import de.fhg.igd.eclipse.util.extension.AbstractObjectDefinition;
@@ -36,6 +41,8 @@ import eu.esdihumboldt.hale.ui.io.IOWizard;
  * @author Simon Templer
  */
 public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdvisorFactory> {
+	
+	private static final ALogger log = ALoggerFactory.getLogger(IOAdvisorExtension.class);
 
 	/**
 	 * Factory for {@link IOAdvisor}s based on a {@link IConfigurationElement}
@@ -49,6 +56,29 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 		 */
 		protected ConfigurationFactory(IConfigurationElement conf) {
 			super(conf, "class");
+		}
+
+		/**
+		 * @see IOAdvisorFactory#getEnabledWhen()
+		 */
+		@Override
+		public Expression getEnabledWhen() {
+			IConfigurationElement[] children = conf.getChildren("enabledWhen");
+			if (children != null && children.length > 0) {
+				// get child of enabled when
+				children = children[0].getChildren();
+				
+				if (children != null && children.length > 0) {
+					try {
+						return ElementHandler.getDefault().create(ExpressionConverter.getDefault(),
+								children[0]);
+					} catch (CoreException e) {
+						log.error("Could not evaluate expression for action enablement.", e);
+					}
+				}
+			}
+			
+			return null;
 		}
 
 		/**
