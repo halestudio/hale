@@ -9,7 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.ui.service.instance.crs.internal;
+package eu.esdihumboldt.hale.ui.io.instance.crs;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -148,7 +148,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 	/**
 	 * Field editor for a CRS code
 	 */
-	private class CRSFieldEditor extends StringFieldEditor {
+	private static class CRSFieldEditor extends StringFieldEditor {
 		
 		private CoordinateReferenceSystem crs;
 
