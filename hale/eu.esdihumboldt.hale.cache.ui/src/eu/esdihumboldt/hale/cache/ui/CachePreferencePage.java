@@ -50,6 +50,7 @@ public class CachePreferencePage extends FieldEditorPreferencePage implements IW
 	 */
 	public CachePreferencePage() {
 		super(GRID);
+		prefs.setFilename("Cache");
 		setPreferenceStore(prefs);
 		
 		IConfigurationService org = OsgiUtils.getService(IConfigurationService.class);
