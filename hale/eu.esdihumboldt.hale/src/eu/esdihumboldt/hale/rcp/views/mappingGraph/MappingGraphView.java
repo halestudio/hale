@@ -610,6 +610,9 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	
 	private void drawMappingView() {
 		if(this.temporaryCellSelection != null){
+			if(this.temporaryCellSelection.isEmpty()) {
+				return;
+			}
 			SchemaSelection schemaSelection;
 			
 			//Schema will be built
