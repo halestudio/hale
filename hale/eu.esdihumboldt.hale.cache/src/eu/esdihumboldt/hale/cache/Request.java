@@ -137,6 +137,13 @@ public class Request {
 	}
 	
 	/**
+	 * @param uri to load from
+	 * 
+	 * @return {@link InputStream}
+	 * 
+	 * @throws URISyntaxException if the uri is malformed
+	 * @throws Exception may contain IOException
+	 * 
 	 * @see Request#get(URI)
 	 */
 	public InputStream get(String uri) throws URISyntaxException, Exception {
@@ -150,7 +157,7 @@ public class Request {
 	 * 
 	 * @return an {@link InputStream} to uri
 	 * 
-	 * @throws Exception
+	 * @throws Exception if something goes wrong
 	 */
 	public InputStream get(URI uri) throws Exception {
 		// check for local files
@@ -240,7 +247,7 @@ public class Request {
 	 * 
 	 * @return {@link InputStream}
 	 * 
-	 * @throws IOException
+	 * @throws IOException if the file could not be read
 	 */
 	private InputStream getLocal(URL file) throws IOException {
 		return file.openStream();
@@ -269,7 +276,7 @@ public class Request {
 	 * 
 	 * @return the whole content of in
 	 * 
-	 * @throws IOException
+	 * @throws IOException if the file could not be read
 	 */
 	public String streamToString(InputStream in, String encoding) throws IOException {
 		if (in != null) {
@@ -335,7 +342,7 @@ public class Request {
 
 	/**
 	 * 
-	 * @param enabled
+	 * @param enabled enabled
 	 */
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;

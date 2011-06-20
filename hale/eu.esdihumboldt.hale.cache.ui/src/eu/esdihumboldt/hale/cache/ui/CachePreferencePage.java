@@ -1,3 +1,15 @@
+/*
+ * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
+ * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * 
+ * For more information on the project, please refer to the this web site:
+ * http://www.esdi-humboldt.eu
+ * 
+ * LICENSE: For information on the license under which this program is 
+ * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
+ * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ */
+
 package eu.esdihumboldt.hale.cache.ui;
 
 import org.eclipse.core.runtime.Platform;
@@ -20,12 +32,22 @@ import de.fhg.igd.osgi.util.configuration.JavaPreferencesConfigurationService;
 import de.fhg.igd.osgi.util.configuration.NamespaceConfigurationServiceDecorator;
 import eu.esdihumboldt.hale.cache.Request;
 
+/**
+ * The preference page for cache settings.
+ * 
+ * @author Andreas Burchert
+ * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @version $Id$
+ */
 public class CachePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 	
 	private IConfigurationService org;
 	private static final String DELIMITER = "/";
 	private PreferenceStore prefs = new PreferenceStore();
 	
+	/**
+	 * Constructor.
+	 */
 	public CachePreferencePage() {
 		super(GRID);
 		setPreferenceStore(prefs);
@@ -80,7 +102,7 @@ public class CachePreferencePage extends FieldEditorPreferencePage implements IW
 			}
 			
 			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {}
+			public void widgetDefaultSelected(SelectionEvent e) {/* not needed */}
 		});
 		clearCache.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1));
 	}

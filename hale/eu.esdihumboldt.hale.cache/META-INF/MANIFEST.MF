@@ -10,7 +10,8 @@ Import-Package: de.fhg.igd.osgi.util,
  net.sf.ehcache.config,
  net.sf.ehcache.store,
  org.apache.http.client,
- org.apache.log4j
+ org.apache.log4j,
+ org.osgi.framework
 Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.1.0",
  org.apache.httpcomponents.httpcore;bundle-version="4.1.0"
 Export-Package: eu.esdihumboldt.hale.cache;uses:="net.sf.ehcache"
