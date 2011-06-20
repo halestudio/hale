@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -111,6 +110,7 @@ import eu.esdihumboldt.hale.schema.model.constraint.type.SimpleFlag;
 import eu.esdihumboldt.hale.schema.model.impl.AbstractDefinition;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultGroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultPropertyDefinition;
+import gnu.trove.TObjectIntHashMap;
 
 /**
  * The main functionality of this class is to load an XML schema file (XSD)
@@ -129,7 +129,7 @@ public class XmlSchemaReader
 	extends AbstractSchemaReader {
 	
 	/**
-	 * 
+	 * The display name constraint for choices
 	 */
 	private static final DisplayName DISPLAYNAME_CHOICE = new DisplayName("choice");
 
@@ -142,6 +142,12 @@ public class XmlSchemaReader
 	 * The XML definition index
 	 */
 	private XmlIndex index;
+	
+	/**
+	 * Holds the number of created groups for a parent. The parent identifier is 
+	 * mapped to the number of groups. 
+	 */
+	private TObjectIntHashMap<String> groupCounter;
 	
 	/**
 	 * The current reporter
@@ -214,11 +220,15 @@ public class XmlSchemaReader
 		
 		// create index
 		index = new XmlIndex(namespace, location);
+		// create group counter
+		groupCounter = new TObjectIntHashMap<String>();
 		
 		Set<String> imports = new HashSet<String>();
 		imports.add(location.toString());
 
 		loadSchema(location.toString(), xmlSchema, imports, progress, true);
+		
+		groupCounter.clear();
 		
 		reporter.setSuccess(true);
 		return reporter;
@@ -531,12 +541,9 @@ public class XmlSchemaReader
 			// create group only if necessary (sequences that appear exactly once will result in no group if not forced)
 			if (forceGroup || sequence.getMinOccurs() != 1 || sequence.getMaxOccurs() != 1) {
 				// create a sequence group
-				String sequenceName = sequence.getId();
-				if (sequenceName == null || sequenceName.isEmpty()) {
-					sequenceName = UUID.randomUUID().toString(); //FIXME name must be the same each time the schema is loaded!
-				}
+				QName sequenceName = createGroupName(declaringGroup, "sequence");
 				DefaultGroupPropertyDefinition sequenceGroup = new DefaultGroupPropertyDefinition(
-						new QName(sequenceName), declaringGroup, false);
+						sequenceName, declaringGroup, false);
 				// set cardinality
 				long max = (sequence.getMaxOccurs() == Long.MAX_VALUE)?(Cardinality.UNBOUNDED):(sequence.getMaxOccurs());
 				sequenceGroup.setConstraint(Cardinality.get(
@@ -573,12 +580,9 @@ public class XmlSchemaReader
 			XmlSchemaChoice choice = (XmlSchemaChoice) particle;
 			
 			// create a choice group
-			String choiceName = choice.getId();
-			if (choiceName == null || choiceName.isEmpty()) {
-				choiceName = UUID.randomUUID().toString(); //FIXME name must be the same each time the schema is loaded
-			}
+			QName choiceName = createGroupName(declaringGroup, "choice");
 			DefaultGroupPropertyDefinition choiceGroup = new DefaultGroupPropertyDefinition(
-					new QName(choiceName), declaringGroup, false); // no flatten allowed because of choice
+					choiceName, declaringGroup, false); // no flatten allowed because of choice
 			// set custom display name
 			choiceGroup.setConstraint(DISPLAYNAME_CHOICE);
 			// set cardinality
@@ -637,6 +641,22 @@ public class XmlSchemaReader
 					particle.getClass().getSimpleName(), null, 
 					particle.getLineNumber(), particle.getLinePosition()));
 		}
+	}
+
+	/**
+	 * Create a name for a group.
+	 * 
+	 * @param declaringGroup the declaring group
+	 * @param groupType the group type
+	 * @return the group name
+	 */
+	private QName createGroupName(DefinitionGroup declaringGroup, String groupType) {
+		int groupNumber;
+		synchronized (groupCounter) {
+			groupNumber = groupCounter.get(declaringGroup.getIdentifier()) + 1;
+			groupCounter.put(declaringGroup.getIdentifier(), groupNumber);
+		}
+		return new QName(declaringGroup.getIdentifier(), groupType + "_" + groupNumber);
 	}
 
 	/**
