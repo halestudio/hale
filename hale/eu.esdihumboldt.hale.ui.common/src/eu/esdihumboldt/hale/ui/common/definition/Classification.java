@@ -16,6 +16,7 @@ import java.util.Date;
 
 import com.vividsolutions.jts.geom.Geometry;
 
+import eu.esdihumboldt.hale.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.schema.model.Definition;
 import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
@@ -68,7 +69,8 @@ public enum Classification {
 						Date.class.isAssignableFrom(binding)) {
 					return NUMERIC_PROPERTY;
 				}
-				else if (Geometry.class.isAssignableFrom(binding)) { // additional checks?
+				else if (Geometry.class.isAssignableFrom(binding) ||
+						GeometryProperty.class.isAssignableFrom(binding)) { // additional checks?
 					return GEOMETRIC_PROPERTY;
 				}
 				
