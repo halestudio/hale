@@ -16,6 +16,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -24,14 +25,15 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
-import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
-import eu.esdihumboldt.hale.ui.service.UpdateMessage;
-import eu.esdihumboldt.hale.ui.service.project.ProjectService;
-import eu.esdihumboldt.hale.ui.views.report.service.ReportService;
-import eu.esdihumboldt.hale.ui.views.report.service.ReportServiceImpl;
+import eu.esdihumboldt.hale.core.report.Message;
+import eu.esdihumboldt.hale.core.report.Report;
+import eu.esdihumboldt.hale.ui.service.report.ReportListener;
+import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
 /**
  * The Transformation Report View.
@@ -39,7 +41,7 @@ import eu.esdihumboldt.hale.ui.views.report.service.ReportServiceImpl;
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ReportView extends ViewPart implements HaleServiceListener {
+public class ReportView extends ViewPart implements ReportListener<Report<Message>, Message> {
 
 	/**
 	 * The view ID
@@ -59,6 +61,8 @@ public class ReportView extends ViewPart implements HaleServiceListener {
 		
 //		ReportService reportService = (ReportService)PlatformUI.getWorkbench().getService(ReportService.class);
 //		reportService.addListener(this);
+		ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+		repService.addReportListener(this);
 		
 		// bar and TreeView
 		page.setLayout(new GridLayout(2, true));
@@ -75,10 +79,10 @@ public class ReportView extends ViewPart implements HaleServiceListener {
 		combo.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ReportServiceImpl reportService = (ReportServiceImpl)PlatformUI.getWorkbench().getService(ReportService.class);
+//				ReportServiceImpl reportService = (ReportServiceImpl)PlatformUI.getWorkbench().getService(ReportService.class);
 				
 				// gets the requested ReportEntry
-				viewer.setInput(reportService.getReport(combo.getSelectionIndex()));
+//				viewer.setInput(reportService.getReport(combo.getSelectionIndex()));
 			}
 			
 			@Override
@@ -93,10 +97,10 @@ public class ReportView extends ViewPart implements HaleServiceListener {
 		/* nothing */
 	}
 
-	@Override
+	/*
 	public void update(UpdateMessage<?> message) {
 		// get reportService
-		ReportServiceImpl reportService = (ReportServiceImpl)PlatformUI.getWorkbench().getService(ReportService.class);
+		ReportService reportService = (ReportService)PlatformUI.getWorkbench().getService(ReportService.class);
 		
 		// set new input
 		viewer.setInput(reportService.getLastReport());
@@ -112,6 +116,46 @@ public class ReportView extends ViewPart implements HaleServiceListener {
 		// add entry and select it
 		combo.add(reportService.getLastReport().getIdentifier()+": "+projectService.getProjectName()+" - "+id); //$NON-NLS-1$ //$NON-NLS-2$
 		combo.select(combo.getItemCount()-1);
+		
+	}*/
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportListener#getReportType()
+	 */
+	@Override
+	public Class getReportType() {
+		return Report.class;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportListener#getMessageType()
+	 */
+	@Override
+	public Class getMessageType() {
+		return Message.class;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportListener#reportAdded(eu.esdihumboldt.hale.ui.service.report.Report)
+	 */
+	@Override
+	public void reportAdded(final Report report) {
+		System.err.println(report.getTaskName()+" / "+report.getMessageType().getSimpleName());
+		
+		IWorkbench bench = PlatformUI.getWorkbench();
+		Display display = bench.getDisplay();
+		display.asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				try{
+					viewer.setInput(report);
+				} catch (NullPointerException e) {
+					System.err.println("NullPointer...");
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
 }

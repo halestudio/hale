@@ -50,6 +50,7 @@ public class ReportContentProvider implements ITreeContentProvider {
 
 	@Override
 	public void dispose() {
+		/* nothing */
 	}
 
 	@Override

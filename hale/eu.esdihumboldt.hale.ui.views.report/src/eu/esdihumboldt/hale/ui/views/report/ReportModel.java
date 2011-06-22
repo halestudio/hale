@@ -19,7 +19,7 @@ import java.util.Map.Entry;
 import org.xml.sax.SAXParseException;
 
 import eu.esdihumboldt.cst.transformer.CellUtils;
-import eu.esdihumboldt.hale.io.xml.validator.Report;
+import eu.esdihumboldt.hale.core.report.Report;
 import eu.esdihumboldt.hale.ui.io.legacy.mappingexport.MappingExportReport;
 import eu.esdihumboldt.hale.ui.views.report.internal.Messages;
 import eu.esdihumboldt.specification.cst.align.ICell;
@@ -46,8 +46,14 @@ public class ReportModel {
 	 * @param report report to analyze
 	 */
 	public ReportModel(Report report) {
-		this.setSAXParseExceptionError(report.getErrors());
-		this.setSAXParseExceptionWarning(report.getWarnings());
+//		this.setSAXParseExceptionError(report.getErrors());
+//		this.setSAXParseExceptionWarning(report.getWarnings());
+//		report.getWarnings().toArray()
+		this.warning = new ArrayList();
+		this.warning.addAll(report.getWarnings());
+		
+		this.error = new ArrayList();
+		this.error.addAll(report.getErrors());
 		
 		this.identifier = Messages.ReportModel_1; //$NON-NLS-1$
 	}
