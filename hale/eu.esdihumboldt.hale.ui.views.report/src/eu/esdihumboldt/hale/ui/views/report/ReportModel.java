@@ -82,6 +82,8 @@ public class ReportModel {
 		if (!this.error.isEmpty() && this.error.get(0) instanceof SAXParseException) {
 			return this.getList(this.error);
 		}
+		
+		
 		return this.getListString(this.error);
 	}
 	
@@ -142,11 +144,12 @@ public class ReportModel {
 	 * 
 	 * @return sorted list
 	 */
-	private List<TransformationResultItem> getListString(List<String> list) {
+	private List<TransformationResultItem> getListString(List<Message> list) {
 		List<TransformationResultItem> items = new ArrayList<TransformationResultItem>();
 		
-		for (String str : list) {
-			items.add(new TransformationResultItem(str, "")); //$NON-NLS-1$
+		
+		for (Message str : list) {
+			items.add(new TransformationResultItem(str.getMessage(), "")); //$NON-NLS-1$
 		}
 		
 		return items;
