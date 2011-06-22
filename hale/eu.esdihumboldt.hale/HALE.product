@@ -82,6 +82,7 @@
       <plugin id="eu.esdihumboldt.hale"/>
       <plugin id="eu.esdihumboldt.hale.cache"/>
       <plugin id="eu.esdihumboldt.hale.cache.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.cache.ui"/>
       <plugin id="eu.esdihumboldt.hale.core"/>
       <plugin id="eu.esdihumboldt.hale.core.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.csvexporter"/>
