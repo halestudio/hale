@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import javax.imageio.ImageIO;
 
@@ -139,6 +141,11 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	 * Contains the path for the pictures
 	 */
 	File dir;
+	
+	/**
+	 * ThreadPool for BrowserTips
+	 */
+	private ScheduledExecutorService scheduleService = Executors.newScheduledThreadPool(1);
 	
 	/**
 	 * Default constructor
@@ -329,7 +336,7 @@ public class MappingGraphView extends ViewPart implements ISelectionListener {
 	 */
 	public void generateBrowserToolTip(GraphNode graphNode) {
 
-		BrowserTip browserTip = new BrowserTip(400, 400, true);
+		BrowserTip browserTip = new BrowserTip(400, 400, true, this.scheduleService);
 
 		List<String> filterList;
 		List<IParameter> parameterList;
