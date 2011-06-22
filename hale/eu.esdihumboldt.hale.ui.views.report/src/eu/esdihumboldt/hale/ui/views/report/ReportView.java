@@ -57,8 +57,8 @@ public class ReportView extends ViewPart implements HaleServiceListener {
 	public void createPartControl(Composite parent) {
 		Composite page = new Composite(parent, SWT.NONE);
 		
-		ReportService reportService = (ReportService)PlatformUI.getWorkbench().getService(ReportService.class);
-		reportService.addListener(this);
+//		ReportService reportService = (ReportService)PlatformUI.getWorkbench().getService(ReportService.class);
+//		reportService.addListener(this);
 		
 		// bar and TreeView
 		page.setLayout(new GridLayout(2, true));
