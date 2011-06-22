@@ -12,11 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.views.report;
 
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.ArrayList;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -25,8 +22,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
@@ -53,14 +48,22 @@ public class ReportView extends ViewPart implements ReportListener<Report<Messag
 	 * parse process.
 	 */
 	private TreeViewer viewer = null;
+	
+	/**
+	 * Contains all selectable reports with timestamp and some information.
+	 */
 	private Combo combo = null;
+	
+	/**
+	 * Innternal list with all reports.
+	 */
+	private ArrayList<Report<Message>> reports = new ArrayList<Report<Message>>();
 	
 	@Override
 	public void createPartControl(Composite parent) {
 		Composite page = new Composite(parent, SWT.NONE);
 		
-//		ReportService reportService = (ReportService)PlatformUI.getWorkbench().getService(ReportService.class);
-//		reportService.addListener(this);
+		// get ReportService and add listener
 		ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
 		repService.addReportListener(this);
 		
@@ -79,10 +82,8 @@ public class ReportView extends ViewPart implements ReportListener<Report<Messag
 		combo.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-//				ReportServiceImpl reportService = (ReportServiceImpl)PlatformUI.getWorkbench().getService(ReportService.class);
-				
-				// gets the requested ReportEntry
-//				viewer.setInput(reportService.getReport(combo.getSelectionIndex()));
+				// gets the requested Report entry
+				viewer.setInput(new ReportModel(reports.get(combo.getSelectionIndex())));
 			}
 			
 			@Override
@@ -96,28 +97,6 @@ public class ReportView extends ViewPart implements ReportListener<Report<Messag
 	public void setFocus() {
 		/* nothing */
 	}
-
-	/*
-	public void update(UpdateMessage<?> message) {
-		// get reportService
-		ReportService reportService = (ReportService)PlatformUI.getWorkbench().getService(ReportService.class);
-		
-		// set new input
-		viewer.setInput(reportService.getLastReport());
-
-		// get current time
-		DateFormat date = DateFormat.getTimeInstance();
-		Date time = Calendar.getInstance().getTime();
-		String id = date.format(time);
-		
-		// get project information
-		ProjectService projectService = (ProjectService)PlatformUI.getWorkbench().getService(ProjectService.class);
-		
-		// add entry and select it
-		combo.add(reportService.getLastReport().getIdentifier()+": "+projectService.getProjectName()+" - "+id); //$NON-NLS-1$ //$NON-NLS-2$
-		combo.select(combo.getItemCount()-1);
-		
-	}*/
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.service.report.ReportListener#getReportType()
@@ -139,21 +118,25 @@ public class ReportView extends ViewPart implements ReportListener<Report<Messag
 	 * @see eu.esdihumboldt.hale.ui.service.report.ReportListener#reportAdded(eu.esdihumboldt.hale.ui.service.report.Report)
 	 */
 	@Override
-	public void reportAdded(final Report report) {
-		System.err.println(report.getTaskName()+" / "+report.getMessageType().getSimpleName());
-		
-		IWorkbench bench = PlatformUI.getWorkbench();
-		Display display = bench.getDisplay();
-		display.asyncExec(new Runnable() {
-			
+	public void reportAdded(final Report<Message> report) {
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
 				try{
+					// create new ReportModel and set it as input
 					viewer.setInput(new ReportModel(report));
+					
+					// add label to the combo box
+					// TODO maybe add the current project to the label?
 					combo.add("["+report.getTimestamp()+"] "+report.getTaskName()+" -- "+report.getSummary());
+					
+					// select current item
 					combo.select(combo.getItemCount()-1);
 					
+					// add report to internal list
+					reports.add(report);
 				} catch (NullPointerException e) {
+					// TODO remove this or add proper Exception handling
 					System.err.println("NullPointer... "+report.getSummary());
 					e.printStackTrace();
 				}
