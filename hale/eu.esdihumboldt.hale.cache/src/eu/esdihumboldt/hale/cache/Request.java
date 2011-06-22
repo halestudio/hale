@@ -20,8 +20,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.Proxy;
-import java.net.Proxy.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -35,7 +33,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
@@ -52,10 +49,10 @@ import de.fhg.igd.osgi.util.configuration.NamespaceConfigurationServiceDecorator
  */
 public class Request {
 
-	private String cacheName = "", cachePath = "";
+	private String cacheName = "", cachePath = ""; //$NON-NLS-1$ //$NON-NLS-2$
 	private boolean enabled = true;
 	
-	private static final String DELIMITER = "/";
+	private static final String DELIMITER = "/"; //$NON-NLS-1$
 	private IConfigurationService org;
 	
 	private static Logger _log = Logger.getLogger(Request.class);
@@ -87,7 +84,7 @@ public class Request {
 				DELIMITER);
 		
 		// get saved seeting
-		this.enabled = this.org.getBoolean("cache.enabled", false);
+		this.enabled = this.org.getBoolean("cache.enabled", false); //$NON-NLS-1$
 		
 		// initialize the cache
 		this.init();
@@ -98,12 +95,12 @@ public class Request {
 	 */
 	private void init() {
 		if (this.enabled) {
-			this.cacheName = this.org.get("cache.name");
-			this.cachePath = this.org.get("cache.path");
+			this.cacheName = this.org.get("cache.name"); //$NON-NLS-1$
+			this.cachePath = this.org.get("cache.path"); //$NON-NLS-1$
 			
 			// use system property to set the proper diskStorePath
-			String tmpDir = System.getProperty("java.io.tmpdir");
-			System.setProperty("java.io.tmpdir", this.cachePath);
+			String tmpDir = System.getProperty("java.io.tmpdir"); //$NON-NLS-1$
+			System.setProperty("java.io.tmpdir", this.cachePath); //$NON-NLS-1$
 			
 			// this cache has already been initialized
 			if (CacheManager.getInstance().getCache(this.cacheName) != null) {
@@ -124,7 +121,7 @@ public class Request {
 			CacheManager.getInstance().addCache(cache);
 			
 			// reset java.io.tmpdir
-			System.setProperty("java.io.tmpdir", tmpDir);
+			System.setProperty("java.io.tmpdir", tmpDir); //$NON-NLS-1$
 		}
 	}
 	
@@ -165,13 +162,13 @@ public class Request {
 	 */
 	public InputStream get(URI uri) throws Exception {
 		// check for local files
-		if (uri.toString().startsWith("file:")) {
+		if (uri.toString().startsWith("file:")) { //$NON-NLS-1$
 			return this.getLocal(uri.toURL());
 		}
 		
 		// no host given
 		if (uri.getHost() == null) {
-			throw new Exception("Empty host!");
+			throw new Exception("Empty host!"); //$NON-NLS-1$
 		}
 		
 		// no caching activated
@@ -184,14 +181,14 @@ public class Request {
 		String link = this.removeSpecialChars(uri.toString());
 		
 		InputStream stream = null;
-		String content = "";
+		String content = ""; //$NON-NLS-1$
 		
 		// if the entry does not exist fetch it from the web
 		if (cache.get(link) == null){
 			InputStream in;
 			
 			// fallback encoding
-			String encoding = "UTF-8";
+			String encoding = "UTF-8"; //$NON-NLS-1$
 			
 			// try to download stuff with HttpGet
 //			HttpClient httpclient = ClientUtil.createThreadSafeHttpClient();
@@ -214,11 +211,11 @@ public class Request {
 				}
 				// or from the returned header codes
 				else {
-					Header[] header = response.getHeaders("Content-Type");
+					Header[] header = response.getHeaders("Content-Type"); //$NON-NLS-1$
 					for(Header h : header) {
 						String head = h.getValue();
-						if (head.contains("charset="))
-							encoding = h.getValue().substring(h.getValue().indexOf("charset=")).replace("charset=", "");
+						if (head.contains("charset=")) //$NON-NLS-1$
+							encoding = h.getValue().substring(h.getValue().indexOf("charset=")).replace("charset=", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					}
 				}
 			}
@@ -232,12 +229,12 @@ public class Request {
 			content = (String) cache.get(link).getObjectValue();
 			
 			// create the result stream
-			stream = new ByteArrayInputStream(content.getBytes("UTF-8"));
+			stream = new ByteArrayInputStream(content.getBytes("UTF-8")); //$NON-NLS-1$
 		}
 		
 		
-		_log.info("Cachesize (Memory/Disk): "+CacheManager.getInstance().getCache(this.cacheName).getMemoryStoreSize()+
-				" / "+CacheManager.getInstance().getCache(this.cacheName).getDiskStoreSize());
+		_log.info("Cachesize (Memory/Disk): "+CacheManager.getInstance().getCache(this.cacheName).getMemoryStoreSize()+ //$NON-NLS-1$
+				" / "+CacheManager.getInstance().getCache(this.cacheName).getDiskStoreSize()); //$NON-NLS-1$
 		
 //		_log.info(CacheManager.getInstance().getCache(this.cacheName).getStatistics().toString()); // this may decrease performance
 		
@@ -265,9 +262,9 @@ public class Request {
 	 * @return clean string
 	 */
 	private String removeSpecialChars(String txt) {
-		txt = txt.replace("http://", "");
-		txt = txt.replace("/", "_");
-		txt = txt.replace(":", "_");
+		txt = txt.replace("http://", ""); //$NON-NLS-1$ //$NON-NLS-2$
+		txt = txt.replace("/", "_"); //$NON-NLS-1$ //$NON-NLS-2$
+		txt = txt.replace(":", "_"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		return txt;
 	}
@@ -309,7 +306,7 @@ public class Request {
 		}
 		// if the InputStrean is null, return ""
 		else {        
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 	}
 	

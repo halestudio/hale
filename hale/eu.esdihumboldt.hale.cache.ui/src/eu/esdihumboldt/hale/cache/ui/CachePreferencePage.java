@@ -42,7 +42,7 @@ import eu.esdihumboldt.hale.cache.Request;
 public class CachePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 	
 	private IConfigurationService org;
-	private static final String DELIMITER = "/";
+	private static final String DELIMITER = "/"; //$NON-NLS-1$
 	private PreferenceStore prefs = new PreferenceStore();
 	
 	/**
@@ -50,7 +50,7 @@ public class CachePreferencePage extends FieldEditorPreferencePage implements IW
 	 */
 	public CachePreferencePage() {
 		super(GRID);
-		prefs.setFilename("Cache");
+		prefs.setFilename("Cache"); //$NON-NLS-1$
 		setPreferenceStore(prefs);
 		
 		IConfigurationService org = OsgiUtils.getService(IConfigurationService.class);
@@ -80,21 +80,21 @@ public class CachePreferencePage extends FieldEditorPreferencePage implements IW
 	@Override
 	protected void createFieldEditors() {
 		// restore data
-		prefs.setValue("cache.enabled", org.getBoolean("cache.enabled", false));
-		prefs.setValue("cache.path",	org.get("cache.path", Platform.getLocation().toString()));
-		prefs.setValue("cache.name",	org.get("cache.name", "HALE_WebRequest"));
+		prefs.setValue("cache.enabled", org.getBoolean("cache.enabled", false)); //$NON-NLS-1$ //$NON-NLS-2$
+		prefs.setValue("cache.path",	org.get("cache.path", Platform.getLocation().toString())); //$NON-NLS-1$ //$NON-NLS-2$
+		prefs.setValue("cache.name",	org.get("cache.name", "HALE_WebRequest")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
 		// add fields
-		addField(new BooleanFieldEditor("cache.enabled", "Activate caching", getFieldEditorParent()));
-		addField(new DirectoryFieldEditor("cache.path", "Cache Path", getFieldEditorParent()));
-		addField(new StringFieldEditor("cache.name", "Cache Name", 20, getFieldEditorParent()));
+		addField(new BooleanFieldEditor("cache.enabled", Messages.CachePreferencePage_10, getFieldEditorParent())); //$NON-NLS-1$
+		addField(new DirectoryFieldEditor("cache.path", Messages.CachePreferencePage_12, getFieldEditorParent())); //$NON-NLS-1$
+		addField(new StringFieldEditor("cache.name", Messages.CachePreferencePage_14, 20, getFieldEditorParent())); //$NON-NLS-1$
 		
 		// placeholder
 //		Composite ph = new Composite(getFieldEditorParent(), SWT.NONE);
 //		ph.setLayoutData(GridDataFactory.swtDefaults().hint(0, 0).create());
 		
 		Button clearCache = new Button(getFieldEditorParent(), GRID);
-		clearCache.setText("Clear Cache");
+		clearCache.setText(Messages.CachePreferencePage_15);
 		clearCache.addSelectionListener(new SelectionListener() {
 			
 			@Override
@@ -113,12 +113,12 @@ public class CachePreferencePage extends FieldEditorPreferencePage implements IW
 	 */
 	@Override
 	public boolean performOk() {
-		org.setBoolean("cache.enabled", prefs.getBoolean("cache.enabled"));
-		org.set("cache.path", prefs.getString("cache.path"));
-		org.set("cache.name", prefs.getString("cache.name"));
+		org.setBoolean("cache.enabled", prefs.getBoolean("cache.enabled")); //$NON-NLS-1$ //$NON-NLS-2$
+		org.set("cache.path", prefs.getString("cache.path")); //$NON-NLS-1$ //$NON-NLS-2$
+		org.set("cache.name", prefs.getString("cache.name")); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		//
-		Request.getInstance().setEnabled(prefs.getBoolean("cache.enabled"));
+		Request.getInstance().setEnabled(prefs.getBoolean("cache.enabled")); //$NON-NLS-1$
 
 		return super.performOk();
 	}
