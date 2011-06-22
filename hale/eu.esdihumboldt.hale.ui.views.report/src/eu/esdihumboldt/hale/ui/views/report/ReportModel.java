@@ -19,6 +19,7 @@ import java.util.Map.Entry;
 import org.xml.sax.SAXParseException;
 
 import eu.esdihumboldt.cst.transformer.CellUtils;
+import eu.esdihumboldt.hale.core.report.Message;
 import eu.esdihumboldt.hale.core.report.Report;
 import eu.esdihumboldt.hale.ui.io.legacy.mappingexport.MappingExportReport;
 import eu.esdihumboldt.hale.ui.views.report.internal.Messages;
@@ -49,31 +50,13 @@ public class ReportModel {
 //		this.setSAXParseExceptionError(report.getErrors());
 //		this.setSAXParseExceptionWarning(report.getWarnings());
 //		report.getWarnings().toArray()
-		this.warning = new ArrayList();
+		this.warning = new ArrayList<Message>();
 		this.warning.addAll(report.getWarnings());
 		
-		this.error = new ArrayList();
+		this.error = new ArrayList<Message>();
 		this.error.addAll(report.getErrors());
 		
 		this.identifier = Messages.ReportModel_1; //$NON-NLS-1$
-	}
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param report report to analyze
-	 */
-	@SuppressWarnings("unchecked")
-	public ReportModel(MappingExportReport report) {
-		for (Entry<ICell, String> entry : report.getFailed().entrySet()) {
-			this.error.add(entry.getValue()+" "+CellUtils.asString(entry.getKey())); //$NON-NLS-1$
-		}
-		
-		for (Entry<ICell, String> entry : report.getWarnings().entrySet()) {
-			this.warning.add(entry.getValue()+" "+CellUtils.asString(entry.getKey())); //$NON-NLS-1$
-		}
-		
-		this.identifier = Messages.ReportModel_4; //$NON-NLS-1$
 	}
 	
 	/**
@@ -167,23 +150,5 @@ public class ReportModel {
 		}
 		
 		return items;
-	}
-	
-	/**
-	 * Setter.
-	 * 
-	 * @param warning the warning list
-	 */
-	public void setSAXParseExceptionWarning(List<SAXParseException> warning) {
-		this.warning = warning;
-	}
-
-	/**
-	 * Setter.
-	 * 
-	 * @param error the error list
-	 */
-	public void setSAXParseExceptionError(List<SAXParseException> error) {
-		this.error = error;
 	}
 }

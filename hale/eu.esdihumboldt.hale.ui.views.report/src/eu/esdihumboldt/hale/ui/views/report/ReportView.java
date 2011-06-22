@@ -149,9 +149,12 @@ public class ReportView extends ViewPart implements ReportListener<Report<Messag
 			@Override
 			public void run() {
 				try{
-					viewer.setInput(report);
+					viewer.setInput(new ReportModel(report));
+					combo.add("["+report.getTimestamp()+"] "+report.getTaskName()+" -- "+report.getSummary());
+					combo.select(combo.getItemCount()-1);
+					
 				} catch (NullPointerException e) {
-					System.err.println("NullPointer...");
+					System.err.println("NullPointer... "+report.getSummary());
 					e.printStackTrace();
 				}
 			}
