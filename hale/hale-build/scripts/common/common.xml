@@ -490,7 +490,6 @@
 		<!-- remove osgi test bundle -->
 		<delete verbose="true">
 			<fileset dir="${plugins}" includes="de.cs3d.util.osgi.test_*.jar" />
-			<fileset dir="${plugins}" includes="de.fhg.igd.osgi.util_*.jar" />
 		</delete>
 	</target>
 	
