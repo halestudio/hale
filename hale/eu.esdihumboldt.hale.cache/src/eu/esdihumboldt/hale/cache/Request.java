@@ -233,7 +233,7 @@ public class Request {
 		}
 		
 		
-		_log.info("Cachesize (Memory/Disk): "+CacheManager.getInstance().getCache(this.cacheName).getMemoryStoreSize()+ //$NON-NLS-1$
+		_log.debug("Cachesize (Memory/Disk): "+CacheManager.getInstance().getCache(this.cacheName).getMemoryStoreSize()+ //$NON-NLS-1$
 				" / "+CacheManager.getInstance().getCache(this.cacheName).getDiskStoreSize()); //$NON-NLS-1$
 		
 //		_log.info(CacheManager.getInstance().getCache(this.cacheName).getStatistics().toString()); // this may decrease performance
