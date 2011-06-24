@@ -249,15 +249,8 @@
 			</classpath>
 		</java>
 		
-		<!-- de.fhg.igd.osgi.util ist in ZIP file enthalten -->
-		
 		<!-- unzip artifact -->
 		<unzip src="${build}/${buildLabel}/${buildId}-${os}.${ws}.${arch}.zip" dest="${release}" overwrite="true" />
-		
-		<!-- de.fhg.igd.osgi.util ist manchmal in release/src/plugins enthalten enthalten -->
-		<copy todir="${release}/src/plugins" verbose="true" overwrite="false">
-			<fileset dir="${build}/plugins" includes="de.fhg.igd.osgi.util*.jar" />
-		</copy>
 		
 		<!-- run unit tests (unless the target "no-unit-tests" has been called) -->
 		<if>
