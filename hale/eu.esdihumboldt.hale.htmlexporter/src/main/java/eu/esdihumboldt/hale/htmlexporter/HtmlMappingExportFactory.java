@@ -45,6 +45,7 @@ import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
 import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.commons.goml.omwg.Restriction;
+import eu.esdihumboldt.cst.transformer.FilterUtils;
 import eu.esdihumboldt.hale.models.ProjectService;
 import eu.esdihumboldt.hale.rcp.views.mappingGraph.MappingGraphView;
 import eu.esdihumboldt.hale.rcp.wizards.io.mappingexport.MappingExportException;
@@ -623,6 +624,18 @@ public class HtmlMappingExportFactory implements MappingExportProvider {
 	 * @param cell
 	 */
 	private void getFilters(Vector<String> cellVector, ICell cell){
+		// try to get filter using FilterUtil
+		if (cell.getEntity1() != null) {
+			List<Restriction> restrictions = FilterUtils.getRestrictions(cell.getEntity1());
+			if (restrictions != null && !restrictions.isEmpty()) {
+				cellVector.addElement("Filter Rules: "); //$NON-NLS-1$
+				for (Restriction restriction : restrictions) {
+					cellVector.addElement("&emsp;&emsp;"+restriction.getCqlStr()); //$NON-NLS-1$
+				}
+				return;
+			}
+		}
+		
 		//Filter Rules
 		if(cell.getEntity1() instanceof ComposedProperty){
 			if (((ComposedProperty) cell.getEntity1())
