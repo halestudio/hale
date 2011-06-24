@@ -17,8 +17,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.io.Resources;
@@ -35,7 +35,7 @@ import eu.esdihumboldt.hale.core.io.service.ContentTypeService;
 public class ContentTypeTrackerTest {
 
 	/**
-	 * 
+	 * Test loading a gml file
 	 */
 	@Test
 	public void testloadGml() {
@@ -48,5 +48,77 @@ public class ContentTypeTrackerTest {
 		assertEquals(result ,tracker.findContentTypesFor(tracker.getContentTypes(),
 				Resources.newInputStreamSupplier(getClass()
 						.getResource("/data/wfs_va_sample.gml")), null));
+	}
+	
+	/**
+	 * Test loading a shape file
+	 */
+	@Test
+	@Ignore  //no tester for shape files implemented yet
+	public void testloadShape() {
+		List<ContentType> result = new ArrayList<ContentType>();
+		result.add(ContentType.getContentType("Shapefile"));
+		
+		ContentTypeService tracker = OsgiUtils.getService(ContentTypeService.class);
+		assertNotNull(tracker);
+		
+		assertEquals(result ,tracker.findContentTypesFor(tracker.getContentTypes(),
+				Resources.newInputStreamSupplier(getClass()
+						.getResource("/data/cc7910_8710_mergedJ.shp")), null));
+	}
+	
+	/**
+	 * Test loading a xml file
+	 */
+	@Test
+	public void testloadXml() {
+		List<ContentType> result = new ArrayList<ContentType>();
+		result.add(ContentType.getContentType("XML"));
+		
+		ContentTypeService tracker = OsgiUtils.getService(ContentTypeService.class);
+		assertNotNull(tracker);
+		
+		assertEquals(result ,tracker.findContentTypesFor(tracker.getContentTypes(),
+				Resources.newInputStreamSupplier(getClass()
+						.getResource("/data/testxml.xml")), null));
+	}
+	
+	/**
+	 * Test loading a xsd file
+	 */
+	@Test
+	public void testloadXsd() {
+		List<ContentType> result = new ArrayList<ContentType>();
+		result.add(ContentType.getContentType("XSD"));
+		
+		ContentTypeService tracker = OsgiUtils.getService(ContentTypeService.class);
+		assertNotNull(tracker);
+		
+		assertEquals(result ,tracker.findContentTypesFor(tracker.getContentTypes(),
+				Resources.newInputStreamSupplier(getClass()
+						.getResource("/data/attributegroup.xsd")), null));
+	}
+	
+	/**
+	 * Test loading a gml file, but only with XML-ContentTester
+	 */
+	@Test
+	public void testloadGmlwithXmltype(){
+		List<ContentType> result = new ArrayList<ContentType>();
+		result.add(ContentType.getContentType("XML"));
+		
+		ContentTypeService tracker = OsgiUtils.getService(ContentTypeService.class);
+		List<ContentType> list = new ArrayList<ContentType>();
+		list.add(ContentType.getContentType("XML"));
+
+		assertNotNull(tracker);
+		
+		assertEquals(result ,tracker.findContentTypesFor(list,
+				Resources.newInputStreamSupplier(getClass()
+						.getResource("/data/wfs_va_sample.gml")), null));
+		
+		assertEquals(result ,tracker.findContentTypesFor(list,
+				Resources.newInputStreamSupplier(getClass()
+						.getResource("/data/wfs_va_sample.gml")), "xyz.gml"));
 	}
 }

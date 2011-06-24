@@ -95,7 +95,7 @@ public class ContentTypeDefinition {
 	}
 
 	/**
-	 * @return the parent
+	 * @return the identifier of the parent content type, may be <code>null</code>
 	 */
 	public String getParent() {
 		return parent;

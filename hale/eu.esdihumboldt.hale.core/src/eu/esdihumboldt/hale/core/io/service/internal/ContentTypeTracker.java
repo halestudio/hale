@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -37,6 +38,7 @@ import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.ContentTypeTester;
 import eu.esdihumboldt.hale.core.io.internal.ContentTypeDefinition;
 import eu.esdihumboldt.hale.core.io.service.ContentTypeService;
+import eu.esdihumboldt.hale.core.util.DependencyOrderedList;
 
 /**
  * Tracks {@link ContentTypeDefinition} files
@@ -232,34 +234,52 @@ public class ContentTypeTracker extends ContextBundleTracker implements ContentT
 			// - we have more than one result from the filename match (as we might have to restrict the result)
 			// - the input supplier is set
 			
-			for (ContentType type : types) {
+			// build a map to commit to DependencyOrderedList
+			Map<ContentType, Set<ContentType>> map = new HashMap<ContentType, Set<ContentType>>();
+			
+			for (ContentType type : types){
 				BundleContentType bct = getBundleContentType(type);
-				if (bct != null) {
-					ContentTypeTester tester = bct.getTester();
-					if (tester != null) {
-						try {
-							InputStream is = in.getInput();
-							try {
-								if (tester.matchesContentType(is)) {
-									results.add(type);
-								}
-								else {
-									results.remove(type);
-								}
-							} finally {
-								try {
-									is.close();
-								} catch (IOException e) {
-									// ignore
-								}
-							}
-						} catch (IOException e) {
-							log.warn("Could not open input stream for testing the content type, tester for content type {0} is ignored", type);
-						}
+				if (bct != null){
+					Set<ContentType> set = new HashSet<ContentType>();
+					String father = bct.getContentType().getParent();
+					if (father != null){
+						set.add(ContentType.getContentType(father));
+						map.put(type, set);
+					}
+					else {
+						map.put(type, null);
 					}
 				}
-				else if (filename == null) { // only warn if we didn't do it before
-					log.warn("No content type definition found for ID {0}", type.getIdentifier());
+			}
+			
+			// order the given content types
+			DependencyOrderedList<ContentType> orderedlist = new DependencyOrderedList<ContentType>(map);
+			List<ContentType> list = orderedlist.getInternalList();
+			
+			// last content type has to check first (has the most dependencies)
+			for (int i = list.size() - 1; i >= 0; i--){
+				ContentType cont = list.get(i);
+				BundleContentType bct = getBundleContentType(cont);
+				ContentTypeTester tester = bct.getTester();
+				if (tester != null) {
+					try {
+						InputStream is = in.getInput();
+						try {
+							if (tester.matchesContentType(is)) {
+								results.add(cont);
+								return results;
+							}
+
+						} finally {
+							try {
+								is.close();
+							} catch (IOException e) {
+								// ignore
+							}
+						}
+					} catch (IOException e) {
+						log.warn("Could not open input stream for testing the content type, tester for content type {0} is ignored", cont);
+					}
 				}
 			}
 		}

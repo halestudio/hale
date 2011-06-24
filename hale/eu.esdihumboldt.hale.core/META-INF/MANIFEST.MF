@@ -8,6 +8,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/ZipProjectReader.xml, OSGI-INF/ZipProjectWriter.xml
 Import-Package: com.google.common.base;version="1.6.0",
+ com.google.common.collect,
  com.google.common.io;version="1.6.0",
  de.cs3d.util.logging,
  de.fhg.igd.osgi.util;version="1.0.0",
