@@ -37,9 +37,9 @@ public class ClientUtil {
 	public static DefaultHttpClient createThreadSafeHttpClient() {
 		//create default scheme registry
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
-     schemeRegistry.register(new Scheme("http", 80,
+     schemeRegistry.register(new Scheme("http", 80, //$NON-NLS-1$
      		PlainSocketFactory.getSocketFactory()));
-     schemeRegistry.register(new Scheme("https", 443,
+     schemeRegistry.register(new Scheme("https", 443, //$NON-NLS-1$
      		SSLSocketFactory.getSocketFactory()));
      
 		//create multi-threaded connection manager
