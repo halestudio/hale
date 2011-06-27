@@ -144,7 +144,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 	 * Default constructor
 	 */
 	public ProjectServiceImpl(){
-		haleVersion = HALEUIPlugin.getDefault().getBundle().getVersion(); //FIXME: consistency with application plugin?
+		haleVersion = Version.parseVersion(Display.getAppVersion());
 		main = createDefaultProject();
 		
 		// create advisors
