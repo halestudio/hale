@@ -50,8 +50,6 @@ public class CachePreferencePage extends FieldEditorPreferencePage implements IW
 	 */
 	public CachePreferencePage() {
 		super(GRID);
-		prefs.setFilename("Cache"); //$NON-NLS-1$
-		setPreferenceStore(prefs);
 		
 		IConfigurationService org = OsgiUtils.getService(IConfigurationService.class);
 		if (org == null) {
@@ -67,6 +65,10 @@ public class CachePreferencePage extends FieldEditorPreferencePage implements IW
 				org, 
 				Request.class.getPackage().getName().replace(".", DELIMITER),  //$NON-NLS-1$
 				DELIMITER);
+		
+		// setup PreferenceStore save path
+		prefs.setFilename(org.get("cache.path", Platform.getLocation().toString())+"/Cache.pref"); //$NON-NLS-1$
+		setPreferenceStore(prefs);
 	}
 	
 	/**
