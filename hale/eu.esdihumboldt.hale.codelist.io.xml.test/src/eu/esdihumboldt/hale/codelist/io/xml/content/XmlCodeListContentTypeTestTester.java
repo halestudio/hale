@@ -21,4 +21,14 @@ public class XmlCodeListContentTypeTestTester {
 		
 		assertTrue(tester.matchesContentType(getClass().getResourceAsStream("/data/AdministrativeHierarchyLevel.xml")));
 	}
+	
+	/**
+	 * Test loading normal xml file
+	 */
+	@Test
+	public void testFalseXmlCodeList(){
+		AbstractXmlTester tester = new XmlCodeListContentTypeTester();
+		
+		assertFalse(tester.matchesContentType(getClass().getResourceAsStream("/data/testxml.xml")));
+	}
 }
