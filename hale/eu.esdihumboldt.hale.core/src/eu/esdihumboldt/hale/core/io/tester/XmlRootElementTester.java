@@ -61,7 +61,7 @@ public abstract class XmlRootElementTester extends AbstractXmlTester {
 				
 				return true;
 			}
-			return false;
+		
 		}
 		return false;
 	}
