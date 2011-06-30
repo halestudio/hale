@@ -24,8 +24,8 @@ import org.eclipse.swt.widgets.Control;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.ui.common.codelist.CodeList;
-import eu.esdihumboldt.hale.ui.common.codelist.internal.XmlCodeList;
+import eu.esdihumboldt.hale.codelist.CodeList;
+import eu.esdihumboldt.hale.codelist.io.xml.XmlCodeList;
 import eu.esdihumboldt.hale.ui.common.internal.Messages;
 
 /**

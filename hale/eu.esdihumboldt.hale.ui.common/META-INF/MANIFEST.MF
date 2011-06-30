@@ -10,6 +10,7 @@ Import-Package: com.vividsolutions.jts.geom,
  de.cs3d.util.logging,
  eu.esdihumboldt.cst.transformer,
  eu.esdihumboldt.cst.transformer.capabilities,
+ eu.esdihumboldt.hale.core.io,
  eu.esdihumboldt.hale.core.io.supplier,
  eu.esdihumboldt.hale.io.xsd.constraint,
  eu.esdihumboldt.hale.schema.geometry,
@@ -37,9 +38,7 @@ Import-Package: com.vividsolutions.jts.geom,
  org.slf4j;version="1.5.11"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.ui.common.internal.CommonUIPlugin
-Export-Package: eu.esdihumboldt.hale.ui.common.codelist,
- eu.esdihumboldt.hale.ui.common.codelist.internal;x-internal:=true,
- eu.esdihumboldt.hale.ui.common.crs,
+Export-Package: eu.esdihumboldt.hale.ui.common.crs,
  eu.esdihumboldt.hale.ui.common.definition,
  eu.esdihumboldt.hale.ui.common.definition.internal;x-internal:=true,
  eu.esdihumboldt.hale.ui.common.definition.internal.editors;x-internal:=true,

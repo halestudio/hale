@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 
-import eu.esdihumboldt.hale.ui.common.codelist.CodeList;
+import eu.esdihumboldt.hale.codelist.CodeList;
 import eu.esdihumboldt.hale.ui.common.internal.Messages;
 
 /**

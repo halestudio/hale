@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.ui.common.definition.internal.editors.codelist;
 
 import org.eclipse.swt.widgets.Control;
 
-import eu.esdihumboldt.hale.ui.common.codelist.CodeList;
+import eu.esdihumboldt.hale.codelist.CodeList;
 
 /**
  * 

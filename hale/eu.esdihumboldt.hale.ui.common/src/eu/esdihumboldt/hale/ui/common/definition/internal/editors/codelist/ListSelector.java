@@ -37,8 +37,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.ui.common.codelist.CodeList;
-import eu.esdihumboldt.hale.ui.common.codelist.CodeListService;
+import eu.esdihumboldt.hale.codelist.CodeList;
+import eu.esdihumboldt.hale.codelist.ui.service.CodeListService;
 import eu.esdihumboldt.hale.ui.common.internal.Messages;
 
 /**

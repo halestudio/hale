@@ -2,14 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            class="eu.esdihumboldt.hale.ui.common.codelist.internal.CodeListPreferencePage"
-            id="eu.esdihumboldt.hale.ui.common.preferences.codelists"
-            name="%preference.codelist.name">
-      </page>
-   </extension>
-   <extension
          point="org.eclipse.ui.handlers">
       <handler
             class="eu.esdihumboldt.hale.ui.common.functions.ListFunctionsHandler"
@@ -32,12 +24,6 @@
          </service>
          <service
                serviceClass="eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory">
-         </service>
-      </serviceFactory>
-      <serviceFactory
-            factoryClass="eu.esdihumboldt.hale.ui.common.codelist.internal.ServiceFactory">
-         <service
-               serviceClass="eu.esdihumboldt.hale.ui.common.codelist.CodeListService">
          </service>
       </serviceFactory>
    </extension>

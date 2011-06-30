@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Codelist
+Bundle-SymbolicName: eu.esdihumboldt.hale.codelist
+Bundle-Version: 2.2.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: eu.esdihumboldt.hale.core.io
+Export-Package: eu.esdihumboldt.hale.codelist,
+ eu.esdihumboldt.hale.codelist.io
