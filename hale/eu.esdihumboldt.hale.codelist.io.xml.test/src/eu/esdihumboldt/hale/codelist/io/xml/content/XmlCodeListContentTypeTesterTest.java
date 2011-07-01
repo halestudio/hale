@@ -10,7 +10,7 @@ import eu.esdihumboldt.hale.core.io.tester.AbstractXmlTester;
  * Testing class for {@link XmlCodeListContentTypeTester}
  * @author Patrick Lieb
  */
-public class XmlCodeListContentTypeTestTester {
+public class XmlCodeListContentTypeTesterTest {
 
 	/**
 	 * Test loading xml code list
