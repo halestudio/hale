@@ -166,7 +166,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 				updateWindowTitle();
 				
 				// execute loaded I/O configurations
-				executeConfigurations(main.getConfigurations());
+				executeConfigurations(main.getResources());
 				
 				// notify listeners
 				Map<String, ProjectFile> projectFiles = provider.getProjectFiles(); //TODO store somewhere for later use?
@@ -566,7 +566,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 		
 		// add configuration to project
 		synchronized (this) {
-			main.getConfigurations().add(conf);
+			main.getResources().add(conf);
 		}
 		setChanged();
 	}

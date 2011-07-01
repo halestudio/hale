@@ -67,7 +67,7 @@ public class ProjectTest {
 		project.setDescription(desc = "Hallo Welt!\nBist Du auch hier?\nÖhm.");
 		
 		IOConfiguration conf1;
-		project.getConfigurations().add(conf1 = new IOConfiguration());
+		project.getResources().add(conf1 = new IOConfiguration());
 		
 		String advisorId1;
 		conf1.setAdvisorId(advisorId1 = "some advisor");
@@ -87,7 +87,7 @@ public class ProjectTest {
 		conf1.setProviderType(type1 = (Class<? extends IOProviderFactory<?>>) IOProviderFactory.class);
 		
 		IOConfiguration conf2;
-		project.getConfigurations().add(conf2 = new IOConfiguration());
+		project.getResources().add(conf2 = new IOConfiguration());
 		String advisorId2;
 		conf2.setAdvisorId(advisorId2 = "a certain advisor");
 		String providerId2;
@@ -112,9 +112,9 @@ public class ProjectTest {
 		assertEquals(haleVersion, p2.getHaleVersion());
 		assertEquals(desc, p2.getDescription());
 		
-		assertEquals(2, p2.getConfigurations().size());
+		assertEquals(2, p2.getResources().size());
 		
-		Iterator<IOConfiguration> it = p2.getConfigurations().iterator();
+		Iterator<IOConfiguration> it = p2.getResources().iterator();
 		IOConfiguration c1 = it.next();
 		assertNotNull(c1);
 		

@@ -267,7 +267,7 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 		// no dependencies needed
 		
 		// add configuration to project
-		project.getConfigurations().add(conf);
+		project.getResources().add(conf);
 	}
 
 	private void loadInstances(HaleProject haleProject, String basePath) {
@@ -329,7 +329,7 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			conf.getDependencies().add("eu.esdihumboldt.hale.ui.io.schema.source");
 			
 			// add configuration to project
-			project.getConfigurations().add(conf);
+			project.getResources().add(conf);
 		}
 	}
 	

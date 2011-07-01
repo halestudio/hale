@@ -38,10 +38,10 @@
 			<bind-xml name="save-config" node="element" />
 		</field>
 		
-		<field name="configurations" 
+		<field name="resources" 
 			type="eu.esdihumboldt.hale.core.io.project.model.IOConfiguration" collection="arraylist" required="false">
 
-			<bind-xml name="io-config" node="element" />
+			<bind-xml name="resource" node="element" />
 		</field>
 		
 		<field name="properties" collection="map" required="false">

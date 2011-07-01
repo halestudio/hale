@@ -140,7 +140,7 @@ public class Project {
 	/**
 	 * I/O configurations 
 	 */
-	private final List<IOConfiguration> configurations = new ArrayList<IOConfiguration>();
+	private final List<IOConfiguration> resources = new ArrayList<IOConfiguration>();
 
 	/**
 	 * Project properties
@@ -155,8 +155,8 @@ public class Project {
 	/**
 	 * @return the configurations
 	 */
-	public List<IOConfiguration> getConfigurations() {
-		return configurations;
+	public List<IOConfiguration> getResources() {
+		return resources;
 	}
 
 	/**
