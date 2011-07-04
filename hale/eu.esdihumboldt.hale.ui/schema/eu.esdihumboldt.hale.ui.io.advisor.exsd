@@ -78,7 +78,7 @@
          <attribute name="providerType" type="string" use="required">
             <annotation>
                <documentation>
-                  The supported I/O provider type. Should be a interface.
+                  The supported I/O provider type. Should be an interface.
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.core.io.IOProvider"/>

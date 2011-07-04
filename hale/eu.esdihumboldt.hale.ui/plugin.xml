@@ -5,6 +5,7 @@
    <extension-point id="eu.esdihumboldt.hale.MappingExport" name="Mapping Export Providers" schema="schema/eu.esdihumboldt.hale.MappingExport.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory" name="Function wizards" schema="schema/eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.ui.io.advisor" name="I/O advisors in the context of the UI services" schema="schema/eu.esdihumboldt.hale.ui.io.advisor.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.ui.io.source" name="Import sources" schema="schema/eu.esdihumboldt.ui.io.source.exsd"/>
    <extension
          point="org.eclipse.ui.commands">
       <command
@@ -166,6 +167,14 @@
             </with>
          </enabledWhen>
       </advisor>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.source">
+      <source
+            class="eu.esdihumboldt.hale.ui.io.source.FileSource"
+            id="eu.esdihumboldt.hale.ui.io.source.file"
+            name="file">
+      </source>
    </extension>
 
 </plugin>

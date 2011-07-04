@@ -12,41 +12,32 @@
 
 package eu.esdihumboldt.hale.ui.io;
 
-import java.io.File;
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.jface.dialogs.DialogPage;
-import org.eclipse.jface.preference.FieldEditor;
-import org.eclipse.jface.preference.FileFieldEditor;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
+import de.fhg.igd.eclipse.util.extension.FactoryFilter;
 import eu.esdihumboldt.hale.core.io.ContentType;
-import eu.esdihumboldt.hale.core.io.HaleIO;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.core.io.ImportProvider;
-import eu.esdihumboldt.hale.core.io.service.ContentTypeService;
-import eu.esdihumboldt.hale.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
-import eu.esdihumboldt.hale.ui.io.util.OpenFileFieldEditor;
+import eu.esdihumboldt.hale.ui.io.ImportSource.SourceConfiguration;
+import eu.esdihumboldt.hale.ui.io.internal.WizardPageDecorator;
+import eu.esdihumboldt.hale.ui.io.source.internal.ImportSourceExtension;
+import eu.esdihumboldt.hale.ui.io.source.internal.ImportSourceFactory;
 
 /**
  * Wizard page that allows selecting a source file or provider
@@ -60,20 +51,222 @@ import eu.esdihumboldt.hale.ui.io.util.OpenFileFieldEditor;
 public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProviderFactory<P>, 
 	W extends ImportWizard<P, T>> extends IOWizardPage<P, T, W> {
 	
-//	private static final ALogger log = ALoggerFactory.getLogger(ImportSelectSourcePage.class);
-	
 	/**
-	 * The file field editor for the source file
+	 * Import source page
 	 */
-	private OpenFileFieldEditor sourceFile;
+	public class SourcePage extends WizardPageDecorator implements SourceConfiguration<P, T> {
+
+		private final ImportSource<P, T> importSource;
+		
+		private final int index;
+
+		private T factory;
+
+		private ContentType contentType;
+
+		private String message;
+
+		private boolean complete = false;
+
+		private int messageType = DialogPage.NONE;
+
+		private String errorMessage;
+
+		/**
+		 * Create an import source page and add it to the {@link #sources} list.
+		 * 
+		 * @param importSource the corresponding import source
+		 * @param parent the parent composite
+		 */
+		public SourcePage(ImportSource<P, T> importSource, Composite parent) {
+			super(ImportSelectSourcePage.this);
+			
+			this.importSource = importSource;
+			
+			importSource.setPage(this);
+			importSource.setConfiguration(this);
+			importSource.createControls(parent);
+			
+			sources.add(this);
+			index = sources.size() - 1;
+		}
+
+		/**
+		 * @see WizardPageDecorator#getWizard()
+		 */
+		@Override
+		public W getWizard() {
+			return ImportSelectSourcePage.this.getWizard();
+		}
+
+		/**
+		 * Activate the source page. This will apply the stored content type,
+		 * provider factory, messages and page completeness.
+		 */
+		public void activate() {
+			getWizard().setContentType(contentType);
+			getWizard().setProviderFactory(factory);
+			
+			super.setMessage(message, messageType);
+			super.setErrorMessage(errorMessage);
+			super.setPageComplete(complete);
+		}
+		
+		private boolean isActive() {
+			synchronized (ImportSelectSourcePage.this) {
+				return index == activeIndex;
+			}
+		}
+		
+		/**
+		 * @see SourceConfiguration#getFactories()
+		 */
+		@Override
+		public Collection<T> getFactories() {
+			return getWizard().getFactories();
+		}
+
+		/**
+		 * @see SourceConfiguration#setProviderFactory(IOProviderFactory)
+		 */
+		@Override
+		public void setProviderFactory(T factory) {
+			this.factory = factory;
+						
+			if (isActive()) {
+				getWizard().setProviderFactory(factory);
+			}
+		}
+
+		/**
+		 * @see ImportSource.SourceConfiguration#getProviderFactory()
+		 */
+		@Override
+		public T getProviderFactory() {
+			return factory;
+		}
+
+		/**
+		 * @see ImportSource.SourceConfiguration#setContentType(ContentType)
+		 */
+		@Override
+		public void setContentType(ContentType contentType) {
+			this.contentType = contentType;
+			
+			if (isActive()) {
+				getWizard().setContentType(contentType);
+			}
+		}
+
+		/**
+		 * @see WizardPageDecorator#getErrorMessage()
+		 */
+		@Override
+		public String getErrorMessage() {
+			return errorMessage;
+		}
+
+		/**
+		 * @see WizardPageDecorator#isPageComplete()
+		 */
+		@Override
+		public boolean isPageComplete() {
+			return complete;
+		}
+
+		/**
+		 * @see WizardPageDecorator#getMessage()
+		 */
+		@Override
+		public String getMessage() {
+			return message;
+		}
+
+		/**
+		 * @see WizardPageDecorator#getMessageType()
+		 */
+		@Override
+		public int getMessageType() {
+			return messageType;
+		}
+
+		/**
+		 * @see WizardPageDecorator#setErrorMessage(String)
+		 */
+		@Override
+		public void setErrorMessage(String newMessage) {
+			this.errorMessage = newMessage;
+			
+			if (isActive()) {
+				super.setErrorMessage(newMessage);
+			}
+		}
+
+		/**
+		 * @see WizardPageDecorator#setMessage(String, int)
+		 */
+		@Override
+		public void setMessage(String newMessage, int newType) {
+			this.message = newMessage;
+			this.messageType = newType;
+			
+			if (isActive()) {
+				super.setMessage(newMessage, newType);
+			}
+		}
+
+		/**
+		 * @see WizardPageDecorator#setPageComplete(boolean)
+		 */
+		@Override
+		public void setPageComplete(boolean complete) {
+			this.complete = complete;
+			
+			if (isActive()) {
+				super.setPageComplete(complete);
+			}
+		}
+
+		/**
+		 * @see WizardPageDecorator#setMessage(String)
+		 */
+		@Override
+		public void setMessage(String newMessage) {
+			this.message = newMessage;
+			
+			if (isActive()) {
+				super.setMessage(newMessage);
+			}
+		}
+
+		/**
+		 * @see SourceConfiguration#getContentType()
+		 */
+		@Override
+		public ContentType getContentType() {
+			return contentType;
+		}
+
+		/**
+		 * @return the importSource
+		 */
+		public ImportSource<P, T> getImportSource() {
+			return importSource;
+		}
+
+		/**
+		 * @return the index
+		 */
+		public int getIndex() {
+			return index;
+		}
+
+	}
+
+	private final List<SourcePage> sources = new ArrayList<SourcePage>();
 	
-	/**
-	 * The set of supported content types
-	 */
-	private Set<ContentType> supportedTypes;
-
-	private ComboViewer providers;
-
+	private int activeIndex = 0;
+	
 	/**
 	 * Default constructor
 	 */
@@ -88,154 +281,104 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 	 */
 	@Override
 	protected void createContent(Composite page) {
-		page.setLayout(new GridLayout(3, false));
+		// get compatible sources
+		List<ImportSourceFactory> availableSources = ImportSourceExtension.getInstance().getFactories(new FactoryFilter<ImportSource<?,?>, ImportSourceFactory>() {
+			
+			@Override
+			public boolean acceptFactory(ImportSourceFactory factory) {
+				return factory.getProviderFactoryType().isAssignableFrom(getWizard().getFactoryClass());
+			}
+			
+			@Override
+			public boolean acceptCollection(
+					ExtensionObjectFactoryCollection<ImportSource<?, ?>, ImportSourceFactory> collection) {
+				return false;
+			}
+		});
 		
-		// source file
-		sourceFile = new OpenFileFieldEditor("sourceFile", "Source file:", true,
-				FileFieldEditor.VALIDATE_ON_KEY_STROKE, page);
-		sourceFile.setEmptyStringAllowed(false);
-		sourceFile.setPage(this);
-		
-		// set content types for file field
-		Collection<T> factories = getWizard().getFactories();
-		supportedTypes = new HashSet<ContentType>();
-		for (T factory : factories) {
-			supportedTypes.addAll(factory.getSupportedTypes());
+		if (availableSources == null || availableSources.isEmpty()) {
+			Label label = new Label(page, SWT.NONE);
+			label.setText("No import source available.");
 		}
-		
-		sourceFile.setContentTypes(supportedTypes);
-		sourceFile.setPropertyChangeListener(new IPropertyChangeListener() {
+		else if (availableSources.size() == 1) {
+			// add source directly
+			createSource(availableSources.iterator().next(), page);
 			
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getProperty().equals(FieldEditor.IS_VALID)) {
-					updateState(true);
-				}
-				else if (event.getProperty().equals(FieldEditor.VALUE)) {
-					updateState(true);
-				}
+			setActiveSource(0);
+		}
+		else {
+			// add tab for each source
+			page.setLayout(new FillLayout());
+			final TabFolder tabs = new TabFolder(page, SWT.BORDER);
+			
+			for (ImportSourceFactory sourceFactory : availableSources) {
+				TabItem item = new TabItem(tabs, SWT.NONE);
+				item.setText(MessageFormat.format("From {0}", sourceFactory.getDisplayName()));
+				//TODO image and tooltip?
+				Composite content = new Composite(tabs, SWT.NONE);
+				
+				createSource(sourceFactory, content);
 			}
-		});
-		
-		// provider selection
-		
-		// label
-		Label providerLabel = new Label(page, SWT.NONE);
-		providerLabel.setText("Import as");
-		
-		// create provider combo
-		providers = new ComboViewer(page, SWT.DROP_DOWN | SWT.READ_ONLY);
-		providers.getControl().setLayoutData(new GridData(SWT.FILL, 
-				SWT.BEGINNING, true, false, 2, 1));
-		providers.setContentProvider(ArrayContentProvider.getInstance());
-		providers.setLabelProvider(new LabelProvider() {
+			
+			tabs.addSelectionListener(new SelectionAdapter() {
 
-			@Override
-			public String getText(Object element) {
-				if (element instanceof IOProviderFactory<?>) {
-					return ((IOProviderFactory<?>) element).getDisplayName();
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					setActiveSource(tabs.getSelectionIndex());
 				}
-				return super.getText(element);
-			}
+				
+			});
 			
-		});
-		
-		// process selection changes
-		providers.addSelectionChangedListener(new ISelectionChangedListener() {
-			
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				updateState(false);
-			}
-		});
-		
-		updateState(true);
+			setActiveSource(0);
+		}
 	}
 	
 	/**
-	 * Update the content type
+	 * Set the active source.
+	 * @param selectionIndex the index of the source to be activated
 	 */
-	private void updateContentType() {
-		ContentType contentType = null;
-		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
-		
-		if (sourceFile.isValid()) {
-			// determine content type
-			Collection<ContentType> filteredTypes = cts.findContentTypesFor(
-					supportedTypes, null, sourceFile.getStringValue());
-			if (!filteredTypes.isEmpty()) {
-				contentType = filteredTypes.iterator().next();
+	private void setActiveSource(int selectionIndex) {
+		synchronized (this) {
+			activeIndex = selectionIndex;
+			getActiveSource().activate();
+		}
+	}
+	
+	/**
+	 * Get the active source or <code>null</code>.
+	 * @return the active source
+	 */
+	private SourcePage getActiveSource() {
+		synchronized (this) {
+			if (activeIndex < sources.size()) {
+				return sources.get(activeIndex);
 			}
 		}
-		
-		getWizard().setContentType(contentType);
-		if (contentType != null) {
-			setMessage(cts.getDisplayName(contentType), DialogPage.INFORMATION);
-		}
-		else {
-			setMessage(null);
-		}
-		
-		// update provider selector
-		updateProvider();
+		return null;
 	}
 
 	/**
-	 * Update the provider selector
+	 * Create an import source and add its controls to the given composite.
+	 * 
+	 * @param sourceFactory the {@link ImportSource} factory
+	 * @param parent the parent composite, a custom layout may be assigned by
+	 *   implementors
 	 */
 	@SuppressWarnings("unchecked")
-	private void updateProvider() {
-		ContentType contentType = getWizard().getContentType();
-		if (contentType  != null) {
-			T lastSelected = null;
-			ISelection provSel = providers.getSelection();
-			if (!provSel.isEmpty() && provSel instanceof IStructuredSelection) {
-				lastSelected = (T) ((IStructuredSelection) provSel).getFirstElement();
-			}
-			
-			List<T> supported = HaleIO.filterFactories(getWizard().getFactories(), contentType);
-			providers.setInput(supported);
-			
-			if (lastSelected != null && supported.contains(lastSelected)) {
-				// reuse old selection
-				providers.setSelection(new StructuredSelection(lastSelected), true);
-			}
-			else if (!supported.isEmpty()) {
-				// select first provider
-				providers.setSelection(new StructuredSelection(supported.get(0)), true);
-			}
-			
-			providers.getControl().setEnabled(supported.size() > 1);
-		}
-		else {
-			providers.setInput(null);
-			providers.getControl().setEnabled(false);
+	private void createSource(ImportSourceFactory sourceFactory,
+			Composite parent) {
+		ImportSource<?, ?> source;
+		try {
+			source = sourceFactory.createExtensionObject();
+		} catch (Exception e) {
+			throw new RuntimeException(MessageFormat.format(
+					"Could not create import source {0}", 
+					sourceFactory.getIdentifier()), e);
 		}
 		
-	}
-
-	/**
-	 * Update the page state
-	 * @param updateContentType if <code>true</code> the content type and the
-	 *   supported providers will be updated before updating the page state
-	 */
-	@SuppressWarnings("unchecked")
-	private void updateState(boolean updateContentType) {
-		if (updateContentType) {
-			updateContentType();
-		}
-		
-		// update provider factory
-		ISelection provSel = providers.getSelection();
-		if (!provSel.isEmpty() && provSel instanceof IStructuredSelection) {
-			getWizard().setProviderFactory((T) ((IStructuredSelection) provSel).getFirstElement());
-		}
-		else {
-			getWizard().setProviderFactory(null);
-		}
-		
-		setPageComplete(sourceFile.isValid() && 
-				getWizard().getProviderFactory() != null);
+		ImportSource<P, T> compatibleSource = ((ImportSource<P, T>) source); //XXX alternative to casting?
+		// create the source page
+		new SourcePage(compatibleSource, parent);
 	}
 
 	/**
@@ -243,18 +386,21 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 	 */
 	@Override
 	public boolean updateConfiguration(P provider) {
-		File file = new File(sourceFile.getStringValue());
-		provider.setSource(new FileIOSupplier(file));
-		return true;
+		SourcePage source = getActiveSource();
+		if (source != null) {
+			return source.getImportSource().updateConfiguration(provider);
+		}
+		
+		return false;
 	}
 
-	/**
-	 * Get the source file name
-	 *  
-	 * @return the source file name
-	 */
-	public String getSourceFileName() {
-		return sourceFile.getStringValue();
-	}
+//	/**
+//	 * Get the source file name
+//	 *  
+//	 * @return the source file name
+//	 */
+//	public String getSourceFileName() {
+//		return sourceFile.getStringValue();
+//	}
 	
 }
