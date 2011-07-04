@@ -4,12 +4,11 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            class="eu.esdihumboldt.hale.ui.views.report.ReportView"
+            class="eu.esdihumboldt.hale.ui.views.report.ReportViewer"
             icon="icons/ft_stylelist.gif"
             id="eu.esdihumboldt.hale.ui.views.report"
             name="%view.export_report.name"
             restorable="true">
       </view>
    </extension>
-
 </plugin>

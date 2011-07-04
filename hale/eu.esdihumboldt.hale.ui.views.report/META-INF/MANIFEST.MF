@@ -11,6 +11,14 @@ Import-Package: eu.esdihumboldt.cst.transformer,
  eu.esdihumboldt.hale.ui.service,
  eu.esdihumboldt.hale.ui.service.project,
  eu.esdihumboldt.hale.ui.service.report,
- eu.esdihumboldt.specification.cst.align
+ eu.esdihumboldt.specification.cst.align,
+ org.eclipse.ui.forms,
+ org.eclipse.ui.forms.editor,
+ org.eclipse.ui.forms.widgets,
+ org.eclipse.ui.internal.views.properties.tabbed.view,
+ org.eclipse.ui.views.properties,
+ org.eclipse.ui.views.properties.tabbed
 Require-Bundle: org.eclipse.ui;bundle-version="3.6.2",
  org.eclipse.core.runtime;bundle-version="3.6.0"
+Bundle-ClassPath: .,
+ swing2swt.jar
