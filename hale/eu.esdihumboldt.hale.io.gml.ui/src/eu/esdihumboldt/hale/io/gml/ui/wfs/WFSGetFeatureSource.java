@@ -33,8 +33,16 @@ public class WFSGetFeatureSource<P extends ImportProvider, T extends IOProviderF
 	@Override
 	protected WfsUrlFieldEditor createWfsFieldEditor(Composite parent) {
 		String schemaNamespace = null; //FIXME needed?
-		return new WfsUrlFieldEditor("sourceWfs", "WFS GetFeature URL:", parent,
+		return new WfsUrlFieldEditor("sourceWfs", "URL:", parent,
 				schemaNamespace , true);
+	}
+
+	/**
+	 * @see AbstractWFSSource#getCaption()
+	 */
+	@Override
+	protected String getCaption() {
+		return "WFS GetFeature request";
 	}
 
 }

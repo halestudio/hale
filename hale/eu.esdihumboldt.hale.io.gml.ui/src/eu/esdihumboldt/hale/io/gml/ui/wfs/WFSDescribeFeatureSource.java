@@ -32,7 +32,15 @@ public class WFSDescribeFeatureSource<P extends ImportProvider, T extends IOProv
 	 */
 	@Override
 	protected WfsUrlFieldEditor createWfsFieldEditor(Composite parent) {
-		return new WfsUrlFieldEditor("sourceWfs", "WFS DescribeFeatureType URL:", parent);
+		return new WfsUrlFieldEditor("sourceWfs", "URL:", parent);
+	}
+
+	/**
+	 * @see AbstractWFSSource#getCaption()
+	 */
+	@Override
+	protected String getCaption() {
+		return "WFS DescribeFeatureType request";
 	}
 
 }

@@ -52,6 +52,11 @@ public abstract class AbstractWFSSource<P extends ImportProvider, T extends IOPr
 	public void createControls(Composite parent) {
 		parent.setLayout(new GridLayout(3, false));
 		
+		// caption
+		Label caption = new Label(parent, SWT.NONE);
+		caption.setText(getCaption());
+		caption.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false, 3, 1));
+		
 		// source file
 		sourceURL = createWfsFieldEditor(parent); 
 		sourceURL.setPage(getPage());
@@ -82,6 +87,12 @@ public abstract class AbstractWFSSource<P extends ImportProvider, T extends IOPr
 		// initial state update
 		updateState(true);
 	}
+
+	/**
+	 * Get the caption for the source page
+	 * @return the caption
+	 */
+	protected abstract String getCaption();
 
 	/**
 	 * Create the WFS field editor to use in the page.
