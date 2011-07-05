@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.io.source;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -20,9 +21,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -42,7 +46,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.PlatformUI;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.core.io.ContentType;
@@ -162,18 +168,41 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 		detect.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ContentType detected = detectContentType();
-				if (detected != null) {
-					types.setSelection(new StructuredSelection(detected));
-					getPage().setMessage(MessageFormat.format(
-							"Detected {0} as content type",
-							HaleIO.getDisplayName(detected)), 
-							DialogPage.INFORMATION);
-					updateContentType();
+				try {
+					getPage().getWizard().getContainer().run(true, false, new IRunnableWithProgress() {
+						
+						@Override
+						public void run(IProgressMonitor monitor) throws InvocationTargetException,
+								InterruptedException {
+							monitor.beginTask("Detect content type", IProgressMonitor.UNKNOWN);
+							
+							final ContentType detected = detectContentType();
+							
+							PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+								
+								@Override
+								public void run() {
+									if (detected != null) {
+										types.setSelection(new StructuredSelection(detected));
+										getPage().setMessage(MessageFormat.format(
+												"Detected {0} as content type",
+												HaleIO.getDisplayName(detected)), 
+												DialogPage.INFORMATION);
+										updateContentType();
+									}
+									else {
+										getPage().setMessage("Could not detect content type", DialogPage.WARNING);
+									}
+								}
+							});
+							
+							monitor.done();
+						}
+					});
+				} catch (Throwable t) {
+					getPage().setErrorMessage("Starting the task to detect the content type failed");
 				}
-				else {
-					getPage().setMessage("Could not detect content type", DialogPage.WARNING);
-				}
+				
 			}
 		});
 		
@@ -219,17 +248,32 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 	private ContentType detectContentType() {
 		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
 		
-		if (sourceURL.isValid() && sourceURL.getURL() != null) {
+		final Display display = PlatformUI.getWorkbench().getDisplay();
+		final AtomicReference<String> sourceString = new AtomicReference<String>();
+		final AtomicReference<URI> sourceURI = new AtomicReference<URI>();
+		
+		display.syncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				if (sourceURL.isValid() && sourceURL.getURL() != null) {
+					sourceString.set(sourceURL.getStringValue());
+					try {
+						sourceURI.set(sourceURL.getURL().toURI());
+					} catch (Throwable e) {
+						getPage().setErrorMessage(e.getLocalizedMessage());
+					}
+				}
+			}
+		});
+		
+		if (sourceURI.get() != null && sourceString.get() != null) {
 			// determine content type
 			Collection<ContentType> filteredTypes;
-			try {
-				filteredTypes = cts.findContentTypesFor(
-						supportedTypes, new DefaultInputSupplier(sourceURL.getURL().toURI()), 
-						sourceURL.getStringValue());
-			} catch (URISyntaxException e) {
-				getPage().setErrorMessage(e.getLocalizedMessage());
-				return null;
-			}
+			filteredTypes = cts.findContentTypesFor(
+					supportedTypes, new DefaultInputSupplier(sourceURI.get()), 
+					sourceString.get());
+			
 			if (!filteredTypes.isEmpty()) {
 				return filteredTypes.iterator().next();
 			}

@@ -279,7 +279,7 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 		}
 
 	}
-
+	
 	private final List<SourcePage> sources = new ArrayList<SourcePage>();
 	
 	private int activeIndex = 0;
