@@ -169,7 +169,7 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				try {
-					getPage().getWizard().getContainer().run(true, false, new IRunnableWithProgress() {
+					getPage().getWizard().getContainer().run(false, false, new IRunnableWithProgress() {
 						
 						@Override
 						public void run(IProgressMonitor monitor) throws InvocationTargetException,
