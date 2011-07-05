@@ -12,15 +12,18 @@
 
 package eu.esdihumboldt.hale.ui.io.source;
 
-import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jface.dialogs.DialogPage;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.FieldEditor;
-import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -32,8 +35,11 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
@@ -44,24 +50,24 @@ import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.core.io.ImportProvider;
 import eu.esdihumboldt.hale.core.io.service.ContentTypeService;
-import eu.esdihumboldt.hale.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
-import eu.esdihumboldt.hale.ui.io.util.OpenFileFieldEditor;
+import eu.esdihumboldt.hale.ui.io.util.URLFieldEditor;
 
 /**
- * File import source
+ * URL import source
  * @param <P> the supported {@link IOProvider} type
  * @param <T> the supported {@link IOProviderFactory} type
  * 
  * @author Simon Templer
  * @since 2.2 
  */
-public class FileSource<P extends ImportProvider, T extends IOProviderFactory<P>> extends AbstractSource<P, T> {
+public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>> extends AbstractSource<P, T> {
 	
 	/**
-	 * The file field editor for the source file
+	 * The file field editor for the source URL
 	 */
-	private OpenFileFieldEditor sourceFile;
+	private URLFieldEditor sourceURL;
 	
 	/**
 	 * The set of supported content types
@@ -70,18 +76,20 @@ public class FileSource<P extends ImportProvider, T extends IOProviderFactory<P>
 
 	private ComboViewer providers;
 
+	private ComboViewer types;
+
+	private Button detect;
+
 	/**
 	 * @see ImportSource#createControls(Composite)
 	 */
 	@Override
 	public void createControls(Composite parent) {
-		parent.setLayout(new GridLayout(3, false));
+		parent.setLayout(new GridLayout(2, false));
 		
 		// source file
-		sourceFile = new OpenFileFieldEditor("sourceFile", "Source file:", true,
-				FileFieldEditor.VALIDATE_ON_KEY_STROKE, parent);
-		sourceFile.setEmptyStringAllowed(false);
-		sourceFile.setPage(getPage());
+		sourceURL = new URLFieldEditor("sourceURL", "Source URL:", parent);
+		sourceURL.setPage(getPage());
 		
 		// set content types for file field
 		Collection<T> factories = getConfiguration().getFactories();
@@ -90,16 +98,73 @@ public class FileSource<P extends ImportProvider, T extends IOProviderFactory<P>
 			supportedTypes.addAll(factory.getSupportedTypes());
 		}
 		
-		sourceFile.setContentTypes(supportedTypes);
-		sourceFile.setPropertyChangeListener(new IPropertyChangeListener() {
-			
+		sourceURL.setPropertyChangeListener(new IPropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty().equals(FieldEditor.IS_VALID)) {
-					updateState(true);
+					getPage().setMessage(null);
+					updateState();
 				}
 				else if (event.getProperty().equals(FieldEditor.VALUE)) {
-					updateState(true);
+					getPage().setMessage(null);
+					updateState();
+				}
+			}
+		});
+		
+		// content type selection
+		
+		// label
+		Label typesLabel = new Label(parent, SWT.NONE);
+		typesLabel.setText("Content type");
+		
+		// types combo
+		Composite group = new Composite(parent, SWT.NONE);
+		group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		group.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
+		
+		types = new ComboViewer(group, SWT.DROP_DOWN | SWT.READ_ONLY);
+		types.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		types.setContentProvider(ArrayContentProvider.getInstance());
+		types.setLabelProvider(new LabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				if (element instanceof ContentType) {
+					return HaleIO.getDisplayName((ContentType) element);
+				}
+				return super.getText(element);
+			}
+			
+		});
+		types.setInput(supportedTypes);
+		
+		// process selection changes
+		types.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				updateContentType();
+			}
+		});
+		
+		// detect button
+		detect = new Button(group, SWT.PUSH);
+		detect.setText("Detect");
+		detect.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ContentType detected = detectContentType();
+				if (detected != null) {
+					types.setSelection(new StructuredSelection(detected));
+					getPage().setMessage(MessageFormat.format(
+							"Detected {0} as content type",
+							HaleIO.getDisplayName(detected)), 
+							DialogPage.INFORMATION);
+					updateContentType();
+				}
+				else {
+					getPage().setMessage("Could not detect content type", DialogPage.WARNING);
 				}
 			}
 		});
@@ -113,7 +178,7 @@ public class FileSource<P extends ImportProvider, T extends IOProviderFactory<P>
 		// create provider combo
 		providers = new ComboViewer(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
 		providers.getControl().setLayoutData(new GridData(SWT.FILL, 
-				SWT.BEGINNING, true, false, 2, 1));
+				SWT.BEGINNING, true, false));
 		providers.setContentProvider(ArrayContentProvider.getInstance());
 		providers.setLabelProvider(new LabelProvider() {
 
@@ -132,38 +197,48 @@ public class FileSource<P extends ImportProvider, T extends IOProviderFactory<P>
 			
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				updateState(false);
+				updateState();
 			}
 		});
 		
-		updateState(true);
+		updateState();
 	}
 	
 	/**
-	 * Update the content type
+	 * Detect the content type
+	 * @return the detected content type or <code>null</code>
 	 */
-	private void updateContentType() {
-		ContentType contentType = null;
+	private ContentType detectContentType() {
 		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
 		
-		if (sourceFile.isValid()) {
+		if (sourceURL.isValid() && sourceURL.getURL() != null) {
 			// determine content type
-			Collection<ContentType> filteredTypes = cts.findContentTypesFor(
-					supportedTypes, null, sourceFile.getStringValue());
+			Collection<ContentType> filteredTypes;
+			try {
+				filteredTypes = cts.findContentTypesFor(
+						supportedTypes, new DefaultInputSupplier(sourceURL.getURL().toURI()), 
+						sourceURL.getStringValue());
+			} catch (URISyntaxException e) {
+				getPage().setErrorMessage(e.getLocalizedMessage());
+				return null;
+			}
 			if (!filteredTypes.isEmpty()) {
-				contentType = filteredTypes.iterator().next();
+				return filteredTypes.iterator().next();
 			}
 		}
 		
-		getConfiguration().setContentType(contentType);
-		if (contentType != null) {
-			getPage().setMessage(cts.getDisplayName(contentType), DialogPage.INFORMATION);
-		}
-		else {
-			getPage().setMessage(null);
+		return null;
+	}
+	
+	private void updateContentType() {
+		ContentType ct = null;
+		ISelection typeSel = types.getSelection();
+		if (!typeSel.isEmpty() && typeSel instanceof IStructuredSelection) {
+			ct = (ContentType) ((IStructuredSelection) typeSel).getFirstElement();
 		}
 		
-		// update provider selector
+		getConfiguration().setContentType(ct);
+		
 		updateProvider();
 	}
 
@@ -203,12 +278,16 @@ public class FileSource<P extends ImportProvider, T extends IOProviderFactory<P>
 
 	/**
 	 * Update the page state
-	 * @param updateContentType if <code>true</code> the content type and the
-	 *   supported providers will be updated before updating the page state
 	 */
 	@SuppressWarnings("unchecked")
-	private void updateState(boolean updateContentType) {
-		if (updateContentType) {
+	private void updateState() {
+		boolean enableSelection = sourceURL.isValid() && sourceURL.getURL() != null;
+		
+		detect.setEnabled(enableSelection);
+		types.getControl().setEnabled(enableSelection);
+		
+		if (!enableSelection) {
+			types.setSelection(new StructuredSelection());
 			updateContentType();
 		}
 		
@@ -221,7 +300,8 @@ public class FileSource<P extends ImportProvider, T extends IOProviderFactory<P>
 			getConfiguration().setProviderFactory(null);
 		}
 		
-		getPage().setPageComplete(sourceFile.isValid() && 
+		getPage().setPageComplete(sourceURL.isValid() && 
+				getConfiguration().getContentType() != null && 
 				getConfiguration().getProviderFactory() != null);
 	}
 
@@ -235,11 +315,20 @@ public class FileSource<P extends ImportProvider, T extends IOProviderFactory<P>
 			return ok;
 		}
 		
-		File file = new File(sourceFile.getStringValue());
-		//TODO check if file exists?
-		provider.setSource(new FileIOSupplier(file));
+		URL url = sourceURL.getURL();
+		if (url != null) {
+			URI uri;
+			try {
+				uri = url.toURI();
+			} catch (URISyntaxException e) {
+				//TODO set error message?
+				return false;
+			}
+			provider.setSource(new DefaultInputSupplier(uri));
+			return true;
+		}
 		
-		return true;
+		return false;
 	}
 
 }

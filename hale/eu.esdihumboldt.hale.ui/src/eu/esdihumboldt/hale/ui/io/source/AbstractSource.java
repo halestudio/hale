@@ -72,4 +72,15 @@ public abstract class AbstractSource<P extends ImportProvider, T extends IOProvi
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}<br>
+	 * <br>
+	 * The default implementation does nothing, override to to react on
+	 * activation of the source page. 
+	 */
+	@Override
+	public void onActivate() {
+		// do nothing
+	}
+
 }

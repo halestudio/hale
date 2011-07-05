@@ -309,7 +309,7 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 		else {
 			// add tab for each source
 			page.setLayout(new FillLayout());
-			final TabFolder tabs = new TabFolder(page, SWT.BORDER);
+			final TabFolder tabs = new TabFolder(page, SWT.NONE);
 			
 			for (ImportSourceFactory sourceFactory : availableSources) {
 				TabItem item = new TabItem(tabs, SWT.NONE);
@@ -318,6 +318,8 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 				Composite content = new Composite(tabs, SWT.NONE);
 				
 				createSource(sourceFactory, content);
+				
+				item.setControl(content);
 			}
 			
 			tabs.addSelectionListener(new SelectionAdapter() {

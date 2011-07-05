@@ -105,5 +105,10 @@ public interface ImportSource<P extends ImportProvider, T extends IOProviderFact
 	 * @return if the source is valid and updating the provider was successful
 	 */
 	public boolean updateConfiguration(P provider);
+	
+	/**
+	 * Method that is called when the source page is activated.
+	 */
+	public void onActivate();
 
 }

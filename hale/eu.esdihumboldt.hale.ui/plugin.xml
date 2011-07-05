@@ -175,6 +175,11 @@
             id="eu.esdihumboldt.hale.ui.io.source.file"
             name="file">
       </source>
+      <source
+            class="eu.esdihumboldt.hale.ui.io.source.URLSource"
+            id="eu.esdihumboldt.hale.ui.io.source.url"
+            name="URL">
+      </source>
    </extension>
 
 </plugin>
