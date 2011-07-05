@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.io.source;
 
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -19,7 +20,6 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -58,6 +58,7 @@ import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.core.io.ImportProvider;
 import eu.esdihumboldt.hale.core.io.service.ContentTypeService;
 import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
 import eu.esdihumboldt.hale.ui.io.util.URLFieldEditor;
@@ -70,7 +71,7 @@ import eu.esdihumboldt.hale.ui.io.util.URLFieldEditor;
  * @author Simon Templer
  * @since 2.2 
  */
-public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>> extends AbstractSource<P, T> {
+public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>> extends AbstractProviderSource<P, T> {
 	
 	/**
 	 * The file field editor for the source URL
@@ -81,8 +82,6 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 	 * The set of supported content types
 	 */
 	private Set<ContentType> supportedTypes;
-
-	private ComboViewer providers;
 
 	private ComboViewer types;
 
@@ -215,31 +214,11 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 		providerLabel.setText("Import as");
 		
 		// create provider combo
-		providers = new ComboViewer(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
+		ComboViewer providers = createProviders(parent);
 		providers.getControl().setLayoutData(new GridData(SWT.FILL, 
 				SWT.BEGINNING, true, false));
-		providers.setContentProvider(ArrayContentProvider.getInstance());
-		providers.setLabelProvider(new LabelProvider() {
-
-			@Override
-			public String getText(Object element) {
-				if (element instanceof IOProviderFactory<?>) {
-					return ((IOProviderFactory<?>) element).getDisplayName();
-				}
-				return super.getText(element);
-			}
-			
-		});
 		
-		// process selection changes
-		providers.addSelectionChangedListener(new ISelectionChangedListener() {
-			
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				updateState(false);
-			}
-		});
-		
+		// initial state update
 		updateState(true);
 	}
 	
@@ -284,7 +263,11 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 		return null;
 	}
 	
-	private void updateContentType() {
+	/**
+	 * @see AbstractProviderSource#updateContentType()
+	 */
+	@Override
+	protected void updateContentType() {
 		ContentType ct = null;
 		ISelection typeSel = types.getSelection();
 		if (!typeSel.isEmpty() && typeSel instanceof IStructuredSelection) {
@@ -293,50 +276,14 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 		
 		getConfiguration().setContentType(ct);
 		
-		updateProvider();
+		super.updateContentType();
 	}
 
 	/**
-	 * Update the provider selector
+	 * @see AbstractProviderSource#updateState(boolean)
 	 */
-	@SuppressWarnings("unchecked")
-	private void updateProvider() {
-		ContentType contentType = getConfiguration().getContentType();
-		if (contentType  != null) {
-			T lastSelected = null;
-			ISelection provSel = providers.getSelection();
-			if (!provSel.isEmpty() && provSel instanceof IStructuredSelection) {
-				lastSelected = (T) ((IStructuredSelection) provSel).getFirstElement();
-			}
-			
-			List<T> supported = HaleIO.filterFactories(getConfiguration().getFactories(), contentType);
-			providers.setInput(supported);
-			
-			if (lastSelected != null && supported.contains(lastSelected)) {
-				// reuse old selection
-				providers.setSelection(new StructuredSelection(lastSelected), true);
-			}
-			else if (!supported.isEmpty()) {
-				// select first provider
-				providers.setSelection(new StructuredSelection(supported.get(0)), true);
-			}
-			
-			providers.getControl().setEnabled(supported.size() > 1);
-		}
-		else {
-			providers.setInput(null);
-			providers.getControl().setEnabled(false);
-		}
-		
-	}
-
-	/**
-	 * Update the page state
-	 * @param updateContentType if the content type shall be updated in the 
-	 *   configuration
-	 */
-	@SuppressWarnings("unchecked")
-	private void updateState(boolean updateContentType) {
+	@Override
+	protected void updateState(boolean updateContentType) {
 		boolean enableSelection = sourceURL.isValid() && sourceURL.getURL() != null;
 		
 		detect.setEnabled(enableSelection);
@@ -347,34 +294,22 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 			updateContentType = true;
 		}
 		
-		if (updateContentType) {
-			updateContentType();
-		}
-		
-		// update provider factory
-		ISelection provSel = providers.getSelection();
-		if (!provSel.isEmpty() && provSel instanceof IStructuredSelection) {
-			getConfiguration().setProviderFactory((T) ((IStructuredSelection) provSel).getFirstElement());
-		}
-		else {
-			getConfiguration().setProviderFactory(null);
-		}
-		
-		getPage().setPageComplete(sourceURL.isValid() && 
-				getConfiguration().getContentType() != null && 
-				getConfiguration().getProviderFactory() != null);
+		super.updateState(updateContentType);
 	}
 
 	/**
-	 * @see AbstractSource#updateConfiguration(ImportProvider)
+	 * @see AbstractProviderSource#isValidSource()
 	 */
 	@Override
-	public boolean updateConfiguration(P provider) {
-		boolean ok = super.updateConfiguration(provider);
-		if (!ok) {
-			return ok;
-		}
-		
+	protected boolean isValidSource() {
+		return sourceURL.isValid() && sourceURL.getURL() != null;
+	}
+
+	/**
+	 * @see AbstractProviderSource#getSource()
+	 */
+	@Override
+	protected LocatableInputSupplier<? extends InputStream> getSource() {
 		URL url = sourceURL.getURL();
 		if (url != null) {
 			URI uri;
@@ -382,13 +317,12 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 				uri = url.toURI();
 			} catch (URISyntaxException e) {
 				//TODO set error message?
-				return false;
+				return null;
 			}
-			provider.setSource(new DefaultInputSupplier(uri));
-			return true;
+			return new DefaultInputSupplier(uri);
 		}
 		
-		return false;
+		return null;
 	}
 
 	/**

@@ -13,9 +13,9 @@
 package eu.esdihumboldt.hale.ui.io.source;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jface.dialogs.DialogPage;
@@ -23,14 +23,7 @@ import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -39,12 +32,12 @@ import org.eclipse.swt.widgets.Label;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.core.io.ContentType;
-import eu.esdihumboldt.hale.core.io.HaleIO;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.core.io.ImportProvider;
 import eu.esdihumboldt.hale.core.io.service.ContentTypeService;
 import eu.esdihumboldt.hale.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
 import eu.esdihumboldt.hale.ui.io.util.OpenFileFieldEditor;
 
@@ -56,7 +49,7 @@ import eu.esdihumboldt.hale.ui.io.util.OpenFileFieldEditor;
  * @author Simon Templer
  * @since 2.2 
  */
-public class FileSource<P extends ImportProvider, T extends IOProviderFactory<P>> extends AbstractSource<P, T> {
+public class FileSource<P extends ImportProvider, T extends IOProviderFactory<P>> extends AbstractProviderSource<P, T> {
 	
 	/**
 	 * The file field editor for the source file
@@ -67,8 +60,6 @@ public class FileSource<P extends ImportProvider, T extends IOProviderFactory<P>
 	 * The set of supported content types
 	 */
 	private Set<ContentType> supportedTypes;
-
-	private ComboViewer providers;
 
 	/**
 	 * @see ImportSource#createControls(Composite)
@@ -111,38 +102,19 @@ public class FileSource<P extends ImportProvider, T extends IOProviderFactory<P>
 		providerLabel.setText("Import as");
 		
 		// create provider combo
-		providers = new ComboViewer(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
+		ComboViewer providers = createProviders(parent);
 		providers.getControl().setLayoutData(new GridData(SWT.FILL, 
 				SWT.BEGINNING, true, false, 2, 1));
-		providers.setContentProvider(ArrayContentProvider.getInstance());
-		providers.setLabelProvider(new LabelProvider() {
-
-			@Override
-			public String getText(Object element) {
-				if (element instanceof IOProviderFactory<?>) {
-					return ((IOProviderFactory<?>) element).getDisplayName();
-				}
-				return super.getText(element);
-			}
-			
-		});
 		
-		// process selection changes
-		providers.addSelectionChangedListener(new ISelectionChangedListener() {
-			
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				updateState(false);
-			}
-		});
-		
+		// initial state update
 		updateState(true);
 	}
 	
 	/**
-	 * Update the content type
+	 * @see AbstractProviderSource#updateContentType()
 	 */
-	private void updateContentType() {
+	@Override
+	protected void updateContentType() {
 		ContentType contentType = null;
 		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
 		
@@ -163,83 +135,24 @@ public class FileSource<P extends ImportProvider, T extends IOProviderFactory<P>
 			getPage().setMessage(null);
 		}
 		
-		// update provider selector
-		updateProvider();
+		super.updateContentType();
 	}
 
 	/**
-	 * Update the provider selector
-	 */
-	@SuppressWarnings("unchecked")
-	private void updateProvider() {
-		ContentType contentType = getConfiguration().getContentType();
-		if (contentType  != null) {
-			T lastSelected = null;
-			ISelection provSel = providers.getSelection();
-			if (!provSel.isEmpty() && provSel instanceof IStructuredSelection) {
-				lastSelected = (T) ((IStructuredSelection) provSel).getFirstElement();
-			}
-			
-			List<T> supported = HaleIO.filterFactories(getConfiguration().getFactories(), contentType);
-			providers.setInput(supported);
-			
-			if (lastSelected != null && supported.contains(lastSelected)) {
-				// reuse old selection
-				providers.setSelection(new StructuredSelection(lastSelected), true);
-			}
-			else if (!supported.isEmpty()) {
-				// select first provider
-				providers.setSelection(new StructuredSelection(supported.get(0)), true);
-			}
-			
-			providers.getControl().setEnabled(supported.size() > 1);
-		}
-		else {
-			providers.setInput(null);
-			providers.getControl().setEnabled(false);
-		}
-		
-	}
-
-	/**
-	 * Update the page state
-	 * @param updateContentType if <code>true</code> the content type and the
-	 *   supported providers will be updated before updating the page state
-	 */
-	@SuppressWarnings("unchecked")
-	private void updateState(boolean updateContentType) {
-		if (updateContentType) {
-			updateContentType();
-		}
-		
-		// update provider factory
-		ISelection provSel = providers.getSelection();
-		if (!provSel.isEmpty() && provSel instanceof IStructuredSelection) {
-			getConfiguration().setProviderFactory((T) ((IStructuredSelection) provSel).getFirstElement());
-		}
-		else {
-			getConfiguration().setProviderFactory(null);
-		}
-		
-		getPage().setPageComplete(sourceFile.isValid() && 
-				getConfiguration().getProviderFactory() != null);
-	}
-
-	/**
-	 * @see AbstractSource#updateConfiguration(ImportProvider)
+	 * @see AbstractProviderSource#isValidSource()
 	 */
 	@Override
-	public boolean updateConfiguration(P provider) {
-		boolean ok = super.updateConfiguration(provider);
-		if (!ok) {
-			return ok;
-		}
-		
+	protected boolean isValidSource() {
+		return sourceFile.isValid();
+	}
+
+	/**
+	 * @see AbstractProviderSource#getSource()
+	 */
+	@Override
+	protected LocatableInputSupplier<? extends InputStream> getSource() {
 		File file = new File(sourceFile.getStringValue());
-		//TODO check if file exists?
-		provider.setSource(new FileIOSupplier(file));
-		
-		return true;
+		return new FileIOSupplier(file);
 	}
 
 	/**
