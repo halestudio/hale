@@ -112,6 +112,8 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 			super.setMessage(message, messageType);
 			super.setErrorMessage(errorMessage);
 			super.setPageComplete(complete);
+			
+			importSource.onActivate();
 		}
 		
 		private boolean isActive() {
