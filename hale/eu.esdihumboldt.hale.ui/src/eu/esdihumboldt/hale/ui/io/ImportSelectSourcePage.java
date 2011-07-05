@@ -12,17 +12,22 @@
 
 package eu.esdihumboldt.hale.ui.io;
 
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -279,6 +284,8 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 	
 	private int activeIndex = 0;
 	
+	private final Set<Image> images = new HashSet<Image>();
+	
 	/**
 	 * Default constructor
 	 */
@@ -326,9 +333,21 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 			for (ImportSourceFactory sourceFactory : availableSources) {
 				TabItem item = new TabItem(tabs, SWT.NONE);
 				item.setText(MessageFormat.format("From {0}", sourceFactory.getDisplayName()));
-				//TODO image and tooltip?
+				// image
+				URL iconURL = sourceFactory.getIconURL();
+				if (iconURL != null) {
+					Image image = ImageDescriptor.createFromURL(iconURL).createImage();
+					if (image != null) {
+						images.add(image); // remember for disposal 
+						item.setImage(image);
+					}
+				}
+				// tooltip
+				item.setToolTipText(sourceFactory.getDescription());
+				
+				// content
 				Composite wrapper = new Composite(tabs, SWT.NONE);
-				wrapper.setLayout(GridLayoutFactory.swtDefaults().create());
+				wrapper.setLayout(GridLayoutFactory.swtDefaults().create()); // for minimum margin
 				Composite content = new Composite(wrapper, SWT.NONE);
 				content.setLayoutData(GridDataFactory.fillDefaults().
 						grab(true, true).create());
@@ -417,6 +436,10 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 	 */
 	@Override
 	public void dispose() {
+		for (Image image : images) {
+			image.dispose();
+		}
+		
 		for (SourcePage source : sources) {
 			source.dispose();
 		}

@@ -172,13 +172,19 @@
          point="eu.esdihumboldt.hale.ui.io.source">
       <source
             class="eu.esdihumboldt.hale.ui.io.source.FileSource"
+            description="Load a resource from a file"
+            icon="icons/file_obj.gif"
             id="eu.esdihumboldt.hale.ui.io.source.file"
-            name="file">
+            name="file"
+            priority="-10">
       </source>
       <source
             class="eu.esdihumboldt.hale.ui.io.source.URLSource"
+            description="Load a resource from the web"
+            icon="icons/discovery.gif"
             id="eu.esdihumboldt.hale.ui.io.source.url"
-            name="URL">
+            name="URL"
+            priority="-5">
       </source>
    </extension>
 

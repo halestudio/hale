@@ -30,4 +30,10 @@ public interface ImportSourceFactory extends ExtensionObjectFactory<ImportSource
 	 */
 	public Class<? extends IOProviderFactory<?>> getProviderFactoryType();
 	
+	/**
+	 * Get the source description.
+	 * @return the description or <code>null</code>
+	 */
+	public String getDescription();
+	
 }

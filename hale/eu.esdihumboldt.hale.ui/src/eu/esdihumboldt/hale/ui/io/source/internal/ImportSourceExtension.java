@@ -12,10 +12,14 @@
 
 package eu.esdihumboldt.hale.ui.io.source.internal;
 
+import java.net.URL;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
 import de.fhg.igd.eclipse.util.extension.AbstractExtension;
+import de.fhg.igd.eclipse.util.extension.AbstractObjectDefinition;
+import de.fhg.igd.eclipse.util.extension.AbstractObjectFactory;
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition;
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 import eu.esdihumboldt.hale.core.internal.CoreBundle;
@@ -86,25 +90,33 @@ public class ImportSourceExtension extends AbstractExtension<ImportSource<?, ?>,
 			return (Class<? extends IOProviderFactory<?>>) IOProviderFactory.class;
 		}
 
-//		/**
-//		 * @see AbstractObjectDefinition#getPriority()
-//		 */
-//		@Override
-//		public int getPriority() {
-//			try {
-//			return Integer.parseInt(conf.getAttribute("priority"));
-//			} catch (NumberFormatException e) {
-//				return 0;
-//			}
-//		}
+		/**
+		 * @see AbstractObjectDefinition#getPriority()
+		 */
+		@Override
+		public int getPriority() {
+			try {
+			return Integer.parseInt(conf.getAttribute("priority"));
+			} catch (NumberFormatException e) {
+				return 0;
+			}
+		}
 
-//		/**
-//		 * @see AbstractObjectFactory#getIconURL()
-//		 */
-//		@Override
-//		public URL getIconURL() {
-//			return getIconURL("icon");
-//		}
+		/**
+		 * @see AbstractObjectFactory#getIconURL()
+		 */
+		@Override
+		public URL getIconURL() {
+			return getIconURL("icon");
+		}
+
+		/**
+		 * @see ImportSourceFactory#getDescription()
+		 */
+		@Override
+		public String getDescription() {
+			return conf.getAttribute("description");
+		}
 
 	}
 
