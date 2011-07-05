@@ -23,6 +23,7 @@ import de.fhg.igd.eclipse.util.extension.AbstractObjectFactory;
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition;
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 import eu.esdihumboldt.hale.core.internal.CoreBundle;
+import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
 
@@ -116,6 +117,20 @@ public class ImportSourceExtension extends AbstractExtension<ImportSource<?, ?>,
 		@Override
 		public String getDescription() {
 			return conf.getAttribute("description");
+		}
+
+		/**
+		 * @see ImportSourceFactory#getContentType()
+		 */
+		@Override
+		public ContentType getContentType() {
+			String ct = conf.getAttribute("contentType");
+			if (ct == null || ct.isEmpty()) {
+				return null;
+			}
+			else {
+				return ContentType.getContentType(ct);
+			}
 		}
 
 	}

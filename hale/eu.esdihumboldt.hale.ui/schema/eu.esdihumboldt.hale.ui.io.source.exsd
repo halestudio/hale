@@ -113,6 +113,13 @@
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="contentType" type="string">
+            <annotation>
+               <documentation>
+                  The identifier of the content type the source supports. If left empty support for any content type is assumed (this also means that the source has to set the content type on the source configuration).
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

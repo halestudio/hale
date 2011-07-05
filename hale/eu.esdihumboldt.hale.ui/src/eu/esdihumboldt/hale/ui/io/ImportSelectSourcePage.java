@@ -36,10 +36,13 @@ import org.eclipse.swt.widgets.TabItem;
 
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
 import de.fhg.igd.eclipse.util.extension.FactoryFilter;
+import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.core.io.ContentType;
+import eu.esdihumboldt.hale.core.io.HaleIO;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.core.io.ImportProvider;
+import eu.esdihumboldt.hale.core.io.service.ContentTypeService;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.ImportSource.SourceConfiguration;
 import eu.esdihumboldt.hale.ui.io.internal.WizardPageDecorator;
@@ -84,8 +87,11 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 		 * 
 		 * @param importSource the corresponding import source
 		 * @param parent the parent composite
+		 * @param initialContentType the content type the import source page
+		 *   should be initialized with, may be <code>null</code>
 		 */
-		public SourcePage(ImportSource<P, T> importSource, Composite parent) {
+		public SourcePage(ImportSource<P, T> importSource, Composite parent,
+				ContentType initialContentType) {
 			super(ImportSelectSourcePage.this);
 			
 			this.importSource = importSource;
@@ -96,6 +102,8 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 			
 			sources.add(this);
 			index = sources.size() - 1;
+			
+			setContentType(initialContentType);
 		}
 
 		/**
@@ -300,12 +308,40 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 	 */
 	@Override
 	protected void createContent(Composite page) {
+		// set content types for file field
+		Collection<T> factories = getWizard().getFactories();
+		final Set<ContentType> supportedTypes = new HashSet<ContentType>();
+		for (T factory : factories) {
+			supportedTypes.addAll(factory.getSupportedTypes());
+		}
+		
 		// get compatible sources
 		List<ImportSourceFactory> availableSources = ImportSourceExtension.getInstance().getFactories(new FactoryFilter<ImportSource<?,?>, ImportSourceFactory>() {
 			
 			@Override
 			public boolean acceptFactory(ImportSourceFactory factory) {
-				return factory.getProviderFactoryType().isAssignableFrom(getWizard().getFactoryClass());
+				// check provider factory compatibility
+				boolean providerMatch = factory.getProviderFactoryType().isAssignableFrom(getWizard().getFactoryClass());
+				if (!providerMatch) {
+					return false;
+				}
+				
+				// check content type compatibility
+				ContentType ct = factory.getContentType();
+				if (ct == null) {
+					return true; // any content type supported
+				}
+				else {
+					for (ContentType candidate : supportedTypes) {
+						if (HaleIO.isCompatibleContentType(candidate, ct)) {
+							// at least one supported type is compatible
+							return true;
+						}
+					}
+					
+					// no supported type is compatible
+					return false;
+				}
 			}
 			
 			@Override
@@ -321,7 +357,8 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 		}
 		else if (availableSources.size() == 1) {
 			// add source directly
-			createSource(availableSources.iterator().next(), page);
+			createSource(availableSources.iterator().next(), page,
+					supportedTypes);
 			
 			setActiveSource(0);
 		}
@@ -352,7 +389,7 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 				content.setLayoutData(GridDataFactory.fillDefaults().
 						grab(true, true).create());
 				
-				createSource(sourceFactory, content);
+				createSource(sourceFactory, content, supportedTypes);
 				
 				item.setControl(wrapper);
 			}
@@ -400,10 +437,11 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 	 * @param sourceFactory the {@link ImportSource} factory
 	 * @param parent the parent composite, a custom layout may be assigned by
 	 *   implementors
+	 * @param supportedTypes the set of supported content types
 	 */
 	@SuppressWarnings("unchecked")
 	private void createSource(ImportSourceFactory sourceFactory,
-			Composite parent) {
+			Composite parent, Set<ContentType> supportedTypes) {
 		ImportSource<?, ?> source;
 		try {
 			source = sourceFactory.createExtensionObject();
@@ -413,9 +451,21 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 					sourceFactory.getIdentifier()), e);
 		}
 		
+		// determine initial content type
+		ContentType initialContentType = null;
+		ContentType ct = sourceFactory.getContentType();
+		while (initialContentType == null && ct != null) {
+			if (supportedTypes.contains(ct)) {
+				initialContentType = ct; // perfect match or parent match
+			}
+			
+			ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
+			ct = cts.getParentType(ct);
+		}
+		
 		ImportSource<P, T> compatibleSource = ((ImportSource<P, T>) source); //XXX alternative to casting?
 		// create the source page
-		new SourcePage(compatibleSource, parent);
+		new SourcePage(compatibleSource, parent, initialContentType);
 	}
 
 	/**

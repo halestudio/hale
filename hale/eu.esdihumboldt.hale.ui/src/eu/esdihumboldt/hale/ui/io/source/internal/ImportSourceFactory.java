@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.ui.io.source.internal;
 
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
+import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
 
@@ -35,5 +36,12 @@ public interface ImportSourceFactory extends ExtensionObjectFactory<ImportSource
 	 * @return the description or <code>null</code>
 	 */
 	public String getDescription();
+	
+	/**
+	 * Get the content type supported by the source. If <code>null</code> any
+	 * content type is supported.
+	 * @return the supported content type or <code>null</code>
+	 */
+	public ContentType getContentType();
 	
 }
