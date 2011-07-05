@@ -36,13 +36,10 @@ import org.eclipse.swt.widgets.TabItem;
 
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
 import de.fhg.igd.eclipse.util.extension.FactoryFilter;
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.core.io.ContentType;
-import eu.esdihumboldt.hale.core.io.HaleIO;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.core.io.ImportProvider;
-import eu.esdihumboldt.hale.core.io.service.ContentTypeService;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.ImportSource.SourceConfiguration;
 import eu.esdihumboldt.hale.ui.io.internal.WizardPageDecorator;
@@ -332,15 +329,8 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 					return true; // any content type supported
 				}
 				else {
-					for (ContentType candidate : supportedTypes) {
-						if (HaleIO.isCompatibleContentType(candidate, ct)) {
-							// at least one supported type is compatible
-							return true;
-						}
-					}
-					
-					// no supported type is compatible
-					return false;
+					// stated type must be present
+					return supportedTypes.contains(ct);
 				}
 			}
 			
@@ -452,18 +442,11 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 		}
 		
 		// determine initial content type
-		ContentType initialContentType = null;
-		ContentType ct = sourceFactory.getContentType();
-		while (initialContentType == null && ct != null) {
-			if (supportedTypes.contains(ct)) {
-				initialContentType = ct; // perfect match or parent match
-			}
-			
-			ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
-			ct = cts.getParentType(ct);
-		}
+		ContentType initialContentType = sourceFactory.getContentType();
+		assert supportedTypes.contains(initialContentType);
 		
 		ImportSource<P, T> compatibleSource = ((ImportSource<P, T>) source); //XXX alternative to casting?
+		
 		// create the source page
 		new SourcePage(compatibleSource, parent, initialContentType);
 	}
