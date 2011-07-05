@@ -14,7 +14,6 @@ package eu.esdihumboldt.hale.io.gml.ui.wfs;
 
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -33,6 +32,7 @@ import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
 import eu.esdihumboldt.hale.ui.io.source.AbstractProviderSource;
+import eu.esdihumboldt.hale.ui.io.source.AbstractSource;
 
 /**
  * Abstract base implementation for import sources based on WFS 
@@ -53,9 +53,11 @@ public abstract class AbstractWFSSource<P extends ImportProvider, T extends IOPr
 		parent.setLayout(new GridLayout(3, false));
 		
 		// caption
+		new Label(parent, SWT.NONE); // placeholder
+		
 		Label caption = new Label(parent, SWT.NONE);
 		caption.setText(getCaption());
-		caption.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false, 3, 1));
+		caption.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false, 2, 1));
 		
 		// source file
 		sourceURL = createWfsFieldEditor(parent); 
@@ -107,9 +109,9 @@ public abstract class AbstractWFSSource<P extends ImportProvider, T extends IOPr
 	@Override
 	protected LocatableInputSupplier<? extends InputStream> getSource() {
 		try {
-			URI uri = new URI(sourceURL.getStringValue());
+			URI uri = sourceURL.getURL().toURI();
 			return new DefaultInputSupplier(uri);
-		} catch (URISyntaxException e) {
+		} catch (Throwable e) {
 			return null;
 		}
 	}
@@ -119,7 +121,15 @@ public abstract class AbstractWFSSource<P extends ImportProvider, T extends IOPr
 	 */
 	@Override
 	protected boolean isValidSource() {
-		return sourceURL.isValid(); // && sourceURL.getStringValue() ...; XXX better check?
+		return sourceURL.isValid() && sourceURL.getURL() != null;
+	}
+
+	/**
+	 * @see AbstractSource#onActivate()
+	 */
+	@Override
+	public void onActivate() {
+		sourceURL.setFocus();
 	}
 
 }

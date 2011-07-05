@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.io.gml.ui.wfs;
 import java.net.URL;
 
 import org.eclipse.jface.preference.StringButtonFieldEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Composite;
 
@@ -31,6 +32,7 @@ import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.WfsGetFeatureWizard;
  * 
  * @author Thorsten Reitz 
  * @author Jan Kolar
+ * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @partner 02 / Intergraph CS
  */
@@ -54,6 +56,9 @@ public class WfsUrlFieldEditor
             Composite parent) {
 		super(name, labelText, parent);
 		
+		setValidateStrategy(StringFieldEditor.VALIDATE_ON_KEY_STROKE);
+		setEmptyStringAllowed(false);
+		
 		this.schemaNamespace = null;
 	}
 	
@@ -70,7 +75,21 @@ public class WfsUrlFieldEditor
 		super(name, labelText, parent);
 		this._getFeatures = getFeatures;
 		
+		setValidateStrategy(StringFieldEditor.VALIDATE_ON_KEY_STROKE);
+		setEmptyStringAllowed(false);
+		
 		this.schemaNamespace = schemaNamespace;
+	}
+	
+	/**
+	 * @see StringFieldEditor#checkState()
+	 */
+	@Override
+	protected boolean checkState() {
+		// reset error message in case of an empty string
+		setErrorMessage("Please specify a valid URL");
+		
+		return super.checkState();
 	}
 
 	/**
@@ -110,6 +129,36 @@ public class WfsUrlFieldEditor
 		}
 		else { // applicable if cancel is pressed.
 			return null; //$NON-NLS-1$
+		}
+	}
+	
+	/**
+	 * @see StringFieldEditor#doCheckState()
+	 */
+	@Override
+	protected boolean doCheckState() {
+		final String value = getStringValue();
+		
+		try {
+			new URL(value);
+		} catch (Throwable e) {
+			setErrorMessage(e.getLocalizedMessage());
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Get the URL value.
+	 * @return the URL or <code>null</code> if the content is no valid URL.
+	 */
+	public URL getURL() {
+		try {
+			return new URL(getStringValue());
+		} catch (Throwable e) {
+			setErrorMessage(e.getLocalizedMessage());
+			return null;
 		}
 	}
 
