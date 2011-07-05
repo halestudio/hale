@@ -9,10 +9,6 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            id="eu.esdihumboldt.hale.ui.target.instance.export"
-            name="Export instances">
-      </command>
-      <command
             id="eu.esdihumboldt.hale.ui.project.open"
             name="Open project">
       </command>
@@ -21,16 +17,8 @@
             name="Save project as">
       </command>
       <command
-            id="eu.esdihumboldt.hale.ui.mapping.export"
-            name="Export mapping">
-      </command>
-      <command
             id="eu.esdihumboldt.hale.ui.project.new"
             name="New project">
-      </command>
-      <command
-            id="eu.esdihumboldt.hale.ui.mapping.import"
-            name="Import mapping">
       </command>
       <command
             id="eu.esdihumboldt.hale.ui.project.save"
@@ -40,32 +28,12 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="eu.esdihumboldt.hale.ui.io.instance.InstanceExportHandler"
-            commandId="eu.esdihumboldt.hale.ui.target.instance.export">
-         <enabledWhen>
-            <with
-                  variable="hale.instances.has_transformed">
-               <equals
-                     value="true">
-               </equals>
-            </with>
-         </enabledWhen>
-      </handler>
-      <handler
             class="eu.esdihumboldt.hale.ui.service.project.handler.SaveProjectHandler"
             commandId="eu.esdihumboldt.hale.ui.project.save">
       </handler>
       <handler
-            class="eu.esdihumboldt.hale.ui.io.legacy.handler.ImportMappingHandler"
-            commandId="eu.esdihumboldt.hale.ui.mapping.import">
-      </handler>
-      <handler
             class="eu.esdihumboldt.hale.ui.service.project.handler.NewProjectHandler"
             commandId="eu.esdihumboldt.hale.ui.project.new">
-      </handler>
-      <handler
-            class="eu.esdihumboldt.hale.ui.io.legacy.handler.SaveMappingCommandHandler"
-            commandId="eu.esdihumboldt.hale.ui.mapping.export">
       </handler>
       <handler
             class="eu.esdihumboldt.hale.ui.service.project.handler.SaveAsProjectHandler"
