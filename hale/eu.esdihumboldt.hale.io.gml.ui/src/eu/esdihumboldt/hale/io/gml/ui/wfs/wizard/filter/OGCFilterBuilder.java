@@ -1,4 +1,4 @@
-package eu.esdihumboldt.hale.io.gml.ui.wfs;
+package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.filter;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

@@ -10,10 +10,11 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.io.gml.ui.wfs;
+package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard;
 
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+
 
 /**
  * Abstract WFS wizard 

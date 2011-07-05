@@ -96,14 +96,14 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 			
 			this.importSource = importSource;
 			
-			importSource.setPage(this);
-			importSource.setConfiguration(this);
-			importSource.createControls(parent);
-			
 			sources.add(this);
 			index = sources.size() - 1;
 			
 			setContentType(initialContentType);
+			
+			importSource.setPage(this);
+			importSource.setConfiguration(this);
+			importSource.createControls(parent);
 		}
 
 		/**

@@ -19,6 +19,10 @@ import org.eclipse.swt.widgets.Composite;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.WfsDescribeFeatureConfiguration;
+import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.WfsDescribeFeatureWizard;
+import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.WfsGetFeatureConfiguration;
+import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.WfsGetFeatureWizard;
 
 /**
  * This editor can be used to select a valid {@link URL} for a WFS to retrieve
@@ -102,12 +106,10 @@ public class WfsUrlFieldEditor
 		}
 
 		if (result != null) {
-			_log.debug("received result: " + result.toString()); //$NON-NLS-1$
-			getTextControl().setText(result.toString());
-			return getTextControl().getText();
+			return result.toString();
 		}
 		else { // applicable if cancel is pressed.
-			return ""; //$NON-NLS-1$
+			return null; //$NON-NLS-1$
 		}
 	}
 

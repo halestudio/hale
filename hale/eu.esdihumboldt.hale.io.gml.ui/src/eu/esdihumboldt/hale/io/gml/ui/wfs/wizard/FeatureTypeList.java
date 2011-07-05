@@ -1,4 +1,4 @@
-package eu.esdihumboldt.hale.io.gml.ui.wfs;
+package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard;
 
 import java.util.ArrayList;
 import java.util.HashMap;

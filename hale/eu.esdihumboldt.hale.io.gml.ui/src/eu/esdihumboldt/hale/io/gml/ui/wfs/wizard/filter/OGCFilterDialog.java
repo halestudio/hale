@@ -1,4 +1,4 @@
-package eu.esdihumboldt.hale.io.gml.ui.wfs;
+package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.filter;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;

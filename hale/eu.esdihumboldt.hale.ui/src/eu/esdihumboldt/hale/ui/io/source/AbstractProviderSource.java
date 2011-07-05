@@ -47,7 +47,8 @@ public abstract class AbstractProviderSource<P extends ImportProvider, T extends
 	
 	/**
 	 * Create the provider selector combo viewer. Once created it can be 
-	 * retrieved using {@link #getProviders()}.
+	 * retrieved using {@link #getProviders()}. This should be called in
+	 * {@link #createControls(Composite)}.
 	 * 
 	 * @param parent the parent composite
 	 * @return the created combo viewer 
@@ -133,7 +134,10 @@ public abstract class AbstractProviderSource<P extends ImportProvider, T extends
 	
 	/**
 	 * Update the page state. This includes setting a provider factory on the
-	 * wizard if applicable and setting the complete state of the page.
+	 * wizard if applicable and setting the complete state of the page.<br>
+	 * <br>
+	 * This should be called in {@link #createControls(Composite)} to
+	 * initialize the page state. 
 	 * @param updateContentType if <code>true</code> the content type and the
 	 *   supported providers will be updated before updating the page state
 	 */

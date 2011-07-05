@@ -10,25 +10,29 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.io.gml.ui.wfs;
-
-import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
+package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard;
 
 /**
- * WFS DescribeFeature wizard
+ * 
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class WfsDescribeFeatureWizard extends AbstractWfsWizard<WfsDescribeFeatureConfiguration> {
-
+public interface WfsPreferenceConstants {
+	
 	/**
-	 * @see AbstractWfsWizard#AbstractWfsWizard(WfsConfiguration)
+	 * The maximum number of recent WFS
 	 */
-	public WfsDescribeFeatureWizard(WfsDescribeFeatureConfiguration configuration) {
-		super(configuration);
-		
-		setWindowTitle(Messages.WfsDescribeFeatureWizard_0); //$NON-NLS-1$
-	}
-
+	public final int MAX_RECENT_WFS = 10;
+	
+	/**
+	 * The name of the recent WFS key prefix
+	 */
+	public final String KEY_RECENT_WFS_PREFIX = "wfs.recent.url"; //$NON-NLS-1$
+	
+	/**
+	 * The name of the recent WFS count key
+	 */
+	public final String KEY_RECENT_WFS_COUNT = "wfs.recent.count"; //$NON-NLS-1$
+	
 }

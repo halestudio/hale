@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.io.gml.ui.wfs;
+package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.Label;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
+import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.filter.OGCFilterDialog;
 
 /**
  * 
