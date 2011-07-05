@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
+import eu.esdihumboldt.hale.schema.Classification;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeIndex;
 
@@ -144,16 +145,35 @@ public class GmlInstanceCollection implements InstanceCollection {
 			allowedTypes = new HashMap<QName, TypeDefinition>();
 			
 			for (TypeDefinition def : sourceSchema.getMappableTypes()) {
-				Collection<? extends XmlElement> elements = def.getConstraint(XmlElements.class).getElements();
-				if (!elements.isEmpty()) {
-					// use element name
-					//XXX MappableFlag also for elements?
-					for (XmlElement element : elements) {
-						allowedTypes.put(element.getName(), def);
+				boolean accept;
+				if (restrictToFeatures) {
+					// accept only feature types
+					Classification clazz = Classification.getClassification(def);
+					switch (clazz) {
+					case CONCRETE_FT:
+						accept = true;
+						break;
+					default:
+						accept = false;
 					}
 				}
 				else {
-					allowedTypes.put(def.getName(), def);
+					// accept all mappable types
+					accept = true;
+				}
+				
+				if (accept) {
+					Collection<? extends XmlElement> elements = def.getConstraint(XmlElements.class).getElements();
+					if (!elements.isEmpty()) {
+						// use element name
+						//XXX MappableFlag also for elements?
+						for (XmlElement element : elements) {
+							allowedTypes.put(element.getName(), def);
+						}
+					}
+					else {
+						allowedTypes.put(def.getName(), def);
+					}
 				}
 			}
 		}
@@ -263,6 +283,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 
 	private final TypeIndex sourceSchema;
 	private final LocatableInputSupplier<? extends InputStream> source;
+	private final boolean restrictToFeatures;
 	
 	private boolean emptyInitialized = false;
 	private boolean empty = false;
@@ -272,12 +293,15 @@ public class GmlInstanceCollection implements InstanceCollection {
 	 * 
 	 * @param source the source
 	 * @param sourceSchema the source schema
+	 * @param restrictToFeatures if only instances that are GML features shall
+	 *   be loaded
 	 */
 	public GmlInstanceCollection(
 			LocatableInputSupplier<? extends InputStream> source,
-			TypeIndex sourceSchema) {
+			TypeIndex sourceSchema, boolean restrictToFeatures) {
 		this.source = source;
 		this.sourceSchema = sourceSchema;
+		this.restrictToFeatures = restrictToFeatures;
 	}
 
 	/**

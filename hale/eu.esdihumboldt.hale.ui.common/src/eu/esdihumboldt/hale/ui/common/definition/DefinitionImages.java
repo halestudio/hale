@@ -21,6 +21,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
+import eu.esdihumboldt.hale.schema.Classification;
 import eu.esdihumboldt.hale.schema.model.Definition;
 import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;

@@ -34,6 +34,24 @@ import eu.esdihumboldt.hale.instance.model.InstanceCollection;
 public class StreamGmlReader extends AbstractInstanceReader {
 
 	private InstanceCollection instances;
+	
+	private final ContentType defaultContentType;
+
+	private final boolean restrictToFeatures;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param defaultContentType the default content type
+	 * @param restrictToFeatures if only instances that are GML features shall
+	 *   be loaded
+	 */
+	public StreamGmlReader(ContentType defaultContentType, 
+			boolean restrictToFeatures) {
+		super();
+		this.defaultContentType = defaultContentType;
+		this.restrictToFeatures = restrictToFeatures;
+	}
 
 	/**
 	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
@@ -44,7 +62,8 @@ public class StreamGmlReader extends AbstractInstanceReader {
 		progress.begin("Prepare loading of " + getTypeName(), ProgressIndicator.UNKNOWN);
 		
 		try {
-			instances = new GmlInstanceCollection(getSource(), getSourceSchema());
+			instances = new GmlInstanceCollection(getSource(), getSourceSchema(),
+					restrictToFeatures);
 			//TODO any kind of analysis on file? e.g. types and size - would also give feedback to the user if the file can be loaded
 			reporter.setSuccess(true);
 		} catch (Throwable e) {
@@ -67,7 +86,7 @@ public class StreamGmlReader extends AbstractInstanceReader {
 	 */
 	@Override
 	protected ContentType getDefaultContentType() {
-		return ContentType.getContentType("XML");
+		return defaultContentType;
 	}
 
 	/**

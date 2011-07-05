@@ -22,17 +22,17 @@ import eu.esdihumboldt.hale.instance.io.InstanceReaderFactory;
  * Factory for XML instance readers
  * @author Simon Templer
  */
-public class XmlInstanceReaderFactory extends AbstractIOProviderFactory<InstanceReader> implements InstanceReaderFactory {
+public class GmlInstanceReaderFactory extends AbstractIOProviderFactory<InstanceReader> implements InstanceReaderFactory {
 
 	private static final String PROVIDER_ID = "eu.esdihumboldt.hale.io.xml.reader";
 	
 	/**
 	 * Default constructor
 	 */
-	public XmlInstanceReaderFactory() {
+	public GmlInstanceReaderFactory() {
 		super(PROVIDER_ID);
 		
-		addSupportedContentType("XML");
+		addSupportedContentType("GML");
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class XmlInstanceReaderFactory extends AbstractIOProviderFactory<Instance
 	 */
 	@Override
 	public String getDisplayName() {
-		return "XML";
+		return "GML (Features)";
 	}
 
 	/**
@@ -48,7 +48,7 @@ public class XmlInstanceReaderFactory extends AbstractIOProviderFactory<Instance
 	 */
 	@Override
 	public InstanceReader createProvider() {
-		return new StreamGmlReader(ContentType.getContentType("XML"), true);
+		return new StreamGmlReader(ContentType.getContentType("GML"), true);
 	}
 
 }

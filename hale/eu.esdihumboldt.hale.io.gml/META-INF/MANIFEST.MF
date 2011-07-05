@@ -4,7 +4,7 @@ Bundle-Name: HALE GML I/O
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml
 Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Service-Component: OSGI-INF/GmlWriter.xml, OSGI-INF/XmlWriter.xml, OSGI-INF/XmlReader.xml
+Service-Component: OSGI-INF/GmlWriter.xml, OSGI-INF/XmlWriter.xml, OSGI-INF/XmlReader.xml, OSGI-INF/GmlReader.xml
 Require-Bundle: org.geotools;bundle-version="2.6.4",
  eu.esdihumboldt.commons;bundle-version="3.0.8",
  eu.esdihumboldt.hale.core;bundle-version="2.2.0"
@@ -17,14 +17,15 @@ Import-Package: com.google.common.base;version="1.6.0",
  eu.esdihumboldt.hale.instance.io.impl,
  eu.esdihumboldt.hale.instance.model,
  eu.esdihumboldt.hale.instance.model.impl,
+ eu.esdihumboldt.hale.io.xml.content,
  eu.esdihumboldt.hale.io.xsd.constraint,
  eu.esdihumboldt.hale.io.xsd.model,
+ eu.esdihumboldt.hale.schema,
  eu.esdihumboldt.hale.schema.model,
  eu.esdihumboldt.hale.schema.model.constraint,
  eu.esdihumboldt.hale.schema.model.constraint.property,
  eu.esdihumboldt.hale.schema.model.constraint.type,
  eu.esdihumboldt.hale.schema.model.impl,
- eu.esdihumboldt.hale.io.xml.content,
  eu.esdihumboldt.hale.schemaprovider,
  eu.esdihumboldt.hale.schemaprovider.model,
  eu.esdihumboldt.hale.schemaprovider.provider,
