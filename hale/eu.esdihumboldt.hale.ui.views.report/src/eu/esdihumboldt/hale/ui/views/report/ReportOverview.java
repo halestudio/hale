@@ -24,17 +24,23 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.ViewPart;
 
+import eu.esdihumboldt.hale.core.report.Message;
+import eu.esdihumboldt.hale.core.report.Report;
+import eu.esdihumboldt.hale.ui.service.report.ReportListener;
+import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import swing2swt.layout.BorderLayout;
+import org.eclipse.swt.graphics.Point;
 
 /**
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ReportOverview extends ViewPart {
+public class ReportOverview extends ViewPart implements ReportListener<Report<Message>, Message> {
 
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.report.ReportOverview"; //$NON-NLS-1$
 	private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
@@ -57,6 +63,10 @@ public class ReportOverview extends ViewPart {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
+		// get ReportService and add listener
+		ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+		repService.addReportListener(this);
+		
 		_container = toolkit.createComposite(parent, SWT.NONE);
 		toolkit.paintBordersFor(_container);
 		_container.setLayout(new BorderLayout(0, 0));
@@ -67,7 +77,8 @@ public class ReportOverview extends ViewPart {
 			toolkit.paintBordersFor(_composite);
 			_composite.setLayout(new BorderLayout(0, 20));
 			{
-				_reportCombo = new Combo(_composite, SWT.NONE);
+				_reportCombo = new Combo(_composite, SWT.READ_ONLY);
+				_reportCombo.setSize(new Point(200, 23));
 				_reportCombo.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
@@ -172,5 +183,51 @@ public class ReportOverview extends ViewPart {
 
 	public void getSummary() {
 		
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportListener#getReportType()
+	 */
+	@Override
+	public Class getReportType() {
+		return Report.class;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportListener#getMessageType()
+	 */
+	@Override
+	public Class getMessageType() {
+		return Message.class;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportListener#reportAdded(eu.esdihumboldt.hale.core.report.Report)
+	 */
+	@Override
+	public void reportAdded(final Report<Message> report) {
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				try{
+					// create new ReportModel and set it as input
+//					viewer.setInput(new ReportModel(report));
+					
+					// add label to the combo box
+					// TODO maybe add the current project to the label?
+					_reportCombo.add("["+report.getTimestamp()+"] "+report.getTaskName()+" -- "+report.getSummary());
+					
+					// select current item
+					_reportCombo.select(_reportCombo.getItemCount()-1);
+					
+					// add report to internal list
+//					reports.add(report);
+				} catch (NullPointerException e) {
+					// TODO remove this or add proper Exception handling
+					System.err.println("NullPointer... "+report.getSummary());
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 }
