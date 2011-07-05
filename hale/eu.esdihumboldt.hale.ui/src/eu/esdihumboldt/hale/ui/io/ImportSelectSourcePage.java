@@ -263,6 +263,14 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 			return index;
 		}
 
+		/**
+		 * @see WizardPageDecorator#dispose()
+		 */
+		@Override
+		public void dispose() {
+			importSource.dispose(); // dispose the import source
+		}
+
 	}
 
 	private final List<SourcePage> sources = new ArrayList<SourcePage>();
@@ -402,13 +410,16 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 		return false;
 	}
 
-//	/**
-//	 * Get the source file name
-//	 *  
-//	 * @return the source file name
-//	 */
-//	public String getSourceFileName() {
-//		return sourceFile.getStringValue();
-//	}
-	
+	/**
+	 * @see HaleWizardPage#dispose()
+	 */
+	@Override
+	public void dispose() {
+		for (SourcePage source : sources) {
+			source.dispose();
+		}
+		
+		super.dispose();
+	}
+
 }

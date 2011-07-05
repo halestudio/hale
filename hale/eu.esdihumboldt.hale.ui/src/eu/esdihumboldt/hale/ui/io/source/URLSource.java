@@ -37,6 +37,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -51,6 +52,7 @@ import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.core.io.ImportProvider;
 import eu.esdihumboldt.hale.core.io.service.ContentTypeService;
 import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
 import eu.esdihumboldt.hale.ui.io.util.URLFieldEditor;
 
@@ -79,6 +81,8 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 	private ComboViewer types;
 
 	private Button detect;
+	
+	private Image detectImage;
 
 	/**
 	 * @see ImportSource#createControls(Composite)
@@ -86,6 +90,8 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 	@Override
 	public void createControls(Composite parent) {
 		parent.setLayout(new GridLayout(2, false));
+		
+		detectImage = HALEUIPlugin.getImageDescriptor("icons/find_obj.gif").createImage();
 		
 		// source file
 		sourceURL = new URLFieldEditor("sourceURL", "Source URL:", parent);
@@ -124,7 +130,7 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 		group.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
 		
 		types = new ComboViewer(group, SWT.DROP_DOWN | SWT.READ_ONLY);
-		types.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		types.getControl().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		types.setContentProvider(ArrayContentProvider.getInstance());
 		types.setLabelProvider(new LabelProvider() {
 
@@ -150,7 +156,9 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 		
 		// detect button
 		detect = new Button(group, SWT.PUSH);
+		detect.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 		detect.setText("Detect");
+		detect.setImage(detectImage);
 		detect.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -329,6 +337,16 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 		}
 		
 		return false;
+	}
+
+	/**
+	 * @see AbstractSource#dispose()
+	 */
+	@Override
+	public void dispose() {
+		if (detectImage != null) {
+			detectImage.dispose();
+		}
 	}
 
 }

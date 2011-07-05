@@ -110,5 +110,10 @@ public interface ImportSource<P extends ImportProvider, T extends IOProviderFact
 	 * Method that is called when the source page is activated.
 	 */
 	public void onActivate();
+	
+	/**
+	 * Dispose any resources when the source page is disposed.
+	 */
+	public void dispose();
 
 }

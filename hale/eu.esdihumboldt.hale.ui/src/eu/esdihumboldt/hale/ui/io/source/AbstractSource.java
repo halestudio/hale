@@ -83,4 +83,12 @@ public abstract class AbstractSource<P extends ImportProvider, T extends IOProvi
 		// do nothing
 	}
 
+	/**
+	 * @see ImportSource#dispose()
+	 */
+	@Override
+	public void dispose() {
+		// do nothing
+	}
+
 }
