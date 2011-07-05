@@ -115,11 +115,11 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty().equals(FieldEditor.IS_VALID)) {
 					getPage().setMessage(null);
-					updateState();
+					updateState(false);
 				}
 				else if (event.getProperty().equals(FieldEditor.VALUE)) {
 					getPage().setMessage(null);
-					updateState();
+					updateState(false);
 				}
 			}
 		});
@@ -156,7 +156,7 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				updateContentType();
+				updateState(true);
 			}
 		});
 		
@@ -188,10 +188,12 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 												"Detected {0} as content type",
 												HaleIO.getDisplayName(detected)), 
 												DialogPage.INFORMATION);
-										updateContentType();
+										updateState(true);
 									}
 									else {
-										getPage().setMessage("Could not detect content type", DialogPage.WARNING);
+										types.setSelection(new StructuredSelection());
+										getPage().setMessage("Could not detect content type. The resource might be not available or it has no matching content type.", DialogPage.WARNING);
+										updateState(true);
 									}
 								}
 							});
@@ -234,11 +236,11 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 			
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				updateState();
+				updateState(false);
 			}
 		});
 		
-		updateState();
+		updateState(true);
 	}
 	
 	/**
@@ -330,16 +332,22 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 
 	/**
 	 * Update the page state
+	 * @param updateContentType if the content type shall be updated in the 
+	 *   configuration
 	 */
 	@SuppressWarnings("unchecked")
-	private void updateState() {
+	private void updateState(boolean updateContentType) {
 		boolean enableSelection = sourceURL.isValid() && sourceURL.getURL() != null;
 		
 		detect.setEnabled(enableSelection);
 		types.getControl().setEnabled(enableSelection);
 		
-		if (!enableSelection) {
+		if (!enableSelection && types.getSelection() != null && !types.getSelection().isEmpty()) {
 			types.setSelection(new StructuredSelection());
+			updateContentType = true;
+		}
+		
+		if (updateContentType) {
 			updateContentType();
 		}
 		
