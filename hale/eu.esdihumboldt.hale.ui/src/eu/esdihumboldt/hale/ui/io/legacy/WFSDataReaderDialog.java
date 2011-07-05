@@ -45,6 +45,8 @@ import org.opengis.feature.type.FeatureType;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.ui.internal.Messages;
+import eu.esdihumboldt.hale.ui.io.legacy.wfs.FeatureTypeList;
+import eu.esdihumboldt.hale.ui.io.legacy.wfs.GetCapabilititiesRetriever;
 
 public class WFSDataReaderDialog extends Dialog {
 	private final static ALogger _log = ALoggerFactory.getLogger(WFSDataReaderDialog.class);

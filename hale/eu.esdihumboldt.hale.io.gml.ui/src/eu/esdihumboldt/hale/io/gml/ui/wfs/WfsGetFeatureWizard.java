@@ -10,9 +10,9 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.io.legacy.wfs;
+package eu.esdihumboldt.hale.io.gml.ui.wfs;
 
-import eu.esdihumboldt.hale.ui.internal.Messages;
+import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
 
 /**
  * WFS GetFeature wizard

@@ -1,4 +1,4 @@
-package eu.esdihumboldt.hale.ui.io.legacy;
+package eu.esdihumboldt.hale.io.gml.ui.wfs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.ui.internal.Messages;
+import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
 
 /**
  * Component for selecting {@link FeatureType}s with a common namespace 

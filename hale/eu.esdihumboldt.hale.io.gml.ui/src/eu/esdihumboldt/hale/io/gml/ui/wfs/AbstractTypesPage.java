@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.io.legacy.wfs;
+package eu.esdihumboldt.hale.io.gml.ui.wfs;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -21,7 +21,6 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.ui.io.legacy.GetCapabilititiesRetriever;
 
 /**
  * 

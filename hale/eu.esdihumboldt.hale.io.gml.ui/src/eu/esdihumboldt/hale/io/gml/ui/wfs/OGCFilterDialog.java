@@ -1,4 +1,4 @@
-package eu.esdihumboldt.hale.ui.io.legacy;
+package eu.esdihumboldt.hale.io.gml.ui.wfs;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -15,10 +15,10 @@ import org.opengis.feature.type.FeatureType;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.ui.internal.Messages;
+import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
 
 public class OGCFilterDialog extends Dialog {
-	private final static ALogger _log = ALoggerFactory.getLogger(WFSDataReaderDialog.class);
+	private final static ALogger _log = ALoggerFactory.getLogger(OGCFilterDialog.class);
 	private String _filter = null;
 	
 	FeatureType featureType;
@@ -69,6 +69,7 @@ public class OGCFilterDialog extends Dialog {
 		final Button finishButton = new Button(buttons, SWT.NONE);
 		finishButton.setText(Messages.OGCFilterDialog_0); //$NON-NLS-1$
 		finishButton.addListener(SWT.Selection, new Listener () {
+			@Override
 			public void handleEvent(Event event) {
 				// do finish
 				try {
@@ -87,6 +88,7 @@ public class OGCFilterDialog extends Dialog {
 		final Button cancelButton = new Button(buttons, SWT.NONE);
 		cancelButton.setText(Messages.OGCFilterDialog_2); //$NON-NLS-1$
 		cancelButton.addListener(SWT.Selection, new Listener () {
+			@Override
 			public void handleEvent(Event event) {
 				shell.dispose();
 			}

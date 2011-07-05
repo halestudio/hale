@@ -9,7 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.ui.io.legacy;
+package eu.esdihumboldt.hale.io.gml.ui.wfs;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -42,7 +42,7 @@ import org.xml.sax.SAXParseException;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.ui.internal.Messages;
+import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
 
 /**
  * This utility class is used to build and handle WFS GetCapabilities Requests
@@ -107,12 +107,16 @@ public class GetCapabilititiesRetriever {
 		BufferedReader reader = new BufferedReader(
 				new InputStreamReader(
 						url.openConnection().getInputStream()));
-        StringBuilder sb = new StringBuilder();
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line + "\n"); //$NON-NLS-1$
-        }
-        return sb.toString();
+		try {
+	        StringBuilder sb = new StringBuilder();
+	        String line = null;
+	        while ((line = reader.readLine()) != null) {
+	            sb.append(line + "\n"); //$NON-NLS-1$
+	        }
+	        return sb.toString();
+		} finally {
+			reader.close();
+		}
 	}
 	
 	/**

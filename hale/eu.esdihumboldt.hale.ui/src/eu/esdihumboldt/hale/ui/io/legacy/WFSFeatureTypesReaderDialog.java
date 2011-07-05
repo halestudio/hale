@@ -42,6 +42,7 @@ import org.opengis.feature.type.FeatureType;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.ui.internal.Messages;
+import eu.esdihumboldt.hale.ui.io.legacy.wfs.GetCapabilititiesRetriever;
 
 /**
  * The {@link WFSFeatureTypesReaderDialog} enables a user to select a WFS from

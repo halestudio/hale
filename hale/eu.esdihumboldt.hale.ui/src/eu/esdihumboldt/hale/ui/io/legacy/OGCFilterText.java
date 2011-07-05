@@ -7,6 +7,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.ui.internal.Messages;
+import eu.esdihumboldt.hale.ui.io.legacy.wfs.FeatureTypeList;
+import eu.esdihumboldt.hale.ui.io.legacy.wfs.OGCFilterDialog;
 
 public class OGCFilterText extends StringButtonFieldEditor {
 	FeatureTypeList selection;

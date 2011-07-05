@@ -1,4 +1,4 @@
-package eu.esdihumboldt.hale.ui.io.legacy;
+package eu.esdihumboldt.hale.io.gml.ui.wfs;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -39,7 +39,7 @@ import org.opengis.feature.type.PropertyDescriptor;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import eu.esdihumboldt.hale.ui.internal.Messages;
+import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
 
 public class OGCFilterBuilder extends Composite {
 	
@@ -95,6 +95,7 @@ public class OGCFilterBuilder extends Composite {
 		addConditionButton.setText(Messages.OGCFilterBuilder_6); //$NON-NLS-1$
 		addConditionButton.setToolTipText(Messages.OGCFilterBuilder_7); //$NON-NLS-1$
 		addConditionButton.addListener(SWT.Selection, new Listener () {
+			@Override
 			public void handleEvent(Event event) {
 				data.getConditions().add(new Condition());
 				tableViewer.refresh();
@@ -105,6 +106,7 @@ public class OGCFilterBuilder extends Composite {
 		removeConditionButton.setText(Messages.OGCFilterBuilder_8); //$NON-NLS-1$
 		removeConditionButton.setToolTipText(Messages.OGCFilterBuilder_9); //$NON-NLS-1$
 		removeConditionButton.addListener(SWT.Selection, new Listener () {
+			@Override
 			public void handleEvent(Event event) {
 				ISelection selection = tableViewer.getSelection();
 				if (selection != null && selection instanceof IStructuredSelection) {
@@ -609,6 +611,7 @@ public class OGCFilterBuilder extends Composite {
 	}
 	
 	private static class ConditionCheckStateListener implements ICheckStateListener {
+		@Override
 		public void checkStateChanged(CheckStateChangedEvent event) {
 			Condition condition = (Condition) event.getElement();
 			condition.setNegate(event.getChecked());

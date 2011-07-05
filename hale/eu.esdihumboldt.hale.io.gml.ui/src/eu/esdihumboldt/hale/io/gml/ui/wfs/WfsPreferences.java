@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.io.legacy.wfs;
+package eu.esdihumboldt.hale.io.gml.ui.wfs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
+import eu.esdihumboldt.hale.io.gml.ui.internal.GmlUIPlugin;
 
 /**
  * WFS preferences
@@ -34,7 +34,7 @@ public class WfsPreferences extends
 	 */
 	@Override
 	public void initializeDefaultPreferences() {
-		IPreferenceStore preferences = HALEUIPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore preferences = GmlUIPlugin.getDefault().getPreferenceStore();
 		
 		preferences.setDefault(KEY_RECENT_WFS_COUNT, 0);
 	}
@@ -45,7 +45,7 @@ public class WfsPreferences extends
 	 * @param recent the search path
 	 */
 	public static void setRecent(List<String> recent) {
-		IPreferenceStore preferences = HALEUIPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore preferences = GmlUIPlugin.getDefault().getPreferenceStore();
 		
 		int size = Math.min(MAX_RECENT_WFS, recent.size());
 		
@@ -70,7 +70,7 @@ public class WfsPreferences extends
 	 * @return the search path
 	 */
 	public static List<String> getRecent() {
-		IPreferenceStore preferences = HALEUIPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore preferences = GmlUIPlugin.getDefault().getPreferenceStore();
 		
 		List<String> result = new ArrayList<String>();
 		int count = preferences.getInt(KEY_RECENT_WFS_COUNT);

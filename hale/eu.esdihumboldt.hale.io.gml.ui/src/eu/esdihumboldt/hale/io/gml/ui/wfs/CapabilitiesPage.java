@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.io.legacy.wfs;
+package eu.esdihumboldt.hale.io.gml.ui.wfs;
 
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -19,7 +19,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.ui.internal.Messages;
+import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
 
 /**
  * Page for specifying the capabilities URL
@@ -58,6 +58,7 @@ public class CapabilitiesPage extends AbstractWfsPage<WfsConfiguration> {
 		location.setPage(this);
 		location.setPropertyChangeListener(new IPropertyChangeListener() {
 			
+			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty().equals(FieldEditor.IS_VALID)) {
 					update();

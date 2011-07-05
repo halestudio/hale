@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.io.legacy.wfs;
+package eu.esdihumboldt.hale.io.gml.ui.wfs;
 
 import java.util.List;
 import java.util.Timer;
@@ -23,9 +23,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.ui.internal.Messages;
-import eu.esdihumboldt.hale.ui.io.legacy.FeatureTypeList;
-import eu.esdihumboldt.hale.ui.io.legacy.FeatureTypeList.TypeSelectionListener;
+import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
+import eu.esdihumboldt.hale.io.gml.ui.wfs.FeatureTypeList.TypeSelectionListener;
 
 /**
  * 

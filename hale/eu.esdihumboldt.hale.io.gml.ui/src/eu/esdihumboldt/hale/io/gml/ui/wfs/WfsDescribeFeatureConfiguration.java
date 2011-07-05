@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.io.legacy.wfs;
+package eu.esdihumboldt.hale.io.gml.ui.wfs;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,7 +20,6 @@ import org.geotools.data.DataStore;
 import org.geotools.data.wfs.WFSDataStore;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.ui.io.legacy.GetCapabilititiesRetriever;
 
 /**
  * Configuration for WFS DescribeFeature

@@ -1,4 +1,4 @@
-package eu.esdihumboldt.hale.ui.io.legacy.wfs;
+package eu.esdihumboldt.hale.io.gml.ui.wfs;
 
 import java.net.URL;
 import java.util.List;
@@ -16,7 +16,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
-import eu.esdihumboldt.hale.ui.io.legacy.GetCapabilititiesRetriever;
 
 /*+-------------+----------------------------------------------------------*
  *|  |  |_|_|_|_|   Fraunhofer-Institut fuer Graphische Datenverarbeitung  *
