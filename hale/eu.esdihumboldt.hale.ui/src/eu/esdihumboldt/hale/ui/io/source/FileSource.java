@@ -242,4 +242,12 @@ public class FileSource<P extends ImportProvider, T extends IOProviderFactory<P>
 		return true;
 	}
 
+	/**
+	 * @see AbstractSource#onActivate()
+	 */
+	@Override
+	public void onActivate() {
+		sourceFile.setFocus();
+	}
+
 }

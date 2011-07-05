@@ -349,4 +349,12 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 		}
 	}
 
+	/**
+	 * @see AbstractSource#onActivate()
+	 */
+	@Override
+	public void onActivate() {
+		sourceURL.setFocus();
+	}
+
 }
