@@ -15,26 +15,40 @@ package eu.esdihumboldt.hale.ui.views.report;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.part.ViewPart;
-import swing2swt.layout.BorderLayout;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.part.ViewPart;
+
+import swing2swt.layout.BorderLayout;
 
 /**
- * TODO Type description
- * @author andi
+ * 
+ * @author Andreas Burchert
+ * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ReportOverview extends ViewPart {
 
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.report.ReportOverview"; //$NON-NLS-1$
 	private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
+	private Combo _reportCombo;
+	private Composite _container;
+	private Composite _composite;
+	private Composite _leftComposite;
+	private Button _btnSummary;
+	private Button _btnDetails;
+	private Composite _rightComposite;
+	private Composite _contentComposite;
 
 	public ReportOverview() {
+		/* nothing */
 	}
 
 	/**
@@ -43,48 +57,82 @@ public class ReportOverview extends ViewPart {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		Composite container = toolkit.createComposite(parent, SWT.NONE);
-		toolkit.paintBordersFor(container);
-		container.setLayout(new BorderLayout(0, 0));
+		_container = toolkit.createComposite(parent, SWT.NONE);
+		toolkit.paintBordersFor(_container);
+		_container.setLayout(new BorderLayout(0, 0));
 		{
-			Composite leftComposite = new Composite(container, SWT.NONE);
-			leftComposite.setLayoutData(BorderLayout.WEST);
-			toolkit.adapt(leftComposite);
-			toolkit.paintBordersFor(leftComposite);
-			RowLayout rl_leftComposite = new RowLayout(SWT.VERTICAL);
-			rl_leftComposite.spacing = 0;
-			rl_leftComposite.marginTop = 30;
-			rl_leftComposite.marginRight = 0;
-			rl_leftComposite.fill = true;
-			rl_leftComposite.center = true;
-			leftComposite.setLayout(rl_leftComposite);
+			_composite = new Composite(_container, SWT.NONE);
+			_composite.setLayoutData(BorderLayout.NORTH);
+			toolkit.adapt(_composite);
+			toolkit.paintBordersFor(_composite);
+			_composite.setLayout(new BorderLayout(0, 20));
 			{
-				Button button = new Button(leftComposite, SWT.FLAT | SWT.TOGGLE | SWT.CENTER);
-				button.setLayoutData(new RowData(70, -1));
-				button.setText("Summary");
-				button.setSelection(true);
-				button.setGrayed(true);
-				toolkit.adapt(button, true, true);
-			}
-			{
-				Button button = new Button(leftComposite, SWT.FLAT | SWT.TOGGLE | SWT.CENTER);
-				button.setLayoutData(new RowData(66, -1));
-				button.setText("Details");
-				toolkit.adapt(button, true, true);
+				_reportCombo = new Combo(_composite, SWT.NONE);
+				_reportCombo.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						/*
+						 * TODOimplement me
+						 * viewer.setInput(new ReportModel(reports.get(combo.getSelectionIndex())));
+						 */
+					}
+				});
+				toolkit.adapt(_reportCombo);
+				toolkit.paintBordersFor(_reportCombo);
 			}
 		}
-		{
-			Combo reportCombo = new Combo(container, SWT.NONE);
-			reportCombo.setLayoutData(BorderLayout.NORTH);
-			toolkit.adapt(reportCombo);
-			toolkit.paintBordersFor(reportCombo);
-		}
-		{
-			Composite contentComposite = new Composite(container, SWT.NONE);
-			contentComposite.setLayoutData(BorderLayout.CENTER);
-			toolkit.adapt(contentComposite);
-			toolkit.paintBordersFor(contentComposite);
-		}
+		
+		Label hSeperator = new Label(_container, SWT.SEPARATOR | SWT.HORIZONTAL);
+		hSeperator.setLayoutData(BorderLayout.SOUTH);
+		toolkit.adapt(hSeperator, true, true);
+		
+		_leftComposite = new Composite(_container, SWT.NONE);
+		_leftComposite.setLayoutData(BorderLayout.WEST);
+		toolkit.adapt(_leftComposite);
+		toolkit.paintBordersFor(_leftComposite);
+		RowLayout rl__leftComposite = new RowLayout(SWT.VERTICAL);
+		rl__leftComposite.spacing = 0;
+		rl__leftComposite.marginTop = 30;
+		rl__leftComposite.marginRight = 0;
+		rl__leftComposite.fill = true;
+		rl__leftComposite.center = true;
+		_leftComposite.setLayout(rl__leftComposite);
+		
+		_btnSummary = new Button(_leftComposite, SWT.FLAT | SWT.TOGGLE | SWT.CENTER);
+		_btnSummary.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ReportSummary rSummary = new ReportSummary(_contentComposite, SWT.NONE);
+				rSummary.setLayoutData(BorderLayout.CENTER);
+				_contentComposite.layout();
+			}
+		});
+		_btnSummary.setLayoutData(new RowData(70, -1));
+		_btnSummary.setText("Summary");
+		_btnSummary.setSelection(true);
+		_btnSummary.setGrayed(true);
+		toolkit.adapt(_btnSummary, true, true);
+		
+		_btnDetails = new Button(_leftComposite, SWT.FLAT | SWT.TOGGLE | SWT.CENTER);
+		_btnDetails.setLayoutData(new RowData(66, -1));
+		_btnDetails.setText("Details");
+		toolkit.adapt(_btnDetails, true, true);
+		
+		_rightComposite = new Composite(_container, SWT.NONE);
+		_rightComposite.setLayoutData(BorderLayout.CENTER);
+		toolkit.adapt(_rightComposite);
+		toolkit.paintBordersFor(_rightComposite);
+		_rightComposite.setLayout(new BorderLayout(0, 0));
+		
+		Label vSeperator = new Label(_rightComposite, SWT.SEPARATOR | SWT.VERTICAL);
+		vSeperator.setLayoutData(BorderLayout.WEST);
+		toolkit.adapt(vSeperator, true, true);
+		
+		_contentComposite = new Composite(_rightComposite, SWT.NONE);
+		_contentComposite.setLayoutData(BorderLayout.CENTER);
+		toolkit.adapt(_contentComposite);
+		toolkit.paintBordersFor(_contentComposite);
+		_contentComposite.setLayout(new BorderLayout(0, 0));
 
 		createActions();
 		initializeToolBar();
@@ -122,4 +170,7 @@ public class ReportOverview extends ViewPart {
 		// Set the focus
 	}
 
+	public void getSummary() {
+		
+	}
 }
