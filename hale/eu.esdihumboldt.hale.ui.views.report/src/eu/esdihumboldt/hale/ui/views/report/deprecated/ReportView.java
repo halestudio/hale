@@ -10,22 +10,14 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.views.report;
+package eu.esdihumboldt.hale.ui.views.report.deprecated;
 
-import java.awt.Frame;
 import java.util.ArrayList;
-
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.awt.SWT_AWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
@@ -33,17 +25,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.views.properties.tabbed.view.TabbedPropertyList;
-import org.eclipse.ui.internal.views.properties.tabbed.view.TabbedPropertyViewer;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.views.properties.PropertySheet;
-import org.eclipse.ui.views.properties.PropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabItem;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 
 import eu.esdihumboldt.hale.core.report.Message;
 import eu.esdihumboldt.hale.core.report.Report;
@@ -86,7 +70,7 @@ public class ReportView extends ViewPart implements ReportListener<Report<Messag
 		// get ReportService and add listener
 		ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
 		repService.addReportListener(this);
-		
+
 		// bar and TreeView
 		page.setLayout(new GridLayout(2, true));
 	
@@ -111,35 +95,7 @@ public class ReportView extends ViewPart implements ReportListener<Report<Messag
 				/* nothing */
 			}
 		});
-		
-		//
-//		CTabFolder tabFolder = new CTabFolder(page, SWT.LEFT);
-		TabFolder tabFolder = new TabFolder(page, SWT.LEFT);
-		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		
-		TabItem tabItem = new TabItem(tabFolder, SWT.LEFT);
-		tabItem.setText("Summary");
-		tabItem.setControl(null);
-		
-		TabItem tabItem2 = new TabItem(tabFolder, SWT.LEFT);
-		tabItem2.setText("Detailed Report");
-		tabItem2.setControl(null);
-		
-//		TabbedPropertyList list = new TabbedPropertyList(page, new TabbedPropertySheetWidgetFactory());
-//		TabbedPropertySheetPage testPage = new TabbedPropertySheetPage()
-//		ITabItem[] listItems = new ReportTabItem[3];
-//		listItems[0] = new ReportTabItem();
-//		listItems[1] = new ReportTabItem();
-//		listItems[2] = new ReportTabItem();
-//		
-//		PropertySheet sheet1 = new PropertySheet();
-//		PropertySheetPage page1 = new PropertySheetPage();
-		
-//		TabbedPropertyViewer tViewer = new TabbedPropertyViewer(list);
-//		tViewer.setContentProvider(new ContentProvider());
-		
-		ReportViewer test = new ReportViewer("myid", "Report Test");
-		test.createPartControl(page);
+
 	}
 
 	@Override

@@ -10,10 +10,12 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.views.report;
+package eu.esdihumboldt.hale.ui.views.report.deprecated;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.xml.sax.SAXParseException;
+
+import eu.esdihumboldt.hale.ui.views.report.TransformationResultItem;
 
 /**
  * LabelProvider for {@link ReportView#viewer}.

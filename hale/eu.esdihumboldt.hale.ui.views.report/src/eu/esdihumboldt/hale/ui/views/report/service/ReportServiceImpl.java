@@ -19,7 +19,7 @@ import eu.esdihumboldt.hale.ui.io.legacy.mappingexport.MappingExportReport;
 import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
 import eu.esdihumboldt.hale.ui.service.UpdateMessage;
 import eu.esdihumboldt.hale.ui.service.UpdateService;
-import eu.esdihumboldt.hale.ui.views.report.ReportModel;
+import eu.esdihumboldt.hale.ui.views.report.deprecated.ReportModel;
 
 /**
  * 

@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.views.report;
+package eu.esdihumboldt.hale.ui.views.report.deprecated;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,7 @@ import eu.esdihumboldt.cst.transformer.CellUtils;
 import eu.esdihumboldt.hale.core.report.Message;
 import eu.esdihumboldt.hale.core.report.Report;
 import eu.esdihumboldt.hale.ui.io.legacy.mappingexport.MappingExportReport;
+import eu.esdihumboldt.hale.ui.views.report.TransformationResultItem;
 import eu.esdihumboldt.hale.ui.views.report.internal.Messages;
 import eu.esdihumboldt.specification.cst.align.ICell;
 

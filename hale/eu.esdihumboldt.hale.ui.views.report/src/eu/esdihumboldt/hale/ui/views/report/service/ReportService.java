@@ -15,7 +15,7 @@ package eu.esdihumboldt.hale.ui.views.report.service;
 import eu.esdihumboldt.hale.io.xml.validator.Report;
 import eu.esdihumboldt.hale.ui.io.legacy.mappingexport.MappingExportReport;
 import eu.esdihumboldt.hale.ui.service.UpdateService;
-import eu.esdihumboldt.hale.ui.views.report.ReportModel;
+import eu.esdihumboldt.hale.ui.views.report.deprecated.ReportModel;
 
 /**
  * Interface for {@link ReportServiceImpl}.

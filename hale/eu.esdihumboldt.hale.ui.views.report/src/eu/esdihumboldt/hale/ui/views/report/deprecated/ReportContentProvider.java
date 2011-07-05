@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.views.report;
+package eu.esdihumboldt.hale.ui.views.report.deprecated;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
+import eu.esdihumboldt.hale.ui.views.report.TransformationResultItem;
 import eu.esdihumboldt.hale.ui.views.report.internal.Messages;
 
 /**
