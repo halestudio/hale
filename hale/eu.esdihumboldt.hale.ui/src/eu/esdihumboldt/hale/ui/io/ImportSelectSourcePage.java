@@ -18,6 +18,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.DialogPage;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -315,11 +317,15 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 				TabItem item = new TabItem(tabs, SWT.NONE);
 				item.setText(MessageFormat.format("From {0}", sourceFactory.getDisplayName()));
 				//TODO image and tooltip?
-				Composite content = new Composite(tabs, SWT.NONE);
+				Composite wrapper = new Composite(tabs, SWT.NONE);
+				wrapper.setLayout(GridLayoutFactory.swtDefaults().create());
+				Composite content = new Composite(wrapper, SWT.NONE);
+				content.setLayoutData(GridDataFactory.fillDefaults().
+						grab(true, true).create());
 				
 				createSource(sourceFactory, content);
 				
-				item.setControl(content);
+				item.setControl(wrapper);
 			}
 			
 			tabs.addSelectionListener(new SelectionAdapter() {
