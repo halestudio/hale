@@ -45,7 +45,7 @@ import eu.esdihumboldt.hale.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
-import eu.esdihumboldt.hale.schema.model.constraint.type.SimpleFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultTypeDefinition;
@@ -103,7 +103,7 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 				
 				// constraints on main type
 				type.setConstraint(MappableFlag.ENABLED);
-				type.setConstraint(SimpleFlag.DISABLED);
+				type.setConstraint(HasValueFlag.DISABLED);
 				type.setConstraint(AbstractFlag.DISABLED);
 				type.setConstraint(Binding.get(Instance.class));
 				
@@ -169,7 +169,7 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 			else {
 				typeDef.setConstraint(Binding.get(type.getBinding()));
 			}
-			typeDef.setConstraint(SimpleFlag.ENABLED); // simple type
+			typeDef.setConstraint(HasValueFlag.ENABLED); // simple type
 			
 			// set metadata
 			typeDef.setLocation(getSource().getLocation());

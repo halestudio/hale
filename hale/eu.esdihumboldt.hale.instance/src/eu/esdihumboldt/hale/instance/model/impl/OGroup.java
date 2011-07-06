@@ -47,7 +47,7 @@ import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
-import eu.esdihumboldt.hale.schema.model.constraint.type.SimpleFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
 
 /**
  * Group implementation based on {@link ODocument}s
@@ -217,7 +217,7 @@ public class OGroup implements MutableGroup {
 		if (child != null) {
 			if (child.asProperty() != null) {
 				TypeDefinition propType = child.asProperty().getPropertyType();
-				if (propType.getConstraint(SimpleFlag.class).isEnabled()) {
+				if (propType.getConstraint(HasValueFlag.class).isEnabled()) {
 					return OType.EMBEDDEDLIST;
 				}
 				else {

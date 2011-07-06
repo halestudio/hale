@@ -23,7 +23,7 @@ import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
-import eu.esdihumboldt.hale.schema.model.constraint.type.SimpleFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
 
 /**
  * Basic classification for definitions
@@ -62,7 +62,7 @@ public enum Classification {
 		else if (def instanceof PropertyDefinition) {
 			// use binding/constraints to determine type
 			PropertyDefinition property = (PropertyDefinition) def;
-			if (property.getPropertyType().getConstraint(SimpleFlag.class).isEnabled()) {
+			if (property.getPropertyType().getConstraint(HasValueFlag.class).isEnabled()) {
 				// simple type
 				Class<?> binding = property.getPropertyType().getConstraint(Binding.class).getBinding();
 				if (Number.class.isAssignableFrom(binding) || 

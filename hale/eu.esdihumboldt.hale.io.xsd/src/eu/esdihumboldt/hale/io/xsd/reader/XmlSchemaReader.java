@@ -106,7 +106,7 @@ import eu.esdihumboldt.hale.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
-import eu.esdihumboldt.hale.schema.model.constraint.type.SimpleFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.schema.model.impl.AbstractDefinition;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultGroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultPropertyDefinition;
@@ -778,7 +778,7 @@ public class XmlSchemaReader
 							
 							// set metadata and constraints
 							setMetadata(anonymousType, complexType, schemaLocation);
-							anonymousType.setConstraint(SimpleFlag.ENABLED);
+							anonymousType.setConstraint(HasValueFlag.ENABLED);
 							// set super type binding
 							//XXX is this ok? 
 							anonymousType.setConstraint(new SuperTypeBinding(anonymousType));
@@ -891,7 +891,7 @@ public class XmlSchemaReader
 		//TODO type constraints!
 		type.setConstraint(Binding.get(Instance.class)); //XXX instead object binding?
 		type.setConstraint(AbstractFlag.get(complexType.isAbstract()));
-		type.setConstraint(SimpleFlag.DISABLED);
+		type.setConstraint(HasValueFlag.DISABLED);
 		
 		// set metadata
 		setMetadata(type, complexType, schemaLocation);

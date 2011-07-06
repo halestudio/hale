@@ -48,7 +48,7 @@ import eu.esdihumboldt.hale.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
-import eu.esdihumboldt.hale.schema.model.constraint.type.SimpleFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.schema.model.impl.DefaultTypeIndex;
 
 /**
@@ -222,7 +222,7 @@ public class XmlSchemaReaderTest {
 		assertNotNull(id);
 		// property type must be a simple type
 		assertTrue(id.getPropertyType().getConstraint(
-				SimpleFlag.class).isEnabled());
+				HasValueFlag.class).isEnabled());
 		// binding must be string
 		assertEquals(String.class, id.getPropertyType().getConstraint(
 				Binding.class).getBinding());
@@ -236,7 +236,7 @@ public class XmlSchemaReaderTest {
 		assertNotNull(version);
 		// property type must be a simple type
 		assertTrue(version.getPropertyType().getConstraint(
-				SimpleFlag.class).isEnabled());
+				HasValueFlag.class).isEnabled());
 		
 		// effDate
 		PropertyDefinition effDate = type.getChild(new QName("effDate")).asProperty();
@@ -583,7 +583,7 @@ public class XmlSchemaReaderTest {
 		assertNotNull(orderperson);
 		// property type must be a simple type
 		assertTrue(orderperson.getPropertyType().getConstraint(
-				SimpleFlag.class).isEnabled());
+				HasValueFlag.class).isEnabled());
 		// binding must be string
 		assertEquals(String.class, orderperson.getPropertyType().getConstraint(
 				Binding.class).getBinding());
@@ -599,7 +599,7 @@ public class XmlSchemaReaderTest {
 		assertNotNull(shipto);
 		// property type must be a complex type
 		assertFalse(shipto.getPropertyType().getConstraint(
-				SimpleFlag.class).isEnabled());
+				HasValueFlag.class).isEnabled());
 		// binding must be Instance
 		assertEquals(Instance.class, shipto.getPropertyType().getConstraint(
 				Binding.class).getBinding());
@@ -609,7 +609,7 @@ public class XmlSchemaReaderTest {
 		assertNotNull(item);
 		// property type must be a complex type
 		assertFalse(item.getPropertyType().getConstraint(
-				SimpleFlag.class).isEnabled());
+				HasValueFlag.class).isEnabled());
 		// item cardinality
 		cc = item.getConstraint(Cardinality.class);
 		assertEquals(1, cc.getMinOccurs());
@@ -630,13 +630,13 @@ public class XmlSchemaReaderTest {
 		// quantity
 		PropertyDefinition quantity = itemType.getChild(new QName(ns, "quantity")).asProperty();
 		assertNotNull(quantity);
-		assertTrue(quantity.getPropertyType().getConstraint(SimpleFlag.class).isEnabled());
+		assertTrue(quantity.getPropertyType().getConstraint(HasValueFlag.class).isEnabled());
 		assertTrue(Number.class.isAssignableFrom(quantity.getPropertyType().getConstraint(
 				Binding.class).getBinding()));
 		// price
 		PropertyDefinition price = itemType.getChild(new QName(ns, "price")).asProperty();
 		assertNotNull(price);
-		assertTrue(price.getPropertyType().getConstraint(SimpleFlag.class).isEnabled());
+		assertTrue(price.getPropertyType().getConstraint(HasValueFlag.class).isEnabled());
 		assertTrue(Number.class.isAssignableFrom(price.getPropertyType().getConstraint(
 				Binding.class).getBinding()));
 		

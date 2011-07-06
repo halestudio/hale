@@ -20,7 +20,14 @@ import eu.esdihumboldt.hale.schema.model.Constraint;
 import eu.esdihumboldt.hale.schema.model.TypeConstraint;
 
 /**
- * Specifies a Java binding for a type, default binding is {@link Object}. 
+ * Specifies a Java binding for a type value, default binding is 
+ * {@link Object}.<br>
+ * <br>
+ * The binding is usually only relevant when the {@link HasValueFlag} is enabled 
+ * for a type.
+ * 
+ * @see HasValueFlag
+ *  
  * @author Simon Templer
  */
 @Immutable

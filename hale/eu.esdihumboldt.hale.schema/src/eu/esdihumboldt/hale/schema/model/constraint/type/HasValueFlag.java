@@ -19,33 +19,38 @@ import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.constraint.AbstractFlagConstraint;
 
 /**
- * Flags if a type is a simple type, by default enabled for 
- * {@link TypeDefinition}s that have no properties, otherwise disabled by 
- * default. A simple type has a value additional to eventual properties.
+ * Flags if a type is has a direct value, apart from eventual properties, by 
+ * default enabled for {@link TypeDefinition}s that have no properties, 
+ * otherwise disabled by default.<br>
+ * <br>
+ * The {@link Binding} constraint defines the Java binding for the value.
+ * 
+ * @see Binding
+ * 
  * @author Simon Templer
  */
 @Immutable
 @Constraint(mutable = false)
-public class SimpleFlag extends AbstractFlagConstraint implements TypeConstraint {
+public class HasValueFlag extends AbstractFlagConstraint implements TypeConstraint {
 
 	/**
 	 * Enabled simple type flag
 	 */
-	public static final SimpleFlag ENABLED = new SimpleFlag(true);
+	public static final HasValueFlag ENABLED = new HasValueFlag(true);
 	
 	/**
 	 * Disabled simple type flag
 	 */
-	public static final SimpleFlag DISABLED = new SimpleFlag(false);
+	public static final HasValueFlag DISABLED = new HasValueFlag(false);
 	
 	/**
 	 * Get the simple type flag
 	 * 
-	 * @param isSimpleType if the flag shall be enabled
+	 * @param hasValue if the flag shall be enabled
 	 * @return the flag
 	 */
-	public static SimpleFlag get(boolean isSimpleType) {
-		return (isSimpleType)?(ENABLED):(DISABLED);
+	public static HasValueFlag get(boolean hasValue) {
+		return (hasValue)?(ENABLED):(DISABLED);
 	}
 	
 	/**
@@ -54,7 +59,7 @@ public class SimpleFlag extends AbstractFlagConstraint implements TypeConstraint
 	 * 
 	 * @see Constraint
 	 */
-	public SimpleFlag() {
+	public HasValueFlag() {
 		this(false);
 	}
 	
@@ -65,14 +70,14 @@ public class SimpleFlag extends AbstractFlagConstraint implements TypeConstraint
 	 * 
 	 * @see Constraint
 	 */
-	public SimpleFlag(TypeDefinition typeDef) {
+	public HasValueFlag(TypeDefinition typeDef) {
 		this(typeDef.getChildren().isEmpty());
 	}
 	
 	/**
 	 * @see AbstractFlagConstraint#AbstractFlagConstraint(boolean)
 	 */
-	private SimpleFlag(boolean enabled) {
+	private HasValueFlag(boolean enabled) {
 		super(enabled);
 	}
 

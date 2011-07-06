@@ -51,7 +51,7 @@ import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.schema.model.constraint.type.ElementType;
 import eu.esdihumboldt.hale.schema.model.constraint.type.Enumeration;
 import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
-import eu.esdihumboldt.hale.schema.model.constraint.type.SimpleFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
 
 /**
  * Utility methods regarding type resolving
@@ -188,7 +188,7 @@ public abstract class XmlTypeUtil {
 			// set binding
 			type.setConstraint(Binding.get(ty.getBinding()));
 			// simple type flag
-			type.setConstraint(SimpleFlag.ENABLED);
+			type.setConstraint(HasValueFlag.ENABLED);
 			// not abstract
 			type.setConstraint(AbstractFlag.DISABLED);
 			// not mappable
@@ -220,7 +220,7 @@ public abstract class XmlTypeUtil {
 		XmlSchemaSimpleTypeContent content = simpleType.getContent();
 		
 		// it's a simple type
-		type.setConstraint(SimpleFlag.ENABLED);
+		type.setConstraint(HasValueFlag.ENABLED);
 		
 		if (content instanceof XmlSchemaSimpleTypeUnion) {
 			// simple type union

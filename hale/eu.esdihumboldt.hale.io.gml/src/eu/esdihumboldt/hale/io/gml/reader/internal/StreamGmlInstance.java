@@ -29,7 +29,7 @@ import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraint.type.SimpleFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -155,7 +155,7 @@ public abstract class StreamGmlInstance {
 	 * @return if the type is a complex type
 	 */
 	private static boolean isComplexType(TypeDefinition type) {
-		return !type.getConstraint(SimpleFlag.class).isEnabled();
+		return !type.getConstraint(HasValueFlag.class).isEnabled();
 	}
 	
 	/**
