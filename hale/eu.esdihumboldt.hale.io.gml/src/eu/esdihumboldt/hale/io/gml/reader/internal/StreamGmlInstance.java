@@ -15,6 +15,9 @@ package eu.esdihumboldt.hale.io.gml.reader.internal;
 import static com.google.common.base.Preconditions.checkState;
 
 import java.text.MessageFormat;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 
 import javax.xml.namespace.QName;
@@ -30,8 +33,12 @@ import eu.esdihumboldt.hale.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.instance.model.impl.OInstance;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
+import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
 
 /**
@@ -176,14 +183,17 @@ public abstract class StreamGmlInstance {
 			Stack<MutableGroup> groups, QName propertyName) {
 		MutableGroup group = groups.peek();
 		
-		// preferred 1: property of the current group
+		// preferred 1: property of a parent group
+		//TODO
+		
+		// preferred 2: property of the current group
 		ChildDefinition<?> child = group.getDefinition().getChild(propertyName);
 		if (child != null && child.asProperty() != null && 
 				allowAdd(group, child.asProperty())) {
 			return child.asProperty();
 		}
 		
-		// preferred 2: property of a parent group
+		// preferred 3: property of a sister group
 		//TODO
 		
 		// fall-back: property of a sub-group
@@ -201,26 +211,195 @@ public abstract class StreamGmlInstance {
 	 */
 	private static boolean allowAdd(MutableGroup group,
 			PropertyDefinition property) {
-		// TODO Auto-generated method stub
+		DefinitionGroup def = group.getDefinition();
+		
+		if (def instanceof GroupPropertyDefinition) {
+			// group property
+			GroupPropertyDefinition groupDef = (GroupPropertyDefinition) def;
+			
+			if (groupDef.getConstraint(ChoiceFlag.class).isEnabled()) {
+				// choice
+				// a choice may only contain one of its properties
+				for (QName propertyName : group.getPropertyNames()) {
+					if (!propertyName.equals(property.getName())) {
+						// other property is present -> may not add property value
+						return false;
+					}
+				}
+				// check cardinality
+				return allowAddCheckCardinality(group, property);
+			}
+			else {
+				// sequence, group(, attributeGroup)
+				
+				// check order
+				if (!allowAddCheckOrder(group, property, groupDef.getDeclaredChildren())) {
+					return false;
+				}
+				
+				// check cardinality
+				return allowAddCheckCardinality(group, property);
+			}
+		}
+		else if (def instanceof TypeDefinition) {
+			// type
+			TypeDefinition typeDef = (TypeDefinition) def;
+			
+			// check order
+			if (!allowAddCheckOrder(group, property, typeDef.getChildren())) {
+				return false;
+			}
+			
+			// check cardinality
+			return allowAddCheckCardinality(group, property);
+		}
+		
+		return false;
+	}
+
+	/**
+	 * Determines if another value of the given property may be added to the
+	 * given group based on values available in the group and the order
+	 * of the given child definitions.
+	 * @param group the group
+	 * @param property the property
+	 * @param children the child definitions
+	 * @return if another property value may be added to the group based on the
+	 *   values and the child definition order
+	 */
+	private static boolean allowAddCheckOrder(MutableGroup group,
+			PropertyDefinition property, Collection<? extends ChildDefinition<?>> children) {
+		boolean before = true;
+		for (ChildDefinition<?> childDef : children) {
+			if (childDef.getName().equals(property.getName())) {
+				before = false;
+			}
+			else {
+				// ignore XML attributes
+				if (childDef.asProperty() != null && childDef.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()) {
+					continue;
+				}
+				// ignore groups that contain no elements
+				if (childDef.asGroup() != null && !hasElements(childDef.asGroup())) {
+					continue;
+				}
+				
+				if (before) {
+					// child before the property
+					// the property may only be added if all children before are valid in their cardinality
+					Cardinality cardinality = null;
+					if (childDef.asProperty() != null) {
+						cardinality = childDef.asProperty().getConstraint(Cardinality.class);
+					}
+					else if (childDef.asGroup() != null) {
+						cardinality = childDef.asGroup().getConstraint(Cardinality.class);
+					}
+					else {
+						log.error("Unrecognized child definition.");
+					}
+					
+					if (cardinality != null) {
+						// check minimum
+						long min = cardinality.getMinOccurs();
+						if (min > 0 && min != Cardinality.UNBOUNDED) {
+							Object[] values = group.getProperty(childDef.getName());
+							int count = (values == null)?(0):(values.length);
+							if (min > count) {
+								return false;
+							}
+						}
+					}
+				}
+				else {
+					// child after the property
+					// the property may only be added if there are no values for children after the property
+					Object[] values = group.getProperty(childDef.getName());
+					if (values != null && values.length > 0) {
+						return false;
+					}
+				}
+			}
+		}
+		
+		// no fail -> allow add
 		return true;
+	}
+
+	/**
+	 * Determines if another value of the given property may be added to the
+	 * given group based on the cardinality of the property.
+	 * @param group the group
+	 * @param property the property
+	 * @return if another property value may be added to the group based on the
+	 *   property cardinality
+	 */
+	private static boolean allowAddCheckCardinality(MutableGroup group,
+			PropertyDefinition property) {
+		Cardinality cardinality = property.getConstraint(Cardinality.class);
+		
+		// check maximum
+		long max = cardinality.getMaxOccurs();
+		if (max == Cardinality.UNBOUNDED) {
+			return true; // add allowed in any case
+		}
+		else if (max <= 0) {
+			return false; // add never allowed
+		}
+		
+		Object[] values = group.getProperty(property.getName());
+		if (values == null) {
+			return true; // allowed because max is 1 or more
+		}
+		
+		return values.length < max;
 	}
 
 	/**
 	 * Determines if the given type has properties that are represented
 	 * as XML elements.
 	 * 
-	 * @param type the type definition
+	 * @param group the type definition
 	 * @return if the type is a complex type
 	 */
-	private static boolean hasElements(TypeDefinition type) {
-		for (ChildDefinition<?> child : type.getChildren()) {
+	private static boolean hasElements(DefinitionGroup group) {
+		return hasElementsOrAttributes(group, false, new HashSet<DefinitionGroup>());
+	}
+	
+	private static boolean hasElementsOrAttributes(DefinitionGroup group,
+			boolean attributes, Set<DefinitionGroup> tested) {
+		if (tested.contains(group)) {
+			// prevent cycles
+			return false;
+		}
+		else {
+			tested.add(group);
+		}
+		
+		Collection<? extends ChildDefinition<?>> children;
+		if (group instanceof TypeDefinition) {
+			children = ((TypeDefinition) group).getChildren();
+		}
+		else {
+			children = group.getDeclaredChildren();
+		}
+		
+		for (ChildDefinition<?> child : children) {
 			if (child.asProperty() != null) {
-				if (!child.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()) {
-					return true;
+				if (child.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()) {
+					if (attributes) {
+						return true;
+					}
+				}
+				else {
+					if (!attributes) {
+						return true;
+					}
 				}
 			}
 			else if (child.asGroup() != null) {
-				//FIXME what about groups?!
+				if (hasElementsOrAttributes(child.asGroup(), attributes, tested)) {
+					return true;
+				}
 			}
 		}
 		
@@ -231,23 +410,11 @@ public abstract class StreamGmlInstance {
 	 * Determines if the given type has properties that are represented
 	 * as XML attributes.
 	 * 
-	 * @param type the type definition
+	 * @param group the type definition
 	 * @return if the type has at least one XML attribute property
 	 */
-	private static boolean hasAttributes(TypeDefinition type) {
-		for (ChildDefinition<?> child : type.getChildren()) {
-			if (child.asProperty() != null) {
-				if (child.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()) {
-					return true;
-				}
-			}
-			else if (child.asGroup() != null) {
-				//XXX what about attribute groups
-				// groups are ignored for now as attribute groups are flattened (and there doesn't seem to be a case where this doesn't work)
-			}
-		}
-		
-		return false;
+	private static boolean hasAttributes(DefinitionGroup group) {
+		return hasElementsOrAttributes(group, true, new HashSet<DefinitionGroup>());
 	}
 
 	/**
