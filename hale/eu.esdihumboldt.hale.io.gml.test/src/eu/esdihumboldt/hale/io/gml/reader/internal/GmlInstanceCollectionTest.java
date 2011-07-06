@@ -134,6 +134,48 @@ public class GmlInstanceCollectionTest {
 	}
 	
 	/**
+	 * Test loading a simple XML file with one instance including a choice.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testLoadChoice() throws Exception {
+		GmlInstanceCollection instances = loadInstances(
+				getClass().getResource("/data/group/choice.xsd").toURI(),
+				getClass().getResource("/data/group/choice.xml").toURI(),
+				false);
+		
+		ResourceIterator<Instance> it = instances.iterator();
+		assertTrue(it.hasNext());
+		
+		Instance instance = it.next();
+		assertNotNull(instance);
+		
+		// choice
+		Object[] choice_1 = instance.getProperty(new QName("/ItemsType", "choice_1"));
+		assertNotNull(choice_1);
+		assertEquals(5, choice_1.length);
+		
+		String[] expectedProperties = new String[]{"shirt", "hat", "shirt", "umbrella", "hat"};
+		for (int i = 0; i < choice_1.length; i++) {
+			assertTrue(choice_1[i] instanceof Group);
+			Group choice = (Group) choice_1[i];
+			String expectedProperty = expectedProperties[i];
+			
+			int num = 0;
+			for (QName name : choice.getPropertyNames()) {
+				assertEquals(0, num++); // expecting only one property
+				assertEquals(new QName(expectedProperty), name);
+			}
+		}
+		
+		// only one object
+		assertFalse(it.hasNext());
+				
+		it.dispose();
+	}
+	
+	/**
 	 * Test loading a (relatively) simple GML file with one instance.
 	 * Includes groups and a geometry.
 	 * 
@@ -222,7 +264,10 @@ public class GmlInstanceCollectionTest {
 		
 		//TODO check value of coordinates - should be a list/collection of something
 		
-		assertFalse(it.hasNext()); // only one instance should be present
+		// only one instance should be present
+		assertFalse(it.hasNext());
+		
+		it.dispose();
 	}
 
 	private GmlInstanceCollection loadInstances(URI schemaLocation, URI xmlLocation, 
