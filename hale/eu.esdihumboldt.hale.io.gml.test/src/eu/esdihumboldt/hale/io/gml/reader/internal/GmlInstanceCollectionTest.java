@@ -52,7 +52,8 @@ public class GmlInstanceCollectionTest {
 	public void testLoadShiporder() throws Exception {
 		GmlInstanceCollection instances = loadInstances(
 				getClass().getResource("/data/shiporder/shiporder.xsd").toURI(),
-				getClass().getResource("/data/shiporder/shiporder.xml").toURI());
+				getClass().getResource("/data/shiporder/shiporder.xml").toURI(),
+				false);
 		
 		String ns = "http://www.example.com";
 		
@@ -127,7 +128,8 @@ public class GmlInstanceCollectionTest {
 		it.dispose();
 	}
 
-	private GmlInstanceCollection loadInstances(URI schemaLocation, URI xmlLocation) throws IOException, IOProviderConfigurationException {
+	private GmlInstanceCollection loadInstances(URI schemaLocation, URI xmlLocation, 
+			boolean restrictToFeatures) throws IOException, IOProviderConfigurationException {
 		SchemaReader reader = new XmlSchemaReader();
 		reader.setSharedTypes(null);
 		reader.setSource(new DefaultInputSupplier(schemaLocation));
@@ -137,7 +139,7 @@ public class GmlInstanceCollectionTest {
 		
 		return new GmlInstanceCollection(
 				new DefaultInputSupplier(xmlLocation), 
-				sourceSchema);
+				sourceSchema, restrictToFeatures);
 	}
 
 }
