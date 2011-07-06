@@ -114,9 +114,10 @@ public abstract class StoreInstancesJob extends Job {
 		onComplete();
 		
 		monitor.done();
+		String message = MessageFormat.format("Stored {0} instances in the database", count);
+		log.info(message);
 		return new Status((monitor.isCanceled())?(IStatus.CANCEL):(IStatus.OK), 
-				HALEUIPlugin.PLUGIN_ID, MessageFormat.format(
-						"Stored {0} instances in the database", count));
+				HALEUIPlugin.PLUGIN_ID, message );
 	}
 
 	/**
