@@ -28,6 +28,7 @@ import org.junit.Test;
 import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.core.io.report.IOReport;
 import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.instance.model.Group;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
@@ -133,7 +134,8 @@ public class GmlInstanceCollectionTest {
 	}
 	
 	/**
-	 * Test loading a (relatively) simple GML file with one instance
+	 * Test loading a (relatively) simple GML file with one instance.
+	 * Includes groups and a geometry.
 	 * 
 	 * @throws Exception if an error occurs
 	 */
@@ -145,6 +147,7 @@ public class GmlInstanceCollectionTest {
 				true);
 		
 		String ns = "http://www.esdi-humboldt.org/waterVA";
+		String gmlNs = "http://www.opengis.net/gml";
 		
 		ResourceIterator<Instance> it = instances.iterator();
 		assertTrue(it.hasNext());
@@ -170,8 +173,54 @@ public class GmlInstanceCollectionTest {
 		assertEquals(1, fgwID.length);
 		assertEquals("81011403", fgwID[0]);
 		
-		//TODO checks regarding groups
-		//TODO checks regarding geometry
+		// the_geom
+		Object[] the_geom = instance.getProperty(new QName(ns, "the_geom"));
+		assertNotNull(the_geom);
+		assertEquals(1, the_geom.length);
+		assertTrue(the_geom[0] instanceof Instance);
+		
+		// MultiLineString
+		Object[] multiLineString = ((Instance) the_geom[0]).getProperty(new QName(gmlNs, "MultiLineString"));
+		assertNotNull(multiLineString);
+		assertEquals(1, multiLineString.length);
+		assertTrue(multiLineString[0] instanceof Instance);
+		
+		//TODO the MultiLineString should have a GeometryProperty value with a MultiLineString as geometry and a CRS definition
+		// ...getValue()
+		
+		// srsName
+		Object[] srsName = ((Instance) multiLineString[0]).getProperty(new QName("srsName"));
+		assertNotNull(srsName);
+		assertEquals(1, srsName.length);
+		assertEquals("EPSG:31251", srsName[0]);
+		
+		// lineStringMember
+		Object[] lineStringMember = ((Instance) multiLineString[0]).getProperty(new QName(gmlNs, "lineStringMember"));
+		assertNotNull(lineStringMember);
+		assertEquals(1, lineStringMember.length);
+		assertTrue(lineStringMember[0] instanceof Instance);
+		
+		// LineString
+		Object[] lineString = ((Instance) lineStringMember[0]).getProperty(new QName(gmlNs, "LineString"));
+		assertNotNull(lineString);
+		assertEquals(1, lineString.length);
+		assertTrue(lineString[0] instanceof Instance);
+		
+		//TODO the LineString should have a GeometryProperty value with a LineString as geometry and a CRS definition
+		// ...getValue()
+		
+		// choice
+		Object[] choice_1 = ((Instance) lineString[0]).getProperty(new QName(gmlNs + "/LineStringType", "choice_1"));
+		assertNotNull(choice_1);
+		assertEquals(1, choice_1.length);
+		assertTrue(choice_1[0] instanceof Group);
+		
+		// coordinates
+		Object[] coordinates = ((Group) choice_1[0]).getProperty(new QName(gmlNs, "coordinates"));
+		assertNotNull(coordinates);
+		assertEquals(1, coordinates.length);
+		
+		//TODO check value of coordinates - should be a list/collection of something
 		
 		assertFalse(it.hasNext()); // only one instance should be present
 	}
