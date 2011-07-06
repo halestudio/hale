@@ -79,7 +79,7 @@ public abstract class StreamGmlInstance {
 		//FIXME check for xsi:nil!
 		//XXX or use reader.hasText()?
 		
-		if (isComplexType(type)) {
+		if (hasElements(type)) {
 			// elements
 			int open = 1;
 			while (open > 0 && reader.hasNext()) {
@@ -93,7 +93,7 @@ public abstract class StreamGmlInstance {
 						checkNotNull(property);
 						
 						//TODO check also namespace?
-						if (isComplexType(property.getPropertyType())) {
+						if (hasElements(property.getPropertyType())) {
 							// use an instance as value
 							instance.addProperty(property.getName(), 
 									parseInstance(reader, property.getPropertyType()));
@@ -154,7 +154,7 @@ public abstract class StreamGmlInstance {
 	 * @param type the type definition
 	 * @return if the type is a complex type
 	 */
-	private static boolean isComplexType(TypeDefinition type) {
+	private static boolean hasElements(TypeDefinition type) {
 		return !type.getConstraint(HasValueFlag.class).isEnabled();
 	}
 	
@@ -173,7 +173,8 @@ public abstract class StreamGmlInstance {
 				}
 			}
 			else if (child.asGroup() != null) {
-				//FIXME what about attribute groups
+				//XXX what about attribute groups
+				// groups are ignored for now as attribute groups are flattened (and there doesn't seem to be a case where this doesn't work)
 			}
 		}
 		
