@@ -12,7 +12,10 @@
 
 package eu.esdihumboldt.hale.io.gml.reader.internal;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import java.text.MessageFormat;
+import java.util.Stack;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
@@ -21,19 +24,15 @@ import javax.xml.stream.XMLStreamReader;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.MutableGroup;
 import eu.esdihumboldt.hale.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.instance.model.impl.OInstance;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
-
-import static com.google.common.base.Preconditions.*;
 
 /**
  * Utility methods for instances from {@link XMLStreamReader}s
@@ -61,7 +60,7 @@ public abstract class StreamGmlInstance {
 		MutableInstance instance = new OInstance(type);
 		
 		// instance properties
-		parseProperties(reader, instance, type);
+		parseProperties(reader, instance);
 
 		// instance value
 		if (type.getConstraint(HasValueFlag.class).isEnabled()) {
@@ -85,17 +84,18 @@ public abstract class StreamGmlInstance {
 	 * XML stream reader.
 	 * @param reader the XML stream reader
 	 * @param group the group to populate with properties
-	 * @param definition the associated definition
 	 * @throws XMLStreamException if parsing the properties failed
 	 */
 	private static void parseProperties(XMLStreamReader reader,
-			MutableGroup group, DefinitionGroup definition) throws XMLStreamException {
+			MutableGroup group) throws XMLStreamException {
+		final MutableGroup topGroup = group;
+		
 		// attributes (usually only present in Instances)
 		for (int i = 0; i < reader.getAttributeCount(); i++) {
 			QName propertyName = reader.getAttributeName(i);
 			//XXX might also be inside a group? currently every attribute group should be flattened
 			// for group support there would have to be some other kind of handling than for elements, cause order doesn't matter for attributes  
-			ChildDefinition<?> child = definition.getChild(propertyName);
+			ChildDefinition<?> child = group.getDefinition().getChild(propertyName);
 			if (child != null && child.asProperty() != null) {
 				// add property value
 				addSimpleProperty(group, child.asProperty(), reader.getAttributeValue(i));
@@ -103,9 +103,12 @@ public abstract class StreamGmlInstance {
 			else {
 				log.warn(MessageFormat.format(
 						"No property ''{0}'' found in type ''{1}'', value is ignored", 
-						propertyName, definition.getIdentifier()));
+						propertyName, group.getDefinition().getIdentifier()));
 			}
 		}
+		
+		Stack<MutableGroup> groups = new Stack<MutableGroup>();
+		groups.push(topGroup);
 				
 		// elements
 		int open = 1;
@@ -113,15 +116,12 @@ public abstract class StreamGmlInstance {
 			int event = reader.next();
 			switch (event) {
 			case XMLStreamConstants.START_ELEMENT:
-				// get child
-				ChildDefinition<?> child = definition.getChild(reader.getName());
+				PropertyDefinition property = determineProperty(groups, reader.getName());
 				
-				//XXX
+				// get group object from stack
+				group = groups.peek();
 				
-				if (child != null) {
-					PropertyDefinition property = child.asProperty();
-					checkNotNull(property);
-					
+				if (property != null) {
 					//TODO check also namespace?
 					if (hasElements(property.getPropertyType())) {
 						// use an instance as value
@@ -146,14 +146,10 @@ public abstract class StreamGmlInstance {
 					}
 				}
 				else {
-					//TODO search in groups for property
-					//XXX remember a last group (hierarchy?) and keep it open for following elements?
+					log.warn(MessageFormat.format(
+							"No property ''{0}'' found in type ''{1}'', value is ignored", 
+							reader.getLocalName(), topGroup.getDefinition().getIdentifier()));
 				}
-//							else {
-//								log.warn(MessageFormat.format(
-//										"No property ''{0}'' found in type ''{1}'', value is ignored", 
-//										reader.getLocalName(), type.getDisplayName()));
-//							}
 				
 				if (reader.getEventType() != XMLStreamConstants.END_ELEMENT) {
 					// only increase open if the current event is not already the end element (because we used getElementText)
@@ -165,6 +161,48 @@ public abstract class StreamGmlInstance {
 				break;
 			}
 		}
+	}
+
+	/**
+	 * Determine the property definition for the given property name.
+	 * The given group stack will be updated so that the parent group object of 
+	 * the property will be the top element on the stack. 
+	 * @param groups the stack of the current group objects. The topmost element
+	 *   is the current group object 
+	 * @param propertyName the property name
+	 * @return the property definition or <code>null</code> if none is found
+	 */
+	private static PropertyDefinition determineProperty(
+			Stack<MutableGroup> groups, QName propertyName) {
+		MutableGroup group = groups.peek();
+		
+		// preferred 1: property of the current group
+		ChildDefinition<?> child = group.getDefinition().getChild(propertyName);
+		if (child != null && child.asProperty() != null && 
+				allowAdd(group, child.asProperty())) {
+			return child.asProperty();
+		}
+		
+		// preferred 2: property of a parent group
+		//TODO
+		
+		// fall-back: property of a sub-group
+		//TODO
+		
+		return null;
+	}
+
+	/**
+	 * Determines if another value of the given property may be added to the
+	 * given group.
+	 * @param group the group
+	 * @param property the property
+	 * @return if another property value may be added to the group
+	 */
+	private static boolean allowAdd(MutableGroup group,
+			PropertyDefinition property) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 
 	/**
