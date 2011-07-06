@@ -15,8 +15,10 @@ package eu.esdihumboldt.hale.io.gml.reader.internal;
 import static com.google.common.base.Preconditions.checkState;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
@@ -181,15 +183,23 @@ public abstract class StreamGmlInstance {
 	 */
 	private static PropertyDefinition determineProperty(
 			Stack<MutableGroup> groups, QName propertyName) {
-		MutableGroup group = groups.peek();
+		final MutableGroup currentGroup = groups.peek();
 		
 		// preferred 1: property of a parent group
-		//TODO
+		if (allowClose(currentGroup)) {
+			//XXX todo
+//			List<MutableGroup> parents = new ArrayList<MutableGroup>(groups);
+//			parents.remove(parents.size() - 1);
+//			//TODO
+//			for (int i = parents.size() - 1; i >= 0; i--) {
+//				
+//			}
+		}
 		
 		// preferred 2: property of the current group
-		ChildDefinition<?> child = group.getDefinition().getChild(propertyName);
+		ChildDefinition<?> child = currentGroup.getDefinition().getChild(propertyName);
 		if (child != null && child.asProperty() != null && 
-				allowAdd(group, child.asProperty())) {
+				allowAdd(currentGroup, child.asProperty())) {
 			return child.asProperty();
 		}
 		
@@ -200,6 +210,72 @@ public abstract class StreamGmlInstance {
 		//TODO
 		
 		return null;
+	}
+
+	/**
+	 * Determines if the given group is valid and may be closed
+	 * @param currentGroup the current group
+	 * @return if the group may be closed
+	 */
+	private static boolean allowClose(MutableGroup currentGroup) {
+		if (currentGroup instanceof Instance) {
+			return false; // instances may never be closed, they have no parent in the group stack
+		}
+		
+		// check cardinality of children
+		
+		// determine all children
+		Collection<? extends ChildDefinition<?>> children;
+		if (currentGroup.getDefinition() instanceof TypeDefinition) {
+			children = ((TypeDefinition) currentGroup.getDefinition()).getChildren();
+		}
+		else {
+			children = currentGroup.getDefinition().getDeclaredChildren();
+		}
+		
+		for (ChildDefinition<?> childDef : children) {
+			if (isValidCardinality(currentGroup, childDef)) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+
+	/**
+	 * Determines if a child is contained in a given group with a valid minimum
+	 * cardinality.
+	 * @param group the group
+	 * @param childDef the child definition
+	 * @return if the minimum cardinality of the child definition is matched in
+	 *   the group
+	 */
+	private static boolean isValidCardinality(MutableGroup group,
+			ChildDefinition<?> childDef) {
+		Cardinality cardinality = null;
+		if (childDef.asProperty() != null) {
+			cardinality = childDef.asProperty().getConstraint(Cardinality.class);
+		}
+		else if (childDef.asGroup() != null) {
+			cardinality = childDef.asGroup().getConstraint(Cardinality.class);
+		}
+		else {
+			log.error("Unrecognized child definition.");
+		}
+		
+		if (cardinality != null) {
+			// check minimum
+			long min = cardinality.getMinOccurs();
+			if (min > 0 && min != Cardinality.UNBOUNDED) {
+				Object[] values = group.getProperty(childDef.getName());
+				int count = (values == null)?(0):(values.length);
+				if (min > count) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
 	}
 
 	/**
@@ -287,27 +363,8 @@ public abstract class StreamGmlInstance {
 				if (before) {
 					// child before the property
 					// the property may only be added if all children before are valid in their cardinality
-					Cardinality cardinality = null;
-					if (childDef.asProperty() != null) {
-						cardinality = childDef.asProperty().getConstraint(Cardinality.class);
-					}
-					else if (childDef.asGroup() != null) {
-						cardinality = childDef.asGroup().getConstraint(Cardinality.class);
-					}
-					else {
-						log.error("Unrecognized child definition.");
-					}
-					
-					if (cardinality != null) {
-						// check minimum
-						long min = cardinality.getMinOccurs();
-						if (min > 0 && min != Cardinality.UNBOUNDED) {
-							Object[] values = group.getProperty(childDef.getName());
-							int count = (values == null)?(0):(values.length);
-							if (min > count) {
-								return false;
-							}
-						}
+					if (!isValidCardinality(group, childDef)) {
+						return false;
 					}
 				}
 				else {
