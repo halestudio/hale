@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
@@ -29,9 +30,12 @@ import eu.esdihumboldt.hale.core.io.report.IOReport;
 import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
+import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 import eu.esdihumboldt.hale.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.schema.model.Schema;
+import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 
 
 /**
@@ -126,6 +130,50 @@ public class GmlInstanceCollectionTest {
 		assertFalse(it.hasNext());
 		
 		it.dispose();
+	}
+	
+	/**
+	 * Test loading a (relatively) simple GML file with one instance
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testLoadWVA() throws Exception {
+		GmlInstanceCollection instances = loadInstances(
+				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(),
+				getClass().getResource("/data/sample_wva/wfs_va_sample.gml").toURI(),
+				true);
+		
+		String ns = "http://www.esdi-humboldt.org/waterVA";
+		
+		ResourceIterator<Instance> it = instances.iterator();
+		assertTrue(it.hasNext());
+		
+		Instance instance = it.next();
+		assertNotNull(instance);
+		
+		// check type and element
+		
+		TypeDefinition type = instance.getDefinition();
+		assertEquals(new QName(ns, "Watercourses_VA_Type"), type.getName());
+		XmlElements elements = type.getConstraint(XmlElements.class);
+		Collection<? extends XmlElement> elementCollection = elements.getElements();
+		assertEquals(1, elementCollection.size());
+		XmlElement element = elementCollection.iterator().next();
+		assertEquals(new QName(ns, "Watercourses_VA"), element.getName());
+		
+		// check instance
+		
+		// check a simple property first (FGW_ID)
+		Object[] fgwID = instance.getProperty(new QName(ns, "FGW_ID"));
+		assertNotNull(fgwID);
+		assertEquals(1, fgwID.length);
+		assertEquals("81011403", fgwID[0]);
+		
+		//TODO checks regarding groups
+		//TODO checks regarding geometry
+		
+		assertFalse(it.hasNext()); // only one instance should be present
 	}
 
 	private GmlInstanceCollection loadInstances(URI schemaLocation, URI xmlLocation, 
