@@ -116,54 +116,56 @@ public abstract class StreamGmlInstance {
 		groups.push(topGroup);
 				
 		// elements
-		int open = 1;
-		while (open > 0 && reader.hasNext()) {
-			int event = reader.next();
-			switch (event) {
-			case XMLStreamConstants.START_ELEMENT:
-				PropertyDefinition property = GroupUtil.determineProperty(groups, reader.getName());
-				
-				// get group object from stack
-				group = groups.peek();
-				
-				if (property != null) {
-					//TODO check also namespace?
-					if (hasElements(property.getPropertyType())) {
-						// use an instance as value
-						group.addProperty(property.getName(), 
-								parseInstance(reader, property.getPropertyType()));
-					}
-					else {
-						if (hasAttributes(property.getPropertyType())) {
-							// no elements but attributes
-							// use an instance as value, it will be assigned an instance value if possible
+		if (hasElements(group.getDefinition())) {
+			int open = 1;
+			while (open > 0 && reader.hasNext()) {
+				int event = reader.next();
+				switch (event) {
+				case XMLStreamConstants.START_ELEMENT:
+					PropertyDefinition property = GroupUtil.determineProperty(groups, reader.getName());
+					
+					// get group object from stack
+					group = groups.peek();
+					
+					if (property != null) {
+						//TODO check also namespace?
+						if (hasElements(property.getPropertyType())) {
+							// use an instance as value
 							group.addProperty(property.getName(), 
 									parseInstance(reader, property.getPropertyType()));
 						}
 						else {
-							// no elements and no attributes
-							// use simple value
-							String value = reader.getElementText();
-							if (value != null) {
-								addSimpleProperty(group, property, value);
+							if (hasAttributes(property.getPropertyType())) {
+								// no elements but attributes
+								// use an instance as value, it will be assigned an instance value if possible
+								group.addProperty(property.getName(), 
+										parseInstance(reader, property.getPropertyType()));
+							}
+							else {
+								// no elements and no attributes
+								// use simple value
+								String value = reader.getElementText();
+								if (value != null) {
+									addSimpleProperty(group, property, value);
+								}
 							}
 						}
 					}
+					else {
+						log.warn(MessageFormat.format(
+								"No property ''{0}'' found in type ''{1}'', value is ignored", 
+								reader.getLocalName(), topGroup.getDefinition().getIdentifier()));
+					}
+					
+					if (reader.getEventType() != XMLStreamConstants.END_ELEMENT) {
+						// only increase open if the current event is not already the end element (because we used getElementText)
+						open++;
+					}
+					break;
+				case XMLStreamConstants.END_ELEMENT:
+					open--;
+					break;
 				}
-				else {
-					log.warn(MessageFormat.format(
-							"No property ''{0}'' found in type ''{1}'', value is ignored", 
-							reader.getLocalName(), topGroup.getDefinition().getIdentifier()));
-				}
-				
-				if (reader.getEventType() != XMLStreamConstants.END_ELEMENT) {
-					// only increase open if the current event is not already the end element (because we used getElementText)
-					open++;
-				}
-				break;
-			case XMLStreamConstants.END_ELEMENT:
-				open--;
-				break;
 			}
 		}
 	}
