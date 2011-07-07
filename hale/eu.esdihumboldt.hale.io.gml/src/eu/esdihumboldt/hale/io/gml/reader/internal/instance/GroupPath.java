@@ -12,14 +12,19 @@
 
 package eu.esdihumboldt.hale.io.gml.reader.internal.instance;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import static com.google.common.base.Preconditions.*;
+
 import eu.esdihumboldt.hale.instance.model.MutableGroup;
+import eu.esdihumboldt.hale.instance.model.impl.OGroup;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
+import eu.esdihumboldt.hale.schema.model.constraint.property.ChoiceFlag;
 
 /**
  * Represents a path of groups in two parts, the existing parent 
@@ -35,11 +40,16 @@ public class GroupPath {
 
 	/**
 	 * Create a group path
-	 * @param parents the list of parent groups
+	 * @param parents the list of parent groups, may neither be <code>null</code>
+	 *   nor empty
 	 * @param children the list of child definition groups, may be <code>null</code>
 	 */
 	public GroupPath(List<MutableGroup> parents, List<DefinitionGroup> children) {
 		super();
+		
+		checkNotNull(parents);
+		checkArgument(!parents.isEmpty());
+		
 		this.parents = parents;
 		this.children = children;
 	}
@@ -59,20 +69,47 @@ public class GroupPath {
 	}
 	
 	/**
+	 * Create groups for the children in the path (which are only represented
+	 * as definitions). May only be called if the path is valid.
+	 * @return the list of created groups
+	 * 
+	 * @see #isValid()
+	 */
+	public List<MutableGroup> createChildGroups() {
+		MutableGroup parent = parents.get(parents.size() - 1);
+		final List<MutableGroup> result = new ArrayList<MutableGroup>();
+		
+		for (DefinitionGroup child : children) {
+			checkState(child instanceof GroupPropertyDefinition);
+			
+			// create group
+			MutableGroup group = new OGroup(child);
+			
+			// add to parent
+			QName propertyName = ((GroupPropertyDefinition) child).getName();
+			parent.addProperty(propertyName, group);
+			
+			// add to result
+			result.add(group);
+			
+			// prepare for next iteration
+			parent = group;
+		}
+			
+		return result;
+	}
+	
+	/**
 	 * Determines if the group path in this configuration is valid in respect
 	 * to the creation of new groups based on the contained definition groups.
 	 * @return if the path is valid
 	 */
 	public boolean isValid() {
-		if (parents == null || parents.isEmpty()) {
-			return false;
-		}
-		
 		if (children == null || children.isEmpty()) {
 			return true; // parents is assumed to be valid
 		}
 		
-		MutableGroup parentGroup = parents.get(parents.size());
+		MutableGroup parentGroup = parents.get(parents.size() - 1);
 		DefinitionGroup parentDef = parentGroup.getDefinition(); 
 		for (DefinitionGroup child : children) {
 			if (child instanceof GroupPropertyDefinition) {
@@ -102,10 +139,6 @@ public class GroupPath {
 	 *   allowed
 	 */
 	public boolean allowAdd(QName propertyName) {
-		if (parents == null || parents.isEmpty()) {
-			return false;
-		}
-		
 		if (children == null || children.isEmpty()) {
 			// check last parent
 			MutableGroup parent = parents.get(parents.size() - 1);
@@ -120,6 +153,13 @@ public class GroupPath {
 		else {
 			// check last child
 			DefinitionGroup child = children.get(children.size() - 1);
+			
+			if (child instanceof GroupPropertyDefinition && 
+					((GroupPropertyDefinition) child).getConstraint(ChoiceFlag.class).isEnabled()) {
+				// group is a choice
+				return true;
+			}
+			
 			return GroupUtil.allowAddCheckOrder(null, propertyName, child);
 		}
 	}
@@ -133,11 +173,7 @@ public class GroupPath {
 			return children.get(children.size() - 1);
 		}
 		
-		if (parents != null && !parents.isEmpty()) {
-			return parents.get(parents.size() - 1).getDefinition();
-		}
-		
-		return null;
+		return parents.get(parents.size() - 1).getDefinition();
 	}
 
 }
