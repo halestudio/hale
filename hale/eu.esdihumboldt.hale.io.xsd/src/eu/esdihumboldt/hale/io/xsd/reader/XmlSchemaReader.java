@@ -93,6 +93,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.ElementName;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.MappableUsingXsiType;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SuperTypeBinding;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SuperTypeHasValue;
 import eu.esdihumboldt.hale.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.schema.io.impl.AbstractSchemaReader;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
@@ -889,9 +890,18 @@ public class XmlSchemaReader
 	private void setMetadataAndConstraints(XmlTypeDefinition type,
 			XmlSchemaComplexType complexType, String schemaLocation) {
 		//TODO type constraints!
-		type.setConstraint(Binding.get(Instance.class)); //XXX instead object binding?
 		type.setConstraint(AbstractFlag.get(complexType.isAbstract()));
-		type.setConstraint(HasValueFlag.DISABLED);
+		
+		// hasValue and binding from super type
+		/*
+		 * XXX instead of assigning this manually could we adapt the type definition 
+		 * to retrieve that information automatically from the super type if not 
+		 * present for the type? This would prevent creation of many objects
+		 * Inheriting constraints could be activated with a parameter to the 
+		 * constraint annotation 
+		 */
+		type.setConstraint(new SuperTypeHasValue(type));
+		type.setConstraint(new SuperTypeBinding(type));
 		
 		// set metadata
 		setMetadata(type, complexType, schemaLocation);
