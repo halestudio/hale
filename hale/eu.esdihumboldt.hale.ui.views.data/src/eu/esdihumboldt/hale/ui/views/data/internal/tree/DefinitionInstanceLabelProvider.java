@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.instance.model.Group;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.ui.common.definition.DefinitionImages;
 
 /**
@@ -79,14 +80,22 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 			}
 		}
 		
+		boolean hasValue = false;
+		if (value instanceof Instance) {
+			hasValue = ((Instance) value).getValue() != null;
+		}
+		
 		StyledString styledString;
 		if (value == null) {
 			styledString = new StyledString("no value", StyledString.DECORATIONS_STYLER);
 		}
-		else if (value instanceof Group) {
+		else if (value instanceof Group && !hasValue) {
 			styledString = new StyledString("+", StyledString.QUALIFIER_STYLER);
 		}
 		else {
+			if (value instanceof Instance) {
+				value = ((Instance) value).getValue();
+			}
 			//TODO some kind of conversion?
 			styledString = new StyledString(value.toString(), null);
 		}
