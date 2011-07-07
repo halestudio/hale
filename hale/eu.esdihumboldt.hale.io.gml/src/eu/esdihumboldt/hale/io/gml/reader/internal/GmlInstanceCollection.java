@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.io.gml.reader.internal.instance.StreamGmlInstance;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.schema.Classification;

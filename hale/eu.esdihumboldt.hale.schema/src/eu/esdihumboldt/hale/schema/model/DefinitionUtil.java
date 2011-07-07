@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.schema.model;
 
+import java.util.Collection;
+
 import eu.esdihumboldt.hale.schema.model.impl.internal.RedeclareGroupProperty;
 import eu.esdihumboldt.hale.schema.model.impl.internal.RedeclareProperty;
 import eu.esdihumboldt.hale.schema.model.impl.internal.ReparentGroupProperty;
@@ -62,6 +64,22 @@ public abstract class DefinitionUtil {
 		}
 		else {
 			throw new IllegalStateException("Illegal child type.");
+		}
+	}
+
+	/**
+	 * Get all children of a definition group. For {@link TypeDefinition}
+	 * also the inherited children will be returned.
+	 * @param group the definition group
+	 * @return the children
+	 */
+	public static Collection<? extends ChildDefinition<?>> getAllChildren(
+			DefinitionGroup group) {
+		if (group instanceof TypeDefinition) {
+			return ((TypeDefinition) group).getChildren();
+		}
+		else {
+			return group.getDeclaredChildren();
 		}
 	}
 
