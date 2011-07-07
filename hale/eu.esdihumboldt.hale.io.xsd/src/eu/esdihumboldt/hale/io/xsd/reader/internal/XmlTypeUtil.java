@@ -182,13 +182,16 @@ public abstract class XmlTypeUtil {
 	                Collections.EMPTY_LIST, XSSchema.NCNAME_TYPE, null);
 		}
 		
+		// only enable hasValue if the type is not anyType
+		boolean hasValue = !typeName.getLocalPart().equals("anyType");
+		
 		if (ty != null) {
 			// configure type
 			
 			// set binding
 			type.setConstraint(Binding.get(ty.getBinding()));
 			// simple type flag
-			type.setConstraint(HasValueFlag.ENABLED);
+			type.setConstraint(HasValueFlag.get(hasValue));
 			// not abstract
 			type.setConstraint(AbstractFlag.DISABLED);
 			// not mappable
