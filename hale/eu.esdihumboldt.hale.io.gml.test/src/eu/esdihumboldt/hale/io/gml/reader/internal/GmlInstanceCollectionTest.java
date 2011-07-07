@@ -261,8 +261,8 @@ public class GmlInstanceCollectionTest {
 		Object[] coordinates = ((Group) choice_1[0]).getProperty(new QName(gmlNs, "coordinates"));
 		assertNotNull(coordinates);
 		assertEquals(1, coordinates.length);
-		
-		//TODO check value of coordinates - should be a list/collection of something
+		assertTrue(coordinates[0] instanceof Instance);
+		assertTrue(((Instance) coordinates[0]).getValue().toString().contains("-39799.68820381"));
 		
 		// only one instance should be present
 		assertFalse(it.hasNext());
