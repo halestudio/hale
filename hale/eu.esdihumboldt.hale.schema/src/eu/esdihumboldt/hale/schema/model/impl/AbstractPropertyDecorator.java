@@ -127,7 +127,7 @@ public abstract class AbstractPropertyDecorator implements PropertyDefinition {
 	 */
 	@Override
 	public PropertyDefinition asProperty() {
-		return property.asProperty();
+		return this;
 	}
 
 	/**

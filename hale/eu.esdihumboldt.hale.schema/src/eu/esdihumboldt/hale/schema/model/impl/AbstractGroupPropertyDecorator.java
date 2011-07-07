@@ -118,7 +118,7 @@ public abstract class AbstractGroupPropertyDecorator implements GroupPropertyDef
 	 */
 	@Override
 	public GroupPropertyDefinition asGroup() {
-		return propertyGroup.asGroup();
+		return this;
 	}
 
 	/**
