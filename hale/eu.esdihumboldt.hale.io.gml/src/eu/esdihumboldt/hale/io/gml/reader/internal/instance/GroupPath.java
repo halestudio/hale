@@ -159,6 +159,10 @@ public class GroupPath {
 		else {
 			// check last child
 			DefinitionGroup child = children.get(children.size() - 1);
+			ChildDefinition<?> property = child.getChild(propertyName);
+			if (property == null) {
+				return false;
+			}
 			
 			if (child instanceof GroupPropertyDefinition && 
 					((GroupPropertyDefinition) child).getConstraint(ChoiceFlag.class).isEnabled()) {
