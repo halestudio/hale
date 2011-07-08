@@ -83,6 +83,7 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.AnonymousXmlType;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.HumboldtURIResolver;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.ProgressURIResolver;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.SubstitutionGroupProperty;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlAttributeGroupReferenceProperty;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlAttributeReferenceProperty;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlElementReferenceProperty;
@@ -673,23 +674,37 @@ public class XmlSchemaReader
 		if (element.getSchemaTypeName() != null) {
 			// element referencing a type
 			// <element name="ELEMENT_NAME" type="SCHEMA_TYPE_NAME" />
+			QName elementName = element.getQName();
+			
+			SubstitutionGroupProperty substitutionGroup = new SubstitutionGroupProperty(
+					new QName(elementName.getNamespaceURI() + "/" + elementName.getLocalPart(), "choice"), //TODO improve naming? 
+					declaringGroup);
+			
 			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-					element.getQName(), declaringGroup, 
+					elementName, substitutionGroup, 
 					index.getOrCreateType(element.getSchemaTypeName()));
 			
 			// set metadata and constraints
 			setMetadataAndConstraints(property, element, schemaLocation);
+			
+			substitutionGroup.setProperty(property);
 		}
 		else if (element.getRefName() != null) {
 			// references another element
 			// <element ref="REF_NAME" />
 			QName elementName = element.getRefName();
 			
+			SubstitutionGroupProperty substitutionGroup = new SubstitutionGroupProperty(
+					new QName(elementName.getNamespaceURI() + "/" + elementName.getLocalPart(), "choice"), //TODO improve naming? 
+					declaringGroup);
+			
 			XmlElementReferenceProperty property = new XmlElementReferenceProperty(
-					elementName, declaringGroup, index, elementName);
+					elementName, substitutionGroup, index, elementName);
 			
 			// set metadata and constraints FIXME can the constraints be set at this point? or must the property determine them from the SchemaElement?
 			setMetadataAndConstraints(property, element, schemaLocation);
+			
+			substitutionGroup.setProperty(property);
 		}
 		else if (element.getSchemaType() != null) {
 			// element w/o type name or reference but an internal type definition
