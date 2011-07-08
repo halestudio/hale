@@ -269,6 +269,36 @@ public class GmlInstanceCollectionTest {
 		
 		it.dispose();
 	}
+	
+	/**
+	 * Test loading a (relatively) simple GML file with one instance.
+	 * Includes groups and a geometry.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testLoadImgeo_Scheiding() throws Exception {
+		GmlInstanceCollection instances = loadInstances(
+				getClass().getResource("/data/sample_imgeo/IMGEO.xsd").toURI(),
+				getClass().getResource("/data/sample_imgeo/sample_scheiding_nofc.gml").toURI(),
+				true);
+		
+		String ns = "http://www.geonovum.nl/IMGEO";
+		String gmlNs = "http://www.opengis.net/gml";
+		
+		ResourceIterator<Instance> it = instances.iterator();
+		assertTrue(it.hasNext());
+		
+		Instance instance = it.next();
+		assertNotNull(instance);
+		
+		//TODO
+		
+		// only one instance should be present
+		assertFalse(it.hasNext());
+		
+		it.dispose();
+	}
 
 	private GmlInstanceCollection loadInstances(URI schemaLocation, URI xmlLocation, 
 			boolean restrictToFeatures) throws IOException, IOProviderConfigurationException {

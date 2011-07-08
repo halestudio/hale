@@ -1,0 +1,1022 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml" xmlns:imgeo="http://www.geonovum.nl/IMGEO" targetNamespace="http://www.geonovum.nl/IMGEO" elementFormDefault="qualified" version="1.0.0">
+	<import namespace="http://www.opengis.net/gml" schemaLocation="gml/3.1.1/base/gml.xsd"/>
+	<!--XML Schema document created by ShapeChange-->
+	<!--Versie informatie: Versie 1.0.0; Eerste officieel uitgebrachte versie: datum 1 11  2007; UML: IMGEO_7; doc IMGeo rapport definitief versie 1.0.pdf (17 oktober 2007)-->
+	<!--Versie informatie: Versie 0.05: datum 24 10 2007; UML: IMGEO_7; doc IMGeo rapport definitief versie 1.0.pdf (17 oktober 2007)-->
+	<!--Versie informatie: Versie 0.04: datum 11 06 2007; UML: IMGEO_6; doc IMGeo 2.3-->
+	<!-- Gemaakt door: Geonovum: Paul Janssen -->
+	<!--Opmerking: Geometrie modellering is aangepast (optie 3, geen geometrie nesting) tov Standaard Shapechange-->
+	<element name="Terreindeel" type="imgeo:TerreindeelType" substitutionGroup="imgeo:Terrein"/>
+	<complexType name="TerreindeelType">
+		<complexContent>
+			<extension base="imgeo:TerreinType">
+				<sequence>
+					<element name="relatieveHoogteligging" type="integer"/>
+					<element name="verharding" type="imgeo:TypeVerhardingType" minOccurs="0"/>
+					<element name="geometrie" type="imgeo:VlakPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="TerreindeelPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Terreindeel"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="OpenbareRuimte" type="imgeo:OpenbareRuimteType" substitutionGroup="imgeo:RegistratiefGebied"/>
+	<complexType name="OpenbareRuimteType">
+		<complexContent>
+			<extension base="imgeo:RegistratiefGebiedType">
+				<sequence>
+					<element name="identificatieBAG" type="string"/>
+					<element name="geometrie" type="imgeo:VlakMultivlakPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="OpenbareRuimtePropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:OpenbareRuimte"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="Wijk" type="imgeo:WijkType" substitutionGroup="imgeo:RegistratiefGebied"/>
+	<complexType name="WijkType">
+		<complexContent>
+			<extension base="imgeo:RegistratiefGebiedType">
+				<sequence>
+					<element name="geometrie" type="imgeo:VlakPropertyType"/>
+					<element name="gemeente" type="imgeo:GemeentePropertyType" minOccurs="0"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="WijkPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Wijk"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="Buurt" type="imgeo:BuurtType" substitutionGroup="imgeo:RegistratiefGebied"/>
+	<complexType name="BuurtType">
+		<complexContent>
+			<extension base="imgeo:RegistratiefGebiedType">
+				<sequence>
+					<element name="geometrie" type="imgeo:VlakPropertyType"/>
+					<element name="wijk" type="imgeo:WijkPropertyType" minOccurs="0"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="BuurtPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Buurt"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="Punt" type="imgeo:PuntType"/>
+	<complexType name="PuntType">
+		<sequence>
+			<element name="geometriePunt" type="gml:PointPropertyType"/>
+		</sequence>
+	</complexType>
+	<complexType name="PuntPropertyType">
+		<sequence>
+			<element ref="imgeo:Punt"/>
+		</sequence>
+	</complexType>
+	<element name="Inrichtingselement" type="imgeo:InrichtingselementType" abstract="true" substitutionGroup="imgeo:GeoObject"/>
+	<complexType name="InrichtingselementType" abstract="true">
+		<complexContent>
+			<extension base="imgeo:GeoObjectType">
+				<sequence>
+					<element name="relatieveHoogteligging" type="integer"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="InrichtingselementPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Inrichtingselement"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<!-- was
+	<element name="PuntLijnVlak" type="imgeo:PuntLijnVlakType"/>
+	<complexType name="PuntLijnVlakType">
+		<choice>
+			<element name="geometrieLijn" type="gml:CurvePropertyType"/>
+			<element name="geometriePunt" type="gml:PointPropertyType"/>
+			<element name="geometrieVlak" type="gml:SurfacePropertyType"/>
+		</choice>
+	</complexType>
+	<complexType name="PuntLijnVlakPropertyType">
+		<sequence>
+			<element ref="imgeo:PuntLijnVlak"/>
+		</sequence>
+	</complexType> -->
+	<!-- nieuw -->
+	<complexType name="PuntLijnVlakPropertyType">
+		<choice>
+			<element ref="gml:Point"/>
+			<element ref="gml:Curve"/>
+			<element ref="gml:Surface"/>
+		</choice>
+	</complexType>
+	<element name="Installatie" type="imgeo:InstallatieType" substitutionGroup="imgeo:Inrichtingselement"/>
+	<complexType name="InstallatieType">
+		<complexContent>
+			<extension base="imgeo:InrichtingselementType">
+				<sequence>
+					<element name="typeInstallatie" type="imgeo:TypeInstallatieType" minOccurs="0"/>
+					<element name="geometrie" type="imgeo:PuntVlakPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="InstallatiePropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Installatie"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<simpleType name="TypeBakType">
+		<restriction base="string">
+			<enumeration value="afval apart plaats"/>
+			<enumeration value="afvalbak"/>
+			<enumeration value="drinkbak"/>
+			<enumeration value="plantenbak"/>
+			<enumeration value="zandbak"/>
+		</restriction>
+	</simpleType>
+	<!-- was
+	<element name="Lijn" type="imgeo:LijnType"/>
+	<complexType name="LijnType">
+		<sequence>
+			<element name="geometrieLijn" type="gml:CurvePropertyType"/>
+		</sequence>
+	</complexType>
+	<complexType name="LijnPropertyType">
+		<sequence>
+			<element ref="imgeo:Lijn"/>
+		</sequence>
+	</complexType>
+-->
+	<!-- nieuw -->
+	<complexType name="LijnPropertyType">
+		<sequence>
+			<element ref="gml:Curve"/>
+		</sequence>
+	</complexType>
+	<!-- was	
+	<element name="Vlak" type="imgeo:VlakType"/>
+	<complexType name="VlakType">
+		<sequence>
+			<element name="geometrieVlak" type="gml:SurfacePropertyType"/>
+		</sequence>
+	</complexType>
+	 
+	<complexType name="VlakPropertyType">
+		<sequence>
+			<element ref="imgeo:Vlak"/>
+		</sequence>
+	</complexType>
+-->
+	<!-- nieuw -->
+	<complexType name="VlakPropertyType">
+		<sequence>
+			<element ref="gml:Surface"/>
+		</sequence>
+	</complexType>
+	<!-- was
+	<element name="LijnVlak" type="imgeo:LijnVlakType"/>
+	<complexType name="LijnVlakType">
+		<choice>
+			<element name="geometrieLijn" type="gml:CurvePropertyType"/>
+			<element name="geometrieVlak" type="gml:SurfacePropertyType"/>
+		</choice>
+	</complexType>
+	<complexType name="LijnVlakPropertyType">
+		<sequence>
+			<element ref="imgeo:LijnVlak"/>
+		</sequence>
+	</complexType>
+	-->
+	<!-- nieuw -->
+	<complexType name="LijnVlakPropertyType">
+		<choice>
+			<element ref="gml:Curve"/>
+			<element ref="gml:Surface"/>
+		</choice>
+	</complexType>
+	<element name="Bak" type="imgeo:BakType" substitutionGroup="imgeo:Inrichtingselement"/>
+	<complexType name="BakType">
+		<complexContent>
+			<extension base="imgeo:InrichtingselementType">
+				<sequence>
+					<element name="typeBak" type="imgeo:TypeBakType" minOccurs="0"/>
+					<element name="geometrie" type="imgeo:PuntVlakPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="BakPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Bak"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="Bord" type="imgeo:BordType" substitutionGroup="imgeo:Inrichtingselement"/>
+	<complexType name="BordType">
+		<complexContent>
+			<extension base="imgeo:InrichtingselementType">
+				<sequence>
+					<element name="typeBord" type="imgeo:TypeBordType" minOccurs="0"/>
+					<element name="geometrie" type="imgeo:PuntLijnVlakPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="BordPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Bord"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="Spoorrail" type="imgeo:SpoorrailType" substitutionGroup="imgeo:Inrichtingselement"/>
+	<complexType name="SpoorrailType">
+		<complexContent>
+			<extension base="imgeo:InrichtingselementType">
+				<sequence>
+					<element name="typeSpoorrail" type="imgeo:TypeSpoorrailType" minOccurs="0"/>
+					<element name="geometrie" type="imgeo:LijnPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="SpoorrailPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Spoorrail"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<simpleType name="StatusType">
+		<restriction base="string">
+			<enumeration value="plan"/>
+			<enumeration value="bestaand"/>
+			<enumeration value="historie"/>
+		</restriction>
+	</simpleType>
+	<element name="Kast" type="imgeo:KastType" substitutionGroup="imgeo:Inrichtingselement"/>
+	<complexType name="KastType">
+		<complexContent>
+			<extension base="imgeo:InrichtingselementType">
+				<sequence>
+					<element name="typeKast" type="imgeo:TypeKastType" minOccurs="0"/>
+					<element name="geometrie" type="imgeo:PuntVlakPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="KastPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Kast"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="Mast" type="imgeo:MastType" substitutionGroup="imgeo:Inrichtingselement"/>
+	<complexType name="MastType">
+		<complexContent>
+			<extension base="imgeo:InrichtingselementType">
+				<sequence>
+					<element name="typeMast" type="imgeo:TypeMastType" minOccurs="0"/>
+					<element name="geometrie" type="imgeo:PuntLijnVlakPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="MastPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Mast"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="OverigBouwwerk" type="imgeo:OverigBouwwerkType" substitutionGroup="imgeo:Inrichtingselement"/>
+	<complexType name="OverigBouwwerkType">
+		<complexContent>
+			<extension base="imgeo:InrichtingselementType">
+				<sequence>
+					<element name="typeOverigBouwwerk" type="imgeo:TypeOverigBouwwerkType" minOccurs="0"/>
+					<element name="geometrie" type="imgeo:VlakPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="OverigBouwwerkPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:OverigBouwwerk"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<!-- Was
+	<element name="PuntVlak" type="imgeo:PuntVlakType"/>
+	<complexType name="PuntVlakType">
+		<choice>
+			<element name="geometriePunt" type="gml:PointPropertyType"/>
+			<element name="geometrieVlak" type="gml:SurfacePropertyType"/>
+		</choice>
+	</complexType>
+	<complexType name="PuntVlakPropertyType">
+		<sequence>
+			<element ref="imgeo:PuntVlak"/>
+		</sequence>
+	</complexType>
+-->
+	<!-- Nieuw -->
+	<complexType name="PuntVlakPropertyType">
+		<choice>
+			<element ref="gml:Point"/>
+			<element ref="gml:Surface"/>
+		</choice>
+	</complexType>
+	<element name="Paal" type="imgeo:PaalType" substitutionGroup="imgeo:Inrichtingselement"/>
+	<complexType name="PaalType">
+		<complexContent>
+			<extension base="imgeo:InrichtingselementType">
+				<sequence>
+					<element name="typePaal" type="imgeo:TypePaalType" minOccurs="0"/>
+					<element name="geometrie" type="imgeo:PuntPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="PaalPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Paal"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="Put" type="imgeo:PutType" substitutionGroup="imgeo:Inrichtingselement"/>
+	<complexType name="PutType">
+		<complexContent>
+			<extension base="imgeo:InrichtingselementType">
+				<sequence>
+					<element name="typePut" type="imgeo:TypePutType" minOccurs="0"/>
+					<element name="geometrie" type="imgeo:PuntPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="PutPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Put"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="Scheiding" type="imgeo:ScheidingType" substitutionGroup="imgeo:Inrichtingselement"/>
+	<complexType name="ScheidingType">
+		<complexContent>
+			<extension base="imgeo:InrichtingselementType">
+				<sequence>
+					<element name="typeScheiding" type="imgeo:TypeScheidingType" minOccurs="0"/>
+					<element name="geometrie" type="imgeo:LijnVlakPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="ScheidingPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Scheiding"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<!--was
+	<element name="VlakMultivlak" type="imgeo:VlakMultivlakType"/>
+	<complexType name="VlakMultivlakType">
+		<choice>
+			<element name="geometrieMultivlak" type="gml:MultiSurfacePropertyType"/>
+			<element name="geometrieVlak" type="gml:SurfacePropertyType"/>
+		</choice>
+	</complexType>
+	<complexType name="VlakMultivlakPropertyType">
+		<sequence>
+			<element ref="imgeo:VlakMultivlak"/>
+		</sequence>
+	</complexType> -->
+	<!-- nieuw -->
+	<complexType name="VlakMultivlakPropertyType">
+		<choice>
+			<element ref="gml:Surface"/>
+			<element ref="gml:MultiSurface"/>
+		</choice>
+	</complexType>
+	<element name="Gemeente" type="imgeo:GemeenteType" substitutionGroup="imgeo:RegistratiefGebied"/>
+	<complexType name="GemeenteType">
+		<complexContent>
+			<extension base="imgeo:RegistratiefGebiedType">
+				<sequence>
+					<element name="geometrie" type="imgeo:VlakPropertyType"/>
+					<element name="provincie" type="imgeo:ProvinciePropertyType" minOccurs="0"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="GemeentePropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Gemeente"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="Locatie" type="imgeo:LocatieType" abstract="true"/>
+	<complexType name="LocatieType" abstract="true">
+		<sequence/>
+	</complexType>
+	<complexType name="LocatiePropertyType">
+		<sequence>
+			<element ref="imgeo:Locatie"/>
+		</sequence>
+	</complexType>
+	<simpleType name="TypeTerreinType">
+		<restriction base="string">
+			<enumeration value="bedrijfsterrein"/>
+			<enumeration value="bos"/>
+			<enumeration value="braakliggend terrein"/>
+			<enumeration value="cultuurgrond"/>
+			<enumeration value="erf"/>
+			<enumeration value="gras"/>
+			<enumeration value="natuur en landschap"/>
+			<enumeration value="overig groenobject"/>
+			<enumeration value="plantvak"/>
+			<enumeration value="recreatieterrein"/>
+			<enumeration value="sportterrein"/>
+			<enumeration value="talud"/>
+			<enumeration value="nader te bepalen"/>
+		</restriction>
+	</simpleType>
+	<element name="Kunstwerkdeel" type="imgeo:KunstwerkdeelType" substitutionGroup="imgeo:Kunstwerk"/>
+	<complexType name="KunstwerkdeelType">
+		<complexContent>
+			<extension base="imgeo:KunstwerkType">
+				<sequence>
+					<element name="relatieveHoogteligging" type="integer"/>
+					<element name="kunstwerk" type="imgeo:KunstwerkPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="KunstwerkdeelPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Kunstwerkdeel"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<!-- was
+	<element name="MultiVlak" type="imgeo:MultiVlakType"/>
+	<complexType name="MultiVlakType">
+		<sequence>
+			<element name="geometrieMultiVlak" type="gml:MultiSurfacePropertyType"/>
+		</sequence>
+	</complexType>
+	<complexType name="MultiVlakPropertyType">
+		<sequence>
+			<element ref="imgeo:MultiVlak"/>
+		</sequence>
+	</complexType>
+-->
+	<!-- nieuw -->
+	<complexType name="MultiVlakPropertyType">
+		<sequence>
+			<element ref="gml:MultiSurface"/>
+		</sequence>
+	</complexType>
+	<element name="Straatmeubilair" type="imgeo:StraatmeubilairType" substitutionGroup="imgeo:Inrichtingselement"/>
+	<complexType name="StraatmeubilairType">
+		<complexContent>
+			<extension base="imgeo:InrichtingselementType">
+				<sequence>
+					<element name="typeStraatmeubilair" type="imgeo:TypeStraatmeubilairType" minOccurs="0"/>
+					<element name="geometrie" type="imgeo:PuntLijnVlakPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="StraatmeubilairPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Straatmeubilair"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<simpleType name="TypeBordType">
+		<restriction base="string">
+			<enumeration value="informatiebord"/>
+			<enumeration value="plaatsnaambord"/>
+			<enumeration value="straatnaambord"/>
+			<enumeration value="verkeersbord"/>
+			<enumeration value="verklikker transportleiding"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TypeInstallatieType">
+		<restriction base="string">
+			<enumeration value="boorgat"/>
+			<enumeration value="peilbuis"/>
+			<enumeration value="pomp"/>
+			<enumeration value="windturbine"/>
+		</restriction>
+	</simpleType>
+	<element name="Kunstwerk" type="imgeo:KunstwerkType" substitutionGroup="imgeo:GeoObject"/>
+	<complexType name="KunstwerkType">
+		<complexContent>
+			<extension base="imgeo:GeoObjectType">
+				<sequence>
+					<element name="typeKunstwerk" type="imgeo:TypeKunstwerkType"/>
+					<element name="geometrie" type="imgeo:LijnVlakPropertyType"/>
+					<element name="geometrieBovenaanzicht" type="imgeo:LijnVlakPropertyType" minOccurs="0"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="KunstwerkPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Kunstwerk"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="RegistratiefGebied" type="imgeo:RegistratiefGebiedType" abstract="true" substitutionGroup="imgeo:GeoObject"/>
+	<complexType name="RegistratiefGebiedType" abstract="true">
+		<complexContent>
+			<extension base="imgeo:GeoObjectType">
+				<sequence/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="RegistratiefGebiedPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:RegistratiefGebied"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="GeoObject" type="imgeo:GeoObjectType" abstract="true" substitutionGroup="gml:_Feature"/>
+	<complexType name="GeoObjectType" abstract="true">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="identificatie" type="string"/>
+					<element name="objectBeginTijd" type="dateTime"/>
+					<element name="objectEindTijd" type="dateTime" minOccurs="0"/>
+					<element name="versieBeginTijd" type="dateTime" minOccurs="0"/>
+					<element name="versieEindTijd" type="dateTime" minOccurs="0"/>
+					<element name="status" type="imgeo:StatusType"/>
+					<element name="locatie" type="imgeo:LocatiePropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<element name="naam" type="gml:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="GeoObjectPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:GeoObject"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<simpleType name="TypeKastType">
+		<restriction base="string">
+			<enumeration value="CAI-kast"/>
+			<enumeration value="elektrakast"/>
+			<enumeration value="gaskast"/>
+			<enumeration value="KPN kast"/>
+			<enumeration value="rioolkast"/>
+			<enumeration value="schakelkast openbare verlichting"/>
+			<enumeration value="trafo"/>
+			<enumeration value="verkeersinstallatiekast"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TypeMastType">
+		<restriction base="string">
+			<enumeration value="bovenleidingmast"/>
+			<enumeration value="hoogspanningsmast"/>
+			<enumeration value="laagspanningsmast"/>
+			<enumeration value="straalzender"/>
+			<enumeration value="zendmast"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TypeOverigBouwwerkType">
+		<restriction base="string">
+			<enumeration value="bordes"/>
+			<enumeration value="luifel"/>
+			<enumeration value="overigBouwwerk"/>
+			<enumeration value="steiger"/>
+		</restriction>
+	</simpleType>
+	<element name="Terrein" type="imgeo:TerreinType" abstract="true" substitutionGroup="imgeo:GeoObject"/>
+	<complexType name="TerreinType" abstract="true">
+		<complexContent>
+			<extension base="imgeo:GeoObjectType">
+				<sequence>
+					<element name="typeTerrein" type="imgeo:TypeTerreinType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="TerreinPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Terrein"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="Water" type="imgeo:WaterType" abstract="true" substitutionGroup="imgeo:GeoObject"/>
+	<complexType name="WaterType" abstract="true">
+		<complexContent>
+			<extension base="imgeo:GeoObjectType">
+				<sequence>
+					<element name="typeWater" type="imgeo:TypeWaterType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="WaterPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Water"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="Spoorbaan" type="imgeo:SpoorbaanType" abstract="true" substitutionGroup="imgeo:GeoObject"/>
+	<complexType name="SpoorbaanType" abstract="true">
+		<complexContent>
+			<extension base="imgeo:GeoObjectType">
+				<sequence>
+					<element name="typeSpoorbaan" type="imgeo:TypeSpoorbaanType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="SpoorbaanPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Spoorbaan"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="Weg" type="imgeo:WegType" abstract="true" substitutionGroup="imgeo:GeoObject"/>
+	<complexType name="WegType" abstract="true">
+		<complexContent>
+			<extension base="imgeo:GeoObjectType">
+				<sequence>
+					<element name="typeWeg" type="imgeo:TypeWegType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="WegPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Weg"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<simpleType name="TypePaalType">
+		<restriction base="string">
+			<enumeration value="afsluitpaal"/>
+			<enumeration value="bolder"/>
+			<enumeration value="haltepaal"/>
+			<enumeration value="hectometerpaal"/>
+			<enumeration value="lantaarnpaal"/>
+			<enumeration value="meerpaal"/>
+			<enumeration value="paal/steen"/>
+			<enumeration value="parkeerautomaat"/>
+			<enumeration value="praatpaal"/>
+			<enumeration value="reclamezuil"/>
+			<enumeration value="remmingswerk"/>
+			<enumeration value="seinpaal"/>
+			<enumeration value="verkeerslicht"/>
+			<enumeration value="verkeerszuil"/>
+			<enumeration value="vlaggenmast"/>
+			<enumeration value="wegwijzer"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TypePutType">
+		<restriction base="string">
+			<enumeration value="benzine- / olieput"/>
+			<enumeration value="brandkraan / -put"/>
+			<enumeration value="drainageput"/>
+			<enumeration value="gasput"/>
+			<enumeration value="inspectieput"/>
+			<enumeration value="kolk"/>
+			<enumeration value="waterleidingput"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TypeScheidingType">
+		<restriction base="string">
+			<enumeration value="geluidsscherm"/>
+			<enumeration value="heg"/>
+			<enumeration value="hek"/>
+			<enumeration value="kademuur"/>
+			<enumeration value="muur"/>
+			<enumeration value="terreinscheiding"/>
+			<enumeration value="walbescherming"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TypeSpoorrailType">
+		<restriction base="string">
+			<enumeration value="(haven)kraan"/>
+			<enumeration value="metro"/>
+			<enumeration value="tram"/>
+			<enumeration value="trein"/>
+			<enumeration value="sneltram, lightrail"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TypeStraatmeubilairType">
+		<restriction base="string">
+			<enumeration value="abri"/>
+			<enumeration value="boom"/>
+			<enumeration value="brievenbus"/>
+			<enumeration value="fietsenrek"/>
+			<enumeration value="kunstobject"/>
+			<enumeration value="openbaar toilet"/>
+			<enumeration value="oprit"/>
+			<enumeration value="slagboom"/>
+			<enumeration value="speelwerktuig"/>
+			<enumeration value="straatmeubilair (overig)"/>
+			<enumeration value="telefooncel"/>
+			<enumeration value="trap"/>
+			<enumeration value="verkeersdrempel"/>
+			<enumeration value="zitbank"/>
+		</restriction>
+	</simpleType>
+	<element name="Verblijfsobject" type="imgeo:VerblijfsobjectType" substitutionGroup="imgeo:GeoObject"/>
+	<complexType name="VerblijfsobjectType">
+		<complexContent>
+			<extension base="imgeo:GeoObjectType">
+				<sequence>
+					<element name="identificatieBAG" type="string"/>
+					<element name="geometrie" type="imgeo:PuntVlakPropertyType"/>
+					<element name="pandVoorVerblijfsobject" type="imgeo:PandPropertyType" maxOccurs="unbounded"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="VerblijfsobjectPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Verblijfsobject"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="Ligplaats" type="imgeo:LigplaatsType" substitutionGroup="imgeo:RegistratiefGebied"/>
+	<complexType name="LigplaatsType">
+		<complexContent>
+			<extension base="imgeo:RegistratiefGebiedType">
+				<sequence>
+					<element name="identificatieBAG" type="string"/>
+					<element name="geometrie" type="imgeo:VlakPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="LigplaatsPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Ligplaats"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="Standplaats" type="imgeo:StandplaatsType" substitutionGroup="imgeo:RegistratiefGebied"/>
+	<complexType name="StandplaatsType">
+		<complexContent>
+			<extension base="imgeo:RegistratiefGebiedType">
+				<sequence>
+					<element name="identificatieBAG" type="string"/>
+					<element name="geometrie" type="imgeo:VlakPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="StandplaatsPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Standplaats"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="Pand" type="imgeo:PandType" substitutionGroup="imgeo:GeoObject"/>
+	<complexType name="PandType">
+		<complexContent>
+			<extension base="imgeo:GeoObjectType">
+				<sequence>
+					<element name="identificatieBAG" type="string"/>
+					<element name="relatieveHoogteligging" type="integer"/>
+					<element name="geometrie" type="imgeo:VlakPropertyType" minOccurs="0"/>
+					<element name="geometrieBovenaanzicht" type="imgeo:VlakPropertyType"/>
+					<element name="verblijfsobjectInPand" type="imgeo:VerblijfsobjectPropertyType" minOccurs="0" maxOccurs="unbounded"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="PandPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Pand"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="Wegdeel" type="imgeo:WegdeelType" substitutionGroup="imgeo:Weg"/>
+	<complexType name="WegdeelType">
+		<complexContent>
+			<extension base="imgeo:WegType">
+				<sequence>
+					<element name="relatieveHoogteligging" type="integer"/>
+					<element name="typeInfrastructuurWegdeel" type="imgeo:TypeInfrastructuurType" minOccurs="0"/>
+					<element name="verharding" type="imgeo:TypeVerhardingType" minOccurs="0"/>
+					<element name="geometrie" type="imgeo:VlakPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="WegdeelPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Wegdeel"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="Spoorbaandeel" type="imgeo:SpoorbaandeelType" substitutionGroup="imgeo:Spoorbaan"/>
+	<complexType name="SpoorbaandeelType">
+		<complexContent>
+			<extension base="imgeo:SpoorbaanType">
+				<sequence>
+					<element name="relatieveHoogteligging" type="integer"/>
+					<element name="typeInfrastructuurSpoorbaandeel" type="imgeo:TypeInfrastructuurType" minOccurs="0"/>
+					<element name="geometrie" type="imgeo:VlakPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="SpoorbaandeelPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Spoorbaandeel"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="LocatieNaam" type="imgeo:LocatieNaamType" substitutionGroup="imgeo:Locatie"/>
+	<complexType name="LocatieNaamType">
+		<complexContent>
+			<extension base="imgeo:LocatieType">
+				<sequence>
+					<element name="locatieNaam" type="string"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="LocatieNaamPropertyType">
+		<sequence>
+			<element ref="imgeo:LocatieNaam"/>
+		</sequence>
+	</complexType>
+	<element name="LocatieOmschrijving" type="imgeo:LocatieOmschrijvingType" substitutionGroup="imgeo:Locatie"/>
+	<complexType name="LocatieOmschrijvingType">
+		<complexContent>
+			<extension base="imgeo:LocatieType">
+				<sequence>
+					<element name="locatieOmschrijving" type="string"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="LocatieOmschrijvingPropertyType">
+		<sequence>
+			<element ref="imgeo:LocatieOmschrijving"/>
+		</sequence>
+	</complexType>
+	<element name="Waterdeel" type="imgeo:WaterdeelType" substitutionGroup="imgeo:Water"/>
+	<complexType name="WaterdeelType">
+		<complexContent>
+			<extension base="imgeo:WaterType">
+				<sequence>
+					<element name="relatieveHoogteligging" type="integer"/>
+					<element name="typeInfrastructuurWaterdeel" type="imgeo:TypeInfrastructuurType" minOccurs="0"/>
+					<element name="geometrie" type="imgeo:VlakPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="WaterdeelPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Waterdeel"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<simpleType name="TypeKunstwerkType">
+		<restriction base="string">
+			<enumeration value="bassin"/>
+			<enumeration value="brug"/>
+			<enumeration value="damwand"/>
+			<enumeration value="duiker"/>
+			<enumeration value="fly-over"/>
+			<enumeration value="loopbrug"/>
+			<enumeration value="perron (voor treinverkeer)"/>
+			<enumeration value="sluis"/>
+			<enumeration value="strekdam"/>
+			<enumeration value="tunnel"/>
+			<enumeration value="viaduct"/>
+			<enumeration value="waterkering"/>
+			<enumeration value="nader te bepalen"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TypeVerhardingType">
+		<restriction base="string">
+			<enumeration value="gesloten verharding"/>
+			<enumeration value="open verharding"/>
+			<enumeration value="onverhard"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TypeInfrastructuurType">
+		<restriction base="string">
+			<enumeration value="kruising"/>
+			<enumeration value="verbinding"/>
+			<enumeration value="vlakte"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TypeWaterType">
+		<restriction base="string">
+			<enumeration value="bron, wel"/>
+			<enumeration value="droogvallend"/>
+			<enumeration value="waterloop"/>
+			<enumeration value="greppel, droge sloot"/>
+			<enumeration value="meer, plas, ven, vijver"/>
+			<enumeration value="zee"/>
+			<enumeration value="nader te bepalen"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TypeWegType">
+		<restriction base="string">
+			<enumeration value="OV-baan"/>
+			<enumeration value="overweg"/>
+			<enumeration value="pad"/>
+			<enumeration value="parkeervlak"/>
+			<enumeration value="perron (voor tramverkeer)"/>
+			<enumeration value="rijbaan"/>
+			<enumeration value="rijwielpad"/>
+			<enumeration value="vluchtheuvel"/>
+			<enumeration value="voetgangersgebied"/>
+			<enumeration value="voetpad"/>
+			<enumeration value="wegberm"/>
+			<enumeration value="woonerf"/>
+			<enumeration value="nader te bepalen"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TypeSpoorbaanType">
+		<restriction base="string">
+			<enumeration value="(haven)kraan"/>
+			<enumeration value="metro"/>
+			<enumeration value="sneltram, lightrail"/>
+			<enumeration value="spoorbaanberm"/>
+			<enumeration value="tram"/>
+			<enumeration value="trein"/>
+			<enumeration value="nader te bepalen"/>
+		</restriction>
+	</simpleType>
+	<element name="Provincie" type="imgeo:ProvincieType" substitutionGroup="imgeo:RegistratiefGebied"/>
+	<complexType name="ProvincieType">
+		<complexContent>
+			<extension base="imgeo:RegistratiefGebiedType">
+				<sequence>
+					<element name="geometrie" type="imgeo:VlakPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="ProvinciePropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Provincie"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="Waterschap" type="imgeo:WaterschapType" substitutionGroup="imgeo:RegistratiefGebied"/>
+	<complexType name="WaterschapType">
+		<complexContent>
+			<extension base="imgeo:RegistratiefGebiedType">
+				<sequence>
+					<element name="geometrie" type="imgeo:VlakPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="WaterschapPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Waterschap"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<element name="Woonplaats" type="imgeo:WoonplaatsType" substitutionGroup="imgeo:RegistratiefGebied"/>
+	<complexType name="WoonplaatsType">
+		<complexContent>
+			<extension base="imgeo:RegistratiefGebiedType">
+				<sequence>
+					<element name="identificatieBAG" type="string"/>
+					<element name="geometrie" type="imgeo:VlakPropertyType"/>
+					<element name="gemeente" type="imgeo:GemeentePropertyType" minOccurs="0"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="WoonplaatsPropertyType">
+		<sequence minOccurs="0">
+			<element ref="imgeo:Woonplaats"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+</schema>
