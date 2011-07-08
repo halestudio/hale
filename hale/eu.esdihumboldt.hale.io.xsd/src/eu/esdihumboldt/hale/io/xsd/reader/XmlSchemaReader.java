@@ -202,7 +202,9 @@ public class XmlSchemaReader
 		}
 		
 		InputStream is = getSource().getInput();
-		xmlSchema = schemaCol.read(new StreamSource(is), null);
+		StreamSource ss = new StreamSource(is);
+		ss.setSystemId(location.toString());
+		xmlSchema = schemaCol.read(ss, null);
 		is.close();
 
 		String namespace = xmlSchema.getTargetNamespace();
