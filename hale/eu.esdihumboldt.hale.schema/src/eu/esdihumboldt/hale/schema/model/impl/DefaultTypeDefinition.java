@@ -15,7 +15,9 @@ package eu.esdihumboldt.hale.schema.model.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -118,16 +120,24 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 			
 			// populate inherited attributes
 			DefaultTypeDefinition parent = getSuperType();
+			LinkedList<DefaultTypeDefinition> parents = new LinkedList<DefaultTypeDefinition>();
 			while (parent != null) {
-				//FIXME wrong order? must the topmost supertype properties should be the first ones? 
+				parents.add(parent);
+				
+				parent = parent.getSuperType();
+			}
+			
+			// add children starting from th topmost supertype
+			Iterator<DefaultTypeDefinition> it = parents.descendingIterator();
+			while (it.hasNext()) {
+				parent = it.next();
+				
 				for (ChildDefinition<?> parentChild : parent.getDeclaredChildren()) {
 					// create reparented copy
 					ChildDefinition<?> reparent = DefinitionUtil.reparentChild(parentChild, this);
 					
 					inheritedChildren.put(reparent.getName(), reparent);
 				}
-				
-				parent = parent.getSuperType();
 			}
 		}
 	}
