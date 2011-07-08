@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+
+<items xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="choice2.xsd">
+	<shirt>Some shirt</shirt>
+	<hat>Some hat</hat>
+	<shirt>Some other shirt</shirt>
+	<house>Some house</house>
+	<umbrella>Some umbrella</umbrella>
+	<hat>And another shirt</hat>
+	<tent>Some tent</tent>
+</items>

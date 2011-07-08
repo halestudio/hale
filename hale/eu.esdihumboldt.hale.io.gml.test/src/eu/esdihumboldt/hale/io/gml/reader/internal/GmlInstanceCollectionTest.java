@@ -176,6 +176,38 @@ public class GmlInstanceCollectionTest {
 	}
 	
 	/**
+	 * Test loading a simple XML file with one instance including a choice
+	 * and a sub-choice.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testLoadChoice2() throws Exception {
+		GmlInstanceCollection instances = loadInstances(
+				getClass().getResource("/data/group/choice2.xsd").toURI(),
+				getClass().getResource("/data/group/choice2.xml").toURI(),
+				false);
+		
+		ResourceIterator<Instance> it = instances.iterator();
+		assertTrue(it.hasNext());
+		
+		Instance instance = it.next();
+		assertNotNull(instance);
+		
+		// choice
+		Object[] choice_1 = instance.getProperty(new QName("/ItemsType", "choice_1"));
+		assertNotNull(choice_1);
+		assertEquals(7, choice_1.length);
+		
+		//TODO
+		
+		// only one object
+		assertFalse(it.hasNext());
+				
+		it.dispose();
+	}
+	
+	/**
 	 * Test loading a (relatively) simple GML file with one instance.
 	 * Includes groups and a geometry.
 	 * 
