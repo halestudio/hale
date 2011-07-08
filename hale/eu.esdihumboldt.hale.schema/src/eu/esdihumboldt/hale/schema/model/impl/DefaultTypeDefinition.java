@@ -127,7 +127,7 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 				parent = parent.getSuperType();
 			}
 			
-			// add children starting from th topmost supertype
+			// add children starting from the topmost supertype
 			Iterator<DefaultTypeDefinition> it = parents.descendingIterator();
 			while (it.hasNext()) {
 				parent = it.next();
