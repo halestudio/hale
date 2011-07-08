@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.io.gml.reader.internal.instance;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import javax.xml.namespace.QName;
 
@@ -70,12 +71,13 @@ public class GroupPath {
 	
 	/**
 	 * Create groups for the children in the path (which are only represented
-	 * as definitions). May only be called if the path is valid.
+	 * as definitions). May only be called if the path is valid. This will also
+	 * update the path to include the groups instead of the definitions.
 	 * @return the list of created groups
 	 * 
 	 * @see #isValid()
 	 */
-	public List<MutableGroup> createChildGroups() {
+	protected List<MutableGroup> createChildGroups() {
 		MutableGroup parent = parents.get(parents.size() - 1);
 		final List<MutableGroup> result = new ArrayList<MutableGroup>();
 		
@@ -95,6 +97,10 @@ public class GroupPath {
 			// prepare for next iteration
 			parent = group;
 		}
+		
+		// update children and parents
+		children.clear();
+		parents.addAll(result);
 			
 		return result;
 	}
@@ -168,12 +174,49 @@ public class GroupPath {
 	 * Get the last definition group in the path
 	 * @return the last definition group
 	 */
-	public DefinitionGroup getLast() {
+	public DefinitionGroup getLastDefinition() {
 		if (children != null && !children.isEmpty()) {
 			return children.get(children.size() - 1);
 		}
 		
 		return parents.get(parents.size() - 1).getDefinition();
+	}
+	
+	/**
+	 * Get the last group in the path.<br>
+	 * <br>
+	 * Will create the child groups for which
+	 * only definitions are present and update the path accordingly before
+	 * getting the last group object.
+	 * @return the last group in the path
+	 * @throws IllegalStateException if the path is not valid
+	 */
+	public MutableGroup getLast() throws IllegalStateException {
+		//XXX possibly introduce a strict parameter (regarding validation)
+		return getAllGroups().peek();
+	}
+
+	/**
+	 * Get all groups in the path.<br>
+	 * <br>
+	 * Will create the child groups for which
+	 * only definitions are present and update the path accordingly before
+	 * returning all group objects.
+	 * @return the all groups in the path
+	 * @throws IllegalStateException if the path is not valid
+	 */
+	public Stack<MutableGroup> getAllGroups() throws IllegalStateException {
+		//XXX possibly introduce a strict parameter (regarding validation)
+		if (children != null && !children.isEmpty()) {
+			if (!isValid()) {
+				throw new IllegalStateException("Attempt to create groups in an invalid path.");
+			}
+			createChildGroups();
+		}
+		
+		Stack<MutableGroup> result = new Stack<MutableGroup>();
+		result.addAll(parents);
+		return result ;
 	}
 
 }

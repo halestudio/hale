@@ -122,13 +122,15 @@ public abstract class StreamGmlInstance {
 				int event = reader.next();
 				switch (event) {
 				case XMLStreamConstants.START_ELEMENT:
-					PropertyDefinition property = GroupUtil.determineProperty(groups, reader.getName());
-					
-					// get group object from stack
-					group = groups.peek();
-					
-					if (property != null) {
-						//TODO check also namespace?
+					GroupProperty gp = GroupUtil.determineProperty(groups, reader.getName());
+					if (gp != null) {
+						// update the stack from the path
+						groups = gp.getPath().getAllGroups();
+						// get group object from stack
+						group = groups.peek();
+						
+						PropertyDefinition property = gp.getProperty();
+						
 						if (hasElements(property.getPropertyType())) {
 							// use an instance as value
 							group.addProperty(property.getName(), 

@@ -15,18 +15,15 @@ package eu.esdihumboldt.hale.io.gml.reader.internal.instance;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Set;
 
 import javax.xml.namespace.QName;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-
 import eu.esdihumboldt.hale.instance.model.Group;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.MutableGroup;
@@ -50,14 +47,12 @@ public class GroupUtil {
 
 	/**
 	 * Determine the property definition for the given property name.
-	 * The given group stack will be updated so that the parent group object of 
-	 * the property will be the top (last) element on the stack. 
 	 * @param groups the stack of the current group objects. The topmost element
 	 *   is the current group object 
 	 * @param propertyName the property name
-	 * @return the property definition or <code>null</code> if none is found
+	 * @return the group property or <code>null</code> if none is found
 	 */
-	static PropertyDefinition determineProperty(
+	static GroupProperty determineProperty(
 			List<MutableGroup> groups, QName propertyName) {
 		if (groups.isEmpty()) {
 			return null;
@@ -66,7 +61,7 @@ public class GroupUtil {
 		// the current group
 		final MutableGroup currentGroup = groups.get(groups.size() -1);
 		// the queue to collect the siblings of the current group with
-		final Queue<GroupPath> siblings = new LinkedList<GroupPath>();
+		LinkedList<GroupPath> siblings = new LinkedList<GroupPath>();
 		
 		/*
 		 * Policy: find the property as high in the hierarchy as possible
@@ -104,79 +99,60 @@ public class GroupUtil {
 			
 			int maxDescent = close.size() - 1;
 			List<MutableGroup> stackPrototype = new ArrayList<MutableGroup>(keep); // prototype that is copied for each parent
+			LinkedList<GroupPath> level = new LinkedList<GroupPath>();
+			LinkedList<GroupPath> nextLevel = new LinkedList<GroupPath>();
 			for (int i = 0; i < parents.size(); i++) {
-				List<MutableGroup> stack = new ArrayList<MutableGroup>(stackPrototype);
+				// add existing parent
+				GroupPath path = new GroupPath(new ArrayList<MutableGroup>(stackPrototype), null);
+				level.addFirst(path);
+				GroupProperty gp = null;
 				
 				// check for a direct match in the group
 				PropertyDefinition property = determineDirectProperty(
 						parents.get(i), propertyName);
-				
-				if (property == null && maxDescent >= 0) { // >= 0 because also for maxDescent 0 we get siblings
-					// check the sub-properties
-					//XXX the policy is not kept here exactly -> properties on a lower level may be preferred because of the descent - instead only one level at a time should be evaluated 
-					property = determineSubProperty(stack, propertyName, 
-							close.subList(i, close.size() - 1), null, siblings, 
-							maxDescent);
+				if (property != null) {
+					gp = new GroupProperty(property, path);
 				}
 				
-				if (property != null) {
-					// use stack adapted by determineSubProperty
-					groups.clear();
-					groups.addAll(stack);
-					return property;
+				if (gp == null && maxDescent >= 0) { // >= 0 because also for maxDescent 0 we get siblings
+					// check the sub-properties
+					gp = determineSubProperty(level, propertyName, 
+							close.subList(i, close.size() - 1), null, nextLevel, 
+							0); //XXX or 1?
+				}
+				
+				if (gp != null) {
+					return gp;
 				}
 				
 				// prepare stack prototype for next parent
 				if (i + 1 < parents.size()) {
 					stackPrototype.add(parents.get(i+1));
 				}
-				// adjust max descent for next parent
-				maxDescent--;
+				// swap lists, clear nextLevel
+				LinkedList<GroupPath> tmp = level;
+				level = nextLevel;
+				nextLevel = tmp;
+				nextLevel.clear();
 			}
+			
+			siblings = level;
 		}
 		
 		// preferred 2: property of the current group
 		PropertyDefinition property = determineDirectProperty(currentGroup, propertyName);
 		if (property != null) {
-			return property;
+			return new GroupProperty(property, new GroupPath(groups, null));
 		}
 		
-		// preferred 3: property of a sibling group
-		for (GroupPath sibling : siblings) {
-			if (sibling.isValid() && sibling.allowAdd(propertyName)) {
-				ChildDefinition<?> child = sibling.getLast().getChild(propertyName);
-				
-				if (child != null && child.asProperty() != null) {
-					// create missing groups
-					List<MutableGroup> subGroups = sibling.createChildGroups();
-					// update stack
-					groups.remove(groups.size() - 1); // remove current group from stack
-					groups.addAll(subGroups);
-					// return property definition
-					return child.asProperty();
-				}
-				else {
-					log.error("False positive for property candidate.");
-				}
-			}
-		}
+		// preferred 3: property of a sub-group, sibling group or sibling sub-group
+		siblings.addFirst(new GroupPath(groups, null));
+		// check the sub-properties
+		GroupProperty gp = determineSubProperty(siblings, propertyName, 
+				null, null, null, -1);
 		
-		// preferred 4: property of a sub-group
-		property = determineSubProperty(groups, propertyName, null, null, null, -1);
-		if (property != null) {
-			return property;
-		}
-		
-		// preferred 5: property of a sibling sub-group
-		//XXX the policy is not kept here exactly -> properties on a lower level may be preferred because of the descent - instead only one level at a time should be evaluated
-		List<MutableGroup> siblingGroups = new ArrayList<MutableGroup>(groups);
-		siblingGroups.remove(siblingGroups.size() - 1);
-		for (GroupPath sibling : siblings) {
-			property = determineSubProperty(siblingGroups, propertyName, null, 
-					sibling.getLast(), null, -1);
-			if (property != null) {
-				return property;
-			}
+		if (gp != null) {
+			return gp;
 		}
 		
 		//XXX fall-back: property in any group without validity checks?
@@ -206,10 +182,7 @@ public class GroupUtil {
 	/**
 	 * Determine the property definition for the given property name in 
 	 * sub-groups of the given group stack.
-	 * The given group stack will be updated so that the parent group object of 
-	 * the property will be the top (last) element on the stack.
-	 * @param groups the stack of the current group objects. The topmost element
-	 *   is the current group object 
+	 * @param paths the group paths whose children shall be checked for the property 
 	 * @param propertyName the property name
 	 * @param exclude a list of definitions representing a child to ignore, 
 	 *   each per descent level (e.g. the first entry in the list should be
@@ -220,24 +193,13 @@ public class GroupUtil {
 	 *   descent, may be <code>null</code> if no population is needed
 	 * @param maxDescent the maximum descent, -1 for no maximum descent
 	 * @return the property definition or <code>null</code> if none is found
-	 * 
-	 * XXX implementation instead based on GroupPath list? using 
-	 * {@link GroupPath#isValid()} to check for cycles (information is all there)
 	 */
-	private static PropertyDefinition determineSubProperty(
-			List<MutableGroup> groups, QName propertyName, List<MutableGroup> exclude,
+	private static GroupProperty determineSubProperty(
+			Queue<GroupPath> paths, QName propertyName, List<MutableGroup> exclude,
 			DefinitionGroup levelOneOnlyChild, Queue<GroupPath> leafs, int maxDescent) {
-		if ((maxDescent != -1 && maxDescent < 0) || groups.isEmpty()) {
+		if (maxDescent != -1 && maxDescent < 0) {
 			return null;
 		}
-		
-		// set for all already checked definitions to prevent cycles with new groups
-		Set<DefinitionGroup> checkedDefinitions = new HashSet<DefinitionGroup>();
-		
-		final List<MutableGroup> pathParents = new ArrayList<MutableGroup>(groups);
-		
-		Queue<GroupPath> paths = new LinkedList<GroupPath>();
-		paths.add(new GroupPath(pathParents, null));
 		
 		while (!paths.isEmpty()) {
 			GroupPath path = paths.poll();
@@ -246,22 +208,18 @@ public class GroupUtil {
 			if (path.getChildren() != null && !path.getChildren().isEmpty()) {
 				// check if path is a valid result
 				if (path.allowAdd(propertyName)) {
-					ChildDefinition<?> property = path.getLast().getChild(propertyName);
+					ChildDefinition<?> property = path.getLastDefinition().getChild(propertyName);
 					
 					if (property != null && property.asProperty() != null) {
-						// create missing groups
-						List<MutableGroup> subGroups = path.createChildGroups();
-						// update stack
-						groups.addAll(subGroups);
-						// return property definition
-						return property.asProperty();
+						// return group property
+						return new GroupProperty(property.asProperty(), path);
 					}
 					else {
 						log.error("False positive for property candidate.");
 					}
 				}
 				
-				lastDef = path.getLast();
+				lastDef = path.getLastDefinition();
 			}
 			else {
 				// the first path which must not be checked, just the children must be added to the queue
@@ -290,7 +248,8 @@ public class GroupUtil {
 					}
 					//XXX
 					
-					if (child.asGroup() != null && !checkedDefinitions.contains(child.asGroup())) {
+					if (child.asGroup() != null && 
+							(path.getChildren() == null || !path.getChildren().contains(child.asGroup()))) { // (check for definition cycle)
 						List<DefinitionGroup> childDefs = new ArrayList<DefinitionGroup>();
 						if (path.getChildren() != null) {
 							childDefs.addAll(path.getChildren());
@@ -311,8 +270,6 @@ public class GroupUtil {
 								paths.add(newPath);
 							}
 						}
-						
-						checkedDefinitions.add(child.asGroup()); // prevent cycles for new groups
 					}
 				}
 			}
