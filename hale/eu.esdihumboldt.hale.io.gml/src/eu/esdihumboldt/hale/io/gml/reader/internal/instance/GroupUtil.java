@@ -87,7 +87,7 @@ public class GroupUtil {
 		// sort groups in those that must be kept and those that may be closed
 		for (int i = keep.size() - 1; i >= 0 && allowClose(keep.get(i)); i--) {
 			close.add(0, keep.get(i));
-			keep.remove(i--);
+			keep.remove(i);
 		}
 		if (!close.isEmpty()) {
 			// collect parents groups
@@ -116,14 +116,19 @@ public class GroupUtil {
 				
 				if (gp == null && maxDescent >= 0) { // >= 0 because also for maxDescent 0 we get siblings
 					// check the sub-properties
-					gp = determineSubProperty(level, propertyName, 
-							close.subList(i, close.size() - 1), null, nextLevel, 
-							0); //XXX or 1?
+					gp = determineSubProperty(level, propertyName, nextLevel, 0);
 				}
 				
 				if (gp != null) {
 					return gp;
 				}
+				
+				//XXX remove XXX add twin of parent to next level check (because it was ignored)
+//				List<MutableGroup> twinParents = new ArrayList<MutableGroup>(stackPrototype);
+//				List<DefinitionGroup> twinChildren = new ArrayList<DefinitionGroup>();
+//				twinChildren.add(parents.get(i).getDefinition());
+//				GroupPath twin = new GroupPath(twinParents, twinChildren);
+//				nextLevel.add(twin);
 				
 				// prepare stack prototype for next parent
 				if (i + 1 < parents.size()) {
@@ -146,10 +151,10 @@ public class GroupUtil {
 		}
 		
 		// preferred 3: property of a sub-group, sibling group or sibling sub-group
-		siblings.addFirst(new GroupPath(groups, null));
+		siblings.addFirst(new GroupPath(groups, null)); // add current group
 		// check the sub-properties
 		GroupProperty gp = determineSubProperty(siblings, propertyName, 
-				null, null, null, -1);
+				null, -1);
 		
 		if (gp != null) {
 			return gp;
@@ -172,7 +177,7 @@ public class GroupUtil {
 			MutableGroup group, QName propertyName) {
 		ChildDefinition<?> child = group.getDefinition().getChild(propertyName);
 		if (child != null && child.asProperty() != null && 
-				allowAdd(group, child.asProperty())) {
+				allowAdd(group, null, child.asProperty().getName())) {
 			return child.asProperty();
 		}
 		
@@ -184,10 +189,6 @@ public class GroupUtil {
 	 * sub-groups of the given group stack.
 	 * @param paths the group paths whose children shall be checked for the property 
 	 * @param propertyName the property name
-	 * @param exclude a list of definitions representing a child to ignore, 
-	 *   each per descent level (e.g. the first entry in the list should be
-	 *   ignored in the first descent level etc.), may be <code>null</code>
-	 * @param levelOneOnlyChild XXX
 	 * @param leafs the queue is populated with the leafs in the explored 
 	 *   definition group tree that are not processed because of the max 
 	 *   descent, may be <code>null</code> if no population is needed
@@ -195,8 +196,8 @@ public class GroupUtil {
 	 * @return the property definition or <code>null</code> if none is found
 	 */
 	private static GroupProperty determineSubProperty(
-			Queue<GroupPath> paths, QName propertyName, List<MutableGroup> exclude,
-			DefinitionGroup levelOneOnlyChild, Queue<GroupPath> leafs, int maxDescent) {
+			Queue<GroupPath> paths, QName propertyName,
+			Queue<GroupPath> leafs, int maxDescent) {
 		if (maxDescent != -1 && maxDescent < 0) {
 			return null;
 		}
@@ -232,22 +233,8 @@ public class GroupUtil {
 			if (lastDef != null) {
 				// add children to queue
 				Collection<? extends ChildDefinition<?>> children = DefinitionUtil.getAllChildren(lastDef);
-				int descentLevel = (path.getChildren() != null)?(path.getChildren().size()):(0);
 				
 				for (ChildDefinition<?> child : children) {
-					if (exclude != null && exclude.size() < descentLevel && 
-							exclude.get(descentLevel).getDefinition().equals(child)) {
-						// ignore the child
-						continue;
-					}
-					
-					//XXX levelOneOnlyChild
-					if (descentLevel == 1 && levelOneOnlyChild != null && !levelOneOnlyChild.equals(child)) {
-						// ignore everything but the levelOneOnlyChild
-						continue;
-					}
-					//XXX
-					
 					if (child.asGroup() != null && 
 							(path.getChildren() == null || !path.getChildren().contains(child.asGroup()))) { // (check for definition cycle)
 						List<DefinitionGroup> childDefs = new ArrayList<DefinitionGroup>();
@@ -352,71 +339,26 @@ public class GroupUtil {
 	/**
 	 * Determines if another value of the given property may be added to the
 	 * given group.
-	 * @param group the group
-	 * @param property the property
+	 * @param group the group, <code>null</code> represents an empty group
+	 * @param groupDef the definition of the given group, may be <code>null</code>
+	 *   if the group is not <code>null</code>
+	 * @param propertyName the property name
 	 * @return if another property value may be added to the group
 	 */
-	static boolean allowAdd(MutableGroup group,
-			PropertyDefinition property) {
-		DefinitionGroup def = group.getDefinition();
-		
-		if (def instanceof GroupPropertyDefinition) {
-			// group property
-			GroupPropertyDefinition groupDef = (GroupPropertyDefinition) def;
-			
-			if (groupDef.getConstraint(ChoiceFlag.class).isEnabled()) {
-				// choice
-				// a choice may only contain one of its properties
-				for (QName propertyName : group.getPropertyNames()) {
-					if (!propertyName.equals(property.getName())) {
-						// other property is present -> may not add property value
-						return false;
-					}
-				}
-				// check cardinality
-				return allowAddCheckCardinality(group, property);
-			}
-			else {
-				// sequence, group(, attributeGroup)
-				
-				// check order
-				if (!allowAddCheckOrder(group, property.getName(), groupDef)) {
-					return false;
-				}
-				
-				// check cardinality
-				return allowAddCheckCardinality(group, property);
-			}
-		}
-		else if (def instanceof TypeDefinition) {
-			// type
-			TypeDefinition typeDef = (TypeDefinition) def;
-			
-			// check order
-			if (!allowAddCheckOrder(group, property.getName(), typeDef)) {
-				return false;
-			}
-			
-			// check cardinality
-			return allowAddCheckCardinality(group, property);
+	@SuppressWarnings("null")
+	static boolean allowAdd(Group group, DefinitionGroup groupDef,
+			QName propertyName) {
+		if (group == null && groupDef == null) {
+			throw new IllegalArgumentException();
 		}
 		
-		return false;
-	}
-
-	/**
-	 * Determines if another value of the given property may be added to the
-	 * given group based on values available in the group and the order
-	 * of the child definitions in the given definition group.
-	 * @param group the group, <code>null</code> represents an empty group
-	 * @param propertyName the property name
-	 * @param groupDef the definition group
-	 * @return if another property value may be added to the group based on the
-	 *   values and the child definition order
-	 */
-	static boolean allowAddCheckOrder(Group group,
-			QName propertyName, final DefinitionGroup groupDef) {
-		boolean before = true;
+		final DefinitionGroup def;
+		if (groupDef == null) {
+			def = group.getDefinition();
+		}
+		else {
+			def = groupDef;
+		}
 		
 		if (group == null) {
 			// create an empty dummy group if none is specified
@@ -433,10 +375,68 @@ public class GroupUtil {
 	
 				@Override
 				public DefinitionGroup getDefinition() {
-					return groupDef;
+					return def;
 				}
 			};
 		}
+		
+		if (def instanceof GroupPropertyDefinition) {
+			// group property
+			GroupPropertyDefinition gpdef = (GroupPropertyDefinition) def;
+			
+			if (gpdef.getConstraint(ChoiceFlag.class).isEnabled()) {
+				// choice
+				// a choice may only contain one of its properties
+				for (QName pName : group.getPropertyNames()) {
+					if (!pName.equals(propertyName)) {
+						// other property is present -> may not add property value
+						return false;
+					}
+				}
+				// check cardinality
+				return allowAddCheckCardinality(group, propertyName);
+			}
+			else {
+				// sequence, group(, attributeGroup)
+				
+				// check order
+				if (!allowAddCheckOrder(group, propertyName, groupDef)) {
+					return false;
+				}
+				
+				// check cardinality
+				return allowAddCheckCardinality(group, propertyName);
+			}
+		}
+		else if (def instanceof TypeDefinition) {
+			// type
+			TypeDefinition typeDef = (TypeDefinition) def;
+			
+			// check order
+			if (!allowAddCheckOrder(group, propertyName, typeDef)) {
+				return false;
+			}
+			
+			// check cardinality
+			return allowAddCheckCardinality(group, propertyName);
+		}
+		
+		return false;
+	}
+
+	/**
+	 * Determines if another value of the given property may be added to the
+	 * given group based on values available in the group and the order
+	 * of the child definitions in the given definition group.
+	 * @param group the group, <code>null</code> represents an empty group
+	 * @param propertyName the property name
+	 * @param groupDef the definition group
+	 * @return if another property value may be added to the group based on the
+	 *   values and the child definition order
+	 */
+	private static boolean allowAddCheckOrder(Group group,
+			QName propertyName, final DefinitionGroup groupDef) {
+		boolean before = true;
 		
 		Collection<? extends ChildDefinition<?>> children = DefinitionUtil.getAllChildren(groupDef);
 		
@@ -480,13 +480,14 @@ public class GroupUtil {
 	 * Determines if another value of the given property may be added to the
 	 * given group based on the cardinality of the property.
 	 * @param group the group
-	 * @param property the property
+	 * @param propertyName the property name
 	 * @return if another property value may be added to the group based on the
 	 *   property cardinality
 	 */
-	static boolean allowAddCheckCardinality(MutableGroup group,
-			PropertyDefinition property) {
-		Cardinality cardinality = property.getConstraint(Cardinality.class);
+	private static boolean allowAddCheckCardinality(Group group,
+			QName propertyName) {
+		ChildDefinition<?> child = group.getDefinition().getChild(propertyName);
+		Cardinality cardinality = DefinitionUtil.getCardinality(child);
 		
 		// check maximum
 		long max = cardinality.getMaxOccurs();
@@ -497,7 +498,7 @@ public class GroupUtil {
 			return false; // add never allowed
 		}
 		
-		Object[] values = group.getProperty(property.getName());
+		Object[] values = group.getProperty(propertyName);
 		if (values == null) {
 			return true; // allowed because max is 1 or more
 		}

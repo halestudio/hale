@@ -119,8 +119,8 @@ public class GroupPath {
 		DefinitionGroup parentDef = parentGroup.getDefinition(); 
 		for (DefinitionGroup child : children) {
 			if (child instanceof GroupPropertyDefinition) {
-				if (!GroupUtil.allowAddCheckOrder(parentGroup, 
-						((GroupPropertyDefinition) child).getName(), parentDef)) {
+				if (!GroupUtil.allowAdd(parentGroup, parentDef,
+						((GroupPropertyDefinition) child).getName())) {
 					return false;
 				}
 			}
@@ -150,7 +150,7 @@ public class GroupPath {
 			MutableGroup parent = parents.get(parents.size() - 1);
 			ChildDefinition<?> child = parent.getDefinition().getChild(propertyName);
 			if (child.asProperty() != null) {
-				return GroupUtil.allowAdd(parent, child.asProperty());
+				return GroupUtil.allowAdd(parent, null, child.asProperty().getName());
 			}
 			else {
 				return false;
@@ -170,7 +170,7 @@ public class GroupPath {
 				return true;
 			}
 			
-			return GroupUtil.allowAddCheckOrder(null, propertyName, child);
+			return GroupUtil.allowAdd(null, child, propertyName);
 		}
 	}
 	

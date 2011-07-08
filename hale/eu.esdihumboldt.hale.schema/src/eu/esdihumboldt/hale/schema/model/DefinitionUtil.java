@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.schema.model;
 
 import java.util.Collection;
 
+import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.schema.model.impl.internal.RedeclareGroupProperty;
 import eu.esdihumboldt.hale.schema.model.impl.internal.RedeclareProperty;
 import eu.esdihumboldt.hale.schema.model.impl.internal.ReparentGroupProperty;
@@ -81,6 +82,22 @@ public abstract class DefinitionUtil {
 		else {
 			return group.getDeclaredChildren();
 		}
+	}
+
+	/**
+	 * Get the cardinality of a child definition.
+	 * @param child the child definition
+	 * @return the cardinality
+	 */
+	public static Cardinality getCardinality(ChildDefinition<?> child) {
+		if (child.asProperty() != null) {
+			return child.asProperty().getConstraint(Cardinality.class);
+		}
+		if (child.asGroup() != null) {
+			return child.asGroup().getConstraint(Cardinality.class);
+		}
+		
+		throw new IllegalStateException("Illegal child type.");
 	}
 
 }
