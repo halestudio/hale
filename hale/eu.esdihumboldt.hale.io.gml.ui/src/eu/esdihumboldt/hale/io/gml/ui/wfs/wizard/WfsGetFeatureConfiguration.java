@@ -56,8 +56,8 @@ public class WfsGetFeatureConfiguration extends WfsConfiguration {
 	 *  
 	 * @return the request URL 
 	 * 
-	 * @throws UnsupportedEncodingException 
-	 * @throws MalformedURLException 
+	 * @throws UnsupportedEncodingException if UTF-8 encoding is not supported
+	 * @throws MalformedURLException if the getFeature request URL is malformed
 	 */
 	public URL getRequestURL() throws UnsupportedEncodingException, MalformedURLException {
 		String capabilities = getCapabilitiesURL();

@@ -42,7 +42,7 @@ public class WfsDescribeFeatureConfiguration extends WfsConfiguration {
 	 * Get the request URL
 	 *  
 	 * @return the request URL 
-	 * @throws IOException 
+	 * @throws IOException if getting the WFS capabilities failed
 	 */
 	public URL getRequestURL() throws IOException {
 		String capabilities = getCapabilitiesURL();
@@ -73,11 +73,11 @@ public class WfsDescribeFeatureConfiguration extends WfsConfiguration {
 		//TODO better solution
 		if (firstType != null) {
 			String temp = ((WFSDataStore) data).getDescribeFeatureTypeURL(firstType).toString();
-			String repl = URLEncoder.encode(firstType);
+			String repl = URLEncoder.encode(firstType, "UTF-8");
 			if (temp.indexOf(repl) < 0) {
 				repl = firstType;
 			}
-			temp = temp.replaceAll(repl, URLEncoder.encode(typeNames.toString()));
+			temp = temp.replaceAll(repl, URLEncoder.encode(typeNames.toString(), "UTF-8"));
 			return new URL(temp);
 		}
 		else {

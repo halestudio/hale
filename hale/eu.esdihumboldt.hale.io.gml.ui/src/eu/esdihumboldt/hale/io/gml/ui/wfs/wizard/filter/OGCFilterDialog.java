@@ -1,3 +1,14 @@
+/*
+ * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
+ * EU Integrated Project #030962                  01.10.2006 - 30.09.2010
+ * 
+ * For more information on the project, please refer to the this web site:
+ * http://www.esdi-humboldt.eu
+ * 
+ * LICENSE: For information on the license under which this program is 
+ * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
+ * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ */
 package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.filter;
 
 import org.eclipse.swt.SWT;
@@ -17,6 +28,10 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
 
+/**
+ * Dialog for creating a filter
+ * @author unknown
+ */
 public class OGCFilterDialog extends Dialog {
 	private final static ALogger _log = ALoggerFactory.getLogger(OGCFilterDialog.class);
 	private String _filter = null;
@@ -24,10 +39,22 @@ public class OGCFilterDialog extends Dialog {
 	FeatureType featureType;
 	OGCFilterBuilder filterBuilder;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param parent the parent shell
+	 * @param style the dialog style
+	 */
 	public OGCFilterDialog(Shell parent, int style) {
 		super(parent, style);
 	}
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param parent the parent shell
+	 * @param title the dialog title
+	 */
 	public OGCFilterDialog(Shell parent, String title) {
 		super(parent, SWT.NONE);
 		this.setText(title);
@@ -95,6 +122,10 @@ public class OGCFilterDialog extends Dialog {
 		});
 	}
 	
+	/**
+	 * Set the feature type to be filtered
+	 * @param featureType the feature type
+	 */
 	public void setFeatureType(FeatureType featureType) {
 		this.featureType = featureType;
 	}

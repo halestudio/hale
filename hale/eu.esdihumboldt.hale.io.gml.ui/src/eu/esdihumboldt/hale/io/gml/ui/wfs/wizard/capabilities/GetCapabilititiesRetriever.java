@@ -11,9 +11,7 @@
  */
 package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.capabilities;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,34 +86,6 @@ public class GetCapabilititiesRetriever {
 			} else {
 				return new URL(complete_url.toString());
 			}
-		}
-	}
-	
-	public static void buildXML() {
-		// FIXME
-	}
-	
-	/**
-	 * Helper method for reading a resource identified through an URL to a 
-	 * String.
-	 * @param url
-	 * @return
-	 * @throws IOException
-	 */
-	public static String readFromUrl(URL url) throws IOException {
-		_log.info("Reading from URL " +url.toString()); //$NON-NLS-1$
-		BufferedReader reader = new BufferedReader(
-				new InputStreamReader(
-						url.openConnection().getInputStream()));
-		try {
-	        StringBuilder sb = new StringBuilder();
-	        String line = null;
-	        while ((line = reader.readLine()) != null) {
-	            sb.append(line + "\n"); //$NON-NLS-1$
-	        }
-	        return sb.toString();
-		} finally {
-			reader.close();
 		}
 	}
 	
@@ -209,9 +179,9 @@ public class GetCapabilititiesRetriever {
 	/**
 	 * Get the data store for the given capabilities URL
 	 * 
-	 * @param getCapabilitiesUrl
+	 * @param getCapabilitiesUrl the GetCapabilities URL
 	 * @return the data store
-	 * @throws IOException
+	 * @throws IOException if reading the capabilities failed
 	 */
 	public static DataStore getDataStore(String getCapabilitiesUrl) throws IOException {
 		_log.info("Getting Capabilities from " + getCapabilitiesUrl); //$NON-NLS-1$
@@ -232,7 +202,7 @@ public class GetCapabilititiesRetriever {
 	 * @param getCapabilitiesUrl the GetCapabilities URL
 	 * @param monitor the progress monitor
 	 * @return the list of feature types
-	 * @throws IOException
+	 * @throws IOException if reading the capabilities or features failed
 	 */
 	public static List<FeatureType> readFeatureTypes(String getCapabilitiesUrl, IProgressMonitor monitor) 
 		throws IOException {

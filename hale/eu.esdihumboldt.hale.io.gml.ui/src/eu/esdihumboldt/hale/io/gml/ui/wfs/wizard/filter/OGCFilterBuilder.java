@@ -1,3 +1,14 @@
+/*
+ * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
+ * EU Integrated Project #030962                  01.10.2006 - 30.09.2010
+ * 
+ * For more information on the project, please refer to the this web site:
+ * http://www.esdi-humboldt.eu
+ * 
+ * LICENSE: For information on the license under which this program is 
+ * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
+ * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ */
 package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.filter;
 
 import java.io.PrintWriter;
@@ -41,12 +52,22 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
 
+/**
+ * SWT Component for specifying a filter 
+ * @author unknown
+ */
 public class OGCFilterBuilder extends Composite {
 	
 	FeatureType featureType;
 	final CheckboxTableViewer tableViewer;
 	final ConditionDataProvider data;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param parent the parent composite
+	 * @param featureType the feature type to be filtered
+	 */
 	public OGCFilterBuilder(Composite parent, FeatureType featureType) {
 		super(parent, SWT.NONE);
 		
@@ -147,7 +168,7 @@ public class OGCFilterBuilder extends Composite {
 	 * Build the filter string
 	 * 
 	 * @return the filter string
-	 * @throws IllegalStateException
+	 * @throws IllegalStateException if the defined conditions are not valid
 	 */
 	public String buildFilter() throws IllegalStateException {
 		List<Condition> conditions = data.getConditions();
@@ -444,7 +465,6 @@ public class OGCFilterBuilder extends Composite {
 		
 		ComboBoxCellEditor propertyEditor;
 		List<PropertyDescriptor> propertyList = new ArrayList<PropertyDescriptor>();
-		ComboBoxCellEditor spatialConditionEditor;
 		List<String> spatialConditionList = new ArrayList<String>();
 		String[] spatialConditions = {"Equals", "Disjoint", "Touches", "Within", "Overlaps", "Crosses",  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 				"Intersects", "Contains", "DWithin", "Beyond", "BBOX"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
@@ -488,8 +508,8 @@ public class OGCFilterBuilder extends Composite {
 			for (int i=0; i<spatialConditions.length; i++) {
 				spatialConditionList.add(spatialConditions[i]);
 			}
-			spatialConditionEditor = new ComboBoxCellEditor(((TableViewer) viewer).getTable(), 
-					spatialConditions, SWT.READ_ONLY);
+//			ComboBoxCellEditor spatialConditionEditor = new ComboBoxCellEditor(((TableViewer) viewer).getTable(), 
+//					spatialConditions, SWT.READ_ONLY);
 			
 			/*propertyEditor = new ComboBoxCellEditor(((TableViewer) viewer).getTable(), 
 					spatialConditions, SWT.READ_ONLY);*/
