@@ -19,14 +19,17 @@ import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.ViewerCell;
 
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.schema.model.Definition;
 import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.util.viewer.TipProvider;
 
 /**
  * Extended label provider for definitions
  * @author Simon Templer
  */
-public class SchemaExplorerLabelProvider extends StyledCellLabelProvider {
+public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
+		implements TipProvider {
 	
 	private final DefinitionLabelProvider defaultLabels = new DefinitionLabelProvider();
 
@@ -66,6 +69,21 @@ public class SchemaExplorerLabelProvider extends StyledCellLabelProvider {
 		cell.setImage(defaultLabels.getImage(element));
 		
 		super.update(cell);
+	}
+
+	/**
+	 * @see TipProvider#getToolTip(Object)
+	 */
+	@Override
+	public String getToolTip(Object element) {
+		if (element instanceof Definition<?>) {
+			String description = ((Definition<?>) element).getDescription();
+			if (description != null && !description.isEmpty()) {
+				return description;
+			}
+		}
+		
+		return null;
 	}
 
 	/**

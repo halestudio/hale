@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Control;
 
 import eu.esdihumboldt.hale.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeIndexContentProvider;
+import eu.esdihumboldt.hale.ui.util.viewer.ColumnBrowserTip;
 
 /**
  * Explorer for schema definitions
@@ -49,10 +50,14 @@ public class SchemaExplorer {
 		// create tree viewer
 		tree = new TreeViewer(main, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER); //XXX for now not lazy XXX | SWT.VIRTUAL);
 		tree.setUseHashlookup(true);
-		tree.setLabelProvider(new SchemaExplorerLabelProvider());
+		SchemaExplorerLabelProvider labelProvider = new SchemaExplorerLabelProvider();
+		tree.setLabelProvider(labelProvider );
 		tree.setContentProvider(new TypeIndexContentProvider(tree));
 		tree.getControl().setLayoutData(GridDataFactory.fillDefaults().
 				grab(true, true).create());
+		
+		//TODO add delay for tooltip
+		new ColumnBrowserTip(tree, 400, 300, true, 0, labelProvider);
 	}
 	
 	/**
