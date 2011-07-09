@@ -14,10 +14,12 @@ package eu.esdihumboldt.hale.io.xsd.reader.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -125,6 +127,8 @@ public class SubstitutionGroupProperty extends LazyGroupPropertyDefinition {
 	 * @return the substitution types
 	 */
 	private List<XmlElement> collectSubstitutions(QName elementName, TypeDefinition type) {
+		Set<QName> substitute = new HashSet<QName>();
+		substitute.add(elementName);
 		Queue<TypeDefinition> subTypes = new LinkedList<TypeDefinition>();
 		subTypes.addAll(type.getSubTypes());
 		
@@ -139,11 +143,18 @@ public class SubstitutionGroupProperty extends LazyGroupPropertyDefinition {
 			while (it.hasNext()) {
 				XmlElement element = it.next();
 				QName subGroup = element.getSubstitutionGroup();
-				if (subGroup != null && subGroup.equals(elementName) && // only if substitution group match
-						!element.getType().getConstraint(AbstractFlag.class).isEnabled()) { // only if type is not abstract
-					result.add(element);
+				if (subGroup != null && substitute.contains(subGroup)) { // only if substitution group match
+					// add element name also to the name that may be substituted
+					substitute.add(element.getName());
+					if (!element.getType().getConstraint(AbstractFlag.class).isEnabled()) { 
+						// only add if type is not abstract
+						result.add(element);
+					}
 				}
 			}
+			
+			//XXX what about using xsi:type?
+			//XXX we could also add elements for other sub-types then, e.g. while also adding a specific constraint
 			
 			// add the sub-type's sub-types
 			subTypes.addAll(subType.getSubTypes());
