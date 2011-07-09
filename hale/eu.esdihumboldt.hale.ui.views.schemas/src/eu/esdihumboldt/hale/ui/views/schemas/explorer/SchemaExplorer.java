@@ -26,7 +26,6 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.TreePathProviderAdapter;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeIndexContentProvider;
 import eu.esdihumboldt.hale.ui.util.viewer.ColumnBrowserTip;
 import eu.esdihumboldt.hale.ui.views.schemas.explorer.tree.TreePathFilteredTree;
-import eu.esdihumboldt.hale.ui.views.schemas.explorer.tree.TreePathPatternFilter;
 
 /**
  * Explorer for schema definitions
@@ -53,12 +52,11 @@ public class SchemaExplorer {
 		//TODO filter stuff?!
 		
 		// create tree viewer
-		PatternFilter patternFilter = new TreePathPatternFilter();
+		PatternFilter patternFilter = new SchemaPatternFilter();
 		final FilteredTree filteredTree = new TreePathFilteredTree(main, SWT.MULTI
 	            | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
 		
 		tree = filteredTree.getViewer();
-		//tree = new TreeViewer(main, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER); //XXX for now not lazy XXX | SWT.VIRTUAL);
 		tree.setUseHashlookup(true);
 		SchemaExplorerLabelProvider labelProvider = new SchemaExplorerLabelProvider();
 		tree.setLabelProvider(labelProvider );
