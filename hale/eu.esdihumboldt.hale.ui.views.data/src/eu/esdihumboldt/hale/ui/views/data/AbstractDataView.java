@@ -17,7 +17,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 
 import eu.esdihumboldt.hale.instance.model.Instance;
@@ -25,6 +24,7 @@ import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelectionListener;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelector;
 import eu.esdihumboldt.hale.ui.views.data.internal.tree.DefinitionInstanceTreeViewer;
+import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 
 /**
  * Table view that shows information about certain features
@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.ui.views.data.internal.tree.DefinitionInstanceTreeVi
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class AbstractDataView extends ViewPart {
+public abstract class AbstractDataView extends PropertiesViewPart {
 
 	/**
 	 * The feature tree viewer
@@ -106,6 +106,8 @@ public abstract class AbstractDataView extends ViewPart {
 		
 		// selector
 		setInstanceSelector(featureSelector);
+		
+		getSite().setSelectionProvider(tree.getTreeViewer());
 	}
 
 	/**

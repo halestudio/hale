@@ -190,4 +190,12 @@ public class DefinitionInstanceTreeViewer {
 //		treeViewer.expandToLevel(2);
 	}
 
+	/**
+	 * Get the internal tree viewer.
+	 * @return the tree viewer
+	 */
+	public TreeViewer getTreeViewer() {
+		return treeViewer;
+	}
+
 }
