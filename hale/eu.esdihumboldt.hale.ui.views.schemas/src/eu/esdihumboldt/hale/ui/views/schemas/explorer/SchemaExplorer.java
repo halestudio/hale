@@ -12,21 +12,28 @@
 
 package eu.esdihumboldt.hale.ui.views.schemas.explorer;
 
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
+import eu.esdihumboldt.hale.schema.Classification;
 import eu.esdihumboldt.hale.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TreePathProviderAdapter;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeIndexContentProvider;
 import eu.esdihumboldt.hale.ui.util.viewer.ColumnBrowserTip;
 import eu.esdihumboldt.hale.ui.views.schemas.explorer.tree.TreePathFilteredTree;
+import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
 
 /**
  * Explorer for schema definitions
@@ -50,7 +57,10 @@ public class SchemaExplorer {
 		// set main layout
 		main.setLayout(GridLayoutFactory.swtDefaults().numColumns(1).create());
 		
-		//TODO filter stuff?!
+		// create the toolbar composite
+		Composite bar = new Composite(main, SWT.NONE);
+		bar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		bar.setLayout(new FillLayout());
 		
 		// create tree viewer
 		PatternFilter patternFilter = new SchemaPatternFilter();
@@ -67,12 +77,76 @@ public class SchemaExplorer {
 		tree.getControl().setLayoutData(GridDataFactory.fillDefaults().
 				grab(true, true).create());
 		
+		ClassificationFilter classFilter = new ClassificationFilter(tree);
+		tree.addFilter(classFilter );
+		
 		tree.setComparator(new DefinitionComparator());
+		
+		// create the toolbar
+		createToolbar(bar, classFilter);
 		
 		//TODO add delay for tooltip
 		new ColumnBrowserTip(tree, 400, 300, true, 0, labelProvider);
 	}
 	
+	/**
+	 * Create the tool-bar
+	 * 
+	 * @param parent the parent composite
+	 * @param classFilter the classification filter
+	 */
+	protected void createToolbar(Composite parent, ClassificationFilter classFilter) {
+		ToolBar toolBar = new ToolBar(parent, SWT.FLAT | SWT.WRAP);
+		
+		ToolBarManager manager = new ToolBarManager(toolBar);
+		
+		manager.add(new ClassificationFilterAction(
+				Classification.ABSTRACT_FT, 
+				Messages.ModelNavigationView_2, 
+				Messages.ModelNavigationView_3,
+				"/icons/see_abstract_ft.png", 
+				classFilter));
+		
+		manager.add(new ClassificationFilterAction(
+				Classification.TYPE, 
+				Messages.ModelNavigationView_PropertyHide, 
+				Messages.ModelNavigationView_PropertyShow, 
+				"/icons/see_property_type.gif", 
+				classFilter));
+		
+		manager.add(new Separator());
+		
+		manager.add(new ClassificationFilterAction(
+				Classification.STRING_PROPERTY, 
+				Messages.ModelNavigationView_StringHide, 
+				Messages.ModelNavigationView_StringShow, 
+				"/icons/see_string_attribute.png", 
+				classFilter));
+		
+		manager.add(new ClassificationFilterAction(
+				Classification.NUMERIC_PROPERTY, 
+				Messages.ModelNavigationView_NumericHide, 
+				Messages.ModelNavigationView_NumericShow, 
+				"/icons/see_number_attribute.png", 
+				classFilter));
+		
+		manager.add(new ClassificationFilterAction(
+				Classification.GEOMETRIC_PROPERTY, 
+				Messages.ModelNavigationView_GeometryHide, 
+				Messages.ModelNavigationView_GeometryShow, 
+				"/icons/see_geometry_attribute.png", 
+				classFilter));
+		
+		manager.add(new ClassificationFilterAction(
+				Classification.COMPLEX_PROPERTY, 
+				"Hide complex properties", 
+				"Show complex properties",
+				"/icons/see_property_type.gif", 
+				classFilter));
+		
+		manager.update(false);
+	}
+
 	/**
 	 * Get the schema
 	 * @return the schema

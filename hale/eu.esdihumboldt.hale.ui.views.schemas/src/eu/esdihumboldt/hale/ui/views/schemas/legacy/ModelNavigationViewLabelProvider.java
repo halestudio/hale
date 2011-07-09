@@ -9,7 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.ui.views.schemas.internal;
+package eu.esdihumboldt.hale.ui.views.schemas.legacy;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -46,6 +46,7 @@ import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
 import eu.esdihumboldt.hale.ui.style.helper.StyleHelper;
 import eu.esdihumboldt.hale.ui.util.swing.SwingRcpUtilities;
 import eu.esdihumboldt.hale.ui.util.viewer.TipProvider;
+import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.ext.ITransformation;
 

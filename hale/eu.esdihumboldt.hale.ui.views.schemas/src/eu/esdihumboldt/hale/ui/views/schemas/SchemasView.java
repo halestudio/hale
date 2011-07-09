@@ -251,9 +251,6 @@ public class SchemasView extends ViewPart {
 			}
 		});
 		
-//		final PatternViewFilter sourceSchemaFilter = new PatternViewFilter();
-//		final PatternViewFilter targetSchemaFilter = new PatternViewFilter();
-
 		Composite modelComposite = new Composite(_parent, SWT.BEGINNING);
 		GridLayout layout = new GridLayout(3, false);
 		layout.verticalSpacing = 3;
