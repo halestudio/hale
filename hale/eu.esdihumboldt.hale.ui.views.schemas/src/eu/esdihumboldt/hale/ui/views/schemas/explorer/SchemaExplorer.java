@@ -22,6 +22,7 @@ import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 import eu.esdihumboldt.hale.schema.model.TypeIndex;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TreePathProviderAdapter;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeIndexContentProvider;
 import eu.esdihumboldt.hale.ui.util.viewer.ColumnBrowserTip;
@@ -64,6 +65,8 @@ public class SchemaExplorer {
 				new TypeIndexContentProvider(tree)));
 		tree.getControl().setLayoutData(GridDataFactory.fillDefaults().
 				grab(true, true).create());
+		
+		tree.setComparator(new DefinitionComparator());
 		
 		//TODO add delay for tooltip
 		new ColumnBrowserTip(tree, 400, 300, true, 0, labelProvider);
