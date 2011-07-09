@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.dialogs.PatternFilter;
 
@@ -90,7 +91,8 @@ public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
 	}
 
 	/**
-	 * Only implemented because of use with {@link PatternFilter}
+	 * Only implemented because of use with {@link PatternFilter} and
+	 * {@link ViewerComparator}
 	 * 
 	 * @see ILabelProvider#getImage(Object)
 	 */
@@ -100,7 +102,8 @@ public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
 	}
 
 	/**
-	 * Only implemented for use with {@link PatternFilter}
+	 * Only implemented for use with {@link PatternFilter} and 
+	 * {@link ViewerComparator}
 	 * 
 	 * @see ILabelProvider#getText(Object)
 	 */

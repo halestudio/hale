@@ -26,6 +26,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 
 /**
@@ -52,6 +53,9 @@ public class DefinitionInstanceTreeViewer {
 		treeViewer = new TreeViewer(parent, SWT.SINGLE | SWT.FULL_SELECTION | SWT.BORDER);
 		
 		treeViewer.setContentProvider(new TypeDefinitionContentProvider(treeViewer));
+		treeViewer.setLabelProvider(new DefinitionLabelProvider());
+		
+		treeViewer.setComparator(new DefinitionComparator());
 		
 		treeViewer.getTree().setHeaderVisible(true);
 		treeViewer.getTree().setLinesVisible(true);

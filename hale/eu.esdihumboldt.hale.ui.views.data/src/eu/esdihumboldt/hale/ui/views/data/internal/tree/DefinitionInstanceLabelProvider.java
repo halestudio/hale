@@ -25,7 +25,6 @@ import eu.esdihumboldt.hale.instance.model.Group;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.ui.common.definition.DefinitionImages;
 
 /**
