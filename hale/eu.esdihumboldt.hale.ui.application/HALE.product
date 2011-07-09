@@ -36,10 +36,10 @@
       <plugin id="com.hp.hpl.jena"/>
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="com.onespatial.jrc.tns.hale.rifexport"/>
+      <plugin id="com.onespatial.jrc.tns.hale.rifexport" fragment=""/>
       <plugin id="com.onespatial.jrc.tns.jaxb.rifprd"/>
-      <plugin id="com.onespatial.jrc.tns.oml_to_rif"/>
-      <plugin id="com.onespatial.jrc.tns.oml_to_rif.test"/>
+      <plugin id="com.onespatial.jrc.tns.oml_to_rif" fragment=""/>
+      <plugin id="com.onespatial.jrc.tns.oml_to_rif.test" fragment=""/>
       <plugin id="com.orientechnologies.orient"/>
       <plugin id="com.springsource.com.sun.xml.bind"/>
       <plugin id="com.springsource.com.sun.xml.fastinfoset"/>
@@ -83,13 +83,14 @@
       <plugin id="eu.esdihumboldt.hale.cache.ui"/>
       <plugin id="eu.esdihumboldt.hale.codelist"/>
       <plugin id="eu.esdihumboldt.hale.codelist.io.xml"/>
+      <plugin id="eu.esdihumboldt.hale.codelist.io.xml.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.codelist.ui"/>
       <plugin id="eu.esdihumboldt.hale.core"/>
       <plugin id="eu.esdihumboldt.hale.core.test" fragment="true"/>
-      <plugin id="eu.esdihumboldt.hale.csvexporter"/>
+      <plugin id="eu.esdihumboldt.hale.csvexporter" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.gmlparser"/>
       <plugin id="eu.esdihumboldt.hale.instance"/>
-      <plugin id="eu.esdihumboldt.hale.instanceprovider"/>
+      <plugin id="eu.esdihumboldt.hale.instanceprovider" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.io.gml"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.ui"/>
@@ -105,8 +106,8 @@
       <plugin id="eu.esdihumboldt.hale.orient.embedded.test"/>
       <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
-      <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.core"/>
-      <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.generic"/>
+      <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.core" fragment=""/>
+      <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.generic" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.schema"/>
       <plugin id="eu.esdihumboldt.hale.schemaprovider"/>
       <plugin id="eu.esdihumboldt.hale.ui"/>
@@ -118,7 +119,7 @@
       <plugin id="eu.esdihumboldt.hale.ui.views.graph" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.ui.views.map" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.ui.views.mapping" fragment=""/>
-      <plugin id="eu.esdihumboldt.hale.ui.views.report"/>
+      <plugin id="eu.esdihumboldt.hale.ui.views.report" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.ui.views.schemas"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.tasks" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.userstatus.config" fragment="true"/>

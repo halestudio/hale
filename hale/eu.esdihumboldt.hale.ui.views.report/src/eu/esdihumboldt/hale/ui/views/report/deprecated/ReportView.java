@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.views.properties.tabbed.ITabItem;
 
 import eu.esdihumboldt.hale.core.report.Message;
 import eu.esdihumboldt.hale.core.report.Report;
@@ -182,46 +181,6 @@ class ContentProvider implements IStructuredContentProvider {
 		// TODO Auto-generated method stub
 		System.err.println("ContentProvider.getElements()");
 		return null;
-	}
-	
-}
-
-class ReportTabItem implements ITabItem {
-
-	/**
-	 * @see org.eclipse.ui.views.properties.tabbed.ITabItem#getImage()
-	 */
-	@Override
-	public Image getImage() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * @see org.eclipse.ui.views.properties.tabbed.ITabItem#getText()
-	 */
-	@Override
-	public String getText() {
-		// TODO Auto-generated method stub
-		return "lololol";
-	}
-
-	/**
-	 * @see org.eclipse.ui.views.properties.tabbed.ITabItem#isSelected()
-	 */
-	@Override
-	public boolean isSelected() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/**
-	 * @see org.eclipse.ui.views.properties.tabbed.ITabItem#isIndented()
-	 */
-	@Override
-	public boolean isIndented() {
-		// TODO Auto-generated method stub
-		return false;
 	}
 	
 }
