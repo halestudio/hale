@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            class="eu.esdihumboldt.hale.ui.views.schemas.ModelNavigationView"
+            class="eu.esdihumboldt.hale.ui.views.schemas.SchemasView"
             icon="icons/schema.gif"
             id="eu.esdihumboldt.hale.ui.views.schemas"
             name="%view.schemaExplorer.name">

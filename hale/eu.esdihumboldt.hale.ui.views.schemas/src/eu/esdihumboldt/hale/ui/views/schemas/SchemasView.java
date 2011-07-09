@@ -45,7 +45,7 @@ import eu.esdihumboldt.hale.ui.views.schemas.explorer.SchemaExplorer;
  * @author Thorsten Reitz, Simon Templer
  * @version $Id$
  */
-public class ModelNavigationView extends ViewPart {
+public class SchemasView extends ViewPart {
 
 //	/**
 	//	 * Function contribution that always uses this view's selection
