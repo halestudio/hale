@@ -14,9 +14,12 @@ package eu.esdihumboldt.hale.ui.views.schemas.explorer;
 
 import java.text.MessageFormat;
 
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.dialogs.PatternFilter;
 
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.Definition;
@@ -29,7 +32,7 @@ import eu.esdihumboldt.hale.ui.util.viewer.TipProvider;
  * @author Simon Templer
  */
 public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
-		implements TipProvider {
+		implements TipProvider, ILabelProvider {
 	
 	private final DefinitionLabelProvider defaultLabels = new DefinitionLabelProvider();
 
@@ -81,6 +84,30 @@ public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
 			if (description != null && !description.isEmpty()) {
 				return description;
 			}
+		}
+		
+		return null;
+	}
+
+	/**
+	 * Only implemented because of use with {@link PatternFilter}
+	 * 
+	 * @see ILabelProvider#getImage(Object)
+	 */
+	@Override
+	public Image getImage(Object element) {
+		return null;
+	}
+
+	/**
+	 * Only implemented for use with {@link PatternFilter}
+	 * 
+	 * @see ILabelProvider#getText(Object)
+	 */
+	@Override
+	public String getText(Object element) {
+		if (element instanceof Definition<?>) {
+			return ((Definition<?>) element).getDisplayName();
 		}
 		
 		return null;

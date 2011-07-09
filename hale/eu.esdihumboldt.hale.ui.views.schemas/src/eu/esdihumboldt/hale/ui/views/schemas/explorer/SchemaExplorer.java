@@ -18,10 +18,15 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.dialogs.FilteredTree;
+import org.eclipse.ui.dialogs.PatternFilter;
 
 import eu.esdihumboldt.hale.schema.model.TypeIndex;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.TreePathProviderAdapter;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeIndexContentProvider;
 import eu.esdihumboldt.hale.ui.util.viewer.ColumnBrowserTip;
+import eu.esdihumboldt.hale.ui.views.schemas.explorer.tree.TreePathFilteredTree;
+import eu.esdihumboldt.hale.ui.views.schemas.explorer.tree.TreePathPatternFilter;
 
 /**
  * Explorer for schema definitions
@@ -48,11 +53,17 @@ public class SchemaExplorer {
 		//TODO filter stuff?!
 		
 		// create tree viewer
-		tree = new TreeViewer(main, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER); //XXX for now not lazy XXX | SWT.VIRTUAL);
+		PatternFilter patternFilter = new TreePathPatternFilter();
+		final FilteredTree filteredTree = new TreePathFilteredTree(main, SWT.MULTI
+	            | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
+		
+		tree = filteredTree.getViewer();
+		//tree = new TreeViewer(main, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER); //XXX for now not lazy XXX | SWT.VIRTUAL);
 		tree.setUseHashlookup(true);
 		SchemaExplorerLabelProvider labelProvider = new SchemaExplorerLabelProvider();
 		tree.setLabelProvider(labelProvider );
-		tree.setContentProvider(new TypeIndexContentProvider(tree));
+		tree.setContentProvider(new TreePathProviderAdapter(
+				new TypeIndexContentProvider(tree)));
 		tree.getControl().setLayoutData(GridDataFactory.fillDefaults().
 				grab(true, true).create());
 		
@@ -92,37 +103,5 @@ public class SchemaExplorer {
 	public Control getControl() {
 		return main;
 	}
-	
-//	/**
-//	 * A helper method for setting up the two SchemaExplorers.
-//	 * 
-//	 * @param modelComposite
-//	 *            the parent {@link Composite} to use.
-//	 * @param schemaType the viewer type
-//	 * @return a {@link TreeViewer} with the currently loaded schema.
-//	 */
-//	private TreeViewer schemaExplorerSetup(Composite modelComposite, final SchemaSpaceID schemaType) {
-//		PatternFilter patternFilter = new PatternFilter();
-//	    final FilteredTree filteredTree = new FilteredTree(modelComposite, SWT.MULTI
-//	            | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
-//	    TreeViewer schemaViewer = filteredTree.getViewer();
-//	    // set the default content provider, settings must match initial action state (be careful: [asIs, invert, invert])
-//		schemaViewer.setContentProvider(new ConfigurableModelContentProvider(false, false, true));
-//		ModelNavigationViewLabelProvider labelProvider = new ModelNavigationViewLabelProvider();
-//		schemaViewer.setLabelProvider(labelProvider);
-//		schemaViewer.setInput(schemaItemService.getRoot(schemaType));
-//       schemaViewer
-//				.addSelectionChangedListener(new ISelectionChangedListener() {
-//					@Override
-//					public void selectionChanged(SelectionChangedEvent event) {
-//						updateSelection();
-//					}
-//				});
-//       
-//       // add tool tip
-//		new ColumnBrowserTip(schemaViewer, 400, 300, true, 0, labelProvider);
-//       
-//		return schemaViewer;
-//	}
 	
 }
