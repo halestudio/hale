@@ -263,7 +263,7 @@ public class SchemasView extends ViewPart {
 //				targetSchemaFilter);
 
 		// source schema toolbar, filter and explorer
-		sourceExplorer = new SchemaExplorer(modelComposite);
+		sourceExplorer = new SchemaExplorer(modelComposite, "Source");
 		sourceExplorer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
 //		List<AbstractContentProviderAction> sourceContentActions = 
@@ -336,7 +336,7 @@ public class SchemasView extends ViewPart {
 //		});
 
 		// target schema toolbar, filter and explorer
-		targetExplorer = new SchemaExplorer(modelComposite);
+		targetExplorer = new SchemaExplorer(modelComposite, "Target");
 		targetExplorer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
 //		List<AbstractContentProviderAction> targetContentActions = 
@@ -454,68 +454,6 @@ public class SchemasView extends ViewPart {
 //				}
 //			});
 //		}
-//	}
-
-//	private List<SimpleToggleAction> getToggleActions(PatternViewFilter pvf) {
-//		List<SimpleToggleAction> result = new ArrayList<SimpleToggleAction>();
-//		result.add(new SimpleToggleAction(TreeObjectType.ABSTRACT_FT, 
-//				Messages.ModelNavigationView_2, Messages.ModelNavigationView_3,  //$NON-NLS-1$ //$NON-NLS-2$
-//				"/icons/see_abstract_ft.png", pvf)); //$NON-NLS-1$
-//		result.add(new SimpleToggleAction(TreeObjectType.PROPERTY_TYPE, 
-//				Messages.ModelNavigationView_PropertyHide, Messages.ModelNavigationView_PropertyShow, 
-//				"/icons/see_property_type.gif", pvf)); //$NON-NLS-1$
-//		result.add(new SimpleToggleAction(TreeObjectType.STRING_ATTRIBUTE, 
-//				Messages.ModelNavigationView_StringHide, Messages.ModelNavigationView_StringShow, 
-//				"/icons/see_string_attribute.png", pvf)); //$NON-NLS-1$
-//		result.add(new SimpleToggleAction(TreeObjectType.GEOMETRIC_ATTRIBUTE, 
-//				Messages.ModelNavigationView_GeometryHide, Messages.ModelNavigationView_GeometryShow, 
-//				"/icons/see_geometry_attribute.png", pvf)); //$NON-NLS-1$
-//		result.add(new SimpleToggleAction(TreeObjectType.NUMERIC_ATTRIBUTE, 
-//				Messages.ModelNavigationView_NumericHide, Messages.ModelNavigationView_NumericShow, 
-//				"/icons/see_number_attribute.png", pvf)); //$NON-NLS-1$
-//		return result;
-//	}
-
-//	private List<AbstractContentProviderAction> initSchemaExplorerToolBar(Composite modelComposite, 
-//			PatternViewFilter pvf, List<SimpleToggleAction> toggleActions, String caption, String ident) {
-//
-//		Composite bar = new Composite(modelComposite, SWT.NONE);
-//		GridLayout gridLayout = new GridLayout(2, false);
-//		gridLayout.marginWidth = 0;
-//		gridLayout.marginHeight = 0;
-//		gridLayout.verticalSpacing = 0;
-//		gridLayout.horizontalSpacing = 10;
-//		bar.setLayout(gridLayout);
-//		
-//		Label captionLabel = new Label(bar, SWT.NONE);
-//		captionLabel.setText(caption);
-//
-//		// create toolbar
-//		ToolBar schemaFilterBar = new ToolBar(bar, SWT.FLAT
-//				| SWT.WRAP);
-//		schemaFilterBar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-//		
-//		List<AbstractContentProviderAction> actions = new ArrayList<AbstractContentProviderAction>();
-//		actions.add(new UseFlatHierarchyAction());
-//		actions.add(new UseInheritanceHierarchyAction());
-//		actions.add(new UseAggregationHierarchyAction());
-//		
-//		// default setting for actions 
-//		actions.get(2).setChecked(true);
-//
-//		ToolBarManager manager = new ToolBarManager(schemaFilterBar);
-//		for (AbstractContentProviderAction action : actions) {
-//			manager.add(action);
-//			action.setCaption(ident);
-//		}
-//		manager.add(new Separator());
-//		for (SimpleToggleAction sta : toggleActions) {
-//			manager.add(sta);
-//			sta.setCaption(ident);
-//		}
-//		manager.update(false);
-//		
-//		return actions;
 //	}
 
 	/**

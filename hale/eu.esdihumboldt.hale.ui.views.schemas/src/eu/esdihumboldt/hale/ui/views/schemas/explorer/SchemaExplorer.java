@@ -18,10 +18,10 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
@@ -50,8 +50,9 @@ public class SchemaExplorer {
 	/**
 	 * Create a schema explorer
 	 * @param parent the parent composite
+	 * @param title the title
 	 */
-	public SchemaExplorer(Composite parent) {
+	public SchemaExplorer(Composite parent, String title) {
 		main = new Composite(parent, SWT.NONE);
 		
 		// set main layout
@@ -60,7 +61,11 @@ public class SchemaExplorer {
 		// create the toolbar composite
 		Composite bar = new Composite(main, SWT.NONE);
 		bar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		bar.setLayout(new FillLayout());
+		bar.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
+		
+		Label titleLabel = new Label(bar, SWT.NONE);
+		titleLabel.setText(title);
+		titleLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false));
 		
 		// create tree viewer
 		PatternFilter patternFilter = new SchemaPatternFilter();
@@ -83,7 +88,8 @@ public class SchemaExplorer {
 		tree.setComparator(new DefinitionComparator());
 		
 		// create the toolbar
-		createToolbar(bar, classFilter);
+		Control toolbar = createToolbar(bar, classFilter);
+		toolbar.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		
 		//TODO add delay for tooltip
 		new ColumnBrowserTip(tree, 400, 300, true, 0, labelProvider);
@@ -94,8 +100,9 @@ public class SchemaExplorer {
 	 * 
 	 * @param parent the parent composite
 	 * @param classFilter the classification filter
+	 * @return the main control of the toolbar
 	 */
-	protected void createToolbar(Composite parent, ClassificationFilter classFilter) {
+	protected Control createToolbar(Composite parent, ClassificationFilter classFilter) {
 		ToolBar toolBar = new ToolBar(parent, SWT.FLAT | SWT.WRAP);
 		
 		ToolBarManager manager = new ToolBarManager(toolBar);
@@ -145,6 +152,8 @@ public class SchemaExplorer {
 				classFilter));
 		
 		manager.update(false);
+		
+		return toolBar;
 	}
 
 	/**
