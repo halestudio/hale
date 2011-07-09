@@ -119,7 +119,8 @@
       <plugin id="eu.esdihumboldt.hale.ui.views.graph" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.ui.views.map" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.ui.views.mapping" fragment=""/>
-      <plugin id="eu.esdihumboldt.hale.ui.views.report" fragment=""/>
+      <plugin id="eu.esdihumboldt.hale.ui.views.properties"/>
+      <plugin id="eu.esdihumboldt.hale.ui.views.report"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.schemas"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.tasks" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.userstatus.config" fragment="true"/>

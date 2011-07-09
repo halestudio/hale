@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -32,6 +33,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
@@ -45,7 +49,7 @@ import eu.esdihumboldt.hale.ui.views.schemas.explorer.SchemaExplorer;
  * @author Thorsten Reitz, Simon Templer
  * @version $Id$
  */
-public class SchemasView extends ViewPart {
+public class SchemasView extends ViewPart implements ITabbedPropertySheetPageContributor {
 
 //	/**
 	//	 * Function contribution that always uses this view's selection
@@ -461,7 +465,7 @@ public class SchemasView extends ViewPart {
 	 */
 	@Override
 	public void setFocus() {
-		// ignore
+		sourceExplorer.getTreeViewer().getControl().setFocus();
 	}
 
 //	/**
@@ -527,6 +531,25 @@ public class SchemasView extends ViewPart {
 //		}
 		
 		super.dispose();
+	}
+
+	/**
+	 * @see ITabbedPropertySheetPageContributor#getContributorId()
+	 */
+	@Override
+	public String getContributorId() {
+		//FIXME use constant instead
+		return "eu.esdihumboldt.hale.ui.views.properties";
+	}
+
+	/**
+	 * @see WorkbenchPart#getAdapter(Class)
+	 */
+	@Override
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+		if (adapter == IPropertySheetPage.class)
+            return new TabbedPropertySheetPage(this);
+        return super.getAdapter(adapter);
 	}
 
 //	/**

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertySections">
+      <propertySections
+            contributorId="eu.esdihumboldt.hale.ui.views.properties">
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionNameSection"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.general.name"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.general">
+            <input
+                  type="eu.esdihumboldt.hale.schema.model.Definition">
+            </input>
+         </propertySection>
+         <propertySection
+               afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.general.name"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionDescriptionSection"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.general.description"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.general">
+            <input
+                  type="eu.esdihumboldt.hale.schema.model.Definition">
+            </input>
+         </propertySection>
+      </propertySections>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
+      <propertyTabs
+            contributorId="eu.esdihumboldt.hale.ui.views.properties">
+         <propertyTab
+               category="eu.esdihumboldt.hale.ui.views.properties.definition"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.general"
+               label="General">
+         </propertyTab>
+      </propertyTabs>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+      <propertyContributor
+            contributorId="eu.esdihumboldt.hale.ui.views.properties"
+            labelProvider="eu.esdihumboldt.hale.ui.views.properties.PropertiesLabelProvider">
+         <propertyCategory
+               category="eu.esdihumboldt.hale.ui.views.properties.definition">
+         </propertyCategory>
+      </propertyContributor>
+   </extension>
+
+</plugin>
