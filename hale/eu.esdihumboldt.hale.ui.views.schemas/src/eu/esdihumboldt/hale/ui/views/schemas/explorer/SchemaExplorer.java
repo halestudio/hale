@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import eu.esdihumboldt.hale.schema.model.TypeIndex;
-import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeIndexContentProvider;
 
 /**
@@ -63,6 +62,14 @@ public class SchemaExplorer {
 	public TypeIndex getSchema() {
 		return schema;
 	}
+	
+	/**
+	 * Get the internal tree viewer of the view
+	 * @return the tree viewer
+	 */
+	public TreeViewer getTreeViewer() {
+		return tree;
+	}
 
 	/**
 	 * Set the schema
@@ -80,5 +87,37 @@ public class SchemaExplorer {
 	public Control getControl() {
 		return main;
 	}
+	
+//	/**
+//	 * A helper method for setting up the two SchemaExplorers.
+//	 * 
+//	 * @param modelComposite
+//	 *            the parent {@link Composite} to use.
+//	 * @param schemaType the viewer type
+//	 * @return a {@link TreeViewer} with the currently loaded schema.
+//	 */
+//	private TreeViewer schemaExplorerSetup(Composite modelComposite, final SchemaSpaceID schemaType) {
+//		PatternFilter patternFilter = new PatternFilter();
+//	    final FilteredTree filteredTree = new FilteredTree(modelComposite, SWT.MULTI
+//	            | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
+//	    TreeViewer schemaViewer = filteredTree.getViewer();
+//	    // set the default content provider, settings must match initial action state (be careful: [asIs, invert, invert])
+//		schemaViewer.setContentProvider(new ConfigurableModelContentProvider(false, false, true));
+//		ModelNavigationViewLabelProvider labelProvider = new ModelNavigationViewLabelProvider();
+//		schemaViewer.setLabelProvider(labelProvider);
+//		schemaViewer.setInput(schemaItemService.getRoot(schemaType));
+//       schemaViewer
+//				.addSelectionChangedListener(new ISelectionChangedListener() {
+//					@Override
+//					public void selectionChanged(SelectionChangedEvent event) {
+//						updateSelection();
+//					}
+//				});
+//       
+//       // add tool tip
+//		new ColumnBrowserTip(schemaViewer, 400, 300, true, 0, labelProvider);
+//       
+//		return schemaViewer;
+//	}
 	
 }

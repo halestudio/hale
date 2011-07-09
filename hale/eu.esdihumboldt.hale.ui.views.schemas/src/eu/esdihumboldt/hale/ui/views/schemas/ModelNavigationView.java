@@ -12,6 +12,17 @@
 package eu.esdihumboldt.hale.ui.views.schemas;
 
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -34,33 +45,137 @@ import eu.esdihumboldt.hale.ui.views.schemas.explorer.SchemaExplorer;
  * @author Thorsten Reitz, Simon Templer
  * @version $Id$
  */
-public class ModelNavigationView extends ViewPart /*implements
-		ISelectionProvider*/ {
+public class ModelNavigationView extends ViewPart {
 
 //	/**
-//	 * Function contribution that always uses this view's selection
-//	 */
-//	private class SchemaFunctionContribution extends FunctionWizardContribution {
-//
-//		/**
-//		 * Default constructor
-//		 */
-//		public SchemaFunctionContribution() {
-//			super(true);
-//		}
-//
-//		/**
-//		 * @see FunctionWizardContribution#getSelection()
-//		 */
-//		@Override
-//		protected ISelection getSelection() {
-//			return currentSelection;
-//		}
-//
-//	}
+	//	 * Function contribution that always uses this view's selection
+	//	 */
+	//	private class SchemaFunctionContribution extends FunctionWizardContribution {
+	//
+	//		/**
+	//		 * Default constructor
+	//		 */
+	//		public SchemaFunctionContribution() {
+	//			super(true);
+	//		}
+	//
+	//		/**
+	//		 * @see FunctionWizardContribution#getSelection()
+	//		 */
+	//		@Override
+	//		protected ISelection getSelection() {
+	//			return currentSelection;
+	//		}
+	//
+	//	}
 
 	//private static Logger _log = Logger.getLogger(ModelNavigationView.class);
-	
+
+	/**
+	 * Selection provider combining selections from source and target schema explorers
+	 */
+	private class SchemasSelectionProvider implements ISelectionProvider, ISelectionChangedListener {
+		
+		/**
+		 * The selection listeners
+		 */
+		private final Set<ISelectionChangedListener> listeners = new HashSet<ISelectionChangedListener>();
+
+		/**
+		 * The current selection
+		 */
+		private ISelection currentSelection;
+
+		/**
+		 * Default constructor
+		 */
+		public SchemasSelectionProvider() {
+			super();
+			
+			sourceExplorer.getTreeViewer().addSelectionChangedListener(this);
+			targetExplorer.getTreeViewer().addSelectionChangedListener(this);
+		}
+
+		/**
+		 * @see ISelectionProvider#addSelectionChangedListener(ISelectionChangedListener)
+		 */
+		@Override
+		public void addSelectionChangedListener(
+				ISelectionChangedListener listener) {
+			listeners.add(listener);
+		}
+
+		/**
+		 * @see ISelectionProvider#getSelection()
+		 */
+		@Override
+		public ISelection getSelection() {
+			return currentSelection;
+		}
+
+		/**
+		 * @see ISelectionProvider#removeSelectionChangedListener(ISelectionChangedListener)
+		 */
+		@Override
+		public void removeSelectionChangedListener(
+				ISelectionChangedListener listener) {
+			listeners.remove(listener);
+		}
+
+		/**
+		 * @see ISelectionProvider#setSelection(ISelection)
+		 */
+		@Override
+		public void setSelection(ISelection selection) {
+			this.currentSelection = selection;
+		}
+		
+		/**
+		 * Update the selection and fire a selection change
+		 */
+		@SuppressWarnings("unchecked")
+		private void updateSelection() {
+			// combine the selections of both viewers
+			//XXX for now using a StructuredSelection
+			
+			// source items
+			IStructuredSelection sourceSelection = (IStructuredSelection) sourceExplorer.getTreeViewer().getSelection();
+			List<Object> elements = new ArrayList<Object>(sourceSelection.toList());
+			
+			// target items
+			IStructuredSelection targetSelection = (IStructuredSelection) targetExplorer.getTreeViewer().getSelection();
+			elements.addAll(targetSelection.toList());
+	 		
+			StructuredSelection selection = new StructuredSelection(elements);
+			fireSelectionChange(selection);
+		}
+		
+		/**
+		 * Sets the selection to the given selection and fires a selection change
+		 * 
+		 * @param selection the selection to set 
+		 */
+		protected void fireSelectionChange(ISelection selection) {
+			this.currentSelection = selection;
+			
+			SelectionChangedEvent event = 
+				new SelectionChangedEvent(this, currentSelection);
+			
+			for (ISelectionChangedListener listener : listeners) {
+				listener.selectionChanged(event);
+			}
+		}
+
+		/**
+		 * @see ISelectionChangedListener#selectionChanged(SelectionChangedEvent)
+		 */
+		@Override
+		public void selectionChanged(SelectionChangedEvent event) {
+			updateSelection();
+		}
+
+	}
+
 	/**
 	 * The view id
 	 */
@@ -82,13 +197,6 @@ public class ModelNavigationView extends ViewPart /*implements
 	 */
 	private SchemaService schemaService;
 
-//	/**
-//	 * The selection listeners
-//	 */
-//	private final Set<ISelectionChangedListener> listeners = new HashSet<ISelectionChangedListener>();
-//
-//	private ISelection currentSelection;
-//	
 //	private Image functionImage;
 //	
 //	private Image augmentImage;
@@ -142,9 +250,6 @@ public class ModelNavigationView extends ViewPart /*implements
 				});
 			}
 		});
-		
-		// register as selection provider
-//		getSite().setSelectionProvider(this);
 		
 //		final PatternViewFilter sourceSchemaFilter = new PatternViewFilter();
 //		final PatternViewFilter targetSchemaFilter = new PatternViewFilter();
@@ -330,6 +435,9 @@ public class ModelNavigationView extends ViewPart /*implements
 		// initialization of explorers
 		sourceExplorer.setSchema(schemaService.getSchemas(SchemaSpaceID.SOURCE));
 		targetExplorer.setSchema(schemaService.getSchemas(SchemaSpaceID.TARGET));
+		
+		// register selection provider
+		getSite().setSelectionProvider(new SchemasSelectionProvider());
 	}
 
 //	/**
@@ -413,38 +521,6 @@ public class ModelNavigationView extends ViewPart /*implements
 //		return actions;
 //	}
 
-//	/**
-//	 * A helper method for setting up the two SchemaExplorers.
-//	 * 
-//	 * @param modelComposite
-//	 *            the parent {@link Composite} to use.
-//	 * @param schemaType the viewer type
-//	 * @return a {@link TreeViewer} with the currently loaded schema.
-//	 */
-//	private TreeViewer schemaExplorerSetup(Composite modelComposite, final SchemaSpaceID schemaType) {
-//		PatternFilter patternFilter = new PatternFilter();
-//	    final FilteredTree filteredTree = new FilteredTree(modelComposite, SWT.MULTI
-//	            | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
-//	    TreeViewer schemaViewer = filteredTree.getViewer();
-//	    // set the default content provider, settings must match initial action state (be careful: [asIs, invert, invert])
-//		schemaViewer.setContentProvider(new ConfigurableModelContentProvider(false, false, true));
-//		ModelNavigationViewLabelProvider labelProvider = new ModelNavigationViewLabelProvider();
-//		schemaViewer.setLabelProvider(labelProvider);
-//		schemaViewer.setInput(schemaItemService.getRoot(schemaType));
-//        schemaViewer
-//				.addSelectionChangedListener(new ISelectionChangedListener() {
-//					@Override
-//					public void selectionChanged(SelectionChangedEvent event) {
-//						updateSelection();
-//					}
-//				});
-//        
-//        // add tool tip
-//		new ColumnBrowserTip(schemaViewer, 400, 300, true, 0, labelProvider);
-//        
-//		return schemaViewer;
-//	}
-
 	/**
 	 * @see WorkbenchPart#setFocus()
 	 */
@@ -472,40 +548,6 @@ public class ModelNavigationView extends ViewPart /*implements
 //	}
 
 //	/**
-//	 * Update the selection and fire a selection change
-//	 */
-//	@SuppressWarnings("unchecked")
-//	private void updateSelection() {
-//		SchemaSelection selection = new SchemaSelection();
-//		
-//		// source items
-//		IStructuredSelection sourceSelection = (IStructuredSelection) sourceSchemaViewer.getSelection();
-//		if (sourceSelection != null) {
-//			Iterator<Object> it = sourceSelection.iterator();
-//			while (it.hasNext()) {
-//				Object item = it.next();
-//				if (item != null && item instanceof SchemaItem) {
-//					selection.addSourceItem((SchemaItem) item);
-//				}
-//			}
-//		}
-//		
-//		// target items
-//		IStructuredSelection targetSelection = (IStructuredSelection) targetSchemaViewer.getSelection();
-//		if (targetSelection != null) {
-//			Iterator<Object> it = targetSelection.iterator();
-//			while (it.hasNext()) {
-//				Object item = it.next();
-//				if (item != null && item instanceof SchemaItem) {
-//					selection.addTargetItem((SchemaItem) item);
-//				}
-//			}
-//		}
-// 		
-//		fireSelectionChange(selection);
-//	}
-	
-//	/**
 //	 * Select the item with representing the given identifier
 //	 * 
 //	 * @param identifier the identifier
@@ -526,55 +568,6 @@ public class ModelNavigationView extends ViewPart /*implements
 //		}
 //	}
 	
-//	/**
-//	 * Sets the selection to the given selection and fires a selection change
-//	 * 
-//	 * @param selection the selection to set 
-//	 */
-//	protected void fireSelectionChange(ISelection selection) {
-//		this.currentSelection = selection;
-//		
-//		SelectionChangedEvent event = 
-//			new SelectionChangedEvent(this, currentSelection);
-//		
-//		for (ISelectionChangedListener listener : listeners) {
-//			listener.selectionChanged(event);
-//		}
-//	}
-
-//	/**
-//	 * @see ISelectionProvider#addSelectionChangedListener(ISelectionChangedListener)
-//	 */
-//	@Override
-//	public void addSelectionChangedListener(ISelectionChangedListener listener) {
-//		listeners.add(listener);
-//	}
-
-//	/**
-//	 * @see ISelectionProvider#getSelection()
-//	 */
-//	@Override
-//	public ISelection getSelection() {
-//		return currentSelection;
-//	}
-
-//	/**
-//	 * @see ISelectionProvider#removeSelectionChangedListener(ISelectionChangedListener)
-//	 */
-//	@Override
-//	public void removeSelectionChangedListener(
-//			ISelectionChangedListener listener) {
-//		listeners.remove(listener);
-//	}
-
-//	/**
-//	 * @see ISelectionProvider#setSelection(ISelection)
-//	 */
-//	@Override
-//	public void setSelection(ISelection selection) {
-//		this.currentSelection = selection;
-//	}
-
 	/**
 	 * @see WorkbenchPart#dispose()
 	 */
