@@ -54,6 +54,7 @@ public class SchemaExplorer {
 		
 		// create tree viewer
 		PatternFilter patternFilter = new SchemaPatternFilter();
+		patternFilter.setIncludeLeadingWildcard(true);
 		final FilteredTree filteredTree = new TreePathFilteredTree(main, SWT.MULTI
 	            | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
 		
