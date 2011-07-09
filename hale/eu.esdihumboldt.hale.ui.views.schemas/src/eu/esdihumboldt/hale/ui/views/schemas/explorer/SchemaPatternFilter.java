@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.ui.views.schemas.explorer.tree.TreePathPatternFilter
  */
 public class SchemaPatternFilter extends TreePathPatternFilter {
 
-	private static final int MAX_LEVELS = 5;
+	private static final int MAX_LEVELS = 8;
 
 	/**
 	 * @see TreePathPatternFilter#allowDescend(TreePath)
