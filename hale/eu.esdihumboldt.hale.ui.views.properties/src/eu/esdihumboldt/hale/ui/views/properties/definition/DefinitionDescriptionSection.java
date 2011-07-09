@@ -52,11 +52,12 @@ public class DefinitionDescriptionSection extends AbstractPropertySection {
 		descriptionText = getWidgetFactory().createText(composite, "", //$NON-NLS-1$ 
 				SWT.MULTI | SWT.V_SCROLL | SWT.WRAP | SWT.BORDER);
 		descriptionText.setEditable(false);
+		//TODO improve layout
 		data = new FormData();
 		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-		data.bottom = new FormAttachment(100, 0);
+		data.bottom = new FormAttachment(100, -ITabbedPropertyConstants.VSPACE);
 		descriptionText.setLayoutData(data);
 
 		CLabel namespaceLabel = getWidgetFactory()

@@ -16,6 +16,7 @@
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.general.name"
                class="eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionDescriptionSection"
+               filter="eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionDescriptionFilter"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.general.description"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.general">
             <input
