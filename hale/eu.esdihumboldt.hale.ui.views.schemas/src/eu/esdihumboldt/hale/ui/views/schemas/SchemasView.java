@@ -132,21 +132,41 @@ public class SchemasView extends PropertiesViewPart {
 		
 		/**
 		 * Update the selection and fire a selection change
+		 * @param sourceFirst if the selected objects from the source shall
+		 *   be added first if the selection is a combination from source and
+		 *   target
 		 */
 		@SuppressWarnings("unchecked")
-		private void updateSelection() {
+		private void updateSelection(boolean sourceFirst) {
 			// combine the selections of both viewers
-			//XXX for now using a StructuredSelection
+			//XXX at least for now using a StructuredSelection
 			
 			// source items
 			IStructuredSelection sourceSelection = (IStructuredSelection) sourceExplorer.getTreeViewer().getSelection();
-			List<Object> elements = new ArrayList<Object>(sourceSelection.toList());
-			
 			// target items
 			IStructuredSelection targetSelection = (IStructuredSelection) targetExplorer.getTreeViewer().getSelection();
-			elements.addAll(targetSelection.toList());
-	 		
-			StructuredSelection selection = new StructuredSelection(elements);
+
+			IStructuredSelection selection;
+			if (sourceSelection.isEmpty()) {
+				selection = targetSelection;
+			}
+			else if (targetSelection.isEmpty()) {
+				selection = sourceSelection;
+			}
+			else {
+				List<Object> elements;
+				if (sourceFirst) {
+					elements = new ArrayList<Object>(sourceSelection.toList());
+					elements.addAll(targetSelection.toList());
+				}
+				else {
+					elements = new ArrayList<Object>(targetSelection.toList());
+					elements.addAll(sourceSelection.toList());
+				}
+				
+				selection = new StructuredSelection(elements);
+			}
+			
 			fireSelectionChange(selection);
 		}
 		
@@ -171,7 +191,7 @@ public class SchemasView extends PropertiesViewPart {
 		 */
 		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
-			updateSelection();
+			updateSelection(event.getSelectionProvider() == sourceExplorer.getTreeViewer());
 		}
 
 	}
