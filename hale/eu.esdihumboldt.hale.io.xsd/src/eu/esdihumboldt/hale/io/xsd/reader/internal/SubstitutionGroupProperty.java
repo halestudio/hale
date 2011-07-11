@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.schema.model.constraint.DisplayName;
 import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.AbstractFlag;
@@ -74,6 +75,8 @@ public class SubstitutionGroupProperty extends LazyGroupPropertyDefinition {
 		setConstraint(property.getConstraint(Cardinality.class));
 		// set cardinality to exactly one for the property
 		property.setConstraint(Cardinality.CC_EXACTLY_ONCE);
+		// set display name to property name
+		setConstraint(new DisplayName(property.getDisplayName()));
 	}
 
 	/**
