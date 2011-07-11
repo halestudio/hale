@@ -276,6 +276,8 @@ public class DefinitionImages {
 			return "geometry_attribute.png"; //$NON-NLS-1$
 		case GROUP:
 			return "package.gif";
+		case CHOICE:
+			return "choice.gif";
 		default:
 			// where no dedicated image is available yet
 			return null;

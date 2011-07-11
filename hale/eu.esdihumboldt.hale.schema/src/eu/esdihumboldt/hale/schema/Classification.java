@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.schema.model.Definition;
 import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
@@ -47,6 +48,8 @@ public enum Classification {
 	GEOMETRIC_PROPERTY,
 	/** Group */
 	GROUP,
+	/** Choice */
+	CHOICE,
 	/** Unknown */
 	UNKNOWN;
 	
@@ -57,6 +60,10 @@ public enum Classification {
 	 */
 	public static Classification getClassification(Definition<?> def) {
 		if (def instanceof GroupPropertyDefinition) {
+			if (((GroupPropertyDefinition) def).getConstraint(ChoiceFlag.class).isEnabled()) {
+				return CHOICE;
+			}
+			
 			return GROUP;
 		}
 		else if (def instanceof PropertyDefinition) {
