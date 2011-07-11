@@ -225,6 +225,9 @@ public class Request {
 			
 			// and add it to the cache
 			cache.put(new Element(link, content));
+			
+			// fetch the file from cache to prevent already closed streams
+			return this.get(uri);
 		} else {
 			content = (String) cache.get(link).getObjectValue();
 			
