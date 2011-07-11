@@ -83,6 +83,8 @@ public class SchemasView extends PropertiesViewPart {
 		 */
 		private ISelection currentSelection;
 
+		private boolean lastSourceFirst = true;
+
 		/**
 		 * Default constructor
 		 */
@@ -134,6 +136,8 @@ public class SchemasView extends PropertiesViewPart {
 		 *   target
 		 */
 		private void updateSelection(boolean sourceFirst) {
+			lastSourceFirst  = sourceFirst;
+			
 			// combine the selections of both viewers
 			//XXX at least for now using a StructuredSelection
 			
@@ -199,6 +203,13 @@ public class SchemasView extends PropertiesViewPart {
 			updateSelection(event.getSelectionProvider() == sourceExplorer.getTreeViewer());
 		}
 
+		/**
+		 * @return the lastSourceFirst
+		 */
+		public boolean isLastSourceFirst() {
+			return lastSourceFirst;
+		}
+
 	}
 
 	/**
@@ -227,6 +238,8 @@ public class SchemasView extends PropertiesViewPart {
 //	private Image augmentImage;
 
 	private SchemaServiceListener schemaListener;
+
+private SchemasSelectionProvider selectionProvider;
 
 //	private HaleServiceListener alignmentListener;
 //
@@ -459,7 +472,7 @@ public class SchemasView extends PropertiesViewPart {
 		targetExplorer.setSchema(schemaService.getSchemas(SchemaSpaceID.TARGET));
 		
 		// register selection provider
-		getSite().setSelectionProvider(new SchemasSelectionProvider());
+		getSite().setSelectionProvider(selectionProvider = new SchemasSelectionProvider());
 	}
 
 //	/**
@@ -486,7 +499,12 @@ public class SchemasView extends PropertiesViewPart {
 	 */
 	@Override
 	public void setFocus() {
-		sourceExplorer.getTreeViewer().getControl().setFocus();
+		if (selectionProvider != null && !selectionProvider.isLastSourceFirst()) {
+			targetExplorer.getTreeViewer().getControl().setFocus();
+		}
+		else {
+			sourceExplorer.getTreeViewer().getControl().setFocus();
+		}
 	}
 
 //	/**
