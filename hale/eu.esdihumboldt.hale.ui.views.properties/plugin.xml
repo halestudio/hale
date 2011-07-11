@@ -7,6 +7,7 @@
             contributorId="eu.esdihumboldt.hale.ui.views.properties">
          <propertySection
                class="eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionNameSection"
+               enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.general.name"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.general">
             <input
@@ -16,6 +17,7 @@
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.general.name"
                class="eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionDescriptionSection"
+               enablesFor="1"
                filter="eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionDescriptionFilter"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.general.description"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.general">
