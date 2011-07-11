@@ -12,9 +12,7 @@
 package eu.esdihumboldt.hale.ui.views.schemas;
 
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jface.viewers.ISelection;
@@ -22,7 +20,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -136,7 +133,6 @@ public class SchemasView extends PropertiesViewPart {
 		 *   be added first if the selection is a combination from source and
 		 *   target
 		 */
-		@SuppressWarnings("unchecked")
 		private void updateSelection(boolean sourceFirst) {
 			// combine the selections of both viewers
 			//XXX at least for now using a StructuredSelection
@@ -147,25 +143,34 @@ public class SchemasView extends PropertiesViewPart {
 			IStructuredSelection targetSelection = (IStructuredSelection) targetExplorer.getTreeViewer().getSelection();
 
 			IStructuredSelection selection;
-			if (sourceSelection.isEmpty()) {
-				selection = targetSelection;
-			}
-			else if (targetSelection.isEmpty()) {
-				selection = sourceSelection;
-			}
-			else {
-				List<Object> elements;
-				if (sourceFirst) {
-					elements = new ArrayList<Object>(sourceSelection.toList());
-					elements.addAll(targetSelection.toList());
-				}
-				else {
-					elements = new ArrayList<Object>(targetSelection.toList());
-					elements.addAll(sourceSelection.toList());
-				}
-				
-				selection = new StructuredSelection(elements);
-			}
+			
+			/*
+			 * XXX because there are problem with the properties view if we 
+			 * combine the objects here (multiple objects in the selection), 
+			 * we return only one of the original selections
+			 */
+			selection = (sourceFirst)?(sourceSelection):(targetSelection);
+			
+			//XXX deactivated
+//			if (sourceSelection.isEmpty()) {
+//				selection = targetSelection;
+//			}
+//			else if (targetSelection.isEmpty()) {
+//				selection = sourceSelection;
+//			}
+//			else {
+//				List<Object> elements;
+//				if (sourceFirst) {
+//					elements = new ArrayList<Object>(sourceSelection.toList());
+//					elements.addAll(targetSelection.toList());
+//				}
+//				else {
+//					elements = new ArrayList<Object>(targetSelection.toList());
+//					elements.addAll(sourceSelection.toList());
+//				}
+//				
+//				selection = new StructuredSelection(elements);
+//			}
 			
 			fireSelectionChange(selection);
 		}
