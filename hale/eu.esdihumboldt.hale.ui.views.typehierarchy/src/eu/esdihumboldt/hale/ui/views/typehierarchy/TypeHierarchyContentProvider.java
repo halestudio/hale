@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.ui.views.typehierarchy;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jface.viewers.IContentProvider;
@@ -31,32 +32,38 @@ public class TypeHierarchyContentProvider implements ITreeContentProvider {
 	/**
 	 * Parent path for a type definition
 	 */
-	public class ParentPath {
+	public static class ParentPath {
 		
 		private final List<TypeDefinition> path;
+		
+		private final TypeDefinition main;
 
 		/**
-		 * Create a parent path for the give type
-		 * @param type the type definition
+		 * Create a parent path for the given type
+		 * @param main the main type definition
 		 */
-		public ParentPath(TypeDefinition type) {
+		public ParentPath(TypeDefinition main) {
+			this.main = main;
+			
 			path = new ArrayList<TypeDefinition>();
 			
-			while (type != null) {
-				path.add(0, type);
-				type = type.getSuperType();
+			while (main != null) {
+				path.add(0, main);
+				main = main.getSuperType();
 			}
 		}
 		
 		/**
 		 * Create a parent path
 		 * @param path the path
+		 * @param main the main type
 		 */
-		private ParentPath(List<TypeDefinition> path) {
+		private ParentPath(List<TypeDefinition> path, TypeDefinition main) {
 			if (path.isEmpty()) {
 				throw new IllegalArgumentException("Path may not be empty");
 			}
 			
+			this.main = main;
 			this.path = path;
 		}
 
@@ -80,7 +87,86 @@ public class TypeHierarchyContentProvider implements ITreeContentProvider {
 			if (path.isEmpty() || path.size() < 2) {
 				return null;
 			}
-			return new ParentPath(path.subList(1, path.size()));
+			return new ParentPath(path.subList(1, path.size()), main);
+		}
+		
+		/**
+		 * Create the sub-paths of the current path
+		 * @return the sub-paths
+		 */
+		public List<ParentPath> createSubPaths() {
+			ParentPath tail = getTail();
+			if (tail != null) {
+				return Collections.singletonList(tail);
+			}
+			
+			List<ParentPath> paths = new ArrayList<ParentPath>();
+			for (TypeDefinition subType : getHead().getSubTypes()) {
+				paths.add(new ParentPath(Collections.singletonList(subType), main));
+			}
+			return paths;
+		}
+		
+		/**
+		 * Determines if this path represents the main type.
+		 * @return if this path represents the main type
+		 */
+		public boolean isMainType() {
+			return main.equals(getHead());
+		}
+
+		/**
+		 * Get the main type.
+		 * @return the main type
+		 */
+		public TypeDefinition getMainType() {
+			return main;
+		}
+		
+		/**
+		 * Get the path that only represents the main type.
+		 * @return the path that represents the main type
+		 */
+		public ParentPath getMainPath() {
+			return new ParentPath(Collections.singletonList(getMainType()), 
+					getMainType());
+		}
+
+		/**
+		 * @see Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((main == null) ? 0 : main.hashCode());
+			result = prime * result + ((path == null) ? 0 : path.hashCode());
+			return result;
+		}
+
+		/**
+		 * @see Object#equals(Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			ParentPath other = (ParentPath) obj;
+			if (main == null) {
+				if (other.main != null)
+					return false;
+			} else if (!main.equals(other.main))
+				return false;
+			if (path == null) {
+				if (other.path != null)
+					return false;
+			} else if (!path.equals(other.path))
+				return false;
+			return true;
 		}
 
 	}
@@ -114,7 +200,7 @@ public class TypeHierarchyContentProvider implements ITreeContentProvider {
 	 * @param inputElement the input element
 	 * @return the parent path or <code>null</code>
 	 */
-	private ParentPath createPath(Object inputElement) {
+	public static ParentPath createPath(Object inputElement) {
 		if (inputElement instanceof TypeDefinition) {
 			return new ParentPath((TypeDefinition) inputElement);
 		}
@@ -133,17 +219,7 @@ public class TypeHierarchyContentProvider implements ITreeContentProvider {
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof ParentPath) {
 			ParentPath path = (ParentPath) parentElement;
-			ParentPath tail = path.getTail();
-			if (tail != null) {
-				return new Object[]{tail};
-			}
-			else {
-				parentElement = path.getHead();
-			}
-		}
-		
-		if (parentElement instanceof TypeDefinition) {
-			return ((TypeDefinition) parentElement).getSubTypes().toArray();
+			return path.createSubPaths().toArray();
 		}
 		
 		throw new IllegalArgumentException("Given element not supported in type hierarchy tree.");
@@ -193,6 +269,22 @@ public class TypeHierarchyContentProvider implements ITreeContentProvider {
 	 */
 	@Override
 	public Object getParent(Object element) {
+		if (element instanceof ParentPath) {
+			ParentPath path = (ParentPath) element;
+			
+			TypeDefinition superType = path.getHead().getSuperType();
+			if (superType == null) {
+				// root -> parent is child
+				return path.getMainType();
+			}
+			else {
+				// create parent path
+				List<TypeDefinition> list = new ArrayList<TypeDefinition>(path.path);
+				list.add(0, superType);
+				return new ParentPath(list, path.getMainType());
+			}
+		}
+		
 		// don't know at this point if the parent should be a parent path or a type definition
 		return null;
 	}

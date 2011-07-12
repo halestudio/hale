@@ -63,7 +63,7 @@ public class TypeHierarchyLabelProvider extends DefinitionLabelProvider implemen
 	 */
 	@Override
 	public Color getBackground(Object element) {
-		if (element instanceof ParentPath && ((ParentPath) element).getTail() == null) {
+		if (element instanceof ParentPath && ((ParentPath) element).isMainType()) {
 			return getMainColor();
 		}
 		return null;

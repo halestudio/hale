@@ -22,6 +22,7 @@ Export-Package: eu.esdihumboldt.hale.ui.util,
  eu.esdihumboldt.hale.ui.util.tree,
  eu.esdihumboldt.hale.ui.util.viewer
 Import-Package: de.cs3d.util.logging,
+ de.fhg.igd.eclipse.util,
  org.apache.http,
  org.apache.http.auth,
  org.apache.http.client,

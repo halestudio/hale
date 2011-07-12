@@ -12,11 +12,14 @@
 
 package eu.esdihumboldt.hale.ui.views.typehierarchy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -25,14 +28,16 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.WorkbenchPart;
 
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.util.selection.SelectionFilter;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
+import eu.esdihumboldt.hale.ui.views.typehierarchy.TypeHierarchyContentProvider.ParentPath;
 
 
 /**
  * View that shows the hierarchy of a {@link TypeDefinition}
  * @author Simon Templer
  */
-public class TypeHierarchyView extends PropertiesViewPart implements ISelectionProvider {
+public class TypeHierarchyView extends PropertiesViewPart {
 
 	/**
 	 * The ID of the view
@@ -42,6 +47,8 @@ public class TypeHierarchyView extends PropertiesViewPart implements ISelectionP
 	private TreeViewer viewer;
 
 	private ISelectionListener selectionListener;
+
+	private SelectionFilter selectionProvider;
 
 	/**
 	 * @see WorkbenchPart#createPartControl(Composite)
@@ -73,7 +80,29 @@ public class TypeHierarchyView extends PropertiesViewPart implements ISelectionP
 			}
 		});
 		
-		getSite().setSelectionProvider(this);
+		getSite().setSelectionProvider(selectionProvider = new SelectionFilter(viewer) {
+			
+			@Override
+			protected ISelection filter(ISelection selection) {
+				if (selection != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
+					List<Object> elements = new ArrayList<Object>();
+					
+					for (Object element : ((IStructuredSelection) selection).toList()) {
+						if (element instanceof ParentPath) {
+							// add parent path head instead of parent path
+							elements.add(((ParentPath) element).getHead());
+						}
+						else {
+							elements.add(element);
+						}
+					}
+					return new StructuredSelection(elements);
+				}
+				else {
+					return selection;
+				}
+			}
+		});
 	}
 
 	/**
@@ -82,8 +111,13 @@ public class TypeHierarchyView extends PropertiesViewPart implements ISelectionP
 	 */
 	protected void update(ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
-			viewer.setInput(((IStructuredSelection) selection).toList());
+			Object element = ((IStructuredSelection) selection).getFirstElement();
+			viewer.setInput(element);
+			ParentPath path = TypeHierarchyContentProvider.createPath(element);
 			viewer.expandAll();
+			if (path != null) {
+				viewer.setSelection(new StructuredSelection(path.getMainPath()));
+			}
 		}
 		else {
 			viewer.setInput(null);
@@ -134,6 +168,10 @@ public class TypeHierarchyView extends PropertiesViewPart implements ISelectionP
 	public void dispose() {
 		if (selectionListener != null) {
 			getSite().getWorkbenchWindow().getSelectionService().removePostSelectionListener(selectionListener);
+		}
+		
+		if (selectionProvider != null) {
+			selectionProvider.dispose();
 		}
 		
 		super.dispose();

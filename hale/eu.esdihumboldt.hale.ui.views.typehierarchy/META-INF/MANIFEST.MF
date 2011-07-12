@@ -9,5 +9,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: eu.esdihumboldt.hale.core.io.supplier,
  eu.esdihumboldt.hale.schema.model,
  eu.esdihumboldt.hale.ui.common.definition.viewer,
+ eu.esdihumboldt.hale.ui.util.selection,
  eu.esdihumboldt.hale.ui.views.properties,
  org.eclipse.ui.views.properties.tabbed
