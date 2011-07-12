@@ -45,6 +45,7 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SuperTypeBinding;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionBinding;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionEnumeration;
+import eu.esdihumboldt.hale.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
@@ -70,27 +71,15 @@ public abstract class XmlTypeUtil {
 	 */
 	protected static final XSSchema xsSchema = new XSSchema();
 	
-//	/**
-//	 * The GML schema
-//	 */
-//	protected static final GMLSchema gml3Schema = new GMLSchema();
-	
-//	/**
-//	 * Geotools bindings location string
-//	 */
-//	private static final String GEOTOOLS_LOC = Messages.getString("TypeUtil.1"); //$NON-NLS-1$
-//	
-//	/**
-//	 * Geotools bindings location prefix
-//	 */
-//	private static final String GEOTOOLS_LOC_PREFIX = Messages.getString("TypeUtil.2"); //$NON-NLS-1$
-//
-//	/**
-//	 * GML 3.2 namespace
-//	 */
-//	private static final String NAMESPACE_GML3_2 = "http://www.opengis.net/gml/3.2"; //$NON-NLS-1$
-//
-//	private static final String NAMESPACE_GML = "http://www.opengis.net/gml"; //$NON-NLS-1$
+	/**
+	 * GML 3.2 namespace
+	 */
+	private static final String NAMESPACE_GML32 = "http://www.opengis.net/gml/3.2"; //$NON-NLS-1$
+
+	/**
+	 * GML up to 3.1.x namespace
+	 */
+	private static final String NAMESPACE_GML = "http://www.opengis.net/gml"; //$NON-NLS-1$
 	
 	/**
 	 * Set of XML schema types that should get a String binding but don't get
@@ -112,6 +101,12 @@ public abstract class XmlTypeUtil {
 		XS_STRING_TYPES.add("NMTOKENS"); //$NON-NLS-1$
 		XS_STRING_TYPES.add("normalizedString"); //$NON-NLS-1$
 		XS_STRING_TYPES.add("QName"); //$NON-NLS-1$
+	}
+	
+	private static final Set<QName> GML_GEOMETRY_TYPES = new HashSet<QName>();
+	static {
+		GML_GEOMETRY_TYPES.add(new QName(NAMESPACE_GML, "AbstractGeometryType"));
+		GML_GEOMETRY_TYPES.add(new QName(NAMESPACE_GML32, "AbstractGeometryType"));
 	}
 	
 //	/**
@@ -411,6 +406,25 @@ public abstract class XmlTypeUtil {
 		type.setConstraint(new UnionBinding(unionTypes));
 		// enumeration constraint
 		type.setConstraint(new UnionEnumeration(unionTypes));
+	}
+
+	/**
+	 * Determine if there is a special binding available for a type (apart from
+	 * explicit definition in the schema)
+	 * @param type the type definition
+	 * @return the special binding or <code>null</code>
+	 */
+	public static Binding determineSpecialBinding(XmlTypeDefinition type) {
+		// determine special bindings
+		
+		// geometry bindings
+		if (GML_GEOMETRY_TYPES.contains(type.getName())) {
+			//XXX just assign GeometryProperty binding for now
+			//FIXME concept of binding constraint and geometry property must be adapted to include built-in support for multiple geometries (with possible different CRS)
+			return Binding.get(GeometryProperty.class);
+		}
+		
+		return null;
 	}
 	
 }

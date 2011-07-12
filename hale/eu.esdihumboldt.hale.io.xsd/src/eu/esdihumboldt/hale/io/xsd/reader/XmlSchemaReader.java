@@ -105,6 +105,7 @@ import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.AbstractFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.schema.model.impl.AbstractDefinition;
@@ -916,7 +917,13 @@ public class XmlSchemaReader
 		 * constraint annotation 
 		 */
 		type.setConstraint(new SuperTypeHasValue(type));
-		type.setConstraint(new SuperTypeBinding(type));
+		Binding binding = XmlTypeUtil.determineSpecialBinding(type);
+		if (binding != null) {
+			type.setConstraint(binding);
+		}
+		else {
+			type.setConstraint(new SuperTypeBinding(type));
+		}
 		
 		// set metadata
 		setMetadata(type, complexType, schemaLocation);
