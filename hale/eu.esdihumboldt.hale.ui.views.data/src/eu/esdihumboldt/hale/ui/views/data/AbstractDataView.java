@@ -127,7 +127,7 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 	 */
 	@Override
 	public void setFocus() {
-		// ignore
+		tree.getTreeViewer().getControl().setFocus();
 	}
 
 	/**
