@@ -17,6 +17,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
+import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.views.typehierarchy.TypeHierarchyContentProvider.ParentPath;
 
@@ -34,8 +35,15 @@ public class TypeHierarchyLabelProvider extends DefinitionLabelProvider implemen
 	@Override
 	public String getText(Object element) {
 		if (element instanceof ParentPath) {
-			return super.getText(((ParentPath) element).getHead());
+			element = ((ParentPath) element).getHead();
 		}
+		
+		if (element instanceof TypeDefinition) {
+			// return the local name of the type instead of the display name
+			// XXX as it may be masked by an XML element name
+			return ((TypeDefinition) element).getName().getLocalPart();
+		}
+		
 		return super.getText(element);
 	}
 
