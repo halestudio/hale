@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 import eu.esdihumboldt.hale.schema.model.Definition;
+import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 
 /**
@@ -51,6 +52,12 @@ public class PropertiesLabelProvider extends LabelProvider {
 	public String getText(Object element) {
 		if (element instanceof IStructuredSelection) {
 			element = ((IStructuredSelection) element).getFirstElement();
+		}
+		
+		if (element instanceof TypeDefinition) {
+			// return the local name of the type instead of the display name
+			// XXX as it may be masked by an XML element name
+			return ((TypeDefinition) element).getName().getLocalPart();
 		}
 		
 		if (element instanceof Definition<?>) {
