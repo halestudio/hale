@@ -25,6 +25,15 @@
                   type="eu.esdihumboldt.hale.schema.model.Definition">
             </input>
          </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.TypeDefinitionBindingSection"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.binding"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
+            <input
+                  type="eu.esdihumboldt.hale.schema.model.TypeDefinition">
+            </input>
+         </propertySection>
       </propertySections>
    </extension>
    <extension
@@ -32,9 +41,16 @@
       <propertyTabs
             contributorId="eu.esdihumboldt.hale.ui.views.properties">
          <propertyTab
+               afterTab="eu.esdihumboldt.hale.ui.views.properties.definition.general"
                category="eu.esdihumboldt.hale.ui.views.properties.definition"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.general"
                label="General">
+         </propertyTab>
+         <propertyTab
+               afterTab="eu.esdihumboldt.hale.ui.views.properties.definition.general"
+               category="eu.esdihumboldt.hale.ui.views.properties.definition"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints"
+               label="Constraints">
          </propertyTab>
       </propertyTabs>
    </extension>
