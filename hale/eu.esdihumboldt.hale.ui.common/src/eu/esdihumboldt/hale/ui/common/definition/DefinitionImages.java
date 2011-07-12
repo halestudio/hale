@@ -278,6 +278,10 @@ public class DefinitionImages {
 			return "package.gif";
 		case CHOICE:
 			return "choice.gif";
+		case CONCRETE_TYPE:
+			return "concrete_type.png";
+		case ABSTRACT_TYPE:
+			return "abstract_type.png"; 
 		default:
 			// where no dedicated image is available yet
 			return null;

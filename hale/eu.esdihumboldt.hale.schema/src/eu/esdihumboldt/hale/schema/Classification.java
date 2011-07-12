@@ -36,8 +36,10 @@ public enum Classification {
 	ABSTRACT_FT,
 	/** Concrete feature type */
 	CONCRETE_FT,
-	/** Property type */
-	TYPE,
+	/** Abstract complex type */
+	ABSTRACT_TYPE,
+	/** Complex type */
+	CONCRETE_TYPE,
 	/** Numeric property */
 	NUMERIC_PROPERTY,
 	/** String property */
@@ -104,7 +106,7 @@ public enum Classification {
 					superType = superType.getSuperType();
 				}
 				
-				return TYPE;
+				return (type.getConstraint(AbstractFlag.class).isEnabled())?(ABSTRACT_TYPE):(CONCRETE_TYPE);
 			}
 		}
 		

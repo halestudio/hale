@@ -109,16 +109,30 @@ public class SchemaExplorer {
 		
 		manager.add(new ClassificationFilterAction(
 				Classification.ABSTRACT_FT, 
-				Messages.ModelNavigationView_2, 
-				Messages.ModelNavigationView_3,
+				"Hide abstract feature types", 
+				"Show abstract feature types",
 				"/icons/see_abstract_ft.png", 
 				classFilter));
 		
 		manager.add(new ClassificationFilterAction(
-				Classification.TYPE, 
+				Classification.CONCRETE_FT, 
+				"Hide concrete feature types", 
+				"Show concrete feature types",
+				"/icons/see_concrete_ft.png", 
+				classFilter));
+		
+		manager.add(new ClassificationFilterAction(
+				Classification.ABSTRACT_TYPE, 
+				"Hide abstract property types", 
+				"Show abstract property types", 
+				"/icons/see_abstract_type.png", 
+				classFilter));
+		
+		manager.add(new ClassificationFilterAction(
+				Classification.CONCRETE_TYPE, 
 				Messages.ModelNavigationView_PropertyHide, 
 				Messages.ModelNavigationView_PropertyShow, 
-				"/icons/see_property_type.gif", 
+				"/icons/see_concrete_type.png", 
 				classFilter));
 		
 		manager.add(new Separator());
