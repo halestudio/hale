@@ -6,7 +6,7 @@
          point="org.eclipse.ui.views">
       <view
             name="Type hierarchy"
-            icon="icons/sample.gif"
+            icon="icons/class_hi.gif"
             class="eu.esdihumboldt.hale.ui.views.typehierarchy.TypeHierarchyView"
             id="eu.esdihumboldt.hale.ui.views.typehierarchy">
       </view>
