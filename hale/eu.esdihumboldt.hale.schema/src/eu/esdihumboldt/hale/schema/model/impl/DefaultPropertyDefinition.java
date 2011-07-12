@@ -56,6 +56,18 @@ public class DefaultPropertyDefinition extends AbstractChildDefinition<PropertyC
 	}
 
 	/**
+	 * @see AbstractDefinition#getDescription()
+	 */
+	@Override
+	public String getDescription() {
+		String desc = super.getDescription();
+		if (desc == null || desc.isEmpty()) {
+			return getPropertyType().getDescription();
+		}
+		return desc;
+	}
+
+	/**
 	 * @see AbstractDefinition#toString()
 	 */
 	@Override
