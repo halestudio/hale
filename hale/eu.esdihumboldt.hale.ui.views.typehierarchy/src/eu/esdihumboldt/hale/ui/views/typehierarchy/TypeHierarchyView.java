@@ -74,6 +74,11 @@ public class TypeHierarchyView extends PropertiesViewPart {
 			
 			@Override
 			public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+				if (!(part instanceof PropertiesViewPart)) {
+					// only update the selection if it originates from a part that provides definition or instance selections
+					return;
+				}
+				
 				if (part != TypeHierarchyView.this) {
 					update(selection);
 				}
