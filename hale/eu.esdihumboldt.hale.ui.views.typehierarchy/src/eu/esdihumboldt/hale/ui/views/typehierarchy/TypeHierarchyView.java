@@ -28,6 +28,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.WorkbenchPart;
 
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionFilter;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 import eu.esdihumboldt.hale.ui.views.typehierarchy.TypeHierarchyContentProvider.ParentPath;
@@ -58,6 +59,7 @@ public class TypeHierarchyView extends PropertiesViewPart {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		viewer.setContentProvider(new TypeHierarchyContentProvider());
 		viewer.setLabelProvider(new TypeHierarchyLabelProvider());
+		viewer.setComparator(new DefinitionComparator());
 		
 		hookContextMenu();
 		contributeToActionBars();
