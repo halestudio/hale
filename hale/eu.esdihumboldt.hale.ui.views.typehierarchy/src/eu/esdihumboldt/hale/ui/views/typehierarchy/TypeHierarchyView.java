@@ -15,23 +15,24 @@ package eu.esdihumboldt.hale.ui.views.typehierarchy;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 
 
 /**
  * View that shows the hierarchy of a {@link TypeDefinition}
  * @author Simon Templer
  */
-public class TypeHierarchyView extends ViewPart {
+public class TypeHierarchyView extends PropertiesViewPart implements ISelectionProvider {
 
 	/**
 	 * The ID of the view
@@ -71,6 +72,8 @@ public class TypeHierarchyView extends ViewPart {
 				}
 			}
 		});
+		
+		getSite().setSelectionProvider(this);
 	}
 
 	/**
