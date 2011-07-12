@@ -71,16 +71,20 @@ public enum Classification {
 		else if (def instanceof PropertyDefinition) {
 			// use binding/constraints to determine type
 			PropertyDefinition property = (PropertyDefinition) def;
+			
+			Class<?> binding = property.getPropertyType().getConstraint(Binding.class).getBinding();
+			
+			// geometry binding allowed also for types where HasValue is not enabled (e.g. XML types where geometries are aggregated)
+			if (Geometry.class.isAssignableFrom(binding) ||
+					GeometryProperty.class.isAssignableFrom(binding)) { // additional checks?
+				return GEOMETRIC_PROPERTY;
+			}
+			
 			if (property.getPropertyType().getConstraint(HasValueFlag.class).isEnabled()) {
 				// simple type
-				Class<?> binding = property.getPropertyType().getConstraint(Binding.class).getBinding();
 				if (Number.class.isAssignableFrom(binding) || 
 						Date.class.isAssignableFrom(binding)) {
 					return NUMERIC_PROPERTY;
-				}
-				else if (Geometry.class.isAssignableFrom(binding) ||
-						GeometryProperty.class.isAssignableFrom(binding)) { // additional checks?
-					return GEOMETRIC_PROPERTY;
 				}
 				
 				// default to string for simple types
