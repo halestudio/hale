@@ -119,6 +119,9 @@ public class TypeHierarchyView extends PropertiesViewPart {
 	protected void update(ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
 			Object element = ((IStructuredSelection) selection).getFirstElement();
+			if (element instanceof ParentPath) {
+				element = ((ParentPath) element).getHead();
+			}
 			viewer.setInput(element);
 			ParentPath path = TypeHierarchyContentProvider.createPath(element);
 			viewer.expandAll();
