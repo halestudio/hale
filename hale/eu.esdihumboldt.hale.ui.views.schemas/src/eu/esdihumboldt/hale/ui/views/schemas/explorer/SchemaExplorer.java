@@ -92,7 +92,7 @@ public class SchemaExplorer {
 		toolbar.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		
 		//TODO add delay for tooltip
-		new ColumnBrowserTip(tree, 400, 300, true, 0, labelProvider);
+//		new ColumnBrowserTip(tree, 400, 300, true, 0, labelProvider);
 	}
 	
 	/**
