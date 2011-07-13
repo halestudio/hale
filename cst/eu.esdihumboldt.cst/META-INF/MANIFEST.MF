@@ -5,7 +5,6 @@ Bundle-SymbolicName: eu.esdihumboldt.transformer.cst;singleton:=true
 Bundle-Version: 1.0.6
 Export-Package: eu.esdihumboldt.cst.transformer,
  eu.esdihumboldt.cst.transformer.capabilities,
- eu.esdihumboldt.cst.transformer.configuration,
  eu.esdihumboldt.cst.transformer.configuration.osgi,
  eu.esdihumboldt.cst.transformer.exceptions,
  eu.esdihumboldt.cst.transformer.fc,
@@ -18,6 +17,7 @@ Require-Bundle: eu.esdihumboldt.commons;bundle-version="3.0.8",
  org.eclipse.ui,
  org.eclipse.core.runtime
 Import-Package: de.cs3d.util.logging,
+ eu.esdihumboldt.hale.util.reflection,
  org.apache.log4j,
  org.junit;version="4.8.1",
  org.osgi.framework,

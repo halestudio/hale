@@ -9,7 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.cst.transformer.configuration.osgi;
+package eu.esdihumboldt.hale.util.reflection;
 
 import java.io.IOException;
 import java.net.URL;
@@ -19,9 +19,7 @@ import org.eclipse.core.runtime.Path;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
-import eu.esdihumboldt.cst.transformer.configuration.DefaultPackageResolver;
-import eu.esdihumboldt.cst.transformer.configuration.PackageResolver;
-import eu.esdihumboldt.cst.transformer.configuration.ReflectionHelper;
+import eu.esdihumboldt.hale.util.internal.Activator;
 
 /**
  * <p>Title: OSGIPackageResolver</p>
@@ -33,10 +31,6 @@ import eu.esdihumboldt.cst.transformer.configuration.ReflectionHelper;
  * @version $Id: OSGIPackageResolver.java 5988 2009-11-19 14:30:20Z mkraemer $
  */
 public class OSGIPackageResolver implements PackageResolver {
-	static {
-		//register this resolver whenever this class is loaded
-		ReflectionHelper.setPackageResolver(new OSGIPackageResolver());
-	}
 	
 	/**
 	 * The default package resolver
@@ -46,6 +40,7 @@ public class OSGIPackageResolver implements PackageResolver {
 	/**
 	 * @see PackageResolver#resolve(java.lang.String)
 	 */
+	@Override
 	public URL resolve(String pkg) throws IOException {
 		URL u = _def.resolve(pkg);
 		if (u != null && u.toString().startsWith("bundleresource")) { //$NON-NLS-1$
@@ -53,7 +48,7 @@ public class OSGIPackageResolver implements PackageResolver {
 		} else if (u == null) {
 			//if the default package resolver could not resolve the package,
 			//search all other bundles
-			BundleContext ctx = CstActivator.getContext();
+			BundleContext ctx = Activator.getContext();
 			Bundle[] bundles = ctx.getBundles();
 			String packagePathStr = pkg.replaceAll("\\.", "/"); //$NON-NLS-1$ //$NON-NLS-2$
 			Path packagePath = new Path(packagePathStr);

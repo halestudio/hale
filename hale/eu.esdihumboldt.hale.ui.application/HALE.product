@@ -123,6 +123,7 @@
       <plugin id="eu.esdihumboldt.hale.ui.views.schemas"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.typehierarchy"/>
       <plugin id="eu.esdihumboldt.hale.userstatus.config" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.util"/>
       <plugin id="eu.esdihumboldt.specification"/>
       <plugin id="eu.esdihumboldt.transformer.cst"/>
       <plugin id="eu.xsdi.mdl" fragment=""/>

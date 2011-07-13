@@ -9,7 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.cst.transformer.configuration;
+package eu.esdihumboldt.hale.util.reflection;
 
 import java.io.File;
 import java.io.IOException;
@@ -281,11 +281,10 @@ public class ReflectionHelper {
 	 * @throws IllegalArgumentException if the argument's type is invalid
 	 * @throws IllegalAccessException if the setter is not accessible
 	 * @throws InvocationTargetException if the setter throws an exception 
-	 * @throws NoSuchMethodException if there is no setter for this property
 	 */
 	private static void invokeSetter(Object bean, Method setter, Object value)
 		throws IllegalArgumentException, IllegalAccessException,
-		InvocationTargetException, NoSuchMethodException {
+		InvocationTargetException {
 		boolean accessible = setter.isAccessible();
 		setter.setAccessible(true);
 		try {
@@ -354,12 +353,11 @@ public class ReflectionHelper {
 	 * @throws IllegalArgumentException if the argument's type is invalid
 	 * @throws IllegalAccessException if the getter is not accessible
 	 * @throws InvocationTargetException if the getter throws an exception 
-	 * @throws NoSuchMethodException if there is no getter for this property
 	 */
 	@SuppressWarnings("unchecked")
 	private static <T> T invokeGetter(Object bean, Method getter)
 		throws IllegalArgumentException, IllegalAccessException,
-		InvocationTargetException, NoSuchMethodException {
+		InvocationTargetException {
 		boolean accessible = getter.isAccessible();
 		getter.setAccessible(true);
 		T result = null;
@@ -552,26 +550,29 @@ public class ReflectionHelper {
      * Gets a list of all classes in the given package and all
      * subpackages recursively.
      * @param pkg the package
+	 * @param classLoader the class loader to use
      * @return the list of classes
      * @throws IOException if a subpackage or a class could not be loaded
      */
-    public static List<Class<?>> getClassesFromPackage(String pkg)
+    public static List<Class<?>> getClassesFromPackage(String pkg, 
+    		ClassLoader classLoader)
     	throws IOException {
-    	return getClassesFromPackage(pkg, true);
+    	return getClassesFromPackage(pkg, classLoader, true);
     }
     
     /**
      * Gets a list of all classes in the given package
      * @param pkg the package
+     * @param classLoader the class loader to use
      * @param recursive true if all subpackages shall be traversed too
      * @return the list of classes
      * @throws IOException if a subpackage or a class could not be loaded
      */
     public static List<Class<?>> getClassesFromPackage(String pkg,
-    		boolean recursive)
+    		ClassLoader classLoader, boolean recursive)
     	throws IOException {
     	List<Class<?>> result = new ArrayList<Class<?>>();
-    	getClassesFromPackage(pkg, result, recursive);
+    	getClassesFromPackage(pkg, result, classLoader, recursive);
     	return result;
     }
     
@@ -616,13 +617,13 @@ public class ReflectionHelper {
     }
     
     private static void getClassesFromPackage(String pkg, List<Class<?>> l,
-    		boolean recursive) throws IOException {
+    		ClassLoader classLoader, boolean recursive) throws IOException {
     	File[] files = getFilesFromPackage(pkg);
     	for (File f : files) {
     		String name = f.getName();
     		if (f.isDirectory() && recursive) {
     			if (!name.startsWith(".")) { //$NON-NLS-1$
-    				getClassesFromPackage(pkg + "." + name, l, true); //$NON-NLS-1$
+    				getClassesFromPackage(pkg + "." + name, l, classLoader, true); //$NON-NLS-1$
     			}
     		} else if (name.toLowerCase().endsWith(".class")) { //$NON-NLS-1$
     			//the following lines make sure we also handle classes
@@ -635,7 +636,7 @@ public class ReflectionHelper {
     					classPath.lastIndexOf(pkg), classPath.lastIndexOf('.'));
     			Class<?> c;
     			try {
-    				c = Class.forName(className);
+    				c = Class.forName(className, true, classLoader);
     			} catch (ClassNotFoundException e) {
     				throw new IOException("Could not load class: " + //$NON-NLS-1$
     						e.getMessage());

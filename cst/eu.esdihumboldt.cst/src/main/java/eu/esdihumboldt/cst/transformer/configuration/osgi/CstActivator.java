@@ -14,6 +14,9 @@ package eu.esdihumboldt.cst.transformer.configuration.osgi;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+
 /**
  * A class that serves as Activator if the CST is used within a OSGI environment.
  * 
@@ -23,22 +26,28 @@ import org.osgi.framework.BundleContext;
 public class CstActivator 
 	implements BundleActivator {
 	
+	private static final ALogger log = ALoggerFactory.getLogger(CstActivator.class);
+	
 	private static BundleContext context = null;
 
 	/**
 	 * @see BundleActivator#start(BundleContext)
 	 */
+	@Override
 	public void start(BundleContext context) throws Exception {
 		CstActivator.context = context;
-		Class.forName(
-				"eu.esdihumboldt.cst.transformer.configuration.osgi.OSGIPackageResolver"); //$NON-NLS-1$
 		
-		CstFunctionExtension.registerFunctions();
+		try {
+			CstFunctionExtension.registerFunctions();
+		} catch (Throwable e) {
+			log.error("Error loading CST functions", e);
+		}
 	}
 
 	/**
 	 * @see BundleActivator#stop(BundleContext)
 	 */
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		context = null;
 	}
