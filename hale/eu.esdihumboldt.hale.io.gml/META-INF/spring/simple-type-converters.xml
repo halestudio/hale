@@ -11,46 +11,9 @@
 		cardinality="1..1" />
 		
 	<!-- converters -->
-	<bean class="eu.esdihumboldt.hale.common.convert.RegisterConverterFactoryBean">
+	<bean class="eu.esdihumboldt.hale.common.convert.ConverterPackageFactoryBean">
 		<property name="registry" ref="converterRegistry" />
-		<property name="converter">
-			<bean class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.DateToXmlDate" />
-		</property>
-	</bean>
-	
-	<bean class="eu.esdihumboldt.hale.common.convert.RegisterConverterFactoryBean">
-		<property name="registry" ref="converterRegistry" />
-		<property name="converter">
-			<bean class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.DateToXmlDateTime" />
-		</property>
-	</bean>
-	
-	<bean class="eu.esdihumboldt.hale.common.convert.RegisterConverterFactoryBean">
-		<property name="registry" ref="converterRegistry" />
-		<property name="converter">
-			<bean class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.DateToXmlTime" />
-		</property>
-	</bean>
-	
-	<bean class="eu.esdihumboldt.hale.common.convert.RegisterConverterFactoryBean">
-		<property name="registry" ref="converterRegistry" />
-		<property name="converter">
-			<bean class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlTimeToDate" />
-		</property>
-	</bean>
-	
-	<bean class="eu.esdihumboldt.hale.common.convert.RegisterConverterFactoryBean">
-		<property name="registry" ref="converterRegistry" />
-		<property name="converter">
-			<bean class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlDateToDate" />
-		</property>
-	</bean>
-	
-	<bean class="eu.esdihumboldt.hale.common.convert.RegisterConverterFactoryBean">
-		<property name="registry" ref="converterRegistry" />
-		<property name="converter">
-			<bean class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlDateTimeToDate" />
-		</property>
+		<property name="package" value="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters" />
 	</bean>
 
 </beans>
