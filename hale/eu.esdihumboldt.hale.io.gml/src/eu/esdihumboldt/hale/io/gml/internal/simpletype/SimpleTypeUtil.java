@@ -15,15 +15,14 @@ package eu.esdihumboldt.hale.io.gml.internal.simpletype;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.convert.ConversionException;
-import org.apache.commons.convert.Converter;
-import org.apache.commons.convert.Converters;
 import org.apache.xmlbeans.XmlAnySimpleType;
 import org.apache.xmlbeans.XmlDate;
 import org.apache.xmlbeans.XmlDateTime;
 import org.apache.xmlbeans.XmlTime;
+import org.springframework.core.convert.ConversionException;
+import org.springframework.core.convert.ConversionService;
 
-import eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.DateTimeConverters;
+import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
@@ -54,20 +53,6 @@ public class SimpleTypeUtil {
 		TYPE_MAP.put("date", XmlDate.class); //$NON-NLS-1$
 		TYPE_MAP.put("time", XmlTime.class); //$NON-NLS-1$
 	}
-	
-	private static boolean initialized = false;
-	
-	/**
-	 * Initialize: register converters
-	 */
-	private static void init() {
-		if (!initialized) {
-			//TODO add additional converters
-			Converters.loadContainedConverters(DateTimeConverters.class);
-			
-			initialized = true;
-		}
-	}
 
 	/**
 	 * Convert a simple type value to a string
@@ -78,29 +63,21 @@ public class SimpleTypeUtil {
 	 * @return the string representation of the value or 
 	 * <code>null</code> if the value is <code>null</code>
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> String convert(T value, TypeDefinition type) {
-		init();
-		
 		if (value == null) {
 			return null;
 		}
 		
 		Class<? extends XmlAnySimpleType> simpleType = getSimpleType(type);
 		
+		ConversionService conversionService = OsgiUtils.getService(ConversionService.class);
+		
 		if (simpleType != null) {
 			try {
-				Converter<T, ? extends XmlAnySimpleType> converter = 
-					(Converter<T, ? extends XmlAnySimpleType>) Converters.getConverter(value.getClass(), simpleType);
-				
-				if (converter != null) {
-					XmlAnySimpleType simpleTypeValue = converter.convert(value);
-					if (simpleTypeValue != null) {
-						return simpleTypeValue.getStringValue();
-					}
+				XmlAnySimpleType simpleTypeValue = conversionService.convert(value, simpleType);
+				if (simpleTypeValue != null) {
+					return simpleTypeValue.getStringValue();
 				}
-			} catch (ClassNotFoundException e) {
-				// ignore
 			} catch (ConversionException e) {
 				// ignore
 			}
@@ -108,17 +85,10 @@ public class SimpleTypeUtil {
 		
 		// try to convert to string
 		try {
-			Converter<T, String> converter = 
-				(Converter<T, String>) Converters.getConverter(value.getClass(), String.class);
-			
-			if (converter != null) {
-				String stringValue = converter.convert(value);
-				if (stringValue != null) {
-					return stringValue;
-				}
+			String stringValue = conversionService.convert(value, String.class);
+			if (stringValue != null) {
+				return stringValue;
 			}
-		} catch (ClassNotFoundException e) {
-			// ignore
 		} catch (ConversionException e) {
 			// ignore
 		}
