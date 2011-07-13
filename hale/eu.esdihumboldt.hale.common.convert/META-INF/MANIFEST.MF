@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Conversion Bundle
+Bundle-SymbolicName: eu.esdihumboldt.hale.common.convert
+Bundle-Version: 2.2.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.springframework.context;bundle-version="3.0.0",
+ org.springframework.core;bundle-version="3.0.0",
+ org.springframework.osgi.core;bundle-version="2.0.0"

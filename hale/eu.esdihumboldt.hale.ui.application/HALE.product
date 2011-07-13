@@ -51,6 +51,7 @@
       <plugin id="com.springsource.javax.servlet.jsp"/>
       <plugin id="com.springsource.javax.xml.bind"/>
       <plugin id="com.springsource.javax.xml.stream"/>
+      <plugin id="com.springsource.org.aopalliance"/>
       <plugin id="com.springsource.org.apache.commons.beanutils"/>
       <plugin id="com.springsource.org.apache.commons.collections"/>
       <plugin id="com.springsource.org.apache.commons.jxpath"/>
@@ -85,6 +86,7 @@
       <plugin id="eu.esdihumboldt.hale.codelist.io.xml"/>
       <plugin id="eu.esdihumboldt.hale.codelist.io.xml.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.codelist.ui"/>
+      <plugin id="eu.esdihumboldt.hale.common.convert"/>
       <plugin id="eu.esdihumboldt.hale.core"/>
       <plugin id="eu.esdihumboldt.hale.core.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.csvexporter" fragment=""/>
@@ -116,13 +118,9 @@
       <plugin id="eu.esdihumboldt.hale.ui.style"/>
       <plugin id="eu.esdihumboldt.hale.ui.util"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.data"/>
-      <plugin id="eu.esdihumboldt.hale.ui.views.graph" fragment=""/>
-      <plugin id="eu.esdihumboldt.hale.ui.views.map"/>
-      <plugin id="eu.esdihumboldt.hale.ui.views.mapping" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.ui.views.properties"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.report"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.schemas"/>
-      <plugin id="eu.esdihumboldt.hale.ui.views.tasks" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.ui.views.typehierarchy"/>
       <plugin id="eu.esdihumboldt.hale.userstatus.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.specification"/>
@@ -191,6 +189,15 @@
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
       <plugin id="org.slf4j.api"/>
+      <plugin id="org.springframework.aop"/>
+      <plugin id="org.springframework.asm"/>
+      <plugin id="org.springframework.beans"/>
+      <plugin id="org.springframework.context"/>
+      <plugin id="org.springframework.core"/>
+      <plugin id="org.springframework.expression"/>
+      <plugin id="org.springframework.osgi.core"/>
+      <plugin id="org.springframework.osgi.extender"/>
+      <plugin id="org.springframework.osgi.io"/>
       <plugin id="org.springframework.transaction"/>
       <plugin id="relaxngDatatype"/>
       <plugin id="slf4j.ext"/>
@@ -200,6 +207,7 @@
       <plugin id="de.cs3d.ui.util.logging.errorlog" autoStart="true" startLevel="2" />
       <plugin id="de.cs3d.util.logging.logback" autoStart="true" startLevel="1" />
       <plugin id="eu.esdihumboldt.hale.codelist.io.xml" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.convert" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.core" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.instance" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
@@ -209,6 +217,8 @@
       <plugin id="eu.esdihumboldt.hale.io.xsd" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.transformer.cst" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
+      <plugin id="org.springframework.osgi.core" autoStart="true" startLevel="0" />
+      <plugin id="org.springframework.osgi.extender" autoStart="true" startLevel="0" />
    </configurations>
 
 </product>
