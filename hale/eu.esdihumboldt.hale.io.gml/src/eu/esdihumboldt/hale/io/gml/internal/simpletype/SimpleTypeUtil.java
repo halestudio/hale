@@ -15,6 +15,8 @@ package eu.esdihumboldt.hale.io.gml.internal.simpletype;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
+
 import org.apache.xmlbeans.XmlAnySimpleType;
 import org.apache.xmlbeans.XmlDate;
 import org.apache.xmlbeans.XmlDateTime;
@@ -23,7 +25,8 @@ import org.springframework.core.convert.ConversionException;
 import org.springframework.core.convert.ConversionService;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
 
 /**
  * Utility methods used for simple type conversion
@@ -34,11 +37,6 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  */
 public class SimpleTypeUtil {
 	
-	/**
-	 * Schema namespace
-	 */
-	private static final String SCHEMA_NS = "http://www.w3.org/2001/XMLSchema"; //$NON-NLS-1$
-
 	/**
 	 * XML simple type names mapped to the corresponding XmlBeans type
 	 */
@@ -63,14 +61,13 @@ public class SimpleTypeUtil {
 	 * @return the string representation of the value or 
 	 * <code>null</code> if the value is <code>null</code>
 	 */
-	public static <T> String convert(T value, TypeDefinition type) {
+	public static <T> String convertToXml(T value, TypeDefinition type) {
 		if (value == null) {
 			return null;
 		}
-		
-		Class<? extends XmlAnySimpleType> simpleType = getSimpleType(type);
-		
+
 		ConversionService conversionService = OsgiUtils.getService(ConversionService.class);
+		Class<? extends XmlAnySimpleType> simpleType = getSimpleType(type);
 		
 		if (simpleType != null) {
 			try {
@@ -96,6 +93,53 @@ public class SimpleTypeUtil {
 		// fall-back
 		return value.toString();
 	}
+	
+	/**
+	 * Convert a string belonging to a XML simple type to the binding specified
+	 * by the given type definition.
+	 * @param value the string value
+	 * @param type the type definition
+	 * @return <code>null</code> if the string was <code>null</code>, the 
+	 *   converted object with the binding type if possible, otherwise the
+	 *   original string
+	 */
+	public static Object convertFromXml(String value, TypeDefinition type) {
+		if (value == null) {
+			return null;
+		}
+		
+		ConversionService conversionService = OsgiUtils.getService(ConversionService.class);
+		Class<? extends XmlAnySimpleType> simpleType = getSimpleType(type);
+		Class<?> binding = type.getConstraint(Binding.class).getBinding();
+		
+		// try using simple type for conversion
+		if (simpleType != null && conversionService.canConvert(String.class, simpleType)) {
+			try {
+				XmlAnySimpleType simpleValue = conversionService.convert(value, simpleType);
+				if (simpleValue != null) {
+					try {
+						Object bindingValue = conversionService.convert(simpleValue, binding);
+						return bindingValue;
+					} catch (ConversionException e) {
+						// ignore
+					}
+				}
+				return simpleValue;
+			} catch (ConversionException e) {
+				// ignore
+			}
+		}
+		
+		// try direct conversion
+		try {
+			Object result = conversionService.convert(value, binding);
+			return result;
+		} catch (ConversionException e) {
+			// ignore
+		}
+		
+		return value;
+	}
 
 	/**
 	 * Get the XmlBeans simple type class for the given type definition
@@ -106,7 +150,7 @@ public class SimpleTypeUtil {
 	 */
 	private static Class<? extends XmlAnySimpleType> getSimpleType(
 			TypeDefinition type) {
-		if (type.getName().getNamespaceURI().equals(SCHEMA_NS)) {
+		if (type.getName().getNamespaceURI().equals(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
 			Class<? extends XmlAnySimpleType> simpleType = 
 				TYPE_MAP.get(type.getName().getLocalPart());
 			

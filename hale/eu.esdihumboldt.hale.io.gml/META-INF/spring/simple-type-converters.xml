@@ -31,5 +31,26 @@
 			<bean class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.DateToXmlTime" />
 		</property>
 	</bean>
+	
+	<bean class="eu.esdihumboldt.hale.common.convert.RegisterConverterFactoryBean">
+		<property name="registry" ref="converterRegistry" />
+		<property name="converter">
+			<bean class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlTimeToDate" />
+		</property>
+	</bean>
+	
+	<bean class="eu.esdihumboldt.hale.common.convert.RegisterConverterFactoryBean">
+		<property name="registry" ref="converterRegistry" />
+		<property name="converter">
+			<bean class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlDateToDate" />
+		</property>
+	</bean>
+	
+	<bean class="eu.esdihumboldt.hale.common.convert.RegisterConverterFactoryBean">
+		<property name="registry" ref="converterRegistry" />
+		<property name="converter">
+			<bean class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlDateTimeToDate" />
+		</property>
+	</bean>
 
 </beans>

@@ -641,7 +641,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 				writeSimpleTypeAttributes(property, attDef);
 				
 				// write value as content
-				writer.writeCharacters(SimpleTypeUtil.convert(value, attDef.getAttributeType()));
+				writer.writeCharacters(SimpleTypeUtil.convertToXml(value, attDef.getAttributeType()));
 			}
 			
 			writer.writeEndElement();

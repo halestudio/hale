@@ -139,7 +139,7 @@ public abstract class GmlWriterUtil {
 			}
 		}
 		else {
-			writeAtt(writer, SimpleTypeUtil.convert(value, attDef.getAttributeType()), attDef);
+			writeAtt(writer, SimpleTypeUtil.convertToXml(value, attDef.getAttributeType()), attDef);
 		}
 	}
 
