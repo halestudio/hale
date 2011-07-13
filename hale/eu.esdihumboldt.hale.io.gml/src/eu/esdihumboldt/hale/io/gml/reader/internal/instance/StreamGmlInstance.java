@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.MutableGroup;
 import eu.esdihumboldt.hale.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.io.gml.internal.simpletype.SimpleTypeUtil;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
@@ -253,9 +254,7 @@ public abstract class StreamGmlInstance {
 	 */
 	private static Object convertSimple(TypeDefinition type,
 			String value) {
-		// TODO Auto-generated method stub
-		//FIXME for now no conversion
-		return value;
+		return SimpleTypeUtil.convertFromXml(value, type);
 	}
 
 }
