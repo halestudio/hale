@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.io.gml.writer.internal.simpletype;
+package eu.esdihumboldt.hale.io.gml.internal.simpletype;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +23,7 @@ import org.apache.xmlbeans.XmlDate;
 import org.apache.xmlbeans.XmlDateTime;
 import org.apache.xmlbeans.XmlTime;
 
-import eu.esdihumboldt.hale.io.gml.writer.internal.simpletype.converters.DateTimeConverters;
+import eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.DateTimeConverters;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**

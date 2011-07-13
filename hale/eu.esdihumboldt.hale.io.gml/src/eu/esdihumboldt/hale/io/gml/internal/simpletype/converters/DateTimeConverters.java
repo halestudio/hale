@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.io.gml.writer.internal.simpletype.converters;
+package eu.esdihumboldt.hale.io.gml.internal.simpletype.converters;
 
 import java.util.Date;
 
