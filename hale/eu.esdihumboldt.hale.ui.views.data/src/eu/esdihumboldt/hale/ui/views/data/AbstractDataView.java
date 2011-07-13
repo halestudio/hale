@@ -180,7 +180,9 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 	 */
 	@Override
 	public void dispose() {
-		selectorControl.dispose();
+		if (selectorControl != null) {
+			selectorControl.dispose();
+		}
 	}
 
 }
