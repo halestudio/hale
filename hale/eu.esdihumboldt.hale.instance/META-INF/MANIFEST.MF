@@ -45,3 +45,4 @@ Export-Package: eu.esdihumboldt.hale.instance.geometry,
  eu.esdihumboldt.hale.instance.io.impl,
  eu.esdihumboldt.hale.instance.model,
  eu.esdihumboldt.hale.instance.model.impl
+Require-Bundle: eu.esdihumboldt.hale.common.convert;bundle-version="2.2.0"

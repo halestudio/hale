@@ -25,7 +25,7 @@ import org.geotools.renderer.GTRenderer;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import eu.esdihumboldt.hale.ui.service.instance.InstanceService.DatasetType;
+import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.util.swing.SwingRcpUtilities;
 import eu.esdihumboldt.hale.ui.views.map.tiles.TileConstraints;
 import eu.esdihumboldt.hale.ui.views.map.tiles.TileProvider;
@@ -38,7 +38,7 @@ import eu.esdihumboldt.hale.ui.views.map.tiles.TileProvider;
  */
 public class FeatureTileRenderer implements TileProvider {
 	
-	private final DatasetType type;
+	private final DataSet type;
 	
 	private GTRenderer renderer;
 	
@@ -58,7 +58,7 @@ public class FeatureTileRenderer implements TileProvider {
 	 * @param selection the feature selection provider
 	 * @param selectionOnly  if only the selection shall be rendered
 	 */
-	public FeatureTileRenderer(final DatasetType type, final FeaturePaintStatus status,
+	public FeatureTileRenderer(final DataSet type, final FeaturePaintStatus status,
 			final FeatureSelectionProvider selection, boolean selectionOnly) {
 		super();
 		

@@ -13,7 +13,7 @@ package eu.esdihumboldt.hale.ui.views.map;
 
 import java.util.Set;
 
-import org.opengis.filter.identity.FeatureId;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
 
 /**
  * Feature selection provider
@@ -26,6 +26,6 @@ public interface FeatureSelectionProvider {
 	/**
 	 * @return the selectedFeatures
 	 */
-	public abstract Set<FeatureId> getSelectedFeatures();
+	public abstract Set<InstanceReference> getSelectedFeatures();
 
 }

@@ -41,6 +41,7 @@ import org.opengis.feature.type.FeatureType;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -48,6 +49,8 @@ import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
 import eu.esdihumboldt.hale.ui.service.UpdateMessage;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.style.helper.StyleHelper;
 import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;
@@ -89,32 +92,47 @@ public class StyleServiceImpl extends AbstractStyleService {
 		schemaService = schema;
 		
 		// add listener to process queued styles
-		schema.addListener(new HaleServiceListener() {
+		schema.addSchemaServiceListener(new SchemaServiceListener() {
 			
-			@SuppressWarnings("deprecation")
+			/**
+			 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#schemaAdded(eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID, eu.esdihumboldt.hale.schema.model.Schema)
+			 */
 			@Override
-			public void update(@SuppressWarnings("rawtypes") UpdateMessage message) {
-				Collection<FeatureTypeStyle> failures = new ArrayList<FeatureTypeStyle>();
-				boolean updateNeeded = false;
-				
-				while (!queuedStyles.isEmpty()) {
-					FeatureTypeStyle fts = queuedStyles.poll();
-					Definition element = schemaService.getTypeByName(fts.getFeatureTypeName());
-					if (element != null && DefinitionUtil.getFeatureType(element) != null) {
-						if (addStyle(DefinitionUtil.getFeatureType(element), fts)) {
-							updateNeeded = true;
-						}
-					}
-					else {
-						failures.add(fts);
-					}
-				}
-				
-				queuedStyles.addAll(failures);
-				
-				if (updateNeeded) {
-					notifyStylesAdded();
-				}
+			public void schemaAdded(SchemaSpaceID spaceID, Schema schema) {
+				update();
+			}
+
+			/**
+			 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#schemasCleared(eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID)
+			 */
+			@Override
+			public void schemasCleared(SchemaSpaceID spaceID) {
+				update();
+			}
+
+			private void update() {
+				//FIXME deactivated
+//				Collection<FeatureTypeStyle> failures = new ArrayList<FeatureTypeStyle>();
+//				boolean updateNeeded = false;
+//				
+//				while (!queuedStyles.isEmpty()) {
+//					FeatureTypeStyle fts = queuedStyles.poll();
+//					Definition element = schemaService.getTypeByName(fts.getFeatureTypeName());
+//					if (element != null && DefinitionUtil.getFeatureType(element) != null) {
+//						if (addStyle(DefinitionUtil.getFeatureType(element), fts)) {
+//							updateNeeded = true;
+//						}
+//					}
+//					else {
+//						failures.add(fts);
+//					}
+//				}
+//				
+//				queuedStyles.addAll(failures);
+//				
+//				if (updateNeeded) {
+//					notifyStylesAdded();
+//				}
 			}
 		});
 		

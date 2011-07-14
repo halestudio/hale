@@ -13,7 +13,7 @@
 package eu.esdihumboldt.hale.ui.views.map;
 
 import java.awt.geom.Point2D;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -31,17 +32,15 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.feature.Feature;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.identity.FeatureId;
 
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
-import eu.esdihumboldt.hale.ui.selection.InstanceSelection;
+import eu.esdihumboldt.hale.ui.service.instance.DataSet;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
-import eu.esdihumboldt.hale.ui.service.instance.InstanceService.DatasetType;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
 
 /**
  * Feature selector
@@ -59,7 +58,7 @@ public class FeatureSelector implements FeatureSelectionProvider, MouseListener,
 	
 	private final FeatureTilePainter mapPainter;
 	
-	private Set<FeatureId> selectedFeatures = new HashSet<FeatureId>();
+	private Set<InstanceReference> selectedFeatures = new HashSet<InstanceReference>();
 	
 	private boolean lastWasDown = false;
 	
@@ -126,7 +125,7 @@ public class FeatureSelector implements FeatureSelectionProvider, MouseListener,
 	 * @param add if the features shall be added current selection or replace it 
 	 */
 	protected void selectFeatures(int x, int y, boolean add) {
-		Set<FeatureId> ids = getFeatures(x, y);
+		Set<InstanceReference> ids = getFeatures(x, y);
 		if (add) {
 			selectedFeatures.addAll(ids);
 		}
@@ -147,7 +146,7 @@ public class FeatureSelector implements FeatureSelectionProvider, MouseListener,
 	 * 
 	 * @return the ids of the selected features 
 	 */
-	protected Set<FeatureId> getFeatures(int x, int y) {
+	protected Set<InstanceReference> getFeatures(int x, int y) {
 		int xMin = x - SELECTION_BUFFER;
 		int yMin = y - SELECTION_BUFFER;
 		int xMax = x + SELECTION_BUFFER;
@@ -156,7 +155,7 @@ public class FeatureSelector implements FeatureSelectionProvider, MouseListener,
 		Point2D p1 = mapPainter.toGeoCoordinates(xMax, yMax);
 		Point2D p2 = mapPainter.toGeoCoordinates(xMin, yMin);
 
-		Set<FeatureId> result = new HashSet<FeatureId>();
+		Set<InstanceReference> result = new HashSet<InstanceReference>();
 		
 		if (p2 != null && p1 != null) {
 			ReferencedEnvelope bbox = new ReferencedEnvelope(
@@ -167,38 +166,30 @@ public class FeatureSelector implements FeatureSelectionProvider, MouseListener,
 					mapPainter.getCRS());
 			
 			// source
-			selectFeatures(bbox, true, result);
+			selectFeatures(bbox, DataSet.SOURCE, result);
 			// target
-			selectFeatures(bbox, false, result);
+			selectFeatures(bbox, DataSet.TRANSFORMED, result);
 		}
 
 		return result;
 	}
 
-	private void selectFeatures(ReferencedEnvelope bbox, boolean source, Set<FeatureId> result) {
-		DatasetType datasetType = (source)?(DatasetType.source):(DatasetType.transformed);
-		SchemaType schemaType = (source)?(SchemaType.SOURCE):(SchemaType.TARGET);
-		
+	private void selectFeatures(ReferencedEnvelope bbox, DataSet dataSet, Set<InstanceReference> result) {
 		InstanceService instances = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
-		SchemaService schemas = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
-		Collection<SchemaElement> schema = schemas.getSchema(schemaType);
-		for (SchemaElement element : schema) {
-			FeatureType ft = element.getFeatureType();
-			if (ft != null && ft.getGeometryDescriptor() != null) {
-				String geometryAtrtribute = ft.getGeometryDescriptor().getLocalName();
+		FeatureType ft = MapUtils.getGeometryFeatureType();
+		if (ft != null && ft.getGeometryDescriptor() != null) {
+			String geometryAtrtribute = ft.getGeometryDescriptor().getLocalName();
+			
+			Filter geometryFilter = ff.intersects(ff.property(geometryAtrtribute), ff.literal(bbox));
+			FeatureCollection<SimpleFeatureType, SimpleFeature> all = MapUtils.getFeatures(dataSet);
+			if (all != null) {
+				FeatureCollection<SimpleFeatureType, SimpleFeature> matches = all.subCollection(geometryFilter);
 				
-				Filter geometryFilter = ff.intersects(ff.property(geometryAtrtribute), ff.literal(bbox));
-				FeatureCollection<FeatureType, Feature> all = instances.getFeatures(datasetType);
-				if (all != null) {
-					FeatureCollection<FeatureType, Feature> matches = all.subCollection(geometryFilter);
-					
-					Iterator<Feature> it = matches.iterator();
-					while (it.hasNext()) {
-						Feature feature = it.next();
-						//TODO check matching feature type?
-						result.add(feature.getIdentifier());
-					}
+				Iterator<SimpleFeature> it = matches.iterator();
+				while (it.hasNext()) {
+					Feature feature = it.next();
+					result.add((InstanceReference) feature.getProperty(MapUtils.REFERENCE_PROPERTY).getValue());
 				}
 			}
 		}
@@ -208,8 +199,8 @@ public class FeatureSelector implements FeatureSelectionProvider, MouseListener,
 	 * @see FeatureSelectionProvider#getSelectedFeatures()
 	 */
 	@Override
-	public Set<FeatureId> getSelectedFeatures() {
-		return new HashSet<FeatureId>(selectedFeatures);
+	public Set<InstanceReference> getSelectedFeatures() {
+		return new HashSet<InstanceReference>(selectedFeatures);
 	}
 
 	/**
@@ -258,7 +249,7 @@ public class FeatureSelector implements FeatureSelectionProvider, MouseListener,
 	 * Update the selection, notify any listeners and repaint the selection in the map
 	 */
 	protected void updateSelection() {
-		selection = new InstanceSelection(selectedFeatures);
+		selection = new StructuredSelection(new ArrayList<InstanceReference>(selectedFeatures));
 
 		SelectionChangedEvent event = new SelectionChangedEvent(this, selection);
 		for (ISelectionChangedListener listener : selectionListeners) {

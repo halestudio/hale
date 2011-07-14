@@ -11,30 +11,17 @@
  */
 package eu.esdihumboldt.hale.ui.style;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.PlatformUI;
-import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.schemaprovider.model.Definition;
-import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
-import eu.esdihumboldt.hale.ui.service.UpdateMessage;
+import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
 
 /**
@@ -43,7 +30,7 @@ import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleServiceListener {
+public class DatasetStyleDropdown extends Action implements IMenuCreator, SchemaServiceListener {
 	
 	private final DataSet dataset;
 	
@@ -63,10 +50,10 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 		setImageDescriptor(InstanceStylePlugin.getImageDescriptor(
 				"/icons/ft_stylelist.gif")); //$NON-NLS-1$
 		
-		update(null);
+		update();
 		
 		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-		schema.addListener(this); //FIXME remove the listener? when & where?
+		schema.addSchemaServiceListener(this); //FIXME remove the listener? when & where?
 		
 		setMenuCreator(this);
 	}
@@ -102,35 +89,36 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 	public void fillMenu(Menu menu) {
 		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
-		Map<Definition, FeatureType> tmp = (dataset == DataSet.SOURCE)?(schema.getSourceSchema().getTypes()):(schema.getTargetSchema().getTypes());
-		List<FeatureType> types = new ArrayList<FeatureType>();
-		for (Entry<Definition, FeatureType> entry : tmp.entrySet()) {
-			TypeDefinition type = DefinitionUtil.getType(entry.getKey());
-			if (type.hasGeometry() && !type.isAbstract()) {
-				types.add(entry.getValue());
-			}
-		}
-		Collections.sort(types, new Comparator<FeatureType>() {
-
-			@Override
-			public int compare(FeatureType o1, FeatureType o2) {
-				return o1.getName().getLocalPart().compareToIgnoreCase(o2.getName().getLocalPart());
-			}
-			
-		});
-		
-		if (types.isEmpty())
-			return;
-		
-		int index = 0;
-		
-		for (FeatureType type : types) {
-			IAction action = new FeatureTypeStyleAction(type);
-			IContributionItem item = new ActionContributionItem(action);
-			item.fill(menu, index);
-			
-			index++;
-		}
+		//FIXME deactivated
+//		Map<Definition, FeatureType> tmp = (dataset == DataSet.SOURCE)?(schema.getSourceSchema().getTypes()):(schema.getTargetSchema().getTypes());
+//		List<FeatureType> types = new ArrayList<FeatureType>();
+//		for (Entry<Definition, FeatureType> entry : tmp.entrySet()) {
+//			TypeDefinition type = DefinitionUtil.getType(entry.getKey());
+//			if (type.hasGeometry() && !type.isAbstract()) {
+//				types.add(entry.getValue());
+//			}
+//		}
+//		Collections.sort(types, new Comparator<FeatureType>() {
+//
+//			@Override
+//			public int compare(FeatureType o1, FeatureType o2) {
+//				return o1.getName().getLocalPart().compareToIgnoreCase(o2.getName().getLocalPart());
+//			}
+//			
+//		});
+//		
+//		if (types.isEmpty())
+//			return;
+//		
+//		int index = 0;
+//		
+//		for (FeatureType type : types) {
+//			IAction action = new FeatureTypeStyleAction(type);
+//			IContributionItem item = new ActionContributionItem(action);
+//			item.fill(menu, index);
+//			
+//			index++;
+//		}
 	}
 
 	/**
@@ -146,16 +134,29 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, HaleSe
 		return menu;
 	}
 
+	private void update() {
+		//FIXME deactivated
+//		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+//		
+//		Map<Definition, FeatureType> elements = (dataset == DataSet.SOURCE)?(schema.getSourceSchema().getTypes()):(schema.getTargetSchema().getTypes());
+//		
+//		setEnabled(elements != null);
+	}
+
 	/**
-	 * @see HaleServiceListener#update(UpdateMessage)
+	 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#schemaAdded(eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID, eu.esdihumboldt.hale.schema.model.Schema)
 	 */
 	@Override
-	public void update(@SuppressWarnings("rawtypes") UpdateMessage message) {
-		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-		
-		Map<Definition, FeatureType> elements = (dataset == DataSet.SOURCE)?(schema.getSourceSchema().getTypes()):(schema.getTargetSchema().getTypes());
-		
-		setEnabled(elements != null);
+	public void schemaAdded(SchemaSpaceID spaceID, Schema schema) {
+		update();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#schemasCleared(eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID)
+	 */
+	@Override
+	public void schemasCleared(SchemaSpaceID spaceID) {
+		update();
 	}
 
 }

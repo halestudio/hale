@@ -179,6 +179,14 @@ public abstract class StyleHelper {
 		return result;
 	}
 	
+	public static Style getStyle(FeatureType ft) {
+		Style style = styleFactory.createStyle();
+		
+		style.addFeatureTypeStyle(getDefaultStyle(ft));
+		
+		return style;
+	}
+	
 	/**
 	 * Create a new point symbolizer based on the given one
 	 * 

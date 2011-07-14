@@ -11,28 +11,42 @@
  */
 package eu.esdihumboldt.hale.ui.views.map;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+
+import javax.xml.namespace.QName;
 
 import org.eclipse.ui.PlatformUI;
 import org.geotools.data.memory.MemoryFeatureCollection;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.NameImpl;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.feature.type.AttributeDescriptorImpl;
+import org.geotools.feature.type.AttributeTypeImpl;
+import org.geotools.gml3.GMLSchema;
 import org.geotools.map.DefaultMapContext;
 import org.geotools.map.MapContext;
 import org.geotools.styling.Style;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.filter.identity.FeatureId;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.AttributeType;
+import org.opengis.feature.type.Name;
+import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import com.vividsolutions.jts.geom.Geometry;
+
+import eu.esdihumboldt.hale.instance.model.Instance;
+import eu.esdihumboldt.hale.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.schema.geometry.GeometryProperty;
+import eu.esdihumboldt.hale.ui.service.instance.DataSet;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
-import eu.esdihumboldt.hale.ui.service.instance.InstanceService.DatasetType;
-import eu.esdihumboldt.hale.ui.style.service.StyleService;
+import eu.esdihumboldt.hale.ui.style.helper.StyleHelper;
 
 /**
  * Utility methods for rendering the map
@@ -42,131 +56,229 @@ import eu.esdihumboldt.hale.ui.style.service.StyleService;
  */
 public abstract class MapUtils {
 	
-	private static final ALogger log = ALoggerFactory.getLogger(FeatureTileRenderer.class);
+//	private static final ALogger log = ALoggerFactory.getLogger(FeatureTileRenderer.class);
+	
+	/**
+	 * 
+	 */
+	public static final String GEOMETRY_PROPERTY = "geometry";
+
+	/**
+	 * 
+	 */
+	public static final String REFERENCE_PROPERTY = "reference";
+
+	private static SimpleFeatureType geometryFeatureType;
+	
+	private static final AttributeType REFERENCE_TYPE = new AttributeTypeImpl(
+        new NameImpl("http://www.esdi-humboldt.eu/hale","InstanceReference"), 
+        InstanceReference.class, false,
+        false, Collections.<Filter>emptyList(), null, null
+    );
 	
 	/**
 	 * @param crs the {@link CoordinateReferenceSystem} to use.
-	 * @param type the {@link DatasetType} to render.
+	 * @param dataSet the {@link DataSet} to render.
 	 * @param status the paint status
 	 * @param selection the feature IDs of the selected features 
 	 * @param selectionOnly if only the selection shall be rendered
 	 * @return a {@link MapContext} with the given CRS and the 
-	 * {@link FeatureCollection} identified by the given {@link DatasetType}.
+	 * {@link FeatureCollection} identified by the given {@link DataSet}.
 	 */
 	public static MapContext buildMapContext(CoordinateReferenceSystem crs, 
-			DatasetType type, FeaturePaintStatus status, Set<FeatureId> selection, 
+			DataSet dataSet, FeaturePaintStatus status, Set<InstanceReference> selection, 
 			boolean selectionOnly) {
 		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
-		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+//		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 		
 		int failed = 0;
 		MapContext mc;
 		
-		FeatureCollection<?, ?> fc = is.getFeatures(type);
-		if (fc != null && fc.size() > 0) {
-			if (crs == null) {
-				crs = is.getCRS().getCRS();
-//				crs = determineCRS(is.getFeatures(DatasetType.source)); // TODO always use source CRS! (Check whether OK)
-			}
+		InstanceCollection ic = is.getInstances(dataSet);
+		
+		if (!ic.isEmpty()) {
+			FeatureCollection<SimpleFeatureType, SimpleFeature> groupedFeatures = new MemoryFeatureCollection(getGeometryFeatureType());
+			FeatureCollection<SimpleFeatureType, SimpleFeature> selectedFeatures = new MemoryFeatureCollection(getGeometryFeatureType());
 			
-			if (selectionOnly) {
-				//TODO apply a filter for the selected features?
-				//fc.s
-			}
-			
-			//log.info("features size: " + fc.size()); //$NON-NLS-1$
-			//log.info("features bounds: " + fc.getBounds()); //$NON-NLS-1$
-			
-			Map<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> groupedFeatures = new HashMap<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>>();
-			Map<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> selectedFeatures = new HashMap<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>>();
-			Iterator<?> it = fc.iterator();
-			while (it.hasNext()) {
-				Object tmp = it.next();
-				
-				if (tmp instanceof SimpleFeature) {
-					SimpleFeature feature = (SimpleFeature) tmp;
-					
-					if (validateFeature(feature)) {
-						Map<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> collectionMap;
-						if (selectionOnly && selection.contains(feature.getIdentifier())) {
-							collectionMap = selectedFeatures;
+			ResourceIterator<Instance> it = ic.iterator();
+			try {
+				while (it.hasNext()) {
+					SimpleFeature feature = createGeometryFeature(it.next(), is, dataSet);
+					if (feature != null) {
+						FeatureCollection<SimpleFeatureType, SimpleFeature> collection;
+						if (selectionOnly && selection.contains(feature.getProperty(REFERENCE_PROPERTY).getValue())) {
+							collection = selectedFeatures;
 						}
 						else if (!selectionOnly) {
-							collectionMap = groupedFeatures;
+							collection = groupedFeatures;
 						}
 						else {
-							collectionMap = null;
+							collection = null;
 						}
 						
-						if (collectionMap != null) {
-							FeatureCollection<SimpleFeatureType, SimpleFeature> collection = collectionMap.get(feature.getFeatureType());
-							if (collection == null) {
-								collection = new MemoryFeatureCollection(feature.getFeatureType());
-								collectionMap.put(feature.getFeatureType(), collection);
-							}
-							
+						if (collection != null) {
 							collection.add(feature);
+						}
+						
+						if (crs == null) { //XXX grabs CRS from the first feature
+							Object userData = ((Geometry) feature.getProperty(GEOMETRY_PROPERTY).getValue()).getUserData();
+							if (userData instanceof CoordinateReferenceSystem) {
+								crs = (CoordinateReferenceSystem) userData;
+							}
 						}
 					}
 					else {
 						failed++;
 					}
 				}
-				else {
-					failed++;
-					log.error("Unrecognized Feature"); //$NON-NLS-1$
-				}
+			} finally {
+				it.dispose();
 			}
 			
 			mc = new DefaultMapContext(crs);
 			// add normal features
-			Style style = ss.getStyle(type);
-			for (Entry<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> entry : groupedFeatures.entrySet()) {
-				mc.addLayer(entry.getValue(), style);
-			}
+			Style style = StyleHelper.getStyle(getGeometryFeatureType()); //XXX ss.getStyle(dataSet);
+			mc.addLayer(groupedFeatures, style);
 			
 			// add selected features
-			style = ss.getSelectionStyle(type);
-			for (Entry<SimpleFeatureType, FeatureCollection<SimpleFeatureType, SimpleFeature>> entry : selectedFeatures.entrySet()) {
-				mc.addLayer(entry.getValue(), style);
-			}
+			style = StyleHelper.getStyle(getGeometryFeatureType()); //XXX ss.getSelectionStyle(dataSet);
+			mc.addLayer(selectedFeatures, style);
 		}
 		else {
 			mc = new DefaultMapContext(crs);
 		}
 		
-		switch (type) {
-		case source:
+		switch (dataSet) {
+		case SOURCE:
 			status.setReferenceFailed(failed);
-//			if (failed > 0) {
-//				log.warn(failed + " source features have no default geometry");
-//			}
 			break;
-		case transformed:
+		case TRANSFORMED:
 			status.setTransformedFailed(failed);
-//			if (failed > 0) {
-//				log.warn(failed + " transformed features have no default geometry");
-//			}
 			break;
 		}
 		
 		return mc;
 	}
+	
+	private static SimpleFeature createGeometryFeature(Instance instance, 
+			InstanceService instanceService, DataSet dataSet) {
+		GeometryProperty<?> geometry = findGeometry(instance);
+		
+		if (geometry != null) {
+			SimpleFeatureBuilder builder = new SimpleFeatureBuilder(getGeometryFeatureType());
+			
+			//FIXME add CRS as user data to geometry (this is not good as it changes the original object)
+			geometry.getGeometry().setUserData(geometry.getCRSDefinition().getCRS());
+			
+			builder.add(geometry.getGeometry());
+			builder.add(instanceService.getReference(instance, dataSet));
+			
+			return builder.buildFeature(null);
+		}
+		
+		return null;
+	}
+
+	private static GeometryProperty<?> findGeometry(Instance instance) {
+		//FIXME improve! only very simple implementation for testing purposes (with shape files)
+		//XXX should be based on TypeDefinition and the path should also be cached per TypeDefinition
+		
+		for (QName name : instance.getPropertyNames()) {
+			Object[] values = instance.getProperty(name);
+			if (values != null && values.length > 0 && values[0] instanceof GeometryProperty<?>) {
+				return (GeometryProperty<?>) values[0];
+			}
+		}
+		
+		return null;
+	}
 
 	/**
-	 * Validate if the given feature may be added to the layer
-	 * 
-	 * @param feature the feature
-	 * 
-	 * @return if the feature may be added to a layer for painting
+	 * Get the feature type containing only a geometry and an {@link InstanceReference}
+	 * @return the feature type
 	 */
-	private static boolean validateFeature(SimpleFeature feature) {
-		// check if a default geometry exists
-		if (feature.getDefaultGeometry() == null) {
-			return false;
+	public static SimpleFeatureType getGeometryFeatureType() {
+		if (geometryFeatureType == null) {
+			SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+
+			// geometry
+			Name geometryName = new NameImpl(null, GEOMETRY_PROPERTY); // must be null namespace because otherwise the StreamingRenderer and some other Geotools components choke on it
+			AttributeType type = GMLSchema.ABSTRACTGEOMETRYTYPE_TYPE;
+			AttributeDescriptor desc =  new AttributeDescriptorImpl(
+					type,
+					geometryName, 
+					1,
+					1,
+					true, // always nillable, else creating the features fails
+					null);
+			builder.add(desc);
+			builder.setDefaultGeometry(geometryName.getLocalPart());
+			
+			// reference
+			Name referenceName = new NameImpl(null, REFERENCE_PROPERTY);
+			desc =  new AttributeDescriptorImpl(
+					REFERENCE_TYPE,
+					referenceName, 
+					1,
+					1,
+					true, // always nillable, else creating the features fails
+					null);
+			builder.add(desc);
+			
+			// other properties
+			builder.setAbstract(false);
+			builder.setName(new NameImpl("http://www.esdi-humboldt.eu/hale", "GeometryFeature"));
+			
+			geometryFeatureType = builder.buildFeatureType();
 		}
-				
-		return true;
+		
+		return geometryFeatureType;
+	}
+	
+	/**
+	 * Get the geometry features for the given data set
+	 * @param dataSet the data set
+	 * @return the feature collection
+	 */
+	public static FeatureCollection<SimpleFeatureType, SimpleFeature> getFeatures(DataSet dataSet) {
+		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+		
+		InstanceCollection ic = is.getInstances(dataSet);
+		FeatureCollection<SimpleFeatureType, SimpleFeature> features = new MemoryFeatureCollection(getGeometryFeatureType());
+		
+		if (!ic.isEmpty()) {
+			ResourceIterator<Instance> it = ic.iterator();
+			try {
+				while (it.hasNext()) {
+					SimpleFeature feature = createGeometryFeature(it.next(), is, dataSet);
+					if (feature != null) {
+						features.add(feature);
+					}
+				}
+			} finally {
+				it.dispose();
+			}
+		}
+		
+		return features;
+	}
+
+	/**
+	 * Determine the CRS from a set of geometry features
+	 * @param features the features
+	 * @return the coordinate reference system or <code>null</code>
+	 */
+	public static CoordinateReferenceSystem determineCRS(
+			FeatureCollection<SimpleFeatureType, SimpleFeature> features) {
+		Iterator<SimpleFeature> it = features.iterator();
+		while (it.hasNext()) {
+			Object userData = ((Geometry) it.next().getProperty(GEOMETRY_PROPERTY).getValue()).getUserData();
+			if (userData instanceof CoordinateReferenceSystem) {
+				return (CoordinateReferenceSystem) userData;
+			}
+		}
+		
+		return null;
 	}
 
 }
