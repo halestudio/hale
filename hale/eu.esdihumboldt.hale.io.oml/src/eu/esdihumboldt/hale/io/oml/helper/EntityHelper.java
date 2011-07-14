@@ -9,7 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.mapping.helper;
+package eu.esdihumboldt.hale.io.oml.helper;
 
 import java.util.Iterator;
 

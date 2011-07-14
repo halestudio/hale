@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import eu.esdihumboldt.hale.mapping.helper.EntityHelper;
+import eu.esdihumboldt.hale.io.oml.helper.EntityHelper;
 import eu.esdihumboldt.hale.schemaprovider.EnumAttributeType;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;

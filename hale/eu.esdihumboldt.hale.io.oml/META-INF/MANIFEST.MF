@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OML I/O Bundle
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.oml
+Bundle-Version: 2.2.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: de.cs3d.util.logging,
+ eu.esdihumboldt.commons.goml.align,
+ eu.esdihumboldt.commons.goml.oml.io,
+ eu.esdihumboldt.commons.goml.omwg,
+ eu.esdihumboldt.hale.prefixmapper,
+ eu.esdihumboldt.hale.schemaprovider.model,
+ eu.esdihumboldt.specification.cst.align,
+ eu.esdihumboldt.specification.cst.rdf,
+ org.slf4j;version="1.5.11"
