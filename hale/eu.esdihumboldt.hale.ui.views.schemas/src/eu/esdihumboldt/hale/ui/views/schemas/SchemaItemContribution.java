@@ -14,7 +14,6 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.model.functions.FunctionWizardContribution;
 import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 import eu.esdihumboldt.hale.ui.style.FeatureTypeStyleAction;
-import eu.esdihumboldt.hale.ui.views.schemas.dialogs.PropertiesAction;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
 
@@ -52,13 +51,13 @@ public class SchemaItemContribution extends
 				boolean addSep = false;
 				
 				// properties
-				if (item.isType() || item.isAttribute()) {
-					IAction action = new PropertiesAction(item);
-					IContributionItem contrib = new ActionContributionItem(action);
-					contrib.fill(menu, index++);
-					
-					addSep = true;
-				}
+//				if (item.isType() || item.isAttribute()) {
+//					IAction action = new PropertiesAction(item);
+//					IContributionItem contrib = new ActionContributionItem(action);
+//					contrib.fill(menu, index++);
+//					
+//					addSep = true;
+//				}
 				
 				// SLD
 				TypeDefinition typeDef = DefinitionUtil.getType(item.getDefinition());
