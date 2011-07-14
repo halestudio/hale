@@ -14,7 +14,6 @@ package eu.esdihumboldt.hale.ui.style.service.internal;
 import java.awt.Color;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,8 +44,6 @@ import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
-import eu.esdihumboldt.hale.ui.service.UpdateMessage;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
@@ -255,7 +252,9 @@ public class StyleServiceImpl extends AbstractStyleService {
 	
 	@SuppressWarnings("deprecation")
 	private Style getStyle(final DataSet dataset, boolean selected) {
-		Map<Definition, FeatureType> elements = (dataset == DataSet.SOURCE)?(schemaService.getSourceSchema().getTypes()):(schemaService.getTargetSchema().getTypes());
+		//FIXME
+		Map<Definition, FeatureType> elements = null;
+//		Map<Definition, FeatureType> elements = (dataset == DataSet.SOURCE)?(schemaService.getSourceSchema().getTypes()):(schemaService.getTargetSchema().getTypes());
 		
 		if (elements == null) {
 			elements = new HashMap<Definition, FeatureType>();
@@ -363,7 +362,7 @@ public class StyleServiceImpl extends AbstractStyleService {
 		
 		for (Style style : styles) {
 			for (FeatureTypeStyle fts : style.getFeatureTypeStyles()) {
-				Definition element = schemaService.getTypeByName(fts.getFeatureTypeName());
+				Definition element = null; //FIXME = schemaService.getTypeByName(fts.getFeatureTypeName());
 				if (element != null && DefinitionUtil.getFeatureType(element) != null) {
 					if (addStyle(DefinitionUtil.getFeatureType(element), fts)) {
 						somethingHappened = true;
