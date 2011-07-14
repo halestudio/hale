@@ -9,7 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.core.util;
+package eu.esdihumboldt.hale.util;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
-import eu.esdihumboldt.hale.core.util.DependencyOrderedList;
+import eu.esdihumboldt.hale.util.DependencyOrderedList;
 
 /**
  * Test case for {@link DependencyOrderedList}

@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE Util Test Bundle
+Bundle-SymbolicName: eu.esdihumboldt.hale.util.test
+Bundle-Version: 2.2.0.qualifier
+Fragment-Host: eu.esdihumboldt.hale.util;bundle-version="2.2.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.junit;version="4.8.1"

@@ -38,7 +38,7 @@ import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.ContentTypeTester;
 import eu.esdihumboldt.hale.core.io.internal.ContentTypeDefinition;
 import eu.esdihumboldt.hale.core.io.service.ContentTypeService;
-import eu.esdihumboldt.hale.core.util.DependencyOrderedList;
+import eu.esdihumboldt.hale.util.DependencyOrderedList;
 
 /**
  * Tracks {@link ContentTypeDefinition} files

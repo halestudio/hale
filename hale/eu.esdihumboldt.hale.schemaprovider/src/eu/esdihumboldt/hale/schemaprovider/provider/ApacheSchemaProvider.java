@@ -70,7 +70,6 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.core.io.impl.LogProgressIndicator;
-import eu.esdihumboldt.hale.core.util.DependencyOrderedList;
 import eu.esdihumboldt.hale.cache.Request;
 import eu.esdihumboldt.hale.schemaprovider.AbstractSchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.HumboldtURIResolver;
@@ -92,6 +91,7 @@ import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.SchemaRefere
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.SchemaTypeAttribute;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.SchemaTypeResolver;
 import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.TypeUtil;
+import eu.esdihumboldt.hale.util.DependencyOrderedList;
 
 /**
  * The main functionality of this class is to load an XML schema file (XSD)
