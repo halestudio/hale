@@ -44,20 +44,22 @@ public interface InstanceService {
 	 */
 	public void clearInstances();
 	
-	//FIXME what to do with the CRS? should it be part of InstanceCollection?
-//	/**
-//	 * Set the coordinate reference system
-//	 * 
-//	 * @param crs the CRS definition
-//	 */
-//	public void setCRS(CRSDefinition crs);
-//	
-//	/**
-//	 * Get the coordinate reference system
-//	 * 
-//	 * @return the CRS definition
-//	 */
-//	public CRSDefinition getCRS();
+	/**
+	 * Get a reference to an instance that can be used to retrieve the
+	 * given instance using {@link #getInstance(InstanceReference)}.
+	 * @param instance the instance, must have originated from this service
+	 * @param dataSet the data set the instance originates from
+	 * @return the reference
+	 */
+	public InstanceReference getReference(Instance instance, DataSet dataSet);
+	
+	/**
+	 * Get the instance referenced by the given reference.
+	 * @param reference the instance reference
+	 * @return the referenced instance or <code>null</code> if it does not exist
+	 *   or the reference is invalid
+	 */
+	public Instance getInstance(InstanceReference reference);
 	
 	/**
 	 * Adds an instance service listener

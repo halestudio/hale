@@ -18,8 +18,15 @@ import java.net.URISyntaxException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 
+import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import com.orientechnologies.orient.core.id.ORID;
+import com.orientechnologies.orient.core.record.impl.ODocument;
+
+import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.instance.model.impl.OInstance;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.internal.AbstractInstanceService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
@@ -118,6 +125,48 @@ public class OrientInstanceService extends AbstractInstanceService {
 		transformed.clear();
 		
 		notifyDatasetChanged(null);
+	}
+
+
+
+	/**
+	 * @see InstanceService#getReference(Instance, DataSet)
+	 */
+	@Override
+	public InstanceReference getReference(Instance instance, DataSet dataSet) {
+		OInstance inst = (OInstance) instance;
+		ORID id = inst.getDocument().getIdentity();
+		
+		return new OrientInstanceReference(id, dataSet, inst.getDefinition());
+	}
+
+
+
+	/**
+	 * @see InstanceService#getInstance(InstanceReference)
+	 */
+	@Override
+	public Instance getInstance(InstanceReference reference) {
+		OrientInstanceReference ref = (OrientInstanceReference) reference;
+		
+		LocalOrientDB lodb = (ref.getDataSet().equals(DataSet.SOURCE))?(source):(transformed);
+		
+		DatabaseReference<ODatabaseDocumentTx> db = lodb.openRead();
+		DatabaseHandle handle = new DatabaseHandle(db.getDatabase());
+		try {
+			ODocument document = db.getDatabase().load(ref.getId());
+			if (document != null) {
+				OInstance instance = new OInstance(document, ref.getTypeDefinition());
+				handle.addReference(instance);
+				return instance;
+			}
+		}
+		finally {
+			db.dispose(false);
+			handle.tryClose();
+		}
+		
+		return null;
 	}
 
 }

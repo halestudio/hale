@@ -88,6 +88,14 @@ public class OGroup implements MutableGroup {
 		return document;
 	}
 	
+	/**
+	 * Get the internal document.
+	 * @return the internal document
+	 */
+	public ODocument getDocument() {
+		return document;
+	}
+	
 	private void configureDocument(ORecordAbstract<?> document, ODatabaseRecord db,
 			DefinitionGroup definition) {
 		// configure document
