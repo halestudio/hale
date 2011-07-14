@@ -33,7 +33,6 @@ import eu.esdihumboldt.hale.ui.model.schema.NullSchemaItem;
 import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.ui.service.schemaitem.SchemaItemService;
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.IEntity;
 
@@ -155,8 +154,10 @@ public class SchemaSelection implements ISelection {
 	 */
 	private SchemaItem getSingleSchemaItem(IEntity entity, SchemaSpaceID type) {
 		// get the schema item matching the entity
-		SchemaItemService items = (SchemaItemService) PlatformUI.getWorkbench().getService(SchemaItemService.class);
-		return items.getSchemaItem(entity, type);
+//		SchemaItemService items = (SchemaItemService) PlatformUI.getWorkbench().getService(SchemaItemService.class);
+//		return items.getSchemaItem(entity, type);
+		//FIXME
+		return null;
 	}
 
 	/**
