@@ -87,15 +87,6 @@
       </sourceProvider>
    </extension>
    <extension
-         point="eu.esdihumboldt.hale.MappingExport">
-      <MappingExportFactory
-            description="RDF Ontology Mapping Language encoding"
-            extension="*.goml"
-            name="RDF OML"
-            providerClass="eu.esdihumboldt.hale.ui.io.legacy.mappingexport.OmlMappingExportProvider">
-      </MappingExportFactory>
-   </extension>
-   <extension
          point="eu.esdihumboldt.hale.ui.io.advisor">
       <advisor
             class="eu.esdihumboldt.hale.ui.io.schema.SourceSchemaImportAdvisor"
