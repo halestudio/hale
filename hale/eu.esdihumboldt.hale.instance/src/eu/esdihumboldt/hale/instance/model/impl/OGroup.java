@@ -22,8 +22,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -68,6 +70,8 @@ public class OGroup implements MutableGroup {
 	 * The definition group
 	 */
 	private final DefinitionGroup definition;
+	
+	private Map<ORecordBytes, Object> cachedObjects;
 	
 	/**
 	 * Creates an empty group with an associated definition group.
@@ -447,6 +451,14 @@ public class OGroup implements MutableGroup {
 		else if (value instanceof ORecordBytes) {
 			//TODO try conversion first?!
 			
+			// check for cached object
+			if (cachedObjects != null) {
+				Object cached = cachedObjects.get(value);
+				if (cached != null) {
+					return cached;
+				}
+			}
+			
 			// object deserialization
 			ORecordBytes record = (ORecordBytes) value;
 			ByteArrayInputStream bytes = new ByteArrayInputStream(record.toStream());
@@ -458,7 +470,12 @@ public class OGroup implements MutableGroup {
 						return CoreBundle.loadClass(desc.getName(), null);
 					}
 				};
-				return in.readObject();
+				Object object = in.readObject();
+				if (cachedObjects == null) {
+					cachedObjects = new HashMap<ORecordBytes, Object>();
+				}
+				cachedObjects.put(record, object);
+				return object;
 			} catch (Exception e) {
 				throw new IllegalStateException("Could not deserialize field value.", e);
 			}
