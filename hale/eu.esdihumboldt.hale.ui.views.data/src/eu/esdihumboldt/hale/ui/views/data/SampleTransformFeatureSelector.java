@@ -12,23 +12,17 @@
 
 package eu.esdihumboldt.hale.ui.views.data;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
@@ -39,18 +33,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.PlatformUI;
-import org.geotools.data.memory.MemoryFeatureCollection;
-import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.cst.transformer.CstService;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
 import eu.esdihumboldt.hale.ui.service.UpdateMessage;
-import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelectionListener;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelector;
 
@@ -147,86 +134,87 @@ public class SampleTransformFeatureSelector implements InstanceSelector {
 		/**
 		 * Update the feature types selection
 		 */
-		@SuppressWarnings("unchecked")
 		protected void updateFeatureTypesSelection() {
-			featureMap.clear();
-			
-			final ReferenceSampleService rss = (ReferenceSampleService) PlatformUI.getWorkbench().getService(ReferenceSampleService.class);
-			final AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
-			final CstService cst = (CstService) PlatformUI.getWorkbench().getService(CstService.class);
-			final SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-			
-			// target schema
-			Map<Definition, FeatureType> targetTypes = schemaService.getTargetSchema().getTypes();
-			Set<FeatureType> fts = new HashSet<FeatureType>(targetTypes.values());
-			Map<FeatureType, Definition> elementMap = new HashMap<FeatureType, Definition>();
-			for (Entry<Definition, FeatureType> entry : targetTypes.entrySet()) {
-				elementMap.put(entry.getValue(), entry.getKey());
-			}
-			
-			// get reference features
-			Collection<Feature> reference = rss.getReferenceInstances();
-			
-			if (reference != null && !reference.isEmpty()) {
-				// create a feature collection
-				MemoryFeatureCollection features = new MemoryFeatureCollection(((SimpleFeature) reference.iterator().next()).getFeatureType());
-				for (Feature refFeature : reference) {
-					features.add((SimpleFeature) refFeature);
-				}
-				
-				// transform features
-				FeatureCollection<FeatureType, Feature> transformed = (FeatureCollection<FeatureType, Feature>) cst.transform(
-						features, // Input Features
-						alService.getAlignment(), // Alignment
-						fts);
-				
-				// determine feature types
-				Iterator<Feature> it = transformed.iterator();
-				while (it.hasNext()) {
-					Feature feature = it.next();
-					FeatureType type = feature.getType();
-					Definition element = elementMap.get(type);
-					List<Feature> featureList = featureMap.get(element);
-					if (featureList == null) {
-						featureList = new ArrayList<Feature>();
-						featureMap.put(element, featureList);
-					}
-					featureList.add(feature);
-				}
-			}
-			
-			Collection<Definition> selectableTypes = featureMap.keySet();
-			featureTypes.setInput(selectableTypes);
-			
-			if (!selectableTypes.isEmpty()) {
-				featureTypes.setSelection(new StructuredSelection(selectableTypes.iterator().next()));
-				featureTypes.getControl().setEnabled(true);
-			}
-			else {
-				featureTypes.getControl().setEnabled(false);
-			}
-			
-			layout(true, true);
-			
-			updateSelection();
+			//FIXME update
+//			featureMap.clear();
+//			
+//			final ReferenceSampleService rss = (ReferenceSampleService) PlatformUI.getWorkbench().getService(ReferenceSampleService.class);
+//			final AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+//			final CstService cst = (CstService) PlatformUI.getWorkbench().getService(CstService.class);
+//			final SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+//			
+//			// target schema
+//			Map<Definition, FeatureType> targetTypes = schemaService.getTargetSchema().getTypes();
+//			Set<FeatureType> fts = new HashSet<FeatureType>(targetTypes.values());
+//			Map<FeatureType, Definition> elementMap = new HashMap<FeatureType, Definition>();
+//			for (Entry<Definition, FeatureType> entry : targetTypes.entrySet()) {
+//				elementMap.put(entry.getValue(), entry.getKey());
+//			}
+//			
+//			// get reference features
+//			Collection<Feature> reference = rss.getReferenceInstances();
+//			
+//			if (reference != null && !reference.isEmpty()) {
+//				// create a feature collection
+//				MemoryFeatureCollection features = new MemoryFeatureCollection(((SimpleFeature) reference.iterator().next()).getFeatureType());
+//				for (Feature refFeature : reference) {
+//					features.add((SimpleFeature) refFeature);
+//				}
+//				
+//				// transform features
+//				FeatureCollection<FeatureType, Feature> transformed = (FeatureCollection<FeatureType, Feature>) cst.transform(
+//						features, // Input Features
+//						alService.getAlignment(), // Alignment
+//						fts);
+//				
+//				// determine feature types
+//				Iterator<Feature> it = transformed.iterator();
+//				while (it.hasNext()) {
+//					Feature feature = it.next();
+//					FeatureType type = feature.getType();
+//					Definition element = elementMap.get(type);
+//					List<Feature> featureList = featureMap.get(element);
+//					if (featureList == null) {
+//						featureList = new ArrayList<Feature>();
+//						featureMap.put(element, featureList);
+//					}
+//					featureList.add(feature);
+//				}
+//			}
+//			
+//			Collection<Definition> selectableTypes = featureMap.keySet();
+//			featureTypes.setInput(selectableTypes);
+//			
+//			if (!selectableTypes.isEmpty()) {
+//				featureTypes.setSelection(new StructuredSelection(selectableTypes.iterator().next()));
+//				featureTypes.getControl().setEnabled(true);
+//			}
+//			else {
+//				featureTypes.getControl().setEnabled(false);
+//			}
+//			
+//			layout(true, true);
+//			
+//			updateSelection();
 		}
 
 		/**
 		 * Update the selection
 		 */
 		protected void updateSelection() {
-			if (!featureTypes.getSelection().isEmpty()) {
-				Definition featureType = (Definition) ((IStructuredSelection) featureTypes.getSelection()).getFirstElement();
-				
-				selectedType = featureType;
-			}
-			else {
-				selectedType = null;
-			}
-			
-			for (InstanceSelectionListener listener : listeners) {
-				listener.selectionChanged(selectedType, getSelection());
-			}
+			//FIXME update
+//			if (!featureTypes.getSelection().isEmpty()) {
+//				Definition featureType = (Definition) ((IStructuredSelection) featureTypes.getSelection()).getFirstElement();
+//				
+//				selectedType = featureType;
+//			}
+//			else {
+//				selectedType = null;
+//			}
+//			
+//			for (InstanceSelectionListener listener : listeners) {
+//				listener.selectionChanged(selectedType, getSelection());
+//			}
 		}
 		
 		/**
@@ -267,11 +255,12 @@ public class SampleTransformFeatureSelector implements InstanceSelector {
 	 */
 	@Override
 	public void addSelectionListener(InstanceSelectionListener listener) {
-		listeners.add(listener);
-		
-		if (current != null && !current.isDisposed()) {
-			listener.selectionChanged(current.selectedType, current.getSelection());
-		}
+		//FIXME update
+//		listeners.add(listener);
+//		
+//		if (current != null && !current.isDisposed()) {
+//			listener.selectionChanged(current.selectedType, current.getSelection());
+//		}
 	}
 
 	/**
