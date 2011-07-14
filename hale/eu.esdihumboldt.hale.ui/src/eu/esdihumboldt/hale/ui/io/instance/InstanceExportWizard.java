@@ -17,9 +17,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.eclipse.ui.PlatformUI;
-import org.geotools.feature.FeatureCollection;
-import org.opengis.feature.Feature;
-import org.opengis.feature.type.FeatureType;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -37,10 +34,7 @@ import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.ui.io.ExportSelectTargetPage;
 import eu.esdihumboldt.hale.ui.io.ExportWizard;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
-import eu.esdihumboldt.hale.ui.service.instance.DataSet;
-import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
  * Wizard for exporting instances
@@ -135,8 +129,10 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceW
 	 * @return the target schema
 	 */
 	public Schema getTargetSchema() {
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-		return ss.getTargetSchema();
+		//FIXME update
+//		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+//		return ss.getTargetSchema();
+		return null;
 	}
 
 	/**
@@ -146,24 +142,25 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceW
 	protected void updateConfiguration(InstanceWriter provider) {
 		super.updateConfiguration(provider);
 		
-		// configure with instances, common SRS, target schema
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
-		
-		FeatureCollection<FeatureType, Feature> features = is.getFeatures(DataSet.TRANSFORMED);
-		Schema targetSchema = getTargetSchema();
-		
-		// determine SRS
-		String commonSRSName;
-		try {
-			commonSRSName = is.getCRS().getCRS().getIdentifiers().iterator().next().toString();
-		} catch (Exception e) {
-			// ignore
-			commonSRSName = null;
-		}
-		
-		provider.setInstances(features);
-		provider.setTargetSchema(targetSchema);
-		provider.setCommonSRSName(commonSRSName);
+		//FIXME update
+//		// configure with instances, common SRS, target schema
+//		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+//		
+//		FeatureCollection<FeatureType, Feature> features = is.getFeatures(DataSet.TRANSFORMED);
+//		Schema targetSchema = getTargetSchema();
+//		
+//		// determine SRS
+//		String commonSRSName;
+//		try {
+//			commonSRSName = is.getCRS().getCRS().getIdentifiers().iterator().next().toString();
+//		} catch (Exception e) {
+//			// ignore
+//			commonSRSName = null;
+//		}
+//		
+//		provider.setInstances(features);
+//		provider.setTargetSchema(targetSchema);
+//		provider.setCommonSRSName(commonSRSName);
 	}
 
 	/**
