@@ -10,11 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.common.definition.internal.editors.codelist;
-
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+package eu.esdihumboldt.hale.codelist.ui.editor;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -23,7 +19,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
@@ -38,8 +33,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.codelist.CodeList;
+import eu.esdihumboldt.hale.codelist.ui.internal.Messages;
 import eu.esdihumboldt.hale.codelist.ui.service.CodeListService;
-import eu.esdihumboldt.hale.ui.common.internal.Messages;
 
 /**
  * 
@@ -54,7 +49,7 @@ public class ListSelector implements CodeListSelector {
 	
 	private final ListViewer listViewer;
 	
-	private final List<CodeList> codeLists;
+//	private final List<CodeList> codeLists;
 
 	/**
 	 * Constructor
@@ -72,21 +67,22 @@ public class ListSelector implements CodeListSelector {
 		
 		CodeListService codeListService = (CodeListService) PlatformUI.getWorkbench().getService(CodeListService.class);
 		
-		codeLists = codeListService.getSearchPathCodeLists();
-		Collections.sort(codeLists, new Comparator<CodeList>() {
-
-			@Override
-			public int compare(CodeList o1, CodeList o2) {
-				int result = o1.getIdentifier().compareToIgnoreCase(o2.getIdentifier());
-				
-				if (result == 0) {
-					result = o1.getNamespace().compareToIgnoreCase(o2.getNamespace());
-				}
-				
-				return result;
-			}
-			
-		});
+		//FIXME update
+//		codeLists = codeListService.getSearchPathCodeLists();
+//		Collections.sort(codeLists, new Comparator<CodeList>() {
+//
+//			@Override
+//			public int compare(CodeList o1, CodeList o2) {
+//				int result = o1.getIdentifier().compareToIgnoreCase(o2.getIdentifier());
+//				
+//				if (result == 0) {
+//					result = o1.getNamespace().compareToIgnoreCase(o2.getNamespace());
+//				}
+//				
+//				return result;
+//			}
+//			
+//		});
 		
 		// search field
 		String tip = Messages.ListSelector_0; //$NON-NLS-1$
@@ -117,7 +113,8 @@ public class ListSelector implements CodeListSelector {
 			}
 			
 		});
-		listViewer.setInput(codeLists);
+		//FIXME update
+//		listViewer.setInput(codeLists);
 		
 		GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1);
 		layoutData.widthHint = SWT.DEFAULT;
@@ -139,7 +136,7 @@ public class ListSelector implements CodeListSelector {
 				ISelection selection = event.getSelection();
 				if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
 					CodeList codeList = (CodeList) ((IStructuredSelection) selection).getFirstElement();
-					String desc = codeList.getDescritpion();
+					String desc = codeList.getDescription();
 					if (desc != null) {
 						info.setText(desc);
 					}
@@ -174,7 +171,7 @@ public class ListSelector implements CodeListSelector {
 					if (codeList.getNamespace().toLowerCase().contains(filterText)) {
 						return true;
 					}
-					if (codeList.getDescritpion() != null && codeList.getDescritpion().toLowerCase().contains(filterText)) {
+					if (codeList.getDescription() != null && codeList.getDescription().toLowerCase().contains(filterText)) {
 						return true;
 					}
 				}
@@ -221,13 +218,15 @@ public class ListSelector implements CodeListSelector {
 	 * @return true if the code list was selected
 	 */
 	public boolean selectCodeList(CodeList codeList) {
-		if (codeList != null && codeLists.contains(codeList)) {
-			listViewer.setSelection(new StructuredSelection(codeList), true);
-			return true;
-		}
-		else {
-			return false;
-		}
+		//FIXME update
+		return false;
+//		if (codeList != null && codeLists.contains(codeList)) {
+//			listViewer.setSelection(new StructuredSelection(codeList), true);
+//			return true;
+//		}
+//		else {
+//			return false;
+//		}
 	}
 
 }

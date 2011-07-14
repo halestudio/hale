@@ -34,12 +34,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.PlatformUI;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.codelist.ui.internal.Messages;
-import eu.esdihumboldt.hale.codelist.ui.service.CodeListService;
 import eu.esdihumboldt.hale.ui.util.tree.CollectionTreeNodeContentProvider;
 
 /**

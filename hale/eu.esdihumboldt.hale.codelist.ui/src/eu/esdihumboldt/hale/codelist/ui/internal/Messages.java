@@ -41,6 +41,13 @@ public class Messages extends NLS {
 
 	public static String CodeListAttributeEditor_0;
 	public static String CodeListAttributeEditor_2;
+	
+	public static String ListSelector_0;
+	public static String ListSelector_1;
+	public static String ListSelector_4;
+	public static String ListSelector_5;
+	
+	public static String FileSelector_1;
 
 	static {
 		// initialize resource bundle

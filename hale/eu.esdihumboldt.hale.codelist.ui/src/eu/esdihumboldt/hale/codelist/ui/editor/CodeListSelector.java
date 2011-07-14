@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.common.definition.internal.editors.codelist;
+package eu.esdihumboldt.hale.codelist.ui.editor;
 
 import org.eclipse.swt.widgets.Control;
 

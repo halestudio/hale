@@ -10,11 +10,9 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.common.definition.internal.editors.codelist;
+package eu.esdihumboldt.hale.codelist.ui.editor;
 
-import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.swt.SWT;
@@ -25,8 +23,7 @@ import org.eclipse.swt.widgets.Control;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.codelist.CodeList;
-import eu.esdihumboldt.hale.codelist.io.xml.XmlCodeList;
-import eu.esdihumboldt.hale.ui.common.internal.Messages;
+import eu.esdihumboldt.hale.codelist.ui.internal.Messages;
 
 /**
  * Allows selecting a file as source for a code list
@@ -60,25 +57,28 @@ public class FileSelector implements CodeListSelector {
 	 */
 	@Override
 	public CodeList getCodeList() {
-		String fileName = fileEditor.getStringValue();
+//		String fileName = fileEditor.getStringValue();
+//		
+//		URI location;
+//		// try a URI
+//		try {
+//			location = new URI(fileName);
+//		} catch (URISyntaxException e) {
+//			// fall back to file
+//			File file = new File(fileName);
+//			location = file.toURI();
+//		}
+//		
+//		try {
+//			XmlCodeList codeList = new XmlCodeList(location.toURL().openStream(), location);
+//			return codeList;
+//		} catch (Exception e) {
+//			log.error("Error loading code list"); //$NON-NLS-1$
+//			return null;
+//		}
 		
-		URI location;
-		// try a URI
-		try {
-			location = new URI(fileName);
-		} catch (URISyntaxException e) {
-			// fall back to file
-			File file = new File(fileName);
-			location = file.toURI();
-		}
-		
-		try {
-			XmlCodeList codeList = new XmlCodeList(location.toURL().openStream(), location);
-			return codeList;
-		} catch (Exception e) {
-			log.error("Error loading code list"); //$NON-NLS-1$
-			return null;
-		}
+		//FIXME update
+		return null;
 	}
 
 	/**

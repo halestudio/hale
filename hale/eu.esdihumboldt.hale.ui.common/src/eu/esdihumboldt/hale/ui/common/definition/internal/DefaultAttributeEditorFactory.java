@@ -33,7 +33,6 @@ import eu.esdihumboldt.hale.ui.common.definition.internal.editors.IntegerAttribu
 import eu.esdihumboldt.hale.ui.common.definition.internal.editors.LongAttributeEditor;
 import eu.esdihumboldt.hale.ui.common.definition.internal.editors.StringAttributeEditor;
 import eu.esdihumboldt.hale.ui.common.definition.internal.editors.URIAttributeEditor;
-import eu.esdihumboldt.hale.ui.common.definition.internal.editors.codelist.CodeListAttributeEditor;
 
 /**
  * Default attribute editor factory
@@ -52,9 +51,10 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 		TypeDefinition attributeType = attribute.getAttributeType();
 		
 		// Code type
-		if (isCodeType(attributeType)) {
-			return new CodeListAttributeEditor(parent, attribute);
-		}
+		//XXX would introduce cycle, should be solved through extension point
+//		if (isCodeType(attributeType)) {
+//			return new CodeListAttributeEditor(parent, attribute);
+//		}
 		
 //		if (attributeType.isComplexType()) {
 //			// complex type or type that could not be resolved
@@ -99,8 +99,8 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 		}
 		else if (String.class.equals(binding)) {
 			// string
-//			return new StringAttributeEditor(parent);
-			return new CodeListAttributeEditor(parent, attribute);
+			return new StringAttributeEditor(parent);
+//			return new CodeListAttributeEditor(parent, attribute);
 		}
 		//TODO other editors
 		

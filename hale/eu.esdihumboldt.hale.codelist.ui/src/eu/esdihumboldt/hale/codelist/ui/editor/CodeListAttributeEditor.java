@@ -10,17 +10,11 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.common.definition.internal.editors.codelist;
+package eu.esdihumboldt.hale.codelist.ui.editor;
 
-import java.text.MessageFormat;
-
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -32,20 +26,16 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.codelist.CodeList;
 import eu.esdihumboldt.hale.codelist.CodeList.CodeEntry;
-import eu.esdihumboldt.hale.codelist.ui.service.CodeListService;
+import eu.esdihumboldt.hale.codelist.ui.internal.CodeListUIPlugin;
+import eu.esdihumboldt.hale.codelist.ui.internal.Messages;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
-import eu.esdihumboldt.hale.ui.common.internal.CommonUIPlugin;
-import eu.esdihumboldt.hale.ui.common.internal.Messages;
 
 /**
  * Editor for enumeration attributes
@@ -104,7 +94,7 @@ public class CodeListAttributeEditor implements AttributeEditor<CodeEntry> {
 		updateCodeList();
 		
 		// add button
-		assignImage = CommonUIPlugin.getImageDescriptor("icons/assign_codelist.gif").createImage(); //$NON-NLS-1$
+		assignImage = CodeListUIPlugin.getImageDescriptor("icons/assign_codelist.gif").createImage(); //$NON-NLS-1$
 		
 		Button assign = new Button(main, SWT.PUSH);
 		assign.setImage(assignImage);
@@ -131,93 +121,95 @@ public class CodeListAttributeEditor implements AttributeEditor<CodeEntry> {
 	 * Select a new code list
 	 */
 	protected void selectCodeList() {
-		final Display display = Display.getCurrent();
-		CodeListSelectionDialog dialog = new CodeListSelectionDialog(display.getActiveShell(), codeList,
-				MessageFormat.format(Messages.CodeListAttributeEditor_0,attribute.getDisplayName())); //$NON-NLS-1$
-		if (dialog.open() == CodeListSelectionDialog.OK) {
-			CodeList newCodeList = dialog.getCodeList();
-			CodeListService codeListService = (CodeListService) PlatformUI.getWorkbench().getService(CodeListService.class);
-				
-			codeListService.assignAttributeCodeList(attribute.getIdentifier(), newCodeList);
-				
-			updateCodeList();
-		}
+		//FIXME update
+//		final Display display = Display.getCurrent();
+//		CodeListSelectionDialog dialog = new CodeListSelectionDialog(display.getActiveShell(), codeList,
+//				MessageFormat.format(Messages.CodeListAttributeEditor_0,attribute.getDisplayName())); //$NON-NLS-1$
+//		if (dialog.open() == CodeListSelectionDialog.OK) {
+//			CodeList newCodeList = dialog.getCodeList();
+//			CodeListService codeListService = (CodeListService) PlatformUI.getWorkbench().getService(CodeListService.class);
+//				
+//			codeListService.assignAttributeCodeList(attribute.getIdentifier(), newCodeList);
+//				
+//			updateCodeList();
+//		}
 	}
 
 	/**
 	 * Update the editor's code list
 	 */
 	protected void updateCodeList() {
-		CodeListService codeListService = (CodeListService) PlatformUI.getWorkbench().getService(CodeListService.class);
-		codeList = codeListService.findCodeListByAttribute(attribute.getIdentifier());
-		if (codeList == null) {
-			codeList = codeListService.findCodeListByIdentifier(codeListNamespace, codeListName);
-		}
-		
-		String oldValue = getAsText();
-		
-		if (codeList != null) {
-			// create or update code editor
-			if (textEditor != null) {
-				textEditor.dispose();
-				textEditor = null;
-			}
-			
-			if (codeEditor == null) {
-				codeEditor = new ComboViewer(editorContainer, SWT.READ_ONLY);
-				codeEditor.setContentProvider(ArrayContentProvider.getInstance());
-				codeEditor.setLabelProvider(new LabelProvider() {
-	
-					@Override
-					public String getText(Object element) {
-						if (element instanceof CodeEntry) {
-							return ((CodeEntry) element).getName();
-						}
-						else {
-							return super.getText(element);
-						}
-					}
-					
-				});
-				final Combo combo =  codeEditor.getCombo();
-				codeEditor.addPostSelectionChangedListener(new ISelectionChangedListener() {
-					
-					@Override
-					public void selectionChanged(SelectionChangedEvent event) {
-						ISelection selection = event.getSelection();
-						if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
-							CodeEntry entry = (CodeEntry) ((IStructuredSelection) selection).getFirstElement();
-							combo.setToolTipText(entry.getName() + ":\n\n" + entry.getDescription()); //$NON-NLS-1$
-						}
-						else {
-							combo.setToolTipText(null);
-						}
-					}
-				});
-			}
-			
-			codeEditor.setInput(codeList.getEntries());
-		}
-		else {
-			// create or update text editor
-			if (codeEditor != null) {
-				codeEditor.getControl().dispose();
-				codeEditor = null;
-			}
-			
-			if (textEditor == null) {
-				textEditor = new Text(editorContainer, SWT.BORDER | SWT.SINGLE);
-			}
-		}
-		
-		if (editorContainer.getParent() != null) {
-			editorContainer.getParent().layout(true, true);
-		}
-		else {
-			editorContainer.layout(true, true);
-		}
-		
-		setAsText(oldValue);
+		//FIXME update
+//		CodeListService codeListService = (CodeListService) PlatformUI.getWorkbench().getService(CodeListService.class);
+//		codeList = codeListService.findCodeListByAttribute(attribute.getIdentifier());
+//		if (codeList == null) {
+//			codeList = codeListService.findCodeListByIdentifier(codeListNamespace, codeListName);
+//		}
+//		
+//		String oldValue = getAsText();
+//		
+//		if (codeList != null) {
+//			// create or update code editor
+//			if (textEditor != null) {
+//				textEditor.dispose();
+//				textEditor = null;
+//			}
+//			
+//			if (codeEditor == null) {
+//				codeEditor = new ComboViewer(editorContainer, SWT.READ_ONLY);
+//				codeEditor.setContentProvider(ArrayContentProvider.getInstance());
+//				codeEditor.setLabelProvider(new LabelProvider() {
+//	
+//					@Override
+//					public String getText(Object element) {
+//						if (element instanceof CodeEntry) {
+//							return ((CodeEntry) element).getName();
+//						}
+//						else {
+//							return super.getText(element);
+//						}
+//					}
+//					
+//				});
+//				final Combo combo =  codeEditor.getCombo();
+//				codeEditor.addPostSelectionChangedListener(new ISelectionChangedListener() {
+//					
+//					@Override
+//					public void selectionChanged(SelectionChangedEvent event) {
+//						ISelection selection = event.getSelection();
+//						if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
+//							CodeEntry entry = (CodeEntry) ((IStructuredSelection) selection).getFirstElement();
+//							combo.setToolTipText(entry.getName() + ":\n\n" + entry.getDescription()); //$NON-NLS-1$
+//						}
+//						else {
+//							combo.setToolTipText(null);
+//						}
+//					}
+//				});
+//			}
+//			
+//			codeEditor.setInput(codeList.getEntries());
+//		}
+//		else {
+//			// create or update text editor
+//			if (codeEditor != null) {
+//				codeEditor.getControl().dispose();
+//				codeEditor = null;
+//			}
+//			
+//			if (textEditor == null) {
+//				textEditor = new Text(editorContainer, SWT.BORDER | SWT.SINGLE);
+//			}
+//		}
+//		
+//		if (editorContainer.getParent() != null) {
+//			editorContainer.getParent().layout(true, true);
+//		}
+//		else {
+//			editorContainer.layout(true, true);
+//		}
+//		
+//		setAsText(oldValue);
 	}
 
 	/**

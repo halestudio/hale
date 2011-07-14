@@ -9,7 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.ui.common.definition.internal.editors.codelist;
+package eu.esdihumboldt.hale.codelist.ui.editor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 
 import eu.esdihumboldt.hale.codelist.CodeList;
-import eu.esdihumboldt.hale.ui.common.internal.Messages;
+import eu.esdihumboldt.hale.codelist.ui.internal.Messages;
 
 /**
  * Dialog showing the properties of a schema item
