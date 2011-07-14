@@ -226,8 +226,12 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 		try {
 			Collection<String> classes = getMainClassNames();
 			for (String clazz : classes) {
-				if (db.countClass(clazz) > 0) {
-					return false;
+				try {
+					if (db.countClass(clazz) > 0) {
+						return false;
+					}
+				} catch (IllegalArgumentException e) {
+					// ignore
 				}
 			}
 			return true;
