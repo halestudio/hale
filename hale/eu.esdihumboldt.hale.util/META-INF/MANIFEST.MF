@@ -8,4 +8,6 @@ Import-Package: org.eclipse.core.runtime,
  org.osgi.framework;version="1.5.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.util.internal.Activator
-Export-Package: eu.esdihumboldt.hale.util.reflection
+Export-Package: eu.esdihumboldt.hale.util.definition,
+ eu.esdihumboldt.hale.util.internal;x-internal:=true,
+ eu.esdihumboldt.hale.util.reflection

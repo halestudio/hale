@@ -15,7 +15,6 @@ package eu.esdihumboldt.hale.instance.geometry.impl.internal;
 import eu.esdihumboldt.hale.instance.geometry.CRSDefinitionFactory;
 import eu.esdihumboldt.hale.instance.geometry.impl.CodeDefinition;
 import eu.esdihumboldt.hale.instance.geometry.impl.WKTDefinition;
-import eu.esdihumboldt.hale.schema.geometry.CRSDefinition;
 
 /**
  * Factory for {@link CodeDefinition}s
@@ -33,10 +32,10 @@ public class WKTDefinitionFactory implements
 	}
 
 	/**
-	 * @see CRSDefinitionFactory#getDefinitionClass()
+	 * @see CRSDefinitionFactory#getObjectClass()
 	 */
 	@Override
-	public Class<WKTDefinition> getDefinitionClass() {
+	public Class<WKTDefinition> getObjectClass() {
 		return WKTDefinition.class;
 	}
 
@@ -49,7 +48,7 @@ public class WKTDefinitionFactory implements
 	}
 
 	/**
-	 * @see CRSDefinitionFactory#asString(CRSDefinition)
+	 * @see CRSDefinitionFactory#asString(Object)
 	 */
 	@Override
 	public String asString(WKTDefinition crsDef) {

@@ -14,7 +14,6 @@ package eu.esdihumboldt.hale.instance.geometry.impl.internal;
 
 import eu.esdihumboldt.hale.instance.geometry.CRSDefinitionFactory;
 import eu.esdihumboldt.hale.instance.geometry.impl.CodeDefinition;
-import eu.esdihumboldt.hale.schema.geometry.CRSDefinition;
 
 /**
  * Factory for {@link CodeDefinition}s
@@ -32,10 +31,10 @@ public class CodeDefinitionFactory implements
 	}
 
 	/**
-	 * @see CRSDefinitionFactory#getDefinitionClass()
+	 * @see CRSDefinitionFactory#getObjectClass()
 	 */
 	@Override
-	public Class<CodeDefinition> getDefinitionClass() {
+	public Class<CodeDefinition> getObjectClass() {
 		return CodeDefinition.class;
 	}
 
@@ -48,7 +47,7 @@ public class CodeDefinitionFactory implements
 	}
 
 	/**
-	 * @see CRSDefinitionFactory#asString(CRSDefinition)
+	 * @see CRSDefinitionFactory#asString(Object)
 	 */
 	@Override
 	public String asString(CodeDefinition crsDef) {

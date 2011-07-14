@@ -10,6 +10,7 @@
 package eu.esdihumboldt.hale.instance.geometry;
 
 import eu.esdihumboldt.hale.schema.geometry.CRSDefinition;
+import eu.esdihumboldt.hale.util.definition.ObjectDefinition;
 
 /**
  * Provides support for creating a {@link CRSDefinition} from a definition
@@ -18,38 +19,9 @@ import eu.esdihumboldt.hale.schema.geometry.CRSDefinition;
  * 
  * @author Simon Templer
  */
-public interface CRSDefinitionFactory<T extends CRSDefinition> {
+public interface CRSDefinitionFactory<T extends CRSDefinition> extends 
+		ObjectDefinition<T> {
 	
-	/**
-	 * Get the factory identifier. It is used to associate a definition string
-	 * to the factory.
-	 * @return the factory identifier
-	 */
-	public String getIdentifier();
-	
-	/**
-	 * Get the class of the supported {@link CRSDefinition}.
-	 * 
-	 * @return the CRS definition class supported by this factory
-	 */
-	public Class<T> getDefinitionClass();
-	
-	/**
-	 * Parse the given definition string and create a CRS definition instance.
-	 * 
-	 * @param value the definition string to parse
-	 * @return the CRS definition instance or <code>null</code>
-	 */
-	public T parse(String value);
-	
-	/**
-	 * Represent the given CRS definition as a definition string, so that it 
-	 * can be used to again create a CRS definition instance using 
-	 * {@link #parse(String)}.
-	 *   
-	 * @param crsDef the CRS definition to create a string representation for
-	 * @return the string representation of the CRS definition
-	 */
-	public String asString(T crsDef);
+	// concrete typed interface
 
 }
