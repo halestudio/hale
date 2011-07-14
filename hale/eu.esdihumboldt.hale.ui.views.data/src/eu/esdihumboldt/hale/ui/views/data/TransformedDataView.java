@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.WorkbenchPart;
 
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService.SchemaType;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.views.data.internal.DataViewPlugin;
 import eu.esdihumboldt.hale.ui.views.data.internal.Messages;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceServiceSelector;
@@ -49,7 +49,7 @@ public class TransformedDataView extends AbstractDataView {
 	
 	private SampleTransformFeatureSelector sampleSelector;
 	
-	private MapFeatureSelector mapSelector;
+//	private MapFeatureSelector mapSelector;
 
 	/**
 	 * Default constructor
@@ -57,11 +57,11 @@ public class TransformedDataView extends AbstractDataView {
 	public TransformedDataView() {
 		super(new SampleTransformFeatureSelector());
 		
-		instanceSelector = new InstanceServiceSelector(SchemaType.TARGET);
+		instanceSelector = new InstanceServiceSelector(SchemaSpaceID.TARGET);
 		// another selector based on the reference sample service
 		sampleSelector = (SampleTransformFeatureSelector) getFeatureSelector();
 		// selector base on the map selection
-		mapSelector = new MapFeatureSelector(SchemaType.TARGET);
+//		mapSelector = new MapFeatureSelector(SchemaType.TARGET);
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class TransformedDataView extends AbstractDataView {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				setInstanceSelector(mapSelector);
+//				setInstanceSelector(mapSelector);
 			}
 			
 		});
