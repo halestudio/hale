@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Mapping API
-Bundle-SymbolicName: eu.esdihumboldt.hale.align
+Bundle-SymbolicName: eu.esdihumboldt.hale.align;singleton:=true
 Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.common.base;version="1.6.0",
@@ -14,3 +14,4 @@ Import-Package: com.google.common.base;version="1.6.0",
  eu.esdihumboldt.hale.schema.model,
  net.jcip.annotations,
  org.slf4j;version="1.5.11"
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0"
