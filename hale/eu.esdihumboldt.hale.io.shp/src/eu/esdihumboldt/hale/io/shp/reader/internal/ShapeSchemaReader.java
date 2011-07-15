@@ -145,10 +145,12 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 	private TypeDefinition getTypeFromAttributeType(AttributeType type,
 			DefaultSchema schema, String namespace) {
 		QName typeName = new QName(namespace, type.getName().getLocalPart());
-		TypeDefinition result;
+		TypeDefinition result = null;
 		
 		// check shared types
-		result = getSharedTypes().getType(typeName);
+		if (getSharedTypes() != null) {
+			result = getSharedTypes().getType(typeName);
+		}
 		
 		if (result == null) {
 			// get type from schema
