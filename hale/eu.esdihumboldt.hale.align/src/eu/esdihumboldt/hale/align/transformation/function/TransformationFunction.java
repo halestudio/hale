@@ -10,17 +10,22 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.align.transformation.model;
+package eu.esdihumboldt.hale.align.transformation.function;
+
+import java.util.Map;
 
 import com.google.common.collect.Multimap;
 
+import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.align.transformation.report.TransformationReporter;
 
 /**
  * Common interface for all transformation functions
+ * @param <E> the transformation engine type
+ * 
  * @author Simon Templer
  */
-public interface TransformationFunction {
+public interface TransformationFunction<E extends TransformationEngine> {
 	
 	/**
 	 * Sets the parameters for the transformation.
@@ -30,10 +35,16 @@ public interface TransformationFunction {
 	
 	/**
 	 * Execute the function as configured.
+	 * @param transformationIdentifier the transformation function identifier
+	 * @param engine the transformation engine that may be used for the
+	 *   function execution
+	 * @param executionParameters additional parameters for the execution, 
+	 *   may be <code>null</code>
 	 * @param report the transformation report to add any information about the
 	 *   execution of the transformation to
 	 */
-	public void execute(TransformationReporter report);
+	public void execute(String transformationIdentifier, E engine, 
+			Map<String, String> executionParameters, TransformationReporter report);
 	
 	//TODO reset method? or something like it
 	

@@ -10,16 +10,19 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.align.transformation.model;
+package eu.esdihumboldt.hale.align.transformation.function;
 
 import eu.esdihumboldt.hale.align.model.Type;
+import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.instance.model.Instance;
 
 /**
  * Type transformation function that processes only one source type.
+ * @param <E> the transformation engine type
+ * 
  * @author Simon Templer
  */
-public interface SingleTypeTransformation extends TypeTransformation {
+public interface SingleTypeTransformation<E extends TransformationEngine> extends TypeTransformation<E> {
 	
 	/**
 	 * Set the source type and instance.

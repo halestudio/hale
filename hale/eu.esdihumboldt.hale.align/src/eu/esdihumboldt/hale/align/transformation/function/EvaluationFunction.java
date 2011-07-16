@@ -10,18 +10,21 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.align.transformation.model;
+package eu.esdihumboldt.hale.align.transformation.function;
 
 import java.util.Map;
 
 import eu.esdihumboldt.hale.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.align.transformation.report.TransformationReporter;
 
 /**
- * Function that is evaluated based on variables populated by property values. 
+ * Function that is evaluated based on variables populated by property values.
+ * @param <E> the transformation engine type
+ *  
  * @author Simon Templer
  */
-public interface EvaluationFunction extends TransformationFunction {
+public interface EvaluationFunction<E extends TransformationEngine> extends TransformationFunction<E> {
 	
 	/**
 	 * Represents a property value for use in an {@link EvaluationFunction}
@@ -69,7 +72,7 @@ public interface EvaluationFunction extends TransformationFunction {
 	public void setVariables(Map<String, PropertyValue> variables); //XXX instead a multimap?
 	
 	/**
-	 * Get the {@link #execute(TransformationReporter)}ion results.
+	 * Get the {@link #execute(String, TransformationEngine, Map, TransformationReporter)}ion results.
 	 * @return the execution results, result names are mapped to result values
 	 */
 	public Map<String, Object> getResults();

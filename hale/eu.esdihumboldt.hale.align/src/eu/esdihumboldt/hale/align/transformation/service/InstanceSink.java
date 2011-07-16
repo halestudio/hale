@@ -12,22 +12,18 @@
 
 package eu.esdihumboldt.hale.align.transformation.service;
 
-import eu.esdihumboldt.hale.align.model.Alignment;
-import eu.esdihumboldt.hale.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.instance.model.Instance;
 
 /**
- * Transformation service
+ * Sink for instances
  * @author Simon Templer
  */
-public interface TransformationService {
-	
+public interface InstanceSink {
+
 	/**
-	 * Transform a set of source instances according to the given alignment.
-	 * @param alignment the alignment
-	 * @param source the source instances
-	 * @param target the transformed instance sink
+	 * Adds an instance to the sink
+	 * @param instance the instance to add
 	 */
-	public void transform(Alignment alignment, InstanceCollection source,
-			InstanceSink target);
+	public void addInstance(Instance instance);
 
 }

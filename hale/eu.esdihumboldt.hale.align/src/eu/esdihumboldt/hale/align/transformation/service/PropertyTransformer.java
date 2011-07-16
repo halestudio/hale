@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.align.transformation.model;
+package eu.esdihumboldt.hale.align.transformation.service;
 
 import java.util.Collection;
 

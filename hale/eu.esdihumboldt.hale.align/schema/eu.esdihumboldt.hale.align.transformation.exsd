@@ -18,8 +18,11 @@
       </annotation>
       <complexType>
          <choice minOccurs="1" maxOccurs="unbounded">
-            <element ref="function"/>
+            <element ref="typeFunction"/>
+            <element ref="propertyFunction"/>
             <element ref="engine"/>
+            <element ref="propertyTransformation"/>
+            <element ref="typeTransformation"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -48,17 +51,71 @@
       </complexType>
    </element>
 
-   <element name="function">
+   <element name="typeFunction">
       <complexType>
-         <choice>
-            <element ref="properties"/>
+         <sequence>
             <element ref="types"/>
-         </choice>
+         </sequence>
          <attribute name="identifier" type="string" use="required">
             <annotation>
                <documentation>
                   Identifier of the function
                </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The display name for the function
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  The function description
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="propertyFunction">
+      <complexType>
+         <sequence>
+            <element ref="properties"/>
+         </sequence>
+         <attribute name="identifier" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Identifier of the function
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The display name for the function
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  The function description
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>
@@ -70,18 +127,11 @@
    <element name="properties" type="string">
    </element>
 
-   <element name="implementation">
+   <element name="typeTransformation">
       <complexType>
-         <attribute name="function" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.align.transformation/function/@identifier"/>
-               </appinfo>
-            </annotation>
-         </attribute>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="executionParameter"/>
+         </choice>
          <attribute name="engine" type="string" use="required">
             <annotation>
                <documentation>
@@ -89,6 +139,102 @@
                </documentation>
                <appinfo>
                   <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.align.transformation/engine/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="function" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.align.transformation/typeFunction/@identifier"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.align.transformation.function.TypeTransformation"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="propertyTransformation">
+      <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="executionParameter"/>
+         </choice>
+         <attribute name="engine" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.align.transformation/engine/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="function" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.align.transformation/propertyFunction/@identifier"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.align.transformation.function.PropertyTransformation"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="evaluator">
+      <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="executionParameter"/>
+         </choice>
+         <attribute name="engine" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.align.transformation/engine/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="function" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.align.transformation/propertyFunction/@identifier"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.align.transformation.function.EvaluationFunction"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -105,7 +251,61 @@
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  The identifier of the transformation engine
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The transformation engine implementation class. Must have a default constructor.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The display name of the transformation engine
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  A description of the transformation engine
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="executionParameter">
+      <annotation>
+         <documentation>
+            A parameter for TransformationFunction execution
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="key" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The parameter key. Only one parameter with the same key may be defined for a function execution.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The execution parameter value
                </documentation>
             </annotation>
          </attribute>

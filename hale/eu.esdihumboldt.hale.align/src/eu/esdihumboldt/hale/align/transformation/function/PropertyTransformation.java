@@ -10,19 +10,22 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.align.transformation.model;
+package eu.esdihumboldt.hale.align.transformation.function;
 
 import com.google.common.collect.Multimap;
 
 import eu.esdihumboldt.hale.align.model.Property;
+import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.MutableInstance;
 
 /**
  * Transformation function between source and target properties.
+ * @param <E> the transformation engine type
+ * 
  * @author Simon Templer
  */
-public interface PropertyTransformation extends TransformationFunction {
+public interface PropertyTransformation<E extends TransformationEngine> extends TransformationFunction<E> {
 	
 	/**
 	 * Set the source properties and instance

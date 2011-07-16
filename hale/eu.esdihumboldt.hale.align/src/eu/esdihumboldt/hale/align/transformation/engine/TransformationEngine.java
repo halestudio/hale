@@ -10,16 +10,16 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.align.transformation.service.impl;
+package eu.esdihumboldt.hale.align.transformation.engine;
 
-import eu.esdihumboldt.hale.align.transformation.service.TransformationService;
+import eu.esdihumboldt.hale.align.transformation.function.TransformationFunction;
 
 /**
- * TODO Type description
- * @author sitemple
+ * A transformation engine used for {@link TransformationFunction} execution.
+ * @author Simon Templer
  */
-public class TransformationServiceImpl implements TransformationService {
-	
-	//TODO
+public interface TransformationEngine {
 
+	// marker interface
+	
 }

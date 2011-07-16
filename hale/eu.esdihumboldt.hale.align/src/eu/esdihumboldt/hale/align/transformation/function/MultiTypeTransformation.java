@@ -10,13 +10,17 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.align.transformation.model;
+package eu.esdihumboldt.hale.align.transformation.function;
+
+import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
 
 /**
  * Type transformation function that processes multiple source types.
+ * @param <E> the transformation engine type
+ * 
  * @author Simon Templer
  */
-public interface MultiTypeTransformation extends TypeTransformation {
+public interface MultiTypeTransformation<E extends TransformationEngine> extends TypeTransformation<E> {
 	
 	//TODO
 
