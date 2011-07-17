@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.schemas.explorer.tree;
+package eu.esdihumboldt.hale.ui.util.viewer.tree;
 
 import java.util.List;
 

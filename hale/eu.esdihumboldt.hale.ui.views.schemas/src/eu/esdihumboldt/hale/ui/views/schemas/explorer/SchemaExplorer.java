@@ -29,10 +29,9 @@ import org.eclipse.ui.dialogs.PatternFilter;
 import eu.esdihumboldt.hale.schema.Classification;
 import eu.esdihumboldt.hale.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
-import eu.esdihumboldt.hale.ui.common.definition.viewer.TreePathProviderAdapter;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeIndexContentProvider;
-import eu.esdihumboldt.hale.ui.util.viewer.ColumnBrowserTip;
-import eu.esdihumboldt.hale.ui.views.schemas.explorer.tree.TreePathFilteredTree;
+import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathFilteredTree;
+import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
 
 /**

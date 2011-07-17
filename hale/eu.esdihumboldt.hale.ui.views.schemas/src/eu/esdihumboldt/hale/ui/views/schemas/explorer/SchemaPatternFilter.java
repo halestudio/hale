@@ -17,7 +17,7 @@ import java.util.Set;
 
 import org.eclipse.jface.viewers.TreePath;
 
-import eu.esdihumboldt.hale.ui.views.schemas.explorer.tree.TreePathPatternFilter;
+import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathPatternFilter;
 
 /**
  * Pattern filter that doesn't descend below a maximum level and doesn't follow
