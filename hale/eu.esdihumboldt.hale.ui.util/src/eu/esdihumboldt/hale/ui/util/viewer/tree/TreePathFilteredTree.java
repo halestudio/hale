@@ -66,7 +66,7 @@ public class TreePathFilteredTree extends FilteredTree {
 			if (filters  != null) {
 				for (Iterator<ViewerFilter> iter = filters.iterator(); iter.hasNext();) {
 					ViewerFilter f = iter.next();
-					// call TreePath overload of filter method
+					// call filter with TreePath objects
 					Object[] filteredResult = f.filter(this, parent, paths.toArray());
 					paths.clear();
 					for (Object res : filteredResult) {
