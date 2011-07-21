@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.align.transformation.function;
 
 import java.util.Map;
 
-import com.google.common.collect.Multimap;
+import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.align.transformation.report.TransformationReporter;
@@ -31,7 +31,7 @@ public interface TransformationFunction<E extends TransformationEngine> {
 	 * Sets the parameters for the transformation.
 	 * @param parameters the transformation parameters
 	 */
-	public void setParameters(Multimap<String, String> parameters);
+	public void setParameters(ListMultimap<String, String> parameters);
 	
 	/**
 	 * Execute the function as configured.

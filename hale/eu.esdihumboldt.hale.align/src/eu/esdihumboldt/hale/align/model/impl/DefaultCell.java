@@ -12,7 +12,13 @@
 
 package eu.esdihumboldt.hale.align.model.impl;
 
-import com.google.common.collect.Multimap;
+import java.util.Collection;
+import java.util.Map;
+
+import org.exolab.castor.mapping.MapItem;
+
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 
 import eu.esdihumboldt.hale.align.model.Cell;
@@ -24,9 +30,9 @@ import eu.esdihumboldt.hale.align.model.Entity;
  */
 public class DefaultCell implements Cell {
 
-	private Multimap<String, ? extends Entity> source;
-	private Multimap<String, ? extends Entity> target;
-	private Multimap<String, String> parameters;
+	private ListMultimap<String, ? extends Entity> source;
+	private ListMultimap<String, ? extends Entity> target;
+	private ListMultimap<String, String> parameters;
 	private String transformation;
 
 	/**
@@ -40,21 +46,21 @@ public class DefaultCell implements Cell {
 	/**
 	 * @param parameters the parameters to set
 	 */
-	public void setTransformationParameters(Multimap<String, String> parameters) {
+	public void setTransformationParameters(ListMultimap<String, String> parameters) {
 		this.parameters = parameters;
 	}
 
 	/**
 	 * @param source the source to set
 	 */
-	public void setSource(Multimap<String, ? extends Entity> source) {
+	public void setSource(ListMultimap<String, ? extends Entity> source) {
 		this.source = source;
 	}
 
 	/**
 	 * @param target the target to set
 	 */
-	public void setTarget(Multimap<String, ? extends Entity> target) {
+	public void setTarget(ListMultimap<String, ? extends Entity> target) {
 		this.target = target;
 	}
 
@@ -62,24 +68,33 @@ public class DefaultCell implements Cell {
 	 * @see Cell#getSource()
 	 */
 	@Override
-	public Multimap<String, ? extends Entity> getSource() {
-		return Multimaps.unmodifiableMultimap(source);
+	public ListMultimap<String, ? extends Entity> getSource() {
+		if (source == null) {
+			return null;
+		}
+		return Multimaps.unmodifiableListMultimap(source);
 	}
 
 	/**
 	 * @see Cell#getTarget()
 	 */
 	@Override
-	public Multimap<String, ? extends Entity> getTarget() {
-		return Multimaps.unmodifiableMultimap(target);
+	public ListMultimap<String, ? extends Entity> getTarget() {
+		if (target == null) {
+			return null;
+		}
+		return Multimaps.unmodifiableListMultimap(target);
 	}
 
 	/**
 	 * @see Cell#getTransformationParameters()
 	 */
 	@Override
-	public Multimap<String, String> getTransformationParameters() {
-		return Multimaps.unmodifiableMultimap(parameters);
+	public ListMultimap<String, String> getTransformationParameters() {
+		if (parameters == null) {
+			return null;
+		}
+		return Multimaps.unmodifiableListMultimap(parameters);
 	}
 
 	/**
@@ -90,4 +105,22 @@ public class DefaultCell implements Cell {
 		return transformation;
 	}
 
+	public Map<String, Collection<String>> getParametersMap() {
+		if (parameters == null) {
+			return null;
+		}
+		return parameters.asMap();
+	}
+	
+	public void addParameters(String name, Collection<String> params) {
+		if (parameters == null) {
+			parameters = LinkedListMultimap.create();
+		}
+		parameters.putAll(name, params);
+	}
+	
+	public void addParameters(MapItem item) {
+		addParameters((String) item.getKey(), (Collection<String>) item.getValue());
+	}
+	
 }

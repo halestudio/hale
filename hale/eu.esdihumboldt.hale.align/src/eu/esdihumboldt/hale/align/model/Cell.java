@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.align.model;
 
-import com.google.common.collect.Multimap;
+import com.google.common.collect.ListMultimap;
 
 /**
  * An alignment cell represents a mapping between two entities
@@ -26,7 +26,7 @@ public interface Cell {
 	 * the same name. The map may not be modified.
 	 * @return the source entities
 	 */
-	public Multimap<String, ? extends Entity> getSource();
+	public ListMultimap<String, ? extends Entity> getSource();
 	
 	/**
 	 * Get the target entities.
@@ -34,7 +34,7 @@ public interface Cell {
 	 * the same name. The map may not be modified.
 	 * @return the target entities
 	 */
-	public Multimap<String, ? extends Entity> getTarget();
+	public ListMultimap<String, ? extends Entity> getTarget();
 	
 	/**
 	 * Get the transformation parameters that shall be applied to the
@@ -42,7 +42,7 @@ public interface Cell {
 	 * @return the transformation parameters, parameter names are mapped to
 	 *   parameter values, may be <code>null</code>
 	 */
-	public Multimap<String, String> getTransformationParameters();
+	public ListMultimap<String, String> getTransformationParameters();
 	
 	/**
 	 * Get the identifier for the transformation referenced by the cell.

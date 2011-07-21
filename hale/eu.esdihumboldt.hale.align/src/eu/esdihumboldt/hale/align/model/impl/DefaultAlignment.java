@@ -12,24 +12,35 @@
 
 package eu.esdihumboldt.hale.align.model.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import eu.esdihumboldt.hale.align.model.Alignment;
-import eu.esdihumboldt.hale.align.model.Cell;
 
 /**
  * Default alignment implementation
  * @author Simon Templer
  */
 public class DefaultAlignment implements Alignment {
+	
+	//FIXME simple collection should be replaced later on
+	private final Collection<DefaultCell> cells = new ArrayList<DefaultCell>();
 
 	/**
-	 * @see eu.esdihumboldt.hale.align.model.Alignment#getCells()
+	 * Add a cell to the alignment
+	 * @param cell the cell to add
+	 */
+	public void addCell(DefaultCell cell) {
+		cells.add(cell);
+	}
+	
+	/**
+	 * @see Alignment#getCells()
 	 */
 	@Override
-	public Collection<Cell> getCells() {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<DefaultCell> getCells() {
+		return Collections.unmodifiableCollection(cells);
 	}
 
 }

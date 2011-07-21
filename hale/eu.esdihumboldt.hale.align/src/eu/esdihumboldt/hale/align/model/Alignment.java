@@ -24,12 +24,18 @@ public interface Alignment {
 	 * Get the collection of cells contained in the alignment.
 	 * @return the alignment cells
 	 */
-	public Collection<Cell> getCells();
+	public Collection<? extends Cell> getCells();
 	
 	//TODO get cells by involved types?!
 	
-	// getTypeCells
+	// getTypeCells(TypeEntityDefinition)
 	
-	// getPropertyCells(Type, Type)
+	// getTypeCells(TypeEntityDefinition, TypeEntityDefinition)
+	
+	// getPropertyCells(TypeEntityDefinition)
+	
+	// getPropertyCells(PropertyEntityDefinition)
+	
+	// getPropertyCells(TypeEntityDefinition, TypeEntityDefinition)
 
 }

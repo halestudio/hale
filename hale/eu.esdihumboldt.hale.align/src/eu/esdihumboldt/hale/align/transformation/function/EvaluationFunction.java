@@ -14,6 +14,8 @@ package eu.esdihumboldt.hale.align.transformation.function;
 
 import java.util.Map;
 
+import com.google.common.collect.ListMultimap;
+
 import eu.esdihumboldt.hale.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.align.transformation.report.TransformationReporter;
@@ -69,7 +71,7 @@ public interface EvaluationFunction<E extends TransformationEngine> extends Tran
 	 * @param variables the property values, variable names are mapped to
 	 *   property values
 	 */
-	public void setVariables(Map<String, PropertyValue> variables); //XXX instead a multimap?
+	public void setVariables(ListMultimap<String, PropertyValue> variables);
 	
 	/**
 	 * Get the {@link #execute(String, TransformationEngine, Map, TransformationReporter)}ion results.

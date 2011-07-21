@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.align.transformation.function;
 
-import com.google.common.collect.Multimap;
+import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.align.model.Property;
 import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
@@ -32,7 +32,7 @@ public interface PropertyTransformation<E extends TransformationEngine> extends 
 	 * @param sourceProperties the source properties
 	 * @param sourceInstance the source instance
 	 */
-	public void setSource(Multimap<String, ? extends Property> sourceProperties,
+	public void setSource(ListMultimap<String, ? extends Property> sourceProperties,
 			Instance sourceInstance);
 	
 	/**
@@ -40,7 +40,7 @@ public interface PropertyTransformation<E extends TransformationEngine> extends 
 	 * @param targetProperties the source properties
 	 * @param targetInstance the source instance
 	 */
-	public void setTarget(Multimap<String, ? extends Property> targetProperties,
+	public void setTarget(ListMultimap<String, ? extends Property> targetProperties,
 			MutableInstance targetInstance);
 
 }
