@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.TreeColumnLayout;
@@ -39,6 +42,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import swing2swt.layout.BorderLayout;
 import eu.esdihumboldt.hale.core.report.Message;
 import eu.esdihumboldt.hale.core.report.Report;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.report.ReportListener;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
@@ -154,11 +158,14 @@ public class ReportList extends ViewPart implements ReportListener<Report<Messag
 					
 					// add report to internal list
 //					reports.add(report);
-					_treeViewer.add("Projectname", report.getTaskName());
-					_treeViewer.setInput(new ReportItem("Projectname", report));
+					
+//					ProjectService proService = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+					String projectname = "Project Name"; // proService.getProjectName(); // TODO replace static string with projectname
+//					_treeViewer.add(proService.getProjectName(), report.getTaskName());
+					_treeViewer.setInput(new ReportItem(projectname, report));
 				} catch (NullPointerException e) {
 					// TODO remove this or add proper Exception handling
-					System.err.println("NullPointer... "+report.getSummary());
+					//System.err.println("NullPointer... "+report.getSummary());
 					e.printStackTrace();
 				}
 			}
@@ -192,7 +199,7 @@ public class ReportList extends ViewPart implements ReportListener<Report<Messag
 		 */
 		@Override
 		public boolean isLabelProperty(Object element, String property) {
-			System.err.println("LabelProvider.isLabelProperty(): ");
+			//System.err.println("LabelProvider.isLabelProperty(): ");
 			// TODO Auto-generated method stub
 			return false;
 		}
@@ -211,17 +218,35 @@ public class ReportList extends ViewPart implements ReportListener<Report<Messag
 		 */
 		@Override
 		public Image getImage(Object element) {
-			System.err.println("LabelProvider.getImage(): "+element.getClass());
+			//System.err.println("LabelProvider.getImage(): "+element.getClass());
 			
 			if (element instanceof String) {
 				return null;
 			}
 			else if (element instanceof Report) {
 				// get the right image
+				Report report = (Report) element;
+				
+				String img = "icons/signed_yes.gif";
+				if (report.getWarnings().size() > 0 && report.getErrors().size() > 0) {
+					img = "icons/errorwarning_tab.gif";
+				} else if (report.getErrors().size() > 0) {
+					img = "icons/error.gif";
+				} else if (report.getWarnings().size() > 0) {
+					img = "icons/warning.gif";
+				}
+				
 				ImageDescriptor descriptor = null;
 				
-				descriptor = AbstractUIPlugin.imageDescriptorFromPlugin(ReportList.ID, "icons/ft_stylelist.gif");
-				if (descriptor == null) return null;
+//				descriptor = ImageDescriptor.createFromURL(
+//						FileLocator.find(Platform.getBundle(ReportList.ID), new Path("icons/ft_stylelist.gif"), null)
+//				);
+				
+				// TODO Platform.getBundle(ReportList.ID) does not work so here is a static plugin path!
+				descriptor = AbstractUIPlugin.imageDescriptorFromPlugin("eu.esdihumboldt.hale.ui.views.report", img);
+				if (descriptor == null) {
+					return null;
+				}
 				
 				Image image = imageCache.get(descriptor);
 				if (image == null) {
@@ -238,7 +263,7 @@ public class ReportList extends ViewPart implements ReportListener<Report<Messag
 		 */
 		@Override
 		public String getText(Object element) {
-			System.err.println("LabelProvider.getText(): "+element.getClass());
+			//System.err.println("LabelProvider.getText(): "+element.getClass());
 			if (element instanceof String) {
 				return (String)element;
 			}
@@ -273,7 +298,7 @@ public class ReportList extends ViewPart implements ReportListener<Report<Messag
 				String project = ((ReportItem) newInput).getProject();
 				ArrayList<Report> reports;
 				
-				System.err.println("ReportListContentProvider.inputChanged() "+project);
+				//System.err.println("ReportListContentProvider.inputChanged() "+project);
 				
 				// check if there's already a list
 				if (this.data.get(project) == null) {
@@ -293,7 +318,7 @@ public class ReportList extends ViewPart implements ReportListener<Report<Messag
 		 */
 		@Override
 		public Object[] getElements(Object inputElement) {
-			System.err.println("getElements: "+inputElement);
+			//System.err.println("getElements: "+inputElement);
 			// display the listing of projects
 			
 			Object[] keys = data.keySet().toArray();
@@ -326,7 +351,7 @@ public class ReportList extends ViewPart implements ReportListener<Report<Messag
 		 */
 		@Override
 		public Object getParent(Object element) {
-			System.err.println("ReportListContentProvider.getParent(): Implement me!");
+			//System.err.println("ReportListContentProvider.getParent(): Implement me!");
 			// TODO Auto-generated method stub
 			return "";
 		}
