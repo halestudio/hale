@@ -12,24 +12,35 @@
 
 package eu.esdihumboldt.hale.ui.views.report;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.layout.TreeColumnLayout;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.ViewPart;
-import swing2swt.layout.BorderLayout;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.custom.TableTree;
-import org.eclipse.jface.viewers.TableTreeViewer;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import swing2swt.layout.BorderLayout;
 import eu.esdihumboldt.hale.core.report.Message;
 import eu.esdihumboldt.hale.core.report.Report;
 import eu.esdihumboldt.hale.ui.service.report.ReportListener;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.layout.TreeColumnLayout;
+import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
 /**
  * 
@@ -43,6 +54,9 @@ public class ReportList extends ViewPart implements ReportListener<Report<Messag
 	private TreeViewer _treeViewer;
 
 	public ReportList() {
+		// get ReportService and add listener
+		ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+		repService.addReportListener(this);
 	}
 
 	/**
@@ -71,6 +85,11 @@ public class ReportList extends ViewPart implements ReportListener<Report<Messag
 		createActions();
 		initializeToolBar();
 		initializeMenu();
+		
+		// set label provider
+		_treeViewer.setLabelProvider(new ReportListLabelProvider());
+		_treeViewer.setContentProvider(new ReportListContentProvider());
+		_treeViewer.setInput("Test");
 	}
 
 	/**
@@ -135,7 +154,8 @@ public class ReportList extends ViewPart implements ReportListener<Report<Messag
 					
 					// add report to internal list
 //					reports.add(report);
-					_treeViewer.add("Test", report.getTaskName());
+					_treeViewer.add("Projectname", report.getTaskName());
+					_treeViewer.setInput(new ReportItem("Projectname", report));
 				} catch (NullPointerException e) {
 					// TODO remove this or add proper Exception handling
 					System.err.println("NullPointer... "+report.getSummary());
@@ -143,5 +163,186 @@ public class ReportList extends ViewPart implements ReportListener<Report<Messag
 				}
 			}
 		});
+	}
+	
+	public class ReportListLabelProvider implements ILabelProvider  {
+
+		private Map<ImageDescriptor, Image> imageCache = new HashMap<ImageDescriptor, Image>();
+		
+		/**
+		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
+		 */
+		@Override
+		public void addListener(ILabelProviderListener listener) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/**
+		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
+		 */
+		@Override
+		public void dispose() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/**
+		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object, java.lang.String)
+		 */
+		@Override
+		public boolean isLabelProperty(Object element, String property) {
+			System.err.println("LabelProvider.isLabelProperty(): ");
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		/**
+		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
+		 */
+		@Override
+		public void removeListener(ILabelProviderListener listener) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/**
+		 * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
+		 */
+		@Override
+		public Image getImage(Object element) {
+			System.err.println("LabelProvider.getImage(): "+element.getClass());
+			
+			if (element instanceof String) {
+				return null;
+			}
+			else if (element instanceof Report) {
+				// get the right image
+				ImageDescriptor descriptor = null;
+				
+				descriptor = AbstractUIPlugin.imageDescriptorFromPlugin(ReportList.ID, "icons/ft_stylelist.gif");
+				if (descriptor == null) return null;
+				
+				Image image = imageCache.get(descriptor);
+				if (image == null) {
+					image = descriptor.createImage();
+					imageCache.put(descriptor, image);
+				}
+				return image;
+			}
+			return null;
+		}
+
+		/**
+		 * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
+		 */
+		@Override
+		public String getText(Object element) {
+			System.err.println("LabelProvider.getText(): "+element.getClass());
+			if (element instanceof String) {
+				return (String)element;
+			}
+			else if (element instanceof Report) {
+				return ((Report) element).getTaskName();
+			}
+			
+			
+			return "Unhandle type";
+		}
+	}
+	
+	public class ReportListContentProvider implements ITreeContentProvider {
+
+		private Map<String, List<Report>> data = new HashMap<String, List<Report>>();
+		
+		/**
+		 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
+		 */
+		@Override
+		public void dispose() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/**
+		 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+		 */
+		@Override
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			if (newInput instanceof ReportItem) {
+				String project = ((ReportItem) newInput).getProject();
+				ArrayList<Report> reports;
+				
+				System.err.println("ReportListContentProvider.inputChanged() "+project);
+				
+				// check if there's already a list
+				if (this.data.get(project) == null) {
+					reports = new ArrayList<Report>();
+				} else {
+					reports = (ArrayList<Report>) this.data.get(project);
+				}
+				
+				// add the new report
+				reports.add(((ReportItem) newInput).getReport());
+				this.data.put(project, reports);
+			}
+		}
+
+		/**
+		 * @see org.eclipse.jface.viewers.ITreeContentProvider#getElements(java.lang.Object)
+		 */
+		@Override
+		public Object[] getElements(Object inputElement) {
+			System.err.println("getElements: "+inputElement);
+			// display the listing of projects
+			
+			Object[] keys = data.keySet().toArray();
+			
+			return keys;
+		}
+
+		/**
+		 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
+		 */
+		@Override
+		public Object[] getChildren(Object parentElement) {
+			List<Report> reports = this.data.get(parentElement);
+			
+			if (reports.size() == 0) {
+				return null;
+			}
+			
+			
+			Object[] ret = new Object[reports.size()];
+			for(int i = 0; i < reports.size(); i++) {
+				ret[i] = reports.get(i);
+			}
+			
+			return ret;
+		}
+
+		/**
+		 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
+		 */
+		@Override
+		public Object getParent(Object element) {
+			System.err.println("ReportListContentProvider.getParent(): Implement me!");
+			// TODO Auto-generated method stub
+			return "";
+		}
+
+		/**
+		 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
+		 */
+		@Override
+		public boolean hasChildren(Object element) {
+			List<Report> list = this.data.get(element);
+			if (list != null && list.size() > 0) {
+				return true;
+			}
+
+			return false;
+		}
+
 	}
 }
