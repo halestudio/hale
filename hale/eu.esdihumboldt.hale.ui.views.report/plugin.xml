@@ -11,7 +11,7 @@
             restorable="true">
       </view>
       <view
-            class="eu.esdihumboldt.hale.ui.views.report.ReportOverview"
+            class="eu.esdihumboldt.hale.ui.views.report.deprecated.ReportOverview"
             icon="icons/ft_stylelist.gif"
             id="eu.esdihumboldt.hale.ui.views.report.ReportOverview"
             name="%view.export_report.name">
