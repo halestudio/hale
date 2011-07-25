@@ -94,6 +94,9 @@ public class ReportList extends ViewPart implements ReportListener<Report<Messag
 		_treeViewer.setLabelProvider(new ReportListLabelProvider());
 		_treeViewer.setContentProvider(new ReportListContentProvider());
 		_treeViewer.setInput("Test");
+		
+		// set selectionProvider
+		getSite().setSelectionProvider(_treeViewer); 
 	}
 
 	/**

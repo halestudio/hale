@@ -31,6 +31,7 @@ implements ITabbedPropertySheetPageContributor {
 	@Override
 	public String getContributorId() {
 		return "eu.esdihumboldt.hale.ui.views.report.properties.definition";
+//		return getSite().getId();
 	}
 	
 	/**

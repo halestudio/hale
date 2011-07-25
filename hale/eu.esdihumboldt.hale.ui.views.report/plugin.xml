@@ -29,46 +29,14 @@
             name="Report List">
       </view>
    </extension>
+
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
       <propertyContributor
-            contributorId="eu.esdihumboldt.hale.ui.views.report.properties"
-            labelProvider="eu.esdihumboldt.hale.ui.views.properties.PropertiesLabelProvider">
-         <propertyCategory
-               category="eu.esdihumboldt.hale.ui.views.report.properties.definition"></propertyCategory>
-      </propertyContributor>
-   </extension>
-   <extension
-         point="org.eclipse.ui.views.properties.tabbed.propertySections">
-      <propertySections
-            contributorId="eu.esdihumboldt.hale.ui.views.report.sections">
-         <propertySection
-               class="org.eclipse.ui.views.properties.tabbed.AdvancedPropertySection"
-               id="eu.esdihumboldt.hale.ui.views.report.sections.summary"
-               tab="eu.esdihumboldt.hale.ui.views.report.sections.summary">
-            <input
-                  type="eu.esdihumboldt.hale.schema.model.Definition">
-            </input>
-         </propertySection>
-         <propertySection
-               class="org.eclipse.ui.views.properties.tabbed.AdvancedPropertySection"
-               id="eu.esdihumboldt.hale.ui.views.report.sections.details"
-               tab="eu.esdihumboldt.hale.ui.views.report.sections.details">
-            <input
-                  type="eu.esdihumboldt.hale.schema.model.Definition">
-            </input>
-         </propertySection>
-      </propertySections>
-   </extension>
-   <extension
-         point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
-      <propertyTabs
             contributorId="eu.esdihumboldt.hale.ui.views.report.properties">
-         <propertyTab
-               category="eu.esdihumboldt.hale.ui.views.report.propertyTab1"
-               id="eu.esdihumboldt.hale.ui.views.report.propertyTab1"
-               label="Summary">
-         </propertyTab>
-      </propertyTabs>
+         <propertyCategory
+               category="eu.esdihumboldt.hale.ui.views.report.properties.definition">
+         </propertyCategory>
+      </propertyContributor>
    </extension>
 </plugin>
