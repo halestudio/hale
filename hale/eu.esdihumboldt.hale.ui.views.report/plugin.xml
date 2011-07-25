@@ -22,6 +22,12 @@
             name="Report Property View"
             restorable="true">
       </view>
+      <view
+            class="eu.esdihumboldt.hale.ui.views.report.ReportList"
+            icon="icons/ft_stylelist.gif"
+            id="eu.esdihumboldt.hale.ui.views.report.ReportList"
+            name="Report List">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
