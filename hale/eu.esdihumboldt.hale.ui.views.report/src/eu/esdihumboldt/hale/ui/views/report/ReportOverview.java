@@ -113,6 +113,10 @@ public class ReportOverview extends ViewPart implements ReportListener<Report<Me
 		_btnSummary.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				System.err.println("State: "+_btnDetails.getSelection());
+				_btnDetails.setSelection(false);
+				System.err.println("State: "+_btnDetails.getSelection());
+				
 				ReportSummary rSummary = new ReportSummary(_contentComposite, SWT.NONE);
 				rSummary.setLayoutData(BorderLayout.CENTER);
 				_contentComposite.layout();
@@ -125,6 +129,17 @@ public class ReportOverview extends ViewPart implements ReportListener<Report<Me
 		toolkit.adapt(_btnSummary, true, true);
 		
 		_btnDetails = new Button(_leftComposite, SWT.FLAT | SWT.TOGGLE | SWT.CENTER);
+		_btnDetails.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+//				syser
+				_btnSummary.setSelection(false);
+				
+				ReportDetails rDetails = new ReportDetails(_contentComposite, SWT.NONE);
+				rDetails.setLayoutData(BorderLayout.CENTER);
+				_contentComposite.layout();
+			}
+		});
 		_btnDetails.setLayoutData(new RowData(66, -1));
 		_btnDetails.setText("Details");
 		toolkit.adapt(_btnDetails, true, true);
