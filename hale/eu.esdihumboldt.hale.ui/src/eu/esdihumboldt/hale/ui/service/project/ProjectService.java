@@ -17,6 +17,7 @@ import java.io.File;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.ui.io.advisor.IOAdvisorFactory;
 
 /**
@@ -60,11 +61,11 @@ public interface ProjectService {
 	public IConfigurationService getConfigurationService();
 	
 	/**
-	 * Get the current's project name
+	 * Get general information about the current project
 	 * 
-	 * @return the project name, may be <code>null</code>
+	 * @return the project info
 	 */
-	public String getProjectName();
+	public ProjectInfo getProjectInfo();
 	
 	/**
 	 * Get if the project content is changed

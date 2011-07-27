@@ -34,12 +34,14 @@ import org.exolab.castor.xml.XMLContext;
 import org.osgi.framework.Version;
 import org.xml.sax.InputSource;
 
+import eu.esdihumboldt.hale.core.io.project.ProjectInfo;
+
 
 /**
  * Represents a project.
  * @author Simon Templer
  */
-public class Project {
+public class Project implements ProjectInfo {
 	
 	/**
 	 * Load a project from an input stream.
@@ -79,7 +81,7 @@ public class Project {
 	 * @throws MarshalException if the project could not be marshaled 
 	 * @throws IOException if the output could not be written 
 	 */
-	public static void save(Project project, OutputStream out) throws MappingException, MarshalException, ValidationException, IOException {
+	public static void save(ProjectInfo project, OutputStream out) throws MappingException, MarshalException, ValidationException, IOException {
 		Mapping mapping = new Mapping(Project.class.getClassLoader());
 		mapping.loadMapping(new InputSource(
 				Project.class.getResourceAsStream("Project.xml")));
@@ -160,8 +162,9 @@ public class Project {
 	}
 
 	/**
-	 * @return the name
+	 * @see eu.esdihumboldt.hale.core.io.project.ProjectInfo#getName()
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -174,8 +177,9 @@ public class Project {
 	}
 
 	/**
-	 * @return the author
+	 * @see eu.esdihumboldt.hale.core.io.project.ProjectInfo#getAuthor()
 	 */
+	@Override
 	public String getAuthor() {
 		return author;
 	}
@@ -188,8 +192,9 @@ public class Project {
 	}
 
 	/**
-	 * @return the haleVersion
+	 * @see eu.esdihumboldt.hale.core.io.project.ProjectInfo#getHaleVersion()
 	 */
+	@Override
 	public Version getHaleVersion() {
 		return haleVersion;
 	}
@@ -202,8 +207,9 @@ public class Project {
 	}
 
 	/**
-	 * @return the created
+	 * @see eu.esdihumboldt.hale.core.io.project.ProjectInfo#getCreated()
 	 */
+	@Override
 	public Date getCreated() {
 		return created;
 	}
@@ -216,8 +222,9 @@ public class Project {
 	}
 
 	/**
-	 * @return the modified
+	 * @see eu.esdihumboldt.hale.core.io.project.ProjectInfo#getModified()
 	 */
+	@Override
 	public Date getModified() {
 		return modified;
 	}
@@ -258,8 +265,9 @@ public class Project {
 	}
 
 	/**
-	 * @return the description
+	 * @see eu.esdihumboldt.hale.core.io.project.ProjectInfo#getDescription()
 	 */
+	@Override
 	public String getDescription() {
 		return description;
 	}

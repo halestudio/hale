@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.IOProvider;
+import eu.esdihumboldt.hale.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.core.io.project.ProjectWriter;
 import eu.esdihumboldt.hale.core.io.project.ProjectWriterFactory;
 import eu.esdihumboldt.hale.core.io.project.model.Project;
@@ -128,7 +129,7 @@ public class SaveProjectDetailsPage extends IOWizardPage<ProjectWriter, ProjectW
 	private void updateFields() {
 		ProjectWriter writer = getWizard().getProvider();
 		if (writer != null && writer.getProject() != null) {
-			Project p = writer.getProject();
+			ProjectInfo p = writer.getProject();
 			name.setStringValue(p.getName());
 			author.setStringValue(p.getAuthor());
 			description.setText((p.getDescription() == null)?(""):(p.getDescription()));

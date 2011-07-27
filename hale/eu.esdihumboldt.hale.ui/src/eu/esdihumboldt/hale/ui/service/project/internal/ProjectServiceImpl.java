@@ -44,6 +44,7 @@ import eu.esdihumboldt.hale.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.core.io.impl.AbstractIOAdvisor;
+import eu.esdihumboldt.hale.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.core.io.project.ProjectReaderFactory;
 import eu.esdihumboldt.hale.core.io.project.ProjectWriter;
@@ -173,7 +174,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 				notifyAfterLoad(projectFiles);
 			}
 
-			private void updatePaths(Project main) {
+			private void updatePaths(ProjectInfo main) {
 				//TODO check if project file has been moved and if paths of included file resources must be updated (i.e. they don't exist at the given location)
 				//XXX maybe even offer a file dialog to search for the file if fixing the path is not possible
 			}
@@ -416,7 +417,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 					title = appTitle;
 				}
 				else {
-					String pn = getProjectName();
+					String pn = getProjectInfo().getName();
 					title = appTitle + " - " + ((pn == null || pn.isEmpty())?("Unnamed"):(pn)) + " - " + projectFile;
 				}
 				
@@ -572,12 +573,12 @@ public class ProjectServiceImpl extends AbstractProjectService
 	}
 
 	/**
-	 * @see ProjectService#getProjectName()
+	 * @see ProjectService#getProjectInfo()
 	 */
 	@Override
-	public String getProjectName() {
+	public ProjectInfo getProjectInfo() {
 		synchronized (this) {
-			return main.getName();
+			return main;
 		}
 	}
 
