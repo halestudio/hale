@@ -1,0 +1,3 @@
+org.geotools.renderer.chart.ChartGraphicFactory
+org.geotools.renderer.style.ImageGraphicFactory
+org.geotools.renderer.style.SVGGraphicFactory

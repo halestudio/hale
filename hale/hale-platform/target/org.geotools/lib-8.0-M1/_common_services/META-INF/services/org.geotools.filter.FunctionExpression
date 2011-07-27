@@ -1,0 +1,3 @@
+org.geotools.filter.IDFunctionExpression
+org.geotools.filter.AsMultiGeometryFunctionExpression
+org.geotools.filter.function.PropertyExistsFunction
