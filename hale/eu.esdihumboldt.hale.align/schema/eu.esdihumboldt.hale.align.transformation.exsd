@@ -54,7 +54,11 @@
    <element name="typeFunction">
       <complexType>
          <sequence>
-            <element ref="types"/>
+            <element ref="sourceTypes"/>
+            <element ref="targetTypes"/>
+            <choice minOccurs="0" maxOccurs="unbounded">
+               <element ref="functionParameter"/>
+            </choice>
          </sequence>
          <attribute name="identifier" type="string" use="required">
             <annotation>
@@ -89,7 +93,11 @@
    <element name="propertyFunction">
       <complexType>
          <sequence>
-            <element ref="properties"/>
+            <element ref="sourceProperties" minOccurs="0" maxOccurs="1"/>
+            <element ref="targetProperties"/>
+            <choice minOccurs="0" maxOccurs="unbounded">
+               <element ref="functionParameter"/>
+            </choice>
          </sequence>
          <attribute name="identifier" type="string" use="required">
             <annotation>
@@ -121,10 +129,15 @@
       </complexType>
    </element>
 
-   <element name="types" type="string">
+   <element name="sourceTypes" type="string">
    </element>
 
-   <element name="properties" type="string">
+   <element name="sourceProperties">
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="property"/>
+         </sequence>
+      </complexType>
    </element>
 
    <element name="typeTransformation">
@@ -306,6 +319,128 @@
             <annotation>
                <documentation>
                   The execution parameter value
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="targetTypes" type="string">
+   </element>
+
+   <element name="targetProperties">
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="property"/>
+         </sequence>
+      </complexType>
+   </element>
+
+   <element name="property">
+      <complexType>
+         <choice minOccurs="0" maxOccurs="unbounded">
+            <element ref="bindingConstraint"/>
+            <element ref="propertyConstraint"/>
+         </choice>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  Name of the property as a parameter to the function
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="minOccurrence" type="string" use="default" value="0">
+            <annotation>
+               <documentation>
+                  The minimum occurrence of the property as parameter to the function, defaults to 0
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="maxOccurrence" type="string" use="default" value="1">
+            <annotation>
+               <documentation>
+                  The maximum occurrence of the property as parameter to the function, defaults to 1
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="bindingConstraint">
+      <complexType>
+         <attribute name="compatibleClass" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The class the binding is required to be compatible with
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="allowConversion" use="default" value="false">
+            <annotation>
+               <documentation>
+                  Specifies if a binding is classified as compatible if conversion to the compatible class is possible. Defaults to false.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="true">
+                  </enumeration>
+                  <enumeration value="false">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="propertyConstraint">
+      <annotation>
+         <documentation>
+            Custom property constraint
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  TODO
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="functionParameter">
+      <annotation>
+         <documentation>
+            Defines a function parameter name
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="minOccurrence" type="string" use="default" value="0">
+            <annotation>
+               <documentation>
+                  The minimum occurrence of the function parameter, defaults to 0
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="maxOccurrence" type="string" use="default" value="1">
+            <annotation>
+               <documentation>
+                  The maximum occurrence of the function parameter, defaults to 1
                </documentation>
             </annotation>
          </attribute>
