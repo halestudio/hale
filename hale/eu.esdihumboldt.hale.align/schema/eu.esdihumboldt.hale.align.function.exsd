@@ -151,8 +151,8 @@
    <element name="property">
       <complexType>
          <choice minOccurs="0" maxOccurs="unbounded">
-            <element ref="bindingConstraint"/>
-            <element ref="propertyConstraint"/>
+            <element ref="bindingCondition"/>
+            <element ref="propertyCondition"/>
          </choice>
          <attribute name="name" type="string">
             <annotation>
@@ -178,7 +178,7 @@
       </complexType>
    </element>
 
-   <element name="bindingConstraint">
+   <element name="bindingCondition">
       <complexType>
          <attribute name="compatibleClass" type="string" use="required">
             <annotation>
@@ -205,10 +205,25 @@
                </restriction>
             </simpleType>
          </attribute>
+         <attribute name="allowCollection" use="default" value="false">
+            <annotation>
+               <documentation>
+                  Specifies if a binding is classified as compatible if it is a collection of the compatible class. Defaults to false.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="true">
+                  </enumeration>
+                  <enumeration value="false">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
       </complexType>
    </element>
 
-   <element name="propertyConstraint">
+   <element name="propertyCondition">
       <annotation>
          <documentation>
             Custom property constraint
@@ -221,7 +236,7 @@
                   TODO
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java"/>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.align.model.condition.PropertyCondition"/>
                </appinfo>
             </annotation>
          </attribute>
