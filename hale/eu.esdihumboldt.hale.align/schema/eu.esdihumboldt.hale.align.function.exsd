@@ -84,6 +84,16 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="category" type="string">
+            <annotation>
+               <documentation>
+                  Category of the function
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.align.category/category/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
@@ -120,6 +130,16 @@
                </documentation>
                <appinfo>
                   <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="category" type="string">
+            <annotation>
+               <documentation>
+                  Category of the function
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.align.category/category/@id"/>
                </appinfo>
             </annotation>
          </attribute>
