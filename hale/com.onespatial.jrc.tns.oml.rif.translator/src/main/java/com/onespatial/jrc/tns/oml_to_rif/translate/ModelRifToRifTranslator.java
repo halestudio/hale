@@ -312,12 +312,13 @@ public class ModelRifToRifTranslator extends
 		List<RifVariable> instVar = s.getVariables(Type.INSTANCE);
 		for(RifVariable rifVar : instVar)
 		{
-			varMapNeg.put(rifVar.getName(), rifVar);
+			varMap.put(rifVar.getName(), rifVar);
 		}
 		
 		s.getMappingConditions().clear();
 		s.getVariablesMap().clear();
 		s.getVariablesMap().putAll(varMapNeg);
+		s.getVariablesMap().put(s.getSourceClass().getName(), s.getSourceClass());
 		processChildren(s, negExists, do1);
 					
 		s.getVariablesMap().clear();
@@ -704,7 +705,13 @@ public class ModelRifToRifTranslator extends
 
             if (variable.getType() == Type.INSTANCE)
             {
-            	if (!sentence.isAttributeFilterSentence())
+            	if (sentence.isAttributeFilterSentence())
+            	{
+            		exists.getDeclare().add(createSourceDeclare(variable));
+        			exists.getFormula().getAnd().getFormula().add(
+        			createSourceInstanceMembershipFormula(sentence, variable));
+            	}
+            	else
             	{
             		do1.getActionVar().add(createTargetVariableDeclare(variable));
             		do1.getActions().getACTION().add(createTargetInstanceMembershipFormula(
@@ -755,7 +762,15 @@ public class ModelRifToRifTranslator extends
         Member member = factory.createMember();
         Instance instance = factory.createInstance();
         Var var = factory.createVar();
-        String name = sentence.getSourceClass().getName();
+        String name;
+        if (!sentence.isAttributeFilterSentence())
+        {
+        	name = sentence.getSourceClass().getName();
+        }
+        else
+        {
+        	name = sentence.getTargetClass().getName();
+        }
         var.getContent().add(name);
         Const const1 = factory.createConst();
         const1.setType("rif:iri");
