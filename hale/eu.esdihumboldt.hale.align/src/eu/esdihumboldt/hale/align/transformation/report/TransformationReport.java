@@ -16,10 +16,10 @@ import eu.esdihumboldt.hale.core.report.Report;
 
 /**
  * TODO Type description
- * @author sitemple
+ * @author Simon Templer
  */
 public interface TransformationReport extends Report<TransformationMessage> {
 
-	//TODO
+	//TODO anything to add?
 	
 }

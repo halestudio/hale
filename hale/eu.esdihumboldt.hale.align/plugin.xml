@@ -4,5 +4,6 @@
    <extension-point id="eu.esdihumboldt.hale.align.transformation" name="Transformation functions and execution" schema="schema/eu.esdihumboldt.hale.align.transformation.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.align.function" name="Transformation function definitions" schema="schema/eu.esdihumboldt.hale.align.function.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.align.engine" name="Transformation engine definitions" schema="schema/eu.esdihumboldt.hale.align.engine.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.align.category" name="Transformation function categories" schema="schema/eu.esdihumboldt.hale.align.category.exsd"/>
 
 </plugin>
