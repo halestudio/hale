@@ -203,8 +203,10 @@ public abstract class StyleHelper {
 		Mark mutiMark = styleBuilder.createMark(mark.getWellKnownName(), 
 				styleBuilder.createFill(color, DEFAULT_FILL_OPACITY), 
 				styleBuilder.createStroke(color, width));
-		mutiMark.setSize(mark.getSize());
-		mutiMark.setRotation(mark.getRotation());
+		
+		//XXX commented because unsupported in Geotools 8.0-M1
+//		mutiMark.setSize(mark.getSize());
+//		mutiMark.setRotation(mark.getRotation());
 		
 		// create new symbolizer
 		return styleBuilder.createPointSymbolizer(styleBuilder.createGraphic(
