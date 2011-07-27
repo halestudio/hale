@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.align.transformation.report;
 
+import eu.esdihumboldt.hale.align.model.Cell;
 import eu.esdihumboldt.hale.core.report.Message;
 
 /**
@@ -20,6 +21,10 @@ import eu.esdihumboldt.hale.core.report.Message;
  */
 public interface TransformationMessage extends Message {
 	
-	//TODO
+	/**
+	 * Get the transformation cell
+	 * @return the cell
+	 */
+	public Cell getCell();
 
 }

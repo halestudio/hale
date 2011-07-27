@@ -17,7 +17,7 @@ import java.util.Map;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
-import eu.esdihumboldt.hale.align.transformation.report.TransformationReporter;
+import eu.esdihumboldt.hale.align.transformation.report.TransformationLog;
 
 /**
  * Common interface for all transformation functions
@@ -40,11 +40,11 @@ public interface TransformationFunction<E extends TransformationEngine> {
 	 *   function execution
 	 * @param executionParameters additional parameters for the execution, 
 	 *   may be <code>null</code>
-	 * @param report the transformation report to add any information about the
+	 * @param log the transformation log to report any information about the
 	 *   execution of the transformation to
 	 */
 	public void execute(String transformationIdentifier, E engine, 
-			Map<String, String> executionParameters, TransformationReporter report);
+			Map<String, String> executionParameters, TransformationLog log);
 	
 	//TODO reset method? or something like it
 	

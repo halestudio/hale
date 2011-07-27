@@ -15,7 +15,7 @@ package eu.esdihumboldt.hale.align.transformation.function;
 import java.util.Collection;
 
 import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
-import eu.esdihumboldt.hale.align.transformation.report.TransformationReporter;
+import eu.esdihumboldt.hale.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.align.transformation.service.PropertyTransformer;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.MutableInstance;
@@ -32,7 +32,7 @@ public interface TypeTransformation<E extends TransformationEngine> extends Tran
 	 * Set the property transformer to publish the source/target instance pairs
 	 * to. Type transformations have no result, instead they must publish the 
 	 * instance pairs created during
-	 * {@link #execute(String, TransformationEngine, java.util.Map, TransformationReporter)}ion 
+	 * {@link #execute(String, TransformationEngine, java.util.Map, TransformationLog)}ion 
 	 * to the property transformer using
 	 * {@link PropertyTransformer#publish(Collection, Instance, MutableInstance)}.
 	 * @param propertyTransformer the property transformer

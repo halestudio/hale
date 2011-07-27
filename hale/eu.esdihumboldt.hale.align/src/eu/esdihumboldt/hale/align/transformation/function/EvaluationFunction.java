@@ -18,7 +18,7 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
-import eu.esdihumboldt.hale.align.transformation.report.TransformationReporter;
+import eu.esdihumboldt.hale.align.transformation.report.TransformationLog;
 
 /**
  * Function that is evaluated based on variables populated by property values.
@@ -74,7 +74,7 @@ public interface EvaluationFunction<E extends TransformationEngine> extends Tran
 	public void setVariables(ListMultimap<String, PropertyValue> variables);
 	
 	/**
-	 * Get the {@link #execute(String, TransformationEngine, Map, TransformationReporter)}ion results.
+	 * Get the {@link #execute(String, TransformationEngine, Map, TransformationLog)}ion results.
 	 * @return the execution results, result names are mapped to result values
 	 */
 	public Map<String, Object> getResults();
