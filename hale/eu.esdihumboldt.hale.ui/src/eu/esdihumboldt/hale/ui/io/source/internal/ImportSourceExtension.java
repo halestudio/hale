@@ -22,7 +22,7 @@ import de.cs3d.util.eclipse.extension.AbstractObjectDefinition;
 import de.cs3d.util.eclipse.extension.AbstractObjectFactory;
 import de.cs3d.util.eclipse.extension.ExtensionObjectDefinition;
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
-import eu.esdihumboldt.hale.core.internal.CoreBundle;
+import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
@@ -82,7 +82,7 @@ public class ImportSourceExtension extends AbstractExtension<ImportSource<?, ?>,
 				String bundleName = conf.getContributor().getName();
 				//TODO move method from InstanceBundle to OsgiUtils
 				Class<? extends IOProviderFactory<?>> result = (Class<? extends IOProviderFactory<?>>) 
-						CoreBundle.loadClass(factoryType, bundleName);
+						OsgiUtils.loadClass(factoryType, bundleName);
 				if (result != null) {
 					return result;
 				}

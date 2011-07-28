@@ -31,7 +31,7 @@ import de.cs3d.util.eclipse.extension.ExtensionObjectDefinition;
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.core.internal.CoreBundle;
+import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
@@ -113,7 +113,7 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 		public Class<? extends IOProvider> getProviderType() {
 			String bundleName = conf.getContributor().getName();
 			//TODO move method from InstanceBundle to OsgiUtils
-			return (Class<? extends IOProvider>) CoreBundle.loadClass(conf.getAttribute("providerType"), bundleName);
+			return (Class<? extends IOProvider>) OsgiUtils.loadClass(conf.getAttribute("providerType"), bundleName);
 		}
 
 		/**

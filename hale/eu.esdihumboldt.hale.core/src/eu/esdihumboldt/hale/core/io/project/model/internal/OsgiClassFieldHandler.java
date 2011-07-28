@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.core.io.project.model.internal;
 
 import org.exolab.castor.mapping.GeneralizedFieldHandler;
 
-import eu.esdihumboldt.hale.core.internal.CoreBundle;
+import de.fhg.igd.osgi.util.OsgiUtils;
 
 /**
  * Field handler for {@link Class}es in an OSGi context.
@@ -38,7 +38,7 @@ public class OsgiClassFieldHandler extends GeneralizedFieldHandler {
 	 */
 	@Override
 	public Object convertUponSet(Object value) {
-		return CoreBundle.loadClass((String) value, null);
+		return OsgiUtils.loadClass((String) value, null);
 	}
 
 	/**

@@ -39,6 +39,7 @@ import com.orientechnologies.orient.core.record.impl.ORecordBytes;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.core.internal.CoreBundle;
 import eu.esdihumboldt.hale.instance.model.Group;
 import eu.esdihumboldt.hale.instance.model.Instance;
@@ -467,7 +468,7 @@ public class OGroup implements MutableGroup {
 					@Override
 					protected Class<?> resolveClass(ObjectStreamClass desc)
 							throws IOException, ClassNotFoundException {
-						return CoreBundle.loadClass(desc.getName(), null);
+						return OsgiUtils.loadClass(desc.getName(), null);
 					}
 				};
 				Object object = in.readObject();
