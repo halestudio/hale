@@ -12,8 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.io.advisor;
 
-import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
-import de.fhg.igd.eclipse.util.extension.FactoryFilter;
+import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
+import de.cs3d.util.eclipse.extension.FactoryFilter;
 import eu.esdihumboldt.hale.core.io.ExportProvider;
 import eu.esdihumboldt.hale.core.io.IOAdvisor;
 

@@ -17,7 +17,7 @@ import java.util.Set;
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.ui.services.IEvaluationService;
 
-import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
+import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
 import eu.esdihumboldt.hale.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.ui.io.IOWizard;

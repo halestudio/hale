@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.io.source.internal;
 
-import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
+import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
 import eu.esdihumboldt.hale.core.io.ContentType;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.ui.io.ImportSource;

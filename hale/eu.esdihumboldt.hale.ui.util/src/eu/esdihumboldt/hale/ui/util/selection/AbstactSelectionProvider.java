@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 
-import de.fhg.igd.eclipse.util.TypeSafeListenerList;
+import de.cs3d.util.eclipse.TypeSafeListenerList;
 
 /**
  * Abstract selection provider implementation

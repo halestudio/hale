@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.service.instance.internal;
 
-import de.fhg.igd.eclipse.util.TypeSafeListenerList;
+import de.cs3d.util.eclipse.TypeSafeListenerList;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;

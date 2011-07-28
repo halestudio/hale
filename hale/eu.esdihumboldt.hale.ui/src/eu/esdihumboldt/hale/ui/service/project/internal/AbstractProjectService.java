@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.ui.service.project.internal;
 
 import java.util.Map;
 
-import de.fhg.igd.eclipse.util.TypeSafeListenerList;
+import de.cs3d.util.eclipse.TypeSafeListenerList;
 import eu.esdihumboldt.hale.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceListener;

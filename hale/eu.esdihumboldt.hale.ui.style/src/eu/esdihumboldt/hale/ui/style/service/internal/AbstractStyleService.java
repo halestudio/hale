@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.ui.style.service.internal;
 
 import org.eclipse.swt.graphics.RGB;
 
-import de.fhg.igd.eclipse.util.TypeSafeListenerList;
+import de.cs3d.util.eclipse.TypeSafeListenerList;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;
 import eu.esdihumboldt.hale.ui.style.service.StyleServiceListener;
 

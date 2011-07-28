@@ -23,11 +23,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.IEvaluationService;
 
+import de.cs3d.ui.util.eclipse.extension.AbstractExtensionContribution;
+import de.cs3d.ui.util.eclipse.extension.AbstractFactoryAction;
+import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import de.fhg.igd.eclipse.util.extension.AbstractExtensionContribution;
-import de.fhg.igd.eclipse.util.extension.AbstractFactoryAction;
-import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 import eu.esdihumboldt.hale.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 
