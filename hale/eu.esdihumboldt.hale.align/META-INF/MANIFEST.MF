@@ -17,3 +17,14 @@ Import-Package: com.google.common.base;version="1.6.0",
  org.slf4j;version="1.5.11"
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.castor.xml;bundle-version="1.3.0"
+Export-Package: eu.esdihumboldt.hale.align.io,
+ eu.esdihumboldt.hale.align.io.internal;x-internal:=true,
+ eu.esdihumboldt.hale.align.model,
+ eu.esdihumboldt.hale.align.model.condition,
+ eu.esdihumboldt.hale.align.model.condition.impl,
+ eu.esdihumboldt.hale.align.model.impl,
+ eu.esdihumboldt.hale.align.transformation.engine,
+ eu.esdihumboldt.hale.align.transformation.function,
+ eu.esdihumboldt.hale.align.transformation.report,
+ eu.esdihumboldt.hale.align.transformation.report.impl,
+ eu.esdihumboldt.hale.align.transformation.service
