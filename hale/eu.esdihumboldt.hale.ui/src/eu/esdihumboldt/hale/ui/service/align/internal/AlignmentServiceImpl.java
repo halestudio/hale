@@ -9,7 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.ui.service.mapping.internal;
+package eu.esdihumboldt.hale.ui.service.align.internal;
 
 import static eu.esdihumboldt.cst.transformer.EntityUtils.entitiesMatch;
 
@@ -28,7 +28,7 @@ import eu.esdihumboldt.commons.goml.align.Alignment;
 import eu.esdihumboldt.commons.goml.align.Entity;
 import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
 import eu.esdihumboldt.commons.goml.rdf.About;
-import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.IEntity;
 

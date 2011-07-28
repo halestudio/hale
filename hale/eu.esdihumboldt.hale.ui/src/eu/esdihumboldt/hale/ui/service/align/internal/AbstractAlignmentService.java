@@ -10,13 +10,13 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.service.mapping.internal;
+package eu.esdihumboldt.hale.ui.service.align.internal;
 
 import eu.esdihumboldt.hale.ui.service.AbstractUpdateService;
 import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
 import eu.esdihumboldt.hale.ui.service.UpdateMessage;
-import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
-import eu.esdihumboldt.hale.ui.service.mapping.AlignmentServiceListener;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
 import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**

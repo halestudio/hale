@@ -42,7 +42,7 @@ import eu.esdihumboldt.hale.ui.model.schema.AttributeItem;
 import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 import eu.esdihumboldt.hale.ui.model.schema.TreeObject;
 import eu.esdihumboldt.hale.ui.model.schema.TreeObject.TreeObjectType;
-import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.style.helper.StyleHelper;
 import eu.esdihumboldt.hale.ui.util.swing.SwingRcpUtilities;
 import eu.esdihumboldt.hale.ui.util.viewer.TipProvider;

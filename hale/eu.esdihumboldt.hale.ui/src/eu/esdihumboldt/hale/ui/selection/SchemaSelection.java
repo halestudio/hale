@@ -31,7 +31,7 @@ import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.hale.ui.model.mapping.CellInfo;
 import eu.esdihumboldt.hale.ui.model.schema.NullSchemaItem;
 import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
-import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.IEntity;

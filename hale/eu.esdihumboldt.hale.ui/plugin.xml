@@ -62,7 +62,7 @@
                serviceClass="eu.esdihumboldt.hale.ui.service.instance.InstanceService">
          </service>
          <service
-               serviceClass="eu.esdihumboldt.hale.ui.service.mapping.AlignmentService">
+               serviceClass="eu.esdihumboldt.hale.ui.service.align.AlignmentService">
          </service>
          <service
                serviceClass="eu.esdihumboldt.hale.ui.service.project.ProjectService">

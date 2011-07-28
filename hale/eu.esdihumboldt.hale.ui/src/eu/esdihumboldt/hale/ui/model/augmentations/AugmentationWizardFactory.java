@@ -21,7 +21,7 @@ import eu.esdihumboldt.hale.ui.model.functions.FunctionWizard;
 import eu.esdihumboldt.hale.ui.model.functions.FunctionWizardFactory;
 import eu.esdihumboldt.hale.ui.model.schema.NullSchemaItem;
 import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
-import eu.esdihumboldt.hale.ui.service.mapping.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
