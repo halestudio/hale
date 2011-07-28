@@ -28,13 +28,14 @@ import org.exolab.castor.xml.ValidationException;
 import org.exolab.castor.xml.XMLContext;
 import org.xml.sax.InputSource;
 
-import eu.esdihumboldt.hale.align.model.impl.DefaultAlignment;
+import eu.esdihumboldt.hale.align.io.internal.AlignmentBean;
+import eu.esdihumboldt.hale.align.model.MutableAlignment;
 
 /**
- * TODO Type description
- * @author sitemple
+ * Save or load an alignment
+ * @author Simon Templer
  */
-public class DefaultAlignmentIO {
+public class AlignmentIO {
 	
 	/**
 	 * Load a default alignment from an input stream.
@@ -45,17 +46,18 @@ public class DefaultAlignmentIO {
 	 * @throws MarshalException if the alignment could not be read
 	 * @throws ValidationException if the input stream did not provide valid XML
 	 */
-	public static DefaultAlignment load(InputStream in) throws MappingException, MarshalException, ValidationException {
-		Mapping mapping = new Mapping(DefaultAlignment.class.getClassLoader());
+	public static MutableAlignment load(InputStream in) throws MappingException, MarshalException, ValidationException {
+		Mapping mapping = new Mapping(AlignmentBean.class.getClassLoader());
 		mapping.loadMapping(new InputSource(
-				DefaultAlignmentIO.class.getResourceAsStream("DefaultAlignment.xml")));
+				AlignmentBean.class.getResourceAsStream("AlignmentBean.xml")));
 		        
 		XMLContext context = new XMLContext();
 		context.addMapping(mapping);
 
 		Unmarshaller unmarshaller = context.createUnmarshaller();
 		try {
-			return (DefaultAlignment) unmarshaller.unmarshal(new InputSource(in));
+			AlignmentBean bean = (AlignmentBean) unmarshaller.unmarshal(new InputSource(in));
+			return bean.createAlignment();
 		} finally {
 			try {
 				in.close();
@@ -74,10 +76,12 @@ public class DefaultAlignmentIO {
 	 * @throws MarshalException if the alignment could not be marshaled 
 	 * @throws IOException if the output could not be written 
 	 */
-	public static void save(DefaultAlignment alignment, OutputStream out) throws MappingException, MarshalException, ValidationException, IOException {
-		Mapping mapping = new Mapping(DefaultAlignment.class.getClassLoader());
+	public static void save(MutableAlignment alignment, OutputStream out) throws MappingException, MarshalException, ValidationException, IOException {
+		AlignmentBean bean = new AlignmentBean(alignment);
+		
+		Mapping mapping = new Mapping(AlignmentBean.class.getClassLoader());
 		mapping.loadMapping(new InputSource(
-				DefaultAlignmentIO.class.getResourceAsStream("DefaultAlignment.xml")));
+				AlignmentBean.class.getResourceAsStream("AlignmentBean.xml")));
 		        
 		XMLContext context = new XMLContext();
 		context.setProperty("org.exolab.castor.indent", true); // enable indentation for marshaling as project files should be very small
@@ -87,7 +91,7 @@ public class DefaultAlignmentIO {
 		Writer writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
 		try {
 			marshaller.setWriter(writer);
-			marshaller.marshal(alignment);
+			marshaller.marshal(bean);
 		} finally {
 			try {
 				writer.close();

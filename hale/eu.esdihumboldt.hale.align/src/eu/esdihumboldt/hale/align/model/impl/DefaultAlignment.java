@@ -17,21 +17,23 @@ import java.util.Collection;
 import java.util.Collections;
 
 import eu.esdihumboldt.hale.align.model.Alignment;
+import eu.esdihumboldt.hale.align.model.MutableAlignment;
+import eu.esdihumboldt.hale.align.model.MutableCell;
 
 /**
  * Default alignment implementation
  * @author Simon Templer
  */
-public class DefaultAlignment implements Alignment {
+public class DefaultAlignment implements Alignment, MutableAlignment {
 	
 	//FIXME simple collection should be replaced later on
-	private final Collection<DefaultCell> cells = new ArrayList<DefaultCell>();
+	private final Collection<MutableCell> cells = new ArrayList<MutableCell>();
 
 	/**
-	 * Add a cell to the alignment
-	 * @param cell the cell to add
+	 * @see MutableAlignment#addCell(MutableCell)
 	 */
-	public void addCell(DefaultCell cell) {
+	@Override
+	public void addCell(MutableCell cell) {
 		cells.add(cell);
 	}
 	
@@ -39,7 +41,7 @@ public class DefaultAlignment implements Alignment {
 	 * @see Alignment#getCells()
 	 */
 	@Override
-	public Collection<DefaultCell> getCells() {
+	public Collection<MutableCell> getCells() {
 		return Collections.unmodifiableCollection(cells);
 	}
 

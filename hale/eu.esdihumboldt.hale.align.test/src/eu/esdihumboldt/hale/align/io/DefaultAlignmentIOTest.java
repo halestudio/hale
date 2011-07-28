@@ -27,6 +27,8 @@ import org.junit.rules.TemporaryFolder;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.hale.align.model.MutableAlignment;
+import eu.esdihumboldt.hale.align.model.MutableCell;
 import eu.esdihumboldt.hale.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.align.model.impl.DefaultCell;
 
@@ -49,10 +51,10 @@ public class DefaultAlignmentIOTest {
 	@Test
 	public void testSaveLoad() throws Exception {
 		// populate alignment 
-		DefaultAlignment align = new DefaultAlignment();
+		MutableAlignment align = new DefaultAlignment();
 		
 		// cell 1
-		DefaultCell cell1 = new DefaultCell();
+		MutableCell cell1 = new DefaultCell();
 		align.addCell(cell1);
 		
 		String id1;
@@ -65,7 +67,7 @@ public class DefaultAlignmentIOTest {
 		cell1.setTransformationParameters(parameters1);
 		
 		// cell 2
-		DefaultCell cell2 = new DefaultCell();
+		MutableCell cell2 = new DefaultCell();
 		align.addCell(cell2);
 		
 		String id2;
@@ -81,18 +83,18 @@ public class DefaultAlignmentIOTest {
 		File alignmentFile = tmp.newFile("alignment.xml");
 		System.out.println(alignmentFile.getAbsolutePath());
 		
-		DefaultAlignmentIO.save(align, new FileOutputStream(alignmentFile));
+		AlignmentIO.save(align, new FileOutputStream(alignmentFile));
 		
 		//FIXME remove
 		Desktop.getDesktop().open(alignmentFile);
 		Thread.sleep(1000);
 		
 		// load alignment
-		DefaultAlignment align2 = DefaultAlignmentIO.load(new FileInputStream(
+		MutableAlignment align2 = AlignmentIO.load(new FileInputStream(
 				alignmentFile));
 		
 		//TODO test alignment
-		Collection<DefaultCell> cells = align2.getCells();
+		Collection<? extends MutableCell> cells = align2.getCells();
 		assertFalse(cells.isEmpty());
 	}
 

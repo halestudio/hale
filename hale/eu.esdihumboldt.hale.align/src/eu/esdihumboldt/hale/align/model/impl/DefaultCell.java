@@ -12,23 +12,18 @@
 
 package eu.esdihumboldt.hale.align.model.impl;
 
-import java.util.Collection;
-import java.util.Map;
-
-import org.exolab.castor.mapping.MapItem;
-
-import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 
 import eu.esdihumboldt.hale.align.model.Cell;
 import eu.esdihumboldt.hale.align.model.Entity;
+import eu.esdihumboldt.hale.align.model.MutableCell;
 
 /**
  * Default implementation of an alignment cell
  * @author Simon Templer
  */
-public class DefaultCell implements Cell {
+public class DefaultCell implements Cell, MutableCell {
 
 	private ListMultimap<String, ? extends Entity> source;
 	private ListMultimap<String, ? extends Entity> target;
@@ -36,30 +31,33 @@ public class DefaultCell implements Cell {
 	private String transformation;
 
 	/**
-	 * Set the identifier for the transformation referenced by the cell.
-	 * @param transformation the transformation identifier
+	 * @see eu.esdihumboldt.hale.align.model.MutableCell#setTransformationIdentifier(java.lang.String)
 	 */
+	@Override
 	public void setTransformationIdentifier(String transformation) {
 		this.transformation = transformation;
 	}
 
 	/**
-	 * @param parameters the parameters to set
+	 * @see eu.esdihumboldt.hale.align.model.MutableCell#setTransformationParameters(com.google.common.collect.ListMultimap)
 	 */
+	@Override
 	public void setTransformationParameters(ListMultimap<String, String> parameters) {
 		this.parameters = parameters;
 	}
 
 	/**
-	 * @param source the source to set
+	 * @see eu.esdihumboldt.hale.align.model.MutableCell#setSource(com.google.common.collect.ListMultimap)
 	 */
+	@Override
 	public void setSource(ListMultimap<String, ? extends Entity> source) {
 		this.source = source;
 	}
 
 	/**
-	 * @param target the target to set
+	 * @see eu.esdihumboldt.hale.align.model.MutableCell#setTarget(com.google.common.collect.ListMultimap)
 	 */
+	@Override
 	public void setTarget(ListMultimap<String, ? extends Entity> target) {
 		this.target = target;
 	}
@@ -103,24 +101,6 @@ public class DefaultCell implements Cell {
 	@Override
 	public String getTransformationIdentifier() {
 		return transformation;
-	}
-
-	public Map<String, Collection<String>> getParametersMap() {
-		if (parameters == null) {
-			return null;
-		}
-		return parameters.asMap();
-	}
-	
-	public void addParameters(String name, Collection<String> params) {
-		if (parameters == null) {
-			parameters = LinkedListMultimap.create();
-		}
-		parameters.putAll(name, params);
-	}
-	
-	public void addParameters(MapItem item) {
-		addParameters((String) item.getKey(), (Collection<String>) item.getValue());
 	}
 	
 }

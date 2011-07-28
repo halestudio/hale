@@ -2,7 +2,7 @@
 <!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN"
 	"http://castor.org/mapping.dtd">
 <mapping>
-	<class name="eu.esdihumboldt.hale.align.model.impl.DefaultAlignment" auto-complete="true">
+	<class name="eu.esdihumboldt.hale.align.io.internal.AlignmentBean" auto-complete="true">
 		<map-to xml="hale-alignment" />
 	
 		<field name="cells" collection="collection" set-method="addCell" get-method="getCells">
@@ -10,13 +10,12 @@
 		</field>
 		
 	</class>
-	<class name="eu.esdihumboldt.hale.align.model.impl.DefaultCell" auto-complete="true">
+	<!-- class name="eu.esdihumboldt.hale.align.model.impl.DefaultCell" auto-complete="true">
 	
 		<field name="transformationIdentifier" type="string" required="true">
 			<bind-xml name="transformation" node="attribute" />
 		</field>
 		
-		<!-- parameters -->
 		<field name="parametersMap" collection="map" required="false" 
 				set-method="addParameters" get-method="getParametersMap">
 			<bind-xml name="parameter">
@@ -30,8 +29,6 @@
 				</class>
 			</bind-xml>
 		</field>
-		<!-- source -->
-		<!-- target -->
 		
-	</class>
+	</class -->
 </mapping>
