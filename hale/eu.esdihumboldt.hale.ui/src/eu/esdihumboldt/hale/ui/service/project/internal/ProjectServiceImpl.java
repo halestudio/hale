@@ -14,6 +14,8 @@ package eu.esdihumboldt.hale.ui.service.project.internal;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -39,10 +41,12 @@ import de.cs3d.util.logging.ATransaction;
 import de.fhg.igd.osgi.util.configuration.AbstractConfigurationService;
 import de.fhg.igd.osgi.util.configuration.AbstractDefaultConfigurationService;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
+import eu.esdihumboldt.hale.core.io.ExportProvider;
 import eu.esdihumboldt.hale.core.io.HaleIO;
 import eu.esdihumboldt.hale.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.core.io.IOProvider;
 import eu.esdihumboldt.hale.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.core.io.ImportProvider;
 import eu.esdihumboldt.hale.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.core.io.project.ProjectReader;
@@ -65,6 +69,7 @@ import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
+import eu.esdihumboldt.hale.ui.service.project.internal.FilePathUpdate;
 
 /**
  * Default implementation of the {@link ProjectService}.
@@ -174,12 +179,41 @@ public class ProjectServiceImpl extends AbstractProjectService
 				notifyAfterLoad(projectFiles);
 			}
 
-			private void updatePaths(ProjectInfo main) {
-				//TODO check if project file has been moved and if paths of included file resources must be updated (i.e. they don't exist at the given location)
-				//XXX maybe even offer a file dialog to search for the file if fixing the path is not possible
+			// uses "user.dir" to get the current location and paths based on "/" in FilePathUpdate
+			private void updatePaths(Project main) {
+				IOConfiguration saveconfig = main.getSaveConfiguration();
+				String exptargetfile = saveconfig.getProviderConfiguration().get(ExportProvider.PARAM_TARGET);
+				String exptarget = exptargetfile.substring(0, exptargetfile.lastIndexOf("/"));
+				String location = System.getProperty("user.dir");
+				
+				if(!location.equals(exptarget)){
+					List<IOConfiguration> configuration = main.getResources();
+					for(IOConfiguration providerconf : configuration){
+						Map<String, String> conf = providerconf.getProviderConfiguration();
+						String impsrc = conf.get(ImportProvider.PARAM_SOURCE);
+						try {
+							URI uri = new URI(impsrc);
+							File file = new File(uri);
+							if(!file.exists()){
+								String newsrc = FilePathUpdate.changePath(impsrc, location);
+								
+								URI newuri = new URI(newsrc);
+								File newfile = new File(newuri);
+								if(newfile.exists()){
+									conf.remove(ImportProvider.PARAM_SOURCE);
+									conf.put(ImportProvider.PARAM_SOURCE, newsrc);
+								}
+							}
+						} catch (URISyntaxException e) {
+							// TODO wrong saved? user input?
+						}
+					}
+				}
+
 			}
-			
 		};
+							
+		
 		
 		saveProjectAdvisor = new AbstractIOAdvisor<ProjectWriter>() {
 			
@@ -582,4 +616,5 @@ public class ProjectServiceImpl extends AbstractProjectService
 		}
 	}
 
+	
 }

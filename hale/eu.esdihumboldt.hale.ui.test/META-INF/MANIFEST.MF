@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.test
+Bundle-Version: 2.2.0.qualifier
+Fragment-Host: eu.esdihumboldt.hale.ui;bundle-version="2.2.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit
