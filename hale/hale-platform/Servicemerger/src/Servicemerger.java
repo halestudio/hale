@@ -33,13 +33,21 @@ import java.util.jar.Manifest;
 
 /**
  * @author Sebastian Reinhardt
- *
+ * The purpose of this tool is to enable an easy upgrade mechanism of the 
+ * geotools dependencies in HALE. This class merges the different (and same) 
+ * service files in the various "META-INF/services" folders of the geotools 
+ * jar-files..
  */
 public class Servicemerger {
 
+	
 	String source;
 	String dest;
 	
+	/**
+	 * @param source - the sourcepath of the geotools jar-files.
+	 * @param dest - the destinationpath where the merged files should appear
+	 */
 	public Servicemerger(String source, String dest){
 		this.source = source;
 		this.dest = dest;
@@ -56,7 +64,13 @@ public class Servicemerger {
 	}
 	
 	
+	/**
+	 * Method for creating a jar file containing the merged servicefiles
+	 * @param dest the destinationpath of the jar file
+	 * @throws IOException
+	 */
 	private void createJar(String dest) throws IOException {
+		//set paths and files
 		File jar = new File(dest + java.io.File.separator + "_common_services.jar");
 		File destDir = new File(dest + java.io.File.separator +
 								"META-INF" + java.io.File.separator +
@@ -79,6 +93,7 @@ public class Servicemerger {
 		           
 		        // System.out.println("Adding " + jaredFiles[i].getName()) ;
 		         
+		         //add files as JarEntrys to the JarFile
 		         JarEntry entry = new JarEntry(	"META-INF" + java.io.File.separator +
 							"services" + java.io.File.separator + jaredFiles[i].getName()) ;
 		         entry.setTime(jaredFiles[i].lastModified()) ;
@@ -105,6 +120,11 @@ public class Servicemerger {
 		 }
 
 
+	/**
+	 * This method can be used, to list all files and subdirectorys
+	 *  in a specific directory
+	 * @param dir the path of the directory
+	 */
 	public void listDir(File dir) {
 
 		File[] files = dir.listFiles();
@@ -122,6 +142,13 @@ public class Servicemerger {
 	}
 	
 	
+	/**
+	 * Reads the inputstream of a file and transforms it into a String text
+	 * Used to read files directly out of a jarfile
+	 * @param input the stream of the file to read
+	 * @return the content of the file as a text
+	 * @throws IOException
+	 */
 	private String readFile(InputStream input) throws IOException{
 		String text = "";
 		   InputStreamReader isr = 
@@ -136,6 +163,12 @@ public class Servicemerger {
 	 }
 	
 	
+	/**
+	 * creates the new merged file comparing the content of 2 files
+	 * @param file the first file to be compared and merged	
+	 * @param text the content of the second file
+	 * @throws IOException
+	 */
 	private void writeMergedFile(File file, String text) throws IOException{
 
 		// Create file if it does not exist
@@ -147,7 +180,7 @@ public class Servicemerger {
 			out.write(text.toCharArray());
 			out.close();
 		} 
-		
+		//file existed, compare content and merge
 		else {
 			BufferedWriter out = new BufferedWriter(new FileWriter(file, true));
 			BufferedReader readFile = new BufferedReader(new FileReader(file));
@@ -177,23 +210,30 @@ public class Servicemerger {
 	}
 		
 	
+	/**
+	 * method for starting the creation and merging process.
+	 * reads all the given jar files and their entrys.
+	 * @param dir the directory of the jar files
+	 * @throws IOException
+	 */
 	private void merge(File dir) throws IOException{	
 		
 		File[] files = dir.listFiles();
 		Map <String, File> visited = new HashMap<String, File>();
+		//are jar files in the given directory?
 		if (files != null) {
 			for (int i = 0; i < files.length; i++) {
-				
+				//we only work with .jar files
 				if(files[i].getName().endsWith(".jar")){
 						
 					JarFile jar = new JarFile(files[i]);
 					
 					Enumeration<JarEntry> jarenu = jar.entries();
-					
+					//lets look at the entry of a specific jar file
 					 while (jarenu.hasMoreElements()){
 						 
 						 JarEntry entry = jarenu.nextElement();
-						 
+						 //do the jar file contains a servicefile?
 						if(entry.getName().contains("META-INF" + java.io.File.separator + "services") && !entry.isDirectory()){
 							
 							if(visited.containsKey(entry.getName())){
@@ -229,7 +269,8 @@ public class Servicemerger {
 	
 	
 	/**
-	 * @param args
+	 * main method to start the Servicemerger
+	 * @param args 0 - the path of the original jar files, 1 - the destination of the new files
 	 */
 	public static void main(String[] args) {
 		
