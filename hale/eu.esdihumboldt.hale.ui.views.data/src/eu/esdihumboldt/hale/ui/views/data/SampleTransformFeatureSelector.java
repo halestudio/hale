@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -36,8 +38,6 @@ import org.eclipse.ui.PlatformUI;
 import org.opengis.feature.Feature;
 
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
-import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
-import eu.esdihumboldt.hale.ui.service.UpdateMessage;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelectionListener;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelector;
 
@@ -60,7 +60,7 @@ public class SampleTransformFeatureSelector implements InstanceSelector {
 		
 		private Definition selectedType;
 
-		private final HaleServiceListener referenceListener;
+		private final Observer referenceListener;
 		
 		/**
 		 * @see Composite#Composite(Composite, int)
@@ -110,10 +110,10 @@ public class SampleTransformFeatureSelector implements InstanceSelector {
 			
 			// service listeners
 			ReferenceSampleService rss = (ReferenceSampleService) PlatformUI.getWorkbench().getService(ReferenceSampleService.class);
-			rss.addListener(referenceListener = new HaleServiceListener() {
+			rss.addObserver(referenceListener = new Observer() {
 				
 				@Override
-				public void update(@SuppressWarnings("rawtypes") UpdateMessage message) {
+				public void update(Observable arg0, Object arg1) {
 					if (Display.getCurrent() != null) {
 						updateFeatureTypesSelection();
 					}
@@ -237,7 +237,7 @@ public class SampleTransformFeatureSelector implements InstanceSelector {
 		@Override
 		public void dispose() {
 			ReferenceSampleService rss = (ReferenceSampleService) PlatformUI.getWorkbench().getService(ReferenceSampleService.class);
-			rss.removeListener(referenceListener);
+			rss.deleteObserver(referenceListener);
 			
 			listeners.clear();
 			

@@ -13,9 +13,9 @@
 package eu.esdihumboldt.hale.ui.views.data;
 
 import java.util.Collection;
+import java.util.Observer;
 
 import eu.esdihumboldt.hale.instance.model.Instance;
-import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
 
 
 /**
@@ -45,13 +45,13 @@ public interface ReferenceSampleService {
 	 * 
 	 * @param listener the listener to add
 	 */
-	public void addListener(HaleServiceListener listener);
+	public void addObserver(Observer listener);
 	
 	/**
 	 * Removes a listener
 	 * 
 	 * @param listener the listener to be removed
 	 */
-	public void removeListener(HaleServiceListener listener);
+	public void deleteObserver(Observer listener);
 
 }

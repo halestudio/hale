@@ -14,11 +14,9 @@ package eu.esdihumboldt.hale.ui.views.data.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Observable;
 
 import eu.esdihumboldt.hale.instance.model.Instance;
-import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
 import eu.esdihumboldt.hale.ui.views.data.ReferenceSampleService;
 
 /**
@@ -27,19 +25,9 @@ import eu.esdihumboldt.hale.ui.views.data.ReferenceSampleService;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ReferenceSampleServiceImpl implements ReferenceSampleService {
-	
-	private final Set<HaleServiceListener> listeners = new HashSet<HaleServiceListener>();
+public class ReferenceSampleServiceImpl extends Observable implements ReferenceSampleService {
 	
 	private Collection<Instance> sample = new ArrayList<Instance>();
-
-	/**
-	 * @see ReferenceSampleService#addListener(HaleServiceListener)
-	 */
-	@Override
-	public void addListener(HaleServiceListener listener) {
-		listeners.add(listener);
-	}
 
 	/**
 	 * @see ReferenceSampleService#getReferenceInstances()
@@ -50,23 +38,13 @@ public class ReferenceSampleServiceImpl implements ReferenceSampleService {
 	}
 
 	/**
-	 * @see ReferenceSampleService#removeListener(HaleServiceListener)
-	 */
-	@Override
-	public void removeListener(HaleServiceListener listener) {
-		listeners.remove(listener);
-	}
-
-	/**
 	 * @see ReferenceSampleService#setReferenceInstances(Collection)
 	 */
 	@Override
 	public void setReferenceInstances(Collection<Instance> instances) {
 		this.sample = instances;
 		
-		for (HaleServiceListener listener : listeners) {
-			listener.update(null);
-		}
+		notifyObservers();
 	}
 
 }
