@@ -12,17 +12,15 @@
 
 package eu.esdihumboldt.hale.ui.service.align;
 
-import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
-import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.hale.align.model.Cell;
 
 /**
  * Listener for alignment service events
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
-public interface AlignmentServiceListener extends HaleServiceListener {
+public interface AlignmentServiceListener {
 	
 	/**
 	 * Called when the alignment has been cleared
@@ -30,30 +28,21 @@ public interface AlignmentServiceListener extends HaleServiceListener {
 	public void alignmentCleared();
 	
 	/**
-	 * Called when the whole alignment has changed and calling lesser events
-	 *   is not feasible
-	 */
-	//public void alignmentChanged();
-	
-	/**
 	 * Called when cells have been added
-	 * 
 	 * @param cells the cells that have been added
 	 */
-	public void cellsAdded(Iterable<ICell> cells);
+	public void cellsAdded(Iterable<Cell> cells);
 	
 	/**
 	 * Called when existing cells have been updated
-	 * 
 	 * @param cells the cells that have been updated
 	 */
-	public void cellsUpdated(Iterable<ICell> cells);
+	public void cellsUpdated(Iterable<Cell> cells);
 	
 	/**
 	 * Called when an existing cell has been removed
-	 * 
 	 * @param cell the cell that has been removed
 	 */
-	public void cellRemoved(ICell cell);
+	public void cellRemoved(Cell cell);
 
 }

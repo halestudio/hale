@@ -83,7 +83,7 @@ public abstract class AugmentationWizardFactory implements
 		
 		// special case: editing a cell that is not the augmentation cell -> use alignment service to get it
 		if (augmentation == null && selection instanceof CellSelectionInfo) {
-			augmentation = alignmentService.getCell(Entity.NULL_ENTITY, item.getEntity());
+//FIXME			augmentation = alignmentService.getCell(Entity.NULL_ENTITY, item.getEntity());
 		}
 		
 		return supports(item, augmentation);

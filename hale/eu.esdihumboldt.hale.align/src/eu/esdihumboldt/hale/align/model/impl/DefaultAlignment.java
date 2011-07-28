@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import eu.esdihumboldt.hale.align.model.Alignment;
+import eu.esdihumboldt.hale.align.model.Cell;
 import eu.esdihumboldt.hale.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.align.model.MutableCell;
 
@@ -33,8 +34,17 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 * @see MutableAlignment#addCell(MutableCell)
 	 */
 	@Override
-	public void addCell(MutableCell cell) {
-		cells.add(cell);
+	public boolean addCell(MutableCell cell) {
+		//FIXME when are cells equal?!
+		if (cells.contains(cell)) {
+			cells.remove(cell);
+			cells.add(cell);
+			return true;
+		}
+		else {
+			cells.add(cell);
+			return false;
+		}
 	}
 	
 	/**
@@ -43,6 +53,14 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	@Override
 	public Collection<MutableCell> getCells() {
 		return Collections.unmodifiableCollection(cells);
+	}
+
+	/**
+	 * @see MutableAlignment#removeCell(Cell)
+	 */
+	@Override
+	public boolean removeCell(Cell cell) {
+		return cells.remove(cell);
 	}
 
 }

@@ -12,12 +12,10 @@
 
 package eu.esdihumboldt.hale.ui.service.align.internal;
 
-import eu.esdihumboldt.hale.ui.service.AbstractUpdateService;
-import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
-import eu.esdihumboldt.hale.ui.service.UpdateMessage;
+import de.fhg.igd.eclipse.util.TypeSafeListenerList;
+import eu.esdihumboldt.hale.align.model.Cell;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
-import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * Notification handling for {@link AlignmentService}s that support
@@ -25,96 +23,65 @@ import eu.esdihumboldt.specification.cst.align.ICell;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
-public abstract class AbstractAlignmentService extends AbstractUpdateService implements
+public abstract class AbstractAlignmentService implements
 		AlignmentService {
 	
-	/**
-	 * The default update message
-	 */
-	private static final UpdateMessage<?> DEF_MESSAGE = new UpdateMessage<Object>(AlignmentService.class, null);
+	private final TypeSafeListenerList<AlignmentServiceListener> listeners = 
+			new TypeSafeListenerList<AlignmentServiceListener>();
 	
 	/**
-	 * @see AbstractUpdateService#notifyListeners(UpdateMessage)
-	 * @deprecated an {@link UnsupportedOperationException} will be thrown when
-	 *   calling this method, use another event notifier instead
+	 * Adds a listener to the service
+	 * @param listener the listener to add
 	 */
-	@Deprecated
-	@Override
-	protected void notifyListeners(UpdateMessage<?> message) {
-		throw new UnsupportedOperationException(); //notifyAlignmentChanged();
+	public void addListener(AlignmentServiceListener listener) {
+		listeners.add(listener);
 	}
-
+	
+	/**
+	 * Removes a listener to the service
+	 * @param listener the listener to remove
+	 */
+	public void removeListener(AlignmentServiceListener listener) {
+		listeners.remove(listener);
+	}
+	
 	/**
 	 * Call when the alignment has been cleared
 	 */
 	protected void notifyAlignmentCleared() {
-		for (HaleServiceListener listener : getListeners()) {
-			if (listener instanceof AlignmentServiceListener) {
-				((AlignmentServiceListener) listener).alignmentCleared();
-			}
-			
-			listener.update(DEF_MESSAGE);
+		for (AlignmentServiceListener listener : listeners) {
+			listener.alignmentCleared();
 		}
 	}
 	
 	/**
-	 * Call when the whole alignment has changed and calling lesser events
-	 *   is not feasible
-	 */
-	/*protected void notifyAlignmentChanged() {
-		for (HaleServiceListener listener : getListeners()) {
-			if (listener instanceof AlignmentServiceListener) {
-				((AlignmentServiceListener) listener).alignmentChanged();
-			}
-			
-			listener.update(DEF_MESSAGE);
-		}
-	}*/
-	
-	/**
 	 * Call when cells have been added
-	 * 
 	 * @param cells the cells that have been added
 	 */
-	protected void notifyCellsAdded(Iterable<ICell> cells) {
-		for (HaleServiceListener listener : getListeners()) {
-			if (listener instanceof AlignmentServiceListener) {
-				((AlignmentServiceListener) listener).cellsAdded(cells);
-			}
-			
-			listener.update(DEF_MESSAGE);
+	protected void notifyCellsAdded(Iterable<Cell> cells) {
+		for (AlignmentServiceListener listener : listeners) {
+			listener.cellsAdded(cells);
 		}
 	}
 	
 	/**
 	 * Call when existing cells have been updated
-	 * 
 	 * @param cells the cells that have been updated
 	 */
-	protected void notifyCellsUpdated(Iterable<ICell> cells) {
-		for (HaleServiceListener listener : getListeners()) {
-			if (listener instanceof AlignmentServiceListener) {
-				((AlignmentServiceListener) listener).cellsUpdated(cells);
-			}
-			
-			listener.update(DEF_MESSAGE);
+	protected void notifyCellsUpdated(Iterable<Cell> cells) {
+		for (AlignmentServiceListener listener : listeners) {
+			listener.cellsUpdated(cells);
 		}
 	}
 	
 	/**
 	 * Call when an existing cell has been removed
-	 * 
 	 * @param cell the cell that has been removed
 	 */
-	protected void notifyCellRemoved(ICell cell) {
-		for (HaleServiceListener listener : getListeners()) {
-			if (listener instanceof AlignmentServiceListener) {
-				((AlignmentServiceListener) listener).cellRemoved(cell);
-			}
-			
-			listener.update(DEF_MESSAGE);
+	protected void notifyCellRemoved(Cell cell) {
+		for (AlignmentServiceListener listener : listeners) {
+			listener.cellRemoved(cell);
 		}
 	}
 	

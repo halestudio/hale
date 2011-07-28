@@ -54,7 +54,7 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		}
 		
 		if (AlignmentService.class.equals(serviceInterface)) {
-			return AlignmentServiceImpl.getInstance();
+			return new AlignmentServiceImpl();
 		}
 		
 		if (ProjectService.class.equals(serviceInterface)) {

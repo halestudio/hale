@@ -77,31 +77,32 @@ public class SchemaSelection implements ISelection {
 		// add NullSchemaItem to find augmentations
 		sourceItems.add(NullSchemaItem.INSTANCE);
 		
-		Collection<ICell> cellList = alignmentService.getCells();
-		for (ICell cell : cellList) {
-			IEntity e1 = cell.getEntity1();
-			IEntity e2 = cell.getEntity2();
-			
-			if (e1 != null && e2 != null) {
-				Collection<SchemaItem> sourceCandidates = getSchemaItems(e1, SchemaSpaceID.SOURCE);
-				
-				if (sourceCandidates != null && !sourceCandidates.isEmpty()) {
-					SchemaItem source = containsAny(sourceItems, sourceCandidates);
-					
-					if (source != null) {
-						Collection<SchemaItem> targetCandidates = getSchemaItems(e2, SchemaSpaceID.TARGET);
-						
-						if (targetCandidates != null && !targetCandidates.isEmpty()) {
-							SchemaItem target = containsAny(targetItems, targetCandidates);
-						
-							if (target != null) {
-								cells.put(cell, new CellInfo(cell, source, target));
-							}
-						}
-					}
-				}
-			}
-		}
+		//FIXME
+//		Collection<ICell> cellList = alignmentService.getCells();
+//		for (ICell cell : cellList) {
+//			IEntity e1 = cell.getEntity1();
+//			IEntity e2 = cell.getEntity2();
+//			
+//			if (e1 != null && e2 != null) {
+//				Collection<SchemaItem> sourceCandidates = getSchemaItems(e1, SchemaSpaceID.SOURCE);
+//				
+//				if (sourceCandidates != null && !sourceCandidates.isEmpty()) {
+//					SchemaItem source = containsAny(sourceItems, sourceCandidates);
+//					
+//					if (source != null) {
+//						Collection<SchemaItem> targetCandidates = getSchemaItems(e2, SchemaSpaceID.TARGET);
+//						
+//						if (targetCandidates != null && !targetCandidates.isEmpty()) {
+//							SchemaItem target = containsAny(targetItems, targetCandidates);
+//						
+//							if (target != null) {
+//								cells.put(cell, new CellInfo(cell, source, target));
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
 		return cells;
 	}
 	

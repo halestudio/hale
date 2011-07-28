@@ -352,7 +352,7 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 		
 		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
 				AlignmentService.class);
-		List<ICell> cells = as.getCell(entity);
+		List<ICell> cells = new ArrayList<ICell>(); //FIXME as.getCell(entity);
 		
 		List<ITransformation> transformations = new ArrayList<ITransformation>();
 		List<ITransformation> augmentations = new ArrayList<ITransformation>();

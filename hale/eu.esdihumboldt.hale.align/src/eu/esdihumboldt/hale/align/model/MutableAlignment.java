@@ -25,8 +25,17 @@ public interface MutableAlignment extends Alignment {
 	/**
 	 * Add a cell to the alignment
 	 * @param cell the cell to add
+	 * @return <code>true</code> if the cell replaced an existing cell,
+	 *   otherwise <code>false</code> 
 	 */
-	public void addCell(MutableCell cell);
+	public boolean addCell(MutableCell cell);
+	
+	/**
+	 * Remove a cell
+	 * @param cell the cell to remove
+	 * @return if the cell was present and removed
+	 */
+	public boolean removeCell(Cell cell);
 	
 	/**
 	 * @see Alignment#getCells()

@@ -12,27 +12,16 @@
 
 package eu.esdihumboldt.hale.ui.service.align;
 
-import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
-import eu.esdihumboldt.hale.ui.service.UpdateMessage;
-import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.hale.align.model.Cell;
 
 /**
- * 
+ * Adapter for alignment service listeners
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public abstract class AlignmentServiceAdapter implements
 		AlignmentServiceListener {
-
-	/**
-	 * @see AlignmentServiceListener#alignmentChanged()
-	 */
-	/*@Override
-	public void alignmentChanged() {
-		// override me
-	}*/
 
 	/**
 	 * @see AlignmentServiceListener#alignmentCleared()
@@ -43,10 +32,10 @@ public abstract class AlignmentServiceAdapter implements
 	}
 
 	/**
-	 * @see AlignmentServiceListener#cellRemoved(ICell)
+	 * @see AlignmentServiceListener#cellRemoved(Cell)
 	 */
 	@Override
-	public void cellRemoved(ICell cell) {
+	public void cellRemoved(Cell cell) {
 		// override me
 	}
 
@@ -54,7 +43,7 @@ public abstract class AlignmentServiceAdapter implements
 	 * @see AlignmentServiceListener#cellsUpdated(Iterable)
 	 */
 	@Override
-	public void cellsUpdated(Iterable<ICell> cells) {
+	public void cellsUpdated(Iterable<Cell> cells) {
 		// override me
 	}
 
@@ -62,16 +51,8 @@ public abstract class AlignmentServiceAdapter implements
 	 * @see AlignmentServiceListener#cellsAdded(Iterable)
 	 */
 	@Override
-	public void cellsAdded(Iterable<ICell> cells) {
+	public void cellsAdded(Iterable<Cell> cells) {
 		// override me
-	}
-
-	/**
-	 * @see HaleServiceListener#update(UpdateMessage)
-	 */
-	@Override
-	public void update(@SuppressWarnings("rawtypes") UpdateMessage message) {
-		// override me if you are sure you need to be called on any event
 	}
 
 }

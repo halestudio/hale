@@ -55,7 +55,9 @@ public class SchemaSelectionInfo implements AlignmentInfo {
 	 */
 	@Override
 	public ICell getAlignment(SchemaItem source, SchemaItem target) {
-		return alignment.getCell(source.getEntity(), target.getEntity());
+		//FIXME
+		return null;
+//		return alignment.getCell(source.getEntity(), target.getEntity());
 	}
 
 	/**
@@ -123,12 +125,13 @@ public class SchemaSelectionInfo implements AlignmentInfo {
 		Entity entity1 = determineEntity(source);
 		Entity entity2 = determineEntity(target);
 		
-		if (entity1 == null || entity2 == null) {
+		//FIXME
+//		if (entity1 == null || entity2 == null) {
 			return null;
-		}
-		else {
-			return alignment.getCell(entity1, entity2);
-		}
+//		}
+//		else {
+//			return alignment.getCell(entity1, entity2);
+//		}
 	}
 
 	/**

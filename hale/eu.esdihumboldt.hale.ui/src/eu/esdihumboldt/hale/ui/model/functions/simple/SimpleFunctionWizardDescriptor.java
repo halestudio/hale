@@ -94,7 +94,7 @@ public class SimpleFunctionWizardDescriptor extends
 			
 			// add cell to alignment
 			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
-			as.addOrUpdateCell(cell);
+//FIXME			as.addOrUpdateCell(cell);
 			
 //			log.userInfo("Added cell");
 			

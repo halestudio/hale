@@ -111,7 +111,7 @@ public class FunctionWizardContribution extends ContributionItem {
 				
 				if (dialog.open() == WizardDialog.OK) {
 					for (ICell cell : wizard.getResult()) {
-						alignmentService.addOrUpdateCell(cell);
+//FIXME						alignmentService.addOrUpdateCell(cell);
 					}
 				}
 			}

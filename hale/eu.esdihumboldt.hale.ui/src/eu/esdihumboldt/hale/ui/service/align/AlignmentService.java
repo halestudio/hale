@@ -12,94 +12,52 @@
 
 package eu.esdihumboldt.hale.ui.service.align;
 
-import java.net.URI;
-import java.util.List;
-
-import org.opengis.feature.type.FeatureType;
-
-import eu.esdihumboldt.commons.goml.align.Alignment;
-import eu.esdihumboldt.commons.goml.align.Entity;
-import eu.esdihumboldt.hale.ui.service.UpdateService;
-import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.hale.align.model.Alignment;
+import eu.esdihumboldt.hale.align.model.Cell;
+import eu.esdihumboldt.hale.align.model.MutableAlignment;
+import eu.esdihumboldt.hale.align.model.MutableCell;
 
 /**
  * The {@link AlignmentService} provides access to the currently loaded 
- * alignment. The model it uses is directly derived from OML (Ontology
- * Mapping Language)
+ * alignment.
  * 
  * @author Thorsten Reitz
+ * @author Simon Templer
  */
-public interface AlignmentService 
-	extends UpdateService {
+public interface AlignmentService {
 	
 	/**
-	 * @return the entire {@link Alignment} as currently represented in the Alignment Model.
+	 * Get the current alignment
+	 * @return the entire {@link Alignment} as currently represented in the 
+	 *   Alignment Model.
 	 */
 	public Alignment getAlignment();
 	
 	/**
-	 * @param alignment the {@link Alignment} to update or add to the Alignment Model.
-	 * @return true if an existing alignment was updated, false if a new one was added.
+	 * Adds the cells contained in the given alignment to the current alignment.
+	 * If cells with the same entities and transformations already exist they
+	 * will be replaced.
+	 * @param alignment the alignment to add
 	 */
-	public boolean addOrUpdateAlignment(Alignment alignment);
+	public void addOrUpdateAlignment(MutableAlignment alignment);
 	
 	/**
-	 * This method is used to return all Alignments that have the given type 
-	 * as their source or target as a {@link AlignmentDocument}.
-	 * @param type the {@link FeatureType} for which to return the Alignments.
-	 * @return
+	 * Adds the given cell to the current alignment. If a cell with the same
+	 * entities and transformation already exists it will be replaced. 
+	 * @param cell the cell to add
 	 */
-	public List<ICell> getAlignmentForType(FeatureType type);
-	
-	
-	public ICell getAlignmentForType(FeatureType type1, FeatureType type2);
+	public void addOrUpdateCell(MutableCell cell);
 	
 	/**
-	 * Get all cells
-	 * 
-	 * @return a list of all cells (not backed by the service)
+	 * Removes the given cell
+	 * @param cell the cell to remove
 	 */
-	public List<ICell> getCells();
-	
-	/**
-	 * 
-	 * @param cell
-	 * @return 
-	 */
-	public boolean addOrUpdateCell(ICell cell);
-	
-	
-	/**
-	 * 
-	 * @param entity
-	 * @return all Cells containing the given Entity as a target Entity if the 
-	 * Entity is part of the target schema, or all Cells containing the Entity 
-	 * as a source Entity if the Entity is part of the source schema.
-	 */
-	public List<ICell> getCell(Entity entity);
-	
-	public ICell getCell(Entity e1, Entity e2);
-	
-	/**
-	 * Adds the alignments defined in an OML file to the currently loaded ones if the alignments
-	 * match the currently loaded schemas.
-	 * @param file the {@link URI} to the file from which to load alignments.
-	 * @return true if the loading was successful.
-	 */
-	public boolean loadAlignment(URI file);
+	public void removeCell(Cell cell);
 	
 	/**
 	 * Invoke this operation if you want to clear out all alignments stored. 
 	 * This method is required when one wants to start working on a new alignment.
-	 * @return true if the cleaning was successful.
 	 */
-	public boolean cleanModel();
-
-	/**
-	 * Removes the given cell
-	 * 
-	 * @param cell the cell to remove
-	 */
-	public void removeCell(ICell cell);
+	public void clean();
 
 }
