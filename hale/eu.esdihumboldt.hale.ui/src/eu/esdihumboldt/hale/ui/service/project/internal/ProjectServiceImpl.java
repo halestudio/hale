@@ -33,6 +33,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.geotools.referencing.operation.projection.AlbersEqualArea.Provider;
 import org.osgi.framework.Version;
 
 import de.cs3d.util.logging.ALogger;
@@ -146,6 +147,8 @@ public class ProjectServiceImpl extends AbstractProjectService
 	
 	private boolean changed = false;
 	
+	private String loc;		//added to get the location
+	
 	/**
 	 * Default constructor
 	 */
@@ -162,6 +165,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 				
 				synchronized (ProjectServiceImpl.this) {
 					main = provider.getProject();
+					loc = provider.getSource().getLocation().toASCIIString(); // for the location
 					updatePaths(main);
 					projectFile = new File(provider.getSource().getLocation());
 					changed = false;
@@ -179,37 +183,38 @@ public class ProjectServiceImpl extends AbstractProjectService
 				notifyAfterLoad(projectFiles);
 			}
 
-			// uses "user.dir" to get the current location and paths based on "/" in FilePathUpdate
+			// uses paths based on "/" in FilePathUpdate
 			private void updatePaths(Project main) {
-//				IOConfiguration saveconfig = main.getSaveConfiguration();
-//				System.out.println(ExportProvider.PARAM_TARGET);
-//				String exptargetfile = saveconfig.getProviderConfiguration().get(ExportProvider.PARAM_TARGET);
-//				String exptarget = exptargetfile.substring(0, exptargetfile.lastIndexOf("/"));
-//				String location = System.getProperty("user.dir");
-//				
-//				if(!location.equals(exptarget)){
-//					List<IOConfiguration> configuration = main.getResources();
-//					for(IOConfiguration providerconf : configuration){
-//						Map<String, String> conf = providerconf.getProviderConfiguration();
-//						String impsrc = conf.get(ImportProvider.PARAM_SOURCE);
-//						try {
-//							URI uri = new URI(impsrc);
-//							File file = new File(uri);
-//							if(!file.exists()){
-//								String newsrc = FilePathUpdate.changePath(impsrc, location);
-//								
-//								URI newuri = new URI(newsrc);
-//								File newfile = new File(newuri);
-//								if(newfile.exists()){
-//									conf.remove(ImportProvider.PARAM_SOURCE);
-//									conf.put(ImportProvider.PARAM_SOURCE, newsrc);
-//								}
-//							}
-//						} catch (URISyntaxException e) {
-//							// TODO wrong saved? user input?
-//						}
-//					}
-//				}
+				IOConfiguration saveconfig = main.getSaveConfiguration();
+				if(saveconfig == null)
+					return;
+				String exptargetfile = saveconfig.getProviderConfiguration().get(ExportProvider.PARAM_TARGET);
+				String exptarget = exptargetfile.substring(0, exptargetfile.lastIndexOf("/"));
+				String location = loc.substring(loc.indexOf("/")+1, loc.length());
+				
+				if(!location.equals(exptarget)){
+					List<IOConfiguration> configuration = main.getResources();
+					for(IOConfiguration providerconf : configuration){
+						Map<String, String> conf = providerconf.getProviderConfiguration();
+						String impsrc = conf.get(ImportProvider.PARAM_SOURCE);
+						try {
+							URI uri = new URI(impsrc);
+							File file = new File(uri);
+							if(!file.exists()){
+								String newsrc = FilePathUpdate.changePath(impsrc, location);
+								
+								URI newuri = new URI(newsrc);
+								File newfile = new File(newuri);
+								if(newfile.exists()){
+									conf.remove(ImportProvider.PARAM_SOURCE);
+									conf.put(ImportProvider.PARAM_SOURCE, newsrc);
+								}
+							}
+						} catch (URISyntaxException e) {
+							// TODO wrong saved? pop-up for new user input?
+						}
+					}
+				}
 
 			}
 		};

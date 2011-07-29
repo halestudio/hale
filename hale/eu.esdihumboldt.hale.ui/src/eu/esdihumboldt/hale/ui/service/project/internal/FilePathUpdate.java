@@ -45,9 +45,11 @@ public class FilePathUpdate {
 				for(int l = 0; l <= first; l++){
 					newsrc = newsrc + locarray[l] + "/";
 				}
+				// Logik hinzufügen!!!
 				for(int d = i+1; d < srcarray.length; d++){
 					newsrc = newsrc + srcarray[d] + "/";
 				}
+				return newsrc + data;
 			}
 		}
 		if(!changed){

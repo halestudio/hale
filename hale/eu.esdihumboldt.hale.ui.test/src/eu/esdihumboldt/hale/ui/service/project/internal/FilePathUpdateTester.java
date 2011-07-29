@@ -36,7 +36,7 @@ public class FilePathUpdateTester {
 	@Test
 	public void TestcaseD(){
 		String path = "c:/dadada/";
-		String file = "file:/d:/old/dududu/blab/dadada/hak.ex";
+		String file = "file:/c:/old/dududu/blab/dadada/hak.ex";
 		String correct = "file:/c:/dadada/hak.ex";
 		String newpath = FilePathUpdate.changePath(file, path);
 		assertEquals(correct, newpath);
@@ -45,8 +45,17 @@ public class FilePathUpdateTester {
 	@Test
 	public void TestcaseE(){
 		String path = "c:/dadada/dududu/blab/";
-		String file = "file:/d:/hale.test";
+		String file = "file:/d:/test/test/test/hale.test";
 		String correct = "file:/c:/dadada/dududu/blab/hale.test";
+		String newpath = FilePathUpdate.changePath(file, path);
+		assertEquals(correct, newpath);
+	}
+	
+	@Test
+	public void TestcaseF(){
+		String path = "C:/watercourse";
+		String file = "file:/C:/humboldt2/_testdata/watercourse/hale.test";
+		String correct = "file:/C:/watercourse/hale.test";
 		String newpath = FilePathUpdate.changePath(file, path);
 		assertEquals(correct, newpath);
 	}
