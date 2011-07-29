@@ -28,17 +28,15 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import eu.esdihumboldt.hale.schema.model.Definition;
 
 /**
- * Properties section with definition name
- * @author Simon Templer
+ * TODO Type description
+ * @author Patrick Lieb
  */
-public class DefinitionNameSection extends AbstractDefinitionSection {
+public class DefinitionLocationSection extends AbstractDefinitionSection{
 
-	private Text namespaceText;
+	private Text location;
 	
-	private Text localNameText;
-
 	private Definition<?> definition;
-
+	
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
 	 */
@@ -50,56 +48,38 @@ public class DefinitionNameSection extends AbstractDefinitionSection {
 				.createFlatFormComposite(parent);
 		FormData data;
 		
-		namespaceText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
-		namespaceText.setEditable(false);
+		location = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
+		location.setEditable(false);
 		data = new FormData();
 		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-		namespaceText.setLayoutData(data);
+		location.setLayoutData(data);
 
 		CLabel namespaceLabel = getWidgetFactory()
-				.createCLabel(composite, "Namespace:"); //$NON-NLS-1$
+				.createCLabel(composite, "Location:"); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(namespaceText,
+		data.right = new FormAttachment(location,
 				-ITabbedPropertyConstants.HSPACE);
-		data.top = new FormAttachment(namespaceText, 0, SWT.CENTER);
+		data.top = new FormAttachment(location, 0, SWT.CENTER);
 		namespaceLabel.setLayoutData(data);
-		
-		localNameText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
-		localNameText.setEditable(false);
-		data = new FormData();
-		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
-		data.right = new FormAttachment(100, 0);
-		data.top = new FormAttachment(namespaceText, ITabbedPropertyConstants.VSPACE);
-		localNameText.setLayoutData(data);
-
-		CLabel LocalNameLabel = getWidgetFactory()
-				.createCLabel(composite, "Local name:"); //$NON-NLS-1$
-		data = new FormData();
-		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(localNameText,
-				-ITabbedPropertyConstants.HSPACE);
-		data.top = new FormAttachment(localNameText, 0, SWT.CENTER);
-		LocalNameLabel.setLayoutData(data);
 	}
-
+	
 	/**
-	 * @see AbstractPropertySection#setInput(IWorkbenchPart, ISelection)
+	 * @see AbstractDefinitionSection#setInput(IWorkbenchPart, ISelection)
 	 */
 	@Override
 	public void setInput(Object input) {
 		Assert.isTrue(input instanceof Definition<?>);
 		this.definition = (Definition<?>) input;
 	}
-
+	
 	/**
 	 * @see AbstractPropertySection#refresh()
 	 */
 	@Override
 	public void refresh() {
-		namespaceText.setText(definition.getName().getNamespaceURI());
-		localNameText.setText(definition.getName().getLocalPart());
+		location.setText(definition.getLocation().toString());
 	}
 }

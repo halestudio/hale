@@ -26,6 +26,15 @@
             </input>
          </propertySection>
          <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionLocationSection"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.general.location"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.general">
+            <input
+                  type="eu.esdihumboldt.hale.schema.model.Definition">
+            </input>
+         </propertySection>
+         <propertySection
                class="eu.esdihumboldt.hale.ui.views.properties.definition.TypeDefinitionBindingSection"
                enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.binding"

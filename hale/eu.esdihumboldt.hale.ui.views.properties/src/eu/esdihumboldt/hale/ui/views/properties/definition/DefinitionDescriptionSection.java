@@ -13,15 +13,12 @@
 package eu.esdihumboldt.hale.ui.views.properties.definition;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
@@ -32,7 +29,7 @@ import eu.esdihumboldt.hale.schema.model.Definition;
  * Properties section with definition name
  * @author Simon Templer
  */
-public class DefinitionDescriptionSection extends AbstractPropertySection {
+public class DefinitionDescriptionSection extends AbstractDefinitionSection {
 
 	private Text descriptionText;
 	
@@ -79,13 +76,10 @@ public class DefinitionDescriptionSection extends AbstractPropertySection {
 	}
 
 	/**
-	 * @see AbstractPropertySection#setInput(IWorkbenchPart, ISelection)
+	 * @see AbstractDefinitionSection#setInput(Object input)
 	 */
 	@Override
-	public void setInput(IWorkbenchPart part, ISelection selection) {
-		super.setInput(part, selection);
-		Assert.isTrue(selection instanceof IStructuredSelection);
-		Object input = ((IStructuredSelection) selection).getFirstElement();
+	public void setInput(Object input) {
 		Assert.isTrue(input instanceof Definition<?>);
 		this.definition = (Definition<?>) input;
 	}
