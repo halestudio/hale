@@ -181,34 +181,35 @@ public class ProjectServiceImpl extends AbstractProjectService
 
 			// uses "user.dir" to get the current location and paths based on "/" in FilePathUpdate
 			private void updatePaths(Project main) {
-				IOConfiguration saveconfig = main.getSaveConfiguration();
-				String exptargetfile = saveconfig.getProviderConfiguration().get(ExportProvider.PARAM_TARGET);
-				String exptarget = exptargetfile.substring(0, exptargetfile.lastIndexOf("/"));
-				String location = System.getProperty("user.dir");
-				
-				if(!location.equals(exptarget)){
-					List<IOConfiguration> configuration = main.getResources();
-					for(IOConfiguration providerconf : configuration){
-						Map<String, String> conf = providerconf.getProviderConfiguration();
-						String impsrc = conf.get(ImportProvider.PARAM_SOURCE);
-						try {
-							URI uri = new URI(impsrc);
-							File file = new File(uri);
-							if(!file.exists()){
-								String newsrc = FilePathUpdate.changePath(impsrc, location);
-								
-								URI newuri = new URI(newsrc);
-								File newfile = new File(newuri);
-								if(newfile.exists()){
-									conf.remove(ImportProvider.PARAM_SOURCE);
-									conf.put(ImportProvider.PARAM_SOURCE, newsrc);
-								}
-							}
-						} catch (URISyntaxException e) {
-							// TODO wrong saved? user input?
-						}
-					}
-				}
+//				IOConfiguration saveconfig = main.getSaveConfiguration();
+//				System.out.println(ExportProvider.PARAM_TARGET);
+//				String exptargetfile = saveconfig.getProviderConfiguration().get(ExportProvider.PARAM_TARGET);
+//				String exptarget = exptargetfile.substring(0, exptargetfile.lastIndexOf("/"));
+//				String location = System.getProperty("user.dir");
+//				
+//				if(!location.equals(exptarget)){
+//					List<IOConfiguration> configuration = main.getResources();
+//					for(IOConfiguration providerconf : configuration){
+//						Map<String, String> conf = providerconf.getProviderConfiguration();
+//						String impsrc = conf.get(ImportProvider.PARAM_SOURCE);
+//						try {
+//							URI uri = new URI(impsrc);
+//							File file = new File(uri);
+//							if(!file.exists()){
+//								String newsrc = FilePathUpdate.changePath(impsrc, location);
+//								
+//								URI newuri = new URI(newsrc);
+//								File newfile = new File(newuri);
+//								if(newfile.exists()){
+//									conf.remove(ImportProvider.PARAM_SOURCE);
+//									conf.put(ImportProvider.PARAM_SOURCE, newsrc);
+//								}
+//							}
+//						} catch (URISyntaxException e) {
+//							// TODO wrong saved? user input?
+//						}
+//					}
+//				}
 
 			}
 		};
