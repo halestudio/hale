@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.align.transformation.function;
 import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multiset;
 
 import eu.esdihumboldt.hale.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
@@ -74,9 +75,16 @@ public interface EvaluationFunction<E extends TransformationEngine> extends Tran
 	public void setVariables(ListMultimap<String, PropertyValue> variables);
 	
 	/**
+	 * Set the expected result names
+	 * @param resultNames the names of the expected results
+	 */
+	public void setExpectedResult(Multiset<String> resultNames);
+	
+	/**
 	 * Get the {@link #execute(String, TransformationEngine, Map, TransformationLog)}ion results.
 	 * @return the execution results, result names are mapped to result values
+	 * @see #setExpectedResult(Multiset)
 	 */
-	public Map<String, Object> getResults();
+	public ListMultimap<String, Object> getResults();
 
 }
