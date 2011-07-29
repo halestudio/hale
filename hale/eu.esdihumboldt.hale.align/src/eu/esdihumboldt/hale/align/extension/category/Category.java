@@ -21,7 +21,7 @@ import net.jcip.annotations.Immutable;
  * @author Simon Templer
  */
 @Immutable
-public class Category implements Identifiable {
+public final class Category implements Identifiable {
 
 	private final String id;
 	private final String name;

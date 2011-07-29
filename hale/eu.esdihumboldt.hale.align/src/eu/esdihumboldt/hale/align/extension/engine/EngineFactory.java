@@ -10,21 +10,21 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.align.model.condition;
+package eu.esdihumboldt.hale.align.extension.engine;
 
-import eu.esdihumboldt.hale.align.model.Property;
+import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
+import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
 
 /**
- * Condition a {@link Property} may fulfill. Implementations may not hold any 
- * state apart from its configuration.
+ * Factory for {@link TransformationEngine}s
  * @author Simon Templer
- * @since 2.5
  */
-public interface PropertyCondition extends EntityCondition<Property> {
+public interface EngineFactory extends ExtensionObjectFactory<TransformationEngine> {
 
-	// concrete typed interface
-	
-	//TODO some possibility to process property values?
-	//e.g. for conversion - or should this be the responsibility of the function implementation?
+	/**
+	 * Get the engine description
+	 * @return the description
+	 */
+	public String getDescription();
 	
 }
