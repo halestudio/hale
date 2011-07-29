@@ -146,7 +146,12 @@
       </complexType>
    </element>
 
-   <element name="sourceTypes" type="string">
+   <element name="sourceTypes">
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="type"/>
+         </sequence>
+      </complexType>
    </element>
 
    <element name="sourceProperties">
@@ -157,7 +162,12 @@
       </complexType>
    </element>
 
-   <element name="targetTypes" type="string">
+   <element name="targetTypes">
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="type"/>
+         </sequence>
+      </complexType>
    </element>
 
    <element name="targetProperties">
@@ -173,6 +183,35 @@
          <choice minOccurs="0" maxOccurs="unbounded">
             <element ref="bindingCondition"/>
             <element ref="propertyCondition"/>
+         </choice>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  Name of the property as a parameter to the function
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="minOccurrence" type="string" use="default" value="0">
+            <annotation>
+               <documentation>
+                  The minimum occurrence of the property as parameter to the function, defaults to 0
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="maxOccurrence" type="string" use="default" value="1">
+            <annotation>
+               <documentation>
+                  The maximum occurrence of the property as parameter to the function, defaults to 1
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="type">
+      <complexType>
+         <choice minOccurs="0" maxOccurs="unbounded">
+            <element ref="typeCondition"/>
          </choice>
          <attribute name="name" type="string">
             <annotation>
@@ -247,6 +286,26 @@
       <annotation>
          <documentation>
             Custom property constraint
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.align.model.condition.PropertyCondition"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="typeCondition">
+      <annotation>
+         <documentation>
+            Custom type constraint
          </documentation>
       </annotation>
       <complexType>

@@ -77,7 +77,7 @@ public final class PropertyParameter extends AbstractParameter {
 			}
 		}
 		
-		return result ;
+		return result;
 	}
 
 	private static BindingCondition createBindingCondition(

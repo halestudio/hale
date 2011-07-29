@@ -12,9 +12,17 @@
 
 package eu.esdihumboldt.hale.align.extension.function;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.align.extension.function.internal.AbstractParameter;
+import eu.esdihumboldt.hale.align.model.condition.TypeCondition;
 
 /**
  * Represents a source or target type as parameter to a 
@@ -22,12 +30,52 @@ import eu.esdihumboldt.hale.align.extension.function.internal.AbstractParameter;
  * @author Simon Templer
  */
 public final class TypeParameter extends AbstractParameter {
+	
+	private static final ALogger log = ALoggerFactory.getLogger(TypeParameter.class);
+	
+	private final List<TypeCondition> conditions;
 
 	/**
 	 * @see AbstractParameter#AbstractParameter(IConfigurationElement)
 	 */
 	public TypeParameter(IConfigurationElement conf) {
 		super(conf);
+		
+		conditions = createConditions(conf);
+	}
+	
+	private static List<TypeCondition> createConditions(
+			IConfigurationElement conf) {
+		List<TypeCondition> result = new ArrayList<TypeCondition>();
+		
+		IConfigurationElement[] children = conf.getChildren();
+		if (children != null) {
+			for (IConfigurationElement child : children) {
+				String name = child.getName();
+				if (name.equals("typeCondition")) {
+					try {
+						TypeCondition condition = (TypeCondition) child.createExecutableExtension("class");
+						result.add(condition);
+					} catch (CoreException e) {
+						log.error("Error creating property condition from extension", e);
+					}
+				}
+				else {
+					// ignore
+//					log.error("Unrecognized property condition");
+				}
+			}
+		}
+		
+		return result;
+	}
+
+	/**
+	 * Get the property conditions
+	 * @return the property conditions
+	 */
+	public List<TypeCondition> getConditions() {
+		return Collections.unmodifiableList(conditions);
 	}
 	
 	//TODO conditions, properties?
