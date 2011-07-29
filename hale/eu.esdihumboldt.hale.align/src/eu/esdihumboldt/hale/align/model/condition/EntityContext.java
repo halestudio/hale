@@ -15,20 +15,14 @@ package eu.esdihumboldt.hale.align.model.condition;
 import eu.esdihumboldt.hale.align.model.Entity;
 
 /**
- * Condition an {@link Entity} may fulfill
- * @param <T> the entity type
- * 
+ * Different context types for an {@link Entity}
  * @author Simon Templer
- * @since 2.5 
  */
-public interface EntityCondition<T extends Entity> {
-
-	/**
-	 * Determines if the given entity matches the constraint
-	 * @param entity the entity
-	 * @param context the entity context
-	 * @return if the entity matches the constraint
-	 */
-	public boolean accept(T entity, EntityContext context);
+public enum EntityContext {
 	
+	/** Entity is a source entity  */
+	SOURCE,
+	/** Entity is a target entity */
+	TARGET
+
 }

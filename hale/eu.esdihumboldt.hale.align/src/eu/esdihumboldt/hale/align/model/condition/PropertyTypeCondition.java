@@ -38,13 +38,13 @@ public class PropertyTypeCondition implements PropertyCondition {
 	}
 
 	/**
-	 * @see EntityCondition#accept(Entity)
+	 * @see EntityCondition#accept(Entity, EntityContext)
 	 */
 	@Override
-	public boolean accept(Property entity) {
+	public boolean accept(Property entity, EntityContext context) {
 		TypeDefinition propertyType = entity.getDefinition().getDefinition().getPropertyType();
 		Type type = new DefaultType(new TypeEntityDefinition(propertyType));
-		return typeCondition.accept(type);
+		return typeCondition.accept(type, context);
 	}
 
 }
