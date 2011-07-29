@@ -6,6 +6,7 @@ Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.common.base;version="1.6.0",
  com.google.common.collect;version="1.6.0",
+ de.cs3d.util.eclipse.extension.simple,
  de.cs3d.util.logging,
  eu.esdihumboldt.hale.core.io.supplier,
  eu.esdihumboldt.hale.core.report,
