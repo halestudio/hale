@@ -14,6 +14,9 @@ package eu.esdihumboldt.hale.align.transformation.function;
 
 import java.util.Collection;
 
+import com.google.common.collect.ListMultimap;
+
+import eu.esdihumboldt.hale.align.model.Type;
 import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.align.transformation.service.PropertyTransformer;
@@ -38,5 +41,11 @@ public interface TypeTransformation<E extends TransformationEngine> extends Tran
 	 * @param propertyTransformer the property transformer
 	 */
 	public void setPropertyTransformer(PropertyTransformer propertyTransformer);
+	
+	/**
+	 * Set the target types
+	 * @param targetTypes the source properties
+	 */
+	public void setTarget(ListMultimap<String, ? extends Type> targetTypes);
 
 }

@@ -56,8 +56,34 @@ public class EvaluationPropertyTransformation<E extends TransformationEngine>
 	@Override
 	public void execute(String transformationIdentifier, E engine,
 			Map<String, String> executionParameters, TransformationLog log) {
-		// TODO Auto-generated method stub
 		//FIXME
+//		ListMultimap<String, ? extends Property> sourceProperties = getSourceProperties();
+//		
+//		for (Entry<String, ? extends Property> entry : sourceProperties.entries()) {
+//			Object[] values = 
+//			PropertyValue val = new PropertyValue(value, entry.getValue().getDefinition());
+//		}
+//		
+//		//XXX loop? when?
+//		
+//		// configure evaluator
+//		
+//		// set parameters
+//		evaluator.setParameters(getParameters());
+//		
+//		// set expected results
+//		evaluator.setExpectedResult(resultNames);
+//		
+//		// set variables
+//		evaluator.setVariables(variables);
+//		
+//		// execute evaluator
+//		evaluator.execute(transformationIdentifier, engine, executionParameters, log);
+//		
+//		// evaluate results
+//		ListMultimap<String, Object> results = evaluator.getResults();
+//		
+//		//XXX loop end?
 	}
 	
 }

@@ -51,7 +51,7 @@
 
    <element name="typeTransformation">
       <complexType>
-         <choice minOccurs="1" maxOccurs="unbounded">
+         <choice minOccurs="0" maxOccurs="unbounded">
             <element ref="executionParameter"/>
          </choice>
          <attribute name="engine" type="string" use="required">
@@ -96,7 +96,7 @@
 
    <element name="propertyTransformation">
       <complexType>
-         <choice minOccurs="1" maxOccurs="unbounded">
+         <choice minOccurs="0" maxOccurs="unbounded">
             <element ref="executionParameter"/>
          </choice>
          <attribute name="engine" type="string" use="required">
