@@ -51,5 +51,14 @@
          </targetProperties>
       </propertyFunction>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.align.engine">
+      <engine
+            class="eu.esdihumboldt.hale.align.transformation.engine.internal.NullTransformationEngine"
+            description="Transformation functions based complemtely on Java without need of a engine for execution"
+            id="eu.esdihumboldt.align.java"
+            name="Java transformation functions">
+      </engine>
+   </extension>
 
 </plugin>
