@@ -67,14 +67,15 @@
       <plugin id="com.springsource.org.jvnet.staxex"/>
       <plugin id="com.sun.xsom"/>
       <plugin id="com.vividsolutions.jts"/>
+      <plugin id="de.cs3d.ui.util.eclipse"/>
       <plugin id="de.cs3d.ui.util.logging.errorlog"/>
       <plugin id="de.cs3d.ui.util.logging.userstatus"/>
+      <plugin id="de.cs3d.util.eclipse"/>
       <plugin id="de.cs3d.util.logging"/>
       <plugin id="de.cs3d.util.logging.logback"/>
       <plugin id="de.cs3d.util.logging.logback.appender" fragment="true"/>
       <plugin id="de.cs3d.util.logging.logback.observer"/>
       <plugin id="de.fhg.igd.concurrency"/>
-      <plugin id="de.fhg.igd.eclipse.util"/>
       <plugin id="de.fhg.igd.osgi.util"/>
       <plugin id="edu.umd.cs.findbugs.annotations"/>
       <plugin id="eu.esdihumboldt.commons"/>
@@ -91,9 +92,9 @@
       <plugin id="eu.esdihumboldt.hale.core"/>
       <plugin id="eu.esdihumboldt.hale.core.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.csvexporter" fragment=""/>
-      <plugin id="eu.esdihumboldt.hale.gmlparser"/>
+      <plugin id="eu.esdihumboldt.hale.gmlparser" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.instance"/>
-      <plugin id="eu.esdihumboldt.hale.instanceprovider"/>
+      <plugin id="eu.esdihumboldt.hale.instanceprovider" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.io.gml"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.ui"/>
@@ -109,8 +110,8 @@
       <plugin id="eu.esdihumboldt.hale.orient.embedded.test"/>
       <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
-      <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.core"/>
-      <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.generic"/>
+      <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.core" fragment=""/>
+      <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.generic" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.schema"/>
       <plugin id="eu.esdihumboldt.hale.schemaprovider"/>
       <plugin id="eu.esdihumboldt.hale.ui"/>
@@ -127,8 +128,8 @@
       <plugin id="eu.esdihumboldt.hale.util"/>
       <plugin id="eu.esdihumboldt.specification"/>
       <plugin id="eu.esdihumboldt.transformer.cst"/>
-      <plugin id="eu.xsdi.mdl"/>
-      <plugin id="eu.xsdi.mdlui"/>
+      <plugin id="eu.xsdi.mdl" fragment=""/>
+      <plugin id="eu.xsdi.mdlui" fragment=""/>
       <plugin id="gnu.trove"/>
       <plugin id="javax.servlet"/>
       <plugin id="jcl.over.slf4j"/>
