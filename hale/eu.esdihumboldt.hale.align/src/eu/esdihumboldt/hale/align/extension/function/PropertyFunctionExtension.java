@@ -21,7 +21,7 @@ import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
  * @author Simon Templer
  */
 public class PropertyFunctionExtension extends
-		IdentifiableExtension<PropertyFunction> {
+		AbstractFunctionExtension<PropertyFunction> {
 
 	/**
 	 * Property function extension point
@@ -44,10 +44,10 @@ public class PropertyFunctionExtension extends
 	}
 
 	/**
-	 * @see IdentifiableExtension#create(String, IConfigurationElement)
+	 * @see AbstractFunctionExtension#doCreate(String, IConfigurationElement)
 	 */
 	@Override
-	protected PropertyFunction create(String elementId,
+	protected PropertyFunction doCreate(String elementId,
 			IConfigurationElement element) {
 		if (element.getName().equals("propertyFunction")) {
 			return new PropertyFunction(element);

@@ -14,7 +14,6 @@ package eu.esdihumboldt.hale.align.extension.function;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import eu.esdihumboldt.hale.align.extension.function.internal.AbstractParameter;
 import net.jcip.annotations.Immutable;
 
 /**

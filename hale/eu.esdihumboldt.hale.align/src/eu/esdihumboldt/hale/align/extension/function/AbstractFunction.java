@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.align.extension.function.internal;
+package eu.esdihumboldt.hale.align.extension.function;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -21,8 +21,6 @@ import net.jcip.annotations.Immutable;
 import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
-import eu.esdihumboldt.hale.align.extension.function.Function;
-import eu.esdihumboldt.hale.align.extension.function.FunctionParameter;
 
 /**
  * {@link IConfigurationElement} based function base class

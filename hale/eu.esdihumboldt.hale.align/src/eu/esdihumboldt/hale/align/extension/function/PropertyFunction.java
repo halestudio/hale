@@ -20,7 +20,6 @@ import net.jcip.annotations.Immutable;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import eu.esdihumboldt.hale.align.extension.function.internal.AbstractFunction;
 
 /**
  * Property function

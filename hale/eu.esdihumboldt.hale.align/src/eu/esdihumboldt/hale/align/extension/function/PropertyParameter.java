@@ -23,7 +23,6 @@ import de.cs3d.util.eclipse.extension.ExtensionUtil;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 
-import eu.esdihumboldt.hale.align.extension.function.internal.AbstractParameter;
 import eu.esdihumboldt.hale.align.model.condition.PropertyCondition;
 import eu.esdihumboldt.hale.align.model.condition.PropertyTypeCondition;
 import eu.esdihumboldt.hale.align.model.condition.impl.BindingCondition;

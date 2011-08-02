@@ -21,7 +21,7 @@ import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
  * @author Simon Templer
  */
 public class TypeFunctionExtension extends
-		IdentifiableExtension<TypeFunction> {
+		AbstractFunctionExtension<TypeFunction> {
 
 	/**
 	 * Property function extension point
@@ -44,10 +44,10 @@ public class TypeFunctionExtension extends
 	}
 
 	/**
-	 * @see IdentifiableExtension#create(String, IConfigurationElement)
+	 * @see AbstractFunctionExtension#doCreate(String, IConfigurationElement)
 	 */
 	@Override
-	protected TypeFunction create(String elementId,
+	protected TypeFunction doCreate(String elementId,
 			IConfigurationElement element) {
 		if (element.getName().equals("typeFunction")) {
 			return new TypeFunction(element);

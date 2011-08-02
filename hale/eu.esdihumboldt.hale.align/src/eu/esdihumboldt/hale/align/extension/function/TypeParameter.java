@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.align.extension.function.internal.AbstractParameter;
 import eu.esdihumboldt.hale.align.model.condition.TypeCondition;
 
 /**
