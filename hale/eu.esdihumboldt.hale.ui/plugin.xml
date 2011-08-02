@@ -146,5 +146,12 @@
             priority="-5">
       </source>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="eu.esdihumboldt.hale.ui"
+            name="HALE">
+      </category>
+   </extension>
 
 </plugin>

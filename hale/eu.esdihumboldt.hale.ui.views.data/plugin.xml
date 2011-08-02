@@ -4,6 +4,7 @@
    <extension
          point="org.eclipse.ui.views">
       <view
+            category="eu.esdihumboldt.hale.ui"
             class="eu.esdihumboldt.hale.ui.views.data.SourceDataView"
             icon="icons/table.gif"
             id="eu.esdihumboldt.hale.ui.views.data.source"
@@ -11,6 +12,7 @@
             restorable="true">
       </view>
       <view
+            category="eu.esdihumboldt.hale.ui"
             class="eu.esdihumboldt.hale.ui.views.data.TransformedDataView"
             icon="icons/table.gif"
             id="eu.esdihumboldt.hale.ui.views.data.transformed"

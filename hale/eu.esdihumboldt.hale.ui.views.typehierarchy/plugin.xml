@@ -5,10 +5,11 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            name="Type hierarchy"
-            icon="icons/class_hi.gif"
+            category="eu.esdihumboldt.hale.ui"
             class="eu.esdihumboldt.hale.ui.views.typehierarchy.TypeHierarchyView"
-            id="eu.esdihumboldt.hale.ui.views.typehierarchy">
+            icon="icons/class_hi.gif"
+            id="eu.esdihumboldt.hale.ui.views.typehierarchy"
+            name="Type hierarchy">
       </view>
    </extension>
 

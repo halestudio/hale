@@ -23,6 +23,7 @@
             restorable="true">
       </view>
       <view
+            category="org.eclipse.ui"
             class="eu.esdihumboldt.hale.ui.views.report.ReportList"
             icon="icons/ft_stylelist.gif"
             id="eu.esdihumboldt.hale.ui.views.report.ReportList"
