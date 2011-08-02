@@ -35,7 +35,6 @@ import org.opengis.feature.type.FeatureType;
 import eu.esdihumboldt.commons.goml.align.Entity;
 import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
 import eu.esdihumboldt.commons.goml.omwg.Property;
-import eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.model.schema.AttributeItem;
@@ -406,10 +405,10 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 		}
 		
 		if (!names.isEmpty()) {
-			if (names.contains(RenameFeatureFunction.class.getName())) {
-				return new RGB(150, 190, 120);
-			}
-			else {
+//			if (names.contains(RenameFeatureFunction.class.getName())) {
+//				return new RGB(150, 190, 120);
+//			}
+//			else {
 				if (onlyAugmentations) {
 					// augmented cell
 					return new RGB(184, 181, 220);
@@ -418,7 +417,7 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 					// default color
 					return new RGB(190, 220, 170);
 				}
-			}
+//			}
 		}
 		
 		return null;

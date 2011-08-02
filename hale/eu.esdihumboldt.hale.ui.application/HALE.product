@@ -36,10 +36,6 @@
       <plugin id="com.hp.hpl.jena"/>
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="com.onespatial.jrc.tns.hale.rifexport" fragment=""/>
-      <plugin id="com.onespatial.jrc.tns.jaxb.rifprd"/>
-      <plugin id="com.onespatial.jrc.tns.oml_to_rif" fragment=""/>
-      <plugin id="com.onespatial.jrc.tns.oml_to_rif.test" fragment=""/>
       <plugin id="com.orientechnologies.orient"/>
       <plugin id="com.springsource.com.sun.xml.bind"/>
       <plugin id="com.springsource.com.sun.xml.fastinfoset"/>
@@ -79,7 +75,6 @@
       <plugin id="de.fhg.igd.osgi.util"/>
       <plugin id="edu.umd.cs.findbugs.annotations"/>
       <plugin id="eu.esdihumboldt.commons"/>
-      <plugin id="eu.esdihumboldt.cst.corefunctions"/>
       <plugin id="eu.esdihumboldt.hale.align"/>
       <plugin id="eu.esdihumboldt.hale.cache"/>
       <plugin id="eu.esdihumboldt.hale.cache.test" fragment="true"/>
@@ -91,10 +86,7 @@
       <plugin id="eu.esdihumboldt.hale.common.convert"/>
       <plugin id="eu.esdihumboldt.hale.core"/>
       <plugin id="eu.esdihumboldt.hale.core.test" fragment="true"/>
-      <plugin id="eu.esdihumboldt.hale.csvexporter" fragment=""/>
-      <plugin id="eu.esdihumboldt.hale.gmlparser" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.instance"/>
-      <plugin id="eu.esdihumboldt.hale.instanceprovider" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.io.gml"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.ui"/>
@@ -105,13 +97,10 @@
       <plugin id="eu.esdihumboldt.hale.io.xsd"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.logback.config" fragment="true"/>
-      <plugin id="eu.esdihumboldt.hale.mapping" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.orient.embedded"/>
       <plugin id="eu.esdihumboldt.hale.orient.embedded.test"/>
       <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
-      <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.core" fragment=""/>
-      <plugin id="eu.esdihumboldt.hale.rcp.wizards.functions.generic" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.schema"/>
       <plugin id="eu.esdihumboldt.hale.schemaprovider"/>
       <plugin id="eu.esdihumboldt.hale.ui"/>
@@ -127,9 +116,6 @@
       <plugin id="eu.esdihumboldt.hale.userstatus.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.util"/>
       <plugin id="eu.esdihumboldt.specification"/>
-      <plugin id="eu.esdihumboldt.transformer.cst"/>
-      <plugin id="eu.xsdi.mdl" fragment=""/>
-      <plugin id="eu.xsdi.mdlui" fragment=""/>
       <plugin id="gnu.trove"/>
       <plugin id="javax.servlet"/>
       <plugin id="jcl.over.slf4j"/>
@@ -209,6 +195,7 @@
    <configurations>
       <plugin id="de.cs3d.ui.util.logging.errorlog" autoStart="true" startLevel="2" />
       <plugin id="de.cs3d.util.logging.logback" autoStart="true" startLevel="1" />
+      <plugin id="eu.esdihumboldt.hale.align" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.codelist.io.xml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.convert" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.core" autoStart="true" startLevel="0" />
@@ -218,7 +205,6 @@
       <plugin id="eu.esdihumboldt.hale.io.shp" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.xml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.xsd" autoStart="true" startLevel="0" />
-      <plugin id="eu.esdihumboldt.transformer.cst" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
       <plugin id="org.springframework.osgi.core" autoStart="true" startLevel="0" />
       <plugin id="org.springframework.osgi.extender" autoStart="true" startLevel="0" />

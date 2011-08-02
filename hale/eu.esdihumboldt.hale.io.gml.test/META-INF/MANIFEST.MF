@@ -7,7 +7,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.common.io;version="1.6.0",
  com.vividsolutions.jts.geom,
  de.cs3d.util.logging,
- eu.esdihumboldt.hale.gmlparser;resolution:=optional,
  eu.esdihumboldt.hale.instance.io,
  eu.esdihumboldt.hale.instance.model,
  eu.esdihumboldt.hale.io.xml.validator,
@@ -33,8 +32,6 @@ Import-Package: com.google.common.io;version="1.6.0",
  org.slf4j;version="1.5.11"
 Require-Bundle: eu.esdihumboldt.hale.io.gml;bundle-version="1.0.0",
  org.geotools;bundle-version="2.6.4",
- eu.esdihumboldt.cst.corefunctions;bundle-version="1.0.3",
- eu.esdihumboldt.transformer.cst;bundle-version="1.0.6",
  eu.esdihumboldt.commons;bundle-version="3.0.8",
  eu.esdihumboldt.hale.core;bundle-version="2.2.0",
  eu.esdihumboldt.hale.io.xml

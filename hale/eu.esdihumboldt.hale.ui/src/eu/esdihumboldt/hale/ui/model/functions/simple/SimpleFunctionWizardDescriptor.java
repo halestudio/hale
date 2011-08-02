@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -32,7 +31,6 @@ import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
 import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.commons.goml.rdf.Resource;
-import eu.esdihumboldt.cst.transformer.service.CstFunctionFactory;
 import eu.esdihumboldt.hale.ui.model.functions.AbstractFunctionWizardDescriptor;
 import eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo;
 import eu.esdihumboldt.hale.ui.model.functions.FunctionWizard;
@@ -274,16 +272,16 @@ public class SimpleFunctionWizardDescriptor extends
 		super(conf);
 		
 		String functionClass = conf.getAttribute("function"); //$NON-NLS-1$
-		Map<String, Class<? extends CstFunction>> functions = CstFunctionFactory.getInstance().getRegisteredFunctions();
-		Class<? extends CstFunction> function = functions.get(functionClass);
-		
-		if (function == null) {
+//		Map<String, Class<? extends CstFunction>> functions = CstFunctionFactory.getInstance().getRegisteredFunctions();
+//		Class<? extends CstFunction> function = functions.get(functionClass);
+//		
+//		if (function == null) {
 			throw new RuntimeException("Function " + functionClass + " not available in the CST"); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		
-		parameterCell = createFunction().getParameters();
-		
-		factory = new SimpleWizardFactory();
+//		}
+//		
+//		parameterCell = createFunction().getParameters();
+//		
+//		factory = new SimpleWizardFactory();
 	}
 	
 	/**
