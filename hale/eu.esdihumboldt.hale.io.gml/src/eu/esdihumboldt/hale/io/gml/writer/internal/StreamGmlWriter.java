@@ -24,8 +24,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLOutputFactory;
@@ -59,7 +59,6 @@ import eu.esdihumboldt.hale.core.io.report.IOReport;
 import eu.esdihumboldt.hale.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.instance.io.impl.AbstractInstanceWriter;
-import eu.esdihumboldt.hale.io.gml.internal.simpletype.SimpleTypeUtil;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.AbstractTypeMatcher;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.DefinitionPath;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.Descent;
@@ -641,7 +640,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 				writeSimpleTypeAttributes(property, attDef);
 				
 				// write value as content
-				writer.writeCharacters(SimpleTypeUtil.convertToXml(value, attDef.getAttributeType()));
+				writer.writeCharacters(value.toString()/*FIXME SimpleTypeUtil.convertToXml(value, attDef.getAttributeType())*/);
 			}
 			
 			writer.writeEndElement();

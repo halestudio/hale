@@ -26,9 +26,7 @@ import org.opengis.feature.type.Name;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-
 import eu.esdihumboldt.commons.tools.FeatureInspector;
-import eu.esdihumboldt.hale.io.gml.internal.simpletype.SimpleTypeUtil;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.PathElement;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
@@ -139,7 +137,7 @@ public abstract class GmlWriterUtil {
 			}
 		}
 		else {
-			writeAtt(writer, SimpleTypeUtil.convertToXml(value, attDef.getAttributeType()), attDef);
+			writeAtt(writer, value.toString() /*FIXME SimpleTypeUtil.convertToXml(value, attDef.getAttributeType())*/, attDef);
 		}
 	}
 
