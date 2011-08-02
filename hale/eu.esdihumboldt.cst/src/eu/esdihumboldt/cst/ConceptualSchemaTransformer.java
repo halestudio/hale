@@ -14,6 +14,8 @@ package eu.esdihumboldt.cst;
 
 import eu.esdihumboldt.hale.align.model.Alignment;
 import eu.esdihumboldt.hale.align.transformation.report.TransformationReport;
+import eu.esdihumboldt.hale.align.transformation.report.TransformationReporter;
+import eu.esdihumboldt.hale.align.transformation.report.impl.DefaultTransformationReporter;
 import eu.esdihumboldt.hale.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.instance.model.InstanceCollection;
@@ -30,8 +32,23 @@ public class ConceptualSchemaTransformer implements TransformationService {
 	@Override
 	public TransformationReport transform(Alignment alignment, InstanceCollection source,
 			InstanceSink target) {
+		TransformationReporter reporter = new DefaultTransformationReporter(
+				"Instance transformation", true) {
+
+					@Override
+					protected String getFailSummary() {
+						return "Transformation failed";
+					}
+
+					@Override
+					protected String getSuccessSummary() {
+						return "Transformation completed";
+					}
+			
+		};
 		// TODO Auto-generated method stub
-		return null;
+		reporter.setSuccess(false);
+		return reporter;
 	}
 
 }

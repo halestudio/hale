@@ -75,6 +75,8 @@
       <plugin id="de.fhg.igd.osgi.util"/>
       <plugin id="edu.umd.cs.findbugs.annotations"/>
       <plugin id="eu.esdihumboldt.commons"/>
+      <plugin id="eu.esdihumboldt.cst"/>
+      <plugin id="eu.esdihumboldt.cst.functions.core"/>
       <plugin id="eu.esdihumboldt.hale.align"/>
       <plugin id="eu.esdihumboldt.hale.cache"/>
       <plugin id="eu.esdihumboldt.hale.cache.test" fragment="true"/>
@@ -196,6 +198,7 @@
    <configurations>
       <plugin id="de.cs3d.ui.util.logging.errorlog" autoStart="true" startLevel="2" />
       <plugin id="de.cs3d.util.logging.logback" autoStart="true" startLevel="1" />
+      <plugin id="eu.esdihumboldt.cst" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.align" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.codelist.io.xml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.convert" autoStart="true" startLevel="0" />
