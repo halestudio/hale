@@ -15,14 +15,16 @@ package eu.esdihumboldt.hale.align.transformation.report.impl;
 import de.cs3d.util.logging.ALogger;
 import eu.esdihumboldt.hale.align.transformation.report.TransformationMessage;
 import eu.esdihumboldt.hale.align.transformation.report.TransformationReport;
+import eu.esdihumboldt.hale.align.transformation.report.TransformationReporter;
 import eu.esdihumboldt.hale.core.report.impl.DefaultReporter;
 
 /**
  * Reporter for transformation messages
  * @author Simon Templer
  */
-public abstract class TransformationReporter extends
-		DefaultReporter<TransformationMessage> implements TransformationReport {
+public abstract class DefaultTransformationReporter extends
+		DefaultReporter<TransformationMessage> implements TransformationReport,
+		TransformationReporter {
 
 	/**
 	 * Create an empty report. It is set to not successful by default. But you
@@ -32,7 +34,7 @@ public abstract class TransformationReporter extends
 	 * @param taskName the name of the task the report is related to 
 	 * @param doLog if added messages shall also be logged using {@link ALogger} 
 	 */
-	public TransformationReporter(String taskName, boolean doLog) {
+	public DefaultTransformationReporter(String taskName, boolean doLog) {
 		super(taskName, TransformationMessage.class, doLog);
 	}
 

@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.align.transformation.service;
 
 import eu.esdihumboldt.hale.align.model.Alignment;
+import eu.esdihumboldt.hale.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.instance.model.InstanceCollection;
 
 /**
@@ -26,8 +27,9 @@ public interface TransformationService {
 	 * @param alignment the alignment
 	 * @param source the source instances
 	 * @param target the transformed instance sink
+	 * @return the transformation report
 	 */
-	public void transform(Alignment alignment, InstanceCollection source,
+	public TransformationReport transform(Alignment alignment, InstanceCollection source,
 			InstanceSink target);
 
 }

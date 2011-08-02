@@ -13,6 +13,11 @@
 package eu.esdihumboldt.hale.ui.service.instance.internal;
 
 import de.cs3d.util.eclipse.TypeSafeListenerList;
+import de.fhg.igd.osgi.util.OsgiUtils;
+import eu.esdihumboldt.hale.align.model.Cell;
+import eu.esdihumboldt.hale.align.transformation.service.TransformationService;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
@@ -30,13 +35,19 @@ public abstract class AbstractInstanceService implements InstanceService {
 
 	private TypeSafeListenerList<InstanceServiceListener> listeners = new TypeSafeListenerList<InstanceServiceListener>();
 	
+	private final AlignmentService alignmentService;
+	
 	/**
 	 * Create an instance service.
 	 * @param projectService the project service. The instances will be cleared
 	 *   when the project is cleaned.
+	 * @param alignmentService the alignment service
 	 */
-	public AbstractInstanceService(ProjectService projectService) {
+	public AbstractInstanceService(ProjectService projectService,
+			AlignmentService alignmentService) {
 		super();
+		
+		this.alignmentService = alignmentService;
 		
 		projectService.addListener(new ProjectServiceAdapter() {
 			
@@ -46,6 +57,67 @@ public abstract class AbstractInstanceService implements InstanceService {
 			}
 			
 		});
+		
+		alignmentService.addListener(new AlignmentServiceAdapter() {
+
+			@Override
+			public void alignmentCleared() {
+				clearTransformedInstances();
+			}
+
+			@Override
+			public void cellRemoved(Cell cell) {
+				/*
+				 * TODO analyze cell if it is a type or property mapping
+				 * property mapping: retransform based on related type mappings
+				 * type mapping: removed transformed instances based on type
+				 *   mapping
+				 */
+				retransform();
+			}
+
+			@Override
+			public void cellsUpdated(Iterable<Cell> cells) {
+				/*
+				 * TODO only retransform with relevant cells (i.e. create a 
+				 * view on the alignment) 
+				 */
+				retransform();
+			}
+
+			@Override
+			public void cellsAdded(Iterable<Cell> cells) {
+				/*
+				 * TODO only retransform with relevant cells (i.e. create a 
+				 * view on the alignment) 
+				 */
+				retransform();
+			}
+		});
+	}
+
+	/**
+	 * Retransform all instances
+	 */
+	protected abstract void retransform();
+
+	/**
+	 * Clear the transformed instances
+	 */
+	protected abstract void clearTransformedInstances();
+
+	/**
+	 * @return the transformationService
+	 */
+	protected TransformationService getTransformationService() {
+		return OsgiUtils.getService(TransformationService.class);
+	}
+
+	/**
+	 * @return the alignmentService
+	 */
+	protected AlignmentService getAlignmentService() {
+		return alignmentService;
 	}
 
 	/**

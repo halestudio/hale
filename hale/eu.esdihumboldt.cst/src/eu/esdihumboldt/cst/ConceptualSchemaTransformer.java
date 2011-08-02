@@ -13,6 +13,7 @@
 package eu.esdihumboldt.cst;
 
 import eu.esdihumboldt.hale.align.model.Alignment;
+import eu.esdihumboldt.hale.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.instance.model.InstanceCollection;
@@ -27,10 +28,10 @@ public class ConceptualSchemaTransformer implements TransformationService {
 	 * @see TransformationService#transform(Alignment, InstanceCollection, InstanceSink)
 	 */
 	@Override
-	public void transform(Alignment alignment, InstanceCollection source,
+	public TransformationReport transform(Alignment alignment, InstanceCollection source,
 			InstanceSink target) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 }

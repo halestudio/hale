@@ -13,23 +13,32 @@
 package eu.esdihumboldt.hale.ui.service.instance.internal.orient;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.ui.PlatformUI;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+
+import eu.esdihumboldt.hale.align.transformation.report.TransformationReport;
+import eu.esdihumboldt.hale.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.internal.AbstractInstanceService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
@@ -40,18 +49,23 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
  */
 public class OrientInstanceService extends AbstractInstanceService {
 	
+	private static final ALogger log = ALoggerFactory.getLogger(OrientInstanceService.class);
+	
 	private static OrientInstanceService instance;
 	
 	/**
 	 * Get the service instance
 	 * @param schemaService the schema service
 	 * @param projectService the project service
+	 * @param alignmentService the alignment service 
 	 * @return the service instance
 	 */
 	public static final OrientInstanceService getInstance(
-			SchemaService schemaService, ProjectService projectService) {
+			SchemaService schemaService, ProjectService projectService, 
+			AlignmentService alignmentService) {
 		if (instance == null) {
-			instance = new OrientInstanceService(schemaService, projectService);
+			instance = new OrientInstanceService(schemaService, projectService,
+					alignmentService);
 		}
 		return instance;
 	}
@@ -65,9 +79,11 @@ public class OrientInstanceService extends AbstractInstanceService {
 	 * Default constructor 
 	 * @param schemaService the schema service
 	 * @param projectService the project service 
+	 * @param alignmentService the alignment service 
 	 */
-	private OrientInstanceService(SchemaService schemaService, ProjectService projectService) {
-		super(projectService);
+	private OrientInstanceService(SchemaService schemaService, 
+			ProjectService projectService, AlignmentService alignmentService) {
+		super(projectService, alignmentService);
 		
 		this.schemaService = schemaService;
 		
@@ -127,8 +143,6 @@ public class OrientInstanceService extends AbstractInstanceService {
 		notifyDatasetChanged(null);
 	}
 
-
-
 	/**
 	 * @see InstanceService#getReference(Instance, DataSet)
 	 */
@@ -167,6 +181,50 @@ public class OrientInstanceService extends AbstractInstanceService {
 		}
 		
 		return null;
+	}
+
+	/**
+	 * @see AbstractInstanceService#retransform()
+	 */
+	@Override
+	protected void retransform() {
+		TransformationService ts = getTransformationService();
+		if (ts == null) {
+			log.userError("No transformation service available");
+			return;
+		}
+		
+		transformed.clear();
+		
+		OrientInstanceSink sink = new OrientInstanceSink(transformed);
+		TransformationReport report;
+		try {
+			report = ts.transform(
+					getAlignmentService().getAlignment(), 
+					getInstances(DataSet.SOURCE), 
+					sink);
+			
+			// publish report
+			ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+			rs.addReport(report);
+		} finally {
+			try {
+				sink.close();
+			} catch (IOException e) {
+				// ignore
+			}
+		}
+		
+		notifyDatasetChanged(DataSet.TRANSFORMED);
+	}
+
+	/**
+	 * @see AbstractInstanceService#clearTransformedInstances()
+	 */
+	@Override
+	protected void clearTransformedInstances() {
+		transformed.clear();
+		notifyDatasetChanged(DataSet.TRANSFORMED);
 	}
 
 }

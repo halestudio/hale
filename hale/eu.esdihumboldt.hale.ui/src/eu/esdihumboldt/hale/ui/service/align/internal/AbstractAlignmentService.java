@@ -34,6 +34,7 @@ public abstract class AbstractAlignmentService implements
 	 * Adds a listener to the service
 	 * @param listener the listener to add
 	 */
+	@Override
 	public void addListener(AlignmentServiceListener listener) {
 		listeners.add(listener);
 	}
@@ -42,6 +43,7 @@ public abstract class AbstractAlignmentService implements
 	 * Removes a listener to the service
 	 * @param listener the listener to remove
 	 */
+	@Override
 	public void removeListener(AlignmentServiceListener listener) {
 		listeners.remove(listener);
 	}

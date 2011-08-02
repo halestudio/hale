@@ -59,5 +59,17 @@ public interface AlignmentService {
 	 * This method is required when one wants to start working on a new alignment.
 	 */
 	public void clean();
+	
+	/**
+	 * Adds a listener to the service
+	 * @param listener the listener to add
+	 */
+	public void addListener(AlignmentServiceListener listener);
+	
+	/**
+	 * Removes a listener to the service
+	 * @param listener the listener to remove
+	 */
+	public void removeListener(AlignmentServiceListener listener);
 
 }
