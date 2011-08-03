@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.views.report;
 
+import eu.esdihumboldt.hale.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.core.report.Report;
 
 /**
@@ -20,10 +21,10 @@ import eu.esdihumboldt.hale.core.report.Report;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ReportItem {
-	private String project;
+	private ProjectInfo project;
 	private Report report;
 	
-	public ReportItem(String project, Report report) {
+	public ReportItem(ProjectInfo project, Report report) {
 		this.setProject(project);
 		this.setReport(report);
 	}
@@ -31,14 +32,14 @@ public class ReportItem {
 	/**
 	 * @return the project
 	 */
-	public String getProject() {
+	public ProjectInfo getProject() {
 		return project;
 	}
 
 	/**
 	 * @param project the project to set
 	 */
-	public void setProject(String project) {
+	public void setProject(ProjectInfo project) {
 		this.project = project;
 	}
 
