@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.report;
+package eu.esdihumboldt.hale.ui.views.report.properties;
 
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
@@ -30,8 +30,7 @@ implements ITabbedPropertySheetPageContributor {
 	*/
 	@Override
 	public String getContributorId() {
-		return "eu.esdihumboldt.hale.ui.views.report.properties.definition";
-//		return getSite().getId();
+		return "eu.esdihumboldt.hale.ui.views.report.properties";
 	}
 	
 	/**

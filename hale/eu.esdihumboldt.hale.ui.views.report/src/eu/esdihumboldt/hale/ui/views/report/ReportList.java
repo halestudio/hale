@@ -45,13 +45,14 @@ import eu.esdihumboldt.hale.core.report.Report;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.report.ReportListener;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
+import eu.esdihumboldt.hale.ui.views.report.properties.ReportPropertiesViewPart;
 
 /**
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ReportList extends ViewPart implements ReportListener<Report<Message>, Message> {
+public class ReportList extends ReportPropertiesViewPart implements ReportListener<Report<Message>, Message> {
 
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.report.ReportList"; //$NON-NLS-1$
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
@@ -92,11 +93,11 @@ public class ReportList extends ViewPart implements ReportListener<Report<Messag
 		
 		// set label provider
 		_treeViewer.setLabelProvider(new ReportListLabelProvider());
-		_treeViewer.setContentProvider(new ReportListContentProvider());
-		_treeViewer.setInput("Test");
 		
-		// set selectionProvider
-		getSite().setSelectionProvider(_treeViewer); 
+		// set content provider
+		_treeViewer.setContentProvider(new ReportListContentProvider());
+		
+		getSite().setSelectionProvider(_treeViewer);
 	}
 
 	/**
@@ -130,6 +131,7 @@ public class ReportList extends ViewPart implements ReportListener<Report<Messag
 	/**
 	 * @see eu.esdihumboldt.hale.ui.service.report.ReportListener#getReportType()
 	 */
+	@Override
 	public Class getReportType() {
 		return Report.class;
 	}
@@ -137,6 +139,7 @@ public class ReportList extends ViewPart implements ReportListener<Report<Messag
 	/**
 	 * @see eu.esdihumboldt.hale.ui.service.report.ReportListener#getMessageType()
 	 */
+	@Override
 	public Class getMessageType() {
 		return Message.class;
 	}
@@ -144,32 +147,30 @@ public class ReportList extends ViewPart implements ReportListener<Report<Messag
 	/**
 	 * @see eu.esdihumboldt.hale.ui.service.report.ReportListener#reportAdded(eu.esdihumboldt.hale.core.report.Report)
 	 */
+	@Override
 	public void reportAdded(final Report<Message> report) {
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
 				try{
-					// create new ReportModel and set it as input
-//					viewer.setInput(new ReportModel(report));
 					
-					// add label to the combo box
-					// TODO maybe add the current project to the label?
-//					_reportCombo.add("["+report.getTimestamp()+"] "+report.getTaskName()+" -- "+report.getSummary());
-					
-					// select current item
-//					_reportCombo.select(_reportCombo.getItemCount()-1);
-					
-					// add report to internal list
-//					reports.add(report);
-					
-//					ProjectService proService = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
-					String projectname = "Project Name"; // proService.getProjectName(); // TODO replace static string with projectname
-//					_treeViewer.add(proService.getProjectName(), report.getTaskName());
-					_treeViewer.setInput(new ReportItem(projectname, report));
+					ProjectService proService = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+					String projectname = proService.getProjectName();
+					/*
+					 * TODO It may be that there's no related project!
+					 * e.g.: loading a project produces a Report but there's not project related at
+					 * this moment. Introducing an id or something similar may prevent this
+					 * and improves the handling of Reports (renaming the project or so).
+					 * 
+					 */
+					if (projectname != null) {
+						_treeViewer.add(proService.getProjectName(), report.getTaskName());
+						_treeViewer.setInput(new ReportItem(projectname, report));
+					}
 				} catch (NullPointerException e) {
 					// TODO remove this or add proper Exception handling
 					//System.err.println("NullPointer... "+report.getSummary());
-					e.printStackTrace();
+//					e.printStackTrace();
 				}
 			}
 		});
