@@ -126,6 +126,7 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 	@Override
 	public void setFocus() {
 		// Set the focus
+		_treeViewer.getControl().setFocus();
 	}
 
 	/**
