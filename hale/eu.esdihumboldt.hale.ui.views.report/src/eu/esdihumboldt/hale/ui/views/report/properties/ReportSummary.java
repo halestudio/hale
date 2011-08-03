@@ -35,11 +35,13 @@ import eu.esdihumboldt.hale.core.report.Report;
  */
 public class ReportSummary extends AbstractPropertySection {
 	
-	private Text successText, summaryText, timeText, linkText;
+	public Text successText, summaryText, timeText, linkText;
 	
-	private Link link;
+	public Report report;
 	
-	private Report report;
+	public Composite composite;
+	
+	public FormData data;
 	
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
@@ -47,8 +49,7 @@ public class ReportSummary extends AbstractPropertySection {
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		Composite composite = getWidgetFactory().createFlatFormComposite(parent);
-		FormData data;
+		composite = getWidgetFactory().createFlatFormComposite(parent);
 		
 		// success
 		successText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
@@ -102,32 +103,7 @@ public class ReportSummary extends AbstractPropertySection {
 		data.right = new FormAttachment(timeText,
 				-ITabbedPropertyConstants.HSPACE);
 		data.top = new FormAttachment(timeText, 0, SWT.CENTER);
-		timeLabel.setLayoutData(data);
-		
-		// link to the file if it's an IOReport
-		
-//		linkText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
-//		linkText.setEditable(false);
-		link = new Link(composite, SWT.NONE);
-		link.setText("<a href=\"google.de\">File</a>");
-		link.setVisible(false);
-		data = new FormData();
-		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
-		data.right = new FormAttachment(100, 0);
-		data.top = new FormAttachment(timeText, ITabbedPropertyConstants.VSPACE);
-//		linkText.setLayoutData(data);
-		link.setLayoutData(data);
-		
-		CLabel linkLabel = getWidgetFactory()
-				.createCLabel(composite, "Link:"); //$NON-NLS-1$
-		data = new FormData();
-		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(link,
-				-ITabbedPropertyConstants.HSPACE);
-		data.top = new FormAttachment(link, 0, SWT.CENTER);
-		linkLabel.setLayoutData(data);
-		
-		
+		timeLabel.setLayoutData(data);	
 	}
 	
 	/**
@@ -152,17 +128,8 @@ public class ReportSummary extends AbstractPropertySection {
 	 */
 	@Override
 	public void refresh() {
-//		System.err.println("refresh()");
 		successText.setText(report.isSuccess()+"");
 		summaryText.setText(report.getSummary());
 		timeText.setText(report.getTimestamp()+"");
-		
-		// add
-		if (report instanceof IOReport) {
-			link.setText("<a href=\""+((IOReport)report).getTarget().getLocation().toString()+"\">File</a>");
-			link.setVisible(true);
-		} else {
-			link.setVisible(false);
-		}
 	}
 }

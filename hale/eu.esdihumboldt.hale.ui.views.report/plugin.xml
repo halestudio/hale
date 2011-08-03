@@ -43,6 +43,15 @@
                   type="eu.esdihumboldt.hale.core.report.Report">
             </input>
          </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.report.properties.ReportIOSummary"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.ui.views.report.properties.summary.name"
+               tab="eu.esdihumboldt.hale.ui.views.report.properties.summary">
+            <input
+                  type="eu.esdihumboldt.hale.core.io.report.IOReport">
+            </input>
+         </propertySection>
       </propertySections>
    </extension>
    <extension
