@@ -12,34 +12,16 @@
 
 package eu.esdihumboldt.hale.ui.views.report;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.TreeColumnLayout;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.Version;
 
 import swing2swt.layout.BorderLayout;
 import eu.esdihumboldt.hale.core.io.project.ProjectInfo;
@@ -52,16 +34,23 @@ import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import eu.esdihumboldt.hale.ui.views.report.properties.ReportPropertiesViewPart;
 
 /**
+ * This is the Report view.
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ReportList extends ReportPropertiesViewPart implements ReportListener<Report<Message>, Message> {
 
+	/**
+	 * The ID for this plugin.
+	 */
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.report.ReportList"; //$NON-NLS-1$
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	private TreeViewer _treeViewer;
 
+	/**
+	 * Constructor.
+	 */
 	public ReportList() {
 		// get ReportService and add listener
 		ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
@@ -70,7 +59,7 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 
 	/**
 	 * Create contents of the view part.
-	 * @param parent
+	 * @param parent parent element
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
@@ -101,7 +90,11 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 		// set content provider
 		_treeViewer.setContentProvider(new ReportListContentProvider());
 		
+		// set selection provider
 		getSite().setSelectionProvider(_treeViewer);
+		
+		// feed a dummy object so old reports are restored if this widget was disposed
+		_treeViewer.setInput(new Object());
 	}
 
 	/**
@@ -114,6 +107,7 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 	/**
 	 * Initialize the toolbar.
 	 */
+	@SuppressWarnings("unused")
 	private void initializeToolBar() {
 		IToolBarManager toolbarManager = getViewSite().getActionBars()
 				.getToolBarManager();
@@ -122,6 +116,7 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 	/**
 	 * Initialize the menu.
 	 */
+	@SuppressWarnings("unused")
 	private void initializeMenu() {
 		IMenuManager menuManager = getViewSite().getActionBars()
 				.getMenuManager();
@@ -136,6 +131,7 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 	/**
 	 * @see eu.esdihumboldt.hale.ui.service.report.ReportListener#getReportType()
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Class getReportType() {
 		return Report.class;
@@ -144,6 +140,7 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 	/**
 	 * @see eu.esdihumboldt.hale.ui.service.report.ReportListener#getMessageType()
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Class getMessageType() {
 		return Message.class;
@@ -161,15 +158,8 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 					
 					ProjectService proService = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
 					ProjectInfo info = proService.getProjectInfo();
-					/*
-					 * TODO It may be that there's no related project!
-					 * e.g.: loading a project produces a Report but there's not project related at
-					 * this moment. Introducing an id or something similar may prevent this
-					 * and improves the handling of Reports (renaming the project or so).
-					 * 
-					 */
+					
 					if (info == null) {
-//						_treeViewer.add(info, report.getTaskName());
 						Project temp = new Project();
 						temp.setName("Unknown");
 						info = temp;
@@ -178,123 +168,8 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 					_treeViewer.setInput(new ReportItem(info, report));
 				} catch (NullPointerException e) {
 					// TODO remove this or add proper Exception handling
-					//System.err.println("NullPointer... "+report.getSummary());
-//					e.printStackTrace();
 				}
 			}
 		});
 	}
-	
-	public class ReportListLabelProvider implements ILabelProvider  {
-
-		private Map<ImageDescriptor, Image> imageCache = new HashMap<ImageDescriptor, Image>();
-		
-		/**
-		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
-		 */
-		@Override
-		public void addListener(ILabelProviderListener listener) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		/**
-		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-		 */
-		@Override
-		public void dispose() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		/**
-		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object, java.lang.String)
-		 */
-		@Override
-		public boolean isLabelProperty(Object element, String property) {
-			//System.err.println("LabelProvider.isLabelProperty(): ");
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		/**
-		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
-		 */
-		@Override
-		public void removeListener(ILabelProviderListener listener) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		/**
-		 * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
-		 */
-		@Override
-		public Image getImage(Object element) {
-			//System.err.println("LabelProvider.getImage(): "+element.getClass());
-			
-			if (element instanceof String) {
-				return null;
-			}
-			else if (element instanceof Report) {
-				// get the right image
-				Report report = (Report) element;
-				
-				String img = "icons/signed_yes.gif";
-				if (report.getWarnings().size() > 0 && report.getErrors().size() > 0) {
-					img = "icons/errorwarning_tab.gif";
-				} else if (report.getErrors().size() > 0) {
-					img = "icons/error.gif";
-				} else if (report.getWarnings().size() > 0) {
-					img = "icons/warning.gif";
-				}
-				
-				ImageDescriptor descriptor = null;
-				
-//				descriptor = ImageDescriptor.createFromURL(
-//						FileLocator.find(Platform.getBundle(ReportList.ID), new Path("icons/ft_stylelist.gif"), null)
-//				);
-				
-				// TODO Platform.getBundle(ReportList.ID) does not work so here is a static plugin path!
-				descriptor = AbstractUIPlugin.imageDescriptorFromPlugin("eu.esdihumboldt.hale.ui.views.report", img);
-				if (descriptor == null) {
-					return null;
-				}
-				
-				Image image = imageCache.get(descriptor);
-				if (image == null) {
-					image = descriptor.createImage();
-					imageCache.put(descriptor, image);
-				}
-				return image;
-			}
-			return null;
-		}
-
-		/**
-		 * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
-		 */
-		@Override
-		public String getText(Object element) {
-			//System.err.println("LabelProvider.getText(): "+element.getClass());
-			if (element instanceof String) {
-				return (String)element;
-			}
-			else if (element instanceof Report) {
-				return ((Report) element).getTaskName();
-			}
-			else if (element instanceof Project) {
-				String title = ((ProjectInfo) element).getName();
-				if (title == null) {
-					title = "undefined";
-				}
-				return title;
-			}
-			
-			
-			return "Unhandled type";
-		}
-	}
-	
-
 }

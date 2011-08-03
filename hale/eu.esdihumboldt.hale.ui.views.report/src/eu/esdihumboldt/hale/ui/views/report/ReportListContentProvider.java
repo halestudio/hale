@@ -13,7 +13,7 @@
 package eu.esdihumboldt.hale.ui.views.report;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,41 +24,43 @@ import eu.esdihumboldt.hale.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.core.report.Report;
 
 /**
+ * ContentProvider for {@link ReportList}.
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ReportListContentProvider implements ITreeContentProvider {
 
-	public Map<ProjectInfo, List<Report>> data = new HashMap<ProjectInfo, List<Report>>();
+	/**
+	 * Contains all projects with related data.
+	 */
+	@SuppressWarnings("rawtypes")
+	public static Map<ProjectInfo, List<Report>> data = new LinkedHashMap<ProjectInfo, List<Report>>();
 	
 	/**
 	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
 	 */
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-		
+		// do nothing
 	}
 
 	/**
 	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		if (newInput instanceof ReportItem) {
 			ReportItem item = (ReportItem) newInput;
 			ProjectInfo project = item.getProject();
 			ArrayList<Report> reports;
-			int id = project.hashCode();
-			
-			//System.err.println("ReportListContentProvider.inputChanged() "+project);
 			
 			// check if there's already a list
 			if (data.get(project) == null) {
 				reports = new ArrayList<Report>();
 			} else {
-				reports = (ArrayList<Report>) this.data.get(project);
+				reports = (ArrayList<Report>) data.get(project);
 			}
 			
 			// add the new report
@@ -79,21 +81,17 @@ public class ReportListContentProvider implements ITreeContentProvider {
 	/**
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		List<Report> reports = this.data.get(parentElement);
+		List<Report> reports = data.get(parentElement);
 		
+		// no reports?
 		if (reports.size() == 0) {
 			return null;
 		}
 		
-		
-		Object[] ret = new Object[reports.size()];
-		for(int i = 0; i < reports.size(); i++) {
-			ret[i] = reports.get(i);
-		}
-		
-		return ret;
+		return reports.toArray();
 	}
 
 	/**
@@ -101,14 +99,13 @@ public class ReportListContentProvider implements ITreeContentProvider {
 	 */
 	@Override
 	public Object getParent(Object element) {
-		//System.err.println("ReportListContentProvider.getParent(): Implement me!");
-		// TODO Auto-generated method stub
-		return "";
+		return null;
 	}
 
 	/**
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean hasChildren(Object element) {
 		if (element instanceof Report) {
@@ -116,7 +113,7 @@ public class ReportListContentProvider implements ITreeContentProvider {
 			return false;
 		}
 			
-		List<Report> list = this.data.get(element);
+		List<Report> list = data.get(element);
 		if (list != null && list.size() > 0) {
 			return true;
 		}

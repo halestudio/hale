@@ -21,10 +21,24 @@ import eu.esdihumboldt.hale.core.report.Report;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ReportItem {
+	/**
+	 * Contains the {@link ProjectInfo}.
+	 */
 	private ProjectInfo project;
+	
+	/**
+	 * Contains the related {@link Report}.
+	 */
+	@SuppressWarnings("rawtypes")
 	private Report report;
 	
-	public ReportItem(ProjectInfo project, Report report) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param project the project
+	 * @param report the realted Report
+	 */
+	public ReportItem(ProjectInfo project, Report<?> report) {
 		this.setProject(project);
 		this.setReport(report);
 	}
@@ -53,7 +67,7 @@ public class ReportItem {
 	/**
 	 * @param report the report to set
 	 */
-	public void setReport(Report report) {
+	public void setReport(Report<?> report) {
 		this.report = report;
 	}
 }
