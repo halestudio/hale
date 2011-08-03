@@ -13,16 +13,21 @@
 package eu.esdihumboldt.hale.ui.views.report.properties;
 
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+
+import eu.esdihumboldt.hale.core.io.report.IOReport;
+import eu.esdihumboldt.hale.core.report.Report;
 
 /**
  * @author Andreas Burchert
@@ -30,9 +35,11 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  */
 public class ReportSummary extends AbstractPropertySection {
 	
-	private Text namespaceText;
+	private Text successText, summaryText, timeText, linkText;
 	
-	private Text localNameText;
+	private Link link;
+	
+	private Report report;
 	
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
@@ -43,39 +50,84 @@ public class ReportSummary extends AbstractPropertySection {
 		Composite composite = getWidgetFactory().createFlatFormComposite(parent);
 		FormData data;
 		
-		namespaceText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
-		namespaceText.setEditable(false);
+		// success
+		successText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
+		successText.setEditable(false);
 		data = new FormData();
 		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-		namespaceText.setLayoutData(data);
-
-		CLabel namespaceLabel = getWidgetFactory()
-				.createCLabel(composite, "Namespace:"); //$NON-NLS-1$
+		successText.setLayoutData(data);
+		
+		CLabel successLabel = getWidgetFactory()
+				.createCLabel(composite, "Success:"); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(namespaceText,
+		data.right = new FormAttachment(successText,
 				-ITabbedPropertyConstants.HSPACE);
-		data.top = new FormAttachment(namespaceText, 0, SWT.CENTER);
-		namespaceLabel.setLayoutData(data);
+		data.top = new FormAttachment(successText, 0, SWT.CENTER);
+		successLabel.setLayoutData(data);
 		
-		localNameText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
-		localNameText.setEditable(false);
+		// summary
+		summaryText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
+		summaryText.setEditable(false);
 		data = new FormData();
 		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
 		data.right = new FormAttachment(100, 0);
-		data.top = new FormAttachment(namespaceText, ITabbedPropertyConstants.VSPACE);
-		localNameText.setLayoutData(data);
-
-		CLabel LocalNameLabel = getWidgetFactory()
-				.createCLabel(composite, "Local name:"); //$NON-NLS-1$
+		data.top = new FormAttachment(successText, ITabbedPropertyConstants.VSPACE);
+		summaryText.setLayoutData(data);
+		
+		CLabel summaryLabe = getWidgetFactory()
+				.createCLabel(composite, "Summary:"); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(localNameText,
+		data.right = new FormAttachment(summaryText,
 				-ITabbedPropertyConstants.HSPACE);
-		data.top = new FormAttachment(localNameText, 0, SWT.CENTER);
-		LocalNameLabel.setLayoutData(data);
+		data.top = new FormAttachment(summaryText, 0, SWT.CENTER);
+		summaryLabe.setLayoutData(data);
+		
+		// timestamp and time related stuff
+		timeText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
+		timeText.setEditable(false);
+		data = new FormData();
+		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
+		data.right = new FormAttachment(100, 0);
+		data.top = new FormAttachment(summaryText, ITabbedPropertyConstants.VSPACE);
+		timeText.setLayoutData(data);
+		
+		CLabel timeLabel = getWidgetFactory()
+				.createCLabel(composite, "Time:"); //$NON-NLS-1$
+		data = new FormData();
+		data.left = new FormAttachment(0, 0);
+		data.right = new FormAttachment(timeText,
+				-ITabbedPropertyConstants.HSPACE);
+		data.top = new FormAttachment(timeText, 0, SWT.CENTER);
+		timeLabel.setLayoutData(data);
+		
+		// link to the file if it's an IOReport
+		
+//		linkText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
+//		linkText.setEditable(false);
+		link = new Link(composite, SWT.NONE);
+		link.setText("<a href=\"google.de\">File</a>");
+		link.setVisible(false);
+		data = new FormData();
+		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
+		data.right = new FormAttachment(100, 0);
+		data.top = new FormAttachment(timeText, ITabbedPropertyConstants.VSPACE);
+//		linkText.setLayoutData(data);
+		link.setLayoutData(data);
+		
+		CLabel linkLabel = getWidgetFactory()
+				.createCLabel(composite, "Link:"); //$NON-NLS-1$
+		data = new FormData();
+		data.left = new FormAttachment(0, 0);
+		data.right = new FormAttachment(link,
+				-ITabbedPropertyConstants.HSPACE);
+		data.top = new FormAttachment(link, 0, SWT.CENTER);
+		linkLabel.setLayoutData(data);
+		
+		
 	}
 	
 	/**
@@ -83,7 +135,16 @@ public class ReportSummary extends AbstractPropertySection {
 	 */
 	@Override
 	public void setInput(IWorkbenchPart part, ISelection selection) {
-		System.err.println("setInput()");
+		Object report = null;
+		if (selection instanceof IStructuredSelection) {
+			// overwrite element with first element from selection
+			report = ((IStructuredSelection) selection).getFirstElement();
+		}
+		
+		// set new report
+		if (report instanceof Report) {
+			this.report = (Report) report;
+		}
 	}
 	
 	/**
@@ -91,6 +152,17 @@ public class ReportSummary extends AbstractPropertySection {
 	 */
 	@Override
 	public void refresh() {
-		System.err.println("refresh()");
+//		System.err.println("refresh()");
+		successText.setText(report.isSuccess()+"");
+		summaryText.setText(report.getSummary());
+		timeText.setText(report.getTimestamp()+"");
+		
+		// add
+		if (report instanceof IOReport) {
+			link.setText("<a href=\""+((IOReport)report).getTarget().getLocation().toString()+"\">File</a>");
+			link.setVisible(true);
+		} else {
+			link.setVisible(false);
+		}
 	}
 }
