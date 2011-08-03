@@ -30,8 +30,7 @@ import eu.esdihumboldt.hale.core.report.Report;
  */
 public class ReportListContentProvider implements ITreeContentProvider {
 
-	public static Map<Integer, List<Report>> data = new HashMap<Integer, List<Report>>();
-	public static Map<Integer, ProjectInfo> projectData = new HashMap<Integer, ProjectInfo>();
+	public Map<ProjectInfo, List<Report>> data = new HashMap<ProjectInfo, List<Report>>();
 	
 	/**
 	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
@@ -48,22 +47,23 @@ public class ReportListContentProvider implements ITreeContentProvider {
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		if (newInput instanceof ReportItem) {
-			ProjectInfo project = ((ReportItem) newInput).getProject();
+			ReportItem item = (ReportItem) newInput;
+			ProjectInfo project = item.getProject();
 			ArrayList<Report> reports;
+			int id = project.hashCode();
 			
 			//System.err.println("ReportListContentProvider.inputChanged() "+project);
 			
 			// check if there's already a list
-			if (this.data.get(project.hashCode()) == null) {
+			if (data.get(project) == null) {
 				reports = new ArrayList<Report>();
 			} else {
 				reports = (ArrayList<Report>) this.data.get(project);
 			}
 			
 			// add the new report
-			reports.add(((ReportItem) newInput).getReport());
-			data.put(project.hashCode(), reports);
-			projectData.put(project.hashCode(), project);
+			reports.add(item.getReport());
+			data.put(project, reports);
 		}
 	}
 
@@ -72,21 +72,8 @@ public class ReportListContentProvider implements ITreeContentProvider {
 	 */
 	@Override
 	public Object[] getElements(Object inputElement) {
-		/*
-		 * TODO recheck this function!
-		 */
-		//System.err.println("getElements: "+inputElement);
 		// display the listing of projects
-		
-//		Object[] keys = data.keySet().toArray();
-		Object[] keys = projectData.values().toArray();
-//		projectData.values().toArray()
-		
-		for(int i = 0; i < keys.length; i++) {
-			keys[i] = ((ProjectInfo) keys[i]).getName()+"";
-		}
-		
-		return keys;
+		return data.keySet().toArray();
 	}
 
 	/**
@@ -124,15 +111,18 @@ public class ReportListContentProvider implements ITreeContentProvider {
 	 */
 	@Override
 	public boolean hasChildren(Object element) {
-		/*
-		 * We get the displayed string which makes it hard to get the related ID.
-		 */
+		if (element instanceof Report) {
+			// assume that Reports do not have any childs!
+			return false;
+		}
+			
 		List<Report> list = this.data.get(element);
 		if (list != null && list.size() > 0) {
 			return true;
 		}
 
 		return false;
+		
 	}
 
 }

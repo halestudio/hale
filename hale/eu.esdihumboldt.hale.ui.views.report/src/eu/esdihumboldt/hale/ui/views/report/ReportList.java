@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.ui.views.report;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,9 +39,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.Version;
 
 import swing2swt.layout.BorderLayout;
 import eu.esdihumboldt.hale.core.io.project.ProjectInfo;
+import eu.esdihumboldt.hale.core.io.project.model.Project;
 import eu.esdihumboldt.hale.core.report.Message;
 import eu.esdihumboldt.hale.core.report.Report;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
@@ -165,10 +168,14 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 					 * and improves the handling of Reports (renaming the project or so).
 					 * 
 					 */
-					if (info != null) {
+					if (info == null) {
 //						_treeViewer.add(info, report.getTaskName());
-						_treeViewer.setInput(new ReportItem(info, report));
+						Project temp = new Project();
+						temp.setName("Unknown");
+						info = temp;
 					}
+					
+					_treeViewer.setInput(new ReportItem(info, report));
 				} catch (NullPointerException e) {
 					// TODO remove this or add proper Exception handling
 					//System.err.println("NullPointer... "+report.getSummary());
@@ -276,14 +283,12 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 			else if (element instanceof Report) {
 				return ((Report) element).getTaskName();
 			}
-			else if (element instanceof Integer) {
-				ProjectInfo info = ReportListContentProvider.projectData.get(element);
-				String ret = info.getName();
-				
-				if (ret == null) {
-					ret = "";
+			else if (element instanceof Project) {
+				String title = ((ProjectInfo) element).getName();
+				if (title == null) {
+					title = "undefined";
 				}
-				return info.getName();
+				return title;
 			}
 			
 			

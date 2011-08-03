@@ -5,6 +5,7 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.report;singleton:=true
 Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: eu.esdihumboldt.hale.core.io.project,
+ eu.esdihumboldt.hale.core.io.project.model,
  eu.esdihumboldt.hale.core.io.report,
  eu.esdihumboldt.hale.core.io.supplier,
  eu.esdihumboldt.hale.core.report,
