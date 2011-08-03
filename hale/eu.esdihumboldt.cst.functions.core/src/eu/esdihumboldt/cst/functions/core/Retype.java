@@ -15,6 +15,8 @@ package eu.esdihumboldt.cst.functions.core;
 import java.util.Collections;
 import java.util.Map;
 
+import net.jcip.annotations.Immutable;
+
 import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.align.transformation.function.TransformationFunction;
 import eu.esdihumboldt.hale.align.transformation.function.impl.AbstractSingleTypeTransformation;
@@ -26,6 +28,7 @@ import eu.esdihumboldt.hale.schema.model.TypeDefinition;
  * Simple 1:1 retype
  * @author Simon Templer
  */
+@Immutable
 public class Retype extends AbstractSingleTypeTransformation<TransformationEngine> {
 
 	/**

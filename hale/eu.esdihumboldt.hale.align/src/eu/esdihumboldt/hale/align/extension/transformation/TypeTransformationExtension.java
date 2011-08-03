@@ -22,7 +22,23 @@ import eu.esdihumboldt.hale.align.transformation.function.TypeTransformation;
  * @author Simon Templer
  */
 public class TypeTransformationExtension
-		extends AbstractExtension<TypeTransformation<?>, TypeTransformationFactory> {
+		extends AbstractTransformationExtension<TypeTransformation<?>, TypeTransformationFactory> {
+	
+	/**
+	 * Factory for {@link TypeTransformation}s
+	 */
+	public static class TypeTransformationConfiguration extends
+			AbstractTransformationFactory<TypeTransformation<?>> implements
+			TypeTransformationFactory {
+
+		/**
+		 * @see AbstractTransformationFactory#AbstractTransformationFactory(IConfigurationElement)
+		 */
+		protected TypeTransformationConfiguration(IConfigurationElement conf) {
+			super(conf);
+		}
+
+	}
 
 	private static final String EXTENSION_ID = "eu.esdihumboldt.hale.align.transformation";
 
@@ -39,7 +55,10 @@ public class TypeTransformationExtension
 	@Override
 	protected TypeTransformationFactory createFactory(
 			IConfigurationElement conf) throws Exception {
-		// TODO Auto-generated method stub
+		if (conf.getName().equals("typeTransformation")) {
+			return new TypeTransformationConfiguration(conf);
+		}
+		
 		return null;
 	}
 

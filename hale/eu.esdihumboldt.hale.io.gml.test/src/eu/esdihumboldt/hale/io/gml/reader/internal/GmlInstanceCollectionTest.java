@@ -130,7 +130,7 @@ public class GmlInstanceCollectionTest {
 		// only one object
 		assertFalse(it.hasNext());
 		
-		it.dispose();
+		it.close();
 	}
 	
 	/**
@@ -172,7 +172,7 @@ public class GmlInstanceCollectionTest {
 		// only one object
 		assertFalse(it.hasNext());
 				
-		it.dispose();
+		it.close();
 	}
 	
 	/**
@@ -204,7 +204,7 @@ public class GmlInstanceCollectionTest {
 		// only one object
 		assertFalse(it.hasNext());
 				
-		it.dispose();
+		it.close();
 	}
 	
 	/**
@@ -299,7 +299,7 @@ public class GmlInstanceCollectionTest {
 		// only one instance should be present
 		assertFalse(it.hasNext());
 		
-		it.dispose();
+		it.close();
 	}
 	
 	/**
@@ -329,7 +329,7 @@ public class GmlInstanceCollectionTest {
 		// only one instance should be present
 		assertFalse(it.hasNext());
 		
-		it.dispose();
+		it.close();
 	}
 
 	private GmlInstanceCollection loadInstances(URI schemaLocation, URI xmlLocation, 

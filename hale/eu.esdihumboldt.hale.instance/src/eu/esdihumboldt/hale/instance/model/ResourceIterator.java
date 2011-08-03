@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.instance.model;
 
+import java.io.Closeable;
 import java.util.Iterator;
 
 /**
@@ -21,12 +22,13 @@ import java.util.Iterator;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public interface ResourceIterator<T> extends Iterator<T> {
+public interface ResourceIterator<T> extends Iterator<T>, Closeable {
 
 	/**
 	 * Dispose the iterator. After calling this method {@link #next()} may not
 	 * be called.
 	 */
-	public void dispose();
+	@Override
+	public void close();
 	
 }

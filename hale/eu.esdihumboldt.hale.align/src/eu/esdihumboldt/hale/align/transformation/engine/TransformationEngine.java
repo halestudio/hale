@@ -20,6 +20,14 @@ import eu.esdihumboldt.hale.align.transformation.function.TransformationFunction
  */
 public interface TransformationEngine {
 
-	// marker interface
+	/**
+	 * Setup the transformation engine
+	 */
+	public void setup();
+	
+	/**
+	 * Dispose the transformation engine
+	 */
+	public void dispose();
 	
 }

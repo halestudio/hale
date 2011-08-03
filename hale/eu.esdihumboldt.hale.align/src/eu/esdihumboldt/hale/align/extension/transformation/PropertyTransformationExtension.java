@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
 import de.cs3d.util.eclipse.extension.AbstractExtension;
-import eu.esdihumboldt.hale.align.extension.transformation.internal.AbstractTransformationFactory;
 import eu.esdihumboldt.hale.align.transformation.function.EvaluationFunction;
 import eu.esdihumboldt.hale.align.transformation.function.PropertyTransformation;
 import eu.esdihumboldt.hale.align.transformation.function.impl.EvaluationPropertyTransformation;
@@ -26,7 +25,7 @@ import eu.esdihumboldt.hale.align.transformation.function.impl.EvaluationPropert
  * @author Simon Templer
  */
 public class PropertyTransformationExtension
-		extends AbstractExtension<PropertyTransformation<?>, PropertyTransformationFactory> {
+		extends AbstractTransformationExtension<PropertyTransformation<?>, PropertyTransformationFactory> {
 
 	/**
 	 * Factory for {@link PropertyTransformation}s that are defined directly

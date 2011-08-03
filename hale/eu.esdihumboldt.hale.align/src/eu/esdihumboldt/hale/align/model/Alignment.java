@@ -28,6 +28,12 @@ public interface Alignment {
 	
 	//TODO get cells by involved types?!
 	
+	/**
+	 * Get the cells representing a mapping between types
+	 * @return the type cells
+	 */
+	public Collection<? extends Cell> getTypeCells();
+	
 	// getTypeCells(TypeEntityDefinition)
 	
 	// getTypeCells(TypeEntityDefinition, TypeEntityDefinition)

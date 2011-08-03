@@ -136,10 +136,10 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 		}
 
 		/**
-		 * @see ResourceIterator#dispose()
+		 * @see ResourceIterator#close()
 		 */
 		@Override
-		public void dispose() {
+		public void close() {
 			if (ref != null) {
 				// connection is closed in DatabaseHandle
 				ref.dispose(false);

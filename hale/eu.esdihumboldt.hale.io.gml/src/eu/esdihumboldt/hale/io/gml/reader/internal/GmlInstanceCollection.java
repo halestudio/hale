@@ -263,10 +263,10 @@ public class GmlInstanceCollection implements InstanceCollection {
 		}
 
 		/**
-		 * @see ResourceIterator#dispose()
+		 * @see ResourceIterator#close()
 		 */
 		@Override
-		public synchronized void dispose() {
+		public synchronized void close() {
 			try {
 				reader.close();
 			} catch (XMLStreamException e) {
@@ -339,7 +339,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 			try {
 				empty = !it.hasNext();
 			} finally {
-				it.dispose();
+				it.close();
 			}
 			
 			emptyInitialized = true;

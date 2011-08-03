@@ -59,12 +59,12 @@ public class ResourceIteratorAdapter<T> implements ResourceIterator<T> {
 	}
 
 	/**
-	 * @see ResourceIterator#dispose()
+	 * @see ResourceIterator#close()
 	 */
 	@Override
-	public void dispose() {
+	public void close() {
 		if (iterator instanceof ResourceIterator<?>) {
-			((ResourceIterator<?>) iterator).dispose();
+			((ResourceIterator<?>) iterator).close();
 		}
 	}
 

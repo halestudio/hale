@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.align.model.Alignment;
 import eu.esdihumboldt.hale.align.model.Cell;
 import eu.esdihumboldt.hale.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.align.model.MutableCell;
+import eu.esdihumboldt.hale.align.model.Type;
 
 /**
  * Default alignment implementation
@@ -29,24 +30,34 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	
 	//FIXME simple collection should be replaced later on
 	private final Collection<MutableCell> cells = new ArrayList<MutableCell>();
+	private final Collection<MutableCell> typeCells = new ArrayList<MutableCell>();
 
 	/**
 	 * @see MutableAlignment#addCell(MutableCell)
 	 */
 	@Override
 	public boolean addCell(MutableCell cell) {
-		//FIXME when are cells equal?!
+		//FIXME when are cells equal?! FIXME
 		if (cells.contains(cell)) {
 			cells.remove(cell);
-			cells.add(cell);
+			internalAdd(cell);
 			return true;
 		}
 		else {
-			cells.add(cell);
+			internalAdd(cell);
 			return false;
 		}
 	}
 	
+	private void internalAdd(MutableCell cell) {
+		cells.add(cell);
+		
+		// check if cell is a type cell
+		if (cell.getTarget().values().iterator().next() instanceof Type) {
+			typeCells.add(cell);
+		}
+	}
+
 	/**
 	 * @see Alignment#getCells()
 	 */
@@ -61,6 +72,14 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	@Override
 	public boolean removeCell(Cell cell) {
 		return cells.remove(cell);
+	}
+
+	/**
+	 * @see Alignment#getTypeCells()
+	 */
+	@Override
+	public Collection<MutableCell> getTypeCells() {
+		return Collections.unmodifiableCollection(typeCells);
 	}
 
 }

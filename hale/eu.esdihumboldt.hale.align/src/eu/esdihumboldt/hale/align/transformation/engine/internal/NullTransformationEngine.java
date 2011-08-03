@@ -19,7 +19,21 @@ import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
  * @author Simon Templer
  */
 public final class NullTransformationEngine implements TransformationEngine {
-	
-	// empty class
+
+	/**
+	 * @see TransformationEngine#setup()
+	 */
+	@Override
+	public void setup() {
+		// do nothing
+	}
+
+	/**
+	 * @see TransformationEngine#dispose()
+	 */
+	@Override
+	public void dispose() {
+		// do nothing
+	}
 	
 }

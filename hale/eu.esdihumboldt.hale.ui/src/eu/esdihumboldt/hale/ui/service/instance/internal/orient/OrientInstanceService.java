@@ -199,6 +199,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 		OrientInstanceSink sink = new OrientInstanceSink(transformed);
 		TransformationReport report;
 		try {
+			//TODO transformation should be done in a job!
 			report = ts.transform(
 					getAlignmentService().getAlignment(), 
 					getInstances(DataSet.SOURCE), 

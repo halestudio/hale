@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.align.extension.transformation.internal;
+package eu.esdihumboldt.hale.align.extension.transformation;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
 import de.cs3d.util.eclipse.extension.ExtensionObjectDefinition;
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
-import eu.esdihumboldt.hale.align.extension.transformation.TransformationFactory;
 import eu.esdihumboldt.hale.align.transformation.function.TransformationFunction;
 
 /**

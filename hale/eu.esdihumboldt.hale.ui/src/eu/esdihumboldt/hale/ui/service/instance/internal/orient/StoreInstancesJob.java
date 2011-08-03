@@ -102,7 +102,7 @@ public abstract class StoreInstancesJob extends Job {
 					}
 				}
 			} finally {
-				it.dispose();
+				it.close();
 			}
 			
 			db.declareIntent(null);

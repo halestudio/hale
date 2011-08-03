@@ -132,7 +132,7 @@ public abstract class MapUtils {
 					}
 				}
 			} finally {
-				it.dispose();
+				it.close();
 			}
 			
 			mc = new DefaultMapContext(crs);
@@ -256,7 +256,7 @@ public abstract class MapUtils {
 					}
 				}
 			} finally {
-				it.dispose();
+				it.close();
 			}
 		}
 		

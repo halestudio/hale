@@ -14,6 +14,8 @@ package eu.esdihumboldt.cst.functions.core;
 
 import java.util.Map;
 
+import net.jcip.annotations.Immutable;
+
 import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.align.transformation.function.TransformationFunction;
 import eu.esdihumboldt.hale.align.transformation.function.impl.AbstractPropertyTransformation;
@@ -23,6 +25,7 @@ import eu.esdihumboldt.hale.align.transformation.report.TransformationLog;
  * Property rename function
  * @author Simon Templer
  */
+@Immutable
 public class Rename extends AbstractPropertyTransformation<TransformationEngine> {
 
 	/**

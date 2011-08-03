@@ -285,7 +285,7 @@ public class InstanceServiceSelector implements InstanceSelector {
 						typeToSelect = instance.getDefinition();
 					}
 				} finally {
-					itInstance.dispose();
+					itInstance.close();
 				}
 			}
 			
@@ -352,7 +352,7 @@ public class InstanceServiceSelector implements InstanceSelector {
 								}
 							}
 						} finally {
-							it.dispose();
+							it.close();
 						}
 //					}
 //					else {
