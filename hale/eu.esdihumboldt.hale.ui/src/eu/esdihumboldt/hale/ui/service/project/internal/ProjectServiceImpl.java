@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -65,6 +66,7 @@ import eu.esdihumboldt.hale.ui.io.advisor.IOAdvisorExtension;
 import eu.esdihumboldt.hale.ui.io.advisor.IOAdvisorFactory;
 import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
 import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
+import eu.esdihumboldt.hale.ui.io.util.OpenFileFieldEditor;
 import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
@@ -211,7 +213,8 @@ public class ProjectServiceImpl extends AbstractProjectService
 								}
 							}
 						} catch (URISyntaxException e) {
-							// TODO wrong saved? pop-up for new user input?
+//							OpenFileFieldEditor sourceFile = new OpenFileFieldEditor("sourceFile", "Source file:", true,
+//									FileFieldEditor.VALIDATE_ON_KEY_STROKE, parent);
 						}
 					}
 				}

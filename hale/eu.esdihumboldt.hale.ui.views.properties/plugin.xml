@@ -35,13 +35,89 @@
             </input>
          </propertySection>
          <propertySection
-               class="eu.esdihumboldt.hale.ui.views.properties.definition.TypeDefinitionBindingSection"
-               enablesFor="1"
-               id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.binding"
-               tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
+               class="eu.esdihumboldt.hale.ui.views.properties.typedefinition.AbstractFlagSection"
+               id="eu.esdihumboldt.hale.ui.views.properties.typedefinition.constraints.abstractflag"
+               tab="eu.esdihumboldt.hale.ui.views.properties.typedefinition.constraints">
             <input
                   type="eu.esdihumboldt.hale.schema.model.TypeDefinition">
             </input>
+         </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.typedefinition.HasValueFlagSection"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.ui.views.properties.typedefinition.constraints.hasvalueflag"
+               tab="eu.esdihumboldt.hale.ui.views.properties.typedefinition.constraints">
+            <input
+                  type="eu.esdihumboldt.hale.schema.model.TypeDefinition">
+            </input>
+         </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.typedefinition.MappableFlagSection"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.ui.views.properties.typedefinition.constraints.mappableflag"
+               tab="eu.esdihumboldt.hale.ui.views.properties.typedefinition.constraints">
+            <input
+                  type="eu.esdihumboldt.hale.schema.model.TypeDefinition">
+            </input>
+         </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.propertydefinition.XmlAttributeFlagSection"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.ui.views.properties.typedefinition.constraints.xmlelementssection"
+               tab="eu.esdihumboldt.hale.ui.views.properties.typedefinition.constraints">
+            <input
+                  type="eu.esdihumboldt.hale.schema.model.TypeDefinition">
+            </input>
+         </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.propertydefinition.CardinalityPDSection"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.ui.views.properties.propertydefinition.constraints.cardinality"
+               tab="eu.esdihumboldt.hale.ui.views.properties.propertydefinition.constraints">
+            <input
+                  type="eu.esdihumboldt.hale.schema.model.PropertyDefinition">
+            </input>
+         </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.propertydefinition.NillableFlagSection"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.ui.views.properties.propertydefinition.constraints.nillableflag"
+               tab="eu.esdihumboldt.hale.ui.views.properties.propertydefinition.constraints">
+            <input
+                  type="eu.esdihumboldt.hale.schema.model.PropertyDefinition">
+            </input>
+         </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.propertydefinition.XmlAttributeFlagSection"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.ui.views.properties.propertydefinition.constraints.xmlattributeflag"
+               tab="eu.esdihumboldt.hale.ui.views.properties.propertydefinition.constraints">
+            <input
+                  type="eu.esdihumboldt.hale.schema.model.PropertyDefinition">
+            </input>
+         </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.grouppropertydefinition.ChoiceFlagSection"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.ui.views.properties.grouppropertydefinition.constraints.choiceflag"
+               tab="eu.esdihumboldt.hale.ui.views.properties.grouppropertydefinition.constraints">
+            <input
+                  type="eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition">
+            </input>
+         </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.grouppropertydefinition.CardinalityGPDSection"
+               id="eu.esdihumboldt.hale.ui.views.properties.grouppropertydefinition.constraints.cardinality"
+               tab="eu.esdihumboldt.hale.ui.views.properties.grouppropertydefinition.constraints">
+            <input
+                  type="eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition">
+            </input>
+         </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.childdefinition.GeneralSection"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.ui.views.properties.childdefinition.parenttype.general"
+               tab="eu.esdihumboldt.hale.ui.views.properties.childdefinition.parenttype">
          </propertySection>
       </propertySections>
    </extension>
@@ -61,6 +137,26 @@
                id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints"
                label="Constraints">
          </propertyTab>
+         <propertyTab
+               category="eu.esdihumboldt.hale.ui.views.properties.typedefinition"
+               id="eu.esdihumboldt.hale.ui.views.properties.typedefinition.constraints"
+               label="Constraints">
+         </propertyTab>
+         <propertyTab
+               category="eu.esdihumboldt.hale.ui.views.properties.propertydefinition"
+               id="eu.esdihumboldt.hale.ui.views.properties.propertydefinition.constraints"
+               label="Constraints">
+         </propertyTab>
+         <propertyTab
+               category="eu.esdihumboldt.hale.ui.views.properties.grouppropertydefinition"
+               id="eu.esdihumboldt.hale.ui.views.properties.grouppropertydefinition.constraints"
+               label="Constraints">
+         </propertyTab>
+         <propertyTab
+               category="eu.esdihumboldt.hale.ui.views.properties.childdefinition"
+               id="eu.esdihumboldt.hale.ui.views.properties.childdefinition.parenttype"
+               label="ParentType">
+         </propertyTab>
       </propertyTabs>
    </extension>
    <extension
@@ -70,6 +166,18 @@
             labelProvider="eu.esdihumboldt.hale.ui.views.properties.PropertiesLabelProvider">
          <propertyCategory
                category="eu.esdihumboldt.hale.ui.views.properties.definition">
+         </propertyCategory>
+         <propertyCategory
+               category="eu.esdihumboldt.hale.ui.views.properties.typedefinition">
+         </propertyCategory>
+         <propertyCategory
+               category="eu.esdihumboldt.hale.ui.views.properties.propertydefinition">
+         </propertyCategory>
+         <propertyCategory
+               category="eu.esdihumboldt.hale.ui.views.properties.grouppropertydefinition">
+         </propertyCategory>
+         <propertyCategory
+               category="eu.esdihumboldt.hale.ui.views.properties.childdefinition">
          </propertyCategory>
       </propertyContributor>
    </extension>

@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.definition;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.layout.FormAttachment;
@@ -23,7 +22,6 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-import eu.esdihumboldt.hale.schema.model.Definition;
 
 /**
  * Properties section with definition name
@@ -32,8 +30,6 @@ import eu.esdihumboldt.hale.schema.model.Definition;
 public class DefinitionDescriptionSection extends AbstractDefinitionSection {
 
 	private Text descriptionText;
-	
-	private Definition<?> definition;
 
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
@@ -76,23 +72,21 @@ public class DefinitionDescriptionSection extends AbstractDefinitionSection {
 	}
 
 	/**
-	 * @see AbstractDefinitionSection#setInput(Object input)
-	 */
-	@Override
-	public void setInput(Object input) {
-		Assert.isTrue(input instanceof Definition<?>);
-		this.definition = (Definition<?>) input;
-	}
-
-	/**
 	 * @see AbstractPropertySection#refresh()
 	 */
 	@Override
 	public void refresh() {
-		String desc = definition.getDescription();
+		String desc = AbstractDefinitionSection.DEFINITION.getDescription();
 		if (desc == null) {
 			desc = "";
 		}
 		descriptionText.setText(desc);
+	}
+	
+	/**
+	 * @return the descriptionText
+	 */
+	public Text getDescription(){
+		return descriptionText;
 	}
 }

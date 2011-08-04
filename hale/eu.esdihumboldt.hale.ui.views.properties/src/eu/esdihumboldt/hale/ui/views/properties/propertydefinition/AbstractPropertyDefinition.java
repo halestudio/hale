@@ -10,38 +10,29 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.definition;
+package eu.esdihumboldt.hale.ui.views.properties.propertydefinition;
 
 import org.eclipse.core.runtime.Assert;
-
-import eu.esdihumboldt.hale.schema.model.Definition;
+import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
 
 /**
  * TODO Type description
  * @author Patrick Lieb
  */
-public abstract class AbstractDefinitionSection extends AbstractSection{
+public abstract class AbstractPropertyDefinition extends AbstractSection{
 	
 	/**
-	 * the general Definition for this package
+	 * the general PropertyDefintion for this package
 	 */
-	protected static Definition<?> DEFINITION;
-	
-	/**
-	 * @param def the Definition
-	 */
-	protected static void setDefinition(Definition<?> def){
-		DEFINITION = def;
-	}
+	protected static PropertyDefinition PROPERTYDEFINITION;
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.AbstractSection#setInput(java.lang.Object)
 	 */
 	@Override
 	protected void setInput(Object input) {
-		Assert.isTrue(input instanceof Definition<?>);
-		DEFINITION = (Definition<?>) input;
+		Assert.isTrue(input instanceof PropertyDefinition);
+		PROPERTYDEFINITION = (PropertyDefinition) input;
 	}
-
 }

@@ -12,20 +12,15 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.definition;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-
-import eu.esdihumboldt.hale.schema.model.Definition;
 
 /**
  * Properties section with definition name
@@ -36,8 +31,6 @@ public class DefinitionNameSection extends AbstractDefinitionSection {
 	private Text namespaceText;
 	
 	private Text localNameText;
-
-	private Definition<?> definition;
 
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
@@ -85,21 +78,27 @@ public class DefinitionNameSection extends AbstractDefinitionSection {
 		LocalNameLabel.setLayoutData(data);
 	}
 
-	/**
-	 * @see AbstractPropertySection#setInput(IWorkbenchPart, ISelection)
-	 */
-	@Override
-	public void setInput(Object input) {
-		Assert.isTrue(input instanceof Definition<?>);
-		this.definition = (Definition<?>) input;
-	}
 
 	/**
 	 * @see AbstractPropertySection#refresh()
 	 */
 	@Override
 	public void refresh() {
-		namespaceText.setText(definition.getName().getNamespaceURI());
-		localNameText.setText(definition.getName().getLocalPart());
+		namespaceText.setText(AbstractDefinitionSection.DEFINITION.getName().getNamespaceURI());
+		localNameText.setText(AbstractDefinitionSection.DEFINITION.getName().getLocalPart());
+	}
+	
+	/**
+	 * @return the namespaceText
+	 */
+	public Text getNamespace(){
+		return namespaceText;
+	}
+	
+	/**
+	 * @return the localNameText
+	 */
+	public Text getLocalName(){
+		return localNameText;
 	}
 }
