@@ -18,10 +18,10 @@ import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
 
 /**
- * TODO Type description
+ * Abstract section for TypeDefinitions
  * @author Patrick Lieb
  */
-public abstract class AbstractTypeDefinitionSection extends AbstractSection{
+public class AbstractTypeDefinitionSection extends AbstractSection{
 	
 	/**
 	 * the general TypeDefintion for this package

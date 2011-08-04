@@ -17,10 +17,10 @@ import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
 
 /**
- * TODO Type description
+ * Abstract section for PropertyDefintion
  * @author Patrick Lieb
  */
-public abstract class AbstractPropertyDefinition extends AbstractSection{
+public class AbstractPropertyDefinition extends AbstractSection{
 	
 	/**
 	 * the general PropertyDefintion for this package

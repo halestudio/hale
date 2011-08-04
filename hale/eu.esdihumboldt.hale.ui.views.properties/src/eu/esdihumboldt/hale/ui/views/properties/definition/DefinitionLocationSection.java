@@ -23,7 +23,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
- * TODO Type description
+ * Properties section with location information
  * @author Patrick Lieb
  */
 public class DefinitionLocationSection extends AbstractDefinitionSection{

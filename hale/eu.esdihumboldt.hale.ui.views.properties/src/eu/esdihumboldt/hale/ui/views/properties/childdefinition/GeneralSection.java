@@ -25,7 +25,7 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionLocationSec
 import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionNameSection;
 
 /**
- * TODO Type description
+ * Properties section with general information for ParentTypes
  * @author Patrick Lieb
  */
 public class GeneralSection extends AbstractDefinitionSection{

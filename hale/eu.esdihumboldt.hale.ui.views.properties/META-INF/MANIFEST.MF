@@ -15,5 +15,6 @@ Import-Package: eu.esdihumboldt.hale.core.io.supplier,
  eu.esdihumboldt.hale.schema.model.constraint,
  eu.esdihumboldt.hale.schema.model.constraint.property,
  eu.esdihumboldt.hale.schema.model.constraint.type,
+ eu.esdihumboldt.hale.schema.model.impl,
  eu.esdihumboldt.hale.ui.common.definition.viewer
 Export-Package: eu.esdihumboldt.hale.ui.views.properties

@@ -20,12 +20,10 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
 
 /**
- * TODO Type description
+ * Properties section with cardinality information
  * @author Patrick Lieb
  */
 public class CardinalityGPDSection extends AbstractGroupPropertyDefinitionSection{
-	
-	private CardinalityGPDSection section;
 	
 	private Text min;
 	

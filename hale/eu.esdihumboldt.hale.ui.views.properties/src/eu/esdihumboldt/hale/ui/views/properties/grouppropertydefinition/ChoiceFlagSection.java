@@ -20,12 +20,10 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import eu.esdihumboldt.hale.schema.model.constraint.property.ChoiceFlag;
 
 /**
- * TODO Type description
+ * Properties section with choiceflag information
  * @author Patrick Lieb
  */
 public class ChoiceFlagSection extends AbstractGroupPropertyDefinitionSection{
-	
-	private ChoiceFlagSection section;
 	
 	private Text choiceflag;
 	

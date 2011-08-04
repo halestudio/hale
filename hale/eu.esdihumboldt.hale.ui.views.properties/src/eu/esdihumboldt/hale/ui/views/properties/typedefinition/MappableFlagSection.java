@@ -20,12 +20,10 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
 
 /**
- * TODO Type description
- * @author Patrick
+ * Properties section with MappableFlag information
+ * @author Patrick Lieb
  */
 public class MappableFlagSection extends AbstractTypeDefinitionSection{
-	
-	private MappableFlagSection section;
 	
 	private Text mappableFlag;
 	

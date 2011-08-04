@@ -20,12 +20,10 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import eu.esdihumboldt.hale.schema.model.constraint.property.NillableFlag;
 
 /**
- * TODO Type description
+ * Properties section with NillableFlag information
  * @author Patrick Lieb
  */
 public class NillableFlagSection extends AbstractPropertyDefinition{
-	
-	private NillableFlagSection section;
 	
 	private Text nillableflag;
 

@@ -27,13 +27,19 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
- * TODO Type description
+ * Abstract section for properties views
  * @author Patrick Lieb
  */
 public abstract class AbstractSection extends AbstractPropertySection{
 	
+	/**
+	 * the Text which is configured in createControls (first part)
+	 */
 	protected static Text TEXT;
 	
+	/**
+	 * the Text which is configured in createControls (second part)
+	 */
 	protected static Text TEXT2;
 
 	/**
@@ -53,14 +59,12 @@ public abstract class AbstractSection extends AbstractPropertySection{
 	protected abstract void setInput(Object input);
 	
 	/**
-	 * @param parent
-	 * @param aTabbedPropertySheetPage
-	 * @param text
-	 * @param title
-	 * @param marker 
-	 * @param text2 
-	 * @param title2 
-	 * @param section 
+	 * Abstract version of createControls
+	 * @param parent the parent composite for the section
+	 * @param aTabbedPropertySheetPage the tabbed property sheet page
+	 * @param title the title for the first text part (static variable TEXT)
+	 * @param marker true if TEXT2 also should be configured otherwise false
+	 * @param title2 the title for the second text part (static variable TEXT2)
 	 */
 	protected void abstractCreateControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage, String title, boolean marker, String title2){

@@ -18,10 +18,10 @@ import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
 
 /**
- * TODO Type description
+ * Abstract section for GroupPropertyDefinitions
  * @author Patrick Lieb
  */
-public abstract class AbstractGroupPropertyDefinitionSection extends AbstractSection{
+public class AbstractGroupPropertyDefinitionSection extends AbstractSection{
 
 	/**
 	 * the general GroupPropertyDefintion for this package

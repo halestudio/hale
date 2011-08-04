@@ -15,28 +15,49 @@ package eu.esdihumboldt.hale.ui.views.properties.typedefinition;
 
 import java.util.Collection;
 
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 
 /**
- * TODO Type description
+ * Properties section with XML-Elements information
  * @author Patrick Lieb
  */
 public class XmlElementsSection extends AbstractTypeDefinitionSection{
 	
-	private XmlElementsSection section;
+	private Text[] text;
 	
-	private Text xmlelements;
+	/**
+	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 */
+	@Override
+	public void createControls(Composite parent,
+			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+		@SuppressWarnings("unused")
+		Collection<? extends XmlElement> elements;
+		int i = 0;
+		for(@SuppressWarnings("unused") XmlElement element : elements = TYPEDEFINITION.getConstraint(XmlElements.class).getElements()){
+			abstractCreateControls(parent, aTabbedPropertySheetPage, "Name:", false, null);
+			text[i] = TEXT;
+			i++;
+		}
+	}
 
 	/**
 	 * @see AbstractPropertySection#refresh()
 	 */
 	@Override
 	public void refresh() {
-		Collection<? extends XmlElement> elements = TYPEDEFINITION.getConstraint(XmlElements.class).getElements();
-			
+		@SuppressWarnings("unused")
+		Collection<? extends XmlElement> elements;
+		int i = 0;
+			for(XmlElement element : elements = TYPEDEFINITION.getConstraint(XmlElements.class).getElements()){
+				text[i].setText(element.getDisplayName());
+				i++;
+			}
 	}
 }

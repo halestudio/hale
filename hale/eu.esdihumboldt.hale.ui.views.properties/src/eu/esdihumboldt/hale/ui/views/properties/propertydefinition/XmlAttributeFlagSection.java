@@ -20,12 +20,10 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 
 /**
- * TODO Type description
+ * Properties section with XML-Attribute-Flag information
  * @author Patrick Lieb
  */
 public class XmlAttributeFlagSection extends AbstractPropertyDefinition{
-	
-	private XmlAttributeFlagSection section;
 	
 	private Text xmlattributeflag;
 	

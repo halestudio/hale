@@ -20,12 +20,10 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
 
 /**
- * TODO Type description
+ * Properties section with HasValueFlag information
  * @author Patrick Lieb
  */
 public class HasValueFlagSection extends AbstractTypeDefinitionSection{
-	
-	private HasValueFlagSection section;
 	
 	private Text hasValueFlag;
 	

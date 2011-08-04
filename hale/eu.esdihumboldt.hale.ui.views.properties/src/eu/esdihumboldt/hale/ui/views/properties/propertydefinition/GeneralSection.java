@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 
 /**
- * TODO Type description
+ * Properties section with general information for PropertyTypes
  * @author Patrick Lieb
  */
 public class GeneralSection extends AbstractPropertyDefinition{
