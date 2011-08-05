@@ -32,15 +32,10 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  */
 public abstract class AbstractSection extends AbstractPropertySection{
 	
-	/**
-	 * the Text which is configured in createControls (first part)
-	 */
-	protected static Text TEXT;
 	
-	/**
-	 * the Text which is configured in createControls (second part)
-	 */
-	protected static Text TEXT2;
+	private Text TEXT;
+
+	private Text TEXT2;
 
 	/**
 	 * @see AbstractPropertySection#setInput(IWorkbenchPart, ISelection)
@@ -108,5 +103,33 @@ public abstract class AbstractSection extends AbstractPropertySection{
 			data.top = new FormAttachment(TEXT2, 0, SWT.CENTER);
 			LocalNameLabel.setLayoutData(data);
 		}
+	}
+
+	/**
+	 * @return the tEXT2
+	 */
+	public Text getText2() {
+		return TEXT2;
+	}
+
+	/**
+	 * @param tEXT2 the tEXT2 to set
+	 */
+	public void setText2(Text tEXT2) {
+		TEXT2 = tEXT2;
+	}
+	
+	/**
+	 * @return the tEXT
+	 */
+	public Text getText() {
+		return TEXT;
+	}
+
+	/**
+	 * @param tEXT the tEXT to set
+	 */
+	public void setText(Text tEXT) {
+		TEXT = tEXT;
 	}
 }

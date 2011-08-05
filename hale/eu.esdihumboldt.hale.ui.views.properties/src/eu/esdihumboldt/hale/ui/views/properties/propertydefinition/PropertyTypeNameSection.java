@@ -12,23 +12,21 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.propertydefinition;
 
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
+import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionNameSection;
 
 /**
- * Properties section with general information for PropertyTypes
+ * TODO Type description
  * @author Patrick Lieb
  */
-public class GeneralSection extends AbstractPropertyDefinition{
-	
-	private Text general;
+public class PropertyTypeNameSection extends DefinitionNameSection {
 
-	
 	/**
-	 * @see AbstractPropertySection#refresh()
+	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection#setInput(java.lang.Object)
 	 */
 	@Override
-	public void refresh() {
-		
+	protected void setInput(Object input) {
+		setDefinition(((PropertyDefinition) input).getPropertyType());
 	}
+
 }

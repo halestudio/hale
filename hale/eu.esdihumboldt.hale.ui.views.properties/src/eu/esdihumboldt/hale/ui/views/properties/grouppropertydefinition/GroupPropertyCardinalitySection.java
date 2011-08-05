@@ -10,31 +10,36 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.propertydefinition;
+package eu.esdihumboldt.hale.ui.views.properties.grouppropertydefinition;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-import eu.esdihumboldt.hale.schema.model.constraint.property.NillableFlag;
+import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
+import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
 
 /**
- * Properties section with NillableFlag information
+ * Properties section with cardinality information
  * @author Patrick Lieb
  */
-public class NillableFlagSection extends AbstractPropertyDefinition{
+public class GroupPropertyCardinalitySection extends DefaultDefinitionSection<GroupPropertyDefinition>{
 	
-	private Text nillableflag;
-
+	private Text min;
+	
+	private Text max;
+	
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
 	 */
 	@Override
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		abstractCreateControls(parent, aTabbedPropertySheetPage, "NillableFlag:", false, null);
-		nillableflag = TEXT;
+		abstractCreateControls(parent, aTabbedPropertySheetPage, "Minimum:", true, "Maximum:");
+		min = getText();
+		max = getText2();
 	}
 	
 	/**
@@ -42,10 +47,9 @@ public class NillableFlagSection extends AbstractPropertyDefinition{
 	 */
 	@Override
 	public void refresh() {
-		if(PROPERTYDEFINITION.getConstraint(NillableFlag.class).isEnabled()){
-			nillableflag.setText("true");
-		} else {
-			nillableflag.setText("false");
-		}
+		long minlong = getDefinition().getConstraint(Cardinality.class).getMinOccurs();
+		long maxlong = getDefinition().getConstraint(Cardinality.class).getMaxOccurs();
+		min.setText(String.valueOf(minlong));
+		max.setText(String.valueOf(maxlong));
 	}
 }

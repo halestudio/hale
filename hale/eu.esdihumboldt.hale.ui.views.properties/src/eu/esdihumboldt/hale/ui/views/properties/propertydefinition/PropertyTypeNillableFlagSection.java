@@ -10,42 +10,44 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.typedefinition;
+package eu.esdihumboldt.hale.ui.views.properties.propertydefinition;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.schema.model.constraint.property.NillableFlag;
+import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
 
 /**
- * Properties section with HasValueFlag information
+ * Properties section with NillableFlag information
  * @author Patrick Lieb
  */
-public class HasValueFlagSection extends AbstractTypeDefinitionSection{
+public class PropertyTypeNillableFlagSection extends DefaultDefinitionSection<PropertyDefinition>{
 	
-	private Text hasValueFlag;
-	
+	private Text nillableflag;
+
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
 	 */
 	@Override
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		abstractCreateControls(parent, aTabbedPropertySheetPage, "HasValueFlag:", false, null);
-		hasValueFlag = TEXT;
+		abstractCreateControls(parent, aTabbedPropertySheetPage, "NillableFlag:", false, null);
+		nillableflag = getText();
 	}
-
+	
 	/**
 	 * @see AbstractPropertySection#refresh()
 	 */
 	@Override
 	public void refresh() {
-		if (TYPEDEFINITION.getConstraint(HasValueFlag.class).isEnabled()){
-			hasValueFlag.setText("true");
+		if(getDefinition().getConstraint(NillableFlag.class).isEnabled()){
+			nillableflag.setText("true");
 		} else {
-			hasValueFlag.setText("false");
+			nillableflag.setText("false");
 		}
 	}
 }

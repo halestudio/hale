@@ -12,24 +12,22 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.typedefinition;
 
-
-import java.util.Collection;
-
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
-import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
+import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
 
 /**
- * Properties section with XML-Elements information
+ * Properties section with MappableFlag information
  * @author Patrick Lieb
  */
-public class XmlElementsSection extends AbstractTypeDefinitionSection{
+public class TypeDefinitionMappableFlagSection extends DefaultDefinitionSection<TypeDefinition>{
 	
-	private Text[] text;
+	private Text mappableFlag;
 	
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
@@ -37,14 +35,8 @@ public class XmlElementsSection extends AbstractTypeDefinitionSection{
 	@Override
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		@SuppressWarnings("unused")
-		Collection<? extends XmlElement> elements;
-		int i = 0;
-		for(@SuppressWarnings("unused") XmlElement element : elements = TYPEDEFINITION.getConstraint(XmlElements.class).getElements()){
-			abstractCreateControls(parent, aTabbedPropertySheetPage, "Name:", false, null);
-			text[i] = TEXT;
-			i++;
-		}
+		abstractCreateControls(parent, aTabbedPropertySheetPage, "MappableFlag:", false, null);
+		mappableFlag = getText();
 	}
 
 	/**
@@ -52,12 +44,10 @@ public class XmlElementsSection extends AbstractTypeDefinitionSection{
 	 */
 	@Override
 	public void refresh() {
-		@SuppressWarnings("unused")
-		Collection<? extends XmlElement> elements;
-		int i = 0;
-			for(XmlElement element : elements = TYPEDEFINITION.getConstraint(XmlElements.class).getElements()){
-				text[i].setText(element.getDisplayName());
-				i++;
-			}
+		if (getDefinition().getConstraint(MappableFlag.class).isEnabled()){
+			mappableFlag.setText("true");
+		} else {
+			mappableFlag.setText("false");
+		}
 	}
 }

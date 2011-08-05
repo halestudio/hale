@@ -10,38 +10,34 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.definition;
-
-import org.eclipse.core.runtime.Assert;
+package eu.esdihumboldt.hale.ui.views.properties;
 
 import eu.esdihumboldt.hale.schema.model.Definition;
-import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
 
 /**
  * Abstract section for definition properties
  * @author Patrick Lieb
+ * @param <T> the definition type
  */
-public class AbstractDefinitionSection extends AbstractSection{
+public abstract class AbstractDefinitionSection<T extends Definition<?>> extends AbstractSection{
 	
 	/**
 	 * the general Definition for this package
 	 */
-	protected static Definition<?> DEFINITION;
+	private T definition;
 	
 	/**
 	 * @param def the Definition
 	 */
-	protected static void setDefinition(Definition<?> def){
-		DEFINITION = def;
+	protected void setDefinition(T def){
+		definition = def;
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.views.properties.AbstractSection#setInput(java.lang.Object)
+	 * @return the definition
 	 */
-	@Override
-	protected void setInput(Object input) {
-		Assert.isTrue(input instanceof Definition<?>);
-		DEFINITION = (Definition<?>) input;
+	public T getDefinition() {
+		return definition;
 	}
 
 }

@@ -22,11 +22,14 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
+import eu.esdihumboldt.hale.schema.model.Definition;
+import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
+
 /**
  * Properties section with location information
  * @author Patrick Lieb
  */
-public class DefinitionLocationSection extends AbstractDefinitionSection{
+public class DefinitionLocationSection extends DefaultDefinitionSection<Definition<?>>{
 
 	private Text location;
 	
@@ -64,7 +67,7 @@ public class DefinitionLocationSection extends AbstractDefinitionSection{
 	 */
 	@Override
 	public void refresh() {
-		location.setText(AbstractDefinitionSection.DEFINITION.getLocation().toString());
+		location.setText(getDefinition().getLocation().toString());
 	}
 	
 	/**

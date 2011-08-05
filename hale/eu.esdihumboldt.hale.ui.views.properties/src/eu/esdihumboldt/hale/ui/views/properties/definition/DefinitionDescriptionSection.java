@@ -22,12 +22,15 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
+import eu.esdihumboldt.hale.schema.model.Definition;
+import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
+
 
 /**
  * Properties section with definition name
  * @author Simon Templer
  */
-public class DefinitionDescriptionSection extends AbstractDefinitionSection {
+public class DefinitionDescriptionSection extends DefaultDefinitionSection<Definition<?>> {
 
 	private Text descriptionText;
 
@@ -76,7 +79,7 @@ public class DefinitionDescriptionSection extends AbstractDefinitionSection {
 	 */
 	@Override
 	public void refresh() {
-		String desc = AbstractDefinitionSection.DEFINITION.getDescription();
+		String desc = getDefinition().getDescription();
 		if (desc == null) {
 			desc = "";
 		}

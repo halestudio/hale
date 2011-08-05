@@ -22,11 +22,14 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
+import eu.esdihumboldt.hale.schema.model.Definition;
+import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
+
 /**
  * Properties section with definition name
  * @author Simon Templer
  */
-public class DefinitionNameSection extends AbstractDefinitionSection {
+public class DefinitionNameSection extends DefaultDefinitionSection<Definition<?>> {
 
 	private Text namespaceText;
 	
@@ -84,8 +87,8 @@ public class DefinitionNameSection extends AbstractDefinitionSection {
 	 */
 	@Override
 	public void refresh() {
-		namespaceText.setText(AbstractDefinitionSection.DEFINITION.getName().getNamespaceURI());
-		localNameText.setText(AbstractDefinitionSection.DEFINITION.getName().getLocalPart());
+		namespaceText.setText(getDefinition().getName().getNamespaceURI());
+		localNameText.setText(getDefinition().getName().getLocalPart());
 	}
 	
 	/**
@@ -101,4 +104,5 @@ public class DefinitionNameSection extends AbstractDefinitionSection {
 	public Text getLocalName(){
 		return localNameText;
 	}
+	
 }

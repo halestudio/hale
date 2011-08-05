@@ -17,13 +17,15 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
+import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.constraint.property.ChoiceFlag;
+import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
 
 /**
  * Properties section with choiceflag information
  * @author Patrick Lieb
  */
-public class ChoiceFlagSection extends AbstractGroupPropertyDefinitionSection{
+public class GroupPropertyChoiceFlagSection extends DefaultDefinitionSection<GroupPropertyDefinition>{
 	
 	private Text choiceflag;
 	
@@ -34,7 +36,7 @@ public class ChoiceFlagSection extends AbstractGroupPropertyDefinitionSection{
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		abstractCreateControls(parent, aTabbedPropertySheetPage, "ChoiceFlag:", false, null);
-		choiceflag = TEXT;
+		choiceflag = getText();
 	}
 	
 	/**
@@ -42,7 +44,7 @@ public class ChoiceFlagSection extends AbstractGroupPropertyDefinitionSection{
 	 */
 	@Override
 	public void refresh() {
-		if(GROUPPROPERTYDEFINITION.getConstraint(ChoiceFlag.class).isEnabled()){
+		if(getDefinition().getConstraint(ChoiceFlag.class).isEnabled()){
 			choiceflag.setText("true");
 		} else {
 			choiceflag.setText("false");

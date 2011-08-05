@@ -17,15 +17,17 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
 
 /**
- * Properties section with MappableFlag information
+ * Properties section with HasValueFlag information
  * @author Patrick Lieb
  */
-public class MappableFlagSection extends AbstractTypeDefinitionSection{
+public class TypeDefinitionHasValueFlagSection extends DefaultDefinitionSection<TypeDefinition>{
 	
-	private Text mappableFlag;
+	private Text hasValueFlag;
 	
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
@@ -33,8 +35,8 @@ public class MappableFlagSection extends AbstractTypeDefinitionSection{
 	@Override
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		abstractCreateControls(parent, aTabbedPropertySheetPage, "MappableFlag:", false, null);
-		mappableFlag = TEXT;
+		abstractCreateControls(parent, aTabbedPropertySheetPage, "HasValueFlag:", false, null);
+		hasValueFlag = getText();
 	}
 
 	/**
@@ -42,10 +44,10 @@ public class MappableFlagSection extends AbstractTypeDefinitionSection{
 	 */
 	@Override
 	public void refresh() {
-		if (TYPEDEFINITION.getConstraint(MappableFlag.class).isEnabled()){
-			mappableFlag.setText("true");
+		if (getDefinition().getConstraint(HasValueFlag.class).isEnabled()){
+			hasValueFlag.setText("true");
 		} else {
-			mappableFlag.setText("false");
+			hasValueFlag.setText("false");
 		}
 	}
 }

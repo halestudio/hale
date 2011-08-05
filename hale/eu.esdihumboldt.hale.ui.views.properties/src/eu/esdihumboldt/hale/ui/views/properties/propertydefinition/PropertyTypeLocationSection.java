@@ -12,27 +12,20 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.propertydefinition;
 
-import org.eclipse.core.runtime.Assert;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
-import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
+import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionLocationSection;
 
 /**
- * Abstract section for PropertyDefintion
+ * TODO Type description
  * @author Patrick Lieb
  */
-public class AbstractPropertyDefinition extends AbstractSection{
-	
-	/**
-	 * the general PropertyDefintion for this package
-	 */
-	protected static PropertyDefinition PROPERTYDEFINITION;
+public class PropertyTypeLocationSection extends DefinitionLocationSection{
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.views.properties.AbstractSection#setInput(java.lang.Object)
+	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection#setInput(java.lang.Object)
 	 */
 	@Override
 	protected void setInput(Object input) {
-		Assert.isTrue(input instanceof PropertyDefinition);
-		PROPERTYDEFINITION = (PropertyDefinition) input;
+		setDefinition(((PropertyDefinition) input).getPropertyType());
 	}
 }
