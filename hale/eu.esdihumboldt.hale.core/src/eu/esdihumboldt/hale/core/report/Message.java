@@ -13,25 +13,31 @@
 package eu.esdihumboldt.hale.core.report;
 
 /**
- * Report message
- *
+ * Report message. For a concrete message implementation there must be a 
+ * corresponding {@link MessageDefinition}. The {@link MessageDefinition} must
+ * be published as OSGi service.
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2 
+ * @since 2.5 
  */
 public interface Message {
 
 	/**
 	 * Get the message string
-	 * 
 	 * @return the message string
 	 */
 	public String getMessage();
 	
 	/**
-	 * Get the associated throwable
-	 * 
-	 * @return the associated throwable, may be <code>null</code>
+	 * Get the associated stack trace if any
+	 * @return the associated stack trace or <code>null</code>
+	 */
+	public String getStackTrace();
+	
+	/**
+	 * Get the associated throwable. It may be not available even if there is
+	 * a stack trace, so use {@link #getStackTrace()} instead if possible.
+	 * @return the associated throwable or <code>null</code>
 	 */
 	public Throwable getThrowable();
 	

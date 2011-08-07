@@ -12,6 +12,9 @@
 
 package eu.esdihumboldt.hale.core.report.impl;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.core.report.Message;
 
@@ -24,8 +27,31 @@ import eu.esdihumboldt.hale.core.report.Message;
  */
 @Immutable
 public class MessageImpl implements Message {
+	
+	/**
+	 * Get the stack trace from a given throwable
+	 * @param throwable the throwable, may be <code>null</code> 
+	 * @return the stack trace or <code>null</code>
+	 */
+	private static String getStackTrace(Throwable throwable) {
+		if (throwable == null) {
+			return null;
+		}
+		
+		StringWriter writer = new StringWriter();
+		PrintWriter printWriter = new PrintWriter(writer);
+		try {
+			throwable.printStackTrace(printWriter);
+		} finally {
+			printWriter.close();
+		}
+		
+		return writer.toString();
+	}
 
 	private final String message;
+	
+	private final String stackTrace;
 	
 	private final Throwable throwable;
 
@@ -36,8 +62,20 @@ public class MessageImpl implements Message {
 	 * @param throwable the associated throwable, may be <code>null</code>
 	 */
 	public MessageImpl(String message, Throwable throwable) {
+		this(message, throwable, getStackTrace(throwable));
+	}
+	
+	/**
+	 * Create a new message
+	 * 
+	 * @param message the message string
+	 * @param throwable the associated throwable, may be <code>null</code>
+	 * @param stackTrace the associated stack trace, or <code>null</code>
+	 */
+	protected MessageImpl(String message, Throwable throwable, String stackTrace) {
 		super();
 		this.message = message;
+		this.stackTrace = stackTrace;
 		this.throwable = throwable;
 	}
 
@@ -47,6 +85,14 @@ public class MessageImpl implements Message {
 	@Override
 	public String getMessage() {
 		return message;
+	}
+
+	/**
+	 * @see Message#getStackTrace()
+	 */
+	@Override
+	public String getStackTrace() {
+		return stackTrace;
 	}
 
 	/**
