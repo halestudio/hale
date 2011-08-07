@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.align.io.internal;
 
 import eu.esdihumboldt.hale.align.model.MutableAlignment;
+import eu.esdihumboldt.hale.core.io.report.IOReporter;
 
 /**
  * Alignment bean serving as model for alignment I/O
@@ -39,9 +40,10 @@ public class AlignmentBean {
 	
 	/**
 	 * Create an alignment from the information in the bean
+	 * @param reporter the I/O reporter to report any errors to, may be <code>null</code>
 	 * @return the alignment
 	 */
-	public MutableAlignment createAlignment() {
+	public MutableAlignment createAlignment(IOReporter reporter) {
 		//TODO
 		return null;
 	}

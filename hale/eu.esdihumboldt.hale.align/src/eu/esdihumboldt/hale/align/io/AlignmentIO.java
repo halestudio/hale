@@ -30,6 +30,7 @@ import org.xml.sax.InputSource;
 
 import eu.esdihumboldt.hale.align.io.internal.AlignmentBean;
 import eu.esdihumboldt.hale.align.model.MutableAlignment;
+import eu.esdihumboldt.hale.core.io.report.IOReporter;
 
 /**
  * Save or load an alignment
@@ -40,13 +41,15 @@ public class AlignmentIO {
 	/**
 	 * Load a default alignment from an input stream.
 	 * @param in the input stream
+	 * @param reporter the I/O reporter to report any errors to, may be <code>null</code>
 	 * @return the alignment
 	 * 
 	 * @throws MappingException if the mapping could not be loaded
 	 * @throws MarshalException if the alignment could not be read
 	 * @throws ValidationException if the input stream did not provide valid XML
 	 */
-	public static MutableAlignment load(InputStream in) throws MappingException, MarshalException, ValidationException {
+	public static MutableAlignment load(InputStream in, IOReporter reporter) 
+			throws MappingException, MarshalException, ValidationException {
 		Mapping mapping = new Mapping(AlignmentBean.class.getClassLoader());
 		mapping.loadMapping(new InputSource(
 				AlignmentBean.class.getResourceAsStream("AlignmentBean.xml")));
@@ -57,7 +60,7 @@ public class AlignmentIO {
 		Unmarshaller unmarshaller = context.createUnmarshaller();
 		try {
 			AlignmentBean bean = (AlignmentBean) unmarshaller.unmarshal(new InputSource(in));
-			return bean.createAlignment();
+			return bean.createAlignment(reporter);
 		} finally {
 			try {
 				in.close();

@@ -91,7 +91,7 @@ public class DefaultAlignmentIOTest {
 		
 		// load alignment
 		MutableAlignment align2 = AlignmentIO.load(new FileInputStream(
-				alignmentFile));
+				alignmentFile), null);
 		
 		//TODO test alignment
 		Collection<? extends MutableCell> cells = align2.getCells();
